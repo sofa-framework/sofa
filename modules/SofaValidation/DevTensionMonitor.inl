@@ -34,12 +34,11 @@ namespace component
 namespace misc
 {
 
-using namespace sofa::defaulttype;
-
 template <class DataTypes>
 void DevTensionMonitor<DataTypes>::init()
 {
 }
+
 template <class DataTypes>
 void DevTensionMonitor<DataTypes>::eval()
 {
@@ -56,7 +55,7 @@ void DevTensionMonitor<DataTypes>::eval()
 
         //Compute tension
         // ....
-        Vec1d tension = Vec1d(xPos[0].getOrientation()[0]);
+        defaulttype::Vec1d tension = defaulttype::Vec1d(xPos[0].getOrientation()[0]);
         std::pair<Vec1d, Real> temp;
         temp.first = tension;
         temp.second = timestamp;
