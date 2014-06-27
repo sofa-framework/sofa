@@ -1,6 +1,6 @@
-# - Config file for the SofaFramework package
+# - Config file for the SofaSimulation package
 # It defines the following variables
-#  SofaSimulation_INCLUDE_DIRS - include directories for FooBar
+#  SofaSimulation_INCLUDE_DIRS - include directories for SofaSimulation
 #  SofaSimulation_LIBRARIES    - libraries to link against
 
 @PACKAGE_INIT@
