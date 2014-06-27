@@ -76,7 +76,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
 		const vector< Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
 		const std::vector< Edge> &edgeArray=ff->_topology->getEdges() ;
 		unsigned int j;
-                int k/*,l*/;
+                /*int l*/;
 		typename DataTypes::Real volume;
 		typename DataTypes::Coord point[4];
         const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
@@ -119,7 +119,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
 
 		for(j=0;j<6;++j) {
 			Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
-			k=e[0];
+			int k=e[0];
             //l=e[1];
 			if (edgeArray[te[j]][0]!=t[k]) {
 				k=e[1];
@@ -425,7 +425,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 	const VecDeriv& dx = d_dx.getValue();
 	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-	unsigned int i=0,j=0,k=0,l=0;
+	unsigned int l=0;
 	unsigned int nbEdges=_topology->getNbEdges();
 	const vector< Edge> &edgeArray=_topology->getEdges() ;
 
@@ -441,7 +441,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 		TetrahedronRestInformation *tetInfo;
 		unsigned int nbTetrahedra=_topology->getNbTetrahedra();
 		const std::vector< Tetrahedron> &tetrahedronArray=_topology->getTetrahedra() ;
-
+		unsigned int i=0, j=0, k=0;
 		for(l=0; l<nbEdges; l++ )edgeInf[l].DfDx.clear();
 		for(i=0; i<nbTetrahedra; i++ )
 		{
@@ -500,14 +500,13 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
 
 	/// performs matrix vector computation
-	unsigned int v0,v1;
 	Deriv deltax;	Deriv dv0,dv1;
 
 	for(l=0; l<nbEdges; l++ )
 	{
 		einfo=&edgeInf[l];
-		v0=edgeArray[l][0];
-		v1=edgeArray[l][1];
+		unsigned int v0=edgeArray[l][0];
+		unsigned int v1=edgeArray[l][1];
 
 		deltax= dx[v0] - dx[v1];
 		dv0 = einfo->DfDx * deltax;
