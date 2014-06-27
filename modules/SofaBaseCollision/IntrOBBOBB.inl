@@ -248,7 +248,7 @@ bool TIntrOBBOBB<TDataTypes>::Test ()
 //----------------------------------------------------------------------------
 template <class TDataTypes>
 bool TIntrOBBOBB<TDataTypes>::Test (Real tmax,
-    const Vec<3,Real>& velocity0, const Vec<3,Real>& velocity1)
+    const defaulttype::Vec<3,Real>& velocity0, const defaulttype::Vec<3,Real>& velocity1)
 {
     if (velocity0 == velocity1)
     {
@@ -280,7 +280,7 @@ bool TIntrOBBOBB<TDataTypes>::Test (Real tmax,
     // Compute difference of box centers, D = C1-C0.
     Coord D = mBox1->center() - mBox0->center();
 
-    Vec<3,Real> W = velocity1 - velocity0;
+    defaulttype::Vec<3,Real> W = velocity1 - velocity0;
     Real C[3][3];     // matrix C = A^T B, c_{ij} = Dot(A_i,B_j)
     Real AbsC[3][3];  // |c_{ij}|
     Real AD[3];       // Dot(A_i,D)
@@ -478,7 +478,7 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
     int i0, i1;
     int side = IntrConfiguration<Real>::NONE;
     IntrConfiguration<Real> box0Cfg, box1Cfg;
-    Vec<3,Real> axis;
+    defaulttype::Vec<3,Real> axis;
     bool config_modified;
 
     // box 0 normals
@@ -547,7 +547,7 @@ bool TIntrOBBOBB<TDataTypes>::Find (Real dmax)
         }
     }
 
-    Vec<3,Real> relVelocity = mBox1->v() - mBox0->v();
+    defaulttype::Vec<3,Real> relVelocity = mBox1->v() - mBox0->v();
     // velocity cross box 0 edges
     for (i0 = 0; i0 < 3; ++i0)
     {
