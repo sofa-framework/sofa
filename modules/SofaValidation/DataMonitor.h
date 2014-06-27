@@ -37,8 +37,6 @@ namespace component
 namespace misc
 {
 
-using namespace sofa::defaulttype;
-
 /**
  * @brief  DataMonitor Class
  */
