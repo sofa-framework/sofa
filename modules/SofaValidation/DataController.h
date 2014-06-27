@@ -37,8 +37,6 @@ namespace component
 namespace misc
 {
 
-using namespace sofa::defaulttype;
-
 /**
  * @brief  DataController Class
  */
