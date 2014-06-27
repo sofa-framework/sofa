@@ -685,7 +685,7 @@ void Distances< DataTypes >::findCorrespondingHexas ( vector<sofa::component::to
 template<class DataTypes>
 void Distances< DataTypes >::find1DCoord ( unsigned int& hexaID, const Coord& point )
 {
-    const defaulttype::Vec3i& res = hexaContainer->resolution.getValue();
+    const sofa::defaulttype::Vec3i& res = hexaContainer->resolution.getValue();
     const defaulttype::Vector3& voxelSize = hexaContainer->voxelSize.getValue();
 
     int x = int ( ( point[0] - offset.getValue()[0]) / voxelSize[0]);
