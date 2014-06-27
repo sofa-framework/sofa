@@ -27,7 +27,7 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 set(SOFA_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeps")
 set(SOFA_FRAMEWORK_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
 set(SOFA_SIMULATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimulation")
-
+set(SOFA_BASE_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/SofaBase"  )
 set(SOFA_COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaCommon")
 
 # deps
@@ -38,6 +38,9 @@ add_subdirectory("${SOFA_FRAMEWORK_DIR}")
 
 # simulation
 add_subdirectory("${SOFA_SIMULATION_DIR}")
+
+# base
+add_subdirectory("${SOFA_BASE_DIR}")
 
 # common
 #add_subdirectory("${SOFA_COMMON_DIR}")
