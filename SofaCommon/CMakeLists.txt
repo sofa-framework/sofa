@@ -42,7 +42,7 @@ include_directories(${SofaCommon_ACTUAL_SOURCE_DIR})
 
 #set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObjectInteraction SofaMeshCollision SofaExplicitOdeSolver SofaImplicitOdeSolver SofaComponentCommon)
 
-set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaComponentCommon)
+set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaComponentCommon)
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
   add_subdirectory(${SofaCommon_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
@@ -56,7 +56,7 @@ write_basic_package_version_file(${SOFACOMMON_BUILD_CMAKE_DIR}/SofaCommonConfigV
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${SOFACOMMON_BUILD_CMAKE_DIR}/SofaCommonConfigVersion.cmake
         DESTINATION ${SOFACOMMON_INSTALL_CMAKE_DIR})
-                                                          
+
 # SofaCommonConfig.cmake (build tree)
 set(SOFACOMMON_INCLUDE_DIR "${SOFACOMMON_BUILD_INCLUDE_DIR}")
 configure_package_config_file(SofaCommonConfig.cmake.in 
