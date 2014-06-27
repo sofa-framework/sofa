@@ -5,7 +5,7 @@ project(${SOLUTION_NAME})
 message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 #temporary until we move the sub projects
-set( SofaBase_ACTUAL_SOURCE_DIR ${SofaSimulation_SOURCE_DIR}/../modules/)
+set( SofaBase_ACTUAL_SOURCE_DIR ${SofaBase_SOURCE_DIR}/../modules/)
 
 ##
 ## SofaBase version 
@@ -40,7 +40,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${SofaBase_ACTUAL_SOURCE_DIR}/../../)
 
 set(SOFABASE_TARGETS SofaBaseTopology SofaBaseLinearSolver SofaBaseMechanics SofaBaseCollision 
-                       SofaBaseAnimationLoop SofaBaseVisual)
+                       SofaBaseAnimationLoop SofaBaseVisual SofaComponentBase)
 
 foreach(TARGET ${SOFABASE_TARGETS})
   add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
