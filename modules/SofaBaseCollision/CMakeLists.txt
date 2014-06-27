@@ -24,8 +24,8 @@ set(HEADER_FILES
     CapsuleIntTool.inl
     OBBModel.inl
     OBBModel.h
-#	RigidCapsuleModel.h
-#	RigidCapsuleModel.inl
+	RigidCapsuleModel.h
+	RigidCapsuleModel.inl
 	CylinderModel.h
 	CylinderModel.inl
     OBBIntTool.h
@@ -58,7 +58,7 @@ set(SOURCE_FILES
     BaseProximityIntersection.cpp
     CapsuleIntTool.cpp
     OBBModel.cpp
-#	RigidCapsuleModel.cpp
+	RigidCapsuleModel.cpp
 	CylinderModel.cpp
     OBBIntTool.cpp
     IntrOBBOBB.cpp
@@ -70,7 +70,7 @@ set(SOURCE_FILES
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} SofaCore ) 
+target_link_libraries( ${PROJECT_NAME} SofaCore SofaSimulationCommon)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 
 set( COMPILER_FLAGS "-DSOFA_BUILD_BASE_COLLISION")
