@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 2.8.11)
 set(SOLUTION_NAME "SofaSimulation")
 project(${SOLUTION_NAME})
 
@@ -32,7 +32,7 @@ set(SOFASIMULATION_INSTALL_CMAKE_DIR   lib/cmake/SofaSimulation   CACHE PATH "In
 find_package(SofaFramework REQUIRED)
 include_directories( ${SofaFramework_INCLUDE_DIRS} )
 
-configure_file( ${SofaSimulation_SOURCE_DIR}/SofaSimulation.config.in 
+configure_file( ${SofaSimulation_SOURCE_DIR}/SofaSimulation.h.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h 
          DESTINATION "${SOFASIMULATION_INSTALL_INCLUDE_DIR}/sofa")
