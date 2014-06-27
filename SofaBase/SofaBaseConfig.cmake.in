@@ -17,4 +17,4 @@ endif()
  
 # For compatibility only
 set(SofaBase_LIBRARIES SofaComponentBase)
-set(SofaBase_INCLUDE_DIRS ${SOFABASE_INCLUDE_DIR} )
+set(SofaBase_INCLUDE_DIRS ${SOFABASE_INCLUDE_DIR} ${SofaSimulation_INCLUDE_DIRS} )
