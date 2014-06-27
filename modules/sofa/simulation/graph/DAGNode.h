@@ -29,8 +29,6 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/simulation/common/Visitor.h>
-using namespace sofa::core::objectmodel;
-
 
 namespace sofa
 {
