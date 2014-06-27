@@ -30,6 +30,7 @@
 #include <iostream>
 #include <vector>
 #include <sofa/defaulttype/Vec.h>
+#include <sstream>
 #include <string.h>
 
 namespace sofa
@@ -84,7 +85,11 @@ void TriangleLoader::loadTriangles(FILE *file)
     float x, y, z;
 //	/* make a default group */
 //
-    while (fscanf(file, "%s", buf) != EOF)
+    
+    std::ostringstream bufScanFormat;
+    bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
+
+    while (fscanf(file, bufScanFormat.str().c_str(), buf) != EOF)
     {
         switch (buf[0])
         {
@@ -176,7 +181,7 @@ void TriangleLoader::loadTriangles(FILE *file)
             break;
         case 'f':
             /* face */
-            if( fscanf(file, "%s", buf) == 1 )
+            if( fscanf(file, bufScanFormat.str().c_str(), buf) == 1 )
             {
                 int n1, n2, n3, v1, v2, v3, t1, t2, t3;
                 /* can be one of %d, %d//%d, %d/%d, %d/%d/%d %d//%d */
