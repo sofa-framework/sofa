@@ -48,8 +48,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 class TriangleOctree;
 
 class SOFA_MESH_COLLISION_API TriangleOctreeRoot

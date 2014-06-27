@@ -41,8 +41,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 template<class DataTypes>
 class TPointModel;
 
@@ -70,7 +68,7 @@ public:
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
 
-    bool testLMD(const Vector3 &, double &, double &);
+    bool testLMD(const sofa::defaulttype::Vector3 &, double &, double &);
 
     bool activated(core::CollisionModel *cm = 0) const;
 };
@@ -226,8 +224,8 @@ inline bool TPoint<DataTypes>::activated(core::CollisionModel *cm) const
     return this->model->myActiver->activePoint(this->index, cm);
 }
 
-typedef TPointModel<Vec3Types> PointModel;
-typedef TPoint<Vec3Types> Point;
+typedef TPointModel<sofa::defaulttype::Vec3Types> PointModel;
+typedef TPoint<sofa::defaulttype::Vec3Types> Point;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
 #ifndef SOFA_FLOAT

@@ -48,7 +48,6 @@ namespace collision
 {
 
 using core::topology::BaseMeshTopology;
-using namespace sofa::core::topology;
 
 template<class DataTypes>
 TLineModel<DataTypes>::TLineModel()

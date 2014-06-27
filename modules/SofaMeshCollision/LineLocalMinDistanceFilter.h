@@ -104,10 +104,10 @@ public:
 protected:
 
 
-    Vector3 m_nMean; ///<
-    Vector3 m_triangleRight; ///<
-    Vector3 m_triangleLeft; ///<
-    Vector3 m_lineVector; ///<
+    sofa::defaulttype::Vector3 m_nMean; ///<
+    sofa::defaulttype::Vector3 m_triangleRight; ///<
+    sofa::defaulttype::Vector3 m_triangleLeft; ///<
+    sofa::defaulttype::Vector3 m_lineVector; ///<
     double	m_computedRightAngleCone; ///<
     double	m_computedLeftAngleCone; ///<
     bool	m_twoTrianglesAroundEdge; ///<

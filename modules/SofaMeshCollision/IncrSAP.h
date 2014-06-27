@@ -154,9 +154,6 @@ public:
     static double tolerance;
 };
 
-
-using namespace sofa::defaulttype;
-
 /**
   *Implementation of incremental sweep and prune. i.e. collision are stored and updated which should speed up
   *the collision detection compared to the DirectSAP.

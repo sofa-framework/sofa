@@ -39,6 +39,8 @@ namespace component
 namespace collision
 {
 
+using namespace sofa::defaulttype;
+
 void TriangleInfo::buildFilter(unsigned int tri_index)
 {
 
@@ -46,9 +48,9 @@ void TriangleInfo::buildFilter(unsigned int tri_index)
     sofa::core::topology::BaseMeshTopology* bmt = this->base_mesh_topology;
     const Triangle &t =  bmt->getTriangle(tri_index);
 
-    const Vector3 &pt1 = (*this->position_filtering)[t[0]];
-    const Vector3 &pt2 = (*this->position_filtering)[t[1]];
-    const Vector3 &pt3 = (*this->position_filtering)[t[2]];
+    const sofa::defaulttype::Vector3 &pt1 = (*this->position_filtering)[t[0]];
+    const sofa::defaulttype::Vector3 &pt2 = (*this->position_filtering)[t[1]];
+    const sofa::defaulttype::Vector3 &pt3 = (*this->position_filtering)[t[2]];
 
     m_normal = cross(pt2-pt1, pt3-pt1);
 
@@ -97,7 +99,7 @@ void TriangleLocalMinDistanceFilter::init()
 {
     bmt = getContext()->getMeshTopology();
     std::cout<<"Mesh Topology found :"<<bmt->getName()<<std::endl;
-    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(getContext()->getMechanicalState());
+    component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(getContext()->getMechanicalState());
 
 
     if(mstateVec3d == NULL)

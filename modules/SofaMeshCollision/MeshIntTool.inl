@@ -5,8 +5,6 @@ namespace component
 {
 namespace collision
 {
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
 
 
 template <class DataTypes>
