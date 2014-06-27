@@ -555,11 +555,9 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     inserted+= state.add(dynamic_cast< core::BaseState* >(obj));
     inserted+= mechanicalState.add(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
     core::BaseMapping* bmap = dynamic_cast< core::BaseMapping* >(obj);
-    bool isMechanicalMapping = false;
     if(bmap)
     {
-        isMechanicalMapping = bmap->isMechanical();
-        if(isMechanicalMapping)
+        if(bmap->isMechanical())
             inserted += mechanicalMapping.add(bmap);
         else
             inserted += mapping.add(bmap);
