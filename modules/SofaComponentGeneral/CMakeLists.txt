@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.11)
 project(SofaComponentGeneral)
 
 set(HEADER_FILES
@@ -19,7 +19,7 @@ set(SOFACOMPONENTGENERAL_DEPS ${SOFAGENERAL_TARGETS})
 list(REMOVE_ITEM SOFACOMPONENTGENERAL_DEPS SofaComponentGeneral)
 
 target_link_libraries( ${PROJECT_NAME} ${SOFACOMPONENTGENERAL_DEPS})
-
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 set( SOFACOMPONENTGENERAL_COMPILER_FLAGS "-DSOFA_BUILD_COMPONENT_GENERAL")
 
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )

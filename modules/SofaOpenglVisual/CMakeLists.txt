@@ -79,6 +79,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries( ${PROJECT_NAME} SofaBaseVisual SofaSimulationCommon )
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 
 set( SOFAOPENGL_VISUAL_COMPILER_FLAGS "-DSOFA_BUILD_OPENGL_VISUAL")
 
@@ -88,7 +89,7 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAOPENGL_VI
 set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaOpenglVisual_libraries
+        COMPONENT SofaGeneral_libraries
         EXPORT    SofaGeneralTargets
         RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"

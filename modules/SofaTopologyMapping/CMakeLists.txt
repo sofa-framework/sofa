@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.11)
 project(SofaTopologyMapping)
 
 set(HEADER_FILES
@@ -48,6 +48,7 @@ set(SOURCE_FILES
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_link_libraries( ${PROJECT_NAME} SofaBaseTopology )
 
 set( SOFATOPOLOGY_MAPPING_COMPILER_FLAGS "-DSOFA_BUILD_TOPOLOGY_MAPPING")
@@ -58,7 +59,7 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFATOPOLOGY_
 set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaTopologyMapping_libraries
+        COMPONENT SofaGeneral_libraries
         EXPORT    SofaGeneralTargets
         RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"
