@@ -474,7 +474,6 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP)
-using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
 extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3dTypes>;
 extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2dTypes>;
