@@ -182,7 +182,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& 
             unsigned int val = (indexFromEnd.getValue()) ? rootX.size() - 1 - index.getValue() : index.getValue();
 
             Coord translation = rootX[val].getCenter();
-            Quat rot = rootX[val].getOrientation();
+            sofa::defaulttype::Quat rot = rootX[val].getOrientation();
 
             for(unsigned int i=0; i<nbpoints; i++)
             {
@@ -199,7 +199,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& 
             for (unsigned int ifrom=0 ; ifrom<rootX.size() ; ifrom++)
             {
                 Coord translation = rootX[ifrom].getCenter();
-                Quat rot = rootX[ifrom].getOrientation();
+                sofa::defaulttype::Quat rot = rootX[ifrom].getOrientation();
 
                 for(unsigned int ito=0; ito<val; ito++)
                 {
@@ -223,7 +223,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& 
             for (unsigned int ifrom=0 ; ifrom<rootX.size() ; ifrom++)
             {
                 Coord translation = rootX[ifrom].getCenter();
-                Quat rot = rootX[ifrom].getOrientation();
+                sofa::defaulttype::Quat rot = rootX[ifrom].getOrientation();
 
                 for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
                 {
@@ -265,7 +265,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeriv&
     if (m_fromRootModel)
     {
         Deriv v,omega;
-        Quat rot;
+        sofa::defaulttype::Quat rot;
         unsigned int cptOut;
         unsigned int val;
 
@@ -551,8 +551,8 @@ template <class TIn, class TInRoot, class TOut>
 void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings()) return;
-    std::vector< Vector3 > points;
-    Vector3 point;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    sofa::defaulttype::Vector3 point;
 
     const typename Out::VecCoord& x = *m_toModel->getX();
     for (unsigned int i=0; i<x.size(); i++)
@@ -560,7 +560,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visual
         point = Out::getCPos(x[i]);
         points.push_back(point);
     }
-    vparams->drawTool()->drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(points, 7, sofa::defaulttype::Vec<4,float>(1,1,0,1));
 }
 
 } // namespace mapping

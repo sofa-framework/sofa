@@ -95,10 +95,10 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
     unsigned int targetP =  P + E * ( k2 - 1 ) ;
     unsigned int targetE =  E * k2 ;
 
-    ReadAccessor<Data<VecInCoord> >		xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
-    WriteAccessor<Data<VecOutCoord> >	xto0 = *this->toModel->write(core::VecCoordId::restPosition());
-    WriteAccessor<Data<VecOutCoord> >	xto = *this->toModel->write(core::VecCoordId::position());
-    WriteAccessor<Data<VecOutCoord> >	xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
+    sofa::helper::ReadAccessor<Data<VecInCoord> >		xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
+    sofa::helper::WriteAccessor<Data<VecOutCoord> >	xto0 = *this->toModel->write(core::VecCoordId::restPosition());
+    sofa::helper::WriteAccessor<Data<VecOutCoord> >	xto = *this->toModel->write(core::VecCoordId::position());
+    sofa::helper::WriteAccessor<Data<VecOutCoord> >	xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
 
     this->toModel->resize(targetP);
     targetMesh->setNbPoints(targetP);

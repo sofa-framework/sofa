@@ -120,33 +120,21 @@ protected:
 };
 
 
-using sofa::defaulttype::ExtVec3fTypes;
-
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Rigid3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::Rigid3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_TUBULARMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3dTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API TubularMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API TubularMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API TubularMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API TubularMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3fTypes, Rigid3dTypes >;
-extern template class SOFA_MISC_MAPPING_API TubularMapping< Rigid3dTypes, Rigid3fTypes >;
+extern template class SOFA_MISC_MAPPING_API TubularMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
+extern template class SOFA_MISC_MAPPING_API TubularMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
 #endif
 #endif
 

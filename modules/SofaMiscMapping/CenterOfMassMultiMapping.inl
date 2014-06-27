@@ -196,8 +196,8 @@ void CenterOfMassMultiMapping< TIn, TOut >::draw(const core::visual::VisualParam
     assert( this->toModels.size() == 1 );
     const sofa::core::objectmodel::Data< OutVecCoord > *X = this->getToModels()[0]->read(sofa::core::VecCoordId::position());
 
-    std::vector< Vector3 > points;
-    Vector3 point1,point2;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    sofa::defaulttype::Vector3 point1,point2;
 
     for(unsigned int i=0 ; i<OutCoord::spatial_dimensions ; i++)
     {
@@ -209,7 +209,7 @@ void CenterOfMassMultiMapping< TIn, TOut >::draw(const core::visual::VisualParam
         points.push_back(point2);
     }
 
-    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(1,1,0,1));
 }
 
 
