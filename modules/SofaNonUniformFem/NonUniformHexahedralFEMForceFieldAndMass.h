@@ -125,7 +125,7 @@ private:
 
     void handleHexaAdded(const core::topology::HexahedraAdded&);
     void handleHexaRemoved(const core::topology::HexahedraRemoved&);
-    void handleMultilevelModif(const MultilevelModification&);
+    void handleMultilevelModif(const component::topology::MultilevelModification&);
 
 
     void computeHtfineH(const Mat88& H, const ElementStiffness& fine, ElementStiffness& HtfineH ) const;
@@ -181,7 +181,7 @@ private:
 
     Material _material; // TODO: enable combination of multiple materials
 
-    MultilevelHexahedronSetTopologyContainer*	_multilevelTopology;
+    component::topology::MultilevelHexahedronSetTopologyContainer*	_multilevelTopology;
 
     Data<bool>		_bRecursive;
 
