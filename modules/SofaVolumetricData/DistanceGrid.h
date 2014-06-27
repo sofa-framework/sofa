@@ -38,8 +38,6 @@ namespace component
 namespace container
 {
 
-using namespace sofa::helper;
-
 class SOFA_VOLUMETRIC_DATA_API DistanceGrid
 {
 public:
@@ -129,17 +127,17 @@ public:
 
     int ix(const Coord& p) const
     {
-        return rfloor((p[0]-pmin[0])*invCellWidth[0]);
+        return helper::rfloor((p[0]-pmin[0])*invCellWidth[0]);
     }
 
     int iy(const Coord& p) const
     {
-        return rfloor((p[1]-pmin[1])*invCellWidth[1]);
+        return helper::rfloor((p[1]-pmin[1])*invCellWidth[1]);
     }
 
     int iz(const Coord& p) const
     {
-        return rfloor((p[2]-pmin[2])*invCellWidth[2]);
+        return helper::rfloor((p[2]-pmin[2])*invCellWidth[2]);
     }
 
     int index(const Coord& p, Coord& coefs) const
@@ -147,13 +145,13 @@ public:
         coefs[0] = (p[0]-pmin[0])*invCellWidth[0];
         coefs[1] = (p[1]-pmin[1])*invCellWidth[1];
         coefs[2] = (p[2]-pmin[2])*invCellWidth[2];
-        int x = rfloor(coefs[0]);
+        int x = helper::rfloor(coefs[0]);
         if (x<0) x=0; else if (x>=nx-1) x=nx-2;
         coefs[0] -= x;
-        int y = rfloor(coefs[1]);
+        int y = helper::rfloor(coefs[1]);
         if (y<0) y=0; else if (y>=ny-1) y=ny-2;
         coefs[1] -= y;
-        int z = rfloor(coefs[2]);
+        int z = helper::rfloor(coefs[2]);
         if (z<0) z=0; else if (z>=nz-1) z=nz-2;
         coefs[2] -= z;
         return x+nx*(y+ny*(z));
@@ -244,7 +242,7 @@ public:
         {
             Coord xclamp = clamp(x);
             d = interp(xclamp);
-            d = rsqrt((x-xclamp).norm2() + d*d); // we underestimate the distance
+            d = helper::rsqrt((x-xclamp).norm2() + d*d); // we underestimate the distance
         }
         return d;
     }
@@ -279,7 +277,7 @@ public:
         {
             Coord xclamp = clamp(x);
             d = dists[index(xclamp)] - cellWidth[0]; // we underestimate the distance
-            d = rsqrt((x-xclamp).norm2() + d*d);
+            d = helper::rsqrt((x-xclamp).norm2() + d*d);
         }
         return d;
     }

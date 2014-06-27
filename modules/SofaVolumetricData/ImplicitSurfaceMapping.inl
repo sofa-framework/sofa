@@ -43,9 +43,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-
 template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::init()
 {
@@ -111,18 +108,18 @@ void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
             ymin = c[1];
         else if (c[1] > ymax)
             ymax = c[1];
-        int z0 = rceil(c[2]-r);
-        int z1 = rfloor(c[2]+r);
+        int z0 = helper::rceil(c[2]-r);
+        int z1 = helper::rfloor(c[2]+r);
         for (int z = z0; z < z1; ++z)
             sortParticles[z].push_back(c);
     }
 
     const int z0 = sortParticles.begin()->first - 1;
     const int nz = sortParticles.rbegin()->first - z0 + 2;
-    const int y0 = rceil(ymin-r) - 1;
-    const int ny = rfloor(ymax+r) - y0 + 2;
-    const int x0 = rceil(xmin-r) - 1;
-    const int nx = rfloor(xmax+r) - x0 + 2;
+    const int y0 = helper::rceil(ymin-r) - 1;
+    const int ny = helper::rfloor(ymax+r) - y0 + 2;
+    const int x0 = helper::rceil(xmin-r) - 1;
+    const int nx = helper::rfloor(xmax+r) - x0 + 2;
 
     (*planes.beginEdit()).resize(2*nx*ny);
     P0 = (*planes.beginEdit()).begin()+0;
@@ -152,10 +149,10 @@ void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mpar
         for (typename std::list<InCoord>::const_iterator it = particles.begin(); it != particles.end(); ++it)
         {
             InCoord c = *it;
-            int cx0 = rceil(c[0]-r);
-            int cx1 = rfloor(c[0]+r);
-            int cy0 = rceil(c[1]-r);
-            int cy1 = rfloor(c[1]+r);
+            int cx0 = helper::rceil(c[0]-r);
+            int cx1 = helper::rfloor(c[0]+r);
+            int cy0 = helper::rceil(c[1]-r);
+            int cy1 = helper::rfloor(c[1]+r);
             OutCoord dp2;
             dp2[2] = (OutReal)sqr(z0+z-c[2]);
             i = (cx0-x0)+(cy0-y0)*nx;

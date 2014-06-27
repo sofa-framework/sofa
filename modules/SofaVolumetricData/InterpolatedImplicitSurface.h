@@ -36,15 +36,13 @@ namespace component
 {
 namespace container
 {
-using namespace sofa::defaulttype;
-
 
 
 class DomainCache
 {
 public:
     bool insideImg; // shows if the domain lies inside the valid image region or outside
-    Vec3d bbMin, bbMax; // bounding box (min and max) of the domain
+    defaulttype::Vec3d bbMin, bbMax; // bounding box (min and max) of the domain
     double val[8]; // corner values of the domain
 };
 

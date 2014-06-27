@@ -45,10 +45,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-
-
 template<class T>
 bool RigidDistanceGridDiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, TSphere<T>&)
 {
@@ -91,7 +87,7 @@ int RigidDistanceGridDiscreteIntersection::computeIntersection(RigidDistanceGrid
     //p1 -= grad * d; // push p1 back to the surface
 
     contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+    core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
     detection->baryCoords[0] = p1;
     detection->baryCoords[1].clear();
