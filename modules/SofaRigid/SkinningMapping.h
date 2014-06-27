@@ -48,9 +48,6 @@ namespace component
 namespace mapping
 {
 
-using sofa::helper::vector;
-using sofa::helper::SVector;
-
 template <class TIn, class TOut>
 class SkinningMapping : public core::Mapping<TIn, TOut>
 {
@@ -112,12 +109,12 @@ protected:
 #endif
 
     Data< vector<unsigned int> > nbRef; // Number of primitives influencing each point.
-    Data< vector<SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
-    Data< vector<SVector<InReal> > > weight;
+    Data< vector<sofa::helper::SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
+    Data< vector<sofa::helper::SVector<InReal> > > weight;
     void updateWeights();
 
 public:
-    void setWeights(const vector<SVector<InReal> >& weights, const vector<SVector<unsigned int> >& indices, const vector<unsigned int>& nbrefs);
+    void setWeights(const vector<sofa::helper::SVector<InReal> >& weights, const vector<sofa::helper::SVector<unsigned int> >& indices, const vector<unsigned int>& nbrefs);
 
 public:
     Data<unsigned int> showFromIndex;
@@ -144,31 +141,19 @@ public:
 
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Rigid3dTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-using sofa::defaulttype::Rigid3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API SkinningMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_RIGID_API SkinningMapping< Rigid3dTypes, ExtVec3fTypes >;
+extern template class SOFA_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API SkinningMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_RIGID_API SkinningMapping< Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API SkinningMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class SOFA_RIGID_API SkinningMapping< Rigid3fTypes, Vec3dTypes >;
+extern template class SOFA_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes >;
 #endif
 #endif
 #endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)

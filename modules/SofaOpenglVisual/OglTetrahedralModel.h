@@ -39,7 +39,7 @@ namespace component
 {
 namespace visualmodel
 {
-using namespace sofa::defaulttype;
+
 /**
  *  \brief Render 3D models with tetrahedra.
  *
@@ -63,8 +63,8 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     core::topology::BaseMeshTopology* m_topology;
 
-    topology::PointData< ResizableExtVector<Coord> > m_positions;
-    Data< ResizableExtVector<Tetrahedron> > m_tetrahedrons;
+    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions;
+    Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > m_tetrahedrons;
     bool modified;
     int lastMeshRev;
     bool useTopology;
