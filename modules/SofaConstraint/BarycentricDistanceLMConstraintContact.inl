@@ -251,9 +251,9 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     sofa::core::objectmodel::TagSet tagsm1 = mstate1->getTags();
     sofa::core::objectmodel::TagSet tagsm2 = mstate2->getTags();
     sofa::core::objectmodel::TagSet::iterator it;
-    for(it=tagsm1.begin(); it != tagsm1.end(); it++)
+    for(it=tagsm1.begin(); it != tagsm1.end(); ++it)
         ff->addTag(*it);
-    for(it=tagsm2.begin(); it!=tagsm2.end(); it++)
+    for(it=tagsm2.begin(); it!=tagsm2.end(); ++it)
         ff->addTag(*it);
 }
 

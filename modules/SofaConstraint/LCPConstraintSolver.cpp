@@ -1081,7 +1081,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         std::list<unsigned int>::iterator it_c ;
         error =0;
 
-        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; it_c++ )
+        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; ++it_c )
         {
 
 
@@ -1090,7 +1090,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
             c1 = constraint/3;
 
             //constraints are treated 3x3 (friction contact)
-            it_c++; it_c++;
+            ++it_c; ++it_c;
 
 
 
@@ -1345,7 +1345,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
         std::list<unsigned int>::iterator it_c;
         error =0;
 
-        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end(); it_c++)
+        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end(); ++it_c)
         {
 
             c1 = *it_c;
