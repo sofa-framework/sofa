@@ -34,6 +34,8 @@
 
 #cmakedefine SOFA_HAVE_GLUT
 
+#cmakedefine SOFA_HAVE_BOOST
+
 #cmakedefine SOFA_HAVE_BOOST_THREAD
 
 #cmakedefine SOFA_HAVE_BOOST_SYSTEM
