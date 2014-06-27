@@ -17,7 +17,7 @@ RegisterProjects("SofaBaseTopology" OPTION "SOFA-LIB_COMPONENT_BASE_TOPOLOGY" PA
 #RegisterProjects("SofaBaseTopology_test" OPTION "SOFA-LIB_COMPONENT_BASE_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseTopology/SofaBaseTopology_test")
 
 RegisterProjects("SofaBaseVisual" OPTION "SOFA-LIB_COMPONENT_BASE_VISUAL" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseVisual")
-#RegisterProjects("SofaBaseVisual_test" OPTION "SOFA-LIB_COMPONENT_BASE_VISUAL" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseVisual/SofaBaseVisual_test")
+RegisterProjects("SofaBaseVisual_test" OPTION "SOFA-LIB_COMPONENT_BASE_VISUAL" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseVisual/SofaBaseVisual_test")
 
 RegisterProjects("SofaComponentAdvanced" OPTION "SOFA-LIB_COMPONENT_COMPONENT_ADVANCED" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaComponentAdvanced")
 #RegisterProjects("SofaComponentAdvanced_test" OPTION "SOFA-LIB_COMPONENT_COMPONENT_ADVANCED" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaComponentAdvanced/SofaComponentAdvanced_test")
