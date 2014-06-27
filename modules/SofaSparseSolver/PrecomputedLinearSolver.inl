@@ -38,7 +38,7 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <SofaSimpleFem/forcefield/TetrahedronFEMForceField.h>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
@@ -47,7 +47,9 @@
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
+#ifdef SOFA_HAVE_CSPARSE
 #include <SofaSparseSolver/SparseCholeskySolver.h>
+#endif
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/CholeskySolver.h>
 
@@ -107,8 +109,12 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
     if(! use_file.getValue() || ! internalData.readFile(ss.str().c_str(),systemSize) )
     {
+#ifdef SOFA_HAVE_CSPARSE
         loadMatrixWithCSparse(M);
         if (use_file.getValue()) internalData.writeFile(ss.str().c_str(),systemSize);
+#else
+        serr << "CSPARSE support is required to invert the matrix" << sendl;
+#endif
     }
 
     for (unsigned int j=0; j<systemSize; j++)
@@ -120,6 +126,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     }
 }
 
+#ifdef SOFA_HAVE_CSPARSE
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {
@@ -166,6 +173,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
     std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
     std::cout.flush();
 }
+#endif
 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/) {}
