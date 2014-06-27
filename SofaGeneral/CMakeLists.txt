@@ -36,8 +36,10 @@ configure_file( ${SofaGeneral_SOURCE_DIR}/SofaGeneral.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h 
          DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/sofa")
+
 # make sure everyone in the build tree can see <sofa/SofaGeneral.h>
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
+message("${CMAKE_CURRENT_BINARY_DIR}")
 include_directories(${SofaGeneral_ACTUAL_SOURCE_DIR}/)
 
 # temporarily limited to a subset of projects
