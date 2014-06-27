@@ -38,6 +38,9 @@
 namespace sofa
 {
 
+using helper::rabs;
+using helper::rmax;
+
 namespace component
 {
 

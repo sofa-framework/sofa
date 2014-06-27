@@ -88,7 +88,7 @@ bool ImplicitSurface::computeSegIntersection(defaulttype::Vec3d& posInside, defa
 
 
 
-    Vec3d Seg = posInside-posOutside;
+    defaulttype::Vec3d Seg = posInside-posOutside;
     if (Seg.norm() < tolerance) // TODO : macro on the global precision
     {
         intersecPos = posOutside;
@@ -97,7 +97,7 @@ bool ImplicitSurface::computeSegIntersection(defaulttype::Vec3d& posInside, defa
 
     // we start on posInside and search for the first point outside with a step given by scale //
     int count=0;
-    Vec3d step = Seg;
+    defaulttype::Vec3d step = Seg;
     double val = b;
     intersecPos = posOutside;
 
