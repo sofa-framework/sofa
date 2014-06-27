@@ -221,9 +221,9 @@ void Monitor<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<savedPos[i].size() ; ++j)
             {
                 point = savedPos[i][j];
-                points.push_back(Vector3(point[0], point[1], point[2]));
+                points.push_back(defaulttype::Vector3(point[0], point[1], point[2]));
                 if(j!=0)
-                    points.push_back(Vector3(point[0], point[1], point[2]));
+                    points.push_back(defaulttype::Vector3(point[0], point[1], point[2]));
             }
             vparams->drawTool()->drawLines(points, (float)(showSizeFactor.getValue()*0.2), trajectoriesColor.getValue());
         }
