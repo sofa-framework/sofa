@@ -43,8 +43,6 @@ class MultilevelModification;
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::topology;
 using sofa::helper::vector;
 
 /**
@@ -125,8 +123,8 @@ protected:
 
 private:
 
-    void handleHexaAdded(const HexahedraAdded&);
-    void handleHexaRemoved(const HexahedraRemoved&);
+    void handleHexaAdded(const core::topology::HexahedraAdded&);
+    void handleHexaRemoved(const core::topology::HexahedraRemoved&);
     void handleMultilevelModif(const MultilevelModification&);
 
 

@@ -45,11 +45,6 @@ namespace component
 namespace mapping
 {
 
-
-
-using namespace sofa::core::behavior;
-using namespace sofa::defaulttype;
-
 template <class BasicMapping>
 class HexahedronCompositeFEMMapping : public BasicMapping
 {
@@ -78,7 +73,7 @@ public:
     typedef sofa::component::forcefield::HexahedronCompositeFEMForceFieldAndMass<In> HexahedronCompositeFEMForceFieldAndMassT;
 
 
-    typedef Mat<3,8*3> Weight;
+    typedef defaulttype::Mat<3,8*3> Weight;
     typedef typename HexahedronCompositeFEMForceFieldAndMassT::Transformation Transformation;
     typedef helper::fixed_array< InCoord, 8 > Nodes;
 

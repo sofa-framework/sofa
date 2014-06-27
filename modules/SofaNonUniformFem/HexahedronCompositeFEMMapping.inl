@@ -49,11 +49,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
-
-
-
 template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::init()
 {

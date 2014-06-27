@@ -40,9 +40,6 @@
 #include <sofa/helper/gl/BasicShapes.h>
 
 
-
-using namespace sofa::component::forcefield;
-
 namespace sofa
 {
 
@@ -52,14 +49,8 @@ namespace component
 namespace forcefield
 {
 
-using std::set;
-using namespace sofa::defaulttype;
-
 
 using topology::SparseGridTopology;
-using namespace linearsolver;
-
-
 
 template <class DataTypes>
 const int HexahedronCompositeFEMForceFieldAndMass<DataTypes>::FineHexa_FineNode_IndiceForAssembling[8][8]=
@@ -624,7 +615,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
         sizeass = (sizeass-1)*2+1;
     sizeass = sizeass*sizeass*sizeass;
 
-    NewMatMatrix assembledStiffness(sizeass*3),assembledMass(sizeass*3);
+    linearsolver::NewMatMatrix assembledStiffness(sizeass*3),assembledMass(sizeass*3);
     assembledStiffness.resize(sizeass*3,sizeass*3);
     assembledMass.resize(sizeass*3,sizeass*3);
     serr<<assembledStiffness.rowSize()<<"x"<<assembledStiffness.colSize()<<sendl;
@@ -788,11 +779,11 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     // 		serr<<map_idxcoarse_idxfine<<sendl;
 
 
-    NewMatMatrix Kg; // stiffness of contrained nodes
+    linearsolver::NewMatMatrix Kg; // stiffness of contrained nodes
     Kg.resize(sizeass*3,8*3);
-    NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
+    linearsolver::NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
     A.resize(sizeass*3,sizeass*3);
-    NewMatMatrix  Ainv;
+    linearsolver::NewMatMatrix  Ainv;
     // 		Ainv.resize(sizeass*3,sizeass*3);
 
 
@@ -847,7 +838,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-    NewMatMatrix  Ainvf;
+    linearsolver::NewMatMatrix  Ainvf;
     // 		Ainvf.resize((sizeass-8)*3,sizeass*3);
     Ainv.getSubMatrix( 0,0, (sizeass-8)*3,sizeass*3,Ainvf);
 
@@ -856,7 +847,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-    NewMatMatrix  W;
+    linearsolver::NewMatMatrix  W;
     // 		W.resize((sizeass-8)*3,8*3);
     W = - Ainvf * Kg;
 
@@ -864,7 +855,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
 
-    NewMatMatrix  WB;
+    linearsolver::NewMatMatrix  WB;
     WB.resize(sizeass*3,8*3);
     for(int i=0; i<sizeass*3; ++i)
     {
@@ -903,7 +894,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     // 		}
 
 
-    NewMatMatrix  mask;
+    linearsolver::NewMatMatrix  mask;
     mask.resize(sizeass*3,8*3);
 
     Coord a = this->_sparseGrid->getPointPos(coarsehexa[0]);
@@ -1083,7 +1074,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
 
     // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
-    NewMatMatrix WBmeca;
+    linearsolver::NewMatMatrix WBmeca;
     WBmeca.resize(sizeass*3,8*3);
     for(int i=0; i<sizeass*3; ++i)
     {
@@ -1121,7 +1112,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
     // 		WBmeca=WB;
 
-    NewMatMatrix Kc, Mc; // coarse stiffness
+    linearsolver::NewMatMatrix Kc, Mc; // coarse stiffness
     // 		Kc.resize(8*3,8*3);
     // 		Mc.resize(8*3,8*3);
     Kc = WBmeca.t() * assembledStiffness * WBmeca;
@@ -1795,7 +1786,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
         // 			  serr<<"sizeass : "<<sizeass<<sendl;
-        NewMatMatrix assembledStiffness,assembledStiffnessStatic,assembledMass;
+        linearsolver::NewMatMatrix assembledStiffness,assembledStiffnessStatic,assembledMass;
         assembledStiffness.resize(sizeass*3,sizeass*3);
         assembledStiffnessStatic.resize(sizeass*3,sizeass*3);
         assembledMass.resize(sizeass*3,sizeass*3);
@@ -1865,7 +1856,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         std::map<int,int> map_idxq_coarse; // a fine idx -> -1->non coarse, x-> idx coarse node
         helper::fixed_array<helper::vector<int> ,8> map_idxcoarse_idxfine;
 
-        NewMatMatrix  mask;
+        linearsolver::NewMatMatrix  mask;
         mask.resize(sizeass*3,8*3);
 
         // 			  std::map<int,std::pair< helper::vector<int>,unsigned > > map_mask; // for each fine node -> a list of depensing coase nodes and in which axes (0==all, 1==x, 2==y, 3==z)
@@ -1960,11 +1951,11 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // 			  }
 
 
-        NewMatMatrix Kg; // stiffness of contrained nodes
+        linearsolver::NewMatMatrix Kg; // stiffness of contrained nodes
         Kg.resize(sizeass*3,idxcutasscoarse*3);
-        NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
+        linearsolver::NewMatMatrix  A; // [Kf -G] ==  Kf (stiffness of free nodes) with the constaints
         A.resize(sizeass*3,sizeass*3);
-        NewMatMatrix  Ainv;
+        linearsolver::NewMatMatrix  Ainv;
 
         // 			  serr<<"map_idxq_coarse : "<<sendl;
         // 			  for( std::map<int,int>::iterator it = map_idxq_coarse.begin();it!= map_idxq_coarse.end();++it)
@@ -2023,13 +2014,13 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
         Ainv = A.i();
 
-        NewMatMatrix  Ainvf;
+        linearsolver::NewMatMatrix  Ainvf;
         Ainv.getSubMatrix( 0,0, (sizeass-idxcutasscoarse)*3,sizeass*3,Ainvf);
 
 
 
         //// ajouter un H qui lie tous les coins superpos�s ensemble et n'en garder que 8 pour avoir un W 27x8
-        NewMatMatrix H;
+        linearsolver::NewMatMatrix H;
         H.resize( idxcutasscoarse*3, 8*3 );
         for(int i=0; i<8; ++i)
         {
@@ -2052,7 +2043,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
 
-        NewMatMatrix  W;
+        linearsolver::NewMatMatrix  W;
         W = - Ainvf * Kg * H;
 
         // 			  serr<<"W"<<elementIndice<<"=";
@@ -2062,7 +2053,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         // 			  serr<<"W : "<<W.rowSize()<<"x"<<W.colSize()<<sendl;
         //
         //
-        NewMatMatrix  WB;
+        linearsolver::NewMatMatrix  WB;
         WB.resize(sizeass*3,8*3);
         // 			  serr<<"WB : "<<WB.rowSize()<<"x"<<WB.colSize()<<sendl;
 
@@ -2102,7 +2093,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 
 
         // apply the mask to take only concerned values (an edge stays an edge, a face stays a face, if corner=1 opposite borders=0....)
-        NewMatMatrix WBmeca;
+        linearsolver::NewMatMatrix WBmeca;
         WBmeca.resize(sizeass*3,8*3);
 
 
@@ -2249,7 +2240,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         }
 
 
-        NewMatMatrix Kc, Mc; // coarse stiffness
+        linearsolver::NewMatMatrix Kc, Mc; // coarse stiffness
         Kc = WBmeca.t() * assembledStiffness * WBmeca;
         Mc = WBmeca.t() * assembledMass * WBmeca;
 
