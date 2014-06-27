@@ -4,6 +4,7 @@
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />
+    <DiscreteIntersection/>
     <Node name="LiverFFD-lowres">
         <EulerImplicit />
         <CGLinearSolver />
