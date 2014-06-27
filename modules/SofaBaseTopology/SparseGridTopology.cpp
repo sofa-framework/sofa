@@ -496,14 +496,13 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
         //Get the voxels from the file
         dataVoxels.beginEdit()->resize(dataResolution.getValue()[0]*dataResolution.getValue()[1]*dataResolution.getValue()[2], (unsigned char)0);
 
-        unsigned char value;
         const Vector3 transform(                (getNx()-1)/(float)dataResolution.getValue()[0],
                 (getNy()-1)/(float)dataResolution.getValue()[1],
                 (getNz()-1)/(float)dataResolution.getValue()[2]);
 
         for (unsigned int i=0; i<dataVoxels.beginEdit()->size(); i++)
         {
-            value=getc(file);
+            unsigned char value=getc(file);
             if ((int)value != 0)
             {
                 setVoxel(i,1);

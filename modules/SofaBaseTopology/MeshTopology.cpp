@@ -89,11 +89,10 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
         const Tetra &t=tetrahedra[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
-        unsigned int v1,v2;
         for (unsigned int j=0; j<6; ++j)
         {
-            v1=t[edgesInTetrahedronArray[j][0]];
-            v2=t[edgesInTetrahedronArray[j][1]];
+            unsigned int v1=t[edgesInTetrahedronArray[j][0]];
+            unsigned int v2=t[edgesInTetrahedronArray[j][1]];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -129,11 +128,10 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
         const Hexa &h=hexahedra[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
-        unsigned int v1,v2;
         for (unsigned int j=0; j<12; ++j)
         {
-            v1=h[edgeHexahedronDescriptionArray[j][0]];
-            v2=h[edgeHexahedronDescriptionArray[j][1]];
+            unsigned int v1=h[edgeHexahedronDescriptionArray[j][0]];
+            unsigned int v2=h[edgeHexahedronDescriptionArray[j][1]];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -177,11 +175,10 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
         const Triangle &t=triangles[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
-        unsigned int v1,v2;
         for (unsigned int j=0; j<3; ++j)
         {
-            v1=t[(j+1)%3];
-            v2=t[(j+2)%3];
+            unsigned int v1=t[(j+1)%3];
+            unsigned int v2=t[(j+2)%3];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
@@ -209,11 +206,10 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
         const Quad &t=quads[i];
         std::map<Edge,unsigned int>::iterator ite;
         Edge e;
-        unsigned int v1,v2;
         for (unsigned int j=0; j<4; ++j)
         {
-            v1=t[(j+1)%4];
-            v2=t[(j+2)%4];
+            unsigned int v1=t[(j+1)%4];
+            unsigned int v2=t[(j+2)%4];
             // sort vertices in lexicographics order
             if (v1<v2)
                 e=Edge(v1,v2);
