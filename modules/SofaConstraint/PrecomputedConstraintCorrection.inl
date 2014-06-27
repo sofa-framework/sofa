@@ -175,7 +175,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string fileName)
+void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string& fileName)
 {
     sout << "saveCompliance in " << fileName << sendl;
 
