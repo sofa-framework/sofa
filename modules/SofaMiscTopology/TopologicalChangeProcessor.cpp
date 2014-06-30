@@ -414,13 +414,13 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             {
                 sofa::component::topology::TriangleSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
-                
+
                 if(!topoMod)
                 {
                     serr << "No PointSetTopologyModifier available" << sendl;
                     continue;
                 }
-                
+
                 helper::vector< Vector2 > baryCoords;
                 baryCoords.resize(nbElements);
                 helper::vector < unsigned int > triangles;
@@ -432,7 +432,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     Vector2& baryCoord = baryCoords[i];
                     Sin >> baryCoord[0] >> baryCoord[1];
                 }
-                
+
 
                 helper::vector< helper::vector< unsigned int > > p_ancestors(nbElements);
                 sofa::helper::vector< helper::vector< double > > p_baryCoefs(nbElements);
@@ -473,14 +473,14 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 //std::cout << "SIN: " << vitems << std::endl;
 
                 topoMod->addEdges(vitems);
-            
+
             }
             else if ( EleType == "Triangle" || EleType == "Triangles")
             {
 
                 helper::vector<helper::vector<unsigned int> >  p_ancestors(nbElements);
                 helper::vector<helper::vector<double> >        p_baryCoefs(nbElements);
-                
+
                 if(!str.eof() )
                 {
                     std::string token;
@@ -495,7 +495,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                         }
                     }
                 }
-                
+
                 sofa::component::topology::TriangleSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
 
@@ -848,7 +848,7 @@ void TopologicalChangeProcessor::saveIndices()
         }
 
         //go to the next line
-        it++;
+        ++it;
         std::istringstream str2(*it);
 
         unsigned int nbElements;
@@ -859,8 +859,7 @@ void TopologicalChangeProcessor::saveIndices()
         }
 
         //go to the next line
-        it++;
-        std::istringstream str3(*it);
+        ++it;
 
         std::vector<Real> values = getValuesInLine(*it, nbElements);
 
@@ -939,7 +938,7 @@ void TopologicalChangeProcessor::saveIndices()
         }
 
         //go to the next line
-        it++;
+        ++it;
     }
 
 
@@ -1267,8 +1266,6 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     Vector3 a;
     Vector3 b;
 
-    unsigned int ind_ta;
-    unsigned int ind_tb;
     unsigned int a_last = core::topology::BaseMeshTopology::InvalidID;
     unsigned int b_last = core::topology::BaseMeshTopology::InvalidID;
     bool firstCut= true;
@@ -1282,7 +1279,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
             triangleIncisionInformation[i].computeCoordinates(m_topology);
     }
 
-
+    unsigned int ind_ta = 0;
     if (indexOfTime < (int)triangleIncisionInformation.size())
     {
         if (triangleIncisionInformation[indexOfTime].triangleIndices.empty())
@@ -1311,6 +1308,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
 //                std::cout << "(TopologicalChangeProcessor::inciseWithSavedIndices): (a) coord : " <<  a << std::endl;
 //                std::cout << "(TopologicalChangeProcessor::inciseWithSavedIndices): (a) barycentric coordinates : " <<  triangleIncisionInformation[indexOfTime].barycentricCoordinates[0] << std::endl;
 
+    unsigned int ind_tb = 0;
     for (unsigned int i =1; i < triangleIncisionInformation[indexOfTime].triangleIndices.size(); ++i)
     {
         ind_tb = triangleIncisionInformation[indexOfTime].triangleIndices[i];
