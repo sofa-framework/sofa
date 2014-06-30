@@ -96,6 +96,8 @@ void LMDNewProximityIntersection::init()
     intersectors.ignore<RayModel, PointModel>();
     intersectors.ignore<RayModel, LineModel>();
     intersectors.add<RayModel, TriangleModel, LMDNewProximityIntersection>(this);
+
+	BaseProximityIntersection::init();
 }
 
 bool LMDNewProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)

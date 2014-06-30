@@ -62,6 +62,9 @@ MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
 {
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
+
+	f_maxIter.setRequired(true);
+	f_tolerance.setRequired(true);
 }
 
 template<class TMatrix, class TVector>

@@ -71,10 +71,15 @@ LMConstraintSolver::LMConstraintSolver()
 
     traceKineticEnergy.setGroup("Statistics");
     this->f_listening.setValue(true);
+
+	numIterations.setRequired(true);
+	maxError.setRequired(true);
 }
 
 void LMConstraintSolver::init()
 {
+	sofa::core::behavior::ConstraintSolver::init();
+
     helper::vector< core::behavior::BaseConstraintCorrection* > listConstraintCorrection;
     ((simulation::Node*) getContext())->get<core::behavior::BaseConstraintCorrection>(&listConstraintCorrection, core::objectmodel::BaseContext::SearchDown);
     for (unsigned int i=0; i<listConstraintCorrection.size(); ++i)
