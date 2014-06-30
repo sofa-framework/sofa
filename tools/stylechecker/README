@@ -1,17 +1,30 @@
 =========== Installer llvm+clang ==================
-Currently stylecheck has been tested for compilation with llvm/clang svn revision 211571 
+To compile stylecheck you need to install LLVM & CLANG as well has the developement headers.
 
-installer llvm/clang en utilisant la méthode suivante: s
+Stylecheck is using llvm/clang from svn revision: 211571
+To compile llvm/clang you can follow the step-by-step procedure available there (specifying the adequate revision number):
 http://clang.llvm.org/
 
-penser à faire:
-make install
-
+Once llvm & clang are working and install on your system you can compile
+stylecheck using the following procedure
 ========== Compiler stylecheck ====================
-# cd tools/stylecheck
-# make 
+# cd YOURSOFAROOT
+# mkdir tools/stylechecker-build
+# cd tools/stylechecker-build 
+# cmake ../stylechecker
+# make
+# make install 
+
+clang requires some specific header so you must either:
+	- install stylecheck in the same directory as where is installed clang  (eg. using make install)
+
+	- install the requested header "../" where is located the stylecheck.exe  application.
+	You can find more infos on this issue at section "Builtin includes"
+	http://clang.llvm.org/docs/LibTooling.html
 
 ========== Tester stylecheck ====================
+# cd YOURSOFAROOT
+# cd tools/stylechecker/
 # stylecheck.exe test1.cpp  --
 
 ========== Wrapper stylecheck dans  un script de build ====================
@@ -22,13 +35,13 @@ make install
 FILENAME_SRC=${BASH_ARGV[0]}
 FILENAME_OUT=${BASH_ARGV[2]}
 
-/home/dmarchal/projects/2014/sofa-coding-sprint/stylecheck/stylecheck.exe $FILENAME_SRC -- $@
+PATH_TO_STYLECHECK_DIR/stylecheck.exe $FILENAME_SRC -- $@
 g++ $@
 
 ------------------------------------------------
 
 
 Et après il faut faire une nouveau répertoire de build sofa.
-mkdir build-stylecheck
-cd build-stylecheck  
+mkdir build-sofa-stylecheck
+cd build-sofa-stylecheck  
 CXX=pathto/fakegcc.sh CC=pathto/fakegcc.sh cmake pathto/sofa-src

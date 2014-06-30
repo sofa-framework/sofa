@@ -21,6 +21,6 @@
 
 
 bool exclude(const clang::SourceManager& srcMgr, const clang::Decl *decl);
-bool exclude(const clang::SourceManager& srcMgr, const clang::Stmt *decl);
+bool exclude(const clang::SourceManager& srcMgr, const clang::Stmt *stmt);
 
 #endif //
