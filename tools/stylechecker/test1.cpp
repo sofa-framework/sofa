@@ -2,6 +2,11 @@
 #include <vector>
 #include "test1.h"
 
+
+int MyClass::functionVALID(){
+	// This one is not defined in a header..
+}
+
 int main()
 { 
     // Invalid declaration, we should always initialize
@@ -26,5 +31,5 @@ int main()
 
     //
     MyClass* clVALID=new MyClass() ;
-    clVALID->use();
+    clVALID->functionInvalid() ;
 }

@@ -53,6 +53,16 @@ cl::opt<bool> shouldAdvice("a", cl::desc("Add advice mode"), cl::init(false), cl
 cl::opt<int> numberofincludes("n", cl::desc("Number of include files before a warning is emited [default is 20]"), cl::init(20), cl::cat(MyToolCategory));
 cl::opt<bool> isLinking("W", cl::desc("This option is to detect that stylecheck is called in linking mode...do not use it"), cl::cat(MyToolCategory));
 
+bool isInHeader(const string& path)
+{
+    if(path.rfind(".h")!=string::npos)
+        return true ;
+    if(path.rfind(".inl")!=string::npos)
+        return true ;
+
+    return false ;
+}
+
 bool isInExcludedPath(const string& path, const vector<string>& excludedPaths){
     if(userincluded.size()!=0){
         for(auto pattern : userincluded)
@@ -132,6 +142,20 @@ void printErrorN1(const string& filename, const int line, const int col, const s
 }
 
 
+void printErrorC1(const string& filename, const int line, const int col, const string& classname, const string& name){
+    cerr << filename << ":" << line << ":" << col <<  ": warning: function member [" << classname << ":" << name << "] is violating the sofa coding style rule C1. " << endl ;
+    cerr << " To keep compilation time between acceptable limits it is adviced that headers contains only declaration (i.e.: no body)" <<  endl ;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl ;
+    cerr << " Suggested replacement: move the body of the function "<< name << " into a a .cpp file" << endl << endl ;
+}
+
+void printErrorC2(const string& filename, const int line, const int col, const string& classname, const string& name){
+    cerr << filename << ":" << line << ":" << col <<  ": warning: function member [" << classname << ":" << name << "] is violating the sofa coding style rule C2. " << endl ;
+    cerr << " By convention, all functions names should use lowerCamlCase without underscore '_' " << endl ;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl << endl ;
+}
+
+
 void printErrorM1(const string& filename, const int line, const int col, const string& classname, const string& name){
     cerr << filename << ":" << line << ":" << col <<  ": warning: member [" << classname << ":" << name << "] is violating the sofa coding style rule M1. " << endl ;
     cerr << " Data fields are importants concept in Sofa, to emphasize this fact that they are not simple membre variable they should all be prefixed with d_" << endl;
@@ -142,22 +166,30 @@ void printErrorM1(const string& filename, const int line, const int col, const s
 void printErrorM2(const string& filename, const int line, const int col, const string& classname, const string& name){
     cerr << filename << ":" << line << ":" << col <<  ": warning: member [" << classname << ":" << name << "] is violating the sofa coding style rule M2. " << endl ;
     cerr << " DataLink are importants concept in Sofa, to emphasize this fact that they are not simple membre variable they should all be prefixed with l_" << endl;
-    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl ;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl << endl  ;
     cerr << " Suggested replacement: s_" << name << endl << endl ;
 }
 
 void printErrorM3(const string& filename, const int line, const int col, const string& classname, const string& name){
     cerr << filename << ":" << line << ":" << col <<  ": warning: member [" << classname << ":" << name << "] is violating the sofa coding style rule M3. " << endl ;
     cerr << " To emphasize attributes membership of a class they should all be prefixed with m_" << endl;
-    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl ;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  ;
     cerr << " Suggested replacement: m_" << name << endl << endl ;
 }
 
 void printErrorM4(const string& filename, const int line, const int col, const string& classname){
     cerr << filename << ":" << line << ":" << col <<  ": warning: class [" << classname << "] is violating the sofa coding style rules M4. " << endl ;
-    cerr << " y convention, all classes name must be in UpperCamlCase without any underscores '_'.' " << endl;
+    cerr << " By convention, all classes name must be in UpperCamlCase without any underscores '_'.' " << endl;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
 }
+
+
+void printErrorM5(const string& filename, const int line, const int col, const string& classname, const string& name){
+    cerr << filename << ":" << line << ":" << col <<  ": warning: member [" << classname << ": " << name << "] is violating the sofa coding style rules M5. " << endl ;
+    cerr << " To avoid confusion with other coding-style a member's name cannot by terminated by an underscore '_'. " << endl;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
+}
+
 
 void printErrorR1(const string& filename, const int sofacode, const int allcodes){
     cerr << filename << ":1:1: info: too much file are included. " << endl ;
@@ -176,10 +208,10 @@ public:
     }
 
     bool VisitStmt(Stmt* stmt){
-	if(Context == NULL )
-	    return true ;
+        if(Context == NULL )
+            return true ;
 
-	if( stmt == NULL )
+        if( stmt == NULL )
             return true ;
 
         FullSourceLoc FullLocation = Context->getFullLoc(stmt->getLocStart()) ;
@@ -196,17 +228,17 @@ public:
                 VarDecl* vardecl = dyn_cast<VarDecl>(decl) ;
 
                 if(vardecl){
-		    auto tmp=vardecl->getMostRecentDecl() ; 
-		    if(tmp)
-			decl=tmp ; 
+                    auto tmp=vardecl->getMostRecentDecl() ;
+                    if(tmp)
+                        decl=tmp ;
 
                     SourceRange declsr=decl->getSourceRange() ;
                     SourceLocation sl=declsr.getBegin();
 
-		    auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
+                    auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
 
-      	            if(fileinfo==NULL || isInExcludedPath(fileinfo->getName(), excludedPathPatterns))
-			continue ; 
+                    if(fileinfo==NULL || isInExcludedPath(fileinfo->getName(), excludedPathPatterns))
+                        continue ;
 
                     if( vardecl->getAnyInitializer() == NULL ){
                         printErrorV1(fileinfo->getName(),
@@ -228,13 +260,13 @@ public:
     bool VisitDecl(Decl* decl)
     {
         if(Context==NULL)
-	    return true ;
+            return true ;
 
-	if(decl==NULL)
- 	    return true ;
+        if(decl==NULL)
+            return true ;
 
 
-	return true ; 
+        return true ;
 
         FullSourceLoc FullLocation = Context->getFullLoc(decl->getLocStart());
         if ( !FullLocation.isValid() || exclude(FullLocation.getManager() , decl) )
@@ -243,29 +275,29 @@ public:
         /// Implement the different check on namespace naming.
         NamespaceDecl* nsdecl= dyn_cast<NamespaceDecl>(decl) ;
         if( nsdecl ){
-	    string nsname=nsdecl->getNameAsString() ;
+            string nsname=nsdecl->getNameAsString() ;
             if( islower(nsname) )
                 return true ;
 
             auto& smanager = Context->getSourceManager() ;
 
-	    Decl* mrdecl=decl->getMostRecentDecl() ;
-	    if(mrdecl!=NULL)
-		decl=mrdecl ; 
+            Decl* mrdecl=decl->getMostRecentDecl() ;
+            if(mrdecl!=NULL)
+                decl=mrdecl ;
 
             SourceRange sr=decl->getSourceRange() ;
             SourceLocation sl=sr.getBegin();
-	    auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
+            auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
 
-		 
+
             if(fileinfo==NULL || isInExcludedPath(fileinfo->getName(), excludedPathPatterns))
-		return true ; 	
+                return true ;
 
             printErrorN1(fileinfo->getName(),
                          smanager.getPresumedLineNumber(sl),
                          smanager.getPresumedColumnNumber(sl),
                          nsname) ;
-	    return true; 
+            return true;
         }
         return RecursiveASTVisitor<StyleChecker>::VisitDecl(decl) ;
     }
@@ -280,8 +312,8 @@ public:
         if(Context==NULL)
             return true ;
 
-	if(record==NULL)
- 	    return true ;
+        if(record==NULL)
+            return true ;
 
         auto& smanager = Context->getSourceManager() ;
 
@@ -298,15 +330,57 @@ public:
                 SourceRange declsr=record->getMostRecentDecl()->getSourceRange() ;
                 SourceLocation sl=declsr.getBegin();
 
-		auto fileinfo = smanager.getFileEntryForID(smanager.getFileID(sl)) ;
+                auto fileinfo = smanager.getFileEntryForID(smanager.getFileID(sl)) ;
 
                 if(fileinfo && !isInExcludedPath(fileinfo->getName(), excludedPathPatterns)){
-	                printErrorM4(fileinfo->getName(),
-	                             smanager.getPresumedLineNumber(sl),
-	                             smanager.getPresumedColumnNumber(sl),
-	                             classname) ;
-		
-		}
+                    printErrorM4(fileinfo->getName(),
+                                 smanager.getPresumedLineNumber(sl),
+                                 smanager.getPresumedColumnNumber(sl),
+                                 classname) ;
+
+                }
+            }
+
+            // Check the function definitions
+            //
+            if(shouldAdvice){
+                for(auto f=record->method_begin();f!=record->method_end();++f){
+
+                    SourceRange declsr=(*f)->getSourceRange() ;
+                    SourceLocation sl=declsr.getBegin();
+                    auto fileinfo = smanager.getFileEntryForID(smanager.getFileID(sl)) ;
+
+                    if(fileinfo!=NULL && !isInExcludedPath(fileinfo->getName(), excludedPathPatterns))
+                    {
+                        if((*f)->hasBody())
+                        {
+                            Stmt* body=(*f)->getBody();
+
+                            SourceRange bodysr=body->getSourceRange() ;
+                            SourceLocation bodysl=bodysr.getBegin();
+                            auto fileinfobody = smanager.getFileEntryForID(smanager.getFileID(bodysl)) ;
+
+                            //cout << "HAS FUNCTION: " <<  f->getNameAsString() << " valud : " << (*f)->isDefined() << endl ;
+                            //cout << "location: " << fileinfobody->getName() << endl ;
+
+                            if(fileinfobody && isInHeader(fileinfobody->getName())){
+                               printErrorC1(fileinfo->getName(), smanager.getPresumedLineNumber(sl), smanager.getPresumedColumnNumber(sl),
+                                           record->getNameAsString(), f->getNameAsString());
+                            }
+                        }
+
+                        if(!isLowerCamlCase(f->getNameAsString())
+                           && !f->isCopyAssignmentOperator()
+                           && !f->isMoveAssignmentOperator()
+                           && !CXXConstructorDecl::classof(*f)
+                           && !CXXDestructorDecl::classof(*f))
+                        {
+                            printErrorC2(fileinfo->getName(), smanager.getPresumedLineNumber(sl), smanager.getPresumedColumnNumber(sl),
+                                         record->getNameAsString(), f->getNameAsString());
+                        }
+
+                    }
+                }
             }
 
             // Now check the attributes...
@@ -318,7 +392,7 @@ public:
                 SourceLocation sl=declsr.getBegin();
                 std::string name=ff->getName() ;
 
-		auto fileinfo = smanager.getFileEntryForID(smanager.getFileID(sl)) ; 
+                auto fileinfo = smanager.getFileEntryForID(smanager.getFileID(sl)) ;
 
                 if( fileinfo == NULL ){
                     continue ;
@@ -340,8 +414,7 @@ public:
                 // RULES NUMBER 1: The name of members cannot be terminated by an underscore.
                 if(name.rfind("_")!=name.size()-1){
                 }else{
-                    cerr << filename << ":" << line << ":" << col
-                         << ": warning: member [" << classname << ":" <<name << "] is violating the sofa coding style http://www.sofa.../codingstyle.html...member's name cannot be terminated with an underscore.' " << std::endl;
+                    printErrorM5(filename, line, col, classname, name);
                 }
 
                 /// THESES TWO RULES ARE NOW DEPRECATED BUT I KEEP THEM FOR HISTORY REASON
@@ -415,7 +488,7 @@ int main(int argc, const char** argv){
                    OptionsParser.getSourcePathList());
 
     if(isLinking){
-    	return 0 ; 
+        return 0 ;
     }
 
     std::vector<std::string> localFilename;
@@ -424,20 +497,20 @@ int main(int argc, const char** argv){
     }
 
     for(auto epath : systemexcluded){
-	if(verbose)	
-		cout << "SYSTEM PATH EXCLUDED: " << epath << endl ;
-	excludedPathPatterns.push_back(epath) ;
+        if(verbose)
+            cout << "SYSTEM PATH EXCLUDED: " << epath << endl ;
+        excludedPathPatterns.push_back(epath) ;
     }
 
     for(auto epath : userexcluded){
-	if(verbose)				
-		cout << "USER PATH EXCLUDED:: " << epath << endl ;
-	excludedPathPatterns.push_back(epath) ;
+        if(verbose)
+            cout << "USER PATH EXCLUDED:: " << epath << endl ;
+        excludedPathPatterns.push_back(epath) ;
     }
 
     for(auto epath : userincluded){
-	if(verbose)	
-		cout << "PATH RESTRICTED TO:: " << epath << endl ;
+        if(verbose)
+            cout << "PATH RESTRICTED TO:: " << epath << endl ;
     }
 
     // Build the ast for each file given as arguments
@@ -456,24 +529,24 @@ int main(int argc, const char** argv){
 
         /// Now check other rules as the one trying to keep as few as possible include files.
         ///
-	if(shouldAdvice){
-        int j=0 ;
-        int sofacode=-1 ;
-        auto it=ctx.getSourceManager().fileinfo_begin() ;
-        for(;it!=ctx.getSourceManager().fileinfo_end();++it){
-            j++ ;
+        if(shouldAdvice){
+            int j=0 ;
+            int sofacode=-1 ;
+            auto it=ctx.getSourceManager().fileinfo_begin() ;
+            for(;it!=ctx.getSourceManager().fileinfo_end();++it){
+                j++ ;
 
-            string filepathname = it->first->getName() ;
-            if(!isInExcludedPath(filepathname, systemexcluded)){
-                sofacode++ ;
+                string filepathname = it->first->getName() ;
+                if(!isInExcludedPath(filepathname, systemexcluded)){
+                    sofacode++ ;
+                }
+
             }
-
+            auto& smanager=ctx.getSourceManager() ;
+            if( sofacode > numberofincludes || j > 300 )
+            {
+                printErrorR1(smanager.getFileEntryForID(smanager.getMainFileID())->getName(), sofacode, j) ;
+            }
         }
-        auto& smanager=ctx.getSourceManager() ;
-        if( sofacode > numberofincludes || j > 300 )
-        {
-            printErrorR1(smanager.getFileEntryForID(smanager.getMainFileID())->getName(), sofacode, j) ;
-        }
-	}
     }
 }
