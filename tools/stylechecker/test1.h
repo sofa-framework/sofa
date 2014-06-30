@@ -48,7 +48,12 @@ class MyClass
 {
 	public:
 		MyClass(){}
-		int use(){return 0; }
+
+		int functionInvalid(){ return 0; }
+
+		int FunctionINVALID() ;
+		int functionVALID() ; 
+
         int publicposition ;
 
         Data<int> 			d_DatafieldVALID ;
