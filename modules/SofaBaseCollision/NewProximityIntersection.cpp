@@ -77,6 +77,8 @@ void NewProximityIntersection::init()
     intersectors.add<RigidCapsuleModel,RigidSphereModel, NewProximityIntersection> (this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
+
+	BaseProximityIntersection::init();
 }
 
 } // namespace collision

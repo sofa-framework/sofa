@@ -52,8 +52,6 @@ public:
 
     // Data<bool> useSphereTriangle;
     // Data<bool> usePointPoint;
-    Data<double> alarmDistance;
-    Data<double> contactDistance;
     Data<bool> filterIntersection;
     Data<double> angleCone;
     Data<double> coneFactor;

@@ -312,6 +312,8 @@ LCPConstraintSolver::LCPConstraintSolver()
 
     _Wdiag = new SparseMatrix<double>();
 
+	tol.setRequired(true);
+	maxIt.setRequired(true);
 }
 
 LCPConstraintSolver::~LCPConstraintSolver()

@@ -80,6 +80,8 @@ void MinProximityIntersection::init()
     intersectors.add<RigidSphereModel,OBBModel, MinProximityIntersection> (this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
+
+	BaseProximityIntersection::init();
 }
 
 
