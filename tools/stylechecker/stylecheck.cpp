@@ -49,9 +49,19 @@ static cl::OptionCategory MyToolCategory("Stylecheck.exe");
 cl::list<string> userexcluded("E", llvm::cl::Prefix, llvm::cl::desc("Specify path pattern to exclude"), cl::cat(MyToolCategory)) ;
 cl::list<string> userincluded("L", llvm::cl::Prefix, llvm::cl::desc("Specify path pattern to be restricted in"), cl::cat(MyToolCategory)) ;
 cl::opt<bool> verbose("v", cl::desc("Set verbose mode"), cl::init(false), cl::cat(MyToolCategory));
-cl::opt<bool> shouldAdvice("a", cl::desc("Add advice mode"), cl::init(false), cl::cat(MyToolCategory));
 cl::opt<int> numberofincludes("n", cl::desc("Number of include files before a warning is emited [default is 20]"), cl::init(20), cl::cat(MyToolCategory));
-cl::opt<bool> isLinking("W", cl::desc("This option is to detect that stylecheck is called in linking mode...do not use it"), cl::cat(MyToolCategory));
+
+enum QualityLevel {
+  Q0, Q1, Q2
+};
+
+cl::opt<QualityLevel> qualityLevel(cl::desc("Choose the level of conformance stylecheck will use:"),
+  cl::values(
+    clEnumVal(Q0, "Emits warnings about style violation from the mandatory guidelines."),
+    clEnumVal(Q1, "Emits warnings about style violation from the recommanded guidelines."),
+    clEnumVal(Q2, "Emits warning about style quality and advices."),
+   clEnumValEnd),
+   cl::init(Q0), cl::cat(MyToolCategory));
 
 bool isInHeader(const string& path)
 {
@@ -125,6 +135,8 @@ bool islower(const std::string& name)
 }
 
 void printErrorV1(const string& filename, const int line, const int col, const string& varname){
+    if(qualityLevel < Q0)
+        return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: initialization of [" << varname << "] is violating the sofa coding style rules V1. " << endl ;
     cerr << " Variables should always have initializer.  Built-in data types (int, float, char, pointers...) have no default values, " << endl ;
     cerr << " so they're undefined until you give them one and without having been properly initialized, hard-to-track bugs can occur. " << endl ;
@@ -136,6 +148,8 @@ void printErrorV1(const string& filename, const int line, const int col, const s
 
 
 void printErrorN1(const string& filename, const int line, const int col, const string& nsname){
+    if(qualityLevel< Q0)
+        return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: namespace [" << nsname << "] is violating the sofa coding style rules N1. " << endl ;
     cerr << " By convention, all namespaces must be in lowercase.' " << endl;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
@@ -143,6 +157,8 @@ void printErrorN1(const string& filename, const int line, const int col, const s
 
 
 void printErrorC1(const string& filename, const int line, const int col, const string& classname, const string& name){
+    //if(qualityLevel < Q2)
+    //    return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: function member [" << classname << ":" << name << "] is violating the sofa coding style rule C1. " << endl ;
     cerr << " To keep compilation time between acceptable limits it is adviced that headers contains only declaration (i.e.: no body)" <<  endl ;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl ;
@@ -150,6 +166,8 @@ void printErrorC1(const string& filename, const int line, const int col, const s
 }
 
 void printErrorC2(const string& filename, const int line, const int col, const string& classname, const string& name){
+    if(qualityLevel < Q0)
+        return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: function member [" << classname << ":" << name << "] is violating the sofa coding style rule C2. " << endl ;
     cerr << " By convention, all functions names should use lowerCamlCase without underscore '_' " << endl ;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl << endl ;
@@ -157,6 +175,8 @@ void printErrorC2(const string& filename, const int line, const int col, const s
 
 
 void printErrorM1(const string& filename, const int line, const int col, const string& classname, const string& name){
+    if(qualityLevel < Q0)
+        return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: member [" << classname << ":" << name << "] is violating the sofa coding style rule M1. " << endl ;
     cerr << " Data fields are importants concept in Sofa, to emphasize this fact that they are not simple membre variable they should all be prefixed with d_" << endl;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl ;
@@ -164,6 +184,8 @@ void printErrorM1(const string& filename, const int line, const int col, const s
 }
 
 void printErrorM2(const string& filename, const int line, const int col, const string& classname, const string& name){
+    if(qualityLevel < Q0)
+        return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: member [" << classname << ":" << name << "] is violating the sofa coding style rule M2. " << endl ;
     cerr << " DataLink are importants concept in Sofa, to emphasize this fact that they are not simple membre variable they should all be prefixed with l_" << endl;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl << endl  ;
@@ -171,6 +193,8 @@ void printErrorM2(const string& filename, const int line, const int col, const s
 }
 
 void printErrorM3(const string& filename, const int line, const int col, const string& classname, const string& name){
+    if(qualityLevel < Q0)
+        return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: member [" << classname << ":" << name << "] is violating the sofa coding style rule M3. " << endl ;
     cerr << " To emphasize attributes membership of a class they should all be prefixed with m_" << endl;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  ;
@@ -178,6 +202,8 @@ void printErrorM3(const string& filename, const int line, const int col, const s
 }
 
 void printErrorM4(const string& filename, const int line, const int col, const string& classname){
+    if(qualityLevel < Q0)
+        return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: class [" << classname << "] is violating the sofa coding style rules M4. " << endl ;
     cerr << " By convention, all classes name must be in UpperCamlCase without any underscores '_'.' " << endl;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
@@ -185,6 +211,8 @@ void printErrorM4(const string& filename, const int line, const int col, const s
 
 
 void printErrorM5(const string& filename, const int line, const int col, const string& classname, const string& name){
+    if(qualityLevel < Q0)
+        return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: member [" << classname << ": " << name << "] is violating the sofa coding style rules M5. " << endl ;
     cerr << " To avoid confusion with other coding-style a member's name cannot by terminated by an underscore '_'. " << endl;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
@@ -192,6 +220,8 @@ void printErrorM5(const string& filename, const int line, const int col, const s
 
 
 void printErrorR1(const string& filename, const int sofacode, const int allcodes){
+    if(qualityLevel < Q2)
+        return ;
     cerr << filename << ":1:1: info: too much file are included. " << endl ;
     cerr << " To decrease compilation time as well as improving interfaces/ABI it is recommanded to include as few as possible files. " << endl ;
     cerr << " The current .cpp file finally ended in including and thus compiling " << allcodes << " other files. " << endl ;
@@ -219,6 +249,7 @@ public:
             return true ;
 
         // If we are on a declaration statement, check that we
+        // correctly provide a default value.
         if(stmt->getStmtClass() == Stmt::DeclStmtClass) {
             auto& smanager=Context->getSourceManager() ;
 
@@ -343,7 +374,7 @@ public:
 
             // Check the function definitions
             //
-            if(shouldAdvice){
+            if(qualityLevel>=Q2){
                 for(auto f=record->method_begin();f!=record->method_end();++f){
 
                     SourceRange declsr=(*f)->getSourceRange() ;
@@ -360,9 +391,6 @@ public:
                             SourceLocation bodysl=bodysr.getBegin();
                             auto fileinfobody = smanager.getFileEntryForID(smanager.getFileID(bodysl)) ;
 
-                            //cout << "HAS FUNCTION: " <<  f->getNameAsString() << " valud : " << (*f)->isDefined() << endl ;
-                            //cout << "location: " << fileinfobody->getName() << endl ;
-
                             if(fileinfobody && isInHeader(fileinfobody->getName())){
                                printErrorC1(fileinfo->getName(), smanager.getPresumedLineNumber(sl), smanager.getPresumedColumnNumber(sl),
                                            record->getNameAsString(), f->getNameAsString());
@@ -373,7 +401,8 @@ public:
                            && !f->isCopyAssignmentOperator()
                            && !f->isMoveAssignmentOperator()
                            && !CXXConstructorDecl::classof(*f)
-                           && !CXXDestructorDecl::classof(*f))
+                           && !CXXDestructorDecl::classof(*f)
+                           && !f->isOverloadedOperator())
                         {
                             printErrorC2(fileinfo->getName(), smanager.getPresumedLineNumber(sl), smanager.getPresumedColumnNumber(sl),
                                          record->getNameAsString(), f->getNameAsString());
@@ -483,13 +512,12 @@ private:
 int main(int argc, const char** argv){
     CommonOptionsParser OptionsParser(argc, argv, MyToolCategory);
 
-
     ClangTool Tool(OptionsParser.getCompilations(),
                    OptionsParser.getSourcePathList());
 
-    if(isLinking){
-        return 0 ;
-    }
+
+
+
 
     std::vector<std::string> localFilename;
     for(unsigned int i=1;i<argc;i++){
@@ -529,7 +557,7 @@ int main(int argc, const char** argv){
 
         /// Now check other rules as the one trying to keep as few as possible include files.
         ///
-        if(shouldAdvice){
+        if(qualityLevel>=Q2){
             int j=0 ;
             int sofacode=-1 ;
             auto it=ctx.getSourceManager().fileinfo_begin() ;
