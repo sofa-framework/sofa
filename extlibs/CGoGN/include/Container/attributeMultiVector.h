@@ -61,11 +61,6 @@ protected:
 	 */
 	unsigned int m_index;
 
-	/**
-	 * Process or not the attribute in arithmetic operations
-	 */
-	bool m_toProcess;
-
 public:
 	AttributeMultiVectorGen(const std::string& strName, const std::string& strType);
 
@@ -128,7 +123,7 @@ public:
 
 	virtual unsigned int getNbBlocks() const = 0;
 
-	virtual void addBlocksBefore(unsigned int nbb) = 0;
+//	virtual void addBlocksBefore(unsigned int nbb) = 0;
 
 	virtual bool copy(const AttributeMultiVectorGen* atmvg) = 0;
 
@@ -176,6 +171,12 @@ public:
 	virtual bool loadBin(CGoGNistream& fs) = 0;
 
 	static bool skipLoadBin(CGoGNistream& fs);
+
+	/**
+	 * lecture binaire
+	 * @param fs filestream
+	 */
+	virtual void dump(unsigned int i) const = 0;
 };
 
 
@@ -266,17 +267,17 @@ public:
 	 *       ARITHMETIC OPERATIONS        *
 	 **************************************/
 
-	void affect(unsigned int i, unsigned int j);
+//	void affect(unsigned int i, unsigned int j);
 
-	void add(unsigned int i, unsigned int j);
+//	void add(unsigned int i, unsigned int j);
 
-	void sub(unsigned int i, unsigned int j);
+//	void sub(unsigned int i, unsigned int j);
 
-	void mult(unsigned int i, double alpha);
+//	void mult(unsigned int i, double alpha);
 
-	void div(unsigned int i, double alpha);
+//	void div(unsigned int i, double alpha);
 
-	void lerp(unsigned res, unsigned int i, unsigned int j, double alpha);
+//	void lerp(unsigned res, unsigned int i, unsigned int j, double alpha);
 
 	/**************************************
 	 *            SAVE & LOAD             *
@@ -294,10 +295,18 @@ public:
 	 * @param fs filestream
 	 */
 	bool loadBin(CGoGNistream& fs);
+
+	/**
+	 * lecture binaire
+	 * @param fs filestream
+	 */
+	virtual void dump(unsigned int i) const;
+
 };
 
 } // namespace CGoGN
 
+#include "attributeMultiVectorBool.hpp"
 #include "attributeMultiVector.hpp"
 
 #endif

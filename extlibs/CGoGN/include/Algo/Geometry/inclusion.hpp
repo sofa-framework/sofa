@@ -42,16 +42,15 @@ namespace Geometry
 {
 
 template <typename PFP>
-bool isConvex(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, bool CCW, unsigned int thread)
+bool isConvex(typename PFP::MAP& map, Vol v, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, bool CCW, unsigned int thread)
 {
 	//get all the dart of the volume
 	std::vector<Dart> vStore;
-	FunctorStore fs(vStore);
-	map.foreach_dart_of_volume(d, fs, thread);
+	map.foreach_dart_of_orbit(v, [&] (Dart d) { vStore.push_back(d); }, thread);
 
 	bool convex = true;
 
-	DartMarkerStore m(map, thread);
+	DartMarkerStore<typename PFP::MAP> m(map, thread);
 	for (std::vector<Dart>::iterator it = vStore.begin() ; it != vStore.end() && convex ; ++it)
 	{
 		Dart e = *it;
@@ -67,7 +66,7 @@ bool isConvex(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP
 
 // TODO add thread Pameter
 template <typename PFP>
-bool isPointInVolume(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, const typename PFP::VEC3& point)
+bool isPointInVolume(typename PFP::MAP& map, Vol v, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const typename PFP::VEC3& point)
 {
 	typedef typename PFP::VEC3 VEC3;
 
@@ -76,74 +75,79 @@ bool isPointInVolume(typename PFP::MAP& map, Dart d, const VertexAttribute<typen
 	int countInter2 = 0;
 
 	VEC3 dir(0.9f,1.1f,1.3f);
+
 	std::vector<VEC3> interPrec;
 	interPrec.reserve(16);
-	std::vector<Dart> visitedFaces;			// Faces that are traversed
+
+	std::vector<Face> visitedFaces;			// Faces that are traversed
 	visitedFaces.reserve(64);
-	visitedFaces.push_back(d);				// Start with the face of d
-	DartMarkerStore mark(map);
-	mark.markOrbit<FACE>(d) ;
-	for(unsigned int  iface = 0; iface != visitedFaces.size(); ++iface)
+	Face f(v.dart);
+	visitedFaces.push_back(f);				// Start with the first face of v
+
+	DartMarkerStore<typename PFP::MAP> mark(map);
+	mark.markOrbit(f) ;
+
+	for(unsigned int iface = 0; iface != visitedFaces.size(); ++iface)
 	{
-		Dart e = visitedFaces[iface];
+		f = visitedFaces[iface];
 		VEC3 inter;
-		bool interRes = intersectionLineConvexFace<PFP>(map, e, position, point, dir, inter);
+		bool interRes = intersectionLineConvexFace<PFP>(map, f, position, point, dir, inter);
 		if (interRes)
 		{
 			// check if already intersect on same point (a vertex certainly)
 			bool alreadyfound = false;
 			for(typename std::vector<VEC3>::iterator it = interPrec.begin(); !alreadyfound && it != interPrec.end(); ++it)
 			{
-				if (Geom::arePointsEquals(*it,inter))
-						alreadyfound = true;
+				if (Geom::arePointsEquals(*it, inter))
+					alreadyfound = true;
 			}
 
 			if (!alreadyfound)
 			{
-				float v = dir * (inter-point);
-				if (v>0)
+				float v = dir * (inter - point);
+				if (v > 0)
 					++countInter;
-				if (v<0)
+				if (v < 0)
 					++countInter2;
 				interPrec.push_back(inter);
 			}
 		}
 		// add all face neighbours to the table
-		Dart currentFace = e;
-		do
+		foreach_adjacent2<EDGE>(map, f, [&] (Face ff)
 		{
-			Dart ee = map.phi2(e) ;
-			if(!mark.isMarked(ee)) // not already marked
+			if(!mark.isMarked(ff)) // not already marked
 			{
-				visitedFaces.push_back(ee) ;
-				mark.markOrbit<FACE>(ee) ;
+				visitedFaces.push_back(ff) ;
+				mark.markOrbit(ff) ;
 			}
-			e = map.phi1(e) ;
-		} while(e != currentFace) ;
+		});
 	}
 
 	//if the point is in the volume there is an odd number of intersection with all faces with any direction
 	return ((countInter % 2) != 0) && ((countInter2 % 2) != 0); //	return (countInter % 2) == 1;
-
 }
 
 template <typename PFP>
-bool isPointInConvexVolume(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, const typename PFP::VEC3& point, bool CCW)
+bool isPointInConvexVolume(typename PFP::MAP& map, Vol v, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const typename PFP::VEC3& point, bool CCW)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL;
 
-	std::list<Dart> visitedFaces;			// Faces that are traversed
-	visitedFaces.push_back(d);				// Start with the face of d
-	std::list<Dart>::iterator face;
-	VEC3 N;
+	std::vector<Face> visitedFaces;			// Faces that are traversed
+	visitedFaces.reserve(64);
+	Face f(v.dart);
+	visitedFaces.push_back(f);				// Start with the first face of v
 
-	DartMarkerStore mark(map);					// Lock a marker
-	for (face = visitedFaces.begin(); face != visitedFaces.end(); ++face)
+	DartMarkerStore<typename PFP::MAP> mark(map);		// Lock a marker
+
+	for (std::vector<Face>::iterator face = visitedFaces.begin(); face != visitedFaces.end(); ++face)
 	{
-		if (!mark.isMarked(*face))
+		f = *face;
+		if (!mark.isMarked(f))
 		{
-			Geom::Plane3D<REAL> p = facePlane<PFP>(map, *face, position);
+			mark.markOrbit(f);
+
+			Geom::Plane3D<REAL> p = facePlane<PFP>(map, f, position);
 			Geom::Orientation3D o3d = p.orient(point);
 			if(CCW)
 			{
@@ -153,15 +157,12 @@ bool isPointInConvexVolume(typename PFP::MAP& map, Dart d, const VertexAttribute
 			else if(o3d == Geom::UNDER)
 				return false;
 
-			Dart dNext = *face ;
-			do
+			// add all face neighbours to the table
+			foreach_adjacent2<EDGE>(map, f, [&] (Face ff)
 			{
-				mark.mark(dNext);					// Mark
-				Dart adj = map.phi2(dNext);			// Get adjacent face
-				if (adj != dNext && !mark.isMarked(adj))
-					visitedFaces.push_back(adj);	// Add it
-				dNext = map.phi1(dNext) ;
-			} while(dNext != *face) ;
+				if(!mark.isMarked(ff)) // not already marked
+					visitedFaces.push_back(ff) ;
+			});
 		}
 	}
 
@@ -169,22 +170,22 @@ bool isPointInConvexVolume(typename PFP::MAP& map, Dart d, const VertexAttribute
 }
 
 template <typename PFP>
-bool isPointInConvexFace(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, const typename PFP::VEC3& point, bool CCW)
+bool isPointInConvexFace(typename PFP::MAP& map, Face f, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const typename PFP::VEC3& point, bool CCW)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL;
 
-	Geom::Plane3D<REAL> pl = Geometry::facePlane<PFP>(map, d, position);
+	Geom::Plane3D<REAL> pl = Geometry::facePlane<PFP>(map, f, position);
 	Geom::Orientation3D o3d = pl.orient(point);
 	if(o3d == Geom::ON)
 	{
-		Traversor2FV<typename PFP::MAP> tfv(map, d) ;
-		for(Dart it = tfv.begin(); it != tfv.end(); it = tfv.next())
+		Traversor2FV<typename PFP::MAP> tfv(map, f) ;
+		for(Vertex v = tfv.begin(); v != tfv.end(); v = tfv.next())
 		{
 			VEC3 N = pl.normal();
-			VEC3 v2(position[map.phi1(it)] - position[it]);
-			VEC3 norm2 = N^v2;
-			Geom::Plane3D<REAL> pl2(norm2, position[it]);
+			VEC3 v2(position[map.phi1(v.dart)] - position[v]);
+			VEC3 norm2 = N ^ v2;
+			Geom::Plane3D<REAL> pl2(norm2, position[v]);
 			o3d = pl2.orient(point);
 			if(CCW)
 			{
@@ -201,7 +202,7 @@ bool isPointInConvexFace(typename PFP::MAP& map, Dart d, const VertexAttribute<t
 }
 
 template <typename PFP>
-bool isPointInConvexFace2D(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, const typename PFP::VEC3& point, bool CCW )
+bool isPointInConvexFace2D(typename PFP::MAP& map, Face f, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const typename PFP::VEC3& point, bool CCW )
 {
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL;
@@ -210,10 +211,10 @@ bool isPointInConvexFace2D(typename PFP::MAP& map, Dart d, const VertexAttribute
 
 	Geom::Orientation2D o2d;
 
-	Traversor2FV<typename PFP::MAP> tfv(map, d) ;
-	for(Dart it = tfv.begin(); it != tfv.end(); it = tfv.next())
+	Traversor2FV<typename PFP::MAP> tfv(map, f) ;
+	for(Vertex v = tfv.begin(); v != tfv.end(); v = tfv.next())
 	{
-		o2d = Geom::testOrientation2D(point, position[it], position[map.phi1(it)]);
+		o2d = Geom::testOrientation2D(point, position[v], position[map.phi1(v.dart)]);
 		if(CCW)
 		{
 			if(o2d == Geom::RIGHT)
@@ -227,7 +228,7 @@ bool isPointInConvexFace2D(typename PFP::MAP& map, Dart d, const VertexAttribute
 }
 
 template <typename PFP>
-bool isPointOnEdge(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, const typename PFP::VEC3& point)
+bool isPointOnEdge(typename PFP::MAP& map, Edge e, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const typename PFP::VEC3& point)
 {
 // 	typedef typename PFP::REAL REAL;
 // 	typedef typename PFP::VEC3 VEC3 ;
@@ -239,6 +240,8 @@ bool isPointOnEdge(typename PFP::MAP& map, Dart d, const VertexAttribute<typenam
 // 	v2.normalize();
 // 
 // 	return fabs(REAL(1) - (v1*v2)) < std::numeric_limits<REAL>::min();
+
+	Dart d = e.dart;
 
 	if(
 		( isPointOnHalfEdge<PFP>(map,d,position,point) && isPointOnHalfEdge<PFP>(map,map.phi2(d),position,point) ) ||
@@ -255,7 +258,7 @@ bool isPointOnEdge(typename PFP::MAP& map, Dart d, const VertexAttribute<typenam
 }
 
 template <typename PFP>
-bool isPointOnHalfEdge(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, const typename PFP::VEC3& point)
+bool isPointOnHalfEdge(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const typename PFP::VEC3& point)
 {
 	typedef typename PFP::REAL REAL;
 	typedef typename PFP::VEC3 VEC3;
@@ -266,34 +269,34 @@ bool isPointOnHalfEdge(typename PFP::MAP& map, Dart d, const VertexAttribute<typ
 	v1.normalize();
 	v2.normalize();
 
-	return (v1*v2) >= -REAL(0.00001);
+	return abs(v1*v2) <= REAL(0.00001);
 }
 
 template <typename PFP>
-bool isPointOnVertex(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, const typename PFP::VEC3& point)
+bool isPointOnVertex(typename PFP::MAP& map, Vertex v, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const typename PFP::VEC3& point)
 {
-	return Geom::arePointsEquals(point, position[d]);
+	return Geom::arePointsEquals(point, position[v]);
 }
 
 template <typename PFP>
-bool isConvexFaceInOrIntersectingTetrahedron(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, const typename PFP::VEC3 points[4], bool CCW)
+bool isConvexFaceInOrIntersectingTetrahedron(typename PFP::MAP& map, Face f, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const typename PFP::VEC3 points[4], bool CCW)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 
-	Traversor2FV<typename PFP::MAP> tfv(map, d) ;
-	for(Dart it = tfv.begin(); it != tfv.end(); it = tfv.next())
+	Traversor2FV<typename PFP::MAP> tfv(map, f) ;
+	for(Vertex v = tfv.begin(); v != tfv.end(); v = tfv.next())
 	{
-		if(Geom::isPointInTetrahedron(points, position[it], CCW))
+		if(Geom::isPointInTetrahedron(points, position[v], CCW))
 			return true;
 	}
 
 	VEC3 inter;
-	if( intersectionSegmentConvexFace(map, d, position, points[0], points[1], inter)
-	|| 	intersectionSegmentConvexFace(map, d, position, points[1], points[2], inter)
-	|| 	intersectionSegmentConvexFace(map, d, position, points[2], points[0], inter)
-	|| 	intersectionSegmentConvexFace(map, d, position, points[0], points[3], inter)
-	|| 	intersectionSegmentConvexFace(map, d, position, points[1], points[3], inter)
-	|| 	intersectionSegmentConvexFace(map, d, position, points[2], points[3], inter)
+	if( intersectionSegmentConvexFace(map, f, position, points[0], points[1], inter)
+	|| 	intersectionSegmentConvexFace(map, f, position, points[1], points[2], inter)
+	|| 	intersectionSegmentConvexFace(map, f, position, points[2], points[0], inter)
+	|| 	intersectionSegmentConvexFace(map, f, position, points[0], points[3], inter)
+	|| 	intersectionSegmentConvexFace(map, f, position, points[1], points[3], inter)
+	|| 	intersectionSegmentConvexFace(map, f, position, points[2], points[3], inter)
 	)
 		return true;
 

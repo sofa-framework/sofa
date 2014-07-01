@@ -78,11 +78,11 @@ public:
 	typedef typename PFP::REAL REAL ;
 
 protected:
-	VertexAttribute<T>& m_attrV ;	// vertex attribute to be predicted
+	VertexAttribute<T, MAP>& m_attrV ;	// vertex attribute to be predicted
 	std::vector<T> m_predict ;		// prediction results
 
 public:
-	Predictor(MAP& m, VertexAttribute<T>& p) :
+	Predictor(MAP& m, VertexAttribute<T, MAP>& p) :
 		PredictorGen<PFP>(m), m_attrV(p)
 	{}
 
@@ -107,12 +107,12 @@ public:
 	}
 } ;
 
-} //namespace Decimation
+} // namespace Decimation
 
-}
+} // namespace Surface
 
-} //namespace Algo
+} // namespace Algo
 
-} //namespace CGoGN
+} // namespace CGoGN
 
 #endif

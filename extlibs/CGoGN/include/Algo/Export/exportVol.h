@@ -47,7 +47,7 @@ namespace Export
 * @return true
  */
 template <typename PFP>
-bool exportMesh(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const std::string& filename) ;
+bool exportMesh(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const std::string& filename) ;
 
 /**
 * export the map into a .nas (nastran file)
@@ -57,7 +57,7 @@ bool exportMesh(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3
 * @return true
 */
 template <typename PFP>
-bool exportNAS(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const char* filename) ;
+bool exportNAS(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const char* filename) ;
 
 
 /**
@@ -68,7 +68,7 @@ bool exportNAS(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>
 * @return true
 */
 template <typename PFP>
-bool exportVTU(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const char* filename) ;
+bool exportVTU(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const char* filename) ;
 
 
 /**
@@ -79,7 +79,7 @@ bool exportVTU(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>
 * @return true
 */
 template <typename PFP>
-bool exportMSH(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const char* filename) ;
+bool exportMSH(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const char* filename) ;
 
 
 /**
@@ -90,7 +90,7 @@ bool exportMSH(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>
 * @return true
 */
 template <typename PFP>
-bool exportTet(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const char* filename) ;
+bool exportTet(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const char* filename) ;
 
 
 /**
@@ -101,7 +101,7 @@ bool exportTet(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>
 * @return true
 */
 template <typename PFP>
-bool exportNodeEle(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const char* filename) ;
+bool exportNodeEle(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const char* filename) ;
 
 
 /**
@@ -111,7 +111,7 @@ bool exportNodeEle(typename PFP::MAP& map, const VertexAttribute<typename PFP::V
 * @param filename filename of mesh file
  */
 template <typename PFP>
-bool exportVolBinGz(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const char* filename);
+bool exportVolBinGz(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const char* filename);
 
 
 /**
@@ -122,12 +122,12 @@ bool exportVolBinGz(typename PFP::MAP& map, const VertexAttribute<typename PFP::
 * @param filename filename of mesh file
  */
 template <typename PFP>
-bool exportTetmesh(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const char* filename);
+bool exportTetmesh(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const char* filename);
 
 
 } // namespace Export
 
-}
+} // namespace Volume
 
 } // namespace Algo
 

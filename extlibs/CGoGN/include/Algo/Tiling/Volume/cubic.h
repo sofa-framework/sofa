@@ -48,16 +48,15 @@ namespace Cubic
 template <typename PFP>
 class Grid : public Algo::Surface::Tilings::Tiling<PFP>
 {
-    typedef typename PFP::MAP MAP;
+	typedef typename PFP::MAP MAP;
     typedef typename PFP::VEC3 VEC3;
 
 public:
     Grid(MAP& map, unsigned int x, unsigned int y, unsigned int z):
-        Algo::Surface::Tilings::Tiling<PFP>(map,x,y,z)
+		Algo::Surface::Tilings::Tiling<PFP>(map, x, y, z)
     {
-        grid3D(x,y,z);
+		grid3D(x, y, z);
     }
-
 
     /*! @name Embedding Operators
      * Tiling creation
@@ -70,7 +69,7 @@ public:
      *  @param x size in Y
      *  @param y position in Z (centered on 0 by default)
      */
-    void embedIntoGrid(VertexAttribute<VEC3>& position, float x, float y, float z);
+	void embedIntoGrid(VertexAttribute<VEC3, MAP>& position, float x, float y, float z);
 
     //! Embed a topological grid into a twister open ribbon with turns=PI it is a Moebius strip, needs only to be closed (if model allow it)
     /*! @param position Attribute used to store vertices positions
@@ -78,7 +77,7 @@ public:
      *  @param radius_max
      *  @param turns number of turn multiplied by 2*PI
      */
-    void embedIntoTwistedStrip(VertexAttribute<VEC3>& position, float radius_min, float radius_max, float turns);
+	void embedIntoTwistedStrip(VertexAttribute<VEC3, MAP>& position, float radius_min, float radius_max, float turns);
 
     //! Embed a topological grid into a helicoid
     /*! @param position Attribute used to store vertices positions
@@ -87,7 +86,7 @@ public:
      *  @param maxHeight height to reach
      *  @param turns number of turn
      */
-    void embedIntoHelicoid(VertexAttribute<VEC3>& position, float radius_min,  float radius_max, float maxHeight, float nbTurn, int orient = 1);
+	void embedIntoHelicoid(VertexAttribute<VEC3, MAP>& position, float radius_min,  float radius_max, float maxHeight, float nbTurn, int orient = 1);
     //@}
 
 protected:

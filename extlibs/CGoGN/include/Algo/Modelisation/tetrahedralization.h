@@ -28,6 +28,7 @@
 //#include "tetgen/tetgen.h"
 //#include <Topology/generic/parameters.h>
 #include "Algo/Geometry/normal.h"
+#include <set>
 
 namespace CGoGN
 {
@@ -49,24 +50,24 @@ namespace Tetrahedralization
 template <typename PFP>
 class EarTriangulation
 {
-    typedef typename PFP::MAP MAP ;
-    typedef typename PFP::VEC3 VEC3 ;
+	typedef typename PFP::MAP MAP ;
+	typedef typename PFP::VEC3 VEC3 ;
 
 protected:
-    // forward declaration
-    class VertexPoly;
+	// forward declaration
+	class VertexPoly;
 
-    // multiset typedef for simple writing
-    typedef std::multiset< VertexPoly,VertexPoly> VPMS;
-    typedef typename VPMS::iterator VMPSITER;
-    typedef NoTypeNameAttribute<VMPSITER> EarAttr ;
+	// multiset typedef for simple writing
+	typedef std::multiset<VertexPoly,VertexPoly> VPMS;
+	typedef typename VPMS::iterator VMPSITER;
+	typedef NoTypeNameAttribute<VMPSITER> EarAttr ;
 
-    class VertexPoly
-    {
-    public:
-        Dart dart;
-        float angle;
-        float length;
+	class VertexPoly
+	{
+	public:
+		Dart dart;
+		float angle;
+		float length;
 
         VertexPoly()
         {}
@@ -83,36 +84,37 @@ protected:
     };
 
 protected:
-    typename PFP::MAP& m_map;
+	MAP& m_map;
 
-    VertexAutoAttribute<EarAttr> m_dartEars;
+	VertexAutoAttribute<EarAttr, MAP> m_dartEars;
 
-    VertexAttribute<VEC3> m_position;
+	VertexAttribute<VEC3, MAP> m_position;
 
-    std::vector<Dart> m_resTets;
+	std::vector<Dart> m_resTets;
 
-    VPMS m_ears;
+	VPMS m_ears;
 
-    bool inTriangle(const VEC3& P, const VEC3& normal, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc);
+	bool inTriangle(const VEC3& P, const VEC3& normal, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc);
 
-    void recompute2Ears(Dart d, const VEC3& normalPoly, bool convex);
+	void recompute2Ears(Dart d, const VEC3& normalPoly, bool convex);
 
-    float computeEarInit(Dart d, const VEC3& normalPoly, float& val);
+	float computeEarInit(Dart d, const VEC3& normalPoly, float& val);
 
 public:
 
-    EarTriangulation(MAP& map) : m_map(map), m_dartEars(map)
-    {
-        m_position = map.template getAttribute<VEC3, VERTEX>("position");
-    }
+	EarTriangulation(MAP& map) : m_map(map), m_dartEars(map)
+	{
+        m_position = map.template getAttribute<VEC3, VERTEX, MAP>("position");
+	}
 
 //	void trianguleFace(Dart d, DartMarker& mark);
-    void trianguleFace(Dart d);
+	void trianguleFace(Dart d);
 
-    void triangule(unsigned int thread = 0);
+	void triangule(unsigned int thread = 0);
 
-    std::vector<Dart> getResultingTets() { return m_resTets; }
+	std::vector<Dart> getResultingTets() { return m_resTets; }
 };
+
 
 ///**
 //* subdivide a hexahedron into 5 tetrahedron
@@ -151,7 +153,7 @@ Dart splitVertex(typename PFP::MAP& map, std::vector<Dart>& vd);
  *
  */
 template <typename PFP>
-bool isTetrahedron(typename PFP::MAP& the_map, Dart d, unsigned int thread=0);
+bool isTetrahedron(typename PFP::MAP& map, Dart d, unsigned int thread = 0);
 
 //!
 /*!
@@ -203,6 +205,8 @@ Dart swap5To4(typename PFP::MAP& map, Dart d);
 //!
 /*!
  *  called edge removal (equivalent to G32)
+ * Connect the vertex of dart d to each vertex of the polygonal face
+ * @return A dart from the vertex that is incident to the tetrahedra created during the swap
  */
 template <typename PFP>
 Dart swapGen3To2(typename PFP::MAP& map, Dart d);
@@ -252,10 +256,6 @@ Dart flip1To3(typename PFP::MAP& map, Dart d);
  */
 template <typename PFP>
 Dart edgeBisection(typename PFP::MAP& map, Dart d);
-
-
-
-
 
 
 

@@ -162,7 +162,6 @@ public:
 	template<typename PFP, typename V_ATT, typename W_ATT>
 	void updateData(typename PFP::MAP& map, const V_ATT& positions, const W_ATT& colorPerFace) ;
 
-
 	/**
 	 * draw edges
 	 */

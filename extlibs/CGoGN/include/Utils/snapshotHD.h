@@ -21,6 +21,8 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
+#ifndef __SNAPSHOT_HD__
+#define __SNAPSHOT_HD__
 
 #include <QImage>
 #include <GL/glew.h>
@@ -128,4 +130,6 @@ void SnapshotHD::unbind()
 
 }
 }
+
+#endif
 

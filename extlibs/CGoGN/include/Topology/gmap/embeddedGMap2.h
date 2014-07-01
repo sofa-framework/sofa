@@ -26,6 +26,7 @@
 #define __EMBEDDED_GMAP2_H__
 
 #include "Topology/gmap/gmap2.h"
+#include "Topology/generic/mapImpl/mapMono.h"
 
 namespace CGoGN
 {
@@ -34,39 +35,43 @@ namespace CGoGN
 * Class of 2-dimensional G-maps
 * with managed embeddings
 */
-class EmbeddedGMap2 : public GMap2
+class EmbeddedGMap2 : public GMap2<MapMono>
 {
+	EmbeddedGMap2(const EmbeddedGMap2& m):GMap2<MapMono>(m) {}
 public:
-	typedef GMap2 TOPO_MAP;
+	typedef MapMono IMPL;
+	typedef GMap2<MapMono> TOPO_MAP;
 
-	static const unsigned int DIMENSION = 2 ;
+	static const unsigned int DIMENSION = TOPO_MAP::DIMENSION ;
+
+	EmbeddedGMap2() {}
 
 	/**
 	 *	create a new face with managed embeddings
 	 */
-	virtual Dart newFace(unsigned int nbEdges, bool withBoundary = true) ;
+	Dart newFace(unsigned int nbEdges, bool withBoundary = true) ;
 
 	/**
 	 * The attributes attached to the old vertex are duplicated on both resulting vertices
 	 * No attribute is attached to the new edge
 	 */
-	virtual void splitVertex(Dart d, Dart e) ;
+	void splitVertex(Dart d, Dart e) ;
 
 	/**
 	 * The attributes attached to the face of d are kept on the resulting face
 	 */
-	virtual Dart deleteVertex(Dart d) ;
+	Dart deleteVertex(Dart d) ;
 
 	/**
 	 * No attribute is attached to the new vertex
 	 * The attributes attached to the old edge are duplicated on both resulting edges
 	 */
-	virtual Dart cutEdge(Dart d) ;
+	Dart cutEdge(Dart d) ;
 
 	/**
 	 * The attributes attached to the edge of d are kept on the resulting edge
 	 */
-	virtual bool uncutEdge(Dart d) ;
+	bool uncutEdge(Dart d) ;
 
 	/**
 	 * Check if the edge of d can be collapsed or not based on some topological conditions
@@ -80,17 +85,17 @@ public:
 	 * See 'collapseDegeneratedFace' to see what can happen to edges attributes
 	 * Nothing has to be done for the faces (some degenerate ones can be deleted)
 	 */
-	virtual Dart collapseEdge(Dart d, bool delDegenerateFaces = true) ;
+	Dart collapseEdge(Dart d, bool delDegenerateFaces = true) ;
 
 	/**
 	 * No cell is created or deleted
 	 */
-	virtual bool flipEdge(Dart d) ;
+	bool flipEdge(Dart d) ;
 
 	/**
 	 * No cell is created or deleted
 	 */
-	virtual bool flipBackEdge(Dart d) ;
+	bool flipBackEdge(Dart d) ;
 
 //	/**
 //	 * The attributes attached to the vertex of dart d are kept on the resulting vertex
@@ -108,42 +113,42 @@ public:
 	 * The attributes attached to the vertices of the edge of d are kept on the vertices of the resulting edge
 	 * The attributes attached to the edge of d are kept on the resulting edge
 	 */
-	virtual void sewFaces(Dart d, Dart e, bool withBoundary = true) ;
+	void sewFaces(Dart d, Dart e, bool withBoundary = true) ;
 
 	/**
 	 * The attributes attached to the vertices of the old edge of d are duplicated on the vertices of both resulting edges
 	 * The attributes attached to the old edge are duplicated on both resulting edges
 	 */
-	virtual void unsewFaces(Dart d) ;
+	void unsewFaces(Dart d) ;
 
 	/**
 	 * The attributes attached to the edge of d are kept on the resulting edge
 	 */
-	virtual bool collapseDegeneratedFace(Dart d);
+	bool collapseDegeneratedFace(Dart d);
 
 	/**
 	 * No attribute is attached to the new edge
 	 * The attributes attached to the old face are duplicated on both resulting faces
 	 */
-	virtual void splitFace(Dart d, Dart e) ;
+	void splitFace(Dart d, Dart e) ;
 
 	/**
 	 * The attributes attached to the face of dart d are kept on the resulting face
 	 */
-	virtual bool mergeFaces(Dart d) ;
+	bool mergeFaces(Dart d) ;
 
 	/**
 	 * The attributes attached to the vertices of the face of d are kept on the resulting vertices
 	 * The attributes attached to the edges of the face of d are kept on the resulting edges
 	 */
-	virtual bool mergeVolumes(Dart d, Dart e) ;
+	bool mergeVolumes(Dart d, Dart e) ;
 
 	/**
 	 * No attribute is attached to the new face
 	 */
-	virtual unsigned int closeHole(Dart d, bool forboundary = true);
+	unsigned int closeHole(Dart d, bool forboundary = true);
 
-	virtual bool check() ;
+	bool check() ;
 } ;
 
 } // namespace CGoGN

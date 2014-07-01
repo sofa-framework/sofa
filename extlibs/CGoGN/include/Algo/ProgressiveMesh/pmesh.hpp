@@ -38,16 +38,20 @@ namespace PMesh
 
 template <typename PFP>
 ProgressiveMesh<PFP>::ProgressiveMesh(
-		MAP& map, DartMarker& inactive,
-		Algo::Surface::Decimation::SelectorType s, Algo::Surface::Decimation::ApproximatorType a,
-		VertexAttribute<typename PFP::VEC3>& position
+		MAP& map,
+		DartMarker<MAP>& inactive,
+		Algo::Surface::Decimation::SelectorType s,
+		Algo::Surface::Decimation::ApproximatorType a,
+		VertexAttribute<VEC3, MAP>& pos
 	) :
-	m_map(map), positionsTable(position), inactiveMarker(inactive), dartSelect(inactiveMarker)
+	m_map(map),
+	position(pos),
+	inactiveMarker(inactive)
 {
 	CGoGNout << "  creating approximator and predictor.." << CGoGNflush ;
 
-	std::vector<VertexAttribute< typename PFP::VEC3>* > pos_v ;
-	pos_v.push_back(&positionsTable) ;
+	std::vector<VertexAttribute<VEC3, MAP>*> pos_v ;
+	pos_v.push_back(&position) ;
 	switch(a)
 	{
 		case Algo::Surface::Decimation::A_QEM : {
@@ -57,22 +61,22 @@ ProgressiveMesh<PFP>::ProgressiveMesh(
 			m_approximators.push_back(new Algo::Surface::Decimation::Approximator_MidEdge<PFP>(m_map, pos_v)) ;
 			break ; }
 		case Algo::Surface::Decimation::A_hHalfCollapse : {
-			Algo::Surface::Decimation::Predictor_HalfCollapse<PFP>* pred = new Algo::Surface::Decimation::Predictor_HalfCollapse<PFP>(m_map, positionsTable) ;
+			Algo::Surface::Decimation::Predictor_HalfCollapse<PFP>* pred = new Algo::Surface::Decimation::Predictor_HalfCollapse<PFP>(m_map, position) ;
 			m_predictors.push_back(pred) ;
 			m_approximators.push_back(new Algo::Surface::Decimation::Approximator_HalfCollapse<PFP>(m_map, pos_v, pred)) ;
 			break ; }
 		case Algo::Surface::Decimation::A_CornerCutting : {
-			Algo::Surface::Decimation::Predictor_CornerCutting<PFP>* pred = new Algo::Surface::Decimation::Predictor_CornerCutting<PFP>(m_map, positionsTable) ;
+			Algo::Surface::Decimation::Predictor_CornerCutting<PFP>* pred = new Algo::Surface::Decimation::Predictor_CornerCutting<PFP>(m_map, position) ;
 			m_predictors.push_back(pred) ;
 			m_approximators.push_back(new Algo::Surface::Decimation::Approximator_CornerCutting<PFP>(m_map, pos_v, pred)) ;
 			break ; }
 		case Algo::Surface::Decimation::A_TangentPredict1 : {
-			Algo::Surface::Decimation::Predictor_TangentPredict1<PFP>* pred = new Algo::Surface::Decimation::Predictor_TangentPredict1<PFP>(m_map, positionsTable) ;
+			Algo::Surface::Decimation::Predictor_TangentPredict1<PFP>* pred = new Algo::Surface::Decimation::Predictor_TangentPredict1<PFP>(m_map, position) ;
 			m_predictors.push_back(pred) ;
 			m_approximators.push_back(new Algo::Surface::Decimation::Approximator_MidEdge<PFP>(m_map, pos_v, pred)) ;
 			break ; }
 		case Algo::Surface::Decimation::A_TangentPredict2 : {
-			Algo::Surface::Decimation::Predictor_TangentPredict2<PFP>* pred = new Algo::Surface::Decimation::Predictor_TangentPredict2<PFP>(m_map, positionsTable) ;
+			Algo::Surface::Decimation::Predictor_TangentPredict2<PFP>* pred = new Algo::Surface::Decimation::Predictor_TangentPredict2<PFP>(m_map, position) ;
 			m_predictors.push_back(pred) ;
 			m_approximators.push_back(new Algo::Surface::Decimation::Approximator_MidEdge<PFP>(m_map, pos_v, pred)) ;
 			break ; }
@@ -83,28 +87,62 @@ ProgressiveMesh<PFP>::ProgressiveMesh(
 	switch(s)
 	{
 		case Algo::Surface::Decimation::S_MapOrder : {
-			m_selector = new Algo::Surface::Decimation::EdgeSelector_MapOrder<PFP>(m_map, positionsTable, m_approximators, dartSelect) ;
+			m_selector = new Algo::Surface::Decimation::EdgeSelector_MapOrder<PFP>(m_map, positionsTable, m_approximators) ;
 			break ; }
 		case Algo::Surface::Decimation::S_Random : {
-			m_selector = new Algo::Surface::Decimation::EdgeSelector_Random<PFP>(m_map, positionsTable, m_approximators, dartSelect) ;
+			m_selector = new Algo::Surface::Decimation::EdgeSelector_Random<PFP>(m_map, positionsTable, m_approximators) ;
 			break ; }
 		case Algo::Surface::Decimation::S_EdgeLength : {
-			m_selector = new Algo::Surface::Decimation::EdgeSelector_Length<PFP>(m_map, positionsTable, m_approximators, dartSelect) ;
+			m_selector = new Algo::Surface::Decimation::EdgeSelector_Length<PFP>(m_map, positionsTable, m_approximators) ;
 			break ; }
 		case Algo::Surface::Decimation::S_QEM : {
-			m_selector = new Algo::Surface::Decimation::EdgeSelector_QEM<PFP>(m_map, positionsTable, m_approximators, dartSelect) ;
+			m_selector = new Algo::Surface::Decimation::EdgeSelector_QEM<PFP>(m_map, positionsTable, m_approximators) ;
 			break ; }
 		case Algo::Surface::Decimation::S_MinDetail : {
-			m_selector = new Algo::Surface::Decimation::EdgeSelector_MinDetail<PFP>(m_map, positionsTable, m_approximators, dartSelect) ;
+			m_selector = new Algo::Surface::Decimation::EdgeSelector_MinDetail<PFP>(m_map, positionsTable, m_approximators) ;
 			break ; }
 		case Algo::Surface::Decimation::S_Curvature : {
-			m_selector = new Algo::Surface::Decimation::EdgeSelector_Curvature<PFP>(m_map, positionsTable, m_approximators, dartSelect) ;
+			m_selector = new Algo::Surface::Decimation::EdgeSelector_Curvature<PFP>(m_map, positionsTable, m_approximators) ;
 			break ; }
 	}
 	CGoGNout << "..done" << CGoGNendl ;
 
 	m_initOk = true ;
 
+	CGoGNout << "  initializing approximators.." << CGoGNflush ;
+	for(typename std::vector<Algo::Surface::Decimation::ApproximatorGen<PFP>*>::iterator it = m_approximators.begin(); it != m_approximators.end(); ++it)
+	{
+		if(! (*it)->init())
+			m_initOk = false ;
+		if((*it)->getApproximatedAttributeName() == "position")
+			m_positionApproximator = reinterpret_cast<Algo::Surface::Decimation::Approximator<PFP, VEC3, EDGE>*>(*it) ;
+	}
+	CGoGNout << "..done" << CGoGNendl ;
+
+	CGoGNout << "  initializing predictors.." << CGoGNflush ;
+	for(typename std::vector<Algo::Surface::Decimation::PredictorGen<PFP>*>::iterator it = m_predictors.begin(); it != m_predictors.end(); ++it)
+		if(! (*it)->init())
+			m_initOk = false ;
+	CGoGNout << "..done" << CGoGNendl ;
+
+	CGoGNout << "  initializing selector.." << CGoGNflush ;
+	m_initOk = m_selector->init() ;
+	CGoGNout << "..done" << CGoGNendl ;
+
+	m_detailAmount = REAL(1) ;
+	m_localFrameDetailVectors = false ;
+	quantizationInitialized = false ;
+	quantizationApplied = false ;
+}
+
+template <typename PFP>
+ProgressiveMesh<PFP>::ProgressiveMesh(
+		MAP& map, DartMarker& inactive,
+		Algo::Surface::Decimation::Selector<PFP>* selector, std::vector<Algo::Surface::Decimation::ApproximatorGen<PFP>*>& approximators,
+		VertexAttribute<typename PFP::VEC3>& position
+	) :
+	m_map(map), m_selector(selector), m_approximators(approximators), positionsTable(position), inactiveMarker(inactive)
+{
 	CGoGNout << "  initializing approximators.." << CGoGNflush ;
 	for(typename std::vector<Algo::Surface::Decimation::ApproximatorGen<PFP>*>::iterator it = m_approximators.begin(); it != m_approximators.end(); ++it)
 	{
@@ -207,8 +245,8 @@ void ProgressiveMesh<PFP>::edgeCollapse(VSplit<PFP>* vs)
 	Dart d = vs->getEdge() ;
 	Dart dd = m_map.phi2(d) ;
 
-	inactiveMarker.markOrbit<FACE>(d) ;
-	inactiveMarker.markOrbit<FACE>(dd) ;
+	inactiveMarker.template markOrbit<FACE>(d) ;
+	inactiveMarker.template markOrbit<FACE>(dd) ;
 
 	m_map.extractTrianglePair(d) ;
 }
@@ -223,8 +261,8 @@ void ProgressiveMesh<PFP>::vertexSplit(VSplit<PFP>* vs)
 
 	m_map.insertTrianglePair(d, d2, dd2) ;
 
-	inactiveMarker.unmarkOrbit<FACE>(d) ;
-	inactiveMarker.unmarkOrbit<FACE>(dd) ;
+	inactiveMarker.template unmarkOrbit<FACE>(d) ;
+	inactiveMarker.template unmarkOrbit<FACE>(dd) ;
 }
 
 template <typename PFP>
@@ -284,16 +322,16 @@ void ProgressiveMesh<PFP>::refine()
 	typename PFP::MATRIX33 invLocalFrame ;
 	if(m_localFrameDetailVectors)
 	{
-		typename PFP::MATRIX33 localFrame = Algo::Geometry::vertexLocalFrame<PFP>(m_map, dd2, positionsTable) ;
+		typename PFP::MATRIX33 localFrame = Algo::Geometry::vertexLocalFrame<PFP>(m_map, dd2, position) ;
 		localFrame.invert(invLocalFrame) ;
 	}
 
 	vertexSplit(vs) ; // split vertex
 
-	m_map.template setOrbitEmbedding<VERTEX>(d, v1) ;		// embed the
+	m_map.template setOrbitEmbedding<VERTEX>(d, v1) ;	// embed the
 	m_map.template setOrbitEmbedding<VERTEX>(dd, v2) ;	// new vertices
 	m_map.template setOrbitEmbedding<EDGE>(d1, e1) ;
-	m_map.template setOrbitEmbedding<EDGE>(d2, e2) ;		// and new edges
+	m_map.template setOrbitEmbedding<EDGE>(d2, e2) ;	// and new edges
 	m_map.template setOrbitEmbedding<EDGE>(dd1, e3) ;
 	m_map.template setOrbitEmbedding<EDGE>(dd2, e4) ;
 
@@ -326,7 +364,7 @@ void ProgressiveMesh<PFP>::refine()
 template <typename PFP>
 void ProgressiveMesh<PFP>::gotoLevel(unsigned int l)
 {
-	if(l == m_cur || l > m_splits.size() || l < 0)
+	if(l == m_cur || l > m_splits.size())
 		return ;
 
 	if(l > m_cur)
@@ -381,7 +419,7 @@ void ProgressiveMesh<PFP>::localizeDetailVectors()
 		{
 			Dart d = m_splits[m_cur-1]->getEdge() ;
 			Dart dd2 = m_splits[m_cur-1]->getRightEdge() ;
-			typename PFP::MATRIX33 localFrame = Algo::Geometry::vertexLocalFrame<PFP>(m_map, dd2, positionsTable) ;
+			typename PFP::MATRIX33 localFrame = Algo::Geometry::vertexLocalFrame<PFP>(m_map, dd2, position) ;
 			VEC3 det = m_positionApproximator->getDetail(d) ;
 			det = localFrame * det ;
 			m_positionApproximator->setDetail(d, det) ;
@@ -412,7 +450,7 @@ void ProgressiveMesh<PFP>::globalizeDetailVectors()
 		{
 			Dart d = m_splits[m_cur-1]->getEdge() ;
 			Dart dd2 = m_splits[m_cur-1]->getRightEdge() ;
-			typename PFP::MATRIX33 localFrame = Algo::Geometry::vertexLocalFrame<PFP>(m_map, dd2, positionsTable) ;
+			typename PFP::MATRIX33 localFrame = Algo::Geometry::vertexLocalFrame<PFP>(m_map, dd2, position) ;
 			typename PFP::MATRIX33 invLocalFrame ;
 			localFrame.invert(invLocalFrame) ;
 			VEC3 det = m_positionApproximator->getDetail(d) ;
@@ -576,6 +614,9 @@ void ProgressiveMesh<PFP>::calculCourbeDebitDistortion()
 */
 
 } // namespace PMesh
+
 } // namespace Surface
+
 } // namespace Algo
+
 } // namespace CGoGN

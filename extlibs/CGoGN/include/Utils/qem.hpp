@@ -22,6 +22,8 @@
  *                                                                              *
  *******************************************************************************/
 
+#include <cmath>
+
 namespace CGoGN {
 
 namespace Utils {
@@ -139,7 +141,11 @@ template <typename REAL>
 bool
 Quadric<REAL>::optimize(VEC4& v) const
 {
-	if (std::isnan(A(0,0)))
+#ifdef WIN32
+	if (A(0, 0) != A(0, 0))
+#else
+	if (std::isnan(A(0, 0)))
+#endif
 		return false ;
 
 	MATRIX44 A2(A) ;
@@ -286,7 +292,11 @@ template <typename REAL, unsigned int N>
 bool
 QuadricNd<REAL,N>::optimize(VECN& v) const
 {
-	if (std::isnan(A(0,0)))
+#ifdef WIN32
+	if (A(0, 0) != A(0, 0))
+#else
+	if (std::isnan(A(0, 0)))
+#endif
 		return false ;
 
 	Geom::Matrix<N,N,double> Ainv ;
