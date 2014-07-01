@@ -41,7 +41,7 @@ namespace Geometry
  * Test if an edge bounded by 2 faces is convex or concave
  */
 template <typename PFP>
-bool isEdgeConvexe(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position) ;
+bool isEdgeConvex(typename PFP::MAP& map, Edge e, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position) ;
 
 } // namespace Geometry
 

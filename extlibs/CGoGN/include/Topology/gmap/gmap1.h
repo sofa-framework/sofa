@@ -33,19 +33,20 @@ namespace CGoGN
 /**
 * The class of 1-GMap
 */
-class GMap1 : public GMap0
+template <typename MAP_IMPL>
+class GMap1 : public GMap0<MAP_IMPL>
 {
 protected:
-	AttributeMultiVector<Dart>* m_beta1 ;
+	// protected copy constructor to prevent the copy of map
+	GMap1(const GMap1<MAP_IMPL>& m):GMap0<MAP_IMPL>(m) {}
 
 	void init() ;
 
 public:
-	typedef GMap0 ParentMap;
+	typedef MAP_IMPL IMPL;
+	typedef GMap0<MAP_IMPL> ParentMap;
 
 	static const unsigned int DIMENSION = 1 ;
-
-
 
 	GMap1();
 
@@ -55,15 +56,12 @@ public:
 
 	virtual void clear(bool removeAttrib);
 
-	virtual void update_topo_shortcuts();
-
-	virtual void compactTopoRelations(const std::vector<unsigned int>& oldnew);
+	virtual unsigned int getNbInvolutions() const;
+	virtual unsigned int getNbPermutations() const;
 
 	/*! @name Basic Topological Operators
 	 * Access and Modification
 	 *************************************************************************/
-
-	virtual Dart newDart();
 
 	Dart beta1(const Dart d) const;
 
@@ -98,12 +96,6 @@ public:
 	* @return a dart of the edge
 	*/
 	Dart newCycle(unsigned int nbEdges);
-
-	//! Create an new face for boundary (marked)
-	/*! @param nbEdges the number of edges
-	 *  @return return a dart of the face
-	 */
-//	Dart newBoundaryCycle(unsigned int nbEdges);
 
 	//! Delete a face erasing all its darts
 	/*! @param d a dart of the face
@@ -199,36 +191,45 @@ public:
 	 *************************************************************************/
 
 	//@{
+	//! Apply a function on every dart of an orbit
+	/*! @param c a cell
+	 *  @param f a function
+	 */
+	template <unsigned int ORBIT, typename FUNC>
+	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread = 0) const ;
+//	template <unsigned int ORBIT, typename FUNC>
+//	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC& f, unsigned int thread = 0) const ;
+
 	/**
 	* Apply a functor on each dart of a vertex
 	* @param d a dart of the vertex
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_vertex(Dart d, FunctorType& fonct, unsigned int thread=0) const;
-//	bool foreach_dart_of_vertex(Dart d, FunctorConstType& fonct, unsigned int thread=0);
+	template <typename FUNC>
+	void foreach_dart_of_vertex(Dart d, FUNC& f, unsigned int thread=0) const;
 
 	/**
 	* Apply a functor on each dart of an edge
 	* @param d a dart of the edge
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_edge(Dart d, FunctorType& fonct, unsigned int thread=0) const;
-//	bool foreach_dart_of_edge(Dart d, FunctorConstType& fonct, unsigned int thread=0);
+	template <typename FUNC>
+	void foreach_dart_of_edge(Dart d, FUNC& f, unsigned int thread=0) const;
 
 	/**
 	* Apply a functor on each dart of an oriented cc (face)
 	* @param d a dart of the oriented cc
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_oriented_cc(Dart d, FunctorType& f, unsigned int thread=0) const;
-//	bool foreach_dart_of_oriented_cc(Dart d, FunctorConstType& f, unsigned int thread=0);
+	template <typename FUNC>
+	void foreach_dart_of_oriented_cc(Dart d, FUNC& f, unsigned int thread=0) const;
 
 	//! Apply a functor on every dart of a cc (face)
 	/*! @param d a dart of the cc
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_cc(Dart d, FunctorType& fonct, unsigned int thread=0) const;
-//	bool foreach_dart_of_cc(Dart d, FunctorConstType& fonct, unsigned int thread=0);
+	template <typename FUNC>
+	void foreach_dart_of_cc(Dart d, FUNC& f, unsigned int thread=0) const;
 	//@}
 };
 

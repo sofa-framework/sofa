@@ -158,7 +158,7 @@ Dart Grid<PFP>::grid1D(unsigned int x)
 }
 
 template <typename PFP>
-void Grid<PFP>::embedIntoGrid(VertexAttribute<VEC3>& position, float x, float y, float z)
+void Grid<PFP>::embedIntoGrid(VertexAttribute<VEC3, MAP>& position, float x, float y, float z)
 {
     float dx = x/float(this->m_nx);
     float dy = y/float(this->m_ny);
@@ -175,7 +175,7 @@ void Grid<PFP>::embedIntoGrid(VertexAttribute<VEC3>& position, float x, float y,
                 typename PFP::VEC3 pos(-x/2.0f + dx*float(k), -y/2.0f + dy*float(j), -z/2.0f + dz*float(i));
                 Dart d = this->m_tableVertDarts[ i*nbs+j*(this->m_nx+1)+k ];
 
-                this->m_map.template setOrbitEmbeddingOnNewCell<VERTEX>(d);
+				Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(this->m_map, d);
                 position[d] = pos;
             }
         }
@@ -183,7 +183,7 @@ void Grid<PFP>::embedIntoGrid(VertexAttribute<VEC3>& position, float x, float y,
 }
 
 template <typename PFP>
-void Grid<PFP>::embedIntoTwistedStrip(VertexAttribute<VEC3>& position, float radius_min, float radius_max, float turns)
+void Grid<PFP>::embedIntoTwistedStrip(VertexAttribute<VEC3, MAP>& position, float radius_min, float radius_max, float turns)
 {
     float alpha = float(2.0*M_PI/this->m_ny);
     float beta = turns/float(this->m_ny);
@@ -204,7 +204,7 @@ void Grid<PFP>::embedIntoTwistedStrip(VertexAttribute<VEC3>& position, float rad
 }
 
 template <typename PFP>
-void Grid<PFP>::embedIntoHelicoid(VertexAttribute<VEC3>& position, float radius_min,  float radius_max, float maxHeight, float nbTurn, int orient)
+void Grid<PFP>::embedIntoHelicoid(VertexAttribute<VEC3, MAP>& position, float radius_min,  float radius_max, float maxHeight, float nbTurn, int orient)
 {
     float alpha = float(2.0*M_PI/this->m_nx)*nbTurn;
     float hS = maxHeight/this->m_nx;

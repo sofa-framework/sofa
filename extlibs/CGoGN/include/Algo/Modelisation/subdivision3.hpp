@@ -111,13 +111,14 @@ Dart cut3Ear(typename PFP::MAP& map, Dart d)
 }
 
 template <typename PFP>
-Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position, Dart d, Geom::Plane3D<typename PFP::REAL > pl)
+Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, Dart d, Geom::Plane3D<typename PFP::REAL > pl)
 {
+    typedef typename PFP::MAP MAP;
 	Dart dRes=NIL;
 	unsigned int nbInter = 0;
 	unsigned int nbVertices = 0;
-	CellMarkerStore<VERTEX> vs(map);			//marker for new vertices from edge cut
-	CellMarkerStore<FACE> cf(map);
+    CellMarkerStore< MAP, VERTEX> vs(map);			//marker for new vertices from edge cut
+    CellMarkerStore< MAP, FACE> cf(map);
 	Dart dPath;
 
 	MarkerForTraversor<typename PFP::MAP::ParentMap, EDGE > mte(map);
@@ -235,15 +236,16 @@ Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC
 }
 
 template <typename PFP>
-Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position, Dart d, CellMarker<EDGE>& edgesToCut, CellMarker<VERTEX>& verticesToSplit)
+Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::MAP, typename PFP::VEC3>& position, Dart d, CellMarker<typename PFP::MAP, EDGE>& edgesToCut, CellMarker<typename PFP::MAP, VERTEX>& verticesToSplit)
 {
+    typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;
 
 	Dart dRes;
 	unsigned int nbInter = 0;
 	unsigned int nbVertices = 0;
-	CellMarkerStore<VERTEX> vs(map);			//marker for new vertices from edge cut
-	CellMarkerStore<FACE> cf(map);
+    CellMarkerStore<MAP, VERTEX> vs(map);			//marker for new vertices from edge cut
+    CellMarkerStore<MAP, FACE> cf(map);
 	Dart dPath;
 
 	MarkerForTraversor<typename PFP::MAP::ParentMap, EDGE > mte(map);
@@ -334,16 +336,17 @@ Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC
 }
 
 template <typename PFP>
-std::vector<Dart> sliceConvexVolumes(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position,CellMarker<VOLUME>& volumesToCut, CellMarker<EDGE>& edgesToCut, CellMarker<VERTEX>& verticesToSplit)
+std::vector<Dart> sliceConvexVolumes(typename PFP::MAP& map, VertexAttribute<typename PFP::MAP, typename PFP::VEC3>& position,CellMarker<typename PFP::MAP, VOLUME>& volumesToCut, CellMarker<typename PFP::MAP, EDGE>& edgesToCut, CellMarker<typename PFP::MAP, VERTEX>& verticesToSplit)
 {
+    typedef typename PFP::MAP MAP;
     std::vector<Dart> vRes;
 
     typedef typename PFP::VEC3 VEC3;
-    CellMarker<VERTEX> localVerticesToSplit(map); //marker for new vertices from edge cut
+    CellMarker<MAP, VERTEX> localVerticesToSplit(map); //marker for new vertices from edge cut
 
     //Step 1: Cut the edges and mark the resulting vertices as vertices to be face-split
     TraversorE<typename PFP::MAP> te(map);
-    CellMarkerStore<FACE> cf(map);
+    CellMarkerStore<MAP, FACE> cf(map);
 
     for(Dart d = te.begin(); d != te.end(); d=te.next()) //cut all edges
     {
@@ -426,7 +429,7 @@ std::vector<Dart> sliceConvexVolumes(typename PFP::MAP& map, VertexAttribute<typ
             std::vector<Dart> vPath;
             vPath.reserve(32);
             vPath.push_back(dPath);
-            CellMarker<FACE> cmf(map);
+            CellMarker<MAP, FACE> cmf(map);
 
 
             //define the path to split for the whole volume
@@ -460,18 +463,19 @@ std::vector<Dart> sliceConvexVolumes(typename PFP::MAP& map, VertexAttribute<typ
 template <typename PFP, typename EMBV>
 void catmullClarkVol(typename PFP::MAP& map, EMBV& attributs)
 {
+    typedef typename PFP::MAP MAP;
 	typedef typename EMBV::DATA_TYPE EMB;
 
 	//std::vector<Dart> l_centers;
 	std::vector<Dart> l_vertices;
 
 	//pre-computation : compute the centroid of all volume
-	VolumeAutoAttribute<EMB> attBary(map);
+    VolumeAutoAttribute<MAP, EMB> attBary(map);
 	Volume::Geometry::computeCentroidVolumes<PFP>(map, const_cast<const EMBV&>(attributs), attBary);
 
 	//subdivision
 	//1. cut edges
-	DartMarkerNoUnmark mv(map);
+    DartMarkerNoUnmark<MAP> mv(map);
 	TraversorE<typename PFP::MAP> travE(map);
 	for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 	{
@@ -681,11 +685,12 @@ inline double sqrt3_K(unsigned int n)
 }
 
 template <typename PFP>
-void sqrt3Vol(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position)
+void sqrt3Vol(typename PFP::MAP& map, VertexAttribute<typename PFP::MAP, typename PFP::VEC3>& position)
 {
-	DartMarkerStore m(map);
+    typedef typename PFP::MAP MAP;
+    DartMarkerStore<MAP> m(map);
 
-	DartMarkerStore newBoundaryV(map);
+    DartMarkerStore<MAP> newBoundaryV(map);
 
 	//
 	// 1-4 flip of all tetrahedra
@@ -975,10 +980,10 @@ void sqrt3Vol(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& posit
 //}
 
 template <typename PFP>
-void computeDual(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position)
+void computeDual(typename PFP::MAP& map, VertexAttribute<typename PFP::MAP, typename PFP::VEC3>& position)
 {
 	// VolumeAttribute -> after dual new VertexAttribute
-	VolumeAttribute<typename PFP::VEC3> positionV  = map.template getAttribute<typename PFP::VEC3, VOLUME>("position") ;
+    VolumeAttribute<typename PFP::MAP, typename PFP::VEC3> positionV  = map.template getAttribute<typename PFP::MAP, typename PFP::VEC3, VOLUME>("position") ;
 	if(!positionV.isValid())
 		positionV = map.template addAttribute<typename PFP::VEC3, VOLUME>("position") ;
 

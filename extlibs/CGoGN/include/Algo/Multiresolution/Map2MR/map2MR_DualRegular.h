@@ -26,8 +26,8 @@
 #define __MAP2MR_DUAL_REGULAR__
 
 #include "Topology/map/embeddedMap2.h"
-#include "Topology/generic/traversorCell.h"
-#include "Topology/generic/traversor2.h"
+#include "Topology/generic/traversor/traversorCell.h"
+#include "Topology/generic/traversor/traversor2.h"
 
 #include "Algo/Multiresolution/filter.h"
 

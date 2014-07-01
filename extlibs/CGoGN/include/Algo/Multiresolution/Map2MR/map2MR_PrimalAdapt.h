@@ -26,8 +26,8 @@
 #define __MAP2MR_PRIMAL_ADAPT__
 
 #include "Topology/map/embeddedMap2.h"
-#include "Topology/generic/traversorCell.h"
-#include "Topology/generic/traversor2.h"
+#include "Topology/generic/traversor/traversorCell.h"
+#include "Topology/generic/traversor/traversor2.h"
 
 #include <cmath>
 
@@ -68,7 +68,6 @@ protected:
 
 public:
 	Map2MR(MAP& map) ;
-
 
 	/***************************************************
 	 *               CELLS INFORMATION                 *

@@ -50,24 +50,26 @@ namespace Filters
  *                           SYNTHESIS FILTERS
  *********************************************************************************/
 
-
 template <typename PFP>
 class Sqrt2FaceSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	Sqrt2FaceSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	Sqrt2FaceSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorF<typename PFP::MAP> trav(m_map) ;
+		TraversorF<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
-			typename PFP::VEC3 p = Geometry::faceCentroid<PFP>(m_map, d, m_position);
+			VEC3 p = Geometry::faceCentroid<PFP>(m_map, d, m_position);
 
 			m_map.incCurrentLevel() ;
 
@@ -80,11 +82,9 @@ public:
 			m_position[midF] = p ;
 
 			m_map.decCurrentLevel() ;
-
 		}
 	}
 } ;
-
 
 } // namespace Filters
 

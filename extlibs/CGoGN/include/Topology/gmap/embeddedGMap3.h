@@ -26,6 +26,7 @@
 #define __EMBEDDED_GMAP3_H__
 
 #include "Topology/gmap/gmap3.h"
+#include "Topology/generic/mapImpl/mapMono.h"
 
 namespace CGoGN
 {
@@ -34,12 +35,16 @@ namespace CGoGN
 * Class of 3-dimensional G-maps
 * with managed embeddings
 */
-class EmbeddedGMap3 : public GMap3
+class EmbeddedGMap3 : public GMap3<MapMono>
 {
+	EmbeddedGMap3(const EmbeddedGMap3& m):GMap3<MapMono>(m) {}
 public:
-	typedef GMap3 TOPO_MAP;
+	typedef MapMono IMPL;
+	typedef GMap3<MapMono> TOPO_MAP;
 
-	static const unsigned int DIMENSION = 3 ;
+	static const unsigned int DIMENSION = TOPO_MAP::DIMENSION ;
+
+	EmbeddedGMap3() {}
 
 	/*!
 	 *

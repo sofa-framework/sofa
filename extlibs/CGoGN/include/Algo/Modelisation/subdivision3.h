@@ -45,7 +45,6 @@ namespace Modelisation
 template <typename PFP>
 bool isHexahedron(typename PFP::MAP& the_map, Dart d, unsigned int thread=0);
 
-
 /**
 * Cut a 3D ear from a mesh : the ear is sewn by phi3 to the rest of the volume
 * @param d dart of the point of the ear
@@ -61,7 +60,7 @@ Dart cut3Ear(typename PFP::MAP& map, Dart d);
 * * TODO (optimization) change to build path while splitting faces
 */
 template <typename PFP>
-Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position, Dart d, Geom::Plane3D<typename PFP::REAL > pl);
+Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, Dart d, Geom::Plane3D<typename PFP::REAL> pl);
 
 /**
 * Cut a volume considering a set of marked edges and vertices
@@ -73,7 +72,7 @@ Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC
 * TODO (optimization) change to build path while splitting faces
 */
 template <typename PFP>
-Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position, Dart d, CellMarker<EDGE>& edgesToCut, CellMarker<VERTEX>& verticesToSplit);
+Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, Dart d, CellMarker<typename PFP::MAP, EDGE>& edgesToCut, CellMarker<typename PFP::MAP, VERTEX>& verticesToSplit);
 
 /**
 * Cut a set of volumes considering a set of marked edges and vertices
@@ -85,7 +84,7 @@ Dart sliceConvexVolume(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC
 * TODO (optimization) change to build path while splitting faces
 */
 template <typename PFP>
-std::vector<Dart> sliceConvexVolumes(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position,CellMarker<VOLUME>& volumesToCut, CellMarker<EDGE>& edgesToCut, CellMarker<VERTEX>& verticesToSplit);
+std::vector<Dart> sliceConvexVolumes(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,CellMarker<typename PFP::MAP, VOLUME>& volumesToCut, CellMarker<typename PFP::MAP, EDGE>& edgesToCut, CellMarker<typename PFP::MAP, VERTEX>& verticesToSplit);
 
 /**
 * catmull clark volumic : do not move the original vertices
@@ -102,14 +101,13 @@ void catmullClarkVol(typename PFP::MAP& map, EMBV& attributs);
 //}
 
 template <typename PFP>
-void sqrt3Vol(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position);
+void sqrt3Vol(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position);
 
 template <typename PFP>
-void relaxation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position);
+void relaxation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position);
 
 template <typename PFP>
-void computeDual(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position);
-
+void computeDual(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position);
 
 } // namespace Modelisation
 
@@ -122,5 +120,3 @@ void computeDual(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& po
 #include "Algo/Modelisation/subdivision3.hpp"
 
 #endif
-
-

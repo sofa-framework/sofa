@@ -58,7 +58,7 @@ bool HalfEdgeSelector_QEMml<PFP>::init()
 	if(!ok)
 		return false ;
 
-	CellMarker<VERTEX> vMark(m) ;
+	CellMarker<MAP, VERTEX> vMark(m) ;
 	for(Dart d = m.begin(); d != m.end(); m.next(d))
 	{
 		if(!vMark.isMarked(d))
@@ -69,7 +69,7 @@ bool HalfEdgeSelector_QEMml<PFP>::init()
 		}
 	}
 
-	DartMarker mark(m) ;
+	DartMarker<MAP> mark(m) ;
 	for(Dart d = m.begin(); d != m.end(); m.next(d))
 	{
 		if(!mark.isMarked(d))
@@ -80,7 +80,7 @@ bool HalfEdgeSelector_QEMml<PFP>::init()
 			quadric[d] += q ;					// and add the contribution of
 			quadric[d1] += q ;					// this quadric to the ones
 			quadric[d_1] += q ;					// of the 3 incident vertices
-			mark.markOrbit<FACE>(d) ;
+			mark.template markOrbit<FACE>(d) ;
 		}
 	}
 
@@ -142,7 +142,8 @@ void HalfEdgeSelector_QEMml<PFP>::updateBeforeCollapse(Dart d)
 }
 
 template <typename PFP>
-void HalfEdgeSelector_QEMml<PFP>::recomputeQuadric(const Dart d, const bool recomputeNeighbors) {
+void HalfEdgeSelector_QEMml<PFP>::recomputeQuadric(const Dart d, const bool recomputeNeighbors)
+{
 	Dart dFront,dBack ;
 	Dart dInit = d ;
 
@@ -308,7 +309,7 @@ bool HalfEdgeSelector_QEMextColor<PFP>::init()
 				++ok ;
 				m_approxindex_color = approxindex ;
 				m_attrindex_color = attrindex ;
-				m_color = m.template getAttribute<typename PFP::VEC3, VERTEX>("color") ;
+				m_color = m.template getAttribute<typename PFP::VEC3, VERTEX, MAP>("color") ;
 				assert(m_color.isValid() || !"EdgeSelector_QEMextColor: color attribute is not valid") ;
 				if (!saved)
 				{
@@ -953,7 +954,7 @@ bool HalfEdgeSelector_ColorGradient<PFP>::init()
 				++ok ;
 				m_approxindex_color = approxindex ;
 				m_attrindex_color = attrindex ;
-				m_color = m.template getAttribute<typename PFP::VEC3, VERTEX>("color") ;
+				m_color = m.template getAttribute<typename PFP::VEC3, VERTEX, MAP>("color") ;
 				assert(m_color.isValid() || !"EdgeSelector_QEMextColor: color attribute is not valid") ;
 				if (!saved)
 				{
@@ -965,9 +966,9 @@ bool HalfEdgeSelector_ColorGradient<PFP>::init()
 	}
 
 	if(ok != 2)
-			return false ;
+		return false ;
 
-	CellMarker<VERTEX> vMark(m) ;
+	CellMarker<MAP, VERTEX> vMark(m) ;
 	for(Dart d = m.begin(); d != m.end(); m.next(d))
 	{
 		if(!vMark.isMarked(d))
@@ -978,7 +979,7 @@ bool HalfEdgeSelector_ColorGradient<PFP>::init()
 		}
 	}
 
-	DartMarker mark(m) ;
+	DartMarker<MAP> mark(m) ;
 	for(Dart d = m.begin(); d != m.end(); m.next(d))
 	{
 		if(!mark.isMarked(d))
@@ -989,7 +990,7 @@ bool HalfEdgeSelector_ColorGradient<PFP>::init()
 			m_quadric[d] += q ;					// and add the contribution of
 			m_quadric[d1] += q ;					// this quadric to the ones
 			m_quadric[d_1] += q ;					// of the 3 incident vertices
-			mark.markOrbit<FACE>(d) ;
+			mark.template markOrbit<FACE>(d) ;
 		}
 	}
 

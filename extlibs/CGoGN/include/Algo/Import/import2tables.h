@@ -60,8 +60,10 @@ template <typename PFP>
 class MeshTablesSurface
 {
 public:
+    typedef typename PFP::MAP MAP ;
     typedef typename PFP::VEC3 VEC3 ;
     typedef typename VEC3::value_type DATA_TYPE ;
+    typedef typename PFP::REAL REAL ;
     enum VOLUME_TYPE {
         TETRAHEDRON = 0,
         HEXAHEDRON,
@@ -69,7 +71,7 @@ public:
         TRIANGULAR_PRISM
     };
 protected:
-    typename PFP::MAP& m_map;
+    MAP& m_map;
 
     unsigned int m_nbVertices;
 
@@ -155,9 +157,10 @@ template <typename PFP>
 class MeshTablesVolume
 {
 public:
+    typedef typename PFP::MAP MAP ;
     typedef typename PFP::VEC3 VEC3 ;
     typedef typename VEC3::value_type DATA_TYPE ;
-    typedef typename PFP::REAL REAL;
+    typedef typename PFP::REAL REAL ;
 
     enum VOLUME_TYPE {
         TETRAHEDRON = 0,
@@ -167,16 +170,16 @@ public:
     };
 
 protected:
-    typename PFP::MAP& m_map;
+    MAP& m_map;
 
     unsigned int m_nbVertices;
 
-    unsigned int m_nbVolumes;
-    unsigned int m_nbFaces;
-    std::vector<unsigned> m_nbEdges;
+     unsigned int m_nbVolumes;
+     unsigned int m_nbFaces;
+     std::vector<unsigned> m_nbEdges;
 
-    std::vector<unsigned>    m_nbVerticesPerVolume;
-    std::vector<VOLUME_TYPE> m_volumeType;
+     std::vector<unsigned>    m_nbVerticesPerVolume;
+     std::vector<VOLUME_TYPE> m_volumeType;
 
     /**
     * table of emb ptr (for each face, first vertex)
@@ -205,11 +208,11 @@ protected:
 
     bool importMSH(const std::string& filename, std::vector<std::string>& attrNames);
 
-    bool importVTU(const std::string& filename, std::vector<std::string>& attrNames);
+//    bool importVTU(const std::string& filename, std::vector<std::string>& attrNames);
 
     bool importNAS(const std::string& filename, std::vector<std::string>& attrNames);
 
-    bool importVBGZ(const std::string& filename, std::vector<std::string>& attrNames);
+//    bool importVBGZ(const std::string& filename, std::vector<std::string>& attrNames);
 
     //bool importMoka(const std::string& filename, std::vector<std::string>& attrNames);
 

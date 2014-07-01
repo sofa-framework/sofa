@@ -121,7 +121,7 @@ public:
 	bool volumeIsSubdivided(Dart d);
 	//@}
 
-protected:
+//protected:
 	/*! @name Topological helping functions
 	 *
 	 *************************************************************************/
@@ -131,19 +131,10 @@ protected:
 	 */
 	void swapEdges(Dart d, Dart e);
 
-	void splitSurfaceInVolume(std::vector<Dart>& vd, bool firstSideClosed = true, bool secondSideClosed = false);
-
-	Dart cutEdgeInVolume(Dart d);
-
-	void splitFaceInVolume(Dart d, Dart e);
-
 	void splitVolume(std::vector<Dart>& vd);
 
-	void saveRelationsAroundVertex(Dart d, std::vector<std::pair<Dart, Dart> >& vd);
-
-	void unsewAroundVertex(std::vector<std::pair<Dart, Dart> >& vd);
-
 	Dart cutEdge(Dart d) ;
+
 	void splitFace(Dart d, Dart e) ;
 	//@}
 
@@ -156,10 +147,20 @@ protected:
 	 */
 	void subdivideEdge(Dart d) ;
 
+	//!
+	/*!
+	 */
+	void coarsenEdge(Dart d);
+
 	//! Subdivide the edge of d to the next level
 	/*! @param d Dart frome the face
 	 */
 	void subdivideFace(Dart d, bool triQuad) ;
+
+	//!
+	/*!
+	 */
+	void coarsenFace(Dart d);
 
 public:
 	//! Subdivide the volume of d to hexahedral cells
@@ -167,18 +168,20 @@ public:
 	 */
 	unsigned int subdivideVolume(Dart d, bool triQuad = true, bool OneLevelDifference = true);
 
+	/*!
+	 * \brief subdivideHexa
+	 *
+	 * Detailed description of the function
+	 * \param d
+	 * \param OneLevelDifference
+	 * \return
+	 */
 	unsigned int subdivideHexa(Dart d, bool OneLevelDifference = true);
-
-    void subdivideFace2(Dart d, bool triQuad = false);
-
-    unsigned int subdivideHexa2(Dart d, bool OneLevelDifference = true);
 
 	//! Subdivide the volume of d to hexahedral cells
 	/*! @param d Dart from the volume
 	 */
 	void subdivideVolumeTetOcta(Dart d) ;
-
-	void subdivideVolumeTetOctaTemp(Dart d);
 	//@}
 
 	/*! @name Vertices Attributes management
@@ -191,6 +194,8 @@ public:
 	void setVolumeVertexFunctor(FunctorType* f) { volumeVertexFunctor = f ; }
 	//@}
 
+	unsigned int subdivideHexa2(Dart d, bool OneLevelDifference = true);
+	void subdivideFace2(Dart d, bool triQuad);
 };
 
 } // namespace Adaptive

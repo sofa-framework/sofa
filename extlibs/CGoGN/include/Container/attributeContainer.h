@@ -138,7 +138,8 @@ public:
 
 	~AttributeContainer();
 
-	unsigned int getOrbit();
+	unsigned int getOrbit() const;
+
 	void setOrbit(unsigned int orbit);
 
 	void setRegistry(std::map<std::string, RegisteredBaseAttribute*>* re);
@@ -273,7 +274,7 @@ public:
 	/**
 	 * get the name of an attribute, given its index in the container
 	 */
-	const std::string& getAttributeName(unsigned int attrIndex);
+	const std::string& getAttributeName(unsigned int attrIndex) const;
 
 	/**
 	 * fill a vector with pointers to the blocks of the given attribute
@@ -290,7 +291,7 @@ public:
 	 * @param names vector of names
 	 * @return number of attributes
 	 */
-	unsigned int getAttributesNames(std::vector<std::string>& names);
+	unsigned int getAttributesNames(std::vector<std::string>& names) const;
 
 	/**
 	 * fill a vector with attribute type names
@@ -366,7 +367,7 @@ public:
 	* @param index index of the line
 	* @return number of refs of the line
 	*/
-	unsigned int getNbRefs(unsigned int index);
+    unsigned int getNbRefs(unsigned int index) const;
 
 	/**
 	* set the number of refs of the given line
@@ -474,6 +475,12 @@ public:
 	 * TODO a version that compact on the fly ?
 	 */
 	void copyFrom(const AttributeContainer& cont);
+	/**
+	 * dump the container in CSV format (; separated columns)
+	 */
+	void dumpCSV() const;
+
+	void dumpByLines() const;
 
     void removeFromFreeIndices(unsigned int index);
 };

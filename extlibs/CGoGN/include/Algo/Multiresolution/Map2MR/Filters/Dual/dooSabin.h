@@ -48,28 +48,32 @@ namespace Filters
 template <typename PFP>
 class DooSabinVertexSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+	typedef typename PFP::REAL REAL;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	DooSabinVertexSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	DooSabinVertexSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
 		for (Dart dV = m_map.begin(); dV != m_map.end();  m_map.next(dV))
 		{
-			typename PFP::VEC3 p(0.0);
+			VEC3 p(0.0);
 
 			unsigned int N = m_map.faceDegree(dV);
-			typename PFP::REAL K0 = float(N+5)/float(4*N);//(1.0 / 4.0) + (5.0 / 4.0) * double(N);
+			REAL K0 = float(N+5)/float(4*N);//(1.0 / 4.0) + (5.0 / 4.0) * double(N);
 			p += K0 * m_position[dV];
 			unsigned int j = 1;
 			Dart tmp = m_map.phi1(dV);
 			do
 			{
-				typename PFP::REAL Kj = (3.0 + 2.0 * cos(2.0 * double(j) * M_PI / double(N))) / (4.0 * N);
+				REAL Kj = (3.0 + 2.0 * cos(2.0 * double(j) * M_PI / double(N))) / (4.0 * N);
 				p += Kj * m_position[tmp];
 				tmp = m_map.phi1(tmp);
 				++j;
@@ -84,7 +88,6 @@ public:
 	}
 } ;
 
-
 } // namespace Masks
 
 } // namespace Primal
@@ -98,4 +101,3 @@ public:
 } // namespace CGoGN
 
 #endif
-
