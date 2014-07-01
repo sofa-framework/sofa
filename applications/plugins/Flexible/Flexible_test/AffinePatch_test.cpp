@@ -104,7 +104,7 @@ namespace sofa {
             root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         }
 
-        void SetRandomAffineTransform (int seed)
+        void SetRandomAffineTransform (int /*seed*/)
         {
             // Random Matrix 3*3
             for( int j=0; j<testedRotation.nbCols; j++)
