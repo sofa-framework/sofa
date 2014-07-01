@@ -119,7 +119,7 @@ void ExplodeVolumeRender::computeFace(typename PFP::MAP& map, Dart d, const EMBV
 		Dart e = map.phi1(a);
 		VEC3 v2 = positions[e] - centerFace;
 		v2.normalize();
-        VEC3 N = v1.cross(v2);
+		VEC3 N = v1^v2;
 		normals.push_back(N);
 		vertices.push_back(positions[a]);
 		a = e;
@@ -138,23 +138,22 @@ void ExplodeVolumeRender::computeFace(typename PFP::MAP& map, Dart d, const EMBV
 	}
 }
 
-
 //template<typename PFP>
 //void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, const VolumeAttribute<typename PFP::VEC3>& colorPerXXX)
 //{
 //    updateSmoothGen<PFP, VertexAttribute<typename PFP::VEC3>, typename PFP::VEC3>(map,positions,colorPerXXX);
 //}
 
-
 template<typename PFP, typename V_ATT, typename W_ATT>
 void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const V_ATT& positions, const W_ATT& colorPerXXX)
 {
 	typedef typename V_ATT::DATA_TYPE VEC3;
 	typedef typename W_ATT::DATA_TYPE COL3;
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::REAL REAL;
 	typedef Geom::Vec3f VEC3F;
 
-	VolumeAutoAttribute<VEC3> centerVolumes(map, "centerVolumes");
+	VolumeAutoAttribute<VEC3, MAP> centerVolumes(map, "centerVolumes");
 	Algo::Volume::Geometry::Parallel::computeCentroidELWVolumes<PFP>(map, positions, centerVolumes);
 
 	std::vector<VEC3F> buffer;
@@ -170,18 +169,16 @@ void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const V_ATT& posi
 	std::vector<VEC3> vertices;
 	vertices.reserve(20);
 
-	
-	TraversorCell<typename PFP::MAP, PFP::MAP::FACE_OF_PARENT> traFace(map);
-
-	for (Dart d = traFace.begin(); d != traFace.end(); d = traFace.next())
+//	TraversorCell<MAP, MAP::FACE_OF_PARENT> traFace(map);
+	foreach_cell<MAP::FACE_OF_PARENT>(map, [&] (Cell<MAP::FACE_OF_PARENT> d)
 	{
 		// compute normals
-		VEC3 centerFace = Algo::Surface::Geometry::faceCentroidELW<PFP>(map, d, positions);
-		VEC3 centerNormalFace = Algo::Surface::Geometry::newellNormal<PFP>(map,d,positions);
+		VEC3 centerFace = Algo::Surface::Geometry::faceCentroidELW<PFP>(map, d.dart, positions);
+		VEC3 centerNormalFace = Algo::Surface::Geometry::newellNormal<PFP>(map, d.dart, positions);
 		
 		computeFace<PFP>(map,d,positions,centerFace,centerNormalFace,vertices,normals);
 		
-		VEC3F volCol = PFP::toVec3f(colorPerXXX[d]);
+		VEC3F volCol = PFP::toVec3f(colorPerXXX[d.dart]);
 
 		unsigned int nbs = vertices.size();
 		// just to have more easy algo further
@@ -193,7 +190,7 @@ void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const V_ATT& posi
 		
 		if (nbs == 3)
 		{
-			buffer.push_back(PFP::toVec3f(centerVolumes[d]));
+			buffer.push_back(PFP::toVec3f(centerVolumes[d.dart]));
 			bufferColors.push_back(PFP::toVec3f(centerFace));
 			bufferNormals.push_back(PFP::toVec3f(centerNormalFace)); // unsused just for fill
 			
@@ -213,7 +210,7 @@ void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const V_ATT& posi
 		{
 			for (unsigned int i=0; i<nbs; ++i)
 			{
-				buffer.push_back(PFP::toVec3f(centerVolumes[d]));
+				buffer.push_back(PFP::toVec3f(centerVolumes[d.dart]));
 				bufferColors.push_back(PFP::toVec3f(centerFace));
 				bufferNormals.push_back(PFP::toVec3f(centerNormalFace)); // unsused just for fill
 
@@ -230,8 +227,8 @@ void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const V_ATT& posi
 				bufferColors.push_back(volCol);
 			}
 		}
-	}
-
+	});
+//	,false,thread); ????
 
 	m_nbTris = buffer.size()/4;
 
@@ -255,13 +252,14 @@ void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const V_ATT& posi
 
 	buffer.clear();
 
-	TraversorCell<typename PFP::MAP, PFP::MAP::EDGE_OF_PARENT> traEdge(map);
-	for (Dart d = traEdge.begin(); d != traEdge.end(); d = traEdge.next())
+//	TraversorCell<typename PFP::MAP, PFP::MAP::EDGE_OF_PARENT> traEdge(map);
+	foreach_cell<PFP::MAP::EDGE_OF_PARENT>(map, [&] (Cell<PFP::MAP::EDGE_OF_PARENT> c)
 	{
-			buffer.push_back(PFP::toVec3f(centerVolumes[d]));
-			buffer.push_back(PFP::toVec3f(positions[d]));
-			buffer.push_back(PFP::toVec3f(positions[map.phi1(d)]));
-	}
+			buffer.push_back(PFP::toVec3f(centerVolumes[c.dart]));
+			buffer.push_back(PFP::toVec3f(positions[c.dart]));
+			buffer.push_back(PFP::toVec3f(positions[map.phi1(c)]));
+	});
+	//	,false,thread); ????
 
 	m_nbLines = buffer.size()/3;
 
@@ -285,10 +283,11 @@ template<typename PFP, typename EMBV>
 void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const EMBV& positions)
 {
 	typedef typename EMBV::DATA_TYPE VEC3;
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::REAL REAL;
 	typedef typename Geom::Vec3f VEC3F;
 
-	VolumeAutoAttribute<VEC3> centerVolumes(map, "centerVolumes");
+	VolumeAutoAttribute<VEC3, MAP> centerVolumes(map, "centerVolumes");
 	Algo::Volume::Geometry::Parallel::computeCentroidELWVolumes<PFP>(map, positions, centerVolumes);
 
 	std::vector<VEC3F> buffer;
@@ -304,9 +303,9 @@ void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const EMBV& posit
 	std::vector<VEC3> vertices;
 	bufferNormals.reserve(20);
 
-	TraversorCell<typename PFP::MAP, PFP::MAP::FACE_OF_PARENT> traFace(map);
-
-	for (Dart d = traFace.begin(); d != traFace.end(); d = traFace.next())
+//	TraversorCell<MAP, MAP::FACE_OF_PARENT> traFace(map);
+//	for (Dart d = traFace.begin(); d != traFace.end(); d = traFace.next())
+	foreach_cell<MAP::FACE_OF_PARENT>(map, [&] (Cell<MAP::FACE_OF_PARENT> d)
 	{
 		// compute normals
 		VEC3 centerFace = Algo::Surface::Geometry::faceCentroidELW<PFP>(map, d, positions);
@@ -361,7 +360,7 @@ void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const EMBV& posit
 				bufferColors.push_back(m_globalColor);
 			}
 		}
-	}
+	}); // false,thread) ???
 	
 	m_nbTris = buffer.size()/4;
 
@@ -385,13 +384,14 @@ void ExplodeVolumeRender::updateSmooth(typename PFP::MAP& map, const EMBV& posit
 
 	buffer.clear();
 
-	TraversorCell<typename PFP::MAP, PFP::MAP::EDGE_OF_PARENT> traEdge(map);
-	for (Dart d = traEdge.begin(); d != traEdge.end(); d = traEdge.next())
+//	TraversorCell<typename PFP::MAP, PFP::MAP::EDGE_OF_PARENT> traEdge(map);
+//	for (Dart d = traEdge.begin(); d != traEdge.end(); d = traEdge.next())
+	foreach_cell<MAP::EDGE_OF_PARENT>(map, [&] (Cell<MAP::EDGE_OF_PARENT> c)
 	{
-			buffer.push_back(PFP::toVec3f(centerVolumes[d]));
-			buffer.push_back(PFP::toVec3f(positions[d]));
-			buffer.push_back(PFP::toVec3f(positions[map.phi1(d)]));
-	}
+			buffer.push_back(PFP::toVec3f(centerVolumes[c.dart]));
+			buffer.push_back(PFP::toVec3f(positions[c.dart]));
+			buffer.push_back(PFP::toVec3f(positions[map.phi1(c.dart)]));
+	});
 
 	m_nbLines = buffer.size()/3;
 
@@ -423,18 +423,17 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const V_ATT& positi
 
 	if (m_smooth)
 	{
-
 		updateSmooth<PFP>(map,positions,colorPerXXX);
 		return;
 	}
 
-
     //typedef typename PFP::VEC3 VEC3;
 	typedef typename V_ATT::DATA_TYPE VEC3;
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::REAL REAL;
 	typedef Geom::Vec3f VEC3F;
 
-	VolumeAutoAttribute<VEC3> centerVolumes(map, "centerVolumes");
+	VolumeAutoAttribute<VEC3, MAP> centerVolumes(map, "centerVolumes");
 	Algo::Volume::Geometry::Parallel::computeCentroidELWVolumes<PFP>(map, positions, centerVolumes);
 
 	std::vector<VEC3F> buffer;
@@ -444,14 +443,11 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const V_ATT& positi
 
 	bufferColors.reserve(16384);
 
-	TraversorCell<typename PFP::MAP, PFP::MAP::FACE_OF_PARENT> traFace(map);
-
-	for (Dart d = traFace.begin(); d != traFace.end(); d = traFace.next())
+//	TraversorCell<MAP, MAP::FACE_OF_PARENT> traFace(map);
+	foreach_cell<MAP::FACE_OF_PARENT>(map, [&] (Cell<MAP::FACE_OF_PARENT> d)
 	{
-
-
-		VEC3F centerFace = PFP::toVec3f(Algo::Surface::Geometry::faceCentroidELW<PFP>(map, d, positions));
-		VEC3F volColor = PFP::toVec3f(colorPerXXX[d]);
+		VEC3F centerFace = PFP::toVec3f(Algo::Surface::Geometry::faceCentroidELW<PFP>(map, d.dart, positions));
+		VEC3F volColor = PFP::toVec3f(colorPerXXX[d.dart]);
 		
 		Dart b = d;
 		Dart c = map.phi1(b);
@@ -459,7 +455,7 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const V_ATT& positi
 		
 		if (map.phi1(a) == d)
 		{
-			buffer.push_back(PFP::toVec3f(centerVolumes[d]));
+			buffer.push_back(PFP::toVec3f(centerVolumes[d.dart]));
 			bufferColors.push_back(centerFace);
 			
 			buffer.push_back(PFP::toVec3f(positions[b]));
@@ -476,7 +472,7 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const V_ATT& positi
 			// loop to cut a polygon in triangle on the fly (ceter point method)
 			do
 			{
-				buffer.push_back(PFP::toVec3f(centerVolumes[d]));
+				buffer.push_back(PFP::toVec3f(centerVolumes[d.dart]));
 				bufferColors.push_back(centerFace);
 				
 				buffer.push_back(centerFace);
@@ -490,7 +486,7 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const V_ATT& positi
 				c = map.phi1(b);
 			} while (b != d);
 		}
-	}
+	});
 
 	m_nbTris = buffer.size()/4;
 
@@ -508,13 +504,13 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const V_ATT& positi
 
 	buffer.clear();
 
-	TraversorCell<typename PFP::MAP, PFP::MAP::EDGE_OF_PARENT> traEdge(map);
-	for (Dart d = traEdge.begin(); d != traEdge.end(); d = traEdge.next())
-	{
-			buffer.push_back(PFP::toVec3f(centerVolumes[d]));
-			buffer.push_back(PFP::toVec3f(positions[d]));
-			buffer.push_back(PFP::toVec3f(positions[map.phi1(d)]));
-	}
+//	TraversorCell<typename PFP::MAP, PFP::MAP::EDGE_OF_PARENT> traEdge(map);
+//	for (Dart d = traEdge.begin(); d != traEdge.end(); d = traEdge.next())
+	foreach_cell<MAP::EDGE_OF_PARENT>(map, [&] (Cell<MAP::EDGE_OF_PARENT> c)
+	{			buffer.push_back(PFP::toVec3f(centerVolumes[c.dart]));
+			buffer.push_back(PFP::toVec3f(positions[c.dart]));
+			buffer.push_back(PFP::toVec3f(positions[map.phi1(c)]));
+	}); // false,thread ???
 
 	m_nbLines = buffer.size()/3;
 
@@ -543,10 +539,11 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const EMBV& positio
 	}
 
 	typedef typename EMBV::DATA_TYPE VEC3;
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::REAL REAL;
 	typedef Geom::Vec3f VEC3F;
 
-	VolumeAutoAttribute<VEC3> centerVolumes(map, "centerVolumes");
+	VolumeAutoAttribute<VEC3, MAP> centerVolumes(map, "centerVolumes");
 	Algo::Volume::Geometry::Parallel::computeCentroidELWVolumes<PFP>(map, positions, centerVolumes);
 
 	std::vector<VEC3F> buffer;
@@ -555,9 +552,8 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const EMBV& positio
 	std::vector<VEC3F> bufferColors;
 	bufferColors.reserve(16384);
 
-	TraversorCell<typename PFP::MAP, PFP::MAP::FACE_OF_PARENT> traFace(map);
-
-	for (Dart d = traFace.begin(); d != traFace.end(); d = traFace.next())
+//	TraversorCell<MAP, MAP::FACE_OF_PARENT> traFace(map);
+	foreach_cell<MAP::FACE_OF_PARENT>(map, [&] (Cell<MAP::FACE_OF_PARENT> d)
 	{
 		VEC3F centerFace = PFP::toVec3f(Algo::Surface::Geometry::faceCentroidELW<PFP>(map, d, positions));
 
@@ -598,7 +594,7 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const EMBV& positio
 				c = map.phi1(b);
 			} while (b != d);
 		}
-	}
+	});
 
 
 	m_nbTris = buffer.size()/4;
@@ -617,13 +613,13 @@ void ExplodeVolumeRender::updateData(typename PFP::MAP& map, const EMBV& positio
 
 	buffer.clear();
 
-	TraversorCell<typename PFP::MAP, PFP::MAP::EDGE_OF_PARENT> traEdge(map);
-	for (Dart d = traEdge.begin(); d != traEdge.end(); d = traEdge.next())
+//	TraversorCell<typename PFP::MAP, PFP::MAP::EDGE_OF_PARENT> traEdge(map);
+	foreach_cell<MAP::EDGE_OF_PARENT>(map, [&] (Cell<MAP::EDGE_OF_PARENT> c)
 	{
-			buffer.push_back(PFP::toVec3f(centerVolumes[d]));
-			buffer.push_back(PFP::toVec3f(positions[d]));
-			buffer.push_back(PFP::toVec3f(positions[map.phi1(d)]));
-	}
+			buffer.push_back(PFP::toVec3f(centerVolumes[c.dart]));
+			buffer.push_back(PFP::toVec3f(positions[c.dart]));
+			buffer.push_back(PFP::toVec3f(positions[map.phi1(c)]));
+	});
 
 	m_nbLines = buffer.size()/3;
 

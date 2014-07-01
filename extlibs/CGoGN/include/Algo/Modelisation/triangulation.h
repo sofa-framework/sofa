@@ -57,7 +57,7 @@ protected:
 	class VertexPoly;
 
 	// multiset typedef for simple writing
-	typedef std::multiset< VertexPoly,VertexPoly> VPMS;
+	typedef std::multiset<VertexPoly, VertexPoly> VPMS;
 	typedef typename VPMS::iterator VMPSITER;
 	typedef NoTypeNameAttribute<VMPSITER> EarAttr ;
 
@@ -85,9 +85,9 @@ protected:
 protected:
 	typename PFP::MAP& m_map;
 
-	VertexAutoAttribute<EarAttr> m_dartEars;
+	VertexAutoAttribute<EarAttr, MAP> m_dartEars;
 
-	VertexAttribute<VEC3> m_position;
+	VertexAttribute<VEC3, MAP> m_position;
 
 	VPMS m_ears;
 
@@ -101,7 +101,7 @@ public:
 
 	EarTriangulation(MAP& map) : m_map(map), m_dartEars(map)
 	{
-		m_position = map.template getAttribute<VEC3, VERTEX>("position");
+		m_position = map.template getAttribute<VEC3, VERTEX, MAP>("position");
 	}
 
 //	void trianguleFace(Dart d, DartMarker& mark);
@@ -112,7 +112,7 @@ public:
 
 } // namespace Modelisation
 
-}
+} // namespace Surface
 
 } // namespace Algo
 

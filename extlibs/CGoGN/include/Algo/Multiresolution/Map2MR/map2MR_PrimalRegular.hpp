@@ -73,7 +73,7 @@ void Map2MR<PFP>::addNewLevel(bool triQuad, bool embedNewVertices)
 	m_map.setCurrentLevel(m_map.getMaxLevel()) ;
 
 	// cut edges
-	TraversorE<typename PFP::MAP> travE(m_map) ;
+	TraversorE<MAP> travE(m_map) ;
 	for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 	{
 //		if(!shareVertexEmbeddings && embedNewVertices)
@@ -95,7 +95,7 @@ void Map2MR<PFP>::addNewLevel(bool triQuad, bool embedNewVertices)
 	}
 
 	// split faces
-	TraversorF<typename PFP::MAP> travF(m_map) ;
+	TraversorF<MAP> travF(m_map) ;
 	for (Dart d = travF.begin(); d != travF.end(); d = travF.next())
 	{
 		Dart old = d ;
@@ -163,11 +163,11 @@ void Map2MR<PFP>::addNewLevelSqrt3()
 	m_map.setCurrentLevel(m_map.getMaxLevel()) ;
 
 	//split faces
-	TraversorF<typename PFP::MAP> t(m_map) ;
+	TraversorF<MAP> t(m_map) ;
 	for (Dart dit = t.begin(); dit != t.end(); dit = t.next())
 	{
 		//if it is an even level (triadic refinement) and a boundary face
-		if((m_map.getCurrentLevel()%2 == 0) && m_map.isBoundaryFace(dit))
+		if((m_map.getCurrentLevel()%2 == 0) && m_map.isFaceIncidentToBoundary(dit))
 		{
 			//find the boundary edge
 			Dart df = m_map.findBoundaryEdgeOfFace(dit);
@@ -225,7 +225,7 @@ void Map2MR<PFP>::addNewLevelSqrt2()
 	m_map.setCurrentLevel(m_map.getMaxLevel()) ;
 
 	//split faces
-	TraversorF<typename PFP::MAP> t(m_map) ;
+	TraversorF<MAP> t(m_map) ;
 	for (Dart dit = t.begin(); dit != t.end(); dit = t.next())
 	{
 		Dart d1 = m_map.phi1(dit);
@@ -262,7 +262,6 @@ void Map2MR<PFP>::analysis()
 
 	for(unsigned int i = 0; i < analysisFilters.size(); ++i)
 		(*analysisFilters[i])() ;
-
 }
 
 template <typename PFP>
@@ -279,7 +278,7 @@ void Map2MR<PFP>::synthesis()
 template <typename PFP>
 void Map2MR<PFP>::addLevelFront()
 {
-	DartMarker md(m_map);
+	DartMarker<MAP> md(m_map);
 
 	m_map.addLevelFront() ;
 	m_map.duplicateDarts(0);
@@ -290,7 +289,7 @@ void Map2MR<PFP>::addLevelFront()
 
 	//look for an irregular vertex
 
-	TraversorV<typename PFP::MAP> tv(m_map);
+	TraversorV<MAP> tv(m_map);
 	bool found = false;
 	for(Dart d = tv.begin() ; !found && d != tv.end() ; d = tv.next())
 	{
@@ -367,7 +366,6 @@ void Map2MR<PFP>::import(Algo::Surface::Import::QuadTree& qt)
 
 	std::cout << "..done" << std::endl ;
 }
-
 
 } // namespace Regular
 

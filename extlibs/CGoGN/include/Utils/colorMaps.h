@@ -56,7 +56,7 @@ Geom::Vec3f color_map_blue_white_red(float x);
 Geom::Vec3f color_map_cyan_white_red(float x);
 
 /**
- * Create a table of color using function (param between 0 & 1
+ * Create a table of color using function (param between 0 & 1)
  * @param table table of color to fill
  * @param nb size of table
  * @param f the function (color_map_xxxx)

@@ -59,7 +59,7 @@ void Approximator_ColorNaive<PFP>::approximate(Dart d)
 template <typename PFP>
 bool Approximator_ColorQEMext<PFP>::init()
 {
-	m_quadric = this->m_map.template getAttribute<Utils::QuadricNd<REAL,6>, VERTEX>("QEMext-quadric") ;
+	m_quadric = this->m_map.template getAttribute<Utils::QuadricNd<REAL,6>, VERTEX, MAP>("QEMext-quadric") ;
 	// Does not require to be valid (if it is not, altenatives will be used).
 
 	if(this->m_predictor)
@@ -171,7 +171,7 @@ void Approximator_ColorQEMext<PFP>::approximate(Dart d)
 template <typename PFP>
 bool Approximator_GeomColOpt<PFP>::init()
 {
-	m_quadric = this->m_map.template getAttribute<Utils::Quadric<REAL>, VERTEX>("QEMquadric") ;
+	m_quadric = this->m_map.template getAttribute<Utils::Quadric<REAL>, VERTEX, MAP>("QEMquadric") ;
 	// Does not require to be valid (if it is not, altenatives will be used).
 
 	if(this->m_predictor)

@@ -33,15 +33,18 @@ namespace CGoGN
 /**
 * The class of 2-GMap
 */
-class GMap2 : public GMap1
+template <typename MAP_IMPL>
+class GMap2 : public GMap1<MAP_IMPL>
 {
 protected:
-	AttributeMultiVector<Dart>* m_beta2 ;
+	// protected copy constructor to prevent the copy of map
+	GMap2(const GMap2<MAP_IMPL>& m):GMap1<MAP_IMPL>(m) {}
 
 	void init() ;
 
 public:
-	typedef GMap1 ParentMap;
+	typedef MAP_IMPL IMPL;
+	typedef GMap1<MAP_IMPL> ParentMap;
 
 	inline static unsigned int ORBIT_IN_PARENT(unsigned int o) { return o+5; }
 
@@ -60,15 +63,12 @@ public:
 
 	virtual void clear(bool removeAttrib);
 
-	virtual void update_topo_shortcuts();
-
-	virtual void compactTopoRelations(const std::vector<unsigned int>& oldnew);
+	virtual unsigned int getNbInvolutions() const;
+	virtual unsigned int getNbPermutations() const;
 
 	/*! @name Basic Topological Operators
 	 * Access and Modification
 	 *************************************************************************/
-
-	virtual Dart newDart();
 
 	Dart beta2(Dart d) const;
 
@@ -102,23 +102,23 @@ public:
 	 *  @param withBoudary create the face and its boundary (default true)
 	 *  @return return a dart of the face
 	 */
-	virtual Dart newFace(unsigned int nbEdges, bool withBoundary = true) ;
+	Dart newFace(unsigned int nbEdges, bool withBoundary = true) ;
 
 	//! Delete a face erasing all its darts
 	/*! @param d a dart of the face
 	 */
-	virtual void deleteFace(Dart d);
+	void deleteFace(Dart d);
 
 	//! Delete a connected component of the map
 	/*! @param d a dart of the connected component
 	 */
-	virtual void deleteCC(Dart d) ;
+	void deleteCC(Dart d) ;
 
 	//! Fill a hole with a face
 	/*! \pre Dart d is boundary marked
 	 *  @param d a dart of the face to fill
 	 */
-	virtual void fillHole(Dart d) ;
+	void fillHole(Dart d) ;
 	//@}
 
 	/*! @name Topological Operators
@@ -131,7 +131,7 @@ public:
 	 *  @param d first dart in vertex v
 	 *  @param e second dart in vertex v
 	 */
-	virtual void splitVertex(Dart d, Dart e);
+	void splitVertex(Dart d, Dart e);
 
 	//! Delete the vertex of d (works only for internal vertices)
 	/*! Does not create a hole -> all the faces
@@ -139,19 +139,19 @@ public:
 	 *  @param d a dart of the vertex to delete
 	 *  @return a dart of the resulting face (NIL if the deletion has not been executed)
 	 */
-	virtual Dart deleteVertex(Dart d) ;
+	Dart deleteVertex(Dart d) ;
 
 	//! Cut the edge of d by inserting a new vertex
 	/*! @param d a dart of the edge to cut
 	 *  @return a dart of the new vertex
 	 */
-	virtual Dart cutEdge(Dart d);
+	Dart cutEdge(Dart d);
 
 	//! Undo the cut of the edge of d
 	/*! @param d a dart of the edge to uncut
 	 *  @return true if the uncut has been executed, false otherwise
 	 */
-	virtual bool uncutEdge(Dart d);
+	bool uncutEdge(Dart d);
 
 	//! Collapse an edge (that is deleted) possibly merging its vertices
 	/*! If delDegenerateFaces is true, the method checks that no degenerate
@@ -163,7 +163,7 @@ public:
 	 *  @param delDegenerateFaces a boolean (default to true)
 	 *  @return a dart of the resulting vertex
 	 */
-	virtual Dart collapseEdge(Dart d, bool delDegenerateFaces = true);
+	Dart collapseEdge(Dart d, bool delDegenerateFaces = true);
 
 	/**
 	 * Flip the edge of d (rotation in phi1 order)
@@ -171,7 +171,7 @@ public:
 	 * @param d a dart of the edge to flip
 	 * @return true if the flip has been executed, false otherwise
 	 */
-	virtual bool flipEdge(Dart d);
+	bool flipEdge(Dart d);
 
 	/**
 	 * Flip the edge of d (rotation in phi_1 order)
@@ -179,7 +179,7 @@ public:
 	 * @param d a dart of the edge to flip
 	 * @return true if the flipBack has been executed, false otherwise
 	 */
-	virtual bool flipBackEdge(Dart d);
+	bool flipBackEdge(Dart d);
 
 //	//! Insert an edge after a dart in the vertex orbit
 //	/*! \pre Dart d and e MUST be different and belong to distinct face
@@ -201,7 +201,7 @@ public:
 	 *  @param e a dart of the second face
 	 *  @param withBoundary: if false, faces must have beta2 fixed points (only for construction: import/primitives)
 	 */
-	virtual void sewFaces(Dart d, Dart e, bool withBoundary = true);
+	void sewFaces(Dart d, Dart e, bool withBoundary = true);
 
 	//! Unsew two faces
 	/*! \pre Edge of dart d MUST NOT be a boundary edge
@@ -222,7 +222,7 @@ public:
 	 *  @param d first dart in face f
 	 *  @param e second dart in face f
 	 */
-	virtual void splitFace(Dart d, Dart e);
+	void splitFace(Dart d, Dart e);
 
 	//! Merge the two faces incident to the edge of d.
 	/*! Works only for non-boundary edges.
@@ -230,7 +230,7 @@ public:
 	 *  @param d a dart in the first face
 	 *  @return true if the merge has been executed, false otherwise
 	 */
-	virtual bool mergeFaces(Dart d);
+	bool mergeFaces(Dart d);
 
 	/**
 	 * Extract a pair of sewed triangles and sew their adjacent faces
@@ -255,13 +255,13 @@ public:
 	 *  @param e a dart of the second face
 	 *  @return true if the merge has been executed, false otherwise
 	 */
-	virtual bool mergeVolumes(Dart d, Dart e);
+	bool mergeVolumes(Dart d, Dart e);
 
 	//!
 	/*!
 	 *
 	 */
-	virtual void splitSurface(std::vector<Dart>& vd, bool firstSideClosed = true, bool secondSideClosed = true);
+	void splitSurface(std::vector<Dart>& vd, bool firstSideClosed = true, bool secondSideClosed = true);
 
 	//@}
 
@@ -341,9 +341,9 @@ public:
 	int checkFaceDegree(Dart d, unsigned int le) const;
 
 	/**
-	 * tell if the face of d is on the boundary of the map
+	 * tell if the face of d is adjacent to the boundary of the map
 	 */
-	bool isBoundaryFace(Dart d) const;
+	bool isBoundaryAdjacentFace(Dart d) const;
 
 	//! Test if dart d and e belong to the same oriented volume
 	/*! @param d a dart
@@ -394,82 +394,97 @@ public:
 	 *************************************************************************/
 
 	//@{
+	//! Apply a function on every dart of an orbit
+	/*! @param c a cell
+	 *  @param f a function
+	 */
+	template <unsigned int ORBIT, typename FUNC>
+	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread = 0) const ;
+//	template <unsigned int ORBIT, typename FUNC>
+//	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC& f, unsigned int thread = 0) const ;
+
 	/**
 	* Apply a functor on each dart of an oriented vertex
 	* @param d a dart of the oriented vertex
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_oriented_vertex(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_oriented_vertex(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
+	template <typename FUNC>
+	void foreach_dart_of_oriented_vertex(Dart d, FUNC& f, unsigned int thread = 0) const;
 
 	/**
 	* Apply a functor on each dart of a vertex
 	* @param d a dart of the vertex
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_vertex(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_vertex(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
+	template <typename FUNC>
+	void foreach_dart_of_vertex(Dart d, FUNC& f, unsigned int thread = 0) const;
 
 	/**
 	* Apply a functor on each dart of an oriented edge
 	* @param d a dart of the oriented edge
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_oriented_edge(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_oriented_edge(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
+	template <typename FUNC>
+	void foreach_dart_of_oriented_edge(Dart d, FUNC& f, unsigned int thread = 0) const;
 
 	/**
 	* Apply a functor on each dart of an edge
 	* @param d a dart of the oriented edge
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_edge(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_edge(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
+	template <typename FUNC>
+	void foreach_dart_of_edge(Dart d, FUNC& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on every dart of an oriented face
 	/*! @param d a dart of the oriented face
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_oriented_face(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_oriented_face(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
+	template <typename FUNC>
+	void foreach_dart_of_oriented_face(Dart d, FUNC& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on every dart of a face
 	/*! @param d a dart of the face
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_face(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_face(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
+	template <typename FUNC>
+	void foreach_dart_of_face(Dart d, FUNC& f, unsigned int thread = 0) const;
 
-	//! Apply a functor on every dart of an oriented convex component
-	/*! @param d a dart of the oriented convex component
+	//! Apply a functor on every dart of a volume
+	/*! @param d a dart of the volume
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_oriented_cc(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_oriented_cc(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
-
-	//! Apply a functor on every dart of a convex component
-	/*! @param d a dart of the convex component
-	 *  @param f the functor to apply
-	 */
-	bool foreach_dart_of_cc(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_cc(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
-
+	template <typename FUNC>
+	void foreach_dart_of_volume(Dart d, FUNC& f, unsigned int thread = 0) const;
 
 	/**
 	* Apply a functor on each dart of a vertex
 	* @param d a dart of the vertex
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_vertex1(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_vertex1(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
+	template <typename FUNC>
+	void foreach_dart_of_vertex1(Dart d, FUNC& f, unsigned int thread = 0) const;
 
 	/**
 	* Apply a functor on each dart of an edge
 	* @param d a dart of the oriented edge
 	* @param fonct functor obj ref
 	*/
-	bool foreach_dart_of_edge1(Dart d, FunctorType& fonct, unsigned int thread = 0) const;
-//	bool foreach_dart_of_edge1(Dart d, FunctorConstType& fonct, unsigned int thread = 0) const;
+	template <typename FUNC>
+	void foreach_dart_of_edge1(Dart d, FUNC& f, unsigned int thread = 0) const;
+
+	//! Apply a functor on every dart of an oriented convex component
+	/*! @param d a dart of the oriented convex component
+	 *  @param f the functor to apply
+	 */
+	template <typename FUNC>
+	void foreach_dart_of_oriented_cc(Dart d, FUNC& f, unsigned int thread = 0) const;
+
+	//! Apply a functor on every dart of a convex component
+	/*! @param d a dart of the convex component
+	 *  @param f the functor to apply
+	 */
+	template <typename FUNC>
+	void foreach_dart_of_cc(Dart d, FUNC& f, unsigned int thread = 0) const;
 
 	//@}
 

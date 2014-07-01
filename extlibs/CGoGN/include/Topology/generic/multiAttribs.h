@@ -25,6 +25,8 @@
 #ifndef __MULTI2ATTRIBS_H_
 #define __MULTI2ATTRIBS_H_
 
+#include "Topology/generic/cells.h"
+
 namespace CGoGN
 {
 
@@ -97,16 +99,16 @@ double length(const T& v)
 }
 
 
-template <typename T1, typename T2>
+template <typename T1, typename T2, typename MAP>
 class Vertex2Attributes
 {
-	VertexAttribute<T1>& m_h1;
-	VertexAttribute<T2>& m_h2;
+	VertexAttribute<T1, MAP>& m_h1;
+	VertexAttribute<T2, MAP>& m_h2;
 public:
 	typedef Compo2Type<T1,T2> DATA_TYPE;
 	typedef RefCompo2Type<T1,T2> REF_DATA_TYPE;
 
-	Vertex2Attributes(VertexAttribute<T1>& h1, VertexAttribute<T2>& h2):
+	Vertex2Attributes(VertexAttribute<T1, MAP>& h1, VertexAttribute<T2, MAP>& h2):
 		m_h1(h1), m_h2(h2) {}
 
 	RefCompo2Type<T1,T2> operator[](unsigned int a)
@@ -114,7 +116,7 @@ public:
 		return RefCompo2Type<T1,T2>(m_h1[a],m_h2[a]);
 	}
 
-	RefCompo2Type<T1,T2> operator[](Dart d)
+	RefCompo2Type<T1,T2> operator[](Vertex d)
 	{
 		return RefCompo2Type<T1,T2>(m_h1[d],m_h2[d]);
 	}
@@ -124,7 +126,7 @@ public:
 		return RefCompo2Type<T1,T2>(m_h1[a],m_h2[a]);
 	}
 
-	const RefCompo2Type<T1,T2> operator[](Dart d) const
+	const RefCompo2Type<T1,T2> operator[](Vertex d) const
 	{
 		return RefCompo2Type<T1,T2>(m_h1[d],m_h2[d]);
 	}
@@ -132,18 +134,16 @@ public:
 	static unsigned int getOrbit() { return VERTEX; }
 };
 
-
-
-template <typename T1, typename T2>
+template <typename T1, typename T2, typename MAP>
 class Edge2Attributes
 {
-	EdgeAttribute<T1>& m_h1;
-	EdgeAttribute<T2>& m_h2;
+	EdgeAttribute<T1, MAP>& m_h1;
+	EdgeAttribute<T2, MAP>& m_h2;
 public:
 	typedef Compo2Type<T1,T2> DATA_TYPE;
 	typedef RefCompo2Type<T1,T2> REF_DATA_TYPE;
 
-	Edge2Attributes(EdgeAttribute<T1>& h1, EdgeAttribute<T2>& h2):
+	Edge2Attributes(EdgeAttribute<T1, MAP>& h1, EdgeAttribute<T2, MAP>& h2):
 		m_h1(h1), m_h2(h2) {}
 
 	RefCompo2Type<T1,T2> operator[](unsigned int a)
@@ -151,7 +151,7 @@ public:
 		return RefCompo2Type<T1,T2>(m_h1[a],m_h2[a]);
 	}
 
-	RefCompo2Type<T1,T2> operator[](Dart d)
+	RefCompo2Type<T1,T2> operator[](Edge d)
 	{
 		return RefCompo2Type<T1,T2>(m_h1[d],m_h2[d]);
 	}
@@ -161,7 +161,7 @@ public:
 		return RefCompo2Type<T1,T2>(m_h1[a],m_h2[a]);
 	}
 
-	const RefCompo2Type<T1,T2> operator[](Dart d) const
+	const RefCompo2Type<T1,T2> operator[](Edge d) const
 	{
 		return RefCompo2Type<T1,T2>(m_h1[d],m_h2[d]);
 	}
@@ -169,18 +169,16 @@ public:
 	static unsigned int getOrbit() { return EDGE; }
 };
 
-
-
-template <typename T1, typename T2>
+template <typename T1, typename T2, typename MAP>
 class Face2Attributes
 {
-	FaceAttribute<T1>& m_h1;
-	FaceAttribute<T2>& m_h2;
+	FaceAttribute<T1, MAP>& m_h1;
+	FaceAttribute<T2, MAP>& m_h2;
 public:
 	typedef Compo2Type<T1,T2> DATA_TYPE;
 	typedef RefCompo2Type<T1,T2> REF_DATA_TYPE;
 
-	Face2Attributes(FaceAttribute<T1>& h1, FaceAttribute<T2>& h2):
+	Face2Attributes(FaceAttribute<T1, MAP>& h1, FaceAttribute<T2, MAP>& h2):
 		m_h1(h1), m_h2(h2) {}
 
 	RefCompo2Type<T1,T2> operator[](unsigned int a)
@@ -188,7 +186,7 @@ public:
 		return RefCompo2Type<T1,T2>(m_h1[a],m_h2[a]);
 	}
 
-	RefCompo2Type<T1,T2> operator[](Dart d)
+	RefCompo2Type<T1,T2> operator[](Face d)
 	{
 		return RefCompo2Type<T1,T2>(m_h1[d],m_h2[d]);
 	}
@@ -198,7 +196,7 @@ public:
 		return RefCompo2Type<T1,T2>(m_h1[a],m_h2[a]);
 	}
 
-	const RefCompo2Type<T1,T2> operator[](Dart d) const
+	const RefCompo2Type<T1,T2> operator[](Face d) const
 	{
 		return RefCompo2Type<T1,T2>(m_h1[d],m_h2[d]);
 	}
@@ -206,16 +204,16 @@ public:
 	static unsigned int getOrbit() { return FACE; }
 };
 
-template <typename T1, typename T2>
+template <typename T1, typename T2, typename MAP>
 class Volume2Attributes
 {
-	VolumeAttribute<T1>& m_h1;
-	VolumeAttribute<T2>& m_h2;
+	VolumeAttribute<T1, MAP>& m_h1;
+	VolumeAttribute<T2, MAP>& m_h2;
 public:
 	typedef Compo2Type<T1,T2> DATA_TYPE;
 	typedef RefCompo2Type<T1,T2> REF_DATA_TYPE;
 
-	 Volume2Attributes(VolumeAttribute<T1>& h1, VolumeAttribute<T2>& h2):
+	 Volume2Attributes(VolumeAttribute<T1, MAP>& h1, VolumeAttribute<T2, MAP>& h2):
 		m_h1(h1), m_h2(h2) {}
 
 	RefCompo2Type<T1,T2> operator[](unsigned int a)
@@ -223,7 +221,7 @@ public:
 		return RefCompo2Type<T1,T2>(m_h1[a],m_h2[a]);
 	}
 
-	RefCompo2Type<T1,T2> operator[](Dart d)
+	RefCompo2Type<T1,T2> operator[](Vol d)
 	{
 		return RefCompo2Type<T1,T2>(m_h1[d],m_h2[d]);
 	}
@@ -233,7 +231,7 @@ public:
 		return RefCompo2Type<T1,T2>(m_h1[a],m_h2[a]);
 	}
 
-	const RefCompo2Type<T1,T2> operator[](Dart d) const
+	const RefCompo2Type<T1,T2> operator[](Vol d) const
 	{
 		return RefCompo2Type<T1,T2>(m_h1[d],m_h2[d]);
 	}
@@ -245,15 +243,12 @@ public:
 
 /// implementation
 
-
 template < typename T1, typename T2>
 Compo2Type<T1,T2>::Compo2Type(const RefCompo2Type<T1,T2>& v)
-
 {
 	m_v1 = v.m_v1;
 	m_v2 = v.m_v2;
 }
-
 
 template < typename T1, typename T2>
 Compo2Type<T1,T2>& Compo2Type<T1,T2>::operator =(const Compo2Type<T1,T2>& comp)
@@ -263,7 +258,6 @@ Compo2Type<T1,T2>& Compo2Type<T1,T2>::operator =(const Compo2Type<T1,T2>& comp)
 	return *this;
 }
 
-
 template < typename T1, typename T2>
 Compo2Type<T1,T2> Compo2Type<T1,T2>::operator+(const Compo2Type<T1,T2>& v) const
 {
@@ -272,7 +266,6 @@ Compo2Type<T1,T2> Compo2Type<T1,T2>::operator+(const Compo2Type<T1,T2>& v) const
 	res.m_v2 = this->m_v2 + v.m_v2;
 	return res ;
 }
-
 
 template < typename T1, typename T2>
 Compo2Type<T1,T2> Compo2Type<T1,T2>::operator-(const Compo2Type<T1,T2>& v) const
@@ -317,7 +310,6 @@ Compo2Type<T1,T2>& Compo2Type<T1,T2>::operator-=(const Compo2Type<T1,T2>& v)
 	return *this;
 }
 
-
 template < typename T1, typename T2>
 Compo2Type<T1,T2>& Compo2Type<T1,T2>::operator*=(double d)
 {
@@ -334,7 +326,6 @@ Compo2Type<T1,T2>& Compo2Type<T1,T2>::operator/=(double d)
 	return *this;
 }
 
-
 /// Ref version
 
 template < typename T1, typename T2>
@@ -343,7 +334,6 @@ RefCompo2Type<T1,T2>::RefCompo2Type (Compo2Type<T1,T2>& comp):
 	m_v2(comp.m_v2)
 {
 }
-
 
 template < typename T1, typename T2>
 RefCompo2Type<T1,T2>& RefCompo2Type<T1,T2>::operator=(const RefCompo2Type<T1,T2>& v)
@@ -360,7 +350,6 @@ RefCompo2Type<T1,T2>& RefCompo2Type<T1,T2>::operator=(Compo2Type<T1,T2>  v)
 	m_v2 = v.m_v2;
 	return *this;
 }
-
 
 template < typename T1, typename T2>
 Compo2Type<T1,T2> RefCompo2Type<T1,T2>::operator+(const RefCompo2Type<T1,T2>& v) const
@@ -379,7 +368,6 @@ Compo2Type<T1,T2> RefCompo2Type<T1,T2>::operator-(const RefCompo2Type<T1,T2>& v)
 	res.m_v2 = this->m_v2 - v.m_v2;
 	return res ;
 }
-
 
 template < typename T1, typename T2>
 Compo2Type<T1,T2> RefCompo2Type<T1,T2>::operator/(double d) const
@@ -407,7 +395,6 @@ RefCompo2Type<T1,T2>& RefCompo2Type<T1,T2>::operator+=(const RefCompo2Type<T1,T2
 	return *this;
 }
 
-
 template < typename T1, typename T2>
 RefCompo2Type<T1,T2>& RefCompo2Type<T1,T2>::operator-=(const RefCompo2Type<T1,T2>& v)
 {
@@ -415,7 +402,6 @@ RefCompo2Type<T1,T2>& RefCompo2Type<T1,T2>::operator-=(const RefCompo2Type<T1,T2
 	m_v2 -= v.m_v2;
 	return *this;
 }
-
 
 template < typename T1, typename T2>
 RefCompo2Type<T1,T2>& RefCompo2Type<T1,T2>::operator*=(double d)
@@ -432,8 +418,6 @@ RefCompo2Type<T1,T2>& RefCompo2Type<T1,T2>::operator/=(double d)
 	m_v2 /= d;
 	return *this;
 }
-
-
 
 } // namespace CGoGN
 

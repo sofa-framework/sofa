@@ -7,7 +7,6 @@ import numpy.linalg
 # For now only EXPECT_* can be implemented (not EXPECT_* style)
 #
 
-EPSILON = 1e-6
 
 def EXPECT_TRUE(value, message=""):
     if not value:
@@ -24,14 +23,14 @@ def EXPECT_EQ(expected, actual, message=""):
         print "Value:", actual, "Expected:", expected, "-", message
     return expected==actual
 
-def EXPECT_FLOAT_EQ(expected, actual, message=""):
-    test = bool(math.fabs(expected-actual)<EPSILON)
+def EXPECT_FLOAT_EQ(expected, actual, message="", rtol=1e-5, atol=1e-8):
+    test = bool( numpy.isclose( expected, actual, rtol, atol ) )
     if not test:
         print "Value:", actual, "Expected:", expected, "-", message
     return test
 
-def EXPECT_VEC_EQ(expected, actual, message=""):
-    test = bool(numpy.linalg.norm(numpy.array(expected)-numpy.array(actual))<EPSILON)
+def EXPECT_VEC_EQ(expected, actual, message="", rtol=1e-5, atol=1e-8):
+    test = bool( numpy.allclose( expected, actual, rtol, atol ) )
     if not test:
         print "Value:", actual, "Expected:", expected, "-", message
     return test

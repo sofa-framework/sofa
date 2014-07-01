@@ -26,8 +26,8 @@
 #define __MAP2MR_PRIMAL_ADAPT__
 
 #include "Topology/ihmap/ihm2.h"
-#include "Topology/generic/traversorCell.h"
-#include "Topology/generic/traversor2.h"
+#include "Topology/generic/traversor/traversorCell.h"
+#include "Topology/generic/traversor/traversor2.h"
 
 #include <cmath>
 
@@ -63,7 +63,6 @@ protected:
 
 public:
 	IHM2(MAP& map) ;
-
 
     /***************************************************
      *               CELLS INFORMATION                 *
@@ -116,7 +115,6 @@ public:
      * and none of its resulting faces is in turn subdivided to the next level
      */
     bool faceIsSubdividedOnce(Dart d) ;
-
 
 protected:
 	/***************************************************

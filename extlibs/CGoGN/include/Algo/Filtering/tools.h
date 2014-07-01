@@ -41,7 +41,7 @@ namespace Filtering
 {
 
 template <typename PFP>
-float computeHaussdorf(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& originalPosition, const VertexAttribute<typename PFP::VEC3>& position2)
+float computeHaussdorf(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& originalPosition, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position2)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 
@@ -88,7 +88,7 @@ float computeHaussdorf(typename PFP::MAP& map, const VertexAttribute<typename PF
 }
 
 template <typename PFP>
-void computeNoise(typename PFP::MAP& map, long amount, const VertexAttribute<typename PFP::VEC3>& position, VertexAttribute<typename PFP::VEC3>& position2, const VertexAttribute<typename PFP::VEC3>& normal)
+void computeNoise(typename PFP::MAP& map, long amount, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position2, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 
@@ -135,7 +135,7 @@ void computeNoise(typename PFP::MAP& map, long amount, const VertexAttribute<typ
 //Uniform-distributed additive noise
 //TODO do not touch to boundary vertices
 template <typename PFP>
-void computeUnfirmAdditiveNoise(typename PFP::MAP& map, float noiseIntensity, const VertexAttribute<typename PFP::VEC3>& position, VertexAttribute<typename PFP::VEC3>& position2)
+void computeUnfirmAdditiveNoise(typename PFP::MAP& map, float noiseIntensity, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position2)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 
@@ -182,7 +182,7 @@ void computeUnfirmAdditiveNoise(typename PFP::MAP& map, float noiseIntensity, co
 //Gaussian-distributed additive noise
 //TODO do not touch to boundary vertices
 template <typename PFP>
-void computeGaussianAdditiveNoise(typename PFP::MAP& map, float noiseIntensity, const VertexAttribute<typename PFP::VEC3>& position, VertexAttribute<typename PFP::VEC3>& position2)
+void computeGaussianAdditiveNoise(typename PFP::MAP& map, float noiseIntensity, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position2)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 
@@ -252,7 +252,7 @@ namespace Filtering
 {
 
 template <typename PFP>
-void computeNoise(typename PFP::MAP& map, long amount, const VertexAttribute<typename PFP::VEC3>& position, VertexAttribute<typename PFP::VEC3>& position2)
+void computeNoise(typename PFP::MAP& map, long amount, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position2)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 
@@ -329,7 +329,7 @@ void computeNoise(typename PFP::MAP& map, long amount, const VertexAttribute<typ
 
 
 template <typename PFP>
-void computeNoiseGaussian(typename PFP::MAP& map, long amount, const VertexAttribute<typename PFP::VEC3>& position, VertexAttribute<typename PFP::VEC3>& position2)
+void computeNoiseGaussian(typename PFP::MAP& map, long amount, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position2)
 {
     typedef typename PFP::VEC3 VEC3 ;
 

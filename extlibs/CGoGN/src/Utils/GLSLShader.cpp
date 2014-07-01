@@ -28,9 +28,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <algorithm>
 #include "Utils/cgognStream.h"
 
 #include "glm/gtx/inverse_transpose.hpp"
+
 
 namespace CGoGN
 {

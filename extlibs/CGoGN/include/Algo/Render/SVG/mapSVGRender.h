@@ -30,7 +30,7 @@
 #include <sstream>
 
 #include "Utils/svg.h"
-#include "Topology/generic/traversorCell.h"
+#include "Topology/generic/traversor/traversorCell.h"
 
 namespace CGoGN
 {
@@ -49,28 +49,28 @@ namespace SVG
  * @warning no depth ordering
  */
 template <typename PFP>
-void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, unsigned int thread=0);
+void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, unsigned int thread = 0);
 
 /**
  * render colored vertices in a SVGOut
  * @warning no depth ordering
  */
 template <typename PFP>
-void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const VertexAttribute<typename PFP::VEC3>& color, unsigned int thread=0);
+void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& color, unsigned int thread = 0);
 
 /**
  * render edges in a SVGOut
  * @warning no depth ordering
  */
 template <typename PFP>
-void renderEdges(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, unsigned int thread=0);
+void renderEdges(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, unsigned int thread = 0);
 
 /**
  * render colored edges in a SVGOut
  * @warning no depth ordering
  */
 template <typename PFP>
-void renderEdges(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const VertexAttribute<typename PFP::VEC3>& color, unsigned int thread=0);
+void renderEdges(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& color, unsigned int thread = 0);
 
 } // namespace SVG
 

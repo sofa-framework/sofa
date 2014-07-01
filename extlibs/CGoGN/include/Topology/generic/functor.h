@@ -26,16 +26,17 @@
 #define __FUNCTOR_H__
 
 #include "Topology/generic/dart.h"
-#include "Topology/generic/marker.h"
+//#include "Topology/generic/marker.h"
 
-#include "Container/attributeMultiVector.h"
-#include <vector>
+//#include "Container/attributeMultiVector.h"
+//#include <vector>
 
 namespace CGoGN
 {
 
 // Base Class for Functors: object function that is applied to darts
 /********************************************************/
+
 class FunctorType
 {
 public:
@@ -44,16 +45,7 @@ public:
 	virtual bool operator()(Dart d) = 0;
 };
 
-class FunctorConstType
-{
-public:
-	FunctorConstType() {}
-	virtual ~FunctorConstType() {}
-	virtual bool operator()(Dart d) = 0;
-};
 
-// Base Class for Functors that need access to the map
-/********************************************************/
 template <typename MAP>
 class FunctorMap : public virtual FunctorType
 {
@@ -64,17 +56,12 @@ public:
 };
 
 
-template <typename MAP>
-class FunctorConstMap : public virtual FunctorType
-{
-protected:
-	const MAP& m_map ;
-public:
-	FunctorConstMap(const MAP& m): m_map(m) {}
-};
+
+
 
 // Selector functors : return true to select or false to not select a dart
 /********************************************************/
+
 class FunctorSelect
 {
 public:
@@ -245,146 +232,6 @@ public:
 };
 
 
-// Counting Functors : increment its value every time it is applied
-/********************************************************/
-
-class FunctorCount : public virtual FunctorType
-{
-private:
-	unsigned m_count;
-public:
-	FunctorCount(): m_count(0) {}
-	bool operator()(Dart)
-	{
-		m_count++;
-		return false;
-	}
-	unsigned getNb() const { return m_count; }
-	void init() { m_count = 0; }
-	void increment() { ++m_count; }
-};
-
-// Embedding Functors
-/********************************************************/
-
-template <typename MAP, unsigned int ORBIT>
-class FunctorSetEmb : public FunctorMap<MAP>
-{
-protected:
-	unsigned int emb;
-public:
-	FunctorSetEmb(MAP& map, unsigned int e) : FunctorMap<MAP>(map), emb(e)
-	{}
-	bool operator()(Dart d)
-	{
-		this->m_map.template setDartEmbedding<ORBIT>(d, emb);
-		return false;
-	}
-    bool operator()(Cell<ORBIT> c)
-    {
-        this->m_map.template setDartEmbedding(c, emb);
-        return false;
-    }
-	void changeEmb(unsigned int e) { emb = e; }
-};
-
-template <typename MAP, unsigned int ORBIT>
-class FunctorInitEmb : public FunctorMap<MAP>
-{
-protected:
-	unsigned int emb;
-public:
-	FunctorInitEmb(MAP& map) : FunctorMap<MAP>(map), emb(EMBNULL)
-	{}
-	FunctorInitEmb(MAP& map, unsigned int e) : FunctorMap<MAP>(map), emb(e)
-	{}
-	bool operator()(Dart d)
-	{
-		this->m_map.template initDartEmbedding<ORBIT>(d, emb);
-		return false;
-	}
-	void changeEmb(unsigned int e) { emb = e; }
-};
-
-// Functor Check Embedding : to check the embeddings of the given map
-
-template <typename MAP>
-class FunctorCheckEmbedding : public FunctorConstMap<MAP>
-{
-protected:
-	unsigned int orbit;
-	unsigned int emb;
-public:
-	FunctorCheckEmbedding(const MAP& map, unsigned int orb, unsigned int e) : FunctorConstMap<MAP>(map), orbit(orb), emb(e)
-	{}
-
-	bool operator()(Dart d)
-	{
-		return (this->m_map.getEmbedding(orbit, d) != emb);
-	}
-};
-
-
-// Search Functor: look for a given dart when applied
-/********************************************************/
-
-template <typename MAP>
-class FunctorSearch : public FunctorType
-{
-protected:
-	bool m_found;
-	Dart dart;
-public:
-	FunctorSearch(Dart d) : m_found(false), dart(d) {}
-	void setDart(Dart d)
-	{
-		dart = d;
-		m_found = false;
-	}
-	bool operator()(Dart d)
-	{
-		if (d == dart)
-		{
-			m_found = true;
-			return true;
-		}
-		return false;
-	}
-	bool found() { return m_found; }
-};
-
-// Functor Store: to store the traversed darts in a given vector
-/********************************************************/
-
-class FunctorStore : public FunctorType
-{
-protected:
-	std::vector<Dart>& m_vec;
-public:
-	FunctorStore(std::vector<Dart>& vec) : m_vec(vec) {}
-	bool operator()(Dart d)
-	{
-		m_vec.push_back(d);
-		return false;
-	}
-};
-
-
-template <typename MAP>
-class FunctorStoreNotBoundary : public FunctorConstMap<MAP>
-{
-protected:
-	std::vector<Dart>& m_vec;
-public:
-	FunctorStoreNotBoundary(const MAP& map, std::vector<Dart>& vec) : FunctorConstMap<MAP>(map), m_vec(vec) {}
-	bool operator()(Dart d)
-	{
-		if (!this->m_map.template isBoundaryMarked<MAP::DIMENSION>(d))
-			m_vec.push_back(d);
-		return false;
-	}
-};
-
 
 // Multiple Functor: to apply several Functors in turn to a dart
 /********************************************************/
@@ -404,69 +251,6 @@ public:
 };
 
 
-// Marker Functors
-/********************************************************/
-
-template <typename MAP>
-class FunctorMarker : public FunctorMap<MAP>
-{
-protected:
-	Mark m_mark ;
-	AttributeMultiVector<Mark>* m_markTable ;
-public:
-	FunctorMarker(MAP& map, Mark m, AttributeMultiVector<Mark>* mTable) : FunctorMap<MAP>(map), m_mark(m), m_markTable(mTable)
-	{}
-//	Mark getMark() { return m_mark ; }
-} ;
-
-template <typename MAP>
-class FunctorMark : public FunctorMarker<MAP>
-{
-public:
-	FunctorMark(MAP& map, Mark m, AttributeMultiVector<Mark>* mTable) : FunctorMarker<MAP>(map, m, mTable)
-	{}
-	bool operator()(Dart d)
-	{
-		unsigned int d_index = this->m_map.dartIndex(d);
-		this->m_markTable->operator[](d_index).setMark(this->m_mark) ;
-		return false ;
-	}
-} ;
-
-template <typename MAP>
-class FunctorMarkStore : public FunctorMarker<MAP>
-{
-protected:
-	std::vector<unsigned int>& m_markedDarts ;
-public:
-	FunctorMarkStore(MAP& map, Mark m, AttributeMultiVector<Mark>* mTable, std::vector<unsigned int>& marked) :
-		FunctorMarker<MAP>(map, m, mTable),
-		m_markedDarts(marked)
-	{}
-	bool operator()(Dart d)
-	{
-		unsigned int d_index = this->m_map.dartIndex(d);
-		this->m_markTable->operator[](d_index).setMark(this->m_mark) ;
-		m_markedDarts.push_back(d_index) ;
-		return false ;
-	}
-} ;
-
-template <typename MAP>
-class FunctorUnmark : public FunctorMarker<MAP>
-{
-public:
-	FunctorUnmark(MAP& map, Mark m, AttributeMultiVector<Mark>* mTable) : FunctorMarker<MAP>(map, m, mTable)
-	{}
-	bool operator()(Dart d)
-	{
-		unsigned int d_index = this->m_map.dartIndex(d);
-		this->m_markTable->operator[](d_index).unsetMark(this->m_mark) ;
-		return false ;
-	}
-} ;
-
-
 
 //
 // FOR PARALLEL TRAVERSALS
@@ -474,7 +258,7 @@ public:
 
 /**
  * Functor class for parallel::foreach_orbit/cell/dart
- * Overload  run
+ * Overload run
  * Overload duplicate if necessary (no sharing of functors)
  */
 template<typename MAP>
@@ -491,7 +275,7 @@ public:
 	/**
 	 * @return a pointer on a copy of the object.
 	 */
-	virtual FunctorMapThreaded<MAP>* duplicate() const { return NULL;}
+	virtual FunctorMapThreaded<MAP>* duplicate() const { return NULL; }
 
 	/**
 	 * insert your code here:
@@ -500,7 +284,6 @@ public:
 	 */
 	virtual void run(Dart d, unsigned int threadID) = 0;
 };
-
 
 /**
  * Functor class for parallel::foreach_attrib
@@ -524,7 +307,6 @@ public:
 	 */
 	virtual void run(unsigned int i, unsigned int threadID) = 0;
 };
-
 
 } //namespace CGoGN
 

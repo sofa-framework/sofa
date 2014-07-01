@@ -54,17 +54,20 @@ void Grid<PFP>::grid(unsigned int x, unsigned int y, bool close)
     {
         for (unsigned int j = 1; j <= x; ++j)
         {
-            Dart d = this->m_map.newFace(3, false);
+            Dart d = this->m_map.newFace(6, false);
             this->m_tableVertDarts.push_back(d);
+            this->m_tableVertDarts.push_back(this->m_map.phi1(d));
+            if (j== 1)
+                this->m_tableVertDarts.push_back(this->m_map.phi_1(d));
             if (j == x)
-                this->m_tableVertDarts.push_back(this->m_map.phi1(d));
+                this->m_tableVertDarts.push_back(this->m_map.phi1(this->m_map.phi1(d)));
         }
     }
 
     // store last row of vertices
     for (unsigned int i = 0; i < x; ++i)
     {
-        //this->m_tableVertDarts.push_back(this->m_map.phi_1(this->m_tableVertDarts[(y-1)*(x+1) + i]) );
+        this->m_tableVertDarts.push_back(this->m_map.phi_1(this->m_tableVertDarts[(y-1)*(x+1) + i]) );
     }
     //this-> m_tableVertDarts.push_back(this->m_map.phi1(this->m_tableVertDarts[(y-1)*(x+1) +x]) );
 
@@ -98,7 +101,7 @@ void Grid<PFP>::grid(unsigned int x, unsigned int y, bool close)
 }
 
 template <typename PFP>
-void Grid<PFP>::embedIntoGrid(VertexAttribute<VEC3>& position, float x, float y, float z)
+void Grid<PFP>::embedIntoGrid(VertexAttribute<VEC3, MAP>& position, float x, float y, float z)
 {
     float dx = x / float(this->m_nx);
     float dy = y / float(this->m_ny);

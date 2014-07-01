@@ -771,7 +771,11 @@ bool ShaderMutator::srcInsertCodeAtMainFunctionEnd(const std::string& insertedCo
 	
 	// Insert the source there
 	modifiedSrc.insert(mainLastBracePos, insertedCode);
-	
+
+	size_t posPb = modifiedSrc.find_last_of(';');
+	if (modifiedSrc.substr(posPb-6,7) == "#endif;")
+		modifiedSrc[posPb] = '\n';
+
 	return true;
 }
 

@@ -67,6 +67,24 @@ typedef FalsePtr<GLenum*> CGoGNGLenumTable;
 
 #endif
 
+
+#ifdef MAC_OSX
+
+inline void glCheckErrors()
+{
+	GLenum glError = glGetError();
+	if (glError != GL_NO_ERROR)
+		CGoGNerr<<"GL error: " << glError << CGoGNendl;
+}
+
+inline void glCheckErrors(const std::string& message)
+{
+	GLenum glError = glGetError();
+	if (glError != GL_NO_ERROR)
+		CGoGNerr<< message <<" : " << glError << CGoGNendl;
+}
+
+#else
 inline void glCheckErrors()
 {
 	GLenum glError = glGetError();
@@ -80,6 +98,8 @@ inline void glCheckErrors(const std::string& message)
 	if (glError != GL_NO_ERROR)
 		CGoGNerr<< message <<" : " << gluErrorString(glError) << CGoGNendl;
 }
+#endif
+
 
 
 }

@@ -21,7 +21,9 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
+
 //#define DEBUG
+
 namespace CGoGN
 {
 
@@ -33,7 +35,6 @@ namespace Surface
 
 namespace MovingObjects
 {
-
 
 template <typename PFP>
 void ParticleCell2D<PFP>::display()
@@ -453,8 +454,12 @@ void ParticleCell2D<PFP>::faceState(const VEC3& goal)
 	}
 }
 
-}
-}
-} //namespaces
-}
+} // namespace MovingObjects
+
+} // namespace Surface
+
+} // namespace Algo
+
+} // namespace CGoGN
+
 //#undef DEBUG

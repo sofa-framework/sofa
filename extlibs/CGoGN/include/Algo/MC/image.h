@@ -27,7 +27,7 @@
 
 
 #include "Geometry/vector_gen.h"
-#include "Utils/cgognStream.h"
+
 #include "Utils/img3D_IO.h"
 
 #ifdef WITH_ZINRI

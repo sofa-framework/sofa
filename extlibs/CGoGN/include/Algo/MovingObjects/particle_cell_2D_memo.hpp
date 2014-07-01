@@ -21,6 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
+
 namespace CGoGN
 {
 
@@ -32,7 +33,6 @@ namespace Surface
 
 namespace MovingObjects
 {
-
 
 template <typename PFP>
 std::vector<Dart> ParticleCell2DMemo<PFP>::move(const VEC3& goal)
@@ -66,7 +66,7 @@ std::vector<Dart> ParticleCell2DMemo<PFP>::move(const VEC3& goal)
 }
 
 template <typename PFP>
-std::vector<Dart> ParticleCell2DMemo<PFP>::move(const VEC3& goal, CellMarkerMemo<FACE>& memo_cross)
+std::vector<Dart> ParticleCell2DMemo<PFP>::move(const VEC3& goal, CellMarkerMemo<MAP, FACE>& memo_cross)
 {
 	this->crossCell = NO_CROSS ;
 	if (!Geom::arePointsEquals(goal, this->getPosition()))
@@ -95,7 +95,7 @@ std::vector<Dart> ParticleCell2DMemo<PFP>::move(const VEC3& goal, CellMarkerMemo
 }
 
 template <typename PFP>
-void ParticleCell2DMemo<PFP>::vertexState(const VEC3& current, CellMarkerMemo<FACE>& memo_cross)
+void ParticleCell2DMemo<PFP>::vertexState(const VEC3& current, CellMarkerMemo<MAP, FACE>& memo_cross)
 {
 #ifdef DEBUG
 	CGoGNout << "vertexState" << this->d << CGoGNendl ;
@@ -182,7 +182,7 @@ void ParticleCell2DMemo<PFP>::vertexState(const VEC3& current, CellMarkerMemo<FA
 }
 
 template <typename PFP>
-void ParticleCell2DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<FACE>& memo_cross, Geom::Orientation2D sideOfEdge)
+void ParticleCell2DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP, FACE>& memo_cross, Geom::Orientation2D sideOfEdge)
 {
 #ifdef DEBUG
 	CGoGNout << "edgeState" << this->d << CGoGNendl ;
@@ -236,7 +236,7 @@ void ParticleCell2DMemo<PFP>::edgeState(const VEC3& current, CellMarkerMemo<FACE
 }
 
 template <typename PFP>
-void ParticleCell2DMemo<PFP>::faceState(const VEC3& current, CellMarkerMemo<FACE>& memo_cross)
+void ParticleCell2DMemo<PFP>::faceState(const VEC3& current, CellMarkerMemo<MAP, FACE>& memo_cross)
 {
 #ifdef DEBUG
 	CGoGNout << "faceState" << this->d << CGoGNendl ;
@@ -377,7 +377,10 @@ void ParticleCell2DMemo<PFP>::faceState(const VEC3& current, CellMarkerMemo<FACE
 
 }
 
-}
-}
-} //namespaces
-}
+} // namespace MovingObjects
+
+} // namespace Surface
+
+} // namespace Algo
+
+} // namespace CGoGN
