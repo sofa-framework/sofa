@@ -40,16 +40,18 @@ namespace Surface
 namespace Filtering
 {
 
-template <typename T, unsigned int ORBIT>
+template <typename ATTR_TYPE>
 class FunctorAverage : public virtual FunctorType
 {
+	typedef typename ATTR_TYPE::DATA_TYPE T ;
+
 protected:
-	const AttributeHandler<T, ORBIT>& attr ;
+	const ATTR_TYPE& attr ;
 	T sum ;
 	unsigned int count ;
 
 public:
-	FunctorAverage(const AttributeHandler<T, ORBIT>& a) : FunctorType(), attr(a), sum(0), count(0)
+	FunctorAverage(const ATTR_TYPE& a) : FunctorType(), attr(a), sum(0), count(0)
 	{}
 	bool operator()(Dart d)
 	{
@@ -69,15 +71,15 @@ class FunctorAverageOnSphereBorder : public FunctorMap<typename PFP::MAP>
 	typedef typename PFP::VEC3 VEC3;
 
 protected:
-	const VertexAttribute<T>& attr ;
-	const VertexAttribute<VEC3>& position ;
+	const VertexAttribute<T, typename PFP::MAP>& attr ;
+	const VertexAttribute<VEC3, typename PFP::MAP>& position ;
 	VEC3 center;
 	typename PFP::REAL radius;
 	T sum ;
 	unsigned int count ;
 
 public:
-	FunctorAverageOnSphereBorder(typename PFP::MAP& map, const AttributeHandler<T, VERTEX>& a, const VertexAttribute<VEC3>& p) :
+	FunctorAverageOnSphereBorder(typename PFP::MAP& map, const VertexAttribute<T, typename PFP::MAP>& a, const VertexAttribute<VEC3, typename PFP::MAP>& p) :
 		FunctorMap<typename PFP::MAP>(map), attr(a), position(p), sum(0), count(0)
 	{
 		center = VEC3(0);
@@ -99,7 +101,7 @@ public:
 
 } // namespace Filtering
 
-}
+} // namespace Surface
 
 } // namespace Algo
 

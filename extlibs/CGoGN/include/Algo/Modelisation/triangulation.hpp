@@ -37,8 +37,8 @@ namespace Modelisation
 template<typename PFP>
 bool EarTriangulation<PFP>::inTriangle(const typename PFP::VEC3& P, const typename PFP::VEC3& normal, const typename PFP::VEC3& Ta,  const typename PFP::VEC3& Tb, const typename PFP::VEC3& Tc)
 {
-	typedef typename PFP::VEC3 VECT ;
-	typedef typename VECT::DATA_TYPE T ;
+	typedef typename PFP::VEC3 VEC3 ;
+	typedef typename VEC3::DATA_TYPE T ;
 
 	if (Geom::tripleProduct(P-Ta, (Tb-Ta), normal) >= T(0))
 		return false;
@@ -55,19 +55,21 @@ bool EarTriangulation<PFP>::inTriangle(const typename PFP::VEC3& P, const typena
 template<typename PFP>
 void EarTriangulation<PFP>::recompute2Ears( Dart d, const typename PFP::VEC3& normalPoly, bool convex)
 {
+	typedef typename PFP::VEC3 VEC3 ;
+
 	Dart d2 = m_map.phi_1(d);
 	Dart d_p = m_map.phi_1(d2);
 	Dart d_n = m_map.phi1(d);
 
-	const typename PFP::VEC3& Ta = m_position[d2];
-	const typename PFP::VEC3& Tb = m_position[d];
-	const typename PFP::VEC3& Tc = m_position[d_p];
-	const typename PFP::VEC3& Td = m_position[d_n];
+	const VEC3& Ta = m_position[d2];
+	const VEC3& Tb = m_position[d];
+	const VEC3& Tc = m_position[d_p];
+	const VEC3& Td = m_position[d_n];
 
 	// compute angle
-	typename PFP::VEC3 v1= Tb - Ta;
-	typename PFP::VEC3 v2= Tc - Ta;
-	typename PFP::VEC3 v3= Td - Tb;
+	VEC3 v1= Tb - Ta;
+	VEC3 v2= Tc - Ta;
+	VEC3 v3= Td - Tb;
 
 	v1.normalize();
 	v2.normalize();
@@ -80,8 +82,8 @@ void EarTriangulation<PFP>::recompute2Ears( Dart d, const typename PFP::VEC3& no
 
 	if (!convex)	// if convex no need to test if vertex is an ear (yes)
 	{
-		typename PFP::VEC3 nv1 = v1^v2;
-		typename PFP::VEC3 nv2 = v1^v3;
+		VEC3 nv1 = v1^v2;
+		VEC3 nv2 = v1^v3;
 
 		if (nv1*normalPoly < 0.0)
 			dotpr1 = 10.0f - dotpr1;// not an ears  (concave)
@@ -92,7 +94,7 @@ void EarTriangulation<PFP>::recompute2Ears( Dart d, const typename PFP::VEC3& no
 		for (typename VPMS::reverse_iterator it = m_ears.rbegin(); (!finished)&&(it != m_ears.rend())&&(it->angle > 5.0f); ++it)
 		{
 			Dart dx = it->dart;
-			const typename PFP::VEC3& P = m_position[dx];
+			const VEC3& P = m_position[dx];
 
 			if ((dotpr1 < 5.0f) && (d != d_p))
 				if (inTriangle(P, normalPoly,Tb,Tc,Ta))
@@ -116,22 +118,24 @@ void EarTriangulation<PFP>::recompute2Ears( Dart d, const typename PFP::VEC3& no
 template<typename PFP>
 float EarTriangulation<PFP>::computeEarInit(Dart d, const typename PFP::VEC3& normalPoly, float& val)
 {
+	typedef typename PFP::VEC3 VEC3 ;
+
 	Dart e =  m_map.phi1(d);
 	Dart f =  m_map.phi1(e);
 
-	const typename PFP::VEC3& Ta = m_position[e];
-	const typename PFP::VEC3& Tb = m_position[f];
-	const typename PFP::VEC3& Tc = m_position[d];
+	const VEC3& Ta = m_position[e];
+	const VEC3& Tb = m_position[f];
+	const VEC3& Tc = m_position[d];
 
-	typename PFP::VEC3 v1 = Tc-Ta;
-	typename PFP::VEC3 v2 = Tb-Ta;
+	VEC3 v1 = Tc-Ta;
+	VEC3 v2 = Tb-Ta;
 	v1.normalize();
 	v2.normalize();
 
 //	val = 1.0f - (v1*v2);
 	val = acos(v1*v2) / (M_PI/2.0f);
 
-	typename PFP::VEC3 vn = v1^v2;
+	VEC3 vn = v1^v2;
 	if (vn*normalPoly > 0.0f)
 		val = 10.0f - val; 		// not an ears  (concave, store at the end for optimized use for intersections)
 
@@ -245,7 +249,7 @@ void EarTriangulation<PFP>::triangule(unsigned int thread)
 
 } // namespace Modelisation
 
-}
+} // namespace Surface
 
 } // namespace Algo
 

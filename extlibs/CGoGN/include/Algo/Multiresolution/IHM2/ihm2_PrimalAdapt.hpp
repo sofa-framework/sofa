@@ -40,7 +40,7 @@ namespace Adaptive
 {
 
 template <typename PFP>
-IHM2<PFP>::IHM2(typename PFP::MAP& map) :
+IHM2<PFP>::IHM2(MAP& map) :
 	m_map(map),
 	shareVertexEmbeddings(true),
 	vertexVertexFunctor(NULL),
@@ -72,6 +72,7 @@ unsigned int IHM2<PFP>::faceLevel(Dart d)
     if(m_map.getCurrentLevel() == 0)
         return 0 ;
 
+// Methode 1
 //	unsigned int cur = m_curLevel ;
 //	Dart it = d ;
 //	Dart end = d ;
@@ -112,6 +113,7 @@ unsigned int IHM2<PFP>::faceLevel(Dart d)
 //	unsigned int fLevel = m_curLevel ;
 //	m_curLevel = cur ;
 
+//Methode 2
     Dart it = d ;
     Dart old = it ;
     unsigned int l_old = m_map.getDartLevel(old) ;
@@ -350,6 +352,8 @@ unsigned int IHM2<PFP>::subdivideFace(Dart d, bool triQuad, bool OneLevelDiffere
     unsigned int fLevel = faceLevel(d) ;
     Dart old = faceOldestDart(d) ;
 
+	//std::cout << "faceLevel = " << fLevel << std::endl;
+
 	unsigned int cur = m_map.getCurrentLevel() ;
 	m_map.setCurrentLevel(fLevel) ;		// go to the level of the face to subdivide its edges
 
@@ -363,7 +367,7 @@ unsigned int IHM2<PFP>::subdivideFace(Dart d, bool triQuad, bool OneLevelDiffere
         {
             Dart nf = m_map.phi2(it) ;
             if(faceLevel(nf) == fLevel - 1)	// check if neighboring faces have to be subdivided first
-                subdivideFace(nf) ;
+				subdivideFace(nf,triQuad) ;
         }
 
         if(!edgeIsSubdivided(it))
@@ -374,7 +378,7 @@ unsigned int IHM2<PFP>::subdivideFace(Dart d, bool triQuad, bool OneLevelDiffere
 	m_map.setCurrentLevel(fLevel + 1) ;	// go to the next level to perform face subdivision
 
 
-    if((degree == 3) && triQuad)					// if subdividing a triangle
+	if((degree == 3) && triQuad)					// if subdividing a triangle
     {
         Dart dd = m_map.phi1(old) ;
         Dart e = m_map.phi1(dd) ;
@@ -382,16 +386,18 @@ unsigned int IHM2<PFP>::subdivideFace(Dart d, bool triQuad, bool OneLevelDiffere
 
         e = m_map.phi1(e) ;
         m_map.splitFace(dd, e) ;					// insert a new edge
-        unsigned int id = m_map.getNewEdgeId() ;
-        m_map.setEdgeId(m_map.phi_1(dd), id) ;		// set the edge id of the inserted
-        m_map.setEdgeId(m_map.phi_1(e), id) ;		// edge to the next available id
+//        unsigned int id = m_map.getNewEdgeId() ;
+		unsigned int id = m_map.getTriRefinementEdgeId(m_map.phi_1(dd));
+		m_map.setEdgeId(m_map.phi_1(dd), id) ;		// set the edge id of the inserted
+		m_map.setEdgeId(m_map.phi_1(e), id) ;		// edge to the next available id
 
         dd = e ;
         e = m_map.phi1(dd) ;
         (*vertexVertexFunctor)(e) ;
         e = m_map.phi1(e) ;
         m_map.splitFace(dd, e) ;
-        id = m_map.getNewEdgeId() ;
+		//id = m_map.getNewEdgeId() ;
+		id = m_map.getTriRefinementEdgeId(m_map.phi_1(dd));
         m_map.setEdgeId(m_map.phi_1(dd), id) ;
         m_map.setEdgeId(m_map.phi_1(e), id) ;
 
@@ -400,7 +406,8 @@ unsigned int IHM2<PFP>::subdivideFace(Dart d, bool triQuad, bool OneLevelDiffere
         (*vertexVertexFunctor)(e) ;
         e = m_map.phi1(e) ;
         m_map.splitFace(dd, e) ;
-        id = m_map.getNewEdgeId() ;
+		//id = m_map.getNewEdgeId() ;
+		id = m_map.getTriRefinementEdgeId(m_map.phi_1(dd));
         m_map.setEdgeId(m_map.phi_1(dd), id) ;
         m_map.setEdgeId(m_map.phi_1(e), id) ;
     }
@@ -415,10 +422,12 @@ unsigned int IHM2<PFP>::subdivideFace(Dart d, bool triQuad, bool OneLevelDiffere
         Dart ne2 = m_map.phi2(ne) ;
 
         m_map.cutEdge(ne) ;							// cut the new edge to insert the central vertex
-        unsigned int id = m_map.getNewEdgeId() ;
+		//unsigned int id = m_map.getNewEdgeId() ;
+		unsigned int id = m_map.getQuadRefinementEdgeId(m_map.phi2(ne));
         m_map.setEdgeId(ne, id) ;
         m_map.setEdgeId(m_map.phi2(ne), id) ;			// set the edge id of the inserted
-        id = m_map.getNewEdgeId() ;
+		//id = m_map.getNewEdgeId() ;
+		id = m_map.getQuadRefinementEdgeId(ne2);
         m_map.setEdgeId(ne2, id) ;					// edges to the next available ids
         m_map.setEdgeId(m_map.phi2(ne2), id) ;
 
@@ -429,7 +438,8 @@ unsigned int IHM2<PFP>::subdivideFace(Dart d, bool triQuad, bool OneLevelDiffere
         {											// linked to the central vertex
             m_map.splitFace(m_map.phi1(ne), dd) ;
             Dart nne = m_map.alpha1(dd) ;
-            id = m_map.getNewEdgeId() ;
+			//id = m_map.getNewEdgeId() ;
+			id = m_map.getQuadRefinementEdgeId(m_map.phi2(nne));
             m_map.setEdgeId(nne, id) ;
             m_map.setEdgeId(m_map.phi2(nne), id) ;
             dd = m_map.phi1(dd) ;

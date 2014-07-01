@@ -103,6 +103,25 @@ void MarchingCubeGen<DataType, ImgT, Windowing, PFP>::deleteMesh()
 	}
 }
 
+
+template< typename  DataType, typename ImgT, template < typename D2 > class Windowing, typename PFP >
+Dart  MarchingCube<DataType, ImgT, Windowing, PFP>::createTriEmb(unsigned int e1, unsigned int e2, unsigned int e3)
+{
+	L_DART d = m_map->newFace(3,false);
+		
+	FunctorSetEmb<typename PFP::MAP, VERTEX> fsetemb(*m_map, e1);
+	m_map->template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
+	d = m_map->phi1(d);
+	fsetemb.changeEmb(e2);
+	m_map->template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
+	d = m_map->phi1(d);
+	fsetemb.changeEmb(e3);
+	m_map->template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, fsetemb);
+	d = m_map->phi1(d);
+
+	return d;
+}
+
 template< typename  DataType, typename ImgT, template < typename D2 > class Windowing, class PFP >
 void MarchingCubeGen<DataType, ImgT, Windowing, PFP>::simpleMeshing()
 {

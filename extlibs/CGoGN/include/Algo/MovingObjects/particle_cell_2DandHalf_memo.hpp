@@ -42,7 +42,7 @@ namespace MovingObjects
 template <typename PFP>
 std::vector<Dart> ParticleCell2DAndHalfMemo<PFP>::move(const VEC3& goal)
 {
-	this->distance=0;
+	this->distance = 0;
 	this->crossCell = NO_CROSS ;
 	if (!Geom::arePointsEquals(goal, this->getPosition()))
 	{
@@ -71,9 +71,9 @@ std::vector<Dart> ParticleCell2DAndHalfMemo<PFP>::move(const VEC3& goal)
 }
 
 template <typename PFP>
-std::vector<Dart> ParticleCell2DAndHalfMemo<PFP>::move(const VEC3& goal, CellMarkerMemo<FACE>& memo_cross)
+std::vector<Dart> ParticleCell2DAndHalfMemo<PFP>::move(const VEC3& goal, CellMarkerMemo<MAP, FACE>& memo_cross)
 {
-	this->distance=0;
+	this->distance = 0;
 	this->crossCell = NO_CROSS ;
 	if (!Geom::arePointsEquals(goal, this->getPosition()))
 	{
@@ -101,7 +101,7 @@ std::vector<Dart> ParticleCell2DAndHalfMemo<PFP>::move(const VEC3& goal, CellMar
 }
 
 template <typename PFP>
-void ParticleCell2DAndHalfMemo<PFP>::vertexState(VEC3 current, CellMarkerMemo<FACE>& memo_cross)
+void ParticleCell2DAndHalfMemo<PFP>::vertexState(VEC3 current, CellMarkerMemo<MAP, FACE>& memo_cross)
 {
 	#ifdef DEBUG
 	CGoGNout << "vertexState" << d << CGoGNendl;
@@ -171,7 +171,7 @@ void ParticleCell2DAndHalfMemo<PFP>::vertexState(VEC3 current, CellMarkerMemo<FA
 }
 
 template <typename PFP>
-void ParticleCell2DAndHalfMemo<PFP>::edgeState(VEC3 current, CellMarkerMemo<FACE>& memo_cross, Geom::Orientation3D sideOfEdge)
+void ParticleCell2DAndHalfMemo<PFP>::edgeState(VEC3 current, CellMarkerMemo<MAP, FACE>& memo_cross, Geom::Orientation3D sideOfEdge)
 {
 	#ifdef DEBUG
 	CGoGNout << "edgeState" <<  d << CGoGNendl;
@@ -241,7 +241,7 @@ void ParticleCell2DAndHalfMemo<PFP>::edgeState(VEC3 current, CellMarkerMemo<FACE
 }
 
 template <typename PFP>
-void ParticleCell2DAndHalfMemo<PFP>::faceState(VEC3 current, CellMarkerMemo<FACE>& memo_cross)
+void ParticleCell2DAndHalfMemo<PFP>::faceState(VEC3 current, CellMarkerMemo<MAP, FACE>& memo_cross)
 {
 	#ifdef DEBUG
 	CGoGNout << "faceState" <<  this->d << CGoGNendl;
@@ -385,8 +385,10 @@ void ParticleCell2DAndHalfMemo<PFP>::faceState(VEC3 current, CellMarkerMemo<FACE
 	}
 }
 
-}
-}
-} //namespaces
-}
+} // namespace MovingObjects
 
+} // namespace Surface
+
+} // namespace Algo
+
+} // namespace CGoGN

@@ -23,6 +23,7 @@
 *******************************************************************************/
 
 // #define DEBUG
+
 namespace CGoGN
 {
 
@@ -34,7 +35,6 @@ namespace Volume
 
 namespace MovingObjects
 {
-
 
 #define DELTA 0.00001
 //static const float DELTA=0.00001;
@@ -64,7 +64,6 @@ typename PFP::VEC3 ParticleCell3D<PFP>::pointInFace(Dart d)
 //
 //	return (p1+p3)*0.5f;
 }
-
 
 template <typename PFP>
 Geom::Orientation3D ParticleCell3D<PFP>::isLeftENextVertex(VEC3 c, Dart d, VEC3 base)
@@ -151,13 +150,12 @@ bool ParticleCell3D<PFP>::isRightDFace(VEC3 c, Dart d, VEC3 base, VEC3 normal)
 	return pl.orient(c)==Geom::UNDER;
 }
 
-
 template <typename PFP>
-Dart ParticleCell3D<PFP>::nextDartOfVertexNotMarked(Dart d, CellMarkerStore<FACE>& mark)
+Dart ParticleCell3D<PFP>::nextDartOfVertexNotMarked(Dart d, CellMarkerStore<MAP, FACE>& mark)
 {
 	// lock a marker
 	Dart d1;
-	DartMarkerNoUnmark markCC(m);
+	DartMarkerNoUnmark<MAP> markCC(m);
 
 	// init algo with parameter dart
 	std::list<Dart> darts_list;
@@ -207,7 +205,7 @@ Dart ParticleCell3D<PFP>::nextNonPlanar(Dart d)
 {
 	// lock a marker
 	Dart d1;
-	DartMarkerNoUnmark markCC(m);
+	DartMarkerNoUnmark<MAP> markCC(m);
 
 	// init algo with parameter dart
 	std::list<Dart> darts_list;
@@ -257,11 +255,11 @@ Dart ParticleCell3D<PFP>::nextNonPlanar(Dart d)
 }
 
 template <typename PFP>
-Dart ParticleCell3D<PFP>::nextFaceNotMarked(Dart d, CellMarkerStore<FACE>& mark)
+Dart ParticleCell3D<PFP>::nextFaceNotMarked(Dart d, CellMarkerStore<MAP, FACE>& mark)
 {
 	// lock a marker
 	Dart d1;
-	DartMarkerNoUnmark markCC(m);
+	DartMarkerNoUnmark<MAP> markCC(m);
 
 	// init algo with parameter dart
 	std::list<Dart> darts_list;
@@ -350,7 +348,6 @@ bool ParticleCell3D<PFP>::isOnHalfEdge(VEC3 c, Dart d)
 	return pl.orient(c)==Geom::OVER && !Geom::arePointsEquals(c,p1);
 }
 
-
 /**when the ParticleCell3D trajectory go through a vertex
 *  searching the good volume "umbrella" where the ParticleCell3D is
 *  if the ParticleCell3D is on the vertex, do nothing */
@@ -373,7 +370,7 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
 
 	Dart dd=d;
 	Geom::Orientation3D wsof;
-	CellMarkerStore<FACE> mark(m);
+	CellMarkerStore<MAP, FACE> mark(m);
 
 	do {
 		VEC3 dualsp = (som+ Algo::Surface::Geometry::vertexNormal<PFP>(m,d,position));
@@ -412,11 +409,11 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
 				d=m.phi2(m.phi_1(d));
 		}
 
-		wsof=whichSideOfFace(current,d);
+		wsof = whichSideOfFace(current,d);
 
 		//if c is before the vertex on the edge, we have to change of umbrella, we are symetric to the good umbrella
-		if(wsof!=Geom::OVER) {
-
+		if(wsof != Geom::OVER)
+		{
 			VEC3 p1=position[d];
 			VEC3 p2=position[m.phi1(d)];
 			VEC3 norm(p2-p1);
@@ -428,14 +425,14 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
 
 		//if c is on the other side of the face, we have to change umbrella
 		//if the umbrella has already been tested, we just take another arbitrary one
-		if(wsof==1) {
-
+		if(wsof == 1)
+		{
 			mark.mark(d);
 
 			if(!mark.isMarked(m.alpha1(d)))
 				d=m.alpha1(d);
-			else {
-
+			else
+			{
 				Dart dtmp=d;
 				d = nextDartOfVertexNotMarked(d,mark);
 				if(dtmp==d) {
@@ -449,9 +446,9 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
 				}
 			}
 		}
-	}while(wsof==1);
+	} while(wsof == 1);
 
-	if(wsof!=0)
+	if(wsof != 0)
 	{
 		this->m_position = pointInFace(d);
 		d = nextNonPlanar(d);
@@ -461,7 +458,6 @@ void ParticleCell3D<PFP>::vertexState(const VEC3& current)
 	else
 	{
 		//Dart ddd=d;
-
 		edgeState(current);
 	}
 }
@@ -644,7 +640,6 @@ void ParticleCell3D<PFP>::edgeState(const VEC3& current)
 		}
 	}
 
-
 	switch (whichSideOfEdge(current,d))
 	{
 	case Geom::OVER :
@@ -676,7 +671,7 @@ void ParticleCell3D<PFP>::volumeState(const VEC3& current)
 	std::cout << "volumeState " <<  d << std::endl;
 	#endif
 
-	CellMarkerStore<FACE> mark(m);
+	CellMarkerStore<MAP, FACE> mark(m);
 	bool above;
 
 	Geom::Orientation3D testRight=Geom::OVER;
@@ -792,7 +787,7 @@ void ParticleCell3D<PFP>::volumeSpecialCase(const VEC3& current)
 	#endif
 
 	Dart dd;
-	CellMarkerStore<FACE> mark(m);
+	CellMarkerStore<MAP, FACE> mark(m);
 
 	Dart d_min;
 
@@ -902,8 +897,10 @@ void ParticleCell3D<PFP>::volumeSpecialCase(const VEC3& current)
 	}
 }
 
-}
-}
-}
-}
+} // namespace MovingObjects
 
+} // namespace Surface
+
+} // namespace Algo
+
+} // namespace CGoGN

@@ -22,9 +22,11 @@
 *                                                                              *
 *******************************************************************************/
 
-namespace CGoGN {
+namespace CGoGN
+{
 
-namespace Utils {
+namespace Utils
+{
 
 template<typename REAL>
 ColourConverter<REAL>::ColourConverter(const VEC3& col, const enum ColourEncoding& enc) :
@@ -37,7 +39,8 @@ ColourConverter<REAL>::ColourConverter(const VEC3& col, const enum ColourEncodin
 {
 	originalEnc = enc ;
 
-	switch(originalEnc) {
+	switch(originalEnc)
+	{
 		case(C_RGB):
 			#ifdef DEBUG
 				if (!(-0.001 < col[0] && col[0] < 1.001 && -0.001 < col[1] && col[1] < 1.001 &&  -0.001 < col[2] && col[2] < 1.001))
@@ -98,8 +101,10 @@ ColourConverter<REAL>::~ColourConverter()
 }
 
 template<typename REAL>
-Geom::Vector<3,REAL> ColourConverter<REAL>::getColour(enum ColourEncoding enc) {
-	switch (enc) {
+Geom::Vector<3,REAL> ColourConverter<REAL>::getColour(enum ColourEncoding enc)
+{
+	switch (enc)
+	{
 	case (C_RGB) :
 		return getRGB() ;
 		break ;
@@ -501,8 +506,10 @@ ColourConverter<REAL>::convertXYZtoLab()
 	REAL &Y = (*XYZ)[1] ;
 	REAL &Z = (*XYZ)[2] ;
 
-	struct Local {
-		static REAL f(REAL x) {
+	struct Local
+	{
+		static REAL f(REAL x)
+		{
 			if (x > 0.008856)
 			return pow(x,1.0/3.0) ;
 			else
@@ -534,8 +541,10 @@ ColourConverter<REAL>::convertLabToXYZ()
 	REAL &a = (*Lab)[1] ;
 	REAL &b = (*Lab)[2] ;
 
-	struct Local {
-		static REAL f(REAL x) {
+	struct Local
+	{
+		static REAL f(REAL x)
+		{
 			if (x > 0.206893)
 			return pow(x,3.0) ;
 			else
@@ -562,16 +571,19 @@ template<typename REAL>
 bool
 ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 {
-	if (to == from) {
+	if (to == from)
+	{
 		#ifdef DEBUG
 			std::cout << "WARNING ColourConverter::convert(from,to) : conversion into same colour space" << std::endl ;
 		#endif
 		return true ;
 	}
 
-	switch(from) {
+	switch(from)
+	{
 		case(C_RGB) :
-			switch (to) {
+			switch (to)
+			{
 				case (C_XYZ) :
 					if (XYZ == NULL)
 						convertRGBtoXYZ() ;
@@ -607,9 +619,11 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 			break ;
 
 		case(C_Luv) :
-			switch(to) {
+			switch(to)
+			{
 				case(C_RGB) : {
-					if (RGB == NULL) {
+					if (RGB == NULL)
+					{
 						if (XYZ == NULL)
 							convertLuvToXYZ() ;
 						convertXYZtoRGB() ;
@@ -622,15 +636,18 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 					break ;
 				}
 				case(C_Lab) :
-					if (Lab == NULL) {
+					if (Lab == NULL)
+					{
 						if (XYZ == NULL)
 							convertLuvToXYZ() ;
 						convertXYZtoLab() ;
 					}
 					break ;
 				case(C_HSV) :
-					if (HSV == NULL) {
-						if (RGB == NULL) {
+					if (HSV == NULL)
+					{
+						if (RGB == NULL)
+						{
 							if (XYZ == NULL)
 								convertLuvToXYZ() ;
 							convertXYZtoRGB() ;
@@ -639,8 +656,10 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 					}
 					break ;
 				case(C_HSL) : {
-					if (HSL == NULL) {
-						if (RGB == NULL) {
+					if (HSL == NULL)
+					{
+						if (RGB == NULL)
+						{
 							if (XYZ == NULL)
 								convertLuvToXYZ() ;
 							convertXYZtoRGB() ;
@@ -656,9 +675,10 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 			break ;
 
 		case(C_XYZ) :
-			switch (to) {
+			switch (to)
+			{
 				case(C_RGB) :
-					if (RGB==NULL)
+					if (RGB == NULL)
 						convertXYZtoRGB() ;
 					break ;
 				case(C_Luv) :
@@ -670,18 +690,20 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 						convertXYZtoLab() ;
 					break ;
 				case(C_HSV) :
-						if (HSV==NULL) {
-							if (RGB==NULL)
+						if (HSV == NULL)
+						{
+							if (RGB == NULL)
 								convertXYZtoRGB() ;
 							convertRGBtoHSV() ;
 						}
 					break ;
 				case(C_HSL) :
-					if (HSL==NULL) {
-						if (RGB==NULL)
+					if (HSL == NULL)
+					{
+						if (RGB == NULL)
 							convertXYZtoRGB() ;
-							convertRGBtoHSL() ;
-						}
+						convertRGBtoHSL() ;
+					}
 					break ;
 				default :
 					std::cerr << "Colour conversion not supported" << std::endl ;
@@ -690,9 +712,11 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 			break ;
 
 		case(C_Lab) :
-			switch (to) {
+			switch (to)
+			{
 				case(C_RGB) : {
-					if (RGB == NULL) {
+					if (RGB == NULL)
+					{
 						if (XYZ == NULL)
 							convertLabToXYZ() ;
 						convertXYZtoRGB() ;
@@ -705,15 +729,18 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 					break ;
 				}
 				case(C_Luv) :
-					if (Luv == NULL) {
+					if (Luv == NULL)
+					{
 						if (XYZ == NULL)
 							convertLabToXYZ() ;
 						convertXYZtoLuv() ;
 					}
 					break ;
 				case(C_HSV) : {
-					if (HSV == NULL) {
-						if (RGB == NULL) {
+					if (HSV == NULL)
+					{
+						if (RGB == NULL)
+						{
 							if (XYZ == NULL)
 								convertLabToXYZ() ;
 							convertXYZtoRGB() ;
@@ -723,8 +750,10 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 					break ;
 				}
 				case(C_HSL) : {
-					if (HSL == NULL) {
-						if (RGB == NULL) {
+					if (HSL == NULL)
+					{
+						if (RGB == NULL)
+						{
 							if (XYZ == NULL)
 								convertLabToXYZ() ;
 							convertXYZtoRGB() ;
@@ -740,9 +769,11 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 			break ;
 
 		case(C_HSV) :
-				switch (to) {
+				switch (to)
+				{
 					case(C_RGB) : {
-						if (RGB == NULL) {
+						if (RGB == NULL)
+						{
 							convertHSVtoRGB() ;
 						}
 						break ;
@@ -757,7 +788,8 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 						break ;
 					}
 					case(C_Lab) :
-						if (Lab == NULL) {
+						if (Lab == NULL)
+						{
 							if (XYZ == NULL)
 							{
 								if (RGB == NULL)
@@ -770,7 +802,8 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 						}
 						break ;
 					case(C_Luv) :
-						if (Luv == NULL) {
+						if (Luv == NULL)
+						{
 							if (XYZ == NULL)
 							{
 								if (RGB == NULL)
@@ -783,7 +816,8 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 						}
 						break ;
 					case(C_HSL) :
-						if (HSL == NULL) {
+						if (HSL == NULL)
+						{
 							if (RGB == NULL)
 								convertHSVtoRGB() ;
 							convertRGBtoHSL() ;
@@ -796,9 +830,11 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 				break ;
 
 				case(C_HSL) :
-						switch (to) {
+						switch (to)
+						{
 							case(C_RGB) : {
-								if (RGB == NULL) {
+								if (RGB == NULL)
+								{
 									convertHSLtoRGB() ;
 								}
 								break ;
@@ -813,7 +849,8 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 								break ;
 							}
 							case(C_Lab) :
-								if (Lab == NULL) {
+								if (Lab == NULL)
+								{
 									if (XYZ == NULL)
 									{
 										if (RGB == NULL)
@@ -826,7 +863,8 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 								}
 								break ;
 							case(C_Luv) :
-								if (Luv == NULL) {
+								if (Luv == NULL)
+								{
 									if (XYZ == NULL)
 									{
 										if (RGB == NULL)
@@ -839,7 +877,8 @@ ColourConverter<REAL>::convert(enum ColourEncoding from, enum ColourEncoding to)
 								}
 								break ;
 							case(C_HSL) :
-								if (HSL == NULL) {
+								if (HSL == NULL)
+								{
 									if (RGB == NULL)
 										convertHSLtoRGB() ;
 									convertRGBtoHSV() ;

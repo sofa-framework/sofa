@@ -35,7 +35,7 @@ namespace Decimation
 {
 
 template <typename PFP, typename T, unsigned int ORBIT>
-Approximator<PFP,T,ORBIT>::Approximator(MAP& m, std::vector<VertexAttribute<T>* > va, Predictor<PFP, T> * predictor) :
+Approximator<PFP,T,ORBIT>::Approximator(MAP& m, std::vector<VertexAttribute<T, MAP>* > va, Predictor<PFP, T> * predictor) :
 	ApproximatorGen<PFP>(m), m_predictor(predictor), m_attrV(va)
 {
 	const unsigned int& size = m_attrV.size() ;
@@ -52,13 +52,13 @@ Approximator<PFP,T,ORBIT>::Approximator(MAP& m, std::vector<VertexAttribute<T>* 
 
 		std::stringstream aname ;
 		aname << "approx_" << m_attrV[i]->name() ;
-		m_approx[i] = this->m_map.template addAttribute<T, ORBIT>(aname.str()) ;
+		m_approx[i] = this->m_map.template addAttribute<T, ORBIT, MAP>(aname.str()) ;
 
 		if(m_predictor)	// if predictors are associated to the approximator
 		{				// create attributes to store the details needed for reconstruction
 			std::stringstream dname ;
 			dname << "detail_" << m_attrV[i]->name() ;
-			m_detail[i] = this->m_map.template addAttribute<T, ORBIT>(dname.str()) ;
+			m_detail[i] = this->m_map.template addAttribute<T, ORBIT, MAP>(dname.str()) ;
 		}
 	}
 }
@@ -69,9 +69,9 @@ Approximator<PFP,T,ORBIT>::~Approximator()
 //	std::cout << "Approximator<PFP,T,ORBIT>::~Approximator()" << std::endl ;
 	for (unsigned int i = 0 ; i < m_attrV.size() ; ++i)
 	{
-		this->m_map.template removeAttribute(m_approx[i]) ;
+		this->m_map.removeAttribute(m_approx[i]) ;
 		if(m_predictor)
-			this->m_map.template removeAttribute(m_detail[i]) ;
+			this->m_map.removeAttribute(m_detail[i]) ;
 	}
 }
 
@@ -117,14 +117,14 @@ Approximator<PFP,T,ORBIT>::getApprox(Dart d, unsigned int index) const
 }
 
 template <typename PFP, typename T, unsigned int ORBIT>
-const VertexAttribute<T>&
+const VertexAttribute<T, typename PFP::MAP>&
 Approximator<PFP,T,ORBIT>::getAttr(unsigned int index) const
 {
 	return *(m_attrV[index]) ;
 }
 
 template <typename PFP, typename T, unsigned int ORBIT>
-VertexAttribute<T>&
+VertexAttribute<T, typename PFP::MAP>&
 Approximator<PFP,T,ORBIT>::getAttr(unsigned int index)
 {
 	return *(m_attrV[index]) ;
@@ -214,10 +214,10 @@ Approximator<PFP,T,ORBIT>::addDetail(Dart d, double amount, bool sign, typename 
 	}
 }
 
-} //namespace Decimation
+} // namespace Decimation
 
-} // namespace surface
+} // namespace Surface
 
-} //namespace Algo
+} // namespace Algo
 
-} //namespace CGoGN
+} // namespace CGoGN

@@ -37,19 +37,20 @@ namespace Decimation
 template <typename PFP>
 int decimate(
 	typename PFP::MAP& map, SelectorType s, ApproximatorType a,
-	std::vector<VertexAttribute<typename PFP::VEC3>* >& attribs, unsigned int nbWantedVertices,
-	EdgeAttribute<typename PFP::REAL> *edgeErrors,
+	std::vector<VertexAttribute<typename PFP::VEC3, typename PFP::MAP>*>& attribs,
+	unsigned int nbWantedVertices,
+	EdgeAttribute<typename PFP::REAL, typename PFP::MAP>* edgeErrors,
 	void (*callback_wrapper)(void*, const void*), void* callback_object
 )
 {
 	assert(attribs.size() >= 1 || !"Decimate: not enough attribs provided") ;
 	assert(attribs[0]->name() == "position" || !"Decimate: first attribute should always be the position") ;
-	VertexAttribute<typename PFP::VEC3> position = *(attribs[0]) ;
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP> position = *(attribs[0]) ;
 
 	std::vector<ApproximatorGen<PFP>*> approximators ;
 	Selector<PFP>* selector = NULL ;
 
-	std::vector<VertexAttribute<typename PFP::VEC3>* > *v_approx = NULL ;
+	std::vector<VertexAttribute<typename PFP::VEC3, typename PFP::MAP>*>* v_approx = NULL ;
 
 	switch(a)
 	{
@@ -76,7 +77,7 @@ int decimate(
 			break ;
 		case A_ColorNaive :
 		{
-			v_approx = new std::vector<VertexAttribute<typename PFP::VEC3>* >[2] ;
+			v_approx = new std::vector<VertexAttribute<typename PFP::VEC3, typename PFP::MAP>*>[2] ;
 
 			// pos
 			v_approx[0].push_back(attribs[0]) ;
@@ -180,8 +181,8 @@ int decimate(
 		Selector<PFP>* selector, std::vector<ApproximatorGen<PFP>*>& approximators,
 		unsigned int nbWantedVertices,
 		bool recomputePriorityList,
-		EdgeAttribute<typename PFP::REAL> *edgeErrors,
-		void (*callback_wrapper)(void*, const void*), void *callback_object
+		EdgeAttribute<typename PFP::REAL, typename PFP::MAP>* edgeErrors,
+		void (*callback_wrapper)(void*, const void*), void* callback_object
 )
 {
 	for(typename std::vector<ApproximatorGen<PFP>*>::iterator it = approximators.begin(); it != approximators.end(); ++it)
@@ -194,7 +195,7 @@ int decimate(
 			return -1 ; // init failed
 	}
 
-	unsigned int nbVertices = map.template getNbOrbits<VERTEX>() ;
+	unsigned int nbVertices = Algo::Topo::getNbOrbits<VERTEX>(map) ;
 	bool finished = false ;
 
 	while(!finished)

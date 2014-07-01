@@ -37,6 +37,7 @@ SET ( FORCE_MR "0" )
 SET ( ONELIB ON)
 SET ( WITH_GLEWMX OFF)
 
+
 IF(WIN32)
 	SET ( CMAKE_PREFIX_PATH ${CGoGN_ROOT_DIR}/windows_dependencies CACHE STRING "path to dependencies" )
 ENDIF(WIN32)
@@ -237,8 +238,8 @@ IF(WITH_QT)
         SET (files_utils_withQt ${files_utils} ${files_utils_qt} ${UTILS_QT_HEADERS_MOC})
 ENDIF (WITH_QT)
 
-
-
+        SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -Wextra -fPIC" )
+#        SET( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS} )
 	add_executable( shader_to_h ${CGoGN_ROOT_DIR}/ThirdParty/Tools/shader_to_h.cpp )
 	add_custom_target(shader_target shader_to_h ${shaders_src}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -251,11 +252,12 @@ IF(WIN32)
 	set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING "Only Release or Debug" FORCE)
 #	set(CMAKE_CONFIGURATION_TYPES "Release Debug" CACHE STRING "Only Release or Debug" FORCE)
 ELSE(WIN32)
-	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC ")
+        message(CMAKE_CXX_FLAGS : ${CMAKE_CXX_FLAGS})
 #	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wclobbered -Wempty-body -Wignored-qualifiers -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -fPIC")
 	SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Woverride-init -fPIC")
 	IF (ONELIB)
-                add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
+        add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
 		add_dependencies(${PROJECT_NAME} shader_target )
 		SET(CGOGN_LIBS "${PROJECT_NAME}")
 	ELSE (ONELIB)

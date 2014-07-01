@@ -27,101 +27,137 @@ namespace CGoGN
 
 /// INLINE FUNCTIONS
 
-inline void GMap0::init()
+template <typename MAP_IMPL>
+inline void GMap0<MAP_IMPL>::init()
 {
-	m_beta0 = addRelation("beta0") ;
+	MAP_IMPL::addInvolution() ;
 }
 
-inline GMap0::GMap0() : AttribMap()
+template <typename MAP_IMPL>
+inline GMap0<MAP_IMPL>::GMap0() : MapCommon<MAP_IMPL>()
 {
 	init() ;
 }
 
-inline std::string GMap0::mapTypeName() const
+template <typename MAP_IMPL>
+inline std::string GMap0<MAP_IMPL>::mapTypeName() const
 {
 	return "GMap0";
 }
 
-inline unsigned int GMap0::dimension() const
+template <typename MAP_IMPL>
+inline unsigned int GMap0<MAP_IMPL>::dimension() const
 {
 	return 0;
 }
 
-inline void GMap0::clear(bool removeAttrib)
+template <typename MAP_IMPL>
+inline void GMap0<MAP_IMPL>::clear(bool removeAttrib)
 {
-	AttribMap::clear(removeAttrib) ;
+	MAP_IMPL::clear(removeAttrib) ;
 	if (removeAttrib)
 		init() ;
 }
 
-inline void GMap0::update_topo_shortcuts()
+template <typename MAP_IMPL>
+inline unsigned int GMap0<MAP_IMPL>::getNbInvolutions() const
 {
-	GenericMap::update_topo_shortcuts();
-	m_beta0 = getRelation("beta0");
+	return 1;
+}
+
+template <typename MAP_IMPL>
+inline unsigned int GMap0<MAP_IMPL>::getNbPermutations() const
+{
+	return 0;
 }
 
 /*! @name Basic Topological Operators
  * Access and Modification
  *************************************************************************/
 
-inline Dart GMap0::newDart()
+template <typename MAP_IMPL>
+inline Dart GMap0<MAP_IMPL>::beta0(Dart d) const
 {
-	Dart d = GenericMap::newDart() ;
-	(*m_beta0)[d.index] = d ;
-	return d ;
+	return MAP_IMPL::template getInvolution<0>(d);
 }
 
-inline Dart GMap0::beta0(Dart d) const
+template <typename MAP_IMPL>
+inline void GMap0<MAP_IMPL>::beta0sew(Dart d, Dart e)
 {
-	return (*m_beta0)[d.index] ;
+	MAP_IMPL::template involutionSew<0>(d,e);
 }
 
-inline void GMap0::beta0sew(Dart d, Dart e)
+template <typename MAP_IMPL>
+inline void GMap0<MAP_IMPL>::beta0unsew(Dart d)
 {
-	assert((*m_beta0)[d.index] == d) ;
-	assert((*m_beta0)[e.index] == e) ;
-	(*m_beta0)[d.index] = e ;
-	(*m_beta0)[e.index] = d ;
+	MAP_IMPL::template involutionUnsew<0>(d);
 }
 
-inline void GMap0::beta0unsew(Dart d)
+/*! @name Constructors and Destructors
+ *  To generate or delete edges in a 0-G-map
+ *************************************************************************/
+
+template <typename MAP_IMPL>
+Dart GMap0<MAP_IMPL>::newEdge()
 {
-	Dart e = (*m_beta0)[d.index] ;
-	(*m_beta0)[d.index] = d ;
-	(*m_beta0)[e.index] = e ;
+	Dart d1 = this->newDart();
+	Dart d2 = this->newDart();
+	beta0sew(d1,d2);
+	return d1;
+}
+
+template <typename MAP_IMPL>
+void GMap0<MAP_IMPL>::deleteEdge(Dart d)
+{
+	this->deleteDart(beta0(d));
+	this->deleteDart(d);
 }
 
 /*! @name Cell Functors
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-inline bool GMap0::foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int /*thread*/) const
+template <typename MAP_IMPL>
+template <unsigned int ORBIT, typename FUNC>
+void GMap0<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread) const
 {
-	return f(d) ;
+	switch(ORBIT)
+	{
+		case DART:		f(c); break;
+		case VERTEX: 	foreach_dart_of_vertex(c, f, thread); break;
+		case EDGE: 		foreach_dart_of_edge(c, f, thread); break;
+		default: 		assert(!"Cells of this dimension are not handled"); break;
+	}
 }
 
-//inline bool GMap0::foreach_dart_of_vertex(Dart d, FunctorConstType& f, unsigned int /*thread*/) const
+//template <typename MAP_IMPL>
+//template <unsigned int ORBIT, typename FUNC>
+//void GMap0<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC& f, unsigned int thread) const
 //{
-//	return f(d) ;
+//	switch(ORBIT)
+//	{
+//		case DART:		f(c); break;
+//		case VERTEX: 	foreach_dart_of_vertex(c, f, thread); break;
+//		case EDGE: 		foreach_dart_of_edge(c, f, thread); break;
+//		default: 		assert(!"Cells of this dimension are not handled"); break;
+//	}
 //}
 
-inline bool GMap0::foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int /*thread*/) const
+template <typename MAP_IMPL>
+template <typename FUNC>
+inline void GMap0<MAP_IMPL>::foreach_dart_of_vertex(Dart d, FUNC& f, unsigned int /*thread*/) const
 {
-	if (f(d)) return true;
+	f(d) ;
+}
+
+template <typename MAP_IMPL>
+template <typename FUNC>
+inline void GMap0<MAP_IMPL>::foreach_dart_of_edge(Dart d, FUNC& f, unsigned int /*thread*/) const
+{
+	f(d);
 	Dart d1 = beta0(d);
-	if (d1 != d) return f(d1);
-	return false;
+	if (d1 != d)
+		f(d1);
 }
-
-
-//inline bool GMap0::foreach_dart_of_edge(Dart d, FunctorConstType& f, unsigned int /*thread*/)
-//{
-//	if (f(d)) return true;
-//	Dart d1 = beta0(d);
-//	if (d1 != d) return f(d1);
-//	return false;
-//}
-
-
 
 } // namespace CGoGN

@@ -39,7 +39,6 @@
 #include "Utils/Shaders/shaderSimpleColor.h"
 #include "Utils/Shaders/shaderColorPerVertex.h"
 
-
 namespace CGoGN
 {
 
@@ -52,8 +51,13 @@ namespace Render
 namespace GL2
 {
 
+template <typename PFP>
 class TopoRender
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+	typedef typename PFP::REAL REAL;
+
 protected:
 	/**
 	* vbo buffers
@@ -114,7 +118,7 @@ protected:
 	/**
 	 * attribut d'index dans le VBO
 	 */
-	DartAttribute<unsigned int> m_attIndex;
+	DartAttribute<unsigned int, MAP> m_attIndex;
 
 	Geom::Vec3f* m_bufferDartPosition;
 
@@ -139,8 +143,7 @@ protected:
 	/**
 	 * affect a color to each dart
 	 */
-	template<typename PFP>
-	void setDartsIdColor(typename PFP::MAP& map, bool withBoundary);
+	void setDartsIdColor(MAP& map, bool withBoundary);
 
 	/**
 	 * save colors before picking
@@ -156,7 +159,7 @@ public:
 	/**
 	* Constructor
 	* @param bs shift for boundary drawing
-	*/	
+	*/
 	TopoRender(float bs = 0.01f);
 
 	/**
@@ -171,7 +174,7 @@ public:
 	void setDartWidth(float dw);
 
 	/**
-	 * set the with of line use to draw phi (default val is ")
+	 * set the with of line use to draw phi (default val is 3)
 	 * @param pw width
 	 */
 	void setRelationWidth(float pw);
@@ -234,7 +237,6 @@ public:
 	 */
 	void overdrawDart(Dart d, float width, float r, float g, float b);
 
-
 	/**
 	 * pick dart with color set by setDartsIdColor
 	 * Do not forget to apply same transformation to scene before picking than before drawing !
@@ -243,32 +245,18 @@ public:
 	 * @param y position of mouse (pass H-y, classic pb of origin)
 	 * @return the dart or NIL
 	 */
-	template<typename PFP>
-	Dart picking(typename PFP::MAP& map, int x, int y, bool withBoundary=false);
+	Dart picking(MAP& map, int x, int y, bool withBoundary=false);
 
+	Dart coneSelection(MAP& map, const Geom::Vec3f& rayA, const Geom::Vec3f& rayAB, float angle);
 
-	template<typename PFP>
-	Dart coneSelection(typename PFP::MAP& map, const Geom::Vec3f& rayA, const Geom::Vec3f& rayAB, float angle);
+	Dart raySelection(MAP& map, const Geom::Vec3f& rayA, const Geom::Vec3f& rayAB, float distmax);
 
-	template<typename PFP>
-	Dart raySelection(typename PFP::MAP& map, const Geom::Vec3f& rayA, const Geom::Vec3f& rayAB, float distmax);
-
-
-
-	template <typename PFP>
-	void updateData(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, float ke, float kf, bool withBoundary = false);
-
-	template <typename PFP>
-	void updateDataMap(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, float ke, float kf, bool withBoundary = false);
-
-	template <typename PFP>
-	void updateDataGMap(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, float ke, float kf, bool withBoundary = false);
+	virtual void updateData(MAP& map, const VertexAttribute<VEC3, MAP>& positions, float ke, float kf, bool withBoundary = false) = 0;
 
 	/**
 	 * Special update function used to draw boundary of map3
 	 */
-	template<typename PFP>
-	void updateDataBoundary(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, float ke, float kf, float ns);
+	void updateDataBoundary(MAP& map, const VertexAttribute<VEC3, MAP>& positions, float ke, float kf, float ns);
 
 	/**
 	 * render to svg struct
@@ -293,9 +281,29 @@ public:
 	void setBoundaryShift(float bs);
 };
 
-// just for compatibility with old code
-typedef TopoRender TopoRenderMapD;
-typedef TopoRender TopoRenderGMap;
+template <typename PFP>
+class TopoRenderMap : public TopoRender<PFP>
+{
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+	typedef typename PFP::REAL REAL;
+
+public:
+	TopoRenderMap(float bs = 0.01f) : TopoRender<PFP>(bs) {}
+	void updateData(MAP &map, const VertexAttribute<VEC3, MAP>& positions, float ke, float kf, bool withBoundary = false);
+};
+
+template <typename PFP>
+class TopoRenderGMap : public TopoRender<PFP>
+{
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+	typedef typename PFP::REAL REAL;
+
+public:
+	TopoRenderGMap(float bs = 0.01f) : TopoRender<PFP>(bs) {}
+	void updateData(MAP &map, const VertexAttribute<VEC3, MAP>& positions, float ke, float kf, bool withBoundary = false);
+};
 
 } // namespace GL2
 
@@ -304,7 +312,6 @@ typedef TopoRender TopoRenderGMap;
 } // namespace Algo
 
 } // namespace CGoGN
-
 
 #include "Algo/Render/GL2/topoRender.hpp"
 

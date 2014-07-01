@@ -22,8 +22,8 @@
  *                                                                              *
  *******************************************************************************/
 
-#include "Topology/generic/traversorCell.h"
-#include "Topology/generic/traversor2.h"
+#include "Topology/generic/traversor/traversorCell.h"
+#include "Topology/generic/traversor/traversor2.h"
 #include "Algo/Geometry/basic.h"
 
 namespace CGoGN
@@ -42,7 +42,7 @@ template <typename PFP, typename ATTR_TYPE>
 ATTR_TYPE computeLaplacianTopoVertex(
 	typename PFP::MAP& map,
 	Dart d,
-	const VertexAttribute<ATTR_TYPE>& attr)
+	const VertexAttribute<ATTR_TYPE, typename PFP::MAP>& attr)
 {
 	ATTR_TYPE l(0) ;
 	ATTR_TYPE value = attr[d] ;
@@ -63,19 +63,21 @@ template <typename PFP, typename ATTR_TYPE>
 ATTR_TYPE computeLaplacianCotanVertex(
 	typename PFP::MAP& map,
 	Dart d,
-	const EdgeAttribute<typename PFP::REAL>& edgeWeight,
-	const VertexAttribute<typename PFP::REAL>& vertexArea,
-	const VertexAttribute<ATTR_TYPE>& attr)
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeWeight,
+	const VertexAttribute<typename PFP::REAL, typename PFP::MAP>& vertexArea,
+	const VertexAttribute<ATTR_TYPE, typename PFP::MAP>& attr)
 {
+	typedef typename PFP::REAL REAL;
+
 	ATTR_TYPE l(0) ;
-	typename PFP::REAL vArea = vertexArea[d] ;
+	REAL vArea = vertexArea[d] ;
 	ATTR_TYPE value = attr[d] ;
-	typename PFP::REAL wSum = 0 ;
+	REAL wSum = 0 ;
 
 	Traversor2VE<typename PFP::MAP> t(map, d) ;
 	for(Dart it = t.begin(); it != t.end(); it = t.next())
 	{
-		typename PFP::REAL w = edgeWeight[it] / vArea ;
+		REAL w = edgeWeight[it] / vArea ;
 		l += (attr[map.phi1(it)] - value) * w ;
 		wSum += w ;
 	}
@@ -87,8 +89,8 @@ ATTR_TYPE computeLaplacianCotanVertex(
 template <typename PFP, typename ATTR_TYPE>
 void computeLaplacianTopoVertices(
 	typename PFP::MAP& map,
-	const VertexAttribute<ATTR_TYPE>& attr,
-	VertexAttribute<ATTR_TYPE>& laplacian)
+	const VertexAttribute<ATTR_TYPE, typename PFP::MAP>& attr,
+	VertexAttribute<ATTR_TYPE, typename PFP::MAP>& laplacian)
 {
 	TraversorV<typename PFP::MAP> t(map) ;
 	for(Dart d = t.begin(); d != t.end(); d = t.next())
@@ -98,10 +100,10 @@ void computeLaplacianTopoVertices(
 template <typename PFP, typename ATTR_TYPE>
 void computeLaplacianCotanVertices(
 	typename PFP::MAP& map,
-	const EdgeAttribute<typename PFP::REAL>& edgeWeight,
-	const VertexAttribute<typename PFP::REAL>& vertexArea,
-	const VertexAttribute<ATTR_TYPE>& attr,
-	VertexAttribute<ATTR_TYPE>& laplacian)
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeWeight,
+	const VertexAttribute<typename PFP::REAL, typename PFP::MAP>& vertexArea,
+	const VertexAttribute<ATTR_TYPE, typename PFP::MAP>& attr,
+	VertexAttribute<ATTR_TYPE, typename PFP::MAP>& laplacian)
 {
 	TraversorV<typename PFP::MAP> t(map) ;
 	for(Dart d = t.begin(); d != t.end(); d = t.next())
@@ -112,26 +114,29 @@ template <typename PFP>
 typename PFP::REAL computeCotanWeightEdge(
 	typename PFP::MAP& map,
 	Dart d,
-	const VertexAttribute<typename PFP::VEC3>& position)
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position)
 {
+	typedef typename PFP::VEC3 VEC3;
+	typedef typename PFP::REAL REAL;
+
 	if(map.isBoundaryEdge(d))
 	{
-		const typename PFP::VEC3& p1 = position[d] ;
-		const typename PFP::VEC3& p2 = position[map.phi1(d)] ;
-		const typename PFP::VEC3& p3 = position[map.phi_1(d)] ;
+		const VEC3& p1 = position[d] ;
+		const VEC3& p2 = position[map.phi1(d)] ;
+		const VEC3& p3 = position[map.phi_1(d)] ;
 
-		typename PFP::REAL cot_alpha = 1 / tan(Geom::angle(p1 - p3, p2 - p3)) ;
+		REAL cot_alpha = 1 / tan(Geom::angle(p1 - p3, p2 - p3)) ;
 		return 0.5 * cot_alpha ;
 	}
 	else
 	{
-		const typename PFP::VEC3& p1 = position[d] ;
-		const typename PFP::VEC3& p2 = position[map.phi1(d)] ;
-		const typename PFP::VEC3& p3 = position[map.phi_1(d)] ;
-		const typename PFP::VEC3& p4 = position[map.phi_1(map.phi2(d))] ;
+		const VEC3& p1 = position[d] ;
+		const VEC3& p2 = position[map.phi1(d)] ;
+		const VEC3& p3 = position[map.phi_1(d)] ;
+		const VEC3& p4 = position[map.phi_1(map.phi2(d))] ;
 
-		typename PFP::REAL cot_alpha = 1 / tan(Geom::angle(p1 - p3, p2 - p3)) ;
-		typename PFP::REAL cot_beta = 1 / tan(Geom::angle(p2 - p4, p1 - p4)) ;
+		REAL cot_alpha = 1 / tan(Geom::angle(p1 - p3, p2 - p3)) ;
+		REAL cot_beta = 1 / tan(Geom::angle(p2 - p4, p1 - p4)) ;
 		return 0.5 * ( cot_alpha + cot_beta ) ;
 	}
 }
@@ -139,8 +144,8 @@ typename PFP::REAL computeCotanWeightEdge(
 template <typename PFP>
 void computeCotanWeightEdges(
 	typename PFP::MAP& map,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	EdgeAttribute<typename PFP::REAL>& edgeWeight)
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeWeight)
 {
 	TraversorE<typename PFP::MAP> t(map) ;
 	for(Dart d = t.begin(); d != t.end(); d = t.next())
@@ -159,7 +164,10 @@ namespace Geometry
 {
 
 template <typename PFP, typename ATTR_TYPE>
-ATTR_TYPE computeLaplacianTopoVertex(typename PFP::MAP& map, Dart d, const VertexAttribute<ATTR_TYPE>& attr)
+ATTR_TYPE computeLaplacianTopoVertex(
+	typename PFP::MAP& map,
+	Dart d,
+	const VertexAttribute<ATTR_TYPE, typename PFP::MAP>& attr)
 {
 	ATTR_TYPE l(0) ;
 	ATTR_TYPE value = attr[d] ;
@@ -177,19 +185,19 @@ ATTR_TYPE computeLaplacianTopoVertex(typename PFP::MAP& map, Dart d, const Verte
 }
 
 template <typename PFP, typename ATTR_TYPE>
-void computeLaplacianTopoVertices(typename PFP::MAP& map, const VertexAttribute<ATTR_TYPE>& attr,
-									VertexAttribute<ATTR_TYPE>& laplacian)
+void computeLaplacianTopoVertices(
+	typename PFP::MAP& map,
+	const VertexAttribute<ATTR_TYPE, typename PFP::MAP>& attr,
+	VertexAttribute<ATTR_TYPE, typename PFP::MAP>& laplacian)
 {
 	TraversorV<typename PFP::MAP> t(map) ;
 	for(Dart d = t.begin(); d != t.end(); d = t.next())
 		laplacian[d] = computeLaplacianTopoVertex<PFP, ATTR_TYPE>(map, d, attr) ;
 }
 
-
 } // namespace Geometry
 
 } // namespace Volume
-
 
 } // namespace Algo
 

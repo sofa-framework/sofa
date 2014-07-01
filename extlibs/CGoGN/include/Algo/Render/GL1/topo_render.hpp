@@ -40,21 +40,22 @@ namespace GL1
 {
 
 template <typename PFP>
-void renderTopoMD2(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, bool drawPhi1, bool drawPhi2, float ke, float kf)
+void renderTopoMD2(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, bool drawPhi1, bool drawPhi2, float ke, float kf)
 {
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;
 	typedef typename PFP::REAL REAL;
 	
-	DartAutoAttribute<VEC3> fv1(map);
-	DartAutoAttribute<VEC3> fv11(map);
-	DartAutoAttribute<VEC3> fv2(map);
-	DartAutoAttribute<VEC3> vert(map);
+	DartAutoAttribute<VEC3, MAP> fv1(map);
+	DartAutoAttribute<VEC3, MAP> fv11(map);
+	DartAutoAttribute<VEC3, MAP> fv2(map);
+	DartAutoAttribute<VEC3, MAP> vert(map);
 
 	glLineWidth(2.0f);
 	glColor3f(0.9f,0.9f,0.9f);
 	glBegin(GL_LINES);
 
-	DartMarker mf(map);
+	DartMarker<MAP> mf(map);
 	for(Dart d = map.begin(); d!= map.end(); map.next(d))
 	{
 		if (!mf.isMarked(d))
@@ -74,7 +75,7 @@ void renderTopoMD2(typename PFP::MAP& map, const VertexAttribute<typename PFP::V
 				vecPos.push_back(positions[d]);
 				center += P;
 				d = map.phi1(d);
-			}while (d!=dd);
+			} while (d != dd);
 			center /= REAL(vecPos.size());
 
 			//shrink the face
@@ -129,7 +130,7 @@ void renderTopoMD2(typename PFP::MAP& map, const VertexAttribute<typename PFP::V
 	glPointSize(5.0f);
 	glColor3f(0.0f,0.0f,0.0f);
 	glBegin(GL_POINTS);
-	for(Dart d = map.begin(); d!= map.end(); map.next(d))
+	for(Dart d = map.begin(); d != map.end(); map.next(d))
 	{
 		glVertex3fv(vert[d].data());
 	}
@@ -138,16 +139,17 @@ void renderTopoMD2(typename PFP::MAP& map, const VertexAttribute<typename PFP::V
 }
 
 template <typename PFP>
-void renderTopoMD3(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& positions, bool drawPhi1, bool drawPhi2, bool drawPhi3, float ke, float kf, float kv)
+void renderTopoMD3(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, bool drawPhi1, bool drawPhi2, bool drawPhi3, float ke, float kf, float kv)
 {
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;
 	typedef typename PFP::REAL REAL;
 
-	DartAutoAttribute<VEC3> fv1(map);
-	DartAutoAttribute<VEC3> fv11(map);
-	DartAutoAttribute<VEC3> fv2(map);
-	DartAutoAttribute<VEC3> fv2x(map);
-	DartAutoAttribute<VEC3> vert(map);
+	DartAutoAttribute<VEC3, MAP> fv1(map);
+	DartAutoAttribute<VEC3, MAP> fv11(map);
+	DartAutoAttribute<VEC3, MAP> fv2(map);
+	DartAutoAttribute<VEC3, MAP> fv2x(map);
+	DartAutoAttribute<VEC3, MAP> vert(map);
 
 	int m_nbDarts = 0;
 
@@ -161,10 +163,10 @@ void renderTopoMD3(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& 
 	std::vector<Dart> vecDartFaces;
 	vecDartFaces.reserve(map.getNbDarts()/4);
 
-	DartMarker mark(map);					// marker for darts
+	DartMarker<MAP> mark(map);					// marker for darts
 	for (Dart d = map.begin(); d != map.end(); map.next(d))
 	{
-		CellMarkerStore<VERTEX> markVert(map);		//marker for vertices
+		CellMarkerStore<MAP, VERTEX> markVert(map);		//marker for vertices
 		VEC3 center(0, 0, 0);
 		unsigned int nbv = 0;
 		unsigned int nbf = 0;
@@ -307,20 +309,21 @@ void renderTopoMD3(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& 
 }
 
 template <typename PFP>
-void renderTopoGMD2(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, bool drawBeta0, bool drawBeta1, bool drawBeta2, float kd, float ke, float kf)
+void renderTopoGMD2(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, bool drawBeta0, bool drawBeta1, bool drawBeta2, float kd, float ke, float kf)
 {
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;
 	typedef typename PFP::REAL REAL;
 
-	DartAutoAttribute<VEC3> posBeta1(map);
-	DartAutoAttribute<VEC3> posBeta2(map);
-	DartAutoAttribute<VEC3> vert(map);
+	DartAutoAttribute<VEC3, MAP> posBeta1(map);
+	DartAutoAttribute<VEC3, MAP> posBeta2(map);
+	DartAutoAttribute<VEC3, MAP> vert(map);
 
 	glLineWidth(2.0f);
 	glColor3f(0.9f,0.9f,0.9f);
 	glBegin(GL_LINES);
 
-	DartMarker mf(map);
+	DartMarker<MAP> mf(map);
 	//draw all darts and potentially all beta0
 	for(Dart d = map.begin(); d!= map.end(); map.next(d))
 	{
@@ -379,7 +382,7 @@ void renderTopoGMD2(typename PFP::MAP& map, const VertexAttribute<typename PFP::
 				posBeta1[map.beta0(d)] = Q*0.9f + Q_mid*0.1f;
 				d = map.phi1(d);
 			}
-			mf.markOrbit<FACE>(d);
+			mf.template markOrbit<FACE>(d);
 		}
 	}
 
@@ -416,14 +419,15 @@ void renderTopoGMD2(typename PFP::MAP& map, const VertexAttribute<typename PFP::
 }
 
 template <typename PFP>
-void renderTopoGMD3(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, bool drawBeta0, bool drawBeta1, bool drawBeta2, bool drawBeta3, float kd, float ke, float kf, float kv)
+void renderTopoGMD3(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, bool drawBeta0, bool drawBeta1, bool drawBeta2, bool drawBeta3, float kd, float ke, float kf, float kv)
 {
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;
 	typedef typename PFP::REAL REAL;
 
-	DartAutoAttribute<VEC3> posBeta1(map);
-	DartAutoAttribute<VEC3> posBeta2(map); //beta 3 link is represented at the same location as beta2
-	DartAutoAttribute<VEC3> vert(map);
+	DartAutoAttribute<VEC3, MAP> posBeta1(map);
+	DartAutoAttribute<VEC3, MAP> posBeta2(map); //beta 3 link is represented at the same location as beta2
+	DartAutoAttribute<VEC3, MAP> vert(map);
 
 	// table of face (one dart of each)
 	std::vector<Dart> vecDartFaces;
@@ -437,8 +441,8 @@ void renderTopoGMD3(typename PFP::MAP& map, const VertexAttribute<typename PFP::
 	std::vector<VEC3> vecVolCenters;
 	vecVolCenters.reserve(vecDartFaces.size()/4); // = nb of volumes for a tetra mesh
 
-	DartMarker mark(map);					// marker for darts
-	CellMarker<VOLUME> mVol(map);
+	DartMarker<MAP> mark(map);					// marker for darts
+	CellMarker<MAP, VOLUME> mVol(map);
 //	DartMarker mVol(map);
 
 	//compute barycenter and get a dart by face
@@ -449,7 +453,7 @@ void renderTopoGMD3(typename PFP::MAP& map, const VertexAttribute<typename PFP::
 			mVol.mark(d);
 //			mVol.markOrbit(VOLUME,d);
 
-			CellMarkerStore<VERTEX> markVert(map);		//marker for vertices
+			CellMarkerStore<MAP, VERTEX> markVert(map);		//marker for vertices
 			VEC3 center(0);
 			unsigned int nbVertices = 0;
 			unsigned int nbf = 0;
@@ -616,4 +620,3 @@ void renderTopoGMD3(typename PFP::MAP& map, const VertexAttribute<typename PFP::
 } // namespace Algo
 
 } // namespace CGoGN
-

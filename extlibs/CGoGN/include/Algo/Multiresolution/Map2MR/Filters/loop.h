@@ -52,7 +52,10 @@ namespace Filters
  *********************************************************************************/
 
 template <typename PFP>
-typename PFP::VEC3 loopOddVertex(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, Dart d1)
+typename PFP::VEC3 loopOddVertex(
+	typename PFP::MAP& map,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	Dart d1)
 {
 	Dart d2 = map.phi2(d1) ;
 	Dart d3 = map.phi_1(d1) ;
@@ -72,7 +75,10 @@ typename PFP::VEC3 loopOddVertex(typename PFP::MAP& map, const VertexAttribute<t
 }
 
 template <typename PFP>
-typename PFP::VEC3 loopEvenVertex(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, Dart d)
+typename PFP::VEC3 loopEvenVertex(
+	typename PFP::MAP& map,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	Dart d)
 {
 	map.incCurrentLevel() ;
 
@@ -101,20 +107,23 @@ typename PFP::VEC3 loopEvenVertex(typename PFP::MAP& map, const VertexAttribute<
 template <typename PFP>
 class LoopOddAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	LoopOddAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LoopOddAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> trav(m_map) ;
+		TraversorE<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
-			typename PFP::VEC3 p = loopOddVertex<PFP>(m_map, m_position, d) ;
+			VEC3 p = loopOddVertex<PFP>(m_map, m_position, d) ;
 
 			m_map.incCurrentLevel() ;
 
@@ -129,20 +138,23 @@ public:
 template <typename PFP>
 class LoopEvenAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position;
 
 public:
-	LoopEvenAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LoopEvenAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> trav(m_map) ;
+		TraversorV<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
-			typename PFP::VEC3 p = loopEvenVertex<PFP>(m_map, m_position, d) ;
+			VEC3 p = loopEvenVertex<PFP>(m_map, m_position, d) ;
 			m_position[d] -= p ;
 		}
 	}
@@ -151,17 +163,20 @@ public:
 template <typename PFP>
 class LoopNormalisationAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position;
 
 public:
-	LoopNormalisationAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LoopNormalisationAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> trav(m_map) ;
+		TraversorV<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 			unsigned int degree = m_map.vertexDegree(d) ;
@@ -180,20 +195,23 @@ public:
 template <typename PFP>
 class LoopOddSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position;
 
 public:
-	LoopOddSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LoopOddSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> trav(m_map) ;
+		TraversorE<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
-			typename PFP::VEC3 p = loopOddVertex<PFP>(m_map, m_position, d) ;
+			VEC3 p = loopOddVertex<PFP>(m_map, m_position, d) ;
 
 			m_map.incCurrentLevel() ;
 
@@ -208,20 +226,23 @@ public:
 template <typename PFP>
 class LoopEvenSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	LoopEvenSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LoopEvenSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> trav(m_map) ;
+		TraversorV<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
-			typename PFP::VEC3 p = loopEvenVertex<PFP>(m_map, m_position, d) ;
+			VEC3 p = loopEvenVertex<PFP>(m_map, m_position, d) ;
 			m_position[d] += p ;
 		}
 	}
@@ -230,17 +251,20 @@ public:
 template <typename PFP>
 class LoopNormalisationSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	LoopNormalisationSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LoopNormalisationSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> trav(m_map) ;
+		TraversorV<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 			unsigned int degree = m_map.vertexDegree(d) ;

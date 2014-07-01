@@ -26,74 +26,24 @@
 #define __EMBEDDED_MAP3_H__
 
 #include "Topology/map/map3.h"
+#include "Topology/generic/mapImpl/mapMono.h"
 
 namespace CGoGN
 {
 
 /*! Class of 3-dimensional maps with managed embeddings
  */
-class EmbeddedMap3 : public Map3
+class EmbeddedMap3 : public Map3<MapMono>
 {
+	EmbeddedMap3(const EmbeddedMap3& m) : Map3<MapMono>(m) {}
 public:
-    typedef Map3 TOPO_MAP;
+	typedef MapMono IMPL;
+	typedef Map3<MapMono> TOPO_MAP;
 
-    static const unsigned int DIMENSION = 3 ;
+	static const unsigned int DIMENSION = TOPO_MAP::DIMENSION ;
 
+	EmbeddedMap3() {}
 
-    EmbeddedMap3() : Map3() {
-        std::cerr << "EMAP3  creation" << std::endl;
-        if(!isOrbitEmbedded<VERTEX>())
-            addEmbedding<VERTEX>() ;
-        if(!isOrbitEmbedded<EDGE>())
-            addEmbedding<EDGE>() ;
-        if(!isOrbitEmbedded<FACE>())
-            addEmbedding<FACE>() ;
-        if(!isOrbitEmbedded<VOLUME>())
-            addEmbedding<VOLUME>() ;
-
-    }
-
-    std::string orbitName(unsigned int ORBIT);
-
-    template<unsigned int ORB>
-    void printEmbedding() {
-        const AttributeContainer& orbCont = m_attribs[ORB] ;
-        const unsigned int size = orbCont.size();
-        AttributeMultiVector<unsigned int>* embVec = getEmbeddingAttributeVector(ORB);
-        std::cerr << "***** printing "<< this->orbitName(ORB) << " embeddings ***** " << std::endl;
-        TraversorV<EmbeddedMap3> trav(*this);
-        unsigned i = 0u ;
-        for (Dart d = trav.begin() ; d != trav.end() ; ++i, d = trav.next()) {
-            std::cerr << "embedding number " << i << " : " << getEmbedding<ORB>(d) << std::endl;
-        }
-        std::cerr << "**** end embedding *****" << std::endl;
-    }
-
-    template<unsigned int ORB>
-    void swapEmbeddings(unsigned int e1, unsigned int e2) {
-        const AttributeContainer& dartCont = m_attribs[DART] ;
-        const unsigned int dartNb = dartCont.size();
-
-        AttributeMultiVector<unsigned int>* embVec = getEmbeddingAttributeVector(ORB);
-        for (unsigned i = 0u ; i < dartNb ; ++i ) {
-            unsigned int& embi = embVec->operator [](i);
-            if (embi== e1)
-                embi = e2;
-            else {
-                if (embi == e2)
-                    embi = e1;
-            }
-        }
-    }
-
-//    template<unsigned int ORB>
-//    bool copyOnFreeCell(unsigned int emb) {
-//        const AttributeContainer& dartCont = m_attribs[DART] ;
-//        const unsigned int dartNb = dartCont.size();
-
-//        AttributeMultiVector<unsigned int>* embVec = getEmbeddingAttributeVector(ORB);
-//        dartCont
-//    }
 
     //!
     /*!
@@ -196,7 +146,41 @@ public:
     //!
     /*!
      */
-    virtual bool check();
+    virtual bool check() const;
+
+
+    std::string orbitName(unsigned int ORBIT);
+
+    template<unsigned int ORB>
+    void printEmbedding() {
+        const AttributeContainer& orbCont = m_attribs[ORB] ;
+        const unsigned int size = orbCont.size();
+        AttributeMultiVector<unsigned int>* embVec = getEmbeddingAttributeVector<ORB>();
+        std::cerr << "***** printing "<< this->orbitName(ORB) << " embeddings ***** " << std::endl;
+        TraversorV<EmbeddedMap3> trav(*this);
+        unsigned i = 0u ;
+        for (Dart d = trav.begin() ; d != trav.end() ; ++i, d = trav.next()) {
+            std::cerr << "embedding number " << i << " : " << getEmbedding<ORB>(d) << std::endl;
+        }
+        std::cerr << "**** end embedding *****" << std::endl;
+    }
+
+    template<unsigned int ORB>
+    void swapEmbeddings(unsigned int e1, unsigned int e2) {
+        const AttributeContainer& dartCont = m_attribs[DART] ;
+        const unsigned int dartNb = dartCont.size();
+
+        AttributeMultiVector<unsigned int>* embVec = getEmbeddingAttributeVector<ORB>();
+        for (unsigned i = 0u ; i < dartNb ; ++i ) {
+            unsigned int& embi = embVec->operator [](i);
+            if (embi== e1)
+                embi = e2;
+            else {
+                if (embi == e2)
+                    embi = e1;
+            }
+        }
+    }
 } ;
 
 } // namespace CGoGN

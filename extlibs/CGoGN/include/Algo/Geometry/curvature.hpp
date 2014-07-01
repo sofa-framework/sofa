@@ -24,9 +24,8 @@
 
 #include "Algo/Geometry/localFrame.h"
 #include "Geometry/matrix.h"
-#include "Topology/generic/traversorCell.h"
-#include "Topology/generic/traversor2.h"
-
+#include "Topology/generic/traversor/traversorCell.h"
+#include "Topology/generic/traversor/traversor2.h"
 
 namespace CGoGN
 {
@@ -43,44 +42,58 @@ namespace Geometry
 template <typename PFP>
 void computeCurvatureVertices_QuadraticFitting(
 	typename PFP::MAP& map,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin)
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	unsigned int thread)
 {
-	TraversorV<typename PFP::MAP> t(map) ;
-	for(Dart d = t.begin(); d != t.end(); d = t.next())
-		computeCurvatureVertex_QuadraticFitting<PFP>(map, d, position, normal, kmax, kmin, Kmax, Kmin) ;
+
+	if ((CGoGN::Parallel::NumberOfThreads > 1) && (thread==0))
+	{
+		Parallel::computeCurvatureVertices_QuadraticFitting<PFP>(map, position, normal, kmax, kmin, Kmax, Kmin);
+		return;
+	}
+
+	foreach_cell<VERTEX>(map, [&] (Vertex v)
+	{
+		computeCurvatureVertex_QuadraticFitting<PFP>(map, v, position, normal, kmax, kmin, Kmax, Kmin) ;
+	}
+	, FORCE_CELL_MARKING, thread);
+
+//	TraversorV<typename PFP::MAP> t(map) ;
+//	for(Vertex v = t.begin(); v != t.end(); v = t.next())
+//		computeCurvatureVertex_QuadraticFitting<PFP>(map, v, position, normal, kmax, kmin, Kmax, Kmin) ;
 }
 
 template <typename PFP>
 void computeCurvatureVertex_QuadraticFitting(
 	typename PFP::MAP& map,
-	Dart dart,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin)
+	Vertex v,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin)
 {
 	typedef typename PFP::REAL REAL ;
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::MATRIX33 MATRIX33 ;
 
-	VEC3 n = normal[dart] ;
+	VEC3 n = normal[v] ;
 
-	MATRIX33 localFrame = Algo::Geometry::vertexLocalFrame<PFP>(map, dart, position, n) ;
+	MATRIX33 localFrame = Algo::Geometry::vertexLocalFrame<PFP>(map, v, position, n) ;
 	MATRIX33 invLocalFrame ;
 	localFrame.invert(invLocalFrame) ;
 
 	REAL a, b, c, d, e;
 	//vertexCubicFitting(map,dart,localFrame,a,b,c,d,e,f,g,h,i) ;
-	vertexQuadraticFitting<PFP>(map, dart, localFrame, position, normal, a, b, c, d, e) ;
+	vertexQuadraticFitting<PFP>(map, v, localFrame, position, normal, a, b, c, d, e) ;
 
-	REAL kmax_v, kmin_v, Kmax_x, Kmax_y ;
+//	REAL kmax_v, kmin_v, Kmax_x, Kmax_y ;
 //	/*int res = */slaev2_(&a, &b, &c, &kmax_v, &kmin_v, &Kmax_x, &Kmax_y) ;
 
 	Eigen::Matrix<REAL,2,2> m;
@@ -90,8 +103,8 @@ void computeCurvatureVertex_QuadraticFitting(
 	Eigen::SelfAdjointEigenSolver<Eigen::Matrix<REAL,2,2> > solver(m);
 
 	const Eigen::Matrix<REAL,2,1>& ev = solver.eigenvalues();
-	kmax_v = ev[0];
-	kmin_v = ev[1];
+	REAL kmax_v = ev[0];
+	REAL kmin_v = ev[1];
 
 	const Eigen::Matrix<REAL,2,2>& evec = solver.eigenvectors();
 	VEC3 Kmax_v(evec(0,0), evec(1,0), 0.0f) ;
@@ -102,30 +115,30 @@ void computeCurvatureVertex_QuadraticFitting(
 
 	if (kmax_v < kmin_v)
 	{
-		kmax[dart] = -kmax_v ;
-		kmin[dart] = -kmin_v ;
-		Kmax[dart] = Kmax_v ;
-		Kmin[dart] = Kmin_v ;
+		kmax[v] = -kmax_v ;
+		kmin[v] = -kmin_v ;
+		Kmax[v] = Kmax_v ;
+		Kmin[v] = Kmin_v ;
 	}
 	else
 	{
-		kmax[dart] = -kmin_v ;
-		kmin[dart] = -kmax_v ;
-		Kmax[dart] = Kmin_v ;
-		Kmin[dart] = Kmax_v ;
+		kmax[v] = -kmin_v ;
+		kmin[v] = -kmax_v ;
+		Kmax[v] = Kmin_v ;
+		Kmin[v] = Kmax_v ;
 	}
 }
 
 template <typename PFP>
 void vertexQuadraticFitting(
 	typename PFP::MAP& map,
-	Dart dart,
+	Vertex v,
 	typename PFP::MATRIX33& localFrame,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
 	float& a, float& b, float& c, float& d, float& e)
 {
-	typename PFP::VEC3 p = position[dart] ;
+	typename PFP::VEC3 p = position[v] ;
 
 	NLContext nlContext = nlNewContext() ;
 	nlMakeCurrent(nlContext) ;
@@ -133,14 +146,12 @@ void vertexQuadraticFitting(
 	nlSolverParameteri(NL_LEAST_SQUARES, NL_TRUE) ;
 	nlBegin(NL_SYSTEM) ;
 	nlBegin(NL_MATRIX) ;
-	Traversor2VVaE<typename PFP::MAP> tav(map, dart) ;
-	for(Dart it = tav.begin(); it != tav.end(); it = tav.next())
-	{
-		typename PFP::VEC3 v = position[it] ;
-		quadraticFittingAddVertexPos<PFP>(v, p, localFrame) ;
-		typename PFP::VEC3 n = normal[it] ;
-		quadraticFittingAddVertexNormal<PFP>(v, n, p, localFrame) ;
-	}
+	foreach_adjacent2<EDGE>(map, v, [&] (Vertex it) {
+		typename PFP::VEC3 itp = position[it] ;
+		quadraticFittingAddVertexPos<PFP>(v, itp, localFrame) ;
+		typename PFP::VEC3 itn = normal[it] ;
+		quadraticFittingAddVertexNormal<PFP>(itp, itn, p, localFrame) ;
+	});
 	nlEnd(NL_MATRIX) ;
 	nlEnd(NL_SYSTEM) ;
 	nlSolve() ;
@@ -293,34 +304,46 @@ template <typename PFP>
 void computeCurvatureVertices_NormalCycles(
 	typename PFP::MAP& map,
 	typename PFP::REAL radius,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	const EdgeAttribute<typename PFP::REAL>& edgeangle,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	VertexAttribute<typename PFP::VEC3>& Knormal,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal,
 	unsigned int thread)
 {
-	TraversorV<typename PFP::MAP> t(map) ;
-	for(Dart d = t.begin(); d != t.end(); d = t.next())
-		computeCurvatureVertex_NormalCycles<PFP>(map, d, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal,thread) ;
+	if ((CGoGN::Parallel::NumberOfThreads > 1) && (thread==0))
+	{
+		Parallel::computeCurvatureVertices_NormalCycles<PFP>(map, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal);
+		return;
+	}
+
+	foreach_cell<VERTEX>(map, [&] (Vertex v)
+	{
+		computeCurvatureVertex_NormalCycles<PFP>(map, v, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal,thread) ;
+	}
+	,FORCE_CELL_MARKING,thread);
+
+//	TraversorV<typename PFP::MAP> t(map) ;
+//	for(Vertex v = t.begin(); v != t.end(); v = t.next())
+//		computeCurvatureVertex_NormalCycles<PFP>(map, v, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal,thread) ;
 }
 
 template <typename PFP>
 void computeCurvatureVertex_NormalCycles(
 	typename PFP::MAP& map,
-	Dart dart,
+	Vertex v,
 	typename PFP::REAL radius,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	const EdgeAttribute<typename PFP::REAL>& edgeangle,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	VertexAttribute<typename PFP::VEC3>& Knormal,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal,
 	unsigned int thread)
 {
 	typedef typename PFP::REAL REAL ;
@@ -331,17 +354,17 @@ void computeCurvatureVertex_NormalCycles(
 
 	// collect the normal cycle tensor
 	Selection::Collector_WithinSphere<PFP> neigh(map, position, radius, thread) ;
-	neigh.collectAll(dart) ;
+	neigh.collectAll(v) ;
 
 	MATRIX tensor(0) ;
-	neigh.computeNormalCyclesTensor(position, edgeangle,tensor);
+	neigh.computeNormalCyclesTensor(position, edgeangle, tensor);
 
 	// solve eigen problem
-	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver (Utils::convertRef<E_MATRIX>(tensor));
+	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver(Utils::convertRef<E_MATRIX>(tensor));
 	const VEC3& ev = Utils::convertRef<VEC3>(solver.eigenvalues());
 	const MATRIX& evec = Utils::convertRef<MATRIX>(solver.eigenvectors());
 
-	normalCycles_SortAndSetEigenComponents<PFP>(ev,evec,kmax[dart],kmin[dart],Kmax[dart],Kmin[dart],Knormal[dart],normal[dart],thread);
+	normalCycles_SortAndSetEigenComponents<PFP>(ev,evec,kmax[v],kmin[v],Kmax[v],Kmin[v],Knormal[v],normal[v],thread);
 
 //	if (dart.index % 15000 == 0)
 //	{
@@ -358,34 +381,46 @@ template <typename PFP>
 void computeCurvatureVertices_NormalCycles_Projected(
 	typename PFP::MAP& map,
 	typename PFP::REAL radius,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	const EdgeAttribute<typename PFP::REAL>& edgeangle,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	VertexAttribute<typename PFP::VEC3>& Knormal,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal,
 	unsigned int thread)
 {
-	TraversorV<typename PFP::MAP> t(map) ;
-	for(Dart d = t.begin(); d != t.end(); d = t.next())
-		computeCurvatureVertex_NormalCycles_Projected<PFP>(map, d, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal,thread) ;
+	if ((CGoGN::Parallel::NumberOfThreads > 1) && (thread==0))
+	{
+		Parallel::computeCurvatureVertices_NormalCycles_Projected<PFP>(map, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal);
+		return;
+	}
+
+	foreach_cell<VERTEX>(map, [&] (Vertex v)
+	{
+		computeCurvatureVertex_NormalCycles_Projected<PFP>(map, v, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal,thread) ;
+	}
+	,FORCE_CELL_MARKING,thread);
+
+//	TraversorV<typename PFP::MAP> t(map) ;
+//	for(Vertex v = t.begin(); v.dart != t.end(); v = t.next())
+//		computeCurvatureVertex_NormalCycles_Projected<PFP>(map, v, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal, thread) ;
 }
 
 template <typename PFP>
 void computeCurvatureVertex_NormalCycles_Projected(
 	typename PFP::MAP& map,
-	Dart dart,
+	Vertex v,
 	typename PFP::REAL radius,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	const EdgeAttribute<typename PFP::REAL>& edgeangle,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	VertexAttribute<typename PFP::VEC3>& Knormal,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal,
 	unsigned int thread)
 {
 	typedef typename PFP::REAL REAL ;
@@ -396,54 +431,53 @@ void computeCurvatureVertex_NormalCycles_Projected(
 
 	// collect the normal cycle tensor
 	Selection::Collector_WithinSphere<PFP> neigh(map, position, radius, thread) ;
-	neigh.collectAll(dart) ;
+	neigh.collectAll(v) ;
 
 	MATRIX tensor(0) ;
-	neigh.computeNormalCyclesTensor(position, edgeangle,tensor);
+	neigh.computeNormalCyclesTensor(position, edgeangle, tensor);
 
 	// project the tensor
-	normalCycles_ProjectTensor<PFP>(tensor,normal[dart],thread);
+	normalCycles_ProjectTensor<PFP>(tensor, normal[v], thread);
 
 	// solve eigen problem
-	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver (Utils::convertRef<E_MATRIX>(tensor));
+	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver(Utils::convertRef<E_MATRIX>(tensor));
 	const VEC3& ev = Utils::convertRef<VEC3>(solver.eigenvalues());
 	const MATRIX& evec = Utils::convertRef<MATRIX>(solver.eigenvectors());
 
-	normalCycles_SortAndSetEigenComponents<PFP>(ev,evec,kmax[dart],kmin[dart],Kmax[dart],Kmin[dart],Knormal[dart],normal[dart],thread);
+	normalCycles_SortAndSetEigenComponents<PFP>(ev,evec,kmax[v],kmin[v],Kmax[v],Kmin[v],Knormal[v],normal[v],thread);
 }
 
 template <typename PFP>
 void computeCurvatureVertices_NormalCycles(
 	typename PFP::MAP& map,
-	Selection::Collector<PFP> & neigh,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	const EdgeAttribute<typename PFP::REAL>& edgeangle,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	VertexAttribute<typename PFP::VEC3>& Knormal,
+	Algo::Surface::Selection::Collector<PFP>& neigh,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal,
 	unsigned int thread)
 {
 	TraversorV<typename PFP::MAP> t(map) ;
-	for(Dart d = t.begin(); d != t.end(); d = t.next())
-		computeCurvatureVertex_NormalCycles<PFP>(map, d, neigh, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal,thread) ;
+	for(Vertex v = t.begin(); v != t.end(); v = t.next())
+		computeCurvatureVertex_NormalCycles<PFP>(map, v, neigh, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal,thread) ;
 }
 
 template <typename PFP>
 void computeCurvatureVertex_NormalCycles(
-	typename PFP::MAP& map,
-	Dart dart,
-	Selection::Collector<PFP> & neigh,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	const EdgeAttribute<typename PFP::REAL>& edgeangle,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	VertexAttribute<typename PFP::VEC3>& Knormal,
+	Vertex v,
+	Algo::Surface::Selection::Collector<PFP>& neigh,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal,
 	unsigned int thread)
 {
 	typedef typename PFP::REAL REAL ;
@@ -453,51 +487,50 @@ void computeCurvatureVertex_NormalCycles(
 	typedef Eigen::Matrix<REAL,3,3,Eigen::RowMajor> E_MATRIX;
 
 	// collect the normal cycle tensor
-	neigh.collectAll(dart) ;
+	neigh.collectAll(v) ;
 
 	MATRIX tensor(0) ;
-	neigh.computeNormalCyclesTensor(position, edgeangle,tensor);
+	neigh.computeNormalCyclesTensor(position, edgeangle, tensor);
 
 	// solve eigen problem
-	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver (Utils::convertRef<E_MATRIX>(tensor));
+	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver(Utils::convertRef<E_MATRIX>(tensor));
 	const VEC3& ev = Utils::convertRef<VEC3>(solver.eigenvalues());
 	const MATRIX& evec = Utils::convertRef<MATRIX>(solver.eigenvectors());
 
-	normalCycles_SortAndSetEigenComponents<PFP>(ev,evec,kmax[dart],kmin[dart],Kmax[dart],Kmin[dart],Knormal[dart],normal[dart],thread);
+	normalCycles_SortAndSetEigenComponents<PFP>(ev,evec,kmax[v],kmin[v],Kmax[v],Kmin[v],Knormal[v],normal[v],thread);
 }
 
 template <typename PFP>
 void computeCurvatureVertices_NormalCycles_Projected(
 	typename PFP::MAP& map,
-	Selection::Collector<PFP> & neigh,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	const EdgeAttribute<typename PFP::REAL>& edgeangle,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	VertexAttribute<typename PFP::VEC3>& Knormal,
+	Algo::Surface::Selection::Collector<PFP>& neigh,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal,
 	unsigned int thread)
 {
 	TraversorV<typename PFP::MAP> t(map) ;
-	for(Dart d = t.begin(); d != t.end(); d = t.next())
-		computeCurvatureVertex_NormalCycles_Projected<PFP>(map, d, neigh, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal,thread) ;
+	for(Vertex v = t.begin(); v != t.end(); v = t.next())
+		computeCurvatureVertex_NormalCycles_Projected<PFP>(map, v, neigh, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal,thread) ;
 }
 
 template <typename PFP>
 void computeCurvatureVertex_NormalCycles_Projected(
-	typename PFP::MAP& map,
-	Dart dart,
-	Selection::Collector<PFP> & neigh,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	const EdgeAttribute<typename PFP::REAL>& edgeangle,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	VertexAttribute<typename PFP::VEC3>& Knormal,
+	Vertex v,
+	Algo::Surface::Selection::Collector<PFP>& neigh,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal,
 	unsigned int thread)
 {
 	typedef typename PFP::REAL REAL ;
@@ -507,20 +540,20 @@ void computeCurvatureVertex_NormalCycles_Projected(
 	typedef Eigen::Matrix<REAL,3,3,Eigen::RowMajor> E_MATRIX;
 
 	// collect the normal cycle tensor
-	neigh.collectAll(dart) ;
+	neigh.collectAll(v) ;
 
 	MATRIX tensor(0) ;
-	neigh.computeNormalCyclesTensor(position, edgeangle,tensor);
+	neigh.computeNormalCyclesTensor(position, edgeangle, tensor);
 
 	// project the tensor
-	normalCycles_ProjectTensor<PFP>(tensor,normal[dart],thread);
+	normalCycles_ProjectTensor<PFP>(tensor, normal[v], thread);
 
 	// solve eigen problem
-	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver (Utils::convertRef<E_MATRIX>(tensor));
+	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver(Utils::convertRef<E_MATRIX>(tensor));
 	const VEC3& ev = Utils::convertRef<VEC3>(solver.eigenvalues());
 	const MATRIX& evec = Utils::convertRef<MATRIX>(solver.eigenvectors());
 
-	normalCycles_SortAndSetEigenComponents<PFP>(ev,evec,kmax[dart],kmin[dart],Kmax[dart],Kmin[dart],Knormal[dart],normal[dart],thread);
+	normalCycles_SortAndSetEigenComponents<PFP>(ev,evec,kmax[v],kmin[v],Kmax[v],Kmin[v],Knormal[v],normal[v],thread);
 }
 
 template <typename PFP>
@@ -536,7 +569,7 @@ void normalCycles_SortAndSetEigenComponents(
 	unsigned int /*thread*/)
 {
 	// sort eigen components : ev[inormal] has minimal absolute value ; kmin = ev[imin] <= ev[imax] = kmax
-	int inormal=0, imin, imax ;
+	int inormal = 0, imin, imax ;
 	if (fabs(e_val[1]) < fabs(e_val[inormal])) inormal = 1;
 	if (fabs(e_val[2]) < fabs(e_val[inormal])) inormal = 2;
 	imin = (inormal + 1) % 3;
@@ -563,7 +596,7 @@ void normalCycles_SortAndSetEigenComponents(
 }
 
 template <typename PFP>
-void normalCycles_SortTensor(Geom::Matrix<3,3,typename PFP::REAL> & tensor, unsigned int /*thread*/)
+void normalCycles_SortTensor(Geom::Matrix<3,3,typename PFP::REAL>& tensor, unsigned int /*thread*/)
 {
 	typedef typename PFP::REAL REAL ;
 	typedef typename PFP::VEC3 VEC3 ;
@@ -572,12 +605,12 @@ void normalCycles_SortTensor(Geom::Matrix<3,3,typename PFP::REAL> & tensor, unsi
 	typedef Eigen::Matrix<REAL,3,3,Eigen::RowMajor> E_MATRIX;
 
 	// compute eigen components
-	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver (Utils::convertRef<E_MATRIX>(tensor));
+	Eigen::SelfAdjointEigenSolver<E_MATRIX> solver(Utils::convertRef<E_MATRIX>(tensor));
 	const VEC3& e_val = Utils::convertRef<VEC3>(solver.eigenvalues());
 	const MATRIX& e_vec = Utils::convertRef<MATRIX>(solver.eigenvectors());
 
 	// switch kmin and kmax w.r.t. Kmin and Kmax
-	int inormal=0, imin, imax ;
+	int inormal = 0, imin, imax ;
 	if (fabs(e_val[1]) < fabs(e_val[inormal])) inormal = 1;
 	if (fabs(e_val[2]) < fabs(e_val[inormal])) inormal = 2;
 	imin = (inormal + 1) % 3;
@@ -596,11 +629,11 @@ void normalCycles_SortTensor(Geom::Matrix<3,3,typename PFP::REAL> & tensor, unsi
 }
 
 template <typename PFP>
-void normalCycles_ProjectTensor(Geom::Matrix<3,3,typename PFP::REAL> & tensor, const typename PFP::VEC3& normal_vector, unsigned int thread)
+void normalCycles_ProjectTensor(Geom::Matrix<3,3,typename PFP::REAL>& tensor, const typename PFP::VEC3& normal_vector, unsigned int thread)
 {
 	Geom::Matrix<3,3,typename PFP::REAL> proj;
 	proj.identity();
-	proj -= Geom::transposed_vectors_mult(normal_vector,normal_vector);
+	proj -= Geom::transposed_vectors_mult(normal_vector, normal_vector);
 	tensor = proj * tensor * proj;
 }
 
@@ -609,129 +642,78 @@ namespace Parallel
 {
 
 template <typename PFP>
-class FunctorComputeCurvatureVertices_NormalCycles: public FunctorMapThreaded<typename PFP::MAP >
-{
-	typename PFP::REAL m_radius;
-	const VertexAttribute<typename PFP::VEC3>& m_position;
-	const VertexAttribute<typename PFP::VEC3>& m_normal;
-	const EdgeAttribute<typename PFP::REAL>& m_edgeangle;
-	VertexAttribute<typename PFP::REAL>& m_kmax;
-	VertexAttribute<typename PFP::REAL>& m_kmin;
-	VertexAttribute<typename PFP::VEC3>& m_Kmax;
-	VertexAttribute<typename PFP::VEC3>& m_Kmin;
-	VertexAttribute<typename PFP::VEC3>& m_Knormal;
-public:
-	 FunctorComputeCurvatureVertices_NormalCycles( typename PFP::MAP& map,
-		typename PFP::REAL radius,
-		const VertexAttribute<typename PFP::VEC3>& position,
-		const VertexAttribute<typename PFP::VEC3>& normal,
-		const EdgeAttribute<typename PFP::REAL>& edgeangle,
-		VertexAttribute<typename PFP::REAL>& kmax,
-		VertexAttribute<typename PFP::REAL>& kmin,
-		VertexAttribute<typename PFP::VEC3>& Kmax,
-		VertexAttribute<typename PFP::VEC3>& Kmin,
-		VertexAttribute<typename PFP::VEC3>& Knormal):
-	  FunctorMapThreaded<typename PFP::MAP>(map),
-	  m_radius(radius),
-	  m_position(position),
-	  m_normal(normal),
-	  m_edgeangle(edgeangle),
-	  m_kmax(kmax),
-	  m_kmin(kmin),
-	  m_Kmax(Kmax),
-	  m_Kmin(Kmin),
-	  m_Knormal(Knormal)
-	 { }
-
-	void run(Dart d, unsigned int threadID)
-	{
-		computeCurvatureVertex_NormalCycles<PFP>(this->m_map, d, m_radius, m_position, m_normal, m_edgeangle, m_kmax, m_kmin, m_Kmax, m_Kmin, m_Knormal, threadID) ;
-	}
-};
-
-template <typename PFP>
 void computeCurvatureVertices_NormalCycles(
 	typename PFP::MAP& map,
 	typename PFP::REAL radius,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	const EdgeAttribute<typename PFP::REAL>& edgeangle,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	VertexAttribute<typename PFP::VEC3>& Knormal,
-	unsigned int nbth)
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal)
 {
 	// WAHOO BIG PROBLEM WITH LAZZY EMBEDDING !!!
-	if (!map. template isOrbitEmbedded<VERTEX>())
-	{
-		CellMarkerNoUnmark<VERTEX> cm(map);
-		map. template initAllOrbitsEmbedding<VERTEX>();
-	}
-	if (!map. template isOrbitEmbedded<EDGE>())
-	{
-		CellMarkerNoUnmark<EDGE> cm(map);
-		map. template initAllOrbitsEmbedding<EDGE>();
-	}
-	if (!map. template isOrbitEmbedded<FACE>())
-	{
-		CellMarkerNoUnmark<FACE> cm(map);
-		map. template initAllOrbitsEmbedding<FACE>();
-	}
+	if (!map.template isOrbitEmbedded<VERTEX>())
+		Algo::Topo::initAllOrbitsEmbedding<VERTEX>(map);
 
-	FunctorComputeCurvatureVertices_NormalCycles<PFP> funct(map, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal);
-	Algo::Parallel::foreach_cell<typename PFP::MAP,VERTEX>(map, funct, nbth, true);
+	if (!map.template isOrbitEmbedded<EDGE>())
+		Algo::Topo::initAllOrbitsEmbedding<EDGE>(map);
+
+	if (!map.template isOrbitEmbedded<FACE>())
+		Algo::Topo::initAllOrbitsEmbedding<FACE>(map);
+
+	CGoGN::Parallel::foreach_cell<VERTEX>(map, [&] (Vertex v, unsigned int threadID)
+	{
+		computeCurvatureVertex_NormalCycles<PFP>(map, v, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal, threadID) ;
+	}, FORCE_CELL_MARKING);
 }
 
-
-
 template <typename PFP>
-class FunctorComputeCurvatureVertices_QuadraticFitting: public FunctorMapThreaded<typename PFP::MAP >
+void computeCurvatureVertices_NormalCycles_Projected(
+	typename PFP::MAP& map,
+	typename PFP::REAL radius,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	const EdgeAttribute<typename PFP::REAL, typename PFP::MAP>& edgeangle,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Knormal)
 {
-	const VertexAttribute<typename PFP::VEC3>& m_position;
-	const VertexAttribute<typename PFP::VEC3>& m_normal;
-	VertexAttribute<typename PFP::REAL>& m_kmax;
-	VertexAttribute<typename PFP::REAL>& m_kmin;
-	VertexAttribute<typename PFP::VEC3>& m_Kmax;
-	VertexAttribute<typename PFP::VEC3>& m_Kmin;
-public:
-	 FunctorComputeCurvatureVertices_QuadraticFitting( typename PFP::MAP& map,
-		const VertexAttribute<typename PFP::VEC3>& position,
-		const VertexAttribute<typename PFP::VEC3>& normal,
-		VertexAttribute<typename PFP::REAL>& kmax,
-		VertexAttribute<typename PFP::REAL>& kmin,
-		VertexAttribute<typename PFP::VEC3>& Kmax,
-		VertexAttribute<typename PFP::VEC3>& Kmin):
-	  FunctorMapThreaded<typename PFP::MAP>(map),
-	  m_position(position),
-	  m_normal(normal),
-	  m_kmax(kmax),
-	  m_kmin(kmin),
-	  m_Kmax(Kmax),
-	  m_Kmin(Kmin)
-	 { }
+//	// WAHOO BIG PROBLEM WITH LAZZY EMBEDDING !!!
+	if (!map.template isOrbitEmbedded<VERTEX>())
+		Algo::Topo::initAllOrbitsEmbedding<VERTEX>(map);
 
-	void run(Dart d, unsigned int threadID)
+	if (!map.template isOrbitEmbedded<EDGE>())
+		Algo::Topo::initAllOrbitsEmbedding<EDGE>(map);
+
+	if (!map.template isOrbitEmbedded<FACE>())
+		Algo::Topo::initAllOrbitsEmbedding<FACE>(map);
+
+	CGoGN::Parallel::foreach_cell<VERTEX>(map, [&] (Vertex v, unsigned int threadID)
 	{
-		computeCurvatureVertex_QuadraticFitting<PFP>(this->m_map, d, m_position, m_normal, m_kmax, m_kmin, m_Kmax, m_Kmin) ;
-	}
-};
-
+		computeCurvatureVertex_NormalCycles_Projected<PFP>(map, v, radius, position, normal, edgeangle, kmax, kmin, Kmax, Kmin, Knormal, threadID) ;
+	}, FORCE_CELL_MARKING);
+}
 
 template <typename PFP>
 void computeCurvatureVertices_QuadraticFitting(
 	typename PFP::MAP& map,
-	const VertexAttribute<typename PFP::VEC3>& position,
-	const VertexAttribute<typename PFP::VEC3>& normal,
-	VertexAttribute<typename PFP::REAL>& kmax,
-	VertexAttribute<typename PFP::REAL>& kmin,
-	VertexAttribute<typename PFP::VEC3>& Kmax,
-	VertexAttribute<typename PFP::VEC3>& Kmin,
-	unsigned int nbth)
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmax,
+	VertexAttribute<typename PFP::REAL, typename PFP::MAP>& kmin,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmax,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& Kmin)
 {
-	FunctorComputeCurvatureVertices_QuadraticFitting<PFP> funct(map, position, normal, kmax, kmin, Kmax, Kmin);
-	Algo::Parallel::foreach_cell<typename PFP::MAP,VERTEX>(map, funct, nbth, true);
+	CGoGN::Parallel::foreach_cell<VERTEX>(map, [&] (Vertex v, unsigned int threadID)
+	{
+		computeCurvatureVertex_QuadraticFitting<PFP>(map, v, position, normal, kmax, kmin, Kmax, Kmin, threadID) ;
+	}, FORCE_CELL_MARKING);
+
 }
 
 } // namespace Parallel
@@ -739,7 +721,7 @@ void computeCurvatureVertices_QuadraticFitting(
 
 } // namespace Geometry
 
-}
+} // namespace Surface
 
 } // namespace Algo
 
