@@ -1,9 +1,9 @@
 ## Converting SI units to/from specific units
-# Every units are given as a ratio to the SI units (m/kg/s/rad)
+# Every units are given as a ratio to the SI units (m/kg/s)
 #
 # For each conversion a local unit can be given
 # OR
-# variables local_time/local_length/local_mass/local_angle are used by default
+# variables local_time/local_length/local_mass are used by default
 # (these variables can be set by the user to define local units)
 #
 # Note that Poisson ratio and strain have no units
@@ -44,11 +44,6 @@ time_min = 60.0
 time_s   = 1.0
 time_ms  = 1e-3
 
-# ANGLE
-angle_rad = 1               # radian
-angle_deg = math.pi / 180.0 # degree
-
-
 
 
 
@@ -58,7 +53,6 @@ angle_deg = math.pi / 180.0 # degree
 local_time = time_s
 local_length = length_m
 local_mass = mass_kg
-local_angle = angle_rad
 
 
 
@@ -95,16 +89,6 @@ def mass_to_SI( m, mass_unit=None ):
     return m * mass_unit
 
 
-# ANGLE
-
-# rad
-def angle_from_SI( a, angle_unit=None ):
-    angle_unit = angle_unit or local_angle
-    return a / angle_unit
-
-def angle_to_SI( a, angle_unit=None ):
-    angle_unit = angle_unit or local_angle
-    return a * angle_unit
 
 
 # DERIVED
