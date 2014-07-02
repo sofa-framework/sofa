@@ -1,6 +1,5 @@
 import math
-import numpy
-import numpy.linalg
+import numpy as np
 
 #
 # Macro to mimic google test behavior
@@ -24,13 +23,13 @@ def EXPECT_EQ(expected, actual, message=""):
     return expected==actual
 
 def EXPECT_FLOAT_EQ(expected, actual, message="", rtol=1e-5, atol=1e-8):
-    test = bool( numpy.isclose( expected, actual, rtol, atol ) )
+    test = bool( np.isclose( expected, actual, rtol, atol ) )
     if not test:
         print "Value:", actual, "Expected:", expected, "-", message
     return test
 
 def EXPECT_VEC_EQ(expected, actual, message="", rtol=1e-5, atol=1e-8):
-    test = bool( numpy.allclose( expected, actual, rtol, atol ) )
+    test = bool( np.allclose( expected, actual, rtol, atol ) )
     if not test:
         print "Value:", actual, "Expected:", expected, "-", message
     return test
