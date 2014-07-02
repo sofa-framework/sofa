@@ -10,7 +10,6 @@ def run():
     units.local_length = units.length_cm
     units.local_mass   = units.mass_g
     units.local_time   = units.time_min
-    units.local_angle  = units.angle_deg
 
     ### BASE
 
@@ -28,11 +27,6 @@ def run():
     ok &= EXPECT_FLOAT_EQ( 1.0/3600.0, units.time_from_SI( 1, units.time_h ), "time from SI local" ) # converting 1 s in hour
     ok &= EXPECT_FLOAT_EQ( 1.0/60.0, units.time_from_SI( 1 ), "time from SI global" ) # converting 1 s in min
     ok &= EXPECT_FLOAT_EQ( 23.12, units.time_from_SI( units.time_to_SI( 23.12 ) ), "time from_to SI global" ) # converting 23.12 s in min then in s
-
-    # angle
-    ok &= EXPECT_FLOAT_EQ( 180.0/math.pi, units.angle_from_SI( 1 ), "angle from SI global" ) # converting 1 rad in deg
-    ok &= EXPECT_FLOAT_EQ( 23.12, units.angle_from_SI( units.angle_to_SI( 23.12 ) ), "angle from_to SI global" ) # converting 23.12 rad in deg then in rad
-
 
 
     ### DERIVATED
