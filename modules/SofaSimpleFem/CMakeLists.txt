@@ -55,6 +55,8 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries( ${PROJECT_NAME} SofaBaseTopology)
 #AddLinkerDependencies(SofaBaseTopology ${SOFA_VISUAL_LIB} newmat)
 #AddSourceDependencies(eigen)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFACOMMON_BUILD_INCLUDE_DIR}>")
 
 set( SOFASIMPLEFEM_COMPILER_FLAGS "-DSOFA_BUILD_SIMPLEFEM")
 

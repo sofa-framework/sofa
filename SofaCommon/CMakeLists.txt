@@ -18,7 +18,7 @@ set( SOFACOMMON_VERSION ${SOFACOMMON_MAJOR_VERSION}.${SOFACOMMON_MINOR_VERSION}.
 
 set(SOFACOMMON_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFACOMMON_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFACOMMON_BUILD_INCLUDE_DIR ${SofaCommon_ACTUAL_SOURCE_DIR})
+set(SOFACOMMON_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFACOMMON_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaCommon)
 
 # Offer the user the choice of overriding the installation directories
@@ -37,8 +37,8 @@ configure_file( ${SofaCommon_SOURCE_DIR}/SofaCommon.h.in
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaCommon.h 
          DESTINATION "${SOFACOMMON_INSTALL_INCLUDE_DIR}/sofa")
 # make sure everyone in the build tree can see <sofa/SofaCommon.h>
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${SofaCommon_ACTUAL_SOURCE_DIR})
+#include_directories(${CMAKE_CURRENT_BINARY_DIR})
+#include_directories(${SofaCommon_ACTUAL_SOURCE_DIR})
 
 set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObjectInteraction SofaMeshCollision SofaExplicitOdeSolver SofaImplicitOdeSolver SofaComponentCommon)
 
