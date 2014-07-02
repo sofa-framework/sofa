@@ -18,7 +18,7 @@ set( SOFASIMULATION_VERSION ${SOFASIMULATION_MAJOR_VERSION}.${SOFASIMULATION_MIN
 
 set(SOFASIMULATION_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFASIMULATION_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFASIMULATION_BUILD_INCLUDE_DIR ${SofaSimulation_ACTUAL_SOURCE_DIR})
+set(SOFASIMULATION_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFASIMULATION_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaSimulation)
 
 # Offer the user the choice of overriding the installation directories
@@ -30,15 +30,15 @@ set(SOFASIMULATION_INSTALL_CMAKE_DIR   lib/cmake/SofaSimulation   CACHE PATH "In
 ## SofaSimulation dependencies  
 ##
 find_package(SofaFramework REQUIRED)
-include_directories( ${SofaFramework_INCLUDE_DIRS} )
+#include_directories( ${SofaFramework_INCLUDE_DIRS} )
 
 configure_file( ${SofaSimulation_SOURCE_DIR}/SofaSimulation.h.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h 
          DESTINATION "${SOFASIMULATION_INSTALL_INCLUDE_DIR}/sofa")
 # make sure everyone in the build tree can see <sofa/SofaSimulation.h>
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${SofaSimulation_ACTUAL_SOURCE_DIR}/../../)
+#include_directories(${CMAKE_CURRENT_BINARY_DIR})
+#include_directories(${SofaSimulation_ACTUAL_SOURCE_DIR}/../../)
 
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/common ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon )
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/tree   ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree   )
