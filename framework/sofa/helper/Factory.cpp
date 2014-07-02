@@ -79,6 +79,13 @@ std::string SOFA_HELPER_API gettypename(const std::type_info& t)
         if (pos == std::string::npos) break;
         name.erase(pos,6);
     }
+	//Remove "struct "
+    for(;;)
+    {
+        std::string::size_type pos = name.find("struct ");
+        if (pos == std::string::npos) break;
+        name.erase(pos,7);
+    }
     return name;
 }
 

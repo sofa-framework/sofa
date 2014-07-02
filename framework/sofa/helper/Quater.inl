@@ -79,7 +79,7 @@ template<class Real>
 //Quater<Real> operator+(Quater<Real> q1, Quater<Real> q2) const
 Quater<Real> Quater<Real>::operator+(const Quater<Real> &q1) const
 {
-    static int	count	= 0;
+//    static int	count	= 0;
 
     Real		t1[4], t2[4], t3[4];
     Real		tf[4];
@@ -110,11 +110,13 @@ Quater<Real> Quater<Real>::operator+(const Quater<Real> &q1) const
     ret._q[2] = tf[2];
     ret._q[3] = tf[3];
 
-    if (++count > RENORMCOUNT)
+/*    if (++count > RENORMCOUNT)
     {
         count = 0;
         ret.normalize();
-    }
+    } */
+
+	ret.normalize();
 
     return ret;
 }
@@ -650,7 +652,7 @@ void Quater<Real>::print()
 template<class Real>
 void Quater<Real>::operator+=(const Quater<Real>& q2)
 {
-    static int	count	= 0;
+//    static int	count	= 0;
 
     Real t1[4], t2[4], t3[4];
     Quater<Real> q1 = (*this);
@@ -674,11 +676,13 @@ void Quater<Real>::operator+=(const Quater<Real>& q2)
     _q[3] = q1._q[3] * q2._q[3] -
             (q1._q[0] * q2._q[0] + q1._q[1] * q2._q[1] + q1._q[2] * q2._q[2]);
 
-    if (++count > RENORMCOUNT)
+/*    if (++count > RENORMCOUNT)
     {
         count = 0;
         normalize();
-    }
+    } */
+
+	normalize();
 }
 
 template<class Real>

@@ -116,7 +116,7 @@ void SofaPluginManager::addLibrary()
 #endif
     if(sfile=="")
         return;
-#ifdef NDEBUG
+#ifndef _DEBUG
     if(sfile.contains(QString("d.")) == true)
         if(QMessageBox::question(this, "library loading warning","This plugin lib seems to be in debug mode whereas you are currently in release mode.\n Are you sure you want to load this lib?",QMessageBox::Yes,QMessageBox::No) != QMessageBox::Yes)
             return;

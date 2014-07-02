@@ -93,6 +93,7 @@ public:
     LineActiver() {}
     virtual ~LineActiver() {}
     virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
+	static LineActiver* getDefaultActiver() { static LineActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>
