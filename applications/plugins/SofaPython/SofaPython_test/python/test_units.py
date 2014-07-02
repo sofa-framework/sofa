@@ -5,7 +5,7 @@ from SofaTest.Macro import *
 def run():
 
     ok=True
-    
+
     # setting local units (as ratio to SI units m/kg/s)
     units.local_length = units.length_cm
     units.local_mass   = units.mass_g
