@@ -16,7 +16,11 @@ set(SOURCE_FILES
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaNonUniformFem)
+
+set(SOFACOMPONENTADVANCED_DEPS ${SOFAADVANCED_TARGETS})
+list(REMOVE_ITEM SOFACOMPONENTADVANCED_DEPS SofaComponentAdvanced)
+
+target_link_libraries( ${PROJECT_NAME} ${SOFACOMPONENTADVANCED_DEPS})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAADVANCED_BUILD_INCLUDE_DIR}>")
 
