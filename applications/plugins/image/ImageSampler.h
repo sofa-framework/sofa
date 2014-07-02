@@ -83,7 +83,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class ImageSampler>
     static void regularSampling( ImageSampler* sampler, const bool atcorners=false, const bool recursive=false )
     {
-        typedef typename ImageSampler::Real Real;
+//        typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
         typedef typename ImageSampler::Edge Edge;
         typedef typename ImageSampler::Hexa Hexa;
@@ -162,8 +162,8 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     {
         typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
-        typedef typename ImageSampler::Edge Edge;
-        typedef typename ImageSampler::Hexa Hexa;
+//        typedef typename ImageSampler::Edge Edge;
+//        typedef typename ImageSampler::Hexa Hexa;
         typedef typename ImageSampler::T T;
 
         clock_t timer = clock();
@@ -267,7 +267,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
         typedef typename ImageSampler::Edge Edge;
-        typedef typename ImageSampler::Hexa Hexa;
+//        typedef typename ImageSampler::Hexa Hexa;
         typedef typename ImageSampler::T T;
 
         clock_t timer = clock();

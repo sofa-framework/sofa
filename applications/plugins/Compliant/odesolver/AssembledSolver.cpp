@@ -165,7 +165,7 @@ using namespace core::behavior;
     // (to compute mapping's geometric stiffnesses during assembly)
     void AssembledSolver::compute_forces(const core::MechanicalParams& params,
                                          simulation::common::MechanicalOperations& mop,
-                                         simulation::common::VectorOperations& vop,
+                                         simulation::common::VectorOperations& /*vop*/,
                                          core::behavior::MultiVecDeriv& f,
                                          core::behavior::MultiVecDeriv& c )
     {

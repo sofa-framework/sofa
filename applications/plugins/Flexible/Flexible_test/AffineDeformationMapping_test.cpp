@@ -116,7 +116,7 @@ namespace sofa {
         }
         
         /// After simulation compare the positions of points to the theoretical positions.
-        bool runTest(double convergenceAccuracy)
+        bool runTest(double /*convergenceAccuracy*/)
         {
             // Init simulation
             sofa::simulation::getSimulation()->init(this->root.get());
