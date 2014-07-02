@@ -63,8 +63,8 @@ inline std::vector<unsigned int>* GenericMap::askUIntBuffer(unsigned int thread)
 {
 	if (s_vintsBuffers[thread].empty())
 	{
-		std::vector<unsigned int>* vui = new std::vector<unsigned int>;
-		vui->reserve(128);
+        std::vector<unsigned int>* vui = new std::vector<unsigned int>(128u, 0u);
+//		vui->reserve(128);
 		return vui;
 	}
 
@@ -77,11 +77,11 @@ inline void GenericMap::releaseUIntBuffer(std::vector<unsigned int>* vui, unsign
 {
 	if (vui->capacity()>1024)
 	{
-		std::vector<unsigned int> v;
-		vui->swap(v);
-		vui->reserve(128);
+        std::vector<unsigned int> v(128u, 0u);
+        vui->swap(v);
+//		vui->reserve(128);
 	}
-	vui->clear();
+    std::fill(vui->begin(), vui->end(), 0u);
 	s_vintsBuffers[thread].push_back(vui);
 }
 
@@ -165,8 +165,11 @@ template <unsigned int ORBIT>
 inline void GenericMap::copyCell(unsigned int i, unsigned int j)
 {
 	assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    assert(i != EMBNULL);
+    assert(j != EMBNULL);
 	m_attribs[ORBIT].copyLine(i, j) ;
 }
+
 
 template <unsigned int ORBIT>
 inline void GenericMap::initCell(unsigned int i)
@@ -235,7 +238,7 @@ AttributeMultiVector<MarkerBool>* GenericMap::askMarkVector(unsigned int thread)
 		x = x/10;
 		number[0]= '0'+x%10;
 
-		AttributeMultiVector<MarkerBool>* amv = m_attribs[ORBIT].addAttribute<MarkerBool>("marker_" + orbitName(ORBIT) + number);
+        AttributeMultiVector<MarkerBool>* amv = m_attribs[ORBIT].addAttribute<MarkerBool>("marker_" + orbitName(ORBIT) + number);
 		return amv;
 	}
 }
@@ -245,7 +248,7 @@ template <unsigned int ORBIT>
 inline void GenericMap::releaseMarkVector(AttributeMultiVector<MarkerBool>* amv, unsigned int thread)
 {
 	assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded") ;
-
+//    amv->allFalse();
 	m_markVectors_free[ORBIT][thread].push_back(amv);
 }
 

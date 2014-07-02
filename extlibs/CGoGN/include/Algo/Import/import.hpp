@@ -327,10 +327,10 @@ bool importMeshSToV(typename PFP::MAP& map, Surface::Import::MeshTablesSurface<P
 
     unsigned int vemb1 = EMBNULL;
 //    auto fsetemb1 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb1); };
-    boost::function<unsigned (Dart)> fsetemb1= boost::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb1));
+    boost::function<unsigned (Dart)> fsetemb1= bl::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb1));
     unsigned int vemb2 = EMBNULL;
 //    auto fsetemb2 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb2); };
-    boost::function<unsigned (Dart)> fsetemb2 = boost::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb2));
+    boost::function<unsigned (Dart)> fsetemb2 = bl::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb2));
 
     VertexAttribute<VEC3, MAP> position = map.template getAttribute<VEC3, VERTEX>("position");
     std::vector<unsigned int > backEdgesBuffer(mts.getNbVertices(), EMBNULL);
@@ -440,10 +440,10 @@ bool importMeshSurfToVol(typename PFP::MAP& map, Surface::Import::MeshTablesSurf
 
     unsigned int vemb1 = EMBNULL;
 //	auto fsetemb1 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb1); };
-    boost::function<unsigned (Dart)> fsetemb1 = boost::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb1));
+    boost::function<unsigned (Dart)> fsetemb1 = bl::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb1));
     unsigned int vemb2 = EMBNULL;
 //	auto fsetemb2 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb2); };
-    boost::function<unsigned (Dart)> fsetemb2 = boost::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb2));
+    boost::function<unsigned (Dart)> fsetemb2 = bl::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb2));
 
     unsigned int nbVertices = mts.getNbVertices();
 

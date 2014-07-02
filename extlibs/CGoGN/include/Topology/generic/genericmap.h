@@ -248,6 +248,7 @@ public:
 	template <unsigned int ORBIT>
 	void copyCell(unsigned int i, unsigned int j) ;
 
+
 	/**
 	 * Line of attributes i is initialized
 	 * @param orbit attribute orbit to use

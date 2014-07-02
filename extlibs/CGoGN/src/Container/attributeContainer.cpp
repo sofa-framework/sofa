@@ -402,15 +402,15 @@ void AttributeContainer::updateHole(unsigned int index) {
 
         std::sort(m_tableBlocksWithFree.begin(), m_tableBlocksWithFree.end(), std::greater<unsigned int>());
 
-        //        DEBUG
-//        std::cerr << "###############################################################" << std::endl;
-//        std::cerr << "m_tableBlocksWithFree :";
-//        for (int i = 0 ; i < m_tableBlocksWithFree.size() ; ++i) {
-//            std::cerr << " " << m_tableBlocksWithFree[i] ;
-//        }
-//        std::cerr << std::endl;
-//        std::cerr << "###############################################################" << std::endl;
-        //        END DEBUG
+//                DEBUG
+        std::cerr << "###############################################################" << std::endl;
+        std::cerr << "m_tableBlocksWithFree :";
+        for (int i = 0 ; i < m_tableBlocksWithFree.size() ; ++i) {
+            std::cerr << " " << m_tableBlocksWithFree[i] ;
+        }
+        std::cerr << std::endl;
+        std::cerr << "###############################################################" << std::endl;
+//                END DEBUG
     }
 }
 

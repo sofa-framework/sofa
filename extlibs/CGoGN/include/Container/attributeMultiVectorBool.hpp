@@ -181,8 +181,8 @@ public:
 		for (unsigned int i = 0; i < m_tableData.size(); ++i)
 		{
 			unsigned int *ptr =m_tableData[i];
-			for (unsigned int j=0; j<_BLOCKSIZE_/32;++j)
-				*ptr++ = 0;
+            for (unsigned int j=0, max = _BLOCKSIZE_/32u; j< max;++j)
+                *ptr++ = 0;
 		}
 	}
 
@@ -191,8 +191,8 @@ public:
         for (unsigned int i = 0; i < m_tableData.size(); ++i)
         {
             unsigned int *ptr =m_tableData[i];
-            for (unsigned int j=0; j<_BLOCKSIZE_/32;++j)
-                *ptr++ = 1;
+            for (unsigned int j=0, max = _BLOCKSIZE_/32u ; j < max ; ++j)
+                *ptr++ = 0xffffffff;
         }
     }
 
@@ -205,9 +205,9 @@ public:
 	{
 		unsigned int jj = i / _BLOCKSIZE_;
 		unsigned int j = i % _BLOCKSIZE_;
-		unsigned int x = j/32;
-		unsigned int y = j%32;
-		unsigned int mask = 1 << y;
+        unsigned int x = j/32;
+        unsigned int y = j%32;
+        unsigned int mask = 1 << y;
 		m_tableData[jj][x] &= ~mask;
 	}
 

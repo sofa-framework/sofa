@@ -98,7 +98,7 @@ public:
 	}
 
 	virtual ~CellMarkerBase()
-	{
+    {
 		if (GenericMap::alive(&m_map))
 			m_map.template releaseMarkVector<CELL>(m_markVector,m_thread);
 	}
@@ -131,7 +131,7 @@ public:
 		if (a == EMBNULL)
 			a = Algo::Topo::setOrbitEmbeddingOnNewCell(m_map, c) ;
 
-		m_markVector->setTrue(a);
+        this->mark(a);
 	}
 
 	/**
@@ -146,7 +146,7 @@ public:
 		if (a == EMBNULL)
 			a = Algo::Topo::setOrbitEmbeddingOnNewCell(m_map, c) ;
 
-		m_markVector->setFalse(a);
+        this->unmark(a);
 	}
 
 	/**
@@ -188,8 +188,10 @@ public:
 	{
 		assert(m_markVector != NULL);
 
-		if (em == EMBNULL)
+        if (em == EMBNULL) {
 			return false ;
+            std::exit(15);
+        }
 		return m_markVector->operator[](em);
 	}
 
@@ -198,8 +200,9 @@ public:
 	 */
 	inline void markAll()
 	{
-		assert(m_markVector != NULL);
-        m_markVector->allTrue();
+        assert(this->m_markVector != NULL);
+        this->m_markVector->allTrue();
+        assert(this->isAllMarked());
 	}
 
 	inline bool isAllUnmarked()
@@ -208,10 +211,21 @@ public:
 
 		AttributeContainer& cont = m_map.template getAttributeContainer<CELL>() ;
 		for (unsigned int i = cont.begin(); i != cont.end(); cont.next(i))
-			if(m_markVector->operator[](i))
+            if(this->isMarked(i))
 				return false ;
 		return true ;
 	}
+
+    inline bool isAllMarked()
+    {
+        assert(m_markVector != NULL);
+
+        AttributeContainer& cont = m_map.template getAttributeContainer<CELL>() ;
+        for (unsigned int i = cont.begin(); i != cont.end(); cont.next(i))
+            if(!this->isMarked(i))
+                return false ;
+        return true ;
+    }
 };
 
 /**
@@ -243,7 +257,8 @@ public:
 	inline void unmarkAll()
 	{
 		assert(this->m_markVector != NULL);
-		this->m_markVector->allFalse();
+        this->m_markVector->allFalse();
+        assert(this->isAllUnmarked());
 	}
 };
 
@@ -305,9 +320,7 @@ public:
 	inline void unmarkAll()
 	{
 		assert(this->m_markVector != NULL);
-
-		for (std::vector<unsigned int>::iterator it = m_markedCells->begin(); it != m_markedCells->end(); ++it)
-			this->m_markVector->setFalse(*it);
+        this->m_markVector->allFalse();
 	}
 };
 
@@ -360,10 +373,7 @@ public:
 	inline void unmarkAll()
 	{
 		assert(this->m_markVector != NULL);
-		for (std::vector<Dart>::iterator it = m_markedDarts.begin(); it != m_markedDarts.end(); ++it)
-		{
-			this->unmark(*it) ;
-		}
+        this->m_markVector->allFalse();
 		m_markedDarts.clear();
 
 	}

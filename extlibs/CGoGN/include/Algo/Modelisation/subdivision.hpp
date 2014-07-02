@@ -49,7 +49,6 @@ Dart trianguleFace(typename PFP::MAP& map, Dart d)
 		CGoGNout << "Warning: triangulation of a face with only one edge" << CGoGNendl;
 	if (map.phi1(d1) == d)
 		CGoGNout << "Warning: triangulation of a face with only two edges" << CGoGNendl;
-
 	map.splitFace(d, d1) ;
 	map.cutEdge(map.phi_1(d)) ;
 	Dart x = map.phi2(map.phi_1(d)) ;
@@ -60,7 +59,6 @@ Dart trianguleFace(typename PFP::MAP& map, Dart d)
 		map.splitFace(dd, map.phi1(x)) ;
 		dd = next ;
 	}
-
 	return map.phi2(x);	// Return a dart of the central vertex
 }
 

@@ -1149,29 +1149,9 @@ bool Map3<MAP_IMPL>::check() const
  *  Apply functors to all darts of a cell
  *************************************************************************/
 
-template <typename MAP_IMPL>
-template <unsigned int ORBIT, typename FUNC>
-void Map3<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread) const
-{
-	switch(ORBIT)
-	{
-		case DART:		f(c); break;
-		case VERTEX: 	foreach_dart_of_vertex(c, f, thread); break;
-		case EDGE: 		foreach_dart_of_edge(c, f, thread); break;
-		case FACE: 		foreach_dart_of_face(c, f, thread); break;
-		case VOLUME: 	foreach_dart_of_volume(c, f, thread); break;
-		case VERTEX1: 	foreach_dart_of_vertex1(c, f, thread); break;
-		case EDGE1: 	foreach_dart_of_edge1(c, f, thread); break;
-		case VERTEX2: 	foreach_dart_of_vertex2(c, f, thread); break;
-		case EDGE2:		foreach_dart_of_edge2(c, f, thread); break;
-		case FACE2:		foreach_dart_of_face2(c, f, thread); break;
-		default: 		assert(!"Cells of this dimension are not handled"); break;
-	}
-}
-
 //template <typename MAP_IMPL>
 //template <unsigned int ORBIT, typename FUNC>
-//void Map3<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC& f, unsigned int thread) const
+//void Map3<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread) const
 //{
 //	switch(ORBIT)
 //	{
@@ -1188,6 +1168,26 @@ void Map3<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int t
 //		default: 		assert(!"Cells of this dimension are not handled"); break;
 //	}
 //}
+
+template <typename MAP_IMPL>
+template <unsigned int ORBIT, typename FUNC>
+void Map3<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f, unsigned int thread) const
+{
+    switch(ORBIT)
+    {
+        case DART:		f(c); break;
+        case VERTEX: 	foreach_dart_of_vertex(c, f, thread); break;
+        case EDGE: 		foreach_dart_of_edge(c, f, thread); break;
+        case FACE: 		foreach_dart_of_face(c, f, thread); break;
+        case VOLUME: 	foreach_dart_of_volume(c, f, thread); break;
+        case VERTEX1: 	foreach_dart_of_vertex1(c, f, thread); break;
+        case EDGE1: 	foreach_dart_of_edge1(c, f, thread); break;
+        case VERTEX2: 	foreach_dart_of_vertex2(c, f, thread); break;
+        case EDGE2:		foreach_dart_of_edge2(c, f, thread); break;
+        case FACE2:		foreach_dart_of_face2(c, f, thread); break;
+        default: 		assert(!"Cells of this dimension are not handled"); break;
+    }
+}
 
 template <typename MAP_IMPL>
 template <typename FUNC>
