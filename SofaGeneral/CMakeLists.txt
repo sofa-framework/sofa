@@ -18,7 +18,7 @@ set( SOFAGENERAL_VERSION ${SOFAGENERAL_MAJOR_VERSION}.${SOFAGENERAL_MINOR_VERSIO
 
 set(SOFAGENERAL_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAGENERAL_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAGENERAL_BUILD_INCLUDE_DIR ${SofaGeneral_ACTUAL_SOURCE_DIR})
+set(SOFAGENERAL_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAGENERAL_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaGeneral)
 
 # Offer the user the choice of overriding the installation directories
@@ -30,7 +30,7 @@ set(SOFAGENERAL_INSTALL_CMAKE_DIR   lib/cmake/SofaGeneral   CACHE PATH "Installa
 ## SofaGeneral dependencies  
 ##
 find_package(SofaCommon REQUIRED)
-include_directories( ${SofaCommon_INCLUDE_DIRS} )
+#include_directories( ${SofaCommon_INCLUDE_DIRS} )
 
 configure_file( ${SofaGeneral_SOURCE_DIR}/SofaGeneral.h.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h )
@@ -38,9 +38,8 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h
          DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/sofa")
 
 # make sure everyone in the build tree can see <sofa/SofaGeneral.h>
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-message("${CMAKE_CURRENT_BINARY_DIR}")
-include_directories(${SofaGeneral_ACTUAL_SOURCE_DIR}/)
+#include_directories(${CMAKE_CURRENT_BINARY_DIR})
+#include_directories(${SofaGeneral_ACTUAL_SOURCE_DIR}/)
 
 # temporarily limited to a subset of projects
 set(SOFAGENERAL_TARGETS SofaValidation SofaExporter SofaGraphComponent SofaTopologyMapping SofaBoundaryCondition SofaComponentGeneral SofaEngine SofaUserInteraction SofaConstraint SofaHaptics SofaPreconditioner)

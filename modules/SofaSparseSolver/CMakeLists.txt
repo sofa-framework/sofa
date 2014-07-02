@@ -34,6 +34,9 @@ target_link_libraries( ${PROJECT_NAME} SofaBaseLinearSolver SofaImplicitOdeSolve
 if( SOFA_HAVE_CSPARSE )
 target_link_libraries( ${PROJECT_NAME} csparse )
 endif()
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGENERAL_BUILD_INCLUDE_DIR}>")
+
 set( SOFASPARSE_SOLVER_COMPILER_FLAGS "-DSOFA_BUILD_SPARSE_SOLVER")
 
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
