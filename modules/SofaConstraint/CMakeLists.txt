@@ -93,6 +93,8 @@ target_link_libraries( ${PROJECT_NAME} SofaMeshCollision SofaSimpleFem SofaImpli
 if(SOFA_HAVE_EIGEN2)
    target_link_libraries( ${PROJECT_NAME} SofaEigen2Solver)
 endif()
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGENERAL_BUILD_INCLUDE_DIR}>")
 
 set( SOFACONSTRAINT_COMPILER_FLAGS "-DSOFA_BUILD_CONSTRAINT")
 

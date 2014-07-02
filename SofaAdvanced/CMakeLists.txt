@@ -18,7 +18,7 @@ set( SOFAADVANCED_VERSION ${SOFAADVANCED_MAJOR_VERSION}.${SOFAADVANCED_MINOR_VER
 
 set(SOFAADVANCED_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAADVANCED_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAADVANCED_BUILD_INCLUDE_DIR ${SofaAdvanced_ACTUAL_SOURCE_DIR})
+set(SOFAADVANCED_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAADVANCED_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaAdvanced)
 
 # Offer the user the choice of overriding the installation directories
@@ -30,15 +30,15 @@ set(SOFAADVANCED_INSTALL_CMAKE_DIR   lib/cmake/SofaAdvanced   CACHE PATH "Instal
 ## SofaAdvanced dependencies  
 ##
 find_package(SofaCommon REQUIRED)
-include_directories( ${SofaCommon_INCLUDE_DIRS} )
+#include_directories( ${SofaCommon_INCLUDE_DIRS} )
 
 configure_file( ${SofaAdvanced_SOURCE_DIR}/SofaAdvanced.h.in 
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaAdvanced.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaAdvanced.h 
          DESTINATION "${SOFAADVANCED_INSTALL_INCLUDE_DIR}/sofa")
 # make sure everyone in the build tree can see <sofa/SofaAdvanced.h>
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${SofaAdvanced_ACTUAL_SOURCE_DIR}/../../)
+#include_directories(${CMAKE_CURRENT_BINARY_DIR})
+#include_directories(${SofaAdvanced_ACTUAL_SOURCE_DIR}/../../)
 
 set(SOFAADVANCED_TARGETS SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaNonUniformFem SofaComponentAdvanced)
 
