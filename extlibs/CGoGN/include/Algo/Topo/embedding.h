@@ -46,9 +46,10 @@ template <unsigned int ORBIT, typename MAP>
 inline void setOrbitEmbedding(MAP& m, Cell<ORBIT> c, unsigned int em)
 {
 	assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    assert(em != EMBNULL);
 //    std::cerr << "setOrbitEmbedding called on a " << ORBIT << "-cell." << " em = " << em << std::endl;
 //	m.foreach_dart_of_orbit(c, [&] (Dart d) { m.template setDartEmbedding<ORBIT>(d, em); });
-    m. template foreach_dart_of_orbit(c, boost::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, em )) ;
+    m. template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
 }
 
 /**
@@ -60,7 +61,7 @@ inline void initOrbitEmbedding(MAP& m, Cell<ORBIT> c, unsigned int em)
 {
 	assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
 //	m.foreach_dart_of_orbit(c, [&] (Dart d) { m.template initDartEmbedding<ORBIT>(d, em); });
-    m.template foreach_dart_of_orbit(c,boost::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, em )) ;
+    m.template foreach_dart_of_orbit(c,bl::bind(&MAP::template initDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) )) ;
 }
 
 /**
@@ -118,7 +119,7 @@ template <unsigned int DIM, unsigned int ORBIT, typename MAP>
 void boundaryMarkOrbit(MAP& m, Cell<ORBIT> c)
 {
 //	m.foreach_dart_of_orbit(c, [&] (Dart d) { m.template boundaryMark<DIM>(d); });
-    m.foreach_dart_of_orbit(c,boost::bind(&MAP::template boundaryMark<DIM>, boost::ref(m), bl::_1)) ;
+    m.foreach_dart_of_orbit(c,bl::bind(&MAP::template boundaryMark<DIM>, boost::ref(m), bl::_1)) ;
 
 }
 
@@ -126,7 +127,7 @@ template <unsigned int DIM, unsigned int ORBIT, typename MAP>
 void boundaryUnmarkOrbit(MAP& m, Cell<ORBIT> c)
 {
 //	m.foreach_dart_of_orbit(c, [&] (Dart d)	{ m.template boundaryUnmark<DIM>(d);	});
-    m.foreach_dart_of_orbit(c,boost::bind(&MAP::template boundaryUnmark<DIM>, boost::ref(m), bl::_1)) ;
+    m.foreach_dart_of_orbit(c,bl::bind(&MAP::template boundaryUnmark<DIM>, boost::ref(m), bl::_1)) ;
 }
 
 } // namespace Topo

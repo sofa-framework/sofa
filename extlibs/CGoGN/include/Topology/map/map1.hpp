@@ -287,7 +287,7 @@ inline bool Map1<MAP_IMPL>::isCycleTriangle(Dart d) const
 
 template <typename MAP_IMPL>
 template <unsigned int ORBIT, typename FUNC>
-void Map1<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread) const
+void Map1<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f, unsigned int thread) const
 {
 	switch(ORBIT)
 	{
@@ -300,7 +300,7 @@ void Map1<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int t
 
 //template <typename MAP_IMPL>
 //template <unsigned int ORBIT, typename FUNC>
-//void Map1<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC& f, unsigned int thread) const
+//void Map1<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread) const
 //{
 //	switch(ORBIT)
 //	{

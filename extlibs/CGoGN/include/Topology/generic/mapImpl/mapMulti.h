@@ -93,6 +93,11 @@ protected:
 public:
     inline unsigned int dartIndex(Dart d) const;
 
+//    template<unsigned ORB>
+//    inline unsigned int dartIndex(Cell<ORB> c) const {
+//        return (*m_mrDarts[m_mrCurrentLevel])[c.index()];
+//    }
+
     inline Dart indexDart(unsigned int index) const;
 
     /**

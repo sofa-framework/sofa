@@ -72,6 +72,18 @@ inline unsigned int MapCommon<MAP_IMPL>::getEmbedding(Cell<ORBIT> c) const
     return (*this->m_embeddings[ORBIT])[this->dartIndex(c)] ;
 }
 
+//template <typename MAP_IMPL>
+//template<unsigned int ORBIT>
+//inline void MapCommon<MAP_IMPL>::copyCell(Cell<ORBIT> dest, Cell<ORBIT> src) {
+//    assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+//    const unsigned destEmb = this->getEmbedding(dest);
+//    const unsigned srcEmb =  this->getEmbedding(src);
+//    assert((destEmb != EMBNULL));
+//    assert((srcEmb != EMBNULL));
+//    AttributeContainer& cont = this->template getAttributeContainer<ORBIT>();
+//    cont.copyLine(destEmb, srcEmb);
+//}
+
 template <typename MAP_IMPL>
 template <unsigned int ORBIT>
 void MapCommon<MAP_IMPL>::setDartEmbedding(Dart d, unsigned int emb)

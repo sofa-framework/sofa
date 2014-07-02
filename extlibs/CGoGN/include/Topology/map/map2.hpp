@@ -904,7 +904,7 @@ bool Map2<MAP_IMPL>::isTriangular() const
 //			tri = false;
 //		return tri;
 //	});
-    foreach_cell_until<FACE>(this, bl::if_then((boost::bind(&Map2<MAP_IMPL>::faceDegree, boost::ref(*this), bl::_1) == 3),
+    foreach_cell_until<FACE>(this, bl::if_then((bl::bind(&Map2<MAP_IMPL>::faceDegree, boost::ref(*this), bl::_1) == 3),
                                                boost::ref(tri).get() = false)
                              , boost::ref(tri));
 	return tri;
@@ -993,7 +993,7 @@ bool Map2<MAP_IMPL>::checkSimpleOrientedPath(std::vector<Dart>& vd)
 
 template <typename MAP_IMPL>
 template <unsigned int ORBIT, typename FUNC>
-void Map2<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread) const
+void Map2<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f, unsigned int thread) const
 {
     switch(ORBIT)
     {
@@ -1010,7 +1010,7 @@ void Map2<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int t
 
 //template <typename MAP_IMPL>
 //template <unsigned int ORBIT, typename FUNC>
-//void Map2<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC& f, unsigned int thread) const
+//void Map2<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread) const
 //{
 //    switch(ORBIT)
 //    {
@@ -1078,6 +1078,7 @@ template <typename FUNC>
 void Map2<MAP_IMPL>::foreach_dart_of_cc(Dart d, FUNC& f, unsigned int thread) const
 {
 	DartMarkerStore<Map2<MAP_IMPL> > mark(*this, thread);	// Lock a marker
+    assert(mark.isAllUnmarked());
 
 	std::vector<Dart> visitedFaces;	// Faces that are traversed
 	visitedFaces.reserve(1024) ;

@@ -60,6 +60,11 @@ protected:
 public:
 	inline unsigned int dartIndex(Dart d) const;
 
+//    template<unsigned ORB>
+//    inline unsigned int dartIndex(Cell<ORB> c) const {
+//        return c.index();
+//    }
+
 	inline Dart indexDart(unsigned int index) const;
 
 	inline unsigned int getNbDarts() const;

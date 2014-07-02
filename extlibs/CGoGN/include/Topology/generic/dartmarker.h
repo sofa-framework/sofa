@@ -153,7 +153,7 @@ public:
     inline void markOrbit(Cell<ORBIT> c)
     {
         assert(m_markVector != NULL);
-        m_map.template foreach_dart_of_orbit(c,boost::bind(&AMV_MarkerBool::setTrue, boost::ref(*m_markVector), boost::bind(&MAP::dartIndex, boost::ref(m_map), bl::_1)));
+        m_map.foreach_dart_of_orbit(c,bl::bind(&AMV_MarkerBool::setTrue, boost::ref(*m_markVector), bl::bind(&MAP::dartIndex, boost::cref(m_map), bl::_1)));
     }
 
     /**
@@ -163,7 +163,7 @@ public:
     inline void unmarkOrbit(Cell<ORBIT> c)
     {
         assert(m_markVector != NULL);
-        m_map.foreach_dart_of_orbit(c,boost::bind(&AMV_MarkerBool::setFalse, boost::ref(*m_markVector), boost::bind(&MAP::dartIndex, boost::ref(m_map), bl::_1)));
+        m_map.foreach_dart_of_orbit(c,bl::bind(&AMV_MarkerBool::setFalse, boost::ref(*m_markVector), bl::bind(&MAP::dartIndex, boost::cref(m_map), bl::_1)));
     }
 
     /**
@@ -172,9 +172,7 @@ public:
     inline void markAll()
     {
         assert(m_markVector != NULL);
-        AttributeContainer& cont = m_map.template getAttributeContainer<DART>() ;
-        for (unsigned int i = cont.begin(); i != cont.end(); cont.next(i))
-            m_markVector->setTrue(i);
+        m_markVector->allTrue();
     }
 
     /**
@@ -235,26 +233,28 @@ template <typename MAP>
 class DartMarkerStore : public DartMarkerTmpl<MAP>
 {
 protected:
-    std::vector<unsigned int>* m_markedDarts ;
+    std::vector<unsigned int> m_markedDarts ;
 public:
     DartMarkerStore(MAP& map, unsigned int thread=0) :
         DartMarkerTmpl<MAP>(map, thread)
     {
-        //		m_markedDarts.reserve(128);
-        m_markedDarts = GenericMap::askUIntBuffer(thread);
+        m_markedDarts.reserve(128);
+        assert(this->isAllUnmarked());
+        //        m_markedDarts = GenericMap::askUIntBuffer(thread);
     }
 
     DartMarkerStore(const MAP& map, unsigned int thread=0) :
         DartMarkerTmpl<MAP>(map, thread)
     {
-        //		m_markedDarts.reserve(128);
-        m_markedDarts = GenericMap::askUIntBuffer(thread);
+        m_markedDarts.reserve(128);
+        assert(this->isAllUnmarked());
+        //        m_markedDarts = GenericMap::askUIntBuffer(thread);
     }
 
     virtual ~DartMarkerStore()
     {
         unmarkAll() ;
-        GenericMap::releaseUIntBuffer(m_markedDarts, this->m_thread);
+//        GenericMap::releaseUIntBuffer(m_markedDarts, this->m_thread);
         //		assert(isAllUnmarked) ;
         //		CGoGN_ASSERT(isAllUnmarked())
     }
@@ -270,19 +270,20 @@ public:
     {
         DartMarkerTmpl<MAP>::mark(d) ;
         unsigned int d_index = this->m_map.dartIndex(d) ;
-        m_markedDarts->push_back(d_index) ;
+        m_markedDarts.push_back(d_index) ;
     }
 
     template <unsigned int ORBIT>
     inline void markOrbit(Cell<ORBIT> c)
     {
-         this->m_map.template foreach_dart_of_orbit(c, (bl::bind(static_cast<void (std::vector<unsigned>::*)(const unsigned&)>(&std::vector<unsigned>::push_back), boost::ref(*m_markedDarts), bl::bind(&MAP::dartIndex, boost::cref(this->m_map), bl::_1) )
+        this->m_map.template foreach_dart_of_orbit(c, (bl::bind(static_cast<void (std::vector<unsigned>::*)(const unsigned&)>(&std::vector<unsigned>::push_back), boost::ref(m_markedDarts), bl::bind(&MAP::dartIndex, boost::cref(this->m_map), bl::_1) )
                                                        ,bl::bind(&AttributeMultiVector<MarkerBool>::setTrue, boost::ref(*(this->m_markVector)), bl::bind(&MAP::dartIndex, boost::cref(this->m_map), bl::_1))));
+
     }
 
     inline void unmarkAll()
     {
-        for (std::vector<unsigned int>::iterator it = m_markedDarts->begin(); it != m_markedDarts->end(); ++it)
+        for (std::vector<unsigned int>::iterator it = m_markedDarts.begin(); it != m_markedDarts.end(); ++it)
             this->m_markVector->setFalse(*it);
     }
 } ;
@@ -306,6 +307,7 @@ public:
 
     virtual ~DartMarkerNoUnmark()
     {
+        unmarkAll();
         //		assert(isAllUnmarked) ;
         //		CGoGN_ASSERT(isAllUnmarked())
     }

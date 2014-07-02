@@ -35,14 +35,14 @@ namespace CGoGN
  */
 class EmbeddedMap3 : public Map3<MapMono>
 {
-	EmbeddedMap3(const EmbeddedMap3& m) : Map3<MapMono>(m) {}
+    EmbeddedMap3(const EmbeddedMap3& m) : Map3<MapMono>(m) {}
 public:
-	typedef MapMono IMPL;
-	typedef Map3<MapMono> TOPO_MAP;
+    typedef MapMono IMPL;
+    typedef Map3<MapMono> TOPO_MAP;
 
-	static const unsigned int DIMENSION = TOPO_MAP::DIMENSION ;
+    static const unsigned int DIMENSION = TOPO_MAP::DIMENSION ;
 
-	EmbeddedMap3() {}
+    EmbeddedMap3() {}
 
 
     //!
@@ -152,12 +152,32 @@ public:
     std::string orbitName(unsigned int ORBIT);
 
     template<unsigned int ORB>
+    bool checkEmbeddings() {
+        bool res = true;
+        std::cerr << "***** checking "<< this->orbitName(ORB) << " embeddings ***** " << std::endl;
+        //        TraversorCell<EmbeddedMap3, ORB, FORCE_DART_MARKING> trav(*this);
+        for (Dart d = this->begin(), end = this->end() ; d != end ; this->next(d)) {
+            if (!this->isBoundaryMarked<3>(d)) {
+                std::vector<Dart> darts;
+                darts.reserve(12);
+                const unsigned emb = this->getEmbedding<ORB>(d);
+                if (emb == EMBNULL) {
+                    std::cerr << this->orbitName(ORB)  << " without embedding (dart " << d << ")" << std::endl;
+                    res = false;
+                }
+            }
+        }
+        std::cerr << "**** check " << this->orbitName(ORB) << " embeddings " << (res?"success":"failed") << std::endl;
+        return res;
+    }
+
+    template<unsigned int ORB>
     void printEmbedding() {
         const AttributeContainer& orbCont = m_attribs[ORB] ;
         const unsigned int size = orbCont.size();
         AttributeMultiVector<unsigned int>* embVec = getEmbeddingAttributeVector<ORB>();
         std::cerr << "***** printing "<< this->orbitName(ORB) << " embeddings ***** " << std::endl;
-        TraversorV<EmbeddedMap3> trav(*this);
+        TraversorCell<EmbeddedMap3, ORB, FORCE_DART_MARKING> trav(*this);
         unsigned i = 0u ;
         for (Dart d = trav.begin() ; d != trav.end() ; ++i, d = trav.next()) {
             std::cerr << "embedding number " << i << " : " << getEmbedding<ORB>(d) << std::endl;
