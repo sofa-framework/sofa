@@ -71,8 +71,8 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
     Data<VecCoord> input_position;
-    Data<VecCoord> output_position;
     Data<helper::vector <unsigned int> > input_indices;
+    Data<VecCoord> output_position;
 
     Data<unsigned int> nb_iterations;
 

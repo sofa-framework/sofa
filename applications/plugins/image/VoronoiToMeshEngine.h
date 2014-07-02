@@ -255,8 +255,8 @@ protected:
             cimg_forXYZ(img,x,y,z)
                     if(img(x,y,z)==0)
             {
-                unsigned int dists[6]={x,img.width()-1-x,y,img.height()-1-y,z,img.depth()-1-z};
-                unsigned int mn=dists[0]; img(x,y,z)=mx;
+                int dists[6]={x,img.width()-1-x,y,img.height()-1-y,z,img.depth()-1-z};
+                int mn=dists[0]; img(x,y,z)=mx;
                 for(unsigned int i=1;i<6;i++) if(dists[i]<mn) { mn=dists[i]; img(x,y,z)=mx+i; }
             }
         }
