@@ -9,13 +9,13 @@ message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
 set( SofaFramework_ACTUAL_SOURCE_DIR ${SofaFramework_SOURCE_DIR}/../framework)
 
 ##
-## SofaFramework version 
+## SofaFramework version
 ##
 set( SOFAFRAMEWORK_MAJOR_VERSION 0 )
 set( SOFAFRAMEWORK_MINOR_VERSION 0 )
 set( SOFAFRAMEWORK_BUILD_VERSION 1 )
 
-set( SOFAFRAMEWORK_VERSION ${SOFAFRAMEWORK_MAJOR_VERSION}.${SOFAFRAMEWORK_MINOR_VERSION}.${SOFAFRAMEWORK_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.") 
+set( SOFAFRAMEWORK_VERSION ${SOFAFRAMEWORK_MAJOR_VERSION}.${SOFAFRAMEWORK_MINOR_VERSION}.${SOFAFRAMEWORK_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
 
 set( SOFAFRAMEWORK_EXTLIBS_DIR "${SofaFramework_ACTUAL_SOURCE_DIR}/../extlibs")
@@ -71,7 +71,7 @@ endif(PS3)
 ## Sofa Extlibs dependencies lookup (mandatory)
 ##
 
-#tinyxml 
+#tinyxml
 find_package(TinyXML  REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${TinyXML_LIBRARIES} )
 set(SOFA_HAVE_TINYXML 1)
@@ -104,10 +104,10 @@ if(SOFA_USE_MINIBOOST)
     find_package(Boost REQUIRED)
     #list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
-	install(DIRECTORY ${Boost_INCLUDE_DIRS}/ 
+	install(DIRECTORY ${Boost_INCLUDE_DIRS}/
             COMPONENT SofaFramework_headers
             DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
-            FILES_MATCHING 
+            FILES_MATCHING
                 PATTERN "*.h"
                 PATTERN "*.inl"
                 PATTERN "*.hxx"
@@ -126,7 +126,7 @@ set(SOFA_HAVE_EIGEN2 1)
 ##
 
 ##
-## Optional Dependencies lookup 
+## Optional Dependencies lookup
 ##
 set(SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS)
 #zlib
@@ -150,7 +150,7 @@ if( GLEW_FOUND)
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_LIBRARIES})
 endif()
 set(SOFA_HAVE_GLEW ${GLEW_FOUND})
-# GLUT 
+# GLUT
 find_package(GLUT)
 if( GLUT_FOUND )
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLUT_INCLUDE_DIR})
@@ -163,7 +163,7 @@ set(SOFA_HAVE_GLUT ${GLUT_FOUND})
 
 configure_file( ${SofaFramework_SOURCE_DIR}/SofaFramework.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h )
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h 
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaFramework.h
          DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}/sofa")
 # make sure everyone in the build tree can see <sofa/SofaFramework.h>
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
@@ -181,34 +181,34 @@ write_basic_package_version_file(${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkC
                                  COMPATIBILITY AnyNewerVersion)
 install(FILES ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigVersion.cmake
         DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR})
-                                                          
+
 
 # SofaFrameworkConfig.cmake (build tree)
 set(SOFAFRAMEWORK_INCLUDE_DIR "${SOFAFRAMEWORK_BUILD_INCLUDE_DIR}")
 set(SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIR "${SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIRS}")
 set(SOFAFRAMEWORK_BIN_DIR "${SOFAFRAMEWORK_BUILD_BIN_DIR}")
-configure_package_config_file(SofaFrameworkConfig.cmake.in 
+configure_package_config_file(SofaFrameworkConfig.cmake.in
                               ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfig.cmake
                               INSTALL_DESTINATION ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}
                               PATH_VARS SOFAFRAMEWORK_INCLUDE_DIR
                                         SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIR
                                         SOFAFRAMEWORK_BIN_DIR)
-                          
+
 # SofaFrameworkConfig.cmake (installed)
 set(SOFAFRAMEWORK_INCLUDE_DIR "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}")
 set(SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIR "")
 set(SOFAFRAMEWORK_BIN_DIR "")
-configure_package_config_file(SofaFrameworkConfig.cmake.in 
+configure_package_config_file(SofaFrameworkConfig.cmake.in
                               ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigInstall.cmake
                               INSTALL_DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR}
                               PATH_VARS SOFAFRAMEWORK_INCLUDE_DIR
                                         SOFAFRAMEWORK_EXTERNAL_INCLUDE_DIR
                                         SOFAFRAMEWORK_BIN_DIR)
-                          
+
 install(FILES ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigInstall.cmake
         DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR}
         RENAME SofaFrameworkConfig.cmake)
-          
+
 # SofaFrameworkTargets.cmake (installed)
-install(EXPORT SofaFrameworkTargets 
+install(EXPORT SofaFrameworkTargets
         DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR} )

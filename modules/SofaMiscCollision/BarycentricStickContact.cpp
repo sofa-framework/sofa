@@ -25,7 +25,9 @@
 #include <SofaMiscCollision/BarycentricStickContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
+#ifdef SOFA_HAVE_MINIFLOWVR
 #include <SofaVolumetricData/DistanceGridCollisionModel.h>
+#endif
 
 namespace sofa
 {
@@ -49,6 +51,7 @@ Creator<Contact::Factory, BarycentricStickContact<TriangleModel, PointModel> > T
 Creator<Contact::Factory, BarycentricStickContact<TriangleModel, LineModel> > TriangleLineStickContactClass("stick",true);
 Creator<Contact::Factory, BarycentricStickContact<TriangleModel, TriangleModel> > TriangleTriangleStickContactClass("stick",true);
 
+#ifdef SOFA_HAVE_MINIFLOWVR
 Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereStickContactClass("stick", true);
@@ -59,7 +62,7 @@ Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel,
 Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPointStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereStickContactClass("stick", true);
 Creator<Contact::Factory, BarycentricStickContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleStickContactClass("stick", true);
-
+#endif
 
 } // namespace collision
 

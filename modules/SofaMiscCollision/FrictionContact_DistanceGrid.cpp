@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaConstraint/FrictionContact.inl>
-#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
 
 namespace sofa

@@ -28,7 +28,6 @@
 #include <SofaSphFluid/initSPHFluid.h>
 #include <SofaVolumetricData/initVolumetricData.h>
 #include <SofaNonUniformFem/initNonUniformFEM.h>
-#include <SofaEigen2Solver/initEigen2Solver.h>
 
 namespace sofa
 {
@@ -49,9 +48,6 @@ void initComponentAdvanced()
     initSPHFluid();
     initVolumetricData();
     initNonUniformFEM();
-#ifdef SOFA_HAVE_EIGEN2
-    initEigen2Solver();
-#endif
 }
 
 

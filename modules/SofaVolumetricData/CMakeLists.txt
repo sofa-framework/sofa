@@ -36,8 +36,7 @@ list(APPEND HEADER_FILES
 
     )
 
-
-set(SOURCE_FILES
+list(APPEND SOURCE_FILES
 
     DistanceGridForceField.cpp
     DistanceGrid.cpp
