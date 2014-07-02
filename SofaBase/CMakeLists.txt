@@ -18,7 +18,7 @@ set( SOFABASE_VERSION ${SOFABASE_MAJOR_VERSION}.${SOFABASE_MINOR_VERSION}.${SOFA
 
 set(SOFABASE_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFABASE_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFABASE_BUILD_INCLUDE_DIR ${SofaBase_ACTUAL_SOURCE_DIR})
+set(SOFABASE_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFABASE_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaBase)
 
 # Offer the user the choice of overriding the installation directories
@@ -36,8 +36,8 @@ configure_file( ${SofaBase_SOURCE_DIR}/SofaBase.h.in
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaBase.h 
          DESTINATION "${SOFABASE_INSTALL_INCLUDE_DIR}/sofa")
 # make sure everyone in the build tree can see <sofa/SofaBase.h>
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${SofaBase_ACTUAL_SOURCE_DIR}/../../)
+#include_directories(${CMAKE_CURRENT_BINARY_DIR})
+#include_directories(${SofaBase_ACTUAL_SOURCE_DIR}/../../)
 
 set(SOFABASE_TARGETS SofaBaseTopology SofaBaseLinearSolver SofaBaseMechanics SofaBaseCollision 
                        SofaBaseAnimationLoop SofaBaseVisual SofaComponentBase)

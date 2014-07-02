@@ -37,8 +37,9 @@ if(SOFA-MISC_SMP)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_link_libraries(${PROJECT_NAME} SofaSimulationCommon SofaBaseTopology)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFABASE_BUILD_INCLUDE_DIR}>")
 
 set( SOFABASEMECHANICS_COMPILER_FLAGS "-DSOFA_BUILD_BASE_MECHANICS")
 
