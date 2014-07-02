@@ -16,8 +16,9 @@ CoulombConstraint::CoulombConstraint(SReal mu)
 	assert(mu >= 0); 
 }
 
-void CoulombConstraint::project( SReal* out, unsigned /*n*/, bool correct ) const
+void CoulombConstraint::project( SReal* out, unsigned n, bool correct ) const
 {
+    (void)n;
     assert( n >= 3 );
 
 	typedef Eigen::Matrix<SReal, 3, 1> vec3;
