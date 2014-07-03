@@ -6,6 +6,7 @@
 from SofaTest.Macro import *
 from Compliant import Rigid, Tools
 from SofaPython import Quaternion
+import numpy
 
 path = Tools.path( __file__ ) + "/geometric_primitives/"
 
