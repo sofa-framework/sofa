@@ -36,7 +36,7 @@
 #include <fstream>
 
 
-#include <viewer/SofaViewer.h>
+#include <sofa/gui/qt/viewer/SofaViewer.h>
 
 #include "../../../ViewerFactory.h"
 

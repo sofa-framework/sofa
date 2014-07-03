@@ -776,7 +776,7 @@
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="local">SofaGUIQt.h</include>
+  <include>sofa/gui/qt/SofaGUIQt.h</include>
  </includes>
  <resources/>
  <connections>

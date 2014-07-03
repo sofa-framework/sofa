@@ -30,8 +30,10 @@
 #include "QTabulationModifyObject.h"
 
 #include <sofa/gui/qt/QTransformationWidget.h>
+#ifdef SOFA_HAVE_QWT
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/QMomentumStatWidget.h>
+#endif
 
 #include <iostream>
 #ifdef SOFA_QT4
@@ -77,9 +79,11 @@ ModifyObject::ModifyObject(
      logOutputEdit(NULL),
      warningTab(NULL),
      logWarningEdit(NULL),
-     transformation(NULL),
-     energy(NULL),
-     momentum(NULL)
+     transformation(NULL)
+#ifdef SOFA_HAVE_QWT
+     ,energy(NULL)
+     ,momentum(NULL)
+#endif
 {
     setCaption(name);
 }
@@ -267,6 +271,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             }
         }
 
+#ifdef SOFA_HAVE_QWT
         //Energy Widget
         if (simulation::Node* real_node = dynamic_cast< simulation::Node* >(node))
         {
@@ -286,6 +291,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 dialogTab->addTab(momentum,QString("Momentum Stats"));
             }
         }
+#endif
 
         // Info Widget
         {
@@ -528,6 +534,7 @@ void ModifyObject::updateTables()
 #ifdef DEBUG_GUI
     std::cout << "GUI<emit updateDataWidgets()" << std::endl;
 #endif
+#ifdef SOFA_HAVE_QWT
     if (energy)
     {
         energy->step();
@@ -539,6 +546,7 @@ void ModifyObject::updateTables()
         momentum->step();
         if (dialogTab->currentPage() == momentum) momentum->updateVisualization();
     }
+#endif
 
     if(node)
     {
