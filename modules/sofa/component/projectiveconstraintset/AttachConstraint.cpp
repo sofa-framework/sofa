@@ -86,7 +86,7 @@ void AttachConstraint<Rigid3dTypes>::calcRestRotations()
         Quat q(0,0,0,1);
         if (indices2[i] < x0.size()-1)
         {
-            Vector3 dp0 = x0[indices2[i]].vectorToChild(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
+            Vector3 dp0 = x0[indices2[i]].unprojectVector(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
             dp0.normalize();
             Vector3 y = cross(dp0, Vector3(1,0,0));
             y.normalize();

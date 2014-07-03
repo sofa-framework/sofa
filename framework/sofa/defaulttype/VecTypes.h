@@ -29,11 +29,11 @@
 
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/RandomGenerator.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <iostream>
 #include <algorithm>
 #include <memory>
-#include <cstdlib>
 
 
 namespace sofa
@@ -43,6 +43,7 @@ namespace defaulttype
 {
 
 using helper::vector;
+using helper::symrand;
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class StdVectorTypes
@@ -91,7 +92,7 @@ public:
     static Deriv randomDeriv( Real maxValue )
     {
         Deriv result;
-        set( result, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX );
+        set( result, symrand(maxValue), symrand(maxValue), symrand(maxValue) );
         return result;
     }
 

@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/RandomGenerator.h>
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
@@ -369,6 +370,20 @@ public:
 
     void clear() { center.clear(); orientation.clear(); }
 
+    /**
+     * @brief Random rigid transform composed of 3 random translations and 3 random Euler angles
+     * @param a Range of each random value: (-a,+a)
+     * @return random rigid transform
+     */
+    static RigidCoord rand(SReal a)
+    {
+        RigidCoord t;
+        using helper::symrand;
+        t.center = Pos( symrand(a), symrand(a), symrand(a) );
+        t.orientation = Quat::fromEuler( symrand(a), symrand(a), symrand(a) );
+        return t;
+    }
+
     template<typename real2>
     void operator=(const RigidCoord<3,real2>& c)
     {
@@ -579,23 +594,35 @@ public:
         m[14] = (float)center[2];
     }
 
-    /// Project a point from the child frame to the parent frame
-    Vec3 pointToParent( const Vec3& v ) const
+    /// Apply the transform to a point, i.e. project a point from the child frame to the parent frame (translation and rotation)
+    Vec3 projectPoint( const Vec3& v ) const
     {
         return orientation.rotate(v)+center;
     }
 
-    /// Project a point from the parent frame to the child frame
-    Vec3 pointToChild( const Vec3& v ) const
+    /// Apply the transform to a vector, i.e. project a vector from the child frame to the parent frame (rotation only, no translation added)
+    Vec3 projectVector( const Vec3& v ) const
+    {
+        return orientation.rotate(v);
+    }
+
+    /// Apply the inverse transform to a point, i.e. project a point from the parent frame to the child frame (translation and rotation)
+    Vec3 unprojectPoint( const Vec3& v ) const
     {
         return orientation.inverseRotate(v-center);
     }
 
-    /// compute the projection of a vector from the parent frame to the child
-    Vec3 vectorToChild( const Vec3& v ) const
+    ///  Apply the inverse transform to a vector, i.e. project a vector from the parent frame to the child frame (rotation only, no translation)
+    Vec3 unprojectVector( const Vec3& v ) const
     {
         return orientation.inverseRotate(v);
     }
+
+    /// obsolete. Use projectPoint.
+    Vec3 pointToParent( const Vec3& v ) const { return projectPoint(v); }
+    /// obsolete. Use unprojectPoint.
+    Vec3 pointToChild( const Vec3& v ) const { return unprojectPoint(v); }
+
 
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const RigidCoord<3,real>& v )
@@ -862,7 +889,8 @@ public:
     static Deriv randomDeriv( Real maxValue )
     {
         Deriv result;
-        set( result, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX );
+        using helper::symrand;
+        set( result, symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue) );
         return result;
     }
 
@@ -1230,6 +1258,20 @@ public:
 
     void clear() { center.clear(); orientation = 0; }
 
+    /**
+     * @brief Random rigid transform composed of 2 random translations and a random angle
+     * @param a Range of each random value: (-a,+a)
+     * @return random rigid transform
+     */
+    static RigidCoord rand(SReal a)
+    {
+        RigidCoord t;
+        using helper::symrand;
+        t.center = Pos( symrand(a), symrand(a) );
+        t.orientation = symrand(a);
+        return t;
+    }
+
     void operator +=(const RigidDeriv<2,real>& a)
     {
         center += getVCenter(a);
@@ -1428,6 +1470,36 @@ public:
     {
         return /*orientation.*/inverseRotate(v);
     }
+
+    /// Apply the transform to a point, i.e. project a point from the child frame to the parent frame (translation and rotation)
+    Vec2 projectPoint( const Vec2& v ) const
+    {
+        return rotate(v)+center;
+    }
+
+    /// Apply the transform to a vector, i.e. project a vector from the child frame to the parent frame (rotation only, no translation added)
+    Vec2 projectVector( const Vec2& v ) const
+    {
+        return rotate(v);
+    }
+
+    /// Apply the inverse transform to a point, i.e. project a point from the parent frame to the child frame (translation and rotation)
+    Vec2 unprojectPoint( const Vec2& v ) const
+    {
+        return inverseRotate(v-center);
+    }
+
+    ///  Apply the inverse transform to a vector, i.e. project a vector from the parent frame to the child frame (rotation only, no translation)
+    Vec2 unprojectVector( const Vec2& v ) const
+    {
+        return inverseRotate(v);
+    }
+
+    /// obsolete. Use projectPoint.
+    Vec2 pointToParent( const Vec2& v ) const { return projectPoint(v); }
+    /// obsolete. Use unprojectPoint.
+    Vec2 pointToChild( const Vec2& v ) const { return unprojectPoint(v); }
+
 
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const RigidCoord<2,real>& v )
@@ -1694,7 +1766,8 @@ public:
     static Deriv randomDeriv( Real maxValue )
     {
         Deriv result;
-        set( result, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX );
+        using helper::symrand;
+        set( result, symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue) );
         return result;
     }
 

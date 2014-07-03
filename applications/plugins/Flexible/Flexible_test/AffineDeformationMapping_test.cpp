@@ -81,7 +81,7 @@ namespace sofa {
             this->SetRandomAffineTransform(seed);
         }
              
-        void SetRandomAffineTransform (int seed)
+        void SetRandomAffineTransform (int /*seed*/)
         {
             // Matrix 3*3
             for( int j=0; j<testedRotation.nbCols; j++)
