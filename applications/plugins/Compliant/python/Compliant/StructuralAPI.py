@@ -158,7 +158,6 @@ class GenericRigidJoint:
             offset = []
 
             for i in range(len(masks)):
-#                print "debug", set, masks[i]
                 set = set + [0] + masks[i]
                 offset.append(limits[i])
 
