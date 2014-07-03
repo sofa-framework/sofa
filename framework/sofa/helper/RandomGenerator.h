@@ -159,6 +159,12 @@ inline float RandomGenerator::random()
 	return random<float>( -(float)RANDOM_BASE_MAX, (float)RANDOM_BASE_MAX );
 }
 
+/** Pseudo-random number between -vmax and +vmax. Uses the seed defined using the standard srand(unsigned int) function of the stdlib
+*/
+inline SReal symrand(SReal vmax){
+    return -vmax + 2 * vmax * std::rand()/RAND_MAX;
+}
+
 }
 
 }

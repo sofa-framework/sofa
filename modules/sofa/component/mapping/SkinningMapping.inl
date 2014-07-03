@@ -183,7 +183,7 @@ void SkinningMapping<TIn, TOut>::reinit()
 
             for (unsigned int j=0 ; j<nbref; j++ )
             {
-                f_localPos[i][j]= xfrom[index[i][j]].pointToChild(cto) * m_weights[i][j];
+                f_localPos[i][j]= xfrom[index[i][j]].unprojectPoint(cto) * m_weights[i][j];
                 f_rotatedPos[i][j]= (cto - xfrom[index[i][j]].getCenter() ) * m_weights[i][j];
             }
         }

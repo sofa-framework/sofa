@@ -223,7 +223,7 @@ void Viewer::saveScreenshot(const QString& imagePath)
     if(finalImagePath.isEmpty())
         finalImagePath = QString("screenshot_") + QDate::currentDate().toString("yyyy-MM-dd_") + QTime::currentTime().toString("hh.mm.ss") + QString(".png");
 
-    QImage&& image = myFramebuffer->toImage();
+    QImage image = myFramebuffer->toImage(); // sorry but clang version 3.4-1ubuntu1 in debug mode fails on QImage&&
     if(image.save(finalImagePath))
         qDebug() << "SAVED";
     else

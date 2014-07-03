@@ -15,6 +15,7 @@ set(SOURCE_FILES
     Matrix_test.cpp
     OBBTest.cpp
     SphereTest.cpp
+    StiffSpringForceField_test.cpp 
     AffinePatch_test.cpp
     ProjectToPlaneConstraint_test.cpp
     ProjectToLineConstraint_test.cpp

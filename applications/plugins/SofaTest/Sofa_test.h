@@ -207,6 +207,49 @@ void copyToData( WriteData& d, const Vector& v){
         d[i] = v[i];
 }
 
+/** Helpers for DataTypes. Includes copies to and from vectors of scalars.
+ *
+ */
+template<class _DataTypes>
+struct data_traits
+{
+    typedef _DataTypes DataTypes;
+    typedef std::size_t Index;
+
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename Coord::value_type Real;
+
+    enum { spatial_dimensions = Coord::spatial_dimensions };
+    enum { coord_total_size = Coord::total_size };
+    enum { deriv_total_size = Deriv::total_size };
+
+    /// Resize a vector of scalars, and copies a VecCoord in it
+    template <class VectorOfScalars>
+    inline static void VecCoord_to_Vector( VectorOfScalars& vec, const VecCoord& vcoord  )
+    {
+        vec.resize( vcoord.size() * coord_total_size );
+        for( Index i=0; i<vcoord.size(); i++ ){
+            for( Index j=0; j<coord_total_size; j++ )
+                vec[j+coord_total_size*i] = vcoord[i][j];
+        }
+    }
+
+    /// Resize a vector of scalars, and copies a VecDeriv in it
+    template <class VectorOfScalars>
+    inline static void VecDeriv_to_Vector( VectorOfScalars& vec, const VecDeriv vderiv  )
+    {
+        vec.resize( vderiv.size() * deriv_total_size );
+        for( Index i=0; i<vderiv.size(); i++ ){
+            for( Index j=0; j<deriv_total_size; j++ )
+                vec[j+deriv_total_size*i] = vderiv[i][j];
+        }
+    }
+
+};
+
 
 
 }
