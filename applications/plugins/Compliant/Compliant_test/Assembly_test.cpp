@@ -13,6 +13,7 @@ struct Assembly_test : public CompliantSolver_test
 {
     typedef odesolver::AssembledSolver OdeSolver;
     typedef linearsolver::LDLTSolver LinearSolver;
+    using sofa::Vec3;
     OdeSolver::SPtr complianceSolver; ///< Solver used to perform the test simulation, and which contains the actual results, to be compared with the expected ones.
     LinearSolver::SPtr linearSolver; ///< Auxiliary linear equation solver used by the ode solver
 
