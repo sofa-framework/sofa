@@ -15,8 +15,7 @@
 import Rigid
 import Tools
 from Tools import cat as concat
-import Vec as vec
-import numpy as np
+import numpy
 
 class RigidBody:
         ## Generic Rigid Body
@@ -159,6 +158,7 @@ class GenericRigidJoint:
             offset = []
 
             for i in range(len(masks)):
+#                print "debug", set, masks[i]
                 set = set + [0] + masks[i]
                 offset.append(limits[i])
 
@@ -231,11 +231,11 @@ class HingeRigidJoint(GenericRigidJoint):
 
     def addLimits( self, lower, upper, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.Limits( self.node, [mask,vec.minus(mask)], [lower,-upper], compliance )
+        return GenericRigidJoint.Limits( self.node, [mask,(numpy.array(mask)*-1.).tolist()], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
         mask = [ (1 - d) for d in self.mask ]
-        mask = vec.scal(1.0/stiffness,mask)
+        mask = numpy.array(mask)/stiffness
         return self.node.createObject('DiagonalCompliance', template = "Rigid", isCompliance="0", compliance=concat(mask))
 
 class SliderRigidJoint(GenericRigidJoint):
@@ -247,11 +247,11 @@ class SliderRigidJoint(GenericRigidJoint):
 
     def addLimits( self, lower, upper, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.Limits( self.node, [mask,vec.minus(mask)], [lower,-upper], compliance )
+        return GenericRigidJoint.Limits( self.node, [mask,(numpy.array(mask)*-1.).tolist()], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
         mask = [ (1 - d) for d in self.mask ]
-        mask = vec.scal(1.0/stiffness,mask)
+        mask = numpy.array(mask)/stiffness
         return self.node.createObject('DiagonalCompliance', template = "Rigid", isCompliance="0", compliance=concat(mask))
 
 class CylindricalRigidJoint(GenericRigidJoint):
@@ -386,7 +386,7 @@ class RigidJointSpring:
             input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
             input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
             self.mapping = self.node.createObject('RigidJointMultiMapping', template = 'Rigid,Vec6d', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
-            compliances = vec.inv(stiffnesses);
+            compliances = 1./numpy.array(stiffnesses);
             self.compliance = self.node.createObject('DiagonalCompliance', template="Vec6d", name='compliance', compliance=concat(compliances), isCompliance=0)
 
 ## @TODO handle joints with diagonalcompliance / diagonaldamper...
