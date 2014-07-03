@@ -1,0 +1,15 @@
+########################
+# Set custom options for builds (i.e for example, share between debug/release builds)
+# ***** Applied only for the first configuration (does not touch the Cmake cache) *****
+# After checking/unchecking options, save this file as "custom_options.cmake"
+
+# OFF
+# setSofaOption(SOFA-APPLICATION_GENERATERIGID OFF)
+# setSofaOption(SOFA-APPLICATION_MODELER OFF)
+# setSofaOption(SOFA-TUTORIAL_COMPOSITE_OBJECT OFF)
+# setSofaOption(SOFA-TUTORIAL_MIXED_PENDULUM OFF)
+# setSofaOption(SOFA-TUTORIAL_ONE_PARTICLE OFF)
+# setSofaOption(SOFA-TUTORIAL_ONE_TETRAHEDRON OFF)
+
+# ON
+# setSofaOption(SOFA-LIB_GUI_QGLVIEWER ON)

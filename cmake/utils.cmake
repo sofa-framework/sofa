@@ -54,3 +54,9 @@ macro(sofa_list_contains var value)
     endif()
   endforeach()
 endmacro()
+
+# Wrapper macro to set boolean value to a variable
+macro(setSofaOption name value)
+    set(${name} "${value}" CACHE BOOL "" FORCE)
+    message("${name} ${value}")
+endmacro()

@@ -13,13 +13,19 @@ include(cmake/environment.cmake)
 include(cmake/functions.cmake)
 include(cmake/options.cmake)
 
-
 if(NOT PRECONFIGURE_DONE)
+    # Load pre-checked options
+    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/cmake/custom_options.cmake" )
+        message("Set Custom options")
+        include(cmake/custom_options.cmake)
+    endif()
+    
     message("")
     message(">>> SOFA framework pre-configuration complete")
     message(">>> Select your options and launch 'configure' or re-run cmake")
     message("")
     set(PRECONFIGURE_DONE 1 CACHE INTERNAL "")
+
 else()
     include(cmake/externals.cmake)
     include(cmake/buildFlags.cmake)
@@ -37,3 +43,4 @@ else()
 
     include(cmake/doxygen.cmake)
 endif()
+
