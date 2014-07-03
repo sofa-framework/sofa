@@ -26,7 +26,7 @@
 #define ADDOBJECT_H
 
 
-#include "ui_DialogAddObject.h"
+#include <ui_DialogAddObject.h>
 #include <vector>
 
 namespace sofa

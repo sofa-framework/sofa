@@ -35,7 +35,9 @@
 #include <sofa/simulation/common/Node.h>
 #include <SofaValidation/Monitor.h>
 #include <sofa/gui/qt/QTransformationWidget.h>
+#ifdef SOFA_HAVE_QWT
 #include <sofa/gui/qt/QEnergyStatWidget.h>
+#endif
 #include <sofa/gui/qt/WDoubleLineEdit.h>
 
 #include <QTreeWidget>
@@ -54,6 +56,11 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <Q3CheckListItem>
+#include <QVBoxLayout>
+
+
+#include <QTextEdit>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
 
 namespace sofa

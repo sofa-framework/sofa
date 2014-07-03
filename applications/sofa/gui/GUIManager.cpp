@@ -25,7 +25,13 @@
 
 #include "GUIManager.h"
 #include "BaseGUI.h"
-#include <SofaComponentMain/init.h>
+//#include <SofaComponentMain/init.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
+
 #include <sofa/simulation/common/xml/initXml.h>
 using std::cerr;
 using std::endl;
@@ -172,7 +178,20 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
 int GUIManager::Init(const char* argv0, const char* name /* = "" */)
 {
     BaseGUI::SetProgramName(argv0);
-    sofa::component::init();
+    //sofa::component::init();
+
+    static bool first = true;
+    if (first)
+    {
+        sofa::component::initComponentBase();
+        sofa::component::initComponentCommon();
+        sofa::component::initComponentGeneral();
+        sofa::component::initComponentAdvanced();
+        sofa::component::initComponentMisc();
+
+        first = false;
+    }
+
     sofa::simulation::xml::initXml();
     GUICreator* creator;
 
