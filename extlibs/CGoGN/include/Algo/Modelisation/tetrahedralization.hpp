@@ -217,7 +217,6 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
         edges.push_back(m_map.phi_1(m_map.phi2(m_map.phi_1(d_1))));
 
         m_map.splitVolume(edges);
-        m_map.check();
         m_resTets.push_back(d_e);
         m_resTets.push_back(m_map.phi3(d_e));
 
