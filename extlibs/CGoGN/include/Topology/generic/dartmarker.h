@@ -239,7 +239,7 @@ public:
         DartMarkerTmpl<MAP>(map, thread)
     {
         m_markedDarts.reserve(128);
-        assert(this->isAllUnmarked());
+//        assert(this->isAllUnmarked());
         //        m_markedDarts = GenericMap::askUIntBuffer(thread);
     }
 
@@ -247,7 +247,7 @@ public:
         DartMarkerTmpl<MAP>(map, thread)
     {
         m_markedDarts.reserve(128);
-        assert(this->isAllUnmarked());
+//        assert(this->isAllUnmarked());
         //        m_markedDarts = GenericMap::askUIntBuffer(thread);
     }
 

@@ -1078,8 +1078,6 @@ template <typename FUNC>
 void Map2<MAP_IMPL>::foreach_dart_of_cc(Dart d, FUNC& f, unsigned int thread) const
 {
 	DartMarkerStore<Map2<MAP_IMPL> > mark(*this, thread);	// Lock a marker
-    assert(mark.isAllUnmarked());
-
 	std::vector<Dart> visitedFaces;	// Faces that are traversed
 	visitedFaces.reserve(1024) ;
 	visitedFaces.push_back(d);		// Start with the face of d

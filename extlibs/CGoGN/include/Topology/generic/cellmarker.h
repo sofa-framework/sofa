@@ -258,7 +258,7 @@ public:
 	{
 		assert(this->m_markVector != NULL);
         this->m_markVector->allFalse();
-        assert(this->isAllUnmarked());
+//        assert(this->isAllUnmarked());
 	}
 };
 

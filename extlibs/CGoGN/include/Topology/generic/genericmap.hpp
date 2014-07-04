@@ -77,11 +77,11 @@ inline void GenericMap::releaseUIntBuffer(std::vector<unsigned int>* vui, unsign
 {
 	if (vui->capacity()>1024)
 	{
-        std::vector<unsigned int> v(128u, 0u);
+        std::vector<unsigned int> v;
         vui->swap(v);
-//		vui->reserve(128);
+        vui->reserve(128);
 	}
-    std::fill(vui->begin(), vui->end(), 0u);
+//    std::fill(vui->begin(), vui->end(), 0u);
 	s_vintsBuffers[thread].push_back(vui);
 }
 
