@@ -452,8 +452,6 @@ bool EmbeddedMap3::mergeVolumes(Dart d, bool deleteFace)
     Dart d2 = phi2(d);
     const unsigned int deletedFaceID = getEmbedding<FACE>(d);
     const unsigned deleteVolumeID = getEmbedding<VOLUME>(phi3(d));
-    std::cerr << "deleting volume " << deleteVolumeID << "(dart "<< d.index << ")" <<std::endl;
-    std::cerr << "boundary marked volume ? " << this->isBoundaryMarked(3,d) << std::endl;
     if (deleteVolumeID == CGoGN::EMBNULL)
         return false;
     //    std::cerr << "mergeVolumes deletedFaceID = " << deletedFaceID << std::endl;
