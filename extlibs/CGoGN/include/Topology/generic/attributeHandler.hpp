@@ -22,7 +22,7 @@
 *                                                                              *
 *******************************************************************************/
 
-#include <boost/thread.hpp>
+#include <boost/thread/thread.hpp>
 #include <boost/thread/barrier.hpp>
 
 #include <vector>
