@@ -203,7 +203,7 @@ def quatToAxis(q):
     if (math.fabs(sine) < sys.float_info.epsilon) :
         axis = [0.0,1.0,0.0]
     else :
-        axis = q[0:3]/sine
+        axis = numpy.asarray(q)[0:3]/sine
     phi =  math.acos(q[3]) * 2.0
     return [axis, phi]
 
