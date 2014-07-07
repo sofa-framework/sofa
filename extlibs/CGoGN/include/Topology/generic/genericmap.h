@@ -42,7 +42,7 @@
 #include "Topology/generic/marker.h"
 #include "Topology/generic/functor.h"
 
-#include <boost/thread.hpp>
+#include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
 namespace CGoGN

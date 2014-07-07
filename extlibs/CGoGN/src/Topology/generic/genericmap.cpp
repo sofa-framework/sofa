@@ -119,7 +119,8 @@ GenericMap::GenericMap():
 
 GenericMap::~GenericMap()
 {
-
+    typedef typename std::vector< std::vector<Dart>* >::iterator VectorVectorDartIterator;
+    typedef typename std::vector< std::vector<unsigned int>* >::iterator VectorVectorUnsignedIterator;
 	for(unsigned int i = 0; i < NB_ORBITS; ++i)
 	{
 		if(isOrbitEmbedded(i))
@@ -143,9 +144,9 @@ GenericMap::~GenericMap()
 
 		for(unsigned int i = 0; i < NB_THREAD; ++i)
 		{
-			for (auto it =s_vdartsBuffers[i].begin(); it != s_vdartsBuffers[i].end(); ++it)
+            for (VectorVectorDartIterator it =s_vdartsBuffers[i].begin(); it != s_vdartsBuffers[i].end(); ++it)
 				delete *it;
-			for (auto it =s_vintsBuffers[i].begin(); it != s_vintsBuffers[i].end(); ++it)
+            for (VectorVectorUnsignedIterator it =s_vintsBuffers[i].begin(); it != s_vintsBuffers[i].end(); ++it)
 				delete *it;
 		}
 
@@ -153,7 +154,7 @@ GenericMap::~GenericMap()
 	}
 
 	// remove instance of table
-	auto it = std::find(s_instances->begin(), s_instances->end(), this);
+    std::vector<GenericMap*>::iterator it = std::find(s_instances->begin(), s_instances->end(), this);
 	*it = s_instances->back();
 	s_instances->pop_back();
 }
@@ -493,7 +494,7 @@ void GenericMap::moveData(GenericMap &mapf)
 
 	this->m_nextMarkerId = mapf.m_nextMarkerId;
 
-	for(auto it = mapf.attributeHandlers.begin(); it != mapf.attributeHandlers.end(); ++it)
+    for(std::multimap<AttributeMultiVectorGen*, AttributeHandlerGen*>::iterator it = mapf.attributeHandlers.begin(); it != mapf.attributeHandlers.end(); ++it)
 	   (*it).second->setInvalid() ;
 	mapf.attributeHandlers.clear() ;
 
@@ -508,7 +509,7 @@ void GenericMap::garbageMarkVectors()
 	{
 		std::vector<std::string> attNames;
 		m_attribs[orbit].getAttributesNames(attNames);
-		for (auto sit=attNames.begin(); sit!=attNames.end();++sit)
+        for (std::vector<std::string>::iterator sit=attNames.begin(); sit!=attNames.end();++sit)
 		{
 			if (sit->substr(0,7) == "marker_")
 			{
@@ -531,7 +532,7 @@ void GenericMap::removeMarkVectors()
 	{
 		std::vector<std::string> attNames;
 		m_attribs[orbit].getAttributesNames(attNames);
-		for (auto sit=attNames.begin(); sit!=attNames.end();++sit)
+        for (std::vector<std::string>::iterator sit=attNames.begin(); sit!=attNames.end();++sit)
 		{
 			if (sit->substr(0,7) == "marker_")
 			{

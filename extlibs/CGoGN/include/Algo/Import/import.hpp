@@ -28,6 +28,8 @@
 #include "Algo/Modelisation/polyhedron.h"
 #include "Algo/Topo/basic.h"
 #include <utils.h>
+#include <boost/function.hpp>
+
 namespace CGoGN
 {
 
