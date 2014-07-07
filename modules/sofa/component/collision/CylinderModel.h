@@ -100,14 +100,18 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecReal VecReal;
+    typedef typename helper::vector<typename DataTypes::Vec3> VecAxisCoord;
+
     typedef TCylinder<DataTypes> Element;
     friend class TCylinder<DataTypes>;
 protected:
     Data<VecReal > _cylinder_radii;
     Data<VecReal > _cylinder_heights;
+	Data<VecAxisCoord> _cylinder_local_axes; 
 
     Data<Real> _default_radius;
     Data<Real> _default_height;
+	Data<Coord> _default_local_axis;
 
     TCylinderModel();
     TCylinderModel(core::behavior::MechanicalState<DataTypes>* mstate );
@@ -135,6 +139,8 @@ public:
 
     //Returns the direction of the cylinder at index index
     Coord axis(int index)const;
+	//Returns the direction of the cylinder at index in local coordinates
+	Coord local_axis(int index) const;
 
     const Quaternion orientation(int index)const;
 
@@ -169,7 +175,10 @@ public:
         return DataTypes::Name();
     }
 
-    Data<VecReal > & writeRadii();
+    Data<VecReal >& writeRadii();
+	Data<VecReal>& writeHeights();
+	Data<VecAxisCoord>& writeLocalAxes();
+
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;
 };
