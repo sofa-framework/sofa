@@ -26,6 +26,7 @@
 #include "misc/CompliantSolverMerger.h"
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
+#include <contact/CompliantContact.h>
 
 namespace sofa
 {
@@ -82,8 +83,13 @@ const char* getModuleComponentList()
     return ""; /// @TODO
 }
 
+}
 
-
+// Ensure that our abstract factories do the registration and avoid symbol stripping on agressive
+// compilers like the ones found on consoles.
+SOFA_Compliant_API void initCompliant()
+{
+	component::collision::registerContactClasses();
 }
 
 }
