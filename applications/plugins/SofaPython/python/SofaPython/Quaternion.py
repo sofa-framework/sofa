@@ -207,6 +207,11 @@ def quatToAxis(q):
     phi =  math.acos(q[3]) * 2.0
     return [axis, phi]
 
+def quatToRotVec(q):
+    """ Return rotation vector corresponding to unit quaternion q
+    """
+    [axis, phi] = quatToAxis(q)
+    return numpy.asarray(axis) * phi
 
 def quatToRodrigues(q):
     """ Return rotation vector corresponding to unit quaternion q in the form of [axis, angle]
