@@ -35,7 +35,8 @@ TCylinderModel<StdRigidTypes<3,MyReal> >::TCylinderModel():
       _cylinder_radii(initData(&_cylinder_radii, "radii","Radius of each cylinder")),
       _cylinder_heights(initData(&_cylinder_heights,"heights","The cylinder heights")),
       _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
-      _default_height(initData(&_default_height,(Real)2,"dafaultHeight","The default height")),
+      _default_height(initData(&_default_height,(Real)2,"defaultHeight","The default height")),
+	  _default_local_axis(initData(&_default_local_axis,DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
       _mstate(NULL)
 {
     enum_type = CYLINDER_TYPE;
@@ -47,6 +48,7 @@ TCylinderModel<StdRigidTypes<3,MyReal> >::TCylinderModel(core::behavior::Mechani
     _cylinder_heights(initData(&_cylinder_heights,"heights","The cylinder heights")),
     _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
     _default_height(initData(&_default_height,(Real)2,"dafaultHeight","The default height")),
+	_default_local_axis(initData(&_default_local_axis,DataTypes::Vec3(0.0, 1.0, 0.0),"defaultLocalAxis", "The default local axis cylinder is modeled around")),
     _mstate(mstate)
 {
     enum_type = CYLINDER_TYPE;
@@ -59,7 +61,8 @@ void TCylinderModel<StdRigidTypes<3,MyReal> >::resize(int size)
 
     VecReal & Cylinder_radii = *_cylinder_radii.beginEdit();
     VecReal & Cylinder_heights = *_cylinder_heights.beginEdit();
-
+	VecAxisCoord & Cylinder_local_axes = *_cylinder_local_axes.beginEdit();
+	
     if ((int)Cylinder_radii.size() < size)
     {
         while((int)Cylinder_radii.size() < size)
@@ -80,8 +83,19 @@ void TCylinderModel<StdRigidTypes<3,MyReal> >::resize(int size)
         Cylinder_heights.reserve(size);
     }
 
+	if ((int)Cylinder_local_axes.size() < size)
+    {
+        while((int)Cylinder_local_axes.size() < size)
+            Cylinder_local_axes.push_back(_default_local_axis.getValue());
+    }
+    else
+    {
+        Cylinder_local_axes.reserve(size);
+    }
+
     _cylinder_radii.endEdit();
     _cylinder_heights.endEdit();
+	_cylinder_local_axes.endEdit();
 }
 
 
@@ -264,12 +278,17 @@ const Quaternion TCylinderModel<StdRigidTypes<3,MyReal> >::orientation(int index
 
 template<class MyReal>
 typename TCylinderModel<StdRigidTypes<3,MyReal> >::Coord TCylinderModel<StdRigidTypes<3,MyReal> >::axis(int index) const {
-    Coord ax(0,1,0);
+	Coord ax = _cylinder_local_axes.getValue()[index];
 
     const Quaternion & ori = orientation(index);
     return ori.rotate(ax);
 }
 
+template<class MyReal>
+typename TCylinderModel<StdRigidTypes<3,MyReal> >::Coord TCylinderModel<StdRigidTypes<3,MyReal> >::local_axis(int index) const {
+	Coord ax = _cylinder_local_axes.getValue()[index];
+    return ax;
+}
 
 template<class MyReal>
 typename TCylinderModel<StdRigidTypes<3,MyReal> >::Real TCylinderModel<StdRigidTypes<3,MyReal> >::height(int index) const {
@@ -284,6 +303,16 @@ typename TCylinder<StdRigidTypes<3,MyReal> >::Coord TCylinder<StdRigidTypes<3,My
 template<class MyReal>
 Data<typename TCylinderModel<StdRigidTypes<3,MyReal> >::VecReal > & TCylinderModel<StdRigidTypes<3,MyReal> >::writeRadii(){
     return _cylinder_radii;
+}
+
+template<class MyReal>
+Data<typename TCylinderModel<StdRigidTypes<3,MyReal> >::VecReal > & TCylinderModel<StdRigidTypes<3,MyReal> >::writeHeights(){
+    return _cylinder_heights;
+}
+
+template<class MyReal>
+Data<typename TCylinderModel<StdRigidTypes<3,MyReal> >::VecAxisCoord > & TCylinderModel<StdRigidTypes<3,MyReal> >::writeLocalAxes(){
+    return _cylinder_local_axes;
 }
 
 }
