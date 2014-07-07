@@ -1,3 +1,3 @@
 # concatenate lists for use with data.
-def cat(x):
+def listToStr(x):
     return ' '.join(map(str, x))
