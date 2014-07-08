@@ -26,7 +26,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
     VecCoord x;
     VecDeriv v,f;
 
-    QuadPressureForceField_test(): ForceField_test(std::string(SOFATEST_SCENES_DIR) + "/" + "QuadPressureForceField.scn")
+    QuadPressureForceField_test(): Inherited::ForceField_test(std::string(SOFATEST_SCENES_DIR) + "/" + "QuadPressureForceField.scn")
     {
         // Set vectors, using DataTypes::set to cope with tests in dimension 2
         //Position
@@ -50,10 +50,10 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
         DataTypes::set( f[3],  f0[0], f0[1], f0[2]);
 
         // Set the properties of the force field
-        this->force->normal.setValue(Deriv(0,0,1));
-        this->force->dmin.setValue(-0.01);
-        this->force->dmax.setValue(0.01);
-        this->force->pressure=Coord(0,0,0.2);
+        Inherited::force->normal.setValue(Deriv(0,0,1));
+        Inherited::force->dmin.setValue(-0.01);
+        Inherited::force->dmax.setValue(0.01);
+        Inherited::force->pressure=Coord(0,0,0.2);
     }
     
     //Test the value of the force it should be equal for each vertex to Pressure*area/4
