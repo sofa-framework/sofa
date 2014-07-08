@@ -44,7 +44,7 @@ struct MechanicalObject_test :  public ::testing::Test
 {
     typedef typename StubMechanicalObject<T>::DataTypes::Coord  Coord;
     typedef typename StubMechanicalObject<T>::DataTypes::Real   Real;
-    
+
     StubMechanicalObject<T> mechanicalObject;
 };
 
@@ -94,7 +94,7 @@ struct CheckPositionImpl<Vec<N, REAL>, 3>
 template<typename DataType>
 void CheckPosition(StubMechanicalObject<DataType>& mechanicalObject)
 {
-    CheckPositionImpl<DataType::Coord, DataType::coord_total_size>()(mechanicalObject.readPositions()[0]); // Vec<N, real>, RigidCoord<N, real>
+    CheckPositionImpl<typename DataType::Coord, DataType::coord_total_size>()(mechanicalObject.readPositions()[0]); // Vec<N, real>, RigidCoord<N, real>
 }
 
 } // namespace TestHelpers
@@ -103,17 +103,17 @@ void CheckPosition(StubMechanicalObject<DataType>& mechanicalObject)
 
 TYPED_TEST(MechanicalObject_test, checkThatDefaultSizeIsOne)
 {
-    ASSERT_EQ(1u, mechanicalObject.getSize());
+    ASSERT_EQ(1u, this->mechanicalObject.getSize());
 }
 
 TYPED_TEST(MechanicalObject_test, checkThatTheSizeOfTheDefaultPositionIsEqualToTheSizeOfTheDataTypeCoord)
 {
-    ASSERT_EQ(TypeParam::coord_total_size, mechanicalObject.readPositions()[0].size());
+    ASSERT_EQ(TypeParam::coord_total_size, this->mechanicalObject.readPositions()[0].size());
 }
 
 TYPED_TEST(MechanicalObject_test, checkThatPositionDefaultValueIsAVectorOfValueInitializedReals)
 {
-    TestHelpers::CheckPosition(mechanicalObject);
+    TestHelpers::CheckPosition(this->mechanicalObject);
 }
 
 } // namespace
