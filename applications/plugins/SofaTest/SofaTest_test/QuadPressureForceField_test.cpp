@@ -4,6 +4,7 @@
 #include "ForceField_test.h"
 //Force field
 #include <sofa/component/forcefield/QuadPressureForceField.h>
+#include <sofa/component/topology/TopologySparseData.inl>
 
 namespace sofa {
 
@@ -82,7 +83,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 
 // Types to instantiate.
 typedef testing::Types<
-    component::forcefield::QuadPressureForceField<defaulttype::Vec3Types>
+    component::forcefield::QuadPressureForceField<defaulttype::Vec3dTypes>
 > TestTypes; 
 
 
