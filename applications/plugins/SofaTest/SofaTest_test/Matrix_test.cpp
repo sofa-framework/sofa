@@ -26,7 +26,7 @@
   The same suite is instanciated using different parameters: entry types (float/double) and BlockMN size in CompressedRowSparse.
   */
 
-
+#include "stdafx.h"
 #include <gtest/gtest.h>
 #include "Sofa_test.h"
 

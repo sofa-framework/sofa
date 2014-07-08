@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
@@ -52,6 +53,8 @@
 #include "PrimitiveCreation.h"
 
 namespace sofa {
+
+    namespace PrimitiveCreationTest{
 
 struct TestOBB : public Sofa_test<double>{
     bool faceVertex();
@@ -1294,6 +1297,6 @@ TEST_F(TestTriOBB, vertex_vertex ) { ASSERT_TRUE( vertexVertex()); }
 TEST_F(TestTriOBB, face_vertex_out ) { ASSERT_TRUE( faceVertex_out()); }
 TEST_F(TestTriOBB, face_vertex_out2 ) { ASSERT_TRUE( faceVertex_out2()); }
 
-
+}// PrimitiveCreationTest
 
 } // namespace sofa
