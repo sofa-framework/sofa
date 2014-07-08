@@ -1,6 +1,9 @@
+#include "stdafx.h"
 #include "PrimitiveCreation.h"
 
 namespace sofa{
+
+     namespace PrimitiveCreationTest{
 
 void rotx(double ax,Vec3 & x,Vec3 & y,Vec3 & z){
     Vec3 ix = Vec3(1,0,0);
@@ -240,7 +243,7 @@ sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & 
     sofa::component::collision::RigidSphereModel::SPtr sphereCollisionModel = New<sofa::component::collision::RigidSphereModel >();
     sphere->addObject(sphereCollisionModel);
 
-    //editting the RigidSphereModel
+    //editing the RigidSphereModel
     sphereCollisionModel->init();
     sofa::component::collision::RigidSphereModel::VecReal & vecRad = *(sphereCollisionModel->radius.beginEdit());
 
@@ -294,5 +297,6 @@ sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal ra
     return sphereCollisionModel;
 }
 
-}
+}// namespace PrimitiveCreationTest
+}//namespace sofa
 

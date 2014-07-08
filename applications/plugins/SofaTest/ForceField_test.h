@@ -24,6 +24,8 @@
 ******************************************************************************/
 
 /* Francois Faure, 2014 */
+#ifndef SOFA_STANDARDTEST_ForceField_test_H
+#define SOFA_STANDARDTEST_ForceField_test_H
 
 #include "Sofa_test.h"
 #include <sofa/component/init.h>
@@ -81,6 +83,32 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         ///  node 1
         node = simu->createNewGraph("root");
         dof = addNew<DOF>(node);
+        force = addNew<ForceField>(node);
+
+        errorMax = 100;
+        deltaMax = 1000;
+        checkStiffness = true;
+        debug = false;
+    }
+    
+     /** Create a scene from a xml file.
+     *
+     */
+    ForceField_test(std::string filename)
+    {
+        using modeling::addNew;
+        simulation::Simulation* simu;
+        sofa::component::init();
+        sofa::simulation::setSimulation(simu = new sofa::simulation::graph::DAGSimulation());
+
+        /// Load the scene
+        node = simu->createNewGraph("root");
+        node = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(filename.c_str()));
+
+        ///  Get mechanical object
+        dof = node->get<DOF>(node->SearchDown);
+
+        // Add force field
         force = addNew<ForceField>(node);
 
         errorMax = 100;
@@ -199,3 +227,5 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
 
 } // namespace sofa
+
+#endif

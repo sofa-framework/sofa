@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
@@ -55,6 +56,8 @@
 
 
 namespace sofa {
+
+using namespace PrimitiveCreationTest;
 
 struct TestSphere : public Sofa_test<double>{
     typedef sofa::defaulttype::Vec3d Vec3d;

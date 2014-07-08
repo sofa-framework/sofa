@@ -24,6 +24,8 @@
 ******************************************************************************/
 
 /* Francois Faure, 2013 */
+#ifndef SOFA_STANDARDTEST_Mapping_test_H
+#define SOFA_STANDARDTEST_Mapping_test_H
 
 #include "Sofa_test.h"
 #include <sofa/component/init.h>
@@ -382,6 +384,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 };
 
-
-
 } // namespace sofa
+
+
+#endif

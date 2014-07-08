@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 /* Francois Faure, 2013 */
-
+#include "stdafx.h"
 #include "Mapping_test.h"
 #include <sofa/component/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -35,7 +35,7 @@
 
 
 namespace sofa {
-
+  namespace {
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -208,4 +208,5 @@ TYPED_TEST( RigidMappingTest , oneRigid_fourParticles_worldCoords )
     ASSERT_TRUE(this->test_oneRigid_fourParticles_worldCoords());
 }
 
+}//anonymous namespace
 } // namespace sofa
