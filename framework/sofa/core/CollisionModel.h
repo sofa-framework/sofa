@@ -428,6 +428,9 @@ public:
     /// add the group ID to this model.
     void addGroup(const int groupId) { group.beginEdit()->insert(groupId); group.endEdit(); }
 
+	/// Set the group IDs to this model
+	void setGroups(const helper::set<int>& ids) { group.setValue(ids); }
+
     /// @deprecated ensuring backward compatibility
     void setGroup(const int groupId) { addGroup(groupId); }
 
