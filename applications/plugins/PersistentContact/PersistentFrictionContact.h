@@ -56,6 +56,7 @@ struct ContactInfo
         , m_mapper2(false)
         , m_distance(0.0)
         , m_initForce(Vec3d())
+        , m_contactId(-1)
     {
     }
 
@@ -66,6 +67,7 @@ struct ContactInfo
         , m_mapper2(map2)
         , m_distance(dist)
         , m_initForce(f)
+        , m_contactId(-1)
     {
     }
 

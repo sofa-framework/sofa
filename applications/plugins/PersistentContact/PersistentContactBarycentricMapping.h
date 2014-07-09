@@ -213,12 +213,14 @@ public:
     PersistentContactBarycentricMapping()
         : Inherit()
         ,  m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
+        , m_init(false)
     {
     }
 
     PersistentContactBarycentricMapping(core::State<In>* from, core::State<Out>* to)
         : Inherit(from, to)
         , m_persistentMapper(initLink("persistentMapper", "Internal persistent mapper created depending on the type of topology"))
+        , m_init(false)
     {
     }
 
