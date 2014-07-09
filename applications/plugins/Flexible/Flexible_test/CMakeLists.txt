@@ -26,6 +26,11 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
 AddCompilerDefinitions("FLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+
+if(WIN32 AND NOT CMAKE_CL_64)
+    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
+endif()
+
 AddLinkerDependencies(Flexible SofaTest)
 
 #Needed by python test
