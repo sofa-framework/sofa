@@ -176,6 +176,17 @@ public:
 		return sizeof(bool); // ?
 	}
 
+    inline bool isAllFalse() {
+        for (unsigned int i = 0; i < m_tableData.size(); ++i)
+        {
+            unsigned int *ptr =m_tableData[i];
+            for (unsigned int j=0, max = _BLOCKSIZE_/32u; j< max;++j)
+                if((*ptr++) != 0u)
+                    return false;
+        }
+        return true;
+    }
+
 	inline void allFalse()
 	{
 		for (unsigned int i = 0; i < m_tableData.size(); ++i)

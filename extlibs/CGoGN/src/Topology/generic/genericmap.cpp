@@ -78,6 +78,14 @@ GenericMap::GenericMap():
 		registerAttribute<float>("float");
 		registerAttribute<double>("double");
 
+        registerAttribute<Geom::Vec2f>("sofaVec2f");
+        registerAttribute<Geom::Vec3f>("sofaVec3f");
+        registerAttribute<Geom::Vec4f>("sofaVec4f");
+
+        registerAttribute<Geom::Vec2d>("sofaVec2d");
+        registerAttribute<Geom::Vec3d>("sofaVec3d");
+        registerAttribute<Geom::Vec4d>("sofaVec4d");
+
 		registerAttribute<Geom::Matrix33f>(Geom::Matrix33f::CGoGNnameOfType());
 		registerAttribute<Geom::Matrix44f>(Geom::Matrix44f::CGoGNnameOfType());
 

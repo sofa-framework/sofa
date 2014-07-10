@@ -26,12 +26,19 @@
 #define __MAP_MONO__
 
 #include "Topology/generic/genericmap.h"
-
+namespace sofa {
+namespace cgogn_plugin {
+namespace test {
+    class CGoGN_test ;
+}
+}
+}
 namespace CGoGN
 {
 
 class MapMono : public GenericMap
 {
+    friend class ::sofa::cgogn_plugin::test::CGoGN_test;
 	template<typename MAP> friend class DartMarkerTmpl ;
 	template<typename MAP> friend class DartMarkerStore ;
 

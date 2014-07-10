@@ -45,6 +45,14 @@
 #include <boost/thread/thread.hpp>
 #include <boost/thread/mutex.hpp>
 
+namespace sofa {
+namespace cgogn_plugin {
+namespace test {
+    class CGoGN_test ;
+}
+}
+}
+
 namespace CGoGN
 {
 
@@ -76,6 +84,7 @@ class CellMarkerGen ;
 
 class GenericMap
 {
+    friend class ::sofa::cgogn_plugin::test::CGoGN_test;
 	template<typename T, unsigned int ORBIT, typename MAP> friend class AttributeHandler ;
 	template<typename T, typename MAP> friend class DartAutoAttribute ;
 	template<typename T, typename MAP> friend class VertexAutoAttribute ;

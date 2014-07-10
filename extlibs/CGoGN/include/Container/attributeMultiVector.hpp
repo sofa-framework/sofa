@@ -350,7 +350,7 @@ inline unsigned int AttributeMultiVectorGen::loadBinInfos(CGoGNistream& fs, std:
 	unsigned int len1 = nbs[1];
 	unsigned int len2 = nbs[2];
 
-	char buffer[256];
+    char* buffer = new char[256];
 	fs.read(buffer, (len1+len2)*sizeof(char));
 
 	name = std::string(buffer);

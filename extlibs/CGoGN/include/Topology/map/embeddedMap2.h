@@ -28,6 +28,14 @@
 #include "Topology/map/map2.h"
 #include "Topology/generic/mapImpl/mapMono.h"
 
+namespace sofa {
+namespace cgogn_plugin {
+namespace test {
+    class CGoGN_test ;
+}
+}
+}
+
 namespace CGoGN
 {
 
@@ -37,7 +45,7 @@ namespace CGoGN
 */
 class EmbeddedMap2 : public Map2<MapMono>
 {
-
+    friend class ::sofa::cgogn_plugin::test::CGoGN_test;
 	EmbeddedMap2(const EmbeddedMap2& m):Map2<MapMono>(m)  {}
 public:
 	typedef MapMono IMPL;

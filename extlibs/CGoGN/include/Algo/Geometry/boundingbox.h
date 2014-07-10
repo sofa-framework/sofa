@@ -42,9 +42,11 @@ template <typename PFP>
 Geom::BoundingBox<typename PFP::VEC3> computeBoundingBox(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position)
 {
     typedef typename Geom::BoundingBox<typename PFP::VEC3> BoundingBox;
+    typedef typename PFP::VEC3 VEC3;
+    typedef typename PFP::MAP MAP;
     BoundingBox bb ;
 //	foreach_cell<VERTEX>(map, [&] (Vertex v) { bb.addPoint(position[v]) ; });
-    foreach_cell<VERTEX>(map, bl::bind(BoundingBox::addPoint, bl::var(bb), bl::bind(VertexAttribute<typename PFP::VEC3, typename PFP::MAP>::operator [], boost::cref(position), bl::_1)));
+    foreach_cell<VERTEX>(map, bl::bind(&BoundingBox::addPoint, boost::ref(bb), bl::bind(static_cast<const VEC3& (VertexAttribute<VEC3,MAP>::*)(Vertex) const> (&VertexAttribute<VEC3,MAP>::operator []), boost::cref(position), bl::_1)));
 	return bb ;
 }
 

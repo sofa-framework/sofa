@@ -584,163 +584,163 @@ Dart Topo3Render<PFP>::picking(MAP& map, int x, int y)
 template<typename PFP>
 void Topo3RenderMap<PFP>::updateData(MAP& mapx, const VertexAttribute<VEC3, MAP>& positions, float ke, float kf, float kv)
 {
-	this->m_attIndex = mapx.template getAttribute<unsigned int, DART, MAP>("dart_index3");
+    this->m_attIndex = mapx.template getAttribute<unsigned int, DART, MAP>("dart_index3");
 
-	if (!this->m_attIndex.isValid())
-		this->m_attIndex  = mapx.template addAttribute<unsigned int, DART, MAP>("dart_index3");
+    if (!this->m_attIndex.isValid())
+        this->m_attIndex  = mapx.template addAttribute<unsigned int, DART, MAP>("dart_index3");
 
-	this->m_nbDarts = 0;
-	for (Dart d = mapx.begin(); d != mapx.end(); mapx.next(d))
-	{
-		if (!mapx.template isBoundaryMarked<3>(d)) // in the following code Traversor do not traverse boundary
-			this->m_nbDarts++;
-	}
+    this->m_nbDarts = 0;
+    for (Dart d = mapx.begin(); d != mapx.end(); mapx.next(d))
+    {
+        if (!mapx.template isBoundaryMarked<3>(d)) // in the following code Traversor do not traverse boundary
+            this->m_nbDarts++;
+    }
 
-	// compute center of each volumes
-	CellMarker<MAP, VOLUME> cmv(mapx);
-	VolumeAutoAttribute<VEC3, MAP> centerVolumes(mapx, "centerVolumes");
+    // compute center of each volumes
+    CellMarker<MAP, VOLUME> cmv(mapx);
+    VolumeAutoAttribute<VEC3, MAP> centerVolumes(mapx, "centerVolumes");
 
-	Algo::Volume::Geometry::Parallel::computeCentroidELWVolumes<PFP>(mapx, positions, centerVolumes);
+    Algo::Volume::Geometry::Parallel::computeCentroidELWVolumes<PFP>(mapx, positions, centerVolumes);
 
-	// debut phi1
-	DartAutoAttribute<VEC3, MAP> fv1(mapx);
-	// fin phi1
-	DartAutoAttribute<VEC3, MAP> fv11(mapx);
+    // debut phi1
+    DartAutoAttribute<VEC3, MAP> fv1(mapx);
+    // fin phi1
+    DartAutoAttribute<VEC3, MAP> fv11(mapx);
 
-	// phi2
-	DartAutoAttribute<VEC3, MAP> fv2(mapx);
-	DartAutoAttribute<VEC3, MAP> fv2x(mapx);
+    // phi2
+    DartAutoAttribute<VEC3, MAP> fv2(mapx);
+    DartAutoAttribute<VEC3, MAP> fv2x(mapx);
 
-	this->m_vbo4->bind();
-	glBufferData(GL_ARRAY_BUFFER, 2*this->m_nbDarts*sizeof(VEC3), 0, GL_STREAM_DRAW);
-	GLvoid* ColorDartsBuffer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
-	Geom::Vec3f* colorDartBuf = reinterpret_cast<Geom::Vec3f*>(ColorDartsBuffer);
+    this->m_vbo4->bind();
+    glBufferData(GL_ARRAY_BUFFER, 2*this->m_nbDarts*sizeof(VEC3), 0, GL_STREAM_DRAW);
+    GLvoid* ColorDartsBuffer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+    Geom::Vec3f* colorDartBuf = reinterpret_cast<Geom::Vec3f*>(ColorDartsBuffer);
 
-	this->m_vbo0->bind();
-	glBufferData(GL_ARRAY_BUFFER, 2*this->m_nbDarts*sizeof(VEC3), 0, GL_STREAM_DRAW);
-	GLvoid* PositionDartsBuffer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
-	Geom::Vec3f* positionDartBuf = reinterpret_cast<Geom::Vec3f*>(PositionDartsBuffer);
+    this->m_vbo0->bind();
+    glBufferData(GL_ARRAY_BUFFER, 2*this->m_nbDarts*sizeof(VEC3), 0, GL_STREAM_DRAW);
+    GLvoid* PositionDartsBuffer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+    Geom::Vec3f* positionDartBuf = reinterpret_cast<Geom::Vec3f*>(PositionDartsBuffer);
 
-	std::vector<Dart> vecDartFaces;
-	vecDartFaces.reserve(this->m_nbDarts/3);
-	unsigned int posDBI = 0;
+    std::vector<Dart> vecDartFaces;
+    vecDartFaces.reserve(this->m_nbDarts/3);
+    unsigned int posDBI = 0;
 
-	// traverse each face of each volume
-	TraversorCell<MAP, PFP::MAP::FACE_OF_PARENT> traFace(mapx);
-	for (Dart d = traFace.begin(); d != traFace.end(); d = traFace.next())
-	{
-		vecDartFaces.push_back(d);
+    // traverse each face of each volume
+    TraversorCell<MAP, PFP::MAP::FACE_OF_PARENT> traFace(mapx);
+    for (Dart d = traFace.begin(); d != traFace.end(); d = traFace.next())
+    {
+        vecDartFaces.push_back(d);
 
-		std::vector<VEC3> vecPos;
-		vecPos.reserve(16);
+        std::vector<VEC3> vecPos;
+        vecPos.reserve(16);
 
-		// store the face & center
-		float okv = 1.0f - kv;
+        // store the face & center
+        float okv = 1.0f - kv;
 
-		VEC3 vc = centerVolumes[d];
+        VEC3 vc = centerVolumes[d];
 
-		VEC3 centerFace = Algo::Surface::Geometry::faceCentroidELW<PFP>(mapx,d,positions)*kv +vc*okv;
+        VEC3 centerFace = Algo::Surface::Geometry::faceCentroidELW<PFP>(mapx,d,positions)*kv +vc*okv;
 
-		//shrink the face
-		float okf = 1.0f - kf;
-		Dart dd = d;
-		do
-		{
-			VEC3 P = centerFace*okf + (vc*okv + positions[dd]*kv)*kf;
-			vecPos.push_back(P);
-			dd = mapx.phi1(dd);
-		} while (dd != d);
+        //shrink the face
+        float okf = 1.0f - kf;
+        Dart dd = d;
+        do
+        {
+            VEC3 P = centerFace*okf + (vc*okv + positions[dd]*kv)*kf;
+            vecPos.push_back(P);
+            dd = mapx.phi1(dd);
+        } while (dd != d);
 
-		unsigned int nb = vecPos.size();
+        unsigned int nb = vecPos.size();
 
-		vecPos.push_back(vecPos.front()); // copy the first for easy computation on next loop
+        vecPos.push_back(vecPos.front()); // copy the first for easy computation on next loop
 
-		// compute position of points to use for drawing topo
-		float oke = 1.0f - ke;
-		for (unsigned int i = 0; i < nb; ++i)
-		{
-			VEC3 P = vecPos[i]*ke + vecPos[i+1]*oke;
-			VEC3 Q = vecPos[i+1]*ke + vecPos[i]*oke;
+        // compute position of points to use for drawing topo
+        float oke = 1.0f - ke;
+        for (unsigned int i = 0; i < nb; ++i)
+        {
+            VEC3 P = vecPos[i]*ke + vecPos[i+1]*oke;
+            VEC3 Q = vecPos[i+1]*ke + vecPos[i]*oke;
 
-			this->m_attIndex[d] = posDBI;
-			posDBI+=2;
+            this->m_attIndex[d] = posDBI;
+            posDBI+=2;
 
-			*positionDartBuf++ = PFP::toVec3f(P);
-			*positionDartBuf++ = PFP::toVec3f(Q);
-			*colorDartBuf++ = this->m_dartsColor;
-			*colorDartBuf++ = this->m_dartsColor;
+            *positionDartBuf++ = PFP::toVec3f(P);
+            *positionDartBuf++ = PFP::toVec3f(Q);
+            *colorDartBuf++ = this->m_dartsColor;
+            *colorDartBuf++ = this->m_dartsColor;
 
-			fv1[d] = P*0.1f + Q*0.9f;
-			fv11[d] = P*0.9f + Q*0.1f;
+            fv1[d] = P*0.1f + Q*0.9f;
+            fv11[d] = P*0.9f + Q*0.1f;
 
-			fv2[d] = P*0.52f + Q*0.48f;
-			fv2x[d] = P*0.48f + Q*0.52f;
-			d = mapx.phi1(d);
-		}
-	}
+            fv2[d] = P*0.52f + Q*0.48f;
+            fv2x[d] = P*0.48f + Q*0.52f;
+            d = mapx.phi1(d);
+        }
+    }
 
-	this->m_vbo0->bind();
-	glUnmapBuffer(GL_ARRAY_BUFFER);
+    this->m_vbo0->bind();
+    glUnmapBuffer(GL_ARRAY_BUFFER);
 
-	this->m_vbo4->bind();
-	glUnmapBuffer(GL_ARRAY_BUFFER);
+    this->m_vbo4->bind();
+    glUnmapBuffer(GL_ARRAY_BUFFER);
 
-	Geom::Vec3f* positioniF1 = new Geom::Vec3f[ 2*this->m_nbDarts];
-	Geom::Vec3f* positioniF2 = new Geom::Vec3f[ 2*this->m_nbDarts];
-	Geom::Vec3f* positioniF3 = new Geom::Vec3f[ 2*this->m_nbDarts];
+    Geom::Vec3f* positioniF1 = new Geom::Vec3f[ 2*this->m_nbDarts];
+    Geom::Vec3f* positioniF2 = new Geom::Vec3f[ 2*this->m_nbDarts];
+    Geom::Vec3f* positioniF3 = new Geom::Vec3f[ 2*this->m_nbDarts];
 
-	Geom::Vec3f* positionF1 = positioniF1;
-	Geom::Vec3f* positionF2 = positioniF2;
-	Geom::Vec3f* positionF3 = positioniF3;
+    Geom::Vec3f* positionF1 = positioniF1;
+    Geom::Vec3f* positionF2 = positioniF2;
+    Geom::Vec3f* positionF3 = positioniF3;
 
-	this->m_nbRel1 = 0;
-	this->m_nbRel2 = 0;
-	this->m_nbRel3 = 0;
+    this->m_nbRel1 = 0;
+    this->m_nbRel2 = 0;
+    this->m_nbRel3 = 0;
 
-	for(std::vector<Dart>::iterator face = vecDartFaces.begin(); face != vecDartFaces.end(); ++face)
-	{
-		Dart d = *face;
-		do
-		{
-			Dart e = mapx.phi2(d);
-			if ((d < e))
-			{
-				*positionF2++ = PFP::toVec3f(fv2[d]);
-				*positionF2++ = PFP::toVec3f(fv2x[e]);
-				*positionF2++ = PFP::toVec3f(fv2[e]);
-				*positionF2++ = PFP::toVec3f(fv2x[d]);
-				this->m_nbRel2++;
-			}
-			e = mapx.phi3(d);
-			if (!mapx.template isBoundaryMarked<3>(e) && (d < e) )
-			{
-				*positionF3++ = PFP::toVec3f(fv2[d]);
-				*positionF3++ = PFP::toVec3f(fv2x[e]);
-				*positionF3++ = PFP::toVec3f(fv2[e]);
-				*positionF3++ = PFP::toVec3f(fv2x[d]);
-				this->m_nbRel3++;
-			}
-			e = mapx.phi1(d);
-			*positionF1++ = PFP::toVec3f(fv1[d]);
-			*positionF1++ = PFP::toVec3f(fv11[e]);
-			this->m_nbRel1++;
+    for(std::vector<Dart>::iterator face = vecDartFaces.begin(); face != vecDartFaces.end(); ++face)
+    {
+        Dart d = *face;
+        do
+        {
+            Dart e = mapx.phi2(d);
+            if ((d < e))
+            {
+                *positionF2++ = PFP::toVec3f(fv2[d]);
+                *positionF2++ = PFP::toVec3f(fv2x[e]);
+                *positionF2++ = PFP::toVec3f(fv2[e]);
+                *positionF2++ = PFP::toVec3f(fv2x[d]);
+                this->m_nbRel2++;
+            }
+            e = mapx.phi3(d);
+            if (!mapx.template isBoundaryMarked<3>(e) && (d < e) )
+            {
+                *positionF3++ = PFP::toVec3f(fv2[d]);
+                *positionF3++ = PFP::toVec3f(fv2x[e]);
+                *positionF3++ = PFP::toVec3f(fv2[e]);
+                *positionF3++ = PFP::toVec3f(fv2x[d]);
+                this->m_nbRel3++;
+            }
+            e = mapx.phi1(d);
+            *positionF1++ = PFP::toVec3f(fv1[d]);
+            *positionF1++ = PFP::toVec3f(fv11[e]);
+            this->m_nbRel1++;
 
-			d = mapx.phi1(d);
-		} while (d != *face );
-	}
+            d = mapx.phi1(d);
+        } while (d != *face );
+    }
 
-	this->m_vbo3->bind();
-	glBufferData(GL_ARRAY_BUFFER, 4*this->m_nbRel3*sizeof(Geom::Vec3f), positioniF3, GL_STREAM_DRAW);
+    this->m_vbo3->bind();
+    glBufferData(GL_ARRAY_BUFFER, 4*this->m_nbRel3*sizeof(Geom::Vec3f), positioniF3, GL_STREAM_DRAW);
 
-	this->m_vbo2->bind();
-	glBufferData(GL_ARRAY_BUFFER, 4*this->m_nbRel2*sizeof(Geom::Vec3f), positioniF2, GL_STREAM_DRAW);
+    this->m_vbo2->bind();
+    glBufferData(GL_ARRAY_BUFFER, 4*this->m_nbRel2*sizeof(Geom::Vec3f), positioniF2, GL_STREAM_DRAW);
 
-	this->m_vbo1->bind();
-	glBufferData(GL_ARRAY_BUFFER, 2*this->m_nbRel1*sizeof(Geom::Vec3f), positioniF1, GL_STREAM_DRAW);
+    this->m_vbo1->bind();
+    glBufferData(GL_ARRAY_BUFFER, 2*this->m_nbRel1*sizeof(Geom::Vec3f), positioniF1, GL_STREAM_DRAW);
 
-	delete[] positioniF1;
-	delete[] positioniF2;
-	delete[] positioniF3;
+    delete[] positioniF1;
+    delete[] positioniF2;
+    delete[] positioniF3;
 }
 
 

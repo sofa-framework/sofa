@@ -26,8 +26,7 @@
 #define __EMBEDDED_MAP3_H__
 
 #include "Topology/map/map3.h"
-#include "Topology/generic/mapImpl/mapMono.h"
-
+#include "Topology/generic/mapImpl/mapMulti.h"
 
 
 namespace sofa {
@@ -38,23 +37,22 @@ namespace test {
 }
 }
 
-
 namespace CGoGN
 {
 
 /*! Class of 3-dimensional maps with managed embeddings
  */
-class EmbeddedMap3 : public Map3<MapMono>
+class EmbeddedMap3_MR : public Map3<MapMulti>
 {
     friend class ::sofa::cgogn_plugin::test::CGoGN_test;
-    EmbeddedMap3(const EmbeddedMap3& m) : Map3<MapMono>(m) {}
+    EmbeddedMap3_MR(const EmbeddedMap3_MR& m) : Map3<MapMulti>(m) {}
 public:
-    typedef MapMono IMPL;
-    typedef Map3<MapMono> TOPO_MAP;
+    typedef MapMulti IMPL;
+    typedef Map3<MapMulti> TOPO_MAP;
 
     static const unsigned int DIMENSION = TOPO_MAP::DIMENSION ;
 
-    EmbeddedMap3() {}
+    EmbeddedMap3_MR() {}
 
 
     //!
@@ -167,7 +165,7 @@ public:
     bool checkEmbeddings() {
         bool res = true;
         std::cerr << "***** checking "<< this->orbitName(ORB) << " embeddings ***** " << std::endl;
-        //        TraversorCell<EmbeddedMap3, ORB, FORCE_DART_MARKING> trav(*this);
+        //        TraversorCell<EmbeddedMap3_MR, ORB, FORCE_DART_MARKING> trav(*this);
         for (Dart d = this->begin(), end = this->end() ; d != end ; this->next(d)) {
             if (!this->isBoundaryMarked<3>(d)) {
                 std::vector<Dart> darts;
@@ -189,7 +187,7 @@ public:
         const unsigned int size = orbCont.size();
         AttributeMultiVector<unsigned int>* embVec = getEmbeddingAttributeVector<ORB>();
         std::cerr << "***** printing "<< this->orbitName(ORB) << " embeddings ***** " << std::endl;
-        TraversorCell<EmbeddedMap3, ORB, FORCE_DART_MARKING> trav(*this);
+        TraversorCell<EmbeddedMap3_MR, ORB, FORCE_DART_MARKING> trav(*this);
         unsigned i = 0u ;
         for (Dart d = trav.begin() ; d != trav.end() ; ++i, d = trav.next()) {
             std::cerr << "embedding number " << i << " : " << getEmbedding<ORB>(d) << std::endl;
