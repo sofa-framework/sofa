@@ -3,7 +3,7 @@ To compile stylecheck you need to install LLVM & CLANG as well has the developem
 
 Stylecheck is using llvm/clang from svn revision: 211571
 To compile llvm/clang you can follow the step-by-step procedure available there (specifying the adequate revision number):
-http://clang.llvm.org/
+http://clang.llvm.org/get_started.html
 
 Once llvm & clang are working and install on your system you can compile
 stylecheck using the following procedure
@@ -11,21 +11,21 @@ stylecheck using the following procedure
 # cd YOURSOFAROOT
 # mkdir tools/stylechecker-build
 # cd tools/stylechecker-build 
-# cmake ../stylechecker
+# cmake ../stylechecker -DLLVM_PATH=YOUR_PATH_TO_LLVM_SOURCE
 # make
-# make install 
+# sudo make install 
 
-clang requires some specific header so you must either:
-	- install stylecheck in the same directory as where is installed clang  (eg. using make install)
-
-	- install the requested header "../" where is located the stylecheck.exe  application.
-	You can find more infos on this issue at section "Builtin includes"
-	http://clang.llvm.org/docs/LibTooling.html
+In case you cannot install the tool using make install you can use it 
+from any other path but you need to copy some standard headers libraries from clang.
+You can find more info in this page: 
+http://clang.llvm.org/docs/LibTooling.html
 
 ========== Tester stylecheck ====================
 # cd YOURSOFAROOT
 # cd tools/stylechecker/
 # stylecheck.exe test1.cpp  --
+
+It should display a bunch of warning. 
 
 ========== Wrapper stylecheck dans  un script de build ====================
 
