@@ -55,7 +55,7 @@ static cl::OptionCategory MyToolCategory("Stylecheck.exe");
 cl::list<string> userexcluded("E", llvm::cl::Prefix, llvm::cl::desc("Specify path pattern to exclude"), cl::cat(MyToolCategory)) ;
 cl::list<string> userincluded("L", llvm::cl::Prefix, llvm::cl::desc("Specify path pattern to be restricted in"), cl::cat(MyToolCategory)) ;
 cl::opt<bool> verbose("v", cl::desc("Set verbose mode"), cl::init(false), cl::cat(MyToolCategory));
-cl::opt<int> numberofincludes("n", cl::desc("Number of include files before a warning is emited [default is 20]"), cl::init(20), cl::cat(MyToolCategory));
+cl::opt<int> numberofincludes("n", cl::desc("Number of include files before a warning is emited [default is 40]"), cl::init(40), cl::cat(MyToolCategory));
 
 enum QualityLevel {
   Q0, Q1, Q2
@@ -163,12 +163,14 @@ void printErrorN1(const string& filename, const int line, const int col, const s
 
 
 void printErrorC1(const string& filename, const int line, const int col, const string& classname, const string& name){
-    //if(qualityLevel < Q2)
-    //    return ;
+    if(qualityLevel< Q0)
+        return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: function member [" << classname << ":" << name << "] is violating the sofa coding style rule C1. " << endl ;
     cerr << " To keep compilation time between acceptable limits it is adviced that headers contains only declaration (i.e.: no body)" <<  endl ;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl ;
-    cerr << " Suggested replacement: move the body of the function "<< name << " into a a .cpp file" << endl << endl ;
+    cerr << " Suggested replacements to remove this warning: " << endl ;
+    cerr << "     - if the function's body can be rewritten in a single line of source code, then do it " << endl;
+    cerr << "     - otherwise move the body of the function "<< name << " into a a .cpp file" << endl << endl ;
 }
 
 void printErrorC2(const string& filename, const int line, const int col, const string& classname, const string& name){
@@ -225,7 +227,7 @@ void printErrorM5(const string& filename, const int line, const int col, const s
 }
 
 void printErrorW1(const string& filename, const int line, const int col){
-    if(qualityLevel < Q2)
+    if(qualityLevel < Q1)
         return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: use of the goto statement violates the sofa coding style rules W1. " << endl ;
     cerr << " Using the goto statement is controversial and it is higly recommended not to use it. " << endl ;
@@ -236,7 +238,7 @@ void printErrorW1(const string& filename, const int line, const int col){
 }
 
 void printErrorW2(const string& filename, const int line, const int col, const std::string& oldfct, const std::string& newfct){
-    if(qualityLevel < Q2)
+    if(qualityLevel < Q1)
         return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: using the C function ["<< oldfct << "] is violates the sofa coding style rules. " << endl ;
     cerr << " Sofa is a C++ project and thus the C++ standard library should be used. Nevertheless not being strictly forbidden " << endl ;
@@ -306,12 +308,15 @@ public:
                     }
                 }
             }
-            //stmt->dumpColor() ;
+
         }else if(stmt->getStmtClass() == Stmt::GotoStmtClass){
             SourceRange sr=stmt->getSourceRange() ;
             SourceLocation sl=sr.getBegin() ;
             auto& smanager=Context->getSourceManager() ;
             auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
+
+            if(fileinfo==NULL || isInExcludedPath(fileinfo->getName(), excludedPathPatterns))
+                return true ;
 
             printErrorW1(fileinfo->getName(),
                          smanager.getPresumedLineNumber(sl),
@@ -328,6 +333,9 @@ public:
                         SourceLocation sl=sr.getBegin() ;
                         auto& smanager=Context->getSourceManager() ;
                         auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
+
+                        if(fileinfo==NULL || isInExcludedPath(fileinfo->getName(), excludedPathPatterns))
+                            return true ;
 
                         printErrorW2(fileinfo->getName(),
                                      smanager.getPresumedLineNumber(sl),
@@ -440,9 +448,12 @@ public:
 
                             SourceRange bodysr=body->getSourceRange() ;
                             SourceLocation bodysl=bodysr.getBegin();
+                            SourceLocation bodyend=bodysr.getEnd();
                             auto fileinfobody = smanager.getFileEntryForID(smanager.getFileID(bodysl)) ;
 
-                            if(fileinfobody && isInHeader(fileinfobody->getName())){
+                            if(fileinfobody
+                                    && isInHeader(fileinfobody->getName())
+                                    && smanager.getPresumedLineNumber(bodyend)- smanager.getPresumedLineNumber(bodysl) > 1 ){
                                printErrorC1(fileinfo->getName(), smanager.getPresumedLineNumber(sl), smanager.getPresumedColumnNumber(sl),
                                            record->getNameAsString(), f->getNameAsString());
                             }
@@ -502,31 +513,6 @@ public:
                 if(ff->getAccess()==AS_public){
                     continue ;
                 }
-
-                /// THESES TWO RULES ARE NOW DEPRECATED BUT I KEEP THEM FOR HISTORY REASON
-                /*
-                if(ff->getType()->isPointerType()){
-                    if(name.size() > 2 && name[0] == 'p' && isupper(name[1]) ){}
-                    else{
-                        std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
-                                  << ":" << smanager.getPresumedLineNumber(sl)
-                                  << ":" << smanager.getPresumedColumnNumber(sl)
-                                  << ": warning: member [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa-framework.com/codingstyle/codingstyle.html... it should prefixed with pUpperCased " << std::endl;
-                    }
-                    continue ;
-                }
-
-                if(ff->getType()->isBooleanType()){
-                    if(name.size() > 2 && name[0] == 'b' && isupper(name[1]) ){}
-                    else{
-                        std::cerr << smanager.getFileEntryForID(smanager.getFileID(sl))->getName()
-                                  << ":" << smanager.getPresumedLineNumber(sl)
-                                  << ":" << smanager.getPresumedColumnNumber(sl)
-                                  << ": warning: member [" << record->getNameAsString() << ":" <<name << "] is violating the sofa coding style http://www.sofa-framework.com/codingstyle/codingstyle.html... it should prefixed with bUpperCased " << std::endl;
-                    }
-                    continue ;
-                }*/
-
 
                 CXXRecordDecl* rd=ff->getType()->getAsCXXRecordDecl() ;
                 if(rd){
