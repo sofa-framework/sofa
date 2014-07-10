@@ -59,7 +59,7 @@ cl::opt<QualityLevel> qualityLevel(cl::desc("Choose the level of conformance sty
   cl::values(
     clEnumVal(Q0, "Emits warnings about style violation from the mandatory guidelines."),
     clEnumVal(Q1, "Emits warnings about style violation from the recommanded guidelines."),
-    clEnumVal(Q2, "Emits warning about style quality and advices."),
+    clEnumVal(Q2, "Emits warnings about style quality and advices."),
    clEnumValEnd),
    cl::init(Q0), cl::cat(MyToolCategory));
 
@@ -225,7 +225,7 @@ void printErrorR1(const string& filename, const int sofacode, const int allcodes
     cerr << filename << ":1:1: info: too much file are included. " << endl ;
     cerr << " To decrease compilation time as well as improving interfaces/ABI it is recommanded to include as few as possible files. " << endl ;
     cerr << " The current .cpp file finally ended in including and thus compiling " << allcodes << " other files. " << endl ;
-    cerr << " There is " << sofacode << " sofa files among this "<< allcodes <<" other files. " << endl ;
+    cerr << " There is " << sofacode << " sofa files among these "<< allcodes <<" other files. " << endl ;
     cerr << " To help fixing this issue you could use PIMPL or InterfaceBaseDesigned, more details " << endl ;
     cerr << " at http://www.sofa-framework.com/codingstyle/opaqueincludes.html " << endl << endl ;
 }
@@ -295,9 +295,6 @@ public:
 
         if(decl==NULL)
             return true ;
-
-
-        return true ;
 
         FullSourceLoc FullLocation = Context->getFullLoc(decl->getLocStart());
         if ( !FullLocation.isValid() || exclude(FullLocation.getManager() , decl) )
