@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <sofa/helper/Quater.h>
 
 #include "../types/DeformationGradientTypes.h"

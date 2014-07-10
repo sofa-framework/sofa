@@ -29,25 +29,21 @@
     <ProjectToPlaneConstraint normal="1 0 0" indices="@[-1].indices" />
 
     <BarycentricShapeFunction template="ShapeFunctiond" />
-    
-    <!--Decomposition of the cubes in tetrahedra -->
-    <Node name="Tetra" >
-      <TetrahedronSetTopologyContainer name="TetraContainer" />
-      <TetrahedronSetTopologyModifier />
-      <TetrahedronSetTopologyAlgorithms template="Vec3d" />
-      <TetrahedronSetGeometryAlgorithms template="Vec3d" />
-      <Hexa2TetraTopologicalMapping name="default28" object1="../hexahedra" object2="TetraContainer" />
+
+    <!--Quads for QuadPressureForceField-->
+    <Node name="Quads" >
       
-      <!--Quads for QuadPressureForceField-->
       <QuadSetTopologyContainer name="QuadContainer" />
       <QuadSetTopologyModifier />
       <QuadSetTopologyAlgorithms template="Vec3d" />
       <QuadSetGeometryAlgorithms template="Vec3d" />
       <Hexa2QuadTopologicalMapping name="default28" object1="../hexahedra" object2="QuadContainer" />
       <QuadPressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" showForces="1" />
-     
+
+    </Node>
+  
       <Node name="behavior">
-        <TopologyGaussPointSampler name="sampler" inPosition="@../../hexahedra.position" showSamplesScale="0" method="0" order="1" />
+        <TopologyGaussPointSampler name="sampler" inPosition="@../hexahedra.position" showSamplesScale="0" method="0" order="2" />
         <MechanicalObject  template="F332" name="F"  showObject="0" showObjectScale="0.05" />
         <LinearMapping template="Mapping&lt;Vec3d,F332&gt;" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
 
@@ -59,6 +55,4 @@
 
       </Node>
       
-    </Node>
-
 </Node>
