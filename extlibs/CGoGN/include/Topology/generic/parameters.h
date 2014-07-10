@@ -78,10 +78,10 @@ struct PFP_DOUBLE
     typedef sofa::defaulttype::Mat<3,6, SReal> MATRIX36;
 //    typedef CGoGN::Geom::Matrix<3,6,REAL> MATRIX36;
 
-	static inline Geom::Vec3f toVec3f(const VEC3& P)
-	{
-		return Geom::Vec3f(float(P[0]),float(P[1]),float(P[2]));
-	}
+    static inline Geom::Vec3f toVec3f(const VEC3& P)
+    {
+        return Geom::Vec3f(float(P[0]),float(P[1]),float(P[2]));
+    }
 };
 
 

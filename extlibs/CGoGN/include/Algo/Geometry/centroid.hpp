@@ -43,7 +43,9 @@ namespace Geometry
 template <typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE volumeCentroid(typename PFP::MAP& map, Vol d, const V_ATT& attributs, unsigned int thread)
 {
-    typename V_ATT::DATA_TYPE center(0.0);
+    typedef typename V_ATT::DATA_TYPE EMB;
+    EMB center;
+    center.fill(0);
     unsigned int count = 0 ;
 
     //	foreach_incident3<VERTEX>(map,d, [&] (Vertex v)
@@ -53,7 +55,7 @@ typename V_ATT::DATA_TYPE volumeCentroid(typename PFP::MAP& map, Vol d, const V_
     //	}
     //	,false,thread);
 
-    foreach_incident3<VERTEX>(map,d, (bl::var(center) += attributs[bl::_1], ++bl::var(count))
+    foreach_incident3<VERTEX, VOLUME>(map,d, (bl::bind<void>(static_cast<void (EMB::*)(const EMB&)>(&EMB::operator+=), boost::ref(center), bl::bind<const EMB&>(static_cast<const EMB& (V_ATT::*)(Vertex) const>(&V_ATT::operator[]),boost::cref(attributs),   bl::_1)), ++bl::var(count))
                               ,false,thread);
 
     center /= double(count) ;
@@ -65,35 +67,38 @@ typename V_ATT::DATA_TYPE volumeCentroidELW(typename PFP::MAP& map, Vol d, const
 {
     typedef typename V_ATT::DATA_TYPE EMB;
     typedef typename PFP::MAP Map;
-    EMB center(0.0);
+    EMB center;
+    center.fill(0);
 
-    double count=0.0;
-    using bl::var;
-    //    foreach_incident3<EDGE>(map,d, [&] (Edge it)
-    //    {
-    //        EMB e1 = attributs[it.dart];
-    //        EMB e2 = attributs[map.phi1(it)];
-    //        double l = (e2-e1).norm();
-    //        center += (e1+e2)*l;
-    //        count += 2.0*l ;
-    //    },false,thread);
-    EMB e1, e2;
-    double l;
-    foreach_incident3<EDGE>(map,d,
-                            (var(e1) = attributs[bl::_1],
-                             var(e2) = attributs[bl::bind(&Map::phi1, boost::ref(map), bl::_1)],
-                             var(l) = bl::bind(&EMB::norm, var(e2) - var(e1)),
-                             var(center) += (var(e1) +var(e2))*var(l),
-                             var(count) += 2.0*var(l)), false, thread);
+//    double count=0.0;
+//    using bl::var;
+//    //    foreach_incident3<EDGE>(map,d, [&] (Edge it)
+//    //    {
+//    //        EMB e1 = attributs[it.dart];
+//    //        EMB e2 = attributs[map.phi1(it)];
+//    //        double l = (e2-e1).norm();
+//    //        center += (e1+e2)*l;
+//    //        count += 2.0*l ;
+//    //    },false,thread);
+//    EMB e1, e2;
+//    double l;
+//    foreach_incident3<EDGE, VOLUME>(map,d,
+//                            (var(e1) = bl::bind<const EMB&>(static_cast<const EMB& (V_ATT::*)(Vertex) const>(&V_ATT::operator[]),boost::cref(attributs), bl::bind<Vertex>(&Vertex::template convertCell<EDGE>, bl::_1)) ,
+//                             var(e2) = bl::bind<const EMB&>(static_cast<const EMB& (V_ATT::*)(Vertex) const>(&V_ATT::operator[]),boost::cref(bl::bind<Dart>(&Map::phi1, boost::ref(map), bl::_1)),bl::_1),
+//                             var(l) = bl::bind<typename PFP::REAL>(&EMB::norm, var(e2) - var(e1)),
+//                             var(center) += (var(e1) +var(e2))*var(l),
+//                             var(count) += 2.0*var(l)), false, thread);
 
-    center /= double(count);
+//    center /= double(count);
     return center ;
 }
 
 template <typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE faceCentroid(typename PFP::MAP& map, Face f, const V_ATT& attributs)
 {
-    typename V_ATT::DATA_TYPE center(0.0);
+    typedef typename V_ATT::DATA_TYPE EMB;
+    EMB center;
+    center.fill(0);
     unsigned int count = 0 ;
     using bl::var;
     //    foreach_incident2<PFP::MAP, VERTEX>(map, f, [&](Vertex it)
@@ -101,7 +106,7 @@ typename V_ATT::DATA_TYPE faceCentroid(typename PFP::MAP& map, Face f, const V_A
     //        center += attributs[it];
     //        ++count ;
     //    });
-    foreach_incident2<PFP::MAP, VERTEX>(map, f, (var(center) += attributs[bl::_1],
+    foreach_incident2<VERTEX, FACE>(map, f, (bl::bind<void>(static_cast<void (EMB::*)(const EMB&)>(&EMB::operator+=), boost::ref(center), bl::bind<const EMB&>(static_cast<const EMB& (V_ATT::*)(Vertex) const>(&V_ATT::operator[]),boost::cref(attributs),bl::_1)),
                                                  var(count)++));
 
     center /= double(count);
@@ -114,7 +119,8 @@ typename V_ATT::DATA_TYPE faceCentroidELW(typename PFP::MAP& map, Face f, const 
     typedef typename V_ATT::DATA_TYPE EMB;
     typedef typename PFP::MAP Map;
     using bl::var;
-    EMB center(0.0);
+    EMB center;
+    center.fill(0);
     double count=0.0;
 
     //    foreach_incident2<EDGE>(map, f, [&](Edge it)
@@ -125,13 +131,14 @@ typename V_ATT::DATA_TYPE faceCentroidELW(typename PFP::MAP& map, Face f, const 
     //        center += (e1+e2)*l;
     //        count += 2.0*l ;
     //    });
+
     EMB e1, e2;
     double l;
-    foreach_incident2<EDGE>(map,f,
-                            (var(e1) = attributs[bl::_1],
-                             var(e2) = attributs[bl::bind(&Map::phi1, boost::ref(map), bl::_1)],
-                             var(l) = bl::bind(&EMB::norm, var(e2) - var(e1)),
-                             var(center) += (var(e1) +var(e2))*var(l),
+    foreach_incident2<EDGE, FACE>(map,f,
+                            (var(e1) = bl::bind<const EMB&>(static_cast<const EMB& (V_ATT::*)(Vertex) const>(&V_ATT::operator[]),boost::cref(attributs), bl::bind<Vertex>(&Vertex::template convertCell<EDGE>, bl::_1)),
+                             var(e2) = bl::bind<const EMB&>(static_cast<const EMB& (V_ATT::*)(Vertex) const>(&V_ATT::operator[]),boost::cref(attributs), bl::bind<Dart>(&Map::phi1, boost::cref(map), bl::_1)),
+                             var(l) = bl::bind<typename PFP::REAL>(&EMB::norm, bl::bind<EMB>(static_cast<EMB (EMB::*)(const EMB&) const>(&EMB::operator-),boost::cref(e2),boost::cref(e1))),
+                             bl::bind(static_cast<void (EMB::*)(const EMB&)>(&EMB::operator+=), boost::ref(center), bl::bind<EMB>(static_cast<EMB (EMB::*)(double) const>(&EMB::operator*), bl::bind<EMB>(static_cast<EMB (EMB::*)(const EMB&) const>(&EMB::operator+),boost::cref(e1),boost::cref(e2)), boost::cref(l)) ),
                              var(count) += 2.0*var(l)));
     center /= double(count);
     return center ;
@@ -140,7 +147,9 @@ typename V_ATT::DATA_TYPE faceCentroidELW(typename PFP::MAP& map, Face f, const 
 template <typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Vertex v, const V_ATT& attributs)
 {
-    typename V_ATT::DATA_TYPE center(0.0);
+    typedef typename V_ATT::DATA_TYPE EMB;
+    EMB center;
+    center.fill(0);
     using bl::var;
     unsigned int count = 0 ;
     //	Traversor2VVaE<typename PFP::MAP> t(map, d) ;
@@ -149,7 +158,7 @@ typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Ver
     //        center += attributs[it];
     //        ++count ;
     //    });
-    foreach_adjacent2<EDGE>(map, v, (var(center) += attributs[bl::_1],
+    foreach_adjacent2<EDGE, VERTEX>(map, v, (bl::bind<void>(static_cast<void (EMB::*)(const EMB&)>(&EMB::operator+=), boost::ref(center), bl::bind<const EMB&>(static_cast<const EMB& (V_ATT::*)(Vertex) const>(&V_ATT::operator[]),boost::cref(attributs),  bl::_1)),
                                      var(count)++));
     center /= count ;
     return center ;
@@ -158,6 +167,7 @@ typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Ver
 template <typename PFP, typename V_ATT, typename F_ATT>
 void computeCentroidFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& face_centroid, unsigned int thread)
 {
+    typedef typename F_ATT::DATA_TYPE EMB;
     using bl::var;
     if ((CGoGN::Parallel::NumberOfThreads > 1) && (thread==0))
     {
@@ -172,7 +182,7 @@ void computeCentroidFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& 
     //    ,AUTO,thread);
     foreach_cell<FACE>(map,
                        (
-                           face_centroid[bl::_1] = bl::bind(&faceCentroid<PFP,V_ATT>, boost::ref(map), bl::_1, boost::ref(position))
+                           bl::bind<EMB& >(static_cast<EMB& (F_ATT::*)(Face)>(&F_ATT::operator[]),boost::ref(face_centroid), bl::_1)  = bl::bind<typename V_ATT::DATA_TYPE>(&faceCentroid<PFP,V_ATT>, boost::ref(map), bl::_1, boost::ref(position))
             )
             ,AUTO,thread);
 }
@@ -180,6 +190,7 @@ void computeCentroidFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& 
 template <typename PFP, typename V_ATT, typename F_ATT>
 void computeCentroidELWFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& face_centroid, unsigned int thread)
 {
+    typedef typename F_ATT::DATA_TYPE EMB;
     if ((CGoGN::Parallel::NumberOfThreads > 1) && (thread==0))
     {
         Parallel::computeCentroidELWFaces<PFP,V_ATT,F_ATT>(map,position,face_centroid);
@@ -193,7 +204,7 @@ void computeCentroidELWFaces(typename PFP::MAP& map, const V_ATT& position, F_AT
     //    ,AUTO,thread);
     foreach_cell<FACE>(map,
                        (
-                           face_centroid[bl::_1] = bl::bind(&faceCentroidELW<PFP,V_ATT>, boost::ref(map), bl::_1, boost::ref(position))
+                           bl::bind<EMB& >(static_cast<EMB& (F_ATT::*)(Face)>(&F_ATT::operator[]),boost::ref(face_centroid), bl::_1) = bl::bind<typename V_ATT::DATA_TYPE>(&faceCentroidELW<PFP,V_ATT>, boost::ref(map), bl::_1, boost::ref(position))
             )
             ,AUTO,thread);
 }
@@ -201,6 +212,7 @@ void computeCentroidELWFaces(typename PFP::MAP& map, const V_ATT& position, F_AT
 template <typename PFP, typename V_ATT>
 void computeNeighborhoodCentroidVertices(typename PFP::MAP& map, const V_ATT& position, V_ATT& vertex_centroid, unsigned int thread)
 {
+    typedef typename V_ATT::DATA_TYPE EMB;
     if ((CGoGN::Parallel::NumberOfThreads > 1) && (thread == 0))
     {
         Parallel::computeNeighborhoodCentroidVertices<PFP,V_ATT>(map,position,vertex_centroid);
@@ -213,7 +225,7 @@ void computeNeighborhoodCentroidVertices(typename PFP::MAP& map, const V_ATT& po
     //    }, AUTO, thread);
     foreach_cell<VERTEX>(map,
                          (
-                             vertex_centroid[bl::_1] = bl::bind(&vertexNeighborhoodCentroid<PFP,V_ATT>, boost::ref(map), bl::_1, boost::ref(position))
+                             bl::bind<EMB& >(static_cast<EMB& (V_ATT::*)(Vertex)>(&V_ATT::operator[]),boost::ref(vertex_centroid), bl::_1) = bl::bind<EMB>(&vertexNeighborhoodCentroid<PFP,V_ATT>, boost::ref(map), bl::_1, boost::cref(position))
             )
             ,AUTO,thread);
 }
@@ -231,7 +243,7 @@ void computeCentroidFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& 
     //    });
     CGoGN::Parallel::foreach_cell<FACE>(map,
                                         (
-                                            face_centroid[bl::_1 = bl::bind(&faceCentroid<PFP>, boost::ref(map), bl::_1, boost::ref(position))]
+                                            bl::bind<typename F_ATT::DATA_TYPE&>(static_cast<typename F_ATT::DATA_TYPE& (F_ATT::*)(Face)>(&F_ATT::operator[]),boost::ref(face_centroid), bl::_1) = bl::bind<typename V_ATT::DATA_TYPE>(&faceCentroid<PFP>, boost::ref(map), bl::_1, boost::ref(position))
             ));
 
 }
@@ -245,7 +257,7 @@ void computeCentroidELWFaces(typename PFP::MAP& map, const V_ATT& position, F_AT
     //    });
     CGoGN::Parallel::foreach_cell<FACE>(map,
                                         (
-                                            face_centroid[bl::_1 = bl::bind(&faceCentroidELW<PFP>, boost::ref(map), bl::_1, boost::ref(position))]
+                                            bl::bind<typename F_ATT::DATA_TYPE&>(static_cast<typename F_ATT::DATA_TYPE& (F_ATT::*)(Face)>(&F_ATT::operator[]),boost::ref(face_centroid), bl::_1) = bl::bind<typename V_ATT::DATA_TYPE>(&faceCentroidELW<PFP>, boost::ref(map), bl::_1, boost::ref(position))
             ));
 }
 
@@ -259,7 +271,7 @@ void computeNeighborhoodCentroidVertices(typename PFP::MAP& map,
     //    }, FORCE_CELL_MARKING);
     CGoGN::Parallel::foreach_cell<VERTEX>(map,
                                           (
-                                              vertex_centroid[bl::_1] = bl::bind(&vertexNeighborhoodCentroid<PFP>, boost::ref(map), bl::_1, boost::ref(position))
+                                              bl::bind<typename V_ATT::DATA_TYPE&>(static_cast<typename V_ATT::DATA_TYPE& (V_ATT::*)(Vertex)>(&V_ATT::operator[]),boost::ref(vertex_centroid), bl::_1) = bl::bind<typename V_ATT::DATA_TYPE>(&vertexNeighborhoodCentroid<PFP>, boost::ref(map), bl::_1, boost::ref(position))
             ), FORCE_CELL_MARKING);
 }
 
@@ -280,7 +292,9 @@ namespace Geometry
 template <typename PFP, typename V_ATT>
 typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Vertex v, const V_ATT& attributs, unsigned int thread)
 {
-    typename V_ATT::DATA_TYPE  center(0.0);
+    typedef typename V_ATT::DATA_TYPE EMB;
+    EMB center;
+    center.fill(0);
     using bl::var;
     unsigned int count = 0 ;
     //    foreach_adjacent3<EDGE>(map, v, [&] (Vertex it)
@@ -290,7 +304,7 @@ typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Ver
     //    }, false, thread);
     foreach_adjacent3<EDGE>(map, v,
                             (
-                                var(center) += attributs[bl::_1],
+                                var(center) += bl::bind<const EMB&>(static_cast<const EMB& (V_ATT::*)(Vertex) const>(&V_ATT::operator[]),boost::cref(attributs), bl::_1),
                                 var(count)++
                                 ), false, thread);
     center /= count ;
@@ -313,13 +327,15 @@ void computeCentroidVolumes(typename PFP::MAP& map, const V_ATT& position, W_ATT
     //    }, AUTO, thread);
     foreach_cell<VOLUME>(map,
                          (
-                             vol_centroid[bl::_1] = bl::bind(&Surface::Geometry::volumeCentroid<PFP,V_ATT>, boost::ref(map), bl::_1, boost::ref(position),thread)
+                             bl::bind<typename W_ATT::DATA_TYPE&>(static_cast<typename W_ATT::DATA_TYPE& (W_ATT::*)(Vol)>(&W_ATT::operator[]),boost::ref(vol_centroid), bl::_1) = bl::bind<typename V_ATT::DATA_TYPE>(&Surface::Geometry::volumeCentroid<PFP,V_ATT>, boost::ref(map), bl::_1, boost::cref(position),thread)
             ), AUTO, thread);
 }
 
 template <typename PFP, typename V_ATT, typename W_ATT>
 void computeCentroidELWVolumes(typename PFP::MAP& map, const V_ATT& position, W_ATT& vol_centroid, unsigned int thread)
 {
+    typedef typename V_ATT::DATA_TYPE EMBV;
+    typedef typename W_ATT::DATA_TYPE EMBW;
     if ((CGoGN::Parallel::NumberOfThreads > 1) && (thread == 0))
     {
         Parallel::computeCentroidELWVolumes<PFP,V_ATT,W_ATT>(map,position,vol_centroid);
@@ -332,13 +348,14 @@ void computeCentroidELWVolumes(typename PFP::MAP& map, const V_ATT& position, W_
     //    }, AUTO, thread);
     foreach_cell<VOLUME>(map,
                          (
-                             vol_centroid[bl::_1] = bl::bind(&Surface::Geometry::volumeCentroidELW<PFP,V_ATT>, boost::ref(map), bl::_1, boost::ref(position),thread)
+                             bl::bind<EMBW&>(static_cast<EMBW& (EMBW::*)(const EMBW&)>(&EMBW::operator=), bl::bind<EMBW&>(static_cast<EMBW& (W_ATT::*)(Vol)>(&W_ATT::operator[]),boost::ref(vol_centroid), bl::_1), bl::bind<EMBV>(&Surface::Geometry::volumeCentroidELW<PFP,V_ATT>, boost::ref(map), bl::_1, boost::cref(position),bl::var(thread)))
             ), AUTO, thread);
 }
 
 template <typename PFP, typename V_ATT>
 void computeNeighborhoodCentroidVertices(typename PFP::MAP& map, const V_ATT& position, V_ATT& vertex_centroid, unsigned int thread)
 {
+    typedef typename V_ATT::DATA_TYPE EMB;
     if ((CGoGN::Parallel::NumberOfThreads > 1) && (thread == 0))
     {
         Parallel::computeNeighborhoodCentroidVertices<PFP,V_ATT>(map,position,vertex_centroid);
@@ -351,7 +368,7 @@ void computeNeighborhoodCentroidVertices(typename PFP::MAP& map, const V_ATT& po
     //    }, AUTO, thread);
     foreach_cell<VOLUME>(map,
                          (
-                             vertex_centroid[bl::_1] = bl::bind(&Surface::Geometry::vertexNeighborhoodCentroid<PFP,V_ATT>, boost::ref(map), bl::_1, boost::ref(position))
+                             bl::bind<EMB&>(static_cast<EMB& (V_ATT::*)(Vertex)>(&V_ATT::operator[]),boost::ref(vertex_centroid), bl::_1) = bl::bind<EMB&>(&Surface::Geometry::vertexNeighborhoodCentroid<PFP,V_ATT>, boost::ref(map), bl::_1, boost::cref(position))
             ), AUTO, thread);
 }
 
@@ -368,7 +385,7 @@ void computeCentroidVolumes(typename PFP::MAP& map, const V_ATT& position, W_ATT
     //    });
     CGoGN::Parallel::foreach_cell<VOLUME>(map,
     (
-        vol_centroid[bl::_1] = bl::bind(&Surface::Geometry::volumeCentroid<PFP,V_ATT>,boost::ref(map), bl::_1, boost::ref(position), bl::_2)
+        bl::bind<typename W_ATT::DATA_TYPE&>(static_cast<typename W_ATT::DATA_TYPE& (W_ATT::*)(Vol)>(&W_ATT::operator[]),boost::ref(vol_centroid), bl::_1) = bl::bind<typename V_ATT::DATA_TYPE>(&Surface::Geometry::volumeCentroid<PFP,V_ATT>,boost::ref(map), bl::_1, boost::cref(position), bl::_2)
     )
             );
 }
@@ -376,13 +393,16 @@ void computeCentroidVolumes(typename PFP::MAP& map, const V_ATT& position, W_ATT
 template <typename PFP, typename V_ATT, typename W_ATT>
 void computeCentroidELWVolumes(typename PFP::MAP& map, const V_ATT& position, W_ATT& vol_centroid)
 {
+    typedef typename V_ATT::DATA_TYPE EMBV;
+    typedef typename W_ATT::DATA_TYPE EMBW;
 //    CGoGN::Parallel::foreach_cell<VOLUME>(map, [&] (Vol v, unsigned int thr)
 //    {
 //        vol_centroid[v] = Surface::Geometry::volumeCentroidELW<PFP,V_ATT>(map, v, position, thr) ;
 //    });
-    CGoGN::Parallel::foreach_cell<VOLUME>(map,
+
+    CGoGN::Parallel::foreach_cell<VOLUME, typename PFP::MAP>(map,
     (
-        vol_centroid[bl::_1] = bl::bind(&Surface::Geometry::volumeCentroidELW<PFP,V_ATT>,boost::ref(map), bl::_1, boost::ref(position), bl::_2)
+       bl::bind<EMBW&>(static_cast<EMBW& (EMBW::*)(const EMBW&)>(&EMBW::operator=), bl::bind<EMBW&>(static_cast<EMBW& (W_ATT::*)(Vol)>(&W_ATT::operator[]),boost::ref(vol_centroid),bl::_1),  bl::bind<EMBV>(&Surface::Geometry::volumeCentroidELW<PFP,V_ATT>,boost::ref(map), bl::_1, boost::cref(position), bl::_2))
     )
             );
 }
@@ -396,7 +416,7 @@ void computeNeighborhoodCentroidVertices(typename PFP::MAP& map, const V_ATT& po
 //    }, FORCE_CELL_MARKING);
     CGoGN::Parallel::foreach_cell<VERTEX>(map,
     (
-        vertex_centroid[bl::_1] = bl::bind(&Volume::Geometry::vertexNeighborhoodCentroid<PFP,V_ATT>,boost::ref(map), bl::_1, boost::ref(position), bl::_2)
+        bl::bind<typename V_ATT::DATA_TYPE&>(static_cast<typename V_ATT::DATA_TYPE& (V_ATT::*)(Vertex)>(&V_ATT::operator[]),boost::ref(vertex_centroid), bl::_1) = bl::bind<typename V_ATT::DATA_TYPE>(&Volume::Geometry::vertexNeighborhoodCentroid<PFP,V_ATT>,boost::ref(map), bl::_1, boost::cref(position), bl::_2)
     )
             );
 }

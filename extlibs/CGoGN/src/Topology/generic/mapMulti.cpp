@@ -252,7 +252,7 @@ bool MapMulti::loadMapBin(const std::string& filename)
 	GenericMap::clear(true);
 
 	// read info
-	char* buff = new char[256];
+    char buff[256] ;
 	fs.read(reinterpret_cast<char*>(buff), 256);
 
 	std::string buff_str(buff);

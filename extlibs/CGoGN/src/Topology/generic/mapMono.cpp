@@ -33,97 +33,97 @@ namespace CGoGN
 
 bool MapMono::saveMapBin(const std::string& filename) const
 {
-	CGoGNostream fs(filename.c_str(), std::ios::out|std::ios::binary);
-	if (!fs)
-	{
-		CGoGNerr << "Unable to open file for writing: " << filename << CGoGNendl;
-		return false;
-	}
+    CGoGNostream fs(filename.c_str(), std::ios::out|std::ios::binary);
+    if (!fs)
+    {
+        CGoGNerr << "Unable to open file for writing: " << filename << CGoGNendl;
+        return false;
+    }
 
-	// Entete
-	char* buff = new char[256];
-	for (int i = 0; i < 256; ++i)
-		buff[i] = char(255);
+    // Entete
+    char* buff = new char[256];
+    for (int i = 0; i < 256; ++i)
+        buff[i] = char(255);
 
-	memcpy(buff, "CGoGN_Map", 10);
+    memcpy(buff, "CGoGN_Map", 10);
 
-	std::string mt = mapTypeName();
-	const char* mtc = mt.c_str();
-	memcpy(buff+32, mtc, mt.size()+1);
-	unsigned int *buffi = reinterpret_cast<unsigned int*>(buff + 64);
-	*buffi = NB_ORBITS;
-	fs.write(reinterpret_cast<const char*>(buff), 256);
-	delete buff;
+    std::string mt = mapTypeName();
+    const char* mtc = mt.c_str();
+    memcpy(buff+32, mtc, mt.size()+1);
+    unsigned int *buffi = reinterpret_cast<unsigned int*>(buff + 64);
+    *buffi = NB_ORBITS;
+    fs.write(reinterpret_cast<const char*>(buff), 256);
+    delete buff;
 
-	// save all attribs
-	for (unsigned int i = 0; i < NB_ORBITS; ++i)
-		m_attribs[i].saveBin(fs, i);
+    // save all attribs
+    for (unsigned int i = 0; i < NB_ORBITS; ++i)
+        m_attribs[i].saveBin(fs, i);
 
-	return true;
+    return true;
 }
 
 bool MapMono::loadMapBin(const std::string& filename)
 {
-	CGoGNistream fs(filename.c_str(), std::ios::in|std::ios::binary);
-	if (!fs)
-	{
-		CGoGNerr << "Unable to open file for loading" << CGoGNendl;
-		return false;
-	}
+    CGoGNistream fs(filename.c_str(), std::ios::in|std::ios::binary);
+    if (!fs)
+    {
+        CGoGNerr << "Unable to open file for loading" << CGoGNendl;
+        return false;
+    }
 
-	GenericMap::clear(true);
+    GenericMap::clear(true);
 
-	// read info
-	char* buff = new char[256];
-	fs.read(reinterpret_cast<char*>(buff), 256);
+    // read info
+    char* buff = new char[256];
+    fs.read(reinterpret_cast<char*>(buff), 256);
 
-	std::string buff_str(buff);
-	// Check file type
-	if (buff_str == "CGoGN_MRMap")
-	{
-		CGoGNerr<< "Wrong binary file format, file is a MR-Map"<< CGoGNendl;
-		return false;
-	}
-	if (buff_str != "CGoGN_Map")
-	{
-		CGoGNerr<< "Wrong binary file format"<< CGoGNendl;
-		return false;
-	}
+    std::string buff_str(buff);
+    // Check file type
+    if (buff_str == "CGoGN_MRMap")
+    {
+        CGoGNerr<< "Wrong binary file format, file is a MR-Map"<< CGoGNendl;
+        return false;
+    }
+    if (buff_str != "CGoGN_Map")
+    {
+        CGoGNerr<< "Wrong binary file format"<< CGoGNendl;
+        return false;
+    }
 
-	// Check map type
-	buff_str = std::string(buff + 32);
+    // Check map type
+    buff_str = std::string(buff + 32);
 
-	std::string localType = this->mapTypeName();
+    std::string localType = this->mapTypeName();
 
-	std::string fileType = buff_str;
+    std::string fileType = buff_str;
 
-	if (fileType != localType)
-	{
-		CGoGNerr << "Not possible to load "<< fileType << " into " << localType << " object" << CGoGNendl;
-		return false;
-	}
+    if (fileType != localType)
+    {
+        CGoGNerr << "Not possible to load "<< fileType << " into " << localType << " object" << CGoGNendl;
+        return false;
+    }
 
-	// Check max nb orbit
-	unsigned int *ptr_nbo = reinterpret_cast<unsigned int*>(buff + 64);
-	unsigned int nbo = *ptr_nbo;
-	if (nbo != NB_ORBITS)
-	{
-		CGoGNerr << "Wrong max orbit number in file" << CGoGNendl;
-		return  false;
-	}
+    // Check max nb orbit
+    unsigned int *ptr_nbo = reinterpret_cast<unsigned int*>(buff + 64);
+    unsigned int nbo = *ptr_nbo;
+    if (nbo != NB_ORBITS)
+    {
+        CGoGNerr << "Wrong max orbit number in file" << CGoGNendl;
+        return  false;
+    }
 
-	// load attrib container
-	for (unsigned int i = 0; i < NB_ORBITS; ++i)
-	{
-		unsigned int id = AttributeContainer::loadBinId(fs);
-		m_attribs[id].loadBin(fs);
-	}
+    // load attrib container
+    for (unsigned int i = 0; i < NB_ORBITS; ++i)
+    {
+        unsigned int id = AttributeContainer::loadBinId(fs);
+        m_attribs[id].loadBin(fs);
+    }
 
-	// restore shortcuts
-	GenericMap::restore_shortcuts();
-	restore_topo_shortcuts();
+    // restore shortcuts
+    GenericMap::restore_shortcuts();
+    restore_topo_shortcuts();
 
-	return true;
+    return true;
 }
 
 bool MapMono::copyFrom(const GenericMap& map)

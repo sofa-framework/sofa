@@ -834,7 +834,7 @@ bool AttributeContainer::loadBin(CGoGNistream& fs)
         std::map<std::string, RegisteredBaseAttribute*>::iterator itAtt = m_attributes_registry_map->find(typeAtt);
         if (itAtt == m_attributes_registry_map->end())
         {
-            CGoGNout << "Skipping non registred attribute of type name"<< typeAtt <<CGoGNendl;
+            CGoGNout << "Skipping non registred attribute of typename "<< typeAtt <<CGoGNendl;
             AttributeMultiVectorGen::skipLoadBin(fs);
         }
         else

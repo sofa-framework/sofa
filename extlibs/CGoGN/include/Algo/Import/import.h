@@ -127,7 +127,7 @@ bool importMSH(typename PFP::MAP& map, const std::string& filename, std::vector<
 
 #include "Algo/Import/import.hpp"
 #include "Algo/Import/importChoupi.hpp"
-
+//#include "Algo/Import/importMSH.hpp"
 
 //#include "Algo/Import/importMoka.hpp"
 //#include "Algo/Import/importObjTex.hpp"

@@ -28,6 +28,14 @@
 #include "Topology/map/map2.h"
 #include "Topology/generic/mapImpl/mapMulti.h"
 
+namespace sofa {
+namespace cgogn_plugin {
+namespace test {
+    class CGoGN_test ;
+}
+}
+}
+
 namespace CGoGN
 {
 
@@ -37,6 +45,7 @@ namespace CGoGN
 */
 class EmbeddedMap2_MR : public Map2<MapMulti>
 {
+    friend class ::sofa::cgogn_plugin::test::CGoGN_test;
 public:
 	typedef MapMulti IMPL;
 	typedef Map2<MapMulti> TOPO_MAP;
@@ -74,7 +83,7 @@ public:
 	/**
 	 * Check if the edge of d can be collapsed or not based on some topological conditions
 	 * @param d a dart of the edge to test
-	 * @return true if the edge can be collapsed, false otherwise
+     * @return true if the edge can be collapsed, false otherwise
 	 */
 	bool edgeCanCollapse(Dart d) ;
 

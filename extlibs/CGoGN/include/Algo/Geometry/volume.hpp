@@ -53,7 +53,7 @@ typename PFP::REAL tetrahedronVolume(typename PFP::MAP& map, Vol v, const Vertex
 {
 	typedef typename PFP::VEC3 VEC3;
 
-    VEC3 p1 = position[v] ;
+    VEC3 p1 = position[Cell<VERTEX>::convertCell(v)] ;
 	VEC3 p2 = position[map.phi1(v)] ;
 	VEC3 p3 = position[map.phi_1(v)] ;
 	VEC3 p4 = position[map.phi_1(map.phi2(v))] ;
@@ -79,7 +79,7 @@ typename PFP::REAL convexPolyhedronVolume(typename PFP::MAP& map, Vol v, const V
 		std::vector<Face> visitedFaces ;
 		visitedFaces.reserve(100) ;
 
-        Face f(v) ;
+        Face f(Face::convertCell(v)) ;
 		visitedFaces.push_back(f) ;
 		mark.markOrbit(f) ;
 
@@ -88,7 +88,7 @@ typename PFP::REAL convexPolyhedronVolume(typename PFP::MAP& map, Vol v, const V
 			f = visitedFaces[iface] ;
 			if(map.isCycleTriangle(f))
 			{
-                VEC3 p1 = position[f] ;
+                VEC3 p1 = position[Vertex::convertCell(f)] ;
 				VEC3 p2 = position[map.phi1(f)] ;
 				VEC3 p3 = position[map.phi_1(f)] ;
 				vol += Geom::tetraVolume(p1, p2, p3, vCentroid) ;
@@ -150,11 +150,12 @@ typename PFP::REAL totalVolume(typename PFP::MAP& map, const VertexAttribute<typ
 	std::vector<typename PFP::REAL> vols(CGoGN::Parallel::NumberOfThreads-1, 0.0);
 
 	// foreach volume
-	CGoGN::Parallel::foreach_cell<VOLUME>(map, [&] (Vol v, unsigned int thr)
-	{
+//    CGoGN::Parallel::foreach_cell<VOLUME>(map, /*[&] (Vol v, unsigned int thr)*/
+//                                          bl::bind(&std::vector<typename PFP::REAL>::operator [],boost::cref(vols),  bl::_1, bl::_2));
+//	{
 		// add volume to the thread accumulator
-		vols[thr-1] += convexPolyhedronVolume<PFP>(map, v, position, thr) ;
-	});
+//		vols[thr-1] += convexPolyhedronVolume<PFP>(map, v, position, thr) ;
+//	});
 
 	// compute the sum of volumes
 	typename PFP::REAL total(0);

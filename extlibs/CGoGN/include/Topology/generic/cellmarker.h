@@ -110,7 +110,6 @@ public:
 		m_markVector = m_map.template askMarkVector<CELL>(m_thread);
 	}
 
-
 protected:
 	// protected copy constructor to forbid its usage
 	CellMarkerBase(const CellMarkerBase<MAP, CELL>& cm) :
