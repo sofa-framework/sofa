@@ -218,6 +218,15 @@ void printErrorM5(const string& filename, const int line, const int col, const s
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
 }
 
+void printErrorW1(const string& filename, const int line, const int col){
+    if(qualityLevel < Q2)
+        return ;
+    cerr << filename << ":" << line << ":" << col <<  ": warning: use of the goto statement violates the sofa coding style rules W1. " << endl ;
+    cerr << " Using the goto statement is controversial and it is higly recommended not to use it. " << endl;
+    cerr << " Recommendation: use a break statement or a continue statement as much as possible.s" << endl;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
+}
+
 
 void printErrorR1(const string& filename, const int sofacode, const int allcodes){
     if(qualityLevel < Q2)
@@ -281,7 +290,15 @@ public:
                 }
             }
             //stmt->dumpColor() ;
-        }else{
+        }else if(stmt->getStmtClass() == Stmt::GotoStmtClass){
+            SourceRange sr=stmt->getSourceRange() ;
+            SourceLocation sl=sr.getBegin();
+            auto& smanager=Context->getSourceManager() ;
+            auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
+
+            printErrorW1(fileinfo->getName(),
+                         smanager.getPresumedLineNumber(sl),
+                         smanager.getPresumedColumnNumber(sl));
             // NOTHING TO DO
         }
 
