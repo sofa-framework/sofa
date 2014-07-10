@@ -44,6 +44,12 @@ vector<string> systemexcluded={ "extlibs/",
 
 vector<string> excludedPathPatterns={};
 
+vector<pair<string, string>> oldccode={pair<string,string>("printf", "std::cou << operator //from #include <iostream>" ),
+                                       pair<string,string>("fprintf", "std::ofstream << operator //from #include <fstream> "),
+                                       pair<string,string>("sprintf", "std::stringstream <<  operator //from #include <sstream> "),
+                                       pair<string,string>("malloc",  "new"),
+                                       pair<string,string>("free",    "delete") } ;
+
 
 static cl::OptionCategory MyToolCategory("Stylecheck.exe");
 cl::list<string> userexcluded("E", llvm::cl::Prefix, llvm::cl::desc("Specify path pattern to exclude"), cl::cat(MyToolCategory)) ;
@@ -222,11 +228,22 @@ void printErrorW1(const string& filename, const int line, const int col){
     if(qualityLevel < Q2)
         return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: use of the goto statement violates the sofa coding style rules W1. " << endl ;
-    cerr << " Using the goto statement is controversial and it is higly recommended not to use it. " << endl;
-    cerr << " Recommendation: use a break statement or a continue statement as much as possible.s" << endl;
+    cerr << " Using the goto statement is controversial and it is higly recommended not to use it. " << endl ;
+    cerr << " Recommendation: use a break statement or a continue statement as much as possible." << endl ;
+    cerr << " If the goto is used to exit mutliple nested loop and if using a non-goto version leads to a large " << endl ;
+    cerr << " increase of code complexity/number of line then it can be kept this way. " << endl ;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
 }
 
+void printErrorW2(const string& filename, const int line, const int col, const std::string& oldfct, const std::string& newfct){
+    if(qualityLevel < Q2)
+        return ;
+    cerr << filename << ":" << line << ":" << col <<  ": warning: using the C function ["<< oldfct << "] is violates the sofa coding style rules. " << endl ;
+    cerr << " Sofa is a C++ project and thus the C++ standard library should be used. Nevertheless not being strictly forbidden " << endl ;
+    cerr << " mixing C and C++ libraries or coding style is considered a poor practice so please avoid it." << endl ;
+    cerr << " Suggestion: instead of ["<< oldfct <<"] you should use [" << newfct << "]" << endl ;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
+}
 
 void printErrorR1(const string& filename, const int sofacode, const int allcodes){
     if(qualityLevel < Q2)
@@ -292,14 +309,34 @@ public:
             //stmt->dumpColor() ;
         }else if(stmt->getStmtClass() == Stmt::GotoStmtClass){
             SourceRange sr=stmt->getSourceRange() ;
-            SourceLocation sl=sr.getBegin();
+            SourceLocation sl=sr.getBegin() ;
             auto& smanager=Context->getSourceManager() ;
             auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
 
             printErrorW1(fileinfo->getName(),
                          smanager.getPresumedLineNumber(sl),
                          smanager.getPresumedColumnNumber(sl));
-            // NOTHING TO DO
+        }else if(stmt->getStmtClass() == Stmt::CallExprClass){
+            CallExpr* callexpr=dyn_cast<CallExpr>(stmt) ;
+            FunctionDecl* fctdecl=callexpr->getDirectCallee() ;
+            if(fctdecl){
+                const string& fctname = fctdecl->getNameAsString() ;
+                for(auto p : oldccode)
+                {
+                    if(fctname == p.first){
+                        SourceRange sr=stmt->getSourceRange() ;
+                        SourceLocation sl=sr.getBegin() ;
+                        auto& smanager=Context->getSourceManager() ;
+                        auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
+
+                        printErrorW2(fileinfo->getName(),
+                                     smanager.getPresumedLineNumber(sl),
+                                     smanager.getPresumedColumnNumber(sl),
+                                     p.first, p.second);
+                        break ;
+                    }
+                }
+            }
         }
 
         return true ;
