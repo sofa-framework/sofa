@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "stdafx.h"
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>
 

@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "stdafx.h"
 #include "Elasticity_test.h"
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
