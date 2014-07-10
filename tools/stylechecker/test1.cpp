@@ -1,10 +1,16 @@
 #include <iostream>
+#include <cstdio>
 #include <vector>
 #include "test1.h"
 
+int my_printf(){
+	printf("La bonne blague...") ;
+	return 0 ; 
+}
 
 int MyClass::functionVALID(){
 	// This one is not defined in a header..
+	return 1 ;
 }
 
 int main()
@@ -20,13 +26,21 @@ int main()
 
     for(int iINVALID; iINVALID < 10; iINVALID++)
     {
-
-    }
+	    for(int jINVALID; jINVALID < 10; jINVALID++)
+	    {
+		goto finboucle;
+	    }	
+    }	
+    finboucle: 
 
     for(int iVALID=10; iVALID< 10; iVALID++)
     {
 
     }
+
+    printf("Hello world pas bien\n");
+    cout << "Hello world bien" << endl ;
+
 
 
     //
