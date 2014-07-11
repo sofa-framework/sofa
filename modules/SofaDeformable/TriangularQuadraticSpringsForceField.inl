@@ -49,7 +49,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeHandler::applyCrea
     if (ff)
     {
 
-        sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
+        sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo=NULL;
         ff->getContext()->get(triangleGeo);
 
         // store the rest length of the edge created
@@ -69,7 +69,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleHandler::apply
 
     if (ff)
     {
-        unsigned int j,k,l;
+        unsigned int j=0,k=0,l=0;
 
         EdgeData<sofa::helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation> > &edgeInfo=ff->getEdgeInfo();
         typename DataTypes::Real area,squareRestLength[3],restLength[3],cotangent[3];
