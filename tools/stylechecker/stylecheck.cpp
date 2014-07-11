@@ -255,7 +255,7 @@ void printErrorW3(const string& filename, const int line, const int col, const s
     cerr << " When importing a namespace in an header may lead to name collisions. Consequently ait is stricly forbiden to import/using a namespace in a header file. " << endl ;
     cerr << " Suggestion to remove this warning: remove the line 'using namespace " << nsname << ";'' and fix all subsequent problems by compiling sofa." << endl ;
     cerr << " If namespaces are long and impact readability please consider using typedef to create type alias on the one type that have a too long name. " << endl ;
-    cerr << " eg: typedef super::long::and::ugly::namespace::MyType MyType ;" << endl ;
+    cerr << " eg: .typedef super::long::and::ugly::namespace::MyType MyType ;" << endl ;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
 }
 
@@ -410,7 +410,10 @@ public:
              auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
              string nsname = udecl->getNominatedNamespaceAsWritten()->getName() ;
 
-             if( fileinfo != NULL && isInHeader(fileinfo->getName()) ){
+             if(fileinfo==NULL || isInExcludedPath(fileinfo->getName(), excludedPathPatterns))
+                 return true ;
+
+             if(isInHeader(fileinfo->getName()) ){
                 printErrorW3(fileinfo->getName(),
                              smanager.getPresumedLineNumber(sl),
                              smanager.getPresumedColumnNumber(sl),
