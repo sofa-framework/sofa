@@ -35,14 +35,15 @@ private:
 
 
 
-namespace validnamespace {
+namespace validnamespaceWithoutUsing {
 	namespace InvalidNamespace{
 	
 	}
 }
 
+
 using namespace std ; // Interdit
-using namespace validnamespace ; 
+using namespace validnamespaceWithoutUsing ; 
 
 class MyClass
 {

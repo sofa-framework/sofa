@@ -247,6 +247,18 @@ void printErrorW2(const string& filename, const int line, const int col, const s
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
 }
 
+
+void printErrorW3(const string& filename, const int line, const int col, const std::string& nsname){
+    if(qualityLevel < Q0)
+        return ;
+    cerr << filename << ":" << line << ":" << col <<  ": warning: using namespace ["<< nsname << "] in headers violates the sofa coding style. " << endl ;
+    cerr << " When importing a namespace in an header may lead to name collisions. Consequently ait is stricly forbiden to import/using a namespace in a header file. " << endl ;
+    cerr << " Suggestion to remove this warning: remove the line 'using namespace " << nsname << ";'' and fix all subsequent problems by compiling sofa." << endl ;
+    cerr << " If namespaces are long and impact readability please consider using typedef to create type alias on the one type that have a too long name. " << endl ;
+    cerr << " eg: typedef super::long::and::ugly::namespace::MyType MyType ;" << endl ;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
+}
+
 void printErrorR1(const string& filename, const int sofacode, const int allcodes){
     if(qualityLevel < Q2)
         return ;
@@ -389,6 +401,25 @@ public:
                          nsname) ;
             return true;
         }
+
+        UsingDirectiveDecl* udecl = dyn_cast<UsingDirectiveDecl>(decl) ;
+        if(udecl){
+             auto& smanager = Context->getSourceManager() ;
+             SourceRange sr=decl->getSourceRange() ;
+             SourceLocation sl=sr.getBegin();
+             auto fileinfo=smanager.getFileEntryForID(smanager.getFileID(sl)) ;
+             string nsname = udecl->getNominatedNamespaceAsWritten()->getName() ;
+
+             if( fileinfo != NULL && isInHeader(fileinfo->getName()) ){
+                printErrorW3(fileinfo->getName(),
+                             smanager.getPresumedLineNumber(sl),
+                             smanager.getPresumedColumnNumber(sl),
+                             nsname);
+             }
+             return true ;
+
+        }
+
         return RecursiveASTVisitor<StyleChecker>::VisitDecl(decl) ;
     }
 
