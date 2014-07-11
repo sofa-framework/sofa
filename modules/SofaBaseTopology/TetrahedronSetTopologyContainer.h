@@ -320,7 +320,7 @@ public:
 
     inline friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t)
     {
-        unsigned int s;
+        unsigned int s=0;
         sofa::helper::vector< unsigned int > value;
         helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
 
