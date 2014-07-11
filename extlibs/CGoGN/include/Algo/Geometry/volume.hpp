@@ -146,16 +146,18 @@ namespace Parallel
 template <typename PFP>
 typename PFP::REAL totalVolume(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position)
 {
+    typedef typename PFP::REAL Real;
 	// allocate a vector of 1 accumulator for each thread
-	std::vector<typename PFP::REAL> vols(CGoGN::Parallel::NumberOfThreads-1, 0.0);
+    std::vector<Real> vols(CGoGN::Parallel::NumberOfThreads-1, 0.0);
 
 	// foreach volume
-//    CGoGN::Parallel::foreach_cell<VOLUME>(map, /*[&] (Vol v, unsigned int thr)*/
-//                                          bl::bind(&std::vector<typename PFP::REAL>::operator [],boost::cref(vols),  bl::_1, bl::_2));
-//	{
-		// add volume to the thread accumulator
-//		vols[thr-1] += convexPolyhedronVolume<PFP>(map, v, position, thr) ;
-//	});
+    CGoGN::Parallel::foreach_cell<VOLUME>(map,
+                                          (bl::bind<Real&>(static_cast<Real& (std::vector<Real>::*)(std::size_t)>(&std::vector<Real>::operator[]),boost::ref(vols),  bl::_2 -1 ) += bl::bind<Real>(&convexPolyhedronVolume<PFP>, boost::ref(map), bl::_1, boost::cref(position), bl::_2))
+                                          );
+//    {
+//         add volume to the thread accumulator
+//        vols[thr-1] += convexPolyhedronVolume<PFP>(map, v, position, thr) ;
+//    });
 
 	// compute the sum of volumes
 	typename PFP::REAL total(0);
