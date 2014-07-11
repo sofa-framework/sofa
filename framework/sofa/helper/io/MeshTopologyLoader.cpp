@@ -196,7 +196,7 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
     file >> nelems;
     for (int i=0; i<nelems; ++i)
     {
-        int index, etype, rphys, relem, nnodes, ntags, tag;
+        int index=-1, etype=-1, rphys=-1, relem=-1, nnodes=-1, ntags=-1, tag=-1;
         if (gmshFormat==1)
         {
             // version 1.0 format is
