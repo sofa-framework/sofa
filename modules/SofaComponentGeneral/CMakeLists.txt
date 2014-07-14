@@ -11,8 +11,6 @@ set(SOURCE_FILES
     initComponentGeneral.cpp
     )
 
-set(GROUP_BASE_DIR "..")
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set(SOFACOMPONENTGENERAL_DEPS ${SOFAGENERAL_TARGETS})

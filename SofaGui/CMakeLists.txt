@@ -46,18 +46,20 @@ add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiCommon ${CMAKE_CURRENT_BINA
 find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
 
 if(Qt4_FOUND)
-    list(APPEND SOFAGENERAL_TARGETS SofaGuiQt SofaGuiQTViewer)
+    list(APPEND SOFAGUI_TARGETS SofaGuiQt)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt            ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
     #add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt/viewer/qt  ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQTViewer)
     #add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt/viewer/qgl ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQTQGLViewer)
 endif(Qt4_FOUND)
 
-#add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/glut          ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
-#add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
+list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
+add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/glut          ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
+list(APPEND SOFAGUI_TARGETS SofaGuiMain)
+add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
 
 include(CMakePackageConfigHelpers)
 
-# SofaGuiConfigVersion.cmake file (same for build tree and intall)
+# SofaGuiConfigVersion.cmake file (same for build tree and install)
 write_basic_package_version_file(${SOFAGUI_BUILD_CMAKE_DIR}/SofaGuiConfigVersion.cmake
                                  VERSION ${SOFAGUI_VERSION}
                                  COMPATIBILITY AnyNewerVersion)
