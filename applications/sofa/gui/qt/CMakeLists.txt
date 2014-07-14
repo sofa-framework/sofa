@@ -92,7 +92,7 @@ set(UI_FILES
 	VideoRecorderManager.ui
 	)
 
-set( SOFAGUIQT_COMPILER_FLAGS "-DSOFA_BUILD_SOFAGUIQT -DSOFA_QT4")
+set( SOFAGUIQT_COMPILER_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
 set( SOFAGUIQT_LINK_LIBRARIES SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 
 if(SOFA_DUMP_VISITOR_INFO)
@@ -159,7 +159,9 @@ endif()
 
 find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
 
+# Required for setting QT_LIBRARIES
 INCLUDE(${QT_USE_FILE})
+
 list(APPEND SOFAGUIQT_LINK_LIBRARIES
     ${QT_LIBRARIES}
 #${QT_LIB} ${QTCORE_LIB} ${QTGUI_LIB} ${QTOPENGL_LIB} ${QTXML_LIB} ${QT3SUPPORT_LIB}
@@ -174,13 +176,17 @@ set(FORM_FILES_GROUP "Generated")
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
 
 target_link_libraries( ${PROJECT_NAME} ${SOFAGUIQT_LINK_LIBRARIES})
-
+target_compile_definitions( ${PROJECT_NAME} PUBLIC "SOFA_QT4" )
+#target_compile_definitions( ${PROJECT_NAME} PUBLIC "${QT_DEFINITIONS}" )
+target_compile_definitions( ${PROJECT_NAME} PUBLIC "QT3_SUPPORT" )
+#target_compile_options( ${PROJECT_NAME} PUBLIC "-DSOFA_QT4")
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
 set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFAGUI_VERSION} )
 set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAGUIQT_COMPILER_FLAGS}"  )
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../../>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGUI_BUILD_INCLUDE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "${QT_INCLUDES}")
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaGui_libraries
