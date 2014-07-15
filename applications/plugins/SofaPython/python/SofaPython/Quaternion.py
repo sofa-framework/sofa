@@ -46,7 +46,7 @@ def rotate(q, x):
     """
     
     # TODO assert q is unit
-    return im( prod(q, prod( x + [0], conj(q))) )
+    return im( prod(q, prod( hstack((array(x), [0])), conj(q))) )
 
 
 def exp(v):
