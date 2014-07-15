@@ -9,6 +9,8 @@ set(SOURCE_FILES
    AffineDeformationMapping_test.cpp
    HexahedraMaterial_test.cpp
    Material_test.cpp
+   MooneyRivlinHexahedraMaterial_test.cpp
+   NeoHookeHexahedraMaterial_test.cpp
    PointDeformationMapping_test.cpp
    Patch_test.cpp
    StrainMappings_test.cpp
