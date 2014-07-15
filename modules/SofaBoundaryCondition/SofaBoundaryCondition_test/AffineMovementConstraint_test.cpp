@@ -32,6 +32,7 @@
 using namespace sofa::defaulttype;
 
 namespace sofa {
+namespace {
 
 template <typename _DataTypes>
 struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
@@ -196,6 +197,11 @@ TYPED_TEST( AffineMovementConstraint_test , testValue )
 {
    ASSERT_TRUE( this->projectPosition(5e-6,5e-5));
 }
+
+
+
+
+}// namespace
 }// namespace sofa
 
 

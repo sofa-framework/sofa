@@ -37,6 +37,7 @@
 using sofa::core::objectmodel::New;
 
 namespace sofa {
+namespace {
 
 using std::cout;
 using std::cerr;
@@ -254,6 +255,6 @@ TYPED_TEST( ProjectToLineConstraint_test , allParticlesConstrained )
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 
-
+} // namespace
 } // namespace sofa
 

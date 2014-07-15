@@ -22,20 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-
 #include "Sofa_test.h"
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
-#include <SofaBoundaryCondition/ProjectToPointConstraint.h>
+#include <SofaBoundaryCondition/ProjectDirectionConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-
 namespace sofa {
+
 namespace {
 
 using std::cout;
@@ -43,14 +41,13 @@ using std::cerr;
 using std::endl;
 using namespace component;
 using namespace defaulttype;
-using sofa::core::objectmodel::New;
+using core::objectmodel::New;
 
-
-/**  Test suite for ProjectToPointConstraint.
+/**  Test suite for ProjectDirectionConstraint.
 The test cases are defined in the #Test_Cases member group.
   */
 template <typename _DataTypes>
-struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Real>
+struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::Real>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -59,24 +56,24 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos CPos;
     typedef typename Coord::value_type Real;
-    typedef projectiveconstraintset::ProjectToPointConstraint<DataTypes> ProjectToPointConstraint;
-    typedef typename ProjectToPointConstraint::SetIndexArray Indices;
+    typedef projectiveconstraintset::ProjectDirectionConstraint<DataTypes> ProjectDirectionConstraint;
+    typedef typename ProjectDirectionConstraint::Indices Indices;
     typedef component::topology::PointSetTopologyContainer PointSetTopologyContainer;
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
-
+  
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
-    unsigned numNodes;                          ///< number of particles used for the test
-    Indices indices;                            ///< indices of the nodes to project
-    CPos targetPoint;                           ///< target point to project to
-    typename ProjectToPointConstraint::SPtr projection;
+    unsigned numNodes;                         ///< number of particles used for the test
+    Indices indices;                           ///< indices of the nodes to project
+    CPos direction;                            ///< direction to project to
+    typename ProjectDirectionConstraint::SPtr projection;
     typename MechanicalObject::SPtr dofs;
 
-    /// Create the context for the tests.
+     /// Create the context for the tests.
     void SetUp()
-    {        
-        // Init
+    {      
+        //Init
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -88,18 +85,17 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
         dofs = New<MechanicalObject>();
         root->addObject(dofs);
-
-        // Project to point constraint
-        projection = New<ProjectToPointConstraint>();
+        
+        // Project direction constraint
+        projection = New<ProjectDirectionConstraint>();
         root->addObject(projection);
 
         /// Set the values
         numNodes = 3;
         dofs->resize(numNodes);
 
-
-        targetPoint = CPos(1,0,2);
-        projection->f_point.setValue(targetPoint);
+        direction = CPos(0,1,1);
+        projection->f_direction.setValue(direction);
 
     }
 
@@ -128,23 +124,32 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
         for(unsigned i = 0; i<numNodes; i++)
             indices.push_back(i);
          projection->f_indices.setValue(indices);
-       
+
          /// Init
          sofa::simulation::getSimulation()->init(root.get());
     }
     ///@}
 
-
+    // Test project position
     bool test_projectPosition()
     {
        VecCoord xprev(numNodes);
        typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
-       for (unsigned i=0; i<numNodes; i++)
-       {
+       for (unsigned i=0; i<numNodes; i++){
            xprev[i] = x[i] = CPos(i,0,0);
        }
 
        projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
+
+       helper::vector<CPos> m_origin;
+     
+       // particle original position
+       const VecCoord& xOrigin = *projection->getMState()->getX();
+        for( typename Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
+        {
+             m_origin.push_back( DataTypes::getCPos(xOrigin[*it]) );
+        }
+    
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -152,8 +157,9 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
        {
            if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
-              CPos diffPoints = (x[i]-targetPoint);
-              Real scal = diffPoints.norm(); // should be null
+              CPos crossprod = (x[i]-m_origin[i]).cross(direction); // should be parallel
+              Real scal = crossprod*crossprod; // null if x is on the line
+
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
@@ -175,6 +181,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
        return succeed;
     }
 
+    // Test project velocity
     bool test_projectVelocity()
     {
        VecDeriv vprev(numNodes);
@@ -191,8 +198,9 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
        {
           if ((it!=indices.end()) && ( i==*it ))  // constrained particle
            {
-              CPos diffPoints = (v[i]-Deriv()); 
-              Real scal = diffPoints.norm(); // should be null
+              CPos crossprod = v[i].cross(direction); // should be parallel
+              Real scal = crossprod.norm(); // null if v is ok
+
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
@@ -203,6 +211,7 @@ struct ProjectToPointConstraint_test : public Sofa_test<typename _DataTypes::Rea
            {
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
+//              cerr<<"scal gap = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;
@@ -230,22 +239,23 @@ typedef Types<
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(ProjectToPointConstraint_test, DataTypes);
+TYPED_TEST_CASE(ProjectDirectionConstraint_test, DataTypes);
 // first test case
-TYPED_TEST( ProjectToPointConstraint_test , oneConstrainedParticle )
+TYPED_TEST( ProjectDirectionConstraint_test , oneConstrainedParticle )
 {
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
-// next test case
-TYPED_TEST( ProjectToPointConstraint_test , allParticlesConstrained )
+// second test case
+TYPED_TEST( ProjectDirectionConstraint_test , allParticlesConstrained )
 {
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
 }
 
-} // namespace
+} // anonymous namespace
+
 } // namespace sofa
 
