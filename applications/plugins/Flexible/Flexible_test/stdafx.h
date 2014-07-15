@@ -114,6 +114,8 @@
 #include "../strainMapping/GreenStrainMapping.h"
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/CauchyStrainMapping.h"
+#include "../strainMapping/InvariantMapping.h"
+#include "../strainMapping/PrincipalStretchesMapping.h"
 
 #include <Mapping_test.h>
 
