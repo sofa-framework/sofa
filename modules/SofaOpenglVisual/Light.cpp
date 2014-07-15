@@ -135,12 +135,12 @@ void Light::initVisual()
     shadowFBO.init(shadowTexWidth, shadowTexHeight);
     blurHFBO.init(shadowTexWidth, shadowTexHeight);
     blurVFBO.init(shadowTexWidth, shadowTexHeight);
-    depthShader->vertFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
-    depthShader->fragFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
+    depthShader->vertFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
+    depthShader->fragFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
     depthShader->init();
     depthShader->initVisual();
-    blurShader->vertFilename.setValue(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
-    blurShader->fragFilename.setValue(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
+    blurShader->vertFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
+    blurShader->fragFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
     blurShader->init();
     blurShader->initVisual();
 #endif
