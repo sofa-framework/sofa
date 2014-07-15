@@ -26,6 +26,7 @@
 #include <SofaLoader/MeshObjLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sstream>
 
 namespace sofa
 {
@@ -187,7 +188,6 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     int nbFaces[NBFACETYPE] = {0}; // number of edges, triangles, quads
     int groupF0[NBFACETYPE] = {0}; // first primitives indices in current group for edges, triangles, quads
     std::string line;
-    std::string face, tmp;
     while( std::getline(file,line) )
     {
         if (line.empty()) continue;
@@ -243,7 +243,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 curMaterialId = -1;
                 helper::vector<Material>::iterator it = my_materials.begin();
                 helper::vector<Material>::iterator itEnd = my_materials.end();
-                for (; it != itEnd; it++)
+                for (; it != itEnd; ++it)
                 {
                     if (it->name == curMaterialName)
                     {
@@ -487,7 +487,9 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
     else
     {
         /* now, read in the data */
-        while (fscanf(file, "%s", buf) != EOF)
+        std::ostringstream cmdScanFormat;
+        cmdScanFormat << "%" << (sizeof(buf) - 1) << "s";
+        while (fscanf(file, cmdScanFormat.str().c_str(), buf) != EOF)
         {
 
             switch (buf[0])
@@ -519,8 +521,8 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                     else
                         serr << "Error: MeshObjLoader: fgets function has encounter an error. case n." << sendl;
                 }
-
-                sscanf(buf, "%s %s", buf, buf);
+                cmdScanFormat << " %" << (sizeof(buf) - 1) << "s";
+                sscanf(buf, cmdScanFormat.str().c_str(), buf, buf);
                 mat->name = buf;
                 break;
             case 'N':

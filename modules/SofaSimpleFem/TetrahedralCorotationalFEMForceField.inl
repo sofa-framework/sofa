@@ -106,6 +106,9 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     this->addAlias(&_assembling, "assembling");
     _poissonRatio.setWidget("poissonRatio");
     tetrahedronHandler = new TetrahedronHandler(this,&tetrahedronInfo);
+
+	_poissonRatio.setRequired(true);
+	_youngModulus.setRequired(true);
 }
 
 template <class DataTypes>

@@ -284,12 +284,10 @@ void SlicedVolumetricModel::findAndDrawTriangles()
     for(int i=0; i<_topology->getNbHexahedra(); ++i)
         positiveCubes.push_back( i );
 
-
-    int nbintersections;
     do
     {
 
-        nbintersections = 0;
+        int nbintersections = 0;
 
         // trouver le centre du plan de coupe
         Coord planeCenter = lastPoint + _planeNormal * (actualPlane * _planeSeparations);

@@ -193,7 +193,7 @@ public:
     {
     public:
         VertexInformation()
-            :sumEigenValues(0.0) {};
+            :sumEigenValues(0.0), stress(0.0) {};
 
         Coord meanStrainDirection;
         double sumEigenValues;

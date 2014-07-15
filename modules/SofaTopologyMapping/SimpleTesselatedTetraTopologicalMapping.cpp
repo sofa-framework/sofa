@@ -351,16 +351,19 @@ void SimpleTesselatedTetraTopologicalMapping::removeOutputTetrahedra( const sofa
     {
         swapOutputTetrahedra( index[i], last );
         int source = tetraSourceData[last];
-        int nbt = 0;
         if (source != -1)
         {
+			int nbt = 0;
+
             for (int j=0; j<8; ++j)
+			{
                 if (tetrahedraMappedFromTetraData[source][j] == last)
                 {
                     tetrahedraMappedFromTetraData[source][j] = -1;
                 }
                 else if (tetrahedraMappedFromTetraData[source][j] != -1)
                     ++nbt;
+			}
             if (nbt == 0) // we need to remove the source tetra
             {
 //				sout << "SimpleTesselatedTetraTopologicalMapping: source tetra "<<source<<" needs to be removed."<<sendl;

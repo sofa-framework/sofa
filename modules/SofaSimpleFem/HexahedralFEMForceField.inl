@@ -103,6 +103,9 @@ HexahedralFEMForceField<DataTypes>::HexahedralFEMForceField()
     _coef[7][0]= -1;		_coef[7][1]=  1;		_coef[7][2]=  1;
 
     hexahedronHandler = new HFFHexahedronHandler(this,&hexahedronInfo);
+
+	f_poissonRatio.setRequired(true);
+	f_youngModulus.setRequired(true);
 }
 
 template <class DataTypes>

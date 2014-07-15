@@ -97,8 +97,6 @@ void Triangle2EdgeTopologicalMapping::init()
 
             const sofa::helper::vector<Edge> &edgeArray=fromModel->getEdges();
 
-            unsigned int nb_visible_edges = 0;
-
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
             Loc2GlobVec.clear();
@@ -106,7 +104,6 @@ void Triangle2EdgeTopologicalMapping::init()
 
             for (unsigned int i=0; i<edgeArray.size(); ++i)
             {
-
                 if (fromModel->getTrianglesAroundEdge(i).size()==1)
                 {
 
@@ -114,8 +111,6 @@ void Triangle2EdgeTopologicalMapping::init()
 
                     Loc2GlobVec.push_back(i);
                     Glob2LocMap[i]=Loc2GlobVec.size()-1;
-
-                    nb_visible_edges+=1;
                 }
             }
 
@@ -194,7 +189,6 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                     for (unsigned int i = 0; i <tab.size(); ++i)
                     {
                         unsigned int k = tab[i];
-                        unsigned int ind_k;
 
                         std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                         if(iter_1 != Glob2LocMap.end())
@@ -202,7 +196,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
 
                             ind_last = ind_last - 1;
 
-                            ind_k = Glob2LocMap[k];
+                            unsigned int ind_k = Glob2LocMap[k];
                             ind_real_last = ind_k;
 
                             std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);

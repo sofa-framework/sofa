@@ -143,7 +143,6 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     sout << "Reading Gmsh file: " << gmshFormat << sendl;
 
     std::string cmd;
-    std::string line;
 
     unsigned int npoints = 0;
     unsigned int nelems = 0;

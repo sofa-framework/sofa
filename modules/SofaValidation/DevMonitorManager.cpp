@@ -34,6 +34,7 @@
 
 #include <SofaValidation/DevTensionMonitor.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <algorithm>
 
 namespace sofa
 {
@@ -70,8 +71,9 @@ void DevMonitorManager::init()
     getContext()->get<core::DevBaseMonitor, sofa::helper::vector<core::DevBaseMonitor*> >(&monitors, core::objectmodel::BaseContext::SearchDown);
 
     //remove itself
-    for (it = monitors.begin() ; (*it) != dynamic_cast<core::DevBaseMonitor*>(this) || it == monitors.end() ; it++) ;
-    monitors.erase(it);
+    it = std::find(monitors.begin(), monitors.end(), dynamic_cast<core::DevBaseMonitor*>(this));
+    if(it != monitors.end())
+        monitors.erase(it);
 
     sout << "Number of Monitors detected = " << monitors.size()  <<sendl;
 
@@ -85,7 +87,7 @@ void DevMonitorManager::eval()
     sofa::helper::vector<core::DevBaseMonitor*>::iterator it;
     sout << " Monitor Manager results :" << sendl;
 
-    for (it = monitors.begin() ; it != monitors.end() ; it++)
+    for (it = monitors.begin() ; it != monitors.end() ; ++it)
     {
         sout << "Data from Monitor " << (*it)->getName() << " : " ;
 

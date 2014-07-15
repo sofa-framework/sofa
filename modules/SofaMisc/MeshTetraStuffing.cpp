@@ -799,7 +799,6 @@ bool MeshTetraStuffing::flipDiag(const SeqPoints& outP, int a, int b, int c, int
             flip = false;
         else
             flip = true;
-        done = true;
     }
 
     if (!flip)

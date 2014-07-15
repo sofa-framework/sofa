@@ -233,7 +233,7 @@ bool MeshVTKLoader::setInputsMesh()
             else
             {
                 nv = inFP[i]; ++i;
-            }           
+            }
 
             switch (t)
             {
@@ -416,11 +416,10 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     sout << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header << sendl;
     //VTKDataIO<double>* inputPointsDouble = NULL;
     VTKDataIO<int>* inputPolygonsInt = NULL;
-    VTKDataIO<int>* inputCellsInt = NULL;    
+    VTKDataIO<int>* inputCellsInt = NULL;
     VTKDataIO<int>* inputCellTypesInt = NULL;
     inputCellOffsets = NULL;
 
-    int /*nbp = 0, */nbf = 0;
     while(!inVTKFile.eof())
     {
         std::getline(inVTKFile, line);
@@ -448,7 +447,6 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             inputPolygons = new VTKDataIO<int>;
             inputPolygonsInt = dynamic_cast<VTKDataIO<int>* > (inputPolygons);
             if (!inputPolygons->read(inVTKFile, ni, binary)) return false;
-            nbf = ni - 3*n;
         }
         else if (kw == "CELLS")
         {
@@ -458,7 +456,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             inputCells = new VTKDataIO<int>;
             inputCellsInt = dynamic_cast<VTKDataIO<int>* > (inputCells);
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
-            numberOfCells = nbf = n;
+            numberOfCells = n;
         }
          else if (kw == "LINES")
         {
@@ -468,7 +466,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             inputCells = new VTKDataIO<int>;
             inputCellsInt = dynamic_cast<VTKDataIO<int>* > (inputCellsInt);
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
-            numberOfCells = nbf = n;
+            numberOfCells = n;
 
             inputCellTypes = new VTKDataIO<int>;
             inputCellTypesInt = dynamic_cast<VTKDataIO<int>* > (inputCellTypes);
@@ -502,7 +500,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
 
                 inputCellDataVector.resize(sz+1);
                 lnData >> dataName;
-                lnData >> dataType;                                
+                lnData >> dataType;
 
                 inputCellDataVector[sz] = newVTKDataIO(dataType);
                 if (inputCellDataVector[sz] == NULL) return false;

@@ -185,7 +185,7 @@ protected:
     /**
      * @brief Save compliance matrix into a file.
      */
-    void saveCompliance(const std::string fileName);
+    void saveCompliance(const std::string& fileName);
 
     /**
      * @brief Builds the compliance file name using the SOFA component internal data.

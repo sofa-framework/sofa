@@ -75,6 +75,9 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
     , edgeHandler(NULL)
 {
     edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+
+	_poissonRatio.setRequired(true);
+	_youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>
@@ -93,7 +96,10 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , _assembling(false)
     , edgeHandler(NULL)
 {
-    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);    
+    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);  
+
+	_poissonRatio.setRequired(true);
+	_youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>
@@ -301,8 +307,6 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 
     df.resize(dx.size());
 
-    unsigned int i=0;
-
     if (_partial_list_segment)
     {
 
@@ -320,6 +324,7 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
     else
     {
         typename VecElement::const_iterator it;
+        unsigned int i = 0;
         for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
@@ -562,12 +567,13 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    unsigned int &offset = r.offset;
     defaulttype::BaseMatrix* mat = r.matrix;
 
     if (r)
     {
         unsigned int i=0;
+
+		unsigned int &offset = r.offset;
 
         if (_partial_list_segment)
         {

@@ -128,13 +128,12 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
         if (renderingState == sofa::core::visual::tristate::false_value || renderingState == sofa::core::visual::tristate::neutral_value) return;
 
         sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
-        VisualManagerPass* currentVMP;
         //preDraw sequence
         it=begin;
         for (it = begin; it != end; ++it)
         {
             (*it)->preDrawScene(vparams);
-            currentVMP=dynamic_cast<VisualManagerPass*>(*it);
+            VisualManagerPass* currentVMP=dynamic_cast<VisualManagerPass*>(*it);
             if( currentVMP!=NULL && !currentVMP->isPrerendered())
             {
 #ifdef DEBUG_DRAW

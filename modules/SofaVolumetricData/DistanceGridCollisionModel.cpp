@@ -499,7 +499,7 @@ void FFDDistanceGridCollisionModel::init()
     if (box.getValue()[0][0]<box.getValue()[1][0]) sout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     sout << sendl;
     grid = DistanceGrid::loadShared(fileFFDDistanceGrid.getFullPath(), scale.getValue(), sampling.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
-    if (grid && !dumpfilename.getValue().empty())
+    if (!dumpfilename.getValue().empty())
     {
         sout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<sendl;
         grid->save(dumpfilename.getFullPath());
