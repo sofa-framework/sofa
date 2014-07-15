@@ -83,8 +83,20 @@ class Frame:
                         setattr(self, k, kwargs[k])
                         
                 return self
-					  
-        # TODO more: apply( vec3 ), wrench/twist frame change.
+
+        # TODO more: wrench/twist frame change.
+
+        def apply(self, vec):
+            """ apply transformation to vec (a [x,y,z] vector)
+            return the result
+            """
+            return array(quat.rotate(self.rotation, vec) + asarray(self.translation))
+
+        def applyInv(self, vec):
+            """ apply the inverse transformation to vec (a [x,y,z] vector)
+            return the result
+            """
+            return self.inv().apply(vec)
 
 
 class MassInfo:
