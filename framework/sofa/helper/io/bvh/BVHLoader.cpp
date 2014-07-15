@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/helper/io/bvh/BVHLoader.h>
 #include <iostream>
+#include <sstream>
 
 namespace sofa
 {
@@ -46,8 +47,11 @@ BVHJoint *BVHLoader::load(const char *filename)
         BVHJoint::lastId = 0;
         BVHJoint *retBVHJoint = NULL;
         char buf[256];
-
-        while (fscanf(file, "%s", buf) != EOF)
+        
+        std::ostringstream bufScanFormat;
+        bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
+            
+        while (fscanf(file, bufScanFormat.str().c_str(), buf) != EOF)
         {
             if (strcmp(buf, "ROOT") == 0)
                 retBVHJoint = parseJoint(file);
@@ -67,16 +71,19 @@ BVHJoint *BVHLoader::parseJoint(FILE *f, bool isEndSite, BVHJoint *parent)
 {
     char buf[256];
 
+    std::ostringstream bufScanFormat;
+    bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
+
     if (!isEndSite)
-    {
-        if (fscanf(f,"%s",buf) == EOF)
+    {  
+        if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
             std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
     }
 
 
     BVHJoint *j = new BVHJoint(buf, isEndSite, parent);
 
-    if (fscanf(f,"%s",buf) == EOF)
+    if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
         std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
     while (!(strcmp(buf,"}") == 0))
@@ -95,14 +102,14 @@ BVHJoint *BVHLoader::parseJoint(FILE *f, bool isEndSite, BVHJoint *parent)
         }
         else if (strcmp(buf,"End") == 0)
         {
-            if (fscanf(f,"%s",buf) ==EOF )
+            if (fscanf(f,bufScanFormat.str().c_str(),buf) ==EOF )
                 std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
             if (strcmp(buf, "Site") == 0)
                 j->addChild(parseJoint(f, true, j));
         }
 
-        if (fscanf(f,"%s",buf) == EOF)
+        if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
             std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
     }
 
@@ -139,9 +146,12 @@ BVHChannels *BVHLoader::parseChannels(FILE *f)
     BVHChannels *c = new BVHChannels(cSize);
     char buf[256];
 
+    std::ostringstream bufScanFormat;
+    bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
+
     for (int i=0; i<cSize; i++)
     {
-        if (fscanf(f,"%s",buf) == EOF)
+        if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
             std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
         if (strcmp(buf, "Xposition") == 0)
@@ -177,7 +187,10 @@ void BVHLoader::parseMotion(FILE *f, BVHJoint *j)
 
     while (!framesFound || !frameTimeFound)
     {
-        if (fscanf(f,"%s",buf) == EOF)
+        std::ostringstream bufScanFormat;
+        bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
+    
+        if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
             std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
         if (strcmp(buf,"Frames:") == 0)

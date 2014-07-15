@@ -197,11 +197,10 @@ bool ImageBMP::load(std::string filename)
     if (nc == 3 || nc == 4)
     {
         int i;
-        unsigned char temp;
         // swap red and blue (bgr -> rgb)
         for (i = 0; i < width*height*nc; i += nc)
         {
-            temp = data[i];
+            unsigned char temp = data[i];
             data[i] = data[i + 2];
             data[i + 2] = temp;
         }
@@ -262,11 +261,10 @@ bool ImageBMP::save(std::string filename, int)
     unsigned char *data = getPixels();
     if(bytespp==3)
     {
-        unsigned char temp;
         /* swap red and blue (rgb -> bgr) */
         for (unsigned i = 0; i < width*height*3; i += 3)
         {
-            temp = data[i];
+            unsigned char temp = data[i];
             data[i] = data[i + 2];
             data[i + 2] = temp;
         }
@@ -287,11 +285,10 @@ bool ImageBMP::save(std::string filename, int)
     if(bytespp==3)
     {
         unsigned i;
-        unsigned char temp;
         /* swap red and blue (bgr -> rgb) */
         for (i = 0; i < width*height*3; i += 3)
         {
-            temp = data[i];
+            unsigned char temp = data[i];
             data[i] = data[i + 2];
             data[i + 2] = temp;
         }

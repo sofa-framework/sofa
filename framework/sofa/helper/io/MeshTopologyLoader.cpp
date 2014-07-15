@@ -196,11 +196,12 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
     file >> nelems;
     for (int i=0; i<nelems; ++i)
     {
-        int index=-1, etype=-1, rphys=-1, relem=-1, nnodes=-1, ntags=-1, tag=-1;
+        int index=-1, etype=-1, nnodes=-1, ntags=-1, tag=-1;
         if (gmshFormat==1)
         {
             // version 1.0 format is
             // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
+            int rphys=-1, relem=-1;
             file >> index >> etype >> rphys >> relem >> nnodes;
         }
         else if (gmshFormat == 2)
@@ -310,27 +311,30 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
     //int npoints = 0;
     //int nlines = 0;
 
-    int totalNumMasses;
-    int totalNumSprings;
+    
+    
     file >> cmd;
 
     // then find out number of masses and springs
     if (cmd == "numm")
     {
+        int totalNumMasses;
         file >> totalNumMasses;
         setNbPoints(totalNumMasses);
         //npoints=totalNumMasses;
+        // 		std::cout << "Model contains "<< totalNumMasses <<" masses";
     }
 
     if (cmd=="nums")
     {
+        int totalNumSprings;
         file >> totalNumSprings;
         setNbLines(totalNumSprings);
         //nlines=totalNumSprings;
         //		setNumSprings(totalNumSprings);
+        //      std::cout<<" and "<< totalNumSprings <<" springs"<<std::endl;
     }
 
-// 		std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
 
     while (!file.eof())
     {
@@ -355,9 +359,12 @@ bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
             int	index;
             int m1,m2;
             double ks=0.0,kd=0.0,initpos=-1;
-            double restx=0.0,resty=0.0,restz=0.0;
+            
             if (vector_spring)
+            {
+                double restx=0.0,resty=0.0,restz=0.0;
                 file >> index >> m1 >> m2 >> ks >> kd >> initpos >> restx >> resty >> restz;
+            }
             else
                 file >> index >> m1 >> m2 >> ks >> kd >> initpos;
             --m1;
@@ -587,9 +594,6 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
 
 bool MeshTopologyLoader::loadCGAL(const char *filename)
 {
-    int npoints = 0;
-    int ntri = 0;
-    int ntetra = 0;
     bool fileLoaded = false;
     std::string cmd;
     std::string line;
@@ -604,6 +608,10 @@ bool MeshTopologyLoader::loadCGAL(const char *filename)
 
     if (line == "MeshVersionFormatted 1") // Reading CGAL 3.7 or 3.8 file
     {
+        int npoints = 0;
+        int ntri = 0;
+        int ntetra = 0;
+
         std::getline(file, line); // we don't care about this line
         file >> cmd;
         if (cmd == "Vertices")

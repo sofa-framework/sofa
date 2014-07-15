@@ -117,10 +117,9 @@ FileRepository::FileRepository(const char* envVar, const char* relativePath)
     {
         std::string path = relativePath;
         size_t p0 = 0;
-        size_t p1;
         while ( p0 < path.size() )
         {
-            p1 = path.find(entrySeparator(),p0);
+            size_t p1 = path.find(entrySeparator(),p0);
             if (p1 == std::string::npos) p1 = path.size();
             if (p1>p0+1)
             {
@@ -160,10 +159,9 @@ void FileRepository::addFirstPath(const std::string& p)
 
     std::vector<std::string> entries;
     size_t p0 = 0;
-    size_t p1;
     while ( p0 < path.size() )
     {
-        p1 = path.find(entrySeparator(),p0);
+        size_t p1 = path.find(entrySeparator(),p0);
         if (p1 == std::string::npos) p1 = path.size();
         if (p1>p0+1)
         {
@@ -181,10 +179,9 @@ void FileRepository::addLastPath(const std::string& p)
 
     std::vector<std::string> entries;
     size_t p0 = 0;
-    size_t p1;
     while ( p0 < path.size() )
     {
-        p1 = path.find(entrySeparator(),p0);
+        size_t p1 = path.find(entrySeparator(),p0);
         if (p1 == std::string::npos) p1 = path.size();
         if (p1>p0+1)
         {
@@ -200,10 +197,9 @@ void FileRepository::removePath(const std::string& path)
 {
     std::vector<std::string> entries;
     size_t p0 = 0;
-    size_t p1;
     while ( p0 < path.size() )
     {
-        p1 = path.find(entrySeparator(),p0);
+        size_t p1 = path.find(entrySeparator(),p0);
         if (p1 == std::string::npos) p1 = path.size();
         if (p1>p0+1)
         {

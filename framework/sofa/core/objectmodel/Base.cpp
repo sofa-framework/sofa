@@ -341,7 +341,7 @@ std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
     //Search in the aliases
     typedef MapData::const_iterator mapIterator;
     std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; itAlias++)
+    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }
@@ -367,7 +367,7 @@ std::vector< BaseLink* > Base::findLinks( const std::string &name ) const
     //Search in the aliases
     typedef MapLink::const_iterator mapIterator;
     std::pair< mapIterator, mapIterator> range = m_aliasLink.equal_range(name);
-    for (mapIterator itAlias=range.first; itAlias!=range.second; itAlias++)
+    for (mapIterator itAlias=range.first; itAlias!=range.second; ++itAlias)
         result.push_back(itAlias->second);
     return result;
 }
@@ -488,7 +488,7 @@ void  Base::parseFields ( const std::list<std::string>& str )
 void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 {
     std::string key,val;
-    for( std::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; i++ )
+    for( std::map<string,string*>::const_iterator i=args.begin(), iend=args.end(); i!=iend; ++i )
     {
         if( (*i).second!=NULL )
         {

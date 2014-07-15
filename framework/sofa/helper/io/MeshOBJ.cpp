@@ -25,6 +25,7 @@
 #include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sstream>
 
 namespace sofa
 {
@@ -234,14 +235,18 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
 void MeshOBJ::readMTL(const char* filename)
 {
     FILE* file;
+
     char buf[128];
+    std::ostringstream bufScanFormat;
+    bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
+
     file = fopen(filename, "r");
     Material *mat = NULL;
     if (!file);//std::cerr << "readMTL() failed: can't open material file " << filename << std::endl;
     else
     {
         /* now, read in the data */
-        while (fscanf(file, "%s", buf) != EOF)
+        while (fscanf(file, bufScanFormat.str().c_str(), buf) != EOF)
         {
 
             switch (buf[0])

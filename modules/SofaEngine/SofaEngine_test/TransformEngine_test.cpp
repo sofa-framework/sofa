@@ -143,50 +143,50 @@ TYPED_TEST( TransformEngine_test , input )
 // test translation
 TYPED_TEST( TransformEngine_test , translation )
 {
-	this->setInputTransformation(TRANSLATION, NULL_VEC, NULL_SCALE);
-	this->testOutput(OUTPUT_TRANSLATION_POS);
+    this->setInputTransformation(TRANSLATION, NULL_VEC, NULL_SCALE);
+    this->testOutput(OUTPUT_TRANSLATION_POS);
 }
 
 // test rotation
 TYPED_TEST( TransformEngine_test , rotation )
 {
     this->setInputTransformation(NULL_VEC, ROTATION, NULL_SCALE);
-	this->testOutput(OUTPUT_ROTATION_POS, OUTPUT_ROTATION_QUAT);
+    this->testOutput(OUTPUT_ROTATION_POS, OUTPUT_ROTATION_QUAT);
 }
 
 // test scale
 TYPED_TEST( TransformEngine_test , scale )
 {
     this->setInputTransformation(NULL_VEC, NULL_VEC, SCALE);
-	this->testOutput(OUTPUT_SCALE_POS);
+    this->testOutput(OUTPUT_SCALE_POS);
 }
 
 // test translation-rotation composite
 TYPED_TEST( TransformEngine_test , translationRotation )
 {
     this->setInputTransformation(TRANSLATION, ROTATION, NULL_SCALE);
-	this->testOutput(OUTPUT_ROTATION_POS + TRANSLATION, OUTPUT_ROTATION_QUAT);
+    this->testOutput(OUTPUT_ROTATION_POS + TRANSLATION, OUTPUT_ROTATION_QUAT);
 }
 
 // test translation-scale composite
 TYPED_TEST( TransformEngine_test , translationScale )
 {
     this->setInputTransformation( TRANSLATION, NULL_VEC, SCALE );
-	this->testOutput(OUTPUT_SCALE_POS + TRANSLATION);
+    this->testOutput(OUTPUT_SCALE_POS + TRANSLATION);
 }
 
 // test rotation-scale composite
 TYPED_TEST( TransformEngine_test , rotationScale )
 {
     this->setInputTransformation( NULL_VEC, ROTATION, SCALE );
-	this->testOutput(OUTPUT_ROTATION_SCALE_POS, OUTPUT_ROTATION_QUAT);
+    this->testOutput(OUTPUT_ROTATION_SCALE_POS, OUTPUT_ROTATION_QUAT);
 }
 
 // test translation-rotation-scale composite
 TYPED_TEST( TransformEngine_test , translationRotationScale )
 {
     this->setInputTransformation( TRANSLATION, ROTATION, SCALE );
-	this->testOutput(OUTPUT_ROTATION_SCALE_POS + TRANSLATION, OUTPUT_ROTATION_QUAT);
+    this->testOutput(OUTPUT_ROTATION_SCALE_POS + TRANSLATION, OUTPUT_ROTATION_QUAT);
 }
 
 }// namespace

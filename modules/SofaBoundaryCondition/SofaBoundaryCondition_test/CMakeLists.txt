@@ -7,6 +7,7 @@ set(SOURCE_FILES
     ProjectToPointConstraint_test.cpp
     FixedConstraint_test.cpp
     PartialFixedConstraint.cpp
+    PointConstraint_test.cpp
         )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

@@ -427,7 +427,6 @@ Node* GNode::findCommonParent( simulation::Node* node2 )
         if (it != hierarchyParent.end())
         {
             return gnodeGroup2;
-            break;
         }
         gnodeGroup2=static_cast<GNode*>(gnodeGroup2->getParent());
     }
