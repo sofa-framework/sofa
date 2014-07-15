@@ -41,7 +41,7 @@ using std::cerr;
 using std::endl;
 using namespace component;
 using namespace defaulttype;
-using core::objectmodel::New;
+using namespace core::objectmodel;
 
 /**  Test suite for ProjectDirectionConstraint.
 The test cases are defined in the #Test_Cases member group.

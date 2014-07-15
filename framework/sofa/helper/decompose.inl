@@ -2547,7 +2547,6 @@ int dsyevq3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, 
   const int n = 3;
   defaulttype::Vec<3,Real> e;                   // The third element is used only as temporary workspace
   Real g, r, p, f, b, s, c, t; // Intermediate storage
-  int nIter;
   int m;
 
   // Transform A to real tridiagonal form by the Householder method
@@ -2559,7 +2558,7 @@ int dsyevq3(const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, 
   // Loop over all off-diagonal elements
   for (int l=0; l < n-1; l++)
   {
-    nIter = 0;
+    int nIter = 0;
     while (1)
     {
       // Check for convergence and exit iteration loop if off-diagonal

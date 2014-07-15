@@ -84,16 +84,14 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 #if defined (_XBOX) || defined(PS3)
 	return false; // not supported
 #else
-    std::string fileIN = filenameStdin;
-
-    //Remove this line below when Windows will be able to read file as stdin
-    fileIN = "";
+    //std::string fileIN = filenameStdin;
+    //Remove this line below and uncomment the one above when Windows will be able to read file as stdin
+    std::string fileIN = "";
 
     fd_t fds[2][2];
 
     //char eol = '\n';
     char** cargs;
-    std::string newCommand(command);
 
     cargs = new char* [args.size()+2];
     cargs[0] = (char*)command.c_str();
@@ -110,7 +108,8 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
 //    fdout = GetStdHandle(STD_OUTPUT_HANDLE);
 //    fderr = GetStdHandle(STD_ERROR_HANDLE);
-
+    
+    std::string newCommand(command);
     for (unsigned int i=0 ; i< args.size() ; i++)
         newCommand += " " + args[i];
 

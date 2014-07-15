@@ -277,7 +277,6 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
     int * base;		// base des variables non nulles
     int ligPiv;		// ligne du pivot
     int colPiv;		// colonne du pivot
-    double pivot;	// pivot
     double min;		// recherche du minimum pour le pivot
     double coeff;	// valeur du coefficient de la combinaison linéaire
     int boucles;	// compteur du nombre de passages dans la boucle
@@ -364,7 +363,7 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
         }
 
         // stockage de la valeur du pivot
-        pivot=mat[ligPiv][colPiv];
+        double pivot=mat[ligPiv][colPiv];
         // et son affichage
         // printf("pivot=mat[%d][%d]=%f\n\n",ligPiv,colPiv,pivot);
 
@@ -566,15 +565,12 @@ void afficheSyst(double *q,double **M, int *base, double **mat, int dim)
 int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
 {
 
-    int i,drive,block,Ifound;
+    int i,Ifound;
     int ic,jc;
     int dim2,ITER;
-    int nobasis;
     int itermax/*,ispeak*/;
 
-    double qs,z0,zb,dblock;
-    double pivot, tovip;
-    double tmp;
+    double qs,z0;
     int *basis;
     static double** A;
     //static int dimTest=0;
@@ -651,9 +647,10 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
 
         for( ic = 0 ; ic < dim  ; ++ic ) basis[ic]=ic+1;
 
-        drive = dim+1;
-        block = 0;
+        int drive = dim+1;
+        int block = 0;
         z0 = A[block][0];
+        double zb,dblock,tmp;
 
 
         /* Start research of argmin lexico */
@@ -687,8 +684,8 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
 
         /* Stop research of argmin lexico */
 
-        pivot = A[block][drive];
-        tovip = 1.0/pivot;
+        double pivot = A[block][drive];
+        double tovip = 1.0/pivot;
 
         /* Pivot < block , drive > */
 
@@ -709,7 +706,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
             for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
         }
 
-        nobasis = basis[block];
+        int nobasis = basis[block];
         basis[block] = drive;
 
         while( ITER < itermax && !Ifound )
@@ -830,15 +827,12 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
 int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
 {
 
-    int i,drive,block,Ifound;
+    int i,Ifound;
     int ic,jc;
     int dim2,ITER;
-    int nobasis;
     int itermax/*,ispeak*/;
 
-    double qs,z0,zb,dblock;
-    double pivot, tovip;
-    double tmp;
+    double qs,z0;
     int *basis;
 
     dim2 = 2*(dim+1);
@@ -907,9 +901,10 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
 
         for( ic = 0 ; ic < dim  ; ++ic ) basis[ic]=ic+1;
 
-        drive = dim+1;
-        block = 0;
+        int drive = dim+1;
+        int block = 0;
         z0 = A[block][0];
+        double zb, dblock, tmp;
 
 
         /* Start research of argmin lexico */
@@ -943,8 +938,8 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
 
         /* Stop research of argmin lexico */
 
-        pivot = A[block][drive];
-        tovip = 1.0/pivot;
+        double pivot = A[block][drive];
+        double tovip = 1.0/pivot;
 
         /* Pivot < block , drive > */
 
@@ -965,7 +960,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
             for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
         }
 
-        nobasis = basis[block];
+        int nobasis = basis[block];
         basis[block] = drive;
 
         while( ITER < itermax && !Ifound )
@@ -1181,8 +1176,7 @@ void LocalBlock33::stickState(double &dn, double &dt, double &ds, double &fn, do
 void LocalBlock33::slipState(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
 {
     double d[3];
-    double normFt;
-
+    
     for (int iteration=0; iteration<10000; iteration++)
     {
         // we set the previous value of the force
@@ -1200,7 +1194,7 @@ void LocalBlock33::slipState(double &mu, double &dn, double &dt, double &ds, dou
         // envaluation of the new fricton forces
         ft -= 2*d[1]/(w[3]+w[5]);
         fs -= 2*d[2]/(w[3]+w[5]);
-        normFt=sqrt(ft*ft+fs*fs);
+        double normFt=sqrt(ft*ft+fs*fs);
         ft *=mu*fn/normFt;
         fs *=mu*fn/normFt;
 
@@ -1392,6 +1386,7 @@ void LocalBlock33::BiPotential(double &mu, double &dn, double &dt, double &ds, d
 // sorted list of the contact (depending on interpenetration)
 //////////////
 
+/*
 typedef struct { double value; int index;} listElem;
 struct listSortAscending
 {
@@ -1399,7 +1394,7 @@ struct listSortAscending
     {
         return e1.value < e2.value;
     }
-};
+};*/
 
 
 /* Fonctions "de base" à définir pour le MultiGrid :
@@ -1468,14 +1463,12 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
     group_has_projection.resize(nbContactsCoarse);
     size_of_group.resize(nbContactsCoarse);
 
-    double dn;
-
     for (int c=0;  c<nbContactsCoarse ; c++)
         group_has_projection[c] = false;
 
     for (int c1=0; c1<numContactFine; c1++)
     {
-        dn=fineLevel.getDfree()[3*c1];
+        double dn=fineLevel.getDfree()[3*c1];
         for (int i=0; i<(int)fineLevel.getDim(); i++)
         {
             dn += fineLevel.getW()[3*c1  ][i]*fineLevel.getF()[i];
@@ -2071,7 +2064,6 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
                 dt += W_coarse[3*g1+1][i]*F_coarse[i];
                 ds += W_coarse[3*g1+2][i]*F_coarse[i];
             }
-            d_1[0] = dn;  d_1[1] = dt;  d_1[2] = ds;
 
             // error measure
             double Ddn, Ddt, Dds;

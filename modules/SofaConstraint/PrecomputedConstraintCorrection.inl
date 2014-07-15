@@ -632,7 +632,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv 
     std::list<int>::iterator IterateurListe;
     unsigned int i, offset, offset2;
 
-    for (IterateurListe = activeDofs.begin(); IterateurListe != activeDofs.end(); IterateurListe++)
+    for (IterateurListe = activeDofs.begin(); IterateurListe != activeDofs.end(); ++IterateurListe)
     {
         int f = (*IterateurListe);
 
@@ -807,7 +807,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     std::list<int>::iterator IterateurListe;
     unsigned int i;
     unsigned int offset, offset2;
-    for (IterateurListe = activeDof.begin(); IterateurListe != activeDof.end(); IterateurListe++)
+    for (IterateurListe = activeDof.begin(); IterateurListe != activeDof.end(); ++IterateurListe)
     {
         int f = (*IterateurListe);
 
