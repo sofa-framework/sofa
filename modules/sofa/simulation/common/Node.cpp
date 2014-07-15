@@ -968,7 +968,7 @@ void Node::printComponents()
     for ( Sequence<OdeSolver>::iterator i=solver.begin(), iend=solver.end(); i!=iend; ++i )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"LinearSolver: ";
-    for ( Sequence<LinearSolver>::iterator i=linearSolver.begin(), iend=linearSolver.end(); i!=iend; i++ )
+    for ( Sequence<BaseLinearSolver>::iterator i=linearSolver.begin(), iend=linearSolver.end(); i!=iend; i++ )
         serr<<(*i)->getName()<<" ";
     serr<<sendl<<"ConstraintSolver: ";
     for ( Sequence<ConstraintSolver>::iterator i=constraintSolver.begin(), iend=constraintSolver.end(); i!=iend; ++i )
