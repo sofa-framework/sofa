@@ -239,14 +239,14 @@ template<class DataTypes>
 inline unsigned TLine<DataTypes>::i2() const { return this->model->elems[this->index].p[1]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return (*this->model->mstate->getX())[this->model->elems[this->index].p[0]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p1() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return (*this->model->mstate->getX())[this->model->elems[this->index].p[1]]; }
+inline const typename DataTypes::Coord& TLine<DataTypes>::p2() const { return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[1]]; }
 
 template<class DataTypes>
 inline const typename DataTypes::Coord& TLine<DataTypes>::p(int i) const {
-    return (*this->model->mstate->getX())[this->model->elems[this->index].p[i]];
+    return this->model->mstate->read(core::ConstVecCoordId::position())->getValue()[this->model->elems[this->index].p[i]];
 }
 
 template<class DataTypes>
@@ -268,14 +268,14 @@ inline const typename DataTypes::Coord& TLine<DataTypes>::p2Free() const
 }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return (*this->model->mstate->getV())[this->model->elems[this->index].p[0]]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->model->elems[this->index].p[0]]; }
 
 template<class DataTypes>
-inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return (*this->model->mstate->getV())[this->model->elems[this->index].p[1]]; }
+inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return this->model->mstate->read(core::ConstVecDerivId::velocity())->getValue()[this->model->elems[this->index].p[1]]; }
 
 
 template<class DataTypes>
-inline typename TLineModel<DataTypes>::Deriv TLineModel<DataTypes>::velocity(int index) const { return ((*mstate->getV())[elems[index].p[0]] + (*mstate->getV())[elems[index].p[1]])/((Real)(2.0)); }
+inline typename TLineModel<DataTypes>::Deriv TLineModel<DataTypes>::velocity(int index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[elems[index].p[1]])/((Real)(2.0)); }
 
 template<class DataTypes>
 inline int TLine<DataTypes>::flags() const { return this->model->getLineFlags(this->index); }

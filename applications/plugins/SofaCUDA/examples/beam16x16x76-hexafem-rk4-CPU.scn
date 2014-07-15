@@ -26,7 +26,7 @@
 		  		zmin="0" zmax="15"
 		  	/>
       <VisualModel name="Visual" />
-		  <SubsetMapping object1="../.." object2="Visual" />
+		  <SubsetMapping input="@.." output="@Visual" />
 		</Node>
 	</Node>
 </Node>

@@ -18,7 +18,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visual Model">
             <OglModel name="Visual Cube" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube RigidDOF" object2="Visual Cube" />
+            <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube RigidDOF" output="@Visual Cube" />
         </Node>
         <Node name="Collision Model">
             <Mesh name="Cube Mesh" filename="mesh/cube.obj" />
@@ -27,7 +27,7 @@
             <Triangle name="Cube Triangle For Collision" />
             <Line name="Cube Edge For Collision" />
             <Point name="Cube Point For Collision" />
-            <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube RigidDOF" object2="Collision Cube" />
+            <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube RigidDOF" output="@Collision Cube" />
         </Node>
     </Node>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
@@ -39,7 +39,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visual Model">
             <OglModel name="Visual Cube" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube RigidDOF" object2="Visual Cube" />
+            <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube RigidDOF" output="@Visual Cube" />
         </Node>
         <Node name="Collision Model">
             <Mesh name="Cube Mesh" filename="mesh/cube.obj" />
@@ -48,7 +48,7 @@
             <Triangle name="Cube Triangle For Collision" />
             <Line name="Cube Edge For Collision" />
             <Point name="Cube Point For Collision" />
-            <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube RigidDOF" object2="Collision Cube" />
+            <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube RigidDOF" output="@Collision Cube" />
         </Node>
     </Node>
     <Node name="Floor">

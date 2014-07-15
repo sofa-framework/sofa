@@ -76,6 +76,9 @@ public:
 
     static const unsigned int CoordSize = Coord::total_size;
 
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
+
 protected:
     PatchTestMovementConstraintInternalData<DataTypes> *data;
     friend class PatchTestMovementConstraintInternalData<DataTypes>;
@@ -128,6 +131,11 @@ public:
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
     // Implement projectMatrix for assembled solver of compliant
     virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
+
+    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /* cData */)
+    {
+        serr << "projectJacobianMatrix not implemented" << sendl;
+    }
 
     /// Compute the theoretical final positions
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 

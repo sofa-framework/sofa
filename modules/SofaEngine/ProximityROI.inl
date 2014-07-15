@@ -80,7 +80,7 @@ void ProximityROI<DataTypes>::init()
         this->getContext()->get(mstate);
         if (mstate)
         {
-            sofa::core::objectmodel::BaseData* parent = mstate->findField("rest_position");
+            sofa::core::objectmodel::BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
                 f_X0.setParent(parent);
@@ -93,7 +93,7 @@ void ProximityROI<DataTypes>::init()
             this->getContext()->get(loader);
             if (loader)
             {
-                sofa::core::objectmodel::BaseData* parent = loader->findField("position");
+                sofa::core::objectmodel::BaseData* parent = loader->findData("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);

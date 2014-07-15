@@ -137,19 +137,11 @@ public:
     /// Render internal data of this object, for debugging purposes.
     virtual void draw(const core::visual::VisualParams*)
     {
-#ifndef SOFA_DEPRECATE_OLD_API
-        draw();
-#endif
     }
     ///@}
-#ifndef SOFA_DEPRECATE_OLD_API
-    virtual void draw() {}
-#endif
 
     /// @name Context accessors
-    /// @{
-
-    //void setContext(BaseContext* n);
+    /// @{    
 
     const BaseContext* getContext() const;
 
@@ -452,7 +444,7 @@ public:
 
     /// Bounding Box computation method.
     /// Default to empty method.
-    virtual void computeBBox(const core::ExecParams* /* params */) {};
+    virtual void computeBBox(const core::ExecParams* /* params */) {}
 
     /// Sets a source Object and parses it to collect dependent Data
     void setSrc(const std::string &v, std::vector< std::string > *attributeList=0);

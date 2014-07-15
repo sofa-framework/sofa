@@ -109,7 +109,7 @@ public:
     int addPoint(const Coord& P, int index, Real&)
     {
         int i = nbp++;
-        if ((int)outmodel->getX()->size() <= i)
+        if ((int)outmodel->read(core::ConstVecCoordId::position())->getValue().size() <= i)
             outmodel->resize(i+1);
         if (mapping)
         {

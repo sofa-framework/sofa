@@ -63,14 +63,26 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+    typedef typename Out::Real OutReal;
 
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type Real;
+    typedef typename In::MatrixDeriv InMatrixDeriv;
+    typedef typename In::Real InReal;
     typedef typename std::pair<unsigned int, Real> couple;
     //typedef typename  InterpolationValueTable;
+
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
+    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
+
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
     Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices;
     Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues;
@@ -84,13 +96,18 @@ public:
     // handle topology changes depending on the topology
     void handleTopologyChange(core::topology::Topology* t);
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    virtual void apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in);
+    //void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    virtual void applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in);
+    //void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    virtual void applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in);
+    //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    virtual void applyJT( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in);
+    //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+
 
 protected:
     ExternalInterpolationMapping();

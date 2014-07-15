@@ -77,7 +77,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
     context->getNodeObject(ahc);
     articulationCenters = ahc->getArticulationCenters();
 
-    const InVecCoord& xfrom = *m_fromModel->getX();
+    const InVecCoord& xfrom = m_fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     ArticulationPos.clear();
     ArticulationAxis.clear();
@@ -117,8 +117,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
             m_fromRootModel == NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
     Inherit::init();
     /*
-    OutVecDeriv& vto = *m_toModel->getV();
-    InVecDeriv& vfrom = *m_fromModel->getV();
+    OutVecDeriv& vto = m_toModel->read(core::ConstVecCoordId::velocity())->getValue();
+    InVecDeriv& vfrom = m_fromModel->read(core::ConstVecCoordId::velocity())->getValue();
     applyJT(vfrom, vto);
     */
 
@@ -416,8 +416,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     //{
     //	serr<<" propagateV processed"<<sendl;
     //	if (m_fromRootModel!=NULL)
-    //		serr<<"V input root: "<<*m_fromRootModel->getV();
-    //	serr<<"  - V input: "<<*m_fromModel->getV()<<"   V output : "<<*m_toModel->getV()<<sendl;
+    //		serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecCoordId::velocity())->getValue();
+    //	serr<<"  - V input: "<<m_fromModel->read(core::ConstVecCoordId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
     //}
 
     //if( this->f_printLog.getValue())
@@ -521,11 +521,11 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outRoot )
 {
-    const OutVecCoord& xto = *m_toModel->getX();
+    const OutVecCoord& xto = m_toModel->read(core::ConstVecCoordId::position())->getValue();
 
     //std::cout << "applyJT (constraints) : \n";
     //std::cout << "xto = " << xto << std::endl;
-    //std::cout << "xfrom = " << *m_fromModel->getX() << std::endl;
+    //std::cout << "xfrom = " <<m_fromModel->read(core::ConstVecCoordId::position())->getValue() << std::endl;
     //std::cout << "xfromFree = " << m_fromModel->read(core::VecCoordId::freePosition())->getValue() << std::endl;
 
     typename OutMatrixDeriv::RowConstIterator rowItEnd = in.end();
@@ -652,7 +652,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
     vparams->drawTool()->drawLines(pointsLine, 1, sofa::defaulttype::Vec<4,float>(0,0,1,1));
 
     //
-    //OutVecCoord& xto = *m_toModel->getX();
+    //OutVecCoord& xto =m_toModel->read(core::ConstVecCoordId::position())->getValue();
     //glDisable (GL_LIGHTING);
     //glPointSize(2);
 }

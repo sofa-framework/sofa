@@ -260,12 +260,12 @@ void MechanicalObject<DataTypes>::exportGnuplot(Real time)
 {
     if( m_gnuplotFileX!=NULL )
     {
-        (*m_gnuplotFileX) << time <<"\t"<< *getX() << std::endl;
+        (*m_gnuplotFileX) << time <<"\t"<< read(core::ConstVecCoordId::position())->getValue() << std::endl;
     }
 
     if( m_gnuplotFileV!=NULL )
     {
-        (*m_gnuplotFileV) << time <<"\t"<< *getV() << std::endl;
+        (*m_gnuplotFileV) << time <<"\t"<< read(core::ConstVecDerivId::velocity())->getValue() << std::endl;
     }
 }
 
@@ -1045,7 +1045,7 @@ void MechanicalObject<DataTypes>::init()
     VecDeriv& v_wA = *v_wAData->beginEdit();
 
     //case if X0 has been set but not X
-    if (getX0()->size() > x_wA.size())
+    if (read(core::ConstVecCoordId::restPosition())->getValue().size() > x_wA.size())
     {
         vOp(core::ExecParams::defaultInstance(), core::VecId::position(), core::VecId::restPosition());
     }
@@ -2544,7 +2544,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 {
     // Compute J
     const size_t N = Deriv::size();
-    const MatrixDeriv& c = *this->getC();
+    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -3388,7 +3388,8 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
             || (defaulttype::DataTypeInfo<Coord>::size() == 7 && defaulttype::DataTypeInfo<Deriv>::size() == 6))
     {
         // seems to be valid DOFs
-        const VecCoord& x = *this->getX();
+        const VecCoord& x =this->read(core::ConstVecCoordId::position())->getValue();
+
         defaulttype::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         defaulttype::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
 //                            cerr<<"MechanicalObject<DataTypes>::pickParticles, ray point = " << rayOx << ", " << rayOy << ", " << rayOz << endl;

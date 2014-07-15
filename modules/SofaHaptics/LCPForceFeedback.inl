@@ -344,7 +344,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     constraints.clear();
     //	id_buf.clear();
 
-    const MatrixDeriv& c = *(mState->getC());
+    const MatrixDeriv& c = mState->read(core::ConstMatrixDerivId::holonomicC())->getValue()   ;
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 

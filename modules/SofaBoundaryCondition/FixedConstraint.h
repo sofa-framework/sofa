@@ -109,8 +109,8 @@ public:
     void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
 
 
-    void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
-    void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
+    virtual void applyConstraint(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void applyConstraint(const core::MechanicalParams* mparams /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /** Project the the given matrix (Experimental API).
       See doc in base parent class

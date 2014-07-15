@@ -118,8 +118,8 @@ void CurveMapping<TIn, TOut>::init()
     this->toModel->resize(nout);
 
     lengthElements.resize(nin-1);
-//	const InVecCoord& x0 = *this->fromModel->getX0();
-    const InVecCoord& x0 = *this->fromModel->getX();
+    //	const InVecCoord& x0 = this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue();
+    const InVecCoord& x0 = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     for (int i=0; i<nin-1; i++)
     {
@@ -167,7 +167,7 @@ void CurveMapping<TIn, TOut>::init()
     old_angle.resize(nout);
     fill(old_angle.begin(), old_angle.end(), 0.0);
 
-    //apply(*this->toModel->getX(), *this->fromModel->getX());
+    //apply(*this->toModel->getX(),this->fromModel->read(core::ConstVecCoordId::position())->getValue());
     //apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
 
     Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(),     core::ConstVecCoordId::position());
@@ -175,8 +175,8 @@ void CurveMapping<TIn, TOut>::init()
 
     /*
 
-     	VecCoord& xto = *this->toModel->getX();
-     	InVecCoord& xfrom = *this->fromModel->getX();
+        VecCoord& xto =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+        InVecCoord& xfrom =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     	std::ofstream catheterDataFile("/media/data/sofa-dev/trunk/Sofa/applications/projects/runSofa/rest_position.dat", std::fstream::out | std::fstream::binary);
 
@@ -236,7 +236,7 @@ void CurveMapping<TIn, TOut>::rotateElements()
 {
     int nin = this->fromModel->getSize();
     rotatedQuatElements.resize(nin-1);
-    //const InVecCoord& x0 = *this->fromModel->getX0();
+    //const InVecCoord& x0 = this->fromModel->read(core::ConstVecCoordId::restPosition())->getValue();
     Real a = angle.getValue()[0];
     for (int i=0; i<nin-1; i++)
     {
@@ -482,7 +482,7 @@ void CurveMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     std::vector< sofa::defaulttype::Vector3 > points;
     sofa::defaulttype::Vector3 point;
 
-    const VecCoord& x = *this->toModel->getX();
+    const VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
     {
         point = DataTypes::getCPos(x[i]);

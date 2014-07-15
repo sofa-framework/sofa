@@ -91,7 +91,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
         return;
     }
 
-    resize(_mstate->getX()->size());
+    resize(_mstate->read(core::ConstVecCoordId::position())->getValue().size());
 }
 
 template <class MyReal>
@@ -103,10 +103,8 @@ unsigned int TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::nbCap()
 template <class MyReal>
 void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
 {
-    using namespace sofa::defaulttype;
-
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int ncap = _mstate->getX()->size();
+    const int ncap = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
     bool updated = false;
     if (ncap != size)
@@ -124,7 +122,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBounding
     cubeModel->resize(ncap);
     if (!empty())
     {
-        typename TCapsule<StdRigidTypes<3,MyReal> >::Real r;
+        typename TCapsule<defaulttype::StdRigidTypes<3,MyReal> >::Real r;
 
         //const typename TCapsule<StdRigidTypes<3,MyReal> >::Real distance = (typename TCapsule<StdRigidTypes<3,MyReal> >::Real)this->proximity.getValue();
         for (int i=0; i<ncap; i++)
@@ -133,8 +131,8 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBounding
             const Coord p2 = point2(i);
             r = radius(i);
 
-            Vector3 maxVec;
-            Vector3 minVec;
+            defaulttype::Vector3 maxVec;
+            defaulttype::Vector3 minVec;
 
             for(int dim = 0 ; dim < 3 ; ++dim){
                 if(p1(dim) > p2(dim)){
@@ -196,7 +194,7 @@ typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsu
 
 template <class MyReal>
 const typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::center(int i)const{
-    return DataTypes::getCPos((*(_mstate->getX()))[i]);
+    return DataTypes::getCPos((_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
 }
 
 template <class MyReal>
@@ -243,7 +241,7 @@ typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsule<so
 
 template<class MyReal>
 const typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::velocity(int index) const {
-    return DataTypes::getDPos(((*(_mstate->getV())))[index]);
+    return DataTypes::getDPos(((_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
 }
 
 
@@ -252,7 +250,7 @@ const typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TC
 
 template<class MyReal>
 const sofa::defaulttype::Quaternion TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::orientation(int index)const{
-    return (*_mstate->getX())[index].getOrientation();
+    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class MyReal>

@@ -105,8 +105,8 @@ void GearSpringForceField<DataTypes>::init()
 template <class DataTypes>
 void GearSpringForceField<DataTypes>::reinit()
 {
-    const VecCoord& x1= *this->mstate1->getX();
-    const VecCoord& x2= *this->mstate2->getX();
+    const VecCoord& x1=this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x2=this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     sofa::helper::vector<Spring> &springsVector=*(springs.beginEdit());
     for (unsigned int i=0; i<springs.getValue().size(); ++i)
     {
@@ -314,8 +314,8 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
 {
 #ifndef SOFA_NO_OPENGL
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
-    const VecCoord& p1 = *this->mstate1->getX();
-    const VecCoord& p2 = *this->mstate2->getX();
+    const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
 
     glDisable(GL_LIGHTING);
     const helper::vector<Spring>& springs = this->springs.getValue();

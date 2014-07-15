@@ -103,7 +103,7 @@ void MeshROI<DataTypes>::init()
         this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)
         {
-            BaseData* parent = mstate->findField("rest_position");
+            BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
                 f_X0.setParent(parent);
@@ -116,7 +116,7 @@ void MeshROI<DataTypes>::init()
             this->getContext()->get(loader,BaseContext::Local); // perso
             if (loader)
             {
-                BaseData* parent = loader->findField("position");
+                BaseData* parent = loader->findData("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);
@@ -133,7 +133,7 @@ void MeshROI<DataTypes>::init()
         {
             if (!f_edges.isSet() && f_computeEdges.getValue())
             {
-                BaseData* eparent = topology->findField("edges");
+                BaseData* eparent = topology->findData("edges");
                 if (eparent)
                 {
                     f_edges.setParent(eparent);
@@ -142,7 +142,7 @@ void MeshROI<DataTypes>::init()
             }
             if (!f_triangles.isSet() && f_computeTriangles.getValue())
             {
-                BaseData* tparent = topology->findField("triangles");
+                BaseData* tparent = topology->findData("triangles");
                 if (tparent)
                 {
                     f_triangles.setParent(tparent);
@@ -151,7 +151,7 @@ void MeshROI<DataTypes>::init()
             }
             if (!f_tetrahedra.isSet() && f_computeTetrahedra.getValue())
             {
-                BaseData* tparent = topology->findField("tetrahedra");
+                BaseData* tparent = topology->findData("tetrahedra");
                 if (tparent)
                 {
                     f_tetrahedra.setParent(tparent);
@@ -169,7 +169,7 @@ void MeshROI<DataTypes>::init()
         this->getContext()->get(mstate,BaseContext::Local);
         if (mstate)
         {
-            BaseData* parent = mstate->findField("rest_position");
+            BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
                 f_X0_i.setParent(parent);
@@ -182,7 +182,7 @@ void MeshROI<DataTypes>::init()
             this->getContext()->get(loader,BaseContext::Local); // perso
             if (loader)
             {
-                BaseData* parent = loader->findField("position");
+                BaseData* parent = loader->findData("position");
                 if (parent)
                 {
                     f_X0_i.setParent(parent);
@@ -199,7 +199,7 @@ void MeshROI<DataTypes>::init()
         {
             if (!f_edges_i.isSet() && f_computeEdges.getValue())
             {
-                BaseData* eparent = topology->findField("edges");
+                BaseData* eparent = topology->findData("edges");
                 if (eparent)
                 {
                     f_edges_i.setParent(eparent);
@@ -208,7 +208,7 @@ void MeshROI<DataTypes>::init()
             }
             if (!f_triangles_i.isSet() && f_computeTriangles.getValue())
             {
-                BaseData* tparent = topology->findField("triangles");
+                BaseData* tparent = topology->findData("triangles");
                 if (tparent)
                 {
                     f_triangles_i.setParent(tparent);

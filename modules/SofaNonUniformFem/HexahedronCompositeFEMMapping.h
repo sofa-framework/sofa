@@ -69,6 +69,18 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename OutCoord::value_type Real;
 
+
+    typedef typename In::MatrixDeriv InMatrixDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
+    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
+
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
+
     typedef topology::SparseGridTopology SparseGridTopologyT;
     typedef sofa::component::forcefield::HexahedronCompositeFEMForceFieldAndMass<In> HexahedronCompositeFEMForceFieldAndMassT;
 
@@ -88,11 +100,21 @@ public:
 
     virtual void init();
 
-    virtual void apply ( OutVecCoord& out, const InVecCoord& in );
+    virtual void apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in);
+    //void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    virtual void applyJ ( OutVecDeriv& out, const InVecDeriv& in );
+    virtual void applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in);
+    //void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
-    virtual void applyJT ( InVecDeriv& out, const OutVecDeriv& in );
+    virtual void applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in);
+    //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+
+    virtual void applyJT( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
+    {
+        serr << "applyJT(constraint) not implemented" << sendl;
+    }
+
+    //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     void draw(const core::visual::VisualParams* vparams);
 

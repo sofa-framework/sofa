@@ -357,7 +357,7 @@ void ClusteringEngine<DataTypes>::draw(const core::visual::VisualParams* vparams
 #ifndef SOFA_NO_OPENGL
     if (vparams->displayFlags().getShowBehaviorModels())
     {
-        const VecCoord& currentPositions = *this->mstate->getX();
+        const VecCoord& currentPositions = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 //        sofa::helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
         sofa::helper::ReadAccessor< Data< VVI > > clust = this->cluster;
         const unsigned int nbp = currentPositions.size();

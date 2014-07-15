@@ -197,7 +197,7 @@ void TetrahedronModel::computeBoundingTree(int maxDepth)
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     for (int i=0; i<size; i++)
     {

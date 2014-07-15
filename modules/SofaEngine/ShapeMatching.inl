@@ -119,7 +119,7 @@ void ShapeMatching<DataTypes>::update()
 
     cleanDirty();
 
-    const VecCoord& restPositions = *mstate->getX0();
+    const VecCoord& restPositions = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     helper::ReadAccessor< Data< VecCoord > > fixedPositions0 = this->fixedPosition0;
     helper::ReadAccessor< Data< VecCoord > > fixedPositions = this->fixedPosition;
     helper::ReadAccessor<Data< VecCoord > > currentPositions = position;

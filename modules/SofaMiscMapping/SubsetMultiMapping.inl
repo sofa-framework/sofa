@@ -148,46 +148,68 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int i
 
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos)
+void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
-    OutVecCoord& out = *outPos[0];
+    //apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos)
+    //OutVecCoord& out = *outPos[0];
+
+    OutVecCoord& out = *(dataVecOutPos[0]->beginEdit(mparams));
+
+
     out.resize(indexPairs.getValue().size()/2);
     for(unsigned i=0; i<out.size(); i++)
     {
 //        cerr<<"SubsetMultiMapping<TIn, TOut>::apply, i = "<< i <<", indexPair = " << indexPairs[i*2] << ", " << indexPairs[i*2+1] <<", inPos size = "<< inPos.size() <<", inPos[i] = " << (*inPos[indexPairs[i*2]]) << endl;
 //        cerr<<"SubsetMultiMapping<TIn, TOut>::apply, out = "<< out << endl;
-        out[i] =
-                (*inPos[indexPairs.getValue()[i*2]])
-                [indexPairs.getValue()[i*2+1]];
+        const InDataVecCoord* inPosPtr = dataVecInPos[indexPairs.getValue()[i*2]];
+        const InVecCoord& inPos = (*inPosPtr).getValue();
+
+        out[i] =  inPos[indexPairs.getValue()[i*2+1]];
     }
+
+    dataVecOutPos[0]->endEdit(mparams);
 
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< typename SubsetMultiMapping<TIn, TOut>::OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
+void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
-    OutVecDeriv& out = *outDeriv[0];
+    OutVecDeriv& out = *(dataVecOutVel[0]->beginEdit(mparams));
+
     out.resize(indexPairs.getValue().size()/2);
     for(unsigned i=0; i<out.size(); i++)
     {
-        out[i] = (*inDeriv[indexPairs.getValue()[i*2]])[indexPairs.getValue()[i*2+1]];
+        const InDataVecDeriv* inDerivPtr = dataVecInVel[indexPairs.getValue()[i*2]];
+        const InVecDeriv& inDeriv = (*inDerivPtr).getValue();
+
+        out[i] = inDeriv[indexPairs.getValue()[i*2+1]];
     }
+
+    dataVecOutVel[0]->endEdit(mparams);
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& )
+void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /* cparams */ /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ )
 {
     std::cerr<<"WARNING ! SubsetMultiMapping<TIn, TOut>::applyJT not implemented for MatrixDeriv ! " << std::endl;
 }
 
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<typename SubsetMultiMapping<TIn, TOut>::InVecDeriv*>& parentDeriv , const helper::vector<const OutVecDeriv*>& childDeriv )
+void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+//void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<typename SubsetMultiMapping<TIn, TOut>::InVecDeriv*>& parentDeriv , const helper::vector<const OutVecDeriv*>& childDeriv )
 {
-    const InVecDeriv& cder = *childDeriv[0];
+    const OutDataVecDeriv* cderData = dataVecInForce[0];
+    const OutVecDeriv& cder = cderData->getValue();
+    //const InVecDeriv& cder = *childDeriv[0];
+
     for(unsigned i=0; i<cder.size(); i++)
     {
-        (*parentDeriv[indexPairs.getValue()[i*2]])[indexPairs.getValue()[i*2+1]] += cder[i];
+        //(*parentDeriv[indexPairs.getValue()[i*2]])[indexPairs.getValue()[i*2+1]] += cder[i];
+        InDataVecDeriv* inDerivPtr = dataVecOutForce[indexPairs.getValue()[i*2]];
+        InVecDeriv& inDeriv = *(*inDerivPtr).beginEdit(mparams);
+        inDeriv[indexPairs.getValue()[i*2+1]] += cder[i];
+        (*inDerivPtr).endEdit(mparams);
     }
 }
 

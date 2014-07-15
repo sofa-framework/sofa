@@ -299,7 +299,7 @@ void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams*
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const Indices & indices = f_indices.getValue();
 

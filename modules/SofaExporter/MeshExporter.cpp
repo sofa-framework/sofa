@@ -86,8 +86,8 @@ void MeshExporter::init()
     if (!position.isSet() && mstate)
     {
         sofa::core::objectmodel::BaseData* parent = NULL;
-        if (!parent && mstate) parent = mstate->findField("position");
-        if (!parent && topology) parent = mstate->findField("topology");
+        if (!parent && mstate) parent = mstate->findData("position");
+        if (!parent && topology) parent = mstate->findData("topology");
         if (parent)
         {
             position.setParent(parent);

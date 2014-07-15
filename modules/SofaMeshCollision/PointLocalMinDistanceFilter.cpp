@@ -287,7 +287,7 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
         /////// TODO : template de la classe
         if(mstateVec3d != NULL)
         {
-            pInfo.setPositionFiltering(mstateVec3d->getX0());
+            pInfo.setPositionFiltering(&(mstateVec3d->read(core::ConstVecCoordId::restPosition())->getValue()));
         }
 
     }
@@ -296,7 +296,7 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
         /////// TODO : template de la classe
         if(mstateVec3d != NULL)
         {
-            pInfo.setPositionFiltering(mstateVec3d->getX());
+            pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
         }
     }
 

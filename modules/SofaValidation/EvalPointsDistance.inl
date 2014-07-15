@@ -153,9 +153,10 @@ SReal EvalPointsDistance<DataTypes>::eval()
 {
     if (!mstate1 || !mstate2)
         return 0.0;
-    const VecCoord& x0 = *mstate1->getX0();
-    const VecCoord& x1 = *mstate1->getX();
-    const VecCoord& x2 = *mstate2->getX();
+    const VecCoord& x0 = mstate1->read(core::ConstVecCoordId::restPosition())->getValue();
+    const VecCoord& x1 = mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x2 = mstate2->read(core::ConstVecCoordId::position())->getValue();
+
     return this->doEval(x1, x2, x0);
 }
 
@@ -230,8 +231,8 @@ void EvalPointsDistance<DataTypes>::draw(const core::visual::VisualParams* )
         return;
     if (!mstate1 || !mstate2)
         return;
-    const VecCoord& x1 = *mstate1->getX();
-    const VecCoord& x2 = *mstate2->getX();
+    const VecCoord& x1 = mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& x2 = mstate2->read(core::ConstVecCoordId::position())->getValue();
     this->doDraw(x1,x2);
 }
 

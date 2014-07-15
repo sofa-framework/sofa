@@ -215,11 +215,11 @@ void TriangularFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Inde
         tinfo->rotatedInitialElements = m_rotatedInitialElements.getValue()[i];
     else
     {
-        const  VecCoord* initialPoints = (this->mstate->getX0());
+        const  VecCoord& initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
 
-        tinfo->rotatedInitialElements[0] = (*initialPoints)[a] - (*initialPoints)[a]; // always (0,0,0)
-        tinfo->rotatedInitialElements[1] = (*initialPoints)[b] - (*initialPoints)[a];
-        tinfo->rotatedInitialElements[2] = (*initialPoints)[c] - (*initialPoints)[a];
+        tinfo->rotatedInitialElements[0] = (initialPoints)[a] - (initialPoints)[a]; // always (0,0,0)
+        tinfo->rotatedInitialElements[1] = (initialPoints)[b] - (initialPoints)[a];
+        tinfo->rotatedInitialElements[2] = (initialPoints)[c] - (initialPoints)[a];
     }
 
     computeStrainDisplacement(tinfo->strainDisplacementMatrix, i, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
@@ -262,27 +262,27 @@ void TriangularFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Inde
         // third vector orthogonal to first and second
         Transformation R_0_1;
 
-        const  VecCoord* initialPoints = (this->mstate->getX0());
+         VecCoord initialPoints = (this->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
 
-        computeRotationLarge( R_0_1, (*initialPoints), a, b, c );
+        computeRotationLarge( R_0_1, (initialPoints), a, b, c );
 
         tinfo->initialTransformation = R_0_1;
 
-        if ( a >= (*initialPoints).size() || b >= (*initialPoints).size() || c >= (*initialPoints).size() )
+        if ( a >= (initialPoints).size() || b >= (initialPoints).size() || c >= (initialPoints).size() )
         {
             std::cout << "Error(TriangularFEMForceField::initLarge): Try to access an element which indices bigger than the size of the vector: a=" <<a <<
-                    " b=" << b << " and c=" << c << " and size=" << (*initialPoints).size()<< std::endl;
+                    " b=" << b << " and c=" << c << " and size=" << (initialPoints).size()<< std::endl;
 
-            initialPoints = this->mstate->getX0(); //reset initialPoints in case of a new pointer of the initial points of the mechanical state
+            initialPoints = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue(); //reset initialPoints in case of a new pointer of the initial points of the mechanical state
 
             std::cout << "Error(TriangularFEMForceField::initLarge): Now it's: a=" <<a <<
-                    " b=" << b << " and c=" << c << " and size=" << (*initialPoints).size()<< std::endl;
+                    " b=" << b << " and c=" << c << " and size=" << (initialPoints).size()<< std::endl;
         }
 
 
-        tinfo->rotatedInitialElements[0] = R_0_1 * ((*initialPoints)[a] - (*initialPoints)[a]); // always (0,0,0)
-        tinfo->rotatedInitialElements[1] = R_0_1 * ((*initialPoints)[b] - (*initialPoints)[a]);
-        tinfo->rotatedInitialElements[2] = R_0_1 * ((*initialPoints)[c] - (*initialPoints)[a]);
+        tinfo->rotatedInitialElements[0] = R_0_1 * ((initialPoints)[a] - (initialPoints)[a]); // always (0,0,0)
+        tinfo->rotatedInitialElements[1] = R_0_1 * ((initialPoints)[b] - (initialPoints)[a]);
+        tinfo->rotatedInitialElements[2] = R_0_1 * ((initialPoints)[c] - (initialPoints)[a]);
     }
 
     computeStrainDisplacement(tinfo->strainDisplacementMatrix, i, tinfo->rotatedInitialElements[0], tinfo->rotatedInitialElements[1], tinfo->rotatedInitialElements[2]);
@@ -833,7 +833,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
     //	Index b = _topology->getTriangle(elementIndex)[1];
     //	Index c = _topology->getTriangle(elementIndex)[2];
 
-    //	const VecCoord& x = *this->mstate->getX();
+    //	const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
@@ -1129,7 +1129,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(defaulttype::Vec<3,Real> 
     StrainDisplacement J;
     defaulttype::Vec<3,Real> strain;
     Transformation R_0_2, R_2_0;
-    const VecCoord& p = *this->mstate->getX();
+    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Index a = _topology->getTriangle(elementIndex)[0];
     Index b = _topology->getTriangle(elementIndex)[1];
     Index c = _topology->getTriangle(elementIndex)[2];
@@ -1208,7 +1208,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stre
     Index a = _topology->getTriangle(elementIndex)[0];
     Index b = _topology->getTriangle(elementIndex)[1];
     Index c = _topology->getTriangle(elementIndex)[2];
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b]-x[a],x[c]-x[a]);
     Coord dir_t = cross(dir,n);
     this->computeStressAlongDirection(stress_across_dir, elementIndex, dir_t, stress);
@@ -1220,7 +1220,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stre
     Index a = _topology->getTriangle(elementIndex)[0];
     Index b = _topology->getTriangle(elementIndex)[1];
     Index c = _topology->getTriangle(elementIndex)[2];
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord n = cross(x[b]-x[a],x[c]-x[a]);
     Coord dir_t = cross(dir,n);
     this->computeStressAlongDirection(stress_across_dir, elementIndex, dir_t);
@@ -1752,7 +1752,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);

@@ -59,7 +59,7 @@ void PointsFromIndices<DataTypes>::init()
         this->getContext()->get(mstate);
         if (mstate)
         {
-            sofa::core::objectmodel::BaseData* parent = mstate->findField("position");
+            sofa::core::objectmodel::BaseData* parent = mstate->findData("position");
             if (parent)
             {
                 f_X.setParent(parent);

@@ -240,7 +240,7 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT( typename In:
     typename core::behavior::MechanicalState<Out>* mechanicalObject;
     this->getContext()->get(mechanicalObject);
 
-    const typename  Out::VecCoord& pX = *mechanicalObject->getX();
+    const typename  Out::VecCoord& pX =mechanicalObject->read(core::ConstVecCoordId::position())->getValue();
 
     // TODO: use mapOrient
     //const sofa::helper::vector<MappingOrientData >& mapOrient = this->mapOrient.getValue();

@@ -111,7 +111,7 @@ void BoxROI<DataTypes>::init()
         this->getContext()->get(mstate,sofa::core::objectmodel::BaseContext::Local);
         if (mstate)
         {
-            sofa::core::objectmodel::BaseData* parent = mstate->findField("rest_position");
+            sofa::core::objectmodel::BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
                 f_X0.setParent(parent);
@@ -124,7 +124,7 @@ void BoxROI<DataTypes>::init()
             this->getContext()->get(loader,sofa::core::objectmodel::BaseContext::Local);
             if (loader)
             {
-                sofa::core::objectmodel::BaseData* parent = loader->findField("position");
+                sofa::core::objectmodel::BaseData* parent = loader->findData("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);
@@ -135,7 +135,7 @@ void BoxROI<DataTypes>::init()
             {
                 this->getContext()->get(mstate,sofa::core::objectmodel::BaseContext::SearchUp);
                 assert(mstate && "BoxROI needs a mstate");
-                sofa::core::objectmodel::BaseData* parent = mstate->findField("rest_position");
+                sofa::core::objectmodel::BaseData* parent = mstate->findData("rest_position");
                 assert(parent && "BoxROI needs a state with a rest_position Data");
                 f_X0.setParent(parent);
                 f_X0.setReadOnly(true);
@@ -150,7 +150,7 @@ void BoxROI<DataTypes>::init()
         {
             if (!f_edges.isSet() && f_computeEdges.getValue())
             {
-                sofa::core::objectmodel::BaseData* eparent = topology->findField("edges");
+                sofa::core::objectmodel::BaseData* eparent = topology->findData("edges");
                 if (eparent)
                 {
                     f_edges.setParent(eparent);
@@ -159,7 +159,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_triangles.isSet() && f_computeTriangles.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topology->findField("triangles");
+                sofa::core::objectmodel::BaseData* tparent = topology->findData("triangles");
                 if (tparent)
                 {
                     f_triangles.setParent(tparent);
@@ -168,7 +168,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_tetrahedra.isSet() && f_computeTetrahedra.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topology->findField("tetrahedra");
+                sofa::core::objectmodel::BaseData* tparent = topology->findData("tetrahedra");
                 if (tparent)
                 {
                     f_tetrahedra.setParent(tparent);
@@ -177,7 +177,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_hexahedra.isSet() && f_computeHexahedra.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topology->findField("hexahedra");
+                sofa::core::objectmodel::BaseData* tparent = topology->findData("hexahedra");
                 if (tparent)
                 {
                     f_hexahedra.setParent(tparent);
@@ -186,7 +186,7 @@ void BoxROI<DataTypes>::init()
             }
             if (!f_quad.isSet() && f_computeQuad.getValue())
             {
-                sofa::core::objectmodel::BaseData* tparent = topology->findField("quads");
+                sofa::core::objectmodel::BaseData* tparent = topology->findData("quads");
                 if (tparent)
                 {
                     f_quad.setParent(tparent);

@@ -11,7 +11,7 @@
         <!--  Barycenter = 0, Circumcenter = 1 -->
         <Node name="VisualModel">
             <OglModel name="Vessel" color="green" />
-            <IdentityMapping name="mapping" object1="../.." object2="Vessel" />
+            <IdentityMapping name="mapping" input="@.." output="@Vessel" />
         </Node>
     </Node>
 </Node>

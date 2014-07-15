@@ -8,7 +8,7 @@
 	<HexahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3"  method="polar"/>
 	<Node name="VisualNode" tags="Visual">
 		<OglModel name="Visual" filename="file" color="red" />
-		<BarycentricMapping object1="../.." object2="Visual" />
+		<BarycentricMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="CollisionNode">
 	  <MeshLoader name="loader"  filename="file"/>

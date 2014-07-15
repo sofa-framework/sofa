@@ -99,25 +99,6 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams /* PARAMS F
             addForce(mparams /* PARAMS FIRST */, *fId[mstate.get(mparams)].write() , *mparams->readX(mstate), *mparams->readV(mstate));
     }
 }
-#ifndef SOFA_DEPRECATE_OLD_API
-template<class DataTypes>
-void ForceField<DataTypes>::addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv &  f, const DataVecCoord &  x , const DataVecDeriv & v )
-{
-    if (mstate.get(mparams))
-    {
-        mstate.get(mparams)->forceMask.setInUse(this->useMask());
-        addForce( *f.beginEdit(mparams) , x.getValue(mparams), v.getValue(mparams));
-        f.endEdit(mparams);
-    }
-}
-template<class DataTypes>
-void ForceField<DataTypes>::addForce(VecDeriv& , const VecCoord& , const VecDeriv& )
-{
-    serr << "ERROR("<<getClassName()<<"): addForce(VecDeriv& , const VecCoord& , const VecDeriv& ) not implemented." << sendl;
-}
-#endif
-
-
 
 template<class DataTypes>
 void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId )
@@ -143,54 +124,6 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS 
     }
 }
 
-#ifndef SOFA_DEPRECATE_OLD_API
-template<class DataTypes>
-void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv & df, const DataVecDeriv & dx )
-{
-    if (mstate)
-    {
-        addDForce( *df.beginEdit(mparams) , dx.getValue(mparams), mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()) ,mparams->bFactor());
-        df.endEdit(mparams);
-    }
-}
-
-template<class DataTypes>
-void ForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double /*bFactor*/)
-{
-    if (kFactor == 1.0)
-        addDForce(df, dx);
-    else if (kFactor != 0.0)
-    {
-        VecDerivId vtmp( VecDerivId::V_FIRST_DYNAMIC_INDEX);
-        mstate->vAvail(core::ExecParams::defaultInstance(), vtmp);
-        mstate->vAlloc(core::ExecParams::defaultInstance(), vtmp);
-        VecDerivId vdx(0);
-        /// @todo: Add a better way to get the current VecId of dx
-        for (vdx.index=0; vdx.index<vtmp.index; ++vdx.index)
-        {
-            const Data<VecDeriv> *d_vdx = mstate->read(ConstVecDerivId(vdx));
-            if (d_vdx)
-            {
-                if (&d_vdx->getValue() == &dx)
-                    break;
-            }
-        }
-
-        mstate->vOp(core::ExecParams::defaultInstance(), vtmp, VecId::null(), vdx, kFactor);
-        //addDForce(df, *mstate->getVecDeriv(vtmp.index));
-        addDForce(df, mstate->read(ConstVecDerivId(vtmp))->getValue());
-
-        mstate->vFree(core::ExecParams::defaultInstance(), vtmp);
-    }
-}
-
-template<class DataTypes>
-void ForceField<DataTypes>::addDForce(VecDeriv& , const VecDeriv& )
-{
-    serr << "ERROR("<<getClassName()<<"): addDForce(VecDeriv& , const VecDeriv& ) not implemented." << sendl;
-}
-#endif
-
 template<class DataTypes>
 double ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
@@ -199,23 +132,6 @@ double ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams
         return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(mstate));
     return 0;
 }
-
-#ifndef SOFA_DEPRECATE_OLD_API
-template<class DataTypes>
-double ForceField<DataTypes>::getPotentialEnergy( const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x ) const
-{
-    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy(const MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&) not implemented." << sendl;
-    return getPotentialEnergy(x.getValue(mparams));
-}
-template<class DataTypes>
-double ForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
-{
-    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy(const VecCoord&) not implemented." << sendl;
-    return 0.0;
-}
-#endif
-
-
 
 template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )

@@ -162,7 +162,7 @@ std::string GraphHistoryManager::componentState(Base *base) const
     std::map<std::string, std::string*>::const_iterator it;
     for (it=datas.begin(); it!=datas.end(); ++it)
     {
-        if (BaseData *d=base->findField(it->first))
+        if (BaseData *d=base->findData(it->first))
             out << it->first << "=\"" << d->getValueString() << "\" ";
     }
     return out.str();
@@ -191,7 +191,7 @@ std::string GraphHistoryManager::setComponentState(Base *base, const std::string
             dataValue += k;
         }
         if (in.eof()) break;
-        BaseData *data=base->findField(dataName);
+        BaseData *data=base->findData(dataName);
         if (data)
         {
             const std::string &currentValue = data->getValueString();

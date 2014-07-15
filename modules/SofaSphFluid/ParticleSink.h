@@ -81,6 +81,10 @@ public:
     typedef core::behavior::MechanicalState<DataTypes> MechanicalModel;
     typedef helper::vector<unsigned int> SetIndexArray;
 
+    typedef Data<VecCoord> DataVecCoord;
+    typedef Data<VecDeriv> DataVecDeriv;
+    typedef Data<MatrixDeriv> DataMatrixDeriv;
+
     Data<Deriv> planeNormal;
     Data<Real> planeD0;
     Data<Real> planeD1;
@@ -128,8 +132,8 @@ public:
     {
         //sout << "ParticleSink: animate begin time="<<time<<sendl;
         if (!this->mstate) return;
-        const VecCoord& x = *this->mstate->getX();
-        const VecDeriv& v = *this->mstate->getV();
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+        const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
         int n = x.size();
         helper::vector<unsigned int> remove;
         const bool log = this->f_printLog.getValue();
@@ -189,22 +193,24 @@ public:
         for (unsigned int s=0; s<_fixed.size(); s++)
             res[_fixed[s]] = Deriv();
     }
-    virtual void projectResponse(VecDeriv& res) ///< project dx to constrained space
+
+    virtual void projectResponse(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx) ///< project dx to constrained space
     {
+        VecDeriv& res = *dx.beginEdit(mparams);
         projectResponseT(res);
-    }
-    virtual void projectResponse(MatrixDerivRowType& res) ///< project dx to constrained space
-    {
-        projectResponseT(res);
+        dx.endEdit(mparams);
     }
 
-    virtual void projectVelocity(VecDeriv&) ///< project dx to constrained space (dx models a velocity)
+    virtual void projectVelocity(const sofa::core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& /* v */) ///< project dx to constrained space (dx models a velocity)
     {
+
     }
 
-    virtual void projectPosition(VecCoord& x) ///< project x to constrained space (x models a position)
+    virtual void projectPosition(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData) ///< project x to constrained space (x models a position)
     {
         if (!this->mstate) return;
+
+        VecCoord& x = *xData.beginEdit(mparams);
 
         helper::WriteAccessor< Data< SetIndexArray > > _fixed = fixed;
 
@@ -218,6 +224,13 @@ public:
                 _fixed.push_back(i);
             }
         }
+
+        xData.endEdit(mparams);
+    }
+
+    virtual void projectJacobianMatrix(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /* cData */)
+    {
+
     }
 
     virtual void animateEnd(double /*dt*/, double /*time*/)

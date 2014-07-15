@@ -65,7 +65,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
         typename DataTypes::Real area,restSquareLength[3],cotangent[3];
         typename DataTypes::Real lambda=ff->getLambda();
         typename DataTypes::Real mu=ff->getMu();
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
         ///describe the indices of the 3 triangle vertices
@@ -85,7 +85,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleHandler::app
         }
         area=sqrt(area)/4;
         tinfo.restArea=area;
-        tinfo.currentNormal= cross<Real>((*restPosition)[t[1]]-(*restPosition)[t[0]],(*restPosition)[t[2]]-(*restPosition)[t[0]])/(2*area);
+        tinfo.currentNormal= cross<Real>((restPosition)[t[1]]-(restPosition)[t[0]],(restPosition)[t[2]]-(restPosition)[t[0]])/(2*area);
         tinfo.lastValidNormal=tinfo.currentNormal;
 
         for(j=0; j<3; ++j)
@@ -211,7 +211,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     // get restPosition
     if (_initialPoints.getValue().size() == 0)
     {
-        const VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints.setValue(p);
     }
     int i;
@@ -534,7 +534,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::draw(const core::visual:
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);

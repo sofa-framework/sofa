@@ -14,7 +14,7 @@
         <!--        <MappedObject name="Mapped"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"   template="CudaVec3f" />-->
 		<MechanicalObject src="@loader" name="Mapped"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  template="CudaVec3f"/>
 		<CudaVisualModel  computeNormals="true"   template="CudaVec3f"   name="Visual"   diffuse="0.8 0.8 0.8 1.0"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"   />
-		<BarycentricMapping  isMechanical="false" object1="../.." object2="Mapped" />
+		<BarycentricMapping  isMechanical="false" input="@.." output="@Mapped" />
 	</Node>
 
 	<Node name="CollisionNode">

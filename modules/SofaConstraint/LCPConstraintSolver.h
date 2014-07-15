@@ -65,8 +65,9 @@ public:
     typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
     typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
-    MechanicalGetConstraintInfoVisitor(const core::ExecParams* params /* PARAMS FIRST */, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+    MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
         : simulation::BaseMechanicalVisitor(params)
+        , _cparams(params)
         , _blocks(blocks)
         , _ids(ids)
         , _positions(positions)
@@ -83,7 +84,7 @@ public:
         if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
         {
             ctime_t t0 = begin(node, c);
-            c->getConstraintInfo(_blocks, _ids, _positions, _directions, _areas);
+            c->getConstraintInfo(_cparams, _blocks, _ids, _positions, _directions, _areas);
             end(node, c, t0);
         }
         return RESULT_CONTINUE;
@@ -111,6 +112,7 @@ private:
     VecConstCoord& _positions;
     VecConstDeriv& _directions;
     VecConstArea& _areas;
+    const core::ConstraintParams* _cparams;
 };
 
 class SOFA_CONSTRAINT_API LCPConstraintSolver : public ConstraintSolverImpl

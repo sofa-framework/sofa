@@ -144,7 +144,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
        helper::vector<CPos> m_origin;
      
        // particle original position
-       const VecCoord& xOrigin = *projection->getMState()->getX();
+       const VecCoord& xOrigin = projection->getMState()->read(core::ConstVecCoordId::position())->getValue();
         for( typename Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
         {
              m_origin.push_back( DataTypes::getCPos(xOrigin[*it]) );

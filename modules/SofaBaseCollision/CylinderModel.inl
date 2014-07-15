@@ -91,7 +91,7 @@ void TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
         return;
     }
 
-    resize(_mstate->getX()->size());
+    resize(_mstate->read(core::ConstVecCoordId::position())->getValue().size());
 }
 
 
@@ -100,7 +100,7 @@ void TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBoundin
 {
     using namespace sofa::defaulttype;
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int ncyl = _mstate->getX()->size();
+    const int ncyl = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
     bool updated = false;
     if (ncyl != size)
@@ -205,7 +205,7 @@ typename TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCyli
 
 template <class MyReal>
 const typename TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::center(int i)const{
-    return DataTypes::getCPos((*(_mstate->getX()))[i]);
+    return DataTypes::getCPos((_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
 }
 
 template <class MyReal>
@@ -247,7 +247,7 @@ typename TCylinder<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCylinder<
 
 template<class MyReal>
 const typename TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::velocity(int index) const {
-    return DataTypes::getDPos(((*(_mstate->getV())))[index]);
+    return DataTypes::getDPos(((_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
 }
 
 
@@ -256,7 +256,7 @@ const typename TCylinder<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & T
 
 template<class MyReal>
 const sofa::defaulttype::Quaternion TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::orientation(int index)const{
-    return (*_mstate->getX())[index].getOrientation();
+    return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class MyReal>

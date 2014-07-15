@@ -52,7 +52,7 @@ void LinearVelocityConstraint<Rigid3dTypes>::draw(const core::visual::VisualPara
 #ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (0,0.5,0.5,0);
@@ -68,7 +68,7 @@ void LinearVelocityConstraint<Vec6dTypes>::draw(const core::visual::VisualParams
 #ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (0,0.5,0.5,0);
@@ -86,7 +86,7 @@ void LinearVelocityConstraint<Rigid3fTypes>::draw(const core::visual::VisualPara
 #ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (0,0.5,0.5,0);
@@ -102,7 +102,7 @@ void LinearVelocityConstraint<Vec6fTypes>::draw(const core::visual::VisualParams
 #ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = m_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (0,0.5,0.5,0);

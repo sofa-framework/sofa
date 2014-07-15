@@ -152,7 +152,7 @@ void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
 template <class DataTypes>
 void TrianglePressureForceField<DataTypes>::selectTrianglesAlongPlane()
 {
-    const VecCoord& x = *this->mstate->getX0();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     std::vector<bool> vArray;
     unsigned int i;
 
@@ -215,7 +215,7 @@ void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParam
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     glDisable(GL_LIGHTING);
 

@@ -334,8 +334,8 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
 
     if (vparams->displayFlags().getShowBehaviorModels())
     {
-        const VecCoord &x1=*(this->constrainedObject1->getX());
-        const VecCoord &x2=*(this->constrainedObject2->getX());
+        const VecCoord &x1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
 
         sofa::helper::vector< sofa::helper::vector< sofa::defaulttype::Vector3 > > points;

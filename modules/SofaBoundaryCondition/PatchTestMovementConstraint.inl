@@ -450,7 +450,7 @@ void PatchTestMovementConstraint<DataTypes>::draw(const core::visual::VisualPara
 {
     const SetIndexArray & indices = m_indices.getValue();
     std::vector< defaulttype::Vector3 > points;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     defaulttype::Vector3 point;
 
     if(m_drawConstrainedPoints.getValue())

@@ -87,7 +87,7 @@ void VaccumSphereForceField<DataTypes>::addForce(const core::MechanicalParams* /
     const VecDeriv& v1 = d_v.getValue();
 
     if (centerDOF)
-        sphereCenter.setValue((*centerDOF->getX())[0]);
+        sphereCenter.setValue(centerDOF->read(core::ConstVecCoordId::position())->getValue()[0]);
 
     const Coord center = sphereCenter.getValue();
     const Real r = sphereRadius.getValue();
@@ -148,7 +148,7 @@ void VaccumSphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
     if (!active.getValue()) return;
 
     if (centerDOF)
-        sphereCenter.setValue((*centerDOF->getX())[0]);
+        sphereCenter.setValue(centerDOF->read(core::ConstVecCoordId::position())->getValue()[0]);
 
     const Coord center = sphereCenter.getValue();
     const Real r = sphereRadius.getValue();

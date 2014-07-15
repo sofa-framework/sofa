@@ -12,6 +12,6 @@
     <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="1 1 1" />
     <Node name="Visual">
         <OglModel name="Surface" color="red" />
-        <IdentityMapping object1="../../Particles" object2="Surface" />
+        <IdentityMapping input="@../Particles" output="@Surface" />
     </Node>
 </Node>

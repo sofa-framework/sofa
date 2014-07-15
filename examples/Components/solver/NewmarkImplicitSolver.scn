@@ -13,7 +13,7 @@
         <MeshSpringForceField name="Spring" tetrasStiffness="1870" tetrasDamping="0" />
         <Node>
             <OglModel name="Visual" fileMesh="mesh/truthcylinder1.obj" color="yellow" dx="15" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <!--
@@ -28,7 +28,7 @@
 		<TetrahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.49" method="polar" />
 		<Node>
 			<OglModel name="Visual" fileMesh="mesh/truthcylinder1.obj" color="cyan" dx="30" />
-			<BarycentricMapping object1="../.." object2="Visual" />
+			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>
 	</Node>
 	<Node name="LinearFEM">
@@ -42,7 +42,7 @@
 		<TetrahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.49" method="small" />
 		<Node>
 			<OglModel name="Visual" fileMesh="mesh/truthcylinder1.obj" color="red" dx="45" />
-			<BarycentricMapping object1="../.." object2="Visual" />
+			<BarycentricMapping input="@.." output="@Visual" />
 		</Node>
 	</Node>-->
 </Node>

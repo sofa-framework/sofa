@@ -66,7 +66,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
         typename DataTypes::Real mu=ff->getMu();
         typename DataTypes::Real volume,val;
         typename DataTypes::Coord point[4]; //shapeVector[4];
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         ///describe the indices of the 4 tetrahedron vertices
         const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
@@ -75,7 +75,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
 
         // store the point position
         for(j=0; j<4; ++j)
-            point[j]=(*restPosition)[t[j]];
+            point[j]=(restPosition)[t[j]];
         /// compute 6 times the rest volume
         volume=dot(cross(point[1]-point[0],point[2]-point[0]),point[0]-point[3]);
         /// store the rest volume
@@ -197,7 +197,7 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        const VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints=p;
     }
 

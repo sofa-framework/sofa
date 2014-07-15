@@ -60,7 +60,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleInfoHandler::applyC
 {
     if (ff)
     {
-        ff->initTriangleInfo(triangleIndex,ti,t, *ff->mstate->getX0());
+        ff->initTriangleInfo(triangleIndex,ti,t, ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue());
     }
 }
 
@@ -69,7 +69,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::TFEMFFOTriangleStateHandler::apply
 {
     if (ff)
     {
-        ff->initTriangleState(triangleIndex,ti,t, *ff->mstate->getX());
+        ff->initTriangleState(triangleIndex,ti,t, ff->mstate->read(core::ConstVecCoordId::position())->getValue());
     }
 }
 
@@ -223,8 +223,8 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
     /// prepare to store info in the triangle array
     const unsigned int nbTriangles = _topology->getNbTriangles();
     const VecElement& triangles = _topology->getTriangles();
-    const  VecCoord& x = *this->mstate->getX();
-    const  VecCoord& x0 = *this->mstate->getX0();
+    const  VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const  VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     VecTriangleInfo& triangleInf = *(triangleInfo.beginEdit());
     VecTriangleState& triangleSta = *(triangleState.beginEdit());
     triangleInf.resize(nbTriangles);
@@ -561,7 +561,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::draw(const core::visual::VisualPar
     using defaulttype::Vec3i;
     using defaulttype::Vec4f;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbTriangles=_topology->getNbTriangles();
     const VecElement& triangles = _topology->getTriangles();
 

@@ -213,7 +213,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(
     const Triangle &ta=m_container->getTriangle(ind_ta);
     const Triangle &tb=m_container->getTriangle(ind_tb);
 
-    //const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    //const typename DataTypes::VecCoord& vect_c =topology->getDOF()->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nb_points =  m_container->getTrianglesAroundVertexArray().size() - 1; //vect_c.size() -1;
 
     const sofa::helper::vector<Triangle> &vect_t=m_container->getTriangleArray();
@@ -1509,7 +1509,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 new_triangles_id.push_back(next_triangle++);
 
                 // Triangularize the remaining quad according to the delaunay criteria
-                const typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
+                const typename DataTypes::VecCoord& coords =(m_geometryAlgorithms->getDOF()->read(core::ConstVecCoordId::position())->getValue());
                 for (unsigned int j = 0; j<2; j++)
                 {
                     //Vec<3,double> pos[4];
@@ -1850,7 +1850,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
         return;
     }
 
-    const typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
+    const typename DataTypes::VecCoord& coords =(m_geometryAlgorithms->getDOF()->read(core::ConstVecCoordId::position())->getValue());
 
 
     //// STEP 3 - Second loop necessary to find object on the neighborhood of a snaped point
@@ -2588,7 +2588,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     /// force the creation of TrianglesAroundVertexArray
     m_container->getTrianglesAroundVertexArray();
 
-    //const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    //const typename DataTypes::VecCoord& vect_c =topology->getDOF()->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nb_points =  m_container->getTrianglesAroundVertexArray().size(); //vect_c.size();
     const sofa::helper::vector<Triangle> &vect_t=m_container->getTriangleArray();
     unsigned int nb_triangles =  vect_t.size();

@@ -175,15 +175,15 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
         glColor4f(0,1,0,1);
     else
         glColor4f(1,0,1,1);
-    helper::gl::glVertexT((*this->mstate1->getX())[m1.getValue()]);
+    helper::gl::glVertexT((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[m1.getValue()]);
     //      helper::gl::glVertexT((*this->object2->getX())[m3]);
     //      helper::gl::glVertexT(proj);
     glEnd();
 
     glBegin(GL_LINES);
     glColor4f(0,0,1,1);
-    helper::gl::glVertexT((*this->mstate2->getX())[m2a.getValue()]);
-    helper::gl::glVertexT((*this->mstate2->getX())[m2b.getValue()]);
+    helper::gl::glVertexT((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[m2a.getValue()]);
+    helper::gl::glVertexT((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[m2b.getValue()]);
     glEnd();
     glPointSize(1);
 #endif /* SOFA_NO_OPENGL */

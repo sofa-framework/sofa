@@ -104,10 +104,13 @@ void ExternalInterpolationMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
-void ExternalInterpolationMapping<TIn, TOut>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+void ExternalInterpolationMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
     if(doNotMap)
         return;
+
+    OutVecCoord& out = *outData.beginEdit(mparams);
+    const InVecCoord& in = inData.getValue();
 
     const sofa::helper::vector<sofa::helper::vector< unsigned int > > table_indices = f_interpolationIndices.getValue();
     const sofa::helper::vector<sofa::helper::vector< Real > > table_values = f_interpolationValues.getValue();
@@ -122,13 +125,19 @@ void ExternalInterpolationMapping<TIn, TOut>::apply( typename Out::VecCoord& out
             out[i] += in[ table_indices[i][j] ]  * table_values[i][j];
         }
     }
+
+    outData.endEdit(mparams);
 }
 
 template <class TIn, class TOut>
-void ExternalInterpolationMapping<TIn, TOut>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+void ExternalInterpolationMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
+
     if(doNotMap)
         return;
+
+    OutVecDeriv& out = *outData.beginEdit(mparams);
+    const InVecDeriv& in = inData.getValue();
 
     const sofa::helper::vector<sofa::helper::vector< unsigned int > > table_indices = f_interpolationIndices.getValue();
     const sofa::helper::vector<sofa::helper::vector< Real > > table_values = f_interpolationValues.getValue();
@@ -144,13 +153,19 @@ void ExternalInterpolationMapping<TIn, TOut>::applyJ( typename Out::VecDeriv& ou
         }
 
     }
+
+    outData.endEdit(mparams);
 }
 
 template <class TIn, class TOut>
-void ExternalInterpolationMapping<TIn, TOut>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+void ExternalInterpolationMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
+
     if(doNotMap)
         return;
+
+    InVecDeriv& out = *outData.beginEdit(mparams);
+    const OutVecDeriv& in = inData.getValue();
 
     const sofa::helper::vector<sofa::helper::vector< unsigned int > > table_indices = f_interpolationIndices.getValue();
     const sofa::helper::vector<sofa::helper::vector< Real > > table_values = f_interpolationValues.getValue();
@@ -165,15 +180,21 @@ void ExternalInterpolationMapping<TIn, TOut>::applyJT( typename In::VecDeriv& ou
 
     }
 
+    outData.endEdit(mparams);
+
 }
 
 template <class TIn, class TOut>
-void ExternalInterpolationMapping<TIn, TOut>::applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in )
+void ExternalInterpolationMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
     using sofa::helper::vector;
 
     if(doNotMap)
         return;
+
+    InMatrixDeriv& out = *outData.beginEdit(cparams);
+    const OutMatrixDeriv& in = inData.getValue();
+
 
     const vector< vector< unsigned int > > table_indices = f_interpolationIndices.getValue();
     const vector< vector< Real > > table_values = f_interpolationValues.getValue();
@@ -210,6 +231,8 @@ void ExternalInterpolationMapping<TIn, TOut>::applyJT( typename In::MatrixDeriv&
 
         i++;
     }
+
+    outData.endEdit(cparams);
 
     /*if(doNotMap)
     	return;
