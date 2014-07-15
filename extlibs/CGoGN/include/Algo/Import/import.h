@@ -84,7 +84,8 @@ namespace Volume
 
 namespace Import
 {
-
+template <typename PFP>
+Dart createStampVolume(typename PFP::MAP& map);
 /**
  * import a volumetric mesh
  * @param map the map in which the function imports the mesh

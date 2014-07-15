@@ -54,113 +54,113 @@ bool importMesh(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
 {
     typedef typename PFP::MAP MAP;
 
-        VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> >, MAP> vecDartsPerVertex(map, "incidents");
+    VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> >, MAP> vecDartsPerVertex(map, "incidents");
 
-        unsigned nbf = mts.getNbFaces();
-        int index = 0;
-        // buffer for tempo faces (used to remove degenerated edges)
-        std::vector<unsigned int> edgesBuffer;
-        edgesBuffer.reserve(16);
+    unsigned nbf = mts.getNbFaces();
+    int index = 0;
+    // buffer for tempo faces (used to remove degenerated edges)
+    std::vector<unsigned int> edgesBuffer;
+    edgesBuffer.reserve(16);
 
-        DartMarkerNoUnmark<MAP> m(map) ;
+    DartMarkerNoUnmark<MAP> m(map) ;
 
     //	unsigned int vemb = EMBNULL;
     //	auto fsetemb = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb); };
 
-        // for each face of table
-        for(unsigned int i = 0; i < nbf; ++i)
+    // for each face of table
+    for(unsigned int i = 0; i < nbf; ++i)
+    {
+        // store face in buffer, removing degenerated edges
+        unsigned int nbe = mts.getNbEdgesFace(i);
+        edgesBuffer.clear();
+        unsigned int prec = EMBNULL;
+        for (unsigned int j = 0; j < nbe; ++j)
         {
-            // store face in buffer, removing degenerated edges
-            unsigned int nbe = mts.getNbEdgesFace(i);
-            edgesBuffer.clear();
-            unsigned int prec = EMBNULL;
+            unsigned int em = mts.getEmbIdx(index++);
+            if (em != prec)
+            {
+                prec = em;
+                edgesBuffer.push_back(em);
+            }
+        }
+        // check first/last vertices
+        if (edgesBuffer.front() == edgesBuffer.back())
+            edgesBuffer.pop_back();
+
+        // create only non degenerated faces
+        nbe = edgesBuffer.size();
+        if (nbe > 2)
+        {
+            Dart d = map.newFace(nbe, false);
             for (unsigned int j = 0; j < nbe; ++j)
             {
-                unsigned int em = mts.getEmbIdx(index++);
-                if (em != prec)
-                {
-                    prec = em;
-                    edgesBuffer.push_back(em);
-                }
-            }
-            // check first/last vertices
-            if (edgesBuffer.front() == edgesBuffer.back())
-                edgesBuffer.pop_back();
+                unsigned int vemb = edgesBuffer[j];	// get embedding
+                //                    map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, vemb); });
+                map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(vemb))) );
 
-            // create only non degenerated faces
-            nbe = edgesBuffer.size();
-            if (nbe > 2)
-            {
-                Dart d = map.newFace(nbe, false);
-                for (unsigned int j = 0; j < nbe; ++j)
-                {
-                    unsigned int vemb = edgesBuffer[j];	// get embedding
-//                    map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, vemb); });
-                    map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(vemb))) );
-
-                    m.mark(d) ;								// mark on the fly to unmark on second loop
-                    vecDartsPerVertex[vemb].push_back(d);	// store incident darts for fast adjacency reconstruction
-                    d = map.phi1(d);
-                }
+                m.mark(d) ;								// mark on the fly to unmark on second loop
+                vecDartsPerVertex[vemb].push_back(d);	// store incident darts for fast adjacency reconstruction
+                d = map.phi1(d);
             }
         }
+    }
 
-        bool needBijectiveCheck = false;
+    bool needBijectiveCheck = false;
 
-        // reconstruct neighbourhood
-        unsigned int nbBoundaryEdges = 0;
-        for (Dart d = map.begin(); d != map.end(); map.next(d))
+    // reconstruct neighbourhood
+    unsigned int nbBoundaryEdges = 0;
+    for (Dart d = map.begin(); d != map.end(); map.next(d))
+    {
+        if (m.isMarked(d))
         {
-            if (m.isMarked(d))
-            {
-                // darts incident to end vertex of edge
-                std::vector<Dart>& vec = vecDartsPerVertex[map.phi1(d)];
+            // darts incident to end vertex of edge
+            std::vector<Dart>& vec = vecDartsPerVertex[map.phi1(d)];
 
-                unsigned int embd = map.template getEmbedding<VERTEX>(d);
-                Dart good_dart = NIL;
-                bool firstOK = true;
-                for (typename std::vector<Dart>::iterator it = vec.begin(); it != vec.end() && good_dart == NIL; ++it)
+            unsigned int embd = map.template getEmbedding<VERTEX>(d);
+            Dart good_dart = NIL;
+            bool firstOK = true;
+            for (typename std::vector<Dart>::iterator it = vec.begin(); it != vec.end() && good_dart == NIL; ++it)
+            {
+                if (map.template getEmbedding<VERTEX>(map.phi1(*it)) == embd)
                 {
-                    if (map.template getEmbedding<VERTEX>(map.phi1(*it)) == embd)
+                    good_dart = *it;
+                    if (good_dart == map.phi2(good_dart))
                     {
-                        good_dart = *it;
-                        if (good_dart == map.phi2(good_dart))
-                        {
-                            map.sewFaces(d, good_dart, false);
-                            m.template unmarkOrbit<EDGE>(d);
-                        }
-                        else
-                        {
-                            good_dart = NIL;
-                            firstOK = false;
-                        }
+                        map.sewFaces(d, good_dart, false);
+                        m.template unmarkOrbit<EDGE>(d);
+                    }
+                    else
+                    {
+                        good_dart = NIL;
+                        firstOK = false;
                     }
                 }
+            }
 
-                if (!firstOK)
-                    needBijectiveCheck = true;
+            if (!firstOK)
+                needBijectiveCheck = true;
 
-                if (good_dart == NIL)
-                {
-                    m.template unmarkOrbit<EDGE>(d);
-                    ++nbBoundaryEdges;
-                }
+            if (good_dart == NIL)
+            {
+                m.template unmarkOrbit<EDGE>(d);
+                ++nbBoundaryEdges;
             }
         }
+    }
 
-        if (nbBoundaryEdges > 0)
-        {
-            unsigned int nbH = map.closeMap();
-            CGoGNout << "Map closed (" << nbBoundaryEdges << " boundary edges / " << nbH << " holes)" << CGoGNendl;
-        }
+    if (nbBoundaryEdges > 0)
+    {
+        unsigned int nbH = map.closeMap();
+        CGoGNout << "Map closed (" << nbBoundaryEdges << " boundary edges / " << nbH << " holes)" << CGoGNendl;
+    }
 
-        if (needBijectiveCheck)
-        {
-            // ensure bijection between topo and embedding
-            Algo::Topo::bijectiveOrbitEmbedding<VERTEX>(map);
-        }
+    if (needBijectiveCheck)
+    {
+        // ensure bijection between topo and embedding
+        Algo::Topo::bijectiveOrbitEmbedding<VERTEX>(map);
+    }
 
-        return true ;
+    return true ;
 }
 
 
@@ -209,7 +209,7 @@ bool importMeshSAsV(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
     DartMarkerNoUnmark<MAP> m(map) ;
 
     unsigned int vemb = EMBNULL;
-//    auto fsetemb = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb); };
+    //    auto fsetemb = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb); };
     boost::function<unsigned (Dart)> fsetemb= bl::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb));
 
     // for each face of table
@@ -328,10 +328,10 @@ bool importMeshSToV(typename PFP::MAP& map, Surface::Import::MeshTablesSurface<P
     DartMarkerNoUnmark<MAP> m(map) ;
 
     unsigned int vemb1 = EMBNULL;
-//    auto fsetemb1 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb1); };
+    //    auto fsetemb1 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb1); };
     boost::function<unsigned (Dart)> fsetemb1= bl::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb1));
     unsigned int vemb2 = EMBNULL;
-//    auto fsetemb2 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb2); };
+    //    auto fsetemb2 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb2); };
     boost::function<unsigned (Dart)> fsetemb2 = bl::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb2));
 
     VertexAttribute<VEC3, MAP> position = map.template getAttribute<VEC3, VERTEX>("position");
@@ -441,10 +441,10 @@ bool importMeshSurfToVol(typename PFP::MAP& map, Surface::Import::MeshTablesSurf
     DartMarkerNoUnmark<MAP> m(map) ;
 
     unsigned int vemb1 = EMBNULL;
-//	auto fsetemb1 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb1); };
+    //	auto fsetemb1 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb1); };
     boost::function<unsigned (Dart)> fsetemb1 = bl::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb1));
     unsigned int vemb2 = EMBNULL;
-//	auto fsetemb2 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb2); };
+    //	auto fsetemb2 = [&] (Dart d) { map.template initDartEmbedding<VERTEX>(d, vemb2); };
     boost::function<unsigned (Dart)> fsetemb2 = bl::bind(&MAP::template initDartEmbedding<VERTEX>, bl::_1, boost::ref(vemb2));
 
     unsigned int nbVertices = mts.getNbVertices();
@@ -490,7 +490,7 @@ bool importMeshSurfToVol(typename PFP::MAP& map, Surface::Import::MeshTablesSurf
 
                     if(k==0)
                     {
-//                        map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, vemb1); });
+                        //                        map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, vemb1); });
                         map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(vemb1))) );
                         vecDartsPerVertex[vemb1].push_back(d);	// store incident darts for fast adjacency reconstruction
                         m.mark(d) ;								// mark on the fly to unmark on second loop
@@ -499,7 +499,7 @@ bool importMeshSurfToVol(typename PFP::MAP& map, Surface::Import::MeshTablesSurf
                     {
                         //						unsigned int emn = backEdgesBuffer[((k-1)*nbVertices) + em];
                         vemb2 = backEdgesBuffer[((k-1)*nbVertices) + vemb1];
-//                        map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, vemb2); });
+                        //                        map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, vemb2); });
                         map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(vemb2))) );
                         vecDartsPerVertex[vemb2].push_back(d);	// store incident darts for fast adjacency reconstruction
                         m.mark(d) ;								// mark on the fly to unmark on second loop
@@ -514,7 +514,7 @@ bool importMeshSurfToVol(typename PFP::MAP& map, Surface::Import::MeshTablesSurf
                     }
 
                     vemb2 = backEdgesBuffer[(k*nbVertices) + vemb1];
-//                    map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d2, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, vemb2); });
+                    //                    map.template foreach_dart_of_orbit<PFP::MAP::VERTEX_OF_PARENT>(d2, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, vemb2); });
                     map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d2,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(vemb2))) );
 
                     d = map.phi_1(d);
@@ -564,6 +564,21 @@ bool importMeshSurfToVol(typename PFP::MAP& map, Surface::Import::MeshTablesSurf
     return true ;
 }
 
+template <typename PFP>
+Dart createStampVolume(typename PFP::MAP& map)
+{
+    Dart dquad = map.newFace(4, false);
+    Dart dtri1 = map.newFace(3, false);
+    Dart dtri2 = map.newFace(3, false);
+
+    map.sewFaces(dtri1, dtri2, false);
+    map.sewFaces(map.phi1(dtri1), map.phi_1(dquad), false);
+    map.sewFaces(map.phi_1(dtri2), dquad, false);
+    map.sewFaces(map.phi1(dtri2), map.phi1(dquad), false);
+    map.sewFaces(map.phi_1(dtri1), map.phi1(map.phi1(dquad)), false);
+
+    return dquad;
+}
 
 template <typename PFP>
 bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
@@ -579,8 +594,8 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
     std::vector<unsigned int> vertexEmbeddingsBuffer;
     vertexEmbeddingsBuffer.reserve(16);
 
-    DartMarkerNoUnmark<typename PFP::MAP> m(map) ;
-//    FunctorInitEmb<typename PFP::MAP, VERTEX> fsetemb(map);
+    DartMarker<typename PFP::MAP> m(map) ;
+    //    FunctorInitEmb<typename PFP::MAP, VERTEX> fsetemb(map);
 
     //for each volume of table
     for(unsigned int i = 0 ; i < nbv ; ++i) {
@@ -599,8 +614,46 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
                 vertexEmbeddingsBuffer.push_back(em);
             }
         }
+        if (VT == MeshTablesVolume<PFP>::CONNECTOR) {
+            Dart d = createStampVolume<PFP>(map);
+            //Embed four vertices
+            unsigned int vemb = EMBNULL;
+            // 1.
+            vemb = vertexEmbeddingsBuffer[0];		// get embedding
+            map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(vemb))) );
+            Dart dd = d;
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd);
 
-        if(VT == MeshTablesVolume<PFP>::TETRAHEDRON) //tetrahedral case
+            // 2.
+            d = map.phi1(d);
+            vemb = vertexEmbeddingsBuffer[1];
+            map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(vemb))) );
+            dd = d;
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd);
+
+            // 3.
+            d = map.phi1(d);
+            vemb = vertexEmbeddingsBuffer[2];
+            map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(vemb))) );
+            dd = d;
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd);
+
+            // 4.
+            d = map.phi1(d);
+            vemb = vertexEmbeddingsBuffer[3];
+            map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(vemb))) );
+            dd = d;
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
+            vecDartsPerVertex[vemb].push_back(dd); m.mark(dd);
+
+
+
+        } else if (VT == MeshTablesVolume<PFP>::TETRAHEDRON) //tetrahedral case
         {
             Dart d = Surface::Modelisation::createTetrahedron<PFP>(map,false);
 
@@ -608,7 +661,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             for(unsigned int j = 0 ; j < 3 ; ++j)
             {
                 unsigned int em = vertexEmbeddingsBuffer[j];		// get embedding
-//                map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, em); });
+                //                map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d, [&] (Dart dd) { map.template initDartEmbedding<VERTEX>(dd, em); });
                 map.template foreach_dart_of_orbit<MAP::VERTEX_OF_PARENT>(d,  ( bl::bind(&MAP::template initDartEmbedding<VERTEX>,boost::ref(map), bl::_1, boost::ref(em))) );
                 //store darts per vertices to optimize reconstruction
                 Dart dd = d;
@@ -823,271 +876,8 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             vecDartsPerVertex[em].push_back(dd); m.mark(dd); dd = map.phi1(map.phi2(dd));
             vecDartsPerVertex[em].push_back(dd); m.mark(dd);
 
-            //debugging
-            const VEC3 & P =position[e];
-            const VEC3 & A = position[map.phi1(e)];
-            const VEC3 & B = position[map.phi1(map.phi1(e))];
-            const VEC3 & C = position[map.phi1(map.phi1(map.phi1(e)))];
-            if (Geom::testOrientation3D<VEC3>(P, A, B, C) == Geom::ON) {
-                d = map.phi2(e);
-                SHOW(position[d]);
-                d = map.phi1(d);
-                SHOW(position[d]);
-                d = map.phi1(d);
-                SHOW(position[d]);
-                d = map.phi2(map.phi1(map.phi1(map.phi2(d))));
-                SHOW(position[d]);
-                d = map.phi_1(d);
-                SHOW(position[d]);
-                d = map.phi_1(d);
-                SHOW(position[d]);
-                DEBUG;
-            }
-
         }
     }
-
-
-//    //reconstruct neighbourhood
-//    unsigned int nbBoundaryFaces = 0 ;
-//    //    Dart d1 = Dart(24);
-//    //    Dart d2 = Dart(141558);
-//    //    SHOW(map.template getEmbedding<VERTEX>(map.phi1(d1).index));
-//    //    SHOW(map.template getEmbedding<VERTEX>(map.phi1(d2).index));
-//    //    SHOW(map.template getEmbedding<VERTEX>(map.phi_1(d1).index));
-//    //    SHOW(map.template getEmbedding<VERTEX>(map.phi_1(d2).index));
-//    //    SHOW(map.faceDegree(d1));
-//    //    SHOW(map.faceDegree(d2));
-//    //    SHOW(map.template getEmbedding<VERTEX>(d1));
-//    //    SHOW(map.template getEmbedding<VERTEX>(d2));
-//    for (Dart d = map.begin(); d != map.end(); map.next(d))
-//    {
-
-//        if (m.isMarked(d))
-//        {
-//            std::vector<Dart>& vec = vecIncidentFacesToVertex[map.phi1(d)];
-
-//            Dart good_dart = NIL;
-//            for(typename std::vector<Dart>::iterator it = vec.begin(); it != vec.end() && good_dart == NIL; ++it)
-//            {
-//                if (map.template getEmbedding<VERTEX>(map.phi1(*it)) == map.template getEmbedding<VERTEX>(d) &&
-//                        map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi1(map.phi1(d))) &&
-//                        map.template getEmbedding<VERTEX>(*it) == map.template getEmbedding<VERTEX>(map.phi1(d))  /*Always true by construction */) {
-//                    good_dart = *it ;
-//                }
-//            }
-
-//            if (good_dart != NIL) { // not at the boundary
-//                unsigned int F1_degree = map.faceDegree(d);
-//                unsigned int F2_degree = map.faceDegree(good_dart);
-//                if ( F1_degree  < 3 || F2_degree < 3 || F1_degree > 4  || F2_degree > 4 || d.index == 334425 || good_dart.index == 334425) {
-//                    SHOW(F1_degree);
-//                    SHOW(F2_degree);
-//                }
-//                //                SHOW(d);
-//                //                SHOW(map.phi3(d));
-//                //                SHOW(good_dart);
-//                //                SHOW(map.phi3(good_dart));
-//                if (F1_degree != F2_degree) {
-//                    if (F1_degree > F2_degree) { // F1D = 4 ; F2D = 3
-//                        const Dart dt = map.phi1(map.phi1(d));
-//                        map.CGoGN::Map2::splitFace(d, dt);
-//                        map.template setDartEmbedding<VERTEX>(map.phi_1(d), map.template getEmbedding<VERTEX>(dt));
-//                        map.template setDartEmbedding<VERTEX>(map.phi_1(dt), map.template getEmbedding<VERTEX>(d));
-//                    } else { // F1D = 3 ; F2D = 4
-//                        const Dart gdt = map.phi1(good_dart);
-//                        map.CGoGN::Map2::splitFace(map.phi_1(good_dart), gdt);
-//                        map.template setDartEmbedding<VERTEX>(map.phi1(good_dart), map.template getEmbedding<VERTEX>(gdt));
-//                        map.template setDartEmbedding<VERTEX>(map.phi_1(gdt), map.template getEmbedding<VERTEX>(map.phi_1(good_dart)));
-//                    }
-//                } else {
-//                    if (F1_degree == 4u) {
-//                        VertexAttribute<typename PFP::VEC3> position =  map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
-//                        assert(position.isValid());
-//                        if (map.template getEmbedding<VERTEX>(map.phi_1(d)) != map.template getEmbedding<VERTEX>(map.phi1(map.phi1(good_dart)))) {
-//                            //                            SHOW(position[d]);
-//                            //                            SHOW(position[map.phi1(d)]);
-//                            //                            SHOW(position[map.phi1(map.phi1(d))]);
-//                            //                            SHOW(position[map.phi_1(d)]);
-//                            //                            DEBUG;
-//                            //                            SHOW(position[good_dart]);
-//                            //                            SHOW(position[map.phi1(good_dart)]);
-//                            //                            SHOW(position[map.phi1(map.phi1(good_dart))]);
-//                            //                            SHOW(position[map.phi_1(good_dart)]);
-//                            //                            std::cerr << std::endl;
-//                        }
-//                    }
-//                }
-//                if ( map.phi3(d) != d || map.phi3(good_dart) != good_dart ) {
-//                    //debugging
-//                    //                    SHOW(d);
-//                    //                    SHOW(map.phi3(d));
-//                    //                    SHOW(good_dart);
-//                    //                    SHOW(map.phi3(good_dart));
-
-
-//                }
-//                map.sewVolumes(d, good_dart, false);
-//                m.unmarkOrbit<FACE>(d);
-//            } else { // good dart = NIL
-//                m.unmarkOrbit<PFP::MAP::FACE_OF_PARENT>(d);
-//                ++nbBoundaryFaces;
-//            }
-//        }
-//    }
-
-    //reconstruct neighbourhood
-//        unsigned int nbBoundaryFaces = 0 ;
-//        //unsigned int nbFakeElements = 0;
-//        std::vector<Dart> vFake;
-//        vFake.reserve(1024);
-//        for (Dart d = map.begin(); d != map.end(); map.next(d))
-//        {
-//            if (m.isMarked(d))
-//            {
-//                std::vector<Dart>& vec = vecDartsPerVertex[map.phi1(d)];
-
-//                Dart good_dart = NIL;
-//                for(typename std::vector<Dart>::iterator it = vec.begin(); it != vec.end() && good_dart == NIL; ++it)
-//                {
-//                    if(map.template getEmbedding<VERTEX>(map.phi1(*it)) == map.template getEmbedding<VERTEX>(d)
-//                      // needed because several tetrahedra can have 2 identical vertices
-//                      && ( map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi1(map.phi1(d)))
-//                        || map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi_1(d))))
-//                    {
-//                        good_dart = *it ;
-//                    }
-//                }
-
-//                if (good_dart != NIL)
-//                {
-//                    unsigned int degD = map.faceDegree(d);
-//                    unsigned int degGD = map.faceDegree(good_dart);
-
-//                    if(degD == degGD)
-//                    {
-//                        map.sewVolumes(d, good_dart, false);
-//                        m.template unmarkOrbit<FACE>(d);
-//                    }
-//                    else
-//                    {
-//                        // face of d is quad
-//                        if(degD > degGD)
-//                        {
-//                            Dart another_d = map.phi1(map.phi1(d));
-//                            std::vector<Dart>& vec = vecDartsPerVertex[map.phi1(another_d)];
-
-//                            Dart another_good_dart = NIL;
-//                            for(typename std::vector<Dart>::iterator it = vec.begin(); it != vec.end() && another_good_dart == NIL; ++it)
-//                            {
-//                                if(map.template getEmbedding<VERTEX>(map.phi1(*it)) == map.template getEmbedding<VERTEX>(another_d) &&
-//                                   map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi1(map.phi1(another_d))))
-//                                {
-//                                    another_good_dart = *it ;
-//                                }
-//                            }
-
-//                            //std::cout << "is nil ? " << (another_good_dart == NIL) << std::endl;
-
-//                            if(another_good_dart != NIL)
-//                            {
-//                                Dart d1 = map.newFace(4, false);
-//                                Dart d2 = map.newFace(3, false);
-//                                Dart d3 = map.newFace(3, false);
-
-//                                map.sewFaces(d1, d2, false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map, d1, map.template getEmbedding<VERTEX>(another_d)) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map, d2, map.template getEmbedding<VERTEX>(map.phi1(d))) ;
-
-//                                map.sewFaces(map.phi1(d1), map.phi_1(d2), false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map, map.phi1(d1), map.template getEmbedding<VERTEX>(map.phi1(d))) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map, map.phi_1(d2), map.template getEmbedding<VERTEX>(d)) ;
-
-//                                map.sewFaces(map.phi1(d2), d3, false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map, map.phi1(d2), map.template getEmbedding<VERTEX>(another_d)) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map, d3, map.template getEmbedding<VERTEX>(d)) ;
-
-//                                map.sewFaces(map.phi_1(d1), map.phi1(d3), false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map, map.phi_1(d1), map.template getEmbedding<VERTEX>(another_good_dart)) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map, map.phi1(d3), map.template getEmbedding<VERTEX>(another_d)) ;
-
-//                                map.sewFaces(map.phi1(map.phi1(d1)), map.phi_1(d3), false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,map.phi1(map.phi1(d1)), map.template getEmbedding<VERTEX>(d)) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,map.phi_1(d3), map.template getEmbedding<VERTEX>(another_good_dart)) ;
-
-//                                map.sewVolumes(map.phi1(d), d1, false);
-//                                map.sewVolumes(good_dart, d2, false);
-//                                map.sewVolumes(another_good_dart, map.phi_1(d3), false);
-
-//                                m.template unmarkOrbit<FACE>(d);
-//                                m.template unmarkOrbit<FACE>(good_dart);
-//                                m.template unmarkOrbit<FACE>(another_good_dart);
-//                            }
-//                        }
-//                        else
-//                        {
-//                            // face of d is tri
-
-//                            Dart another_good_dart = map.phi1(map.phi1(d));
-//                            std::vector<Dart>& vec = vecDartsPerVertex[another_good_dart];
-
-//                            Dart another_d = NIL;
-//                            for(typename std::vector<Dart>::iterator it = vec.begin(); it != vec.end() && another_d == NIL; ++it)
-//                            {
-//                                if(map.template getEmbedding<VERTEX>(map.phi1(*it)) == map.template getEmbedding<VERTEX>(map.phi_1(another_good_dart)) &&
-//                                   map.template getEmbedding<VERTEX>(map.phi1(map.phi1(*it))) == map.template getEmbedding<VERTEX>(map.phi1(another_good_dart)))
-//                                {
-//                                    another_d = *it ;
-//                                }
-//                            }
-
-//                            //std::cout << "is nil ? " << (another_good_dart == NIL) << std::endl;
-
-//                            if(another_d != NIL)
-//                            {
-//                                Dart d1 = map.newFace(4, false);
-//                                Dart d2 = map.newFace(3, false);
-//                                Dart d3 = map.newFace(3, false);
-
-//                                map.sewFaces(d1, d2, false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,d1, map.template getEmbedding<VERTEX>(another_d)) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,d2, map.template getEmbedding<VERTEX>(map.phi1(d))) ;
-
-//                                map.sewFaces(map.phi1(d1), map.phi_1(d2), false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,map.phi1(d1), map.template getEmbedding<VERTEX>(map.phi1(d))) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,map.phi_1(d2), map.template getEmbedding<VERTEX>(d)) ;
-
-//                                map.sewFaces(map.phi1(d2), d3, false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,map.phi1(d2), map.template getEmbedding<VERTEX>(another_d)) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,d3, map.template getEmbedding<VERTEX>(d)) ;
-
-//                                map.sewFaces(map.phi_1(d1), map.phi1(d3), false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,map.phi_1(d1), map.template getEmbedding<VERTEX>(another_good_dart)) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,map.phi1(d3), map.template getEmbedding<VERTEX>(another_d)) ;
-
-//                                map.sewFaces(map.phi1(map.phi1(d1)), map.phi_1(d3), false);
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,map.phi1(map.phi1(d1)), map.template getEmbedding<VERTEX>(d)) ;
-//                                Algo::Topo::setOrbitEmbedding<VERTEX, MAP>(map,map.phi_1(d3), map.template getEmbedding<VERTEX>(another_good_dart)) ;
-
-//                                map.sewVolumes(d, d2, false);
-//                                map.sewVolumes(another_d, d3, false);
-//                                map.sewVolumes(good_dart, d1, false);
-
-//                                m.template unmarkOrbit<FACE>(d);
-//                                m.template unmarkOrbit<FACE>(another_d);
-//                                m.template unmarkOrbit<FACE>(good_dart);
-//                            }
-//                        }
-//                    }
-//                }
-//                else
-//                {
-//                    m.template unmarkOrbit<PFP::MAP::FACE_OF_PARENT>(d);
-//                    ++nbBoundaryFaces;
-//                }
-//            }
-//        }
-    //        std::exit(20);
 
     //reconstruct neighbourhood
     unsigned int nbBoundaryFaces = 0 ;
@@ -1101,7 +891,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
             for(typename std::vector<Dart>::iterator it = vec.begin(); it != vec.end() && good_dart == NIL; ++it)
             {
                 if(map.template getEmbedding<VERTEX>(map.phi1(*it)) == map.template getEmbedding<VERTEX>(d) &&
-                   map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi1(map.phi1(d))))
+                        map.template getEmbedding<VERTEX>(map.phi_1(*it)) == map.template getEmbedding<VERTEX>(map.phi1(map.phi1(d))))
                 {
                     good_dart = *it ;
                 }
@@ -1112,77 +902,14 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
                 unsigned int degD = map.faceDegree(d);
                 unsigned int degGD = map.faceDegree(good_dart);
 
-                //				std::cout << "degD = " << degD << std::endl;
-                //				std::cout << "degGD = " << degGD << std::endl << std::endl;
-
-                if(degD < degGD)
-                {
-                    Dart dt = map.phi1(good_dart);
-                    map.PFP::MAP::ParentMap::splitFace(dt,map.phi_1(good_dart));
-
-                    map.template initDartEmbedding<VERTEX>(map.phi1(good_dart), map.template getEmbedding<VERTEX>(dt)) ;
-                    map.template initDartEmbedding<VERTEX>(map.phi_1(dt), map.template getEmbedding<VERTEX>(map.phi_1(good_dart))) ;
-
-                    m.mark(map.phi1(good_dart));
-                    m.mark(map.phi2(map.phi1(good_dart)));
-
-                    unsigned int emb2 = map.template getEmbedding<VERTEX>(map.phi1(map.phi1(d)));
-                    vecDartsPerVertex[emb2].push_back(map.phi2(map.phi1(good_dart)));
-
-                    unsigned int emb1 = map.template getEmbedding<VERTEX>(d);
-                    vecDartsPerVertex[emb1].push_back(map.phi1(good_dart));
-
-                    //m.unmarkOrbit<PFP::MAP::FACE_OF_PARENT>(d);
-                    //m.unmarkOrbit<PFP::MAP::FACE_OF_PARENT>(good_dart);
-                }
-                else if(degD > degGD)
-                {
-                    Dart dt = map.phi1(map.phi1(d));
-                    map.PFP::MAP::ParentMap::splitFace(d,dt);
-
-                    map.template initDartEmbedding<VERTEX>(map.phi_1(dt), map.template getEmbedding<VERTEX>(d)) ;
-                    map.template initDartEmbedding<VERTEX>(map.phi_1(d), map.template getEmbedding<VERTEX>(dt)) ;
-
-                    m.mark(map.phi_1(d));
-                    m.mark(map.phi2(map.phi_1(d)));
-
-                    //ne change rien sur l'exemple test
-                    unsigned int emb1 = map.template getEmbedding<VERTEX>(map.phi1(map.phi1(good_dart)));
-                    vecDartsPerVertex[emb1].push_back(map.phi2(map.phi_1(d)));
-
-                    unsigned int emb2 = map.template getEmbedding<VERTEX>(good_dart);
-                    vecDartsPerVertex[emb2].push_back(map.phi_1(d));
-
-                    //m.unmarkOrbit<PFP::MAP::FACE_OF_PARENT>(d);
-                    //m.unmarkOrbit<PFP::MAP::FACE_OF_PARENT>(good_dart);
-                }
-                else if(degD == degGD)
+                //std::cout << "degD = " << degD << " et degGD = " << degGD << std::endl;
+                if(degD == degGD)
                 {
                     map.sewVolumes(d, good_dart, false);
                     m.template unmarkOrbit<FACE>(d);
                 }
-                //				else if(degD > 3 && degGD > 3)
-                //				{
-                //					if(map.template getEmbedding<VERTEX>(map.phi1(map.phi1(good_dart))) != map.template getEmbedding<VERTEX>(map.phi_1(d)))
-                //					{
-                //						std::cout << "2 faces quad" << std::endl;
-                //						Dart dtgd = map.phi1(good_dart);
-                //						map.PFP::MAP::ParentMap::splitFace(dtgd,map.phi_1(good_dart));
-
-                //						map.template initDartEmbedding<VERTEX>(map.phi1(good_dart), map.template getEmbedding<VERTEX>(dtgd)) ;
-                //						map.template initDartEmbedding<VERTEX>(map.phi_1(dtgd), map.template getEmbedding<VERTEX>(map.phi_1(good_dart))) ;
-
-
-                //						Dart dt = map.phi1(map.phi1(d));
-                //						map.PFP::MAP::ParentMap::splitFace(d,dt);
-
-                //						map.template initDartEmbedding<VERTEX>(map.phi_1(dt), map.template getEmbedding<VERTEX>(d)) ;
-                //						map.template initDartEmbedding<VERTEX>(map.phi_1(d), map.template getEmbedding<VERTEX>(dt)) ;
-                //					}
-                //				}
-
-                //				map.sewVolumes(d, good_dart, false);
-                //				m.unmarkOrbit<FACE>(d);
+//                else
+//                    std::cout << "erreur : degD != degGD" << std::endl;
             }
             else
             {
@@ -1192,7 +919,7 @@ bool importMesh(typename PFP::MAP& map, MeshTablesVolume<PFP>& mtv) {
         }
     }
 
-//        map.check();
+    //        map.check();
     if (nbBoundaryFaces > 0) {
         unsigned int nbH =  map.closeMap();
         CGoGNout << "Map closed (" << nbBoundaryFaces << " boundary faces / " << nbH << " holes)" << CGoGNendl;
