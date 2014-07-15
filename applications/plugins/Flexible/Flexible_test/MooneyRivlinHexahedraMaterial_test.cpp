@@ -32,6 +32,7 @@
 
 #include <sofa/component/forcefield/QuadPressureForceField.h>
 #include "../strainMapping/InvariantMapping.h"
+#include "../strainMapping/PrincipalStretchesMapping.h"
 #include "../material/HookeForceField.h"
 #include "../material/NeoHookeanForceField.h"
 #include "../material/MooneyRivlinForceField.h"
@@ -126,7 +127,7 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
        // Add strain mechanical object
        strainDOFsSPtr strainDOFs = addNew<StrainDOFs>(strainNode);
        // Add strain mapping
-       StrainMapping::SPtr strainMapping = addNew<StrainMapping>(strainNode);
+       typename StrainMapping::SPtr strainMapping = addNew<StrainMapping>(strainNode);
        strainMapping->setModels(behaviorDofs.get(),strainDOFs.get());
     }
 
