@@ -836,7 +836,7 @@ unsigned int Map2<MAP_IMPL>::volumeDegree(Vol v) const
 
 	std::vector<Dart> visitedFaces;		// Faces that are traversed
 	visitedFaces.reserve(16);
-	visitedFaces.push_back(v.dart);		// Start with a face of v
+    visitedFaces.push_back(v);		// Start with a face of v
 
 	// For every face added to the list
 	for (unsigned int i = 0; i != visitedFaces.size(); ++i)
@@ -850,7 +850,7 @@ unsigned int Map2<MAP_IMPL>::volumeDegree(Vol v) const
 			{
 				mark.mark(it);					// Mark
 				Dart adj = phi2(it);			// Get adjacent face
-				if ( !this->isBoundaryMarked2(adj) && !mark.isMarked(adj) )
+                if ( !this->template isBoundaryMarked<2>(adj) && !mark.isMarked(adj) )
 					visitedFaces.push_back(adj);// Add it
 				it = this->phi1(it);
 			} while(it != df);

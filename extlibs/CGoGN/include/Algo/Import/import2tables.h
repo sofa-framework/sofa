@@ -166,7 +166,8 @@ public:
         TETRAHEDRON = 0,
         HEXAHEDRON,
         SQUARE_PYRAMID,
-        TRIANGULAR_PRISM
+        TRIANGULAR_PRISM,
+        CONNECTOR
     };
 
 protected:
@@ -174,12 +175,12 @@ protected:
 
     unsigned int m_nbVertices;
 
-     unsigned int m_nbVolumes;
-     unsigned int m_nbFaces;
-     std::vector<unsigned> m_nbEdges;
+    unsigned int m_nbVolumes;
+    unsigned int m_nbFaces;
+    std::vector<unsigned> m_nbEdges;
 
-     std::vector<unsigned>    m_nbVerticesPerVolume;
-     std::vector<VOLUME_TYPE> m_volumeType;
+    std::vector<unsigned>    m_nbVerticesPerVolume;
+    std::vector<VOLUME_TYPE> m_volumeType;
 
     /**
     * table of emb ptr (for each face, first vertex)
@@ -208,11 +209,11 @@ protected:
 
     bool importMSH(const std::string& filename, std::vector<std::string>& attrNames);
 
-//    bool importVTU(const std::string& filename, std::vector<std::string>& attrNames);
+    //    bool importVTU(const std::string& filename, std::vector<std::string>& attrNames);
 
     bool importNAS(const std::string& filename, std::vector<std::string>& attrNames);
 
-//    bool importVBGZ(const std::string& filename, std::vector<std::string>& attrNames);
+    //    bool importVBGZ(const std::string& filename, std::vector<std::string>& attrNames);
 
     //bool importMoka(const std::string& filename, std::vector<std::string>& attrNames);
 
@@ -221,8 +222,10 @@ protected:
 public:
     //static ImportType getFileType(const std::string& filename);
 
-    unsigned int getNbVerticesOfVolume(VOLUME_TYPE vt) const  {
-        if (vt == TETRAHEDRON)
+    inline static unsigned int getNbVerticesOfVolume(VOLUME_TYPE vt) {
+        if (vt == CONNECTOR)
+            return 4u;
+        else if (vt == TETRAHEDRON)
             return 4u;
         else if ( vt == SQUARE_PYRAMID)
             return 5u;
@@ -239,7 +242,7 @@ public:
 
     inline unsigned getNbVolumes() const { return m_nbVolumes; }
 
-    inline short getNbFacesVolume(int i) const { return m_nbVerticesPerVolume[i]; }
+//    inline short getNbFacesVolume(int i) const { return m_nbVerticesPerVolume[i]; }
 
     inline VOLUME_TYPE getVolumeType(int i) const { return m_volumeType[i] ;}
 
