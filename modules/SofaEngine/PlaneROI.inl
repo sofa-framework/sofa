@@ -89,7 +89,7 @@ void PlaneROI<DataTypes>::init()
         this->getContext()->get(mstate);
         if (mstate)
         {
-            BaseData* parent = mstate->findField("rest_position");
+            BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
                 f_X0.setParent(parent);
@@ -102,7 +102,7 @@ void PlaneROI<DataTypes>::init()
             this->getContext()->get(loader);
             if (loader)
             {
-                BaseData* parent = loader->findField("position");
+                BaseData* parent = loader->findData("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);
@@ -119,7 +119,7 @@ void PlaneROI<DataTypes>::init()
         {
             if (!f_edges.isSet() && f_computeEdges.getValue())
             {
-                BaseData* eparent = topology->findField("edges");
+                BaseData* eparent = topology->findData("edges");
                 if (eparent)
                 {
                     f_edges.setParent(eparent);
@@ -128,7 +128,7 @@ void PlaneROI<DataTypes>::init()
             }
             if (!f_triangles.isSet() && f_computeTriangles.getValue())
             {
-                BaseData* tparent = topology->findField("triangles");
+                BaseData* tparent = topology->findData("triangles");
                 if (tparent)
                 {
                     f_triangles.setParent(tparent);
@@ -137,7 +137,7 @@ void PlaneROI<DataTypes>::init()
             }
             if (!f_tetrahedra.isSet() && f_computeTetrahedra.getValue())
             {
-                BaseData* tparent = topology->findField("tetrahedra");
+                BaseData* tparent = topology->findData("tetrahedra");
                 if (tparent)
                 {
                     f_tetrahedra.setParent(tparent);

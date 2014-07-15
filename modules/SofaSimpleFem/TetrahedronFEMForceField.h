@@ -178,7 +178,7 @@ public:
 
     void getRotations(VecReal& vecR)
     {
-        unsigned int nbdof = this->mstate->getX()->size();
+        unsigned int nbdof = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
         for (unsigned int i=0; i<nbdof; ++i)
         {
 
@@ -188,7 +188,7 @@ public:
 
     void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
     {
-        unsigned int nbdof = this->mstate->getX()->size();
+        unsigned int nbdof = this->mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
         if (component::linearsolver::RotationMatrix<float> * diag = dynamic_cast<component::linearsolver::RotationMatrix<float> *>(rotations))
         {
@@ -403,6 +403,11 @@ public:
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    {
+        serr << "Get potentialEnergy not implemented" << sendl;
+        return 0.0;
+    }
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 

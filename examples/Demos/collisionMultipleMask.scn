@@ -14,7 +14,7 @@
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/torus2_scale3.obj" dx="0" dy="20" dz="29" color="blue" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/torus2_scale3.obj" />
@@ -35,7 +35,7 @@
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/dragon.obj" dx="20" dy="20" dz="29" color="red" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
@@ -56,19 +56,19 @@
         <RegularGridSpringForceField name="Springs" stiffness="350" damping="1" />
         <Node name="Visu1">
             <OglModel name="VisualBody" filename="mesh/frog_body.obj" normals="0" dx="-20" dy="20" dz="29" color="0.17 0.70 0.05" />
-            <BarycentricMapping object1="../.." object2="VisualBody" />
+            <BarycentricMapping input="@.." output="@VisualBody" />
         </Node>
         <Node name="Visu2">
             <OglModel name="VisualEyes" filename="mesh/frog_eyes.obj" normals="0" dx="-20" dy="20" dz="29" color="0.04 0.19 0.52" />
-            <BarycentricMapping object1="../.." object2="VisualEyes" />
+            <BarycentricMapping input="@.." output="@VisualEyes" />
         </Node>
         <Node name="Visu3">
             <OglModel name="VisualEyebrows" filename="mesh/frog_eyebrows.obj" normals="0" dx="-20" dy="20" dz="29" color="0.44 0.43 0.00" />
-            <BarycentricMapping object1="../.." object2="VisualEyebrows" />
+            <BarycentricMapping input="@.." output="@VisualEyebrows" />
         </Node>
         <Node name="Visu4">
             <OglModel name="VisualLips" filename="mesh/frog_lips.obj" normals="0" dx="-20" dy="20" dz="29" color="0.47 0.25 0.03" />
-            <BarycentricMapping object1="../.." object2="VisualLips" />
+            <BarycentricMapping input="@.." output="@VisualLips" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/frog-push25.obj" />

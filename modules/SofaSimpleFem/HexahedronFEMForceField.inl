@@ -109,7 +109,7 @@ void HexahedronFEMForceField<DataTypes>::init()
 
     if (_initialPoints.getValue().size() == 0)
     {
-        const VecCoord& p = *this->mstate->getX();
+        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         _initialPoints.setValue(p);
     }
 
@@ -1160,7 +1160,7 @@ void HexahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!f_drawing.getValue()) return;
 
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);

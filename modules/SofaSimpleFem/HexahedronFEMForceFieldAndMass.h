@@ -97,6 +97,12 @@ public:
     virtual double getKineticEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& /*v*/ ) const  ///< vMv/2 using dof->getV()
     {serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl; return 0;}
 
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    {
+        serr << "Get potentialEnergy not implemented" << sendl;
+        return 0.0;
+    }
+
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
     // virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, double kFactor, double);
 

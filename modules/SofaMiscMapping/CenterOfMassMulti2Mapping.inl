@@ -53,8 +53,8 @@ struct Operation
     typedef typename Model::VecDeriv VecDeriv;
 
 public :
-    static inline const VecCoord* getVecCoord( const Model* m, const sofa::core::VecId id) { return m->getVecCoord(id.index); };
-    static inline VecDeriv* getVecDeriv( Model* m, const sofa::core::VecId id) { return m->getVecDeriv(id.index);};
+    static inline const VecCoord* getVecCoord( const Model* m, const sofa::core::VecId id) { return m->getVecCoord(id.index); }
+    static inline VecDeriv* getVecDeriv( Model* m, const sofa::core::VecId id) { return m->getVecDeriv(id.index);}
 
     static inline const sofa::core::behavior::BaseMass* fetchMass  ( const Model* m)
     {
@@ -64,7 +64,7 @@ public :
     static inline double computeTotalMass( const Model* model, const sofa::core::behavior::BaseMass* mass )
     {
         double result = 0.0;
-        for ( unsigned int i = 0; i < model->getX()->size(); i++)
+        for ( unsigned int i = 0; i < model->read(core::ConstVecCoordId::position())->getValue().size(); i++)
         {
             result += mass->getElementMass(i);
         }
@@ -93,13 +93,30 @@ public :
 };
 
 template< class TIn1, class TIn2, class TOut  >
-void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 )
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
+        const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
+        const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
+        const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos)
+//apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 )
 {
-    assert( outPos.size() == 1); // we are dealing with a many to one mapping.
+    assert( dataVecOutPos.size() == 1); // we are dealing with a many to one mapping.
     typedef typename helper::vector<In1Coord>::iterator iter_coord1;
     typedef typename helper::vector<In2Coord>::iterator iter_coord2;
 
     SReal px=0,py=0,pz=0;
+
+    //Not optimized at all...
+    helper::vector<OutVecCoord*> outPos;
+    for(unsigned int i=0; i<dataVecOutPos.size(); i++)
+        outPos.push_back(dataVecOutPos[i]->beginEdit(mparams));
+
+    helper::vector<const In1VecCoord*> inPos1;
+    for(unsigned int i=0; i<dataVecIn1Pos.size(); i++)
+        inPos1.push_back(&dataVecIn1Pos[i]->getValue(mparams));
+    helper::vector<const In2VecCoord*> inPos2;
+    for(unsigned int i=0; i<dataVecIn2Pos.size(); i++)
+        inPos2.push_back(&dataVecIn2Pos[i]->getValue(mparams));
+
 
     {
         In1Coord COM;
@@ -132,14 +149,34 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(const vecOutVecCoord& 
     OutVecCoord* outVecCoord = outPos[0];
 
     OutDataTypes::set((*outVecCoord)[0], px,py,pz);
+
+    //Really Not optimized at all...
+    for(unsigned int i=0; i<dataVecOutPos.size(); i++)
+        dataVecOutPos[i]->endEdit(mparams);
 }
 
 template <class TIn1, class TIn2, class TOut>
-void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2)
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
+        const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
+        const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
+        const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
+//applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2)
 {
-    assert( outDeriv.size() == 1 );
+    assert( dataVecOutVel.size() == 1 );
     typedef typename helper::vector<In1Deriv>::iterator                     iter_deriv1;
     typedef typename helper::vector<In2Deriv>::iterator                     iter_deriv2;
+
+    //Not optimized at all...
+    helper::vector<OutVecDeriv*> outDeriv;
+    for(unsigned int i=0; i<dataVecOutVel.size(); i++)
+        outDeriv.push_back(dataVecOutVel[i]->beginEdit(mparams));
+
+    helper::vector<const In1VecDeriv*> inDeriv1;
+    for(unsigned int i=0; i<dataVecIn1Vel.size(); i++)
+        inDeriv1.push_back(&dataVecIn1Vel[i]->getValue(mparams));
+    helper::vector<const In2VecDeriv*> inDeriv2;
+    for(unsigned int i=0; i<dataVecIn2Vel.size(); i++)
+        inDeriv2.push_back(&dataVecIn2Vel[i]->getValue(mparams));
 
     SReal px=0,py=0,pz=0;
 
@@ -174,14 +211,34 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(const helper::vector<
     OutVecDeriv* outVecDeriv =  outDeriv[0];
 
     OutDataTypes::set((*outVecDeriv)[0], px,py,pz);
+
+    //Really Not optimized at all...
+    for(unsigned int i=0; i<dataVecOutVel.size(); i++)
+        dataVecOutVel[i]->endEdit(mparams);
 }
 
 
 
 template < class TIn1, class TIn2, class TOut >
-void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT( const helper::vector<typename In1::VecDeriv*>& outDeriv1 ,const helper::vector<typename In2::VecDeriv*>& outDeriv2 , const helper::vector<const typename Out::VecDeriv*>& inDeriv )
+void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT(
+        const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
+        const helper::vector< In2DataVecDeriv*>& dataVecOut2Force,
+        const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+//applyJT( const helper::vector<typename In1::VecDeriv*>& outDeriv1 ,const helper::vector<typename In2::VecDeriv*>& outDeriv2 , const helper::vector<const typename Out::VecDeriv*>& inDeriv )
 {
-    assert( inDeriv.size() == 1 );
+    assert( dataVecOut1Force.size() == 1 );
+
+    //Not optimized at all...
+    helper::vector<In1VecDeriv*> outDeriv1;
+    for(unsigned int i=0; i<dataVecOut1Force.size(); i++)
+        outDeriv1.push_back(dataVecOut1Force[i]->beginEdit(mparams));
+    helper::vector<In2VecDeriv*> outDeriv2;
+    for(unsigned int i=0; i<dataVecOut2Force.size(); i++)
+        outDeriv2.push_back(dataVecOut2Force[i]->beginEdit(mparams));
+
+    helper::vector<const OutVecDeriv*> inDeriv;
+    for(unsigned int i=0; i<dataVecInForce.size(); i++)
+        inDeriv.push_back(&dataVecInForce[i]->getValue(mparams));
 
     typename Out::Deriv gravityCenterForce;
     const typename Out::VecDeriv* inForce = inDeriv[0];
@@ -222,6 +279,16 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT( const helper::vecto
                 }
             }
         }
+    }
+
+    //Really Not optimized at all...
+    for(unsigned int i=0; i<dataVecOut1Force.size(); i++)
+    {
+        dataVecOut1Force[i]->endEdit(mparams);
+    }
+    for(unsigned int i=0; i<dataVecOut2Force.size(); i++)
+    {
+        dataVecOut2Force[i]->endEdit(mparams);
     }
 }
 

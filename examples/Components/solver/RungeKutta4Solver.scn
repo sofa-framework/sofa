@@ -10,7 +10,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.45" method="large" />
         <Node>
             <OglModel name="m_Visual" fileMesh="mesh/truthcylinder1.obj" color="red" />
-            <BarycentricMapping object1="../.." object2="m_Visual" />
+            <BarycentricMapping input="@.." output="@m_Visual" />
         </Node>
     </Node>
 </Node>

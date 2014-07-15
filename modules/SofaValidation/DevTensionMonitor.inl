@@ -42,7 +42,7 @@ void DevTensionMonitor<DataTypes>::init()
 template <class DataTypes>
 void DevTensionMonitor<DataTypes>::eval()
 {
-    const VecCoord & xPos = *mstate->getX();
+    const VecCoord & xPos = mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (f_indices.getValue().empty())
     {

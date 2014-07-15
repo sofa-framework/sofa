@@ -127,7 +127,7 @@ void LennardJonesForceField<DataTypes>::addDForce(const core::MechanicalParams* 
     const VecDeriv& dx1 = d_dx.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    const VecCoord& p1 = *this->mstate->getX();
+    const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     df1.resize(dx1.size());
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {
@@ -147,7 +147,7 @@ template<class DataTypes>
 void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;
-    const VecCoord& p1 = *this->mstate->getX();
+    const VecCoord& p1 = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< defaulttype::Vector3 > points[2];
 

@@ -5,7 +5,7 @@
 	<UniformMass />
 	<Node name="VisualNode" tags="Visual">
 		<OglModel name="Visual" filename="file" color="gray" scale3d="1 1 1" />
-		<RigidMapping object1="../.." object2="Visual" />
+		<RigidMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="CollisionNode">
       <MeshObjLoader name="loader" filename="file"/>

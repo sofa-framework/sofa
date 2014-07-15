@@ -64,7 +64,7 @@ public :
     static inline double computeTotalMass( const Model* model, const sofa::core::behavior::BaseMass* mass )
     {
         double result = 0.0;
-        for ( unsigned int i = 0; i < model->getX()->size(); i++)
+        for ( unsigned int i = 0; i < model->read(core::ConstVecCoordId::position())->getValue().size(); i++)
         {
             result += mass->getElementMass(i);
         }
@@ -94,9 +94,19 @@ public :
 
 
 template <class TIn, class TOut>
-void CenterOfMassMultiMapping< TIn, TOut >::apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos )
+void CenterOfMassMultiMapping< TIn, TOut >::apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
     typedef typename InVecCoord::iterator iter_coord;
+
+    //Not optimized at all...
+    helper::vector<OutVecCoord*> outPos;
+    for(unsigned int i=0; i<dataVecOutPos.size(); i++)
+        outPos.push_back(dataVecOutPos[i]->beginEdit(mparams));
+
+    helper::vector<const InVecCoord*> inPos;
+    for(unsigned int i=0; i<dataVecInPos.size(); i++)
+        inPos.push_back(&dataVecInPos[i]->getValue(mparams));
+
     assert( outPos.size() == 1); // we are dealing with a many to one mapping.
     InCoord COM;
     std::transform(inPos.begin(), inPos.end(), inputBaseMass.begin(), inputWeightedCOM.begin(), Operation< core::State<In> >::WeightedCoord );
@@ -109,13 +119,27 @@ void CenterOfMassMultiMapping< TIn, TOut >::apply(const vecOutVecCoord& outPos, 
     SReal x,y,z;
     InDataTypes::get(x,y,z,COM);
     OutDataTypes::set((*outVecCoord)[0], x,y,z);
+
+    //Really Not optimized at all...
+    for(unsigned int i=0; i<dataVecOutPos.size(); i++)
+        dataVecOutPos[i]->endEdit(mparams);
 }
 
 
 template <class TIn, class TOut>
-void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const InVecDeriv*>& inDeriv)
+void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
     typedef typename InVecDeriv::iterator iter_deriv;
+
+    //Not optimized at all...
+    helper::vector<OutVecDeriv*> outDeriv;
+    for(unsigned int i=0; i<dataVecOutVel.size(); i++)
+        outDeriv.push_back(dataVecOutVel[i]->beginEdit(mparams));
+
+    helper::vector<const InVecDeriv*> inDeriv;
+    for(unsigned int i=0; i<dataVecInVel.size(); i++)
+        inDeriv.push_back(&dataVecInVel[i]->getValue(mparams));
+
     assert( outDeriv.size() == 1 );
 
     InDeriv Velocity;
@@ -129,12 +153,26 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJ(const helper::vector< OutVecD
     SReal x,y,z;
     InDataTypes::get(x,y,z,Velocity);
     OutDataTypes::set((*outVecDeriv)[0], x,y,z);
+
+    //Really Not optimized at all...
+    for(unsigned int i=0; i<dataVecOutVel.size(); i++)
+        dataVecOutVel[i]->endEdit(mparams);
 }
 
 
 template < class TIn, class TOut >
-void CenterOfMassMultiMapping< TIn, TOut >::applyJT( const helper::vector<InVecDeriv*>& outDeriv , const helper::vector<const OutVecDeriv*>& inDeriv )
+void CenterOfMassMultiMapping< TIn, TOut >::applyJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
 {
+    //Not optimized at all...
+    helper::vector<InVecDeriv*> outDeriv;
+    for(unsigned int i=0; i<dataVecOutForce.size(); i++)
+        outDeriv.push_back(dataVecOutForce[i]->beginEdit(mparams));
+
+    helper::vector<const OutVecDeriv*> inDeriv;
+    for(unsigned int i=0; i<dataVecInForce.size(); i++)
+        inDeriv.push_back(&dataVecInForce[i]->getValue(mparams));
+
+
     assert( inDeriv.size() == 1 );
 
     OutDeriv gravityCenterForce;
@@ -160,6 +198,10 @@ void CenterOfMassMultiMapping< TIn, TOut >::applyJT( const helper::vector<InVecD
             }
         }
     }
+
+    //Really Not optimized at all...
+    for(unsigned int i=0; i<dataVecOutForce.size(); i++)
+        dataVecOutForce[i]->endEdit(mparams);
 }
 
 

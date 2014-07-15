@@ -53,8 +53,8 @@ namespace animationloop
 class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalGetConstraintResolutionVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
-        : simulation::BaseMechanicalVisitor(params), _res(res),_offset(offset)
+    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
+        : simulation::BaseMechanicalVisitor(params), _cparams(params), _res(res),_offset(offset)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -69,7 +69,7 @@ public:
         if (core::behavior::BaseConstraint *c=dynamic_cast<core::behavior::BaseConstraint*>(cSet))
         {
             ctime_t t0 = begin(node, c);
-            c->getConstraintResolution(_res, _offset);
+            c->getConstraintResolution(_cparams, _res, _offset);
             end(node, c, t0);
         }
         return RESULT_CONTINUE;
@@ -89,6 +89,7 @@ public:
 private:
     std::vector<core::behavior::ConstraintResolution*>& _res;
     unsigned int _offset;
+    const sofa::core::ConstraintParams *_cparams;
 };
 
 

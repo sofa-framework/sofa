@@ -105,7 +105,7 @@ void TSphereModel<DataTypes>::init()
         return;
     }
 
-    const int npoints = mstate->getX()->size();
+    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     resize(npoints);
 }
 
@@ -137,7 +137,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
         // Check topological modifications
-        const int npoints = mstate->getX()->size();
+        const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
 
         std::vector<Vector3> points;
         std::vector<float> radius;
@@ -165,7 +165,7 @@ template <class DataTypes>
 void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->getX()->size();
+    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     bool updated = false;
     if (npoints != size)
     {
@@ -202,7 +202,7 @@ void TSphereModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDe
     using namespace sofa::defaulttype;
 
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->getX()->size();
+    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     bool updated = false;
     if (npoints != size)
     {

@@ -70,7 +70,7 @@ void FixedLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vpa
 #ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *constrainedObject1->getX();
+    const VecCoord& x =constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
@@ -89,7 +89,7 @@ void FixedLMConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vpa
 {
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    const VecCoord& x = *constrainedObject1->getX();
+    const VecCoord& x =constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< Vector3 > points;
     for (SetIndexArray::const_iterator it = indices.begin();

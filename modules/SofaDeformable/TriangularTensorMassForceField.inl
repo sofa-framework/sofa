@@ -84,7 +84,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
         typename DataTypes::Coord point[3],dpk,dpl;
         vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
 
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         for (i=0; i<triangleAdded.size(); ++i)
         {
@@ -95,7 +95,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
             const Triangle &t= ff->_topology->getTriangle(triangleAdded[i]);
             // store points
             for(j=0; j<3; ++j)
-                point[j]=(*restPosition)[t[j]];
+                point[j]=(restPosition)[t[j]];
             // store square rest length
             for(j=0; j<3; ++j)
             {
@@ -173,7 +173,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
         typename DataTypes::Coord point[3],dpk,dpl;
 
         vector<EdgeRestInformation> &edgeData = *ff->edgeInfo.beginEdit();
-        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
+        const typename DataTypes::VecCoord& restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
         for (i=0; i<triangleRemoved.size(); ++i)
         {
@@ -184,7 +184,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeHandler::applyTr
             const Triangle &t= ff->_topology->getTriangle(triangleRemoved[i]);
             // store points
             for(j=0; j<3; ++j)
-                point[j]=(*restPosition)[t[j]];
+                point[j]=(restPosition)[t[j]];
             // store square rest length
             for(j=0; j<3; ++j)
             {
@@ -308,7 +308,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        const VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints=p;
     }
 
@@ -425,7 +425,7 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int nbTriangles=_topology->getNbTriangles();
 
     glDisable(GL_LIGHTING);

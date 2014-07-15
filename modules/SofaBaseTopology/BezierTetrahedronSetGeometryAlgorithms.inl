@@ -150,7 +150,7 @@ typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::c
 template< class DataTypes>
 typename DataTypes::Coord BezierTetrahedronSetGeometryAlgorithms< DataTypes >::computeNodalValue(const size_t tetrahedronIndex,const Vec4 barycentricCoordinate)
 {
-	const typename DataTypes::VecCoord& p = *(this->object->getX());
+	const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 	return(computeNodalValue(tetrahedronIndex,barycentricCoordinate,p));
 }
 template<class DataTypes>
@@ -198,7 +198,7 @@ typename DataTypes::Real BezierTetrahedronSetGeometryAlgorithms<DataTypes>::comp
  typename BezierTetrahedronSetGeometryAlgorithms<DataTypes>::Real 
 	 BezierTetrahedronSetGeometryAlgorithms<DataTypes>::computeJacobian(const size_t tetrahedronIndex, const Vec4 barycentricCoordinate)
  {
-	 const typename DataTypes::VecCoord& p = *(this->object->getX());
+	 const typename DataTypes::VecCoord& p =(this->object->read(core::ConstVecCoordId::position())->getValue());
 	 return(computeJacobian(tetrahedronIndex,barycentricCoordinate,p));
 
  }
@@ -300,7 +300,7 @@ void BezierTetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual:
 				const sofa::defaulttype::Vec3f& color =  this->_drawColor.getValue();
 				glColor3f(color[0], color[1], color[2]);
 				glBegin(GL_LINES);
-				const VecCoord& coords = *(this->object->getX());
+				const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 				VecPointID indexArray;
 				Vec4 baryCoord;
 				sofa::defaulttype::Vec3f p; //,p2;

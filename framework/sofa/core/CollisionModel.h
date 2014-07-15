@@ -323,16 +323,9 @@ public:
     /// Render the whole collision model.
     virtual void draw(const core::visual::VisualParams* )
     {
-#ifndef SOFA_DEPRECATE_OLD_API
-        draw();
-#endif
+
     }
 
-#ifndef SOFA_DEPRECATE_OLD_API
-    virtual void draw() {}
-
-    virtual void draw(int /*index*/) {}
-#endif
 
     /// Return the first (i.e. root) CollisionModel in the hierarchy.
     CollisionModel* getFirst()
@@ -413,23 +406,11 @@ public:
 
 
 
-    /// @deprecated "group" is now a set of IDs, please use getGroups instead
-    /// @warning returns only the first group ID
-    /// @warning return 0 when group is empty
-    int getGroup() const {
-        std::cerr<<"CollisionModel::getGroup is deprecated\n";
-        if( group.getValue().empty() ) return 0;
-        return *group.getValue().begin();
-    }
-
     /// Return the group IDs containing this model.
     const helper::set<int>& getGroups() const { return group.getValue(); }
 
     /// add the group ID to this model.
     void addGroup(const int groupId) { group.beginEdit()->insert(groupId); group.endEdit(); }
-
-    /// @deprecated ensuring backward compatibility
-    void setGroup(const int groupId) { addGroup(groupId); }
 
     /// @}
 

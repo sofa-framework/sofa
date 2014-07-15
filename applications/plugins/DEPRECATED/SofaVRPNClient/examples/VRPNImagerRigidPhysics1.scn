@@ -1,11 +1,11 @@
 <Node name="root" dt="0.003" gravity="0 -9.81 0" showBehaviorModels="1" showCollisionModels="1" showVisualModels="1">
 	<MasterContactSolver/>
 	<LCPConstraintSolver mu="0.05" tolerance="1e-10"/>
-        <Object type="CollisionPipeline" verbose="0" />
-        <Object type="BruteForceDetection" name="N2" />
-        <Object type="CollisionResponse" name="Response" response="FrictionContact" />
-        <Object type="CollisionGroup" name="Group" />
-	<Object type="LocalMinDistance" name="Proximity" alarmDistance="0.04" contactDistance="0.002" />
+        <CollisionPipeline verbose="0" />
+        <BruteForceDetection name="N2" />
+        <CollisionResponse name="Response" response="FrictionContact" />
+        <CollisionGroup name="Group" />
+	<LocalMinDistance name="Proximity" alarmDistance="0.04" contactDistance="0.002" />
 
         <EulerImplicit rayleighStiffness="0.01" name="cg_odesolver" printLog="false"/>
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -18,45 +18,45 @@
 		<MechanicalObject name="mechCorner" template="Rigid" position="@../tracking/imageData.rigidPosition" debugViewIndices="true" />
 		<Node name="center">
 			<MechanicalObject name="mechCenter" template="Rigid" debugViewIndices="true" />
-	                <Object type="UniformMass"  mass="0.1" showAxisSizeFactor="0.01"/>
+	                <UniformMass  mass="0.1" showAxisSizeFactor="0.01"/>
 			<RigidRigidMapping initialPoints="0.22 0.095 0  0 0 0 1"/>
 		</Node>
 	</Node>
        <Node name="cage">
-                <Object type="MechanicalObject" template="Rigid" position="0 0 -1.15 0 0 0 1"/>
-                <Object type="UniformMass"  mass="0.001" showAxisSizeFactor="0.01"/>
+                <MechanicalObject template="Rigid" position="0 0 -1.15 0 0 0 1"/>
+                <UniformMass  mass="0.001" showAxisSizeFactor="0.01"/>
 		<RestShapeSpringsForceField points="0" external_points="0" external_rest_shape="../proxy/center/mechCenter" stiffness="2000" angularStiffness="50000"/>
-                <Object type="UncoupledConstraintCorrection" compliance="0.0005 0.00002 0 0  0.00002  0 0.00002"/>
+                <UncoupledConstraintCorrection compliance="0.0005 0.00002 0 0  0.00002  0 0.00002"/>
                 <Node name="Visu">
-			<Object type="OglModel" name="Visual" fileMesh="mesh/box_outside_duriez.obj" color="1 0 0 0.7"/>
-                        <Object type="RigidMapping" object1="../.." object2="Visual" />
+			<OglModel name="Visual" fileMesh="mesh/box_outside_duriez.obj" color="1 0 0 0.7"/>
+                        <RigidMapping input="@.." output="@Visual" />
                 </Node>
                 <Node name="Surf2">
-			<Object type="MeshLoader" name="meshLoader" filename="mesh/box_inside_duriez.obj" triangulate="true"/>
-                        <Object type="Mesh" />
-                        <Object type="MechanicalObject"/>
-                        <Object type="Triangle" />
-                        <Object type="Line" />
-                        <Object type="Point" />
-                        <Object type="RigidMapping" />
+			<MeshLoader name="meshLoader" filename="mesh/box_inside_duriez.obj" triangulate="true"/>
+                        <Mesh />
+                        <MechanicalObject/>
+                        <Triangle />
+                        <Line />
+                        <Point />
+                        <RigidMapping />
                 </Node>
         </Node>
         <Node name="CUBE">
-		<Object type="MechanicalObject" template="Rigid" position="0 0 -1.15 0 0 0 1" />
-                <Object type="UniformMass"  mass="0.01 0.00001 0.0001 0 0 0 0.0001 0 0 0 0.0001" showAxisSizeFactor="0.01"/>
-                <Object type="UncoupledConstraintCorrection"/>
+		<MechanicalObject template="Rigid" position="0 0 -1.15 0 0 0 1" />
+                <UniformMass  mass="0.01 0.00001 0.0001 0 0 0 0.0001 0 0 0 0.0001" showAxisSizeFactor="0.01"/>
+                <UncoupledConstraintCorrection/>
                 <Node name="Visu">
-                        <Object type="OglModel" name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.01"/>
-                        <Object type="RigidMapping" object1="../.." object2="Visual" />
+                        <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.01"/>
+                        <RigidMapping input="@.." output="@Visual" />
                 </Node>
                 <Node name="Surf2">
-                        <Object type="MeshLoader" name="meshLoader" filename="mesh/smCube27.obj" triangulate="true"/>
-                        <Object type="Mesh" />
-                        <Object type="MechanicalObject" scale="0.01"/>
-                        <Object type="Triangle" />
-                        <Object type="Line" />
-                        <Object type="Point" />
-                        <Object type="RigidMapping" />
+                        <MeshLoader name="meshLoader" filename="mesh/smCube27.obj" triangulate="true"/>
+                        <Mesh />
+                        <MechanicalObject scale="0.01"/>
+                        <Triangle />
+                        <Line />
+                        <Point />
+                        <RigidMapping />
                 </Node>
 	</Node>
 

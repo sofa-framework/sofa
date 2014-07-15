@@ -371,7 +371,7 @@ void TLineModel<DataTypes>::updateFromTopology()
 
         needsUpdate = true;
 
-        const unsigned int nbPoints = mstate->getX()->size();
+        const unsigned int nbPoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
         const unsigned int nbLines = bmt->getNbEdges();
 
         resize( nbLines );

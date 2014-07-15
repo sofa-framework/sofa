@@ -76,7 +76,10 @@ public:
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
     typedef defaulttype::Quat Quat;
     typedef defaulttype::Vector3 Vector3;
-    
+
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
+
     static const unsigned int CoordSize = Coord::total_size;
     typedef defaulttype::Mat<3,3,Real> RotationMatrix;
 
@@ -94,7 +97,7 @@ public :
     /// data end time when the constraint is applied
     Data <double> m_endConstraintTime;
     /// Rotation Matrix of affine transformation
-    core::objectmodel::Data<RotationMatrix> m_rotation;
+    Data<RotationMatrix> m_rotation;
     /// Quaternion of affine transformation (for rigid)
     Data<Quat> m_quaternion;
     /// Translation Matrix of affine transformation
@@ -130,6 +133,11 @@ public:
     void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
     void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+
+    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /* cData */)
+    {
+        serr << "projectJacobianMatrix not implemented" << sendl;
+    }
 
     /// Compute the theoretical final positions
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 

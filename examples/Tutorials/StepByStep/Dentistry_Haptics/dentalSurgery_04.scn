@@ -31,7 +31,7 @@
         <UniformMass name="mass" totalmass="0.05" filename="BehaviorModels/dental_instrument.rigid" />
         <Node name="VisualModel">
             <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" dz="-10" />
-            <RigidMapping name="MM-&gt;VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
+            <RigidMapping name="MM-&gt;VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel">
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
@@ -39,7 +39,7 @@
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 -10" />
             <Line name="instrument" contactStiffness="5" />
             <Point name="instrument" contactStiffness="5" />
-            <RigidMapping name="MM-&gt;CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
+            <RigidMapping name="MM-&gt;CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
         </Node>
     </Node>
 </Node>

@@ -26,7 +26,7 @@
 		<UncoupledConstraintCorrection template="Rigid" name="default45" />
 		<Node 	name="VisualModel" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
 			<OglModel template="ExtVec3f" name="InstrumentVisualModel"  fileMesh="data/mesh/dental_instrument.obj"  translation="-1.2 -1.6 3.55"  rotation="180 0 150"  material="Default Diffuse 1 1 0.2 0.2 1 Ambient 1 0.2 0.04 0.04 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
-			<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="MM->VM mapping"  object1="instrumentState"  object2="InstrumentVisualModel" />
+			<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="MM->VM mapping"  input="@instrumentState"  output="@InstrumentVisualModel" />
 		</Node>
 		<Node 	name="CollisionModel" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
 			<MeshObjLoader name="loader"  filename="data/mesh/dental_instrument_centerline.obj" />
@@ -35,10 +35,10 @@
 			<TTriangleModel template="Vec3d" name="instrument"  contactStiffness="10" />
 			<LineModel name="instrument"  contactStiffness="10" />
 			<PointModel name="instrument"  contactStiffness="10" />
-			<RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="MM->CM mapping"  object1="instrumentState"  object2="instrumentCollisionState" />
+			<RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="MM->CM mapping"  input="@instrumentState"  output="@instrumentCollisionState" />
 		</Node>
-		<VectorSpringForceField template="Vec3d" name="default47"  object1="Omni/RefModel/instrumentCollisionState"  object2="Instrument/CollisionModel/instrumentCollisionState"  stiffness="10"  viscosity="0" />
-		<JointSpringForceField template="Rigid" name="joint springs"  object1="Omni"  object2="instrumentState"  spring="BEGIN_SPRING  0 0  KS_T 50 50  KS_R 500 500  KS_B 500  END_SPRING
+		<VectorSpringForceField template="Vec3d" name="default47"  object1="@Omni/RefModel/instrumentCollisionState"  object2="@Instrument/CollisionModel/instrumentCollisionState"  stiffness="10"  viscosity="0" />
+		<JointSpringForceField template="Rigid" name="joint springs"  object1="@Omni"  object2="@instrumentState"  spring="BEGIN_SPRING  0 0  KS_T 50 50  KS_R 500 500  KS_B 500  END_SPRING
 " />
 	</Node>
 	<Node 	name="Tooth" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >

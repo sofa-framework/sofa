@@ -79,7 +79,7 @@ template <> SOFA_OBJECT_INTERACTION_API
 void AttachConstraint<Rigid3dTypes>::calcRestRotations()
 {
     const SetIndexArray & indices2 = f_indices2.getValue();
-    const VecCoord& x0 = *this->mstate2->getX0();
+    const VecCoord& x0 = this->mstate2->read(core::ConstVecCoordId::restPosition())->getValue();
     restRotations.resize(indices2.size());
     for (unsigned int i=0; i<indices2.size(); ++i)
     {

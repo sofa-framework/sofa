@@ -192,7 +192,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
 
-    const VecCoord& x0 = *this->mstate->getX0();
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     //    sout << "Beam "<<i<<" : ("<<a<<' '<<b<<") : beamsData size = "<<beamsData.size()<<" mstate size = "<<this->mstate->getSize()<<" x0 size = "<<x0.size()<<sendl;
     //if (needInit)
     if (stiffnessContainer)
@@ -421,7 +421,7 @@ inline defaulttype::Quat qDiff(defaulttype::Quat a, const defaulttype::Quat& b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 {
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     defaulttype::Quat quatA, quatB, dQ;
     Vec3 dW;
@@ -457,7 +457,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecCoord & x, int i, Index a, Index b )
 {
-    const VecCoord& x0 = *this->mstate->getX0();
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     beamQuat(i)= x[a].getOrientation();
     beamQuat(i).normalize();
@@ -518,7 +518,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, double fact)
 {
-    //const VecCoord& x = *this->mstate->getX();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     Displacement local_depl;
     defaulttype::Vec<3,Real> u;
@@ -658,7 +658,7 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< defaulttype::Vector3 > points[3];
 

@@ -47,7 +47,7 @@
 		<MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
 		<Node name="VisuAvatar" activated="false" >
 			<OglModel name="Visual" fileMesh="mesh/sphere.obj" color="gray" scale="0.1"/>
-			<RigidMapping object1="../.." object2="Visual" index="0"/>
+			<RigidMapping input="@.." output="@Visual" index="0"/>
 		</Node>
 		<Node name="RefModel">
 			<MeshObjLoader filename="dental_instrument_centerline.obj"  name="loader"/>
@@ -66,7 +66,7 @@
 		<UncoupledConstraintCorrection/>
 		<Node name="VisualModel" >
 			<OglModel name="InstrumentVisualModel" fileMesh="dental_instrument.obj" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
-			<RigidMapping name="MM->VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />
+			<RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
 		</Node>
 		<Node name="CollisionModel" >
 			<MeshObjLoader filename="dental_instrument_centerline.obj"  name="loader"/>
@@ -74,9 +74,9 @@
 			<MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<Line name="instrument" contactStiffness="10" />
 			<Point name="instrument" contactStiffness="10" /> 
-			<RigidMapping name="MM->CM mapping" object1="instrumentState" object2="instrumentCollisionState" />
+			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
-		<VectorSpringForceField  object1="Omni/RefModel/instrumentCollisionState" object2="Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
+		<VectorSpringForceField  object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
 	</Node>  
 
 </Node>

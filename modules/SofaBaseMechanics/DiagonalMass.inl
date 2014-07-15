@@ -809,7 +809,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     const MassVector &masses= f_mass.getValue();
     if (masses.empty()) return;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Coord gravityCenter;
     Real totalMass=0.0;
 

@@ -395,11 +395,11 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(M
     materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
     // divide by 36 times volumes of the element
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    Coord A = (*X0)[b] - (*X0)[a];
-    Coord B = (*X0)[c] - (*X0)[a];
-    Coord C = (*X0)[d] - (*X0)[a];
+    Coord A = (X0)[b] - (X0)[a];
+    Coord B = (X0)[c] - (X0)[a];
+    Coord C = (X0)[d] - (X0)[a];
     Coord AB = cross(A, B);
     Real volumes6 = fabs( dot( AB, C ) );
     if (volumes6<0)
@@ -644,11 +644,11 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Index&c, Index&d)
 {
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
-    computeStrainDisplacement(tetrahedronInf[i].strainDisplacementTransposedMatrix, (*X0)[a], (*X0)[b], (*X0)[c], (*X0)[d] );
+    computeStrainDisplacement(tetrahedronInf[i].strainDisplacementTransposedMatrix, (X0)[a], (X0)[b], (X0)[c], (X0)[d] );
 
     tetrahedronInfo.endEdit();
 
@@ -660,7 +660,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
 {
 
     const topology::Tetrahedron t=_topology->getTetrahedron(elementIndex);
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
 
     Index a = t[0];
@@ -673,15 +673,15 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
     D[0] = 0;
     D[1] = 0;
     D[2] = 0;
-    D[3] =  (*X0)[b][0] - (*X0)[a][0] - p[b][0]+p[a][0];
-    D[4] =  (*X0)[b][1] - (*X0)[a][1] - p[b][1]+p[a][1];
-    D[5] =  (*X0)[b][2] - (*X0)[a][2] - p[b][2]+p[a][2];
-    D[6] =  (*X0)[c][0] - (*X0)[a][0] - p[c][0]+p[a][0];
-    D[7] =  (*X0)[c][1] - (*X0)[a][1] - p[c][1]+p[a][1];
-    D[8] =  (*X0)[c][2] - (*X0)[a][2] - p[c][2]+p[a][2];
-    D[9] =  (*X0)[d][0] - (*X0)[a][0] - p[d][0]+p[a][0];
-    D[10] = (*X0)[d][1] - (*X0)[a][1] - p[d][1]+p[a][1];
-    D[11] = (*X0)[d][2] - (*X0)[a][2] - p[d][2]+p[a][2];
+    D[3] =  (X0)[b][0] - (X0)[a][0] - p[b][0]+p[a][0];
+    D[4] =  (X0)[b][1] - (X0)[a][1] - p[b][1]+p[a][1];
+    D[5] =  (X0)[b][2] - (X0)[a][2] - p[b][2]+p[a][2];
+    D[6] =  (X0)[c][0] - (X0)[a][0] - p[c][0]+p[a][0];
+    D[7] =  (X0)[c][1] - (X0)[a][1] - p[c][1]+p[a][1];
+    D[8] =  (X0)[c][2] - (X0)[a][2] - p[c][2]+p[a][2];
+    D[9] =  (X0)[d][0] - (X0)[a][0] - p[d][0]+p[a][0];
+    D[10] = (X0)[d][1] - (X0)[a][1] - p[d][1]+p[a][1];
+    D[11] = (X0)[d][2] - (X0)[a][2] - p[d][2]+p[a][2];
     /*        serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall, displacement"<<D<<sendl;
             serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall, strainDisplacementTransposed"<<tetrahedronInfo[elementIndex].strainDisplacementTransposedMatrix<<sendl;
             serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall, material"<<tetrahedronInfo[elementIndex].materialMatrix<<sendl;*/
@@ -904,7 +904,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffness
 template <class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, topology::Tetra& te)
 {
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Index a = te[0];
     Index b = te[1];
@@ -912,16 +912,16 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffness
     Index d = te[3];
 
     Transformation R_0_1;
-    computeRotationLarge( R_0_1, (*X0), a, b, c);
+    computeRotationLarge( R_0_1, (X0), a, b, c);
 
     MaterialStiffness	materialMatrix;
     StrainDisplacementTransposed	strainMatrix;
     helper::fixed_array<Coord,4> rotatedInitialElements;
 
-    rotatedInitialElements[0] = R_0_1*(*X0)[a];
-    rotatedInitialElements[1] = R_0_1*(*X0)[b];
-    rotatedInitialElements[2] = R_0_1*(*X0)[c];
-    rotatedInitialElements[3] = R_0_1*(*X0)[d];
+    rotatedInitialElements[0] = R_0_1*(X0)[a];
+    rotatedInitialElements[1] = R_0_1*(X0)[b];
+    rotatedInitialElements[2] = R_0_1*(X0)[c];
+    rotatedInitialElements[3] = R_0_1*(X0)[d];
 
     rotatedInitialElements[1] -= rotatedInitialElements[0];
     rotatedInitialElements[2] -= rotatedInitialElements[0];
@@ -952,17 +952,17 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
     // first vector on first edge
     // second vector in the plane of the two first edges
     // third vector orthogonal to first and second
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     Transformation R_0_1;
-    computeRotationLarge( R_0_1, (*X0), a, b, c);
+    computeRotationLarge( R_0_1, (X0), a, b, c);
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
-    tetrahedronInf[i].rotatedInitialElements[0] = R_0_1*(*X0)[a];
-    tetrahedronInf[i].rotatedInitialElements[1] = R_0_1*(*X0)[b];
-    tetrahedronInf[i].rotatedInitialElements[2] = R_0_1*(*X0)[c];
-    tetrahedronInf[i].rotatedInitialElements[3] = R_0_1*(*X0)[d];
+    tetrahedronInf[i].rotatedInitialElements[0] = R_0_1*(X0)[a];
+    tetrahedronInf[i].rotatedInitialElements[1] = R_0_1*(X0)[b];
+    tetrahedronInf[i].rotatedInitialElements[2] = R_0_1*(X0)[c];
+    tetrahedronInf[i].rotatedInitialElements[3] = R_0_1*(X0)[d];
 
     tetrahedronInf[i].initialTransformation = R_0_1;
 //	serr<<"a,b,c : "<<a<<" "<<b<<" "<<c<<sendl;
@@ -1165,23 +1165,23 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessLarge( Vecto
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, Index&c, Index&d)
 {
-    const VecCoord *X0=this->mstate->getX0();
+    const VecCoord X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
     Transformation A;
-    A[0] = (*X0)[b]-(*X0)[a];
-    A[1] = (*X0)[c]-(*X0)[a];
-    A[2] = (*X0)[d]-(*X0)[a];
+    A[0] = (X0)[b]-(X0)[a];
+    A[1] = (X0)[c]-(X0)[a];
+    A[2] = (X0)[d]-(X0)[a];
     tetrahedronInf[i].initialTransformation = A;
 
     Transformation R_0_1;
     helper::Decompose<Real>::polarDecomposition(A, R_0_1);
 
-    tetrahedronInf[i].rotatedInitialElements[0] = R_0_1*(*X0)[a];
-    tetrahedronInf[i].rotatedInitialElements[1] = R_0_1*(*X0)[b];
-    tetrahedronInf[i].rotatedInitialElements[2] = R_0_1*(*X0)[c];
-    tetrahedronInf[i].rotatedInitialElements[3] = R_0_1*(*X0)[d];
+    tetrahedronInf[i].rotatedInitialElements[0] = R_0_1*(X0)[a];
+    tetrahedronInf[i].rotatedInitialElements[1] = R_0_1*(X0)[b];
+    tetrahedronInf[i].rotatedInitialElements[2] = R_0_1*(X0)[c];
+    tetrahedronInf[i].rotatedInitialElements[3] = R_0_1*(X0)[d];
 
     computeStrainDisplacement( tetrahedronInf[i].strainDisplacementTransposedMatrix,tetrahedronInf[i].rotatedInitialElements[0], tetrahedronInf[i].rotatedInitialElements[1],tetrahedronInf[i].rotatedInitialElements[2],tetrahedronInf[i].rotatedInitialElements[3] );
 
@@ -1306,7 +1306,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,true);

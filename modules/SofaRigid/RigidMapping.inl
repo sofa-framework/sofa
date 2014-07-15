@@ -191,17 +191,17 @@ void RigidMapping<TIn, TOut>::reinit()
     if (this->points.getValue().empty() && this->toModel != NULL && !useX0.getValue())
     {
         //        cerr<<"RigidMapping<TIn, TOut>::init(), from " << this->fromModel->getName() << " to " << this->toModel->getName() << endl;
-        const VecCoord& xTo = *this->toModel->getX();
+        const VecCoord& xTo =this->toModel->read(core::ConstVecCoordId::position())->getValue();
         helper::WriteAccessor<Data<VecCoord> > points = this->points;
         points.resize(xTo.size());
         unsigned int i = 0;
         if (globalToLocalCoords.getValue())
         {
             //            cerr<<"globalToLocal is true, compute local coordinates"  << endl;
-            const VecCoord& xTo = *this->toModel->getX();
+            const VecCoord& xTo =this->toModel->read(core::ConstVecCoordId::position())->getValue();
             points.resize(xTo.size());
             unsigned int i = 0, cpt = 0;
-            const InVecCoord& xFrom = *this->fromModel->getX();
+            const InVecCoord& xFrom =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
             switch (pointsPerFrame.getValue().size())
             {
             case 0:
@@ -281,7 +281,7 @@ void RigidMapping<TIn, TOut>::disable()
 {
  if (!this->points.getValue().empty() && this->toModel!=NULL)
  {
-  VecCoord& x = *this->toModel->getX();
+  VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
   x.resize(points.getValue().size());
   for (unsigned int i=0;i<points.getValue().size();i++)
    x[i] = points.getValue()[i];
@@ -760,7 +760,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
             {
                 // Commented by PJ. Bug??
                 // o.addCol(out.size() - 1 - index.getValue(), result);
-                const unsigned int numDofs = this->getFromModel()->getX()->size();
+                const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
                 o.addCol(numDofs - 1 - index.getValue(), result);
             }
         }
@@ -769,7 +769,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     }
     case 1:
     {
-        const unsigned int numDofs = this->getFromModel()->getX()->size();
+        const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
         const unsigned int val = pointsPerFrame.getValue()[0];
 
         typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
@@ -814,7 +814,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     }
     default:
     {
-        const unsigned int numDofs = this->getFromModel()->getX()->size();
+        const unsigned int numDofs = this->getFromModel()->read(core::ConstVecCoordId::position())->getValue().size();
 
         typename Out::MatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -902,8 +902,8 @@ void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
 template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
 {
-	const VecCoord& out = *this->toModel->getX();
-    const InVecCoord& in = *this->fromModel->getX();
+	const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& pts = this->getPoints();
 
 	typename SparseMatrixEigen::CompressedMatrix& J = eigenJacobian.compressedMatrix;
@@ -1007,8 +1007,8 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
 {
-    const VecCoord& out = *this->toModel->getX();
-    const InVecCoord& in = *this->fromModel->getX();
+    const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& pts = this->getPoints();
     assert(pts.size() == out.size());
 
@@ -1141,7 +1141,7 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     std::vector<defaulttype::Vector3> points;
     defaulttype::Vector3 point;
 
-    const VecCoord& x = *this->toModel->getX();
+    const VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i = 0; i < x.size(); i++)
     {
         point = OutDataTypes::getCPos(x[i]);

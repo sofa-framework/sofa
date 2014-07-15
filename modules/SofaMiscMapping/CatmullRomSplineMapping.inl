@@ -95,10 +95,10 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
     unsigned int targetP =  P + E * ( k2 - 1 ) ;
     unsigned int targetE =  E * k2 ;
 
-    sofa::helper::ReadAccessor<Data<VecInCoord> >		xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
-    sofa::helper::WriteAccessor<Data<VecOutCoord> >	xto0 = *this->toModel->write(core::VecCoordId::restPosition());
-    sofa::helper::WriteAccessor<Data<VecOutCoord> >	xto = *this->toModel->write(core::VecCoordId::position());
-    sofa::helper::WriteAccessor<Data<VecOutCoord> >	xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
+    sofa::helper::ReadAccessor<Data<InVecCoord> >		xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
+    sofa::helper::WriteAccessor<Data<OutVecCoord> >	xto0 = *this->toModel->write(core::VecCoordId::restPosition());
+    sofa::helper::WriteAccessor<Data<OutVecCoord> >	xto = *this->toModel->write(core::VecCoordId::position());
+    sofa::helper::WriteAccessor<Data<OutVecCoord> >	xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
 
     this->toModel->resize(targetP);
     targetMesh->setNbPoints(targetP);
@@ -176,19 +176,27 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
-void CatmullRomSplineMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
+void CatmullRomSplineMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
+    OutVecCoord& out = *outData.beginEdit(mparams);
+    const InVecCoord& in = inData.getValue();
+
     for ( unsigned int i = 0 ; i < out.size(); i++ )
     {
         out[i] = OutCoord ();
         for ( unsigned int j=0; j<4 ; j++ )	out[i] += in[m_index[i][j]] * m_weight[i][j] ;
     }
+
+    outData.endEdit(mparams);
 }
 
 
 template <class TIn, class TOut>
-void CatmullRomSplineMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+void CatmullRomSplineMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
+    OutVecDeriv& out = *outData.beginEdit(mparams);
+    const InVecDeriv& in = inData.getValue();
+
     if ( ! ( this->maskTo->isInUse() ) )
     {
         for ( unsigned int i=0; i<out.size(); i++ )
@@ -211,13 +219,18 @@ void CatmullRomSplineMapping<TIn, TOut>::applyJ ( typename Out::VecDeriv& out, c
             for ( unsigned int j=0; j<4 ; j++ )  out[i] += in[m_index[i][j]] * m_weight[i][j] ;
         }
     }
+
+    outData.endEdit(mparams);
 }
 
 
 
 template <class TIn, class TOut>
-void CatmullRomSplineMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+void CatmullRomSplineMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
+    InVecDeriv& out = *outData.beginEdit(mparams);
+    const OutVecDeriv& in = inData.getValue();
+
     if ( ! ( this->maskTo->isInUse() ) )
     {
         this->maskFrom->setInUse ( false );
@@ -243,13 +256,18 @@ void CatmullRomSplineMapping<TIn, TOut>::applyJT ( typename In::VecDeriv& out, c
             }
         }
     }
+
+    outData.endEdit(mparams);
 }
 
 
 
 template <class TIn, class TOut>
-void CatmullRomSplineMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& parentJacobians, const typename Out::MatrixDeriv& childJacobians )
+void CatmullRomSplineMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
+    InMatrixDeriv& parentJacobians = *outData.beginEdit(cparams);
+    const OutMatrixDeriv& childJacobians = inData.getValue();
+
     for (typename Out::MatrixDeriv::RowConstIterator childJacobian = childJacobians.begin(); childJacobian != childJacobians.end(); ++childJacobian)
     {
         typename In::MatrixDeriv::RowIterator parentJacobian = parentJacobians.writeLine(childJacobian.index());
@@ -267,6 +285,8 @@ void CatmullRomSplineMapping<TIn, TOut>::applyJT ( typename In::MatrixDeriv& par
             }
         }
     }
+
+    outData.endEdit(cparams);
 }
 
 
@@ -277,8 +297,8 @@ void CatmullRomSplineMapping<TIn, TOut>::draw(const core::visual::VisualParams* 
 #ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowMappings()) return;
 
-    const typename Out::VecCoord& xto = *this->toModel->getX();
-    const typename In::VecCoord& xfrom = *this->fromModel->getX();
+    const typename Out::VecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
     glDisable ( GL_LIGHTING );

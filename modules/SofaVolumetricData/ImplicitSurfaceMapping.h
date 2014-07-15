@@ -56,6 +56,17 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type InReal;
+
+    typedef typename In::MatrixDeriv InMatrixDeriv;
+    typedef typename Out::MatrixDeriv OutMatrixDeriv;
+
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
+    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
+
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 protected:
     ImplicitSurfaceMapping()
         : Inherit(),
@@ -94,8 +105,16 @@ public:
 
     void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
     void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
+    void applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in)
+    {
+        serr << "applyJT(dx) is not implemented" << sendl;
+    }
 
-    //void applyJT( InVecDeriv& out, const OutVecDeriv& in );
+    void applyJT( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
+    {
+        serr << "applyJT(constraint) is not implemented" << sendl;
+    }
+
 protected:
     Data <double > mStep;
     Data <double > mRadius;
