@@ -33,6 +33,7 @@
 using namespace sofa::defaulttype;
 
 namespace sofa {
+namespace {
 
 using namespace modeling;
 typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
@@ -121,7 +122,8 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 
 TEST_F( EulerImplicit_test_2_particles_to_equilibrium,  ){}
 
-}// namespace sofa
+} // namespace
+} // namespace sofa
 
 
 

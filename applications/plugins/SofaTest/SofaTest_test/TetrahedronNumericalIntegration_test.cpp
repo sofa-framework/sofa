@@ -41,6 +41,7 @@
 
 
 namespace sofa {
+namespace {
 
 using std::cout;
 using std::cerr;
@@ -169,5 +170,5 @@ TYPED_TEST( TetrahedronNumericalIntegration_test , testNumericalIntegration )
 }
 
 
-
+} // namespace
 } // namespace sofa

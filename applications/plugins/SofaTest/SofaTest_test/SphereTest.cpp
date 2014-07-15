@@ -56,6 +56,7 @@
 using namespace sofa::core::objectmodel;
 
 namespace sofa {
+namespace {
 
 struct TestSphere : public Sofa_test<double>{
     typedef sofa::defaulttype::Vec3d Vec3d;
@@ -545,4 +546,5 @@ TEST_F(TestSphere, rigid_sphere_triangle_new_prox)  {ASSERT_TRUE(rigidTriangle<c
 TEST_F(TestSphere, soft_sphere_triangle_min_prox)  {ASSERT_TRUE(softTriangle<component::collision::MeshMinProximityIntersection >(meshMin));  }
 TEST_F(TestSphere, soft_sphere_triangle_new_prox)  {ASSERT_TRUE(softTriangle<component::collision::MeshNewProximityIntersection >(meshNew));  }
 
-}
+} // namespace
+} // namespace sofa
