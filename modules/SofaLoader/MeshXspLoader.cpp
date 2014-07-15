@@ -109,20 +109,19 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
     //int npoints = 0;
     //int nlines = 0;
 
-    int totalNumMasses;
-    int totalNumSprings;
-
     file >> cmd;
 
     // then find out number of masses and springs
     if (cmd == "numm")
     {
+        int totalNumMasses = 0;
         file >> totalNumMasses;
         //npoints=totalNumMasses;
     }
 
     if (cmd=="nums")
     {
+        int totalNumSprings = 0;
         file >> totalNumSprings;
         //nlines=totalNumSprings;
     }
@@ -157,11 +156,15 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
             int	index;
             Edge m;
             double ks=0.0,kd=0.0,initpos=-1;
-            double restx=0.0,resty=0.0,restz=0.0;
             if (vector_spring)
+            {
+                double restx=0.0,resty=0.0,restz=0.0;
                 file >> index >> m[0] >> m[1] >> ks >> kd >> initpos >> restx >> resty >> restz;
+            }
             else
+            {
                 file >> index >> m[0] >> m[1] >> ks >> kd >> initpos;
+            }
             --m[0];
             --m[1];
 

@@ -157,7 +157,6 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
         sofa::helper::vector<CollisionElementIterator> collisionElems;
         Vector3 minBBox, maxBBox;
         Vector3 ijk, lmn;
-        bool collisionDetected = false;
 
         for (; it != itEnd; it++)
         {
@@ -196,7 +195,6 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
             {
                 //if ((*it)->canCollideWith(*itCollis))
                 {
-                    collisionDetected = true;
                     cmPairs.push_back(std::pair<CollisionModel*, CollisionModel*>(it->getCollisionModel(), itCollis->getCollisionModel()));
                     elemPairs.push_back(std::pair<CollisionElementIterator, CollisionElementIterator> (it, *itCollis));
                 }
@@ -406,10 +404,9 @@ void GridCell::setMinMax(const Vector3 &minimum, const Vector3 &maximum)
 
 void GridCell::draw (const core::visual::VisualParams* vparams,int timeStampMethod)
 {
-    if (timeStampMethod != timeStamp || (collisElems.empty() && collisElemsImmobile[1].empty()))
+    if(timeStampMethod != timeStamp || (collisElems.empty() && collisElemsImmobile[1].empty()))
     {
         return;
-        glColor3f (0.0, 0.25, 0.25);
     }
     else
     {

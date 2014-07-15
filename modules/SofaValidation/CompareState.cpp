@@ -86,9 +86,6 @@ std::string lookForValidCompareStateFile( const std::string& sceneName,
 
     // from here we look for a closest match in terms of mstateName.
 
-    std::string parentDir = SetDirectory::GetParentDir(testFilename.c_str());
-    std::string fileName  = SetDirectory::GetFileName(testFilename.c_str());
-
     const int& numDefault = sofa::simulation::xml::numDefault;
 
     for( int i = 0; i<numDefault; ++i)

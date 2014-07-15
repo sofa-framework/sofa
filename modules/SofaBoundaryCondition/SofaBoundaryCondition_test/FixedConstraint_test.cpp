@@ -37,6 +37,7 @@
 namespace sofa{
 namespace {
 using namespace modeling;
+using core::objectmodel::New;
 
 template<typename DataTypes>
 void createUniformMass(simulation::Node::SPtr node, component::container::MechanicalObject<DataTypes>& dofs)

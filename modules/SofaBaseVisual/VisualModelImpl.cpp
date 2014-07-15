@@ -1446,7 +1446,6 @@ void VisualModelImpl::handleTopologyChange()
             }
 
             unsigned int last;
-            unsigned int ind_last;
 
             last = m_topology->getNbTriangles() - 1;
 
@@ -1462,7 +1461,7 @@ void VisualModelImpl::handleTopologyChange()
                 triangles[ind_k] = triangles[last];
                 triangles[last] = tmp;
 
-                ind_last = triangles.size() - 1;
+                unsigned int ind_last = triangles.size() - 1;
 
                 if(last != ind_last)
                 {
@@ -1488,7 +1487,6 @@ void VisualModelImpl::handleTopologyChange()
             }
 
             unsigned int last;
-            unsigned int ind_last;
 
             last = m_topology->getNbQuads() - 1;
 
@@ -1504,7 +1502,7 @@ void VisualModelImpl::handleTopologyChange()
                 quads[ind_k] = quads[last];
                 quads[last] = tmp;
 
-                ind_last = quads.size() - 1;
+                unsigned int ind_last = quads.size() - 1;
 
                 if(last != ind_last)
                 {

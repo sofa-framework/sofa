@@ -154,7 +154,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
                 }
             }
         }
-        it++;
+        ++it;
     }
     return this->doEval(x1, xproj, x0);
 }

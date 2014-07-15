@@ -129,7 +129,7 @@ public :
       /// Input stream
       inline friend std::istream& operator>> ( std::istream& in, TetrahedronRestInformation& /*eri*/ ) { return in; }
 
-      TetrahedronRestInformation() {}  
+      TetrahedronRestInformation(): tetraIndices(), tetraEdges() {}  
     };
     typedef typename VecCoord::template rebind<TetrahedronRestInformation>::other tetrahedronRestInfoVector;
     
@@ -147,7 +147,7 @@ public :
 	   /// Input stream
 	   inline friend std::istream& operator>> ( std::istream& in, EdgeInformation& /*eri*/ ) { return in; }
 
-     EdgeInformation() {}
+     EdgeInformation(): DfDx(), vertices() {}
    };
    typedef typename VecCoord::template rebind<EdgeInformation>::other edgeInformationVector;
 
@@ -164,13 +164,13 @@ public :
    
 public:
 
-	void setMaterialName(const std::string name) {
+	void setMaterialName(const std::string& name) {
 		f_materialName.setValue(name);
 	}
-	void setparameter(const vector<Real> param) {
+	void setparameter(const vector<Real>& param) {
 		f_parameterSet.setValue(param);
 	}
-	void setdirection(const vector<Coord> direction) {
+	void setdirection(const vector<Coord>& direction) {
 		f_anisotropySet.setValue(direction);
 	}
 

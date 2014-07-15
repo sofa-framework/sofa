@@ -109,7 +109,6 @@ void PartialFixedConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams
 #ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    std::vector< Vector3 > points;
 
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);

@@ -62,6 +62,10 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
 #ifdef DISPLAY_TIME
     timeStamp = 1.0 / (double)sofa::helper::system::thread::CTime::getRefTicksPerSec();
 #endif
+
+	f_maxIter.setRequired(true);
+	f_tolerance.setRequired(true);
+	f_smallDenominatorThreshold.setRequired(true);
 }
 
 template<class TMatrix, class TVector>

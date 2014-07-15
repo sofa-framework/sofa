@@ -300,6 +300,14 @@ void BaseObject::init()
     if(!context_||!context_->is_partition())
         setPartition(new Iterative::IterativePartition());
 #endif
+
+	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
+	{
+		if ((*iData)->isRequired() && !(*iData)->isSet())
+		{
+			serr << "ERROR: Required data " << (*iData)->getName() << " has not been set. (Current value is " << (*iData)->getValueString() << ")" << sendl;
+		}
+	}
 }
 
 void BaseObject::bwdInit()

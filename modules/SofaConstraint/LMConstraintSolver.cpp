@@ -71,10 +71,15 @@ LMConstraintSolver::LMConstraintSolver()
 
     traceKineticEnergy.setGroup("Statistics");
     this->f_listening.setValue(true);
+
+	numIterations.setRequired(true);
+	maxError.setRequired(true);
 }
 
 void LMConstraintSolver::init()
 {
+	sofa::core::behavior::ConstraintSolver::init();
+
     helper::vector< core::behavior::BaseConstraintCorrection* > listConstraintCorrection;
     ((simulation::Node*) getContext())->get<core::behavior::BaseConstraintCorrection>(&listConstraintCorrection, core::objectmodel::BaseContext::SearchDown);
     for (unsigned int i=0; i<listConstraintCorrection.size(); ++i)
@@ -830,7 +835,6 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
     }
     const unsigned int dimensionDofs=dofs->getDerivDimension();
 
-    unsigned int offset=0;
     //In case of position correction, we need to update the velocities
     if (order==core::ConstraintParams::POS)
     {
@@ -839,7 +843,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         {
             VectorEigen Acorrection=VectorEigen::Zero(dofs->getSize()*(3+4));
             //We have to transform the Euler Rotations into a quaternion
-            offset=0;
+            unsigned int offset=0;
 
             for (int l=0; l<A.rows(); l+=6)
             {

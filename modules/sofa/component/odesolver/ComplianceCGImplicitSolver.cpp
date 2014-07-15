@@ -116,7 +116,7 @@ void ComplianceCGImplicitSolver::solve(double dt)
 
 
     // -- solve the system using a conjugate gradient solution
-    double rho, rho_1=0, alpha, beta;
+    double rho_1=0, beta;
     v_clear( x );
     v_eq(r,b); // initial residual
 
@@ -135,8 +135,8 @@ void ComplianceCGImplicitSolver::solve(double dt)
     {
 
         //z = r; // no precond
-        //rho = r.dot(z);
-        rho = r.dot(r);
+        //double rho = r.dot(z);
+        double rho = r.dot(r);
 
 
         if( nb_iter==1 )
@@ -206,7 +206,7 @@ void ComplianceCGImplicitSolver::solve(double dt)
             }
             break;
         }
-        alpha = rho/den;
+        double alpha = rho/den;
         x.peq(p,alpha);                 // x = x + alpha p
         r.peq(q,-alpha);                // r = r - alpha r
         if( printLog )
