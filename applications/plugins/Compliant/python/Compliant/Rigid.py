@@ -408,7 +408,7 @@ class Joint:
             
             target_constraint = target.createChild("target_constraint")
             target_constraint.createObject('MechanicalObject', template = 'Vec1d', name = 'dofs')
-            target_constraint.createObject('OffsetMapping', name = 'mapping', template = 'Vec1d,Vec1d', input = '@../', output = '@dofs', offsets = concat(maskedTargetPose) )
+            target_constraint.createObject('DifferenceFromTargetMapping', name = 'mapping', template = 'Vec1d,Vec1d', input = '@../', output = '@dofs', targets = concat(maskedTargetPose) )
             target_constraint.createObject('UniformCompliance', name = 'compliance', template = 'Vec1d', compliance = compliance, damping=damping)
 
 # and now for more specific joints:
