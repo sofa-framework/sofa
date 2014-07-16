@@ -54,7 +54,7 @@ public:
      * @param near Smaller than the nearest distance from the new camera center to the scene (output)
      * @param far Larger than the nearest distance from the new camera center to the scene (output)
      */
-    void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far);
+    void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* nearPlane, SReal* farPlane);
 
     /**
      * @brief getPickDirection Compute the direction of a button click, returned as a unit vector
