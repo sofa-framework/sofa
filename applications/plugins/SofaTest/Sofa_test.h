@@ -33,6 +33,7 @@
 
 #include "initTestPlugin.h"
 #include <gtest/gtest.h>
+#include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/simulation/common/Node.h>
 #include <time.h>
@@ -252,11 +253,21 @@ struct data_traits
 };
 
 
-
+template <int N, class real>
+void EXPECT_VEC_DOUBLE_EQ(sofa::defaulttype::Vec<N, real> const& expected, sofa::defaulttype::Vec<N, real> const& actual) {
+    typedef typename sofa::defaulttype::Vec<N,real>::size_type size_type;
+    for (size_type i=0; i<expected.total_size; ++i)
+        EXPECT_DOUBLE_EQ(expected[i], actual[i]);
 }
 
-#endif
+template <int L, int C, class real>
+void EXPECT_MAT_DOUBLE_EQ(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual) {
+    typedef typename sofa::defaulttype::Mat<L,C,real>::size_type size_type;
+    for (size_type i=0; i<expected.nbLines; ++i)
+        for (size_type j=0; j<expected.nbCols; ++j)
+            EXPECT_DOUBLE_EQ(expected(i,j), actual(i,j));
+}
 
+} // namespace sofa
 
-
-
+#endif // SOFA_STANDARDTEST_Sofa_test_H
