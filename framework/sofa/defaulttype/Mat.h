@@ -646,8 +646,11 @@ public:
         return r;
     }
 
-
-
+    /// Invert transformation matrix m
+    bool transformInvert(const Mat<L,C,real>& m)
+    {
+        return transformInvertMatrix(*this, m);
+    }
 
 };
 
@@ -872,6 +875,27 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
     return true;
 }
 #undef MIN_DETERMINANT
+
+/// Inverse Matrix considering the matrix as a transformation.
+template<int S, class real>
+bool transformInvertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
+{
+    Mat<S-1,S-1,real> R, R_inv;
+    from.getsub(0,0,R);
+    bool b = invertMatrix(R_inv, R);
+
+    Mat<S-1,1,real> t, t_inv;
+    from.getsub(0,S-1,t);
+    t_inv = -1.*R_inv*t;
+
+    dest.setsub(0,0,R_inv);
+    dest.setsub(0,S-1,t_inv);
+    for (unsigned int i=0; i<S-1; ++i)
+        dest(S-1,i)=0.0;
+    dest(S-1,S-1)=1.0;
+
+    return b;
+}
 
 typedef Mat<1,1,float> Mat1x1f;
 typedef Mat<1,1,double> Mat1x1d;
