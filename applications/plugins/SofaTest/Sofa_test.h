@@ -92,7 +92,7 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
 
     /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
     template< int N, typename Real, typename Vector2>
-    Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2 )
+    static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2 )
     {
         if( N !=m2.size() ) {
             ADD_FAILURE() << "Comparison between vectors of different sizes";
@@ -107,9 +107,9 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
     }
 
 
-    /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
+    /// return the maximum difference between corresponding entries
     template< int N, typename Real>
-    Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const sofa::defaulttype::Vec<N,Real>& m2 )
+    static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const sofa::defaulttype::Vec<N,Real>& m2 )
     {
         Real result = 0;
         for( unsigned i=0; i<N; i++ ){
@@ -121,7 +121,7 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
 
     /// Return the maximum difference between two containers. Issues a failure if sizes are different.
     template<class Container1, class Container2>
-    Real vectorMaxDiff( const Container1& c1, const Container2& c2 )
+    static Real vectorMaxDiff( const Container1& c1, const Container2& c2 )
     {
         if( c1.size()!=c2.size() ){
             ADD_FAILURE() << "containers have different sizes";
@@ -185,8 +185,9 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
 
 protected:
     // helpers
-    Real norm(Real a){ return fabs(a); }
-    template <typename T> Real norm(T a){ return a.norm(); }
+    static Real norm(Real a){ return fabs(a); }
+    template <typename T>
+    static Real norm(T a){ return a.norm(); }
 
 
 };
