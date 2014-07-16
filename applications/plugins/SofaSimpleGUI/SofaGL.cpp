@@ -156,7 +156,7 @@ void SofaGL::detach( Interactor* drag)
 }
 
 
-void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far)
+void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* nearPlane, SReal* farPlane)
 {
     // scene center and radius
     SReal xmin, xmax, ymin, ymax, zmin, zmax;
@@ -177,8 +177,8 @@ void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal*
     *zcam = *zcen + distance * (*zcam-*zcen) / curdist;
 
     // update the depth bounds
-    *near = distance - radius*1.5;
-    *far  = distance + radius*1.5;
+    *nearPlane = distance - radius*1.5;
+    *farPlane  = distance + radius*1.5;
 }
 
 
