@@ -257,7 +257,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mpar
                 {
                     for (int j=0; j<N; j++)
                     {
-                        mat21.matrix->add(mat21.offRow+p1+i,mat21.offCol+p2+j,  (Real)m[i][j]);
+                        mat21.matrix->add(mat21.offRow+p2+i,mat21.offCol+p1+j,  (Real)m[i][j]);
                     }
                 }
             }
@@ -267,7 +267,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mpar
                 {
                     for (int j=0; j<N; j++)
                     {
-                        mat22.matrix->add(mat22.offset+p2+i,mat11.offset+p2+j, -(Real)m[i][j]);
+                        mat22.matrix->add(mat22.offset+p2+i,mat22.offset+p2+j, -(Real)m[i][j]);
                     }
                 }
             }
