@@ -42,21 +42,18 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 	                   const typename self::in_pos_type& in )  {
 		assert( this->Nout == this->Nin );
 
-		pairs_type& p = *pairs.beginEdit();
-		assert( !p.empty() );
+        const pairs_type& p = pairs.getValue();
+        assert( !p.empty() );
 
         for( unsigned j = 0, m = p.size(); j < m; ++j)
         {
 			out[j] = in[p[j][1]] - in[p[j][0]];
-		}
-
-		pairs.endEdit();
-
+        }
 	}
 
 	virtual void assemble( const typename self::in_pos_type& in ) {
 		// jacobian matrix assembly
-		pairs_type& p = *pairs.beginEdit();
+        const pairs_type& p = pairs.getValue();
 		assert( !p.empty() );
 
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
@@ -86,9 +83,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 }
 			}
 		}
-		J.finalize();
-		
-		pairs.endEdit();
+        J.finalize();
 	}
 
 	

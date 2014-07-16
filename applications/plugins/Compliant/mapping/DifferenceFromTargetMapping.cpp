@@ -17,6 +17,7 @@ using namespace defaulttype;
 
 // Register in the Factory
 int DifferenceFromTargetMappingClass = core::RegisterObject("Compute position differences between dofs and targets")
+        .addAlias("OffsetMapping") // backward compatibility with a previous identical mapping
 #ifndef SOFA_FLOAT
 .add< DifferenceFromTargetMapping< Vec3dTypes, Vec3dTypes > >()
 .add< DifferenceFromTargetMapping< Vec1dTypes, Vec1dTypes > >()
