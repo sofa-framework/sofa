@@ -39,6 +39,8 @@
 **
 ****************************************************************************/
 
+#include "stdafx.h"
+
 #ifdef OPENGL_ONLY
 #include <QtGui/QGuiApplication>
 #define Application QGuiApplication
@@ -46,10 +48,6 @@
 #include <QtWidgets/QApplication>
 #define Application QApplication
 #endif
-#include <QQuickWindow>
-#include <QQmlApplicationEngine>
-
-#include <iostream>
 
 #include "Window.h"
 #include "Viewer.h"

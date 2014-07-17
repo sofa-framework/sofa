@@ -39,6 +39,8 @@
 **
 ****************************************************************************/
 
+#include "stdafx.h"
+
 #include "../SofaGL.h"
 #include "Viewer.h"
 #include "Scene.h"
@@ -152,6 +154,7 @@ void Viewer::paint()
     //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
+	//mySofaGL->draw();
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     myRenderShaderProgram->disableAttributeArray(0);

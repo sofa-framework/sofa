@@ -4,6 +4,7 @@ set(SOURCE_FILES
 		Window.cpp
 		Viewer.cpp
         Scene.cpp
+		stdafx.cpp
 		
 		Main.cpp
 )
@@ -12,6 +13,7 @@ set(HEADER_FILES
 		Window.h
 		Viewer.h
         Scene.h
+		stdafx.h
 )
 
 set(SHADER_FILES
