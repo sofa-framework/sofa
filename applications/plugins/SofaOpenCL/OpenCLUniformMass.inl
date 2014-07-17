@@ -114,7 +114,7 @@ void UniformMass<OpenCLVec3fTypes, float>::addForce(const core::MechanicalParams
 template <>
 bool UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox)
 {
-	const VecCoord& x = *this->mstate->getX();
+	const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
 	for (unsigned int i=0; i<x.size(); i++)
 	{
@@ -171,7 +171,7 @@ void UniformMass<OpenCLVec3f1Types, float>::addForce(const core::MechanicalParam
 template <>
 bool UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addBBox(double* minBBox, double* maxBBox)
 {
-	const VecCoord& x = *this->mstate->getX();
+	const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
 	for (unsigned int i=0; i<x.size(); i++)
 	{
@@ -212,7 +212,7 @@ void UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass
 {
     if(!vparams->displayFlags().getShowBehaviorModels())return;
 //	if (!getContext()->getShowBehaviorModels())return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     defaulttype::Vec3d len;
 
     // The moment of inertia of a box is:
@@ -280,7 +280,7 @@ void UniformMass<OpenCLVec3dTypes, double>::addForce(const core::MechanicalParam
 template <>
 bool UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox)
 {
-	const VecCoord& x = *this->mstate->getX();
+	const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
 	for (unsigned int i=0; i<x.size(); i++)
 	{
@@ -337,7 +337,7 @@ void UniformMass<OpenCLVec3d1Types, double>::addForce(const core::MechanicalPara
 template <>
 bool UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox)
 {
-	const VecCoord& x = *this->mstate->getX();
+	const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 	//if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
 	for (unsigned int i=0; i<x.size(); i++)
 	{
@@ -379,7 +379,7 @@ void UniformMass<gpu::opencl::OpenCLRigid3dTypes, sofa::defaulttype::Rigid3dMass
     if(!vparams->displayFlags().getShowBehaviorModels())return;
 
     //if (!getContext()->getShowBehaviorModels())return;
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     defaulttype::Vec3d len;
 
     // The moment of inertia of a box is:

@@ -198,7 +198,7 @@ void TTriangleModel<DataTypes>::updateFlags(int /*ntri*/)
 #if 0
     if (ntri < 0) ntri = triangles->size();
     //VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-    //VecDeriv& v = mstate->read(core::ConstVecCoordId::velocity())->getValue();
+    //VecDeriv& v = mstate->read(core::ConstVecDerivId::velocity())->getValue();
     vector<bool> pflags(mstate->getSize());
     std::set<std::pair<int,int> > eflags;
     for (unsigned i=0; i<triangles->size(); i++)
