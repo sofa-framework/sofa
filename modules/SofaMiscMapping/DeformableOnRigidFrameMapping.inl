@@ -713,13 +713,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateV()
 //{
 //	if (m_fromModel!=NULL && m_toModel->getV()!=NULL && m_fromModel->getV()!=NULL)
-//		applyJ(m_toModel->read(core::ConstVecCoordId::velocity())->getValue(), m_fromModel->read(core::ConstVecCoordId::velocity())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
+//		applyJ(m_toModel->read(core::ConstVecDerivId::velocity())->getValue(), m_fromModel->read(core::ConstVecCoordId::velocity())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
 //
 //	if( this->f_printLog.getValue()){
 //		serr<<"DeformableOnRigidFrameMapping::propagateV processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
-//			serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecCoordId::velocity())->getValue();
-//		serr<<"  - V input: "<<m_fromModel->read(core::ConstVecCoordId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
+//			serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecDerivId::velocity())->getValue();
+//		serr<<"  - V input: "<<m_fromModel->read(core::ConstVecDerivId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
 //	}
 //
 //}

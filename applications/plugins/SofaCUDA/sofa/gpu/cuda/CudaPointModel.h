@@ -114,7 +114,7 @@ inline int CudaPoint::i0()
 inline int CudaPoint::getSize()
 {
     if (index == model->getSize()-1)
-        return model->getMechanicalState()->getX()->size();
+        return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue().size();
     else
         return model->groupSize.getValue();
 }
