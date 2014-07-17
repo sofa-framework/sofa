@@ -5,7 +5,7 @@
 #include "Response.h"
 
 #include <Eigen/LU>
-#include <Eigen/Sparse>
+#include <sofa/helper/pooledEigen/Sparse>
 #include <Eigen/SparseCholesky>
 
 #include <Eigen/SVD>

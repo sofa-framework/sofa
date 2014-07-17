@@ -5,7 +5,7 @@
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/component/collision/BaseContactMapper.h>
-
+#include <boost/pool/pool.hpp>
 #include "../initCompliant.h"
 
 #include "../mapping/DifferenceMapping.h"
@@ -444,6 +444,61 @@ protected:
         for(unsigned i = 0; i < size; ++i) {
             res[i] = (*contacts)[i].value;
         }
+    }
+
+
+    /// The next three methods are here to create a pool of contacts
+    /// in the memory.
+
+public:
+
+    /// This method accesses to the contact constructor. Therefore,
+    /// all child classes should have their creator accessible
+    /// (ie. made public or be friend with this method). Except for
+    /// the last lines, the method is identical to
+    /// core::collision::Contact.
+    ///
+    /// If this method is overloaded, the delete method should be also
+    /// overloaded. 
+
+    template<class RealContact>
+    static typename RealContact::SPtr create(RealContact*, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> arg)
+    {
+        typedef typename RealContact::CollisionModel1 RealCollisionModel1;
+        typedef typename RealContact::CollisionModel2 RealCollisionModel2;
+        typedef typename RealContact::Intersection RealIntersection;
+        RealCollisionModel1* model1 = dynamic_cast<RealCollisionModel1*>(arg.first.first);
+        RealCollisionModel2* model2 = dynamic_cast<RealCollisionModel2*>(arg.first.second);
+        RealIntersection* inter  = dynamic_cast<RealIntersection*>(arg.second);
+        if (model1==NULL || model2==NULL || inter==NULL) return typename RealContact::SPtr();
+
+        // This test is here juste in case an inherited contact is too
+        // big for the pool. It have to be identical to the pool size
+        // as defined in getPool.
+        BOOST_STATIC_ASSERT( sizeof( RealContact ) <= 5000 );
+
+        /// Get the pool and make the allocation.
+        auto pool = getPool();
+        void * buffer = pool->malloc();
+        return new ( buffer ) RealContact( model1, model2, inter );
+    }
+
+    static void operator delete( void* buffer, size_t sz )
+    {
+        auto pool = getPool();
+        pool->free( buffer );
+    }
+
+    /// The size of the pool has to be greater than any inherited
+    /// contact. The BOOST_STATIC_ASSERT above should ensure this.
+    /// The current size has been set to work for all contacts of the
+    /// Compliant plugin (that are CompliantContact,
+    /// FrictionCompliantContact and PenalityCompliantContact).
+
+    static boost::pool<>* getPool()
+    {
+        static boost::pool<>* storage = new boost::pool<>( 5000 );
+        return storage;
     }
 
 };

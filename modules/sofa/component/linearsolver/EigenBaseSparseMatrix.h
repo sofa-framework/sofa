@@ -31,7 +31,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <map>
-#include <Eigen/Sparse>
+#include <sofa/helper/pooledEigen/Sparse>
 
 #ifdef USING_OMP_PRAGMAS
 #include "EigenBaseSparseMatrix_MT.h"

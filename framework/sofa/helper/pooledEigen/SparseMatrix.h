@@ -9,7 +9,11 @@
 
 #ifndef EIGEN_SPARSEMATRIX_H
 #define EIGEN_SPARSEMATRIX_H
-#error Polpopo
+
+
+#include "Pool.h"
+
+
 namespace Eigen { 
 
 /** \ingroup SparseCore_Module
@@ -291,7 +295,8 @@ class SparseMatrix
       {
         std::size_t totalReserveSize = 0;
         // turn the matrix into non-compressed mode
-        m_innerNonZeros = static_cast<Index*>(std::malloc(m_outerSize * sizeof(Index)));
+		//std::cerr << "Sparse::reserveInnerVectors malloc1" << std::endl;
+        m_innerNonZeros = internal::Pool::allocate< Index >( m_outerSize );
         if (!m_innerNonZeros) internal::throw_std_bad_alloc();
         
         // temporarily use m_innerSizes to hold the new starting points.
@@ -324,7 +329,8 @@ class SparseMatrix
       }
       else
       {
-        Index* newOuterIndex = static_cast<Index*>(std::malloc((m_outerSize+1)*sizeof(Index)));
+		//std::cerr << "Sparse::reserveInnerVectors malloc1" << std::endl;
+        Index* newOuterIndex = internal::Pool::allocate< Index >( m_outerSize+1 );
         if (!newOuterIndex) internal::throw_std_bad_alloc();
         
         Index count = 0;
@@ -353,7 +359,7 @@ class SparseMatrix
         }
         
         std::swap(m_outerIndex, newOuterIndex);
-        std::free(newOuterIndex);
+        internal::Pool::free< Index >( newOuterIndex );
       }
       
     }
@@ -468,7 +474,7 @@ class SparseMatrix
         m_outerIndex[j+1] = m_outerIndex[j] + m_innerNonZeros[j];
         oldStart = nextOldStart;
       }
-      std::free(m_innerNonZeros);
+      internal::Pool::free( m_innerNonZeros );
       m_innerNonZeros = 0;
       m_data.resize(m_outerIndex[m_outerSize]);
       m_data.squeeze();
@@ -479,7 +485,8 @@ class SparseMatrix
     {
       if(m_innerNonZeros != 0)
         return; 
-      m_innerNonZeros = static_cast<Index*>(std::malloc(m_outerSize * sizeof(Index)));
+	  //std::cerr << "Sparse::uncompress malloc1" << std::endl;
+      m_innerNonZeros = internal::Pool::allocate< Index >( m_outerSize );
       for (Index i = 0; i < m_outerSize; i++)
       {
         m_innerNonZeros[i] = m_outerIndex[i+1] - m_outerIndex[i]; 
@@ -545,7 +552,7 @@ class SparseMatrix
       if (m_innerNonZeros)
       {
         // Resize m_innerNonZeros
-        Index *newInnerNonZeros = static_cast<Index*>(std::realloc(m_innerNonZeros, (m_outerSize + outerChange) * sizeof(Index)));
+        Index *newInnerNonZeros = internal::Pool::reallocate< Index >( m_innerNonZeros, m_outerSize + outerChange );
         if (!newInnerNonZeros) internal::throw_std_bad_alloc();
         m_innerNonZeros = newInnerNonZeros;
         
@@ -555,7 +562,8 @@ class SparseMatrix
       else if (innerChange < 0) 
       {
         // Inner size decreased: allocate a new m_innerNonZeros
-        m_innerNonZeros = static_cast<Index*>(std::malloc((m_outerSize+outerChange+1) * sizeof(Index)));
+		//std::cerr << "Sparse::conservativeResize malloc" << std::endl;
+        m_innerNonZeros = internal::Pool::allocate< Index >( m_outerSize + outerChange + 1 );
         if (!m_innerNonZeros) internal::throw_std_bad_alloc();
         for(Index i = 0; i < m_outerSize; i++)
           m_innerNonZeros[i] = m_outerIndex[i+1] - m_outerIndex[i];
@@ -578,7 +586,7 @@ class SparseMatrix
       if (outerChange == 0)
         return;
           
-      Index *newOuterIndex = static_cast<Index*>(std::realloc(m_outerIndex, (m_outerSize + outerChange + 1) * sizeof(Index)));
+      Index *newOuterIndex = internal::Pool::reallocate< Index >( m_outerIndex, m_outerSize + outerChange + 1 );
       if (!newOuterIndex) internal::throw_std_bad_alloc();
       m_outerIndex = newOuterIndex;
       if (outerChange > 0)
@@ -595,20 +603,22 @@ class SparseMatrix
       */
     void resize(Index rows, Index cols)
     {
+	  //std::cerr << "SparseMatrix::resize " << rows << ", " << cols << std::endl;
       const Index outerSize = IsRowMajor ? rows : cols;
       m_innerSize = IsRowMajor ? cols : rows;
       m_data.clear();
       if (m_outerSize != outerSize || m_outerSize==0)
       {
-        std::free(m_outerIndex);
-        m_outerIndex = static_cast<Index*>(std::malloc((outerSize + 1) * sizeof(Index)));
+        internal::Pool::free< Index >( m_outerIndex );
+		//std::cerr << "Sparse::resize malloc" << std::endl;
+        m_outerIndex = internal::Pool::allocate< Index >( outerSize + 1 );
         if (!m_outerIndex) internal::throw_std_bad_alloc();
         
         m_outerSize = outerSize;
       }
       if(m_innerNonZeros)
       {
-        std::free(m_innerNonZeros);
+        internal::Pool::free< Index >( m_innerNonZeros );
         m_innerNonZeros = 0;
       }
       memset(m_outerIndex, 0, (m_outerSize+1)*sizeof(Index));
@@ -629,6 +639,7 @@ class SparseMatrix
     inline SparseMatrix()
       : m_outerSize(-1), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
+	  //std::cerr << "SparseMatrix()" << std::endl;
       check_template_parameters();
       resize(0, 0);
     }
@@ -637,6 +648,7 @@ class SparseMatrix
     inline SparseMatrix(Index rows, Index cols)
       : m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
+	  //std::cerr << "SparseMatrix(Index, Index)" << std::endl;
       check_template_parameters();
       resize(rows, cols);
     }
@@ -646,6 +658,7 @@ class SparseMatrix
     inline SparseMatrix(const SparseMatrixBase<OtherDerived>& other)
       : m_outerSize(0), m_innerSize(0), m_outerIndex(0), m_innerNonZeros(0)
     {
+	  //std::cerr << "SparseMatrix(SparseMatrixBase)" << std::endl;
       EIGEN_STATIC_ASSERT((internal::is_same<Scalar, typename OtherDerived::Scalar>::value),
         YOU_MIXED_DIFFERENT_NUMERIC_TYPES__YOU_NEED_TO_USE_THE_CAST_METHOD_OF_MATRIXBASE_TO_CAST_NUMERIC_TYPES_EXPLICITLY)
       check_template_parameters();
@@ -782,8 +795,8 @@ class SparseMatrix
     /** Destructor */
     inline ~SparseMatrix()
     {
-      std::free(m_outerIndex);
-      std::free(m_innerNonZeros);
+      internal::Pool::free< Index >( m_outerIndex );
+	  internal::Pool::free< Index >( m_innerNonZeros );
     }
 
 #ifndef EIGEN_PARSED_BY_DOXYGEN
@@ -803,7 +816,7 @@ protected:
       resize(other.rows(), other.cols());
       if(m_innerNonZeros)
       {
-        std::free(m_innerNonZeros);
+        internal::Pool::free< Index >( m_innerNonZeros );
         m_innerNonZeros = 0;
       }
     }
@@ -1048,7 +1061,7 @@ void SparseMatrix<Scalar,_Options,_Index>::sumupDuplicates()
   m_outerIndex[m_outerSize] = count;
 
   // turn the matrix into compressed form
-  std::free(m_innerNonZeros);
+  internal::Pool::free< Index >( m_innerNonZeros );
   m_innerNonZeros = 0;
   m_data.resize(m_outerIndex[m_outerSize]);
 }

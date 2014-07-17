@@ -2,7 +2,7 @@
 #define SCHUR_H
 
 #include <Eigen/Core>
-#include <Eigen/Sparse>
+#include <sofa/helper/pooledEigen/Sparse>
 
 namespace sofa {
 namespace component {

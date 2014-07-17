@@ -46,6 +46,7 @@ public:
     typedef typename Inherit::CollisionModel2 CollisionModel2;
     typedef typename Inherit::Intersection Intersection;
 
+friend class Inherit::Inherit;
 
 protected:
 

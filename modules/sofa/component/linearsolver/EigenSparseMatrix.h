@@ -31,7 +31,7 @@
 #include <sofa/helper/SortedPermutation.h>
 #include <sofa/helper/vector.h>
 #include <Eigen/Core>
-#include <Eigen/Sparse>
+#include <sofa/helper/pooledEigen/Sparse>
 using std::cerr;
 using std::endl;
 

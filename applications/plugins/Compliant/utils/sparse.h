@@ -1,7 +1,7 @@
 #ifndef SPARSE_H
 #define SPARSE_H
 
-#include <Eigen/Sparse>
+#include <sofa/helper/pooledEigen/Sparse>
 
 namespace sparse {
 

@@ -2,7 +2,7 @@
 #define ASSEMBLED_SYSTEM_H
 
 #include "initCompliant.h"
-#include <Eigen/SparseCore>
+#include <sofa/helper/pooledEigen/SparseCore>
 #include <Eigen/Core>
 #include <sofa/helper/system/config.h>
 #include <sofa/simulation/common/VectorOperations.h>

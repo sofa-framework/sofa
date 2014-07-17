@@ -1,0 +1,64 @@
+#ifndef EIGEN_SPARSECORE_MODULE_H
+#define EIGEN_SPARSECORE_MODULE_H
+
+#include "Eigen/Core"
+
+#include "Eigen/src/Core/util/DisableStupidWarnings.h"
+
+#include <vector>
+#include <map>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+
+/** 
+  * \defgroup SparseCore_Module SparseCore module
+  *
+  * This module provides a sparse matrix representation, and basic associatd matrix manipulations
+  * and operations.
+  *
+  * See the \ref TutorialSparse "Sparse tutorial"
+  *
+  * \code
+  * #include <Eigen/SparseCore>
+  * \endcode
+  *
+  * This module depends on: Core.
+  */
+
+namespace Eigen {
+
+/** The type used to identify a general sparse storage. */
+struct Sparse {};
+
+}
+
+#include "Eigen/src/SparseCore/SparseUtil.h"
+#include "Eigen/src/SparseCore/SparseMatrixBase.h"
+#include "CompressedStorage.h"
+#include "Eigen/src/SparseCore/AmbiVector.h"
+#include "SparseMatrix.h"
+#include "Eigen/src/SparseCore/MappedSparseMatrix.h"
+#include "Eigen/src/SparseCore/SparseVector.h"
+#include "Eigen/src/SparseCore/SparseBlock.h"
+#include "Eigen/src/SparseCore/SparseTranspose.h"
+#include "Eigen/src/SparseCore/SparseCwiseUnaryOp.h"
+#include "Eigen/src/SparseCore/SparseCwiseBinaryOp.h"
+#include "Eigen/src/SparseCore/SparseDot.h"
+#include "Eigen/src/SparseCore/SparsePermutation.h"
+#include "Eigen/src/SparseCore/SparseRedux.h"
+#include "Eigen/src/SparseCore/SparseFuzzy.h"
+#include "Eigen/src/SparseCore/ConservativeSparseSparseProduct.h"
+#include "Eigen/src/SparseCore/SparseSparseProductWithPruning.h"
+#include "Eigen/src/SparseCore/SparseProduct.h"
+#include "Eigen/src/SparseCore/SparseDenseProduct.h"
+#include "Eigen/src/SparseCore/SparseDiagonalProduct.h"
+#include "Eigen/src/SparseCore/SparseTriangularView.h"
+#include "Eigen/src/SparseCore/SparseSelfAdjointView.h"
+#include "Eigen/src/SparseCore/TriangularSolver.h"
+#include "Eigen/src/SparseCore/SparseView.h"
+
+#include "Eigen/src/Core/util/ReenableStupidWarnings.h"
+
+#endif // EIGEN_SPARSECORE_MODULE_H
+

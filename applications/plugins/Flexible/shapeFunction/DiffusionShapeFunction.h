@@ -39,7 +39,7 @@
 #include <map>
 #include <string>
 
-#include <Eigen/SparseCore>
+#include <sofa/helper/pooledEigen/SparseCore>
 //#include <Eigen/SparseCholesky>
 #include <Eigen/IterativeLinearSolvers>
 

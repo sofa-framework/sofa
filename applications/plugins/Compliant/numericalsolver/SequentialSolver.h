@@ -8,7 +8,7 @@
 #include "IterativeSolver.h"
 #include "Response.h"
 
-#include <Eigen/Sparse>
+#include <sofa/helper/pooledEigen/Sparse>
 #include <Eigen/SparseCholesky>
 #include <Eigen/Cholesky>
 

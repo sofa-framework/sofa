@@ -2,7 +2,7 @@
 #define COMPLIANT_UTILS_KKT_H
 
 #include <Eigen/Core>
-#include <Eigen/Sparse>
+#include <sofa/helper/pooledEigen/Sparse>
 
 
 namespace sofa {
