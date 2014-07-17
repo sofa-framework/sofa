@@ -3,6 +3,9 @@
 #include <vector>
 #include "test1.h"
 
+
+using namespace sofa ;
+
 int my_printf(){
 	printf("La bonne blague...") ;
 	return 0 ; 
@@ -12,6 +15,7 @@ int MyClass::functionVALID(){
 	// This one is not defined in a header..
 	return 1 ;
 }
+
 
 int main()
 { 

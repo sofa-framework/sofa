@@ -61,13 +61,23 @@ enum QualityLevel {
   Q0, Q1, Q2
 };
 
-cl::opt<QualityLevel> qualityLevel(cl::desc("Choose the level of conformance stylecheck will use:"),
+cl::opt<QualityLevel> qualityLevel(cl::desc("Choose the level of conformance stylecheck will use (default is Q0):"),
   cl::values(
     clEnumVal(Q0, "Emits warnings about style violation from the mandatory guidelines."),
     clEnumVal(Q1, "Emits warnings about style violation from the recommanded guidelines."),
     clEnumVal(Q2, "Emits warnings about style quality and advices."),
    clEnumValEnd),
    cl::init(Q0), cl::cat(MyToolCategory));
+
+bool isAnExecParam(const string& path)
+{
+    if(path.find("class sofa::core::ExecParams")!=string::npos)
+        return true ;
+    if(path.find("class sofa::core::MechanicalParams")!=string::npos)
+        return true ;
+
+    return false ;
+}
 
 bool isInHeader(const string& path)
 {
@@ -181,7 +191,6 @@ void printErrorC2(const string& filename, const int line, const int col, const s
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl << endl ;
 }
 
-
 void printErrorM1(const string& filename, const int line, const int col, const string& classname, const string& name){
     if(qualityLevel < Q0)
         return ;
@@ -217,7 +226,6 @@ void printErrorM4(const string& filename, const int line, const int col, const s
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
 }
 
-
 void printErrorM5(const string& filename, const int line, const int col, const string& classname, const string& name){
     if(qualityLevel < Q0)
         return ;
@@ -247,17 +255,35 @@ void printErrorW2(const string& filename, const int line, const int col, const s
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
 }
 
-
 void printErrorW3(const string& filename, const int line, const int col, const std::string& nsname){
     if(qualityLevel < Q0)
         return ;
     cerr << filename << ":" << line << ":" << col <<  ": warning: using namespace ["<< nsname << "] in headers violates the sofa coding style. " << endl ;
-    cerr << " When importing a namespace in an header may lead to name collisions. Consequently ait is stricly forbiden to import/using a namespace in a header file. " << endl ;
+    cerr << " Importing a namespace in an header may lead to name collisions. Consequently ait is stricly forbiden to import/using a namespace in a header file. " << endl ;
     cerr << " Suggestion to remove this warning: remove the line 'using namespace " << nsname << ";'' and fix all subsequent problems by compiling sofa." << endl ;
     cerr << " If namespaces are long and impact readability please consider using typedef to create type alias on the one type that have a too long name. " << endl ;
     cerr << " eg: .typedef super::long::and::ugly::namespace::MyType MyType ;" << endl ;
     cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
 }
+
+void printErrorW4(const string& filename, const int line, const int col, const std::string& type, const std::string& nsname){
+    if(qualityLevel < Q2)
+        return ;
+    cerr << filename << ":" << line << ":" << col <<  ": warning: parameter ["<< type << " " << nsname << "] is violating the sofa coding style W4. " << endl ;
+    cerr << " To avoid problems when implementing visitors, it has been decieded that ExecParams and MechanicalParams cannot have a default value. " << endl ;
+    cerr << " Suggestion: remove the default value for the parameter ["<< type << " " << nsname << "] ;" << endl ;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
+}
+
+void printErrorW5(const string& filename, const int line, const int col, const std::string& type, const std::string& nsname){
+    if(qualityLevel < Q2)
+        return ;
+    cerr << filename << ":" << line << ":" << col <<  ": warning: the parameter ["<< type << " " << nsname << "] is violating the sofa coding style W5 " << endl ;
+    cerr << " To avoid problems when implementing visitors, it has been decieded that ExecParams and MechanicalParams must be the first parameter of methods. " << endl ;
+    cerr << " Suggestion: move the parameter [" << type << " " << nsname << "] to make it the first parameter;" << endl ;
+    cerr << " You can found the complete Sofa coding guidelines at: http://www.sofa-framework.com/codingstyle/coding-guide.html" << endl  << endl ;
+}
+
 
 void printErrorR1(const string& filename, const int sofacode, const int allcodes){
     if(qualityLevel < Q2)
@@ -476,6 +502,7 @@ public:
 
                     if(fileinfo!=NULL && !isInExcludedPath(fileinfo->getName(), excludedPathPatterns))
                     {
+                        // Rules C1: check that a function definition is not in a body.
                         if((*f)->hasBody())
                         {
                             Stmt* body=(*f)->getBody();
@@ -493,6 +520,7 @@ public:
                             }
                         }
 
+                        // Rules C2: check that a method name is following a LowerCamlCase mode
                         if(!isLowerCamlCase(f->getNameAsString())
                            && !f->isCopyAssignmentOperator()
                            && !f->isMoveAssignmentOperator()
@@ -504,6 +532,23 @@ public:
                                          record->getNameAsString(), f->getNameAsString());
                         }
 
+                        // Rules M3: check that all ExecParam are the first param and that they have no default arg.
+                        for(auto p=(*f)->param_begin();p!=(*f)->param_end();++p)
+                        {
+                            string fullname=(*p)->getOriginalType().getCanonicalType().getAsString() ;
+                            if(isAnExecParam(fullname)){
+                                if( (*p)->hasUnparsedDefaultArg() ||
+                                    (*p)->hasDefaultArg() ){
+                                    printErrorW4(fileinfo->getName(), smanager.getPresumedLineNumber(sl), smanager.getPresumedColumnNumber(sl),
+                                                 fullname, (*p)->getName());
+                                }
+                                if( p != (*f)->param_begin() ){
+                                    printErrorW5(fileinfo->getName(), smanager.getPresumedLineNumber(sl), smanager.getPresumedColumnNumber(sl),
+                                                 fullname, (*p)->getName());
+                                }
+
+                            }
+                        }
                     }
                 }
             }
@@ -526,7 +571,6 @@ public:
                 if(isInExcludedPath(fileinfo->getName(), excludedPathPatterns)){
                     continue ;
                 }
-
 
                 if(name.size()==0){
                     continue ;
@@ -585,10 +629,6 @@ int main(int argc, const char** argv){
 
     ClangTool Tool(OptionsParser.getCompilations(),
                    OptionsParser.getSourcePathList());
-
-
-
-
 
     std::vector<std::string> localFilename;
     for(unsigned int i=1;i<argc;i++){
