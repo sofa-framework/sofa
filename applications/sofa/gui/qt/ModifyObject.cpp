@@ -102,6 +102,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 #endif
     node = base;
     data_ = NULL;
+
     //Layout to organize the whole window
     QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
 
@@ -110,9 +111,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     generalLayout->addWidget(dialogTab);
     connect(dialogTab, SIGNAL( currentChanged( QWidget*)), this, SLOT( updateTables()));
 
-
-
-    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
+//    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
 
     buttonUpdate = new QPushButton( this, "buttonUpdate" );
     buttonUpdate->setText("&Update");
@@ -132,12 +131,12 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
 
         //If we operate on a Node, we have to ...
-        if(isNode)
+        /*if(isNode)
         {
             if (dialogFlags_.REINIT_FLAG)
             {
                 //add the widgets to apply some basic transformations
-                
+
                 m_tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
                 groupTabulation[std::string("Property")].push_back(m_tabs.back());
                 connect(m_tabs.back(), SIGNAL(nodeNameModification(simulation::Node *)), this, SIGNAL(nodeNameModification(simulation::Node *)));
@@ -148,7 +147,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 connect( transformation, SIGNAL(TransformationDirty(bool)), buttonUpdate, SLOT( setEnabled(bool) ) );
                 connect( transformation, SIGNAL(TransformationDirty(bool)), this, SIGNAL( componentDirty(bool) ) );
             }
-        }
+        }*/
 
         std::vector<std::string> tabNames;
         //Put first the Property Tab

@@ -87,12 +87,24 @@ signals:
     void dataValueChanged(QString);
 
 protected:
+	static QIcon& RefreshIcon()
+	{
+		static QIcon icon;
+		if(icon.isNull())
+		{
+			std::string filename = "textures/refresh.png";
+			sofa::helper::system::DataRepository.findFile(filename);
+			icon = QIcon(filename.c_str());
+		}
+		return icon;
+	}
+
+protected:
     core::objectmodel::BaseData* data_;
     ModifyObjectFlags flags_;
     QDisplayDataInfoWidget*  datainfowidget_;
     DataWidget* datawidget_;
     unsigned int numWidgets_;
-
 };
 
 
@@ -115,7 +127,7 @@ class QDataSimpleEdit : public DataWidget
 public :
     QDataSimpleEdit(QWidget*, const char* name, core::objectmodel::BaseData*);
     virtual unsigned int numColumnWidget() {return 3;}
-    virtual unsigned int sizeWidget() {return 1;}
+    virtual unsigned int sizeWidget() {return 6;}
     virtual bool createWidgets();
     virtual void setDataReadOnly(bool readOnly);
 protected:

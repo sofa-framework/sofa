@@ -402,8 +402,28 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     SofaVideoRecorderManager::getInstance()->hide();
 
     //Center the application
-    const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
-    this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
+	/** This code doesn't work for all the multi screen config, so i comment and replace it by the previous code **/
+	/*
+    QSettings settings;
+    settings.beginGroup("viewer");
+    int screenNumber = settings.value("screenNumber", QApplication::desktop()->primaryScreen()).toInt();
+    settings.endGroup();
+
+    if (screenNumber >= QApplication::desktop()->screenCount())
+        screenNumber = QApplication::desktop()->primaryScreen();
+
+    int offset = 0;
+    if (screenNumber > 0)
+        for (int i = 0 ; i < screenNumber; i++)
+            offset = QApplication::desktop()->availableGeometry(i).width();
+
+    const QRect screen = QApplication::desktop()->availableGeometry(screenNumber);
+    this->move( offset + ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
+	*/
+
+	//Center the application
+	const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
+	this->move(  ( screen.width()- this->width()  ) / 2 - 200,  ( screen.height() - this->height()) / 2 - 50  );
 
 #ifdef SOFA_QT4
     tabs->removeTab(tabs->indexOf(TabVisualGraph));
@@ -712,6 +732,14 @@ int RealGUI::closeGUI()
     settings.setValue("screenNumber", QApplication::desktop()->screenNumber(this));
     settings.endGroup();
 
+//    std::string viewerFileName;
+//    std::string path = sofa::helper::system::DataRepository.getFirstPath();
+//    viewerFileName = path.append("/share/config/sofaviewer.ini");
+
+//    std::ofstream out(viewerFileName.c_str(),std::ios::out);
+//    out << sizeW->value() << std::endl << sizeH->value() << std::endl;
+//    out.close();
+
     delete this;
     return 0;
 }
@@ -785,7 +813,7 @@ void RealGUI::fileOpen()
         {
             if (itExt!=extensions.begin()) filter +=" ";
             filter+="*.";
-            filter+=(*itExt);       
+            filter+=(*itExt);
 
             allKnownFilters+="*."+(*itExt);
             if (*it!=loaders->back()) allKnownFilters += " ";
@@ -810,7 +838,6 @@ void RealGUI::fileOpen()
             filter.c_str(),
             "open file dialog",  "Choose a file to open", &selectedFilter
                                 );
-
     if ( s.length() >0 )
     {
 #ifdef SOFA_PML
@@ -1251,7 +1278,6 @@ void RealGUI::setRecordPath(const std::string & path)
 #else
 void RealGUI::setRecordPath(const std::string&) {}
 #endif
-}
 
 //------------------------------------
 
@@ -1804,7 +1830,7 @@ void RealGUI::createPropertyWidget()
     modifyObjectFlags.setFlagsForSofa();
 
     propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags);
-	
+
 	QDockWindow *dockProperty=new QDockWindow(this);
 	dockProperty->setResizeEnabled(true);
 	dockProperty->setFixedExtentWidth(300);
@@ -1816,7 +1842,7 @@ void RealGUI::createPropertyWidget()
     dockProperty->setWidget(propertyWidget);
 
     connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
-    
+
     simulationGraph->setPropertyWidget(propertyWidget);
 }
 

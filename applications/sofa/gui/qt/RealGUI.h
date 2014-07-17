@@ -25,7 +25,7 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
-#include "GUI.h"
+#include "ui_GUI.h"
 #include "SofaGUIQt.h"
 #include "GraphListenerQListView.h"
 #include "QMenuFilesRecentlyOpened.h"
@@ -94,6 +94,7 @@ class QSofaRecorder;
 enum SCRIPT_TYPE { PHP, PERL };
 
 class QSofaListView;
+class QDisplayPropertyWidget;
 class QSofaStatWidget;
 class GraphListenerQListView;
 class DisplayFlagsDataWidget;
@@ -109,7 +110,7 @@ class SofaViewer;
 }
 
 
-class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public sofa::gui::BaseGUI
+class SOFA_SOFAGUIQT_API RealGUI : public Q3MainWindow, public Ui::GUI, public sofa::gui::BaseGUI
 {
     Q_OBJECT
 
@@ -230,6 +231,9 @@ protected:
     bool m_fullScreen;
     BaseViewer* mViewer;
 
+	// Component Properties
+    QDisplayPropertyWidget* propertyWidget;
+
     /// list of all viewer key name (for creation) mapped to its QAction in the GUI
     std::map< helper::SofaViewerFactory::Key, QAction* > viewerMap;
     InformationOnPickCallBack informationOnPickCallBack;
@@ -272,27 +276,14 @@ public:
     virtual int closeGUI();
     virtual sofa::simulation::Node* currentSimulation();
     virtual void fileOpen(std::string filename, bool temporaryFile=false);
-    virtual void fileOpen();
+    // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
     virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
     virtual void unloadScene(bool _withViewer = true);
 
     virtual void setTitle( std::string windowTitle );
-    virtual void fileNew();
-    virtual void fileSave();
-    virtual void fileSaveAs()
-    {
-        fileSaveAs((Node *)NULL);
-    }
     virtual void fileSaveAs(Node* node,const char* filename);
-    virtual void fileReload();
-    virtual void fileExit();
     virtual void saveXML();
-    virtual void editRecordDirectory();
-    virtual void editGnuplotDirectory();
-    virtual void showPluginManager();
-    virtual void showMouseManager();
-    virtual void showVideoRecorderManager();
 
     virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen(bool enable = true);
@@ -378,6 +369,7 @@ private:
 
     void createBackgroundGUIInfos();
     void createSimulationGraph();
+	void createPropertyWidget();
     void createWindowVisitor();
     void createSceneDescription();
 //----------------- METHODS------------------------}
@@ -419,6 +411,24 @@ public slots:
     virtual void setExportVisitor(bool);
     virtual void currentTabChanged(QWidget*);
 
+    virtual void fileNew();
+    virtual void fileOpen();
+    virtual void fileReload();
+    virtual void fileSave();
+    virtual void fileExit();
+    virtual void fileSaveAs() {
+        fileSaveAs((Node *)NULL);
+    }
+    virtual void helpIndex() { /* TODO */ }
+    virtual void helpContents() { /* TODO */ }
+    virtual void helpAbout() { /* TODO */ }
+    virtual void editRecordDirectory();
+    virtual void editGnuplotDirectory();
+    virtual void showPluginManager();
+    virtual void showMouseManager();
+    virtual void showVideoRecorderManager();
+
+
 protected slots:
     /// Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list (see viewerMap).
     /// TODO: find a better way to propagate the argument when we construct the viewer
@@ -427,6 +437,9 @@ protected slots:
     /// Update the viewerMap and create viewer if we haven't yet one (the first of the list)
     /// TODO: find a better way to propagate the argument when we construct the viewer
     virtual void updateViewerList();
+
+	void toolsDockMoved(Q3DockWindow::Place p);
+	void propertyDockMoved(Q3DockWindow::Place p);
 
     void appendToDataLogFile(QString);
 

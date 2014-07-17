@@ -142,11 +142,11 @@ public Q_SLOTS:
     /// has read the data value.
     /// ultimately read the data value.
     void updateWidgetValue();
-    
+
     /// You call this slot anytime you want to specify that the widget
     /// value is out of sync with the underlying data value.
     void setWidgetDirty(bool b=true);
-    
+
 Q_SIGNALS:
     /// Emitted each time setWidgetDirty is called. You can also emit
     /// it if you want to tell the widget value is out of sync with
@@ -165,13 +165,13 @@ public:
     virtual ~DataWidget();
 
     virtual void setData( MyData* d);
-    
+
     /// BaseData pointer accessor function.
     inline const core::objectmodel::BaseData* getBaseData() const { return baseData; }
     inline core::objectmodel::BaseData* getBaseData() { return baseData; }
 
     void updateVisibility();
-    
+
     inline bool isDirty() { return dirty; }
 
     /// The implementation of this method holds the widget creation and the signal / slot
@@ -232,7 +232,7 @@ public:
         }
 
     }
-    
+
     TDataWidget(QWidget* parent,const char* name, MyTData* d):
         DataWidget(parent,name,d),Tdata(d) {}
     /// Accessor function. Gives you the actual data instead
