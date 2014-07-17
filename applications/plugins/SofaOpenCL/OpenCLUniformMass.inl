@@ -208,7 +208,7 @@ double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMas
 }
 
 template <>
-void UniformMass<gpu::opencl::OpenCLRigid3fTypes, Rigid3fMass>::draw(const sofa::core::visual::VisualParams* vparams)
+void UniformMass<gpu::opencl::OpenCLRigid3fTypes, sofa::defaulttype::Rigid3fMass>::draw(const sofa::core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowBehaviorModels())return;
 //	if (!getContext()->getShowBehaviorModels())return;
@@ -374,7 +374,7 @@ double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMas
 }
 
 template <>
-void UniformMass<gpu::opencl::OpenCLRigid3dTypes, Rigid3dMass>::draw(const sofa::core::visual::VisualParams* vparams)
+void UniformMass<gpu::opencl::OpenCLRigid3dTypes, sofa::defaulttype::Rigid3dMass>::draw(const sofa::core::visual::VisualParams* vparams)
 {
     if(!vparams->displayFlags().getShowBehaviorModels())return;
 
