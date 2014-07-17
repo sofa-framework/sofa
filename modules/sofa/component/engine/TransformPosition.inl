@@ -71,7 +71,6 @@ TransformPosition<DataTypes>::TransformPosition()
     , f_drawInput(initData(&f_drawInput, false, "drawInput", "Draw input points") )
     , f_drawOutput(initData(&f_drawOutput, false, "drawOutput", "Draw output points") )
     , f_pointSize(initData(&f_pointSize, (Real)1.0, "pointSize", "Point size") )
-    , mstate(NULL), x0(NULL)
 {
     addAlias(&f_inputX, "inputPosition");
     addAlias(&f_outputX, "outputPosition");
