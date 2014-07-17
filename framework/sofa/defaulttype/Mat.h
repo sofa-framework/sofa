@@ -189,6 +189,13 @@ public:
                 this->elems[i+L0][j+C0] = m[i][j];
     }
 
+    template<int N> void setsub(int L0, int C0, const Vec<N,real>& v)
+    {
+        for (int i=0; i<N; i++)
+                this->elems[i+L0][C0] = v[i];
+    }
+
+
     /// Sets each element to 0.
     void clear()
     {

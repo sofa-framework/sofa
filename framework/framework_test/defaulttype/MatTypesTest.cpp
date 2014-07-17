@@ -54,3 +54,15 @@ TEST(MatTypesTest, transformInverse)
 //    test_transformInverse(Matrix4::transformRotation(Quat::fromEuler(3.14/4.,3.14/2.,3.14/3.)));
 }
 
+TEST(MatTypesTest, setsub_vec)
+{
+    Matrix3 M = Matrix3::Identity();
+    Vector2 v(1.,2.);
+    M.setsub(1,2,v);
+    double exp[9]={1.,0.,0.,
+                   0.,1.,1.,
+                   0.,0.,2.};
+    Matrix3 M_exp(exp);
+    EXPECT_MAT_DOUBLE_EQ(M_exp, M);
+}
+
