@@ -56,7 +56,7 @@ public:
     enum {material_dimensions = OutDataTypes::spatial_dimensions};
     static const bool positionMapped=true; ///< tells if spatial positions are included in output state
     static const bool FMapped=false;        ///< tells if deformation gradients are included in output state
-    static Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real> getF(const typename OutDataTypes::Coord&)  { return Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real>(); }
+    static defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real> getF(const typename OutDataTypes::Coord&)  { return defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real>(); }
 };
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
@@ -77,7 +77,7 @@ public:
     enum {material_dimensions = TCoord::spatial_dimensions};
     static const bool positionMapped=true;
     static const bool FMapped=false;
-    static Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
+    static defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
 };
 
 template<class TCoord, class TDeriv, class TReal>
@@ -87,7 +87,7 @@ public:
     enum {material_dimensions = TCoord::spatial_dimensions};
     static const bool positionMapped=true;
     static const bool FMapped=false;
-    static Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
+    static defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
 };
 
 
@@ -113,13 +113,13 @@ template <int spatial_dimensions,typename Real>
 class BasePointMapper : public virtual core::objectmodel::BaseObject
 {
 public:
-    typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
 
     virtual void ForwardMapping(Coord& p,const Coord& p0)=0;      ///< returns spatial coord p in deformed configuration corresponding to the rest coord p0
     virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10)=0;     ///< iteratively approximate spatial coord p0 in rest configuration corresponding to the deformed coord p (warning! p0 need to be initialized in the object first, for instance using closest point matching)
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false)=0; ///< returns closest mapped point x from input point p, its rest pos x0, and its index
 
-    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
+    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
 };
 
 
@@ -189,7 +189,7 @@ public:
 
     /** @name  Coord types    */
     //@{
-    typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef vector<Coord> VecCoord;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
@@ -209,7 +209,7 @@ public:
 
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
+    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
 
     /** @name Mapping functions */
     //@{
