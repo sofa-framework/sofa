@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/simulation/common/Node.h>
 
+
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QTextEdit>
@@ -93,6 +94,8 @@ signals:
     void TabDirty(bool);
     void nodeNameModification(simulation::Node *);
 
+
+
 protected:
     core::objectmodel::Base *object;
     Q3ListViewItem* item;
@@ -100,7 +103,6 @@ protected:
 
     const unsigned int index;
     unsigned int size;
-    const unsigned int maxSize;
 
     bool dirty;
     std::map< QObject*, QString> m_dataValueModified;
