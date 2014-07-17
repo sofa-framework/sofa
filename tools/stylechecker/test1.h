@@ -33,18 +33,22 @@ private:
 
 } ;
 
-
-
-namespace validnamespaceWithoutUsing {
-	namespace InvalidNamespace{
-	
+namespace sofa{
+	namespace core{
+		class ExecParams {} ;
+		class MechanicalParams {} ;		
 	}
 }
 
+namespace validnamespaceWithoutUsing {
+	namespace InvalidNamespace{
+	}
+}
 
 using namespace std ; // Interdit
 using namespace validnamespaceWithoutUsing ; 
 
+namespace sofa{
 class MyClass
 {
 	public:
@@ -78,7 +82,14 @@ class MyClass
 
 	bool 				invalidBooleanINVALID;
 	bool 				m_isAValidBooleanVALID;
+
+	void addDForce(core::ExecParams* param) ;
+	void addDForce(sofa::core::MechanicalParams* param) ;
+	void addDForceInvalid(core::ExecParams* param=NULL) ;
+	void addDForceInvalid(sofa::core::MechanicalParams* param=NULL) ;
+	void addDForceInvalid(int x, core::ExecParams* param) ;
 };
+}
 
 class myInvalidClass
 {
