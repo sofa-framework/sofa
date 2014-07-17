@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include "Window.h"
 #include <QTime>
 #include <QOpenGLContext>
