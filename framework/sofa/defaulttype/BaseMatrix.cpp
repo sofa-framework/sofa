@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <limits.h>
 
 namespace sofa
 {
@@ -809,6 +810,85 @@ void BaseMatrix::opAddM(defaulttype::BaseMatrix* result,double fact) const
 void BaseMatrix::opAddMT(defaulttype::BaseMatrix* result,double fact) const
 {
     BaseMatrixLinearOpAddMT::opDynamic(this, result, fact);
+}
+
+
+
+std::ostream& operator << (std::ostream& out, const BaseMatrix& m )
+{
+    BaseMatrix::Index nx = m.colSize();
+    BaseMatrix::Index ny = m.rowSize();
+    out << "[";
+    for (BaseMatrix::Index y=0; y<ny; ++y)
+    {
+        out << "\n[";
+        for (BaseMatrix::Index x=0; x<nx; ++x)
+        {
+            out << " " << m.element(y,x);
+        }
+        out << " ]";
+    }
+    out << " ]";
+    return out;
+}
+
+std::istream& operator>>( std::istream& in, BaseMatrix& m )
+{
+    // The reading could be way simplier with an other format,
+    // but I did not want to change the existing output.
+    // Anyway, I guess there are better ways to perform the reading
+    // but at least this one is working...
+
+    std::vector<SReal> line;
+    std::vector< std::vector<SReal> > lines;
+
+//    unsigned l=0, c;
+
+    in.ignore(INT_MAX, '['); // ignores all characters until it passes a [, start of the matrix
+
+    while(true)
+    {
+        in.ignore(INT_MAX, '['); // ignores all characters until it passes a [, start of the line
+//        c=0;
+
+        SReal r;
+        char car; in >> car;
+        while( car!=']') // end of the line
+        {
+            in.seekg( -1, std::istream::cur ); // unread car
+            in >> r;
+            line.push_back(r);
+//            ++c;
+            in >> car;
+        }
+
+//        ++l;
+
+        lines.push_back(line);
+        line.clear();
+
+        in >> car;
+        if( car==']' ) break; // end of the matrix
+        else in.seekg( -1, std::istream::cur ); // unread car
+
+    }
+
+    m.resize( lines.size(), lines[0].size() );
+
+    for( unsigned i=0; i<lines.size();++i)
+    {
+        assert( lines[i].size() == lines[0].size() ); // all line should have the same number of columns
+        for( unsigned j=0; j<lines[i].size();++j)
+        {
+            m.add( i, j, lines[i][j] );
+        }
+    }
+
+    m.compress();
+
+
+    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+    return in;
 }
 
 
