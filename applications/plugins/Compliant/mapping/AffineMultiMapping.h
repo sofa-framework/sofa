@@ -55,7 +55,7 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 		value(initData(&value, "value", "offset value")),
 		hard_positions(initData(&hard_positions, 
 								false, 
-								"hard_position", 
+								"hard_positions", 
 								"skip matrix multiplication in apply call: the output value will be hard set to @value")) {
 		
 		// hard positions allows to build arbitrary constraints

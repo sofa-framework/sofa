@@ -812,6 +812,7 @@ void BaseMatrix::opAddMT(defaulttype::BaseMatrix* result,double fact) const
 }
 
 
+
 } // nampespace defaulttype
 
 } // nampespace sofa
