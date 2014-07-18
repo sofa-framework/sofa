@@ -3,7 +3,6 @@
 
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
-    <RequiredPlugin pluginName="SofaMJEDFEM"/>
   
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
     <CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
@@ -17,7 +16,7 @@
 
           <MeshToImageEngine template="ImageUC" name="rasterizer" src="@loader" voxelSize="0.1" padSize="1" rotateImage="true" />
 	  <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
-
+          
 <!-- param = DESIRED NUMBER OF FRAMES -->
 <!-- fixedPosition = USER POSITIONS OF FRAMES -->
 	  <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="2" fixedPosition="2 0 0 -2 0 0" printLog="false"/> 

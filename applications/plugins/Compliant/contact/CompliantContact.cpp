@@ -90,6 +90,7 @@ Creator<Contact::Factory, CompliantContact<TriangleModel, CylinderModel> >* Tria
 Creator<Contact::Factory, CompliantContact<OBBModel, CylinderModel> >* OBBCylinderompliantContactClassNoStrip;
 Creator<Contact::Factory, CompliantContact<CylinderModel, OBBModel> >* CylinderOBBompliantContactClassNoStrip;
 
+
 void registerContactClasses()
 {
 

@@ -37,6 +37,7 @@
 #include <sofa/component/mapping/SubsetMultiMapping.inl>
 
 #include <sofa/core/behavior/ForceField.inl>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/component/forcefield/RestShapeSpringsForceField.inl>
 #include <sofa/component/forcefield/ConstantForceField.inl>
 
@@ -60,9 +61,11 @@ namespace behavior
 
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 
 
