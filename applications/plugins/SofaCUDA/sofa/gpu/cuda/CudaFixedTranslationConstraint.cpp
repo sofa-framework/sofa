@@ -52,7 +52,7 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable(GL_LIGHTING);
     glPointSize(10);
     glColor4f(1, 0.5, 0.5, 1);
@@ -81,7 +81,7 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable(GL_LIGHTING);
     glPointSize(10);
     glColor4f(1, 0.5, 0.5, 1);

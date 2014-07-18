@@ -163,7 +163,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
     const VecElement& elems = *m->_indexedElements;
 
-    const VecCoord& p = *m->mstate->getX0();
+    const VecCoord& p = m->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     m->_initialPoints.setValue(p);
 
     m->rotations.resize( m->_indexedElements->size() );

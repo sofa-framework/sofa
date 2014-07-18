@@ -202,7 +202,7 @@ inline void InvertibleFVMForceField<DataTypes>::reinit()
 
     //serr<<"InvertibleFVMForceField<DataTypes>::reinit"<<sendl;
 
-    const VecCoord& p = *this->mstate->getX0();
+    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     _initialPoints.setValue(p);
 
     _initialTransformation.resize( _indexedTetra->size() );
@@ -603,7 +603,7 @@ void InvertibleFVMForceField<DataTypes>::draw(const core::visual::VisualParams* 
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const bool edges = (drawAsEdges.getValue() || vparams->displayFlags().getShowWireFrame());
     const bool heterogeneous = (drawHeterogeneousTetra.getValue() && minYoung!=maxYoung);

@@ -103,14 +103,14 @@ public:
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
-    typedef sofa::helper::WriteAccessor<Data< ImageTypes > > waImage;
-    typedef sofa::helper::ReadAccessor<Data< ImageTypes > > raImage;
+    typedef sofa::helper::WriteAccessor<sofa::core::objectmodel::Data< ImageTypes > > waImage;
+    typedef sofa::helper::ReadAccessor<sofa::core::objectmodel::Data< ImageTypes > > raImage;
 
     // transform data
     typedef SReal t_Real;
     typedef sofa::defaulttype::ImageLPTransform<t_Real> TransformType;
-    typedef sofa::helper::WriteAccessor<Data< TransformType > > waTransform;
-    typedef sofa::helper::ReadAccessor<Data< TransformType > > raTransform;
+    typedef sofa::helper::WriteAccessor<sofa::core::objectmodel::Data< TransformType > > waTransform;
+    typedef sofa::helper::ReadAccessor<sofa::core::objectmodel::Data< TransformType > > raTransform;
 
 
 public:
@@ -136,33 +136,33 @@ public:
 
     //Inputs
     sofa::core::objectmodel::DataFileName m_filename;
-    Data< ImageTypes > image;
-    Data< TransformType > transform;
+    sofa::core::objectmodel::Data< ImageTypes > image;
+    sofa::core::objectmodel::Data< TransformType > transform;
 
     //Outputs
-    Data<VecCoord> f_newX0;
-    Data<SeqTetrahedra> f_tetrahedra;
-    Data<sofa::helper::vector<int> > f_tetraDomain;
+    sofa::core::objectmodel::Data<VecCoord> f_newX0;
+    sofa::core::objectmodel::Data<SeqTetrahedra> f_tetrahedra;
+    sofa::core::objectmodel::Data<sofa::helper::vector<int> > f_tetraDomain;
     vector<int> tetraDomainLabels;
-    Data<sofa::helper::vector<double> > output_cellData;
+    sofa::core::objectmodel::Data<sofa::helper::vector<double> > output_cellData;
 
-    Data<bool> frozen;
+    sofa::core::objectmodel::Data<bool> frozen;
 
     //Parameters
-    Data<double> facetAngle, facetSize, facetApproximation;
-    Data<double> cellRatio;
-    Data<double> cellSize;
-    Data< sofa::helper::vector<int> > label;
-    Data< sofa::helper::vector<double> > labelCellSize;
-    Data< sofa::helper::vector<double> > labelCellData;
-    Data<bool> odt, lloyd, perturb, exude;
-    Data<int> odt_max_it, lloyd_max_it;
-    Data<double> perturb_max_time, exude_max_time;
-    Data<int> ordering;
+    sofa::core::objectmodel::Data<double> facetAngle, facetSize, facetApproximation;
+    sofa::core::objectmodel::Data<double> cellRatio;
+    sofa::core::objectmodel::Data<double> cellSize;
+    sofa::core::objectmodel::Data< sofa::helper::vector<int> > label;
+    sofa::core::objectmodel::Data< sofa::helper::vector<double> > labelCellSize;
+    sofa::core::objectmodel::Data< sofa::helper::vector<double> > labelCellData;
+    sofa::core::objectmodel::Data<bool> odt, lloyd, perturb, exude;
+    sofa::core::objectmodel::Data<int> odt_max_it, lloyd_max_it;
+    sofa::core::objectmodel::Data<double> perturb_max_time, exude_max_time;
+    sofa::core::objectmodel::Data<int> ordering;
 
     // Display
-    Data<bool> drawTetras;
-    Data<bool> drawSurface;
+    sofa::core::objectmodel::Data<bool> drawTetras;
+    sofa::core::objectmodel::Data<bool> drawSurface;
 
 };
 

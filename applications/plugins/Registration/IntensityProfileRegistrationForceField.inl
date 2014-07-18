@@ -128,7 +128,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::init()
     if(this->mstate)
     {
         // add a spring for every input point
-        const VecCoord& x = *this->mstate->getX();
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         //RDataRefVecCoord x(*this->getMState()->read(core::ConstVecCoordId::position()));
         this->clearSprings(x.size());
         for(unsigned int i=0;i<x.size();i++) this->addSpring(i, (Real) ks.getValue(),(Real) kd.getValue());
@@ -179,7 +179,9 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 
     // get current data
     const CImg<T>& img = in->getCImg(t);
-    const VecCoord& pos = *(ref?this->mstate->getX0():this->mstate->getX());
+    const VecCoord& pos = (ref?
+                           this->mstate->read(core::ConstVecCoordId::restPosition())->getValue():
+                           this->mstate->read(core::ConstVecCoordId::position())->getValue());
     const RDataRefVecCoord dir(ref?this->refDirections:this->directions);
     if(dir.size() != pos.size()) return;
 
@@ -268,7 +270,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 
     if( IP->isEmpty() || IPref->isEmpty() || !this->mstate)  return;
 
-    const VecCoord& pos = *this->mstate->getX();
+    const VecCoord& pos = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const CImg<T>& prof = IP->getCImg(0);
     const CImg<T>& profref = IPref->getCImg(0);
 
@@ -690,7 +692,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::draw(const co
     if (this->targetPos.size()!=springs.getValue().size()) return;
 
     RDataRefVecCoord x(*this->getMState()->read(core::ConstVecCoordId::position()));
-    //const VecCoord& x = *this->mstate->getX();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     std::vector< Vector3 > points;
 

@@ -58,7 +58,7 @@ void ARTrackController<Vec3dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
 {
     if(mstate)
     {
-        if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
+        if(!mstate->read(core::ConstVecCoordId::freePosition())->getValue().empty() && !mstate->read(core::ConstVecCoordId::position())->getValue().empty())
         {
             helper::WriteAccessor<Data<VecCoord> > freePos = *mstate->write(core::VecCoordId::freePosition());
             helper::WriteAccessor<Data<VecCoord> > pos = *mstate->write(core::VecCoordId::position());
@@ -78,7 +78,7 @@ void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
     std::cout<<"AR track event detected"<<std::endl;
     if(mstate)
     {
-        if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
+        if(!mstate->read(core::ConstVecCoordId::freePosition())->getValue().empty() && !mstate->read(core::ConstVecCoordId::position())->getValue().empty())
         {
             if(f_printLog.getValue())
                 std::cout<<" aev pos :"<<aev->getPosition()<<" aev quat :"<<aev->getOrientation()<<std::endl;
@@ -105,7 +105,7 @@ void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
     std::cout<<"AR track event detected"<<std::endl;
     if(mstate)
     {
-        if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
+        if(!mstate->read(core::ConstVecCoordId::freePosition())->getValue().empty() && !mstate->read(core::ConstVecCoordId::position())->getValue().empty())
         {
 
             if(f_printLog.getValue())
@@ -118,10 +118,10 @@ void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
             {
                 restPos[i].x() = (aev->getAngles()[0]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
-                /* if((*mstate->getX0())[i].x()<0)
+                /* if(mstate->read(core::ConstVecCoordId::restPosition())->getValue()[i].x()<0)
                  {
-                     (*mstate->getX0())[i] = 0.0;
-                     (*mstate->getX())[i] = 0.0;
+                     mstate->read(core::ConstVecCoordId::restPosition())->getValue()[i] = 0.0;
+                     mstate->read(core::ConstVecCoordId::position())->getValue()[i] = 0.0;
                  }*/
             }
 
@@ -129,10 +129,10 @@ void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
             {
                 restPos[i].x() = (aev->getAngles()[1]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
-                /* if((*mstate->getX0())[i].x()<0)
+                /* if(mstate->read(core::ConstVecCoordId::restPosition())->getValue()[i].x()<0)
                  {
-                     (*mstate->getX0())[i] = 0.0;
-                     (*mstate->getX())[i] = 0.0;
+                     mstate->read(core::ConstVecCoordId::restPosition())->getValue()[i] = 0.0;
+                     mstate->read(core::ConstVecCoordId::position())->getValue()[i] = 0.0;
                  }*/
             }
 
@@ -140,10 +140,10 @@ void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
             {
                 restPos[i].x() = (aev->getAngles()[2]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
-                /*if((*mstate->getX0())[i].x()<0)
+                /*if(mstate->read(core::ConstVecCoordId::restPosition())->getValue()[i].x()<0)
                 {
-                    (*mstate->getX0())[i] = 0.0;
-                    (*mstate->getX())[i] = 0.0;
+                    mstate->read(core::ConstVecCoordId::restPosition())->getValue()[i] = 0.0;
+                    mstate->read(core::ConstVecCoordId::position())->getValue()[i] = 0.0;
                 }*/
             }
         }
@@ -180,7 +180,7 @@ void ARTrackController<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent *
 
         if(mstate)
         {
-            if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
+            if(!mstate->read(core::ConstVecCoordId::freePosition())->getValue().empty() && !mstate->read(core::ConstVecCoordId::position())->getValue().empty())
             {
 
                 helper::WriteAccessor<Data<VecCoord> > restPos = *mstate->write(core::VecCoordId::restPosition());
