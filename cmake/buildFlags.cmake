@@ -106,7 +106,11 @@ if(SOFA-MISC_NO_EXCEPTIONS)
 	endif()
 	
 	if(PS3)
-	STRING(REPLACE "-fexceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	STRING(REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	endif()
+	
+	if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+	STRING(REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 	endif()
 endif()
 
