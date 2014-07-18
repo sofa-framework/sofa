@@ -24,7 +24,11 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <sofa/component/initMeshCollision.h>
+#include <sofa/component/collision/MeshNewProximityIntersection.h>
 
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
+using namespace sofa::component::collision;
 
 namespace sofa
 {
@@ -40,6 +44,8 @@ void initMeshCollision()
     {
         first = false;
     }
+
+	IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>("Mesh");
 }
 
 SOFA_LINK_CLASS(BarycentricPenalityContact)
