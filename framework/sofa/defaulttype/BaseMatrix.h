@@ -1169,23 +1169,9 @@ public:
 
     /// @}
 
-    friend std::ostream& operator << (std::ostream& out, const  sofa::defaulttype::BaseMatrix& v )
-    {
-        Index nx = v.colSize();
-        Index ny = v.rowSize();
-        out << "[";
-        for (Index y=0; y<ny; ++y)
-        {
-            out << "\n[";
-            for (Index x=0; x<nx; ++x)
-            {
-                out << " " << v.element(y,x);
-            }
-            out << " ]";
-        }
-        out << " ]";
-        return out;
-    }
+    friend std::ostream& operator<<(std::ostream& out, const  sofa::defaulttype::BaseMatrix& m );
+
+    friend std::istream& operator>>( std::istream& in, sofa::defaulttype::BaseMatrix& m );
 
 };
 
