@@ -51,7 +51,7 @@ void RegistrationExporter::init()
 
     if (!position.isSet() && mstate)
     {
-        sofa::core::objectmodel::BaseData* parent = mstate->findField("position");
+        sofa::core::objectmodel::BaseData* parent = mstate->findData("position");
         if (parent)
         {
             position.setParent(parent);

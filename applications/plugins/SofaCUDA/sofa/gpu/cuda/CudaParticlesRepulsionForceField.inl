@@ -99,7 +99,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const co
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     Real bFactor = (Real)mparams->bFactor();
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     GPURepulsion3f repulsion;
     repulsion.d = distance.getValue();
     repulsion.d2 = repulsion.d*repulsion.d;
@@ -151,7 +151,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const co
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     Real bFactor = (Real)mparams->bFactor();
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     GPURepulsion3d repulsion;
     repulsion.d = distance.getValue();
     repulsion.d2 = repulsion.d*repulsion.d;

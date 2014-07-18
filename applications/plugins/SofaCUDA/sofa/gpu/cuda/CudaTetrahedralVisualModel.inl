@@ -145,7 +145,7 @@ bool OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::add
 {
     const core::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
     core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-    const VecCoord& x = *nodes->getX();
+    const VecCoord& x = nodes->read(core::ConstVecCoordId::position())->getValue();
     Coord v;
 
     for(it = vec.begin() ; it != vec.end() ; ++it)
