@@ -32,11 +32,13 @@
 %
 \section*{TODO}
 \begin{itemize}
-\item finish sections :-)
-\item references
-\item wikipedia links
-\item introduction ?
+  \item Code cheat sheet
+  \item finish sections :-)
+  \item references
+  \item wikipedia links
+  \item introduction ?
 \end{itemize}
+
 \section{Lagrangian Dynamics}
 Given an $n$-dimensional state space $Q$, we consider a Lagrangian
 $\LL$ defined as usual:
@@ -539,6 +541,49 @@ mention Generalized Reflections
 \label{sec:solvers}
 %
 TODO: CG, Cholesky, Minres, GS, PGS, Sequential Impulses
+
+
+\section{Code Cheat Sheet}
+
+A quick reminder of who does what where in the code:
+
+\subsection{AssembledSolver}
+
+\begin{itemize}
+\item Performs KKT system assembly
+\item Builds right-hand sides (correction/dyamics) computation
+\item Integrate system solution, update graph and stuff
+\end{itemize}
+
+\subsection{Right-hand side computation}
+
+Lots of cases:
+\begin{itemize}
+\item Bilateral (default), unilateral, friction constraint type
+\item Elastic constraints, kinematic constraints (can be stabilized) (default), restitution constraints, \ldots ?
+\end{itemize}
+
+A constraint has a BaseConstraintValue constraint value (if not, the
+default is assigned) that produces a correct constraint violation term
+(the right-hand side for constraints in the KKT system) depending on
+the correction/dynamics phase.
+
+Elastic constraints have zero rhs during correction, and -error / dt
+during dynamics.
+
+Stabilized constraints (Stablization component) correct the error
+during stabilization, but have zero rhs during dynamics (holonomic
+kinematic constraints)
+
+Restitution constraints: stabilize when velocity is small and when the constraint is not violated,
+otherwise flip relative velocity.
+
+Depending on the type (bilateral, unilateral, friction), the
+constraint also has an associated Projector, that you can find in the
+KKT system.
+
+\subsection{KKTSolver}
+Solves a KKT system (AssemledSystem), for both correction/dynamics cases.
 
 \end{document}
 

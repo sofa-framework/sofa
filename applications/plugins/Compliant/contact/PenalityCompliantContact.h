@@ -88,7 +88,7 @@ protected:
         typedef forcefield::DiagonalCompliance<defaulttype::Vec1Types> compliance_type;
         compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
         contact_node->addObject( compliance.get() );
-        compliance->damping.setValue( this->damping_ratio.getValue() );
+        edit(compliance->damping)->assign(1, this->damping_ratio.getValue() );
         compliance->isCompliance.setValue( false );
 
         typename compliance_type::VecDeriv complianceValues( size );

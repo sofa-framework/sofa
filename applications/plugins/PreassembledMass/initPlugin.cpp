@@ -16,19 +16,13 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/component/initMeshCollision.h>
-#include <sofa/component/collision/MeshNewProximityIntersection.h>
-
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace sofa::component::collision;
+#include "initPlugin.h"
 
 namespace sofa
 {
@@ -36,32 +30,55 @@ namespace sofa
 namespace component
 {
 
+//Here are just several convenient functions to help user to know what contains the plugin
 
-void initMeshCollision()
+extern "C" {
+    SOFA_PreassembledMass_API void initExternalModule();
+    SOFA_PreassembledMass_API const char* getModuleName();
+    SOFA_PreassembledMass_API const char* getModuleVersion();
+    SOFA_PreassembledMass_API const char* getModuleLicense();
+    SOFA_PreassembledMass_API const char* getModuleDescription();
+    SOFA_PreassembledMass_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
     static bool first = true;
     if (first)
     {
         first = false;
     }
-
-	IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>("Mesh");
 }
 
-SOFA_LINK_CLASS(BarycentricPenalityContact)
-SOFA_LINK_CLASS(BarycentricContactMapper)
-SOFA_LINK_CLASS(IdentityContactMapper)
-SOFA_LINK_CLASS(SubsetContactMapper)
-SOFA_LINK_CLASS(MeshDiscreteIntersection)
-SOFA_LINK_CLASS(MeshMinProximityIntersection)
-SOFA_LINK_CLASS(MeshNewProximityIntersection)
-SOFA_LINK_CLASS(Point)
-SOFA_LINK_CLASS(Line)
-SOFA_LINK_CLASS(Triangle)
-SOFA_LINK_CLASS(LineLocalMinDistanceFilter)
-SOFA_LINK_CLASS(PointLocalMinDistanceFilter)
+const char* getModuleName()
+{
+    return "PreassembledMass";
+}
+
+const char* getModuleVersion()
+{
+    return "0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
 
-} // namespace component
+const char* getModuleDescription()
+{
+    return "Preassembling mapped masses at the desired level";
+}
 
-} // namespace sofa
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    return  "PreassembledMass";
+}
+}
+}
+
+/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
+
+SOFA_LINK_CLASS(PreassembledMass)
