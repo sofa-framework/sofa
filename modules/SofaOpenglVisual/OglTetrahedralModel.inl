@@ -257,7 +257,7 @@ void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params
         SReal maxBBox[3] = {min_real,min_real,min_real};
         SReal minBBox[3] = {max_real,max_real,max_real};
 
-        for(it = vec.begin() ; it != vec.end() ; it++)
+        for(it = vec.begin() ; it != vec.end() ; ++it)
         {
             for (unsigned int i=0 ; i< 4 ; i++)
             {

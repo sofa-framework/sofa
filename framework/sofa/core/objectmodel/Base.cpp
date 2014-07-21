@@ -245,12 +245,48 @@ void Base::setName(const std::string& n, int counter)
 
 void Base::processStream(std::ostream& out)
 {
-    if (&out == &serr)
+#ifdef WIN32
+
+#define BLUE 9
+#define GREEN 10
+#define CYAN 11
+#define RED 12
+#define PURPLE 13
+#define YELLOW 14
+#define WHITE 15
+
+	HANDLE console;
+	console = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO _currentInfo;
+	GetConsoleScreenBufferInfo(console, &_currentInfo);
+#else
+
+#define BLUE "\033[1;34m "
+#define GREEN "\033[1;32m "
+#define CYAN "\033[1;36m "
+#define RED "\033[1;31m "
+#define PURPLE "\033[1;35m "
+#define YELLOW "\033[1;33m "
+#define WHITE "\033[1;37m "
+#define ENDL " \033[0m"
+
+#endif
+
+	if (&out == &serr)
     {
-        serr << "\n";
+	    serr << "\n";
         std::string str = serr.str();
         //if (f_printLog.getValue())
-        std::cerr<< "WARNING[" << getName() << "(" << getClassName() << ")]: "<<str;
+#ifdef WIN32
+		SetConsoleTextAttribute(console, RED);
+		std::cerr<< " [WARN] ";
+		SetConsoleTextAttribute(console, _currentInfo.wAttributes);
+#else
+		std::cerr<< RED <<"[WARN]" << ENDL;
+#endif
+		std::cerr<< "[" << getName() << "(" << getClassName() << ")]: ";
+//		SetConsoleTextAttribute(console, _currentInfo.wAttributes);
+		std::cerr << str;
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
             std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting serr buffer." << std::endl;
@@ -262,10 +298,20 @@ void Base::processStream(std::ostream& out)
     }
     else if (&out == &sout)
     {
+
         sout << "\n";
         std::string str = sout.str();
         if (f_printLog.getValue())
+		{
+#ifdef WIN32
+			SetConsoleTextAttribute(console, GREEN);
+			std::cout<<" [INFO] ";
+			SetConsoleTextAttribute(console, _currentInfo.wAttributes);
+#else
+			std::cerr<<GREEN<<"[INFO]"<< ENDL;
+#endif
             std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< str << std::flush;
+		}
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
             std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting sout buffer." << std::endl;
@@ -555,6 +601,24 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
     }
 }
 
+static std::string xmlencode(const std::string& str)
+{
+    std::string res;
+    for (unsigned int i=0; i<str.length(); ++i)
+    {
+        switch(str[i])
+        {
+        case '<': res += "&lt;"; break;
+        case '>': res += "&gt;"; break;
+        case '&': res += "&amp;"; break;
+        case '"': res += "&quot;"; break;
+        case '\'': res += "&apos;"; break;
+        default:  res += str[i];
+        }
+    }
+    return res;
+}
+
 void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
 {
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
@@ -562,7 +626,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
         BaseData* field = *iData;
         if (!field->getLinkPath().empty() )
         {
-            out << " " << field->getName() << "=\""<< field->getLinkPath() << "\" ";
+            out << " " << field->getName() << "=\""<< xmlencode( field->getLinkPath() )<< "\" ";
         }
         else
         {
@@ -570,7 +634,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
             {
                 std::string val = field->getValueString();
                 if (!val.empty())
-                    out << " " << field->getName() << "=\""<< val << "\" ";
+                    out << " " << field->getName() << "=\""<< xmlencode( val ) << "\" ";
             }
         }
     }
@@ -581,7 +645,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
         {
             std::string val = link->getValueString();
             if (!val.empty())
-                out << " " << link->getName() << "=\""<< val << "\" ";
+                out << " " << link->getName() << "=\""<< xmlencode( val ) << "\" ";
         }
     }
 }

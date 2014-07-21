@@ -158,7 +158,6 @@ SparseGridTopology::SparseGridTopology(Vec3i numVertices, BoundingBox box, bool 
     _usingMC = false;
 
     _regularGrid = sofa::core::objectmodel::New<RegularGridTopology>();
-
     //Add alias to use MeshLoader
     addAlias(&vertices,"position");
     addAlias(&input_triangles,"triangles");
@@ -168,7 +167,6 @@ SparseGridTopology::SparseGridTopology(Vec3i numVertices, BoundingBox box, bool 
     setMin(box.minBBox());
     setMax(box.maxBBox());
 }
-
 
 void SparseGridTopology::init()
 {
@@ -440,7 +438,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
                 {
                     setVoxel(x + (int)numVoxels[0] * (y + (int)numVoxels[1] * z),1);
                 }
-                f++;
+                ++f;
             }
         }
     }
@@ -1415,12 +1413,22 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
     this->addSlave(_virtualFinerLevels[0]); //->setContext( this->getContext( ) );
-    _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
+
+    if(this->fileTopology.getValue().empty() )
+    {   
+        _virtualFinerLevels[0]->vertices.setValue( this->vertices.getValue() );
+        _virtualFinerLevels[0]->input_triangles.setValue( this->input_triangles.getValue() );
+        _virtualFinerLevels[0]->input_quads.setValue( this->input_quads.getValue() );
+    }
+    else
+    {
+        _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
+    }
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->init();
 
-    serr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
-    serr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , ";
+    sout<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
+    sout<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , ";
 
     for(int i=1; i<nb; ++i)
     {
@@ -1431,10 +1439,10 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
         _virtualFinerLevels[i]->init();
 
-        serr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
+        sout<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }
 
-    serr<<sendl;
+    sout<<sendl;
 
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1].get());
 }
@@ -1507,11 +1515,11 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
 
 helper::fixed_array<int,6> SparseGridTopology::findneighboorCubes( int indice )
 {
-    serr<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice]<<sendl;
-    serr<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ] <<sendl;
+    sout<<"SparseGridTopology::findneighboorCubes : "<<indice<<" -> "<<_indicesOfCubeinRegularGrid[indice]<<sendl;
+    sout<<_indicesOfRegularCubeInSparseGrid[ _indicesOfCubeinRegularGrid[indice] ] <<sendl;
     helper::fixed_array<int,6> result;
     Vector3 c = _regularGrid->getCubeCoordinate( _indicesOfCubeinRegularGrid[indice] );
-    serr<<c<<sendl;
+    sout<<c<<sendl;
     result[0] = c[0]<=0 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid->getCubeIndex( (int)c[0]-1,(int)c[1],(int)c[2] )];
     result[1] = c[0]>=getNx()-2 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid->getCubeIndex( (int)c[0]+1,(int)c[1],(int)c[2] )];
     result[2] = c[1]<=0 ? -1 : _indicesOfRegularCubeInSparseGrid[ _regularGrid->getCubeIndex( (int)c[0],(int)c[1]-1,(int)c[2] )];

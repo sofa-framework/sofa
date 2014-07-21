@@ -107,7 +107,7 @@ void BoxROI<DataTypes>::init()
     if (!f_X0.isSet())
     {
         //cerr<<"BoxROI<DataTypes>::init() f_X0 is not set "<<endl;
-        sofa::core::behavior::BaseMechanicalState* mstate;
+        sofa::core::behavior::BaseMechanicalState* mstate = NULL;
         this->getContext()->get(mstate,sofa::core::objectmodel::BaseContext::Local);
         if (mstate)
         {

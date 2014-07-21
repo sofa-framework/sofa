@@ -84,6 +84,7 @@ signals:
     void WidgetUpdate();
     void DataUpdate();
     void DataOwnerDirty(bool);
+    void dataValueChanged(QString);
 
 protected:
 	static QIcon& RefreshIcon()

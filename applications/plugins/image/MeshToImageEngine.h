@@ -724,7 +724,8 @@ protected:
                 if(it==edges.end()) edges.insert(edge(p1,p2));
                 else edges.erase(it);
             }
-        if(!edges.size()) return; // no hole
+        if(edges.empty()) 
+            return; // no hole
 
         // get loops
         typedef std::map<unsigned int,unsigned int> edgemap;
@@ -735,12 +736,12 @@ protected:
         typename edgemap::iterator it=emap.begin();
         std::vector<std::vector<unsigned int> > loops; loops.resize(1);
         loops.back().push_back(it->first);
-        while(emap.size())
+        while(!emap.empty())
         {
             unsigned int i=it->second;
             loops.back().push_back(i);  // insert point in loop
             emap.erase(it);
-            if(emap.size())
+            if(!emap.empty())
             {
                 if(i==loops.back().front())  loops.push_back(std::vector<unsigned int>());  //  loop termination
                 it=emap.find(i);

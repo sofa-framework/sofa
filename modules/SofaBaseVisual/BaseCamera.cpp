@@ -344,7 +344,7 @@ void BaseCamera::computeZ()
         helper::gl::Transformation transform;
 
         currentOrientation.buildRotationMatrix(transform.rotation);
-        for (unsigned int i=0 ; i< 3 ; i++)
+        for (unsigned int i=0 ; i< 3 ; ++i)
             transform.translation[i] = -currentPosition[i];
 
         for (int corner=0; corner<8; ++corner)
@@ -397,13 +397,11 @@ void BaseCamera::computeZ()
 
 void BaseCamera::fitSphere(const Vec3 &center, SReal radius)
 {
-
-    SReal distance = 0.0;
     SReal fov_radian = getFieldOfView() * (M_PI/180);
     SReal hor_fov_radian = getHorizontalFieldOfView() * (M_PI/180);
     const SReal yview = radius / sin(fov_radian/2.0);
     const SReal xview = radius / sin(hor_fov_radian/2.0);
-    distance = std::max(xview,yview);
+    SReal distance = std::max(xview,yview);
     const Quat& orientation = p_orientation.getValue();
     Vec3 viewDirection = orientation.rotate(Vec3(0.0, 0.0, -1.0));
 

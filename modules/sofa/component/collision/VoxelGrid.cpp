@@ -191,7 +191,7 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
             sofa::helper::vector<CollisionElementIterator>::const_iterator itCollis = collisionElems.begin();
             sofa::helper::vector<CollisionElementIterator>::const_iterator itCollisEnd = collisionElems.end();
 
-            for (; itCollis != itCollisEnd; itCollis++)
+            for (; itCollis != itCollisEnd; ++itCollis)
             {
                 //if ((*it)->canCollideWith(*itCollis))
                 {
@@ -296,7 +296,7 @@ void VoxelGrid::draw(const core::visual::VisualParams* vparams)
         glColor3f(1.0, 0.0, 1.0);
         glLineWidth(3);
         //std::cout << "Size : " << elemPairs.size() << std::endl;
-        for (; it != itEnd; it++)
+        for (; it != itEnd; ++it)
         {
             it->first->draw(vparams);
             it->second->draw(vparams);
@@ -333,7 +333,7 @@ void GridCell::add(VoxelGrid* grid, CollisionElementIterator collisionElem, sofa
             maxBBox1[2] += distance;
         }
 
-        for (; it < itEnd; it++)
+        for (; it < itEnd; ++it)
         {
             if (!collisionElem.canCollideWith(*it)) continue;
             if (it->visited()) continue;
@@ -354,7 +354,7 @@ void GridCell::add(VoxelGrid* grid, CollisionElementIterator collisionElem, sofa
     {
         sofa::helper::vector < CollisionElementIterator >::iterator it = collisElemsImmobile[phase].begin();
         sofa::helper::vector < CollisionElementIterator >::iterator itEnd = collisElemsImmobile[phase].end();
-        for (; it < itEnd; it++)
+        for (; it < itEnd; ++it)
         {
             if (!collisionElem.canCollideWith(*it)) continue;
             if ((*it)->visited()) continue;

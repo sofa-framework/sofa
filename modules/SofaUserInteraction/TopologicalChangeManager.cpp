@@ -147,7 +147,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                     {
                         vector<unsigned int> indices;
                         topoMap->getFromIndex( indices, *it);
-                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
+                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
                             //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
@@ -312,7 +312,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                     {
                         vector<unsigned int> indices;
                         topoMap->getFromIndex( indices, *it);
-                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
+                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
                             //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );

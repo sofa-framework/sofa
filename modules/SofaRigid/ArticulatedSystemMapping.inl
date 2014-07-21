@@ -117,8 +117,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::init()
             m_fromRootModel == NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue());
     Inherit::init();
     /*
-    OutVecDeriv& vto = m_toModel->read(core::ConstVecCoordId::velocity())->getValue();
-    InVecDeriv& vfrom = m_fromModel->read(core::ConstVecCoordId::velocity())->getValue();
+    OutVecDeriv& vto = m_toModel->read(core::ConstVecDerivId::velocity())->getValue();
+    InVecDeriv& vfrom = m_fromModel->read(core::ConstVecDerivId::velocity())->getValue();
     applyJT(vfrom, vto);
     */
 
@@ -416,8 +416,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
     //{
     //	serr<<" propagateV processed"<<sendl;
     //	if (m_fromRootModel!=NULL)
-    //		serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecCoordId::velocity())->getValue();
-    //	serr<<"  - V input: "<<m_fromModel->read(core::ConstVecCoordId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
+    //		serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecDerivId::velocity())->getValue();
+    //	serr<<"  - V input: "<<m_fromModel->read(core::ConstVecDerivId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
     //}
 
     //if( this->f_printLog.getValue())

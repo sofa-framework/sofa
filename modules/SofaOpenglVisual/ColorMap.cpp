@@ -302,7 +302,7 @@ void ColorMap::prepareLegend()
     glTexImage1D(GL_TEXTURE_1D, 0, GL_RGB, width, 0, GL_RGB, GL_UNSIGNED_BYTE,
         data);
 
-    delete data;
+    delete[] data;
 }
 
 void ColorMap::drawVisual(const core::visual::VisualParams* vparams)

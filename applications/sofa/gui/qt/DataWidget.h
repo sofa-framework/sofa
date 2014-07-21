@@ -31,6 +31,8 @@
 #include "ModifyObject.h"
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -133,49 +135,18 @@ public:
 public Q_SLOTS:
     /// Checks that widget has been edited
     /// emit DataOwnerDirty in case the name field has been modified
-    void updateDataValue()
-    {
-        if(dirty)
-        {
-            const bool hasOwner = baseData->getOwner();
-            std::string previousName;
-            if ( hasOwner ) previousName = baseData->getOwner()->getName();
-            writeToData();
-            updateVisibility();
-            if(hasOwner && baseData->getOwner()->getName() != previousName)
-            {
-                Q_EMIT DataOwnerDirty(true);
-            }
-        }
+    void updateDataValue();
 
-        dirty = false;
-        counter = baseData->getCounter();
-
-    }
     /// First checks that the widget is not currently being edited
     /// checks that the data has changed since the last time the widget
     /// has read the data value.
     /// ultimately read the data value.
-    void updateWidgetValue()
-    {
-        if(!dirty)
-        {
-            if(counter != baseData->getCounter())
-            {
-                readFromData();
-                this->update();
-            }
-        }
+    void updateWidgetValue();
 
-
-    }
     /// You call this slot anytime you want to specify that the widget
     /// value is out of sync with the underlying data value.
-    void setWidgetDirty(bool b=true)
-    {
-        dirty = b;
-        Q_EMIT WidgetDirty(b);
-    }
+    void setWidgetDirty(bool b=true);
+
 Q_SIGNALS:
     /// Emitted each time setWidgetDirty is called. You can also emit
     /// it if you want to tell the widget value is out of sync with
@@ -184,31 +155,24 @@ Q_SIGNALS:
     /// Currently this signal is used to reflect the changes of the
     /// component name in the sofaListview.
     void DataOwnerDirty(bool );
+
+    void dataValueChanged(QString dataValueString );
 public:
     typedef core::objectmodel::BaseData MyData;
 
-    DataWidget(QWidget* parent,const char* name, MyData* d) :
-        QWidget(parent,name), baseData(d), dirty(false), counter(-1)
-    {
-    }
-    virtual ~DataWidget() {}
+    DataWidget(QWidget* parent,const char* name, MyData* d);
 
-    inline virtual void setData( MyData* d)
-    {
-        baseData = d;
-        readFromData();
-    }
+    virtual ~DataWidget();
 
+    virtual void setData( MyData* d);
 
     /// BaseData pointer accessor function.
-    const core::objectmodel::BaseData* getBaseData() const { return baseData; }
-    core::objectmodel::BaseData* getBaseData() { return baseData; }
+    inline const core::objectmodel::BaseData* getBaseData() const { return baseData; }
+    inline core::objectmodel::BaseData* getBaseData() { return baseData; }
 
-    void updateVisibility()
-    {
-        parentWidget()->setShown(baseData->isDisplayed());
-    }
-    bool isDirty() { return dirty; }
+    void updateVisibility();
+
+    inline bool isDirty() { return dirty; }
 
     /// The implementation of this method holds the widget creation and the signal / slot
     /// connections.
@@ -230,9 +194,6 @@ protected:
     core::objectmodel::BaseData* baseData;
     bool dirty;
     int counter;
-
-
-
 };
 
 
@@ -271,7 +232,7 @@ public:
         }
 
     }
-    
+
     TDataWidget(QWidget* parent,const char* name, MyTData* d):
         DataWidget(parent,name,d),Tdata(d) {}
     /// Accessor function. Gives you the actual data instead
