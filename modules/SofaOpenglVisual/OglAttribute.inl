@@ -43,7 +43,7 @@ template < int size, unsigned int type, class DataTypes>
 OglAttribute< size, type, DataTypes>::OglAttribute() :
     OglShaderElement()
     , _abo ( GLuint(-1) ), _aboSize(0), _needUpdate(false), _lastUpdateDataCounter(-1)
-    , _usage( GL_STATIC_DRAW)
+    , _index ( GLuint(-1) ), _usage( GL_STATIC_DRAW)
     , value( initData(&value, "value", "internal Data"))
     , handleDynamicTopology( initData(&handleDynamicTopology, true, "handleDynamicTopology",
         "Activate handling of topological changes on the values of this attribute (resizes only)"))
@@ -71,6 +71,7 @@ void OglAttribute< size, type, DataTypes>::init()
 {
     OglShaderElement::init();
     getContext()->get( _topology);
+    value.getValue(); // make sure the data is updated
 }
 
 template < int size, unsigned int type, class DataTypes>

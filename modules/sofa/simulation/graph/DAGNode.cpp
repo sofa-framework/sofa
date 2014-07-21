@@ -121,7 +121,7 @@ void DAGNode::detachFromGraph()
 {
     DAGNode::SPtr me = this; // make sure we don't delete ourself before the end of this method
     LinkParents::Container parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; i++)
+    for ( unsigned int i = 0; i < parents.size() ; ++i)
     {
         parents[i]->removeChild(this);
     }
@@ -205,7 +205,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         {
             Parents parents = getParents();
             if (!parents.empty())
-                for (Parents::iterator it = parents.begin(); it!=parents.end() && !result; it++)
+                for (Parents::iterator it = parents.begin(); it!=parents.end() && !result; ++it)
                     result = dynamic_cast<Node*>(*it)->getObject(class_info, tags, SearchUp);
         }
         break;
@@ -259,7 +259,7 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         Parents parents = getParents();
         if (!parents.empty())
         {
-            for (Parents::iterator it = parents.begin(); it!=parents.end(); it++)
+            for (Parents::iterator it = parents.begin(); it!=parents.end(); ++it)
             {
                 void* obj = dynamic_cast<Node*>(*it)->getObject(class_info,newpath);
                 if (obj) return obj;
@@ -309,8 +309,6 @@ void* DAGNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
         }
     }
 }
-
-
 
 
 /// Generic list of objects access, possibly searching up or down from the current context
@@ -366,7 +364,7 @@ core::objectmodel::BaseNode::Parents DAGNode::getParents() const
     Parents p;
 
     LinkParents::Container parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; i++)
+    for ( unsigned int i = 0; i < parents.size() ; ++i)
     {
         if (parents[i])
         {
@@ -393,7 +391,7 @@ bool DAGNode::hasParent(const BaseContext* context) const
     if (context == NULL) return getParents().empty();
 
     LinkParents::Container parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; i++)
+    for ( unsigned int i = 0; i < parents.size() ; ++i)
         if (context == parents[i]->getContext()) return true;
     return false;
 
@@ -406,7 +404,7 @@ bool DAGNode::hasParent(const BaseContext* context) const
 bool DAGNode::hasAncestor(const BaseContext* context) const
 {
     LinkParents::Container parents = l_parents.getValue();
-    for ( unsigned int i = 0; i < parents.size() ; i++)
+    for ( unsigned int i = 0; i < parents.size() ; ++i)
         if (context == parents[i]->getContext()
             || parents[i]->hasAncestor(context))
             return true;
@@ -600,6 +598,7 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
 
     action->processNodeBottomUp(this);
 }
+
 
 
 void DAGNode::initVisualContext()

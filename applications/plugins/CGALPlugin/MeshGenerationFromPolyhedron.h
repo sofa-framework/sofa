@@ -93,31 +93,31 @@ public:
     }
 
     //Inputs
-    Data<VecCoord> f_X0;
-    Data<SeqTriangles> f_triangles;
-    Data<SeqQuads> f_quads;
+    sofa::core::objectmodel::Data<VecCoord> f_X0;
+    sofa::core::objectmodel::Data<SeqTriangles> f_triangles;
+    sofa::core::objectmodel::Data<SeqQuads> f_quads;
 
     //Outputs
-    Data<VecCoord> f_newX0;
-    Data<SeqTetrahedra> f_tetrahedra;
+    sofa::core::objectmodel::Data<VecCoord> f_newX0;
+    sofa::core::objectmodel::Data<SeqTetrahedra> f_tetrahedra;
 
-    Data<bool> frozen;
+    sofa::core::objectmodel::Data<bool> frozen;
 
     //Parameters
-    Data<double> facetAngle, facetSize, facetApproximation;
-    Data<double> cellRatio, cellSize;
+    sofa::core::objectmodel::Data<double> facetAngle, facetSize, facetApproximation;
+    sofa::core::objectmodel::Data<double> cellRatio, cellSize;
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
-    Data<double> sharpEdgeAngle;
-    Data<double> sharpEdgeSize;
+    sofa::core::objectmodel::Data<double> sharpEdgeAngle;
+    sofa::core::objectmodel::Data<double> sharpEdgeSize;
 #endif
-    Data<bool> odt, lloyd, perturb, exude;
-    Data<int> odt_max_it, lloyd_max_it;
-    Data<double> perturb_max_time, exude_max_time;
-    Data<int> ordering;
+    sofa::core::objectmodel::Data<bool> odt, lloyd, perturb, exude;
+    sofa::core::objectmodel::Data<int> odt_max_it, lloyd_max_it;
+    sofa::core::objectmodel::Data<double> perturb_max_time, exude_max_time;
+    sofa::core::objectmodel::Data<int> ordering;
 
     // Display
-    Data<bool> drawTetras;
-    Data<bool> drawSurface;
+    sofa::core::objectmodel::Data<bool> drawTetras;
+    sofa::core::objectmodel::Data<bool> drawSurface;
 
     // A modifier creating a triangle with the incremental builder.
     template <class HDS>

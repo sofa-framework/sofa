@@ -51,7 +51,7 @@ bool SofaHAPIHapticsDevice::initDevice()
     sout << "Available device drivers :";
     for( std::list< HAPI::HAPIHapticsDevice::HapticsDeviceRegistration >::iterator i =
             HAPI::HAPIHapticsDevice::registered_devices->begin();
-            i != HAPI::HAPIHapticsDevice::registered_devices->end(); i++ )
+            i != HAPI::HAPIHapticsDevice::registered_devices->end(); ++i )
     {
         sout << " " << i->name;
     }
@@ -60,7 +60,7 @@ bool SofaHAPIHapticsDevice::initDevice()
     std::string name = this->driverName.getValue();
     for( std::list< HAPI::HAPIHapticsDevice::HapticsDeviceRegistration >::iterator i =
             HAPI::HAPIHapticsDevice::registered_devices->begin();
-            i != HAPI::HAPIHapticsDevice::registered_devices->end(); i++ )
+            i != HAPI::HAPIHapticsDevice::registered_devices->end(); ++i )
     {
         if( i->name == name )
         {
@@ -166,7 +166,7 @@ void SofaHAPIHapticsDevice::setForceFeedbacks(vector<ForceFeedback*> ffs)
     //feedbackEffects.clear();
     if (xfer)
         device->transferObjects();
-    for (unsigned int i=0; i<ffs.size(); i++)
+    for (unsigned int i=0; i<ffs.size(); ++i)
     {
         SofaHAPIForceFeedbackEffect::SPtr ffe = sofa::core::objectmodel::New<SofaHAPIForceFeedbackEffect>();
         ffe->setForceFeedback(ffs[i]);

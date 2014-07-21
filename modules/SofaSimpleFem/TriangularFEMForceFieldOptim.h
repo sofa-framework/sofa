@@ -130,6 +130,7 @@ public:
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
     virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
     virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const;
+    void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
 
     void draw(const core::visual::VisualParams* vparams);
     //}
@@ -311,7 +312,6 @@ public:
     void addKToMatrixT(const core::MechanicalParams* mparams, MatrixWriter m);
 
     void getTriangleVonMisesStress(unsigned int i, Real& stressValue);
-    void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
     void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection, Real& stressValue2, Deriv& stressDirection2);
 
 public:

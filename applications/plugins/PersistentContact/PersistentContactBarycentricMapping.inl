@@ -475,7 +475,7 @@ void PersistentContactBarycentricMapping<TIn, TOut>::createPersistentMapperFromT
     topology::PointSetTopologyContainer* toTopoCont;
     this->toModel->getContext()->get(toTopoCont);
 
-    core::topology::TopologyContainer* fromTopoCont;
+    core::topology::TopologyContainer* fromTopoCont = NULL;
 //	this->fromModel->getContext()->get(fromTopoCont);
 
     if (dynamic_cast< core::topology::TopologyContainer* >(topology) != 0)

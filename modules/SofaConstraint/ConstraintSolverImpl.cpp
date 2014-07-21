@@ -35,12 +35,30 @@ namespace component
 namespace constraintset
 {
 
+ConstraintProblem::ConstraintProblem()
+    : tolerance(0.00001), maxIterations(1000),
+      dimension(0), problemId(0)
+{
+}
+
+ConstraintProblem::~ConstraintProblem()
+{
+}
+
 void ConstraintProblem::clear(int nbConstraints)
 {
     dimension = nbConstraints;
     W.resize(nbConstraints, nbConstraints);
     dFree.resize(nbConstraints);
     f.resize(nbConstraints);
+
+    static unsigned int counter = 0;
+    problemId = ++counter;
+}
+
+unsigned int ConstraintProblem::getProblemId()
+{
+    return problemId;
 }
 
 } // namespace constraintset

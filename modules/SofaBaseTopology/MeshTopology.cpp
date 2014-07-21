@@ -1990,7 +1990,7 @@ int MeshTopology::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID
     vector<HexaID> out7(set8.size()+out6.size());
     vector<HexaID>::iterator result7;
     result7 = std::set_intersection(set8.begin(),set8.end(),out6.begin(),out6.end(),out7.begin());
-    out7.erase(result6,out7.end());
+    out7.erase(result7,out7.end());
 
     assert(out7.size()==0 || out7.size()==1);
 

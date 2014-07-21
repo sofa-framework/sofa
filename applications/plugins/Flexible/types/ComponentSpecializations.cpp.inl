@@ -92,7 +92,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const SetIndexArray & indices = f_indices.getValue();
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -157,7 +157,7 @@ void FixedConstraint< TYPEABSTRACTNAME3fTypes >::draw(const core::visual::Visual
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const SetIndexArray & indices = f_indices.getValue();
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -250,7 +250,7 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::V
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const SetIndexArray & indices = f_indices.getValue();
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -315,7 +315,7 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::V
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const SetIndexArray & indices = f_indices.getValue();
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {

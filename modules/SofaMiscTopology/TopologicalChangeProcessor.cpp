@@ -626,7 +626,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             if (m_saveIndicesAtInit.getValue())
             {
                 inciseWithSavedIndices();
-                it++; it++; continue;
+                ++it; ++it; continue;
             }
 
             sofa::component::topology::TriangleSetTopologyModifier* triangleMod;

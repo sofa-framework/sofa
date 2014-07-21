@@ -94,7 +94,7 @@ public:
 		
         if ( !vparams->displayFlags().getShowBehaviorModels() || !_draw.getValue() )
             return;
-        helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
+        helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
 
         for(unsigned i = 0, n = x.size(); i < n; ++i) {
@@ -169,7 +169,7 @@ public:
 			const unsigned index = clamp(i);
 			
 			// body-fixed velocity
-			typename se3::vec3 omega_body = se3::rotation( (*this->mstate->getX())[i] ).inverse() * 
+			typename se3::vec3 omega_body = se3::rotation( this->mstate->read(core::ConstVecCoordId::position())->getValue()[i] ).inverse() * 
 				se3::map(v[i].getVOrientation());
 			
 			res += 
@@ -215,7 +215,7 @@ public:
 			
             se3::map(f[i].getLinear()) += (factor * mass.getValue()[ index ]) * se3::map(dx[i].getLinear());
 
-			typename se3::quat q = se3::rotation( (*this->mstate->getX())[i] );
+			typename se3::quat q = se3::rotation( this->mstate->read(core::ConstVecCoordId::position())->getValue()[i] );
             se3::map(f[i].getAngular()) += factor *
                 ( q * se3::map(inertia.getValue()[ index ]).cwiseProduct( q.conjugate() * se3::map(dx[i].getAngular() ) ));
 			
@@ -243,7 +243,7 @@ public:
                               mass.getValue()[ index ] * mFactor );
 			}			              
 			
-			typename se3::mat33 R = se3::rotation( (*this->mstate->getX())[i] ).toRotationMatrix();
+			typename se3::mat33 R = se3::rotation( this->mstate->read(core::ConstVecCoordId::position())->getValue()[i] ).toRotationMatrix();
 			
 			typename se3::mat33 chunk = R * se3::map( inertia.getValue()[ index ] ).asDiagonal() * R.transpose();
 			

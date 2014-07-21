@@ -82,7 +82,6 @@ namespace Deformable {}
 namespace Springs {}
 namespace FEM {}
 namespace Tensor {}
-}
 
 /// Components used only for rigid bodies
 namespace Rigid {}

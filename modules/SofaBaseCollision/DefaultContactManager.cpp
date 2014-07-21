@@ -266,7 +266,7 @@ std::string DefaultContactManager::getContactResponse(core::CollisionModel* mode
 
 void DefaultContactManager::draw(const core::visual::VisualParams* vparams)
 {
-    for (sofa::helper::vector<core::collision::Contact::SPtr>::iterator it = contacts.begin(); it!=contacts.end(); it++)
+    for (sofa::helper::vector<core::collision::Contact::SPtr>::iterator it = contacts.begin(); it!=contacts.end(); ++it)
     {
         if ((*it)!=NULL)
             (*it)->draw(vparams);
@@ -335,9 +335,9 @@ void DefaultContactManager::setContactTags(core::CollisionModel* model1, core::C
     sofa::core::objectmodel::TagSet tagsm1 = model1->getTags();
     sofa::core::objectmodel::TagSet tagsm2 = model2->getTags();
     sofa::core::objectmodel::TagSet::iterator it;
-    for(it=tagsm1.begin(); it != tagsm1.end(); it++)
+    for(it=tagsm1.begin(); it != tagsm1.end(); ++it)
         contact->addTag(*it);
-    for(it=tagsm2.begin(); it!=tagsm2.end(); it++)
+    for(it=tagsm2.begin(); it!=tagsm2.end(); ++it)
         contact->addTag(*it);
 }
 

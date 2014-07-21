@@ -81,14 +81,14 @@ template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
 #ifdef DISPLAY_TIME
-    sofa::helper::system::thread::CTime * timer;
-    time2 = (double) timer->getTime();
+    sofa::helper::system::thread::CTime timer;
+    time2 = (double) timer.getTime();
 #endif
 
     Inherit::setSystemMBKMatrix(mparams);
 
 #ifdef DISPLAY_TIME
-    time2 = ((double) timer->getTime() - time2)  * timeStamp;
+    time2 = ((double) timer.getTime() - time2)  * timeStamp;
 #endif
 }
 
@@ -140,8 +140,8 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     const char* endcond = "iterations";
 
 #ifdef DISPLAY_TIME
-    sofa::helper::system::thread::CTime * timer;
-    time1 = (double) timer->getTime();
+    sofa::helper::system::thread::CTime timer;
+    time1 = (double) timer.getTime();
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -238,7 +238,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     }
 
 #ifdef DISPLAY_TIME
-    time1 = (double)(((double) timer->getTime() - time1) * timeStamp / (nb_iter-1));
+    time1 = (double)(((double) timer.getTime() - time1) * timeStamp / (nb_iter-1));
 #endif
 
     f_graph.endEdit();

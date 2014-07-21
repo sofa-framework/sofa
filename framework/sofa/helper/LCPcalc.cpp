@@ -374,6 +374,12 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
             printf("*** Pas de solution *** \n");
             boucles=MAX_BOU;
             result=0;
+            for(compteur=0; compteur<dim; compteur++)
+            {
+                free(mat[compteur]);
+            }
+            free(mat);
+            free(base);
             return result;
         }
         else
@@ -1994,6 +2000,15 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
             else
             {
                 std::cerr<<"ERROR in nlcp_multiGrid: no projection found for group" << g << std::endl;
+                free(d_free_coarse);
+                free(F_coarse_1);
+                free(F_coarse);
+                free(d_coarse);
+
+                for (int i = 0; i < numContacts; i++)
+                    delete W33[i];
+                free(W33);
+                
                 return 0;
             }
 
@@ -2167,6 +2182,15 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
         std::cout<<"after 10 iteration at the finer LEVEL: "<<std::endl;
         afficheResult( f,dim);
     }
+
+    free(d_free_coarse);
+    free(F_coarse_1);
+    free(F_coarse);
+    free(d_coarse);
+
+    for (int i = 0; i < numContacts; i++)
+        delete W33[i];
+    free(W33);
 
     return result;
 
