@@ -26,4 +26,9 @@ INSTANTIATE_TEST_CASE_P(Batch,
                         Python_test,
                         ::testing::ValuesIn(tests.list));
 
+TEST_P(Python_test, sofa_python_test)
+{
+    run(GetParam());
+}
+
 }
