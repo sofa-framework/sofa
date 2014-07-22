@@ -174,7 +174,14 @@ protected:
     TetrahedronFEMForceFieldInternalData<DataTypes> data;
     friend class TetrahedronFEMForceFieldInternalData<DataTypes>;
 
+    Real m_restVolume;
+
 public:
+
+
+    // get the volume of the mesh
+    Real getRestVolume() {return m_restVolume;}
+
     //For a faster contact handling with simplified compliance
     void getRotation(Transformation& R, unsigned int nodeIdx);
 
@@ -236,7 +243,7 @@ public:
         }
     }
 
-    Data< VecCoord > _initialPoints; ///< the intial positions of the points
+    Data< VecCoord > _initialPoints; ///< the initial positions of the points
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
 

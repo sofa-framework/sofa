@@ -308,6 +308,8 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     Coord C = initialPoints[d] - initialPoints[a];
     Coord AB = cross(A, B);
     Real volumes6 = fabs( dot( AB, C ) );
+
+    m_restVolume += volumes6/6;
     if (volumes6<0)
     {
         serr << "ERROR: Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
@@ -341,6 +343,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiff
     Coord C = (*X0)[d] - (*X0)[a];
     Coord AB = cross(A, B);
     Real volumes6 = fabs( dot( AB, C ) );
+    m_restVolume += volumes6/6;
     if (volumes6<0)
     {
         serr << "ERROR: Negative volume for tetra"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
@@ -1497,6 +1500,8 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         prevMaxStress = -1.0;
         updateVonMisesStress = true;
     }
+
+    m_restVolume = 0;
 
     unsigned int i;
     typename VecElement::const_iterator it;
