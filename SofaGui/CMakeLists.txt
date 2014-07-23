@@ -6,6 +6,7 @@ message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 #temporary until we move the sub projects
 set( SofaGui_ACTUAL_SOURCE_DIR ${SofaGui_SOURCE_DIR}/../applications/sofa/gui)
+set( SofaProjects_ACTUAL_SOURCE_DIR ${SofaGui_SOURCE_DIR}/../applications/projects)
 
 ##
 ## SofaGui version
@@ -56,6 +57,13 @@ list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/glut          ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
+
+# applications
+if(Qt4_FOUND)
+    list(APPEND SOFAGUI_TARGETS runSofa)
+    add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/runSofa            ${CMAKE_CURRENT_BINARY_DIR}/runSofa)
+endif(Qt4_FOUND)
+
 
 include(CMakePackageConfigHelpers)
 
