@@ -10,6 +10,7 @@ namespace defaulttype
 {
 
 typedef std::map<std::string, std::string> TemplateAliasesMap;
+typedef TemplateAliasesMap::const_iterator TemplateAliasesMapIterator;
 TemplateAliasesMap& getTemplateAliasesMap()
 {
 	static TemplateAliasesMap theMap;
@@ -34,8 +35,34 @@ bool TemplateAliases::addAlias(const std::string& name, const std::string& resul
 std::string TemplateAliases::resolveAlias(const std::string& name)
 {
 	TemplateAliasesMap& templateAliases = getTemplateAliasesMap();
-	if (templateAliases.find(name) != templateAliases.end())
-		return templateAliases[name];
+	TemplateAliasesMapIterator it = templateAliases.find(name);
+	if (it != templateAliases.end())
+		return it->second;
+	else if (name.find(",") != std::string::npos) // Multiple templates, resolve each one
+	{
+		std::string resolved = name;
+		std::string::size_type first = 0;
+		while (true)
+		{
+			std::string::size_type last = resolved.find_first_of(",", first);
+			if (last == std::string::npos) // Take until the end of the string if there is no more comma
+				last = resolved.size();
+			std::string token = resolved.substr(first, last-first);
+
+			// Replace the token with the alias (if there is one)
+			it = templateAliases.find(token);
+			if (it != templateAliases.end())
+				resolved.replace(first, last-first, it->second);
+
+			// Recompute the start of next token as we can have changed the length of the string
+			first = resolved.find_first_of(",", first);
+			if (first == std::string::npos)
+				break;
+			++first;
+		}
+
+		return resolved;
+	}
 	else
 		return name;
 }
