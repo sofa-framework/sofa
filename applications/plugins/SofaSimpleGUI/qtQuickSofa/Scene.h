@@ -28,7 +28,7 @@ public slots:
      * @brief Clear the current scene and open a new one
      * @param filename new scene to open
      */
-    Q_INVOKABLE void open(const char* filename);
+	Q_INVOKABLE void open(const QString& filename);
     /// re-open the current scene
     Q_INVOKABLE void reload();
     /// Apply one simulation time step
@@ -38,7 +38,7 @@ public slots:
     /// toggle play/pause
     Q_INVOKABLE void playpause();
     /// set play or pause, depending on the parameter
-    Q_INVOKABLE void play( bool p=true );
+    Q_INVOKABLE void play(bool p = true);
     /// pause the animation
     Q_INVOKABLE void pause();
     /// restart at the beginning, without reloading the file
@@ -47,6 +47,8 @@ public slots:
 public:
     /// Length of the simulation time step
     Q_INVOKABLE SReal dt() const;
+	/// true if the current scene has been correctly loaded
+    Q_INVOKABLE bool isLoaded() const;
     /// true if simulation is running, false if it is paused
     Q_INVOKABLE bool isPlaying() const;
 
