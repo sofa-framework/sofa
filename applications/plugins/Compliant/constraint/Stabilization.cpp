@@ -38,8 +38,7 @@ void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core:
 	unsigned i = 0;
     for(SReal* last = dst + size; dst < last; ++dst, ++i) {
 		if( !mask.empty() && !mask[i] ) *dst = 0;
-	}
-	
+    }
 }
 
 

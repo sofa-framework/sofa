@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#if defined(WIN32)
+#if defined(WIN32) && (_MSC_VER < 1800) // for all version anterior to Visual Studio 2013
 # include <float.h>
 # define isnan(x)  (_isnan(x))
 #else

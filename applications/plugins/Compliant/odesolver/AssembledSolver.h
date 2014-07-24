@@ -190,10 +190,17 @@ public:
 
 
 
-	// linear rhs for dynamics/correction steps
-    virtual void rhs_dynamics(vec& res, const system_type& sys, const vec& v, const core::behavior::MultiVecDeriv& b,
+    /// linear rhs (ode & constraints) for dynamics steps
+    virtual void rhs_dynamics(vec& res, const system_type& sys, const core::behavior::MultiVecDeriv& b,
                               core::MultiVecCoordId posId,
                               core::MultiVecDerivId velId ) const;
+
+    /// linear rhs (constraints only) for dynamics steps
+    virtual void rhs_constraints_dynamics(vec& res, const system_type& sys,
+                                          core::MultiVecCoordId posId,
+                                          core::MultiVecDerivId velId ) const;
+
+    /// linear rhs (ode & constraints) for correction step
     virtual void rhs_correction(vec& res, const system_type& sys,
                                 core::MultiVecCoordId posId,
                                 core::MultiVecDerivId velId) const;

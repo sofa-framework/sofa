@@ -234,8 +234,7 @@ class HingeRigidJoint(GenericRigidJoint):
         return GenericRigidJoint.Limits( self.node, [mask,(numpy.array(mask)*-1.).tolist()], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
-        mask = [ (1 - d) for d in self.mask ]
-        mask = numpy.array(mask)/stiffness
+        mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', template = "Rigid", isCompliance="0", compliance=concat(mask))
 
 class SliderRigidJoint(GenericRigidJoint):
@@ -250,8 +249,7 @@ class SliderRigidJoint(GenericRigidJoint):
         return GenericRigidJoint.Limits( self.node, [mask,(numpy.array(mask)*-1.).tolist()], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
-        mask = [ (1 - d) for d in self.mask ]
-        mask = numpy.array(mask)/stiffness
+        mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', template = "Rigid", isCompliance="0", compliance=concat(mask))
 
 class CylindricalRigidJoint(GenericRigidJoint):
