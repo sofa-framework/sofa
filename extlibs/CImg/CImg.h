@@ -1949,6 +1949,8 @@ extern "C" {
 #define _cimglist_instance "[instance(%u,%u,%p)] CImgList<%s>::"
 #define cimglist_instance _width,_allocated_width,_data,pixel_type()
 
+// Macros used to avoid heap corruption detection on windows debug build
+#define cimg_safe_delete_array(x) if(x) {delete[] x; x = 0; }
 /*------------------------------------------------
  #
  #
@@ -8886,10 +8888,8 @@ namespace cimg_library_suffixed {
       if (is_empty()) return flush();
       DestroyWindow(_window);
       TerminateThread(_thread,0);
-      delete[] _data;
-      delete[] _title;
-      _data = 0;
-      _title = 0;
+      cimg_safe_delete_array(_data);
+      cimg_safe_delete_array(_title);
       if (_is_fullscreen) _desinit_fullscreen();
       _width = _height = _normalization = _window_width = _window_height = 0;
       _window_x = _window_y = 0;
@@ -8960,7 +8960,7 @@ namespace cimg_library_suffixed {
         unsigned int *const ndata = new unsigned int[dimx*dimy];
         if (force_redraw) _render_resize(_data,_width,_height,ndata,dimx,dimy);
         else std::memset(ndata,0x80,sizeof(unsigned int)*dimx*dimy);
-        delete[] _data;
+       cimg_safe_delete_array(_data);
         _data = ndata;
         _bmi.bmiHeader.biWidth = dimx;
         _bmi.bmiHeader.biHeight = -(int)dimy;
@@ -9050,7 +9050,7 @@ namespace cimg_library_suffixed {
       cimg_vsnprintf(tmp,sizeof(tmp),format,ap);
       va_end(ap);
       if (!std::strcmp(_title,tmp)) return *this;
-      delete[] _title;
+      cimg_safe_delete_array(_title);
       const unsigned int s = (unsigned int)std::strlen(tmp) + 1;
       _title = new char[s];
       std::memcpy(_title,tmp,s*sizeof(char));
@@ -9399,7 +9399,7 @@ namespace cimg_library_suffixed {
          that shares its buffer with the destroyed instance, in order to avoid further invalid memory access (to a deallocated buffer).
     **/
     ~CImg() {
-      if (!_is_shared) delete[] _data;
+      if (!_is_shared) cimg_safe_delete_array(_data);
     }
 
     //! Construct empty image.
@@ -9889,7 +9889,7 @@ namespace cimg_library_suffixed {
                                       cimg_instance,
                                       size_x,size_y,size_z,size_c);
         else {
-          delete[] _data;
+          cimg_safe_delete_array(_data);
           try { _data = new T[siz]; } catch (...) {
             _width = _height = _depth = _spectrum = 0; _data = 0;
             throw CImgInstanceException(_cimg_instance

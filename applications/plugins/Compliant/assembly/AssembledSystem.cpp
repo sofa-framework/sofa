@@ -97,6 +97,63 @@ void AssembledSystem::addToMultiVec( core::MultiVecId targetId, const vec& sourc
 }
 
 
+
+
+
+
+
+
+
+void AssembledSystem::copyFromCompliantMultiVec(vec &target, core::ConstMultiVecId derivId)
+{
+    assert(target.size() >= n);
+    unsigned off = target.size()==n ? 0 : m; // if target is of size m+n, only copy target.tail(n)
+    // compliant dofs
+    for(unsigned i = 0, end = compliant.size(); i < end; ++i)
+    {
+        dofs_type* dofs = compliant[i];
+
+        unsigned dim = dofs->getMatrixSize();
+
+        dofs->copyToBuffer(&target(off), derivId.getId(dofs), dim);
+        off += dim;
+    }
+
+}
+
+
+void AssembledSystem::copyToCompliantMultiVec( core::MultiVecId targetId, const vec& source)
+{
+    unsigned off = source.size()==n ? 0 : m;
+    // compliant dofs
+    for(unsigned i = 0, end = compliant.size(); i < end; ++i)
+    {
+        dofs_type* dofs = compliant[i];
+
+        unsigned dim = dofs->getMatrixSize();
+
+        dofs->copyFromBuffer(targetId.getId(dofs), &source(off), dim);
+        off += dim;
+    }
+
+}
+
+void AssembledSystem::addToCompliantMultiVec( core::MultiVecId targetId, const vec& source )
+{
+    unsigned off = source.size()==n ? 0 : m;
+    // compliance dofs
+    for(unsigned i = 0, end = compliant.size(); i < end; ++i)
+    {
+        dofs_type* dofs = compliant[i];
+
+        unsigned dim = dofs->getMatrixSize();
+
+        dofs->addFromBuffer(targetId.getId(dofs), &source(off), dim);
+        off += dim;
+    }
+
+}
+
 }
 }
 }

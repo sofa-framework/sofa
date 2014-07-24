@@ -101,8 +101,8 @@ def createScene(root):
     
     # FIXED
     fixedNode = root.createChild('fixed')
-    fixed_body1 = createFixedRigidBody(hingeNode, "fixed_body1", 5 )
-    fixed_body2 = createRigidBody(hingeNode, "fixed_body2", 5 )
+    fixed_body1 = createFixedRigidBody(fixedNode, "fixed_body1", 5 )
+    fixed_body2 = createRigidBody(fixedNode, "fixed_body2", 5 )
     fixed = StructuralAPI.FixedRigidJoint( fixedNode, "joint", fixed_body1.node, fixed_body2.node )
   
     # DISTANCE

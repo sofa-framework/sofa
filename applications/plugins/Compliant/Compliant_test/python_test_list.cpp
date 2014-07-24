@@ -27,6 +27,11 @@ INSTANTIATE_TEST_CASE_P(Batch,
                         Python_scene_test,
                         ::testing::ValuesIn(tests.list));
 
+TEST_P(Python_scene_test, sofa_python_scene_tests)
+{
+    run(GetParam());
+}
+
 
 
 
@@ -51,6 +56,13 @@ static struct Tests2 : public Python_test_list
 INSTANTIATE_TEST_CASE_P(Batch,
                         Python_test,
                         ::testing::ValuesIn(tests2.list));
+
+TEST_P(Python_test, sofa_python_tests)
+{
+    run(GetParam());
+}
+
+
 
 
 } // namespace sofa

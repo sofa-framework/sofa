@@ -335,7 +335,7 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
     if (dataVoxels.getValue().size() == 0)
     {
         std::ifstream file( filename.c_str() );
-        if ( file == NULL )
+        if ( file.fail() )
         {
             serr << "SparseGridTopology: failed to open file " << filename << sendl;
             return;
