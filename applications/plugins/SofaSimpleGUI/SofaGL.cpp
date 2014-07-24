@@ -1,3 +1,4 @@
+#include <gl/glew.h>
 #include "SofaGL.h"
 
 namespace sofa {
@@ -6,14 +7,22 @@ namespace newgui {
 template <typename T> inline T sqr(const T& t){ return t*t; }
 
 
-SofaGL::SofaGL(SofaScene *s)
+SofaGL::SofaGL(SofaScene *s) :
+	_sofaScene(s)
 {
-    _vparams = sofa::core::visual::VisualParams::defaultInstance();
-    _vparams->drawTool() = &_drawToolGL;
-    _sofaScene = s;
+	
 }
 
-void SofaGL::init(){}
+void SofaGL::init()
+{
+	glewInit();
+
+	_vparams = sofa::core::visual::VisualParams::defaultInstance();
+    _vparams->drawTool() = &_drawToolGL;
+	_vparams->setSupported(sofa::core::visual::API_OpenGL);
+
+	sofa::simulation::getSimulation()->initTextures(_sofaScene->sroot().get());
+}
 
 void SofaGL::draw()
 {
@@ -23,8 +32,16 @@ void SofaGL::draw()
     glGetDoublev (GL_MODELVIEW_MATRIX, _mvmatrix);
     glGetDoublev (GL_PROJECTION_MATRIX, _projmatrix);
 
+	if(_vparams)
+	{
+		_vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
+		_vparams->sceneBBox() = _sofaScene->sroot()->f_bbox.getValue();
+		_vparams->setProjectionMatrix(_projmatrix);
+		_vparams->setModelViewMatrix(_mvmatrix);
+	}
+
     sofa::simulation::getSimulation()->updateVisual(_sofaScene->sroot().get()); // needed to update normals ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
-    sofa::simulation::getSimulation()->draw(_vparams,_sofaScene->sroot().get());
+    sofa::simulation::getSimulation()->draw(_vparams, _sofaScene->sroot().get());
 }
 
 void SofaGL::getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y )

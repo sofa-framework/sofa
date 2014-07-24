@@ -27,6 +27,7 @@
 
 #ifndef SOFA_NO_OPENGL
 
+#include <sofa/helper/helper.h>
 #include <sofa/helper/system/config.h>
 
 #if defined (SOFA_HAVE_GLEW) && !defined(PS3)
@@ -41,9 +42,9 @@
 #include <GL/glext.h> // necessary when you havn't glew
 #endif
 
-extern const char* GetGlExtensionsList();
+extern SOFA_HELPER_API const char* GetGlExtensionsList();
 
-extern bool CanUseGlExtension(char* ext);
+extern SOFA_HELPER_API bool CanUseGlExtension(char* ext);
 
 #endif /* SOFA_NO_OPENGL */
 

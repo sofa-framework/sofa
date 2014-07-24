@@ -27,13 +27,13 @@
 #include <string>
 
 
-const char* GetGlExtensionsList()
+SOFA_HELPER_API const char* GetGlExtensionsList()
 {
     return reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
 }
 
 
-bool CanUseGlExtension(char* ext)
+SOFA_HELPER_API bool CanUseGlExtension(char* ext)
 {
     std::string Extensions( GetGlExtensionsList() );
     if( Extensions.find( std::string(ext) ) != std::string::npos )

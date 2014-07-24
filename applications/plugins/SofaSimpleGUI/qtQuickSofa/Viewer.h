@@ -47,6 +47,7 @@
 #include <QtGui/QOpenGLFramebufferObject>
 
 class Scene;
+class QOpenGLShaderProgram;
 
 namespace sofa
 {
@@ -64,28 +65,26 @@ class Viewer : public QQuickItem
 
 public:
     Viewer();
+	~Viewer();
 
 	Scene* scene() const {return myScene;}
 	void setScene(Scene* scene);
 
-    Q_INVOKABLE void saveScreenshot(const QString& imagePath = QString());
-
 public slots:
+	void sceneModification();
     void paint();
-    void grab();
-    void cleanup();
     void sync();
 
 private slots:
     void handleWindowChanged(QQuickWindow *win);
 
-private:
-    QOpenGLShaderProgram*       myRenderShaderProgram;
-    QOpenGLShaderProgram*       myCompositionShaderProgram;
-    QOpenGLFramebufferObject*   myFramebuffer;
+signals:
+	void requestPaint();
 
+private:
 	Scene*						myScene;
 	sofa::newgui::SofaGL*		mySofaGL; // draw tools for Sofa
+	QOpenGLShaderProgram*		myProgram;
 };
 
 #endif // VIEWER_H

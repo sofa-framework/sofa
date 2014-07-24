@@ -4,10 +4,10 @@
 #include "initSimpleGUI.h"
 #include <sofa/config.h>
 #include <sofa/component/container/MechanicalObject.h>
-//#include <sofa/simulation/graph/DAGSimulation.h>
-//typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
-#include <sofa/simulation/tree/TreeSimulation.h>
-typedef sofa::simulation::tree::TreeSimulation SofaSimulation;
+#include <sofa/simulation/graph/DAGSimulation.h>
+typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
+//#include <sofa/simulation/tree/TreeSimulation.h>
+//typedef sofa::simulation::tree::TreeSimulation SofaSimulation;
 
 namespace sofa {
 using simulation::Node;
@@ -40,6 +40,10 @@ public:
      */
     SofaScene();
     virtual ~SofaScene(){}
+	/**
+     * @return The root of the simulation.
+     */
+    Node::SPtr groot(){ return _groot; } // for test purpose only
     /**
      * @return The root of the loaded scene.
      */

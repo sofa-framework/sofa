@@ -24,6 +24,10 @@ typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > V
 
 SofaScene::SofaScene()
 {
+	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
+	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel = 0;
+	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
+
     sofa::simulation::setSimulation(new SofaSimulation());
 
     sofa::component::init();
@@ -31,7 +35,6 @@ SofaScene::SofaScene()
 
     _groot = sofa::simulation::getSimulation()->createNewGraph("");
     _groot->setName("theRoot");
-
 }
 
 void SofaScene::step( SReal dt)
