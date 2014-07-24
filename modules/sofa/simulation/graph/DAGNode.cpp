@@ -506,7 +506,13 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         return;
     }
 
+	if( this->isSleeping() && !action->canAccessSleepingNode )
+	{
+        // do not execute the visitor on this node
+        statusMap[this] = PRUNED;
 
+        return;
+    }
 
     // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru
 
@@ -617,6 +623,13 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
 {
     if( !this->isActive() )
     {
+        // do not execute the visitor on this node
+        statusMap[this] = PRUNED;
+        return;
+    }
+
+	if( this->isSleeping() && !action->canAccessSleepingNode )
+	{
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
         return;

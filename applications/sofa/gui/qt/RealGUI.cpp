@@ -1815,6 +1815,7 @@ void RealGUI::createSimulationGraph()
     connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
     connect(simulationGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
+	connect(simulationGraph, SIGNAL( RequestSleeping(sofa::simulation::Node*, bool) ), this, SLOT( setSleepingNode(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
@@ -1944,6 +1945,13 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
         else
             simulation::getSimulation()->initNode(node);
     }
+}
+
+//------------------------------------
+
+void RealGUI::setSleepingNode(sofa::simulation::Node* node, bool sleeping)
+{
+	node->setSleeping(sleeping);
 }
 
 //------------------------------------

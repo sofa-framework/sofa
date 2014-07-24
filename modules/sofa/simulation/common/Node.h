@@ -525,6 +525,7 @@ public:
     // Added by FF to model component dependencies
     /// Pairs representing component dependencies. First must be initialized before second.
     Data < sofa::helper::vector < std::string > > depend;
+
     /// Sort the components according to the dependencies expressed in Data depend.
     void sortComponents();
 
