@@ -905,6 +905,8 @@ void Node::updateVisualContext()
 void Node::executeVisitor(Visitor* action, bool precomputedOrder)
 {
     if (!this->isActive()) return;
+	// if the current node is sleeping and the visitor can't access it, don't do anything
+	if (this->isSleeping() && !action->canAccessSleepingNode) return;
 
     if (!action->execParams()->checkValidStorage())
     {

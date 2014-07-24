@@ -125,6 +125,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 
     //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->isActive()) return Visitor::RESULT_PRUNE;
+	if (node->isSleeping()) return Visitor::RESULT_PRUNE;
 #ifdef SOFA_HAVE_EIGEN2
     if (!firstNodeVisited)
     {

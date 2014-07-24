@@ -87,6 +87,10 @@ bool LCPConstraintSolver::buildSystem(const core::ConstraintParams * /*cParams*/
 {
     //sout<<"constraintCorrections is called"<<sendl;
 
+	// Test if the nodes containing the constraint correction are active (not sleeping)
+	for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+		constraintCorrectionIsActive[i] = !constraintCorrections[i]->getContext()->isSleeping();
+
     if(build_lcp.getValue())
     {
         //sout<<"build_LCP is called"<<sendl;
@@ -247,6 +251,7 @@ bool LCPConstraintSolver::applyCorrection(const core::ConstraintParams * /*cPara
 
     for (unsigned int i = 0; i < constraintCorrections.size(); i++)
     {
+		if (!constraintCorrectionIsActive[i]) continue;
         core::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->applyContactForce(_result);
     }
@@ -328,6 +333,7 @@ void LCPConstraintSolver::init()
     }
 
     getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
+	constraintCorrectionIsActive.resize(constraintCorrections.size());
 
     context = (simulation::Node*) getContext();
 }
