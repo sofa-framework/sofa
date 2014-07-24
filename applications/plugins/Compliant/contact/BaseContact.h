@@ -334,6 +334,9 @@ protected:
 
         }
 
+        // ensure all graph context parameters (e.g. dt are well copied)
+        delta_node->updateSimulationContext();
+
         delta_type res;
         res.node = delta_node;
         res.dofs = delta_dofs;
