@@ -200,7 +200,7 @@ void Multi2Mapping<In1,In2,Out>::updateMapping()
 template < class In1, class In2, class Out >
 std::string Multi2Mapping<In1,In2,Out>::templateName(const Multi2Mapping<In1, In2, Out>* /*mapping*/)
 {
-    return std::string("Multi2Mapping<[") + In1::Name() + std::string(",") + In2::Name() + std::string("],")+ Out::Name() + std::string(">");
+    return std::string(In1::Name()) + "," + In2::Name() + "," + Out::Name();
 }
 
 template < class In1, class In2, class Out >
