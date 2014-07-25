@@ -30,6 +30,7 @@ struct SE3 {
 
 	typedef Eigen::Matrix<real, 6, 6> mat66;
 	typedef Eigen::Matrix<real, 3, 3> mat33;
+    typedef Eigen::Matrix<real, 3, 6> mat36;
 
 	typedef Eigen::Quaternion<real> quat;
 
