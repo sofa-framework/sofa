@@ -8,9 +8,9 @@ import os
 def datatostr(component,data):
 	return str(component.findData(data).value).replace('[', '').replace("]", '').replace(",", ' ')
 
-def affineDatatostr(component,data):
+def affineDatatostr(data):
 	L = ""
-	for it in component.findData(data).value :
+	for it in data :
 		for i in xrange(3):
 			L = L+ str(it[i])+" "
 		L = L+ "["
@@ -26,8 +26,8 @@ def export_AffineFrames(mechanicalObject, filename):
 	f = open(filename, 'w')
 	f.write("def loadDofs(node):\n\tcomponent=node.createObject('MechanicalObject', template='Affine',name='"+mechanicalObject.name+"'")
 	f.write(", showObject='"+datatostr(mechanicalObject,'showObject')+"', showObjectScale='"+datatostr(mechanicalObject,'showObjectScale')+"'")
-	f.write(", rest_position='"+affineDatatostr(mechanicalObject,'rest_position')+"'")
-	f.write(", position='"+affineDatatostr(mechanicalObject,'position')+"'")
+	f.write(", rest_position='"+affineDatatostr(mechanicalObject.findData('rest_position').value)+"'")
+	f.write(", position='"+affineDatatostr(mechanicalObject.findData('position').value)+"'")
 	f.write(")\n\treturn component\n")
 	f.close()
 	return 0
