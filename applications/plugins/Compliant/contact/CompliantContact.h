@@ -87,6 +87,9 @@ protected:
 
         delta.node->addChild( contact_node.get() );
 
+        // ensure all graph context parameters (e.g. dt are well copied)
+        contact_node->updateSimulationContext();
+
         // 1d contact dofs
         typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
         typename contact_dofs_type::SPtr contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
