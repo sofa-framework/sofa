@@ -156,9 +156,9 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
     void send(simulation::Visitor& vis);
 			  
 	// integrate positions
-    void integrate( const core::MechanicalParams* params, 
-                    const core::MultiVecCoordId& posId,
-                    const core::MultiVecDerivId& velId );
+    virtual void integrate( const core::MechanicalParams* params,
+                            const core::MultiVecCoordId& posId,
+                            const core::MultiVecDerivId& velId );
 
 	// propagate velocities
     void propagate(const core::MechanicalParams* params);
