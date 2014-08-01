@@ -1,6 +1,6 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-
+if (SOFA-LIB_GUI_QT)
 
 set(HEADER_FILES
 
@@ -44,11 +44,11 @@ else()
 	include_directories("/usr/include/suitesparse/")
 endif()
 
-	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${MOC_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_COMPLIANT_GUI")
 AddLinkerDependencies(SofaGuiMain Compliant)
 
+endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
