@@ -48,24 +48,24 @@ using namespace helper;
 
 #ifndef SOFA_FLOAT
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointByNormal( const Vector3& )
+Vector3 TSphere<Vec3dTypes>::getContactPointByNormal( const Vector3& )
 {
     return center();
 }
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3dTypes >::getContactPointWithSurfacePoint( const Vector3& )
+Vector3 TSphere<Vec3dTypes>::getContactPointWithSurfacePoint( const Vector3& )
 {
     return center();
 }
 #endif
 #ifndef SOFA_DOUBLE
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointByNormal( const Vector3& )
+Vector3 TSphere<Vec3fTypes>::getContactPointByNormal( const Vector3& )
 {
     return center();
 }
 template <> SOFA_BASE_COLLISION_API
-Vector3 TSphere<defaulttype::Vec3fTypes >::getContactPointWithSurfacePoint( const Vector3& )
+Vector3 TSphere<Vec3fTypes>::getContactPointWithSurfacePoint( const Vector3& )
 {
     return center();
 }
@@ -91,12 +91,16 @@ int SphereModelClass = core::RegisterObject("Collision model which represents a 
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
-template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3dTypes>;
+template class SOFA_BASE_COLLISION_API TSphere<Vec3dTypes>;
+//template class SOFA_BASE_COLLISION_API TSphere<Rigid3dTypes>; // Can't compile due to type mismatches in pFree() method.
+template class SOFA_BASE_COLLISION_API TSphereModel<Vec3dTypes>;
+template class SOFA_BASE_COLLISION_API TSphereModel<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
-template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3fTypes>;
+template class SOFA_BASE_COLLISION_API TSphere<Vec3fTypes>;
+//template class SOFA_BASE_COLLISION_API TSphere<Rigid3fTypes>; // Can't compile due to type mismatches in pFree() method.
+template class SOFA_BASE_COLLISION_API TSphereModel<Vec3fTypes>;
+template class SOFA_BASE_COLLISION_API TSphereModel<Rigid3fTypes>;
 #endif
 
 } // namespace collision
