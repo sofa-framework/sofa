@@ -60,9 +60,6 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::component::odesolver;
-using namespace sofa::component::linearsolver;
-
 template<class TMatrix,class TVector>
 PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
     : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
@@ -98,7 +95,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
     internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
-    EulerImplicitSolver* EulerSolver;
+    odesolver::EulerImplicitSolver* EulerSolver;
     this->getContext()->get(EulerSolver);
     factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
     if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
@@ -207,7 +204,7 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatri
         core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
         //TODO get the m b k factor from euler
 
-        cerr << "ERROR : the construction of the matrix when the solver is used only as cvonstraint correction is not implemented. You first need to save the matrix into a file" << std::endl;
+        std::cerr << "ERROR : the construction of the matrix when the solver is used only as cvonstraint correction is not implemented. You first need to save the matrix into a file" << std::endl;
         setSystemMBKMatrix(&mparams);
     }
 
