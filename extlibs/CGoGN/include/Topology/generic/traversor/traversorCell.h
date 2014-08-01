@@ -71,17 +71,98 @@ public:
     ~TraversorCell() ;
 
     inline Cell<ORBIT> begin() ;
-
     inline Cell<ORBIT> end() ;
-
     inline Cell<ORBIT> next() ;
 
     inline void skip(Cell<ORBIT> c);
-
-    inline unsigned int nbCells();
 } ;
 
+// qt version
 
+template <typename MAP, unsigned int ORBIT, TraversalOptim OPT>
+class TraversorCellIterable {
+    BOOST_STATIC_ASSERT((sizeof(MAP) == 0)); // always false
+};
+
+template<typename MAP,unsigned int ORBIT>
+class TraversorCellIterable<MAP,ORBIT, FORCE_QUICK_TRAVERSAL> {
+public:
+    class Iterator {
+        Iterator(const TraversorCellIterable& tr, unsigned int qCurr);
+        Iterator(const Iterator& it);
+        Iterator& operator++() ;
+
+        inline bool operator!=(const Iterator& it) const { return current != it.current; }
+        inline bool operator==(const Iterator& it) const { return current == it.current; }
+        // Warning : does not return a reference but a value.
+        inline Cell<ORBIT> operator*() const {return current;}
+        inline const Cell<ORBIT>* operator->() const {return &current;}
+
+    private:
+        Iterator();
+        Iterator& operator=(const Iterator& it);
+        // Never use it++, instead you'll need to use ++it.
+        Iterator& operator++(int) ;
+    private:
+        Cell<ORBIT> current;
+        unsigned int qCurrent;
+        const TraversorCellIterable& m_trav;
+    };
+
+public:
+    TraversorCellIterable(const MAP& map, bool, unsigned int);
+    TraversorCellIterable(const MAP& map);
+    TraversorCellIterable(const TraversorCellIterable& );
+    ~TraversorCellIterable();
+    inline Iterator begin() const {return Iterator(*this, cont->realBegin()); }
+    inline Iterator end() const { return Iterator(*this, this->cont->realEnd()); }
+private:
+    const AttributeMultiVector<Dart>* quickTraversal ;
+    const AttributeContainer* cont ;
+};
+
+
+
+// cell marking version
+
+template<typename MAP,unsigned int ORBIT>
+class TraversorCellIterable<MAP,ORBIT, FORCE_CELL_MARKING> {
+public:
+    class Iterator {
+        Iterator(const TraversorCellIterable& tr, Cell<ORBIT> curr) ;
+        Iterator(const Iterator& it) ;
+        Iterator& operator++() ;
+        ~Iterator();
+
+        inline bool operator!=(const Iterator& it) const { return current != it.current; }
+        inline bool operator==(const Iterator& it) const { return current == it.current; }
+        // Warning : does not return a reference but a value.
+        inline Cell<ORBIT> operator*() const { return current; }
+        inline const Cell<ORBIT>* operator->() const { return &current; }
+
+    private:
+        Iterator();
+        Iterator& operator=(const Iterator& it);
+        // Never use it++, instead you'll need to use ++it.
+        Iterator& operator++(int) ;
+    private:
+        CellMarker<MAP, ORBIT>* cmark ;
+        Cell<ORBIT> current;
+        const TraversorCellIterable& m_trav;
+    };
+
+public:
+    TraversorCellIterable(const MAP& map, bool forceDartmarking = false, unsigned int thread = 0);
+    TraversorCellIterable(const TraversorCellIterable& );
+    ~TraversorCellIterable();
+    inline Iterator begin() { return Iterator(*this,m_begin); }
+    inline Iterator end()   { return Iterator(*this,NIL); }
+
+private:
+    Cell<ORBIT> m_begin;
+    const MAP& m_map;
+    const unsigned m_thread;
+};
 
 
 template <typename MAP, unsigned int ORBIT, TraversalOptim OPT = AUTO>
