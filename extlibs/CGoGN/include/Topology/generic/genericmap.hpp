@@ -63,8 +63,8 @@ inline std::vector<unsigned int>* GenericMap::askUIntBuffer(unsigned int thread)
 {
 	if (s_vintsBuffers[thread].empty())
 	{
-        std::vector<unsigned int>* vui = new std::vector<unsigned int>(128u, 0u);
-//		vui->reserve(128);
+        std::vector<unsigned int>* vui = new std::vector<unsigned int>;
+        vui->reserve(128);
 		return vui;
 	}
 
@@ -75,13 +75,13 @@ inline std::vector<unsigned int>* GenericMap::askUIntBuffer(unsigned int thread)
 
 inline void GenericMap::releaseUIntBuffer(std::vector<unsigned int>* vui, unsigned int thread)
 {
-	if (vui->capacity()>1024)
-	{
-        std::vector<unsigned int> v;
-        vui->swap(v);
-        vui->reserve(128);
-	}
-//    std::fill(vui->begin(), vui->end(), 0u);
+//	if (vui->capacity()>1024)
+//	{
+//        std::vector<unsigned int> v;
+//        vui->swap(v);
+//        vui->reserve(128);
+//	}
+
 	s_vintsBuffers[thread].push_back(vui);
 }
 

@@ -57,9 +57,11 @@ public:
 
 	unsigned int getCell() { return m_cell ; }
     inline unsigned getThread() const { return m_thread; }
-protected:
-	// protected copy constructor to forbid its usage
-	CellMarkerGen(const CellMarkerGen& /*cm*/)
+//protected:
+//	// protected copy constructor to forbid its usage
+    CellMarkerGen(const CellMarkerGen& cm) :
+        m_cell(cm.m_cell),
+        m_thread(cm.m_thread)
 	{}
 
 };
@@ -110,12 +112,15 @@ public:
 		m_markVector = m_map.template askMarkVector<CELL>(m_thread);
 	}
 
-protected:
-	// protected copy constructor to forbid its usage
+//protected:
+//	// protected copy constructor to forbid its usage
 	CellMarkerBase(const CellMarkerBase<MAP, CELL>& cm) :
-		m_map(cm.m_map),
-		CellMarkerGen(CELL)
-	{}
+        CellMarkerGen(cm),
+        m_map(cm.m_map)
+    {
+        m_markVector = m_map.template askMarkVector<CELL>(m_thread);
+        m_markVector->copy(cm.m_markVector);
+    }
 
 public:
 	/**
@@ -231,6 +236,7 @@ public:
  * class that allows the marking of cells
  * \warning no default constructor
  */
+
 template <typename MAP, unsigned int CELL>
 class CellMarker : public CellMarkerBase<MAP, CELL>
 {
@@ -247,7 +253,7 @@ public:
 		unmarkAll() ;
 	}
 
-protected:
+//protected:
 	CellMarker(const CellMarker& cm) :
 		CellMarkerBase<MAP, CELL>(cm)
 	{}
@@ -259,6 +265,8 @@ public:
         this->m_markVector->allFalse();
 //        assert(this->isAllUnmarked());
 	}
+
+    inline const MAP& getMap() const {return this->m_map;}
 };
 
 /**
@@ -295,10 +303,13 @@ public:
 //		CGoGN_ASSERT(this->isAllUnmarked())
 	}
 
-protected:
+//protected:
 	CellMarkerStore(const CellMarkerStore& cm) :
 		CellMarkerBase<MAP, CELL>(cm)
-	{}
+    {
+        m_markedCells = GenericMap::askUIntBuffer(cm.getThread());
+        *m_markedCells = *(cm.m_markedCells);
+    }
 
 public:
 	inline void mark(Cell<CELL> d)
@@ -354,10 +365,12 @@ public:
 //		CGoGN_ASSERT(this->isAllUnmarked())
 	}
 
-protected:
+//protected:
 	CellMarkerMemo(const CellMarkerMemo& cm) :
 		CellMarkerBase<MAP, CELL>(cm)
-	{}
+    {
+        m_markedDarts = cm.m_markedDarts;
+    }
 
 public:
 	inline void mark(Cell<CELL> c)
@@ -406,7 +419,7 @@ public:
 //		CGoGN_ASSERT(this->isAllUnmarked())
 	}
 
-protected:
+//protected:
 	CellMarkerNoUnmark(const CellMarkerNoUnmark& cm) :
 		CellMarkerBase<MAP, CELL>(cm)
 	{}
