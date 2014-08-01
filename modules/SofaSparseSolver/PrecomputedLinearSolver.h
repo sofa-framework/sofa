@@ -43,20 +43,6 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::core;
-using namespace sofa::defaulttype;
-
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-
-using namespace sofa::component::linearsolver;
-
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-using std::cerr;
-using std::endl;
-
 template<class TMatrix, class TVector>
 class PrecomputedLinearSolverInternalData
 {
@@ -123,7 +109,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        return BaseObject::canCreate(obj, context, arg);
+        return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
     virtual std::string getTemplateName() const
