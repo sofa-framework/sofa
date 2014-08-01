@@ -94,7 +94,7 @@ void SceneColladaLoader::init()
 		return;
 
     // retrieving parent node
-    BaseContext* currentContext = getContext();
+    core::objectmodel::BaseContext* currentContext = getContext();
     Node* parentNode = dynamic_cast<Node*>(currentContext);
     if(!parentNode)
     {
@@ -631,8 +631,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
 								currentSkinningMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
 
-								vector<SVector<SkinningMapping<Rigid3dTypes, Vec3dTypes>::InReal> > weights;
-								vector<SVector<unsigned int> > indices;
+								vector<helper::SVector<SkinningMapping<Rigid3dTypes, Vec3dTypes>::InReal> > weights;
+								vector<helper::SVector<unsigned int> > indices;
 								vector<unsigned int> nbref;
 
 								indices.resize(currentAiMesh->mNumVertices);
