@@ -28,6 +28,13 @@
 
 #include <sofa/SofaFramework.h>
 
+#cmakedefine SOFA_GUI_GLUT
+#cmakedefine SOFA_GUI_QT
+#cmakedefine SOFA_GUI_QGLVIEWER
+#cmakedefine SOFA_GUI_QTVIEWER
+#cmakedefine SOFA_HAVE_QT
+#cmakedefine SOFA_QT4
+
 #define SOFAGUI_MAJOR_VERSION ${SOFAGUI_MAJOR_VERSION}
 #define SOFAGUI_MINOR_VERSION ${SOFAGUI_MINOR_VERSION}
 #define SOFAGUI_BUILD_VERSION ${SOFAGUI_BUILD_VERSION}
