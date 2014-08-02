@@ -145,7 +145,6 @@ if(SOFA_HAVE_QGLVIEWER)
 	list(APPEND SOURCE_FILES viewer/qgl/QtGLViewer.cpp)
     set(SOFAGUIQT_COMPILER_FLAGS "${SOFAGUIQT_COMPILER_FLAGS} -DSOFA_GUI_QGLVIEWER")
 	list(APPEND SOFAGUIQT_LINK_LIBRARIES QGLViewer)
-#	AddLinkerDependencies(QGLViewer)
 endif()
 
 # make mocced header / form files path from absolute to relative

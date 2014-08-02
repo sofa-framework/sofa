@@ -31,12 +31,10 @@ set(SOFAGUI_INSTALL_CMAKE_DIR   lib/cmake/SofaGui   CACHE PATH "Installation dir
 ## SofaGui dependencies
 ##
 find_package(SofaFramework REQUIRED)
-#include_directories( ${SofaFramework_INCLUDE_DIRS} )
+find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
 
-configure_file( ${SofaGui_SOURCE_DIR}/SofaGui.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGui.h )
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGui.h
-         DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa")
+set(SOFA_HAVE_QT ${Qt4_FOUND} )
+set(SOFA_QT4 ${Qt4_FOUND} )
 
 #set(SOFAGUI_TARGETS SofaGuiCommon SofaGuiQt SofaGuiQTViewer SofaGuiGlut SofaGuiMain)
 
@@ -44,27 +42,40 @@ set(SOFAGUI_TARGETS SofaGuiCommon)
 
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
 
-find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
+if(SOFA_HAVE_GLUT)
+    set(SOFA_GUI_GLUT 1)
+    list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
+    add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/glut          ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
+endif()
 
 if(Qt4_FOUND)
+    set(SOFA_GUI_QT 1)
+
     list(APPEND SOFAGUI_TARGETS SofaGuiQt)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt            ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+    set(SOFA_GUI_QTVIEWER 1)
+    
     #add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt/viewer/qt  ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQTViewer)
     #add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt/viewer/qgl ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQTQGLViewer)
 endif(Qt4_FOUND)
 
-list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
-add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/glut          ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
+
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
 
 # applications
 if(Qt4_FOUND)
-    list(APPEND SOFAGUI_TARGETS runSofa)
-    add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/runSofa            ${CMAKE_CURRENT_BINARY_DIR}/runSofa)
     add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/Modeler            ${CMAKE_CURRENT_BINARY_DIR}/Modeler)
 endif(Qt4_FOUND)
+list(APPEND SOFAGUI_TARGETS runSofa)
+add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/runSofa            ${CMAKE_CURRENT_BINARY_DIR}/runSofa)
 
+
+configure_file( ${SofaGui_SOURCE_DIR}/SofaGui.h.in
+                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGui.h )
+
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGui.h
+         DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa")
 
 include(CMakePackageConfigHelpers)
 
