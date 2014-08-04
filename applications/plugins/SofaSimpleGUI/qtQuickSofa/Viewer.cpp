@@ -73,21 +73,18 @@ void Viewer::setScene(Scene* scene)
 	if(!scene || scene == myScene)
 		return;
 
-	qDebug() << "setScene:" << myScene;
+	clear();
 
 	delete myScene;
 	myScene = scene;
 
-	delete mySofaGL;
-	mySofaGL = 0;
-
-	connect(myScene, SIGNAL(opened()), this, SLOT(sceneModification()));
+	connect(myScene, SIGNAL(opened()), this, SLOT(clear()));
 
 	if(window())
 		window()->update();
 }
 
-void Viewer::sceneModification()
+void Viewer::clear()
 {
 	delete mySofaGL;
 	mySofaGL = 0;
@@ -116,15 +113,6 @@ void Viewer::handleWindowChanged(QQuickWindow *win)
 
 void Viewer::paint()
 {
-	qDebug() << "a" << QThread::currentThreadId() << flush;
-	
-	if(!myScene)
-	{
-		myScene = new Scene();
-		myScene->open("C:/MyFiles/Sofa/examples/Demos/caduceus.scn");
-	}
-
-	qDebug() << "a1" << flush;
 	if(!myProgram)
 	{
         myProgram = new QOpenGLShaderProgram();
@@ -149,11 +137,10 @@ void Viewer::paint()
         myProgram->link();
     }
 	
-	// we need to bind/release a shader once before drawing anything, for now i don't know why ...
+	// we need to bind/release a shader once before drawing anything, currently i don't know why ...
 	myProgram->bind();
 	myProgram->release();
 
-	qDebug() << "b" << mySofaGL << myScene << flush;
 	if(!mySofaGL && myScene && myScene->isLoaded())
 	{
 		sofa::newgui::SofaScene* sofaScene = dynamic_cast<sofa::newgui::SofaScene*>(myScene);
@@ -164,7 +151,6 @@ void Viewer::paint()
 			mySofaGL->init();
 		}
 	}
-	qDebug() << "h" << flush;
 
     // compute the correct viewer position
     QPointF pos = mapToScene(QPointF(0.0, 0.0));
@@ -205,17 +191,10 @@ void Viewer::paint()
 	glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
+	glDepthMask(GL_TRUE);
 
-	if(mySofaGL && myScene && myScene->isLoaded())
-	{
-		qDebug() << "i" << flush;
-		myScene->step();
-		qDebug() << "j" << flush;
+	if(mySofaGL)
 		mySofaGL->draw();
-		qDebug() << "k" << flush;
-	}
-
-	qDebug() << "l" << flush;
 }
 
 void Viewer::sync()

@@ -19,7 +19,7 @@ class Interactor;
 
 /** @brief A sofa scene graph with simulation functions.
  * Node _groot is the root of the scene.
- * Scene files are loaded under its child node _sroot, while Interactors are set under its child node _iroot.
+ * Interactors are set under its child node _iroot.
  *
  * @author Francois Faure, 2014
  */
@@ -28,8 +28,7 @@ class SOFA_SOFASIMPLEGUI_API  SofaScene : public SofaSimulation
 protected:
 
 
-    Node::SPtr _groot; ///< root of the graph.
-    Node::SPtr _sroot; ///< root of the loaded scenes, child of _groot
+    Node::SPtr _groot; ///< root of the scene
     Node::SPtr _iroot; ///< root of the interactors, child of _groot
     std::string _currentFileName; ///< Name of the current scene
 
@@ -41,13 +40,9 @@ public:
     SofaScene();
     virtual ~SofaScene(){}
 	/**
-     * @return The root of the simulation.
-     */
-    Node::SPtr groot(){ return _groot; } // for test purpose only
-    /**
      * @return The root of the loaded scene.
      */
-    Node::SPtr sroot(){ return _sroot; }
+    Node::SPtr groot(){ return _groot; }
     /**
      * @return The root of the interactors.
      */
