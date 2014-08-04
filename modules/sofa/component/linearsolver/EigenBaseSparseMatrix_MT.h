@@ -281,7 +281,7 @@ template<typename Lhs, typename Rhs, typename ResultType>
 void mul_EigenSparseMatrix_MT( ResultType& res, const Lhs& lhs, const Rhs& rhs )
 {
 #ifdef USING_OMP_PRAGMAS
-    assert( &res != this );
+    assert( &res != &lhs );
     assert( &res != &rhs );
     conservative_sparse_sparse_product_selector_MT< Lhs, Rhs, ResultType >::run(lhs, rhs, res);
 #else
