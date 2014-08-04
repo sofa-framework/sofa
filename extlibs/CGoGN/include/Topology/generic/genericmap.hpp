@@ -40,22 +40,23 @@ inline std::vector<Dart>* GenericMap::askDartBuffer(unsigned int thread)
 		vd->reserve(128);
 		return vd;
 	}
-
 	std::vector<Dart>* vd = s_vdartsBuffers[thread].back();
 	s_vdartsBuffers[thread].pop_back();
+//    std::cerr << "current number of vec in the dart buffer of thread n " << thread << " :: " << s_vdartsBuffers[thread].size() << std::endl;
 	return vd;
 }
 
 inline void GenericMap::releaseDartBuffer(std::vector<Dart>* vd, unsigned int thread)
 {
-	if (vd->capacity()>1024)
-	{
-		std::vector<Dart> v;
-		vd->swap(v);
-		vd->reserve(128);
-	}
+//	if (vd->capacity()>1024)
+//	{
+//		std::vector<Dart> v;
+//		vd->swap(v);
+//		vd->reserve(128);
+//	}
 	vd->clear();
 	s_vdartsBuffers[thread].push_back(vd);
+//    std::cerr << "current number of vec in the dart buffer of thread n " << thread << " :: " << s_vdartsBuffers[thread].size() << std::endl;
 }
 
 
@@ -238,7 +239,7 @@ AttributeMultiVector<MarkerBool>* GenericMap::askMarkVector(unsigned int thread)
 		x = x/10;
 		number[0]= '0'+x%10;
 
-        AttributeMultiVector<MarkerBool>* amv = m_attribs[ORBIT].addAttribute<MarkerBool>("marker_" + orbitName(ORBIT) + number);
+        AttributeMultiVector<MarkerBool>* amv = m_attribs[ORBIT].addAttribute<MarkerBool>("marker_" + orbitName<ORBIT>() + number);
 		return amv;
 	}
 }
