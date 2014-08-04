@@ -106,7 +106,7 @@ public:
 	bool copy(const AttributeMultiVectorGen* atmvg)
 	{
 		const AttributeMultiVector<MarkerBool>* atmv = dynamic_cast<const AttributeMultiVector<MarkerBool>*>(atmvg);
-
+        assert(atmv != NULL);
 		if (atmv == NULL)
 		{
 			CGoGNerr << "trying to copy attributes of different type" << CGoGNendl;
