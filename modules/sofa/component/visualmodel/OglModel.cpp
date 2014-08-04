@@ -812,8 +812,8 @@ void OglModel::initVisual()
 
 	static bool init = false;
 	if(!init)
-	{
-		vboAvailable = CanUseGlExtension("GL_ARB_vertex_buffer_object");
+    {
+        vboAvailable = CanUseGlExtension( "GL_ARB_vertex_buffer_object" );
 		init = true;
 	}
 

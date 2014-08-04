@@ -29,6 +29,7 @@
 
 #include <sofa/helper/helper.h>
 #include <sofa/helper/system/config.h>
+#include <string>
 
 #if defined (SOFA_HAVE_GLEW) && !defined(PS3)
 #include <GL/glew.h>
@@ -44,7 +45,7 @@
 
 extern SOFA_HELPER_API const char* GetGlExtensionsList();
 
-extern SOFA_HELPER_API bool CanUseGlExtension(char* ext);
+extern SOFA_HELPER_API bool CanUseGlExtension(const std::string& ext);
 
 #endif /* SOFA_NO_OPENGL */
 
