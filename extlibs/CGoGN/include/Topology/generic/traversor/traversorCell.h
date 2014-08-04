@@ -88,8 +88,10 @@ template<typename MAP,unsigned int ORBIT>
 class TraversorCellIterable<MAP,ORBIT, FORCE_QUICK_TRAVERSAL> {
 public:
     class Iterator {
+    public:
         Iterator(const TraversorCellIterable& tr, unsigned int qCurr);
         Iterator(const Iterator& it);
+        Iterator& operator=(const Iterator& it);
         Iterator& operator++() ;
 
         inline bool operator!=(const Iterator& it) const { return current != it.current; }
@@ -97,10 +99,8 @@ public:
         // Warning : does not return a reference but a value.
         inline Cell<ORBIT> operator*() const {return current;}
         inline const Cell<ORBIT>* operator->() const {return &current;}
-
     private:
         Iterator();
-        Iterator& operator=(const Iterator& it);
         // Never use it++, instead you'll need to use ++it.
         Iterator& operator++(int) ;
     private:
@@ -110,8 +110,8 @@ public:
     };
 
 public:
-    TraversorCellIterable(const MAP& map, bool, unsigned int);
-    TraversorCellIterable(const MAP& map);
+    typedef Iterator iterator;
+    TraversorCellIterable(const MAP& map, bool = 0, unsigned int = 0);
     TraversorCellIterable(const TraversorCellIterable& );
     ~TraversorCellIterable();
     inline Iterator begin() const {return Iterator(*this, cont->realBegin()); }
@@ -129,6 +129,7 @@ template<typename MAP,unsigned int ORBIT>
 class TraversorCellIterable<MAP,ORBIT, FORCE_CELL_MARKING> {
 public:
     class Iterator {
+    public:
         Iterator(const TraversorCellIterable& tr, Cell<ORBIT> curr) ;
         Iterator(const Iterator& it) ;
         Iterator& operator++() ;
@@ -139,7 +140,6 @@ public:
         // Warning : does not return a reference but a value.
         inline Cell<ORBIT> operator*() const { return current; }
         inline const Cell<ORBIT>* operator->() const { return &current; }
-
     private:
         Iterator();
         Iterator& operator=(const Iterator& it);
@@ -148,10 +148,11 @@ public:
     private:
         CellMarker<MAP, ORBIT>* cmark ;
         Cell<ORBIT> current;
-        const TraversorCellIterable& m_trav;
+//        const TraversorCellIterable& m_trav;
     };
 
 public:
+    typedef Iterator iterator;
     TraversorCellIterable(const MAP& map, bool forceDartmarking = false, unsigned int thread = 0);
     TraversorCellIterable(const TraversorCellIterable& );
     ~TraversorCellIterable();
@@ -163,6 +164,56 @@ private:
     const MAP& m_map;
     const unsigned m_thread;
 };
+
+
+
+// AUTO VERSION (--> qt if possible, otherwise cm)
+template<typename MAP,unsigned int ORBIT>
+class TraversorCellIterable<MAP,ORBIT, AUTO> {
+public:
+    class Iterator {
+    public:
+        Iterator(const TraversorCellIterable& tr, bool beginning = true) ; // true for beginning, false for end
+        Iterator& operator++() ;
+        ~Iterator();
+
+        inline bool operator!=(const Iterator& it) const { return current != it.current; }
+        inline bool operator==(const Iterator& it) const { return current == it.current; }
+        // Warning : does not return a reference but a value.
+        inline Cell<ORBIT> operator*() const { return current; }
+        inline const Cell<ORBIT>* operator->() const { return &current; }
+    private:
+        Iterator();
+        Iterator& operator=(const Iterator& it);
+        // Never use it++, instead you'll need to use ++it.
+        Iterator& operator++(int) ;
+    private:
+        CellMarker<MAP, ORBIT>* cmark ;
+        Cell<ORBIT> current;
+        unsigned int qCurrent;
+        const TraversorCellIterable& m_trav;
+    };
+
+public:
+    typedef Iterator iterator;
+    TraversorCellIterable(const MAP& map, bool forceDartmarking = false, unsigned int thread = 0);
+    TraversorCellIterable(const TraversorCellIterable& );
+    ~TraversorCellIterable();
+    inline Iterator begin() { return Iterator(*this,m_begin); }
+    inline Iterator end()   { return Iterator(*this,NIL); }
+
+private:
+    Cell<ORBIT> m_begin;
+    const MAP& m_map;
+    const AttributeMultiVector<Dart>* quickTraversal ;
+    const AttributeContainer* cont ;
+    const unsigned m_thread;
+
+};
+
+
+
+
 
 
 template <typename MAP, unsigned int ORBIT, TraversalOptim OPT = AUTO>

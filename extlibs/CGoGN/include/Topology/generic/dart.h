@@ -88,10 +88,6 @@ struct Dart
 	friend std::ostream& operator<<( std::ostream &out, const Dart& fa ) { return out << fa.index; }
 	friend std::istream& operator>>( std::istream &in, Dart& fa ) { in >> fa.index; return in; }
 
-	void operator += (const Dart& /*fa*/) {}
-	void operator -= (const Dart& /*fa*/) {}
-	void operator *= (double /*v*/) {}
-	void operator /= (double /*v*/) {}
 
 	/**
 	 * CGoGN name
@@ -106,9 +102,10 @@ struct Dart
 
 const Dart NIL = Dart::nil();
 
-inline std::string orbitName(unsigned int orbit)
+template<unsigned int ORBIT>
+inline std::string orbitName()
 {
-	switch(orbit)
+    switch(ORBIT)
 	{
 	case DART:
 		return "DART";

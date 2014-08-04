@@ -313,21 +313,21 @@ void Map1<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f, unsigne
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map1<MAP_IMPL>::foreach_dart_of_vertex(Dart d, FUNC& f, unsigned int /*thread*/) const
+inline void Map1<MAP_IMPL>::foreach_dart_of_vertex(Dart d,const  FUNC& f, unsigned int /*thread*/) const
 {
 	f(d) ;
 }
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map1<MAP_IMPL>::foreach_dart_of_edge(Dart d, FUNC& f, unsigned int /*thread*/) const
+inline void Map1<MAP_IMPL>::foreach_dart_of_edge(Dart d, const FUNC& f, unsigned int /*thread*/) const
 {
 	f(d) ;
 }
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map1<MAP_IMPL>::foreach_dart_of_cc(Dart d, FUNC& f, unsigned int /*thread*/) const
+inline void Map1<MAP_IMPL>::foreach_dart_of_cc(Dart d, const FUNC& f, unsigned int /*thread*/) const
 {
 	Dart it = d ;
 	do
