@@ -26,6 +26,7 @@ set(HEADER_FILES
     shapeFunction/HatShapeFunction.h 
     shapeFunction/BarycentricShapeFunction.h 
     shapeFunction/BezierShapeFunction.h
+    deformationMapping/BaseDeformationImpl.inl 
     deformationMapping/BaseDeformationMapping.h
     deformationMapping/BaseDeformationMapping.inl 
     deformationMapping/CustomJacobianBlock.h

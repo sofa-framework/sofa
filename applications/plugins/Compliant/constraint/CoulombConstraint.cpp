@@ -30,7 +30,7 @@ void CoulombConstraint::project( SReal* out, unsigned n, bool correct ) const
     if( correct ) {
 		SReal alpha = normal.dot( view );
 
-		alpha = std::max(alpha, 0.0);
+		alpha = std::max(alpha, (SReal)0.0);
 
 		view = normal * alpha;
 		

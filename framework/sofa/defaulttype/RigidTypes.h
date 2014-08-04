@@ -993,7 +993,9 @@ typedef RigidMass<3,float> Rigid3fMass;
 #endif
 
 /// We now use template aliases so we do not break backward compatibility.
+#ifndef SOFA_FLOAT
 template<> inline const char* Rigid3dTypes::Name() { return "Rigid3d"; }
+#endif
 template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
 
 
