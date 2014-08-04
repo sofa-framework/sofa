@@ -32,14 +32,13 @@
 #include <sofa/defaulttype/Mat.h>
 #include <set>
 #include <vector>
+#include <array>
 
 #ifdef USING_OMP_PRAGMAS
-    #include <omp.h>
+#include <omp.h>
 #endif
 
 using namespace cimg_library;
-
-
 
 /**
 *  Move points to the centroid of their voronoi region
@@ -279,7 +278,266 @@ void dijkstra (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial,
     }
 }
 
+///Utility functions for parallel marching method
 
+template<typename real>
+real norm(cimg_library::CImg<real>& distances, std::array<int,3>& coord)
+{
+    return sqrt(pow(distances(coord[0],coord[1],coord[2],0),2) +
+            pow(distances(coord[0],coord[1],coord[2],1),2) +
+            pow(distances(coord[0],coord[1],coord[2],2),2));
+}
+
+template<typename real,typename T>
+void replace(cimg_library::CImg<unsigned int>& voronoi, cimg_library::CImg<real>& distances, std::array<int,3>& oldCoord, std::array<int,3>& newCoord, std::array<real,3>& offset, const sofa::defaulttype::Vec<3,real>& voxelSize, const CImg<T>* bias)
+{
+    real b=1.0;
+    if(bias)
+        b=std::min((*bias)(oldCoord[0], oldCoord[1], oldCoord[2]), (*bias)(newCoord[0], newCoord[1], newCoord[2]));
+    distances(oldCoord[0], oldCoord[1], oldCoord[2], 0) = distances(newCoord[0], newCoord[1], newCoord[2], 0) +  offset[0]*voxelSize[0]/b;
+    distances(oldCoord[0], oldCoord[1], oldCoord[2], 1) = distances(newCoord[0], newCoord[1], newCoord[2], 1) +  offset[1]*voxelSize[1]/b;
+    distances(oldCoord[0], oldCoord[1], oldCoord[2], 2) = distances(newCoord[0], newCoord[1], newCoord[2], 2) +  offset[2]*voxelSize[2]/b;
+    voronoi(oldCoord[0], oldCoord[1], oldCoord[2]) = voronoi(newCoord[0], newCoord[1], newCoord[2]);
+}
+
+template<typename real,typename T>
+void update(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, std::array< std::array<int,3>,10 >& coord, std::array< std::array<real,3>, 10>& offset, const sofa::defaulttype::Vec<3,real>& voxelSize, const cimg_library::CImg<T>* bias)
+{
+    real l_curr=norm(distances,coord[0]);
+    for(int l=1; l<=9; ++l)
+    {
+        real l_neigh=norm(distances,coord[l]);
+        if(l_neigh<l_curr){ replace(voronoi,distances,coord[0],coord[l],offset[l], voxelSize, bias); l_curr=l_neigh; }
+    }
+}
+
+template<typename real>
+bool hasConverged(cimg_library::CImg<real>& previous, cimg_library::CImg<real>& current, SReal tolerance)
+{
+    bool result=true;
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+    for(int i=0; i<previous.width(); ++i) for(int j=0; j<previous.height(); ++j) for(int k=0; k<previous.depth(); ++k)
+    {
+        if( !std::isnan(previous(i,j,k,0)) && !std::isnan(current(i,j,k,0)) )
+        {
+            SReal error = sqrt( pow(previous(i,j,k,0)-current(i,j,k,0),2) +
+                                pow(previous(i,j,k,1)-current(i,j,k,1),2) +
+                                pow(previous(i,j,k,2)-current(i,j,k,2),2));
+            if(error>tolerance)
+                result = false;
+        }
+    }
+    return result;
+}
+
+template<typename real,typename T>
+void left(CImg<unsigned int>& v, CImg<real>& d, const sofa::defaulttype::Vec<3,real>& vx, const CImg<T>* bias)
+{
+    for(int i=d.width()-2; i>=0; --i)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int j=d.height()-2; j>=1; --j)
+        {
+            for(int k=d.depth()-2; k>=1; --k)
+            {
+                std::array< std::array<int,3>, 10 > c = {{ {{i,j,k}},
+                                                 {{i+1, j-1, k-1}}, {{i+1, j-1, k}}, {{i+1, j-1, k+1}},
+                                                 {{i+1, j, k-1}}, {{i+1, j, k}}, {{i+1, j, k+1}},
+                                                 {{i+1, j+1, k-1}}, {{i+1, j+1, k}}, {{i+1, j+1, k+1}} }};
+                std::array< std::array<real,3>, 10 > o = {{ {{0,0,0}},
+                                                   {{1, 1, 1}}, {{1, 1, 0}}, {{1, 1, 1}},
+                                                   {{1, 0, 1}}, {{1, 0, 0}}, {{1, 0, 1}},
+                                                   {{1, 1, 1}}, {{1, 1, 0}}, {{1, 1, 1}} }};
+                update(d,v,c,o,vx, bias);
+            }
+        }
+    }
+}
+
+template<typename real,typename T>
+void right(CImg<unsigned int>& v, CImg<real>& d, const sofa::defaulttype::Vec<3,real>& vx, const CImg<T>* bias)
+{
+    for(int i=1; i<d.width(); ++i)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int j=1; j<d.height()-1; ++j)
+        {
+            for(int k=1; k<d.depth()-1; ++k)
+            {
+                std::array< std::array<int,3>, 10 > c = {{ {{i,j,k}},
+                                                 {{i-1,j-1,k-1}}, {{i-1,j-1,k}}, {{i-1,j-1,k+1}},
+                                                 {{i-1,j,k-1}}, {{i-1,j,k}}, {{i-1,j,k+1}},
+                                                 {{i-1,j+1,k-1}}, {{i-1,j+1,k}}, {{i-1,j+1,k+1}} }};
+                std::array< std::array<real,3>, 10 > o = {{ {{0,0,0}},
+                                                   {{1,1,1}}, {{1,1,0}}, {{1,1,1}},
+                                                   {{1,0,1}}, {{1,0,0}}, {{1,0,1}},
+                                                   {{1,1,1}}, {{1,1,0}}, {{1,1,1}} }};
+                update(d,v,c,o,vx, bias);
+            }
+        }
+    }
+}
+
+template<typename real,typename T>
+void down(CImg<unsigned int>& v, CImg<real>& d, const sofa::defaulttype::Vec<3,real>& vx, const CImg<T>* bias)
+{
+    for(int j=d.height()-2; j>=0; --j)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int i=d.width()-2; i>=1; --i)
+        {
+            for(int k=d.depth()-2; k>=1; --k)
+            {
+                std::array< std::array<int,3>, 10> c = {{ {{i,j,k}},
+                                                {{i-1, j+1, k-1}}, {{i-1, j+1, k}}, {{i-1, j+1, k+1}},
+                                                {{i, j+1, k-1}}, {{i, j+1, k}}, {{i, j+1, k+1}},
+                                                {{i+1, j+1, k-1}}, {{i+1, j+1, k}}, {{i+1, j+1, k+1}} }};
+                std::array< std::array<real,3>, 10> o = {{ {{0,0,0}},
+                                                  {{1, 1, 1}}, {{1, 1, 0}}, {{1, 1, 1}},
+                                                  {{0, 1, 1}}, {{0, 1, 0}}, {{0, 1, 1}},
+                                                  {{1, 1, 1}}, {{1, 1, 0}}, {{1, 1, 1}} }};
+                update(d,v,c,o,vx, bias);
+            }
+        }
+    }
+}
+
+template<typename real,typename T>
+void up(CImg<unsigned int>& v, CImg<real>& d, const sofa::defaulttype::Vec<3,real>& vx, const CImg<T>* bias)
+{
+    for(int j=1; j<d.height(); ++j)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int i=1; i<d.width()-1; ++i)
+        {
+            for(int k=1; k<d.depth()-1; ++k)
+            {
+                std::array< std::array<int,3>, 10> c = {{ {{i,j,k}},
+                                                {{i-1, j-1, k-1}}, {{i-1, j-1, k}}, {{i-1, j-1, k+1}},
+                                                {{i, j-1, k-1}}, {{i, j-1, k}}, {{i, j-1, k+1}},
+                                                {{i+1, j-1, k-1}}, {{i+1, j-1, k}}, {{i+1, j-1, k+1}} }};
+                std::array< std::array<real,3>, 10> o = {{ {{0,0,0}},
+                                                  {{1, 1, 1}}, {{1, 1, 0}}, {{1, 1, 1}},
+                                                  {{0, 1, 1}}, {{0, 1, 0}}, {{0, 1, 1}},
+                                                  {{1, 1, 1}}, {{1, 1, 0}}, {{1, 1, 1}} }};
+                update(d,v,c,o,vx, bias);
+            }
+        }
+    }
+}
+
+template<typename real,typename T>
+void backward(CImg<unsigned int>& v, CImg<real>& d, const sofa::defaulttype::Vec<3,real>& vx, const CImg<T>* bias)
+{
+    for(int k=d.depth()-2; k>=0; --k)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int i=d.width()-2; i>=1; --i)
+        {
+            for(int j=d.height()-2; j>=1; --j)
+            {
+                std::array< std::array<int,3>, 10> c = {{ {{i,j,k}},
+                                                {{i-1, j-1, k+1}}, {{i-1, j, k+1}}, {{i-1, j+1, k+1}},
+                                                {{i, j-1, k+1}}, {{i, j, k+1}}, {{i, j+1, k+1}},
+                                                {{i+1, j-1, k+1}}, {{i+1, j, k+1}}, {{i+1, j+1, k+1}}
+                                              }};
+                std::array< std::array<real,3>, 10> o = {{ {{0,0,0}},
+                                                  {{1, 1, 1}}, {{1, 0, 1}}, {{1, 1, 1}},
+                                                  {{0, 1, 1}}, {{0, 0, 1}}, {{0, 1, 1}},
+                                                  {{1, 1, 1}}, {{1, 0, 1}}, {{1, 1, 1}}
+                                                }};
+                update(d,v,c,o,vx,bias);
+            }
+        }
+    }
+}
+
+template<typename real,typename T>
+void forward(CImg<unsigned int>& v, CImg<real>& d, const sofa::defaulttype::Vec<3,real>& vx, const CImg<T>* bias)
+{
+    for(int k=1; k<d.depth(); ++k)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int i=1; i<d.width()-1; ++i)
+        {
+            for(int j=1; j<d.height()-1; ++j)
+            {
+                std::array< std::array<int,3>, 10> c = {{ {{i,j,k}},
+                                                {{i-1, j-1, k-1}}, {{i-1, j, k-1}}, {{i-1, j+1, k-1}},
+                                                {{i, j-1, k-1}}, {{i, j, k-1}}, {{i, j+1, k-1}},
+                                                {{i+1, j-1, k-1}}, {{i+1, j, k-1}}, {{i+1, j+1, k-1}} }};
+                std::array< std::array<real,3>, 10> o = {{ {{0,0,0}},
+                                                  {{1, 1, 1}}, {{1, 0, 1}}, {{1, 1, 1}},
+                                                  {{0, 1, 1}}, {{0, 0, 1}}, {{0, 1, 1}},
+                                                  {{1, 1, 1}}, {{1, 0, 1}}, {{1, 1, 1}} }};
+                update(d,v,c,o,vx,bias);
+            }
+        }
+    }
+}
+
+template<typename real,typename T>
+void rasterScan(cimg_library::CImg<unsigned int>& voronoi, cimg_library::CImg<real>& distances, const sofa::defaulttype::Vec<3,real>& voxelSize, const cimg_library::CImg<T>* biasFactor=NULL)
+{
+    right(voronoi, distances, voxelSize, biasFactor);
+    left(voronoi, distances, voxelSize, biasFactor);
+    down(voronoi, distances, voxelSize,biasFactor);
+    up(voronoi, distances, voxelSize,biasFactor);
+    forward(voronoi, distances, voxelSize,biasFactor);
+    backward(voronoi, distances, voxelSize,biasFactor);
+}
+
+template<typename real,typename T>
+void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, const sofa::defaulttype::Vec<3,real>& voxelSize, const unsigned int maxIter=1e10, const SReal tolerance=10, const cimg_library::CImg<T>* biasFactor=NULL)
+{
+    //Build a new distance image from distances.
+    cimg_library::CImg<real> v_distances(distances.width(), distances.height(), distances.depth(), 3, std::numeric_limits<real>::max());
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+    for(int i=0; i<distances.width(); ++i) for(int j=0; j<distances.height(); ++j) for(int k=0; k<distances.depth(); ++k)
+    {
+        if( distances(i,j,k,0) < 0 )
+            v_distances(i,j,k,0) = v_distances(i,j,k,1) = v_distances(i,j,k,2) = std::numeric_limits<real>::signaling_NaN();
+        else
+            v_distances(i,j,k,0) = v_distances(i,j,k,1) = v_distances(i,j,k,2) = distances(i,j,k,0);
+    }
+
+    //Perform raster scan until convergence
+    bool converged = false; int iter_count = 0; cimg_library::CImg<real> prev_distances;
+    while( (converged==false) || (iter_count<maxIter) )
+    {
+        prev_distances = v_distances; iter_count++;
+        rasterScan(voronoi, v_distances, voxelSize, biasFactor);
+        converged = hasConverged(prev_distances, v_distances, tolerance);
+    }
+
+    //Update distances with v_distances
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+    for(int i=0; i<distances.width(); ++i) for(int j=0; j<distances.height(); ++j) for(int k=0; k<distances.depth(); ++k)
+    {
+        if( v_distances(i,j,k,0)==std::numeric_limits<real>::signaling_NaN() )
+            distances(i,j,k,0) = -1.0;
+        else
+            distances(i,j,k,0) = std::sqrt( std::pow(v_distances(i,j,k,0),2) + std::pow(v_distances(i,j,k,1),2) + std::pow(v_distances(i,j,k,2),2) );
+    }
+}
 
 /**
 * Initialize null distances and voronoi value (=point index) from a position in image coordinates
@@ -292,7 +550,7 @@ void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& tr
     typedef sofa::defaulttype::Vec<3,int> iCoord;
     typedef std::pair<real,iCoord > DistanceToPoint;
 
-	iCoord P;  for (unsigned int j=0; j<3; j++)  P[j]=sofa::helper::round(pos[j]);
+    iCoord P;  for (unsigned int j=0; j<3; j++)  P[j]=sofa::helper::round(pos[j]);
     if(distances.containsXYZC(P[0],P[1],P[2]))
         if(distances(P[0],P[1],P[2])>=0)
         {
