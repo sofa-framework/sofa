@@ -532,7 +532,7 @@ void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<un
 #endif
     for(int i=0; i<distances.width(); ++i) for(int j=0; j<distances.height(); ++j) for(int k=0; k<distances.depth(); ++k)
     {
-        if( v_distances(i,j,k,0)==std::numeric_limits<real>::signaling_NaN() )
+        if( std::isnan(v_distances(i,j,k,0)) )
             distances(i,j,k,0) = -1.0;
         else
             distances(i,j,k,0) = std::sqrt( std::pow(v_distances(i,j,k,0),2) + std::pow(v_distances(i,j,k,1),2) + std::pow(v_distances(i,j,k,2),2) );
