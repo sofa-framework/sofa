@@ -62,7 +62,7 @@ public:
  * Traverse all Y incident to X
  */
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-class Traversor3XY//: public Traversor<MAP>
+class Traversor3XY
 {
     BOOST_STATIC_ASSERT(MAP::DIMENSION >= 3u) ;
 private:
@@ -89,12 +89,54 @@ public:
 	Cell<ORBY> next() ;
 } ;
 
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+class Traversor3XYIterable
+{
+    BOOST_STATIC_ASSERT(MAP::DIMENSION == 3u) ;
+public:
+    class Iterator {
+    public:
+        Iterator(const Traversor3XYIterable& tr);
+        Iterator(const Traversor3XYIterable& tr, Cell<ORBY> curr) ;
+        Iterator(const Iterator& it) ;
+        Iterator& operator++() ;
+        ~Iterator();
+
+        inline bool operator!=(const Iterator& it) const { return m_current != it.m_current; }
+        inline bool operator==(const Iterator& it) const { return m_current == it.m_current; }
+        // Warning : does not return a reference but a value.
+        inline Cell<ORBY> operator*() const { return m_current; }
+        inline const Cell<ORBY>* operator->() const { return &m_current; }
+    private:
+        Iterator();
+        Iterator& operator=(const Iterator& it);
+        // Never use it++, use ++it instead.
+        Iterator& operator++(int) ;
+    private:
+        CellMarker<MAP, ORBY>* m_cmark ;
+        TraversorDartsOfOrbit<MAP, ORBX>* m_tradoo;
+        Cell<ORBY> m_current;
+    };
+    typedef Iterator iterator;
+private:
+    const MAP& m_map ;
+    const Cell<ORBX> m_baseCell;
+    const unsigned int m_thread;
+public:
+    Traversor3XYIterable(const MAP& map, Cell<ORBX> c, bool forceDartMarker = false, unsigned int thread = 0) ;
+    Traversor3XYIterable(const Traversor3XYIterable& tra3xy);
+    ~Traversor3XYIterable();
+
+    inline Iterator begin() { return Iterator(*this); }
+    inline Iterator end() { return Iterator(*this, NIL); }
+} ;
+
 /**
  * Generic class Traversor (do not use directly)
  * Traverse all X adjacent to X by an Y
  */
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-class Traversor3XXaY//: public Traversor<MAP>
+class Traversor3XXaY
 {
 private:
 	const MAP& m_map ;
@@ -111,6 +153,52 @@ public:
 	Cell<ORBX> end();
 	Cell<ORBX> next();
 };
+
+
+
+
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+class Traversor3XXaYIterable
+{
+public:
+    class Iterator {
+    public:
+        Iterator(std::vector<Dart>::iterator it);
+        Iterator(const Iterator& it) ;
+        Iterator& operator++() ;
+        ~Iterator();
+
+        inline bool operator!=(const Iterator& it) const { return m_iter != it.m_iter; }
+        inline bool operator==(const Iterator& it) const { return m_iter == it.m_iter; }
+        // Warning : does not return a reference but a value.
+        inline Cell<ORBX> operator*() const { return *m_iter; }
+        inline const Cell<ORBX>* operator->() const { return &(*m_iter); }
+
+    private:
+        Iterator();
+        Iterator& operator=(const Iterator& it);
+        // Never use it++, use ++it instead.
+        Iterator& operator++(int) ;
+
+    private:
+        std::vector<Dart>::iterator m_iter;
+    };
+    typedef Iterator iterator;
+
+private:
+    const unsigned int m_thread;
+    std::vector<Dart>* m_vecDarts;
+
+public:
+    Traversor3XXaYIterable(const MAP& map, Cell<ORBX> c, bool forceDartMarker = false, unsigned int thread = 0);
+    ~Traversor3XXaYIterable();
+    inline Iterator begin() { return Iterator(m_vecDarts->begin()); }
+    inline Iterator end() { return Iterator(m_vecDarts->begin()+m_vecDarts->size()-1); }
+};
+
+
+
 
 /**
  * Traverse vertices incident to volume

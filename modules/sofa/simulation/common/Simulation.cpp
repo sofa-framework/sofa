@@ -298,6 +298,7 @@ void Simulation::initTextures ( Node* root )
 /// Compute the bounding box of the scene.
 void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
 {
+	if ( !root ) return;
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     core::visual::VisualLoop* vloop = root->getVisualLoop();
     if(vloop)

@@ -57,9 +57,9 @@ ApplicationWindow {
     }
 
 	// sofa scene
-    /*Scene {
+    Scene {
 		id: scene
-    }*/
+    }
 
     // dialog
     FileDialog {
@@ -67,7 +67,7 @@ ApplicationWindow {
         nameFilters: ["Scene files (*.xml *.scn *.pscn *.py *.simu *)"]
         onAccepted: {
             filePath = fileUrl;
-            scene.open(filePath);
+            scene.open(fileUrl);
         }
     }
 
@@ -139,7 +139,7 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 width: 70
 
-                //scene: scene
+                scene: scene
             }
         }
 

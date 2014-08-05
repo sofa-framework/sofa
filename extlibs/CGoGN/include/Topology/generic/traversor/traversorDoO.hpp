@@ -35,80 +35,79 @@ namespace CGoGN
 {
 
 template <typename MAP, unsigned int ORBIT>
-TraversorDartsOfOrbit<MAP, ORBIT>::TraversorDartsOfOrbit(const MAP& map, Cell<ORBIT> c, unsigned int thread):
-	m_thread(thread)
-{ //static_cast<void (std::vector<Device>::*)( const Device& )>
-	m_vd = GenericMap::askDartBuffer(thread);
-//	map.foreach_dart_of_orbit(c, [&] (Dart d) { if (!map.isBoundaryMarkedCurrent(d)) m_vd->push_back(d); }, thread);
+TraversorDartsOfOrbit<MAP, ORBIT>::TraversorDartsOfOrbit(const MAP& map, Cell<ORBIT> c, unsigned int thread) :
+    m_vd(GenericMap::askDartBuffer(thread)),
+    m_thread(thread)
+{
+    //	map.foreach_dart_of_orbit(c, [&] (Dart d) { if (!map.isBoundaryMarkedCurrent(d)) m_vd->push_back(d); }, thread);
     map.foreach_dart_of_orbit(c, bl::if_(!bl::bind(&MAP::isBoundaryMarkedCurrent, boost::cref(map), bl::_1)) [bl::bind(static_cast<void (std::vector<Dart>::*)(const Dart&)>(&std::vector<Dart>::push_back), boost::ref(m_vd), bl::_1)] , thread);
-	m_vd->push_back(NIL);
+    m_vd->push_back(NIL);
 }
 
 template <typename MAP, unsigned int ORBIT>
 TraversorDartsOfOrbit<MAP, ORBIT>::~TraversorDartsOfOrbit()
 {
-	GenericMap::releaseDartBuffer(m_vd, m_thread);
+    GenericMap::releaseDartBuffer(m_vd, m_thread);
 }
 
 template <typename MAP, unsigned int ORBIT>
 Dart TraversorDartsOfOrbit<MAP, ORBIT>::begin()
 {
-	m_current = m_vd->begin();
-	return *m_current;
+    return *(m_current = m_vd->begin());
 }
 
 template <typename MAP, unsigned int ORBIT>
 Dart TraversorDartsOfOrbit<MAP, ORBIT>::end()
 {
-	return NIL;
+    return NIL;
 }
 
 template <typename MAP, unsigned int ORBIT>
 Dart TraversorDartsOfOrbit<MAP, ORBIT>::next()
 {
-	if (*m_current != NIL)
-		m_current++;
-	return *m_current;
+    //	if (*m_current != NIL)
+    //        ++m_current;
+    return *(++m_current);
 }
 
 
 
 template <typename MAP, unsigned int ORBIT>
 VTraversorDartsOfOrbit<MAP, ORBIT>::VTraversorDartsOfOrbit(const MAP& map, Cell<ORBIT> c, unsigned int thread):
-	m_thread(thread)
+    m_thread(thread)
 {
-	m_vd = GenericMap::askDartBuffer(thread);
-//	map.foreach_dart_of_orbit(c, [&] (Dart d) {	if (!map.isBoundaryMarkedCurrent(d)) m_vd->push_back(d); }, thread);
-//    map.foreach_dart_of_orbit(c,  bl::if_(!boost::ref(map).isBoundaryMarkedCurrent(bl::_1) [boost::ref(m_vd).push_back(bl::_1)], thread);
+    m_vd = GenericMap::askDartBuffer(thread);
+    //	map.foreach_dart_of_orbit(c, [&] (Dart d) {	if (!map.isBoundaryMarkedCurrent(d)) m_vd->push_back(d); }, thread);
+    //    map.foreach_dart_of_orbit(c,  bl::if_(!boost::ref(map).isBoundaryMarkedCurrent(bl::_1) [boost::ref(m_vd).push_back(bl::_1)], thread);
     map.foreach_dart_of_orbit(c,  bl::if_(!bl::bind(&MAP::isBoundaryMarkedCurrent, boost::cref(map), bl::_1))[bl::bind(static_cast<void (std::vector<Dart>::*)(const Dart&)>(&std::vector<Dart>::push_back), boost::ref(m_vd), bl::_1)], thread);
-	m_vd->push_back(NIL);
+    m_vd->push_back(NIL);
 }
 
 template <typename MAP, unsigned int ORBIT>
 VTraversorDartsOfOrbit<MAP, ORBIT>::~VTraversorDartsOfOrbit()
 {
-	GenericMap::releaseDartBuffer(m_vd, m_thread);
+    GenericMap::releaseDartBuffer(m_vd, m_thread);
 }
 
 template <typename MAP, unsigned int ORBIT>
 Dart VTraversorDartsOfOrbit<MAP, ORBIT>::begin()
 {
-	m_current = m_vd->begin();
-	return *m_current;
+    m_current = m_vd->begin();
+    return *m_current;
 }
 
 template <typename MAP, unsigned int ORBIT>
 Dart VTraversorDartsOfOrbit<MAP, ORBIT>::end()
 {
-	return NIL;
+    return NIL;
 }
 
 template <typename MAP, unsigned int ORBIT>
 Dart VTraversorDartsOfOrbit<MAP, ORBIT>::next()
 {
-	if (*m_current != NIL)
-		m_current++;
-	return *m_current;
+    if (*m_current != NIL)
+        m_current++;
+    return *m_current;
 }
 
 

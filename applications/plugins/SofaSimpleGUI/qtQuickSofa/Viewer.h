@@ -71,7 +71,7 @@ public:
 	void setScene(Scene* scene);
 
 public slots:
-	void sceneModification();
+	void clear();
     void paint();
     void sync();
 
@@ -83,7 +83,7 @@ signals:
 
 private:
 	Scene*						myScene;
-	sofa::newgui::SofaGL*		mySofaGL; // draw tools for Sofa
+	sofa::newgui::SofaGL*		mySofaGL;
 	QOpenGLShaderProgram*		myProgram;
 };
 

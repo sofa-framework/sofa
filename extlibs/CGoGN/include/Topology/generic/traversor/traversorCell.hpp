@@ -573,6 +573,219 @@ inline void foreach_cell_until(const MAP& map, FUNC f, TraversalOptim opt, unsig
 }
 
 
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::TraversorCellIterable(const MAP& map, bool, unsigned int) {
+    quickTraversal = map.template getQuickTraversal<ORBIT>() ;
+    assert(quickTraversal != NULL);
+    cont = &(map.template getAttributeContainer<ORBIT>()) ;
+
+}
+
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::TraversorCellIterable(const TraversorCellIterable&) {
+    std::cerr << "CGoGN : Copy constructor of TraversorCellIterable called. Should not happen. Aborting." << std::endl;
+    std::exit(1);
+}
+
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::~TraversorCellIterable()
+{}
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::Iterator::Iterator(const TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>& tr, unsigned int qCurr) :
+    m_trav(tr),
+    qCurrent(qCurr)
+{
+    if (qCurr == m_trav.cont->realEnd())
+        current = NIL;
+    else
+        current = tr.quickTraversal->operator[](qCurrent) ;
+}
+
+template<typename MAP,unsigned int ORBIT>
+typename TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::Iterator& TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::Iterator::operator=(const Iterator&)
+{
+    std::cerr << "CGoGN : TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::Iterator::operator= called. Should not happen. Aborting." << std::endl;
+    std::exit(1);
+    return *this;
+}
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::Iterator::Iterator(const Iterator& it) :
+    m_trav(it.m_trav),
+    qCurrent(it.qCurrent),
+    current(it.current)
+{}
+
+template<typename MAP,unsigned int ORBIT>
+typename TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::Iterator& TraversorCellIterable<MAP, ORBIT, FORCE_QUICK_TRAVERSAL>::Iterator::operator++()
+{
+    m_trav.cont->realNext(qCurrent) ;
+    if (qCurrent != m_trav.cont->realEnd())
+        current = m_trav.quickTraversal->operator[](qCurrent) ;
+    else current = NIL;
+    return *this;
+}
+// cell marking version
+
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_CELL_MARKING>::TraversorCellIterable(const MAP& map, bool, unsigned int thread) :
+    m_thread(thread)
+{
+    m_begin = map.begin();
+    while((m_begin != map.end()) && (map.isBoundaryMarkedCurrent(m_begin)))
+        map.next(m_begin) ;
+    if(m_begin == map.end())
+        m_begin = NIL ;
+}
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_CELL_MARKING>::TraversorCellIterable(const TraversorCellIterable&) {
+    std::cerr << "CGoGN : Copy constructor of TraversorCellIterable called. Should not happen. Aborting." << std::endl;
+    std::exit(1);
+}
+
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_CELL_MARKING>::Iterator::Iterator(const TraversorCellIterable& tr, Cell<ORBIT> curr) :
+    //    m_trav(tr),
+    current(curr),
+    cmark(NULL)
+{
+    if (!current.isNil()) {
+        cmark = new CellMarker<MAP, ORBIT>(tr.m_map, tr.m_thread);
+        cmark->mark(current) ;
+    }
+}
+
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_CELL_MARKING>::Iterator::Iterator(const Iterator& it) :
+    //    m_trav(it.m_trav),
+    current(it.current),
+    cmark(NULL)
+{
+    if (!current.isNil()) {
+        cmark = new CellMarker<MAP, ORBIT>(*(it.cmark));
+        cmark->mark(current) ;
+    }
+}
+
+template<typename MAP,unsigned int ORBIT>
+typename TraversorCellIterable<MAP, ORBIT, FORCE_CELL_MARKING>::Iterator& TraversorCellIterable<MAP, ORBIT, FORCE_CELL_MARKING>::Iterator::operator++()
+{
+    assert(cmark != NULL);
+    const MAP& m = cmark->getMap();
+    bool ismarked = cmark->isMarked(current) ;
+    while((!current.isNil()) && (ismarked || m.isBoundaryMarkedCurrent(current)))
+    {
+        m.next(current) ;
+        if(current == m.end())
+            current = NIL ;
+        else
+            ismarked = cmark->isMarked(current) ;
+    }
+    if(current != NIL)
+        cmark->mark(current) ;
+    return *this;
+}
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, FORCE_CELL_MARKING>::Iterator::~Iterator()
+{
+    delete cmark;
+}
+
+
+// auto version
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, AUTO>::TraversorCellIterable(const MAP& map, bool, unsigned int thread) :
+    m_map(map),
+    quickTraversal(NULL),
+    cont(NULL),
+    m_thread(thread)
+{
+    quickTraversal = map.template getQuickTraversal<ORBIT>() ;
+    if (quickTraversal != NULL) {
+        cont = &(map.template getAttributeContainer<ORBIT>()) ;
+        m_begin = quickTraversal->operator[](cont->realBegin());
+    } else {
+        m_begin = map.begin();
+        while((m_begin != map.end()) && (map.isBoundaryMarkedCurrent(m_begin)))
+            map.next(m_begin) ;
+        if(m_begin == map.end())
+            m_begin = NIL ;
+    }
+}
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, AUTO>::TraversorCellIterable(const TraversorCellIterable&)
+{
+    std::cerr << "CGoGN : Copy constructor of TraversorCellIterable<MAP, ORBIT, AUTO>::TraversorCellIterable called. Should not happen. Aborting." << std::endl;
+    std::exit(1);
+}
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, AUTO>::~TraversorCellIterable()
+{}
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, AUTO>::Iterator::Iterator(const TraversorCellIterable<MAP, ORBIT, AUTO>& tr, bool beginning) :
+    cmark(NULL),
+    current(NIL),
+    m_trav(tr)
+{
+    if (!beginning)
+        current = NIL;
+    else {
+        if (m_trav.quickTraversal != NULL) {
+            qCurrent = m_trav.cont->realBegin();
+            current = m_trav.quickTraversal->operator[](qCurrent) ;
+        } else {
+            cmark = new CellMarker<MAP, ORBIT>(m_trav.m_map, m_trav.m_thread);
+            current = m_trav.m_begin;
+            if (!current.isNil())
+                cmark->mark(current);
+        }
+    }
+}
+
+
+template<typename MAP,unsigned int ORBIT>
+TraversorCellIterable<MAP, ORBIT, AUTO>::Iterator::~Iterator() {
+    delete cmark;
+}
+
+template<typename MAP,unsigned int ORBIT>
+typename TraversorCellIterable<MAP, ORBIT, AUTO>::Iterator& TraversorCellIterable<MAP, ORBIT, AUTO>::Iterator::operator++() {
+    if (m_trav.quickTraversal != NULL) {
+        m_trav.cont->realNext(qCurrent) ;
+        if (qCurrent != m_trav.cont->realEnd())
+            current = m_trav.quickTraversal->operator[](qCurrent) ;
+        else current = NIL;
+
+    } else {
+        assert(cmark != NULL);
+        const MAP& m = cmark->getMap();
+        bool ismarked = cmark->isMarked(current) ;
+        while((!current.isNil()) && (ismarked || m.isBoundaryMarkedCurrent(current)))
+        {
+            m.next(current) ;
+            if(current == m.end())
+                current = NIL ;
+            else
+                ismarked = cmark->isMarked(current) ;
+        }
+        if(current != NIL)
+            cmark->mark(current) ;
+    }
+    return *this;
+}
+
 //template <unsigned int ORBIT, typename MAP, typename FUNC, typename FUNC2>
 //inline void foreach_cell_EvenOdd(const MAP& map, FUNC f, FUNC2 g, unsigned int nbpasses, TraversalOptim opt, unsigned int thread)
 //{
@@ -745,16 +958,16 @@ void foreach_cell_tmpl(MAP& map, FUNC func, unsigned int nbth)
 
 
     //wait for all theads to be finished
-        for (unsigned int i = 0; i < nbth; ++i)
-        {
-            threads[i]->join();
-            delete threads[i];
-            delete tfs[i];
-        }
-        delete[] tfs;
-        delete[] threads;
-        delete[] vd;
-        delete[] tempo;
+    for (unsigned int i = 0; i < nbth; ++i)
+    {
+        threads[i]->join();
+        delete threads[i];
+        delete tfs[i];
+    }
+    delete[] tfs;
+    delete[] threads;
+    delete[] vd;
+    delete[] tempo;
 }
 
 template <unsigned int ORBIT, typename MAP, typename FUNC>
@@ -782,6 +995,10 @@ void foreach_cell(MAP& map, FUNC func, TraversalOptim opt, unsigned int nbth)
         break;
     }
 }
+
+
+
+
 
 } // namespace Parallel
 

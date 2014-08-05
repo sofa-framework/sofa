@@ -389,4 +389,5 @@ class RigidJointSpring:
 
 ## @TODO handle joints with diagonalcompliance / diagonaldamper...
 ## @TODO add mappings for more complex joints (eg with coupled dofs ie skrew, winch...)
+## @TODO add a 6D Rigid Spring with a full stiffness matrix (not only diagonal)
 
