@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_INL
 
 #include "../deformationMapping/BaseDeformationMapping.h"
+#include "../deformationMapping/BaseDeformationImpl.inl"
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
@@ -42,15 +43,10 @@
 
 namespace sofa
 {
-
-/** determinant for 1x1 matrix  to complement 2x2 and 3x3 implementations (used for visualization of  det F ) **/
-namespace defaulttype { template<class real> inline real determinant(const Mat<1,1,real>& m) { return m(0,0);} }
-
 namespace component
 {
 namespace mapping
 {
-
 
 template <class JacobianBlockType>
 BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State<In>* from , core::State<Out>* to)
@@ -654,37 +650,6 @@ void BaseDeformationMappingT<JacobianBlockType>::ForwardMapping(Coord& p,const C
 }
 
 
-
-/** inversion of rectangular deformation gradients (used in backward mapping) **/
-template <int L,typename Real>
-inline static void invert(defaulttype::Mat<L,L,Real> &Minv, const defaulttype::Mat<L,L,Real> &M)
-{
-    //    Eigen::Map<const Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eM(&M[0][0]);
-    //    Eigen::Map<Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eMinv(&Minv[0][0]);
-    //    eMinv=eM.inverse();
-    Minv.invert(M);
-}
-
-template <int L,typename Real>
-inline static void invert(defaulttype::Mat<1,L,Real> &Minv, const defaulttype::Mat<L,1,Real> &M)
-{
-    Real n2inv=0; for(size_t i=0; i<L; i++) n2inv+=M[i][0]*M[i][0];
-    n2inv=1./n2inv;
-    for(size_t i=0; i<L; i++)  Minv[0][i]=M[i][0]*n2inv;
-}
-
-template <typename Real>
-inline static void invert(defaulttype::Mat<2,3,Real> &Minv, const defaulttype::Mat<3,2,Real> &M)
-{
-    defaulttype::Vec<3,Real> u=M.transposed()[0],v=M.transposed()[1],w=cross(u,v);
-    w.normalize();
-    defaulttype::Mat<3,3,Real> Mc; for(size_t i=0; i<3; i++) {Mc[i][0]=M[i][0]; Mc[i][1]=M[i][1]; Mc[i][2]=w[i];}
-    defaulttype::Mat<3,3,Real> Mcinv; invert(Mcinv,Mc);
-    for(size_t i=0; i<2; i++) for(size_t j=0; j<3; j++) Minv[i][j]=Mcinv[i][0];
-}
-
-
-
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::BackwardMapping(Coord& p0,const Coord& p,const Real Thresh, const size_t NbMaxIt)
 {
@@ -752,38 +717,6 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
     x0=f_pos0.getValue()[index];
     return index;
 }
-
-template<int matdim,typename Real>
-void drawEllipsoid(const Mat<3,matdim,Real> & F, const Vec<3,Real> &p, const float& scale)
-{
-#ifndef SOFA_NO_OPENGL
-    glPushMatrix();
-
-    GLdouble transformMatrix[16];
-    for(size_t i=0; i<3; i++) for(size_t j=0; j<matdim; j++) transformMatrix[4*j+i] = (double)F(i,j)*scale;
-
-    if(matdim==1)
-    {
-        for(size_t i=0; i<3; i++) for(size_t j=1; j<3; j++) transformMatrix[4*j+i] = 0;
-    }
-    else if(matdim==2)
-    {
-        Vec<3,Real> w=cross(F.transposed()[0],F.transposed()[1]); w.normalize();
-        for(size_t i=0; i<3; i++)  transformMatrix[8+i]=(double)w[i]*scale*0.01; // arbitrarily small thickness
-    }
-
-    for(size_t i=0; i<3; i++)  transformMatrix[i+12]=p[i];
-    for(size_t i=0; i<3; i++)  transformMatrix[4*i+3]=0; transformMatrix[15] = 1;
-    glMultMatrixd(transformMatrix);
-
-    GLUquadricObj* ellipsoid = gluNewQuadric();
-    gluSphere(ellipsoid, 1.0, 10, 10);
-    gluDeleteQuadric(ellipsoid);
-
-    glPopMatrix();
-#endif
-}
-
 
 
 template <class JacobianBlockType>

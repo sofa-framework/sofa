@@ -434,9 +434,9 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 
         //---debugging
         if (showLawfulTorsion.getValue())
-            helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].pointToParent(springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
+            helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].projectPoint(springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
         if (showExtraTorsion.getValue())
-            helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].pointToParent(springs[i].torsion-springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
+            helper::gl::drawArrow(p1[springs[i].m1].getCenter(), p1[springs[i].m1].projectPoint(springs[i].torsion-springs[i].lawfulTorsion), (float)(0.5*showFactorSize.getValue()));
     }
 #endif /* SOFA_NO_OPENGL */
 }

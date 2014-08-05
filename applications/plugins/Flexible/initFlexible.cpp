@@ -57,7 +57,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return "0.2";
+    return "0";
 }
 
 const char* getModuleLicense()
@@ -68,7 +68,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "TODO: replace this with the description of your plugin";
+    return "Modular implementation of deformable solids";
 }
 
 const char* getModuleComponentList()

@@ -41,9 +41,11 @@ namespace objectmodel
 
 using std::string;
 
+static const std::string unnamed_label=std::string("unnamed");
+
 Base::Base()
     : ref_counter(0)
-    , name(initData(&name,std::string("unnamed"),"name","object name"))
+    , name(initData(&name,unnamed_label,"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , f_bbox(initData( &f_bbox, "bbox", "this object bounding box"))
@@ -99,6 +101,9 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
 /// Helper method used by initData()
 void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags )
 {
+	static uint32_t draw_fourcc = MAKEFOURCC('d', 'r', 'a', 'w');
+	static uint32_t show_fourcc = MAKEFOURCC('s', 'h', 'o', 'w');
+
     /*
         std::string ln(name);
         if( ln.size()>0 && findField(ln) )
@@ -115,12 +120,10 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     res.helpMsg = help;
     res.dataFlags = dataFlags;
 
-    std::string nameStr(name);
-    if (nameStr.size() >= 4)
-    {
-        const std::string prefix=nameStr.substr(0,4);
-        if (prefix=="show" || prefix=="draw") res.group = "Visualization";
-    }
+	uint32_t prefix = *(uint32_t*) name;
+
+	if(prefix == draw_fourcc || prefix == show_fourcc)
+		res.group = "Visualization";
 }
 
 /// Add a data field.

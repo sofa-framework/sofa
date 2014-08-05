@@ -47,7 +47,7 @@ public:
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL ;
 
-	Predictor_HalfCollapse(MAP& m, VertexAttribute<VEC3>& pos) :
+	Predictor_HalfCollapse(MAP& m, VertexAttribute<VEC3, MAP>& pos) :
 		Predictor<PFP, VEC3>(m, pos)
 	{}
 	PredictorType getType() { return P_HalfCollapse ; }
@@ -63,7 +63,7 @@ public:
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL ;
 
-	Predictor_CornerCutting(MAP& m, VertexAttribute<VEC3>& pos) :
+	Predictor_CornerCutting(MAP& m, VertexAttribute<VEC3, MAP>& pos) :
 		Predictor<PFP, VEC3>(m, pos)
 	{}
 	PredictorType getType() { return P_CornerCutting ; }
@@ -80,7 +80,7 @@ public:
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL ;
 
-	Predictor_TangentPredict1(MAP& m, VertexAttribute<VEC3>& pos) :
+	Predictor_TangentPredict1(MAP& m, VertexAttribute<VEC3, MAP>& pos) :
 		Predictor<PFP, VEC3>(m, pos)
 	{}
 	PredictorType getType() { return P_TangentPredict1 ; }
@@ -97,7 +97,7 @@ public:
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL ;
 
-	Predictor_TangentPredict2(MAP& m, VertexAttribute<VEC3>& pos) :
+	Predictor_TangentPredict2(MAP& m, VertexAttribute<VEC3, MAP>& pos) :
 		Predictor<PFP, VEC3>(m, pos)
 	{}
 	PredictorType getType() { return P_TangentPredict2 ; }
@@ -106,13 +106,13 @@ public:
 	void predict(Dart d2, Dart dd2) ;
 } ;
 
-} //namespace Decimation
+} // namespace Decimation
 
-}
+} // namespace Surface
 
-} //namespace Algo
+} // namespace Algo
 
-} //namespace CGoGN
+} // namespace CGoGN
 
 #include "Algo/Decimation/geometryPredictor.hpp"
 

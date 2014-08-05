@@ -920,7 +920,7 @@ public:
 		for (Dart ditW = trav.begin(); ditW != trav.end(); ditW = trav.next())
 		{
 
-			if(m_map.isBoundaryVolume(ditW))
+			if(m_map.isBoundaryAdjacentVolume(ditW))
 			{
 				typename PFP::VEC3 p = Algo::Geometry::volumeCentroid<PFP>(m_map, ditW, m_position);
 

@@ -23,6 +23,7 @@ set(HEADER_FILES
 	SolidTypes.h	
 	SolidTypes.inl	
 	#SparseConstraintTypes.h	
+	TemplatesAliases.h
 	Vec.h	
 	VecTypes.h	
 	MatSym.h	
@@ -36,6 +37,7 @@ set(SOURCE_FILES
 	Frame.cpp
 	#RigidInertia.cpp
 	SolidTypes.cpp
+	TemplatesAliases.cpp
 	)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include "ObjectFactory.h"
 
+#include <sofa/defaulttype/TemplatesAliases.h>
+
 
 namespace sofa
 {
@@ -113,57 +115,62 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     objectmodel::BaseObject::SPtr object = NULL;
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
-    std::string templatename = arg->getAttribute( "template", "");
+	std::string usertemplatename = arg->getAttribute( "template", "");
+	std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename); // Resolve template aliases
+	std::string userresolved = templatename; // Copy in case we change for the default one
+
     ClassEntryMap::iterator it = registry.find(classname);
-    if (it == registry.end())
+	if (it != registry.end()) // Found the classname
     {
-        //std::cout << "ObjectFactory: class "<<classname<<" NOT FOUND."<<std::endl;
-    }
-    else
-    {
-//        std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
         ClassEntry::SPtr entry = it->second;
-        if(templatename.empty()) templatename = entry->defaultTemplate;
+		// If no template has been given or if the template does not exist, first try with the default one
+        if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
+			templatename = entry->defaultTemplate;
+		
         CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
-//            std::cout << "ObjectFactory: template "<<templatename<<" FOUND."<<std::endl;
             Creator::SPtr c = it2->second;
             if (c->canCreate(context, arg))
                 creators.push_back(*it2);
         }
-        else
+
+		// If object cannot be created with the given template (or the default one), try all possible ones
+        if (creators.empty())
         {
-            // std::cout << "ObjectFactory: template "<<templatename<<" NOT FOUND for "<<classname<<std::endl;
             CreatorMap::iterator it3;
             for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
-	        Creator::SPtr c = it3->second;
+				Creator::SPtr c = it3->second;
                 if (c->canCreate(context, arg))
                     creators.push_back(*it3);
             }
         }
     }
+
     if (creators.empty())
-    {
-//        std::cerr<<"ERROR: ObjectFactory: Object type "<<classname<<"<"<<templatename<<"> creation failed."<<std::endl;
+    {	// The object cannot be created
         arg->logWarning("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
     }
     else
     {
-//          std::cout << "Create Instance : " << arg->getFullName() << "\n";
         object = creators[0].second->createInstance(context, arg);
-        if (creators.size()>1)
-        {
-//                 std::cerr<<"WARNING: ObjectFactory: Several possibilities found for type "<<classname<<"<"<<templatename<<">:\n"; //<<std::endl;
-            std::string w= "Template Unknown: <"+templatename+std::string("> : default used: <")+object->getTemplateName()+std::string("> in the list: ");
-            for(unsigned int i=0; i<creators.size(); ++i)
-            {
-                w += std::string("\n\t* ") + creators[i].first; //creatorsobjectmodel::Base::decodeTemplateName(creators[i]->type());
-            }
-            object->serr<<w<<object->sendl;
+
+		// The object has been created, but not with the template given by the user
+		if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
+		{
+            std::string w = "Template <" + usertemplatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string(">");
+            object->serr << w << object->sendl;
+        }
+        else if (creators.size() > 1)
+        {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
+            std::string w = "Template <" + templatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string("> in the list:");
+            for(unsigned int i = 0; i < creators.size(); ++i)
+                w += std::string("\n\t* ") + creators[i].first;
+            object->serr << w << object->sendl;
         }
     }
+
     return object;
 }
 

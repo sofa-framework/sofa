@@ -647,17 +647,21 @@ bool FrameManipulator::setOrientation(const Geom::Vec3f& X, const Geom::Vec3f& Y
 
 void FrameManipulator::setTransformation( const glm::mat4& transfo)
 {
+    typedef Geom::Vec3f::value_type Real;
 	setTranslation(Geom::Vec3f(transfo[3][0],transfo[3][1],transfo[3][2]));
 
 	Geom::Vec3f Rx(	transfo[0][0], transfo[0][1], transfo[0][2]);
 	Geom::Vec3f Ry(	transfo[1][0], transfo[1][1], transfo[1][2]);
 	Geom::Vec3f Rz(	transfo[2][0], transfo[2][1], transfo[2][2]);
 
-    setScale(Geom::Vec3f(Rx.norm(),Ry.norm() ,Rz.norm() ));
+    const Real& N1 = Rx.norm();
+    const Real& N2 = Ry.norm();
+    const Real& N3 = Rz.norm();
+    setScale(Geom::Vec3f(N1, N2, N3));
+    Rx/=N1;
+    Ry/=N2;
+    Rz/=N3;
 
-    Rx.normalize();
-    Ry.normalize();
-    Rz.normalize();
 	m_rotations[0][0] = Rx[0];
 	m_rotations[0][1] = Rx[1];
 	m_rotations[0][2] = Rx[2];
@@ -843,14 +847,14 @@ float FrameManipulator::scaleFromMouse(int dx, int dy)
 	if (abs(dx) > abs(dy))
 	{
 		if (dx>0)
-			return 1.01;
-		return 0.99;
+			return 1.01f;
+		return 0.99f;
 	}
 	else
 	{
 		if (dy>0)
-			return 1.01;
-		return 0.99;
+			return 1.01f;
+		return 0.99f;
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "Algo/Geometry/plane.h"
 #include "Geometry/intersection.h"
 #include "Geometry/orientation.h"
+
 #include <iostream>
 
 /* A particle cell is a particle base within a map, within a precise cell, the displacement function should indicate
@@ -37,11 +38,11 @@ template <typename PFP>
 class ParticleCell2DAndHalf : public Algo::MovingObjects::ParticleBase<PFP>
 {
 public :
-	typedef typename PFP::MAP Map;
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;
-	typedef VertexAttribute<typename PFP::VEC3> TAB_POS;
+	typedef VertexAttribute<VEC3, MAP> TAB_POS;
 
-	Map& m;
+	MAP& m;
 
 	const TAB_POS& m_positions;
 
@@ -54,11 +55,18 @@ public :
 
 	float distance;
 
-	ParticleCell2DAndHalf(Map& map) : m(map)
+	ParticleCell2DAndHalf(MAP& map) : m(map)
 	{}
 
-	ParticleCell2DAndHalf(Map& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos) :
-		Algo::MovingObjects::ParticleBase<PFP>(pos), m(map), m_positions(tabPos), d(belonging_cell), lastCrossed(belonging_cell), state(FACE), crossCell(NO_CROSS), distance(0)
+	ParticleCell2DAndHalf(MAP& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos) :
+		Algo::MovingObjects::ParticleBase<PFP>(pos),
+		m(map),
+		m_positions(tabPos),
+		d(belonging_cell),
+		lastCrossed(belonging_cell),
+		state(FACE),
+		crossCell(NO_CROSS),
+		distance(0)
 	{}
 
 	Dart getCell() { return d; }
@@ -77,7 +85,7 @@ public :
 
 	void vertexState(VEC3 current);
 
-	void edgeState(VEC3 current, Geom::Orientation3D sideOfEdge=Geom::ON);
+	void edgeState(VEC3 current, Geom::Orientation3D sideOfEdge = Geom::ON);
 
 	void faceState(VEC3 current);
 
@@ -107,7 +115,7 @@ public :
 
 } // namespace MovingObjects
 
-} // Surface
+} // namespace Surface
 
 } // namespace Algo
 

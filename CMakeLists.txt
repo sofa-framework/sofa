@@ -1,5 +1,14 @@
 cmake_minimum_required(VERSION 2.8.8)
 
+# automatically use ccache if it is installed
+find_program(ccache_cmd NAMES ccache)
+if(ccache_cmd)
+    SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+    message(STATUS "Using ccache for building")
+endif()
+
+
 set(SOLUTION_NAME "Sofa")
 project(${SOLUTION_NAME})
 
@@ -8,18 +17,24 @@ project(${SOLUTION_NAME})
 set_property(GLOBAL
 PROPERTY USE_FOLDERS ON)
 
-include(cmake/utils.cmake)
-include(cmake/environment.cmake)
-include(cmake/functions.cmake)
-include(cmake/options.cmake)
-
+include(cmake/utils.cmake)       # utils macros
+include(cmake/environment.cmake) # paths
+include(cmake/functions.cmake)   # sofa build functions
+include(cmake/options.cmake)     # user options
 
 if(NOT PRECONFIGURE_DONE)
+    # Load pre-checked options
+    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/cmake/custom_options.cmake" )
+        message("Set Custom options")
+        include(cmake/custom_options.cmake)
+    endif()
+    
     message("")
     message(">>> SOFA framework pre-configuration complete")
     message(">>> Select your options and launch 'configure' or re-run cmake")
     message("")
     set(PRECONFIGURE_DONE 1 CACHE INTERNAL "")
+
 else()
     include(cmake/externals.cmake)
     include(cmake/buildFlags.cmake)
@@ -37,3 +52,4 @@ else()
 
     include(cmake/doxygen.cmake)
 endif()
+

@@ -1,7 +1,8 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    BroadPhaseTest.h
+    stdafx.h
+    PrimitiveCreation.h
 )
 
 set(SOURCE_FILES
@@ -15,6 +16,7 @@ set(SOURCE_FILES
     Matrix_test.cpp
     OBBTest.cpp
     SphereTest.cpp
+    StiffSpringForceField_test.cpp 
     AffinePatch_test.cpp
     ProjectToPlaneConstraint_test.cpp
     ProjectToLineConstraint_test.cpp
@@ -23,6 +25,8 @@ set(SOURCE_FILES
     DAG_test.cpp
     Node_test.cpp
     BroadPhaseTest.cpp
+    QuadPressureForceField_test.cpp
+    stdafx.cpp
         )
 
 if(APPLE)
@@ -40,7 +44,7 @@ if(SOFA-PLUGIN_SOFAPYTHON)
     include(./python_tests/python.cmake)
 endif()
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
 
 # Define a macro to get the absolute path to a directory;
 # absolute paths are perfectly OK for test resources.

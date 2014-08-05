@@ -83,20 +83,28 @@ public:
     // // return true iff the magnitude of every diagonal entries are larger or equal than the sum of the magnitudes of all the non-diagonal entries in the same row
     // bool isDiagonalDominant() const;
 
-//    /// Copy a state vector from the scene graph to this system. Only the independent DOFs are copied.
-//    void copyFromMultiVec( vec& target, core::ConstVecDerivId sourceId );
 
     /// Copy a state vector from the scene graph to this system. Only the independent DOFs are copied.
     void copyFromMultiVec(vec& target, core::ConstMultiVecId sourceId );
-
-//    /// Copy a state vector from this system to the scene graph. Only the independent DOFs are copied.
-//    void copyToMultiVec( core::VecDerivId targetId, const vec& source );
-
     /// Copy a state vector from this system to the scene graph. Only the independent DOFs are copied.
     void copyToMultiVec( core::MultiVecId targetId, const vec& source );
-
-    /// Add a state vector from this system to the scene graph. Only the independent DOFs are copied.
+    /// Add a state vector from this system to the scene graph. Only the independent DOFs are added.
     void addToMultiVec( core::MultiVecId targetId, const vec& source );
+
+
+    /// Copy a state vector from the scene graph to this system. Only the compliant DOFs are copied.
+    /// Note the given target can be either of the size n and will then used entierly OR
+    /// it could be of size m+n and it will be used starting at index m
+    void copyFromCompliantMultiVec(vec& target, core::ConstMultiVecId sourceId );
+    /// Copy a state vector from this system to the scene graph. Only the compliant DOFs are copied.
+    /// Note the given target can be either of the size n and will then used entierly OR
+    /// it could be of size m+n and it will be used starting at index m
+    void copyToCompliantMultiVec( core::MultiVecId targetId, const vec& source );
+    /// Add a state vector from this system to the scene graph. Only the compliant DOFs are added.
+    /// Note the given target can be either of the size n and will then used entierly OR
+    /// it could be of size m+n and it will be used starting at index m
+    void addToCompliantMultiVec( core::MultiVecId targetId, const vec& source );
+
 };
 
 

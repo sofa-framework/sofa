@@ -46,7 +46,7 @@ namespace Render
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerCells(unsigned int cell, Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3>& positions);
+void drawerCells(unsigned int cell, Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions);
 
 /**
  * add a set of volumes to a drawer
@@ -58,7 +58,7 @@ void drawerCells(unsigned int cell, Utils::Drawer& dr, typename PFP::MAP& map, s
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerCell(unsigned int cell, Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& positions);
+void drawerCell(unsigned int cell, Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions);
 
 /**
  * add a set of vertices to a drawer
@@ -68,7 +68,7 @@ void drawerCell(unsigned int cell, Utils::Drawer& dr, typename PFP::MAP& map, Da
  * @param positions attribute of positions
  */
 template<typename PFP>
-void drawerVertices(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3>& positions);
+void drawerVertices(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions);
 
 /**
  * add a set of edges to a drawer
@@ -79,7 +79,7 @@ void drawerVertices(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerEdges(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3>& positions, float k);
+void drawerEdges(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, float k);
 
 /**
  * add a set of faces to a drawer
@@ -90,7 +90,7 @@ void drawerEdges(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& v
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerFaces(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3>& positions, float k);
+void drawerFaces(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, float k);
 
 /**
  * add a set of volumes to a drawer
@@ -101,7 +101,7 @@ void drawerFaces(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& v
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerVolumes(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3>& positions, float k);
+void drawerVolumes(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>& vd, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, float k);
 
 /**
  * add a vertex to a drawer
@@ -111,7 +111,7 @@ void drawerVolumes(Utils::Drawer& dr, typename PFP::MAP& map, std::vector<Dart>&
  * @param positions attribute of positions
  */
 template<typename PFP>
-void drawerVertex(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& positions);
+void drawerVertex(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions);
 
 /**
  * add an edge to a drawer
@@ -121,7 +121,7 @@ void drawerVertex(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const Verte
  * @param positions attribute of positions
  */
 template<typename PFP>
-void drawerEdge(Utils::Drawer& dr, typename PFP::MAP& map,  Dart d, const VertexAttribute<typename PFP::VEC3>& positions, float k);
+void drawerEdge(Utils::Drawer& dr, typename PFP::MAP& map,  Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, float k);
 
 /**
  * add a face to a drawer
@@ -132,7 +132,7 @@ void drawerEdge(Utils::Drawer& dr, typename PFP::MAP& map,  Dart d, const Vertex
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerFace(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& positions, float k);
+void drawerFace(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, float k);
 
 /**
  * add a volume to a drawer
@@ -143,7 +143,7 @@ void drawerFace(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexA
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerVolume(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& positions, float k);
+void drawerVolume(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, float k);
 
 /**
  * add an edge to a drawer, use between begin / end
@@ -154,7 +154,7 @@ void drawerVolume(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const Verte
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerAddEdge(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& positions, float k);
+void drawerAddEdge(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, float k);
 
 /**
  * add an shrinked edge from center to a drawer, use between begin / end
@@ -166,7 +166,7 @@ void drawerAddEdge(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const Vert
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerAddEdgeShrink(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& positions, const typename PFP::VEC3& C, float k);
+void drawerAddEdgeShrink(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, const typename PFP::VEC3& C, float k);
 
 /**
  * add an face to a drawer, use between begin / end
@@ -177,7 +177,7 @@ void drawerAddEdgeShrink(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, cons
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerAddFace(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& positions, float k);
+void drawerAddFace(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, float k);
 
 /**
  * add a volume to a drawer, use between begin / end
@@ -188,7 +188,7 @@ void drawerAddFace(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const Vert
  * @param k shrinking factor
  */
 template<typename PFP>
-void drawerAddVolume(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& positions, float k);
+void drawerAddVolume(Utils::Drawer& dr, typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, float k);
 
 } // namespace Render
 

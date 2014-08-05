@@ -22,7 +22,7 @@
 *                                                                              *
 *******************************************************************************/
 
-#include "Topology/generic/traversor2.h"
+#include "Topology/generic/traversor/traversor2.h"
 #include "Algo/Geometry/intersection.h"
 #include <queue>
 
@@ -43,15 +43,15 @@ namespace Selection
  *********************************************************/
 
 template <typename PFP>
-Collector<PFP>::Collector(typename PFP::MAP& m, unsigned int thread) : map(m), m_thread(thread), isInsideCollected(false)
+Collector<PFP>::Collector(MAP& m, unsigned int thread) : map(m), m_thread(thread), isInsideCollected(false)
 {}
 
 template <typename PFP>
 inline bool Collector<PFP>::applyOnInsideVertices(FunctorType& f)
 {
 	assert(isInsideCollected || !"applyOnInsideVertices: inside cells have not been collected.") ;
-	for(std::vector<Dart>::iterator iv = insideVertices.begin(); iv != insideVertices.end(); ++iv)
-		if(f(*iv))
+	for(std::vector<Vertex>::iterator iv = insideVertices.begin(); iv != insideVertices.end(); ++iv)
+		if(f((*iv).dart))
 			return true ;
 	return false ;
 }
@@ -60,8 +60,8 @@ template <typename PFP>
 inline bool Collector<PFP>::applyOnInsideEdges(FunctorType& f)
 {
 	assert(isInsideCollected || !"applyOnInsideEdges: inside cells have not been collected.") ;
-	for(std::vector<Dart>::iterator iv = insideEdges.begin(); iv != insideEdges.end(); ++iv)
-		if(f(*iv))
+	for(std::vector<Edge>::iterator iv = insideEdges.begin(); iv != insideEdges.end(); ++iv)
+		if(f((*iv).dart))
 			return true ;
 	return false ;
 }
@@ -70,8 +70,8 @@ template <typename PFP>
 inline bool Collector<PFP>::applyOnInsideFaces(FunctorType& f)
 {
 	assert(isInsideCollected || !"applyOnInsideFaces: inside cells have not been collected.") ;
-	for(std::vector<Dart>::iterator iv = insideFaces.begin(); iv != insideFaces.end(); ++iv)
-		if(f(*iv))
+	for(std::vector<Face>::iterator iv = insideFaces.begin(); iv != insideFaces.end(); ++iv)
+		if(f((*iv).dart))
 			return true ;
 	return false ;
 }
@@ -117,18 +117,14 @@ void Collector_OneRing<PFP>::collectAll(Dart d)
 	this->insideFaces.reserve(16);
 	this->border.reserve(16);
 
-	this->insideVertices.push_back(this->centerDart);
+	this->insideVertices.push_back(d);
 
-	Traversor2VE<typename PFP::MAP> te(this->map, this->centerDart) ;
-	for(Dart it = te.begin(); it != te.end(); it = te.next())
-		this->insideEdges.push_back(it);
-
-	Traversor2VF<typename PFP::MAP> tf(this->map, this->centerDart) ;
-	for(Dart it = tf.begin(); it != tf.end(); it = tf.next())
+	foreach_incident2<EDGE>(this->map, Vertex(d), [&] (Edge e)
 	{
-		this->insideFaces.push_back(it);
-		this->border.push_back(this->map.phi1(it));
-	}
+		this->insideEdges.push_back(e);
+		this->insideFaces.push_back(e.dart);
+		this->border.push_back(this->map.phi1(e.dart));
+	});
 }
 
 template <typename PFP>
@@ -137,32 +133,34 @@ void Collector_OneRing<PFP>::collectBorder(Dart d)
 	this->init(d);
 	this->border.reserve(12);
 
-	Traversor2VF<typename PFP::MAP> t(this->map, this->centerDart) ;
-	for(Dart it = t.begin(); it != t.end(); it = t.next())
-		this->border.push_back(this->map.phi1(it));
+	foreach_incident2<FACE>(this->map, Vertex(d), [&] (Face f)
+	{
+		this->border.push_back(this->map.phi1(f.dart));
+	});
 }
 
 template <typename PFP>
-typename PFP::REAL Collector_OneRing<PFP>::computeArea(const VertexAttribute<VEC3>& pos)
+typename PFP::REAL Collector_OneRing<PFP>::computeArea(const VertexAttribute<VEC3, MAP>& pos)
 {
 	assert(this->isInsideCollected || !"computeArea: inside cells have not been collected.") ;
 
 	REAL area = 0;
 
-	for (std::vector<Dart>::const_iterator it = this->insideFaces.begin(); it != this->insideFaces.end(); ++it)
+	for (std::vector<Face>::const_iterator it = this->insideFaces.begin(); it != this->insideFaces.end(); ++it)
 		area += Algo::Surface::Geometry::triangleArea<PFP>(this->map, *it, pos);
 
 	return area;
 }
 
 template <typename PFP>
-void Collector_OneRing<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3>& pos, const EdgeAttribute<REAL>& edgeangle, typename PFP::MATRIX33& tensor){
+void Collector_OneRing<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3, MAP>& pos, const EdgeAttribute<REAL, MAP>& edgeangle, typename PFP::MATRIX33& tensor)
+{
 	assert(this->isInsideCollected || !"computeNormalCyclesTensor: inside cells have not been collected.") ;
 
 	tensor.zero() ;
 
 	// collect edges inside the neighborhood
-	for (std::vector<Dart>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
+	for (std::vector<Edge>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
 	{
 		const VEC3 e = Algo::Surface::Geometry::vectorOutOfDart<PFP>(this->map, *it, pos) ;
 		tensor += Geom::transposed_vectors_mult(e,e) * edgeangle[*it] * (1 / e.norm()) ;
@@ -181,13 +179,14 @@ void Collector_OneRing<PFP>::computeNormalCyclesTensor (const VertexAttribute<VE
 }
 
 template <typename PFP>
-void Collector_OneRing<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3>& pos, typename PFP::MATRIX33& tensor){
+void Collector_OneRing<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3, MAP>& pos, typename PFP::MATRIX33& tensor)
+{
 	assert(this->isInsideCollected || !"computeNormalCyclesTensor: inside cells have not been collected.") ;
 
 	tensor.zero() ;
 
 	// collect edges inside the neighborhood
-	for (std::vector<Dart>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
+	for (std::vector<Edge>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
 	{
 		const VEC3 e = Algo::Surface::Geometry::vectorOutOfDart<PFP>(this->map, *it, pos) ;
 		const REAL edgeangle = Algo::Surface::Geometry::computeAngleBetweenNormalsOnEdge<PFP>(this->map, *it, pos) ;
@@ -226,7 +225,7 @@ void Collector_OneRing_AroundEdge<PFP>::collectAll(Dart d)
 	this->insideFaces.reserve(16);
 	this->border.reserve(16);
 
-	CellMarkerStore<FACE> fm (this->map, this->m_thread);
+	CellMarkerStore<MAP, FACE> fm(this->map, this->m_thread);
 	fm.mark(d);
 	fm.mark(d2);
 
@@ -235,13 +234,13 @@ void Collector_OneRing_AroundEdge<PFP>::collectAll(Dart d)
 	this->insideVertices.push_back(d2);
 	this->insideEdges.push_back(d);
 
-	Traversor2EEaV<typename PFP::MAP> te(this->map, d) ;
-	for(Dart it = te.begin(); it != te.end(); it = te.next())
+	foreach_adjacent2<VERTEX>(this->map, Edge(d), [&] (Edge e)
 	{
-		this->insideEdges.push_back(it);
-		this->insideFaces.push_back(it);
-		if (! fm.isMarked(it)) this->border.push_back(this->map.phi1(it));
-	}
+		this->insideEdges.push_back(e);
+		this->insideFaces.push_back(e.dart);
+		if (! fm.isMarked(e.dart))
+			this->border.push_back(this->map.phi1(e.dart));
+	});
 }
 
 template <typename PFP>
@@ -255,39 +254,39 @@ void Collector_OneRing_AroundEdge<PFP>::collectBorder(Dart d)
 
 	this->border.reserve(16);
 
-	CellMarkerStore<FACE> fm (this->map, this->m_thread);
+	CellMarkerStore<MAP, FACE> fm (this->map, this->m_thread);
 	fm.mark(d);
 	fm.mark(d2);
 
-	// collect
-	Traversor2EEaV<typename PFP::MAP> te(this->map, d) ;
-	for(Dart it = te.begin(); it != te.end(); it = te.next())
+	foreach_adjacent2<VERTEX>(this->map, Edge(d), [&] (Edge e)
 	{
-		if (! fm.isMarked(it)) this->border.push_back(this->map.phi1(it));
-	}
+		if (! fm.isMarked(e.dart))
+			this->border.push_back(this->map.phi1(e.dart));
+	});
 }
 
 template <typename PFP>
-typename PFP::REAL Collector_OneRing_AroundEdge<PFP>::computeArea(const VertexAttribute<VEC3>& pos)
+typename PFP::REAL Collector_OneRing_AroundEdge<PFP>::computeArea(const VertexAttribute<VEC3, MAP>& pos)
 {
 	assert(this->isInsideCollected || !"computeArea: inside cells have not been collected.") ;
 
 	REAL area = 0;
 
-	for (std::vector<Dart>::const_iterator it = this->insideFaces.begin(); it != this->insideFaces.end(); ++it)
+	for (std::vector<Face>::const_iterator it = this->insideFaces.begin(); it != this->insideFaces.end(); ++it)
 		area += Algo::Surface::Geometry::triangleArea<PFP>(this->map, *it, pos);
 
 	return area;
 }
 
 template <typename PFP>
-void Collector_OneRing_AroundEdge<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3>& pos, const EdgeAttribute<REAL>& edgeangle, typename PFP::MATRIX33& tensor){
+void Collector_OneRing_AroundEdge<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3, MAP>& pos, const EdgeAttribute<REAL, MAP>& edgeangle, typename PFP::MATRIX33& tensor)
+{
 	assert(this->isInsideCollected || !"computeNormalCyclesTensor: inside cells have not been collected.") ;
 
 	tensor.zero() ;
 
 	// collect edges inside the neighborhood
-	for (std::vector<Dart>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
+	for (std::vector<Edge>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
 	{
 		const VEC3 e = Algo::Surface::Geometry::vectorOutOfDart<PFP>(this->map, *it, pos) ;
 		tensor += Geom::transposed_vectors_mult(e,e) * edgeangle[*it] * (1 / e.norm()) ;
@@ -306,13 +305,14 @@ void Collector_OneRing_AroundEdge<PFP>::computeNormalCyclesTensor (const VertexA
 }
 
 template <typename PFP>
-void Collector_OneRing_AroundEdge<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3>& pos, typename PFP::MATRIX33& tensor){
+void Collector_OneRing_AroundEdge<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3, MAP>& pos, typename PFP::MATRIX33& tensor)
+{
 	assert(this->isInsideCollected || !"computeNormalCyclesTensor: inside cells have not been collected.") ;
 
 	tensor.zero() ;
 
 	// collect edges inside the neighborhood
-	for (std::vector<Dart>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
+	for (std::vector<Edge>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
 	{
 		const VEC3 e = Algo::Surface::Geometry::vectorOutOfDart<PFP>(this->map, *it, pos) ;
 		const REAL edgeangle = Algo::Surface::Geometry::computeAngleBetweenNormalsOnEdge<PFP>(this->map, *it, pos) ;
@@ -331,7 +331,6 @@ void Collector_OneRing_AroundEdge<PFP>::computeNormalCyclesTensor (const VertexA
 
 	tensor /= computeArea(pos) ;
 }
-
 
 /*********************************************************
  * Collector Within Sphere
@@ -340,25 +339,21 @@ void Collector_OneRing_AroundEdge<PFP>::computeNormalCyclesTensor (const VertexA
 template <typename PFP>
 void Collector_WithinSphere<PFP>::collectAll(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	this->init(d);
 	this->isInsideCollected = true;
 	this->insideEdges.reserve(32);
 	this->insideFaces.reserve(32);
 	this->border.reserve(32);
 
-	CellMarkerStore<VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
-	CellMarkerStore<FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + border-faces
+	CellMarkerStore<MAP, VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
+	CellMarkerStore<MAP, FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + border-faces
 
-	this->insideVertices.push_back(this->centerDart);
-	vm.mark(this->centerDart);
+	this->insideVertices.push_back(d);
+	vm.mark(d);
 
 	VEC3 centerPosition = this->position[d];
 	unsigned int i = 0;
-//	for(std::vector<Dart>::iterator iv = this->insideVertices.begin(); iv != this->insideVertices.end(); ++iv)
 	while (i < this->insideVertices.size())
 	{
 		Dart end = this->insideVertices[i];
@@ -404,18 +399,15 @@ void Collector_WithinSphere<PFP>::collectAll(Dart d)
 template <typename PFP>
 void Collector_WithinSphere<PFP>::collectBorder(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	this->init(d);
 	this->border.reserve(128);
 	this->insideVertices.reserve(128);
 
-	CellMarkerStore<VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
+	CellMarkerStore<MAP, VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
 
-	this->insideVertices.push_back(this->centerDart);
-	vm.mark(this->centerDart);
+	this->insideVertices.push_back(d);
+	vm.mark(d);
 
 	VEC3 centerPosition = this->position[d];
 	unsigned int i = 0;
@@ -452,14 +444,14 @@ void Collector_WithinSphere<PFP>::collectBorder(Dart d)
 
 
 template <typename PFP>
-typename PFP::REAL Collector_WithinSphere<PFP>::computeArea(const VertexAttribute<VEC3>& pos)
+typename PFP::REAL Collector_WithinSphere<PFP>::computeArea(const VertexAttribute<VEC3, MAP>& pos)
 {
 	assert(this->isInsideCollected || !"computeArea: inside cells have not been collected.") ;
 
 	VEC3 centerPosition = pos[this->centerDart];
 	REAL area = 0;
 
-	for (std::vector<Dart>::const_iterator it = this->insideFaces.begin(); it != this->insideFaces.end(); ++it)
+	for (std::vector<Face>::const_iterator it = this->insideFaces.begin(); it != this->insideFaces.end(); ++it)
 		area += Geometry::triangleArea<PFP>(this->map, *it, pos);
 
 	for (std::vector<Dart>::const_iterator it = this->border.begin(); it != this->border.end(); ++it)
@@ -468,14 +460,14 @@ typename PFP::REAL Collector_WithinSphere<PFP>::computeArea(const VertexAttribut
 		const Dart g = this->map.phi1(f);
 		if (Geom::isPointInSphere(pos[g], centerPosition, this->radius))
 		{ // only f is outside
-			typename PFP::REAL alpha, beta;
+			REAL alpha, beta;
 			Geometry::intersectionSphereEdge<PFP>(this->map, centerPosition, this->radius, *it, pos, alpha);
 			Geometry::intersectionSphereEdge<PFP>(this->map, centerPosition, this->radius, this->map.phi2(f), pos, beta);
 			area += (alpha+beta - alpha*beta) * Algo::Surface::Geometry::triangleArea<PFP>(this->map, *it, pos);
 		}
 		else
 		{ // f and g are outside
-			typename PFP::REAL alpha, beta;
+			REAL alpha, beta;
 			Geometry::intersectionSphereEdge<PFP>(this->map, centerPosition, this->radius, *it, pos, alpha);
 			Geometry::intersectionSphereEdge<PFP>(this->map, centerPosition, this->radius, this->map.phi2(g), pos, beta);
 			area += alpha * beta * Algo::Surface::Geometry::triangleArea<PFP>(this->map, *it, pos);
@@ -485,14 +477,15 @@ typename PFP::REAL Collector_WithinSphere<PFP>::computeArea(const VertexAttribut
 }
 
 template <typename PFP>
-void Collector_WithinSphere<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3>& pos, const EdgeAttribute<REAL>& edgeangle, typename PFP::MATRIX33& tensor){
+void Collector_WithinSphere<PFP>::computeNormalCyclesTensor(const VertexAttribute<VEC3, MAP>& pos, const EdgeAttribute<REAL, MAP>& edgeangle, typename PFP::MATRIX33& tensor)
+{
 	assert(this->isInsideCollected || !"computeNormalCyclesTensor: inside cells have not been collected.") ;
 
 	VEC3 centerPosition = pos[this->centerDart];
 	tensor.zero() ;
 
 	// collect edges inside the neighborhood
-	for (std::vector<Dart>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
+	for (std::vector<Edge>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
 	{
 		const VEC3 e = Algo::Surface::Geometry::vectorOutOfDart<PFP>(this->map, *it, pos) ;
 		tensor += Geom::transposed_vectors_mult(e,e) * edgeangle[*it] * (1 / e.norm()) ;
@@ -509,16 +502,16 @@ void Collector_WithinSphere<PFP>::computeNormalCyclesTensor (const VertexAttribu
 	tensor /= computeArea(pos) ;
 }
 
-
 template <typename PFP>
-void Collector_WithinSphere<PFP>::computeNormalCyclesTensor (const VertexAttribute<VEC3>& pos, typename PFP::MATRIX33& tensor){
+void Collector_WithinSphere<PFP>::computeNormalCyclesTensor(const VertexAttribute<VEC3, MAP>& pos, typename PFP::MATRIX33& tensor)
+{
 	assert(this->isInsideCollected || !"computeNormalCyclesTensor: inside cells have not been collected.") ;
 
 	VEC3 centerPosition = pos[this->centerDart];
 	tensor.zero() ;
 
 	// collect edges inside the neighborhood
-	for (std::vector<Dart>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
+	for (std::vector<Edge>::const_iterator it = this->insideEdges.begin(); it != this->insideEdges.end(); ++it)
 	{
 		const VEC3 e = Algo::Surface::Geometry::vectorOutOfDart<PFP>(this->map, *it, pos) ;
 		const REAL edgeangle = Algo::Surface::Geometry::computeAngleBetweenNormalsOnEdge<PFP>(this->map, *it, pos) ;
@@ -544,18 +537,15 @@ void Collector_WithinSphere<PFP>::computeNormalCyclesTensor (const VertexAttribu
 template <typename PFP>
 void Collector_NormalAngle<PFP>::collectAll(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	this->init(d);
 	this->isInsideCollected = true;
 	this->insideEdges.reserve(32);
 	this->insideFaces.reserve(32);
 	this->border.reserve(32);
 
-	CellMarkerStore<VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
-	CellMarkerStore<FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + border-faces
+	CellMarkerStore<MAP, VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
+	CellMarkerStore<MAP, FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + border-faces
 
 	this->insideVertices.push_back(this->centerDart);
 	vm.mark(this->centerDart);
@@ -611,15 +601,12 @@ void Collector_NormalAngle<PFP>::collectAll(Dart d)
 template <typename PFP>
 void Collector_NormalAngle<PFP>::collectBorder(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	this->init(d);
 	this->border.reserve(128);
 	this->insideVertices.reserve(128);
 
-	CellMarkerStore<VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
+	CellMarkerStore<MAP, VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
 
 	this->insideVertices.push_back(this->centerDart);
 	vm.mark(this->centerDart);
@@ -659,7 +646,6 @@ void Collector_NormalAngle<PFP>::collectBorder(Dart d)
 	this->insideVertices.clear();
 }
 
-
 /*********************************************************
  * Collector Normal Angle (Triangles)
  *********************************************************/
@@ -667,9 +653,6 @@ void Collector_NormalAngle<PFP>::collectBorder(Dart d)
 template <typename PFP>
 void Collector_NormalAngle_Triangles<PFP>::collectAll(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	this->init(d);
 	this->isInsideCollected = true;
 	this->insideVertices.reserve(32);
@@ -677,8 +660,8 @@ void Collector_NormalAngle_Triangles<PFP>::collectAll(Dart d)
 	this->insideFaces.reserve(32);
 	this->border.reserve(32);
 
-	CellMarkerStore<FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + front-faces
-	CellMarkerStore<FACE> fminside(this->map, this->m_thread);	// mark the collected inside-faces
+	CellMarkerStore<MAP, FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + front-faces
+	CellMarkerStore<MAP, FACE> fminside(this->map, this->m_thread);	// mark the collected inside-faces
 
 	std::queue<Dart> front;
 	front.push(this->centerDart);
@@ -696,7 +679,7 @@ void Collector_NormalAngle_Triangles<PFP>::collectAll(Dart d)
 		{ // collect this face and add adjacent faces to the front
 			this->insideFaces.push_back(f);
 			fminside.mark(f);
-			Traversor2FFaE<typename PFP::MAP> t (this->map, f) ;
+			Traversor2FFaE<MAP> t (this->map, f) ;
 			for (Dart it = t.begin(); it != t.end(); it=t.next())
 			{
 				if (!fm.isMarked(it))
@@ -708,12 +691,12 @@ void Collector_NormalAngle_Triangles<PFP>::collectAll(Dart d)
 		}
 	}
 
-	CellMarkerStore<VERTEX> vm(this->map, this->m_thread);	// mark inside-vertices and border-vertices
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark inside-edges and border-edges
+	CellMarkerStore<MAP, VERTEX> vm(this->map, this->m_thread);	// mark inside-vertices and border-vertices
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark inside-edges and border-edges
 	std::vector<Dart>::iterator f_it;
 	for (f_it = this->insideFaces.begin(); f_it != this->insideFaces.end(); f_it++)
 	{ // collect insideVertices, insideEdges, and border
-		Traversor2FE<typename PFP::MAP> te (this->map, *f_it) ;
+		Traversor2FE<MAP> te (this->map, *f_it) ;
 		for (Dart it = te.begin(); it != te.end(); it=te.next())
 		{ // collect insideEdges and border
 			if (!em.isMarked(it))
@@ -728,7 +711,7 @@ void Collector_NormalAngle_Triangles<PFP>::collectAll(Dart d)
 			}
 		}
 
-		Traversor2FV<typename PFP::MAP> tv (this->map, *f_it) ;
+		Traversor2FV<MAP> tv (this->map, *f_it) ;
 		for (Dart it = tv.begin(); it != tv.end(); it=tv.next())
 		{ // collect insideVertices
 			if (!vm.isMarked(it))
@@ -753,15 +736,12 @@ void Collector_NormalAngle_Triangles<PFP>::collectAll(Dart d)
 template <typename PFP>
 void Collector_NormalAngle_Triangles<PFP>::collectBorder(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	this->init(d);
 	this->insideFaces.reserve(32);
 	this->border.reserve(32);
 
-	CellMarkerStore<FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + front-faces
-	CellMarkerStore<FACE> fminside(this->map, this->m_thread);	// mark the collected inside-faces
+	CellMarkerStore<MAP, FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + front-faces
+	CellMarkerStore<MAP, FACE> fminside(this->map, this->m_thread);	// mark the collected inside-faces
 
 	std::queue<Dart> front;
 	front.push(this->centerDart);
@@ -774,12 +754,11 @@ void Collector_NormalAngle_Triangles<PFP>::collectBorder(Dart d)
 		front.pop();
 		REAL a = Geom::angle(centerNormal, this->normal[f]);
 
-
 		if (a < angleThreshold )
 		{ // collect this face and add adjacent faces to the front
 			this->insideFaces.push_back(f);
 			fminside.mark(f);
-			Traversor2FFaE<typename PFP::MAP> t (this->map, f) ;
+			Traversor2FFaE<MAP> t (this->map, f) ;
 			for (Dart it = t.begin(); it != t.end(); it=t.next())
 			{
 				if (!fm.isMarked(it))
@@ -791,11 +770,11 @@ void Collector_NormalAngle_Triangles<PFP>::collectBorder(Dart d)
 		}
 	}
 
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark inside-edges and border-edges
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark inside-edges and border-edges
 	std::vector<Dart>::iterator f_it;
 	for (f_it = this->insideFaces.begin(); f_it != this->insideFaces.end(); f_it++)
 	{ // collect border (edges)
-		Traversor2FE<typename PFP::MAP> te (this->map, *f_it) ;
+		Traversor2FE<MAP> te (this->map, *f_it) ;
 		for (Dart it = te.begin(); it != te.end(); it=te.next())
 		{
 			if (!em.isMarked(it))
@@ -811,7 +790,6 @@ void Collector_NormalAngle_Triangles<PFP>::collectBorder(Dart d)
 	this->insideFaces.clear();
 }
 
-
 /*********************************************************
  * Collector Vertices
  *********************************************************/
@@ -819,9 +797,6 @@ void Collector_NormalAngle_Triangles<PFP>::collectBorder(Dart d)
 template <typename PFP>
 void Collector_Vertices<PFP>::collectAll(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	crit.init(d);
 	this->init(d);
 	this->isInsideCollected = true;
@@ -829,9 +804,9 @@ void Collector_Vertices<PFP>::collectAll(Dart d)
 	this->insideFaces.reserve(32);
 	this->border.reserve(32);
 
-	CellMarkerStore<VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
-	CellMarkerStore<FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + border-faces
+	CellMarkerStore<MAP, VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
+	CellMarkerStore<MAP, FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + border-faces
 
 	this->insideVertices.push_back(this->centerDart);
 	vm.mark(this->centerDart);
@@ -882,16 +857,13 @@ void Collector_Vertices<PFP>::collectAll(Dart d)
 template <typename PFP>
 void Collector_Vertices<PFP>::collectBorder(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	crit.init(d);
 	this->init(d);
 	this->border.reserve(128);
 	this->insideVertices.reserve(128);
 
-	CellMarkerStore<VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
+	CellMarkerStore<MAP, VERTEX> vm(this->map, this->m_thread);	// mark the collected inside-vertices
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark the collected inside-edges + border-edges
 
 	this->insideVertices.push_back(this->centerDart);
 	vm.mark(this->centerDart);
@@ -928,7 +900,6 @@ void Collector_Vertices<PFP>::collectBorder(Dart d)
 	this->insideVertices.clear();
 }
 
-
 /*********************************************************
  * Collector Triangles
  *********************************************************/
@@ -936,9 +907,6 @@ void Collector_Vertices<PFP>::collectBorder(Dart d)
 template <typename PFP>
 void Collector_Triangles<PFP>::collectAll(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	crit.init(d);
 	this->init(d);
 	this->isInsideCollected = true;
@@ -947,8 +915,8 @@ void Collector_Triangles<PFP>::collectAll(Dart d)
 	this->insideFaces.reserve(32);
 	this->border.reserve(32);
 
-	CellMarkerStore<FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + front-faces
-	CellMarkerStore<FACE> fminside(this->map, this->m_thread);	// mark the collected inside-faces
+	CellMarkerStore<MAP, FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + front-faces
+	CellMarkerStore<MAP, FACE> fminside(this->map, this->m_thread);	// mark the collected inside-faces
 
 	std::queue<Dart> front;
 	front.push(this->centerDart);
@@ -963,7 +931,7 @@ void Collector_Triangles<PFP>::collectAll(Dart d)
 		{ // collect this face and add adjacent faces to the front
 			this->insideFaces.push_back(f);
 			fminside.mark(f);
-			Traversor2FFaE<typename PFP::MAP> t (this->map, f) ;
+			Traversor2FFaE<MAP> t (this->map, f) ;
 			for (Dart it = t.begin(); it != t.end(); it=t.next())
 			{
 				if (!fm.isMarked(it))
@@ -975,12 +943,12 @@ void Collector_Triangles<PFP>::collectAll(Dart d)
 		}
 	}
 
-	CellMarkerStore<VERTEX> vm(this->map, this->m_thread);	// mark inside-vertices and border-vertices
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark inside-edges and border-edges
+	CellMarkerStore<MAP, VERTEX> vm(this->map, this->m_thread);	// mark inside-vertices and border-vertices
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark inside-edges and border-edges
 	std::vector<Dart>::iterator f_it;
 	for (f_it = this->insideFaces.begin(); f_it != this->insideFaces.end(); f_it++)
 	{ // collect insideVertices, insideEdges, and border
-		Traversor2FE<typename PFP::MAP> te (this->map, *f_it) ;
+		Traversor2FE<MAP> te (this->map, *f_it) ;
 		for (Dart it = te.begin(); it != te.end(); it=te.next())
 		{ // collect insideEdges and border
 			if (!em.isMarked(it))
@@ -995,7 +963,7 @@ void Collector_Triangles<PFP>::collectAll(Dart d)
 			}
 		}
 
-		Traversor2FV<typename PFP::MAP> tv (this->map, *f_it) ;
+		Traversor2FV<MAP> tv (this->map, *f_it) ;
 		for (Dart it = tv.begin(); it != tv.end(); it=tv.next())
 		{ // collect insideVertices
 			if (!vm.isMarked(it))
@@ -1005,22 +973,18 @@ void Collector_Triangles<PFP>::collectAll(Dart d)
 			}
 		}
 	}
-
 }
 
 template <typename PFP>
 void Collector_Triangles<PFP>::collectBorder(Dart d)
 {
-	typedef typename PFP::VEC3 VEC3;
-	typedef typename PFP::REAL REAL;
-
 	crit.init(d);
 	this->init(d);
 	this->insideFaces.reserve(32);
 	this->border.reserve(32);
 
-	CellMarkerStore<FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + front-faces
-	CellMarkerStore<FACE> fminside(this->map, this->m_thread);	// mark the collected inside-faces
+	CellMarkerStore<MAP, FACE> fm(this->map, this->m_thread);	// mark the collected inside-faces + front-faces
+	CellMarkerStore<MAP, FACE> fminside(this->map, this->m_thread);	// mark the collected inside-faces
 
 	std::queue<Dart> front;
 	front.push(this->centerDart);
@@ -1035,7 +999,7 @@ void Collector_Triangles<PFP>::collectBorder(Dart d)
 		{ // collect this face and add adjacent faces to the front
 			this->insideFaces.push_back(f);
 			fminside.mark(f);
-			Traversor2FFaE<typename PFP::MAP> t (this->map, f) ;
+			Traversor2FFaE<MAP> t (this->map, f) ;
 			for (Dart it = t.begin(); it != t.end(); it=t.next())
 			{
 				if (!fm.isMarked(it))
@@ -1047,11 +1011,11 @@ void Collector_Triangles<PFP>::collectBorder(Dart d)
 		}
 	}
 
-	CellMarkerStore<EDGE> em(this->map, this->m_thread);	// mark inside-edges and border-edges
+	CellMarkerStore<MAP, EDGE> em(this->map, this->m_thread);	// mark inside-edges and border-edges
 	std::vector<Dart>::iterator f_it;
 	for (f_it = this->insideFaces.begin(); f_it != this->insideFaces.end(); f_it++)
 	{ // collect border (edges)
-		Traversor2FE<typename PFP::MAP> te (this->map, *f_it) ;
+		Traversor2FE<MAP> te (this->map, *f_it) ;
 		for (Dart it = te.begin(); it != te.end(); it=te.next())
 		{
 			if (!em.isMarked(it))
@@ -1077,7 +1041,7 @@ void Collector_Dijkstra_Vertices<PFP>::collectAll(Dart dinit)
 	init(dinit);
 	this->isInsideCollected = true;
 
-	CellMarkerStore<VERTEX> vmReached (this->map, this->m_thread);
+	CellMarkerStore<MAP, VERTEX> vmReached (this->map, this->m_thread);
 	vertexInfo[this->centerDart].it = front.insert(std::pair<float,Dart>(0.0, this->centerDart));
 	vertexInfo[this->centerDart].valid = true;
 	vmReached.mark(this->centerDart);
@@ -1090,7 +1054,7 @@ void Collector_Dijkstra_Vertices<PFP>::collectAll(Dart dinit)
 		vertexInfo[e].valid=false;
 		this->insideVertices.push_back(e);
 
-		Traversor2VVaE<typename PFP::MAP> tv (this->map, e);
+		Traversor2VVaE<MAP> tv (this->map, e);
 		for (Dart f = tv.begin(); f != tv.end(); f=tv.next())
 		{
 			VertexInfo& vi (vertexInfo[f]);
@@ -1123,13 +1087,12 @@ void Collector_Dijkstra_Vertices<PFP>::collectAll(Dart dinit)
 		front.erase(front.begin());
 	}
 
-
-	CellMarkerStore<EDGE> em (this->map, this->m_thread);
-	CellMarkerStore<FACE> fm (this->map, this->m_thread);
+	CellMarkerStore<MAP, EDGE> em (this->map, this->m_thread);
+	CellMarkerStore<MAP, FACE> fm (this->map, this->m_thread);
 	for (std::vector<Dart>::iterator e_it = this->insideVertices.begin(); e_it != this->insideVertices.end() ; e_it++)
 	{
 		// collect insideEdges
-		Traversor2VE<typename PFP::MAP> te (this->map, *e_it);
+		Traversor2VE<MAP> te (this->map, *e_it);
 		for (Dart e = te.begin(); e != te.end(); e=te.next())
 		{
 			if ( !em.isMarked(e) && vmReached.isMarked(this->map.phi2(e)) )
@@ -1140,13 +1103,13 @@ void Collector_Dijkstra_Vertices<PFP>::collectAll(Dart dinit)
 		}
 
 		// collect insideFaces and border
-		Traversor2VF<typename PFP::MAP> tf (this->map, *e_it);
+		Traversor2VF<MAP> tf (this->map, *e_it);
 		for (Dart f = tf.begin(); f != tf.end(); f=tf.next())
 		{
 			if ( !fm.isMarked(f) )
 			{
 				fm.mark(f);
-				Traversor2FV<typename PFP::MAP> tv (this->map, f);
+				Traversor2FV<MAP> tv (this->map, f);
 				Dart v = tv.begin();
 				while ( v != tv.end() && vmReached.isMarked(v) ) {v=tv.next();}
 				if ( v == tv.end() )
@@ -1163,7 +1126,7 @@ void Collector_Dijkstra_Vertices<PFP>::collectBorder(Dart dinit)
 {
 	init(dinit);
 
-	CellMarkerStore<VERTEX> vmReached (this->map, this->m_thread);
+	CellMarkerStore<MAP, VERTEX> vmReached (this->map, this->m_thread);
 	vertexInfo[this->centerDart].it = front.insert(std::pair<float,Dart>(0.0, this->centerDart));
 	vertexInfo[this->centerDart].valid = true;
 	vmReached.mark(this->centerDart);
@@ -1176,7 +1139,7 @@ void Collector_Dijkstra_Vertices<PFP>::collectBorder(Dart dinit)
 		vertexInfo[e].valid=false;
 		this->insideVertices.push_back(e);
 
-		Traversor2VVaE<typename PFP::MAP> tv (this->map, e);
+		Traversor2VVaE<MAP> tv (this->map, e);
 		for (Dart f = tv.begin(); f != tv.end(); f=tv.next())
 		{
 			VertexInfo& vi (vertexInfo[f]);
@@ -1195,12 +1158,10 @@ void Collector_Dijkstra_Vertices<PFP>::collectBorder(Dart dinit)
 			else
 			{
 				vi.it = front.insert(std::pair<float,Dart>(d + edge_cost[f], f));
-				vi.valid=true;
+				vi.valid = true;
 				vmReached.mark(f);
 			}
-
 		}
-
 	}
 
 	while ( !front.empty())
@@ -1209,18 +1170,17 @@ void Collector_Dijkstra_Vertices<PFP>::collectBorder(Dart dinit)
 		front.erase(front.begin());
 	}
 
-
-	CellMarkerStore<FACE> fm (this->map, this->m_thread);
+	CellMarkerStore<MAP, FACE> fm (this->map, this->m_thread);
 	for (std::vector<Dart>::iterator e_it = this->insideVertices.begin(); e_it != this->insideVertices.end() ; e_it++)
 	{
 		// collect border
-		Traversor2VF<typename PFP::MAP> tf (this->map, *e_it);
+		Traversor2VF<MAP> tf (this->map, *e_it);
 		for (Dart f = tf.begin(); f != tf.end(); f=tf.next())
 		{
 			if ( !fm.isMarked(f) )
 			{
 				fm.mark(f);
-				Traversor2FV<typename PFP::MAP> tv (this->map, f);
+				Traversor2FV<MAP> tv (this->map, f);
 				Dart v = tv.begin();
 				while ( v != tv.end() && vmReached.isMarked(v) ) {v=tv.next();}
 				if ( v != tv.end() )
@@ -1230,7 +1190,6 @@ void Collector_Dijkstra_Vertices<PFP>::collectBorder(Dart dinit)
 	}
 	this->insideVertices.clear();
 }
-
 
 /*********************************************************
  * Collector Dijkstra
@@ -1242,7 +1201,7 @@ void Collector_Dijkstra<PFP>::collectAll(Dart dinit)
 	init(dinit);
 	this->isInsideCollected = true;
 
-	CellMarkerStore<VERTEX> vmReached (this->map, this->m_thread);
+	CellMarkerStore<MAP, VERTEX> vmReached (this->map, this->m_thread);
 	vertexInfo[this->centerDart].it = front.insert(std::pair<float,Dart>(0.0, this->centerDart));
 	vertexInfo[this->centerDart].valid = true;
 	vmReached.mark(this->centerDart);
@@ -1255,7 +1214,7 @@ void Collector_Dijkstra<PFP>::collectAll(Dart dinit)
 		vertexInfo[e].valid=false;
 		this->insideVertices.push_back(e);
 
-		Traversor2VVaE<typename PFP::MAP> tv (this->map, e);
+		Traversor2VVaE<MAP> tv (this->map, e);
 		for (Dart f = tv.begin(); f != tv.end(); f=tv.next())
 		{
 			VertexInfo& vi (vertexInfo[f]);
@@ -1274,12 +1233,10 @@ void Collector_Dijkstra<PFP>::collectAll(Dart dinit)
 			else
 			{
 				vi.it = front.insert(std::pair<float,Dart>(d + edgeLength(f), f));
-				vi.valid=true;
+				vi.valid = true;
 				vmReached.mark(f);
 			}
-
 		}
-
 	}
 
 	while ( !front.empty())
@@ -1288,13 +1245,12 @@ void Collector_Dijkstra<PFP>::collectAll(Dart dinit)
 		front.erase(front.begin());
 	}
 
-
-	CellMarkerStore<EDGE> em (this->map, this->m_thread);
-	CellMarkerStore<FACE> fm (this->map, this->m_thread);
+	CellMarkerStore<MAP, EDGE> em (this->map, this->m_thread);
+	CellMarkerStore<MAP, FACE> fm (this->map, this->m_thread);
 	for (std::vector<Dart>::iterator e_it = this->insideVertices.begin(); e_it != this->insideVertices.end() ; e_it++)
 	{
 		// collect insideEdges
-		Traversor2VE<typename PFP::MAP> te (this->map, *e_it);
+		Traversor2VE<MAP> te (this->map, *e_it);
 		for (Dart e = te.begin(); e != te.end(); e=te.next())
 		{
 			if ( !em.isMarked(e) && vmReached.isMarked(this->map.phi2(e)) )
@@ -1305,13 +1261,13 @@ void Collector_Dijkstra<PFP>::collectAll(Dart dinit)
 		}
 
 		// collect insideFaces and border
-		Traversor2VF<typename PFP::MAP> tf (this->map, *e_it);
+		Traversor2VF<MAP> tf (this->map, *e_it);
 		for (Dart f = tf.begin(); f != tf.end(); f=tf.next())
 		{
 			if ( !fm.isMarked(f) )
 			{
 				fm.mark(f);
-				Traversor2FV<typename PFP::MAP> tv (this->map, f);
+				Traversor2FV<MAP> tv (this->map, f);
 				Dart v = tv.begin();
 				while ( v != tv.end() && vmReached.isMarked(v) ) {v=tv.next();}
 				if ( v == tv.end() )
@@ -1328,7 +1284,7 @@ void Collector_Dijkstra<PFP>::collectBorder(Dart dinit)
 {
 	init(dinit);
 
-	CellMarkerStore<VERTEX> vmReached (this->map, this->m_thread);
+	CellMarkerStore<MAP, VERTEX> vmReached (this->map, this->m_thread);
 	vertexInfo[this->centerDart].it = front.insert(std::pair<float,Dart>(0.0, this->centerDart));
 	vertexInfo[this->centerDart].valid = true;
 	vmReached.mark(this->centerDart);
@@ -1341,7 +1297,7 @@ void Collector_Dijkstra<PFP>::collectBorder(Dart dinit)
 		vertexInfo[e].valid=false;
 		this->insideVertices.push_back(e);
 
-		Traversor2VVaE<typename PFP::MAP> tv (this->map, e);
+		Traversor2VVaE<MAP> tv (this->map, e);
 		for (Dart f = tv.begin(); f != tv.end(); f=tv.next())
 		{
 			VertexInfo& vi (vertexInfo[f]);
@@ -1360,12 +1316,10 @@ void Collector_Dijkstra<PFP>::collectBorder(Dart dinit)
 			else
 			{
 				vi.it = front.insert(std::pair<float,Dart>(d + edgeLength(f), f));
-				vi.valid=true;
+				vi.valid = true;
 				vmReached.mark(f);
 			}
-
 		}
-
 	}
 
 	while ( !front.empty())
@@ -1374,18 +1328,17 @@ void Collector_Dijkstra<PFP>::collectBorder(Dart dinit)
 		front.erase(front.begin());
 	}
 
-
-	CellMarkerStore<FACE> fm (this->map, this->m_thread);
+	CellMarkerStore<MAP, FACE> fm (this->map, this->m_thread);
 	for (std::vector<Dart>::iterator e_it = this->insideVertices.begin(); e_it != this->insideVertices.end() ; e_it++)
 	{
 		// collect border
-		Traversor2VF<typename PFP::MAP> tf (this->map, *e_it);
+		Traversor2VF<MAP> tf (this->map, *e_it);
 		for (Dart f = tf.begin(); f != tf.end(); f=tf.next())
 		{
 			if ( !fm.isMarked(f) )
 			{
 				fm.mark(f);
-				Traversor2FV<typename PFP::MAP> tv (this->map, f);
+				Traversor2FV<MAP> tv (this->map, f);
 				Dart v = tv.begin();
 				while ( v != tv.end() && vmReached.isMarked(v) ) {v=tv.next();}
 				if ( v != tv.end() )
@@ -1403,10 +1356,9 @@ inline float Collector_Dijkstra<PFP>::edgeLength (Dart d)
 	return v.norm();
 }
 
-
 } // namespace Selection
 
-} // Surface
+} // namespace Surface
 
 } // namespace Algo
 

@@ -1,15 +1,15 @@
 import QtQuick 2.0
+import QtQuick.Controls 1.0
+import QtQuick.Layouts 1.0
+import QtQuick.Dialogs 1.0
 
 Rectangle {
-
-}
-
-/*Rectangle {
     Layout.fillWidth: true
     height: 30
-    Row {
+    MenuBar {
         Menu {
             title: "&File"
+            visible: true
 
             MenuItem { action: openAction }
             MenuItem { action: reloadAction }
@@ -48,4 +48,4 @@ Rectangle {
             }
         }
     }
-}*/
+}

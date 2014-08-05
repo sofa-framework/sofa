@@ -56,21 +56,24 @@ namespace Filters
 template <typename PFP>
 class Ber02OddAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
-	typename PFP::VEC3::DATA_TYPE m_a;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
+	typename VEC3::DATA_TYPE m_a;
 
 public:
-	Ber02OddAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p, typename PFP::VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
+	Ber02OddAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p, typename VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> travE(m_map) ;
+		TraversorE<MAP> travE(m_map) ;
 		for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 		{
-			typename PFP::VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
+			VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
 			ve *= 2.0 * m_a;
 
 			m_map.incCurrentLevel() ;
@@ -79,14 +82,14 @@ public:
 			m_map.decCurrentLevel() ;
 		}
 
-		TraversorF<typename PFP::MAP> travF(m_map) ;
+		TraversorF<MAP> travF(m_map) ;
 		for (Dart d = travF.begin(); d != travF.end(); d = travF.next())
 		{
-			typename PFP::VEC3 vf(0.0);
-			typename PFP::VEC3 ef(0.0);
+			VEC3 vf(0.0);
+			VEC3 ef(0.0);
 
 			unsigned int count = 0;
-			Traversor2FE<typename PFP::MAP> travFE(m_map, d);
+			Traversor2FE<MAP> travFE(m_map, d);
 			for (Dart dit = travFE.begin(); dit != travFE.end(); dit = travFE.next())
 			{
 				vf += m_position[dit];
@@ -113,26 +116,29 @@ public:
 template <typename PFP>
 class Ber02EvenAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
-	typename PFP::VEC3::DATA_TYPE m_a;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
+	typename VEC3::DATA_TYPE m_a;
 
 public:
-	Ber02EvenAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p, typename PFP::VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
+	Ber02EvenAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p, typename VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> travE(m_map);
+		TraversorE<MAP> travE(m_map);
 		for(Dart d = travE.begin() ; d != travE.end() ; d = travE.next())
 		{
 			if(!m_map.isBoundaryEdge(d))
 			{
 				unsigned int count = 0;
 
-				typename PFP::VEC3 fe(0);
-				Traversor2EF<typename PFP::MAP> travEF(m_map, d);
+				VEC3 fe(0);
+				Traversor2EF<MAP> travEF(m_map, d);
 				for(Dart dit = travEF.begin() ; dit != travEF.end() ; dit = travEF.next())
 				{
 					m_map.incCurrentLevel() ;
@@ -152,11 +158,11 @@ public:
 			}
 		}
 
-		TraversorV<typename PFP::MAP> travV(m_map);
+		TraversorV<MAP> travV(m_map);
 		for(Dart d = travV.begin() ; d != travV.end() ; d = travV.next())
 		{
-			typename PFP::VEC3 ev(0.0);
-			typename PFP::VEC3 fv(0.0);
+			VEC3 ev(0.0);
+			VEC3 fv(0.0);
 			if(m_map.isBoundaryVertex(d))
 			{
 				Dart db = m_map.findBoundaryEdgeOfVertex(d);
@@ -173,7 +179,7 @@ public:
 			{
 				unsigned int count = 0;
 
-				Traversor2VF<typename PFP::MAP> travVF(m_map,d);
+				Traversor2VF<MAP> travVF(m_map,d);
 				for(Dart dit = travVF.begin(); dit != travVF.end() ; dit = travVF.next())
 				{
 					m_map.incCurrentLevel() ;
@@ -201,18 +207,21 @@ public:
 template <typename PFP>
 class Ber02ScaleAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
-	typename PFP::VEC3::DATA_TYPE m_a;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
+	typename VEC3::DATA_TYPE m_a;
 
 public:
-	Ber02ScaleAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p, typename PFP::VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
+	Ber02ScaleAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p, typename VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> travE(m_map) ;
+		TraversorE<MAP> travE(m_map) ;
 		for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 		{
 			m_map.incCurrentLevel() ;
@@ -222,7 +231,7 @@ public:
 			m_map.decCurrentLevel() ;
 		}
 
-		TraversorV<typename PFP::MAP> travV(m_map) ;
+		TraversorV<MAP> travV(m_map) ;
 		for (Dart d = travV.begin(); d != travV.end(); d = travV.next())
 		{
 			if(m_map.isBoundaryVertex(d))
@@ -243,26 +252,29 @@ public:
 template <typename PFP>
 class Ber02OddSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
-	typename PFP::VEC3::DATA_TYPE m_a;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
+	typename VEC3::DATA_TYPE m_a;
 
 
 public:
-	Ber02OddSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p, typename PFP::VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
+	Ber02OddSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p, typename VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
 	{}
 
 	void operator() ()
 	{
-		TraversorF<typename PFP::MAP> travF(m_map) ;
+		TraversorF<MAP> travF(m_map) ;
 		for (Dart d = travF.begin(); d != travF.end(); d = travF.next())
 		{
-			typename PFP::VEC3 vf(0.0);
-			typename PFP::VEC3 ef(0.0);
+			VEC3 vf(0.0);
+			VEC3 ef(0.0);
 
 			unsigned int count = 0;
-			Traversor2FE<typename PFP::MAP> travFE(m_map, d);
+			Traversor2FE<MAP> travFE(m_map, d);
 			for (Dart dit = travFE.begin(); dit != travFE.end(); dit = travFE.next())
 			{
 				vf += m_position[dit];
@@ -284,10 +296,10 @@ public:
 
 		}
 
-		TraversorE<typename PFP::MAP> travE(m_map) ;
+		TraversorE<MAP> travE(m_map) ;
 		for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 		{
-			typename PFP::VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
+			VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
 			ve *= 2.0 * m_a;
 
 			m_map.incCurrentLevel() ;
@@ -302,22 +314,25 @@ public:
 template <typename PFP>
 class Ber02EvenSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
-	typename PFP::VEC3::DATA_TYPE m_a;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
+	typename VEC3::DATA_TYPE m_a;
 
 public:
-	Ber02EvenSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p, typename PFP::VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
+	Ber02EvenSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p, typename VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> travV(m_map);
+		TraversorV<MAP> travV(m_map);
 		for(Dart d = travV.begin() ; d != travV.end() ; d = travV.next())
 		{
-			typename PFP::VEC3 ev(0.0);
-			typename PFP::VEC3 fv(0.0);
+			VEC3 ev(0.0);
+			VEC3 fv(0.0);
 			if(m_map.isBoundaryVertex(d))
 			{
 				Dart db = m_map.findBoundaryEdgeOfVertex(d);
@@ -331,7 +346,7 @@ public:
 			else
 			{
 				unsigned int count = 0;
-				Traversor2VF<typename PFP::MAP> travVF(m_map,d);
+				Traversor2VF<MAP> travVF(m_map,d);
 				for(Dart dit = travVF.begin(); dit != travVF.end() ; dit = travVF.next())
 				{
 					m_map.incCurrentLevel() ;
@@ -352,15 +367,15 @@ public:
 			}
 		}
 
-		TraversorE<typename PFP::MAP> travE(m_map);
+		TraversorE<MAP> travE(m_map);
 		for(Dart d = travE.begin() ; d != travE.end() ; d = travE.next())
 		{
 			if(!m_map.isBoundaryEdge(d))
 			{
 				unsigned int count = 0;
 
-				typename PFP::VEC3 fe(0.0);
-				Traversor2EF<typename PFP::MAP> travEF(m_map, d);
+				VEC3 fe(0.0);
+				Traversor2EF<MAP> travEF(m_map, d);
 				for(Dart dit = travEF.begin() ; dit != travEF.end() ; dit = travEF.next())
 				{
 					m_map.incCurrentLevel() ;
@@ -379,7 +394,6 @@ public:
 				m_map.decCurrentLevel() ;
 			}
 		}
-
 	}
 } ;
 
@@ -387,18 +401,21 @@ public:
 template <typename PFP>
 class Ber02ScaleSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
-	typename PFP::VEC3::DATA_TYPE m_a;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
+	typename VEC3::DATA_TYPE m_a;
 
 public:
-	Ber02ScaleSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p, typename PFP::VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
+	Ber02ScaleSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p, typename VEC3::DATA_TYPE a) : m_map(m), m_position(p), m_a(a)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> travV(m_map) ;
+		TraversorV<MAP> travV(m_map) ;
 		for (Dart d = travV.begin(); d != travV.end(); d = travV.next())
 		{
 			if(m_map.isBoundaryVertex(d))
@@ -407,7 +424,7 @@ public:
 				m_position[d] *= m_a * m_a;
 		}
 
-		TraversorE<typename PFP::MAP> travE(m_map) ;
+		TraversorE<MAP> travE(m_map) ;
 		for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 		{
 			m_map.incCurrentLevel() ;
@@ -418,8 +435,6 @@ public:
 		}
 	}
 } ;
-
-
 
 } // namespace Filters
 
@@ -432,6 +447,5 @@ public:
 } // namespace Algo
 
 } // namespace CGoGN
-
 
 #endif /* __2MR_FILTERS_PRIMAL__ */

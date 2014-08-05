@@ -366,7 +366,7 @@ void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices, VertexAttribute<typena
 	TraversorW<typename PFP::MAP> tWb(m_map);
 	for(Dart dit = tWb.begin() ; dit != tWb.end() ; dit = tWb.next())
 	{
-        if(m_map.isBoundaryVolume(dit))
+		if(m_map.isBoundaryAdjacentVolume(dit))
         {
             Traversor3WE<typename PFP::MAP> tWE(m_map, dit);
             for(Dart ditWE = tWE.begin() ; ditWE != tWE.end() ; ditWE = tWE.next())
@@ -549,7 +549,7 @@ void Map3MR<PFP>::addNewLevelSqrt3Geom(bool embedNewVertices, VertexAttribute<ty
     TraversorW<typename PFP::MAP> tWb(m_map);
     for(Dart dit = tWb.begin() ; dit != tWb.end() ; dit = tWb.next())
     {
-        if(m_map.isBoundaryVolume(dit))
+		if(m_map.isBoundaryAdjacentVolume(dit))
         {
             Traversor3WE<typename PFP::MAP> tWE(m_map, dit);
             for(Dart ditWE = tWE.begin() ; ditWE != tWE.end() ; ditWE = tWE.next())
@@ -715,7 +715,7 @@ void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices)
 	TraversorW<typename PFP::MAP> tWb(m_map);
 	for(Dart dit = tWb.begin() ; dit != tWb.end() ; dit = tWb.next())
 	{
-		if(m_map.isBoundaryVolume(dit))
+		if(m_map.isBoundaryAdjacentVolume(dit))
 		{
 			Traversor3WE<typename PFP::MAP> tWE(m_map, dit);
 			for(Dart ditWE = tWE.begin() ; ditWE != tWE.end() ; ditWE = tWE.next())

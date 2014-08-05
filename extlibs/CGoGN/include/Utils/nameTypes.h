@@ -44,6 +44,15 @@ std::string nameOfType(const T& v)
 
 template <> inline std::string nameOfType(const Eigen::Matrix3d& /*v*/) { return "EigenMat3d"; }
 template <> inline std::string nameOfType(const Eigen::Matrix4d& /*v*/) { return "EigenMat4d"; }
+
+template <> inline std::string nameOfType(const sofa::defaulttype::Mat<24,6,float>& /*v*/) { return "Mat<24,6,float>"; }
+template <> inline std::string nameOfType(const sofa::defaulttype::Mat<24,6,double>& /*v*/) { return "Mat<24,6,double>"; }
+template <> inline std::string nameOfType(const sofa::defaulttype::Mat<24,24,float>& /*v*/) { return "Mat<24,24,float>"; }
+template <> inline std::string nameOfType(const sofa::defaulttype::Mat<24,24,double>& /*v*/) { return "Mat<24,24,double>"; }
+template <> inline std::string nameOfType(const sofa::helper::fixed_array<sofa::defaulttype::Vec<3,float>,8>& /*v*/) { return "fixed_array<sVec<3,float>,8>f"; }
+template <> inline std::string nameOfType(const sofa::helper::fixed_array<sofa::defaulttype::Vec<3,double>,8>& /*v*/) { return "fixed_array<sVec<3,double>,8>f"; }
+
+
 template <> inline std::string nameOfType(const bool& /*v*/) { return "bool"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Mat4x4f& /*v*/) { return "Mat4x4f"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Mat4x4d& /*v*/) { return "Mat4x4d"; }

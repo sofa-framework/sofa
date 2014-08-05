@@ -41,7 +41,7 @@
 <!-- 		    - first way -->
 <!-- 		    <DifferenceFromTargetMapping template="Vec1d" targets="1" inverted="1"/> -->
 <!--                - second way-->
-		    <OffsetMapping offsets="1" inverted="1"/>
+		    <DifferenceFromTargetMapping targets="1" inverted="1"/>
 		    
 		    <UniformCompliance name="ucomp" template="Vec1d" compliance="0" />
 		    <ConstraintValue />

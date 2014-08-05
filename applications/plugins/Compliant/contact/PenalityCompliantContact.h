@@ -62,6 +62,9 @@ protected:
 
         delta.node->addChild( contact_node.get() );
 
+        // ensure all graph context parameters (e.g. dt are well copied)
+        contact_node->updateSimulationContext();
+
         // 1d contact dofs
         typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
         typename contact_dofs_type::SPtr contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
@@ -88,7 +91,7 @@ protected:
         typedef forcefield::DiagonalCompliance<defaulttype::Vec1Types> compliance_type;
         compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
         contact_node->addObject( compliance.get() );
-        compliance->damping.setValue( this->damping_ratio.getValue() );
+        edit(compliance->damping)->assign(1, this->damping_ratio.getValue() );
         compliance->isCompliance.setValue( false );
 
         typename compliance_type::VecDeriv complianceValues( size );

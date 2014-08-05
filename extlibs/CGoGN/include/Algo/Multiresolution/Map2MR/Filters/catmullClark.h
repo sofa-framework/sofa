@@ -70,24 +70,27 @@ namespace Filters
 template <typename PFP>
 class CCInitEdgeSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 	bool first;
 
 public:
-	CCInitEdgeSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p), first(true)
+	CCInitEdgeSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p), first(true)
 	{}
 
 	void operator() ()
 	{
 		if(first)
 		{
-			TraversorE<typename PFP::MAP> trav(m_map) ;
+			TraversorE<MAP> trav(m_map) ;
 			for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 			{
 				m_map.incCurrentLevel() ;
-				m_position[m_map.phi1(d)] = typename PFP::VEC3(0.0);
+				m_position[m_map.phi1(d)] = VEC3(0.0);
 				m_map.decCurrentLevel() ;
 			}
 			first = false;
@@ -98,24 +101,27 @@ public:
 template <typename PFP>
 class CCInitFaceSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 	bool first;
 
 public:
-	CCInitFaceSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p), first(true)
+	CCInitFaceSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p), first(true)
 	{}
 
 	void operator() ()
 	{
 		if(first)
 		{
-			TraversorF<typename PFP::MAP> trav(m_map) ;
+			TraversorF<MAP> trav(m_map) ;
 			for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 			{
 				m_map.incCurrentLevel() ;
-				m_position[m_map.phi2(m_map.phi1(d))] = typename PFP::VEC3(0.0); // ou phi2(d)
+				m_position[m_map.phi2(m_map.phi1(d))] = VEC3(0.0); // ou phi2(d)
 				m_map.decCurrentLevel() ;
 			}
 			first = false;
@@ -126,20 +132,23 @@ public:
 template <typename PFP>
 class CCEdgeSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	CCEdgeSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	CCEdgeSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> trav(m_map) ;
+		TraversorE<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
-			typename PFP::VEC3 ei =  (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
+			VEC3 ei =  (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
 
 			m_map.incCurrentLevel() ;
 			Dart midV = m_map.phi1(d) ;
@@ -152,23 +161,26 @@ public:
 template <typename PFP>
 class CCFaceSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	CCFaceSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	CCFaceSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorF<typename PFP::MAP> trav(m_map) ;
+		TraversorF<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 			float u = 1.0/2.0;
 
-			typename PFP::VEC3 v(0.0);
-			typename PFP::VEC3 e(0.0);
+			VEC3 v(0.0);
+			VEC3 e(0.0);
 			unsigned int degree = 0;
 
 			Dart dit = d;
@@ -200,21 +212,24 @@ public:
 template <typename PFP>
 class CCVertexSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	CCVertexSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	CCVertexSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> trav(m_map) ;
+		TraversorV<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
-			typename PFP::VEC3 np1(0) ;
-			typename PFP::VEC3 np2(0) ;
+			VEC3 np1(0) ;
+			VEC3 np2(0) ;
 			unsigned int degree1 = 0 ;
 			unsigned int degree2 = 0 ;
 			Dart it = d ;
@@ -239,7 +254,7 @@ public:
 			np1 *= beta / degree1 ;
 			np2 *= gamma / degree2 ;
 
-			typename PFP::VEC3 vp = m_position[d] ;
+			VEC3 vp = m_position[d] ;
 			vp *= 1.0 - beta - gamma ;
 
 			m_map.incCurrentLevel() ;
@@ -252,24 +267,27 @@ public:
 template <typename PFP>
 class CCScalingSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	CCScalingSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	CCScalingSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> trav(m_map) ;
+		TraversorE<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 			m_map.incCurrentLevel() ;
 
-			typename PFP::VEC3 ei = m_position[m_map.phi1(d)];
+			VEC3 ei = m_position[m_map.phi1(d)];
 
-			typename PFP::VEC3 f = m_position[m_map.phi2(m_map.phi1(d))];
+			VEC3 f = m_position[m_map.phi2(m_map.phi1(d))];
 			f += m_position[m_map.phi_1(m_map.phi2(d))];
 			f *= 1.0 / 2.0;
 
@@ -285,24 +303,27 @@ public:
 template <typename PFP>
 class CCScalingAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	CCScalingAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	CCScalingAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> trav(m_map) ;
+		TraversorE<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 			m_map.incCurrentLevel() ;
 
-			typename PFP::VEC3 ei = m_position[m_map.phi1(d)];
+			VEC3 ei = m_position[m_map.phi1(d)];
 
-			typename PFP::VEC3 f = m_position[m_map.phi2(m_map.phi1(d))];
+			VEC3 f = m_position[m_map.phi2(m_map.phi1(d))];
 			f += m_position[m_map.phi_1(m_map.phi2(d))];
 			f *= 1.0 / 2.0;
 
@@ -318,22 +339,25 @@ public:
 template <typename PFP>
 class CCVertexAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	CCVertexAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	CCVertexAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> trav(m_map) ;
+		TraversorV<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 			m_map.incCurrentLevel() ;
-			typename PFP::VEC3 np1(0) ;
-			typename PFP::VEC3 np2(0) ;
+			VEC3 np1(0) ;
+			VEC3 np2(0) ;
 			unsigned int degree1 = 0 ;
 			unsigned int degree2 = 0 ;
 			Dart it = d ;
@@ -358,7 +382,7 @@ public:
 			np1 *= beta / degree1 ;
 			np2 *= gamma / degree2 ;
 
-			typename PFP::VEC3 vd = m_position[d] ;
+			VEC3 vd = m_position[d] ;
 
 			m_map.decCurrentLevel() ;
 
@@ -372,24 +396,27 @@ public:
 template <typename PFP>
 class CCFaceAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	CCFaceAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	CCFaceAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorF<typename PFP::MAP> trav(m_map) ;
+		TraversorF<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 
 			float u = 1.0/2.0;
 
-			typename PFP::VEC3 v(0.0);
-			typename PFP::VEC3 e(0.0);
+			VEC3 v(0.0);
+			VEC3 e(0.0);
 			unsigned int degree = 0;
 
 			Dart dit = d;
@@ -420,20 +447,23 @@ public:
 template <typename PFP>
 class CCEdgeAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	CCEdgeAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	CCEdgeAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> trav(m_map) ;
+		TraversorE<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
-			typename PFP::VEC3 ei =  (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
+			VEC3 ei =  (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
 
 			m_map.incCurrentLevel() ;
 			Dart midV = m_map.phi1(d) ;
@@ -456,4 +486,3 @@ public:
 } // namespace CGoGN
 
 #endif
-

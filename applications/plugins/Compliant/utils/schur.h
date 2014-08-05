@@ -41,7 +41,7 @@ struct schur {
 		  prec(0)
 		{
 		assert( sys.n );
-	};
+    }
 
 	mutable vec result, tmp1, tmp2, tmp3;
 	
@@ -66,7 +66,7 @@ struct schur {
 		
 		if( damping ) result += damping * x;
 		return result;
-	};
+    }
 	
 
 };

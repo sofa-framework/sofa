@@ -52,6 +52,8 @@
 
 namespace sofa{
 
+namespace PrimitiveCreationTest{
+
 typedef sofa::defaulttype::Vector3 Vec3;
 
 /**
@@ -75,4 +77,6 @@ sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & 
                                                                             sofa::simulation::Node::SPtr & father);
 
 sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal radius,const Vec3 & v,sofa::simulation::Node::SPtr & father);
+
+}
 }

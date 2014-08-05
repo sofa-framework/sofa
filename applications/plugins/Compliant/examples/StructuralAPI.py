@@ -1,6 +1,8 @@
 import Sofa
 
-from Compliant import StructuralAPI
+from Compliant import StructuralAPI, Tools
+
+path = Tools.path( __file__ )
 
 def createFixedRigidBody(node,name,pos):
     body = StructuralAPI.RigidBody( node, name )
@@ -99,8 +101,8 @@ def createScene(root):
     
     # FIXED
     fixedNode = root.createChild('fixed')
-    fixed_body1 = createFixedRigidBody(hingeNode, "fixed_body1", 5 )
-    fixed_body2 = createRigidBody(hingeNode, "fixed_body2", 5 )
+    fixed_body1 = createFixedRigidBody(fixedNode, "fixed_body1", 5 )
+    fixed_body2 = createRigidBody(fixedNode, "fixed_body2", 5 )
     fixed = StructuralAPI.FixedRigidJoint( fixedNode, "joint", fixed_body1.node, fixed_body2.node )
   
     # DISTANCE
@@ -155,4 +157,31 @@ def createScene(root):
     joint1.addLimits( -10, 10 )
     joint1.addDamper( 5 )
     
+    
+    
+    ##### ROTATED INERTIA
+    mesh = path + "/../Compliant_test/python/geometric_primitives/rotated_cuboid_12_35_-27.obj"
+    body3 = StructuralAPI.RigidBody( complexNode, "rotated_mesh" )
+    body3.setFromMesh( mesh, 1, [-3,-5,0,0.7071067811865476,0,0,0.7071067811865476])
+    body3.dofs.showObject=True
+    body3.dofs.showObjectScale=1
+    alignedoffset = body3.addOffset( "world_axis_aligned", [0,0,0,0,0,0,1] )
+    alignedoffset.dofs.showObject=True
+    alignedoffset.dofs.showObjectScale=.5
+    notalignedoffset = body3.addOffset( "offset", [1,0,0,0.7071067811865476,0,0,0.7071067811865476] )
+    notalignedoffset.dofs.showObject=True
+    notalignedoffset.dofs.showObjectScale=.5
+    body3.addCollisionMesh( mesh )
+    body3.addVisualModel( mesh )
+    
+    
+       
+    ##### COMPLEX SHAPE
+    mesh = "mesh/dragon.obj"
+    dragon = StructuralAPI.RigidBody( complexNode, "dragon" )
+    dragon.setFromMesh( mesh, 1, [-10,-5,0,0,0,0,1], [.2,.2,.2] )
+    dragon.dofs.showObject=True
+    dragon.dofs.showObjectScale=1
+    dragon.addCollisionMesh( mesh, [.2,.2,.2] )
+    dragon.addVisualModel( mesh, [.2,.2,.2] )
     

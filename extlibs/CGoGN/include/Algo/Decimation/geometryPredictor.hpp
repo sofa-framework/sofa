@@ -279,11 +279,11 @@ void Predictor_TangentPredict2<PFP>::predict(Dart d2, Dart dd2)
 	this->m_predict.push_back( a2 - displ ) ;
 }
 
-} //namespace Decimation
+} // namespace Decimation
 
-}
+} // namespace Surface
 
-} //namespace Algo
+} // namespace Algo
 
-} //namespace CGoGN
+} // namespace CGoGN
 

@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "stdafx.h"
 #include "Elasticity_test.h"
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -98,14 +99,13 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
        tractionStruct.root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
        // Get child nodes
-       simulation::Node::SPtr tetraNode = tractionStruct.root->getChild("Tetra");
-       simulation::Node::SPtr trianglesNode= tetraNode->getChild("Triangles");
-       simulation::Node::SPtr behaviorNode = tetraNode->getChild("behavior");
+       simulation::Node::SPtr quadNode = tractionStruct.root->getChild("Quads");
+       simulation::Node::SPtr behaviorNode = tractionStruct.root->getChild("behavior");
        strainNode = behaviorNode->getChild("Strain");
 
        // Get force field
        typedef component::forcefield::QuadPressureForceField<Vec3Types> QuadPressureForceField;
-       forceField = tetraNode->get<QuadPressureForceField>( tractionStruct.root->SearchDown);
+       forceField = quadNode->get<QuadPressureForceField>( tractionStruct.root->SearchDown);
     
        // Get mechanical object
        typedef component::container::MechanicalObject<Vec3Types> MechanicalObject;
@@ -181,7 +181,7 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     Real longitudinalDeformation=(p1[0]-p0[0])/p0[0];
 
                     // test the longitudinal deformation
-                    if (fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus))>5.4e-7) 
+                    if (fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus))>2e-10) 
                     {
                         ADD_FAILURE() << "Wrong longitudinal deformation for Young Modulus = " << youngModulus << " Poisson Ratio = "<<
                             poissonRatio << " pressure= "<<pressure<< std::endl <<
@@ -198,7 +198,7 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     Real radialDeformation= dot(p0,p1)/radius-1 ;
 
                     // test the radial deformation
-                    if (fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus))>1.6e-7) {
+                    if (fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus))>8e-7) {
                         ADD_FAILURE() << "Wrong radial deformation for Young Modulus = " << youngModulus << " Poisson Ratio = "<<
                             poissonRatio << " pressure= "<<pressure<< std::endl <<
                             "Got "<<radialDeformation<< " instead of "<< -pressure*poissonRatio/youngModulus<< std::endl;

@@ -15,8 +15,9 @@
 import Rigid
 import Tools
 from Tools import cat as concat
-import Vec as vec
-import numpy as np
+import numpy
+from SofaPython import Quaternion
+import math
 
 class RigidBody:
         ## Generic Rigid Body
@@ -28,18 +29,15 @@ class RigidBody:
                 self.frame = Rigid.Frame()
                 self.framecom = Rigid.Frame()
 
-        def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], inertia_forces = False ):
+        def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
                 ## create the rigid body from a mesh (inertia and com are automatically computed)
-                info = Rigid.generate_rigid(filepath, density)
+                info = Rigid.generate_rigid(filepath, density, scale3d)
 
                 self.framecom = Rigid.Frame()
+                self.framecom.rotation = info.inertia_rotation
                 self.framecom.translation = info.com
 
                 self.frame = Rigid.Frame(offset) * self.framecom
-
-                # !!!! TODO !!! use info.inertia_rotation to rotate the rigid dof so the inertia axis are aligned to the rigid axis
-                if( info.inertia_rotation != [0,0,0,1] ):
-                    print "WARNING: inertia matrix of "+filepath+" is not diagonal, its inertia is then WRONG (the rigid dof should be rotated to be aligned with inertia axis)"
 
                 self.dofs = self.frame.insert( self.node, name = 'dofs' )
                 self.mass = self.node.createObject('RigidMass',
@@ -86,9 +84,10 @@ class RigidBody:
 
         class CollisionMesh:
 
-            def __init__(self, node, filepath, scale3d, translation):
+            def __init__(self, node, filepath, scale3d, offset):
                 self.node = node.createChild( "collision" )  # node
-                self.loader = self.node.createObject("MeshObjLoader", name='loader', filename=filepath, scale3d=concat(scale3d), translation=concat(translation), triangulate=1 )
+                r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
+                self.loader = self.node.createObject("MeshObjLoader", name='loader', filename=filepath, scale3d=concat(scale3d), translation=concat(offset[:3]), rotation=concat(r), triangulate=1 )
                 self.topology = self.node.createObject('MeshTopology', name='topology', src="@loader" )
                 self.dofs = self.node.createObject('MechanicalObject', name='dofs')
                 self.triangles = self.node.createObject('TriangleModel', template='Vec3d', name='model')
@@ -106,9 +105,10 @@ class RigidBody:
 
 
         class VisualModel:
-            def __init__(self, node, filepath, scale3d, translation):
+            def __init__(self, node, filepath, scale3d, offset):
                 self.node = node.createChild( "visual" )  # node
-                self.model = self.node.createObject('VisualModel', template='ExtVec3f', name='model', fileMesh=filepath, scale3d=concat(scale3d), translation=concat(translation))
+                r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
+                self.model = self.node.createObject('VisualModel', template='ExtVec3f', name='model', fileMesh=filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r) )
                 self.mapping = self.node.createObject('RigidMapping', name="mapping")
 
         class Offset:
@@ -231,11 +231,10 @@ class HingeRigidJoint(GenericRigidJoint):
 
     def addLimits( self, lower, upper, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.Limits( self.node, [mask,vec.minus(mask)], [lower,-upper], compliance )
+        return GenericRigidJoint.Limits( self.node, [mask,(numpy.array(mask)*-1.).tolist()], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
-        mask = [ (1 - d) for d in self.mask ]
-        mask = vec.scal(1.0/stiffness,mask)
+        mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', template = "Rigid", isCompliance="0", compliance=concat(mask))
 
 class SliderRigidJoint(GenericRigidJoint):
@@ -247,11 +246,10 @@ class SliderRigidJoint(GenericRigidJoint):
 
     def addLimits( self, lower, upper, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.Limits( self.node, [mask,vec.minus(mask)], [lower,-upper], compliance )
+        return GenericRigidJoint.Limits( self.node, [mask,(numpy.array(mask)*-1.).tolist()], [lower,-upper], compliance )
 
     def addSpring( self, stiffness ):
-        mask = [ (1 - d) for d in self.mask ]
-        mask = vec.scal(1.0/stiffness,mask)
+        mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', template = "Rigid", isCompliance="0", compliance=concat(mask))
 
 class CylindricalRigidJoint(GenericRigidJoint):
@@ -386,7 +384,7 @@ class RigidJointSpring:
             input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
             input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
             self.mapping = self.node.createObject('RigidJointMultiMapping', template = 'Rigid,Vec6d', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
-            compliances = vec.inv(stiffnesses);
+            compliances = 1./numpy.array(stiffnesses);
             self.compliance = self.node.createObject('DiagonalCompliance', template="Vec6d", name='compliance', compliance=concat(compliances), isCompliance=0)
 
 ## @TODO handle joints with diagonalcompliance / diagonaldamper...

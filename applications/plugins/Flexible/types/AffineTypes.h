@@ -329,7 +329,8 @@ public:
     static Deriv randomDeriv( Real maxValue )
     {
         Deriv result;
-        set( result, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX, rand()*maxValue/RAND_MAX);
+        using helper::symrand;
+        set( result, symrand(maxValue), symrand(maxValue), symrand(maxValue) );
         return result;
     }
 

@@ -27,6 +27,9 @@
 #include "Utils/svg.h"
 #include "Utils/gzstream.h"
 
+#include <algorithm>
+
+
 namespace CGoGN
 {
 

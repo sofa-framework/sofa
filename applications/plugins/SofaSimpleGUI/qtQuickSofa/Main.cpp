@@ -39,6 +39,8 @@
 **
 ****************************************************************************/
 
+#include "stdafx.h"
+
 #ifdef OPENGL_ONLY
 #include <QtGui/QGuiApplication>
 #define Application QGuiApplication
@@ -46,31 +48,30 @@
 #include <QtWidgets/QApplication>
 #define Application QApplication
 #endif
-#include <QQuickWindow>
-#include <QQmlApplicationEngine>
 
-#include <iostream>
-
-#include "Window.h"
 #include "Viewer.h"
 #include "Scene.h"
+
+#include <sofa/helper/system/FileRepository.h>
 
 int main(int argc, char **argv)
 {
     Application app(argc, argv);
 
-    qmlRegisterType<Window>("Window", 1, 0, "Window");
     qmlRegisterType<Viewer>("Viewer", 1, 0, "Viewer");
 	qmlRegisterType<Scene>("Scene", 1, 0, "Scene");
 
-    QUrl mainScriptUrl = QString("qrc:///resource/Main.qml");
-/*#ifdef OPENGL_ONLY
-    mainScriptUrl = "qrc:///resource/mainOpenGLOnlyGUI.qml";
-#endif*/
+    QUrl mainScriptUrl = QUrl("qrc:///resource/Main.qml");
+
+	QSurfaceFormat format;
+	format.setMajorVersion(3);
+	format.setMajorVersion(2);
+	format.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
 
     QQmlApplicationEngine engine(mainScriptUrl);
     QObject* topLevel = engine.rootObjects().value(0);
     QQuickWindow* window = qobject_cast<QQuickWindow *>(topLevel);
+	//window->setFormat(format);
     if(0 == window)
     {
         qDebug() << "Your QML root object should be a window";

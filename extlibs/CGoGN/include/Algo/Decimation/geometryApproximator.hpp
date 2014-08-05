@@ -21,6 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
+#include "Algo/Topo/embedding.h"
 
 namespace CGoGN
 {
@@ -40,7 +41,7 @@ namespace Decimation
 template <typename PFP>
 bool Approximator_QEM<PFP>::init()
 {
-	m_quadric = this->m_map.template getAttribute<Utils::Quadric<REAL>, VERTEX>("QEMquadric") ;
+	m_quadric = this->m_map.template getAttribute<Utils::Quadric<REAL>, VERTEX, MAP>("QEMquadric") ;
 	// Does not require to be valid (if it is not, altenatives will be used).
 
 	if(this->m_predictor)
@@ -115,7 +116,7 @@ void Approximator_QEM<PFP>::approximate(Dart d)
 template <typename PFP>
 bool Approximator_QEMhalfEdge<PFP>::init()
 {
-	m_quadric = this->m_map.template getAttribute<Utils::Quadric<REAL>, VERTEX>("QEMquadric") ;
+	m_quadric = this->m_map.template getAttribute<Utils::Quadric<REAL>, VERTEX, MAP>("QEMquadric") ;
 
 	if(this->m_predictor)
 	{
@@ -214,7 +215,8 @@ void Approximator_MidEdge<PFP>::approximate(Dart d)
 
 		// temporary edge collapse
 		m.extractTrianglePair(d) ;
-		unsigned int newV = m.template setOrbitEmbeddingOnNewCell<VERTEX>(d2) ;
+//		unsigned int newV = m.template setOrbitEmbeddingOnNewCell<VERTEX>(d2) ;
+		unsigned int newV = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(m,d2);
 		this->m_attrV[0]->operator[](newV) = this->m_approx[0][d] ;
 
 		// compute the detail vector
@@ -223,8 +225,10 @@ void Approximator_MidEdge<PFP>::approximate(Dart d)
 
 		// vertex split to reset the initial connectivity and embeddings
 		m.insertTrianglePair(d, d2, dd2) ;
-		m.template setOrbitEmbedding<VERTEX>(d, m.template getEmbedding<VERTEX>(d)) ;
-		m.template setOrbitEmbedding<VERTEX>(dd, m.template getEmbedding<VERTEX>(dd)) ;
+//		m.template setOrbitEmbedding<VERTEX>(d, m.template getEmbedding<VERTEX>(d)) ;
+//		m.template setOrbitEmbedding<VERTEX>(dd, m.template getEmbedding<VERTEX>(dd)) ;
+		Algo::Topo::setOrbitEmbedding<VERTEX>(m, d, m.template getEmbedding<VERTEX>(d)) ;
+		Algo::Topo::setOrbitEmbedding<VERTEX>(m, dd, m.template getEmbedding<VERTEX>(dd)) ;
 	}
 }
 
@@ -263,7 +267,8 @@ void Approximator_HalfCollapse<PFP>::approximate(Dart d)
 
 		// temporary edge collapse
 		m.extractTrianglePair(d) ;
-		unsigned int newV = m.template setOrbitEmbeddingOnNewCell<VERTEX>(d2) ;
+//		unsigned int newV = m.template setOrbitEmbeddingOnNewCell<VERTEX>(d2) ;
+		unsigned int newV = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(m,d2) ;
 		for (unsigned int i = 0 ; i < this->m_attrV.size() ; ++i)
 		{
 			this->m_attrV[i]->operator[](newV) = this->m_approx[i][d] ;
@@ -278,8 +283,11 @@ void Approximator_HalfCollapse<PFP>::approximate(Dart d)
 
 		// vertex split to reset the initial connectivity and embeddings
 		m.insertTrianglePair(d, d2, dd2) ;
-		m.template setOrbitEmbedding<VERTEX>(d, m.template getEmbedding<VERTEX>(d)) ;
-		m.template setOrbitEmbedding<VERTEX>(dd, m.template getEmbedding<VERTEX>(dd)) ;
+//		m.template setOrbitEmbedding<VERTEX>(d, m.template getEmbedding<VERTEX>(d)) ;
+//		m.template setOrbitEmbedding<VERTEX>(dd, m.template getEmbedding<VERTEX>(dd)) ;
+		Algo::Topo::setOrbitEmbedding<VERTEX>(m, d, m.template getEmbedding<VERTEX>(d)) ;
+		Algo::Topo::setOrbitEmbedding<VERTEX>(m, dd, m.template getEmbedding<VERTEX>(dd)) ;
+
 	}
 }
 
@@ -377,7 +385,7 @@ void Approximator_CornerCutting<PFP>::approximate(Dart d)
 template <typename PFP>
 bool Approximator_NormalArea<PFP>::init()
 {
-	edgeMatrix = this->m_map.template getAttribute<Geom::Matrix<3,3,REAL>, EDGE>("NormalAreaMatrix") ;
+	edgeMatrix = this->m_map.template getAttribute<Geom::Matrix<3,3,REAL>, EDGE, MAP>("NormalAreaMatrix") ;
 	assert(edgeMatrix.isValid());
 
 	if(this->m_predictor)

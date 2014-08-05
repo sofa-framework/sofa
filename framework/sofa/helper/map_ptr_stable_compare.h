@@ -41,19 +41,22 @@ template <typename T>
 class ptr_stable_id
 {
 public:
-	ptr_stable_id() : counter(0) {}
+	ptr_stable_id() 
+		: counter(new unsigned int(0))
+		, idMap(new std::map<T*, unsigned int>) {}
+
 	unsigned int operator()(T* p)
 	{
 		unsigned int id = 0;
-        typename std::map<T*,unsigned int>::iterator it = idMap.find(p);
-		if (it != idMap.end())
+        typename std::map<T*,unsigned int>::iterator it = idMap->find(p);
+		if (it != idMap->end())
 		{
 			id = it->second;
 		}
 		else
 		{
-			id = ++counter;
-			idMap.insert(std::make_pair(p, id));
+			id = ++(*counter);
+			idMap->insert(std::make_pair(p, id));
 		}
 		return id;
 	}
@@ -64,8 +67,8 @@ public:
     }
 
 protected:
-	mutable unsigned int counter;
-	mutable std::map<T*,unsigned int> idMap;
+    mutable boost::shared_ptr<unsigned int> counter;
+    mutable boost::shared_ptr< std::map<T*,unsigned int> > idMap;
 };
 
 /// A comparison object that order pointers in a stable way, i.e. in the order pointers are presented

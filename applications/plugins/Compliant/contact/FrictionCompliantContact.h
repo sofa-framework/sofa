@@ -62,6 +62,9 @@ protected:
 
         delta.node->addChild( contact_node.get() );
 
+        // ensure all graph context parameters (e.g. dt are well copied)
+        contact_node->updateSimulationContext();
+
         typedef defaulttype::Vec3Types contact_type;
 
         typedef container::MechanicalObject<contact_type> contact_dofs_type;
