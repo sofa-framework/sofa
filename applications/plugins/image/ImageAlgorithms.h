@@ -517,7 +517,7 @@ void rasterScan(cimg_library::CImg<unsigned int>& voronoi, cimg_library::CImg<re
 /// @param tolerance should be carefully chosen to minimize computation time.
 /// @returns @param voronoi and @param distances
 template<typename real,typename T>
-void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, const sofa::helper::fixed_array<real, 3>& voxelSize, const unsigned int maxIter=1e10, const SReal tolerance=10, const cimg_library::CImg<T>* biasFactor=NULL)
+void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, const sofa::helper::fixed_array<real, 3>& voxelSize, const unsigned int maxIter=std::numeric_limits<unsigned int>::max(), const SReal tolerance=10, const cimg_library::CImg<T>* biasFactor=NULL)
 {
     //Build a new distance image from distances.
     cimg_library::CImg<real> v_distances(distances.width(), distances.height(), distances.depth(), 3, std::numeric_limits<real>::max());
