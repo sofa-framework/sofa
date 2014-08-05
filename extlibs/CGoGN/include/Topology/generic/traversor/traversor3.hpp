@@ -223,8 +223,8 @@ Cell<ORBY> Traversor3XY<MAP, ORBX, ORBY>::next()
 		return *m_ItDarts++;
 	}
 
-    if(m_current != NIL)
-	{
+//    if(m_current != NIL)
+//	{
 		if (m_cmark)
 		{
 			m_cmark->mark(m_current);
@@ -269,8 +269,81 @@ Cell<ORBY> Traversor3XY<MAP, ORBX, ORBY>::next()
             while ((m_current != NIL) && m_dmark->isMarked(m_current))
 				m_current = m_tradoo.next();
 		}
-	}
+//	}
 	return m_current ;
+}
+
+// ITERABLE VERSION
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XYIterable<MAP, ORBX, ORBY>::Iterator::Iterator(const Traversor3XYIterable& tr) :
+    m_cmark(NULL),
+    m_tradoo(NULL),
+    m_current(NIL)
+{
+    if (!tr.m_baseCell.isNil()) {
+        m_cmark = new CellMarkerStore<MAP, ORBY>(tr.m_map, tr.m_thread) ;
+        m_tradoo = new TraversorDartsOfOrbit<MAP, ORBX>(tr.m_map, tr.m_baseCell, tr.m_thread);
+
+        m_current = m_tradoo->begin() ;
+
+        if ((ORBY == VOLUME) && (m_current != NIL))
+        {
+            if(tr.m_map.template isBoundaryMarked<3>(m_current))
+                this->operator++();
+        }
+    }
+}
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XYIterable<MAP, ORBX, ORBY>::Iterator::Iterator(const Traversor3XYIterable&, Cell<ORBY> curr) :
+    m_cmark(NULL),
+    m_tradoo(NULL),
+    m_current(curr)
+{
+    assert(curr == NIL);
+}
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XYIterable<MAP, ORBX, ORBY>::Iterator::Iterator(const Iterator& ) {
+    std::cerr << "CGoGN : Copy constructor of Traversor3XYIterable<MAP, ORBX, ORBY>::Iterator::Iterator called. Should not happen. Aborting." << std::endl;
+    std::exit(1);
+}
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+typename Traversor3XYIterable<MAP, ORBX, ORBY>::Iterator& Traversor3XYIterable<MAP, ORBX, ORBY>::Iterator::operator++()
+{
+    m_cmark->mark(m_current);
+    m_current = m_tradoo->next();
+
+    if((ORBY == VOLUME) && (m_current != NIL))
+    {
+        if(m_cmark->getMap().template isBoundaryMarked<3>(m_current))
+            m_cmark->mark(m_current);
+    }
+    while ((m_current != NIL) && m_cmark->isMarked(m_current))
+        m_current = m_tradoo->next();
+    return *this;
+}
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XYIterable<MAP, ORBX, ORBY>::Iterator::~Iterator() {
+    delete m_cmark;
+    delete m_tradoo;
+}
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XYIterable<MAP, ORBX, ORBY>::Traversor3XYIterable(const MAP& map, Cell<ORBX> c, bool , unsigned int thread ) :
+    m_map(map),
+    m_baseCell(c),
+    m_thread(thread)
+{}
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XYIterable<MAP, ORBX, ORBY>::Traversor3XYIterable(const Traversor3XYIterable&)
+{
+    std::cerr << "CGoGN : Copy constructor of Traversor3XYIterable<MAP, ORBX, ORBY>::Traversor3XYIterable called. Should not happen. Aborting." << std::endl;
+    std::exit(1);
 }
 
 //*********************************************
@@ -335,6 +408,49 @@ Cell<ORBX> Traversor3XXaY<MAP, ORBX, ORBY>::next()
 	return *m_iter ;
 }
 
+// ITERABLE VERSION
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XXaYIterable<MAP, ORBX, ORBY>::Traversor3XXaYIterable(const MAP& map, Cell<ORBX> c, bool , unsigned int thread) :
+    m_thread(thread),
+    m_vecDarts(GenericMap::askDartBuffer(thread))
+{
+    MarkerForTraversor<MAP, ORBX> mk(map, false, thread);
+    mk.mark(c);
+
+    Traversor3XY<MAP, ORBX, ORBY> traAdj(map, c, false, thread);
+    for (Dart d = traAdj.begin(), endAdj = traAdj.end(); d != endAdj ; d = traAdj.next())
+    {
+        Traversor3XY<MAP, ORBY, ORBX> traInci(map, d, mk, false, thread);
+        for (Dart e = traInci.begin(), endInci = traInci.end() ; e != endInci ; e = traInci.next())
+            m_vecDarts->push_back(e);
+    }
+    m_vecDarts->push_back(NIL);
+}
+
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XXaYIterable<MAP, ORBX, ORBY>::Iterator::Iterator(std::vector<Dart>::iterator it) :
+    m_iter(it)
+{}
+
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XXaYIterable<MAP, ORBX, ORBY>::Iterator::Iterator(const Iterator&) {
+    std::cerr << "CGoGN : Copy constructor of Traversor3XXaYIterable<MAP, ORBX, ORBY>::Iterator called. Should not happen. Aborting." << std::endl;
+    std::exit(1);
+}
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+typename Traversor3XXaYIterable<MAP, ORBX, ORBY>::Iterator& Traversor3XXaYIterable<MAP, ORBX, ORBY>::Iterator::operator++() {
+    ++m_iter;
+   return *this;
+}
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+Traversor3XXaYIterable<MAP, ORBX, ORBY>::~Traversor3XXaYIterable() {
+    GenericMap::releaseDartBuffer(m_vecDarts, m_thread);
+}
 
 //template<typename MAP>
 //Traversor3<MAP>* Traversor3<MAP>::createXY(MAP& map, Dart dart, unsigned int orbX, unsigned int orbY)

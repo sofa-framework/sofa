@@ -14,15 +14,25 @@ Scene::Scene(QObject *parent) :
 
 void Scene::open(const QString& filename)
 {
-	QString finalFilename = QUrl(filename).toLocalFile().toLatin1().constData();
+	QString finalFilename = QUrl(filename).toLocalFile();
 	if(finalFilename.isEmpty())
 		finalFilename = filename;
 
-	qDebug() << "Url:" << finalFilename;
+	std::string filepath = finalFilename.toLatin1().constData();
+	if(sofa::helper::system::DataRepository.findFile(filepath))
+		finalFilename = filepath.c_str();
 
+	qDebug() << "-------------------------------------------------- " << endl << "Loading:" << finalFilename;
     SofaScene::open(finalFilename.toLatin1().constData());
 	if(!_currentFileName.empty())
+	{
+		qDebug() << "Scene loaded";	
 		emit opened();
+	}
+	else
+	{
+		qDebug() << "Scene could not be loaded";
+	}
 }
 
 void Scene::reload()

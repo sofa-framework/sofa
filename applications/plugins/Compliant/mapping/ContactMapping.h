@@ -101,7 +101,14 @@ protected:
 				// possibly tangent directions
 				if( self::Nout == 3 ) {
 					Eigen::Matrix<real, 3, 1> n = local_frame.col(0);
-					local_frame.template rightCols<2>() = ker( n );
+					try{
+					  local_frame.template rightCols<2>() = ker( n );
+					}
+					catch( const std::logic_error& e) {
+					  std::cout << "skipping degenerate normal for contact " << i
+								<< ": " << n.transpose() << std::endl;
+					  local_frame.setZero();
+					}
 				}
 				
 				// make sure we're cool
