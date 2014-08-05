@@ -165,7 +165,7 @@ using namespace core::behavior;
     // (to compute mapping's geometric stiffnesses during assembly)
     void AssembledSolver::compute_forces(const core::MechanicalParams& params,
                                          simulation::common::MechanicalOperations& mop,
-                                         simulation::common::VectorOperations& vop,
+                                         simulation::common::VectorOperations& /*vop*/,
                                          core::behavior::MultiVecDeriv& f,
                                          core::behavior::MultiVecDeriv& c )
     {
@@ -257,7 +257,7 @@ using namespace core::behavior;
     }
 
 
-    void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const vec& v, const MultiVecDeriv& b,
+    void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const MultiVecDeriv& b,
                                        core::MultiVecCoordId posId,
                                        core::MultiVecDerivId velId) const {
         assert( res.size() == sys.size() );
@@ -280,33 +280,59 @@ using namespace core::behavior;
         // In compute_forces (in multivec representation) it would require a visitor (more expensive).
         res.head( sys.m ) = sys.P * res.head( sys.m );
 
+        vec res_constraint(sys.n);
+        rhs_constraints_dynamics( res_constraint, sys, posId, velId );
+        res.tail(sys.n).noalias() = res_constraint;
+    }
+
+
+    void AssembledSolver::rhs_constraints_dynamics(vec& res, const system_type& sys,
+                                                   core::MultiVecCoordId posId,
+                                                   core::MultiVecDerivId velId) const {
+        assert( res.size() == sys.n );
+
+        if( !sys.n  ) return;
+
+        unsigned off = 0;
+
         // compliant dofs
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
             system_type::dofs_type* dofs = sys.compliant[i];
             const system_type::constraint_type& constraint = sys.constraints[i];
 
-            const unsigned dim = dofs->getSize(); // nb lines per constraint
+            const unsigned dim = dofs->getSize(); // nb constraints
             const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
+
+            // get constraint violation velocity
+            vec v_constraint( dim*constraint_dim );
+            dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), dim*constraint_dim );
 
             assert( constraint.value ); // at least a fallback must be added in filter_constraints
 
             constraint.value->dynamics( &res(off), dim, constraint_dim, stabilization.getValue(), posId, velId );
+
+            // adjust compliant value based on alpha/beta   ( phi/a -(1-b)*J.v ) / b
+            if( alpha.getValue() != 1 ) res(off) /= alpha.getValue();
+            if( beta.getValue() != 1 ) {
+                res(off) -= (1 - beta.getValue()) * v_constraint(off);
+                res(off) /= beta.getValue();
+            }
+
             off += dim * constraint_dim;
         }
-        assert( off == sys.size() );
+        assert( off == sys.n );
 
-        // adjust compliant value based on alpha/beta
-        if( sys.n ) {
 
-            if(alpha.getValue() != 1 ) res.tail( sys.n ) /= alpha.getValue();
 
-            if( beta.getValue() != 1 ) {
-                // TODO dofs->copyToBuffer(v_compliant, core::VecDerivId::vel(), dim); rather than sys.J * v, v_compliant is already mapped
-                // TODO use v_compliant to implement constraint damping
-                res.tail( sys.n ).noalias() = res.tail( sys.n ) - (1 - beta.getValue()) * (sys.J * v);
-                res.tail( sys.n ) /= beta.getValue();
-            }
-        }
+//        // adjust compliant value based on alpha/beta
+//        if(alpha.getValue() != 1 ) res.tail( sys.n ) /= alpha.getValue();
+
+//        if( beta.getValue() != 1 ) {
+//            // TODO dofs->copyToBuffer(v_compliant, core::VecDerivId::vel(), dim); rather than sys.J * v, v_compliant is already mapped
+//            // TODO use v_compliant to implement constraint damping
+//            res.tail( sys.n ).noalias() = res.tail( sys.n ) - (1 - beta.getValue()) * (sys.J * v);
+//            res.tail( sys.n ) /= beta.getValue();
+//        }
     }
 
     void AssembledSolver::rhs_correction(vec& res, const system_type& sys,
@@ -324,7 +350,7 @@ using namespace core::behavior;
             system_type::dofs_type* dofs = sys.compliant[i];
             const system_type::constraint_type& constraint = sys.constraints[i];
 
-            const unsigned dim = dofs->getSize(); // nb lines per constraint
+            const unsigned dim = dofs->getSize(); // nb constraints
             const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
 
             assert( constraint.value ); // at least a fallback must be added in filter_constraints
@@ -529,7 +555,7 @@ using namespace core::behavior;
                 if( warm_start.getValue() ) x = current;
                 else x = vec::Zero( sys.size() );
 
-                rhs_dynamics(rhs, sys, current.head(sys.m), _ck, posId, velId );
+                rhs_dynamics(rhs, sys, _ck, posId, velId );
 
                 kkt->solve(x, sys, rhs);
 				

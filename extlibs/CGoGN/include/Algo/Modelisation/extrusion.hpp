@@ -22,7 +22,7 @@
 *                                                                              *
 *******************************************************************************/
 
-//#include "Utils/gl_def.h"
+#include "Utils/gl_def.h"
 #include "Geometry/transfo.h"
 
 namespace CGoGN
@@ -38,9 +38,14 @@ namespace Modelisation
 {
 
 template<typename PFP>
-//Polyhedron<PFP>* revolution_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, const std::vector<typename PFP::VEC3>& profile, const typename PFP::VEC3& center,
-Algo::Surface::Tilings::Tiling<PFP>* revolution_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, const std::vector<typename PFP::VEC3>& profile, const typename PFP::VEC3& center,
-				const typename PFP::VEC3& axis, bool profile_closed, int nbSides)
+Algo::Surface::Tilings::Tiling<PFP>* revolution_prim(
+	typename PFP::MAP& the_map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const std::vector<typename PFP::VEC3>& profile,
+	const typename PFP::VEC3& center,
+	const typename PFP::VEC3& axis,
+	bool profile_closed,
+	int nbSides)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 
@@ -68,10 +73,15 @@ Algo::Surface::Tilings::Tiling<PFP>* revolution_prim(typename PFP::MAP& the_map,
 }
 
 template<typename PFP>
-Dart revolution(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, const std::vector<typename PFP::VEC3>& profile, const typename PFP::VEC3& center,
-				const typename PFP::VEC3& axis, bool profile_closed, int nbSides)
+Dart revolution(
+	typename PFP::MAP& the_map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const std::vector<typename PFP::VEC3>& profile,
+	const typename PFP::VEC3& center,
+	const typename PFP::VEC3& axis,
+	bool profile_closed,
+	int nbSides)
 {
-    //Polyhedron<PFP> *prim = revolution_prim<PFP>(the_map, position, profile, center, axis, profile_closed, nbSides);
     Algo::Surface::Tilings::Tiling<PFP> *prim = revolution_prim<PFP>(the_map, position, profile, center, axis, profile_closed, nbSides);
 	Dart d = prim->getDart();
 	delete prim;
@@ -80,10 +90,17 @@ Dart revolution(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>&
 
 
 template<typename PFP>
-Dart extrusion_scale(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, const std::vector<typename PFP::VEC3>& profile, const typename PFP::VEC3& centerProfile, const typename PFP::VEC3& normalProfile, bool profile_closed,
-			   const std::vector<typename PFP::VEC3>& path, bool path_closed, const std::vector<float>& scalePath)
+Dart extrusion_scale(
+	typename PFP::MAP& the_map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const std::vector<typename PFP::VEC3>& profile,
+	const typename PFP::VEC3& centerProfile,
+	const typename PFP::VEC3& normalProfile,
+	bool profile_closed,
+	const std::vector<typename PFP::VEC3>& path,
+	bool path_closed,
+	const std::vector<float>& scalePath)
 {
-    //Polyhedron<PFP> *prim = extrusion_scale_prim<PFP>(the_map, position, profile, centerProfile, normalProfile, profile_closed, path, path_closed,scalePath);
     Algo::Surface::Tilings::Tiling<PFP> *prim = extrusion_scale_prim<PFP>(the_map, position, profile, centerProfile, normalProfile, profile_closed, path, path_closed,scalePath);
 	Dart d = prim->getDart();
 	delete prim;
@@ -91,11 +108,17 @@ Dart extrusion_scale(typename PFP::MAP& the_map, VertexAttribute<typename PFP::V
 }
 
 template<typename PFP>
-Dart extrusion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, const std::vector<typename PFP::VEC3>& profile, const typename PFP::VEC3& centerProfile, const typename PFP::VEC3& normalProfile, bool profile_closed,
-				const std::vector<typename PFP::VEC3>& path, bool path_closed)
+Dart extrusion(
+	typename PFP::MAP& the_map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const std::vector<typename PFP::VEC3>& profile,
+	const typename PFP::VEC3& centerProfile,
+	const typename PFP::VEC3& normalProfile,
+	bool profile_closed,
+	const std::vector<typename PFP::VEC3>& path,
+	bool path_closed)
 {
 	std::vector<float> scalePath;
-    //Polyhedron<PFP> *prim = extrusion_scale_prim<PFP>(the_map, position, profile, centerProfile, normalProfile, profile_closed, path, path_closed,scalePath);
     Algo::Surface::Tilings::Tiling<PFP> *prim = extrusion_scale_prim<PFP>(the_map, position, profile, centerProfile, normalProfile, profile_closed, path, path_closed,scalePath);
 	Dart d = prim->getDart();
 	delete prim;
@@ -103,20 +126,33 @@ Dart extrusion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& 
 }
 
 template<typename PFP>
-//Polyhedron<PFP>* extrusion_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, const std::vector<typename PFP::VEC3>& profile, const typename PFP::VEC3& centerProfile, const typename PFP::VEC3& normalProfile, bool profile_closed,
-Algo::Surface::Tilings::Tiling<PFP>* extrusion_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, const std::vector<typename PFP::VEC3>& profile, const typename PFP::VEC3& centerProfile, const typename PFP::VEC3& normalProfile, bool profile_closed,
-			   const std::vector<typename PFP::VEC3>& path, bool path_closed)
+Algo::Surface::Tilings::Tiling<PFP>* extrusion_prim(
+	typename PFP::MAP& the_map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const std::vector<typename PFP::VEC3>& profile,
+	const typename PFP::VEC3& centerProfile,
+	const typename PFP::VEC3& normalProfile,
+	bool profile_closed,
+	const std::vector<typename PFP::VEC3>& path,
+	bool path_closed)
 {
 	std::vector<float> scalePath;
 	return extrusion_scale_prim<PFP>(the_map, position, profile, centerProfile, normalProfile, profile_closed, path, path_closed,scalePath);
 }
 
 template<typename PFP>
-//Polyhedron<PFP>* extrusion_scale_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, const std::vector<typename PFP::VEC3>& profile, const typename PFP::VEC3& centerProfile, const typename PFP::VEC3& normal, bool profile_closed, const std::vector<typename PFP::VEC3>& path, bool path_closed, const std::vector<float>& scalePath)
-Algo::Surface::Tilings::Tiling<PFP>* extrusion_scale_prim(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, const std::vector<typename PFP::VEC3>& profile, const typename PFP::VEC3& centerProfile, const typename PFP::VEC3& normal, bool profile_closed, const std::vector<typename PFP::VEC3>& path, bool path_closed, const std::vector<float>& scalePath)
+Algo::Surface::Tilings::Tiling<PFP>* extrusion_scale_prim(
+	typename PFP::MAP& the_map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	const std::vector<typename PFP::VEC3>& profile,
+	const typename PFP::VEC3& centerProfile,
+	const typename PFP::VEC3& normal,
+	bool profile_closed,
+	const std::vector<typename PFP::VEC3>& path,
+	bool path_closed,
+	const std::vector<float>& scalePath)
 {
 	// topological creation
-    //Polyhedron<PFP> *prim = new Polyhedron<PFP>(the_map, position);
     Algo::Surface::Tilings::Tiling<PFP>* prim;
 
     //Dart grid;
@@ -124,18 +160,15 @@ Algo::Surface::Tilings::Tiling<PFP>* extrusion_scale_prim(typename PFP::MAP& the
 	if (profile_closed)
 	{
 		if (path_closed)
-            //grid = prim->tore_topo(profile.size() ,path.size());
             prim = new Algo::Surface::Tilings::Square::Tore<PFP>(the_map, profile.size(), path.size());
 		else
-            //grid = prim->cylinder_topo(profile.size() ,path.size()-1, false, false);
-            prim = new Algo::Surface::Tilings::Square::Cylinder<PFP>(the_map, profile.size(), path.size()-1,false, false);
+			prim = new Algo::Surface::Tilings::Square::Cylinder<PFP>(the_map, profile.size(), path.size()-1, false, false);
 	}
 	else
 	{
 		if (path_closed)
 		{
-            //grid = prim->grid_topo(profile.size()-1 ,path.size());
-            prim = new Algo::Surface::Tilings::Square::Grid<PFP>(the_map, profile.size()-1 ,path.size(), true);
+			prim = new Algo::Surface::Tilings::Square::Grid<PFP>(the_map, profile.size()-1, path.size(), true);
 			// sewing boundaries correponding to path boundaries
 			std::vector<Dart>& darts = prim->getVertexDarts();
 			int index = profile.size()*path.size();
@@ -149,8 +182,7 @@ Algo::Surface::Tilings::Tiling<PFP>* extrusion_scale_prim(typename PFP::MAP& the
 
 		}
 		else
-            //grid = prim->grid_topo(profile.size()-1 ,path.size()-1);
-            prim = new Algo::Surface::Tilings::Square::Grid<PFP>(the_map, profile.size()-1 ,path.size()-1, true);
+			prim = new Algo::Surface::Tilings::Square::Grid<PFP>(the_map, profile.size()-1, path.size()-1, true);
 	}
 
 	glPushMatrix();
@@ -239,7 +271,7 @@ Algo::Surface::Tilings::Tiling<PFP>* extrusion_scale_prim(typename PFP::MAP& the
 			Geom::translate(path[i][0],path[i][1],path[i][2],transf);
 		}
 
-	CGoGNout << "PATH: "<< i<< CGoGNendl;
+		CGoGNout << "PATH: "<< i<< CGoGNendl;
 		// apply transfo on object to embed Polyhedron.
 		for(typename std::vector<typename PFP::VEC3>::iterator ip = localObj.begin(); ip != localObj.end(); ++ip)
 		{
@@ -272,7 +304,7 @@ Algo::Surface::Tilings::Tiling<PFP>* extrusion_scale_prim(typename PFP::MAP& the
 			else position[em] = P;
 
 			Dart d = vertD[index++];
-			the_map.template setOrbitEmbedding<VERTEX>(d, em);
+			Algo::Topo::setOrbitEmbedding<VERTEX>(the_map, d, em);
 
 			// rotate again to put profile in the good position along the path
 //			pos4=Geom::Vec4f ((*ip)[0],(*ip)[1],(*ip)[2], 1.0f);
@@ -288,12 +320,14 @@ Algo::Surface::Tilings::Tiling<PFP>* extrusion_scale_prim(typename PFP::MAP& the
 }
 
 template <typename PFP>
-Dart extrudeFace(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& positions, Dart d, const typename PFP::VEC3& N)
+Dart extrudeFace(
+	typename PFP::MAP& the_map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions,
+	Dart d,
+	const typename PFP::VEC3& N)
 {
-	typedef typename PFP::MAP MAP;
-
 	// triangule
-	Dart c = Surface::Modelisation::trianguleFace<PFP>(the_map,d);
+	Dart c = Surface::Modelisation::trianguleFace<PFP>(the_map, d);
 
 	Dart cc = c;
 	// cut edges
@@ -329,20 +363,24 @@ Dart extrudeFace(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>
 }
 
 template <typename PFP>
-Dart extrudeFace(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position, Dart d, float dist)
+Dart extrudeFace(
+	typename PFP::MAP& the_map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	Dart d,
+	float dist)
 {
-	typedef typename PFP::MAP MAP;
-
 	//compute normal
 	typename PFP::VEC3 normal = Surface::Geometry::faceNormal<PFP>(the_map, d, position);
 	normal *= dist;
-	
 	return extrudeFace<PFP>(the_map, position, d, normal);
 }
 
 template<typename PFP>
-Dart extrudeRegion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC3>& position,
-   Dart d,	const CellMarker<FACE>& cm)
+Dart extrudeRegion(
+	typename PFP::MAP& the_map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	Dart d,
+	const CellMarker<typename PFP::MAP, FACE>& cm)
 {
    typedef typename PFP::MAP MAP;
 
@@ -350,7 +388,7 @@ Dart extrudeRegion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC
    std::vector<Dart> borderDarts;
    std::vector<Dart> pile;
    pile.push_back(d);
-   CellMarker<EDGE>* em = new CellMarker<EDGE>(the_map);
+   CellMarker<MAP, EDGE> em(the_map);
 
    while(!pile.empty())
    {
@@ -363,20 +401,20 @@ Dart extrudeRegion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC
 			   borderDarts.push_back(the_map.phi2(it));
 			   break;
 		   }
-		   else if (!em->isMarked(the_map.phi2(it)))
+		   else if (!em.isMarked(the_map.phi2(it)))
 					   pile.push_back(the_map.phi2(it));
-		   em->mark(it);
+		   em.mark(it);
 	   }
    }
 
    /*----------- find borders of the region -----------*/
    std::vector<std::vector<Dart> > contours; // border
-   for (int i = 0; i < borderDarts.size(); i++)
+   for (unsigned int i = 0; i < borderDarts.size(); i++)
    {
 	   bool used = false;
-	   for (int j = 0; j < contours.size(); j++)
+	   for (unsigned int j = 0; j < contours.size(); j++)
 	   {
-		   for (int k = 0; k < contours[j].size(); k++)
+		   for (unsigned int k = 0; k < contours[j].size(); k++)
 		   {
 			   if (borderDarts[i] == contours[j][k])
 			   {
@@ -406,16 +444,16 @@ Dart extrudeRegion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC
 
    /*----------- calculate the height of the extrusion -----------*/
    typename PFP::REAL dist = 0;
-   for(int i = 0; i < (contours.size()); i++)
+   for(unsigned int i = 0; i < (contours.size()); i++)
    {
-	   for(int j = 0; j < contours[i].size()-1; j++)
+	   for(unsigned int j = 0; j < contours[i].size()-1; j++)
 	   {
 		   dist = dist + (position[contours[i][j]] - position[contours[i][j+1]]).norm();
 	   }
 	   dist = dist + (position[contours[i][contours[i].size()-1]] - position[contours[i][0]]).norm();
    }
    int size = 0;
-   for (int i = 0; i < contours.size(); i++)
+   for (unsigned int i = 0; i < contours.size(); i++)
    {
 	   size = size + contours[i].size();
    }
@@ -425,7 +463,7 @@ Dart extrudeRegion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC
    pile.clear();
    pile.push_back(contours[0][0]);
    typename PFP::VEC3 normal;
-   CellMarker<FACE>* fm = new CellMarker<FACE>(the_map);
+   CellMarker<MAP, FACE> fm(the_map);
    int faceNb = 0;
    while(!pile.empty())
    {
@@ -433,23 +471,23 @@ Dart extrudeRegion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC
 	   pile.pop_back();
 	   for (Dart it = trav2FE2.begin(); it != trav2FE2.end (); it = trav2FE2.next())
 	   {
-		   if((cm.isMarked(the_map.phi2(it))) && (!fm->isMarked(the_map.phi2(it))))
+		   if((cm.isMarked(the_map.phi2(it))) && (!fm.isMarked(the_map.phi2(it))))
 			   pile.push_back(the_map.phi2(it));
-		   if(!fm->isMarked(it))
+		   if(!fm.isMarked(it))
 		   {
 			   normal = normal + Surface::Geometry::faceNormal<PFP>(the_map, it, position);
 			   faceNb++;
-			   fm->mark(it);
+			   fm.mark(it);
 		   }
 	   }
    }
    normal = normal / faceNb * dist;
 
    /*----------- add new faces -----------*/
-   for (int i = 0; i < contours.size(); i++)
+   for (unsigned int i = 0; i < contours.size(); i++)
    {
 	   Dart prev;
-	   for(int j = 0; j < contours[i].size(); j++)
+	   for(unsigned int j = 0; j < contours[i].size(); j++)
 	   {
 		   d = the_map.newFace(4);
 		   Dart e = the_map.phi2(contours[i][j]);
@@ -467,7 +505,7 @@ Dart extrudeRegion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC
    /*----------- fix positions of vertices of the region -----------*/
    pile.clear();
    pile.push_back(contours[0][0]);
-   CellMarker<VERTEX>* vm = new CellMarker<VERTEX>(the_map);
+   CellMarker<MAP, VERTEX> vm(the_map);
 
    while(!pile.empty())
    {
@@ -475,12 +513,12 @@ Dart extrudeRegion(typename PFP::MAP& the_map, VertexAttribute<typename PFP::VEC
 	   pile.pop_back();
 	   for (Dart it = trav2VF.begin(); it != trav2VF.end (); it = trav2VF.next())
 	   {
-		   if(!vm->isMarked(it))
+		   if(!vm.isMarked(it))
 		   {
 			   position[it] = position[it]+normal;
-			   vm->mark(it);
+			   vm.mark(it);
 		   }
-		   if (cm.isMarked(it) && (!vm->isMarked(the_map.phi2(it))))
+		   if (cm.isMarked(it) && (!vm.isMarked(the_map.phi2(it))))
 			   pile.push_back(the_map.phi2(it));
 	   }
    }

@@ -7,6 +7,8 @@ set(HEADER_FILES
     Mapping_test.h
     Elasticity_test.inl
     Elasticity_test.h
+    Elasticity_test.inl
+    ForceField_test.h
     BroadPhaseTest.h
 	)
 

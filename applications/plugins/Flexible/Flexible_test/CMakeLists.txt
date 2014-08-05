@@ -1,14 +1,22 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
+set(HEADER_FILES
+    stdafx.h
+)
+
 set(SOURCE_FILES
    AffinePatch_test.cpp
    AffineDeformationMapping_test.cpp
    HexahedraMaterial_test.cpp
    Material_test.cpp
+   MooneyRivlinHexahedraMaterial_test.cpp
+   NeoHookeHexahedraMaterial_test.cpp
    PointDeformationMapping_test.cpp
    Patch_test.cpp
    StrainMappings_test.cpp
    RigidDeformationMapping_test.cpp
+   TetrahedraMaterial_test.cpp
+   stdafx.cpp
         )
 
 if(APPLE)
@@ -24,8 +32,13 @@ if(SOFA-PLUGIN_SOFAPYTHON)
     include(./scenes/python/python.cmake)
 endif()
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${RC_FILES} ${PYTHON_FILES})
 AddCompilerDefinitions("FLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+
+if(WIN32 AND NOT CMAKE_CL_64)
+    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
+endif()
+
 AddLinkerDependencies(Flexible SofaTest)
 
 #Needed by python test

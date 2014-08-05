@@ -14,12 +14,12 @@ namespace Tilings
 template <typename PFP>
 Tiling<PFP>::Tiling(const Tiling<PFP>& t1, const Tiling<PFP> t2):
     m_map(t1.m_map),
-    m_nx(-1), m_ny(-1), m_nz(-1)
+	m_nx(-1),
+	m_ny(-1),
+	m_nz(-1)
 {
-    if (&(t1.m_map) != &(t2.m_map))
-    {
-        CGoGNerr << "Warning, can not merge to Polyhedrons of different maps"<< CGoGNendl;
-    }
+	if (&(t1.m_map) != &(t2.m_map))
+		CGoGNerr << "Warning, can not merge to Polyhedrons of different maps" << CGoGNendl;
 
     m_tableVertDarts.reserve(t1.m_tableVertDarts.size() + t2.m_tableVertDarts.size()); // can be too much but ...
 
@@ -57,7 +57,7 @@ Tiling<PFP>::Tiling(const Tiling<PFP>& t1, const Tiling<PFP> t2):
 }
 
 template <typename PFP>
-void Tiling<PFP>::computeCenter(VertexAttribute<VEC3>& position)
+void Tiling<PFP>::computeCenter(VertexAttribute<VEC3, MAP>& position)
 {
     typename PFP::VEC3 center(0);
 
@@ -72,7 +72,7 @@ void Tiling<PFP>::computeCenter(VertexAttribute<VEC3>& position)
 
 template <typename PFP>
 //void Tiling<PFP>::transform(float* matrice)
-void Tiling<PFP>::transform(VertexAttribute<VEC3>& position, const Geom::Matrix44f& matrice)
+void Tiling<PFP>::transform(VertexAttribute<VEC3, MAP>& position, const Geom::Matrix44f& matrice)
 {
 //	Geom::Vec4f v1(matrice[0],matrice[4],matrice[8], matrice[12]);
 //	Geom::Vec4f v2(matrice[1],matrice[5],matrice[9], matrice[13]);
@@ -98,7 +98,7 @@ void Tiling<PFP>::transform(VertexAttribute<VEC3>& position, const Geom::Matrix4
 }
 
 template <typename PFP>
-void Tiling<PFP>::mark(CellMarker<VERTEX>& m)
+void Tiling<PFP>::mark(CellMarker<MAP, VERTEX>& m)
 {
     for(typename std::vector<Dart>::iterator di = m_tableVertDarts.begin(); di != m_tableVertDarts.end(); ++di)
     {
@@ -106,6 +106,30 @@ void Tiling<PFP>::mark(CellMarker<VERTEX>& m)
     }
 }
 
+template <typename PFP>
+bool Tiling<PFP>::exportPositions(const VertexAttribute<VEC3, MAP>& position, const char* filename)
+{
+	// open file
+	std::ofstream out ;
+	out.open(filename, std::ios::out) ;
+
+	if (!out.good())
+	{
+		CGoGNerr << "Unable to open file " << CGoGNendl ;
+		return false ;
+	}
+
+	out << (m_nx + 1) << " ";
+	out << (m_ny + 1) << " ";
+	out << (m_nz + 1) << " ";
+
+	for(std::vector<Dart>::iterator it = m_tableVertDarts.begin() ; it != m_tableVertDarts.end() ; ++it)
+	{
+		out << position[*it];
+	}
+
+	return true;
+}
 
 } // namespace Tilings
 

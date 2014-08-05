@@ -196,7 +196,7 @@ public:
         const float k = d_k.getValue();
         const Vec2d size = d_size.getValue();
 
-        const Vec2i resoBG(size.x()/(radius/sqrt(2)),size.y()/(radius/sqrt(2)));
+        const Vec2i resoBG(size.x()/(radius/sqrt(2.0)),size.y()/(radius/sqrt(2.0)));
         const Vec2d sizeCellBG(size.x()/(float)resoBG.x(),size.y()/(float)resoBG.y());
 
         VecVec2d BG;

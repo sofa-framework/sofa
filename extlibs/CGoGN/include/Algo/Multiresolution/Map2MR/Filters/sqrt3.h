@@ -105,31 +105,34 @@ inline double omega0(unsigned int n)
 template <typename PFP>
 class Sqrt3FaceSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	Sqrt3FaceSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	Sqrt3FaceSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorF<typename PFP::MAP> trav(m_map) ;
+		TraversorF<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 			Dart d1 = m_map.phi1(d) ;
 			Dart d2 = m_map.phi1(d1) ;
 
-			typename PFP::VEC3 p0 = m_position[d] ;
-			typename PFP::VEC3 p1 = m_position[d1] ;
-			typename PFP::VEC3 p2 = m_position[d2] ;
+			VEC3 p0 = m_position[d] ;
+			VEC3 p1 = m_position[d1] ;
+			VEC3 p2 = m_position[d2] ;
 
 			p0 *= 1.0 / 3.0 ;
 			p1 *= 1.0 / 3.0 ;
 			p2 *= 1.0 / 3.0 ;
 
-			if(m_map.isBoundaryFace(d))
+			if(m_map.isFaceIncidentToBoundary(d))
 			{
 				Dart df = m_map.findBoundaryEdgeOfFace(d);
 				m_map.incCurrentLevel() ;
@@ -149,17 +152,20 @@ public:
 template <typename PFP>
 class Sqrt3VertexSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	Sqrt3VertexSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	Sqrt3VertexSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> trav(m_map) ;
+		TraversorV<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 			if(m_map.isBoundaryVertex(d))
@@ -168,13 +174,13 @@ public:
 
 				if((m_map.getCurrentLevel()%2 == 0))
 				{
-					typename PFP::VEC3 np(0) ;
-					typename PFP::VEC3 nl(0) ;
-					typename PFP::VEC3 nr(0) ;
+					VEC3 np(0) ;
+					VEC3 nl(0) ;
+					VEC3 nr(0) ;
 
-					typename PFP::VEC3 pi = m_position[df];
-					typename PFP::VEC3 pi_1 = m_position[m_map.phi_1(df)];
-					typename PFP::VEC3 pi1 = m_position[m_map.phi1(df)];
+					VEC3 pi = m_position[df];
+					VEC3 pi_1 = m_position[m_map.phi_1(df)];
+					VEC3 pi1 = m_position[m_map.phi1(df)];
 
 					np += pi_1 * 4 + pi * 19 + pi1 * 4;
 					np /= 27;
@@ -196,13 +202,13 @@ public:
 			}
 			else
 			{
-				typename PFP::VEC3 nf(0) ;
+				VEC3 nf(0) ;
 				unsigned int degree = 0 ;
 
 				m_map.incCurrentLevel() ;
 				Dart df = m_map.phi2(m_map.phi1(d));
 
-				Traversor2VVaE<typename PFP::MAP> trav(m_map, df) ;
+				Traversor2VVaE<MAP> trav(m_map, df) ;
 				for(Dart it = trav.begin(); it != trav.end(); it = trav.next())
 				{
 					++degree ;
@@ -217,7 +223,7 @@ public:
 
 				nf *= sigma;
 
-				typename PFP::VEC3 vp = m_position[d] ;
+				VEC3 vp = m_position[d] ;
 				vp *= teta ;
 
 				m_map.incCurrentLevel() ;
@@ -233,26 +239,29 @@ public:
 template <typename PFP>
 class Sqrt3VertexAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	Sqrt3VertexAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	Sqrt3VertexAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> trav(m_map) ;
+		TraversorV<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
-			typename PFP::VEC3 nf(0) ;
+			VEC3 nf(0) ;
 			unsigned int degree = 0 ;
 
 			m_map.incCurrentLevel() ;
 			Dart df = m_map.phi2(m_map.phi1(d));
 
-			Traversor2VVaE<typename PFP::MAP> trav(m_map, df) ;
+			Traversor2VVaE<MAP> trav(m_map, df) ;
 			for(Dart it = trav.begin(); it != trav.end(); it = trav.next())
 			{
 				++degree ;
@@ -267,7 +276,7 @@ public:
 
 			nf *= sigma;
 
-			typename PFP::VEC3 vp = m_position[d] ;
+			VEC3 vp = m_position[d] ;
 			vp -= nf ;
 
 			m_map.incCurrentLevel() ;
@@ -283,25 +292,28 @@ public:
 template <typename PFP>
 class Sqrt3FaceAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	Sqrt3FaceAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	Sqrt3FaceAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorF<typename PFP::MAP> trav(m_map) ;
+		TraversorF<MAP> trav(m_map) ;
 		for (Dart d = trav.begin(); d != trav.end(); d = trav.next())
 		{
 			Dart d1 = m_map.phi1(d) ;
 			Dart d2 = m_map.phi1(d1) ;
 
-			typename PFP::VEC3 p0 = m_position[d] ;
-			typename PFP::VEC3 p1 = m_position[d1] ;
-			typename PFP::VEC3 p2 = m_position[d2] ;
+			VEC3 p0 = m_position[d] ;
+			VEC3 p1 = m_position[d1] ;
+			VEC3 p2 = m_position[d2] ;
 
 			p0 *= 1.0 / 3.0 ;
 			p1 *= 1.0 / 3.0 ;

@@ -6,6 +6,7 @@
 from SofaTest.Macro import *
 from Compliant import Rigid, Tools
 from SofaPython import Quaternion
+import numpy
 
 path = Tools.path( __file__ ) + "/geometric_primitives/"
 
@@ -149,7 +150,8 @@ def run():
     inertiat[2] = 1.0/12.0 * mass * (scale[0]*scale[0]+scale[1]*scale[1]) # z
 
     # used quaternion in mesh
-    q = Quaternion.normalized( Quaternion.from_euler_xyz( 12*math.pi/180.0, 35*math.pi/180.0, -27*math.pi/180.0 ) )
+
+    q = Quaternion.normalized( Quaternion.from_euler( [12*math.pi/180.0, 35*math.pi/180.0, -27*math.pi/180.0] ) )
 
     # corresponding rotation matrices (ie frame defined by columns)
     mt = Quaternion.to_matrix( q )

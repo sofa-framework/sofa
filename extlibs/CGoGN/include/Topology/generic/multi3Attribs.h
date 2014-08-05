@@ -25,6 +25,8 @@
 #ifndef __MULTI3ATTRIBS_H_
 #define __MULTI3ATTRIBS_H_
 
+#include "Topology/generic/cells.h"
+
 namespace CGoGN
 {
 
@@ -102,7 +104,7 @@ public:
 		return RefCompo3Type<T1,T2,T3>(m_h1[a],m_h2[a],m_h3[a]);
 	}
 
-	RefCompo3Type<T1,T2,T3> operator[](Dart d)
+	RefCompo3Type<T1,T2,T3> operator[](Vertex d)
 	{
 		return RefCompo3Type<T1,T2,T3>(m_h1[d],m_h2[d],m_h3[d]);
 	}
@@ -112,7 +114,7 @@ public:
 		return RefCompo3Type<T1,T2,T3>(m_h1[a],m_h2[a],m_h3[a]);
 	}
 
-	const RefCompo3Type<T1,T2,T3> operator[](Dart d) const
+	const RefCompo3Type<T1,T2,T3> operator[](Vertex d) const
 	{
 		return RefCompo3Type<T1,T2,T3>(m_h1[d],m_h2[d],m_h3[d]);
 	}
@@ -139,7 +141,7 @@ public:
 		return RefCompo3Type<T1,T2,T3>(m_h1[a],m_h2[a],m_h3[a]);
 	}
 
-	RefCompo3Type<T1,T2,T3> operator[](Dart d)
+	RefCompo3Type<T1,T2,T3> operator[](Edge d)
 	{
 		return RefCompo3Type<T1,T2,T3>(m_h1[d],m_h2[d],m_h3[d]);
 	}
@@ -149,7 +151,7 @@ public:
 		return RefCompo3Type<T1,T2,T3>(m_h1[a],m_h2[a],m_h3[a]);
 	}
 
-	const RefCompo3Type<T1,T2,T3> operator[](Dart d) const
+	const RefCompo3Type<T1,T2,T3> operator[](Edge d) const
 	{
 		return RefCompo3Type<T1,T2,T3>(m_h1[d],m_h2[d],m_h3[d]);
 	}
@@ -177,7 +179,7 @@ public:
 		return RefCompo3Type<T1,T2,T3>(m_h1[a],m_h2[a],m_h3[a]);
 	}
 
-	RefCompo3Type<T1,T2,T3> operator[](Dart d)
+	RefCompo3Type<T1,T2,T3> operator[](Face d)
 	{
 		return RefCompo3Type<T1,T2,T3>(m_h1[d],m_h2[d],m_h3[d]);
 	}
@@ -187,7 +189,7 @@ public:
 		return RefCompo3Type<T1,T2,T3>(m_h1[a],m_h2[a],m_h3[a]);
 	}
 
-	const RefCompo3Type<T1,T2,T3> operator[](Dart d) const
+	const RefCompo3Type<T1,T2,T3> operator[](Face d) const
 	{
 		return RefCompo3Type<T1,T2,T3>(m_h1[d],m_h2[d],m_h3[d]);
 	}
@@ -213,7 +215,7 @@ public:
 		return RefCompo3Type<T1,T2,T3>(m_h1[a],m_h2[a],m_h3[a]);
 	}
 
-	RefCompo3Type<T1,T2,T3> operator[](Dart d)
+	RefCompo3Type<T1,T2,T3> operator[](Vol d)
 	{
 		return RefCompo3Type<T1,T2,T3>(m_h1[d],m_h2[d],m_h3[d]);
 	}
@@ -223,7 +225,7 @@ public:
 		return RefCompo3Type<T1,T2,T3>(m_h1[a],m_h2[a],m_h3[a]);
 	}
 
-	const RefCompo3Type<T1,T2,T3> operator[](Dart d) const
+	const RefCompo3Type<T1,T2,T3> operator[](Vol d) const
 	{
 		return RefCompo3Type<T1,T2,T3>(m_h1[d],m_h2[d],m_h3[d]);
 	}

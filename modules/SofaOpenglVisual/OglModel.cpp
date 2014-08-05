@@ -807,20 +807,25 @@ void OglModel::initVisual()
 #ifdef NO_VBO
     canUseVBO = false;
 #else
-#if defined (SOFA_HAVE_GLEW) && !defined(PS3)
-    //This test is not enough to detect if we can enable the VBO.
-    canUseVBO = (GLEW_ARB_vertex_buffer_object!=0);
+#if !defined(PS3)
+	static bool vboAvailable = false; // check the vbo availability
+
+	static bool init = false;
+	if(!init)
+    {
+        vboAvailable = CanUseGlExtension( "GL_ARB_vertex_buffer_object" );
+		init = true;
+	}
+
+    canUseVBO = vboAvailable;
 #elif PS3
 	canUseVBO = true;
-#else
-    canUseVBO = CanUseGlExtension("GL_ARB_vertex_buffer_object");
 #endif
 
     if (useVBO.getValue() && !canUseVBO)
     {
         serr << "OglModel : VBO is not supported by your GPU" << sendl;
     }
-
 
 #endif
 

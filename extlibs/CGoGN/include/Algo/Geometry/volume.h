@@ -37,22 +37,22 @@ namespace Geometry
 {
 
 template <typename PFP>
-typename PFP::REAL tetrahedronSignedVolume(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position) ;
+typename PFP::REAL tetrahedronSignedVolume(typename PFP::MAP& map, Vol v, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position) ;
 
 template <typename PFP>
-typename PFP::REAL tetrahedronVolume(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position) ;
+typename PFP::REAL tetrahedronVolume(typename PFP::MAP& map, Vol v, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position) ;
 
 template <typename PFP>
-typename PFP::REAL convexPolyhedronVolume(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position, unsigned int thread=0) ;
+typename PFP::REAL convexPolyhedronVolume(typename PFP::MAP& map, Vol v, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, unsigned int thread = 0) ;
 
 template <typename PFP>
-typename PFP::REAL totalVolume(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, unsigned int thread = 0) ;
-
+typename PFP::REAL totalVolume(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, unsigned int thread = 0) ;
 
 namespace Parallel
 {
+
 template <typename PFP>
-typename PFP::REAL totalVolume(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, unsigned int nbth = 0) ;
+typename PFP::REAL totalVolume(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position) ;
 
 }
 

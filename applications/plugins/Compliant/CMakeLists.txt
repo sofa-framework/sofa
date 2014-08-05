@@ -19,7 +19,6 @@ set(HEADER_FILES
     mapping/ProjectionMapping.h
     mapping/RigidComMultiMapping.h
     mapping/AffineMultiMapping.h
-    mapping/OffsetMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/LDLTSolver.h
@@ -110,7 +109,6 @@ set(SOURCE_FILES
     mapping/ProjectionMapping.cpp
     mapping/RigidComMultiMapping.cpp
     mapping/AffineMultiMapping.cpp
-    mapping/OffsetMapping.cpp
 
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp
@@ -188,12 +186,15 @@ AddSourceDependencies( GenerateRigid )
 # linking with boost-system is needed
 # that means an installed version of boost is mandatory (sadly)
 # I loved the header-only boost
-if(NOT SOFA-EXTERNAL_BOOST)
-    message(FATAL_ERROR "Compliant plugin needs a compiled Boost library >= 1.48. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
-endif()
 
-find_package(Boost COMPONENTS system REQUIRED)
-AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+# max: hopefully this is not needed anymore
+
+# if(NOT SOFA-EXTERNAL_BOOST)
+#    message(FATAL_ERROR "Compliant plugin needs a compiled Boost library >= 1.48. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
+# endif()
+# find_package(Boost COMPONENTS system REQUIRED)
+# AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+
 
 if(LINUX OR UNIX AND NOT APPLE)
     AddLinkerDependencies( rt ) # clock_gettime

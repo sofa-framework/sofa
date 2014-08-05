@@ -54,24 +54,27 @@ namespace Filters
 template <typename PFP>
 class LerpQuadOddSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	LerpQuadOddSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LerpQuadOddSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorF<typename PFP::MAP> travF(m_map) ;
+		TraversorF<MAP> travF(m_map) ;
 		for (Dart d = travF.begin(); d != travF.end(); d = travF.next())
 		{
-			typename PFP::VEC3 vf(0.0);
-			typename PFP::VEC3 ef(0.0);
+			VEC3 vf(0.0);
+			VEC3 ef(0.0);
 
 			unsigned int count = 0;
-			Traversor2FE<typename PFP::MAP> travFE(m_map, d);
+			Traversor2FE<MAP> travFE(m_map, d);
 			for (Dart dit = travFE.begin(); dit != travFE.end(); dit = travFE.next())
 			{
 				vf += m_position[dit];
@@ -93,10 +96,10 @@ public:
             break;
 		}
 
-		TraversorE<typename PFP::MAP> travE(m_map) ;
+		TraversorE<MAP> travE(m_map) ;
 		for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 		{
-			typename PFP::VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
+			VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
 
 			m_map.incCurrentLevel() ;
 			Dart midV = m_map.phi1(d) ;
@@ -110,26 +113,29 @@ public:
 template <typename PFP>
 class LerpTriQuadOddSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	LerpTriQuadOddSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LerpTriQuadOddSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorF<typename PFP::MAP> travF(m_map) ;
+		TraversorF<MAP> travF(m_map) ;
 		for (Dart d = travF.begin(); d != travF.end(); d = travF.next())
 		{
 			if(m_map.faceDegree(d) != 3)
 			{
-				typename PFP::VEC3 vf(0.0);
-				typename PFP::VEC3 ef(0.0);
+				VEC3 vf(0.0);
+				VEC3 ef(0.0);
 
 				unsigned int count = 0;
-				Traversor2FE<typename PFP::MAP> travFE(m_map, d);
+				Traversor2FE<MAP> travFE(m_map, d);
 				for (Dart dit = travFE.begin(); dit != travFE.end(); dit = travFE.next())
 				{
 					vf += m_position[dit];
@@ -150,10 +156,10 @@ public:
 			}
 		}
 
-		TraversorE<typename PFP::MAP> travE(m_map) ;
+		TraversorE<MAP> travE(m_map) ;
 		for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 		{
-			typename PFP::VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
+			VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
 
 			m_map.incCurrentLevel() ;
 			Dart midV = m_map.phi1(d) ;
@@ -171,20 +177,23 @@ public:
 template <typename PFP>
 class LerpQuadOddAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	LerpQuadOddAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LerpQuadOddAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> travE(m_map) ;
+		TraversorE<MAP> travE(m_map) ;
 		for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 		{
-			typename PFP::VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
+			VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
 
 			m_map.incCurrentLevel() ;
 			Dart midV = m_map.phi1(d) ;
@@ -192,14 +201,14 @@ public:
 			m_map.decCurrentLevel() ;
 		}
 
-		TraversorF<typename PFP::MAP> travF(m_map) ;
+		TraversorF<MAP> travF(m_map) ;
 		for (Dart d = travF.begin(); d != travF.end(); d = travF.next())
 		{
-			typename PFP::VEC3 vf(0.0);
-			typename PFP::VEC3 ef(0.0);
+			VEC3 vf(0.0);
+			VEC3 ef(0.0);
 
 			unsigned int count = 0;
-			Traversor2FE<typename PFP::MAP> travFE(m_map, d);
+			Traversor2FE<MAP> travFE(m_map, d);
 			for (Dart dit = travFE.begin(); dit != travFE.end(); dit = travFE.next())
 			{
 				vf += m_position[dit];
@@ -225,20 +234,23 @@ public:
 template <typename PFP>
 class LerpTriQuadOddAnalysisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	LerpTriQuadOddAnalysisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LerpTriQuadOddAnalysisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorE<typename PFP::MAP> travE(m_map) ;
+		TraversorE<MAP> travE(m_map) ;
 		for (Dart d = travE.begin(); d != travE.end(); d = travE.next())
 		{
-			typename PFP::VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
+			VEC3 ve = (m_position[d] + m_position[m_map.phi1(d)]) * typename PFP::REAL(0.5);
 
 			m_map.incCurrentLevel() ;
 			Dart midV = m_map.phi1(d) ;
@@ -246,16 +258,16 @@ public:
 			m_map.decCurrentLevel() ;
 		}
 
-		TraversorF<typename PFP::MAP> travF(m_map) ;
+		TraversorF<MAP> travF(m_map) ;
 		for (Dart d = travF.begin(); d != travF.end(); d = travF.next())
 		{
 			if(m_map.faceDegree(d) != 3)
 			{
-				typename PFP::VEC3 vf(0.0);
-				typename PFP::VEC3 ef(0.0);
+				VEC3 vf(0.0);
+				VEC3 ef(0.0);
 
 				unsigned int count = 0;
-				Traversor2FE<typename PFP::MAP> travFE(m_map, d);
+				Traversor2FE<MAP> travFE(m_map, d);
 				for (Dart dit = travFE.begin(); dit != travFE.end(); dit = travFE.next())
 				{
 					vf += m_position[dit];

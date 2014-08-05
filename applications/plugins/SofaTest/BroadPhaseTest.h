@@ -1,3 +1,6 @@
+#ifndef SOFA_STANDARDTEST_BroadPhase_test_H
+#define SOFA_STANDARDTEST_BroadPhase_test_H
+
 #include <SofaMeshCollision/DirectSAP.h>
 #include <gtest/gtest.h>
 #include <iostream>
@@ -522,4 +525,6 @@ bool BroadPhaseTest<BroadPhase>::randSparse(){
 
     return true;
 }
+
+#endif
 

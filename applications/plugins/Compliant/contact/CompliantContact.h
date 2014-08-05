@@ -10,6 +10,13 @@
 
 #include "../mapping/ContactMapping.h" 		// should be normal mapping
 
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/TetrahedronModel.h>
+#include <sofa/component/collision/LineModel.h>
+#include <sofa/component/collision/PointModel.h>
+#include <sofa/component/collision/OBBModel.h>
+#include <sofa/component/collision/CylinderModel.h>
+#include <sofa/core/collision/Contact.h>
 
 //#include <sofa/simulation/common/MechanicalVisitor.h>
 //#include <sofa/core/VecId.h>
@@ -80,6 +87,9 @@ protected:
 
         delta.node->addChild( contact_node.get() );
 
+        // ensure all graph context parameters (e.g. dt are well copied)
+        contact_node->updateSimulationContext();
+
         // 1d contact dofs
         typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
         typename contact_dofs_type::SPtr contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
@@ -145,6 +155,8 @@ protected:
 
 
 };
+
+void registerContactClasses();
 
 } // namespace collision
 } // namespace component

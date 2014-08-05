@@ -25,6 +25,8 @@
 #ifndef __MULTI4ATTRIBS_H_
 #define __MULTI4ATTRIBS_H_
 
+#include "Topology/generic/cells.h"
+
 namespace CGoGN
 {
 
@@ -105,7 +107,7 @@ public:
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[a],m_h2[a],m_h3[a],m_h4[a]);
 	}
 
-	RefCompo4Type<T1,T2,T3,T4> operator[](Dart d)
+	RefCompo4Type<T1,T2,T3,T4> operator[](Vertex d)
 	{
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[d],m_h2[d],m_h3[d],m_h4[d]);
 	}
@@ -115,7 +117,7 @@ public:
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[a],m_h2[a],m_h3[a],m_h4[a]);
 	}
 
-	const RefCompo4Type<T1,T2,T3,T4> operator[](Dart d) const
+	const RefCompo4Type<T1,T2,T3,T4> operator[](Vertex d) const
 	{
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[d],m_h2[d],m_h3[d],m_h4[d]);
 	}
@@ -143,7 +145,7 @@ public:
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[a],m_h2[a],m_h3[a],m_h4[a]);
 	}
 
-	RefCompo4Type<T1,T2,T3,T4> operator[](Dart d)
+	RefCompo4Type<T1,T2,T3,T4> operator[](Edge d)
 	{
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[d],m_h2[d],m_h3[d],m_h4[d]);
 	}
@@ -153,7 +155,7 @@ public:
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[a],m_h2[a],m_h3[a],m_h4[a]);
 	}
 
-	const RefCompo4Type<T1,T2,T3,T4> operator[](Dart d) const
+	const RefCompo4Type<T1,T2,T3,T4> operator[](Edge d) const
 	{
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[d],m_h2[d],m_h3[d],m_h4[d]);
 	}
@@ -182,7 +184,7 @@ public:
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[a],m_h2[a],m_h3[a],m_h4[a]);
 	}
 
-	RefCompo4Type<T1,T2,T3,T4> operator[](Dart d)
+	RefCompo4Type<T1,T2,T3,T4> operator[](Face d)
 	{
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[d],m_h2[d],m_h3[d],m_h4[d]);
 	}
@@ -192,7 +194,7 @@ public:
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[a],m_h2[a],m_h3[a],m_h4[a]);
 	}
 
-	const RefCompo4Type<T1,T2,T3,T4> operator[](Dart d) const
+	const RefCompo4Type<T1,T2,T3,T4> operator[](Face d) const
 	{
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[d],m_h2[d],m_h3[d],m_h4[d]);
 	}
@@ -219,7 +221,7 @@ public:
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[a],m_h2[a],m_h3[a],m_h4[a]);
 	}
 
-	RefCompo4Type<T1,T2,T3,T4> operator[](Dart d)
+	RefCompo4Type<T1,T2,T3,T4> operator[](Vol d)
 	{
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[d],m_h2[d],m_h3[d],m_h4[d]);
 	}
@@ -229,7 +231,7 @@ public:
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[a],m_h2[a],m_h3[a],m_h4[a]);
 	}
 
-	const RefCompo4Type<T1,T2,T3,T4> operator[](Dart d) const
+	const RefCompo4Type<T1,T2,T3,T4> operator[](Vol d) const
 	{
 		return RefCompo4Type<T1,T2,T3,T4>(m_h1[d],m_h2[d],m_h3[d],m_h4[d]);
 	}

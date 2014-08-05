@@ -87,17 +87,28 @@ void QuatToRigidEngine<DataTypes>::update()
 
     unsigned int sizeRigids = positions.size();
 
-    if(positions.size() != orientations.size())
+    int nbPositions = positions.size();
+    int nbOrientations = orientations.size();
+    if (!nbOrientations)
+    {
+        serr << "Warnings : no orientations" << sendl;
+        sizeRigids = 0;
+    }
+    else if (nbOrientations == 1)
+    { // We will use the same orientation for all rigids
+        sizeRigids = nbPositions;
+    }
+    else if(nbOrientations > 1 && nbPositions != nbOrientations)
     {
         serr << "Warnings : size of positions and orientations are not equal" << sendl;
-        sizeRigids = ( positions.size() > orientations.size() ) ?  orientations.size() :  positions.size() ;
+        sizeRigids = std::min(nbPositions, nbOrientations);
     }
 
     rigids.clear();
     for (unsigned int i=0 ; i< sizeRigids ; i++)
     {
         Vec3 pos = positions[i];
-        Quat q = orientations[i];
+        Quat q = orientations[i % nbOrientations];
         if (i < colinearPositions.size())
         {
             Vec3 colP = colinearPositions[i];

@@ -79,6 +79,7 @@ public:
     PointActiver() {}
     virtual ~PointActiver() {}
     virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
+	static PointActiver* getDefaultActiver() { static PointActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>

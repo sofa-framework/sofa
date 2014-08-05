@@ -54,3 +54,24 @@ macro(sofa_list_contains var value)
     endif()
   endforeach()
 endmacro()
+
+# Wrapper macro to set boolean value to a variable
+macro(setSofaOption name value)
+    set(${name} "${value}" CACHE BOOL "" FORCE)
+    message("${name} ${value}")
+endmacro()
+
+macro(setSofaPath name value)
+    set(${name} "${value}" CACHE PATH "" FORCE)
+    message("${name} ${value}")
+endmacro()
+
+macro(setSofaString name value)
+    set(${name} "${value}" CACHE STRING "" FORCE)
+    message("${name} ${value}")
+endmacro()
+
+macro(setSofaFilePath name value)
+    set(${name} "${value}" CACHE FILEPATH "" FORCE)
+    message("${name} ${value}")
+endmacro()

@@ -48,6 +48,13 @@ public:
 	static std::string CGoGNnameOfType() { return ""; }
 };
 
+template <typename T>
+std::ostream& operator<<(std::ostream& out, const NoTypeNameAttribute<T>&)
+{
+	out << "no_output" ;
+	return out ;
+}
+
 } // namespace CGoGN
 
 #endif /* FAKEATTRIBUTE_H_ */

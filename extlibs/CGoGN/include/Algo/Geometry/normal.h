@@ -41,24 +41,22 @@ namespace Geometry
 {
 
 template<typename PFP, typename V_ATT>
-typename V_ATT::DATA_TYPE triangleNormal(typename PFP::MAP& map, Dart d, const V_ATT& position) ;
+typename V_ATT::DATA_TYPE triangleNormal(typename PFP::MAP& map, Face f, const V_ATT& position) ;
 
 template<typename PFP, typename V_ATT>
-typename V_ATT::DATA_TYPE newellNormal(typename PFP::MAP& map, Dart d, const V_ATT& position);
+typename V_ATT::DATA_TYPE newellNormal(typename PFP::MAP& map, Face f, const V_ATT& position);
 
 template<typename PFP, typename V_ATT>
-typename V_ATT::DATA_TYPE faceNormal(typename PFP::MAP& map, Dart d, const V_ATT& position) ;
+typename V_ATT::DATA_TYPE faceNormal(typename PFP::MAP& map, Face f, const V_ATT& position) ;
 
 template<typename PFP, typename V_ATT>
-typename V_ATT::DATA_TYPE vertexNormal(typename PFP::MAP& map, Dart d, const V_ATT& position) ;
+typename V_ATT::DATA_TYPE vertexNormal(typename PFP::MAP& map, Vertex v, const V_ATT& position) ;
 
 template<typename PFP, typename V_ATT>
-typename V_ATT::DATA_TYPE vertexBorderNormal(typename PFP::MAP& map, Dart d, const V_ATT& position) ;
-
+typename V_ATT::DATA_TYPE vertexBorderNormal(typename PFP::MAP& map, Vertex v, const V_ATT& position) ;
 
 template <typename PFP, typename V_ATT, typename F_ATT>
 void computeNormalFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& face_normal, unsigned int thread = 0) ;
-
 
 /**
  * compute normals of  vertices
@@ -72,23 +70,27 @@ template <typename PFP,typename V_ATT>
 void computeNormalVertices(typename PFP::MAP& map, const V_ATT& position, V_ATT& normal, unsigned int thread = 0) ;
 
 
-namespace Parallel
-{
-template <typename PFP,typename V_ATT>
-void computeNormalVertices(typename PFP::MAP& map, const V_ATT& position, V_ATT& normal, unsigned int nbth = 0) ;
-
-
-template <typename PFP, typename V_ATT, typename F_ATT>
-void computeNormalFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& face_normal, unsigned int nbth = 0) ;
-
-}
-
-
 template <typename PFP, typename V_ATT>
-typename PFP::REAL computeAngleBetweenNormalsOnEdge(typename PFP::MAP& map, Dart d, const V_ATT& position) ;
+typename PFP::REAL computeAngleBetweenNormalsOnEdge(typename PFP::MAP& map, Edge d, const V_ATT& position) ;
 
 template <typename PFP, typename V_ATT, typename E_ATT>
 void computeAnglesBetweenNormalsOnEdges(typename PFP::MAP& map, const V_ATT& position, E_ATT& angles, unsigned int thread = 0) ;
+
+
+
+namespace Parallel
+{
+
+template <typename PFP,typename V_ATT>
+void computeNormalVertices(typename PFP::MAP& map, const V_ATT& position, V_ATT& normal) ;
+
+template <typename PFP, typename V_ATT, typename F_ATT>
+void computeNormalFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& face_normal) ;
+
+template <typename PFP, typename V_ATT, typename E_ATT>
+void computeAnglesBetweenNormalsOnEdges(typename PFP::MAP& map, const V_ATT& position, E_ATT& angles) ;
+
+}
 
 
 } // namespace Geometry

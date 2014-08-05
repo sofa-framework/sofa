@@ -56,7 +56,3 @@ CMakeLists.txt.user
 
 .svn/
 build/
-buildCSRelease/
-buildCSDebug/
-buildDebug/
-buildRelease/

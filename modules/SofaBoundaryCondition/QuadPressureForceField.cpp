@@ -40,8 +40,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-using namespace sofa::defaulttype;
-
 SOFA_DECL_CLASS(QuadPressureForceField)
 
 int QuadPressureForceFieldClass = core::RegisterObject("QuadPressure")

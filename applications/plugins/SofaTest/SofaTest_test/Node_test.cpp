@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-
+#include "stdafx.h"
 #include "Sofa_test.h"
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <plugins/SceneCreator/SceneCreator.h>

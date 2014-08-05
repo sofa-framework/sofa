@@ -25,25 +25,23 @@
 #ifndef __AUTO_ATTRIBUTE_HANDLER_H__
 #define __AUTO_ATTRIBUTE_HANDLER_H__
 
-#include "Topology/generic/attribmap.h"
 #include "Topology/generic/attributeHandler.h"
 
 namespace CGoGN
 {
 
-
 /**
  *  shortcut class for Dart AutoAttribute (Handler)
  */
-template <typename T>
-class DartAutoAttribute : public DartAttribute<T>
+template <typename T, typename MAP>
+class DartAutoAttribute : public DartAttribute<T, MAP>
 {
 public:
-	DartAutoAttribute(AttribMap& m, const std::string& nameAttr = "")
+	DartAutoAttribute(MAP& m, const std::string& nameAttr = "")
 	{
 		this->m_map = &m ;
-		if(!m.isOrbitEmbedded<DART>())
-			m.addEmbedding<DART>() ;
+		if(!m.template isOrbitEmbedded<DART>())
+			m.template addEmbedding<DART>() ;
 		AttributeMultiVector<T>* amv = this->m_map->template getAttributeContainer<DART>().template addAttribute<T>(nameAttr) ;
 		this->m_attrib = amv ;
 		this->valid = true ;
@@ -53,22 +51,22 @@ public:
 	~DartAutoAttribute()
 	{
 		if (this->valid)
-			reinterpret_cast<AttribMap*>(this->m_map)->removeAttribute<T>(*this) ;
+			this->m_map->removeAttribute(*this) ;
 	}
 };
 
 /**
  *  shortcut class for Vertex AutoAttribute (Handler)
  */
-template <typename T>
-class VertexAutoAttribute : public VertexAttribute<T>
+template <typename T, typename MAP>
+class VertexAutoAttribute : public VertexAttribute<T, MAP>
 {
 public:
-	VertexAutoAttribute(AttribMap& m, const std::string& nameAttr = "")
+	VertexAutoAttribute(MAP& m, const std::string& nameAttr = "")
 	{
 		this->m_map = &m ;
-		if(!m.isOrbitEmbedded<VERTEX>())
-			m.addEmbedding<VERTEX>() ;
+		if(!m.template isOrbitEmbedded<VERTEX>())
+			m.template addEmbedding<VERTEX>() ;
 		AttributeMultiVector<T>* amv = this->m_map->template getAttributeContainer<VERTEX>().template addAttribute<T>(nameAttr) ;
 		this->m_attrib = amv ;
 		this->valid = true ;
@@ -78,22 +76,22 @@ public:
 	~VertexAutoAttribute()
 	{
 		if (this->valid)
-			reinterpret_cast<AttribMap*>(this->m_map)->removeAttribute<T>(*this) ;
+			this->m_map->removeAttribute(*this) ;
 	}
 };
 
 /**
  *  shortcut class for Edge AutoAttribute (Handler)
  */
-template <typename T>
-class EdgeAutoAttribute : public EdgeAttribute<T>
+template <typename T, typename MAP>
+class EdgeAutoAttribute : public EdgeAttribute<T, MAP>
 {
 public:
-	EdgeAutoAttribute(AttribMap& m, const std::string& nameAttr = "")
+	EdgeAutoAttribute(MAP& m, const std::string& nameAttr = "")
 	{
 		this->m_map = &m ;
-		if(!m.isOrbitEmbedded<EDGE>())
-			m.addEmbedding<EDGE>() ;
+		if(!m.template isOrbitEmbedded<EDGE>())
+			m.template addEmbedding<EDGE>() ;
 		AttributeMultiVector<T>* amv = this->m_map->template getAttributeContainer<EDGE>().template addAttribute<T>(nameAttr) ;
 		this->m_attrib = amv ;
 		this->valid = true ;
@@ -103,22 +101,22 @@ public:
 	~EdgeAutoAttribute()
 	{
 		if (this->valid)
-			reinterpret_cast<AttribMap*>(this->m_map)->removeAttribute<T>(*this) ;
+			this->m_map->removeAttribute(*this) ;
 	}
 };
 
 /**
  *  shortcut class for Face AutoAttribute (Handler)
  */
-template <typename T>
-class FaceAutoAttribute : public FaceAttribute<T>
+template <typename T, typename MAP>
+class FaceAutoAttribute : public FaceAttribute<T, MAP>
 {
 public:
-	FaceAutoAttribute(AttribMap& m, const std::string& nameAttr = "")
+	FaceAutoAttribute(MAP& m, const std::string& nameAttr = "")
 	{
 		this->m_map = &m ;
-		if(!m.isOrbitEmbedded<FACE>())
-			m.addEmbedding<FACE>() ;
+		if(!m.template isOrbitEmbedded<FACE>())
+			m.template addEmbedding<FACE>() ;
 		AttributeMultiVector<T>* amv = this->m_map->template getAttributeContainer<FACE>().template addAttribute<T>(nameAttr) ;
 		this->m_attrib = amv ;
 		this->valid = true ;
@@ -128,22 +126,22 @@ public:
 	~FaceAutoAttribute()
 	{
 		if (this->valid)
-			reinterpret_cast<AttribMap*>(this->m_map)->removeAttribute<T>(*this) ;
+			this->m_map->removeAttribute(*this) ;
 	}
 };
 
 /**
  *  shortcut class for Volume AutoAttribute (Handler)
  */
-template <typename T>
-class VolumeAutoAttribute : public VolumeAttribute<T>
+template <typename T, typename MAP>
+class VolumeAutoAttribute : public VolumeAttribute<T, MAP>
 {
 public:
-	VolumeAutoAttribute(AttribMap& m, const std::string& nameAttr = "")
+	VolumeAutoAttribute(MAP& m, const std::string& nameAttr = "")
 	{
 		this->m_map = &m ;
-		if(!m.isOrbitEmbedded<VOLUME>())
-			m.addEmbedding<VOLUME>() ;
+		if(!m.template isOrbitEmbedded<VOLUME>())
+			m.template addEmbedding<VOLUME>() ;
 		AttributeMultiVector<T>* amv = this->m_map->template getAttributeContainer<VOLUME>().template addAttribute<T>(nameAttr) ;
 		this->m_attrib = amv ;
 		this->valid = true ;
@@ -153,10 +151,9 @@ public:
 	~VolumeAutoAttribute()
 	{
 		if (this->valid)
-			reinterpret_cast<AttribMap*>(this->m_map)->removeAttribute<T>(*this) ;
+			this->m_map->removeAttribute(*this) ;
 	}
 };
-
 
 } // namespace CGoGN
 

@@ -21,6 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
+
 namespace CGoGN
 {
 
@@ -66,7 +67,7 @@ std::vector<Dart> ParticleCell2DSecured<PFP>::move(const VEC3& goal)
 }
 
 template <typename PFP>
-void ParticleCell2DSecured<PFP>::vertexState(const VEC3& current, CellMarkerMemo<FACE>& memo_cross)
+void ParticleCell2DSecured<PFP>::vertexState(const VEC3& current, CellMarkerMemo<MAP, FACE>& memo_cross)
 {
 #ifdef DEBUG
 	CGoGNout << "vertexState" << this->d << CGoGNendl ;
@@ -163,7 +164,7 @@ void ParticleCell2DSecured<PFP>::vertexState(const VEC3& current, CellMarkerMemo
 }
 
 template <typename PFP>
-void ParticleCell2DSecured<PFP>::edgeState(const VEC3& current, CellMarkerMemo<FACE>& memo_cross, Geom::Orientation2D sideOfEdge)
+void ParticleCell2DSecured<PFP>::edgeState(const VEC3& current, CellMarkerMemo<MAP, FACE>& memo_cross, Geom::Orientation2D sideOfEdge)
 {
 #ifdef DEBUG
 	CGoGNout << "edgeState" << this->d << CGoGNendl ;
@@ -226,7 +227,7 @@ void ParticleCell2DSecured<PFP>::edgeState(const VEC3& current, CellMarkerMemo<F
 }
 
 template <typename PFP>
-void ParticleCell2DSecured<PFP>::faceState(const VEC3& current, CellMarkerMemo<FACE>& memo_cross)
+void ParticleCell2DSecured<PFP>::faceState(const VEC3& current, CellMarkerMemo<MAP, FACE>& memo_cross)
 {
 #ifdef DEBUG
 	CGoGNout << "faceState" << this->d << CGoGNendl ;
@@ -245,7 +246,10 @@ void ParticleCell2DSecured<PFP>::faceState(const VEC3& current, CellMarkerMemo<F
 
 }
 
-}
-}
-} //namespaces
-}
+} // namespace MovingObjects
+
+} // namespace Surface
+
+} // namespace Algo
+
+} // namespace CGoGN

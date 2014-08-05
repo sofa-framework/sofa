@@ -25,7 +25,7 @@
 #ifndef _CGOGN_TEXTURESTICKER_H_
 #define _CGOGN_TEXTURESTICKER_H_
 
-#include "Utils/vbo.h"
+#include "Utils/vbo_base.h"
 #include "Utils/Shaders/shaderSimpleTexture.h"
 #include "Utils/Shaders/shaderTextureDepth.h"
 #include "Utils/gl_def.h"

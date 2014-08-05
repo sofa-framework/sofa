@@ -10,6 +10,7 @@
 #include <SofaBaseMechanics/UniformMass.h>
 
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/core/behavior/Mass.h>
 
 
 #ifdef SOFA_HAVE_IMAGE
@@ -138,9 +139,11 @@ namespace behavior
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_COMPILING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME3dTypes>;
+extern template class SOFA_Flexible_API Mass<defaulttype::TYPEABSTRACTNAME3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_Flexible_API ForceField<defaulttype::TYPEABSTRACTNAME3fTypes>;
+extern template class SOFA_Flexible_API Mass<defaulttype::TYPEABSTRACTNAME3fTypes>;
 #endif
 #endif
 

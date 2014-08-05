@@ -329,7 +329,10 @@ protected:
                     pt.u=Coord( ( inp[0]< indim[0]-inp[0]-1)? inp[0]: indim[0]-inp[0]-1 ,
                             ( inp[1]< indim[1]-inp[1]-1)? inp[1]: indim[1]-inp[1]-1 ,
                             ( inp[2]< indim[2]-inp[2]-1)? inp[2]: indim[2]-inp[2]-1 ); // distance from border
-                    pts.push_back(pt);
+
+                    bool isnotnull=false;
+                    for(unsigned int t=0; t<pt.vals.size(); t++) for(unsigned int k=0; k<pt.vals[t].size(); k++) if(pt.vals[t][k]!=(T)0) isnotnull=true;
+                    if(isnotnull) pts.push_back(pt);
                 }
             }
             unsigned int nbp=pts.size();

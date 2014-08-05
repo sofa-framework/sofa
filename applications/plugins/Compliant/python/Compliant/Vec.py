@@ -7,6 +7,8 @@ import math
 
 import __builtin__ as base
 
+print "WARNING Compliant's Vec.py is now deprecated (and will be deleted soon), please use numpy instead"
+
 def dot(x, y):
     return base.sum( [xi * yi for xi, yi in zip(x, y) ] )
 

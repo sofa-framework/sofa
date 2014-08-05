@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <sofa/helper/Quater.h>
 
 #include "../types/DeformationGradientTypes.h"
@@ -119,8 +120,8 @@ namespace sofa {
                 expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
 //              cerr<<"voigt strain = " << defo << endl;
 
-//              helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
-                helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // random rotation to combine to strain
+                helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
+//                helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // random rotation to combine to strain
 
                 return Inherited::runTest( rotation, symGradDef, expectedChildCoords );
 

@@ -60,8 +60,10 @@ template <typename PFP>
 class MeshTablesSurface
 {
 public:
+    typedef typename PFP::MAP MAP ;
     typedef typename PFP::VEC3 VEC3 ;
     typedef typename VEC3::value_type DATA_TYPE ;
+    typedef typename PFP::REAL REAL ;
     enum VOLUME_TYPE {
         TETRAHEDRON = 0,
         HEXAHEDRON,
@@ -69,7 +71,7 @@ public:
         TRIANGULAR_PRISM
     };
 protected:
-    typename PFP::MAP& m_map;
+    MAP& m_map;
 
     unsigned int m_nbVertices;
 
@@ -155,19 +157,21 @@ template <typename PFP>
 class MeshTablesVolume
 {
 public:
+    typedef typename PFP::MAP MAP ;
     typedef typename PFP::VEC3 VEC3 ;
     typedef typename VEC3::value_type DATA_TYPE ;
-    typedef typename PFP::REAL REAL;
+    typedef typename PFP::REAL REAL ;
 
     enum VOLUME_TYPE {
         TETRAHEDRON = 0,
         HEXAHEDRON,
         SQUARE_PYRAMID,
-        TRIANGULAR_PRISM
+        TRIANGULAR_PRISM,
+        CONNECTOR
     };
 
 protected:
-    typename PFP::MAP& m_map;
+    MAP& m_map;
 
     unsigned int m_nbVertices;
 
@@ -205,11 +209,11 @@ protected:
 
     bool importMSH(const std::string& filename, std::vector<std::string>& attrNames);
 
-    bool importVTU(const std::string& filename, std::vector<std::string>& attrNames);
+    //    bool importVTU(const std::string& filename, std::vector<std::string>& attrNames);
 
     bool importNAS(const std::string& filename, std::vector<std::string>& attrNames);
 
-    bool importVBGZ(const std::string& filename, std::vector<std::string>& attrNames);
+    //    bool importVBGZ(const std::string& filename, std::vector<std::string>& attrNames);
 
     //bool importMoka(const std::string& filename, std::vector<std::string>& attrNames);
 
@@ -218,8 +222,10 @@ protected:
 public:
     //static ImportType getFileType(const std::string& filename);
 
-    unsigned int getNbVerticesOfVolume(VOLUME_TYPE vt) const  {
-        if (vt == TETRAHEDRON)
+    inline static unsigned int getNbVerticesOfVolume(VOLUME_TYPE vt) {
+        if (vt == CONNECTOR)
+            return 4u;
+        else if (vt == TETRAHEDRON)
             return 4u;
         else if ( vt == SQUARE_PYRAMID)
             return 5u;
@@ -236,7 +242,7 @@ public:
 
     inline unsigned getNbVolumes() const { return m_nbVolumes; }
 
-    inline short getNbFacesVolume(int i) const { return m_nbVerticesPerVolume[i]; }
+//    inline short getNbFacesVolume(int i) const { return m_nbVerticesPerVolume[i]; }
 
     inline VOLUME_TYPE getVolumeType(int i) const { return m_volumeType[i] ;}
 

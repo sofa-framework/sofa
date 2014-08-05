@@ -118,7 +118,7 @@ void TLineModel<DataTypes>::init()
     if (path.size()==0)
     {
 
-        myActiver = new LineActiver();
+        myActiver = LineActiver::getDefaultActiver();
         sout<<"path = "<<path<<" no Line Activer found for LineModel "<<this->getName()<<sendl;
     }
     else
@@ -139,7 +139,7 @@ void TLineModel<DataTypes>::init()
 
         if (myActiver==NULL)
         {
-            myActiver = new LineActiver();
+            myActiver = LineActiver::getDefaultActiver();
 
 
             serr<<"wrong path for Line Activer for LineModel "<< this->getName() <<sendl;

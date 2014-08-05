@@ -5,15 +5,26 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/breadth_first_search.hpp>
 
+namespace boost {
+
+
+}
+
 namespace utils {
 
 template<class Vertex, class Edge, class Direction>
 struct graph_traits {
+
+	typedef boost::property<boost::vertex_color_t,
+							boost::default_color_type,
+							Vertex> vertex_properties;
 	
-	typedef boost::property<boost::vertex_color_t, boost::default_color_type, Vertex> vertex_properties;
-	typedef boost::property< boost::edge_color_t, boost::default_color_type, Edge > edge_properties;
+	typedef boost::property< boost::edge_color_t,
+							 boost::default_color_type,
+							 Edge > edge_properties;
 
 	typedef boost::adjacency_list<boost::vecS, boost::vecS, Direction, vertex_properties, edge_properties > graph_type;
+
 	
 }; 
 
@@ -40,9 +51,20 @@ struct graph : graph_traits<Vertex, Edge, Direction>::graph_type {
 	typedef std::pair<typename graph::out_edge_iterator,
 	                  typename graph::out_edge_iterator> out_edge_range;
 
+	// easy properties
+	static typename boost::edge_property_type<base>::type ep(const Edge& x) {
+		return typename boost::edge_property_type<base>::type( boost::default_color_type(), x);
+	};
+
+	static typename boost::vertex_property_type<base>::type vp(const Vertex& x) {
+		return typename boost::vertex_property_type<base>::type( boost::default_color_type(), x);
+	};
+
+
 };
 
 
+// postfix (children first)
 template<class F>
 struct dfs_visitor : boost::default_dfs_visitor {
 	F f;
@@ -86,6 +108,7 @@ struct bfs_visitor : boost::default_bfs_visitor {
 
 
 
+// postfix (chidren first)
 template<class G, class F>
 void dfs(const G& g, const F& f) {
 	dfs_visitor<F> vis(f);

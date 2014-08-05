@@ -49,7 +49,7 @@ namespace MC
  * @param DataType the type of voxel image
  * @param Windowing the windowing class which allow to distinguish inside from outside
  */
-template< typename  DataType, template < typename D2 > class Windowing, typename PFP >
+template <typename DataType, template <typename D2> class Windowing, typename PFP>
 class MarchingCube
 {
 protected:
@@ -84,7 +84,7 @@ protected:
 	*/
 	L_MAP* m_map;
 
-	VertexAttribute<VEC3>& m_positions;
+	VertexAttribute<VEC3, L_MAP>& m_positions;
 
 	/**
 	* Origin of image
@@ -227,7 +227,7 @@ public:
 	* @param wind the windowing class (for inside/outside distinguish)
 	* @param boundRemoved true is bound is going to be removed
 	*/
-	MarchingCube(Image<DataType>* img, L_MAP* map, VertexAttribute<VEC3>& position, Windowing<DataType> wind, bool boundRemoved);
+	MarchingCube(Image<DataType>* img, L_MAP* map, VertexAttribute<VEC3, L_MAP>& position, Windowing<DataType> wind, bool boundRemoved);
 
 	/**
 	* destructor
@@ -265,24 +265,23 @@ public:
 	 */
 	Geom::Vec3f boundMax() const { return m_Image->boundMax(); }
 
-	void removeFacesOfBoundary(VertexAttribute<unsigned char>& boundVertices, unsigned int frameWidth);
+	void removeFacesOfBoundary(VertexAttribute<unsigned char, L_MAP>& boundVertices, unsigned int frameWidth);
 
 	void recalPoints(const Geom::Vec3f& origin);
 
-
 	#ifdef MC_WIDTH_EDGE_Z_EMBEDED
-	void setZSliceAttrib(EdgeAttribute<unsigned long long>* zsatt, unsigned int zbound, unsigned int nbZone);
+	void setZSliceAttrib(EdgeAttribute<unsigned long long, L_MAP>* zsatt, unsigned int zbound, unsigned int nbZone);
 	#endif
-
 };
 
 } // namespace MC
 
-}
+} // namespace Surface
 
 } // namespace Algo
 
 } // namespace CGoGN
 
 #include "Algo/MC/marchingcube.hpp"
+
 #endif

@@ -40,14 +40,14 @@ namespace Geometry
 {
 
 template <typename PFP>
-bool isEdgeConvexe(typename PFP::MAP& map, Dart d, const VertexAttribute<typename PFP::VEC3>& position)
+bool isEdgeConvex(typename PFP::MAP& map, Edge e, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position)
 {
 	typedef typename PFP::VEC3 VEC3 ;
 
-	const VEC3 n = faceNormal<PFP>(map, d, position);
-	const VEC3 e = vectorOutOfDart<PFP>(map, map.phi1(map.phi2(d)), position) ;
+	const VEC3 n = faceNormal<PFP>(map, e.dart, position);
+	const VEC3 ee = vectorOutOfDart<PFP>(map, map.phi1(map.phi2(e.dart)), position) ;
 
-	if((e * n) > 0)
+	if((ee * n) < 0)
 		return true;
 	else
 		return false;

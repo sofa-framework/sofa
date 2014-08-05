@@ -18,6 +18,7 @@ CoulombConstraint::CoulombConstraint(SReal mu)
 
 void CoulombConstraint::project( SReal* out, unsigned n, bool correct ) const
 {
+    (void)n;
     assert( n >= 3 );
 
 	typedef Eigen::Matrix<SReal, 3, 1> vec3;
@@ -25,22 +26,13 @@ void CoulombConstraint::project( SReal* out, unsigned n, bool correct ) const
 
 	static const vec3 normal = vec3::UnitX();
 
-	// only project normal component during correction
+	// only keep unilateral projection during correction
     if( correct ) {
-		SReal direction = normal.dot( view );
+		SReal alpha = normal.dot( view );
 
-		if( direction < 0 ) {
-			// only project normal
-			view = view - normal * normal.dot( view );
+		alpha = std::max(alpha, (SReal)0.0);
 
-            // un bazooka pour tuer une mouche
-            // ca ne revient pas exactement à :
-            // if( view[O] < 0 ) view[O] = 0;
-            // ?
-            // et quid des forces tangentielles ?
-            // il ne faut pas les "unilatéraliser" aussi ?
-            // pour les empecher d'attirer.
-		}
+		view = normal * alpha;
 		
     } else {
 		// full cone projection
