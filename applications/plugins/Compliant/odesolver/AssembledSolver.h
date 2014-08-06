@@ -308,7 +308,7 @@ public:
     /// if fullAssembly==true, a complete assembly/factorization is performed
     /// otherwise only the rhs is updated and the system used for the dynamics pass is preserved
     /// @warning: the contacts points and normals are not updated, so the time step needs to be small with contacts
-    void post_stabilization( SolverOperations& sop,
+    virtual void post_stabilization( SolverOperations& sop,
                              core::MultiVecCoordId posId, core::MultiVecDerivId velId,
                              bool fullAssembly );
 
