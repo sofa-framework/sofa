@@ -45,6 +45,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
+#include <sofa/gui/BatchGUI.h>  // For the default number of iterations
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
@@ -118,7 +119,7 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
-    int	        nbIterations = 0;
+    int	        nbIterations = sofa::gui::BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
     std::string gui = "";
@@ -207,7 +208,7 @@ int main(int argc, char** argv)
 
     sofa::helper::system::PluginManager::getInstance().init();
 
-    if(gui.compare("batch") == 0 && nbIterations > 0)
+    if(gui.compare("batch") == 0 && nbIterations >= 0)
     {
         std::ostringstream oss ;
         oss << "nbIterations=";
