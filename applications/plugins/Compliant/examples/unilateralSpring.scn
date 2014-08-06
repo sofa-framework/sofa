@@ -33,18 +33,11 @@
 	    <!-- soft spring in stiffness -->
 	    <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-2" isCompliance="false" />
 
-
 	    <!-- negative extension above limit, two ways to implement the same unilateral constraint -->
 	    <Node name="limits" >
 		    <MechanicalObject template="Vec1d"  name="extensionsDOF" />
-		    
-<!-- 		    - first way -->
-<!-- 		    <DifferenceFromTargetMapping template="Vec1d" targets="1" inverted="1"/> -->
-<!--                - second way-->
 		    <DifferenceFromTargetMapping targets="1" inverted="1"/>
-		    
 		    <UniformCompliance name="ucomp" template="Vec1d" compliance="0" />
-		    <ConstraintValue />
 		    <UnilateralConstraint />
 	    </Node>
 	    
