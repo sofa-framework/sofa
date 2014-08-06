@@ -136,7 +136,7 @@ public:
         LElementConstIterator ite = it->second.find(j);
         if (ite == it->second.end())
             return 0.0;
-        return ite->second;
+        return (SReal)ite->second;
     }
 
     void set(Index i, Index j, double v)

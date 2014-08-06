@@ -318,10 +318,10 @@ void MatrixLinearSolver<Matrix,Vector>::invertSystem()
 template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, double fact)
 {
-    for (unsigned row=0; row<J->rowSize(); row++)
+    for (JMatrixType::Index row=0; row<J->rowSize(); row++)
     {
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
-        for (unsigned i=0; i<J->colSize(); i++) currentGroup->systemRHVector->set(i,J->element(row,i)); // currentGroup->systemMatrix->rowSize()
+        for (JMatrixType::Index i=0; i<J->colSize(); i++) currentGroup->systemRHVector->set(i,J->element(row,i)); // currentGroup->systemMatrix->rowSize()
 
         // STEP 2 : solve the system :
         solveSystem();
@@ -357,16 +357,16 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
 template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::addMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, double fact)
 {
-    for (unsigned row=0; row<J->rowSize(); row++)
+    for (JMatrixType::Index row=0; row<J->rowSize(); row++)
     {
         // STEP 1 : put each line of matrix Jt in the right hand term of the system
-        for (unsigned i=0; i<J->colSize(); i++) currentGroup->systemRHVector->set(i,J->element(row,i)); // currentGroup->systemMatrix->rowSize()
+        for (JMatrixType::Index i=0; i<J->colSize(); i++) currentGroup->systemRHVector->set(i,J->element(row,i)); // currentGroup->systemMatrix->rowSize()
 
         // STEP 2 : solve the system :
         solveSystem();
 
         // STEP 3 : project the result using matrix J
-        for (unsigned i=0; i<J->colSize(); i++) result->add(row,i,currentGroup->systemRHVector->element(i) * fact);
+        for (JMatrixType::Index i=0; i<J->colSize(); i++) result->add(row,i,currentGroup->systemRHVector->element(i) * fact);
     }
 
     return true;
