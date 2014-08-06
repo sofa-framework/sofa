@@ -8,9 +8,13 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/MechanicalOperations.h>
+#include <sofa/simulation/common/VectorOperations.h>
 
 // TODO forward instead ?
 #include "numericalsolver/KKTSolver.h"
+
+#include <sofa/helper/OptionsGroup.h>
 
 
 
@@ -113,6 +117,74 @@ public:
  @author Francois Faure, Maxime Tournier, Matthieu Nesme
 */
 class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolver {
+
+  protected:
+
+    /** Unification of the parameters and helpers used by the solver */
+    struct SolverOperations
+    {
+        sofa::simulation::common::VectorOperations vop;
+        sofa::simulation::common::MechanicalOperations mop;
+        sofa::core::objectmodel::BaseContext* ctx;
+        SReal alpha;
+        SReal beta;
+        core::MechanicalParams _mparams;
+        const core::MultiVecCoordId& posId;
+        const core::MultiVecDerivId& velId;
+
+        SolverOperations( const core::ExecParams* ep , sofa::core::objectmodel::BaseContext* ctx,
+                          SReal a, SReal b, SReal dt,
+                          const core::MultiVecCoordId& posId, const core::MultiVecDerivId& velId,
+                          bool staticSolver=false )
+            : vop( ep, ctx )
+            , mop( ep, ctx )
+            , ctx( ctx )
+            , alpha( a )
+            , beta( b )
+            , posId( posId )
+            , velId( velId )
+        {
+            _mparams.setExecParams( ep );
+            mop->setImplicit(true); // we will compute forces and stiffnesses
+
+            SReal mfactor;
+            SReal bfactor;
+            SReal kfactor;
+
+            if( staticSolver )
+            {
+                mfactor = 0.0;
+                bfactor = 0.0;
+                kfactor = 1.0;
+                dt = 1;
+            }
+            else
+            {
+                mfactor = 1.0;
+                bfactor = -dt * alpha;
+                kfactor = -dt * dt * alpha * beta;
+            }
+
+            mparams().setMFactor( mfactor );
+            mparams().setBFactor( bfactor );
+            mparams().setKFactor( kfactor );
+            mparams().setDt( dt );
+
+            mparams().setImplicitVelocity( alpha );
+            mparams().setImplicitPosition( beta );
+
+//            mparams().setX( posId );
+//            mparams().setV( velId );
+
+            mop.mparams = mparams();
+        }
+
+        inline const core::MechanicalParams& mparams() const { return /*mop.*/_mparams; }
+        inline       core::MechanicalParams& mparams()       { return /*mop.*/_mparams; }
+
+    };
+
+
   public:
 				
 	SOFA_CLASS(AssembledSolver, sofa::core::behavior::OdeSolver);
@@ -134,12 +206,10 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
     virtual void cleanup();
 
-    // mechanical params
-    void buildMparams( core::MechanicalParams& mparams,
-                       const core::ExecParams& params,
-                       double dt) const;
+    enum { NO_STABILIZATION=0, PRE_STABILIZATION, POST_STABILIZATION_RHS, POST_STABILIZATION_ASSEMBLY, NB_STABILIZATION };
+    Data<helper::OptionsGroup> stabilization;
 
-    Data<bool> warm_start, propagate_lambdas, stabilization, debug;
+    Data<bool> warm_start, propagate_lambdas, debug;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 	Data<SReal> stabilization_damping;
     Data<bool> neglecting_compliance_forces_in_geometric_stiffness; ///< isn't the name clear enough?
@@ -176,9 +246,7 @@ public:
 
 
     /// Compute the forces f (summing stiffness and compliance) and the right part of the implicit system c (c_k in compliant-reference.pdf, section 3)
-    virtual void compute_forces(const core::MechanicalParams& params,
-                               simulation::common::MechanicalOperations& mop,
-                               simulation::common::VectorOperations& vop,
+    virtual void compute_forces(SolverOperations& sop,
                                core::behavior::MultiVecDeriv& f,
                                core::behavior::MultiVecDeriv& c );
 
@@ -246,6 +314,16 @@ protected:
 
     /// temporary multivecs
     core::behavior::MultiVecDeriv _ck; ///< the right part of the implicit system (c_k term)
+
+
+    /// compute post-stabilization correcting constraint in position-based
+    /// have a look to Ascher94&97 and Cline03 for more details
+    /// if fullAssembly==true, a complete assembly/factorization is performed
+    /// otherwise only the rhs is updated and the system used for the dynamics pass is preserved
+    /// @warning: the contacts points and normals are not updated, so the time step needs to be small with contacts
+    void post_stabilization( SolverOperations& sop,
+                             core::MultiVecCoordId posId, core::MultiVecDerivId velId,
+                             bool fullAssembly );
 
 };
 
