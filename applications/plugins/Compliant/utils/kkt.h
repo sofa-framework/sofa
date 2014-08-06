@@ -8,7 +8,7 @@
 namespace sofa {
 namespace component {
 namespace linearsolver {
-struct AssembledSystem;
+class AssembledSystem;
 }
 }
 }
