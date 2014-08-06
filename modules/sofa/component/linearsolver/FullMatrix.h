@@ -191,7 +191,7 @@ public:
             return 0.0;
         }
 #endif
-        return data[i*pitch+j];
+        return (SReal)data[i*pitch+j];
     }
 
     void set(Index i, Index j, double v)

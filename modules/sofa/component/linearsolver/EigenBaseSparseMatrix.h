@@ -90,7 +90,7 @@ class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
                 it.valueRef()=0.0;
         }
 
-        incoming.push_back( Triplet(i,j,v) );
+        incoming.push_back( Triplet(i,j,(Real)v) );
     }
 
 
@@ -194,7 +194,7 @@ public:
 
     SReal element(Index i, Index j) const
     {
-        return compressedMatrix.coeff(i,j);
+        return (SReal)compressedMatrix.coeff(i,j);
     }
 
 

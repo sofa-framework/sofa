@@ -60,7 +60,7 @@ public:
         Index bd = j-(i/3)*3;
         if ((bd<0) || (bd>2)) return 0.0 ;
 
-        return data[i*3+bd];
+        return (SReal)data[i*3+bd];
     }
 
     /// Resize the matrix and reset all values to 0
@@ -115,9 +115,9 @@ public:
         Index l = 0;
         while (k < data.size())
         {
-            result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 1] * v->element(l+1) + data[k + 2] * v->element(l+2));
-            result->set(l+1,data[k + 3] * v->element(l+0) + data[k + 4] * v->element(l+1) + data[k + 5] * v->element(l+2));
-            result->set(l+2,data[k + 6] * v->element(l+0) + data[k + 7] * v->element(l+1) + data[k + 8] * v->element(l+2));
+            result->set(l+0,(SReal)(data[k + 0] * v->element(l+0) + data[k + 1] * v->element(l+1) + data[k + 2] * v->element(l+2)));
+            result->set(l+1,(SReal)(data[k + 3] * v->element(l+0) + data[k + 4] * v->element(l+1) + data[k + 5] * v->element(l+2)));
+            result->set(l+2,(SReal)(data[k + 6] * v->element(l+0) + data[k + 7] * v->element(l+1) + data[k + 8] * v->element(l+2)));
             l+=3;
             k+=9;
         }
@@ -129,9 +129,9 @@ public:
         Index l = 0;
         while (k < data.size())
         {
-            result->set(l+0,data[k + 0] * v->element(l+0) + data[k + 3] * v->element(l+1) + data[k + 6] * v->element(l+2));
-            result->set(l+1,data[k + 1] * v->element(l+0) + data[k + 4] * v->element(l+1) + data[k + 7] * v->element(l+2));
-            result->set(l+2,data[k + 2] * v->element(l+0) + data[k + 5] * v->element(l+1) + data[k + 8] * v->element(l+2));
+            result->set(l+0,(SReal)(data[k + 0] * v->element(l+0) + data[k + 3] * v->element(l+1) + data[k + 6] * v->element(l+2)));
+            result->set(l+1,(SReal)(data[k + 1] * v->element(l+0) + data[k + 4] * v->element(l+1) + data[k + 7] * v->element(l+2)));
+            result->set(l+2,(SReal)(data[k + 2] * v->element(l+0) + data[k + 5] * v->element(l+1) + data[k + 8] * v->element(l+2)));
             l+=3;
             k+=9;
         }
