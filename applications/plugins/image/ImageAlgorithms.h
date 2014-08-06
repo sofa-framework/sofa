@@ -32,6 +32,14 @@
 #include <set>
 #include <vector>
 
+#if defined(WIN32) && (_MSC_VER < 1800) // for all version anterior to Visual Studio 2013
+# include <float.h>
+# define isnan(x)  (_isnan(x))
+#else
+# include <cmath>
+# define isnan(x) (std::isnan(x))
+#endif
+
 #include "ImageTypes.h"
 
 #ifdef USING_OMP_PRAGMAS
@@ -323,7 +331,7 @@ bool hasConverged(cimg_library::CImg<real>& previous, cimg_library::CImg<real>& 
 #endif
     for(int i=0; i<previous.width(); ++i) for(int j=0; j<previous.height(); ++j) for(int k=0; k<previous.depth(); ++k)
     {
-        if( !std::isnan(previous(i,j,k,0)) && !std::isnan(current(i,j,k,0)) )
+        if( !isnan(previous(i,j,k,0)) && !isnan(current(i,j,k,0)) )
         {
             SReal error = sqrt( pow(previous(i,j,k,0)-current(i,j,k,0),2) +
                                 pow(previous(i,j,k,1)-current(i,j,k,1),2) +
@@ -517,7 +525,7 @@ void rasterScan(cimg_library::CImg<unsigned int>& voronoi, cimg_library::CImg<re
 /// @param tolerance should be carefully chosen to minimize computation time.
 /// @returns @param voronoi and @param distances
 template<typename real,typename T>
-void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, const sofa::helper::fixed_array<real, 3>& voxelSize, const unsigned int maxIter=std::numeric_limits<unsigned int>::max(), const SReal tolerance=10, const cimg_library::CImg<T>* biasFactor=NULL)
+void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, const sofa::helper::fixed_array<real, 3>& voxelSize, const unsigned int maxIter=1e10, const SReal tolerance=10, const cimg_library::CImg<T>* biasFactor=NULL)
 {
     //Build a new distance image from distances.
     cimg_library::CImg<real> v_distances(distances.width(), distances.height(), distances.depth(), 3, std::numeric_limits<real>::max());
@@ -547,7 +555,7 @@ void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<un
 #endif
     for(int i=0; i<distances.width(); ++i) for(int j=0; j<distances.height(); ++j) for(int k=0; k<distances.depth(); ++k)
     {
-        if( std::isnan(v_distances(i,j,k,0)) )
+        if( isnan(v_distances(i,j,k,0)) )
             distances(i,j,k,0) = -1.0;
         else
             distances(i,j,k,0) = std::sqrt( std::pow(v_distances(i,j,k,0),2) + std::pow(v_distances(i,j,k,1),2) + std::pow(v_distances(i,j,k,2),2) );
@@ -576,6 +584,6 @@ void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& tr
 }
 
 
-
+#undef isnan(x)
 
 #endif // IMAGEALGORITHMS_H
