@@ -136,9 +136,9 @@ public:
             J_local.clear();
             J_local.resize(J->rowSize(),J->colSize());
 
-            for (JMatrixType::Index j=0; j<J->rowSize(); j++)
+            for (typename JMatrixType::Index j=0; j<J->rowSize(); j++)
             {
-                for (JMatrixType::Index i=0; i<J->colSize(); i++)
+                for (typename JMatrixType::Index i=0; i<J->colSize(); i++)
                 {
                     J_local.set(j,i,J->element(j,i));
                 }
