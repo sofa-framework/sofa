@@ -180,7 +180,7 @@ void Visitor::printVector(core::behavior::BaseMechanicalState *mm, core::ConstVe
 
 void Visitor::printNode(const std::string &type, const std::string &name, const TRACE_ARGUMENT &arguments)
 {
-    std::cout << "printNode " << type << " " << name << std::endl;
+//    std::cout << "printNode " << type << " " << name << std::endl;
     if (Visitor::printActivated)
     {
         std::ostringstream s;
