@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/wiki/TutorialBasicCube -->
-<Node name="root" dt="0.01" gravity="0 0 -9.81" showBehavior="1">
-
+<Node name="root" dt="0.01" gravity="0 0 -9.81">
+  <VisualStyle displayFlags="showBehavior" />
   <EulerImplicitSolver name="EulerImplicit" />
   <CGLinearSolver name="CG Solver" />
 

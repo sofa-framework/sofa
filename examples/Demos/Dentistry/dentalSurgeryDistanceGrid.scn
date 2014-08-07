@@ -4,9 +4,10 @@
  + Added a computation of the haptic forces 
 -->
 
-<Node name="root" dt="0.001" gravity="10 0 0" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
+<Node name="root" dt="0.001" gravity="10 0 0" >
 
-    	<OmniDriver scale="0.1" orientation="0 0 90"/>
+    <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
+    <OmniDriver scale="0.1" orientation="0 0 90"/>
 		 
 	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
