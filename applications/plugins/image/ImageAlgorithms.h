@@ -527,6 +527,11 @@ void rasterScan(cimg_library::CImg<unsigned int>& voronoi, cimg_library::CImg<re
 template<typename real,typename T>
 void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, const sofa::helper::fixed_array<real, 3>& voxelSize, const unsigned int maxIter=std::numeric_limits<unsigned int>::max(), const SReal tolerance=10, const cimg_library::CImg<T>* biasFactor=NULL)
 {
+    if(distances.width()<3 || distances.height()<3 || distances.depth()<3)
+    {
+        std::cerr << "ImageAlgorithms::parallelMarching : Boundary conditions are not treated so size (width,height,depth) should be >=3. (Work in Progress)" << std::endl;
+        return;
+    }
     //Build a new distance image from distances.
     cimg_library::CImg<real> v_distances(distances.width(), distances.height(), distances.depth(), 3, std::numeric_limits<real>::max());
 #ifdef USING_OMP_PRAGMAS
