@@ -17,7 +17,7 @@ def createScene(node):
     manager.responseParams = 'mu=0' # per object friction coefficient (the friction coef between 2 objects is approximated as the product of both coefs)
 
     ode = node.getObject('ode')
-    ode.stabilization = True
+    ode.stabilization = "pre-stabilization"
     ode.debug = False
 
     num = node.createObject('SequentialSolver',
