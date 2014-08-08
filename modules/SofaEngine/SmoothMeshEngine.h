@@ -89,7 +89,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SmoothMeshEngine_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API SmoothMeshEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

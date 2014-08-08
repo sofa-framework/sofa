@@ -1191,12 +1191,12 @@ void Map3<MAP_IMPL>::foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f, unsigne
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-void Map3<MAP_IMPL>::foreach_dart_of_vertex(Dart d, FUNC& f, unsigned int thread) const
+void Map3<MAP_IMPL>::foreach_dart_of_vertex(Dart d, const FUNC& f, unsigned int thread) const
 {
 	DartMarkerStore< Map3<MAP_IMPL> > mv(*this, thread);	// Lock a marker
 
-	std::vector<Dart> darts;	// Darts that are traversed
-	darts.reserve(256);
+    std::vector<Dart>& darts = *(this->askDartBuffer(thread));	// Darts that are traversed
+//	darts.reserve(256);
 	darts.push_back(d);			// Start with the dart d
 	mv.mark(d);
 
@@ -1220,11 +1220,12 @@ void Map3<MAP_IMPL>::foreach_dart_of_vertex(Dart d, FUNC& f, unsigned int thread
 
 		f(darts[i]);
 	}
+    this->releaseDartBuffer(&darts, thread);
 }
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map3<MAP_IMPL>::foreach_dart_of_edge(Dart d, FUNC& f, unsigned int thread) const
+inline void Map3<MAP_IMPL>::foreach_dart_of_edge(Dart d,const  FUNC& f, unsigned int thread) const
 {
 	Dart it = d;
 	do
@@ -1236,7 +1237,7 @@ inline void Map3<MAP_IMPL>::foreach_dart_of_edge(Dart d, FUNC& f, unsigned int t
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map3<MAP_IMPL>::foreach_dart_of_face(Dart d, FUNC& f, unsigned int thread) const
+inline void Map3<MAP_IMPL>::foreach_dart_of_face(Dart d, const FUNC& f, unsigned int thread) const
 {
 	ParentMap::foreach_dart_of_face(d, f, thread);
 	ParentMap::foreach_dart_of_face(phi3(d), f, thread);
@@ -1244,53 +1245,53 @@ inline void Map3<MAP_IMPL>::foreach_dart_of_face(Dart d, FUNC& f, unsigned int t
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map3<MAP_IMPL>::foreach_dart_of_volume(Dart d, FUNC& f, unsigned int thread) const
+inline void Map3<MAP_IMPL>::foreach_dart_of_volume(Dart d, const FUNC& f, unsigned int thread) const
 {
 	ParentMap::foreach_dart_of_cc(d, f, thread);
 }
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map3<MAP_IMPL>::foreach_dart_of_vertex1(Dart d, FUNC& f, unsigned int thread) const
+inline void Map3<MAP_IMPL>::foreach_dart_of_vertex1(Dart d, const FUNC& f, unsigned int thread) const
 {
 	ParentMap::ParentMap::foreach_dart_of_vertex(d, f, thread);
 }
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map3<MAP_IMPL>::foreach_dart_of_edge1(Dart d, FUNC& f, unsigned int thread) const
+inline void Map3<MAP_IMPL>::foreach_dart_of_edge1(Dart d, const FUNC& f, unsigned int thread) const
 {
 	ParentMap::ParentMap::foreach_dart_of_edge(d, f, thread);
 }
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map3<MAP_IMPL>::foreach_dart_of_vertex2(Dart d, FUNC& f, unsigned int thread) const
+inline void Map3<MAP_IMPL>::foreach_dart_of_vertex2(Dart d, const FUNC& f, unsigned int thread) const
 {
 	ParentMap::foreach_dart_of_vertex(d, f, thread);
 }
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map3<MAP_IMPL>::foreach_dart_of_edge2(Dart d, FUNC& f, unsigned int thread) const
+inline void Map3<MAP_IMPL>::foreach_dart_of_edge2(Dart d, const FUNC& f, unsigned int thread) const
 {
 	ParentMap::foreach_dart_of_edge(d, f, thread);
 }
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-inline void Map3<MAP_IMPL>::foreach_dart_of_face2(Dart d, FUNC& f, unsigned int thread) const
+inline void Map3<MAP_IMPL>::foreach_dart_of_face2(Dart d, const FUNC& f, unsigned int thread) const
 {
 	ParentMap::foreach_dart_of_face(d, f, thread);
 }
 
 template <typename MAP_IMPL>
 template <typename FUNC>
-void Map3<MAP_IMPL>::foreach_dart_of_cc(Dart d, FUNC& f, unsigned int thread) const
+void Map3<MAP_IMPL>::foreach_dart_of_cc(Dart d, const FUNC& f, unsigned int thread) const
 {
 	DartMarkerStore< Map3<MAP_IMPL> > mv(*this,thread);	// Lock a marker
 
-	std::vector<Dart> darts;	// Darts that are traversed
+    std::vector<Dart>& darts = *(this->askDartBuffer(thread));	// Darts that are traversed
 	darts.reserve(1024);
 	darts.push_back(d);			// Start with the dart d
 	mv.mark(d);
@@ -1320,6 +1321,7 @@ void Map3<MAP_IMPL>::foreach_dart_of_cc(Dart d, FUNC& f, unsigned int thread) co
 
 		f(darts[i]);
 	}
+    this->releaseDartBuffer(&darts, thread);
 }
 
 /*! @name Close map after import or creation

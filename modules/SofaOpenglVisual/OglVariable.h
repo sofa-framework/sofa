@@ -74,6 +74,7 @@ public:
     void initVisual() { core::visual::VisualModel::initVisual(); }
     void pushValue() { initVisual(); }
     void reinit() { init();	initVisual(); }
+	void updateVisual() { initVisual(); }
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
     virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_VARIABLE; }

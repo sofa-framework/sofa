@@ -34,9 +34,9 @@
 #include <stdio.h>
 #include <sstream>
 #include <string>
-//#ifdef SOFA_HAVE_ZLIB
+#ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>
-//#endif
+#endif
 
 
 namespace cimg_library

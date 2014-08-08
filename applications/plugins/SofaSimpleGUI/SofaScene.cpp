@@ -32,9 +32,6 @@ SofaScene::SofaScene()
 
     sofa::component::init();
     sofa::simulation::xml::initXml();
-
-    _groot = sofa::simulation::getSimulation()->createNewGraph("");
-    _groot->setName("theRoot");
 }
 
 void SofaScene::step( SReal dt)
@@ -74,23 +71,18 @@ void SofaScene::reset()
 
 void SofaScene::open(const char *filename)
 {
-    if(_sroot){
-        unload(_sroot);
-        unload(_iroot);
-    }
-    _sroot = _groot->createChild("sroot");
-    _iroot = _groot->createChild("iroot");
+	unload(_groot);
 
-    Node::SPtr loadroot = load( filename );
-    if( !loadroot ){
+	_groot = load( filename );
+    if(!_groot)
+	{
         cerr << "loading failed" << endl;
         return;
     }
+
+	_iroot = _groot->createChild("iroot");
+
     _currentFileName = filename;
-
-
-    _sroot->addChild(loadroot);
-
 
     SofaSimulation::init(_groot.get());
 //    cout<<"SofaScene::init, scene loaded" << endl;
@@ -108,7 +100,8 @@ void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ym
 
 void SofaScene::insertInteractor( Interactor * interactor )
 {
-    _iroot->addChild(interactor->getNode());
+	if(_iroot)
+	    _iroot->addChild(interactor->getNode());
 }
 
 

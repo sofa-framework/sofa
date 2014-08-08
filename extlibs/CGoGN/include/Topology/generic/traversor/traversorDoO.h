@@ -44,15 +44,13 @@ public:
         m_current = tr.m_current;
         m_vd = tr.m_vd;
         m_thread = tr.m_thread;
-        std::cerr << __FILE__ << "" << __LINE__ << " should not happen" << std::endl;
+        std::cerr << __FILE__ << "" << __LINE__ << "TraversorDartsOfOrbit( const TraversorDartsOfOrbit& tr) called. Should not happen" << std::endl;
     }
 	 ~TraversorDartsOfOrbit();
 
-	Dart begin() ;
-
-	Dart end() ;
-
-	Dart next() ;
+    inline Dart begin() ;
+    static inline Dart end() ;
+    inline Dart next() ;
 } ;
 
 template <typename MAP, unsigned int ORBIT>

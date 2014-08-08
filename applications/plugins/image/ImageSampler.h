@@ -161,7 +161,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
     template<class ImageSampler>
-    static void uniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING, const unsigned int pmmIter = 1e10, const SReal pmmTol = 10 )
+    static void uniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING, const unsigned int pmmIter = std::numeric_limits<unsigned int>::max(), const SReal pmmTol = 10 )
     {
         typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
@@ -262,8 +262,6 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
                 default : std::cerr << "Unknown Distance Field Computation Method" << std::endl; break;
                 };
-
-
                 it++; if(it>=lloydIt) converged=true;
             }
             else converged=true;
@@ -283,7 +281,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
     template<class ImageSampler>
-    static void recursiveUniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING,  const unsigned int N=1, const unsigned int pmmIter=1e10, const SReal pmmTol=10)
+    static void recursiveUniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING,  const unsigned int N=1, const unsigned int pmmIter=std::numeric_limits<unsigned int>::max(), const SReal pmmTol=10)
     {
         typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
@@ -835,7 +833,7 @@ protected:
     * @param lloydIt : maximum number of Lloyd iterations.
     */
 
-    void uniformSampling (const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING, const unsigned int pmmIter=1e10, const SReal pmmTol=10)
+    void uniformSampling (const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING, const unsigned int pmmIter=std::numeric_limits<unsigned int>::max(), const SReal pmmTol=10)
     {
         ImageSamplerSpecialization<ImageTypes::label>::uniformSampling( this, nb, bias, lloydIt, method, pmmIter, pmmTol );
     }
@@ -847,7 +845,7 @@ protected:
     * a graph is generated relating the new samples to its neighbors at the instant of insertion
     */
 
-    void recursiveUniformSampling ( const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=false,  const unsigned int N=1, const unsigned int pmmIter=1e10, const SReal pmmTol=10)
+    void recursiveUniformSampling ( const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=false, const unsigned int N=1, const unsigned int pmmIter=std::numeric_limits<unsigned int>::max(), const SReal pmmTol=10)
     {
         ImageSamplerSpecialization<ImageTypes::label>::recursiveUniformSampling( this, nb, bias, lloydIt, method, N, pmmIter, pmmTol );
     }
