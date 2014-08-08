@@ -32,7 +32,7 @@
 #include <set>
 #include <vector>
 
-#if defined(WIN32) && (_MSC_VER < 1800) // for all version anterior to Visual Studio 2013
+#if (defined(WIN32) || defined (_XBOX)) && (_MSC_VER < 1800) // for all version anterior to Visual Studio 2013
 # include <float.h>
 # define isnan(x)  (_isnan(x))
 #else
@@ -525,8 +525,13 @@ void rasterScan(cimg_library::CImg<unsigned int>& voronoi, cimg_library::CImg<re
 /// @param tolerance should be carefully chosen to minimize computation time.
 /// @returns @param voronoi and @param distances
 template<typename real,typename T>
-void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, const sofa::helper::fixed_array<real, 3>& voxelSize, const unsigned int maxIter=1e10, const SReal tolerance=10, const cimg_library::CImg<T>* biasFactor=NULL)
+void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, const sofa::helper::fixed_array<real, 3>& voxelSize, const unsigned int maxIter=std::numeric_limits<unsigned int>::max(), const SReal tolerance=10, const cimg_library::CImg<T>* biasFactor=NULL)
 {
+    if(distances.width()<3 || distances.height()<3 || distances.depth()<3)
+    {
+        std::cerr << "ImageAlgorithms::parallelMarching : Boundary conditions are not treated so size (width,height,depth) should be >=3. (Work in Progress)" << std::endl;
+        return;
+    }
     //Build a new distance image from distances.
     cimg_library::CImg<real> v_distances(distances.width(), distances.height(), distances.depth(), 3, std::numeric_limits<real>::max());
 #ifdef USING_OMP_PRAGMAS
@@ -584,6 +589,6 @@ void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& tr
 }
 
 
-#undef isnan(x)
+#undef isnan
 
 #endif // IMAGEALGORITHMS_H

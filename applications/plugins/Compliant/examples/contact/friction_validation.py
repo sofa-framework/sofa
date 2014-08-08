@@ -33,7 +33,7 @@ def createScene(node):
     manager.responseParams = 'mu=' + str(shared.mu)
 
     ode = node.getObject('ode')
-    ode.stabilization = True
+    ode.stabilization = "pre-stabilization"
 
     bench = node.createObject('Benchmark')
     

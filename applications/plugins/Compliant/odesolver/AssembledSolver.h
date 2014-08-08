@@ -118,7 +118,7 @@ public:
 */
 class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolver {
 
-  protected:
+    public:
 
     /** Unification of the parameters and helpers used by the solver */
     struct SolverOperations
@@ -185,7 +185,6 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
     };
 
 
-  public:
 				
 	SOFA_CLASS(AssembledSolver, sofa::core::behavior::OdeSolver);
 
@@ -304,6 +303,15 @@ public:
 
     //@}
 
+    /// compute post-stabilization correcting constraint in position-based
+    /// have a look to Ascher94&97 and Cline03 for more details
+    /// if fullAssembly==true, a complete assembly/factorization is performed
+    /// otherwise only the rhs is updated and the system used for the dynamics pass is preserved
+    /// @warning: the contacts points and normals are not updated, so the time step needs to be small with contacts
+    virtual void post_stabilization( SolverOperations& sop,
+                             core::MultiVecCoordId posId, core::MultiVecDerivId velId,
+                             bool fullAssembly );
+
 protected:
 
     system_type sys; ///< assembled equation system
@@ -315,15 +323,6 @@ protected:
     /// temporary multivecs
     core::behavior::MultiVecDeriv _ck; ///< the right part of the implicit system (c_k term)
 
-
-    /// compute post-stabilization correcting constraint in position-based
-    /// have a look to Ascher94&97 and Cline03 for more details
-    /// if fullAssembly==true, a complete assembly/factorization is performed
-    /// otherwise only the rhs is updated and the system used for the dynamics pass is preserved
-    /// @warning: the contacts points and normals are not updated, so the time step needs to be small with contacts
-    void post_stabilization( SolverOperations& sop,
-                             core::MultiVecCoordId posId, core::MultiVecDerivId velId,
-                             bool fullAssembly );
 
 };
 
