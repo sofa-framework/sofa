@@ -1,5 +1,5 @@
-<Node name="root" gravity="-1.8 0 100"  dt="1" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
-
+<Node name="root" gravity="-1.8 0 100"  dt="1">
+    <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 	<Node name="Reference">
 		<OglModel fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="0" dy="-1" dz="0" color="green" />
 	</Node>

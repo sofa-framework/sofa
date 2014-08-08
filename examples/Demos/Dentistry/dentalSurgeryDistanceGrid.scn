@@ -1,17 +1,17 @@
-<!-- 
- + Added a driver for the Omni phantom device 
- + Added a mechanical state controller that gathers data from the phantom and updates the position of a representation of the device in the simulation 
- + Added a computation of the haptic forces 
+<!--
+ + Added a driver for the Omni phantom device
+ + Added a mechanical state controller that gathers data from the phantom and updates the position of a representation of the device in the simulation
+ + Added a computation of the haptic forces
 -->
 
 <Node name="root" dt="0.001" gravity="10 0 0" >
-	<VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
-    	<OmniDriver scale="0.1" orientation="0 0 90"/>
+    <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
+    <OmniDriver scale="0.1" orientation="0 0 90"/>
 	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />
 	<CollisionResponse name="response" response="default" />
 	<MinProximityIntersection name="proximity" alarmDistance="0.03" contactDistance="0.03" />
-	
+
 	<Node name="Tooth" >
 		<Node name="VisualModel" >
 			<OglModel name="ToothVisualModel" fileMesh="data/mesh/tooth-closed.obj" color="white" />
@@ -20,7 +20,7 @@
 			<DistanceGrid fileRigidDistanceGrid="data/mesh/tooth-128.fmesh" scale="1.0" usePoints="0" proximity="0.0" contactStiffness="50.0" contactFriction="0.0"/>
 		</Node>
 	</Node>
-	
+
 	<!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
 	<Node name="Omni">
 		<MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0 0 0 1"/>
@@ -51,7 +51,7 @@
 
 	<Node name="Instrument" >
 		<EulerImplicitSolver name="ODE solver" rayleighStiffness="0.01" rayleighMass="1.0" />
-		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
+		<CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" />
 		<MechanicalObject name="instrumentState" template="Rigid" />
 		<UniformMass name="mass" totalmass="0.05" />
 		<EnslavementForceFeedback activate="true" stiffness="3.0"/> <!-- ADDED : Compute a force-feedback for the device -->
@@ -64,7 +64,7 @@
 			<Mesh src="@loader" name="InstrumentCollisionModel"  />
 			<MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
 			<Line name="instrument" contactStiffness="10" />
-			<Point name="instrument" contactStiffness="10" /> 
+			<Point name="instrument" contactStiffness="10" />
 			<RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
 		</Node>
 		<Node name="RefModelRight" >
@@ -82,6 +82,6 @@
 		<VectorSpringForceField  template="Vec3d" object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="30" viscosity="0" />
 		<VectorSpringForceField  template="Vec3d" object1="@Omni/RefModelRight/instrumentCollisionState" object2="@Instrument/RefModelRight/instrumentCollisionState" stiffness="30" viscosity="0" />
 		<VectorSpringForceField  template="Vec3d" object1="@Omni/RefModelLeft/instrumentCollisionState" object2="@Instrument/RefModelLeft/instrumentCollisionState" stiffness="30" viscosity="0" />
-	</Node>  
+	</Node>
 
 </Node>
