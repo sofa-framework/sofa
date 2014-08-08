@@ -169,7 +169,7 @@ public:
     SReal norm(unsigned l)
     {
         vop->v_norm(v, l);
-        return vop->finish();
+        return (SReal)vop->finish();
     }
 
     /// v = a

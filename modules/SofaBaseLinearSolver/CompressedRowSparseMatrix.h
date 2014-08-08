@@ -199,7 +199,7 @@ public:
         if (nBlocRow == nbBRow && nBlocRow == nbBCol)
         {
             // just clear the matrix
-            for (Index i=0; i < colsValue.size(); ++i)
+            for (Index i=0; i < (Index)colsValue.size(); ++i)
                 traits::clear(colsValue[i]);
             compressed = colsValue.empty();
             btemp.clear();
@@ -704,7 +704,7 @@ public:
 #endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method !
-        return traits::v(bloc(i, j), bi, bj);
+        return (SReal)traits::v(bloc(i, j), bi, bj);
     }
 
     void set(Index i, Index j, double v)
@@ -877,7 +877,7 @@ public:
 
     void clear()
     {
-        for (Index i=0; i < colsValue.size(); ++i)
+        for (Index i=0; i < (Index)colsValue.size(); ++i)
             traits::clear(colsValue[i]);
         compressed = colsValue.empty();
         btemp.clear();
@@ -1071,7 +1071,7 @@ public:
                 btemp.push_back(IndexedBloc(i,j));
                 traits::clear(btemp.back().value);
             }
-            return createBlockAccessor(i, j, -btemp.size());
+            return createBlockAccessor(i, j, -(Index)btemp.size());
         }
     }
 

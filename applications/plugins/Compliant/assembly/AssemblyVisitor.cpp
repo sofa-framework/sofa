@@ -8,6 +8,7 @@
 #include "./utils/cast.h"
 #include "./utils/sparse.h"
 
+#include "../constraint/ConstraintValue.h"
 #include "../constraint/Stabilization.h"
 
 using std::cerr;
@@ -562,9 +563,16 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
                 AssembledSystem::constraint_type constraint;
                 constraint.projector = c.dofs->getContext()->get<component::linearsolver::Constraint>( core::objectmodel::BaseContext::Local );
                 constraint.value = c.dofs->getContext()->get<component::odesolver::BaseConstraintValue>( core::objectmodel::BaseContext::Local );
-                // fallback -> stabilized constraint value
+
+                // by default the manually given ConstraintValue is used
+                // otherwise a fallback is used depending on the constraint type
                 if( !constraint.value ) {
-                    constraint.value = new component::odesolver::Stabilization( c.dofs );
+
+                    // a non bilateral constraint should be stabilizable, as a non compliant bilateral constaint
+                    if( constraint.projector || zero(c.C) ) constraint.value = new component::odesolver::Stabilization( c.dofs );
+                    // by default, a compliant bilateral constraint is considered as elastic and is so not stabilized
+                    else constraint.value = new component::odesolver::ConstraintValue( c.dofs );
+
                     c.dofs->getContext()->addObject( constraint.value );
                     constraint.value->init();
                 }

@@ -442,10 +442,10 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 
     dW = dQ.toEulerVector();
 
-    double Theta = dW.norm();
+    SReal Theta = dW.norm();
 
 
-    if(Theta>0.0000001)
+    if(Theta>(SReal)0.0000001)
     {
         //std::cout << "beam " << i << " : Theta = " << Theta << std::endl;
         dW.normalize();
