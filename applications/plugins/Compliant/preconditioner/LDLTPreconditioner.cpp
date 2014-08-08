@@ -37,7 +37,7 @@ void LDLTPreconditioner::compute( const AssembledSystem::mat& H )
 
             if( preconditioner.info() != Eigen::Success )
             {
-                std::cerr << "warning: non invertible response" << std::endl;
+                serr << "non invertible response" << sendl;
                 assert( false );
             }
 

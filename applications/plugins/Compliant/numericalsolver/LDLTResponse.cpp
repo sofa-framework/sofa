@@ -42,7 +42,7 @@ void LDLTResponse::factor(const mat& H, bool semidefinite ) {
 
 	
 	if( response.info() != Eigen::Success ) {
-		std::cerr << "warning: non invertible response" << std::endl;
+        serr << "non invertible response" << sendl;
 	}
 
 	assert( response.info() == Eigen::Success );

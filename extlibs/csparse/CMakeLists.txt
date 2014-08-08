@@ -21,7 +21,5 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU"
     AddCompilerFlags("-fPIC")
 endif()
 
-AddCompilerDefinitions("use_namespace")
-
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

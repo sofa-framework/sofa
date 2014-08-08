@@ -27,6 +27,8 @@
 #ifdef WIN32
 # include <windows.h>
 # include <StrSafe.h>
+#elif defined _XBOX
+# include <xtl.h>
 #endif
 
 namespace sofa
@@ -40,7 +42,7 @@ namespace system
 namespace Utils
 {
 
-#ifdef WIN32
+#if defined WIN32 || defined _XBOX
 std::wstring s2ws(const std::string& s)
 {
     int len;
@@ -60,6 +62,7 @@ std::string ws2s(const std::wstring& ws)
     return std::string(ws.begin(), ws.end());
 }
 
+#ifdef WIN32
 std::string GetLastError() {
     LPVOID lpErrMsgBuf;
     LPVOID lpMessageBuf;
@@ -89,6 +92,15 @@ std::string GetLastError() {
     LocalFree(lpMessageBuf);
     return ws2s(wsMessage);
 }
+#else
+std::string GetLastError() {
+	DWORD dwErrorCode = ::GetLastError();
+	char buffer[32];
+	sprintf_s(buffer, 32, "0x%08.8X", dwErrorCode);
+	return buffer;
+}
+#endif
+
 #endif
 
 } // namespace Utils

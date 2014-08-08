@@ -62,7 +62,7 @@ public:
  * Traverse all Y incident to X
  */
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-class Traversor3XY//: public Traversor<MAP>
+class Traversor3XY
 {
     BOOST_STATIC_ASSERT(MAP::DIMENSION >= 3u) ;
 private:
@@ -89,12 +89,29 @@ public:
 	Cell<ORBY> next() ;
 } ;
 
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+class Traversor3XYArray {
+public:
+    typedef std::vector<Dart>::iterator iterator;
+    Traversor3XYArray(const MAP& map,Cell<ORBX> c, bool = false, unsigned int = 0);
+    Traversor3XYArray(const Traversor3XYArray& );
+    ~Traversor3XYArray();
+    inline iterator begin() const { return m_cells->begin(); }
+    inline iterator end() const { return m_cells->end(); }
+private:
+    const unsigned int m_thread;
+    std::vector<Dart>* m_cells;
+};
+
+
+
+
 /**
  * Generic class Traversor (do not use directly)
  * Traverse all X adjacent to X by an Y
  */
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-class Traversor3XXaY//: public Traversor<MAP>
+class Traversor3XXaY
 {
 private:
 	const MAP& m_map ;
@@ -110,6 +127,21 @@ public:
 	Cell<ORBX> begin();
 	Cell<ORBX> end();
 	Cell<ORBX> next();
+};
+
+
+template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+class Traversor3XXaYArray {
+public:
+    typedef std::vector<Dart>::iterator iterator;
+    Traversor3XXaYArray(const MAP& map, Cell<ORBX> c, bool forceDartMarker = false, unsigned int thread = 0);
+    Traversor3XXaYArray(const Traversor3XXaYArray& );
+    ~Traversor3XXaYArray();
+    inline iterator begin() const { return m_cells->begin(); }
+    inline iterator end() const { return m_cells->end(); }
+private:
+    const unsigned int m_thread;
+    std::vector<Dart>* m_cells;
 };
 
 /**
