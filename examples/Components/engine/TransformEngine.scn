@@ -34,4 +34,3 @@
         <OglModel name="VisualModel" src="@./ObjLoader" position="@[-1].output_position" texturename="textures/floor.bmp" />
     </Node>
 </Node>
-</Node>
