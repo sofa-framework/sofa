@@ -99,6 +99,8 @@ if(SOFA-MISC_NO_EXCEPTIONS)
 	
 	if(MSVC)
 	STRING(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	# due to default microsoft STL using always a try catch block, we have to deactivate the warning C4530
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -wd4530")
 	endif()
 
 	if(XBOX)
