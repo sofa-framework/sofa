@@ -42,7 +42,7 @@ def createScene(node):
 
     ode = node.getObject('ode')
 
-    ode.stabilization = False
+    ode.stabilization = "no stabilization"
     # ode.warm_start = False
     # ode.debug = True
 
