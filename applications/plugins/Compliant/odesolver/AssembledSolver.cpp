@@ -72,7 +72,10 @@ using namespace core::behavior;
 
 
     AssembledSolver::AssembledSolver()
-        : warm_start(initData(&warm_start,
+        : stabilization(initData(&stabilization,
+                                 "stabilization",
+                                 "apply a stabilization pass on kinematic constraints requesting it")),
+          warm_start(initData(&warm_start,
                               true,
                               "warm_start",
                               "warm start iterative solvers: avoids biasing solution towards zero (and speeds-up resolution)")),
@@ -80,9 +83,6 @@ using namespace core::behavior;
                                      false,
                                      "propagate_lambdas",
                                      "propagate Lagrange multipliers in force vector at the end of time step")),
-          stabilization(initData(&stabilization,
-                                 "stabilization",
-                                 "apply a stabilization pass on kinematic constraints requesting it")),
           debug(initData(&debug,
                          false,
                          "debug",
@@ -566,7 +566,7 @@ using namespace core::behavior;
 
 
             // constraint post-stabilization
-            if( sys.n && stabilizationType>=POST_STABILIZATION_RHS )
+            if( stabilizationType>=POST_STABILIZATION_RHS )
             {
                 post_stabilization( sop, posId, velId, stabilizationType==POST_STABILIZATION_ASSEMBLY);
             }
@@ -607,6 +607,8 @@ using namespace core::behavior;
                                               core::MultiVecCoordId posId, core::MultiVecDerivId velId,
                                               bool fullAssembly )
     {
+        if( !sys.n ) return;
+
         scoped::timer step("correction");
 
         // at this point collision detection should be run again
