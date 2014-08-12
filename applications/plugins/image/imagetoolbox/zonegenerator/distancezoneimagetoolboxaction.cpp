@@ -64,7 +64,7 @@ sofa::component::engine::ZoneGeneratorImageToolBoxNoTemplated* DistanceZoneImage
 }
 
 
-void DistanceZoneImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int axis,const sofa::defaulttype::Vec3d& imageposition,const sofa::defaulttype::Vec3d& position3D,const QString& value)
+void DistanceZoneImageToolBoxAction::selectionPointEvent(int /*mouseevent*/, const unsigned int /*axis*/,const sofa::defaulttype::Vec3d& /*imageposition*/,const sofa::defaulttype::Vec3d& /*position3D*/,const QString& /*value*/)
 {
  /*
     select->setChecked(false);
@@ -368,7 +368,7 @@ void DistanceZoneImageToolBoxAction::thresholdModified()
     //emit updateImage();
 }
 */
-void DistanceZoneImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i v)
+void DistanceZoneImageToolBoxAction::optionChangeSection(sofa::defaulttype::Vec3i /*v*/)
 {
   //  sectionPosition = v;
 
