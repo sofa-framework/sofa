@@ -639,6 +639,17 @@ public:
         return m;
     }
 
+    /// @return True if and only if the Matrix is a transformation matrix
+    bool isTransform() const
+    {
+        for (int j=0;j<C-1;++j)
+            if (fabs((*this)(L-1,j)) > EQUALITY_THRESHOLD)
+                return false;
+        if (fabs((*this)(L-1,C-1) - 1.) > EQUALITY_THRESHOLD)
+            return false;
+        return true;
+    }
+
     /// Multiplication operator Matrix * Vector considering the matrix as a transformation.
     Vec<C-1,real> transform(const Vec<C-1,real>& v) const
     {
