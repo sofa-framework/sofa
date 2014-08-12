@@ -158,8 +158,6 @@ protected:
     Data<bool> f_drawInput;
     Data<bool> f_drawOutput;
     Data<Real> f_pointSize;
-    MechanicalState<DataTypes>* mstate;
-    const VecCoord* x0;
 
 };
 
