@@ -43,7 +43,7 @@ void test_transformInverse(Matrix4 const& M)
     M_inv.transformInvert(M);
     Matrix4 res = M*M_inv;
     Matrix4 I;I.identity();
-    EXPECT_MAT_DOUBLE_EQ(I, res);
+    EXPECT_MAT_NEAR(I, res, 1e-12);
 }
 
 TEST(MatTypesTest, transformInverse)
@@ -51,7 +51,7 @@ TEST(MatTypesTest, transformInverse)
     test_transformInverse(Matrix4::Identity());
     test_transformInverse(Matrix4::transformTranslation(Vector3(1.,2.,3.)));
     test_transformInverse(Matrix4::transformScale(Vector3(1.,2.,3.)));
-//    test_transformInverse(Matrix4::transformRotation(Quat::fromEuler(3.14/4.,3.14/2.,3.14/3.)));
+    test_transformInverse(Matrix4::transformRotation(Quat::fromEuler(3.14/4.,3.14/2.,3.14/3.)));
 }
 
 TEST(MatTypesTest, setsub_vec)
