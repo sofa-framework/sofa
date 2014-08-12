@@ -44,7 +44,8 @@ set(HEADER_FILES
     ../engine/TransformPosition.h 
     ../engine/TransformPosition.inl 
     ../engine/TransformEngine.h 
-    ../engine/TransformEngine.inl 
+    ../engine/TransformEngine.inl
+    ../engine/TransformMatrixEngine.h
     ../engine/PointsFromIndices.h 
     ../engine/PointsFromIndices.inl 
     ../engine/ValuesFromIndices.h 
@@ -112,6 +113,7 @@ set(SOURCE_FILES
     ../engine/MeshROI.cpp 
     ../engine/TransformPosition.cpp 
     ../engine/TransformEngine.cpp 
+    ../engine/TransformMatrixEngine.cpp
     ../engine/PointsFromIndices.cpp 
     ../engine/ValuesFromIndices.cpp 
     ../engine/IndicesFromValues.cpp 

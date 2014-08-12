@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node name="Root">
+    <VisualStyle displayFlags="showVisual" />
+    <Node name="Transformation">
+        <TranslateTransformMatrixEngine name="T1" translation="10 11 12"/>
+        <ScaleTransformMatrixEngine name="T2" inT="@T1.outT" scale="1.2 1.5 0.8"/>
+        <RotateTransformMatrixEngine name="T3" inT="@T2.outT" rotation="15 20 40"/>
+        <InvertTransformMatrixEngine name="T4" inT="@T2.outT"/>
+    </Node>
+    <Node name="Visu">
+        <Node name="Armadillo0">
+            <MeshObjLoader name="loader0" filename="mesh/Armadillo_verysimplified.obj"/>
+            <VisualModel name="visual0" src="@loader0" color="cyan"/>
+        </Node>
+        <Node name="Armadillo1">
+            <MeshObjLoader name="loader1" filename="mesh/Armadillo_verysimplified.obj" transformation="@/Transformation/T3.outT"/>
+            <VisualModel name="visual1" src="@loader1" color="yellow"/>
+        </Node>
+    </Node>
+</Node>

@@ -33,6 +33,7 @@
 
 #include "initTestPlugin.h"
 #include <gtest/gtest.h>
+#include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/simulation/common/Node.h>
 #include <time.h>
@@ -92,7 +93,7 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
 
     /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
     template< int N, typename Real, typename Vector2>
-    Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2 )
+    static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const Vector2& m2 )
     {
         if( N !=m2.size() ) {
             ADD_FAILURE() << "Comparison between vectors of different sizes";
@@ -107,9 +108,9 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
     }
 
 
-    /// return the maximum difference between corresponding entries, or the infinity if the vectors have different sizes
+    /// return the maximum difference between corresponding entries
     template< int N, typename Real>
-    Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const sofa::defaulttype::Vec<N,Real>& m2 )
+    static Real vectorMaxDiff( const sofa::defaulttype::Vec<N,Real>& m1, const sofa::defaulttype::Vec<N,Real>& m2 )
     {
         Real result = 0;
         for( unsigned i=0; i<N; i++ ){
@@ -121,7 +122,7 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
 
     /// Return the maximum difference between two containers. Issues a failure if sizes are different.
     template<class Container1, class Container2>
-    Real vectorMaxDiff( const Container1& c1, const Container2& c2 )
+    static Real vectorMaxDiff( const Container1& c1, const Container2& c2 )
     {
         if( c1.size()!=c2.size() ){
             ADD_FAILURE() << "containers have different sizes";
@@ -185,8 +186,9 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
 
 protected:
     // helpers
-    Real norm(Real a){ return fabs(a); }
-    template <typename T> Real norm(T a){ return a.norm(); }
+    static Real norm(Real a){ return fabs(a); }
+    template <typename T>
+    static Real norm(T a){ return a.norm(); }
 
 
 };
@@ -251,11 +253,29 @@ struct data_traits
 };
 
 
-
+template <int N, class real>
+void EXPECT_VEC_DOUBLE_EQ(sofa::defaulttype::Vec<N, real> const& expected, sofa::defaulttype::Vec<N, real> const& actual) {
+    typedef typename sofa::defaulttype::Vec<N,real>::size_type size_type;
+    for (size_type i=0; i<expected.total_size; ++i)
+        EXPECT_DOUBLE_EQ(expected[i], actual[i]);
 }
 
-#endif
+template <int L, int C, class real>
+void EXPECT_MAT_DOUBLE_EQ(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual) {
+    typedef typename sofa::defaulttype::Mat<L,C,real>::size_type size_type;
+    for (size_type i=0; i<expected.nbLines; ++i)
+        for (size_type j=0; j<expected.nbCols; ++j)
+            EXPECT_DOUBLE_EQ(expected(i,j), actual(i,j));
+}
 
+template <int L, int C, class real>
+void EXPECT_MAT_NEAR(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual, real abs_error) {
+    typedef typename sofa::defaulttype::Mat<L,C,real>::size_type size_type;
+    for (size_type i=0; i<expected.nbLines; ++i)
+        for (size_type j=0; j<expected.nbCols; ++j)
+            EXPECT_NEAR(expected(i,j), actual(i,j), abs_error);
+}
 
+} // namespace sofa
 
-
+#endif // SOFA_STANDARDTEST_Sofa_test_H
