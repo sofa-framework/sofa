@@ -268,6 +268,14 @@ void EXPECT_MAT_DOUBLE_EQ(sofa::defaulttype::Mat<L,C,real> const& expected, sofa
             EXPECT_DOUBLE_EQ(expected(i,j), actual(i,j));
 }
 
+template <int L, int C, class real>
+void EXPECT_MAT_NEAR(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::defaulttype::Mat<L,C,real> const& actual, real abs_error) {
+    typedef typename sofa::defaulttype::Mat<L,C,real>::size_type size_type;
+    for (size_type i=0; i<expected.nbLines; ++i)
+        for (size_type j=0; j<expected.nbCols; ++j)
+            EXPECT_NEAR(expected(i,j), actual(i,j), abs_error);
+}
+
 } // namespace sofa
 
 #endif // SOFA_STANDARDTEST_Sofa_test_H
