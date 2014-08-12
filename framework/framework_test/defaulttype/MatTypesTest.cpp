@@ -66,3 +66,10 @@ TEST(MatTypesTest, setsub_vec)
     EXPECT_MAT_DOUBLE_EQ(M_exp, M);
 }
 
+TEST(MatTypesTest, isTransform)
+{
+    Matrix4 M;
+    EXPECT_FALSE(M.isTransform());
+    M = Matrix4::Identity();
+    EXPECT_TRUE(M.isTransform());
+}
