@@ -413,7 +413,7 @@ public:
             double dt = (double)1.0/(double)slices;
 
             //std::cout << "quad " << k << "("<< baseIPk <<"//" << baseNk<< "//"<<min<<"//"<<max<< "//"<<v1[k] << " " << v2[k] <<" ) : ";
-            for(unsigned int h=0;h<slices+1;h++)
+            for(int h=0;h<slices+1;h++)
             {
                 double dt_h = dt*h;
 
@@ -480,7 +480,7 @@ public:
             if(it->second < 2)
             {
                 std::cout << "mmap"<< it->first << " "<<it->second<<std::endl;
-                for(unsigned int i=0;i<slices+1;i++)
+                for(int i=0;i<slices+1;i++)
                 {
                     std::cout << " ->"<<k0+it->first*(slices+1)+i<<std::endl;
 
@@ -648,7 +648,7 @@ public:
         {
             MeshDataImageToolBox::Index4  &q = layer.grid1[i];
 
-            for(unsigned int j=0;j<slices;j++)
+            for(int j=0;j<slices;j++)
             {
                 MeshDataImageToolBox::Index8  v1(q[0]+j,q[1]+j,q[2]+j,q[3]+j,q[0]+j+1,q[1]+j+1,q[2]+j+1,q[3]+j+1);
 
@@ -700,7 +700,7 @@ public:
     bool calculateDistanceMap(Layer&l,unsigned int numLayer)
     {
         //std::cout << "calculateDistanceMap"<<l.layer1<<" "<<l.layer2<<" "<<l.base<<std::endl;
-        if(l.layer1>=labelsOfGrid.size() || l.layer2>=labelsOfGrid.size()  || l.base>=labelsOfGrid.size())return false;
+        if((size_t)l.layer1>=labelsOfGrid.size() || (size_t)l.layer2>=labelsOfGrid.size()  || (size_t)l.base>=labelsOfGrid.size())return false;
 
         LabelGridImageToolBoxNoTemplated *surf1 = labelsOfGrid[l.layer1];
         LabelGridImageToolBoxNoTemplated *surf2 = labelsOfGrid[l.layer2];
@@ -1122,7 +1122,7 @@ public:
             MeshDataImageToolBox::VecIndex & vecl = meshs.veclayer[index].positionIndexOfSlice[i];
             std::list<unsigned int> vec;
 
-            for(int j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
+            for(size_t j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
 
 
             vec.sort();
@@ -1146,7 +1146,7 @@ public:
             MeshDataImageToolBox::VecIndex & vecl = meshs.veclayer[index].edgePositionIndexOfSlice[i];
             std::list<unsigned int> vec;
 
-            for(int j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
+            for(size_t j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
 
             vec.sort();
             vec.unique();
@@ -1169,7 +1169,7 @@ public:
             MeshDataImageToolBox::VecIndex & vecl = meshs.veclayer[index].hexaIndexOfSlice[i];
             std::list<unsigned int> vec;
 
-            for(int j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
+            for(size_t j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
 
             vec.sort();
             vec.unique();
@@ -1192,7 +1192,7 @@ public:
             MeshDataImageToolBox::VecIndex & vecl = meshs.veclayer[index].tetraIndexOfSlice[i];
             std::list<unsigned int> vec;
 
-            for(int j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
+            for(size_t j=0;j<vecl.size();j++)vec.push_back(vecl[j]);
 
             vec.sort();
             vec.unique();
@@ -1211,7 +1211,7 @@ public:
 
         out << " <CatchAllVector name=\"TrianglesIndex\" data=\"";
         unsigned int offset1 = 0;
-        for(unsigned int i=0;i<index;i++)
+        for(int i=0;i<index;i++)
         {
             offset1 += meshs.veclayer[i].triangles.size();
         }
@@ -1228,7 +1228,7 @@ public:
 
         out << " <CatchAllVector name=\"TetraIndex\" data=\"";
         unsigned int offset2 = 0;
-        for(unsigned int i=0;i<index;i++)
+        for(int i=0;i<index;i++)
         {
             offset2 += meshs.veclayer[i].tetras.size();
         }
@@ -1244,7 +1244,7 @@ public:
 
         out << " <CatchAllVector name=\"HexaIndex\" data=\"";
         unsigned int offset3 = 0;
-        for(unsigned int i=0;i<index;i++)
+        for(int i=0;i<index;i++)
         {
             offset3 += meshs.veclayer[i].hexas.size();
         }
@@ -1258,7 +1258,7 @@ public:
 
         out << " <CatchAllVector name=\"Grid1Index\" data=\"";
         unsigned int offset4 = 0;
-        for(unsigned int i=0;i<index;i++)
+        for(int i=0;i<index;i++)
         {
             offset4 += meshs.veclayer[i].grid1.size();
         }
@@ -1274,7 +1274,7 @@ public:
 
         out << " <CatchAllVector name=\"Grid2Index\" data=\"";
         unsigned int offset5 = 0;
-        for(unsigned int i=0;i<index;i++)
+        for(int i=0;i<index;i++)
         {
             offset5 += meshs.veclayer[i].grid2.size();
         }

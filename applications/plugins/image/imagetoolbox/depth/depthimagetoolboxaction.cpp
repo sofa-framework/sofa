@@ -224,7 +224,7 @@ void DepthImageToolBoxAction::changeRow(int index,QString name,int layer1,QStrin
 
     sofa::component::engine::DepthImageToolBox *l = DITB();
 
-    if(l->layers.size()<=index)return;
+    if(l->layers.size()<=(unsigned int)index)return;
 
     sofa::component::engine::DepthImageToolBox::Layer &layer = l->layers[index];
 

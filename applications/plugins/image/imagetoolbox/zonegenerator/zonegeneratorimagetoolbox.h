@@ -124,7 +124,7 @@ public:
         ListVec2i last;
     };
 
-    T color(int index,int max)
+    T color(int index,int /*max*/)
     {
         return index;
     }
@@ -178,10 +178,10 @@ public:
 
         const unsigned int dimX = im_in->getCImg().width();
         const unsigned int dimY = im_in->getCImg().height();
-        const unsigned int dimZ = im_in->getCImg().depth();
+//        const unsigned int dimZ = im_in->getCImg().depth();
         const unsigned int dimS = im_in->getCImg().spectrum();
 
-        const unsigned int nbPixels = dimX*dimY;
+//        const unsigned int nbPixels = dimX*dimY;
 
 
 
@@ -343,7 +343,7 @@ public:
             delete [] pColor;
         }
 
-        unsigned int probcount = sizemax+sizemax/2;
+//        unsigned int probcount = sizemax+sizemax/2;
 
         int kk=sizemax;
         vector< unsigned int> test;
