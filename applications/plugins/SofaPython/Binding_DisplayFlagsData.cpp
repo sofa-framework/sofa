@@ -86,7 +86,7 @@ extern "C" int DisplayFlagsData_setAttr_showBehaviorModels(PyObject *self, PyObj
         bool b = (Py_True==args); \
         DisplayFlags* flags = data->beginEdit(); \
         flags->setShow##flagName(b); \
-        printf("%s %d\n",#flagName,b); \
+        /*printf("%s %d\n",#flagName,b);*/ \
         data->endEdit(); \
         return 0; \
     }

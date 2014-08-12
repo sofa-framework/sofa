@@ -16,6 +16,7 @@ static struct Tests : public Python_test_list
         addTest( "UniformCompliance.py", scenePath );
         addTest( "AffineMultiMapping.py", scenePath );
         addTest( "restitution.py", scenePath );
+        addTest( "friction.py", scenePath );
 
         // add python tests here
     }
