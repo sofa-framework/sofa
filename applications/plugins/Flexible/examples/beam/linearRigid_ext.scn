@@ -62,7 +62,7 @@
 
        <Node 	name="VisualNode">
             <OglModel template="ExtVec3f" name="Visual" color="red" />
-            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default1"  input="@../Triangles"  output="@Visual" />
+            <IdentityMapping template="Vec3d,ExtVec3f" name="default1"  input="@../Triangles"  output="@Visual" />
        </Node>
   </Node>
 
@@ -81,11 +81,11 @@
 	<Node 	name="behavior"   >
 	    <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="100"/>
             <MechanicalObject template="F332" name="F" />
-	    <LinearMapping template="Mapping&lt;Rigid,F332&gt;"  />
+	    <LinearMapping template="Rigid,F332"  />
 
 	    <Node 	name="E"   >
 		<MechanicalObject  template="E332" name="E"  /> 
-		<CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"   method="polar" />
+		<CorotationalStrainMapping template="F332,E332"   method="polar" />
 		<HookeForceField  template="E332" name="ff" youngModulus="1" poissonRatio="0" viscosity="0"/>
 	    </Node>
         </Node>
@@ -93,7 +93,7 @@
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../behavior/sampler.position"  />
 	     
-	     <LinearMapping template="Mapping&lt;Rigid,Vec3d&gt;"  />
+	     <LinearMapping template="Rigid,Vec3d"  />
         </Node>
 
 	    <Node 	name="collision"   >
@@ -107,12 +107,12 @@
       		 <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1 "  /> 
        		<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 0 0.05"/> 
 
-	    	<LinearMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;"/>
+	    	<LinearMapping template="Rigid,Vec3d"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="1 0.8 0.8 "/>
-	    	<LinearMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;"/>
+	    	<LinearMapping template="Rigid,ExtVec3f"/>
 	    </Node>
     </Node>
 </Node>

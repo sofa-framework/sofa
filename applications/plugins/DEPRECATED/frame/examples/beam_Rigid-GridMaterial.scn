@@ -36,7 +36,7 @@
 
 		<Node name="Physics">
 			<MechanicalObject template="DeformationGradient332" name="PointSet" useMask="0"  showObject="1" showObjectScale="0.2"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" targetFrameNumber="2"/>
+			<FrameBlendingMapping template="Rigid,DeformationGradient332" name="SMapping"  input="@../DOFs"  output="@PointSet" targetFrameNumber="2"/>
 			<GreenLagrangeForceField template="DeformationGradient332"  printLog="0"/>  
 		</Node>
 
@@ -45,12 +45,12 @@
       		<Mesh /> 
       		<MechanicalObject  name="PointSet"/>
       		<Triangle />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="Rigid,Vec3d" name="SMapping"  input="@../DOFs"  output="@PointSet" />
 		</Node>
 
 		<Node name="Visu">
 			<OglModel name="Beam" fileMesh="mesh/beam.obj" normals="0"   color="0.1 .8 .3 1" />
-			<FrameBlendingMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="SMapping"  input="@../DOFs"  output="@Beam"/>
+			<FrameBlendingMapping template="Rigid,ExtVec3f" name="SMapping"  input="@../DOFs"  output="@Beam"/>
 		</Node>
 
 	</Node>

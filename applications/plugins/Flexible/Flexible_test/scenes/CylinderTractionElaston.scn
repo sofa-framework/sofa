@@ -42,12 +42,12 @@
   <Node name="behavior"   >
     <TopologyGaussPointSampler name="sampler" inPosition="@../cylinder.output_position" showSamplesScale="0" method="0" order="1" />
     <MechanicalObject  template="F332" name="F"  showObject="0" showObjectScale="0.05" />
-    <LinearMapping template="Mapping&lt;Vec3d,F332&gt;" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
+    <LinearMapping template="Vec3d,F332" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
 
     <!--Material-->
     <Node name="Strain">
       <MechanicalObject  template="E332" name="E"  />
-      <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"   method="svd" geometricStiffness="false"/>
+      <CorotationalStrainMapping template="F332,E332"   method="svd" geometricStiffness="false"/>
     </Node>
   </Node>
 

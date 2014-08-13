@@ -36,7 +36,7 @@
 		<Node name="Physics">
 			<MechanicalObject template="DeformationGradient332" useMask="0" name="PointSet" showObject="1" showObjectScale="0.1" 
 position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
-			<FrameBlendingMapping template="MechanicalMapping&lt;FrameQuadratic,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" 
+			<FrameBlendingMapping template="FrameQuadratic,DeformationGradient332" name="SMapping"  input="@../DOFs"  output="@PointSet" 
 				targetFrameNumber="5"
 				targetSampleNumber="100" />
 			<FrameVolumePreservationForceField template="DeformationGradient332"  printLog="0"/>  
@@ -48,7 +48,7 @@ position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
       		<Mesh /> 
       		<MechanicalObject  name="PointSet"/>
       		<Triangle />
-			<FrameBlendingMapping template="MechanicalMapping&lt;FrameQuadratic,Vec3d&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="FrameQuadratic,Vec3d" name="SMapping"  input="@../DOFs"  output="@PointSet" />
 		</Node>
 
 
