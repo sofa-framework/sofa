@@ -17,7 +17,7 @@
         <HexahedronSetTopologyContainer src="@loader" name="Container" />
         <HexahedronSetTopologyModifier name="Modifier" />
         <HexahedronSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
-        <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3" />/&gt;
+        <HexahedronSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3" />/
         <!--    <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" 
       p0="-10 -10 -10"/>-->
         <HexahedronFEMForceField name="FEM" template="Vec3d" />
@@ -32,7 +32,7 @@
             <TriangleModel name="default7" />
             <Node name="Visu">
                 <OglModel template="ExtVec3f" name="Visual" color="green" />
-                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1="../../../Hexa" object2="Visual" />
+                <IdentityMapping template="Vec3d,ExtVec3f" name="default8" object1="../../../Hexa" object2="Visual" />
             </Node>
         </Node>
     </Node>

@@ -30,11 +30,11 @@
             <Node 	name="behavior"   >
                 <TopologyGaussPointSampler name="sampler" inPosition="@../../DOF.rest_position" showSamples="false"/>
                 <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-                <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" name="linearMapping" assembleJ="true"/>
+                <LinearMapping template="Vec3d,F331" name="linearMapping" assembleJ="true"/>
 
                 <Node 	name="Strain"   >
                     <MechanicalObject  template="E331" name="E"  />
-                    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assembleJ="true" method="large" name="corotstrainmap"/>
+                    <CorotationalStrainMapping template="F331,E331" assembleJ="true" method="large" name="corotstrainmap"/>
                     <HookeForceField  template="E331" name="ff" youngModulus="1000" poissonRatio="0" viscosity="0" assembleK="true" assembleB="false"/>
                 </Node>
             </Node>

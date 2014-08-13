@@ -29,7 +29,7 @@
 
 		<Node name="Physics">
 			<MechanicalObject template="DeformationGradient332" useMask="0" name="PointSet" showObject="0" showObjectScale="0.02"  />
-			<FrameBlendingMapping template="Mapping&lt;FrameAffine,DeformationGradient332&gt;" name="PMapping"  input="@../DOFs"  output="@PointSet" 
+			<FrameBlendingMapping template="FrameAffine,DeformationGradient332" name="PMapping"  input="@../DOFs"  output="@PointSet" 
 				targetFrameNumber="3"
 				targetSampleNumber="1" initializeFramesInRigidParts="1" />
 			<GreenLagrangeForceField template="DeformationGradient332"  printLog="0"/>
@@ -40,12 +40,12 @@
 			<Mesh src="@MeshLoader" /> 
 			<MechanicalObject  name="PointSet" scale3d="1 1 1" translation="0 0 0" useMask="1"/>
 			
-			<FrameBlendingMapping template="MechanicalMapping&lt;FrameAffine,Vec3d&gt;" name="CMapping"  input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="FrameAffine,Vec3d" name="CMapping"  input="@../DOFs"  output="@PointSet" />
 		</Node>
 
 		<Node name="Visu">
 			<OglModel name="Beam" fileMesh="mesh/steak.obj" texturename="material/steak.png" normals="0" color="1 .8 .3 1" scale3d="1 1 1" translation="0 0 0"/>
-			<FrameBlendingMapping template="Mapping&lt;FrameAffine,ExtVec3f&gt;" name="VMapping"  input="@../DOFs"  output="@Beam"/>
+			<FrameBlendingMapping template="FrameAffine,ExtVec3f" name="VMapping"  input="@../DOFs"  output="@Beam"/>
 		</Node>
 	</Node>
 </Node>

@@ -29,7 +29,7 @@
                 <MeshInformation printLog="true" />
                 <Node name="Visu">
                     <OglModel template="ExtVec3f" name="Visual" />
-                    <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@../.." output="@Visual" />
+                    <IdentityMapping template="Vec3d,ExtVec3f" input="@../.." output="@Visual" />
                 </Node>
             </Node>
         </Node>

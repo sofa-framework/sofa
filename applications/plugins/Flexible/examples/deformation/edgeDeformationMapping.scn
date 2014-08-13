@@ -22,10 +22,10 @@
     <Node name="deformationNode" >
 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
         <MechanicalObject template="F311"  name="triangleDeformationsDOF" />
-  	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;"  />
+  	<LinearMapping template="Vec3d,F311"  />
         <Node name="StrainNode">
             <MechanicalObject template="E311"  name="VoigtStrainDOF" />
-	    <GreenStrainMapping template="Mapping&lt;F311,E311&gt;"     /> 
+	    <GreenStrainMapping template="F311,E311"     /> 
             <HookeForceField template="E311" youngModulus="1" poissonRatio="0"     />
         </Node>
     </Node>
@@ -54,10 +54,10 @@
     <Node name="deformationNode" >
 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
         <MechanicalObject template="F311"  name="triangleDeformationsDOF" />
-  	<LinearMapping template="Mapping&lt;Vec3d,F311&gt;"  />
+  	<LinearMapping template="Vec3d,F311"  />
         <Node name="StrainNode">
             <MechanicalObject template="E311"  name="VoigtStrainDOF" />
-	    <CorotationalStrainMapping template="Mapping&lt;F311,E311&gt;" geometricStiffness="true"    />
+	    <CorotationalStrainMapping template="F311,E311" geometricStiffness="true"    />
             <HookeForceField template="E311" youngModulus="1" poissonRatio="0"    />
         </Node>
     </Node>

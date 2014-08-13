@@ -31,7 +31,7 @@
             <TriangleModel name="Models" />
             <Node name="Visu">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45" />
-                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default17" object1="../../../Volume" object2="Visual" />
+                <IdentityMapping template="Vec3d,ExtVec3f" name="default17" object1="../../../Volume" object2="Visual" />
             </Node>
         </Node>
     </Node>
