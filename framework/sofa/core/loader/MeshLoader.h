@@ -25,10 +25,13 @@
 #ifndef SOFA_CORE_LOADER_MESHLOADER_H
 #define SOFA_CORE_LOADER_MESHLOADER_H
 
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/loader/PrimitiveGroup.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/helper/fixed_array.h>
+
 
 
 namespace sofa
@@ -41,6 +44,7 @@ namespace loader
 {
 
 using sofa::defaulttype::Vector3;
+
 
 class SOFA_CORE_API MeshLoader : public virtual BaseLoader
 {
@@ -61,6 +65,8 @@ public:
     //virtual void init();
     virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
 
+    virtual void init();
+
     virtual void reinit();
 
     /// Apply translation vector to the position.
@@ -75,15 +81,20 @@ public:
     /// Apply Scale to the positions
     virtual void applyScale (const SReal sx, const SReal sy, const SReal sz);
 
+    /// Apply Homogeneous transformation to the positions
+    virtual void applyTransformation (sofa::defaulttype::Matrix4 const& T);
+
     /// @name Initial transformations accessors.
     /// @{
     void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(Vector3(dx,dy,dz));}
     void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(Vector3(rx,ry,rz));}
     void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(Vector3(sx,sy,sz));}
+    void setTransformation(const sofa::defaulttype::Matrix4& t) {d_transformation.setValue(t);}
 
     virtual Vector3 getTranslation() const {return translation.getValue();}
     virtual Vector3 getRotation() const {return rotation.getValue();}
     virtual Vector3 getScale() const {return scale.getValue();}
+    virtual sofa::defaulttype::Matrix4 getTransformation() const {return d_transformation.getValue();}
     /// @}
 
     // Point coordinates in 3D in double.
@@ -119,6 +130,7 @@ public:
     Data< Vector3 > translation;
     Data< Vector3 > rotation;
     Data< Vector3 > scale;
+    Data< sofa::defaulttype::Matrix4 > d_transformation;
 
 protected:
     void updateMesh();

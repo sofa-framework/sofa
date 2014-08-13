@@ -47,7 +47,7 @@ def createScene(node):
 
     ode = node.getObject('ode')
 
-    ode.stabilization = True
+    ode.stabilization = "pre-stabilization"
     ode.warm_start = False
     ode.propagate_lambdas = True
     

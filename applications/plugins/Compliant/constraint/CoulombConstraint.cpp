@@ -18,28 +18,39 @@ CoulombConstraint::CoulombConstraint(SReal mu)
 
 void CoulombConstraint::project( SReal* out, unsigned n, bool correct ) const
 {
-    (void)n;
     assert( n >= 3 );
 
-	typedef Eigen::Matrix<SReal, 3, 1> vec3;
-	Eigen::Map< vec3 > view(out);
+    // By construction the first component is aligned with the normal
 
-	static const vec3 normal = vec3::UnitX();
+    // no attractive force
+    if( out[0] < 0 )
+    {
+        for( unsigned int i=0 ; i<n ; ++i ) out[i] = 0;
+    }
+    else
+    {
+         if( correct )
+         {
+             // only keep unilateral projection during correction
+             for( unsigned int i=1 ; i<n ; ++i ) out[i] = 0;
+         }
+         else
+         {
+             // full cone projection
 
-	// only keep unilateral projection during correction
-    if( correct ) {
-		SReal alpha = normal.dot( view );
+             typedef Eigen::Matrix<SReal, 3, 1> vec3;
+             Eigen::Map< vec3 > view(out);
 
-		alpha = std::max(alpha, (SReal)0.0);
+             static const vec3 normal = vec3::UnitX();
 
-		view = normal * alpha;
-		
-    } else {
-		// full cone projection
+             // could be optimized by forcing normal=unitX in cone projection
 
-		// coneProjection(out, mu);
-		view = cone<SReal>(view, normal, mu);
-		// view = cone_horizontal<SReal>(view, normal, mu);
+             // coneProjection(out, mu);
+             view = cone<SReal>(view, normal, mu);
+             // view = cone_horizontal<SReal>(view, normal, mu);
+
+             for( unsigned int i=3 ; i<n ; ++i ) out[i] = 0;
+         }
     }
 
 }

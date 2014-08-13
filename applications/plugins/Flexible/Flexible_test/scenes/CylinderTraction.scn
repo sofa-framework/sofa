@@ -47,7 +47,7 @@
     <!--Material-->
 	  <Node name="Strain">
 		  <MechanicalObject  template="E331" name="E"  />
-	    <CorotationalStrainMapping template="F331,E331"   method="svd" geometricStiffness="false"/>
+        <CorotationalStrainMapping template="F331,E331"   method="svd" geometricStiffness="false"/>
 	  </Node>   
   </Node>
 
