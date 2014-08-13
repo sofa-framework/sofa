@@ -85,8 +85,12 @@ public:
     Data< std::string > external_rest_shape;
     Data< helper::vector< unsigned int > > external_points;
     Data< bool > recompute_indices;
-    Data< bool > drawSpring;
-    Data< sofa::defaulttype::Vec4f > springColor;
+
+    Data< bool > d_drawSpring;
+    Data< Real > d_drawSpringLengthThreshold;
+    Data< sofa::defaulttype::Vec4f > d_springColor;
+    Data< sofa::defaulttype::Vec4f > d_springSphereColor;
+    Data< Real > d_springSphereRadius;
 
     sofa::core::behavior::MechanicalState< DataTypes > *restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
@@ -94,6 +98,8 @@ public:
     //VecDeriv Springs_dir;
 protected:
     RestShapeSpringsForceField();
+    Data< bool > d_useRestMState; ///< An external MechanicalState is used as rest reference.
+
 public:
     /// BaseObject initialization method.
     void bwdInit();
@@ -121,7 +127,7 @@ public:
 
     const DataVecCoord* getExtPosition() const;
     const VecIndex& getIndices() const { return m_indices; }
-    const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
+    const VecIndex& getExtIndices() const { return (d_useRestMState.getValue() ? m_ext_indices : m_indices); }
 
     virtual void updateForceMask();
 
@@ -129,16 +135,15 @@ protected :
 
     void recomputeIndices();
 
+    bool checkOutOfBoundsIndices();
+    bool checkOutOfBoundsIndices(const VecIndex &indices, const unsigned int dimension);
+
     VecIndex m_indices;
-    VecReal k;
     VecIndex m_ext_indices;
     helper::vector<CPos> m_pivots;
 
     SReal lastUpdatedStep;
 
-private :
-
-    bool useRestMState; /// An external MechanicalState is used as rest reference.
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGSFORCEFIELD_CPP)

@@ -74,7 +74,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
         //std::cout<<"i="<<i<<std::endl;
         const unsigned int index = m_indices[i];
         unsigned int ext_index = m_indices[i];
-        if(useRestMState)
+        if(d_useRestMState.getValue())
             ext_index= m_ext_indices[i];
 
         // translation
@@ -195,7 +195,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::Mechanic
 template<>
 void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
+    if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
     vparams->drawTool()->saveLastState();
@@ -212,7 +212,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
 
         vertices.push_back(p[index].getCenter());
 
-        if(useRestMState)
+        if(d_useRestMState.getValue())
         {
             const unsigned int ext_index = m_ext_indices[i];
             vertices.push_back(p0[ext_index].getCenter());
@@ -222,7 +222,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
             vertices.push_back(p0[index].getCenter());
         }
     }
-    vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
+    vparams->drawTool()->drawLines(vertices,5,d_springColor.getValue());
     vparams->drawTool()->restoreLastState();
 }
 
@@ -331,7 +331,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(const core::Mechanic
 template<>
 void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
+    if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
     vparams->drawTool()->saveLastState();
@@ -349,7 +349,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
         sofa::defaulttype::Vector3 v0(p[index].getCenter()[0],
                                       p[index].getCenter()[1],
                                       p[index].getCenter()[2]);
-        unsigned int tempIndex = (useRestMState) ? m_ext_indices[i] : index;
+        unsigned int tempIndex = (d_useRestMState.getValue()) ? m_ext_indices[i] : index;
 
         sofa::defaulttype::Vector3 v1(p0[tempIndex].getCenter()[0],
                                       p0[tempIndex].getCenter()[1],
@@ -360,7 +360,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
         vertices.push_back(v1);
     }
 
-    vparams->drawTool()->drawLines(vertices,5,springColor.getValue());
+    vparams->drawTool()->drawLines(vertices,5,d_springColor.getValue());
 
     vparams->drawTool()->restoreLastState();
 }
