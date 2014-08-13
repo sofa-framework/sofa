@@ -189,10 +189,12 @@ public:
                 this->elems[i+L0][j+C0] = m[i][j];
     }
 
-    template<int N> void setsub(int L0, int C0, const Vec<N,real>& v)
+    template<int L2> void setsub(int L0, int C0, const Vec<L2,real>& v)
     {
-        for (int i=0; i<N; i++)
-                this->elems[i+L0][C0] = v[i];
+        assert( C0<C );
+        assert( L0+L2-1<L );
+        for (int i=0; i<L2; i++)
+            this->elems[i+L0][C0] = v[i];
     }
 
 
