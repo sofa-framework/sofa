@@ -1,7 +1,7 @@
-<!--
- + Added a driver for the Omni phantom device
- + Added a mechanical state controller that gathers data from the phantom and updates the position of a representation of the device in the simulation
- + Added a computation of the haptic forces
+<!-- 
+ + Added a driver for the Omni phantom device 
+ + Added a mechanical state controller that gathers data from the phantom and updates the position of a representation of the device in the simulation 
+ + Added a computation of the haptic forces 
 -->
 
 <Node name="root" dt="0.001" gravity="10 0 0" >

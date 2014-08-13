@@ -18,7 +18,7 @@ namespace qt
 {
 
 LabelPointsBySectionImageToolBoxAction::LabelPointsBySectionImageToolBoxAction(sofa::component::engine::LabelImageToolBox* lba,QObject *parent):
-    LabelImageToolBoxAction(lba,parent),addPoints(false),tablewidget(NULL)
+    LabelImageToolBoxAction(lba,parent),tablewidget(NULL),addPoints(false)
 {
 
 

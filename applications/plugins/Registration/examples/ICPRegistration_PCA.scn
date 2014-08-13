@@ -37,7 +37,7 @@
 			<MeshObjLoader name='loader' filename='mesh/r_femur.obj'/>
 			<Mesh src="@loader" />
 			<MechanicalObject template="Vec3d" name="deformed" />
-			<PCAOnRigidFrameMapping template="[Vec1d,Rigid],Vec3d" name="PCAmapping"  basis="@../../basis/basis.position" input1="@../weights"  input2="@../../rigidframe" output="@deformed" />
+			<PCAOnRigidFrameMapping template="Vec1d,Rigid,Vec3d" name="PCAmapping"  basis="@../../basis/basis.position" input1="@../weights"  input2="@../../rigidframe" output="@deformed" />
 
 			<NormalsFromPoints name="NormalsFromPoints" template="Vec3d" position="@deformed.position" triangles="@loader.triangles" quads="@loader.quads"/>
 			<ClosestPointRegistrationForceField template="Vec3d&gt"

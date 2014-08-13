@@ -34,7 +34,7 @@
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <Node>
-            <RegularGrid nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />/&gt;
+            <RegularGrid nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />/
             <MechanicalObject />
             <SphereModel radius="1.0" contactStiffness="1" />
             <SubsetMapping />

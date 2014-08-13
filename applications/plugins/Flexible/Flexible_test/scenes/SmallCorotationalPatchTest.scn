@@ -38,7 +38,7 @@
       <!--Material-->
       <Node 	name="Material" >
         <MechanicalObject template="E332"  name="VoigtStrainDOF" />
-        <CorotationalStrainMapping template="F332,E332" method="small"/> 
+        <CorotationalStrainMapping template="F332,E332" method="small"/>
         <HookeForceField template="E332" youngModulus="1000" poissonRatio="0" />
       </Node>
     

@@ -15,10 +15,6 @@ def createScene(node):
 
  
 class Controller(SofaTest.Controller):
-
-    def onLoaded(self, node):
-        self.node = node
-        return 0
         
     def onBeginAnimationStep(self, dt):
         condition = True

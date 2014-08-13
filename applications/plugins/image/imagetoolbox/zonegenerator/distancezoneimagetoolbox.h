@@ -146,12 +146,12 @@ public:
 
         const unsigned int dimX = im_in->getCImg().width();
         const unsigned int dimY = im_in->getCImg().height();
-        const unsigned int dimZ = im_in->getCImg().depth();
+//        const unsigned int dimZ = im_in->getCImg().depth();
         const unsigned int dimS = im_in->getCImg().spectrum();
 
-        const unsigned int nbPixels = dimX*dimY;
+//        const unsigned int nbPixels = dimX*dimY;
 
-        unsigned int max = 1 + (unsigned int)(sqrt((double)(dimX*dimX+dimY*dimY)));
+//        unsigned int max = 1 + (unsigned int)(sqrt((double)(dimX*dimX+dimY*dimY)));
 
         double maxdistance=0;
         // calculate max distance

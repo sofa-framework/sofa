@@ -19,7 +19,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Visual2">
-                <OglModel name="Visual" color="red" dz="0.01" />&quot;/&gt;
+                <OglModel name="Visual" color="red" dz="0.01" />&quot;/
             </Node>
             <Node name="Barycenters">
                 <PointSetTopologyContainer name="Container2" />

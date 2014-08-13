@@ -103,6 +103,6 @@
 		<VectorSpringForceField  object1="Omni/RefModel/instrumentCollisionState" object2="Instrument/CollisionModel/instrumentCollisionState" stiffness="30" viscosity="0" />
 		<VectorSpringForceField  object1="Omni/RefModelRight/instrumentCollisionState" object2="Instrument/RefModelRight/instrumentCollisionState" stiffness="30" viscosity="0" />
 		<VectorSpringForceField  object1="Omni/RefModelLeft/instrumentCollisionState" object2="Instrument/RefModelLeft/instrumentCollisionState" stiffness="30" viscosity="0" />
-	</Node>
+	</Node> 
 
 </Node>
