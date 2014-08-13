@@ -55,7 +55,7 @@ def createScene(root):
 
     strainNode = behaviorNode.createChild('E')
     strainNode.createObject('MechanicalObject',  template="E331", name="E"  ) 
-    strainNode.createObject('GreenStrainMapping', template="Mapping&lt;F331,E331&gt;"    )
+    strainNode.createObject('GreenStrainMapping', template="F331,E331"    )
     strainNode.createObject('HookeForceField',  template="E331", name="ff", youngModulus="2000.0", poissonRatio="0.2", viscosity="0") 
 		
     massNode = rigidNode.createChild('mass')
