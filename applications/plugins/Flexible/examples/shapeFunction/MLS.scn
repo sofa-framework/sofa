@@ -28,7 +28,7 @@
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
-	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	    	<BarycentricMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
     </Node>
 
@@ -60,13 +60,13 @@
 <!--	    	<TopologyGaussPointSampler name="sampler" inPosition="@mesh.position" showSamplesScale="0" method="0" order="1" />-->
 
 		<MechanicalObject template="F331" name="F" />
-	    	<MLSMapping template="Mapping&lt;Vec3d,F331&gt;"   showDeformationGradientScale="0.1"/>
+	    	<MLSMapping template="Vec3d,F331"   showDeformationGradientScale="0.1"/>
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" name="E"  /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="polar" />
+		    <CorotationalStrainMapping template="F331,E331"   method="polar" />
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
-<!--		    <PrincipalStretchesMapping template="Mapping&lt;F331,U331&gt;"   method="polar" />-->
+<!--		    <PrincipalStretchesMapping template="F331,U331"   method="polar" />-->
 <!--		    <StabilizedNeoHookeanForceField  template="U331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>-->		</Node>
 	    </Node>
 
@@ -79,12 +79,12 @@
             	<BoxROI template="Vec3d" box="0 -2 0 5 2 5"  position="@mesh.position" /> 
 		<RestShapeSpringsForceField template="Vec3d" points="@[-1].indices" stiffness="1E3"/> 
 
-	    	<MLSMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;"/>
+	    	<MLSMapping template="Vec3d,Vec3d"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
-	    	<MLSMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	    	<MLSMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
 
     </Node>

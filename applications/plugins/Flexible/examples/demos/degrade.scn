@@ -35,14 +35,14 @@
 	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1"/>
 
 	<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
+    	<LinearMapping template="Affine,F332"  />
 
 
 	<Node 	name="E"   >
 	    <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
 
 	    <MechanicalObject  template="E332" name="E"  />
-	    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"  />
+	    <CorotationalStrainMapping template="F332,E332"  />
 	    <HookeForceField  template="E332" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="100"/>
 	</Node>
 	
@@ -56,12 +56,12 @@
 		<Mesh name="mesh" src="@mesh" /> 
 		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
 		<UniformMass totalMass="1000" />
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
 		<OglModel name="Beam" fileMesh="../beam/beam_100-40-1.obj" texturename="../data/mesh/degrade-stiffness.png" />
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+	    	<LinearMapping template="Affine,ExtVec3f"/>
 	    </Node>
 
     </Node>

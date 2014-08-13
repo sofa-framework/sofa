@@ -45,11 +45,11 @@
         <Node 	name="behavior"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="2" />
 	    <MechanicalObject  template="F331" name="F" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"   />
+    	    <LinearMapping template="Vec3d,F331"   />
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="polar"/>
+	    	<CorotationalStrainMapping template="F331,E331"   method="polar"/>
 	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"    />	    
 	    </Node>
         </Node>
@@ -57,12 +57,12 @@
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../mesh.position" />
 	     <UniformMass totalMass="250" />
-	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"  />
+	     <LinearMapping template="Vec3d,Vec3d"  />
         </Node>
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/torus.obj" />
-             <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+             <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
 
  	<Node name="VisuHexa"  >

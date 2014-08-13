@@ -24,7 +24,7 @@
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader" />
 			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05" translation="0 2 0" useMask="0"/>
-			<FrameBlendingMapping template="Mapping&lt;FrameAffine,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
+			<FrameBlendingMapping template="FrameAffine,DeformationGradient331"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
 		</Node>
 
@@ -34,7 +34,7 @@
 			<MechanicalObject  name="PointSet" translation="0 2 0" useMask="0"/>
 			<PlaneForceField name="Plane" stiffness="500" normal="0 1 0"/>
 			<Triangle />
-			<FrameBlendingMapping template="Mapping&lt;FrameAffine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="FrameAffine,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>
 
@@ -46,7 +46,7 @@
 		<UniformMass template="Rigid" name="default14" />
 		<Node 	name="VisualNode" tags="Visual" gravity="0 -9.81 0"  >
 			<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/cube.obj"  scale3d="1 1 1"  material="Default Diffuse 1 0.5 0.5 0.5 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
-			<RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="default15"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Visual" />
+			<RigidMapping template="Rigid,ExtVec3f" name="default15"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Visual" />
 		</Node>
 		<Node 	name="CollisionNode" gravity="0 -9.81 0"  >
 			<MeshObjLoader name="collisionLoader"  filename="mesh/cube.obj" />
@@ -56,7 +56,7 @@
 			<TTriangleModel template="Vec3d" name="default18"  contactStiffness="200" />
 			<LineModel name="default19"  contactStiffness="@[-1].contactStiffness" />
 			<PointModel name="default20"  contactStiffness="@[-1].contactStiffness" />
-			<RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" name="default21"  input="@.."  output="@." />
+			<RigidMapping template="Rigid,Vec3d" name="default21"  input="@.."  output="@." />
 		</Node>
 	</Node>
 </Node>

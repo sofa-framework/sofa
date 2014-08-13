@@ -17,11 +17,11 @@
 	    <Node 	name="behavior"   >
 		<TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="1"/>
 		<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-	    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
+	    	<LinearMapping template="Vec3d,F331"  />
 
 		<Node 	name="Strain"   >
 		    <MechanicalObject  template="E331" name="E"  />
-		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;"   method="polar"/>
+		    <GreenStrainMapping template="F331,E331"   method="polar"/>
 		    <HookeForceField  template="E331" name="ff" youngModulus="1000" poissonRatio="0" viscosity="0"/>
 		</Node>
 	    </Node>
@@ -29,7 +29,7 @@
 <!-- 
     <Node 	name="Child"   >
         <MechanicalObject template="Vec3d" position="0 0.1 0.8   0 0 0.5" name="child"/>
-    	<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"/>
+    	<LinearMapping template="Vec3d,Vec3d"/>
     </Node>
  -->
 

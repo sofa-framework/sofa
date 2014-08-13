@@ -15,7 +15,7 @@
 			<Mesh src="@MeshLoader"  tags="LDI"/>
 			<MechanicalObject  name="PointSet"  translation="0 -2 0" useMask="0"/>
 			<Triangle />
-			<FrameBlendingMapping template="Mapping&lt;Rigid,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="Rigid,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>
 
@@ -28,7 +28,7 @@
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
 			<Mesh src="@MeshLoader"  />
 			<MechanicalObject  template="DeformationGradient331" name="PointSet"   showObject="1" showObjectScale="0.05" useMask="0"/>
-			<FrameBlendingMapping template="Mapping&lt;FrameAffine,DeformationGradient331&gt;"  input="@../DOFs"  output="@PointSet"  />
+			<FrameBlendingMapping template="FrameAffine,DeformationGradient331"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient331"   printLog="0" />
 		</Node>
 
@@ -37,7 +37,7 @@
 			<Mesh src="@MeshLoader" tags="LDI"/>
 			<MechanicalObject  name="PointSet" useMask="0"/>
 			<Triangle />
-			<FrameBlendingMapping template="Mapping&lt;FrameAffine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="FrameAffine,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>
 </Node>

@@ -12,6 +12,6 @@
 
     <Node 	name="Child"   >
 	<MechanicalObject  template="F331" name="child"  showObject="1" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;"/>
+    	<LinearMapping template="Vec3d,F331"/>
     </Node>
 </Node>

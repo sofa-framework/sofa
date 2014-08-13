@@ -41,7 +41,7 @@
 		<Node name="Physics">
 			<MechanicalObject template="DeformationGradient332" useMask="0" name="PointSet" showObject="1" showObjectScale="0.1" 
 position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
-			<FrameBlendingMapping template="Mapping&lt;FrameAffine,DeformationGradient332&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" 
+			<FrameBlendingMapping template="FrameAffine,DeformationGradient332" name="SMapping"  input="@../DOFs"  output="@PointSet" 
 				targetFrameNumber="2"
 				targetSampleNumber="50" />
 			<FrameVolumePreservationForceField template="DeformationGradient332"  printLog="0"/>  
@@ -53,13 +53,13 @@ position="0 0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
 			<Mesh /> 
 			<MechanicalObject  name="PointSet"/>
 			<Triangle />
-			<FrameBlendingMapping template="MechanicalMapping&lt;FrameAffine,Vec3d&gt;" name="SMapping"  input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="FrameAffine,Vec3d" name="SMapping"  input="@../DOFs"  output="@PointSet" />
 		</Node>
 -->
 		<Node name="Visu">
 			<OglModel name="Beam" fileMesh="mesh/beam.obj" normals="0"   color="1 .8 .3 1" />
 			<!--
-			<FrameBlendingMapping template="Mapping&lt;FrameAffine,ExtVec3f&gt;" name="SMapping"  input="@../DOFs"  output="@Beam"/>
+			<FrameBlendingMapping template="FrameAffine,ExtVec3f" name="SMapping"  input="@../DOFs"  output="@Beam"/>
 			-->
 		</Node>
 

@@ -22,11 +22,11 @@
 <!--
        <MechanicalObject template="Vec3d" position="0 0.1 0.8   0 0 0.5" name="child"/>
 -->
-       <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"/>
+       <LinearMapping template="Vec3d,Vec3d"/>
     </Node>
 
     <Node 	name="visual"   >
 	<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
-    	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+    	<LinearMapping template="Vec3d,ExtVec3f"/>
     </Node>
 </Node>

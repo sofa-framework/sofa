@@ -23,18 +23,18 @@
         <Node 	name="behavior"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
 	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="0" />
+    	    <LinearMapping template="Vec3d,F331" assemble="0" />
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="polar" assemble="0"/>
+	    	<CorotationalStrainMapping template="F331,E331"   method="polar" assemble="0"/>
 	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"  assemble="0"  />	    
 	    </Node>
         </Node>
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/torus.obj" />
-             <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" assemble="0"/>
+             <LinearMapping template="Vec3d,ExtVec3f" assemble="0"/>
 	</Node>
     </Node>
 
@@ -68,11 +68,11 @@
         <Node 	name="behavior"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
 	    <MechanicalObject  template="F331" name="F"   />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="0" showDeformationGradientScale="0"/>
+    	    <LinearMapping template="Vec3d,F331" assemble="0" showDeformationGradientScale="0"/>
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CauchyStrainMapping template="Mapping&lt;F331,E331&gt;"  assemble="0"/>
+	    	<CauchyStrainMapping template="F331,E331"  assemble="0"/>
 	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"   assemble="0" />	    
 	    </Node>
         </Node>
@@ -83,7 +83,7 @@
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/torus.obj" color="1 0 0"/>
-             <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" assemble="0"/>
+             <LinearMapping template="Vec3d,ExtVec3f" assemble="0"/>
 	</Node>
 
     </Node>

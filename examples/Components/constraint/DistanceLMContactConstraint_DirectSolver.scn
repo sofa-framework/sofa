@@ -15,7 +15,7 @@
         <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="25" updateStiffnessMatrix="0" computeGlobalMatrix="0" />
         <Node name="Visu" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/smCube125.obj" translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-            <SubsetMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default4" input="@.." output="@Visual" />
+            <SubsetMapping template="Vec3d,ExtVec3f" name="default4" input="@.." output="@Visual" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
@@ -24,7 +24,7 @@
             <TTriangleModel template="Vec3d" name="default1" contactFriction="0.6" />
             <LineModel name="default2" contactFriction="@[-1].contactFriction" />
             <PointModel name="default3" contactFriction="@[-1].contactFriction" />
-            <SubsetMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="default10" />
+            <SubsetMapping template="Vec3d,Vec3d" name="default10" />
         </Node>
     </Node>
     <Node name="Floor" gravity="0 -9.81 0">
@@ -43,7 +43,7 @@
         <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="25" updateStiffnessMatrix="0" computeGlobalMatrix="0" />
         <Node name="Visu" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/smCube125.obj" translation="@../dof.translation" rotation="@../dof.rotation" scale3d="@../dof.scale3d" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-            <SubsetMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default4" input="@.." output="@Visual" />
+            <SubsetMapping template="Vec3d,ExtVec3f" name="default4" input="@.." output="@Visual" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
             <MeshObjLoader name="loader" filename="mesh/smCube125.obj" />
@@ -52,7 +52,7 @@
             <TTriangleModel template="Vec3d" name="default1" contactFriction="0.6" />
             <LineModel name="default2" contactFriction="@[-1].contactFriction" />
             <PointModel name="default3" contactFriction="@[-1].contactFriction" />
-            <SubsetMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="default10" />
+            <SubsetMapping template="Vec3d,Vec3d" name="default10" />
         </Node>
     </Node>
 </Node>
