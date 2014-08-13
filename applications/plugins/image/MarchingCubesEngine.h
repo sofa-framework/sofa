@@ -70,6 +70,7 @@ public:
 
     Data< Real > isoValue;
     Data< Vec<3,unsigned int> > subdiv;
+    Data< bool > invertNormals;
     Data< bool > showMesh;
 
     typedef _ImageTypes ImageTypes;
@@ -100,6 +101,7 @@ public:
     MarchingCubesEngine()    :   Inherited()
         , isoValue(initData(&isoValue,(Real)(1.0),"isoValue","pixel value to extract isosurface"))
         , subdiv(initData(&subdiv,Vec<3,unsigned int>(0,0,0),"subdiv","number of subdividions in x,y,z directions (use image dimension if =0)"))
+        , invertNormals(initData(&invertNormals,false,"invertNormals","invert triangle vertex order"))
         , showMesh(initData(&showMesh,false,"showMesh","show reconstructed mesh"))
         , image(initData(&image,ImageTypes(),"image",""))
         , transform(initData(&transform,TransformType(),"transform",""))
@@ -157,7 +159,10 @@ protected:
 
         waTriangles tri(this->triangles);
         tri.resize(faces.size());
-        cimglist_for(faces,l) tri[l]=Triangle(faces(l,0),faces(l,1),faces(l,2));
+        if( invertNormals.getValue() )
+            cimglist_for(faces,l) tri[l]=Triangle(faces(l,2),faces(l,1),faces(l,0));
+        else
+            cimglist_for(faces,l) tri[l]=Triangle(faces(l,0),faces(l,1),faces(l,2));
     }
 
     void handleEvent(sofa::core::objectmodel::Event *event)
