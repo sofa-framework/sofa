@@ -45,6 +45,7 @@ set(HEADER_FILES
     TransformPosition.inl
     TransformEngine.h
     TransformEngine.inl
+    TransformMatrixEngine.h
     PointsFromIndices.h
     PointsFromIndices.inl
     ValuesFromIndices.h
@@ -112,6 +113,7 @@ set(SOURCE_FILES
     MeshROI.cpp
     TransformPosition.cpp
     TransformEngine.cpp
+    TransformMatrixEngine.cpp
     PointsFromIndices.cpp
     ValuesFromIndices.cpp
     IndicesFromValues.cpp
