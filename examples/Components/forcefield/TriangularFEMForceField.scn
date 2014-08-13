@@ -20,7 +20,7 @@
         <TriangularFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" />
         <Node name="VisuA">
             <OglModel name="Visual" color="yellow" />
-            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../DOFs" output="@Visual" />
+            <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../DOFs" output="@Visual" />
         </Node>
     </Node>
 </Node>

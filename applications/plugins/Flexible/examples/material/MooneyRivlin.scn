@@ -28,11 +28,11 @@
     <Node 	name="behavior"   >
       <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="0" />
       <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-      <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
+      <LinearMapping template="Vec3d,F331"  />
 
       <Node 	name="I"   >
         <MechanicalObject  template="I331" name="I"  />
-        <InvariantMapping template="Mapping&lt;F331,I331&gt;"    />
+        <InvariantMapping template="F331,I331"    />
         <MooneyRivlinForceField  template="I331" C1="1000" C2="100" bulk="1000"      />
       </Node>
     </Node>
@@ -40,12 +40,12 @@
     <Node 	name="mass"   >
       <MechanicalObject position="@../mesh.position" />
       <UniformMass totalMass="250" />
-      <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"  />
+      <LinearMapping template="Vec3d,Vec3d"  />
     </Node>
 
     <Node 	name="visual"   >
       <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
-      <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"  />
+      <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>
 
@@ -69,11 +69,11 @@
     <Node 	name="behavior"   >
       <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="0" />
       <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-      <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
+      <LinearMapping template="Vec3d,F331"  />
 
       <Node 	name="U"   >
         <MechanicalObject  template="U331" name="U"  />
-        <PrincipalStretchesMapping template="Mapping&lt;F331,U331&gt;" asStrain="false" threshold="0.6"    />
+        <PrincipalStretchesMapping template="F331,U331" asStrain="false" threshold="0.6"    />
         <MooneyRivlinForceField  template="U331" C1="1000" C2="100" bulk="1000" PSDStabilization="true"     />
       </Node>
     </Node>
@@ -81,12 +81,12 @@
     <Node 	name="mass"   >
       <MechanicalObject position="@../mesh.position" />
       <UniformMass totalMass="250" />
-      <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"  />
+      <LinearMapping template="Vec3d,Vec3d"  />
     </Node>
 
     <Node 	name="visual"   >
       <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.2 1 0.2 1" />
-      <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"  />
+      <LinearMapping template="Vec3d,ExtVec3f"  />
     </Node>
   </Node>
 
@@ -111,7 +111,7 @@
 
     <Node 	name="visual"   >
       <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
-      <BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+      <BarycentricMapping template="Vec3d,ExtVec3f"/>
     </Node>
   </Node>
 
@@ -132,11 +132,11 @@
     <Node name="deformationNode" >
       <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-      <LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  />
+      <LinearMapping template="Vec3d,F321"  />
 
       <Node name="StrainNode">
         <MechanicalObject template="U321"  name="U" />
-        <PrincipalStretchesMapping template="Mapping&lt;F321,U321&gt;" asStrain="false" threshold="0.6"   />
+        <PrincipalStretchesMapping template="F321,U321" asStrain="false" threshold="0.6"   />
         <MooneyRivlinForceField  template="U321" C1="1000" C2="100" bulk="1000" PSDStabilization="true"     />
       </Node>
 

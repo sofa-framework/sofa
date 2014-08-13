@@ -25,11 +25,11 @@
     <Node name="deformationNode" >
       <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject template="F221"  name="triangleDeformationsDOF" />
-      <LinearMapping template="Mapping&lt;Vec2d,F221&gt;" showDeformationGradientScale="0.1" />
+      <LinearMapping template="Vec2d,F221" showDeformationGradientScale="0.1" />
 
       <Node name="StrainNode">
         <MechanicalObject template="E221"  name="E" />
-        <CorotationalStrainMapping template="Mapping&lt;F221,E221&gt;" method="svd" />
+        <CorotationalStrainMapping template="F221,E221" method="svd" />
         <HookeForceField  template="E221" youngModulus="10" poissonRatio="0" />
       </Node>
       

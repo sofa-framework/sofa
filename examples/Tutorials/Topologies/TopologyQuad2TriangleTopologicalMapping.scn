@@ -22,7 +22,7 @@
         <FixedConstraint name="Fixed dof" template="Vec3d" indices="4 5 6 7" />
         <Node name="Visu">
             <OglModel name="Visual" template="ExtVec3f" color="green" />
-            <IdentityMapping name="Mapping" template="Mapping&lt;Vec3d,ExtVec3f&gt;" object1="../../Quads" object2="Visual" />
+            <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" object1="../../Quads" object2="Visual" />
         </Node>
         <Node name="Triangles Mesh">
             <TriangleSetTopologyContainer name="Container" />

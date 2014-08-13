@@ -26,12 +26,12 @@
     <Node 	name="behavior"   >
 	<TopologyGaussPointSampler name="sampler" inPosition="@../dofs.rest_position" method="0" order="2"/>
 	<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
+    	<LinearMapping template="Vec3d,F331"  />
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-<!-- 	    	<GreenStrainMapping template="Mapping&lt;F331,E331&gt;"  /> -->
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"  />
+<!-- 	    	<GreenStrainMapping template="F331,E331"  /> -->
+	    	<CorotationalStrainMapping template="F331,E331"  />
 	        <HookeForceField  template="E331" name="ff" youngModulus="3000" poissonRatio="0.3" viscosity="0"    />	    </Node>
     </Node>
 
@@ -43,12 +43,12 @@
 	<Mesh  src="@loader" />
 	<MechanicalObject  />
 	<TTriangleModel />
-        <LinearMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;"  />
+        <LinearMapping template="Vec3d,Vec3d"  />
    </Node>
 
   <Node name="Visual"  >
         <VisualModel  fileMesh="mesh/Armadillo_simplified.obj"   />
-        <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"  />
+        <LinearMapping template="Vec3d,ExtVec3f"  />
    </Node>
 
  	<Node name="VisuHexa"  >

@@ -34,11 +34,11 @@
 	    <Node 	name="behavior"   >
 		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1"/>
 		<MechanicalObject template="F332" name="F"  useMask="0"  showObject="0" showObjectScale="0.05" />
-	    	<LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
+	    	<LinearMapping template="Affine,F332"  />
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E332" name="E"  /> 
-		    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"   method="polar" />
+		    <CorotationalStrainMapping template="F332,E332"   method="polar" />
 		    <HookeForceField  template="E332" name="ff" youngModulus="1000.0" poissonRatio="0.4" viscosity="0"/>
 		</Node>
 
@@ -47,18 +47,18 @@
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../behavior/sampler.position"  />
 	     <UniformMass totalMass="10" />
-	     <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;"  />
+	     <LinearMapping template="Affine,Vec3d"  />
         </Node>
 
 	    <Node 	name="collision"   >	
 		<Mesh name="mesh" src="@../mesh" /> 
 		<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="../data/mesh/T.obj" color="0.8 0.6 0.5" scale3d="10 10 10" />
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+	    	<LinearMapping template="Affine,ExtVec3f"/>
 	    </Node>
     </Node>
 

@@ -29,7 +29,7 @@
         <FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
-            <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
+            <BarycentricMapping template="Vec3d,ExtVec3f" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
 	    <SphereLoader filename="mesh/liver.sph" />

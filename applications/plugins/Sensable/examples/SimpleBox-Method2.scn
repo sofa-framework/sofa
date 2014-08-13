@@ -44,7 +44,7 @@
 
         <Node name="ToolVisual">
             <OglModel template="ExtVec3f" name="VisualModel" fileMesh="data/mesh/dental_instrument.obj" scale3d="10 10 10" translation="-2.12256 1.32361 35.5" rotation="180 0 150" />
-            <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="MM->VM mapping" object1="ms" object2="VisualModel" />
+            <RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping" object1="ms" object2="VisualModel" />
         </Node>
               
 

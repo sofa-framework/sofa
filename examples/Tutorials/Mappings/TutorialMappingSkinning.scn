@@ -11,11 +11,11 @@
         <Node name="PointSet" gravity="0 -9.81 0">
             <MechanicalObject template="Vec3d" name="PointSet" restScale="1" />
             <RegularGridTopology name="default2" n="10 10 9" min="-0.45 -0.45 0" max="0.45 0.45 2" p0="-0.45 -0.45 0" />
-            <SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2" object1="../../DOFs" object2="PointSet" computeJ="1" computeAllMatrices="1" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1" voxelVolume="0.00222222" wheightingType="2" interpolationType="1" distanceType="0" />
+            <SkinningMapping template="Rigid,Vec3d" name="default2" object1="../../DOFs" object2="PointSet" computeJ="1" computeAllMatrices="1" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1" voxelVolume="0.00222222" wheightingType="2" interpolationType="1" distanceType="0" />
         </Node>
         <Node name="visualNode" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" translation="0 0 0" scale3d="1.1 1.1 1" material="Default Diffuse 1 0 1 0 1 Ambient 1 0 0.2 0 1 Specular 0 0 1 0 1 Emissive 0 0 1 0 1 Shininess 0 45" />
-            <SkinningMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="default2" object1="../../DOFs" object2="Visual" computeJ="0" computeAllMatrices="0" showValuesNbDecimals="3" showTextScaleFactor="0.0005" voxelVolume="0.00222222" wheightingType="2" interpolationType="1" distanceType="0" />
+            <SkinningMapping template="Rigid,ExtVec3f" name="default2" object1="../../DOFs" object2="Visual" computeJ="0" computeAllMatrices="0" showValuesNbDecimals="3" showTextScaleFactor="0.0005" voxelVolume="0.00222222" wheightingType="2" interpolationType="1" distanceType="0" />
         </Node>
     </Node>
 </Node>

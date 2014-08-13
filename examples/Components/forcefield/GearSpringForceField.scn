@@ -14,7 +14,7 @@
     <!--  	EXTERNAL SUPPORT -->
     <Node name="Gear">
         <MechanicalObject template="Rigid" name="attaches" rest_position="0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 -1.161 0 1.706 0 0.194787 0 0.980846 -6.7 4 1.706 0 0 0.707107 0.707107 1.790 0 -5.503 0 0.229019 0 0.973422 -6.7 5.2 -3.5 0 0 0.707107 0.707107" restScale="1" />
-        <RigidRigidMapping template="Mapping&lt;Rigid,Rigid&gt;" input="@.." output="@." repartition="1 1 1 1 4" />
+        <RigidRigidMapping template="Rigid,Rigid" input="@.." output="@." repartition="1 1 1 1 4" />
         <GearSpringForceField template="Rigid" name="springs" showFactorSize="5" spring="BEGIN_SPRING  4 0 6 2 AXIS 1 1 KS_T 2000000  KS_R 2000000 2000000 KD 1 RATIO 2 END_SPRING&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;  BEGIN_SPRING  4 0 5 1 AXIS 1 1 KS_T 2000000  KS_R 2000000 2000000 KD 1 RATIO -1.5385 END_SPRING&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;  BEGIN_SPRING  5 1 7 3 AXIS 1 1 KS_T 2000000  KS_R 2000000 2000000 KD 1 RATIO 2.166667 END_SPRING" />
     </Node>
     <Node name="0">
@@ -22,10 +22,10 @@
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <Triangle />
-        <RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" index="0" />
+        <RigidMapping template="Rigid,Vec3d" index="0" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear0.obj" />
-            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@.." output="@Visual" />
+            <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="1">
@@ -33,10 +33,10 @@
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <Triangle />
-        <RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" index="1" />
+        <RigidMapping template="Rigid,Vec3d" index="1" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear1.obj" />
-            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@.." output="@Visual" />
+            <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="2">
@@ -44,10 +44,10 @@
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <Triangle />
-        <RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" index="2" />
+        <RigidMapping template="Rigid,Vec3d" index="2" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear2.obj" />
-            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@.." output="@Visual" />
+            <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="3">
@@ -55,10 +55,10 @@
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <Triangle />
-        <RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" index="3" />
+        <RigidMapping template="Rigid,Vec3d" index="3" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gear3.obj" />
-            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@.." output="@Visual" />
+            <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="support">
@@ -66,10 +66,10 @@
         <Mesh src="@MeshLoader" />
         <MechanicalObject name="PointSet" />
         <Triangle />
-        <RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" index="4" />
+        <RigidMapping template="Rigid,Vec3d" index="4" />
         <Node name="Visu">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/gearsupport.obj" material="Default Diffuse 1 1 1 0.8 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-            <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@.." output="@Visual" />
+            <IdentityMapping template="Vec3d,ExtVec3f" input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

@@ -27,7 +27,7 @@
       <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
       <TriangleSet />
       <VisualModel name="Visual" color="black" />
-      <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1=".." object2="Visual" />
+      <IdentityMapping template="Vec3d,ExtVec3f" name="default8" object1=".." object2="Visual" />
     </Node>
   </Node>
 
@@ -103,7 +103,7 @@
         <TriangularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="300" damping="1" />
         <TriangleSet />
         <VisualModel name="Visual" color="red" />
-        <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1=".." object2="Visual" />
+        <IdentityMapping template="Vec3d,ExtVec3f" name="default8" object1=".." object2="Visual" />
     </Node>
   </Node>
 

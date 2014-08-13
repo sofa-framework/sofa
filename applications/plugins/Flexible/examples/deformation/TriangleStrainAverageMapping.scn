@@ -28,7 +28,7 @@
     <Node name="deformationNode" >
 	<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
         <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-  	<LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  />
+  	<LinearMapping template="Vec3d,F321"  />
     
         <TriangleSetTopologyContainer triangles="@../mesh.triangles" />
 <!--
@@ -36,11 +36,11 @@
 -->
         <Node name="StrainNode">
             <MechanicalObject template="E321"  name="triangleVoigtStrainDOF" />
-            <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
+            <GreenStrainMapping template="F321,E321" />
 <!--            <HookeForceField template="E321" youngModulus="1000" poissonRatio="0.45" />-->
             <Node>
                 <MechanicalObject template="E321"  name="nodeVoigtStrainDOF" />
-                <TriangleStrainAverageMapping template="Mapping&lt;E321,E321&gt;" />
+                <TriangleStrainAverageMapping template="E321,E321" />
                 <HookeForceField template="E321" youngModulus="1000" poissonRatio="0.4" />
             </Node>
         </Node>

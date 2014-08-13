@@ -26,10 +26,10 @@
         <Node name="deformationNode" >
             <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" method="0" order="1" />
             <MechanicalObject template="F321"  />
-            <LinearMapping template="Mapping&lt;Vec3d,F321&gt;" showDeformationGradientScale="0.1" showDeformationGradientStyle="1"/>
+            <LinearMapping template="Vec3d,F321" showDeformationGradientScale="0.1" showDeformationGradientStyle="1"/>
             <Node name="StrainNode">
                 <MechanicalObject template="E321" name="E"/>
-                <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
+                <GreenStrainMapping template="F321,E321" />
 	        <HookeOrthotropicForceField  template="E321" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0"/>	        
 		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Tri" /> 
 	    </Node>
@@ -65,10 +65,10 @@
         <Node name="deformationNode" >
             <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" method="0" order="2" />
             <MechanicalObject template="F321"  />
-            <LinearMapping template="Mapping&lt;Vec3d,F321&gt;" showDeformationGradientScale="0.1" showDeformationGradientStyle="1"/>
+            <LinearMapping template="Vec3d,F321" showDeformationGradientScale="0.1" showDeformationGradientStyle="1"/>
             <Node name="StrainNode">
                 <MechanicalObject template="E321" name="E"/>
-                <GreenStrainMapping template="Mapping&lt;F321,E321&gt;" />
+                <GreenStrainMapping template="F321,E321" />
 	        <HookeOrthotropicForceField  template="E321" youngModulusX="200" youngModulusY="20" poissonRatioXY="0.4" shearModulusXY="3.6" viscosity="0" />	        
 		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Quad" /> 
 	    </Node>
