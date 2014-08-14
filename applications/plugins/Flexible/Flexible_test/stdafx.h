@@ -26,8 +26,8 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <plugins/SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
@@ -43,8 +43,8 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include "Elasticity_test.h"
 #include <sofa/defaulttype/VecTypes.h>
@@ -55,7 +55,7 @@
 
 #include <sofa/component/forcefield/QuadPressureForceField.h>
 #include "../material/HookeForceField.h"
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include "Elasticity_test.h"
 #include <plugins/SceneCreator/SceneCreator.h>
@@ -65,9 +65,9 @@
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include "../material/HookeForceField.h"
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 #include <plugins/SofaTest/Sofa_test.h>
@@ -83,14 +83,14 @@
 
 // Including component
 #include <sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>
 
 // Including component
 
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include "../deformationMapping/LinearMapping.h"
 
 #include <Mapping_test.h>
@@ -99,7 +99,7 @@
 #include <sofa/helper/RandomGenerator.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include "../deformationMapping/LinearMapping.h"
 
 #include <Mapping_test.h>

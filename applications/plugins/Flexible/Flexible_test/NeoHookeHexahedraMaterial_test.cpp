@@ -36,7 +36,7 @@
 #include "../material/HookeForceField.h"
 #include "../material/NeoHookeanForceField.h"
 #include "../material/MooneyRivlinForceField.h"
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa {
 
