@@ -203,16 +203,20 @@ boost::mutex s_mtx;
 template <class DataTypes>
 void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)
 {    
-    const unsigned int stateSize = state.size();
-    // Resize du vecteur force. Initialization � 0 ?
-    forces.resize(stateSize);
-    // Init to 0
-    for(unsigned int i = 0; i < stateSize; ++i)
+    if (!this->f_activate.getValue())
     {
-        forces[i] = Deriv();
+        return;
     }
+    updateStats();
+    updateConstraintProblem();
+    doComputeForce(state, forces);
+}
+template <class DataTypes>
+void LCPForceFeedback<DataTypes>::updateStats()
+{
+    using namespace helper::system::thread;
 
-    sofa::helper::system::thread::ctime_t actualTime = _timer->getTime();
+    ctime_t actualTime = _timer->getTime();
     ++timer_iterations;
     if (actualTime - time_buf >= sofa::helper::system::thread::CTime::getTicksPerSec())
     {
@@ -220,33 +224,54 @@ void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv&
         time_buf = actualTime;
         timer_iterations = 0;
     }
+}
 
-    if(!constraintSolver||!mState)
-        return;
-
-
-    if (!this->f_activate.getValue())
-    {
-        return;
-    }
-
+template <class DataTypes>
+bool LCPForceFeedback<DataTypes>::updateConstraintProblem()
+{
+    int prevId = mCurBufferId;
 
     //
     // Retrieve the last LCP and constraints computed by the Sofa thread.
     //
     mIsCuBufferInUse = true;
 
+    {
+        // TODO: Lock and/or memory barrier HERE
+        mCurBufferId = mNextBufferId;
+    }
 
-    mCurBufferId = mNextBufferId;
+    bool changed = (prevId != mCurBufferId);
 
-    const MatrixDeriv& constraints = mConstraints[mCurBufferId];
-    //	std::vector<int> &id_buf = mId_buf[mCurBufferId];
-    VecCoord &val = mVal[mCurBufferId];
     component::constraintset::ConstraintProblem* cp = mCP[mCurBufferId];
 
     if(!cp)
     {
         mIsCuBufferInUse = false;
+    }
+
+    return changed;
+}
+
+template <class DataTypes>
+void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeriv& forces)
+{
+    const unsigned int stateSize = state.size();
+    forces.resize(stateSize);
+    for (unsigned int i = 0; i < forces.size(); ++i)
+    {
+        forces[i].clear();
+    }
+
+    if(!constraintSolver||!mState)
+        return;
+
+    const MatrixDeriv& constraints = mConstraints[mCurBufferId];
+    VecCoord &val = mVal[mCurBufferId];
+    component::constraintset::ConstraintProblem* cp = mCP[mCurBufferId];
+
+    if(!cp)
+    {
         return;
     }
 
@@ -368,13 +393,17 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
     }
 
     // valid buffer
-    mNextBufferId = buf_index;
+
+    {
+        // TODO: Lock and/or memory barrier HERE
+        mNextBufferId = buf_index;
+    }
 
     // Lock lcp to prevent its use by the SOFA thread while it is used by haptic thread
     if(mIsCuBufferInUse)
-        constraintSolver->lockConstraintProblem(mCP[mCurBufferId], mCP[mNextBufferId]);
+        constraintSolver->lockConstraintProblem(this, mCP[mCurBufferId], mCP[mNextBufferId]);
     else
-        constraintSolver->lockConstraintProblem(mCP[mNextBufferId]);
+        constraintSolver->lockConstraintProblem(this, mCP[mNextBufferId]);
 }
 
 

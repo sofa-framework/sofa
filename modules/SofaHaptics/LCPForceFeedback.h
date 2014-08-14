@@ -95,6 +95,12 @@ protected:
     {
         delete(_timer);
     }
+
+    virtual void updateStats();
+    virtual bool updateConstraintProblem();
+    virtual void doComputeForce(const  VecCoord& state,  VecDeriv& forces);
+
+
 public:
     void handleEvent(sofa::core::objectmodel::Event *event);
 

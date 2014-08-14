@@ -69,7 +69,7 @@ GenericConstraintSolver::GenericConstraintSolver()
 , currentIterations(initData(&currentIterations, 0, "currentIterations", "OUTPUT: current number of constraint groups"))
 , currentError(initData(&currentError, 0.0, "currentError", "OUTPUT: current error"))
 , reverseAccumulateOrder(initData(&reverseAccumulateOrder, false, "reverseAccumulateOrder", "True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)"))
-, current_cp(&cp1)
+, current_cp(&m_cpBuffer[0])
 , last_cp(NULL)
 {
 	addAlias(&maxIt, "maxIt");
@@ -144,6 +144,8 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
 	sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
 	last_cp = current_cp;
+
+    clearConstraintProblemLocks(); // NOTE: this assumes we solve only one constraint problem per step
 
 	time = 0.0;
 	timeTotal = 0.0;
@@ -432,17 +434,34 @@ ConstraintProblem* GenericConstraintSolver::getConstraintProblem()
 	return last_cp;
 }
 
-void GenericConstraintSolver::lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2)
+void GenericConstraintSolver::clearConstraintProblemLocks()
 {
-	if( (current_cp != p1) && (current_cp != p2) ) // Le ConstraintProblem courant n'est pas locké
+    for (unsigned int i = 0; i < CP_BUFFER_SIZE; ++i)
+    {
+        m_cpIsLocked[i] = false;
+    }
+}
+
+void GenericConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2)
+{
+	if( (current_cp != p1) && (current_cp != p2) ) // The current ConstraintProblem is not locked
 		return;
 
-	if( (&cp1 != p1) && (&cp1 != p2) ) // cp1 n'est pas locké
-		current_cp = &cp1;
-	else if( (&cp2 != p1) && (&cp2 != p2) ) // cp2 n'est pas locké
-		current_cp = &cp2;
-	else
-		current_cp = &cp3; // cp1 et cp2 sont lockés, donc cp3 n'est pas locké
+    for (unsigned int i = 0; i < CP_BUFFER_SIZE; ++i)
+    {
+        GenericConstraintProblem* p = &m_cpBuffer[i];
+        if (p == p1 || p == p2)
+        {
+            m_cpIsLocked[i] = true;
+        }
+        if (!m_cpIsLocked[i]) // ConstraintProblem i is not locked
+        {
+            current_cp = p;
+            return;
+        }
+    }
+    // All constraint problems are locked
+    serr << "All constraint problems are locked, request from " << (from ? from->getName() : "NULL") << " ignored" << sendl;
 }
 
 void GenericConstraintProblem::clear(int nbC)

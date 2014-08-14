@@ -106,8 +106,8 @@ public:
 
 	bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 	bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-        void rebuildSystem(double massFactor, double forceFactor);
-        bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    void rebuildSystem(double massFactor, double forceFactor);
+    bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
 	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
     void computeResidual(const core::ExecParams* /*params*/);
 
@@ -126,15 +126,19 @@ public:
     Data<bool> reverseAccumulateOrder;
 
 	ConstraintProblem* getConstraintProblem();
-	void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0);
+	void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=0);
 
     virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s);
 
 protected:
-	GenericConstraintProblem cp1, cp2, cp3;
+    enum { CP_BUFFER_SIZE = 10 };
+    sofa::helper::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
+    sofa::helper::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
 	GenericConstraintProblem *current_cp, *last_cp;
 	std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 	std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
+
+    void clearConstraintProblemLocks();
 
 	simulation::Node *context;
 
