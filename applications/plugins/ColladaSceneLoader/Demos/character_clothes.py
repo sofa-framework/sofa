@@ -122,11 +122,11 @@ def createFlexibleClothes(parent):
     deformationNode = parent.createChild('deformation')
     deformationNode.createObject('TopologyGaussPointSampler', name='sampler', inPosition='@../dof.position', showSamples='false', method='0', order='1')
     deformationNode.createObject('MechanicalObject', template='F321', name='triangleDeformationsDOF')
-    deformationNode.createObject('LinearMapping', template="Mapping&lt;Vec3d,F321&gt;")
+    deformationNode.createObject('LinearMapping', template="Vec3d,F321")
     
     strainNode = deformationNode.createChild('strain')
     strainNode.createObject('MechanicalObject', template='E321', name="StrainDOF")
-    strainNode.createObject('CorotationalStrainMapping', template='Mapping&lt;F321,E321&gt;', method="svd") # try qr instead of svd
+    strainNode.createObject('CorotationalStrainMapping', template='F321,E321', method="svd") # try qr instead of svd
     strainNode.createObject('HookeForceField', template='E321', youngModulus='30000', poissonRatio='0.35', viscosity='0')
 
 	
