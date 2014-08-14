@@ -6,7 +6,7 @@
 
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -30,7 +30,7 @@
 
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -63,7 +63,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
@@ -76,7 +76,7 @@
 #include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
@@ -123,7 +123,7 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 #include <sofa/component/mapping/DistanceMapping.h>
 #include <sofa/component/mapping/DistanceFromTargetMapping.h>
@@ -151,7 +151,7 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/collision/MeshIntTool.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/PointSetTopologyContainer.h>
@@ -160,7 +160,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/PointSetTopologyContainer.h>
@@ -170,7 +170,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 #include <sofa/component/container/MechanicalObject.h>
@@ -193,7 +193,7 @@
 #include <sofa/component/odesolver/StaticSolver.h>
 
 #include "Mapping_test.h"
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -222,7 +222,7 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
 #include <sofa/component/mapping/DistanceMapping.h>
 #include <sofa/component/mapping/DistanceFromTargetMapping.h>
@@ -252,7 +252,7 @@
 #include <sofa/component/collision/MeshMinProximityIntersection.h>
 #include <sofa/component/collision/MeshNewProximityIntersection.inl>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 //#include <plugins/SceneCreator/SceneCreator.h>
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>
