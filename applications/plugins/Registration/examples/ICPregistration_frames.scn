@@ -42,7 +42,7 @@
 			<LinearMapping template="Affine,Vec3d" />
 
 			<NormalsFromPoints name="NormalsFromPoints" template="Vec3d" position="@PointSet.position" triangles="@MeshLoader.triangles" quads="@MeshLoader.quads"/>
-			<ClosestPointRegistrationForceField template="Vec3d&gt"
+			<ClosestPointRegistrationForceField template="Vec3d"
 					sourceTriangles="@MeshLoader.triangles"					
 					sourceNormals="@NormalsFromPoints.normals"					
 					position="@../../target/Bone.position" 
