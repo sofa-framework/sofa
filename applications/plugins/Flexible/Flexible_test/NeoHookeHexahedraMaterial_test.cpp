@@ -32,7 +32,7 @@
 
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
-#include <sofa/component/forcefield/QuadPressureForceField.h>
+#include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include "../material/HookeForceField.h"
 #include "../material/NeoHookeanForceField.h"
 #include "../material/MooneyRivlinForceField.h"

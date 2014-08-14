@@ -45,7 +45,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <SofaMiscForceField/MeshMatrixMass.h>
-#include <sofa/component/engine/GenerateCylinder.h>
+#include <SofaEngine/GenerateCylinder.h>
 #include <SofaTopologyMapping/Mesh2BezierTopologicalMapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -176,7 +176,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 //Force field
-#include <sofa/component/forcefield/QuadPressureForceField.h>
+#include <SofaBoundaryCondition/QuadPressureForceField.h>
 
 // topology
 #include <SofaBaseTopology/RegularGridTopology.h>

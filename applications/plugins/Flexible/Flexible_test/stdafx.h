@@ -53,7 +53,7 @@
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/forcefield/QuadPressureForceField.h>
+#include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include "../material/HookeForceField.h"
 #include <SofaBaseMechanics/MechanicalObject.h>
 
@@ -82,7 +82,7 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h>
+#include <SofaBoundaryCondition/PatchTestMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <sofa/helper/Quater.h>

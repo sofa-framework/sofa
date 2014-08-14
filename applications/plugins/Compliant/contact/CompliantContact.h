@@ -10,12 +10,12 @@
 
 #include "../mapping/ContactMapping.h" 		// should be normal mapping
 
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/TetrahedronModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/CylinderModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMiscCollision/TetrahedronModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/core/collision/Contact.h>
 
 //#include <sofa/simulation/common/MechanicalVisitor.h>
