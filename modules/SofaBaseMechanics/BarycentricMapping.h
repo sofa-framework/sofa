@@ -102,7 +102,7 @@ namespace mapping
 /// Base class for barycentric mapping topology-specific mappers
 
 template<class In, class Out>
-class BarycentricMapper : public core::objectmodel::BaseObject
+class BarycentricMapper : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapper,In,Out),core::objectmodel::BaseObject);
