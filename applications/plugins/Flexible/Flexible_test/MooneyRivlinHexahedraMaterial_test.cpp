@@ -30,7 +30,7 @@
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/forcefield/QuadPressureForceField.h>
+#include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
 #include "../material/HookeForceField.h"

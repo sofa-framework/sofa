@@ -35,7 +35,7 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h>
+#include <SofaBoundaryCondition/PatchTestMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
 

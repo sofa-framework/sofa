@@ -1264,3 +1264,8 @@ s:#include *[<"]sofa/component/TopologyMapping.h[>"]:#include <SofaTopologyMappi
 s:#include *[<"]sofa/component/UserInteraction.h[>"]:#include <SofaUserInteraction/UserInteraction.h>:
 s:#include *[<"]sofa/component/Validation.h[>"]:#include <SofaValidation/Validation.h>:
 s:#include *[<"]sofa/component/VolumetricData.h[>"]:#include <SofaVolumetricData/VolumetricData.h>:
+s:#include *[<"]sofa/component/engine/TransformMatrixEngine.h[>"]:#include <SofaEngine/TransformMatrixEngine.h>:
+s:#include *[<"]sofa/component/engine/GenerateCylinder.h[>"]:#include <SofaEngine/GenerateCylinder.h>:
+s:#include *[<"]sofa/component/forcefield/QuadPressureForceField.h[>"]:#include <SofaBoundaryCondition/QuadPressureForceField.h>:
+s:#include *[<"]sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h[>"]:#include <SofaBoundaryCondition/PatchTestMovementConstraint.h>:
+s:#include *[<"]sofa/component/collision/CylinderModel.h[>"]:#include <SofaBaseCollision/CylinderModel.h>:

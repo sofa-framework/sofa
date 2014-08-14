@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 #define SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 
-#include <sofa/component/controller/Controller.h>
-#include <sofa/component/visualmodel/OglModel.h>
+#include <SofaUserInteraction/Controller.h>
+#include <SofaOpenglVisual/OglModel.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
 
