@@ -32,7 +32,7 @@
 
 #include <sofa/component/forcefield/QuadPressureForceField.h>
 #include "../material/HookeForceField.h"
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa {
 

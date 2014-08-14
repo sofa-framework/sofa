@@ -15,18 +15,18 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including constraint, force and mass
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaDeformable/MeshSpringForceField.h>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 #include "Sofa_test.h"
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
 
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -39,14 +39,14 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including constraint, force and mass
-#include <sofa/component/topology/BezierTetrahedronSetTopologyContainer.h>
-#include <sofa/component/topology/BezierTetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseTopology/BezierTetrahedronSetTopologyContainer.h>
+#include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <plugins/SceneCreator/SceneCreator.h>
-#include <sofa/component/mass/MeshMatrixMass.h>
+#include <SofaMiscForceField/MeshMatrixMass.h>
 #include <sofa/component/engine/GenerateCylinder.h>
-#include <sofa/component/topology/Mesh2BezierTopologicalMapping.h>
+#include <SofaTopologyMapping/Mesh2BezierTopologicalMapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <plugins/SceneCreator/SceneCreator.h>
@@ -55,8 +55,8 @@
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 #include <plugins/SceneCreator/SceneCreator.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <sofa/simulation/common/Simulation.h>
 
 #include <plugins/SceneCreator/SceneCreator.h>
@@ -66,15 +66,15 @@
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
-#include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
-#include <sofa/component/topology/TopologySparseData.inl>
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/engine/PairBoxRoi.h>
-#include <sofa/component/odesolver/StaticSolver.h>
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
+#include <SofaMiscFem/TetrahedralTensorMassForceField.h>
+#include <SofaSimpleFem/TetrahedralCorotationalFEMForceField.h>
+#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaEngine/PairBoxRoi.h>
+#include <SofaImplicitOdeSolver/StaticSolver.h>
+#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
 
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/common/Simulation.h>
@@ -86,11 +86,11 @@
 #include <gtest/gtest.h>
 #include "Sofa_test.h"
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/FullVector.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/FullMatrix.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -124,18 +124,18 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #include <SofaComponentMain/init.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/mapping/DistanceMapping.h>
-#include <sofa/component/mapping/DistanceFromTargetMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/topology/CubeTopology.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/collision/OBBModel.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <SofaMiscMapping/DistanceMapping.h>
+#include <SofaMiscMapping/DistanceFromTargetMapping.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseTopology/CubeTopology.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaBaseCollision/OBBModel.h>
 #include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -145,27 +145,27 @@
 
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 #include <sofa/simulation/tree/GNode.h>
 
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/collision/MeshIntTool.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaMeshCollision/MeshIntTool.h>
 
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/projectiveconstraintset/ProjectToPlaneConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBoundaryCondition/ProjectToPlaneConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -173,32 +173,32 @@
 #include <SofaComponentMain/init.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 //Force field
 #include <sofa/component/forcefield/QuadPressureForceField.h>
 
 // topology
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 
-#include <sofa/component/engine/BoxROI.h>
+#include <SofaEngine/BoxROI.h>
 
 // Constraint
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
-#include <sofa/component/projectiveconstraintset/FixedPlaneConstraint.h>
+#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 
 //Solver
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/odesolver/StaticSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaImplicitOdeSolver/StaticSolver.h>
 
 #include "Mapping_test.h"
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include <gtest/gtest.h>
 #include <iostream>
@@ -223,18 +223,18 @@
 #include <sofa/helper/system/FileRepository.h>
 
 #include <SofaComponentMain/init.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/mapping/DistanceMapping.h>
-#include <sofa/component/mapping/DistanceFromTargetMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/topology/CubeTopology.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/collision/OBBModel.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <SofaMiscMapping/DistanceMapping.h>
+#include <SofaMiscMapping/DistanceFromTargetMapping.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseTopology/CubeTopology.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaBaseCollision/OBBModel.h>
 #include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -244,13 +244,13 @@
 
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 #include <sofa/simulation/tree/GNode.h>
 
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/collision/MeshIntTool.h>
-#include <sofa/component/collision/MeshMinProximityIntersection.h>
-#include <sofa/component/collision/MeshNewProximityIntersection.inl>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaMeshCollision/MeshIntTool.h>
+#include <SofaMeshCollision/MeshMinProximityIntersection.h>
+#include <SofaMeshCollision/MeshNewProximityIntersection.inl>
 
 #include <SofaComponentMain/init.h>
 //#include <plugins/SceneCreator/SceneCreator.h>
@@ -260,8 +260,8 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/set.h>
 // Including constraint, force and mass
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/CommonAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <ctime>
 #include <plugins/SceneCreator/SceneCreator.h>
