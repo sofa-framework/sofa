@@ -23,7 +23,7 @@
 						
 			<NormalsFromPoints name="NormalsFromPoints" template="Vec3d" position="@PointSet.position" triangles="@meshLoader.triangles" quads="@meshLoader.quads"/>
 
-			<ClosestPointRegistrationForceField template="Vec3d&gt"
+			<ClosestPointRegistrationForceField template="Vec3d"
 					sourceTriangles="@meshLoader.triangles"					
 					sourceNormals="@NormalsFromPoints.normals"					
 					position="@../target/Bone.position" 
