@@ -484,11 +484,15 @@ namespace component
 namespace container
 {
 
+using defaulttype::Vector3;
+using defaulttype::Quat;
+using defaulttype::Vec4f;
+
 // ==========================================================================
 // Draw Specializations
 #ifndef SOFA_FLOAT
 template <> SOFA_Flexible_API
-void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
+void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
 
@@ -501,7 +505,7 @@ void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualP
         glDisable ( GL_LIGHTING );
         float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
 
-        Mat<4,4, GLfloat> modelviewM;
+        defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         for ( int i=0 ; i< vsize ; i++ )
         {
@@ -520,7 +524,7 @@ void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualP
             glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
             temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
@@ -544,8 +548,8 @@ void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualP
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        const TYPEABSTRACTNAME3dTypes::VecCoord& x = ( *getX() );
-
+        const defaulttype::TYPEABSTRACTNAME3dTypes::VecCoord& x = ( read(core::ConstVecCoordId::position())->getValue() );
+        
         for (int i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
@@ -577,7 +581,7 @@ void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualP
 #endif
 #ifndef SOFA_DOUBLE
 template <> SOFA_Flexible_API
-void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
+void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
 
@@ -590,7 +594,7 @@ void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualP
         glDisable ( GL_LIGHTING );
         float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
 
-        Mat<4,4, GLfloat> modelviewM;
+        defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         for ( int i=0 ; i< vsize ; i++ )
         {
@@ -609,7 +613,7 @@ void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualP
             glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+            defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
             temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
@@ -633,7 +637,7 @@ void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualP
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        const TYPEABSTRACTNAME3fTypes::VecCoord& x = ( *getX() );
+        const defaulttype::TYPEABSTRACTNAME3fTypes::VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
 
         for (int i = 0; i < this->getSize(); ++i)
         {
@@ -918,10 +922,10 @@ void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >::init
 
     const double dt2 = dt * dt;
 
-    TYPEABSTRACTNAME3dMass massValue;
+    defaulttype::TYPEABSTRACTNAME3dMass massValue;
     VecReal usedComp;
 
-    sofa::component::mass::UniformMass< TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dMass >* uniformMass;
+    sofa::component::mass::UniformMass< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dMass >* uniformMass;
 
     this->getContext()->get( uniformMass, core::objectmodel::BaseContext::SearchUp );
     if( uniformMass )
@@ -953,10 +957,10 @@ void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >::init
 
     const double dt2 = dt * dt;
 
-    TYPEABSTRACTNAME3fMass massValue;
+    defaulttype::TYPEABSTRACTNAME3fMass massValue;
     VecReal usedComp;
 
-    sofa::component::mass::UniformMass< TYPEABSTRACTNAME3fTypes, TYPEABSTRACTNAME3fMass >* uniformMass;
+    sofa::component::mass::UniformMass< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fMass >* uniformMass;
 
     this->getContext()->get( uniformMass, core::objectmodel::BaseContext::SearchUp );
     if( uniformMass )

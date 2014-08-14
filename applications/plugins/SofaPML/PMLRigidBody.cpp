@@ -206,7 +206,7 @@ void PMLRigidBody::initVelocity(string m)
 
 Vector3 PMLRigidBody::getDOF(unsigned int index)
 {
-    return (*((MechanicalState<Vec3Types>*)mmodel.get())->getX())[index];
+    return ((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue()[index];
 }
 
 

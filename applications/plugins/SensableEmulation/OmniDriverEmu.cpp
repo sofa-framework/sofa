@@ -131,10 +131,10 @@ void OmniDriverEmu::cleanup()
 
 void OmniDriverEmu::init()
 {
-    std::cout << "[OmniEmu] init" << endl;
+    std::cout << "[OmniEmu] init" << std::endl;
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState) serr << "OmniDriverEmu has no binding MechanicalState" << sendl;
-    else std::cout << "[Omni] init" << endl;
+    else std::cout << "[Omni] init" << std::endl;
 
     if(mState->getSize()<toolCount.getValue())
         mState->resize(toolCount.getValue());
@@ -210,21 +210,21 @@ void *hapticSimuExecute( void *ptr )
         //for the point
         unsigned int n = tmg[seg]*omniDrv->simuFreq.getValue();
         stepNum.push_back(n);
-        cout << "N pts = " << n << endl;
+        cout << "N pts = " << n << std::endl;
         OmniDriverEmu::Coord crd;
-        cout << " adding  " << crd << endl;
+        cout << " adding  " << crd << std::endl;
         stepDiff.push_back(crd);
 
         //for the line
         if (np < numPts-1) {
             seg++;
             n = tmg[seg]*omniDrv->simuFreq.getValue();
-            cout << "N lin = " << n << endl;
+            cout << "N lin = " << n << std::endl;
             stepNum.push_back(n);
             Vec3d dx = (pts[np+1].getCenter() - pts[np].getCenter())/double(n);
             helper::Quater<double> dor;  ///TODO difference for rotations!!!
             OmniDriverEmu::Coord crd(dx, dor);
-            cout << "adding " << crd << endl;
+            cout << "adding " << crd << std::endl;
             stepDiff.push_back(crd);
         }
         seg++;
@@ -289,7 +289,7 @@ void *hapticSimuExecute( void *ptr )
             else
             {
 
-                std::cout << "OmniDriverEmu : End of the movement!" << endl;
+                std::cout << "OmniDriverEmu : End of the movement!" << std::endl;
                 omniDrv->setOmniSimThreadCreated(false);
 #ifndef WIN32
                 pthread_exit(0);
@@ -402,14 +402,14 @@ void OmniDriverEmu::bwdInit()
         // no error: thread cancel
         if(err==0)
         {
-            std::cout << "OmniDriverEmu: thread haptic cancel" << endl;
+            std::cout << "OmniDriverEmu: thread haptic cancel" << std::endl;
 
         }
 
         // error
         else
         {
-            std::cout << "thread not cancel = "  << err  << endl;
+            std::cout << "thread not cancel = "  << err  << std::endl;
         }
 #endif
     }
@@ -422,7 +422,7 @@ void OmniDriverEmu::bwdInit()
 #ifndef WIN32
     if ( pthread_create( &hapSimuThread, NULL, hapticSimuExecute, (void*)this) == 0 )
     {
-        cout << "OmniDriver : Thread created for Omni simulation" << endl;
+        std::cout << "OmniDriver : Thread created for Omni simulation" << std::endl;
         omniSimThreadCreated=true;
     }
 
@@ -464,8 +464,6 @@ void OmniDriverEmu::reinitVisual()
 }
 
 
-}
-
 void OmniDriverEmu::reinit()
 {
     std::cout<<"OmniDriverEmu::reinit() is called" <<std::endl;
@@ -492,8 +490,8 @@ void OmniDriverEmu::draw()
     if(omniVisu.getValue())
     {
         // compute position of the endOmni in worldframe
-        SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
-        SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
+        defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
+        defaulttype::SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
 
         visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
@@ -532,8 +530,6 @@ void OmniDriverEmu::copyDeviceDataCallback(OmniData *pUserData)
 }
 
 
-}
-
 void OmniDriverEmu::stopCallback(OmniData *pUserData)
 {
     OmniData *data = pUserData; // static_cast<OmniData*>(pUserData);
@@ -568,7 +564,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             std::cout << "Test handle event "<< std::endl;
         }
 
-        cout << "test handle event "<< endl;
+        std::cout << "test handle event "<< std::endl;
         //getData(); // copy data->servoDeviceData to gDeviceData
         //if (!simulateTranslation.getValue()) {
         copyDeviceDataCallback(&data);
@@ -587,7 +583,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
 
             data.deviceData.quat.normalize();
 
-            //sout << "driver is working ! " << data->servoDeviceData.transform[12+0] << endl;
+            //sout << "driver is working ! " << data->servoDeviceData.transform[12+0] << std::endl;
 
             if (isToolControlled) // ignore haptic device if tool is unselected
             {
@@ -744,40 +740,6 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
     }
 }
 
-
-void OmniDriverEmu::draw()
-{
-    if(omniVisu.getValue())
-    {
-        // compute position of the endOmni in worldframe
-        SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
-        SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
-
-        visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
-        visu_base->fileMesh.setValue("mesh/omni_test2.obj");
-        visu_base->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
-        visu_base->setColor(1.0f,1.0f,1.0f,1.0f);
-        visu_base->init();
-        visu_base->initVisual();
-        visu_base->updateVisual();
-        visu_base->applyRotation(orientationBase.getValue());
-        visu_base->applyTranslation( positionBase.getValue()[0],positionBase.getValue()[1], positionBase.getValue()[2]);
-
-        visu_end = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
-        visu_end->fileMesh.setValue("mesh/stylus.obj");
-        visu_end->m_scale.setValue(defaulttype::Vector3(scale.getValue(),scale.getValue(),scale.getValue()));
-        visu_end->setColor(1.0f,0.3f,0.0f,1.0f);
-        visu_end->init();
-        visu_end->initVisual();
-        visu_end->updateVisual();
-        visu_end->applyRotation(world_H_endOmni.getOrientation());
-        visu_end->applyTranslation(world_H_endOmni.getOrigin()[0],world_H_endOmni.getOrigin()[1],world_H_endOmni.getOrigin()[2]);
-
-        // draw the 2 visual models
-        visu_base->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
-        visu_end->drawVisual(sofa::core::visual::VisualParams::defaultInstance());
-    }
-}
 
 int OmniDriverEmuClass = core::RegisterObject("Solver to test compliance computation for new articulated system objects")
         .add< OmniDriverEmu >();

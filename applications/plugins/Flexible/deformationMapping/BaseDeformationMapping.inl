@@ -666,7 +666,7 @@ void BaseDeformationMappingT<JacobianBlockType>::BackwardMapping(Coord& p0,const
 
     while(count<NbMaxIt)
     {
-        StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
+        defaulttype::StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
         _shapeFunction->computeShapeFunction(mp0,F0,ref,w,&dw);
         if(!w[0]) { p0=Coord(); return; } // outside object
 
@@ -743,7 +743,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
     if (vparams->displayFlags().getShowMechanicalMappings())
     {
         vector< defaulttype::Vector3 > edge;     edge.resize(2);
-        Vec<4,float> col;
+        defaulttype::Vec<4,float> col;
 
         for(size_t i=0; i<out.size(); i++ )
         {
@@ -763,36 +763,36 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         const Data<OutVecDeriv>* outf = this->toModel->read(core::ConstVecDerivId::force());
         glEnable ( GL_LIGHTING );
         float scale=showDeformationGradientScale.getValue();
-        Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
-        Mat<3,3,float> F;
-        Vec<3,float> p;
+        defaulttype::Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
+        defaulttype::Mat<3,3,float> F;
+        defaulttype::Vec<3,float> p;
 
         static const int subdiv = 8;
 
         for(size_t i=0; i<out.size(); i++ )
         {
-            if(OutDataTypesInfo<Out>::FMapped) F=(Mat<3,3,float>)OutDataTypesInfo<Out>::getF(out[i]); else F=(Mat<3,3,float>)f_F[i];
+            if(OutDataTypesInfo<Out>::FMapped) F=(defaulttype::Mat<3,3,float>)OutDataTypesInfo<Out>::getF(out[i]); else F=(defaulttype::Mat<3,3,float>)f_F[i];
             if(OutDataTypesInfo<Out>::positionMapped) Out::get(p[0],p[1],p[2],out[i]); else p=f_pos[i];
 
             if(showDeformationGradientStyle.getValue().getSelectedId()==0)
                 for(int j=0; j<material_dimensions; j++)
                 {
-                    Vec<3,float> u=F.transposed()(j)*0.5*scale;
+                    defaulttype::Vec<3,float> u=F.transposed()(j)*0.5*scale;
                     vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
             {
-                Vec<3,float> u=F.transposed()(0)*0.5*scale;
+                defaulttype::Vec<3,float> u=F.transposed()(0)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==2)
             {
-                Vec<3,float> u=F.transposed()(1)*0.5*scale;
+                defaulttype::Vec<3,float> u=F.transposed()(1)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==3)
             {
-                Vec<3,float> u=F.transposed()(2)*0.5*scale;
+                defaulttype::Vec<3,float> u=F.transposed()(2)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
@@ -803,7 +803,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
             else if(showDeformationGradientStyle.getValue().getSelectedId()==5 && outf) // stress
                 if(OutDataTypesInfo<Out>::FMapped)
                 {
-                    F=(Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf->getValue()[i]);
+                    F=(defaulttype::Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf->getValue()[i]);
                     vparams->drawTool()->setMaterial(col);
                     drawEllipsoid(F,p,0.5*scale);
                 }
@@ -834,7 +834,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         if(extTriangles) nb+=extTriangles->size();
 
         std::vector< defaulttype::Vector3 > points(3*nb),normals;
-        std::vector< Vec<4,float> > colors(3*nb);
+        std::vector< defaulttype::Vec<4,float> > colors(3*nb);
         size_t count=0;
 
         if(triangles)

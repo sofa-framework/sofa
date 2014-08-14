@@ -40,7 +40,7 @@ namespace mapping
 {
 
 template<int matdim,typename Real>
-void drawEllipsoid(const Mat<3,matdim,Real> & F, const Vec<3,Real> &p, const float& scale)
+void drawEllipsoid(const defaulttype::Mat<3,matdim,Real> & F, const defaulttype::Vec<3,Real> &p, const float& scale)
 {
 #ifndef SOFA_NO_OPENGL
     glPushMatrix();
@@ -54,7 +54,7 @@ void drawEllipsoid(const Mat<3,matdim,Real> & F, const Vec<3,Real> &p, const flo
     }
     else if(matdim==2)
     {
-        Vec<3,Real> w=cross(F.transposed()[0],F.transposed()[1]); w.normalize();
+        defaulttype::Vec<3,Real> w=cross(F.transposed()[0],F.transposed()[1]); w.normalize();
         for(size_t i=0; i<3; i++)  transformMatrix[8+i]=(double)w[i]*scale*0.01; // arbitrarily small thickness
     }
 

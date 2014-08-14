@@ -76,7 +76,7 @@ PMLMappedBody::~PMLMappedBody()
 
 Vector3 PMLMappedBody::getDOF(unsigned int index)
 {
-    return (*((MechanicalState<Vec3Types>*)mmodel.get())->getX())[index];
+    return ((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue()[index];
 }
 
 
