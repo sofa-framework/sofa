@@ -537,7 +537,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
 #endif
     const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
     const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-    sofa::helper::vector<Matrix3> bases;
+    sofa::helper::vector<defaulttype::Matrix3> bases;
     sofa::helper::vector<defaulttype::Vector3> centers;
     clear(out.size()); // reserve space for mapping
     if (tetras.empty() && cubes.empty())

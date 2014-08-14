@@ -94,7 +94,7 @@ typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::Real Image
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
 const typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::VecCoord* ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getX0()
 {
-    return this->mstate->getX0();
+    return &this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 }
 
 

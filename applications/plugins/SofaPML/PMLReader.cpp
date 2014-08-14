@@ -51,6 +51,8 @@
 #include "sofa/simulation/common/Simulation.h"
 #include "sofa/simulation/common/Node.h"
 
+using sofa::core::objectmodel::New;
+
 namespace sofa
 {
 
