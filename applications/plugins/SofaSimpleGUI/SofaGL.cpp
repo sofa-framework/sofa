@@ -1,4 +1,4 @@
-#include <gl/glew.h>
+#include <GL/glew.h>
 #include "SofaGL.h"
 
 namespace sofa {
@@ -10,7 +10,7 @@ template <typename T> inline T sqr(const T& t){ return t*t; }
 SofaGL::SofaGL(SofaScene *s) :
 	_sofaScene(s)
 {
-	
+    this->init(); // do we really need a separate init ?
 }
 
 void SofaGL::init()
