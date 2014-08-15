@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 	QSurfaceFormat format;
 	format.setMajorVersion(3);
 	format.setMajorVersion(2);
-	format.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
+//	format.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
 
     QQmlApplicationEngine engine(mainScriptUrl);
     QObject* topLevel = engine.rootObjects().value(0);

@@ -25,7 +25,7 @@ typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > V
 SofaScene::SofaScene()
 {
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
-	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel = 0;
+    boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;// = NULL;
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
 
     sofa::simulation::setSimulation(new SofaSimulation());
