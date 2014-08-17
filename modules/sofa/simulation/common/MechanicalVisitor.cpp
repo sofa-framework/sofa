@@ -1275,9 +1275,9 @@ Visitor::Result MechanicalResetForceVisitor::fwdMappedMechanicalState(simulation
 }
 
 
-Visitor::Result MechanicalComputeForceVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalComputeForceVisitor::fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
 {
-    //mm->setF(res);
+//    cerr << "MechanicalComputeForceVisitor::fwdMechanicalState " << node->getName() << endl;
     mm->accumulateForce(this->params /* PARAMS FIRST */, res.getId(mm));
     return RESULT_CONTINUE;
 }

@@ -20,11 +20,16 @@ SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
     _interactorDof->addTag(std::string("Interactor"));
     MechanicalObject3::WriteVecCoord xanchor = _interactorDof->writePositions();
     xanchor[0] = picked.point;
+    FixedConstraint3::SPtr fixed= New<FixedConstraint3>(); // Makes it unmovable through forces
+    _interactionNode->addObject(fixed);
+    fixed->init();
 
     // create spring to drag the picked object
     _spring = New<StiffSpringForceField3>(_interactorDof.get(),pickedDof);
     _interactionNode->addObject(_spring);
     _spring->addSpring(0,picked.index,stiffness,0.1,0.);
+
+
 
 //    cout << "SpringInteractor set spring to " << pickedDof->getName() << ", " << picked.index << endl;
 }
