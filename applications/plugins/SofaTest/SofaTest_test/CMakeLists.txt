@@ -5,8 +5,9 @@ set(HEADER_FILES
     PrimitiveCreation.h
 )
 
-set(SOURCE_FILES
+set(SOURCE_FILES  stdafx.cpp
 
+# alphabetical order
     AffinePatch_test.cpp
     BaryMapperTest.cpp
     BezierTetrahedronTopology_test.cpp
@@ -27,9 +28,7 @@ set(SOURCE_FILES
     SphereTest.cpp
     StiffSpringForceField_test.cpp 
     TetrahedronNumericalIntegration_test.cpp
-    TrianglePressureForceField_test.cpp
-    stdafx.cpp
-        )
+)
 
 if(APPLE)
 #    set(RC_FILES "runSOFA.icns")

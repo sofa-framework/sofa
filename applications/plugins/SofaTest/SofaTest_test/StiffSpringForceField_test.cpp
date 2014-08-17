@@ -27,10 +27,18 @@
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
 #include "ForceField_test.h"
 #include <sofa/defaulttype/RigidTypes.h>
-//#include <cstdlib>
+#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <sofa/component/linearsolver/CGLinearSolver.h>
 
 namespace sofa {
 
+using namespace modeling;
+typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
+typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+
+/** Used to rotate points and vectors in space for tests
+ *
+ */
 template <class DataTypes>
 struct RigidTransform
 {
@@ -127,6 +135,73 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
         this->run_test( x, v, f );
     }
 
+    /** Two particles in different nodes. One node is the child of the other. The parent contains a solver.
+    */
+    void test_2particles_in_parent_and_child(
+            Real stiffness, Real dampingRatio, Real restLength,
+            Vec3 x0, Vec3 v0,
+            Vec3 x1, Vec3 v1,
+            Vec3 f0)
+    {
+        // create a child node with its own DOF
+        simulation::Node::SPtr child = this->node->createChild("childNode");
+        typename DOF::SPtr childDof = addNew<DOF>(child);
+
+        // replace the spring with another one, between the parent and the child
+        this->node->removeObject(this->force);
+        typename Spring::SPtr spring = New<Spring>(this->dof.get(), childDof.get());
+        this->node->addObject(spring);
+
+        // set position and velocity vectors, using DataTypes::set to cope with tests in dimension 2
+        VecCoord xp(1),xc(1);
+        DataTypes::set( xp[0], x0[0],x0[1],x0[2]);
+        DataTypes::set( xc[0], x1[0],x1[1],x1[2]);
+        VecDeriv vp(1),vc(1);
+        DataTypes::set( vp[0], v0[0],v0[1],v0[2]);
+        DataTypes::set( vc[0], v1[0],v1[1],v1[2]);
+        VecDeriv fp(1),fc(1);
+        DataTypes::set( fp[0],  f0[0], f0[1], f0[2]);
+        DataTypes::set( fc[0], -f0[0],-f0[1],-f0[2]);
+        // copy the position and velocities to the scene graph
+        this->dof->resize(1);
+        childDof->resize(1);
+        typename DOF::WriteVecCoord xdof = this->dof->writePositions(), xchildDof = childDof->writePositions();
+        copyToData( xdof, xp );
+        copyToData( xchildDof, xc );
+        typename DOF::WriteVecDeriv vdof = this->dof->writeVelocities(), vchildDof = childDof->writeVelocities();
+        copyToData( vdof, vp );
+        copyToData( vchildDof, vc );
+
+        // tune the force field
+        spring->addSpring(0,0,stiffness,dampingRatio,restLength);
+
+
+        // and run the test
+
+        // init scene and compute force
+        sofa::simulation::getSimulation()->init(this->node.get());
+        core::MechanicalParams mparams;
+        mparams.setKFactor(1.0);
+        simulation::MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
+        this->node->execute(computeForce);
+
+        // check force
+        typename DOF::ReadVecDeriv actualfp = this->dof->readForces();
+        typename DOF::ReadVecDeriv actualfc = childDof->readForces();
+        if(this->debug){
+            cout << "run_test,          xp = " << xp << endl;
+            cout << "                   xc = " << xc << endl;
+            cout << "                   vp = " << vp << endl;
+            cout << "                   vc = " << vc << endl;
+            cout << "          expected fp = " << fp << endl;
+            cout << "            actual fp = " << actualfp << endl;
+            cout << "          expected fc = " << fc << endl;
+            cout << "            actual fc = " << actualfc << endl;
+        }
+        ASSERT_TRUE( this->vectorMaxDiff(fp,actualfp)< this->errorMax*this->epsilon() );
+        ASSERT_TRUE( this->vectorMaxDiff(fc,actualfc)< this->errorMax*this->epsilon() );
+    }
+
     ///@}
 };
 
@@ -190,5 +265,30 @@ TYPED_TEST( StiffSpringForceField_test , viscosity )
 
     this->test_2particles(k,d,l0, x0,v0, x1,v1, f0);
 }
+
+// extension, two particles in different nodes
+TYPED_TEST( StiffSpringForceField_test , extension_in_parent_and_child )
+{
+    this->errorMax = 1000;
+    this->deltaMax = 1000;
+    this->debug = false;
+
+    SReal
+            k = 1.0,  // stiffness
+            d = 0.1,  // damping ratio
+            l0 = 1.0; // rest length
+
+    typename TestFixture::Vec3
+            x0(0,0,0), // position of the first particle
+            v0(0,0,0), // velocity of the first particle
+            x1(2,0,0), // position of the second particle
+            v1(0,0,0), // velocity of the second particle
+            f0(1,0,0); // expected force on the first particle
+
+
+    // use the parent  class to automatically test the functions
+    this->test_2particles_in_parent_and_child(k,d,l0, x0,v0, x1,v1, f0);
+}
+
 
 } // namespace sofa

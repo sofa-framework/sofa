@@ -1395,44 +1395,44 @@ void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams*
     }
 }
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params)
-{
-#ifdef SOFA_SMP
-    if (params->execMode() == core::ExecParams::EXEC_KAAPI)
-    {
-        BaseObject::Task < vPEq2 <  VecDeriv, VecDeriv > >
-                (this, **defaulttype::getShared(*this->write(VecDerivId::force())),
-                 **defaulttype::getShared(*this->read(ConstVecDerivId::externalForce())));
-    }
-    else
-#endif /* SOFA_SMP */
-    {
-        helper::ReadAccessor< Data<VecDeriv> > extForces_rA( params, *this->read(ConstVecDerivId::externalForce()) );
+//template <class DataTypes>
+//void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params)
+//{
+//#ifdef SOFA_SMP
+//    if (params->execMode() == core::ExecParams::EXEC_KAAPI)
+//    {
+//        BaseObject::Task < vPEq2 <  VecDeriv, VecDeriv > >
+//                (this, **defaulttype::getShared(*this->write(VecDerivId::force())),
+//                 **defaulttype::getShared(*this->read(ConstVecDerivId::externalForce())));
+//    }
+//    else
+//#endif /* SOFA_SMP */
+//    {
+//        helper::ReadAccessor< Data<VecDeriv> > extForces_rA( params, *this->read(ConstVecDerivId::externalForce()) );
+//        cerr<<"MechanicalObject<DataTypes>::accumulateForce" << extForces_rA << endl;
+//        if (!extForces_rA.empty())
+//        {
+//            helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(VecDerivId::force()) );
 
-        if (!extForces_rA.empty())
-        {
-            helper::WriteAccessor< Data<VecDeriv> > f_wA ( params, *this->write(VecDerivId::force()) );
-
-            if (!this->forceMask.isInUse())
-            {
-                for (unsigned int i=0; i < extForces_rA.size(); i++)
-                    f_wA[i] += extForces_rA[i];
-            }
-            else
-            {
-                typedef helper::ParticleMask ParticleMask;
-                const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
-                ParticleMask::InternalStorage::const_iterator it;
-                for (it = indices.begin(); it != indices.end(); it++)
-                {
-                    const int i = (*it);
-                    f_wA[i] += extForces_rA[i];
-                }
-            }
-        }
-    }
-}
+//            if (!this->forceMask.isInUse())
+//            {
+//                for (unsigned int i=0; i < extForces_rA.size(); i++)
+//                    f_wA[i] += extForces_rA[i];
+//            }
+//            else
+//            {
+//                typedef helper::ParticleMask ParticleMask;
+//                const ParticleMask::InternalStorage &indices = this->forceMask.getEntries();
+//                ParticleMask::InternalStorage::const_iterator it;
+//                for (it = indices.begin(); it != indices.end(); it++)
+//                {
+//                    const int i = (*it);
+//                    f_wA[i] += extForces_rA[i];
+//                }
+//            }
+//        }
+//    }
+//}
 
 template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(VecCoordId v)
