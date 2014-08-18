@@ -9,6 +9,9 @@
 // standard headers on some systems, you must include Python.h before any
 // standard headers are included."
 
+#if defined(_WIN32)
+#	define MS_NO_COREDLL // deactivate pragma linking on Win32 done in Python.h
+#endif
 
 #if defined(_MSC_VER) && defined(_DEBUG)
 // undefine _DEBUG since we want to always link agains the release version of
