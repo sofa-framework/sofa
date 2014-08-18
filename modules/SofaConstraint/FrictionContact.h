@@ -35,6 +35,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
+#include <sofa/component/collision/ContactIdentifier.h>
 namespace sofa
 {
 
@@ -46,39 +47,11 @@ namespace collision
 
 
 
-class SOFA_CONSTRAINT_API Identifier
+template <class TCollisionModel1, class TCollisionModel2>
+class FrictionContact : public core::collision::Contact, public ContactIdentifier
 {
 public:
-    Identifier()
-    {
-        if (!availableId.empty())
-        {
-            id = availableId.front();
-            availableId.pop_front();
-        }
-        else
-            id = cpt++;
-
-        //	sout << id << sendl;
-    }
-
-    virtual ~Identifier()
-    {
-        availableId.push_back(id);
-    }
-
-protected:
-    static sofa::core::collision::DetectionOutput::ContactId cpt;
-    sofa::core::collision::DetectionOutput::ContactId id;
-    static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
-};
-
-
-template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
-class FrictionContact : public core::collision::Contact, public Identifier
-{
-public:
-    SOFA_CLASS(SOFA_TEMPLATE3(FrictionContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes), core::collision::Contact);
+    SOFA_CLASS(SOFA_TEMPLATE2(FrictionContact, TCollisionModel1, TCollisionModel2), core::collision::Contact);
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
@@ -126,13 +99,6 @@ public:
 
     void removeResponse();
 };
-
-inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)
-{
-    // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
-    return (long)(((x+y)*(x+y)+3*x+y)/2);
-}
-
 
 } // collision
 
