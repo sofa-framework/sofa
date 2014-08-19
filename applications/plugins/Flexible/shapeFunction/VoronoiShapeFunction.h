@@ -389,7 +389,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 ///Voronoi shape functions are natural neighbor interpolants there are computed from an image (typically a rasterized object)
 template <class ShapeFunctionTypes_,class ImageTypes_>
-class VoronoiShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
+class SOFA_Flexible_API VoronoiShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
 {
     friend struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
     friend struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
