@@ -638,6 +638,53 @@ void MeshTopology::init()
         quadUpdate->setName("quadUpdate");
         this->addSlave(quadUpdate);
     }
+
+
+    for(PointID pid=0;pid<(std::size_t)this->getNbPoints();++pid)
+    {
+        getEdgesAroundVertex(pid);
+        getOrientedEdgesAroundVertex(pid);
+        getTrianglesAroundVertex(pid);
+        //getOrientedTrianglesAroundVertex(pid);
+        getQuadsAroundVertex(pid);
+        //getOrientedQuadsAroundVertex(pid);
+        getTetrahedraAroundVertex(pid);
+        getHexahedraAroundVertex(pid);
+    }
+
+    for(EdgeID eid=0;eid<(std::size_t)this->getNbEdges();++eid)
+    {
+        getTrianglesAroundEdge(eid);
+        getQuadsAroundEdge(eid);
+        getTetrahedraAroundEdge(eid);
+        getHexahedraAroundEdge(eid);
+    }
+
+    for(TriangleID tid=0;tid<(std::size_t)this->getNbTriangles();++tid)
+    {
+        getEdgesInTriangle(tid);
+        getTetrahedraAroundTriangle(tid);
+    }
+
+    for(QuadID qid=0;qid<(std::size_t)this->getNbQuads();++qid)
+    {
+        getEdgesInQuad(qid);
+        getHexahedraAroundQuad(qid);
+    }
+
+    for(TetraID tetid=0;tetid<(std::size_t)this->getNbTetrahedra();++tetid)
+    {
+        getEdgesInTetrahedron(tetid);
+        getTrianglesInTetrahedron(tetid);
+    }
+
+    for(HexaID hexid=0;hexid<(std::size_t)this->getNbHexas();++hexid)
+    {
+        getEdgesInHexahedron(hexid);
+        getQuadsInHexahedron(hexid);
+    }
+
+
 }
 
 void MeshTopology::clear()
