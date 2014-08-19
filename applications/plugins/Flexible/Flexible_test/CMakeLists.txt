@@ -7,6 +7,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
    AffinePatch_test.cpp
    AffineDeformationMapping_test.cpp
+   FramesBeamMaterial_test.cpp
    HexahedraMaterial_test.cpp
    Material_test.cpp
    MooneyRivlinHexahedraMaterial_test.cpp
@@ -15,6 +16,7 @@ set(SOURCE_FILES
    Patch_test.cpp
    StrainMappings_test.cpp
    RigidDeformationMapping_test.cpp
+   ShapeFunction_test.cpp
    TetrahedraMaterial_test.cpp
    stdafx.cpp
         )
@@ -39,6 +41,7 @@ if(WIN32 AND NOT CMAKE_CL_64)
     AddCompilerDefinitions("EIGEN_DONT_ALIGN")
 endif()
 
+AddLinkerDependencies(Flexible SofaTest image Compliant)
 AddLinkerDependencies(Flexible SofaTest Compliant image)
 
 #Needed by python test
