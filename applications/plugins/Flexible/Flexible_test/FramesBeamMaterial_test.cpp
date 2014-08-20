@@ -54,12 +54,12 @@ const double poissonRatioArray[] = {0.1,0.3};
 const size_t sizePoissonRatioArray = sizeof(poissonRatioArray)/sizeof(poissonRatioArray[0]);
 
 
-/**  Test flexible material. Apply a traction on the top part of an hexahedra and
-test that the longitudinal and radial deformation are related with the material law.
+/**  Test flexible material. Apply a traction on a beam with affine dofs and
+test that the longitudinal deformation is related with the material law.
  */
 
 template <typename _DataTypes>
-struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
+struct BeamMaterial_test : public Sofa_test<typename Vec3Types::Real>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::EType EType;
@@ -68,7 +68,7 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
     typedef component::container::MechanicalObject<Affine3dTypes> AffineMechanicalObject;
     typedef sofa::component::forcefield::HookeForceField<EType> HookeForceField;
     typedef typename sofa::component::forcefield::HookeForceField<EType>::SPtr HookeForceFieldSPtr;
-    typedef HookeForceFieldSPtr (HexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double,double);
+    typedef HookeForceFieldSPtr (BeamMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double,double);
     typename component::forcefield::SurfacePressureForceField<Vec3Types>* bottomForceField;
     typename component::forcefield::SurfacePressureForceField<Vec3Types>* topForceField;
 
@@ -110,11 +110,11 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
 
        // Get force field for bottom face
        typedef component::forcefield::SurfacePressureForceField<Vec3Types> SurfacePressureForceField;
-       /*bottomForceField =*/ collisionNode->get<SurfacePressureForceField>(bottomForceField,"bottomFF");
+       collisionNode->get<SurfacePressureForceField>(bottomForceField,"bottomFF");
 
        // Get force field for up face
        typedef component::forcefield::SurfacePressureForceField<Vec3Types> SurfacePressureForceField;
-       /*topForceField = */collisionNode->get<SurfacePressureForceField>(topForceField,"upFF");
+       collisionNode->get<SurfacePressureForceField>(topForceField,"upFF");
     
        // Get mechanical object
        affineDofs = flexibleNode->get<AffineMechanicalObject>( root->SearchDown);
@@ -177,33 +177,25 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     topForceField->init();
                    
                     // Record the initial point of a given vertex
-                    //xf[i].getCenter()
-                    //sofa::defaulttype::Affine3dTypes p0=(*(affineDofs.get()->getX()))[vIndex];
                     typename  AffineMechanicalObject::ReadVecCoord xelasticityDofs0 = affineDofs->readPositions();
                     Vec<3,Real> p0Center = xelasticityDofs0[vIndex].getCenter();
                     Vec<3,Real> p0CenterRadial = xelasticityDofs0[9].getCenter();
 
                     //  do several steps of the static solver
-                    for(l=0;l<10;++l) 
+                    for(l=0;l<2;++l) 
                     {
-                        sofa::simulation::getSimulation()->animate(root.get(),1);
+                        sofa::simulation::getSimulation()->animate(root.get(),4);
                     }
 
                     // Get the simulated final position of that vertex
-                    //sofa::defaulttype::Affine3dTypes p1=(*(affineDofs.get()->getX()))[vIndex];
                     typename  AffineMechanicalObject::ReadVecCoord xelasticityDofs = affineDofs->readPositions();
                     Vec<3,Real> p1Center = xelasticityDofs[vIndex].getCenter();
                     Vec<3,Real> p1CenterRadial = xelasticityDofs[9].getCenter();
-                    //Vec<3,Real> p1Center = p1.getCenter();
-
-                    std::cout << "p0Center = " << p0Center << std::endl;
-                    std::cout << "p1Center = " << p1Center << std::endl;
 
                     // Compute longitudinal deformation
                     Real longitudinalDeformation=(p1Center[2]-p0Center[2])/p0Center[2];
 
                     // test the longitudinal deformation
-                    std::cout << "precision longitudinal stretch = " << fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus)) << std::endl;
                     if (fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus))>2.7e-1) 
                     {
                         ADD_FAILURE() << "Wrong longitudinal deformation for Young Modulus = " << youngModulus << " Poisson Ratio = "<<
@@ -212,23 +204,6 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                         return false;
                     }
 
-                    // compute radial deformation
-                    /*p0CenterRadial[0]=0;
-                    p1CenterRadial[0]=0;
-                    p0CenterRadial[2]=0;
-                    p1CenterRadial[2]=0;
-                    Real radius=p0CenterRadial.norm2();
-                    Real radialDeformation= dot(p0CenterRadial,p1CenterRadial)/radius-1 ;
-                    std::cout << "radius = " << radius << std::endl;
-
-                    // test the radial deformation
-                    std::cout << "precision radial stretch = " << fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus)) << std::endl;
-                    if (fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus))>8e-1) {
-                        ADD_FAILURE() << "Wrong radial deformation for Young Modulus = " << youngModulus << " Poisson Ratio = "<<
-                            poissonRatio << " pressure= "<<pressure<< std::endl <<
-                            "Got "<<radialDeformation<< " instead of "<< -pressure*poissonRatio/youngModulus<< std::endl;
-                        return false;
-                    }*/
                 }
                 root->removeObject(ff);
                 if (root!=NULL)
@@ -249,25 +224,25 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
 };
 
 // Define the types for the test
-struct Type{
+struct BeamType{
     typedef E332Types EType;
     static const std::string sceneName; 
 };
-const std::string Type::sceneName= "FramesBeamTractionTest.scn";
+const std::string BeamType::sceneName= "FramesBeamTractionTest.scn";
 
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef testing::Types<
-    Type
+    BeamType
 > DataTypes; 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(HexahedraMaterial_test, DataTypes);
+TYPED_TEST_CASE(BeamMaterial_test, DataTypes);
 
 // Test traction cylinder
-TYPED_TEST( HexahedraMaterial_test , test_Hooke_Hexahedra_InTraction )
+TYPED_TEST( BeamMaterial_test , test_Hooke_Beam_InTraction )
 {
-    ASSERT_TRUE( this->testHexahedraInTraction(&sofa::HexahedraMaterial_test<TypeParam>::addHookeForceField));
+    ASSERT_TRUE( this->testHexahedraInTraction(&sofa::BeamMaterial_test<TypeParam>::addHookeForceField));
 }
 
 } // namespace sofa
