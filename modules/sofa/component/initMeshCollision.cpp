@@ -46,6 +46,7 @@ void initMeshCollision()
     }
 
 	IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>("Mesh");
+    (void) pMeshNewProximityIntersectors;
 }
 
 SOFA_LINK_CLASS(BarycentricPenalityContact)
