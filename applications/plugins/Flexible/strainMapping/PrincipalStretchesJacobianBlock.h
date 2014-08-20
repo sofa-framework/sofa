@@ -359,6 +359,9 @@ public:
     KBlock getK( const OutDeriv& childForce )
     {
         KBlock K;
+
+        if( _degenerated ) return K;
+
         compute_K( K, childForce );
         return K;
     }
