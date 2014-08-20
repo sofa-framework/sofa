@@ -66,7 +66,7 @@ public:
       * see maple file ./doc/StabilizedNeoHookean_principalStretches.mw for derivative
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real lambdaVol;  ///<  0.5 * first coef * volume
     Real muVol;   ///<  0.5 * volume coef * volume
@@ -185,7 +185,7 @@ public:
       * see maple file ./doc/StabilizedNeoHookean_principalStretches.mw for derivative
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real lambdaVol;  ///<  0.5 * first coef * volume
     Real muVol;   ///<  0.5 * volume coef * volume
