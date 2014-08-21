@@ -91,7 +91,7 @@ class ProjectiveMaterialBlock< F331(_Real) >:
     // cf. 'projective dynamics' paper
     void project(const Affine& F) const
     {
-        helper::Decompose<Real>::polarDecomposition( F, P );
+        helper::Decompose<Real>::polarDecomposition_stable( F, P );
     }
 
 
