@@ -195,7 +195,7 @@ public:
             value_min=cimg::type<T>::max();
             value_max=cimg::type<T>::min();
             cimglist_for(img,l)
-            cimg_forXYZ(img(l),x,y,z)
+                    cimg_forXYZ(img(l),x,y,z)
             {
                 CImg<long double> vect=img(l).get_vector_at(x,y,z);
                 long double val=vect.magnitude();
@@ -205,7 +205,7 @@ public:
             }
             if(value_max==value_min) value_max=value_min+(T)1;
             cimglist_for(img,l)
-            cimg_forXYZ(img(l),x,y,z)
+                    cimg_forXYZ(img(l),x,y,z)
             {
                 CImg<long double> vect=img(l).get_vector_at(x,y,z);
                 long double val=vect.magnitude();
@@ -222,7 +222,7 @@ public:
             value_max=img.max();
             if(value_max==value_min) value_max=value_min+(T)1;
             cimglist_for(img,l)
-            cimg_forXYZC(img(l),x,y,z,c)
+                    cimg_forXYZC(img(l),x,y,z,c)
             {
                 const T val = img(l)(x,y,z,c);
                 long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
@@ -265,11 +265,11 @@ public:
             {
                 Vec<3,unsigned int> pt((unsigned int)helper::round(position[i][0]),(unsigned int)helper::round(position[i][1]),(unsigned int)helper::round(position[i][2]));
                 if(pt[axis]==coord) if(pt[0]>=ROI[0][0] && pt[0]<=ROI[1][0]) if(pt[1]>=ROI[0][1] && pt[1]<=ROI[1][1])	if(pt[2]>=ROI[0][2] && pt[2]<=ROI[1][2])
-                            {
-                                if(axis==0)			ret(pt[2]-ROI[0][2],pt[1]-ROI[0][1])=true;
-                                else if(axis==1)	ret(pt[0]-ROI[0][0],pt[2]-ROI[0][2])=true;
-                                else				ret(pt[0]-ROI[0][0],pt[1]-ROI[0][1])=true;
-                            }
+                {
+                    if(axis==0)			ret(pt[2]-ROI[0][2],pt[1]-ROI[0][1])=true;
+                    else if(axis==1)	ret(pt[0]-ROI[0][0],pt[2]-ROI[0][2])=true;
+                    else				ret(pt[0]-ROI[0][0],pt[1]-ROI[0][1])=true;
+                }
 
             }
         }
@@ -320,7 +320,7 @@ public:
                 for (unsigned int j = 0; j < 4 ; j++)
                 {
                     if(pt[j][axis]==(int)coord) pts.push_back(pt[j]);
-                    unsigned int k=(j==2)?0:j+1;
+                    unsigned int k=(j==3)?0:j+1;
                     if(pt[j][axis]<pt[k][axis])
                     {
                         alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
@@ -570,7 +570,7 @@ public:
 
     Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=false)
         :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
-         clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
+          clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
     { }
 
     void setInput(const ImageTypes& _img)
@@ -694,7 +694,7 @@ public:
     const bool& getMergeChannels() const {return this->mergeChannels;}
     void setMergeChannels(const bool _mergeChannels)  {   this->mergeChannels=_mergeChannels;    }
 
-    void setNewPoint(const Coord& newPoint) 
+    void setNewPoint(const Coord& newPoint)
     {
         point = newPoint;
         this->newPointClicked=true;
@@ -784,16 +784,23 @@ public:
 
         for(unsigned int m=0; m<visualModels.size(); m++)
         {
-            ResizableExtVector<Coord> tposition; tposition.resize(visualModels[m]->getVertices().size());
-            for(unsigned int i=0; i<tposition.size(); i++)
-                tposition[i]=transform->toImage(Coord((Real)visualModels[m]->getVertices()[i][0],(Real)visualModels[m]->getVertices()[i][1],(Real)visualModels[m]->getVertices()[i][2]));
+            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
+            //            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->m_positions.getValue();
+            const ResizableExtVector<int> * extvertPosIdx = &visualModels[m]->m_vertPosIdx.getValue();
 
+            ResizableExtVector<Coord> tposition; tposition.resize(verts.size());
+            unsigned int ind;
+            for(unsigned int i=0; i<tposition.size(); i++)
+            {
+/*                if(!extvertPosIdx->empty()) ind=(*extvertPosIdx)[i]; else */ind=i;
+                tposition[i]=transform->toImage(Coord((Real)verts[ind][0],(Real)verts[ind][1],(Real)verts[ind][2]));
+            }
             helper::ReadAccessor<Data< core::loader::Material > > mat(visualModels[m]->material);
             const unsigned char color[3]= {(unsigned char)helper::round(mat->diffuse[0]*255.),(unsigned char)helper::round(mat->diffuse[1]*255.),(unsigned char)helper::round(mat->diffuse[2]*255.)};
 
             CImg<bool> tmp = this->img->get_slicedModels(index,axis,roi,tposition,visualModels[m]->getTriangles(),visualModels[m]->getQuads());
             cimg_foroff(tmp,off)
-            if(tmp[off])
+                    if(tmp[off])
             {
                 ret.get_shared_channel(0)[off]=color[0];
                 ret.get_shared_channel(1)[off]=color[1];
