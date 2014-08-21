@@ -36,6 +36,8 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYT
 AddLinkerDependencies(Compliant SofaTest)
 
 
+
+
 # needed by python tests
 AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
 
