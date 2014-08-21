@@ -153,12 +153,12 @@ public:
         }
         _f.endEdit();
 
-        if(!BlockType::constantK && this->assemble.getValue())
-        {
-//            updateC(); // no need to update C on regular basis, if C is needed, the forcefield is a compliance and addForce is not call
-            updateK();
-            updateB();
-        }
+//        if(!BlockType::constantK && this->assemble.getValue())
+//        {
+////            updateC(); // no need to update C on regular basis, if C is needed, the forcefield is a compliance and addForce is not call
+//            updateK();
+//            updateB();
+//        }
 
         if(this->f_printLog.getValue())
         {
