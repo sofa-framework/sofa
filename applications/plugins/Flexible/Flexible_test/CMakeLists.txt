@@ -42,7 +42,6 @@ if(WIN32 AND NOT CMAKE_CL_64)
 endif()
 
 AddLinkerDependencies(Flexible SofaTest image Compliant)
-AddLinkerDependencies(Flexible SofaTest Compliant image)
 
 #Needed by python test
 AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
