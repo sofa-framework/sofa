@@ -15,6 +15,7 @@ AddLinkerDependencies(Compliant SofaComponentMain SofaGuiMain)
 
 if(UNIX)
     AddLinkerDependencies("dl")
+    AddLinkerDependencies(boost_system)
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

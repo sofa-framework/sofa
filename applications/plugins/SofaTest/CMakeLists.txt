@@ -53,5 +53,8 @@ if(APPLE)
     AddLinkerDependencies(gtest)
 endif()
 
+if(UNIX)
+    AddLinkerDependencies(boost_system)
+endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
