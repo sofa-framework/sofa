@@ -155,7 +155,7 @@ public:
 
         if(!BlockType::constantK && this->assemble.getValue())
         {
-            updateC();
+//            updateC(); // no need to update C on regular basis, if C is needed, the forcefield is a compliance and addForce is not call
             updateK();
             updateB();
         }
@@ -191,7 +191,24 @@ public:
 
     const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams * /*mparams*/)
     {
-        if(!this->assemble.getValue() || !BlockType::constantK) updateC();
+        if(!this->assemble.getValue() || !BlockType::constantK)
+        {
+            // MattN: quick and dirty fix to update the compliance matrix for a non-linear material
+            // C is generally computed as K^{-1}, K is computed in addForce that is not call for compliances...
+            // A deeper modification in forcefield API is required to fix this for all forcedields
+            // maybe a cleaner fix is possible only for flexible
+            {
+                const DataVecCoord& xx = *this->mstate->read(core::ConstVecCoordId::position());
+                const DataVecCoord& vv = *this->mstate->read(core::ConstVecDerivId::velocity());
+                const VecCoord&  x = xx.getValue();
+                const VecDeriv&  v = vv.getValue();
+                VecDeriv f_bidon; f_bidon.resize( x.size() );
+                for(unsigned int i=0; i<material.size(); i++)
+                    material[i].addForce(f_bidon[i],x[i],v[i]); // too much stuff is computed there but at least C is updated
+            }
+
+            updateC();
+        }
         return &C;
     }
 
