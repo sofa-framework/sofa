@@ -59,7 +59,7 @@ public :
 
     static const int length = 15;
 
-    static std::string GenerateStirngID::generate(){
+    static std::string generate(){
         static std::string alphanum = "0123456789!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         std::string result;
         result.resize(length);
