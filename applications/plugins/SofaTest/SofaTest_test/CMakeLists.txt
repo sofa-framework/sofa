@@ -6,26 +6,28 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    LinearElasticity_test.cpp
+
+    AffinePatch_test.cpp
+    BaryMapperTest.cpp
     BezierTetrahedronTopology_test.cpp
-    TetrahedronNumericalIntegration_test.cpp
-    PrimitiveCreation.cpp
-    RigidMapping_test.cpp
+    BroadPhaseTest.cpp
+    DAG_test.cpp
     EulerImplicit_test.cpp
-    Matrix_test.inl
+    LinearElasticity_test.cpp
+    LoadScene_test.cpp
     Matrix_test.cpp
+    Matrix_test.inl
+    Node_test.cpp
     OBBTest.cpp
+    PrimitiveCreation.cpp
+    ProjectToLineConstraint_test.cpp
+    ProjectToPlaneConstraint_test.cpp
+    QuadPressureForceField_test.cpp
+    RigidMapping_test.cpp
     SphereTest.cpp
     StiffSpringForceField_test.cpp 
-    AffinePatch_test.cpp
-    ProjectToPlaneConstraint_test.cpp
-    ProjectToLineConstraint_test.cpp
-    BaryMapperTest.cpp
-    LoadScene_test.cpp
-    DAG_test.cpp
-    Node_test.cpp
-    BroadPhaseTest.cpp
-    QuadPressureForceField_test.cpp
+    TetrahedronNumericalIntegration_test.cpp
+    TrianglePressureForceField_test.cpp
     stdafx.cpp
         )
 

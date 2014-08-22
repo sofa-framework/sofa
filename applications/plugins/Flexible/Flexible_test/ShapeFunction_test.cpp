@@ -236,25 +236,28 @@ namespace sofa {
     // Test suite for all the instantiations
     TYPED_TEST_CASE(ShapeFunction_test, DataTypes);
 
-    // test case
+    // test case: voronoi shape function test
     TYPED_TEST( ShapeFunction_test , VoronoiShapeFunctionTest)
     {
         this->SetShapeFunction(0);
         ASSERT_TRUE( this->runTest());
     }
 
+    // test case: diffusion shape function test
     TYPED_TEST( ShapeFunction_test , DiffusionShapeFunctionTest)
     {
         this->SetShapeFunction(1);
         ASSERT_TRUE( this->runTest());
     }
-
+    
+    // test case: shepard shape function test
     TYPED_TEST( ShapeFunction_test , ShepardShapeFunctionTest)
     {
         this->SetShapeFunction(2);
         ASSERT_TRUE( this->runTest());
     }
 
+    // test case: hat shape function test
     TYPED_TEST( ShapeFunction_test , HatShapeFunctionTest)
     {
         this->SetShapeFunction(3);
