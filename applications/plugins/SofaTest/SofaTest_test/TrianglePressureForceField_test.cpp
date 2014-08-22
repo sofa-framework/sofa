@@ -3,18 +3,18 @@
 // Base class
 #include "ForceField_test.h"
 //Force field
-#include <sofa/component/forcefield/QuadPressureForceField.h>
+#include <sofa/component/forcefield/TrianglePressureForceField.h>
 #include <sofa/component/topology/TopologySparseData.inl>
 
 namespace sofa {
 
 /**  Test QuadPressureForceField.
   */
-template <typename _QuadPressureForceField>
-struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceField>
+template <typename _TrianglePressureForceField>
+struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressureForceField>
 {
-    typedef ForceField_test<_QuadPressureForceField> Inherited;
-    typedef _QuadPressureForceField ForceType;
+    typedef ForceField_test<_TrianglePressureForceField> Inherited;
+    typedef _TrianglePressureForceField ForceType;
     typedef typename ForceType::DataTypes DataTypes;
 
     typedef typename ForceType::VecCoord VecCoord;
@@ -27,34 +27,33 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
     VecCoord x;
     VecDeriv v,f;
 
-    QuadPressureForceField_test(): Inherited::ForceField_test(std::string(SOFATEST_SCENES_DIR) + "/" + "QuadPressureForceField.scn")
+    TrianglePressureForceField_test(): Inherited::ForceField_test(std::string(SOFATEST_SCENES_DIR) + "/" + "TrianglePressureForceField.scn")
     {
         // Set vectors, using DataTypes::set to cope with tests in dimension 2
         //Position
-        x.resize(4);
+        x.resize(3);
         DataTypes::set( x[0], 0,0,0);
         DataTypes::set( x[1], 1,0,0);
         DataTypes::set( x[2], 1,1,0);
-        DataTypes::set( x[3], 0,1,0);
+
         //Velocity
-        v.resize(4);
+        v.resize(3);
         DataTypes::set( v[0], 0,0,0);
         DataTypes::set( v[1], 0,0,0);
         DataTypes::set( v[2], 0,0,0);
-        DataTypes::set( v[3], 0,0,0);
+
         //Force
-         f.resize(4);
-        Vec3 f0(0,0,0.05);
+         f.resize(3);
+        Vec3 f0(0,0,0.1);
         DataTypes::set( f[0],  f0[0], f0[1], f0[2]);
         DataTypes::set( f[1],  f0[0], f0[1], f0[2]);
         DataTypes::set( f[2],  f0[0], f0[1], f0[2]);
-        DataTypes::set( f[3],  f0[0], f0[1], f0[2]);
 
         // Set the properties of the force field
         Inherited::force->normal.setValue(Deriv(0,0,1));
         Inherited::force->dmin.setValue(-0.01);
         Inherited::force->dmax.setValue(0.01);
-        Inherited::force->pressure=Coord(0,0,0.2);
+        Inherited::force->pressure=Coord(0,0,0.6);
     }
     
     //Test the value of the force it should be equal for each vertex to Pressure*area/4
@@ -83,16 +82,16 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 
 // Types to instantiate.
 typedef testing::Types<
-    component::forcefield::QuadPressureForceField<defaulttype::Vec3dTypes>
+    component::forcefield::TrianglePressureForceField<defaulttype::Vec3dTypes>
 > TestTypes; 
 
 
 
 // Tests to run for each instantiated type
-TYPED_TEST_CASE(QuadPressureForceField_test, TestTypes);
+TYPED_TEST_CASE(TrianglePressureForceField_test, TestTypes);
 
 // first test case: test force value
-TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
+TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)
 {
     this->errorMax = 1000;
     this->deltaMax = 1000;
@@ -102,7 +101,7 @@ TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 }
 
 // second test case: test that force is constant
-TYPED_TEST( QuadPressureForceField_test , constantQuadPressureForceFieldTest)
+TYPED_TEST( TrianglePressureForceField_test , constantTrianglePressureForceFieldTest)
 {
     this->errorMax = 1000;
     this->deltaMax = 1000;

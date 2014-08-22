@@ -177,6 +177,10 @@
 
 //Force field
 #include <sofa/component/forcefield/QuadPressureForceField.h>
+// Base class
+#include "ForceField_test.h"
+//Force field
+#include <sofa/component/forcefield/TrianglePressureForceField.h>
 
 // topology
 #include <sofa/component/topology/RegularGridTopology.h>
