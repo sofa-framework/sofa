@@ -321,7 +321,7 @@ public:
 
     virtual void endIntegration(const core::ExecParams* params /* PARAMS FIRST */, Real dt);
 
-    //virtual void accumulateForce(const core::ExecParams* params); // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId)
+    virtual void accumulateForce(const core::ExecParams* params); // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId)
 
     /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
     virtual void vAvail(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId& v);
