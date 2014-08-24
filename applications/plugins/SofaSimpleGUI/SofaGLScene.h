@@ -28,14 +28,16 @@ public:
 
     virtual ~SofaGLScene();
 
-    std::vector<std::string> plugins; ///< list of plugins to load
-
     /**
      * @brief Initialize Sofa and load a scene file
-     * @param plugins List of plugins to load
      * @param fileName Scene file to load
      */
-    void init( const std::string& fileName );
+    void init( const std::string& fileName="" );
+
+    /**
+     * @brief Initialize Sofa with a given graph
+     */
+    void init( Node::SPtr groot );
 
     // standard callback-level interface
 
