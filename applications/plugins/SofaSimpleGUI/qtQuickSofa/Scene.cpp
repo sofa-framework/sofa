@@ -23,7 +23,7 @@ void Scene::open(const QString& filename)
 		finalFilename = filepath.c_str();
 
 	qDebug() << "-------------------------------------------------- " << endl << "Loading:" << finalFilename;
-    SofaScene::open(finalFilename.toLatin1().constData());
+    SofaScene::setScene(finalFilename.toLatin1().constData());
 	if(!_currentFileName.empty())
 	{
 		qDebug() << "Scene loaded";	

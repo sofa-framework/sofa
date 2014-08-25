@@ -20,8 +20,13 @@ void Camera::glMultViewMatrix()
         glMultMatrixf( transform.data() );
 }
 
-void Camera::lookAt( Vec3 eye, Vec3 target, Vec3 upVec )
+void Camera::lookAt(
+        float eyeX, float eyeY, float eyeZ,
+        float targetX, float targetY, float targetZ,
+        float upX, float upY, float upZ
+        )
 {
+    Vec3 eye(eyeX,eyeY,eyeZ), target(targetX,targetY,targetZ), upVec(upX,upY,upZ);
 //    cout<<"Camera::lookAt " << eye.transpose() <<", " << target.transpose() << ", " << upVec.transpose() << endl;
 
     Vec3 forward = target - eye;
@@ -130,6 +135,11 @@ bool Camera::handleMouseMotion( int x, int y )
     }
     return false;
 }
+
+Camera::Vec3 Camera::eye() const {
+    return - transform.linear().transpose() * transform.translation();
+}
+
 
 } // simplegui
 } // sofa

@@ -31,11 +31,18 @@ public:
     void glMultViewMatrix();
 
     /// Equivalent of gluLookAt.
-    void lookAt( Vec3 eye, Vec3 target, Vec3 up );
+    void lookAt(
+            float eyeX, float eyeY, float eyeZ,
+            float targetX, float targetY, float targetZ,
+            float upX, float upY, float upZ
+            );
     /// Set the camera displacement modes and return true.
     bool handleMouseButton(int button, int state, int x, int y);
     /// Displace the camera based on the mouse motion and return true.
     bool handleMouseMotion(int x, int y);
+
+    /// Center of the camera in world coordinates
+    Vec3 eye() const;
 
 protected:
 

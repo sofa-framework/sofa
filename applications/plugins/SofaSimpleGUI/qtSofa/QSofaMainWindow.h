@@ -23,7 +23,7 @@ public:
     /**
      * @brief The simulated scene
      */
-    sofa::newgui::QSofaScene sofaScene;
+    sofa::simplegui::QSofaScene sofaScene;
 
     /**
      * @brief Default viewer, set as central widget.

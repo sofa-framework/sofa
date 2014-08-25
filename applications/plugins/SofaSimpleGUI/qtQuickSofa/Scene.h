@@ -8,7 +8,7 @@
 class QTimer;
 //typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
 
-class Scene : public QObject, public sofa::newgui::SofaScene
+class Scene : public QObject, public sofa::simplegui::SofaScene
 {
     Q_OBJECT
 

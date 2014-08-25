@@ -51,7 +51,7 @@ class QOpenGLShaderProgram;
 
 namespace sofa
 {
-	namespace newgui
+	namespace simplegui
 	{
 		class SofaGL;
 	}
@@ -83,7 +83,7 @@ signals:
 
 private:
 	Scene*						myScene;
-	sofa::newgui::SofaGL*		mySofaGL;
+	sofa::simplegui::SofaGL*		mySofaGL;
 	QOpenGLShaderProgram*		myProgram;
 };
 

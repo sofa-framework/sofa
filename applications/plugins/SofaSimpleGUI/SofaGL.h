@@ -10,7 +10,7 @@
 #include "SpringInteractor.h"
 
 namespace sofa {
-namespace newgui {
+namespace simplegui {
 
 /** OpenGL interface to a SofaScene.
  * This is not a viewer, this is an object used by a viewer to display a Sofa scene and to pick objects in it.
@@ -19,6 +19,8 @@ namespace newgui {
  * Picking returns a PickedPoint which describes a particle.
  * It is up to the application to create the appropriate Interactor, which can then be inserted in the Sofa scene.
  * This class provides the functions to attach/detach an interactor and move it.
+ *
+ * @todo Construction/initialization is questionable. Should they be merged ? Should the initTextures be made in sofaScene ?
  *
  * @author Francois Faure, 2014
 
