@@ -9,9 +9,9 @@ set(SOURCE_FILES  stdafx.cpp
 
 # alphabetical order
     AffinePatch_test.cpp
-    BaryMapperTest.cpp
+    BaryMapper_test.cpp
     BezierTetrahedronTopology_test.cpp
-    BroadPhaseTest.cpp
+    BroadPhase_test.cpp
     DAG_test.cpp
     EulerImplicit_test.cpp
     LinearElasticity_test.cpp
@@ -19,13 +19,13 @@ set(SOURCE_FILES  stdafx.cpp
     Matrix_test.cpp
     Matrix_test.inl
     Node_test.cpp
-    OBBTest.cpp
+    OBB_test.cpp
     PrimitiveCreation.cpp
     ProjectToLineConstraint_test.cpp
     ProjectToPlaneConstraint_test.cpp
     QuadPressureForceField_test.cpp
     RigidMapping_test.cpp
-    SphereTest.cpp
+    Sphere_test.cpp
     StiffSpringForceField_test.cpp 
     TetrahedronNumericalIntegration_test.cpp
 )
