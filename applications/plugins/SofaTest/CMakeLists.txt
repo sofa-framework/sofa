@@ -2,18 +2,18 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-    initTestPlugin.h
+    InitPlugin_test.h
     Sofa_test.h
     Mapping_test.h
     Elasticity_test.h
     Elasticity_test.inl
     ForceField_test.h
-    BroadPhaseTest.h
+    BroadPhase_test.h
 	)
 
 set(SOURCE_FILES
 
-    initTestPlugin.cpp
+    InitPlugin_test.cpp
     Sofa_test.cpp
     Elasticity_test.cpp
     

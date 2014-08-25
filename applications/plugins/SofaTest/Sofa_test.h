@@ -31,7 +31,7 @@
 #define _VARIADIC_MAX 10 
 #endif
 
-#include "initTestPlugin.h"
+#include "InitPlugin_test.h"
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

@@ -22,70 +22,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initTestPlugin.h"
-
-namespace sofa
-{
-
-namespace component
-{
-
-	//Here are just several convenient functions to help user to know what contains the plugin
-
-	extern "C" {
-                SOFA_TestPlugin_API void initExternalModule();
-                SOFA_TestPlugin_API const char* getModuleName();
-                SOFA_TestPlugin_API const char* getModuleVersion();
-                SOFA_TestPlugin_API const char* getModuleLicense();
-                SOFA_TestPlugin_API const char* getModuleDescription();
-                SOFA_TestPlugin_API const char* getModuleComponentList();
-	}
-	
-	void initExternalModule()
-	{
-		static bool first = true;
-		if (first)
-		{
-			first = false;
-		}
-	}
-
-	const char* getModuleName()
-	{
-	  return "TestPlugin";
-	}
-
-	const char* getModuleVersion()
-	{
-		return "0.2";
-	}
-
-	const char* getModuleLicense()
-	{
-		return "LGPL";
-	}
+#ifndef INITPlugin_Test_H
+#define INITPlugin_Test_H
 
 
-	const char* getModuleDescription()
-	{
-		return "TODO: replace this with the description of your plugin";
-	}
+#include <sofa/helper/system/config.h>
 
-	const char* getModuleComponentList()
-	{
-	  /// string containing the names of the classes provided by the plugin
-	  return "";
-	  //return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
-	}
+#ifdef SOFA_BUILD_TEST
+#define SOFA_TestPlugin_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_TestPlugin_API  SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+/** \mainpage
+This is the test suite of Sofa. It contains:
+- base classes to ease the development of tests, such as sofa::Sofa_test , sofa::Mapping_test
+- tests of Sofa classes, in project SofaTest_test/. This currently contains all the tests of the standard (non-plugin) classes. It is far from complete.
+
+Motivation and detail about activation is given in http://wiki.sofa-framework.org/wiki/UnitTesting
+
+The tests are based on the googletest framework http://code.google.com/p/googletest/wiki/Documentation
+
+<h3> Data files</h3>
+Some tests require to open data files. These are typically located in the same directory as the test code.
+The path to the current directory can be defined in the CMakeLists.txt, and passed by the compiler as a predefined symbol.
+For instance, if you set the following line in CMakeLists.txt:
+
+AddCompilerDefinitions("THIS_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\\"")
+
+then the following instruction creates a complete, absolute path to fileName:
+
+std::string fileName = std::string(THIS_DIR) + "/" + fileName;
+
+See e.g. SofaTest_test/CMakeLists.txt and SofaTest_test/LoadScene_test.cpp
 
 
+@author François Faure, Aurélie Dégletagne, and hopefully lots of others !
+@date Started in 2013
 
-} 
+This is a the starting page of the plugin documentation, defined in file InitPlugin_test.h
+  */
 
-} 
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-//SOFA_LINK_CLASS(MyBehaviorModel)
-//SOFA_LINK_CLASS(MyProjectiveConstraintSet)
-
+#endif // INITPlugin_Test_H
