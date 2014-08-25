@@ -202,7 +202,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
         helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(int i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
+        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
     }
 }
 
@@ -248,7 +248,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
         helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(int i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
+        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
     }
 }
 
