@@ -121,7 +121,7 @@ public:
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*m*/, SReal /*kFactor*/, unsigned int & /*offset*/) {}
 
     /// Constant pressure has null variation
-    virtual void addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix ){}
+    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ){}
 
 
     void draw(const core::visual::VisualParams* vparams);
