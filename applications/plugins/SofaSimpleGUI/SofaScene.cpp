@@ -25,7 +25,7 @@ typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > V
 SofaScene::SofaScene()
 {
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
-	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel = 0;
+    boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;// = NULL;
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
 
     sofa::simulation::setSimulation(new SofaSimulation());
@@ -45,7 +45,7 @@ void SofaScene::printGraph()
 }
 
 
-void SofaScene::init(std::vector<std::string> plugins, const std::string& fileName )
+void SofaScene::init(const std::string& fileName )
 {
 
     // --- plugins ---
@@ -58,9 +58,26 @@ void SofaScene::init(std::vector<std::string> plugins, const std::string& fileNa
 
 
     // --- Create simulation graph ---
-    if(fileName.empty())
-        sout << "SofaGLScene::init, no file to load" << sendl;
-    else open(fileName.c_str() );
+    assert( !fileName.empty());
+    open(fileName.c_str() );
+
+}
+
+void SofaScene::init( Node::SPtr node )
+{
+
+    // --- plugins ---
+    for (unsigned int i=0; i<plugins.size(); i++){
+        sout<<"SofaScene::init, loading plugin " << plugins[i] << sendl;
+        sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
+    }
+
+    sofa::helper::system::PluginManager::getInstance().init();
+
+    _groot = sofa::simulation::getSimulation()->createNewGraph("root");
+    _groot->addChild(node);
+    SofaSimulation::init(_groot.get());
+
 
 }
 

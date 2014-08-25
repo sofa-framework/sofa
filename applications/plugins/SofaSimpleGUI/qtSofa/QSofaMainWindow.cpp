@@ -139,10 +139,10 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
 
 }
 
-void QSofaMainWindow::initSofa( const std::vector<std::string> &plugins, string fileName )
+void QSofaMainWindow::initSofa(string fileName )
 {
     // --- Init sofa ---
-    sofaScene.init(plugins,fileName);
+    sofaScene.init(fileName);
     QMessageBox::information( this, tr("Tip"), tr("Space to start/stop,\n\n"
                                                   "Shift-Click and drag the control points to interact. Use Ctrl-Shift-Click to select Interactors only\n"
                                                   "Release button before Shift to release the control point.\n"

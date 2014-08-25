@@ -165,7 +165,6 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     tractionStruct.forceField.get()->init();
                    
                     // Record the initial point of a given vertex
-                    std::cout <<"number of dofs = " << tractionStruct.dofs.get()->getSize() << std::endl;
                     Coord p0=(*(tractionStruct.dofs.get()->getX()))[vIndex];
 
                     //  do several steps of the static solver

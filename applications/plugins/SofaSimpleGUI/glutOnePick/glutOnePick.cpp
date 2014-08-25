@@ -51,6 +51,8 @@ using namespace sofa::newgui;
 sofa::newgui::SofaGLScene sofaScene;     ///< The interface of the application with Sofa
 sofa::newgui::SpringInteractor* drag = NULL; ///< Mouse interactor
 
+#include "oneTetra.h"
+
 
 // ---------------------------------------------------------------------
 // Various shared variables for glut
@@ -216,11 +218,16 @@ int main(int argc, char** argv)
 
     sofa::helper::parse("Simple glut application featuring a Sofa scene.")
             .option(&sofaScene.plugins,'l',"load","load given plugins")
-            .parameter(&fileName,'f',"file","scene file to load")
+            .option(&fileName,'f',"file","scene file to load")
             (argc,argv);
 
     // --- Init sofa ---
-    sofaScene.init(fileName);
+    if( fileName.empty() ){
+        cout << "No scene file provided, creating default scene " << endl;
+        sofaScene.init( oneTetra() );
+    }
+    else
+        sofaScene.init(fileName);
 
     glutMainLoop();
 

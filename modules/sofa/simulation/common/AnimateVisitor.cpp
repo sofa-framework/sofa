@@ -169,11 +169,11 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         //end(node, node->collisionPipeline, t0);
     }
     /*	if (node->solver != NULL)
-    	{
-    		ctime_t t0 = begin(node, node->solver);
-    		processOdeSolver(node, node->solver);
-    		end(node, node->solver, t0);
-    		return RESULT_PRUNE;
+        {
+            ctime_t t0 = begin(node, node->solver);
+            processOdeSolver(node, node->solver);
+            end(node, node->solver, t0);
+            return RESULT_PRUNE;
             }*/
     if (!node->solver.empty() )
     {

@@ -39,6 +39,10 @@ public:
      */
     SofaScene();
     virtual ~SofaScene(){}
+
+    std::vector<std::string> plugins; ///< list of plugins to load
+
+
 	/**
      * @return The root of the loaded scene.
      */
@@ -53,10 +57,14 @@ public:
     void printGraph();
     /**
      * @brief Initialize Sofa and load a scene file
-     * @param plugins List of plugins to load
      * @param fileName Scene file to load
      */
-    void init( std::vector<std::string> plugins, const std::string& fileName="" );
+    void init( const std::string& fileName );
+    /**
+     * @brief Initialize Sofa and set the scene graph
+     * @param graph the scene to simulate
+     */
+    void init( Node::SPtr graph );
     /**
      * @brief Integrate time by one step and update the Sofa scene.
      */

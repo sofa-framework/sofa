@@ -66,6 +66,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include "../material/HookeForceField.h"
 #include <SofaBaseMechanics/MechanicalObject.h>
 
@@ -116,6 +117,14 @@
 #include "../strainMapping/CauchyStrainMapping.h"
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
+
+#include <image/ImageTypes.h>
+#include <image/ImageContainer.h>
+#include "../shapeFunction/VoronoiShapeFunction.h"
+#include "../shapeFunction/ShepardShapeFunction.h"
+#include "../shapeFunction/HatShapeFunction.h"
+#include "../shapeFunction/ShapeFunctionDiscretizer.h"
+#include "../shapeFunction/DiffusionShapeFunction.h"
 
 #include <Mapping_test.h>
 
