@@ -66,7 +66,7 @@ public:
       * see maple file ./doc/Ogden_principalStretches.mw for derivative
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real mu1Vol, mu2Vol, mu3Vol, alpha1, alpha2, alpha3, volond1, volond2, volond3;
     bool stabilization;
@@ -222,7 +222,7 @@ public:
       * see maple file ./doc/Ogden_principalStretches.mw for derivative
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real mu1Vol, mu2Vol, mu3Vol, alpha1, alpha2, alpha3, volond1, volond2, volond3;
     bool stabilization;

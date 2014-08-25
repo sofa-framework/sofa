@@ -172,7 +172,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 abstract class for shape functions computed from a set of images (typically rasterized objects)
   */
 template <class ShapeFunctionTypes_,class ImageTypes_>
-class BaseImageShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class SOFA_Flexible_API BaseImageShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
 {
     friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
     friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;

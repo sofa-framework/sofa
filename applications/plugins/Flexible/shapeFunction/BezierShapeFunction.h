@@ -50,7 +50,7 @@ there are computed from barycentric coordinates
   */
 
 template <class ShapeFunctionTypes_>
-class BezierShapeFunction : public BarycentricShapeFunction<ShapeFunctionTypes_>
+class SOFA_Flexible_API BezierShapeFunction : public BarycentricShapeFunction<ShapeFunctionTypes_>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BezierShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BarycentricShapeFunction, ShapeFunctionTypes_));

@@ -73,55 +73,55 @@ void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) 
 }
 
 
-static bool diagonal_dominant(const AssembledSystem& sys) 
-{
-	typedef AssembledSystem::mat::Index Index;
+//static bool diagonal_dominant(const AssembledSystem& sys)
+//{
+//	typedef AssembledSystem::mat::Index Index;
     
-	AssembledSystem::mat PH = sys.P * sys.H;
+//	AssembledSystem::mat PH = sys.P * sys.H;
     
-	typedef SReal real;
+//	typedef SReal real;
 
-    if( sys.n )
-    {
-        AssembledSystem::mat PJt = sys.P * sys.J.transpose();
+//    if( sys.n )
+//    {
+//        AssembledSystem::mat PJt = sys.P * sys.J.transpose();
         
-        for( unsigned i = 0 ; i < sys.m ; ++i )
-	        {
-		        real d = helper::rabs(PH.coeff(i,i));
+//        for( unsigned i = 0 ; i < sys.m ; ++i )
+//	        {
+//		        real d = helper::rabs(PH.coeff(i,i));
 		        
-		        real o = -d;
-		        for( Index j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
-		        for( Index j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
+//		        real o = -d;
+//		        for( Index j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
+//		        for( Index j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
 		        
-		        if( o > d ) return false;
-	        }
+//		        if( o > d ) return false;
+//	        }
         
-        for( unsigned i=0 ; i< sys.n ; ++i )
-	        {
-		        real d = helper::rabs(sys.C.coeff(i,i));
+//        for( unsigned i=0 ; i< sys.n ; ++i )
+//	        {
+//		        real d = helper::rabs(sys.C.coeff(i,i));
 		        
-		        real o = -d;
-		        for( Index j=0 ; j<sys.C.cols() ; ++j ) o += helper::rabs(sys.C.coeff(i,j));
-		        for( Index j=0 ; j<sys.J.cols() ; ++j ) o += helper::rabs(sys.J.coeff(i,j));
+//		        real o = -d;
+//		        for( Index j=0 ; j<sys.C.cols() ; ++j ) o += helper::rabs(sys.C.coeff(i,j));
+//		        for( Index j=0 ; j<sys.J.cols() ; ++j ) o += helper::rabs(sys.J.coeff(i,j));
 		        
-		        if( o > d ) return false;
-	        }
-    }
-    else
-	    {
-		    for( unsigned i=0 ; i< sys.m ; ++i )
-			    {
-				    real d = helper::rabs(PH.coeff(i,i));
+//		        if( o > d ) return false;
+//	        }
+//    }
+//    else
+//	    {
+//		    for( unsigned i=0 ; i< sys.m ; ++i )
+//			    {
+//				    real d = helper::rabs(PH.coeff(i,i));
 				    
-				    real o = -d;
-				    for( Index j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
+//				    real o = -d;
+//				    for( Index j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
 				    
-				    if( o > d ) return false;
-			    }
-	    }
+//				    if( o > d ) return false;
+//			    }
+//	    }
     
-    return true;
-}
+//    return true;
+//}
 
 
 

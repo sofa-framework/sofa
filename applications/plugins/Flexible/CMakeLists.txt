@@ -2,7 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-    initFlexible.h 
+    initFlexible.h
     BaseJacobian.h 
     helper.h 
     types/DeformationGradientTypes.h 
@@ -92,7 +92,9 @@ set(HEADER_FILES
     material/MuscleMaterialBlock.h
     material/TendonMaterialForceField.h
     material/TendonMaterialBlock.h
-    #forceField/Flex    ibleTetrahedronFEMForceField.h
+    material/ProjectiveForceField.h
+    material/ProjectiveMaterialBlock.h
+    #forceField/FlexibleTetrahedronFEMForceField.h
 
 	)
 
@@ -142,6 +144,7 @@ set(SOURCE_FILES
     material/PolynomialMaterialForceField.cpp
     material/MuscleMaterialForceField.cpp
     material/TendonMaterialForceField.cpp
+    material/ProjectiveForceField.cpp
     #forceField/FlexibleTetrahedronFEMForceField.cpp
 
 	)

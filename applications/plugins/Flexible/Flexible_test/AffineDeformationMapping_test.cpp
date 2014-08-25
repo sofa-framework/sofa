@@ -154,7 +154,7 @@ namespace sofa {
 
       // Define the list of DataTypes to instantiate
     using testing::Types;
-    typedef Types<
+    typedef testing::Types<
         LinearMapping<Affine3Types, F331Types>,
         LinearMapping<Affine3Types, F332Types>
     > DataTypes; // the types to instantiate.

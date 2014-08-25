@@ -102,7 +102,7 @@ TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 }
 
 // second test case: test that force is constant
-TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTestAnimate)
+TYPED_TEST( QuadPressureForceField_test , constantQuadPressureForceFieldTest)
 {
     this->errorMax = 1000;
     this->deltaMax = 1000;

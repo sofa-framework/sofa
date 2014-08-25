@@ -66,7 +66,7 @@ public:
       * see maple file ./doc/mooneyRivlin_principalStretches.mw for derivative
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real C1Vol;  ///<  first coef * volume
     Real C2Vol;  ///<  second coef * volume
@@ -235,7 +235,7 @@ public:
       * see maple file ./doc/mooneyRivlin_principalStretches.mw for derivative
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real C1Vol;  ///<  first coef * volume
     Real C2Vol;  ///<  second coef * volume

@@ -12,7 +12,12 @@ SofaGLScene::SofaGLScene(){
 SofaGLScene::~SofaGLScene() { delete sofaGL; }
 
 void SofaGLScene::init( const std::string& fileName ){
-    SofaScene::init(plugins,fileName);
+    SofaScene::init(fileName);
+    sofaGL->init();
+}
+
+void SofaGLScene::init( Node::SPtr groot ){
+    SofaScene::init(groot);
     sofaGL->init();
 }
 

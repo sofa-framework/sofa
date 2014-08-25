@@ -2,7 +2,6 @@
 #define CONSTRAINTVALUE_H
 
 #include "BaseConstraintValue.h"
-#include "../initCompliant.h"
 
 namespace sofa {
 namespace component {

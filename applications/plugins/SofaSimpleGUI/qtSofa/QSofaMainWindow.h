@@ -33,10 +33,9 @@ public:
 
     /**
      * @brief initSofa
-     * @param plugins list of plugin (names) to load
      * @param filename scene to load on startup
      */
-    void initSofa(const std::vector<string> &plugins, string filename );
+    void initSofa(string filename );
 
 
 signals:
