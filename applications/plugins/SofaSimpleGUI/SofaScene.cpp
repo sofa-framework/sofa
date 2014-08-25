@@ -15,7 +15,7 @@ using std::endl;
 
 
 namespace sofa {
-namespace newgui {
+namespace simplegui {
 
 
 typedef sofa::defaulttype::Vector3 Vec3;
@@ -44,41 +44,45 @@ void SofaScene::printGraph()
     sofa::simulation::getSimulation()->print(_groot.get());
 }
 
-
-void SofaScene::init(const std::string& fileName )
+void SofaScene::loadPlugins( std::vector<std::string> plugins )
 {
-
-    // --- plugins ---
     for (unsigned int i=0; i<plugins.size(); i++){
         sout<<"SofaScene::init, loading plugin " << plugins[i] << sendl;
         sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
     }
 
     sofa::helper::system::PluginManager::getInstance().init();
-
-
-    // --- Create simulation graph ---
-    assert( !fileName.empty());
-    open(fileName.c_str() );
-
 }
 
-void SofaScene::init( Node::SPtr node )
+void SofaScene::setScene(const std::string& fileName )
 {
+    // --- Create simulation graph ---
+    assert( !fileName.empty());
 
-    // --- plugins ---
-    for (unsigned int i=0; i<plugins.size(); i++){
-        sout<<"SofaScene::init, loading plugin " << plugins[i] << sendl;
-        sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
+    if(_groot) unload (_groot);
+    _groot = load( fileName.c_str() );
+    if(!_groot)
+    {
+        cerr << "loading failed" << endl;
+        return;
     }
 
-    sofa::helper::system::PluginManager::getInstance().init();
+    _iroot = _groot->createChild("iroot");
 
-    _groot = sofa::simulation::getSimulation()->createNewGraph("root");
-    _groot->addChild(node);
+    _currentFileName = fileName;
+
     SofaSimulation::init(_groot.get());
 
+//    open(fileName.c_str() );
+}
 
+void SofaScene::setScene( Node::SPtr node )
+{
+    if(_groot) unload (_groot);
+    _groot = sofa::simulation::getSimulation()->createNewGraph("root");
+    _groot->addChild(node);
+    _iroot = _groot->createChild("iroot");
+    SofaSimulation::init(_groot.get());
 }
 
 void SofaScene::reset()
@@ -86,25 +90,25 @@ void SofaScene::reset()
     SofaSimulation::reset(_groot.get());
 }
 
-void SofaScene::open(const char *filename)
-{
-	unload(_groot);
+//void SofaScene::open(const char *filename)
+//{
+//	unload(_groot);
 
-	_groot = load( filename );
-    if(!_groot)
-	{
-        cerr << "loading failed" << endl;
-        return;
-    }
+//	_groot = load( filename );
+//    if(!_groot)
+//	{
+//        cerr << "loading failed" << endl;
+//        return;
+//    }
 
-	_iroot = _groot->createChild("iroot");
+//	_iroot = _groot->createChild("iroot");
 
-    _currentFileName = filename;
+//    _currentFileName = filename;
 
-    SofaSimulation::init(_groot.get());
-//    cout<<"SofaScene::init, scene loaded" << endl;
-//    printGraph();
-}
+//    SofaSimulation::init(_groot.get());
+////    cout<<"SofaScene::init, scene loaded" << endl;
+////    printGraph();
+//}
 
 void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax )
 {

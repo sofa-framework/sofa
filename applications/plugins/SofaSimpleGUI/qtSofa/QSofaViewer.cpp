@@ -22,7 +22,7 @@ GLfloat znear = cp[2]-10;
 GLfloat zfar = cp[2]+10;
 
 
-QSofaViewer::QSofaViewer(newgui::QSofaScene *sofaScene, QWidget *parent) :
+QSofaViewer::QSofaViewer(sofa::simplegui::QSofaScene *sofaScene, QWidget *parent) :
     QGLWidget(parent), _sofaGL(sofaScene)
 {
     _drag = NULL;
@@ -138,14 +138,14 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
         {
             _drag = _sofaGL.pickInteractor(cp[0],cp[1],cp[2], event->x(), event->y());
         }
-        else if( sofa::newgui::PickedPoint glpicked = _sofaGL.pick(cp[0],cp[1],cp[2], event->x(),event->y() )  ) // create new interactor
+        else if( sofa::simplegui::PickedPoint glpicked = _sofaGL.pick(cp[0],cp[1],cp[2], event->x(),event->y() )  ) // create new interactor
         {
 //            cout << "Picked: " << glpicked <<  endl;
             _drag = _sofaGL.getInteractor(glpicked);
             if( _drag == NULL )
             {
                 cout << "create new interactor" << endl;
-                _drag = new sofa::newgui::SpringInteractor(glpicked,10000);
+                _drag = new sofa::simplegui::SpringInteractor(glpicked,10000);
                 _sofaGL.attach(_drag);
             }
             else cout << "reuse interactor" << endl;

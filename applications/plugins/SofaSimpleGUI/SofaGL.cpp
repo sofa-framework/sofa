@@ -2,7 +2,7 @@
 #include "SofaGL.h"
 
 namespace sofa {
-namespace newgui {
+namespace simplegui {
 
 template <typename T> inline T sqr(const T& t){ return t*t; }
 
@@ -68,7 +68,7 @@ PickedPoint SofaGL::pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
     getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
 
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
-    //    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
+//    cout<< "SofaGL::rayPick from origin " << origin << ", in direction " << direction << endl;
     sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth );
     picker.execute( _sofaScene->groot()->getContext() );
 

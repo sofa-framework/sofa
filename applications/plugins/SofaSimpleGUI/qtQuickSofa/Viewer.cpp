@@ -143,11 +143,11 @@ void Viewer::paint()
 
 	if(!mySofaGL && myScene && myScene->isLoaded())
 	{
-		sofa::newgui::SofaScene* sofaScene = dynamic_cast<sofa::newgui::SofaScene*>(myScene);
+		sofa::simplegui::SofaScene* sofaScene = dynamic_cast<sofa::simplegui::SofaScene*>(myScene);
 		if(sofaScene)
 		{
 			delete mySofaGL;
-			mySofaGL = new sofa::newgui::SofaGL(sofaScene);
+			mySofaGL = new sofa::simplegui::SofaGL(sofaScene);
 			mySofaGL->init();
 		}
 	}

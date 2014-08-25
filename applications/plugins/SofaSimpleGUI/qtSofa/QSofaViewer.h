@@ -5,10 +5,10 @@
 #include <QGLWidget>
 #include <SofaSimpleGUI/SofaGL.h>
 #include "QSofaScene.h"
-using sofa::newgui::SofaGL;
-using sofa::newgui::Interactor;
-using sofa::newgui::SpringInteractor;
-using sofa::newgui::PickedPoint;
+using sofa::simplegui::SofaGL;
+using sofa::simplegui::Interactor;
+using sofa::simplegui::SpringInteractor;
+using sofa::simplegui::PickedPoint;
 
 /**
  * @brief The QSofaViewer class is a Qt OpenGL viewer with a SofaGL interface to display and interact with a Sofa simulation.
@@ -20,7 +20,7 @@ class QSofaViewer : public QGLWidget
     Q_OBJECT
 
 public:
-    explicit QSofaViewer(sofa::newgui::QSofaScene* sofaScene, QWidget *parent = 0);
+    explicit QSofaViewer(sofa::simplegui::QSofaScene* sofaScene, QWidget *parent = 0);
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);

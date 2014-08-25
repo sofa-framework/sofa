@@ -35,7 +35,7 @@
 #endif
 
 namespace sofa {
-namespace newgui {
+namespace simplegui {
 
 /** \mainpage SimpleGUI - a simplified GUI for Sofa
  * This plugin proposes a simple API for including Sofa in a graphics interface:
