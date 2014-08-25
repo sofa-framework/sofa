@@ -59,6 +59,12 @@ public:
     /// addDForce does nothing when this component is processed like a compliance.
     virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
 
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    {
+        serr << "getPotentialEnergy() not implemented" << sendl;
+        return 0.0;
+    }
+
 protected:
     DiagonalCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 

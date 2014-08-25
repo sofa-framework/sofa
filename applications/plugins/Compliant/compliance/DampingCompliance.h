@@ -64,6 +64,18 @@ public:
 	/// this does nothing as we are a compliance
 	virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &)  { }
 
+    virtual void addDForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv&   /*df*/ , const DataVecDeriv&  /*dx*/)
+    {
+        serr << "addDForce() not implemented" << sendl;
+    }
+
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    {
+        serr << "getPotentialEnergy() not implemented" << sendl;
+        return 0.0;
+    }
+
+
 
 protected:
 	typedef typename DataTypes::Real real;
