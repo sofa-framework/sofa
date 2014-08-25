@@ -2,11 +2,6 @@
 
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.5" showAxis="true">
   <RequiredPlugin pluginName="Flexible"/>
-  <RequiredPlugin pluginName="Compliant"/>
-
-  <!--Solver-->
-  <!--<AssembledSolver/>
-  <LDLTSolver/>-->
 
   <!--Solver-->
   <StaticSolver/>
@@ -35,7 +30,7 @@
 
   <BarycentricShapeFunction template="ShapeFunctiond" />
 
-  <!--Decomposition of the cubes in tetrahedra -->
+  <!--Decomposition of the cubes in triangles -->
   <Node name="Triangles" >
     <TriangleSetTopologyContainer name="triangleContainer" triangles="1 7 3 5 1 7"/>
     <TriangleSetTopologyModifier />
@@ -46,14 +41,9 @@
 
   <Node name="behavior">
     <TopologyGaussPointSampler name="sampler" inPosition="@../tetrahedra.position" showSamplesScale="0" method="0" order="1" />
-    <MechanicalObject  template="F332" name="F"  showObject="0" showObjectScale="0.05" />
-    <LinearMapping template="Vec3d,F332" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
-
+  
     <!--Material-->
     <Node name="Strain"   >
-      <MechanicalObject  template="E332" name="E"  />
-      <CorotationalStrainMapping template="F332,E332"   method="svd" geometricStiffness="true"/>
-      <!-- <HookeForceField  template="E332" name="ff" youngModulus="1" poissonRatio="0.1" viscosity="0.1"/>-->
     </Node>
 
   </Node>
