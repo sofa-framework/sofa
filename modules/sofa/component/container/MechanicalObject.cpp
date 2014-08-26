@@ -693,6 +693,42 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
 #endif /* SOFA_NO_OPENGL */
 }
 
+#ifndef SOFA_FLOAT
+template<>
+bool MechanicalObject<defaulttype::Vec3dTypes>::addBBox(double* minBBox, double* maxBBox)
+{
+    const VecCoord& x = *this->getX();
+    for( std::size_t i=0; i<x.size(); i++ )
+    {
+        if(x[i][0]<minBBox[0]) minBBox[0]=x[i][0];
+        if(x[i][0]>maxBBox[0]) maxBBox[0]=x[i][0];
+        if(x[i][1]<minBBox[1]) minBBox[1]=x[i][1];
+        if(x[i][1]>maxBBox[1]) maxBBox[1]=x[i][1];
+        if(x[i][2]<minBBox[2]) minBBox[2]=x[i][2];
+        if(x[i][2]>maxBBox[2]) maxBBox[2]=x[i][2];
+    }
+    return true;
+}
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+bool MechanicalObject<defaulttype::Vec3fTypes>::addBBox(double* minBBox, double* maxBBox)
+{
+    const VecCoord& x = *this->getX();
+    for( std::size_t i=0; i<x.size(); i++ )
+    {
+        if(x[i][0]<minBBox[0]) minBBox[0]=x[i][0];
+        if(x[i][0]>maxBBox[0]) maxBBox[0]=x[i][0];
+        if(x[i][1]<minBBox[1]) minBBox[1]=x[i][1];
+        if(x[i][1]>maxBBox[1]) maxBBox[1]=x[i][1];
+        if(x[i][2]<minBBox[2]) minBBox[2]=x[i][2];
+        if(x[i][2]>maxBBox[2]) maxBBox[2]=x[i][2];
+    }
+    return true;
+}
+#endif
+
+
 }
 
 } // namespace component
