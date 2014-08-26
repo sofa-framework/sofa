@@ -35,5 +35,5 @@
 #  define SOFA_THMPGSPATIALHASHING_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#endif // INITTestPlugin_H
+#endif // INITPlugin_Test_H
 
