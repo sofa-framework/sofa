@@ -3421,6 +3421,8 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
         return false;
 }
 
+
+
 } // namespace container
 
 } // namespace component

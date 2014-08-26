@@ -25,6 +25,7 @@ set(SOURCE_FILES  stdafx.cpp
     ProjectToPlaneConstraint_test.cpp
     QuadPressureForceField_test.cpp
     RigidMapping_test.cpp
+    Simulation_test.cpp
     Sphere_test.cpp
     StiffSpringForceField_test.cpp 
     TetrahedronNumericalIntegration_test.cpp
