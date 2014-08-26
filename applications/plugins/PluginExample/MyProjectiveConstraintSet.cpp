@@ -70,4 +70,3 @@ template class SOFA_MyPluginExample_API MyProjectiveConstraintSet<Vec3fTypes>;
 }	//component
 
 }	//sofa
-
