@@ -219,11 +219,11 @@ void CompliantAttachPerformer<DataTypes>::start()
     interactionNode = pickedNode->createChild("InteractionDistanceNode");
 
     typedef component::container::MechanicalObject<DataTypes1> MechanicalObject1;
-    typename MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
+    typename MechanicalObject1::SPtr extensions = core::objectmodel::New<MechanicalObject1>();
     interactionNode->addObject(extensions);
     extensions->setName("extensionValues");
 
-    distanceMapping = New<DistanceFromTargetMapping31>();
+    distanceMapping = core::objectmodel::New<DistanceFromTargetMapping31>();
     distanceMapping->setModels(mstateCollision,extensions.get());
     interactionNode->addObject( distanceMapping );
     distanceMapping->setName(distanceMappingName.c_str());
@@ -236,7 +236,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     //       cerr<<"CompliantAttachPerformer<DataTypes>::start(), create target of " << picked.indexCollisionElement << " at " <<  (*mstateCollision->getX())[picked.indexCollisionElement] << " to " << pointOnRay << ", distance = " << (picked.point-pointOnRay).norm() << endl;
 
     typedef forcefield::UniformCompliance<DataTypes1> UniformCompliance1;
-    typename UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
+    typename UniformCompliance1::SPtr compliance = core::objectmodel::New<UniformCompliance1>();
     compliance->setName("pickCompliance");
     compliance->compliance.setValue(_compliance);
     compliance->isCompliance.setValue(_isCompliance);

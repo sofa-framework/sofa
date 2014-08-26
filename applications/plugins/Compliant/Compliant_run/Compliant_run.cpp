@@ -87,7 +87,7 @@ typedef Vec<3,SReal> Vec3;
 typedef Vec<1,SReal> Vec1;
 typedef DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
 typedef DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
-typedef UniformCompliance<Vec1Types> UniformCompliance1;
+typedef UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
 
 typedef component::odesolver::AssembledSolver AssembledSolver;
 typedef component::linearsolver::LDLTSolver LDLTSolver;

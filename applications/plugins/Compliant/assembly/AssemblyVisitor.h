@@ -49,7 +49,7 @@ namespace simulation {
 class MechanicalComputeComplianceForceVisitor : public MechanicalComputeForceVisitor
 {
 public:
-    MechanicalComputeComplianceForceVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId res )
+    MechanicalComputeComplianceForceVisitor(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res )
         : MechanicalComputeForceVisitor(mparams,res,true)
     {
     }
@@ -71,12 +71,12 @@ public:
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
 class MechanicalAddComplianceForce : public MechanicalVisitor
 {
-    MultiVecDerivId res, lambdas;
+    core::MultiVecDerivId res, lambdas;
     SReal invdt;
 
 
 public:
-    MechanicalAddComplianceForce(const sofa::core::MechanicalParams* mparams, MultiVecDerivId res, MultiVecDerivId lambdas, SReal dt )
+    MechanicalAddComplianceForce(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res, core::MultiVecDerivId lambdas, SReal dt )
         : MechanicalVisitor(mparams), res(res), lambdas(lambdas), invdt(1.0/dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -104,10 +104,10 @@ public:
         if( ff->isCompliance.getValue() )
         {
             core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
-            const VecDerivId& lambdasid = lambdas.getId(mm);
+            const core::VecDerivId& lambdasid = lambdas.getId(mm);
             if( !lambdasid.isNull() ) // previously allocated
             {
-                const VecDerivId& resid = res.getId(mm);
+                const core::VecDerivId& resid = res.getId(mm);
 
                 // hack that improve a lot stability and energy preserving
                 // TO BE STUDIED: only keep negative lambda to generate geometric stiffness
@@ -175,11 +175,11 @@ public:
 class MechanicalComputeStiffnessAndComplianceForcesVisitor : public MechanicalVisitor
 {
 
-    MultiVecDerivId fk,fc;
+    core::MultiVecDerivId fk,fc;
 
 public:
 
-    MechanicalComputeStiffnessAndComplianceForcesVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId fk, MultiVecDerivId fc )
+    MechanicalComputeStiffnessAndComplianceForcesVisitor(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId fk, core::MultiVecDerivId fc )
         : MechanicalVisitor(mparams), fk(fk),fc(fc)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -264,11 +264,11 @@ public:
 class MechanicalComputeStiffnessForcesAndAddingPreviousLambdasVisitor : public MechanicalVisitor
 {
 
-    MultiVecDerivId f,fk,fc;
+    core::MultiVecDerivId f,fk,fc;
 
 public:
 
-    MechanicalComputeStiffnessForcesAndAddingPreviousLambdasVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId f, MultiVecDerivId fk, MultiVecDerivId fc )
+    MechanicalComputeStiffnessForcesAndAddingPreviousLambdasVisitor(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId f, core::MultiVecDerivId fk, core::MultiVecDerivId fc )
         : MechanicalVisitor(mparams), f(f), fk(fk),fc(fc)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -295,10 +295,10 @@ public:
         if( ff->isCompliance.getValue() )
         {
             core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
-            const VecDerivId& fcid = fc.getId(mm);
+            const core::VecDerivId& fcid = fc.getId(mm);
             if( !fcid.isNull() ) // previously allocated
             {
-                const VecDerivId& fid = f.getId(mm);
+                const core::VecDerivId& fid = f.getId(mm);
                 mm->vOp( this->params, fid, fid, fcid );
             }
         }
@@ -387,7 +387,7 @@ public:
     virtual ~AssemblyVisitor();
 
 //protected:
-//    MultiVecDerivId _velId;
+//    core::MultiVecDerivId _velId;
 
 	// applies another visitor topDown/bottomUp based on internal
 	// graph. this is to work around bogus graph traversal in case of

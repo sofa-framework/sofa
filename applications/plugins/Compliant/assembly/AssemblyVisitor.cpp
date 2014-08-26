@@ -132,9 +132,9 @@ AssemblyVisitor::mat AssemblyVisitor::proj(simulation::Node* node) {
 
 
 
-AssemblyVisitor::mat compliance_impl( const MechanicalParams* mparams, BaseForceField* ffield )
+AssemblyVisitor::mat compliance_impl( const core::MechanicalParams* mparams, BaseForceField* ffield )
 {
-    const BaseMatrix* c = ffield->getComplianceMatrix(mparams);
+    const defaulttype::BaseMatrix* c = ffield->getComplianceMatrix(mparams);
 
     if( c )
         return convert<AssemblyVisitor::mat>( c );

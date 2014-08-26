@@ -77,6 +77,8 @@ using sofa::helper::vector;
 
 namespace sofa
 {
+    using core::objectmodel::New;
+
 /** \page Page_CompliantTestSuite Compliant plugin test suite
  *
  * Class CompliantSolver_test provides helpers.
@@ -90,7 +92,7 @@ namespace sofa
 
     typedef component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
     typedef defaulttype::Vec<3,SReal> Vec3;
-    typedef forcefield::UniformCompliance<Vec1Types> UniformCompliance1;
+    typedef forcefield::UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
 
     // Vec3-Vec1
     typedef mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
