@@ -89,7 +89,7 @@ void PythonEnvironment::Init()
 
 
 #ifdef WIN32
-    char* scriptPyChar = (char*) malloc(scriptPy.size()*sizeof(char));
+    char* scriptPyChar = (char*) malloc((scriptPy.size()+1)*sizeof(char));
     strcpy(scriptPyChar,scriptPy.c_str());
     PyObject* PyFileObject = PyFile_FromString(scriptPyChar, "r");
     PyRun_SimpleFileEx(PyFile_AsFile(PyFileObject), scriptPyChar, 1);
