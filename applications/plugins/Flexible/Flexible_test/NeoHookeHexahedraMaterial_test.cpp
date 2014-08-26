@@ -204,7 +204,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
                 pressureForceField.get()->init();
                    
                 // Record the initial point of a given vertex
-                Coord p0=(*(tractionStruct.dofs.get()->getX()))[vIndex];
+                Coord p0=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
 
                 //  do several steps of the static solver
                 for(l=0;l<8;++l) 
@@ -213,7 +213,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
                 }
 
                 // Get the simulated final position of that vertex
-                Coord p1=(*(tractionStruct.dofs.get()->getX()))[vIndex];
+                Coord p1=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
                     
                 if(debug) // Print the coordinates of the initial point p0 and the final point p1 (p0 after traction)
                 {

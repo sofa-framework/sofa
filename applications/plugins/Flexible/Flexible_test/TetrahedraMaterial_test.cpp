@@ -165,7 +165,7 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     tractionStruct.forceField.get()->init();
                    
                     // Record the initial point of a given vertex
-                    Coord p0=(*(tractionStruct.dofs.get()->getX()))[vIndex];
+                    Coord p0=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
 
                     //  do several steps of the static solver
                     for(l=0;l<20;++l) 
@@ -174,7 +174,7 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     }
 
                     // Get the simulated final position of that vertex
-                    Coord p1=(*(tractionStruct.dofs.get()->getX()))[vIndex];
+                    Coord p1=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
                     
                     // Compute longitudinal deformation
                     Real longitudinalDeformation=(p1[0]-p0[0])/p0[0];
