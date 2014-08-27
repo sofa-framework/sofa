@@ -257,7 +257,7 @@ public:
 SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVecDerivId residual,
                                       MultiVecCoordId newX, const MultiVecDerivId newV, MultiVecDerivId newF,
                                       MultiVecCoordId oldX, MultiVecDerivId oldV, MultiVecDerivId oldF,
-                                      const vec& lambda, chuck_type& residual_constraints )
+                                      const vec& lambda, chuck_type* residual_constraints )
 {
     const SReal h = sop.mparams().dt();
     const SReal a = alpha.getValue();
@@ -341,7 +341,7 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVe
 
         // compute C at the end of the step ??
         // compute C.lambda - phi
-        residual_constraints = - sys.C * lambda - phi;
+        *residual_constraints = - sys.C * lambda - phi;
 
         // project unilateral error
         unsigned off=0;
@@ -362,7 +362,7 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVe
                     if( violation[constraint_dim*j]>=0 ) // not violated unilateral -> no error
                     {
                         for( unsigned k=0 ; k<constraint_dim ; ++k )
-                            residual_constraints( off + constraint_dim*j + k ) = 0;
+                            (*residual_constraints)( off + constraint_dim*j + k ) = 0;
                     }
                 }
 
@@ -372,7 +372,7 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVe
             off += size;
         }
 
-        e = std::max( e, residual_constraints.lpNorm<Eigen::Infinity>() );
+        e = std::max( e, residual_constraints->lpNorm<Eigen::Infinity>() );
 
     }
 
@@ -384,7 +384,7 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVe
         sop.vop.print(newX,std::cout,"CompliantNLImplicitSolver::compute_residual, newX= ", "\n");
         sop.vop.print(lagrange,std::cout,"CompliantNLImplicitSolver::compute_residual, lagrange= ", "\n");
         sop.vop.print(residual,std::cout,"CompliantNLImplicitSolver::compute_residual, err= ", " | ");
-        std::cout<<residual_constraints.transpose()<<" -> ";
+        std::cout<<residual_constraints->transpose()<<" -> ";
         std::cout<<e;
         std::cout<<std::endl;
     }
@@ -542,11 +542,11 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 
         vec x(sys.size()); // unknown
         vec residual(sys.size()); // residual
-        chuck_type residual_constraints(&residual(sys.m),sys.n);
+        boost::scoped_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
 
         handleUnilateralConstraints();
 
-        SReal resnorm = compute_residual( sop, _err, newX, newV, newF, _x0, _v0, _f0, lambda, residual_constraints );
+        SReal resnorm = compute_residual( sop, _err, newX, newV, newF, _x0, _v0, _f0, lambda, residual_constraints.get() );
 //        if( debug.getValue() ){
 //            cerr<<"CompliantNLImplicitSolver::solveStep, resnorm = " << resnorm << ", err = " << err << endl;
 //        }
@@ -628,7 +628,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
                     sys.copyToCompliantMultiVec( lagrange, lambda );
                 }
 
-                resnorm = compute_residual(sop,_err,newX,newV,newF,_x0,_v0,_f0,lambda,residual_constraints);
+                resnorm = compute_residual(sop,_err,newX,newV,newF,_x0,_v0,_f0,lambda,residual_constraints.get());
 
                 if( resnorm>resnormit )
                 {
@@ -657,7 +657,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
                          sys.copyToCompliantMultiVec( lagrange, lambda );
                      }
 
-                     resnorm = compute_residual(sop,_err,newX,newV,newF,_x0,_v0,_f0,lambda,residual_constraints);
+                     resnorm = compute_residual(sop,_err,newX,newV,newF,_x0,_v0,_f0,lambda,residual_constraints.get());
                      if( resnorm>prevresnorm )
                      {
 //                         std::cerr<<"TOO MUCH SUBSTEPS : "<<prevresnorm<<" "<<resnorm<<std::endl;
@@ -669,7 +669,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
                              sys.copyToCompliantMultiVec( lagrange, lambda );
                          }
 
-                         resnorm = compute_residual(sop,_err,newX,newV,newF,_x0,_v0,_f0,lambda,residual_constraints); // needs to be performed again to have right forces
+                         resnorm = compute_residual(sop,_err,newX,newV,newF,_x0,_v0,_f0,lambda,residual_constraints.get()); // needs to be performed again to have right forces
 
                          break;
                      }
@@ -721,6 +721,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
             serr<<"Only full post-stabilization "<<POST_STABILIZATION_ASSEMBLY<<" can be (and will be) computed\n";
             stabilization.beginEdit()->setSelectedItem(POST_STABILIZATION_ASSEMBLY); stabilization.endEdit();
         }
+        // TODO realloc _ck
         post_stabilization( sop, posId, velId, true );
     }
 
@@ -742,7 +743,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
 
     const unsigned n = sys.size();
 
-    chuck_type residual_constraints(&residual(sys.m),sys.n);
+    boost::scoped_ptr<chuck_type> residual_constraints( sys.n?new chuck_type(&residual(sys.m),sys.n):NULL);
 
     vec x(n), xold(n);
     sys.copyFromMultiVec( xold, newV );
@@ -783,7 +784,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
         sys.copyToMultiVec( newV, x );
         sys.copyToCompliantMultiVec( lagrange, x );
 
-        resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints);
+        resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints.get());
 
         if( resnorm>resnormold )
         {
@@ -805,7 +806,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
              sys.copyToMultiVec( newV, x );
              sys.copyToCompliantMultiVec( lagrange, x );
 
-             resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints);
+             resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints.get());
              if( resnorm>prevresnorm )
              {
 //                 std::cerr<<"TOO MUCH SUBSTEPS : "<<prevresnorm<<" "<<resnorm<<std::endl;
@@ -814,7 +815,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
                  sys.copyToMultiVec( newV, x );
                  sys.copyToCompliantMultiVec( lagrange, x );
 
-                 resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints); // needs to be performed again to have right forces
+                 resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints.get()); // needs to be performed again to have right forces
 
 //                 std::cerr<<"Newton sub-steps: "<<i*newtonStepLength.getValue()<<std::endl;
 
@@ -837,7 +838,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
         sys.copyToMultiVec( newV, x );
         sys.copyToCompliantMultiVec( lagrange, x );
 
-        resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints);
+        resnorm = compute_residual(sop,err,newX,newV,newF,oldX,oldV,oldF,x.tail(sys.n),residual_constraints.get());
 //        std::cerr<<SOFA_CLASS_METHOD<<"alam = "<<alam<<" "<<resnorm<<" "<<resnormold<<" "<<resnormold+ALF*alam*slope<<std::endl;
 
         if (resnorm <= resnormold+ALF*alam*slope)

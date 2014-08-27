@@ -38,6 +38,7 @@ struct CompliantNLImplicitSolver_test : public CompliantSolver_test
         complianceSolver->beta.setValue(1.0);
         SReal precision = 1.0e-6;
         complianceSolver->precision.setValue(precision);
+        complianceSolver->stabilization.beginEdit()->setSelectedItem(CompliantNLImplicitSolver::NO_STABILIZATION); complianceSolver->stabilization.endEdit();
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(getRoot());
         linearSolver->debug.setValue(debug);
@@ -114,6 +115,7 @@ struct CompliantNLImplicitSolver_test : public CompliantSolver_test
         odeSolver->beta.setValue(1.0);
         SReal precision = 1.0e-6;
         odeSolver->precision.setValue(precision);
+        odeSolver->stabilization.beginEdit()->setSelectedItem(OdeSolver::NO_STABILIZATION); odeSolver->stabilization.endEdit();
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
         linearSolver->debug.setValue(debug);
@@ -192,6 +194,7 @@ struct CompliantNLImplicitSolver_test : public CompliantSolver_test
         complianceSolver->precision.setValue(precision);
         complianceSolver->neglecting_compliance_forces_in_geometric_stiffness.setValue(false);
         complianceSolver->newtonStepLength.setValue(isCompliance?0.1:1);
+        complianceSolver->stabilization.beginEdit()->setSelectedItem(CompliantNLImplicitSolver::NO_STABILIZATION); complianceSolver->stabilization.endEdit();
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
 //        linearSolver->debug.setValue(debug);
@@ -281,6 +284,7 @@ struct CompliantNLImplicitSolver_test : public CompliantSolver_test
         complianceSolver->debug.setValue( debug );
         SReal precision = 1.0e-6;
         complianceSolver->precision.setValue(precision);
+        complianceSolver->stabilization.beginEdit()->setSelectedItem(odesolver::CompliantNLImplicitSolver::NO_STABILIZATION); complianceSolver->stabilization.endEdit();
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
 //        linearSolver->debug.setValue( debug );

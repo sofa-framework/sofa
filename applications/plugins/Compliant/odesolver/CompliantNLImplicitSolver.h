@@ -69,7 +69,7 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
     void compute_forces(SolverOperations& sop, core::behavior::MultiVecDeriv& f, core::behavior::MultiVecDeriv& c );
 
     /// Residual of the non-linear implicit integration equation
-    SReal compute_residual( SolverOperations sop, MultiVecDerivId residual, MultiVecCoordId newX, const MultiVecDerivId newV, MultiVecDerivId newF, MultiVecCoordId oldX, MultiVecDerivId oldV, MultiVecDerivId oldF, const vec& lambda, chuck_type& residual_constraints );
+    SReal compute_residual( SolverOperations sop, MultiVecDerivId residual, MultiVecCoordId newX, const MultiVecDerivId newV, MultiVecDerivId newF, MultiVecCoordId oldX, MultiVecDerivId oldV, MultiVecDerivId oldF, const vec& lambda, chuck_type* residual_constraints=NULL );
 
     /// Jacobian of the residual
     void compute_jacobian( SolverOperations sop );
