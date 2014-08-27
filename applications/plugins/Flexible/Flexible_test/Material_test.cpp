@@ -91,7 +91,7 @@ struct Material_test : public Sofa_test<typename Vec3Types::Real>
 		size_t resolutionCircumferential=7;
 		size_t  resolutionRadial=3;
 		size_t  resolutionHeight=7;
-		size_t maxIteration=3000; // maximum iteration for the CG.
+//		size_t maxIteration=3000; // maximum iteration for the CG.
       
        vIndex=(resolutionCircumferential*(resolutionRadial-1)+1)*resolutionHeight/2;
     
