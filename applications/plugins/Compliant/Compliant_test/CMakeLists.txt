@@ -9,7 +9,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     Assembly_test.cpp
-    AssembledSolver_test.cpp
+    CompliantImplicitSolver_test.cpp
     DampedOscillator_test.cpp
 
 	)

@@ -7,7 +7,7 @@
 
 <CompliantAttachButtonSetting button="Left" />
 <Node 	name="complianceSolverScene" >
-        <AssembledSolver/>
+        <CompliantImplicitSolver/>
 	<LDLTSolver/>
 <!--    <MinresSolver iterations="20" precision="1e-3" /> -->
    

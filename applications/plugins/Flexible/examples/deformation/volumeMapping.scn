@@ -9,7 +9,7 @@
     <DefaultVisualManagerLoop />
     
 <!--     <EulerImplicitSolver /> <CGLinearSolver  /> -->
-        <AssembledSolver  />        <MinresSolver iterations="100"  precision="1e-6"  relative="false"/>
+        <CompliantImplicitSolver  />        <MinresSolver iterations="100"  precision="1e-6"  relative="false"/>
 
     <Node 	name="volumeconservation"   >
 

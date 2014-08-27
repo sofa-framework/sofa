@@ -46,7 +46,7 @@
 #include <sofa/component/topology/EdgeSetTopologyContainer.h>
 #include <sofa/component/projectiveconstraintset/FixedConstraint.h>
 
-#include "../odesolver/AssembledSolver.h"
+#include "../odesolver/CompliantImplicitSolver.h"
 #include "../numericalsolver/LDLTSolver.h"
 #include "../compliance/UniformCompliance.h"
 
@@ -83,7 +83,7 @@ namespace sofa
  *
  * Class Assembly_test checks the assembly of system matrices: mass, constraint Jacobian, etc.
  *
- * Class AssembledSolver_test checks the accuracy of the Implicit Euler integration in simple linear cases.
+ * Class CompliantImplicitSolver_test checks the accuracy of the Implicit Euler integration in simple linear cases.
   */
 
     typedef linearsolver::AssembledSystem::rmat SMatrix;

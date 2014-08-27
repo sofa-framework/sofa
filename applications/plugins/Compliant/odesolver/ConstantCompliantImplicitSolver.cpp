@@ -1,4 +1,4 @@
-#include "ConstantAssembledSolver.h"
+#include "ConstantCompliantImplicitSolver.h"
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/linearsolver/EigenVector.h>
@@ -15,8 +15,8 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-SOFA_DECL_CLASS(ConstantAssembledSolver);
-int ConstantAssembledSolverClass = core::RegisterObject("Pre-assembled AssembedSolver").add< ConstantAssembledSolver >();
+SOFA_DECL_CLASS(ConstantCompliantImplicitSolver);
+int ConstantCompliantImplicitSolverClass = core::RegisterObject("Pre-assembled AssembedSolver").add< ConstantCompliantImplicitSolver >();
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
@@ -24,7 +24,7 @@ using namespace core::behavior;
 
 
 
-void ConstantAssembledSolver::perform_assembly( const core::MechanicalParams *mparams, system_type& sys )
+void ConstantCompliantImplicitSolver::perform_assembly( const core::MechanicalParams *mparams, system_type& sys )
 {
     if( assemblyVisitor ) return;
 

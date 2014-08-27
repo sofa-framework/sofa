@@ -42,7 +42,7 @@ namespace odesolver {
 
 
 
-// this class must be outside AssembledSolver in order to be dll exported on Windows
+// this class must be outside CompliantImplicitSolver in order to be dll exported on Windows
 /// propagate constraint *forces* (lambdas/dt) toward independent dofs
 class SOFA_Compliant_API propagate_constraint_force_visitor : public simulation::MechanicalVisitor {
 
@@ -116,7 +116,7 @@ public:
 
  @author Francois Faure, Maxime Tournier, Matthieu Nesme
 */
-class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolver {
+class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::OdeSolver {
 
     public:
 
@@ -186,7 +186,7 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
 
 
 				
-	SOFA_CLASS(AssembledSolver, sofa::core::behavior::OdeSolver);
+	SOFA_CLASS(CompliantImplicitSolver, sofa::core::behavior::OdeSolver);
 
 
     typedef linearsolver::AssembledSystem system_type;
@@ -200,8 +200,8 @@ class SOFA_Compliant_API AssembledSolver : public sofa::core::behavior::OdeSolve
                        core::MultiVecDerivId velId);
 
 
-	AssembledSolver();
-    virtual ~AssembledSolver();
+	CompliantImplicitSolver();
+    virtual ~CompliantImplicitSolver();
 
     virtual void cleanup();
 

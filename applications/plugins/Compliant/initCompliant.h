@@ -42,7 +42,7 @@
 
   See Compliant/doc/compliant.pdf and Compliant/doc/compliant-reference.pdf for more detail.
 
-  See also class sofa::component::odesolver::AssembledSolver
+  See also class sofa::component::odesolver::CompliantImplicitSolver
 
   A test suite is available, see page \ref Page_CompliantTestSuite
 

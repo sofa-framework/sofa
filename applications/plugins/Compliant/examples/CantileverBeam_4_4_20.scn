@@ -7,7 +7,7 @@
     <Node name="Cube grid" >
 <!--        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
 
-	<AssembledSolver/>
+	<CompliantImplicitSolver/>
 	<LDLTSolver/>
 
         <!--Subdivided cube-->
