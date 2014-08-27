@@ -179,7 +179,7 @@ struct BeamMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     // Record the initial point of a given vertex
                     typename  AffineMechanicalObject::ReadVecCoord xelasticityDofs0 = affineDofs->readPositions();
                     Vec<3,Real> p0Center = xelasticityDofs0[vIndex].getCenter();
-                    Vec<3,Real> p0CenterRadial = xelasticityDofs0[9].getCenter();
+//                    Vec<3,Real> p0CenterRadial = xelasticityDofs0[9].getCenter();
 
                     //  do several steps of the static solver
                     for(l=0;l<2;++l) 
@@ -190,7 +190,7 @@ struct BeamMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     // Get the simulated final position of that vertex
                     typename  AffineMechanicalObject::ReadVecCoord xelasticityDofs = affineDofs->readPositions();
                     Vec<3,Real> p1Center = xelasticityDofs[vIndex].getCenter();
-                    Vec<3,Real> p1CenterRadial = xelasticityDofs[9].getCenter();
+//                    Vec<3,Real> p1CenterRadial = xelasticityDofs[9].getCenter();
 
                     // Compute longitudinal deformation
                     Real longitudinalDeformation=(p1Center[2]-p0Center[2])/p0Center[2];
