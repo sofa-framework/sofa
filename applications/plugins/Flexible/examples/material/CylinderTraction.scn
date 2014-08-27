@@ -8,7 +8,7 @@
   <!--Solver-->
   <StaticSolver/>
   <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-9" threshold="1e-9" />
-  <!-- <AssembledSolver/>
+  <!-- <CompliantImplicitSolver/>
   <LDLTSolver/> -->
   <!-- <NewtonSolver precision="1e-9" iterations="1000"/>
   <LDLTSolver/> -->

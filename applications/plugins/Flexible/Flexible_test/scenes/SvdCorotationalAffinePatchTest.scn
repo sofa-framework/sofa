@@ -5,7 +5,7 @@
   <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields" />
 
   <Node name="Patch" >
-    <AssembledSolver/>
+    <CompliantImplicitSolver/>
     <LDLTSolver/> 
 
     <!--Nodes-->

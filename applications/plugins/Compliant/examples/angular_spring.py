@@ -10,8 +10,8 @@ def createScene(root):
     root.dt = 0.001
     root.gravity = [0, -9.8, 0]
     
-    ode = root.createObject('AssembledSolver')
-    ode.stabilization = True
+    ode = root.createObject('CompliantImplicitSolver')
+    ode.stabilization = "pre-stabilization"
     
     num = root.createObject('MinresSolver')
     num.iterations = 500

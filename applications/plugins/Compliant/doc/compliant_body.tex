@@ -352,12 +352,12 @@ With time, this component has been broken down to the following
 components:
 
 \begin{itemize}
-\item \component{AssembledSolver}, which performs system assembly
+\item \component{CompliantImplicitSolver}, which performs system assembly
   (through an internal \component{AssemblyVisitor}) and
   time-stepping.
 \item \component{KKTSolver}, which performs the KKT solve associated
   with an \component{AssembledSystem}, itself provided by the
-  \component{AssembledSolver} though its internal
+  \component{CompliantImplicitSolver} though its internal
   \component{AssemblyVisitor}. 
 \end{itemize}
 
@@ -368,7 +368,7 @@ for unilateral and frictional constraints.
 
 We now give a quick user documentation for the above components.
 
-\subsection{AssembledSolver}
+\subsection{CompliantImplicitSolver}
 
 This component implements a linearized implicit Euler solver. The KKT
 system is first assembled by an \component{AssemblyVisitor}, and

@@ -4,7 +4,7 @@
 #include <sofa/component/collision/SolverMerger.h>
 #include <sofa/helper/FnDispatcher.inl>
 
-#include "odesolver/AssembledSolver.h"
+#include "odesolver/CompliantImplicitSolver.h"
 
 #include "numericalsolver/MinresSolver.h"
 #include "numericalsolver/CgSolver.h"
@@ -63,9 +63,9 @@ namespace collision
 
 
 
-    SolverSet createAssembledSolver(odesolver::AssembledSolver& solver1, odesolver::AssembledSolver& solver2)
+    SolverSet createCompliantImplicitSolver(odesolver::CompliantImplicitSolver& solver1, odesolver::CompliantImplicitSolver& solver2)
     {
-        odesolver::AssembledSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::AssembledSolver>();
+        odesolver::CompliantImplicitSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::CompliantImplicitSolver>();
 
         solver->warm_start.setValue( solver1.warm_start.getValue() && solver2.warm_start.getValue() );
         solver->propagate_lambdas.setValue( solver1.propagate_lambdas.getValue() && solver2.propagate_lambdas.getValue() );
@@ -111,7 +111,7 @@ namespace collision
 
     void CompliantSolverMerger::add()
     {
-        SolverMerger::addDispatcher<odesolver::AssembledSolver,odesolver::AssembledSolver,createAssembledSolver,true>();
+        SolverMerger::addDispatcher<odesolver::CompliantImplicitSolver,odesolver::CompliantImplicitSolver,createCompliantImplicitSolver,true>();
     }
 
 

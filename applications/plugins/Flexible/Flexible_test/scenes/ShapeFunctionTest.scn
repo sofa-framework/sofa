@@ -9,7 +9,7 @@
   <Node 	name="Patch"   >
     
     <!--Solver-->
-    <AssembledSolver/>
+    <CompliantImplicitSolver/>
     <LDLTSolver/>
  
     <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>

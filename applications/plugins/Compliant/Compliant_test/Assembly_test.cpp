@@ -11,7 +11,7 @@ using namespace modeling;
  */
 struct Assembly_test : public CompliantSolver_test
 {
-    typedef odesolver::AssembledSolver OdeSolver;
+    typedef odesolver::CompliantImplicitSolver OdeSolver;
     typedef linearsolver::LDLTSolver LinearSolver;
     typedef sofa::Vec3 Vec3;
     OdeSolver::SPtr complianceSolver; ///< Solver used to perform the test simulation, and which contains the actual results, to be compared with the expected ones.

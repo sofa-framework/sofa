@@ -53,7 +53,7 @@ def createScene(node):
     node.findData('dt').value=0.01
     
     node.findData('gravity').value='0 -9.81 0'
-    node.createObject('AssembledSolver',
+    node.createObject('CompliantImplicitSolver',
                       name='odesolver', 
                       stabilization="true")
         

@@ -32,7 +32,7 @@ def createScene(root):
 		root.createObject('DefaultContactManager', name="Response", response="CompliantContact", responseParams="compliance=0&restitution=0" )
 	
 	
-	root.createObject('AssembledSolver',stabilization="1")
+	root.createObject('CompliantImplicitSolver',stabilization="1")
 	root.createObject('SequentialSolver',iterations="100",precision="1e-15")
 		
 	

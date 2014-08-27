@@ -1,7 +1,7 @@
 #include <plugins/Compliant/numericalsolver/MinresSolver.h>
 #include <plugins/Compliant/numericalsolver/LDLTSolver.h>
 #include <plugins/Compliant/Compliant_test/Compliant_test.h>
-#include <plugins/Compliant/odesolver/AssembledSolver.h>
+#include <plugins/Compliant/odesolver/CompliantImplicitSolver.h>
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 using namespace sofa::modeling;
@@ -9,10 +9,10 @@ using namespace sofa::modeling;
 namespace sofa
 {
 
-struct AssembledSolver_test : public CompliantSolver_test
+struct CompliantImplicitSolver_test : public CompliantSolver_test
 {
 
-    /** @defgroup AssembledSolver_Unit_Tests AssembledSolver basic tests.
+    /** @defgroup CompliantImplicitSolver_Unit_Tests CompliantImplicitSolver basic tests.
      *
      * The scene is composed of two particles connected by a spring. One particle is fixed, while the other has an initial velocity.
      * The solver is set to backward Euler: alpha = beta = 1.
@@ -32,8 +32,8 @@ struct AssembledSolver_test : public CompliantSolver_test
         root->setDt(dt);
 
         // The solver
-        using odesolver::AssembledSolver;
-        AssembledSolver::SPtr complianceSolver = addNew<AssembledSolver>(getRoot());
+        using odesolver::CompliantImplicitSolver;
+        CompliantImplicitSolver::SPtr complianceSolver = addNew<CompliantImplicitSolver>(getRoot());
         complianceSolver->debug.setValue(debug);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
@@ -82,14 +82,14 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector x2 = x1 - v1 * dt;
 
         if( debug ){
-            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, time step : " << dt << endl;
-            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, initial positions : " << x0.transpose() << endl;
-            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, initial velocities: " << v0.transpose() << endl;
-            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new positions : " << x1.transpose() << endl;
-            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new velocities: " << v1.transpose() << endl;
-            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new forces: " << f1.transpose() << endl;
-            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new positions  after backward integration: " << x2.transpose() << endl;
-            cerr<<"AssembledSolver_test::testLinearOneFixedOneStiffnessSpringV100, new velocities after backward integration: " << v2.transpose() << endl;
+            cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, time step : " << dt << endl;
+            cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, initial positions : " << x0.transpose() << endl;
+            cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, initial velocities: " << v0.transpose() << endl;
+            cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new positions : " << x1.transpose() << endl;
+            cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new velocities: " << v1.transpose() << endl;
+            cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new forces: " << f1.transpose() << endl;
+            cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new positions  after backward integration: " << x2.transpose() << endl;
+            cerr<<"CompliantImplicitSolver_test::testLinearOneFixedOneStiffnessSpringV100, new velocities after backward integration: " << v2.transpose() << endl;
         }
 
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
@@ -105,8 +105,8 @@ struct AssembledSolver_test : public CompliantSolver_test
         root->setDt(dt);
 
         // The solver
-        using odesolver::AssembledSolver;
-        AssembledSolver::SPtr complianceSolver = addNew<AssembledSolver>(root);
+        using odesolver::CompliantImplicitSolver;
+        CompliantImplicitSolver::SPtr complianceSolver = addNew<CompliantImplicitSolver>(root);
         complianceSolver->debug.setValue( debug );
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
@@ -158,13 +158,13 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector x2 = x1 - v1 * dt;
 
         if( debug ){
-        cerr<<"AssembledSolver_test, initial positions : " << x0.transpose() << endl;
-        cerr<<"AssembledSolver_test, initial velocities: " << v0.transpose() << endl;
-        cerr<<"AssembledSolver_test, new positions : " << x1.transpose() << endl;
-        cerr<<"AssembledSolver_test, new velocities: " << v1.transpose() << endl;
-        cerr<<"AssembledSolver_test, new forces: " << f1.transpose() << endl;
-        cerr<<"AssembledSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
-        cerr<<"AssembledSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
+        cerr<<"CompliantImplicitSolver_test, initial positions : " << x0.transpose() << endl;
+        cerr<<"CompliantImplicitSolver_test, initial velocities: " << v0.transpose() << endl;
+        cerr<<"CompliantImplicitSolver_test, new positions : " << x1.transpose() << endl;
+        cerr<<"CompliantImplicitSolver_test, new velocities: " << v1.transpose() << endl;
+        cerr<<"CompliantImplicitSolver_test, new forces: " << f1.transpose() << endl;
+        cerr<<"CompliantImplicitSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
+        cerr<<"CompliantImplicitSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
         }
 
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
@@ -180,7 +180,7 @@ struct AssembledSolver_test : public CompliantSolver_test
         root->setDt(dt);
 
         // The solver
-        typedef odesolver::AssembledSolver OdeSolver;
+        typedef odesolver::CompliantImplicitSolver OdeSolver;
         OdeSolver::SPtr odeSolver = addNew<OdeSolver>(root);
         odeSolver->debug.setValue(debug);
         odeSolver->alpha.setValue(1.0);
@@ -229,13 +229,13 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v2 = v1 - f1 * dt;
         Vector x2 = x1 - v1 * dt;
 
-//        cerr<<"AssembledSolver_test, initial positions : " << x0.transpose() << endl;
-//        cerr<<"AssembledSolver_test, initial velocities: " << v0.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new positions     : " << x1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new velocities    : " << v1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new forces        : " << f1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, initial positions : " << x0.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, initial velocities: " << v0.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new positions     : " << x1.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new velocities    : " << v1.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new forces        : " << f1.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
 
         // check that the implicit integration satisfies the implicit integration equation
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
@@ -257,7 +257,7 @@ struct AssembledSolver_test : public CompliantSolver_test
         root->setDt(dt);
 
         // The solver
-        typedef odesolver::AssembledSolver OdeSolver;
+        typedef odesolver::CompliantImplicitSolver OdeSolver;
         OdeSolver::SPtr odeSolver = addNew<OdeSolver>(root);
         odeSolver->debug.setValue(debug);
         odeSolver->alpha.setValue(1.0);
@@ -330,13 +330,13 @@ struct AssembledSolver_test : public CompliantSolver_test
         Vector v2 = v1 - f1 * dt;
         Vector x2 = x1 - v1 * dt;
 
-//        cerr<<"AssembledSolver_test, initial positions : " << x0.transpose() << endl;
-//        cerr<<"AssembledSolver_test, initial velocities: " << v0.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new positions     : " << x1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new velocities    : " << v1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new forces        : " << f1.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
-//        cerr<<"AssembledSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, initial positions : " << x0.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, initial velocities: " << v0.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new positions     : " << x1.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new velocities    : " << v1.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new forces        : " << f1.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new positions  after backward integration: " << x2.transpose() << endl;
+//        cerr<<"CompliantImplicitSolver_test, new velocities after backward integration: " << v2.transpose() << endl;
 
         // check that the implicit integration satisfies the implicit integration equation
         ASSERT_TRUE( (x2-x0).lpNorm<Eigen::Infinity>() < precision );
@@ -355,10 +355,10 @@ struct AssembledSolver_test : public CompliantSolver_test
 // do run the tests
 //=================
 // simple linear cases
-TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringV100 ){    testLinearOneFixedOneComplianceSpringV100(false);  }
-TEST_F(AssembledSolver_test, OneFixedOneStiffnessSpringV100 ){     testLinearOneFixedOneStiffnessSpringV100(false);  }
-TEST_F(AssembledSolver_test, OneFixedOneStiffnessSpringX200 ){     testLinearOneFixedOneStiffnessSpringX200(false);  }
-TEST_F(AssembledSolver_test, OneFixedOneComplianceSpringX200 ){    testLinearOneFixedOneComplianceSpringX200(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){    testLinearOneFixedOneComplianceSpringV100(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100 ){     testLinearOneFixedOneStiffnessSpringV100(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200 ){     testLinearOneFixedOneStiffnessSpringX200(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){    testLinearOneFixedOneComplianceSpringX200(false);  }
 
 }// sofa
 

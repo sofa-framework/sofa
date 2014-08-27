@@ -14,7 +14,7 @@ def createScene(root):
     root.dt = 0.05
     root.gravity = [0, -9.8, 0]
     
-    root.createObject('AssembledSolver')
+    root.createObject('CompliantImplicitSolver')
     root.createObject('MinresSolver')
     
     root.createObject('MeshObjLoader', name="loader", filename="mesh/torus.obj", triangulate="1")

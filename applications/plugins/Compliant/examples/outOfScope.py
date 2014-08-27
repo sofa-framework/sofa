@@ -20,8 +20,8 @@ def createScene(root):
     common = inside.createChild('common')
     extension = common.createChild('extension')
     
-    ode = inside.createObject('AssembledSolver')
-    ode.stabilization = True
+    ode = inside.createObject('CompliantImplicitSolver')
+    ode.stabilization = "pre-stabilization"
     num = inside.createObject('LDLTSolver')
     insidedof = inside.createObject('MechanicalObject',name='insidedof', position="1 0 0")
     inside.createObject('UniformMass',name='mass',totalmass='1')
