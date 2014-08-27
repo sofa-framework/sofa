@@ -261,14 +261,14 @@ public:
 
     const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
     {
-        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
+//        if(!this->assemble.getValue() || !BlockType::constant) updateJ(); // J should have been updated in apply() that is call before
         return &eigenJacobian;
     }
 
     // Compliant plugin experimental API
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
     {
-        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
+//        if(!this->assemble.getValue() || !BlockType::constant) updateJ(); // J should have been updated in apply() that is call before
         return &baseMatrices;
     }
 
