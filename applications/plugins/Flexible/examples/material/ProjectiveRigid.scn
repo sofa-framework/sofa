@@ -3,7 +3,7 @@
 
   <RequiredPlugin pluginName="Flexible"/>
   <RequiredPlugin pluginName="Compliant"/>
-<!--   <RequiredPlugin pluginName="CompliantDev"/> -->
+  
   <CompliantAttachButton compliance="0.001"/>
 
   <VisualStyle displayFlags="showBehaviorModels showForceFields" />
@@ -11,7 +11,7 @@
   <Node 	name="Corotational (grey)" activated="1"  >
 
 <CompliantImplicitSolver />
-<!--       <NewtonSolver iterations="10" precision="1e-10"/> -->
+<!--       <CompliantNLImplicitSolver iterations="10" precision="1e-10"/> -->
 <LDLTSolver />
 <LDLTResponse constant="False"/>
 
@@ -50,7 +50,7 @@
   <Node         name="Linear (blue)" activated="1"  >
 
 <ConstantCompliantImplicitSolver />
-<!--       <NewtonSolver iterations="10" precision="1e-10"/> -->
+<!--       <CompliantNLImplicitSolver iterations="10" precision="1e-10"/> -->
 <LDLTSolver />
 <LDLTResponse constant="True"/>
 
@@ -91,7 +91,7 @@
   <Node 	name="Projective (red)" activated="1"  >
 
 <ConstantCompliantImplicitSolver />
-<!--       <NewtonSolver iterations="10" precision="1e-10"/> -->
+<!--       <CompliantNLImplicitSolver iterations="10" precision="1e-10"/> -->
 <LDLTSolver />
 <LDLTResponse constant="True"/>
 

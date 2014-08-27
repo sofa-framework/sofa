@@ -6,11 +6,11 @@
   
       <RequiredPlugin pluginName="Flexible"/>
       <RequiredPlugin pluginName="Compliant"/>
-<!--       <RequiredPlugin pluginName="CompliantDev"/> -->
+      
  <CompliantAttachButtonSetting compliance="0.001" isCompliance="0"/>
 	<Node name="compliant-stiffness (red)" activated="1" >
 		<CompliantImplicitSolver warm_start="true" />
-<!--             <NewtonSolver iteration="100" precision="1e-5"/> -->
+<!--             <CompliantNLImplicitSolver iteration="100" precision="1e-5"/> -->
 		<MinresSolver iterations="200" precision="1e-5" relative="false" />
 		
 		<Node name="Flexible"  >
