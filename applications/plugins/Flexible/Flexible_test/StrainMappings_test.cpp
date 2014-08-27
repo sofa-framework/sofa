@@ -65,6 +65,8 @@ namespace sofa {
             cerr<<"StrainMappingTest::runTest, f="<< f << endl;
             cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
 
+            static_cast<_Mapping*>(this->mapping)->assemble.setValue(true);
+
             return Inherited::runTest(xin,xout,xin,expectedChildCoords);
         }
 
