@@ -262,12 +262,12 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
     /// Two springs, 3 particles including 2 fixed, forming a triangle.
     ///  start configuration:
     ///   X
-    ///     \
-    ///      \
+    ///     \.
+    ///      \.
     ///   X---o
     /// solution:
     ///   X
-    ///     \
+    ///     \.
     ///      o
     ///     /
     ///   X
@@ -366,11 +366,11 @@ TEST_F(CompliantNLImplicitSolver_test, OneFixedOneComplianceSpringV100 ){    tes
 TEST_F(CompliantNLImplicitSolver_test, OneFixedOneStiffnessSpringX200 ){     testLinearOneFixedOneSpringX200(false);  }
 TEST_F(CompliantNLImplicitSolver_test, OneFixedOneComplianceSpringX200 ){    testLinearOneFixedOneSpringX200(true);  }
 
-// simple nonlinear cases
+//// simple nonlinear cases
 TEST_F(CompliantNLImplicitSolver_test, OneFixedOneSpringGravityStiffness ) { testLinearOneFixedOneSpringGravity(false);  }
 TEST_F(CompliantNLImplicitSolver_test, OneFixedOneSpringGravityCompliance ){ testLinearOneFixedOneSpringGravity(true);  }
-TEST_F(CompliantNLImplicitSolver_test, NonlinearStiffness ){                 testNonlinear(false); }
-TEST_F(CompliantNLImplicitSolver_test, NonlinearCompliance ){                testNonlinear(true); }
+TEST_F(CompliantNLImplicitSolver_test, NonlinearStiffness ){                 testNonlinear(false,true); }
+TEST_F(CompliantNLImplicitSolver_test, NonlinearCompliance ){                testNonlinear(true,true); }
 
 
 
