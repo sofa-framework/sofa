@@ -36,6 +36,8 @@ public:
     /// Apply the viewing transform, typically just after glLoadIdentity() in the draw function.
     void lookAt();
 
+    void viewAll( float xmin, float ymin, float zmin, float xmax, float ymax, float zmax );
+
     /// Equivalent of gluPerspective.
     /// Alternatively, the definition and the application of the projection matrix can be done separately using other functions.
     /// @sa void setPerspective( float fovy, float ratio, float znear, float zfar ) @sa void perspective()

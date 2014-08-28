@@ -172,13 +172,20 @@ void SofaGL::detach( Interactor* drag)
     //    cout<<"SofaGL::detach "<< endl; _sofaScene->printGraph();
 }
 
+void SofaGL::getSceneBBox( float* xmin, float* ymin, float* zmin, float* xmax, float* ymax, float* zmax )
+{
+    SReal xm, xM, ym, yM, zm, zM;
+    _sofaScene->getBoundingBox(&xm,&xM,&ym,&yM,&zm,&zM);
+    *xmin=xm, *xmax=xM, *ymin=ym, *ymax=yM, *zmin=zm, *zmax=zM;
+}
+
 
 void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* nearPlane, SReal* farPlane)
 {
     // scene center and radius
     SReal xmin, xmax, ymin, ymax, zmin, zmax;
     _sofaScene->getBoundingBox(&xmin,&xmax,&ymin,&ymax,&zmin,&zmax);
-    cout<<"SofaGL::viewAll, bounding box = "<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
+    cout<<"SofaGL::viewAll, bounding box = ("<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
     *xcen = (xmin+xmax)*0.5;
     *ycen = (ymin+ymax)*0.5;
     *zcen = (zmin+zmax)*0.5;
