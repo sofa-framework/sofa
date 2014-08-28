@@ -721,7 +721,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
             serr<<"Only full post-stabilization "<<POST_STABILIZATION_ASSEMBLY<<" can be (and will be) computed\n";
             stabilization.beginEdit()->setSelectedItem(POST_STABILIZATION_ASSEMBLY); stabilization.endEdit();
         }
-        // TODO realloc _ck
+        _ck.realloc( &sop.vop, false, true );
         post_stabilization( sop, posId, velId, true );
     }
 
