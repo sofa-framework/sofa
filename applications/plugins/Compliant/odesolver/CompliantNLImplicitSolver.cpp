@@ -384,7 +384,7 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVe
         sop.vop.print(newX,std::cout,"CompliantNLImplicitSolver::compute_residual, newX= ", "\n");
         sop.vop.print(lagrange,std::cout,"CompliantNLImplicitSolver::compute_residual, lagrange= ", "\n");
         sop.vop.print(residual,std::cout,"CompliantNLImplicitSolver::compute_residual, err= ", " | ");
-        std::cout<<residual_constraints->transpose()<<" -> ";
+        if(residual_constraints) std::cout<<residual_constraints->transpose()<<" -> ";
         std::cout<<e;
         std::cout<<std::endl;
     }
