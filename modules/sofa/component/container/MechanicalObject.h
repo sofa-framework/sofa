@@ -260,10 +260,7 @@ public:
     void getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
 
     /// update the given bounding box, to include this
-    virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
-    {
-        return false;
-    }
+    virtual bool addBBox(double* minBBox, double* maxBBox);
 
     /// @name Base Matrices and Vectors Interface
     /// @{
@@ -510,14 +507,6 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 template<>
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams);
 
-#ifndef SOFA_FLOAT
-template<>
-bool MechanicalObject<defaulttype::Vec3dTypes>::addBBox(double* minBBox, double* maxBBox);
-#endif
-#ifndef SOFA_DOUBLE
-template<>
-bool MechanicalObject<defaulttype::Vec3fTypes>::addBBox(double* minBBox, double* maxBBox);
-#endif
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
