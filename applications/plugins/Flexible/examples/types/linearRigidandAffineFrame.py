@@ -3,17 +3,14 @@ import Sofa
 def createScene(root):
     root.createObject('RequiredPlugin', name='Flexible')
     root.createObject('RequiredPlugin', name='image')
-    root.createObject('RequiredPlugin', name='Compliant')
-    root.createObject('RequiredPlugin', name='PreassembledMass')
     root.createObject('VisualStyle', displayFlags="showBehavior" )
    
-    root.createObject('CompliantAttachButtonSetting')
     
     root.dt = 0.05
     root.gravity = [0, -9.8, 0]
     
-    root.createObject('CompliantImplicitSolver')
-    root.createObject('MinresSolver')
+    root.createObject('ImplicitEulerSolver')
+    root.createObject('MinResLinearSolver', iteration="100", tolerance="1e-15")
     
     root.createObject('MeshObjLoader', name="loader", filename="mesh/torus.obj", triangulate="1")
     #root.createObject('OglModel', template="ExtVec3f", name="Visual", fileMesh="mesh/torus.obj", color="1 0.8 0.8 ")
@@ -33,14 +30,12 @@ def createScene(root):
     rigidNode.createObject( 'MechanicalObject', template="Rigid", name="dof", showObject="true", showObjectScale="0.7", position="@../merged.position1" )
     rigidNode.createObject( 'BoxROI', template="Vec3d", box="0 -2 0 5 2 5", position="@../merged.position1", name="FixedROI")
     rigidNode.createObject( 'FixedConstraint', indices="@FixedROI.indices" )
-    rigidNode.createObject( 'PreassembledMass',template="Rigid", name="RigidMass",massNodes="@mass")
-        
+      
         
     affineNode = root.createChild('Affine')
     affineNode.createObject('MechanicalObject', template="Affine", name="dof", showObject="true", showObjectScale="1.5", position="@../merged.position2" )
     affineNode.createObject('BoxROI', template="Vec3d", box="0 -2 0 5 2 5", position="@../merged.position2", name="FixedROI")
     affineNode.createObject('FixedConstraint', indices="@FixedROI.indices" )
-    affineNode.createObject( 'PreassembledMass', template="Affine", name="AffineMass",massNodes="@mass")
     
     
     behaviorNode = rigidNode.createChild('behavior')
@@ -59,7 +54,7 @@ def createScene(root):
     massNode = rigidNode.createChild('mass')
     massNode.createObject('TransferFunction',name="densityTF", template="ImageUC,ImageD", inputImage="@../../rasterizer.image", param="0 0 1 0.005")
     massNode.createObject('MechanicalObject', position="@../../merged.position", useMask="0")
-    massNode.createObject('ImageDensityMass', template="Vec3d,ShapeFunctiond", densityImage="@densityTF.outputImage", transform="@../../rasterizer.transform", lumping="0",  printMassMatrix="true" )
+    massNode.createObject('ImageDensityMass', template="Vec3d", densityImage="@densityTF.outputImage", transform="@../../rasterizer.transform", lumping="0",  printMassMatrix="true" )
     #massNode.createObject('UniformMass', totalMass="20" )
     massNode.createObject('LinearMultiMapping', template="Rigid,Affine,Vec3d", input1="@..", input2="@../../Affine", output="@.", printLog="0", assemble="0")
     affineNode.addChild( massNode )
