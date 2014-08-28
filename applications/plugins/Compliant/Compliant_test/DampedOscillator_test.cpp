@@ -7,8 +7,14 @@
 #include <plugins/SceneCreator/SceneCreator.h>
 
 
+
 namespace sofa
 {
+
+
+using namespace simulation;
+using namespace component;
+using namespace modeling;
 
 /**
  * @brief Integrate a one-dimensional damped oscillator in time, using an CompliantImplicitSolver.

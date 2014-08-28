@@ -5,7 +5,9 @@
 
 namespace sofa
 {
+
 using namespace modeling;
+using namespace component;
 
 /** Test suite for matrix assembly.
  */
