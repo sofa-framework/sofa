@@ -54,7 +54,8 @@ if(APPLE)
 endif()
 
 if(UNIX)
-    AddLinkerDependencies(boost_system)
+    find_package(Boost COMPONENTS system REQUIRED)
+    AddLinkerDependencies(${Boost_SYSTEM_LIBRARY})
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
