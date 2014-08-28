@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 //    std::cout<<"path to resource = " << path_to_resource << std::endl;
     QResource::registerResource(path_to_resource.c_str());
 
-    std::string fileName = std::string(QTSOFA_SRC_DIR) + "/../examples/oneTet.scn";
+    std::string fileName;// = std::string(QTSOFA_SRC_DIR) + "/../examples/oneTet.scn";
     std::vector<std::string> plugins;
     sofa::helper::parse("Simple glut application featuring a Sofa scene.")
             .option(&plugins,'l',"load","load given plugins")

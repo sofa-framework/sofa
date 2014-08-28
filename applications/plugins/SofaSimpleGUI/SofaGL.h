@@ -58,6 +58,8 @@ public:
      */
     void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* nearPlane, SReal* farPlane);
 
+    void getSceneBBox( float* xmin, float* ymin, float* zmin, float* xmax, float* ymax, float* zmax );
+
     /**
      * @brief getPickDirection Compute the direction of a button click, returned as a unit vector
      * @param dx normalized direction

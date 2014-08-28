@@ -10,6 +10,7 @@ set(HEADER_FILES
 	QSofaViewer.h
         QSofaMainWindow.h
         QSofaScene.h
+        oneTetra.h
 )
 
 UseQt()
