@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <GL/gl.h>
+#include <GL/glu.h>
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -9,25 +10,41 @@ namespace simplegui{
 
 Camera::Camera()
 {
-    viewMode = EXAMINER;
     transform.matrix() = Eigen::Matrix4f::Identity();
     tb_tournerXY=0, tb_translaterXY=0, tb_bougerZ=0;
 }
 
-void Camera::glMultViewMatrix()
+void Camera::lookAt()
 {
 
         glMultMatrixf( transform.data() );
 }
 
-void Camera::lookAt(
+void Camera::perspective( float f, float r, float zn, float zf )
+{
+    setPerspective(f,r,zn,zf);
+    perspective();
+}
+
+void Camera::setPerspective( float f, float r, float zn, float zf )
+{
+    fovy=f, ratio=r, znear=zn, zfar=zf;
+}
+
+void Camera::perspective()
+{
+    gluPerspective(fovy,ratio,znear,zfar);
+}
+
+
+void Camera::setlookAt(
         float eyeX, float eyeY, float eyeZ,
         float targetX, float targetY, float targetZ,
         float upX, float upY, float upZ
         )
 {
     Vec3 eye(eyeX,eyeY,eyeZ), target(targetX,targetY,targetZ), upVec(upX,upY,upZ);
-//    cout<<"Camera::lookAt " << eye.transpose() <<", " << target.transpose() << ", " << upVec.transpose() << endl;
+    cout<<"Camera::lookAt " << eye.transpose() <<", " << target.transpose() << ", " << upVec.transpose() << endl;
 
     Vec3 forward = target - eye;
     forward.normalize();
@@ -49,7 +66,7 @@ void Camera::lookAt(
     // -orientation.transpose*translation
     transform.translation() = -transform.linear() * eye;
 
-//    cout<<"  transform matrix: " << endl << transform.matrix() << endl;
+    cout<<"  transform matrix: " << endl << transform.matrix() << endl;
 
 }
 
@@ -137,7 +154,7 @@ bool Camera::handleMouseMotion( int x, int y )
 }
 
 Camera::Vec3 Camera::eye() const {
-    return - transform.linear().transpose() * transform.translation();
+    return - transform.linear().inverse() * transform.translation();
 }
 
 

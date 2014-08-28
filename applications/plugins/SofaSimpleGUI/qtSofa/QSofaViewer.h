@@ -4,11 +4,13 @@
 #include <QApplication>
 #include <QGLWidget>
 #include <SofaSimpleGUI/SofaGL.h>
+#include <SofaSimpleGUI/Camera.h>
 #include "QSofaScene.h"
 using sofa::simplegui::SofaGL;
 using sofa::simplegui::Interactor;
 using sofa::simplegui::SpringInteractor;
 using sofa::simplegui::PickedPoint;
+using sofa::simplegui::Camera;
 
 /**
  * @brief The QSofaViewer class is a Qt OpenGL viewer with a SofaGL interface to display and interact with a Sofa simulation.
@@ -44,6 +46,8 @@ protected:
     SofaGL _sofaGL; ///< interface with the scene to display and pick in.
 
     Interactor* _drag; ///< current active interactor, NULL if none
+
+    Camera _camera;  ///< viewpoint
 
     /// @return true iff SHIFT key is currently pressed
     inline bool isShiftPressed() const { return QApplication::keyboardModifiers() & Qt::ShiftModifier; }

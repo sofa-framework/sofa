@@ -43,7 +43,7 @@ int main(int argc, char** argv)
     mainWindow.setWindowTitle("qtSofa");
     mainWindow.resize(800,600);
     mainWindow.show();
-    mainWindow.sofaScene.play();
+    //mainWindow.sofaScene.play();
 
 
     // Run main loop.
