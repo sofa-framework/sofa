@@ -607,7 +607,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 
                     // we do not want to take into account constraint dofs that correspond to the lamda at the beginning of the step == 0
                     sop.vop.v_dot(_v0,_v0);
-                    stpmax = STPMX * std::max( std::sqrt( sop.vop.finish() ), SReal(sys.m) );
+                    stpmax = STPMX * std::max( SReal(std::sqrt( sop.vop.finish() )), SReal(sys.m) );
                 }
 
 
@@ -759,7 +759,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
     {
         SReal test=0.0, temp;
         for( i=0 ; i<n ; i++ ) {
-            temp = fabs(p[i]) / std::max( fabs(xold[i]), 1.0 );
+            temp = fabs(p[i]) / std::max( fabs(xold[i]), SReal(1.0) );
             if( temp > test ) test=temp;
         }
         alamin = std::max( TOLX/test, MINIMALSTEP );
@@ -776,7 +776,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
         }
 
         // hack not to perform to much sub-steps
-        alamin = std::min( 0.1, alamin*100 );
+        alamin = std::min( SReal(0.1), SReal(alamin*100) );
 
 
         // applying correction
@@ -884,7 +884,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
         }
         alam2=alam;
         resnorm2 = resnorm;
-        alam=std::max(tmplam,0.1*alam);
+        alam=std::max(tmplam,SReal(0.1)*alam);
     }
 }
 
