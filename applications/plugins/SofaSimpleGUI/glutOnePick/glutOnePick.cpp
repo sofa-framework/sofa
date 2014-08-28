@@ -101,7 +101,7 @@ void display(void)
     glLoadIdentity ();
 
     glLightfv(GL_LIGHT0, GL_POSITION, light_position); // WARNING: positioning light before camera imply that the light will follow the camera
-    camera.glMultViewMatrix(); // apply viewing transform
+    camera.lookAt(); // apply viewing transform
 
     sofaGL->draw();
 
@@ -262,7 +262,7 @@ int main(int argc, char** argv)
     sofaGL->init();
 
     // initial viewpoint
-    camera.lookAt ( 0,0,25,    0.0, 0.0, 0.0,    0.0, 1.0, 0.0);
+    camera.setlookAt ( 0,0,25,    0.0, 0.0, 0.0,    0.0, 1.0, 0.0);
 
     // Run main loop
     glutMainLoop();

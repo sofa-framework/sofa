@@ -122,7 +122,7 @@ protected:
     // Interaction tools
     typedef map< PickedPoint, Interactor*> Picked_to_Interactor;
     /** Currently available interactors, associated with picked points.
-     *  The interactors are not necessarily being manipulated. Only one can be manipulated at at time.
+     *  The interactors are not necessarily being manipulated. Only one is typically manipulated at a given time.
      */
     Picked_to_Interactor _picked_to_interactor;
     Interactor* _drag;                            ///< The currently active interactor

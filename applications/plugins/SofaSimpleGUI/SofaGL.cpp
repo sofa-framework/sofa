@@ -178,13 +178,18 @@ void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal*
     // scene center and radius
     SReal xmin, xmax, ymin, ymax, zmin, zmax;
     _sofaScene->getBoundingBox(&xmin,&xmax,&ymin,&ymax,&zmin,&zmax);
+    cout<<"SofaGL::viewAll, bounding box = "<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
     *xcen = (xmin+xmax)*0.5;
     *ycen = (ymin+ymax)*0.5;
     *zcen = (zmin+zmax)*0.5;
-    SReal radius = sqrt( sqr(xmin-xmax) + sqr(ymin-ymax) + sqr(zmin-zmax) )*0.5;
+    SReal radius = sqrt( sqr(xmin-xmax) + sqr(ymin-ymax) + sqr(zmin-zmax) );
 
     // Desired distance:  distance * tan(a) = radius
-    SReal distance = radius / tan(a);
+    SReal distance = 2 * radius / tan(a);
+//    SReal ratio = ((SReal) _viewport[3] - _viewport[1])/(_viewport[2] - _viewport[0]);
+//    distance *= ratio;
+    cout<<"SofaGL::viewAll, angle = " << a << ", tan = " << tan(a) << ", distance = " << distance << endl;
+    cout<<"SofaGL::viewAll, xmin xmax ymin ymax zmin zmax = " << xmin << " " << xmax <<" "<<ymin<<" "<<ymax<<" "<<zmin<<" "<<zmax<< endl;
 
     // move the camera along the current camera-center line, at the right distance
     // cam = cen + distance * (cam-cen)/|cam-cen|
