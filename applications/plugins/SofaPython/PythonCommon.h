@@ -11,15 +11,13 @@
 
 #if defined(_WIN32)
 #	define MS_NO_COREDLL // deactivate pragma linking on Win32 done in Python.h
+#	define Py_ENABLE_SHARED 1 // this flag ensure to use dll's version (needed because of MS_NO_COREDLL define).
 #endif
 
 #if defined(_MSC_VER) && defined(_DEBUG)
-// undefine _DEBUG since we want to always link agains the release version of
-// python and pyconfig.h automatically links debug version if _DEBUG is defined.
-// ocarre: no we don't, in debug on Windows we cannot link with python release, if we want to build SofaPython in debug we have to compile python in debug
-//#    undef _DEBUG
-#    include <Python.h>
-//#    define _DEBUG
+// if you use Python on windows in debug build, be sure to provide a compiled version because
+// installation package doesn't come with debug libs.
+#    include <Python.h> 
 #elif defined(__APPLE__) && defined(__MACH__)
 #    include <Python/Python.h>
 #else
