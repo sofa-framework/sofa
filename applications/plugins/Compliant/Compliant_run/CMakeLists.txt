@@ -17,7 +17,7 @@ if(UNIX)
     # But for some obscure reason, on linux and OS X, Compliant_run contains
     # references to symbols of Boost.System anyway, so we link against it.
     find_package(Boost COMPONENTS system REQUIRED)
-    AddLinkerDependencies(boost_system)
+    AddLinkerDependencies(${Boost_SYSTEM_LIBRARY})
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
