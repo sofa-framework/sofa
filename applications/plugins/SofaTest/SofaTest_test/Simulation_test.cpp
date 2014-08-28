@@ -59,6 +59,7 @@ struct Simulation_test: public Sofa_test<double>
        x[2] = Vector3(0,1,0);
        x[3] = Vector3(0,0,1);
        Vector3 expectedMin(0,0,0), expectedMax(1,1,1);
+       DOF->showObject.setValue(true); // bbox is updated only for drawn MO
 
        // end create scene
        //*********
