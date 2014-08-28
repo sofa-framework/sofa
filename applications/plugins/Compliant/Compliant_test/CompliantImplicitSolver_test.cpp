@@ -4,7 +4,9 @@
 #include <plugins/Compliant/odesolver/CompliantImplicitSolver.h>
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
+
 using namespace sofa::modeling;
+using namespace sofa::component;
 
 namespace sofa
 {

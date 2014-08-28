@@ -4,10 +4,13 @@
 #include <plugins/Compliant/odesolver/CompliantNLImplicitSolver.h>
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
+
 using namespace sofa::modeling;
+using namespace sofa::component;
+using namespace sofa;
 
 
-struct CompliantNLImplicitSolver_test : public CompliantSolver_test
+struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 {
 
     /** @defgroup CompliantNLImplicitSolver_Unit_Tests CompliantNLImplicitSolver basic tests.
@@ -38,7 +41,7 @@ struct CompliantNLImplicitSolver_test : public CompliantSolver_test
         complianceSolver->beta.setValue(1.0);
         SReal precision = 1.0e-6;
         complianceSolver->precision.setValue(precision);
-        complianceSolver->stabilization.beginEdit()->setSelectedItem(CompliantNLImplicitSolver::NO_STABILIZATION); complianceSolver->stabilization.endEdit();
+//        complianceSolver->stabilization.beginEdit()->setSelectedItem(CompliantNLImplicitSolver::NO_STABILIZATION); complianceSolver->stabilization.endEdit();
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(getRoot());
         linearSolver->debug.setValue(debug);
