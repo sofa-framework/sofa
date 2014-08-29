@@ -74,7 +74,7 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
         QSpinBox* spinBox = new QSpinBox(this);
         toolbar->addWidget(spinBox);
         spinBox->setValue(40);
-        spinBox->setMaxValue(40000);
+        spinBox->setMaximum(40000);
         spinBox->setToolTip(tr("Simulation time step (ms)"));
         connect(spinBox,SIGNAL(valueChanged(int)), this, SLOT(setDt(int)));
     }

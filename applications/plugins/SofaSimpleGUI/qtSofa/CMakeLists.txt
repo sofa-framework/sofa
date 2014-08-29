@@ -7,7 +7,7 @@ set(SOURCE_FILES
         QSofaScene.cpp
 )
 set(HEADER_FILES
-	QSofaViewer.h
+        QSofaViewer.h
         QSofaMainWindow.h
         QSofaScene.h
         oneTetra.h
