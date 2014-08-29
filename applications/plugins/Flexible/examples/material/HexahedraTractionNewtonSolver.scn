@@ -2,11 +2,11 @@
 
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.1" showAxis="true">
   <RequiredPlugin pluginName="Flexible"/>
-  <RequiredPlugin name="CompliantDev" />
+  <RequiredPlugin name="Compliant" />
   
   <!--Solver-->
   
-    <NewtonSolver precision="1e-9" iterations="100"/>
+    <CompliantNLImplicitSolver precision="1e-9" iterations="100"/>
     <LDLTSolver/>
 
     <!--Topology Hexahedra-->

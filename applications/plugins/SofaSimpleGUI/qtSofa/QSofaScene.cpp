@@ -1,7 +1,7 @@
 #include "QSofaScene.h"
 
 namespace sofa {
-namespace newgui {
+namespace simplegui {
 
 QSofaScene::QSofaScene(QObject *parent) :
     QObject(parent)
@@ -14,7 +14,7 @@ QSofaScene::QSofaScene(QObject *parent) :
 
 void QSofaScene::open(const char *filename )
 {
-    SofaScene::open(filename);
+    SofaScene::setScene(filename);
     emit opened();
 }
 

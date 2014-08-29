@@ -30,6 +30,8 @@
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
+#include "../deformationMapping/LinearMapping.h"
+#include "../strainMapping/CorotationalStrainMapping.h"
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include "../material/HookeForceField.h"
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -61,9 +63,16 @@ template <typename _DataTypes>
 struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
 {
     typedef _DataTypes DataTypes;
+    typedef typename DataTypes::FType FType;
     typedef typename DataTypes::EType EType;
+    typedef typename DataTypes::LinearMapping LinearMapping;
+    typedef typename DataTypes::StrainMapping StrainMapping;
 	typedef typename Vec3Types::Coord Coord;
 	typedef typename Vec3Types::Real Real;
+    typedef container::MechanicalObject<FType> DefoDOFs;
+    typedef typename container::MechanicalObject<FType>::SPtr DefoDOFsSPtr;
+    typedef container::MechanicalObject<EType> StrainDOFs;
+    typedef typename container::MechanicalObject<EType>::SPtr strainDOFsSPtr;
     typedef typename container::MechanicalObject<Vec3Types> MechanicalObject;
     typedef sofa::component::forcefield::HookeForceField<EType> HookeForceField;
     typedef typename sofa::component::forcefield::HookeForceField<EType>::SPtr HookeForceFieldSPtr;
@@ -110,6 +119,20 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
        typedef component::container::MechanicalObject<Vec3Types> MechanicalObject;
        tractionStruct.dofs = tractionStruct.root->get<MechanicalObject>( tractionStruct.root->SearchDown);
 
+       // Add behavior mechanical object
+       DefoDOFsSPtr defoDofs = addNew<DefoDOFs>(behaviorNode);
+
+       // Add linear mapping
+       typename LinearMapping::SPtr linearMapping = addNew<LinearMapping>(behaviorNode);
+       linearMapping->setModels(tractionStruct.dofs.get(),defoDofs.get());
+
+       // Add strain mechanical object
+       strainDOFsSPtr strainDOFs = addNew<StrainDOFs>(strainNode);
+
+       // Add strain mapping
+       typename StrainMapping::SPtr strainMapping = addNew<StrainMapping>(strainNode);
+       strainMapping->setModels(defoDofs.get(),strainDOFs.get());
+
     }
 
 	HookeForceFieldSPtr addHookeForceField(simulation::Node::SPtr node,
@@ -128,11 +151,11 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
 
 	}
 
-	bool testHexahedraInTraction(LinearElasticityFF createForceField)
+    bool testTetrahedraInTraction(LinearElasticityFF createForceField, double longitudinalStretchAccuracy,double radialStretchAccuracy, bool debug)
     {
         // Init
-		sofa::simulation::getSimulation()->init(tractionStruct.root.get());
-		size_t i,j,k,l;
+        sofa::simulation::getSimulation()->init(tractionStruct.root.get());
+        size_t i,j,k,l;
         Real viscosity = 1;
 
         for (k=0;k<sizeYoungModulusArray;++k) 
@@ -180,7 +203,9 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     Real longitudinalDeformation=(p1[0]-p0[0])/p0[0];
 
                     // test the longitudinal deformation
-                    if (fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus))>2e-8) 
+                    if(debug)
+                        std::cout << "precision longitudinal stretch = " << fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus)) << std::endl;
+                    if (fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus))>longitudinalStretchAccuracy) 
                     {
                         ADD_FAILURE() << "Wrong longitudinal deformation for Young Modulus = " << youngModulus << " Poisson Ratio = "<<
                             poissonRatio << " pressure= "<<pressure<< std::endl <<
@@ -197,7 +222,9 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     Real radialDeformation= dot(p0,p1)/radius-1 ;
 
                     // test the radial deformation
-                    if (fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus))>2e-6) {
+                    if(debug)
+                        std::cout << "precision radial stretch = " << fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus))<< std::endl;
+                    if (fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus))>radialStretchAccuracy) {
                         ADD_FAILURE() << "Wrong radial deformation for Young Modulus = " << youngModulus << " Poisson Ratio = "<<
                             poissonRatio << " pressure= "<<pressure<< std::endl <<
                             "Got "<<radialDeformation<< " instead of "<< -pressure*poissonRatio/youngModulus<< std::endl;
@@ -222,17 +249,42 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
 
 };
 
-// Define the types for the test
-struct TetraMaterialTestType{
-    typedef E332Types EType;
+// Define types for the test
+// 331 Types
+struct TetraMaterialTest331Type{
+    typedef F331Types FType;
+    typedef E331Types EType;
+    typedef mapping::LinearMapping<defaulttype::Vec3Types,defaulttype::F331Types> LinearMapping;
+    typedef mapping::CorotationalStrainMapping<defaulttype::F331Types,defaulttype::E331Types> StrainMapping;
+    static const double longitudinalStretchAccuracy;
+    static const double radialStretchAccuracy; 
     static const std::string sceneName; 
 };
-const std::string TetraMaterialTestType::sceneName= "TetrahedraTractionTest.scn";
+const double TetraMaterialTest331Type::longitudinalStretchAccuracy= 2e-8; // Accuracy of longitudinal stretch
+const double TetraMaterialTest331Type::radialStretchAccuracy= 2e-6; // Accuracy of radial stretch
+const std::string TetraMaterialTest331Type::sceneName= "TetrahedraTractionTest.scn";
+
+// 332 Types
+struct TetraMaterialTest332Type{
+    typedef F332Types FType;
+    typedef E332Types EType;
+    typedef mapping::LinearMapping<defaulttype::Vec3Types,defaulttype::F332Types> LinearMapping;
+    typedef mapping::CorotationalStrainMapping<defaulttype::F332Types,defaulttype::E332Types> StrainMapping;
+    static const double longitudinalStretchAccuracy;
+    static const double radialStretchAccuracy; 
+    static const std::string sceneName; 
+};
+const double TetraMaterialTest332Type::longitudinalStretchAccuracy= 2e-8; // Accuracy of longitudinal stretch
+const double TetraMaterialTest332Type::radialStretchAccuracy= 2e-6; // Accuracy of radial stretch
+const std::string TetraMaterialTest332Type::sceneName= "TetrahedraTractionTest.scn";
+
 
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef testing::Types<
-    TetraMaterialTestType
+    TetraMaterialTest331Type,
+    TetraMaterialTest332Type
+
 > DataTypes; 
 
 // Test suite for all the instanciations
@@ -241,7 +293,7 @@ TYPED_TEST_CASE(TetrahedraMaterial_test, DataTypes);
 // Test traction cylinder
 TYPED_TEST( TetrahedraMaterial_test , test_Hooke_Tetrahedra_InTraction )
 {
-    ASSERT_TRUE( this->testHexahedraInTraction(&sofa::TetrahedraMaterial_test<TypeParam>::addHookeForceField));
+    ASSERT_TRUE( this->testTetrahedraInTraction(&sofa::TetrahedraMaterial_test<TypeParam>::addHookeForceField,TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
 }
 
 } // namespace sofa

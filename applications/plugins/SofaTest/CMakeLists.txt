@@ -2,19 +2,19 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-    initTestPlugin.h
+    InitPlugin_test.h
     Sofa_test.h
     Mapping_test.h
     Elasticity_test.inl
     Elasticity_test.h
     Elasticity_test.inl
     ForceField_test.h
-    BroadPhaseTest.h
+    BroadPhase_test.h
 	)
 
 set(SOURCE_FILES
 
-    initTestPlugin.cpp
+    InitPlugin_test.cpp
     Sofa_test.cpp
     Elasticity_test.cpp
     
@@ -53,5 +53,9 @@ if(APPLE)
     AddLinkerDependencies(gtest)
 endif()
 
+if(UNIX)
+    find_package(Boost COMPONENTS system REQUIRED)
+    AddLinkerDependencies(${Boost_SYSTEM_LIBRARY})
+endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

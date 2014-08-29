@@ -484,13 +484,13 @@ public:
 
     void clear()
     {
-        for (Index b=0; b<data.size(); b++)
+        for (Index b=0; b<(Index)data.size(); b++)
             traits::clear(data[b]);
     }
 
     void invert()
     {
-        for (Index b=0; b<data.size(); b++)
+        for (Index b=0; b<(Index)data.size(); b++)
         {
             const Bloc m = data[b];
             traits::invert(data[b], m);
@@ -544,7 +544,7 @@ public:
     friend std::ostream& operator << (std::ostream& out, const BlockDiagonalMatrix<LC>& v )
     {
         out << "[";
-        for (Index i=0; i<v.data.size(); i++) out << " " << v.data[i];
+        for (Index i=0; i<(Index)v.data.size(); i++) out << " " << v.data[i];
         out << " ]";
         return out;
     }

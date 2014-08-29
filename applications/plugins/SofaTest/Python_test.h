@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #include <string>
 #include <plugins/SofaPython/SceneLoaderPY.h>
-#include "initTestPlugin.h"
+#include "InitPlugin_test.h"
 
 namespace sofa {
 

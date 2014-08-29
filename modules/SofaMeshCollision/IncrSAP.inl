@@ -383,7 +383,7 @@ void TIncrSAP<List,Allocator>::showEndPoints()const{
 
 template <template<class T,class Allocator> class List,template <class T> class Allocator>
 void TIncrSAP<List,Allocator>::showBoxes()const{
-    for(int i = 0 ; i < _boxes.size() ; ++i){
+    for(size_t i = 0 ; i < _boxes.size() ; ++i){
         const ISAPBox & box = _boxes[i];
         std::cout<<"collision model "<<box.cube.getCollisionModel()->getLast()<<" index "<<box.cube.getExternalChildren().first.getIndex()<<std::endl;
 

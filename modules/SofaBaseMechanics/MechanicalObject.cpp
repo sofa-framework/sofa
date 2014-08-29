@@ -693,6 +693,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
 #endif /* SOFA_NO_OPENGL */
 }
 
+
 }
 
 } // namespace component

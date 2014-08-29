@@ -4,10 +4,10 @@
 #include <QObject>
 #include <QTimer>
 
-#include "../SofaGLScene.h"
+#include "../SofaGL.h"
 
 namespace sofa {
-namespace newgui {
+namespace simplegui {
 
 /**
  * @brief The QSofaScene class is a SofaScene which can be connected to other Qt objects, such as viewers, using signals and slots.

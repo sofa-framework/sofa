@@ -2,7 +2,7 @@
 #define COMPLIANT_CONSTANTASSEMBLEDSOLVER_H
 
 
-#include "AssembledSolver.h"
+#include "CompliantImplicitSolver.h"
 
 namespace sofa {
 
@@ -12,15 +12,15 @@ namespace odesolver {
 			
 
 
-/** An AssembledSolver where the assembly is only perform at the first step
+/** An CompliantImplicitSolver where the assembly is only perform at the first step
   @warning: only external forces can interact with a pre-assembled system
 */
 
 
-class SOFA_Compliant_API ConstantAssembledSolver : public AssembledSolver {
+class SOFA_Compliant_API ConstantCompliantImplicitSolver : public CompliantImplicitSolver {
   public:
 				
-    SOFA_CLASS(ConstantAssembledSolver, AssembledSolver);
+    SOFA_CLASS(ConstantCompliantImplicitSolver, CompliantImplicitSolver);
 
   protected:
 

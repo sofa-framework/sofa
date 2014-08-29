@@ -10,7 +10,7 @@
 
       <Node 	name="complianceSolverScene" >
 	
-	  <AssembledSolver implicitVelocity="0.5" implicitPosition="1"/>
+	  <CompliantImplicitSolver implicitVelocity="0.5" implicitPosition="1"/>
 	  <LDLTSolver/>
 
 	  <!-- resolution = number of particles (including the fixed one) -->

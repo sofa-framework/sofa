@@ -27,7 +27,7 @@ void OffsettedConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bo
 
     const SReal& offset = d_offset.getValue();
 
-    for( int i=0;i<size;++i) dst[i] += offset;
+    for( unsigned i=0;i<size;++i) dst[i] += offset;
 
 	using namespace utils;
     map(dst, size) = -map(dst, size) / this->getContext()->getDt();

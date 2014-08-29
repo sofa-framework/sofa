@@ -15,14 +15,15 @@ GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 0.0 };
 GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 0.0 };
 GLfloat light_specular[] = { 1.0, 1.0, 1.0, 0.0 };
 
-GLfloat cp[] = { 0.0, 0.0, 25.0, 0.0 };
-GLfloat camera_target[] = { 2.0, 0.0, 0.0 };
+//GLfloat cp[] = { 0.0, 0.0, 25.0, 0.0 };
+GLfloat camera_target[] = { 22.0, 0.0, 0.0 };
 GLfloat camera_angle = 55;
-GLfloat znear = cp[2]-10;
-GLfloat zfar = cp[2]+10;
+GLfloat znear = 15;
+GLfloat zfar = 35;
+GLfloat DegToRad = 3.1415927 / 180;
 
 
-QSofaViewer::QSofaViewer(newgui::QSofaScene *sofaScene, QWidget *parent) :
+QSofaViewer::QSofaViewer(sofa::simplegui::QSofaScene *sofaScene, QWidget *parent) :
     QGLWidget(parent), _sofaGL(sofaScene)
 {
     _drag = NULL;
@@ -66,17 +67,26 @@ void QSofaViewer::initializeGL()
 
     glEnable(GL_DEPTH_TEST);
 
+
+    _camera.setlookAt (
+            0,0,25,
+            camera_target[0],camera_target[1],camera_target[2],
+            0.0, 1.0, 0.0 // up vector
+            );
+
+
 }
 
 void QSofaViewer::paintGL()
 {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity ();
-    gluLookAt (
-            cp[0],cp[1],cp[2],
-            camera_target[0],camera_target[1],camera_target[2],
-            0.0, 1.0, 0.0 // up vector
-            );
+    _camera.lookAt();
+//    gluLookAt (
+//            cp[0],cp[1],cp[2],
+//            camera_target[0],camera_target[1],camera_target[2],
+//            0.0, 1.0, 0.0 // up vector
+//            );
 
     _sofaGL.draw();
 
@@ -93,19 +103,28 @@ void QSofaViewer::draw()
 
 void QSofaViewer::viewAll()
 {
-    SReal cp[3], ct[3], zn, zf;
-    _sofaGL.viewAll(
-            &cp[0],&cp[1],&cp[2],
-            &ct[0],&ct[1],&ct[2],
-            camera_angle, &zn, &zf
-            );
-    for( int i=0; i<3; i++ )
-    {
-        cp[i] = cp[i];
-        camera_target[i] = ct[i];
-    }
-    znear = zn;
-    zfar = zf;
+//    SReal cp[3], ct[3], zn, zf;
+//    Camera::Vec3 eye = _camera.eye();
+//    for( int i=0; i<3; i++ ) cp[i] = eye[i];
+//    _sofaGL.viewAll(
+//            &cp[0],&cp[1],&cp[2],
+//            &ct[0],&ct[1],&ct[2],
+//            camera_angle * DegToRad, &zn, &zf
+//            );
+//    cout << "QSofaViewer::viewAll, camera eye before = " << _camera.eye().transpose() << endl << ", linear = " << endl << _camera.getTransform().linear().inverse() << endl;
+//    cout << " cp = " << cp[0] << " " << cp[1] << " " << cp[2] << ", ct = "<< ct[0] << " " << ct[1] << " " << ct[2]  << endl;
+//     _camera.setlookAt(cp[0],cp[1],cp[2],
+//            ct[0],ct[1],ct[2],
+//            _camera.getTransform().linear()(1,0), _camera.getTransform().linear()(1,1), _camera.getTransform().linear()(1,2)); // use current y direction as up axis
+//    cout << "QSofaViewer::viewAll, camera eye after = " << _camera.eye().transpose() << endl << ", linear = " << endl << _camera.getTransform().linear().inverse() << endl;
+//    znear = zn;
+//    zfar = zf;
+
+    float xmin, xmax, ymin, ymax, zmin, zmax;
+    _sofaGL.getSceneBBox(&xmin,&ymin,&zmin, &xmax,&ymax,&zmax);
+//    cout<<"QSofaViewer::viewAll, bounding box = "<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
+    _camera.viewAll(xmin,ymin,zmin, xmax,ymax,zmax);
+    update();
 }
 
 void QSofaViewer::resizeGL(int w, int h)
@@ -113,7 +132,7 @@ void QSofaViewer::resizeGL(int w, int h)
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
     glMatrixMode (GL_PROJECTION);
     glLoadIdentity ();
-    gluPerspective (camera_angle, (GLfloat) w/(GLfloat) h, znear, zfar );
+    _camera.perspective(camera_angle, (GLfloat) w/(GLfloat) h, 0.01, 100);
     glMatrixMode (GL_MODELVIEW);
 }
 
@@ -136,16 +155,18 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
     {
         if( isControlPressed() ) // pick an existing interactor
         {
-            _drag = _sofaGL.pickInteractor(cp[0],cp[1],cp[2], event->x(), event->y());
+            _drag = _sofaGL.pickInteractor(_camera.eye()[0], _camera.eye()[1], _camera.eye()[2], event->x(), event->y());
         }
-        else if( sofa::newgui::PickedPoint glpicked = _sofaGL.pick(cp[0],cp[1],cp[2], event->x(),event->y() )  ) // create new interactor
+        else if( sofa::simplegui::PickedPoint glpicked = _sofaGL.pick(
+                     _camera.eye()[0], _camera.eye()[1], _camera.eye()[2],
+                     event->x(),event->y() )  ) // create new interactor
         {
 //            cout << "Picked: " << glpicked <<  endl;
             _drag = _sofaGL.getInteractor(glpicked);
             if( _drag == NULL )
             {
                 cout << "create new interactor" << endl;
-                _drag = new sofa::newgui::SpringInteractor(glpicked,10000);
+                _drag = new sofa::simplegui::SpringInteractor(glpicked,10000);
                 _sofaGL.attach(_drag);
             }
             else cout << "reuse interactor" << endl;
@@ -153,6 +174,17 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
         else {
             cout << "no particle glpicked" << endl;
         }
+    }
+    else {
+        if( _camera.handleMouseButton(
+            event->button()==Qt::LeftButton ? Camera::ButtonLeft : event->button()==Qt::MiddleButton ? Camera::ButtonMiddle : Camera::ButtonRight ,
+            Camera::ButtonDown,
+            event->x(), event->y()
+                    ))
+        {
+            return;
+        }
+
     }
 
 }
@@ -163,9 +195,15 @@ void QSofaViewer::mouseMoveEvent ( QMouseEvent * event )
     {
         _sofaGL.move(_drag, event->x(), event->y());
     }
+    else if( _camera.handleMouseMotion(event->x(), event->y()) )
+    {
+        update();
+        return;
+    }
+
 }
 
-void QSofaViewer::mouseReleaseEvent ( QMouseEvent * /*event*/ )
+void QSofaViewer::mouseReleaseEvent ( QMouseEvent * event )
 {
         if( _drag != NULL )
         {
@@ -176,6 +214,18 @@ void QSofaViewer::mouseReleaseEvent ( QMouseEvent * /*event*/ )
 //                cout << "delete interactor " << endl;
             }
             _drag = NULL;
+        }
+        else
+        {
+            if( _camera.handleMouseButton(
+                event->button()==Qt::LeftButton ? Camera::ButtonLeft : event->button()==Qt::MiddleButton ? Camera::ButtonMiddle : Camera::ButtonRight ,
+                Camera::ButtonUp,
+                event->x(), event->y()
+                        ))
+            {
+                return;
+            }
+
         }
 }
 

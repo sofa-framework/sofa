@@ -533,7 +533,7 @@ double DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) con
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
 {
-    const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
+    static const defaulttype::BaseMatrix::Index dimension = (defaulttype::BaseMatrix::Index) defaulttype::DataTypeInfo<Deriv>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();

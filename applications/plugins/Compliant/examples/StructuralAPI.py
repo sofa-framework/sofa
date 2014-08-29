@@ -35,7 +35,7 @@ def createScene(root):
     root.createObject('CompliantAttachButtonSetting')
     
     ##### SOLVER
-    root.createObject('AssembledSolver', stabilization=1)
+    root.createObject('CompliantImplicitSolver', stabilization=1)
     root.createObject('SequentialSolver', iterations=100)
     root.createObject('LDLTResponse')
     

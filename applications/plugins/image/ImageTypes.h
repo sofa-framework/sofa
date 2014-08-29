@@ -786,7 +786,7 @@ public:
         {
             const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
             //            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->m_positions.getValue();
-            const ResizableExtVector<int> * extvertPosIdx = &visualModels[m]->m_vertPosIdx.getValue();
+//            const ResizableExtVector<int> * extvertPosIdx = &visualModels[m]->m_vertPosIdx.getValue();
 
             ResizableExtVector<Coord> tposition; tposition.resize(verts.size());
             unsigned int ind;
