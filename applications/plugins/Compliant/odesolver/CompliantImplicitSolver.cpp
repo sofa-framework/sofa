@@ -567,6 +567,13 @@ using namespace core::behavior;
             }
 
 
+            // propagate lambdas if asked to (constraint forces must be propagated before post_stab)
+            if( propagate_lambdas.getValue() && sys.n ) {
+                scoped::timer step("lambda propagation");
+                propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), sys.dt );
+                send( prop );
+            }
+
             // constraint post-stabilization
             if( stabilizationType>=POST_STABILIZATION_RHS )
             {
@@ -574,12 +581,6 @@ using namespace core::behavior;
             }
         }
 
-        // propagate lambdas if asked to
-        if( propagate_lambdas.getValue() && sys.n ) {
-            scoped::timer step("lambda propagation");
-            propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), sys.dt );
-            send( prop );
-        }
 
         clear_constraints();
 
