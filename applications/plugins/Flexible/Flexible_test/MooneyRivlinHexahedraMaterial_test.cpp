@@ -200,7 +200,14 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
                     
                 // Compute longitudinal deformation
                 Real longitudinalStretch=p1[0]/p0[0];
-                
+
+                // Test if longitudinal stretch is a nan value
+                if(longitudinalStretch != longitudinalStretch)
+                {
+                    ADD_FAILURE() << "Error longitudinal stretch is NAN" << std::endl;
+                    return false;
+                }
+
                 // test the longitudinal deformation
                 if(debug)
                 std::cout << "precision longitudinal stretch = " << fabs((longitudinalStretch-s1Array[j][i])/(s1Array[j][i])) << std::endl;
@@ -219,6 +226,13 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
                 p1[1]=0;
                 Real radius=p0.norm2();
                 Real radialStretch= dot(p0,p1)/radius;
+
+                // Test if radial stretch is a nan value
+                if(radialStretch != radialStretch)
+                {
+                    ADD_FAILURE() << "Error radial stretch is NAN" << std::endl;
+                    return false;
+                }
 
                 // test the radial deformation
                 if(debug)
@@ -290,7 +304,7 @@ TYPED_TEST_CASE(MooneyRivlinHexahedraMaterial_test, DataTypes);
 TYPED_TEST( MooneyRivlinHexahedraMaterial_test , test_MR_Hexahedra_InTraction )
 {
     ASSERT_TRUE( this->testHexahedraInTraction(&sofa::MooneyRivlinHexahedraMaterial_test<TypeParam>::addMooneyRivlinForceField,pressureMRArray,s1MRArray, s2MRArray,
-                                                TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
+                                                TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,true));
 }
 
 
