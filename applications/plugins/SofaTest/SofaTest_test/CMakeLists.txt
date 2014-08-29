@@ -1,11 +1,10 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    stdafx.h
     PrimitiveCreation.h
 )
 
-set(SOURCE_FILES  stdafx.cpp
+set(SOURCE_FILES
 
 # alphabetical order
     AffinePatch_test.cpp
@@ -37,6 +36,10 @@ endif()
 
 if(WIN32)
     link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+
+    list(APPEND HEADER_FILES "stdafx.h")
+    list(APPEND SOURCE_FILES "stdafx.cpp")
+
 endif()
 
 if(SOFA-PLUGIN_SOFAPYTHON)
