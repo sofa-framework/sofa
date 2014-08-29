@@ -13,7 +13,7 @@
 
   <DefaultContactManager responseParams="restitution=0" response="FrictionCompliantContact" />
 	
-  <AssembledSolver stabilization="1" warm_start="1" />
+  <CompliantImplicitSolver stabilization="1" warm_start="1" />
 
   <SequentialSolver precision="1e-10" relative="false" iterations="10" />
 	

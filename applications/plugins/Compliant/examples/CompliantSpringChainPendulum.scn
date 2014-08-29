@@ -11,7 +11,7 @@
       
 <Node 	name="CONSTRAINT 0" activated="1">
   
-    <AssembledSolver/>
+    <CompliantImplicitSolver/>
 <LDLTSolver/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
@@ -34,7 +34,7 @@
 
 <Node 	name="CONSTRAINT 1e-15" activated="1">
   
-    <AssembledSolver/>
+    <CompliantImplicitSolver/>
 <LDLTSolver/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
@@ -56,7 +56,7 @@
 
 <Node 	name="CONSTRAINT 1e-5" activated="1">
   
-    <AssembledSolver/>
+    <CompliantImplicitSolver/>
 <LDLTSolver/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
@@ -81,7 +81,7 @@
       
 <Node 	name="COMPLIANCE 0" activated="1">
   
-    <AssembledSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
+    <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
 <LDLTSolver/>
     <!--<MinresSolver precision="0" iterations="100"/>-->
 
@@ -103,7 +103,7 @@
 
 <Node 	name="COMPLIANCE 1e-15" >
   
-    <AssembledSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
+    <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
 <LDLTSolver/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
@@ -126,7 +126,7 @@
 
 <Node 	name="COMPLIANCE 1e-5" activated="1">
   
-    <AssembledSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
+    <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="false"/>
 <LDLTSolver/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
@@ -153,7 +153,7 @@
 
 <Node 	name="STIFFNESS 0" activated="1">
   
-    <AssembledSolver/>
+    <CompliantImplicitSolver/>
 <LDLTSolver/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
@@ -175,7 +175,7 @@
 
 <Node 	name="STIFFNESS 1e-15" activated="1">
   
-    <AssembledSolver/>
+    <CompliantImplicitSolver/>
 <LDLTSolver/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 
@@ -197,7 +197,7 @@
 
 <Node 	name="STIFFNESS 1e-5" activated="1">
   
-    <AssembledSolver/>
+    <CompliantImplicitSolver/>
 <LDLTSolver/>
 <!--<MinresSolver precision="0" iterations="100"/>-->
 

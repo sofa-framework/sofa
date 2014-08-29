@@ -18,7 +18,7 @@
   <Node name="Assembled Balls" >
     
     
-  <AssembledSolver stabilization="1"/>
+  <CompliantImplicitSolver stabilization="1"/>
   <SequentialSolver precision="1e-10" relative="false" iterations="100" /> 
     
   <MechanicalObject name="dofs" template="Vec3d" position="0 3 0  3 3 0" velocity="1 0 0  -1 0 0" showObject="1" showObjectScale="1"/>
@@ -30,7 +30,7 @@
   <Node name="Separated Balls" >
     
     
-  <AssembledSolver stabilization="1"/>
+  <CompliantImplicitSolver stabilization="1"/>
   <SequentialSolver precision="1e-10" relative="false" iterations="100" /> 
     
     <Node name="Ball1">

@@ -60,7 +60,7 @@
 #include <sofa/component/typedef/Sofa_typedef.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
-#include <plugins/Compliant/odesolver/AssembledSolver.h>
+#include <plugins/Compliant/odesolver/CompliantImplicitSolver.h>
 #include <plugins/Compliant/numericalsolver/LDLTSolver.h>
 #include <plugins/Compliant/compliance/UniformCompliance.h>
 #include <plugins/Compliant/misc/CompliantAttachButtonSetting.h>
@@ -89,7 +89,7 @@ typedef DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTyp
 typedef DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
 typedef UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
 
-typedef component::odesolver::AssembledSolver AssembledSolver;
+typedef component::odesolver::CompliantImplicitSolver CompliantImplicitSolver;
 typedef component::linearsolver::LDLTSolver LDLTSolver;
 typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
@@ -216,7 +216,7 @@ simulation::Node::SPtr createCompliantScene()
     Node::SPtr simulatedScene = root->createChild("simulatedScene");
 
 
-    AssembledSolver::SPtr assembledSolver = New<AssembledSolver>();
+    CompliantImplicitSolver::SPtr assembledSolver = New<CompliantImplicitSolver>();
     simulatedScene->addObject( assembledSolver );
 //    assembledSolver->verbose.setValue(verbose);
 

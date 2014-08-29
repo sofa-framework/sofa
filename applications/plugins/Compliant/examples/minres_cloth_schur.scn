@@ -8,7 +8,7 @@
 	<CompliantAttachButtonSetting button="Left" />
 	<Node name="scene" >
 		
-		<AssembledSolver />
+		<CompliantImplicitSolver />
 		<MinresSolver verbose="0" iterations="20" precision="1e-3" relative="false" schur="true"/>
 		<DiagonalResponse />
 

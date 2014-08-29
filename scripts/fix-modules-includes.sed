@@ -1269,3 +1269,4 @@ s:#include *[<"]sofa/component/engine/GenerateCylinder.h[>"]:#include <SofaEngin
 s:#include *[<"]sofa/component/forcefield/QuadPressureForceField.h[>"]:#include <SofaBoundaryCondition/QuadPressureForceField.h>:
 s:#include *[<"]sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h[>"]:#include <SofaBoundaryCondition/PatchTestMovementConstraint.h>:
 s:#include *[<"]sofa/component/collision/CylinderModel.h[>"]:#include <SofaBaseCollision/CylinderModel.h>:
+s:#include *[<"]sofa/component/init.h[>"]:#include <SofaComponentMain/init.h>:

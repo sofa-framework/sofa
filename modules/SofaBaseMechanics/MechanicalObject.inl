@@ -3424,6 +3424,31 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
         return false;
 }
 
+
+template <class DataTypes>
+bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+{
+    // participating to bbox only if it is drawn
+    if( !showObject.getValue() ) return false;
+
+    const VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
+    for( std::size_t i=0; i<x.size(); i++ )
+    {
+        defaulttype::Vec<3,Real> p;
+        DataTypes::get( p[0], p[1], p[2], x[i] );
+
+        assert( DataTypes::spatial_dimensions <= 3 );
+
+        for( unsigned int j=0 ; j<DataTypes::spatial_dimensions; ++j )
+        {
+            if(p[j]<minBBox[j]) minBBox[j]=p[j];
+            if(p[j]>maxBBox[j]) maxBBox[j]=p[j];
+        }
+    }
+    return true;
+}
+
+
 } // namespace container
 
 } // namespace component

@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
     // Instantiate the main window and make it visible.
     QSofaMainWindow mainWindow;
-    mainWindow.sofaScene.plugins = plugins;
+    mainWindow.sofaScene.loadPlugins( plugins );
     mainWindow.initSofa(fileName);
     mainWindow.setWindowTitle("qtSofa");
     mainWindow.resize(800,600);

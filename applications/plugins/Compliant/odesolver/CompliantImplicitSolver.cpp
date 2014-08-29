@@ -1,4 +1,4 @@
-#include "AssembledSolver.h"
+#include "CompliantImplicitSolver.h"
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaEigen2Solver/EigenVector.h>
@@ -14,8 +14,10 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-SOFA_DECL_CLASS(AssembledSolver);
-int AssembledSolverClass = core::RegisterObject("Example compliance solver using assembly").add< AssembledSolver >();
+SOFA_DECL_CLASS(CompliantImplicitSolver);
+int CompliantImplicitSolverClass = core::RegisterObject("Example compliance solver using assembly")
+        .add< CompliantImplicitSolver >()
+        .addAlias("AssembledSolver"); // deprecated, for backward compatibility only
 
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
@@ -71,7 +73,7 @@ using namespace core::behavior;
 
 
 
-    AssembledSolver::AssembledSolver()
+    CompliantImplicitSolver::CompliantImplicitSolver()
         : stabilization(initData(&stabilization,
                                  "stabilization",
                                  "apply a stabilization pass on kinematic constraints requesting it")),
@@ -121,7 +123,7 @@ using namespace core::behavior;
 
 
 
-    void AssembledSolver::send(simulation::Visitor& vis) {
+    void CompliantImplicitSolver::send(simulation::Visitor& vis) {
 //        scoped::timer step("visitor execution");
 
         this->getContext()->executeVisitor( &vis );
@@ -129,10 +131,10 @@ using namespace core::behavior;
     }
 
 
-    void AssembledSolver::storeDynamicsSolution(bool b) { storeDSol = b; }
+    void CompliantImplicitSolver::storeDynamicsSolution(bool b) { storeDSol = b; }
 
 
-    void AssembledSolver::integrate( const core::MechanicalParams* params,
+    void CompliantImplicitSolver::integrate( const core::MechanicalParams* params,
                                      const core::MultiVecCoordId& posId,
                                      const core::MultiVecDerivId& velId ) {
         scoped::timer step("position integration");
@@ -155,11 +157,11 @@ using namespace core::behavior;
 
 
 
-    AssembledSolver::~AssembledSolver() {
+    CompliantImplicitSolver::~CompliantImplicitSolver() {
         if( assemblyVisitor ) delete assemblyVisitor;
     }
 
-    void AssembledSolver::cleanup() {
+    void CompliantImplicitSolver::cleanup() {
         sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
         vop.v_free( lagrange.id(), false, true );
         vop.v_free( _ck.id(), false, true );
@@ -169,7 +171,7 @@ using namespace core::behavior;
     // this is c_k computation (see compliant-reference.pdf, section 3)
     // at the end, the multivec f MUST contain the forces
     // (to compute mapping's geometric stiffnesses during assembly)
-    void AssembledSolver::compute_forces(SolverOperations& sop,
+    void CompliantImplicitSolver::compute_forces(SolverOperations& sop,
                                          core::behavior::MultiVecDeriv& f,
                                          core::behavior::MultiVecDeriv& c )
     {
@@ -226,13 +228,13 @@ using namespace core::behavior;
 
 
 
-    void AssembledSolver::propagate(const core::MechanicalParams* params)
+    void CompliantImplicitSolver::propagate(const core::MechanicalParams* params)
     {
         simulation::MechanicalPropagatePositionAndVelocityVisitor bob( params );
         send( bob );
     }
 
-    void AssembledSolver::filter_constraints( const core::MultiVecCoordId& posId) const {
+    void CompliantImplicitSolver::filter_constraints( const core::MultiVecCoordId& posId) const {
 
         // compliant dofs
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
@@ -247,7 +249,7 @@ using namespace core::behavior;
         }
     }
 
-    void AssembledSolver::clear_constraints() const {
+    void CompliantImplicitSolver::clear_constraints() const {
         // compliant dofs
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
 
@@ -261,7 +263,7 @@ using namespace core::behavior;
     }
 
 
-    void AssembledSolver::rhs_dynamics(vec& res, const system_type& sys, const MultiVecDeriv& b,
+    void CompliantImplicitSolver::rhs_dynamics(vec& res, const system_type& sys, const MultiVecDeriv& b,
                                        core::MultiVecCoordId posId,
                                        core::MultiVecDerivId velId) const {
         assert( res.size() == sys.size() );
@@ -290,7 +292,7 @@ using namespace core::behavior;
     }
 
 
-    void AssembledSolver::rhs_constraints_dynamics(vec& res, const system_type& sys,
+    void CompliantImplicitSolver::rhs_constraints_dynamics(vec& res, const system_type& sys,
                                                    core::MultiVecCoordId posId,
                                                    core::MultiVecDerivId velId) const {
         assert( res.size() == sys.n );
@@ -339,7 +341,7 @@ using namespace core::behavior;
 //        }
     }
 
-    void AssembledSolver::rhs_correction(vec& res, const system_type& sys,
+    void CompliantImplicitSolver::rhs_correction(vec& res, const system_type& sys,
                                          core::MultiVecCoordId posId,
                                          core::MultiVecDerivId velId) const {
         assert( res.size() == sys.size() );
@@ -367,7 +369,7 @@ using namespace core::behavior;
     }
 
 
-    void AssembledSolver::get_state(vec& res, const system_type& sys, const core::MultiVecDerivId& multiVecId) const {
+    void CompliantImplicitSolver::get_state(vec& res, const system_type& sys, const core::MultiVecDerivId& multiVecId) const {
 
         assert( res.size() == sys.size() );
 
@@ -398,7 +400,7 @@ using namespace core::behavior;
     }
 
 
-    void AssembledSolver::set_state_v(const system_type& sys, const vec& data, const core::MultiVecDerivId& velId) const {
+    void CompliantImplicitSolver::set_state_v(const system_type& sys, const vec& data, const core::MultiVecDerivId& velId) const {
 
         assert( data.size() == sys.size() );
 
@@ -416,7 +418,7 @@ using namespace core::behavior;
     }
 
 
-    void AssembledSolver::set_state_lambda(const system_type& sys, const vec& data) const {
+    void CompliantImplicitSolver::set_state_lambda(const system_type& sys, const vec& data) const {
 
         // we directly store lambda (and not constraint *force*)
         unsigned off = 0;
@@ -432,14 +434,14 @@ using namespace core::behavior;
         }
     }
 
-    void AssembledSolver::set_state(const system_type& sys, const vec& data, const core::MultiVecDerivId& velId) const {
+    void CompliantImplicitSolver::set_state(const system_type& sys, const vec& data, const core::MultiVecDerivId& velId) const {
         set_state_v( sys, data, velId );
         set_state_lambda( sys, data.tail(sys.n) );
     }
 
 
 
-    void AssembledSolver::perform_assembly( const core::MechanicalParams *mparams, system_type& sys )
+    void CompliantImplicitSolver::perform_assembly( const core::MechanicalParams *mparams, system_type& sys )
     {
         // max: il ya des auto_ptr pour ca.
         if( assemblyVisitor ) delete assemblyVisitor;
@@ -452,7 +454,7 @@ using namespace core::behavior;
         sys = assemblyVisitor->assemble();
     }
 
-    void AssembledSolver::solve(const core::ExecParams* params,
+    void CompliantImplicitSolver::solve(const core::ExecParams* params,
                                 double dt,
                                 core::MultiVecCoordId posId,
                                 core::MultiVecDerivId velId) {
@@ -565,6 +567,13 @@ using namespace core::behavior;
             }
 
 
+            // propagate lambdas if asked to (constraint forces must be propagated before post_stab)
+            if( propagate_lambdas.getValue() && sys.n ) {
+                scoped::timer step("lambda propagation");
+                propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), sys.dt );
+                send( prop );
+            }
+
             // constraint post-stabilization
             if( stabilizationType>=POST_STABILIZATION_RHS )
             {
@@ -572,12 +581,6 @@ using namespace core::behavior;
             }
         }
 
-        // propagate lambdas if asked to
-        if( propagate_lambdas.getValue() && sys.n ) {
-            scoped::timer step("lambda propagation");
-            propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), sys.dt );
-            send( prop );
-        }
 
         clear_constraints();
 
@@ -590,20 +593,20 @@ using namespace core::behavior;
 
 
 
-    void AssembledSolver::init() {
+    void CompliantImplicitSolver::init() {
 
         // do want KKTSolver !
         kkt = this->getContext()->get<kkt_type>(core::objectmodel::BaseContext::Local);
 
         // TODO slightly less dramatic error, maybe ?
-        if( !kkt ) throw std::logic_error("AssembledSolver needs a KKTSolver");
+        if( !kkt ) throw std::logic_error("CompliantImplicitSolver needs a KKTSolver");
     }
 
 
 
 
 
-    void AssembledSolver::post_stabilization( SolverOperations& sop,
+    void CompliantImplicitSolver::post_stabilization( SolverOperations& sop,
                                               core::MultiVecCoordId posId, core::MultiVecDerivId velId,
                                               bool fullAssembly )
     {

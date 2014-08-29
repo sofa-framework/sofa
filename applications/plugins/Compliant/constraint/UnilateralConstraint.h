@@ -11,7 +11,7 @@ struct SOFA_Compliant_API UnilateralConstraint : Constraint {
 	
     SOFA_CLASS(UnilateralConstraint, Constraint);
 	
-    virtual void project(SReal* out, unsigned n, bool correctionPass=false) const;
+    virtual void project(SReal* out, unsigned n, unsigned index, bool correctionPass=false) const;
 	
 };
 

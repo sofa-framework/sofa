@@ -5,7 +5,7 @@ using namespace std;
 #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa{
-namespace newgui{
+namespace simplegui{
 
 SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
     : Interactor(picked)

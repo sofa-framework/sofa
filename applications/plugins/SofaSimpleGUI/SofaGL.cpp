@@ -2,7 +2,7 @@
 #include "SofaGL.h"
 
 namespace sofa {
-namespace newgui {
+namespace simplegui {
 
 template <typename T> inline T sqr(const T& t){ return t*t; }
 
@@ -68,7 +68,7 @@ PickedPoint SofaGL::pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
     getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
 
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
-    //    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
+//    cout<< "SofaGL::rayPick from origin " << origin << ", in direction " << direction << endl;
     sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth );
     picker.execute( _sofaScene->groot()->getContext() );
 
@@ -172,19 +172,31 @@ void SofaGL::detach( Interactor* drag)
     //    cout<<"SofaGL::detach "<< endl; _sofaScene->printGraph();
 }
 
+void SofaGL::getSceneBBox( float* xmin, float* ymin, float* zmin, float* xmax, float* ymax, float* zmax )
+{
+    SReal xm, xM, ym, yM, zm, zM;
+    _sofaScene->getBoundingBox(&xm,&xM,&ym,&yM,&zm,&zM);
+    *xmin=xm, *xmax=xM, *ymin=ym, *ymax=yM, *zmin=zm, *zmax=zM;
+}
+
 
 void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* nearPlane, SReal* farPlane)
 {
     // scene center and radius
     SReal xmin, xmax, ymin, ymax, zmin, zmax;
     _sofaScene->getBoundingBox(&xmin,&xmax,&ymin,&ymax,&zmin,&zmax);
+    cout<<"SofaGL::viewAll, bounding box = ("<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
     *xcen = (xmin+xmax)*0.5;
     *ycen = (ymin+ymax)*0.5;
     *zcen = (zmin+zmax)*0.5;
-    SReal radius = sqrt( sqr(xmin-xmax) + sqr(ymin-ymax) + sqr(zmin-zmax) )*0.5;
+    SReal radius = sqrt( sqr(xmin-xmax) + sqr(ymin-ymax) + sqr(zmin-zmax) );
 
     // Desired distance:  distance * tan(a) = radius
-    SReal distance = radius / tan(a);
+    SReal distance = 2 * radius / tan(a);
+//    SReal ratio = ((SReal) _viewport[3] - _viewport[1])/(_viewport[2] - _viewport[0]);
+//    distance *= ratio;
+    cout<<"SofaGL::viewAll, angle = " << a << ", tan = " << tan(a) << ", distance = " << distance << endl;
+    cout<<"SofaGL::viewAll, xmin xmax ymin ymax zmin zmax = " << xmin << " " << xmax <<" "<<ymin<<" "<<ymax<<" "<<zmin<<" "<<zmax<< endl;
 
     // move the camera along the current camera-center line, at the right distance
     // cam = cen + distance * (cam-cen)/|cam-cen|

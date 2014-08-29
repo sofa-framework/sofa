@@ -43,8 +43,9 @@ set(HEADER_FILES
     assembly/AssemblyVisitor.h
     assembly/AssembledSystem.h
 
-    odesolver/AssembledSolver.h
-    odesolver/ConstantAssembledSolver.h
+    odesolver/CompliantImplicitSolver.h
+    odesolver/ConstantCompliantImplicitSolver.h
+    odesolver/CompliantNLImplicitSolver.h
 
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
@@ -61,6 +62,7 @@ set(HEADER_FILES
     constraint/ConstraintValue.h
     constraint/Restitution.h
     constraint/DampingValue.h
+    constraint/OffsettedConstraintValue.h
 
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -129,8 +131,9 @@ set(SOURCE_FILES
     assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp
 
-    odesolver/AssembledSolver.cpp
-    odesolver/ConstantAssembledSolver.cpp
+    odesolver/CompliantImplicitSolver.cpp
+    odesolver/ConstantCompliantImplicitSolver.cpp
+    odesolver/CompliantNLImplicitSolver.cpp
 
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
@@ -139,6 +142,7 @@ set(SOURCE_FILES
     constraint/Stabilization.cpp
     constraint/Restitution.cpp
     constraint/DampingValue.cpp
+    constraint/OffsettedConstraintValue.cpp
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp

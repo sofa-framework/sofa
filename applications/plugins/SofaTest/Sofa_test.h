@@ -31,7 +31,7 @@
 #define _VARIADIC_MAX 10 
 #endif
 
-#include "initTestPlugin.h"
+#include "InitPlugin_test.h"
 #include <gtest/gtest.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -155,8 +155,8 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
             ADD_FAILURE() << "Comparison between matrices of different sizes";
             return infinity();
         }
-        for(unsigned i=0; i<m1.rowSize(); i++)
-            for(unsigned j=0; j<m1.colSize(); j++){
+        for(typename Matrix1::Index i=0; i<m1.rowSize(); i++)
+            for(typename Matrix1::Index j=0; j<m1.colSize(); j++){
                 Real diff = abs(m1.element(i,j)-m2.element(i,j));
                 if(diff>result)
                     result = diff;

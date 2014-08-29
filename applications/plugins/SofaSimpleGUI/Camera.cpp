@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <GL/gl.h>
+#include <GL/glu.h>
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -9,20 +10,73 @@ namespace simplegui{
 
 Camera::Camera()
 {
-    viewMode = EXAMINER;
     transform.matrix() = Eigen::Matrix4f::Identity();
     tb_tournerXY=0, tb_translaterXY=0, tb_bougerZ=0;
 }
 
-void Camera::glMultViewMatrix()
+void Camera::lookAt()
 {
 
         glMultMatrixf( transform.data() );
 }
 
-void Camera::lookAt( Vec3 eye, Vec3 target, Vec3 upVec )
+template <typename T> inline T sqr(const T& t){ return t*t; }
+
+void Camera::viewAll( float xmin, float ymin, float zmin, float xmax, float ymax, float zmax )
 {
-//    cout<<"Camera::lookAt " << eye.transpose() <<", " << target.transpose() << ", " << upVec.transpose() << endl;
+    Vec3 pmin(xmin,ymin,zmin), pmax(xmax,ymax,zmax);
+    Vec3 pcen = (pmin+pmax)*0.5;
+    Vec3 diag = pmax-pmin;
+    float radius = diag.norm();
+//    cout<<"Camera, diag = " << diag.transpose() << endl;
+//    cout<<"Camera, scene radius = " << radius << endl;
+
+    // Desired distance:  distance * tan(a) = radius
+    float distance = 1.5 * radius / tan(fovy * 3.1415927/180);
+//    cout<<"Camera::viewAll, angle = " << fovy << ", tan = " << tan(fovy) << ", distance = " << distance << endl;
+//    cout<<"Camera::viewAll, xmin xmax ymin ymax zmin zmax = " << xmin << " " << xmax <<" "<<ymin<<" "<<ymax<<" "<<zmin<<" "<<zmax<< endl;
+
+    // move the camera along the current camera-center line, at the right distance
+    // cam = cen + distance * (cam-cen)/|cam-cen|
+    Vec3 forward = pcen - eye();
+    float curdist = forward.norm();
+    Vec3 peye = pcen - forward * distance / curdist;
+
+    // update the depth bounds
+    znear = distance - radius*1.5;
+    zfar  = distance + radius*1.5;
+
+    setlookAt(peye(0),peye(1),peye(2),
+           pcen(0),pcen(1),pcen(2),
+           transform.linear()(1,0), transform.linear()(1,1), transform.linear()(1,2)); // use current y direction as up axis
+}
+
+
+void Camera::perspective( float f, float r, float zn, float zf )
+{
+    setPerspective(f,r,zn,zf);
+    perspective();
+}
+
+void Camera::setPerspective( float f, float r, float zn, float zf )
+{
+    fovy=f, ratio=r, znear=zn, zfar=zf;
+}
+
+void Camera::perspective()
+{
+    gluPerspective(fovy,ratio,znear,zfar);
+}
+
+
+void Camera::setlookAt(
+        float eyeX, float eyeY, float eyeZ,
+        float targetX, float targetY, float targetZ,
+        float upX, float upY, float upZ
+        )
+{
+    Vec3 eye(eyeX,eyeY,eyeZ), target(targetX,targetY,targetZ), upVec(upX,upY,upZ);
+//    cout<<"Camera::setLookAt " << eye.transpose() <<", " << target.transpose() << ", " << upVec.transpose() << endl;
 
     Vec3 forward = target - eye;
     forward.normalize();
@@ -44,7 +98,7 @@ void Camera::lookAt( Vec3 eye, Vec3 target, Vec3 upVec )
     // -orientation.transpose*translation
     transform.translation() = -transform.linear() * eye;
 
-//    cout<<"  transform matrix: " << endl << transform.matrix() << endl;
+//    cout<<"Camera::setLookAt,  transform matrix: " << endl << transform.matrix() << endl;
 
 }
 
@@ -130,6 +184,11 @@ bool Camera::handleMouseMotion( int x, int y )
     }
     return false;
 }
+
+Camera::Vec3 Camera::eye() const {
+    return - transform.linear().inverse() * transform.translation();
+}
+
 
 } // simplegui
 } // sofa

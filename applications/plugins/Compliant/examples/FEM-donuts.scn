@@ -6,11 +6,12 @@
   
       <RequiredPlugin pluginName="Flexible"/>
       <RequiredPlugin pluginName="Compliant"/>
+      
  <CompliantAttachButtonSetting compliance="0.001" isCompliance="0"/>
 	<Node name="compliant-stiffness (red)" activated="1" >
-		<AssembledSolver warm_start="true" />
-		
-		<MinresSolver iterations="200" precision="0" relative="false" />
+		<CompliantImplicitSolver warm_start="true" />
+<!--             <CompliantNLImplicitSolver iteration="100" precision="1e-5"/> -->
+		<MinresSolver iterations="200" precision="1e-5" relative="false" />
 		
 		<Node name="Flexible"  >
 			
@@ -44,8 +45,8 @@
 	</Node>
 
 	<Node name="compliant-compliant RG (blue)" activated="1">
-		<AssembledSolver warm_start="true" neglecting_compliance_forces_in_geometric_stiffness="false"/>
-		<MinresSolver iterations="200" precision="0" relative="false" />
+		<CompliantImplicitSolver warm_start="true" neglecting_compliance_forces_in_geometric_stiffness="false"/>
+		<MinresSolver iterations="200" precision="1e-5" relative="false" />
 		
 		<Node name="Flexible"  >
 			
@@ -64,8 +65,6 @@
 					<MechanicalObject  template="E331" name="E"  />
 	    		<CorotationalStrainMapping template="F331,E331" assemble="true" method="svd" geometricStiffness="1"/>
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="true" isCompliance="true"/>
-					<Stabilization/>
-<!--   <ConstraintValue/> -->
 				</Node>
 			</Node>
 			<Node 	name="mass"   >
@@ -81,8 +80,8 @@
 	</Node>
 	
 	<Node name="compliant-compliant no RG (green)" activated="1">
-		<AssembledSolver warm_start="true" neglecting_compliance_forces_in_geometric_stiffness="true"/>
-		<MinresSolver iterations="200" precision="0" relative="false" />
+		<CompliantImplicitSolver warm_start="true" neglecting_compliance_forces_in_geometric_stiffness="true"/>
+		<MinresSolver iterations="200" precision="1e-5" relative="false" />
 		
 		<Node name="Flexible"  >
 			
@@ -101,8 +100,6 @@
 					<MechanicalObject  template="E331" name="E"  />
 	    		<CorotationalStrainMapping template="F331,E331" assemble="true" method="svd" geometricStiffness="1"/>
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="true" isCompliance="true"/>
-<!-- 					<Stabilization/> -->
-  <ConstraintValue/>
 				</Node>
 			</Node>
 			<Node 	name="mass"   >
@@ -117,10 +114,10 @@
 		</Node>
 	</Node>
 
-	<Node name="not-assembled-stiffness second order (grey)" activated="1">
+	<Node name="not-assembled-stiffness second order (grey)" activated="0">
 		
 		<EulerImplicitSolver rayleighStiffness="0" rayleighMass="0" vdamping="0"  />
-		<MinResLinearSolver iterations="200" tolerance="0" />
+		<MinResLinearSolver iterations="200" tolerance="1e-5" />
 		<Node name="Flexible2"  >
 			
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />

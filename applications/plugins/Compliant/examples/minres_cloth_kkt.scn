@@ -7,7 +7,7 @@
 
 <CompliantAttachButtonSetting button="Left" />
 <Node 	name="complianceSolverScene" >
-	<AssembledSolver />
+	<CompliantImplicitSolver />
 	<MinresSolver verbose="0" iterations="20" precision="1e-3" relative="false" />
 
     <GridMeshCreator name="loader" filename="nofile" resolution="20 20" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
