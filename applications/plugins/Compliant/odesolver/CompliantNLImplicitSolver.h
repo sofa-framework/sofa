@@ -66,7 +66,7 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
     /// compute a first approximation with the regular, linearized system
     void firstGuess( SolverOperations& sop, core::MultiVecCoordId posId, core::MultiVecDerivId velId );
 
-    void compute_forces(SolverOperations& sop, core::behavior::MultiVecDeriv& f, core::behavior::MultiVecDeriv& c );
+    virtual void compute_forces(SolverOperations& sop, core::behavior::MultiVecDeriv& f, core::behavior::MultiVecDeriv& c, bool stabilizing=false );
 
     /// Residual of the non-linear implicit integration equation
     SReal compute_residual( SolverOperations sop, MultiVecDerivId residual, MultiVecCoordId newX, const MultiVecDerivId newV, MultiVecDerivId newF, MultiVecCoordId oldX, MultiVecDerivId oldV, MultiVecDerivId oldF, const vec& lambda, chuck_type* residual_constraints=NULL );

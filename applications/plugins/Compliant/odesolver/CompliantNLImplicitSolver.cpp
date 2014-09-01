@@ -889,12 +889,14 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
 }
 
 
-void CompliantNLImplicitSolver::compute_forces(SolverOperations& sop, core::behavior::MultiVecDeriv& f, core::behavior::MultiVecDeriv& c )
+void CompliantNLImplicitSolver::compute_forces(SolverOperations& sop, core::behavior::MultiVecDeriv& f, core::behavior::MultiVecDeriv& c, bool stabilizing )
 {
     if( !staticSolver.getValue() )
-        return CompliantImplicitSolver::compute_forces( sop, f, c );
+        return CompliantImplicitSolver::compute_forces( sop, f, c, stabilizing );
     else
     {
+        std::cerr<<SOFA_CLASS_METHOD<<"Static solver does not work!\n";
+
         scoped::timer step("implicit rhs computation");
 
         {
