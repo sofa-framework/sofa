@@ -422,7 +422,7 @@ void CompliantNLImplicitSolver::compute_jacobian(SolverOperations sop)
 }
 
 
-void CompliantNLImplicitSolver::integrate( SolverOperations sop, core::MultiVecCoordId oldPos, core::MultiVecCoordId newPos, core::MultiVecDerivId vel )
+void CompliantNLImplicitSolver::integrate( SolverOperations& sop, core::MultiVecCoordId oldPos, core::MultiVecCoordId newPos, core::MultiVecDerivId vel )
 {
     core::behavior::BaseMechanicalState::VMultiOp multi;
     multi.resize(1);
@@ -923,7 +923,7 @@ void CompliantNLImplicitSolver::compute_forces(SolverOperations& sop, core::beha
     }
 }
 
-void CompliantNLImplicitSolver::firstGuess( SolverOperations sop, core::MultiVecCoordId posId, core::MultiVecDerivId velId )
+void CompliantNLImplicitSolver::firstGuess( SolverOperations& sop, core::MultiVecCoordId posId, core::MultiVecDerivId velId )
 {
     MultiVecDeriv f( &sop.vop, core::VecDerivId::force() ); // total force (stiffness + compliance)
     _ck.realloc( &sop.vop, false, true ); // the right part of the implicit system (c_k term)
