@@ -230,7 +230,7 @@ void MeshSampler<DataTypes>::computeDistances(VD& distances, VI& voronoi,const V
 
 
 template <class DataTypes>
-void MeshSampler<DataTypes>::draw(const core::visual::VisualParams* vparams)
+void MeshSampler<DataTypes>::draw(const core::visual::VisualParams* /*vparams*/)
 {
 
 }
