@@ -76,7 +76,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 {
     if (!after) after = BaseContext::getDefault();
     if (before == after) return;
-    for (unsigned int i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
+    for (size_t i = 0; i < l_slaves.size(); ++i) l_slaves.get(i)->l_context.set(after);
     if (after != BaseContext::getDefault())
     {
         // update links
@@ -85,7 +85,7 @@ void BaseObject::changeContextLink(BaseContext* before, BaseContext*& after)
 }
 
 /// This method insures that slaves objects have master and context links set correctly
-void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, unsigned int /*index*/, bool add)
+void BaseObject::changeSlavesLink(BaseObject::SPtr ptr, size_t /*index*/, bool add)
 {
     if (!ptr) return;
     if (add) { ptr->l_master.set(this); ptr->l_context.set(getContext()); }
