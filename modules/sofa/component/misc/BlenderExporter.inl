@@ -57,18 +57,18 @@ namespace sofa
                     serr<<"Initialization failed!"<<sendl;
                 Inherit::init();
                 // if hair type simulation, create an additional information frame 
-                if(simulationType.getValue()==SimulationType::Hair)
+                if(simulationType.getValue()==Hair)
                 {
                     ostringstream iss;
                     iss<<path.getValue()<<"/"<<baseName.getValue()<<"_000000_00.bphys";
                     string fileName = iss.str();
                     // create the file
-                    ofstream file(fileName, ios::out|ios::binary);
+                    ofstream file(fileName.c_str(), ios::out|ios::binary);
                     if(file)
                     {
                         sout<<"writing in "<<fileName<<sendl;
-                        char *bphysics = "BPHYSICS";
-                        file.write(bphysics,8);
+                        const string bphysics = "BPHYSICS";
+                        file.write(bphysics.c_str(),8);
                         unsigned tmp[3]={1,1,64};
                         file.write((char*)&tmp,12);
                         float tmp2[3]={0,100,100};
@@ -99,7 +99,7 @@ namespace sofa
                         string fileName = iss.str();
 
                         // create the file
-                        ofstream file(fileName, ios::out|ios::binary);
+                        ofstream file(fileName.c_str(), ios::out|ios::binary);
 
                         if(file)
                         {
@@ -107,20 +107,20 @@ namespace sofa
 
                             // ############# write header
 
-                            char *bphysics = "BPHYSICS";
-                            file.write(bphysics,8);
+                            const string bphysics = "BPHYSICS";
+                            file.write(bphysics.c_str(),8);
 
                             // types
                             unsigned type;
-                            if(simulationType.getValue()==SimulationType::Hair)
-                                type = SimulationType::Cloth; // blender hair exception
+                            if(simulationType.getValue()==Hair)
+                                type = Cloth; // blender hair exception
                             else
                                 type = simulationType.getValue();
                             file.write((char*)&type,4);
 
                             // number of data
                             unsigned size = mmodel->getSize();
-                            if(simulationType.getValue()==SimulationType::Hair)
+                            if(simulationType.getValue()==Hair)
                             {
                                 unsigned sizeHair = size+size/(nbPtsByHair.getValue());
                                 file.write((char*)&sizeHair,4);
@@ -132,9 +132,9 @@ namespace sofa
                             unsigned dataType;
                             switch (simulationType.getValue())
                             {
-                            case SimulationType::SoftBody: dataType = 6;
+                            case SoftBody: dataType = 6;
                                 break;
-                            case SimulationType::Hair: dataType = 22;
+                            case Hair: dataType = 22;
                                 break;
                             default:  dataType = 6;
                                 break;
@@ -153,14 +153,14 @@ namespace sofa
                             ReadVecCoord posData = mmodel->readPositions();
 
 
-                            for(unsigned i=size-1; i>=0; i--)
+                            for(int i=(int)size-1; i>=0; i--)
                             {
                                 //create an additional point for root tangent
-                                if((simulationType.getValue() == SimulationType::Hair && (i%nbPtsByHair.getValue()==0)))
+                                if((simulationType.getValue() == Hair && (i%nbPtsByHair.getValue()==0)))
                                 {
 
-                                    Vector3  x0 = T::getCPos(posData[i]);
-                                    Vector3  x1 = T::getCPos(posData[i+1]);
+                                   defaulttype::Vector3  x0 = T::getCPos(posData[i]);
+                                   defaulttype::Vector3  x1 = T::getCPos(posData[i+1]);
 
                                     x1 = x1-x0;
                                    // sout<<"tangeant direction: "<<x1<<sendl;
@@ -207,11 +207,11 @@ namespace sofa
 
                                 switch (simulationType.getValue())
                                 {
-                                case SimulationType::SoftBody: 
+                                case SoftBody:
                                     file.write((char*)pos,12);
                                     file.write((char*)vel,12);
                                     break;
-                                case SimulationType::Hair: 
+                                case Hair:
                                     file.write((char*)pos,12);
                                     file.write((char*)vel,12);
                                     file.write((char*)rest,12);

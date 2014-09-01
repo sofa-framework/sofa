@@ -68,12 +68,12 @@ namespace sofa
             public:
                 typedef core::objectmodel::BaseObject Inherit;
                 typedef sofa::core::State<T> DataType;
-                typename typedef DataType::VecCoord VecCoord;
-                typename typedef DataType::VecDeriv VecDeriv;
-                typename typedef DataType::Coord Coord;
-                typename typedef DataType::Deriv Deriv;
-                typename typedef DataType::ReadVecDeriv ReadVecDeriv;
-                typename typedef DataType::ReadVecCoord ReadVecCoord;
+                typedef typename DataType::VecCoord VecCoord;
+                typedef typename DataType::VecDeriv VecDeriv;
+                typedef typename DataType::Coord Coord;
+                typedef typename DataType::Deriv Deriv;
+                typedef typename DataType::ReadVecDeriv ReadVecDeriv;
+                typedef typename DataType::ReadVecCoord ReadVecCoord;
 
                 typedef enum{SoftBody,Particle,Cloth,Hair}SimulationType;
 
@@ -115,8 +115,8 @@ namespace sofa
 
                 /// Pre-construction check method called by ObjectFactory.
                 /// Check that DataTypes matches the MechanicalState.
-                template<class T>
-                static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+                template<class T2>
+                static bool canCreate(T2*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
                 {
                     if (dynamic_cast<DataType*>(context->getState()) == NULL)
                         return false;
