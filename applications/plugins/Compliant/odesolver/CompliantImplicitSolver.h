@@ -211,7 +211,9 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     Data<bool> warm_start, propagate_lambdas, debug;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 	Data<SReal> stabilization_damping;
+    Data<bool> use_velocity;
     Data<bool> neglecting_compliance_forces_in_geometric_stiffness; ///< isn't the name clear enough?
+
 
   protected:
 
@@ -225,9 +227,15 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     void send(simulation::Visitor& vis);
 			  
 	// integrate positions
-    virtual void integrate( const core::MechanicalParams* params,
+    virtual void integrate( SolverOperations& sop,
                             const core::MultiVecCoordId& posId,
                             const core::MultiVecDerivId& velId );
+
+    // integrate positions and velocities
+    virtual void integrate( SolverOperations& sop,
+                            const core::MultiVecCoordId& posId,
+                            const core::MultiVecDerivId& velId,
+                            const core::MultiVecDerivId& accId );
 
 	// propagate velocities
     void propagate(const core::MechanicalParams* params);
@@ -322,6 +330,7 @@ protected:
 
     /// temporary multivecs
     core::behavior::MultiVecDeriv _ck; ///< the right part of the implicit system (c_k term)
+    core::behavior::MultiVecDeriv _acc; ///< acceleration when !use_velocity
 
 
 };

@@ -61,10 +61,10 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
 
 
     /// newPos = oldPos + beta*h*vel
-    void integrate( SolverOperations sop, core::MultiVecCoordId oldPos, core::MultiVecCoordId newPos, core::MultiVecDerivId vel );
+    void integrate( SolverOperations& sop, core::MultiVecCoordId oldPos, core::MultiVecCoordId newPos, core::MultiVecDerivId vel );
 
     /// compute a first approximation with the regular, linearized system
-    void firstGuess( SolverOperations sop, core::MultiVecCoordId posId, core::MultiVecDerivId velId );
+    void firstGuess( SolverOperations& sop, core::MultiVecCoordId posId, core::MultiVecDerivId velId );
 
     void compute_forces(SolverOperations& sop, core::behavior::MultiVecDeriv& f, core::behavior::MultiVecDeriv& c );
 
