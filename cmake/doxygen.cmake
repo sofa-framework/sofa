@@ -60,7 +60,7 @@ if (SOFA-MISC_DOXYGEN)
         set(tag_files)
         foreach(dependency ${dependencies})
             list(APPEND dependencies_targets "doc-${dependency}")
-            set(tag_files "${tag_files} misc/doxygen-tags/${dependency}=../${dependency}")
+            set(tag_files "${tag_files} misc/doxygen-tagfiles/${dependency}=../${dependency}")
         endforeach()
 
         # Generate a Doxyfile based on Doxyfile.in, with configure_file()
