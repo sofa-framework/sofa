@@ -128,6 +128,9 @@ protected:
 	// control how fast the animation is played since animation time is not simulation time
 	Data<float>											animationSpeed;
 
+    /// is the projective constraint activated?
+    Data<bool>                                          active;
+
 private:
     /// the key times surrounding the current simulation time (for interpolation)
     Real												prevT, nextT;
