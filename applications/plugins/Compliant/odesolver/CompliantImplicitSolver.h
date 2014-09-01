@@ -254,8 +254,9 @@ public:
 
     /// Compute the forces f (summing stiffness and compliance) and the right part of the implicit system c (c_k in compliant-reference.pdf, section 3)
     virtual void compute_forces(SolverOperations& sop,
-                               core::behavior::MultiVecDeriv& f,
-                               core::behavior::MultiVecDeriv& c );
+                                core::behavior::MultiVecDeriv& f,
+                                core::behavior::MultiVecDeriv& c,
+                                bool stabilizing = false );
 
 
     /// evaluate violated and active constraints
