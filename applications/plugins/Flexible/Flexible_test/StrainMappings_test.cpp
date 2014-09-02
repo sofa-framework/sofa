@@ -250,9 +250,9 @@ namespace sofa {
 
 
         /// since principal stretches are oder-independent, sort them before comparison
-        virtual OutCoord difference( const OutCoord& a, const OutCoord& b )
+        virtual OutDeriv difference( const OutCoord& a, const OutCoord& b )
         {
-            return sort(a)-sort(b);
+            return (OutDeriv)(sort(a)-sort(b));
         }
 
 
