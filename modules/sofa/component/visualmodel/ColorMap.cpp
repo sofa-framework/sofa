@@ -135,6 +135,14 @@ ColorMap::ColorMap()
 
 }
 
+ColorMap::~ColorMap() {
+    // Workaround: for some reason, if 'texture' is 0, calling
+    // glDeleteTexture() can cause a crash on some OS X systems,
+    // although it should just ignore it.
+    if (texture != 0)
+        glDeleteTextures(1, &texture);
+}
+
 // For backward compatibility only
 // TODO: remove this later
 void ColorMap::initOld(const std::string &data)
