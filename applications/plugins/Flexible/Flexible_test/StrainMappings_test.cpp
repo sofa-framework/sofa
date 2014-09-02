@@ -235,6 +235,7 @@ namespace sofa {
         typedef typename Inherited::Real Real;
         typedef typename Inherited::OutVecCoord OutVecCoord;
         typedef typename Inherited::OutCoord OutCoord;
+        typedef typename Inherited::OutDeriv OutDeriv;
         typedef typename Inherited::OutVecDeriv OutVecDeriv;
 
 
