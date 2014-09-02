@@ -103,10 +103,9 @@ using namespace core::behavior;
 									   "stabilization_damping",
 									   "stabilization damping hint to relax infeasible problems"))
 
-          , use_velocity(initData(&use_velocity,
-            true,
-            "use_velocity",
-            "solve velocity dynamics (otherwise acceleration). this might cause damping when used with iterative solver unless warm_start is on, and less projective constraints can work."))
+          , formulation(initData(&formulation,
+            "formulation",
+            "solve dynamics on velocity (vel) or velocity variation (dv) or acceleration (acc)"))
 
           , neglecting_compliance_forces_in_geometric_stiffness(initData(&neglecting_compliance_forces_in_geometric_stiffness,
             true,
@@ -124,6 +123,14 @@ using namespace core::behavior;
         stabilizationOptions.setItemName( POST_STABILIZATION_ASSEMBLY, "post-stabilization assembly" );
         stabilizationOptions.setSelectedItem( PRE_STABILIZATION );
         stabilization.setValue( stabilizationOptions );
+
+        helper::OptionsGroup formulationOptions;
+        formulationOptions.setNbItems( NB_FORMULATION );
+        formulationOptions.setItemName( FORMULATION_VEL, "vel" );
+        formulationOptions.setItemName( FORMULATION_DV,  "dv"  );
+        formulationOptions.setItemName( FORMULATION_ACC, "acc" );;
+        formulationOptions.setSelectedItem( FORMULATION_VEL );
+        formulation.setValue( formulationOptions );
     }
 
 
@@ -161,7 +168,8 @@ using namespace core::behavior;
     void CompliantImplicitSolver::integrate( SolverOperations& sop,
                                      const core::MultiVecCoordId& posId,
                                      const core::MultiVecDerivId& velId,
-                                     const core::MultiVecDerivId& accId ) {
+                                     const core::MultiVecDerivId& accId,
+                                     const SReal& accFactor ) {
         scoped::timer step("position integration");
         const SReal& dt = sop.mparams().dt();
 
@@ -173,16 +181,16 @@ using namespace core::behavior;
         multi[0].first = posId;
         multi[0].second.push_back( std::make_pair(posId, 1.0) );
         multi[0].second.push_back( std::make_pair(velId, dt*beta.getValue()) );
-        multi[0].second.push_back( std::make_pair(accId, dt*dt*beta.getValue()) );
+        multi[0].second.push_back( std::make_pair(accId, accFactor*dt*beta.getValue()) );
 
         multi[1].first = velId;
         multi[1].second.push_back( std::make_pair(velId, 1.0) );
-        multi[1].second.push_back( std::make_pair(accId, dt) );
+        multi[1].second.push_back( std::make_pair(accId, accFactor) );
 
         sop.vop.v_multiop( multi );
 
 
-//        sop.vop.v_peq( velId, accId, dt );
+//        sop.vop.v_peq( velId, accId, accFactor );
 //        integrate( sop, posId, velId );
     }
 
@@ -205,8 +213,7 @@ using namespace core::behavior;
 
         scoped::timer step("compute_forces");
 
-        SReal factor = use_velocity.getValue() ? sop.mparams().dt() : 1.0;
-
+        SReal factor = ( (formulation.getValue().getSelectedId()==FORMULATION_ACC) ? 1.0 : sop.mparams().dt() );
 
         {
             scoped::timer substep("forces computation");
@@ -282,20 +289,26 @@ using namespace core::behavior;
         SReal m_factor, b_factor, k_factor;
         const SReal& h = sys.dt;
 
-        if( use_velocity.getValue() ) // c_k = h.f_k + Mv
+        switch( formulation.getValue().getSelectedId() )
         {
+        case FORMULATION_VEL: // c_k = h.f_k + Mv
             // M v_k
             m_factor = 1;
             // h (1-alpha) B v_k
             b_factor = h * (1 - alpha.getValue());
             // h^2 alpha (1 - beta ) K v_k
             k_factor = h * h * alpha.getValue() * (1 - beta.getValue());
-        }
-        else // acceleration: c_k = f_k + hKv + Dv
-        {
+            break;
+        case FORMULATION_DV: // c_k = h.f_k + h²Kv + hDv
+            m_factor = 0.0;
+            b_factor = h;
+            k_factor = h*h*alpha.getValue();
+            break;
+        case FORMULATION_ACC: // c_k = f_k + hKv + Dv
             m_factor = 0.0;
             b_factor = 1.0;
             k_factor = h*alpha.getValue();
+            break;
         }
 
         {
@@ -354,7 +367,10 @@ using namespace core::behavior;
 
             // adjust compliant value based on alpha/beta
 
-            if( use_velocity.getValue() ) // ( phi/a -(1-b)*J.v ) / b
+
+            switch( formulation.getValue().getSelectedId() )
+            {
+            case FORMULATION_VEL: // ( phi/a -(1-b)*J.v ) / b
             {
                 if( alpha.getValue() != 1 ) res.segment(off,total_dim) /= alpha.getValue();
                 if( beta.getValue() != 1 )
@@ -366,22 +382,34 @@ using namespace core::behavior;
                     res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - (1 - beta.getValue()) * v_constraint;
                     res.segment(off,total_dim) /= beta.getValue();
                 }
+                break;
             }
-            else // ( phi/a -J.v ) / bh
+            case FORMULATION_DV: // ( phi/a -J.v ) / b
             {
                 if( alpha.getValue() != 1 ) res.segment(off,total_dim) /= alpha.getValue();
 
                 vec v_constraint( total_dim );
                 dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
 
-//                vec v (sys.m);
-//                get_state( v, sys, velId );
+                res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - v_constraint;
 
+                res.segment(off,total_dim) /= beta.getValue();
 
+                break;
+            }
+            case FORMULATION_ACC: // ( phi/a -J.v ) / bh
+            {
+                if( alpha.getValue() != 1 ) res.segment(off,total_dim) /= alpha.getValue();
+
+                vec v_constraint( total_dim );
+                dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
 
                 res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - v_constraint;
 
                 res.segment(off,total_dim) /= ( beta.getValue() * sys.dt );
+
+                break;
+            }
             }
 
             off += total_dim;
@@ -528,7 +556,7 @@ using namespace core::behavior;
 //        simulation::common::MechanicalOperations mop( params, this->getContext() );
 //        simulation::common::VectorOperations vop( params, this->getContext() );
 
-        bool useVelocity = use_velocity.getValue();
+        bool useVelocity = (formulation.getValue().getSelectedId()==FORMULATION_VEL);
 
         SolverOperations sop( params, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId );
 
@@ -623,15 +651,20 @@ using namespace core::behavior;
                 }
 
 
-                if( useVelocity )
+                switch( formulation.getValue().getSelectedId() )
                 {
+                case FORMULATION_VEL: // p+ = p- + h.v
                     set_state( sys, x, velId ); // set v and lambda
                     integrate( sop, posId, velId );
-                }
-                else
-                {
-                   set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
-                   integrate( sop, posId, velId, _acc.id() );
+                    break;
+                case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
+                    set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+                    integrate( sop, posId, velId, _acc.id(), 1.0  );
+                    break;
+                case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
+                    set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+                    integrate( sop, posId, velId, _acc.id(), dt  );
+                    break;
                 }
 
                 // TODO is this even needed at this point ?
