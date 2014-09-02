@@ -154,6 +154,13 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     }
 
 
+    /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
+      */
+    virtual OutDeriv difference( const OutCoord& a, const OutCoord& b )
+    {
+        return Out::coordDifference(a,b);
+    }
+
     /** Possible child force pre-treatment, does nothing by default
       */
     virtual OutVecDeriv preTreatment( const OutVecDeriv& f ) { return f; }
@@ -204,7 +211,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         bool succeed=true;
         for( unsigned i=0; i<xout.size(); i++ )
         {
-            if( !this->isSmall( Out::coordDifference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
+            if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i];
                 succeed = false;
             }
@@ -308,14 +315,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData( pin, xp1 );
 //        cout<<"new parent positions xp1 = " << xp1 << endl;
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
-        WriteOutVecCoord pout = outDofs->writePositions();
+        WriteOutVecDeriv pout = outDofs->writePositions();
         copyFromData( xc1, pout );
 //        cout<<"new child positions xc1 = " << xc1 << endl;
 
         // ================ test applyJ: compute the difference between propagated displacements and velocities
         OutVecDeriv dxc(Nc);
         for(unsigned i=0; i<Nc; i++ ){
-            dxc[i] =  Out::coordDifference(xc1[i], xc[i]);
+            dxc[i] = difference( xc1[i], xc[i] );
         }
         if( this->vectorMaxDiff(dxc,vc)>this->epsilon()*errorMax ){
             succeed = false;
