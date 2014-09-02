@@ -8,12 +8,15 @@
     <CompliantAttachButtonSetting button="Left" />
 
 
+    
+<Node name="ELASTIC">
 
 <Node   name="compliance" >
 
     <Node 	name="acc" >
         <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="1" use_velocity="0" warm_start="1" stabilization="0" implicitPosition="0.5" implicitVelocity="0.5"/>
-        <MinresSolver iterations="20" precision="1e-3" />
+        <MinresSolver iterations="100" precision="1e-10" />
+<!--         <LDLTSolver/> -->
     
         <GridMeshCreator name="loader" filename="nofile" resolution="5 5" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
         <MeshTopology name="mesh" src="@loader" />
@@ -33,7 +36,8 @@
 
     <Node   name="vel" >
         <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="1" use_velocity="1" warm_start="1" stabilization="0" implicitPosition="0.5" implicitVelocity="0.5"/>
-        <MinresSolver iterations="20" precision="1e-3" />
+        <MinresSolver iterations="100" precision="1e-10" />
+<!--         <LDLTSolver/> -->
     
         <GridMeshCreator name="loader" filename="nofile" resolution="5 5" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
         <MeshTopology name="mesh" src="@loader" />
@@ -93,7 +97,50 @@
 
 </Node>
 
+</Node>
 
+<Node name="HARD">
+
+<Node name="no-stab" >
+
+    <Node name="acc" >
+        <CompliantImplicitSolver use_velocity="0" warm_start="1" stabilization="0" />
+        <MinresSolver iterations="20" precision="1e-3" />
+    
+        <GridMeshCreator name="loader" filename="nofile" resolution="5 5" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" translation="2.4 0 0"/>
+        <MeshTopology name="mesh" src="@loader" />
+        <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+        <BoxConstraint box="2.395 -0.005 -0.005    3.405 0.005 0.005  " />
+        <UniformMass  name="mass" />
+        <Node name="extensionsNode" >
+            <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+            <EdgeSetTopologyContainer edges="@../mesh.edges" />
+            <DistanceMapping/>
+            <UniformCompliance name="ucomp" template="Vec1d" compliance="0" isCompliance="1" />
+        </Node>
+    </Node>
+
+
+
+
+    <Node name="vel" >
+        <CompliantImplicitSolver use_velocity="1" warm_start="1" stabilization="0" />
+        <MinresSolver iterations="20" precision="1e-3" />
+    
+        <GridMeshCreator name="loader" filename="nofile" resolution="5 5" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" translation="2.4 0 0"/>
+        <MeshTopology name="mesh" src="@loader" />
+        <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+        <BoxConstraint box="2.395 -0.005 -0.005    3.405 0.005 0.005  " />
+        <UniformMass  name="mass" />
+        <Node name="extensionsNode" >
+            <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+            <EdgeSetTopologyContainer edges="@../mesh.edges" />
+            <DistanceMapping/>
+            <UniformCompliance name="ucomp" template="Vec1d" compliance="0" isCompliance="1" />
+        </Node>
+    </Node>
+
+</Node>
 
 <Node name="pre-stab" >
 
@@ -174,6 +221,8 @@
             <UniformCompliance name="ucomp" template="Vec1d" compliance="0" isCompliance="1" />
         </Node>
     </Node>
+
+</Node>
 
 </Node>
 
