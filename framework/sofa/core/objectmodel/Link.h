@@ -166,7 +166,7 @@ public:
     {
         return rend();
     }
-    size_t size() const
+    unsigned int size() const
     {
         return (!elems[0])?0:1;
     }
@@ -186,19 +186,19 @@ public:
     {
         return elems[0];
     }
-    const TPtr& operator[](size_t i) const
+    const TPtr& operator[](unsigned int i) const
     {
         return elems[i];
     }
-    TPtr& operator[](size_t i)
+    TPtr& operator[](unsigned int i)
     {
         return elems[i];
     }
-    const TPtr& operator()(size_t i) const
+    const TPtr& operator()(unsigned int i) const
     {
         return elems[i];
     }
-    TPtr& operator()(size_t i)
+    TPtr& operator()(unsigned int i)
     {
         return elems[i];
     }
@@ -222,17 +222,17 @@ public:
     {
         c.clear();
     }
-    static size_t add(T& c, TDestPtr v)
+    static unsigned int add(T& c, TDestPtr v)
     {
         c.get() = v;
         return 0;
     }
-    static size_t find(const T& c, TDestPtr v)
+    static unsigned int find(const T& c, TDestPtr v)
     {
         if (c.get() == v) return 0;
         else return 1;
     }
-    static void remove(T& c, size_t index)
+    static void remove(T& c, unsigned index)
     {
         if (!index)
             c.clear();
@@ -253,20 +253,20 @@ public:
     {
         c.clear();
     }
-    static size_t add(T& c, TDestPtr v)
+    static unsigned int add(T& c, TDestPtr v)
     {
-        size_t index = c.size();
+        unsigned int index = static_cast<unsigned int>(c.size());
         c.push_back(TValueType(v));
         return index;
     }
-    static size_t find(const T& c, TDestPtr v)
+    static unsigned int find(const T& c, TDestPtr v)
     {
         size_t s = c.size();
         for (size_t i=0; i<s; ++i)
-            if (c[i] == v) return i;
-        return s;
+            if (c[i] == v) return static_cast<unsigned int>(i);
+        return static_cast<unsigned int>(s);
     }
-    static void remove(T& c, size_t index)
+    static void remove(T& c, unsigned index)
     {
         size_t s = c.size();
         for (size_t i=index+1; i < s; ++i)
@@ -348,9 +348,9 @@ public:
     {
     }
 
-    size_t size(const core::ExecParams* params = 0) const
+    unsigned int size(const core::ExecParams* params = 0) const
     {
-        return m_value[core::ExecParams::currentAspect(params)].size();
+        return (unsigned int)m_value[core::ExecParams::currentAspect(params)].size();
     }
 
     bool empty(const core::ExecParams* params = 0) const
@@ -387,7 +387,7 @@ public:
     {
         if (!v) return false;
         const int aspect = core::ExecParams::currentAspect();
-        size_t index = TraitsContainer::add(m_value[aspect],v);
+        unsigned int index = TraitsContainer::add(m_value[aspect],v);
         this->updateCounter(aspect);
         added(v, index);
         return true;
@@ -397,7 +397,7 @@ public:
     {
         if (!v && path.empty()) return false;
         const int aspect = core::ExecParams::currentAspect();
-        size_t index = TraitsContainer::add(m_value[aspect],v);
+        unsigned int index = TraitsContainer::add(m_value[aspect],v);
         TraitsValueType::setPath(m_value[aspect][index],path);
         this->updateCounter(aspect);
         added(v, index);
@@ -417,7 +417,7 @@ public:
     {
         if (!v) return false;
         const int aspect = core::ExecParams::currentAspect();
-        size_t index = TraitsContainer::find(m_value[aspect],v);
+        unsigned int index = TraitsContainer::find(m_value[aspect],v);
         if (index >= m_value[aspect].size()) return false;
         TraitsContainer::remove(m_value[aspect],index);
         this->updateCounter(aspect);
@@ -429,8 +429,8 @@ public:
     {
         if (path.empty()) return false;
         const int aspect = core::ExecParams::currentAspect();
-        size_t n = m_value[aspect].size();
-        for (size_t index=0; index<n; ++index)
+        unsigned int n = m_value[aspect].size();
+        for (unsigned int index=0; index<n; ++index)
         {
             std::string p = getPath(index);
             if (p == path)
@@ -455,12 +455,12 @@ public:
         return OwnerType::GetClass();
     }
 
-    size_t getSize() const
+    unsigned int getSize() const
     {
         return size();
     }
 
-    std::string getPath(size_t index) const
+    std::string getPath(unsigned int index) const
     {
         const int aspect = core::ExecParams::currentAspect();
         if (index >= m_value[aspect].size())
@@ -477,15 +477,15 @@ public:
         return path;
     }
 
-    Base* getLinkedBase(size_t index=0) const
+    Base* getLinkedBase(unsigned int index=0) const
     {
         return TraitsDestCasts::getBase(getIndex(index));
     }
-    BaseData* getLinkedData(size_t index=0) const
+    BaseData* getLinkedData(unsigned int index=0) const
     {
         return TraitsDestCasts::getData(getIndex(index));
     }
-    std::string getLinkedPath(size_t index=0) const
+    std::string getLinkedPath(unsigned int index=0) const
     {
         return getPath(index);
     }
@@ -591,7 +591,7 @@ protected:
     OwnerType* m_owner;
     helper::fixed_array<Container, SOFA_DATA_MAX_ASPECTS> m_value;
 
-    DestType* getIndex(size_t index) const
+    DestType* getIndex(unsigned int index) const
     {
         const int aspect = core::ExecParams::currentAspect();
         if (index < m_value[aspect].size())
@@ -600,8 +600,8 @@ protected:
             return NULL;
     }
 
-    virtual void added(DestPtr ptr, size_t index) = 0;
-    virtual void removed(DestPtr ptr, size_t index) = 0;
+    virtual void added(DestPtr ptr, unsigned int index) = 0;
+    virtual void removed(DestPtr ptr, unsigned int index) = 0;
 };
 
 /**
@@ -625,7 +625,7 @@ public:
     typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
     typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
-    typedef void (OwnerType::*ValidatorFn)(DestPtr v, size_t index, bool add);
+    typedef void (OwnerType::*ValidatorFn)(DestPtr v, unsigned int index, bool add);
 
     MultiLink(const BaseLink::InitLink<OwnerType>& init)
         : Inherit(init), m_validator(NULL)
@@ -670,8 +670,8 @@ public:
         if (!this->m_owner) return false;
         bool ok = true;
         const int aspect = core::ExecParams::currentAspect();
-        size_t n = this->size();
-        for (size_t i=0; i<n; ++i)
+        unsigned int n = this->size();
+        for (unsigned int i=0; i<n; ++i)
         {
             ValueType& value = this->m_value[aspect][i];
             std::string path;
@@ -698,7 +698,7 @@ public:
         return ok;
     }
 
-    DestType* get(size_t index, const core::ExecParams* params = 0) const
+    DestType* get(unsigned int index, const core::ExecParams* params = 0) const
     {
         const int aspect = core::ExecParams::currentAspect(params);
         if (index < this->m_value[aspect].size())
@@ -707,7 +707,7 @@ public:
             return NULL;
     }
 
-    DestType* operator[](size_t index) const
+    DestType* operator[](unsigned int index) const
     {
         return get(index);
     }
@@ -715,13 +715,13 @@ public:
 protected:
     ValidatorFn m_validator;
 
-    void added(DestPtr val, size_t index)
+    void added(DestPtr val, unsigned int index)
     {
         if (m_validator)
             (this->m_owner->*m_validator)(val, index, true);
     }
 
-    void removed(DestPtr val, size_t index)
+    void removed(DestPtr val, unsigned int index)
     {
         if (m_validator)
             (this->m_owner->*m_validator)(val, index, false);
@@ -880,7 +880,7 @@ protected:
     ValidatorFn m_validator;
 
 
-    void added(DestPtr val, size_t /*index*/)
+    void added(DestPtr val, unsigned int /*index*/)
     {
         if (m_validator)
         {
@@ -891,7 +891,7 @@ protected:
         }
     }
 
-    void removed(DestPtr val, size_t /*index*/)
+    void removed(DestPtr val, unsigned int /*index*/)
     {
         if (m_validator)
         {
