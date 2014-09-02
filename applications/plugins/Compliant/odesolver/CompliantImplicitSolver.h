@@ -252,12 +252,11 @@ public:
 	typedef system_type::vec vec;
 
 
-    /// Compute the forces f (summing stiffness and compliance) and the right part of the implicit system c (c_k in compliant-reference.pdf, section 3)
+    /// Compute the forces f (stiffness and constraint forces)
     virtual void compute_forces(SolverOperations& sop,
-                                core::behavior::MultiVecDeriv& f,
-                                core::behavior::MultiVecDeriv& c,
-                                bool stabilizing = false );
-
+                                core::behavior::MultiVecDeriv& f,  // the total force sum (stiffness + constraint forces if required)
+                                core::behavior::MultiVecDeriv* f_k = NULL // the stiffness force only
+                               );
 
     /// evaluate violated and active constraints
     void filter_constraints(const core::MultiVecCoordId& posId) const;
@@ -267,7 +266,11 @@ public:
 
 
     /// linear rhs (ode & constraints) for dynamics steps
-    virtual void rhs_dynamics(vec& res, const system_type& sys, const core::behavior::MultiVecDeriv& b,
+    /// the right part of the implicit system c (c_k in compliant-reference.pdf, section 3)
+    /// f_k(in) must contain the stiffness forces, and (out) it will contains c_k
+    virtual void rhs_dynamics(SolverOperations& sop,
+                              vec& res, const system_type& sys,
+                              core::behavior::MultiVecDeriv& f_k,
                               core::MultiVecCoordId posId,
                               core::MultiVecDerivId velId ) const;
 
