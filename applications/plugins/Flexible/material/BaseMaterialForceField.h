@@ -253,6 +253,9 @@ public:
         return material[index].getPotentialEnergy( x[index] );
     }
 
+
+    Data<bool> assemble;
+
 protected:
 
     BaseMaterialForceFieldT(core::behavior::MechanicalState<DataTypes> *mm = NULL)
@@ -265,8 +268,6 @@ protected:
     virtual ~BaseMaterialForceFieldT()    {     }
 
     SparseMatrix material;
-
-    Data<bool> assemble;
 
     SparseMatrixEigen C;
 
