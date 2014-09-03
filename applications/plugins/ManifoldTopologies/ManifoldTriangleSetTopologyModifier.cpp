@@ -570,7 +570,7 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
 
         bool before = true;
         unsigned int bord = 0;
-        unsigned int bord2 = 0;
+//        unsigned int bord2 = 0;
         unsigned int cpt = 0;
 
 
@@ -775,7 +775,7 @@ void ManifoldTriangleSetTopologyModifier::reorderingEdge(const unsigned int edge
         helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = m_container->d_edge;
         helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
 
-        Edge the_edge = m_edge[edgeIndex];
+//        Edge the_edge = m_edge[edgeIndex];
         unsigned int triangleIndex, edgeIndexInTriangle;
         EdgesInTriangle EdgesInTriangleArray;
         Triangle TriangleVertexArray;

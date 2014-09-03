@@ -147,7 +147,7 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 		BezierDegreeType degree=container->getDegree();
 		// check the total number of vertices.
 		size_t nbPoints=container->getNumberOfTetrahedralPoints()+container->getNumberOfEdges()*(degree-1)+container->getNumberOfTriangles()*(degree-1)*(degree-2)/2+container->getNumberOfTetrahedra()*((degree-1)*(degree-2)*(degree-3)/6);
-		if(container->getNbPoints()!=nbPoints) {
+        if((size_t)container->getNbPoints()!=nbPoints) {
 			ADD_FAILURE() << "wrong number of points " <<container->getNbPoints() << " is wrong. It should be  " <<nbPoints  << std::endl;
 			return false;
 		}

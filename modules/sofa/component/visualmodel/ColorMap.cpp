@@ -119,6 +119,7 @@ ColorMap::ColorMap()
 : f_paletteSize(initData(&f_paletteSize, (unsigned int)256, "paletteSize", "How many colors to use"))
 , f_colorScheme(initData(&f_colorScheme, "colorScheme", "Color scheme to use"))
 , f_showLegend(initData(&f_showLegend, false, "showLegend", "Activate rendering of color scale legend on the side"))
+, texture(0)
 {
     f_colorScheme.beginEdit()->setNames(6,
         "Red to Blue",  // HSV space
@@ -132,6 +133,14 @@ ColorMap::ColorMap()
     f_colorScheme.beginEdit()->setSelectedItem("HSV");
     f_colorScheme.endEdit();
 
+}
+
+ColorMap::~ColorMap() {
+    // Workaround: for some reason, if 'texture' is 0, calling
+    // glDeleteTexture() can cause a crash on some OS X systems,
+    // although it should just ignore it.
+    if (texture != 0)
+        glDeleteTextures(1, &texture);
 }
 
 // For backward compatibility only

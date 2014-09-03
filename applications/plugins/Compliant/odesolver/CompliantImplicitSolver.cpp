@@ -291,14 +291,6 @@ using namespace core::behavior;
 
         switch( formulation.getValue().getSelectedId() )
         {
-        case FORMULATION_VEL: // c_k = h.f_k + Mv
-            // M v_k
-            m_factor = 1;
-            // h (1-alpha) B v_k
-            b_factor = h * (1 - alpha.getValue());
-            // h^2 alpha (1 - beta ) K v_k
-            k_factor = h * h * alpha.getValue() * (1 - beta.getValue());
-            break;
         case FORMULATION_DV: // c_k = h.f_k + h²Kv + hDv
             m_factor = 0.0;
             b_factor = h;
@@ -308,6 +300,15 @@ using namespace core::behavior;
             m_factor = 0.0;
             b_factor = 1.0;
             k_factor = h*alpha.getValue();
+            break;
+        case FORMULATION_VEL: // c_k = h.f_k + Mv
+        default:
+            // M v_k
+            m_factor = 1;
+            // h (1-alpha) B v_k
+            b_factor = h * (1 - alpha.getValue());
+            // h^2 alpha (1 - beta ) K v_k
+            k_factor = h * h * alpha.getValue() * (1 - beta.getValue());
             break;
         }
 

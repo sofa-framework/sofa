@@ -74,7 +74,7 @@ public:
         const vector<Type> &data2 = _data2.getValue();
 
 
-        for(int i=0;i<data1.size();i++)
+        for(size_t i=0;i<data1.size();i++)
         {
             data.push_back((data1[i]+data2[i])/2);
         }
