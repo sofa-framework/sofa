@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 -1 0" dt="0.05"  >
+    <VisualStyle displayFlags="showWireframe" />
+
+<Node name="using Geodesic Distances (red)" >
+    <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="red" dz="0" />
+    <Mesh name="topo" src="@Visual" />
+
+    <MeshSampler name="sampler1" position="@topo.position" edges="@topo.edges"  number="10" maxIter="100" printLog="1"/>
+    <MechanicalObject template="Vec3d" position="@sampler1.outputPosition" showObject="1" showObjectScale="10" />
+</Node>
+
+<Node name="using Euclidean Distances (blue)" >
+    <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="blue" dy="20" />
+
+    <MeshSampler name="sampler2" position="@Visual.position"  number="10" maxIter="100" printLog="1"/>
+    <MechanicalObject template="Vec3d" position="@sampler2.outputPosition" showObject="1" showObjectScale="10" />
+</Node>
+
+</Node>
+

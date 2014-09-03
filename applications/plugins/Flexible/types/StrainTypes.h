@@ -201,6 +201,12 @@ public:
         return result;
     }
 
+    /// for finite difference methods 
+    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    {
+        return (Deriv)(c1-c2);
+    }
+
 };
 
 

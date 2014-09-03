@@ -102,6 +102,11 @@ using namespace core::behavior;
 									   SReal(1e-7),
 									   "stabilization_damping",
 									   "stabilization damping hint to relax infeasible problems"))
+
+          , formulation(initData(&formulation,
+            "formulation",
+            "solve dynamics on velocity (vel) or velocity variation (dv) or acceleration (acc)"))
+
           , neglecting_compliance_forces_in_geometric_stiffness(initData(&neglecting_compliance_forces_in_geometric_stiffness,
             true,
             "neglecting_compliance_forces_in_geometric_stiffness",
@@ -118,6 +123,14 @@ using namespace core::behavior;
         stabilizationOptions.setItemName( POST_STABILIZATION_ASSEMBLY, "post-stabilization assembly" );
         stabilizationOptions.setSelectedItem( PRE_STABILIZATION );
         stabilization.setValue( stabilizationOptions );
+
+        helper::OptionsGroup formulationOptions;
+        formulationOptions.setNbItems( NB_FORMULATION );
+        formulationOptions.setItemName( FORMULATION_VEL, "vel" );
+        formulationOptions.setItemName( FORMULATION_DV,  "dv"  );
+        formulationOptions.setItemName( FORMULATION_ACC, "acc" );;
+        formulationOptions.setSelectedItem( FORMULATION_VEL );
+        formulation.setValue( formulationOptions );
     }
 
 
@@ -134,14 +147,11 @@ using namespace core::behavior;
     void CompliantImplicitSolver::storeDynamicsSolution(bool b) { storeDSol = b; }
 
 
-    void CompliantImplicitSolver::integrate( const core::MechanicalParams* params,
+    void CompliantImplicitSolver::integrate( SolverOperations& sop,
                                      const core::MultiVecCoordId& posId,
                                      const core::MultiVecDerivId& velId ) {
         scoped::timer step("position integration");
-        SReal dt = params->dt();
-
-        // integrate positions
-        sofa::simulation::common::VectorOperations vop( params, this->getContext() );
+        const SReal& dt = sop.mparams().dt();
 
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp multi;
@@ -152,10 +162,37 @@ using namespace core::behavior;
         multi[0].second.push_back( std::make_pair(posId, 1.0) );
         multi[0].second.push_back( std::make_pair(velId, beta.getValue() * dt) );
 
-        vop.v_multiop( multi );
+        sop.vop.v_multiop( multi );
     }
 
+    void CompliantImplicitSolver::integrate( SolverOperations& sop,
+                                     const core::MultiVecCoordId& posId,
+                                     const core::MultiVecDerivId& velId,
+                                     const core::MultiVecDerivId& accId,
+                                     const SReal& accFactor ) {
+        scoped::timer step("position integration");
+        const SReal& dt = sop.mparams().dt();
 
+        typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+        VMultiOp multi;
+
+        multi.resize(2);
+
+        multi[0].first = posId;
+        multi[0].second.push_back( std::make_pair(posId, 1.0) );
+        multi[0].second.push_back( std::make_pair(velId, dt*beta.getValue()) );
+        multi[0].second.push_back( std::make_pair(accId, accFactor*dt*beta.getValue()) );
+
+        multi[1].first = velId;
+        multi[1].second.push_back( std::make_pair(velId, 1.0) );
+        multi[1].second.push_back( std::make_pair(accId, accFactor) );
+
+        sop.vop.v_multiop( multi );
+
+
+//        sop.vop.v_peq( velId, accId, accFactor );
+//        integrate( sop, posId, velId );
+    }
 
     CompliantImplicitSolver::~CompliantImplicitSolver() {
         if( assemblyVisitor ) delete assemblyVisitor;
@@ -165,22 +202,18 @@ using namespace core::behavior;
         sofa::simulation::common::VectorOperations vop( core::ExecParams::defaultInstance(), this->getContext() );
         vop.v_free( lagrange.id(), false, true );
         vop.v_free( _ck.id(), false, true );
+        vop.v_free( _acc.id() );
     }
 
 
-    // this is c_k computation (see compliant-reference.pdf, section 3)
-    // at the end, the multivec f MUST contain the forces
-    // (to compute mapping's geometric stiffnesses during assembly)
     void CompliantImplicitSolver::compute_forces(SolverOperations& sop,
-                                         core::behavior::MultiVecDeriv& f,
-                                         core::behavior::MultiVecDeriv& c )
+                                                  core::behavior::MultiVecDeriv& f,
+                                                  core::behavior::MultiVecDeriv* f_k)
     {
 
-        scoped::timer step("implicit rhs computation");
+        scoped::timer step("compute_forces");
 
-
-        const SReal h = sop.mparams().dt();
-
+        SReal factor = ( (formulation.getValue().getSelectedId()==FORMULATION_ACC) ? 1.0 : sop.mparams().dt() );
 
         {
             scoped::timer substep("forces computation");
@@ -188,10 +221,10 @@ using namespace core::behavior;
             sop.mop.computeForce( f ); // f = fk
         }
 
+        if( f_k )
         {
-            scoped::timer substep("c_k = h.fk");
-
-            c.eq( f, h );
+            scoped::timer substep("f_k = fk");
+            f_k->eq( f, factor );
         }
 
         if( !neglecting_compliance_forces_in_geometric_stiffness.getValue() )
@@ -201,29 +234,11 @@ using namespace core::behavior;
             // using lambdas computed at the previous time step as an approximation of the forces generated by compliances
             // If no approximation are known, 0 is used and the associated compliance won't contribute
             // to geometric sitffness generation for this step.
-            simulation::MechanicalAddComplianceForce lvis( &sop.mparams(), f, lagrange, h ); // f += fc   f += lambda / dt
+            simulation::MechanicalAddComplianceForce lvis( &sop.mparams(), f, lagrange, factor ); // f += fc  with  fc = lambda / dt
             send( lvis );
 
             // TODO have a look about reseting or not forces of mapped dofs
         }
-
-
-        {
-            scoped::timer substep("c_k+=MBKv");
-
-            // M v_k
-            const SReal mfactor = 1;
-
-            // h (1-alpha) B v_k
-            const SReal bfactor = h * (1 - alpha.getValue());
-
-            // h^2 alpha (1 - beta ) K v_k
-            const SReal kfactor = h * h * alpha.getValue() * (1 - beta.getValue());
-
-            // note: K v_k factor only for stiffness dofs
-            sop.mop.addMBKv( c, mfactor, bfactor, kfactor );
-        }
-
     }
 
 
@@ -263,10 +278,46 @@ using namespace core::behavior;
     }
 
 
-    void CompliantImplicitSolver::rhs_dynamics(vec& res, const system_type& sys, const MultiVecDeriv& b,
-                                       core::MultiVecCoordId posId,
-                                       core::MultiVecDerivId velId) const {
+    void CompliantImplicitSolver::rhs_dynamics(SolverOperations& sop,
+                                               vec& res, const system_type& sys,
+                                               MultiVecDeriv& f_k,
+                                               core::MultiVecCoordId posId,
+                                               core::MultiVecDerivId velId ) const {
         assert( res.size() == sys.size() );
+
+
+        SReal m_factor, b_factor, k_factor;
+        const SReal& h = sys.dt;
+
+        switch( formulation.getValue().getSelectedId() )
+        {
+        case FORMULATION_VEL: // c_k = h.f_k + Mv
+            // M v_k
+            m_factor = 1;
+            // h (1-alpha) B v_k
+            b_factor = h * (1 - alpha.getValue());
+            // h^2 alpha (1 - beta ) K v_k
+            k_factor = h * h * alpha.getValue() * (1 - beta.getValue());
+            break;
+        case FORMULATION_DV: // c_k = h.f_k + h²Kv + hDv
+            m_factor = 0.0;
+            b_factor = h;
+            k_factor = h*h*alpha.getValue();
+            break;
+        case FORMULATION_ACC: // c_k = f_k + hKv + Dv
+            m_factor = 0.0;
+            b_factor = 1.0;
+            k_factor = h*alpha.getValue();
+            break;
+        }
+
+        {
+            scoped::timer substep("c_k+=MBKv");
+
+            // note: K v_k factor only for stiffness dofs
+            sop.mop.addMBKv( f_k, m_factor, b_factor, k_factor );
+        }
+
 
         unsigned off = 0;
 
@@ -276,7 +327,7 @@ using namespace core::behavior;
 
             unsigned dim = dofs->getMatrixSize();
 
-            dofs->copyToBuffer(&res(off), b.id().getId(dofs), dim);
+            dofs->copyToBuffer(&res(off), f_k.id().getId(dofs), dim);
 
             off += dim;
         }
@@ -294,12 +345,13 @@ using namespace core::behavior;
 
     void CompliantImplicitSolver::rhs_constraints_dynamics(vec& res, const system_type& sys,
                                                    core::MultiVecCoordId posId,
-                                                   core::MultiVecDerivId velId) const {
+                                                   core::MultiVecDerivId velId ) const {
         assert( res.size() == sys.n );
 
-        if( !sys.n  ) return;
+        if( !sys.n ) return;
 
         unsigned off = 0;
+
 
         // compliant dofs
         for(unsigned i = 0, end = sys.compliant.size(); i < end; ++i) {
@@ -308,23 +360,59 @@ using namespace core::behavior;
 
             const unsigned dim = dofs->getSize(); // nb constraints
             const unsigned constraint_dim = dofs->getDerivDimension(); // nb lines per constraint
-
-            // get constraint violation velocity
-            vec v_constraint( dim*constraint_dim );
-            dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), dim*constraint_dim );
+            const unsigned total_dim = dim*constraint_dim; // nb constraint lines
 
             assert( constraint.value ); // at least a fallback must be added in filter_constraints
-
             constraint.value->dynamics( &res(off), dim, constraint_dim, stabilization.getValue().getSelectedId(), posId, velId );
 
-            // adjust compliant value based on alpha/beta   ( phi/a -(1-b)*J.v ) / b
-            if( alpha.getValue() != 1 ) res(off) /= alpha.getValue();
-            if( beta.getValue() != 1 ) {
-                res(off) -= (1 - beta.getValue()) * v_constraint(off);
-                res(off) /= beta.getValue();
+            // adjust compliant value based on alpha/beta
+
+
+            switch( formulation.getValue().getSelectedId() )
+            {
+            case FORMULATION_VEL: // ( phi/a -(1-b)*J.v ) / b
+            {
+                if( alpha.getValue() != 1 ) res.segment(off,total_dim) /= alpha.getValue();
+                if( beta.getValue() != 1 )
+                {
+                    // get constraint violation velocity
+                    vec v_constraint( total_dim );
+                    dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
+
+                    res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - (1 - beta.getValue()) * v_constraint;
+                    res.segment(off,total_dim) /= beta.getValue();
+                }
+                break;
+            }
+            case FORMULATION_DV: // ( phi/a -J.v ) / b
+            {
+                if( alpha.getValue() != 1 ) res.segment(off,total_dim) /= alpha.getValue();
+
+                vec v_constraint( total_dim );
+                dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
+
+                res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - v_constraint;
+
+                res.segment(off,total_dim) /= beta.getValue();
+
+                break;
+            }
+            case FORMULATION_ACC: // ( phi/a -J.v ) / bh
+            {
+                if( alpha.getValue() != 1 ) res.segment(off,total_dim) /= alpha.getValue();
+
+                vec v_constraint( total_dim );
+                dofs->copyToBuffer( &v_constraint(0), velId.getId(dofs), total_dim );
+
+                res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - v_constraint;
+
+                res.segment(off,total_dim) /= ( beta.getValue() * sys.dt );
+
+                break;
+            }
             }
 
-            off += dim * constraint_dim;
+            off += total_dim;
         }
         assert( off == sys.n );
 
@@ -365,7 +453,6 @@ using namespace core::behavior;
 
             off += dim * constraint_dim;
         }
-
     }
 
 
@@ -469,11 +556,15 @@ using namespace core::behavior;
 //        simulation::common::MechanicalOperations mop( params, this->getContext() );
 //        simulation::common::VectorOperations vop( params, this->getContext() );
 
+        bool useVelocity = (formulation.getValue().getSelectedId()==FORMULATION_VEL);
+
         SolverOperations sop( params, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId );
 
 
         MultiVecDeriv f( &sop.vop, core::VecDerivId::force() ); // total force (stiffness + compliance) (f_k term)
         _ck.realloc( &sop.vop, false, true ); // the right part of the implicit system (c_k term)
+
+        if( !useVelocity ) _acc.realloc( &sop.vop );
 
         {
             scoped::timer step("lambdas alloc");
@@ -484,7 +575,7 @@ using namespace core::behavior;
         // compute forces and implicit right part warning: must be
         // call before assemblyVisitor since the mapping's geometric
         // stiffness depends on its child force
-        compute_forces( sop, f, _ck );
+        compute_forces( sop, f, &_ck );
 
         // assemble system
         perform_assembly( &sop.mparams(), sys );
@@ -514,36 +605,37 @@ using namespace core::behavior;
             scoped::timer step("system solve");
 
             // constraint pre-stabilization
-            if( sys.n && stabilizationType==PRE_STABILIZATION)
+            if( sys.n && stabilizationType==PRE_STABILIZATION )
             {
-                    scoped::timer step("correction");
+                // Note that stabilization is always solved in velocity
 
-                    x = vec::Zero( sys.size() );
-                    rhs_correction(rhs, sys, posId, velId);
+                scoped::timer step("correction");
 
-                    kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
+                x = vec::Zero( sys.size() );
+                rhs_correction(rhs, sys, posId, velId);
 
-                    if( debug.getValue() ) {
-                        std::cerr << "correction rhs:" << std::endl
-                                  << rhs.transpose() << std::endl
-                                  << "solution:" << std::endl
-                                  << x.transpose() << std::endl;
-                    }
+                kkt->correct(x, sys, rhs, stabilization_damping.getValue() );
 
+                if( debug.getValue() ) {
+                    std::cerr << "correction rhs:" << std::endl
+                              << rhs.transpose() << std::endl
+                              << "solution:" << std::endl
+                              << x.transpose() << std::endl;
+                }
 
-                    MultiVecDeriv v_stab( &sop.vop ); // a temporary multivec not to modify velocity
-                    set_state_v( sys, x, v_stab.id() ); // set v (no need to set lambda)
-                    integrate( &sop.mparams(), posId, v_stab.id() );
+                MultiVecDeriv v_stab( &sop.vop ); // a temporary multivec not to modify velocity
+                set_state_v( sys, x, v_stab.id() ); // set v (no need to set lambda)
+                integrate( sop, posId, v_stab.id() );
             }
 
             // actual dynamics
             {
                 scoped::timer step("dynamics");
 
-                if( warm_start.getValue() ) /*x = current;*/  get_state( x, sys, velId );
+                if( warm_start.getValue() ) get_state( x, sys, useVelocity ? velId : _acc.id() );
                 else x = vec::Zero( sys.size() );
 
-                rhs_dynamics(rhs, sys, _ck, posId, velId );
+                rhs_dynamics( sop, rhs, sys, _ck, posId, velId );
 
                 kkt->solve(x, sys, rhs);
 				
@@ -559,8 +651,21 @@ using namespace core::behavior;
                 }
 
 
-                set_state( sys, x, velId ); // set v and lambda
-                integrate( &sop.mparams(), posId, velId );
+                switch( formulation.getValue().getSelectedId() )
+                {
+                case FORMULATION_VEL: // p+ = p- + h.v
+                    set_state( sys, x, velId ); // set v and lambda
+                    integrate( sop, posId, velId );
+                    break;
+                case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
+                    set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+                    integrate( sop, posId, velId, _acc.id(), 1.0  );
+                    break;
+                case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
+                    set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+                    integrate( sop, posId, velId, _acc.id(), dt  );
+                    break;
+                }
 
                 // TODO is this even needed at this point ?
                 propagate( &sop.mparams() );
@@ -570,7 +675,7 @@ using namespace core::behavior;
             // propagate lambdas if asked to (constraint forces must be propagated before post_stab)
             if( propagate_lambdas.getValue() && sys.n ) {
                 scoped::timer step("lambda propagation");
-                propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), sys.dt );
+                propagate_constraint_force_visitor prop( &sop.mparams(), core::VecId::force(), lagrange.id(), useVelocity ? sys.dt : 1.0 );
                 send( prop );
             }
 
@@ -612,6 +717,8 @@ using namespace core::behavior;
     {
         if( !sys.n ) return;
 
+        // Note that stabilization is always solved in velocity
+
         scoped::timer step("correction");
 
         // at this point collision detection should be run again
@@ -622,7 +729,7 @@ using namespace core::behavior;
         vec x(sys.size()), rhs(sys.size());
         MultiVecDeriv f( &sop.vop, core::VecDerivId::force() );
 
-        compute_forces( sop, f, _ck );
+        compute_forces( sop, f );
 
         if( fullAssembly )
         {
@@ -658,7 +765,7 @@ using namespace core::behavior;
 
         MultiVecDeriv v_stab( &sop.vop );  // a temporary multivec not to modify velocity
         set_state_v( sys, x, v_stab.id() ); // set v (no need to set lambda)
-        integrate( &sop.mparams(), posId, v_stab.id() );
+        integrate( sop, posId, v_stab.id() );
 
         propagate( &sop.mparams() );
     }

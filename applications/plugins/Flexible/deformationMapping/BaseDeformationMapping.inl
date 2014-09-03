@@ -155,29 +155,35 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     {
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : using filled data" <<std::endl;
 
-        VMaterialToSpatial& F0	= *f_F0.beginEdit();
-        vector<VReal>& w		= *f_w.beginEdit();
-        vector<VGradient>& dw	= *f_dw.beginEdit();
-        vector<VHessian>& ddw	= *f_ddw.beginEdit();
+        // MattN 01/09/14
+        // it can make too many allocations, are default weight gradients really necessary?
+        // it does not seems so, but I am not sure (sorry...)
 
-        F0.assign(pos0.size(), MaterialToSpatial());
-        dw.assign(pos0.size(), VGradient());
-        ddw.assign(pos0.size(), VHessian());
+//        VMaterialToSpatial& F0	= *f_F0.beginEdit();
+//        vector<VReal>& w		= *f_w.beginEdit();
+//        vector<VGradient>& dw	= *f_dw.beginEdit();
+//        vector<VHessian>& ddw	= *f_ddw.beginEdit();
 
-        for(size_t i = 0; i < pos0.size(); ++i)
-        {
-            dw[i].assign(w.size(), Gradient());
-            ddw[i].assign(w.size(), Hessian());
-        }
+//        F0.assign(pos0.size(), MaterialToSpatial());
+//        dw.assign(pos0.size(), VGradient());
+//        ddw.assign(pos0.size(), VHessian());
 
-        f_ddw.endEdit();
-        f_dw.endEdit();
-        f_F0.endEdit();
+//        for(size_t i = 0; i < pos0.size(); ++i)
+//        {
+//            dw[i].assign(w.size(), Gradient());
+//            ddw[i].assign(w.size(), Hessian());
+//        }
+
+//        f_ddw.endEdit();
+//        f_dw.endEdit();
+//        f_F0.endEdit();
 
         // use custom rest positions (to set material directions or set residual deformations)
         if(restPositionSet)
         {
             helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+            F0.wref().resize(pos0.size());
+
             for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
             if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
         }

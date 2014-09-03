@@ -560,64 +560,67 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
 					if(currentAiMesh->HasBones())
                     {
-						bool generateSkinningMapping = true;
-
 #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
-						if(useFlexible.getValue())
-						{
-							generateSkinningMapping = false;
-
+                        if(useFlexible.getValue())
+                        {
 							LinearMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3dTypes, Vec3dTypes> >();
-							{
-								// adding the generated LinearMapping to its parent Node
-								currentSubNode->addObject(currentLinearMapping);
 
-								std::stringstream nameStream(meshName);
-								if(meshName.empty())
-									nameStream << componentIndex++;
-								currentLinearMapping->setName(nameStream.str());
+                            // adding the generated LinearMapping to its parent Node
+                            currentSubNode->addObject(currentLinearMapping);
 
-								currentLinearMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
+                            std::stringstream nameStream(meshName);
+                            if(meshName.empty())
+                                nameStream << componentIndex++;
+                            currentLinearMapping->setName(nameStream.str());
 
-								vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VReal> weights;
-								vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VRef> indices;
+                            currentLinearMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
 
-								indices.resize(currentAiMesh->mNumVertices);
-								weights.resize(currentAiMesh->mNumVertices);
-							
-								size_t nbref = currentAiMesh->mNumBones;
+                            vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VReal>& weights = *currentLinearMapping->f_w.beginEdit();
+                            vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VRef>& indices = *currentLinearMapping->f_index.beginEdit();
 
-								for(std::size_t i = 0; i < indices.size(); ++i)
-								{
-									indices[i].reserve(nbref);
-									weights[i].reserve(nbref);
-								}
+                            indices.resize(currentAiMesh->mNumVertices);
+                            weights.resize(currentAiMesh->mNumVertices);
 
-								for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
-								{
-									aiBone*& bone = currentAiMesh->mBones[k];
 
-									for(unsigned int l = 0; l < bone->mNumWeights; ++l)
-									{
-										unsigned int id = bone->mWeights[l].mVertexId;
-										float weight = bone->mWeights[l].mWeight;
+                            size_t nbref = 0;
+                            for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
+                            {
+                                aiBone*& bone = currentAiMesh->mBones[k];
+                                if( bone->mNumWeights>nbref ) nbref=bone->mNumWeights;
+                            }
 
-										if(id >= currentAiMesh->mNumVertices)
-										{
-											sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
-											return false;
-										}
+//                            for(std::size_t i = 0; i < indices.size(); ++i)
+//                            {
+//                                indices[i].reserve(nbref);
+//                                weights[i].reserve(nbref);
+//                            }
 
-										indices[id].push_back(k);
-										weights[id].push_back(weight);
-									}
-								}
+                            for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
+                            {
+                                aiBone*& bone = currentAiMesh->mBones[k];
 
-								currentLinearMapping->setWeights(weights, indices);
-							}
+                                for(unsigned int l = 0; l < bone->mNumWeights; ++l)
+                                {
+                                    unsigned int id = bone->mWeights[l].mVertexId;
+                                    float weight = bone->mWeights[l].mWeight;
+
+                                    if(id >= currentAiMesh->mNumVertices)
+                                    {
+                                        sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+                                        return false;
+                                    }
+
+                                        indices[id].push_back(k);
+                                        weights[id].push_back(weight);
+                                }
+                            }
+
+
+                            currentLinearMapping->f_w.endEdit();
+                            currentLinearMapping->f_index.endEdit();
 						}
+                        else
 #endif
-						if(generateSkinningMapping)
 						{
 							SkinningMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentSkinningMapping = sofa::core::objectmodel::New<SkinningMapping<Rigid3dTypes, Vec3dTypes> >();
 							{

@@ -50,6 +50,7 @@ SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : sofa::core::be
     , skeletonJoints(initData(&skeletonJoints, "joints", "skeleton joints"))
     , skeletonBones(initData(&skeletonBones, "bones", "skeleton bones"))
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
+    , active(initData(&active, true, "active", "is the constraint actived?"))
 {
 
 }
@@ -114,6 +115,8 @@ template <class DataTypes>
 template <class DataDeriv>
 void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
 {
+    if( !active.getValue() ) return;
+
     for(unsigned int i = 0; i < dx.size(); ++i)
         dx[i] = Deriv();
     /*Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
@@ -134,6 +137,8 @@ void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::Mechanica
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
 {
+    if( !active.getValue() ) return;
+
     helper::WriteAccessor<DataVecDeriv> res = resData;
     projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
 }
@@ -141,6 +146,8 @@ void SkeletalMotionConstraint<DataTypes>::projectResponse(const core::Mechanical
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
 {
+    if( !active.getValue() ) return;
+
     helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
 
@@ -183,6 +190,8 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
 {
+    if( !active.getValue() ) return;
+
     helper::WriteAccessor<DataVecCoord> x = xData;
     Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
 
@@ -244,6 +253,8 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
 {
+    if( !active.getValue() ) return;
+
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
     MatrixDerivRowIterator rowIt = c->begin();
@@ -300,6 +311,8 @@ void SkeletalMotionConstraint<DataTypes>::addChannel(unsigned int jointIndex , C
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix * /*mat*/, unsigned int /*offset*/)
 {
+    if( !active.getValue() ) return;
+
     //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
     /*const unsigned int N = Deriv::size();
     const SetIndexArray & indices = m_indices.getValue();
@@ -318,6 +331,8 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatri
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector * /*vect*/, unsigned int /*offset*/)
 {
+    if( !active.getValue() ) return;
+
     //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     /*const unsigned int N = Deriv::size();
 
@@ -333,6 +348,8 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if( !active.getValue() ) return;
+
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 

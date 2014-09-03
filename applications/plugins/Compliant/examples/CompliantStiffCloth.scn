@@ -3,7 +3,6 @@
 	<VisualStyle name="visualStyle1"  displayFlags="hideVisual showBehaviorModels showForceFields showMappings" />
 	<CompliantAttachButtonSetting button="Left" />
 	
-	      <RequiredPlugin pluginName="Flexible"/>
       <RequiredPlugin pluginName="Compliant"/>
 	
 	<Node 	 name="complianceSolverScene"  >

@@ -151,6 +151,7 @@ struct DefGradientTypes
         {
             return getVec().norm();
         }
+
     };
 
     typedef vector<Deriv> VecDeriv;
@@ -191,6 +192,12 @@ struct DefGradientTypes
         for( unsigned int i=0 ; i<VSize ; ++i )
             result[i] = helper::symrand(maxValue);
         return result;
+    }
+
+    /// for finite difference methods 
+    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    {
+        return (Deriv)(c1-c2);
     }
 
 };
