@@ -1270,3 +1270,5 @@ s:#include *[<"]sofa/component/forcefield/QuadPressureForceField.h[>"]:#include 
 s:#include *[<"]sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h[>"]:#include <SofaBoundaryCondition/PatchTestMovementConstraint.h>:
 s:#include *[<"]sofa/component/collision/CylinderModel.h[>"]:#include <SofaBaseCollision/CylinderModel.h>:
 s:#include *[<"]sofa/component/init.h[>"]:#include <SofaComponentMain/init.h>:
+s:#include *[<"]sofa/component/misc/BlenderExporter.h[>"]:#include <SofaExporter/BlenderExporter.h>:
+s:#include *[<"]sofa/component/misc/BlenderExporter.inl[>"]:#include <SofaExporter/BlenderExporter.inl>:
