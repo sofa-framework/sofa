@@ -136,9 +136,9 @@ ColorMap::ColorMap()
 }
 
 ColorMap::~ColorMap() {
-    // Workaround: for some reason, if 'texture' is 0, calling
-    // glDeleteTexture() can cause a crash on some OS X systems,
-    // although it should just ignore it.
+    // Some components may use ColorMap internally, in which case an OpenGL
+    // context might not exist.  That's why this 'if' is here, to avoid calling
+    // an OpenGL function in a destructor unless strictly necessary.
     if (texture != 0)
         glDeleteTextures(1, &texture);
 }
