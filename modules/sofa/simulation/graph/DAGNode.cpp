@@ -447,7 +447,7 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 /// This method bypass the actionScheduler of this node if any.
 void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder)
 {
-    if( precomputedOrder )
+    if( precomputedOrder && !_precomputedTraversalOrder.empty() )
     {
 //        std::cerr<<SOFA_CLASS_METHOD<<"precomputed "<<_precomputedTraversalOrder<<std::endl;
 
