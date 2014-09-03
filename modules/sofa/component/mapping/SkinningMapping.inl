@@ -325,7 +325,7 @@ void SkinningMapping<TIn, TOut>::apply ( typename Out::VecCoord& out, const type
                 out[i] += in[index[i][j]].getCenter() * m_weights[i][j] + f_rotatedPos[i][j];
 
                 // update the Jacobian Matrix
-                Real w=m_weights[i][j];
+//                Real w=m_weights[i][j];
                 matblock[0][0] = (Real) m_weights[i][j];        ;    matblock[1][0] = (Real) 0                      ;    matblock[2][0] = (Real) 0                      ;
                 matblock[0][1] = (Real) 0                       ;    matblock[1][1] = (Real) m_weights[i][j]        ;    matblock[2][1] = (Real) 0                      ;
                 matblock[0][2] = (Real) 0                       ;    matblock[1][2] = (Real) 0                      ;    matblock[2][2] = (Real) m_weights[i][j];       ;
