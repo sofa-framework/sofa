@@ -547,7 +547,7 @@ using namespace core::behavior;
                                 core::MultiVecCoordId posId,
                                 core::MultiVecDerivId velId) {
 
-        static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder();
+        static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( params );
 
         assert(kkt);
 

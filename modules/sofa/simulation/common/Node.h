@@ -140,6 +140,7 @@ public:
 
     /// @name Visitor handling
     /// @param precomputedOrder is not used by default but could allow optimization on certain Node specializations
+    /// @warning when calling with precomputedOrder=true, the fonction "precomputeTraversalOrder" must be called before executing the visitor and the user must ensure by himself that the simulation graph has done been modified since the last call to "precomputeTraversalOrder"
     /// @{
 
     /// Execute a recursive action starting from this node.
@@ -181,7 +182,7 @@ public:
     }
 
     /// Possible optimization with traversal precomputation, not mandatory and does nothing by default
-    virtual void precomputeTraversalOrder() {}
+    virtual void precomputeTraversalOrder( const core::ExecParams* ) {}
 
     /// @}
 

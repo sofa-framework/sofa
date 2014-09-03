@@ -414,7 +414,7 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
 }
 
 
-void DAGNode::precomputeTraversalOrder()
+void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 {
     // acumulating traversed Nodes
     class TraversalOrderVisitor : public Visitor
@@ -437,7 +437,7 @@ void DAGNode::precomputeTraversalOrder()
         virtual const char* getClassName() const {return "TraversalOrderVisitor";}
     };
 
-    TraversalOrderVisitor tov( core::ExecParams::defaultInstance(), _precomputedTraversalOrder );
+    TraversalOrderVisitor tov( params, _precomputedTraversalOrder );
     executeVisitor( &tov, false );
 }
 
@@ -447,7 +447,7 @@ void DAGNode::precomputeTraversalOrder()
 /// This method bypass the actionScheduler of this node if any.
 void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder)
 {
-    if( precomputedOrder && !_precomputedTraversalOrder.empty() )
+    if( precomputedOrder )
     {
 //        std::cerr<<SOFA_CLASS_METHOD<<"precomputed "<<_precomputedTraversalOrder<<std::endl;
 
