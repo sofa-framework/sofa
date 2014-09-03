@@ -257,7 +257,7 @@ void BaseContext::propagateEvent( const core::ExecParams* /* PARAMS FIRST */, Ev
     serr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<sendl;
 }
 
-void BaseContext::executeVisitor(simulation::Visitor* , bool precomputedOrder)
+void BaseContext::executeVisitor(simulation::Visitor*, bool)
 {
     serr<<"WARNING !!! BaseContext::executeVisitor not overloaded, does nothing"<<sendl;
     //assert(false);
