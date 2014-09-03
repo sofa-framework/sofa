@@ -152,7 +152,7 @@ public:
     virtual Node* findCommonParent( Node* node2 );
 
     /// compute the traversal order from this Node
-    virtual void precomputeTraversalOrder();
+    virtual void precomputeTraversalOrder( const core::ExecParams* params );
 
 protected:
 
