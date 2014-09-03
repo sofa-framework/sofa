@@ -133,51 +133,57 @@ public:
     /// Apply modifications to the components
     void reinit(const core::ExecParams* params);
     /// Do one step forward in time
-    void animate(const core::ExecParams* params /* PARAMS FIRST */, double dt);
+//    void animate(const core::ExecParams* params /* PARAMS FIRST */, double dt);
     /// Draw the objects in an OpenGl context
     void glDraw(core::visual::VisualParams* params);
     /// @}
 
     /// @name Visitor handling
+    /// @param precomputedOrder is not used by default but could allow optimization on certain Node specializations
+    /// @warning when calling with precomputedOrder=true, the fonction "precomputeTraversalOrder" must be called before executing the visitor and the user must ensure by himself that the simulation graph has done been modified since the last call to "precomputeTraversalOrder"
     /// @{
 
     /// Execute a recursive action starting from this node.
     /// This method bypasses the actionScheduler of this node if any.
-    virtual void doExecuteVisitor(Visitor* action)=0;
+    virtual void doExecuteVisitor(Visitor* action, bool precomputedOrder=false)=0;
 
     /// Execute a recursive action starting from this node
-    void executeVisitor( simulation::Visitor* action);
+    void executeVisitor( simulation::Visitor* action, bool precomputedOrder=false);
 
     /// Execute a recursive action starting from this node
-    void execute(simulation::Visitor& action)
+    void execute(simulation::Visitor& action, bool precomputedOrder=false)
     {
         simulation::Visitor* p = &action;
-        executeVisitor(p);
+        executeVisitor(p, precomputedOrder);
     }
 
     /// Execute a recursive action starting from this node
-    void execute(simulation::Visitor* p)
+    void execute(simulation::Visitor* p, bool precomputedOrder=false)
     {
-        executeVisitor(p);
+        executeVisitor(p, precomputedOrder);
     }
 
     /// Execute a recursive action starting from this node
     template<class Act, class Params>
-    void execute(const Params* params)
+    void execute(const Params* params, bool precomputedOrder=false)
     {
         Act action(params);
         simulation::Visitor* p = &action;
-        executeVisitor(p);
+        executeVisitor(p, precomputedOrder);
     }
 
     /// Execute a recursive action starting from this node
     template<class Act>
-    void execute(core::visual::VisualParams* vparams)
+    void execute(core::visual::VisualParams* vparams, bool precomputedOrder=false)
     {
         Act action(vparams);
         simulation::Visitor* p = &action;
-        executeVisitor(p);
+        executeVisitor(p, precomputedOrder);
     }
+
+    /// Possible optimization with traversal precomputation, not mandatory and does nothing by default
+    virtual void precomputeTraversalOrder( const core::ExecParams* ) {}
+
     /// @}
 
     /// @name Component containers
