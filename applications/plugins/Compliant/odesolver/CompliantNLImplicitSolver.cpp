@@ -319,7 +319,7 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVe
     // compute deltaV (propagated to mapped dofs)
     simulation::MechanicalVMultiOpVisitor multivis( &sop.mparams(), velocity_ops );
     multivis.mapped = true; // propagating
-    this->getContext()->executeVisitor( &multivis );
+    this->getContext()->executeVisitor( &multivis, true );
 
 
     // compute rhs from average_f, average_v and deltaV
@@ -437,7 +437,7 @@ void CompliantNLImplicitSolver::v_eq_all(const core::ExecParams* params, sofa::c
 {
     simulation::MechanicalVOpVisitor vis( params, v, a );
     vis.mapped = true;
-    this->getContext()->executeVisitor( &vis );
+    this->getContext()->executeVisitor( &vis, true );
 }
 
 
@@ -461,7 +461,9 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 {
     assert(kkt);
 
-    SolverOperations sop( eparams, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId, staticSolver.getValue() );
+    static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder();
+
+    SolverOperations sop( eparams, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId, true, staticSolver.getValue() );
 
     if( iterations.getValue() <= 1 )
     {
