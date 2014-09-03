@@ -103,25 +103,41 @@ void MeshVTK::readVTU(const std::string &filename)
 
     int cellType;
     vector< vector<int> > vertNormTexIndices;
-    vector<int> vIndices, nIndices(3,0), tIndices(3,0);
+    vector<int> vIndices(3,0), nIndices(3,0), tIndices(3,0), quad(4,0);
     for (std::size_t i = 0 ; i < nbCells ; ++i)
     {
-        vIndices.clear();
-        vertNormTexIndices.clear();
         typesDataArray >> cellType;
         switch(cellType) {
-        case 5:
-            vIndices.resize(3);
+        case 5: // triangle
             connectivityDataArray >> vIndices[0]  >> vIndices[1] >> vIndices[2];
+            vertNormTexIndices.clear();
+            vertNormTexIndices.push_back (vIndices);
+            vertNormTexIndices.push_back (nIndices);
+            vertNormTexIndices.push_back (tIndices);
+            facets.push_back(vertNormTexIndices);
+            break;
+        case 9: // quad
+            // split quad into two triangles
+            connectivityDataArray >> quad[0] >> quad[1] >> quad[2] >> quad[3];
+            // triangle #1
+            vIndices[0]=quad[0];vIndices[1]=quad[1];vIndices[2]=quad[2];
+            vertNormTexIndices.clear();
+            vertNormTexIndices.push_back (vIndices);
+            vertNormTexIndices.push_back (nIndices);
+            vertNormTexIndices.push_back (tIndices);
+            facets.push_back(vertNormTexIndices);
+            // triangle #2
+            vIndices[0]=quad[0];vIndices[1]=quad[2];vIndices[2]=quad[3];
+            vertNormTexIndices.clear();
+            vertNormTexIndices.push_back (vIndices);
+            vertNormTexIndices.push_back (nIndices);
+            vertNormTexIndices.push_back (tIndices);
+            facets.push_back(vertNormTexIndices);
             break;
         default:
             std::cerr << "ERROR: " << filename << " - Unsupported cell type: " << cellType << std::endl;
             return;
         }
-        vertNormTexIndices.push_back (vIndices);
-        vertNormTexIndices.push_back (nIndices);
-        vertNormTexIndices.push_back (tIndices);
-        facets.push_back(vertNormTexIndices);
     }
 }
 
