@@ -1,6 +1,5 @@
 #include "Camera.h"
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include <GL/glew.h>
 #include <iostream>
 using std::cout;
 using std::endl;

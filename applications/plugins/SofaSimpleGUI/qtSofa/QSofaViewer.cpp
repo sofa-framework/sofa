@@ -24,11 +24,11 @@ GLfloat DegToRad = 3.1415927 / 180;
 
 
 QSofaViewer::QSofaViewer(sofa::simplegui::QSofaScene *sofaScene, QWidget *parent) :
-    QGLWidget(parent), _sofaGL(sofaScene)
+    QGLWidget(parent), _sofaScene(sofaScene), _sofaGL(0)
 {
     _drag = NULL;
+	connect(sofaScene, SIGNAL(opened()), this, SLOT(reset()));
     connect(sofaScene, SIGNAL(stepEnd()), this, SLOT(draw()));
-    connect(sofaScene, SIGNAL(opened()), this, SLOT(draw()));
 
     {
         QAction* toggleFullScreenAct = new QAction( tr("&FullScreen"), this );
@@ -88,12 +88,22 @@ void QSofaViewer::paintGL()
 //            0.0, 1.0, 0.0 // up vector
 //            );
 
-    _sofaGL.draw();
+	// we need to init sofaGL here in order to be able to call initTextures (needing an active opengl context) for each opened scene 
+	if(!_sofaGL)
+		_sofaGL = new SofaGL(_sofaScene);
+
+    _sofaGL->draw();
 
     // display a box, for debug
     glColor3f (1.0, 0.0, 0.0);
     glutWireCube (1.0);
 
+}
+
+void QSofaViewer::reset()
+{
+	delete _sofaGL;
+	_sofaGL = 0;
 }
 
 void QSofaViewer::draw()
@@ -103,10 +113,13 @@ void QSofaViewer::draw()
 
 void QSofaViewer::viewAll()
 {
+	if(!_sofaGL)
+		return;
+
 //    SReal cp[3], ct[3], zn, zf;
 //    Camera::Vec3 eye = _camera.eye();
 //    for( int i=0; i<3; i++ ) cp[i] = eye[i];
-//    _sofaGL.viewAll(
+//    _sofaGL->viewAll(
 //            &cp[0],&cp[1],&cp[2],
 //            &ct[0],&ct[1],&ct[2],
 //            camera_angle * DegToRad, &zn, &zf
@@ -121,7 +134,7 @@ void QSofaViewer::viewAll()
 //    zfar = zf;
 
     float xmin, xmax, ymin, ymax, zmin, zmax;
-    _sofaGL.getSceneBBox(&xmin,&ymin,&zmin, &xmax,&ymax,&zmax);
+    _sofaGL->getSceneBBox(&xmin,&ymin,&zmin, &xmax,&ymax,&zmax);
 //    cout<<"QSofaViewer::viewAll, bounding box = "<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
     _camera.viewAll(xmin,ymin,zmin, xmax,ymax,zmax);
     update();
@@ -151,23 +164,26 @@ void QSofaViewer::keyReleaseEvent ( QKeyEvent * /*event*/ )
 
 void QSofaViewer::mousePressEvent ( QMouseEvent * event )
 {
+	if(!_sofaGL)
+		return;
+
     if( isShiftPressed() )
     {
         if( isControlPressed() ) // pick an existing interactor
         {
-            _drag = _sofaGL.pickInteractor(_camera.eye()[0], _camera.eye()[1], _camera.eye()[2], event->x(), event->y());
+            _drag = _sofaGL->pickInteractor(_camera.eye()[0], _camera.eye()[1], _camera.eye()[2], event->x(), event->y());
         }
-        else if( sofa::simplegui::PickedPoint glpicked = _sofaGL.pick(
+        else if( sofa::simplegui::PickedPoint glpicked = _sofaGL->pick(
                      _camera.eye()[0], _camera.eye()[1], _camera.eye()[2],
                      event->x(),event->y() )  ) // create new interactor
         {
 //            cout << "Picked: " << glpicked <<  endl;
-            _drag = _sofaGL.getInteractor(glpicked);
+            _drag = _sofaGL->getInteractor(glpicked);
             if( _drag == NULL )
             {
                 cout << "create new interactor" << endl;
                 _drag = new sofa::simplegui::SpringInteractor(glpicked,10000);
-                _sofaGL.attach(_drag);
+                _sofaGL->attach(_drag);
             }
             else cout << "reuse interactor" << endl;
         }
@@ -191,9 +207,12 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
 
 void QSofaViewer::mouseMoveEvent ( QMouseEvent * event )
 {
+	if(!_sofaGL)
+		return;
+
     if( _drag != NULL )
     {
-        _sofaGL.move(_drag, event->x(), event->y());
+        _sofaGL->move(_drag, event->x(), event->y());
     }
     else if( _camera.handleMouseMotion(event->x(), event->y()) )
     {
@@ -205,27 +224,30 @@ void QSofaViewer::mouseMoveEvent ( QMouseEvent * event )
 
 void QSofaViewer::mouseReleaseEvent ( QMouseEvent * event )
 {
-        if( _drag != NULL )
-        {
-            if(QApplication::keyboardModifiers() & Qt::ShiftModifier )
-            {
-                _sofaGL.detach(_drag);
-                delete _drag;
-//                cout << "delete interactor " << endl;
-            }
-            _drag = NULL;
-        }
-        else
-        {
-            if( _camera.handleMouseButton(
-                event->button()==Qt::LeftButton ? Camera::ButtonLeft : event->button()==Qt::MiddleButton ? Camera::ButtonMiddle : Camera::ButtonRight ,
-                Camera::ButtonUp,
-                event->x(), event->y()
-                        ))
-            {
-                return;
-            }
+	if(!_sofaGL)
+		return;
 
+    if( _drag != NULL )
+    {
+        if(QApplication::keyboardModifiers() & Qt::ShiftModifier )
+        {
+            _sofaGL->detach(_drag);
+            delete _drag;
+//                cout << "delete interactor " << endl;
         }
+        _drag = NULL;
+    }
+    else
+    {
+        if( _camera.handleMouseButton(
+            event->button()==Qt::LeftButton ? Camera::ButtonLeft : event->button()==Qt::MiddleButton ? Camera::ButtonMiddle : Camera::ButtonRight ,
+            Camera::ButtonUp,
+            event->x(), event->y()
+                    ))
+        {
+            return;
+        }
+
+    }
 }
 
