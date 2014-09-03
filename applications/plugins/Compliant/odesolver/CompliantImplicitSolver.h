@@ -135,9 +135,10 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
         SolverOperations( const core::ExecParams* ep , sofa::core::objectmodel::BaseContext* ctx,
                           SReal a, SReal b, SReal dt,
                           const core::MultiVecCoordId& posId, const core::MultiVecDerivId& velId,
+                          bool precomputedTraversalOrder = false,
                           bool staticSolver=false )
-            : vop( ep, ctx )
-            , mop( ep, ctx )
+            : vop( ep, ctx, precomputedTraversalOrder )
+            , mop( ep, ctx, precomputedTraversalOrder )
             , ctx( ctx )
             , alpha( a )
             , beta( b )
