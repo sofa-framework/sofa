@@ -325,7 +325,14 @@ public:
 			// will cause a temporary copy of the map, which this define was meant to avoid!
 			if (vtype2 == vtype)
             {
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
+
                 idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+
+#pragma GCC diagnostic pop
+
 			}
 			else
 #endif
