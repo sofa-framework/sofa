@@ -115,7 +115,7 @@ void MeshVTK::readVTU(const std::string &filename)
             connectivityDataArray >> vIndices[0]  >> vIndices[1] >> vIndices[2];
             break;
         default:
-            std::cerr << "Unsupported cell type" << std::endl;
+            std::cerr << "ERROR: " << filename << " - Unsupported cell type: " << cellType << std::endl;
             return;
         }
         vertNormTexIndices.push_back (vIndices);
