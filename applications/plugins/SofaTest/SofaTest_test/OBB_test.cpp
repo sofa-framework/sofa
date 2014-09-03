@@ -50,12 +50,11 @@
 #include <sofa/component/collision/MeshIntTool.h>
 
 #include "Sofa_test.h"
-#include "PrimitiveCreation.h"
+#include "../PrimitiveCreation.h"
 
-namespace sofa {
+using namespace sofa::PrimitiveCreationTest;
 
-    namespace PrimitiveCreationTest{
-
+namespace sofa{
 struct TestOBB : public Sofa_test<double>{
     bool faceVertex();
     bool vertexVertex();
@@ -1296,7 +1295,4 @@ TEST_F(TestTriOBB, vertex_edge ) { ASSERT_TRUE( vertexEdge()); }
 TEST_F(TestTriOBB, vertex_vertex ) { ASSERT_TRUE( vertexVertex()); }
 TEST_F(TestTriOBB, face_vertex_out ) { ASSERT_TRUE( faceVertex_out()); }
 TEST_F(TestTriOBB, face_vertex_out2 ) { ASSERT_TRUE( faceVertex_out2()); }
-
-}// PrimitiveCreationTest
-
-} // namespace sofa
+}
