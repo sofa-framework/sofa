@@ -286,7 +286,7 @@ template <class DataTypes> TriangularTensorMassForceField<DataTypes>::~Triangula
 
 template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init()
 {
-    serr << "initializing TriangularTensorMassForceField" << sendl;
+    sout << "initializing TriangularTensorMassForceField" << sendl;
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();

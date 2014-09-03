@@ -6,11 +6,11 @@
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
     <EulerImplicit />
-    <CGLinearSolver iterations="25" />
+    <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="Liver1">
         <!--<CGImplicit iterations="25"/>-->
         <EulerImplicit />
-        <CGLinearSolver iterations="25" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="Liver1MS" />
@@ -31,7 +31,7 @@
     <Node name="Liver2">
         <!--<CGImplicit iterations="25"/>-->
         <EulerImplicit />
-        <CGLinearSolver iterations="25" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="Liver2MS" dx="10" ry="180" />
@@ -51,7 +51,7 @@
     <Node name="Liver3">
         <!--<CGImplicit iterations="25"/>-->
         <EulerImplicit />
-        <CGLinearSolver iterations="25" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="Liver3MS" dx="20" ry="90" />

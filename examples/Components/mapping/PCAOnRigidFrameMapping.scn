@@ -1,7 +1,7 @@
 <Node name="Scene" gravity="0 0 0" dt="0.1">
     <VisualStyle displayFlags="showBehavior showVisual" />
     <EulerImplicitSolver rayleighStiffness="1" rayleighMass="1" />
-    <CGLinearSolver template="GraphScattered" iterations="50" threshold="1e-008" />
+    <CGLinearSolver template="GraphScattered" iterations="50" threshold="1e-008" tolerance="1e-5"/>
     <MechanicalObject template="Rigid" name="rigidframe" position="0 0 0 0 0 0 1" />
     <UniformMass template="Rigid" name="mass" filename="BehaviorModels/r_femur.rigid" showAxisSizeFactor="1" />
     <FixedConstraint template="Rigid" name="constraint" indices="0" />

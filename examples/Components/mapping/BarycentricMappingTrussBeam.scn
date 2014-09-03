@@ -19,7 +19,7 @@
         <BoxConstraint box="-0.001 -0.001 -0.001 0.001 0.011 0.011" />
         <TetrahedronFEMForceField name="FEM" youngModulus="300000" poissonRatio="0.45" method="large" />
 	<BoxROI box="0.099 -0.001 -0.001 0.11 0.011 0.011"/>
-	<ConstantForceField indices="@[-1].indices" force="0 -0.1 0" />
+	<ConstantForceField force="0 -0.1 0" />
         <!--<BoxConstantForceField  force="0 -0.1 0" />-->
         <!--<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="960000" assembling="0"/>-->
         <!--<ConstantForceField points="449 459 549 559" forces="1000000 0 0"/>-->

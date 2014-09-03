@@ -242,9 +242,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrixWithCSparse(TMatrix& M
 
         for (unsigned d=0; d<dof_on_node; d++)
         {
-            std::cout.precision(2);
-            std::cout << "Precomputing constraint correction : " << std::fixed << (float)(j*dof_on_node+d)*100.0f/(float)(nb_dofs*dof_on_node) << " %   " << '\xd';
-            std::cout.flush();
+            sout.precision(2);
+            sout << "Precomputing constraint correction : " << std::fixed << (float)(j*dof_on_node+d)*100.0f/(float)(nb_dofs*dof_on_node) << " %   " << '\xd';
+            sout.flush();
 
             b.set(pid_j*dof_on_node+d,1.0);
             solver.solve(M,r,b);

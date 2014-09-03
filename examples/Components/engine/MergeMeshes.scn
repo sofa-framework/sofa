@@ -1,7 +1,7 @@
 <Node name="Scene" gravity="0 0 0" dt="0.1" >
 	<VisualStyle displayFlags="showBehavior" />
   <EulerImplicitSolver />
-  <CGLinearSolver />
+  <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
   <Node>
     <MeshObjLoader name="r_femur" filename="mesh/r_femur.obj" />
     <MeshObjLoader name="r_femur_0" filename="mesh/r_femur_0.obj" />

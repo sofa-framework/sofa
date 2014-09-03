@@ -11,7 +11,7 @@
 	<CollisionResponse name="response" response="FrictionContact" />
 	<LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
 	<FreeMotionAnimationLoop/>
-	<LCPConstraintSolver/>
+	<LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
 	<OmniDriver scale="0.1" orientation="180 -90 0"/>
 
 	<Node name="Tooth" >

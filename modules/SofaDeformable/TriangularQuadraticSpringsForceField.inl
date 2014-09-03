@@ -165,7 +165,7 @@ template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::~Tri
 
 template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>::init()
 {
-    serr << "initializing TriangularQuadraticSpringsForceField" << sendl;
+    sout<< "initializing TriangularQuadraticSpringsForceField" << sendl;
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();

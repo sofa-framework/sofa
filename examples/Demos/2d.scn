@@ -1,7 +1,7 @@
 <Node dt="0.004" gravity="0 -10 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
     <EulerImplicit />
-    <CGLinearSolver iterations="25" />
+    <CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05"/>
     <Node name="Cube1">
         <MechanicalObject template="Rigid2d" position="0 10 0" velocity="0.1 1 -200" />
         <UniformMass mass="1 1 0.83333" />

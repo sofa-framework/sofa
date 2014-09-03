@@ -1310,7 +1310,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /
 			}
 		}
 	if(printMass.getValue() && (this->getContext()->getTime()==0.0))
-		std::cout<<"Total Mass = "<<massTotal<<std::endl;
+        sout<<"Total Mass = "<<massTotal<<sendl;
 
 	if(printMass.getValue())
 	{

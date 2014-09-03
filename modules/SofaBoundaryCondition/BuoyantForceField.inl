@@ -111,7 +111,7 @@ bool BuoyantForceField<DataTypes>::checkParameters()
         for ( unsigned int i = 0 ; i < 3 ; i++)
             if (tempMin[i] > tempMax[i])
             {
-                std::cout << "Switch value " << i << " between min and max" << std::endl;
+                sout << "Switch value " << i << " between min and max" << sendl;
                 tempMin[i] = m_maxBox.getValue()[i];
                 tempMax[i] = m_minBox.getValue()[i];
             }
