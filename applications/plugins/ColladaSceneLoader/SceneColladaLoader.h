@@ -158,7 +158,10 @@ private:
 
 	Data<float> animationSpeed;
 	Data<bool> generateCollisionModels;
+
+#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
 	Data<bool> useFlexible;
+#endif
 
 };
 
