@@ -78,5 +78,11 @@ sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & 
 
 sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal radius,const Vec3 & v,sofa::simulation::Node::SPtr & father);
 
+void rotx(double ax,Vec3 & x,Vec3 & y,Vec3 & z);
+
+void roty(double ax,Vec3 & x,Vec3 & y,Vec3 & z);
+
+void rotz(double ax,Vec3 & x,Vec3 & y,Vec3 & z);
+
 }
 }
