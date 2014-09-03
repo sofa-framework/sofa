@@ -152,13 +152,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     }
 
 
-    /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
-      */
-    virtual OutCoord difference( const OutCoord& a, const OutCoord& b )
-    {
-        return a-b;
-    }
-
     /** Possible child force pre-treatment, does nothing by default
       */
     virtual OutVecDeriv preTreatment( const OutVecDeriv& f ) { return f; }
@@ -209,7 +202,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         bool succeed=true;
         for( unsigned i=0; i<xout.size(); i++ )
         {
-            if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
+            if( !this->isSmall( Out::coordDifference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
                 ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i];
                 succeed = false;
             }
@@ -313,21 +306,20 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData( pin, xp1 );
 //        cout<<"new parent positions xp1 = " << xp1 << endl;
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
-        WriteOutVecDeriv pout = outDofs->writePositions();
+        WriteOutVecCoord pout = outDofs->writePositions();
         copyFromData( xc1, pout );
 //        cout<<"new child positions xc1 = " << xc1 << endl;
 
         // ================ test applyJ: compute the difference between propagated displacements and velocities
-        OutVecCoord dxc(Nc),dxcv(Nc);
+        OutVecDeriv dxc(Nc);
         for(unsigned i=0; i<Nc; i++ ){
-            dxc[i] = difference( xc1[i], xc[i] );
-            dxcv[i] = vc[i]; // convert VecDeriv to VecCoord for comparison. Because strangely enough, Coord-Coord substraction returns a Coord (should be a Deriv)
+            dxc[i] =  Out::coordDifference(xc1[i], xc[i]);
         }
-        if( this->vectorMaxDiff(dxc,dxcv)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(dxc,vc)>this->epsilon()*errorMax ){
             succeed = false;
             ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax  << endl
                           << "position change = " << dxc << endl
-                          << "velocity        = " << dxcv << endl;
+                          << "velocity        = " << vc << endl;
         }
 
 

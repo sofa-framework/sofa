@@ -211,7 +211,12 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     Data<bool> warm_start, propagate_lambdas, debug;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 	Data<SReal> stabilization_damping;
+
+    enum { FORMULATION_VEL=0, FORMULATION_DV, FORMULATION_ACC, NB_FORMULATION };
+    Data<helper::OptionsGroup> formulation;
+
     Data<bool> neglecting_compliance_forces_in_geometric_stiffness; ///< isn't the name clear enough?
+
 
   protected:
 
@@ -225,9 +230,16 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     void send(simulation::Visitor& vis);
 			  
 	// integrate positions
-    virtual void integrate( const core::MechanicalParams* params,
+    virtual void integrate( SolverOperations& sop,
                             const core::MultiVecCoordId& posId,
                             const core::MultiVecDerivId& velId );
+
+    // integrate positions and velocities
+    virtual void integrate( SolverOperations& sop,
+                            const core::MultiVecCoordId& posId,
+                            const core::MultiVecDerivId& velId,
+                            const core::MultiVecDerivId& accId,
+                            const SReal& accFactor );
 
 	// propagate velocities
     void propagate(const core::MechanicalParams* params);
@@ -244,11 +256,11 @@ public:
 	typedef system_type::vec vec;
 
 
-    /// Compute the forces f (summing stiffness and compliance) and the right part of the implicit system c (c_k in compliant-reference.pdf, section 3)
+    /// Compute the forces f (stiffness and constraint forces)
     virtual void compute_forces(SolverOperations& sop,
-                               core::behavior::MultiVecDeriv& f,
-                               core::behavior::MultiVecDeriv& c );
-
+                                core::behavior::MultiVecDeriv& f,  // the total force sum (stiffness + constraint forces if required)
+                                core::behavior::MultiVecDeriv* f_k = NULL // the stiffness force only
+                               );
 
     /// evaluate violated and active constraints
     void filter_constraints(const core::MultiVecCoordId& posId) const;
@@ -258,7 +270,11 @@ public:
 
 
     /// linear rhs (ode & constraints) for dynamics steps
-    virtual void rhs_dynamics(vec& res, const system_type& sys, const core::behavior::MultiVecDeriv& b,
+    /// the right part of the implicit system c (c_k in compliant-reference.pdf, section 3)
+    /// f_k(in) must contain the stiffness forces, and (out) it will contains c_k
+    virtual void rhs_dynamics(SolverOperations& sop,
+                              vec& res, const system_type& sys,
+                              core::behavior::MultiVecDeriv& f_k,
                               core::MultiVecCoordId posId,
                               core::MultiVecDerivId velId ) const;
 
@@ -322,6 +338,7 @@ protected:
 
     /// temporary multivecs
     core::behavior::MultiVecDeriv _ck; ///< the right part of the implicit system (c_k term)
+    core::behavior::MultiVecDeriv _acc; ///< acceleration when FORMULATION_ACC, or dv when FORMULATION_DV
 
 
 };
