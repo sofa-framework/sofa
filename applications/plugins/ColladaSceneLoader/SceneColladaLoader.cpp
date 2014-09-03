@@ -78,7 +78,9 @@ SceneColladaLoader::SceneColladaLoader() : SceneLoader()
 	, importer()
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
 	, generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
-	, useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin if available (it will replace the SkinningMapping with a LinearMapping)"))
+#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+    , useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
+#endif
 {
 	
 }
