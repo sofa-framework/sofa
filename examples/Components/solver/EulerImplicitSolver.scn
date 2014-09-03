@@ -5,7 +5,7 @@
     </Node>
     <Node name="Springs">
         <EulerImplicitSolver name="cg_odesolver" />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dx="15" />
@@ -19,7 +19,7 @@
     </Node>
     <Node name="CoFEM">
         <EulerImplicitSolver name="cg_odesolver" />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dx="30" />
@@ -33,7 +33,7 @@
     </Node>
     <Node name="CoFEM_firstOrder">
         <EulerImplicitSolver name="cg_odesolver" firstOrder="1" />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dx="45" />
@@ -47,7 +47,7 @@
     </Node>
     <Node name="LinearFEM">
         <EulerImplicitSolver name="cg_odesolver" />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dx="60" />

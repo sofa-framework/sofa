@@ -5,7 +5,7 @@
     <ViewerSetting resolution="800 600"/>
 
     <VisualStyle displayFlags="showVisual  " /> <!--showBehaviorModels showCollisionModels-->
-	<LCPConstraintSolver tolerance="1e-3" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
+	<LCPConstraintSolver tolerance="1e-3" maxIt="1000" initial_guess="false" build_lcp="false"  printLog="0" mu="0.2"/>
     <FreeMotionAnimationLoop />
     <CollisionPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />

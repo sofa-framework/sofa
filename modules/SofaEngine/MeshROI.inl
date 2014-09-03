@@ -240,7 +240,7 @@ void MeshROI<DataTypes>::init()
     if (b[1] > b[4]) std::swap(b[1],b[4]);
     if (b[2] > b[5]) std::swap(b[2],b[5]);
     f_box.setValue(b);
-    std::cout << "Bounding Box " << b << std::endl;
+    sout << "Bounding Box " << b << sendl;
 
     // fin perso : init de la mesh template
     first.setValue(1); // perso

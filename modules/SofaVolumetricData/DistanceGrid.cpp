@@ -28,6 +28,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/objectmodel/Base.h>
 //#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
 //#endif
@@ -98,13 +99,14 @@ bool DistanceGrid::release()
 
 DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
+    sofa::core::objectmodel::Base* base;
     double absscale=fabs(scale);
     if (filename == "#cube")
     {
         float dim = (float)scale;
         int np = 5;
         Coord bbmin(-dim, -dim, -dim), bbmax(dim,dim,dim);
-        std::cout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<std::endl;
+        base->sout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<base->sendl;
         if (pmin[0]<=pmax[0])
         {
             pmin = bbmin;
@@ -121,12 +123,12 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
                 if (bbmax[c] > pmax[c]) pmax[c] = bbmax[c];
             }
         }
-        std::cout << "Creating cube distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
+        base->sout << "Creating cube distance grid in <"<<pmin<<">-<"<<pmax<<">"<<base->sendl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         grid->calcCubeDistance(dim, np);
         if (sampling)
             grid->sampleSurface(sampling);
-        std::cout << "Distance grid creation DONE."<<std::endl;
+        base->sout << "Distance grid creation DONE."<< base->sendl;
         return grid;
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")

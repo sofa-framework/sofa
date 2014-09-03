@@ -100,7 +100,7 @@ void MeshSTL::readSTL (const std::string &filename)
     #ifndef NDEBUG
     std::size_t namepos = filename.find_last_of("/");
     std::string name = filename.substr(namepos+1);
-    std::cout << "Reading STL file : " << name << std::endl;
+    sout << "Reading STL file : " << name << sendl;
     #endif
     
     vector< vector<int> > vertNormTexIndices;

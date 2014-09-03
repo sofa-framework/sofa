@@ -48,7 +48,7 @@ template<class DataTypes>
 void StiffSpringForceField<DataTypes>::init()
 {
     this->SpringForceField<DataTypes>::init();
-    serr<<"StiffSpringForceField<DataTypes> initialized "<<sendl;
+    sout<<"StiffSpringForceField<DataTypes> initialized "<<sendl;
 }
 
 template<class DataTypes>
