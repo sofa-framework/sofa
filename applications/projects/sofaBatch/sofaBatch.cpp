@@ -170,7 +170,7 @@ int main(int argc, char** argv)
     //std::ifstream end(fileName.c_str());
 
     std::string input;
-    int nbsteps;
+//    int nbsteps;
     std::string output;
 
 //    while( end >> input && end >>nbsteps && end >> output  )

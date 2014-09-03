@@ -587,7 +587,13 @@ Solves a KKT system (AssemledSystem), for both correction/dynamics cases.
 
 
 
-\section{Acceleration formulation}
+\section{Alternative formulations}
+
+Alternative formulations allow more complex projective constraints (e.g. velocity constraints) where the velocity formulation can only handle the fixed projective constraint.
+Howerver their corresponding linear system seems harder to resolve for constraints.
+Note that stabilization is always performed in velocity.
+
+\subsection{Acceleration}
 
 By considering $v_{k+1} = v_k + h a $, eq. (\ref{eq:time-stepping}) becomes :
 
@@ -602,9 +608,21 @@ and eq. (\ref{eq:constraintvalue}) becomes :
   J_k a &= \frac{ -\frac{g_k}{\alpha h} - J_k v_k } {\beta h}
 \end{align}
 
-At first view, the velocity formulation seems more stable for elastic constraints but the acceleration formulation allows more complex projective constraints (e.g. velocity constraints) where the velocity formulation can only handle the fixed projective constraint.
-Note that stabilization is always performed in velocity.
 
+\subsection{Velocity variation}
+
+By considering $v_{k+1} = v_k + dv $, eq. (\ref{eq:time-stepping}) becomes :
+
+\begin{equation}
+  \block{M + h\alpha D + h^2 \alpha \beta K} dv = 
+  h f_k - h D v_k - \alpha h^2 K v_k
+\end{equation}
+
+and eq. (\ref{eq:constraintvalue}) becomes :
+
+\begin{align}
+  J_k dv &= \frac{ -\frac{g_k}{\alpha h} - J_k v_k } {\beta}
+\end{align}
 
 
 \end{document}

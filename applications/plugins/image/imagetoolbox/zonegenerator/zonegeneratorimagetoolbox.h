@@ -297,7 +297,7 @@ public:
         for(unsigned int j=0;j<dimY;j++)
         {
             T* pColor = new T[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
-            for(int c=0;c<dimS;c++)pColor[c]=color(0,1);
+            for(int c=0;c<(int)dimS;c++)pColor[c]=color(0,1);
             //std::cout <<pColor[0]<<std::endl;
 
             im_out->getCImg().draw_point(i, j, 0, pColor);
@@ -409,7 +409,7 @@ public:
                     }
                 }
 
-                if(v.x()<dimX-1)
+                if(v.x()<(int)(dimX-1))
                 {
                     if(im_out->getCImg()(v.x()+1,v.y(),0,0)==0)
                     {
@@ -425,7 +425,7 @@ public:
                     }
                 }
 
-                if(v.y()<dimY-1)
+                if(v.y()<(int)(dimY-1))
                 {
                     if(im_out->getCImg()(v.x(),v.y()+1,0,0)==0)
                     {

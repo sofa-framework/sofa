@@ -324,8 +324,8 @@ public:
 			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
 			// will cause a temporary copy of the map, which this define was meant to avoid!
 			if (vtype2 == vtype)
-			{
-				idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+            {
+                idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
 			}
 			else
 #endif

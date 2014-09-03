@@ -168,7 +168,7 @@ bool SceneColladaLoader::load()
     return fileRead;
 }
 
-bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
+bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filename*/)
 {
     sout << "SceneColladaLoader::readDAE" << sendl;
 
@@ -958,7 +958,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
     // register every SkeletonJoint and their parents and fill up theirs properties
     for(std::size_t i = 0; i < skeletonJoints.size(); ++i)
     {
-        SkeletonJoint<Rigid3dTypes>& skeletonJoint = skeletonJoints[i];
+//        SkeletonJoint<Rigid3dTypes>& skeletonJoint = skeletonJoints[i];
 
         aiNode*	node = NULL;
 
