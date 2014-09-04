@@ -574,22 +574,57 @@ protected:
         unsigned previousClosingTriSize = cltri.size();
 
 
-        this->closeMesh( meshId );
-
-        raPositions clpos(this->closingPosition);
-
         T colorClosing = (T)this->closingValue.getValue();
 
-#ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
-#endif
-        for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+        if( colorClosing )
         {
-            Coord pts[3];
-            for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
-            this->draw_triangle(im,pts[0],pts[1],pts[2],colorClosing,this->subdiv.getValue());
-            this->draw_triangle(im,pts[1],pts[2],pts[0],colorClosing,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            this->closeMesh( meshId );
+
+            raPositions clpos(this->closingPosition);
+
+    #ifdef USING_OMP_PRAGMAS
+            #pragma omp parallel for
+    #endif
+            for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+            {
+                Coord pts[3];
+                for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+
+                this->draw_triangle(im,pts[0],pts[1],pts[2],colorClosing,this->subdiv.getValue());
+                this->draw_triangle(im,pts[1],pts[2],pts[0],colorClosing,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            }
         }
+        else
+        {
+            // colorClosing=0 interpolate the color
+
+            SeqValues clValues;
+            this->closeMesh( meshId, &clValues );
+
+            raPositions clpos(this->closingPosition);
+
+
+    #ifdef USING_OMP_PRAGMAS
+            #pragma omp parallel for
+    #endif
+            for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+            {
+                Coord pts[3];
+                T colors[3];
+
+                for(size_t j=0; j<3; j++)
+                {
+                    pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+                    if( !colorClosing ) colors[j] = (T)clValues[cltri[i][j]];
+                }
+
+                this->draw_triangle(im,pts[0],pts[1],pts[2],colors[0],colors[1],colors[2],this->subdiv.getValue());
+                this->draw_triangle(im,pts[1],pts[2],pts[0],colors[0],colors[1],colors[2],this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            }
+
+        }
+
+
     }
 
 
@@ -648,7 +683,7 @@ protected:
             PixelT color;
             if( dmax==0 )
             {
-                color = 0.5*(color0+color1);
+                color = (PixelT)(0.5*(color0+color1));
             }
             else
             {
@@ -693,8 +728,16 @@ protected:
         Coord P (P0);
         for (unsigned int t = 0; t<=dmax; ++t)
         {
-            Real u = (Real)t / (Real)dmax;
-            PixelT color = (PixelT)(color0 * (1.0 - u) + color1 * u);
+            PixelT color;
+            if( dmax==0 )
+            {
+                color = (PixelT)(0.5*(color0+color1));
+            }
+            else
+            {
+                Real u = (Real)t / (Real)dmax;
+                color = (PixelT)(color0 * (1.0 - u) + color1 * u);
+            }
 
             this->draw_line(im,P,p2,color,color2,subdiv);
             P+=dP;
@@ -702,10 +745,11 @@ protected:
     }
 
 
-    void closeMesh( unsigned meshId )
+    void closeMesh( unsigned meshId, SeqValues* clValues=NULL )
     {
         raPositions pos(*this->vf_positions[meshId]);
         raTriangles tri(*this->vf_triangles[meshId]);
+        raValues    val(*this->vf_values[meshId]   );
 
         waPositions clpos(this->closingPosition);
         waTriangles cltri(this->closingTriangles);
@@ -759,15 +803,30 @@ protected:
             if(loops[i].size()>2)
             {
                 Coord centroid;
+                double centroidValue = 0.0;
                 size_t indexCentroid=clpos.size()+loops[i].size()-1;
                 for(size_t j=0; j<loops[i].size()-1; j++)
                 {
-                    clpos.push_back(pos[loops[i][j]]);
-                    centroid+=pos[loops[i][j]];
+                    unsigned int posIdx = loops[i][j];
+                    clpos.push_back(pos[posIdx]);
+                    centroid+=pos[posIdx];
+
+                    if( clValues )
+                    {
+                        clValues->push_back( val[posIdx] );
+                        centroidValue+=val[posIdx]; // TODO weight by distance to perform real barycentric interpolation
+                    }
+
                     cltri.push_back(Triangle(indexCentroid,clpos.size()-1,j?clpos.size()-2:indexCentroid-1));
                 }
                 centroid/=(Real)(loops[i].size()-1);
                 clpos.push_back(centroid);
+
+                if( clValues )
+                {
+                    centroidValue /= (Real)(loops[i].size()-1); // TODO normalize by sum of weight
+                    clValues->push_back( centroidValue );
+                }
             }
     }
 
