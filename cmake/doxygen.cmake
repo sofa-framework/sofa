@@ -52,7 +52,7 @@ if (SOFA-MISC_DOXYGEN)
     set(SOFA_DOC_TARGETS)
     foreach(project ${GLOBAL_DEPENDENCIES})
         if((${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/plugins/${project}") OR
-                (${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/modules/${project}"))
+                (${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/modules/sofa/component/${project}"))
             # Ignore SofaComponent* meta-modules
             if(NOT ${project} MATCHES "SofaComponent.*")
                 list(APPEND SOFA_DOCUMENTABLE_PROJECTS ${project})
@@ -165,21 +165,18 @@ if (SOFA-MISC_DOXYGEN)
 
     # Create the 'doc-SOFA' target for the documentation of framework/
     if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
+        add_custom_target("component_list"
+            COMMAND bin/generateComponentList > misc/component_list.h
+            DEPENDS generateComponentList)
         add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h ${SOFA_BUILD_DIR}/misc/component_list.h" "")
-        add_dependencies("doc-SOFA" generateComponentList)
+        add_dependencies("doc-SOFA", "component_list")
     else()
         add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h" "")
     endif()
     set_target_properties("doc-SOFA" PROPERTIES FOLDER "Documentation") # IDE Folder
 
     # Create the 'doc' target, to build every documentation
-    if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
-        add_custom_target("doc"
-            COMMAND bin/generateComponentList > misc/component_list.h
-            DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
-    else()
-        add_custom_target("doc" DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
-    endif()
+    add_custom_target("doc" DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
     set_target_properties("doc" PROPERTIES FOLDER "Documentation") # IDE Folder
 
     # Create a convenient shortcut to the main page
