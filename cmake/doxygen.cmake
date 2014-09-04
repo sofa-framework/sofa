@@ -169,7 +169,7 @@ if (SOFA-MISC_DOXYGEN)
             COMMAND bin/generateComponentList > misc/component_list.h
             DEPENDS generateComponentList)
         add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h ${SOFA_BUILD_DIR}/misc/component_list.h" "")
-        add_dependencies("doc-SOFA", "component_list")
+        add_dependencies("doc-SOFA" "component_list")
     else()
         add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h" "")
     endif()
