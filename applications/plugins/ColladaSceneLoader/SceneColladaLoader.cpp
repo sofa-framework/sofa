@@ -78,7 +78,9 @@ SceneColladaLoader::SceneColladaLoader() : SceneLoader()
 	, importer()
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
 	, generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
-	, useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin if available (it will replace the SkinningMapping with a LinearMapping)"))
+#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+    , useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
+#endif
 {
 	
 }
@@ -168,7 +170,7 @@ bool SceneColladaLoader::load()
     return fileRead;
 }
 
-bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
+bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filename*/)
 {
     sout << "SceneColladaLoader::readDAE" << sendl;
 
@@ -958,7 +960,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
     // register every SkeletonJoint and their parents and fill up theirs properties
     for(std::size_t i = 0; i < skeletonJoints.size(); ++i)
     {
-        SkeletonJoint<Rigid3dTypes>& skeletonJoint = skeletonJoints[i];
+//        SkeletonJoint<Rigid3dTypes>& skeletonJoint = skeletonJoints[i];
 
         aiNode*	node = NULL;
 

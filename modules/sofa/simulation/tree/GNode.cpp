@@ -338,7 +338,7 @@ bool GNode::hasAncestor(const BaseContext* context) const
 
 /// Execute a recursive action starting from this node
 /// This method bypass the actionScheduler of this node if any.
-void GNode::doExecuteVisitor(simulation::Visitor* action)
+void GNode::doExecuteVisitor(simulation::Visitor* action, bool)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     action->setNode(this);

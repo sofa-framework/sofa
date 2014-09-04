@@ -57,9 +57,7 @@ public:
 
 protected:
     ColorMap();
-    virtual ~ColorMap() {
-        glDeleteTextures(1, &texture);
-    }
+    virtual ~ColorMap();
 
 public:
     template<class Real>

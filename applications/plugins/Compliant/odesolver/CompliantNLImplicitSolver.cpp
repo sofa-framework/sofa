@@ -77,9 +77,9 @@ void CompliantNLImplicitSolver::cleanup() {
 class AccumulateConstraintForceVisitor : public simulation::MechanicalVisitor
 {
 public:
-    simulation::MultiVecDerivId lambda;
+    core::MultiVecDerivId lambda;
 
-    AccumulateConstraintForceVisitor(const sofa::core::MechanicalParams* mparams, simulation::MultiVecDerivId lambda )
+    AccumulateConstraintForceVisitor(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId lambda )
         : simulation::MechanicalVisitor(mparams), lambda(lambda)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -176,12 +176,12 @@ public:
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
 class MechanicalAddLagrangeForce : public simulation::MechanicalVisitor
 {
-    simulation::MultiVecDerivId res, lambdas;
+    core::MultiVecDerivId res, lambdas;
     SReal invdt;
 
 
 public:
-    MechanicalAddLagrangeForce(const sofa::core::MechanicalParams* mparams, simulation::MultiVecDerivId res, simulation::MultiVecDerivId lambdas, SReal dt )
+    MechanicalAddLagrangeForce(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res, core::MultiVecDerivId lambdas, SReal dt )
         : MechanicalVisitor(mparams), res(res), lambdas(lambdas), invdt(-1.0/dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -319,7 +319,7 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVe
     // compute deltaV (propagated to mapped dofs)
     simulation::MechanicalVMultiOpVisitor multivis( &sop.mparams(), velocity_ops );
     multivis.mapped = true; // propagating
-    this->getContext()->executeVisitor( &multivis );
+    this->getContext()->executeVisitor( &multivis, true );
 
 
     // compute rhs from average_f, average_v and deltaV
@@ -437,7 +437,7 @@ void CompliantNLImplicitSolver::v_eq_all(const core::ExecParams* params, sofa::c
 {
     simulation::MechanicalVOpVisitor vis( params, v, a );
     vis.mapped = true;
-    this->getContext()->executeVisitor( &vis );
+    this->getContext()->executeVisitor( &vis, true );
 }
 
 
@@ -461,7 +461,9 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 {
     assert(kkt);
 
-    SolverOperations sop( eparams, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId, staticSolver.getValue() );
+    static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( eparams );
+
+    SolverOperations sop( eparams, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId, true, staticSolver.getValue() );
 
     if( iterations.getValue() <= 1 )
     {

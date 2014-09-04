@@ -30,14 +30,9 @@ class SOFA_SOFASIMPLEGUI_API  SofaGL
 public:
     /**
      * @brief SofaGL
-     * @param s The Sofa scene to interact with.
+     * @param s The Sofa scene to interact with, the scene MUST already be opened !
      */
     SofaGL( SofaScene* s );
-    /**
-     * @brief init
-     * currently does nothing
-     */
-    void init();
     /**
      * @brief Draw the scene and stores the transformation matrices, for picking.
      * This requires an OpenGL context. It is supposed to be used by the drawing method of a viewer, after setting the modelview matrix.
