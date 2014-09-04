@@ -77,9 +77,9 @@ void CompliantNLImplicitSolver::cleanup() {
 class AccumulateConstraintForceVisitor : public simulation::MechanicalVisitor
 {
 public:
-    simulation::MultiVecDerivId lambda;
+    core::MultiVecDerivId lambda;
 
-    AccumulateConstraintForceVisitor(const sofa::core::MechanicalParams* mparams, simulation::MultiVecDerivId lambda )
+    AccumulateConstraintForceVisitor(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId lambda )
         : simulation::MechanicalVisitor(mparams), lambda(lambda)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -176,12 +176,12 @@ public:
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
 class MechanicalAddLagrangeForce : public simulation::MechanicalVisitor
 {
-    simulation::MultiVecDerivId res, lambdas;
+    core::MultiVecDerivId res, lambdas;
     SReal invdt;
 
 
 public:
-    MechanicalAddLagrangeForce(const sofa::core::MechanicalParams* mparams, simulation::MultiVecDerivId res, simulation::MultiVecDerivId lambdas, SReal dt )
+    MechanicalAddLagrangeForce(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res, core::MultiVecDerivId lambdas, SReal dt )
         : MechanicalVisitor(mparams), res(res), lambdas(lambdas), invdt(-1.0/dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
