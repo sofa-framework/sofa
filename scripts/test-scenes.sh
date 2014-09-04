@@ -58,6 +58,7 @@ do
             elif [[ -z ${SCENES+x} ]]; then
                 SCENES="$arg"
             else
+		echo $arg
                 echo "Superfluous argument: $arg"
                 usage; exit 1
             fi;;

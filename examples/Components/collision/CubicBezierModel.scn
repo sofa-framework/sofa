@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Node name="root" dt="0.01" gravity="0 -20 0">
     <VisualStyle displayFlags="showCollision" />
-    <GenericConstraintSolver tolerance="1e-6" />
+    <GenericConstraintSolver tolerance="1e-6" maxIterations="1000"/>
     <FreeMotionAnimationLoop />
     <CollisionPipeline depth="6" verbose="1" draw="0" />
     <BruteForceDetection name="N2" />

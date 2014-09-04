@@ -3,6 +3,7 @@
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
+    <DiscreteIntersection />
     <CollisionResponse response="default" name="collision response" />
     <!--<CollisionGroup />-->
     <Node name="Liver">

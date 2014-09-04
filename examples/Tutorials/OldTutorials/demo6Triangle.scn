@@ -4,10 +4,10 @@
     <CollisionPipeline depth="6" verbose="0" draw="1" />
     <BruteForceDetection name="N2" draw="1" />
     <!--<ProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="1" useLineTriangle="0"/>-->
-    <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="0" useLineTriangle="1" />
+    <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5"  />
     <Node name="Poutre1">
         <EulerImplicit />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <Node name="M1">
             <MechanicalObject filename="BehaviorModels/smCube27.xs3" dz="-21.0" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />

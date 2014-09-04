@@ -6,9 +6,9 @@
   <DefaultContactManager name="Response"  response="default" />
   <TreeCollisionGroupManager name="Group" />
   <EulerImplicitSolver name="Implicit Euler Solver" />
-  <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
-  <NewProximityIntersection name="newProximityIntersection0" />
-  <Node 	 name="RigMec"  gravity="0 0 0"  >
+  <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
+  <NewProximityIntersection name="newProximityIntersection0" alarmDistance="1" contactDistance="0.5"/>
+  <Node name="RigMec"  gravity="0 0 0"  >
 	<MechanicalObject template="Rigid" name="rigidDOF"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
 	<UniformMass template="Rigid" name="uniformMass63" />
 	<Node 	 name="TRIANGLE"  >
@@ -19,7 +19,7 @@
 	  <RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../rigidDOF"  output="@falling_particle" />
 	</Node>
   </Node>
-  <Node 	 name="OBB"  gravity="0 0 -9.81"  >
+  <Node name="OBB"  gravity="0 0 -9.81"  >
 	<MechanicalObject template="Rigid" name="mObject37"  position="0 0 -5 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
 	<UniformMass template="Rigid" name="uniformMass0"  mass="1 1 [1 0 0,0 1 0,0 0 1]" />
 	<FixedConstraint template="Rigid" name="fixedConstraint0"  indices="0" />
