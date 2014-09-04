@@ -169,7 +169,8 @@ void QSofaMainWindow::isPlaying( bool playing )
 void QSofaMainWindow::open()
 {
     sofaScene.pause();
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open scene file"), ".", tr("Scene Files (*.scn *.xml *.py)"));
+    std::string path = std::string(QTSOFA_SRC_DIR) + "/../examples";
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open scene file"), path.c_str(), tr("Scene Files (*.scn *.xml *.py)"));
     if( fileName.size()>0 )
         sofaScene.open(fileName.toStdString().c_str());
 }

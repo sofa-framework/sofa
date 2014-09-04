@@ -17,8 +17,9 @@ LIBS += -lglut -lGLU -lGLEW
 
 ###### SOFA  ####################################################
 #### customize the following paths:
-QMAKE_CXX = clang++
-QMAKE_CC = clang
+#QMAKE_CXX = clang++
+#QMAKE_CXXFLAGS += -Wno-overloaded-virtual -Wno-unused-parameter
+#QMAKE_CC = clang
 SOFA_SRC=/home/faure/scm/sofa-git/sofa/
 DEFINES += QTSOFA_SRC_DIR=\\\"/home/faure/scm/sofa-git/sofa/applications/plugins/SofaSimpleGUI/qtSofa\\\"
 SOFA_BUILD_DEBUG=/home/faure/scm/sofa-git/clang-debug              # required for a debug version

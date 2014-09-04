@@ -16,7 +16,7 @@ Camera::Camera()
 void Camera::lookAt()
 {
 
-        glMultMatrixf( transform.data() );
+    glMultMatrixf( transform.data() );
 }
 
 template <typename T> inline T sqr(const T& t){ return t*t; }
@@ -27,13 +27,13 @@ void Camera::viewAll( float xmin, float ymin, float zmin, float xmax, float ymax
     Vec3 pcen = (pmin+pmax)*0.5;
     Vec3 diag = pmax-pmin;
     float radius = diag.norm();
-//    cout<<"Camera, diag = " << diag.transpose() << endl;
-//    cout<<"Camera, scene radius = " << radius << endl;
+    //    cout<<"Camera, diag = " << diag.transpose() << endl;
+    //    cout<<"Camera, scene radius = " << radius << endl;
 
     // Desired distance:  distance * tan(a) = radius
     float distance = 1.5 * radius / tan(fovy * 3.1415927/180);
-//    cout<<"Camera::viewAll, angle = " << fovy << ", tan = " << tan(fovy) << ", distance = " << distance << endl;
-//    cout<<"Camera::viewAll, xmin xmax ymin ymax zmin zmax = " << xmin << " " << xmax <<" "<<ymin<<" "<<ymax<<" "<<zmin<<" "<<zmax<< endl;
+    //    cout<<"Camera::viewAll, angle = " << fovy << ", tan = " << tan(fovy) << ", distance = " << distance << endl;
+    //    cout<<"Camera::viewAll, xmin xmax ymin ymax zmin zmax = " << xmin << " " << xmax <<" "<<ymin<<" "<<ymax<<" "<<zmin<<" "<<zmax<< endl;
 
     // move the camera along the current camera-center line, at the right distance
     // cam = cen + distance * (cam-cen)/|cam-cen|
@@ -46,8 +46,8 @@ void Camera::viewAll( float xmin, float ymin, float zmin, float xmax, float ymax
     zfar  = distance + radius*1.5;
 
     setlookAt(peye(0),peye(1),peye(2),
-           pcen(0),pcen(1),pcen(2),
-           transform.linear()(1,0), transform.linear()(1,1), transform.linear()(1,2)); // use current y direction as up axis
+              pcen(0),pcen(1),pcen(2),
+              transform.linear()(1,0), transform.linear()(1,1), transform.linear()(1,2)); // use current y direction as up axis
 }
 
 
@@ -75,7 +75,7 @@ void Camera::setlookAt(
         )
 {
     Vec3 eye(eyeX,eyeY,eyeZ), target(targetX,targetY,targetZ), upVec(upX,upY,upZ);
-//    cout<<"Camera::setLookAt " << eye.transpose() <<", " << target.transpose() << ", " << upVec.transpose() << endl;
+    //    cout<<"Camera::setLookAt " << eye.transpose() <<", " << target.transpose() << ", " << upVec.transpose() << endl;
 
     Vec3 forward = target - eye;
     forward.normalize();
@@ -92,12 +92,12 @@ void Camera::setlookAt(
         transform.linear()(0,i) = side(i);
         transform.linear()(1,i) = up(i);
         transform.linear()(2,i) = -forward(i);
-     }
+    }
 
     // -orientation.transpose*translation
     transform.translation() = -transform.linear() * eye;
 
-//    cout<<"Camera::setLookAt,  transform matrix: " << endl << transform.matrix() << endl;
+    //    cout<<"Camera::setLookAt,  transform matrix: " << endl << transform.matrix() << endl;
 
 }
 
@@ -167,15 +167,17 @@ bool Camera::handleMouseMotion( int x, int y )
         {
             transform.translation() += Vec3( dx/100.0, dy/100, 0);
         }
-        else if( fabs(dx)>fabs(dy) )
-        { // rotation z
-            float angle = dx;
-            Eigen::AngleAxisf rot( angle, Vec3(0,0,-1) );
-            transform.linear() = rot*transform.linear();
-        }
-        else if( fabs(dy)>fabs(dx) )
-        {
-            transform.translation() += Vec3( 0,0, -dy/100);
+        else {
+//            if( fabs(dx)>fabs(dy) )
+//            { // rotation z
+//                float angle = dx;
+//                Eigen::AngleAxisf rot( angle, Vec3(0,0,-1) );
+//                transform.linear() = rot*transform.linear();
+//            }
+//            else if( fabs(dy)>fabs(dx) )
+//            {
+                transform.translation() += Vec3( 0,0, -dy/100);
+//            }
         }
         tb_ancienX = x;
         tb_ancienY = y;

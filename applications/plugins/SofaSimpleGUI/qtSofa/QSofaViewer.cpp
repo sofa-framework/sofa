@@ -135,7 +135,7 @@ void QSofaViewer::viewAll()
 
     float xmin, xmax, ymin, ymax, zmin, zmax;
     _sofaGL->getSceneBBox(&xmin,&ymin,&zmin, &xmax,&ymax,&zmax);
-//    cout<<"QSofaViewer::viewAll, bounding box = "<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
+    cout<<"QSofaViewer::viewAll, bounding box = "<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
     _camera.viewAll(xmin,ymin,zmin, xmax,ymax,zmax);
     update();
 }
