@@ -172,9 +172,12 @@ void SubsetMapping<TIn, TOut>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology);
-    f_indices.registerTopologicalData();
+    if (f_handleTopologyChange.getValue())
+    {
+        // Initialize functions and parameters for topological changes
+        f_indices.createTopologicalEngine(topology);
+        f_indices.registerTopologicalData();
+    }
 
     postInit();
 }
