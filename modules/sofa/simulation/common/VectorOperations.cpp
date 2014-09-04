@@ -43,11 +43,9 @@ namespace simulation
 namespace common
 {
 
-using namespace sofa::core;
-
-VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext *ctx):
+VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext *ctx, bool precomputedTraversalOrder):
     sofa::core::behavior::BaseVectorOperations(params,ctx),
-    executeVisitor(*ctx)
+    executeVisitor(*ctx,precomputedTraversalOrder)
 {
 }
 
@@ -55,76 +53,76 @@ void VectorOperations::v_alloc(sofa::core::MultiVecCoordId& v)
 {
     /* template < VecType vtype > MechanicalVAvailVisitor;  */
     /* this can be probably merged in a single operation with the MultiVecId design */
-    VecCoordId id(VecCoordId::V_FIRST_DYNAMIC_INDEX);
-    //executeVisitor( MechanicalVAvailVisitor<V_COORD>( params /* PARAMS FIRST */, id) );
+    core::VecCoordId id(core::VecCoordId::V_FIRST_DYNAMIC_INDEX);
+    //executeVisitor( MechanicalVAvailVisitor<core:V_COORD>( params /* PARAMS FIRST */, id) );
     //v.assign(id);
-    MechanicalVAvailVisitor<V_COORD> avail(params /* PARAMS FIRST */, id);
+    MechanicalVAvailVisitor<core::V_COORD> avail(params /* PARAMS FIRST */, id);
     executeVisitor( &avail );
     //v.assign(id);
     v.setId(avail.states, id);
-    executeVisitor( MechanicalVAllocVisitor<V_COORD>(params /* PARAMS FIRST */, v) );
+    executeVisitor( MechanicalVAllocVisitor<core::V_COORD>(params /* PARAMS FIRST */, v) );
 }
 
 void VectorOperations::v_alloc(sofa::core::MultiVecDerivId& v)
 {
-    VecDerivId id(VecDerivId::V_FIRST_DYNAMIC_INDEX);
-    MechanicalVAvailVisitor<V_DERIV> avail(params /* PARAMS FIRST */, id);
+    core::VecDerivId id(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
+    MechanicalVAvailVisitor<core::V_DERIV> avail(params /* PARAMS FIRST */, id);
     executeVisitor( &avail );
     //v.assign(id);
     v.setId(avail.states, id);
-    executeVisitor(  MechanicalVAllocVisitor<V_DERIV>(params /* PARAMS FIRST */, v) );
+    executeVisitor(  MechanicalVAllocVisitor<core::V_DERIV>(params /* PARAMS FIRST */, v) );
 }
 
 void VectorOperations::v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField, bool propagate)
 {
-    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_COORD>( params /* PARAMS FIRST */, id, interactionForceField, propagate) );
+    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<core::V_COORD>( params /* PARAMS FIRST */, id, interactionForceField, propagate) );
 }
 
 void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField, bool propagate)
 {
-    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<V_DERIV>(params /* PARAMS FIRST */, id, interactionForceField, propagate) );
+    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<core::V_DERIV>(params /* PARAMS FIRST */, id, interactionForceField, propagate) );
 }
 
 void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactionForceField, bool propagate)
 {
     if( v.isNull() )
     {
-        VecCoordId id(VecCoordId::V_FIRST_DYNAMIC_INDEX);
-        MechanicalVAvailVisitor<V_COORD> avail(params /* PARAMS FIRST */, id);
+        core::VecCoordId id(core::VecCoordId::V_FIRST_DYNAMIC_INDEX);
+        MechanicalVAvailVisitor<core::V_COORD> avail(params /* PARAMS FIRST */, id);
         executeVisitor( &avail );
         //v.assign(id);
         v.setId(avail.states, id);
     }
-    executeVisitor( MechanicalVReallocVisitor<V_COORD>(params /* PARAMS FIRST */, &v, interactionForceField, propagate) );
+    executeVisitor( MechanicalVReallocVisitor<core::V_COORD>(params /* PARAMS FIRST */, &v, interactionForceField, propagate) );
 }
 
 void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactionForceField, bool propagate)
 {
     if( v.isNull() )
     {
-        VecDerivId id(VecDerivId::V_FIRST_DYNAMIC_INDEX);
-        MechanicalVAvailVisitor<V_DERIV> avail(params /* PARAMS FIRST */, id);
+        core::VecDerivId id(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
+        MechanicalVAvailVisitor<core::V_DERIV> avail(params /* PARAMS FIRST */, id);
         executeVisitor( &avail );
         //v.assign(id);
         v.setId(avail.states, id);
     }
-    executeVisitor( MechanicalVReallocVisitor<V_DERIV>(params /* PARAMS FIRST */, &v, interactionForceField, propagate) );
+    executeVisitor( MechanicalVReallocVisitor<core::V_DERIV>(params /* PARAMS FIRST */, &v, interactionForceField, propagate) );
 }
 
 
 void VectorOperations::v_clear(sofa::core::MultiVecId v) //v=0
 {
-    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, ConstMultiVecId::null(), ConstMultiVecId::null(), 1.0) );
+    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0) );
 }
 
 void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a) // v=a
 {
-    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, a, ConstMultiVecId::null(), 1.0) );
+    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, a, core::ConstMultiVecId::null(), 1.0) );
 }
 
 void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f) // v=f*a
 {
-    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, ConstMultiVecId::null(), a, f) );
+    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, core::ConstMultiVecId::null(), a, f) );
 }
 
 #ifndef SOFA_SMP
@@ -174,13 +172,13 @@ void VectorOperations::v_op(sofa::core::MultiVecId v, sofa::core::MultiVecId a, 
 void VectorOperations::v_dot( sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b)
 {
     result = 0;
-    MechanicalVDotVisitor(params /* PARAMS FIRST */, a,b,&result).setTags(ctx->getTags()).execute( ctx );
+    MechanicalVDotVisitor(params /* PARAMS FIRST */, a,b,&result).setTags(ctx->getTags()).execute( ctx, executeVisitor.precomputedTraversalOrder );
 }
 
 void VectorOperations::v_norm( sofa::core::ConstMultiVecId a, unsigned l)
 {
     MechanicalVNormVisitor vis(params, a,l);
-    vis.setTags(ctx->getTags()).execute( ctx );
+    vis.setTags(ctx->getTags()).execute( ctx, executeVisitor.precomputedTraversalOrder );
     result = vis.getResult();
 }
 

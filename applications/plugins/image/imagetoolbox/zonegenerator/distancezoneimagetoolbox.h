@@ -155,13 +155,13 @@ public:
 
         double maxdistance=0;
         // calculate max distance
-        for(int i=0;i<dimX;i++)
-        for(int j=0;j<dimY;j++)
+        for(int i=0;i<(int)dimX;i++)
+        for(int j=0;j<(int)dimY;j++)
         {
             unsigned int currentColor = im_in->getCImg()(i,j,0,0,0);
 
-            for(int ii=0;ii<dimX;ii++)
-            for(int jj=0;jj<dimY;jj++)
+            for(int ii=0;ii<(int)dimX;ii++)
+            for(int jj=0;jj<(int)dimY;jj++)
             {
                 unsigned int color2 = im_in->getCImg()(ii,jj,0,0,0);
                 int x = i-ii, y= j-jj;
@@ -177,8 +177,8 @@ public:
 
 
         // set color
-        for(int i=0;i<dimX;i++)
-        for(int j=0;j<dimY;j++)
+        for(int i=0;i<(int)dimX;i++)
+        for(int j=0;j<(int)dimY;j++)
         {
             unsigned int currentColor = im_in->getCImg()(i,j,0,0,0);
 
@@ -188,8 +188,8 @@ public:
 
 
 
-            for(int ii=0;ii<dimX;ii++)
-            for(int jj=0;jj<dimY;jj++)
+            for(int ii=0;ii<(int)dimX;ii++)
+            for(int jj=0;jj<(int)dimY;jj++)
             {
                 unsigned int color2 = im_in->getCImg()(ii,jj,0,0,0);
                 int x = i-ii, y= j-jj;

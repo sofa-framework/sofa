@@ -3,9 +3,12 @@
 #include <GL/glew.h>
 #include <QApplication>
 #include <QGLWidget>
+#include <SofaSimpleGUI/SofaScene.h>
 #include <SofaSimpleGUI/SofaGL.h>
 #include <SofaSimpleGUI/Camera.h>
 #include "QSofaScene.h"
+
+using sofa::simplegui::SofaScene;
 using sofa::simplegui::SofaGL;
 using sofa::simplegui::Interactor;
 using sofa::simplegui::SpringInteractor;
@@ -36,6 +39,8 @@ public:
 signals:
 
 public slots:
+	// reset the display
+	void reset();
     /// update the display
     void draw();
     /// adjust camera center and orientation to see the entire scene
@@ -43,7 +48,8 @@ public slots:
     void toggleFullScreen();
 
 protected:
-    SofaGL _sofaGL; ///< interface with the scene to display and pick in.
+	SofaScene* _sofaScene;	///< the sofa scene we want to display
+    SofaGL* _sofaGL;		///< interface with the scene to display and pick in.
 
     Interactor* _drag; ///< current active interactor, NULL if none
 

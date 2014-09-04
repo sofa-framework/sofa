@@ -104,6 +104,14 @@ if (SOFA-MISC_DOXYGEN)
         sofa_list_intersection(documentable_dependencies project_dependencies SOFA_DOCUMENTABLE_PROJECTS)
         set(input "${GLOBAL_PROJECT_PATH_${project}}")
 
+        # Temporary workaround for modules, which are not organised by directory:
+        # we extract the list of source files from the CMakeLists.txt files.
+        if("${input}" MATCHES ".*/modules/sofa/component/.*")
+            if(NOT WIN32)
+                execute_process(COMMAND bash -c "sed -e 's/#.*//' ${input}/CMakeLists.txt | sed -ne '/\\.\\.\\/.*\\(h\\|cpp\\|inl\\)/s/.*\\(\\.\\.\\/.*\\(h\\|cpp\\|inl\\)\\).*/\\1/p' | sed -e ':foo;N;$!bfoo;s/\\n/ /g' | sed -e 's:\\.\\.:${SOFA_SRC_DIR}/modules/sofa/component:g'" OUTPUT_VARIABLE input)
+            endif()
+        endif()
+
         add_doc_target("${project}" "${input}" "${documentable_dependencies};SOFA")
     endforeach()
 
@@ -157,21 +165,18 @@ if (SOFA-MISC_DOXYGEN)
 
     # Create the 'doc-SOFA' target for the documentation of framework/
     if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
+        add_custom_target("component_list"
+            COMMAND bin/generateComponentList > misc/component_list.h
+            DEPENDS generateComponentList)
         add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h ${SOFA_BUILD_DIR}/misc/component_list.h" "")
-        add_dependencies("doc-SOFA" generateComponentList)
+        add_dependencies("doc-SOFA" "component_list")
     else()
         add_doc_target("SOFA" "${SOFA_FRAMEWORK_DIR}/sofa ${SOFA_BUILD_DIR}/misc/doc.h" "")
     endif()
     set_target_properties("doc-SOFA" PROPERTIES FOLDER "Documentation") # IDE Folder
 
     # Create the 'doc' target, to build every documentation
-    if(SOFA-MISC_DOXYGEN_COMPONENT_LIST)
-        add_custom_target("doc"
-            COMMAND bin/generateComponentList > misc/component_list.h
-            DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
-    else()
-        add_custom_target("doc" DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
-    endif()
+    add_custom_target("doc" DEPENDS ${SOFA_DOC_TARGETS} "doc-SOFA")
     set_target_properties("doc" PROPERTIES FOLDER "Documentation") # IDE Folder
 
     # Create a convenient shortcut to the main page

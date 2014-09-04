@@ -139,7 +139,7 @@ using namespace core::behavior;
     void CompliantImplicitSolver::send(simulation::Visitor& vis) {
 //        scoped::timer step("visitor execution");
 
-        this->getContext()->executeVisitor( &vis );
+        this->getContext()->executeVisitor( &vis, true );
 
     }
 
@@ -291,14 +291,6 @@ using namespace core::behavior;
 
         switch( formulation.getValue().getSelectedId() )
         {
-        case FORMULATION_VEL: // c_k = h.f_k + Mv
-            // M v_k
-            m_factor = 1;
-            // h (1-alpha) B v_k
-            b_factor = h * (1 - alpha.getValue());
-            // h^2 alpha (1 - beta ) K v_k
-            k_factor = h * h * alpha.getValue() * (1 - beta.getValue());
-            break;
         case FORMULATION_DV: // c_k = h.f_k + h²Kv + hDv
             m_factor = 0.0;
             b_factor = h;
@@ -308,6 +300,15 @@ using namespace core::behavior;
             m_factor = 0.0;
             b_factor = 1.0;
             k_factor = h*alpha.getValue();
+            break;
+        case FORMULATION_VEL: // c_k = h.f_k + Mv
+        default:
+            // M v_k
+            m_factor = 1;
+            // h (1-alpha) B v_k
+            b_factor = h * (1 - alpha.getValue());
+            // h^2 alpha (1 - beta ) K v_k
+            k_factor = h * h * alpha.getValue() * (1 - beta.getValue());
             break;
         }
 
@@ -545,20 +546,14 @@ using namespace core::behavior;
                                 double dt,
                                 core::MultiVecCoordId posId,
                                 core::MultiVecDerivId velId) {
+
+        static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( params );
+
         assert(kkt);
-
-        // mechanical parameters
-//        core::MechanicalParams mparams;
-//        this->buildMparams( mparams, *params, dt );
-//        mparams.setX(posId);
-//        mparams.setV(velId);
-
-//        simulation::common::MechanicalOperations mop( params, this->getContext() );
-//        simulation::common::VectorOperations vop( params, this->getContext() );
 
         bool useVelocity = (formulation.getValue().getSelectedId()==FORMULATION_VEL);
 
-        SolverOperations sop( params, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId );
+        SolverOperations sop( params, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId, true );
 
 
         MultiVecDeriv f( &sop.vop, core::VecDerivId::force() ); // total force (stiffness + compliance) (f_k term)
@@ -667,8 +662,8 @@ using namespace core::behavior;
                     break;
                 }
 
-                // TODO is this even needed at this point ?
-                propagate( &sop.mparams() );
+                // TODO is this even needed at this point ? NO it is done by the animation loop
+//                propagate( &sop.mparams() );
             }
 
 
@@ -720,6 +715,9 @@ using namespace core::behavior;
         // Note that stabilization is always solved in velocity
 
         scoped::timer step("correction");
+
+        // propagate dynamics position and velocity
+        propagate( &sop.mparams() );
 
         // at this point collision detection should be run again
         // for now, we keep the same contact points with the same normals (wrong)

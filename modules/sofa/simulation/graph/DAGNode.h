@@ -149,6 +149,9 @@ public:
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
     virtual Node* findCommonParent( Node* node2 );
 
+    /// compute the traversal order from this Node
+    virtual void precomputeTraversalOrder( const core::ExecParams* params );
+
 protected:
 
     /// bottom-up traversal, returning the first node which have a descendancy containing both node1 & node2
@@ -163,7 +166,7 @@ protected:
 
     /// Execute a recursive action starting from this node.
     /// This method bypass the actionScheduler of this node if any.
-    void doExecuteVisitor(simulation::Visitor* action);
+    void doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder=false);
 
 
     /// @name @internal stuff related to the DAG traversal
@@ -188,7 +191,6 @@ protected:
     virtual void notifyMoveChild(Node::SPtr node, Node* prev);
 
 
-
     /// traversal flags
     typedef enum
     {
@@ -196,6 +198,7 @@ protected:
         VISITED,
         PRUNED
     } VisitedStatus;
+
 
 
     /// wrapper to use VisitedStatus in a std::map (to ensure the default map insertion will give NOT_VISITED)
@@ -215,7 +218,10 @@ protected:
     typedef std::map<DAGNode*,StatusStruct> StatusMap;
 
     /// list of DAGNode*
-    typedef std::list<DAGNode*> NodeList;
+    typedef helper::list<DAGNode*> NodeList;
+
+    /// the ordered list of Node to traverse from this Node
+    NodeList _precomputedTraversalOrder;
 
     /// @internal performing only the top-down traversal on a DAG
     /// @executedNodes will be fill with the DAGNodes where the top-down action is processed
@@ -320,6 +326,7 @@ protected:
         const sofa::core::objectmodel::ClassInfo& _class_info;
         DAGNode::GetObjectsCallBack& _container;
         const sofa::core::objectmodel::TagSet& _tags;
+
     };
     /// @}
 };

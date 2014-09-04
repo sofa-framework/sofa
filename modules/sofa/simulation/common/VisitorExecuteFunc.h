@@ -41,20 +41,27 @@ struct VisitorExecuteFunc
 {
 protected:
     core::objectmodel::BaseContext& ctx;
+
 public:
-    VisitorExecuteFunc(core::objectmodel::BaseContext& ctx):ctx(ctx) {};
+
+    bool precomputedTraversalOrder;
+
+    VisitorExecuteFunc(core::objectmodel::BaseContext& ctx, bool precomputedTraversalOrder=false)
+        : ctx(ctx)
+        , precomputedTraversalOrder(precomputedTraversalOrder)
+    {}
 
     template< class Visitor >
     void operator()(Visitor* pv)
     {
         prepareVisitor(pv);
-        pv->execute(&ctx);
+        pv->execute(&ctx,precomputedTraversalOrder);
     }
     template< class Visitor >
     void operator()(Visitor v)
     {
         prepareVisitor(&v);
-        v.execute(&ctx);
+        v.execute(&ctx,precomputedTraversalOrder);
     }
 protected:
     void prepareVisitor( sofa::simulation::Visitor* v)

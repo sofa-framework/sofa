@@ -47,9 +47,9 @@ Visitor::~Visitor()
 {
 }
 
-void Visitor::execute(sofa::core::objectmodel::BaseContext* c)
+void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool precomputedOrder)
 {
-    c->executeVisitor(this);
+    c->executeVisitor(this, precomputedOrder);
 }
 
 #ifdef SOFA_DUMP_VISITOR_INFO

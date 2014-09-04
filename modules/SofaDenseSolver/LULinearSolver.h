@@ -129,7 +129,7 @@ public:
     {
         const unsigned int Jrows = J.rowSize();
         const unsigned int Jcols = J.colSize();
-        if (Jcols != this->currentGroup->systemMatrix->rowSize())
+        if (Jcols != (unsigned int)this->currentGroup->systemMatrix->rowSize())
         {
             serr << "LULinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
             return false;

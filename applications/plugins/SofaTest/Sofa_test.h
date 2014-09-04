@@ -130,7 +130,7 @@ struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
         }
 
         Real maxdiff = 0.;
-        for(unsigned i=0; i<c1.size(); i++ ){
+        for(unsigned i=0; i<(unsigned)c1.size(); i++ ){
 //            cout<< c2[i]-c1[i] << " ";
             Real n = norm(c1[i]-c2[i]);
             if( n>maxdiff )
