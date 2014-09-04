@@ -3,7 +3,7 @@
 	<VisualStyle displayFlags="showBehavior" />
   <Node name="FixedConstraint" >
 	  <EulerImplicitSolver  />
-	  <CGLinearSolver  />
+	  <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
 	  <Node >
 		  <RegularGridTopology />
 		  <MechanicalObject showIndices="1"  showIndicesScale="0.0004" />
@@ -16,8 +16,8 @@
   </Node>
   <Node name="FixedLMConstraint" >
 	  <EulerImplicitSolver  />
-	  <CGLinearSolver  />
-    <LMConstraintSolver />
+	  <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+    <LMConstraintSolver numIterations="27" maxError="1e-7"/>
 	  <VisualStyle displayFlags="showBehavior" />
 	  <Node >
 		  <RegularGridTopology p0="2 0 0" />
@@ -31,8 +31,8 @@
   </Node>
   <Node name="DOFBlockerAllAxis" >
     <EulerImplicitSolver  />
-	  <CGLinearSolver  />
-	  <LMConstraintSolver />
+	  <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+	  <LMConstraintSolver numIterations="27" maxError="1e-7"/>
 	  <VisualStyle  displayFlags="showBehavior" />
 	  <Node >
 		  <RegularGridTopology  p0="4 0 0" />

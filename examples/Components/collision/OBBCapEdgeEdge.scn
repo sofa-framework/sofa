@@ -5,9 +5,9 @@
 	<BruteForceDetection name="Detection" />
 	<DefaultContactManager name="Response"  response="default" />
 	<TreeCollisionGroupManager name="Group" />
-	<NewProximityIntersection name="newProximityIntersection0" />
+	<NewProximityIntersection name="newProximityIntersection0" alarmDistance="1" contactDistance="0.5"/>
 	<EulerImplicitSolver name="Implicit Euler Solver" />
-	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
+	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
 	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
 		<MechanicalObject template="Rigid" name="mObject37"  position="0 0 -8  0.270598 0.653281 0.270598 0.653282"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
 		<UniformMass template="Rigid" name="uniformMass0" />

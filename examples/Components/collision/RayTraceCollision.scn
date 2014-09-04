@@ -199,6 +199,6 @@
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10" scale="0.5" />
         <TriangleOctree name="Floor" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" notexturename="textures/floor.bmp" color="lightgray" dy="-10" />
+        <OglModel name="FloorV" fileMesh="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" color="lightgray" dy="-10" />
     </Node>
 </Node>

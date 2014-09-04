@@ -7,7 +7,7 @@
     <Node name="cubeFEM" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
-        <LMConstraintSolver name="default0" listening="1" constraintVel="1" constraintPos="1" />
+        <LMConstraintSolver name="default0" listening="1" constraintVel="1" constraintPos="1" numIterations="27" maxError="1e-7"/>
         <MechanicalObject template="Vec3d" name="dof" useMask="1" translation="0 2 0" rotation="30 20 15" restScale="1" />
         <UniformMass template="Vec3d" name="default2" mass="0.25" />
         <RegularGridTopology name="default3" n="5 5 5" min="-3.5 -3.5 -3.5" max="3.5 3.5 3.5" p0="-3.5 -3.5 -3.5" />

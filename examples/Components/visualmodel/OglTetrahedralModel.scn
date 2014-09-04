@@ -6,7 +6,7 @@
         <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
         <Node>
             <OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/tetra.vert" geoFilename="shaders/tetra_triangles.geo" fragFilename="shaders/tetra.frag" />
-            <OglTetrahedralModel />
+            <OglTetrahedralModel template="Vec3d" />
         </Node>
     </Node>
 </Node>

@@ -5,7 +5,8 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-    <Node name="Liver" gravity="0 -9.81 0" depend="topo dofs">
+    <DiscreteIntersection />
+    <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshTopology name="mesh" fileTopology="mesh/liver.msh" />

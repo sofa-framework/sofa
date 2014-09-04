@@ -4,6 +4,7 @@
     <BruteForceDetection name="N2" />
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
+    <DiscreteIntersection />
     <Node name="cubeFEM">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />

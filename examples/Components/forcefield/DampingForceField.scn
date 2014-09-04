@@ -7,7 +7,7 @@
 	<DefaultContactManager name="Response"  response="default" />
 	<DefaultCollisionGroupManager name="Group" />
 	<EulerImplicitSolver name="eulerImplicitSolver0"  rayleighStiffness="0"  rayleighMass="0" />
-	<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  tolerance="1e-015"  threshold="1e-015" />
+	<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  tolerance="1e-015"  threshold="1e-015" iterations="25"/>
 	<Node 	 name="noDamping (white)"  >
 		<MechanicalObject template="Vec3d" name="mObject2"  position="0 0 0"  velocity="1 1 1"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObject="1"  showObjectScale="0.1"  drawMode="1" />
 		<UniformMass template="Vec3d" name="uniformMass3" />

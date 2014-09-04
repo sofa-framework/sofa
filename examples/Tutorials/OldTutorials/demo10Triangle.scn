@@ -7,7 +7,7 @@
     <CollisionGroup name="Group" />
     <Node name="M1">
         <EulerImplicit />
-        <CGLinearSolver iterations="100" threshold="0.000001" />
+        <CGLinearSolver iterations="100" threshold="0.000001" tolerance="1e-5"/>
         <MechanicalObject dx="0" dy="-10.5" dz="0" />
         <UniformMass mass="0.05" />
         <RegularGrid nx="3" ny="3" nz="3" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
@@ -28,7 +28,7 @@
     </Node>
     <Node name="M2">
         <EulerImplicit />
-        <CGLinearSolver iterations="100" threshold="0.000001" />
+        <CGLinearSolver iterations="100" threshold="0.000001" tolerance="1e-5"/>
         <MechanicalObject dx="2" dy="0" dz="0" />
         <UniformMass mass="0.05" />
         <RegularGrid nx="4" ny="4" nz="4" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
@@ -49,7 +49,7 @@
     </Node>
     <Node name="M3">
         <EulerImplicit />
-        <CGLinearSolver iterations="100" threshold="0.000001" />
+        <CGLinearSolver iterations="100" threshold="0.000001" tolerance="1e-5"/>
         <MechanicalObject dx="0" dy="10.5" dz="-4" />
         <UniformMass mass="0.05" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
@@ -70,7 +70,7 @@
     </Node>
     <Node name="M4">
         <EulerImplicit />
-        <CGLinearSolver iterations="100" threshold="0.000001" />
+        <CGLinearSolver iterations="100" threshold="0.000001" tolerance="1e-5"/>
         <MechanicalObject dx="0" dy="21" dz="0" />
         <UniformMass mass="0.05" />
         <RegularGrid nx="6" ny="6" nz="6" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
@@ -92,7 +92,7 @@
     <!--
 	<Node name="M5">
 		<EulerImplicit />
-		<CGLinearSolver iterations="100" threshold="0.000001" />
+		<CGLinearSolver iterations="100" threshold="0.000001" tolerance="1e-5"/>
 		<MechanicalObject dx="-4" dy="31.5" dz="-4"/>
 		<UniformMass mass="0.05"/>
 		<RegularGrid

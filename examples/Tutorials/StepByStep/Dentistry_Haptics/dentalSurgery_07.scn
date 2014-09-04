@@ -14,6 +14,7 @@ Using LCP contact detection and resolution:
     <LocalMinDistance name="proximity" alarmDistance="0.3" contactDistance="0.15" angleCone="0.0" />
     <FreeMotionAnimationLoop />
     <OmniDriver scale="0.1" orientation="0 180 0" />
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <Node name="Head">
         <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
         <Node name="Tongue">

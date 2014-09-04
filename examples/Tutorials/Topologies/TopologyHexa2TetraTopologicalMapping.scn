@@ -14,7 +14,7 @@
         <MechanicalObject template="Vec3d" name="Hexa" />
         <UniformMass template="Vec3d" name="Mass" mass="0.25" />
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
-        <HexahedronFEMForceField template="Vec3d" name="FEM" />
+        <HexahedronFEMForceField template="Vec3d" name="FEM" poissonRatio="0.45" youngModulus="5000"/>
         <RegularGridSpringForceField template="Vec3d" name="FEM-bend" />
         <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="0 5 180 185" drawSize="0" />
         <Node name="Tetra Mesh">
