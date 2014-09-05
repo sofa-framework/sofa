@@ -297,7 +297,8 @@ protected:
         {
             for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++) img(t)(x,y,z,k) = (T)0;
 
-            vector<bool> imageNbre(nb,false);// for NimagesNchannels keep track of which image the point belongs to
+            vector<bool> imageNbre;
+            for (unsigned i=0;i<nb;i++) imageNbre.push_back(false);// for NimagesNchannels keep track of which image the point belongs to
 
             Coord p = outT->fromImage(Coord(x,y,z)); //coordinate of voxel (x,y,z) in world space
             vector<struct pttype> pts;
