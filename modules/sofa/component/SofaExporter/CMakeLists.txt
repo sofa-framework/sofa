@@ -8,7 +8,9 @@ set(HEADER_FILES
     ../misc/WriteTopology.h 
     ../misc/WriteTopology.inl 
     ../misc/VTKExporter.h 
-    ../misc/OBJExporter.h 
+    ../misc/OBJExporter.h
+	../misc/BlenderExporter.h 
+	../misc/BlenderExporter.inl 
     ../misc/STLExporter.h 
     ../misc/MeshExporter.h
 
@@ -21,6 +23,7 @@ set(SOURCE_FILES
     ../misc/WriteTopology.cpp 
     ../misc/VTKExporter.cpp 
     ../misc/OBJExporter.cpp 
+	../misc/BlenderExporter.cpp
     ../misc/STLExporter.cpp 
     ../misc/MeshExporter.cpp
  

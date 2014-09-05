@@ -10,16 +10,18 @@ template <typename T> inline T sqr(const T& t){ return t*t; }
 SofaGL::SofaGL(SofaScene *s) :
 	_sofaScene(s)
 {
-    this->init(); // do we really need a separate init ?
-}
+	if(!_sofaScene)
+	{
+		std::cerr << "Error: you are trying to create a SofaGL object with a null SofaScene" << std::endl;
+		return;
+	}
 
-void SofaGL::init()
-{
 	glewInit();
 
 	_vparams = sofa::core::visual::VisualParams::defaultInstance();
     _vparams->drawTool() = &_drawToolGL;
 	_vparams->setSupported(sofa::core::visual::API_OpenGL);
+
 
 	sofa::simulation::getSimulation()->initTextures(_sofaScene->groot().get());
 }

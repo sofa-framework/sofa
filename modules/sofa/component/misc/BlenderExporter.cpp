@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,94 +22,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_IMAGE_AVERAGECATCHALLVECTOR_H
-#define SOFA_IMAGE_AVERAGECATCHALLVECTOR_H
-
-#include "initImage_gui.h"
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-
-#include <sofa/component/component.h>
-#include <sofa/helper/OptionsGroup.h>
-
-#include "ImageContainer.h"
+#include <sofa/component/misc/BlenderExporter.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
-namespace component
-{
-namespace engine
-{
 
-template <class _Type>
-class SOFA_IMAGE_GUI_API AverageCatchAllVector : public core::DataEngine
-{
-public:
-    typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(AverageCatchAllVector,_Type),Inherited);
-
-    typedef _Type Type;
-
-    AverageCatchAllVector()    :   Inherited()
-        ,_data(initData(&_data,"data_out","data_out"))
-        ,_data1(initData(&_data1,"data_in1","data_in1"))
-        ,_data2(initData(&_data2,"data_in2","data_in2"))
-
+    namespace component
     {
 
-    }
-
-    ~AverageCatchAllVector() {}
-
-    void init()
-    {
-        reinit();
-    }
-
-    void reinit()
-    {
-        vector<Type> data;
-        const vector<Type> &data1 = _data1.getValue();
-        const vector<Type> &data2 = _data2.getValue();
-
-
-        for(size_t i=0;i<data1.size();i++)
+        namespace misc
         {
-            data.push_back((data1[i]+data2[i])/2);
-        }
+            using namespace defaulttype;
 
-        _data.setValue(data);
+            SOFA_DECL_CLASS(BlenderExporter)
 
-    }
+                int BlenderExportClass = core::RegisterObject("Export the simulation result as blender point cache files")
+                .add< BlenderExporter<Vec3dTypes> >()
+                .add< BlenderExporter<Vec3fTypes> >()
+                .add< BlenderExporter<ExtVec3fTypes> >()
+                .add< BlenderExporter<Rigid3dTypes> >()
+                .add< BlenderExporter<Rigid3fTypes> >();
 
-    Data< vector<Type> > _data;
-    Data< vector<Type> > _data1;
-    Data< vector<Type> > _data2;
+        } // namespace misc
 
-protected:
+    } // namespace component
 
-    virtual void update()
-    {
-    }
-
-public:
-
-   /* virtual void draw(const core::visual::VisualParams*)
-    {
-    }
-
-    void handleEvent(core::objectmodel::Event *event)
-    {
-    }*/
-};
-
-
-
-
-
-} // namespace engine
-} // namespace component
 } // namespace sofa
-
-#endif // SOFA_IMAGE_AverageCatchAllVector_H

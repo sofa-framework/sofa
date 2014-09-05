@@ -53,7 +53,7 @@ void DiagonalCompliance<DataTypes>::reinit()
             for(unsigned int j = 0; j < m; ++j)
             {
     //            matC.beginRow(row);
-                matC.insertBack(row, row, diagonal.getValue()[i][j]);
+                if( diagonal.getValue()[i][j] ) matC.insertBack(row, row, diagonal.getValue()[i][j]);
     //            matC.add(row, row, diagonal.getValue()[i][j]);
                 ++row;
             }
@@ -77,7 +77,7 @@ void DiagonalCompliance<DataTypes>::reinit()
                         -1 / diagonal.getValue()[i][j] :
                         -1 / std::numeric_limits<Real>::epsilon();
 
-                matK.insertBack(row, row, k);
+                if( k ) matK.insertBack(row, row, k);
                 ++row;
             }
         }
@@ -95,7 +95,7 @@ void DiagonalCompliance<DataTypes>::reinit()
 			const SReal d = damping.getValue()[index];
 			
             matB.compressedMatrix.startVec(i);
-            matB.compressedMatrix.insertBack(i, i) = -d;
+            if( d ) matB.compressedMatrix.insertBack(i, i) = -d;
         }
 
         matB.compressedMatrix.finalize();

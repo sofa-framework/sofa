@@ -1,6 +1,7 @@
 #ifndef SOFA_SIMPLEGUI_CAMERA_H
 #define SOFA_SIMPLEGUI_CAMERA_H
 
+#include "initSimpleGUI.h"
 #include <Eigen/Geometry>
 
 namespace sofa{
@@ -12,7 +13,7 @@ namespace simplegui{
  *
  * @author Francois Faure, 2014
  */
-class Camera
+class SOFA_SOFASIMPLEGUI_API Camera
 {
 public:
     typedef Eigen::Transform<float,3,Eigen::Affine,Eigen::ColMajor> Transform;
