@@ -22,99 +22,42 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_IMAGE_MERGEDCATCHALLVECTOR_H
-#define SOFA_IMAGE_MERGEDCATCHALLVECTOR_H
-
-#include "initImage_gui.h"
-#include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-
-#include <sofa/component/component.h>
-#include <sofa/helper/OptionsGroup.h>
-
-#include "ImageContainer.h"
+#define SOFA_COMPONENT_ENGINE_MESHSAMPLER_CPP
+#include <sofa/component/engine/MeshSampler.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
+
 namespace component
 {
+
 namespace engine
 {
 
-template <class _Type>
-class SOFA_IMAGE_GUI_API MergedCatchAllVector : public core::DataEngine
-{
-public:
-    typedef core::DataEngine Inherited;
-    SOFA_CLASS(SOFA_TEMPLATE(MergedCatchAllVector,_Type),Inherited);
+SOFA_DECL_CLASS(MeshSampler)
 
-    typedef _Type Type;
+int MeshSamplerClass = core::RegisterObject("Select uniformly distributed points on a mesh based on Euclidean or Geodesic distance measure")
+#ifndef SOFA_FLOAT
+        .add< MeshSampler<Vec3dTypes> >(true)
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< MeshSampler<Vec3fTypes> >()
+#endif //SOFA_DOUBLE
+        ;
 
-    MergedCatchAllVector()    :   Inherited()
-        ,_data(initData(&_data,"data_out","data_out"))
-        ,_data1(initData(&_data1,"data_in1","data_in1"))
-        ,_data2(initData(&_data2,"data_in2","data_in2"))
-
-    {
-
-    }
-
-    ~MergedCatchAllVector() {}
-
-    void init()
-    {
-        reinit();
-    }
-
-    void reinit()
-    {
-        vector<Type> data;
-        const vector<Type> &data1 = _data1.getValue();
-        const vector<Type> &data2 = _data2.getValue();
-
-
-        for(size_t i=0;i<data1.size();i++)
-        {
-            data.push_back(data1[i]);
-        }
-
-        for(size_t i=0;i<data2.size();i++)
-        {
-            data.push_back(data2[i]);
-        }
-
-        _data.setValue(data);
-
-    }
-
-    Data< vector<Type> > _data;
-    Data< vector<Type> > _data1;
-    Data< vector<Type> > _data2;
-
-protected:
-
-    virtual void update()
-    {
-    }
-
-public:
-
-   /* virtual void draw(const core::visual::VisualParams*)
-    {
-    }
-
-    void handleEvent(core::objectmodel::Event *event)
-    {
-    }*/
-};
+#ifndef SOFA_FLOAT
+template class SOFA_ENGINE_API MeshSampler<Vec3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_ENGINE_API MeshSampler<Vec3fTypes>;
+#endif //SOFA_DOUBLE
 
 
 
-
-
-} // namespace engine
+} //
 } // namespace component
+
 } // namespace sofa
 
-#endif // SOFA_IMAGE_MergedCatchAllVector_H

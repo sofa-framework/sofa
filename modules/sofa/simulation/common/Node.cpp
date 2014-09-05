@@ -186,13 +186,13 @@ void Node::reinit(const core::ExecParams* params)
 }
 
 /// Do one step forward in time
-void Node::animate(const core::ExecParams* params /* PARAMS FIRST */, double dt)
-{
-    simulation::AnimateVisitor vis(params /* PARAMS FIRST */, dt);
-    //cerr<<"Node::animate, start execute"<<endl;
-    execute(vis);
-    //cerr<<"Node::animate, end execute"<<endl;
-}
+//void Node::animate(const core::ExecParams* params /* PARAMS FIRST */, double dt)
+//{
+//    simulation::AnimateVisitor vis(params /* PARAMS FIRST */, dt);
+//    //cerr<<"Node::animate, start execute"<<endl;
+//    execute(vis);
+//    //cerr<<"Node::animate, end execute"<<endl;
+//}
 
 void Node::glDraw(core::visual::VisualParams* vparams)
 {
@@ -902,7 +902,7 @@ void Node::updateVisualContext()
 }
 
 /// Execute a recursive action starting from this node
-void Node::executeVisitor(Visitor* action)
+void Node::executeVisitor(Visitor* action, bool precomputedOrder)
 {
     if (!this->isActive()) return;
 
@@ -925,7 +925,7 @@ void Node::executeVisitor(Visitor* action)
     if (actionScheduler)
         actionScheduler->executeVisitor(this,action);
     else
-        doExecuteVisitor(action);
+        doExecuteVisitor(action, precomputedOrder);
 
 #ifdef DEBUG_VISITOR
     --level;

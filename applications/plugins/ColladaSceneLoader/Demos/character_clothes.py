@@ -1,7 +1,5 @@
 import Sofa
 
-import sys
-sys.path.append( Sofa.src_dir() + '/applications/plugins/Compliant/python' )
 from Compliant import Rigid
 
 colladasceneloader_path = Sofa.src_dir() + '/applications/plugins/ColladaSceneLoader'

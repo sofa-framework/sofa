@@ -234,7 +234,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
             {
                 Coord Tp = inT->toImage(p);
                 if(!in->isInside(Tp[0],Tp[1],Tp[2])) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
-                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = img.linear_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue);
+                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = (T)img.linear_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue);
                 p+=dp;
             }
         }
@@ -252,7 +252,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
             {
                 Coord Tp = inT->toImage(p);
                 if(!in->isInside(Tp[0],Tp[1],Tp[2])) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
-                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue,cimg::type<T>::min(),cimg::type<T>::max());
+                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = (T)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue,cimg::type<T>::min(),cimg::type<T>::max());
                 p+=dp;
             }
         }

@@ -43,9 +43,9 @@ namespace simulation
 namespace common
 {
 
-VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext *ctx):
+VectorOperations::VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext *ctx, bool precomputedTraversalOrder):
     sofa::core::behavior::BaseVectorOperations(params,ctx),
-    executeVisitor(*ctx)
+    executeVisitor(*ctx,precomputedTraversalOrder)
 {
 }
 
@@ -172,13 +172,13 @@ void VectorOperations::v_op(sofa::core::MultiVecId v, sofa::core::MultiVecId a, 
 void VectorOperations::v_dot( sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b)
 {
     result = 0;
-    MechanicalVDotVisitor(params /* PARAMS FIRST */, a,b,&result).setTags(ctx->getTags()).execute( ctx );
+    MechanicalVDotVisitor(params /* PARAMS FIRST */, a,b,&result).setTags(ctx->getTags()).execute( ctx, executeVisitor.precomputedTraversalOrder );
 }
 
 void VectorOperations::v_norm( sofa::core::ConstMultiVecId a, unsigned l)
 {
     MechanicalVNormVisitor vis(params, a,l);
-    vis.setTags(ctx->getTags()).execute( ctx );
+    vis.setTags(ctx->getTags()).execute( ctx, executeVisitor.precomputedTraversalOrder );
     result = vis.getResult();
 }
 

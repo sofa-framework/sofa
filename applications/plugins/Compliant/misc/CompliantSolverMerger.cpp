@@ -5,6 +5,7 @@
 #include <sofa/helper/FnDispatcher.inl>
 
 #include "odesolver/CompliantImplicitSolver.h"
+#include "odesolver/CompliantNLImplicitSolver.h"
 
 #include "numericalsolver/MinresSolver.h"
 #include "numericalsolver/CgSolver.h"
@@ -60,7 +61,7 @@ namespace collision
 /////////////////////
 
 
-
+    // TODO adjust which parameters must be merged
 
 
     SolverSet createCompliantImplicitSolver(odesolver::CompliantImplicitSolver& solver1, odesolver::CompliantImplicitSolver& solver2)
@@ -74,8 +75,27 @@ namespace collision
         return SolverSet(solver, CompliantSolverMerger::mergeLinearSolver(&solver1,&solver2) );
     }
 
+    SolverSet createCompliantNLImplicitSolver(odesolver::CompliantNLImplicitSolver& solver1, odesolver::CompliantNLImplicitSolver& solver2)
+    {
+        odesolver::CompliantNLImplicitSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::CompliantNLImplicitSolver>();
 
+        solver->warm_start.setValue( solver1.warm_start.getValue() && solver2.warm_start.getValue() );
+        solver->propagate_lambdas.setValue( solver1.propagate_lambdas.getValue() && solver2.propagate_lambdas.getValue() );
+        solver->stabilization.beginEdit()->setSelectedItem( std::max( solver1.stabilization.getValue().getSelectedId(), solver2.stabilization.getValue().getSelectedId() ) ); solver->stabilization.endEdit();
 
+        return SolverSet(solver, CompliantSolverMerger::mergeLinearSolver(&solver1,&solver2) );
+    }
+
+    SolverSet createCompliantNLImplicitSolver(odesolver::CompliantImplicitSolver& solver1, odesolver::CompliantNLImplicitSolver& solver2)
+    {
+        odesolver::CompliantNLImplicitSolver::SPtr solver = sofa::core::objectmodel::New<odesolver::CompliantNLImplicitSolver>();
+
+        solver->warm_start.setValue( solver1.warm_start.getValue() && solver2.warm_start.getValue() );
+        solver->propagate_lambdas.setValue( solver1.propagate_lambdas.getValue() && solver2.propagate_lambdas.getValue() );
+        solver->stabilization.beginEdit()->setSelectedItem( std::max( solver1.stabilization.getValue().getSelectedId(), solver2.stabilization.getValue().getSelectedId() ) ); solver->stabilization.endEdit();
+
+        return SolverSet(solver, CompliantSolverMerger::mergeLinearSolver(&solver1,&solver2) );
+    }
 
 ////////////////////////
 
@@ -112,6 +132,8 @@ namespace collision
     void CompliantSolverMerger::add()
     {
         SolverMerger::addDispatcher<odesolver::CompliantImplicitSolver,odesolver::CompliantImplicitSolver,createCompliantImplicitSolver,true>();
+        SolverMerger::addDispatcher<odesolver::CompliantNLImplicitSolver,odesolver::CompliantNLImplicitSolver,createCompliantNLImplicitSolver,true>();
+        SolverMerger::addDispatcher<odesolver::CompliantImplicitSolver,odesolver::CompliantNLImplicitSolver,createCompliantNLImplicitSolver,false>();
     }
 
 

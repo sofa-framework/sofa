@@ -1,7 +1,6 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    stdafx.h
 )
 
 set(SOURCE_FILES
@@ -18,8 +17,12 @@ set(SOURCE_FILES
    RigidDeformationMapping_test.cpp
    ShapeFunction_test.cpp
    TetrahedraMaterial_test.cpp
-   stdafx.cpp
         )
+
+if(WIN32)
+    list(APPEND HEADER_FILES "stdafx.h")
+    list(APPEND SOURCE_FILES "stdafx.cpp")
+endif()
 
 if(APPLE)
 #    set(RC_FILES "runSOFA.icns")

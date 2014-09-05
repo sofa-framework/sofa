@@ -363,7 +363,7 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
         }
 
         std::cout<<"want to show::::::::::"<<std::endl;
-        for(int i = 0 ; i < boxes.size() ; ++i){
+        for(size_t i = 0 ; i < boxes.size() ; ++i){
             boxes[i].show();
         }
         std::cout<<"=="<<std::endl;
@@ -392,7 +392,7 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
         }
 
         std::cout<<"want to show::::::::::"<<std::endl;
-        for(int i = 0 ; i < boxes.size() ; ++i){
+        for(size_t i = 0 ; i < boxes.size() ; ++i){
             boxes[i].show();
         }
         std::cout<<"=="<<std::endl;
