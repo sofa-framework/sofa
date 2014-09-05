@@ -168,7 +168,7 @@ void PrecomputedWarpPreconditioner<TDataTypes>::loadMatrix(TMatrix& M)
 
     if (share_matrix.getValue()) internalData.setMinv(internalData.getSharedMatrix(fname));
 
-    if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (BaseMatrix::Index)systemSize)
+    if (share_matrix.getValue() && internalData.MinvPtr->rowSize() == (defaulttype::BaseMatrix::Index)systemSize)
     {
         cout << "shared matrix : " << fname << " is already built" << endl;
     }
