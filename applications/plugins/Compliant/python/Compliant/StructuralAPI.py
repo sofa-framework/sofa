@@ -32,7 +32,14 @@ class RigidBody:
         def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
                 ## create the rigid body from a mesh (inertia and com are automatically computed)
                 info = Rigid.generate_rigid(filepath, density, scale3d)
+                self.setFromRigidInfo(info, offset, inertia_forces)
 
+        def setFromRigidFile(self, rigidfilepath, offset = [0,0,0,0,0,0,1], inertia_forces = False):
+                ## create the rigid body from a rigid file (it contains inertia and com)
+                info = Rigid.read_rigid(rigidfilepath)
+                self.setFromRigidInfo(info, offset, inertia_forces)
+
+        def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = False) :
                 self.framecom = Rigid.Frame()
                 self.framecom.rotation = info.inertia_rotation
                 self.framecom.translation = info.com
