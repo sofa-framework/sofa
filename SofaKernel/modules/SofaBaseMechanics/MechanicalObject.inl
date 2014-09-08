@@ -1580,10 +1580,13 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
 #if defined(SOFA_DEBUG) || !defined(NDEBUG)
-        const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
-        if (!val.empty() && val.size() != (unsigned int)this->getSize())
+        if(d!=NULL)
         {
-            serr << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
+            const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
+            if (!val.empty() && val.size() != (unsigned int)this->getSize())
+            {
+                serr << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
+            }
         }
 #endif
         return d;
