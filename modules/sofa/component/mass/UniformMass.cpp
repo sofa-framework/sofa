@@ -245,7 +245,10 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualPara
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue() );
+		if (getContext()->isSleeping())
+	        vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue(), Vec4f(0.5,0.5,0.5,1) );
+		else
+			vparams->drawTool()->drawFrame(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue() );
         gravityCenter += (x[i].getCenter());
     }
 
