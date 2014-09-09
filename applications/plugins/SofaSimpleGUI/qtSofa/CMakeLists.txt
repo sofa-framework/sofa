@@ -17,6 +17,13 @@ UseQt()
 
 SOFA_QT4_WRAP_CPP(MOC_FILES ${HEADER_FILES})
 
+# make resource files path from absolute to relative
+ToRelativePath(RESOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${RESOURCE_FILES}")
+
+set(RESOURCE_FILES_GROUP "Generated")
+
+QT4_ADD_RESOURCES(RESOURCE_FILES "./icons.qrc")
+
 # make mocced header / form files path from absolute to relative
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
@@ -24,7 +31,7 @@ set(MOC_FILES_GROUP "Generated")
 	
 AddCompilerDefinitions("QTSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${RESOURCE_FILES})
 
 AddLinkerDependencies(SofaSimpleGUI ${GLUT_LIBRARIES})
 
