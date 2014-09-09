@@ -127,6 +127,7 @@ public:
 
 
     Data< double > closingValue;
+    Data< double > backgroundValue;
 
     Data<unsigned int> f_nbMeshes;
 
@@ -148,6 +149,7 @@ public:
         , closingPosition(initData(&closingPosition,SeqPositions(),"closingPosition","ouput closing positions"))
         , closingTriangles(initData(&closingTriangles,SeqTriangles(),"closingTriangles","ouput closing triangles"))
         , closingValue(initData(&closingValue,1.,"closingValue","pixel value at closings"))
+        , backgroundValue(initData(&backgroundValue,0.,"backgroundValue","pixel value at background"))
         , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
         , gridSnap(initData(&gridSnap,true,"gridSnap","align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)"))
     {
@@ -331,8 +333,8 @@ protected:
 			iml->getCImgList()(0).assign(dim[0],dim[1],dim[2],1);
 
 		// Keep it as a pointer since the code will be called recursively
-        CImg<T>& im= iml->getCImg();
-        im.fill((T)0);
+        CImg<T>& im = iml->getCImg();
+        im.fill( (T)backgroundValue.getValue() );
 
         for( size_t meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )
         {
@@ -836,7 +838,7 @@ protected:
 
 
 
-
+public:
     void createInputMeshesData()
     {
         unsigned int n = f_nbMeshes.getValue();
@@ -854,6 +856,7 @@ protected:
         createInputDataVector(n, vf_roiValue, "roiValue", "pixel value for ROI ", 1.0, false);
     }
 
+protected:
     template<class U>
     void createInputDataVector(unsigned int nb, helper::vector< Data<U>* >& vf, std::string name, std::string help, const U&defaultValue, bool readOnly=false)
     {

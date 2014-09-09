@@ -58,4 +58,8 @@ if(SOFA-PLUGIN_FLEXIBLE)
 	AddLinkerDependencies(Flexible)
 endif()
 
+if(SOFA-PLUGIN_IMAGE)
+    AddLinkerDependencies(image)
+endif()
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
