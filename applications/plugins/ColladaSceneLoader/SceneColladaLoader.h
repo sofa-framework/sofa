@@ -162,6 +162,9 @@ private:
 #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
 	Data<bool> useFlexible;
 #endif
+#ifdef SOFA_HAVE_PLUGIN_IMAGE
+    Data<bool> generateShapeFunction;
+#endif
 
 };
 
