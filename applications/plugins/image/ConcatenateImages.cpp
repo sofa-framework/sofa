@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include "initImage.h"
+#define SOFA_IMAGE_CONCATENATEIMAGES_CPP
+
+#include "ConcatenateImages.h"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -31,76 +33,46 @@ namespace sofa
 namespace component
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
-
-extern "C" {
-    SOFA_IMAGE_API void initExternalModule();
-    SOFA_IMAGE_API const char* getModuleName();
-    SOFA_IMAGE_API const char* getModuleVersion();
-    SOFA_IMAGE_API const char* getModuleLicense();
-    SOFA_IMAGE_API const char* getModuleDescription();
-    SOFA_IMAGE_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace engine
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-const char* getModuleName()
-{
-    return "Image Plugin";
-}
+using namespace defaulttype;
 
-const char* getModuleVersion()
-{
-    return "0.1";
-}
+SOFA_DECL_CLASS(ConcatenateImages)
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+int ConcatenateImagesClass = core::RegisterObject("Concatenate images")
+        .add<ConcatenateImages<ImageUC> >(true)
+        .add<ConcatenateImages<ImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ConcatenateImages<ImageC> >()
+        .add<ConcatenateImages<ImageI> >()
+        .add<ConcatenateImages<ImageUI> >()
+        .add<ConcatenateImages<ImageS> >()
+        .add<ConcatenateImages<ImageUS> >()
+        .add<ConcatenateImages<ImageL> >()
+        .add<ConcatenateImages<ImageUL> >()
+        .add<ConcatenateImages<ImageF> >()
+        .add<ConcatenateImages<ImageB> >()
+#endif
+        ;
+
+template class SOFA_IMAGE_API ConcatenateImages<ImageUC>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageD>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ConcatenateImages<ImageC>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageI>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageUI>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageS>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageUS>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageL>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageUL>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageF>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageB>;
+#endif
 
 
-const char* getModuleDescription()
-{
-    return "Image support in SOFA";
-}
-
-const char* getModuleComponentList()
-{
-    return "ImageContainer,ImageExporter,ImageViewer,ImageFilter,ImageToMeshEngine";
-}
-
-} // namespace image
+} //
+} // namespace component
 
 } // namespace sofa
 
-////////// BEGIN CLASS LIST //////////
-SOFA_LINK_CLASS(DepthMapToMeshEngine)
-SOFA_LINK_CLASS(ImageAccumulator)
-SOFA_LINK_CLASS(ImageContainer)
-SOFA_LINK_CLASS(ImageDataDisplay)
-SOFA_LINK_CLASS(ImageExporter)
-SOFA_LINK_CLASS(ImageFilter)
-SOFA_LINK_CLASS(ImageOperation)
-SOFA_LINK_CLASS(ImageSampler)
-SOFA_LINK_CLASS(ImageTransform)
-SOFA_LINK_CLASS(ImageValuesFromPositions)
-#ifndef SOFA_NO_OPENGL
-SOFA_LINK_CLASS(ImageViewer)
-#endif /* SOFA_NO_OPENGL */
-SOFA_LINK_CLASS(MarchingCubesEngine)
-SOFA_LINK_CLASS(VoronoiToMeshEngine)
-SOFA_LINK_CLASS(MergeImages)
-SOFA_LINK_CLASS(ConcatenateImages)
-SOFA_LINK_CLASS(MeshToImageEngine)
-SOFA_LINK_CLASS(TransferFunction)
-#ifdef SOFA_HAVE_LIBFREENECT
-SOFA_LINK_CLASS(Kinect)
-#endif
