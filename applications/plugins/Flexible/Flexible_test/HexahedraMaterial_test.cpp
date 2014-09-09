@@ -203,6 +203,13 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     // Compute longitudinal deformation
                     Real longitudinalDeformation=(p1[0]-p0[0])/p0[0];
 
+                    // Test if longitudinal stretch is a nan value
+                    if(longitudinalDeformation != longitudinalDeformation)
+                    {
+                        ADD_FAILURE() << "Error longitudinal stretch is NAN" << std::endl;
+                        return false;
+                    }
+
                     // test the longitudinal deformation
                     if(debug)
                         std::cout << "precision longitudinal stretch = " << fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus)) << std::endl;
@@ -221,6 +228,13 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     p1[1]=0;
                     Real radius=p0.norm2();
                     Real radialDeformation= dot(p0,p1)/radius-1 ;
+
+                    // Test if radial stretch is a nan value
+                    if(radialDeformation != radialDeformation)
+                    {
+                        ADD_FAILURE() << "Error radial stretch is NAN" << std::endl;
+                        return false;
+                    }
 
                     // test the radial deformation
                     if(debug)

@@ -50,7 +50,7 @@ struct HatShapeFunctionInternalData
 
 
 template <class ShapeFunctionTypes_>
-class SOFA_Flexible_API HatShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class HatShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(HatShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));

@@ -16,7 +16,8 @@ set(SOURCE_FILES
     ImageSampler.cpp 
     ImageExporter.cpp 
     ImageDataDisplay.cpp
-    VoronoiToMeshEngine.cpp)
+    VoronoiToMeshEngine.cpp
+    ConcatenateImages.cpp)
 
 set(HEADER_FILES
     initImage.h
@@ -38,7 +39,8 @@ set(HEADER_FILES
     ImageAlgorithms.h 
     Containers.h 
     ImageDataDisplay.h
-    VoronoiToMeshEngine.h)
+    VoronoiToMeshEngine.h
+    ConcatenateImages.h)
 
 set(README_FILES image.txt)
 
