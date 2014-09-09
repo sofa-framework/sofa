@@ -90,7 +90,10 @@ void QSofaViewer::paintGL()
 
 	// we need to init sofaGL here in order to be able to call initTextures (needing an active opengl context) for each opened scene 
 	if(!_sofaGL)
+	{
 		_sofaGL = new SofaGL(_sofaScene);
+		viewAll();
+	}
 
     _sofaGL->draw();
 
@@ -135,8 +138,8 @@ void QSofaViewer::viewAll()
 
     float xmin, xmax, ymin, ymax, zmin, zmax;
     _sofaGL->getSceneBBox(&xmin,&ymin,&zmin, &xmax,&ymax,&zmax);
-    cout<<"QSofaViewer::viewAll, bounding box = "<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
     _camera.viewAll(xmin,ymin,zmin, xmax,ymax,zmax);
+
     update();
 }
 
