@@ -28,7 +28,6 @@
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/interactionforcefield/SpringForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
