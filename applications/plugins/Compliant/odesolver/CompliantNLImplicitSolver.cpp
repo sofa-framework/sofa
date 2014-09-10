@@ -134,7 +134,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(res);
+        addWriteVector(lambda);
     }
 #endif
 };
