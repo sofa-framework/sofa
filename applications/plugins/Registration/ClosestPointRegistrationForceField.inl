@@ -340,19 +340,20 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
     // add rest spring force
     for (unsigned int i=0; i<nb; i++)
     {
-        //serr<<"addForce() between "<<springs[i].m1<<" and "<<closestPos[springs[i].m1]<<sendl;
+        //serr<<"addForce() between "<<i<<" and "<<closestPos[i]<<sendl;
         Coord u = this->closestPos[i]-x[i];
+        Real nrm2 = u.norm2();
         Real k = this->ks.getValue();
         if(theCloserTheStiffer.getValue())
         {
-            Real elongation = u.norm();
+            Real elongation = helper::rsqrt(nrm2);
             Real ks_max=k;
             Real ks_min=k*0.1;
             k = ks_min*(max-elongation)/(max-min)+ks_max*(elongation-min)/(max-min);
         }
         f[i]+=k*u;
-        m_potentialEnergy += u.norm2() * k * 0.5;
-        if(this->kd.getValue()) f[i]-=this->kd.getValue()*u*dot(u,v[i])/u.norm2();
+        m_potentialEnergy += nrm2 * k * 0.5;
+        if(this->kd.getValue() && nrm2) f[i]-=this->kd.getValue()*u*dot(u,v[i])/u.norm2();
     }
     _f.endEdit();
 
@@ -365,28 +366,22 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
 template <class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams,DataVecDeriv& _df , const DataVecDeriv&  _dx )
 {
-    if(ks.getValue()==0) return;
+    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) * this->ks.getValue();
+    if(!k) return;
     sofa::helper::WriteAccessor< DataVecDeriv > df = _df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx = _dx;
-    Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    for (unsigned int i=0; i<dx.size(); i++)        df[i] -= dx[i] * this->ks.getValue() * kFactor;
-
+    for (unsigned int i=0; i<dx.size(); i++)        df[i] -= dx[i] * k;
 }
 
 template<class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    if(ks.getValue()==0) return;
-
+    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) * this->ks.getValue();
+    if(!k) return;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     sofa::defaulttype::BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
-    Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-
     const int N = Coord::total_size, nb= this->closestPos.size();
-
-    Real k = this->ks.getValue()*kFact;
-
     for (unsigned int index = 0; index <nb; index++)
         for(int i = 0; i < N; i++)
             mat->add(offset + N * index + i, offset + N * index + i, -k);

@@ -31,7 +31,6 @@
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/interactionforcefield/SpringForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -102,9 +101,7 @@ public:
 
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-
-    typedef typename interactionforcefield::LinearSpring<Real> Spring;
+    typedef defaulttype::Mat<N,N,Real> MatNN;
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -137,6 +134,8 @@ public:
     CImg<bool> mask;
     CImg<bool> similarityMask;
 
+    Data<bool> useAnisotropicStiffness;
+
     /*
         The threshold for the signal between two 'edges'
     */
@@ -158,8 +157,6 @@ public:
     static std::string templateName(const IntensityProfileRegistrationForceField<DataTypes,ImageTypes>* = NULL) { return DataTypes::Name()+ std::string(",")+ImageTypes::Name();    }
     virtual std::string getTemplateName() const    { return templateName(this);    }
 
-    const sofa::helper::vector< Spring >& getSprings() const {return springs.getValue();}
-
     // -- ForceField interface
     void reinit();
     void init();
@@ -179,50 +176,19 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    // -- Modifiers
-
-    void clearSprings(int reserve=0)
-    {
-        sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
-        springs.clear();
-        if (reserve) springs.reserve(reserve);
-        this->springs.endEdit();
-    }
-
-    void removeSpring(unsigned int idSpring)
-    {
-        if (idSpring >= (this->springs.getValue()).size())
-            return;
-
-        sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
-        springs.erase(springs.begin() +idSpring );
-        this->springs.endEdit();
-    }
-
-    void addSpring(int m1, SReal ks, SReal kd )
-    {
-        springs.beginEdit()->push_back(Spring(m1,-1,ks,kd,0));
-        springs.endEdit();
-    }
-
-    void addSpring(const Spring & spring)
-    {
-        springs.beginEdit()->push_back(spring);
-        springs.endEdit();
-    }
-
 protected :
 
-    sofa::helper::vector<Mat>  dfdx;
+    sofa::helper::vector<MatNN>  dfdx;
     VecCoord targetPos;
     double m_potentialEnergy;
 
-    /// Accumulate the spring force and compute and store its stiffness
-    virtual void addSpringForce(double& potentialEnergy, VecDeriv& f,const  VecCoord& p,const VecDeriv& v, int i, const Spring& spring);
-    /// Apply the stiffness, i.e. accumulate df given dx
-    virtual void addSpringDForce(VecDeriv& df,const  VecDeriv& dx, int i, const Spring& spring, double kFactor, double bFactor);
-    
+    /// compute intensity profile image by sampling the input image along 'direction'.
+    /// can be done for the current or reference position/image
+    /// Inward and outward profile sizes are defined by data 'Sizes' (+ searchRange, if done on current position)
     void udpateProfiles(bool ref=false);
+
+    /// compute silarity image by convoluing current and reference profiles
+    /// the width of the resulting image is 2*searchRange
     void udpateSimilarity();
 /*
     Finds the closest change in signal for each point
@@ -260,7 +226,6 @@ protected :
     Data<Real> ks;
     Data<Real> kd;
 
-    Data<sofa::helper::vector<Spring> > springs;
     Data<float> showArrowSize;
     Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
 };
