@@ -100,8 +100,6 @@ public:
     Data<ImageTypes> image;
     Data<TransformType> transform;
 
-    Data<bool> NimagesNchannels;
-
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const MergeImages<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
@@ -111,7 +109,6 @@ public:
         , nbImages ( initData ( &nbImages,(unsigned int)0,"nbImages","number of images to merge" ) )
         , image(initData(&image,ImageTypes(),"image","Image"))
         , transform(initData(&transform,TransformType(),"transform","Transform"))
-        , NimagesNchannels(initData(&NimagesNchannels,(bool)false,"NimagesNchannels","transform N images with 1 channels to 1 image with N channels"))
     {
         createInputImagesData();
         image.setReadOnly(true);
@@ -281,8 +278,6 @@ protected:
 
         waImage out(this->image);
         out->clear();
-        if (NimagesNchannels.getValue()) dim[3] = nb; // channel = number of input images
-
         out->setDimensions(dim);
 
         unsigned int overlp = this->overlap.getValue().getSelectedId();
@@ -296,9 +291,6 @@ protected:
         cimg_forXYZ(img(0),x,y,z) //space
         {
             for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++) img(t)(x,y,z,k) = (T)0;
-
-            vector<bool> imageNbre;
-            for (unsigned i=0;i<nb;i++) imageNbre.push_back(false);// for NimagesNchannels keep track of which image the point belongs to
 
             Coord p = outT->fromImage(Coord(x,y,z)); //coordinate of voxel (x,y,z) in world space
             vector<struct pttype> pts;
@@ -316,39 +308,24 @@ protected:
                     if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());
-                            if (NimagesNchannels.getValue()){
-                                pt.vals[t].push_back((double)inImg(t).atXYZ(sofa::helper::round((double)inp[0]),sofa::helper::round((double)inp[1]),sofa::helper::round((double)inp[2]),0));
-                            }
-                            else{
-                                for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
-                                    pt.vals[t].push_back((double)inImg(t).atXYZ(sofa::helper::round((double)inp[0]),sofa::helper::round((double)inp[1]),sofa::helper::round((double)inp[2]),k));
-                            }
+                            pt.vals.push_back(vector<double>());                         
+                            for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
+                                pt.vals[t].push_back((double)inImg(t).atXYZ(sofa::helper::round((double)inp[0]),sofa::helper::round((double)inp[1]),sofa::helper::round((double)inp[2]),k));
                         }
                     else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());
-                            if (NimagesNchannels.getValue()){
-                                pt.vals[t].push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],0));
-                            }
-                            else {
-                                for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
-                                    pt.vals[t].push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],k));
-                            }
+                            pt.vals.push_back(vector<double>());                        
+                            for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
+                                pt.vals[t].push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],k));
                         }
                     else
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
                             pt.vals.push_back(vector<double>());
-                            if (NimagesNchannels.getValue()){
-                                pt.vals[t].push_back((double)inImg(t).cubic_atXYZ(inp[0],inp[1],inp[2],0));
-
-                            }
-                            else {
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).cubic_atXYZ(inp[0],inp[1],inp[2],k));
-                            }
+
                         }
                     pt.u=Coord( ( inp[0]< indim[0]-inp[0]-1)? inp[0]: indim[0]-inp[0]-1 ,
                             ( inp[1]< indim[1]-inp[1]-1)? inp[1]: indim[1]-inp[1]-1 ,
@@ -356,68 +333,51 @@ protected:
 
                     bool isnotnull=false;
                     for(unsigned int t=0; t<pt.vals.size(); t++) for(unsigned int k=0; k<pt.vals[t].size(); k++) if(pt.vals[t][k]!=(T)0) isnotnull=true;
-                    if(isnotnull) {pts.push_back(pt);imageNbre[j]=true;}
+                    if(isnotnull) pts.push_back(pt);
 
                 }
             }
             unsigned int nbp=pts.size();
             if(nbp==0) continue;
-            else if(nbp==1) {
-                if (NimagesNchannels.getValue()){
-                    for(unsigned int t=0; t<pts[0].vals.size(); t++) for(unsigned int k=0; k<nb; k++) if (imageNbre[k]) {if((T)pts[0].vals[t][0]!=(T)0) img(t)(x,y,z,k) = (T)pts[0].vals[t][0];}
-                }
-                else {
+            else if(nbp==1) {                
                     for(unsigned int t=0; t<pts[0].vals.size(); t++) for(unsigned int k=0; k<pts[0].vals[t].size(); k++) if((T)pts[0].vals[t][k]!=(T)0) img(t)(x,y,z,k) = (T)pts[0].vals[t][k];
-                }
             }
             else if(nbp>1)
-            {
-                if (NimagesNchannels.getValue()){
-                    unsigned int nbt=pts[0].vals.size();
-                    unsigned countor = 0;
-                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nb; k++) {
-                        while (!imageNbre[k] && k<nb-1) k++;
-                        if (imageNbre[k]){
-                            img(t)(x,y,z,k) = (T)(pts[t+countor*nbt].vals[t][0]);
-                            countor+=1;
-                        }
-                    }
+            {                
+                unsigned int nbt=pts[0].vals.size();
+                unsigned int nbc=pts[0].vals[0].size();
+                if(overlp==AVERAGE)
+                {
+                    for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k];
+                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]/(double)nbp);
                 }
-                else {
-                    unsigned int nbt=pts[0].vals.size();
-                    unsigned int nbc=pts[0].vals[0].size();
-                    if(overlp==AVERAGE)
-                    {
-                        for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k];
-                        for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]/(double)nbp);
-                    }
-                    else if(overlp==ORDER)
-                        {
-                        for(int j=nbp-1; j>=0; j--) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) if((T)pts[j].vals[t][k]!=(T)0) img(t)(x,y,z,k) = (T)pts[j].vals[t][k];
-                    }
-                    else if(overlp==ALPHABLEND)
-                    {
-                        unsigned int dir=0; if(pts[1].u[1]!=pts[0].u[1]) dir=1; if(pts[1].u[2]!=pts[0].u[2]) dir=2; // blending direction = direction where distance to border is different
-                        double count=pts[0].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k]*=pts[0].u[dir];
-                        for(unsigned int j=1; j<nbp; j++) { count+=pts[j].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k]*pts[j].u[dir]; }
-                        for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]/count);
-                    }
-                    else if(overlp==SEPARATE)
-                    {
-                        for(unsigned int j=1; j<nbp; j++) if(pts[j].u[0]>pts[0].u[0] || pts[j].u[1]>pts[0].u[1] || pts[j].u[2]>pts[0].u[2]) { pts[0].u= pts[j].u; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] = pts[j].vals[t][k]; }
-                        for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)pts[0].vals[t][k];
-                    }
-                    else if(overlp==ADDITIVE)
-                    {
-                        for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k];
-                        for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]);
-                    }
-                    else if(overlp==INTERSECT)
-                    {
-                        for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) if (pts[0].vals[t][k] && pts[j].vals[t][k]) pts[0].vals[t][k] = (T)0.0;
-                        for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]);
-                    }
+                else if(overlp==ORDER)
+                {
+                    for(int j=nbp-1; j>=0; j--) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) if((T)pts[j].vals[t][k]!=(T)0) img(t)(x,y,z,k) = (T)pts[j].vals[t][k];
                 }
+                else if(overlp==ALPHABLEND)
+                {
+                   unsigned int dir=0; if(pts[1].u[1]!=pts[0].u[1]) dir=1; if(pts[1].u[2]!=pts[0].u[2]) dir=2; // blending direction = direction where distance to border is different
+                   double count=pts[0].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k]*=pts[0].u[dir];
+                   for(unsigned int j=1; j<nbp; j++) { count+=pts[j].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k]*pts[j].u[dir]; }
+                   for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]/count);
+                }
+                else if(overlp==SEPARATE)
+                {
+                    for(unsigned int j=1; j<nbp; j++) if(pts[j].u[0]>pts[0].u[0] || pts[j].u[1]>pts[0].u[1] || pts[j].u[2]>pts[0].u[2]) { pts[0].u= pts[j].u; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] = pts[j].vals[t][k]; }
+                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)pts[0].vals[t][k];
+                }
+                else if(overlp==ADDITIVE)
+                {
+                    for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k];
+                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]);
+                }
+                else if(overlp==INTERSECT)
+                {
+                    for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) if (pts[0].vals[t][k] && pts[j].vals[t][k]) pts[0].vals[t][k] = (T)0.0;
+                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]);
+                }
+
             }
         }
 
