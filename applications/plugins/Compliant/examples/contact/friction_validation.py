@@ -30,7 +30,7 @@ def createScene(node):
 
     manager = node.getObject('manager')
     manager.response = 'FrictionCompliantContact'
-    manager.responseParams = 'mu=' + str(shared.mu)
+    manager.responseParams = 'mu=' + str(shared.mu)+"&horizontalConeProjection=1"
 
     ode = node.getObject('ode')
     ode.stabilization = "pre-stabilization"
