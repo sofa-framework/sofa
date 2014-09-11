@@ -463,6 +463,9 @@ protected:
     }
 };
 
+template<class ShapeFunctionTypes,class ImageTypes>
+const typename DiffusionShapeFunction<ShapeFunctionTypes,ImageTypes>::DistT DiffusionShapeFunction<ShapeFunctionTypes,ImageTypes>::MAXTEMP = (DistT)1.0;
+
 }
 }
 }
