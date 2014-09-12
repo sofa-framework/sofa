@@ -64,6 +64,7 @@ set(HEADER_FILES
     constraint/Restitution.h
     constraint/DampingValue.h
     constraint/OffsettedConstraintValue.h
+    constraint/HolonomicConstraintValue.h
 
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -145,6 +146,7 @@ set(SOURCE_FILES
     constraint/Restitution.cpp
     constraint/DampingValue.cpp
     constraint/OffsettedConstraintValue.cpp
+    constraint/HolonomicConstraintValue.cpp
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
