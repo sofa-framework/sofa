@@ -131,7 +131,7 @@ void bijectiveOrbitEmbedding(MAP& map)
     foreach_cell<ORBIT>( (map,boost::ref(emb) = bl::bind(&MAP::template getEmbedding<ORBIT>, boost::cref(map), bl::_1),
                           bl::if_(boost::ref(emb) != EMBNULL)[
                                       (bl::if_(bl::bind(&AttributeHandler<int, ORBIT, MAP>::operator [],boost::cref(counter), bl::_1) > 0)
-                                        [ (bl::bind(&MAP::template copyCell<ORBIT>, boost::ref(map). bl::bind(&Algo::Topo::template setOrbitEmbeddingOnNewCell<ORBIT, MAP>, boost::ref(map), bl::_1), boost::ref(emb))) ]
+                                        [ (bl::bind(&MAP::template copyCell<ORBIT>, boost::ref(map), bl::bind(&Algo::Topo::template setOrbitEmbeddingOnNewCell<ORBIT, MAP>, boost::ref(map), bl::_1), boost::ref(emb))) ]
                                       , bl::bind(&AttributeHandler<int, ORBIT, MAP>::operator [],boost::ref(counter), bl::_1)++)
             ]
                           ), FORCE_DART_MARKING);

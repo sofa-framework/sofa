@@ -318,7 +318,7 @@ void MapRender::initTriangles(typename PFP::MAP& map, std::vector<GLuint>& table
     {
         foreach_cell<FACE>(map,
                            (
-                               bl::if_(bl::bind(&MAP::faceDegree, boost::ref(map). bl::_1) == 3)[
+                               bl::if_(bl::bind(&MAP::faceDegree, boost::ref(map), bl::_1) == 3)[
                                bl::bind(&addTri<PFP>, boost::ref(map), bl::_1, boost::ref(tableIndices))
                            ].else_[
                            bl::bind(&addEarTri<PFP>, boost::ref(map), bl::_1, boost::ref(tableIndices), boost::ref(position)) ]
