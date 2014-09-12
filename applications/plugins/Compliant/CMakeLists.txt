@@ -38,6 +38,7 @@ set(HEADER_FILES
     preconditioner/BasePreconditioner.h
     preconditioner/LDLTPreconditioner.h
     #preconditioner/IncompleteCholeskyPreconditioner.h
+    preconditioner/JacobiPreconditioner.h
 
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
@@ -127,6 +128,7 @@ set(SOURCE_FILES
 
     preconditioner/LDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
+    preconditioner/JacobiPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp
