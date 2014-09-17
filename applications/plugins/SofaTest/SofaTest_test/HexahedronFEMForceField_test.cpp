@@ -62,6 +62,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         DataTypes::set( x[1], 1,0,0);
         DataTypes::set( x[2], 1,1,0);
         DataTypes::set( x[3], 0,1,0);
+        // Apply an extension along z axis
         Vec3 xTmp(0,1,1.1);
         DataTypes::set( x[4], xTmp[0],xTmp[0],xTmp[2]);
         DataTypes::set( x[5], xTmp[1],xTmp[0],xTmp[2]);
@@ -77,7 +78,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         DataTypes::set( v[5], 0,0,0);
         DataTypes::set( v[6], 0,0,0);
         DataTypes::set( v[7], 0,0,0);
-        //Force
+        //Expected force
         f.resize(8);
         Vec3 fdown(0,0,0.25);
         Vec3 fup(0,0,-0.25);

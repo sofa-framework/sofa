@@ -33,7 +33,6 @@
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
 #include <sofa/component/forcefield/QuadPressureForceField.h>
-#include "../material/HookeForceField.h"
 #include "../material/NeoHookeanForceField.h"
 #include "../material/MooneyRivlinForceField.h"
 #include <sofa/component/container/MechanicalObject.h>
@@ -76,10 +75,8 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
     typedef typename sofa::component::forcefield::MooneyRivlinForceField<StrainType>::SPtr MooneyRivlinForceFieldSPtr;
     typedef sofa::component::forcefield::NeoHookeanForceField<StrainType> NeoHookeForceField;
     typedef typename sofa::component::forcefield::NeoHookeanForceField<StrainType>::SPtr NeoHookeForceFieldSPtr;
-    //typedef NeoHookeForceFieldSPtr (NeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
     typedef typename sofa::core::behavior::ForceField<StrainType>::SPtr ForceFieldSPtr;
     typedef ForceFieldSPtr (NeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
-    //typedef MooneyRivlinForceFieldSPtr (NeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
     typename component::forcefield::QuadPressureForceField<Vec3Types>::SPtr pressureForceField;
 
     /// Simulation
@@ -90,10 +87,6 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 	size_t vIndex;
     // Strain node for the force field
     simulation::Node::SPtr strainNode;
-   
-
-     // Define the path for the scenes directory
-    #define ADD_SOFA_TEST_SCENES_PATH( x ) sofa_tostring(SOFA_TEST_SCENES_PATH)sofa_tostring(x) 
 
     // Create the context for the scene
     void SetUp()
@@ -183,7 +176,6 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
             Real poissonRatio=poissonRatioArray[j];
 
             // Create the force field
-            //NeoHookeForceFieldSPtr ff = (this->*createForceField)(strainNode,youngModulus,poissonRatio);
             ForceFieldSPtr ff = (this->*createForceField)(strainNode,youngModulus,poissonRatio);
 
             ff->init();
