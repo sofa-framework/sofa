@@ -49,16 +49,12 @@ struct Engine_test : public Sofa_test<>
        engine1 = sofa::core::objectmodel::New<TestEngine>();
        engine1->f_numberToMultiply.setValue(1);
        engine1->f_factor.setValue(2);
-       std::cout << "init 1 " << std::endl;
-       std::cout << "identifier engine 1 :" << engine1->identifier << std::endl;
        engine1->init();
         
        // Engine 2 linked to the ouput of engine 1
        engine2 = sofa::core::objectmodel::New<TestEngine>();
        sofa::modeling::setDataLink(&engine1->f_result,&engine2->f_numberToMultiply);
        engine2->f_factor.setValue(3);
-       std::cout << "init 2 " << std::endl;
-        std::cout << "identifier engine 2 :" << engine2->identifier << std::endl;
        engine2->init();
 
     }
@@ -66,18 +62,22 @@ struct Engine_test : public Sofa_test<>
     // Test if the output is updated only if necessary
     void testUpdate()
     {
-       //std::cout << "************Get Value Ouput E1*******************"<< std::endl;
-       SReal result1 = engine1->f_result.getValue();
-       int numberUpdate1Call = engine1->getCounterUpdate();
-       ASSERT_EQ(numberUpdate1Called,1);
-       ASSERT_EQ(result1,2);
-
        //std::cout << "************Get Value Ouput E2*******************"<< std::endl;
        SReal result2 = engine2->f_result.getValue();
-       numberUpdate1Call = engine1->getCounterUpdate();
-       int numberUpdate2Call = engine2->getCounterUpdate();
-       ASSERT_EQ(numberUpdate1Called,1);
-       ASSERT_EQ(numberUpdate2Called,1);
+
+       // Test if update method of engine1 is called 1 time
+       if(engine1->getCounterUpdate()!=1)
+       {
+           ADD_FAILURE() << "Update method of engine1 was called " << engine1->getCounterUpdate() << " times instead of 1 time " << std::endl;
+       }
+
+       // Test if update method of engine2 is called 1 time
+       if(engine2->getCounterUpdate()!=1)
+       {
+           ADD_FAILURE() << "Update method of engine2 was called " << engine2->getCounterUpdate() << " times instead of 1 time " << std::endl;
+       }
+
+       // Test if result is correct
        ASSERT_EQ(result2,6);
 
     }
