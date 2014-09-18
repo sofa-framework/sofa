@@ -25,6 +25,7 @@
 
 #include "stdafx.h"
 #include <sofa/component/engine/TestEngine.h>
+#include <plugins/SceneCreator/SceneCreator.h>
 #include "Sofa_test.h"
 
 
