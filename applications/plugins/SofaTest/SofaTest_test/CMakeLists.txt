@@ -12,6 +12,7 @@ set(SOURCE_FILES
     BezierTetrahedronTopology_test.cpp
     BroadPhase_test.cpp
     DAG_test.cpp
+    Engine_test.cpp
     EulerImplicit_test.cpp
     HexahedronFEMForceField_test.cpp
     LinearElasticity_test.cpp

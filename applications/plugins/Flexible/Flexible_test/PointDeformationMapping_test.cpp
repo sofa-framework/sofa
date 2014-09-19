@@ -116,7 +116,7 @@ namespace sofa {
 
         }
       
-        bool runTest(double convergenceAccuracy, double /*tolerance*/)
+        bool runTest(double convergenceAccuracy)
         {
             // Init simulation
             sofa::simulation::getSimulation()->init(Inherited::root.get());
@@ -211,7 +211,7 @@ namespace sofa {
     // test case: polarcorotationalStrainMapping 
     TYPED_TEST( PointsDeformationMapping_test , VecDeformationMappingTest)
     {
-        ASSERT_TRUE( this->runTest(1e-10,1e-10));
+        ASSERT_TRUE( this->runTest(1e-10));
     }
 
 } // namespace sofa

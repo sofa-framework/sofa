@@ -33,8 +33,6 @@
 #include <sofa/component/forcefield/QuadPressureForceField.h>
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
-#include "../material/HookeForceField.h"
-#include "../material/NeoHookeanForceField.h"
 #include "../material/MooneyRivlinForceField.h"
 #include <sofa/component/container/MechanicalObject.h>
 
@@ -86,10 +84,6 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
 	size_t vIndex;
     // Strain node for the force field
     simulation::Node::SPtr strainNode;
-   
-
-     // Define the path for the scenes directory
-    #define ADD_SOFA_TEST_SCENES_PATH( x ) sofa_tostring(SOFA_TEST_SCENES_PATH)sofa_tostring(x) 
 
     // Create the context for the scene
     void SetUp()
