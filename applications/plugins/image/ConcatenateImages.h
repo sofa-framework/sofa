@@ -252,19 +252,19 @@ protected:
                     if(Interpolation.getValue().getSelectedId()==INTERPOL_NEAREST)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(double());
+                            //pt.vals.push_back(double());
                             pt.vals.push_back((double)inImg(t).atXYZ(sofa::helper::round((double)inp[0]),sofa::helper::round((double)inp[1]),sofa::helper::round((double)inp[2]),0));
                         }
                     else if(Interpolation.getValue().getSelectedId()==INTERPOL_LINEAR)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(double());
+                            //pt.vals.push_back(double());
                             pt.vals.push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],0));
                         }
                     else
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(double());
+                            //pt.vals.push_back(double());
                             pt.vals.push_back((double)inImg(t).cubic_atXYZ(inp[0],inp[1],inp[2],0));
                         }
                     pt.u=Coord( ( inp[0]< indim[0]-inp[0]-1)? inp[0]: indim[0]-inp[0]-1 ,
@@ -272,7 +272,7 @@ protected:
                             ( inp[2]< indim[2]-inp[2]-1)? inp[2]: indim[2]-inp[2]-1 ); // distance from border
 
                     bool isnotnull=false;
-                    for(unsigned int t=0; t<pt.vals.size(); t++)  if(pt.vals[t]!=(T)0) isnotnull=true;
+                    for(unsigned int t=0; t<pt.vals.size(); t++)  if(pt.vals[t]>(T)0) isnotnull=true;
                     if(isnotnull) pts.push_back(pt);
 
                 }
@@ -355,7 +355,7 @@ protected:
 #endif
         cimg_forXYZ(img(0),x,y,z) //space
         {
-            for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++){ img(t)(x,y,z,k) = (T)0; imgIndices(t)(x,y,z,k)=(T)0;}
+            for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++){ img(t)(x,y,z,k) = (T)-1; imgIndices(t)(x,y,z,k)=(T)-1;}
 
             Coord p = outT->fromImage(Coord(x,y,z)); //coordinate of voxel (x,y,z) in world space
             vector<struct pttype> pts;
@@ -396,7 +396,7 @@ protected:
                             ( inp[2]< indim[2]-inp[2]-1)? inp[2]: indim[2]-inp[2]-1 ); // distance from border
 
                     bool isnotnull=false;
-                    for(unsigned int t=0; t<pt.vals.size(); t++)  if(pt.vals[t]!=(T)0) isnotnull=true;
+                    for(unsigned int t=0; t<pt.vals.size(); t++)  if(pt.vals[t]>(T)0) isnotnull=true;
                     if(isnotnull) pts.push_back(pt);
 
                 }
