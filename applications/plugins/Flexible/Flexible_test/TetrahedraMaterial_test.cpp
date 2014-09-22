@@ -305,7 +305,7 @@ TYPED_TEST_CASE(TetrahedraMaterial_test, DataTypes);
 // Test traction cylinder
 TYPED_TEST( TetrahedraMaterial_test , test_Hooke_Tetrahedra_InTraction )
 {
-    ASSERT_TRUE( this->testTetrahedraInTraction(&sofa::TetrahedraMaterial_test<TypeParam>::addHookeForceField,TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,true));
+    ASSERT_TRUE( this->testTetrahedraInTraction(&sofa::TetrahedraMaterial_test<TypeParam>::addHookeForceField,TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
 }
 
 } // namespace sofa

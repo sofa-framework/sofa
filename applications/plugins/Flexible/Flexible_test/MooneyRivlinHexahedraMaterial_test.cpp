@@ -164,8 +164,7 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
             {
                 // Set the pressure on the top part
                 Real pressure= pressureArray[j][i];
-                if(debug)
-                std::cout << "pressure = " << pressure << std::endl;
+
                 pressureForceField.get()->pressure=Coord(pressure,0,0);
 
                 // Reset simulation
@@ -186,11 +185,11 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
                 // Get the simulated final position of that vertex
                 Coord p1=(*(tractionStruct.dofs.get()->getX()))[vIndex];
 
-                if(debug) // Print the coordinates of the initial point p0 and the final point p1 (p0 after traction)
+                /*if(debug) // Print the coordinates of the initial point p0 and the final point p1 (p0 after traction)
                 {
                     std::cout << "p0 = " << p0 << std::endl;
                     std::cout << "p1 = " << p1 << std::endl;
-                }
+                }*/
                     
                 // Compute longitudinal deformation
                 Real longitudinalStretch=p1[0]/p0[0];
