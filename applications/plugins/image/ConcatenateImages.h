@@ -77,6 +77,14 @@ public:
     typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
+#ifdef BUILD_ALL_IMAGE_TYPES
+    typedef defaulttype::ImageI ImageIndiceType;
+#else
+    typedef defaulttype::ImageD ImageIndiceType;
+#endif
+    typedef typename ImageIndiceType::T Tindices;
+    typedef helper::WriteAccessor<Data< ImageIndiceType > > waImageIndice;
+
     typedef SReal Real;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef typename TransformType::Coord Coord;
@@ -90,8 +98,8 @@ public:
     helper::vector<Data<TransformType>*> inputTransforms;
 
     Data<ImageTypes> weightImage;
-    Data<ImageTypes> indiceImage;
-
+    Data<ImageIndiceType> indiceImage;
+//    Data<ImageTypes> indiceImage;
     Data<TransformType> transform;
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -101,7 +109,7 @@ public:
         , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
         , nbImages ( initData ( &nbImages,(unsigned int)0,"nbImages","number of images to merge" ) )
         , weightImage(initData(&weightImage,ImageTypes(),"weightImage","weightImage"))
-        , indiceImage(initData(&indiceImage,ImageTypes(),"indiceImage","indiceImage"))
+        , indiceImage(initData(&indiceImage,ImageIndiceType(),"indiceImage","indiceImage"))
         , transform(initData(&transform,TransformType(),"transform","Transform"))
     {
         createInputImagesData();
@@ -328,7 +336,7 @@ protected:
         dim[ImageTypes::DIMENSION_Z]=fabs(BB[1][2] - BB[0][2]) / fabs(outT->getScale()[2]);
 
         waImage out(this->weightImage);
-        waImage outIndices(this->indiceImage);
+        waImageIndice outIndices(this->indiceImage);
         out->clear();
         outIndices->clear();
 
@@ -339,7 +347,7 @@ protected:
         outIndices->setDimensions(dim);
 
         CImgList<T>& img = out->getCImgList();
-        CImgList<T>& imgIndices = outIndices->getCImgList();
+        CImgList<Tindices>& imgIndices = outIndices->getCImgList();
 
 
         raImage outRead= this->weightImage;
@@ -355,7 +363,7 @@ protected:
 #endif
         cimg_forXYZ(img(0),x,y,z) //space
         {
-            for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++){ img(t)(x,y,z,k) = (T)-1; imgIndices(t)(x,y,z,k)=(T)-1;}
+            for(unsigned int t=0; t<dim[4]; t++) for(unsigned int k=0; k<dim[3]; k++){ img(t)(x,y,z,k) = (T)-1; imgIndices(t)(x,y,z,k)=(Tindices)-1;}
 
             Coord p = outT->fromImage(Coord(x,y,z)); //coordinate of voxel (x,y,z) in world space
             vector<struct pttype> pts;
@@ -406,7 +414,7 @@ protected:
             else if(nbp==1){
                 for(unsigned int t=0; t<pts[0].vals.size(); t++)  if((T)pts[0].vals[t]!=(T)0) {
                     img(t)(x,y,z,0) = (T)pts[0].vals[t];
-                    imgIndices(t)(x,y,z,0)= (T)pts[0].indices[t];
+                    imgIndices(t)(x,y,z,0)= (Tindices)pts[0].indices[t];
                 }
             }
             else if(nbp>1)
@@ -414,7 +422,7 @@ protected:
                 unsigned int nbt=pts[0].vals.size();
                 for (unsigned int j=0; j<nbp && j<Nbref;j++ ) for(unsigned int t=0; t<nbt; t++) {
                     img(t)(x,y,z,j)= pts[j].vals[t];
-                    imgIndices(t)(x,y,z,j)= (T)pts[j].indices[t];
+                    imgIndices(t)(x,y,z,j)= (Tindices)pts[j].indices[t];
                 }
             }
         }
