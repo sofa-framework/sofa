@@ -91,7 +91,7 @@ void ComputeDualQuatEngine< DataTypes >::update()
         {
             Rigid p0 = getRigid<Real>( x0[i] );
             // Compute X0^-1*X
-            p = p.mult( StdRigidTypes< 3, Real >::inverse(p0) );
+            p = p.mult( sofa::defaulttype::StdRigidTypes< 3, Real >::inverse(p0) );
         }
 
         // Pass to a dualquat
