@@ -4,7 +4,6 @@ set(HEADER_FILES
 
 initSimpleGUI.h
 Camera.h
-#SofaGLScene.h
 Interactor.h
 SpringInteractor.h
 PickedPoint.h
@@ -17,7 +16,6 @@ set(SOURCE_FILES
 
 initSimpleGUI.cpp
 Camera.cpp
-#SofaGLScene.cpp
 Interactor.cpp
 SpringInteractor.cpp
 SofaScene.cpp

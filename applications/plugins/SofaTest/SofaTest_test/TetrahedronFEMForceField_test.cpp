@@ -114,8 +114,8 @@ TYPED_TEST_CASE(TetrahedronFEMForceField_test, TestTypes);
 // test case
 TYPED_TEST( TetrahedronFEMForceField_test , extension )
 {
-    this->errorMax = 10e7 ;
-    this->deltaMax = 10000;
+    this->errorMax = 1.0e+8 ;
+    this->deltaMax = this->errorMax * 1000;
     this->debug = false;
 
     // Young modulus, poisson ratio method
