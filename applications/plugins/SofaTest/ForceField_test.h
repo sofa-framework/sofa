@@ -73,7 +73,11 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     /// @name Precision and control parameters
     /// {
     SReal errorMax;       ///< tolerance in precision test. The actual value is this one times the epsilon of the Real numbers (typically float or double)
-    SReal deltaMax;       ///< Maximum amplitude of the random perturbation used to check the stiffness using finite differences
+    /**
+     * @brief Maximum amplitude of the random perturbation used to check the stiffness using finite differences
+     * @warning Should be more than errorMax/stiffness. This is not checked automatically.
+     */
+    SReal deltaMax;
     bool checkStiffness;  ///< If false, stops the test after checking the force, without checking the stiffness. Default value is true.
     bool debug;           ///< Print debug messages. Default is false.
     /// }
@@ -151,6 +155,8 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         sofa::simulation::getSimulation()->init(this->node.get());
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
+        simulation::MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());
+        node->execute(resetForce);
         simulation::MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
         this->node->execute(computeForce);
 
@@ -180,7 +186,6 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         }
 
         // compute new force and difference between previous force
-        simulation::MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());
         node->execute(resetForce);
         node->execute(computeForce);
         VecDeriv newF;
