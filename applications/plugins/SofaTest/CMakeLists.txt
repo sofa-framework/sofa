@@ -8,7 +8,7 @@ set(HEADER_FILES
     Elasticity_test.h
     Elasticity_test.inl
     ForceField_test.h
-    BroadPhaseTest.h
+    BroadPhase_test.h
     PrimitiveCreation.h
 	)
 

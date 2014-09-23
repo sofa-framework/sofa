@@ -1,0 +1,41 @@
+
+************************************
+*     BulletCollisionDetection.txt     *
+************************************
+
+
+
+AUTHOR :
+    Moreno TRLIN
+
+
+LICENCE :
+ - Private
+
+
+
+OTHER COMMENTS :
+
+UTILISATION DU PLUGIN :
+Tout d'abord il faut le mettre dans le dossier des plugins et le renommer en BulletCollisionDetection si ce n'est pas
+le cas.
+
+Dans la scène construite il faut mettre les composants BulletCollisionDetection et BulletIntersection pour pouvoir
+traiter les BulletCollisionModel (interface entre les collision model de bullet et sofa).
+
+BulletCollisionDetection fait office de broad et narrow phase (d'ailleurs il est possible de choisir la broad phase,
+les champs useSAP et useSimpleBroadPhase... proposent cette possibilité). Il ne faut donc mettre aucune
+autre broad ou narrow phase dans la scène.
+
+BulletIntersection sert à insérer les contacts de bullet dans sofa
+grâce à l'intermédiaire du BtInterManager en les triant selon leur type. Le champ contactDistance de BulletIntersection
+spécifie la distance à partir de laquelle un contact sofa est créé. BulletIntersection hérite d'Intersection et BaseIntersector,
+il ne faut en aucun cas mettre d'autres composants héritant d'Intersection dans la scène sofa.
+
+Les BulletCollisionModel sont l'interface entre les collision model de bullet et sofa. BulletCollisionModel est une classe
+abstraite. Toute classe qui en hérite doit aussi hériter du collision model de sofa lui corresondant. Ainsi, BulletTriangleModel
+hérite à la fois de TriangleModel (sofa) et de BulletCollisionModel, et, contient les objets bullet nécessaires à la construction
+d'un mesh.
+
+Des exemples de scènes sont fournies dans le dossier examples.
+
