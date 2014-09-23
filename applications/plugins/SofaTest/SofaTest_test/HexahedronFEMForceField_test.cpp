@@ -95,6 +95,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         Inherited::force->f_poissonRatio.setValue(0);
         Inherited::force->f_youngModulus.setValue(10);
         Inherited::force->f_method.setValue("small");
+        Inherited::force->isCompliance.setValue(0);
 
         // Init simulation
         sofa::simulation::getSimulation()->init(Inherited::node.get());
