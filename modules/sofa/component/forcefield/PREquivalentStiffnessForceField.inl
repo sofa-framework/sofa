@@ -403,7 +403,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addKToMatrix(sofa::defaulttype:
 }
 
 template<typename DataTypes>
-void PREquivalentStiffnessForceField<DataTypes>::displaceFrames(const VecCoord &frames, PREquivalentStiffnessForceField::VecCoord &displaced, const VecDeriv &dq, const Real epsilon)
+void PREquivalentStiffnessForceField<DataTypes>::displaceFrames(const VecCoord &frames, VecCoord &displaced, const VecDeriv &dq, const Real epsilon)
 {
     sofa::helper::RandomGenerator rgen;
     for(size_t n = 0 ; n < displaced.size() ; ++n)
