@@ -13,7 +13,7 @@ namespace linearsolver {
 
 CoulombConstraint::CoulombConstraint(SReal mu)
     : mu(mu)
-    , horizontalProjection( false )
+    , horizontalProjection( true )
 {
 	assert(mu >= 0); 
 }
