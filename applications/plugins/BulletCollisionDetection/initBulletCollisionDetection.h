@@ -42,8 +42,9 @@ namespace component
  * This plugin contains the Bullet collision pipeline itself named BulletCollisionDetection, where
  * broad phase and narrow phase are performed. So in the Sofa scene, you must place the element
  * BulletCollisionDetection instead of any broad or narrow phase. An important thing to know is
- * that this plugin works well with constraints (LMConstraintSolver for example) and no with penlity contacts because
- * it is not robust to collision models penetration.
+ * that this plugin works well with constraints (LMConstraintSolver for example) and no with penality contacts because
+ * it is not robust to collision models penetration. But some improvement has been done with the collision model margin
+ * to allow this for most of the primitives (if the primitives don't penetrate).
  *
  *
  * It contains also the element BulletIntersection which must replace any kind of Sofa intersection
@@ -77,13 +78,13 @@ namespace component
  * \image html BulletSphere.png
  *
  * Dependencies:
- * - You must have bullet 2.82 installed and specify its location in the CMakeCache.txt by filling the paths BULLET_INCLUDE_PATH (for bullet include files) and BULLET_LIB_PATH (for bullet binary files)
+ * - You must have bullet 2.82 installed and specify its location in the CMakeCache.txt by filling the paths BULLET_INCLUDE_PATH (for bullet include files) and BULLET_LIB_PATH (for bullet binary files).
+ *   WARNING, when installing bullet write in the bullet CMakeLists.txt the line add_definitions(-DBULLET_TRIANGLE_COLLISION)
  * - HACD (a part of bullet for convex hull decomposition) must also be installed at the same locations than bullet
  *
  * Issues:
  * - Currently, the plugin doesn't work well with CompliantContacts
  * - Some improvements to static meshes could be done by using another Bullet mesh class in this case
- *
  */
 
 
