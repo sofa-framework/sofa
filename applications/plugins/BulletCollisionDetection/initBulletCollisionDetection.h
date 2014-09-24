@@ -78,6 +78,7 @@ namespace component
  *
  * Dependencies:
  * - You must have bullet 2.82 installed and specify its location in the CMakeCache.txt by filling the paths BULLET_INCLUDE_PATH (for bullet include files) and BULLET_LIB_PATH (for bullet binary files)
+ * - HACD (a part of bullet for convex hull decomposition) must also be installed at the same locations than bullet
  *
  * Issues:
  * - Currently, the plugin doesn't work well with CompliantContacts

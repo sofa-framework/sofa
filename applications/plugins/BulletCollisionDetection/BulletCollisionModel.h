@@ -14,8 +14,14 @@ public:
 
     BulletCollisionModel() : _bt_collision_object(0x0),_handled(false){}
 
+    /**
+      *Inits bullet collision shapes from the sofa shapes.
+      */
     virtual void initBullet() = 0;
 
+    /**
+      *Updates at each time step the bullet shapes from sofa shapes.
+      */
     virtual void updateBullet() = 0;
 
     virtual ~BulletCollisionModel(){delete _bt_collision_object;}
@@ -24,12 +30,15 @@ public:
 
     inline const btCollisionObject * getBtCollisionObject()const{return _bt_collision_object;}
 
+    /**
+      *Returns true if the BulletCollisionModeled has been added to the bullet scene.
+      */
     inline bool handled()const{return _handled;}
 
     inline void setHandled(bool h){_handled = h;}
 
 protected:
-    btCollisionObject * _bt_collision_object;
-    bool _handled;
+    btCollisionObject * _bt_collision_object;//the collision object in the bullet scene
+    bool _handled;//true if the bullet collision model has been added to the bullet scene
 };
 #endif
