@@ -82,8 +82,8 @@ protected:
         contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
         contact_node->addObject( contact_map.get() );
 
-        this->copyNormals( contact_map->normal );
-        this->copyPenetrations( contact_map->penetrations );
+        this->copyNormals( *edit(contact_map->normal) );
+        this->copyPenetrations( *edit(contact_map->penetrations) );
 
         // every contact points must propagate constraint forces
         for(unsigned i = 0; i < size; ++i)

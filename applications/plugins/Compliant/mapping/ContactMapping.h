@@ -43,11 +43,15 @@ public:
 	typedef typename TIn::Real real;
 
 	typedef vector< defaulttype::Vec<3, real> > normal_type;
-	normal_type normal;
+    Data<normal_type> normal;
 
 	typedef vector< real > penetration_type;
-	penetration_type penetrations;
+    Data<penetration_type> penetrations;
 
+  ContactMapping() : normal(initData(&normal, "normal", "contact normals")),
+					 penetrations(initData(&penetrations, "penetrations", "contact penetrations")) {
+
+  }
 	
 protected:
 
@@ -63,7 +67,7 @@ protected:
 
 		for(unsigned i = 0; i < n; ++i) {
 
-            out[i][0] = penetrations[i];
+		  out[i][0] = penetrations.getValue()[i];
 
 //             std::cout << SOFA_CLASS_METHOD<<"normal " << normal[i] << std::endl;
 //             std::cout << SOFA_CLASS_METHOD<< "penetration " << penetrations[i] << " "<< out[i][0]<< std::endl;
@@ -96,7 +100,7 @@ protected:
 //				assert( std::abs( normal[i].norm() - 1 ) <= std::numeric_limits<SReal>::epsilon() );
 				
 				// first vector is normal
-                local_frame.col(0) = utils::map( normal[i] );
+                local_frame.col(0) = utils::map( normal.getValue()[i] );
 				
 				// possibly tangent directions
 				if( self::Nout == 3 ) {
