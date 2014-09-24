@@ -111,6 +111,8 @@ protected:
     helper::vector<std::string> textItems    ;
     unsigned int                selectedItem ;
 
+public:
+
     ///return the id_item of the string if found in string list button
     ///             -1    if not found
     int isInOptionsList(const std::string & m_string) const;

@@ -16,9 +16,9 @@ using namespace utils;
 
 Stabilization::Stabilization( mstate_type* mstate )
     : BaseConstraintValue( mstate )
-    , mask(initData(&mask, "mask", "dofs to be stabilized")) {
+    , mask(initData(&mask, "mask", "dofs to be stabilized"))
     , m_holonomic( false )
-}
+{}
 
 void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
 	assert( mstate );
