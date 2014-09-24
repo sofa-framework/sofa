@@ -13,11 +13,12 @@ class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
 
     SOFA_CLASS(Stabilization, BaseConstraintValue);
 
-	Stabilization( mstate_type* mstate = 0);
+    Stabilization( mstate_type* mstate = 0 );
 
 	/// flagging which constraint lines must be stabilized (if empty, all constraints are stabilized)
 	typedef vector<bool> mask_type;
 	Data<mask_type> mask;
+    bool m_holonomic;
 	
 	// value for stabilization
     virtual void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
