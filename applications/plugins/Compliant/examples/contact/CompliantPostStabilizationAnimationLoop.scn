@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<Node name="Root" dt="0.3" gravity="0 0 0">
+  <VisualStyle displayFlags=" showBehaviorModels hideVisual showCollisionModels" />
+  
+  
+  <RequiredPlugin name="Compliant" />  
+  
+  
+    <CompliantAttachButton/>
+    <CompliantPostStabilizationAnimationLoop />
+  
+  <DefaultPipeline depth="6" />
+  <BruteForceDetection />
+  <DiscreteIntersection />
+<!--   <NewProximityIntersection alarmDistance=".5" contactDistance="0"/> -->
+  <DefaultContactManager responseParams="compliance=0&amp;restitution=0&amp;holonomic=1" response="CompliantContact" />
+  
+  
+  
+  <CompliantImplicitSolver stabilization="0"/>
+  <SequentialSolver precision="1e-10" relative="false" iterations="100" /> 
+    
+    <Node name="Ball1">
+      <MechanicalObject name="dofs" template="Vec3d" position="0 0 0" velocity="1 0 0" showObject="1" showObjectScale="1"/>
+      <UniformMass totalMass="1"/>
+      <SphereModel template="Vec3d" contactFriction="0" contactRestitution="0" />
+    </Node>
+    <Node name="Ball2">
+      <MechanicalObject name="dofs" template="Vec3d" position="3 0 0" velocity="-1 0 0" showObject="1" showObjectScale="1"/>
+      <UniformMass totalMass="1"/>
+      <SphereModel template="Vec3d" contactFriction="0" contactRestitution="0"/>
+    </Node>
+    
+  
+</Node>
