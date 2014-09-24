@@ -81,8 +81,8 @@ protected:
         contact_map->setName( this->getName() + " contact mapping" );
         contact_node->addObject( contact_map.get() );
 
-        this->copyNormals( contact_map->normal );
-        this->copyPenetrations( contact_map->penetrations );
+        this->copyNormals( *edit(contact_map->normal) );
+        this->copyPenetrations( *edit(contact_map->penetrations) );
 
         contact_map->init();
 
