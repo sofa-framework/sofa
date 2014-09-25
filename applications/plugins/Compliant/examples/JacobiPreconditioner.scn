@@ -8,7 +8,7 @@
         
     <CompliantImplicitSolver/>
     <PreconditionedCgSolver iterations="100" precision="1e-10"/>
-    <JacobiPreconditioner/>
+    <CompliantJacobiPreconditioner/>
 <!--     <CgSolver iterations="100" precision="1e-10"/> -->
     
     

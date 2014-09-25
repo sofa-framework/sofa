@@ -1,4 +1,4 @@
-#include "LDLTPreconditioner.h"
+#include "CompliantLDLTPreconditioner.h"
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -7,18 +7,18 @@ namespace component {
 namespace linearsolver {
 
 
-SOFA_DECL_CLASS(LDLTPreconditioner);
-int LDLTPreconditionerClass = core::RegisterObject("LDLT preconditioner").add< LDLTPreconditioner >();
+SOFA_DECL_CLASS(CompliantLDLTPreconditioner);
+int CompliantLDLTPreconditionerClass = core::RegisterObject("LDLT preconditioner").add< CompliantLDLTPreconditioner >();
 
 
-LDLTPreconditioner::LDLTPreconditioner()
+CompliantLDLTPreconditioner::CompliantLDLTPreconditioner()
     : BasePreconditioner()
     , _factorized( false )
 {
 
 }
 
-void LDLTPreconditioner::compute( const AssembledSystem::mat& H )
+void CompliantLDLTPreconditioner::compute( const AssembledSystem::mat& H )
 {
     if( !_factorized )
     {
@@ -45,7 +45,7 @@ void LDLTPreconditioner::compute( const AssembledSystem::mat& H )
     }
 }
 
-void LDLTPreconditioner::apply( AssembledSystem::vec& res, const AssembledSystem::vec& v )
+void CompliantLDLTPreconditioner::apply( AssembledSystem::vec& res, const AssembledSystem::vec& v )
 {
     res.resize( v.size() );
     res.head(preconditioner.rows()) = preconditioner.solve( v.head(preconditioner.rows()) );
