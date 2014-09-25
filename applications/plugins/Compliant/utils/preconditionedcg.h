@@ -21,6 +21,8 @@ struct preconditionedcg
     template<class Matrix, class Preconditioner>
     static void solve(vec& x, const Matrix& A, const Preconditioner& P, const vec& b, params& p)
     {
+//        std::cerr<<"PCG: "<<(A(P(b))-b).norm()<<std::endl;
+
 
         vec residual = b;
 
@@ -40,12 +42,12 @@ struct preconditionedcg
         d.init( P );
 
         natural i;
-        for( i = 0; i < p.iterations && d.phi > p.precision; ++i )
+        for( i = 0; i < p.iterations && d.r_norm > p.precision; ++i )
         {
             d.step(x, A, P);
         }
         p.iterations = i;
-        p.precision = d.phi;
+        p.precision = d.r_norm;
 
     }
 
@@ -55,12 +57,12 @@ struct preconditionedcg
     {
 
         vec p;			// descent direction
-        vec r;			// residual
+        vec& r;			// residual
         vec z;			// preconditioned residual
         vec Ap;			// A(p)
 
-        real phi2;		// residual squared norm
-        real phi;			// residual norm
+        real phi2;		// residual . preconditioned residual norm
+        real r_norm;	// residual norm
 
         natural k;		// iteration
 
@@ -71,9 +73,9 @@ struct preconditionedcg
         void init(const Preconditioner& P)
         {
             z = P(r);
-            p = r;
+            p = z;
             phi2 = r.dot(z);
-            phi = std::sqrt( phi2 );
+            r_norm = r.norm();
             k = 1;
         }
 
@@ -89,20 +91,20 @@ struct preconditionedcg
             // fail
             if( !pAp ) return false;
 
-            // const real alpha = phi2 / pAp;
             const real alpha = r.dot(z) / pAp;
             
             x += alpha * p;
             r -= alpha * Ap;
             z = P(r);
 
-            const real old = phi2;
+            const real old_phi2 = phi2;
 
             phi2 = r.dot(z);
-            phi = std::sqrt( phi2 );
-            const real mu = phi2 / old;
+            const real beta = phi2 / old_phi2; // regular Fletcher–Reeves formula
 
-            p = z + mu * p;
+            r_norm = r.norm();
+
+            p = z + beta * p;
             ++k;
 
             return true;

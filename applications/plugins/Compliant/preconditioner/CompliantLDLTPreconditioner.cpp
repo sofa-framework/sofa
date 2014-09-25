@@ -22,14 +22,14 @@ void CompliantLDLTPreconditioner::compute( const AssembledSystem::mat& H )
 {
     if( !_factorized )
     {
-//         std::cerr<<SOFA_CLASS_METHOD<<"\n";
-
         _factorized = true;
 
-        preconditioner.compute( H );
+        preconditioner.compute( H.selfadjointView<Eigen::Lower>() );
 
         if( preconditioner.info() != Eigen::Success )
         {
+            std::cerr<<SOFA_CLASS_METHOD<<"automatic regularization of a singular matrix\n";
+
             // if singular, try to regularize by adding a tiny diagonal matrix
             AssembledSystem::mat identity(H.rows(),H.cols());
             identity.setIdentity();
@@ -49,9 +49,7 @@ void CompliantLDLTPreconditioner::apply( AssembledSystem::vec& res, const Assemb
 {
     res.resize( v.size() );
     res.head(preconditioner.rows()) = preconditioner.solve( v.head(preconditioner.rows()) );
-    res.tail( v.size()-preconditioner.rows() ) = v.tail( v.size()-preconditioner.rows() ); // in case of dofs have been added, like mouse...
-
-//    std::cerr<<SOFA_CLASS_METHOD<<"\n";
+    res.tail( v.size()-preconditioner.rows() ) = v.tail( v.size()-preconditioner.rows() ); // in case of dofs have been added, like mouse...;
 }
 
 }
