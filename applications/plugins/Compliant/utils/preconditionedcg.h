@@ -45,6 +45,7 @@ struct preconditionedcg
             d.step(x, A, P);
         }
         p.iterations = i;
+        p.precision = d.phi;
 
     }
 
@@ -54,7 +55,7 @@ struct preconditionedcg
     {
 
         vec p;			// descent direction
-        vec& r;			// residual
+        vec r;			// residual
         vec z;			// preconditioned residual
         vec Ap;			// A(p)
 
