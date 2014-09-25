@@ -36,9 +36,9 @@ set(HEADER_FILES
     numericalsolver/PreconditionedCgSolver.h
 
     preconditioner/BasePreconditioner.h
-    preconditioner/LDLTPreconditioner.h
+    preconditioner/CompliantLDLTPreconditioner.h
     #preconditioner/IncompleteCholeskyPreconditioner.h
-    preconditioner/JacobiPreconditioner.h
+    preconditioner/CompliantJacobiPreconditioner.h
 
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
@@ -128,9 +128,9 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
 
-    preconditioner/LDLTPreconditioner.cpp
+    preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
-    preconditioner/JacobiPreconditioner.cpp
+    preconditioner/CompliantJacobiPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp

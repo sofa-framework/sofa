@@ -1,5 +1,5 @@
-#ifndef COMPLIANT_JACOBIPRECONDITIONER_H
-#define COMPLIANT_JACOBIPRECONDITIONER_H
+#ifndef COMPLIANT_CompliantJacobiPreconditioner_H
+#define COMPLIANT_CompliantJacobiPreconditioner_H
 
 #include "BasePreconditioner.h"
 
@@ -14,16 +14,16 @@ namespace linearsolver {
  * 
 */
 
-class SOFA_Compliant_API JacobiPreconditioner : public BasePreconditioner
+class SOFA_Compliant_API CompliantJacobiPreconditioner : public BasePreconditioner
 {
 
   public:
 
-    SOFA_ABSTRACT_CLASS(JacobiPreconditioner, BasePreconditioner);
+    SOFA_ABSTRACT_CLASS(CompliantJacobiPreconditioner, BasePreconditioner);
 
     typedef AssembledSystem::real Real;
 
-    JacobiPreconditioner();
+    CompliantJacobiPreconditioner();
 
     virtual void compute( const AssembledSystem::mat& H );
     virtual void apply( AssembledSystem::vec& res, const AssembledSystem::vec& v );
