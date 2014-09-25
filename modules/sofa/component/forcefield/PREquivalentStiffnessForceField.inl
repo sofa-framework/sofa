@@ -131,6 +131,8 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
     //    Quaternion qDiff = q0Current.inverse() * q1th.inverse() * q1Current;
         Quaternion dummy;
 
+        Quaternion _0_R_1  = q0Current.inverse() * q1Current;
+
         // compute rotation difference between rigid and real motion
 		// first, compute q1 orientation w.r.t. in q0's frames
 //		Quaternion q1l0Current = q1Current * q0Current.inverse() ;
@@ -140,7 +142,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
 //		Quaternion qDiff = (q1l0Current.inverse()*q1th);
 //		qDiff.normalize();
 //		Vec3 dq = -qDiff.toEulerVector();
-		Vec3 dq = -dummy.angularDisplacement(q0Current.inverse() * q1Current, q1th);
+        Vec3 dq = -dummy.angularDisplacement(_0_R_1, q1th);
 
 
     //    Real angleDiff;
@@ -161,8 +163,10 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
 
         Vec6 f1(F, r);
 
+        //std::cout<<"++++++++++++++ \n TEST \n K="<<m_CInv[n]<< "\n dX1="<<dX1<<" \n f1="<<f1<<std::endl;
+
         // compute transport matrix
-        Vec3 p0p1 = q0Current.inverseRotate(x1Current - x0Current);
+        Vec3 p0p1 = q0Current.inverseRotate(x1Current - x0Current); // p0^p1 in local frame
         Mat66 H = Mat66::Identity();
         H(3, 1) = -p0p1.z();
         H(3, 2) = p0p1.y();
@@ -171,9 +175,25 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         H(5, 0) = -p0p1.y();
         H(5,1) = p0p1.x();
 
-		H = -H;
+        H = -H; // static equilibrium
 
-		tmp = H*tmp;
+        // compute f0
+        tmp = H*f1;
+        F = Vec3(tmp(0), tmp(1), tmp(2));
+        r = Vec3(tmp(3), tmp(4), tmp(5));
+        std::cout<<" F ="<<F<<std::endl;
+
+        F = q0Current.rotate(F);
+        r = q0Current.rotate(r);
+
+        Vec6 f0(F, r);
+        std::cout<<" f0="<<f0<<std::endl;
+
+        force[n+0] += f0;
+        force[n+1] += f1;
+
+
+
 
         Mat66 block = H*m_CInv[n];
         m_K[n].clear();
@@ -200,16 +220,11 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
 
         // compute x0 forces in x0's frame using transport
 
-        F = Vec3(tmp(0), tmp(1), tmp(2));
-        r = Vec3(tmp(3), tmp(4), tmp(5));
 
-        F = q0Current.rotate(F);
-        r = q0Current.rotate(r);
 
-        Vec6 f0(F, r);
 
-		force[n+0] += f0;
-		force[n+1] += f1;
+/*
+
 
 		// Check:
 		// ATTENTION : je ne suis pas sur pour la verif des couples.
@@ -227,6 +242,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
 //            force[0][i] += f0[i];
 //            force[1][i] += f1[i];
 //        }
+*/
     }
 
 //    std::cout << "f" << std::endl;
@@ -236,6 +252,8 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
 //    }
 //    std::cout << std::endl;
 //    std::cout << std::endl;
+
+
 
     f.endEdit();
 
@@ -273,6 +291,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
         dfdq[n+0] += df0;
         dfdq[n+1] += df1;
 
+        /*
 		std::cout << "dx" << std::endl;
 		for(int i = 0 ; i < dx.size() ; ++i)
 			std::cout <<i << " : " << dx[i] << std::endl;
@@ -283,6 +302,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
 		std::cout << "df" << n+1 << " = " << df1 << std::endl;
 		std::cout << "df" << n+1 << "th = " << (dx[n+0].getVAll() - dx[n+1].getVAll())*100*kFact << std::endl;
 		std::cout << std::endl;
+        */
 
     }
 

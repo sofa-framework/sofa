@@ -72,6 +72,8 @@ public :
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
     void displaceFrames(const VecCoord& frames, VecCoord& displaced, const VecDeriv& dq, const Real epsilon);
+
+private :
     void computeForce(const VecCoord& pos, const VecCoord& restPos, VecDeriv& f);
 
 protected :
