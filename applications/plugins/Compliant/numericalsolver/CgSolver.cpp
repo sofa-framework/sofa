@@ -78,6 +78,8 @@ void CgSolver::solve_kkt(AssembledSystem::vec& x,
     typedef ::cg<real> solver_type;
     solver_type::solve(x, A, b, p);
 
+    report("cg (kkt)", p );
+
 }
 
 
