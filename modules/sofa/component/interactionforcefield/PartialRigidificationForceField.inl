@@ -34,6 +34,7 @@
 #include <sofa/helper/rmath.h>
 #include <assert.h>
 #include <iostream>
+#include <fstream>
 
 namespace sofa
 {
@@ -83,13 +84,13 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     // mstate2 = mstate templated on Rigid (rigid degrees of freedom)
 
 	std::cout << "Getting matrix for mstate1" << std::endl;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat11 = matrix->getMatrix(this->mstate1);
+	sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat11 = matrix->getMatrix(this->mstate1);
 	std::cout << "Resulting mstate1 matrix size " << mat11.matrix->rows() << std::endl;
 	std::cout << "Getting matrix for mstate2" << std::endl;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat22 = matrix->getMatrix(this->mstate2);
+	sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat22 = matrix->getMatrix(this->mstate2);
 	std::cout << "Resulting mstate2 matrix size " << mat22.matrix->rows() << std::endl;
-    sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(this->mstate1, this->mstate2);
-    sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(this->mstate2, this->mstate1);
+	sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(this->mstate1, this->mstate2);
+	sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(this->mstate2, this->mstate1);
 	std::cout << "Resulting mstate1 mstate2 interaction matrix size " << mat12.matrix->rows() << std::endl;
 	std::cout << "Resulting mstate2 mstate1 interaction matrix size " << mat21.matrix->rows() << std::endl;
 
@@ -174,16 +175,16 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 
 
     m_mappedForceField.get()->addKToMatrix(mparams, mappedFFMatrixAccessor);
-	std:: cout << "result matrix" << std::endl;
-	std:: cout << *(r.matrix) << std::endl;
+//	std:: cout << "result matrix" << std::endl;
+//	std:: cout << *(r.matrix) << std::endl;
 
-    std::cout<<" dim mappedFFMatrix :"<<mappedFFMatrix->nBlocRow<<" "<<mappedFFMatrix->nBlocCol<<std::endl;
-     std::cout<<" dim J0 :"<<J0->nBlocRow<<" "<<J0->nBlocCol<<std::endl;
-	 std::cout<<" J0 :"<<*J0<<std::endl;
-     std::cout<<" dim J1 :"<<J1->nBlocRow<<" "<<J1->nBlocCol<<std::endl;
-	 std::cout<<" J1 :"<<*J1<<std::endl;
-     std::cout<<" dim Jr :"<<Jr->nBlocRow<<" "<<Jr->nBlocCol<<std::endl;
-	 std::cout<<" Jr :"<<*Jr<<std::endl;
+//    std::cout<<" dim mappedFFMatrix :"<<mappedFFMatrix->nBlocRow<<" "<<mappedFFMatrix->nBlocCol<<std::endl;
+//     std::cout<<" dim J0 :"<<J0->nBlocRow<<" "<<J0->nBlocCol<<std::endl;
+//	 std::cout<<" J0 :"<<*J0<<std::endl;
+//     std::cout<<" dim J1 :"<<J1->nBlocRow<<" "<<J1->nBlocCol<<std::endl;
+//	 std::cout<<" J1 :"<<*J1<<std::endl;
+//     std::cout<<" dim Jr :"<<Jr->nBlocRow<<" "<<Jr->nBlocCol<<std::endl;
+//	 std::cout<<" Jr :"<<*Jr<<std::endl;
 
 	 std::cout << "Test transpose JO^t*J0" << std::endl;
 	 sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>* t1 = new sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>();
@@ -200,36 +201,36 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 
 	 multMatricesT<3,3,3>(*J0, *J0, *t1);
 	 std::cout << "*t1" << std::endl;
-	 std::cout << *t1 << std::endl;
+//	 std::cout << *t1 << std::endl;
 
 	 multMatrices<3,3,6>(*J1, *Jr, *J1Jr);
 	 std::cout << "*J1Jr" << std::endl;
-	 std::cout << *J1Jr << std::endl;
+//	 std::cout << *J1Jr << std::endl;
 
 
 	 multMatricesT<3,3,3>(*J0, *K, *J0tK);
 	 std::cout << "J0t * K" << std::endl;
-	 std::cout << *J0tK << std::endl;
+//	 std::cout << *J0tK << std::endl;
 
 	 multMatrices<3,3,3>(*J0tK, *J0, *J0tKJ0); //mat11
 	 std::cout << "J0t * K * J0" << std::endl;
-	 std::cout << *J0tKJ0 << std::endl;
+//	 std::cout << *J0tKJ0 << std::endl;
 
 	 multMatrices<3, 3, 6>(*J0tK, *J1Jr, *J0tKJ1Jr); // mat12
 	 std::cout << "J0t * K * J1 * Jr" << std::endl;
-	 std::cout << *J0tKJ1Jr << std::endl;
+//	 std::cout << *J0tKJ1Jr << std::endl;
 
 	 multMatricesT<3, 6, 3>(*J1Jr, *K, *JrtJ1tK);
 	 std::cout << "Jrt * J1t * K" << std::endl;
-	 std::cout << *JrtJ1tK << std::endl;
+//	 std::cout << *JrtJ1tK << std::endl;
 
 	 multMatrices<6,3,6>(*JrtJ1tK, *J1Jr, *JrtJ1tKJ1Jr); // mat22
 	 std::cout << "Jrt * J1t * K * J1 * Jr" << std::endl;
-	 std::cout << *JrtJ1tKJ1Jr << std::endl;
+//	 std::cout << *JrtJ1tKJ1Jr << std::endl;
 
 	 multMatrices<6,3,3>(*JrtJ1tK, *J0, *JrtJ1tKJ0); // mat21
 	 std::cout << "Jrt * J1t * K * J0" << std::endl;
-	 std::cout << *JrtJ1tKJ0 << std::endl;
+//	 std::cout << *JrtJ1tKJ0 << std::endl;
 
 
 	 /**************************************** Add J0tKJ0 to global system **********************************************/
@@ -306,8 +307,13 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 		 }
 	 }
 
+
+	 std::ofstream outputFile("./complianceMat.txt");
+
 	 std::cout << "Final system matrix" << std::endl;
-	 std::cout << *mat22.matrix << std::endl;
+//	 std::cout << *mat22.matrix << std::endl;
+
+	 outputFile.close();
 
 
 //// Step1 compute J1*Jr
