@@ -14,7 +14,7 @@
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
-			<OglShader vertFilename="simpleShader.vert" fragFilename="simpleShader.frag"/>
+			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="1 1 0  0.5 0.5 0.5" indices="@Cube1.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
@@ -36,7 +36,7 @@
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
-			<OglShader vertFilename="simpleShader.vert" fragFilename="simpleShader.frag"/>
+			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="1 0 0  0.5 0.5 0.5" indices="@Cube2.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" dx="50" dy="20"/>
@@ -58,7 +58,7 @@
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
-			<OglShader vertFilename="simpleShader.vert" fragFilename="simpleShader.frag"/>
+			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 1 0  0.5 0.5 0.5" indices="@Cube3.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" dx="-30" dy="10"/>

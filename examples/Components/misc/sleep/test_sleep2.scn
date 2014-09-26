@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <Node name="root" dt="0.01" gravity="0 -9.810 0">
 	<VisualStyle displayFlags="" /> <!-- showInteractionForceFields -->
     <FreeMotionAnimationLoop />
@@ -29,7 +30,7 @@
         <UniformMass totalmass="1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-			<OglShader vertFilename="simpleShader.vert" fragFilename="simpleShader.frag"/>
+			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 0 1  0.5 0.5 0.5" indices="@Cube1.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <OglModel name="Visual" fileMesh="mesh/cube.obj" />
@@ -53,7 +54,7 @@
         <UniformMass totalmass="1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-			<OglShader vertFilename="simpleShader.vert" fragFilename="simpleShader.frag"/>
+			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="0 1 0  0.5 0.5 0.5" indices="@Cube2.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <OglModel name="Visual" fileMesh="mesh/cube.obj" />
@@ -77,7 +78,7 @@
         <UniformMass totalmass="1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
-			<OglShader vertFilename="simpleShader.vert" fragFilename="simpleShader.frag"/>
+			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
 			<ValuesFromIndices name="colorEngine" template="Vec3" in="1 1 0  0.5 0.5 0.5" indices="@Cube3.sleeping" />
 			<OglFloat3Variable id="color" value="@colorEngine.out" />
             <OglModel name="Visual" fileMesh="mesh/cube.obj" />
