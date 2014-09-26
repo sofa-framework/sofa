@@ -39,9 +39,9 @@
 #include <map>
 #include <string>
 
-#include <Eigen/SparseCore>
+//#include <Eigen/SparseCore>
 //#include <Eigen/SparseCholesky>
-#include <Eigen/IterativeLinearSolvers>
+//#include <Eigen/IterativeLinearSolvers>
 
 #define HARMONIC 0
 #define BIHARMONIC 1
