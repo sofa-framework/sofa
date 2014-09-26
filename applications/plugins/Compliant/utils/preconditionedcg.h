@@ -92,19 +92,36 @@ struct preconditionedcg
             if( !pAp ) return false;
 
             const real alpha = r.dot(z) / pAp;
-            
-            x += alpha * p;
-            r -= alpha * Ap;
-            z = P(r);
 
             const real old_phi2 = phi2;
 
-            phi2 = r.dot(z);
-            const real beta = phi2 / old_phi2; // regular Fletcher–Reeves formula
+            x += alpha * p;
+            
+#if 1
+            {
+                r -= alpha * Ap;
+                z = P(r);
+
+
+                phi2 = r.dot(z);
+                const real beta = phi2 / old_phi2; // regular Fletcher–Reeves formula
+                p = z + beta * p;
+            }
+#else
+            {
+                vec diff_r = - alpha * Ap;
+                r += diff_r;
+                z = P(r);
+
+                phi2 = r.dot(z);
+
+                const real beta = diff_r.dot(z) / old_phi2; // Polak–Ribière formula
+                p = z + beta * p;
+            }
+#endif
 
             r_norm = r.norm();
 
-            p = z + beta * p;
             ++k;
 
             return true;
