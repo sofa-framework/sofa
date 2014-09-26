@@ -22,6 +22,9 @@ import math
 # to specify the floating point encoding (double by default)
 template_suffix="d"
 
+# global variable to give a different name to each visual model
+idxVisualModel = 0
+
 class RigidBody:
         ## Generic Rigid Body
 
@@ -107,17 +110,21 @@ class RigidBody:
 
             class VisualModel:
                 def __init__(self, node ):
+                    global idxVisualModel;
                     self.node = node.createChild( "visual" )  # node
-                    self.model = self.node.createObject('VisualModel', name="model")
+                    self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel))
                     self.mapping = self.node.createObject('IdentityMapping', name="mapping")
+                    idxVisualModel+=1
 
 
         class VisualModel:
             def __init__(self, node, filepath, scale3d, offset):
+                global idxVisualModel;
                 self.node = node.createChild( "visual" )  # node
                 r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-                self.model = self.node.createObject('VisualModel', template='ExtVec3f', name='model', fileMesh=filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r) )
+                self.model = self.node.createObject('VisualModel', template='ExtVec3f', name='model'+str(idxVisualModel), fileMesh=filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r) )
                 self.mapping = self.node.createObject('RigidMapping', name="mapping")
+                idxVisualModel+=1
 
         class Offset:
             def __init__(self, node, name, offset, index):
