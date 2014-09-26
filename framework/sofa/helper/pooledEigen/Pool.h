@@ -68,11 +68,9 @@ public:
 		/// we will manage the reallocation.
 		if( oldStorage )
 		{
-			const size_t newSize = n * sizeof(T);
-		
 			/// If the new size feets into the allocated buffer,
 			/// we simply return the same buffer.
-			if( oldStorage->alloc_size() >= newSize )
+			if( oldStorage->get_requested_size() >= n )
 			{
 				return buffer;
 			}
