@@ -79,7 +79,7 @@ public:
 			{
 				T * newBuffer = allocate< T >( n );
 
-				std::memcpy( newBuffer, buffer, oldStorage->requested_size() * sizeof( T ) );
+				std::memcpy( newBuffer, buffer, oldStorage->get_requested_size() * sizeof( T ) );
 				oldStorage->free( buffer );
 
 				return newBuffer;
