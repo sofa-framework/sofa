@@ -63,8 +63,11 @@ public:
         Inherit::reinit();
         // chane nbref according to nb channels
         unsigned int nbchannels = this->f_w.getValue().getDimensions()[Inherit::DistTypes::DIMENSION_S];
-        if(this->f_printLog.getValue()) std::cout<<this->getName()<<" changed nbref according to nbChannels: "<<nbchannels<<std::endl;
-        if(nbchannels>this->f_nbRef.getValue()) this->f_nbRef.setValue(nbchannels);
+        if(nbchannels!=this->f_nbRef.getValue())
+        {
+            if(this->f_printLog.getValue()) std::cout<<this->getName()<<" changed nbref according to nbChannels: "<<nbchannels<<std::endl;
+            this->f_nbRef.setValue(nbchannels);
+        }
     }
 
 protected:

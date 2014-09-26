@@ -93,13 +93,13 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         // retrieve data
         raImage in(This->image);
         if(in->isEmpty())  { This->serr<<"Image not found"<<This->sendl; return; }
-//        const typename ImageTypes::CImgT& inimg = in->getCImg(0);  // suppose time=0
+        //        const typename ImageTypes::CImgT& inimg = in->getCImg(0);  // suppose time=0
 
         // init dist
         typename DiffusionShapeFunction::imCoord dim = in->getDimensions(); dim[ImageTypes::DIMENSION_S]=dim[ImageTypes::DIMENSION_T]=1;
 
         waDist distData(This->f_distances);         distData->setDimensions(dim);
-//        typename DistTypes::CImgT& dist = distData->getCImg();
+        //        typename DistTypes::CImgT& dist = distData->getCImg();
 
         // init indices and weights images
         unsigned int nbref=This->f_nbRef.getValue();        dim[ImageTypes::DIMENSION_S]=nbref;
@@ -190,8 +190,6 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class DiffusionShapeFunction>
     static void initTemp(DiffusionShapeFunction* This, const unsigned index)
     {
-        //typedef typename DiffusionShapeFunction::DistT DistT;
-
         // retrieve data
         typename DiffusionShapeFunction::raImage in(This->image);
         typename DiffusionShapeFunction::raTransform inT(This->transform);
@@ -212,14 +210,29 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
             typename DiffusionShapeFunction::Coord p = inT->toImageInt(parent[i]);
             if(in->isInside(p[0],p[1],p[2])) dist(p[0],p[1],p[2])=(i==index)?DiffusionShapeFunction::MAXTEMP:0;
         }
+
+        if(index<This->nbBoundaryConditions.getValue())
+        {
+            typename DiffusionShapeFunction::raDist bcData(This->f_boundaryConditions[index]);
+            if(!bcData->isEmpty())
+            {
+                const  typename DiffusionShapeFunction::DistTypes::CImgT& bc = bcData->getCImg();
+                cimg_foroff(bc,off)
+                        if(bc[off]>=0)
+                        dist[off]=bc[off];
+            }
+        }
+
     }
 
 
     template<class DiffusionShapeFunction>
-    static double GaussSeidelStep(DiffusionShapeFunction* This) //, const CImg<typename DiffusionShapeFunction::DistT>& stencil
+    static double GaussSeidelStep(DiffusionShapeFunction* This, const unsigned index) //, const CImg<typename DiffusionShapeFunction::DistT>& stencil
     {
+        typedef typename DiffusionShapeFunction::DistT DistT;
+
         // laplacian stencil
-        CImg<typename DiffusionShapeFunction::DistT> stencil(3,3,3);
+        CImg<DistT> stencil(3,3,3);
         stencil.fill(0);
         stencil(1,1,1)=-6.0;
         stencil(0,1,1)=stencil(2,1,1)=stencil(1,0,1)=stencil(1,2,1)=stencil(1,1,0)=stencil(1,1,2)=1.0;
@@ -229,11 +242,23 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         unsigned int ox=0.5*(stencil.width()-1),oy=0.5*(stencil.height()-1),oz=0.5*(stencil.depth()-1);
         unsigned int border=std::max(ox,std::max(oy,oz));
 
+        const  typename DiffusionShapeFunction::DistTypes::CImgT* bc = NULL;
+        if(index<This->nbBoundaryConditions.getValue())
+        {
+            typename DiffusionShapeFunction::raDist bcData(This->f_boundaryConditions[index]);
+            if(!bcData->isEmpty()) bc = &(bcData->getCImg());
+        }
+
         double res=0; // return maximum absolute change
+
+//#ifdef USING_OMP_PRAGMAS
+//        #pragma omp parallel for
+//#endif
         cimg_for_insideXYZ(dist,x,y,z,border)
                 if(dist(x,y,z)>0 && dist(x,y,z)<1)
+                if(!bc || (*bc)(x,y,z)==(DistT)-1)
         {
-            typename DiffusionShapeFunction::DistT val=0;
+            DistT val=0;
             cimg_forXYZ(stencil,dx,dy,dz)
                     if(stencil(dx,dy,dz))
                     if(dx!=(int)ox || dy!=(int)oy || dz!=(int)oz)
@@ -254,7 +279,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     * weights are based on the (biased) distance : w= e(-d'²/sigma²) with d'=d/min(stiffness)
     * distances must be initialized to 1 or 0 at constrained pixels, to -1 outside, and between 0 and 1 elsewhere
     */
-/*
+    /*
     template<typename real,typename T>
     real GaussSeidelDiffusionStep (CImg<real>& distances, const sofa::defaulttype::Vec<3,real>& voxelsize, const CImg<T>* biasFactor=NULL)
     {
@@ -330,6 +355,9 @@ public:
     typedef typename Inherit::raDist raDist;
     typedef typename Inherit::waDist waDist;
     Data< DistTypes > f_distances;
+    Data<unsigned int> nbBoundaryConditions;
+    helper::vector<Data<DistTypes>*> f_boundaryConditions;
+
 
     typedef typename Inherit::IndT IndT;
     typedef typename Inherit::IndTypes IndTypes;
@@ -355,6 +383,8 @@ public:
     {
         Inherit::init();
 
+        createBoundaryConditionsData();
+
         // init weight and indice image
         DiffusionShapeFunctionSpecialization<ImageTypes::label>::init( this );
 
@@ -367,9 +397,14 @@ public:
                     DiffusionShapeFunctionSpecialization<ImageTypes::label>::initTemp(this,i);
 
                     double res=this->tolerance.getValue();
+                    unsigned int nbit=0;
                     for(unsigned int it=0; it<this->iterations.getValue(); it++)
                         if(res>=this->tolerance.getValue())
-                            res = DiffusionShapeFunctionSpecialization<ImageTypes::label>::GaussSeidelStep(this);
+                        {
+                            res = DiffusionShapeFunctionSpecialization<ImageTypes::label>::GaussSeidelStep(this,i);
+                            nbit++;
+                        }
+                    if(this->f_printLog.getValue()) std::cout<<this->getName()<<": dof "<<i<<": performed "<<nbit<<" iterations, residual="<<res<<std::endl;
 
                     DiffusionShapeFunctionSpecialization<ImageTypes::label>::updateWeights(this,i);
                 }
@@ -425,10 +460,40 @@ public:
         }
     }
 
+
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    {
+        const char* p = arg->getAttribute(nbBoundaryConditions.getName().c_str());
+        if (p)
+        {
+            std::string nbStr = p;
+            sout << "parse: setting nbBoundaryConditions="<<nbStr<<sendl;
+            nbBoundaryConditions.read(nbStr);
+            createBoundaryConditionsData();
+        }
+        Inherit1::parse(arg);
+    }
+
+    /// Assign the field values stored in the given map of name -> value pairs
+    void parseFields ( const std::map<std::string,std::string*>& str )
+    {
+        std::map<std::string,std::string*>::const_iterator it = str.find(nbBoundaryConditions.getName());
+        if (it != str.end() && it->second)
+        {
+            std::string nbStr = *it->second;
+            sout << "parseFields: setting nbBoundaryConditions="<<nbStr<<sendl;
+            nbBoundaryConditions.read(nbStr);
+            createBoundaryConditionsData();
+        }
+        Inherit1::parseFields(str);
+    }
+
 protected:
     DiffusionShapeFunction()
         :Inherit()
         , f_distances(initData(&f_distances,DistTypes(),"distances",""))
+        , nbBoundaryConditions(initData(&nbBoundaryConditions,(unsigned int)0,"nbBoundaryConditions","Number of boundary condition images provided"))
         , f_clearData(initData(&f_clearData,true,"clearData","clear diffusion image after computation?"))
         , method ( initData ( &method,"method","method" ) )
         , solver ( initData ( &solver,"solver","solver (param)" ) )
@@ -455,11 +520,45 @@ protected:
 
         biasDistances.setGroup("parameters");
 
+        createBoundaryConditionsData();
+
     }
 
     virtual ~DiffusionShapeFunction()
     {
+        deleteInputDataVector(f_boundaryConditions);
 
+    }
+
+
+
+    template<class t>
+    void createInputDataVector(unsigned int nb, helper::vector< Data<t>* >& vf, std::string name, std::string help)
+    {
+        vf.reserve(nb);
+        for (unsigned int i=vf.size(); i<nb; i++)
+        {
+            std::ostringstream oname; oname << name << (1+i); std::string name_i = oname.str();
+
+            Data<t>* d = new Data<t>();
+            d->setName(name_i);
+            d->setHelpMsg(help.c_str());
+            d->setReadOnly(true);
+
+            vf.push_back(d);
+            this->addData(d);
+        }
+    }
+    template<class t>
+    void deleteInputDataVector(helper::vector< Data<t>* >& vf)
+    {
+        for (unsigned int i=0; i<vf.size(); ++i) delete vf[i];
+        vf.clear();
+    }
+
+    void createBoundaryConditionsData()
+    {
+        createInputDataVector(this->nbBoundaryConditions.getValue(), f_boundaryConditions, "boundaryConditions", "boundaryConditions");
     }
 };
 
