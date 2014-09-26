@@ -164,6 +164,7 @@ private:
 #endif
 #ifdef SOFA_HAVE_PLUGIN_IMAGE
     Data<bool> generateShapeFunction;
+    Data<SReal> voxelSize;
 #endif
 
 };
