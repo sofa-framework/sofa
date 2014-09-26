@@ -46,14 +46,15 @@ public:
     typedef typename Inherit::CollisionModel2 CollisionModel2;
     typedef typename Inherit::Intersection Intersection;
 
-friend class Inherit::Inherit;
+    friend class BaseContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>;
+
 
 protected:
-
 
     CompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
     {}
+
 
     typename node_type::SPtr create_node()
     {

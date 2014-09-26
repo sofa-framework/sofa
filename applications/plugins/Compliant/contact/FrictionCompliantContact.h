@@ -33,7 +33,7 @@ public:
     typedef typename Inherit::CollisionModel2 CollisionModel2;
     typedef typename Inherit::Intersection Intersection;
 
-	friend class Inherit::Inherit;
+    friend class BaseContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>;
 
     Data< SReal > mu; ///< friction coef
     Data< bool > horizontalConeProjection; ///< should the cone projection be horizontal? By default a regular orthogonal cone projection is performed.

@@ -452,6 +452,8 @@ protected:
 
 public:
 
+#define BASE_CONTACT_POOL_SIZE 7000
+
     /// This method accesses to the contact constructor. Therefore,
     /// all child classes should have their creator accessible
     /// (ie. made public or be friend with this method). Except for
@@ -475,17 +477,17 @@ public:
         // This test is here juste in case an inherited contact is too
         // big for the pool. It have to be identical to the pool size
         // as defined in getPool.
-        BOOST_STATIC_ASSERT( sizeof( RealContact ) <= 5000 );
+        BOOST_STATIC_ASSERT( sizeof( RealContact ) <= BASE_CONTACT_POOL_SIZE );
 
         /// Get the pool and make the allocation.
-        auto pool = getPool();
+        boost::pool<>* pool = getPool();
         void * buffer = pool->malloc();
         return new ( buffer ) RealContact( model1, model2, inter );
     }
 
     static void operator delete( void* buffer, size_t sz )
     {
-        auto pool = getPool();
+        boost::pool<>* pool = getPool();
         pool->free( buffer );
     }
 
@@ -497,7 +499,7 @@ public:
 
     static boost::pool<>* getPool()
     {
-        static boost::pool<>* storage = new boost::pool<>( 5000 );
+        static boost::pool<>* storage = new boost::pool<>( BASE_CONTACT_POOL_SIZE );
         return storage;
     }
 

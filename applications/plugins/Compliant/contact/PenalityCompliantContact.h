@@ -34,7 +34,7 @@ public:
     typedef typename Inherit::CollisionModel2 CollisionModel2;
     typedef typename Inherit::Intersection Intersection;
 
-	friend class Inherit;
+    friend class BaseContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>;
 
     Data< SReal > stiffness;
 
