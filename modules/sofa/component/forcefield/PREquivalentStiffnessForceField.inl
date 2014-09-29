@@ -306,33 +306,33 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
 
     }
 
-	displaceFrames(m_pos, displaced, dx, epsilon);
-	std::cout << displaced << std::endl;
+//	displaceFrames(m_pos, displaced, dx, epsilon);
+//	std::cout << displaced << std::endl;
 
-	VecDeriv fq(dx.size()), fqdq(dx.size());
-	helper::vector<Vec6> testDf(dx.size());
+//	VecDeriv fq(dx.size()), fqdq(dx.size());
+//	helper::vector<Vec6> testDf(dx.size());
 
-	computeForce(m_pos, m_restPos, fq);
-	computeForce(displaced, m_restPos, fqdq);
+//	computeForce(m_pos, m_restPos, fq);
+//	computeForce(displaced, m_restPos, fqdq);
 
-//    fq = dataFq.getValue();
-//    fqdq = dataFqdq.getValue();
+////    fq = dataFq.getValue();
+////    fqdq = dataFqdq.getValue();
 
-	for(size_t n = 0 ; n < dx.size() ; ++n)
-	{
-		testDf[n] = ((fqdq[n].getVAll() - fq[n].getVAll())*kFact)/epsilon;
-	}
+//	for(size_t n = 0 ; n < dx.size() ; ++n)
+//	{
+//		testDf[n] = ((fqdq[n].getVAll() - fq[n].getVAll())*kFact)/epsilon;
+//	}
 
 
-	std::cout << "Df" << std::endl;
-	for(size_t n = 0 ; n < nFrames; ++n)
-	{
-		std::cout << n << " : " << dfdq[n] << std::endl;
-		std::cout << n << " : " << testDf[n] << std::endl;
-		std::cout << std::endl;
-	}
-	std::cout << std::endl;
-	std::cout << std::endl;
+//	std::cout << "Df" << std::endl;
+//	for(size_t n = 0 ; n < nFrames; ++n)
+//	{
+//		std::cout << n << " : " << dfdq[n] << std::endl;
+//		std::cout << n << " : " << testDf[n] << std::endl;
+//		std::cout << std::endl;
+//	}
+//	std::cout << std::endl;
+//	std::cout << std::endl;
 
 //    m_K.clear();
 

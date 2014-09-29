@@ -260,16 +260,16 @@ public:
 
 	virtual void addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& /*f1*/, DataVecDeriv2& /*f2*/, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& /*v1*/, const DataVecDeriv2& /*v2*/)
     {
-		std::cout << "x1 " << x1 << std::endl;
-		std::cout << "x2 " << x2 << std::endl;
-		std::cout << std::endl;
+//		std::cout << "x1 " << x1 << std::endl;
+//		std::cout << "x2 " << x2 << std::endl;
+//		std::cout << std::endl;
     }
 
 	virtual void addDForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& /*df1*/, DataVecDeriv2& /*df2*/, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)
     {
-		std::cout << "dx1 " << dx1 << std::endl;
-		std::cout << "dx2 " << dx2 << std::endl;
-		std::cout << std::endl;
+//		std::cout << "dx1 " << dx1 << std::endl;
+//		std::cout << "dx2 " << dx2 << std::endl;
+//		std::cout << std::endl;
     }
 
     virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
