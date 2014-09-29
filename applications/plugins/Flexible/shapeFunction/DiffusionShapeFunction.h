@@ -185,8 +185,21 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
 
+    /// normalize weights to partition unity
+    template<class DiffusionShapeFunction>
+    static void normalizeWeights(DiffusionShapeFunction* This)
+    {
+        typename DiffusionShapeFunction::waDist weightData(This->f_w);                 typename DiffusionShapeFunction::DistTypes::CImgT& weights = weightData->getCImg();
+        cimg_forXYZ(weights,x,y,z)
+        {
+            typename DiffusionShapeFunction::DistT totW=0;
+            cimg_forC(weights,c) totW+=weights(x,y,z,c);
+            if(totW) cimg_forC(weights,c) weights(x,y,z,c)/=totW;
+        }
+    }
 
 
+    /// init temperature according to dof position (to have interpolating weights) and provided boundary condition images
     template<class DiffusionShapeFunction>
     static void initTemp(DiffusionShapeFunction* This, const unsigned index)
     {
@@ -223,54 +236,6 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
             }
         }
 
-    }
-
-
-    template<class DiffusionShapeFunction>
-    static double GaussSeidelStep(DiffusionShapeFunction* This, const unsigned index) //, const CImg<typename DiffusionShapeFunction::DistT>& stencil
-    {
-        typedef typename DiffusionShapeFunction::DistT DistT;
-
-        // laplacian stencil
-        CImg<DistT> stencil(3,3,3);
-        stencil.fill(0);
-        stencil(1,1,1)=-6.0;
-        stencil(0,1,1)=stencil(2,1,1)=stencil(1,0,1)=stencil(1,2,1)=stencil(1,1,0)=stencil(1,1,2)=1.0;
-
-        typename DiffusionShapeFunction::waDist distData(This->f_distances);     typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
-
-        unsigned int ox=0.5*(stencil.width()-1),oy=0.5*(stencil.height()-1),oz=0.5*(stencil.depth()-1);
-        unsigned int border=std::max(ox,std::max(oy,oz));
-
-        const  typename DiffusionShapeFunction::DistTypes::CImgT* bc = NULL;
-        if(index<This->nbBoundaryConditions.getValue())
-        {
-            typename DiffusionShapeFunction::raDist bcData(This->f_boundaryConditions[index]);
-            if(!bcData->isEmpty()) bc = &(bcData->getCImg());
-        }
-
-        double res=0; // return maximum absolute change
-
-//#ifdef USING_OMP_PRAGMAS
-//        #pragma omp parallel for
-//#endif
-        cimg_for_insideXYZ(dist,x,y,z,border)
-                if(dist(x,y,z)>0 && dist(x,y,z)<1)
-                if(!bc || (*bc)(x,y,z)==(DistT)-1)
-        {
-            DistT val=0;
-            cimg_forXYZ(stencil,dx,dy,dz)
-                    if(stencil(dx,dy,dz))
-                    if(dx!=(int)ox || dy!=(int)oy || dz!=(int)oz)
-            {
-                if(dist(x+dx-ox,y+dy-oy,z+dz-oz)!=-1.0) val+=dist(x+dx-ox,y+dy-oy,z+dz-oz)*stencil(dx,dy,dz);
-                else val+=dist(x,y,z)*stencil(dx,dy,dz);  // neumann boundary conditions
-            }
-            val = -val/stencil(ox,oy,oz);
-            if(res<fabs(val-dist(x,y,z))) res=fabs(val-dist(x,y,z));
-            dist(x,y,z)=val;
-        }
-        return res;
     }
 
 
@@ -321,6 +286,53 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         }
         return res;
     }*/
+
+    template<class DiffusionShapeFunction>
+    static double GaussSeidelStep(DiffusionShapeFunction* This, const unsigned index) //, const CImg<typename DiffusionShapeFunction::DistT>& stencil
+    {
+        typedef typename DiffusionShapeFunction::DistT DistT;
+
+        // laplacian stencil
+        CImg<DistT> stencil(3,3,3);
+        stencil.fill(0);
+        stencil(1,1,1)=-6.0;
+        stencil(0,1,1)=stencil(2,1,1)=stencil(1,0,1)=stencil(1,2,1)=stencil(1,1,0)=stencil(1,1,2)=1.0;
+
+        typename DiffusionShapeFunction::waDist distData(This->f_distances);     typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
+
+        unsigned int ox=0.5*(stencil.width()-1),oy=0.5*(stencil.height()-1),oz=0.5*(stencil.depth()-1);
+        unsigned int border=std::max(ox,std::max(oy,oz));
+
+        const  typename DiffusionShapeFunction::DistTypes::CImgT* bc = NULL;
+        if(index<This->nbBoundaryConditions.getValue())
+        {
+            typename DiffusionShapeFunction::raDist bcData(This->f_boundaryConditions[index]);
+            if(!bcData->isEmpty()) bc = &(bcData->getCImg());
+        }
+
+        double res=0; // return maximum absolute change
+
+        //#ifdef USING_OMP_PRAGMAS
+        //        #pragma omp parallel for
+        //#endif
+        cimg_for_insideXYZ(dist,x,y,z,border)
+                if(dist(x,y,z)>0 && dist(x,y,z)<1)
+                if(!bc || (*bc)(x,y,z)==(DistT)-1)
+        {
+            DistT val=0;
+            cimg_forXYZ(stencil,dx,dy,dz)
+                    if(stencil(dx,dy,dz))
+                    if(dx!=(int)ox || dy!=(int)oy || dz!=(int)oz)
+            {
+                if(dist(x+dx-ox,y+dy-oy,z+dz-oz)!=-1.0) val+=dist(x+dx-ox,y+dy-oy,z+dz-oz)*stencil(dx,dy,dz);
+                else val+=dist(x,y,z)*stencil(dx,dy,dz);  // neumann boundary conditions
+            }
+            val = -val/stencil(ox,oy,oz);
+            if(res<fabs(val-dist(x,y,z))) res=fabs(val-dist(x,y,z));
+            dist(x,y,z)=val;
+        }
+        return res;
+    }
 };
 
 
@@ -453,6 +465,8 @@ public:
 
 
         }
+
+        DiffusionShapeFunctionSpecialization<ImageTypes::label>::normalizeWeights( this );
 
         if(this->f_clearData.getValue())
         {
