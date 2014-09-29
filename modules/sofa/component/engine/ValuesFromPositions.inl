@@ -74,7 +74,7 @@ ValuesFromPositions<DataTypes>::ValuesFromPositions()
 {
     sofa::helper::OptionsGroup m_newoptiongroup(2,"Scalar","Vector");
     m_newoptiongroup.setSelectedItem("Scalar");
-    p_fieldType.setValue(m_newoptiongroup);
+    p_fieldType.setValue(m_newoptiongroup,true);
 
     addAlias(&f_X0,"rest_position");
 }
