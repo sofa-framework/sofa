@@ -54,8 +54,8 @@ TestEngine::TestEngine()
 
 void TestEngine::init()
 {
-    addInput(&f_numberToMultiply);
     addInput(&f_factor);
+    addInput(&f_numberToMultiply);
     addOutput(&f_result);
     setDirtyValue();
 }
@@ -70,7 +70,6 @@ void TestEngine::update()
     // Count how many times the update method is called
     counter ++;
 
-
     cleanDirty();
 
     // Get number to multiply
@@ -80,7 +79,7 @@ void TestEngine::update()
     SReal factor = f_factor.getValue();
 
     // Set result
-    f_result.setValue(number*factor);
+    f_result.setValue(number*factor,true);
    
     // Update call list
     updateCallList.push_back(this->identifier);

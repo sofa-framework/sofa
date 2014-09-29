@@ -181,6 +181,11 @@ void BaseData::update()
             m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
 #endif
         updateFromParentValue(parentBaseData);
+        // If the value is dirty clean it
+        if(this->isDirty())
+        {
+            cleanDirty();
+        }
     }
 }
 
