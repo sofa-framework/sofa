@@ -1,5 +1,5 @@
 #ifndef BULLET_CYLINDER_MODEL
-#define BULLET_Cylinder_MODEL
+#define BULLET_CYLINDER_MODEL
 
 #include <sofa/component/collision/CylinderModel.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
