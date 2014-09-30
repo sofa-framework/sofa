@@ -3,10 +3,10 @@
 #include <GL/glew.h>
 #include <QApplication>
 #include <QGLWidget>
-#include <SofaSimpleGUI/SofaScene.h>
-#include <SofaSimpleGUI/SofaGL.h>
-#include <SofaSimpleGUI/Camera.h>
-#include "QSofaScene.h"
+#include <plugins/SofaSimpleGUI/SofaScene.h>
+#include <plugins/SofaSimpleGUI/SofaGL.h>
+#include <plugins/SofaSimpleGUI/Camera.h>
+#include <plugins/SofaSimpleGUI/QSofaScene.h>
 
 using sofa::simplegui::SofaScene;
 using sofa::simplegui::SofaGL;

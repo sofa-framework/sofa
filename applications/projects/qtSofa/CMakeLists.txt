@@ -4,12 +4,10 @@ set(SOURCE_FILES
 	qtSofa.cpp
 	QSofaViewer.cpp
         QSofaMainWindow.cpp
-        QSofaScene.cpp
 )
 set(HEADER_FILES
         QSofaViewer.h
         QSofaMainWindow.h
-        QSofaScene.h
         oneTetra.h
 )
 
