@@ -118,6 +118,12 @@ def createScene(root):
     spring = StructuralAPI.RigidJointSpring( springNode, "joint", spring_body1.node, spring_body2.node, [100000,100000,100000,100000,100000,10000] )
   
   
+  
+    # from now work in float
+  
+    StructuralAPI.template_suffix = "f"
+  
+  
             
     ##### MORE COMPLEX EXAMPLE
     complexNode = root.createChild('complex')

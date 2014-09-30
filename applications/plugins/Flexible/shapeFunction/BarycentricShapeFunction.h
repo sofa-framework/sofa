@@ -48,7 +48,7 @@ Barycentric shape functions are the barycentric coordinates of points inside cel
   */
 
 template <class ShapeFunctionTypes_>
-class SOFA_Flexible_API BarycentricShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class BarycentricShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BarycentricShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));

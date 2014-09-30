@@ -77,9 +77,9 @@ void CompliantNLImplicitSolver::cleanup() {
 class AccumulateConstraintForceVisitor : public simulation::MechanicalVisitor
 {
 public:
-    simulation::MultiVecDerivId lambda;
+    core::MultiVecDerivId lambda;
 
-    AccumulateConstraintForceVisitor(const sofa::core::MechanicalParams* mparams, simulation::MultiVecDerivId lambda )
+    AccumulateConstraintForceVisitor(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId lambda )
         : simulation::MechanicalVisitor(mparams), lambda(lambda)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -134,7 +134,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(res);
+        addWriteVector(lambda);
     }
 #endif
 };
@@ -176,12 +176,12 @@ public:
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
 class MechanicalAddLagrangeForce : public simulation::MechanicalVisitor
 {
-    simulation::MultiVecDerivId res, lambdas;
+    core::MultiVecDerivId res, lambdas;
     SReal invdt;
 
 
 public:
-    MechanicalAddLagrangeForce(const sofa::core::MechanicalParams* mparams, simulation::MultiVecDerivId res, simulation::MultiVecDerivId lambdas, SReal dt )
+    MechanicalAddLagrangeForce(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res, core::MultiVecDerivId lambdas, SReal dt )
         : MechanicalVisitor(mparams), res(res), lambdas(lambdas), invdt(-1.0/dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -723,8 +723,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
             serr<<"Only full post-stabilization "<<POST_STABILIZATION_ASSEMBLY<<" can be (and will be) computed\n";
             stabilization.beginEdit()->setSelectedItem(POST_STABILIZATION_ASSEMBLY); stabilization.endEdit();
         }
-        _ck.realloc( &sop.vop, false, true );
-        post_stabilization( sop, posId, velId, true );
+        post_stabilization( sop, posId, velId, true, true );
     }
 
 }
@@ -930,7 +929,12 @@ void CompliantNLImplicitSolver::compute_forces(SolverOperations& sop, core::beha
 void CompliantNLImplicitSolver::firstGuess( SolverOperations& sop, core::MultiVecCoordId posId, core::MultiVecDerivId velId )
 {
     MultiVecDeriv f( &sop.vop, core::VecDerivId::force() ); // total force (stiffness + compliance)
+    MultiVecDeriv v( &sop.vop, velId );
     _ck.realloc( &sop.vop, false, true ); // the right part of the implicit system (c_k term)
+
+    bool useVelocity = (formulation.getValue().getSelectedId()==FORMULATION_VEL);
+
+    if( !useVelocity ) _acc.realloc( &sop.vop );
 
     // compute forces and implicit right part (c_k term, homogeneous to a momentum)
     // warning: must be call before assemblyVisitor since the mapping's geometric
@@ -963,21 +967,27 @@ void CompliantNLImplicitSolver::firstGuess( SolverOperations& sop, core::MultiVe
     {
         scoped::timer step("dynamics system solve");
 
-        if( warm_start.getValue() ) x = current;
+        if( warm_start.getValue() ) get_state( x, sys, useVelocity ? velId : _acc.id() );
         else x = vec::Zero( sys.size() );
 
         rhs_dynamics( sop, rhs, sys, _ck, posId, velId );
 
         kkt->solve(x, sys, rhs);
 
-//            if( debug.getValue() ) {
-//                std::cerr << "dynamics rhs:" << std::endl
-//                          << rhs.transpose() << std::endl
-//                          << "solution:" << std::endl
-//                          << x.transpose() << std::endl;
-//            }
-
-        set_state( sys, x, velId );
+        switch( formulation.getValue().getSelectedId() )
+        {
+        case FORMULATION_VEL: // p+ = p- + h.v
+            set_state( sys, x, velId ); // set v and lambda
+            break;
+        case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
+            set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+            v.peq( _acc.id() );
+            break;
+        case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
+            set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+            v.peq( _acc.id(), sop.mparams().dt() );
+            break;
+        }
 
 //            std::cerr<<"CompliantNLImplicitSolver::firstGuess lambdas : "<< x.tail(sys.n).transpose() <<std::endl;
 

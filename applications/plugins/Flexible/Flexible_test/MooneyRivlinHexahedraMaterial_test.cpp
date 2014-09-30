@@ -33,8 +33,6 @@
 #include <sofa/component/forcefield/QuadPressureForceField.h>
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
-#include "../material/HookeForceField.h"
-#include "../material/NeoHookeanForceField.h"
 #include "../material/MooneyRivlinForceField.h"
 #include <sofa/component/container/MechanicalObject.h>
 
@@ -86,10 +84,6 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
 	size_t vIndex;
     // Strain node for the force field
     simulation::Node::SPtr strainNode;
-   
-
-     // Define the path for the scenes directory
-    #define ADD_SOFA_TEST_SCENES_PATH( x ) sofa_tostring(SOFA_TEST_SCENES_PATH)sofa_tostring(x) 
 
     // Create the context for the scene
     void SetUp()
@@ -170,8 +164,7 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
             {
                 // Set the pressure on the top part
                 Real pressure= pressureArray[j][i];
-                if(debug)
-                std::cout << "pressure = " << pressure << std::endl;
+
                 pressureForceField.get()->pressure=Coord(pressure,0,0);
 
                 // Reset simulation
@@ -192,15 +185,22 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
                 // Get the simulated final position of that vertex
                 Coord p1=(*(tractionStruct.dofs.get()->getX()))[vIndex];
 
-                if(debug) // Print the coordinates of the initial point p0 and the final point p1 (p0 after traction)
+                /*if(debug) // Print the coordinates of the initial point p0 and the final point p1 (p0 after traction)
                 {
                     std::cout << "p0 = " << p0 << std::endl;
                     std::cout << "p1 = " << p1 << std::endl;
-                }
+                }*/
                     
                 // Compute longitudinal deformation
                 Real longitudinalStretch=p1[0]/p0[0];
-                
+
+                // Test if longitudinal stretch is a nan value
+                if(longitudinalStretch != longitudinalStretch)
+                {
+                    ADD_FAILURE() << "Error longitudinal stretch is NAN" << std::endl;
+                    return false;
+                }
+
                 // test the longitudinal deformation
                 if(debug)
                 std::cout << "precision longitudinal stretch = " << fabs((longitudinalStretch-s1Array[j][i])/(s1Array[j][i])) << std::endl;
@@ -219,6 +219,13 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
                 p1[1]=0;
                 Real radius=p0.norm2();
                 Real radialStretch= dot(p0,p1)/radius;
+
+                // Test if radial stretch is a nan value
+                if(radialStretch != radialStretch)
+                {
+                    ADD_FAILURE() << "Error radial stretch is NAN" << std::endl;
+                    return false;
+                }
 
                 // test the radial deformation
                 if(debug)
@@ -290,7 +297,7 @@ TYPED_TEST_CASE(MooneyRivlinHexahedraMaterial_test, DataTypes);
 TYPED_TEST( MooneyRivlinHexahedraMaterial_test , test_MR_Hexahedra_InTraction )
 {
     ASSERT_TRUE( this->testHexahedraInTraction(&sofa::MooneyRivlinHexahedraMaterial_test<TypeParam>::addMooneyRivlinForceField,pressureMRArray,s1MRArray, s2MRArray,
-                                                TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
+                                                TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,true));
 }
 
 

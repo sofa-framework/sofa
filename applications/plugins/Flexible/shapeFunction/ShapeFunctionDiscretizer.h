@@ -54,7 +54,7 @@ using cimg_library::CImg;
 
 
 template <class ImageTypes_>
-class SOFA_Flexible_API ShapeFunctionDiscretizer : public core::DataEngine
+class ShapeFunctionDiscretizer : public core::DataEngine
 {
 public:
     typedef core::DataEngine Inherited;

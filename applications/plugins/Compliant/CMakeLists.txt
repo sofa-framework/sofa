@@ -36,8 +36,9 @@ set(HEADER_FILES
     numericalsolver/PreconditionedCgSolver.h
 
     preconditioner/BasePreconditioner.h
-    preconditioner/LDLTPreconditioner.h
+    preconditioner/CompliantLDLTPreconditioner.h
     #preconditioner/IncompleteCholeskyPreconditioner.h
+    preconditioner/CompliantJacobiPreconditioner.h
 
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
@@ -46,6 +47,7 @@ set(HEADER_FILES
     odesolver/CompliantImplicitSolver.h
     odesolver/ConstantCompliantImplicitSolver.h
     odesolver/CompliantNLImplicitSolver.h
+    odesolver/CompliantPostStabilizationAnimationLoop.h
 
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
@@ -63,6 +65,7 @@ set(HEADER_FILES
     constraint/Restitution.h
     constraint/DampingValue.h
     constraint/OffsettedConstraintValue.h
+    constraint/HolonomicConstraintValue.h
 
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -125,8 +128,9 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
 
-    preconditioner/LDLTPreconditioner.cpp
+    preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
+    preconditioner/CompliantJacobiPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp
@@ -134,6 +138,7 @@ set(SOURCE_FILES
     odesolver/CompliantImplicitSolver.cpp
     odesolver/ConstantCompliantImplicitSolver.cpp
     odesolver/CompliantNLImplicitSolver.cpp
+    odesolver/CompliantPostStabilizationAnimationLoop.cpp
 
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
@@ -143,6 +148,7 @@ set(SOURCE_FILES
     constraint/Restitution.cpp
     constraint/DampingValue.cpp
     constraint/OffsettedConstraintValue.cpp
+    constraint/HolonomicConstraintValue.cpp
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp

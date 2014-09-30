@@ -65,7 +65,7 @@ struct ShapeFunctionInternalData
   */
 
 template <class TShapeFunctionTypes>
-class SOFA_Flexible_API BaseShapeFunction : public virtual core::objectmodel::BaseObject
+class BaseShapeFunction : public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE(BaseShapeFunction, TShapeFunctionTypes) , objectmodel::BaseObject);

@@ -21,7 +21,7 @@
 namespace sofa {
 
 namespace simulation {
-struct AssemblyVisitor;
+class AssemblyVisitor;
 
 namespace common {
 class MechanicalOperations;
@@ -33,7 +33,7 @@ class VectorOperations;
 namespace component {
 
 namespace linearsolver {
-struct AssembledSystem;
+class AssembledSystem;
 }
 
 
@@ -327,7 +327,7 @@ public:
     /// @warning: the contacts points and normals are not updated, so the time step needs to be small with contacts
     virtual void post_stabilization( SolverOperations& sop,
                              core::MultiVecCoordId posId, core::MultiVecDerivId velId,
-                             bool fullAssembly );
+                             bool fullAssembly, bool realloc=false );
 
 protected:
 

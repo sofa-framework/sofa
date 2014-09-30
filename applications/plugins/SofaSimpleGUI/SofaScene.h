@@ -6,8 +6,6 @@
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
-//#include <sofa/simulation/tree/TreeSimulation.h>
-//typedef sofa::simulation::tree::TreeSimulation SofaSimulation;
 
 namespace sofa {
 using simulation::Node;

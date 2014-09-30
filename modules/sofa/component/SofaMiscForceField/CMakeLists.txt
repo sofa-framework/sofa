@@ -11,6 +11,8 @@ set(HEADER_FILES
     ../forcefield/LennardJonesForceField.inl 
     ../forcefield/WashingMachineForceField.h 
     ../forcefield/WashingMachineForceField.inl 
+    ../forcefield/PREquivalentStiffnessForceField.h
+    ../forcefield/PREquivalentStiffnessForceField.inl
     ../interactionforcefield/GearSpringForceField.h 
     ../interactionforcefield/GearSpringForceField.inl 
     ../interactionforcefield/LineBendingSprings.h 
@@ -25,6 +27,7 @@ set(SOURCE_FILES
     ../mass/MeshMatrixMass.cpp 
     ../forcefield/LennardJonesForceField.cpp 
     ../forcefield/WashingMachineForceField.cpp 
+    ../forcefield/PREquivalentStiffnessForceField.cpp
     ../interactionforcefield/GearSpringForceField.cpp 
     ../interactionforcefield/LineBendingSprings.cpp
  

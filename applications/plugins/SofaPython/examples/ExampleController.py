@@ -21,7 +21,7 @@ def testNodes(node):
 	abel = eve.createChild('Abel')
 
 	#you can animate simulation directly by uncommenting the following line:
-	#node.animate=truee
+	#node.animate=true
 
 	return 0
 
