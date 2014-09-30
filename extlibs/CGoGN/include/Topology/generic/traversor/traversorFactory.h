@@ -24,7 +24,7 @@
 
 #ifndef __TRAVERSORFACTORY_H__
 #define __TRAVERSORFACTORY_H__
-
+#include "traversorGen.h"
 namespace CGoGN
 {
 

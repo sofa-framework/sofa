@@ -36,7 +36,7 @@
 #include <map>
 
 #ifdef USING_OMP_PRAGMAS
-    #include <omp.h>
+#include <omp.h>
 #endif
 
 #include <sofa/component/loader/MeshObjLoader.h>
@@ -75,7 +75,6 @@ ClosestPointRegistrationForceField<DataTypes>::ClosestPointRegistrationForceFiel
     , projectToPlane(initData(&projectToPlane,true,"projectToPlane","project closest points in the plane defined by the normal."))
     , rejectBorders(initData(&rejectBorders,true,"rejectBorders","ignore border vertices."))
     , rejectOutsideBbox(initData(&rejectOutsideBbox,false,"rejectOutsideBbox","ignore source points outside bounding box of target points."))
-    , springs(initData(&springs,"spring","index, stiffness, damping"))
     , sourceTriangles(initData(&sourceTriangles,"sourceTriangles","Triangles of the source mesh."))
     , sourceNormals(initData(&sourceNormals,"sourceNormals","Normals of the source mesh."))
     , targetPositions(initData(&targetPositions,"position","Vertices of the target mesh."))
@@ -97,11 +96,7 @@ ClosestPointRegistrationForceField<DataTypes>::~ClosestPointRegistrationForceFie
 template <class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::reinit()
 {
-    for (unsigned int i=0;i<springs.getValue().size();++i)
-    {
-        (*springs.beginEdit())[i].ks = (Real) ks.getValue();
-        (*springs.beginEdit())[i].kd = (Real) kd.getValue();
-    }
+
 }
 
 template <class DataTypes>
@@ -120,11 +115,6 @@ void ClosestPointRegistrationForceField<DataTypes>::init()
     }
     // Get source normals
     if(!sourceNormals.getValue().size()) serr<<"normals of the source model not found"<<sendl;
-
-    // add a spring for every input point
-    const VecCoord& x = *this->mstate->getX(); 			//RDataRefVecCoord x(*this->getMState()->read(core::ConstVecCoordId::position()));
-    this->clearSprings(x.size());
-    for(unsigned int i=0;i<x.size();i++) this->addSpring(i, (Real) ks.getValue(),(Real) kd.getValue());
 }
 
 template<class DataTypes>
@@ -202,39 +192,39 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
     // closest target points from source points
     if(blendingFactor.getValue()<1) {
 
-    //unsigned int count=0;
+        //unsigned int count=0;
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+#pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbs;i++)
             if(rejectOutsideBbox.getValue() && !targetBbox.contains(x[i])) sourceIgnored[i]=true;
-        else
-        {
-            Real dx=(previousX[i]-x[i]).norm();
-            //  closest point caching [cf. Simon96 thesis]
-            if(dx>=cacheDist[i] || closestSource[i].size()==0)
+            else
             {
-                targetKdTree.getNClosest(closestSource[i],x[i],this->cacheSize.getValue() );
-                typename distanceSet::iterator it0=closestSource[i].begin(), it1=it0; it1++;
-                typename distanceSet::reverse_iterator itn=closestSource[i].rbegin();
-                cacheDist[i] =((itn->first)-(it0->first))*(Real)0.5;
-                cacheDist2[i]=((it1->first)-(it0->first))*(Real)0.5;
-                previousX[i]=x[i];
+                Real dx=(previousX[i]-x[i]).norm();
+                //  closest point caching [cf. Simon96 thesis]
+                if(dx>=cacheDist[i] || closestSource[i].size()==0)
+                {
+                    targetKdTree.getNClosest(closestSource[i],x[i],this->cacheSize.getValue() );
+                    typename distanceSet::iterator it0=closestSource[i].begin(), it1=it0; it1++;
+                    typename distanceSet::reverse_iterator itn=closestSource[i].rbegin();
+                    cacheDist[i] =((itn->first)-(it0->first))*(Real)0.5;
+                    cacheDist2[i]=((it1->first)-(it0->first))*(Real)0.5;
+                    previousX[i]=x[i];
+                }
+                else if(dx>=cacheDist2[i]) // in the cache -> update N-1 distances
+                {
+                    targetKdTree.updateCachedDistances(closestSource[i],x[i]);
+                    //count++;
+                }
             }
-            else if(dx>=cacheDist2[i]) // in the cache -> update N-1 distances
-            {
-                targetKdTree.updateCachedDistances(closestSource[i],x[i]);
-                //count++;
-            }
-        }
-    //std::cout<<(Real)count*(Real)100./(Real)nbs<<" % cached"<<std::endl;
+        //std::cout<<(Real)count*(Real)100./(Real)nbs<<" % cached"<<std::endl;
     }
     // closest source points from target points
     if(blendingFactor.getValue()>0)
     {
         initSource();
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+#pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbt;i++)
             sourceKdTree.getNClosest(closestTarget[i],tp[i],1);
@@ -242,9 +232,9 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
 
 
     // prune outliers
-//    if(rejectOutsideBbox.getValue()) {
-//        for(unsigned int i=0;i<nbt;i++) if(closestTarget[i].size()) if(!targetBbox.contains(x[closestTarget[i].begin()->second])) targetIgnored[i]=true;
-//    }
+    //    if(rejectOutsideBbox.getValue()) {
+    //        for(unsigned int i=0;i<nbt;i++) if(closestTarget[i].size()) if(!targetBbox.contains(x[closestTarget[i].begin()->second])) targetIgnored[i]=true;
+    //    }
     if(outlierThreshold.getValue()!=0) {
         Real mean=0,stdev=0,count=0;
         for(unsigned int i=0;i<nbs;i++) if(closestSource[i].size()) {count++; Real d=closestSource[i].begin()->first; stdev+=d*d; mean+=d; }
@@ -280,9 +270,9 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
     ReadAccessor< Data< VecCoord > > tn(targetNormals);
     ReadAccessor< Data< VecCoord > > tp(targetPositions);
 
-    const vector<Spring>& s= this->springs.getValue();
-    this->dfdx.resize(s.size());
-    this->closestPos.resize(s.size());
+    unsigned int nb = x.size();
+
+    this->closestPos.resize(nb);
 
     updateClosestPoints();
 
@@ -295,12 +285,12 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
     Real projF=((Real)1.-attrF);
 
     if(tp.size()==0)
-        for (unsigned int i=0; i<s.size(); i++)
+        for (unsigned int i=0; i<nb; i++)
             closestPos[i]=x[i];
-    else {
-
+    else
+    {
         // count number of attractors
-        cnt.resize(s.size()); cnt.fill(0);  if(attrF>0) for (unsigned int i=0; i<tp.size(); i++) if(!targetIgnored[i]) cnt[closestTarget[i].begin()->second]++;
+        cnt.resize(nb); cnt.fill(0);  if(attrF>0) for (unsigned int i=0; i<tp.size(); i++) if(!targetIgnored[i]) cnt[closestTarget[i].begin()->second]++;
 
         if(theCloserTheStiffer.getValue())
         {
@@ -317,35 +307,53 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
         // compute targetpos = projF*closestto + attrF* sum closestfrom / count
 
         // projection to point or plane
-        if(projF>0) {
-            for (unsigned int i=0; i<s.size(); i++)
-                if(!sourceIgnored[i]) {
+        if(projF>0)
+        {
+            for (unsigned int i=0; i<nb; i++)
+                if(!sourceIgnored[i])
+                {
                     unsigned int id=closestSource[i].begin()->second;
                     if(projectToPlane.getValue() && tn.size()!=0)	closestPos[i]=(x[i]+tn[id]*dot(tp[id]-x[i],tn[id]))*projF;
                     else closestPos[i]=tp[id]*projF;
                     if(!cnt[i]) closestPos[i]+=x[i]*attrF;
                 }
-                else {
+                else
+                {
                     closestPos[i]=x[i]*projF;
                     if(!cnt[i]) closestPos[i]+=x[i]*attrF;
                 }
         }
-        else for (unsigned int i=0; i<s.size(); i++) { if(!cnt[i]) closestPos[i]=x[i]; else closestPos[i].fill(0); }
+        else for (unsigned int i=0; i<nb; i++) { if(!cnt[i]) closestPos[i]=x[i]; else closestPos[i].fill(0); }
 
         // attraction
         if(attrF>0)
             for (unsigned int i=0; i<tp.size(); i++)
-                if(!targetIgnored[i])	{
+                if(!targetIgnored[i])
+                {
                     unsigned int id=closestTarget[i].begin()->second;
                     closestPos[id]+=tp[i]*attrF/(Real)cnt[id];
                     sourceIgnored[id]=false;
                 }
     }
 
-    for (unsigned int i=0; i<s.size(); i++)
+
+    // add rest spring force
+    for (unsigned int i=0; i<nb; i++)
     {
-        //serr<<"addForce() between "<<springs[i].m1<<" and "<<closestPos[springs[i].m1]<<sendl;
-        this->addSpringForce(m_potentialEnergy,f,x,v, i, s[i]);
+        //serr<<"addForce() between "<<i<<" and "<<closestPos[i]<<sendl;
+        Coord u = this->closestPos[i]-x[i];
+        Real nrm2 = u.norm2();
+        Real k = this->ks.getValue();
+        if(theCloserTheStiffer.getValue())
+        {
+            Real elongation = helper::rsqrt(nrm2);
+            Real ks_max=k;
+            Real ks_min=k*0.1;
+            k = ks_min*(max-elongation)/(max-min)+ks_max*(elongation-min)/(max-min);
+        }
+        f[i]+=k*u;
+        m_potentialEnergy += nrm2 * k * 0.5;
+        if(this->kd.getValue() && nrm2) f[i]-=this->kd.getValue()*u*dot(u,v[i])/u.norm2();
     }
     _f.endEdit();
 
@@ -353,118 +361,30 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
 
 
 
-template<class DataTypes>
-void ClosestPointRegistrationForceField<DataTypes>::addSpringForce(double& potentialEnergy, VecDeriv& f,const  VecCoord& p,const VecDeriv& v,int i, const Spring& spring)
-{
-    int a = spring.m1;
-    Coord u = this->closestPos[i]-p[a];
-    Real d = u.norm();
-    if( d>1.0e-4 )
-    {
-        Real inverseLength = 1.0f/d;
-        u *= inverseLength;
-        Real elongation = (Real)d;
-        potentialEnergy += elongation * elongation * spring.ks / 2;
-        /*          serr<<"addSpringForce, p = "<<p<<sendl;
-        serr<<"addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
-        Deriv relativeVelocity = -v[a];
-        Real elongationVelocity = dot(u,relativeVelocity);
-        Real forceIntensity;
-        if(theCloserTheStiffer.getValue())
-        {
-            Real ks_max=spring.ks;
-            Real ks_min=spring.ks/10;
-            Real ks_mod = ks_min*(max-elongation)/(max-min)+ks_max*(elongation-min)/(max-min);
-            forceIntensity = (Real)(ks_mod*elongation+spring.kd*elongationVelocity);
-        }
-        else forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
-        Deriv force = u*forceIntensity;
-        f[a]+=force;
-        Mat& m = this->dfdx[i];
-        Real tgt = forceIntensity * inverseLength;
-        for( int j=0; j<N; ++j )
-        {
-            // anisotropic
-            //for( int k=0; k<N; ++k ) m[j][k] = tgt * u[j] * u[k];
-
-            // isotropic
-            for( int k=0; k<N; ++k ) m[j][k] = ((Real)spring.ks-tgt) * u[j] * u[k];
-            m[j][j] += tgt;
-        }
-    }
-    else // null length, no force and no stiffness
-    {
-        Mat& m = this->dfdx[i];
-        for( int j=0; j<N; ++j )
-        {
-            for( int k=0; k<N; ++k )
-            {
-                m[j][k] = 0;
-            }
-        }
-    }
-}
-
-template<class DataTypes>
-void ClosestPointRegistrationForceField<DataTypes>::addSpringDForce(VecDeriv& df,const  VecDeriv& dx, int i, const Spring& spring, double kFactor, double /*bFactor*/)
-{
-    const int a = spring.m1;
-    const Coord d = -dx[a];
-    Deriv dforce = this->dfdx[i]*d;
-    dforce *= kFactor;
-    df[a]+=dforce;
-    //serr<<"addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
-}
-
 
 
 template <class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams,DataVecDeriv& _df , const DataVecDeriv&  _dx )
 {
-
-    VecDeriv& df = *_df.beginEdit();		//WDataRefVecDeriv df(_df);
-    const VecDeriv&  dx = _dx.getValue();	// RDataRefVecDeriv dx(_dx);
-
-    double kFactor       =  mparams->kFactor();
-    double bFactor       =  mparams->bFactor();
-
-    if(ks.getValue()==0) return;
-
-    const vector<Spring>& s = this->springs.getValue();
-
-    //serr<<"addDForce, dx = "<<dx<<sendl;
-    //serr<<"addDForce, df before = "<<f<<sendl;
-    for (unsigned int i=0; i<s.size(); i++)
-    {
-        this->addSpringDForce(df,dx, i, s[i], kFactor, bFactor);
-    }
-    //serr<<"addDForce, df = "<<f<<sendl;
-    _df.endEdit();
+    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) * this->ks.getValue();
+    if(!k) return;
+    sofa::helper::WriteAccessor< DataVecDeriv > df = _df;
+    sofa::helper::ReadAccessor< DataVecDeriv > dx = _dx;
+    for (unsigned int i=0; i<dx.size(); i++)        df[i] -= dx[i] * k;
 }
 
 template<class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    if(ks.getValue()==0) return;
-
-    double kFact = mparams->kFactor();
-
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate);
-    if (!mat) return;
-    const vector<Spring >& ss = this->springs.getValue();
-    const unsigned int n = ss.size() < this->dfdx.size() ? ss.size() : this->dfdx.size();
-    for (unsigned int e=0; e<n; e++)
-    {
-        const Spring& s = ss[e];
-        unsigned p1 = mat.offset+Deriv::total_size*s.m1;
-        const Mat& m = this->dfdx[e];
-        for(int i=0; i<N; i++)
-            for (int j=0; j<N; j++)
-            {
-                Real k = (Real)(m[i][j]*kFact);
-                mat.matrix->add(p1+i,p1+j, -k);
-            }
-    }
+    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) * this->ks.getValue();
+    if(!k) return;
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    unsigned int offset = mref.offset;
+    const int N = Coord::total_size, nb= this->closestPos.size();
+    for (unsigned int index = 0; index <nb; index++)
+        for(int i = 0; i < N; i++)
+            mat->add(offset + N * index + i, offset + N * index + i, -k);
 }
 
 template<class DataTypes>
@@ -472,20 +392,19 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
 {
     if(ks.getValue()==0) return;
 
-    if (this->closestPos.size()!=springs.getValue().size()) return;
     if (!vparams->displayFlags().getShowForceFields() && !drawColorMap.getValue()) return;
 
     ReadAccessor< Data< VecCoord > > x(*this->getMState()->read(core::ConstVecCoordId::position()));
     //const VecCoord& x = *this->mstate->getX();
-    const vector<Spring>& springs = this->springs.getValue();
 
+    unsigned int nb = this->closestPos.size();
     if (vparams->displayFlags().getShowForceFields())
     {
         std::vector< Vector3 > points;
-        for (unsigned int i=0; i<springs.size(); i++)
+        for (unsigned int i=0; i<nb; i++)
             if(!sourceIgnored[i])
             {
-                Vector3 point1 = DataTypes::getCPos(x[springs[i].m1]);
+                Vector3 point1 = DataTypes::getCPos(x[i]);
                 Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
                 points.push_back(point1);
                 points.push_back(point2);
@@ -501,12 +420,12 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
     if(drawColorMap.getValue())
     {
         std::vector< Real > dists(x.size());  for (unsigned int i=0; i<dists.size(); i++) dists[i]=0.;
-        for (unsigned int i=0; i<springs.size(); i++)
+        for (unsigned int i=0; i<nb; i++)
             if(!sourceIgnored[i])
             {
-                Vector3 point1 = DataTypes::getCPos(x[springs[i].m1]);
+                Vector3 point1 = DataTypes::getCPos(x[i]);
                 Vector3 point2 = DataTypes::getCPos(this->closestPos[i]);
-                dists[springs[i].m1]=(point2-point1).norm();
+                dists[i]=(point2-point1).norm();
             }
         Real max=0; for (unsigned int i=0; i<dists.size(); i++) if(max<dists[i]) max=dists[i];
 

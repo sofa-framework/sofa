@@ -1,7 +1,7 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
-    PrimitiveCreation.h
+    stdafx.h
 )
 
 set(SOURCE_FILES
@@ -12,21 +12,25 @@ set(SOURCE_FILES
     BezierTetrahedronTopology_test.cpp
     BroadPhase_test.cpp
     DAG_test.cpp
+    DataLink_test.cpp
+    Engine_test.cpp
+    RigidMapping_test.cpp
     EulerImplicit_test.cpp
+    HexahedronFEMForceField_test.cpp
     LinearElasticity_test.cpp
     LoadScene_test.cpp
     Matrix_test.cpp
     Matrix_test.inl
     Node_test.cpp
     OBB_test.cpp
-    PrimitiveCreation.cpp
     ProjectToLineConstraint_test.cpp
     ProjectToPlaneConstraint_test.cpp
     QuadPressureForceField_test.cpp
     RigidMapping_test.cpp
     Simulation_test.cpp
     Sphere_test.cpp
-    StiffSpringForceField_test.cpp 
+    TetrahedronFEMForceField_test.cpp
+    StiffSpringForceField_test.cpp
     TetrahedronNumericalIntegration_test.cpp
 )
 

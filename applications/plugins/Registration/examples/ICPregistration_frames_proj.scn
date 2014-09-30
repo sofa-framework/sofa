@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<Node name="Scene" gravity="0 0 0" dt="1"  >
+	<RequiredPlugin name="Flexible" pluginName="Flexible" />
+	<RequiredPlugin name="Registration" pluginName="Registration" />
+	<RequiredPlugin name="Image" pluginName="image" />
+	<RequiredPlugin name="Compliant" pluginName="Compliant" />
+
+	<VisualStyle displayFlags="showForceFields showVisual" />
+<!--	<EulerImplicitSolver rayleighStiffness="0.1"  rayleighMass="0.1" />-->
+<!--	<CGLinearSolver template="GraphScattered" iterations="15"  threshold="1e-008" />-->
+
+	<ConstantCompliantImplicitSolver />
+	<LDLTSolver />
+	<LDLTResponse constant="True"/>
+
+	<Node name="target">
+			<OglModel name="Bone" fileMesh="data/femur_f.obj"  color="0.5 .4 1 1" />
+	</Node>
+			
+	<Node name="source">
+
+	    <MeshObjLoader name="mesh" filename="data/femur_m.obj" triangulate="1"/>
+            <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.05" padSize="1" rotateImage="true" />
+	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+
+	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="2" /> 
+	    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@sampler" />
+	    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" />
+
+   	    <Node 	name="behavior"   >
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="1" order="1" showSamplesScale="0" targetNumber="10" />
+		<MechanicalObject template="F331" />
+	    	<LinearMapping template="Affine,F331" assemble="1" />
+      		<ProjectiveForceField  template="F331" youngModulus="1000" viscosity="0" assemble="1"  isCompliance="0"/>
+	    </Node>
+
+		<Node name="ModelInteraction">
+			<MeshObjLoader name="MeshLoader"  filename="data/femur_m.obj" />
+			<MechanicalObject  name="PointSet"  position="@MeshLoader.position" useMask="0" />
+			<UniformMass totalMass="2000" />
+			<LinearMapping template="Affine,Vec3d" assemble="1" />
+
+			<NormalsFromPoints name="NormalsFromPoints" template="Vec3d" position="@PointSet.position" triangles="@MeshLoader.triangles" quads="@MeshLoader.quads"/>
+			<ClosestPointRegistrationForceField template="Vec3d"
+					sourceTriangles="@MeshLoader.triangles"					
+					sourceNormals="@NormalsFromPoints.normals"					
+					position="@../../target/Bone.position" 
+					triangles="@../../target/Bone.triangles"	
+					normals="@../../target/Bone.normal"					
+					cacheSize="4"
+					stiffness="0.1" damping="0" />
+			<Node name="Visu">
+				<VisualModel fileMesh="data/femur_m.obj" color="1 .4 0.5 1" />
+				<IdentityMapping />
+			</Node>		
+		</Node>		
+	</Node>
+
+
+</Node>

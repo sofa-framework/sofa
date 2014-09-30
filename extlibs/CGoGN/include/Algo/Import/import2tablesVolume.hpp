@@ -694,7 +694,7 @@ bool MeshTablesVolume<PFP>::importTs(const std::string& /*filename*/, std::vecto
 //    }
 
 //    fp.close();
-//    return true;
+   return true;
 }
 
 template <typename PFP>

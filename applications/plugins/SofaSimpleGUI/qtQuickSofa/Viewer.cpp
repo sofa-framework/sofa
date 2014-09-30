@@ -148,7 +148,6 @@ void Viewer::paint()
 		{
 			delete mySofaGL;
 			mySofaGL = new sofa::simplegui::SofaGL(sofaScene);
-			mySofaGL->init();
 		}
 	}
 

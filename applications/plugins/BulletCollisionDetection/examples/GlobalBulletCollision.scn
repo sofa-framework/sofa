@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<Node 	 name="Root"  gravity="0 0 -6"  >
+	<RequiredPlugin name="detection"  printLog="1"  pluginName="BulletCollisionDetection" />
+	<BulletCollisionDetection name="bulletCollisionDetection0" />
+	<VisualStyle name="displayFlags"  displayFlags="showAll" />
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="10" />
+	<!-- <DefaultContactManager name="Response"  response="distanceLMConstraint" /> -->
+	<DefaultContactManager name="Response"/>
+	<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+	<CGLinearSolver template="GraphScattered" name="linear solver" iterations="15" tolerance="1.0e-5" threshold="1.0e-5"/>
+    <!-- <LMConstraintSolver listening="1" warm_start = "false" stabilization="1" constraintVel="1" constraintPos="1" numIterations="25" /> -->
+	<BulletIntersection name="1"  contactDistance="1"/>
+	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
+             <RequiredPlugin name="SofaPython"  printLog="1"  pluginName="SofaPython" />
+	         <PythonScriptController name="pythonScriptCapsule"  listening="1"  filename="GlobalBulletCollision.py"  classname="GlobalCollision" />
+	</Node>
+</Node>

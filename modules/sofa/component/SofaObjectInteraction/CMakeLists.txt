@@ -13,6 +13,8 @@ set(HEADER_FILES
     ../interactionforcefield/PenalityContactForceField.inl 
     ../interactionforcefield/RepulsiveSpringForceField.h 
     ../interactionforcefield/RepulsiveSpringForceField.inl
+    ../interactionforcefield/PartialRigidificationForceField.h
+    ../interactionforcefield/PartialRigidificationForceField.inl
 
     )
     
@@ -24,6 +26,7 @@ set(SOURCE_FILES
     ../interactionforcefield/InteractionEllipsoidForceField.cpp 
     ../interactionforcefield/PenalityContactForceField.cpp 
     ../interactionforcefield/RepulsiveSpringForceField.cpp
+    ../interactionforcefield/PartialRigidificationForceField.cpp
  
     )
 
@@ -32,6 +35,6 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_OBJECT_INTERACTION")
-AddLinkerDependencies(SofaDeformable)
+AddLinkerDependencies(SofaDeformable SofaRigid SofaMiscMapping)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

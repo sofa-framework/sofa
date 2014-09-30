@@ -71,6 +71,7 @@ template <class DataTypes>
 void CompliantAttachPerformer<DataTypes>::clear()
 {
 //    cerr<<"CompliantAttachPerformer<DataTypes>::clear()" << endl;
+
     if( interactionNode )
     {
         if( pickedNode )
@@ -139,6 +140,7 @@ void CompliantAttachPerformer<DataTypes>::start()
         }
         std::string name = "contactMouse";
         mstateCollision = mapper->createMapping(name.c_str());
+        mstateCollision->useMask.setValue(false);
         mapper->resize(1);
 
         typename DataTypes::Coord pointPicked;
@@ -188,6 +190,8 @@ void CompliantAttachPerformer<DataTypes>::start()
 
     assert(pickedNode);
     pickedParticleIndex = picked.indexCollisionElement;
+    if (mstateCollision->getSize()<picked.indexCollisionElement+1)
+        pickedParticleIndex = 0;
 
     //-------- Mouse manipulator
     mouseMapping = this->interactor->core::objectmodel::BaseObject::template searchUp<sofa::core::BaseMapping>();
@@ -216,7 +220,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     // look for existing interactions
     static const std::string distanceMappingName="InteractionDistanceFromTargetMapping_createdByCompliantAttachPerformer";
 
-    interactionNode = pickedNode->createChild("InteractionDistanceNode");
+    interactionNode = static_cast<simulation::Node*>(mstateCollision->getContext() )->createChild("InteractionDistanceNode");
 
     typedef component::container::MechanicalObject<DataTypes1> MechanicalObject1;
     typename MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
@@ -258,6 +262,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
     if( DataTypes::getCPos(xmouse[0]) == initialMousePos ) return;
 
     distanceMapping->updateTarget(pickedParticleIndex,xmouse[0]);
+
 
 //    mouseMapping->apply(core::MechanicalParams::defaultInstance());
 //    mouseMapping->applyJ(core::MechanicalParams::defaultInstance());

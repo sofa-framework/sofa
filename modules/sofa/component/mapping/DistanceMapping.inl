@@ -102,7 +102,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 {
     helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::WriteAccessor<Data<vector<Real> > > restLengths(f_restLengths);
+    helper::ReadAccessor<Data<vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = edgeContainer->getEdges();
 
     //    jacobian.clear();
