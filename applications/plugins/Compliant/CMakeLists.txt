@@ -58,6 +58,7 @@ set(HEADER_FILES
     constraint/Constraint.h
     constraint/CoulombConstraint.h
     constraint/UnilateralConstraint.h
+    constraint/ResistanceConstraint.h
 
     constraint/BaseConstraintValue.h
     constraint/Stabilization.h
@@ -143,6 +144,7 @@ set(SOURCE_FILES
 
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
+    constraint/ResistanceConstraint.cpp
 
     constraint/ConstraintValue.cpp
     constraint/Stabilization.cpp
