@@ -32,9 +32,7 @@
 
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
-#include <sofa/component/forcefield/QuadPressureForceField.h>
-#include "../material/NeoHookeanForceField.h"
-#include "../material/MooneyRivlinForceField.h"
+#include "../material/StabilizedNeoHookeanForceField.h"
 #include <sofa/component/container/MechanicalObject.h>
 
 namespace sofa {
@@ -51,16 +49,16 @@ const size_t sizePressureArray = 8;
 const double poissonRatioArray[] = {0.1,0.33,0.49};
 const size_t sizePoissonRatioArray = sizeof(poissonRatioArray)/sizeof(poissonRatioArray[0]);
 
-const double pressureNHArray[3][8]={{-0.0889597892, -0.0438050358, 0.0635053964, 0.1045737959, 0.1447734054,  0.2230181491, 0.2612702806, 0.2990693371},{  0.0908043726, 0.1442067021, 0.1972023146, 0.2501382493, 0.3033829162,  0.3573334637, 0.4124247244, 0.4691402652},{-0.438050358e-1,0.0506740890, 0.1015527192, 0.1529835922, 0.2053969789,    0.2593326498, 0.3154780834, 0.3747238572}};
-const double s1NHArray[3][8]={{0.9253724143, 0.9621812232, 1.058685691, 1.099159142, 1.140749790, 1.227419011, 1.272569570, 1.318981460},{1.095547169, 1.158492292, 1.226210815, 1.299242414, 1.378211471, 1.463844371, 1.556991211, 1.658653303},{.9621812232,1.053287121, 1.112386732, 1.178304553, 1.252292527, 1.335929089, 1.431233010, 1.540828471}};
-const double s2NHArray[3][8]={{1.018538248, 1.009217097, 0.9863591796, 0.9773820557, 0.9684934549, 0.9509661681, 0.9423200997, 0.9337477636},{0.9672670466, 0.9474800960, 0.9275635172, 0.9075003349, 0.8872723319, 0.8668598514, 0.8462415656, 0.8253942001},{1.009217097,0.9748631443, 0.9490868600, 0.9226175014, 0.8953935507, 0.8673438984, 0.8383856153, 0.8084210028}};
+const double pressureNHArray[3][8]={{-0.0889597892, -0.0438050358, 0.0635053964, 0.1045737959, 0.1447734054,  0.2230181491, 0.2612702806, 0.2990693371},{  0.0908043726, 0.1442067021, 0.1972023146, 0.2501382493, 0.3033829162,  0.3573334637, 0.4124247244, 0.4691402652},{0.0506740890, 0.1015527192, 0.1529835922, 0.2053969789,    0.2593326498, 0.3154780834, 0.3747238572, 0.4382459743}};
+const double s1NHArray[3][8]={{0.9253724143, 0.9621812232, 1.058685691, 1.099159142, 1.140749790, 1.227419011, 1.272569570, 1.318981460},{1.095547169, 1.158492292, 1.226210815, 1.299242414, 1.378211471, 1.463844371, 1.556991211, 1.658653303},{1.053287121, 1.112386732, 1.178304553, 1.252292527, 1.335929089, 1.431233010, 1.540828471, 1.668190396}};
+const double s2NHArray[3][8]={{1.018538248, 1.009217097, 0.9863591796, 0.9773820557, 0.9684934549, 0.9509661681, 0.9423200997, 0.9337477636},{0.9672670466, 0.9474800960, 0.9275635172, 0.9075003349, 0.8872723319, 0.8668598514, 0.8462415656, 0.8253942001},{0.9748631443, 0.9490868600, 0.9226175014, 0.8953935507, 0.8673438984, 0.8383856153, 0.8084210028, 0.7773336312}};
 
 /**  Test flexible material. Apply a traction on the top part of an hexahedra and
 test that the longitudinal and radial deformation are related with the material law.
  */
 
 template <typename _DataTypes>
-struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
+struct StabilizedNeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::StrainType StrainType;
@@ -71,12 +69,10 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
     typedef typename container::MechanicalObject<Vec3Types> MechanicalObject;
     typedef container::MechanicalObject<StrainType> StrainDOFs;
     typedef typename container::MechanicalObject<StrainType>::SPtr strainDOFsSPtr;
-    typedef sofa::component::forcefield::MooneyRivlinForceField<StrainType> MooneyRivlinForceField;
-    typedef typename sofa::component::forcefield::MooneyRivlinForceField<StrainType>::SPtr MooneyRivlinForceFieldSPtr;
-    typedef sofa::component::forcefield::NeoHookeanForceField<StrainType> NeoHookeForceField;
-    typedef typename sofa::component::forcefield::NeoHookeanForceField<StrainType>::SPtr NeoHookeForceFieldSPtr;
+    typedef sofa::component::forcefield::StabilizedNeoHookeanForceField<StrainType> StabilizedNeoHookeanForceField;
+    typedef typename sofa::component::forcefield::StabilizedNeoHookeanForceField<StrainType>::SPtr StabilizedNeoHookeanForceFieldSPtr;
     typedef typename sofa::core::behavior::ForceField<StrainType>::SPtr ForceFieldSPtr;
-    typedef ForceFieldSPtr (NeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
+    typedef ForceFieldSPtr (StabilizedNeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
     typename component::forcefield::QuadPressureForceField<Vec3Types>::SPtr pressureForceField;
 
     /// Simulation
@@ -128,37 +124,19 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 
     }
 
-    ForceFieldSPtr addNeoHookeForceField(simulation::Node::SPtr node,
+    ForceFieldSPtr addStabilizedNeoHookeanForceField(simulation::Node::SPtr node,
         double youngModulus,double poissonRatio)
     {
         // Hooke Force Field
-        NeoHookeForceFieldSPtr hookeFf = addNew<NeoHookeForceField>(node,"strainMapping");
+        StabilizedNeoHookeanForceFieldSPtr ff = addNew<StabilizedNeoHookeanForceField>(node,"strainMapping");
 
-        // Set young modulus, poisson ratio and viscosity
+        // Set young modulus and poisson ratio
         vector<Real> youngModulusVec; vector<Real> poissonRatioVec;
         youngModulusVec.push_back(youngModulus); poissonRatioVec.push_back(poissonRatio);
-        hookeFf->_youngModulus.setValue(youngModulusVec);
-        hookeFf->_poissonRatio.setValue(poissonRatioVec);
-        return (ForceFieldSPtr )hookeFf;
+        ff->_youngModulus.setValue(youngModulusVec);
+        ff->_poissonRatio.setValue(poissonRatioVec);
+        return (ForceFieldSPtr )ff;
 
-    }
-
-    ForceFieldSPtr addMooneyRivlinForceField(simulation::Node::SPtr node,
-        double youngModulus,double poissonRatio)
-    {
-        // Mooney Rivlin Force Field
-        MooneyRivlinForceFieldSPtr hookeFf = addNew<MooneyRivlinForceField>(node,"strainMapping");
-
-        Real lambda=youngModulus*poissonRatio/((1+poissonRatio)*(1-2*poissonRatio));
-        Real mu=youngModulus/(2*(1+poissonRatio));
-        Real bulkModulus=lambda+2*mu/3;
-        vector<Real> c1Vec; vector<Real> c2Vec;vector<Real> bulkModulusVec;
-        // Neo Hooke with its mooney rivlin equivalent model
-        c1Vec.push_back(0.25/(1.0+poissonRatio)); c2Vec.push_back(0);bulkModulusVec.push_back(1.0/(3*(1-2*poissonRatio)));
-        hookeFf->f_C1.setValue(c1Vec);
-        hookeFf->f_C2.setValue(c2Vec);
-        hookeFf->f_bulk.setValue(bulkModulusVec);
-        return (ForceFieldSPtr )hookeFf;
     }
 
     bool testHexahedraInTraction(LinearElasticityFF createForceField, dataArray pressureArray, 
@@ -187,7 +165,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
                 Real pressure= pressureArray[j][i];
 
                 pressureForceField.get()->pressure=Coord(pressure,0,0);
-  
+
                 // Reset simulation
                 sofa::simulation::getSimulation()->reset(tractionStruct.root.get());
                     
@@ -205,7 +183,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 
                 // Get the simulated final position of that vertex
                 Coord p1=(*(tractionStruct.dofs.get()->getX()))[vIndex];
- 
+
                 // Compute longitudinal deformation
                 Real longitudinalStretch=p1[0]/p0[0];
                     
@@ -226,13 +204,14 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
                         "Got "<<longitudinalStretch<< " instead of "<< s1Array[j][i]<< std::endl;
                     return false;
                 }
+
                 // compute radial deformation
                 p0[0]=0;
                 p1[0]=0;
                 p0[1]=0;
                 p1[1]=0;
                 Real radius=p0.norm2();
-                Real radialStretch= dot(p0,p1)/radius;
+                Real radialStretch= dot(p0,p1)/radius;//-1 ;
 
                 // Test if radial stretch is a nan value
                 if(radialStretch != radialStretch)
@@ -271,61 +250,35 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 
 };
 
-// Define the types for the test
-
-// Invariant mapping
-struct TypeInvariantNHHexaTest{
-    typedef I331Types StrainType;
-    typedef mapping::InvariantMapping<defaulttype::F331Types,defaulttype::I331Types> StrainMapping;
-    static const double longitudinalStretchAccuracy;
-    static const double radialStretchAccuracy; 
-    static const std::string sceneName; 
-};
-const double TypeInvariantNHHexaTest::longitudinalStretchAccuracy= 1e-1; // Accuracy of longitudinal stretch
-const double TypeInvariantNHHexaTest::radialStretchAccuracy= 1.6e-2; // Accuracy of radial stretch
-const std::string TypeInvariantNHHexaTest::sceneName= "StaticSolverMrNhHexahedraTractionTest.scn"; // Scene to test
-
-// Principal Stretches mapping
-struct TypePrincipalStretchesNHHexaTest{
+// Principal Stretches mapping U331
+struct TypePrincipalStretchesStabilizedNHHexaTest{
     typedef U331Types StrainType;
     typedef mapping::PrincipalStretchesMapping<defaulttype::F331Types,defaulttype::U331Types> StrainMapping;
     static const double longitudinalStretchAccuracy;
     static const double radialStretchAccuracy; 
     static const std::string sceneName; 
 };
-const double TypePrincipalStretchesNHHexaTest::longitudinalStretchAccuracy= 4.2e-1; // Accuracy of longitudinal stretch
-const double TypePrincipalStretchesNHHexaTest::radialStretchAccuracy= 8.4-1; // Accuracy of radial stretch
-const std::string TypePrincipalStretchesNHHexaTest::sceneName= "AssembledSolverMrNhHexahedraTractionTest.scn"; // Scene to test
-
-
+const double TypePrincipalStretchesStabilizedNHHexaTest::longitudinalStretchAccuracy= 1.5e-1; // Accuracy of longitudinal stretch
+const double TypePrincipalStretchesStabilizedNHHexaTest::radialStretchAccuracy= 5.4e-2; // Accuracy of radial stretch
+const std::string TypePrincipalStretchesStabilizedNHHexaTest::sceneName= "AssembledSolverMrNhHexahedraTractionTest.scn"; // Scene to test
 
 
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef testing::Types<
-    //TypeInvariantNHHexaTest, 
-    TypePrincipalStretchesNHHexaTest
+    TypePrincipalStretchesStabilizedNHHexaTest
 > DataTypes; 
 
 
 // Test suite for all the instanciations
-TYPED_TEST_CASE(NeoHookeHexahedraMaterial_test, DataTypes);
+TYPED_TEST_CASE(StabilizedNeoHookeHexahedraMaterial_test, DataTypes);
 
 // Test NeoHooke with principal stretches mapping
-TYPED_TEST( NeoHookeHexahedraMaterial_test , test_NH_Hexahedra_InTraction )
+TYPED_TEST( StabilizedNeoHookeHexahedraMaterial_test , test_StabilizedNeoHooke_Hexahedra_InTraction )
 {
-    ASSERT_TRUE( this->testHexahedraInTraction(&sofa::NeoHookeHexahedraMaterial_test<TypeParam>::addNeoHookeForceField,pressureNHArray,s1NHArray, s2NHArray,
+    ASSERT_TRUE( this->testHexahedraInTraction(&sofa::StabilizedNeoHookeHexahedraMaterial_test<TypeParam>::addStabilizedNeoHookeanForceField,pressureNHArray,s1NHArray, s2NHArray,
                                                 TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
 }
-
-// Use TypeInvariantNHHexaTest type to test
-// NeoHooke with equivalent mooney rivlin for invariant mapping 
-/*TYPED_TEST( NeoHookeHexahedraMaterial_test , test_MR_Hexahedra_InTraction )
-{
-    ASSERT_TRUE( this->testHexahedraInTraction(&sofa::NeoHookeHexahedraMaterial_test<TypeParam>::addMooneyRivlinForceField,pressureNHArray,s1NHArray, s2NHArray,
-                                                 TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,true));
-}*/
-
 
 } // namespace sofa
 
