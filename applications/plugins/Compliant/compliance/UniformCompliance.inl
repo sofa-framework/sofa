@@ -40,12 +40,15 @@ void UniformCompliance<DataTypes>::reinit()
     {
         matC.resize(state->getMatrixSize(), state->getMatrixSize());
 
-        for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
-            matC.compressedMatrix.startVec(i);
-            matC.compressedMatrix.insertBack(i, i) = compliance.getValue();
-        }
+        if( compliance.getValue() ) // only fill the matrix for not null compliance, otherwise let play the sparsity
+        {
+            for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+                matC.compressedMatrix.startVec(i);
+                matC.compressedMatrix.insertBack(i, i) = compliance.getValue();
+            }
 
-        matC.compressedMatrix.finalize();
+            matC.compressedMatrix.finalize();
+        }
 
         if( helper::rabs(compliance.getValue()) <= EPSILON && this->rayleighStiffness.getValue() )
         {
@@ -65,12 +68,16 @@ void UniformCompliance<DataTypes>::reinit()
 
         matK.resize(state->getMatrixSize(), state->getMatrixSize());
 
-        for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
-            matK.compressedMatrix.startVec(i);
-            matK.compressedMatrix.insertBack(i, i) = k;
+        if( k )
+        {
+            for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+                matK.compressedMatrix.startVec(i);
+                matK.compressedMatrix.insertBack(i, i) = k;
+            }
+
+            matK.compressedMatrix.finalize();
         }
 
-        matK.compressedMatrix.finalize();
 //    }
 //    else matK.compressedMatrix.resize(0,0);
 

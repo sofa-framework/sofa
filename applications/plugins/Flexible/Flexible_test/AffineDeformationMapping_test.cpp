@@ -30,7 +30,7 @@
 #include "../deformationMapping/LinearMapping.h"
 
 #include <Mapping_test.h>
-
+#include "../shapeFunction/DiffusionShapeFunction.h"
 namespace sofa {
 
     using namespace defaulttype;

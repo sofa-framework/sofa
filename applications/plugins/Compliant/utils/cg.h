@@ -60,6 +60,7 @@ struct cg
             d.step(x, A);
         }
         p.iterations = i;
+        p.precision = d.phi;
 
     }
 

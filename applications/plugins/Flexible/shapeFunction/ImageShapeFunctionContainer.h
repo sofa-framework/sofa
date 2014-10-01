@@ -57,8 +57,18 @@ public:
     static std::string templateName(const ImageShapeFunctionContainer<ShapeFunctionTypes_,ImageTypes_>* = NULL) { return ShapeFunctionTypes_::Name()+std::string(",")+ImageTypes_::Name(); }
 
 
-    virtual void init()    { Inherit::init(); }
-
+    virtual void init()    { Inherit::init(); reinit();}
+    virtual void reinit()
+    {
+        Inherit::reinit();
+        // chane nbref according to nb channels
+        unsigned int nbchannels = this->f_w.getValue().getDimensions()[Inherit::DistTypes::DIMENSION_S];
+        if(nbchannels!=this->f_nbRef.getValue())
+        {
+            if(this->f_printLog.getValue()) std::cout<<this->getName()<<" changed nbref according to nbChannels: "<<nbchannels<<std::endl;
+            this->f_nbRef.setValue(nbchannels);
+        }
+    }
 
 protected:
     ImageShapeFunctionContainer()

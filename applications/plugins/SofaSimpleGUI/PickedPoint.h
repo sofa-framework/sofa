@@ -10,7 +10,7 @@ typedef std::size_t nat;
 typedef sofa::defaulttype::Vector3 Vec3;
 
 namespace sofa{
-namespace newgui{
+namespace simplegui{
 
 /**
  * @brief The PickedPoint struct represents a vertex of a State, typically picked using the mouse.

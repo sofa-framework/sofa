@@ -36,15 +36,18 @@ set(HEADER_FILES
     numericalsolver/PreconditionedCgSolver.h
 
     preconditioner/BasePreconditioner.h
-    preconditioner/LDLTPreconditioner.h
+    preconditioner/CompliantLDLTPreconditioner.h
     #preconditioner/IncompleteCholeskyPreconditioner.h
+    preconditioner/CompliantJacobiPreconditioner.h
 
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
     assembly/AssembledSystem.h
 
-    odesolver/AssembledSolver.h
-    odesolver/ConstantAssembledSolver.h
+    odesolver/CompliantImplicitSolver.h
+    odesolver/ConstantCompliantImplicitSolver.h
+    odesolver/CompliantNLImplicitSolver.h
+    odesolver/CompliantPostStabilizationAnimationLoop.h
 
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
@@ -55,12 +58,16 @@ set(HEADER_FILES
     constraint/Constraint.h
     constraint/CoulombConstraint.h
     constraint/UnilateralConstraint.h
+    constraint/ResistanceConstraint.h
 
     constraint/BaseConstraintValue.h
     constraint/Stabilization.h
     constraint/ConstraintValue.h
     constraint/Restitution.h
     constraint/DampingValue.h
+    constraint/OffsettedConstraintValue.h
+    constraint/HolonomicConstraintValue.h
+    constraint/VelocityConstraintValue.h
 
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -123,22 +130,29 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
 
-    preconditioner/LDLTPreconditioner.cpp
+    preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
+    preconditioner/CompliantJacobiPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp
 
-    odesolver/AssembledSolver.cpp
-    odesolver/ConstantAssembledSolver.cpp
+    odesolver/CompliantImplicitSolver.cpp
+    odesolver/ConstantCompliantImplicitSolver.cpp
+    odesolver/CompliantNLImplicitSolver.cpp
+    odesolver/CompliantPostStabilizationAnimationLoop.cpp
 
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
+    constraint/ResistanceConstraint.cpp
 
     constraint/ConstraintValue.cpp
     constraint/Stabilization.cpp
     constraint/Restitution.cpp
     constraint/DampingValue.cpp
+    constraint/OffsettedConstraintValue.cpp
+    constraint/HolonomicConstraintValue.cpp
+    constraint/VelocityConstraintValue.cpp
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp

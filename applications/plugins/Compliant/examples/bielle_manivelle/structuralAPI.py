@@ -63,7 +63,7 @@ def createScene(node):
     # solvers
     compliance = 0
     
-    node.createObject('AssembledSolver', name='odesolver',stabilization=1)
+    node.createObject('CompliantImplicitSolver', name='odesolver',stabilization=1)
     node.createObject('MinresSolver', name='numsolver', iterations='250', precision='1e-14');
     #node.createObject('LDLTSolver', name='numsolver'); compliance = 1e-10 #need to relax the system a bit
         

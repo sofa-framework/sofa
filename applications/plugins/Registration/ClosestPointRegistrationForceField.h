@@ -28,7 +28,6 @@
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/interactionforcefield/SpringForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -87,7 +86,6 @@ public:
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-    typedef typename interactionforcefield::LinearSpring<Real> Spring;
     typedef helper::fixed_array <unsigned int,3> tri;
     typedef helper::kdTree<Coord> KDT;
     typedef typename KDT::distanceSet distanceSet;
@@ -97,8 +95,6 @@ public:
     virtual ~ClosestPointRegistrationForceField();
 
     core::behavior::MechanicalState<DataTypes>* getObject() { return this->mstate; }
-
-    const sofa::helper::vector< Spring >& getSprings() const {return springs.getValue();}
 
     // -- ForceField interface
     void reinit();
@@ -119,52 +115,15 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    // -- Modifiers
-
-    void clearSprings(int reserve=0)
-    {
-        sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
-        springs.clear();
-        if (reserve) springs.reserve(reserve);
-        this->springs.endEdit();
-    }
-
-    void removeSpring(unsigned int idSpring)
-    {
-        if (idSpring >= (this->springs.getValue()).size())
-            return;
-
-        sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
-        springs.erase(springs.begin() +idSpring );
-        this->springs.endEdit();
-    }
-
-    void addSpring(int m1, SReal ks, SReal kd )
-    {
-        springs.beginEdit()->push_back(Spring(m1,-1,ks,kd,0));
-        springs.endEdit();
-    }
-
-    void addSpring(const Spring & spring)
-    {
-        springs.beginEdit()->push_back(spring);
-        springs.endEdit();
-    }
 
 protected :
     void updateClosestPoints();
 
-    vector<Mat>  dfdx;
     VecCoord closestPos;
     vector<unsigned int>  cnt;
     double m_potentialEnergy;
 
     Real min,max;
-
-    /// Accumulate the spring force and compute and store its stiffness
-    virtual void addSpringForce(double& potentialEnergy, VecDeriv& f,const  VecCoord& p,const VecDeriv& v, int i, const Spring& spring);
-    /// Apply the stiffness, i.e. accumulate df given dx
-    virtual void addSpringDForce(VecDeriv& df,const  VecDeriv& dx, int i, const Spring& spring, double kFactor, double bFactor);
 
     Data<Real> ks;
     Data<Real> kd;
@@ -176,7 +135,6 @@ protected :
     Data<bool> rejectBorders;
     Data<bool> rejectOutsideBbox;
     defaulttype::BoundingBox targetBbox;
-    Data<sofa::helper::vector<Spring> > springs;
 
     // source mesh data
     Data< helper::vector< tri > > sourceTriangles;

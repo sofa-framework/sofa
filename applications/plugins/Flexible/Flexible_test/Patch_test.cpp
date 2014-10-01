@@ -96,9 +96,9 @@ namespace sofa {
             VecCoord finalPos;
             typename PatchTestMovementConstraint::SPtr bilinearConstraint  = root->get<PatchTestMovementConstraint>(root->SearchDown);
             typename MechanicalObject::SPtr dofs = root->get<MechanicalObject>(root->SearchDown);
-            typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
+            typename MechanicalObject::ReadVecCoord x0 = dofs->readPositions();
             bilinearConstraint->getFinalPositions( finalPos,*dofs->write(core::VecCoordId::position()) );
-            
+
             // Initialize
             size_t numNodes = finalPos.size();
             VecCoord xprev(numNodes);
@@ -137,11 +137,11 @@ namespace sofa {
             bool succeed=true;
             for(size_t i=0; i<finalPos.size(); i++ )
             {
-                if((finalPos[i]-x[i]).norm()>diffMaxBetweenSimulatedAndTheoreticalPosition)
+                if((finalPos[i]-x0[i]).norm()>diffMaxBetweenSimulatedAndTheoreticalPosition)
                 {   
                     succeed = false;
-                    ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl 
-                        << "difference = " <<(finalPos[i]-x[i]).norm() << std::endl;
+                    ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x0[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl
+                        << "difference = " <<(finalPos[i]-x0[i]).norm() << std::endl;
                 }
             }
             return succeed;

@@ -1,0 +1,115 @@
+\documentclass{article}
+
+\usepackage{palatino}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[utf8]{inputenc}
+\usepackage[colorlinks=true]{hyperref}
+
+% macros
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\norm}[1]{\left|\left|#1\right|\right|}
+\newcommand{\dd}{d}
+\newcommand{\ddd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\block}[1]{\left(#1\right)}
+\newcommand{\mat}[1]{ \begin{pmatrix} #1 \end{pmatrix} }
+\newcommand{\inv}[1]{#1^{-1}}
+\newcommand{\argmin}[1]{\underset{#1}{\textrm{argmin}}}
+
+
+\newcommand{\p}[1]{#1^{+}}
+\newcommand{\m}[1]{#1^{-}}
+\newcommand{\s}[1]{#1^{*}}
+\newcommand{\xp}{\p{x}}
+\newcommand{\xm}{\m{x}}
+\newcommand{\vp}{\p{v}}
+\newcommand{\vm}{\m{v}}
+\newcommand{\vs}{\s{v}}
+\newcommand{\fp}{\p{f}}
+\newcommand{\fm}{\m{f}}
+\newcommand{\fs}{\s{f}}
+\newcommand{\Dx}{\Delta x}
+\newcommand{\Dv}{\Delta v}
+
+
+\begin{document}
+\title{Newton Solver Reference}
+\author{Fran\c{c}ois Faure and Matthieu Nesme}
+\date{\today}
+\maketitle
+%
+\begin{abstract}
+  Detailing the non-linear time-stepping scheme implemented in the CompliantNLImplicitSolver component.
+\end{abstract}
+%
+
+
+\section{Notations}
+
+
+\begin{itemize}
+\item $x$: positions
+\item $v$: velocities
+\item $f(x,v,t)$: forces for given positions and velocities at time $t$
+\item $h$: time step
+\item $\m{(.)}$, $\p{(.)}$: a state at, respectively, the beginning and the end of the time step
+\item $\Dx=\xp-\xm$: variation of position during the time step
+\item $\Dv=\vp-\vm$: variation of velocity during the time step
+\item $\alpha$, $\beta$: blending parameters such as $\fs=\alpha\fp+(1-\alpha)\fm$ and $\vs=\beta\vp+(1-\beta)\vm$. Corresponding Data are called implicitVelocity and implicitPosition.
+\item $M$: mass
+\end{itemize}
+
+\section{Euler Integration}
+
+\[
+   \left \{
+   \begin{array}{r c l}
+      \Dx  & = & h\vs \\
+      M\Dv & = & h\fs \\
+   \end{array}
+   \right .
+\]
+
+from explicit $\alpha=\beta=0$ to implicit $\alpha=\beta=1$.
+
+
+\section{Non-linear Solver}
+
+The method computes the next velocity $\vp$, such that $e \equiv M\Dv-h\fs$ is satisfied.\\
+
+
+Based on the Newton's method, an approximate solution is iteratively improved by solving a linear equation system based on the Jacobian of the residual of the equation to satisfy.
+A first guess is computed with the regular, linearized system (cf the linear time-stepping scheme in the Compliant plugin doc). \\
+
+
+Stating that \[ e \equiv M(\vp-\vm)-h(\alpha\fp+(1-\alpha)\fm)\] we obtain the jacobian \[ \ddd{e}{\vp}=M-h\alpha\ddd{\fp}{\vp}\]
+
+A first order approximation of the Taylor serie of $\fp=f(\xp,\vp,t+h)$ gives
+
+\[
+   \begin{array}{r c l}
+      \fp  & = & f(\xm,\vm,t)+\ddd{f}{x}\Dx+\ddd{f}{v}\Dv \\
+           & = & \fm+K\Dx+B\Dv \\
+           & = & \fm+K(h(\beta\vp+(1-\beta)\vm))+B(\vp-\vm)
+   \end{array}
+\]
+
+with $K=\ddd{f}{x}$ the stiffness matrix and $B=\ddd{f}{v}$ the damping matrix. \\
+
+
+So \[ \ddd{\fp}{\vp}=h\beta K+B\] and \[\ddd{e}{\vp}=M-h\alpha B-h^2\alpha\beta K\]
+
+
+\section{Newton Step Length}
+
+Two different strategies are implemented:
+\begin{itemize}
+\item naïve sub-step approach: a predefinied portion (Data 0$<$newtonStepLength$<$1) of the correction is applied successively while the error is decreasing. This is simple and quite efficient. For 10\% (default) it seems to always converge.
+\item Backtracking algorithm (Data newtonStepLength=1): try to find the maximum amount of correction to apply that decreased "sufficiently" the error. The line search described in \textit{Numerical Recipies} (chapter Globally Convergent Methods for Nonlinear Systems of Equations) is employed. Even if this method should be better, it sometimes diverges, maybe because of its magical thresholds?!
+\end{itemize}
+
+
+\end{document}
+

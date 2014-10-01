@@ -62,6 +62,7 @@
 #define FILLHOLES 24
 #define CONNECTEDCOMPONENTS 25
 #define LARGESTCONNECTEDCOMPONENT 26
+#define MIRROR 27
 
 
 namespace sofa
@@ -135,7 +136,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(27	,"0 - None"
+        helper::OptionsGroup filterOptions(28	,"0 - None"
                                            ,"1 - Blur ( sigma )"
                                            ,"2 - Blur Median ( n )"
                                            ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -162,6 +163,7 @@ public:
                                            ,"24 - Fill Holes (inval=0, outval=1)"
                                            ,"25 - Label connected components (tolerance=0)"
                                            ,"26 - Largest connected component (tolerance=0)"
+                                           ,"27 - Mirror (axis=0)"
                                            );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -624,6 +626,16 @@ protected:
                     // mask input
                     cimg_foroff(img(l),off) if(img(l)[off]==val) img(l)[off]=(To)inimg(l)[off]; else     img(l)[off]=(To)0.;
                 }
+            }
+            break;
+
+        case MIRROR:
+            if(updateImage)
+            {
+                unsigned int axis=0; if(p.size()) axis=(unsigned int)p[0];
+                if(axis==0) cimglist_for(img,l) img(l)=inimg(l).get_mirror ('x');
+                else if(axis==0) cimglist_for(img,l) img(l)=inimg(l).get_mirror ('y');
+                else cimglist_for(img,l) img(l)=inimg(l).get_mirror ('z');
             }
             break;
 

@@ -107,7 +107,7 @@ def createScene(node):
     
     #node.createObject('EulerSolver',name='odesolver')
     #node.createObject('RequiredPlugin', pluginName = 'Compliant')
-    #node.createObject('AssembledSolver',name='odesolver',stabilization='0')
+    #node.createObject('CompliantImplicitSolver',name='odesolver',stabilization='0')
     #node.createObject('LDLTSolver',name = 'numsolver')
     
     # angular damping test

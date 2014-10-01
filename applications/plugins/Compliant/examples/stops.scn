@@ -6,7 +6,7 @@
   
   <CompliantAttachButton/>
   
-  <AssembledSolver stabilization="0" />
+  <CompliantImplicitSolver stabilization="0" />
   <SequentialSolver precision="1e-20" iterations="100" />
 
   

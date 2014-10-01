@@ -10,7 +10,7 @@
 #include "SpringInteractor.h"
 
 namespace sofa {
-namespace newgui {
+namespace simplegui {
 
 /** OpenGL interface to a SofaScene.
  * This is not a viewer, this is an object used by a viewer to display a Sofa scene and to pick objects in it.
@@ -20,6 +20,8 @@ namespace newgui {
  * It is up to the application to create the appropriate Interactor, which can then be inserted in the Sofa scene.
  * This class provides the functions to attach/detach an interactor and move it.
  *
+ * @todo Construction/initialization is questionable. Should they be merged ? Should the initTextures be made in sofaScene ?
+ *
  * @author Francois Faure, 2014
 
  */
@@ -28,14 +30,9 @@ class SOFA_SOFASIMPLEGUI_API  SofaGL
 public:
     /**
      * @brief SofaGL
-     * @param s The Sofa scene to interact with.
+     * @param s The Sofa scene to interact with, the scene MUST already be opened !
      */
     SofaGL( SofaScene* s );
-    /**
-     * @brief init
-     * currently does nothing
-     */
-    void init();
     /**
      * @brief Draw the scene and stores the transformation matrices, for picking.
      * This requires an OpenGL context. It is supposed to be used by the drawing method of a viewer, after setting the modelview matrix.
@@ -55,6 +52,8 @@ public:
      * @param far Larger than the nearest distance from the new camera center to the scene (output)
      */
     void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* nearPlane, SReal* farPlane);
+
+    void getSceneBBox( float* xmin, float* ymin, float* zmin, float* xmax, float* ymax, float* zmax );
 
     /**
      * @brief getPickDirection Compute the direction of a button click, returned as a unit vector
@@ -120,7 +119,7 @@ protected:
     // Interaction tools
     typedef map< PickedPoint, Interactor*> Picked_to_Interactor;
     /** Currently available interactors, associated with picked points.
-     *  The interactors are not necessarily being manipulated. Only one can be manipulated at at time.
+     *  The interactors are not necessarily being manipulated. Only one is typically manipulated at a given time.
      */
     Picked_to_Interactor _picked_to_interactor;
     Interactor* _drag;                            ///< The currently active interactor

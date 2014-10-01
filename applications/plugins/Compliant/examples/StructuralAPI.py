@@ -35,7 +35,7 @@ def createScene(root):
     root.createObject('CompliantAttachButtonSetting')
     
     ##### SOLVER
-    root.createObject('AssembledSolver', stabilization=1)
+    root.createObject('CompliantImplicitSolver', stabilization=1)
     root.createObject('SequentialSolver', iterations=100)
     root.createObject('LDLTResponse')
     
@@ -116,6 +116,12 @@ def createScene(root):
     spring_body1 = createFixedRigidBody(springNode, "spring_body1", 15 )
     spring_body2 = createRigidBody(springNode, "spring_body2", 15 )
     spring = StructuralAPI.RigidJointSpring( springNode, "joint", spring_body1.node, spring_body2.node, [100000,100000,100000,100000,100000,10000] )
+  
+  
+  
+    # from now work in float
+  
+    StructuralAPI.template_suffix = "f"
   
   
             

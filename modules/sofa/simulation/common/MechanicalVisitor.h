@@ -957,7 +957,7 @@ public:
     ConstMultiVecId a;
     unsigned l; ///< Type of norm:  for l>0, \f$ \|v\|_l = ( \sum_{i<dim(v)} \|v[i]\|^{l} )^{1/l} \f$, while we use l=0 for the infinite norm: \f$ \|v\|_\infinite = \max_{i<dim(v)} \|v[i]\| \f$
     MechanicalVNormVisitor(const sofa::core::ExecParams* params, ConstMultiVecId a, unsigned l)
-        : BaseMechanicalVisitor(params) , a(a), l(l)
+        : BaseMechanicalVisitor(params), accum(0), a(a), l(l)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

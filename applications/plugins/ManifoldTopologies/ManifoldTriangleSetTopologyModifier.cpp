@@ -570,7 +570,7 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
 
         bool before = true;
         unsigned int bord = 0;
-        unsigned int bord2 = 0;
+//        unsigned int bord2 = 0;
         unsigned int cpt = 0;
 
 
@@ -608,7 +608,7 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
             {
                 edgeShellTmp[i] = edgesAroundVertex[i-cpt];
                 before = false;
-                bord2=i;
+                // bord2=i;
                 bord++;
             }
             else
@@ -647,7 +647,7 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
                     else
                         edgeShellTmp[i] = m_container->getEdgeIndex(tri[ (vertexInTriangle+1)%3 ], tri[ vertexInTriangle ]);
                     //		std::cout << "edgeShellTmp[i]: "<< edgeShellTmp[i] << std::endl;
-                    bord2=i;
+                    // bord2=i;
                     bord++;
 
                 }
@@ -775,7 +775,7 @@ void ManifoldTriangleSetTopologyModifier::reorderingEdge(const unsigned int edge
         helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = m_container->d_edge;
         helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
 
-        Edge the_edge = m_edge[edgeIndex];
+//        Edge the_edge = m_edge[edgeIndex];
         unsigned int triangleIndex, edgeIndexInTriangle;
         EdgesInTriangle EdgesInTriangleArray;
         Triangle TriangleVertexArray;

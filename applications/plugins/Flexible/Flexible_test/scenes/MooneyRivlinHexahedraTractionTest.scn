@@ -31,7 +31,7 @@
 
     <BarycentricShapeFunction template="ShapeFunctiond" />
     
-    <!--Decomposition of the cubes in tetrahedra -->
+    <!--Decomposition of the cubes in quads -->
     <Node name="Quads" >
 
       <!--Quads for QuadPressureForceField-->

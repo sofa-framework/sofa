@@ -18,7 +18,7 @@
 
 	<Node name="compliant-stiffness (red)" >
 
-		<AssembledSolver warm_start="true"  />
+		<CompliantImplicitSolver warm_start="true"  />
 
 		
 
@@ -106,7 +106,7 @@
 
 	<Node name="compliant-compliant (blue)" activated="1">
 
-		<AssembledSolver warm_start="true" />
+		<CompliantImplicitSolver warm_start="true" />
 
 
 

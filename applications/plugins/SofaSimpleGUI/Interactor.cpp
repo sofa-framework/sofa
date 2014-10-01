@@ -7,7 +7,7 @@
 using namespace sofa;
 
 namespace sofa{
-namespace newgui{
+namespace simplegui{
 
 Interactor::Interactor(const PickedPoint& picked)
     : _pickedPoint( picked )

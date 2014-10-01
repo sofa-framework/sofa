@@ -12,11 +12,13 @@ namespace linearsolver {
 
 
 CoulombConstraint::CoulombConstraint(SReal mu)
-	: mu(mu) { 
+    : mu(mu)
+    , horizontalProjection( true )
+{
 	assert(mu >= 0); 
 }
 
-void CoulombConstraint::project( SReal* out, unsigned n, bool correct ) const
+void CoulombConstraint::project( SReal* out, unsigned n, unsigned /*index*/, bool correct ) const
 {
     assert( n >= 3 );
 
@@ -45,9 +47,11 @@ void CoulombConstraint::project( SReal* out, unsigned n, bool correct ) const
 
              // could be optimized by forcing normal=unitX in cone projection
 
-             // coneProjection(out, mu);
-             view = cone<SReal>(view, normal, mu);
-             // view = cone_horizontal<SReal>(view, normal, mu);
+             if( horizontalProjection )
+                 view = cone_horizontal<SReal>(view, normal, mu);
+             else
+                // coneProjection(out, mu);
+                view = cone<SReal>(view, normal, mu);
 
              for( unsigned int i=3 ; i<n ; ++i ) out[i] = 0;
          }

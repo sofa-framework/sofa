@@ -18,14 +18,22 @@ LDLTResponse::LDLTResponse()
 	  constant( initData(&constant, 
 						 false,
 						 "constant",
-						 "reuse first factorization"))
+                         "reuse first factorization")),
+    factorized( false )
 {}
+
+
+void LDLTResponse::reinit()
+{
+    Response::reinit();
+    factorized = false;
+}
 
 void LDLTResponse::factor(const mat& H, bool semidefinite ) {
 
-	bool first = (response.cols() != H.cols() );
+    if( constant.getValue() && factorized ) return;
 
-    if( constant.getValue() && !first ) return;
+    factorized = true;
 
     if( regularize.getValue() && semidefinite ) {
 		// add a tiny diagonal matrix to make H psd.

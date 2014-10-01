@@ -1,7 +1,5 @@
 import Sofa
 
-import sys
-sys.path.append( Sofa.src_dir() + '/applications/plugins/Compliant/python' )
 from Compliant import Rigid
 
 colladasceneloader_path = Sofa.src_dir() + '/applications/plugins/ColladaSceneLoader'
@@ -35,7 +33,7 @@ def createScene(root):
     scene.createObject('DefaultContactManager', responseParams='damping=0&amp;compliance=0&amp;restitution=0', response='CompliantContact')
     scene.createObject('MinProximityIntersection', alarmDistance='.7', contactDistance='0.5')
     
-    scene.createObject('AssembledSolver', stabilization='1', warm_start=1)
+    scene.createObject('CompliantImplicitSolver', stabilization='1', warm_start=1)
     scene.createObject('SequentialSolver', precision='1e-10', iterations='100', projectH=1)
     scene.createObject('LDLTResponse', regularize=1e-18 )
     scene.createObject('CompliantAttachButtonSetting')
