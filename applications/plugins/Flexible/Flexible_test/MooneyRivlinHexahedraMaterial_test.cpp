@@ -45,14 +45,14 @@ using namespace component;
 using namespace defaulttype;
 using namespace modeling;
 
-const size_t sizePressureArray = 12;
+const size_t sizePressureArray = 11;
 
 const double poissonRatioArray[] = {0.1,0.33,0.49};
 const size_t sizePoissonRatioArray = sizeof(poissonRatioArray)/sizeof(poissonRatioArray[0]);
 
-const double pressureMRArray[3][12]={{ -.132595933819742, -0.758890223788378e-1, -0.258991562820281e-1, 0.122841742266160e-1, 0.520772676750806e-1, 0.873930706748338e-1, .118816127431302, .146849902919337, .171927899808457, .194423344562865, .214657633906771, .249412231083852}, {-.154930950668924, -0.979576615372482e-1, -0.464710012871213e-1, 0.284218582658924e-1, 0.914766994502278e-1, .144633398240619, .189615987963914, .227903290162599, .260727571353401, .289093880485712, .313810447718268, .335522186311620}, { -.174294795457842, -.110585160631557, -0.525879542151690e-1, 0.475417922161212e-1, 0.904460240483829e-1, .129148389744539, .164092090469086, .195709909049912, .224410003682693, .250566350597095, .274513720064362, .296546394664819}};
-const double s1MRArray[3][12]={{ .889079674146271, .931794051853002, .975065910151025, 1.01251520167355, 1.05652828731312, 1.10078865847721, 1.14519812021085, 1.18966661875371, 1.23411306966208, 1.27846567737549, 1.32266186026694, 1.41037820203926}, {.874088410079668, .914536984204839, .956550854415787, 1.02968913936779, 1.10608130132324, 1.18492093513811, 1.26540562751559, 1.34680469638069, 1.42849860927677, 1.50999193035351, 1.59090769085560, 1.67097181418148}, {.861904401269021, .905185951795058, .951263797501961, 1.05118074082972, 1.10452763290780, 1.15971595999524, 1.21639661336373, 1.27421792985636, 1.33284425170856, 1.39196937504899, 1.45132448185498, 1.51068121696553}};
-const double s2MRArray[3][12]={{1.01169675110348, 1.00706137054476, 1.00252693873968, .998757171436292, .994529295679769, .990512372245131, .986727246300965, .983187350362974, .979899868402788, .976866865097434, .974086327685361, .969259676788529}, { 1.04525921482584, 1.02987669475421, 1.01476173719551, .990393133930705, .967334438704431, .945819462262607, .925976549680711, .907839716156012, .891370013246562, .876479335741178, .863051445950385, .850957995076938},{1.07551885873374, 1.05001709087481, 1.02478381944566, .975839382171100, .952457416859653, .929982228608163, .908509044567281, .888098578545382, .868778948075975, .850550090414534, .833389463544910, .817257977203409}};
+const double pressureMRArray[3][11]={{ -.132595933819742, -0.758890223788378e-1, -0.258991562820281e-1, 0.122841742266160e-1, 0.520772676750806e-1, 0.873930706748338e-1, .118816127431302, .146849902919337, .171927899808457, .194423344562865, .214657633906771}, {-.154930950668924, -0.979576615372482e-1, -0.464710012871213e-1, 0.284218582658924e-1, 0.914766994502278e-1, .144633398240619, .189615987963914, .227903290162599, .260727571353401, .289093880485712, .313810447718268}, { -.174294795457842, -.110585160631557, -0.525879542151690e-1, 0.475417922161212e-1, 0.904460240483829e-1, .129148389744539, .164092090469086, .195709909049912, -0.525879542151690e-1, 0.475417922161212e-1, 0.904460240483829e-1}};
+const double s1MRArray[3][11]={{ .889079674146271, .931794051853002, .975065910151025, 1.01251520167355, 1.05652828731312, 1.10078865847721, 1.14519812021085, 1.18966661875371, 1.23411306966208, 1.27846567737549, 1.32266186026694}, {.874088410079668, .914536984204839, .956550854415787, 1.02968913936779, 1.10608130132324, 1.18492093513811, 1.26540562751559, 1.34680469638069, 1.42849860927677, 1.50999193035351, 1.59090769085560}, {.861904401269021, .905185951795058, .951263797501961, 1.05118074082972, 1.10452763290780, 1.15971595999524, 1.21639661336373, 1.27421792985636, .951263797501961, 1.05118074082972, 1.10452763290780}};
+const double s2MRArray[3][11]={{1.01169675110348, 1.00706137054476, 1.00252693873968, .998757171436292, .994529295679769, .990512372245131, .986727246300965, .983187350362974, .979899868402788, .976866865097434, .974086327685361}, { 1.04525921482584, 1.02987669475421, 1.01476173719551, .990393133930705, .967334438704431, .945819462262607, .925976549680711, .907839716156012, .891370013246562, .876479335741178, .863051445950385},{1.07551885873374, 1.05001709087481, 1.02478381944566, .975839382171100, .952457416859653, .929982228608163, .908509044567281, .888098578545382, 1.02478381944566, .975839382171100, .952457416859653}};
 
 /**  Test flexible material. Apply a traction on the top part of an hexahedra and
 test that the longitudinal and radial deformation are related with the material law.
@@ -66,7 +66,7 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
     typedef typename DataTypes::StrainMapping StrainMapping;
 	typedef typename Vec3Types::Coord Coord;
 	typedef typename Vec3Types::Real Real;
-    typedef const double dataArray[3][12];
+    typedef const double dataArray[3][11];
     typedef typename container::MechanicalObject<Vec3Types> MechanicalObject;
     typedef container::MechanicalObject<StrainType> StrainDOFs;
     typedef typename container::MechanicalObject<StrainType>::SPtr strainDOFsSPtr;
@@ -172,11 +172,11 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
                     
                 // Init the triangle pressure forcefield
                 pressureForceField.get()->init();
-                   
+ 
                 // Record the initial point of a given vertex
                 Coord p0=(*(tractionStruct.dofs.get()->getX()))[vIndex];
 
-                //  do several steps of the static solver
+                //  do several steps of the implicit solver
                 for(l=0;l<8;++l) 
                 {
                     sofa::simulation::getSimulation()->animate(tractionStruct.root.get(),0.5);
@@ -185,12 +185,6 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
                 // Get the simulated final position of that vertex
                 Coord p1=(*(tractionStruct.dofs.get()->getX()))[vIndex];
 
-                /*if(debug) // Print the coordinates of the initial point p0 and the final point p1 (p0 after traction)
-                {
-                    std::cout << "p0 = " << p0 << std::endl;
-                    std::cout << "p1 = " << p1 << std::endl;
-                }*/
-                    
                 // Compute longitudinal deformation
                 Real longitudinalStretch=p1[0]/p0[0];
 
@@ -269,7 +263,7 @@ struct TypeInvariantMRHexaTest{
 };
 const double TypeInvariantMRHexaTest::longitudinalStretchAccuracy= 3.5e-2; // Accuracy of longitudinal stretch
 const double TypeInvariantMRHexaTest::radialStretchAccuracy= 5e-2; // Accuracy of radial stretch
-const std::string TypeInvariantMRHexaTest::sceneName= "MooneyRivlinHexahedraTractionTest.scn"; // Scene to test
+const std::string TypeInvariantMRHexaTest::sceneName= "StaticSolverMrNhHexahedraTractionTest.scn"; // Scene to test
 
 // Principal Stretches mapping
 struct TypePrincipalStretchesMRHexaTest{
@@ -279,9 +273,9 @@ struct TypePrincipalStretchesMRHexaTest{
     static const double radialStretchAccuracy; 
     static const std::string sceneName; 
 };
-const double TypePrincipalStretchesMRHexaTest::longitudinalStretchAccuracy= 3.4e-1; // Accuracy of longitudinal stretch
-const double TypePrincipalStretchesMRHexaTest::radialStretchAccuracy= 6e-1; // Accuracy of radial stretch
-const std::string TypePrincipalStretchesMRHexaTest::sceneName= "MooneyRivlinHexahedraTractionTest.scn"; // Scene to test
+const double TypePrincipalStretchesMRHexaTest::longitudinalStretchAccuracy= 2.1e-1; // Accuracy of longitudinal stretch
+const double TypePrincipalStretchesMRHexaTest::radialStretchAccuracy= 2.3e-1; // Accuracy of radial stretch
+const std::string TypePrincipalStretchesMRHexaTest::sceneName= "AssembledSolverMrNhHexahedraTractionTest.scn"; // Scene to test
 
 
 // Define the list of DataTypes to instanciate
