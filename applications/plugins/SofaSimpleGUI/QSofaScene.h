@@ -15,7 +15,7 @@ namespace simplegui {
  *
  * @author Francois Faure, 2014
  */
-class QSofaScene : public QObject, public SofaScene
+class SOFA_SOFASIMPLEGUI_API QSofaScene : public QObject, public SofaScene
 {
     Q_OBJECT
 public:
