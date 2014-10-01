@@ -14,8 +14,8 @@ def createScene(root):
     root.gravity = [0, -9.8, 0]
     
     # ode solver
-    ode = root.createObject('AssembledSolver')
-    ode.stabilization = True
+    ode = root.createObject('CompliantImplicitSolver')
+    ode.stabilization = "pre-stabilization"
     
     # numerical solver
     num = root.createObject('MinresSolver')

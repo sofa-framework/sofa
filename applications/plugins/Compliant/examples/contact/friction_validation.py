@@ -30,7 +30,7 @@ def createScene(node):
 
     manager = node.getObject('manager')
     manager.response = 'FrictionCompliantContact'
-    manager.responseParams = 'mu=' + str(shared.mu)
+    manager.responseParams = 'mu=' + str(shared.mu)+"&horizontalConeProjection=1"
 
     ode = node.getObject('ode')
     ode.stabilization = "pre-stabilization"
@@ -91,11 +91,11 @@ def createScene(node):
 
     # shared.pid.dofs.externalForce = '-1e7'
 
-    scale = 1e6
+    scale = 2e5
 
-    shared.pid.kp = - 1.2 * scale
-    shared.pid.kd =  - 5 * scale
-    shared.pid.ki = - 1 * scale
+    shared.pid.kp = - 5 * scale
+    shared.pid.kd =  - 100 * scale
+    shared.pid.ki = - 1e-1 * scale
 
 # scene controller
 class Controller(Sofa.PythonScriptController):

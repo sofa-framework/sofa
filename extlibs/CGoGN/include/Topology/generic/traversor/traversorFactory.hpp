@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#include "Topology/generic/cellmarker.h"
 #include "Topology/generic/traversor/traversor1.h"
 #include "Topology/generic/traversor/traversor2Virt.h"
 #include "Topology/generic/traversor/traversor3Virt.h"

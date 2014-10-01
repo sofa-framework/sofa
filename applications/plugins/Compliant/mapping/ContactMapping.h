@@ -104,7 +104,7 @@ protected:
 					try{
 					  local_frame.template rightCols<2>() = ker( n );
 					}
-					catch( const std::logic_error& e) {
+                    catch( const std::logic_error& ) {
 					  std::cout << "skipping degenerate normal for contact " << i
 								<< ": " << n.transpose() << std::endl;
 					  local_frame.setZero();

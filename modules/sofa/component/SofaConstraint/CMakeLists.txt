@@ -32,7 +32,9 @@ set(HEADER_FILES
     ../constraintset/StopperConstraint.h 
     ../constraintset/StopperConstraint.inl 
     ../constraintset/SlidingConstraint.h 
-    ../constraintset/SlidingConstraint.inl 
+    ../constraintset/SlidingConstraint.inl
+    ../constraintset/PartialRigidificationConstraint.h
+    ../constraintset/PartialRigidificationConstraint.inl    
     ../collision/ConstraintAttachBodyPerformer.h 
     ../collision/ConstraintAttachBodyPerformer.inl
 
@@ -57,6 +59,7 @@ set(SOURCE_FILES
     ../animationloop/ConstraintAnimationLoop.cpp 
     ../constraintset/StopperConstraint.cpp 
     ../constraintset/SlidingConstraint.cpp 
+    ../constraintset/PartialRigidificationConstraint.cpp
     ../collision/ConstraintAttachBodyPerformer.cpp
     ../constraintset/GenericConstraintCorrection.cpp 
 

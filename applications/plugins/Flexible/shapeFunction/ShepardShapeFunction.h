@@ -50,7 +50,7 @@ struct ShepardShapeFunctionInternalData
 
 
 template <class ShapeFunctionTypes_>
-class SOFA_Flexible_API ShepardShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
+class ShepardShapeFunction : public BaseShapeFunction<ShapeFunctionTypes_>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ShepardShapeFunction, ShapeFunctionTypes_) , SOFA_TEMPLATE(BaseShapeFunction, ShapeFunctionTypes_));

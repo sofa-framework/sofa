@@ -451,7 +451,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
 
 //    std::cerr<<"ImageDensityMass::getElementMass "<<std::endl;
 
-    const unsigned dimension = DataTypes::deriv_total_size;
+    static const BaseMatrix::Index dimension = (BaseMatrix::Index) DataTypes::deriv_total_size;
 
     if( m->rowSize() != dimension || m->colSize() != dimension ) m->resize( dimension, dimension );
 

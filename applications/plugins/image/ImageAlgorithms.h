@@ -546,7 +546,7 @@ void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<un
     }
 
     //Perform raster scan until convergence
-    bool converged = false; int iter_count = 0; cimg_library::CImg<real> prev_distances;
+    bool converged = false; unsigned int iter_count = 0; cimg_library::CImg<real> prev_distances;
     while( (converged==false) || (iter_count<maxIter) )
     {
         prev_distances = v_distances; iter_count++;

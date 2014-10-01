@@ -38,21 +38,18 @@ namespace shapefunction
 using namespace defaulttype;
 using namespace core::behavior;
 
-
-template<class ShapeFunctionTypes,class ImageTypes>
-const typename DiffusionShapeFunction<ShapeFunctionTypes,ImageTypes>::DistT DiffusionShapeFunction<ShapeFunctionTypes,ImageTypes>::MAXTEMP = (DistT)1.0;
-
-
 SOFA_DECL_CLASS(DiffusionShapeFunction)
 
 // Register in the Factory
 int DiffusionShapeFunctionClass = core::RegisterObject("Computes shape functions based on diffusion in images")
 
         .add< DiffusionShapeFunction<ShapeFunction,ImageUC> >(true)
+        .add< DiffusionShapeFunction<ShapeFunction,ImageB> >()
         .add< DiffusionShapeFunction<ShapeFunction,ImageD> >()
         ;
 
 template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction,ImageUC>;
+template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction,ImageB>;
 template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction,ImageD>;
 
 }

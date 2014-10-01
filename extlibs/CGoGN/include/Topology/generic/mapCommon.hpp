@@ -24,6 +24,7 @@
 
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
+#include "traversor/traversorFactory.h"
 namespace bl = boost::lambda;
 namespace CGoGN
 {

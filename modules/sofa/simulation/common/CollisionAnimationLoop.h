@@ -35,7 +35,6 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>

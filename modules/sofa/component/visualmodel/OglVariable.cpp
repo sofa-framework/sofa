@@ -443,42 +443,17 @@ void OglFloatVectorVariable::init()
 
 void OglFloatVector2Variable::init()
 {
-    OglFloatVectorVariable::init();
-    helper::vector<float> temp = value.getValue();
-    if (temp.size() %2 != 0)
-    {
-        serr << "The number of values is not even ; padding with one zero" << sendl;
-        temp.push_back(0.0);
-        value.setValue(temp);
-    }
+    OglVariable<helper::vector<defaulttype::Vec2f> >::init();
 }
 
 void OglFloatVector3Variable::init()
 {
-    OglFloatVectorVariable::init();
-    helper::vector<float> temp = value.getValue();
-
-    if (temp.size() %3 != 0)
-    {
-        serr << "The number of values is not a multiple of 3 ; padding with zero(s)" << sendl;
-        while (temp.size() %3 != 0)
-            temp.push_back(0.0);
-        value.setValue(temp);
-    }
+    OglVariable<helper::vector<defaulttype::Vec3f> >::init();
 }
 
 void OglFloatVector4Variable::init()
 {
-    OglFloatVectorVariable::init();
-    helper::vector<float> temp = value.getValue();
-
-    if (temp.size() %4 != 0)
-    {
-        serr << "The number of values is not a multiple of 4 ; padding with zero(s)" << sendl;
-        while (temp.size() %4 != 0)
-            temp.push_back(0.0);
-        value.setValue(temp);
-    }
+    OglVariable<helper::vector<defaulttype::Vec4f> >::init();
 }
 
 void OglFloatVectorVariable::initVisual()
@@ -495,30 +470,30 @@ void OglFloatVector2Variable::initVisual()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
-    const helper::vector<float>& v = value.getValue();
-    const float* vptr = v.empty() ? NULL : &(v[0]);
+    const helper::vector<defaulttype::Vec2f>& v = value.getValue();
+    const float* vptr = v.empty() ? NULL : &(v[0][0]);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
-        (*it)->setFloatVector2(idShader, idstr.c_str(), (int)v.size()/2, vptr);
+        (*it)->setFloatVector2(idShader, idstr.c_str(), (int)v.size(), vptr);
 }
 
 void OglFloatVector3Variable::initVisual()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
-    const helper::vector<float>& v = value.getValue();
-    const float* vptr = v.empty() ? NULL : &(v[0]);
+    const helper::vector<defaulttype::Vec3f>& v = value.getValue();
+    const float* vptr = v.empty() ? NULL : &(v[0][0]);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
-        (*it)->setFloatVector3(idShader, idstr.c_str(), (int)v.size()/3, vptr);
+        (*it)->setFloatVector3(idShader, idstr.c_str(), (int)v.size(), vptr);
 }
 
 void OglFloatVector4Variable::initVisual()
 {
     const unsigned int idShader = indexShader.getValue();
     const std::string& idstr = id.getValue();
-    const helper::vector<float>& v = value.getValue();
-    const float* vptr = v.empty() ? NULL : &(v[0]);
+    const helper::vector<defaulttype::Vec4f>& v = value.getValue();
+    const float* vptr = v.empty() ? NULL : &(v[0][0]);
     for(std::set<OglShader*>::iterator it = shaders.begin(), iend = shaders.end(); it!=iend; it++)
-        (*it)->setFloatVector4(idShader, idstr.c_str(), (int)v.size()/4, vptr);
+        (*it)->setFloatVector4(idShader, idstr.c_str(), (int)v.size(), vptr);
 }
 
 

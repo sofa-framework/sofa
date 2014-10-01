@@ -413,34 +413,80 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
     return false;
 }
 
+
+void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
+{
+    // acumulating traversed Nodes
+    class TraversalOrderVisitor : public Visitor
+    {
+        NodeList& _orderList;
+    public:
+        TraversalOrderVisitor(const core::ExecParams* params, NodeList& orderList )
+            : Visitor(params)
+            , _orderList( orderList )
+        {
+            _orderList.clear();
+        }
+
+        virtual Result processNodeTopDown(Node* node)
+        {
+            _orderList.push_back( static_cast<DAGNode*>(node) );
+            return RESULT_CONTINUE;
+        }
+
+        virtual const char* getClassName() const {return "TraversalOrderVisitor";}
+    };
+
+    TraversalOrderVisitor tov( params, _precomputedTraversalOrder );
+    executeVisitor( &tov, false );
+}
+
+
+
 /// Execute a recursive action starting from this node
 /// This method bypass the actionScheduler of this node if any.
-void DAGNode::doExecuteVisitor(simulation::Visitor* action)
+void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder)
 {
-    // on ne passe à un enfant que si tous ses parents ont été visités
-    // un enfant n'est pruné que si tous ses parents le sont
-    // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru (mais on n'execute rien)
-
-    // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément (ici dans une map StatusMap par visiteur)
-
-    // Tous les noeuds executés à la descente sont stockés dans executedNodes dont l'ordre inverse est utilisé pour la remontée
-
-    Visitor::TreeTraversalRepetition repeat;
-    if( action->treeTraversal(repeat) )
+    if( precomputedOrder && !_precomputedTraversalOrder.empty() )
     {
-        StatusMap statusMap;
-        executeVisitorTreeTraversal( action, statusMap, repeat );
+//        std::cerr<<SOFA_CLASS_METHOD<<"precomputed "<<_precomputedTraversalOrder<<std::endl;
+
+        for( NodeList::iterator it = _precomputedTraversalOrder.begin(), itend = _precomputedTraversalOrder.end() ; it != itend ; ++it )
+            action->processNodeTopDown( *it );
+
+        for( NodeList::reverse_iterator it = _precomputedTraversalOrder.rbegin(), itend = _precomputedTraversalOrder.rend() ; it != itend ; ++it )
+            action->processNodeBottomUp( *it );
     }
     else
     {
-        NodeList executedNodes;
+
+//        std::cerr<<SOFA_CLASS_METHOD<<"not precomputed "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
+
+
+        // on ne passe à un enfant que si tous ses parents ont été visités
+        // un enfant n'est pruné que si tous ses parents le sont
+        // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru (mais on n'execute rien)
+
+        // NE PAS stocker les infos de parcours dans le DAGNode, plusieurs visiteurs pouvant parcourir le graphe simultanément (ici dans une map StatusMap par visiteur)
+
+        // Tous les noeuds executés à la descente sont stockés dans executedNodes dont l'ordre inverse est utilisé pour la remontée
+
+        Visitor::TreeTraversalRepetition repeat;
+        if( action->treeTraversal(repeat) )
         {
             StatusMap statusMap;
-            executeVisitorTopDown( action, executedNodes, statusMap, this );
+            executeVisitorTreeTraversal( action, statusMap, repeat );
         }
-        executeVisitorBottomUp( action, executedNodes );
+        else
+        {
+            NodeList executedNodes;
+            {
+                StatusMap statusMap;
+                executeVisitorTopDown( action, executedNodes, statusMap, this );
+            }
+            executeVisitorBottomUp( action, executedNodes );
+        }
     }
-
 }
 
 

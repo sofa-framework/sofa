@@ -358,7 +358,7 @@ public:
         res.resize( nRow, m.colSize() );
         for( Index i=0 ; i<nRow ; ++i )
         {
-            for( unsigned j=0 ; j<m.colSize() ; ++j )
+            for( unsigned j=0 ; j<(unsigned)m.colSize() ; ++j )
             {
                 res.set( i, j, element(i,0)*m.element(0,j) );
                 for( Index k=1 ; k<nCol; ++k )
@@ -377,7 +377,7 @@ public:
         res.resize( nCol, m.colSize() );
         for( Index i=0 ; i<nCol ; ++i )
         {
-            for( unsigned j=0 ; j<m.colSize() ; ++j )
+            for( unsigned j=0 ; j<(unsigned)m.colSize() ; ++j )
             {
                 res.set( i, j, element(0,i)*m.element(0,j) );
                 for( Index k=1 ; k<nRow ; ++k )

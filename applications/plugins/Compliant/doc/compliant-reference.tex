@@ -211,7 +211,7 @@ then:
 %
 \begin{align}
   M v_{k+1} &= p_k + h \block{f_{k+1} + d_{k+1} + J_k^T\lambda_{k+1}} \\
-  J_k v_{k+1} &= -\frac{g_k}{\beta h} - \frac{1 - \beta}{\beta} J_k v_k
+  J_k v_{k+1} &= -\frac{g_k}{\beta h} - \frac{1 - \beta}{\beta} J_k v_k \label{eq:constraintvalue}
 \end{align}
 % 
 At this point, we \emph{could} introduce an implicit blending between
@@ -547,7 +547,7 @@ TODO: CG, Cholesky, Minres, GS, PGS, Sequential Impulses
 
 A quick reminder of who does what where in the code:
 
-\subsection{AssembledSolver}
+\subsection{CompliantImplicitSolver}
 
 \begin{itemize}
 \item Performs KKT system assembly
@@ -584,6 +584,46 @@ KKT system.
 
 \subsection{KKTSolver}
 Solves a KKT system (AssemledSystem), for both correction/dynamics cases.
+
+
+
+\section{Alternative formulations}
+
+Alternative formulations allow more complex projective constraints (e.g. velocity constraints) where the velocity formulation can only handle the fixed projective constraint.
+Howerver their corresponding linear system seems harder to resolve for constraints.
+Note that stabilization is always performed in velocity.
+
+\subsection{Acceleration}
+
+By considering $v_{k+1} = v_k + h a $, eq. (\ref{eq:time-stepping}) becomes :
+
+\begin{equation}
+  \block{M + h\alpha D + h^2 \alpha \beta K} a = 
+  f_k - D v_k - \alpha h K v_k
+\end{equation}
+
+and eq. (\ref{eq:constraintvalue}) becomes :
+
+\begin{align}
+  J_k a &= \frac{ -\frac{g_k}{\alpha h} - J_k v_k } {\beta h}
+\end{align}
+
+
+\subsection{Velocity variation}
+
+By considering $v_{k+1} = v_k + dv $, eq. (\ref{eq:time-stepping}) becomes :
+
+\begin{equation}
+  \block{M + h\alpha D + h^2 \alpha \beta K} dv = 
+  h f_k - h D v_k - \alpha h^2 K v_k
+\end{equation}
+
+and eq. (\ref{eq:constraintvalue}) becomes :
+
+\begin{align}
+  J_k dv &= \frac{ -\frac{g_k}{\alpha h} - J_k v_k } {\beta}
+\end{align}
+
 
 \end{document}
 

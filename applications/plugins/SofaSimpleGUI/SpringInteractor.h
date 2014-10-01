@@ -5,7 +5,7 @@
 #include "Interactor.h"
 
 namespace sofa{
-namespace newgui{
+namespace simplegui{
 
 /**
  * @brief Interaction using a spring.

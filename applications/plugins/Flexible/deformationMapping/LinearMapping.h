@@ -59,7 +59,9 @@ public:
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
     typedef typename Inherit::VRef VRef;
     typedef typename Inherit::VReal VReal;
+    typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::VGradient VGradient;
+    typedef typename Inherit::Hessian Hessian;
     typedef typename Inherit::VHessian VHessian;
 
     typedef defaulttype::StdVectorTypes<defaulttype::Vec<Inherit::spatial_dimensions,Real>,defaulttype::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
@@ -128,6 +130,10 @@ protected:
 
         unsigned int size=this->f_pos0.getValue().size();
 
+        bool dw  = !this->f_dw.getValue().empty();
+        bool ddw = !this->f_ddw.getValue().empty();
+        bool F0  = !this->f_F0.getValue().empty();
+
         this->jacobian.resize(size);
         for(unsigned int i=0; i<size; i++ )
         {
@@ -136,7 +142,12 @@ protected:
             for(unsigned int j=0; j<nbref; j++ )
             {
                 unsigned int index=this->f_index.getValue()[i][j];
-                this->jacobian[i][j].init( in[index],out[i],this->f_pos0.getValue()[i],this->f_F0.getValue()[i],this->f_w.getValue()[i][j],this->f_dw.getValue()[i][j],this->f_ddw.getValue()[i][j]);
+                this->jacobian[i][j].init( in[index],out[i],this->f_pos0.getValue()[i],
+                                           F0 ? this->f_F0.getValue()[i] : MaterialToSpatial(),
+                                           this->f_w.getValue()[i][j],
+                                           dw  ? this->f_dw.getValue()[i][j]  : Gradient(),
+                                           ddw ? this->f_ddw.getValue()[i][j] : Hessian()
+                                         );
             }
         }
     }

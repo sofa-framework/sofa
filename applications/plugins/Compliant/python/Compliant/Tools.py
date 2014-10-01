@@ -41,7 +41,7 @@ def scene(node):
                               name = 'style',
                               displayFlags='hideBehaviorModels hideCollisionModels hideMappings hideForceFields')
 
-    ode = node.createObject('AssembledSolver',
+    ode = node.createObject('CompliantImplicitSolver',
                             name='ode' )
 
     # TODO is this needed ?

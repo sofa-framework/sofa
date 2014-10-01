@@ -470,10 +470,10 @@ if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
     set(CUDA_HOST_COMPILER "gcc" CACHE STRING "Host side compiler used by NVCC" FORCE)
 endif()
 
-# in debug mode, enforce cuda to compile host code in debug (the same could be done for device code with -G)
-set(CUDA_NVCC_FLAGS_DEBUG ${CUDA_NVCC_FLAGS_DEBUG} -g)
-# in release mode, enforce optimizations for host code
-set(CUDA_NVCC_FLAGS_RELEASE ${CUDA_NVCC_FLAGS_RELEASE} -O2 -DNDEBUG)
+## in debug mode, enforce cuda to compile host code in debug (the same could be done for device code with -G)
+set(CUDA_NVCC_FLAGS_DEBUG "-g" CACHE STRING "Semi-colon delimit multiple arguments" FORCE)
+## in release mode, enforce optimizations for host code
+set(CUDA_NVCC_FLAGS_RELEASE "-DNDEBUG" CACHE STRING "Semi-colon delimit multiple arguments" FORCE)
 
 
 # plugins (auto-search)

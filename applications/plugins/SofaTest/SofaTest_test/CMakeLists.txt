@@ -2,32 +2,37 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
     stdafx.h
-    PrimitiveCreation.h
 )
 
 set(SOURCE_FILES
-    LinearElasticity_test.cpp
+
+# alphabetical order
+    AffinePatch_test.cpp
+    BaryMapper_test.cpp
     BezierTetrahedronTopology_test.cpp
-    TetrahedronNumericalIntegration_test.cpp
-    PrimitiveCreation.cpp
+    BroadPhase_test.cpp
+    DAG_test.cpp
+    DataLink_test.cpp
+    Engine_test.cpp
     RigidMapping_test.cpp
     EulerImplicit_test.cpp
-    Matrix_test.inl
-    Matrix_test.cpp
-    OBBTest.cpp
-    SphereTest.cpp
-    StiffSpringForceField_test.cpp 
-    AffinePatch_test.cpp
-    ProjectToPlaneConstraint_test.cpp
-    ProjectToLineConstraint_test.cpp
-    BaryMapperTest.cpp
+    HexahedronFEMForceField_test.cpp
+    LinearElasticity_test.cpp
     LoadScene_test.cpp
-    DAG_test.cpp
+    Matrix_test.cpp
+    Matrix_test.inl
     Node_test.cpp
-    BroadPhaseTest.cpp
+    OBB_test.cpp
+    ProjectToLineConstraint_test.cpp
+    ProjectToPlaneConstraint_test.cpp
     QuadPressureForceField_test.cpp
-    stdafx.cpp
-        )
+    RigidMapping_test.cpp
+    Simulation_test.cpp
+    Sphere_test.cpp
+    TetrahedronFEMForceField_test.cpp
+    StiffSpringForceField_test.cpp
+    TetrahedronNumericalIntegration_test.cpp
+)
 
 if(APPLE)
 #    set(RC_FILES "runSOFA.icns")
@@ -35,6 +40,10 @@ endif()
 
 if(WIN32)
     link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+
+    list(APPEND HEADER_FILES "stdafx.h")
+    list(APPEND SOURCE_FILES "stdafx.cpp")
+
 endif()
 
 if(SOFA-PLUGIN_SOFAPYTHON)

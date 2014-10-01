@@ -43,6 +43,8 @@ namespace sofa {
 
 
 /** @brief Helper for writing ForceField tests.
+ * The constructor creates a root node and adds it a State and a ForceField (of the paremeter type of this template class).
+ * Pointers to node, state and force are available.
  * Deriving the ForceField test from this class makes it easy to write: just call function run_test with positions, velocities and the corresponding expected forces.
  * This function automatically checks not only the forces (function addForce), but also the stiffness (methods addDForce and addKToMatrix), using finite differences.
  * @author François Faure, 2014
@@ -61,14 +63,24 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
     typedef component::container::MechanicalObject<DataTypes> DOF;
 
+    /// @name Scene elements
+    /// {
     typename DOF::SPtr dof;
     typename ForceField::SPtr force;
     simulation::Node::SPtr node;
+    /// }
 
+    /// @name Precision and control parameters
+    /// {
     SReal errorMax;       ///< tolerance in precision test. The actual value is this one times the epsilon of the Real numbers (typically float or double)
-    SReal deltaMax;       ///< Maximum amplitude of the random perturbation used to check the stiffness using finite differences
+    /**
+     * @brief Maximum amplitude of the random perturbation used to check the stiffness using finite differences
+     * @warning Should be more than errorMax/stiffness. This is not checked automatically.
+     */
+    SReal deltaMax;
     bool checkStiffness;  ///< If false, stops the test after checking the force, without checking the stiffness. Default value is true.
     bool debug;           ///< Print debug messages. Default is false.
+    /// }
 
     /** Create a scene with a node, a state and a forcefield.
      *
@@ -143,6 +155,8 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         sofa::simulation::getSimulation()->init(this->node.get());
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
+        simulation::MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());
+        node->execute(resetForce);
         simulation::MechanicalComputeForceVisitor computeForce( &mparams, core::VecDerivId::force() );
         this->node->execute(computeForce);
 
@@ -151,7 +165,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         if(debug){
             cout << "run_test,          x = " << x << endl;
             cout << "                   v = " << v << endl;
-            cout << "                   f = " << ef << endl;
+            cout << "            expected f = " << ef << endl;
             cout << "            actual f = " <<  f << endl;
         }
         ASSERT_TRUE( this->vectorMaxDiff(f,ef)< errorMax*this->epsilon() );
@@ -172,7 +186,6 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         }
 
         // compute new force and difference between previous force
-        simulation::MechanicalResetForceVisitor resetForce(&mparams, core::VecDerivId::force());
         node->execute(resetForce);
         node->execute(computeForce);
         VecDeriv newF;

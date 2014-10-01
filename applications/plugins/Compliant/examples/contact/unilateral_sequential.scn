@@ -12,7 +12,7 @@
   <NewProximityIntersection alarmDistance=".5" contactDistance=".05" />
   <DefaultContactManager responseParams="damping=0&amp;compliance=0&amp;restitution=0" response="CompliantContact" />
 
-  <AssembledSolver stabilization="1" />
+  <CompliantImplicitSolver stabilization="1" />
   <SequentialSolver precision="1e-10" relative="false" iterations="500" />
   
   <Node name="ground">

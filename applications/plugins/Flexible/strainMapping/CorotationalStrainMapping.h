@@ -186,7 +186,7 @@ protected:
 
         dOut.endEdit();
 
-        /*if(!BlockType::constant)*/ if(this->assemble.getValue()) this->updateJ();
+        if(!BlockType::constant && this->assemble.getValue()) this->updateJ();
     }
 
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )

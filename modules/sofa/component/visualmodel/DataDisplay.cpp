@@ -71,6 +71,12 @@ void DataDisplay::init()
     }
 }
 
+
+void DataDisplay::updateVisual()
+{
+    computeNormals();
+}
+
 void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowVisualModels()) return;
@@ -145,10 +151,11 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             Vec4f color = isnan(clData[i])
                 ? f_colorNaN.getValue()
                 : eval(clData[i]);
-            Triangle tri = tt->getTriangle(i);
+            Triangle t = tt->getTriangle(i);
             vparams->drawTool()->drawTriangle(
-                x[ tri[0] ], x[ tri[1] ], x[ tri[2] ],
-                Vector3(0,0,0), color);
+                x[ t[0] ], x[ t[1] ], x[ t[2] ],
+                m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
+                color, color, color);
         }
         glEnd();
     }
@@ -169,6 +176,11 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
 
     } else if (bDrawPointData) {
         ColorMap::evaluator<Real> eval = colorMap->getEvaluator(min, max);
+
+        glPushAttrib ( GL_LIGHTING_BIT );
+        glEnable ( GL_LIGHTING );
+        glEnable( GL_COLOR_MATERIAL );
+
         // Triangles
         glBegin(GL_TRIANGLES);
         for (int i=0; i<topology->getNbTriangles(); ++i)
@@ -180,30 +192,84 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
                     ? f_colorNaN.getValue()
                     : eval(ptData[t[j]]);
             }
+
             vparams->drawTool()->drawTriangle(
                 x[ t[0] ], x[ t[1] ], x[ t[2] ],
-                Vector3(0,0,0), color[0], color[1], color[2]);
+                m_normals[ t[0] ], m_normals[ t[1] ], m_normals[ t[2] ],
+                color[0], color[1], color[2]);
         }
         glEnd();
+
         // Quads
         glBegin(GL_QUADS);
         for (int i=0; i<topology->getNbQuads(); ++i)
         {
             const Quad &q = topology->getQuad(i);
-            for (int j=0; j<4; j++) {
-                Vec4f color = isnan(ptData[q[j]])
-                    ? f_colorNaN.getValue()
-                    : eval(ptData[q[j]]);
-                glColor4f(color[0], color[1], color[2], color[3]);
-                //glColor4f(1.0, 1.0, 1.0, 1.0);
-                glVertex3f(
-                    x[ q[j] ][0],
-                    x[ q[j] ][1],
-                    x[ q[j] ][2]);
+            Vec4f color[4];
+            for (int j=0; j<4; j++)
+            {
+                color[j] = isnan(ptData[q[j]])
+                ? f_colorNaN.getValue()
+                : eval(ptData[q[j]]);
             }
+
+            vparams->drawTool()->drawQuad(
+                x[ q[0] ], x[ q[1] ], x[ q[2] ], x[ q[3] ],
+                m_normals[ q[0] ], m_normals[ q[1] ], m_normals[ q[2] ], m_normals[ q[3] ],
+                color[0], color[1], color[2], color[3]);
+
         }
         glEnd();
+
+        glPopAttrib();
     }
+
+}
+
+void DataDisplay::computeNormals()
+{
+    if( !topology ) return;
+    const VecCoord& x = this->read(sofa::core::ConstVecCoordId::position())->getValue();
+
+    m_normals.resize(x.size(),Vec3f(0,0,0));
+
+    for (int i=0; i<topology->getNbTriangles(); ++i)
+    {
+        const Triangle &t = topology->getTriangle(i);
+
+        Coord edge0 = (x[t[1]]-x[t[0]]); edge0.normalize();
+        Coord edge1 = (x[t[2]]-x[t[0]]); edge1.normalize();
+        Real triangleSurface = edge0*edge1*0.5;
+        Vec3f triangleNormal = cross( edge0, edge1 ) * triangleSurface;
+
+        for( int i=0 ; i<3 ; ++i )
+        {
+            m_normals[t[i]] += triangleNormal;
+        }
+    }
+
+    for (int i=0; i<topology->getNbQuads(); ++i)
+    {
+        const Quad &q = topology->getQuad(i);
+
+        for( int i=0 ; i<4 ; ++i )
+        {
+            Coord edge0 = (x[q[(i+1)%3]]-x[q[i]]); edge0.normalize();
+            Coord edge1 = (x[q[(i+2)%3]]-x[q[i]]); edge1.normalize();
+            Real triangleSurface = edge0*edge1*0.5;
+            Vec3f quadNormal = cross( edge0, edge1 ) * triangleSurface;
+
+            m_normals[q[i]] += quadNormal;
+        }
+    }
+
+    // normalization
+    for (size_t i=0; i<x.size(); ++i)
+    {
+        m_normals[i].normalize();
+    }
+
+
 
 }
 

@@ -45,7 +45,15 @@
 #include <algorithm>
 
 #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
-#include <deformationMapping/LinearMapping.h>
+#include <Flexible/deformationMapping/LinearMapping.h>
+#endif
+
+
+#ifdef SOFA_HAVE_PLUGIN_IMAGE
+#include <image/ImageContainer.h>
+#include <image/MeshToImageEngine.h>
+#include <image/ImageFilter.h>
+#include <image/ImageViewer.h>
 #endif
 
 namespace sofa
@@ -78,7 +86,13 @@ SceneColladaLoader::SceneColladaLoader() : SceneLoader()
 	, importer()
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
 	, generateCollisionModels(initData(&generateCollisionModels, true, "generateCollisionModels", "generate point/line/triangle collision models for imported meshes"))
-	, useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin if available (it will replace the SkinningMapping with a LinearMapping)"))
+#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+    , useFlexible(initData(&useFlexible, false, "useFlexible", "Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)"))
+#endif
+#ifdef SOFA_HAVE_PLUGIN_IMAGE
+    , generateShapeFunction(initData(&generateShapeFunction, false, "generateShapeFunction", "Generate a shape function that could be used in another simulation"))
+    , voxelSize(initData(&voxelSize, (SReal)0.02, "voxelSize", "voxelSize used for shape function generation"))
+#endif
 {
 	
 }
@@ -168,7 +182,7 @@ bool SceneColladaLoader::load()
     return fileRead;
 }
 
-bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
+bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filename*/)
 {
     sout << "SceneColladaLoader::readDAE" << sendl;
 
@@ -232,14 +246,19 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                 // useful to generate a unique index for each component of a node
                 int componentIndex = 0;
 
+
+                // TODO: have only one rigidMechanicalObject with no redundancy and same indices for all meshes
+                // so all meshes can be mapped to the same rigidMechanicalObject
+
+
                 // for each mesh in the node
                 for(unsigned int j = 0; j < currentAiNode->mNumMeshes; ++j, ++meshId)
                 {
                     std::stringstream meshNameStream;
                     meshNameStream << "mesh " << (int)meshId;
                     
-					Node::SPtr meshNode = getSimulation()->createNewNode(meshNameStream.str());
-					currentNode->addChild(meshNode);
+                    Node::SPtr meshNode = getSimulation()->createNewNode(meshNameStream.str());
+                    currentNode->addChild(meshNode);
 
                     aiMesh* currentAiMesh = currentAiScene->mMeshes[currentAiNode->mMeshes[j]];
 
@@ -247,7 +266,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                     std::string meshName(currentAiMesh->mName.data, currentAiMesh->mName.length);
 
 					// the node representing a part of the current mesh construction (skinning, collision, visualization ...)
-					Node::SPtr currentSubNode = meshNode;
+                    Node::SPtr currentSubNode = meshNode;
 
                     // generating a MechanicalObject and a SkinningMapping if the mesh contains bones and filling up theirs properties
                     MechanicalObject<Rigid3dTypes>::SPtr currentBoneMechanicalObject;
@@ -292,38 +311,25 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
                                     x[k] = Rigid3dTypes::Coord(boneTranslation, boneQuat);
                                 }
-								d_x->endEdit();
+                                d_x->endEdit();
                             }
                         }
 
-						if(generateCollisionModels.getValue())
-						{
-							UniformMass<Rigid3dTypes, Rigid3dMass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3dTypes, Rigid3dMass> >();
-							{
-								// adding the generated UniformMass to its parent Node
-								currentSubNode->addObject(currentUniformMass);
+                        if(generateCollisionModels.getValue())
+                        {
+                            UniformMass<Rigid3dTypes, Rigid3dMass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3dTypes, Rigid3dMass> >();
+                            {
+                                // adding the generated UniformMass to its parent Node
+                                currentSubNode->addObject(currentUniformMass);
 
-								std::stringstream nameStream(meshName);
-								if(meshName.empty())
-									nameStream << componentIndex++;
-								currentUniformMass->setName(nameStream.str());
+                                std::stringstream nameStream(meshName);
+                                if(meshName.empty())
+                                    nameStream << componentIndex++;
+                                currentUniformMass->setName(nameStream.str());
 
-								currentUniformMass->setTotalMass(80.0);
-							}
-						}
-
-						/*FixedConstraint<Rigid3dTypes>::SPtr currentFixedConstraint = sofa::core::objectmodel::New<FixedConstraint<Rigid3dTypes> >();
-						{
-							// adding the generated FixedConstraint to its parent Node
-							currentSubNode->addObject(currentFixedConstraint);
-
-							std::stringstream nameStream(meshName);
-							if(meshName.empty())
-								nameStream << componentIndex++;
-							currentFixedConstraint->setName(nameStream.str());
-
-							currentFixedConstraint->f_fixAll.setValue(true);
-						}*/
+                                currentUniformMass->setTotalMass(80.0);
+                            }
+                        }
 
                         // generating a SkeletalMotionConstraint and filling up its properties
                         SkeletalMotionConstraint<Rigid3dTypes>::SPtr currentSkeletalMotionConstraint = sofa::core::objectmodel::New<SkeletalMotionConstraint<Rigid3dTypes> >();
@@ -412,6 +418,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
 					currentSubNode = rigidNode;
 
+                    std::map<Vec3d,unsigned> vertexMap; // no to superimpose identical vertices
+
                     // generating a MechanicalObject and filling up its properties
                     MechanicalObject<Vec3dTypes>::SPtr currentMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Vec3dTypes> >();
                     {
@@ -430,13 +438,22 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                         // filling up position coordinate array
                         if(0 != currentAiMesh->mNumVertices)
                         {
-                            currentMechanicalObject->resize(currentAiMesh->mNumVertices);
+                            int vertexIdx=0;
+                            for(unsigned int k = 0; k < currentAiMesh->mNumVertices; ++k)
+                            {
+                                Vec3d v(currentAiMesh->mVertices[k][0], currentAiMesh->mVertices[k][1], currentAiMesh->mVertices[k][2]);
+                                if( vertexMap.find(v) == vertexMap.end() ) vertexMap[v] = vertexIdx++;
+                            }
+
+                            currentMechanicalObject->resize(vertexMap.size());
 
                             {
                                 Data<vector<Vec3dTypes::Coord> >* d_x = currentMechanicalObject->write(core::VecCoordId::position());
                                 vector<Vec3dTypes::Coord> &x = *d_x->beginEdit();
-                                for(unsigned int k = 0; k < currentAiMesh->mNumVertices; ++k)
-                                    x[k] = Vec3dTypes::Coord(Vec3d(currentAiMesh->mVertices[k][0], currentAiMesh->mVertices[k][1], currentAiMesh->mVertices[k][2]));
+                                for( std::map<Vec3d,unsigned>::iterator it=vertexMap.begin() , itend=vertexMap.end() ; it!=itend ; ++it )
+                                    x[it->second] = it->first;
+
+                                d_x->endEdit();
                             }
                         }
                     }
@@ -455,66 +472,107 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
                         // filling up position array
                         currentMeshTopology->seqPoints.setParent(&currentMechanicalObject->x);
 
-                        // filling up triangle array
-                        vector<topology::Triangle> triangles;
-                        unsigned int numTriangles = 0;
+                        unsigned int numTriangles = 0, numQuads = 0;
                         for(unsigned int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                            if(3 == currentAiMesh->mFaces[k].mNumIndices)
+                            if( 3 == currentAiMesh->mFaces[k].mNumIndices )
                                 ++numTriangles;
-
-                        if(0 != numTriangles)
-                        {
-                            triangles.resize(numTriangles);
-
-                            unsigned int triangleOffset = 0;
-                            for(unsigned int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                            {
-                                if(3 != currentAiMesh->mFaces[k].mNumIndices)
-                                    continue;
-
-                                memcpy(&triangles[0] + triangleOffset, currentAiMesh->mFaces[k].mIndices, sizeof(topology::Triangle));
-                                ++triangleOffset;
-                            }
-
-                            {
-                                vector<topology::Triangle>& seqTriangles = *currentMeshTopology->seqTriangles.beginEdit();
-                                seqTriangles.reserve(triangles.size());
-
-                                for(unsigned int k = 0; k < triangles.size(); ++k)
-                                    seqTriangles.push_back(triangles[k]);
-                            }
-                        }
-
-                        // filling up quad array
-                        vector<topology::Quad> quads;
-                        unsigned int numQuads = 0;
-                        for(unsigned int k = 0; k < currentAiMesh->mNumFaces; ++k)
-                            if(4 == currentAiMesh->mFaces[k].mNumIndices)
+                            else if( 4 == currentAiMesh->mFaces[k].mNumIndices )
                                 ++numQuads;
 
-                        if(0 != numQuads)
+
+                        vector<topology::Triangle>& seqTriangles = *currentMeshTopology->seqTriangles.beginEdit();
+#ifdef SOFA_HAVE_PLUGIN_IMAGE
+                        if( generateShapeFunction.getValue() )
                         {
-                            quads.resize(numQuads);
+                            if( numTriangles || numQuads ) seqTriangles.reserve(numTriangles+numQuads*2);
 
-                            unsigned int quadOffset = 0;
-                            for(unsigned int k = 0; k < currentAiMesh->mNumFaces; ++k)
+                            for( unsigned int k = 0 ; k < currentAiMesh->mNumFaces ; ++k )
                             {
-                                if(4 != currentAiMesh->mFaces[k].mNumIndices)
-                                    continue;
+                                if( currentAiMesh->mFaces[k].mNumIndices==3 )
+                                {
+                                    unsigned int *faceIndices = currentAiMesh->mFaces[k].mIndices;
 
-                                memcpy(&quads[0] + quadOffset, currentAiMesh->mFaces[k].mIndices, sizeof(topology::Quad));
-                                ++quadOffset;
-                            }
+                                    const unsigned int &faceIndex0 = faceIndices[0];
+                                    const unsigned int &faceIndex1 = faceIndices[1];
+                                    const unsigned int &faceIndex2 = faceIndices[2];
 
-                            {
-                                vector<topology::Quad>& seqQuads = *currentMeshTopology->seqQuads.beginEdit();
-                                seqQuads.reserve(quads.size());
+                                    Vec3d v0(currentAiMesh->mVertices[faceIndex0][0], currentAiMesh->mVertices[faceIndex0][1], currentAiMesh->mVertices[faceIndex0][2]);
+                                    Vec3d v1(currentAiMesh->mVertices[faceIndex1][0], currentAiMesh->mVertices[faceIndex1][1], currentAiMesh->mVertices[faceIndex1][2]);
+                                    Vec3d v2(currentAiMesh->mVertices[faceIndex2][0], currentAiMesh->mVertices[faceIndex2][1], currentAiMesh->mVertices[faceIndex2][2]);
 
-                                for(unsigned int k = 0; k < quads.size(); ++k)
-                                    seqQuads.push_back(quads[k]);
+                                    seqTriangles.push_back( topology::Triangle( vertexMap[v0], vertexMap[v1], vertexMap[v2] ) );
+                                }
+                                else if( currentAiMesh->mFaces[k].mNumIndices==4 )
+                                {
+                                    unsigned int *faceIndices = currentAiMesh->mFaces[k].mIndices;
+
+                                    const unsigned int &faceIndex0 = faceIndices[0];
+                                    const unsigned int &faceIndex1 = faceIndices[1];
+                                    const unsigned int &faceIndex2 = faceIndices[2];
+                                    const unsigned int &faceIndex3 = faceIndices[3];
+
+                                    Vec3d v0(currentAiMesh->mVertices[faceIndex0][0], currentAiMesh->mVertices[faceIndex0][1], currentAiMesh->mVertices[faceIndex0][2]);
+                                    Vec3d v1(currentAiMesh->mVertices[faceIndex1][0], currentAiMesh->mVertices[faceIndex1][1], currentAiMesh->mVertices[faceIndex1][2]);
+                                    Vec3d v2(currentAiMesh->mVertices[faceIndex2][0], currentAiMesh->mVertices[faceIndex2][1], currentAiMesh->mVertices[faceIndex2][2]);
+                                    Vec3d v3(currentAiMesh->mVertices[faceIndex3][0], currentAiMesh->mVertices[faceIndex3][1], currentAiMesh->mVertices[faceIndex3][2]);
+
+                                    unsigned int i0 = vertexMap[v0];
+                                    unsigned int i1 = vertexMap[v1];
+                                    unsigned int i2 = vertexMap[v2];
+                                    unsigned int i3 = vertexMap[v3];
+
+                                    seqTriangles.push_back( topology::Triangle( i0, i1, i2 ) );
+                                    seqTriangles.push_back( topology::Triangle( i0, i2, i3 ) );
+                                }
                             }
                         }
+                        else
+#endif
+                        {
+                            if( numTriangles ) seqTriangles.reserve(numTriangles);
+                            vector<topology::Quad>& seqQuads = *currentMeshTopology->seqQuads.beginEdit();
+                            if( numQuads ) seqQuads.reserve(numQuads);
+
+                            for( unsigned int k = 0 ; k < currentAiMesh->mNumFaces ; ++k )
+                            {
+                                if( currentAiMesh->mFaces[k].mNumIndices==3 )
+                                {
+                                    unsigned int *faceIndices = currentAiMesh->mFaces[k].mIndices;
+
+                                    const unsigned int &faceIndex0 = faceIndices[0];
+                                    const unsigned int &faceIndex1 = faceIndices[1];
+                                    const unsigned int &faceIndex2 = faceIndices[2];
+
+                                    Vec3d v0(currentAiMesh->mVertices[faceIndex0][0], currentAiMesh->mVertices[faceIndex0][1], currentAiMesh->mVertices[faceIndex0][2]);
+                                    Vec3d v1(currentAiMesh->mVertices[faceIndex1][0], currentAiMesh->mVertices[faceIndex1][1], currentAiMesh->mVertices[faceIndex1][2]);
+                                    Vec3d v2(currentAiMesh->mVertices[faceIndex2][0], currentAiMesh->mVertices[faceIndex2][1], currentAiMesh->mVertices[faceIndex2][2]);
+
+                                    seqTriangles.push_back( topology::Triangle( vertexMap[v0], vertexMap[v1], vertexMap[v2] ) );
+                                }
+                                else if( currentAiMesh->mFaces[k].mNumIndices==4 )
+                                {
+                                    unsigned int *faceIndices = currentAiMesh->mFaces[k].mIndices;
+
+                                    const unsigned int &faceIndex0 = faceIndices[0];
+                                    const unsigned int &faceIndex1 = faceIndices[1];
+                                    const unsigned int &faceIndex2 = faceIndices[2];
+                                    const unsigned int &faceIndex3 = faceIndices[3];
+
+                                    Vec3d v0(currentAiMesh->mVertices[faceIndex0][0], currentAiMesh->mVertices[faceIndex0][1], currentAiMesh->mVertices[faceIndex0][2]);
+                                    Vec3d v1(currentAiMesh->mVertices[faceIndex1][0], currentAiMesh->mVertices[faceIndex1][1], currentAiMesh->mVertices[faceIndex1][2]);
+                                    Vec3d v2(currentAiMesh->mVertices[faceIndex2][0], currentAiMesh->mVertices[faceIndex2][1], currentAiMesh->mVertices[faceIndex2][2]);
+                                    Vec3d v3(currentAiMesh->mVertices[faceIndex3][0], currentAiMesh->mVertices[faceIndex3][1], currentAiMesh->mVertices[faceIndex3][2]);
+
+                                    seqQuads.push_back( topology::Quad( vertexMap[v0], vertexMap[v1], vertexMap[v2], vertexMap[v3] ) );
+                                }
+                            }
+
+                            currentMeshTopology->seqQuads.endEdit();
+                        }
+
+                        currentMeshTopology->seqTriangles.endEdit();
                     }
+
 
 					if(generateCollisionModels.getValue())
 					{
@@ -560,64 +618,195 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
 					if(currentAiMesh->HasBones())
                     {
-						bool generateSkinningMapping = true;
+#ifdef SOFA_HAVE_PLUGIN_IMAGE
+                        if( generateShapeFunction.getValue() )
+                        {
+                            SReal vsize = this->voxelSize.getValue();
 
-#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
-						if(useFlexible.getValue())
-						{
-							generateSkinningMapping = false;
+                            // rasterized mesh
+                            Node::SPtr labelNode = currentSubNode->createChild("label");
+                            engine::MeshToImageEngine<defaulttype::ImageB>::SPtr M2I = sofa::core::objectmodel::New<engine::MeshToImageEngine<defaulttype::ImageB> >();
+                            M2I->setName( "rasterizer" );
+                            M2I->voxelSize.setValue( vector<SReal>(1,vsize) );
+                            M2I->padSize.setValue(2);
+                            M2I->rotateImage.setValue(false);
+                            M2I->f_nbMeshes.setValue(1);
+                            M2I->createInputMeshesData();
+                            M2I->backgroundValue.setValue(0);
+                            M2I->closingValue.setValue(1);
+                            engine::MeshToImageEngine<defaulttype::ImageB>::SeqValues values(1,1);
+                            (*M2I->vf_values[0]).setValue(values);
+                            (*M2I->vf_positions[0]).setParent( &currentMechanicalObject->x );
+                            (*M2I->vf_triangles[0]).setParent( &currentMeshTopology->seqTriangles );
+                            labelNode->addObject(M2I);
 
-							LinearMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3dTypes, Vec3dTypes> >();
-							{
-								// adding the generated LinearMapping to its parent Node
-								currentSubNode->addObject(currentLinearMapping);
+                            ImageContainer<defaulttype::ImageB>::SPtr IC0 = sofa::core::objectmodel::New<ImageContainer<defaulttype::ImageB> >();
+                            IC0->setName( "image" );
+                            IC0->image.setParent(&M2I->image);
+                            IC0->transform.setParent(&M2I->transform);
+                            labelNode->addObject(IC0);
 
-								std::stringstream nameStream(meshName);
-								if(meshName.empty())
-									nameStream << componentIndex++;
-								currentLinearMapping->setName(nameStream.str());
+//                            misc::ImageViewer<defaulttype::ImageB>::SPtr IV0 = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageB> >();
+//                            IV0->setName( "viewer" );
+//                            IV0->image.setParent( &M2I->image );
+//                            IV0->transform.setParent( &M2I->transform );
+//                            labelNode->addObject(IV0);
 
-								currentLinearMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
+                            // rasterized weights on surface
+                            for( unsigned int b = 0 ; b < currentAiMesh->mNumBones /*&& b<1*/ ; ++b )
+                            {
+                                aiBone*& bone = currentAiMesh->mBones[b];
 
-								vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VReal> weights;
-								vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VRef> indices;
+                                std::stringstream nodeName;
+                                nodeName << "dof " << b;
+                                Node::SPtr dofNode = currentSubNode->createChild(nodeName.str());
 
-								indices.resize(currentAiMesh->mNumVertices);
-								weights.resize(currentAiMesh->mNumVertices);
-							
-								size_t nbref = currentAiMesh->mNumBones;
+                                engine::MeshToImageEngine<defaulttype::ImageD>::SPtr M2I = sofa::core::objectmodel::New<engine::MeshToImageEngine<defaulttype::ImageD> >();
+                                M2I->setName( "rasterizer" );
+                                M2I->voxelSize.setValue( vector<SReal>(1,vsize) );
+                                M2I->padSize.setValue(2);
+                                M2I->rotateImage.setValue(false);
+                                M2I->f_nbMeshes.setValue(1);
+                                M2I->createInputMeshesData();
+                                M2I->closingValue.setValue(0);
 
-								for(std::size_t i = 0; i < indices.size(); ++i)
-								{
-									indices[i].reserve(nbref);
-									weights[i].reserve(nbref);
-								}
+                                std::stringstream nameStream(meshName);
+                                if(meshName.empty())
+                                    nameStream << componentIndex++;
 
-								for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
-								{
-									aiBone*& bone = currentAiMesh->mBones[k];
 
-									for(unsigned int l = 0; l < bone->mNumWeights; ++l)
-									{
-										unsigned int id = bone->mWeights[l].mVertexId;
-										float weight = bone->mWeights[l].mWeight;
 
-										if(id >= currentAiMesh->mNumVertices)
-										{
-											sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
-											return false;
-										}
+                                engine::MeshToImageEngine<defaulttype::ImageD>::SeqValues values(vertexMap.size());
 
-										indices[id].push_back(k);
-										weights[id].push_back(weight);
-									}
-								}
 
-								currentLinearMapping->setWeights(weights, indices);
-							}
-						}
+                                for(unsigned int l = 0; l < bone->mNumWeights; ++l)
+                                {
+
+                                    const unsigned int& vertexid = bone->mWeights[l].mVertexId;
+
+                                    if(vertexid >= currentAiMesh->mNumVertices)
+                                    {
+                                        sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+                                        return false;
+                                    }
+
+                                    Vec3d v(currentAiMesh->mVertices[vertexid][0], currentAiMesh->mVertices[vertexid][1], currentAiMesh->mVertices[vertexid][2]);
+
+                                    unsigned int id = vertexMap[v];
+                                    float weight = bone->mWeights[l].mWeight;
+
+                                    values[id] = weight;
+                                }
+
+
+
+                                (*M2I->vf_values[0]).setValue(values);
+                                M2I->backgroundValue.setValue(-1);
+                                (*M2I->vf_positions[0]).setParent( &currentMechanicalObject->x );
+                                (*M2I->vf_triangles[0]).setParent( &currentMeshTopology->seqTriangles );
+
+
+                                dofNode->addObject(M2I);
+
+                                ImageContainer<defaulttype::ImageD>::SPtr IC0 = sofa::core::objectmodel::New<ImageContainer<defaulttype::ImageD> >();
+                                IC0->setName( "image" );
+                                IC0->image.setParent(&M2I->image);
+                                IC0->transform.setParent(&M2I->transform);
+                                dofNode->addObject(IC0);
+
+//                                misc::ImageViewer<defaulttype::ImageD>::SPtr IV0 = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageD> >();
+//                                IV0->setName( "viewer" );
+//                                IV0->image.setParent( &M2I->image );
+//                                IV0->transform.setParent( &M2I->transform );
+//                                dofNode->addObject(IV0);
+
+//                                engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD>::SPtr IF = sofa::core::objectmodel::New<engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD> >();
+//                                IF->setName( "diffusion" );
+//                                IF->inputImage.setParent(&M2I->image);
+//                                IF->inputTransform.setParent(&M2I->transform);
+//                                IF->filter.beginEdit()->setSelectedItem( 23 ); IF->filter.endEdit();
+//                                engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD>::ParamTypes params(4);
+//                                params[0] = 0; params[1] = params[2] = 1; params[3] = 1e-5;
+//                                IF->param.setValue(params);
+//                                IF->f_printLog.setValue(true);
+//                                dofNode->addObject(IF);
+
+//                                ImageContainer<defaulttype::ImageD>::SPtr IC = sofa::core::objectmodel::New<ImageContainer<defaulttype::ImageD> >();
+//                                IC->setName( "image" );
+//                                IC->image.setParent(&IF->outputImage);
+//                                IC->transform.setParent(&IF->outputTransform);
+//                                dofNode->addObject(IC);
+
+//                                misc::ImageViewer<defaulttype::ImageD>::SPtr IV = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageD> >();
+//                                IV->setName( "viewer" );
+//                                IV->image.setParent( &IF->outputImage );
+//                                IV->transform.setParent( &IF->outputTransform );
+//                                dofNode->addObject(IV);
+
+                            }
+                        } else
 #endif
-						if(generateSkinningMapping)
+#ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
+                        if(useFlexible.getValue())
+                        {
+							LinearMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3dTypes, Vec3dTypes> >();
+
+                            // adding the generated LinearMapping to its parent Node
+                            currentSubNode->addObject(currentLinearMapping);
+
+                            std::stringstream nameStream(meshName);
+                            if(meshName.empty())
+                                nameStream << componentIndex++;
+                            currentLinearMapping->setName(nameStream.str());
+
+                            currentLinearMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
+
+                            vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VReal>& weights = *currentLinearMapping->f_w.beginEdit();
+                            vector<LinearMapping<Rigid3dTypes, Vec3dTypes>::VRef>& indices = *currentLinearMapping->f_index.beginEdit();
+
+                            indices.resize(vertexMap.size());
+                            weights.resize(vertexMap.size());
+
+                            for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
+                            {
+                                aiBone*& bone = currentAiMesh->mBones[k];
+
+
+//                                helper:vector<float> boneW((size_t)currentAiMesh->mNumVertices,.0f);
+
+                                for(unsigned int l = 0; l < bone->mNumWeights; ++l)
+                                {
+                                    const unsigned int& vertexid = bone->mWeights[l].mVertexId;
+
+                                    if(vertexid >= currentAiMesh->mNumVertices)
+                                    {
+                                        sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
+                                        return false;
+                                    }
+
+                                    Vec3d v(currentAiMesh->mVertices[vertexid][0], currentAiMesh->mVertices[vertexid][1], currentAiMesh->mVertices[vertexid][2]);
+
+                                    unsigned int id = vertexMap[v];
+                                    float weight = bone->mWeights[l].mWeight;
+
+//                                    boneW[id]=weight;
+
+                                    if( std::find( indices[id].begin(), indices[id].end(), k ) == indices[id].end() )
+                                    {
+                                        indices[id].push_back(k);
+                                        weights[id].push_back(weight);
+                                    }
+                                }
+
+//                                std::cerr<<"MESH "<<meshId<<" - DOF "<<k<<": "<<boneW<<std::endl;
+
+                            }
+
+                            currentLinearMapping->f_w.endEdit();
+                            currentLinearMapping->f_index.endEdit();
+						}
+                        else
+#endif
 						{
 							SkinningMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentSkinningMapping = sofa::core::objectmodel::New<SkinningMapping<Rigid3dTypes, Vec3dTypes> >();
 							{
@@ -635,11 +824,9 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 								vector<SVector<unsigned int> > indices;
 								vector<unsigned int> nbref;
 
-								indices.resize(currentAiMesh->mNumVertices);
-								weights.resize(currentAiMesh->mNumVertices);
-								nbref.resize(currentAiMesh->mNumVertices);
-								for(unsigned int k = 0; k < nbref.size(); ++k)
-									nbref[k] = 0;
+                                indices.resize(vertexMap.size());
+                                weights.resize(vertexMap.size());
+                                nbref.resize(vertexMap.size(),0);
 
 								for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
 								{
@@ -647,18 +834,27 @@ bool SceneColladaLoader::readDAE (std::ifstream &file, const char* filename)
 
 									for(unsigned int l = 0; l < bone->mNumWeights; ++l)
 									{
-										unsigned int id = bone->mWeights[l].mVertexId;
-										float weight = bone->mWeights[l].mWeight;
 
-										if(id >= currentAiMesh->mNumVertices)
+                                        const unsigned int& vertexid = bone->mWeights[l].mVertexId;
+
+                                        if(vertexid >= currentAiMesh->mNumVertices)
 										{
 											sout << "Error: SceneColladaLoader::readDAE, a mesh could not be load : " << nameStream.str() << " - in node : " << currentNode->getName() << sendl;
 											return false;
 										}
 
-										weights[id].push_back(weight);
-										indices[id].push_back(k);
-										++nbref[id];
+                                        Vec3d v(currentAiMesh->mVertices[vertexid][0], currentAiMesh->mVertices[vertexid][1], currentAiMesh->mVertices[vertexid][2]);
+
+                                        unsigned int id = vertexMap[v];
+                                        float weight = bone->mWeights[l].mWeight;
+
+                                        if( std::find( indices[id].begin(), indices[id].end(), k ) == indices[id].end() )
+                                        {
+                                            weights[id].push_back(weight);
+                                            indices[id].push_back(k);
+                                            ++nbref[id];
+                                        }
+
 									}
 								}
 
@@ -955,7 +1151,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
     // register every SkeletonJoint and their parents and fill up theirs properties
     for(std::size_t i = 0; i < skeletonJoints.size(); ++i)
     {
-        SkeletonJoint<Rigid3dTypes>& skeletonJoint = skeletonJoints[i];
+//        SkeletonJoint<Rigid3dTypes>& skeletonJoint = skeletonJoints[i];
 
         aiNode*	node = NULL;
 

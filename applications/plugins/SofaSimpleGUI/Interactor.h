@@ -10,7 +10,7 @@
 typedef sofa::defaulttype::Vector3 Vec3;
 
 namespace sofa{
-namespace newgui{
+namespace simplegui{
 
 class SofaScene;
 

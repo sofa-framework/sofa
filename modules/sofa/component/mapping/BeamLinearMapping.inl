@@ -306,7 +306,7 @@ const sofa::defaulttype::BaseMatrix* BeamLinearMapping<TIn, TOut>::getJ()
     if (matrixJ.get() == 0 || updateJ)
     {
         updateJ = false;
-        if (matrixJ.get() == 0 || matrixJ->rowBSize() != outStateSize || matrixJ->colBSize() != inStateSize )
+        if (matrixJ.get() == 0 || (unsigned int)matrixJ->rowBSize() != outStateSize || (unsigned int)matrixJ->colBSize() != inStateSize )
         {
             matrixJ.reset(new MatrixType(outStateSize * NOut, inStateSize * NIn));
         }

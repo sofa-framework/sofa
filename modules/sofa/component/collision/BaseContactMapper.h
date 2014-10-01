@@ -53,6 +53,23 @@ namespace component
 namespace collision
 {
 
+class GenerateStirngID
+{
+public :
+
+    static const int length = 15;
+
+    static std::string generate(){
+        static std::string alphanum = "0123456789!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        std::string result;
+        result.resize(length);
+        for (int i = 0; i < length; i++)
+            result[i] = alphanum[rand() % length];
+
+        return result;
+    }
+};
+
 using sofa::defaulttype::Vector3;
 
 /// This class will be specialized to whatever mapper is required
@@ -120,6 +137,7 @@ public:
         obj->setCollisionModel(model);
         return obj;
     }
+
 
 };
 

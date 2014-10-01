@@ -94,7 +94,7 @@ void AverageCoord<DataTypes>::update()
 
 //    cerr<<"AverageCoord<DataTypes>::update, c= "<< c << endl;
 
-    f_average.setValue(c);
+    f_average.setValue(c,true);
 }
 
 template<class DataTypes>

@@ -43,10 +43,12 @@ namespace component
 namespace interactionforcefield
 {
 
+
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::init()
 {
     this->SpringForceField<DataTypes>::init();
+    //serr<<"StiffSpringForceField<DataTypes> initialized "<<sendl;
 }
 
 template<class DataTypes>
@@ -73,13 +75,14 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
         potentialEnergy += elongation * elongation * spring.ks / 2;
-//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
-//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
-//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;
         Deriv relativeVelocity = v2[b]-v1[a];
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
         Deriv force = u*forceIntensity;
+//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
+//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
+//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;
+//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, force = "<< force <<sendl;
         f1[a]+=force;
         f2[b]-=force;
         if (this->maskInUse)

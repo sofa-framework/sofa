@@ -146,9 +146,9 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
     if (!m_constraint)
     {
         // Get the mechanical model from mapper1 to fill the constraint vector
-        MechanicalState1* mmodel1 = mapper1.createMapping();
+        MechanicalState1* mmodel1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
         // Get the mechanical model from mapper2 to fill the constraints vector
-        MechanicalState2* mmodel2 = selfCollision ? mmodel1 : mapper2.createMapping();
+        MechanicalState2* mmodel2 = selfCollision ? mmodel1 : mapper2.createMapping(GenerateStirngID::generate().c_str());
         m_constraint = sofa::core::objectmodel::New<constraintset::UnilateralInteractionConstraint<Vec3Types> >(mmodel1, mmodel2);
         m_constraint->setName( getName() );
         setInteractionTags(mmodel1, mmodel2);

@@ -156,9 +156,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
       */
-    virtual OutCoord difference( const OutCoord& a, const OutCoord& b )
+    virtual OutDeriv difference( const OutCoord& a, const OutCoord& b )
     {
-        return a-b;
+        return Out::coordDifference(a,b);
     }
 
     /** Possible child force pre-treatment, does nothing by default
@@ -320,16 +320,15 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 //        cout<<"new child positions xc1 = " << xc1 << endl;
 
         // ================ test applyJ: compute the difference between propagated displacements and velocities
-        OutVecCoord dxc(Nc),dxcv(Nc);
+        OutVecDeriv dxc(Nc);
         for(unsigned i=0; i<Nc; i++ ){
             dxc[i] = difference( xc1[i], xc[i] );
-            dxcv[i] = vc[i]; // convert VecDeriv to VecCoord for comparison. Because strangely enough, Coord-Coord substraction returns a Coord (should be a Deriv)
         }
-        if( this->vectorMaxDiff(dxc,dxcv)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(dxc,vc)>this->epsilon()*errorMax ){
             succeed = false;
             ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax  << endl
                           << "position change = " << dxc << endl
-                          << "velocity        = " << dxcv << endl;
+                          << "velocity        = " << vc << endl;
         }
 
 
