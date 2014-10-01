@@ -5,7 +5,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QAction>
-#include <GL/glut.h>
+#include <sofa/helper/system/glut.h>
 #include <iostream>
 using std::cout;
 using std::endl;

@@ -10,12 +10,12 @@ endif()
 
 include_directories("${SOFA_APPLICATIONS_PROJECTS_DIR}/Standard_test")
 
-if(SOFA-PLUGIN_SOFAPYTHON)
-    AddCompilerDefinitions("REGISTRATION_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
-    list(APPEND SOURCE_FILES "python_test_list.cpp")
-    AddLinkerDependencies(SofaPython)
-    include(./scenes/python/python.cmake)
-endif()
+#if(SOFA-PLUGIN_SOFAPYTHON)
+#    AddCompilerDefinitions("REGISTRATION_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
+#    list(APPEND SOURCE_FILES "python_test_list.cpp")
+#    AddLinkerDependencies(SofaPython)
+#    include(./scenes/python/python.cmake)
+#endif()
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
 
