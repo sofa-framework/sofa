@@ -180,11 +180,57 @@ class GenericRigidJoint:
             self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
             self.mapping = self.node.createObject('ProjectionMapping', set=concat(set), offset=concat(offset))
             self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance)
-            self.type = self.node.createObject('ConstraintValue') # cannot be stabilized for now
+            self.type = self.node.createObject('Stabilization')
             self.constraint = self.node.createObject('UnilateralConstraint')
 
     def addDamper( self, damping ):
             return self.node.createObject( 'UniformVelocityDampingForceField', dampingCoefficient=damping )
+
+    class VelocityController:
+        def __init__(self, node, mask, velocities, compliance):
+            self.node = node.createChild( "controller" )
+            position = [0] * len(mask)
+            self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
+            self.mapping = self.node.createObject('MaskMapping', dofs=concat(mask))
+            self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance, isCompliance=1)
+            self.type = self.node.createObject('VelocityConstraintValue', velocities=concat(velocities))
+
+        def setVelocities( self, velocities ):
+            self.type.velocities = concat(velocities)
+
+
+    class PositionController:
+        def __init__(self, node, masks, offsets, compliance):
+            self.node = node.createChild( "controller" )
+
+            set = []
+            position = [0] * len(masks)
+
+            for i in range(len(masks)):
+                set = set + [0] + masks[i]
+
+            self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
+            self.mapping = self.node.createObject('ProjectionMapping', set=concat(set), offset=concat(offsets))
+            self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance, isCompliance=0)
+            self.type = self.node.createObject('Stabilization')
+
+        def setOffsets( self, offsets ):
+            self.mapping.offset = concat(offsets)
+
+
+    class ForceController:
+        def __init__(self, node, mask, forces):
+            self.node = node.createChild( "controller" )
+
+            position = [0] * len(mask)
+            points = numpy.arange(0,len(mask)+1,1)
+
+            self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
+            self.mapping = self.node.createObject('MaskMapping', dofs=concat(mask))
+            self.force = self.node.createObject('ConstantForceField', template='Vec1'+template_suffix, forces=concat(forces), points=concat(points.tolist()) )
+
+        def setForces( self, forces ):
+            self.force.forces = concat(forces)
 
 
 
@@ -224,7 +270,7 @@ class CompleteRigidJoint:
             self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
             self.mapping = self.node.createObject('ProjectionMapping', set=concat(set), offset=concat(offset))
             self.compliance = self.node.createObject('DiagonalCompliance', name='compliance', compliance=concat(compliances))
-            self.type = self.node.createObject('ConstraintValue') # cannot be stabilized for now
+            self.type = self.node.createObject('Stabilization')
             self.constraint = self.node.createObject('UnilateralConstraint')
 
     def addLimits( self, masks, limits, compliances ):
@@ -252,6 +298,19 @@ class HingeRigidJoint(GenericRigidJoint):
         mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
 
+    def addPositionController( self, offset, compliance=0 ):
+        mask = [ (1 - d) for d in self.mask ]
+        return GenericRigidJoint.PositionController( self.node, [mask], [offset], compliance )
+
+    def addVelocityController( self, velocity, compliance=0 ):
+        mask = [ (1 - d) for d in self.mask ]
+        return GenericRigidJoint.VelocityController( self.node, mask, [velocity], compliance )
+
+    def addForceController( self, force ):
+        mask = [ (1 - d) for d in self.mask ]
+        return GenericRigidJoint.ForceController( self.node, mask, [force] )
+
+
 class SliderRigidJoint(GenericRigidJoint):
     ## Slider/Prismatic joint along the given axis (0->x, 1->y, 2->z)
 
@@ -266,6 +325,19 @@ class SliderRigidJoint(GenericRigidJoint):
     def addSpring( self, stiffness ):
         mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
+
+    def addPositionController( self, offset, compliance=0 ):
+        mask = [ (1 - d) for d in self.mask ]
+        return GenericRigidJoint.PositionController( self.node, [mask], [offset], compliance )
+
+    def addVelocityController( self, velocity, compliance=0 ):
+        mask = [ (1 - d) for d in self.mask ]
+        return GenericRigidJoint.VelocityController( self.node, mask, [velocity], compliance )
+
+    def addForceController( self, force ):
+        mask = [ (1 - d) for d in self.mask ]
+        return GenericRigidJoint.ForceController( self.node, mask, [force] )
+
 
 class CylindricalRigidJoint(GenericRigidJoint):
     ## Cylindrical joint along and around the given axis (0->x, 1->y, 2->z)
