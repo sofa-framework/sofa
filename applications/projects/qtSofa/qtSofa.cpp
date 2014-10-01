@@ -7,7 +7,7 @@
 #include <QApplication>
 #include <QResource>
 #include "QSofaMainWindow.h"
-#include <GL/glut.h>
+#include <sofa/helper/system/glut.h>
 #include <sofa/helper/ArgumentParser.h>
 #include <string>
 #include <iostream>
