@@ -54,6 +54,24 @@ std::vector<GenericMap*>*  GenericMap::s_instances=NULL;
 
 
 
+void GenericMap::allocVdartsBuffers()
+{
+    if (s_vdartsBuffers == NULL)
+    {
+        s_vdartsBuffers = new std::vector< std::vector<Dart>* >[NB_THREAD];
+        s_vintsBuffers = new std::vector< std::vector<unsigned int>* >[NB_THREAD];
+    } else {
+        s_vdartsBuffers->clear();
+        s_vintsBuffers->clear();
+    }
+    for(unsigned int i = 0; i < NB_THREAD; ++i)
+    {
+        s_vdartsBuffers[i].reserve(8);
+        s_vintsBuffers[i].reserve(8);
+            // prealloc ?
+    }
+}
+
 GenericMap::GenericMap():
 	m_nextMarkerId(0)
 {
@@ -103,17 +121,7 @@ GenericMap::GenericMap():
 
 	s_instances->push_back(this);
 
-	if (s_vdartsBuffers == NULL)
-	{
-		s_vdartsBuffers = new std::vector< std::vector<Dart>* >[NB_THREAD];
-		s_vintsBuffers = new std::vector< std::vector<unsigned int>* >[NB_THREAD];
-		for(unsigned int i = 0; i < NB_THREAD; ++i)
-		{
-			s_vdartsBuffers[i].reserve(8);
-			s_vintsBuffers[i].reserve(8);
-				// prealloc ?
-		}
-	}
+    allocVdartsBuffers();
 
 
 	for(unsigned int i = 0; i < NB_ORBITS; ++i)
@@ -200,6 +208,8 @@ void GenericMap::init(bool addBoundaryMarkers)
 
 void GenericMap::clear(bool removeAttrib)
 {
+    removeMarkVectors();
+    allocVdartsBuffers();
 	if (removeAttrib)
 		init();
 	else
