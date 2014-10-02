@@ -454,9 +454,10 @@ public:
      * @param mapf map from which data are moved);
      */
     void moveData(GenericMap &mapf);
+
 private:
     void allocVdartsBuffers();
-
+    void deleteBuffers();
 } ;
 
 
