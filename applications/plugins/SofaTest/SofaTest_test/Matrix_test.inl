@@ -48,7 +48,8 @@ TEST_F(TestMatrix, crs1_vector_product )
 //    EXPECT_TRUE(NROWS%BROWS==0 && NCOLS%BCOLS==0) << "Error: CompressedRowSparseMatrix * Vector crashes when the size of the matrix is not a multiple of the size of the matrix blocks. Aborting this test, and reporting a failure."; // otherwise the product crashes
 //    crs1.opMulV(&fullVec_nrows_result,&fullVec_ncols);
     fullVec_nrows_result = crs1 * fullVec_ncols;
-    ASSERT_TRUE(vectorMaxDiff(fullVec_nrows_reference,fullVec_nrows_result) < epsilon() );
+    ASSERT_FALSE(vectorMaxDiff(fullVec_nrows_reference,fullVec_nrows_result) < epsilon() ); // create an error to check if I get a message from Jenkins
+//    ASSERT_TRUE(vectorMaxDiff(fullVec_nrows_reference,fullVec_nrows_result) < epsilon() );
 }
 
 
