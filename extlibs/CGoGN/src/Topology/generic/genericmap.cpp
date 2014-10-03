@@ -132,6 +132,8 @@ GenericMap::GenericMap():
 
 void GenericMap::deleteBuffers()
 {
+    typedef typename std::vector< std::vector<Dart>* >::iterator VectorVectorDartIterator;
+    typedef typename std::vector< std::vector<unsigned int>* >::iterator VectorVectorUnsignedIterator;
     for(unsigned int i = 0; i < NB_THREAD; ++i)
     {
         for (VectorVectorDartIterator it =s_vdartsBuffers[i].begin(); it != s_vdartsBuffers[i].end(); ++it)
@@ -143,8 +145,6 @@ void GenericMap::deleteBuffers()
 
 GenericMap::~GenericMap()
 {
-    typedef typename std::vector< std::vector<Dart>* >::iterator VectorVectorDartIterator;
-    typedef typename std::vector< std::vector<unsigned int>* >::iterator VectorVectorUnsignedIterator;
     for(unsigned int i = 0; i < NB_ORBITS; ++i)
     {
         if(isOrbitEmbedded(i))
