@@ -71,6 +71,6 @@ TEST_F(TestMatrix, crs_matrix_addition )
     ASSERT_TRUE( matrixMaxDiff(mat*3,crs2) < 100*epsilon() );
 
     crs2 -= crs1;
-//    ASSERT_TRUE( matrixMaxDiff(mat*2,crs2) < 100*epsilon() );
     ASSERT_FALSE( matrixMaxDiff(mat*2,crs2) < 100*epsilon() ); // create an error to check if I get a message from Jenkins
+    //    ASSERT_TRUE( matrixMaxDiff(mat*2,crs2) < 100*epsilon() );
 }
