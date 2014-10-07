@@ -38,6 +38,12 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
 	enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
+    virtual void init()
+    {
+        this->getToModel()->resize( pairs.getValue().size() );
+        AssembledMapping<TIn, TOut>::init();
+    }
+
 	virtual void apply(typename self::out_pos_type& out, 
 	                   const typename self::in_pos_type& in )  {
 		assert( this->Nout == this->Nin );
@@ -137,7 +143,11 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-
+        virtual void init()
+        {
+            this->getToModels()[0]->resize( pairs.getValue().size() );
+            AssembledMultiMapping<TIn, TOut>::init();
+        }
 
         virtual void apply(typename self::out_pos_type& out,
                            const vector<typename self::in_pos_type>& in)  {
