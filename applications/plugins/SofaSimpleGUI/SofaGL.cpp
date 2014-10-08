@@ -178,6 +178,7 @@ void SofaGL::getSceneBBox( float* xmin, float* ymin, float* zmin, float* xmax, f
 {
     SReal xm, xM, ym, yM, zm, zM;
     _sofaScene->getBoundingBox(&xm,&xM,&ym,&yM,&zm,&zM);
+//    cerr << "SofaGL::getSceneBBox, xm=" << xm <<", xM=" << xM << endl;
     *xmin=xm, *xmax=xM, *ymin=ym, *ymax=yM, *zmin=zm, *zmax=zM;
 }
 
