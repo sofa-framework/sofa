@@ -84,8 +84,18 @@ public:
     /// Update contexts. Required before drawing the scene if root flags are modified.
     virtual void updateVisualContext(Node* root);
 
-    /// Compute the bounding box of the scene. If init is set to "true", then minBBox and maxBBox will be initialised to a default value
+    /** Compute the bounding box of the scene.
+     * If init is set to "true", then minBBox and maxBBox will be initialised to a default value
+     * @warning MechanicalObjects with showObject member set to false are ignored
+     * @sa computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox)
+     */
     virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true);
+
+    /** Compute the bounding box of the scene.
+     * Includes all objects, may they be displayed or not.
+     * @sa computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true)
+     */
+    virtual void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox);
 
     /// Render the scene
     virtual void draw(sofa::core::visual::VisualParams* vparams, Node* root);
