@@ -73,7 +73,11 @@ void SofaScene::setScene(const std::string& fileName )
 
     SofaSimulation::init(_groot.get());
 
-//    open(fileName.c_str() );
+    printGraph();
+    SReal xm,xM,ym,yM,zm,zM;
+    getBoundingBox(&xm,&xM,&ym,&yM,&zm,&zM);
+    cout<<"SofaScene::setScene, xm="<<xm<<", xM"<< xM<< ", ym="<< ym<<", yM="<< yM<<", zm="<< zm<<", zM="<< zM<<endl;
+
 }
 
 void SofaScene::setScene( Node::SPtr node )
@@ -113,7 +117,7 @@ void SofaScene::reset()
 void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax )
 {
     SReal pmin[3], pmax[3];
-    computeBBox( _groot.get(), pmin, pmax );
+    computeTotalBBox( _groot.get(), pmin, pmax );
     *xmin = pmin[0]; *xmax = pmax[0];
     *ymin = pmin[1]; *ymax = pmax[1];
     *zmin = pmin[2]; *zmax = pmax[2];
