@@ -93,6 +93,7 @@ public:
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
     Data< vector< Real > > f_restLengths;		///< rest length of each link
+    Data< Real >           d_showObjectScale; ///< drawing size
 
     virtual void init();
 
