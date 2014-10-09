@@ -178,9 +178,9 @@ protected:
 					Mat<M,K, Real1> RBlockData(0.0);
 					//multiply the block, could be done more efficiently
 
-					for (int i = 0; i < M ; i++)
-						for (int j = 0; j < K; j++)
-							for (int k = 0; k < N; k++)
+                    for (unsigned int i = 0; i < M ; i++)
+                        for (unsigned int j = 0; j < K; j++)
+                            for (unsigned int k = 0; k < N; k++)
 								RBlockData(i,j) += ABlockData(i,k)*BBlockData(k,j);
 
 					R.blocAdd(ArBlockId, BColIndex, RBlockData.ptr());
@@ -208,7 +208,7 @@ protected:
 		Mat<M,N, Real1> AMatrixBuffer;
 		Mat<M,K, Real1> BMatrixBuffer;
 
-		for(size_t AtrBlockId = 0 ; AtrBlockId < At.nBlocRow ; ++AtrBlockId)
+        for(size_t AtrBlockId = 0 ; AtrBlockId < (size_t)At.nBlocRow ; ++AtrBlockId)
 		{
 			for(AColBlockIter AtColIter = At.bRowBegin(AtrBlockId); AtColIter < At.bRowEnd(AtrBlockId) ; AtColIter++)
 			{
@@ -230,9 +230,9 @@ protected:
 					Mat<N,K, Real1> RBlockData(0.0);
 					//multiply the block, could be done more efficiently
 
-					for (int i = 0; i < N ; i++)
-						for (int j = 0; j < K; j++)
-							for (int k = 0; k < M; k++)
+                    for (unsigned int i = 0; i < N ; i++)
+                        for (unsigned int j = 0; j < K; j++)
+                            for (unsigned int k = 0; k < M; k++)
 								RBlockData(i,j) += ABlockData(k,i)*BBlockData(k,j);
 
 					R.blocAdd(AColIndex, BColIndex, RBlockData.ptr());
@@ -258,14 +258,14 @@ protected:
 
 public:
 
-	virtual void addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& /*f1*/, DataVecDeriv2& /*f2*/, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& /*v1*/, const DataVecDeriv2& /*v2*/)
+    virtual void addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& /*f1*/, DataVecDeriv2& /*f2*/, const DataVecCoord1& /*x1*/, const DataVecCoord2& /*x2*/, const DataVecDeriv1& /*v1*/, const DataVecDeriv2& /*v2*/)
     {
 //		std::cout << "x1 " << x1 << std::endl;
 //		std::cout << "x2 " << x2 << std::endl;
 //		std::cout << std::endl;
     }
 
-	virtual void addDForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& /*df1*/, DataVecDeriv2& /*df2*/, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)
+    virtual void addDForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& /*df1*/, DataVecDeriv2& /*df2*/, const DataVecDeriv1& /*dx1*/, const DataVecDeriv2& /*dx2*/)
     {
 //		std::cout << "dx1 " << dx1 << std::endl;
 //		std::cout << "dx2 " << dx2 << std::endl;
