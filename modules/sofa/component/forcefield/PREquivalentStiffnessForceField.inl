@@ -95,7 +95,7 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
 }
 
 template<typename DataTypes>
-void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v)
+void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &/*v*/)
 {
     const VecCoord& X = x.getValue();
     m_pos = x.getValue();
@@ -116,7 +116,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         const Quaternion& q0Current = X[n+0].getOrientation();
         const Quaternion& q1Current = X[n+1].getOrientation();
         const Quaternion& q0Rest = m_restPos[n+0].getOrientation();
-        const Quaternion& q1Rest = m_restPos[n+1].getOrientation();
+//        const Quaternion& q1Rest = m_restPos[n+1].getOrientation();
 
         // compute x1 local rigid position and rotation (can be precomputed)
         const Pos& x1th = q0Rest.inverseRotate(x1Rest - x0Rest);
@@ -268,7 +268,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
 
     VecCoord displaced(dx.size());
 
-	const Real epsilon = 1e-10;
+//	const Real epsilon = 1e-10;
 	Real kFact = mparams->kFactor();
 
     for(size_t n = 0 ; n < nFrames-1 ; ++n)

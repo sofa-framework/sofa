@@ -14,15 +14,15 @@ namespace collision
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
-TBulletConvexHullModel<DataTypes>::TBulletConvexHullModel() :
-    _mstate(NULL)
-    ,computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal")),
-    CHPoints(initData(&CHPoints,"CHPoints", "points defining the convex hull")),
-    computeConvexHullDecomposition(initData(&computeConvexHullDecomposition,false,"computeConvexHullDecomposition","compute convex hull decomposition using HACD")),
-    drawConvexHullDecomposition(initData(&drawConvexHullDecomposition,false,"drawConvexHullDecomposition","draw convex hull decomposition using")),
-    positionDefined(initData(&positionDefined,false,"positionDefined","set to true if the collision model position is defined in the mechanical object" )),
-    margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet")),
-    concavityThreeshold(initData(&concavityThreeshold, (SReal)100, "concavityThreeshold","Threeshold used in the decomposition"))
+TBulletConvexHullModel<DataTypes>::TBulletConvexHullModel()
+    : _mstate(NULL)
+    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    , computeConvexHullDecomposition(initData(&computeConvexHullDecomposition,false,"computeConvexHullDecomposition","compute convex hull decomposition using HACD"))
+    , drawConvexHullDecomposition(initData(&drawConvexHullDecomposition,false,"drawConvexHullDecomposition","draw convex hull decomposition using"))
+    , CHPoints(initData(&CHPoints,"CHPoints", "points defining the convex hull"))
+    , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
+    , positionDefined(initData(&positionDefined,false,"positionDefined","set to true if the collision model position is defined in the mechanical object" ))
+    , concavityThreeshold(initData(&concavityThreeshold, (SReal)100, "concavityThreeshold","Threeshold used in the decomposition"))
 {
     bmsh = 0x0;
     enum_type = -1;
@@ -145,13 +145,13 @@ void TBulletConvexHullModel<DataTypes>::initBullet(){
         HACD::Vec3<long> * hacd_tri = new HACD::Vec3<long>[tri.size()];
         HACD::HACD convex_decomposotion;
 
-        for(int i = 0 ; i < ch_pts.size() ; ++i){
+        for(unsigned int i = 0 ; i < ch_pts.size() ; ++i){
             hacd_pts[i].X() = ch_pts[i][0];
             hacd_pts[i].Y() = ch_pts[i][1];
             hacd_pts[i].Z() = ch_pts[i][2];
         }
 
-        for(int i = 0 ; i < tri.size() ; ++i){
+        for(unsigned int i = 0 ; i < tri.size() ; ++i){
             hacd_tri[i].X() = tri[i][0];
             hacd_tri[i].Y() = tri[i][1];
             hacd_tri[i].Z() = tri[i][2];
@@ -333,7 +333,7 @@ void TBulletConvexHullModel<DataTypes>::draw_decomposition(const core::visual::V
         vparams->drawTool()->setPolygonMode(2,true);
         vparams->drawTool()->setPolygonMode(1,false);
 
-        for (int i=0; i<_ch_deco_colors.size(); i++)
+        for (unsigned int i=0; i<_ch_deco_colors.size(); i++)
         {
             vparams->drawTool()->setLightingEnabled(true);
             vparams->drawTool()->drawTriangles(_ch_deco_pts[i], _ch_deco_tri[i], _ch_deco_norms[i], _ch_deco_colors[i]);

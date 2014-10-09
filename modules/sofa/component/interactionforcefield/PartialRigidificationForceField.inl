@@ -236,7 +236,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 	 /**************************************** Add J0tKJ0 to global system **********************************************/
 
 	 _3_3_Matrix_Type K11MatrixBuffer;
-	 for(size_t k11RowIndex = 0 ; k11RowIndex < J0tKJ0->nBlocRow ; ++k11RowIndex)
+     for(size_t k11RowIndex = 0 ; k11RowIndex < (size_t)J0tKJ0->nBlocRow ; ++k11RowIndex)
 	 {
 		 for(_3_3_ColBlockConstIterator k11ColIter = J0tKJ0->bRowBegin(k11RowIndex); k11ColIter < J0tKJ0->bRowEnd(k11RowIndex) ; k11ColIter++)
 		 {
@@ -256,7 +256,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 	 /**************************************** Add JrtJ1tKJ1Jr to global system **********************************************/
 
 	 _6_6_Matrix_Type K22MatrixBuffer;
-	 for(size_t k22RowIndex = 0 ; k22RowIndex < JrtJ1tKJ1Jr->nBlocRow ; ++k22RowIndex)
+     for(size_t k22RowIndex = 0 ; k22RowIndex < (size_t)JrtJ1tKJ1Jr->nBlocRow ; ++k22RowIndex)
 	 {
 		 for(_6_6_ColBlockConstIterator k22ColIter = JrtJ1tKJ1Jr->bRowBegin(k22RowIndex); k22ColIter < JrtJ1tKJ1Jr->bRowEnd(k22RowIndex) ; k22ColIter++)
 		 {
@@ -275,7 +275,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 
 	 _3_6_Matrix_Type K12MatrixBuffer;
 
-	 for(size_t k12RowIndex = 0 ; k12RowIndex < J0tKJ1Jr->nBlocRow ; ++k12RowIndex)
+     for(size_t k12RowIndex = 0 ; k12RowIndex < (size_t)J0tKJ1Jr->nBlocRow ; ++k12RowIndex)
 	 {
 		 for(_3_6_ColBlockConstIterator k12ColIter = J0tKJ1Jr->bRowBegin(k12RowIndex) ; k12ColIter < J0tKJ1Jr->bRowEnd(k12RowIndex) ; k12ColIter++ )
 		 {
@@ -292,7 +292,7 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 
 	 _6_3_Matrix_Type K21MatrixBuffer;
 
-	 for(size_t k21RowIndex = 0 ; k21RowIndex < JrtJ1tKJ0->nBlocRow ; ++k21RowIndex)
+     for(size_t k21RowIndex = 0 ; k21RowIndex < (size_t)JrtJ1tKJ0->nBlocRow ; ++k21RowIndex)
 	 {
 		 for(_6_3_ColBlockConstIterator k21ColIter = JrtJ1tKJ0->bRowBegin(k21RowIndex) ; k21ColIter < JrtJ1tKJ0->bRowEnd(k21RowIndex) ; k21ColIter++)
 		 {

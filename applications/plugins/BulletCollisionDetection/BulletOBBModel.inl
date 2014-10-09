@@ -12,12 +12,18 @@ namespace collision
 {
 
 template <class DataTypes>
-TBulletOBBModel<DataTypes>::TBulletOBBModel() : TOBBModel<DataTypes>(),_bt_cshape(0x0),
-margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet")){}
+TBulletOBBModel<DataTypes>::TBulletOBBModel()
+    : TOBBModel<DataTypes>()
+    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    , _bt_cshape(0x0)
+{}
 
 template<class DataTypes>
-TBulletOBBModel<DataTypes>::TBulletOBBModel(core::behavior::MechanicalState<DataTypes>* _mstate ) : TOBBModel<DataTypes>(_mstate),_bt_cshape(0x0),
-    margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet")){}
+TBulletOBBModel<DataTypes>::TBulletOBBModel(core::behavior::MechanicalState<DataTypes>* _mstate )
+    : TOBBModel<DataTypes>(_mstate)
+    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    , _bt_cshape(0x0)
+{}
 
 static btRigidBody* localCreateRigidBody(float mass, const btTransform& startTransform,btCollisionShape* shape,float processingThreshold)
 {
@@ -67,7 +73,7 @@ void TBulletOBBModel<DataTypes>::initBullet(){
         btBoxShape * obb = new btBoxShape(bex);
        // obb->setMargin(marginValue);
         //obb->setMargin(0);
-        obb->setUserPointer((void*)i);
+        obb->setUserPointer((void*)(size_t)i);
 
         _garbage.push(obb);
         _bt_cshape->addChildShape(trans,obb);

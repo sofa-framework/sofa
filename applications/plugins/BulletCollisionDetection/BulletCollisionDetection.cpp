@@ -126,11 +126,11 @@ void BulletCollisionDetection::beginNarrowPhase(){
     }
 }
 
-void BulletCollisionDetection::draw(const core::visual::VisualParams* vparams)
+void BulletCollisionDetection::draw(const core::visual::VisualParams* /*vparams*/)
 {
 //    if (!bDraw.getValue()) return;
 
-        /*const*/ DetectionOutputMap & outputsMap = const_cast<DetectionOutputMap &>(this->getDetectionOutputs());
+//        /*const*/ DetectionOutputMap & outputsMap = const_cast<DetectionOutputMap &>(this->getDetectionOutputs());
 
 //        glDisable(GL_LIGHTING);
 //        glColor3f(1.0, 0.0, 1.0);
