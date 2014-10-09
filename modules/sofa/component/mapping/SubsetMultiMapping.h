@@ -30,6 +30,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 namespace sofa
 {
@@ -69,8 +70,11 @@ public:
     typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
     /// Correspondance array
     typedef core::topology::BaseMeshTopology::SetIndex IndexArray;
+    typedef defaulttype::Mat<3,3, Real> Mat33;
+    typedef linearsolver::CompressedRowSparseMatrix<Mat33> Jacobian;
 
-    virtual void init();
+
+    virtual void bwdInit();
 
     void addPoint(const core::BaseState* fromModel, int index);
 
@@ -78,14 +82,12 @@ public:
     virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
     virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
+    virtual void applyJT( const helper::vector<InMatrixDeriv* >& dOut, const helper::vector<const OutMatrixDeriv* >& dIn);
 
-    /// @todo implement this
-    virtual void applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& );
 
-#ifdef SOFA_HAVE_EIGEN2
     /// Experimental API used to handle multimappings in matrix assembly. Returns pointers to matrices associated with parent states, consistently with  getFrom().
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
-#endif
+
 
 
     Data< vector<unsigned> > indexPairs;                     ///< for each child, its parent and index in parent (two by two)
@@ -104,7 +106,14 @@ protected :
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
 
-    vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    vector<defaulttype::BaseMatrix*> baseMatrices;
+
+    /// Jacobian of the mapping, in a vector
+    vector< Jacobian *> matricesJ;
+
+private :
+    /// Number of parents
+    unsigned int m_numParents;
 
 };
 
