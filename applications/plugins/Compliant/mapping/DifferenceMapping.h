@@ -27,14 +27,15 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
     typedef vector< index_pair > pairs_type;
 
 	Data< pairs_type > pairs;
+    Data< SReal > d_showObjectScale; ///< drawing size
 
 
 
 	
 	DifferenceMapping() 
-		: pairs( initData(&pairs, "pairs", "index pairs for computing deltas") ) {
-		
-	}
+        : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") )
+        , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
+    {}
 
 	enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
 
@@ -92,6 +93,33 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
         J.finalize();
 	}
 
+    void draw(const core::visual::VisualParams* vparams)
+    {
+        if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
+
+        typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
+        const pairs_type& p = pairs.getValue();
+
+        if( d_showObjectScale.getValue() == 0 )
+        {
+            vector< defaulttype::Vector3 > points(p.size()*2);
+            for(unsigned i=0; i<p.size(); i++ )
+            {
+                points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                points[i*2+1] = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+            }
+            vparams->drawTool()->drawLines ( points, 1, defaulttype::Vec<4,float> ( 1,1,0,1 ) );
+        }
+        else
+        {
+            for(unsigned i=0; i<p.size(); i++ )
+            {
+                defaulttype::Vector3 p0 = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                defaulttype::Vector3 p1 = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), defaulttype::Vec<4,float> ( 1,1,0,1 ) );
+            }
+        }
+    }
 	
 };
 

@@ -47,7 +47,8 @@ template <class TIn, class TOut>
 DistanceMapping<TIn, TOut>::DistanceMapping()
     : Inherit()
     , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections."))
+    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
+    , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
 {
 }
 
@@ -292,17 +293,32 @@ const vector<defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getKs()
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+    if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
+
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     SeqEdges links = edgeContainer->getEdges();
 
-    vector< Vector3 > points;
 
-    for(unsigned i=0; i<links.size(); i++ )
+
+    if( d_showObjectScale.getValue() == 0 )
     {
-        points.push_back( Vector3( TIn::getCPos(pos[links[i][0]]) ) );
-        points.push_back( Vector3( TIn::getCPos(pos[links[i][1]]) ));
+        vector< Vector3 > points;
+        for(unsigned i=0; i<links.size(); i++ )
+        {
+            points.push_back( Vector3( TIn::getCPos(pos[links[i][0]]) ) );
+            points.push_back( Vector3( TIn::getCPos(pos[links[i][1]]) ));
+        }
+        vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,1,0,1 ) );
     }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,1,0,1 ) );
+    else
+    {
+        for(unsigned i=0; i<links.size(); i++ )
+        {
+            Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
+            Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
+            vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), Vec<4,float> ( 1,1,0,1 ) );
+        }
+    }
 }
 
 
