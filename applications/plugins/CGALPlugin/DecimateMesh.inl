@@ -99,12 +99,12 @@ void DecimateMesh<DataTypes>::update()
     // Edge collapse simplification method
     sout << "DecimateMesh: Initial mesh has " << m_inVertices.getValue().size() << " vertices and " << m_inTriangles.getValue().size() << " triangles." << sendl;
     sout << "DecimateMesh: Processing mesh simplification..." << sendl;
-    if (m_edgesTarget != NULL)
+    if (m_edgesTarget != 0)
     {
         SMS::Count_stop_predicate<Surface> stop(m_edgesTarget.getValue());
         SMS::edge_collapse(surface, stop, CGAL::vertex_index_map( boost::get(CGAL::vertex_external_index,surface)).edge_index_map( boost::get(CGAL::edge_external_index,surface  )));
     }
-    else if (m_edgesRatio != NULL)
+    else if (m_edgesRatio != 0)
     {
         SMS::Count_ratio_stop_predicate<Surface> stop(m_edgesRatio.getValue());
         SMS::edge_collapse(surface, stop, CGAL::vertex_index_map( boost::get(CGAL::vertex_external_index,surface)).edge_index_map( boost::get(CGAL::edge_external_index,surface  )));
