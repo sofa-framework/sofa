@@ -1,12 +1,15 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"   >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+<CompliantAttachButtonSetting button="Left" />
 <Node 	name="Create here an example of the plugin" >
-    <MechanicalObject template="Vec3" position="0 0 0   0 -1 0" />
+    <MechanicalObject name="pendulum" template="Vec3" position="0 0 0   0 -1 0" showObject="1"  showObjectScale="5"  showIndices="1" />
+    <MeshTopology name="pendulumMesh" edges="0 1" drawEdges="1" position="@pendulum.position"/>
     <UniformMass />
     <Node>
         <MechanicalObject template="Vec1" />
-        <DistanceMapping links="0 1" />
+        <EdgeSetTopologyContainer edges="0 1" position="@../pendulum.position"/>
+        <DistanceMapping/>
         <UniformCompliance compliance="1.0" />
     </Node>
 </Node>
