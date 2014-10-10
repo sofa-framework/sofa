@@ -64,29 +64,29 @@ void SubsetMultiMapping<TIn, TOut>::bwdInit()
 
 
 
-    std::cout<<" bwd Init Call "<<std::endl;
+//    std::cout<<" bwd Init Call "<<std::endl;
 
     int s0 = this->fromModels[0]->getSize();
     int s1 = this->fromModels[1]->getSize();
-    std::cout<<"size from [0] = "<<s0<<"    -  size from [1] = "<<s1<<std::endl;
+//    std::cout<<"size from [0] = "<<s0<<"    -  size from [1] = "<<s1<<std::endl;
 
-    std::cout << "init inherit"<<std::endl;
+//    std::cout << "init inherit"<<std::endl;
     Inherit::init();
 
 
-    std::cout << "assert"<<std::endl;
+//    std::cout << "assert"<<std::endl;
 
     assert( indexPairs.getValue().size()%2==0 );
     const unsigned indexPairSize = indexPairs.getValue().size()/2;
 
-    std::cout << "resize"<<std::endl;
+//    std::cout << "resize"<<std::endl;
 
     this->toModels[0]->resize( indexPairSize );
 
 
     s0 = this->fromModels[0]->getSize();
     s1 = this->fromModels[1]->getSize();
-    std::cout<<"size from [0]"<<s0<<"    -  size from [1]"<<s1<<std::endl;
+//    std::cout<<"size from [0]"<<s0<<"    -  size from [1]"<<s1<<std::endl;
 
 
 
@@ -94,11 +94,11 @@ void SubsetMultiMapping<TIn, TOut>::bwdInit()
     unsigned Nin = TIn::deriv_total_size, Nout = Nin;
 
 
-    std::cout<<"before delete"<<std::endl;
+//    std::cout<<"before delete"<<std::endl;
 
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
-    std::cout<<"after delete"<<std::endl;
+//    std::cout<<"after delete"<<std::endl;
 
 //#ifdef SOFA_HAVE_EIGEN2
 
