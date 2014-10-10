@@ -96,7 +96,7 @@ protected:
 		
 		for(unsigned i = 0; i < n; ++i)
 			{
-				assert( !normal.empty() );
+			  assert( !normal.getValue().empty() );
 //				assert( std::abs( normal[i].norm() - 1 ) <= std::numeric_limits<SReal>::epsilon() );
 				
 				// first vector is normal
