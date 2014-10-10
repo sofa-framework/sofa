@@ -61,7 +61,7 @@ protected:
 		// local frames have been computed in assemble
 
 		assert( in.size() == out.size() );
-        assert( in.size() == penetrations.size() );
+        assert( in.size() == penetrations.getValue().size() );
 
 		unsigned n = in.size();
 
