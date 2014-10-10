@@ -49,6 +49,7 @@ DistanceMapping<TIn, TOut>::DistanceMapping()
     , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
     , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
+    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
 {
 }
 
@@ -308,7 +309,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
             points.push_back( Vector3( TIn::getCPos(pos[links[i][0]]) ) );
             points.push_back( Vector3( TIn::getCPos(pos[links[i][1]]) ));
         }
-        vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,1,0,1 ) );
+        vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
     else
     {
@@ -316,7 +317,7 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         {
             Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
             Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
-            vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), Vec<4,float> ( 1,1,0,1 ) );
+            vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
 }

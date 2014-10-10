@@ -28,6 +28,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
 	Data< pairs_type > pairs;
     Data< SReal > d_showObjectScale; ///< drawing size
+    Data< defaulttype::Vec4f > d_color; ///< drawing color
 
 
 
@@ -35,6 +36,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 	DifferenceMapping() 
         : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") )
         , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
+        , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
     {}
 
 	enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
@@ -97,6 +99,8 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
     {
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
+        glEnable(GL_LIGHTING);
+
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
         const pairs_type& p = pairs.getValue();
 
@@ -108,7 +112,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
                 points[i*2+1] = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
             }
-            vparams->drawTool()->drawLines ( points, 1, defaulttype::Vec<4,float> ( 1,1,0,1 ) );
+            vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
         }
         else
         {
@@ -116,7 +120,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
             {
                 defaulttype::Vector3 p0 = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
                 defaulttype::Vector3 p1 = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
-                vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), defaulttype::Vec<4,float> ( 1,1,0,1 ) );
+                vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
     }

@@ -169,6 +169,7 @@ public:
     Data< bool >  showVectors;
     Data< float > showVectorsScale;
     Data< int > drawMode;
+    Data< defaulttype::Vec4f > d_color;  ///< drawing color
     Data < bool > isToPrint;
 
     virtual void init();

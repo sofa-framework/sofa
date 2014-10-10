@@ -107,6 +107,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity"))
     , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display"))
     , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere"))
+    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,1,1), "showColor", "Color for object display"))
     , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
@@ -2779,11 +2780,11 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
         switch (drawMode.getValue())
         {
         case 0:
-            vparams->drawTool()->drawPoints(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawPoints(positions,scale,Vec<4,float>(d_color.getValue()));
             break;
         case 1:
             glEnable(GL_LIGHTING);
-            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(1.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawSpheres(positions,scale,Vec<4,float>(d_color.getValue()));
             break;
         case 2:
             glEnable(GL_LIGHTING);
