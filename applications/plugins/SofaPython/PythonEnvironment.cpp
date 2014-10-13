@@ -50,11 +50,6 @@ namespace sofa
 namespace simulation
 {
 
-
-static bool m_Initialized = false;
-
-
-
 void PythonEnvironment::Init()
 {
     // Initialize the Python Interpreter
