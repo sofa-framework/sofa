@@ -74,6 +74,16 @@ else:
     import code
     import atexit
 
+
+    _cleanup = None
+
+    def _register( c ):
+        global _cleanup
+        if _cleanup: _cleanup()
+
+        _cleanup = c
+
+
     class Console(code.InteractiveConsole):
 
         def __init__(self, locals = None, timeout = 100):
@@ -84,6 +94,7 @@ else:
 
             'timeout' (in milliseconds) sets how often is the console polled.
             """
+            
             code.InteractiveConsole.__init__(self, locals)
 
             if timeout >= 0:
@@ -95,6 +106,8 @@ else:
                 self.timer = QtCore.QTimer()
                 self.timer.timeout.connect( callback )
                 self.timer.start( timeout )
+
+                _register( lambda: self.timer.stop() )
 
         # execute next command, blocks on console input
         def next(self):
