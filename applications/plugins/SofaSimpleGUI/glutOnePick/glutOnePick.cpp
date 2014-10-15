@@ -256,10 +256,9 @@ int main(int argc, char** argv)
         sofaScene->setScene( oneTetra() );
     }
     else
-        sofaScene->setScene(fileName);
+        sofaScene->open(fileName);
 
     sofaGL = new SofaGL(sofaScene);
-//    sofaGL->init();
 
     // initial viewpoint
     camera.setlookAt ( 0,0,25,    0.0, 0.0, 0.0,    0.0, 1.0, 0.0);
