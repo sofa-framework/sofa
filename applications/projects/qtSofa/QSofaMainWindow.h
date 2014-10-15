@@ -50,6 +50,10 @@ public slots:
      */
     void open();
     /**
+     * @brief Clear the scene and re-open the scene previously opened, if any.
+     */
+    void reload();
+    /**
      * @brief Set the simulation time step
      * @param ms Value of the time step, in milliseconds.
      */
@@ -65,6 +69,7 @@ public slots:
 protected:
     QAction* _playPauseAct;  // play/pause
     bool _fullScreen; ///< true if currently displaying in full screen mode
+    QString _fileName;  ///< name of the scene file opened.
 
 };
 
