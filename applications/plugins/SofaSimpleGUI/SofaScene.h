@@ -39,7 +39,7 @@ protected:
 
     Node::SPtr _groot; ///< root of the scene
     Node::SPtr _iroot; ///< root of the interactors, child of _groot
-    std::string _currentFileName; ///< Name of the current scene
+//    std::string _currentFileName; ///< Name of the current scene
 
 public:
     /**
@@ -58,7 +58,7 @@ public:
      * @brief Load a scene file. The previous scene graph, if any, is deleted.
      * @param fileName Scene file to load
      */
-    void setScene( const std::string& fileName );
+    void open( const std::string& fileName );
     /**
      * @brief Set the scene graph. The previous scene graph, if any, is deleted.
      * @param graph the scene to simulate

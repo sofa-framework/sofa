@@ -21,7 +21,7 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
 {
     setFocusPolicy(Qt::ClickFocus);
 
-    mainViewer = new QSofaViewer(&sofaScene,this);
+    mainViewer = new QSofaViewer(&sofaScene,NULL,this);
     setCentralWidget(mainViewer);
 
     QToolBar* toolbar = addToolBar(tr("Controls"));
@@ -86,10 +86,10 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
         reloadAct->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_R));
         reloadAct->setStatusTip(tr("Reloading scene…"));
         reloadAct->setToolTip(tr("Reload file and restart from the beginning"));
-        connect(reloadAct, SIGNAL(triggered()), &sofaScene, SLOT(reload()));
+        connect(reloadAct, SIGNAL(triggered()), this, SLOT(reload()));
         this->addAction(reloadAct);
         fileMenu->addAction(reloadAct);
-        toolbar->addAction(reloadAct);
+//        toolbar->addAction(reloadAct);
     }
 
     // viewAll
@@ -149,7 +149,7 @@ void QSofaMainWindow::initSofa(string fileName )
         sofaScene.setScene(oneTetra());
     }
     else {
-        sofaScene.setScene(fileName);
+        sofaScene.open(fileName.c_str());
     }
     QMessageBox::information( this, tr("Tip"), tr("Space to start/stop,\n\n"
                                                   "Shift-Click and drag the control points to interact. Use Ctrl-Shift-Click to select Interactors only\n"
@@ -170,10 +170,20 @@ void QSofaMainWindow::open()
 {
     sofaScene.pause();
     std::string path = std::string(QTSOFA_SRC_DIR) + "/../examples";
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open scene file"), path.c_str(), tr("Scene Files (*.scn *.xml *.py)"));
-    if( fileName.size()>0 )
-        sofaScene.open(fileName.toStdString().c_str());
+    _fileName = QFileDialog::getOpenFileName(this, tr("Open scene file"), path.c_str(), tr("Scene Files (*.scn *.xml *.py)"));
+    if( _fileName.size()>0 )
+        sofaScene.open(_fileName.toStdString().c_str());
 }
+
+void QSofaMainWindow::reload() {
+    if( _fileName.size()==0 )
+    {
+        QMessageBox::information( this, tr("Error"), tr("No file to reload") );
+        return;
+    }
+    sofaScene.open(_fileName.toStdString().c_str());
+}
+
 
 void QSofaMainWindow::setDt( int milis ) { sofaScene.setTimeStep( milis/1000.0 ); }
 
@@ -190,7 +200,7 @@ void QSofaMainWindow::toggleFullScreen()
 
 void QSofaMainWindow::createAdditionalViewer()
 {
-    QSofaViewer* additionalViewer = new QSofaViewer(&sofaScene, this);
+    QSofaViewer* additionalViewer = new QSofaViewer(&sofaScene, mainViewer, this);
     QDockWidget* additionalViewerDock = new QDockWidget(tr("Additional Viewer"), this);
     additionalViewerDock->setWidget(additionalViewer);
     addDockWidget(Qt::LeftDockWidgetArea, additionalViewerDock);

@@ -35,8 +35,8 @@ public slots:
      * @param filename new scene to open
      */
     void open(const char* filename);
-    /// re-open the current scene
-    void reload();
+//    /// re-open the current scene
+//    void reload();
     /// Apply one simulation time step
     void step();
     /// Set the length of the simulation time step

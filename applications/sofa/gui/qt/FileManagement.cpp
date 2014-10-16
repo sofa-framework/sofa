@@ -52,7 +52,7 @@ QString getExistingDirectory ( QWidget* parent, const QString & dir, const char 
 #else
     return Q3FileDialog::getExistingDirectory( dir, parent, name, caption );
 #endif
-};
+}
 
 QString getOpenFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
 {
@@ -64,7 +64,7 @@ QString getOpenFileName ( QWidget* parent, const QString & startWith, const QStr
 #else
     return Q3FileDialog::getOpenFileName ( startWith, filter, parent, name, caption, selectedFilter );
 #endif
-};
+}
 
 QString getSaveFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
 {
@@ -76,7 +76,7 @@ QString getSaveFileName ( QWidget* parent, const QString & startWith, const QStr
 #else
     return Q3FileDialog::getSaveFileName ( startWith, filter, parent, name, caption, selectedFilter );
 #endif
-};
+}
 
 void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool recursive, const std::vector< QString > &filter )
 {
