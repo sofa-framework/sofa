@@ -106,6 +106,9 @@ public:
     /// Print all object in the graph in XML format
     virtual void exportXML(Node* root, const char* fileName=NULL);
 
+    /// Print all objects in the graph in the given file (format is given by the filename extension)
+    virtual void exportGraph(Node* root, const char* filename=NULL);
+
     /// Dump the current state in the given stream
     virtual void dumpState( Node* root, std::ofstream& out );
 
