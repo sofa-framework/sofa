@@ -66,8 +66,8 @@ void SubsetMultiMapping<TIn, TOut>::bwdInit()
 
 //    std::cout<<" bwd Init Call "<<std::endl;
 
-    int s0 = this->fromModels[0]->getSize();
-    int s1 = this->fromModels[1]->getSize();
+//    int s0 = this->fromModels[0]->getSize();
+//    int s1 = this->fromModels[1]->getSize();
 //    std::cout<<"size from [0] = "<<s0<<"    -  size from [1] = "<<s1<<std::endl;
 
 //    std::cout << "init inherit"<<std::endl;
@@ -84,8 +84,8 @@ void SubsetMultiMapping<TIn, TOut>::bwdInit()
     this->toModels[0]->resize( indexPairSize );
 
 
-    s0 = this->fromModels[0]->getSize();
-    s1 = this->fromModels[1]->getSize();
+//    s0 = this->fromModels[0]->getSize();
+//    s1 = this->fromModels[1]->getSize();
 //    std::cout<<"size from [0]"<<s0<<"    -  size from [1]"<<s1<<std::endl;
 
 
