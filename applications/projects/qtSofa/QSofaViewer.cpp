@@ -23,8 +23,8 @@ GLfloat zfar = 35;
 GLfloat DegToRad = 3.1415927 / 180;
 
 
-QSofaViewer::QSofaViewer(sofa::simplegui::QSofaScene *sofaScene, QWidget *parent) :
-    QGLWidget(parent), _sofaScene(sofaScene), _sofaGL(0)
+QSofaViewer::QSofaViewer(sofa::simplegui::QSofaScene *sofaScene, QGLWidget* contextSharing, QWidget *parent) :
+    QGLWidget(parent, contextSharing), _sofaScene(sofaScene), _sofaGL(0)
 {
     _drag = NULL;
 	connect(sofaScene, SIGNAL(opened()), this, SLOT(reset()));

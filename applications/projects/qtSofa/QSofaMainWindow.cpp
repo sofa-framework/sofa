@@ -21,7 +21,7 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
 {
     setFocusPolicy(Qt::ClickFocus);
 
-    mainViewer = new QSofaViewer(&sofaScene,this);
+    mainViewer = new QSofaViewer(&sofaScene,NULL,this);
     setCentralWidget(mainViewer);
 
     QToolBar* toolbar = addToolBar(tr("Controls"));
@@ -200,7 +200,7 @@ void QSofaMainWindow::toggleFullScreen()
 
 void QSofaMainWindow::createAdditionalViewer()
 {
-    QSofaViewer* additionalViewer = new QSofaViewer(&sofaScene, this);
+    QSofaViewer* additionalViewer = new QSofaViewer(&sofaScene, mainViewer, this);
     QDockWidget* additionalViewerDock = new QDockWidget(tr("Additional Viewer"), this);
     additionalViewerDock->setWidget(additionalViewer);
     addDockWidget(Qt::LeftDockWidgetArea, additionalViewerDock);
