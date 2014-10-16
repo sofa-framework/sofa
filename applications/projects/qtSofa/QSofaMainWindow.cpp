@@ -15,12 +15,12 @@ using std::cout;
 using std::endl;
 #include "oneTetra.h"
 
-
-QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
-    QMainWindow(parent)
+// Graphic interface
+QSofaMainWindow::QSofaMainWindow(QWidget *parent) : QMainWindow(parent)
 {
     setFocusPolicy(Qt::ClickFocus);
 
+	// Viewer
     mainViewer = new QSofaViewer(&sofaScene,this);
     setCentralWidget(mainViewer);
 
@@ -28,7 +28,7 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
     QMenu* fileMenu = menuBar()->addMenu(tr("&File"));
     QMenu* simulationMenu = menuBar()->addMenu(tr("&Simulation"));
     QMenu* viewMenu = menuBar()->addMenu(tr("&View"));
-
+	
     // find icons at https://www.iconfinder.com/search
 
     // start/stop
@@ -55,14 +55,14 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
         simulationMenu->addAction(resetAct);
         toolbar->addAction(resetAct);
     }
-
+	
     // open
     {
-        QAction* openAct = new QAction(QIcon(":/icons/reset.svg"), tr("&Open..."), this);
+        QAction* openAct = new QAction(QIcon(":/icons/file.svg"), tr("&Open..."), this);
         openAct->setIcon(this->style()->standardIcon(QStyle::SP_FileIcon));
         openAct->setShortcut(QKeySequence(Qt::CTRL+Qt::Key_O));
         openAct->setToolTip(tr("Open new scene"));
-        openAct->setStatusTip(tr("Opening scene…"));
+        openAct->setStatusTip(tr("Opening scene …"));
         connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
         this->addAction(openAct);
         fileMenu->addAction(openAct);
@@ -84,7 +84,7 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
         QAction* reloadAct = new QAction(QIcon(":/icons/reload.svg"), tr("&Reload..."), this);
         reloadAct->setIcon(this->style()->standardIcon(QStyle::SP_BrowserReload));
         reloadAct->setShortcut(QKeySequence(Qt::CTRL+Qt::SHIFT+Qt::Key_R));
-        reloadAct->setStatusTip(tr("Reloading scene…"));
+        reloadAct->setStatusTip(tr("Reloading scene …"));
         reloadAct->setToolTip(tr("Reload file and restart from the beginning"));
         connect(reloadAct, SIGNAL(triggered()), &sofaScene, SLOT(reload()));
         this->addAction(reloadAct);
@@ -171,21 +171,21 @@ void QSofaMainWindow::open()
     sofaScene.pause();
     std::string path = std::string(QTSOFA_SRC_DIR) + "/../examples";
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open scene file"), path.c_str(), tr("Scene Files (*.scn *.xml *.py)"));
-    if( fileName.size()>0 )
-        sofaScene.open(fileName.toStdString().c_str());
+    if( fileName.size()>0 ) sofaScene.open(fileName.toStdString().c_str());	// Open the chosen file
 }
 
-void QSofaMainWindow::setDt( int milis ) { sofaScene.setTimeStep( milis/1000.0 ); }
+void QSofaMainWindow::setDt( int milis ) 
+{ 
+	sofaScene.setTimeStep( milis/1000.0 ); 
+}
 
 void QSofaMainWindow::toggleFullScreen()
 {
     _fullScreen = !_fullScreen;
-    if( _fullScreen ){
+    if( _fullScreen )
         this->showFullScreen();
-    }
-    else {
-        this->showNormal();
-    }
+    else 
+		this->showNormal();
 }
 
 void QSofaMainWindow::createAdditionalViewer()
