@@ -31,8 +31,6 @@ SofaGL::SofaGL(SofaScene *s) :
 
 void SofaGL::draw()
 {
-    //                cout<<"SofaGL::draw" << endl;
-    //                sofaScene->printScene();
     glGetIntegerv (GL_VIEWPORT, _viewport);
     glGetDoublev (GL_MODELVIEW_MATRIX, _mvmatrix);
     glGetDoublev (GL_PROJECTION_MATRIX, _projmatrix);
@@ -48,14 +46,6 @@ void SofaGL::draw()
     sofa::simulation::getSimulation()->updateVisual(_sofaScene->groot().get()); // needed to update normals ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
 
     if( _isPicking ){
-        //        VisualPickVisitor vpick(_vparams);
-        //        _sofaScene->groot().get()->executeVisitor(&vpick);
-
-        //        core::visual::VisualLoop* vloop = _sofaScene->groot()->getVisualLoop();
-        //        assert(vloop != NULL);
-        //        vloop->drawStep(_vparams);
-
-        //simulation::VisualDrawVisitor act ( _vparams );
 
         // start picking
         glSelectBuffer(BUFSIZE,selectBuf);
@@ -113,15 +103,13 @@ void SofaGL::draw()
             }
             else
                 cerr<<"You didn't click a snowman!";
-           cerr<<endl;
+            cerr<<endl;
         }
         else cerr<<"no hits !" << endl;
         _isPicking = false;
 
     }
-//    else {
-        sofa::simulation::getSimulation()->draw(_vparams, _sofaScene->groot().get());
-//    }
+    sofa::simulation::getSimulation()->draw(_vparams, _sofaScene->groot().get());
 }
 
 void SofaGL::getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y )

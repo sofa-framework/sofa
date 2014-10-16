@@ -290,7 +290,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv*
             typename InMatrixDeriv::RowIterator o = dOut[index_parent]->writeLine(rowIt.index());
 
             // for each col of the constraint direction, it adds a col in the corresponding parent's constraint direction
-            if(indexPairs.getValue()[colIt.index()*2+1] < this->fromModels[index_parent]->getSize())
+            if(indexPairs.getValue()[colIt.index()*2+1] < (unsigned int)this->fromModels[index_parent]->getSize())
                 o.addCol(indexP[colIt.index()*2+1], colIt.val());
             ++colIt;
         }
