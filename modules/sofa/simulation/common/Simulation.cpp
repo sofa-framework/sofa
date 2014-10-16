@@ -139,6 +139,25 @@ void Simulation::exportXML ( Node* root, const char* fileName )
     }
 }
 
+/// Print all object in the graph
+void Simulation::exportGraph ( Node* root, const char* filename )
+{
+    if ( !root ) return;
+
+    SceneLoader *exporter = SceneLoaderFactory::getInstance()->getExporterEntryFileName(filename);
+
+    if (exporter)
+    {
+        exporter->write(root,filename);
+    }
+    else
+    {
+        // unable to write the file
+        std::cerr << "Simulation::exportGraph : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export" << std::endl;
+    }
+}
+
+
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
@@ -430,9 +449,8 @@ Node::SPtr Simulation::load ( const char *filename )
     }
 
     // unable to load file
-    std::cerr << "Simulation : Error : extension not handled" << std::endl;
+    std::cerr << "Simulation : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << std::endl;
     return NULL;
-
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid
