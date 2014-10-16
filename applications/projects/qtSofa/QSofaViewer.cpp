@@ -52,7 +52,6 @@ void QSofaViewer::toggleFullScreen()
     }
 }
 
-
 void QSofaViewer::initializeGL()
 {
     glClearColor (0.0, 0.0, 0.0, 0.0);
@@ -180,7 +179,7 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
                      _camera.eye()[0], _camera.eye()[1], _camera.eye()[2],
                      event->x(),event->y() )  ) // create new interactor
         {
-//            cout << "Picked: " << glpicked <<  endl;
+            //cout << "Picked: " << glpicked <<  endl;
             _drag = _sofaGL->getInteractor(glpicked);
             if( _drag == NULL )
             {
@@ -236,7 +235,7 @@ void QSofaViewer::mouseReleaseEvent ( QMouseEvent * event )
         {
             _sofaGL->detach(_drag);
             delete _drag;
-//                cout << "delete interactor " << endl;
+            //cout << "delete interactor " << endl;
         }
         _drag = NULL;
     }

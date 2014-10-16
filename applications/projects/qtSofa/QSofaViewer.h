@@ -35,7 +35,6 @@ public:
     void mouseMoveEvent ( QMouseEvent * event );
     void mouseReleaseEvent ( QMouseEvent * event );
 
-
 signals:
 
 public slots:
@@ -48,8 +47,8 @@ public slots:
     void toggleFullScreen();
 
 protected:
-	SofaScene* _sofaScene;	///< the sofa scene we want to display
-    SofaGL* _sofaGL;		///< interface with the scene to display and pick in.
+	SofaScene* _sofaScene; ///< the sofa scene we want to display
+    SofaGL* _sofaGL; ///< interface with the scene to display and pick in.
 
     Interactor* _drag; ///< current active interactor, NULL if none
 
