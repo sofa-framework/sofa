@@ -31,7 +31,7 @@ AddCompilerDefinitions("QTSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${RESOURCE_FILES})
 
-AddLinkerDependencies(SofaSimpleGUI SohusimDev SofaPython image image_gui Flexible Compliant Compliant_gui Registration ${GLUT_LIBRARIES})
+AddLinkerDependencies(SofaSimpleGUI ${GLUT_LIBRARIES})
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
