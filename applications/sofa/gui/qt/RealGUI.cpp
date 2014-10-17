@@ -129,6 +129,7 @@
 #include <algorithm>
 
 
+
 namespace sofa
 {
 
@@ -988,7 +989,7 @@ void RealGUI::fileSave()
 
 void RealGUI::fileSaveAs ( Node *node, const char* filename )
 {
-    simulation::getSimulation()->exportXML ( node, filename );
+    simulation::getSimulation()->exportGraph ( node, filename );
 }
 
 //------------------------------------
@@ -1036,10 +1037,10 @@ void RealGUI::fileExit()
 
 //------------------------------------
 
-void RealGUI::saveXML()
-{
-    simulation::getSimulation()->exportXML ( currentSimulation(), "scene.scn" );
-}
+//void RealGUI::saveXML()
+//{
+//    simulation::getSimulation()->exportXML ( currentSimulation(), "scene.scn" );
+//}
 
 //------------------------------------
 
@@ -1951,22 +1952,47 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
 void RealGUI::fileSaveAs(Node *node)
 {
     if (node == NULL) node = currentSimulation();
-    QString s;
     std::string filename(this->windowFilePath().ascii());
-#ifdef SOFA_PML
-    s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.xml *.pml)", "save file dialog",  "Choose where the scene will be saved" );
-    if ( s.length() >0 )
+
+
+    QString filter( "Scenes (");
+
+    int nb=0;
+    SceneLoaderFactory::SceneLoaderList* loaders = SceneLoaderFactory::getInstance()->getEntries();
+    for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); it++)
     {
+        SceneLoader::ExtensionList extensions;
+        (*it)->getExtensionList(&extensions);
+        for (SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); itExt++)
+        {
+            if( (*it)->canWriteFileExtension( itExt->c_str() ) )
+            {
+                if (nb!=0) filter +=" ";
+                filter += "*.";
+                filter += QString( itExt->c_str() );
+                ++nb;
+            }
+        }
+    }
+#ifdef SOFA_PML
+    filter += " *.pml";
+#endif
+
+    filter += ")";
+
+
+
+
+
+    QString s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), filter, "save file dialog", "Choose where the scene will be saved" );
+    if ( s.length() >0 )
+#ifdef SOFA_PML
         if ( pmlreader && s.endsWith ( ".pml" ) )
             pmlreader->saveAsPML ( s );
         else
-            fileSaveAs ( node,s );
-    }
-#else
-    s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
-    if ( s.length() >0 )
-        fileSaveAs ( node,s );
 #endif
+            fileSaveAs ( node,s );
+
 }
 
 //------------------------------------
