@@ -8,9 +8,7 @@ using std::string;
 using std::vector;
 #include <plugins/SofaSimpleGUI/QSofaScene.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/gui/qt/viewer/qgl/QtGLViewer.h>
 class QSofaViewer;
-class QtGLViewer;
 
 /**
  * @brief The QSofaMainWindow class contains a Sofa simulation.
