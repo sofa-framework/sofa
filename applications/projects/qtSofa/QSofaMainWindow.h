@@ -39,7 +39,7 @@ public:
      * @brief initSofa
      * @param filename Scene to load on startup. If empty, create a default scene
      */
-    void initSofa(string filename );
+    void initSofa( string filename );
 
 
 signals:
@@ -54,6 +54,11 @@ public slots:
      * @brief Select a new scene file using the menu, clear the current scene and replace it with the new one
      */
     void open();
+
+	  /**
+     * @brief Select a new scene file using the menu, clear the current scene and replace it with the new one
+     */
+    void reload();
 	
     /**
      * @brief Set the simulation time step
@@ -74,6 +79,7 @@ public slots:
 protected:
     QAction* _playPauseAct;  // play/pause
     bool _fullScreen; ///< true if currently displaying in full screen mode
+	QString _fileName;
 };
 
 #endif // QTSOFAMAINWINDOW_H
