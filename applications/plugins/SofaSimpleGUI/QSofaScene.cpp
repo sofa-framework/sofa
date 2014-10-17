@@ -14,11 +14,9 @@ QSofaScene::QSofaScene(QObject *parent) :
 
 void QSofaScene::open(const char *filename )
 {
-    SofaScene::setScene(filename);
+    SofaScene::open(filename);
     emit opened();
 }
-
-void QSofaScene::reload() { open(_currentFileName.c_str()); }
 
 
 void QSofaScene::step()

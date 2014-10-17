@@ -15,14 +15,14 @@ using namespace sofa::defaulttype;
 
 template <class DataTypes>
 TBulletConvexHullModel<DataTypes>::TBulletConvexHullModel()
-    : _mstate(NULL)
-    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    : margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
     , computeConvexHullDecomposition(initData(&computeConvexHullDecomposition,false,"computeConvexHullDecomposition","compute convex hull decomposition using HACD"))
     , drawConvexHullDecomposition(initData(&drawConvexHullDecomposition,false,"drawConvexHullDecomposition","draw convex hull decomposition using"))
     , CHPoints(initData(&CHPoints,"CHPoints", "points defining the convex hull"))
     , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , positionDefined(initData(&positionDefined,false,"positionDefined","set to true if the collision model position is defined in the mechanical object" ))
     , concavityThreeshold(initData(&concavityThreeshold, (SReal)100, "concavityThreeshold","Threeshold used in the decomposition"))
+    , _mstate(NULL)
 {
     bmsh = 0x0;
     enum_type = -1;

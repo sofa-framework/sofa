@@ -54,7 +54,7 @@ void SofaScene::loadPlugins( std::vector<std::string> plugins )
     sofa::helper::system::PluginManager::getInstance().init();
 }
 
-void SofaScene::setScene(const std::string& fileName )
+void SofaScene::open(const std::string& fileName )
 {
     // --- Create simulation graph ---
     assert( !fileName.empty());
@@ -69,7 +69,7 @@ void SofaScene::setScene(const std::string& fileName )
 
     _iroot = _groot->createChild("iroot");
 
-    _currentFileName = fileName;
+//    _currentFileName = fileName;
 
     SofaSimulation::init(_groot.get());
 

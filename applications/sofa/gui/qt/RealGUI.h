@@ -277,7 +277,7 @@ public:
 
     virtual void setTitle( std::string windowTitle );
     virtual void fileSaveAs(Node* node,const char* filename);
-    virtual void saveXML();
+//    virtual void saveXML();
 
     virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen(bool enable = true);

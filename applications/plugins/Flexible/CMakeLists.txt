@@ -22,6 +22,7 @@ set(HEADER_FILES
     quadrature/TopologyGaussPointSampler.h 
     quadrature/GaussPointContainer.h
     shapeFunction/BaseShapeFunction.h
+    shapeFunction/ImageShapeFunctionSelectNode.h
     shapeFunction/ShepardShapeFunction.h 
     shapeFunction/HatShapeFunction.h 
     shapeFunction/BarycentricShapeFunction.h 
@@ -113,6 +114,7 @@ set(SOURCE_FILES
     quadrature/TopologyGaussPointSampler.cpp 
     quadrature/GaussPointContainer.cpp
     shapeFunction/BaseShapeFunction.cpp
+    shapeFunction/ImageShapeFunctionSelectNode.cpp
     shapeFunction/ShepardShapeFunction.cpp 
     shapeFunction/HatShapeFunction.cpp 
     shapeFunction/BarycentricShapeFunction.cpp 
