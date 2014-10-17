@@ -56,7 +56,7 @@ void SubsetMultiMapping<TIn, TOut>::bwdInit()
     // for now we suppose that we only have two parents
     if (this->fromModels.size()!=2 )
     {
-        serr<<" ERROR, for now SubsetMultiMapping is programmed to have only two parents and not"<< this->fromModels.size()<<sendl;
+        serr<<" ERROR, for now SubsetMultiMapping is programmed to have only two parents and not "<< this->fromModels.size()<<sendl;
         return;
     }
 
