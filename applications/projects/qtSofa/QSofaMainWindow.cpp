@@ -11,9 +11,9 @@
 #include <iostream>
 #include <QSpinBox>
 #include <QDockWidget>
+#include "oneTetra.h"
 using std::cout;
 using std::endl;
-#include "oneTetra.h"
 
 
 QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
@@ -102,7 +102,7 @@ QSofaMainWindow::QSofaMainWindow(QWidget *parent) :
         simulationMenu->addAction(viewAllAct);
         toolbar->addAction(viewAllAct);
     }
-
+	
     // print
     {
         QAction* printAct = new QAction( QIcon(":/icons/print.svg"), tr("&PrintGraph..."), this);
