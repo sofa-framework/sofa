@@ -40,6 +40,7 @@
 #define MULTIPLICATION 2
 #define DIVISION 3
 #define DICE 4
+#define CONCATENATE 5
 
 
 namespace sofa
@@ -92,11 +93,12 @@ public:
         inputImage1.setReadOnly(true);  this->addAlias(&inputImage1, "image1");
         inputImage2.setReadOnly(true);  this->addAlias(&inputImage2, "image2");
         outputImage.setReadOnly(true);  this->addAlias(&outputImage, "image");
-        helper::OptionsGroup operationOptions(5	,"0 - Addition"
+        helper::OptionsGroup operationOptions(6	,"0 - Addition"
                                               ,"1 - Subtraction"
                                               ,"2 - Multiplication"
                                               ,"3 - Division"
                                               ,"4 - Dice coefficient"
+                                              ,"5 - Concatenate in two channels"
                                               );
         operationOptions.setSelectedItem(SUBTRACTION);
         operation.setValue(operationOptions);
@@ -153,6 +155,19 @@ protected:
             }
             double dice= (double)count_inter*2./(double)count_union;
             std::cout<<this->getName()<<": Dice = "<< dice <<" , union = "<< count_union <<" , intersection = "<< count_inter <<std::endl;
+        }
+            break;
+        case CONCATENATE:
+        {
+            imCoord dim = in1->getDimensions();
+            unsigned int s1=dim[ImageTypes::DIMENSION_S];
+            dim[ImageTypes::DIMENSION_S] += in2->getDimensions()[ImageTypes::DIMENSION_S];
+            out->setDimensions(dim);
+            cimglist_for(img,l)  cimg_forXYZ(img(l),x,y,z)
+            {
+                cimg_forC(inimg1(l),c)   img(l)(x,y,z,c)=inimg1(l)(x,y,z,c);
+                cimg_forC(inimg2(l),c)   img(l)(x,y,z,c+s1)=inimg2(l)(x,y,z,c);
+            }
         }
             break;
         default:            break;
