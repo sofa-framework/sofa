@@ -47,142 +47,67 @@ namespace mapping
 using namespace sofa::core;
 
 
-
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::bwdInit()
+void SubsetMultiMapping<TIn, TOut>::init()
 {
 
-
-    // for now we suppose that we only have two parents
-    if (this->fromModels.size()!=2 )
-    {
-        serr<<" ERROR, for now SubsetMultiMapping is programmed to have only two parents and not "<< this->fromModels.size()<<sendl;
-        return;
-    }
-
-    m_numParents = 2;
-
-
-
-//    std::cout<<" bwd Init Call "<<std::endl;
-
-    int s0 = this->fromModels[0]->getSize();
-    int s1 = this->fromModels[1]->getSize();
-//    std::cout<<"size from [0] = "<<s0<<"    -  size from [1] = "<<s1<<std::endl;
-
-//    std::cout << "init inherit"<<std::endl;
     Inherit::init();
-
-
-//    std::cout << "assert"<<std::endl;
 
     assert( indexPairs.getValue().size()%2==0 );
     const unsigned indexPairSize = indexPairs.getValue().size()/2;
 
-//    std::cout << "resize"<<std::endl;
-
     this->toModels[0]->resize( indexPairSize );
 
-
-    s0 = this->fromModels[0]->getSize();
-    s1 = this->fromModels[1]->getSize();
-//    std::cout<<"size from [0]"<<s0<<"    -  size from [1]"<<s1<<std::endl;
-
-
-
-
+#ifdef SOFA_HAVE_EIGEN2
     unsigned Nin = TIn::deriv_total_size, Nout = Nin;
-
-
-//    std::cout<<"before delete"<<std::endl;
 
     for( unsigned i=0; i<baseMatrices.size(); i++ )
         delete baseMatrices[i];
-//    std::cout<<"after delete"<<std::endl;
 
-//#ifdef SOFA_HAVE_EIGEN2
-
-//    std::cout<<"SOFA_HAVE_EIGEN2"<<std::endl;
-
-//    typedef linearsolver::EigenSparseMatrix<TIn,TOut> Jacobian;
-//    baseMatrices.resize( this->getFrom().size() );
-//    vector<Jacobian*> jacobians( this->getFrom().size() );
-//    for(unsigned i=0; i<baseMatrices.size(); i++ )
-//    {
-//        baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
-//        jacobians[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->readPositions().size() ); // each jacobian has the same number of rows
-//    }
-
-//    // fill the jacobians
-//    for(unsigned i=0; i<indexPairSize; i++)
-//    {
-//        unsigned parent = indexPairs.getValue()[i*2];
-//        Jacobian* jacobian = jacobians[parent];
-//        unsigned bcol = indexPairs.getValue()[i*2+1];  // parent particle
-//        for(unsigned k=0; k<Nin; k++ )
-//        {
-//            unsigned row = i*Nout + k;
-//            jacobian->insertBack( row, Nin*bcol +k, (SReal)1. );
-//        }
-//    }
-////    // fill the jacobians
-////    vector<unsigned> rowIndex(this->getFrom().size(),0); // current block row index in each jacobian
-////    for(unsigned i=0; i<indexPairSize; i++)
-////    {
-////        unsigned parent = indexPairs[i*2];
-////        Jacobian* jacobian = jacobians[parent];
-////        unsigned& brow = rowIndex[parent];
-////        unsigned bcol = indexPairs[i*2+1];  // parent particle
-////        for(unsigned k=0; k<Nin; k++ )
-////        {
-//////            baseMatrices[ indexPairs[i*2] ]->set( Nout*i+k, Nin*indexPairs[i*2+1], (SReal)1. );
-////            jacobian->beginRow(Nout*brow+k);
-////            jacobian->insertBack( Nout*brow+k, Nin*bcol +k, (SReal)1. );
-////        }
-////        brow++;
-////    }
-
-//    // finalize the jacobians
-//    for(unsigned i=0; i<baseMatrices.size(); i++ )
-//    {
-//        baseMatrices[i]->compress();
-//    }
-//#else
-
-
-
-    for( unsigned i=0; i<matricesJ.size(); i++ )
-        delete matricesJ[i];
-
+    typedef linearsolver::EigenSparseMatrix<TIn,TOut> Jacobian;
     baseMatrices.resize( this->getFrom().size() );
-    matricesJ.resize( this->getFrom().size() );
-    for(unsigned i=0; i<matricesJ.size(); i++ )
+    vector<Jacobian*> jacobians( this->getFrom().size() );
+    for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
-
-        baseMatrices[i] = matricesJ[i] = new Jacobian();
-        matricesJ[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->readPositions().size() ); // each jacobian has the same number of rows
+        baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
+        jacobians[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->readPositions().size() ); // each jacobian has the same number of rows
     }
 
     // fill the jacobians
     for(unsigned i=0; i<indexPairSize; i++)
     {
         unsigned parent = indexPairs.getValue()[i*2];
-        Jacobian* jacobian = matricesJ[parent];
+        Jacobian* jacobian = jacobians[parent];
         unsigned bcol = indexPairs.getValue()[i*2+1];  // parent particle
         for(unsigned k=0; k<Nin; k++ )
         {
             unsigned row = i*Nout + k;
-            jacobian->set( row, Nin*bcol +k, (SReal)1. );
+            jacobian->insertBack( row, Nin*bcol +k, (SReal)1. );
         }
     }
+//    // fill the jacobians
+//    vector<unsigned> rowIndex(this->getFrom().size(),0); // current block row index in each jacobian
+//    for(unsigned i=0; i<indexPairSize; i++)
+//    {
+//        unsigned parent = indexPairs[i*2];
+//        Jacobian* jacobian = jacobians[parent];
+//        unsigned& brow = rowIndex[parent];
+//        unsigned bcol = indexPairs[i*2+1];  // parent particle
+//        for(unsigned k=0; k<Nin; k++ )
+//        {
+////            baseMatrices[ indexPairs[i*2] ]->set( Nout*i+k, Nin*indexPairs[i*2+1], (SReal)1. );
+//            jacobian->beginRow(Nout*brow+k);
+//            jacobian->insertBack( Nout*brow+k, Nin*bcol +k, (SReal)1. );
+//        }
+//        brow++;
+//    }
 
     // finalize the jacobians
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
         baseMatrices[i]->compress();
     }
-
-//#endif
+#endif
 }
 
 template <class TIn, class TOut>
@@ -255,60 +180,15 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< typename Subset
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& dOut, const helper::vector<const OutMatrixDeriv* >& dIn)
+void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& )
 {
-
-    vector<unsigned>  indexP = indexPairs.getValue();
-
-    // hypothesis: one child only:
-    const OutMatrixDeriv* in = dIn[0];
-
-    if (dOut.size() != m_numParents)
-    {
-        serr<<"problem with number of output constraint matrices"<<sendl;
-        return;
-    }
-
-    typename OutMatrixDeriv::RowConstIterator rowItEnd = in->end();
-    // loop on the constraints defined on the child of the mapping
-    for (typename OutMatrixDeriv::RowConstIterator rowIt = in->begin(); rowIt != rowItEnd; ++rowIt)
-    {
-
-        typename OutMatrixDeriv::ColConstIterator colIt = rowIt.begin();
-        typename OutMatrixDeriv::ColConstIterator colItEnd = rowIt.end();
-
-
-        // A constraint can be shared by several nodes,
-        // these nodes can be linked to 2 different parent.
-        // we need to add a line to each parent that is concerned by the constraint
-
-
-        while (colIt != colItEnd)
-        {
-            unsigned int index_parent=  indexP[colIt.index()*2]; // 0 or 1 (for now...)
-            // writeLine provide an iterator on the line... if this line does not exist, the line is created:
-            typename InMatrixDeriv::RowIterator o = dOut[index_parent]->writeLine(rowIt.index());
-
-            // for each col of the constraint direction, it adds a col in the corresponding parent's constraint direction
-            if(indexPairs.getValue()[colIt.index()*2+1] < (unsigned int)this->fromModels[index_parent]->getSize())
-                o.addCol(indexP[colIt.index()*2+1], colIt.val());
-            ++colIt;
-        }
-
-
-
-    }
-
-//    std::cout<<" dIn ="<<(*dIn[0])<<std::endl;
-//    std::cout<<" dOut ="<<(*dOut[0])<<"  "<<(*dOut[1])<<std::endl;
-
+    cerr<<"WARNING ! SubsetMultiMapping<TIn, TOut>::applyJT not implemented for MatrixDeriv ! " << endl;
 }
 
 
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<typename SubsetMultiMapping<TIn, TOut>::InVecDeriv*>& parentDeriv , const helper::vector<const OutVecDeriv*>& childDeriv )
 {
-    // hypothesis: one child only:
     const InVecDeriv& cder = *childDeriv[0];
     for(unsigned i=0; i<cder.size(); i++)
     {
