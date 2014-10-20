@@ -236,6 +236,36 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
             }
         }
 
+
+
+
+
+
+//        DIRTY CODE TO EXPORT IMAGES TO BE DIFFUSED
+//        CImg<float> img = dist; // convert in float
+
+//        std::stringstream ss;
+//        ss << "/tmp/DiffusionShapeFunction"<<index<<"_"<<dist.width()<<"_"<<dist.height()<<"_"<<dist.depth()<<"_"<<sizeof(float)<<".raw";
+//        img.save( ss.str().c_str() );
+
+//        CImg<char> mask(dist.width(),dist.height(),dist.depth(),1,-1);// outside
+//        cimg_foroff(mask,off)
+//                if( inimg[off]!=0 ) mask[off]=1; // inside
+
+//        for(unsigned int i=0; i<parent.size(); i++)
+//        {
+//            typename DiffusionShapeFunction::Coord p = inT->toImageInt(parent[i]);
+//            if(in->isInside(p[0],p[1],p[2])) mask(p[0],p[1],p[2])=0; // dirichlet
+//        }
+
+//        std::stringstream ss2;
+//        ss2 << "/tmp/DiffusionShapeFunction"<<index<<"_mask_"<<dist.width()<<"_"<<dist.height()<<"_"<<dist.depth()<<"_"<<sizeof(char)<<".raw";
+//        mask.save( ss2.str().c_str() );
+
+
+
+
+
     }
 
 
@@ -407,6 +437,9 @@ public:
                 for(unsigned int i=0; i<this->f_position.getValue().size(); i++)
                 {
                     DiffusionShapeFunctionSpecialization<ImageTypes::label>::initTemp(this,i);
+
+
+
 
                     double res=this->tolerance.getValue();
                     unsigned int nbit=0;

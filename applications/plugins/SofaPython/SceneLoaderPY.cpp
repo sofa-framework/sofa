@@ -232,7 +232,7 @@ void PythonExporterVisitor::processObject( T obj, const std::string& nodeVariabl
     std::string classname = obj->getClassName();
     std::string templatename = obj->getTemplateName();
 
-    m_out << s_tab << nodeVariable << ".createObject('" << classname <<"', template='" << templatename << "'";
+    m_out << s_tab << nodeVariable << ".createObject( '" << classname <<"', template='" << templatename << "'";
 
     obj->writeDatas( m_out, ", " );
 
@@ -242,6 +242,8 @@ void PythonExporterVisitor::processObject( T obj, const std::string& nodeVariabl
 
 Visitor::Result PythonExporterVisitor::processNodeTopDown(Node* node)
 {
+    m_out << "\n\n";
+
     m_variableIndex++;
 
     sofa::helper::vector< core::objectmodel::BaseNode* > parents = node->getParents();
@@ -253,13 +255,12 @@ Visitor::Result PythonExporterVisitor::processNodeTopDown(Node* node)
 
     if( !parents.empty() ) // not root
     {
-
-        nodeVariable << nodeName << m_variableIndex;
+        nodeVariable << nodeName << "_Node" << m_variableIndex;
         m_mapNodeVariable[node] = nodeVariable.str();
 
         const std::string& parentVariable = m_mapNodeVariable[parents[0]];
 
-        m_out << s_tab << nodeVariable.str() << " = "<<parentVariable<<".createChild('"<<nodeName <<"' )" << std::endl;
+        m_out << s_tab << nodeVariable.str() << " = "<<parentVariable<<".createChild( '"<<nodeName <<"' )" << std::endl;
     }
     else
     {
