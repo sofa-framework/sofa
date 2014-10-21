@@ -133,7 +133,7 @@ struct TetrahedronNumericalIntegration_test : public Sofa_test<typename _DataTyp
 				if (fabs(realIntegral-integral)>1e-8) {
 					ADD_FAILURE() << "Error in numerical integration on tetrahedron for integration method " <<(*itio)<<
 						"  and integration order " <<(*itio)  << " for polynomial defined by "<< randomPolynomial<< std::endl
-					 << "Got  " <<integral<<" instead of " <<realIntegral  << std::endl;
+                     << "Got  " <<integral<<" instead of " <<realIntegral  << std::endl << "Failed seed number = " << BaseSofa_test::seed << std::endl;
 					return false;
 				}
 			}

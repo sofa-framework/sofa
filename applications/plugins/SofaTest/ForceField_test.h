@@ -204,7 +204,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         VecDeriv dF;
         copyFromData( dF, dof->readForces() );
         if( this->vectorMaxDiff(changeOfForce,dF)> errorMax*this->epsilon() ){
-            ADD_FAILURE()<<"dF differs from change of force";
+            ADD_FAILURE()<<"dF differs from change of force" << endl << "Failed seed number = " << BaseSofa_test::seed << endl;
         }
 
         // check stiffness matrix: compare its product with dx to actual force change
@@ -230,7 +230,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         Eigen::VectorXd df;
         data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
         if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
-            ADD_FAILURE()<<"Kdx differs from change of force";
+            ADD_FAILURE()<<"Kdx differs from change of force"<< endl << "Failed seed number = " << BaseSofa_test::seed << endl;;
 
 
     }
