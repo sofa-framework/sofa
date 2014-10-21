@@ -356,7 +356,8 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                              "fp2-fp = " << fp12 << endl;
         }
 
-
+        if(!succeed)
+        { ADD_FAILURE() << "Failed Seed number = " << BaseSofa_test::seed << std::endl;}
         return succeed;
     }
 
