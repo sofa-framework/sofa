@@ -291,7 +291,7 @@ TYPED_TEST_CASE(MooneyRivlinHexahedraMaterial_test, DataTypes);
 TYPED_TEST( MooneyRivlinHexahedraMaterial_test , test_MR_Hexahedra_InTraction )
 {
     ASSERT_TRUE( this->testHexahedraInTraction(&sofa::MooneyRivlinHexahedraMaterial_test<TypeParam>::addMooneyRivlinForceField,pressureMRArray,s1MRArray, s2MRArray,
-                                                TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,true));
+                                                TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
 }
 
 

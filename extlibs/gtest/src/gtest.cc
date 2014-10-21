@@ -4995,7 +4995,7 @@ void InitGoogleTestImpl(int* argc, CharType** argv) {
     ParseGoogleTestFlagsOnly(argc, argv);
     GetUnitTestImpl()->PostFlagParsingInit();
 
-    std::cout << "seed Value used for the tests =" << seedValue << std::endl;
+    std::cout << "Seed Value used for the tests = " << seedValue << std::endl;
 }
 
 
@@ -5027,7 +5027,7 @@ void InitGoogleTestImpl<wchar_t>(int* argc, wchar_t** argv) {
     ParseGoogleTestFlagsOnly(argc, argv);
     GetUnitTestImpl()->PostFlagParsingInit();
 
-    std::cout << "seed Value used for the tests =" << seedValue << std::endl;
+    std::cout << "Seed Value used for the tests = " << seedValue << std::endl;
 
 }
 
