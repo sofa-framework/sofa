@@ -25,11 +25,20 @@
 #include <sofa/helper/system/Utils.h>
 
 #ifdef WIN32
-# include <windows.h>
+# include <Windows.h>
 # include <StrSafe.h>
 #elif defined _XBOX
 # include <xtl.h>
+#elif defined __APPLE__
+# include <mach-o/dyld.h>       // for _NSGetExecutablePath()
+#else
+# include <unistd.h>            // for readlink()
+# include <errno.h>
+# include <linux/limits.h>      // for PATH_MAX
 #endif
+
+#include <vector>
+#include <iostream>
 
 namespace sofa
 {
@@ -62,7 +71,7 @@ std::string ws2s(const std::wstring& ws)
     return std::string(ws.begin(), ws.end());
 }
 
-#ifdef WIN32
+# ifdef WIN32
 std::string GetLastError() {
     LPVOID lpErrMsgBuf;
     LPVOID lpMessageBuf;
@@ -92,16 +101,60 @@ std::string GetLastError() {
     LocalFree(lpMessageBuf);
     return ws2s(wsMessage);
 }
-#else
+# else  // XBOX
 std::string GetLastError() {
-	DWORD dwErrorCode = ::GetLastError();
-	char buffer[32];
-	sprintf_s(buffer, 32, "0x%08.8X", dwErrorCode);
-	return buffer;
+    DWORD dwErrorCode = ::GetLastError();
+    char buffer[32];
+    sprintf_s(buffer, 32, "0x%08.8X", dwErrorCode);
+    return buffer;
 }
+# endif
 #endif
 
+std::string getExecutablePath() {
+
+#if defined(_XBOX) || defined(PS3)
+    std::cerr << "Error: Utils::getExecutablePath() is not implemented." << std::endl;
+    return "";
+
+#elif defined(WIN32)
+    std::vector<TCHAR> lpFilename(MAX_PATH);
+    int ret = GetModuleFileName(NULL, /* NULL --> executable of the current process */
+        &lpFilename[0],
+        MAX_PATH);
+    if (ret == 0 || ret == MAX_PATH) {
+        std::cerr << "Utils::getExecutablePath(): " << GetLastError() << std::endl;
+        return "";
+    } else {
+        return ws2s(std::wstring(&lpFilename[0]));
+    }
+
+#elif defined(__APPLE__)
+    std::vector<char> path(PATH_MAX);
+    std::vector<char> real_path(PATH_MAX);
+    uint32_t size = path.size();
+    if (_NSGetExecutablePath(&path[0], &size) != 0) {
+        std::cerr << "Utils::getExecutablePath(): _NSGetExecutablePath() failed" << std::endl;
+        return "";
+    }
+    if (realpath(&path[0], &real_path[0]) == 0) {
+        std::cerr << "Utils::getExecutablePath(): realpath() failed" << std::endl;
+        return "";
+    }
+    return std::string(&real_path[0]);
+
+#else  // Linux
+    std::vector<char> buffer(PATH_MAX);
+    if (readlink("/proc/self/exe", &buffer[0], buffer.size()) == -1) {
+        int error = errno;
+        std::cerr << "Utils::getExecutablePath(): " << strerror(error) << std::endl;
+        return "";
+    } else {
+        return std::string(&buffer[0]);
+    }
 #endif
+}
+
 
 } // namespace Utils
 

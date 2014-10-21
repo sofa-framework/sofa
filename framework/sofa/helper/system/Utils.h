@@ -63,6 +63,12 @@ SOFA_HELPER_API std::string GetLastError();
 
 #endif
 
+/// @brief Get the path of the current executable.
+///
+/// Note that this function uses various non-portable tricks to achieve its
+/// goal, and it might not be the most reliable thing ever written.
+SOFA_HELPER_API std::string getExecutablePath();
+
 }
 
 
