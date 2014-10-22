@@ -2,12 +2,14 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
 	qtSofa.cpp
-	QSofaViewer.cpp
 	QSofaMainWindow.cpp
+	QSofaScene.cpp
+	QSofaViewer.cpp
 )
 set(HEADER_FILES
+	QSofaMainWindow.h
+	QSofaScene.h
     QSofaViewer.h
-    QSofaMainWindow.h
     oneTetra.h
 )
 
