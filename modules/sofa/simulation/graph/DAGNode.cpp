@@ -365,7 +365,7 @@ core::objectmodel::BaseNode::Parents DAGNode::getParents() const
 {
     Parents p;
 
-    LinkParents::Container parents = l_parents.getValue();
+    const LinkParents::Container& parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; i++)
     {
         if (parents[i])
