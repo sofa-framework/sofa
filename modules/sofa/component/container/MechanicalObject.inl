@@ -177,8 +177,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     externalForces  .forceSet();
 
     // do not forget to delete these in the destructor
-    write(VecCoordId::null())->forceSet();
-    write(VecDerivId::null())->forceSet();
+    // are null() vectors must be allocated?
+//    write(VecCoordId::null())->forceSet();
+//    write(VecDerivId::null())->forceSet();
     write(VecDerivId::dforce())->forceSet();
 
     // default size is 1
@@ -668,6 +669,7 @@ void MechanicalObject<DataTypes>::resize(const int size)
             {
                 vectorsCoord[i]->beginEdit()->resize(size);
                 vectorsCoord[i]->endEdit();
+//                std::cerr<<SOFA_CLASS_METHOD<<"allocatind veccoord "<<i<<std::endl;
             }
         }
 
@@ -677,6 +679,7 @@ void MechanicalObject<DataTypes>::resize(const int size)
             {
                 vectorsDeriv[i]->beginEdit()->resize(size);
                 vectorsDeriv[i]->endEdit();
+//                std::cerr<<SOFA_CLASS_METHOD<<"allocatind vecderiv "<<i<<std::endl;
             }
         }
     }
@@ -1054,6 +1057,14 @@ void MechanicalObject<DataTypes>::init()
     {
         vOp(core::ExecParams::defaultInstance(), VecId::position(), VecId::restPosition());
     }
+    else if( getX0()->empty() || getX0()->size()!=x_wA.size() )
+    {
+        // storing X0 from X
+        if( restScale.getValue()!=1 )
+            vOp(core::ExecParams::defaultInstance(), VecId::restPosition(), core::ConstVecId::null(), VecId::position(), restScale.getValue());
+        else
+            vOp(core::ExecParams::defaultInstance(), VecId::restPosition(), VecId::position());
+    }
 
     if (x_wA.size() != (std::size_t)vsize || v_wA.size() != (std::size_t)vsize)
     {
@@ -1099,22 +1110,12 @@ void MechanicalObject<DataTypes>::init()
         }
     }
 
+    x_wAData->endEdit();
+    v_wAData->endEdit();
+
     reinit();
 
-    VecCoord *x0_edit = x0.beginEdit();
 
-
-    // Rest position
-    if (x0_edit->size() == 0)
-    {
-        x0.setValue(x.getValue());
-        if (restScale.getValue() != (Real)1)
-        {
-            Real s = (Real)restScale.getValue();
-            for (unsigned int i=0; i<x0_edit->size(); i++)
-                (*x0_edit)[i] *= s;
-        }
-    }
 
 #if 0// SOFA_HAVE_NEW_TOPOLOGYCHANGES
     x0.createTopologicalEngine(m_topology);
@@ -1139,7 +1140,6 @@ void MechanicalObject<DataTypes>::init()
 #endif
 
 
-    x0.endEdit();
 
     if (rotation2.getValue()[0]!=0.0 || rotation2.getValue()[1]!=0.0 || rotation2.getValue()[2]!=0.0)
     {
@@ -1208,10 +1208,12 @@ void MechanicalObject<DataTypes>::reinit()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::storeResetState()
 {
+    // store a reset state only for independent dofs (mapped dofs are deduced from independent dofs)
+    if( !isIndependent() ) return;
+
     // Save initial state for reset button
     vOp(core::ExecParams::defaultInstance(), VecId::resetPosition(), VecId::position());
 
-    //vOp(VecId::resetVelocity(), VecId::velocity());
     // we only store a resetVelocity if the velocity is not zero
     helper::ReadAccessor< Data<VecDeriv> > v = *this->read(VecDerivId::velocity());
     bool zero = true;
@@ -1246,8 +1248,8 @@ void MechanicalObject<DataTypes>::reset()
         vOp(core::ExecParams::defaultInstance(), VecId::velocity(), VecId::resetVelocity());
     }
 
-    vOp(core::ExecParams::defaultInstance(), VecId::freePosition(), VecId::position());
-    vOp(core::ExecParams::defaultInstance(), VecId::freeVelocity(), VecId::velocity());
+    if( xfree.isSet() ) vOp(core::ExecParams::defaultInstance(), VecId::freePosition(), VecId::position());
+    if( vfree.isSet() ) vOp(core::ExecParams::defaultInstance(), VecId::freeVelocity(), VecId::velocity());
 }
 
 
@@ -2590,7 +2592,7 @@ std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObje
     // for all row indices
     typedef std::list<unsigned int> indices_t;
 
-    const MatrixDeriv& constraints = c.getValue();
+    const MatrixDeriv& constraints = *getC();//c.getValue();
 
     unsigned int block_row = 0;
     for (indices_t::const_iterator rowIt = indices.begin(); rowIt != indices.end(); ++rowIt, ++block_row)
@@ -2643,7 +2645,7 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
 {
     SReal result = 0;
 
-    const MatrixDeriv& constraints = c.getValue();
+    const MatrixDeriv& constraints = *getC();// = c.getValue();
 
     MatrixDerivRowConstIterator rowIterator = constraints.readLine(line);
 
@@ -2659,7 +2661,7 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
     }
     else if (id == ConstVecId::dx())
     {
-        data = &dx.getValue();
+        data = getDx();
     }
     else
     {
@@ -2731,7 +2733,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     if (showVectors.getValue())
     {
         Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+        sofa::simulation::Node* context = static_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
@@ -3444,6 +3446,12 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
         }
     }
     return true;
+}
+
+template <class DataTypes>
+bool MechanicalObject<DataTypes>::isIndependent() const
+{
+    return static_cast<const simulation::Node*>(this->getContext())->mechanicalMapping.empty();
 }
 
 
