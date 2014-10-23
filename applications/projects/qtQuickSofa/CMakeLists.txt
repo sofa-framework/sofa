@@ -4,7 +4,6 @@ set(SOURCE_FILES
 		Window.cpp
 		Viewer.cpp
         Scene.cpp
-		stdafx.cpp
 		
 		Main.cpp
 )
@@ -13,7 +12,6 @@ set(HEADER_FILES
 		Window.h
 		Viewer.h
         Scene.h
-		stdafx.h
 )
 
 set(SHADER_FILES
@@ -30,7 +28,8 @@ set(QML_FILES
 		resource/gui/Header.qml
 		resource/gui/Scene.qml
 		resource/gui/Viewer.qml
-		resource/gui/SceneGraph.qml
+		resource/gui/SimulationControl.qml
+		resource/gui/FPSDisplay.qml
 )
 
 set(QRC_FILES
@@ -56,7 +55,7 @@ qt5_add_resources(RESOURCE_FILES ${QRC_FILES})
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QRC_FILES} ${RESOURCE_FILES} ${SHADER_FILES} ${QML_FILES})
 
-AddLinkerDependencies(SofaSimpleGUI Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
+AddLinkerDependencies(SofaSimulationGraph SofaComponentMain Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

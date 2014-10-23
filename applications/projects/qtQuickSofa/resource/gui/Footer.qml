@@ -19,10 +19,11 @@ Rectangle {
             Layout.fillHeight: true
             width: 10
 
-            Label {
-                anchors.centerIn: parent
+            FPSDisplay {
+                anchors.fill: parent
+                anchors.centerIn: parent.Center
                 horizontalAlignment: Text.AlignHCenter
-                text: "FPS"
+                verticalAlignment: Text.AlignVCenter
             }
         }
 
@@ -32,7 +33,7 @@ Rectangle {
             width: 5
         }
 
-        Rectangle {
+        /*Rectangle {
             color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -49,7 +50,7 @@ Rectangle {
             color: Qt.rgba(0.75, 0.75, 0.75, 1.0)
             Layout.fillHeight: true
             width: 5
-        }
+        }*/
 
         Rectangle {
             color: Qt.rgba(0.0, 0.0, 0.0, 0.0)

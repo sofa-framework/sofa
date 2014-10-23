@@ -7,8 +7,9 @@
         <file>resource/shaders/render.vs</file>
         <file>resource/gui/FileBrowser.qml</file>
         <file>resource/gui/Footer.qml</file>
+        <file>resource/gui/FPSDisplay.qml</file>
         <file>resource/gui/Header.qml</file>
-        <file>resource/gui/SceneGraph.qml</file>
+        <file>resource/gui/SimulationControl.qml</file>
         <file>resource/gui/Viewer.qml</file>
         <file>resource/gui/Scene.qml</file>
     </qresource>

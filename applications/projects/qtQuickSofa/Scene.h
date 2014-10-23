@@ -2,60 +2,61 @@
 #define SCENE_H
 
 #include <QObject>
-#include "SofaScene.h"
-//#include <sofa/simulation/graph/DAGSimulation.h>
+#include <QUrl>
+#include <sofa/simulation/common/Simulation.h>
 
 class QTimer;
-//typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
 
-class Scene : public QObject, public sofa::simplegui::SofaScene
+class Scene : public QObject
 {
     Q_OBJECT
 
 public:
     explicit Scene(QObject *parent = 0);
-
-signals:
-    /// Sent after step() or reset() to notify that redraw is needed
-    void stepEnd();
-    /// new state: play or pause (for changing the icon)
-    void sigPlaying(bool playing);
-    /// scene was just opened
-    void opened();
-
-public slots:
-    /**
-     * @brief Clear the current scene and open a new one
-     * @param filename new scene to open
-     */
-	Q_INVOKABLE void open(const QString& filename);
-    /// re-open the current scene
-    Q_INVOKABLE void reload();
-    /// Apply one simulation time step
-    Q_INVOKABLE void step();
-    /// Set the length of the simulation time step
-    Q_INVOKABLE void setTimeStep(SReal dt);
-    /// toggle play/pause
-    Q_INVOKABLE void playpause();
-    /// set play or pause, depending on the parameter
-    Q_INVOKABLE void play(bool p = true);
-    /// pause the animation
-    Q_INVOKABLE void pause();
-    /// restart at the beginning, without reloading the file
-    Q_INVOKABLE void reset();
+	~Scene();
 
 public:
-    /// Length of the simulation time step
-    Q_INVOKABLE SReal dt() const;
-	/// true if the current scene has been correctly loaded
-    Q_INVOKABLE bool isLoaded() const;
-    /// true if simulation is running, false if it is paused
-    Q_INVOKABLE bool isPlaying() const;
+	Q_PROPERTY(QUrl source MEMBER mySource NOTIFY sourceChanged);
+	Q_PROPERTY(double dt MEMBER myDt NOTIFY dtChanged);
+	Q_PROPERTY(bool play MEMBER myPlay NOTIFY playChanged);
+
+public:
+	const QUrl& source() const	{return mySource;}
+	double dt() const			{return myDt;}
+	bool playing() const		{return myPlay;}
+
+signals:
+	void sourceChanged(const QUrl& newSource);
+	void dtChanged(double newDt);
+	void playChanged(bool newPlay);
+
+public slots:
+	/// re-open the current scene
+	bool reload();
+	/// apply one simulation time step, the simulation must be paused (play = false)
+	void step();
+	/// restart at the beginning, without reloading the file
+	void reset();
+
+signals:
+	void opened();
+	void stepBegin();
+    void stepEnd();
+
+protected slots:
+    /// open a scene according to the source
+	bool open();
+
+public:
+	sofa::simulation::Simulation* sofaSimulation() const {return mySofaSimulation;}
 
 private:
-    SReal _dt;
-    QTimer *_timer;
+	QUrl							mySource;
+	double							myDt;
+	bool							myPlay;
 
+	sofa::simulation::Simulation*	mySofaSimulation;
+	QTimer*							myStepTimer;
 };
 
 #endif // SCENE_H
