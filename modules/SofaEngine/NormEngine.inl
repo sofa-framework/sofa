@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_ENGINE_NORMENGINE_INL
 
 
-#include <sofa/component/engine/NormEngine.h>
+#include <SofaEngine/NormEngine.h>
 
 
 namespace sofa

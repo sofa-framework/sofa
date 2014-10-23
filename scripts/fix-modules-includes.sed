@@ -1272,3 +1272,5 @@ s:#include *[<"]sofa/component/collision/CylinderModel.h[>"]:#include <SofaBaseC
 s:#include *[<"]sofa/component/init.h[>"]:#include <SofaComponentMain/init.h>:
 s:#include *[<"]sofa/component/misc/BlenderExporter.h[>"]:#include <SofaExporter/BlenderExporter.h>:
 s:#include *[<"]sofa/component/misc/BlenderExporter.inl[>"]:#include <SofaExporter/BlenderExporter.inl>:
+s:#include *[<"]sofa/component/engine/NormEngine.h[>"]:#include <SofaEngine/NormEngine.h>:
+s:#include *[<"]sofa/component/engine/NormEngine.inl[>"]:#include <SofaEngine/NormEngine.inl>:
