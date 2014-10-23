@@ -265,6 +265,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // apply geometric stiffness
+        inDofs->vRealloc( &mparams, core::VecDerivId::dx() ); // dx is not allocated by default
         WriteInVecDeriv dxin = inDofs->writeDx();
         copyToData( dxin, vp );
         dfp.fill( InDeriv() );

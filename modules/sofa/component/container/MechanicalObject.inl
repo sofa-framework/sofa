@@ -172,15 +172,20 @@ MechanicalObject<DataTypes>::MechanicalObject()
     x               .forceSet();
     //  x0              .forceSet();
     v               .forceSet();
-    dx              .forceSet();
+//    dx              .forceSet();
     f               .forceSet();
     externalForces  .forceSet();
+
+    // there is no need for a common user to watch at these vectors
+//    dx.setDisplayed( false );
+//    freePosition.setDisplayed( false );
+//    freeVelocity.setDisplayed( false );
 
     // do not forget to delete these in the destructor
     // are null() vectors must be allocated?
 //    write(VecCoordId::null())->forceSet();
 //    write(VecDerivId::null())->forceSet();
-    write(VecDerivId::dforce())->forceSet();
+//    write(VecDerivId::dforce())->forceSet();
 
     // default size is 1
     resize(1);
@@ -198,12 +203,15 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 
     for(unsigned i=core::VecCoordId::V_FIRST_DYNAMIC_INDEX; i<vectorsCoord.size(); i++)
         if( vectorsCoord[i] != NULL ) { delete vectorsCoord[i]; vectorsCoord[i]=NULL; }
-    delete vectorsCoord[VecCoordId::null().getIndex()]; vectorsCoord[VecCoordId::null().getIndex()] = NULL;
+    if( vectorsCoord[VecCoordId::null().getIndex()] != NULL )
+        { delete vectorsCoord[VecCoordId::null().getIndex()]; vectorsCoord[VecCoordId::null().getIndex()] = NULL; }
 
     for(unsigned i=core::VecDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsDeriv.size(); i++)
         if( vectorsDeriv[i] != NULL )  { delete vectorsDeriv[i]; vectorsDeriv[i]=NULL; }
-    delete vectorsDeriv[VecDerivId::null().getIndex()]; vectorsDeriv[VecDerivId::null().getIndex()] = NULL;
-    delete vectorsDeriv[VecDerivId::dforce().getIndex()]; vectorsDeriv[VecDerivId::dforce().getIndex()] = NULL;
+    if( vectorsDeriv[VecDerivId::null().getIndex()] != NULL )
+        { delete vectorsDeriv[VecDerivId::null().getIndex()]; vectorsDeriv[VecDerivId::null().getIndex()] = NULL; }
+    if( VecDerivId::dforce().getIndex()<vectorsDeriv.size() && vectorsDeriv[VecDerivId::dforce().getIndex()] != NULL )
+        { delete vectorsDeriv[VecDerivId::dforce().getIndex()]; vectorsDeriv[VecDerivId::dforce().getIndex()] = NULL; }
 
     for(unsigned i=core::MatrixDerivId::V_FIRST_DYNAMIC_INDEX; i<vectorsMatrixDeriv.size(); i++)
         if( vectorsMatrixDeriv[i] != NULL )  { delete vectorsMatrixDeriv[i]; vectorsMatrixDeriv[i]=NULL; }

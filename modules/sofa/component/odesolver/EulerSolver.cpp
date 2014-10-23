@@ -76,7 +76,7 @@ void EulerSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, doubl
     mop->setImplicit(false); // this solver is explicit only
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv acc(&vop, core::VecDerivId::dx() );
+    MultiVecDeriv acc(&vop, core::VecDerivId::dx() ); acc.realloc( &vop, true, true ); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
     MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
     MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
