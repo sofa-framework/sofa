@@ -1057,14 +1057,6 @@ void MechanicalObject<DataTypes>::init()
     {
         vOp(core::ExecParams::defaultInstance(), VecId::position(), VecId::restPosition());
     }
-    else if( getX0()->empty() || getX0()->size()!=x_wA.size() )
-    {
-        // storing X0 from X
-        if( restScale.getValue()!=1 )
-            vOp(core::ExecParams::defaultInstance(), VecId::restPosition(), core::ConstVecId::null(), VecId::position(), restScale.getValue());
-        else
-            vOp(core::ExecParams::defaultInstance(), VecId::restPosition(), VecId::position());
-    }
 
     if (x_wA.size() != (std::size_t)vsize || v_wA.size() != (std::size_t)vsize)
     {
@@ -1115,6 +1107,15 @@ void MechanicalObject<DataTypes>::init()
 
     reinit();
 
+    // storing X0 must be done after reinit() that possibly applies transformations
+    if( getX0()->size()!=x_wA.size() )
+    {
+        // storing X0 from X
+        if( restScale.getValue()!=1 )
+            vOp(core::ExecParams::defaultInstance(), VecId::restPosition(), core::ConstVecId::null(), VecId::position(), restScale.getValue());
+        else
+            vOp(core::ExecParams::defaultInstance(), VecId::restPosition(), VecId::position());
+    }
 
 
 #if 0// SOFA_HAVE_NEW_TOPOLOGYCHANGES
