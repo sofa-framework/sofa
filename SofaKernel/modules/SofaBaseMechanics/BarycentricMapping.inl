@@ -688,7 +688,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::init ( const typename Out::Ve
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
 
-    // Why do we need that ? is reset the map in case of topology change
+    // Why do we need that ? it reset the map in case of topology change
 //    if (this->toTopology)
 //    {
 //        map.createTopologicalEngine(this->toTopology);
@@ -3730,6 +3730,93 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
     reinit(); // we now recompute the entire mapping when there is a topologychange
 }
 
+#ifdef BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
+template <class In, class Out>
+void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::topology::Topology* t)
+{
+  	core::topology::BaseMeshTopology* from = dynamic_cast<core::topology::BaseMeshTopology*>(t);
+	if(from == NULL ) {
+		this->serr << __FUNCTION__ << ": could not cast topology to BaseMeshTopology" << this->sendl; 
+		return;
+	}
+
+	std::list<const core::topology::TopologyChange *>::const_iterator itBegin = from->beginChange();
+	std::list<const core::topology::TopologyChange *>::const_iterator itEnd = from->endChange();
+
+	for ( std::list<const core::topology::TopologyChange *>::const_iterator changeIt = itBegin;
+		changeIt != itEnd; ++changeIt )
+	{
+		const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
+		switch ( changeType )
+		{
+        case core::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
+        {
+            helper::vector<MappingData>& vectorData = *(this->map.beginEdit());
+            vectorData.clear();
+            this->map.endEdit();
+
+            typedef MechanicalState<In> MechanicalStateF;
+            typedef MechanicalState<Out> MechanicalStateT;
+
+            MechanicalStateF* mStateF;
+            MechanicalStateT* mStateT;
+
+            this->fromTopology->getContext()->get(mStateF);
+            this->toTopology->getContext()->get(mStateT);
+
+            const typename MechanicalStateF::VecCoord& in = *(mStateF->getX0());
+            const typename MechanicalStateT::VecCoord& out = *(mStateT->getX0());
+
+            int outside = 0;
+
+            const sofa::helper::vector<topology::Triangle>& triangles = this->fromTopology->getTriangles();
+            sofa::helper::vector<Mat3x3d> bases;
+            sofa::helper::vector<Vector3> centers;
+
+            // no 3D elements -> map on 2D elements
+            this->clear ( out.size() ); // reserve space for 2D mapping
+            bases.resize ( triangles.size() );
+            centers.resize ( triangles.size() );
+
+            for ( unsigned int t = 0; t < triangles.size(); t++ )
+            {
+                Mat3x3d m,mt;
+                m[0] = in[triangles[t][1]]-in[triangles[t][0]];
+                m[1] = in[triangles[t][2]]-in[triangles[t][0]];
+                m[2] = cross ( m[0],m[1] );
+                mt.transpose ( m );
+                bases[t].invert ( mt );
+                centers[t] = ( in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]] ) /3;
+            }
+
+            for ( unsigned int i=0; i<out.size(); i++ )
+            {
+                Vec3d pos = Out::getCPos(out[i]);
+                Vector3 coefs;
+                int index = -1;
+                double distance = 1e10;
+                for ( unsigned int t = 0; t < triangles.size(); t++ )
+                {
+                    Vec3d v = bases[t] * ( pos - in[triangles[t][0]] );
+                    double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
+                    if ( d>0 ) d = ( pos-centers[t] ).norm2();
+                    if ( d<distance ) { coefs = v; distance = d; index = t; }
+                }
+                if ( distance>0 )
+                {
+                    ++outside;
+                }
+                this->addPointInTriangle ( index, coefs.ptr() );
+            }
+            break;
+        }
+		default:
+			break;
+		}
+	}
+}
+
+#endif // BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
 
 
 template<class TIn, class TOut>
