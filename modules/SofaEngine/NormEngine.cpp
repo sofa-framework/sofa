@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_ENGINE_NORMENGINE_CPP
-#include <sofa/component/engine/NormEngine.inl>
+#include <SofaEngine/NormEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
