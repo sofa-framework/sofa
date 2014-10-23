@@ -274,35 +274,35 @@ Cell<ORBY> Traversor3XY<MAP, ORBX, ORBY>::next()
 }
 
 // ARRAY VERSION
-template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-Traversor3XYArray<MAP, ORBX, ORBY>::Traversor3XYArray(const MAP& map, Cell<ORBX> c, bool , unsigned int thread ) :
-    m_thread(thread),
-    m_cells(GenericMap::askDartBuffer(thread))
-{
-    const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<ORBX,ORBY>() ;
-    if (quickTraversal != NULL) {
-        const std::vector<Dart>& m_QLT = quickTraversal->operator[](map.getEmbedding(c));
-        *m_cells = m_QLT;
-    } else {
-        CellMarkerStore<MAP, ORBY> m_cmark(map, thread) ;
-        TraversorDartsOfOrbit<MAP, ORBX> m_tradoo(map, c, thread);
+//template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+//Traversor3XYArray<MAP, ORBX, ORBY>::Traversor3XYArray(const MAP& map, Cell<ORBX> c, bool , unsigned int thread ) :
+//    m_thread(thread),
+//    m_cells(GenericMap::askDartBuffer(thread))
+//{
+//    const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<ORBX,ORBY>() ;
+//    if (quickTraversal != NULL) {
+//        const std::vector<Dart>& m_QLT = quickTraversal->operator[](map.getEmbedding(c));
+//        *m_cells = m_QLT;
+//    } else {
+//        CellMarkerStore<MAP, ORBY> m_cmark(map, thread) ;
+//        TraversorDartsOfOrbit<MAP, ORBX> m_tradoo(map, c, thread);
 
-        for (Dart curr = m_tradoo.begin() ; !curr.isNil() ; curr = m_tradoo.next()) {
-            if (!m_cmark.isMarked(curr)) {
-                m_cmark.mark(curr);
-                if ( (ORBY != VOLUME) || (!map.template isBoundaryMarked<3>(curr)))
-                    m_cells->push_back(curr);
-            }
-        }
-    }
-}
+//        for (Dart curr = m_tradoo.begin() ; !curr.isNil() ; curr = m_tradoo.next()) {
+//            if (!m_cmark.isMarked(curr)) {
+//                m_cmark.mark(curr);
+//                if ( (ORBY != VOLUME) || (!map.template isBoundaryMarked<3>(curr)))
+//                    m_cells->push_back(curr);
+//            }
+//        }
+//    }
+//}
 
-template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-Traversor3XYArray<MAP, ORBX, ORBY>::Traversor3XYArray(const Traversor3XYArray&)
-{
-    std::cerr << "CGoGN : Copy constructor of Traversor3XYArray<MAP, ORBX, ORBY> called. Should not happen. Aborting." << std::endl;
-    std::exit(1);
-}
+//template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+//Traversor3XYArray<MAP, ORBX, ORBY>::Traversor3XYArray(const Traversor3XYArray&)
+//{
+//    std::cerr << "CGoGN : Copy constructor of Traversor3XYArray<MAP, ORBX, ORBY> called. Should not happen. Aborting." << std::endl;
+//    std::exit(1);
+//}
 
 //*********************************************
 // Traversor cellX to cellX adjacent by cell Y
@@ -368,38 +368,40 @@ Cell<ORBX> Traversor3XXaY<MAP, ORBX, ORBY>::next()
 
 
 // ARRAY VERSION
-template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-Traversor3XXaYArray<MAP, ORBX, ORBY>::Traversor3XXaYArray(const MAP& map, Cell<ORBX> c, bool , unsigned int thread ) :
-    m_thread(thread),
-    m_cells(GenericMap::askDartBuffer(thread))
-{
-    const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal =  map.template getQuickAdjacentTraversal<ORBX,ORBY>() ;
-    if (quickTraversal != NULL)
-    {
-        const std::vector<Dart>& m_QLT  = quickTraversal->operator[](map.getEmbedding(c));
-        *m_cells = m_QLT;
-    }
-    else
-    {
-        MarkerForTraversor<MAP, ORBX> mk(map, false, thread);
-        mk.mark(c);
+//template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+//Traversor3XXaYArray<MAP, ORBX, ORBY>::Traversor3XXaYArray(const MAP& map, Cell<ORBX> c, bool , unsigned int thread ) :
+//    m_thread(thread),
+//    m_cells(GenericMap::askDartBuffer(thread))
+//{
+//    const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal =  map.template getQuickAdjacentTraversal<ORBX,ORBY>() ;
+//    if (quickTraversal != NULL)
+//    {
+//        const std::vector<Dart>& m_QLT  = quickTraversal->operator[](map.getEmbedding(c));
+//        *m_cells = m_QLT;
+//    }
+//    else
+//    {
+//        MarkerForTraversor<MAP, ORBX> mk(map, false, thread);
+//        mk.mark(c);
 
-        Traversor3XY<MAP, ORBX, ORBY> traAdj(map, c, false, thread);
-        for (Dart d = traAdj.begin(), endAdj = traAdj.end(); d != endAdj ; d = traAdj.next())
-        {
-            Traversor3XY<MAP, ORBY, ORBX> traInci(map, d, mk, false, thread);
-            for (Dart e = traInci.begin(), endInci = traInci.end() ; e != endInci; e = traInci.next())
-                m_cells->push_back(e);
-        }
-    }
-}
+//        Traversor3XY<MAP, ORBX, ORBY> traAdj(map, c, false, thread);
+//        for (Dart d = traAdj.begin(), endAdj = traAdj.end(); d != endAdj ; d = traAdj.next())
+//        {
+//            Traversor3XY<MAP, ORBY, ORBX> traInci(map, d, mk, false, thread);
+//            for (Dart e = traInci.begin(), endInci = traInci.end() ; e != endInci; e = traInci.next())
+//                m_cells->push_back(e);
+//        }
+//    }
+//}
 
-template <typename MAP, unsigned int ORBX, unsigned int ORBY>
-Traversor3XXaYArray<MAP, ORBX, ORBY>::Traversor3XXaYArray(const Traversor3XXaYArray&)
-{
-    std::cerr << "CGoGN : Copy constructor of Traversor3XYArray<MAP, ORBX, ORBY> called. Should not happen. Aborting." << std::endl;
-    std::exit(1);
-}
+//template <typename MAP, unsigned int ORBX, unsigned int ORBY>
+//Traversor3XXaYArray<MAP, ORBX, ORBY>::Traversor3XXaYArray(const Traversor3XXaYArray&)
+//{
+//    std::cerr << "CGoGN : Copy constructor of Traversor3XYArray<MAP, ORBX, ORBY> called. Should not happen. Aborting." << std::endl;
+//    std::exit(1);
+//}
+
+
 //template<typename MAP>
 //Traversor3<MAP>* Traversor3<MAP>::createXY(MAP& map, Dart dart, unsigned int orbX, unsigned int orbY)
 //{

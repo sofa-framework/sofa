@@ -250,7 +250,6 @@ public:
     virtual ~DartMarkerStore()
     {
         unmarkAll() ;
-        m_markedDarts->clear();
         GenericMap::releaseUIntBuffer(m_markedDarts, this->m_thread);
         //		assert(isAllUnmarked) ;
         //		CGoGN_ASSERT(isAllUnmarked())
