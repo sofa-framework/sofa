@@ -21,7 +21,7 @@
 namespace sofa {
 
 namespace simulation {
-struct AssemblyVisitor;
+class AssemblyVisitor;
 
 namespace common {
 class MechanicalOperations;
@@ -33,7 +33,7 @@ class VectorOperations;
 namespace component {
 
 namespace linearsolver {
-struct AssembledSystem;
+class AssembledSystem;
 }
 
 

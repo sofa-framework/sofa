@@ -202,6 +202,13 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     // Compute longitudinal deformation
                     Real longitudinalDeformation=(p1[0]-p0[0])/p0[0];
 
+                    // Test if longitudinal stretch is a nan value
+                    if(longitudinalDeformation != longitudinalDeformation)
+                    {
+                        ADD_FAILURE() << "Error longitudinal stretch is NAN" << std::endl;
+                        return false;
+                    }
+
                     // test the longitudinal deformation
                     if(debug)
                         std::cout << "precision longitudinal stretch = " << fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus)) << std::endl;
@@ -221,9 +228,17 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
                     Real radius=p0.norm2();
                     Real radialDeformation= dot(p0,p1)/radius-1 ;
 
+                    // Test if radial stretch is a nan value
+                    if(radialDeformation != radialDeformation)
+                    {
+                        ADD_FAILURE() << "Error radial stretch is NAN" << std::endl;
+                        return false;
+                    }
+
                     // test the radial deformation
                     if(debug)
                         std::cout << "precision radial stretch = " << fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus))<< std::endl;
+                    
                     if (fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus))>radialStretchAccuracy) {
                         ADD_FAILURE() << "Wrong radial deformation for Young Modulus = " << youngModulus << " Poisson Ratio = "<<
                             poissonRatio << " pressure= "<<pressure<< std::endl <<
@@ -260,8 +275,8 @@ struct TetraMaterialTest331Type{
     static const double radialStretchAccuracy; 
     static const std::string sceneName; 
 };
-const double TetraMaterialTest331Type::longitudinalStretchAccuracy= 2e-8; // Accuracy of longitudinal stretch
-const double TetraMaterialTest331Type::radialStretchAccuracy= 2e-6; // Accuracy of radial stretch
+const double TetraMaterialTest331Type::longitudinalStretchAccuracy= 1.4e-10; // Accuracy of longitudinal stretch
+const double TetraMaterialTest331Type::radialStretchAccuracy= 8.7e-9; // Accuracy of radial stretch
 const std::string TetraMaterialTest331Type::sceneName= "TetrahedraTractionTest.scn";
 
 // 332 Types
@@ -274,8 +289,8 @@ struct TetraMaterialTest332Type{
     static const double radialStretchAccuracy; 
     static const std::string sceneName; 
 };
-const double TetraMaterialTest332Type::longitudinalStretchAccuracy= 2e-8; // Accuracy of longitudinal stretch
-const double TetraMaterialTest332Type::radialStretchAccuracy= 2e-6; // Accuracy of radial stretch
+const double TetraMaterialTest332Type::longitudinalStretchAccuracy= 1.4e-10; // Accuracy of longitudinal stretch
+const double TetraMaterialTest332Type::radialStretchAccuracy= 8.7e-9; // Accuracy of radial stretch
 const std::string TetraMaterialTest332Type::sceneName= "TetrahedraTractionTest.scn";
 
 
@@ -293,7 +308,7 @@ TYPED_TEST_CASE(TetrahedraMaterial_test, DataTypes);
 // Test traction cylinder
 TYPED_TEST( TetrahedraMaterial_test , test_Hooke_Tetrahedra_InTraction )
 {
-    ASSERT_TRUE( this->testTetrahedraInTraction(&sofa::TetrahedraMaterial_test<TypeParam>::addHookeForceField,TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
+    ASSERT_TRUE( this->testTetrahedraInTraction(&sofa::TetrahedraMaterial_test<TypeParam>::addHookeForceField,TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,true));
 }
 
 } // namespace sofa

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,8 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP
-#include <SofaEngine/DilateEngine.inl>
+#define SOFA_IMAGE_CONCATENATEIMAGES_CPP
+
+#include "ConcatenateImages.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,29 +36,42 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(DilateEngine)
+using namespace defaulttype;
 
-int DilateEngineClass = core::RegisterObject("Move mesh vertices along their normal")
-#ifndef SOFA_FLOAT
-//  .add< DilateEngine<defaulttype::Vec3fTypes> >(true) // default template
-        .add< DilateEngine<defaulttype::Vec3dTypes> >(true) // default template
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//.add< DilateEngine<defaulttype::Vec3fTypes> >()
-//  .add< DilateEngine<defaulttype::ExtVec3fTypes> >()
-#endif //SOFA_DOUBLE
+SOFA_DECL_CLASS(ConcatenateImages)
+
+int ConcatenateImagesClass = core::RegisterObject("Concatenate images")
+        .add<ConcatenateImages<ImageUC> >(true)
+        .add<ConcatenateImages<ImageD> >()
+#ifdef BUILD_ALL_IMAGE_TYPES
+        .add<ConcatenateImages<ImageC> >()
+        .add<ConcatenateImages<ImageI> >()
+        .add<ConcatenateImages<ImageUI> >()
+        .add<ConcatenateImages<ImageS> >()
+        .add<ConcatenateImages<ImageUS> >()
+        .add<ConcatenateImages<ImageL> >()
+        .add<ConcatenateImages<ImageUL> >()
+        .add<ConcatenateImages<ImageF> >()
+        .add<ConcatenateImages<ImageB> >()
+#endif
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
-//template class SOFA_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageUC>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageD>;
+#ifdef BUILD_ALL_IMAGE_TYPES
+template class SOFA_IMAGE_API ConcatenateImages<ImageC>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageI>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageUI>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageS>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageUS>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageL>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageUL>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageF>;
+template class SOFA_IMAGE_API ConcatenateImages<ImageB>;
+#endif
 
-} // namespace engine
 
+} //
 } // namespace component
 
 } // namespace sofa

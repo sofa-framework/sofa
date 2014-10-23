@@ -300,7 +300,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
 template <class ShapeFunctionTypes_,class ImageTypes_>
-class SOFA_Flexible_API DiffusionShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
+class DiffusionShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
 {
     friend struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
     friend struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;

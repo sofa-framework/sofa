@@ -13,6 +13,7 @@ set(SOURCE_FILES
     BroadPhase_test.cpp
     DAG_test.cpp
     EulerImplicit_test.cpp
+    HexahedronFEMForceField_test.cpp
     LinearElasticity_test.cpp
     LoadScene_test.cpp
     Matrix_test.cpp
@@ -27,6 +28,7 @@ set(SOURCE_FILES
     Simulation_test.cpp
     Sphere_test.cpp
     StiffSpringForceField_test.cpp 
+    TetrahedronFEMForceField_test.cpp
     TetrahedronNumericalIntegration_test.cpp
 )
 
