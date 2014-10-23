@@ -88,6 +88,8 @@ set(HEADER_FILES
     ../engine/HausdorffDistance.inl
     ../engine/MeshSampler.h
     ../engine/MeshSampler.inl
+    ../engine/NormEngine.h
+    ../engine/NormEngine.inl
     )
     
 set(SOURCE_FILES
@@ -136,6 +138,7 @@ set(SOURCE_FILES
     ../engine/ProximityROI.cpp
     ../engine/HausdorffDistance.cpp
     ../engine/MeshSampler.cpp
+    ../engine/NormEngine.cpp
     )
 
 set(GROUP_BASE_DIR "..")

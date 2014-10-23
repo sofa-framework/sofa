@@ -714,12 +714,13 @@ public:
 
     void setTime(const Real t, bool repeat=true)
     {
-        if(!this->img)  return;
-        if(!this->img->getDimensions()[4] || !this->transform) return;
+        if(!this->img )  return;
+        unsigned int size = this->img->getCImgList().size();
+        if(!t || !this->transform) return;
         Real t2=this->transform->toImage(t) ;
-        if(repeat) t2-=(Real)((int)((int)t2/this->img->getDimensions()[4])*this->img->getDimensions()[4]);
+        if(repeat) t2-=(Real)((int)((int)t2/size)*size);
         t2=(t2-floor(t2)>0.5)?ceil(t2):floor(t2); // nearest
-        if(t2<0) t2=0.0; else if(t2>=(Real)this->img->getDimensions()[4]) t2=(Real)this->img->getDimensions()[4]-1.0; // clamp
+        if(t2<0) t2=0.0; else if(t2>=(Real)size) t2=(Real)size-1.0; // clamp
         if(this->time!=(unsigned int)t2)
         {
             this->time=(unsigned int)t2;
@@ -895,7 +896,7 @@ struct ImageTypeInfo
 
     enum { ValidInfo       = BaseTypeInfo::ValidInfo       }; ///< 1 if this type has valid infos
     enum { FixedSize       = 1                             }; ///< 1 if this type has a fixed size  -> always 1 Image
-    enum { ZeroConstructor = 1                             }; ///< 1 if the constructor is equivalent to setting memory to 0  -> I guess so, a default Image is initialzed with nothing
+    enum { ZeroConstructor = 0                             }; ///< 1 if the constructor is equivalent to setting memory to 0  -> I guess so, a default Image is initialzed with nothing
     enum { SimpleCopy      = 0                             }; ///< 1 if copying the data can be done with a memcpy
     enum { SimpleLayout    = 0                             }; ///< 1 if the layout in memory is simply N values of the same base type
     enum { Integer         = 0                             }; ///< 1 if this type uses integer values
@@ -936,11 +937,11 @@ struct ImageTypeInfo
 };
 
 
-template<class T>
-struct DataTypeInfo< Image<T> > : public ImageTypeInfo< Image<T> >
-{
-    static std::string name() { std::ostringstream o; o << "Image<" << DataTypeName<T>::name() << ">"; return o.str(); }
-};
+//template<class T>
+//struct DataTypeInfo< Image<T> > : public ImageTypeInfo< Image<T> >
+//{
+//    static std::string name() { std::ostringstream o; o << "Image<" << DataTypeName<T>::name() << ">"; return o.str(); }
+//};
 
 
 

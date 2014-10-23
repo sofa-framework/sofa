@@ -175,6 +175,12 @@ struct Material_test : public Sofa_test<typename Vec3Types::Real>
                     // Get the simulated final position of that vertex
                     Coord p1=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
                      Real longitudinalDeformation=(p1[2]-p0[2])/p0[2];
+                    // Test if longitudinal stretch is a nan value
+                    if(longitudinalDeformation != longitudinalDeformation)
+                    {
+                        ADD_FAILURE() << "Error longitudinal stretch is NAN" << std::endl;
+                        return false;
+                    }
 
                     // test the longitudinal deformation
                     if (fabs((longitudinalDeformation-pressure/youngModulus)/(pressure/youngModulus))>5.2e-3) {
@@ -189,6 +195,13 @@ struct Material_test : public Sofa_test<typename Vec3Types::Real>
                     p1[2]=0;
                     Real radius=p0.norm2();
                     Real radialDeformation= dot(p0,p1)/radius-1 ;
+
+                    // Test if radial stretch is a nan value
+                    if(radialDeformation != radialDeformation)
+                    {
+                        ADD_FAILURE() << "Error radial stretch is NAN" << std::endl;
+                        return false;
+                    }
 
                     // test the radial deformation
                     if (fabs((radialDeformation+pressure*poissonRatio/youngModulus)/(pressure*poissonRatio/youngModulus))>5.2e-3)

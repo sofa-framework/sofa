@@ -1,3 +1,4 @@
+ 
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
 *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
@@ -22,9 +23,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP
-#include <SofaEngine/DilateEngine.inl>
-#include <sofa/core/ObjectFactory.h>
+#ifndef SOFA_COMPONENT_ENGINE_NORMENGINE_H
+#define SOFA_COMPONENT_ENGINE_NORMENGINE_H
+
+#include <sofa/component/component.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -35,26 +39,55 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(DilateEngine)
+/// convert a vector of Vecs in a vector of their l-norms
+template <class TDataType>
+class NormEngine : public core::DataEngine
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(NormEngine,TDataType),core::DataEngine);
 
-int DilateEngineClass = core::RegisterObject("Move mesh vertices along their normal")
-#ifndef SOFA_FLOAT
-//  .add< DilateEngine<defaulttype::Vec3fTypes> >(true) // default template
-        .add< DilateEngine<defaulttype::Vec3dTypes> >(true) // default template
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//.add< DilateEngine<defaulttype::Vec3fTypes> >()
-//  .add< DilateEngine<defaulttype::ExtVec3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
+    typedef TDataType DataType;
+    typedef typename DataType::value_type Real;
+    typedef helper::vector<DataType> VecData;
+    typedef helper::vector<Real> VecReal;
 
+    NormEngine();
+
+    virtual ~NormEngine() {}
+
+    void init();
+
+    void reinit();
+
+    void update();
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const NormEngine<TDataType>* = NULL)
+    {
+        return defaulttype::DataTypeInfo<TDataType>::name();
+    }
+
+
+protected:
+
+    Data<VecData> d_input;
+    Data<VecReal> d_output;
+    Data<int> d_normType;
+
+};
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
+extern template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3d>;
+#endif
 #ifndef SOFA_DOUBLE
-//template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
-//template class SOFA_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
+extern template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3f>;
+#endif
+#endif
 
 } // namespace engine
 
@@ -62,3 +95,4 @@ template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
 
 } // namespace sofa
 
+#endif

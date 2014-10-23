@@ -98,9 +98,9 @@ SOFA_LINK_CLASS(ImageViewer)
 SOFA_LINK_CLASS(MarchingCubesEngine)
 SOFA_LINK_CLASS(VoronoiToMeshEngine)
 SOFA_LINK_CLASS(MergeImages)
+SOFA_LINK_CLASS(ConcatenateImages)
 SOFA_LINK_CLASS(MeshToImageEngine)
 SOFA_LINK_CLASS(TransferFunction)
 #ifdef SOFA_HAVE_LIBFREENECT
 SOFA_LINK_CLASS(Kinect)
 #endif
-

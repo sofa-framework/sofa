@@ -16,6 +16,9 @@ int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
 
+	/* WARNING: svg is not a built-in format on Windows and its not supported without using a plugin, for now we should use a matrix based format: bmp, png, etc.
+	 * OCARRE: no need to do the following rcc trick anymore, we know use a .qrc file compiled during project build
+	 
     // access to the compiled resource file (icons etc.)
     // On linux, this file can be generated using the command line: rcc -binary SofaSimpleGUI.qrc -o SofaSimpleGUI.rcc
     // See http://qt-project.org/doc/qt-4.8/resources.html
@@ -24,6 +27,7 @@ int main(int argc, char** argv)
     std::string path_to_resource = std::string(QTSOFA_SRC_DIR) + "/SofaSimpleGUI.rcc";
 //    std::cout<<"path to resource = " << path_to_resource << std::endl;
     QResource::registerResource(path_to_resource.c_str());
+	*/
 
 //    std::string fileName = std::string(QTSOFA_SRC_DIR) + "/../../../../examples/Demos/caduceus.scn";
     std::string fileName = std::string(QTSOFA_SRC_DIR) + "/../examples/oneTet.scn";
@@ -32,7 +36,6 @@ int main(int argc, char** argv)
             .option(&plugins,'l',"load","load given plugins")
             .option(&fileName,'f',"file","scene file to load")
             (argc,argv);
-
 
     // Read command lines arguments.
     QApplication application(argc,argv);

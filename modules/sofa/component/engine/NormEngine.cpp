@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP
-#include <SofaEngine/DilateEngine.inl>
+#define SOFA_COMPONENT_ENGINE_NORMENGINE_CPP
+#include <sofa/component/engine/NormEngine.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -35,30 +35,28 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(DilateEngine)
+SOFA_DECL_CLASS(NormEngine)
 
-int DilateEngineClass = core::RegisterObject("Move mesh vertices along their normal")
+int NormEngineClass = core::RegisterObject("Convert Vec in Real")
 #ifndef SOFA_FLOAT
-//  .add< DilateEngine<defaulttype::Vec3fTypes> >(true) // default template
-        .add< DilateEngine<defaulttype::Vec3dTypes> >(true) // default template
-#endif //SOFA_FLOAT
+        .add< NormEngine<defaulttype::Vec3d> >(true) // default template
+#endif
 #ifndef SOFA_DOUBLE
-//.add< DilateEngine<defaulttype::Vec3fTypes> >()
-//  .add< DilateEngine<defaulttype::ExtVec3fTypes> >()
-#endif //SOFA_DOUBLE
+        .add< NormEngine<defaulttype::Vec3f> >()
+#endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
+template class SOFA_ENGINE_API NormEngine<defaulttype::Vec3d>;
+#endif
 #ifndef SOFA_DOUBLE
-//template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
-//template class SOFA_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
+template class SOFA_ENGINE_API NormEngine<defaulttype::Vec3f>;
+#endif
 
 } // namespace engine
 
 } // namespace component
 
 } // namespace sofa
+
 
