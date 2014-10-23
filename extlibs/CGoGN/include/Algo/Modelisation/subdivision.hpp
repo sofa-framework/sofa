@@ -46,9 +46,9 @@ Dart trianguleFace(typename PFP::MAP& map, Dart d)
 {
 	Dart d1 = map.phi1(d);
 	if (d1 == d)
-		CGoGNout << "Warning: triangulation of a face with only one edge" << CGoGNendl;
+        std::cerr << "Warning: triangulation of a face with only one edge" << std::endl;
 	if (map.phi1(d1) == d)
-		CGoGNout << "Warning: triangulation of a face with only two edges" << CGoGNendl;
+        std::cerr << "Warning: triangulation of a face with only two edges" << std::endl;
 	map.splitFace(d, d1) ;
 	map.cutEdge(map.phi_1(d)) ;
 	Dart x = map.phi2(map.phi_1(d)) ;
@@ -59,6 +59,20 @@ Dart trianguleFace(typename PFP::MAP& map, Dart d)
 		map.splitFace(dd, map.phi1(x)) ;
 		dd = next ;
 	}
+
+//    Dart e = map.phi2(x);
+//    std::cerr << "checking embeddings :in triangulateFace " << std::endl;
+//    std::cerr << map.template getEmbedding<FACE>(e) << std::endl;
+//    std::cerr << map.template getEmbedding<FACE>(map.phi2(map.phi_1(e))) << std::endl;
+//    Dart f = map.phi2(e);
+//    std::cerr << "dart "<< f << " map.template getEmbedding<FACE>(f) " << map.template getEmbedding<FACE>(f) << std::endl;
+//    std::cerr <<  "dart "<< map.phi3(f) << " map.template getEmbedding<FACE>(map.phi3(f)) " << map.template getEmbedding<FACE>(map.phi3(f)) << std::endl;
+//    Dart g = map.phi1(f);
+//    while (g != f) {
+//        std::cerr << "map.template getEmbedding<FACE>(g) " << map.template getEmbedding<FACE>(g) << std::endl;
+//        std::cerr << "map.template getEmbedding<FACE>(map.phi3(g)) " << map.template getEmbedding<FACE>(map.phi3(g)) << std::endl;
+//        g = map.phi1(g);
+//    }
 	return map.phi2(x);	// Return a dart of the central vertex
 }
 
