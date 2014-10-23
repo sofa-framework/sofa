@@ -10,7 +10,7 @@ ApplicationWindow {
 
     title: "QtQuick SofaViewer"
     width: 1280
-    height: 720    
+    height: 720
     property string filePath: ""
 
     menuBar: MenuBar {
@@ -56,9 +56,9 @@ ApplicationWindow {
         }
     }
 
-	// sofa scene
+    // sofa scene
     Scene {
-		id: scene
+        id: scene
     }
 
     // dialog
@@ -66,8 +66,7 @@ ApplicationWindow {
         id: openDialog
         nameFilters: ["Scene files (*.xml *.scn *.pscn *.py *.simu *)"]
         onAccepted: {
-            filePath = fileUrl;
-            scene.open(fileUrl);
+            scene.source = fileUrl;
         }
     }
 
@@ -76,13 +75,11 @@ ApplicationWindow {
         selectExisting: false
         nameFilters: ["Scene files (*.scn)"]
         onAccepted: {
-            filePath = fileUrl;
-            scene.save(filePath);
+            scene.save(fileUrl);
         }
     }
 
     // action
-
     Action {
         id: openAction
         text: "&Open..."
@@ -124,22 +121,38 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            SceneGraph {
-                id: sceneGraph
-
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                width: 30
-            }
-
             Viewer {
                 id: viewer
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                width: 70
+                width: 75
 
                 scene: scene
+            }
+
+            Rectangle {
+                id: toolPanel
+
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                width: 25
+
+                color: "lightgrey"
+
+                Column {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.margins: 5
+
+                    SimulationControl {
+                        id: simulationControl
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+
+                        onAnimateClicked: viewer.scene.play = checked
+                    }
+                }
             }
         }
 
@@ -147,7 +160,7 @@ ApplicationWindow {
             id: footer
 
             Layout.fillWidth: true
-            height: 30
+            height: 20
         }
     }
 }

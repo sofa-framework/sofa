@@ -1,97 +1,89 @@
-#include "stdafx.h"
 #include "Scene.h"
 
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/PluginManager.h>
+#include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/component/init.h>
 #include <QTimer>
+#include <QString>
+#include <QUrl>
+#include <QDebug>
 
 Scene::Scene(QObject *parent) :
-    QObject(parent)
-  , _dt(0.04)
+    QObject(parent),
+	mySource(),
+	myDt(0.04),
+	myPlay(false),
+	mySofaSimulation(0),
+	myStepTimer(new QTimer(this))
 {
-    _timer = new QTimer(this);
-    connect(_timer, SIGNAL(timeout()), this, SLOT(step()));
+	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
+	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
+	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
 
+	myStepTimer->setInterval(0);
+	mySofaSimulation = sofa::simulation::graph::getSimulation();
+
+	sofa::component::init();
+	sofa::simulation::xml::initXml();
+
+	connect(this, &Scene::sourceChanged, this, &Scene::open);
+	connect(this, &Scene::playChanged, myStepTimer, [&](bool newPlay) {newPlay ? myStepTimer->start() : myStepTimer->stop();});
+
+    connect(myStepTimer, &QTimer::timeout, this, &Scene::step);
 }
 
-void Scene::open(const QString& filename)
+Scene::~Scene()
 {
-	QString finalFilename = QUrl(filename).toLocalFile();
+	if(mySofaSimulation == sofa::simulation::getSimulation())
+		sofa::simulation::setSimulation(0);
+}
+
+bool Scene::open()
+{
+	QString finalFilename = mySource.toLocalFile();
 	if(finalFilename.isEmpty())
-		finalFilename = filename;
+		return false;
 
 	std::string filepath = finalFilename.toLatin1().constData();
 	if(sofa::helper::system::DataRepository.findFile(filepath))
 		finalFilename = filepath.c_str();
 
-	qDebug() << "-------------------------------------------------- " << endl << "Loading:" << finalFilename;
-    SofaScene::setScene(finalFilename.toLatin1().constData());
-	if(!_currentFileName.empty())
-	{
-		qDebug() << "Scene loaded";	
-		emit opened();
-	}
-	else
-	{
-		qDebug() << "Scene could not be loaded";
-	}
+	if(finalFilename.isEmpty())
+		return false;
+
+	mySofaSimulation->unload(mySofaSimulation->GetRoot());
+	if(!mySofaSimulation->load(finalFilename.toLatin1().constData()))
+		return false;
+
+	mySofaSimulation->init(mySofaSimulation->GetRoot().get());
+
+	emit opened();
+
+	return true;
 }
 
-void Scene::reload()
+bool Scene::reload()
 {
-	open(_currentFileName.c_str());
+	return open();
 }
 
 void Scene::step()
 {
-	if(!isLoaded())
+	if(!mySofaSimulation->GetRoot())
 		return;
 
-    SofaScene::step(_dt);
+	emit stepBegin();
+    mySofaSimulation->animate(mySofaSimulation->GetRoot().get(), myDt);
     emit stepEnd();
-}
-
-void Scene::setTimeStep( SReal dt ){
-    _dt = dt;
-}
-
-SReal Scene::dt() const
-{
-	return _dt;
-}
-
-bool Scene::isLoaded() const
-{
-	return !_currentFileName.empty();
-}
-
-bool Scene::isPlaying() const
-{
-	return _timer->isActive();
-}
-
-void Scene::play( bool p )
-{
-    if( p ) {
-        _timer->start(_dt);
-        emit sigPlaying(true);
-    }
-    else {
-        _timer->stop();
-        emit sigPlaying(false);
-    }
-}
-
-void Scene::pause()
-{
-	play(false);
-}
-
-void Scene::playpause()
-{
-    play( !_timer->isActive() );
 }
 
 void Scene::reset()
 {
-    SofaScene::reset();
-    emit stepEnd();
+	if(!mySofaSimulation->GetRoot())
+		return;
+
+    mySofaSimulation->reset(mySofaSimulation->GetRoot().get());
 }
