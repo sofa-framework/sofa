@@ -71,6 +71,12 @@ public :
 	virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   df , const DataVecDeriv&   dx );
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    {
+        serr << "getPotentialEnergy() not implemented" << sendl;
+        return 0.0;
+    }
+
     void displaceFrames(const VecCoord& frames, VecCoord& displaced, const VecDeriv& dq, const Real epsilon);
     void computeForce(const VecCoord& pos, const VecCoord& restPos, VecDeriv& f);
 
