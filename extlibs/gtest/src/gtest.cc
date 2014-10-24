@@ -4975,6 +4975,10 @@ void InitGoogleTestImpl(int* argc, CharType** argv) {
     {
         seedValue =atoi(argv[1]);
         std::cout << "Seed value given as command line argument = " << seedValue << std::endl;
+        for(size_t i=0;i<*argc;i++)
+        {
+            std::cout << "Argument " << i << " = " << argv[i] << std::endl;
+        }
     }
 
     // We don't want to run the initialization code twice.
@@ -5008,6 +5012,10 @@ void InitGoogleTestImpl<wchar_t>(int* argc, wchar_t** argv) {
         wchar_t* pEnd;
         seedValue = wcstol(argv[1],&pEnd,10);
         std::cout << "Seed value given as command line argument = " << seedValue << std::endl;
+        for(size_t i=0;i<*argc;i++)
+        {
+            std::cout << "Argument " << i << " = " << argv[i] << std::endl;
+        }
     }
 
     // We don't want to run the initialization code twice.
