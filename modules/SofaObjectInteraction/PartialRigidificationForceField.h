@@ -31,10 +31,10 @@
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
 
 namespace sofa
 {
