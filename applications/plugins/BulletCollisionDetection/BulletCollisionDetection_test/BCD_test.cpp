@@ -280,7 +280,7 @@ static sofa::component::collision::OBBModel::SPtr makeRandOBB(const Vec3 & pos_m
 
 
     Vec3 v(0,0,0);
-    Vec3 extents(randVect(Vec3(0.5,0.5,0.5),Vec3(3,3,3)),seed);
+    Vec3 extents(randVect(Vec3(0.5,0.5,0.5),Vec3(3,3,3),seed));
 
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(p,angles,order,v,extents,father);
 
