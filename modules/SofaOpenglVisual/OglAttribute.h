@@ -82,7 +82,7 @@ public:
     // For attributes : return the number of values per vertex
     virtual int getSESizePerVertex() { return size; }
     // Returns the total size of the values
-    virtual int getSETotolSize();
+    virtual int getSETotalSize();
 
 protected:
     // attribute buffer object identity

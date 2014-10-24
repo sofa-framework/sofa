@@ -86,10 +86,7 @@ struct TetrahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
 	size_t vIndex;
     // Strain node for the force field
     simulation::Node::SPtr strainNode;
-   
 
-     // Define the path for the scenes directory
-    #define ADD_SOFA_TEST_SCENES_PATH( x ) sofa_tostring(SOFA_TEST_SCENES_PATH)sofa_tostring(x) 
 
     // Create the context for the scene
     void SetUp()
@@ -308,7 +305,7 @@ TYPED_TEST_CASE(TetrahedraMaterial_test, DataTypes);
 // Test traction cylinder
 TYPED_TEST( TetrahedraMaterial_test , test_Hooke_Tetrahedra_InTraction )
 {
-    ASSERT_TRUE( this->testTetrahedraInTraction(&sofa::TetrahedraMaterial_test<TypeParam>::addHookeForceField,TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,true));
+    ASSERT_TRUE( this->testTetrahedraInTraction(&sofa::TetrahedraMaterial_test<TypeParam>::addHookeForceField,TypeParam::longitudinalStretchAccuracy,TypeParam::radialStretchAccuracy,false));
 }
 
 } // namespace sofa

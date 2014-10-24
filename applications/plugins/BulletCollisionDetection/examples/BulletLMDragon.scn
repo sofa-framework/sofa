@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<Node 	 name="root"  dt="0.03333" gravity="0 0 -10" >
+	<RequiredPlugin name="detection"  printLog="1"  pluginName="BulletCollisionDetection" />
+	<BulletCollisionDetection name="bulletCollisionDetection0" />
+	<VisualStyle name="displayFlags"  displayFlags="showAll" />
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="10" />
+	<DefaultContactManager name="Response"  response="distanceLMConstraint" />
+	<!-- <TreeCollisionGroupManager name="Group" /> -->
+	<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
+	<CGLinearSolver template="GraphScattered" name="linear solver" iterations="15" tolerance="1.0e-5" threshold="1.0e-5"/>
+    <LMConstraintSolver listening="1" warm_start = "false" stabilization="1" constraintVel="1" constraintPos="1" numIterations="25" />
+	<BulletIntersection contactDistance="5"/>
+	<Node 	 name="Dragon"  >
+		<MechanicalObject template="Rigid" name="mObject0"  position="0 0 50 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  reserve="1" />
+		<UniformMass template="Rigid" name="uniformMass0" />
+		<Node 	 name="Dragon2"  >
+			<!-- <MeshObjLoader name="loader"  filename="mesh/SimpleThinCube.obj" /> -->
+			<MeshObjLoader name="loader"  filename="mesh/dragon.obj" />
+			<MeshTopology name="meshTopology1"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
+			<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="0 0 0"  rotation="33 0 0" />
+			<TBulletTriangleModel template="Vec3d" name="tBulletTriangleModel2" proximity="0" margin="5"/>
+			<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../"  output="@./" />
+			<UniformMass template="Vec3d" name="uniformMass0"  totalmass="10" />
+		</Node>
+	</Node>
+	<Node 	 name="Floor"  >
+		<MechanicalObject template="Rigid" name="rigidDOF"  position="0 0 0 0 0 0 1"/>
+		<UniformMass template="Rigid" name="uniformMass63" />
+		<FixedConstraint template="Rigid" name="fixedConstraint0"  indices="0" />
+			<Node 	 name="TRIANGLE"  >
+				<MeshTopology name="meshTopology35"  edges="2 0  1 2  0 1 "  triangles="0 1 2 "  drawEdges="1"  drawTriangles="1" />
+				<!-- <MechanicalObject template="Vec3d" name="fix"  position="-2 0 -2 -2 0 2 2 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" reserve="0" /> -->
+				<MechanicalObject template="Vec3d" name="fix"  position="-2 -2 0 2 -2 0 0 2 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  scale3d="50 50 50" reserve="0" />
+				<UniformMass template="Vec3d" name="Mass"  mass="0.33333" />
+				<RigidMapping template="Rigid,Vec3d" name="rigidMap1"  input="@../rigidDOF"  output="@fix" />
+				<TBulletTriangleModel template="Vec3d" name="tBulletTriangleModel2" proximity="0" margin="2"/>
+			</Node>
+	</Node>
+</Node>

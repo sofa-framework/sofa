@@ -24,9 +24,8 @@
 
 #include <boost/thread/thread.hpp>
 #include <boost/thread/barrier.hpp>
-
 #include <vector>
-
+#include <Algo/Topo/embedding.h>
 namespace CGoGN
 {
 
@@ -198,7 +197,6 @@ inline T& AttributeHandler<T, ORBIT, MAP>::operator[](Cell<ORBIT> c)
 
 	if (a == EMBNULL)
 		a = Algo::Topo::setOrbitEmbeddingOnNewCell(*m_map, c) ;
-
 	return m_attrib->operator[](a) ;
 }
 

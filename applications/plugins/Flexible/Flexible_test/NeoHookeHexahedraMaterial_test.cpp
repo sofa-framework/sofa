@@ -76,10 +76,8 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
     typedef typename sofa::component::forcefield::MooneyRivlinForceField<StrainType>::SPtr MooneyRivlinForceFieldSPtr;
     typedef sofa::component::forcefield::NeoHookeanForceField<StrainType> NeoHookeForceField;
     typedef typename sofa::component::forcefield::NeoHookeanForceField<StrainType>::SPtr NeoHookeForceFieldSPtr;
-    //typedef NeoHookeForceFieldSPtr (NeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
     typedef typename sofa::core::behavior::ForceField<StrainType>::SPtr ForceFieldSPtr;
     typedef ForceFieldSPtr (NeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
-    //typedef MooneyRivlinForceFieldSPtr (NeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
     typename component::forcefield::QuadPressureForceField<Vec3Types>::SPtr pressureForceField;
 
     /// Simulation
@@ -90,10 +88,6 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 	size_t vIndex;
     // Strain node for the force field
     simulation::Node::SPtr strainNode;
-   
-
-     // Define the path for the scenes directory
-    #define ADD_SOFA_TEST_SCENES_PATH( x ) sofa_tostring(SOFA_TEST_SCENES_PATH)sofa_tostring(x) 
 
     // Create the context for the scene
     void SetUp()
@@ -183,7 +177,6 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
             Real poissonRatio=poissonRatioArray[j];
 
             // Create the force field
-            //NeoHookeForceFieldSPtr ff = (this->*createForceField)(strainNode,youngModulus,poissonRatio);
             ForceFieldSPtr ff = (this->*createForceField)(strainNode,youngModulus,poissonRatio);
 
             ff->init();
@@ -193,8 +186,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 
                 // Set the pressure on the top part
                 Real pressure= pressureArray[j][i];
-                if(debug)
-                std::cout << "pressure = " << pressure << std::endl;
+
                 pressureForceField.get()->pressure=Coord(pressure,0,0);
 
                 // Reset simulation
@@ -215,11 +207,11 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
                 // Get the simulated final position of that vertex
                 Coord p1=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
                     
-                if(debug) // Print the coordinates of the initial point p0 and the final point p1 (p0 after traction)
+                /*if(debug) // Print the coordinates of the initial point p0 and the final point p1 (p0 after traction)
                 {
                     std::cout << "p0 = " << p0 << std::endl;
                     std::cout << "p1 = " << p1 << std::endl;
-                }
+                }*/
 
                 // Compute longitudinal deformation
                 Real longitudinalStretch=p1[0]/p0[0];

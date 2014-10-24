@@ -437,10 +437,11 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                         // filling up position coordinate array
                         if(0 != currentAiMesh->mNumVertices)
                         {
+                            int vertexIdx=0;
                             for(unsigned int k = 0; k < currentAiMesh->mNumVertices; ++k)
                             {
                                 Vec3d v(currentAiMesh->mVertices[k][0], currentAiMesh->mVertices[k][1], currentAiMesh->mVertices[k][2]);
-                                if( vertexMap.find(v) == vertexMap.end() ) vertexMap[v] = vertexMap.size();
+                                if( vertexMap.find(v) == vertexMap.end() ) vertexMap[v] = vertexIdx++;
                             }
 
                             currentMechanicalObject->resize(vertexMap.size());

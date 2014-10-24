@@ -79,9 +79,6 @@ struct Material_test : public Sofa_test<typename Vec3Types::Real>
     // Strain node for the force field
     simulation::Node::SPtr strainNode;
 
-     // Define the path for the scenes directory
-    #define ADD_SOFA_TEST_SCENES_PATH( x ) sofa_tostring(SOFA_TEST_SCENES_PATH)sofa_tostring(x) 
-
     // Create the context for the scene
     void SetUp()
     { 
@@ -226,7 +223,6 @@ struct Material_test : public Sofa_test<typename Vec3Types::Real>
     {
         if (tractionStruct.root!=NULL)
             sofa::simulation::getSimulation()->unload(tractionStruct.root);
-//        cerr<<"tearing down"<<endl;
     }
 
 };

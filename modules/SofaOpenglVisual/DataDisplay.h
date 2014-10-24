@@ -84,7 +84,12 @@ public:
     //void initTextures() {}
     void drawVisual(const core::visual::VisualParams* vparams);
     //void drawTransparent(const VisualParams* /*vparams*/)
-    //void updateVisual();
+    void updateVisual();
+
+protected:
+
+    void computeNormals();
+    helper::vector<Vec3f> m_normals;
 
 };
 

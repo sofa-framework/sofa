@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include "PrimitiveCreation.h"
 
 using sofa::core::objectmodel::New;

@@ -22,6 +22,8 @@ class SOFA_Compliant_API ConstantCompliantImplicitSolver : public CompliantImpli
 				
     SOFA_CLASS(ConstantCompliantImplicitSolver, CompliantImplicitSolver);
 
+    virtual void reinit();
+
   protected:
 
     /// a derivable function creating and calling the assembly visitor to create an AssembledSystem

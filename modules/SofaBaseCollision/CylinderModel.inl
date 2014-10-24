@@ -183,7 +183,7 @@ void TCylinderModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const cor
     p1 += h2 * ax;
     p2 -= h2 * ax;
 
-    vparams->drawTool()->drawCylinder(p1,p2,(float)radius(i),colour);
+    vparams->drawTool()->drawCylinder(p2,p1,(float)radius(i),colour);
 }
 
 template<class MyReal>

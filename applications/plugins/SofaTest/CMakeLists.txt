@@ -5,11 +5,11 @@ set(HEADER_FILES
     InitPlugin_test.h
     Sofa_test.h
     Mapping_test.h
-    Elasticity_test.inl
     Elasticity_test.h
     Elasticity_test.inl
     ForceField_test.h
     BroadPhase_test.h
+    PrimitiveCreation.h
 	)
 
 set(SOURCE_FILES
@@ -17,10 +17,11 @@ set(SOURCE_FILES
     InitPlugin_test.cpp
     Sofa_test.cpp
     Elasticity_test.cpp
-    
+    PrimitiveCreation.cpp
 	)
-AddCompilerDefinitions("SOFA_BUILD_TEST")	
-AddCompilerDefinitions("_VARIADIC_MAX=10")	
+AddCompilerDefinitions("SOFA_BUILD_TEST")
+AddCompilerDefinitions("GTEST_LINKED_AS_SHARED_LIBRARY")
+AddCompilerDefinitions("_VARIADIC_MAX=10")
 set(PYTHON_FILES "")
 
 if(SOFA-PLUGIN_SOFAPYTHON)
@@ -28,7 +29,7 @@ if(SOFA-PLUGIN_SOFAPYTHON)
     list(APPEND SOURCE_FILES "Python_test.cpp")
 
     AddLinkerDependencies(SofaPython)
-    
+
     # include python files
     include(./python/python.cmake)
 endif()

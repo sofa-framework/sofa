@@ -38,6 +38,7 @@ set(HEADER_FILES
     preconditioner/BasePreconditioner.h
     preconditioner/LDLTPreconditioner.h
     #preconditioner/IncompleteCholeskyPreconditioner.h
+    preconditioner/JacobiPreconditioner.h
 
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
@@ -63,6 +64,7 @@ set(HEADER_FILES
     constraint/Restitution.h
     constraint/DampingValue.h
     constraint/OffsettedConstraintValue.h
+    constraint/HolonomicConstraintValue.h
 
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -127,6 +129,7 @@ set(SOURCE_FILES
 
     preconditioner/LDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
+    preconditioner/JacobiPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp
@@ -143,6 +146,7 @@ set(SOURCE_FILES
     constraint/Restitution.cpp
     constraint/DampingValue.cpp
     constraint/OffsettedConstraintValue.cpp
+    constraint/HolonomicConstraintValue.cpp
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp

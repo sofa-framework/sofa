@@ -521,7 +521,22 @@ void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 
     glVertexNv<3>(p3.ptr());
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+        const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3,
+        const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3)
+{
+    glNormalT(normal1);
+    glColor4fv(c1.ptr());
+    glVertexNv<3>(p1.ptr());
+    glNormalT(normal2);
+    glColor4fv(c2.ptr());
+    glVertexNv<3>(p2.ptr());
+    glNormalT(normal3);
+    glColor4fv(c3.ptr());
+    glVertexNv<3>(p3.ptr());
+}
+
 
 void DrawToolGL::drawTriangle( const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
         const Vector3 &normal, const  Vec<4,float> &c)
@@ -533,7 +548,6 @@ void DrawToolGL::drawTriangle( const Vector3 &p1, const Vector3 &p2, const Vecto
     glVertexNv<3>(p3.ptr());
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
         const Vector3 &normal)
@@ -542,6 +556,64 @@ void DrawToolGL::drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 
     glVertexNv<3>(p1.ptr());
     glVertexNv<3>(p2.ptr());
     glVertexNv<3>(p3.ptr());
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+        const Vector3 &normal,
+        const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3, const Vec<4,float> &c4)
+{
+    glNormalT(normal);
+    glColor4fv(c1.ptr());
+    glVertexNv<3>(p1.ptr());
+    glColor4fv(c2.ptr());
+    glVertexNv<3>(p2.ptr());
+    glColor4fv(c3.ptr());
+    glVertexNv<3>(p3.ptr());
+    glColor4fv(c4.ptr());
+    glVertexNv<3>(p4.ptr());
+}
+
+
+void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+        const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
+        const Vec<4,float> &c1, const Vec<4,float> &c2, const Vec<4,float> &c3, const Vec<4,float> &c4)
+{
+    glNormalT(normal1);
+    glColor4fv(c1.ptr());
+    glVertexNv<3>(p1.ptr());
+    glNormalT(normal2);
+    glColor4fv(c2.ptr());
+    glVertexNv<3>(p2.ptr());
+    glNormalT(normal3);
+    glColor4fv(c3.ptr());
+    glVertexNv<3>(p3.ptr());
+    glNormalT(normal4);
+    glColor4fv(c4.ptr());
+    glVertexNv<3>(p4.ptr());
+}
+
+
+void DrawToolGL::drawQuad( const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,const Vector3 &p4,
+        const Vector3 &normal, const  Vec<4,float> &c)
+{
+    glNormalT(normal);
+    glColor4fv(c.ptr());
+    glVertexNv<3>(p1.ptr());
+    glVertexNv<3>(p2.ptr());
+    glVertexNv<3>(p3.ptr());
+    glVertexNv<3>(p4.ptr());
+}
+
+
+void DrawToolGL::drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+        const Vector3 &normal)
+{
+    glNormalT(normal);
+    glVertexNv<3>(p1.ptr());
+    glVertexNv<3>(p2.ptr());
+    glVertexNv<3>(p3.ptr());
+    glVertexNv<3>(p4.ptr());
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -52,7 +52,7 @@ OglAttribute< size, type, DataTypes>::OglAttribute() :
 }
 
 template < int size, unsigned int type, class DataTypes>
-int OglAttribute< size, type, DataTypes >::getSETotolSize()
+int OglAttribute< size, type, DataTypes >::getSETotalSize()
 {
     const sofa::defaulttype::ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
