@@ -23,6 +23,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/RandomGenerator.h>
 
 #include <sofa/component/init.h>
 #include <sofa/component/mapping/SubsetMultiMapping.h>
@@ -150,7 +151,7 @@ double alarmDist = proxIntersection->getAlarmDistance();
 template<class Detection>
 bool genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection);
 
-static Vector3 randVect(const Vector3 & min,const Vector3 & max);
+static Vector3 randVect(const Vector3 & min,const Vector3 & max,int seed);
 
 void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
     sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel*>(cm->getLast()->getPrevious());
@@ -162,7 +163,7 @@ void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
 
 sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent);
 
-void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Vector3 & max_vect){
+void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Vector3 & max_vect,int seed){
     sofa::component::collision::OBBModel * obbm = dynamic_cast<sofa::component::collision::OBBModel*>(cm->getLast());
     MechanicalObjectRigid3* dof = dynamic_cast<MechanicalObjectRigid3*>(obbm->getMechanicalState());
 
@@ -172,12 +173,13 @@ void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Ve
     //Editting the velocity of the OBB
     Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
-
+    sofa::helper::RandomGenerator randomGenerator;
+    randomGenerator.initSeed(seed);
 
     for(int i = 0 ; i < dof->getSize() ; ++i){
-        if(rand() < RAND_MAX/2.0){//make it move !
+        if(randomGenerator.random<double>() < RAND_MAX/2.0){//make it move !
             velocities[i] = Vector3(1,1,1);//velocity is used only to know if a primitive moves, its direction is not important
-            positions[i] = Rigid3Types::Coord(randVect(min_vect,max_vect),Quaternion(0,0,0,1));
+            positions[i] = Rigid3Types::Coord(randVect(min_vect,max_vect,seed),Quaternion(0,0,0,1));
         }
     }
 
@@ -453,12 +455,15 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector
     return obbCollisionModel;
 }
 
-Vector3 randVect(const Vector3 & min,const Vector3 & max){
+Vector3 randVect(const Vector3 & min,const Vector3 & max,int seed){
     Vector3 ret;
     Vector3 extents = max - min;
 
+    sofa::helper::RandomGenerator randomGenerator;
+    randomGenerator.initSeed((unsigned int)time(NULL));
+
     for(int i = 0 ; i < 3 ; ++i){
-        ret[i] = ((double)(rand())/RAND_MAX) * extents[i] + min[i];
+        ret[i] = ((randomGenerator.random<double>())/RAND_MAX) * extents[i] + min[i];
     }
 
     return ret;
@@ -467,16 +472,15 @@ Vector3 randVect(const Vector3 & min,const Vector3 & max){
 
 template <class BroadPhase>
 bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3 & min,const Vector3 & max){
-    srand(seed);
 
     std::vector<Vector3> firstCollision;
     std::vector<Vector3> secondCollision;
 
     for(int i = 0 ; i < nb1 ; ++i)
-        firstCollision.push_back(randVect(min,max));
+        firstCollision.push_back(randVect(min,max,seed));
 
     for(int i = 0 ; i < nb2 ; ++i)
-        secondCollision.push_back(randVect(min,max));
+        secondCollision.push_back(randVect(min,max,seed));
 
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbm1,obbm2;
@@ -493,8 +497,8 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3
         if(!GENTest(obbm1.get(),obbm2.get(),broadphase))
             return false;
 
-        randMoving(obbm1.get(),min,max);
-        randMoving(obbm2.get(),min,max);
+        randMoving(obbm1.get(),min,max,seed);
+        randMoving(obbm2.get(),min,max,seed);
     }
 
     return true;

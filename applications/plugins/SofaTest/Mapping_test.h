@@ -233,7 +233,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set random child forces and propagate them to the parent
         for( unsigned i=0; i<Nc; i++ ){
-            fc[i] = Out::randomDeriv( 1.0 );
+            fc[i] = Out::randomDeriv( 1.0 , BaseSofa_test::seed  );
         }
         fp2.fill( InDeriv() );
         WriteInVecDeriv fin = inDofs->writeForces();
@@ -247,7 +247,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set small parent velocities and use them to update the child
         for( unsigned i=0; i<Np; i++ ){
-            vp[i] = In::randomDeriv( this->epsilon() * deltaMax );
+            vp[i] = In::randomDeriv( this->epsilon() * deltaMax , BaseSofa_test::seed );
         }
 //        cout<<"parent velocities vp = " << vp << endl;
         for( unsigned i=0; i<Np; i++ ){             // and small displacements
