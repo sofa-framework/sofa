@@ -197,6 +197,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
         // check computeDf: compare its result to actual change
         node->execute(resetForce);
+        dof->vRealloc( &mparams, core::VecDerivId::dx()); // dx is not allocated by default
         typename DOF::WriteVecDeriv wdx = dof->writeDx();
         copyToData ( wdx, dX );
         simulation::MechanicalComputeDfVisitor computeDf( &mparams, core::VecDerivId::force() );
