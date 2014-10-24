@@ -89,7 +89,7 @@ public:
 protected:
 
     void computeNormals();
-    helper::vector<Vec3f> m_normals;
+    helper::vector<defaulttype::Vec3f> m_normals;
 
 };
 
