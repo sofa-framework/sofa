@@ -1,8 +1,8 @@
 #ifndef PREQUIVALENTSTIFFNESSFORCEFIELD_INL
 #define PREQUIVALENTSTIFFNESSFORCEFIELD_INL
 
-#include <sofa/component/forcefield/PREquivalentStiffnessForceField.h>
-#include <sofa/component/linearsolver/FullVector.h>
+#include <SofaMiscForceField/PREquivalentStiffnessForceField.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/RandomGenerator.h>

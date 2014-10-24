@@ -1,4 +1,4 @@
-#include <sofa/component/forcefield/PREquivalentStiffnessForceField.inl>
+#include <SofaMiscForceField/PREquivalentStiffnessForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

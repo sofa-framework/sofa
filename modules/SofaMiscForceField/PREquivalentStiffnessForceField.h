@@ -6,7 +6,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>

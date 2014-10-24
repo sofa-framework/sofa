@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_PARTIAL_RIGIDIFICATION_FORCEFIELD_INL
 
 //#include <sofa/core/behavior/ForceField.inl>
-#include <sofa/component/interactionforcefield/PartialRigidificationForceField.h>
+#include <SofaObjectInteraction/PartialRigidificationForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>

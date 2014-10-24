@@ -1274,3 +1274,7 @@ s:#include *[<"]sofa/component/misc/BlenderExporter.h[>"]:#include <SofaExporter
 s:#include *[<"]sofa/component/misc/BlenderExporter.inl[>"]:#include <SofaExporter/BlenderExporter.inl>:
 s:#include *[<"]sofa/component/engine/NormEngine.h[>"]:#include <SofaEngine/NormEngine.h>:
 s:#include *[<"]sofa/component/engine/NormEngine.inl[>"]:#include <SofaEngine/NormEngine.inl>:
+s:#include *[<"]sofa/component/forcefield/PREquivalentStiffnessForceField.h[>"]:#include <SofaMiscForceField/PREquivalentStiffnessForceField.h>:
+s:#include *[<"]sofa/component/forcefield/PREquivalentStiffnessForceField.inl[>"]:#include <SofaMiscForceField/PREquivalentStiffnessForceField.inl>:
+s:#include *[<"]sofa/component/interactionforcefield/PartialRigidificationForceField.h[>"]:#include <SofaObjectInteraction/PartialRigidificationForceField.h>:
+s:#include *[<"]sofa/component/interactionforcefield/PartialRigidificationForceField.inl[>"]:#include <SofaObjectInteraction/PartialRigidificationForceField.inl>:
