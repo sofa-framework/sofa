@@ -86,7 +86,8 @@ set(HEADER_FILES
     ProximityROI.inl
     HausdorffDistance.h
     HausdorffDistance.inl
-
+    NormEngine.h
+    NormEngine.inl
     )
 
 set(SOURCE_FILES
@@ -134,6 +135,7 @@ set(SOURCE_FILES
     ShapeMatching.cpp
     ProximityROI.cpp
     HausdorffDistance.cpp
+    NormEngine.cpp
 
     )
 

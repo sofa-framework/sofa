@@ -15,7 +15,8 @@ set(HEADER_FILES
     GearSpringForceField.inl
     LineBendingSprings.h
     LineBendingSprings.inl
-
+    PREquivalentStiffnessForceField.h
+    PREquivalentStiffnessForceField.inl
     )
 
 set(SOURCE_FILES
@@ -27,6 +28,7 @@ set(SOURCE_FILES
     WashingMachineForceField.cpp
     GearSpringForceField.cpp
     LineBendingSprings.cpp
+    PREquivalentStiffnessForceField.cpp
 
     )
 
