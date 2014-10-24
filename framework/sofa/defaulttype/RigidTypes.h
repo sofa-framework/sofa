@@ -375,12 +375,12 @@ public:
      * @param a Range of each random value: (-a,+a)
      * @return random rigid transform
      */
-    static RigidCoord rand(SReal a)
+    static RigidCoord rand(SReal a,int seed = (unsigned int)time(NULL))
     {
         RigidCoord t;
         using helper::symrand;
-        t.center = Pos( symrand(a), symrand(a), symrand(a) );
-        t.orientation = Quat::fromEuler( symrand(a), symrand(a), symrand(a) );
+        t.center = Pos( symrand(a,seed), symrand(a,seed), symrand(a,seed) );
+        t.orientation = Quat::fromEuler( symrand(a,seed), symrand(a,seed), symrand(a,seed) );
         return t;
     }
 
@@ -886,11 +886,11 @@ public:
     static const char* Name();
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue )
+    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
     {
         Deriv result;
         using helper::symrand;
-        set( result, symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue) );
+        set( result, symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed) );
         return result;
     }
 
@@ -1765,11 +1765,11 @@ public:
     }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue )
+    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
     {
         Deriv result;
         using helper::symrand;
-        set( result, symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue), symrand(maxValue) );
+        set( result, symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed) );
         return result;
     }
 
