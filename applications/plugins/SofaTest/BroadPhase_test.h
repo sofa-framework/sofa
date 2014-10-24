@@ -151,7 +151,7 @@ double alarmDist = proxIntersection->getAlarmDistance();
 template<class Detection>
 bool genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection);
 
-static Vector3 randVect(const Vector3 & min,const Vector3 & max,int seed);
+static Vector3 randVect(const Vector3 & min,const Vector3 & max,int seed=0);
 
 void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
     sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel*>(cm->getLast()->getPrevious());
@@ -455,7 +455,7 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector
     return obbCollisionModel;
 }
 
-Vector3 randVect(const Vector3 & min,const Vector3 & max,int seed){
+Vector3 randVect(const Vector3 & min,const Vector3 & max,int seed=0){
     Vector3 ret;
     Vector3 extents = max - min;
 
