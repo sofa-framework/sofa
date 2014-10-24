@@ -50,14 +50,11 @@
 #include <SofaMeshCollision/MeshIntTool.h>
 
 #include "Sofa_test.h"
-#include "PrimitiveCreation.h"
+#include "../PrimitiveCreation.h"
 
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
+using namespace sofa::PrimitiveCreationTest;
 
-namespace sofa {
-namespace PrimitiveCreationTest {
-
+namespace sofa{
 struct TestOBB : public Sofa_test<double>{
     bool faceVertex();
     bool vertexVertex();
@@ -165,7 +162,7 @@ bool TestOBB::faceVertex(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
     sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
-    sofa::component::collision::OBBModel::SPtr obbmodel0 = sofa::PrimitiveCreationTest::makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
+    sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //the second OBB which is moving, one OBB must move, if not, there is no collision (OBB collision algorithm is like that)
@@ -1299,5 +1296,4 @@ TEST_F(TestTriOBB, vertex_vertex ) { ASSERT_TRUE( vertexVertex()); }
 TEST_F(TestTriOBB, face_vertex_out ) { ASSERT_TRUE( faceVertex_out()); }
 TEST_F(TestTriOBB, face_vertex_out2 ) { ASSERT_TRUE( faceVertex_out2()); }
 
-}// PrimitiveCreationTest
 } // namespace sofa

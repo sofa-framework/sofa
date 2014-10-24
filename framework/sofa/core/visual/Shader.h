@@ -82,7 +82,7 @@ public:
     // For attributes : return the number of values per vertex
     virtual int getSESizePerVertex() { return 0; }
     // For attributes : return the number of values
-    virtual int getSETotolSize() { return 0; }
+    virtual int getSETotalSize() { return 0; }
 };
 
 } // namespace visual

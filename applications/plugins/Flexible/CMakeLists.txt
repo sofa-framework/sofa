@@ -51,6 +51,9 @@ set(HEADER_FILES
     deformationMapping/TriangleStrainAverageMapping.inl 
     deformationMapping/VolumeMapping.h
     deformationMapping/CorotationalMeshMapping.h
+    engine/ComputeDualQuatEngine.h
+    engine/ComputeDualQuatEngine.inl
+    engine/ComputeWeightEngine.h
     strainMapping/BaseStrainMapping.h
     strainMapping/CauchyStrainMapping.h
     strainMapping/CauchyStrainJacobianBlock.h
@@ -127,6 +130,8 @@ set(SOURCE_FILES
     deformationMapping/TriangleStrainAverageMapping.cpp 
     deformationMapping/VolumeMapping.cpp
     deformationMapping/CorotationalMeshMapping.cpp
+    engine/ComputeDualQuatEngine.cpp
+    engine/ComputeWeightEngine.cpp
     strainMapping/CauchyStrainMapping.cpp
     strainMapping/GreenStrainMapping.cpp
     strainMapping/CorotationalStrainMapping.cpp 

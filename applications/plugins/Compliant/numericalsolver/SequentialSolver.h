@@ -55,7 +55,8 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 			   bool correct = false) const;
 	
 	// response matrix
-	Response::SPtr response;
+	typedef Response response_type;
+	response_type::SPtr response;
 	
 	// mapping matrix response 
     typedef Response::cmat cmat;

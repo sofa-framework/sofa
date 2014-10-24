@@ -41,6 +41,7 @@ set(HEADER_FILES
     ../engine/MeshBarycentricMapperEngine.inl 
     ../engine/MeshROI.h 
     ../engine/MeshROI.inl 
+    ../engine/TestEngine.h
     ../engine/TransformPosition.h 
     ../engine/TransformPosition.inl 
     ../engine/TransformEngine.h 
@@ -114,6 +115,7 @@ set(SOURCE_FILES
     ../engine/MergeVectors.cpp
     ../engine/MeshBarycentricMapperEngine.cpp 
     ../engine/MeshROI.cpp 
+    ../engine/TestEngine.cpp
     ../engine/TransformPosition.cpp 
     ../engine/TransformEngine.cpp 
     ../engine/TransformMatrixEngine.cpp

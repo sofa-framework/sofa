@@ -24,6 +24,17 @@ using namespace core::behavior;
 
 
 
+void ConstantCompliantImplicitSolver::reinit()
+{
+    CompliantImplicitSolver::reinit();
+    if( assemblyVisitor )
+    {
+        delete assemblyVisitor;
+        assemblyVisitor = NULL;
+    }
+}
+
+
 void ConstantCompliantImplicitSolver::perform_assembly( const core::MechanicalParams *mparams, system_type& sys )
 {
     if( assemblyVisitor ) return;

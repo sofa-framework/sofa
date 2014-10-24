@@ -270,6 +270,10 @@
 #include <ctime>
 #include <plugins/SceneCreator/SceneCreator.h>
 
+#include "Sofa_test.h"
+#include <sofa/component/engine/TestEngine.h>
+#include <plugins/SceneCreator/SceneCreator.h>
+
 #endif // WIN32
 
 #endif // STDAFX_H
