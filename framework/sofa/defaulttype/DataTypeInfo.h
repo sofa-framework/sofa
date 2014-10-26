@@ -30,6 +30,7 @@
 //#include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
 #include <sstream>
+#include <typeinfo>
 
 namespace sofa
 {
