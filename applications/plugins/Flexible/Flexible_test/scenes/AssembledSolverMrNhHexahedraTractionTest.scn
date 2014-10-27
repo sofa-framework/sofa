@@ -5,8 +5,8 @@
   <RequiredPlugin pluginName="Compliant"/>
 
     <!--Solver-->
-    <StaticSolver/>
-    <CGLinearSolver template="GraphScattered" name="linear solver" iterations="200" tolerance="1e-12" threshold="1e-12" />
+    <AssembledSolver/>
+    <LDLTSolver/>
 
     <!--Topology Hexahedra-->
     <RegularGridTopology name="hexahedra" n="2 5 5" min="0 0 0" max="1 1 1"/>

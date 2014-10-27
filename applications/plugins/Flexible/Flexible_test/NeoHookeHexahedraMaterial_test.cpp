@@ -52,9 +52,9 @@ const size_t sizePressureArray = 8;
 const double poissonRatioArray[] = {0.1,0.33,0.49};
 const size_t sizePoissonRatioArray = sizeof(poissonRatioArray)/sizeof(poissonRatioArray[0]);
 
-const double pressureNHArray[3][8]={{-0.0889597892, -0.0438050358, 0.0635053964, 0.1045737959, 0.1447734054,  0.2230181491, 0.2612702806, 0.2990693371},{  0.0908043726, 0.1442067021, 0.1972023146, 0.2501382493, 0.3033829162,  0.3573334637, 0.4124247244, 0.4691402652},{0.0506740890, 0.1015527192, 0.1529835922, 0.2053969789,    0.2593326498, 0.3154780834, 0.3747238572, 0.4382459743}};
-const double s1NHArray[3][8]={{0.9253724143, 0.9621812232, 1.058685691, 1.099159142, 1.140749790, 1.227419011, 1.272569570, 1.318981460},{1.095547169, 1.158492292, 1.226210815, 1.299242414, 1.378211471, 1.463844371, 1.556991211, 1.658653303},{1.053287121, 1.112386732, 1.178304553, 1.252292527, 1.335929089, 1.431233010, 1.540828471, 1.668190396}};
-const double s2NHArray[3][8]={{1.018538248, 1.009217097, 0.9863591796, 0.9773820557, 0.9684934549, 0.9509661681, 0.9423200997, 0.9337477636},{0.9672670466, 0.9474800960, 0.9275635172, 0.9075003349, 0.8872723319, 0.8668598514, 0.8462415656, 0.8253942001},{0.9748631443, 0.9490868600, 0.9226175014, 0.8953935507, 0.8673438984, 0.8383856153, 0.8084210028, 0.7773336312}};
+const double pressureNHArray[3][8]={{-0.0889597892, -0.0438050358, 0.0635053964, 0.1045737959, 0.1447734054,  0.2230181491, 0.2612702806, 0.2990693371},{  0.0908043726, 0.1442067021, 0.1972023146, 0.2501382493, 0.3033829162,  0.3573334637, 0.4124247244, 0.4691402652},{-0.438050358e-1,0.0506740890, 0.1015527192, 0.1529835922, 0.2053969789,    0.2593326498, 0.3154780834, 0.3747238572}};
+const double s1NHArray[3][8]={{0.9253724143, 0.9621812232, 1.058685691, 1.099159142, 1.140749790, 1.227419011, 1.272569570, 1.318981460},{1.095547169, 1.158492292, 1.226210815, 1.299242414, 1.378211471, 1.463844371, 1.556991211, 1.658653303},{.9621812232,1.053287121, 1.112386732, 1.178304553, 1.252292527, 1.335929089, 1.431233010, 1.540828471}};
+const double s2NHArray[3][8]={{1.018538248, 1.009217097, 0.9863591796, 0.9773820557, 0.9684934549, 0.9509661681, 0.9423200997, 0.9337477636},{0.9672670466, 0.9474800960, 0.9275635172, 0.9075003349, 0.8872723319, 0.8668598514, 0.8462415656, 0.8253942001},{1.009217097,0.9748631443, 0.9490868600, 0.9226175014, 0.8953935507, 0.8673438984, 0.8383856153, 0.8084210028}};
 
 /**  Test flexible material. Apply a traction on the top part of an hexahedra and
 test that the longitudinal and radial deformation are related with the material law.
@@ -198,7 +198,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
                 // Record the initial point of a given vertex
                 Coord p0=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
 
-                //  do several steps of the static solver
+                //  do several steps of the implicit solver
                 for(l=0;l<8;++l) 
                 {
                     sofa::simulation::getSimulation()->animate(tractionStruct.root.get(),0.5);
@@ -206,12 +206,6 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 
                 // Get the simulated final position of that vertex
                 Coord p1=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
-                    
-                /*if(debug) // Print the coordinates of the initial point p0 and the final point p1 (p0 after traction)
-                {
-                    std::cout << "p0 = " << p0 << std::endl;
-                    std::cout << "p1 = " << p1 << std::endl;
-                }*/
 
                 // Compute longitudinal deformation
                 Real longitudinalStretch=p1[0]/p0[0];
@@ -290,7 +284,7 @@ struct TypeInvariantNHHexaTest{
 };
 const double TypeInvariantNHHexaTest::longitudinalStretchAccuracy= 1e-1; // Accuracy of longitudinal stretch
 const double TypeInvariantNHHexaTest::radialStretchAccuracy= 1.6e-2; // Accuracy of radial stretch
-const std::string TypeInvariantNHHexaTest::sceneName= "NeoHookeHexahedraTractionTest.scn"; // Scene to test
+const std::string TypeInvariantNHHexaTest::sceneName= "StaticSolverMrNhHexahedraTractionTest.scn"; // Scene to test
 
 // Principal Stretches mapping
 struct TypePrincipalStretchesNHHexaTest{
@@ -300,9 +294,9 @@ struct TypePrincipalStretchesNHHexaTest{
     static const double radialStretchAccuracy; 
     static const std::string sceneName; 
 };
-const double TypePrincipalStretchesNHHexaTest::longitudinalStretchAccuracy= 9.6e-1; // Accuracy of longitudinal stretch
+const double TypePrincipalStretchesNHHexaTest::longitudinalStretchAccuracy= 4.2e-1; // Accuracy of longitudinal stretch
 const double TypePrincipalStretchesNHHexaTest::radialStretchAccuracy= 8.4-1; // Accuracy of radial stretch
-const std::string TypePrincipalStretchesNHHexaTest::sceneName= "NeoHookeHexahedraTractionTest.scn"; // Scene to test
+const std::string TypePrincipalStretchesNHHexaTest::sceneName= "AssembledSolverMrNhHexahedraTractionTest.scn"; // Scene to test
 
 
 

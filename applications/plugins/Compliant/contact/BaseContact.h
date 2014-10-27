@@ -49,6 +49,7 @@ public:
 
 
     Data< SReal > damping_ratio;
+    Data<bool> holonomic;
 
 protected:
 
@@ -81,10 +82,12 @@ protected:
 
     BaseContact()
         : damping_ratio( this->initData(&damping_ratio, SReal(0.0), "damping", "contact damping (used for stabilization)") )
+        , holonomic(this->initData(&holonomic, false, "holonomic", "only enforce null relative velocity, do not try to remove penetration during the dynamics pass"))
     { }
 
     BaseContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : damping_ratio( this->initData(&damping_ratio, SReal(0.0), "damping", "contact damping (used for stabilization)") )
+        , holonomic(this->initData(&holonomic, false, "holonomic", "only enforce null relative velocity, do not try to remove penetration during the dynamics pass"))
         , model1(model1)
         , model2(model2)
         , intersectionMethod(intersectionMethod)
@@ -387,6 +390,7 @@ protected:
             // stabilizer
             typedef odesolver::Stabilization stab_type;
             stab_type::SPtr stab = sofa::core::objectmodel::New<stab_type>( dofs );
+            stab->m_holonomic = holonomic.getValue();
             node->addObject( stab.get() );
 
             // don't stabilize non-penetrating contacts (normal component only)

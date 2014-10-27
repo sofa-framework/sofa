@@ -37,7 +37,7 @@
 #include <fstream>
 #include <ctime>
 #include <GL/glew.h>
-#include <GL/glut.h>
+#include <sofa/helper/system/glut.h>
 using std::endl;
 using std::cout;
 

@@ -1,6 +1,6 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,57 +22,74 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_IMAGE_CONCATENATEIMAGES_CPP
+#ifndef SOFA_COMPONENT_ENGINE_INERTIAALIGN_H
+#define SOFA_COMPONENT_ENGINE_INERTIAALIGN_H
 
-#include "ConcatenateImages.h"
-#include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/vector.h>
+#include <sofa/component/component.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/defaulttype/Vec.h>
+#include <Eigen/Dense>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <Eigen/LU>
 namespace sofa
 {
 
 namespace component
 {
 
-namespace engine
+
+class InertiaAlign: public sofa::core::objectmodel::BaseObject
 {
+public:
+    SOFA_CLASS(InertiaAlign,core::objectmodel::BaseObject);
 
-using namespace defaulttype;
+    InertiaAlign();
+    ~InertiaAlign();
+    typedef defaulttype::Mat<3,3> Mat3x3;
 
-SOFA_DECL_CLASS(ConcatenateImages)
+    /**
+      * Data Fields
+      */
+    /// input
+    Data <sofa::defaulttype::Vector3> targetC;
+    Data <sofa::defaulttype::Vector3> sourceC;
 
-int ConcatenateImagesClass = core::RegisterObject("Concatenate images")
-        .add<ConcatenateImages<ImageUC> >(true)
-        .add<ConcatenateImages<ImageD> >()
-#ifdef BUILD_ALL_IMAGE_TYPES
-        .add<ConcatenateImages<ImageC> >()
-        .add<ConcatenateImages<ImageI> >()
-        .add<ConcatenateImages<ImageUI> >()
-        .add<ConcatenateImages<ImageS> >()
-        .add<ConcatenateImages<ImageUS> >()
-        .add<ConcatenateImages<ImageL> >()
-        .add<ConcatenateImages<ImageUL> >()
-        .add<ConcatenateImages<ImageF> >()
-        .add<ConcatenateImages<ImageB> >()
-#endif
-        ;
+    Data < Mat3x3 > targetInertiaMatrix;
 
-template class SOFA_IMAGE_API ConcatenateImages<ImageUC>;
-template class SOFA_IMAGE_API ConcatenateImages<ImageD>;
-#ifdef BUILD_ALL_IMAGE_TYPES
-template class SOFA_IMAGE_API ConcatenateImages<ImageC>;
-template class SOFA_IMAGE_API ConcatenateImages<ImageI>;
-template class SOFA_IMAGE_API ConcatenateImages<ImageUI>;
-template class SOFA_IMAGE_API ConcatenateImages<ImageS>;
-template class SOFA_IMAGE_API ConcatenateImages<ImageUS>;
-template class SOFA_IMAGE_API ConcatenateImages<ImageL>;
-template class SOFA_IMAGE_API ConcatenateImages<ImageUL>;
-template class SOFA_IMAGE_API ConcatenateImages<ImageF>;
-template class SOFA_IMAGE_API ConcatenateImages<ImageB>;
-#endif
+    Data < Mat3x3 > sourceInertiaMatrix;
+    /// input//output
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positiont;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positions;
+    helper::vector<sofa::defaulttype::Vec<3,SReal> > positionDistSource;
+
+    /// Initialization method called at graph modification, during bottom-up traversal.
+    virtual void init();
+
+protected:
+
+    typedef defaulttype::Vector3 Vector3;
+    typedef defaulttype::Matrix4 Matrix4;
+
+    SReal computeDistances(helper::vector<sofa::defaulttype::Vec<3,SReal> >, helper::vector<sofa::defaulttype::Vec<3,SReal> >);
+    SReal distance(sofa::defaulttype::Vec<3,SReal>, helper::vector<sofa::defaulttype::Vec<3,SReal> >);
+    SReal abs(SReal);
+
+    Matrix4 inverseTransform(Matrix4);
+    /**
+      * Protected methods
+      */
+public:
 
 
-} //
+};
+
+
 } // namespace component
 
 } // namespace sofa
 
+#endif

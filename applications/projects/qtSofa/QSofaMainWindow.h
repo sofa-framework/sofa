@@ -6,7 +6,7 @@
 using std::string;
 #include <vector>
 using std::vector;
-#include "QSofaScene.h"
+#include <plugins/SofaSimpleGUI/QSofaScene.h>
 class QSofaViewer;
 
 /**
@@ -33,7 +33,7 @@ public:
 
     /**
      * @brief initSofa
-     * @param filename scene to load on startup
+     * @param filename Scene to load on startup. If empty, create a default scene
      */
     void initSofa(string filename );
 

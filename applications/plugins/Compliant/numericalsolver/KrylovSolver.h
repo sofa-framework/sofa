@@ -58,7 +58,7 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
 	virtual params_type params(const vec& rhs) const;
 
 	// again
-	virtual void report(const char* what, const params_type& p) const;
+    /*virtual*/ void report(const char* what, const params_type& p) const;
 
 	typedef Response response_type;
 	Response::SPtr response;

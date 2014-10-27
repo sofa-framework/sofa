@@ -507,6 +507,7 @@ bool BroadPhaseTest<BroadPhase>::randDense(){
     for(int i = 0 ; i < 100 ; ++i){
         if(/*!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,40,20,sofa::defaulttype::Vector3(-5,-5,-5),sofa::defaulttype::Vector3(5,5,5))){
             //std::cout<<"FAIL seed number "<<i<<std::endl;
+            ADD_FAILURE() <<"FAIL seed number "<<i<< std::endl;
             return false;
         }
     }

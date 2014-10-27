@@ -91,6 +91,7 @@ SceneColladaLoader::SceneColladaLoader() : SceneLoader()
 #endif
 #ifdef SOFA_HAVE_PLUGIN_IMAGE
     , generateShapeFunction(initData(&generateShapeFunction, false, "generateShapeFunction", "Generate a shape function that could be used in another simulation"))
+    , voxelSize(initData(&voxelSize, (SReal)0.02, "voxelSize", "voxelSize used for shape function generation"))
 #endif
 {
 	
@@ -620,9 +621,40 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 #ifdef SOFA_HAVE_PLUGIN_IMAGE
                         if( generateShapeFunction.getValue() )
                         {
+                            SReal vsize = this->voxelSize.getValue();
+
+                            // rasterized mesh
+                            Node::SPtr labelNode = currentSubNode->createChild("label");
+                            engine::MeshToImageEngine<defaulttype::ImageB>::SPtr M2I = sofa::core::objectmodel::New<engine::MeshToImageEngine<defaulttype::ImageB> >();
+                            M2I->setName( "rasterizer" );
+                            M2I->voxelSize.setValue( vector<SReal>(1,vsize) );
+                            M2I->padSize.setValue(2);
+                            M2I->rotateImage.setValue(false);
+                            M2I->f_nbMeshes.setValue(1);
+                            M2I->createInputMeshesData();
+                            M2I->backgroundValue.setValue(0);
+                            M2I->closingValue.setValue(1);
+                            engine::MeshToImageEngine<defaulttype::ImageB>::SeqValues values(1,1);
+                            (*M2I->vf_values[0]).setValue(values);
+                            (*M2I->vf_positions[0]).setParent( &currentMechanicalObject->x );
+                            (*M2I->vf_triangles[0]).setParent( &currentMeshTopology->seqTriangles );
+                            labelNode->addObject(M2I);
+
+                            ImageContainer<defaulttype::ImageB>::SPtr IC0 = sofa::core::objectmodel::New<ImageContainer<defaulttype::ImageB> >();
+                            IC0->setName( "image" );
+                            IC0->image.setParent(&M2I->image);
+                            IC0->transform.setParent(&M2I->transform);
+                            labelNode->addObject(IC0);
+
+//                            misc::ImageViewer<defaulttype::ImageB>::SPtr IV0 = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageB> >();
+//                            IV0->setName( "viewer" );
+//                            IV0->image.setParent( &M2I->image );
+//                            IV0->transform.setParent( &M2I->transform );
+//                            labelNode->addObject(IV0);
+
+                            // rasterized weights on surface
                             for( unsigned int b = 0 ; b < currentAiMesh->mNumBones /*&& b<1*/ ; ++b )
                             {
-
                                 aiBone*& bone = currentAiMesh->mBones[b];
 
                                 std::stringstream nodeName;
@@ -631,13 +663,11 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                                 engine::MeshToImageEngine<defaulttype::ImageD>::SPtr M2I = sofa::core::objectmodel::New<engine::MeshToImageEngine<defaulttype::ImageD> >();
                                 M2I->setName( "rasterizer" );
-                                M2I->voxelSize.setValue( vector<SReal>(1,0.02) );
+                                M2I->voxelSize.setValue( vector<SReal>(1,vsize) );
                                 M2I->padSize.setValue(2);
                                 M2I->rotateImage.setValue(false);
-
                                 M2I->f_nbMeshes.setValue(1);
                                 M2I->createInputMeshesData();
-
                                 M2I->closingValue.setValue(0);
 
                                 std::stringstream nameStream(meshName);
@@ -684,11 +714,11 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                 IC0->transform.setParent(&M2I->transform);
                                 dofNode->addObject(IC0);
 
-                                misc::ImageViewer<defaulttype::ImageD>::SPtr IV0 = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageD> >();
-                                IV0->setName( "viewer" );
-                                IV0->image.setParent( &M2I->image );
-                                IV0->transform.setParent( &M2I->transform );
-                                dofNode->addObject(IV0);
+//                                misc::ImageViewer<defaulttype::ImageD>::SPtr IV0 = sofa::core::objectmodel::New<misc::ImageViewer<defaulttype::ImageD> >();
+//                                IV0->setName( "viewer" );
+//                                IV0->image.setParent( &M2I->image );
+//                                IV0->transform.setParent( &M2I->transform );
+//                                dofNode->addObject(IV0);
 
 //                                engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD>::SPtr IF = sofa::core::objectmodel::New<engine::ImageFilter<defaulttype::ImageD,defaulttype::ImageD> >();
 //                                IF->setName( "diffusion" );
