@@ -180,9 +180,51 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const helper::vector< typename Subset
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& , const helper::vector<OutMatrixDeriv* >& )
+void SubsetMultiMapping<TIn, TOut>::applyJT( const helper::vector<InMatrixDeriv* >& dOut, const helper::vector<OutMatrixDeriv* >& dIn )
 {
-    cerr<<"WARNING ! SubsetMultiMapping<TIn, TOut>::applyJT not implemented for MatrixDeriv ! " << endl;
+    vector<unsigned>  indexP = indexPairs.getValue();
+
+    // hypothesis: one child only:
+    const OutMatrixDeriv* in = dIn[0];
+
+    if (dOut.size() != this->fromModels.size())
+    {
+        serr<<"problem with number of output constraint matrices"<<sendl;
+        return;
+    }
+
+    typename OutMatrixDeriv::RowConstIterator rowItEnd = in->end();
+    // loop on the constraints defined on the child of the mapping
+    for (typename OutMatrixDeriv::RowConstIterator rowIt = in->begin(); rowIt != rowItEnd; ++rowIt)
+    {
+
+        typename OutMatrixDeriv::ColConstIterator colIt = rowIt.begin();
+        typename OutMatrixDeriv::ColConstIterator colItEnd = rowIt.end();
+
+
+        // A constraint can be shared by several nodes,
+        // these nodes can be linked to 2 different parents. // TODO handle more parents
+        // we need to add a line to each parent that is concerned by the constraint
+
+
+        while (colIt != colItEnd)
+        {
+            unsigned int index_parent=  indexP[colIt.index()*2]; // 0 or 1 (for now...)
+            // writeLine provide an iterator on the line... if this line does not exist, the line is created:
+            typename InMatrixDeriv::RowIterator o = dOut[index_parent]->writeLine(rowIt.index());
+
+            // for each col of the constraint direction, it adds a col in the corresponding parent's constraint direction
+            if(indexPairs.getValue()[colIt.index()*2+1] < (unsigned int)this->fromModels[index_parent]->getSize())
+                o.addCol(indexP[colIt.index()*2+1], colIt.val());
+            ++colIt;
+        }
+
+
+
+    }
+
+    //    std::cout<<" dIn ="<<(*dIn[0])<<std::endl;
+    //    std::cout<<" dOut ="<<(*dOut[0])<<"  "<<(*dOut[1])<<std::endl;
 }
 
 

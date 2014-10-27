@@ -28,9 +28,15 @@
 
 namespace sofa {
 
+int BaseSofa_test::seed = (unsigned int)time(NULL);
+
 BaseSofa_test::BaseSofa_test(){
+
+    seed = testing::seedValue;
     modeling::initSofa();
-    srand (time(NULL)); // comment out if you want to generate always the same sequence of pseudo-random numbers
+    //if you want to generate the same sequence of pseudo-random numbers than a specific test suites use the same seed
+    //pass the seed in command argument line (the seed value is indicated at the 2nd line of test results)
+    srand(BaseSofa_test::seed);
 }
 
 BaseSofa_test::~BaseSofa_test(){ clearSceneGraph(); }

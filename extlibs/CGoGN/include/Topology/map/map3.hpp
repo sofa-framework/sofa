@@ -507,7 +507,6 @@ Dart Map3<MAP_IMPL>::collapseEdge(Dart d, bool delDegenerateVolumes)
 	return resV;
 }
 
-
 template <typename MAP_IMPL>
 bool Map3<MAP_IMPL>::splitFacePreCond(Dart d, Dart e)
 {

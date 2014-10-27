@@ -181,7 +181,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         // change position
         VecDeriv dX(n);
         for( unsigned i=0; i<n; i++ ){
-            dX[i] = DataTypes::randomDeriv(deltaMax * this->epsilon() );  // todo: better random, with negative values
+            dX[i] = DataTypes::randomDeriv(deltaMax * this->epsilon(),BaseSofa_test::seed );  // todo: better random, with negative values
             xdof[i] += dX[i];
         }
 
@@ -197,6 +197,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
         // check computeDf: compare its result to actual change
         node->execute(resetForce);
+        dof->vRealloc( &mparams, core::VecDerivId::dx()); // dx is not allocated by default
         typename DOF::WriteVecDeriv wdx = dof->writeDx();
         copyToData ( wdx, dX );
         simulation::MechanicalComputeDfVisitor computeDf( &mparams, core::VecDerivId::force() );
@@ -204,7 +205,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         VecDeriv dF;
         copyFromData( dF, dof->readForces() );
         if( this->vectorMaxDiff(changeOfForce,dF)> errorMax*this->epsilon() ){
-            ADD_FAILURE()<<"dF differs from change of force";
+            ADD_FAILURE()<<"dF differs from change of force" << endl << "Failed seed number = " << BaseSofa_test::seed << endl;
         }
 
         // check stiffness matrix: compare its product with dx to actual force change
@@ -230,7 +231,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         Eigen::VectorXd df;
         data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
         if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
-            ADD_FAILURE()<<"Kdx differs from change of force";
+            ADD_FAILURE()<<"Kdx differs from change of force"<< endl << "Failed seed number = " << BaseSofa_test::seed << endl;;
 
 
     }
