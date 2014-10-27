@@ -150,6 +150,19 @@ def force_to_SI( f, length_unit=None, mass_unit=None, time_unit=None ):
     time_unit = time_unit or local_time
     return f * length_unit * mass_unit / time_unit / time_unit
 
+# C = N.m = kg.m2/s2
+def torque_from_SI( c, length_unit=None, mass_unit=None, time_unit=None ):
+    length_unit = length_unit or local_length
+    mass_unit = mass_unit or local_mass
+    time_unit = time_unit or local_time
+    return c / length_unit / length_unit / mass_unit * time_unit * time_unit
+
+def torque_to_SI( c, length_unit=None, mass_unit=None, time_unit=None ):
+    length_unit = length_unit or local_length
+    mass_unit = mass_unit or local_mass
+    time_unit = time_unit or local_time
+    return c * length_unit * length_unit * mass_unit / time_unit / time_unit
+
 # Pa = N/m2 = kg/(m.s2)
 def pressure_from_SI( p, length_unit=None, mass_unit=None, time_unit=None ):
     length_unit = length_unit or local_length
@@ -176,6 +189,17 @@ def energy_to_SI( e, length_unit=None, mass_unit=None, time_unit=None ):
     mass_unit = mass_unit or local_mass
     time_unit = time_unit or local_time
     return e * length_unit * length_unit * mass_unit / time_unit / time_unit
+
+# I = kg.m2
+def inertia_from_SI( i, length_unit=None, mass_unit=None ):
+    length_unit = length_unit or local_length
+    mass_unit = mass_unit or local_mass
+    return i / length_unit / length_unit / mass_unit 
+
+def inertia_to_SI( i, length_unit=None, mass_unit=None ):
+    length_unit = length_unit or local_length
+    mass_unit = mass_unit or local_mass
+    return i * length_unit * length_unit * mass_unit 
 
 
 

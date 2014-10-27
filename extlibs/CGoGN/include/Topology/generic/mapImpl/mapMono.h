@@ -46,7 +46,7 @@ public:
 	MapMono()
 	{}
 
-	inline virtual void clear(bool removeAttrib);
+    virtual void clear(bool removeAttrib);
 
 protected:
 	// protected copy constructor to prevent the copy of map

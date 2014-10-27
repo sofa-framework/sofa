@@ -369,6 +369,8 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
     else // new drawing by spheres
     {
+        glEnable( GL_LIGHTING );
+
         std::vector< Vector3 > points;
         Vector3 point;
         if( f_fixAll.getValue()==true )

@@ -82,6 +82,11 @@
 
 namespace testing {
 
+//The seed value used to generate random values in tests is initialized in google test:
+// If there is an argument in command line use it to init the seed else by default seed value is initialized with the time.
+// If a test fails you can re-run the same test series by using the same seed that you pass as argument in command line.
+extern int seedValue;
+
 // Declares the flags.
 
 // This flag temporary enables the disabled tests.

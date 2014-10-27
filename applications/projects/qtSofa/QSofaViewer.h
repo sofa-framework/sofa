@@ -25,7 +25,7 @@ class QSofaViewer : public QGLWidget
     Q_OBJECT
 
 public:
-    explicit QSofaViewer(sofa::simplegui::QSofaScene* sofaScene, QWidget *parent = 0);
+    explicit QSofaViewer(sofa::simplegui::QSofaScene* sofaScene, QGLWidget* contextSharing, QWidget *parent = 0);
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);

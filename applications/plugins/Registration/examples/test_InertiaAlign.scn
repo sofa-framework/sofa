@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<Node 	 name="Scene"  gravity="0 0 0"  dt="1"  >
+	<RequiredPlugin name="Registration"  printLog="1"  pluginName="Registration" />
+	<VisualStyle name="visualStyle1"  displayFlags="showVisual showForceFields" />
+	<EulerImplicitSolver name="eulerImplicitSolver1"  rayleighStiffness="0.1"  rayleighMass="0.1" />
+	<CGLinearSolver template="GraphScattered" name="cGLinearSolver1"  iterations="15"  threshold="1e-08" />
+	<Node 	 name="target"  >
+                <OglModel template="ExtVec3f" name="Femur1"  fileMesh="data/boxes.obj"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1"  material="Default Diffuse 1 0.333333 0.666667 0 1 Ambient 1 0 0.333333 0 1 Specular 0 0.494118 0.4 1 1 Emissive 0 0.494118 0.4 1 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+                <MeshObjLoader name="meshLoader"  filename="data/boxes.obj"  triangulate="1"  translation="0 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
+		<GenerateRigidMass template="Rigid3d" name="Rigid"  position="@meshLoader.position"  triangles="@meshLoader.triangles"  quads="@meshLoader.quads"  polygons="@meshLoader.polygons" />
+	</Node>
+	<Node 	 name="source"  >
+                <OglModel template="ExtVec3f" name="Femur2"  fileMesh="data/boxes.obj"  translation="1 0 0"  rotation="0 0 0"  scale3d="1 1 1"  material="Default Diffuse 1 1 0.666667 0 1 Ambient 1 0.666667 0 0 1 Specular 0 1 0.4 0.494118 1 Emissive 0 1 0.4 0.494118 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
+                <MeshObjLoader name="meshLoader"  filename="data/boxes.obj"  triangulate="1"  translation="1 0 0"  rotation="0 0 0"  scale3d="1 1 1" />
+		<GenerateRigidMass template="Rigid3d" name="Rigid"  position="@meshLoader.position"  triangles="@meshLoader.triangles"  quads="@meshLoader.quads"  polygons="@meshLoader.polygons" />
+	</Node>
+	<Node 	 name="InertiaAlign"  >
+		<InertiaAlign name="Align"  targetCenter="@../target/Rigid.centerToOrigin"  sourceCenter="@../source/Rigid.centerToOrigin"  targetInertiaMatrix="@../target/Rigid.inertiaMatrix"  sourceInertiaMatrix="@../source/Rigid.inertiaMatrix"  targetPosition="@../target/meshLoader.position"  sourcePosition="@../source/meshLoader.position" />
+		<MechanicalObject template="Vec3d" name="Placed"  position="@Align.sourcePosition"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObject="1"  showObjectScale="10"  isToPrint="1" />
+	</Node>
+</Node>

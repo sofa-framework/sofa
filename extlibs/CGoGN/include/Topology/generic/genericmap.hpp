@@ -81,7 +81,7 @@ inline void GenericMap::releaseUIntBuffer(std::vector<unsigned int>* vui, unsign
 //        vui->swap(v);
 //        vui->reserve(128);
 //	}
-
+    vui->clear();
 	s_vintsBuffers[thread].push_back(vui);
 }
 
@@ -248,7 +248,7 @@ template <unsigned int ORBIT>
 inline void GenericMap::releaseMarkVector(AttributeMultiVector<MarkerBool>* amv, unsigned int thread)
 {
 	assert(isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded") ;
-//    amv->allFalse();
+    amv->allFalse();
 	m_markVectors_free[ORBIT][thread].push_back(amv);
 }
 

@@ -27,16 +27,25 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
     typedef vector< index_pair > pairs_type;
 
 	Data< pairs_type > pairs;
+    Data< SReal > d_showObjectScale; ///< drawing size
+    Data< defaulttype::Vec4f > d_color; ///< drawing color
 
 
 
 	
 	DifferenceMapping() 
-		: pairs( initData(&pairs, "pairs", "index pairs for computing deltas") ) {
-		
-	}
+        : pairs( initData(&pairs, "pairs", "index pairs for computing deltas") )
+        , d_showObjectScale(initData(&d_showObjectScale, SReal(0), "showObjectScale", "Scale for object display"))
+        , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
+    {}
 
 	enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
+
+    virtual void init()
+    {
+        this->getToModel()->resize( pairs.getValue().size() );
+        AssembledMapping<TIn, TOut>::init();
+    }
 
 	virtual void apply(typename self::out_pos_type& out, 
 	                   const typename self::in_pos_type& in )  {
@@ -86,6 +95,35 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
         J.finalize();
 	}
 
+    void draw(const core::visual::VisualParams* vparams)
+    {
+        if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
+
+        glEnable(GL_LIGHTING);
+
+        typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
+        const pairs_type& p = pairs.getValue();
+
+        if( d_showObjectScale.getValue() == 0 )
+        {
+            vector< defaulttype::Vector3 > points(p.size()*2);
+            for(unsigned i=0; i<p.size(); i++ )
+            {
+                points[i*2  ] = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                points[i*2+1] = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+            }
+            vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
+        }
+        else
+        {
+            for(unsigned i=0; i<p.size(); i++ )
+            {
+                defaulttype::Vector3 p0 = defaulttype::Vector3( TIn::getCPos(pos[p[i][0]]) );
+                defaulttype::Vector3 p1 = defaulttype::Vector3( TIn::getCPos(pos[p[i][1]]) );
+                vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
+            }
+        }
+    }
 	
 };
 
@@ -137,7 +175,11 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
-
+        virtual void init()
+        {
+            this->getToModels()[0]->resize( pairs.getValue().size() );
+            AssembledMultiMapping<TIn, TOut>::init();
+        }
 
         virtual void apply(typename self::out_pos_type& out,
                            const vector<typename self::in_pos_type>& in)  {

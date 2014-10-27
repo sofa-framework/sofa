@@ -45,6 +45,12 @@ bool SceneLoaderXML::canLoadFileExtension(const char *extension)
     return (ext=="xml" || ext=="scn");
 }
 
+
+bool SceneLoaderXML::canWriteFileExtension(const char *extension)
+{
+    return canLoadFileExtension(extension);
+}
+
 /// get the file type description
 std::string SceneLoaderXML::getFileTypeDesc()
 {
@@ -76,6 +82,11 @@ sofa::simulation::Node::SPtr SceneLoaderXML::load(const char *filename)
     delete xml;
 
     return root;
+}
+
+void SceneLoaderXML::write(Node *node, const char *filename)
+{
+    simulation::getSimulation()->exportXML( node, filename );
 }
 
 /// Load a scene from a file

@@ -12,11 +12,15 @@ namespace collision
 {
 
 template <class DataTypes>
-TBulletTriangleModel<DataTypes>::TBulletTriangleModel() : TTriangleModel<DataTypes>(),_bt_mesh(0x0),_bt_gmesh(0x0),
-    margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet")){}
+TBulletTriangleModel<DataTypes>::TBulletTriangleModel()
+    : TTriangleModel<DataTypes>()
+    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    , _bt_mesh(0x0)
+    , _bt_gmesh(0x0)
+{}
 
 
-static btRigidBody* localCreateRigidBody(float mass, const btTransform& startTransform,btCollisionShape* shape,float processingThreshold)
+static btRigidBody* localCreateRigidBody(float mass, const btTransform& startTransform,btCollisionShape* shape,float /*processingThreshold*/)
 {
     btAssert((!shape || shape->getShapeType() != INVALID_SHAPE_PROXYTYPE));
 
@@ -249,9 +253,9 @@ bool TBulletTriangleModel<DataTypes>::goodSofaBulletLink()const{
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles & triz = *(this->triangles);
 
-    for(int i = 0 ; i < triz.size() ; ++i){
+    for(unsigned int i = 0 ; i < triz.size() ; ++i){
         for(int j = 0 ; j < 3 ; ++j){
-            if(triz[i][j] != b_indices[i*3 + j])
+            if(triz[i][j] != (unsigned int)b_indices[i*3 + j])
                 return false;
         }
     }

@@ -43,6 +43,34 @@ namespace container
 using namespace core::behavior;
 using namespace defaulttype;
 
+//template <>
+//bool MechanicalObject<Vec3dTypes>::addBBox(double* minBBox, double* maxBBox)
+//{
+//    cerr << "MechanicalObject<Vec3dTypes>::addBBox, before min=" << *minBBox <<", max=" << *maxBBox << endl;
+
+//    // participating to bbox only if it is drawn
+//    if( !showObject.getValue() ) return false;
+
+//    const VecCoord& x = *this->getX();
+//    for( std::size_t i=0; i<x.size(); i++ )
+//    {
+//        Vec<3,Real> p;
+//        DataTypes::get( p[0], p[1], p[2], x[i] );
+//        cerr<<"MechanicalObject<Vec3dTypes>::addBBox, p=" << p << endl;
+
+//        assert( DataTypes::spatial_dimensions <= 3 );
+
+//        for( unsigned int j=0 ; j<DataTypes::spatial_dimensions; ++j )
+//        {
+//            if(p[j]<minBBox[j]) minBBox[j]=p[j];
+//            if(p[j]>maxBBox[j]) maxBBox[j]=p[j];
+//        }
+//    }
+//    cerr << "MechanicalObject<Vec3dTypes>::addBBox, after min=" << *minBBox <<", max=" << *maxBBox << endl;
+//    return true;
+//}
+
+
 SOFA_DECL_CLASS(MechanicalObject)
 
 int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
@@ -94,6 +122,8 @@ template class SOFA_BASE_MECHANICS_API MechanicalObject<LaparoscopicRigid3Types>
 
 
 #ifndef SOFA_FLOAT
+
+
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q)
 {
