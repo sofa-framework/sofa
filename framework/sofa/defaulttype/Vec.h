@@ -644,8 +644,8 @@ public:
         {
             real n = 0;
             for( int i=0; i<N; i++ )
-                n += pow( helper::rabs( this->elems[i] ), l );
-            return pow( n, 1.0/(real)l );
+                n += pow( (real) helper::rabs( this->elems[i] ), l );
+            return pow( n, (real) (1.0/ l) );
         }
     }
 
