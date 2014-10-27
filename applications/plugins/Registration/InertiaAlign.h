@@ -22,66 +22,74 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/interactionforcefield/PartialRigidificationForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#ifndef SOFA_COMPONENT_ENGINE_INERTIAALIGN_H
+#define SOFA_COMPONENT_ENGINE_INERTIAALIGN_H
 
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/vector.h>
+#include <sofa/component/component.h>
+#include <sofa/core/topology/Topology.h>
+#include <sofa/defaulttype/Vec.h>
+#include <Eigen/Dense>
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+#include <Eigen/LU>
 namespace sofa
 {
 
 namespace component
 {
 
-namespace interactionforcefield
+
+class InertiaAlign: public sofa::core::objectmodel::BaseObject
 {
+public:
+    SOFA_CLASS(InertiaAlign,core::objectmodel::BaseObject);
 
-using namespace sofa::defaulttype;
+    InertiaAlign();
+    ~InertiaAlign();
+    typedef defaulttype::Mat<3,3> Mat3x3;
 
-//template class PartialRigidificationForceField<Vec3fTypes, Rigid3fTypes>;
-//template class PartialRigidificationForceField<Vec3dTypes, Vec3dTypes>;
-//template class PartialRigidificationForceField<Vec3fTypes, Vec3fTypes>;
-/*
-template class PartialRigidificationForceField<Vec2dTypes, Rigid2dTypes>;
-template class PartialRigidificationForceField<Vec2fTypes, Rigid2dTypes>;
-*/
+    /**
+      * Data Fields
+      */
+    /// input
+    Data <sofa::defaulttype::Vector3> targetC;
+    Data <sofa::defaulttype::Vector3> sourceC;
 
-SOFA_DECL_CLASS(PartialRigidificationForceField)
+    Data < Mat3x3 > targetInertiaMatrix;
 
-int PartialRigidificationForceFieldClass = core::RegisterObject("Repulsion applied by an ellipsoid toward the exterior or the interior")
-#ifndef SOFA_FLOAT
-		.add< PartialRigidificationForceField<Vec3dTypes, Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-//        .add< PartialRigidificationForceField<Vec3fTypes, Rigid3fTypes> >()
-#endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-//        .add< PartialRigidificationForceField<Vec3dTypes, Rigid3fTypes> >()
-//        .add< PartialRigidificationForceField<Vec3fTypes, Rigid3dTypes> >()
-#endif
-#endif
-//.add< PartialRigidificationForceField<Vec3fTypes, Rigid3fTypes> >()
-//.add< PartialRigidificationForceField<Vec3dTypes, Vec3dTypes> >()
-//.add< PartialRigidificationForceField<Vec3fTypes, Vec3fTypes> >()
-		;
+    Data < Mat3x3 > sourceInertiaMatrix;
+    /// input//output
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positiont;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positions;
+    helper::vector<sofa::defaulttype::Vec<3,SReal> > positionDistSource;
 
-#ifndef SOFA_FLOAT
-template class PartialRigidificationForceField<Vec3dTypes, Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class PartialRigidificationForceField<Vec3fTypes, Rigid3fTypes>;
-#endif
+    /// Initialization method called at graph modification, during bottom-up traversal.
+    virtual void init();
 
-//#ifndef SOFA_FLOAT
-//#ifndef SOFA_DOUBLE
-//template class PartialRigidificationForceField<Vec3dTypes, Rigid3fTypes>;
-//template class PartialRigidificationForceField<Vec3fTypes, Rigid3dTypes>;
-//#endif
-//#endif
+protected:
 
-} // namespace forcefield
+    typedef defaulttype::Vector3 Vector3;
+    typedef defaulttype::Matrix4 Matrix4;
+
+    SReal computeDistances(helper::vector<sofa::defaulttype::Vec<3,SReal> >, helper::vector<sofa::defaulttype::Vec<3,SReal> >);
+    SReal distance(sofa::defaulttype::Vec<3,SReal>, helper::vector<sofa::defaulttype::Vec<3,SReal> >);
+    SReal abs(SReal);
+
+    Matrix4 inverseTransform(Matrix4);
+    /**
+      * Protected methods
+      */
+public:
+
+
+};
+
 
 } // namespace component
 
 } // namespace sofa
+
+#endif

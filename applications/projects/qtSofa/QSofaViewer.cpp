@@ -5,7 +5,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QAction>
-#include <GL/glut.h>
+#include <sofa/helper/system/glut.h>
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -23,8 +23,8 @@ GLfloat zfar = 35;
 GLfloat DegToRad = 3.1415927 / 180;
 
 
-QSofaViewer::QSofaViewer(sofa::simplegui::QSofaScene *sofaScene, QWidget *parent) :
-    QGLWidget(parent), _sofaScene(sofaScene), _sofaGL(0)
+QSofaViewer::QSofaViewer(sofa::simplegui::QSofaScene *sofaScene, QGLWidget* contextSharing, QWidget *parent) :
+    QGLWidget(parent, contextSharing), _sofaScene(sofaScene), _sofaGL(0)
 {
     _drag = NULL;
 	connect(sofaScene, SIGNAL(opened()), this, SLOT(reset()));
@@ -88,12 +88,12 @@ void QSofaViewer::paintGL()
 //            0.0, 1.0, 0.0 // up vector
 //            );
 
-	// we need to init sofaGL here in order to be able to call initTextures (needing an active opengl context) for each opened scene 
-	if(!_sofaGL)
-	{
-		_sofaGL = new SofaGL(_sofaScene);
-		viewAll();
-	}
+    // we need to init sofaGL here in order to be able to call initTextures (needing an active opengl context) for each opened scene
+    if(!_sofaGL)
+    {
+        _sofaGL = new SofaGL(_sofaScene);
+        viewAll();
+    }
 
     _sofaGL->draw();
 
@@ -105,8 +105,8 @@ void QSofaViewer::paintGL()
 
 void QSofaViewer::reset()
 {
-	delete _sofaGL;
-	_sofaGL = 0;
+    delete _sofaGL;
+    _sofaGL = 0;
 }
 
 void QSofaViewer::draw()
@@ -116,8 +116,8 @@ void QSofaViewer::draw()
 
 void QSofaViewer::viewAll()
 {
-	if(!_sofaGL)
-		return;
+    if(!_sofaGL)
+        return;
 
 //    SReal cp[3], ct[3], zn, zf;
 //    Camera::Vec3 eye = _camera.eye();
@@ -167,7 +167,7 @@ void QSofaViewer::keyReleaseEvent ( QKeyEvent * /*event*/ )
 
 void QSofaViewer::mousePressEvent ( QMouseEvent * event )
 {
-	if(!_sofaGL)
+    if(!_sofaGL)
 		return;
 
     if( isShiftPressed() )
@@ -210,7 +210,7 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
 
 void QSofaViewer::mouseMoveEvent ( QMouseEvent * event )
 {
-	if(!_sofaGL)
+    if(!_sofaGL)
 		return;
 
     if( _drag != NULL )
@@ -227,7 +227,7 @@ void QSofaViewer::mouseMoveEvent ( QMouseEvent * event )
 
 void QSofaViewer::mouseReleaseEvent ( QMouseEvent * event )
 {
-	if(!_sofaGL)
+    if(!_sofaGL)
 		return;
 
     if( _drag != NULL )

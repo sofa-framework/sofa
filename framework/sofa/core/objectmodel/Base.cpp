@@ -558,14 +558,14 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
     }
 }
 
-void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
+void  Base::writeDatas (std::ostream& out, const std::string& separator)
 {
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
         BaseData* field = *iData;
         if (!field->getLinkPath().empty() )
         {
-            out << " " << field->getName() << "=\""<< field->getLinkPath() << "\" ";
+            out << separator << field->getName() << "=\""<< field->getLinkPath() << "\" ";
         }
         else
         {
@@ -573,7 +573,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
             {
                 std::string val = field->getValueString();
                 if (!val.empty())
-                    out << " " << field->getName() << "=\""<< val << "\" ";
+                    out << separator << field->getName() << "=\""<< val << "\" ";
             }
         }
     }
@@ -584,7 +584,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
         {
             std::string val = link->getValueString();
             if (!val.empty())
-                out << " " << link->getName() << "=\""<< val << "\" ";
+                out << separator << link->getName() << "=\""<< val << "\" ";
         }
     }
 }

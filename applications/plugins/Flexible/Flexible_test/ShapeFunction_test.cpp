@@ -75,8 +75,6 @@ namespace sofa {
         defaulttype::Mat<3,3,Real> testedRotation; 
         /// Tested Translation: random translation
         Vec3 testedTranslation;
-        /// Seed for random value
-        long seed;
         /// Random generator
         sofa::helper::RandomGenerator randomGenerator;
 
@@ -87,10 +85,9 @@ namespace sofa {
             //Inherited::errorMax = 10000;
             // For F332Types
             Inherited::errorMax = 5e9;
-            seed=1;
             // Set random rotation and translation
-            randomGenerator.initSeed(seed);
-            this->SetRandomAffineTransform(seed);
+            randomGenerator.initSeed(BaseSofa_test::seed);
+            this->SetRandomAffineTransform();
         }
              
         void SetShapeFunction (int shapeFunctionCase)
@@ -156,7 +153,7 @@ namespace sofa {
 
         }
         
-        void SetRandomAffineTransform (int /*seed*/)
+        void SetRandomAffineTransform ()
         {
             // Matrix 3*3
             for( int j=0; j<testedRotation.nbCols; j++)

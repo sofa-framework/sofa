@@ -3,12 +3,12 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(SOURCE_FILES
 	qtSofa.cpp
 	QSofaViewer.cpp
-        QSofaMainWindow.cpp
+	QSofaMainWindow.cpp
 )
 set(HEADER_FILES
-        QSofaViewer.h
-        QSofaMainWindow.h
-        oneTetra.h
+    QSofaViewer.h
+    QSofaMainWindow.h
+    oneTetra.h
 )
 
 UseQt()
@@ -27,6 +27,8 @@ ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
 set(MOC_FILES_GROUP "Generated")
 	
+include_directories(${SOFA_EXTLIBS_DIR})
+
 AddCompilerDefinitions("QTSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${RESOURCE_FILES})

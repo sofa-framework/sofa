@@ -16,7 +16,8 @@ int UnilateralConstraintClass = core::RegisterObject("Unilateral constraint")
 void UnilateralConstraint::project(SReal* out, unsigned n, unsigned, bool) const
 {
     for(unsigned i = 0; i < n; ++i)
-        out[i] = std::max( (SReal)0.0, out[i] );
+//        out[i] = std::max( (SReal)0.0, out[i] );
+        if( out[i] < 0 ) out[i] = 0;
 }
 
 

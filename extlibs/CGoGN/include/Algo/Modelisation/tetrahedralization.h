@@ -112,7 +112,7 @@ public:
 
 	void triangule(unsigned int thread = 0);
 
-	std::vector<Dart> getResultingTets() { return m_resTets; }
+    std::vector<Dart> getResultingTets() const { return m_resTets; }
 };
 
 
