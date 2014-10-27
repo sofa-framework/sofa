@@ -88,6 +88,7 @@ set(HEADER_FILES
     HausdorffDistance.inl
     NormEngine.h
     NormEngine.inl
+    TestEngine.h
     )
 
 set(SOURCE_FILES
@@ -136,7 +137,7 @@ set(SOURCE_FILES
     ProximityROI.cpp
     HausdorffDistance.cpp
     NormEngine.cpp
-
+    TestEngine.cpp
     )
 
 set(GROUP_BASE_DIR "..")
