@@ -4973,12 +4973,13 @@ void InitGoogleTestImpl(int* argc, CharType** argv) {
     g_init_gtest_count++;
     if(*argc>1)
     {
-        seedValue =atoi(argv[1]);
-        std::cout << "Seed value given as command line argument = " << seedValue << std::endl;
-        for(size_t i=0;i<*argc;i++)
+        // Test if a seed argument is given it should be given as: seed 785
+        if(argv[*argc-2]==std::string("seed"))
         {
-            std::cout << "Argument " << i << " = " << argv[i] << std::endl;
+            seedValue =atoi(argv[*argc-1]);
+            std::cout << "Seed value given as command line argument = " << seedValue << std::endl;
         }
+
     }
 
     // We don't want to run the initialization code twice.
@@ -5009,12 +5010,14 @@ void InitGoogleTestImpl<wchar_t>(int* argc, wchar_t** argv) {
     g_init_gtest_count++;
     if(*argc>1)
     {
-        wchar_t* pEnd;
-        seedValue = wcstol(argv[1],&pEnd,10);
-        std::cout << "Seed value given as command line argument = " << seedValue << std::endl;
-        for(size_t i=0;i<*argc;i++)
+        // Test if a seed argument is given it should be given as: seed 785
+        std::string s = "seed";
+        std::wstring wsTmp(s.begin(), s.end());
+        if(argv[*argc-2]==wsTmp)
         {
-            std::cout << "Argument " << i << " = " << argv[i] << std::endl;
+            wchar_t* pEnd;
+            seedValue = wcstol(argv[*argc-1],&pEnd,10);
+            std::cout << "Seed value given as command line argument = " << seedValue << std::endl;
         }
     }
 
