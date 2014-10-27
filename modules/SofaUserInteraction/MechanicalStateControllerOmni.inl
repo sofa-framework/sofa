@@ -205,7 +205,7 @@ void MechanicalStateControllerOmni<DataTypes>::onHapticDeviceEvent(core::objectm
     //  std::cout<<" Button1 pressed"<<std::endl;
 
     device = true;
-    buttonDeviceState.setValue(oev->getButton());
+    buttonDeviceState.setValue(oev->getButton(),true);
     position = oev->getPosition();
     orientation = oev->getOrientation();
 }

@@ -15,6 +15,8 @@ def createScene(node):
     manager = node.getObject('manager')
     manager.response = 'FrictionCompliantContact'
     
+    node.createObject('CompliantAttachButton')
+    
     
     globalMu = 0 # per object friction coefficient (the friction coef between 2 objects is approximated as the product of both coefs)
     manager.responseParams = 'mu='+str(globalMu)+"&horizontalConeProjection=1"  # perfom an horizontal Coulomb cone projection

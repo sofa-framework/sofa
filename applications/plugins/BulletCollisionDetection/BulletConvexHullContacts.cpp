@@ -1,6 +1,6 @@
 #include "BulletConvexHullModel.h"
 #include <sofa/component/collision/BarycentricPenalityContact.inl>
-#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/BarycentricContactMapper.inl>
 #include "BulletConvexHullContactMapper.h"
 #include <sofa/component/collision/FrictionContact.h>
 #include <sofa/component/collision/BarycentricDistanceLMConstraintContact.inl>

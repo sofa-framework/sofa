@@ -60,12 +60,14 @@ class GlobalCollision(Sofa.PythonScriptController):
 
 		# createSphere(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
 
-		if choice == 1:
-			createBulletSphere(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
-		elif choice == 2:
-			createBulletOBB(self.rootNode,str(self.nb_prim),x,y,self.current_height,1,1,1)
-		else:
-			createBulletCapsule(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
+		# if choice == 1:
+		# 	createBulletSphere(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
+		# elif choice == 2:
+		# 	createBulletOBB(self.rootNode,str(self.nb_prim),x,y,self.current_height,1,1,1)
+		# else:
+		# 	createBulletCapsule(self.rootNode,str(self.nb_prim),x,y,self.current_height,1)
+
+		createBulletOBB(self.rootNode,str(self.nb_prim),x,y,self.current_height,1,1,1)
 
 		#createBulletOBB(self.rootNode,str(self.nb_prim),x,y,self.current_height,1,1,1)
 

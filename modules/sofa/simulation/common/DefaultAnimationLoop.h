@@ -77,7 +77,7 @@ public:
         return obj;
     }
 
-private :
+protected :
 
     simulation::Node* gnode;  ///< the node controlled by the loop
     bool firstIteration;

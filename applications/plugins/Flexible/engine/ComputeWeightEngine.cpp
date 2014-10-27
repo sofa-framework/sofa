@@ -23,8 +23,8 @@ int ComputeWeightEngineClass = core::RegisterObject("Computes the weight and ind
 
 
 ComputeWeightEngine::ComputeWeightEngine()
-    : l_visualModel( initLink( "visual", "Visual model"))
-    , l_shapeFunction(initLink("shapeFunction", "Shape function object"))
+    : l_shapeFunction(initLink("shapeFunction", "Shape function object"))
+    , l_visualModel( initLink( "visual", "Visual model"))
     , d_indices( initData( &d_indices, "indices", "Indices" ) )
     , d_weights( initData( &d_weights, "weights", "Weights" ) )
 {

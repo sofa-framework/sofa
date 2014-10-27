@@ -37,6 +37,8 @@ void PreconditionedCgSolver::solve_kkt(AssembledSystem::vec& x,
 
         params_type p = params(b);
 
+//        report("pcg (kkt) recquired ", p );
+
         kkt::matrixQ A( system );
         Preconditioner P( system, _preconditioner );
 

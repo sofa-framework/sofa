@@ -34,6 +34,7 @@
 #include <sofa/helper/rmath.h>
 #include <assert.h>
 #include <iostream>
+#include <fstream>
 
 namespace sofa
 {
@@ -83,13 +84,13 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
     // mstate2 = mstate templated on Rigid (rigid degrees of freedom)
 
 	std::cout << "Getting matrix for mstate1" << std::endl;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat11 = matrix->getMatrix(this->mstate1);
+	sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat11 = matrix->getMatrix(this->mstate1);
 	std::cout << "Resulting mstate1 matrix size " << mat11.matrix->rows() << std::endl;
 	std::cout << "Getting matrix for mstate2" << std::endl;
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat22 = matrix->getMatrix(this->mstate2);
+	sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat22 = matrix->getMatrix(this->mstate2);
 	std::cout << "Resulting mstate2 matrix size " << mat22.matrix->rows() << std::endl;
-    sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(this->mstate1, this->mstate2);
-    sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(this->mstate2, this->mstate1);
+	sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat12 = matrix->getMatrix(this->mstate1, this->mstate2);
+	sofa::core::behavior::MultiMatrixAccessor::InteractionMatrixRef mat21 = matrix->getMatrix(this->mstate2, this->mstate1);
 	std::cout << "Resulting mstate1 mstate2 interaction matrix size " << mat12.matrix->rows() << std::endl;
 	std::cout << "Resulting mstate2 mstate1 interaction matrix size " << mat21.matrix->rows() << std::endl;
 
@@ -174,19 +175,19 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 
 
     m_mappedForceField.get()->addKToMatrix(mparams, mappedFFMatrixAccessor);
-	std:: cout << "result matrix" << std::endl;
-	std:: cout << *(r.matrix) << std::endl;
+//	std:: cout << "result matrix" << std::endl;
+//	std:: cout << *(r.matrix) << std::endl;
 
-    std::cout<<" dim mappedFFMatrix :"<<mappedFFMatrix->nBlocRow<<" "<<mappedFFMatrix->nBlocCol<<std::endl;
-     std::cout<<" dim J0 :"<<J0->nBlocRow<<" "<<J0->nBlocCol<<std::endl;
-	 std::cout<<" J0 :"<<*J0<<std::endl;
-     std::cout<<" dim J1 :"<<J1->nBlocRow<<" "<<J1->nBlocCol<<std::endl;
-	 std::cout<<" J1 :"<<*J1<<std::endl;
-     std::cout<<" dim Jr :"<<Jr->nBlocRow<<" "<<Jr->nBlocCol<<std::endl;
-	 std::cout<<" Jr :"<<*Jr<<std::endl;
+//    std::cout<<" dim mappedFFMatrix :"<<mappedFFMatrix->nBlocRow<<" "<<mappedFFMatrix->nBlocCol<<std::endl;
+//     std::cout<<" dim J0 :"<<J0->nBlocRow<<" "<<J0->nBlocCol<<std::endl;
+//	 std::cout<<" J0 :"<<*J0<<std::endl;
+//     std::cout<<" dim J1 :"<<J1->nBlocRow<<" "<<J1->nBlocCol<<std::endl;
+//	 std::cout<<" J1 :"<<*J1<<std::endl;
+//     std::cout<<" dim Jr :"<<Jr->nBlocRow<<" "<<Jr->nBlocCol<<std::endl;
+//	 std::cout<<" Jr :"<<*Jr<<std::endl;
 
 	 std::cout << "Test transpose JO^t*J0" << std::endl;
-	 sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>* t1 = new sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>();
+//	 sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>* t1 = new sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>();
 	 sofa::component::linearsolver::CompressedRowSparseMatrix<_3_6_Matrix_Type>* J1Jr = new sofa::component::linearsolver::CompressedRowSparseMatrix<_3_6_Matrix_Type>();
 	 sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>* J0tK = new sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>();
 	 sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>* J0tKJ0 = new sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>();
@@ -198,38 +199,38 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 
 	 K = dynamic_cast<sofa::component::linearsolver::CompressedRowSparseMatrix<_3_3_Matrix_Type>*>(r.matrix);
 
-	 multMatricesT<3,3,3>(*J0, *J0, *t1);
-	 std::cout << "*t1" << std::endl;
-	 std::cout << *t1 << std::endl;
+//	 multMatricesT<3,3,3>(*J0, *J0, *t1);
+//	 std::cout << "*t1" << std::endl;
+//	 std::cout << *t1 << std::endl;
 
 	 multMatrices<3,3,6>(*J1, *Jr, *J1Jr);
 	 std::cout << "*J1Jr" << std::endl;
-	 std::cout << *J1Jr << std::endl;
+//	 std::cout << *J1Jr << std::endl;
 
 
 	 multMatricesT<3,3,3>(*J0, *K, *J0tK);
 	 std::cout << "J0t * K" << std::endl;
-	 std::cout << *J0tK << std::endl;
+//	 std::cout << *J0tK << std::endl;
 
 	 multMatrices<3,3,3>(*J0tK, *J0, *J0tKJ0); //mat11
 	 std::cout << "J0t * K * J0" << std::endl;
-	 std::cout << *J0tKJ0 << std::endl;
+//	 std::cout << *J0tKJ0 << std::endl;
 
 	 multMatrices<3, 3, 6>(*J0tK, *J1Jr, *J0tKJ1Jr); // mat12
 	 std::cout << "J0t * K * J1 * Jr" << std::endl;
-	 std::cout << *J0tKJ1Jr << std::endl;
+//	 std::cout << *J0tKJ1Jr << std::endl;
 
 	 multMatricesT<3, 6, 3>(*J1Jr, *K, *JrtJ1tK);
 	 std::cout << "Jrt * J1t * K" << std::endl;
-	 std::cout << *JrtJ1tK << std::endl;
+//	 std::cout << *JrtJ1tK << std::endl;
 
 	 multMatrices<6,3,6>(*JrtJ1tK, *J1Jr, *JrtJ1tKJ1Jr); // mat22
 	 std::cout << "Jrt * J1t * K * J1 * Jr" << std::endl;
-	 std::cout << *JrtJ1tKJ1Jr << std::endl;
+//	 std::cout << *JrtJ1tKJ1Jr << std::endl;
 
 	 multMatrices<6,3,3>(*JrtJ1tK, *J0, *JrtJ1tKJ0); // mat21
 	 std::cout << "Jrt * J1t * K * J0" << std::endl;
-	 std::cout << *JrtJ1tKJ0 << std::endl;
+//	 std::cout << *JrtJ1tKJ0 << std::endl;
 
 
 	 /**************************************** Add J0tKJ0 to global system **********************************************/
@@ -306,160 +307,24 @@ void PartialRigidificationForceField<DataTypes1, DataTypes2>::addKToMatrix(const
 		 }
 	 }
 
+
+//	 std::ofstream outputFile("./complianceMat.txt");
+
 	 std::cout << "Final system matrix" << std::endl;
-	 std::cout << *mat22.matrix << std::endl;
+//	 std::cout << *mat22.matrix << std::endl;
+
+//	 outputFile.close();
+
+	 delete J1Jr;
+	 delete J0tK;
+	 delete J0tKJ0;
+	 delete K;
+	 delete J0tKJ1Jr;
+	 delete JrtJ1tKJ1Jr;
+	 delete JrtJ1tK;
+	 delete JrtJ1tKJ0;
 
 
-//// Step1 compute J1*Jr
-//    sofa::component::linearsolver::CompressedRowSparseMatrix< _3_6_Matrix_Type > *J1Jr = new sofa::component::linearsolver::CompressedRowSparseMatrix< _3_6_Matrix_Type > ( );
-////	  J1->mul((*J1Jr),(*Jr)); // ne compile   pas
-
-//    _3_3_Matrix_Type _3_3_MatrixBuffer;
-//    _3_6_Matrix_Type _3_6_MatrixBuffer;
-//    for (int J1RowIndex = 0; J1RowIndex < J1->nBlocRow; J1RowIndex++) {   //through X, must take each row  (but test can be added)
-//        for (_3_3_ColBlockConstIterator J1ColIter = J1->bRowBegin(J1RowIndex); J1ColIter < J1->bRowEnd(J1RowIndex); J1ColIter++) {
-//            _3_3_BlockConstAccessor J1Block = J1ColIter.bloc(); //take non zero blocks in row
-//            const _3_3_Matrix_Type& J1BlockData = *(const _3_3_Matrix_Type*) J1Block.elements(_3_3_MatrixBuffer.ptr());
-//            int J1ColIndex = J1Block.getCol();
-//            for (_3_6_ColBlockConstIterator JrColIter = Jr->bRowBegin(J1ColIndex); JrColIter < Jr->bRowEnd(J1ColIndex); JrColIter++) {
-//                _3_6_BlockConstAccessor JrBlock = JrColIter.bloc();
-//                const _3_6_Matrix_Type& JrBlockData = *(const _3_6_Matrix_Type*)JrBlock.elements(_3_6_MatrixBuffer.ptr());
-//                int JrColIndex = JrBlock.getCol();
-//                _3_6_Matrix_Type j1jrBlockData(0.0);
-//                //multiply the block, could be done more efficiently
-//                for (int i = 0; i < 3; i++)
-//                    for (int j = 0; j < 6; j++)
-//                        for (int k = 0; k < 3; k++)
-//                            j1jrBlockData(i,j) += J1BlockData(i,k)*JrBlockData(k,j);
-//                J1Jr->blocAdd(J1RowIndex, JrColIndex, j1jrBlockData.ptr());
-//            }
-//        }
-//    }
-
-//	std::cout << "J1Jr" << std::endl;
-//	std::cout << *J1Jr << std::endl;
-
-
- //// Step2 compute KJ0
-//    sofa::component::linearsolver::CompressedRowSparseMatrix< _3_3_Matrix_Type > *KJ0 = new sofa::component::linearsolver::CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
-//	sofa::component::linearsolver::CompressedRowSparseMatrix< _3_3_Matrix_Type > *J0tKJ0 = new sofa::component::linearsolver::CompressedRowSparseMatrix< _3_3_Matrix_Type > ( );
-//	sofa::component::linearsolver::CompressedRowSparseMatrix< _6_6_Matrix_Type > *J0tKJ0Jr = new sofa::component::linearsolver::CompressedRowSparseMatrix< _6_6_Matrix_Type > ( );
-
-    // bizarrement là la multiplication de matrice fonctionne...
-//    mappedFFMatrix->mul((*KJ0),(*J0));
-//	J0->mulTranspose(*J0tKJ0, *KJ0);
-//	J0tKJ0->mul(J0tKJ0Jr, Jr);
-
-//	std::cout<<" aaa r.matrix size"<< r.matrix->bRowSize()<<" "<< r.matrix->bColSize()<<std::endl;
-//	std::cout<<" aaa r.matrix size"<< r.matrix->rows()<<" "<< r.matrix->cols()<<std::endl;
-
-
-//    for (int tempRowIndex = 0; tempRowIndex < tempMatrix.nBlocRow; tempRowIndex++) {
-//        for (TempColBlockConstIterator tempColIter = tempMatrix.bRowBegin(tempRowIndex); tempColIter < tempMatrix.bRowEnd(tempRowIndex); tempColIter++) {
-//            TempBlockConstAccessor tempBlock = tempColIter.bloc();
-//            const TempBlockType& tempBlockData = *(const TempBlockType*) tempBlock.elements(tempBuffer.ptr());
-//            int tempColIndex = tempBlock.getCol();
-//            for (MappingColBlockConstIterator mappingColIter = mappingMatrix->bRowBegin(tempColIndex); mappingColIter < mappingMatrix->bRowEnd(tempColIndex); mappingColIter++) {
-//                MappingBlockConstAccessor mappingBlock = mappingColIter.bloc();
-//                const MappingBlockType &mappingBlockData = *(const MappingBlockType*) mappingBlock.elements(mappingBuffer.ptr());
-//                int mappingColIndex = mappingBlock.getCol();
-//                InBlockType inBlockData(0.0);
-//                //multiply the block, could be done more efficiently
-//                for (int i = 0; i < 3; i++)
-//                    for (int j = 0; j < 3; j++) {
-//                        for (int k = 0; k < 3; k++)
-//                            inBlockData(i,j) += tempBlockData(i,k) * mappingBlockData(k,j);
-//                        //because input matrix is  BaseMatrix, we do it like this for now
-//                        mat->add(3*tempRowIndex+i, 3*mappingColIndex+j, inBlockData(i,j));
-//                    }
-//                //mat->blocAdd(tempRowIndex,mappingColIndex,inBlockData.ptr());   //if mat is block matrix
-//            }
-//        }
-//    }
-
-
-
-
-
-
-
-
-
-
-
-
- //   sofa::defaulttype::BaseMatrix* mat = r.matrix;
-
-//    beamMatrix->clear();
-//    mappedBeamForceField->addKToMatrix(mparams,beamMatrixAccessor);
-
-//    const sofa::component::linearsolver::CompressedRowSparseMatrix<MappingBlockType>* mappingMatrix;
-//    mappingMatrix = dynamic_cast<const sofa::component::linearsolver::CompressedRowSparseMatrix<MappingBlockType> *>(mappingBeamTetra->getJ());
-
-//    MappingBlockType mappingBuffer;
-//    BeamBlockType beamBuffer;
-
-//    sofa::component::linearsolver::CompressedRowSparseMatrix<TempBlockType> tempMatrix;
-//    tempMatrix.resizeBloc(nbTetDOFs, nbBeamDOFs);
-
-//    //stopTime = (double)timer->getTime();
-//    //std::cout << "Length1 = " << stopTime - startTime << std::endl;
-//    //startTime = (double)timer->getTime();
-
-//    /*
-//     * K11 = mat
-//     * K22 = beamMatrix
-//     *   J = mappingMatrix
-//     * */
-//    //operation K11 += Jt * K22 * J evaluated in two steps
-
-//    //op1 : tempMatrix = Jt * K22
-//    for (int mappingRowIndex = 0; mappingRowIndex < mappingMatrix->nBlocRow; mappingRowIndex++) {   //through X, must take each row  (but test can be added)
-//        for (MappingColBlockConstIterator mappingColIter = mappingMatrix->bRowBegin(mappingRowIndex); mappingColIter < mappingMatrix->bRowEnd(mappingRowIndex); mappingColIter++) {  //take non zero blocks in row, determines the row in K)
-//            MappingBlockConstAccessor mappingBlock = mappingColIter.bloc();
-//            const MappingBlockType& mappingBlockData = *(const MappingBlockType*)mappingBlock.elements(mappingBuffer.ptr());
-//            int mappingColIndex = mappingBlock.getCol();
-//            for (BeamColBlockConstIterator beamColIter = beamMatrix->bRowBegin(mappingRowIndex); beamColIter < beamMatrix->bRowEnd(mappingRowIndex); beamColIter++) {
-//                BeamBlockConstAccessor beamBlock = beamColIter.bloc();
-//                const BeamBlockType& beamBlockData = *(const BeamBlockType*)beamBlock.elements(beamBuffer.ptr());
-//                int beamColIndex = beamBlock.getCol();
-//                TempBlockType tempBlockData(0.0);
-//                //multiply the block, could be done more efficiently
-//                for (int i = 0; i < 3; i++)
-//                    for (int j = 0; j < 6; j++)
-//                        for (int k = 0; k < 6; k++)
-//                            tempBlockData(i,j) += mappingBlockData(k,i)*beamBlockData(k,j);
-//                tempMatrix.blocAdd(mappingColIndex, beamColIndex, tempBlockData.ptr());
-//            }
-//        }
-//    }
-
-//    TempBlockType tempBuffer;
-//    //op1 : K11 += tempMatrix * J
-//    for (int tempRowIndex = 0; tempRowIndex < tempMatrix.nBlocRow; tempRowIndex++) {
-//        for (TempColBlockConstIterator tempColIter = tempMatrix.bRowBegin(tempRowIndex); tempColIter < tempMatrix.bRowEnd(tempRowIndex); tempColIter++) {
-//            TempBlockConstAccessor tempBlock = tempColIter.bloc();
-//            const TempBlockType& tempBlockData = *(const TempBlockType*) tempBlock.elements(tempBuffer.ptr());
-//            int tempColIndex = tempBlock.getCol();
-//            for (MappingColBlockConstIterator mappingColIter = mappingMatrix->bRowBegin(tempColIndex); mappingColIter < mappingMatrix->bRowEnd(tempColIndex); mappingColIter++) {
-//                MappingBlockConstAccessor mappingBlock = mappingColIter.bloc();
-//                const MappingBlockType &mappingBlockData = *(const MappingBlockType*) mappingBlock.elements(mappingBuffer.ptr());
-//                int mappingColIndex = mappingBlock.getCol();
-//                TetraBlockType tetraBlockData(0.0);
-//                //multiply the block, could be done more efficiently
-//                for (int i = 0; i < 3; i++)
-//                    for (int j = 0; j < 3; j++) {
-//                        for (int k = 0; k < 6; k++)
-//                            tetraBlockData(i,j) += tempBlockData(i,k) * mappingBlockData(k,j);
-//                        //because input matrix is  BaseMatrix, we do it like this for now
-//                        mat->add(3*tempRowIndex+i, 3*mappingColIndex+j, tetraBlockData(i,j));
-//                    }
-//                //mat->blocAdd(tempRowIndex,mappingColIndex,tetraBlockData.ptr());   //if mat is block matrix
-//            }
-//        }
-//    }
-//    //stopTime = (double)timer->getTime();
-//    //std::cout << "Length = " << stopTime - startTime << std::endl;
 
     if(this->f_printLog.getValue())
     {

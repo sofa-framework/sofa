@@ -60,7 +60,7 @@ HausdorffDistance<DataTypes>::HausdorffDistance()
     d12.setGroup("Output");
     max.setGroup("Output");
 
-    f_listening.setValue(true);
+    f_listening.setValue(true,true);
 
 }
 
@@ -117,7 +117,7 @@ void HausdorffDistance<DataTypes>::computeDistances()
         Real d = distance(p1[i], p2);
         if (d>max12) max12 = d;
     }
-    d12.setValue(max12);
+    d12.setValue(max12,true);
 
     Real max21 = 0.0;
     for (unsigned int i = 0 ; i < p2.size(); i++)
@@ -125,12 +125,12 @@ void HausdorffDistance<DataTypes>::computeDistances()
         Real d = distance(p2[i], p1);
         if (d>max21) max21 = d;
     }
-    d21.setValue(max21);
+    d21.setValue(max21,true);
 
     if (max21 > max12)
-        max.setValue(max21);
+        max.setValue(max21,true);
     else
-        max.setValue(max12);
+        max.setValue(max12,true);
 }
 
 template<class DataTypes>

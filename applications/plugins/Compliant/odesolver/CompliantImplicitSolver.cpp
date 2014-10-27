@@ -706,11 +706,17 @@ using namespace core::behavior;
 
 
 
-    void CompliantImplicitSolver::post_stabilization( SolverOperations& sop,
+    void CompliantImplicitSolver::post_stabilization(SolverOperations& sop,
                                               core::MultiVecCoordId posId, core::MultiVecDerivId velId,
-                                              bool fullAssembly )
+                                              bool fullAssembly, bool realloc )
     {
         if( !sys.n ) return;
+
+        if( realloc )
+        {
+            static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( &sop.mparams() ); // if the graph changed, the traversal order needs to be updated
+            _ck.realloc( &sop.vop, false, true ); // the right part of the implicit system (c_k term)
+        }
 
         // Note that stabilization is always solved in velocity
 
@@ -724,7 +730,6 @@ using namespace core::behavior;
         // but the contact violation is updated
         // dt must be small with collisions
 
-        vec x(sys.size()), rhs(sys.size());
         MultiVecDeriv f( &sop.vop, core::VecDerivId::force() );
 
         compute_forces( sop, f );
@@ -749,7 +754,8 @@ using namespace core::behavior;
             filter_constraints( posId );
         }
 
-        x = vec::Zero( sys.size() );
+        vec x = vec::Zero( sys.size() );
+        vec rhs( sys.size() );
         rhs_correction(rhs, sys, posId, velId);
 
         kkt->correct(x, sys, rhs, stabilization_damping.getValue() );

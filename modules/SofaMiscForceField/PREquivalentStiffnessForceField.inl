@@ -76,7 +76,7 @@ void PREquivalentStiffnessForceField<DataTypes>::init()
             if( ! (file >> m_complianceMat[n]) )
             {
                 serr << "Unable to read compliance matrix for frames [" << n << " | " << n+1 << "]" << sendl;
-//                std::cout << m_complianceMat[n] << std::endl;
+				std::cout << m_complianceMat[n] << std::endl;
             }
             else
             {
@@ -120,18 +120,29 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
 
         // compute x1 local rigid position and rotation (can be precomputed)
         const Pos& x1th = q0Rest.inverseRotate(x1Rest - x0Rest);
-        const Quaternion& q1th = Quaternion::identity(); // currently q1th is the same
+		const Quaternion& q1th = Quaternion::identity(); // currently q1th is the same
+//		const Quaternion& q1th = q1Rest;
 
         // compute x1 position w.r.t. x0 frame
         const Pos& x1l0Current = q0Current.inverseRotate(x1Current - x0Current);
 
-        // compute the difference between theoritical and real positions and orientations
+		// compute the difference between rigid and real positions and orientations
         const Pos& dx = x1th - x1l0Current;
     //    Quaternion qDiff = q0Current.inverse() * q1th.inverse() * q1Current;
         Quaternion dummy;
 
+        Quaternion _0_R_1  = q0Current.inverse() * q1Current;
+
         // compute rotation difference between rigid and real motion
-        Vec3 dq = -dummy.angularDisplacement(q0Current.inverse() * q1Current, q1th);
+		// first, compute q1 orientation w.r.t. in q0's frames
+//		Quaternion q1l0Current = q1Current * q0Current.inverse() ;
+//		Quaternion q1l0Current = q0Current.inverse() * q1Current ;
+
+		// then compute the difference
+//		Quaternion qDiff = (q1l0Current.inverse()*q1th);
+//		qDiff.normalize();
+//		Vec3 dq = -qDiff.toEulerVector();
+        Vec3 dq = -dummy.angularDisplacement(_0_R_1, q1th);
 
 
     //    Real angleDiff;
@@ -145,14 +156,17 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
 
         // compute x1 forces in x0's frame and rotate them back to global coordinates
         Vec6 tmp = m_CInv[n]*dX1;
-        Vec3 F(tmp(0), tmp(1), tmp(2)), r(tmp(3), tmp(4), tmp(5));
-        F = q0Current.rotate(F); // shouldn't that be inverseRotate ?
+		Vec3 F(tmp(0), tmp(1), tmp(2));
+		Vec3 r(tmp(3), tmp(4), tmp(5));
+		F = q0Current.rotate(F); // shouldn't that be inverseRotate ? Edit : I think no.
         r = q0Current.rotate(r);
 
         Vec6 f1(F, r);
 
+        //std::cout<<"++++++++++++++ \n TEST \n K="<<m_CInv[n]<< "\n dX1="<<dX1<<" \n f1="<<f1<<std::endl;
+
         // compute transport matrix
-        Vec3 p0p1 = q0Current.inverseRotate(x1Current - x0Current);
+        Vec3 p0p1 = q0Current.inverseRotate(x1Current - x0Current); // p0^p1 in local frame
         Mat66 H = Mat66::Identity();
         H(3, 1) = -p0p1.z();
         H(3, 2) = p0p1.y();
@@ -161,47 +175,74 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
         H(5, 0) = -p0p1.y();
         H(5,1) = p0p1.x();
 
-        tmp = -H*tmp;
+        H = -H; // static equilibrium
 
-//        m_H[n] = H;0101
+        // compute f0
+        tmp = H*f1;
+        F = Vec3(tmp(0), tmp(1), tmp(2));
+        r = Vec3(tmp(3), tmp(4), tmp(5));
+        std::cout<<" F ="<<F<<std::endl;
+
+        F = q0Current.rotate(F);
+        r = q0Current.rotate(r);
+
+        Vec6 f0(F, r);
+        std::cout<<" f0="<<f0<<std::endl;
+
+        force[n+0] += f0;
+        force[n+1] += f1;
+
+
+
 
         Mat66 block = H*m_CInv[n];
         m_K[n].clear();
-        m_K[n].setsub(0, 6, block);
-        m_K[n].setsub(6, 0, block.transposed());
+		m_K[n].setsub(0, 6, block);
+		m_K[n].setsub(6, 0, block.transposed());
 
-        block = block*H.transposed();
+		block =  H*m_CInv[n]*H.transposed();
         m_K[n].setsub(0, 0, block);
         m_K[n].setsub(6, 6, m_CInv[n]);
 
+		// build rotation matrix 4 3x3 blocks on diagonal
         Mat33 Rn;
-        X[n].getOrientation().toMatrix(Rn);
+		q0Current.toMatrix(Rn);
         Mat12x12 R(.0);
         R.setsub(0, 0, Rn);
         R.setsub(3, 3, Rn);
         R.setsub(6, 6, Rn);
         R.setsub(9, 9, Rn);
 
-        m_K[n] = R * m_K[n] * R.transposed(); // modified : wasn't negated
+//		std::cout << m_K[n] << std::endl;
+
+		m_K[n] = -R * m_K[n] * R.transposed(); // modified : wasn't negated
+
 
         // compute x0 forces in x0's frame using transport
 
-        F = Vec3(tmp(0), tmp(1), tmp(2));
-        r = Vec3(tmp(3), tmp(4), tmp(5));
 
-        F = q0Current.rotate(F);
-        r = q0Current.rotate(r);
 
-        Vec6 f0(F, r);
 
-        force[n+0] += f0;
-        force[n+1] += f1;
+/*
+
+
+		// Check:
+		// ATTENTION : je ne suis pas sur pour la verif des couples.
+
+		std::cout << "f"<< n <<" calc :" << f0 <<  std::endl;
+//		std::cout << "f"<< n <<" th :" << ((x1Current -x0Current)-(x1Rest - x0Rest))*100 << " | " << -dummy.angularDisplacement(q0Rest, q1Rest) + dummy.angularDisplacement(q0Current, q1Current)*10000 << std::endl;
+		std::cout << "f"<< n <<" th :" << ((x1Current -x0Current)-(x1Rest - x0Rest))*100 << " | " << ((q1Current.inverse()*q0Current).inverse()*(q1Rest.inverse()*q0Rest)).toEulerVector()*10000 << std::endl;
+		std::cout << "f"<< n+1 <<" calc :" << f1 <<  std::endl;
+//		std::cout << "f"<< n+1 <<" th :" << ((x0Current-x1Current) - (x0Rest  - x1Rest))*100 <<  " | " << -dummy.angularDisplacement(q1Rest, q0Rest) + dummy.angularDisplacement(q1Current, q0Current)*10000<< std::endl;
+		std::cout << "f"<< n+1 <<" th :" << ((x0Current-x1Current) - (x0Rest  - x1Rest))*100 <<  " | " << ((q0Current.inverse()*q1Current).inverse()*(q0Rest.inverse()*q1Rest)).toEulerVector()*10000<< std::endl;
+		std::cout  <<  std::endl;
 
 //        for(size_t i = 0 ; i < 6 ; ++i)
 //        {
 //            force[0][i] += f0[i];
 //            force[1][i] += f1[i];
 //        }
+*/
     }
 
 //    std::cout << "f" << std::endl;
@@ -211,6 +252,8 @@ void PREquivalentStiffnessForceField<DataTypes>::addForce(const MechanicalParams
 //    }
 //    std::cout << std::endl;
 //    std::cout << std::endl;
+
+
 
     f.endEdit();
 
@@ -225,7 +268,8 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
 
     VecCoord displaced(dx.size());
 
-    const Real epsilon = 1e-2;
+	const Real epsilon = 1e-10;
+	Real kFact = mparams->kFactor();
 
     for(size_t n = 0 ; n < nFrames-1 ; ++n)
     {
@@ -238,7 +282,7 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
         std::copy(dq0, dq0+6, dq.ptr());
         std::copy(dq1, dq1+6, dq.ptr()+6);
 
-        Vec12 df = m_K[n]*dq;
+		Vec12 df = m_K[n]*dq*kFact;
 
         // separate force vector
         Vec6 df0(df.ptr());
@@ -247,35 +291,48 @@ void PREquivalentStiffnessForceField<DataTypes>::addDForce(const MechanicalParam
         dfdq[n+0] += df0;
         dfdq[n+1] += df1;
 
+        /*
+		std::cout << "dx" << std::endl;
+		for(int i = 0 ; i < dx.size() ; ++i)
+			std::cout <<i << " : " << dx[i] << std::endl;
+		std::cout << std::endl;
+
+		std::cout << "df" << n << " = " << df0 << std::endl;
+		std::cout << "df" << n << "th = " << (dx[n+1].getVAll() - dx[n+0].getVAll())*100*kFact << std::endl;
+		std::cout << "df" << n+1 << " = " << df1 << std::endl;
+		std::cout << "df" << n+1 << "th = " << (dx[n+0].getVAll() - dx[n+1].getVAll())*100*kFact << std::endl;
+		std::cout << std::endl;
+        */
+
     }
 
-    displaceFrames(m_pos, displaced, dx, epsilon);
-    std::cout << displaced << std::endl;
+//	displaceFrames(m_pos, displaced, dx, epsilon);
+//	std::cout << displaced << std::endl;
 
-    VecDeriv fq(dx.size()), fqdq(dx.size());
-    helper::vector<Vec6> testDf(dx.size());
+//	VecDeriv fq(dx.size()), fqdq(dx.size());
+//	helper::vector<Vec6> testDf(dx.size());
 
-    computeForce(m_pos, m_restPos, fq);
-    computeForce(displaced, m_restPos, fqdq);
+//	computeForce(m_pos, m_restPos, fq);
+//	computeForce(displaced, m_restPos, fqdq);
 
-//    fq = dataFq.getValue();
-//    fqdq = dataFqdq.getValue();
+////    fq = dataFq.getValue();
+////    fqdq = dataFqdq.getValue();
 
-    for(size_t n = 0 ; n < dx.size() ; ++n)
-    {
-        testDf[n] = (fqdq[n].getVAll() - fq[n].getVAll())/epsilon;
-    }
+//	for(size_t n = 0 ; n < dx.size() ; ++n)
+//	{
+//		testDf[n] = ((fqdq[n].getVAll() - fq[n].getVAll())*kFact)/epsilon;
+//	}
 
 
-    std::cout << "Df" << std::endl;
-    for(size_t n = 0 ; n < nFrames; ++n)
-    {
-        std::cout << n << " : " << dfdq[n] << std::endl;
-        std::cout << n << " : " << testDf[n] << std::endl;
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
-    std::cout << std::endl;
+//	std::cout << "Df" << std::endl;
+//	for(size_t n = 0 ; n < nFrames; ++n)
+//	{
+//		std::cout << n << " : " << dfdq[n] << std::endl;
+//		std::cout << n << " : " << testDf[n] << std::endl;
+//		std::cout << std::endl;
+//	}
+//	std::cout << std::endl;
+//	std::cout << std::endl;
 
 //    m_K.clear();
 
@@ -413,7 +470,7 @@ void PREquivalentStiffnessForceField<DataTypes>::displaceFrames(const VecCoord &
 //            dqn[i] = rgen.random(.0, 1.0)*epsilon;
 
         Quaternion q(dqn.getVOrientation(), dqn.getVOrientation().norm());
-        q.normalize();
+//        q.normalize();
         displaced[n].getCenter() = frames[n].getCenter() + dqn.getVCenter();
         displaced[n].getOrientation() = frames[n].getOrientation() * q;
     }
@@ -426,69 +483,90 @@ void PREquivalentStiffnessForceField<DataTypes>::computeForce(const VecCoord& po
 
 //    std::cout << "Number of frames : " << nFrames << std::endl;
 
-    for(size_t n = 0 ; n < nFrames-1 ; ++n)
-    {
+	for(size_t n = 0 ; n < nFrames-1 ; ++n)
+	{
 
-        const Pos& x0Current = pos[n+0].getCenter();
-        const Pos& x1Current = pos[n+1].getCenter();
+		const Pos& x0Current = pos[n+0].getCenter();
+		const Pos& x1Current = pos[n+1].getCenter();
 
-        const Pos& x0Rest = restPos[n+0].getCenter();
-        const Pos& x1Rest = restPos[n+1].getCenter();
+		const Pos& x0Rest = restPos[n+0].getCenter();
+		const Pos& x1Rest = restPos[n+1].getCenter();
 
-        const Quaternion& q0Current = pos[n+0].getOrientation();
-        const Quaternion& q1Current = pos[n+1].getOrientation();
-        const Quaternion& q0Rest = restPos[n+0].getOrientation();
-        const Quaternion& q1Rest = restPos[n+1].getOrientation();
+		const Quaternion& q0Current = pos[n+0].getOrientation();
+		const Quaternion& q1Current = pos[n+1].getOrientation();
+		const Quaternion& q0Rest = restPos[n+0].getOrientation();
+		const Quaternion& q1Rest = restPos[n+1].getOrientation();
 
-        // compute x1 local rigid position and rotation (can be precomputed)
-        const Pos& x1th = q0Rest.inverseRotate(x1Rest - x0Rest);
-        const Quaternion& q1th = Quaternion::identity(); // currently q1th is the same
+		// compute x1 local rigid position and rotation (can be precomputed)
+		const Pos& x1th = q0Rest.inverseRotate(x1Rest - x0Rest);
+//        const Quaternion& q1th = Quaternion::identity(); // currently q1th is the same
+		const Quaternion& q1th = q1Rest;
 
-        // compute x1 position w.r.t. x0 frame
-        const Pos& x1l0Current = q0Current.inverseRotate(x1Current - x0Current);
+		// compute x1 position w.r.t. x0 frame
+		const Pos& x1l0Current = q0Current.inverseRotate(x1Current - x0Current);
 
-        // compute the difference between theoritical and real positions and orientations
-        const Pos& dx = x1th - x1l0Current;
+		// compute the difference between theoritical and real positions and orientations
+		const Pos& dx = x1th - x1l0Current;
+	//    Quaternion qDiff = q0Current.inverse() * q1th.inverse() * q1Current;
+		Quaternion dummy;
 
-        Quaternion dummy;
+		// compute rotation difference between rigid and real motion
+		Vec3 dq = -dummy.angularDisplacement(q0Current.inverse() * q1Current, q1th);
 
-        // compute rotation difference between rigid and real motion
-        Vec3 dq = -dummy.angularDisplacement(q0Current.inverse() * q1Current, q1th);
 
-        Vec6 dX1(dx, dq);
+	//    Real angleDiff;
 
-        // compute x1 forces in x0's frame and rotate them back to global coordinates
-        Vec6 tmp = m_CInv[n]*dX1;
-        Vec3 F(tmp(0), tmp(1), tmp(2)), r(tmp(3), tmp(4), tmp(5));
-        F = q0Current.rotate(F); // shouldn't that be inverseRotate ?
-        r = q0Current.rotate(r);
+	//    qDiff.quatToAxis(dq, angleDiff);
 
-        Vec6 f1(F, r);
+	//    dq.normalize();
+	//    dq *= angleDiff;
 
-        // compute transport matrix
-        Vec3 p0p1 = q0Current.inverseRotate(x1Current - x0Current);
-        Mat66 H = Mat66::Identity();
-        H(3, 1) = -p0p1.z();
-        H(3, 2) = p0p1.y();
-        H(4, 0) = p0p1.z();
-        H(4, 2) = -p0p1.x();
-        H(5, 0) = -p0p1.y();
-        H(5,1) = p0p1.x();
+		Vec6 dX1(dx, dq);
 
-        tmp = -H*tmp;
+		// compute x1 forces in x0's frame and rotate them back to global coordinates
+		Vec6 tmp = m_CInv[n]*dX1;
+		Vec3 F(tmp(0), tmp(1), tmp(2));
+		Vec3 r(tmp(3), tmp(4), tmp(5));
+		F = q0Current.rotate(F); // shouldn't that be inverseRotate ?
+		r = q0Current.rotate(r);
 
-        // compute x0 forces in x0's frame using transport
+		Vec6 f1(F, r);
 
-        F = Vec3(tmp(0), tmp(1), tmp(2));
-        r = Vec3(tmp(3), tmp(4), tmp(5));
+		// compute transport matrix
+		Vec3 p0p1 = q0Current.inverseRotate(x1Current - x0Current);
+		Mat66 H = Mat66::Identity();
+		H(3, 1) = -p0p1.z();
+		H(3, 2) = p0p1.y();
+		H(4, 0) = p0p1.z();
+		H(4, 2) = -p0p1.x();
+		H(5, 0) = -p0p1.y();
+		H(5,1) = p0p1.x();
 
-        F = q0Current.rotate(F);
-        r = q0Current.rotate(r);
+		H = -H;
 
-        Vec6 f0(F, r);
+		tmp = H*tmp;
 
-        f[n+0] += f0;
-        f[n+1] += f1;
+		Mat33 Rn;
+		q0Current.toMatrix(Rn);
+		Mat12x12 R(.0);
+		R.setsub(0, 0, Rn);
+		R.setsub(3, 3, Rn);
+		R.setsub(6, 6, Rn);
+		R.setsub(9, 9, Rn);
+
+		// compute x0 forces in x0's frame using transport
+
+		F = Vec3(tmp(0), tmp(1), tmp(2));
+		r = Vec3(tmp(3), tmp(4), tmp(5));
+
+		F = q0Current.rotate(F);
+		r = q0Current.rotate(r);
+
+		Vec6 f0(F, r);
+
+		f[n+0] += f0;
+		f[n+1] += f1;
+
 
     }
 }

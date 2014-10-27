@@ -16,6 +16,7 @@ set(SOURCE_FILES
    StrainMappings_test.cpp
    RigidDeformationMapping_test.cpp
    ShapeFunction_test.cpp
+   StabilizedNeoHookeHexahedraMaterial_test.cpp
    TetrahedraMaterial_test.cpp
         )
 

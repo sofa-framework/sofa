@@ -1,5 +1,5 @@
-#ifndef COMPLIANT_LDLTPRECONDITIONER_H
-#define COMPLIANT_LDLTPRECONDITIONER_H
+#ifndef COMPLIANT_CompliantLDLTPreconditioner_H
+#define COMPLIANT_CompliantLDLTPreconditioner_H
 
 #include "BasePreconditioner.h"
 #include <Eigen/SparseCholesky>
@@ -15,14 +15,14 @@ namespace linearsolver {
  * 
 */
 
-class SOFA_Compliant_API LDLTPreconditioner : public BasePreconditioner
+class SOFA_Compliant_API CompliantLDLTPreconditioner : public BasePreconditioner
 {
 
   public:
 
-    SOFA_ABSTRACT_CLASS(LDLTPreconditioner, BasePreconditioner);
+    SOFA_ABSTRACT_CLASS(CompliantLDLTPreconditioner, BasePreconditioner);
 
-    LDLTPreconditioner();
+    CompliantLDLTPreconditioner();
 
     virtual void compute( const AssembledSystem::mat& H );
     virtual void apply( AssembledSystem::vec& res, const AssembledSystem::vec& v );
