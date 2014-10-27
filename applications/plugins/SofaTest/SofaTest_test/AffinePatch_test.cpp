@@ -84,8 +84,6 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
     defaulttype::Mat<3,3,Real> testedRotation;
     /// Tested Translation: random translation
     Coord testedTranslation;
-    /// Seed for random value
-    long seed;
     // Random generator
     sofa::helper::RandomGenerator randomGenerator;
     
@@ -99,8 +97,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
          root = simulation::getSimulation()->createNewGraph("root");
 
          // Init seed with a random value between 0 and 100
-         randomGenerator.initSeed( (long)time(0) );
-         seed = randomGenerator.random<long>(0,100);
+         randomGenerator.initSeed(BaseSofa_test::seed);
     }
 
     /// Create a scene with a 2D regular grid and an affine constraint
@@ -121,9 +118,6 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
         //Force field for 2D Grid
         typename MeshSpringForceField::SPtr meshSpringForceField = addNew<MeshSpringForceField> (SquareNode,"forceField");
         meshSpringForceField->setStiffness(10);
-
-        // Init seed
-        randomGenerator.initSeed(seed);
 
         if(randomRotation)
         // Random Rotation
@@ -175,9 +169,6 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
         tetraFEM->setYoungModulus(20);
         tetraFEM->setPoissonRatio(0.4);
 
-        // Init seed
-        randomGenerator.initSeed(seed);
-
         // Random Rotation
         if(randomRotation)
         {
@@ -218,11 +209,6 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
     void setTranslation(int x,int y,int z)
     {
         testedTranslation = Coord(x,y,z);
-    }
-
-    void setSeed (int seedValue)
-    {
-        this->seed = seedValue;
     }
 
     /// After simulation compare the positions of points to the theoretical positions.
@@ -282,7 +268,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
                 succeed = false;
                 ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl 
                     << "difference = " <<(finalPos[i]-x[i]).norm() << std::endl <<"rotation = " << testedRotation << std::endl << " translation = " << testedTranslation << std::endl
-                    << "seed =" << seed;
+                    << "Failed seed number =" << BaseSofa_test::seed;
 
             }
         }

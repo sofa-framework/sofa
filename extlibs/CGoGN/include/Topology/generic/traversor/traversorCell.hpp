@@ -68,8 +68,11 @@ TraversorCell<MAP, ORBIT, OPT>::TraversorCell(const MAP& map, bool forceDartMark
             {
                 if(map.template isOrbitEmbedded<ORBIT>())
                     cmark = new CellMarker<MAP, ORBIT>(map, thread) ;
-                else
+                else {
+                    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
+                    std::cerr << "WARNING : using dart marker in traversorCell ! " << std::endl;
                     dmark = new DartMarker<MAP>(map, thread) ;
+                }
             }
         }
         break;
