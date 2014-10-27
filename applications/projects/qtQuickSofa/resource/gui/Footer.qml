@@ -3,7 +3,9 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
 Rectangle {
-    id: base
+    id: root
+
+    property int physicalFrameCount: 0
 
     gradient: Gradient {
         GradientStop {position: 0.0; color: "lightgrey"}
@@ -30,7 +32,7 @@ Rectangle {
         Rectangle {
             color: Qt.rgba(0.75, 0.75, 0.75, 1.0)
             Layout.fillHeight: true
-            width: 5
+            width: 2
         }
 
         /*Rectangle {

@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(SOURCE_FILES
 		Window.cpp
 		Viewer.cpp
+		Camera.cpp
         Scene.cpp
 		
 		Main.cpp
@@ -11,6 +12,7 @@ set(SOURCE_FILES
 set(HEADER_FILES
 		Window.h
 		Viewer.h
+		Camera.h
         Scene.h
 )
 

@@ -9,13 +9,16 @@
 #include <QTimer>
 #include <QString>
 #include <QUrl>
+#include <QThread>
 #include <QDebug>
 
 Scene::Scene(QObject *parent) :
     QObject(parent),
+	myStatus(Status::Null),
 	mySource(),
 	myDt(0.04),
 	myPlay(false),
+	myAsynchronous(true),
 	mySofaSimulation(0),
 	myStepTimer(new QTimer(this))
 {
@@ -31,8 +34,12 @@ Scene::Scene(QObject *parent) :
 
 	connect(this, &Scene::sourceChanged, this, &Scene::open);
 	connect(this, &Scene::playChanged, myStepTimer, [&](bool newPlay) {newPlay ? myStepTimer->start() : myStepTimer->stop();});
+	connect(this, &Scene::statusChanged, this, [&](Scene::Status newStatus) {if(Scene::Status::Ready == newStatus) loaded();});
 
     connect(myStepTimer, &QTimer::timeout, this, &Scene::step);
+
+	if(!mySource.isEmpty())
+		open();
 }
 
 Scene::~Scene()
@@ -41,33 +48,109 @@ Scene::~Scene()
 		sofa::simulation::setSimulation(0);
 }
 
-bool Scene::open()
+static bool LoaderProcess(sofa::simulation::Simulation* sofaSimulation, const QString& scenePath)
 {
+	if(!sofaSimulation || scenePath.isEmpty())
+		return false;
+
+	sofaSimulation->unload(sofaSimulation->GetRoot());
+	if(sofaSimulation->load(scenePath.toLatin1().constData()))
+	{
+		sofaSimulation->init(sofaSimulation->GetRoot().get());
+
+		if(sofaSimulation->GetRoot())
+			return true;
+	}
+
+	return false;
+}
+
+class LoaderThread : public QThread
+{
+public:
+	LoaderThread(sofa::simulation::Simulation* sofaSimulation, const QString& scenePath) :
+		mySofaSimulation(sofaSimulation),
+		myScenepath(scenePath),
+		myIsLoaded(false)
+	{
+
+	}
+
+	void run()
+	{
+		myIsLoaded = LoaderProcess(mySofaSimulation, myScenepath);
+	}
+
+	bool isLoaded() const			{return myIsLoaded;}
+
+private:
+	sofa::simulation::Simulation*	mySofaSimulation;
+	QString							myScenepath;
+	bool							myIsLoaded;
+};
+
+void Scene::open()
+{
+	if(Status::Loading == myStatus) // return now if a scene is already loading
+		return;
+
+	setStatus(Status::Loading);
+
 	QString finalFilename = mySource.toLocalFile();
 	if(finalFilename.isEmpty())
-		return false;
+	{
+		setStatus(Status::Error);
+		return;
+	}
 
 	std::string filepath = finalFilename.toLatin1().constData();
 	if(sofa::helper::system::DataRepository.findFile(filepath))
 		finalFilename = filepath.c_str();
 
 	if(finalFilename.isEmpty())
-		return false;
+	{
+		setStatus(Status::Error);
+		return;
+	}
 
-	mySofaSimulation->unload(mySofaSimulation->GetRoot());
-	if(!mySofaSimulation->load(finalFilename.toLatin1().constData()))
-		return false;
+	setPlay(false);
 
-	mySofaSimulation->init(mySofaSimulation->GetRoot().get());
-
-	emit opened();
-
-	return true;
+	if(myAsynchronous)
+	{
+		LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
+		connect(loaderThread, &QThread::finished, this, [this, loaderThread]() {setStatus(loaderThread && loaderThread->isLoaded() ? Status::Ready : Status::Error);});
+		connect(loaderThread, &QThread::finished, loaderThread, &QObject::deleteLater);
+		loaderThread->start();
+	}
+	else
+	{
+		setStatus(LoaderProcess(mySofaSimulation, finalFilename) ? Status::Ready : Status::Error);
+	}
 }
 
-bool Scene::reload()
+void Scene::setStatus(Status newStatus)
 {
-	return open();
+	if(newStatus == myStatus)
+		return;
+
+	myStatus = newStatus;
+
+	statusChanged(newStatus);
+}
+
+void Scene::setPlay(bool newPlay)
+{
+	if(newPlay == myPlay)
+		return;
+
+	myPlay = newPlay;
+
+	playChanged(newPlay);
+}
+
+void Scene::reload()
+{
+	open();
 }
 
 void Scene::step()

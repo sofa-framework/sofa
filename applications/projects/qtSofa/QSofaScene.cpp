@@ -1,8 +1,5 @@
 #include "QSofaScene.h"
 
-namespace sofa {
-namespace simplegui {
-
 QSofaScene::QSofaScene(QObject *parent) :
     QObject(parent)
   , _dt(0.04)
@@ -63,6 +60,3 @@ void QSofaScene::reset()
 void QSofaScene::printGraph(){
     SofaScene::printGraph();
 }
-
-}//newgui
-}//sofa
