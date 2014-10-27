@@ -3,5 +3,5 @@ import Scene 1.0
 
 Scene {
     id: root
-    source: "Demos/caduceus.scn"
+    source: "file:Demos/caduceus.scn"
 }

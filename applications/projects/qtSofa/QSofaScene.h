@@ -6,16 +6,13 @@
 
 #include "SofaGL.h"
 
-namespace sofa {
-namespace simplegui {
-
 /**
  * @brief The QSofaScene class is a SofaScene which can be connected to other Qt objects, such as viewers, using signals and slots.
  * It contains the basic simulation functions, but no graphics capabilities.
  *
  * @author Francois Faure, 2014
  */
-class SOFA_SOFASIMPLEGUI_API QSofaScene : public QObject, public SofaScene
+class QSofaScene : public QObject, public sofa::simplegui::SofaScene
 {
     Q_OBJECT
 public:
@@ -63,9 +60,5 @@ private:
 
 
 };
-
-
-}//newgui
-}//sofa
 
 #endif // QSOFASCENE_H

@@ -6,17 +6,19 @@ GroupBox {
     id: root
     title: "Simulation Control"
 
-    signal animateClicked(var checked)
+    property alias animateButton: animateButton
 
-    Column {
+    RowLayout {
+		anchors.fill: parent
         Button {
-            width: 150
+            id: animateButton
+            Layout.fillWidth: true
             text: "Animate"
             checkable: true
 
-            onClicked: {
+            /*onClicked: {
                 root.animateClicked(checked);
-            }
+            }*/
         }
     }
 }

@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include "Viewer.h"
 #include "Scene.h"
+#include "Camera.h"
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
@@ -14,7 +15,8 @@
 
 Viewer::Viewer() :
 	myScene(0),
-	myInitTexture(false),
+	myCamera(new Camera(this)),
+	myTexturesDirty(false),
 	myProgram(0)
 {
 	setFlag(QQuickItem::ItemHasContents);
@@ -32,10 +34,13 @@ void Viewer::handleSceneChanged(Scene* scene)
 {
 	if(scene)
 	{
-		if(!scene->source().isEmpty())
-			myInitTexture = true;
+		if(scene->isReady())
+		{
+			myTexturesDirty = true;
+			viewAll();
+		}
 
-		connect(scene, &Scene::opened, this, [&]() {myInitTexture = true;});
+		connect(scene, &Scene::loaded, this, [&]() {myTexturesDirty = true; viewAll();});
 	}
 }
 
@@ -98,7 +103,7 @@ void Viewer::paint()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_SCISSOR_TEST);
 
-	if(!myScene || !myScene->sofaSimulation() || !myScene->sofaSimulation()->GetRoot())
+	if(!myScene || !myScene->isReady())
 		return;
 
     // set the viewer viewport
@@ -106,16 +111,15 @@ void Viewer::paint()
 
     glDisable(GL_DEPTH_TEST);
 
+	myCamera->setAspectRatio(width() / (float) height());
+
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
-	glLoadIdentity();
-	//glOrtho(-20.0, 20.0, -20.0, 20.0, -100.0, 100.0);
-	gluPerspective(55.0, (GLfloat) width()/(GLfloat) height(), 0.1, 1000.0);
+	glLoadMatrixf(myCamera->projection().constData());
 
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
-	glLoadIdentity();
-	glTranslated(0.0, -30.0, -100.0);
+	glLoadMatrixf(myCamera->modelView().constData());
 
 	GLfloat light_position[] = { 25.0, 0.0, 25.0, 1.0 }; // w = 0.0 => directional light ; w = 1.0 => point light (hemi) or spot light
 	GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 0.0 };
@@ -154,10 +158,10 @@ void Viewer::paint()
 		_vparams->setModelViewMatrix(_mvmatrix);
 	}
 
-	if(myInitTexture)
+	if(myTexturesDirty)
 	{
-		myInitTexture = false;
 		myScene->sofaSimulation()->initTextures(myScene->sofaSimulation()->GetRoot().get());
+		myTexturesDirty = false;
 	}
 
 	myScene->sofaSimulation()->updateVisual(myScene->sofaSimulation()->GetRoot().get());
@@ -168,6 +172,17 @@ void Viewer::paint()
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+}
+
+void Viewer::viewAll()
+{
+	if(!myScene || !myScene->isReady())
+		return;
+
+	SReal min[3], max[3];
+	myScene->sofaSimulation()->computeTotalBBox(myScene->sofaSimulation()->GetRoot().get(), min, max );
+
+	myCamera->fit(QVector3D(min[0], min[1], min[2]), QVector3D(max[0], max[1], max[2]));
 }
 
 void Viewer::sync()

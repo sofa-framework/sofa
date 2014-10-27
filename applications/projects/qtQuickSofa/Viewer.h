@@ -6,6 +6,7 @@
 #include <QtGui/QOpenGLFramebufferObject>
 
 class Scene;
+class Camera;
 class QOpenGLShaderProgram;
 
 class Viewer : public QQuickItem
@@ -24,6 +25,7 @@ signals:
 
 public slots:
     void paint();
+	void viewAll();
     void sync();
 
 private slots:
@@ -35,7 +37,8 @@ signals:
 
 private:
 	Scene*						myScene;
-	bool						myInitTexture;
+	Camera*						myCamera;
+	bool						myTexturesDirty;
 	QOpenGLShaderProgram*		myProgram;
 };
 

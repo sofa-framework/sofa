@@ -16,44 +16,65 @@ public:
 	~Scene();
 
 public:
+	Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged);
 	Q_PROPERTY(QUrl source MEMBER mySource NOTIFY sourceChanged);
 	Q_PROPERTY(double dt MEMBER myDt NOTIFY dtChanged);
-	Q_PROPERTY(bool play MEMBER myPlay NOTIFY playChanged);
+	Q_PROPERTY(bool play READ playing WRITE setPlay NOTIFY playChanged)
+	Q_PROPERTY(bool asynchronous MEMBER myAsynchronous NOTIFY asynchronousChanged)
+
+	Q_ENUMS(Status)
+	enum Status {
+		Null,
+		Ready,
+		Loading,
+		Error
+	};
 
 public:
-	const QUrl& source() const	{return mySource;}
-	double dt() const			{return myDt;}
-	bool playing() const		{return myPlay;}
+	Status status()	const				{return myStatus;}
+	void setStatus(Status newStatus);
+
+	const QUrl& source() const			{return mySource;}
+	double dt() const					{return myDt;}
+	
+	bool playing() const				{return myPlay;}
+	void setPlay(bool newPlay);
+
+	bool isReady() const				{return Status::Ready == myStatus;}
 
 signals:
+	void loaded();
+	void statusChanged(Status newStatus);
 	void sourceChanged(const QUrl& newSource);
 	void dtChanged(double newDt);
 	void playChanged(bool newPlay);
+	void asynchronousChanged(bool newAsynchronous);
 
 public slots:
 	/// re-open the current scene
-	bool reload();
+	void reload();
 	/// apply one simulation time step, the simulation must be paused (play = false)
 	void step();
 	/// restart at the beginning, without reloading the file
 	void reset();
 
 signals:
-	void opened();
 	void stepBegin();
     void stepEnd();
 
-protected slots:
+private slots:
     /// open a scene according to the source
-	bool open();
+	void open();
 
 public:
 	sofa::simulation::Simulation* sofaSimulation() const {return mySofaSimulation;}
 
 private:
+	Status							myStatus;
 	QUrl							mySource;
 	double							myDt;
 	bool							myPlay;
+	bool							myAsynchronous;
 
 	sofa::simulation::Simulation*	mySofaSimulation;
 	QTimer*							myStepTimer;

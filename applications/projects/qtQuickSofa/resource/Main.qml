@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
-import QtQuick.Dialogs 1.0
+import QtQuick.Dialogs 1.2
 
 import "gui"
 
@@ -13,47 +13,8 @@ ApplicationWindow {
     height: 720
     property string filePath: ""
 
-    menuBar: MenuBar {
-        Menu {
-            title: "&File"
-            visible: true
+    menuBar: Header {
 
-            MenuItem { action: openAction }
-            MenuItem { action: reloadAction }
-            MenuItem { action: saveAction }
-            MenuItem { action: saveAsAction }
-            MenuSeparator { }
-            MenuItem {
-                text: "Exit"
-                shortcut: "Ctrl+Q"
-                onTriggered: close()
-            }
-        }
-        Menu {
-            title: "&Edit"
-            //MenuItem { action: cutAction }
-            //MenuItem { action: copyAction }
-            //MenuItem { action: pasteAction }
-            MenuSeparator { }
-            MenuItem {
-                text: "Empty"
-                enabled: false
-            }
-        }
-        Menu {
-            title: "&View"
-            MenuItem {
-                text: "Empty"
-                enabled: false
-            }
-        }
-        Menu {
-            title: "&Help"
-            MenuItem {
-                text: "Empty"
-                enabled: false
-            }
-        }
     }
 
     // sofa scene
@@ -111,15 +72,39 @@ ApplicationWindow {
         tooltip: "Save the Sofa Scene at a specific location"
     }
 
+    Action
+    {
+        id: exitAction
+        text: "&Exit"
+        shortcut: "Ctrl+Q"
+        onTriggered: close()
+    }
+
+    MessageDialog {
+        id: aboutDialog
+        title: "About"
+        text: "Welcome in the qtQuickSofa Application"
+        onAccepted: visible = false
+    }
+
+    Action
+    {
+        id: aboutAction
+        text: "&About"
+        onTriggered: aboutDialog.visible = true;
+        tooltip: "What is this application ?"
+    }
+
     // content
 
     ColumnLayout {
-        id: mainLayout
         anchors.fill: parent
+        spacing: 0
 
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            spacing: 0
 
             Viewer {
                 id: viewer
@@ -129,6 +114,25 @@ ApplicationWindow {
                 width: 75
 
                 scene: scene
+
+                focus: true
+
+                Keys.onPressed: {
+                    if(event.isAutoRepeat) {
+                        event.accepted = true;
+                        return;
+                    }
+
+                    if(event.key === Qt.Key_F4) {
+                        if(0 !== window.visibility) { // not hidden
+                            if(2 & window.visibility) // windowed
+                                window.visibility = "FullScreen";
+                            else // fullscreen
+                                window.visibility = "Windowed";
+                        }
+                        event.accepted = true;
+                    }
+                }
             }
 
             Rectangle {
@@ -140,18 +144,35 @@ ApplicationWindow {
 
                 color: "lightgrey"
 
-                Column {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
+                ColumnLayout {
+                    anchors.fill: parent
                     anchors.margins: 5
 
                     SimulationControl {
                         id: simulationControl
-                        anchors.left: parent.left
-                        anchors.right: parent.right
+                        Layout.fillWidth: true
 
-                        onAnimateClicked: viewer.scene.play = checked
+                        Connections {
+                            target: viewer
+                            onSceneChanged: {
+                                simulationControl.animateButton.checked = viewer.scene.play;
+                            }
+                        }
+
+                        Connections {
+                            target: viewer.scene
+                            onPlayChanged: {
+                                simulationControl.animateButton.checked = viewer.scene.play;
+                            }
+                        }
+
+                        animateButton.onCheckedChanged: viewer.scene.play = animateButton.checked
                     }
+
+					Item {
+						Layout.fillWidth: true
+						Layout.fillHeight: true
+					}
                 }
             }
         }
