@@ -84,65 +84,65 @@ public:
 #endif
     }
 
-    // TODO how to propagate lambdas without invalidating forces on mapped dofs?
-//    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-//    {
-//        mm->resetForce(this->params, res.getId(mm));
-//        return RESULT_CONTINUE;
-//    }
-
-
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+    // reset lambda where there is no compliant FF
+    // these reseted lambdas were previously propagated, but were not computed from the last solve
+    virtual Result fwdMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
     {
-//        if( ff->isCompliance.getValue() )
-//        {
-//            core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
-//            mm->vOp( this->params, res.getId(mm), res.getId(mm), lambdas.getId(mm), invdt );
-//            // lambdas should always be allocated through realloc (null values for new constraints)
-//        }
+        // a compliant FF must be alone, so if there is one, it is the first one of the list.
+        const core::behavior::BaseForceField* ff = NULL;
 
-        if( ff->isCompliance.getValue() )
+        if( !node->forceField.empty() ) ff = *node->forceField.begin();
+        else if( !node->interactionForceField.empty() ) ff = *node->interactionForceField.begin();
+
+        if( !ff || !ff->isCompliance.getValue() )
         {
             core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
             const core::VecDerivId& lambdasid = lambdas.getId(mm);
             if( !lambdasid.isNull() ) // previously allocated
             {
-                const core::VecDerivId& resid = res.getId(mm);
-
-                // hack that improve a lot stability and energy preserving
-                // TO BE STUDIED: only keep negative lambda to generate geometric stiffness
-                // TODO find a way to make it cleaner
-                const size_t dim = mm->getMatrixSize();
-                component::linearsolver::AssembledSystem::vec buffer( dim );
-                mm->copyToBuffer( &buffer(0), lambdasid, dim );
-                for( size_t i=0 ; i<dim ; ++i )
-                    if( buffer[i] > 0 ) buffer[i] = 0;
-                    else buffer[i] *= invdt; // constraint force = lambda / dt
-                mm->copyFromBuffer( resid, &buffer(0), dim );
-
-//                mm->vOp( this->params, resid, resid, lambdasid, invdt );
+                mm->resetForce(this->params, lambdasid);
             }
         }
         return RESULT_CONTINUE;
     }
 
+    virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
+    {
+        return fwdMechanicalState( node, mm );
+    }
 
+    // pop-up lamdas without modifying f
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
     {
-        ForceMaskActivate( map->getMechFrom() );
-        ForceMaskActivate( map->getMechTo() );
-        map->applyJT( this->mparams, res, res );
-        ForceMaskDeactivate( map->getMechTo() );
+        map->applyJT( this->mparams, lambdas, lambdas );
     }
 
+    // for all dofs, f += lamda / dt
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
-        mm->forceMask.activate(false);
+        const core::VecDerivId& lambdasid = lambdas.getId(mm);
+        if( !lambdasid.isNull() ) // previously allocated
+        {
+            const core::VecDerivId& resid = res.getId(mm);
+
+//            mm->vOp( this->params, resid, resid, lambdasid, invdt ); // f += lambda / dt
+
+            // hack to improve stability and energy preservation
+            // TO BE STUDIED: lambda must be negative to generate geometric stiffness
+            // TODO find a more efficient way to implemented it
+            const size_t dim = mm->getMatrixSize();
+            component::linearsolver::AssembledSystem::vec buffer( dim );
+            mm->copyToBuffer( &buffer(0), lambdasid, dim );
+            for( size_t i=0 ; i<dim ; ++i )
+                if( buffer[i] > 0 ) buffer[i] *= -invdt;
+                else buffer[i] *= invdt; // constraint_force = lambda / dt
+            mm->addFromBuffer( resid, &buffer(0), dim ); // f += lambda / dt
+        }
     }
 
-    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
+    virtual void bwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
     {
-        c->projectResponse( this->mparams, res );
+        bwdMechanicalState( node, mm );
     }
 
 

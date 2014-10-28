@@ -13,8 +13,6 @@ set(HEADER_FILES
     PenalityContactForceField.inl
     RepulsiveSpringForceField.h
     RepulsiveSpringForceField.inl
-    PartialRigidificationForceField.h
-    PartialRigidificationForceField.inl
     )
 
 set(SOURCE_FILES
@@ -25,8 +23,6 @@ set(SOURCE_FILES
     InteractionEllipsoidForceField.cpp
     PenalityContactForceField.cpp
     RepulsiveSpringForceField.cpp
-    PartialRigidificationForceField.cpp
-
     )
 
 set(GROUP_BASE_DIR "..")

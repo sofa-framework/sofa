@@ -133,6 +133,7 @@ public:
 
     Data<bool> gridSnap;
 
+	Data<bool> worldGridAligned;
 
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -152,6 +153,7 @@ public:
         , backgroundValue(initData(&backgroundValue,0.,"backgroundValue","pixel value at background"))
         , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
         , gridSnap(initData(&gridSnap,true,"gridSnap","align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)"))
+		, worldGridAligned(initData(&worldGridAligned, false, "worldGridAligned", "perform rasterization on a world aligned grid using nbVoxels and voxelSize"))
     {
         createInputMeshesData();
     }
@@ -188,6 +190,13 @@ public:
         addOutput(&transform);
     }
 
+	void clearImage()
+	{
+		waImage iml(this->image);
+		CImg<T>& im= iml->getCImg();
+		im.fill((T)0);
+	}
+
     virtual void reinit() { update(); }
 
 protected:
@@ -211,7 +220,16 @@ protected:
 
         Real BB[3][2] = { {std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max()} , {std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max()} , {std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max()} };
 
-        if(!this->rotateImage.getValue()) // use Axis Aligned Bounding Box
+		if(worldGridAligned.getValue() == true) // no transformation, simply assign an image of numVoxel*voxelSize 
+		{
+			// min and max centered around origin of transform	
+			for(int i=0; i< 3; i++)
+			{
+				BB[i][1] = nbVoxels.getValue()[i]*voxelSize.getValue()[i]*0.5f;
+				BB[i][0] = -BB[i][1];
+			}
+		}
+		else if(!this->rotateImage.getValue()) // use Axis Aligned Bounding Box
         {
             for(size_t j=0; j<3; j++) tr->getRotation()[j]=(Real)0 ;
 
@@ -325,6 +343,13 @@ protected:
         // update image extents
         unsigned int dim[3];
         for(size_t j=0; j<3; j++) dim[j]=ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
+		
+		if(this->worldGridAligned.getValue()==true) {
+			for(size_t j=0; j<3; j++) {	
+				dim[j]=ceil((BB[j][1]-BB[j][0])/this->voxelSize.getValue()[j]);
+				tr->getScale()[j]= this->voxelSize.getValue()[j];
+			}
+		}
         
 		if(iml->getCImgList().size() == 0)
 			iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
@@ -689,7 +714,7 @@ protected:
             }
             else
             {
-                Real u = (Real)t / (Real)dmax;
+				Real u = (dmax == 0) ? Real(0.0) : (Real)t / (Real)dmax;
                 color = (PixelT)(color0 * (1.0 - u) + color1 * u);
             }
 			
@@ -726,10 +751,12 @@ protected:
         Coord delta = P1 - P0;
         unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
         dmax*=subdiv; // divide step to avoid possible holes
+
         Coord dP = delta/(Real)dmax;
         Coord P (P0);
         for (unsigned int t = 0; t<=dmax; ++t)
         {
+
             PixelT color;
             if( dmax==0 )
             {

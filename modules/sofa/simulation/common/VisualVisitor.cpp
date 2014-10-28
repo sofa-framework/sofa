@@ -184,15 +184,21 @@ VisualComputeBBoxVisitor::VisualComputeBBoxVisitor(const core::ExecParams* param
 
 void VisualComputeBBoxVisitor::processMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* vm)
 {
+//    cerr << "VisualComputeBBoxVisitor::processMechanicalState, bbox before = " << *minBBox <<", "<< *maxBBox << endl;
     vm->addBBox(minBBox, maxBBox);
+//    cerr << "VisualComputeBBoxVisitor::processMechanicalState, bbox after = " << *minBBox <<", "<< *maxBBox << endl;
 }
 void VisualComputeBBoxVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
+//    cerr << "VisualComputeBBoxVisitor::processVisualModel, bbox before = " << *minBBox <<", "<< *maxBBox << endl;
     vm->addBBox(minBBox, maxBBox);
+//    cerr << "VisualComputeBBoxVisitor::processVisualModel, bbox after = " << *minBBox <<", "<< *maxBBox << endl;
 }
 void VisualComputeBBoxVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* bm)
 {
+//    cerr << "VisualComputeBBoxVisitor::processBehaviorModel, bbox before = " << *minBBox <<", "<< *maxBBox << endl;
     bm->addBBox(minBBox, maxBBox);
+//    cerr << "VisualComputeBBoxVisitor::processBehaviorModel, bbox after = " << *minBBox <<", "<< *maxBBox << endl;
 }
 
 } // namespace simulation

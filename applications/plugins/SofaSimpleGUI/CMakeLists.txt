@@ -9,6 +9,7 @@ SpringInteractor.h
 PickedPoint.h
 SofaScene.h
 SofaGL.h
+VisualPickVisitor.h
 
 	)
 
@@ -20,6 +21,7 @@ Interactor.cpp
 SpringInteractor.cpp
 SofaScene.cpp
 SofaGL.cpp
+VisualPickVisitor.cpp
 
 	)
 

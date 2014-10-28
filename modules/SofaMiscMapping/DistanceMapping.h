@@ -92,6 +92,8 @@ public:
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
     Data< vector< Real > > f_restLengths;		///< rest length of each link
+    Data< Real >           d_showObjectScale;   ///< drawing size
+    Data< defaulttype::Vec4f > d_color;         ///< drawing color
 
     virtual void init();
 

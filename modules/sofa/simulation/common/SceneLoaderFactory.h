@@ -57,10 +57,22 @@ public:
         return canLoadFileExtension(ext.c_str());
     }
 
+    /// Pre-saving check
+    virtual bool canWriteFileName(const char *filename)
+    {
+        std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+        return canWriteFileExtension(ext.c_str());
+    }
+
     virtual bool canLoadFileExtension(const char *extension) = 0;
+
+    virtual bool canWriteFileExtension(const char *extension) { return false; }
 
     /// load the file
     virtual sofa::simulation::Node::SPtr load(const char *filename) = 0;
+
+    /// write scene graph in the file
+    virtual void write(sofa::simulation::Node* node, const char *filename) {}
 
     /// get the file type description
     virtual std::string getFileTypeDesc() = 0;
@@ -92,6 +104,12 @@ public:
 
     /// Get an entry given a file name
     SceneLoader* getEntryFileName(std::string filename);
+
+    /// Get an exporter entry given a file extension
+    SceneLoader* getExporterEntryFileExtension(std::string extension);
+
+    /// Get an exporter entry given a file name
+    SceneLoader* getExporterEntryFileName(std::string filename);
 
     /// Add a scene loader
     SceneLoader* addEntry(SceneLoader *loader);

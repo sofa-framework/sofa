@@ -101,8 +101,8 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
 /// Helper method used by initData()
 void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, BaseData::DataFlags dataFlags )
 {
-	static uint32_t draw_fourcc = MAKEFOURCC('d', 'r', 'a', 'w');
-	static uint32_t show_fourcc = MAKEFOURCC('s', 'h', 'o', 'w');
+    static uint32_t draw_fourcc = MAKEFOURCC('d', 'r', 'a', 'w');
+    static uint32_t show_fourcc = MAKEFOURCC('s', 'h', 'o', 'w');
 
     /*
         std::string ln(name);
@@ -120,10 +120,10 @@ void Base::initData0( BaseData* field, BaseData::BaseInitData& res, const char* 
     res.helpMsg = help;
     res.dataFlags = dataFlags;
 
-	uint32_t prefix = *(uint32_t*) name;
+    uint32_t prefix = *(uint32_t*) name;
 
-	if(prefix == draw_fourcc || prefix == show_fourcc)
-		res.group = "Visualization";
+    if(prefix == draw_fourcc || prefix == show_fourcc)
+        res.group = "Visualization";
 }
 
 /// Add a data field.
@@ -258,10 +258,10 @@ void Base::processStream(std::ostream& out)
 #define YELLOW 14
 #define WHITE 15
 
-	HANDLE console;
-	console = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_SCREEN_BUFFER_INFO _currentInfo;
-	GetConsoleScreenBufferInfo(console, &_currentInfo);
+    HANDLE console;
+    console = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO _currentInfo;
+    GetConsoleScreenBufferInfo(console, &_currentInfo);
 #else
 
 #define BLUE "\033[1;34m "
@@ -275,21 +275,21 @@ void Base::processStream(std::ostream& out)
 
 #endif
 
-	if (&out == &serr)
+    if (&out == &serr)
     {
-	    serr << "\n";
+        serr << "\n";
         std::string str = serr.str();
         //if (f_printLog.getValue())
 #ifdef WIN32
-		SetConsoleTextAttribute(console, RED);
-		std::cerr<< " [WARN] ";
-		SetConsoleTextAttribute(console, _currentInfo.wAttributes);
+        SetConsoleTextAttribute(console, RED);
+        std::cerr<< " [WARN] ";
+        SetConsoleTextAttribute(console, _currentInfo.wAttributes);
 #else
-		std::cerr<< RED <<"[WARN]" << ENDL;
+        std::cerr<< RED <<"[WARN]" << ENDL;
 #endif
-		std::cerr<< "[" << getName() << "(" << getClassName() << ")]: ";
-//		SetConsoleTextAttribute(console, _currentInfo.wAttributes);
-		std::cerr << str;
+        std::cerr<< "[" << getName() << "(" << getClassName() << ")]: ";
+//        SetConsoleTextAttribute(console, _currentInfo.wAttributes);
+        std::cerr << str;
         if (warnings.size()+str.size() >= MAXLOGSIZE)
         {
             std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting serr buffer." << std::endl;
@@ -305,16 +305,16 @@ void Base::processStream(std::ostream& out)
         sout << "\n";
         std::string str = sout.str();
         if (f_printLog.getValue())
-		{
+        {
 #ifdef WIN32
-			SetConsoleTextAttribute(console, GREEN);
-			std::cout<<" [INFO] ";
-			SetConsoleTextAttribute(console, _currentInfo.wAttributes);
+            SetConsoleTextAttribute(console, GREEN);
+            std::cout<<" [INFO] ";
+            SetConsoleTextAttribute(console, _currentInfo.wAttributes);
 #else
-			std::cerr<<GREEN<<"[INFO]"<< ENDL;
+            std::cerr<<GREEN<<"[INFO]"<< ENDL;
 #endif
             std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< str << std::flush;
-		}
+        }
         if (outputs.size()+str.size() >= MAXLOGSIZE)
         {
             std::cerr<< "LOG OVERFLOW[" << getName() << "(" << getClassName() << ")]: resetting sout buffer." << std::endl;
@@ -371,16 +371,16 @@ void Base::removeTag(Tag t)
 BaseData* Base::findData( const std::string &name ) const
 {
     //Search in the aliases
-	if(m_aliasData.size())
-	{
-		typedef MapData::const_iterator mapIterator;
-		std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
-		if (range.first != range.second)
-			return range.first->second;
-		else
-			return NULL;
-	}
-	else return NULL;
+    if(m_aliasData.size())
+    {
+        typedef MapData::const_iterator mapIterator;
+        std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
+        if (range.first != range.second)
+            return range.first->second;
+        else
+            return NULL;
+    }
+    else return NULL;
 }
 
 /// Find fields given a name: several can be found as we look into the alias map
@@ -622,14 +622,14 @@ static std::string xmlencode(const std::string& str)
     return res;
 }
 
-void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
+void  Base::writeDatas (std::ostream& out, const std::string& separator)
 {
     for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
     {
         BaseData* field = *iData;
         if (!field->getLinkPath().empty() )
         {
-            out << " " << field->getName() << "=\""<< xmlencode( field->getLinkPath() )<< "\" ";
+            out << separator << field->getName() << "=\""<< xmlencode(field->getLinkPath()) << "\" ";
         }
         else
         {
@@ -637,7 +637,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
             {
                 std::string val = field->getValueString();
                 if (!val.empty())
-                    out << " " << field->getName() << "=\""<< xmlencode( val ) << "\" ";
+                    out << separator << field->getName() << "=\""<< xmlencode(val) << "\" ";
             }
         }
     }
@@ -648,7 +648,7 @@ void  Base::xmlWriteDatas (std::ostream& out, int /*level*/)
         {
             std::string val = link->getValueString();
             if (!val.empty())
-                out << " " << link->getName() << "=\""<< xmlencode( val ) << "\" ";
+                out << separator << link->getName() << "=\""<< xmlencode(val) << "\" ";
         }
     }
 }

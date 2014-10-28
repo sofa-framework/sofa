@@ -150,8 +150,9 @@ public:
     /// Write the current field values to the given map of name -> value pairs
     void writeDatas (std::map<std::string,std::string*>& str);
 
-    /// Write the current field values to the given XML output stream
-    void xmlWriteDatas (std::ostream& out, int level = 0);
+    /// Write the current field values to the given output stream
+    /// separated with the given separator (" " used by default for XML)
+    void writeDatas (std::ostream& out, const std::string& separator = " ");
 
     /// Find a data field given its name. Return NULL if not found.
     /// If more than one field is found (due to aliases), only the first is returned.

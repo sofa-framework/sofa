@@ -190,7 +190,7 @@ void CompliantAttachPerformer<DataTypes>::start()
 
     assert(pickedNode);
     pickedParticleIndex = picked.indexCollisionElement;
-    if (mstateCollision->getSize()<picked.indexCollisionElement+1)
+    if ((unsigned int)mstateCollision->getSize()<picked.indexCollisionElement+1)
         pickedParticleIndex = 0;
 
     //-------- Mouse manipulator
