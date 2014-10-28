@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <Node 	 name="Root"  gravity="0 -10 0"  dt="0.001"  >
+        <RequiredPlugin pluginName="Flexible"/>
+        <RequiredPlugin pluginName="image"/>
 	<VisualStyle name="visualStyle1"  displayFlags="showBehaviorModels showInteractionForceFields hideWireframe" />
 	<DefaultAnimationLoop name="defaultAnimationLoop1" />
 	<DefaultVisualManagerLoop name="defaultVisualManagerLoop1" />

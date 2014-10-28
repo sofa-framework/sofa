@@ -12,14 +12,20 @@ namespace collision
 {
 
 template <class DataTypes>
-TBulletSphereModel<DataTypes>::TBulletSphereModel() : TSphereModel<DataTypes>(),_bt_cshape(0x0),
-margin(initData(&margin, (SReal)0.05, "margin","Margin used for collision detection within bullet")){}
+TBulletSphereModel<DataTypes>::TBulletSphereModel()
+    : TSphereModel<DataTypes>()
+    , margin(initData(&margin, (SReal)0.05, "margin","Margin used for collision detection within bullet"))
+    , _bt_cshape(0x0)
+{}
 
 template<class DataTypes>
-TBulletSphereModel<DataTypes>::TBulletSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate ) : TSphereModel<DataTypes>(_mstate),_bt_cshape(0x0),
-    margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet")){}
+TBulletSphereModel<DataTypes>::TBulletSphereModel(core::behavior::MechanicalState<DataTypes>* _mstate )
+    : TSphereModel<DataTypes>(_mstate)
+    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    , _bt_cshape(0x0)
+{}
 
-static btRigidBody* localCreateRigidBody(float mass, const btTransform& startTransform,btCollisionShape* shape,float processingThreshold)
+static btRigidBody* localCreateRigidBody(float mass, const btTransform& startTransform,btCollisionShape* shape,float /*processingThreshold*/)
 {
     btAssert((!shape || shape->getShapeType() != INVALID_SHAPE_PROXYTYPE));
 
@@ -54,7 +60,7 @@ void TBulletSphereModel<DataTypes>::initBullet(){
     for(int i = 0 ; i < npoints ; ++i){
         btVector3 btP(pos[i][0],pos[i][1],pos[i][2]);
         btSphereShape * sphere = new btSphereShape(radii[i] + margin.getValue());
-        sphere->setUserPointer((void*)i);
+        sphere->setUserPointer((void*)(size_t)i);
         _garbage.push(sphere);
         _bt_cshape->addChildShape(btTransform(btQuaternion(0,0,0,1),btP),sphere);
     }

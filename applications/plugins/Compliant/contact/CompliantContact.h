@@ -18,6 +18,7 @@
 #include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/core/collision/Contact.h>
 
+#include <Compliant/utils/edit.h>
 //#include <sofa/simulation/common/MechanicalVisitor.h>
 //#include <sofa/core/VecId.h>
 //#include <sofa/core/MultiVecId.h>
@@ -106,8 +107,8 @@ protected:
         contact_map->setName( this->getName() + " contact mapping" );
         contact_node->addObject( contact_map.get() );
 
-        this->copyNormals( contact_map->normal );
-        this->copyPenetrations( contact_map->penetrations );
+        this->copyNormals( *edit(contact_map->normal) );
+        this->copyPenetrations( *edit(contact_map->penetrations) );
 
         // every contact points must propagate constraint forces
         for(unsigned i = 0; i < size; ++i)

@@ -277,7 +277,6 @@ void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /
 
 }
 
-
 // Matrix Integration interface
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
@@ -369,6 +368,8 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     }
     else // new drawing by spheres
     {
+        glEnable( GL_LIGHTING );
+
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
         if( f_fixAll.getValue()==true )

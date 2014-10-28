@@ -236,8 +236,6 @@ using namespace core::behavior;
             // to geometric sitffness generation for this step.
             simulation::MechanicalAddComplianceForce lvis( &sop.mparams(), f, lagrange, factor ); // f += fc  with  fc = lambda / dt
             send( lvis );
-
-            // TODO have a look about reseting or not forces of mapped dofs
         }
     }
 
