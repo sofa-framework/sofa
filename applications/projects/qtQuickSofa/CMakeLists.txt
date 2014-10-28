@@ -16,26 +16,19 @@ set(HEADER_FILES
         Scene.h
 )
 
-set(SHADER_FILES
-		resource/shaders/composition.vs
-		resource/shaders/composition.fs
-		resource/shaders/render.vs
-		resource/shaders/render.fs
-)
-
 set(QML_FILES
-		resource/Main.qml
-		resource/gui/FileBrowser.qml
-		resource/gui/Footer.qml
-		resource/gui/Header.qml
-		resource/gui/Scene.qml
-		resource/gui/Viewer.qml
-		resource/gui/SimulationControl.qml
-		resource/gui/FPSDisplay.qml
+		data/qml/Main.qml
+		data/qml/FileBrowser.qml
+		data/qml/Footer.qml
+		data/qml/Header.qml
+		data/qml/Scene.qml
+		data/qml/Viewer.qml
+		data/qml/SimulationControl.qml
+		data/qml/FPSDisplay.qml
 )
 
 set(QRC_FILES
-		qtQuickSofa.qrc
+		resource.qrc
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -55,7 +48,7 @@ find_package(Qt5 COMPONENTS Core Gui Widgets Quick Qml REQUIRED PATHS "${SOFA-EX
 qt5_wrap_cpp(MOC_FILES ${HEADER_FILES}) # do not use "set(CMAKE_AUTOMOC ON)" since all the mocced files will be compiled by a single compilation unit leading to a "out of heap space" issue on MSVC
 qt5_add_resources(RESOURCE_FILES ${QRC_FILES})
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QRC_FILES} ${RESOURCE_FILES} ${SHADER_FILES} ${QML_FILES})
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QRC_FILES} ${RESOURCE_FILES} ${QML_FILES})
 
 AddLinkerDependencies(SofaSimulationGraph SofaComponentMain Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
 
