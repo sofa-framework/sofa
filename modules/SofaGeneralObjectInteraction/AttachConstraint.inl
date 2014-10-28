@@ -473,8 +473,6 @@ void AttachConstraint<DataTypes>::init()
     f_indices2.createTopologicalEngine(topology);
     f_indices2.registerTopologicalData();
 
-    constraintReleased.resize(f_indices2.getValue().size());
-
     if (f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
     {
         const Real maxR = f_radius.getValue();
@@ -499,16 +497,9 @@ void AttachConstraint<DataTypes>::init()
             }
         }
     }
-#if 0
-    // Initialize functions and parameters
-    topology::PointSubset my_subset = f_indices.getValue();
 
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
 
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
-#endif
+    constraintReleased.resize(f_indices2.getValue().size());
     activeFlags.resize(f_indices2.getValue().size());
     std::fill(activeFlags.begin(), activeFlags.end(), true);
     if (f_restRotations.getValue())
@@ -541,6 +532,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
     VecCoord &res2 = *res2_d.beginEdit();
 
     // update active flags
+    constraintReleased.resize(indices2.size());
     activeFlags.resize(indices2.size());
     if (last)
         lastDist.resize(indices2.size());
@@ -611,6 +603,9 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
 
+    constraintReleased.resize(indices2.size());
+    activeFlags.resize(indices2.size());
+
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
@@ -652,6 +647,9 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
+
+    constraintReleased.resize(indices2.size());
+    activeFlags.resize(indices2.size());
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -715,6 +713,9 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
 
+    constraintReleased.resize(indices.size());
+    activeFlags.resize(indices.size());
+
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
         if (!clamp && i < activeFlags.size() && !activeFlags[i])
@@ -766,6 +767,9 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     const unsigned int NCLast = DerivConstrainedSize(f_lastFreeRotation.getValue());
     unsigned int i = 0;
     const bool clamp = f_clamp.getValue();
+
+    constraintReleased.resize(indices.size());
+    activeFlags.resize(indices.size());
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
