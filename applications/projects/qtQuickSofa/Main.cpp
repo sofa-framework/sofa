@@ -14,7 +14,7 @@ int main(int argc, char **argv)
 	qmlRegisterType<Scene>("Scene", 1, 0, "Scene");
     qmlRegisterType<Viewer>("Viewer", 1, 0, "Viewer");
 
-    QUrl mainScriptUrl = QUrl("qrc:///resource/Main.qml");
+    QUrl mainScriptUrl = QUrl("qrc:///data/qml/Main.qml");
 
 	/*QSurfaceFormat format;
 	format.setMajorVersion(3);

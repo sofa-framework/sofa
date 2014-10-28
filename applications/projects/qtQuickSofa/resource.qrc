@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/qml/Main.qml</file>
+        <file>data/qml/FileBrowser.qml</file>
+        <file>data/qml/Footer.qml</file>
+        <file>data/qml/FPSDisplay.qml</file>
+        <file>data/qml/Header.qml</file>
+        <file>data/qml/SimulationControl.qml</file>
+        <file>data/qml/Viewer.qml</file>
+        <file>data/qml/Scene.qml</file>
+    </qresource>
+</RCC>
