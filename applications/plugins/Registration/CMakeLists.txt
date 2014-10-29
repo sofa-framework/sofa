@@ -22,7 +22,7 @@ set(SOURCE_FILES
     GroupwiseRegistrationEngine.cpp
     InertiaAlign.cpp)
 
-set(README_FILES registration.txt)
+set(README_FILES README.txt)
 
 if(SOFA-PLUGIN_IMAGE)
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.h")
