@@ -49,6 +49,7 @@ class Scene:
                 rigid.setFromMesh(os.path.join(self.sceneDir, r.find("mesh").text), offset= SofaPython.Tools.strToListFloat(r.find("position").text))
                 rigid.dofs.showObject = self.param.showRigid
                 rigid.dofs.showObjectScale = self.param.showRigidScale
+                # TODO read velocity
                 # visual
                 rigid.addVisualModel(r.find("mesh").text)
                 rigid.addCollisionMesh(r.find("mesh").text)
