@@ -174,8 +174,10 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
     unsigned int nbe = 0;
     Dart a = d;
 
-    if (m_map.template phi<111>(d) ==d)
+    if (m_map.template phi<111>(d) ==d) //check if the face is already a triangle
     {
+        m_resTets.push_back(d);
+        m_resTets.push_back(m_map.phi3(d));
         //		mark.markOrbit<FACE>(d);	// mark the face
         return;
     }
@@ -195,6 +197,7 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
     // LET'S REMOVE THEM
 
     bool convex = nbe==nbv;
+
 
     while (nbv>3)
     {
@@ -243,6 +246,9 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
         //		else
         //			mark.markOrbit<FACE>(e1);	// mark last face
     }
+
+
+
     m_ears.clear();
 }
 
@@ -812,12 +818,22 @@ Dart swapGen3To2(typename PFP::MAP& map, Dart d)
         map.flipBackEdge(d);
         map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
         map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
+        if (map.template isOrbitEmbedded<FACE>())
+        {
+             map.template copyDartEmbedding<FACE>(map.phi_1(d), d) ;
+             map.template copyDartEmbedding<FACE>(map.phi_1(e), e) ;
+        }
 
         d  = map.phi3(dbegin);
         e = map.phi2(d);
         map.flipEdge(d);
         map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
         map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
+        if ( map.template isOrbitEmbedded<FACE>())
+        {
+             map.template copyDartEmbedding<FACE>(map.phi1(d), d) ;
+             map.template copyDartEmbedding<FACE>(map.phi1(e), e) ;
+        }
     }
 
     std::vector<Dart> edges;
@@ -881,12 +897,23 @@ std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
         map.flipBackEdge(d);
         map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
         map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
+        if ( map.template isOrbitEmbedded<FACE>())
+        {
+             map.template copyDartEmbedding<FACE>(map.phi1(d), d) ;
+             map.template copyDartEmbedding<FACE>(map.phi1(e), e) ;
+        }
+
 
         d  = map.phi3(dbegin);
         e = map.phi2(d);
         map.flipEdge(d);
         map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
         map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
+        if (map.template isOrbitEmbedded<FACE>())
+        {
+             map.template copyDartEmbedding<FACE>(map.phi_1(d), d) ;
+             map.template copyDartEmbedding<FACE>(map.phi_1(e), e) ;
+        }
     }
 
     std::vector<Dart> edges;
