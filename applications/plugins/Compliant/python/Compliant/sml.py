@@ -3,6 +3,8 @@ import xml.etree.ElementTree as etree
 
 from Compliant import StructuralAPI
 
+import SofaPython.Tools
+
 class Scene:
     """ Builds a (sub)scene from a sml file using compliant formulation
     """
@@ -37,18 +39,21 @@ class Scene:
             self.node=parentNode.createChild(self.name)
             print "model:", self.name
 
-            # store StructuralAPI rigids
+            # rigids
             self.rigids=dict()
             for r in model.iter("rigid"):
                 print "rigid", r.attrib["name"]
                 rigid = StructuralAPI.RigidBody(self.node, r.attrib["name"])
+                self.rigids[r.attrib["name"]] = rigid
                 # TODO set manually using <mass> if present
-                rigid.setFromMesh(os.path.join(self.sceneDir, r.find("mesh").text))
+                rigid.setFromMesh(os.path.join(self.sceneDir, r.find("mesh").text), offset= SofaPython.Tools.strToListFloat(r.find("position").text))
                 rigid.dofs.showObject = self.param.showRigid
                 rigid.dofs.showObjectScale = self.param.showRigidScale
-                self.rigids[r.attrib["name"]] = rigid
-                
+                # visual
+                rigid.addVisualModel(r.find("mesh").text)
+                rigid.addCollisionMesh(r.find("mesh").text)
             
+            # joints
             self.joints=dict()
             for j in model.iter("joint"):
                 print "joint", j.attrib["name"]
@@ -79,9 +84,11 @@ class Scene:
             return self.rigids[rigidName]
         
         if xmlOffset.attrib["type"] is "absolute":
-            offset = self.rigids[rigidName].addAbsoluteOffset(name, map(float,xmlOffset.text.split()))
+            offset = self.rigids[rigidName].addAbsoluteOffset(name, SofaPython.Tools.strToListFloat(xmlOffset.text))
         else:
-            offset = self.rigids[rigidName].addOffset(name, map(float,xmlOffset.text.split()))
+            offset = self.rigids[rigidName].addOffset(name, SofaPython.Tools.strToListFloat(xmlOffset.text))
         offset.dofs.showObject = self.param.showOffset
         offset.dofs.showObjectScale = self.param.showOffsetScale
         return offset
+    
+    
