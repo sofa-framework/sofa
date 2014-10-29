@@ -139,11 +139,11 @@ public:
     inline virtual void setMargin(SReal margin){_bt_cshape.setMargin(margin);}
 
     inline const Coord & center()const{
-        return DataTypes::getCPos((*(_mstate->getX()))[0]);
+        return DataTypes::getCPos(_mstate->read(core::ConstVecCoordId::position())->getValue()[0]);
     }
 
     inline const Quaternion & orientation()const{
-        return ((*(_mstate->getX()))[0]).getOrientation();
+        return _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getOrientation();
     }
 
     Data<bool> computeConvexHullDecomposition;

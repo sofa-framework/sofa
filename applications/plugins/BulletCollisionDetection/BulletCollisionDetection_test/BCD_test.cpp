@@ -1,10 +1,10 @@
 #include <SofaTest/BroadPhase_test.h>
 #include <SofaTest/PrimitiveCreation.h>
-#include <sofa/component/collision/BruteForceDetection.h>
+#include <SofaBaseCollision/BruteForceDetection.h>
 #include "BulletCollisionDetection.h"
 #include <SofaTest/PrimitiveCreation.h>
-#include <sofa/component/collision/DefaultPipeline.h>
-#include <sofa/component/collision/BruteForceDetection.h>
+#include <SofaBaseCollision/DefaultPipeline.h>
+#include <SofaBaseCollision/BruteForceDetection.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/CollisionEndEvent.h>
@@ -13,10 +13,11 @@
 
 
 
-typedef Vector3 Vec3;
+typedef sofa::defaulttype::Vector3 Vec3;
 
 using namespace sofa::PrimitiveCreationTest;
-
+using sofa::core::objectmodel::New;
+using sofa::core::objectmodel::Data;
 
 struct BCD_test : public ::testing::Test{
 
@@ -67,7 +68,7 @@ sofa::component::collision::BulletOBBModel::SPtr makeBulletOBB(const Vec3 & p,co
 
 
     //we finnaly edit the positions by filling it with a RigidCoord made up from p and the rotated fram x,y,z
-    positions[0] = Rigid3Types::Coord(p,Quaternion::createQuaterFromFrame(x,y,z));
+    positions[0] = sofa::defaulttype::Rigid3Types::Coord(p, sofa::defaulttype::Quaternion::createQuaterFromFrame(x,y,z));
 
     dpositions.endEdit();
 
@@ -113,7 +114,7 @@ static void transMechaRigid(const Vec3 & angles,const Vec3 & new_pos,sofa::simul
     Data<MechanicalObjectRigid3::VecCoord> & dpositions = *mecha->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
-    Quat & quat = positions[0].getOrientation();
+    sofa::defaulttype::Quat & quat = positions[0].getOrientation();
     Vec3 & pos  = positions[0].getCenter();
 
     quat.rotate(angles);
