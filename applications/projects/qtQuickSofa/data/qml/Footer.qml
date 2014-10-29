@@ -3,7 +3,9 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
 Rectangle {
-    id: base
+    id: root
+
+    property int physicalFrameCount: 0
 
     gradient: Gradient {
         GradientStop {position: 0.0; color: "lightgrey"}
@@ -19,20 +21,21 @@ Rectangle {
             Layout.fillHeight: true
             width: 10
 
-            Label {
-                anchors.centerIn: parent
+            FPSDisplay {
+                anchors.fill: parent
+                anchors.centerIn: parent.Center
                 horizontalAlignment: Text.AlignHCenter
-                text: "FPS"
+                verticalAlignment: Text.AlignVCenter
             }
         }
 
         Rectangle {
             color: Qt.rgba(0.75, 0.75, 0.75, 1.0)
             Layout.fillHeight: true
-            width: 5
+            width: 2
         }
 
-        Rectangle {
+        /*Rectangle {
             color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -49,7 +52,7 @@ Rectangle {
             color: Qt.rgba(0.75, 0.75, 0.75, 1.0)
             Layout.fillHeight: true
             width: 5
-        }
+        }*/
 
         Rectangle {
             color: Qt.rgba(0.0, 0.0, 0.0, 0.0)

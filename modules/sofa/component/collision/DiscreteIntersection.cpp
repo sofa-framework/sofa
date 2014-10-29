@@ -74,6 +74,8 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<RigidCapsuleModel,OBBModel,DiscreteIntersection>(this);
     intersectors.add<RigidCapsuleModel,RigidSphereModel,DiscreteIntersection>(this);
 
+	//intersectors.add<RayModel,CubeModel,DiscreteIntersection>(this);
+
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 }

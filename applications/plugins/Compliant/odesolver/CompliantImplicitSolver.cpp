@@ -227,7 +227,7 @@ using namespace core::behavior;
             f_k->eq( f, factor );
         }
 
-        if( !neglecting_compliance_forces_in_geometric_stiffness.getValue() )
+        if( sys.n && !neglecting_compliance_forces_in_geometric_stiffness.getValue() )
         {
             scoped::timer substep("f += fc");
 
