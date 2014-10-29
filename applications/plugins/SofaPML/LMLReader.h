@@ -80,6 +80,7 @@ public :
 
     unsigned int numberOfLoads() { if(loadsList)return loadsList->numberOfLoads(); else return 0;}
 
+
 private :
     Loads * loadsList;
     const char * lmlFile;
