@@ -70,6 +70,7 @@ namespace pml
 template<class DataTypes>
 class LMLConstraint : public sofa::core::behavior::Constraint<DataTypes> //, public sofa::core::VisualModel
 {
+    SOFA_CLASS(SOFA_TEMPLATE(LMLConstraint, DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Constraint, DataTypes));
 public :
     ///template types
     typedef typename DataTypes::VecCoord VecCoord;
@@ -78,6 +79,10 @@ public :
     typedef typename DataTypes::VecDeriv::iterator VecDerivIterator;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
+    typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
     ///constructor
     LMLConstraint(Loads* loadsList, const std::map<unsigned int, unsigned int> &atomIndexToDOFIndex, sofa::core::behavior::MechanicalState<DataTypes> *mm);
@@ -96,7 +101,16 @@ public :
     virtual void projectVelocity(VecDeriv& ) {} ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
 
-    sofa::core::objectmodel::BaseClass* getClass() const { return NULL; }
+    virtual void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v)
+    {
+        serr << "LMLConstraint::getConstraintViolation() not implemented" << sendl;
+    }
+
+
+    virtual void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x)
+    {
+        serr << "LMLConstraint::buildConstraintMatrix() not implemented" << sendl;
+    }
 
     /// -- VisualModel interface
     void draw();
