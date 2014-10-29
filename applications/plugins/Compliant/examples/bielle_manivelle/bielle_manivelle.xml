@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<model name="bielle_manivelle">
+    <units mass="kg" length="m" time="s" />
+
+    <rigid name="Corps">
+        <position>0 0 0 0 0 0 1</position>
+        <velocity>0 0 0 0 0 0</velocity>
+        <mesh format="obj">/local/usr/src/sofa/applications/plugins/Compliant/examples/bielle_manivelle/0.obj</mesh>
+    </rigid>
+    
+    <rigid name="Roue">
+        <position>0 0 -0.148 0 0 0 1</position>
+        <mesh format="obj">3.obj</mesh>
+    </rigid>
+    
+    <joint name="hinge_corps-roue">
+        <parent name="Corps">
+            <offset type="absolute">0 0 0 0 0 0 1</offset>
+        </parent>
+        <child name="Roue">
+            <offset type="absolute">0 0 0.148 0 0 0 1</offset>
+        </child>
+        <dof index="5"/>
+    </joint>
+
+</model>
