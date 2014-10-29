@@ -7,6 +7,11 @@ def listToStr(x):
     """
     return ' '.join(map(str, x))
 
+def strToListFloat(s):
+    """ Convert a string to a list of float
+    """
+    return map(float,s.split())
+
 def getNode(rootNode, path):
     """ Return node at path or None if not found
     """
