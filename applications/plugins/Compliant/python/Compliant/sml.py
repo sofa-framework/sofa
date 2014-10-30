@@ -10,7 +10,7 @@ def parseUnits(xmlModel):
     """ set SofaPython.units.local_* to units specified in <units />
     """
     if not xmlModel.find("units") is None:
-        message = "Units set to:"
+        message = "units set to:"
         xmlUnits = xmlModel.find("units")
         for unit in xmlUnits.attrib:
             exec("SofaPython.units.local_{0} = SofaPython.units.{0}_{1}".format(unit,xmlUnits.attrib[unit]))
@@ -57,7 +57,7 @@ class Scene:
             # rigids
             self.rigids=dict()
             for r in model.iter("rigid"):
-                print "rigid", r.attrib["name"]
+                print "rigid:", r.attrib["name"]
                 rigid = StructuralAPI.RigidBody(self.node, r.attrib["name"])
                 self.rigids[r.attrib["name"]] = rigid
                 # TODO set manually using <mass> if present
@@ -72,7 +72,7 @@ class Scene:
             # joints
             self.joints=dict()
             for j in model.iter("joint"):
-                print "joint", j.attrib["name"]
+                print "joint:", j.attrib["name"]
                 
                 parent = j.find("parent")
                 parentOffset = self.addOffset("offset_{0}".format(j.attrib["name"]), parent.attrib["name"], parent.find("offset"))
