@@ -8,21 +8,25 @@
     <rigid name="Corps">
         <position>0 0 0 0 0 0 1</position>
         <mesh format="obj">0.obj</mesh>
+        <density>7.8e+3</density>
     </rigid>
     
     <rigid name="Roue">
         <position>0 0 -0.148 0 0 0 1</position>
         <mesh format="obj">3.obj</mesh>
+        <density>7.8e+3</density>
     </rigid>
     
     <rigid name="Came">
         <position>1.085 -0.072 0.33 0 0 0 1</position>
         <mesh format="obj">2.obj</mesh>
+        <density>7.8e+3</density>
     </rigid>
     
     <rigid name="Piston">
         <position>2.05 0 0.33 0 0 0 1</position>
         <mesh format="obj">1.obj</mesh>
+        <density>7.8e+3</density>
     </rigid>
     
     <joint name="hinge_corps-roue">
