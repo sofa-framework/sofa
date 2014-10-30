@@ -26,7 +26,7 @@ SofaGL::SofaGL(SofaScene *s) :
     _isPicking = false;
 
 
-    sofa::simulation::getSimulation()->initTextures(_sofaScene->groot().get());
+    _sofaScene->getSimulation()->initTextures(_sofaScene->getSimulation()->GetRoot().get());
 }
 
 void SofaGL::draw()
@@ -38,12 +38,12 @@ void SofaGL::draw()
     if(_vparams)
     {
         _vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
-        _vparams->sceneBBox() = _sofaScene->groot()->f_bbox.getValue();
+        _vparams->sceneBBox() = _sofaScene->getSimulation()->GetRoot()->f_bbox.getValue();
         _vparams->setProjectionMatrix(_projmatrix);
         _vparams->setModelViewMatrix(_mvmatrix);
     }
 
-    sofa::simulation::getSimulation()->updateVisual(_sofaScene->groot().get()); // needed to update normals and VBOs ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
+    _sofaScene->getSimulation()->updateVisual(_sofaScene->getSimulation()->GetRoot().get()); // needed to update normals and VBOs ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
 
     if( _isPicking ){
 
@@ -65,8 +65,8 @@ void SofaGL::draw()
         // draw
         _vparams->pass() = sofa::core::visual::VisualParams::Std;
         VisualPickVisitor pick ( _vparams );
-        pick.setTags(_sofaScene->groot()->getTags());
-        _sofaScene->groot()->execute ( &pick );
+        pick.setTags(_sofaScene->getSimulation()->GetRoot()->getTags());
+        _sofaScene->getSimulation()->GetRoot()->execute ( &pick );
 
         // stop picking
         glMatrixMode(GL_PROJECTION);
@@ -109,7 +109,7 @@ void SofaGL::draw()
         _isPicking = false;
 
     }
-    sofa::simulation::getSimulation()->draw(_vparams, _sofaScene->groot().get());
+    _sofaScene->getSimulation()->draw(_vparams, _sofaScene->getSimulation()->GetRoot().get());
 }
 
 void SofaGL::getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y )
@@ -144,7 +144,7 @@ PickedPoint SofaGL::pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
     //    cout<< "SofaGL::rayPick from origin " << origin << ", in direction " << direction << endl;
     sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth );
-    picker.execute( _sofaScene->groot()->getContext() );
+    picker.execute( _sofaScene->getSimulation()->GetRoot()->getContext() );
 
     PickedPoint pickedPoint;
     if (!picker.particles.empty())
@@ -187,7 +187,7 @@ Interactor* SofaGL::pickInteractor( GLdouble ox, GLdouble oy, GLdouble oz, int x
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
     //    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
     sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth, Tag("!NoPicking") );
-    picker.execute(_sofaScene->groot()->getContext());
+    picker.execute(_sofaScene->getSimulation()->GetRoot()->getContext());
 
     if (!picker.particles.empty())
     {
