@@ -148,6 +148,12 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
 
 }
 
+bool XMLPrintVisitor::treeTraversal(TreeTraversalRepetition& repeat)
+{
+	repeat = NO_REPETITION;
+	return true;
+}
+
 } // namespace simulation
 
 } // namespace sofa
