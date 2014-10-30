@@ -4,6 +4,18 @@ import xml.etree.ElementTree as etree
 from Compliant import StructuralAPI
 
 import SofaPython.Tools
+import SofaPython.units
+
+def parseUnits(xmlModel):
+    """ set SofaPython.units.local_* to units specified in <units />
+    """
+    if not xmlModel.find("units") is None:
+        message = "Units set to:"
+        xmlUnits = xmlModel.find("units")
+        for unit in xmlUnits.attrib:
+            exec("SofaPython.units.local_{0} = SofaPython.units.{0}_{1}".format(unit,xmlUnits.attrib[unit]))
+            message+= " "+unit+":"+xmlUnits.attrib[unit]
+        print message
 
 class Scene:
     """ Builds a (sub)scene from a sml file using compliant formulation
@@ -39,6 +51,9 @@ class Scene:
             self.node=parentNode.createChild(self.name)
             print "model:", self.name
 
+            # units
+            parseUnits(model)
+
             # rigids
             self.rigids=dict()
             for r in model.iter("rigid"):
@@ -48,7 +63,7 @@ class Scene:
                 # TODO set manually using <mass> if present
                 rigid.setFromMesh(os.path.join(self.sceneDir, r.find("mesh").text), offset= SofaPython.Tools.strToListFloat(r.find("position").text))
                 rigid.dofs.showObject = self.param.showRigid
-                rigid.dofs.showObjectScale = self.param.showRigidScale
+                rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
                 # TODO read velocity
                 # visual
                 rigid.addVisualModel(r.find("mesh").text)
@@ -89,7 +104,7 @@ class Scene:
         else:
             offset = self.rigids[rigidName].addOffset(name, SofaPython.Tools.strToListFloat(xmlOffset.text))
         offset.dofs.showObject = self.param.showOffset
-        offset.dofs.showObjectScale = self.param.showOffsetScale
+        offset.dofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showOffsetScale)
         return offset
     
     
