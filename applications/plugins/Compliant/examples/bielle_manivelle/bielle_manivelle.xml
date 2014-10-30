@@ -7,7 +7,7 @@
 
     <rigid name="Corps">
         <position>0 0 0 0 0 0 1</position>
-        <mesh format="obj">/local/usr/src/sofa/applications/plugins/Compliant/examples/bielle_manivelle/0.obj</mesh>
+        <mesh format="obj">0.obj</mesh>
     </rigid>
     
     <rigid name="Roue">
