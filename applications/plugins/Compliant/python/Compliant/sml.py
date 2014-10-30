@@ -9,7 +9,7 @@ import SofaPython.units
 def parseUnits(xmlModel):
     """ set SofaPython.units.local_* to units specified in <units />
     """
-    if not xmlModel.find("units") is None:
+    if xmlModel.find("units") is not None:
         message = "units set to:"
         xmlUnits = xmlModel.find("units")
         for unit in xmlUnits.attrib:
@@ -69,7 +69,6 @@ class Scene:
                     #r.find("mass")
                 rigid.dofs.showObject = self.param.showRigid
                 rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
-                # TODO read velocity
                 # visual
                 rigid.addVisualModel(r.find("mesh").text)
                 rigid.addCollisionMesh(r.find("mesh").text)
@@ -96,7 +95,7 @@ class Scene:
     def addOffset(self, name, rigidName, xmlOffset):
         """ add xml defined offset to rigid
         """
-        if not rigidName in self.rigids:
+        if rigidName not in self.rigids:
             print "ERROR: Compliant.sml.Scene: rigid {0} is unknown".format(rigidName)
             return None
         
