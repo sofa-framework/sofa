@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
-<model name="bielle_manivelle">
+
+<!--<!DOCTYPE sml SYSTEM "sml.dtd">-->
+
+<sml name="bielle_manivelle">
     <units mass="kg" length="m" time="s" />
 
     <rigid name="Corps">
@@ -63,4 +66,4 @@
         <dof index="0"/>
     </joint>    
 
-</model>
+</sml>
