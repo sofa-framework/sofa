@@ -19,6 +19,8 @@ def parseUnits(xmlModel):
 
 class Scene:
     """ Builds a (sub)scene from a sml file using compliant formulation
+    
+    <rigid> if <density> is given, inertia is computed from mesh, else <mass> must be given
     """
     
     class Param:
@@ -61,7 +63,10 @@ class Scene:
                 rigid = StructuralAPI.RigidBody(self.node, r.attrib["name"])
                 self.rigids[r.attrib["name"]] = rigid
                 # TODO set manually using <mass> if present
-                rigid.setFromMesh(os.path.join(self.sceneDir, r.find("mesh").text), offset= SofaPython.Tools.strToListFloat(r.find("position").text))
+                if r.find("density") is not None:
+                    rigid.setFromMesh(os.path.join(self.sceneDir, r.find("mesh").text), density=float(r.find("density").text), offset= SofaPython.Tools.strToListFloat(r.find("position").text))
+                #else: TODO
+                    #r.find("mass")
                 rigid.dofs.showObject = self.param.showRigid
                 rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
                 # TODO read velocity
