@@ -3,9 +3,9 @@
 
 #include "initSimpleGUI.h"
 #include <sofa/config.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
+//#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/simulation/common/Simulation.h>
+//typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
 
 namespace sofa {
 using simulation::Node;
@@ -32,14 +32,13 @@ class Interactor;
 
  * @author Francois Faure, 2014
  */
-class SOFA_SOFASIMPLEGUI_API  SofaScene : public SofaSimulation
+class SOFA_SOFASIMPLEGUI_API  SofaScene //: public SofaSimulation
 {
 protected:
 
 
     Node::SPtr _groot; ///< root of the scene
     Node::SPtr _iroot; ///< root of the interactors, child of _groot
-//    std::string _currentFileName; ///< Name of the current scene
 
 public:
     /**
@@ -87,18 +86,22 @@ public:
      */
     void getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax );
 
-    /**
-     * @return The root of the loaded scene.
-     */
-    Node::SPtr groot(){ return _groot; }
+//    /**
+//     * @return The root of the loaded scene.
+//     */
+//    Node::SPtr groot(){ return _groot; }
     /**
      * @return The root of the interactors.
      */
     Node::SPtr iroot(){ return _iroot; }
 
+    simulation::Simulation* getSimulation() { return sofaSimulation; }
+
     /// Do not use this directly. Use Interactor::attach, which calls this.
     void insertInteractor( Interactor* );
 
+private:
+    simulation::Simulation* sofaSimulation;
 
 };
 
