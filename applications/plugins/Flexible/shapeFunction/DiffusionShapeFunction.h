@@ -303,46 +303,27 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         if(in->isEmpty())  { This->serr<<"Image not found"<<This->sendl; return; }
         const typename DiffusionShapeFunction::ImageTypes::CImgT& inimg = in->getCImg(0);  // suppose time=0
 
-        typename DiffusionShapeFunction::waDist distData(This->f_distances);     typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
-
         typename DiffusionShapeFunction::raVecCoord parent(This->f_position);
         if(!parent.size()) { This->serr<<"Parent nodes not found"<<This->sendl; return; }
 
         // init temperatures
-        dist.fill(-1);
-        cimg_foroff(inimg,off) if(inimg[off]) dist[off]=0;
+        values.resize(inimg.width(),inimg.height(),inimg.depth(),1);
+        values.fill(0);
 
-        for(unsigned int i=0; i<parent.size(); i++)
-        {
-            typename DiffusionShapeFunction::Coord p = inT->toImageInt(parent[i]);
-            if(in->isInside(p[0],p[1],p[2])) dist(p[0],p[1],p[2])=(i==index)?1:0;
-        }
-
-        if(index<This->nbBoundaryConditions.getValue())
-        {
-            typename DiffusionShapeFunction::raDist bcData(This->f_boundaryConditions[index]);
-            if(!bcData->isEmpty())
-            {
-                const  typename DiffusionShapeFunction::DistTypes::CImgT& bc = bcData->getCImg();
-                cimg_foroff(bc,off)
-                        if(bc[off]>=0)
-                        dist[off]=bc[off];
-            }
-        }
-
-
-        values = dist; // forcing float conversion  TODO improve that
-
-
-        mask.resize(dist.width(),dist.height(),dist.depth(),1);
+        mask.resize(inimg.width(),inimg.height(),inimg.depth(),1);
         mask.fill(DiffusionSolver<float>::OUTSIDE);
         cimg_foroff(mask,off)
                 if( inimg[off]!=0 ) mask[off] = DiffusionSolver<float>::INSIDE;
 
+
         for(unsigned int i=0; i<parent.size(); i++)
         {
             typename DiffusionShapeFunction::Coord p = inT->toImageInt(parent[i]);
-            if(in->isInside(p[0],p[1],p[2])) mask(p[0],p[1],p[2]) = DiffusionSolver<float>::DIRICHLET;
+            if(in->isInside(p[0],p[1],p[2]))
+            {
+                values(p[0],p[1],p[2])=(i==index)?1:0;
+                mask(p[0],p[1],p[2]) = DiffusionSolver<float>::DIRICHLET;
+            }
         }
 
         if(index<This->nbBoundaryConditions.getValue())
@@ -352,12 +333,15 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
             {
                 const  typename DiffusionShapeFunction::DistTypes::CImgT& bc = bcData->getCImg();
                 cimg_foroff(bc,off)
-                        if(bc[off]>=0) mask[off] = DiffusionSolver<float>::DIRICHLET; // dirichlet
+                {
+                    if(bc[off]>=0)
+                    {
+                        values[off]=bc[off];
+                        mask[off] = DiffusionSolver<float>::DIRICHLET; // dirichlet
+                    }
+                }
             }
         }
-
-
-
 
     }
 
