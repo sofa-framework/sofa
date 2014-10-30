@@ -7,7 +7,6 @@
 
     <rigid name="Corps">
         <position>0 0 0 0 0 0 1</position>
-        <velocity>0 0 0 0 0 0</velocity>
         <mesh format="obj">/local/usr/src/sofa/applications/plugins/Compliant/examples/bielle_manivelle/0.obj</mesh>
     </rigid>
     
