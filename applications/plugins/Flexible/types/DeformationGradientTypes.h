@@ -189,8 +189,9 @@ struct DefGradientTypes
     static Deriv randomDeriv( Real maxValue , int seed = (unsigned int)time(NULL))
     {
         Deriv result;
+        helper::RandomGenerator randomGenerator(seed);
         for( unsigned int i=0 ; i<VSize ; ++i )
-            result[i] = helper::symrand(maxValue,seed);
+            result[i] = randomGenerator.symrand(maxValue);
         return result;
     }
 
