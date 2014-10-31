@@ -486,9 +486,20 @@ template<class Real>
 void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi)
 {
     const double  sine  = sin( acos(_q[3]) );
-
     if (!sine)
-        a = defaulttype::Vec<3,Real>(0.0,1.0,0.0);
+    {
+        defaulttype::Vec<3,Real> Vec(_q[0],_q[1],_q[2]);
+
+        if(Vec.norm()!=0) // Quaternion was not good normalized
+        {
+            a = Vec/(Vec.norm());
+            // phi = 2*asin(Vec.norm()) Vec.norm() is near 0 so asin(angle)~angle
+            phi = 2*(Vec.norm());
+            return;
+        }
+        else
+            a = defaulttype::Vec<3,Real>(0.0,1.0,0.0);
+    }
     else
         a = defaulttype::Vec<3,Real>(_q[0],_q[1],_q[2])/ sine;
 
