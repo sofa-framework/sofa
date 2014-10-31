@@ -378,9 +378,9 @@ public:
     static RigidCoord rand(SReal a,int seed = (unsigned int)time(NULL))
     {
         RigidCoord t;
-        using helper::symrand;
-        t.center = Pos( symrand(a,seed), symrand(a,seed), symrand(a,seed) );
-        t.orientation = Quat::fromEuler( symrand(a,seed), symrand(a,seed), symrand(a,seed) );
+        helper::RandomGenerator randomGenerator(seed);
+        t.center = Pos( randomGenerator.symrand(a), randomGenerator.symrand(a), randomGenerator.symrand(a) );
+        t.orientation = Quat::fromEuler( randomGenerator.symrand(a), randomGenerator.symrand(a), randomGenerator.symrand(a) );
         return t;
     }
 
@@ -889,8 +889,8 @@ public:
     static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
     {
         Deriv result;
-        using helper::symrand;
-        set( result, symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed) );
+        helper::RandomGenerator randomGenerator(seed);
+        set( result, randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
         return result;
     }
 
@@ -1269,9 +1269,9 @@ public:
     static RigidCoord rand(SReal a)
     {
         RigidCoord t;
-        using helper::symrand;
-        t.center = Pos( symrand(a), symrand(a) );
-        t.orientation = symrand(a);
+        helper::RandomGenerator randomGenerator;
+        t.center = Pos( randomGenerator.symrand(a), randomGenerator.symrand(a) );
+        t.orientation = randomGenerator.symrand(a);
         return t;
     }
 
@@ -1769,8 +1769,8 @@ public:
     static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
     {
         Deriv result;
-        using helper::symrand;
-        set( result, symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed) );
+        helper::RandomGenerator randomGenerator(seed);
+        set( result, randomGenerator.symrand(maxValue),randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue),randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
         return result;
     }
 

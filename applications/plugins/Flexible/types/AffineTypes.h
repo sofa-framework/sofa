@@ -31,6 +31,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/decompose.h>
+#include <sofa/helper/RandomGenerator.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
@@ -329,8 +330,8 @@ public:
     static Deriv randomDeriv( Real maxValue , int seed = (unsigned int)time(NULL))
     {
         Deriv result;
-        using helper::symrand;
-        set( result, symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed) );
+        helper::RandomGenerator randomGenerator(seed);
+        set( result, randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
         return result;
     }
 
