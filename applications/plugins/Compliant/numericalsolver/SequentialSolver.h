@@ -64,7 +64,7 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	mat JP;
 	
 	// data blocks 
-	class SOFA_Compliant_API block {
+	struct SOFA_Compliant_API block {
 		block();
         unsigned offset, size;
         Constraint* projector;
