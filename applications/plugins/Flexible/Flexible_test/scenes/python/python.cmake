@@ -1,3 +1,3 @@
 set(PYTHON_FILES
-    scenes/python/reInitMapping.pys
+    scenes/python/reInitMapping.py
 )

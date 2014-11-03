@@ -1,12 +1,8 @@
 set(PYTHON_FILES
-
-# python sofa scenes
-    python/AffineMultiMapping.pys
-    python/Example.pys
-    python/LambdaPropagation.pys
-    python/UniformCompliance.pys
-    python/friction.pys
-
-# python sofa tests
+    python/AffineMultiMapping.py
+    python/Example.py
+    python/LambdaPropagation.py
+    python/UniformCompliance.py
     python/GenerateRigid.py
+    python/friction.py
 )

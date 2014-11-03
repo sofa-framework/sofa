@@ -11,12 +11,12 @@ static struct Tests : public Python_test_list
     {
         static const std::string scenePath = std::string(COMPLIANT_TEST_PYTHON_DIR);
 
-        addTest( "Example.pys", scenePath );
-        addTest( "LambdaPropagation.pys", scenePath );
-        addTest( "UniformCompliance.pys", scenePath );
-        addTest( "AffineMultiMapping.pys", scenePath );
-        addTest( "restitution.pys", scenePath );
-        addTest( "friction.pys", scenePath );
+        addTest( "Example.py", scenePath );
+        addTest( "LambdaPropagation.py", scenePath );
+        addTest( "UniformCompliance.py", scenePath );
+        addTest( "AffineMultiMapping.py", scenePath );
+        addTest( "restitution.py", scenePath );
+        addTest( "friction.py", scenePath );
 
         // add python tests here
     }
