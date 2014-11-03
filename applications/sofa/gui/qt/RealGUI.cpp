@@ -1748,8 +1748,7 @@ void RealGUI::parseOptions(const std::vector<std::string>& options)
 
 void RealGUI::createPluginManager()
 {
-    sofa::core::ObjectFactory::getInstance()->getPluginManager().refreshPluginInfo();
-    pluginManager_dialog = new SofaPluginManager(sofa::core::ObjectFactory::getInstance()->getPluginManager());
+    pluginManager_dialog = new SofaPluginManager();
     pluginManager_dialog->hide();
     this->connect( pluginManager_dialog, SIGNAL( libraryAdded() ),  this, SLOT( updateViewerList() ));
     this->connect( pluginManager_dialog, SIGNAL( libraryRemoved() ),  this, SLOT( updateViewerList() ));

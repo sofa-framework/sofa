@@ -28,7 +28,7 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PluginManager.h>
 #ifdef SOFA_HAVE_DAG
 #include <sofa/simulation/graph/DAGSimulation.h>
 #endif
@@ -36,6 +36,7 @@
 #include <sofa/simulation/tree/SMPSimulation.h>
 #endif
 #include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaComponentMain/init.h>
 #include <SofaLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
@@ -198,16 +199,16 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 #endif
 
+    sofa::component::init();
     sofa::simulation::xml::initXml();
 
     if (!files.empty())
         fileName = files[0];
 
-    sofa::core::ObjectFactory::getInstance()->getPluginManager().refreshPluginInfo();
-    // for (unsigned int i=0; i<plugins.size(); i++)
-    //     sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
+    for (unsigned int i=0; i<plugins.size(); i++)
+        sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    // sofa::helper::system::PluginManager::getInstance().init();
+    sofa::helper::system::PluginManager::getInstance().init();
 
     if(gui.compare("batch") == 0 && nbIterations >= 0)
     {
