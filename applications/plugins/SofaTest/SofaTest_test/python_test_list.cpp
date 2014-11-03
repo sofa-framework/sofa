@@ -23,7 +23,7 @@ static struct SceneTests : public Python_test_list
         arguments[3] = "1e-3"; // error threshold
         arguments[4] = "1.0"; // mass
         arguments[5] = "1.0"; // radius
-        addTest( "damping.py", scenePath, arguments );
+        addTest( "damping.pys", scenePath, arguments );
 
         // add python scene tests here
     }
