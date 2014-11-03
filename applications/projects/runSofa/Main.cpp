@@ -36,7 +36,14 @@
 #include <sofa/simulation/tree/SMPSimulation.h>
 #endif
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <SofaComponentMain/init.h>
+
+
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
+
 #include <SofaLoader/ReadState.h>
 #include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
@@ -199,7 +206,12 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 #endif
 
-    sofa::component::init();
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
+    sofa::component::initComponentGeneral();
+    sofa::component::initComponentAdvanced();
+    sofa::component::initComponentMisc();
+
     sofa::simulation::xml::initXml();
 
     if (!files.empty())
