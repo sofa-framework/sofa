@@ -10,7 +10,7 @@ static struct Tests : public Python_test_list
     {
         static const std::string scenePath = std::string(FLEXIBLE_TEST_PYTHON_DIR);
 
-        addTest( "reInitMapping.py", scenePath );
+        addTest( "reInitMapping.pys", scenePath );
         // add python tests here
     }
 } tests;
