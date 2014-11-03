@@ -4,11 +4,11 @@ project(SofaFramework_test)
 
 set(SOURCE_FILES
     defaulttype/VecTypesTest.cpp
-    defaulttype/MatTypesTest.cpp
+    #defaulttype/MatTypesTest.cpp
     helper/system/atomicTest.cpp
     helper/system/FileSystemTest.cpp
     helper/system/UtilsTest.cpp
-    core/PluginTest.cpp
+    #core/PluginTest.cpp
     core/objectmodel/AspectPoolTest.cpp
     #plugin-system/PluginSystemTest.cpp
     )
@@ -24,4 +24,4 @@ target_link_libraries(${PROJECT_NAME} gtest_main SofaCore)
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${PROJECT_NAME} COMMENT "-> Running unit tests..." VERBATIM)
 
-add_subdirectory(defaulttype)
+#add_subdirectory(defaulttype)
