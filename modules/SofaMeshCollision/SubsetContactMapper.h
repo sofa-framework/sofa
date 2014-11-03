@@ -54,8 +54,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 
 /// Base class for all mappers using SubsetMapping
 template < class TCollisionModel, class DataTypes >

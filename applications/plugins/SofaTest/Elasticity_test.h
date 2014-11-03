@@ -48,10 +48,6 @@
 
 namespace sofa {
 
-
-using namespace simulation;
-using namespace modeling;
-
 /// Structure which contains the nodes and the pointers useful for the patch test
 template<class T>
 struct  PatchTestStruct
@@ -91,15 +87,15 @@ template< class DataTypes>
 /// Create a scene with a regular grid and an affine constraint for patch test
 
 PatchTestStruct<DataTypes> createRegularGridScene(
-        Node::SPtr root,
+        simulation::Node::SPtr root,
         Coord startPoint,
         Coord endPoint,
         int numX,
         int numY,
         int numZ,
-        Vec<6,SReal> entireBoxRoi,
-        Vec<6,SReal> inclusiveBox,
-        Vec<6,SReal> includedBox);
+        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
+        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
+        sofa::defaulttype::Vec<6,SReal> includedBox);
 
 CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
         int resolutionCircumferential,

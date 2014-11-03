@@ -43,10 +43,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 MeshBarycentricMapperEngine<DataTypes>::MeshBarycentricMapperEngine()
     : initialized(false)
@@ -70,7 +66,7 @@ void MeshBarycentricMapperEngine<DataTypes>::init()
 
     if (TopoInput==NULL)
     {
-        this->f_printLog.setValue(true);
+        this->f_printLog.setValue(true,true);
         serr<<"Can not work with no input topology"<<sendl;
         return;
     }
@@ -94,6 +90,11 @@ void MeshBarycentricMapperEngine<DataTypes>::reinit()
 template <class DataTypes>
 void MeshBarycentricMapperEngine<DataTypes>::update()
 {
+
+    using sofa::defaulttype::Vector3;
+    using sofa::defaulttype::Matrix3;
+    using sofa::defaulttype::Mat3x3d;
+    using sofa::defaulttype::Vec3d;
 
     cleanDirty();
     const std::string path = InputMeshName.getValue();

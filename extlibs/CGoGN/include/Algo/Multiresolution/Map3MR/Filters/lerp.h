@@ -678,7 +678,7 @@ public:
 		{
 			Dart dit = d;
 
-			if(m_map.isBoundaryVolume(d))
+			if(m_map.isBoundaryAdjacentVolume(d))
 			{
 				dit = findDartOfCentralVertex(d);
 			}

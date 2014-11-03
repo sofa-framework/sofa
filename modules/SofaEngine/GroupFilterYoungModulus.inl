@@ -36,8 +36,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::core::loader;
-
 template <class DataTypes>
 GroupFilterYoungModulus<DataTypes>::GroupFilterYoungModulus()
     : f_groups( initData (&f_groups, "groups", "Groups") )
@@ -73,7 +71,7 @@ void GroupFilterYoungModulus<DataTypes>::update()
     //Input
     const std::string& strMap = p_mapGroupModulus.getValue();
     const helper::vector<unsigned int>& primitives = f_primitives.getValue();
-    const helper::vector<PrimitiveGroup >& groups = f_groups.getValue();
+    const helper::vector<sofa::core::loader::PrimitiveGroup >& groups = f_groups.getValue();
     const helper::vector<int >& elementsGroup = f_elementsGroup.getValue();
 
     const Real& defaultModulus =  p_defaultModulus.getValue();
@@ -90,7 +88,7 @@ void GroupFilterYoungModulus<DataTypes>::update()
 
             //does not matter if primitives is empty
             int maxSize = primitives.size();
-            std::map<PrimitiveGroup, Real> mapMG;
+            std::map<sofa::core::loader::PrimitiveGroup, Real> mapMG;
 
             //read string and tokenize
             while(end != std::string::npos )
@@ -132,10 +130,10 @@ void GroupFilterYoungModulus<DataTypes>::update()
             youngModulusVector.resize(maxSize);
             std::fill(youngModulusVector.begin(), youngModulusVector.end(), defaultModulus);
 
-            typename std::map<PrimitiveGroup, Real>::const_iterator itMapMG;
+            typename std::map<sofa::core::loader::PrimitiveGroup, Real>::const_iterator itMapMG;
             for (itMapMG = mapMG.begin() ; itMapMG != mapMG.end() ; itMapMG++)
             {
-                PrimitiveGroup pg = (*itMapMG).first;
+                sofa::core::loader::PrimitiveGroup pg = (*itMapMG).first;
                 Real ym = (*itMapMG).second;
 
                 for (int i=pg.p0 ; i<pg.p0+pg.nbp ; i++)

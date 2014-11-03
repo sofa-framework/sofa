@@ -50,9 +50,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using sofa::helper::vector;
-
 template<class DataTypes>
 class HexahedronCompositeFEMForceFieldAndMass : public sofa::component::forcefield::NonUniformHexahedronFEMForceFieldAndMass<DataTypes>
 {
@@ -78,7 +75,7 @@ public:
 
     typedef typename NonUniformHexahedronFEMForceFieldAndMassT::VecElement VecElement;
 
-    typedef Mat<8*3, 8*3, Real> Weight;
+    typedef defaulttype::Mat<8*3, 8*3, Real> Weight;
 
 
 

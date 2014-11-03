@@ -32,7 +32,7 @@ set(HEADER_FILES
     ../constraintset/StopperConstraint.h 
     ../constraintset/StopperConstraint.inl 
     ../constraintset/SlidingConstraint.h 
-    ../constraintset/SlidingConstraint.inl 
+    ../constraintset/SlidingConstraint.inl
     ../collision/ConstraintAttachBodyPerformer.h 
     ../collision/ConstraintAttachBodyPerformer.inl
 

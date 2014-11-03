@@ -43,7 +43,6 @@ namespace forcefield
 {
 
 using std::set;
-using namespace sofa::defaulttype;
 
 template <class DataTypes>
 NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForceFieldAndMass()
@@ -105,11 +104,11 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     }
 
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    Vec<8,Coord> nodesCoarse;
+    defaulttype::Vec<8,Coord> nodesCoarse;
     for(int w=0; w<8; ++w)
         nodesCoarse[w] = (X0)[this->_topology->getHexahedron(0)[w]];
 
-    Vec<8,Coord> nodesFine;
+    defaulttype::Vec<8,Coord> nodesFine;
     for(int w=0; w<8; ++w)
         nodesFine[w] = (nodesCoarse[w] - nodesCoarse[0]) / coarseNodeSize;
 
@@ -267,7 +266,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::top
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const HexahedraAdded& hexaAddedEvent)
+void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::topology::HexahedraAdded& hexaAddedEvent)
 {
     const sofa::helper::vector<unsigned int> &hexaModif = hexaAddedEvent.hexahedronIndexArray;
 
@@ -332,7 +331,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const Hexahedr
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const HexahedraRemoved& hexaRemovedEvent)
+void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::topology::HexahedraRemoved& hexaRemovedEvent)
 {
     const sofa::helper::vector<unsigned int> &hexaModif = hexaRemovedEvent.getArray();
 
@@ -380,7 +379,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const Hexahe
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const MultilevelModification& modEvent)
+void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const component::topology::MultilevelModification& modEvent)
 {
     const sofa::helper::vector<unsigned int> &hexaModif = modEvent.getArray();
 
@@ -458,7 +457,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
 {
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
         nodes[w] = (X0)[this->_topology->getHexahedron(i)[w]];
 
@@ -493,7 +492,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
 {
     const VecCoord& X0=this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    Vec<8,Coord> nodes;
+    defaulttype::Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
         nodes[j] = (X0)[this->_topology->getHexahedron(i)[j]];
 

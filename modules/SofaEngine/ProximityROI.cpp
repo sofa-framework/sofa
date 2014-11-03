@@ -37,6 +37,8 @@ namespace component
 namespace engine
 {
 
+using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(ProximityROI)
 
 int ProximityROIClass = core::RegisterObject("Find the N closest primitives from a given position")

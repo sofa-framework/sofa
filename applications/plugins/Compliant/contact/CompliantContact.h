@@ -10,7 +10,15 @@
 
 #include "../mapping/ContactMapping.h" 		// should be normal mapping
 
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMiscCollision/TetrahedronModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/CylinderModel.h>
+#include <sofa/core/collision/Contact.h>
 
+#include <Compliant/utils/edit.h>
 //#include <sofa/simulation/common/MechanicalVisitor.h>
 //#include <sofa/core/VecId.h>
 //#include <sofa/core/MultiVecId.h>
@@ -80,6 +88,9 @@ protected:
 
         delta.node->addChild( contact_node.get() );
 
+        // ensure all graph context parameters (e.g. dt are well copied)
+        contact_node->updateSimulationContext();
+
         // 1d contact dofs
         typedef container::MechanicalObject<defaulttype::Vec1Types> contact_dofs_type;
         typename contact_dofs_type::SPtr contact_dofs = sofa::core::objectmodel::New<contact_dofs_type>();
@@ -96,8 +107,8 @@ protected:
         contact_map->setName( this->getName() + " contact mapping" );
         contact_node->addObject( contact_map.get() );
 
-        this->copyNormals( contact_map->normal );
-        this->copyPenetrations( contact_map->penetrations );
+        this->copyNormals( *edit(contact_map->normal) );
+        this->copyPenetrations( *edit(contact_map->penetrations) );
 
         // every contact points must propagate constraint forces
         for(unsigned i = 0; i < size; ++i)
@@ -145,6 +156,8 @@ protected:
 
 
 };
+
+void registerContactClasses();
 
 } // namespace collision
 } // namespace component

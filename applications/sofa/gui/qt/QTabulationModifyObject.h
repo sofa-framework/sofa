@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/simulation/common/Node.h>
+#include <sofa/SofaGui.h>
 
 #ifdef SOFA_QT4
 #include <QWidget>
@@ -57,6 +58,8 @@ namespace qt
 {
 
 struct ModifyObjectFlags;
+class DataWidget;
+
 class QTabulationModifyObject : public QWidget
 {
     Q_OBJECT
@@ -76,17 +79,23 @@ public:
     bool isEmpty() const;
     bool isDirty() const;
 
+    QString getDataModifiedString() const;
+
 public slots:
     void setTabDirty(bool=true);
     void updateListViewItem();
     void updateDataValue();
     void updateWidgetValue();
+    void dataValueChanged(QString dataValue);
 
 signals:
     void UpdateDatas();
     void UpdateDataWidgets();
     void TabDirty(bool);
     void nodeNameModification(simulation::Node *);
+
+
+
 protected:
     core::objectmodel::Base *object;
     Q3ListViewItem* item;
@@ -96,6 +105,7 @@ protected:
     unsigned int size;
 
     bool dirty;
+    std::map< QObject*, QString> m_dataValueModified;
 
     unsigned int pixelSize;
     unsigned int pixelMaxSize;

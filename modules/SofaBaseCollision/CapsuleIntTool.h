@@ -42,6 +42,7 @@ bool CapsuleIntTool::shareSameVertex(const TCapsule<DataTypes1>&, const TCapsule
 
 template <class DataTypes1,class DataTypes2>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<DataTypes2> & sph,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+    using namespace sofa::defaulttype;
     Vector3 sph_center = sph.center();
     Vector3 cap_p1 = cap.point1();
     Vector3 cap_p2 = cap.point2();
@@ -132,11 +133,11 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & cap, TSphere<Data
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
-extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<Vec3Types>&, TCapsule<Vec3Types>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<Vec3Types>&, TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<RigidTypes>&, TCapsule<RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<RigidTypes> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
-extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<Vec3Types> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>&, TCapsule<sofa::defaulttype::Vec3Types>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types>&, TCapsule<sofa::defaulttype::RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::RigidTypes>&, TCapsule<sofa::defaulttype::RigidTypes>&,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::RigidTypes> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+extern template SOFA_BASE_COLLISION_API int CapsuleIntTool::computeIntersection(TCapsule<sofa::defaulttype::Vec3Types> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 #endif
 
 }

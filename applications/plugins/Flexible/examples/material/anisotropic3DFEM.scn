@@ -15,11 +15,11 @@
             <Node 	name="behavior"   >
                 <TopologyGaussPointSampler name="sampler" inPosition="@../DOF.rest_position" method="0" order="2"/>
                 <MechanicalObject  template="F331" name="F"  />
-                <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" showDeformationGradientScale="0.2" showDeformationGradientStyle="1"/>
+                <LinearMapping template="Vec3d,F331" showDeformationGradientScale="0.2" showDeformationGradientStyle="1"/>
 
                 <Node 	name="Strain"   >
                     <MechanicalObject  template="E331" name="E"  />
-                    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" method="large" />
+                    <CorotationalStrainMapping template="F331,E331" method="large" />
 	            <HookeTransverseForceField  template="E331" name="ff" youngModulusX="200" youngModulusY="50" poissonRatioXY="0" poissonRatioYZ="0" shearModulusXY="100" viscosity="20" />	        
 <!--	            <HookeOrthotropicForceField  template="E331" name="ff" youngModulusX="200" youngModulusY="50" youngModulusZ="10" poissonRatioXY="0" poissonRatioYZ="0" poissonRatioZX="0" shearModulusXY="100" shearModulusYZ="100" shearModulusZX="100" viscosity="20" />	        -->
                 </Node>
@@ -28,7 +28,7 @@
             <Node 	name="behavior"   >
                 <CubeTopology nx="50" ny="20" nz="20" min="0 0 0" max="1 1 1" />
                 <MechanicalObject  />
-                <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" />
+                <LinearMapping template="Vec3d,Vec3d" />
 		<SurfacePressureForceField pressure="100"  drawForceScale="1" volumeConservationMode="1"/> 
 		<Node name="Visual"  >
 		    <VisualModel color="0.5 0.5 0.5 0.5" />

@@ -72,8 +72,8 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     simulation::Visitor::printComment("SVD");
 #endif
 #ifdef DISPLAY_TIME
-    CTime * timer;
-    double time1 = (double) timer->getTime();
+    CTime timer;
+    double time1 = (double) timer.getTime();
 #endif
     const bool printLog = this->f_printLog.getValue();
     const bool verbose  = f_verbose.getValue();
@@ -81,9 +81,9 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     /// Convert the matrix and the right-hand vector to Eigen objects
     Eigen::MatrixXd m(M.rowSize(),M.colSize());
     Eigen::VectorXd rhs(M.rowSize());
-    for(unsigned i=0; i<M.rowSize(); i++ )
+    for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
     {
-        for( unsigned j=0; j<M.colSize(); j++ )
+        for( unsigned j=0; j<(unsigned)M.colSize(); j++ )
             m(i,j) = M[i][j];
         rhs(i) = b[i];
     }
@@ -112,7 +112,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 //    }
     Eigen::VectorXd Ut_b = svd.matrixU().transpose() *  rhs;
     Eigen::VectorXd S_Ut_b(M.colSize());
-    for( unsigned i=0; i<M.colSize(); i++ )   /// product with the diagonal matrix, using the threshold for near-null values
+    for( unsigned i=0; i<(unsigned)M.colSize(); i++ )   /// product with the diagonal matrix, using the threshold for near-null values
     {
         if( svd.singularValues()[i] > f_minSingularValue.getValue() )
             S_Ut_b[i] = Ut_b[i]/svd.singularValues()[i];
@@ -120,7 +120,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             S_Ut_b[i] = (Real)0.0 ;
     }
     Eigen::VectorXd solution = svd.matrixV() * S_Ut_b;
-    for(unsigned i=0; i<M.rowSize(); i++ )
+    for(unsigned i=0; i<(unsigned)M.rowSize(); i++ )
     {
         x[i] = (Real) solution(i);
     }
@@ -128,7 +128,7 @@ void SVDLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     if( printLog )
     {
 #ifdef DISPLAY_TIME
-        time1 = (double)(((double) timer->getTime() - time1) * timeStamp / (nb_iter-1));
+        time1 = (double)(((double) timer.getTime() - time1) * timeStamp / (nb_iter-1));
         std::cerr<<"SVDLinearSolver::solve, SVD = "<<time1<<std::endl;
 #endif
         serr << "SVDLinearSolver<TMatrix,TVector>::solve, rhs vector = " << sendl << rhs.transpose() << sendl;

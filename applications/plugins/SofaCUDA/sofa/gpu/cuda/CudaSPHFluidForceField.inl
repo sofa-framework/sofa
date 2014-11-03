@@ -138,8 +138,8 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::Mechan
     const VecDeriv& dx = d_dx.getValue();
 
     //sout << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")" << sendl;
-    //const VecCoord& x = *this->mstate->getX();
-    const VecDeriv& v = *this->mstate->getV();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, kernelT, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
@@ -225,8 +225,8 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::Mechan
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    //const VecCoord& x = *this->mstate->getX();
-    const VecDeriv& v = *this->mstate->getV();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
@@ -247,7 +247,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::Vis
     if (!vparams->displayFlags().getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
-    helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
+    helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     helper::ReadAccessor<gpu::cuda::CudaVector<defaulttype::Vec4f> > pos4 = this->data.pos4;
     if (pos4.empty()) return;
     glDisable(GL_LIGHTING);

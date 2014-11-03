@@ -22,10 +22,11 @@
  *                                                                              *
  *******************************************************************************/
 
-#include "Algo/Modelisation/subdivision3.h"
-#include "Topology/generic/traversor3.h"
 #include "Algo/Modelisation/subdivision.h"
+#include "Algo/Modelisation/subdivision3.h"
+#include "Topology/generic/traversor/traversor3.h"
 #include "Algo/Geometry/normal.h"
+#include <utils.h>
 
 namespace CGoGN
 {
@@ -47,13 +48,14 @@ bool EarTriangulation<PFP>::inTriangle(const typename PFP::VEC3& P, const typena
 {
     typedef typename PFP::VEC3 VECT ;
     typedef typename VECT::value_type T ;
-    if (Geom::tripleProduct<3,T>(P-Ta, Tb-Ta, normal) >= T(0))
+
+    if (Geom::tripleProduct<3, T>(P-Ta, (Tb-Ta), normal) >= T(0))
         return false;
 
-    if (Geom::tripleProduct<3,T>(P-Tb, (Tc-Tb), normal) >= T(0))
+    if (Geom::tripleProduct<3, T>(P-Tb, (Tc-Tb), normal) >= T(0))
         return false;
 
-    if (Geom::tripleProduct<3,T>(P-Tc, (Ta-Tc), normal) >= T(0))
+    if (Geom::tripleProduct<3, T>(P-Tc, (Ta-Tc), normal) >= T(0))
         return false;
 
     return true;
@@ -164,9 +166,9 @@ template<typename PFP>
 //void EarTriangulation<PFP>::trianguleFace(Dart d, DartMarker& mark)
 void EarTriangulation<PFP>::trianguleFace(Dart d)
 {
+    typedef typename PFP::MAP MAP;
     // compute normal to polygon
-    typename PFP::VEC3 normalPoly = Algo::Surface::Geometry::newellNormal<PFP, VertexAttribute<VEC3> >(m_map, d, m_position);
-
+    typename PFP::VEC3 normalPoly = Algo::Surface::Geometry::newellNormal<PFP, VertexAttribute<VEC3, MAP> >(m_map, FaceCell(d), m_position);
     // first pass create polygon in chained list witht angle computation
     unsigned int nbv = 0;
     unsigned int nbe = 0;
@@ -201,23 +203,20 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
         Dart d_e = be_it->dart;
         Dart e1 = m_map.phi1(d_e);
         Dart e2 = m_map.phi_1(d_e);
-
         m_map.splitFace(e1,e2);
-
         Dart d_1 = m_map.phi_1(e1);
         std::vector<Dart> edges;
         edges.push_back(d_1);
         edges.push_back(m_map.phi1(m_map.phi2(m_map.phi1(d_1))));
         edges.push_back(m_map.phi_1(m_map.phi2(m_map.phi_1(d_1))));
         m_map.splitVolume(edges);
-
         d_1 = m_map.phi3(m_map.phi_1(e1));
         edges.clear();
         edges.push_back(d_1);
         edges.push_back(m_map.phi1(m_map.phi2(m_map.phi1(d_1))));
         edges.push_back(m_map.phi_1(m_map.phi2(m_map.phi_1(d_1))));
-        m_map.splitVolume(edges);
 
+        m_map.splitVolume(edges);
         m_resTets.push_back(d_e);
         m_resTets.push_back(m_map.phi3(d_e));
 
@@ -581,6 +580,7 @@ void EarTriangulation<PFP>::triangule(unsigned int thread)
 /************************************************************************************************
  * 									Collapse / Split Operators
  ************************************************************************************************/
+
 template <typename PFP>
 Dart splitVertex(typename PFP::MAP& map, std::vector<Dart>& vd)
 {
@@ -620,12 +620,12 @@ Dart splitVertex(typename PFP::MAP& map, std::vector<Dart>& vd)
  *************************************************************************************************/
 
 template <typename PFP>
-bool isTetrahedron(typename PFP::MAP& the_map, Dart d, unsigned int thread)
+bool isTetrahedron(typename PFP::MAP& map, Vol v, unsigned int thread)
 {
     unsigned int nbFaces = 0;
 
     //Test the number of faces end its valency
-    Traversor3WF<typename PFP::MAP> travWF(the_map, d, false, thread);
+    Traversor3WF<typename PFP::MAP> travWF(map, v, false, thread);
     for(Dart dit = travWF.begin() ; dit != travWF.end(); dit = travWF.next())
     {
         //increase the number of faces
@@ -634,7 +634,7 @@ bool isTetrahedron(typename PFP::MAP& the_map, Dart d, unsigned int thread)
             return false;
 
         //test the valency of this face
-        if(the_map.faceDegree(dit) != 3)
+        if(!map.isCycleTriangle(dit))
             return false;
     }
 
@@ -722,20 +722,18 @@ Dart swap3To2(typename PFP::MAP& map, Dart d)
     while(dit != stop);
     map.splitVolume(edges);
 
-    return map.phi2(edges[0]); //map.phi3(stop);
+    return map.phi2(edges[0]);
 }
 
 //[precond] le brin doit venir d'une face partagé par 2 tetraèdres
-// renvoie un brin de l'ancienne couture entre les 2 tetras qui est devenu une arête
+// renvoie un brin de la nouvelle orbite arete creee
 template <typename PFP>
 Dart swap2To3(typename PFP::MAP& map, Dart d)
 {
     std::vector<Dart> edges;
-//    map.check();
+    //    map.check();
     Dart d2_1 = map.phi_1(map.phi2(d));
-    map.mergeVolumes(d, true);
-//    std::cerr << __FILE__ << std::endl;
-//    map.check();
+    map.mergeVolumes(d);
 
     //
     // Cut the 1st tetrahedron
@@ -798,7 +796,7 @@ Dart swapGen3To2(typename PFP::MAP& map, Dart d)
     Dart stop = map.phi1(map.phi2(map.phi_1(d)));
     if(map.deleteEdge(d) == NIL)
     {
-//        std::cout << "boundary" << std::endl;
+        //        std::cout << "boundary" << std::endl;
 
         std::vector<Dart> edges;
         Dart dbegin = map.findBoundaryFaceOfEdge(d);
@@ -866,10 +864,9 @@ template <typename PFP>
 std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
 {
     Dart stop = map.phi1(map.phi2(map.phi_1(d)));
+
     if(map.deleteEdge(d) == NIL)
     {
-//        std::cout << "boundary" << std::endl;
-
         std::vector<Dart> edges;
         Dart dbegin = map.findBoundaryFaceOfEdge(d);
         Traversor3EW<typename PFP::MAP> t(map, d);
@@ -879,31 +876,17 @@ std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
         for(unsigned int i = 0 ; i < edges.size() ; ++i)
             map.mergeVolumes(edges[i]);
 
-//        map.check();
         Dart d  = dbegin;
         Dart e = map.phi2(d);
         map.flipBackEdge(d);
         map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
         map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
 
-
-        if (map.template isOrbitEmbedded<FACE>()) {
-            map.template copyDartEmbedding<FACE>(map.phi1(d), d) ;
-            map.template copyDartEmbedding<FACE>(map.phi1(e), e) ;
-        }
-
-
         d  = map.phi3(dbegin);
         e = map.phi2(d);
         map.flipEdge(d);
         map.template copyDartEmbedding<VERTEX>(d, map.phi1(e)) ;
         map.template copyDartEmbedding<VERTEX>(e, map.phi1(d)) ;
-
-
-        if (map.template isOrbitEmbedded<FACE>()) {
-            map.template copyDartEmbedding<FACE>(map.phi_1(d), d) ;
-            map.template copyDartEmbedding<FACE>(map.phi_1(e), e) ;
-        }
     }
 
     std::vector<Dart> edges;
@@ -914,11 +897,10 @@ std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
         dit = map.phi1(map.phi2(map.phi1(dit)));
     }
     while(dit != stop);
-    map.splitVolume(edges);
 
+    map.splitVolume(edges);
     Tetrahedralization::EarTriangulation<PFP> triangulation(map);
     triangulation.trianguleFace(map.phi1(map.phi2(stop)));
-
     return triangulation.getResultingTets();
 }
 
@@ -994,7 +976,6 @@ Dart flip1To3(typename PFP::MAP& map, Dart d)
     // Triangule one face
     //
     Dart x = Surface::Modelisation::trianguleFace<PFP>(map,d);
-
     //
     // Cut the 1st Tetrahedron
     //
@@ -1006,12 +987,10 @@ Dart flip1To3(typename PFP::MAP& map, Dart d)
     edges.push_back(dit);
     dit = map.phi1(map.phi2(map.phi1(dit)));
     edges.push_back(dit);
-
     map.splitVolume(edges);
 
     // Cut the 2nd Tetrahedron
     map.splitFace(map.phi1(map.phi2(edges[0])),map.phi1(map.phi2(edges[2])));
-
     // Cut the 3rd Tetrahedron
     dit = map.phi1(map.phi2(edges[0]));
     edges.clear();
@@ -1020,7 +999,6 @@ Dart flip1To3(typename PFP::MAP& map, Dart d)
     edges.push_back(dit);
     dit = map.phi1(map.phi2(map.phi1(dit)));
     edges.push_back(dit);
-
     map.splitVolume(edges);
 
     return x;
@@ -1037,7 +1015,6 @@ Dart edgeBisection(typename PFP::MAP& map, Dart d)
     //coupe l'arete en 2
     Dart dV = map.cutEdge(d);
     Dart e = map.phi1(d);
-
     Dart dit = e;
     do
     {
@@ -1051,7 +1028,7 @@ Dart edgeBisection(typename PFP::MAP& map, Dart d)
     std::vector<Dart> edges;
     do
     {
-        if(!map.isBoundaryMarked3(dit))
+        if(!map.template isBoundaryMarked<3>(dit))
         {
             edges.push_back(map.phi_1(dit));
             edges.push_back(map.phi_1(map.phi2(map.phi_1(edges[0]))));
@@ -1596,9 +1573,9 @@ Dart edgeBisection(typename PFP::MAP& map, Dart d)
 
 } // namespace Tetrahedralization
 
-}
-
 } // namespace Modelisation
+
+} // namespace Volume
 
 } // namespace Algo
 

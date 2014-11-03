@@ -3,13 +3,15 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
+    <DiscreteIntersection/>
+
     <Node name="Settings" gravity="0 -9.81 0">
         <SofaDefaultPathSetting />
         <Node name="Application" gravity="0 -9.81 0">
             <VisualStyle displayFlags="showVisual hideBehaviorModels hideForceFields hideCollision hideMapping hideOptions" />
-            <ViewerSetting fullscreen="0" cameraMode="Orthographic" objectPickingMethod="Selection buffer" />
+            <ViewerSetting fullscreen="0" objectPickingMethod="Selection buffer" /> <!-- cameraMode="Orthographic" -->
             <BackgroundSetting color="0.2 0 0.2" />
-            <StatsSetting logTime="0" traceVisitors="1" />
+            <StatsSetting logTime="0" />
         </Node>
         <Node name="MouseConfiguration" gravity="0 -9.81 0">
             <VisualStyle displayFlags="showVisual hideBehaviorModels hideForceFields hideCollision hideMapping hideOptions" />
@@ -17,6 +19,7 @@
             <FixPickedParticleButtonSetting button="Left" stiffness="10000" />
         </Node>
     </Node>
+
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -29,10 +32,10 @@
         <FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
-            <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
+            <BarycentricMapping template="Vec3d,ExtVec3f" name="visual mapping" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
-	    <SphereLoader filename="mesh/liver.sph" />
+            <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject  position="@[-1].position" />
             <TSphereModel  listRadius="@[-2].listRadius" />
             <BarycentricMapping  input="@.." output="@." />

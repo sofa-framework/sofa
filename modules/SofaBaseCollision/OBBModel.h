@@ -46,8 +46,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 template<class DataTypes>
 class TOBBModel;
 
@@ -284,8 +282,8 @@ inline TOBB<DataTypes>::TOBB(const core::CollisionElementIterator& i)
 }
 
 
-typedef TOBBModel<Rigid3Types> OBBModel;
-typedef TOBB<Rigid3Types> OBB;
+typedef TOBBModel<sofa::defaulttype::Rigid3Types> OBBModel;
+typedef TOBB<sofa::defaulttype::Rigid3Types> OBB;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT

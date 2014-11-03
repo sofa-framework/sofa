@@ -41,8 +41,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace sofa::component::topology;
-
 /// This class can be overriden if needed for additionnal storage within template specilizations.
 template <class DataTypes>
 class FixedPlaneConstraintInternalData
@@ -112,13 +110,13 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >
     {
     public:
         typedef typename FixedPlaneConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+        FCPointHandler(FixedPlaneConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
 

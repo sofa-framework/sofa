@@ -47,11 +47,6 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::linearsolver;
-using namespace helper::system::thread;
-
-
 /// Christian : WARNING: this class is already defined in sofa::helper
 class LCPConstraintProblem : public ConstraintProblem
 {
@@ -189,14 +184,14 @@ private:
     void build_LCP();
     LCPConstraintProblem lcp1, lcp2, lcp3; // Triple buffer for LCP.
     LCPConstraintProblem *lcp, *last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
-    LPtrFullMatrix<double>  *_W;
+    sofa::component::linearsolver::LPtrFullMatrix<double>  *_W;
 
     /// multi-grid approach ///
     void MultigridConstraintsMerge();
     void MultigridConstraintsMerge_Compliance();
     void MultigridConstraintsMerge_Spatial();
     void build_Coarse_Compliance(std::vector<int> &/*constraint_merge*/, int /*sizeCoarseSystem*/);
-    LPtrFullMatrix<double>  _Wcoarse;
+    sofa::component::linearsolver::LPtrFullMatrix<double>  _Wcoarse;
 
     //std::vector< int> _contact_group;
     //std::vector< int> _constraint_group;
@@ -210,10 +205,10 @@ private:
 
     /// common built-unbuilt
     simulation::Node *context;
-    FullVector<double> *_dFree, *_result;
+    sofa::component::linearsolver::FullVector<double> *_dFree, *_result;
     ///
-    CTime timer;
-    CTime timerTotal;
+    sofa::helper::system::thread::CTime timer;
+    sofa::helper::system::thread::CTime timerTotal;
 
     double time;
     double timeTotal;
@@ -226,7 +221,7 @@ private:
     int nlcp_gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL);
     int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL) { if (_mu == 0.0) return lcp_gaussseidel_unbuilt(dfree, f, residuals); else return nlcp_gaussseidel_unbuilt(dfree, f, residuals); }
 
-    SparseMatrix<double> *_Wdiag;
+    sofa::component::linearsolver::SparseMatrix<double> *_Wdiag;
     //std::vector<helper::LocalBlock33 *> _Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem2;

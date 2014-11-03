@@ -22,10 +22,10 @@ def createScene(node):
      
      node.gravity = '0 -9.81 0'
      
-     ode = node.createObject('AssembledSolver',
+     ode = node.createObject('CompliantImplicitSolver',
                              name='odesolver' )
 
-     ode.stabilization = 'true'
+     ode.stabilization = "pre-stabilization"
      # ode.debug = 'true'
 
      num = node.createObject('MinresSolver',

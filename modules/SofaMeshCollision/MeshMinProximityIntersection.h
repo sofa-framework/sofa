@@ -85,11 +85,11 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, TSphere<T>& e1
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 x13 = e2.p1()-e2.p2();
-    const Vector3 x23 = e2.p1()-e2.p3();
-    const Vector3 x03 = e2.p1()-e1.center();
-    Matrix2 A;
-    Vector2 b;
+    const defaulttype::Vector3 x13 = e2.p1()-e2.p2();
+    const defaulttype::Vector3 x23 = e2.p1()-e2.p3();
+    const defaulttype::Vector3 x03 = e2.p1()-e1.center();
+    defaulttype::Matrix2 A;
+    defaulttype::Vector2 b;
     A[0][0] = x13*x13;
     A[1][1] = x23*x23;
     A[0][1] = A[1][0] = x13*x23;
@@ -110,7 +110,7 @@ bool MeshMinProximityIntersection::testIntersection(Triangle& e2, TSphere<T>& e1
             return false;
     }
 
-    Vector3 P,Q,PQ;
+    defaulttype::Vector3 P,Q,PQ;
     P = e1.center();
     Q = e2.p1() - x13 * alpha - x23 * beta;
     PQ = Q-P;
@@ -128,11 +128,11 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, TSphere<T>& 
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 x13 = e2.p1()-e2.p2();
-    const Vector3 x23 = e2.p1()-e2.p3();
-    const Vector3 x03 = e2.p1()-e1.center();
-    Matrix2 A;
-    Vector2 b;
+    const defaulttype::Vector3 x13 = e2.p1()-e2.p2();
+    const defaulttype::Vector3 x23 = e2.p1()-e2.p3();
+    const defaulttype::Vector3 x03 = e2.p1()-e1.center();
+    defaulttype::Matrix2 A;
+    defaulttype::Vector2 b;
     A[0][0] = x13*x13;
     A[1][1] = x23*x23;
     A[0][1] = A[1][0] = x13*x23;
@@ -153,9 +153,9 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, TSphere<T>& 
             return 0;
     }
 
-    Vector3 P = e1.center();
-    Vector3 Q = e2.p1() - x13 * alpha - x23 * beta;
-    Vector3 QP = P-Q;
+    defaulttype::Vector3 P = e1.center();
+    defaulttype::Vector3 Q = e2.p1() - x13 * alpha - x23 * beta;
+    defaulttype::Vector3 QP = P-Q;
     //Vector3 PQ = Q-P;
 
     if (QP.norm2() >= alarmDist*alarmDist)
@@ -176,7 +176,7 @@ int MeshMinProximityIntersection::computeIntersection(Triangle& e2, TSphere<T>& 
     else
     {
         intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
-        detection->normal= Vector3(1,0,0);
+        detection->normal= defaulttype::Vector3(1,0,0);
     }
     detection->value -= contactDist;
     detection->point[0]=Q;
@@ -189,8 +189,8 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, TSphere<T>& e1)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 x32 = e2.p1()-e2.p2();
-    const Vector3 x31 = e1.center()-e2.p2();
+    const defaulttype::Vector3 x32 = e2.p1()-e2.p2();
+    const defaulttype::Vector3 x31 = e1.center()-e2.p2();
     SReal A;
     SReal b;
     A = x32*x32;
@@ -205,7 +205,7 @@ bool MeshMinProximityIntersection::testIntersection(Line& e2, TSphere<T>& e1)
             return false;
     }
 
-    Vector3 P,Q,PQ;
+    defaulttype::Vector3 P,Q,PQ;
     P = e1.center();
     Q = e2.p1() - x32 * alpha;
     PQ = Q-P;
@@ -223,8 +223,8 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, TSphere<T>& e1, 
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    const Vector3 x32 = e2.p1()-e2.p2();
-    const Vector3 x31 = e1.center()-e2.p2();
+    const defaulttype::Vector3 x32 = e2.p1()-e2.p2();
+    const defaulttype::Vector3 x31 = e1.center()-e2.p2();
     SReal A;
     SReal b;
     A = x32*x32;
@@ -239,9 +239,9 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, TSphere<T>& e1, 
             return 0;
     }
 
-    Vector3 P = e1.center();
-    Vector3 Q = e2.p1() - x32 * alpha;
-    Vector3 QP = P-Q;
+    defaulttype::Vector3 P = e1.center();
+    defaulttype::Vector3 Q = e2.p1() - x32 * alpha;
+    defaulttype::Vector3 QP = P-Q;
     //Vector3 PQ = Q-P;
 
     if (QP.norm2() >= alarmDist*alarmDist)
@@ -262,7 +262,7 @@ int MeshMinProximityIntersection::computeIntersection(Line& e2, TSphere<T>& e1, 
     else
     {
         intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
-        detection->normal= Vector3(1,0,0);
+        detection->normal= defaulttype::Vector3(1,0,0);
     }
     detection->point[0]=Q;
     detection->point[1]=e1.getContactPointByNormal( detection->normal );
@@ -275,7 +275,7 @@ bool MeshMinProximityIntersection::testIntersection(TSphere<T>& e1, Point& e2)
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    Vector3 P,Q,PQ;
+    defaulttype::Vector3 P,Q,PQ;
     P = e1.center();
     Q = e2.p();
     PQ = Q-P;
@@ -293,7 +293,7 @@ int MeshMinProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
 {
     const SReal alarmDist = intersection->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
-    Vector3 P,Q,PQ;
+    defaulttype::Vector3 P,Q,PQ;
     P = e1.center();
     Q = e2.p();
     PQ = Q-P;
@@ -316,7 +316,7 @@ int MeshMinProximityIntersection::computeIntersection(TSphere<T>& e1, Point& e2,
     else
     {
         intersection->serr<<"WARNING: null distance between contact detected"<<intersection->sendl;
-        detection->normal= Vector3(1,0,0);
+        detection->normal= defaulttype::Vector3(1,0,0);
     }
     detection->value -= contactDist;
     detection->point[0]=e1.getContactPointByNormal( -detection->normal );

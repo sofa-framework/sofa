@@ -24,6 +24,8 @@
 ******************************************************************************/
 
 /* Francois Faure, 2013 */
+#ifndef SOFA_STANDARDTEST_Mapping_test_H
+#define SOFA_STANDARDTEST_Mapping_test_H
 
 #include "Sofa_test.h"
 #include <SofaComponentMain/init.h>
@@ -39,8 +41,6 @@ namespace sofa {
 
 using std::cout;
 using std::endl;
-using namespace core;
-using namespace modeling;
 
 
 /** @brief Base class for the Mapping tests, with helpers to automatically test applyJ, applyJT, applyDJT and getJs using finite differences.
@@ -117,12 +117,12 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         /// Parent node
         root = simulation->createNewGraph("root");
-        inDofs = addNew<InDOFs>(root);
+        inDofs = modeling::addNew<InDOFs>(root);
 
         /// Child node
         simulation::Node::SPtr childNode = root->createChild("childNode");
-        outDofs = addNew<OutDOFs>(childNode);
-        mapping = addNew<Mapping>(root).get();
+        outDofs = modeling::addNew<OutDOFs>(childNode);
+        mapping = modeling::addNew<Mapping>(root).get();
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
@@ -143,10 +143,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
          simulation::Node::SPtr elasticityNode = patchNode->getChild("Elasticity");
 
          // Add OutDofs
-         outDofs = addNew<OutDOFs>(elasticityNode);
+         outDofs = modeling::addNew<OutDOFs>(elasticityNode);
 
          // Add mapping to the scene
-         mapping = addNew<Mapping>(elasticityNode).get();
+         mapping = modeling::addNew<Mapping>(elasticityNode).get();
          mapping->setModels(inDofs.get(),outDofs.get());
         
     }
@@ -154,9 +154,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
       */
-    virtual OutCoord difference( const OutCoord& a, const OutCoord& b )
+    virtual OutDeriv difference( const OutCoord& a, const OutCoord& b )
     {
-        return a-b;
+        return Out::coordDifference(a,b);
     }
 
     /** Possible child force pre-treatment, does nothing by default
@@ -185,7 +185,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                   const OutVecCoord expectedChildNew)
     {
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
-        MechanicalParams mparams;
+        core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
         mparams.setSymmetricMatrix(false);
 
@@ -318,16 +318,15 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 //        cout<<"new child positions xc1 = " << xc1 << endl;
 
         // ================ test applyJ: compute the difference between propagated displacements and velocities
-        OutVecCoord dxc(Nc),dxcv(Nc);
+        OutVecDeriv dxc(Nc);
         for(unsigned i=0; i<Nc; i++ ){
             dxc[i] = difference( xc1[i], xc[i] );
-            dxcv[i] = vc[i]; // convert VecDeriv to VecCoord for comparison. Because strangely enough, Coord-Coord substraction returns a Coord (should be a Deriv)
         }
-        if( this->vectorMaxDiff(dxc,dxcv)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(dxc,vc)>this->epsilon()*errorMax ){
             succeed = false;
             ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax  << endl
                           << "position change = " << dxc << endl
-                          << "velocity        = " << dxcv << endl;
+                          << "velocity        = " << vc << endl;
         }
 
 
@@ -382,6 +381,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 };
 
-
-
 } // namespace sofa
+
+
+#endif

@@ -39,7 +39,7 @@ namespace Geometry
 
 // Normalize the average length of given attribute
 template <typename PFP, unsigned int ORBIT>
-typename PFP::REAL normalizeLength(typename PFP::MAP & the_map, AttributeHandler<typename PFP::VEC3,ORBIT> & m_attr, const typename PFP::REAL scale = 1.0, )
+typename PFP::REAL normalizeLength(typename PFP::MAP & map, AttributeHandler<typename PFP::VEC3, ORBIT, typename PFP::MAP> & m_attr, const typename PFP::REAL scale = 1.0)
 {
 //	typename PFP::REAL sum = 0 ;
 //	int count = 0 ;
@@ -69,11 +69,11 @@ typename PFP::REAL normalizeLength(typename PFP::MAP & the_map, AttributeHandler
 	typename PFP::REAL sum = 0 ;
 	int count = 0 ;
 
-	TraversorCell<PFP::MAP,ORBIT> trav(the_map);
+	TraversorCell<typename PFP::MAP, ORBIT> trav(map);
 	for (Dart d = trav.begin(); d != trav.end(); d=trav.next())
 	{
 		typename PFP::VEC3 length = m_attr[d] ;
-		length -= m_attr[the_map.phi2(d)] ;
+		length -= m_attr[map.phi2(d)] ;
 		sum += length.norm() ;
 		++count ;
 	}

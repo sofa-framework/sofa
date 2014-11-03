@@ -141,7 +141,7 @@ void ParallelCollisionPipeline::doRealCollisionReset()
     if (contactManager!=NULL)
     {
         const sofa::helper::vector<Contact*>& contacts = contactManager->getContacts();
-        for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+        for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
         {
             (*it)->removeResponse();
         }
@@ -178,7 +178,7 @@ void ParallelCollisionPipeline::doCollisionDetection(const sofa::helper::vector<
         sofa::helper::vector<CollisionModel*>::const_iterator it = collisionModels.begin();
         sofa::helper::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
         int nActive = 0;
-        for (; it != itEnd; it++)
+        for (; it != itEnd; ++it)
         {
             VERBOSE(sout << "ParallelCollisionPipeline::doCollisionDetection, consider model "<<(*it)->getName()<<sendl);
             if (!(*it)->isActive()) continue;
@@ -243,7 +243,7 @@ void ParallelCollisionPipeline::doCollisionResponse()
     // First we remove all contacts with non-simulated objects and directly add them
     sofa::helper::vector<Contact*> notStaticContacts;
     long int c=0;
-    for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+    for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
     {
         c+=(long int)*it;
     }
@@ -257,7 +257,7 @@ void ParallelCollisionPipeline::doCollisionResponse()
     {
         //std::cerr<<"EQUAL!"<<c<<std::endl;
     }
-    for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+    for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); ++it)
     {
         Contact* c = *it;
         if (!c->getCollisionModels().first->isSimulated())
@@ -276,7 +276,7 @@ void ParallelCollisionPipeline::doCollisionResponse()
     if (groupManager==NULL)
     {
         VERBOSE(sout << "Linking all contacts to Scene"<<sendl);
-        for (sofa::helper::vector<Contact*>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); it++)
+        for (sofa::helper::vector<Contact*>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); ++it)
         {
             (*it)->createResponse(scene);
         }

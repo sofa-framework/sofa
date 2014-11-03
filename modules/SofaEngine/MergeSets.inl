@@ -44,10 +44,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class T>
 MergeSets<T>::MergeSets()
     : f_in1( initData (&f_in1, "in1", "first set of indices") )

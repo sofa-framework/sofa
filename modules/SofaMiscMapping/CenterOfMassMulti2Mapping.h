@@ -139,8 +139,6 @@ protected:
     double invTotalMass;
 };
 
-using namespace sofa::defaulttype;
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTI2MAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API CenterOfMassMulti2Mapping< Vec3dTypes, Rigid3dTypes, Vec3dTypes >;

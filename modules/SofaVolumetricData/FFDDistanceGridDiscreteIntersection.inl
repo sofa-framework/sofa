@@ -44,8 +44,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
 
 template<class T>
 bool FFDDistanceGridDiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, TSphere<T>&)
@@ -65,7 +63,7 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
 
     c1.updateFaces();
     const SReal cubesize = c1.invDP.norm();
-    Vector3 p2 = e2.center();
+    defaulttype::Vector3 p2 = e2.center();
     DistanceGrid::Coord p1 = p2;
 
     // estimate the barycentric coordinates
@@ -104,13 +102,13 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     grad.normalize();
 
                     contacts->resize(contacts->size()+1);
-                    DetectionOutput *detection = &*(contacts->end()-1);
-                    detection->normal = Vector3(grad); // normal in global space from p1's surface
+                    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
+                    detection->normal = defaulttype::Vector3(grad); // normal in global space from p1's surface
                     detection->value = d - d0;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
                     detection->id = e2.getIndex();
-                    detection->point[0] = Vector3(pinit);
+                    detection->point[0] = defaulttype::Vector3(pinit);
                     detection->point[1] = e2.getContactPointWithSurfacePoint( pinit );
                     return 1;
                 }

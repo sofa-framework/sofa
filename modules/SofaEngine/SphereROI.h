@@ -47,9 +47,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
 #ifndef SOFA_FLOAT
 using sofa::defaulttype::Rigid3dTypes;
 #endif //#ifndef SOFA_FLOAT
@@ -72,10 +69,10 @@ public:
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<3,Real> Vec3;
     typedef defaulttype::Vec<6,Real> Vec6;
-    typedef helper::vector<BaseMeshTopology::EdgeID> SetEdge;
-    typedef helper::vector<BaseMeshTopology::TriangleID> SetTriangle;
-    typedef helper::vector<BaseMeshTopology::QuadID> SetQuad;
-    typedef BaseMeshTopology::SetIndex SetIndex;
+    typedef helper::vector<sofa::core::topology::BaseMeshTopology::EdgeID> SetEdge;
+    typedef helper::vector<sofa::core::topology::BaseMeshTopology::TriangleID> SetTriangle;
+    typedef helper::vector<sofa::core::topology::BaseMeshTopology::QuadID> SetQuad;
+    typedef sofa::core::topology::BaseMeshTopology::SetIndex SetIndex;
 
     typedef typename DataTypes::CPos CPos;
 
@@ -107,7 +104,7 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
                 return false; // this template is not the same as the existing MechanicalState
         }
 
@@ -136,10 +133,10 @@ protected:
 
 	bool isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
     bool isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-    bool isEdgeInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Edge& edge);
-    bool isTriangleInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Triangle& triangle);
-    bool isQuadInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Quad& quad);
-    bool isTetrahedronInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Tetra& tetrahedron);
+    bool isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
+    bool isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
+    bool isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
+    bool isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
 
 public:
     //Input
@@ -190,20 +187,20 @@ public:
 #ifndef SOFA_FLOAT
 template<> bool SphereROI<Rigid3dTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
 template<> bool SphereROI<Rigid3dTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Tetra& tetrahedron);
+template<> bool SphereROI<Rigid3dTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
+template<> bool SphereROI<Rigid3dTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
+template<> bool SphereROI<Rigid3dTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
+template<> bool SphereROI<Rigid3dTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
 template<> void SphereROI<Rigid3dTypes>::update();
 #endif
 
 #ifndef SOFA_DOUBLE
 template<> bool SphereROI<Rigid3fTypes>::isPointInSphere(const Vec3& c, const Real& r, const Coord& p);
 template<> bool SphereROI<Rigid3fTypes>::isPointInSphere(const PointID& pid, const Real& r, const Coord& p);
-template<> bool SphereROI<Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Edge& edge);
-template<> bool SphereROI<Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Triangle& triangle);
-template<> bool SphereROI<Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Quad& quad);
-template<> bool SphereROI<Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const BaseMeshTopology::Tetra& tetrahedron);
+template<> bool SphereROI<Rigid3fTypes>::isEdgeInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Edge& edge);
+template<> bool SphereROI<Rigid3fTypes>::isTriangleInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Triangle& triangle);
+template<> bool SphereROI<Rigid3fTypes>::isQuadInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Quad& quad);
+template<> bool SphereROI<Rigid3fTypes>::isTetrahedronInSphere(const Vec3& c, const Real& r, const sofa::core::topology::BaseMeshTopology::Tetra& tetrahedron);
 template<> void SphereROI<Rigid3fTypes>::update();
 #endif
 

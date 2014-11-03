@@ -60,30 +60,26 @@ namespace component
 {
 namespace forcefield
 {
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
 
 template< class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCreateFunction(unsigned int tetrahedronIndex, 
                                                                                             TetrahedronRestInformation & tinfo,                                                                                        
-                                                                                            const Tetrahedron &,
+                                                                                            const topology::Tetrahedron &,
                                                                                             const sofa::helper::vector<unsigned int> &,
                                                                                             const sofa::helper::vector<double> &)
 {
     if (ff) {
-		const vector< Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
-		const std::vector< Edge> &edgeArray=ff->_topology->getEdges() ;
+		const vector< topology::Tetrahedron > &tetrahedronArray=ff->_topology->getTetrahedra() ;
+		const std::vector< topology::Edge> &edgeArray=ff->_topology->getEdges() ;
 		unsigned int j;
-                int k/*,l*/;
+        /*int l*/;
 		typename DataTypes::Real volume;
 		typename DataTypes::Coord point[4];
         const typename DataTypes::VecCoord restPosition=ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
 		///describe the indices of the 4 tetrahedron vertices  
-		const Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
-		BaseMeshTopology::EdgesInTetrahedron te=ff->_topology->getEdgesInTetrahedron(tetrahedronIndex);
+		const topology::Tetrahedron &t= tetrahedronArray[tetrahedronIndex];
+        core::topology::BaseMeshTopology::EdgesInTetrahedron te=ff->_topology->getEdgesInTetrahedron(tetrahedronIndex);
 
         //store point indices
         tinfo.tetraIndices[0] = (float)t[0];
@@ -118,8 +114,8 @@ void StandardTetrahedralFEMForceField<DataTypes>::GHTetrahedronHandler::applyCre
 
 
 		for(j=0;j<6;++j) {
-			Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
-			k=e[0];
+			topology::Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
+			int k=e[0];
             //l=e[1];
 			if (edgeArray[te[j]][0]!=t[k]) {
 				k=e[1];
@@ -180,60 +176,60 @@ template <class DataTypes> void StandardTetrahedralFEMForceField<DataTypes>::ini
 	}
 	//vector<HyperelasticMaterialTerm *> materialTermArray;
 	/** parse the input material name */
-	string material = f_materialName.getValue();
+    std::string material = f_materialName.getValue();
 	if(material=="ArrudaBoyce") {
 		fem::BoyceAndArruda<DataTypes> *BoyceAndArrudaMaterial = new fem::BoyceAndArruda<DataTypes>;
 		myMaterial = BoyceAndArrudaMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	} 
 	else if (material=="StVenantKirchhoff"){
 		fem::STVenantKirchhoff<DataTypes> *STVenantKirchhoffMaterial = new fem::STVenantKirchhoff<DataTypes>;
 		myMaterial = STVenantKirchhoffMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 	else if (material=="NeoHookean"){
 		fem::NeoHookean<DataTypes> *NeoHookeanMaterial = new fem::NeoHookean<DataTypes>;
 		myMaterial = NeoHookeanMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 	else if (material=="MooneyRivlin"){
 		fem::MooneyRivlin<DataTypes> *MooneyRivlinMaterial = new fem::MooneyRivlin<DataTypes>;
 		myMaterial = MooneyRivlinMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 	else if (material=="VerondaWestman"){
 		fem::VerondaWestman<DataTypes> *VerondaWestmanMaterial = new fem::VerondaWestman<DataTypes>;
 		myMaterial = VerondaWestmanMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 
 	else if (material=="Costa"){
 		fem::Costa<DataTypes> *CostaMaterial = new fem::Costa<DataTypes>();
 		myMaterial =CostaMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 	else if (material=="Ogden"){
 		fem::Ogden<DataTypes> *OgdenMaterial = new fem::Ogden<DataTypes>();
 		myMaterial =OgdenMaterial;
-		cout<<"The model is "<<material<<endl;
+		std::cout<<"The model is "<<material<<std::endl;
 		//	materialTermArray =  myMaterial->getMaterialTermArray();
 	}
 
 
 	else {
-		cerr << "material name " << material << " is not valid"<<endl;
+        std::cerr << "material name " << material << " is not valid" << std::endl;
 	}
 
 
 	if (!_topology->getNbTetrahedra())
 	{
-		cerr << "ERROR(StandardTetrahedralFEMForceField): object must have a Tetrahedral Set Topology.\n";
+        std::cerr << "ERROR(StandardTetrahedralFEMForceField): object must have a Tetrahedral Set Topology.\n";
 		return;
 	}
 
@@ -313,7 +309,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 	for(i=0; i<nbTetrahedra; i++ )
 	{
 		tetInfo=&tetrahedronInf[i];
-		const Tetrahedron &ta= _topology->getTetrahedron(i);
+		const topology::Tetrahedron &ta= _topology->getTetrahedron(i);
 
 		x0=x[ta[0]];
 
@@ -425,9 +421,9 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 	const VecDeriv& dx = d_dx.getValue();
 	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-	unsigned int i=0,j=0,k=0,l=0;
+	unsigned int l=0;
 	unsigned int nbEdges=_topology->getNbEdges();
-	const vector< Edge> &edgeArray=_topology->getEdges() ;
+	const vector< topology::Edge> &edgeArray=_topology->getEdges() ;
 
 	helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
@@ -440,21 +436,21 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
 		TetrahedronRestInformation *tetInfo;
 		unsigned int nbTetrahedra=_topology->getNbTetrahedra();
-		const std::vector< Tetrahedron> &tetrahedronArray=_topology->getTetrahedra() ;
-
+		const std::vector< topology::Tetrahedron> &tetrahedronArray=_topology->getTetrahedra() ;
+		unsigned int i=0, j=0, k=0;
 		for(l=0; l<nbEdges; l++ )edgeInf[l].DfDx.clear();
 		for(i=0; i<nbTetrahedra; i++ )
 		{
 			tetInfo=&tetrahedronInf[i];
 //			Matrix3 &df=tetInfo->deformationGradient;
 //			Matrix3 Tdf=df.transposed();
-			BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(i);
+            core::topology::BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(i);
 
 			/// describe the jth vertex index of triangle no i 
-			const Tetrahedron &ta= tetrahedronArray[i];
+			const topology::Tetrahedron &ta= tetrahedronArray[i];
 			for(j=0;j<6;j++) {
 				einfo= &edgeInf[te[j]];
-				Edge e=_topology->getLocalEdgesInTetrahedron(j);
+				topology::Edge e=_topology->getLocalEdgesInTetrahedron(j);
 
 				k=e[0];
 				l=e[1];
@@ -500,14 +496,13 @@ void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::Mechanic
 
 
 	/// performs matrix vector computation
-	unsigned int v0,v1;
 	Deriv deltax;	Deriv dv0,dv1;
 
 	for(l=0; l<nbEdges; l++ )
 	{
 		einfo=&edgeInf[l];
-		v0=edgeArray[l][0];
-		v1=edgeArray[l][1];
+		unsigned int v0=edgeArray[l][0];
+		unsigned int v1=edgeArray[l][1];
 
 		deltax= dx[v0] - dx[v1];
 		dv0 = einfo->DfDx * deltax;
@@ -548,7 +543,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::draw(const core::visual::Visua
 
 
 template<class DataTypes>
-Mat<3,3,double> StandardTetrahedralFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
+defaulttype::Mat<3,3,double> StandardTetrahedralFEMForceField<DataTypes>::getPhi(int TetrahedronIndex)
 {
 	tetrahedronRestInfoVector& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 	TetrahedronRestInformation *tetInfo;
@@ -609,7 +604,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 
 		// get current energy around
 		Real energy1 = 0;
-		BaseMeshTopology::TetrahedraAroundVertex vTetras = _topology->getTetrahedraAroundVertex( moveIdx );
+        core::topology::BaseMeshTopology::TetrahedraAroundVertex vTetras = _topology->getTetrahedraAroundVertex( moveIdx );
 		for(unsigned int i = 0; i < vTetras.size(); ++i)
 		{
 			energy1 += tetrahedronInf[vTetras[i]].strainEnergy * tetrahedronInf[vTetras[i]].restVolume;
@@ -641,14 +636,14 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 		Real deltaEnergyFactual = (energy2 - energy1);
 		Real energyError = fabs( deltaEnergyPredicted - deltaEnergyFactual );
 		if (energyError > 0.05*fabs(deltaEnergyFactual)) { // allow up to 5% error
-			printf("Error energy %i = %f%%\n", moveIdx, 100.0*energyError/fabs(deltaEnergyFactual) );
+			printf("Error energy %ui = %f%%\n", moveIdx, 100.0*energyError/fabs(deltaEnergyFactual) );
 		}
 
 		// check 2nd derivative for off-diagonal elements:
-		BaseMeshTopology::EdgesAroundVertex vEdges = _topology->getEdgesAroundVertex( moveIdx ); 
+        core::topology::BaseMeshTopology::EdgesAroundVertex vEdges = _topology->getEdgesAroundVertex( moveIdx ); 
 		for (unsigned int eIdx=0; eIdx<vEdges.size(); eIdx++)
 		{
-			BaseMeshTopology::Edge edge = _topology->getEdge( vEdges[eIdx] );
+            core::topology::BaseMeshTopology::Edge edge = _topology->getEdge( vEdges[eIdx] );
 			unsigned int testIdx = edge[0];
 			if (testIdx==moveIdx) testIdx = edge[1];
 			Coord deltaForceFactual = force2[testIdx] - force1[testIdx];
@@ -661,7 +656,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 				count++;
 			}
 			if (errorNorm > errorThresh) {
-				printf("Error move %i test %i = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
+				printf("Error move %ui test %ui = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
 			}
 		}
 		// check 2nd derivative for diagonal elements:
@@ -672,7 +667,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 		errorNorm = error.norm();
 		errorThresh = (Real)0.05 * deltaForceFactual.norm(); // allow up to 5% error
 		if (errorNorm > errorThresh) {
-			printf("Error move %i test %i = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
+			printf("Error move %ui test %ui = %f%%\n", moveIdx, testIdx, 100.0*errorNorm/deltaForceFactual.norm() );
 		}
 	}
 
@@ -692,10 +687,9 @@ void StandardTetrahedralFEMForceField<DataTypes>::saveMesh( const char *filename
 	// write header
 	char header[81];
 	//	strcpy( header, "STL generated by SOFA." );
-    size_t errResult;
-        errResult = fwrite( (void*)&(header[0]),1, 80, file );
-	unsigned int numTriangles = triangles.size();
-        errResult = fwrite( &numTriangles, 4, 1, file );
+    fwrite( (void*)&(header[0]),1, 80, file );
+    unsigned int numTriangles = triangles.size();
+    fwrite( &numTriangles, 4, 1, file );
 	// write poly data
 	float vertex[3][3];
 	float normal[3] = { 1,0,0 };
@@ -712,12 +706,12 @@ void StandardTetrahedralFEMForceField<DataTypes>::saveMesh( const char *filename
 				vertex[1][d] = (float)pos[p1][d];
 				vertex[2][d] = (float)pos[p2][d];
 			}
-                        errResult = fwrite( (void*)&(normal[0]), sizeof(float), 3, file );
-                        errResult = fwrite( (void*)&(vertex[0][0]), sizeof(float), 9, file );
-                        errResult = fwrite( (void*)&(stlSeperator), 2, 1, file );
+            
+            fwrite( (void*)&(normal[0]), sizeof(float), 3, file );
+            fwrite( (void*)&(vertex[0][0]), sizeof(float), 9, file );
+            fwrite( (void*)&(stlSeperator), 2, 1, file );
 		}
 	}
-    errResult -= errResult; // ugly trick to avoid warnings
 
 	fclose( file );
 }

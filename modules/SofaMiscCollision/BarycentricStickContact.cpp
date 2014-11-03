@@ -29,6 +29,8 @@
 #include <SofaVolumetricData/DistanceGridCollisionModel.h>
 #endif
 
+using namespace sofa::core::collision ;
+
 namespace sofa
 {
 

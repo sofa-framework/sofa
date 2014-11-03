@@ -39,6 +39,8 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
+using namespace sofa::helper;
+
 const unsigned long* Grid2D::obstacles = NULL;
 
 // For loop macros

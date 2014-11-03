@@ -6,7 +6,7 @@
   
   <CompliantAttachButton/>
   
-  <AssembledSolver stabilization="0" />
+  <CompliantImplicitSolver stabilization="0" />
   <SequentialSolver precision="1e-20" iterations="100" />
 
   
@@ -86,7 +86,7 @@
 		    
 		    <Node name="offset">
 			  <MechanicalObject template="Vec1d" position="0"/>
-			  <OffsetMapping offsets="6" inverted="1"/>
+			  <DifferenceFromTargetMapping targets="6" inverted="1"/>
 			  <UniformCompliance/>
 			  <UnilateralConstraint />
                           <Stabilization/>

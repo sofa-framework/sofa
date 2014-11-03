@@ -38,11 +38,11 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS ( DynamicSparseGridGeometryAlgorithms );
 int DynamicSparseGridGeometryAlgorithmsClass = core::RegisterObject ( "Hexahedron set geometry algorithms" )
 #ifdef SOFA_FLOAT
-        .add< DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> > ( true ) // default template
+        .add< DynamicSparseGridGeometryAlgorithms<Vec3fTypes> > ( true ) // default template
 #else
-        .add< DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::Vec3dTypes> > ( true ) // default template
+        .add< DynamicSparseGridGeometryAlgorithms<Vec3dTypes> > ( true ) // default template
 #ifndef SOFA_DOUBLE
-        .add< DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >() // default template
+        .add< DynamicSparseGridGeometryAlgorithms<Vec3fTypes> >() // default template
 #endif
 #endif
 #ifndef SOFA_FLOAT
@@ -68,7 +68,7 @@ int DynamicSparseGridGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos
     return HexahedronSetGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(pos, baryC, distance);
 }
 
-template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
+template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec3dTypes>;
 template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec2dTypes>;
 template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec1dTypes>;
 #endif
@@ -86,7 +86,7 @@ int DynamicSparseGridGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos
     return HexahedronSetGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos( pos, baryC, distance);
 }
 
-template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
+template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec3fTypes>;
 template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec2fTypes>;
 template class SOFA_NON_UNIFORM_FEM_API DynamicSparseGridGeometryAlgorithms<Vec1fTypes>;
 #endif

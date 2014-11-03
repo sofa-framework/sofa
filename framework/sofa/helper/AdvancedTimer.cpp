@@ -76,7 +76,7 @@ public:
 
         while(it != idfac->idsList.end() && (*it)!= name)
         {
-            it++;
+            ++it;
             i++;
         }
 

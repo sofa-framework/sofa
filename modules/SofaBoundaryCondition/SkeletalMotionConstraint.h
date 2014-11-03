@@ -39,11 +39,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::behavior;
-using namespace sofa::defaulttype;
-
 // a joint of the skeletal hierarchy, it participates in the skeletal animation chain and may be animated
 template <class DataTypes>
 struct SkeletonJoint;
@@ -53,11 +48,12 @@ typedef int SkeletonBone;
 
 // impose a specific motion (translation and rotation) for each DOFs of a MechanicalObject
 template <class TDataTypes>
-class SkeletalMotionConstraint : public ProjectiveConstraintSet<TDataTypes>
+class SkeletalMotionConstraint : public sofa::core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SkeletalMotionConstraint,TDataTypes),SOFA_TEMPLATE(ProjectiveConstraintSet, TDataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(SkeletalMotionConstraint,TDataTypes),SOFA_TEMPLATE(sofa::core::behavior::ProjectiveConstraintSet, TDataTypes));
     typedef TDataTypes DataTypes;
+    typedef sofa::core::behavior::ProjectiveConstraintSet<TDataTypes> TProjectiveConstraintSet;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -106,7 +102,7 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
     template<class MyCoord>
-    void localToGlobal(typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
+    void localToGlobal(typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
 
     void setSkeletalMotion(const helper::vector<SkeletonJoint<DataTypes> >& skeletonJoints, const helper::vector<SkeletonBone>& skeletonBones);
 
@@ -117,7 +113,7 @@ protected:
     void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
 
     template<class MyCoord>
-    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x);
+    void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);
 
 protected:
 	// every nodes needed in the animation chain
@@ -127,6 +123,9 @@ protected:
 
 	// control how fast the animation is played since animation time is not simulation time
 	Data<float>											animationSpeed;
+
+    /// is the projective constraint activated?
+    Data<bool>                                          active;
 
 private:
     /// the key times surrounding the current simulation time (for interpolation)

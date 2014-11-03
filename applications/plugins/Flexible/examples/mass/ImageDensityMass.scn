@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="0.1"  >
+    
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="image"/>
+    
   <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
   <DefaultAnimationLoop />
   <DefaultVisualManagerLoop />
@@ -37,11 +41,11 @@
     <Node 	name="behavior"   >
       <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-      <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
+      <LinearMapping template="Vec3d,F331"  />
 
       <Node 	name="Strain"   >
         <MechanicalObject  template="E331" name="E"  />
-        <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="svd"/>
+        <CorotationalStrainMapping template="F331,E331"   method="svd"/>
         <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"    />
       </Node>
 
@@ -82,11 +86,11 @@
     <Node 	name="behavior"   >
       <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-      <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
+      <LinearMapping template="Vec3d,F331"  />
 
       <Node 	name="Strain"   >
         <MechanicalObject  template="E331" name="E"  />
-        <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="svd"/>
+        <CorotationalStrainMapping template="F331,E331"   method="svd"/>
         <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"    />
       </Node>
 
@@ -126,14 +130,14 @@
     <Node name="deformationNode" >
       <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-      <LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  />
+      <LinearMapping template="Vec3d,F321"  />
 
       <!-- 	<TriangleSetTopologyContainer triangles="@../mesh.triangles" /> -->
       <!--         <TriangleDeformationMapping  scaleView="0.03" /> -->
 
       <Node name="StrainNode">
         <MechanicalObject template="E321"  name="VoigtStrainDOF" />
-        <CorotationalStrainMapping template="Mapping&lt;F321,E321&gt;"   method="qr"/>
+        <CorotationalStrainMapping template="F321,E321"   method="qr"/>
         <HookeForceField template="E321" youngModulus="10" poissonRatio="0.4" />
       </Node>
     </Node>
@@ -167,14 +171,14 @@
     <Node name="deformationNode" >
       <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject template="F321"  name="triangleDeformationsDOF" />
-      <LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  />
+      <LinearMapping template="Vec3d,F321"  />
 
       <!-- 	<TriangleSetTopologyContainer triangles="@../mesh.triangles" /> -->
       <!--         <TriangleDeformationMapping  scaleView="0.03" /> -->
 
       <Node name="StrainNode">
         <MechanicalObject template="E321"  name="VoigtStrainDOF" />
-        <CorotationalStrainMapping template="Mapping&lt;F321,E321&gt;"   method="qr"/>
+        <CorotationalStrainMapping template="F321,E321"   method="qr"/>
         <HookeForceField template="E321" youngModulus="10" poissonRatio="0.4" />
       </Node>
     </Node>

@@ -73,7 +73,7 @@ public:
       * see maple file ./doc/stabilizedHooke_principalStretches.mw
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real mu2Vol;  ///<  2 * mu * volume
     Real lambdaVol;  ///<  lambda * volume

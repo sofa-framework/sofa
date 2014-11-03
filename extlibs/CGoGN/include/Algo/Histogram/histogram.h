@@ -28,13 +28,11 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-
 #include "Topology/generic/attributeHandler.h"
 #include "Topology/generic/cellmarker.h"
 #include "Geometry/vector_gen.h"
 #include "Utils/colorMaps.h"
 #include "Utils/vbo_base.h"
-
 
 namespace CGoGN
 {
@@ -52,8 +50,8 @@ protected:
 	double m_max;
 	double m_w;
 	unsigned int m_nb;
-public:
 
+public:
 	virtual ~HistoColorMap() {}
 
 	/// set min value (for update from Histogram)
@@ -83,7 +81,6 @@ public:
 	}
 };
 
-
 /**
  *  inherits this class by:
  *  - add xxAttribute& in data (& constructor)
@@ -110,6 +107,7 @@ class AttributeConvert: public AttributeConvertGen
 {
 protected:
 	ATT& attrib;
+
 public:
 	AttributeConvert(ATT &att): attrib(att) {}
 	virtual unsigned int begin() const { return attrib.begin();}
@@ -120,14 +118,12 @@ public:
 	virtual ~AttributeConvert() {}
 };
 
-
 /**
  * Histogram class
  * T must have operators -, / ,< ,>
  */
 class Histogram
 {
-
 //	std::vector<double> m_data;
 
 	mutable std::vector< std::pair<double, unsigned int> > m_dataIdx;
@@ -179,188 +175,185 @@ class Histogram
 	void quantilesAreaCorrection();
 
 public:
-		/**
-		* create an histogram from attribute handler
-		*/
-		Histogram(HistoColorMap& hcm);
+	/**
+	* create an histogram from attribute handler
+	*/
+	Histogram(HistoColorMap& hcm);
 
-		/**
-		 * init data
-		 * @param conv a attribute convertor
-		 */
-		void initDataConvert(const AttributeConvertGen& conv);
+	/**
+	 * init data
+	 * @param conv a attribute convertor
+	 */
+	void initDataConvert(const AttributeConvertGen& conv);
 
-		
-		/**
-		 * init data
-		 * @param attr the attribute to copy from
-		 * @param sortForQuantiles sort data vector for quantille generation
-		 */
-		template <typename ATTR>
-		void initData(const ATTR& attr);
+	/**
+	 * init data
+	 * @param attr the attribute to copy from
+	 * @param sortForQuantiles sort data vector for quantille generation
+	 */
+	template <typename ATTR>
+	void initData(const ATTR& attr);
 
-		/**
-		 * get min value of attribute (perhaps modified by user)
-		 */
-		double getMin() const;
+	/**
+	 * get min value of attribute (perhaps modified by user)
+	 */
+	double getMin() const;
 
-		/**
-		 * get max value of attribute (perhaps modified by user)
-		 */
-		double getMax() const;
+	/**
+	 * get max value of attribute (perhaps modified by user)
+	 */
+	double getMax() const;
 
-		/**
-		 * get real min value of attribute
-		 */
-		double getQMin() const;
+	/**
+	 * get real min value of attribute
+	 */
+	double getQMin() const;
 
-		/**
-		 * get real max value of attribute
-		 */
-		double getQMax() const;
-
-
-		/**
-		 * set min value of attribute
-		 */
-		void setMin(double m);
-
-		/**
-		 * set max value of attribute
-		 */
-		void setMax(double m);
-
-		/**
-		 * get max population value of all bars of histo
-		 */
-		unsigned int getMaxBar() const;
-
-		/**
-		 * get max population value of all bars of quantiles
-		 */
-		double getMaxQBar() const;
+	/**
+	 * get real max value of attribute
+	 */
+	double getQMax() const;
 
 
-		/**
-		 * modify min/max values to center Histogram on zero if necessary
-		 */
-		void centerOnZero();
+	/**
+	 * set min value of attribute
+	 */
+	void setMin(double m);
 
-		/**
-		 * compute the histogram with given numbre of classes
-		 */
-		void populateHisto(unsigned int nbclasses=0);
+	/**
+	 * set max value of attribute
+	 */
+	void setMax(double m);
 
-		/**
-		 * compute the histogram with given number of classes
-		 */
-		void populateQuantiles(unsigned int nbclasses=10);
+	/**
+	 * get max population value of all bars of histo
+	 */
+	unsigned int getMaxBar() const;
 
-		/**
-		* which class belong a value
-		*/
-		unsigned int whichClass(double val) const;
-
-		/**
-		* which class belong a value
-		*/
-		unsigned int whichQuantille(double val) const;
-
-		/**
-		* fill a color attribute from histo
-		* @param colors attribute to fill
-		*/
-		template <typename ATTC>
-		void histoColorize(ATTC& colors);
+	/**
+	 * get max population value of all bars of quantiles
+	 */
+	double getMaxQBar() const;
 
 
-		/**
-		 * colorize the VBO (RGB) from histo
-		 * @warning GL context must be accessible
-		 * @param vbo the vbo to fill with colors
-		 */
-		void histoColorizeVBO(Utils::VBO& vbo);
+	/**
+	 * modify min/max values to center Histogram on zero if necessary
+	 */
+	void centerOnZero();
+
+	/**
+	 * compute the histogram with given numbre of classes
+	 */
+	void populateHisto(unsigned int nbclasses = 0);
+
+	/**
+	 * compute the histogram with given number of classes
+	 */
+	void populateQuantiles(unsigned int nbclasses = 10);
+
+	/**
+	* which class belong a value
+	*/
+	unsigned int whichClass(double val) const;
+
+	/**
+	* which class belong a value
+	*/
+	unsigned int whichQuantille(double val) const;
+
+	/**
+	* fill a color attribute from histo
+	* @param colors attribute to fill
+	*/
+	template <typename ATTC>
+	void histoColorize(ATTC& colors);
 
 
-		/**
-		* fill a color attribute from quantiles
-		* @param colors attribute to fill
-		* @param tc table of color
-		*/
-		template<typename ATTC>
-		void quantilesColorize(ATTC& colors, const std::vector<Geom::Vec3f>& tc);
-
-		/**
-		* colorize the VBO (RGB) from
-		* @warning GL context must be accessible
-		* @param vbo the vbo to fill with colors
-		* @param tc table of color
-		*/
-		void quantilesColorizeVBO(Utils::VBO& vbo, const std::vector<Geom::Vec3f>& tc);
-
-		/**
-		* get the vector of class population
-		*/
-		const std::vector<unsigned int>& getPopulation() const;
-
-		/**
-		* get the vector of height of quantiles
-		*/
-		const std::vector<double>& getQuantilesHeights() const;
-
-		/**
-		* get the vector of intervals bounaries for quantiles
-		*/
-		const std::vector<double>& getQuantilesIntervals() const;
-
-		/**
-		 * return cells of histogram's column
-		 * @param c column of histogram
-		 * @param vc vector of cells (indices)
-		 * @return number of cells
-		 */
-		unsigned int cellsOfHistogramColumn( unsigned int c, std::vector<unsigned int>& vc) const;
-
-		/**
-		 * return cells of quantile's column
-		 * @param c column of quantile
-		 * @param vc vector of cells (indices)
-		 * @return number of cells
-		 */
-		unsigned int cellsOfQuantilesColumn( unsigned int c, std::vector<unsigned int>& vc) const;
+	/**
+	 * colorize the VBO (RGB) from histo
+	 * @warning GL context must be accessible
+	 * @param vbo the vbo to fill with colors
+	 */
+	void histoColorizeVBO(Utils::VBO& vbo);
 
 
-		/**
-		 * mark cells of histogram's column
-		 * @param c column of quantile
-		 * @param cm marker
-		 * @return number of marked cells
-		 */
-		template <typename CELLMARKER>
-		unsigned int markCellsOfHistogramColumn(unsigned int c, CELLMARKER& cm) const;
+	/**
+	* fill a color attribute from quantiles
+	* @param colors attribute to fill
+	* @param tc table of color
+	*/
+	template<typename ATTC>
+	void quantilesColorize(ATTC& colors, const std::vector<Geom::Vec3f>& tc);
 
-		/**
-		 * mark cells of quantile's column
-		 * @param c column of quantile
-		 * @param cm marker
-		 * @return number of marked cells
-		 */
-		template <typename CELLMARKER>
-		unsigned int markCellsOfQuantilesColumn(unsigned int c, CELLMARKER& cm) const;
+	/**
+	* colorize the VBO (RGB) from
+	* @warning GL context must be accessible
+	* @param vbo the vbo to fill with colors
+	* @param tc table of color
+	*/
+	void quantilesColorizeVBO(Utils::VBO& vbo, const std::vector<Geom::Vec3f>& tc);
 
-		/**
-		 * get the colorMap
-		 */
-		const HistoColorMap& colorMap() const;
+	/**
+	* get the vector of class population
+	*/
+	const std::vector<unsigned int>& getPopulation() const;
 
+	/**
+	* get the vector of height of quantiles
+	*/
+	const std::vector<double>& getQuantilesHeights() const;
+
+	/**
+	* get the vector of intervals bounaries for quantiles
+	*/
+	const std::vector<double>& getQuantilesIntervals() const;
+
+	/**
+	 * return cells of histogram's column
+	 * @param c column of histogram
+	 * @param vc vector of cells (indices)
+	 * @return number of cells
+	 */
+	unsigned int cellsOfHistogramColumn(unsigned int c, std::vector<unsigned int>& vc) const;
+
+	/**
+	 * return cells of quantile's column
+	 * @param c column of quantile
+	 * @param vc vector of cells (indices)
+	 * @return number of cells
+	 */
+	unsigned int cellsOfQuantilesColumn(unsigned int c, std::vector<unsigned int>& vc) const;
+
+
+	/**
+	 * mark cells of histogram's column
+	 * @param c column of quantile
+	 * @param cm marker
+	 * @return number of marked cells
+	 */
+	template <typename CELLMARKER>
+	unsigned int markCellsOfHistogramColumn(unsigned int c, CELLMARKER& cm) const;
+
+	/**
+	 * mark cells of quantile's column
+	 * @param c column of quantile
+	 * @param cm marker
+	 * @return number of marked cells
+	 */
+	template <typename CELLMARKER>
+	unsigned int markCellsOfQuantilesColumn(unsigned int c, CELLMARKER& cm) const;
+
+	/**
+	 * get the colorMap
+	 */
+	const HistoColorMap& colorMap() const;
 };
 
+} // namespace Histogram
 
-}
-}
-}
+} // namespace Algo
+
+} // namespace CGoGN
 
 #include "Algo/Histogram/histogram.hpp"
 #endif
-
-

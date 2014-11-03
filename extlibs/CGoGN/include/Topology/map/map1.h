@@ -25,9 +25,10 @@
 #ifndef __MAP1_H__
 #define __MAP1_H__
 
-#include "Topology/generic/attribmap.h"
+#include "Topology/generic/mapCommon.h"
 #include "Topology/generic/dartmarker.h"
 #include "Topology/generic/cellmarker.h"
+#include "Algo/Topo/basic.h"
 
 namespace CGoGN
 {
@@ -40,15 +41,19 @@ namespace CGoGN
  *  - Faces with only one edge (sometime called loops) are accepted.
  *  - Degenerated faces with only two edges are accepted.
  */
-class Map1 : public AttribMap
+template <typename MAP_IMPL>
+class Map1 : public MapCommon<MAP_IMPL>
 {
 protected:
-	AttributeMultiVector<Dart>* m_phi1 ;
-	AttributeMultiVector<Dart>* m_phi_1 ;
+	// protected copy constructor to prevent the copy of map
+	Map1(const Map1<MAP_IMPL>& m):MapCommon<MAP_IMPL>(m) {}
 
 	void init() ;
 
 public:
+	typedef MAP_IMPL IMPL;
+	typedef MapCommon<MAP_IMPL> ParentMap;
+
 	Map1();
 
 	static const unsigned int DIMENSION = 1 ;
@@ -59,15 +64,12 @@ public:
 
 	virtual void clear(bool removeAttrib);
 
-	virtual void update_topo_shortcuts();
-
-	virtual void compactTopoRelations(const std::vector<unsigned int>& oldnew);
+	virtual unsigned int getNbInvolutions() const;
+	virtual unsigned int getNbPermutations() const;
 
 	/*! @name Basic Topological Operators
 	 * Access and Modification
 	 *************************************************************************/
-
-	virtual Dart newDart();
 
 	Dart phi1(Dart d) const;
 
@@ -110,12 +112,6 @@ public:
 	 *  @return return a dart of the face
 	 */
 	Dart newCycle(unsigned int nbEdges) ;
-
-	//! Create an new face for boundary (marked)
-	/*! @param nbEdges the number of edges
-	 *  @return return a dart of the face
-	 */
-//	Dart newBoundaryCycle(unsigned int nbEdges);
 
 	//! Delete an oriented face erasing all its darts
 	/*! @param d a dart of the face
@@ -208,24 +204,35 @@ public:
 	 *************************************************************************/
 
 	//@{
+	//! Apply a function on every dart of an orbit
+	/*! @param c a cell
+	 *  @param f a function
+	 */
+	template <unsigned int ORBIT, typename FUNC>
+    void foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f, unsigned int thread = 0) const ;
+//	template <unsigned int ORBIT, typename FUNC>
+//	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread = 0) const ;
+
 	//! Apply a functor on every dart of a vertex
 	/*! @param d a dart of the vertex
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_vertex(Dart d, FunctorType& f, unsigned int thread = 0) const;
+	template <typename FUNC>
+    void foreach_dart_of_vertex(Dart d, const FUNC& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on every dart of an edge
 	/*! @param d a dart of the edge
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_edge(Dart d, FunctorType& f, unsigned int thread = 0) const;
-
+	template <typename FUNC>
+    void foreach_dart_of_edge(Dart d, const FUNC& f, unsigned int thread = 0) const;
 
 	//! Apply a functor on every dart of a connected component
 	/*! @param d a dart of the connected component
 	 *  @param f the functor to apply
 	 */
-	bool foreach_dart_of_cc(Dart d, FunctorType& f, unsigned int thread = 0) const;
+	template <typename FUNC>
+    void foreach_dart_of_cc(Dart d, const FUNC& f, unsigned int thread = 0) const;
 	//@}
 } ;
 

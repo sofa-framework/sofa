@@ -250,6 +250,8 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename,ElementNameHel
 }
 
 
+/*
+ //TODO properly remove this.
 static void dumpNode(BaseElement* node, std::string prefix0="==", std::string prefix="  ")
 {
     std::cout << prefix0;
@@ -265,6 +267,7 @@ static void dumpNode(BaseElement* node, std::string prefix0="==", std::string pr
         it = next;
     }
 }
+*/
 
 BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc)
 {

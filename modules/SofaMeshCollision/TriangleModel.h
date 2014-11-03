@@ -43,8 +43,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 template<class DataTypes>
 class TTriangleModel;
 
@@ -316,8 +314,8 @@ inline bool TTriangle<DataTypes>::hasFreePosition() const { return this->model->
 template<class DataTypes>
 inline typename DataTypes::Deriv TTriangleModel<DataTypes>::velocity(int index) const { return (mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(triangles))[index][0]] + mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(triangles))[index][1]] +
                                                                                                 mstate->read(core::ConstVecDerivId::velocity())->getValue()[(*(triangles))[index][2]])/((Real)(3.0)); }
-typedef TTriangleModel<Vec3Types> TriangleModel;
-typedef TTriangle<Vec3Types> Triangle;
+typedef TTriangleModel<sofa::defaulttype::Vec3Types> TriangleModel;
+typedef TTriangle<sofa::defaulttype::Vec3Types> Triangle;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
 #ifndef SOFA_FLOAT

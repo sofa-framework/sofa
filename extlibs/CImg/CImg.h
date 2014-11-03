@@ -96,11 +96,15 @@
 #define cimg_OS 1
 #elif defined(_MSC_VER) || defined(WIN32)  || defined(_WIN32) || defined(__WIN32__) \
    || defined(WIN64)    || defined(_WIN64) || defined(__WIN64__)
+#ifdef _XBOX
+#define cimg_OS 3
+#else
 #define cimg_OS 2
+#endif
 #else
 #define cimg_OS 0
 #endif
-#elif !(cimg_OS==0 || cimg_OS==1 || cimg_OS==2)
+#elif !(cimg_OS==0 || cimg_OS==1 || cimg_OS==2 || cimg_OS==3)
 #error CImg Library: Invalid configuration variable 'cimg_OS'.
 #error (correct values are '0 = unknown OS', '1 = Unix-like OS', '2 = Microsoft Windows').
 #endif
@@ -135,6 +139,12 @@
 #include <io.h>
 #define cimg_snprintf _snprintf
 #define cimg_vsnprintf _vsnprintf
+#elif cimg_OS==3
+#include <xtl.h>
+#define cimg_snprintf _snprintf
+#define cimg_vsnprintf _vsnprintf
+#define cimg_no_system_calls
+#define cimg_no_temp_files
 #endif
 #ifndef cimg_snprintf
 #include <stdio.h>
@@ -146,7 +156,7 @@
 //
 // Filename separator is set by default to '/', except for Windows where it is '\'.
 #ifndef cimg_file_separator
-#if cimg_OS==2
+#if cimg_OS==2 || cimg_OS==3
 #define cimg_file_separator '\\'
 #else
 #define cimg_file_separator '/'
@@ -187,6 +197,8 @@
 #endif
 #elif cimg_OS==2
 #define cimg_display 2
+#elif cimg_OS==3
+#define cimg_display 0
 #endif
 #elif !(cimg_display==0 || cimg_display==1 || cimg_display==2)
 #error CImg Library: Configuration variable 'cimg_display' is badly defined.
@@ -1949,6 +1961,8 @@ extern "C" {
 #define _cimglist_instance "[instance(%u,%u,%p)] CImgList<%s>::"
 #define cimglist_instance _width,_allocated_width,_data,pixel_type()
 
+// Macros used to avoid heap corruption detection on windows debug build
+#define cimg_safe_delete_array(x) if(x) {delete[] x; x = 0; }
 /*------------------------------------------------
  #
  #
@@ -4766,6 +4780,9 @@ namespace cimg_library_suffixed {
        \return Path where temporary files can be saved.
     **/
     inline const char* temporary_path(const char *const user_path=0, const bool reinit_path=false) {
+#ifdef cimg_no_temp_files
+		return "";
+#else
 #define _cimg_test_temporary_path(p) \
       if (!path_found) { \
         cimg_snprintf(st_path,1024,"%s",p); \
@@ -4810,6 +4827,7 @@ namespace cimg_library_suffixed {
           throw CImgIOException("cimg::temporary_path(): Failed to locate path for writing temporary files.\n");
       }
       return st_path;
+#endif
     }
 
     //! Get/set path to the <i>Program Files/</i> directory (Windows only).
@@ -8886,10 +8904,8 @@ namespace cimg_library_suffixed {
       if (is_empty()) return flush();
       DestroyWindow(_window);
       TerminateThread(_thread,0);
-      delete[] _data;
-      delete[] _title;
-      _data = 0;
-      _title = 0;
+      cimg_safe_delete_array(_data);
+      cimg_safe_delete_array(_title);
       if (_is_fullscreen) _desinit_fullscreen();
       _width = _height = _normalization = _window_width = _window_height = 0;
       _window_x = _window_y = 0;
@@ -8960,7 +8976,7 @@ namespace cimg_library_suffixed {
         unsigned int *const ndata = new unsigned int[dimx*dimy];
         if (force_redraw) _render_resize(_data,_width,_height,ndata,dimx,dimy);
         else std::memset(ndata,0x80,sizeof(unsigned int)*dimx*dimy);
-        delete[] _data;
+       cimg_safe_delete_array(_data);
         _data = ndata;
         _bmi.bmiHeader.biWidth = dimx;
         _bmi.bmiHeader.biHeight = -(int)dimy;
@@ -9050,7 +9066,7 @@ namespace cimg_library_suffixed {
       cimg_vsnprintf(tmp,sizeof(tmp),format,ap);
       va_end(ap);
       if (!std::strcmp(_title,tmp)) return *this;
-      delete[] _title;
+      cimg_safe_delete_array(_title);
       const unsigned int s = (unsigned int)std::strlen(tmp) + 1;
       _title = new char[s];
       std::memcpy(_title,tmp,s*sizeof(char));
@@ -9399,7 +9415,7 @@ namespace cimg_library_suffixed {
          that shares its buffer with the destroyed instance, in order to avoid further invalid memory access (to a deallocated buffer).
     **/
     ~CImg() {
-      if (!_is_shared) delete[] _data;
+      if (!_is_shared) cimg_safe_delete_array(_data);
     }
 
     //! Construct empty image.
@@ -9889,7 +9905,7 @@ namespace cimg_library_suffixed {
                                       cimg_instance,
                                       size_x,size_y,size_z,size_c);
         else {
-          delete[] _data;
+          cimg_safe_delete_array(_data);
           try { _data = new T[siz]; } catch (...) {
             _width = _height = _depth = _spectrum = 0; _data = 0;
             throw CImgInstanceException(_cimg_instance

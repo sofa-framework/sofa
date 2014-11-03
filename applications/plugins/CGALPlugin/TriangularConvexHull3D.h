@@ -83,11 +83,11 @@ public:
     }
 
     //Inputs
-    Data<VecCoord> f_X0;
+    sofa::core::objectmodel::Data<VecCoord> f_X0;
 
     //Outputs
-    Data<VecCoord> f_newX0;
-    Data<SeqTriangles> f_triangles;
+    sofa::core::objectmodel::Data<VecCoord> f_newX0;
+    sofa::core::objectmodel::Data<SeqTriangles> f_triangles;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP)

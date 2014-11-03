@@ -8,7 +8,7 @@ namespace collision{
 
 
 template <class DataTypes>
-void IntrUtil<TTriangle<DataTypes> >::triFaceNearestPoints(const IntrTri & tri,const Vec<3,Real> *second_face,int second_size, Vec<3,Real> &pt_on_first, Vec<3,Real> &pt_on_second){
+void IntrUtil<TTriangle<DataTypes> >::triFaceNearestPoints(const IntrTri & tri,const defaulttype::Vec<3,Real> *second_face,int second_size, defaulttype::Vec<3,Real> &pt_on_first, defaulttype::Vec<3,Real> &pt_on_second){
     Real min1 = std::numeric_limits<Real>::max();
     Real min2 = std::numeric_limits<Real>::max();
     Real new_min;
@@ -48,10 +48,10 @@ void IntrUtil<TTriangle<DataTypes> >::triFaceNearestPoints(const IntrTri & tri,c
 }
 
 template <typename DataType>
-SReal IntrUtil<TTriangle<DataType> >::triSegNearestPoints(const IntrTri & tri,const Vec<3,Real> seg[2], Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg){
+SReal IntrUtil<TTriangle<DataType> >::triSegNearestPoints(const IntrTri & tri,const defaulttype::Vec<3,Real> seg[2], defaulttype::Vec<3,Real> & pt_on_face,defaulttype::Vec<3,Real> & pt_on_seg){
     Real min = std::numeric_limits<Real>::max();
-    Vec<3,Real> cur_pt_on_face,cur_pt_on_seg;
-    Vec<3,Real> face_seg[2];
+    defaulttype::Vec<3,Real> cur_pt_on_face,cur_pt_on_seg;
+    defaulttype::Vec<3,Real> face_seg[2];
     Real new_min;
 
     for(int j = 0 ; j < 3 ; ++j){
@@ -77,7 +77,7 @@ SReal IntrUtil<TTriangle<DataType> >::triSegNearestPoints(const IntrTri & tri,co
 
 
 template <class DataType>
-typename IntrUtil<TTriangle<DataType> >::Real IntrUtil<TTriangle<DataType> >::project(Vec<3,Real> & pt,const TTriangle<DataType> & tri){
+typename IntrUtil<TTriangle<DataType> >::Real IntrUtil<TTriangle<DataType> >::project(defaulttype::Vec<3,Real> & pt,const TTriangle<DataType> & tri){
     Real s,t;
     return IntrUtil<Real>::projectOnTriangle(pt,tri.p1(),tri.p2(),tri.p3(),s,t);
 }
@@ -358,9 +358,9 @@ void IntrConfigManager<TTriangle<DataTypes> >::init (const Coord& axis,
 
 template <class TDataTypes1,class TDataTypes2>
 FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const IntrTri& tri,
-    const Box& box, const Vec<3,Real> & axis,int side, const IntrConfiguration<Real>& triCfg,
+    const Box& box, const defaulttype::Vec<3,Real> & axis,int side, const IntrConfiguration<Real>& triCfg,
     const IntrConfiguration<Real>& boxCfg,Real tfirst,
-    Vec<3,Real> & pt_on_tri,Vec<3,Real> & pt_on_box)
+    defaulttype::Vec<3,Real> & pt_on_tri,defaulttype::Vec<3,Real> & pt_on_box)
 {
     const int* tIndex = triCfg.mIndex;
     const int* bIndex = boxCfg.mIndex;
@@ -390,7 +390,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
             {
                 // triseg-boxseg intersection
-                Vec<3,Real> triSeg[2], boxSeg[2];
+                defaulttype::Vec<3,Real> triSeg[2], boxSeg[2];
                 triSeg[0] = tri.p(tIndex[0]);
                 triSeg[1] = tri.p(tIndex[1]);
                 boxSeg[0] = getPointFromIndex(bIndex[6], box);
@@ -401,9 +401,9 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             else // boxCfg.mMap == IntrConfiguration<Real>::m44, triangles'edge box's face
             {
                 int quantity;
-                Vec<3,Real> P[2];
+                defaulttype::Vec<3,Real> P[2];
 
-                Vec<3,Real> triFinal[3] =
+                defaulttype::Vec<3,Real> triFinal[3] =
                 {
                     tri.p(0) - tfirst*axis,
                     tri.p(1) - tfirst*axis,
@@ -411,8 +411,8 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 };
 
                 // triseg-boxface intersection
-                Vec<3,Real> triSeg[2];
-                Vec<3,Real> boxFace[4];
+                defaulttype::Vec<3,Real> triSeg[2];
+                defaulttype::Vec<3,Real> boxFace[4];
                 triSeg[0] = triFinal[tIndex[0]];
                 triSeg[1] = triFinal[tIndex[1]];
                 boxFace[0] = getPointFromIndex(bIndex[4], box);
@@ -439,9 +439,9 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
         else // triCfg.mMap == IntrConfiguration<Real>::m3, triangle's face
         {
             int quantity;
-            Vec<3,Real> P[6];
+            defaulttype::Vec<3,Real> P[6];
 
-            Vec<3,Real> triFinal[3] =
+            defaulttype::Vec<3,Real> triFinal[3] =
             {
                 tri.p(0) - tfirst*axis,
                 tri.p(1) - tfirst*axis,
@@ -451,7 +451,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)//box's edge
             {
                 // boxseg-triface intersection
-                Vec<3,Real> boxSeg[2];
+                defaulttype::Vec<3,Real> boxSeg[2];
                 boxSeg[0] = getPointFromIndex(bIndex[6], box);
                 boxSeg[1] = getPointFromIndex(bIndex[7], box);
                 IntrUtil<Real>::ColinearSegmentTriangle(boxSeg, triFinal, quantity, P);
@@ -469,7 +469,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             else
             {
                 // triface-boxface intersection
-                Vec<3,Real> boxFace[4];
+                defaulttype::Vec<3,Real> boxFace[4];
                 boxFace[0] = getPointFromIndex(bIndex[4], box);
                 boxFace[1] = getPointFromIndex(bIndex[5], box);
                 boxFace[2] = getPointFromIndex(bIndex[6], box);
@@ -512,7 +512,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)//box's edge
             {
                 // segment-segment intersection
-                Vec<3,Real> triSeg[2], boxSeg[2];
+                defaulttype::Vec<3,Real> triSeg[2], boxSeg[2];
                 triSeg[0] = tri[tIndex[1]];
                 triSeg[1] = tri[tIndex[2]];
                 boxSeg[0] = getPointFromIndex(bIndex[0], box);
@@ -523,9 +523,9 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             }
             else // boxCfg.mMap == IntrConfiguration<Real>::m44, box's face
             {
-                Vec<3,Real> P[2];
+                defaulttype::Vec<3,Real> P[2];
                 int quantity;
-                Vec<3,Real> triFinal[3] =
+                defaulttype::Vec<3,Real> triFinal[3] =
                 {
                     tri.p(0) + tfirst*axis,
                     tri.p(1) + tfirst*axis,
@@ -533,7 +533,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 };
 
                 // triseg-boxface intersection
-                Vec<3,Real> triSeg[2], boxFace[4];
+                defaulttype::Vec<3,Real> triSeg[2], boxFace[4];
                 triSeg[0] = triFinal[tIndex[1]];
                 triSeg[1] = triFinal[tIndex[2]];
 
@@ -562,9 +562,9 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
         }
         else // triCfg.mMap == IntrConfiguration<Real>::m3
         {
-            Vec<3,Real> P[6];
+            defaulttype::Vec<3,Real> P[6];
             int quantity;
-            Vec<3,Real> triFinal[3] =
+            defaulttype::Vec<3,Real> triFinal[3] =
             {
                 tri.p(0) + tfirst*axis,
                 tri.p(1) + tfirst*axis,
@@ -574,7 +574,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
             {
                 // boxseg-triface intersection
-                Vec<3,Real> boxSeg[2];
+                defaulttype::Vec<3,Real> boxSeg[2];
                 boxSeg[0] = getPointFromIndex(bIndex[0], box);
                 boxSeg[1] = getPointFromIndex(bIndex[1], box);
 
@@ -593,7 +593,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             else
             {
                 // triface-boxface intersection
-                Vec<3,Real> boxFace[4];
+                defaulttype::Vec<3,Real> boxFace[4];
                 boxFace[0] = getPointFromIndex(bIndex[0], box);
                 boxFace[1] = getPointFromIndex(bIndex[1], box);
                 boxFace[2] = getPointFromIndex(bIndex[2], box);

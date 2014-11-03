@@ -227,7 +227,7 @@ std::string ExportDotVisitor::getName(core::objectmodel::Base* o, std::string pr
     int index = nextIndex[name]++;
     if (index)
     {
-        char str[16];
+        char str[16]={"azertyazertyaze"};
         snprintf(str,sizeof(str),"%d",index+1);
         name += str;
     }

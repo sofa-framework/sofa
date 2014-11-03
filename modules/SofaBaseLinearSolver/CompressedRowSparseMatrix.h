@@ -199,7 +199,7 @@ public:
         if (nBlocRow == nbBRow && nBlocRow == nbBCol)
         {
             // just clear the matrix
-            for (Index i=0; i < colsValue.size(); ++i)
+            for (Index i=0; i < (Index)colsValue.size(); ++i)
                 traits::clear(colsValue[i]);
             compressed = colsValue.empty();
             btemp.clear();
@@ -555,7 +555,7 @@ public:
         colsValue.reserve(M.colsValue.size());
 
         Index vid = 0;
-        for (Index rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+        for (Index rowId = 0; rowId < (Index)M.rowIndex.size(); ++rowId)
         {
             Index i = M.rowIndex[rowId];
             rowIndex.push_back(i);
@@ -704,7 +704,7 @@ public:
 #endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
         ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method !
-        return traits::v(bloc(i, j), bi, bj);
+        return (SReal)traits::v(bloc(i, j), bi, bj);
     }
 
     void set(Index i, Index j, double v)
@@ -877,7 +877,7 @@ public:
 
     void clear()
     {
-        for (Index i=0; i < colsValue.size(); ++i)
+        for (Index i=0; i < (Index)colsValue.size(); ++i)
             traits::clear(colsValue[i]);
         compressed = colsValue.empty();
         btemp.clear();
@@ -1071,7 +1071,7 @@ public:
                 btemp.push_back(IndexedBloc(i,j));
                 traits::clear(btemp.back().value);
             }
-            return createBlockAccessor(i, j, -btemp.size());
+            return createBlockAccessor(i, j, -(Index)btemp.size());
         }
     }
 
@@ -1275,7 +1275,7 @@ protected:
 
           ((Matrix*)this)->compress();
           vresize( res, rowBSize(), rowSize() );
-          for (Index xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
+          for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
           {
               defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
@@ -1312,7 +1312,7 @@ protected:
 
           ((Matrix*)this)->compress();
           vresize( res, rowBSize(), rowSize() );
-          for (Index xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
+          for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
           {
               defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
@@ -1349,7 +1349,7 @@ protected:
 
           ((Matrix*)this)->compress();
           vresize( res, rowBSize(), rowSize() );
-          for (Index xi = 0; xi < rowIndex.size(); ++xi)  // for each non-empty block row
+          for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)  // for each non-empty block row
           {
               defaulttype::Vec<NL,Real2> r;  // local block-sized vector to accumulate the product of the block row  with the large vector
 
@@ -1447,7 +1447,7 @@ public:
 
         if( m.rowIndex.empty() ) return; // if m is null
 
-        for( Index xi = 0; xi < rowIndex.size(); ++xi )  // for each non-null block row
+        for( Index xi = 0; xi < (Index)rowIndex.size(); ++xi )  // for each non-null block row
         {
             unsigned mr = 0; // block row index in m
 
@@ -1501,7 +1501,7 @@ public:
 
         if( m.rowIndex.empty() ) return; // if m is null
 
-        for( Index xi = 0 ; xi < rowIndex.size() ; ++xi )  // for each non-null transpose block column
+        for( Index xi = 0 ; xi < (Index)rowIndex.size() ; ++xi )  // for each non-null transpose block column
         {
             unsigned mr = 0; // block row index in m
 
@@ -1709,7 +1709,7 @@ public:
     template<class Dest>
     void addTo(Dest* dest) const
     {
-        for (Index xi = 0; xi < rowIndex.size(); ++xi)
+        for (Index xi = 0; xi < (Index)rowIndex.size(); ++xi)
         {
             Index iN = rowIndex[xi] * NL;
             Range rowRange(rowBegin[xi], rowBegin[xi+1]);

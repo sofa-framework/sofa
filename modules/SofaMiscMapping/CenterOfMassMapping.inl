@@ -49,14 +49,11 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
-
 template <class TIn, class TOut>
 void CenterOfMassMapping<TIn, TOut>::init()
 {
     //get the pointer on the input dofs mass
-    masses = dynamic_cast<BaseMass*> (this->fromModel->getContext()->getMass());
+    masses = dynamic_cast<sofa::core::behavior::BaseMass*> (this->fromModel->getContext()->getMass());
     if(!masses)
         return;
 
@@ -149,8 +146,8 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
 {
     const typename Out::VecCoord &X = this->toModel->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< Vector3 > points;
-    Vector3 point1,point2;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    sofa::defaulttype::Vector3 point1,point2;
     for(unsigned int i=0 ; i<OutCoord::spatial_dimensions ; i++)
     {
         OutCoord v;
@@ -161,7 +158,7 @@ void CenterOfMassMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpar
         points.push_back(point2);
     }
 
-    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(1,1,0,1));
 }
 
 

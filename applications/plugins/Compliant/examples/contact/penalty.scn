@@ -11,7 +11,7 @@
   <NewProximityIntersection alarmDistance=".5" contactDistance=".05" />
   <DefaultContactManager response="PenalityCompliantContact" responseParams="stiffness=1e10"  />
 
-  <AssembledSolver stabilization="0" />
+  <CompliantImplicitSolver stabilization="0" />
   <LDLTSolver projectH="1" />
   
   <Node name="ground">

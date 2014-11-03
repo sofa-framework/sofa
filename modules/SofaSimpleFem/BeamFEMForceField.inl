@@ -48,7 +48,6 @@
 #include "PoissonContainer.h"
 
 
-
 namespace sofa
 {
 
@@ -58,9 +57,6 @@ namespace component
 namespace forcefield
 {
 
-using std::set;
-using namespace sofa::core;
-using namespace sofa::defaulttype;
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField()
@@ -79,6 +75,9 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField()
     , edgeHandler(NULL)
 {
     edgeHandler = new BeamFFEdgeHandler(this, &beamsData);
+
+	_poissonRatio.setRequired(true);
+	_youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>
@@ -97,7 +96,10 @@ BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngMod
     , _assembling(false)
     , edgeHandler(NULL)
 {
-    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);    
+    edgeHandler = new BeamFFEdgeHandler(this, &beamsData);  
+
+	_poissonRatio.setRequired(true);
+	_youngModulus.setReadOnly(true);
 }
 
 template<class DataTypes>
@@ -228,10 +230,7 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 }
 
 template< class DataTypes>
-void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsigned int edgeIndex, BeamInfo &ei,
-        const Edge &,
-        const sofa::helper::vector<unsigned int> &,
-        const sofa::helper::vector<double> &)
+void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsigned int edgeIndex, BeamInfo &ei, const topology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if(ff)
     {
@@ -308,8 +307,6 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 
     df.resize(dx.size());
 
-    unsigned int i=0;
-
     if (_partial_list_segment)
     {
 
@@ -327,6 +324,7 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
     else
     {
         typename VecElement::const_iterator it;
+        unsigned int i = 0;
         for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
@@ -340,7 +338,7 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 }
 
 template<class DataTypes>
-typename BeamFEMForceField<DataTypes>::Real BeamFEMForceField<DataTypes>::peudo_determinant_for_coef ( const Mat<2, 3, Real>&  M )
+typename BeamFEMForceField<DataTypes>::Real BeamFEMForceField<DataTypes>::peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M )
 {
     return  M[0][1]*M[1][2] - M[1][1]*M[0][2] -  M[0][0]*M[1][2] + M[1][0]*M[0][2] + M[0][0]*M[1][1] - M[1][0]*M[0][1];
 }
@@ -410,7 +408,7 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
     beamsData.endEdit();
 }
 
-inline Quat qDiff(Quat a, const Quat& b)
+inline defaulttype::Quat qDiff(defaulttype::Quat a, const defaulttype::Quat& b)
 {
     if (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]<0)
     {
@@ -419,7 +417,7 @@ inline Quat qDiff(Quat a, const Quat& b)
         a[2] = -a[2];
         a[3] = -a[3];
     }
-    Quat q = b.inverse() * a;
+    defaulttype::Quat q = b.inverse() * a;
     //sout << "qDiff("<<a<<","<<b<<")="<<q<<", bq="<<(b*q)<<sendl;
     return q;
 }
@@ -430,7 +428,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    Quat quatA, quatB, dQ;
+    defaulttype::Quat quatA, quatB, dQ;
     Vec3 dW;
 
     quatA = x[a].getOrientation();
@@ -444,10 +442,10 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 
     dW = dQ.toEulerVector();
 
-    double Theta = dW.norm();
+    SReal Theta = dW.norm();
 
 
-    if(Theta>0.0000001)
+    if(Theta>(SReal)0.0000001)
     {
         //std::cout << "beam " << i << " : Theta = " << Theta << std::endl;
         dW.normalize();
@@ -471,7 +469,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 
     beamsData.endEdit();
 
-    Vec<3,Real> u, P1P2, P1P2_0;
+    defaulttype::Vec<3,Real> u, P1P2, P1P2_0;
     // local displacement
     Displacement depl;
 
@@ -486,7 +484,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     depl[6] = u[0]; depl[7] = u[1]; depl[8] = u[2];
 
     // rotations //
-    Quat dQ0, dQ;
+    defaulttype::Quat dQ0, dQ;
 
     // dQ = QA.i * QB ou dQ = QB * QA.i() ??
     dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
@@ -496,7 +494,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     dQ0.normalize();
     dQ.normalize();
 
-    Quat tmpQ = qDiff(dQ,dQ0);
+    defaulttype::Quat tmpQ = qDiff(dQ,dQ0);
     tmpQ.normalize();
 
     u = tmpQ.toEulerVector(); //dQ.toEulerVector() - dQ0.toEulerVector();
@@ -510,11 +508,11 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 
     // Apply lambda transpose (we use the rotation value of point a for the beam)
 
-    Vec3 fa1 = x[a].getOrientation().rotate(Vec3d(force[0],force[1],force[2]));
-    Vec3 fa2 = x[a].getOrientation().rotate(Vec3d(force[3],force[4],force[5]));
+    Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0],force[1],force[2]));
+    Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3],force[4],force[5]));
 
-    Vec3 fb1 = x[a].getOrientation().rotate(Vec3d(force[6],force[7],force[8]));
-    Vec3 fb2 = x[a].getOrientation().rotate(Vec3d(force[9],force[10],force[11]));
+    Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6],force[7],force[8]));
+    Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9],force[10],force[11]));
 
 
     f[a] += Deriv(-fa1, -fa2);
@@ -528,8 +526,8 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
     //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     Displacement local_depl;
-    sofa::defaulttype::Vec<3,Real> u;
-    Quat& q = beamQuat(i); //x[a].getOrientation();
+    defaulttype::Vec<3,Real> u;
+    defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
     q.normalize();
 
     u = q.inverseRotate(getVCenter(dx[a]));
@@ -554,10 +552,10 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
 
     Displacement local_force = beamsData.getValue()[i]._k_loc * local_depl;
 
-    Vec3 fa1 = q.rotate(Vec3d(local_force[0],local_force[1] ,local_force[2] ));
-    Vec3 fa2 = q.rotate(Vec3d(local_force[3],local_force[4] ,local_force[5] ));
-    Vec3 fb1 = q.rotate(Vec3d(local_force[6],local_force[7] ,local_force[8] ));
-    Vec3 fb2 = q.rotate(Vec3d(local_force[9],local_force[10],local_force[11]));
+    Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
+    Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
+    Vec3 fb1 = q.rotate(defaulttype::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
+    Vec3 fb2 = q.rotate(defaulttype::Vec3d(local_force[9],local_force[10],local_force[11]));
 
 
     df[a] += Deriv(-fa1,-fa2) * fact;
@@ -569,12 +567,13 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
-    unsigned int &offset = r.offset;
-    sofa::defaulttype::BaseMatrix* mat = r.matrix;
+    defaulttype::BaseMatrix* mat = r.matrix;
 
     if (r)
     {
         unsigned int i=0;
+
+		unsigned int &offset = r.offset;
 
         if (_partial_list_segment)
         {
@@ -588,8 +587,8 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 Index b = edge[1];
 
                 Displacement local_depl;
-                Vec3d u;
-                Quat& q = beamQuat(i); //x[a].getOrientation();
+                defaulttype::Vec3d u;
+                defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
                 q.normalize();
                 Transformation R,Rt;
                 q.toMatrix(R);
@@ -599,7 +598,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 for (int x1=0; x1<12; x1+=3)
                     for (int y1=0; y1<12; y1+=3)
                     {
-                        Mat<3,3,Real> m;
+                        defaulttype::Mat<3,3,Real> m;
                         K0.getsub(x1,y1, m);
                         m = R*m*Rt;
                         K.setsub(x1,y1, m);
@@ -626,8 +625,8 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 
 
                 Displacement local_depl;
-                Vec3d u;
-                Quat& q = beamQuat(i); //x[a].getOrientation();
+                defaulttype::Vec3d u;
+                defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
                 q.normalize();
                 Transformation R,Rt;
                 q.toMatrix(R);
@@ -637,7 +636,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                 for (int x1=0; x1<12; x1+=3)
                     for (int y1=0; y1<12; y1+=3)
                     {
-                        Mat<3,3,Real> m;
+                        defaulttype::Mat<3,3,Real> m;
                         K0.getsub(x1,y1, m);
                         m = R*m*Rt;
                         K.setsub(x1,y1, m);
@@ -667,7 +666,7 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< Vector3 > points[3];
+    std::vector< defaulttype::Vector3 > points[3];
 
     if (_partial_list_segment)
     {
@@ -679,22 +678,22 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
         for (unsigned int i=0; i<_indexedElements->size(); ++i)
             drawElement(i, points, x);
     }
-    vparams->drawTool()->drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
-    vparams->drawTool()->drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
-    vparams->drawTool()->drawLines(points[2], 1, Vec<4,float>(0,0,1,1));
+    vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,0,1));
+    vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,0,1));
+    vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(0,0,1,1));
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< Vector3 >* points, const VecCoord& x)
+void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* points, const VecCoord& x)
 {
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
     //sout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<sendl;
-    Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
-    Vec3d beamVec;
+    defaulttype::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
+    defaulttype::Vec3d beamVec;
     beamVec[0]=beamsData.getValue()[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
 
-    const Quat& q = beamQuat(i);
+    const defaulttype::Quat& q = beamQuat(i);
     // axis X
     points[0].push_back(p - q.rotate(beamVec) );
     points[0].push_back(p + q.rotate(beamVec) );
@@ -842,7 +841,7 @@ void BeamInfo::computeUinit(Vec3d &P1, Vec3d &P2, Vec3d &LoX1, Vec3d &LoY1, Vec3
 	Vec3d        p2; //position of point2 in local frame (LoX1,LoY1,LoZ1);
 	Vec3d      P1P2, p1p2, p1p2_init, u_init;
 	Vec3d      LoX1_loc, LoY1_loc, LoZ1_loc, LoX2_loc, LoY2_loc, LoZ2_loc;
-	sofa::defaulttype::Mat3x3d    R1;
+	defaulttype::Mat3x3d    R1;
 	NewMAT::ColumnVector Finit(9);
 	NewMAT::ColumnVector Uinit(9);
 	NewMAT::Matrix K(9,9);

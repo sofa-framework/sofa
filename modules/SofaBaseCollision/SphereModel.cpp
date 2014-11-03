@@ -91,10 +91,14 @@ int SphereModelClass = core::RegisterObject("Collision model which represents a 
         ;
 
 #ifndef SOFA_FLOAT
+template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3dTypes>;
+//template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Rigid3dTypes>; // Can't compile due to type mismatches in pFree() method.
 template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3dTypes>;
 template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
+template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Vec3fTypes>;
+//template class SOFA_BASE_COLLISION_API TSphere<defaulttype::Rigid3fTypes>; // Can't compile due to type mismatches in pFree() method.
 template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Vec3fTypes>;
 template class SOFA_BASE_COLLISION_API TSphereModel<defaulttype::Rigid3fTypes>;
 #endif

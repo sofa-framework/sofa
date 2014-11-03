@@ -3,9 +3,10 @@
     <VisualStyle displayFlags="showForceFields" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" draw="1" />
+    <DiscreteIntersection />
     <Node name="Poutre1">
         <EulerImplicit />
-        <CGLinearSolver iterations="10" />
+        <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <Node name="M1">
             <MechanicalyesObject filename="BehaviorModels/smCube27.xs3" dz="-21.0" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />

@@ -66,7 +66,7 @@ void THMPGSpatialHashing::sumEdgeLength_template(core::CollisionModel *cm){
     if(mec == 0)
         return;
 
-    const typename sofa::core::behavior::MechanicalState<DataTypes>::VecCoord & coords = *(mec->getX());
+    const typename sofa::core::behavior::MechanicalState<DataTypes>::VecCoord & coords = mec->read(core::ConstVecCoordId::position())->getValue();
 
     const sofa::core::topology::BaseMeshTopology::SeqEdges & seq_edges = bmt->getEdges();
 

@@ -71,10 +71,15 @@ LMConstraintSolver::LMConstraintSolver()
 
     traceKineticEnergy.setGroup("Statistics");
     this->f_listening.setValue(true);
+
+	numIterations.setRequired(true);
+	maxError.setRequired(true);
 }
 
 void LMConstraintSolver::init()
 {
+	sofa::core::behavior::ConstraintSolver::init();
+
     helper::vector< core::behavior::BaseConstraintCorrection* > listConstraintCorrection;
     ((simulation::Node*) getContext())->get<core::behavior::BaseConstraintCorrection>(&listConstraintCorrection, core::objectmodel::BaseContext::SearchDown);
     for (unsigned int i=0; i<listConstraintCorrection.size(); ++i)
@@ -262,12 +267,12 @@ bool LMConstraintSolver::buildSystem(const core::ConstraintParams *cParams, Mult
 //    cerr<<"-----------LMConstraintSolver::buildSystem " <<  endl;
 
     sofa::helper::AdvancedTimer::stepBegin("SolveConstraints "  + id.getName() + " BuildSystem Prepare");
-    const helper::vector< BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
+    const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
     //Informations to build the matrices
     //Dofs to be constrained
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)
     {
-        BaseLMConstraint *constraint=LMConstraints[mat];
+        sofa::core::behavior::BaseLMConstraint *constraint=LMConstraints[mat];
         if (constraint->getNumConstraint(cParams->constOrder()))
         {
             setDofs.insert(constraint->getSimulatedMechModel1());
@@ -385,7 +390,7 @@ bool LMConstraintSolver::solveSystem(const core::ConstraintParams* cParams, Mult
         cerr << "\n" << c << endl;
     }
 
-    const helper::vector< BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
+    const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
 
     //"Cold" start
     Lambda=VectorEigen::Zero(numConstraint);
@@ -408,7 +413,7 @@ bool LMConstraintSolver::applyCorrection(const core::ConstraintParams* cparams, 
     //************************************************************
     // Updating the state vectors
     // get the displacement. deltaState = M^-1.L^T.lambda : lambda being the solution of the system
-    for (SetDof::iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
+    for (SetDof::iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
     {
         sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         bool updateVelocities=!constraintVel.getValue();
@@ -488,7 +493,7 @@ void LMConstraintSolver::buildLMatrices( ConstOrder Order,
 
 void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToMatrix& invMassMatrices)
 {
-    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
+    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
     {
         const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const unsigned int dimensionDofs=dofs->getDerivDimension();
@@ -603,7 +608,7 @@ void LMConstraintSolver::buildLMatrix( const sofa::core::behavior::BaseMechanica
     {
         const int idxRow=constraintOffset+eq;
 
-        for (std::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); itBlock++)
+        for (std::list< ConstraintBlock >::const_iterator itBlock=blocks.begin(); itBlock!=blocks.end(); ++itBlock)
         {
             const ConstraintBlock &b=(*itBlock);
             const defaulttype::BaseMatrix &m=b.getMatrix();
@@ -676,9 +681,9 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
         unsigned int idxConstraint=0;
         for (unsigned int componentConstraint=0; componentConstraint<LMConstraints.size(); ++componentConstraint)
         {
-            const BaseLMConstraint *constraint=LMConstraints[componentConstraint];
+            const sofa::core::behavior::BaseLMConstraint *constraint=LMConstraints[componentConstraint];
             //Get the vector containing all the constraint stored in one component
-            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
+            const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
 
             unsigned int numConstraintToProcess=0;
             for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess)
@@ -717,9 +722,9 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( MultiVecId id, C
 
         for (unsigned int componentConstraint=0; componentConstraint<numLMConstraintComponents; ++componentConstraint)
         {
-            BaseLMConstraint *constraint=LMConstraints[componentConstraint];
+            sofa::core::behavior::BaseLMConstraint *constraint=LMConstraints[componentConstraint];
             //Get the vector containing all the constraint stored in one component
-            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
+            const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(Order);
 
             unsigned int numConstraintToProcess=0;
             for (unsigned int constraintEntry=0; constraintEntry<constraintOrder.size(); ++constraintEntry, idxConstraint += numConstraintToProcess, ++idxBlocks)
@@ -830,7 +835,6 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
     }
     const unsigned int dimensionDofs=dofs->getDerivDimension();
 
-    unsigned int offset=0;
     //In case of position correction, we need to update the velocities
     if (order==core::ConstraintParams::POS)
     {
@@ -839,7 +843,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         {
             VectorEigen Acorrection=VectorEigen::Zero(dofs->getSize()*(3+4));
             //We have to transform the Euler Rotations into a quaternion
-            offset=0;
+            unsigned int offset=0;
 
             for (int l=0; l<A.rows(); l+=6)
             {
@@ -865,7 +869,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
         else
         {
             std::set< unsigned int >::const_iterator it;
-            for (it=dofUsed.begin(); it!=dofUsed.end(); it++)
+            for (it=dofUsed.begin(); it!=dofUsed.end(); ++it)
             {
                 unsigned int offset=(*it);
                 FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
@@ -878,7 +882,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
             const double h=1.0/getContext()->getDt();
 
             std::set< unsigned int >::const_iterator it;
-            for (it=dofUsed.begin(); it!=dofUsed.end(); it++)
+            for (it=dofUsed.begin(); it!=dofUsed.end(); ++it)
             {
                 unsigned int offset=(*it);
                 FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
@@ -891,7 +895,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
     else
     {
         std::set< unsigned int >::const_iterator it;
-        for (it=dofUsed.begin(); it!=dofUsed.end(); it++)
+        for (it=dofUsed.begin(); it!=dofUsed.end(); ++it)
         {
             unsigned int offset=(*it);
             FullVector<SReal> v(&(A.data()[offset*dimensionDofs]),dimensionDofs);
@@ -911,7 +915,7 @@ void LMConstraintSolver::computeKineticEnergy(MultiVecId id)
     applyCorrection(&cparam, id);
 
     double kineticEnergy=0;
-    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
+    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); ++itDofs)
     {
         const sofa::core::behavior::BaseMechanicalState* dofs=*itDofs;
         const core::behavior::BaseMass *mass=dynamic_cast< core::behavior::BaseMass *>(dofs->getContext()->getMass());

@@ -9,7 +9,7 @@
         <!-- body=soft, lips=very soft, eyes=very stiff-->
         <!-- the order is important: included elements must appear after (lips is included in boby so it appears after)-->
         <EulerImplicit />
-        <CGLinearSolver iterations="10" />
+        <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <UniformMass mass="1" />
         <HexahedronFEMForceField youngModulus="3000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />

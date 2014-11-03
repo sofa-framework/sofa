@@ -35,8 +35,6 @@ namespace component
 {
 namespace container
 {
-using namespace sofa::defaulttype;
-
 
 
 void InterpolatedImplicitSurface::updateCache( DomainCache *cache, defaulttype::Vec3d& pos )

@@ -23,11 +23,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
-
 template<class DataTypes>
 TCapsuleModel<DataTypes>::TCapsuleModel():
       _capsule_radii(initData(&_capsule_radii, "listCapsuleRadii","Radius of each capsule")),
@@ -105,6 +100,7 @@ unsigned int TCapsuleModel<DataTypes>::nbCap()const
 template <class DataTypes>
 void TCapsuleModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
+    using namespace sofa::defaulttype;
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int ncap = getContext()->getMeshTopology()->getNbEdges();
     bool updated = false;
@@ -157,7 +153,7 @@ void TCapsuleModel<DataTypes>::computeBoundingTree(int maxDepth)
 template<class DataTypes>
 void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams,int index)
 {
-    Vec<4,float> col4f(getColor4f());
+    sofa::defaulttype::Vec<4,float> col4f(getColor4f());
     vparams->drawTool()->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
 }
 
@@ -166,7 +162,7 @@ void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (vparams->displayFlags().getShowCollisionModels())
     {
-        Vec<4,float> col4f(getColor4f());
+        sofa::defaulttype::Vec<4,float> col4f(getColor4f());
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());//maybe ??
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 
@@ -273,7 +269,7 @@ bool TCapsule<DataTypes>::shareSameVertex(const TCapsule<DataTypes> & other)cons
 }
 
 template<class DataTypes>
-Quaternion TCapsuleModel<DataTypes>::orientation(int index) const {
+sofa::defaulttype::Quaternion TCapsuleModel<DataTypes>::orientation(int index) const {
     Coord ax(point2(index) - point1(index));
     ax.normalize();
 
@@ -291,7 +287,7 @@ Quaternion TCapsuleModel<DataTypes>::orientation(int index) const {
         rx2 = cross(rx1,ax);
     }
 
-    return Quaternion::createQuaterFromFrame(rx1,ax,rx2);
+    return sofa::defaulttype::Quaternion::createQuaterFromFrame(rx1,ax,rx2);
 }
 
 template<class DataTypes>

@@ -43,6 +43,34 @@ namespace container
 using namespace core::behavior;
 using namespace defaulttype;
 
+//template <>
+//bool MechanicalObject<Vec3dTypes>::addBBox(double* minBBox, double* maxBBox)
+//{
+//    cerr << "MechanicalObject<Vec3dTypes>::addBBox, before min=" << *minBBox <<", max=" << *maxBBox << endl;
+
+//    // participating to bbox only if it is drawn
+//    if( !showObject.getValue() ) return false;
+
+//    const VecCoord& x = *this->getX();
+//    for( std::size_t i=0; i<x.size(); i++ )
+//    {
+//        Vec<3,Real> p;
+//        DataTypes::get( p[0], p[1], p[2], x[i] );
+//        cerr<<"MechanicalObject<Vec3dTypes>::addBBox, p=" << p << endl;
+
+//        assert( DataTypes::spatial_dimensions <= 3 );
+
+//        for( unsigned int j=0 ; j<DataTypes::spatial_dimensions; ++j )
+//        {
+//            if(p[j]<minBBox[j]) minBBox[j]=p[j];
+//            if(p[j]>maxBBox[j]) maxBBox[j]=p[j];
+//        }
+//    }
+//    cerr << "MechanicalObject<Vec3dTypes>::addBBox, after min=" << *minBBox <<", max=" << *maxBBox << endl;
+//    return true;
+//}
+
+
 SOFA_DECL_CLASS(MechanicalObject)
 
 int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
@@ -94,6 +122,8 @@ template class SOFA_BASE_MECHANICS_API MechanicalObject<LaparoscopicRigid3Types>
 
 
 #ifndef SOFA_FLOAT
+
+
 template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q)
 {
@@ -113,7 +143,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize
     if (dest.type == sofa::core::V_COORD)
     {
 
-        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
         const unsigned int nbEntries = src->size()/coordDim;
 
@@ -147,7 +177,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize
     }
     else
     {
-        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
 
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
         const unsigned int nbEntries = src->size()/derivDim;
@@ -171,7 +201,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
 {
     if (dest.type == sofa::core::V_COORD)
     {
-        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
 
         for (unsigned int i=0; i<vDest.size(); i++)
@@ -205,7 +235,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core
     }
     else
     {
-        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
         for (unsigned int i=0; i<vDest.size(); i++)
         {
@@ -234,7 +264,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
         glColor3f(1.0f,1.0f,1.0f);
         float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
-        Mat<4,4, GLfloat> modelviewM;
+        defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         for (int i=0 ; i< vsize ; i++)
         {
@@ -280,7 +310,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
         float scale = showVectorsScale.getValue();
-        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(ConstVecDerivId::velocity());
+        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
         //std::cout << "number of velocity values: " << v_rA.size() << std::endl;
         vector<Vector3> points;
         points.resize(2);
@@ -300,13 +330,13 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
             case 0:
                 points[0] = p1;
                 points[1] = p2;
-                vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1.0,1.0,1.0,1.0));
+                vparams->drawTool()->drawLines(points, 1, Vec4f(1.0,1.0,1.0,1.0));
                 break;
             case 1:
-                vparams->drawTool()->drawCylinder(p1, p2, rad, Vec<4,float>(1.0,1.0,1.0,1.0));
+                vparams->drawTool()->drawCylinder(p1, p2, rad, Vec4f(1.0,1.0,1.0,1.0));
                 break;
             case 2:
-                vparams->drawTool()->drawArrow(p1, p2, rad, Vec<4,float>(1.0,1.0,1.0,1.0));
+                vparams->drawTool()->drawArrow(p1, p2, rad, Vec4f(1.0,1.0,1.0,1.0));
                 break;
             default:
                 serr << "No proper drawing mode found!" << sendl;
@@ -371,7 +401,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize
     if (dest.type == sofa::core::V_COORD)
     {
 
-        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
         const unsigned int nbEntries = src->size()/coordDim;
 
@@ -405,7 +435,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize
     }
     else
     {
-        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
 
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
         const unsigned int nbEntries = src->size()/derivDim;
@@ -428,7 +458,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
 {
     if (dest.type == sofa::core::V_COORD)
     {
-        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(VecCoordId(dest));
+        helper::WriteAccessor< Data<VecCoord> > vDest = *this->write(core::VecCoordId(dest));
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
 
         for (unsigned int i=0; i<vDest.size(); i++)
@@ -462,7 +492,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
     }
     else
     {
-        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(VecDerivId(dest));
+        helper::WriteAccessor< Data<VecDeriv> > vDest = *this->write(core::VecDerivId(dest));
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
         for (unsigned int i=0; i<vDest.size(); i++)
         {
@@ -542,7 +572,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
         float scale = showVectorsScale.getValue();
-        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(ConstVecDerivId::velocity());
+        sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
         //std::cout << "number of velocity values: " << v_rA.size() << std::endl;
         vector<Vector3> points;
         points.resize(2);
@@ -562,13 +592,13 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
             case 0:
                 points[0] = p1;
                 points[1] = p2;
-                vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1.0,1.0,1.0,1.0));
+                vparams->drawTool()->drawLines(points, 1, Vec4f(1.0,1.0,1.0,1.0));
                 break;
             case 1:
-                vparams->drawTool()->drawCylinder(p1, p2, rad, Vec<4,float>(1.0,1.0,1.0,1.0));
+                vparams->drawTool()->drawCylinder(p1, p2, rad, Vec4f(1.0,1.0,1.0,1.0));
                 break;
             case 2:
-                vparams->drawTool()->drawArrow(p1, p2, rad, Vec<4,float>(1.0,1.0,1.0,1.0));
+                vparams->drawTool()->drawArrow(p1, p2, rad, Vec4f(1.0,1.0,1.0,1.0));
                 break;
             default:
                 serr << "No proper drawing mode found!" << sendl;
@@ -623,7 +653,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
         glDisable(GL_LIGHTING);
         float scale = (float)( ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue() );
 
-        Mat<4,4, GLfloat> modelviewM;
+        defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         for (int i=0 ; i< vsize ; i++)
         {
@@ -692,6 +722,7 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
     }
 #endif /* SOFA_NO_OPENGL */
 }
+
 
 }
 

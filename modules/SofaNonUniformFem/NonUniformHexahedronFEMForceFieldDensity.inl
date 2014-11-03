@@ -90,7 +90,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
     if (this->_initialPoints.getValue().size() == 0)
     {
-        const VecCoord& p = *this->mstate->getX0();
+        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         this->_initialPoints.setValue(p);
     }
 
@@ -388,7 +388,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::draw(const core::visua
     if (this->getIndexedElements()->size() == 0) return;
 
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

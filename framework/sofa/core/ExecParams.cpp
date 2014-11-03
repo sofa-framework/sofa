@@ -73,8 +73,6 @@ bool ExecParams::checkValidStorage() const
     }
     if (storage == ts) return true;
     std::cerr << "[THREAD " << ts->threadID << "]: ERROR invalid ExecParams used, belonging to thread " << storage->threadID << std::endl;
-    //sofa::helper::BackTrace::dump();
-    //assert(storage == ts);
     const_cast<ExecParams*>(this)->storage = ts;
     return false;
 }

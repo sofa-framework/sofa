@@ -17,12 +17,12 @@
 		<TetrahedronFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="25"  updateStiffnessMatrix="0"  computeGlobalMatrix="0"  gatherPt=" "  gatherBsize=" " />
 		<Node 	name="Visu" gravity="0 -9.81 0"  >
 			<OglModel template="ExtVec3f" name="Visual"  fileMesh="mesh/smCube125.obj"  material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-			<SubsetMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default4"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Visual" />
+			<SubsetMapping template="Vec3d,ExtVec3f" name="default4"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Visual" />
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0"  >
 			<TSphereModel template="Vec3d" name="default5"  fileSphere="mesh/smCube27b.sph" />
 			<MechanicalObject template="Vec3d" name="default6"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
-			<BarycentricMapping template="Mapping&lt;Vec3d,Vec3d&gt;" name="default7"  input="@.."  output="@." />
+			<BarycentricMapping template="Vec3d,Vec3d" name="default7"  input="@.."  output="@." />
 		</Node>
 	</Node>
 </Node>

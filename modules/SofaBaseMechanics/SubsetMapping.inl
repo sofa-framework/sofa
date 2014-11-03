@@ -313,8 +313,8 @@ const sofa::defaulttype::BaseMatrix* SubsetMapping<TIn, TOut>::getJ()
 
         updateJ = false;
         if (matrixJ.get() == 0 ||
-            matrixJ->rowBSize() != out.size() ||
-            matrixJ->colBSize() != in.size())
+            (unsigned int)matrixJ->rowBSize() != out.size() ||
+            (unsigned int)matrixJ->colBSize() != in.size())
         {
             matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
         }

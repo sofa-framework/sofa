@@ -18,7 +18,7 @@
 
 	<Node name="compliant-stiffness (red)" >
 
-		<AssembledSolver warm_start="true"  />
+		<CompliantImplicitSolver warm_start="true"  />
 
 		
 
@@ -54,7 +54,7 @@
 
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
 
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="true"/>
+    		<LinearMapping template="Vec3d,F331" assemble="true"/>
 
 
 
@@ -62,7 +62,7 @@
 
 					<MechanicalObject  template="E331" name="E"  />
 
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="true" method="svd"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="true" method="svd"/>
 
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assemble="true" isCompliance="false" rayleighStiffness="0" />
 
@@ -78,7 +78,7 @@
 
 				<UniformMass totalMass="250" rayleighMass="10"/>
 
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="true"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="true"/>
 
 			</Node>
 
@@ -88,7 +88,7 @@
 
 				<VisualModel  fileMesh="mesh/torus.obj" color="red" />
 
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 
 			</Node>
 
@@ -106,7 +106,7 @@
 
 	<Node name="compliant-compliant (blue)" activated="0">
 
-		<AssembledSolver warm_start="true" />
+		<CompliantImplicitSolver warm_start="true" />
 
 
 
@@ -142,7 +142,7 @@
 
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
 
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="true"/>
+    		<LinearMapping template="Vec3d,F331" assemble="true"/>
 
 
 
@@ -150,7 +150,7 @@
 
 					<MechanicalObject  template="E331" name="E"  />
 
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="true" method="svd"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="true" method="svd"/>
 
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assemble="true" isCompliance="true" rayleighStiffness="0"  />
 
@@ -170,7 +170,7 @@
 
 				<UniformMass totalMass="250" rayleighMass="10"/>
 
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="true"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="true"/>
 
 			</Node>
 
@@ -180,7 +180,7 @@
 
 				<VisualModel  fileMesh="mesh/torus.obj" color="blue" />
 
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 
 			</Node>
 
@@ -229,7 +229,7 @@
 
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
 
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="false"/>
+    		<LinearMapping template="Vec3d,F331" assemble="false"/>
 
 
 
@@ -237,7 +237,7 @@
 
 					<MechanicalObject  template="E331" name="E"  />
 
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="false" method="svd"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="false" method="svd"/>
 
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assemble="false" isCompliance="false" rayleighStiffness="0"/>	    
 
@@ -253,7 +253,7 @@
 
 				<UniformMass totalMass="250" rayleighMass="10"/>
 
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="false"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="false"/>
 
 			</Node>
 
@@ -263,7 +263,7 @@
 
 				<VisualModel  fileMesh="mesh/torus.obj" color="yellow"/>
 
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 
 			</Node>
 
@@ -314,7 +314,7 @@
 
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
 
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="false"/>
+    		<LinearMapping template="Vec3d,F331" assemble="false"/>
 
 
 
@@ -322,7 +322,7 @@
 
 					<MechanicalObject  template="E331" name="E"  />
 
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="false" method="svd"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="false" method="svd"/>
 
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assemble="false" isCompliance="false"/>	    
 
@@ -338,7 +338,7 @@
 
 				<UniformMass totalMass="250" />
 
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="false"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="false"/>
 
 			</Node>
 
@@ -348,7 +348,7 @@
 
 				<VisualModel  fileMesh="mesh/torus.obj" />
 
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 
 			</Node>
 
@@ -402,7 +402,7 @@
 
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
 
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="false"/>
+    		<LinearMapping template="Vec3d,F331" assemble="false"/>
 
 
 
@@ -410,7 +410,7 @@
 
 					<MechanicalObject  template="E331" name="E"  />
 
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="false" method="svd"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="false" method="svd"/>
 
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0" assemble="false" isCompliance="false"/>	    
 
@@ -426,7 +426,7 @@
 
 				<UniformMass totalMass="250" />
 
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="false"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="false"/>
 
 			</Node>
 
@@ -436,7 +436,7 @@
 
 				<VisualModel  fileMesh="mesh/torus.obj" color="magenta"/>
 
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 
 			</Node>
 

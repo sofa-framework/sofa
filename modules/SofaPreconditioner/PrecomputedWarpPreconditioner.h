@@ -43,16 +43,6 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::core;
-using namespace sofa::defaulttype;
-
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-
 template<class TDataTypes>
 class PrecomputedWarpPreconditionerInternalData
 {
@@ -119,9 +109,9 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename TDataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename behavior::MechanicalState<DataTypes> MState;
+    typedef typename sofa::core::behavior::MechanicalState<DataTypes> MState;
 
-    typedef MatNoInit<3, 3, Real> Transformation;
+    typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
 
     Data<bool> jmjt_twostep;
     Data<bool> f_verbose;
@@ -156,7 +146,7 @@ public:
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         if (dynamic_cast<MState *>(context->getMechanicalState()) == NULL) return false;
-        return BaseObject::canCreate(obj, context, arg);
+        return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
     virtual std::string getTemplateName() const

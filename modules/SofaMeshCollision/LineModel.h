@@ -42,8 +42,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 template<class DataTypes>
 class TLineModel;
 
@@ -93,6 +91,7 @@ public:
     LineActiver() {}
     virtual ~LineActiver() {}
     virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
+	static LineActiver* getDefaultActiver() { static LineActiver defaultActiver; return &defaultActiver; }
 };
 
 template<class TDataTypes>
@@ -342,8 +341,8 @@ inline bool TLine<DataTypes>::activated(core::CollisionModel *cm) const
 //    void updateFromTopology();
 //};
 
-typedef TLineModel<Vec3Types> LineModel;
-typedef TLine<Vec3Types> Line;
+typedef TLineModel<sofa::defaulttype::Vec3Types> LineModel;
+typedef TLine<sofa::defaulttype::Vec3Types> Line;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
 #ifndef SOFA_FLOAT

@@ -15,7 +15,7 @@ namespace mapping {
 	where x is the concatenation of input dofs, in the order specified
 	in fromModel().
 
-	A is given as rows, b as a vector.
+	A is given row-major in a single vector, b as a vector.
 
 	this is mostly useful to python scripts that need to compute
 	arbitrary multimappings.
@@ -55,7 +55,7 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 		value(initData(&value, "value", "offset value")),
 		hard_positions(initData(&hard_positions, 
 								false, 
-								"hard_position", 
+								"hard_positions", 
 								"skip matrix multiplication in apply call: the output value will be hard set to @value")) {
 		
 		// hard positions allows to build arbitrary constraints

@@ -154,7 +154,7 @@ SReal EvalSurfaceDistance<DataTypes>::eval()
                 }
             }
         }
-        it++;
+        ++it;
     }
     return this->doEval(x1, xproj, x0);
 }
@@ -167,7 +167,7 @@ void EvalSurfaceDistance<DataTypes>::draw(const core::visual::VisualParams* )
         return;
     if (!this->mstate1 || !this->mstate2 || xproj.empty()) return;
     const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
-    const VecCoord& x2 = xproj; //*this->mstate2->getX();
+    const VecCoord& x2 = xproj; //this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     this->doDraw(x1, x2);
 }
 

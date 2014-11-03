@@ -46,11 +46,6 @@ namespace component
 
 namespace linearsolver
 {
-using core::VecId;
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
@@ -62,6 +57,9 @@ MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
 {
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
+
+	f_maxIter.setRequired(true);
+	f_tolerance.setRequired(true);
 }
 
 template<class TMatrix, class TVector>

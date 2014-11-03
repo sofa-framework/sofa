@@ -43,8 +43,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 template<class DataTypes>
 class TCapsuleModel;
 
@@ -56,10 +54,10 @@ class TCapsule;
   *defined by its apexes.
   */
 template< class MyReal>
-class TCapsule<StdRigidTypes<3,MyReal> > : public core::TCollisionElementIterator< TCapsuleModel<StdRigidTypes<3,MyReal> > >
+class TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> > : public core::TCollisionElementIterator< TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> > >
 {
 public:
-    typedef StdRigidTypes<3,MyReal> DataTypes;
+    typedef sofa::defaulttype::StdRigidTypes<3,MyReal> DataTypes;
     typedef typename DataTypes::Real   Real;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::CPos Coord;
@@ -91,7 +89,7 @@ public:
         std::cout<<"index "<<this->index<<std::endl;
     }
 
-    bool shareSameVertex(const TCapsule<StdRigidTypes<3,MyReal> > & other)const;
+    bool shareSameVertex(const TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> > & other)const;
 };
 
 
@@ -99,13 +97,13 @@ public:
   *CapsuleModel templated by RigidTypes (frames), direction is given by Y direction of the frame.
   */
 template< class MyReal>
-class TCapsuleModel<StdRigidTypes<3,MyReal> > : public core::CollisionModel
+class TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> > : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TCapsuleModel, SOFA_TEMPLATE2(StdRigidTypes, 3, MyReal)), core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(TCapsuleModel, SOFA_TEMPLATE2(sofa::defaulttype::StdRigidTypes, 3, MyReal)), core::CollisionModel);
 
 
-    typedef StdRigidTypes<3,MyReal> DataTypes;
+    typedef sofa::defaulttype::StdRigidTypes<3,MyReal> DataTypes;
     typedef DataTypes InDataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename  DataTypes::VecDeriv VecDeriv;
@@ -155,7 +153,7 @@ public:
     //Returns the point1-point2 normalized vector
     Coord axis(int index)const;
 
-    const Quaternion orientation(int index)const;
+    const sofa::defaulttype::Quaternion orientation(int index)const;
 
     int point1Index(int index)const;
 
@@ -197,18 +195,18 @@ protected:
 
 
 template<class MyReal>
-inline TCapsule<StdRigidTypes<3,MyReal> >::TCapsule(ParentModel* model, int index)
+inline TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsule(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 
 template<class MyReal>
-inline TCapsule<StdRigidTypes<3,MyReal> >::TCapsule(const core::CollisionElementIterator& i)
+inline TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsule(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-typedef TCapsuleModel<Rigid3Types> RigidCapsuleModel;
-typedef TCapsule<Rigid3Types> RigidCapsule;
+typedef TCapsuleModel<sofa::defaulttype::Rigid3Types> RigidCapsuleModel;
+typedef TCapsule<sofa::defaulttype::Rigid3Types> RigidCapsule;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT

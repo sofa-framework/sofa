@@ -230,7 +230,7 @@ void CudaVisualModel< TDataTypes >::updateTopology()
     int nbv = 0;
     if (!nelems.empty())
         nbv = nelems.rbegin()->first + 1;
-    sout << "CUDA CudaVisualModel: "<<triangles.size()<<" triangles, "<<quads.size()<<" quads, "<<nbv<<"/"<<state->getX()->size()<<" attached points, max "<<nmax<<" elements per point."<<sendl;
+    sout << "CUDA CudaVisualModel: "<<triangles.size()<<" triangles, "<<quads.size()<<" quads, "<<nbv<<"/"<<state->read(core::ConstVecCoordId::position())->getValue().size()<<" attached points, max "<<nmax<<" elements per point."<<sendl;
     initV(triangles.size()+quads.size(), nbv, nmax);
 
     nelems.clear();
@@ -253,8 +253,8 @@ void CudaVisualModel< TDataTypes >::updateTopology()
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::updateNormals()
 {
-    if (!topology || !state || !state->getX()->size()) return;
-    const VecCoord& x = *state->getX();
+    if (!topology || !state || !state->read(core::ConstVecCoordId::position())->getValue().size()) return;
+    const VecCoord& x = state->read(core::ConstVecCoordId::position())->getValue();
     fnormals.resize(nbElement);
     vnormals.resize(x.size());
     if (triangles.size() > 0)
@@ -316,7 +316,7 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
 {
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
-    if (!topology || !state || !state->getX()->size()) return;
+    if (!topology || !state || !state->read(core::ConstVecCoordId::position())->getValue().size()) return;
 
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

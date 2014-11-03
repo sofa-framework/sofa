@@ -26,11 +26,10 @@ namespace CGoGN
 {
 
 inline AttributeMultiVectorGen::AttributeMultiVectorGen(const std::string& strName, const std::string& strType):
-	m_attrName(strName), m_typeName(strType), m_toProcess(true)
+	m_attrName(strName), m_typeName(strType)
 {}
 
-inline AttributeMultiVectorGen::AttributeMultiVectorGen():
-	m_toProcess(true)
+inline AttributeMultiVectorGen::AttributeMultiVectorGen()
 {}
 
 inline AttributeMultiVectorGen::~AttributeMultiVectorGen()
@@ -351,7 +350,7 @@ inline unsigned int AttributeMultiVectorGen::loadBinInfos(CGoGNistream& fs, std:
 	unsigned int len1 = nbs[1];
 	unsigned int len2 = nbs[2];
 
-	char buffer[256];
+    char* buffer = new char[256];
 	fs.read(buffer, (len1+len2)*sizeof(char));
 
 	name = std::string(buffer);
@@ -405,6 +404,13 @@ inline bool AttributeMultiVectorGen::skipLoadBin(CGoGNistream& fs)
 	delete[] ptr;
 
 	return true;
+}
+
+
+template <typename T>
+void AttributeMultiVector<T>::dump(unsigned int i) const
+{
+	CGoGNout << this->operator[](i);
 }
 
 } // namespace CGoGN

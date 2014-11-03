@@ -91,7 +91,6 @@ public:
 	* set the plane of rendering for VR rendering
 	*/
 	void setEyePosition(const Geom::Vec3f& ep);
-
 };
 
 } // namespace Utils

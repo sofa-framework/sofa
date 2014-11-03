@@ -195,7 +195,7 @@ public:
             value_min=cimg::type<T>::max();
             value_max=cimg::type<T>::min();
             cimglist_for(img,l)
-            cimg_forXYZ(img(l),x,y,z)
+                    cimg_forXYZ(img(l),x,y,z)
             {
                 CImg<long double> vect=img(l).get_vector_at(x,y,z);
                 long double val=vect.magnitude();
@@ -205,7 +205,7 @@ public:
             }
             if(value_max==value_min) value_max=value_min+(T)1;
             cimglist_for(img,l)
-            cimg_forXYZ(img(l),x,y,z)
+                    cimg_forXYZ(img(l),x,y,z)
             {
                 CImg<long double> vect=img(l).get_vector_at(x,y,z);
                 long double val=vect.magnitude();
@@ -222,7 +222,7 @@ public:
             value_max=img.max();
             if(value_max==value_min) value_max=value_min+(T)1;
             cimglist_for(img,l)
-            cimg_forXYZC(img(l),x,y,z,c)
+                    cimg_forXYZC(img(l),x,y,z,c)
             {
                 const T val = img(l)(x,y,z,c);
                 long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
@@ -265,11 +265,11 @@ public:
             {
                 Vec<3,unsigned int> pt((unsigned int)helper::round(position[i][0]),(unsigned int)helper::round(position[i][1]),(unsigned int)helper::round(position[i][2]));
                 if(pt[axis]==coord) if(pt[0]>=ROI[0][0] && pt[0]<=ROI[1][0]) if(pt[1]>=ROI[0][1] && pt[1]<=ROI[1][1])	if(pt[2]>=ROI[0][2] && pt[2]<=ROI[1][2])
-                            {
-                                if(axis==0)			ret(pt[2]-ROI[0][2],pt[1]-ROI[0][1])=true;
-                                else if(axis==1)	ret(pt[0]-ROI[0][0],pt[2]-ROI[0][2])=true;
-                                else				ret(pt[0]-ROI[0][0],pt[1]-ROI[0][1])=true;
-                            }
+                {
+                    if(axis==0)			ret(pt[2]-ROI[0][2],pt[1]-ROI[0][1])=true;
+                    else if(axis==1)	ret(pt[0]-ROI[0][0],pt[2]-ROI[0][2])=true;
+                    else				ret(pt[0]-ROI[0][0],pt[1]-ROI[0][1])=true;
+                }
 
             }
         }
@@ -320,7 +320,7 @@ public:
                 for (unsigned int j = 0; j < 4 ; j++)
                 {
                     if(pt[j][axis]==(int)coord) pts.push_back(pt[j]);
-                    unsigned int k=(j==2)?0:j+1;
+                    unsigned int k=(j==3)?0:j+1;
                     if(pt[j][axis]<pt[k][axis])
                     {
                         alpha=((Real)coord-0.5 -v[k][axis])/(v[j][axis]-v[k][axis]); if( alpha>=0 &&  alpha <=1)  pts.push_back(Vec<3,int>((int)helper::round(v[j][0]*alpha + v[k][0]*(1.0-alpha)),(int)helper::round(v[j][1]*alpha + v[k][1]*(1.0-alpha)),(int)helper::round(v[j][2]*alpha + v[k][2]*(1.0-alpha))));
@@ -498,7 +498,7 @@ public:
     //internal data
     helper::Quater<Real> qrotation; Coord axisrotation; Real phirotation; // "rotation" in other formats
 
-    void setCamPos(const Real cx,const Real cy) {this->camx=cx;  this->camy=cy; }
+    void setCamPos(const Real& cx,const Real& cy) {this->camx=cx;  this->camy=cy; }
 
     //internal data update
     virtual void update()
@@ -570,7 +570,7 @@ public:
 
     Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=false)
         :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
-         clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
+          clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
     { }
 
     void setInput(const ImageTypes& _img)
@@ -694,7 +694,7 @@ public:
     const bool& getMergeChannels() const {return this->mergeChannels;}
     void setMergeChannels(const bool _mergeChannels)  {   this->mergeChannels=_mergeChannels;    }
 
-    void setNewPoint(const Coord& newPoint) 
+    void setNewPoint(const Coord& newPoint)
     {
         point = newPoint;
         this->newPointClicked=true;
@@ -714,12 +714,13 @@ public:
 
     void setTime(const Real t, bool repeat=true)
     {
-        if(!this->img)  return;
-        if(!this->img->getDimensions()[4] || !this->transform) return;
+        if(!this->img )  return;
+        unsigned int size = this->img->getCImgList().size();
+        if(!t || !this->transform) return;
         Real t2=this->transform->toImage(t) ;
-        if(repeat) t2-=(Real)((int)((int)t2/this->img->getDimensions()[4])*this->img->getDimensions()[4]);
+        if(repeat) t2-=(Real)((int)((int)t2/size)*size);
         t2=(t2-floor(t2)>0.5)?ceil(t2):floor(t2); // nearest
-        if(t2<0) t2=0.0; else if(t2>=(Real)this->img->getDimensions()[4]) t2=(Real)this->img->getDimensions()[4]-1.0; // clamp
+        if(t2<0) t2=0.0; else if(t2>=(Real)size) t2=(Real)size-1.0; // clamp
         if(this->time!=(unsigned int)t2)
         {
             this->time=(unsigned int)t2;
@@ -784,16 +785,23 @@ public:
 
         for(unsigned int m=0; m<visualModels.size(); m++)
         {
-            ResizableExtVector<Coord> tposition; tposition.resize(visualModels[m]->getVertices().size());
-            for(unsigned int i=0; i<tposition.size(); i++)
-                tposition[i]=transform->toImage(Coord((Real)visualModels[m]->getVertices()[i][0],(Real)visualModels[m]->getVertices()[i][1],(Real)visualModels[m]->getVertices()[i][2]));
+            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
+            //            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->m_positions.getValue();
+//            const ResizableExtVector<int> * extvertPosIdx = &visualModels[m]->m_vertPosIdx.getValue();
 
+            ResizableExtVector<Coord> tposition; tposition.resize(verts.size());
+            unsigned int ind;
+            for(unsigned int i=0; i<tposition.size(); i++)
+            {
+/*                if(!extvertPosIdx->empty()) ind=(*extvertPosIdx)[i]; else */ind=i;
+                tposition[i]=transform->toImage(Coord((Real)verts[ind][0],(Real)verts[ind][1],(Real)verts[ind][2]));
+            }
             helper::ReadAccessor<Data< core::loader::Material > > mat(visualModels[m]->material);
             const unsigned char color[3]= {(unsigned char)helper::round(mat->diffuse[0]*255.),(unsigned char)helper::round(mat->diffuse[1]*255.),(unsigned char)helper::round(mat->diffuse[2]*255.)};
 
             CImg<bool> tmp = this->img->get_slicedModels(index,axis,roi,tposition,visualModels[m]->getTriangles(),visualModels[m]->getQuads());
             cimg_foroff(tmp,off)
-            if(tmp[off])
+                    if(tmp[off])
             {
                 ret.get_shared_channel(0)[off]=color[0];
                 ret.get_shared_channel(1)[off]=color[1];
@@ -873,6 +881,68 @@ public:
 
 
 };
+
+
+////// infos for Data
+
+template<class TDataType>
+struct ImageTypeInfo
+{
+    typedef TDataType DataType;
+    typedef typename DataType::T BaseType;
+    typedef DataTypeInfo<BaseType> BaseTypeInfo;
+    typedef typename BaseTypeInfo::ValueType ValueType;
+    typedef DataTypeInfo<ValueType> ValueTypeInfo;
+
+    enum { ValidInfo       = BaseTypeInfo::ValidInfo       }; ///< 1 if this type has valid infos
+    enum { FixedSize       = 1                             }; ///< 1 if this type has a fixed size  -> always 1 Image
+    enum { ZeroConstructor = 0                             }; ///< 1 if the constructor is equivalent to setting memory to 0  -> I guess so, a default Image is initialzed with nothing
+    enum { SimpleCopy      = 0                             }; ///< 1 if copying the data can be done with a memcpy
+    enum { SimpleLayout    = 0                             }; ///< 1 if the layout in memory is simply N values of the same base type
+    enum { Integer         = 0                             }; ///< 1 if this type uses integer values
+    enum { Scalar          = 0                             }; ///< 1 if this type uses scalar values
+    enum { Text            = 0                             }; ///< 1 if this type uses text values
+    enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write -> it seems to be THE important option not to perform too many copies
+
+    enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
+    static size_t size() { return 1; }
+
+    static size_t size(const DataType& /*data*/) { return 1; }
+
+    static void setSize(DataType& /*data*/, size_t /*size*/) {  }
+
+    template <typename T>
+    static void getValue(const DataType &/*data*/, size_t /*index*/, T& /*value*/)
+    {
+        return;
+    }
+
+    template<typename T>
+    static void setValue(DataType &/*data*/, size_t /*index*/, const T& /*value*/ )
+    {
+        return;
+    }
+
+    static void getValueString(const DataType &data, size_t index, std::string& value)
+    {
+        if (index != 0) return;
+        std::ostringstream o; o << data; value = o.str();
+    }
+
+    static void setValueString(DataType &data, size_t index, const std::string& value )
+    {
+        if (index != 0) return;
+        std::istringstream i(value); i >> data;
+    }
+};
+
+
+//template<class T>
+//struct DataTypeInfo< Image<T> > : public ImageTypeInfo< Image<T> >
+//{
+//    static std::string name() { std::ostringstream o; o << "Image<" << DataTypeName<T>::name() << ">"; return o.str(); }
+//};
+
 
 
 } // namespace defaulttype

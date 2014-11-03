@@ -1,10 +1,11 @@
 <!-- Mechanical SubsetMapping Group Basic Example -->
-<Node name="root" dt="0.01" gravity="0 -9.6 0" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showForceFields="0" showWireFrame="0" showInteractionForceFields="1">
-	<CollisionPipeline depth="6" verbose="0" draw="0"/>
+<Node name="root" dt="0.01" gravity="0 -9.6 0">
+    <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe" />
+    <CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2" />
 	<LocalMinDistance name="Proximity"  alarmDistance="0.006" contactDistance="0.001" coneFactor="0.3" angleCone="0.01" filterIntersection="true"/>
 	<CollisionResponse name="Response" response="NeedleContact"/>
-		
+
 	<Node name="sutureSoftCubes">
 		<EulerImplicit name="TissueSolver" printLog="false" rayleighStiffness="0.3" rayleighMass="0.2"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -17,9 +18,9 @@
 				zmin="-0.05" zmax="0.05"
 		/>
 		<!--<TetrahedronFEMForceField name="FEM" youngModulus="1e3" poissonRatio="0.4" computeGlobalMatrix="false" method="large"/>-->
-		<BoxROI name="box_roi" box="-0.06 -0.001 -0.06 0.06 0.001 0.06   -0.052 -0.001 -0.06 -0.048 0.011 0.06    0.048 -0.001 -0.06 0.052 0.011 0.06" /> 
-		<FixedConstraint indices="@box_roi.indices" />			
-		
+		<BoxROI name="box_roi" box="-0.06 -0.001 -0.06 0.06 0.001 0.06   -0.052 -0.001 -0.06 -0.048 0.011 0.06    0.048 -0.001 -0.06 0.052 0.011 0.06" />
+		<FixedConstraint indices="@box_roi.indices" />
+
 		<Node name="subCube1">
 			<MechanicalObject template="Vec3d"/>
 			<RegularGrid name="grid"
@@ -47,7 +48,7 @@
 					<OglShaderDefineMacro id="USE_TEXTURE" />
 					<OglTexture2D id="colorTexture" texture2DFilename="textures/skin2.png" textureUnit="1" repeat="true" />
 					<BarycentricMapping input="@../.." output="@Visual"/>
--->					
+-->
 					<OglModel name="Visual1" color="0.3 1 0.3 1"/>
 					<IdentityMapping input="@../.." output="@Visual1"/>
 
@@ -56,8 +57,8 @@
 					<Point group="2" name="cube2_collis_point"/>
 				</Node>
 			</Node>
-		</Node>		
-		
+		</Node>
+
 		<Node name="subCube2">
 			<MechanicalObject template="Vec3d"/>
 			<RegularGrid name="grid"
@@ -85,17 +86,17 @@
 					<OglShaderDefineMacro id="USE_TEXTURE" />
 					<OglTexture2D id="colorTexture" texture2DFilename="textures/skin2.png" textureUnit="1" repeat="true" />
 					<BarycentricMapping input="@../.." output="@Visual"/>
- -->					
+ -->
 					<OglModel name="Visual2" color="0.3 0.3 1 1"/>
 					<IdentityMapping input="@../.." output="@Visual2"/>
-					
+
 					<Triangle group="3" name="cube2_collis_tri"/>
 					<Line group="3"  name="cube2_collis_line"/>
 					<Point group="3" name="cube2_collis_point"/>
 				</Node>
 			</Node>
-		</Node>	
-		
+		</Node>
+
 		<Node name="subCube3">
 			<MechanicalObject template="Vec3d"/>
 			<RegularGrid name="grid"
@@ -119,11 +120,11 @@
 					<TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 					<Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" flipNormals="1" />
 					<OglModel name="Visual3" color="1 0.3 0.1 1"/>
-					<IdentityMapping input="@../.." output="@Visual3"/>				
+					<IdentityMapping input="@../.." output="@Visual3"/>
 				</Node>
 			</Node>
-		</Node>	
-	</Node>	
-	
-	
+		</Node>
+	</Node>
+
+
 </Node>

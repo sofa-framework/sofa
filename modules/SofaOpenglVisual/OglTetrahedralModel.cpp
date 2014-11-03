@@ -33,7 +33,7 @@ namespace component
 namespace visualmodel
 {
 
-
+using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(OglTetrahedralModel)
 

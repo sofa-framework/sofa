@@ -35,6 +35,9 @@
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/ViewerFactory.h>
 
+#include <set>
+#include <string>
+
 #ifdef SOFA_QT4
 #   include <Q3ListViewItem>
 typedef Q3ListViewItem QListViewItem;
@@ -249,6 +252,9 @@ protected:
     std::string simulation_name;
     std::string gnuplot_directory;
     std::string pathDumpVisitor;
+    
+    /// Keep track of log files that have been modified since the GUI started
+    std::set<std::string>   m_modifiedLogFiles;
 
 private:
     //currently unused: scale is experimental
@@ -278,7 +284,7 @@ public:
 
     virtual void setTitle( std::string windowTitle );
     virtual void fileSaveAs(Node* node,const char* filename);
-    virtual void saveXML();
+//    virtual void saveXML();
 
     virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen(bool enable = true);
@@ -435,6 +441,8 @@ protected slots:
 
 	void toolsDockMoved(Q3DockWindow::Place p);
 	void propertyDockMoved(Q3DockWindow::Place p);
+
+    void appendToDataLogFile(QString);
 
 signals:
     void reload();

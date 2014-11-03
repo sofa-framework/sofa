@@ -44,22 +44,20 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
 
 template<class T>
 bool RayDiscreteIntersection::testIntersection(Ray& ray1, TSphere<T>& sph2)
 {
     //sout<<"intersectionSphereRay: Collision between Sphere - Ray"<<sendl;
     // Center of the sphere
-    const Vector3 sph2Pos(sph2.center());
+    const defaulttype::Vector3 sph2Pos(sph2.center());
     // Radius of the sphere
     const SReal radius1 = sph2.r();
 
-    const Vector3 ray1Origin(ray1.origin());
-    const Vector3 ray1Direction(ray1.direction());
+    const defaulttype::Vector3 ray1Origin(ray1.origin());
+    const defaulttype::Vector3 ray1Direction(ray1.direction());
     const SReal length2 = ray1.l();
-    const Vector3 tmp = sph2Pos - ray1Origin;
+    const defaulttype::Vector3 tmp = sph2Pos - ray1Origin;
     const SReal rayPos = tmp*ray1Direction;
     const SReal rayPosInside = std::max(std::min(rayPos,length2),(SReal)0.0);
     const SReal dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
@@ -70,14 +68,14 @@ template<class T>
 int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, OutputVector* contacts)
 {
     // Center of the sphere
-    const Vector3 sph2Pos(sph2.center());
+    const defaulttype::Vector3 sph2Pos(sph2.center());
     // Radius of the sphere
     const SReal radius1 = sph2.r();
 
-    const Vector3 ray1Origin(ray1.origin());
-    const Vector3 ray1Direction(ray1.direction());
+    const defaulttype::Vector3 ray1Origin(ray1.origin());
+    const defaulttype::Vector3 ray1Direction(ray1.direction());
     const SReal length2 = ray1.l();
-    const Vector3 tmp = sph2Pos - ray1Origin;
+    const defaulttype::Vector3 tmp = sph2Pos - ray1Origin;
     const SReal rayPos = tmp*ray1Direction;
     const SReal rayPosInside = std::max(std::min(rayPos,length2),(SReal)0.0);
     const SReal dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
@@ -87,7 +85,7 @@ int RayDiscreteIntersection::computeIntersection(Ray& ray1, TSphere<T>& sph2, Ou
     const SReal dist = sqrt(dist2);
 
     contacts->resize(contacts->size()+1);
-    DetectionOutput *detection = &*(contacts->end()-1);
+    sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
     detection->point[0] = ray1Origin + ray1Direction*rayPosInside;
     detection->normal = sph2Pos - detection->point[0];

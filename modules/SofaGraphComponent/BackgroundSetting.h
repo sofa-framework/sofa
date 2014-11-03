@@ -39,8 +39,6 @@ namespace component
 namespace configurationsetting
 {
 
-using namespace sofa::core::objectmodel;
-
 ///Class for the configuration of background settings.
 class SOFA_GRAPH_COMPONENT_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
 {
@@ -50,7 +48,7 @@ protected:
     BackgroundSetting();    ///< Default constructor
 public:
     Data<defaulttype::Vector3> color;   ///< Color of the Background of the Viewer.
-    DataFileName image;                 ///< Image to be used as background of the viewer.
+    sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
 
 };
 

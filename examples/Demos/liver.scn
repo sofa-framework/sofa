@@ -1,8 +1,10 @@
 <?xml version="1.0" ?>
-<Node name="root" gravity="0 -9.81 0" dt="0.02">
+<Node name="lroot" gravity="0 -9.81 0" dt="0.02">
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
+    <DiscreteIntersection/>
+	
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver"  />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -18,7 +20,7 @@
             <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
         </Node>
         <Node name="Surf" gravity="0 -9.81 0">
-	    <SphereLoader filename="mesh/liver.sph" />
+            <SphereLoader filename="mesh/liver.sph" />
             <MechanicalObject name="spheres" position="@[-1].position" />
             <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
             <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />

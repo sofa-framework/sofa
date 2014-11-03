@@ -7,7 +7,7 @@
 	
 	
 	<!-- euler implicit solver -->
-	<AssembledSolver stabilization_damping="0" neglecting_compliance_forces_in_geometric_stiffness="false"/>
+	<CompliantImplicitSolver stabilization_damping="0" neglecting_compliance_forces_in_geometric_stiffness="false"/>
 	
 	<!-- numerical solver -->
 	<SequentialSolver precision="1e-10" iterations="100" />
@@ -33,18 +33,11 @@
 	    <!-- soft spring in stiffness -->
 	    <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-2" isCompliance="false" />
 
-
 	    <!-- negative extension above limit, two ways to implement the same unilateral constraint -->
 	    <Node name="limits" >
 		    <MechanicalObject template="Vec1d"  name="extensionsDOF" />
-		    
-<!-- 		    - first way -->
-<!-- 		    <DifferenceFromTargetMapping template="Vec1d" targets="1" inverted="1"/> -->
-<!--                - second way-->
-		    <OffsetMapping offsets="1" inverted="1"/>
-		    
+		    <DifferenceFromTargetMapping targets="1" inverted="1"/>
 		    <UniformCompliance name="ucomp" template="Vec1d" compliance="0" />
-		    <ConstraintValue />
 		    <UnilateralConstraint />
 	    </Node>
 	    

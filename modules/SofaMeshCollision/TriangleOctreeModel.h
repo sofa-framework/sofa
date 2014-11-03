@@ -42,8 +42,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 class SOFA_MESH_COLLISION_API TriangleOctreeModel : public  TriangleModel, public TriangleOctreeRoot
 {
 public:
@@ -57,8 +55,8 @@ public:
 #endif
 
     /// the normals for each point
-    vector<Vector3> pNorms;
-    //vector < Vector4 > octreeVec;
+    vector<defaulttype::Vector3> pNorms;
+    //vector < defaulttype::Vector4 > octreeVec;
     void draw(const core::visual::VisualParams* vparams);
     virtual void computeBoundingTree(int maxDepth=0);
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);

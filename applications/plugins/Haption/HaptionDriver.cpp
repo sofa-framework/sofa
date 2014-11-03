@@ -109,7 +109,24 @@ HaptionDriver::HaptionDriver()
      posBase(initData(&posBase, "positionBase","Position of the interface base in the scene world coordinates")),
      torqueScale(initData(&torqueScale, 0.5, "torqueScale","Default scale applied to the Haption torque. ")),
      forceScale(initData(&forceScale, 1.0, "forceScale","Default scale applied to the Haption force. ")),
-     ip_haption(initData(&ip_haption,std::string("localhost"),"ip_haption","ip of the device"))
+     ip_haption(initData(&ip_haption,std::string("localhost"),"ip_haption","ip of the device")),
+     m_speedFactor(1.0),
+     m_forceFactor(1.0),
+     haptic_time_step(0.003f),
+     connection_device(0),
+     initCallback(false),
+     nodeHaptionVisual(NULL),
+     visualHaptionDOF(NULL),
+     nodeAxesVisual(NULL),
+     visualAxesDOF(NULL),
+     oldScale(0),
+     changeScale(0),
+     visuAxes(false),
+     modX(false),
+     modY(false),
+     modZ(false),
+     modS(false),
+     visuActif(false)
 {
     rigidDOF=NULL;
 }
@@ -135,15 +152,7 @@ void HaptionDriver::init()
     ip_char[ip_haption.getValue().size()] = '\0';
     connection_device = initDevice(ip_char);
     delete[] ip_char;
-    initCallback=false;
     myData.forceFeedback = NULL;
-
-
-    //visual
-    visualHaptionDOF = NULL;
-    visualAxesDOF = NULL;
-    nodeHaptionVisual = NULL;
-    nodeAxesVisual = NULL;
 
 
     if(visualHaptionDOF == NULL && visualAxesDOF == NULL)
@@ -154,7 +163,6 @@ void HaptionDriver::init()
 
         //Haption node
         nodeHaptionVisual = sofa::simulation::getSimulation()->createNewGraph("nodeHaptionVisual");
-        visuActif=false;
         if(haptionVisu.getValue())
         {
             sofa::simulation::tree::GNode *parent = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
@@ -276,11 +284,6 @@ void HaptionDriver::init()
         changeScale=false;
     }
 
-    visuAxes = false;
-    modX=false;
-    modY=false;
-    modZ=false;
-    modS=false;
 
 
 

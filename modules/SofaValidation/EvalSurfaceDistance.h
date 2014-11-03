@@ -48,8 +48,6 @@ namespace misc
 {
 
 
-using namespace core::behavior;
-
 /** Compute the distance between surfaces in two objects
 */
 template<class TDataTypes>

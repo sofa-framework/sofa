@@ -28,8 +28,6 @@
 #include <SofaEngine/ClusteringEngine.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -39,11 +37,6 @@ namespace component
 
 namespace engine
 {
-
-
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
 
 template <class DataTypes>
 ClusteringEngine<DataTypes>::ClusteringEngine()
@@ -64,7 +57,7 @@ ClusteringEngine<DataTypes>::ClusteringEngine()
 template <class DataTypes>
 void ClusteringEngine<DataTypes>::init()
 {
-    this->mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    this->mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     addInput(&radius);
     addInput(&fixedRadius);
     addInput(&number);
@@ -211,9 +204,9 @@ void ClusteringEngine<DataTypes>::farthestPointSampling(VI& ptIndices,VI& vorono
         for (unsigned int i=0; i<nbp; i++) if(distances[i]>dmax) {dmax=distances[i]; imax=(ID)i;}
         if(dmax==0) break;
         else ptIndices.push_back(imax);
-        std::cout<<"ClusteringEngine :"<<(int)floor(100.*(double)ptIndices.size()/(double)nbc)<<" % done\r";
+        sout<<"ClusteringEngine :"<<(int)floor(100.*(double)ptIndices.size()/(double)nbc)<<" % done\r";
     }
-    std::cout<<"ClusteringEngine :100 % done\n";
+    sout<<"ClusteringEngine :100 % done\n";
 
     if(this->topo && this->useTopo.getValue()) 	dijkstra(ptIndices , distances, voronoi);
     else Voronoi(ptIndices , distances, voronoi);
@@ -305,11 +298,11 @@ bool ClusteringEngine<DataTypes>::load()
     sofa::helper::WriteAccessor< Data< VVI > > clust = this->cluster;
     clust.clear();
 
-    bool usetopo; fileStream >> usetopo;	this->useTopo.setValue(usetopo);
-    Real rad; fileStream >> rad;		this->radius.setValue(usetopo);
-    fileStream >> rad;		this->fixedRadius.setValue(usetopo);
+    bool usetopo; fileStream >> usetopo;	this->useTopo.setValue(usetopo,true);
+    Real rad; fileStream >> rad;		this->radius.setValue(usetopo,true);
+    fileStream >> rad;		this->fixedRadius.setValue(usetopo,true);
     unsigned int nb; fileStream >> nb;			clust.resize(nb);
-    int numb; fileStream >> numb;		this->number.setValue(usetopo);
+    int numb; fileStream >> numb;		this->number.setValue(usetopo,true);
 
     for (unsigned int i=0; i<nb; ++i)
     {
@@ -320,7 +313,7 @@ bool ClusteringEngine<DataTypes>::load()
     loadedFilename = fname;
     sout << "ClusteringEngine: loaded clusters from "<<fname<<sendl;
     //if (this->f_printLog.getValue())
-    std::cout << "ClusteringEngine: loaded clusters from "<<fname<<endl;
+    std::cout << "ClusteringEngine: loaded clusters from "<<fname<<std::endl;
     return true;
 }
 
@@ -342,18 +335,18 @@ bool ClusteringEngine<DataTypes>::save()
     fileStream << this->fixedRadius.getValue() << " ";
     fileStream << clust.size() << " ";
     fileStream << this->number.getValue() << " ";
-    fileStream << endl;
+    fileStream << std::endl;
 
     for (unsigned int i=0; i<clust.size(); ++i)
     {
         fileStream << clust[i].size() << " ";
         for (unsigned int j=0; j< clust[i].size(); ++j) fileStream << clust[i][j] << " ";
-        fileStream << endl;
+        fileStream << std::endl;
     }
 
     sout << "ClusteringEngine: saved clusters in "<<fname<<sendl;
     //if (this->f_printLog.getValue())
-    std::cout << "ClusteringEngine: saved clusters in "<<fname<<endl;
+    std::cout << "ClusteringEngine: saved clusters in "<<fname<<std::endl;
 
     return true;
 }

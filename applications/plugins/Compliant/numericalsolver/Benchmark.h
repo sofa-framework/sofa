@@ -6,13 +6,14 @@
 
 #include <Eigen/Core>
 
-#ifndef BOOST_CHRONO_HEADER_ONLY
-#define BOOST_CHRONO_HEADER_ONLY // to be able to use boost::chrono without linking with precompiled boost-chrono
-#endif
-
+// Use Boost.Chrono as a header-only library, and avoid depending on
+// Boost.System.  Quote from the Boost.Chrono documentation:
+// "When BOOST_CHRONO_HEADER_ONLY is defined the lib is header-only. However, you
+// will either need to define BOOST_CHRONO_DONT_PROVIDE_HYBRID_ERROR_HANDLING or
+// link with Boost.System."
+#define BOOST_CHRONO_HEADER_ONLY
+#define BOOST_CHRONO_DONT_PROVIDE_HYBRID_ERROR_HANDLING
 #include <boost/chrono.hpp>
-#undef BOOST_CHRONO_HEADER_ONLY
-
 
 namespace sofa {
 namespace component {

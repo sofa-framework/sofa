@@ -41,10 +41,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class computes the laplacian smooth of a mesh
  */
@@ -71,8 +67,8 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
     Data<VecCoord> input_position;
-    Data<VecCoord> output_position;
     Data<helper::vector <unsigned int> > input_indices;
+    Data<VecCoord> output_position;
 
     Data<unsigned int> nb_iterations;
 
@@ -93,7 +89,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SmoothMeshEngine_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API SmoothMeshEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

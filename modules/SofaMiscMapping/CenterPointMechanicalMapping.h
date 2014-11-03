@@ -90,29 +90,21 @@ protected:
     core::topology::BaseMeshTopology* outputTopo;
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CENTERPOINTMECHANICALMAPPING_CPP)  //// ATTENTION PB COMPIL WIN3Z
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterPointMechanicalMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3dTypes >;
 #endif
 #endif
 #endif

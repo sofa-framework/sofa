@@ -32,8 +32,10 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/helper/RandomGenerator.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/RandomGenerator.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
@@ -149,6 +151,7 @@ struct DefGradientTypes
         {
             return getVec().norm();
         }
+
     };
 
     typedef vector<Deriv> VecDeriv;
@@ -187,8 +190,14 @@ struct DefGradientTypes
     {
         Deriv result;
         for( unsigned int i=0 ; i<VSize ; ++i )
-            result[i] = rand()*maxValue/RAND_MAX;
+            result[i] = helper::symrand(maxValue);
         return result;
+    }
+
+    /// for finite difference methods 
+    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    {
+        return (Deriv)(c1-c2);
     }
 
 };

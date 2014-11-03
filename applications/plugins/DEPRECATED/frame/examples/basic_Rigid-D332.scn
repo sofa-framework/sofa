@@ -20,28 +20,28 @@
      			<MechanicalObject  template="DeformationGradient332" name="PointSet"  useMask="0"  showObject="1" showObjectScale="0.05"/>
 -->
 
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient332&gt;"  name="PMapping" input="@../DOFs"  output="@PointSet"  />
+			<FrameBlendingMapping template="Rigid,DeformationGradient332"  name="PMapping" input="@../DOFs"  output="@PointSet"  />
 			<GreenLagrangeForceField template="DeformationGradient332"   printLog="0" />
 		</Node>
 		<Node name="Collision">
 			<MeshObjLoader name="MeshLoader" filename="mesh/beam.obj"/>
     		  	<Mesh src="@MeshLoader" color="green" /> 
      		 	<MechanicalObject  name="PointSet"  />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="CMapping" input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="Rigid,Vec3d" name="CMapping" input="@../DOFs"  output="@PointSet" />
 		</Node>
 		<Node name="Visu">
 			<OglModel name="Beam" fileMesh="mesh/beam.obj" normals="0"   color="0.5 .4 .15 1" />
-			<FrameBlendingMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VMapping"  input="@../DOFs"  output="@Beam"/>
+			<FrameBlendingMapping template="Rigid,ExtVec3f" name="VMapping"  input="@../DOFs"  output="@Beam"/>
 		</Node>
 
 		<!-- frame/frame mapping -->
 		<!-- <Node name="AffineFrameMapping">
 			<MechanicalObject template="FrameAffine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,FrameAffine;" input="@../DOFs"  output="@MappedDOFs" />
+			<FrameBlendingMapping template="Rigid,FrameAffine;" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
 		<Node name="RigidFrameMapping">
 			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Rigid;" input="@../DOFs"  output="@MappedDOFs" />
+			<FrameBlendingMapping template="Rigid,Rigid;" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>-->
 	</Node>	
 	
@@ -61,7 +61,7 @@
      			<MechanicalObject  template="DeformationGradient332" name="PointSet"  useMask="0"  showObject="1" showObjectScale="0.05"/>
 -->
 
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,DeformationGradient332&gt;"  name="PMappingDQ" useDQ="1" input="@../DOFs"  output="@PointSet"  />
+			<FrameBlendingMapping template="Rigid,DeformationGradient332"  name="PMappingDQ" useDQ="1" input="@../DOFs"  output="@PointSet"  />
 			<GreenLagrangeForceField template="DeformationGradient332"   printLog="0" />
 		</Node>
 		<Node name="Collision">
@@ -69,21 +69,21 @@
     		  	<Mesh src="@MeshLoader" color="green" /> 
      		 	<MechanicalObject  name="PointSet"  />
       			<Triangle />
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="CMappingDQ" useDQ="1" input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="Rigid,Vec3d" name="CMappingDQ" useDQ="1" input="@../DOFs"  output="@PointSet" />
 		</Node>
 		<Node name="Visu">
 			<OglModel name="Beam" fileMesh="mesh/beam.obj" normals="0"   color="0.5 .4 1 1" />
-			<FrameBlendingMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="VMappingDQ"  useDQ="1" input="@../DOFs"  output="@Beam"/>
+			<FrameBlendingMapping template="Rigid,ExtVec3f" name="VMappingDQ"  useDQ="1" input="@../DOFs"  output="@Beam"/>
 		</Node>
 
 		<!-- frame/frame mapping -->
 		<!-- <Node name="AffineFrameMapping">
 			<MechanicalObject template="FrameAffine" name="MappedDOFs" useMask="0" position="0 0 0 [1 0 0, 0 1 0, 0 0 1]" showObject="1" showObjectScale="0.5"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,FrameAffine;" useDQ="1" input="@../DOFs"  output="@MappedDOFs" />
+			<FrameBlendingMapping template="Rigid,FrameAffine;" useDQ="1" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>
 		<Node name="RigidFrameMapping">
 			<MechanicalObject template="Rigid" name="MappedDOFs" useMask="0" position="0 0 0 0 0 0 1" showObject="1" showObjectScale="0.5"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;Rigid,Rigid;" useDQ="1" input="@../DOFs"  output="@MappedDOFs" />
+			<FrameBlendingMapping template="Rigid,Rigid;" useDQ="1" input="@../DOFs"  output="@MappedDOFs" />
 		</Node>-->
 	</Node>		
 	

@@ -4,6 +4,7 @@ project(SofaFramework_test)
 
 set(SOURCE_FILES
     defaulttype/VecTypesTest.cpp
+    defaulttype/MatTypesTest.cpp
     helper/system/atomicTest.cpp
     helper/system/FileSystemTest.cpp
     helper/system/UtilsTest.cpp

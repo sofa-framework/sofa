@@ -26,7 +26,7 @@
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
-	    	<BarycentricMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+	    	<BarycentricMapping template="Vec3d,ExtVec3f"/>
 	    </Node>
     </Node>
 
@@ -60,11 +60,11 @@
 <!--    <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 -1 -1"/> -->
 <!--    <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 -1 -1"/> -->
 		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;"  />
+	    	<LinearMapping template="Affine,F331"  />
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" name="E"  /> 
-		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;"    />
+		    <GreenStrainMapping template="F331,E331"    />
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/> 
 
 		</Node>
@@ -77,18 +77,18 @@
 	      <Mesh name="mesh" src="@loader" />
 	      <MechanicalObject />
 	      <UniformMass totalMass="20" />
-	      <LinearMapping template="Mapping&lt;Affine,Vec3d&gt;"  />
+	      <LinearMapping template="Affine,Vec3d"  />
         </Node>
 
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" src="@../loader" /> 
 		<MechanicalObject  template="Vec3d" name="pts"  useMask="1"  />
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+	    	<LinearMapping template="Affine,ExtVec3f"/>
 	    </Node>
     </Node>
 

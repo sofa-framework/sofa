@@ -6,20 +6,20 @@
     <DefaultContactManager name="Response" response="default" />
     <Node name="Object" gravity="0 -9.81 0">
         <EulerImplicitSolver name="Implicit Euler Solver" />
-        <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
+        <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology name="Embedded Sparse Grid" fileTopology="mesh/dragon.obj" n="7 6 5" />
         <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0" />
         <UniformMass template="Vec3d" name="Mass" />
-        <HexahedronFEMForceField template="Vec3d" name="FEM" youngModulus="200" />
+        <HexahedronFEMForceField template="Vec3d" name="FEM" poissonRatio="0.45" youngModulus="200" />
         <Node name="VisualNode" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="Objective" fileMesh="mesh/dragon.obj" />
-            <BarycentricMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="Visual Mapping" output="@Objective"  />
+            <BarycentricMapping template="Vec3d,ExtVec3f" name="Visual Mapping" output="@Objective"  />
         </Node>
         <Node name="CollisionNode" gravity="0 -9.81 0">
             <MeshTopology name="Mesh" fileTopology="mesh/cube.obj" />
             <MechanicalObject template="Vec3d" name="CollisionObject" scale3d="6 6 6" restScale="1" />
             <SphereModel name="Spheres" contactStiffness="1000" />
-            <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="MechanicalMapping"  />
+            <BarycentricMapping template="Vec3d,Vec3d" name="MechanicalMapping"  />
         </Node>
     </Node>
     <Node name="Obstacle" gravity="0 -9.81 0">

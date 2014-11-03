@@ -49,11 +49,6 @@ namespace projectiveconstraintset
 {
 
 
-
-
-using namespace sofa::component::topology;
-
-
 template<class DataTypes>
 class PartialLinearMovementConstraintInternalData
 {
@@ -151,13 +146,13 @@ public:
 
     virtual void draw(const core::visual::VisualParams*);
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >
     {
     public:
         typedef typename PartialLinearMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(PartialLinearMovementConstraint<DataTypes>* _lc, PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), lc(_lc) {}
+        FCPointHandler(PartialLinearMovementConstraint<DataTypes>* _lc, sofa::component::topology::PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >(_data), lc(_lc) {}
 
 
 

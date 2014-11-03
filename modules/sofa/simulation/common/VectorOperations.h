@@ -47,7 +47,7 @@ class SOFA_SIMULATION_COMMON_API VectorOperations : public sofa::core::behavior:
 {
 public:
 
-    VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext* ctx);
+    VectorOperations(const sofa::core::ExecParams* params, sofa::core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder=false);
 
     /// Allocate a temporary vector
     void v_alloc(sofa::core::MultiVecCoordId& v);

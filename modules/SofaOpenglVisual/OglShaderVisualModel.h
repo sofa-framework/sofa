@@ -54,8 +54,8 @@ public:
 
 protected:
 
-    typedef ExtVec3fTypes::Coord Coord;
-    typedef ExtVec3fTypes::VecCoord VecCoord;
+    typedef sofa::defaulttype::ExtVec3fTypes::Coord Coord;
+    typedef sofa::defaulttype::ExtVec3fTypes::VecCoord VecCoord;
 
     GLuint abo;
     OglShader* shader;

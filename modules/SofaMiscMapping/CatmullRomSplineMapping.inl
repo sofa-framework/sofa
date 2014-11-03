@@ -51,10 +51,6 @@ namespace component
 namespace mapping
 {
 
-using helper::WriteAccessor;
-using helper::ReadAccessor;
-using sofa::defaulttype::Vec;
-
 template <class TIn, class TOut>
 CatmullRomSplineMapping<TIn, TOut>::CatmullRomSplineMapping ( )
     : Inherit ( )
@@ -99,10 +95,10 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
     unsigned int targetP =  P + E * ( k2 - 1 ) ;
     unsigned int targetE =  E * k2 ;
 
-    ReadAccessor<Data<InVecCoord> >		xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
-    WriteAccessor<Data<OutVecCoord> >	xto0 = *this->toModel->write(core::VecCoordId::restPosition());
-    WriteAccessor<Data<OutVecCoord> >	xto = *this->toModel->write(core::VecCoordId::position());
-    WriteAccessor<Data<OutVecCoord> >	xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
+    sofa::helper::ReadAccessor<Data<InVecCoord> >		xfrom = *this->fromModel->read(core::ConstVecCoordId::restPosition());
+    sofa::helper::WriteAccessor<Data<OutVecCoord> >	xto0 = *this->toModel->write(core::VecCoordId::restPosition());
+    sofa::helper::WriteAccessor<Data<OutVecCoord> >	xto = *this->toModel->write(core::VecCoordId::position());
+    sofa::helper::WriteAccessor<Data<OutVecCoord> >	xtoReset = *this->toModel->write(core::VecCoordId::resetPosition());
 
     this->toModel->resize(targetP);
     targetMesh->setNbPoints(targetP);
@@ -110,7 +106,7 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
     m_index.resize(targetP);
 
     unsigned int count=0;
-    Vec<4,ID> id(0,0,0,0); vector<ID> n1,n2;
+    sofa::defaulttype::Vec<4,ID> id(0,0,0,0); vector<ID> n1,n2;
     OutReal t,t2,t3;
     for ( unsigned int i=0; i<P; i++ ) // initial points
     {

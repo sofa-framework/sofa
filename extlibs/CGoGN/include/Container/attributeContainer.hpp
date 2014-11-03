@@ -30,7 +30,7 @@
 namespace CGoGN
 {
 
-inline unsigned int AttributeContainer::getOrbit()
+inline unsigned int AttributeContainer::getOrbit() const
 {
 	return m_orbit ;
 }
@@ -332,7 +332,7 @@ inline bool AttributeContainer::unrefLine(unsigned int index)
 	return false;
 }
 
-inline unsigned int AttributeContainer::getNbRefs(unsigned int index)
+inline unsigned int AttributeContainer::getNbRefs(unsigned int index) const
 {
 	unsigned int bi = index / _BLOCKSIZE_;
 	unsigned int j = index % _BLOCKSIZE_;

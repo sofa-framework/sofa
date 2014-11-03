@@ -49,13 +49,6 @@ namespace component
 namespace constraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
-
 template <class DataTypes>
 double DistanceLMContactConstraint<DataTypes>::lengthEdge(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
 {
@@ -345,12 +338,12 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
         const VecCoord &x2= this->constrainedObject2->read(core::ConstVecCoordId::position())->getValue();
 
 
-        helper::vector< helper::vector< Vector3 > > points;
+        sofa::helper::vector< sofa::helper::vector< sofa::defaulttype::Vector3 > > points;
         points.resize(3);
         //Sliding: show direction of the new constraint
-        helper::vector< Vector3 > slidingConstraints;
+        sofa::helper::vector< sofa::defaulttype::Vector3 > slidingConstraints;
 
-        const helper::vector< ConstraintGroup* > &groups = this->getConstraintsOrder(core::ConstraintParams::VEL);
+        const sofa::helper::vector< ConstraintGroup* > &groups = this->getConstraintsOrder(core::ConstraintParams::VEL);
 
         const SeqEdges &edges =  pointPairs.getValue();
         for (unsigned int i=0; i<groups.size(); ++i)
@@ -363,7 +356,7 @@ void DistanceLMContactConstraint<DataTypes>::draw(const core::visual::VisualPara
 
             if (contactDescription.state == SLIDING)
             {
-                Vector3 direction=contactDirection.n *contactDescription.coeff[0] +
+                sofa::defaulttype::Vector3 direction=contactDirection.n *contactDescription.coeff[0] +
                         contactDirection.t1*contactDescription.coeff[1]+
                         contactDirection.t2*contactDescription.coeff[2];
 

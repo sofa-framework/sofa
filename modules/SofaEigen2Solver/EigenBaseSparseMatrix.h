@@ -39,8 +39,6 @@
 
 
 
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -50,7 +48,6 @@ namespace component
 
 namespace linearsolver
 {
-using helper::vector;
 
 //#define EigenBaseSparseMatrix_CHECK
 //#define EigenBaseSparseMatrix_VERBOSE
@@ -90,7 +87,7 @@ class EigenBaseSparseMatrix : public defaulttype::BaseMatrix
                 it.valueRef()=0.0;
         }
 
-        incoming.push_back( Triplet(i,j,v) );
+        incoming.push_back( Triplet(i,j,(Real)v) );
     }
 
 
@@ -117,6 +114,19 @@ public:
         resize(nbRow,nbCol);
     }
 
+    /// copy constructor
+    EigenBaseSparseMatrix(const ThisMatrix& m)
+    {
+        *this = m;
+    }
+
+    /// copy operator
+    void operator=(const ThisMatrix& m)
+    {
+        incoming = m.incoming;
+        compressedMatrix = m.compressedMatrix;
+    }
+
     void setIdentity()
     {
         clear();
@@ -130,12 +140,12 @@ public:
 
     /// Schedule the addition of the value at the given place. Scheduled additions must be finalized using function compress() .
     void add( Index row, Index col, double value ){
-        incoming.push_back( Triplet(row,col,(Real)value) );
+        if( value!=0.0 ) incoming.push_back( Triplet(row,col,(Real)value) );
     }
 
     /// Insert in the compressed matrix. There must be no value at this place already. Efficient only if the value is inserted at the last place of the last row.
     void insertBack( Index row, Index col, Real value){
-        compressedMatrix.insert(row,col) = value;
+        if( value!=0.0 ) compressedMatrix.insert(row,col) = value;
     }
 
     /// Return a reference to the given entry in the compressed matrix.There can (must ?) be a value at this place already. Efficient only if the it is at the last place of the compressed matrix.
@@ -181,7 +191,7 @@ public:
 
     SReal element(Index i, Index j) const
     {
-        return compressedMatrix.coeff(i,j);
+        return (SReal)compressedMatrix.coeff(i,j);
     }
 
 
@@ -383,7 +393,7 @@ public:
 
 
     /// add this EigenBaseSparseMatrix to a BaseMatrix at the offset and multiplied by factor
-    void addToBaseMatrix( BaseMatrix *matrix, SReal factor, Index offset )
+    void addToBaseMatrix( BaseMatrix *matrix, SReal factor, Index offset ) const
     {
         for( Index j=0 ; j<compressedMatrix.outerSize() ; ++j )
             for( typename CompressedMatrix::InnerIterator it(compressedMatrix,j) ; it ; ++it )
@@ -435,6 +445,7 @@ public:
         res = compressedMatrix * rhs;
 #endif
     }
+
 
 };
 

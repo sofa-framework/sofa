@@ -91,11 +91,9 @@ void BaseController::handleEvent(core::objectmodel::Event *event)
     }
 }
 
-}
+} //behavior
 
-}
+} //core
 
-}
-
-}
+} //sofa
 

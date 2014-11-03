@@ -103,4 +103,3 @@ SOFA_LINK_CLASS(TransferFunction)
 #ifdef SOFA_HAVE_LIBFREENECT
 SOFA_LINK_CLASS(Kinect)
 #endif
-

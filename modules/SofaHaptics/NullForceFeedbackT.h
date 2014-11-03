@@ -35,7 +35,6 @@ namespace component
 
 namespace controller
 {
-using namespace std;
 
 /**
 * Device driver force field
@@ -56,7 +55,7 @@ public:
         fx = fy = fz = 0.0;
     };
     virtual void computeForce(const  VecCoord &,  VecDeriv &) {};
-    virtual void computeWrench(const SolidTypes<SReal>::Transform &, const SolidTypes<SReal>::SpatialVector &, SolidTypes<SReal>::SpatialVector &W_tool_world ) {W_tool_world.clear();};
+    virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world ) {W_tool_world.clear();};
 
 
 };

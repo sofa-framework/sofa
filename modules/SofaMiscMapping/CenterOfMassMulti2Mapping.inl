@@ -44,9 +44,6 @@ namespace component
 namespace mapping
 {
 
-using namespace core;
-using namespace core::behavior;
-
 template < typename Model >
 struct Operation
 {
@@ -56,15 +53,15 @@ struct Operation
     typedef typename Model::VecDeriv VecDeriv;
 
 public :
-    static inline const VecCoord* getVecCoord( const Model* m, const VecId id) { return m->getVecCoord(id.index); }
-    static inline VecDeriv* getVecDeriv( Model* m, const VecId id) { return m->getVecDeriv(id.index);}
+    static inline const VecCoord* getVecCoord( const Model* m, const sofa::core::VecId id) { return m->getVecCoord(id.index); }
+    static inline VecDeriv* getVecDeriv( Model* m, const sofa::core::VecId id) { return m->getVecDeriv(id.index);}
 
-    static inline const BaseMass* fetchMass  ( const Model* m)
+    static inline const sofa::core::behavior::BaseMass* fetchMass  ( const Model* m)
     {
-        BaseMass* mass = dynamic_cast<BaseMass*> (m->getContext()->getMass());
+        sofa::core::behavior::BaseMass* mass = dynamic_cast<sofa::core::behavior::BaseMass*> (m->getContext()->getMass());
         return mass;
     }
-    static inline double computeTotalMass( const Model* model, const BaseMass* mass )
+    static inline double computeTotalMass( const Model* model, const sofa::core::behavior::BaseMass* mass )
     {
         double result = 0.0;
         for ( unsigned int i = 0; i < model->read(core::ConstVecCoordId::position())->getValue().size(); i++)
@@ -74,7 +71,7 @@ public :
         return result;
     }
 
-    static inline Coord WeightedCoord( const VecCoord* v, const BaseMass* m)
+    static inline Coord WeightedCoord( const VecCoord* v, const sofa::core::behavior::BaseMass* m)
     {
         Coord c;
         for (unsigned int i=0 ; i< v->size() ; i++)
@@ -84,7 +81,7 @@ public :
         return c;
     }
 
-    static inline Deriv WeightedDeriv( const VecDeriv* v, const BaseMass* m)
+    static inline Deriv WeightedDeriv( const VecDeriv* v, const sofa::core::behavior::BaseMass* m)
     {
         Deriv d;
         for (unsigned int i=0 ; i< v->size() ; i++)
@@ -327,10 +324,10 @@ template <class TIn1, class TIn2, class TOut>
 void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::draw(const core::visual::VisualParams* vparams)
 {
     assert( this->toModels.size() == 1 );
-    const Data< OutVecCoord > *X = this->getToModels()[0]->read(VecCoordId::position());
+    const Data< OutVecCoord > *X = this->getToModels()[0]->read(sofa::core::VecCoordId::position());
 
-    std::vector< Vector3 > points;
-    Vector3 point1,point2;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    sofa::defaulttype::Vector3 point1,point2;
 
     for(unsigned int i=0 ; i<OutCoord::spatial_dimensions ; i++)
     {
@@ -341,7 +338,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::draw(const core::visual::Vis
         points.push_back(point1);
         points.push_back(point2);
     }
-    vparams->drawTool()->drawLines(points, 1, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(1,1,0,1));
 }
 
 

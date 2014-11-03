@@ -37,8 +37,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::topology;
 
 class TriangleModelInRegularGrid : public TriangleModel
 {
@@ -49,8 +47,8 @@ public:
     virtual void computeBoundingTree ( int maxDepth=0 );
 
     sofa::core::topology::BaseMeshTopology* _topology;
-    BaseMeshTopology* _higher_topo;
-    core::behavior::MechanicalState<Vec3Types>* _higher_mstate;
+    sofa::core::topology::BaseMeshTopology* _higher_topo;
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* _higher_mstate;
 
 protected:
     TriangleModelInRegularGrid();

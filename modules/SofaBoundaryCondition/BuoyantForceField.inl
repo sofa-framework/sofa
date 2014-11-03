@@ -43,9 +43,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace core::topology;
-
 template <class DataTypes>
 BuoyantForceField<DataTypes>::BuoyantForceField():
     m_fluidModel(initData(&m_fluidModel, (Real)1.0f, "fluidModel", "1 for a plane, 2 for a box")),
@@ -114,7 +111,7 @@ bool BuoyantForceField<DataTypes>::checkParameters()
         for ( unsigned int i = 0 ; i < 3 ; i++)
             if (tempMin[i] > tempMax[i])
             {
-                std::cout << "Switch value " << i << " between min and max" << std::endl;
+                sout << "Switch value " << i << " between min and max" << sendl;
                 tempMin[i] = m_maxBox.getValue()[i];
                 tempMax[i] = m_minBox.getValue()[i];
             }

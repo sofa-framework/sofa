@@ -107,21 +107,13 @@ public:
 
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3dTypes>;
+extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3fTypes>;
+extern template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<defaulttype::Vec3fTypes>;
 #endif
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP)

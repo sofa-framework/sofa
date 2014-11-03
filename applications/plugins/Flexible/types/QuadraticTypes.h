@@ -200,6 +200,7 @@ public:
                 for(unsigned j=spatial_dimensions; j<num_quadratic_terms; j++)
                     q[i][j] = 0.;
         }
+
     };
 
 
@@ -438,6 +439,12 @@ public:
         c.getCenter() [2] += ( Real ) z;
     }
 //@}
+
+    /// for finite difference methods 
+    static Deriv coordDifference(const Coord& c1, const Coord& c2)
+    {
+        return (Deriv)(c1-c2);
+    }
 
 
 };

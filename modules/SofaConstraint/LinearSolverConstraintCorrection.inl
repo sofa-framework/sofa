@@ -47,7 +47,7 @@ namespace constraintset
 #define EPS_UNITARY_FORCE 0.01
 
 template<class DataTypes>
-LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
+LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
 : Inherit(mm)
 , wire_optimization(initData(&wire_optimization, false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
 , solverName( initData(&solverName, "solverName", "name of the constraint solver") )
@@ -71,7 +71,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 {
     Inherit::init();
 
-    objectmodel::BaseContext* c = this->getContext();
+    sofa::core::objectmodel::BaseContext* c = this->getContext();
 
     odesolver=getOdeSolver(c);
 
@@ -81,7 +81,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 
     if (solverNames.size() == 0)
     {
-        linearsolvers.push_back(c->get<behavior::LinearSolver>());
+        linearsolvers.push_back(c->get<sofa::core::behavior::LinearSolver>());
     }
     else
     {
@@ -124,7 +124,7 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 }
 
 template<class DataTypes>
-void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W)
+void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
 {
     if (!this->mstate || !odesolver || (linearsolvers.size()==0)) return;
 
@@ -185,7 +185,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 #endif
 
     // Compute J
-    const MatrixDeriv& c = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
     const unsigned int totalNumConstraints = W->rowSize();
 
     J.resize(totalNumConstraints, numDOFReals);
@@ -242,7 +242,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttyp
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
     static linearsolver::SparseMatrix<SReal> J; //local J
-    if (J.rowSize() != numDOFReals)
+    if (J.rowSize() != (defaulttype::BaseMatrix::Index)numDOFReals)
     {
         J.resize(numDOFReals,numDOFReals);
         for (unsigned int i=0; i<numDOFReals; ++i)
@@ -276,7 +276,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttyp
 
 
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeDx(MultiVecDerivId fId)
+void LinearSolverConstraintCorrection< DataTypes >::computeDx(sofa::core::MultiVecDerivId fId)
 {
     if (this->mstate)
     {
@@ -337,7 +337,7 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyMotionCorrect
 
 
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyPositionCorrection(const ConstraintParams *cparams, MultiVecCoordId xId, MultiVecDerivId fId, const BaseVector *lambda)
+void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId xId, sofa::core::MultiVecDerivId fId, const sofa::defaulttype::BaseVector *lambda)
 {
     this->setConstraintForceInMotionSpace(fId, lambda);
 
@@ -368,7 +368,7 @@ void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyPositionCorre
 
 
 template< class DataTypes >
-void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyVelocityCorrection(const ConstraintParams *cparams, MultiVecDerivId vId, MultiVecDerivId fId, const BaseVector *lambda)
+void LinearSolverConstraintCorrection< DataTypes >::computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId vId, sofa::core::MultiVecDerivId fId, const sofa::defaulttype::BaseVector *lambda)
 {
     this->setConstraintForceInMotionSpace(fId, lambda);
 
@@ -434,7 +434,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
         for (unsigned int r=0; r<N; ++r)
             force[i][r] = F[i*N+r];
 #else
-    const MatrixDeriv& c = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -538,7 +538,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
 template<class DataTypes>
 bool LinearSolverConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 {
-    const MatrixDeriv& c = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     return c.readLine(index) != c.end();
 }
@@ -558,7 +558,7 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
     verify_constraints();
 
 
-    const MatrixDeriv& constraints = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     constraint_force.clear();
     constraint_force.resize(this->mstate->getSize());
@@ -721,7 +721,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
 {
     //std::cout<<" addConstraintDisplacement... begin ="<<begin<<"  end ="<<end<<std::endl ;
 
-    const MatrixDeriv& constraints = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
     const unsigned int derivDim = Deriv::size();
 
     last_disp = begin;
@@ -761,7 +761,7 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
 {
 
 
-    const MatrixDeriv& constraints = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
     const unsigned int derivDim = Deriv::size();
 
 
@@ -828,7 +828,7 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
     const unsigned int numDOFReals = numDOFs*N;
 
     // Compute J
-    const MatrixDeriv& constraints = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
     const unsigned int totalNumConstraints = W->rowSize();
 
     J.resize(totalNumConstraints, numDOFReals);

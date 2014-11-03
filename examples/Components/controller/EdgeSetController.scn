@@ -7,13 +7,13 @@
     <CollisionGroup name="Group" />
     <Node name="InstrumentEdgeSet">
         <EulerImplicit rayleighStiffness="0" printLog="false" />
-        <BTDLinearSolver template="NewMatBand" bandWidth="11" printLog="false" verbose="false" />
+        <BTDLinearSolver template="BTDMatrix6d" printLog="false" verbose="false" />
         <MeshGmshLoader name="loader" filename="mesh/edgeSet.msh" />
         <MechanicalObject src="@loader" name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1" />
         <include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid" />
         <EdgeSetController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" />
         <FixedConstraint name="FixedConstraint" indices="0" />
-        <UniformMass mass="1 1&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 0.01 0   0 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 0    0.1 0 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09; 0    0   0.1" printLog="false" />
-        <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" />
+        <UniformMass mass="1 1 1 0.01 0   0 0    0.1 0  0    0   0.1" printLog="false" />
+        <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" poissonRatio="0.49"/>
     </Node>
 </Node>

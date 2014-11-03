@@ -264,6 +264,7 @@ bool SofaViewer::isControlPressed() const
 void SofaViewer::wheelEvent(QWheelEvent *e)
 {
     //<CAMERA API>
+	if (!currentCamera) return;
     sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Wheel,e->delta());
     currentCamera->manageEvent(&me);
 
@@ -277,6 +278,7 @@ void SofaViewer::wheelEvent(QWheelEvent *e)
 void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
 {
     //<CAMERA API>
+	if (!currentCamera) return;
     sofa::core::objectmodel::MouseEvent me(sofa::core::objectmodel::MouseEvent::Move,e->x(), e->y());
     currentCamera->manageEvent(&me);
 
@@ -290,6 +292,7 @@ void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
 void SofaViewer::mousePressEvent ( QMouseEvent * e)
 {
     //<CAMERA API>
+	if (!currentCamera) return;
     sofa::core::objectmodel::MouseEvent* mEvent = NULL;
     if (e->button() == Qt::LeftButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, e->x(), e->y());
@@ -313,6 +316,7 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
 void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
 {
     //<CAMERA API>
+	if (!currentCamera) return;
     sofa::core::objectmodel::MouseEvent* mEvent = NULL;
     if (e->button() == Qt::LeftButton)
         mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, e->x(), e->y());

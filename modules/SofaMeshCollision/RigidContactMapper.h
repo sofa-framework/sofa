@@ -57,8 +57,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 
 /// Base class for all mappers using RigidMapping
 template < class TCollisionModel, class DataTypes >
@@ -154,7 +152,7 @@ class ContactMapper<RigidSphereModel,TVec3Types > : public RigidContactMapper<Ri
             RigidSphere e(this->model, index);
             const typename RigidSphereModel::DataTypes::Coord & rCenter = e.rigidCenter();
             const typename TVec3Types::Coord & cP = P - rCenter.getCenter();
-            const Quaternion & ori = rCenter.getOrientation();
+            const defaulttype::Quaternion & ori = rCenter.getOrientation();
 
             //r = e.r();
 
@@ -169,7 +167,7 @@ class ContactMapper<OBBModel,TVec3Types > : public RigidContactMapper<OBBModel, 
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const Quaternion & ori = this->model->orientation(index);
+            const defaulttype::Quaternion & ori = this->model->orientation(index);
 
             return RigidContactMapper<OBBModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
@@ -181,7 +179,7 @@ class ContactMapper<RigidCapsuleModel,TVec3Types > : public RigidContactMapper<R
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const Quaternion & ori = this->model->orientation(index);
+            const defaulttype::Quaternion & ori = this->model->orientation(index);
 
             return RigidContactMapper<RigidCapsuleModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
@@ -193,17 +191,17 @@ class ContactMapper<CylinderModel,TVec3Types > : public RigidContactMapper<Cylin
         int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
         {
             const typename TVec3Types::Coord & cP = P - this->model->center(index);
-            const Quaternion & ori = this->model->orientation(index);
+            const defaulttype::Quaternion & ori = this->model->orientation(index);
 
             return RigidContactMapper<CylinderModel,TVec3Types >::addPoint(ori.inverseRotate(cP),index,r);
         }
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
-extern template class SOFA_MESH_COLLISION_API ContactMapper<CylinderModel,Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidCapsuleModel,Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel,Vec3Types>;
-extern template class SOFA_MESH_COLLISION_API ContactMapper<OBBModel,Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<CylinderModel, defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidCapsuleModel, defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidSphereModel, defaulttype::Vec3Types>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<OBBModel, defaulttype::Vec3Types>;
 #endif
 
 } // namespace collision

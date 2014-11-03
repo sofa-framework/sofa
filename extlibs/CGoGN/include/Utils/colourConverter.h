@@ -167,12 +167,12 @@ private: // private members
 
 private: // private constants
 	// D65 reference white
-	static const REAL Xn = 0.950456 ;
-	static const REAL Yn = 1.0 ;
-	static const REAL Zn = 1.088754 ;
+	static constexpr REAL Xn = 0.950456 ;
+	static constexpr REAL Yn = 1.0 ;
+	static constexpr REAL Zn = 1.088754 ;
 
-	static const REAL un = 0.197832 ;
-	static const REAL vn = 0.468340 ;
+	static constexpr REAL un = 0.197832 ;
+	static constexpr REAL vn = 0.468340 ;
 
 } ;
 
@@ -180,6 +180,6 @@ private: // private constants
 
 } // namespace CGoGN
 
-#include "colourConverter.hpp"
+#include "Utils/colourConverter.hpp"
 
 #endif // __COLOURCONVERTER_H__

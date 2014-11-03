@@ -26,20 +26,27 @@
 #ifndef IMAGE_IMAGEALGORITHMS_H
 #define IMAGE_IMAGEALGORITHMS_H
 
-#include "ImageTypes.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/Mat.h>
 #include <set>
 #include <vector>
 
+#if (defined(WIN32) || defined (_XBOX)) && (_MSC_VER < 1800) // for all version anterior to Visual Studio 2013
+# include <float.h>
+# define isnan(x)  (_isnan(x))
+#else
+# include <cmath>
+# define isnan(x) (std::isnan(x))
+#endif
+
+#include "ImageTypes.h"
+
 #ifdef USING_OMP_PRAGMAS
-    #include <omp.h>
+#include <omp.h>
 #endif
 
 using namespace cimg_library;
-
-
 
 /**
 *  Move points to the centroid of their voronoi region
@@ -279,7 +286,286 @@ void dijkstra (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > > &trial,
     }
 }
 
+///@brief Compute norm L2 of a pixel in a CImg
+template<typename real>
+real norm(cimg_library::CImg<real>& distances, sofa::helper::fixed_array<int, 3>& coord)
+{
+    return sqrt(pow(distances(coord[0],coord[1],coord[2],0),2) +
+            pow(distances(coord[0],coord[1],coord[2],1),2) +
+            pow(distances(coord[0],coord[1],coord[2],2),2));
+}
 
+/// @brief Replace value at oldCoord with a combinaison of value at newCoord, a offset and a bias if provided
+template<typename real,typename T>
+void replace(cimg_library::CImg<unsigned int>& voronoi, cimg_library::CImg<real>& distances, sofa::helper::fixed_array<int, 3>& oldCoord, sofa::helper::fixed_array<int, 3>& newCoord, sofa::helper::fixed_array<real, 3>& offset, const sofa::helper::fixed_array<real, 3>& voxelSize, const CImg<T>* bias)
+{
+    real b=1.0;
+    if(bias)
+        b=std::min((*bias)(oldCoord[0], oldCoord[1], oldCoord[2]), (*bias)(newCoord[0], newCoord[1], newCoord[2]));
+    distances(oldCoord[0], oldCoord[1], oldCoord[2], 0) = distances(newCoord[0], newCoord[1], newCoord[2], 0) +  offset[0]*voxelSize[0]/b;
+    distances(oldCoord[0], oldCoord[1], oldCoord[2], 1) = distances(newCoord[0], newCoord[1], newCoord[2], 1) +  offset[1]*voxelSize[1]/b;
+    distances(oldCoord[0], oldCoord[1], oldCoord[2], 2) = distances(newCoord[0], newCoord[1], newCoord[2], 2) +  offset[2]*voxelSize[2]/b;
+    voronoi(oldCoord[0], oldCoord[1], oldCoord[2]) = voronoi(newCoord[0], newCoord[1], newCoord[2]);
+}
+
+/// @brief Update value of the pixel of an image after comparing it with its neighbor
+template<typename real,typename T>
+void update(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, sofa::helper::fixed_array< sofa::helper::fixed_array<int, 3>, 10 >& coord, sofa::helper::fixed_array< sofa::helper::fixed_array<real, 3>, 10 >& offset, const sofa::helper::fixed_array<real, 3>& voxelSize, const cimg_library::CImg<T>* bias)
+{
+    real l_curr=norm(distances,coord[0]);
+    for(int l=1; l<=9; ++l)
+    {
+        real l_neigh=norm(distances,coord[l]);
+        if(l_neigh<l_curr){ replace(voronoi,distances,coord[0],coord[l],offset[l], voxelSize, bias); l_curr=l_neigh; }
+    }
+}
+
+/// @brief Compare two images, pixel per pixel
+/// @return true if for each pixel the error is bounded by a threshold, false otherwise.
+template<typename real>
+bool hasConverged(cimg_library::CImg<real>& previous, cimg_library::CImg<real>& current, SReal tolerance)
+{
+    bool result=true;
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+    for(int i=0; i<previous.width(); ++i) for(int j=0; j<previous.height(); ++j) for(int k=0; k<previous.depth(); ++k)
+    {
+        if( !isnan(previous(i,j,k,0)) && !isnan(current(i,j,k,0)) )
+        {
+            SReal error = sqrt( pow(previous(i,j,k,0)-current(i,j,k,0),2) +
+                                pow(previous(i,j,k,1)-current(i,j,k,1),2) +
+                                pow(previous(i,j,k,2)-current(i,j,k,2),2));
+            if(error>tolerance)
+                result = false;
+        }
+    }
+    return result;
+}
+
+/// @brief Perform a raster scan from left to right to update distances
+template<typename real,typename T>
+void left(CImg<unsigned int>& v, CImg<real>& d, const sofa::helper::fixed_array<real, 3>& vx, const CImg<T>* bias)
+{
+    for(int i=d.width()-2; i>=0; --i)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int j=d.height()-2; j>=1; --j)
+        {
+            for(int k=d.depth()-2; k>=1; --k)
+            {
+                sofa::helper::fixed_array< sofa::helper::fixed_array<int, 3>, 10 > c;
+                sofa::helper::fixed_array< sofa::helper::fixed_array<real, 3>, 10 > o;
+                c[0] = sofa::helper::fixed_array<int, 3>(i,j,k); o[0] = sofa::helper::fixed_array<real, 3>(0,0,0); int count=1;
+                for(int y=-1;y<=1; ++y) for(int z=-1; z<=1; z++)
+                {
+                    c[count] = sofa::helper::fixed_array<int, 3>(i+1,j+y,k+z);
+                    o[count] = sofa::helper::fixed_array<real, 3>(1,std::abs(y),std::abs(z)); count++;
+                }
+                update(d,v,c,o,vx, bias);
+            }
+        }
+    }
+}
+
+/// @brief Perform a raster scan from right to left to update distances
+template<typename real,typename T>
+void right(CImg<unsigned int>& v, CImg<real>& d, const sofa::helper::fixed_array<real, 3>& vx, const CImg<T>* bias)
+{
+    for(int i=1; i<d.width(); ++i)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int j=1; j<d.height()-1; ++j)
+        {
+            for(int k=1; k<d.depth()-1; ++k)
+            {
+                sofa::helper::fixed_array< sofa::helper::fixed_array<int, 3>, 10 > c;
+                sofa::helper::fixed_array< sofa::helper::fixed_array<real, 3>, 10 > o;
+                c[0] = sofa::helper::fixed_array<int, 3>(i,j,k); o[0] = sofa::helper::fixed_array<real, 3>(0,0,0); int count=1;
+                for(int y=-1;y<=1; ++y) for(int z=-1; z<=1; z++)
+                {
+                    c[count] = sofa::helper::fixed_array<int, 3>(i-1,j+y,k+z);
+                    o[count] = sofa::helper::fixed_array<real, 3>(1,std::abs(y),std::abs(z)); count++;
+                }
+                update(d,v,c,o,vx, bias);
+            }
+        }
+    }
+}
+
+/// @brief Perform a raster scan from down to up to update distances
+template<typename real,typename T>
+void down(CImg<unsigned int>& v, CImg<real>& d, const sofa::helper::fixed_array<real, 3>& vx, const CImg<T>* bias)
+{
+    for(int j=d.height()-2; j>=0; --j)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int i=d.width()-2; i>=1; --i)
+        {
+            for(int k=d.depth()-2; k>=1; --k)
+            {
+                sofa::helper::fixed_array< sofa::helper::fixed_array<int, 3>, 10 > c;
+                sofa::helper::fixed_array< sofa::helper::fixed_array<real, 3>, 10 > o;
+                c[0] = sofa::helper::fixed_array<int, 3>(i,j,k); o[0] = sofa::helper::fixed_array<real, 3>(0,0,0); int count=1;
+                for(int x=-1;x<=1; ++x) for(int z=-1; z<=1; z++)
+                {
+                    c[count] = sofa::helper::fixed_array<int, 3>(i+x,j+1,k+z);
+                    o[count] = sofa::helper::fixed_array<real, 3>(std::abs(x),1,std::abs(z)); count++;
+                }
+                update(d,v,c,o,vx, bias);
+            }
+        }
+    }
+}
+
+/// @brief Perform a raster scan from up to down to update distances
+template<typename real,typename T>
+void up(CImg<unsigned int>& v, CImg<real>& d, const sofa::helper::fixed_array<real, 3>& vx, const CImg<T>* bias)
+{
+    for(int j=1; j<d.height(); ++j)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int i=1; i<d.width()-1; ++i)
+        {
+            for(int k=1; k<d.depth()-1; ++k)
+            {
+                sofa::helper::fixed_array< sofa::helper::fixed_array<int, 3>, 10 > c;
+                sofa::helper::fixed_array< sofa::helper::fixed_array<real, 3>, 10 > o;
+                c[0] = sofa::helper::fixed_array<int, 3>(i,j,k); o[0] = sofa::helper::fixed_array<real, 3>(0,0,0); int count=1;
+                for(int x=-1;x<=1; ++x) for(int z=-1; z<=1; z++)
+                {
+                    c[count] = sofa::helper::fixed_array<int, 3>(i+x,j-1,k+z);
+                    o[count] = sofa::helper::fixed_array<real, 3>(std::abs(x),1,std::abs(z)); count++;
+                }
+                update(d,v,c,o,vx, bias);
+            }
+        }
+    }
+}
+
+/// @brief Perform a raster scan from backward to forward to update distances
+template<typename real,typename T>
+void backward(CImg<unsigned int>& v, CImg<real>& d, const sofa::helper::fixed_array<real, 3>& vx, const CImg<T>* bias)
+{
+    for(int k=d.depth()-2; k>=0; --k)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int i=d.width()-2; i>=1; --i)
+        {
+            for(int j=d.height()-2; j>=1; --j)
+            {
+                sofa::helper::fixed_array< sofa::helper::fixed_array<int, 3>, 10 > c;
+                sofa::helper::fixed_array< sofa::helper::fixed_array<real, 3>, 10 > o;
+                c[0] = sofa::helper::fixed_array<int, 3>(i,j,k); o[0] = sofa::helper::fixed_array<real, 3>(0,0,0); int count=1;
+                for(int x=-1;x<=1; ++x) for(int y=-1; y<=1; y++)
+                {
+                    c[count] = sofa::helper::fixed_array<int, 3>(i+x,j+y,k+1);
+                    o[count] = sofa::helper::fixed_array<real, 3>(std::abs(x),std::abs(y),1); count++;
+                }
+                update(d,v,c,o,vx,bias);
+            }
+        }
+    }
+}
+
+/// @brief Perform a raster scan from forward to backward to update distances
+template<typename real,typename T>
+void forward(CImg<unsigned int>& v, CImg<real>& d, const sofa::helper::fixed_array<real, 3>& vx, const CImg<T>* bias)
+{
+    for(int k=1; k<d.depth(); ++k)
+    {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(int i=1; i<d.width()-1; ++i)
+        {
+            for(int j=1; j<d.height()-1; ++j)
+            {
+                sofa::helper::fixed_array< sofa::helper::fixed_array<int, 3>, 10 > c;
+                sofa::helper::fixed_array< sofa::helper::fixed_array<real, 3>, 10 > o;
+                c[0] = sofa::helper::fixed_array<int, 3>(i,j,k); o[0] = sofa::helper::fixed_array<real, 3>(0,0,0); int count=1;
+                for(int x=-1;x<=1; ++x) for(int y=-1; y<=1; y++)
+                {
+                    c[count] = sofa::helper::fixed_array<int, 3>(i+x,j+y,k-1);
+                    o[count] = sofa::helper::fixed_array<real, 3>(std::abs(x),std::abs(y),1); count++;
+                }
+                update(d,v,c,o,vx,bias);
+            }
+        }
+    }
+}
+
+/// @brief Perform 6 raster scan of an image to fully cover it.
+template<typename real,typename T>
+void rasterScan(cimg_library::CImg<unsigned int>& voronoi, cimg_library::CImg<real>& distances, const sofa::helper::fixed_array<real, 3>& voxelSize, const cimg_library::CImg<T>* biasFactor=NULL)
+{
+    right(voronoi, distances, voxelSize, biasFactor);
+    left(voronoi, distances, voxelSize, biasFactor);
+    down(voronoi, distances, voxelSize,biasFactor);
+    up(voronoi, distances, voxelSize,biasFactor);
+    forward(voronoi, distances, voxelSize,biasFactor);
+    backward(voronoi, distances, voxelSize,biasFactor);
+}
+
+/// @brief Update geodesic distances in the image given a bias distance function b(x).
+/// using Parallel Marching Method (PMM) from Ofir Weber & .al (https://ssl.lu.usi.ch/entityws/Allegati/pdf_pub5153.pdf).
+/// The implementation works with openMP. Due to data dependency it may quite slow compared to a sequential algorithm because it requires many iterations to converge.
+/// In specific cases it can be very efficient (convex domain) because only one iteration is required. A GPU implementation is possible and is on the todo list.
+/// @param maxIter should be carefully chosen to minimize computation time.
+/// @param tolerance should be carefully chosen to minimize computation time.
+/// @returns @param voronoi and @param distances
+template<typename real,typename T>
+void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<unsigned int>& voronoi, const sofa::helper::fixed_array<real, 3>& voxelSize, const unsigned int maxIter=std::numeric_limits<unsigned int>::max(), const SReal tolerance=10, const cimg_library::CImg<T>* biasFactor=NULL)
+{
+    if(distances.width()<3 || distances.height()<3 || distances.depth()<3)
+    {
+        std::cerr << "ImageAlgorithms::parallelMarching : Boundary conditions are not treated so size (width,height,depth) should be >=3. (Work in Progress)" << std::endl;
+        return;
+    }
+    //Build a new distance image from distances.
+    cimg_library::CImg<real> v_distances(distances.width(), distances.height(), distances.depth(), 3, std::numeric_limits<real>::max());
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+    for(int i=0; i<distances.width(); ++i) for(int j=0; j<distances.height(); ++j) for(int k=0; k<distances.depth(); ++k)
+    {
+        if( distances(i,j,k,0) < 0 )
+            v_distances(i,j,k,0) = v_distances(i,j,k,1) = v_distances(i,j,k,2) = std::numeric_limits<real>::signaling_NaN();
+        else
+            v_distances(i,j,k,0) = v_distances(i,j,k,1) = v_distances(i,j,k,2) = distances(i,j,k,0);
+    }
+
+    //Perform raster scan until convergence
+    bool converged = false; unsigned int iter_count = 0; cimg_library::CImg<real> prev_distances;
+    while( (converged==false) || (iter_count<maxIter) )
+    {
+        prev_distances = v_distances; iter_count++;
+        rasterScan(voronoi, v_distances, voxelSize, biasFactor);
+        converged = hasConverged(prev_distances, v_distances, tolerance);
+    }
+
+    //Update distances with v_distances
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+    for(int i=0; i<distances.width(); ++i) for(int j=0; j<distances.height(); ++j) for(int k=0; k<distances.depth(); ++k)
+    {
+        if( isnan(v_distances(i,j,k,0)) )
+            distances(i,j,k,0) = -1.0;
+        else
+            distances(i,j,k,0) = std::sqrt( std::pow(v_distances(i,j,k,0),2) + std::pow(v_distances(i,j,k,1),2) + std::pow(v_distances(i,j,k,2),2) );
+    }
+}
 
 /**
 * Initialize null distances and voronoi value (=point index) from a position in image coordinates
@@ -292,7 +578,7 @@ void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& tr
     typedef sofa::defaulttype::Vec<3,int> iCoord;
     typedef std::pair<real,iCoord > DistanceToPoint;
 
-	iCoord P;  for (unsigned int j=0; j<3; j++)  P[j]=sofa::helper::round(pos[j]);
+    iCoord P;  for (unsigned int j=0; j<3; j++)  P[j]=sofa::helper::round(pos[j]);
     if(distances.containsXYZC(P[0],P[1],P[2]))
         if(distances(P[0],P[1],P[2])>=0)
         {
@@ -303,6 +589,6 @@ void AddSeedPoint (std::set<std::pair<real,sofa::defaulttype::Vec<3,int> > >& tr
 }
 
 
-
+#undef isnan
 
 #endif // IMAGEALGORITHMS_H

@@ -135,12 +135,12 @@ void Light::initVisual()
     shadowFBO.init(shadowTexWidth, shadowTexHeight);
     blurHFBO.init(shadowTexWidth, shadowTexHeight);
     blurVFBO.init(shadowTexWidth, shadowTexHeight);
-    depthShader->vertFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
-    depthShader->fragFilename.setValue(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
+    depthShader->vertFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER);
+    depthShader->fragFilename.setValueAsString(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER);
     depthShader->init();
     depthShader->initVisual();
-    blurShader->vertFilename.setValue(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
-    blurShader->fragFilename.setValue(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
+    blurShader->vertFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_VERTEX_SHADER);
+    blurShader->fragFilename.setValueAsString(PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER);
     blurShader->init();
     blurShader->initVisual();
 #endif
@@ -210,14 +210,14 @@ void Light::postDrawShadow()
 void Light::blurDepthTexture()
 {
 #ifdef SOFA_HAVE_GLEW
-    float vxmax, vymax, vzmax ;
-    float vxmin, vymin, vzmin ;
-    float txmax,tymax,tzmax;
-    float txmin,tymin,tzmin;
+    float vxmax, vymax;
+    float vxmin, vymin;
+    float txmax, tymax;
+    float txmin, tymin;
 
-    txmin = tymin = tzmin = 0.0;
-    vxmin = vymin = vzmin = -1.0;
-    vxmax = vymax = vzmax = txmax = tymax = tzmax = 1.0;
+    txmin = tymin = 0.0;
+    vxmin = vymin = -1.0;
+    vxmax = vymax = txmax = tymax = 1.0;
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();

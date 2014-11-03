@@ -51,10 +51,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
-
 /**
  * This class groups points into overlapping clusters according to a user defined number of clusters and radius
  * It takes input positions (and optionally a meshtopology if geodesic distances are prefered)
@@ -73,7 +69,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename Coord::value_type Real;
 
-    typedef BaseMeshTopology::PointID ID;
+    typedef sofa::core::topology::BaseMeshTopology::PointID ID;
     typedef helper::vector<ID> VI;
     typedef helper::vector<VI> VVI;
 
@@ -110,8 +106,8 @@ public:
     static std::string templateName(const ClusteringEngine<DataTypes>* = NULL) {   return DataTypes::Name(); }
 
 private:
-    MechanicalState<DataTypes>* mstate;
-    BaseMeshTopology* topo;
+    sofa::core::behavior::MechanicalState<DataTypes>* mstate;
+    sofa::core::topology::BaseMeshTopology* topo;
 
     // recursively add to cluster[i] neighbors of lastNeighbors if dist<radius or if in voronoi(i)+one ring
     void AddNeighborhoodFromNeighborhood(VI& lastN, const unsigned int i, const VI& voronoi);

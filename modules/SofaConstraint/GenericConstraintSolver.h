@@ -47,16 +47,12 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::linearsolver;
-using namespace helper::system::thread;
-using core::behavior::ConstraintResolution;
 class GenericConstraintSolver;
 
 class SOFA_CONSTRAINT_API GenericConstraintProblem : public ConstraintProblem
 {
 public:
-	FullVector<double> _d;
+    sofa::component::linearsolver::FullVector<double> _d;
 	std::vector<core::behavior::ConstraintResolution*> constraintsResolutions;
 	bool scaleTolerance, allVerified, unbuilt;
 	double sor;
@@ -65,7 +61,7 @@ public:
     int currentIterations;
 
 	// For unbuilt version :
-	SparseMatrix<double> Wdiag;
+    sofa::component::linearsolver::SparseMatrix<double> Wdiag;
     std::list<unsigned int> constraints_sequence;
 	bool change_sequence;
 
@@ -136,8 +132,8 @@ protected:
 
 	simulation::Node *context;
 
-	CTime timer;
-	CTime timerTotal;
+    sofa::helper::system::thread::CTime timer;
+    sofa::helper::system::thread::CTime timerTotal;
 
 	double time;
 	double timeTotal;

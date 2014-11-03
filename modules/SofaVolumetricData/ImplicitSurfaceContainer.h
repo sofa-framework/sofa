@@ -39,8 +39,6 @@ namespace component
 namespace container
 {
 
-using namespace sofa::defaulttype;
-
 
 ////////////////// ///////////////
 

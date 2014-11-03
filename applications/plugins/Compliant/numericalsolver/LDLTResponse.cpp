@@ -18,14 +18,22 @@ LDLTResponse::LDLTResponse()
 	  constant( initData(&constant, 
 						 false,
 						 "constant",
-						 "reuse first factorization"))
+                         "reuse first factorization")),
+    factorized( false )
 {}
+
+
+void LDLTResponse::reinit()
+{
+    Response::reinit();
+    factorized = false;
+}
 
 void LDLTResponse::factor(const mat& H, bool semidefinite ) {
 
-	bool first = (response.cols() != H.cols() );
+    if( constant.getValue() && factorized ) return;
 
-    if( constant.getValue() && !first ) return;
+    factorized = true;
 
     if( regularize.getValue() && semidefinite ) {
 		// add a tiny diagonal matrix to make H psd.
@@ -42,7 +50,7 @@ void LDLTResponse::factor(const mat& H, bool semidefinite ) {
 
 	
 	if( response.info() != Eigen::Success ) {
-		std::cerr << "warning: non invertible response" << std::endl;
+        serr << "non invertible response" << sendl;
 	}
 
 	assert( response.info() == Eigen::Success );

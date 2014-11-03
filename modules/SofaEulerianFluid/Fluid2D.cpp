@@ -105,6 +105,7 @@ void Fluid2D::updatePosition(double dt)
 
 void Fluid2D::draw(const core::visual::VisualParams* vparams)
 {
+    using namespace sofa::helper;
 #ifndef SOFA_NO_OPENGL
     updateVisual();
     glPushMatrix();
@@ -404,7 +405,7 @@ void Fluid2D::updateVisual()
 
     for (unsigned int i=0; i<facets.size(); i++)
     {
-        Vec3f n = cross(points[facets[i].p[1]].p-points[facets[i].p[0]].p,points[facets[i].p[2]].p-points[facets[i].p[0]].p);
+        sofa::defaulttype::Vec3f n = cross(points[facets[i].p[1]].p-points[facets[i].p[0]].p,points[facets[i].p[2]].p-points[facets[i].p[0]].p);
         n.normalize();
         points[facets[i].p[0]].n += n;
         points[facets[i].p[1]].n += n;

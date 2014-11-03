@@ -15,7 +15,7 @@
     <MeshVTKLoader name="Vol1" filename="mesh/n1-336.vtu" />
     <Node name="N0">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-        <CGLinearSolver iterations="25" threshold="0.00000001" />
+        <CGLinearSolver iterations="25" threshold="0.00000001" tolerance="1e-5" />
         <MeshTopology src="@../Vol0" />
         <MechanicalObject name="DOFs" translation2="2.6 0 0" />
         <UniformMass totalMass="183" />
@@ -35,7 +35,7 @@
     <!--
   <Node name="N0">
 	<EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-	<CGLinearSolver iterations="25" threshold="0.00000001"  />
+	<CGLinearSolver iterations="25" threshold="0.00000001" tolerance="1e-5" />
     <MeshTopology src="@../Vol0" />
     <MechanicalObject name="DOFs" translation2="1.75 0 0" />
     <UniformMass totalMass="183" />
@@ -55,9 +55,9 @@
 -->
     <Node name="N0Rigid">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-        <CGLinearSolver iterations="25" threshold="0.0000000001" />
+        <CGLinearSolver iterations="25" threshold="0.0000000001" tolerance="1e-5"/>
         <MechanicalObject template="Rigid" name="DOFs" translation2="1.75 0 0" position="1.0688487862 0.4269655685 0.1499999780 0 0 0 1" />
-        <UniformMass filename="mesh/n0.rigid" mass="300" />
+        <UniformMass filename="mesh/n0.rigid" totalMass="300" />
         <Node name="C">
             <MeshTopology src="@../../Surf0" />
             <MechanicalObject name="CMpts" translation="-1.0688487862 -0.4269655685 -0.1499999780" />
@@ -72,7 +72,7 @@
     </Node>
     <Node name="N0">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-        <CGLinearSolver iterations="25" threshold="0.00000001" />
+        <CGLinearSolver iterations="25" threshold="0.00000001" tolerance="1e-5"/>
         <MeshTopology src="@../Vol0" />
         <MechanicalObject name="DOFs" translation2="0.9 0 0" />
         <UniformMass totalMass="183" />
@@ -91,9 +91,9 @@
     </Node>
     <Node name="N0Rigid">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-        <CGLinearSolver iterations="25" threshold="0.0000000001" />
+        <CGLinearSolver iterations="25" threshold="0.0000000001" tolerance="1e-5"/>
         <MechanicalObject template="Rigid" name="DOFs" position="1.0688487862 0.4269655685 0.1499999780 0 0 0 1" />
-        <UniformMass filename="mesh/n0.rigid" mass="300" />
+        <UniformMass filename="mesh/n0.rigid" totalMass="300" />
         <Node name="C">
             <MeshTopology src="@../../Surf0" />
             <MechanicalObject name="CMpts" translation="-1.0688487862 -0.4269655685 -0.1499999780" />
@@ -108,7 +108,7 @@
     </Node>
     <Node name="N1">
         <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-        <CGLinearSolver iterations="25" threshold="0.00000001" />
+        <CGLinearSolver iterations="25" threshold="0.00000001" tolerance="1e-5"/>
         <MeshTopology src="@../Vol1" />
         <MechanicalObject name="DOFs" src="@../Vol1" />
         <UniformMass totalMass="115" />

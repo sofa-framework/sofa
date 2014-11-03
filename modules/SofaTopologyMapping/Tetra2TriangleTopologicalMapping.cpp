@@ -103,7 +103,6 @@ void Tetra2TriangleTopologicalMapping::init()
             const sofa::helper::vector<Triangle> &triangleArray=fromModel->getTriangles();
             const bool flipN = flipNormals.getValue();
 
-            unsigned int nb_visible_triangles = 0;
             /// only initialize with border triangles if necessary
             if (noInitialTriangles.getValue()==false)
             {
@@ -130,8 +129,6 @@ void Tetra2TriangleTopologicalMapping::init()
 
                         Loc2GlobVec.push_back(i);
                         Glob2LocMap[i]=Loc2GlobVec.size()-1;
-
-                        nb_visible_triangles+=1;
                     }
                 }
 
@@ -212,7 +209,6 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     for (unsigned int i = 0; i <tab.size(); ++i)
                     {
                         unsigned int k = tab[i];
-                        unsigned int ind_k;
 
                         std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                         if(iter_1 != Glob2LocMap.end())
@@ -220,7 +216,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                             ind_last = ind_last - 1;
 
-                            ind_k = Glob2LocMap[k];
+                            unsigned int ind_k = Glob2LocMap[k];
                             ind_real_last = ind_k;
 
                             std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
@@ -420,14 +416,13 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                         for (unsigned int i = 0; i <triangles_to_remove.size(); ++i)
                         {
                             unsigned int k = triangles_to_remove[i];
-                            unsigned int ind_k;
 
                             std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                             if(iter_1 != Glob2LocMap.end())
                             {
 
                                 ind_last = ind_last - 1;
-                                ind_k = Glob2LocMap[k];
+                                unsigned int ind_k = Glob2LocMap[k];
 
                                 if((int) ind_k != ind_last)
                                 {

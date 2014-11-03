@@ -43,10 +43,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 ExtrudeQuadsAndGenerateHexas<DataTypes>::ExtrudeQuadsAndGenerateHexas()
     : initialized(false)
@@ -87,6 +83,8 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::reinit()
 template <class DataTypes>
 void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
 {
+    using sofa::core::topology::BaseMeshTopology;
+
     cleanDirty();
 
     const helper::vector<BaseMeshTopology::Quad>& surfaceQuads = f_surfaceQuads.getValue();

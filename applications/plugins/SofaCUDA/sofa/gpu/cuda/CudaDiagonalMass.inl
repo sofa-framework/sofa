@@ -98,7 +98,7 @@ void DiagonalMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams*
     //const VecCoord& x = d_x.getValue();
     //const VecDeriv& v = d_v.getValue();
 
-    Vec3d g ( this->getContext()->getGravity() );
+    defaulttype::Vec3d g ( this->getContext()->getGravity() );
     const MassVector &masses= f_mass.getValue();
     DiagonalMassCuda_addForcef(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
 
@@ -156,7 +156,7 @@ void DiagonalMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams
 
 // template <>
 // bool DiagonalMass<CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox) {
-//     const VecCoord& x = *this->mstate->getX();
+//     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 //     //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
 //     for (unsigned int i=0; i<x.size(); i++) {
 //         //const Coord& p = x[i];

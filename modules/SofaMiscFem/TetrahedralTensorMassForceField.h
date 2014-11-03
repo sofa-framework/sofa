@@ -47,9 +47,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 
 template<class DataTypes>
 class TetrahedralTensorMassForceField : public core::behavior::ForceField<DataTypes>
@@ -154,19 +151,19 @@ public:
     void updateLameCoefficients();
 
 
-    class TetrahedralTMEdgeHandler : public TopologyDataHandler<Edge,edgeRestInfoVector >
+    class TetrahedralTMEdgeHandler : public topology::TopologyDataHandler<topology::Edge,edgeRestInfoVector >
     {
     public:
         typedef typename TetrahedralTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
-        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, EdgeData<edgeRestInfoVector >* _data) : TopologyDataHandler<Edge, edgeRestInfoVector >(_data), ff(_ff) {}
+        TetrahedralTMEdgeHandler(TetrahedralTensorMassForceField<DataTypes>* _ff, topology::EdgeData<edgeRestInfoVector >* _data) : topology::TopologyDataHandler<topology::Edge, edgeRestInfoVector >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation& ei,
-                const Edge &,
+                const topology::Edge &,
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
         void applyTetrahedronCreation(const sofa::helper::vector<unsigned int> &edgeAdded,
-                const sofa::helper::vector<Tetrahedron> &,
+                const sofa::helper::vector<topology::Tetrahedron> &,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
@@ -184,31 +181,23 @@ public:
 protected:
 
 //    EdgeData < typename VecType < EdgeRestInformation > > edgeInfo;
-    EdgeData < edgeRestInfoVector > edgeInfo;
+    topology::EdgeData < edgeRestInfoVector > edgeInfo;
 
 //    EdgeData < typename VecType < EdgeRestInformation > > &getEdgeInfo() {return edgeInfo;}
-    EdgeData < edgeRestInfoVector > &getEdgeInfo() {return edgeInfo;}
+    topology::EdgeData < edgeRestInfoVector > &getEdgeInfo() {return edgeInfo;}
 
 
     TetrahedralTMEdgeHandler* edgeHandler;
 
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API TetrahedralTensorMassForceField<Vec3dTypes>;
+extern template class SOFA_MISC_FEM_API TetrahedralTensorMassForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API TetrahedralTensorMassForceField<Vec3fTypes>;
+extern template class SOFA_MISC_FEM_API TetrahedralTensorMassForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRALTENSORMASSFORCEFIELD_CPP)

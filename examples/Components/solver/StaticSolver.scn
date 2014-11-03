@@ -1,12 +1,12 @@
-<Node name="root" gravity="-1.8 0 100"  dt="1" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
-
+<Node name="root" gravity="-1.8 0 100"  dt="1">
+    <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 	<Node name="Reference">
 		<OglModel fileMesh="mesh/truthcylinder1-bent.obj" scale="0.95" dx="0" dy="-1" dz="0" color="green" />
 	</Node>
 	<Node name="Springs">
 
 		<StaticSolver  />
-		<CGLinearSolver iterations="100" />
+		<CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         	<MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh" />
 		<Mesh src="@loader" />
 		<MechanicalObject src="@loader" dx="15" />
@@ -20,7 +20,7 @@
 	</Node>
 	<Node name="CoFEM">
 		<StaticSolver  />
-		<CGLinearSolver iterations="100" />
+		<CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         	<MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh"/>
 		<Mesh src="@loader" />
 		<MechanicalObject src="@loader" dx="30" />
@@ -34,7 +34,7 @@
 	</Node>
 	<Node name="LinearFEM">
 		<StaticSolver  />
-		<CGLinearSolver iterations="100" />
+		<CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         	<MeshGmshLoader name="loader" filename="mesh/truthcylinder1.msh"/>
 		<Mesh src="@loader" />
 		<MechanicalObject src="@loader" dx="45" />

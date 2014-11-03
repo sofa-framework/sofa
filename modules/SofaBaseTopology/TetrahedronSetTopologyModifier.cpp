@@ -155,7 +155,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
     {
         for (unsigned int j=0; j<6; ++j)
         {
-            int p0,p1;
+            int p0=-1,p1=-1;
 
             // compute the index of edges in tetra
             if (j<3)

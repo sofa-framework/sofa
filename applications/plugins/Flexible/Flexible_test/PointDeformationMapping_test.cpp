@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#include "stdafx.h"
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>
 
@@ -96,7 +96,7 @@ namespace sofa {
             affineConstraint->m_translation.setValue(testedTranslation);
         }
              
-        void SetRandomAffineTransform (int seed)
+        void SetRandomAffineTransform (int /*seed*/)
         {
             // Matrix 3*3
             for( int j=0; j<testedRotation.nbCols; j++)
@@ -116,7 +116,7 @@ namespace sofa {
 
         }
       
-        bool runTest(double convergenceAccuracy, double /*tolerance*/)
+        bool runTest(double convergenceAccuracy)
         {
             // Init simulation
             sofa::simulation::getSimulation()->init(Inherited::root.get());
@@ -211,7 +211,7 @@ namespace sofa {
     // test case: polarcorotationalStrainMapping 
     TYPED_TEST( PointsDeformationMapping_test , VecDeformationMappingTest)
     {
-        ASSERT_TRUE( this->runTest(1e-10,1e-10));
+        ASSERT_TRUE( this->runTest(1e-10));
     }
 
 } // namespace sofa

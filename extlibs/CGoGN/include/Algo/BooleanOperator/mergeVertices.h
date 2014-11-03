@@ -42,13 +42,13 @@ namespace BooleanOperator
 {
 
 template <typename PFP>
-bool isBetween(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, Dart d, Dart e, Dart f) ;
+bool isBetween(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, Dart d, Dart e, Dart f) ;
 
 template <typename PFP>
-void mergeVertex(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& positions, Dart d, Dart e);
+void mergeVertex(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions, Dart d, Dart e);
 
 template <typename PFP>
-void mergeVertices(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& positions);
+void mergeVertices(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& positions);
 
 }
 

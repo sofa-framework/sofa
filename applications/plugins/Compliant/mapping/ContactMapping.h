@@ -43,11 +43,15 @@ public:
 	typedef typename TIn::Real real;
 
 	typedef vector< defaulttype::Vec<3, real> > normal_type;
-	normal_type normal;
+    Data<normal_type> normal;
 
 	typedef vector< real > penetration_type;
-	penetration_type penetrations;
+    Data<penetration_type> penetrations;
 
+  ContactMapping() : normal(initData(&normal, "normal", "contact normals")),
+					 penetrations(initData(&penetrations, "penetrations", "contact penetrations")) {
+
+  }
 	
 protected:
 
@@ -57,13 +61,13 @@ protected:
 		// local frames have been computed in assemble
 
 		assert( in.size() == out.size() );
-        assert( in.size() == penetrations.size() );
+        assert( in.size() == penetrations.getValue().size() );
 
 		unsigned n = in.size();
 
 		for(unsigned i = 0; i < n; ++i) {
 
-            out[i][0] = penetrations[i];
+		  out[i][0] = penetrations.getValue()[i];
 
 //             std::cout << SOFA_CLASS_METHOD<<"normal " << normal[i] << std::endl;
 //             std::cout << SOFA_CLASS_METHOD<< "penetration " << penetrations[i] << " "<< out[i][0]<< std::endl;
@@ -92,16 +96,23 @@ protected:
 		
 		for(unsigned i = 0; i < n; ++i)
 			{
-				assert( !normal.empty() );
+			  assert( !normal.getValue().empty() );
 //				assert( std::abs( normal[i].norm() - 1 ) <= std::numeric_limits<SReal>::epsilon() );
 				
 				// first vector is normal
-                local_frame.col(0) = utils::map( normal[i] );
+                local_frame.col(0) = utils::map( normal.getValue()[i] );
 				
 				// possibly tangent directions
 				if( self::Nout == 3 ) {
 					Eigen::Matrix<real, 3, 1> n = local_frame.col(0);
-					local_frame.template rightCols<2>() = ker( n );
+					try{
+					  local_frame.template rightCols<2>() = ker( n );
+					}
+                    catch( const std::logic_error& ) {
+					  std::cout << "skipping degenerate normal for contact " << i
+								<< ": " << n.transpose() << std::endl;
+					  local_frame.setZero();
+					}
 				}
 				
 				// make sure we're cool

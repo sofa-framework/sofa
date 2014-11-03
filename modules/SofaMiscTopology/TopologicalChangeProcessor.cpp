@@ -414,13 +414,13 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             {
                 sofa::component::topology::TriangleSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
-                
+
                 if(!topoMod)
                 {
                     serr << "No PointSetTopologyModifier available" << sendl;
                     continue;
                 }
-                
+
                 helper::vector< Vector2 > baryCoords;
                 baryCoords.resize(nbElements);
                 helper::vector < unsigned int > triangles;
@@ -432,7 +432,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     Vector2& baryCoord = baryCoords[i];
                     Sin >> baryCoord[0] >> baryCoord[1];
                 }
-                
+
 
                 helper::vector< helper::vector< unsigned int > > p_ancestors(nbElements);
                 sofa::helper::vector< helper::vector< double > > p_baryCoefs(nbElements);
@@ -473,14 +473,14 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 //std::cout << "SIN: " << vitems << std::endl;
 
                 topoMod->addEdges(vitems);
-            
+
             }
             else if ( EleType == "Triangle" || EleType == "Triangles")
             {
 
                 helper::vector<helper::vector<unsigned int> >  p_ancestors(nbElements);
                 helper::vector<helper::vector<double> >        p_baryCoefs(nbElements);
-                
+
                 if(!str.eof() )
                 {
                     std::string token;
@@ -495,7 +495,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                         }
                     }
                 }
-                
+
                 sofa::component::topology::TriangleSetTopologyModifier* topoMod;
                 m_topology->getContext()->get(topoMod);
 
@@ -626,7 +626,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             if (m_saveIndicesAtInit.getValue())
             {
                 inciseWithSavedIndices();
-                it++; it++; continue;
+                ++it; ++it; continue;
             }
 
             sofa::component::topology::TriangleSetTopologyModifier* triangleMod;
@@ -848,7 +848,7 @@ void TopologicalChangeProcessor::saveIndices()
         }
 
         //go to the next line
-        it++;
+        ++it;
         std::istringstream str2(*it);
 
         unsigned int nbElements;
@@ -859,8 +859,7 @@ void TopologicalChangeProcessor::saveIndices()
         }
 
         //go to the next line
-        it++;
-        std::istringstream str3(*it);
+        ++it;
 
         std::vector<Real> values = getValuesInLine(*it, nbElements);
 
@@ -885,9 +884,6 @@ void TopologicalChangeProcessor::saveIndices()
         }
 
         unsigned int increment = ( onlyCoordinates ) ? 3 : 4; // 3 if only the coordinates, 4 if there is also a triangle index
-
-        std::vector<unsigned int> indicesToPush;
-        std::vector<Vector3>            coordinatesToPush;
 
 //                    std::cout << "(TopologicalChangeProcessor::saveIndices): values size : " <<  values.size() << std::endl;
 
@@ -942,7 +938,7 @@ void TopologicalChangeProcessor::saveIndices()
         }
 
         //go to the next line
-        it++;
+        ++it;
     }
 
 
@@ -1139,11 +1135,9 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
 
     for (unsigned int i = 0 ; i < triIndices.size() ; i++)
     {
-        bool isPointInTriangle = false;
-
-        bool is_tested = false;
-        unsigned int indTest;
-        isPointInTriangle = triangleGeo->isPointInsideTriangle(triIndices[i], is_tested, coord, indTest);
+        const bool is_tested = false;
+        unsigned int indTest = 0;
+        const bool isPointInTriangle = triangleGeo->isPointInsideTriangle(triIndices[i], is_tested, coord, indTest);
 
         if (isPointInTriangle)
         {
@@ -1193,12 +1187,10 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
         projectedPoint[1] = (- a * b * x + (a * a + c * c) * y - b * c * z - d * b) /*/normalNorm*/;
         projectedPoint[2] = (- a * c * x - b * c * y + (a * a + b * b) * z - d * c) /*/normalNorm*/;
 
-        bool isPointInTriangle = false;
-
-        bool is_tested = false;
-        unsigned int indTest;
+        const bool is_tested = false;
+        unsigned int indTest = 0;
         //test if the projected point is inside the current triangle
-        isPointInTriangle = triangleGeo->isPointInsideTriangle(i, is_tested, projectedPoint, indTest);
+        const bool isPointInTriangle = triangleGeo->isPointInsideTriangle(i, is_tested, projectedPoint, indTest);
 
         if (isPointInTriangle)
         {
@@ -1274,8 +1266,6 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     Vector3 a;
     Vector3 b;
 
-    unsigned int ind_ta;
-    unsigned int ind_tb;
     unsigned int a_last = core::topology::BaseMeshTopology::InvalidID;
     unsigned int b_last = core::topology::BaseMeshTopology::InvalidID;
     bool firstCut= true;
@@ -1289,7 +1279,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
             triangleIncisionInformation[i].computeCoordinates(m_topology);
     }
 
-
+    unsigned int ind_ta = 0;
     if (indexOfTime < (int)triangleIncisionInformation.size())
     {
         if (triangleIncisionInformation[indexOfTime].triangleIndices.empty())
@@ -1318,6 +1308,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
 //                std::cout << "(TopologicalChangeProcessor::inciseWithSavedIndices): (a) coord : " <<  a << std::endl;
 //                std::cout << "(TopologicalChangeProcessor::inciseWithSavedIndices): (a) barycentric coordinates : " <<  triangleIncisionInformation[indexOfTime].barycentricCoordinates[0] << std::endl;
 
+    unsigned int ind_tb = 0;
     for (unsigned int i =1; i < triangleIncisionInformation[indexOfTime].triangleIndices.size(); ++i)
     {
         ind_tb = triangleIncisionInformation[indexOfTime].triangleIndices[i];

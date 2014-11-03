@@ -23,8 +23,8 @@ Q_OBJECT
     QStackedWidget *stack;
     
     unsigned int currentAxis;
-    Vec3f currentImagePosition;
-    Vec3f current3DPosition;
+    defaulttype::Vec3f currentImagePosition;
+    defaulttype::Vec3f current3DPosition;
     QString currentVal;
     
     typedef sofa::component::engine::LabelImageToolBox Label;

@@ -142,8 +142,14 @@ protected:
 						J.insertBack(row, col) = block(u, v);
 					} 
 				}		 
-				J.finalize();
+				
 			}
+		}
+
+		// finalize at the end of operations otherwise indices lookup table gets computed.
+		for(unsigned j = 0, m = in.size(); j < m; ++j) {
+			typename self::jacobian_type::CompressedMatrix& J = this->jacobian(j).compressedMatrix;
+			J.finalize();
 		}
 	}
 	

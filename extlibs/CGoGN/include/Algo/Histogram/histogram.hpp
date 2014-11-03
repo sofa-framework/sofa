@@ -33,14 +33,10 @@ namespace Algo
 namespace Histogram
 {
 
-
-
 inline Histogram::Histogram( HistoColorMap& hcm):
  m_hcolmap(hcm),m_sorted(false)
 {
-
 }
-
 
 inline const std::vector<unsigned int>& Histogram::getPopulation() const
 {
@@ -52,48 +48,40 @@ inline const std::vector<double>& Histogram::getQuantilesHeights() const
 	return m_pop_quantiles;
 }
 
-
 inline const std::vector<double>&  Histogram::getQuantilesIntervals() const
 {
 	return m_interv;
 }
-
 
 inline const HistoColorMap& Histogram::colorMap() const
 {
 	return m_hcolmap;
 }
 
-
 inline double Histogram::getMin() const
 {
 	return m_min;
 }
-
 
 inline double Histogram::getMax() const
 {
 	return m_max;
 }
 
-
 inline double Histogram::getQMin() const
 {
 	return m_dataIdx.front().first;
 }
-
 
 inline double Histogram::getQMax() const
 {
 	return m_dataIdx.back().first;
 }
 
-
 inline unsigned int Histogram::getMaxBar() const
 {
 	return m_maxBar;
 }
-
 
 inline double Histogram::getMaxQBar() const
 {
@@ -112,7 +100,6 @@ inline void Histogram::setMax(double m)
 	m_hcolmap.setMax(m);
 }
 
-
 inline void Histogram::centerOnZero()
 {
 	if ((m_min <0.0) && (m_max > 0.0))
@@ -123,8 +110,6 @@ inline void Histogram::centerOnZero()
 			m_min = -m_max;
 	}
 }
-
-
 
 template <typename ATTR>
 inline void Histogram::initData(const ATTR& attr)
@@ -151,8 +136,6 @@ inline void Histogram::initData(const ATTR& attr)
 	m_sorted = false;
 }
 
-
-
 inline unsigned int Histogram::whichClass(double val) const
 {
 	if (val == m_max)
@@ -163,7 +146,6 @@ inline unsigned int Histogram::whichClass(double val) const
 	return (unsigned int)(x);
 }
 
-
 inline unsigned int Histogram::whichQuantille(double val) const
 {
 	unsigned int i=1;
@@ -171,7 +153,6 @@ inline unsigned int Histogram::whichQuantille(double val) const
 		++i;
 	return i-1;
 }
-
 
 template<typename ATTC>
 void Histogram::histoColorize(ATTC& colors)
@@ -185,8 +166,6 @@ void Histogram::histoColorize(ATTC& colors)
 			colors[j] = m_hcolmap.colorIndex(c);
 	}
 }
-
-
 
 template<typename ATTC>
 void Histogram::quantilesColorize(ATTC& colors, const std::vector<Geom::Vec3f>& tc)
@@ -208,12 +187,12 @@ void Histogram::quantilesColorize(ATTC& colors, const std::vector<Geom::Vec3f>& 
 	}
 }
 
-
 /// get data
 inline double Histogram::data(unsigned int i) const
 {
 	return m_dataIdx[i].first;
 }
+
 /// get idx of data in attribute
 inline unsigned int Histogram::idx(unsigned int i) const
 {
@@ -225,7 +204,6 @@ inline bool Histogram::dataComp( const std::pair<double, unsigned int>& a, const
 {
 	return a.first < b.first;
 }
-
 
 template <typename CELLMARKER>
 unsigned int Histogram::markCellsOfHistogramColumn(unsigned int c, CELLMARKER& cm) const
@@ -277,11 +255,8 @@ unsigned int Histogram::markCellsOfQuantilesColumn(unsigned int c, CELLMARKER& c
 	return nbc;
 }
 
+} // namespace Histogram
 
+} // namespace Algo
 
-
-}
-}
-}
-
-
+} // namespace CGoGN

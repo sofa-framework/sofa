@@ -43,6 +43,9 @@
 #define REGULAR 0
 #define LLOYD 1
 
+#define FASTMARCHING 0
+#define DIJKSTRA 1
+#define PARALLELMARCHING 2
 
 namespace sofa
 {
@@ -83,7 +86,7 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class ImageSampler>
     static void regularSampling( ImageSampler* sampler, const bool atcorners=false, const bool recursive=false )
     {
-        typedef typename ImageSampler::Real Real;
+//        typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
         typedef typename ImageSampler::Edge Edge;
         typedef typename ImageSampler::Hexa Hexa;
@@ -158,12 +161,12 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
     template<class ImageSampler>
-    static void uniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false )
+    static void uniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING, const unsigned int pmmIter = std::numeric_limits<unsigned int>::max(), const SReal pmmTol = 10 )
     {
         typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
-        typedef typename ImageSampler::Edge Edge;
-        typedef typename ImageSampler::Hexa Hexa;
+//        typedef typename ImageSampler::Edge Edge;
+//        typedef typename ImageSampler::Hexa Hexa;
         typedef typename ImageSampler::T T;
 
         clock_t timer = clock();
@@ -207,8 +210,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         }
         if(fpos.size())
         {
-            if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
-            else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
+            switch(method)
+            {
+            case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
+            case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
+            case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
+            default : std::cerr << "Unknown Distance Field Computation Method" << std::endl; break;
+            };
         }
 
         // farthest point sampling using geodesic distances
@@ -223,8 +231,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 pos_voronoiIndex.push_back(fpos_VoxelIndex.size()+pos_VoxelIndex.size()+1);
                 pos_VoxelIndex.push_back(pmax);
                 AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex.back(),pos_voronoiIndex.back());
-                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
-                else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
+                switch(method)
+                {
+                case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
+                case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
+                case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
+                default : std::cerr << "Unknown Distance Field Computation Method" << std::endl; break;
+                };
             }
             else break;
         }
@@ -241,8 +254,14 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg_library::cimg::type<Real>::max();
                 for(unsigned int i=0; i<fpos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i], fpos_voronoiIndex[i]);
                 for(unsigned int i=0; i<pos_voronoiIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex[i], pos_voronoiIndex[i]);
-                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
-                else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
+
+                switch(method)
+                {
+                case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
+                case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
+                case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
+                default : std::cerr << "Unknown Distance Field Computation Method" << std::endl; break;
+                };
                 it++; if(it>=lloydIt) converged=true;
             }
             else converged=true;
@@ -262,12 +281,12 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
     template<class ImageSampler>
-    static void recursiveUniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false,  const unsigned int N=1 )
+    static void recursiveUniformSampling( ImageSampler* sampler,const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING,  const unsigned int N=1, const unsigned int pmmIter=std::numeric_limits<unsigned int>::max(), const SReal pmmTol=10)
     {
         typedef typename ImageSampler::Real Real;
         typedef typename ImageSampler::Coord Coord;
         typedef typename ImageSampler::Edge Edge;
-        typedef typename ImageSampler::Hexa Hexa;
+//        typedef typename ImageSampler::Hexa Hexa;
         typedef typename ImageSampler::T T;
 
         clock_t timer = clock();
@@ -311,8 +330,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         }
         if(fpos.size())
         {
-            if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
-            else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
+            switch(method)
+            {
+            case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
+            case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
+            case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
+            default : std::cerr << "Unknown Distance Field Computation Method" << std::endl; break;
+            };
         }
 
         // new points
@@ -336,8 +360,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 newpos_voronoiIndex.push_back(fpos_VoxelIndex.size()+pos_VoxelIndex.size()+newpos_VoxelIndex.size()+1);
                 newpos_VoxelIndex.push_back(pmax);
                 AddSeedPoint<Real>(trial,dist,voronoi, newpos_VoxelIndex.back(),newpos_voronoiIndex.back());
-                if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor);
-                else fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor );
+                switch(method)
+                {
+                case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
+                case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
+                case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
+                default : std::cerr << "Unknown Distance Field Computation Method" << std::endl; break;
+                };
             }
 
             // lloyd iterations for the N points
@@ -353,8 +382,13 @@ struct ImageSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
                     for(unsigned int i=0; i<fpos_VoxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, fpos_VoxelIndex[i], fpos_voronoiIndex[i]);
                     for(unsigned int i=0; i<pos_VoxelIndex.size(); i++)  AddSeedPoint<Real>(trial,dist,voronoi, pos_VoxelIndex[i], pos_voronoiIndex[i]);
                     for(unsigned int i=0; i<newpos_VoxelIndex.size(); i++) AddSeedPoint<Real>(trial,dist,voronoi, newpos_VoxelIndex[i], newpos_voronoiIndex[i]);
-                    if(useDijkstra) dijkstra<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
-                    else fastMarching<Real,T>(trial,dist, voronoi,  sampler->transform.getValue().getScale(), biasFactor);
+                    switch(method)
+                    {
+                    case FASTMARCHING : fastMarching<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(),biasFactor ); break;
+                    case DIJKSTRA : dijkstra<Real,T>(trial,dist, voronoi, sampler->transform.getValue().getScale(), biasFactor); break;
+                    case PARALLELMARCHING : parallelMarching<Real,T>(dist, voronoi, sampler->transform.getValue().getScale(), pmmIter, pmmTol, biasFactor); break;
+                    default : std::cerr << "Unknown Distance Field Computation Method" << std::endl; break;
+                    };
                     it++; if(it>=lloydIt) converged=true;
                 }
                 else converged=true;
@@ -525,7 +559,7 @@ public:
         f_listening.setValue(true);
 
         helper::OptionsGroup methodOptions(2,"0 - Regular sampling (at voxel center(0) or corners (1)) "
-                ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)=1)"
+                ,"1 - Uniform sampling using Fast Marching and Lloyd relaxation (nbSamples | bias distances=false | nbiterations=100  | FastMarching(0)/Dijkstra(1)/ParallelMarching(2)=1 | PMM max iter | PMM tolerance)"
                                           );
         methodOptions.setSelectedItem(REGULAR);
         method.setValue(methodOptions);
@@ -573,12 +607,14 @@ protected:
             unsigned int nb=0;        if(params.size())       nb=(unsigned int)params[0];
             bool bias=false;          if(params.size()>1)     bias=(bool)params[1];
             unsigned int lloydIt=100; if(params.size()>2)     lloydIt=(unsigned int)params[2];
-            bool Dij=true;            if(params.size()>3)     Dij=(bool)params[3];
+            unsigned int Dij=1;       if(params.size()>3)     Dij=(unsigned int)params[3];
             unsigned int N=1;         if(params.size()>4)     N=(unsigned int)params[4];
+            unsigned int pmmIter=127; if(params.size()>5)     pmmIter=(unsigned int)params[5];
+            Real pmmTol=10;           if(params.size()>6)     pmmTol=(Real)params[6];
 
             // sampling
-            if(!computeRecursive.getValue()) uniformSampling(nb,bias,lloydIt,Dij);
-            else recursiveUniformSampling(nb,bias,lloydIt,Dij,N);
+            if(!computeRecursive.getValue()) uniformSampling(nb,bias,lloydIt,Dij,pmmIter, pmmTol);
+            else recursiveUniformSampling(nb,bias,lloydIt,Dij,N, pmmIter, pmmTol);
         }
 
         // clear distance image ?
@@ -707,10 +743,12 @@ protected:
             for(unsigned int i=0; i<nb; i++) {unsigned int index=indices[i]; q.insert(distanceToPoint(pos[index][dir],i));}
             typename distanceSet::iterator it=q.begin();
             BB[0][dir]=q.begin()->first; BB[1][dir]=q.rbegin()->first;
-            C[dir]=(BB[1][dir]+BB[0][dir])*0.5;   while(it->first<C[dir]) it++;       // mean
+            C[dir]=(BB[1][dir]+BB[0][dir])*0.5;   while(it->first<C[dir]) ++it;       // mean
             // for(unsigned int count=0; count<nb/2; count++) it++;   // median
             Real c=it->first;
-            it--; if(C[dir]-it->first<c-C[dir]) c=it->first;
+            --it;
+            if(C[dir]-it->first<c-C[dir]) 
+                c=it->first;
             C[dir]=c;
             //            std::cout<<"dir="<<dir<<":"; for( it=q.begin(); it!=q.end(); it++)  std::cout<<it->first <<" "; std::cout<<std::endl; std::cout<<"C="<<C[dir]<<std::endl;
         }
@@ -770,7 +808,7 @@ protected:
     }
 
     // add point p in pos if not already there are return its index
-    unsigned int addPoint(const Coord p, waPositions& pos, vector<unsigned int> &indices)
+    unsigned int addPoint(const Coord& p, waPositions& pos, vector<unsigned int> &indices)
     {
         unsigned int ret ;
         typename vector<Coord>::iterator it=std::find(pos.begin(),pos.end(),p);
@@ -784,7 +822,7 @@ protected:
     {
         if(e[0]==e[1]) return;
         typename vector<Edge>::iterator it=edg.begin();
-        while(it!=edg.end() && ((*it)[0]!=e[0] || (*it)[1]!=e[1])) it++; // to replace std::find that does not compile here for some reasons..
+        while(it!=edg.end() && ((*it)[0]!=e[0] || (*it)[1]!=e[1])) ++it; // to replace std::find that does not compile here for some reasons..
         if(it==edg.end()) edg.push_back(e);
     }
 
@@ -795,9 +833,9 @@ protected:
     * @param lloydIt : maximum number of Lloyd iterations.
     */
 
-    void uniformSampling (const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false)
+    void uniformSampling (const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=FASTMARCHING, const unsigned int pmmIter=std::numeric_limits<unsigned int>::max(), const SReal pmmTol=10)
     {
-        ImageSamplerSpecialization<ImageTypes::label>::uniformSampling( this, nb, bias, lloydIt, useDijkstra );
+        ImageSamplerSpecialization<ImageTypes::label>::uniformSampling( this, nb, bias, lloydIt, method, pmmIter, pmmTol );
     }
 
 
@@ -807,9 +845,9 @@ protected:
     * a graph is generated relating the new samples to its neighbors at the instant of insertion
     */
 
-    void recursiveUniformSampling ( const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const bool useDijkstra=false,  const unsigned int N=1)
+    void recursiveUniformSampling ( const unsigned int nb=0,  const bool bias=false, const unsigned int lloydIt=100,const unsigned int method=false, const unsigned int N=1, const unsigned int pmmIter=std::numeric_limits<unsigned int>::max(), const SReal pmmTol=10)
     {
-        ImageSamplerSpecialization<ImageTypes::label>::recursiveUniformSampling( this, nb, bias, lloydIt, useDijkstra, N );
+        ImageSamplerSpecialization<ImageTypes::label>::recursiveUniformSampling( this, nb, bias, lloydIt, method, N, pmmIter, pmmTol );
     }
 
 

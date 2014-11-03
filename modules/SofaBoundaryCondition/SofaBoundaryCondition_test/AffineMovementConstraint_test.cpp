@@ -29,6 +29,8 @@
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+using namespace sofa::defaulttype;
+
 namespace sofa {
 namespace {
 
@@ -86,7 +88,7 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
         simulation::Node::SPtr SquareNode = patchStruct.SquareNode;
      
         //Force field for 2D Grid
-        typename MeshSpringForceField::SPtr meshSpringForceField = addNew<MeshSpringForceField> (SquareNode,"forceField");
+        typename MeshSpringForceField::SPtr meshSpringForceField = modeling::addNew<MeshSpringForceField> (SquareNode,"forceField");
         meshSpringForceField->setStiffness(10);
 
         // Init seed

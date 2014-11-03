@@ -35,12 +35,12 @@ namespace Geometry
 {
 
 template <typename PFP>
-void statModele(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position)
+void statModele(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position)
 {
 	int nbFaces = 0;
 	int nbVertex = 0;
 
-	CellMarker<VERTEX> mVertex(map);
+	CellMarker<typename PFP::MAP, VERTEX> mVertex(map);
 
 	float ratioMinMax = 0;
 	int nbEdgePerVertex = 0;

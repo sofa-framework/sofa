@@ -1,5 +1,8 @@
 #include "DiagonalCompliance.h"
 #include <iostream>
+
+#include <utils/edit.h>
+
 using std::cerr;
 using std::endl;
 
@@ -16,9 +19,10 @@ DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalSta
     , diagonal( initData(&diagonal, 
                          "compliance", 
                          "Compliance value diagonally applied to all the DOF."))
-    , damping( initData(&damping, Real(0), "damping", "uniform viscous damping."))
+    , damping( initData(&damping, "damping", "uniform viscous damping."))
 {
 	this->isCompliance.setValue(true);
+	edit(damping)->push_back(0);
 }
 
 template<class DataTypes>
@@ -49,7 +53,7 @@ void DiagonalCompliance<DataTypes>::reinit()
             for(unsigned int j = 0; j < m; ++j)
             {
     //            matC.beginRow(row);
-                matC.insertBack(row, row, diagonal.getValue()[i][j]);
+                if( diagonal.getValue()[i][j] ) matC.insertBack(row, row, diagonal.getValue()[i][j]);
     //            matC.add(row, row, diagonal.getValue()[i][j]);
                 ++row;
             }
@@ -73,7 +77,7 @@ void DiagonalCompliance<DataTypes>::reinit()
                         -1 / diagonal.getValue()[i][j] :
                         -1 / std::numeric_limits<Real>::epsilon();
 
-                matK.insertBack(row, row, k);
+                if( k ) matK.insertBack(row, row, k);
                 ++row;
             }
         }
@@ -81,14 +85,17 @@ void DiagonalCompliance<DataTypes>::reinit()
 //    }
 //    else matK.compressedMatrix.resize(0,0);
 
-    if( damping.getValue() > 0 ) {
-        SReal d = damping.getValue();
-
+		if( damping.getValue().size() > 1 || damping.getValue()[0] > 0 ) {
+		
         matB.resize(state->getMatrixSize(), state->getMatrixSize());
 
         for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+			const unsigned index = std::min<unsigned>(i, damping.getValue().size() - 1);
+			
+			const SReal d = damping.getValue()[index];
+			
             matB.compressedMatrix.startVec(i);
-            matB.compressedMatrix.insertBack(i, i) = -d;
+            if( d ) matB.compressedMatrix.insertBack(i, i) = -d;
         }
 
         matB.compressedMatrix.finalize();
@@ -148,8 +155,7 @@ void DiagonalCompliance<DataTypes>::addDForce(const core::MechanicalParams *mpar
         matK.addMult( df, dx, kfactor );
     }
 
-    if( damping.getValue() > 0 )
-    {
+    if( damping.getValue().size() > 1 || damping.getValue()[0] > 0 ) {
         Real bfactor = (Real)mparams->bFactor();
         matB.addMult( df, dx, bfactor );
     }

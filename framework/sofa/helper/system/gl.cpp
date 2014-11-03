@@ -24,19 +24,18 @@
 ******************************************************************************/
 #include "gl.h"
 
-#include <string>
 
 
-const char* GetGlExtensionsList()
+SOFA_HELPER_API const char* GetGlExtensionsList()
 {
     return reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
 }
 
 
-bool CanUseGlExtension(char* ext)
+SOFA_HELPER_API bool CanUseGlExtension(const std::string& ext)
 {
-    std::string Extensions( GetGlExtensionsList() );
-    if( Extensions.find( std::string(ext) ) != std::string::npos )
+    std::string Extensions = GetGlExtensionsList();
+    if( Extensions.find( ext ) != std::string::npos )
         return true;
     return false;
 }

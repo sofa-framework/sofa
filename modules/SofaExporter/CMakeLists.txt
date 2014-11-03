@@ -12,6 +12,8 @@ set(HEADER_FILES
     OBJExporter.h
     STLExporter.h
     MeshExporter.h
+    BlenderExporter.h
+    BlenderExporter.inl
 
     )
 
@@ -24,6 +26,7 @@ set(SOURCE_FILES
     OBJExporter.cpp
     STLExporter.cpp
     MeshExporter.cpp
+    BlenderExporter.cpp
 
     )
 

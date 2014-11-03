@@ -42,14 +42,14 @@ template <typename PFP>
 bool importMSH(typename PFP::MAP& map, const std::string& filename, std::vector<std::string>& attrNames, float scaleFactor)
 {
 	typedef typename PFP::VEC3 VEC3;
-
-	VertexAttribute<VEC3> position = map.template addAttribute<VEC3, VERTEX>("position") ;
+    typedef typename PFP::MAP MAP;
+    VertexAttribute<VEC3, MAP> position = map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 	attrNames.push_back(position.name()) ;
 
 	AttributeContainer& container = map.template getAttributeContainer<VERTEX>() ;
 
 	unsigned int m_nbVertices = 0, m_nbVolumes = 0;
-	VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> > > vecDartsPerVertex(map, "incidents");
+    VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> >, MAP > vecDartsPerVertex(map, "incidents");
 
 	//open file
 	std::ifstream fp(filename.c_str(), std::ios::in);
@@ -271,7 +271,7 @@ bool importMSH(typename PFP::MAP& map, const std::string& filename, std::vector<
 
 	m_nbVolumes = 0;
 
-	DartMarkerNoUnmark m(map) ;
+    DartMarkerNoUnmark<MAP> m(map) ;
 
 	if (tet.size() > 0)
 	{

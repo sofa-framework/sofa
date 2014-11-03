@@ -2,15 +2,14 @@
 
 <Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="5" showAxis="true">
 <RequiredPlugin pluginName="Flexible"/>
-<!--<RequiredPlugin pluginName="Compliant"/>
-<RequiredPlugin name="CompliantDev" /> -->
+<!--<RequiredPlugin pluginName="Compliant"/> -->
   
   <!--Solver-->
   <StaticSolver/>
   <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-9" threshold="1e-9" />
-  <!-- <AssembledSolver/>
+  <!-- <CompliantImplicitSolver/>
   <LDLTSolver/> -->
-  <!-- <NewtonSolver precision="1e-9" iterations="1000"/>
+  <!-- <CompliantNLImplicitSolver precision="1e-9" iterations="1000"/>
   <LDLTSolver/> -->
   
   <!--Generate Cylinder-->
@@ -48,12 +47,12 @@
   <Node name="behavior"   >
 	  <TopologyGaussPointSampler name="sampler" inPosition="@../cylinder.output_position" showSamplesScale="0" method="0" order="1" />
 	  <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
+    <LinearMapping template="Vec3d,F331" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
     
     <!--Material-->
 	  <Node name="Strain">
 		        <MechanicalObject  template="E331" name="E"  />
-	    	    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="svd" geometricStiffness="false"/>
+	    	    <CorotationalStrainMapping template="F331,E331"   method="svd" geometricStiffness="false"/>
 	          <HookeForceField  template="E331" name="ff" youngModulus="1" poissonRatio="0.2" viscosity="0.1"/>
 	  </Node>
 

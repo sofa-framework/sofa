@@ -21,7 +21,7 @@ public:
     typedef typename TDataTypes::Real Real;
     typedef typename IntrTri::Coord Coord;
     typedef TOBB<TDataTypes2> Box;
-    typedef Vec<3,Real> Vec3;
+    typedef defaulttype::Vec<3,Real> Vec3;
 
     TIntrTriangleOBB (const IntrTri& tri, const Box & box);
 
@@ -40,7 +40,7 @@ private:
     const Box * mBox;
 };
 
-typedef TIntrTriangleOBB<Vec3Types,Rigid3Types> IntrTriangleOBB;
+typedef TIntrTriangleOBB<defaulttype::Vec3Types,defaulttype::Rigid3Types> IntrTriangleOBB;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
 #ifndef SOFA_FLOAT

@@ -3,6 +3,7 @@
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />
+    <DiscreteIntersection />
     <!--<CollisionGroup />-->
     <Node name="Liver">
         <EulerImplicit name="cg_odesolver" printLog="false" />

@@ -45,8 +45,6 @@ namespace component
 namespace misc
 {
 
-using namespace core::behavior;
-
 /** Compute the distance between point/node positions in two objects
 */
 template<class TDataTypes>

@@ -6,6 +6,7 @@
     <CollisionResponse name="response" response="FrictionContact" />
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
     <FreeMotionAnimationLoop mu="0.01" />
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <Node name="Head">
         <OglModel name="HeadVisualModel" fileMesh="data/mesh/head.obj" texturename="Tutorials/StepByStep/Dentistry_Haptics/data/pics/head_baseTexBaked.png" />
         <Node name="Tongue">

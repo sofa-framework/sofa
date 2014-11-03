@@ -47,13 +47,6 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
-using namespace sofa::component::topology;
-using namespace sofa::core::topology;
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-
 /**
 * This class, called Edge2QuadTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
 *
@@ -64,13 +57,13 @@ using namespace sofa::core::behavior;
 *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Edge2QuadTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Edge2QuadTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
-    SOFA_CLASS(Edge2QuadTopologicalMapping,TopologicalMapping);
+    SOFA_CLASS(Edge2QuadTopologicalMapping,sofa::core::topology::TopologicalMapping);
 
-    typedef State<Rigid3Types>::VecCoord VecCoord;
-    typedef State<Rigid3Types>::Coord Coord;
+    typedef sofa::core::State<defaulttype::Rigid3Types>::VecCoord VecCoord;
+    typedef sofa::core::State<defaulttype::Rigid3Types>::Coord Coord;
     typedef Coord::value_type Real;
     enum { M=Coord::spatial_dimensions };
     typedef defaulttype::Mat<M,M,Real> Mat;

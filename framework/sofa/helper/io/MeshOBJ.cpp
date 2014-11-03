@@ -25,6 +25,7 @@
 #include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sstream>
 
 namespace sofa
 {
@@ -120,7 +121,7 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
                 values >> curGroup.materialName;
                 vector<Material>::iterator it = materials.begin();
                 vector<Material>::iterator itEnd = materials.end();
-                for (; it != itEnd; it++)
+                for (; it != itEnd; ++it)
                 {
                     if (it->name == curGroup.materialName)
                     {
@@ -160,7 +161,7 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
                 std::string face;
                 values >> face;
                 if (face.empty()) continue;
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 3; ++j)
                 {
                     vtn[j] = 0;
                     std::string::size_type pos = face.find('/');
@@ -208,10 +209,10 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
         // compute bbox
         Vector3 minBB = vertices[0];
         Vector3 maxBB = vertices[0];
-        for (unsigned int i=1; i<vertices.size(); i++)
+        for (unsigned int i=1; i<vertices.size(); ++i)
         {
             Vector3 p = vertices[i];
-            for (int c=0; c<3; c++)
+            for (int c=0; c<3; ++c)
             {
                 if (minBB[c] > p[c])
                     minBB[c] = p[c];
@@ -234,14 +235,18 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
 void MeshOBJ::readMTL(const char* filename)
 {
     FILE* file;
+
     char buf[128];
+    std::ostringstream bufScanFormat;
+    bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
+
     file = fopen(filename, "r");
     Material *mat = NULL;
     if (!file);//std::cerr << "readMTL() failed: can't open material file " << filename << std::endl;
     else
     {
         /* now, read in the data */
-        while (fscanf(file, "%s", buf) != EOF)
+        while (fscanf(file, bufScanFormat.str().c_str(), buf) != EOF)
         {
 
             switch (buf[0])

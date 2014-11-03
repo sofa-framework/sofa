@@ -48,9 +48,6 @@ namespace component
 namespace misc
 {
 
-using namespace sofa::defaulttype;
-using namespace std;
-
 
 ///////////////////////////// Monitor /////////////////////////////////////
 template <class DataTypes>
@@ -224,9 +221,9 @@ void Monitor<DataTypes>::draw(const core::visual::VisualParams* vparams)
             for (unsigned int j=0 ; j<savedPos[i].size() ; ++j)
             {
                 point = savedPos[i][j];
-                points.push_back(Vector3(point[0], point[1], point[2]));
+                points.push_back(defaulttype::Vector3(point[0], point[1], point[2]));
                 if(j!=0)
-                    points.push_back(Vector3(point[0], point[1], point[2]));
+                    points.push_back(defaulttype::Vector3(point[0], point[1], point[2]));
             }
             vparams->drawTool()->drawLines(points, (float)(showSizeFactor.getValue()*0.2), trajectoriesColor.getValue());
         }
@@ -252,12 +249,12 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
             saveGnuplotX = new std::ofstream ( ( path + this->getName() +"_x.txt" ).c_str() );
             ( *saveGnuplotX ) << "# Gnuplot File : positions of "
                     << indices.getValue().size() << " particle(s) Monitored"
-                    <<  endl;
+                    <<  std::endl;
             ( *saveGnuplotX ) << "# 1st Column : time, others : particle(s) number ";
 
             for (unsigned int i = 0; i < indices.getValue().size(); i++)
                 ( *saveGnuplotX ) << indices.getValue()[i] << " ";
-            ( *saveGnuplotX ) << endl;
+            ( *saveGnuplotX ) << std::endl;
 
         }
 
@@ -268,12 +265,12 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
             saveGnuplotV = new std::ofstream ( ( path + this->getName() +"_v.txt" ).c_str() );
             ( *saveGnuplotV ) << "# Gnuplot File : velocities of "
                     << indices.getValue().size() << " particle(s) Monitored"
-                    <<  endl;
+                    <<  std::endl;
             ( *saveGnuplotV ) << "# 1st Column : time, others : particle(s) number ";
 
             for (unsigned int i = 0; i < indices.getValue().size(); i++)
                 ( *saveGnuplotV ) << indices.getValue()[i] << " ";
-            ( *saveGnuplotV ) << endl;
+            ( *saveGnuplotV ) << std::endl;
         }
 
 
@@ -284,12 +281,12 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
             saveGnuplotF = new std::ofstream ( ( path + this->getName() +"_f.txt" ).c_str() );
             ( *saveGnuplotF ) << "# Gnuplot File : forces of "
                     << indices.getValue().size() << " particle(s) Monitored"
-                    <<  endl;
+                    <<  std::endl;
             ( *saveGnuplotF ) << "# 1st Column : time, others : particle(s) number ";
 
             for (unsigned int i = 0; i < indices.getValue().size(); i++)
                 ( *saveGnuplotF ) << indices.getValue()[i] << " ";
-            ( *saveGnuplotF ) << endl;
+            ( *saveGnuplotF ) << std::endl;
         }
 
     }
@@ -308,7 +305,7 @@ void Monitor<DataTypes>::exportGnuplot ( Real time )
 
         for (unsigned int i = 0; i < indices.getValue().size(); i++)
             ( *saveGnuplotX ) << (*X)[indices.getValue()[i]] << "\t";
-        ( *saveGnuplotX ) << endl;
+        ( *saveGnuplotX ) << std::endl;
     }
     if ( saveVToGnuplot.getValue() && V->size()>0 )
     {
@@ -316,7 +313,7 @@ void Monitor<DataTypes>::exportGnuplot ( Real time )
 
         for (unsigned int i = 0; i < indices.getValue().size(); i++)
             ( *saveGnuplotV ) << (*V)[indices.getValue()[i]] << "\t";
-        ( *saveGnuplotV ) << endl;
+        ( *saveGnuplotV ) << std::endl;
     }
 
     if ( saveFToGnuplot.getValue() && F->size()>0)
@@ -325,7 +322,7 @@ void Monitor<DataTypes>::exportGnuplot ( Real time )
 
         for (unsigned int i = 0; i < indices.getValue().size(); i++)
             ( *saveGnuplotF ) << (*F)[indices.getValue()[i]] << "\t";
-        ( *saveGnuplotF ) << endl;
+        ( *saveGnuplotF ) << std::endl;
     }
 }
 ///////////////////////////////////////////////////////////////////////////

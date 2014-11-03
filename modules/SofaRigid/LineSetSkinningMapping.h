@@ -45,8 +45,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
 template <class TIn, class TOut>
 class LineSetSkinningMapping : public core::Mapping<TIn, TOut>
 {
@@ -166,12 +164,12 @@ private:
     /*!
     	Compute the perpendicular distance from a vertice to a line
     */
-    Vec<3,double> projectToSegment(const Vec<3,Real>& first, const Vec<3,Real>& last, const OutCoord& vertice);
+    defaulttype::Vec<3,double> projectToSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice);
 
     /*!
     	Compute the weight betwewen a vertice and a line
     */
-    double convolutionSegment(const Vec<3,Real>& first, const Vec<3,Real>& last, const OutCoord& vertice);
+    double convolutionSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice);
 
     /*!
     	Stores the lines influenced by each vertice

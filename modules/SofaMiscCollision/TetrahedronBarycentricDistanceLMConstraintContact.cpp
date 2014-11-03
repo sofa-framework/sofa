@@ -25,6 +25,10 @@
 #include <SofaConstraint/BarycentricDistanceLMConstraintContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 
+
+using namespace sofa::defaulttype;
+using namespace sofa::core::collision;
+
 namespace sofa
 {
 

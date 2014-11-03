@@ -38,10 +38,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class T>
 IndicesFromValues<T>::IndicesFromValues()
     : f_values( initData (&f_values, "values", "input values") )

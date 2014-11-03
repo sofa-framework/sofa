@@ -37,12 +37,8 @@
 #include "Utils/Shaders/shaderSimpleColor.h"
 #include "Utils/Shaders/shaderColorPerVertex.h"
 
-
-
-
 #include "Utils/vbo_base.h"
 #include "Utils/svg.h"
-
 
 namespace CGoGN
 {
@@ -56,11 +52,13 @@ namespace Render
 namespace GL2
 {
 
-
+template <typename PFP>
 class Topo3PrimalRender
 {
-protected:
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
 
+protected:
 	/**
 	* vbo buffers
 	* 0: vertices darts
@@ -114,8 +112,7 @@ protected:
 	/**
 	 * attribute index to get easy correspondence dart/color
 	 */
-	DartAttribute<unsigned int> m_attIndex;
-
+	DartAttribute<unsigned int, MAP> m_attIndex;
 
 	Geom::Vec3f* m_bufferDartPosition;
 
@@ -138,7 +135,6 @@ protected:
 	Dart pickColor(unsigned int x, unsigned int y);
 
 public:
-
 	/**
 	* Constructor
 	*/
@@ -149,9 +145,8 @@ public:
 	*/
 	~Topo3PrimalRender();
 
-
-	Utils::GLSLShader* shader1() { return static_cast<Utils::GLSLShader*>(m_shader1);}
-	Utils::GLSLShader* shader2() { return static_cast<Utils::GLSLShader*>(m_shader2);}
+	Utils::GLSLShader* shader1() { return static_cast<Utils::GLSLShader*>(m_shader1); }
+	Utils::GLSLShader* shader2() { return static_cast<Utils::GLSLShader*>(m_shader2); }
 
 	/**
 	 * set the with of line use to draw darts (default val is 2)
@@ -223,8 +218,7 @@ public:
 	/**
 	 * store darts in color for picking
 	 */
-	template<typename PFP>
-	void setDartsIdColor(typename PFP::MAP& map);
+	void setDartsIdColor(MAP& map);
 
 	/**
 	 * pick dart with color set bey setDartsIdColor
@@ -235,9 +229,7 @@ public:
 	 * @param y position of mouse (pass H-y, classic pb of origin)
 	 * @return the dart or NIL
 	 */
-	template<typename PFP>
-	Dart picking(typename PFP::MAP& map, int x, int y);
-
+	Dart picking(MAP& map, int x, int y);
 
 	/**
 	 * compute dart from color (for picking)
@@ -248,7 +240,6 @@ public:
 	 * compute color from dart (for picking)
 	 */
 	void dartToCol(Dart d, float& r, float& g, float& b);
-
 
 	/**
 	* update all drawing buffers to render a dual map
@@ -261,24 +252,21 @@ public:
 //	template<typename PFP>
 //	void updateData(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, float ke, float kf);
 
-	template<typename PFP, typename EMBV>
-	void updateData(typename PFP::MAP& mapx, const EMBV& positions, float ke, float kf);
+	void updateData(MAP& mapx, const VertexAttribute<VEC3, MAP>& positions, float ke, float kf);
 
 	/**
 	* update color buffer with color attribute handler
 	* @param map the map
 	* @param colors  attribute of dart's colors
 	*/
-	template<typename PFP>
-	void updateColors(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& colors);
+	void updateColors(MAP& map, const VertexAttribute<VEC3, MAP>& colors);
 
 	/**
 	 * Get back middle position of drawn darts
 	 * @param map the map
 	 * @param posExpl the output positions
 	 */
-	template<typename PFP>
-	void computeDartMiddlePositions(typename PFP::MAP& map, DartAttribute<typename PFP::VEC3>& posExpl);
+	void computeDartMiddlePositions(MAP& map, DartAttribute<VEC3, MAP>& posExpl);
 
 	/**
 	 * render to svg struct
@@ -290,12 +278,9 @@ public:
 	 */
 	void svgout2D(const std::string& filename, const glm::mat4& model, const glm::mat4& proj);
 
+	Dart coneSelection(MAP& map, const Geom::Vec3f& rayA, const Geom::Vec3f& rayAB, float angle);
 
-	template<typename PFP>
-	Dart coneSelection(typename PFP::MAP& map, const Geom::Vec3f& rayA, const Geom::Vec3f& rayAB, float angle);
-
-	template<typename PFP>
-	Dart raySelection(typename PFP::MAP& map, const Geom::Vec3f& rayA, const Geom::Vec3f& rayAB, float distmax);
+	Dart raySelection(MAP& map, const Geom::Vec3f& rayA, const Geom::Vec3f& rayAB, float distmax);
 
 protected:
 //	/**
@@ -321,14 +306,13 @@ protected:
 //	void updateDataGMap3(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& positions, float ke, float kf, float kv);
 };
 
+} // end namespace GL2
 
-}//end namespace GL2
+} // end namespace Algo
 
-}//end namespace Algo
+} // end namespace Render
 
-}//end namespace Render
-
-}//end namespace CGoGN
+} // end namespace CGoGN
 
 #include "Algo/Render/GL2/topo3PrimalRender.hpp"
 

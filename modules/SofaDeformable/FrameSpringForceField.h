@@ -44,8 +44,6 @@ namespace component
 namespace interactionforcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core;
 template<class DataTypes>
 class FrameSpringForceFieldInternalData
 {
@@ -75,7 +73,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=DataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Vec<N,Real> VecN;
+    typedef defaulttype::Vec<N,Real> VecN;
 
 
     class Spring
@@ -197,7 +195,7 @@ public:
     virtual void init();
 
 
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
+    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
     ///SOFA_DEPRECATED_ForceField <<<virtual void addForce ( VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2 );
 
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);

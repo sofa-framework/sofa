@@ -45,7 +45,7 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
+
 
 class SOFA_CONSTRAINT_API Identifier
 {
@@ -101,7 +101,7 @@ protected:
     ContactMapper<CollisionModel1,DataTypes1> mapper1;
     ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
-    constraintset::UnilateralInteractionConstraint<Vec3Types>::SPtr m_constraint;
+    constraintset::UnilateralInteractionConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
 
     Data<double> mu, tol;

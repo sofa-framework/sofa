@@ -34,8 +34,6 @@
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -46,14 +44,10 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 AverageCoord<DataTypes>::AverageCoord()
     : f_indices( initData (&f_indices, "indices", "indices of the coordinates to average") )
-    , f_vecId(initData (&f_vecId, core::VecCoordId::position().getIndex(), "vecId", "index of the vector (default value corresponds to core::VecCoordId::position() )") )
+    , f_vecId(initData (&f_vecId, sofa::core::VecCoordId::position().getIndex(), "vecId", "index of the vector (default value corresponds to core::VecCoordId::position() )") )
     , f_average( initData (&f_average, "average", "average of the values with the given indices in the given coordinate vector") )
 {
 }
@@ -61,7 +55,7 @@ AverageCoord<DataTypes>::AverageCoord()
 template <class DataTypes>
 void AverageCoord<DataTypes>::init()
 {
-    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     addInput(&f_indices);
     addInput(&f_vecId);
     addOutput(&f_average);
@@ -94,7 +88,7 @@ void AverageCoord<DataTypes>::update()
 
 //    cerr<<"AverageCoord<DataTypes>::update, c= "<< c << endl;
 
-    f_average.setValue(c);
+    f_average.setValue(c,true);
 }
 
 template<class DataTypes>

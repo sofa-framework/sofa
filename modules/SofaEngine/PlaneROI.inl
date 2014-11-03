@@ -43,10 +43,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 PlaneROI<DataTypes>::PlaneROI()
     : planes( initData(&planes, "plane", "Plane defined by 3 points and a depth distance") )
@@ -72,7 +68,7 @@ PlaneROI<DataTypes>::PlaneROI()
     , p_drawTetrahedra( initData(&p_drawTetrahedra,false,"drawTetrahedra","Draw Tetrahedra") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","rendering size for box and topological elements") )
 {
-    planes.beginEdit()->push_back(Vec10(Vec<9,Real>(0,0,0,0,0,0,0,0,0),0));
+    planes.beginEdit()->push_back(Vec10(sofa::defaulttype::Vec<9,Real>(0,0,0,0,0,0,0,0,0),0));
     planes.endEdit();
 
     addAlias(&f_X0,"rest_position");
@@ -85,9 +81,11 @@ PlaneROI<DataTypes>::PlaneROI()
 template <class DataTypes>
 void PlaneROI<DataTypes>::init()
 {
+    using sofa::core::objectmodel::BaseData;
+
     if (!f_X0.isSet())
     {
-        MechanicalState<DataTypes>* mstate;
+        sofa::core::behavior::MechanicalState<DataTypes>* mstate;
         this->getContext()->get(mstate);
         if (mstate)
         {
@@ -115,7 +113,7 @@ void PlaneROI<DataTypes>::init()
     }
     if (!f_edges.isSet() || !f_triangles.isSet())
     {
-        BaseMeshTopology* topology;
+        sofa::core::topology::BaseMeshTopology* topology;
         this->getContext()->get(topology);
         if (topology)
         {

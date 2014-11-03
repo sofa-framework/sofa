@@ -45,10 +45,6 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::core;
-using namespace sofa::core::behavior;
-
-
 /* DefaultMultiMatrixAccessor is a simplest class managing the global matrix setup.
  * This class allow only cases where there are several Mechanical State on simulation scene
  * and interactions between them.
@@ -100,7 +96,7 @@ public:
     virtual MatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate) const;
 
     //give the Matrix Reference (Matrix and Offset) related to a interactionForceField (between 2 Mechanical State)
-    virtual InteractionMatrixRef getMatrix(const BaseMechanicalState* mstate1, const BaseMechanicalState* mstate2) const;
+    virtual InteractionMatrixRef getMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2) const;
 
     //Compute the global system matrix
     //If there are no mapping, do nothing
@@ -111,7 +107,7 @@ public:
     //Matrix creating is only call when there are mapped state,
     //the stiffness and interaction stiffness of this state couldn't directly described on the principal matrix
     //then it demande to create a new matrix
-    static defaulttype::BaseMatrix* createMatrix(const BaseMechanicalState* mstate1, const BaseMechanicalState* mstate2);
+    static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
 
 protected:
 
@@ -139,11 +135,11 @@ protected:
     //map used only for mapped mechanical state
     //a mapped state is added here if and only if its stiffness matrix is guessed by other component (forcefield)
     //by method "getMatrix" in order to fill its matrix
-    mutable std::map< const BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
+    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, defaulttype::BaseMatrix* > mappedMatrices;
 
     //The data structure included mapped and on mapped state, the diagonal stiffness bloc and interaction stiffnessbloc
-    mutable std::map< const BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;//todo remove
-    mutable std::map< std::pair<const BaseMechanicalState*, const BaseMechanicalState*>, InteractionMatrixRef > interactionStiffnessBloc;//todo remove
+    mutable std::map< const sofa::core::behavior::BaseMechanicalState*, MatrixRef > diagonalStiffnessBloc;//todo remove
+    mutable std::map< std::pair<const sofa::core::behavior::BaseMechanicalState*, const sofa::core::behavior::BaseMechanicalState*>, InteractionMatrixRef > interactionStiffnessBloc;//todo remove
 
     //The list of validated mapping in the order of visitor, to be read in the inverted direction for propagation contribution
     std::vector<sofa::core::BaseMapping*> mappingList;

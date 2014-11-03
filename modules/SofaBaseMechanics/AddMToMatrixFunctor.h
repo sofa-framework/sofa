@@ -28,8 +28,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {

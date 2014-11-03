@@ -84,20 +84,18 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 #if defined (_XBOX) || defined(PS3)
 	return false; // not supported
 #else
-    std::string fileIN = filenameStdin;
-
-    //Remove this line below when Windows will be able to read file as stdin
-    fileIN = "";
+    //std::string fileIN = filenameStdin;
+    //Remove this line below and uncomment the one above when Windows will be able to read file as stdin
+    std::string fileIN = "";
 
     fd_t fds[2][2];
 
     //char eol = '\n';
     char** cargs;
-    std::string newCommand(command);
 
     cargs = new char* [args.size()+2];
     cargs[0] = (char*)command.c_str();
-    for (unsigned int i=1 ; i< args.size() + 1 ; i++)
+    for (unsigned int i=1 ; i< args.size() + 1 ; ++i)
         cargs[i] = (char*)args[i-1].c_str();
     cargs[args.size() + 1] = NULL;
 
@@ -110,8 +108,9 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
 //    fdout = GetStdHandle(STD_OUTPUT_HANDLE);
 //    fderr = GetStdHandle(STD_ERROR_HANDLE);
-
-    for (unsigned int i=0 ; i< args.size() ; i++)
+    
+    std::string newCommand(command);
+    for (unsigned int i=0 ; i< args.size() ; ++i)
         newCommand += " " + args[i];
 
 #else
@@ -194,16 +193,16 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         CloseHandle(fds[0][1]);
         CloseHandle(fds[1][1]);
         unsigned long exit = 0;
-        for (int i=0; i<2; i++)
+        for (int i=0; i<2; ++i)
             nfill[i] = 0;
-        for(int i=0;; i++)
+        for(int i=0;; ++i)
         {
             GetExitCodeProcess(piProcInfo.hProcess,&exit);      //while the process is running
             if (exit != STILL_ACTIVE)
                 break;
 
             bool busy = false;
-            for (int i=0; i<2; i++)
+            for (int i=0; i<2; ++i)
             {
                 DWORD n = BUFSIZE-nfill[i];
                 if (n > STEPSIZE) n = STEPSIZE;
@@ -264,7 +263,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 
         int retexec = execvp(command.c_str(), cargs);
         std::cerr << "PipeProcess : ERROR: execlp( "<< command.c_str() << " " ;
-        for (unsigned int i=0; i<args.size() + 1 ; i++)
+        for (unsigned int i=0; i<args.size() + 1 ; ++i)
             std::cerr << cargs[i] << " ";
         std::cerr << ") returned "<<retexec<<std::endl;
         return false;
@@ -282,7 +281,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
         FD_ZERO(&rfds);
         FD_SET(fdin, &rfds);
         int nopen = 0;
-        for (int i=0; i<2; i++)
+        for (int i=0; i<2; ++i)
         {
             //fcntl(fds[i][0],F_SETFL, fcntl(fds[i][0],F_GETFL)|O_NONBLOCK );
             FD_SET(fds[i][0], &rfds);
@@ -310,7 +309,7 @@ bool PipeProcess::executeProcess(const std::string &command,  const std::vector<
 //					FD_CLR(fdin, &rfds);
 //				}
 //			}
-            for (int i=0; i<2; i++)
+            for (int i=0; i<2; ++i)
             {
                 if (FD_ISSET(fds[i][0], &ready))
                 {

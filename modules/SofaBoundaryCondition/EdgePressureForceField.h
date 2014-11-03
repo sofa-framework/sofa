@@ -40,9 +40,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 template<class DataTypes>
 class EdgePressureForceField : public core::behavior::ForceField<DataTypes>
 {
@@ -57,7 +54,7 @@ public:
     typedef typename DataTypes::VecReal     VecReal     ;
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
-
+    typedef sofa::defaulttype::Vec3d        Vec3d;
 protected:
 
     class EdgePressureInformation
@@ -85,7 +82,7 @@ protected:
         }
     };
 
-    EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap;
+    sofa::component::topology::EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
@@ -93,7 +90,7 @@ protected:
 
     Data<Deriv> pressure;
     Data<helper::vector<unsigned int> > edgeIndices;
-    Data<helper::vector<Edge> > edges;
+    Data<helper::vector<sofa::core::topology::Edge> > edges;
     Data<Deriv> normal; // the normal used to define the edge subjected to the pressure force
     Data<Real> dmin; // coordinates min of the plane for the vertex selection
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
@@ -164,21 +161,13 @@ protected :
     }
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API EdgePressureForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 #endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_CPP)

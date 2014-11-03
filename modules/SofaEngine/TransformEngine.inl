@@ -25,9 +25,12 @@
 #ifndef SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_INL
 #define SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_INL
 
+#include <sofa/core/objectmodel/Base.h>
 #include <SofaEngine/TransformEngine.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/rmath.h> //M_PI
+
+#include <cassert>
 
 namespace sofa
 {
@@ -44,6 +47,7 @@ TransformEngine<DataTypes>::TransformEngine()
     , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points") )
     , translation(initData(&translation, defaulttype::Vector3(0,0,0),"translation", "translation vector ") )
     , rotation(initData(&rotation, defaulttype::Vector3(0,0,0), "rotation", "rotation vector ") )
+    , quaternion(initData(&quaternion, defaulttype::Quaternion(0,0,0,1), "quaternion", "rotation quaternion ") )
     , scale(initData(&scale, defaulttype::Vector3(1,1,1),"scale", "scale factor") )
     , inverse(initData(&inverse, false, "inverse", "true to apply inverse transformation"))
 {
@@ -56,6 +60,7 @@ void TransformEngine<DataTypes>::init()
     addInput(&f_inputX);
     addInput(&translation);
     addInput(&rotation);
+    addInput(&quaternion);
     addInput(&scale);
     addInput(&inverse);
     addOutput(&f_outputX);
@@ -128,6 +133,14 @@ struct RotationSpecialized : public TransformOperation<DataTypes>
         if (inverse)
             q = q.inverse();
     }
+
+    void configure(const defaulttype::Quaternion &qi, bool inverse, sofa::core::objectmodel::Base*)
+    {
+        q=qi;
+        if (inverse)
+            q = q.inverse();
+    }
+
 private:
     defaulttype::Quaternion q;
 };
@@ -154,6 +167,14 @@ struct RotationSpecialized<DataTypes, 2, false> : public TransformOperation<Data
         if (inverse)
             rotZ = -rotZ;
     }
+
+    void configure(const defaulttype::Quaternion &qi, bool inverse, sofa::core::objectmodel::Base* pBase)
+    {
+        assert(pBase);
+        pBase->serr << "'void RotationSpecialized::configure(const defaulttype::Quaternion &qi, bool inverse)' is not implemented for two-dimensional data types" << pBase->sendl;
+        assert(false && "This method should not be called without been implemented");
+    }
+
 private:
     Real rotZ;
 	defaulttype::Quaternion q;
@@ -173,6 +194,13 @@ struct RotationSpecialized<DataTypes, 3, false> : public TransformOperation<Data
     void configure(const defaulttype::Vector3 &r, bool inverse)
     {
         q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
+        if (inverse)
+            q = q.inverse();
+    }
+
+    void configure(const defaulttype::Quaternion &qi, bool inverse, sofa::core::objectmodel::Base*)
+    {
+        q=qi;
         if (inverse)
             q = q.inverse();
     }
@@ -253,13 +281,22 @@ void TransformEngine<DataTypes>::update()
     const defaulttype::Vector3 &s=scale.getValue();
     const defaulttype::Vector3 &r=rotation.getValue();
     const defaulttype::Vector3 &t=translation.getValue();
+    const defaulttype::Quaternion &q=quaternion.getValue();
 
     //Create the object responsible for the transformations
     Transform<DataTypes> transformation;
     const bool inv = inverse.getValue();
-    if (s != defaulttype::Vector3(1,1,1))  transformation.add(new Scale<DataTypes>, inv)->configure(s, inv);
-    if (r != defaulttype::Vector3(0,0,0))  transformation.add(new Rotation<DataTypes>, inv)->configure(r, inv);
-    if (t != defaulttype::Vector3(0,0,0))  transformation.add(new Translation<DataTypes>, inv)->configure(t, inv);
+    if (s != defaulttype::Vector3(1,1,1))
+        transformation.add(new Scale<DataTypes>, inv)->configure(s, inv);
+
+    if (r != defaulttype::Vector3(0,0,0))
+        transformation.add(new Rotation<DataTypes>, inv)->configure(r, inv);
+
+    if (q != defaulttype::Quaternion(0,0,0,1))
+        transformation.add(new Rotation<DataTypes>, inv)->configure(q, inv, this);
+
+    if (t != defaulttype::Vector3(0,0,0))
+        transformation.add(new Translation<DataTypes>, inv)->configure(t, inv);
 
     //Get input
     const VecCoord& in = f_inputX.getValue();

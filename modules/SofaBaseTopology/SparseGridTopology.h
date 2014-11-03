@@ -46,10 +46,6 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-using sofa::helper::MarchingCubeUtility;
-using sofa::core::loader::VoxelLoader;
-
 
 /** A sparse grid topology. Like a sparse FFD building from the bounding box of the object. Starting from a RegularGrid, only valid cells containing matter (ie intersecting the original surface mesh or totally inside the object) are considered.
  * Valid cells are tagged by a Type BOUNDARY or INSIDE
@@ -59,8 +55,10 @@ class SOFA_BASE_TOPOLOGY_API SparseGridTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(SparseGridTopology,MeshTopology);
-
-    typedef fixed_array<Vector3,8> CubeCorners;
+    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::defaulttype::Vec3i   Vec3i;
+    typedef sofa::helper::fixed_array<Vector3,8> CubeCorners;
+    typedef sofa::defaulttype::BoundingBox BoundingBox;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
 protected:
     SparseGridTopology(bool _isVirtual=false);
@@ -115,7 +113,7 @@ public:
 
 
     /// Resolution
-    Vec<3, int> getN() const { return n.getValue();}
+    sofa::defaulttype::Vec<3, int> getN() const { return n.getValue();}
     int getNx() const { return n.getValue()[0]; }
     int getNy() const { return n.getValue()[1]; }
     int getNz() const { return n.getValue()[2]; }
@@ -203,7 +201,7 @@ public:
 protected:
     bool isVirtual;
     /// cutting number in all directions
-    Data< Vec< 3, int > > n;
+    Data< sofa::defaulttype::Vec< 3, int > > n;
     Data< Vector3 > _min;
     Data< Vector3 > _max;
     Data< double > _cellWidth; ///< if > 0 : dimension of each cell in the created grid
@@ -232,7 +230,7 @@ protected:
     virtual void updateQuads();
     virtual void updateHexahedra();
 
-    MarchingCubeUtility                 marchingCubes;
+    sofa::helper::MarchingCubeUtility                 marchingCubes;
     bool                                _usingMC;
 
     sofa::helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
@@ -251,7 +249,7 @@ protected:
             RegularGridTopology::SPtr regularGrid,
             vector<Type>& regularGridTypes,
             vector<bool>& alreadyTested,
-            std::stack< Vec<3,int> > &seed) const;
+            std::stack< sofa::defaulttype::Vec<3,int> > &seed) const;
 
     void computeBoundingBox(const helper::vector<Vector3>& vertices,
             SReal& xmin, SReal& xmax,
@@ -280,11 +278,11 @@ protected:
     */
     void buildFromVoxelFile(const std::string& filename);
     void buildFromRawVoxelFile(const std::string& filename);
-    void buildFromVoxelLoader(VoxelLoader * loader);
+    void buildFromVoxelLoader(sofa::core::loader::VoxelLoader * loader);
 
     template< class T>
     void constructCollisionModels(const sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > &list_mesh,
-            const helper::vector< Data< helper::vector< Vec<3,T> > >* >            &list_X) ;
+            const helper::vector< Data< helper::vector< sofa::defaulttype::Vec<3,T> > >* >            &list_X) ;
 
     SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
     SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid

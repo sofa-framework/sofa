@@ -187,7 +187,6 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     int nbFaces[NBFACETYPE] = {0}; // number of edges, triangles, quads
     int groupF0[NBFACETYPE] = {0}; // first primitives indices in current group for edges, triangles, quads
     std::string line;
-    std::string face, tmp;
     while( std::getline(file,line) )
     {
         if (line.empty()) continue;
@@ -243,7 +242,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 curMaterialId = -1;
                 helper::vector<Material>::iterator it = my_materials.begin();
                 helper::vector<Material>::iterator itEnd = my_materials.end();
-                for (; it != itEnd; it++)
+                for (; it != itEnd; ++it)
                 {
                     if (it->name == curMaterialName)
                     {
@@ -480,14 +479,17 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
     sout << "MeshObjLoader::readMTL" << sendl;
 
     FILE* file;
-    char buf[128];
+    char buf[128]; // Note: in the strings below, 127 is sizeof(buf)-1
+    const char *single_string_format = "%127s"; // Better than "%s" for scanf
+    const char *double_string_format = "%127s %127s"; // Better than "%s %s"
+
     file = fopen(filename, "r");
     Material *mat = NULL;
     if (!file);//serr << "readMTL() failed: can't open material file " << filename << sendl;
     else
     {
         /* now, read in the data */
-        while (fscanf(file, "%s", buf) != EOF)
+        while (fscanf(file, single_string_format, buf) != EOF)
         {
 
             switch (buf[0])
@@ -519,8 +521,7 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                     else
                         serr << "Error: MeshObjLoader: fgets function has encounter an error. case n." << sendl;
                 }
-
-                sscanf(buf, "%s %s", buf, buf);
+                sscanf(buf, double_string_format, buf, buf);
                 mat->name = buf;
                 break;
             case 'N':

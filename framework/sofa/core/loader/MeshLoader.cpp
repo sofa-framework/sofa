@@ -58,6 +58,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
+    , d_transformation(initData(&d_transformation, Matrix4::Identity(), "transformation", "4x4 Homogeneous matrix to transform the DOFs (when present replace any)"))
 {
     addAlias(&tetrahedra,"tetras");
     addAlias(&hexahedra,"hexas");
@@ -69,6 +70,8 @@ MeshLoader::MeshLoader() : BaseLoader()
     translation.setAutoLink(false);
     rotation.setAutoLink(false);
     scale.setAutoLink(false);
+    d_transformation.setAutoLink(false);
+    d_transformation.setDirtyValue();
 
     positions.setPersistent(false);
     edges.setPersistent(false);
@@ -91,34 +94,38 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
         scale.setValue(scale.getValue()*s);
     }
 
+
     if (canLoad())
         load(/*m_filename.getFullPath().c_str()*/);
     else
         sout << "Doing nothing" << sendl;
-
-    updateMesh();
-
-    // Transformation of the local frame: translation, then rotation around the translated origin, then scale along the translated and rotated axes
-    // is applied to the points in the opposite order: scale S then rotation R then translation T, to implement the matrix product TRSx
-    if (scale.getValue() != Vector3(1.0,1.0,1.0))
-        this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
-    if (rotation.getValue() != Vector3(0.0,0.0,0.0))
-        this->applyRotation(rotation.getValue()[0], rotation.getValue()[1], rotation.getValue()[2]);
-    if (translation.getValue() != Vector3(0.0,0.0,0.0))
-        this->applyTranslation(translation.getValue()[0], translation.getValue()[1], translation.getValue()[2]);
 }
 
+void MeshLoader::init()
+{
+    BaseLoader::init();
+    this->reinit();
+}
 
 void MeshLoader::reinit()
 {
-    // Transformation of the local frame: translation, then rotation around the translated origin, then scale along the translated and rotated axes
-    // is applied to the points in the opposite order: scale S then rotation R then translation T, to implement the matrix product TRSx
-    if (scale.getValue() != Vector3(1.0,1.0,1.0))
-        this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
-    if (rotation.getValue() != Vector3(0.0,0.0,0.0))
-        this->applyRotation(rotation.getValue()[0], rotation.getValue()[1], rotation.getValue()[2]);
-    if (translation.getValue() != Vector3(0.0,0.0,0.0))
-        this->applyTranslation(translation.getValue()[0], translation.getValue()[1], translation.getValue()[2]);
+    if (d_transformation.getValue() != Matrix4::Identity()) {
+        this->applyTransformation(d_transformation.getValue());
+        if (scale.getValue() != Vector3(1.0,1.0,1.0) || rotation.getValue() != Vector3(0.0,0.0,0.0) || translation.getValue() != Vector3(0.0,0.0,0.0))
+            sout<< "Parameters scale, rotation, translation ignored in favor of transformation matrix" << sendl;
+    }
+    else {
+        // Transformation of the local frame: translation, then rotation around the translated origin, then scale along the translated and rotated axes
+        // is applied to the points in the opposite order: scale S then rotation R then translation T, to implement the matrix product TRSx
+        if (scale.getValue() != Vector3(1.0,1.0,1.0))
+            this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
+        if (rotation.getValue() != Vector3(0.0,0.0,0.0))
+            this->applyRotation(rotation.getValue()[0], rotation.getValue()[1], rotation.getValue()[2]);
+        if (translation.getValue() != Vector3(0.0,0.0,0.0))
+            this->applyTranslation(translation.getValue()[0], translation.getValue()[1], translation.getValue()[2]);
+    }
+
+    updateMesh();
 }
 
 
@@ -443,6 +450,16 @@ void MeshLoader::applyScale(const SReal sx, const SReal sy, const SReal sz)
     }
 }
 
+void MeshLoader::applyTransformation(Matrix4 const& T)
+{
+    if (!T.isTransform()) {
+        serr << "applyTransformation: ignored matrix which is not a transformation T=" << T << sendl;
+        return;
+    }
+    sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > > my_positions = positions;
+    for (size_t i = 0; i < my_positions.size(); i++)
+        my_positions[i] = T.transform(my_positions[i]);
+}
 
 void MeshLoader::addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p)
 {

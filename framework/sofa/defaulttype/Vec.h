@@ -608,6 +608,48 @@ public:
         return helper::rsqrt(norm2());
     }
 
+    /// l-norm of the vector
+    /// The type of norm is set by parameter l.
+    /// Use l<0 for the infinite norm.
+    real lNorm( int l ) const
+    {
+        if( l==2 ) return norm(); // euclidian norm
+        else if( l<0 ) // infinite norm
+        {
+            real n=0;
+            for( int i=0; i<N; i++ )
+            {
+                real a = helper::rabs( this->elems[i] );
+                if( a>n ) n=a;
+            }
+            return n;
+        }
+        else if( l==1 ) // Manhattan norm
+        {
+            real n=0;
+            for( int i=0; i<N; i++ )
+            {
+                n += helper::rabs( this->elems[i] );
+            }
+            return n;
+        }
+        else if( l==0 ) // counting not null
+        {
+            real n=0;
+            for( int i=0; i<N; i++ )
+                if( this->elems[i] ) n+=1;
+            return n;
+        }
+        else // generic implementation
+        {
+            real n = 0;
+            for( int i=0; i<N; i++ )
+                n += pow( helper::rabs( this->elems[i] ), l );
+            return pow( n, real(1.0)/(real)l );
+        }
+    }
+
+
     /// Normalize the vector with the given norm
     void normalizeWithNorm(real norm, real threshold=std::numeric_limits<real>::epsilon())
     {

@@ -67,7 +67,7 @@ public:
       * see maple file ./doc/NeoHookean_principalStretches.mw for derivative
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real mimuVol;  ///< 0.5 * shear modulus * volume
     Real mibulkVol;   ///<  bulk modulus * volume
@@ -170,8 +170,8 @@ public:
     MatBlock getC() const
     {
         MatBlock C = MatBlock();
-        C.invert( _K );
-        return C;
+        C.invert( -_K );
+        return -C;
     }
 
     MatBlock getB() const
@@ -208,7 +208,7 @@ public:
       * see maple file ./doc/NeoHookean_principalStretches.mw for derivative
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real mimuVol;  ///< 0.5 * shear modulus * volume
     Real mibulkVol;   ///<  bulk modulus * volume
@@ -327,7 +327,7 @@ public:
       *     - df =  -vol [ 2*C1 , 0 , bulk*dJ ]
       */
 
-    static const bool constantK=true;
+    static const bool constantK=false;
 
     Real mimuVol;  ///<  first coef * volume * 2
     Real mibulkVol; ///< bulk modulus * volume

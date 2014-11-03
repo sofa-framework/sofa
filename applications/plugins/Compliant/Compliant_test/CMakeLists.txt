@@ -9,7 +9,8 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     Assembly_test.cpp
-    AssembledSolver_test.cpp
+    CompliantImplicitSolver_test.cpp
+    CompliantNLImplicitSolver_test.cpp
     DampedOscillator_test.cpp
 
 	)
@@ -33,6 +34,8 @@ endif()
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
 
 AddLinkerDependencies(Compliant SofaTest)
+
+
 
 
 # needed by python tests

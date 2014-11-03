@@ -32,7 +32,6 @@
 
 namespace sofa
 {
-using defaulttype::Vec3i;
 
 namespace component
 {
@@ -50,7 +49,7 @@ public:
     typedef EdgesInHexahedron EdgesInHexahedron;
     typedef QuadsInHexahedron QuadsInHexahedron;
 
-    Data< Vec3i> resolution;
+    Data<sofa::defaulttype::Vec3i> resolution;
 
     Data< sofa::helper::vector<unsigned char> > valuesIndexedInRegularGrid;
     HexahedronData< sofa::helper::vector<unsigned char> > valuesIndexedInTopology;

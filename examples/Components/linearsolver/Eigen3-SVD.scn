@@ -3,7 +3,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node>
         <EulerImplicit name="cg_odesolver" printLog="false" />
-        <SVD printLog="1" verbose="0" />
+        <SVD template="FullMatrix" printLog="1" verbose="0" />
         <MechanicalObject />
         <UniformMass mass="1" />
         <RegularGrid nx="4" ny="4" nz="4" xmin="-9" xmax="-6" ymin="0" ymax="3" zmin="0" zmax="3" />

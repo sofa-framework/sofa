@@ -2,10 +2,11 @@
 using namespace std;
 #include "SpringInteractor.h"
 #include "PickedPoint.h"
+#include <sofa/core/SofaLibrary.h>
 #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa{
-namespace newgui{
+namespace simplegui{
 
 SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
     : Interactor(picked)
@@ -14,17 +15,22 @@ SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
     MechanicalObject3* pickedDof=dynamic_cast<MechanicalObject3*>(picked.state.get()); assert(pickedDof);
 
     // create DOF to represent the actuator
-    _interactorDof = New<MechanicalObject3>();
+    _interactorDof = sofa::core::objectmodel::New<MechanicalObject3>();
     _interactionNode->addObject(_interactorDof);
     _interactorDof->setName("interactorDOF");
     _interactorDof->addTag(std::string("Interactor"));
     MechanicalObject3::WriteVecCoord xanchor = _interactorDof->writePositions();
     xanchor[0] = picked.point;
+    FixedConstraint3::SPtr fixed= sofa::core::objectmodel::New<FixedConstraint3>(); // Makes it unmovable through forces
+    _interactionNode->addObject(fixed);
+    fixed->init();
 
     // create spring to drag the picked object
-    _spring = New<StiffSpringForceField3>(_interactorDof.get(),pickedDof);
+    _spring = sofa::core::objectmodel::New<StiffSpringForceField3>(_interactorDof.get(),pickedDof);
     _interactionNode->addObject(_spring);
     _spring->addSpring(0,picked.index,stiffness,0.1,0.);
+
+
 
 //    cout << "SpringInteractor set spring to " << pickedDof->getName() << ", " << picked.index << endl;
 }

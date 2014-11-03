@@ -2,7 +2,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="M1">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.01" threshold="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="0" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
@@ -16,7 +16,7 @@
     </Node>
     <Node name="M2">
         <EulerImplicit />
-        <CGLinearSolver iterations="100" tol="0.0001" threshold="0.000000001" />
+        <CGLinearSolver iterations="100" tolerance="0.0001" threshold="0.000000001" />
         <MechanicalObject dx="-12" dy="0" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
@@ -30,7 +30,7 @@
     </Node>
     <Node name="M3">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.01" threshold="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-24" dy="0" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
@@ -44,7 +44,7 @@
     </Node>
     <Node name="M4">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.00001" threshold="0.000001" stiffness="0.2" />
+        <CGLinearSolver iterations="25" tolerance="0.00001" threshold="0.000001" />
         <!--
 		<RungeKutta4 />
 		<Euler />

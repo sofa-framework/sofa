@@ -60,8 +60,6 @@ namespace component
 namespace misc
 {
 
-using namespace sofa::component::topology;
-
 template<class TDataTypes>
 class ParticleSource : public core::behavior::ProjectiveConstraintSet<TDataTypes>
 {
@@ -105,6 +103,7 @@ public:
         , f_stop(initData(&f_stop, (Real)1e10, "stop", "Source stopping time"))
         , f_canHaveEmptyVector(initData(&f_canHaveEmptyVector, (bool)false, "canHaveEmptyVector", ""))
         , lastparticles(initData(&lastparticles, "lastparticles", "lastparticles indices"))
+        , N(0)
     {
         this->f_listening.setValue(true);
         f_center.beginEdit()->push_back(Coord()); f_center.endEdit();
@@ -126,15 +125,15 @@ public:
     sofa::component::topology::PointSubsetData< VecIndex > lastparticles;
     VecCoord lastpos;
 
-    class PSPointHandler : public TopologySubsetDataHandler<Point, VecIndex >
+    class PSPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, VecIndex >
     {
     public:
         typedef typename ParticleSource<DataTypes>::VecIndex VecIndex;
         typedef VecIndex container_type;
         typedef typename container_type::value_type value_type;
 
-        PSPointHandler(ParticleSource<DataTypes>* _ps, PointSubsetData<VecIndex >* _data)
-            : TopologySubsetDataHandler<Point, VecIndex >(_data), ps(_ps) {}
+        PSPointHandler(ParticleSource<DataTypes>* _ps, sofa::component::topology::PointSubsetData<VecIndex >* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, VecIndex >(_data), ps(_ps) {}
 
         void applyDestroyFunction(unsigned int index, value_type& /*T*/)
         {
@@ -501,7 +500,6 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MISC_PARTICLESOURCE_CPP)
-using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
 extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec3dTypes>;
 extern template class SOFA_SPH_FLUID_API ParticleSource<defaulttype::Vec2dTypes>;

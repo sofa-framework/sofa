@@ -32,11 +32,13 @@
 %
 \section*{TODO}
 \begin{itemize}
-\item finish sections :-)
-\item references
-\item wikipedia links
-\item introduction ?
+  \item Code cheat sheet
+  \item finish sections :-)
+  \item references
+  \item wikipedia links
+  \item introduction ?
 \end{itemize}
+
 \section{Lagrangian Dynamics}
 Given an $n$-dimensional state space $Q$, we consider a Lagrangian
 $\LL$ defined as usual:
@@ -209,7 +211,7 @@ then:
 %
 \begin{align}
   M v_{k+1} &= p_k + h \block{f_{k+1} + d_{k+1} + J_k^T\lambda_{k+1}} \\
-  J_k v_{k+1} &= -\frac{g_k}{\beta h} - \frac{1 - \beta}{\beta} J_k v_k
+  J_k v_{k+1} &= -\frac{g_k}{\beta h} - \frac{1 - \beta}{\beta} J_k v_k \label{eq:constraintvalue}
 \end{align}
 % 
 At this point, we \emph{could} introduce an implicit blending between
@@ -539,6 +541,89 @@ mention Generalized Reflections
 \label{sec:solvers}
 %
 TODO: CG, Cholesky, Minres, GS, PGS, Sequential Impulses
+
+
+\section{Code Cheat Sheet}
+
+A quick reminder of who does what where in the code:
+
+\subsection{CompliantImplicitSolver}
+
+\begin{itemize}
+\item Performs KKT system assembly
+\item Builds right-hand sides (correction/dyamics) computation
+\item Integrate system solution, update graph and stuff
+\end{itemize}
+
+\subsection{Right-hand side computation}
+
+Lots of cases:
+\begin{itemize}
+\item Bilateral (default), unilateral, friction constraint type
+\item Elastic constraints, kinematic constraints (can be stabilized) (default), restitution constraints, \ldots ?
+\end{itemize}
+
+A constraint has a BaseConstraintValue constraint value (if not, the
+default is assigned) that produces a correct constraint violation term
+(the right-hand side for constraints in the KKT system) depending on
+the correction/dynamics phase.
+
+Elastic constraints have zero rhs during correction, and -error / dt
+during dynamics.
+
+Stabilized constraints (Stablization component) correct the error
+during stabilization, but have zero rhs during dynamics (holonomic
+kinematic constraints)
+
+Restitution constraints: stabilize when velocity is small and when the constraint is not violated,
+otherwise flip relative velocity.
+
+Depending on the type (bilateral, unilateral, friction), the
+constraint also has an associated Projector, that you can find in the
+KKT system.
+
+\subsection{KKTSolver}
+Solves a KKT system (AssemledSystem), for both correction/dynamics cases.
+
+
+
+\section{Alternative formulations}
+
+Alternative formulations allow more complex projective constraints (e.g. velocity constraints) where the velocity formulation can only handle the fixed projective constraint.
+Howerver their corresponding linear system seems harder to resolve for constraints.
+Note that stabilization is always performed in velocity.
+
+\subsection{Acceleration}
+
+By considering $v_{k+1} = v_k + h a $, eq. (\ref{eq:time-stepping}) becomes :
+
+\begin{equation}
+  \block{M + h\alpha D + h^2 \alpha \beta K} a = 
+  f_k - D v_k - \alpha h K v_k
+\end{equation}
+
+and eq. (\ref{eq:constraintvalue}) becomes :
+
+\begin{align}
+  J_k a &= \frac{ -\frac{g_k}{\alpha h} - J_k v_k } {\beta h}
+\end{align}
+
+
+\subsection{Velocity variation}
+
+By considering $v_{k+1} = v_k + dv $, eq. (\ref{eq:time-stepping}) becomes :
+
+\begin{equation}
+  \block{M + h\alpha D + h^2 \alpha \beta K} dv = 
+  h f_k - h D v_k - \alpha h^2 K v_k
+\end{equation}
+
+and eq. (\ref{eq:constraintvalue}) becomes :
+
+\begin{align}
+  J_k dv &= \frac{ -\frac{g_k}{\alpha h} - J_k v_k } {\beta}
+\end{align}
+
 
 \end{document}
 

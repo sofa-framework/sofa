@@ -37,12 +37,11 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
 class SOFA_BASE_TOPOLOGY_API CubeTopology : public MeshTopology
 {
 public:
     SOFA_CLASS(CubeTopology,MeshTopology);
+    typedef sofa::defaulttype::Vector3 Vector3;
 protected:
     CubeTopology(int nx, int ny, int nz);
     CubeTopology();

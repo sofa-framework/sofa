@@ -25,13 +25,8 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
-
 template<class MyReal>
-TCapsuleModel<StdRigidTypes<3,MyReal> >::TCapsuleModel():
+TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsuleModel():
       _capsule_radii(initData(&_capsule_radii, "radii","Radius of each capsule")),
       _capsule_heights(initData(&_capsule_heights,"heights","The capsule heights")),
       _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
@@ -42,7 +37,7 @@ TCapsuleModel<StdRigidTypes<3,MyReal> >::TCapsuleModel():
 }
 
 template<class MyReal>
-TCapsuleModel<StdRigidTypes<3,MyReal> >::TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate):
+TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::TCapsuleModel(core::behavior::MechanicalState<DataTypes>* mstate):
     _capsule_radii(initData(&_capsule_radii, "radii","Radius of each capsule")),
     _capsule_heights(initData(&_capsule_heights,"heights","The capsule heights")),
     _default_radius(initData(&_default_radius,(Real)0.5,"defaultRadius","The default radius")),
@@ -53,7 +48,7 @@ TCapsuleModel<StdRigidTypes<3,MyReal> >::TCapsuleModel(core::behavior::Mechanica
 }
 
 template<class MyReal>
-void TCapsuleModel<StdRigidTypes<3,MyReal> >::resize(int size)
+void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::resize(int size)
 {
     this->core::CollisionModel::resize(size);
 
@@ -86,7 +81,7 @@ void TCapsuleModel<StdRigidTypes<3,MyReal> >::resize(int size)
 
 
 template<class MyReal>
-void TCapsuleModel<StdRigidTypes<3,MyReal> >::init()
+void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::init()
 {
     this->CollisionModel::init();
     _mstate = dynamic_cast< core::behavior::MechanicalState<DataTypes>* > (getContext()->getMechanicalState());
@@ -100,13 +95,13 @@ void TCapsuleModel<StdRigidTypes<3,MyReal> >::init()
 }
 
 template <class MyReal>
-unsigned int TCapsuleModel<StdRigidTypes<3,MyReal> >::nbCap()const
+unsigned int TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::nbCap()const
 {
     return _capsule_radii.getValue().size();
 }
 
 template <class MyReal>
-void TCapsuleModel<StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
+void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int ncap = _mstate->read(core::ConstVecCoordId::position())->getValue().size();
@@ -127,7 +122,7 @@ void TCapsuleModel<StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
     cubeModel->resize(ncap);
     if (!empty())
     {
-        typename TCapsule<StdRigidTypes<3,MyReal> >::Real r;
+        typename TCapsule<defaulttype::StdRigidTypes<3,MyReal> >::Real r;
 
         //const typename TCapsule<StdRigidTypes<3,MyReal> >::Real distance = (typename TCapsule<StdRigidTypes<3,MyReal> >::Real)this->proximity.getValue();
         for (int i=0; i<ncap; i++)
@@ -136,8 +131,8 @@ void TCapsuleModel<StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
             const Coord p2 = point2(i);
             r = radius(i);
 
-            Vector3 maxVec;
-            Vector3 minVec;
+            defaulttype::Vector3 maxVec;
+            defaulttype::Vector3 minVec;
 
             for(int dim = 0 ; dim < 3 ; ++dim){
                 if(p1(dim) > p2(dim)){
@@ -159,18 +154,18 @@ void TCapsuleModel<StdRigidTypes<3,MyReal> >::computeBoundingTree(int maxDepth)
 
 
 template<class MyReal>
-void TCapsuleModel<StdRigidTypes<3,MyReal> >::draw(const core::visual::VisualParams* vparams,int index)
+void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core::visual::VisualParams* vparams,int index)
 {
-    Vec<4,float> col4f(getColor4f());
+    sofa::defaulttype::Vec<4,float> col4f(getColor4f());
     vparams->drawTool()->drawCapsule(point1(index),point2(index),(float)radius(index),col4f);
 }
 
 template<class MyReal>
-void TCapsuleModel<StdRigidTypes<3,MyReal> >::draw(const core::visual::VisualParams* vparams)
-{
+void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core::visual::VisualParams* vparams)
+{   
     if (vparams->displayFlags().getShowCollisionModels())
     {
-        Vec<4,float> col4f(getColor4f());
+        sofa::defaulttype::Vec<4,float> col4f(getColor4f());
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());//maybe ??
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 
@@ -192,93 +187,93 @@ void TCapsuleModel<StdRigidTypes<3,MyReal> >::draw(const core::visual::VisualPar
 
 
 template <class MyReal>
-typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Real TCapsuleModel<StdRigidTypes<3,MyReal> >::defaultRadius() const
+typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::defaultRadius() const
 {
     return this->_default_radius.getValue();
 }
 
 template <class MyReal>
-const typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<StdRigidTypes<3,MyReal> >::center(int i)const{
+const typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::center(int i)const{
     return DataTypes::getCPos((_mstate->read(core::ConstVecCoordId::position())->getValue())[i]);
 }
 
 template <class MyReal>
-typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Real TCapsuleModel<StdRigidTypes<3,MyReal> >::radius(int i) const
+typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::radius(int i) const
 {
     return this->_capsule_radii.getValue()[i];
 }
 
 template <class MyReal>
-typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord TCapsuleModel<StdRigidTypes<3,MyReal> >::point1(int i) const
+typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::point1(int i) const
 {
     return  center(i) - axis(i) * height(i)/2.0;
 }
 
 template <class MyReal>
-typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord TCapsuleModel<StdRigidTypes<3,MyReal> >::point2(int i) const
+typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::point2(int i) const
 {
     return  center(i) + axis(i) * height(i)/2.0;
 }
 
 template <class MyReal>
-typename TCapsule<StdRigidTypes<3,MyReal> >::Coord TCapsule<StdRigidTypes<3,MyReal> >::point1() const
+typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::point1() const
 {
     return this->model->point1(this->index);
 }
 
 template<class MyReal>
-bool TCapsule<StdRigidTypes<3,MyReal> >::shareSameVertex(const TCapsule<StdRigidTypes<3,MyReal> > & )const{
+bool TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::shareSameVertex(const TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> > & )const{
     return false;
 }
 
 template <class MyReal>
-typename TCapsule<StdRigidTypes<3,MyReal> >::Coord TCapsule<StdRigidTypes<3,MyReal> >::point2() const
+typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::point2() const
 {
     return this->model->point2(this->index);
 }
 
 template <class MyReal>
-typename TCapsule<StdRigidTypes<3,MyReal> >::Real TCapsule<StdRigidTypes<3,MyReal> >::radius() const
+typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::radius() const
 {
     return this->model->radius(this->index);
 }
 
 
 template<class MyReal>
-const typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<StdRigidTypes<3,MyReal> >::velocity(int index) const {
+const typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::velocity(int index) const {
     return DataTypes::getDPos(((_mstate->read(core::ConstVecDerivId::velocity())->getValue()))[index]);
 }
 
 
 template<class MyReal>
-const typename TCapsule<StdRigidTypes<3,MyReal> >::Coord & TCapsule<StdRigidTypes<3,MyReal> >::v() const {return this->model->velocity(this->index);}
+const typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord & TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::v() const {return this->model->velocity(this->index);}
 
 template<class MyReal>
-const Quaternion TCapsuleModel<StdRigidTypes<3,MyReal> >::orientation(int index)const{
+const sofa::defaulttype::Quaternion TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::orientation(int index)const{
     return _mstate->read(core::ConstVecCoordId::position())->getValue()[index].getOrientation();
 }
 
 template<class MyReal>
-typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Coord TCapsuleModel<StdRigidTypes<3,MyReal> >::axis(int index) const {
+typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::axis(int index) const {
     Coord ax(0,1,0);
 
-    const Quaternion & ori = orientation(index);
+    const sofa::defaulttype::Quaternion & ori = orientation(index);
     return ori.rotate(ax);
 }
 
 
 template<class MyReal>
-typename TCapsuleModel<StdRigidTypes<3,MyReal> >::Real TCapsuleModel<StdRigidTypes<3,MyReal> >::height(int index) const {
+typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Real TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::height(int index) const {
     return ((_capsule_heights.getValue()))[index];
 }
 
 template<class MyReal>
-typename TCapsule<StdRigidTypes<3,MyReal> >::Coord TCapsule<StdRigidTypes<3,MyReal> >::axis() const {
+typename TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::Coord TCapsule<sofa::defaulttype::StdRigidTypes<3,MyReal> >::axis() const {
     return this->model->axis(this->index);
 }
 
 template<class MyReal>
-Data<typename TCapsuleModel<StdRigidTypes<3,MyReal> >::VecReal > & TCapsuleModel<StdRigidTypes<3,MyReal> >::writeRadii(){
+Data<typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::VecReal > & TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::writeRadii(){
     return _capsule_radii;
 }
 

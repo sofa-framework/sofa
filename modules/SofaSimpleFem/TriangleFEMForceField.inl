@@ -47,10 +47,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-
-
-
 
 
 template <class DataTypes>
@@ -71,6 +67,8 @@ TriangleFEMForceField()
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 {
+	f_poisson.setRequired(true);
+	f_young.setRequired(true);
 }
 
 
@@ -87,7 +85,7 @@ void TriangleFEMForceField<DataTypes>::init()
     _mesh = this->getContext()->getMeshTopology();
 
     if( _mesh )
-        serr<<"TriangleFEMForceField<DataTypes>::init, mesh has " <<_mesh->getTriangles().size() <<" triangles and " << _mesh->getQuads().size() << " quads" << sendl;
+        sout<<"TriangleFEMForceField<DataTypes>::init, mesh has " <<_mesh->getTriangles().size() <<" triangles and " << _mesh->getQuads().size() << " quads" << sendl;
 
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {
@@ -329,10 +327,10 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J )
 {
-    Mat<3,6,Real> Jt;
+    defaulttype::Mat<3,6,Real> Jt;
     Jt.transpose( J );
 
-    Vec<3,Real> JtD;
+    defaulttype::Vec<3,Real> JtD;
 
     // Optimisations: The following values are 0 (per computeStrainDisplacement )
 
@@ -357,7 +355,7 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
     JtD[2] = Jt[2][0] * Depl[0] + Jt[2][1] * Depl[1] + Jt[2][2] * Depl[2] +
             Jt[2][3] * Depl[3] + Jt[2][4] * Depl[4] /* + Jt[2][5] * Depl[5] */ ;
 
-    Vec<3,Real> KJtD;
+    defaulttype::Vec<3,Real> KJtD;
 
     //	KJtD = K * JtD;
 
@@ -760,14 +758,14 @@ void TriangleFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vp
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessMatrix& S, StiffnessMatrix& SR, const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot )
 {
-    MatNoInit<3, 6, Real> Jt;
+    defaulttype::MatNoInit<3, 6, Real> Jt;
     Jt.transpose( J );
 
-    MatNoInit<6, 6, Real> JKJt;
+    defaulttype::MatNoInit<6, 6, Real> JKJt;
     JKJt = J*K*Jt;  // in-plane stiffness matrix, 6x6
 
     // stiffness JKJt expanded to 3 dimensions
-    Mat<9, 9, Real> Ke; // initialized to 0
+    defaulttype::Mat<9, 9, Real> Ke; // initialized to 0
     // for each 2x2 block i,j
     for(unsigned i=0; i<3; i++)
     {
@@ -781,7 +779,7 @@ void TriangleFEMForceField<DataTypes>::computeElementStiffnessMatrix( StiffnessM
     }
 
     // rotation matrices. TODO: use block-diagonal matrices, more efficient.
-    Mat<9, 9, Real> RR,RRt; // initialized to 0
+    defaulttype::Mat<9, 9, Real> RR,RRt; // initialized to 0
     for(int i=0; i<3; ++i)
         for(int j=0; j<3; ++j)
         {

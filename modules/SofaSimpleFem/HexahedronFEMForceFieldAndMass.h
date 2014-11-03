@@ -38,20 +38,16 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using sofa::helper::vector;
-using sofa::core::behavior::Mass;
-
 /** Compute Finite Element forces based on hexahedral elements including continuum mass matrices
 */
 template<class DataTypes>
-class HexahedronFEMForceFieldAndMass : virtual public Mass<DataTypes>, virtual public HexahedronFEMForceField<DataTypes>
+class HexahedronFEMForceFieldAndMass : virtual public sofa::core::behavior::Mass<DataTypes>, virtual public HexahedronFEMForceField<DataTypes>
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE(HexahedronFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(Mass,DataTypes), SOFA_TEMPLATE(HexahedronFEMForceField,DataTypes));
+    SOFA_CLASS2(SOFA_TEMPLATE(HexahedronFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(sofa::core::behavior::Mass,DataTypes), SOFA_TEMPLATE(HexahedronFEMForceField,DataTypes));
 
     typedef HexahedronFEMForceField<DataTypes> HexahedronFEMForceFieldT;
-    typedef Mass<DataTypes> MassT;
+    typedef sofa::core::behavior::Mass<DataTypes> MassT;
 
     typedef typename DataTypes::Real        Real        ;
     typedef typename DataTypes::Coord       Coord       ;

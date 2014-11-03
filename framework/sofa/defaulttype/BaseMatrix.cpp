@@ -48,7 +48,10 @@ static inline void opVresize(BaseVector& vec, BaseVector::Index n) { vec.resize(
 template<class Real2> static inline void opVresize(Real2* vec, BaseVector::Index n) { for (const Real2* end=vec+n; vec != end; ++vec) *vec = (Real2)0; }
 static inline SReal opVget(const BaseVector& vec, BaseVector::Index i) { return (SReal)vec.element(i); }
 template<class Real2> static inline SReal opVget(const Real2* vec, BaseVector::Index i) { return (SReal)vec[i]; }
-static inline void opVset(BaseVector& vec, BaseVector::Index i, SReal v) { vec.set(i, v); }
+
+//this line was remove to supress a warning.
+//static inline void opVset(BaseVector& vec, BaseVector::Index i, SReal v) { vec.set(i, v); }
+
 template<class Real2> static inline void opVset(Real2* vec, BaseVector::Index i, SReal v) { vec[i] = (Real2)v; }
 static inline void opVadd(BaseVector& vec, BaseVector::Index i, double v) { vec.add(i, (SReal)v); }
 static inline void opVadd(BaseVector& vec, BaseVector::Index i, float v) { vec.add(i, (SReal)v); }
@@ -810,6 +813,7 @@ void BaseMatrix::opAddMT(defaulttype::BaseMatrix* result,double fact) const
 {
     BaseMatrixLinearOpAddMT::opDynamic(this, result, fact);
 }
+
 
 
 } // nampespace defaulttype

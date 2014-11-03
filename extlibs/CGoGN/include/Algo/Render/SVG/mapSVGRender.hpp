@@ -35,7 +35,7 @@ namespace SVG
 {
 
 template <typename PFP>
-void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, unsigned int /*thread*/)
+void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, unsigned int /*thread*/)
 {
 	Utils::SVG::SvgGroup* svg1 = new Utils::SVG::SvgGroup("vertices", svg.m_model, svg.m_proj);
 	TraversorV<typename PFP::MAP> trac(map);
@@ -47,7 +47,7 @@ void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const Verte
 }
 
 template <typename PFP>
-void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const VertexAttribute<typename PFP::VEC3>& color, unsigned int thread)
+void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& color, unsigned int thread)
 {
 	Utils::SVG::SvgGroup* svg1 = new Utils::SVG::SvgGroup("vertices", svg.m_model, svg.m_proj);
 	TraversorV<typename PFP::MAP> trac(map);
@@ -59,7 +59,7 @@ void renderVertices(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const Verte
 }
 
 template <typename PFP>
-void renderEdges(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, unsigned int /*thread*/)
+void renderEdges(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, unsigned int /*thread*/)
 {
 	Utils::SVG::SvgGroup* svg1 = new Utils::SVG::SvgGroup("edges", svg.m_model, svg.m_proj);
 	TraversorE<typename PFP::MAP> trac(map);
@@ -71,7 +71,7 @@ void renderEdges(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAt
 }
 
 template <typename PFP>
-void renderEdges(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3>& position, const VertexAttribute<typename PFP::VEC3>& color, unsigned int thread)
+void renderEdges(Utils::SVG::SVGOut& svg, typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& color, unsigned int thread)
 {
 	Utils::SVG::SvgGroup* svg1 = new Utils::SVG::SvgGroup("edges", svg.m_model, svg.m_proj);
 	TraversorE<typename PFP::MAP> trac(map);

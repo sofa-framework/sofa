@@ -9,7 +9,7 @@
     <DefaultVisualManagerLoop />
     
 <!--     <EulerImplicitSolver /> <CGLinearSolver  /> -->
-        <AssembledSolver  />        <MinresSolver iterations="100"  precision="1e-6"  relative="false"/>
+        <CompliantImplicitSolver  />        <MinresSolver iterations="100"  precision="1e-6"  relative="false"/>
 
     <Node 	name="volumeconservation"   >
 
@@ -26,18 +26,18 @@
         <Node 	name="behavior_hooke"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
 	    <MechanicalObject  template="F321" name="F"  showObject="0" showObjectScale="0.05" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  assemble="1"/>
+    	    <LinearMapping template="Vec3d,F321"  assemble="1"/>
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E321" name="E"  />
-	    	<GreenStrainMapping template="Mapping&lt;F321,E321&gt;" assemble="1"/>
+	    	<GreenStrainMapping template="F321,E321" assemble="1"/>
 	        <HookeForceField  template="E321" name="ff" youngModulus="2000.0" poissonRatio="0" viscosity="0"  assemble="1"  />	    
 	    </Node>	    
         </Node>
 
         <Node 	name="behavior_vol"   >
 	    <MechanicalObject  template="Vec1d" name="Volume"   />
-    	    <VolumeMapping template="Mapping&lt;Vec3d,Vec1d&gt;" offset="-20"/>   <!-- the offset is the opposite of the target volume -->
+    	    <VolumeMapping template="Vec3d,Vec1d" offset="-20"/>   <!-- the offset is the opposite of the target volume -->
 	    <UniformCompliance template="Vec1d" compliance="0"/>
 	<!--<RestShapeSpringsForceField template="Vec1d" points="0" stiffness="10000"/>-->
         </Node>
@@ -63,18 +63,18 @@
         <Node 	name="behavior_hooke"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
 	    <MechanicalObject  template="F321" name="F"  showObject="0" showObjectScale="0.05" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F321&gt;"  assemble="1"/>
+    	    <LinearMapping template="Vec3d,F321"  assemble="1"/>
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E321" name="E"  />
-	    	<GreenStrainMapping template="Mapping&lt;F321,E321&gt;" assemble="1"/>
+	    	<GreenStrainMapping template="F321,E321" assemble="1"/>
 	        <HookeForceField  template="E321" name="ff" youngModulus="2000.0" poissonRatio="0" viscosity="0"  assemble="1"  />	    
 	    </Node>	    
         </Node>
 
         <Node 	name="behavior_vol"   >
 	    <MechanicalObject  template="Vec1d" name="Volume"   />
-    	    <VolumeMapping template="Mapping&lt;Vec3d,Vec1d&gt;" offset="0"/>
+    	    <VolumeMapping template="Vec3d,Vec1d" offset="0"/>
 	    <ConstantForceField points="0" force="1000"/>
         </Node>
 <!--  This is equivalent to      <SurfacePressureForceField pressure="1000" volumeConservationMode="0"/>-->

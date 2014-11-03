@@ -32,6 +32,6 @@ set(GROUP_BASE_DIR "..")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_OBJECT_INTERACTION")
-AddLinkerDependencies(SofaDeformable)
+AddLinkerDependencies(SofaDeformable SofaRigid SofaMiscMapping)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

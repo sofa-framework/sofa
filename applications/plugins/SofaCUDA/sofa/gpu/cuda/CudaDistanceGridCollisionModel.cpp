@@ -626,7 +626,7 @@ void CudaRigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         Vector3 emin, emax;
         if (rigid)
         {
-            const RigidTypes::Coord& xform = (*rigid->getX())[i];
+            const RigidTypes::Coord& xform = rigid->read(core::ConstVecCoordId::position())->getValue()[i];
             elems[i].translation = xform.getCenter();
             xform.getOrientation().toMatrix(elems[i].rotation);
             elems[i].isTransformed = true;

@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -10 0 " dt="0.05"  >
+
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="Compliant"/>
+  
+  <CompliantAttachButton compliance="0.001"/>
+
+  <VisualStyle displayFlags="showBehaviorModels showForceFields" />
+
+  <Node 	name="Corotational (grey)" activated="1"  >
+
+<CompliantImplicitSolver />
+<!--       <CompliantNLImplicitSolver iterations="10" precision="1e-10"/> -->
+<LDLTSolver />
+<LDLTResponse constant="False"/>
+
+    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+    <Mesh name="mesh" src="@loader" />
+    <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
+
+    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+    <FixedConstraint indices="@FixedROI.indices" />
+
+    <BarycentricShapeFunction  />
+
+    <Node 	name="behavior"   >
+      <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="0" />
+      <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+      <LinearMapping template="Vec3d,F331"  assemble="1" />
+
+	    <Node 	name="Strain"   >
+		<MechanicalObject  template="E331" name="E"  />
+	    	<CorotationalStrainMapping template="F331,E331"   method="svd" assemble="1"/>
+                <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0" viscosity="0"  assemble="1"   />
+	    </Node>
+    </Node>
+
+    <UniformMass totalMass="250"/>
+    
+    <Node 	name="visual"   >
+      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj"/>
+      <LinearMapping template="Vec3d,ExtVec3f"  />
+    </Node>
+  </Node>
+
+  
+  
+  
+  <Node         name="Linear (blue)" activated="1"  >
+
+<ConstantCompliantImplicitSolver />
+<!--       <CompliantNLImplicitSolver iterations="10" precision="1e-10"/> -->
+<LDLTSolver />
+<LDLTResponse constant="True"/>
+
+    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+    <Mesh name="mesh" src="@loader" />
+   
+    <MechanicalObject template="Vec3d" name="parent" showObject="0" showObjectScale="10"/>
+
+    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+    <FixedConstraint indices="@FixedROI.indices" /> 
+
+
+    <BarycentricShapeFunction nbRef="4" />
+
+    <Node       name="behavior"   >
+      <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="0" method="0" order="2"/>
+      <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+      <LinearMapping template="Vec3d,F331"  assemble="1" />
+
+            <Node       name="Strain"   >
+                <MechanicalObject  template="E331" name="E"  />
+                <CorotationalStrainMapping template="F331,E331" method="svd" assemble="1"/>
+                <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0" viscosity="0"  assemble="1"   />         
+            </Node>
+    </Node>
+
+    <UniformMass totalMass="250"/>
+    
+    <Node       name="visual"   >
+      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="blue"/>
+      <LinearMapping template="Vec3d,ExtVec3f"  />
+    </Node>
+  </Node>
+
+  
+  
+
+  <Node 	name="Projective (red)" activated="1"  >
+
+<ConstantCompliantImplicitSolver />
+<!--       <CompliantNLImplicitSolver iterations="10" precision="1e-10"/> -->
+<LDLTSolver />
+<LDLTResponse constant="True"/>
+
+    <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+    <Mesh name="mesh" src="@loader" />
+    <MechanicalObject template="Vec3d" name="parent" showObject="false" showObjectScale="0.05"/>
+
+    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@mesh.position" name="FixedROI"/>
+    <FixedConstraint indices="@FixedROI.indices" />
+
+    <BarycentricShapeFunction  />
+
+    <Node 	name="behavior"   >
+      <TopologyGaussPointSampler name="sampler" inPosition="@../parent.rest_position" showSamplesScale="0" />
+      <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+      <LinearMapping template="Vec3d,F331"  assemble="1" />
+      <ProjectiveForceField  template="F331" youngModulus="2000" viscosity="0" assemble="1"  />
+    </Node>
+    
+    <UniformMass totalMass="250"/>
+
+    <Node 	name="visual"   >
+      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="red"/>
+      <LinearMapping template="Vec3d,ExtVec3f"  />
+    </Node>
+  </Node>
+
+
+</Node>

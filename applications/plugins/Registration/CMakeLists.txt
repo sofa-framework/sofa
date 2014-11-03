@@ -10,7 +10,8 @@ set(HEADER_FILES
     ClosestPointRegistrationForceField.h
     ClosestPointRegistrationForceField.inl
     RegistrationExporter.h
-    GroupwiseRegistrationEngine.h)
+    GroupwiseRegistrationEngine.h
+    InertiaAlign.h)
 
 set(SOURCE_FILES
     initRegistration.cpp
@@ -18,7 +19,8 @@ set(SOURCE_FILES
     RegistrationContactForceField.cpp
     ClosestPointRegistrationForceField.cpp
     RegistrationExporter.cpp
-    GroupwiseRegistrationEngine.cpp)
+    GroupwiseRegistrationEngine.cpp
+    InertiaAlign.cpp)
 
 set(README_FILES registration.txt)
 

@@ -68,12 +68,8 @@ namespace constraintset
 //#define	MAX_NUM_CONSTRAINT_PER_NODE 10000
 //#define EPS_UNITARY_FORCE 0.01
 
-using namespace sofa::component::odesolver;
-using namespace sofa::component::linearsolver;
-using namespace sofa::simulation;
-
 template<class DataTypes>
-PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
+PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
     , m_rotations(initData(&m_rotations, false, "rotations", ""))
     , m_restRotations(initData(&m_restRotations, false, "restDeformations", ""))
@@ -175,7 +171,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string fileName)
+void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string& fileName)
 {
     sout << "saveCompliance in " << fileName << sendl;
 
@@ -220,13 +216,13 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invM->data = new Real[nbRows * nbCols];
 
         // for the intial computation, the gravity has to be put at 0
-        const Vec3d gravity = this->getContext()->getGravity();
+        const sofa::defaulttype::Vec3d gravity = this->getContext()->getGravity();
 
-        const Vec3d gravity_zero(0.0,0.0,0.0);
+        const sofa::defaulttype::Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravity(gravity_zero);
 
-        EulerImplicitSolver* eulerSolver;
-        CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >* cgLinearSolver;
+        sofa::component::odesolver::EulerImplicitSolver* eulerSolver;
+        sofa::component::linearsolver::CGLinearSolver< sofa::component::linearsolver::GraphScatteredMatrix, sofa::component::linearsolver::GraphScatteredVector >* cgLinearSolver;
         core::behavior::LinearSolver* linearSolver;
 
         this->getContext()->get(eulerSolver);
@@ -321,11 +317,11 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         for (unsigned int f = 0; f < nbNodes; f++)
         {
-            std::streamsize prevPrecision = std::cout.precision();
-            std::cout.precision(2);
-            std::cout << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
-            std::cout.flush();
-            std::cout.precision(prevPrecision);
+            std::streamsize prevPrecision = sout.precision();
+            sout.precision(2);
+            sout << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
+            sout.flush();
+            sout.precision(prevPrecision);
 
             // Deriv unitary_force;
 
@@ -403,7 +399,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 #endif
     }
 
-    std::cout << "appCompliance = invM->data\n";
+    //std::cout << "appCompliance = invM->data\n";
     appCompliance = invM->data;
 
     // Optimisation for the computation of W
@@ -463,9 +459,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
 template< class DataTypes >
-void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W)
+void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
 {
-    const MatrixDeriv& c = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     double factor = 1.0;
 
@@ -538,7 +534,6 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     unsigned int offset, offset2;
     unsigned int ii,jj, it;
     Deriv Vbuf;
-    int indexCurColConst, indexCurRowConst;
     it = 0;
 
     //////////////////////////////////////////
@@ -556,7 +551,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
             Vbuf.clear();
 
             MatrixDerivColConstIterator colItEnd = rowIt.end();
-
+            
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
                 const Deriv n2 = colIt.val();
@@ -582,7 +577,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
     {
-        indexCurRowConst = rowIt.index();
+        int indexCurRowConst = rowIt.index();
 
         MatrixDerivColConstIterator colItEnd = rowIt.end();
 
@@ -596,7 +591,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
             for (MatrixDerivRowConstIterator rowIt2 = rowIt; rowIt2 != rowItEnd; ++rowIt2)
             {
-                indexCurColConst = rowIt2.index();
+                int indexCurColConst = rowIt2.index();
                 double w = _sparseCompliance[temp + curColConst] * n1 * factor;
 
                 W->add(indexCurRowConst, indexCurColConst, w);
@@ -636,7 +631,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv 
     std::list<int>::iterator IterateurListe;
     unsigned int i, offset, offset2;
 
-    for (IterateurListe = activeDofs.begin(); IterateurListe != activeDofs.end(); IterateurListe++)
+    for (IterateurListe = activeDofs.begin(); IterateurListe != activeDofs.end(); ++IterateurListe)
     {
         int f = (*IterateurListe);
 
@@ -668,8 +663,8 @@ void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv 
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const ConstraintParams *cparams
-        , Data< VecCoord > &x_d, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams
+        , sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
 {
     std::list< int > activeDof;
 
@@ -705,7 +700,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const ConstraintParams *cparams, Data< VecCoord > &x_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
 {
     std::list< int > activeDof;
 
@@ -732,7 +727,7 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrecti
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const ConstraintParams *cparams, Data< VecDeriv > &v_d, Data< VecDeriv > &f_d, const BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
 {
     std::list< int > activeDof;
 
@@ -811,7 +806,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     std::list<int>::iterator IterateurListe;
     unsigned int i;
     unsigned int offset, offset2;
-    for (IterateurListe = activeDof.begin(); IterateurListe != activeDof.end(); IterateurListe++)
+    for (IterateurListe = activeDof.begin(); IterateurListe != activeDof.end(); ++IterateurListe)
     {
         int f = (*IterateurListe);
 
@@ -1070,7 +1065,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)
 {
     constraint_force = f;
-    const MatrixDeriv& c = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
 #ifdef NEW_METHOD_UNBUILT
     constraint_D.clear();
@@ -1381,7 +1376,6 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
     int numLocalConstraints = 0;
 
     std::list<int> localActiveDof;
-    std::list<int>::iterator IterateurListe;
     std::vector<int> constraintLocalID;
 
     for (int i = begin; i <= end; i++)

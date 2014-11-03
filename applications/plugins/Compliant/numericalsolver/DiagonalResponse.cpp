@@ -13,18 +13,29 @@ int DiagonalResponseClass = core::RegisterObject("A diagonal factorization of th
 
 DiagonalResponse::DiagonalResponse() 
     : constant(initData(&constant, false, "constant", "reuse first factorization"))
+    , factorized(false)
 {
 
 }
 
+
+void DiagonalResponse::reinit()
+{
+    Response::reinit();
+    factorized = false;
+}
+
+
 void DiagonalResponse::factor( const mat& H, bool semidefinite ) {
 	
-    if( constant.getValue() && diag.size() == H.rows() ) return;
+    if( constant.getValue() && factorized ) return;
+
+    factorized = true;
 
     if( semidefinite )
     {
         diag = H.diagonal();
-        for( unsigned i=0 ; i<H.rows() ; ++i )
+        for( mat::Index i=0 ; i<H.rows() ; ++i )
             diag.coeffRef(i) = std::abs(diag.coeff(i)) < std::numeric_limits<real>::epsilon() ? real(0) : real(1) / diag.coeff(i);
     }
     else

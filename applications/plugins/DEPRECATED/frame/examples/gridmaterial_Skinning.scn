@@ -25,7 +25,7 @@
 
 		<Node name="Physics" showBehaviorModels="0">
 			<MechanicalObject name="PointSet" template="DeformationGradient332" useMask="0"  showObject="1" showObjectScale="0.1"/>
- 			<FrameBlendingMapping name="Mapping" template="MechanicalMapping&lt;FrameAffine,DeformationGradient332&gt;" 
+ 			<FrameBlendingMapping name="Mapping" template="FrameAffine,DeformationGradient332" 
 				input="@../DOFs"  output="@PointSet"  
 				targetFrameNumber="7"
 				targetSampleNumber="50"
@@ -36,7 +36,7 @@
 
 		<Node name="Visual" >
 			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/Turtle.obj"/>
-			<FrameBlendingMapping template="MechanicalMapping&lt;FrameAffine,ExtVec3d&gt;"  input="@../DOFs"  output="@Visual" />
+			<FrameBlendingMapping template="FrameAffine,ExtVec3d"  input="@../DOFs"  output="@Visual" />
 		</Node>
 
 		<Node name="Collision">
@@ -44,7 +44,7 @@
       			<Mesh src="@MeshLoader"  /> 
       			<MechanicalObject  name="PointSet"/>
       			<Triangle />
-			<FrameBlendingMapping template="MechanicalMapping&lt;FrameAffine,Vec3d&gt;" input="@../DOFs"  output="@PointSet" />
+			<FrameBlendingMapping template="FrameAffine,Vec3d" input="@../DOFs"  output="@PointSet" />
 		</Node>
 	</Node>
 </Node>

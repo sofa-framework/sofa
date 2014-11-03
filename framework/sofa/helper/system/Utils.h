@@ -41,7 +41,7 @@ namespace system
 namespace Utils
 {
 
-#ifdef WIN32
+#if defined WIN32 || defined _XBOX
 
 /// @brief Convert a string to a wstring.
 ///

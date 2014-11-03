@@ -6,7 +6,7 @@
     <CollisionGroup name="Group" />
     <Node name="M1">
         <EulerImplicit />
-        <CGLinearSolver iterations="10" tol="0.01" threshold="0.000001" />
+        <CGLinearSolver iterations="10" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="20" dz="29" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
@@ -27,7 +27,7 @@
     </Node>
     <Node name="M1">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.01" threshold="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="20" dy="20" dz="29" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="6" ny="5" nz="3" xmin="-11" xmax="11" ymin="-7" ymax="7" zmin="-4" zmax="4" />
@@ -48,7 +48,7 @@
     </Node>
     <Node name="M1">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.01" threshold="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-20" dy="20" dz="29" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="6" ny="3" nz="5" xmin="-10" xmax="8" ymin="-3" ymax="2.5" zmin="-7" zmax="7" />

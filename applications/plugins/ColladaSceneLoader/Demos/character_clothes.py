@@ -1,7 +1,5 @@
 import Sofa
 
-import sys
-sys.path.append( Sofa.src_dir() + '/applications/plugins/Compliant/python' )
 from Compliant import Rigid
 
 colladasceneloader_path = Sofa.src_dir() + '/applications/plugins/ColladaSceneLoader'
@@ -35,7 +33,7 @@ def createScene(root):
     scene.createObject('DefaultContactManager', responseParams='damping=0&amp;compliance=0&amp;restitution=0', response='CompliantContact')
     scene.createObject('MinProximityIntersection', alarmDistance='.7', contactDistance='0.5')
     
-    scene.createObject('AssembledSolver', stabilization='1', warm_start=1)
+    scene.createObject('CompliantImplicitSolver', stabilization='1', warm_start=1)
     scene.createObject('SequentialSolver', precision='1e-10', iterations='100', projectH=1)
     scene.createObject('LDLTResponse', regularize=1e-18 )
     scene.createObject('CompliantAttachButtonSetting')
@@ -122,11 +120,11 @@ def createFlexibleClothes(parent):
     deformationNode = parent.createChild('deformation')
     deformationNode.createObject('TopologyGaussPointSampler', name='sampler', inPosition='@../dof.position', showSamples='false', method='0', order='1')
     deformationNode.createObject('MechanicalObject', template='F321', name='triangleDeformationsDOF')
-    deformationNode.createObject('LinearMapping', template="Mapping&lt;Vec3d,F321&gt;")
+    deformationNode.createObject('LinearMapping', template="Vec3d,F321")
     
     strainNode = deformationNode.createChild('strain')
     strainNode.createObject('MechanicalObject', template='E321', name="StrainDOF")
-    strainNode.createObject('CorotationalStrainMapping', template='Mapping&lt;F321,E321&gt;', method="svd") # try qr instead of svd
+    strainNode.createObject('CorotationalStrainMapping', template='F321,E321', method="svd") # try qr instead of svd
     strainNode.createObject('HookeForceField', template='E321', youngModulus='30000', poissonRatio='0.35', viscosity='0')
 
 	

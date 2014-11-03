@@ -40,14 +40,14 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::core::topology;
+
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class DOFBlockerLMConstraintInternalData
 {
 };
 
-using namespace sofa::component::topology;
+
 
 
 /** Keep two particules at an initial distance
@@ -141,11 +141,11 @@ public:
     SetIndex f_indices;
     Data<SReal> showSizeAxis;
 
-    class FCTPointHandler : public TopologySubsetDataHandler<Point, vector<unsigned int> >
+    class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, vector<unsigned int> >
     {
     public:
-        FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, PointSubsetData<helper::vector<unsigned int> >* _data)
-            : TopologySubsetDataHandler<Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
+        FCTPointHandler(DOFBlockerLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<helper::vector<unsigned int> >* _data)
+            : TopologySubsetDataHandler<sofa::component::topology::Point, sofa::helper::vector<unsigned int> >(_data), fc(_fc) {}
 
 
 
@@ -160,7 +160,7 @@ public:
     };
 
 protected :
-    helper::vector<SetIndexArray> idxEquations;
+    sofa::helper::vector<SetIndexArray> idxEquations;
 
 
     sofa::core::topology::BaseMeshTopology* topology;

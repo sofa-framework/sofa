@@ -82,16 +82,19 @@ void DefaultVisualManagerLoop::updateStep(sofa::core::ExecParams* params)
     simulation::Visitor::printNode("UpdateVisual");
 #endif
     sofa::helper::AdvancedTimer::begin("UpdateVisual");
-    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
-    gRoot->execute<UpdateMappingVisitor>(params);
-    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
-    {
-        double dt=gRoot->getDt();
-        UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( params, &ev );
-        gRoot->execute ( act );
-    }
-    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
+
+    // 03/09/14: mapping update should already be performed by animation
+//    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
+//    gRoot->execute<UpdateMappingVisitor>(params);
+//    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
+//    {
+//        double dt=gRoot->getDt();
+//        UpdateMappingEndEvent ev ( dt );
+//        PropagateEventVisitor act ( params, &ev );
+//        gRoot->execute ( act );
+//    }
+//    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
+
     gRoot->execute<VisualUpdateVisitor>(params);
     sofa::helper::AdvancedTimer::end("UpdateVisual");
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -155,6 +158,7 @@ void DefaultVisualManagerLoop::computeBBoxStep(sofa::core::visual::VisualParams*
     VisualComputeBBoxVisitor act(vparams);
     if ( gRoot )
         gRoot->execute ( act );
+//    cerr<<"DefaultVisualManagerLoop::computeBBoxStep, xm= " << act.minBBox[0] <<", xM= " << act.maxBBox[0] << endl;
     if (init)
     {
         minBBox[0] = (SReal)(act.minBBox[0]);

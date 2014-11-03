@@ -35,11 +35,6 @@ void Python_test::run( const Python_test_data& data ) {
 }
 
 
-TEST_P(Python_test, Run) {
-    run( GetParam() );
-}
-
-
 
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
@@ -95,11 +90,8 @@ void Python_scene_test::run( const Python_test_data& data ) {
 }
 
 
-TEST_P(Python_scene_test, Run) {
-    run( GetParam() );
-}
-
-
-
 
 } // namespace sofa
+
+
+

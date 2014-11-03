@@ -26,8 +26,8 @@
             <MechanicalObject name="meca"/>
             <DiagonalMass mass="100"/>
 
-            <TetrahedronFEMForceField youngModulus="1000000"/>
-            <DistanceGridForceField filename="mesh/cubeDistance.fmesh" stiffnessIn="100000000" stiffnessOut="0" draw="true" drawPoints="true" printLog="false" drawSize="2"/> 
+            <TetrahedronFEMForceField youngModulus="1000000" poissonRatio="0.45"/>
+            <DistanceGridForceField filename="mesh/cubeDistanceGrid.fmesh" stiffnessIn="100000000" stiffnessOut="0" draw="true" drawPoints="true" printLog="false" drawSize="2"/>
 
             <Node name="visual">
                 <OglModel name="visu" filename="mesh/liver.obj"/>

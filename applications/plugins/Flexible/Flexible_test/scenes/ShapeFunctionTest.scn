@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0 " dt="1"  >
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="Compliant"/>
+  <RequiredPlugin pluginName="image"/>
+  <DefaultAnimationLoop />
+
+
+  <Node 	name="Patch"   >
+    
+    <!--Solver-->
+    <CompliantImplicitSolver/>
+    <LDLTSolver/>
+ 
+    <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>
+    <ImageContainer template="ImageUC" name="image" filename="beam.raw" drawBB="false"/>
+    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="2" fixedPosition="0 0 -0.999 0 0 0.999" printLog="false"/>
+    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" showIndices="1"  showIndicesScale="0.0003" />
+
+    <Node 	name="Elasticity"   >
+      <MeshObjLoader name="loader" filename="beam.obj" triangulate="1"/> 
+	    <Mesh name="mesh" src="@loader" />
+      <TopologyGaussPointSampler name="sampler" inPosition="@mesh.position" showSamplesScale="0" method="0" order="1" />
+    </Node>
+
+  </Node>
+
+</Node>

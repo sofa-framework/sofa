@@ -26,7 +26,7 @@ public:
     typedef typename IntrCap::Real Real;
     typedef typename IntrCap::Coord Coord;
     typedef TOBB<TDataTypes2> Box;
-    typedef Vec<3,Real> Vec3;
+    typedef sofa::defaulttype::Vec<3,Real> Vec3;
 
     TIntrCapsuleOBB (const IntrCap& capsule, const Box & box);
 
@@ -44,16 +44,16 @@ private:
     using Intersector<Real>::_sep_axis;
 };
 
-typedef TIntrCapsuleOBB<Vec3Types,Rigid3Types> IntrCapsuleOBB;
+typedef TIntrCapsuleOBB<sofa::defaulttype::Vec3Types, sofa::defaulttype::Rigid3Types> IntrCapsuleOBB;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Vec3dTypes,Rigid3dTypes>;
-extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Rigid3dTypes,Rigid3dTypes>;
+extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Rigid3dTypes>;
+extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Vec3fTypes,Rigid3fTypes>;
-extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<Rigid3fTypes,Rigid3fTypes>;
+extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Rigid3fTypes>;
+extern template class SOFA_BASE_COLLISION_API TIntrCapsuleOBB<sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes>;
 #endif
 #endif
 

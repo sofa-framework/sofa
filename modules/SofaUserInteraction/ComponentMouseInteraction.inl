@@ -48,15 +48,10 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::simulation;
 using sofa::component::collision::BodyPicked;
 
-
-
-
-
 template <class DataTypes>
-void TComponentMouseInteraction<DataTypes>::createInteractionComponents(Node* parent, Node* current)
+void TComponentMouseInteraction<DataTypes>::createInteractionComponents( sofa::simulation::Node* parent,  sofa::simulation::Node* current)
 {
     if( parent )
     {

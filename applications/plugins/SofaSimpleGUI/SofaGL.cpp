@@ -1,30 +1,115 @@
+#include <GL/glew.h>
 #include "SofaGL.h"
+#include "VisualPickVisitor.h"
 
 namespace sofa {
-namespace newgui {
+namespace simplegui {
 
 template <typename T> inline T sqr(const T& t){ return t*t; }
 
 
-SofaGL::SofaGL(SofaScene *s)
+SofaGL::SofaGL(SofaScene *s) :
+    _sofaScene(s)
 {
+    if(!_sofaScene)
+    {
+        std::cerr << "Error: you are trying to create a SofaGL object with a null SofaScene" << std::endl;
+        return;
+    }
+
+    glewInit();
+
     _vparams = sofa::core::visual::VisualParams::defaultInstance();
     _vparams->drawTool() = &_drawToolGL;
-    _sofaScene = s;
-}
+    _vparams->setSupported(sofa::core::visual::API_OpenGL);
 
-void SofaGL::init(){}
+    _isPicking = false;
+
+
+    sofa::simulation::getSimulation()->initTextures(_sofaScene->groot().get());
+}
 
 void SofaGL::draw()
 {
-    //                cout<<"SofaGL::draw" << endl;
-    //                sofaScene->printScene();
     glGetIntegerv (GL_VIEWPORT, _viewport);
     glGetDoublev (GL_MODELVIEW_MATRIX, _mvmatrix);
     glGetDoublev (GL_PROJECTION_MATRIX, _projmatrix);
 
-    sofa::simulation::getSimulation()->updateVisual(_sofaScene->sroot().get()); // needed to update normals ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
-    sofa::simulation::getSimulation()->draw(_vparams,_sofaScene->sroot().get());
+    if(_vparams)
+    {
+        _vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
+        _vparams->sceneBBox() = _sofaScene->groot()->f_bbox.getValue();
+        _vparams->setProjectionMatrix(_projmatrix);
+        _vparams->setModelViewMatrix(_mvmatrix);
+    }
+
+    sofa::simulation::getSimulation()->updateVisual(_sofaScene->groot().get()); // needed to update normals ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
+
+    if( _isPicking ){
+
+        // start picking
+        glSelectBuffer(BUFSIZE,selectBuf);
+        glRenderMode(GL_SELECT);
+
+        glInitNames();
+
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+
+        gluPickMatrix(pickX,_viewport[3]-pickY,5,5,_viewport);
+        glMultMatrixd(_projmatrix);
+        glMatrixMode(GL_MODELVIEW);
+
+
+        // draw
+        _vparams->pass() = sofa::core::visual::VisualParams::Std;
+        VisualPickVisitor pick ( _vparams );
+        pick.setTags(_sofaScene->groot()->getTags());
+        _sofaScene->groot()->execute ( &pick );
+
+        // stop picking
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glFlush();
+        hits = glRenderMode(GL_RENDER);
+        if (hits != 0)
+        {
+            GLuint* buffer = selectBuf;
+            // process the hits
+            GLint i, j, numberOfNames;
+            GLuint names, *ptr, minZ,*ptrNames;
+
+            ptr = (GLuint *) buffer;
+            minZ = 0xffffffff;
+            for (i = 0; i < hits; i++) {
+                names = *ptr;
+                ptr++;
+                if (*ptr < minZ) {
+                    numberOfNames = names;
+                    minZ = *ptr;
+                    ptrNames = ptr+2;
+                }
+
+                ptr += names+2;
+            }
+            if (numberOfNames > 0) {
+                cerr << "You picked object  ";
+                ptr = ptrNames;
+                for (j = 0; j < numberOfNames; j++,ptr++) {
+                    cerr<< pick.names[*ptr] << " ";
+                }
+            }
+            else
+                cerr<<"You didn't click a snowman!";
+            cerr<<endl;
+        }
+        else cerr<<"no hits !" << endl;
+        _isPicking = false;
+
+    }
+    sofa::simulation::getSimulation()->draw(_vparams, _sofaScene->groot().get());
 }
 
 void SofaGL::getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y )
@@ -45,15 +130,21 @@ void SofaGL::getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, 
 }
 
 
+void SofaGL::glPick(int x, int y )
+{
+    pickX = x; pickY = y;
+    _isPicking = true;
+}
+
 PickedPoint SofaGL::pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
 {
     Vec3 origin(ox,oy,oz), direction;
     getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
 
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
-    //    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
+    //    cout<< "SofaGL::rayPick from origin " << origin << ", in direction " << direction << endl;
     sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth );
-    picker.execute( _sofaScene->sroot()->getContext() );
+    picker.execute( _sofaScene->groot()->getContext() );
 
     PickedPoint pickedPoint;
     if (!picker.particles.empty())
@@ -94,9 +185,9 @@ Interactor* SofaGL::pickInteractor( GLdouble ox, GLdouble oy, GLdouble oz, int x
     Vec3 origin(ox,oy,oz), direction;
     getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
-//    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
-    sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth, Tag("!NoPicking") );
-    picker.execute(_sofaScene->sroot()->getContext());
+    //    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
+    sofa::simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, distance, distanceGrowth, sofa::core::objectmodel::Tag("!NoPicking") );
+    picker.execute(_sofaScene->groot()->getContext());
 
     if (!picker.particles.empty())
     {
@@ -155,19 +246,32 @@ void SofaGL::detach( Interactor* drag)
     //    cout<<"SofaGL::detach "<< endl; _sofaScene->printGraph();
 }
 
+void SofaGL::getSceneBBox( float* xmin, float* ymin, float* zmin, float* xmax, float* ymax, float* zmax )
+{
+    SReal xm, xM, ym, yM, zm, zM;
+    _sofaScene->getBoundingBox(&xm,&xM,&ym,&yM,&zm,&zM);
+    //    cerr << "SofaGL::getSceneBBox, xm=" << xm <<", xM=" << xM << endl;
+    *xmin=xm, *xmax=xM, *ymin=ym, *ymax=yM, *zmin=zm, *zmax=zM;
+}
 
-void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* near, SReal* far)
+
+void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* nearPlane, SReal* farPlane)
 {
     // scene center and radius
     SReal xmin, xmax, ymin, ymax, zmin, zmax;
     _sofaScene->getBoundingBox(&xmin,&xmax,&ymin,&ymax,&zmin,&zmax);
+    cout<<"SofaGL::viewAll, bounding box = ("<< xmin <<" "<<ymin<<" "<<zmin<<"),("<<xmax<<" "<<ymax<<" "<<zmax<<")"<<endl;
     *xcen = (xmin+xmax)*0.5;
     *ycen = (ymin+ymax)*0.5;
     *zcen = (zmin+zmax)*0.5;
-    SReal radius = sqrt( sqr(xmin-xmax) + sqr(ymin-ymax) + sqr(zmin-zmax) )*0.5;
+    SReal radius = sqrt( sqr(xmin-xmax) + sqr(ymin-ymax) + sqr(zmin-zmax) );
 
     // Desired distance:  distance * tan(a) = radius
-    SReal distance = radius / tan(a);
+    SReal distance = 2 * radius / tan(a);
+    //    SReal ratio = ((SReal) _viewport[3] - _viewport[1])/(_viewport[2] - _viewport[0]);
+    //    distance *= ratio;
+    cout<<"SofaGL::viewAll, angle = " << a << ", tan = " << tan(a) << ", distance = " << distance << endl;
+    cout<<"SofaGL::viewAll, xmin xmax ymin ymax zmin zmax = " << xmin << " " << xmax <<" "<<ymin<<" "<<ymax<<" "<<zmin<<" "<<zmax<< endl;
 
     // move the camera along the current camera-center line, at the right distance
     // cam = cen + distance * (cam-cen)/|cam-cen|
@@ -177,8 +281,8 @@ void SofaGL::viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal*
     *zcam = *zcen + distance * (*zcam-*zcen) / curdist;
 
     // update the depth bounds
-    *near = distance - radius*1.5;
-    *far  = distance + radius*1.5;
+    *nearPlane = distance - radius*1.5;
+    *farPlane  = distance + radius*1.5;
 }
 
 

@@ -8,7 +8,7 @@
 	<Node 	 name="scene"  printLog="1"  >
 		
 		<!-- euler implicit solver -->
-		<AssembledSolver stabilization="false" />
+		<CompliantImplicitSolver stabilization="false" />
 		
 		<!-- numerical solver -->
 		<MinresSolver precision="0" relative="false" iterations="100" />

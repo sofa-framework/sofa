@@ -52,7 +52,7 @@ GenericConstraintCorrection::GenericConstraintCorrection()
 GenericConstraintCorrection::~GenericConstraintCorrection() {}
 
 void GenericConstraintCorrection::bwdInit() {
-    objectmodel::BaseContext* c = this->getContext();
+    sofa::core::objectmodel::BaseContext* c = this->getContext();
 
     c->get(odesolver, core::objectmodel::BaseContext::SearchRoot);
 
@@ -94,7 +94,7 @@ void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceF
     }
 }
 
-void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, defaulttype::BaseMatrix* W) {
+void GenericConstraintCorrection::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W) {
     if (!odesolver) return;
 
     // use the OdeSolver to get the position integration factor
@@ -134,13 +134,13 @@ void GenericConstraintCorrection::computeAndApplyMotionCorrection(const core::Co
 }
 
 
-void GenericConstraintCorrection::computeResidual(const core::ExecParams* params, BaseVector *lambda) {
+void GenericConstraintCorrection::computeResidual(const sofa::core::ExecParams* params, sofa::defaulttype::BaseVector *lambda) {
     for (unsigned i = 0; i < linearsolvers.size(); i++) {
         linearsolvers[i]->computeResidual(params,lambda);
     }
 }
 
-void GenericConstraintCorrection::computeAndApplyPositionCorrection(const ConstraintParams * /*cparams*/, MultiVecCoordId /*xId*/, MultiVecDerivId /*fId*/, const BaseVector *lambda) {
+void GenericConstraintCorrection::computeAndApplyPositionCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::MultiVecCoordId /*xId*/, sofa::core::MultiVecDerivId /*fId*/, const sofa::defaulttype::BaseVector *lambda) {
     if (!odesolver) return;
 
     const double positionFactor = odesolver->getPositionIntegrationFactor();
@@ -150,7 +150,7 @@ void GenericConstraintCorrection::computeAndApplyPositionCorrection(const Constr
     }
 }
 
-void GenericConstraintCorrection::computeAndApplyVelocityCorrection(const ConstraintParams * /*cparams*/, MultiVecDerivId /*vId*/, MultiVecDerivId /*fId*/, const BaseVector *lambda) {
+void GenericConstraintCorrection::computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::MultiVecDerivId /*vId*/, sofa::core::MultiVecDerivId /*fId*/, const sofa::defaulttype::BaseVector *lambda) {
     if (!odesolver) return;
 
     const double velocityFactor = odesolver->getVelocityIntegrationFactor();

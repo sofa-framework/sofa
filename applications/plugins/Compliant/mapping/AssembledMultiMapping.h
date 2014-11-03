@@ -126,6 +126,12 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		}
 	}
 
+    virtual void applyJ(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
+    {
+        serr << "applyJ() not implemented" << sendl;
+    }
+
+
 	void debug() {
 		std::cerr << this->getClassName() << std::endl;
 		for( unsigned i = 0, n = js.size(); i < n; ++i) {

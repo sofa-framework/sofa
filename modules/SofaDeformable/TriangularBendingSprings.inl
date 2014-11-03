@@ -54,20 +54,10 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
-
-
-
-
-using namespace core::behavior;
-using core::topology::BaseMeshTopology;
-typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
+typedef core::topology::BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int , EdgeInformation &ei, const Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFunction(unsigned int , EdgeInformation &ei, const core::topology::Edge &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -90,8 +80,9 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyCreateFu
 
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded, const sofa::helper::vector<Triangle> &, const sofa::helper::vector<sofa::helper::vector<unsigned int> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded, const sofa::helper::vector<core::topology::Triangle> &, const sofa::helper::vector<sofa::helper::vector<unsigned int> > &, const sofa::helper::vector<sofa::helper::vector<double> > &)
 {
+    using namespace core::topology;
     if (ff)
     {
 
@@ -197,6 +188,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 template< class DataTypes>
 void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangleDestruction(const sofa::helper::vector<unsigned int> &triangleRemoved)
 {
+    using namespace core::topology;
     if (ff)
     {
 
@@ -311,6 +303,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyTriangle
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopologyChange(const core::topology::TrianglesAdded* e)
 {
+    using namespace core::topology;
     const sofa::helper::vector<unsigned int> &triangleAdded = e->getIndexArray();
     const sofa::helper::vector<Triangle> &elems = e->getElementArray();
     const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ancestors = e->ancestorsList;
@@ -331,6 +324,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::ApplyTopology
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointDestruction(const sofa::helper::vector<unsigned int> &tab)
 {
+    using namespace core::topology;
     if(ff)
     {
         bool debug_mode = false;
@@ -508,6 +502,7 @@ void TriangularBendingSprings<DataTypes>::init()
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::reinit()
 {
+    using namespace core::topology;
     /// prepare to store info in the edge array
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(_topology->getNbEdges());

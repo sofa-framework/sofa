@@ -56,8 +56,6 @@ namespace collision
 class TetrahedronModel;
 #endif
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::topology;
 
 /// a class to manage the handling of topological changes which have been requested from the Collision Model
 class SOFA_USER_INTERACTION_API TopologicalChangeManager
@@ -88,8 +86,10 @@ public:
      *
      * @return bool - true if incision has been performed.
      */
-    bool incisionCollisionModel(sofa::core::CollisionElementIterator elem, Vector3& pos, bool firstInput,
-            int snapingValue = 0, int snapingBorderValue = 0);
+    bool incisionCollisionModel(sofa::core::CollisionElementIterator elem,
+                                defaulttype::Vector3& pos, bool firstInput,
+                                int snapingValue = 0,
+                                int snapingBorderValue = 0);
 
 
     /** Handles Cutting for general model collision (activated only for a triangular topology for the moment).
@@ -108,9 +108,14 @@ public:
      *
      * @return bool - true if incision has been performed.
      */
-    bool incisionCollisionModel(sofa::core::CollisionModel* model1, unsigned int idx1, const Vector3& firstPoint,
-            sofa::core::CollisionModel *model2, unsigned int idx2, const Vector3& secondPoint,
-            int snapingValue = 0, int snapingBorderValue = 0);
+    bool incisionCollisionModel(sofa::core::CollisionModel* model1,
+                                unsigned int idx1,
+                                const defaulttype::Vector3& firstPoint,
+                                sofa::core::CollisionModel *model2,
+                                unsigned int idx2,
+                                const defaulttype::Vector3& secondPoint,
+                                int snapingValue = 0,
+                                int snapingBorderValue = 0);
 
     /** Sets incision starting parameter - incision is just started or already in course
      *
@@ -137,9 +142,14 @@ private:
      *
      * @return bool - true if incision has been performed.
      */
-    bool incisionTriangleModel(TriangleModel* model1, unsigned int idx1, const Vector3& firstPoint,
-            TriangleModel *model2, unsigned int idx2, const Vector3& secondPoint,
-            int snapingValue = 0, int snapingBorderValue = 0);
+    bool incisionTriangleModel(TriangleModel* model1,
+                               unsigned int idx1,
+                               const defaulttype::Vector3& firstPoint,
+                               TriangleModel *model2,
+                               unsigned int idx2,
+                               const defaulttype::Vector3& secondPoint,
+                               int snapingValue = 0,
+                               int snapingBorderValue = 0);
 
 
 
@@ -155,13 +165,13 @@ private:
     struct Incision
     {
         /// Temporary point index for successive incisions
-        BaseMeshTopology::PointID indexPoint;
+        sofa::core::topology::BaseMeshTopology::PointID indexPoint;
 
         /// Temporary point coordinate for successive incisions
-        Vector3 coordPoint;
+        defaulttype::Vector3 coordPoint;
 
         /// Temporary triangle index for successive incisions
-        BaseMeshTopology::TriangleID indexTriangle;
+        sofa::core::topology::BaseMeshTopology::TriangleID indexTriangle;
 
         /// Information of first incision for successive incisions
         bool firstCut;

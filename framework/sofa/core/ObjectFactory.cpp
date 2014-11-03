@@ -23,20 +23,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "ObjectFactory.h"
-#include <sofa/core/Plugin.h>
+
+#include <sofa/defaulttype/TemplatesAliases.h>
 
 
 namespace sofa
 {
 namespace core
 {
-
-ObjectFactory::ObjectFactory()
-{
-    std::string pluginDir("");
-    pluginDir += "./bin/plugins/";
-    m_pluginManager.addPluginDirectory(pluginDir);
-}
 
 ObjectFactory::~ObjectFactory()
 {
@@ -52,65 +46,7 @@ ObjectFactory::ClassEntry& ObjectFactory::getEntry(std::string classname)
     return *registry[classname];
 }
 
-bool ObjectFactory::hasEntry(std::string componentName)
-{
-    return registry.find(componentName) != registry.end();
-}
-
-void ObjectFactory::addEntry(const std::string& componentName, const std::string& description,
-                             const std::string& authors, const std::string& license)
-{
-    if (hasEntry(componentName)) {
-        std::cerr << "ObjectFactory::addEntry(): entry already exists: '"
-                  << componentName << "'" << std::endl;
-        return;
-    }
-    ClassEntry& entry = getEntry(componentName);
-    entry.description = description;
-    entry.authors = authors;
-    entry.license = license;
-}
-    
-void ObjectFactory::addCreator(const std::string& componentName, const std::string& templateParameters,
-                               Creator::SPtr creator, bool defaultTemplate)
-{
-    if (!hasEntry(componentName)) {
-        std::cerr << "ObjectFactory::addCreator(): entry does not exist: '"
-                  << componentName << "'" << std::endl;
-        return;
-    }
-    ClassEntry& entry = getEntry(componentName);
-    
-    if (entry.creatorMap.find(templateParameters) != entry.creatorMap.end()) {
-        std::cerr << "ObjectFactory::addCreator(): creator already exists: '"
-                  << componentName << "<" << templateParameters << ">" << "'" << std::endl;
-        return;
-    }
-    entry.creatorMap[templateParameters] = creator;
-    if (defaultTemplate)
-        entry.defaultTemplateParameters = templateParameters;
-}
-
-void ObjectFactory::removeCreator(const std::string& componentName, const std::string& templateParameters)
-{
-    if (!hasEntry(componentName)) {
-        std::cerr << "ObjectFactory::removeCreator(): entry does not exist: '"
-                  << componentName << "'" << std::endl;
-        return;
-    }
-    ClassEntry& entry = getEntry(componentName);
-    if (entry.creatorMap.find(templateParameters) == entry.creatorMap.end()) {
-        std::cerr << "ObjectFactory::removeCreator(): creator does not exist: '"
-                  << componentName << "<" << templateParameters << ">" << "'" << std::endl;
-        return;
-    }
-    entry.creatorMap.erase(templateParameters);
-    if (entry.creatorMap.empty()) {
-        registry.erase(componentName);
-        std::cout << "ObjectFactory::removeCreator(): erased empty entry: '" << componentName << "'" << std::endl;
-    }
-}
-
+/// Test if a creator exists for a given classname
 bool ObjectFactory::hasCreator(std::string classname)
 {
     ClassEntryMap::iterator it = registry.find(classname);
@@ -174,69 +110,66 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
     registry[name] = previous;
 }
 
-ObjectFactory::Creator::SPtr ObjectFactory::getCreator(objectmodel::BaseContext* context,
-                                                       objectmodel::BaseObjectDescription* arg)
-{
-    std::string className = arg->getAttribute("type", "");
-    std::string templateParameters = arg->getAttribute("template", "");
-
-    // std::cout << "getCreator: " << className << ", " << templateParameters << std::endl;
-    ClassEntryMap::iterator i = registry.find(className);
-    // std::cout << "found component: " << (i != registry.end()) << std::endl;
-    if (i != registry.end()) { // Component found
-        ClassEntry::SPtr entry = i->second;
-
-        if(templateParameters.empty())
-            templateParameters = entry->defaultTemplateParameters;
-        // std::cout << "defaultTemplateParameters: " << templateParameters << std::endl;
-
-        CreatorMap::iterator j = entry->creatorMap.find(templateParameters);
-        // std::cout << "found creator: " << (j != entry->creatorMap.end()) << std::endl;
-        if (j != entry->creatorMap.end()) { // Template instance found
-            Creator::SPtr creator = j->second;
-            if (creator->canCreate(context, arg))
-                return creator;
-        }
-
-        for (CreatorMap::iterator k = entry->creatorMap.begin();
-             k != entry->creatorMap.end();
-             k++) {
-            Creator::SPtr creator = k->second;
-            // std::cout << "trying creator: " << (creator->getClass()->templateName) << std::endl;
-            if (creator->canCreate(context, arg)) {
-                // std::cout << "Yep !" << std::endl;
-                return creator;
-            }
-        }
-    }
-    return Creator::SPtr();
-}
-
-objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context,
-                                                          objectmodel::BaseObjectDescription* arg)
+objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = NULL;
-    std::string className = arg->getAttribute("type", "");
-    std::string templateParameters = arg->getAttribute("template", "");
+    std::vector< std::pair<std::string, Creator::SPtr> > creators;
+    std::string classname = arg->getAttribute( "type", "");
+	std::string usertemplatename = arg->getAttribute( "template", "");
+	std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename); // Resolve template aliases
+	std::string userresolved = templatename; // Copy in case we change for the default one
 
-    // std::cout << "createObject: " << className << ", " << templateParameters << std::endl;
-    Creator::SPtr creator = getCreator(context, arg);
-    if (creator.get() == NULL) {
-        if (m_pluginManager.canFindComponent(className, templateParameters)) {
-            try {
-                Plugin& plugin = m_pluginManager.loadPluginContaining(className, templateParameters);
-                m_pluginManager.addComponentsToFactory(*this, plugin);
-                creator = getCreator(context, arg);
-            } catch (std::exception& e) {
-                arg->logWarning(e.what());
+    ClassEntryMap::iterator it = registry.find(classname);
+	if (it != registry.end()) // Found the classname
+    {
+        ClassEntry::SPtr entry = it->second;
+		// If no template has been given or if the template does not exist, first try with the default one
+        if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
+			templatename = entry->defaultTemplate;
+		
+        CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
+        if (it2 != entry->creatorMap.end())
+        {
+            Creator::SPtr c = it2->second;
+            if (c->canCreate(context, arg))
+                creators.push_back(*it2);
+        }
+
+		// If object cannot be created with the given template (or the default one), try all possible ones
+        if (creators.empty())
+        {
+            CreatorMap::iterator it3;
+            for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
+            {
+				Creator::SPtr c = it3->second;
+                if (c->canCreate(context, arg))
+                    creators.push_back(*it3);
             }
         }
     }
-    if (creator.get() == NULL)
-        arg->logWarning("Object type " + className + std::string("<") + templateParameters
-                        + std::string("> creation failed"));
+
+    if (creators.empty())
+    {	// The object cannot be created
+        arg->logWarning("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
+    }
     else
-        object = creator->createInstance(context, arg);
+    {
+        object = creators[0].second->createInstance(context, arg);
+
+		// The object has been created, but not with the template given by the user
+		if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
+		{
+            std::string w = "Template <" + usertemplatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string(">");
+            object->serr << w << object->sendl;
+        }
+        else if (creators.size() > 1)
+        {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
+            std::string w = "Template <" + templatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string("> in the list:");
+            for(unsigned int i = 0; i < creators.size(); ++i)
+                w += std::string("\n\t* ") + creators[i].first;
+            object->serr << w << object->sendl;
+        }
+    }
 
     return object;
 }
@@ -245,11 +178,6 @@ ObjectFactory* ObjectFactory::getInstance()
 {
     static ObjectFactory instance;
     return &instance;
-}
-
-sofa::core::PluginManager& ObjectFactory::getPluginManager()
-{
-    return m_pluginManager;
 }
 
 void ObjectFactory::getAllEntries(std::vector<ClassEntry::SPtr>& result)
@@ -395,7 +323,7 @@ void ObjectFactory::dumpHTML(std::ostream& out)
             out << "<li>Template instances:<i>";
             for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
             {
-                if (itc->first == entry->defaultTemplateParameters)
+                if (itc->first == entry->defaultTemplate)
                     out << " <b>" << xmlencode(itc->first) << "</b>";
                 else
                     out << " " << xmlencode(itc->first);
@@ -450,8 +378,7 @@ RegisterObject& RegisterObject::addCreator(std::string classname,
 					   std::string templatename,
 					   ObjectFactory::Creator::SPtr creator)
 {
-  // std::cout << "ObjectFactory: warning: RegisterObject called for ("
-  //           << classname << ", " << templatename << ")" << std::endl;
+
     if (!entry.className.empty() && entry.className != classname)
     {
         std::cerr << "ERROR: ObjectFactory: all templated class should have the same base classname ("<<entry.className<<"!="<<classname<<")\n";
@@ -481,15 +408,15 @@ RegisterObject::operator int()
         reg.description += entry.description;
         reg.authors += entry.authors;
         reg.license += entry.license;
-        if (!entry.defaultTemplateParameters.empty())
+        if (!entry.defaultTemplate.empty())
         {
-            if (!reg.defaultTemplateParameters.empty())
+            if (!reg.defaultTemplate.empty())
             {
-                std::cerr << "ERROR: ObjectFactory: default template for class "<<entry.className<<" already registered <"<<reg.defaultTemplateParameters<<">, do not register <"<<entry.defaultTemplateParameters<<"> as default.\n";
+                std::cerr << "ERROR: ObjectFactory: default template for class "<<entry.className<<" already registered <"<<reg.defaultTemplate<<">, do not register <"<<entry.defaultTemplate<<"> as default.\n";
             }
             else
             {
-                reg.defaultTemplateParameters = entry.defaultTemplateParameters;
+                reg.defaultTemplate = entry.defaultTemplate;
             }
         }
         for (ObjectFactory::CreatorMap::iterator itc = entry.creatorMap.begin(), itcend = entry.creatorMap.end(); itc != itcend; ++itc)

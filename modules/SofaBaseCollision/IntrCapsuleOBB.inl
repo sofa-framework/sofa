@@ -80,7 +80,7 @@ bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
         }
     }
 
-    Vec<3,Real> relVelocity = mBox->v() - _cap->v();
+    defaulttype::Vec<3,Real> relVelocity = mBox->v() - _cap->v();
     // Test velocity cross box-faces.
     for (i = 0; i < 3; i++)
     {
@@ -106,7 +106,7 @@ bool TIntrCapsuleOBB<TDataTypes,TDataTypes2>::Find (Real dmax)
         _sep_axis = capContact.axis;
     }
     else{
-        Vec<3,Real> projP = segment[0] + cap_direction * ((cap_direction  * (_pt_on_first - segment[0]))/cap_direction.norm2());
+        defaulttype::Vec<3,Real> projP = segment[0] + cap_direction * ((cap_direction  * (_pt_on_first - segment[0]))/cap_direction.norm2());
 
         _sep_axis = _pt_on_first - projP;
         _sep_axis.normalize();

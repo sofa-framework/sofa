@@ -47,9 +47,7 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
 using sofa::helper::vector;
-using namespace sofa::component::topology;
 
 
 template<class DataTypes>
@@ -97,19 +95,20 @@ public:
     Data<VecCoord> f_fiberCenter;
     Data<bool> showFiber;
 
-    TriangleData <helper::vector< Deriv> > localFiberDirection;
+    topology::TriangleData <helper::vector< Deriv> > localFiberDirection;
 
-    class TRQSTriangleHandler : public TopologyDataHandler<Triangle,vector<Deriv> >
+    class TRQSTriangleHandler : public topology::TopologyDataHandler<topology::Triangle,vector<Deriv> >
     {
     public:
         typedef typename TriangularAnisotropicFEMForceField::Deriv triangleInfo;
 
-        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, TriangleData<helper::vector<triangleInfo> >*  _data) : TopologyDataHandler<Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
+        TRQSTriangleHandler(TriangularAnisotropicFEMForceField<DataTypes>* _ff, topology::TriangleData<helper::vector<triangleInfo> >*  _data) : topology::TopologyDataHandler<topology::Triangle, helper::vector<triangleInfo> >(_data), ff(_ff) {}
 
-        void applyCreateFunction(unsigned int triangleIndex, helper::vector<triangleInfo> & ,
-                const Triangle & t,
-                const sofa::helper::vector< unsigned int > &,
-                const sofa::helper::vector< double > &);
+        void applyCreateFunction(unsigned int triangleIndex,
+                                 helper::vector<triangleInfo> & ,
+                                 const topology::Triangle & t,
+                                 const sofa::helper::vector< unsigned int > &,
+                                 const sofa::helper::vector< double > &);
 
     protected:
         TriangularAnisotropicFEMForceField<DataTypes>* ff;

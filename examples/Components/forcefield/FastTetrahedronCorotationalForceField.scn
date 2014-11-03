@@ -4,6 +4,7 @@
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" name="collision response" />
+    <DiscreteIntersection />
     <Node name="MeshTopology">
         <TetrahedronSetTopologyContainer name="Container1" fileTopology="mesh/cylinder.msh" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />

@@ -42,8 +42,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::core::objectmodel;
-
 template<class DataTypes>
 LinearForceField<DataTypes>::LinearForceField()
     : data(new LinearForceFieldInternalData<DataTypes>())

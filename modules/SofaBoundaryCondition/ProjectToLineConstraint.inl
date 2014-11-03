@@ -34,8 +34,6 @@
 #include <sofa/helper/gl/template.h>
 //#include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 
@@ -53,13 +51,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
-
 // Define TestNewPointFunction
 template< class DataTypes>
 bool ProjectToLineConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
@@ -76,7 +67,7 @@ bool ProjectToLineConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction
 
 // Define RemovalFunction
 template< class DataTypes>
-void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, value_type &)
+void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type> &)
 {
     if (fc)
     {
@@ -309,8 +300,8 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< Vector3 > points;
-        Vector3 point;
+        std::vector< sofa::defaulttype::Vector3 > points;
+        sofa::defaulttype::Vector3 point;
         //serr<<"ProjectToLineConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         for (Indices::const_iterator it = indices.begin();
                 it != indices.end();
@@ -319,12 +310,12 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
-        std::vector< Vector3 > points;
-        Vector3 point;
+        std::vector< sofa::defaulttype::Vector3 > points;
+        sofa::defaulttype::Vector3 point;
         glColor4f (1.0f,0.35f,0.35f,1.0f);
         for (Indices::const_iterator it = indices.begin();
                 it != indices.end();
@@ -333,7 +324,7 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 #endif /* SOFA_NO_OPENGL */
 }

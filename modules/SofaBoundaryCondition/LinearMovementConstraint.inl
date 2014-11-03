@@ -46,12 +46,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
 // Define TestNewPointFunction
 template< class DataTypes>
 bool LinearMovementConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
@@ -255,7 +249,7 @@ void LinearMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
 
 template <class DataTypes>
 template <class MyCoord>
-void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
+void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::disable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue();
 //                cerr<<"LinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
@@ -280,14 +274,14 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 
 template <class DataTypes>
 template <class MyCoord>
-void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, RigidCoord<3, Real> >, VecCoord>::type& x)
+void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue();
 
     Real dt = (cT - prevT) / (nextT - prevT);
     Deriv m = prevM + (nextM-prevM)*dt;
-    Quater<Real> prevOrientation = Quater<Real>::createQuaterFromEuler(getVOrientation(prevM));
-    Quater<Real> nextOrientation = Quater<Real>::createQuaterFromEuler(getVOrientation(nextM));
+    helper::Quater<Real> prevOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(prevM));
+    helper::Quater<Real> nextOrientation = helper::Quater<Real>::createQuaterFromEuler(getVOrientation(nextM));
 
     //set the motion to the Dofs
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -398,8 +392,8 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i]));
-                gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
+                helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i]));
+                helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
             }
         }
         glEnd();
@@ -408,15 +402,15 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-        sofa::helper::vector<Vector3> points;
-        Vector3 point;
+        sofa::helper::vector<defaulttype::Vector3> points;
+        defaulttype::Vector3 point;
         const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
+        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4, float> (1, 0.5, 0.5, 1));
     }
 #endif /* SOFA_NO_OPENGL */
 }

@@ -39,6 +39,8 @@
 #define SUBTRACTION 1
 #define MULTIPLICATION 2
 #define DIVISION 3
+#define DICE 4
+#define CONCATENATE 5
 
 
 namespace sofa
@@ -91,11 +93,13 @@ public:
         inputImage1.setReadOnly(true);  this->addAlias(&inputImage1, "image1");
         inputImage2.setReadOnly(true);  this->addAlias(&inputImage2, "image2");
         outputImage.setReadOnly(true);  this->addAlias(&outputImage, "image");
-        helper::OptionsGroup operationOptions(4	,"0 - Addition"
-                                           ,"1 - Subtraction"
-                                           ,"2 - Multiplication"
-                                           ,"3 - Division"
-                                           );
+        helper::OptionsGroup operationOptions(6	,"0 - Addition"
+                                              ,"1 - Subtraction"
+                                              ,"2 - Multiplication"
+                                              ,"3 - Division"
+                                              ,"4 - Dice coefficient"
+                                              ,"5 - Concatenate in two channels"
+                                              );
         operationOptions.setSelectedItem(SUBTRACTION);
         operation.setValue(operationOptions);
     }
@@ -134,6 +138,38 @@ protected:
         case SUBTRACTION:         cimglist_for(img,l) cimg_forXYZC(img(l),x,y,z,c) img(l)(x,y,z,c)-=inimg2(l)(x,y,z,c);            break;
         case MULTIPLICATION:      cimglist_for(img,l) cimg_forXYZC(img(l),x,y,z,c) img(l)(x,y,z,c)*=inimg2(l)(x,y,z,c);            break;
         case DIVISION:            cimglist_for(img,l) cimg_forXYZC(img(l),x,y,z,c) img(l)(x,y,z,c)/=inimg2(l)(x,y,z,c);            break;
+        case DICE:
+        {
+            unsigned int count_inter=0,count_union=0;
+            cimglist_for(img,l)
+                    cimg_forXYZC(img(l),x,y,z,c)
+            {
+                T v=img(l)(x,y,z,c),v2=inimg2(l)(x,y,z,c);
+                if(v!=(T)0 || v2!=(T)0)
+                {
+                    if(v!=(T)0)    count_union++;
+                    if(v2!=(T)0)   count_union++;
+                    if(v==v2) {count_inter++; img(l)(x,y,z,c)=(T)2;}
+                    else img(l)(x,y,z,c)=(T)1;
+                }
+            }
+            double dice= (double)count_inter*2./(double)count_union;
+            std::cout<<this->getName()<<": Dice = "<< dice <<" , union = "<< count_union <<" , intersection = "<< count_inter <<std::endl;
+        }
+            break;
+        case CONCATENATE:
+        {
+            imCoord dim = in1->getDimensions();
+            unsigned int s1=dim[ImageTypes::DIMENSION_S];
+            dim[ImageTypes::DIMENSION_S] += in2->getDimensions()[ImageTypes::DIMENSION_S];
+            out->setDimensions(dim);
+            cimglist_for(img,l)  cimg_forXYZ(img(l),x,y,z)
+            {
+                cimg_forC(inimg1(l),c)   img(l)(x,y,z,c)=inimg1(l)(x,y,z,c);
+                cimg_forC(inimg2(l),c)   img(l)(x,y,z,c+s1)=inimg2(l)(x,y,z,c);
+            }
+        }
+            break;
         default:            break;
         }
     }

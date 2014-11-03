@@ -182,6 +182,12 @@ public:
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    {
+        serr << "getPotentialEnergy() not implemented" << sendl;
+        return 0.0;
+    }
+
     void draw(const core::visual::VisualParams* vparams);
 
 

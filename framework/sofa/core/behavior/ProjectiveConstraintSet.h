@@ -79,6 +79,15 @@ public:
 
     virtual void init();
 
+    
+    virtual helper::vector< core::BaseState* > getModels()
+    {
+        helper::vector< core::BaseState* > models;
+        models.push_back( getMState() );
+        return models;
+    }
+
+
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return mstate.get(); }
 

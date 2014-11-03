@@ -40,8 +40,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::core::behavior;
-
 /** mapping computing the center of mass of an object.
 	the output of the mapping has to be a single dof.
 	Its position is then set from the input DOFs, proportionally to their mass.
@@ -112,33 +110,33 @@ protected :
     {}
 
     ///pointer on the input DOFs mass
-    BaseMass * masses;
+    sofa::core::behavior::BaseMass * masses;
 
     /// the total mass of the input object
     double totalMass;
 };
 
-using namespace sofa::defaulttype;
+
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2dTypes, Vec2dTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, ExtVec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2fTypes, Vec2fTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2dTypes, Vec2fTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3dTypes, ExtVec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid2fTypes, Vec2dTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< Rigid3fTypes, ExtVec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3dTypes >;
 #endif
 #endif
 #endif

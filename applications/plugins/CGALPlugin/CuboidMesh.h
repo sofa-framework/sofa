@@ -94,17 +94,17 @@ public:
     }
 
     //Inputs
-    Data<unsigned> m_debug;
-    Data<double> m_radius;
-    Data<double> m_height;
-    Data<int> m_number;
-    Data<bool> m_convex;
-    Data<bool> m_viewPoints;
-    Data<bool> m_viewTetras;
+    sofa::core::objectmodel::Data<unsigned> m_debug;
+    sofa::core::objectmodel::Data<double> m_radius;
+    sofa::core::objectmodel::Data<double> m_height;
+    sofa::core::objectmodel::Data<int> m_number;
+    sofa::core::objectmodel::Data<bool> m_convex;
+    sofa::core::objectmodel::Data<bool> m_viewPoints;
+    sofa::core::objectmodel::Data<bool> m_viewTetras;
 
     //Outputs
-    Data<VecCoord> m_points;
-    Data<SeqTetrahedra> m_tetras;
+    sofa::core::objectmodel::Data<VecCoord> m_points;
+    sofa::core::objectmodel::Data<SeqTetrahedra> m_tetras;
 
     //Parameters
     unsigned m_nbVertices, m_nbBdVertices, m_nbCenters, m_nbBdCenters;

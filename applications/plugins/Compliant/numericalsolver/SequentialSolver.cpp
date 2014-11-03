@@ -63,58 +63,65 @@ void SequentialSolver::fetch_blocks(const system_type& system) {
 // TODO optimize remaining allocs
 void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) {
 	inv.compute( schur );
-}
 
-
-static bool diagonal_dominant(const AssembledSystem& sys) 
-{
-	typedef AssembledSystem::mat::Index Index;
-    
-	AssembledSystem::mat PH = sys.P * sys.H;
-    
-	typedef SReal real;
-
-    if( sys.n )
-    {
-        AssembledSystem::mat PJt = sys.P * sys.J.transpose();
-        
-        for( unsigned i = 0 ; i < sys.m ; ++i )
-	        {
-		        real d = helper::rabs(PH.coeff(i,i));
-		        
-		        real o = -d;
-		        for( Index j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
-		        for( Index j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
-		        
-		        if( o > d ) return false;
-	        }
-        
-        for( unsigned i=0 ; i< sys.n ; ++i )
-	        {
-		        real d = helper::rabs(sys.C.coeff(i,i));
-		        
-		        real o = -d;
-		        for( Index j=0 ; j<sys.C.cols() ; ++j ) o += helper::rabs(sys.C.coeff(i,j));
-		        for( Index j=0 ; j<sys.J.cols() ; ++j ) o += helper::rabs(sys.J.coeff(i,j));
-		        
-		        if( o > d ) return false;
-	        }
+#ifndef NDEBUG
+    if( inv.info() == Eigen::NumericalIssue ){
+        std::cerr << SOFA_CLASS_METHOD<<"block Schur is not psd. System solution will be wrong." << std::endl;
+        std::cerr << schur << std::endl;
     }
-    else
-	    {
-		    for( unsigned i=0 ; i< sys.m ; ++i )
-			    {
-				    real d = helper::rabs(PH.coeff(i,i));
-				    
-				    real o = -d;
-				    for( Index j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
-				    
-				    if( o > d ) return false;
-			    }
-	    }
-    
-    return true;
+#endif
 }
+
+
+//static bool diagonal_dominant(const AssembledSystem& sys)
+//{
+//	typedef AssembledSystem::mat::Index Index;
+    
+//	AssembledSystem::mat PH = sys.P * sys.H;
+    
+//	typedef SReal real;
+
+//    if( sys.n )
+//    {
+//        AssembledSystem::mat PJt = sys.P * sys.J.transpose();
+        
+//        for( unsigned i = 0 ; i < sys.m ; ++i )
+//	        {
+//		        real d = helper::rabs(PH.coeff(i,i));
+		        
+//		        real o = -d;
+//		        for( Index j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
+//		        for( Index j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
+		        
+//		        if( o > d ) return false;
+//	        }
+        
+//        for( unsigned i=0 ; i< sys.n ; ++i )
+//	        {
+//		        real d = helper::rabs(sys.C.coeff(i,i));
+		        
+//		        real o = -d;
+//		        for( Index j=0 ; j<sys.C.cols() ; ++j ) o += helper::rabs(sys.C.coeff(i,j));
+//		        for( Index j=0 ; j<sys.J.cols() ; ++j ) o += helper::rabs(sys.J.coeff(i,j));
+		        
+//		        if( o > d ) return false;
+//	        }
+//    }
+//    else
+//	    {
+//		    for( unsigned i=0 ; i< sys.m ; ++i )
+//			    {
+//				    real d = helper::rabs(PH.coeff(i,i));
+				    
+//				    real o = -d;
+//				    for( Index j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
+				    
+//				    if( o > d ) return false;
+//			    }
+//	    }
+    
+//    return true;
+//}
 
 
 
@@ -152,8 +159,7 @@ void SequentialSolver::factor(const system_type& system) {
 
 	this->JP = system.J * system.P;
 
-	cmat tmp; tmp.resize( mapping_response.rows(),
-						  mapping_response.cols());
+    cmat tmp( mapping_response.rows(), mapping_response.cols());
 	
 
 	// TODO: temporary :-/
@@ -241,6 +247,7 @@ SReal SequentialSolver::step(vec& lambda,
                              const vec& rhs,
                              vec& error, vec& delta,
 							 bool correct ) const {
+
 	// TODO size asserts
 	
 	// error norm2 estimate (seems conservative and much cheaper to
@@ -280,7 +287,7 @@ SReal SequentialSolver::step(vec& lambda,
 
             // project new lambdas if needed
             if( b.projector ) {
-                b.projector->project( lambda_chunk.data(), lambda_chunk.size(), correct );
+                b.projector->project( lambda_chunk.data(), lambda_chunk.size(), i, correct );
                 assert( !has_nan(lambda_chunk.eval()) );
             }
 
@@ -380,7 +387,7 @@ void SequentialSolver::solve_impl(vec& res,
 
 	// outer loop
 	unsigned k = 0, max = iterations.getValue();
-	vec primal;
+//	vec primal;
 	for(k = 0; k < max; ++k) {
 
         real estimate2 = step( lambda, net, sys, constant, error, delta, correct );

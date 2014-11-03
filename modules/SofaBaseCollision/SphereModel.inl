@@ -53,11 +53,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-using namespace helper;
-
-
 template<class DataTypes>
 TSphereModel<DataTypes>::TSphereModel()
     : radius(initData(&radius, "listRadius","Radius of each sphere"))
@@ -121,7 +116,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 #ifndef SOFA_NO_OPENGL
     TSphere<DataTypes> t(this,index);
 
-    Vector3 p = t.p();
+    sofa::defaulttype::Vector3 p = t.p();
     glPushMatrix();
     glTranslated(p[0], p[1], p[2]);
     glutSolidSphere(t.r(), 32, 16);
@@ -133,6 +128,8 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* ,int index)
 template<class DataTypes>
 void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using namespace sofa::defaulttype;
+
     if (!this->isActive()) return;
     //if (!vparams->isSupported(core::visual::API_OpenGL)) return;
     if (vparams->displayFlags().getShowCollisionModels())
@@ -202,6 +199,8 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
 template <class DataTypes>
 void TSphereModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
 {
+    using namespace sofa::defaulttype;
+
     CubeModel* cubeModel = createPrevious<CubeModel>();
     const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     bool updated = false;

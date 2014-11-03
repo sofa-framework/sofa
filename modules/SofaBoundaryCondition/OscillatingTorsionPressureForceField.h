@@ -40,9 +40,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 
 
 template<class DataTypes>
@@ -89,7 +86,7 @@ protected:
     std::ofstream file;
 
 public:
-    TriangleSparseData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap;
+    sofa::component::topology::TriangleSparseData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap;
     sofa::core::topology::BaseMeshTopology* _topology;
 
     Data<Real> moment;   // total moment/torque applied
@@ -200,21 +197,13 @@ protected :
 
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<Vec3dTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<Vec3fTypes>;
+extern template class SOFA_BOUNDARY_CONDITION_API OscillatingTorsionPressureForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
 #endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_OSCILLATINGTORSIONPRESSUREFORCEFIELD_CPP)

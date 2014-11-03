@@ -163,21 +163,21 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
 
     // create the rigid frames and their bounding boxes
     unsigned numRigid = 2;
-    vector<BoundingBox> boxes(numRigid);
+    vector<sofa::defaulttype::BoundingBox> boxes(numRigid);
     vector< vector<unsigned> > indices(numRigid); // indices of the particles in each box
     double eps = (endPoint[0]-startPoint[0])/(numX*2);
 
     // first box, x=xmin
-    boxes[0] = BoundingBox(Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-                           Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[0] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+                           sofa::defaulttype::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
 
     // second box, x=xmax
-    boxes[1] = BoundingBox(Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-                           Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[1] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+                           sofa::defaulttype::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
     rigid_dof->resize(numRigid);
     MechanicalObjectRigid3::WriteVecCoord xrigid = rigid_dof->writePositions();
-    xrigid[0].getCenter()=Vec3d(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
-    xrigid[1].getCenter()=Vec3d(  endPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
+    xrigid[0].getCenter()=sofa::defaulttype::Vec3d(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
+    xrigid[1].getCenter()=sofa::defaulttype::Vec3d(  endPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
 
     // find the particles in each box
     vector<bool> isFree(xgrid.size(),true);

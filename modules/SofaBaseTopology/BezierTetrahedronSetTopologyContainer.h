@@ -153,7 +153,7 @@ public :
 
     inline friend std::istream& operator>>(std::istream& in, BezierTetrahedronSetTopologyContainer& t)
     {
-        unsigned int s;
+        unsigned int s=0;
         sofa::helper::vector< unsigned int > value;
         helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = t.d_tetrahedron;
 
@@ -178,7 +178,7 @@ public :
             in >> value;
             t.m_tetrahedraAroundTriangle.push_back(value);
         }
-		BezierDegreeType bdt;
+        BezierDegreeType bdt=0;
 		in >> bdt;
 		t.d_degree.setValue(bdt);
 		int nbp;

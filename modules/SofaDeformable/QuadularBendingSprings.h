@@ -48,10 +48,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 /**
 Bending springs added between vertices of quads sharing a common edge.
 The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
@@ -147,27 +143,27 @@ public:
     void initTextures() { }
     void update() { }
 
-    EdgeData<sofa::helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> > &getEdgeInfo() {return edgeInfo;}
 
 
-    class EdgeBSHandler : public TopologyDataHandler<Edge,sofa::helper::vector<EdgeInformation> >
+    class EdgeBSHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeInformation> >
     {
     public:
         typedef typename QuadularBendingSprings<DataTypes>::EdgeInformation EdgeInformation;
 
-        EdgeBSHandler(QuadularBendingSprings<DataTypes>* ff, EdgeData<sofa::helper::vector<EdgeInformation> >* data )
-            :TopologyDataHandler<Edge,sofa::helper::vector<EdgeInformation> >(data)
+        EdgeBSHandler(QuadularBendingSprings<DataTypes>* ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> >* data )
+            :sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeInformation> >(data)
             ,ff(ff)
         {
         }
 
         void applyCreateFunction(unsigned int edgeIndex, EdgeInformation& ei,
-                const Edge &,
+                const sofa::component::topology::Edge &,
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
         void applyQuadCreation(const sofa::helper::vector<unsigned int> & quadAdded,
-                const sofa::helper::vector<Quad> &,
+                const sofa::helper::vector<sofa::component::topology::Quad> &,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > &,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
@@ -201,7 +197,7 @@ protected:
 
     double m_potentialEnergy;
 
-    EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* _topology;

@@ -40,10 +40,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
-
 /** Apply a parabolic trajectory to particles going through 3 points specified by the user.
 	The DOFs set in the "indices" list follow the computed parabol from "tBegin" to "tEnd".
 	*/

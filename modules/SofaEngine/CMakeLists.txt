@@ -46,6 +46,7 @@ set(HEADER_FILES
     TransformPosition.inl
     TransformEngine.h
     TransformEngine.inl
+    TransformMatrixEngine.h
     PointsFromIndices.h
     PointsFromIndices.inl
     ValuesFromIndices.h
@@ -86,7 +87,9 @@ set(HEADER_FILES
     ProximityROI.inl
     HausdorffDistance.h
     HausdorffDistance.inl
-
+    NormEngine.h
+    NormEngine.inl
+    TestEngine.h
     )
 
 set(SOURCE_FILES
@@ -113,6 +116,7 @@ set(SOURCE_FILES
     MeshROI.cpp
     TransformPosition.cpp
     TransformEngine.cpp
+    TransformMatrixEngine.cpp
     PointsFromIndices.cpp
     ValuesFromIndices.cpp
     IndicesFromValues.cpp
@@ -133,7 +137,8 @@ set(SOURCE_FILES
     ShapeMatching.cpp
     ProximityROI.cpp
     HausdorffDistance.cpp
-
+    NormEngine.cpp
+    TestEngine.cpp
     )
 
 set(GROUP_BASE_DIR "..")

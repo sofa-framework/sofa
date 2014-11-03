@@ -8,7 +8,7 @@
     <TreeCollisionGroupManager />
     <Node name="Cube">
         <EulerImplicitSolver />
-        <CGLinearSolver template="GraphScattered" iterations="50" threshold="1e-12" />
+        <CGLinearSolver template="GraphScattered" iterations="50" tolerance="1e-5" threshold="1e-12" />
         <RegularGridTopology name="cube" n="10 10 10" min="-0.05 -0.05 0.3" max="0.05 0.05 0.4" p0="-0.05 -0.05 0.4" />
         <MechanicalObject template="Vec3d" />
         <UniformMass template="Vec3d" totalmass="0.8" />
@@ -29,7 +29,7 @@
                 <MeshInformation printLog="true" />
                 <Node name="Visu">
                     <OglModel template="ExtVec3f" name="Visual" />
-                    <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" input="@../.." output="@Visual" />
+                    <IdentityMapping template="Vec3d,ExtVec3f" input="@../.." output="@Visual" />
                 </Node>
             </Node>
         </Node>

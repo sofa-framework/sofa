@@ -44,10 +44,6 @@ namespace component
 
 namespace forcefield
 {
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 
 template<class DataTypes>
 class TriangularQuadraticSpringsForceField : public core::behavior::ForceField<DataTypes>
@@ -65,8 +61,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-
-    class Mat3 : public fixed_array<Deriv,3>
+    class Mat3 : public sofa::helper::fixed_array<Deriv,3>
     {
     public:
         Deriv operator*(const Deriv& v)
@@ -182,14 +177,14 @@ public:
     void updateLameCoefficients();
 
 
-    class TRQSTriangleHandler : public TopologyDataHandler<Triangle,vector<TriangleRestInformation> >
+    class TRQSTriangleHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Triangle,vector<TriangleRestInformation> >
     {
     public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
-        TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : TopologyDataHandler<Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
+        TRQSTriangleHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<sofa::component::topology::Triangle, sofa::helper::vector<TriangleRestInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int triangleIndex, TriangleRestInformation& ,
-                const Triangle & t,
+                const sofa::component::topology::Triangle & t,
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
@@ -199,14 +194,14 @@ public:
         TriangularQuadraticSpringsForceField<DataTypes>* ff;
     };
 
-    class TRQSEdgeHandler : public TopologyDataHandler<Edge,vector<EdgeRestInformation> >
+    class TRQSEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge,vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
-        TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : TopologyDataHandler<Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
+        TRQSEdgeHandler(TriangularQuadraticSpringsForceField<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* _data) : sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeRestInformation> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation& ,
-                const Edge & t,
+                const sofa::component::topology::Edge & t,
                 const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);
 
@@ -216,10 +211,10 @@ public:
 
 
 protected :
-    TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo;
-    EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo;
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
 
-    EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
     TRQSTriangleHandler* triangleHandler;
     TRQSEdgeHandler* edgeHandler;

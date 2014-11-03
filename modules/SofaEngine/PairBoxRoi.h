@@ -49,9 +49,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::behavior;
-using namespace core::objectmodel;
-
 /**
  * This class find all the points located between two boxes. The difference between the inclusive box (surrounding the mesh) and the included box (inside the mesh) gives the border points of the mesh.
  */
@@ -91,7 +88,7 @@ public:
         if (!arg->getAttribute("template"))
         {
             // only check if this template is correct if no template was given
-            if (context->getMechanicalState() && dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            if (context->getMechanicalState() && dynamic_cast<sofa::core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
                 return false; // this template is not the same as the existing MechanicalState
         }
 

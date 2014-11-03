@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 /* Francois Faure, 2013 */
-
+#include "stdafx.h"
 #include "Mapping_test.h"
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>

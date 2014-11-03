@@ -46,7 +46,7 @@
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 #include <SofaBoundaryCondition/FixedConstraint.h>
 
-#include "../odesolver/AssembledSolver.h"
+#include "../odesolver/CompliantImplicitSolver.h"
 #include "../numericalsolver/LDLTSolver.h"
 #include "../compliance/UniformCompliance.h"
 
@@ -77,37 +77,41 @@ using sofa::helper::vector;
 
 namespace sofa
 {
+    using core::objectmodel::New;
+
 /** \page Page_CompliantTestSuite Compliant plugin test suite
  *
  * Class CompliantSolver_test provides helpers.
  *
  * Class Assembly_test checks the assembly of system matrices: mass, constraint Jacobian, etc.
  *
- * Class AssembledSolver_test checks the accuracy of the Implicit Euler integration in simple linear cases.
+ * Class CompliantImplicitSolver_test checks the accuracy of the Implicit Euler integration in simple linear cases.
   */
 
-    typedef linearsolver::AssembledSystem::rmat SMatrix;
-
-    typedef component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
-    typedef defaulttype::Vec<3,SReal> Vec3;
-    typedef forcefield::UniformCompliance<Vec1Types> UniformCompliance1;
-
-    // Vec3-Vec1
-    typedef mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
-    typedef mapping::DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
 
 
 /** Base class for tests of the Compliance plugin. Contains typedefs and helpers */
 class CompliantSolver_test : public Sofa_test<>
 {
+public:
 
+
+    typedef sofa::component::linearsolver::AssembledSystem::rmat SMatrix;
+
+    typedef sofa::component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
+    typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+    typedef sofa::component::forcefield::UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
+
+    // Vec3-Vec1
+    typedef sofa::component::mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
+    typedef sofa::component::mapping::DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
 
 protected:
     /** @name Helpers */
     ///@{
 
     /// Helper method to create strings used in various tests.
-    Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0/*, double dampingRatio=0*/, bool isCompliant=true, SReal totalRestLength = -1 )
+    simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0/*, double dampingRatio=0*/, bool isCompliant=true, SReal totalRestLength = -1 )
     {
         static unsigned numObject = 1;
         std::ostringstream oss;
@@ -268,9 +272,9 @@ protected:
     }
 
     /// Return an identity matrix, or if not square, a matrix with 1 on each entry of the main diagonal
-    static DenseMatrix makeIdentity( unsigned rows, unsigned cols )
+    static modeling::DenseMatrix makeIdentity( unsigned rows, unsigned cols )
     {
-        DenseMatrix m(rows,cols);
+        modeling::DenseMatrix m(rows,cols);
         for(unsigned i=0; i<rows; i++ )
         {
             m(i,i) = 1.0;
@@ -279,13 +283,13 @@ protected:
     }
 
     /// Return true if the matrices have same size and all their entries are equal within the given tolerance. Specialization on Eigen matrices.
-    static bool matricesAreEqual( const DenseMatrix m1, const SMatrix& sm2, SReal tolerance=100*std::numeric_limits<SReal>::epsilon() )
+    static bool matricesAreEqual( const modeling::DenseMatrix m1, const SMatrix& sm2, SReal tolerance=100*std::numeric_limits<SReal>::epsilon() )
     {
-        DenseMatrix m2 = sm2;
+        modeling::DenseMatrix m2 = sm2;
         if( m1.rows()!=m2.rows() || m1.cols()!=m2.cols() ) return false;
 
-        DenseMatrix diff = m1 - m2;
-        bool areEqual = abs(diff.maxCoeff()<tolerance && abs(diff.minCoeff()<tolerance));
+        modeling::DenseMatrix diff = m1 - m2;
+        bool areEqual = abs(diff.maxCoeff()<tolerance) && abs(diff.minCoeff()<tolerance);
         if( !areEqual )
         {
             cerr<<"CompliantSolver_test::matricesAreEqual1, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
@@ -315,7 +319,7 @@ protected:
     }
 
     /// return true if the matrices have same size and all their entries are equal within the given tolerance
-    static bool vectorsAreEqual( const Vector& m1, const Vector& m2, SReal tolerance=100*std::numeric_limits<SReal>::epsilon() )
+    static bool vectorsAreEqual( const modeling::Vector& m1, const modeling::Vector& m2, SReal tolerance=100*std::numeric_limits<SReal>::epsilon() )
     {
         if( m1.size()!=m2.size() )
         {
@@ -323,8 +327,8 @@ protected:
             return false;
         }
 
-        Vector diff = m1-m2;
-        bool areEqual = abs(diff.maxCoeff()<tolerance && abs(diff.minCoeff()<tolerance));
+        modeling::Vector diff = m1-m2;
+        bool areEqual = abs(diff.maxCoeff()<tolerance) && abs(diff.minCoeff()<tolerance);
         if( !areEqual )
         {
             cerr<<"CompliantSolver_test::vectorsAreEqual, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;

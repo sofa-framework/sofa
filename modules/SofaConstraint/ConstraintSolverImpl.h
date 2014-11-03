@@ -40,17 +40,15 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::linearsolver;
 
 class SOFA_CONSTRAINT_API ConstraintProblem
 {
 public:
-    LPtrFullMatrix<double> W;
-    FullVector<double> dFree, f;
+    sofa::component::linearsolver::LPtrFullMatrix<double> W;
+    sofa::component::linearsolver::FullVector<double> dFree, f;
 
-    ConstraintProblem() : tolerance(0.00001), maxIterations(1000), dimension(0) {}
-    virtual ~ConstraintProblem() {};
+    ConstraintProblem();
+    virtual ~ConstraintProblem();
 
     double tolerance;
     int maxIterations;
@@ -63,8 +61,11 @@ public:
 
     virtual void solveTimed(double tolerance, int maxIt, double timeout) = 0;
 
+    unsigned int getProblemId();
+
 protected:
     int dimension;
+    unsigned int problemId;
 };
 
 
@@ -87,7 +88,7 @@ class MechanicalGetConstraintViolationVisitor : public simulation::BaseMechanica
 {
 public:
 
-    MechanicalGetConstraintViolationVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, BaseVector *v)
+    MechanicalGetConstraintViolationVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, sofa::defaulttype::BaseVector *v)
         : simulation::BaseMechanicalVisitor(params)
         , cparams(params)
         , m_v(v)
@@ -129,7 +130,7 @@ private:
     const sofa::core::ConstraintParams *cparams;
 
     /// Vector for constraint values
-    BaseVector* m_v;
+    sofa::defaulttype::BaseVector* m_v;
 };
 
 } // namespace constraintset
