@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0 " dt="1"  >
+    <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin pluginName="image"/>
     <VisualStyle displayFlags="showWireframe showBehaviorModels" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
@@ -32,12 +34,12 @@
     <Node 	name="behavior"   >
         <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" targetNumber="1"/>
 	<MechanicalObject template="F332" name="F"  />
-	<LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
+	<LinearMapping template="Affine,F332"  />
 
 	<Node 	name="E"   >
 	    <VisualStyle displayFlags="hideBehaviorModels " />
 	    <MechanicalObject  template="E332" name="E"  /> 
-	    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"   method="polar" />
+	    <CorotationalStrainMapping template="F332,E332"   method="polar" />
 	    <HookeForceField  template="E332" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0"/>
 	</Node>
     </Node>
@@ -51,12 +53,12 @@
 	<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
 	<BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.9"  position="@mesh.position" /> 
 	<RestShapeSpringsForceField template="Vec3d" points="@[-1].indices" stiffness="1E6"/> 
-	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+	<LinearMapping template="Affine,Vec3d"/>
     </Node>
 
     <Node 	name="visual"   >
         <OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="1 0.8 0.8"/>
-	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+	<LinearMapping template="Affine,ExtVec3f"/>
     </Node>
 </Node>
 
@@ -82,12 +84,12 @@
     <Node 	name="behavior"   >
         <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" targetNumber="@../../Affine/behavior/sampler.targetNumber"/>
 	<MechanicalObject template="F332" name="F"  />
-	<LinearMapping template="Mapping&lt;Rigid,F332&gt;"  />
+	<LinearMapping template="Rigid,F332"  />
 
 	<Node 	name="E"   >
 	    <VisualStyle displayFlags="hideBehaviorModels " />
 	    <MechanicalObject  template="E332" name="E"  /> 
-	    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"   method="polar" />
+	    <CorotationalStrainMapping template="F332,E332"   method="polar" />
 	    <HookeForceField  template="E332" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0"/>
 	</Node>
     </Node>
@@ -101,12 +103,12 @@
 	<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
 	<BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.9"  position="@mesh.position" /> 
 	<RestShapeSpringsForceField template="Vec3d" points="@[-1].indices" stiffness="1E6"/> 
-	<LinearMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;"/>
+	<LinearMapping template="Rigid,Vec3d"/>
     </Node>
 
     <Node 	name="visual"   >
         <OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="0.8 1 0.8"/>
-	<LinearMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;"/>
+	<LinearMapping template="Rigid,ExtVec3f"/>
     </Node>
 </Node>
 
@@ -134,12 +136,12 @@
     <Node 	name="behavior"   >
         <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" targetNumber="100"/>
 	<MechanicalObject template="F332" name="F"  />
-	<LinearMapping template="Mapping&lt;Quadratic,F332&gt;"  />
+	<LinearMapping template="Quadratic,F332"  />
 
 	<Node 	name="E"   >
 	    <VisualStyle displayFlags="hideBehaviorModels " />
 	    <MechanicalObject  template="E332" name="E"  /> 
-	    <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;"   method="polar" />
+	    <CorotationalStrainMapping template="F332,E332"   method="polar" />
 	    <HookeForceField  template="E332" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0"/>
 	</Node>
     </Node>
@@ -153,12 +155,12 @@
 	<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
 	<BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.9"  position="@mesh.position" /> 
 	<RestShapeSpringsForceField template="Vec3d" points="@[-1].indices" stiffness="1E6"/> 
-	<LinearMapping template="MechanicalMapping&lt;Quadratic,Vec3d&gt;"/>
+	<LinearMapping template="Quadratic,Vec3d"/>
     </Node>
 
     <Node 	name="visual"   >
         <OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="0.8 0.8 1"/>
-	<LinearMapping template="MechanicalMapping&lt;Quadratic,ExtVec3f&gt;"/>
+	<LinearMapping template="Quadratic,ExtVec3f"/>
     </Node>
 </Node>
 

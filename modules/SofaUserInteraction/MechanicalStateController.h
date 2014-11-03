@@ -52,7 +52,7 @@ namespace component
 namespace controller
 {
 
-using namespace sofa::defaulttype;
+
 
 /**
  * @brief MechanicalStateController Class
@@ -176,8 +176,8 @@ protected:
     int eventX, eventY; ///< Mouse current position in pixel
     double deviceX, deviceY, deviceZ;
     int mouseSavedPosX, mouseSavedPosY; ///< Last recorded mouse position
-    Vector3 position;
-    Quat orientation;
+    sofa::defaulttype::Vector3 position;
+    sofa::defaulttype::Quat orientation;
     bool buttonDevice;
 };
 

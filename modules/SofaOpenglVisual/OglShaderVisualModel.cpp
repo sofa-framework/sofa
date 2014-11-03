@@ -187,8 +187,8 @@ void OglShaderVisualModel::computeRestPositions()
 //    if (counter == restPosition_lastUpdate) return;
 //    restPosition_lastUpdate = counter;
 
-    helper::ReadAccessor< Data<ResizableExtVector<Coord> > > positions = m_positions;
-    helper::ReadAccessor< Data<ResizableExtVector<Coord> > > restpositions = m_restPositions;
+    helper::ReadAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
+    helper::ReadAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restpositions = m_restPositions;
 
     //Get the position of the new point (should be the rest position to avoid artefact !
     if (restpositions.size()!=positions.size()) {
@@ -200,7 +200,7 @@ void OglShaderVisualModel::computeRestPositions()
     }
 
 
-    ResizableExtVector<Coord>& vrestpos = * ( vrestpositions->beginEdit() );
+    sofa::defaulttype::ResizableExtVector<Coord>& vrestpos = * ( vrestpositions->beginEdit() );
     vrestpos.resize ( restpositions.size() );
 
     for ( unsigned int i = 0; i < restpositions.size(); i++ )
@@ -257,10 +257,10 @@ void OglShaderVisualModel::fwdDraw(core::visual::VisualParams* /*vp*/)
 void OglShaderVisualModel::computeRestNormals()
 {
     if (!vrestpositions || !vrestnormals) return;
-    const ResizableExtVector<Coord>& vrestpos = vrestpositions->getValue();
-    const ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
-    const ResizableExtVector<Quad>& quads = m_quads.getValue();
-    ResizableExtVector<Coord>& restNormals = * ( vrestnormals->beginEdit() );
+    const sofa::defaulttype::ResizableExtVector<Coord>& vrestpos = vrestpositions->getValue();
+    const sofa::defaulttype::ResizableExtVector<Triangle>& triangles = m_triangles.getValue();
+    const sofa::defaulttype::ResizableExtVector<Quad>& quads = m_quads.getValue();
+    sofa::defaulttype::ResizableExtVector<Coord>& restNormals = * ( vrestnormals->beginEdit() );
     restNormals.resize(vrestpos.size());
     for (unsigned int i = 0; i < restNormals.size(); i++)
     {

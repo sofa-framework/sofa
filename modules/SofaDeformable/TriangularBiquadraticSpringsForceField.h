@@ -45,10 +45,6 @@ namespace component
 
 namespace forcefield
 {
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 
 template<class DataTypes>
 class TriangularBiquadraticSpringsForceField : public core::behavior::ForceField<DataTypes>
@@ -66,7 +62,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    class Mat3 : public fixed_array<Deriv,3>
+    class Mat3 : public sofa::helper::fixed_array<Deriv,3>
     {
     public:
         Deriv operator*(const Deriv& v)
@@ -140,8 +136,8 @@ protected:
         }
     };
 
-    TriangleData<helper::vector<TriangleRestInformation> > triangleInfo;
-    EdgeData<helper::vector<EdgeRestInformation> > edgeInfo;
+    sofa::component::topology::TriangleData<helper::vector<TriangleRestInformation> > triangleInfo;
+    sofa::component::topology::EdgeData<helper::vector<EdgeRestInformation> > edgeInfo;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     Data < VecCoord >  _initialPoints;										///< the intial positions of the points
@@ -193,38 +189,38 @@ public:
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
-    class TRBSEdgeHandler : public TopologyDataHandler<Edge,sofa::helper::vector<EdgeRestInformation> >
+    class TRBSEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
 
         TRBSEdgeHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
-                EdgeData<sofa::helper::vector<EdgeRestInformation> >* data)
-            :TopologyDataHandler<Edge,sofa::helper::vector<EdgeRestInformation> >(data)
+                sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* data)
+            :sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeRestInformation> >(data)
             ,ff(ff)
         {
         }
-        void applyCreateFunction(unsigned int, EdgeRestInformation &t, const Edge &,
+        void applyCreateFunction(unsigned int, EdgeRestInformation &t, const sofa::component::topology::Edge &,
                 const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
 
     protected:
         TriangularBiquadraticSpringsForceField<DataTypes>* ff;
     };
 
-    class TRBSTriangleHandler : public TopologyDataHandler<Triangle,sofa::helper::vector<TriangleRestInformation> >
+    class TRBSTriangleHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Triangle,sofa::helper::vector<TriangleRestInformation> >
     {
     public:
         typedef typename TriangularBiquadraticSpringsForceField<DataTypes>::TriangleRestInformation TriangleRestInformation;
 
         TRBSTriangleHandler(TriangularBiquadraticSpringsForceField<DataTypes>* ff,
-                TriangleData<sofa::helper::vector<TriangleRestInformation> >* data)
-            :TopologyDataHandler<Triangle,sofa::helper::vector<TriangleRestInformation> >(data)
+                sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> >* data)
+            :sofa::component::topology::TopologyDataHandler<sofa::component::topology::Triangle,sofa::helper::vector<TriangleRestInformation> >(data)
             ,ff(ff)
         {
         }
 
         void applyCreateFunction(unsigned int, TriangleRestInformation &t,
-                const Triangle &,
+                const sofa::component::topology::Triangle &,
                 const sofa::helper::vector<unsigned int> &,
                 const sofa::helper::vector<double> &);
         void applyDestroyFunction(unsigned int, TriangleRestInformation &);
@@ -240,7 +236,7 @@ protected :
     TRBSEdgeHandler* edgeHandler;
     TRBSTriangleHandler* triangleHandler;
 
-    EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::component::topology::EdgeData<helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
 };
 

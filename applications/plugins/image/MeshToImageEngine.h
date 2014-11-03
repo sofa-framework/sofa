@@ -127,11 +127,13 @@ public:
 
 
     Data< double > closingValue;
+    Data< double > backgroundValue;
 
     Data<unsigned int> f_nbMeshes;
 
     Data<bool> gridSnap;
 
+	Data<bool> worldGridAligned;
 
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
@@ -148,8 +150,10 @@ public:
         , closingPosition(initData(&closingPosition,SeqPositions(),"closingPosition","ouput closing positions"))
         , closingTriangles(initData(&closingTriangles,SeqTriangles(),"closingTriangles","ouput closing triangles"))
         , closingValue(initData(&closingValue,1.,"closingValue","pixel value at closings"))
+        , backgroundValue(initData(&backgroundValue,0.,"backgroundValue","pixel value at background"))
         , f_nbMeshes( initData (&f_nbMeshes, (unsigned)1, "nbMeshes", "number of meshes to voxelize (Note that the last one write on the previous ones)") )
         , gridSnap(initData(&gridSnap,true,"gridSnap","align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)"))
+		, worldGridAligned(initData(&worldGridAligned, false, "worldGridAligned", "perform rasterization on a world aligned grid using nbVoxels and voxelSize"))
     {
         createInputMeshesData();
     }
@@ -186,6 +190,13 @@ public:
         addOutput(&transform);
     }
 
+	void clearImage()
+	{
+		waImage iml(this->image);
+		CImg<T>& im= iml->getCImg();
+		im.fill((T)0);
+	}
+
     virtual void reinit() { update(); }
 
 protected:
@@ -209,7 +220,16 @@ protected:
 
         Real BB[3][2] = { {std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max()} , {std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max()} , {std::numeric_limits<Real>::max(), -std::numeric_limits<Real>::max()} };
 
-        if(!this->rotateImage.getValue()) // use Axis Aligned Bounding Box
+		if(worldGridAligned.getValue() == true) // no transformation, simply assign an image of numVoxel*voxelSize 
+		{
+			// min and max centered around origin of transform	
+			for(int i=0; i< 3; i++)
+			{
+				BB[i][1] = nbVoxels.getValue()[i]*voxelSize.getValue()[i]*0.5f;
+				BB[i][0] = -BB[i][1];
+			}
+		}
+		else if(!this->rotateImage.getValue()) // use Axis Aligned Bounding Box
         {
             for(size_t j=0; j<3; j++) tr->getRotation()[j]=(Real)0 ;
 
@@ -323,6 +343,13 @@ protected:
         // update image extents
         unsigned int dim[3];
         for(size_t j=0; j<3; j++) dim[j]=ceil((BB[j][1]-BB[j][0])/tr->getScale()[j]+(Real)2.0*this->padSize.getValue());
+		
+		if(this->worldGridAligned.getValue()==true) {
+			for(size_t j=0; j<3; j++) {	
+				dim[j]=ceil((BB[j][1]-BB[j][0])/this->voxelSize.getValue()[j]);
+				tr->getScale()[j]= this->voxelSize.getValue()[j];
+			}
+		}
         
 		if(iml->getCImgList().size() == 0)
 			iml->getCImgList().assign(1,dim[0],dim[1],dim[2],1);
@@ -331,8 +358,8 @@ protected:
 			iml->getCImgList()(0).assign(dim[0],dim[1],dim[2],1);
 
 		// Keep it as a pointer since the code will be called recursively
-        CImg<T>& im= iml->getCImg();
-        im.fill((T)0);
+        CImg<T>& im = iml->getCImg();
+        im.fill( (T)backgroundValue.getValue() );
 
         for( size_t meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )
         {
@@ -574,22 +601,57 @@ protected:
         unsigned previousClosingTriSize = cltri.size();
 
 
-        this->closeMesh( meshId );
-
-        raPositions clpos(this->closingPosition);
-
         T colorClosing = (T)this->closingValue.getValue();
 
-#ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
-#endif
-        for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+        if( colorClosing )
         {
-            Coord pts[3];
-            for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
-            this->draw_triangle(im,pts[0],pts[1],pts[2],colorClosing,this->subdiv.getValue());
-            this->draw_triangle(im,pts[1],pts[2],pts[0],colorClosing,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            this->closeMesh( meshId );
+
+            raPositions clpos(this->closingPosition);
+
+    #ifdef USING_OMP_PRAGMAS
+            #pragma omp parallel for
+    #endif
+            for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+            {
+                Coord pts[3];
+                for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+
+                this->draw_triangle(im,pts[0],pts[1],pts[2],colorClosing,this->subdiv.getValue());
+                this->draw_triangle(im,pts[1],pts[2],pts[0],colorClosing,this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            }
         }
+        else
+        {
+            // colorClosing=0 interpolate the color
+
+            SeqValues clValues;
+            this->closeMesh( meshId, &clValues );
+
+            raPositions clpos(this->closingPosition);
+
+
+    #ifdef USING_OMP_PRAGMAS
+            #pragma omp parallel for
+    #endif
+            for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+            {
+                Coord pts[3];
+                T colors[3];
+
+                for(size_t j=0; j<3; j++)
+                {
+                    pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
+                    if( !colorClosing ) colors[j] = (T)clValues[cltri[i][j]];
+                }
+
+                this->draw_triangle(im,pts[0],pts[1],pts[2],colors[0],colors[1],colors[2],this->subdiv.getValue());
+                this->draw_triangle(im,pts[1],pts[2],pts[0],colors[0],colors[1],colors[2],this->subdiv.getValue());  // fill along two directions to be sure that there is no hole
+            }
+
+        }
+
+
     }
 
 
@@ -648,11 +710,11 @@ protected:
             PixelT color;
             if( dmax==0 )
             {
-                color = 0.5*(color0+color1);
+                color = (PixelT)(0.5*(color0+color1));
             }
             else
             {
-                Real u = (Real)t / (Real)dmax;
+				Real u = (dmax == 0) ? Real(0.0) : (Real)t / (Real)dmax;
                 color = (PixelT)(color0 * (1.0 - u) + color1 * u);
             }
 			
@@ -689,12 +751,22 @@ protected:
         Coord delta = P1 - P0;
         unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
         dmax*=subdiv; // divide step to avoid possible holes
+
         Coord dP = delta/(Real)dmax;
         Coord P (P0);
         for (unsigned int t = 0; t<=dmax; ++t)
         {
-            Real u = (Real)t / (Real)dmax;
-            PixelT color = (PixelT)(color0 * (1.0 - u) + color1 * u);
+
+            PixelT color;
+            if( dmax==0 )
+            {
+                color = (PixelT)(0.5*(color0+color1));
+            }
+            else
+            {
+                Real u = (Real)t / (Real)dmax;
+                color = (PixelT)(color0 * (1.0 - u) + color1 * u);
+            }
 
             this->draw_line(im,P,p2,color,color2,subdiv);
             P+=dP;
@@ -702,10 +774,11 @@ protected:
     }
 
 
-    void closeMesh( unsigned meshId )
+    void closeMesh( unsigned meshId, SeqValues* clValues=NULL )
     {
         raPositions pos(*this->vf_positions[meshId]);
         raTriangles tri(*this->vf_triangles[meshId]);
+        raValues    val(*this->vf_values[meshId]   );
 
         waPositions clpos(this->closingPosition);
         waTriangles cltri(this->closingTriangles);
@@ -724,7 +797,8 @@ protected:
                 if(it==edges.end()) edges.insert(edge(p1,p2));
                 else edges.erase(it);
             }
-        if(!edges.size()) return; // no hole
+        if(edges.empty()) 
+            return; // no hole
 
         // get loops
         typedef std::map<unsigned int,unsigned int> edgemap;
@@ -735,12 +809,12 @@ protected:
         typename edgemap::iterator it=emap.begin();
         std::vector<std::vector<unsigned int> > loops; loops.resize(1);
         loops.back().push_back(it->first);
-        while(emap.size())
+        while(!emap.empty())
         {
             unsigned int i=it->second;
             loops.back().push_back(i);  // insert point in loop
             emap.erase(it);
-            if(emap.size())
+            if(!emap.empty())
             {
                 if(i==loops.back().front())  loops.push_back(std::vector<unsigned int>());  //  loop termination
                 it=emap.find(i);
@@ -759,15 +833,30 @@ protected:
             if(loops[i].size()>2)
             {
                 Coord centroid;
+                double centroidValue = 0.0;
                 size_t indexCentroid=clpos.size()+loops[i].size()-1;
                 for(size_t j=0; j<loops[i].size()-1; j++)
                 {
-                    clpos.push_back(pos[loops[i][j]]);
-                    centroid+=pos[loops[i][j]];
+                    unsigned int posIdx = loops[i][j];
+                    clpos.push_back(pos[posIdx]);
+                    centroid+=pos[posIdx];
+
+                    if( clValues )
+                    {
+                        clValues->push_back( val[posIdx] );
+                        centroidValue+=val[posIdx]; // TODO weight by distance to perform real barycentric interpolation
+                    }
+
                     cltri.push_back(Triangle(indexCentroid,clpos.size()-1,j?clpos.size()-2:indexCentroid-1));
                 }
                 centroid/=(Real)(loops[i].size()-1);
                 clpos.push_back(centroid);
+
+                if( clValues )
+                {
+                    centroidValue /= (Real)(loops[i].size()-1); // TODO normalize by sum of weight
+                    clValues->push_back( centroidValue );
+                }
             }
     }
 
@@ -777,7 +866,7 @@ protected:
 
 
 
-
+public:
     void createInputMeshesData()
     {
         unsigned int n = f_nbMeshes.getValue();
@@ -795,6 +884,7 @@ protected:
         createInputDataVector(n, vf_roiValue, "roiValue", "pixel value for ROI ", 1.0, false);
     }
 
+protected:
     template<class U>
     void createInputDataVector(unsigned int nb, helper::vector< Data<U>* >& vf, std::string name, std::string help, const U&defaultValue, bool readOnly=false)
     {

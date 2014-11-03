@@ -43,10 +43,12 @@ namespace component
 namespace interactionforcefield
 {
 
+
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::init()
 {
     this->SpringForceField<DataTypes>::init();
+    // sout<<"StiffSpringForceField<DataTypes> initialized "<<sendl;
 }
 
 template<class DataTypes>
@@ -73,13 +75,14 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         u *= inverseLength;
         Real elongation = (Real)(d - spring.initpos);
         potentialEnergy += elongation * elongation * spring.ks / 2;
-        //                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
-        //                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
-        //                    serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;
         Deriv relativeVelocity = v2[b]-v1[a];
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
         Deriv force = u*forceIntensity;
+//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
+//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
+//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;
+//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, force = "<< force <<sendl;
         f1[a]+=force;
         f2[b]-=force;
         if (this->maskInUse)
@@ -134,7 +137,7 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
 }
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
+void StiffSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 {
     VecDeriv&       f1 = *data_f1.beginEdit();
     const VecCoord& x1 =  data_x1.getValue();
@@ -186,7 +189,7 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
 
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void StiffSpringForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
 
     Real kFact = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
@@ -257,7 +260,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mpar
                 {
                     for (int j=0; j<N; j++)
                     {
-                        mat21.matrix->add(mat21.offRow+p1+i,mat21.offCol+p2+j,  (Real)m[i][j]);
+                        mat21.matrix->add(mat21.offRow+p2+i,mat21.offCol+p1+j,  (Real)m[i][j]);
                     }
                 }
             }
@@ -267,7 +270,7 @@ void StiffSpringForceField<DataTypes>::addKToMatrix(const MechanicalParams* mpar
                 {
                     for (int j=0; j<N; j++)
                     {
-                        mat22.matrix->add(mat22.offset+p2+i,mat11.offset+p2+j, -(Real)m[i][j]);
+                        mat22.matrix->add(mat22.offset+p2+i,mat22.offset+p2+j, -(Real)m[i][j]);
                     }
                 }
             }

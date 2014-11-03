@@ -78,8 +78,6 @@ public:
 	}
 } ;
 
-
-
 } // namespace MovingObjects
 
 } // namespace Algo

@@ -84,7 +84,7 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
     connect(displaydatawidget, SIGNAL( DataOwnerDirty(bool)),  this, SLOT( updateListViewItem() ) );
     connect(this, SIGNAL(UpdateDatas()), displaydatawidget, SLOT( UpdateData()));
     connect(this, SIGNAL(UpdateDataWidgets()), displaydatawidget, SLOT( UpdateWidgets()));
-
+    connect(displaydatawidget, SIGNAL( dataValueChanged(QString) ), SLOT(dataValueChanged(QString) ) );
 #ifdef DEBUG_GUI
     std::cout << "GUI< addData " << data->getName() << std::endl;
 #endif
@@ -110,6 +110,10 @@ void QTabulationModifyObject::addLink(sofa::core::objectmodel::BaseLink *link, c
     connect(this, SIGNAL(UpdateDataWidgets()), displaylinkwidget, SLOT( UpdateWidgets()));
 }
 
+void QTabulationModifyObject::dataValueChanged(QString dataValue)
+{
+    m_dataValueModified[sender()] = dataValue;
+}
 
 void QTabulationModifyObject::updateListViewItem()
 {
@@ -131,6 +135,31 @@ void QTabulationModifyObject::updateListViewItem()
         QString newName(name.c_str());
         if (newName != currentName) item->setText(0,newName);
     }
+}
+
+QString QTabulationModifyObject::getDataModifiedString() const
+{
+    if (m_dataValueModified.empty())
+    {
+       return QString();
+    }
+
+    QString dataModifiedString;
+    std::map< QObject*, QString>::const_iterator it_map;
+    std::map< QObject*, QString>::const_iterator it_last = m_dataValueModified.end();
+    --it_last;
+
+    for (it_map = m_dataValueModified.begin(); it_map != m_dataValueModified.end(); ++it_map)
+    {
+        const QString& lastDataValue = it_map->second;
+        dataModifiedString += lastDataValue;
+        if (it_map != it_last)
+        {
+            dataModifiedString += "\n";
+        }
+    }
+
+    return dataModifiedString;
 }
 
 void QTabulationModifyObject::setTabDirty(bool b)

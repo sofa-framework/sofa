@@ -146,7 +146,7 @@ void CudaHexahedronTLEDForceField::reinit()
      */
     std::cout << "CudaHexahedronTLEDForceField: precomputations..." << std::endl;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     nelems.clear();
 
     // Shape function natural derivatives DhDr
@@ -270,6 +270,8 @@ void CudaHexahedronTLEDForceField::reinit()
                 Ai[2*i]   = timestep.getValue()*Visco_iso[2*i]/(timestep.getValue() + Visco_iso[2*i+1]);    // Denoted A in Taylor et al.
                 Ai[2*i+1] = Visco_iso[2*i+1]/(timestep.getValue() + Visco_iso[2*i+1]);                      // Denoted B in Taylor et al.
             }
+
+            delete[] Visco_iso;
         }
 
         if (Nv != 0)
@@ -287,6 +289,8 @@ void CudaHexahedronTLEDForceField::reinit()
                 Av[2*i]   = timestep.getValue()*Visco_vol[2*i]/(timestep.getValue() + Visco_vol[2*i+1]);
                 Av[2*i+1] = Visco_vol[2*i+1]/(timestep.getValue() + Visco_vol[2*i+1]);
             }
+
+            delete[] Visco_vol;
         }
 
         InitGPU_Visco(Ai, Av, Ni, Nv);
@@ -326,7 +330,7 @@ void CudaHexahedronTLEDForceField::addForce (const sofa::core::MechanicalParams*
     const VecCoord& x  =   dataX.getValue()  ;
 
     // Gets initial positions (allow to compute displacements by doing the difference between initial and current positions)
-    const VecCoord& x0 = *mstate->getX0();
+    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     f.resize(x.size());
     CudaHexahedronTLEDForceField3f_addForce(

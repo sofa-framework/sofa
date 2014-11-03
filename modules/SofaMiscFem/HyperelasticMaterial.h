@@ -48,9 +48,6 @@ namespace component
 
 namespace fem
 {
-using namespace std;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 template<typename Real>
 class StrainInformation;

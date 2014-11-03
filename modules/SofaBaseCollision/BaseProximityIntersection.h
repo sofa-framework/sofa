@@ -24,8 +24,6 @@ protected:
     BaseProximityIntersection();
     virtual ~BaseProximityIntersection() { }
 public:
-    virtual void init()=0;
-
     /// Returns true if algorithm uses proximity
     virtual bool useProximity() const { return true; }
 

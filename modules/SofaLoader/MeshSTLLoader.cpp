@@ -171,7 +171,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
 bool MeshSTLLoader::readSTL(const char *filename)
 {
-    std::cout << "reading STL file" << std::endl;
+    sout << "reading STL file" << sendl;
 
     // Init
     std::ifstream dataFile (filename);

@@ -48,7 +48,6 @@ namespace collision
 {
 
 using core::topology::BaseMeshTopology;
-using namespace sofa::core::topology;
 
 template<class DataTypes>
 TLineModel<DataTypes>::TLineModel()
@@ -119,7 +118,7 @@ void TLineModel<DataTypes>::init()
     if (path.size()==0)
     {
 
-        myActiver = new LineActiver();
+        myActiver = LineActiver::getDefaultActiver();
         sout<<"path = "<<path<<" no Line Activer found for LineModel "<<this->getName()<<sendl;
     }
     else
@@ -140,7 +139,7 @@ void TLineModel<DataTypes>::init()
 
         if (myActiver==NULL)
         {
-            myActiver = new LineActiver();
+            myActiver = LineActiver::getDefaultActiver();
 
 
             serr<<"wrong path for Line Activer for LineModel "<< this->getName() <<sendl;
@@ -199,7 +198,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
             case core::topology::EDGESADDED :
             {
                 //	sout << "INFO_print : Col - EDGESADDED" << sendl;
-                const EdgesAdded *ta = static_cast< const EdgesAdded * >( *itBegin );
+                const core::topology::EdgesAdded *ta = static_cast< const core::topology::EdgesAdded * >( *itBegin );
 
                 for (unsigned int i = 0; i < ta->getNbAddedEdges(); ++i)
                 {
@@ -228,7 +227,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     last = elems.size() -1;
                 }
 
-                const sofa::helper::vector< unsigned int > &tab = ( static_cast< const EdgesRemoved *>( *itBegin ) )->getArray();
+                const sofa::helper::vector< unsigned int > &tab = ( static_cast< const core::topology::EdgesRemoved *>( *itBegin ) )->getArray();
 
                 LineData tmp;
                 //topology::Edge tmp2;
@@ -281,7 +280,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                     unsigned int last = bmt->getNbPoints() - 1;
 
                     unsigned int i,j;
-                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRemoved * >( *itBegin ) )->getArray();
+                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const core::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
                     sofa::helper::vector<unsigned int> lastIndexVec;
                     for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
@@ -336,7 +335,7 @@ void TLineModel<DataTypes>::handleTopologyChange()
                 {
                     unsigned int i;
 
-                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
+                    const sofa::helper::vector<unsigned int> tab = ( static_cast< const core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
 
                     for ( i = 0; i < elems.size(); ++i)
                     {
@@ -419,7 +418,7 @@ void TLineModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         if (vparams->displayFlags().getShowWireFrame())
             vparams->drawTool()->setPolygonMode(0,true);
 
-        std::vector< Vector3 > points;
+        std::vector< defaulttype::Vector3 > points;
         for (int i=0; i<size; i++)
         {
             TLine<DataTypes> l(this,i);
@@ -430,11 +429,11 @@ void TLineModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
             }
         }
 
-        vparams->drawTool()->drawLines(points, 1, Vec<4,float>(getColor4f()));
+        vparams->drawTool()->drawLines(points, 1, defaulttype::Vec<4,float>(getColor4f()));
 
         if (m_displayFreePosition.getValue())
         {
-            std::vector< Vector3 > pointsFree;
+            std::vector< defaulttype::Vector3 > pointsFree;
             for (int i=0; i<size; i++)
             {
                 TLine<DataTypes> l(this,i);
@@ -445,7 +444,7 @@ void TLineModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 }
             }
 
-            vparams->drawTool()->drawLines(pointsFree, 1, Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
+            vparams->drawTool()->drawLines(pointsFree, 1, defaulttype::Vec<4,float>(0.0f,1.0f,0.2f,1.0f));
         }
 
         if (vparams->displayFlags().getShowWireFrame())
@@ -587,7 +586,7 @@ void TLineModel<DataTypes>::computeBoundingTree(int maxDepth)
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate = false;
-    Vector3 minElem, maxElem;
+    defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -595,10 +594,10 @@ void TLineModel<DataTypes>::computeBoundingTree(int maxDepth)
         const SReal distance = (SReal)this->proximity.getValue();
         for (int i=0; i<size; i++)
         {
-            Vector3 minElem, maxElem;
+            defaulttype::Vector3 minElem, maxElem;
             TLine<DataTypes> l(this,i);
-            const Vector3& pt1 = l.p1();
-            const Vector3& pt2 = l.p2();
+            const defaulttype::Vector3& pt1 = l.p1();
+            const defaulttype::Vector3& pt2 = l.p2();
 
             for (int c = 0; c < 3; c++)
             {
@@ -630,7 +629,7 @@ void TLineModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDept
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate=false;
-    Vector3 minElem, maxElem;
+    defaulttype::Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
     if (!empty())
@@ -639,10 +638,10 @@ void TLineModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDept
         for (int i=0; i<size; i++)
         {
             TLine<DataTypes> t(this,i);
-            const Vector3& pt1 = t.p1();
-            const Vector3& pt2 = t.p2();
-            const Vector3 pt1v = pt1 + t.v1()*dt;
-            const Vector3 pt2v = pt2 + t.v2()*dt;
+            const defaulttype::Vector3& pt1 = t.p1();
+            const defaulttype::Vector3& pt2 = t.p2();
+            const defaulttype::Vector3 pt1v = pt1 + t.v1()*dt;
+            const defaulttype::Vector3 pt2v = pt2 + t.v2()*dt;
 
             for (int c = 0; c < 3; c++)
             {

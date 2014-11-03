@@ -100,12 +100,12 @@ bool MeshTablesVolume<PFP>::importMesh(const std::string& filename, std::vector<
 template <typename PFP>
 bool MeshTablesVolume<PFP>::importTet(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<VEC3> position =  m_map.template getAttribute<VEC3, VERTEX>("position") ;
+	VertexAttribute<VEC3, MAP> position =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
-    if (!position.isValid())
-        position = m_map.template addAttribute<VEC3, VERTEX>("position") ;
+	if (!position.isValid())
+		position = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
-    attrNames.push_back(position.name()) ;
+	attrNames.push_back(position.name()) ;
 
 	AttributeContainer& container = m_map.template getAttributeContainer<VERTEX>() ;
 
@@ -203,10 +203,10 @@ bool MeshTablesVolume<PFP>::importTet(const std::string& filename, std::vector<s
 template <typename PFP>
 bool MeshTablesVolume<PFP>::importOFFWithELERegions(const std::string& filenameOFF, const std::string& filenameELE, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<VEC3> position =  m_map.template getAttribute<VEC3, VERTEX>("position") ;
+	VertexAttribute<VEC3, MAP> position =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
-    if (!position.isValid())
-        position = m_map.template addAttribute<VEC3, VERTEX>("position") ;
+	if (!position.isValid())
+		position = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(position.name()) ;
 
@@ -344,10 +344,10 @@ bool MeshTablesVolume<PFP>::importOFFWithELERegions(const std::string& filenameO
 template <typename PFP>
 bool MeshTablesVolume<PFP>::importNodeWithELERegions(const std::string& filenameNode, const std::string& filenameELE, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<VEC3> position =  m_map.template getAttribute<VEC3, VERTEX>("position") ;
+	VertexAttribute<VEC3, MAP> position =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
-    if (!position.isValid())
-        position = m_map.template addAttribute<VEC3, VERTEX>("position") ;
+	if (!position.isValid())
+		position = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(position.name()) ;
 
@@ -479,10 +479,10 @@ bool MeshTablesVolume<PFP>::importNodeWithELERegions(const std::string& filename
 template <typename PFP>
 bool MeshTablesVolume<PFP>::importTetmesh(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<VEC3> position =  m_map.template getAttribute<VEC3, VERTEX>("position") ;
+	VertexAttribute<VEC3, MAP> position =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
-    if (!position.isValid())
-        position = m_map.template addAttribute<VEC3, VERTEX>("position") ;
+	if (!position.isValid())
+		position = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(position.name()) ;
 
@@ -588,126 +588,122 @@ bool MeshTablesVolume<PFP>::importTetmesh(const std::string& filename, std::vect
 }
 
 template <typename PFP>
-bool MeshTablesVolume<PFP>::importTs(const std::string& filename, std::vector<std::string>& attrNames)
+bool MeshTablesVolume<PFP>::importTs(const std::string& /*filename*/, std::vector<std::string>& /*attrNames*/)
 {
-    //
-    VertexAttribute<VEC3> position =  m_map.template getAttribute<VEC3, VERTEX>("position") ;
+//    // open file
+//    std::ifstream fp(filename.c_str(), std::ios::in);
+//    if (!fp.good())
+//    {
+//        CGoGNerr << "Unable to open file " << filename << CGoGNendl;
+//        return false;
+//    }
 
-    if (!position.isValid())
-        position = m_map.template addAttribute<VEC3, VERTEX>("position") ;
+//    VertexAttribute<VEC3, MAP> position =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
-    attrNames.push_back(position.name()) ;
+//    if (!position.isValid())
+//        position = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
-    //
-    VertexAttribute<REAL> scalar = m_map.template getAttribute<REAL, VERTEX>("scalar");
+//    attrNames.push_back(position.name()) ;
 
-    if (!scalar.isValid())
-        scalar = m_map.template addAttribute<REAL, VERTEX>("scalar") ;
+//    VertexAttribute<REAL, MAP> scalar = m_map.template getAttribute<REAL, VERTEX, MAP>("scalar");
 
-    attrNames.push_back(scalar.name()) ;
+//    if (!scalar.isValid())
+//        scalar = m_map.template addAttribute<REAL, VERTEX, MAP>("scalar") ;
 
-    //
-    AttributeContainer& container = m_map.template getAttributeContainer<VERTEX>() ;
+//    attrNames.push_back(scalar.name()) ;
 
-    // open file
-    std::ifstream fp(filename.c_str(), std::ios::in);
-    if (!fp.good())
-    {
-        CGoGNerr << "Unable to open file " << filename << CGoGNendl;
-        return false;
-    }
+//    AttributeContainer& container = m_map.template getAttributeContainer<VERTEX>() ;
 
-    std::string ligne;
+//    std::string ligne;
 
-    // reading number of vertices/tetrahedra
-    std::getline (fp, ligne);
-    std::stringstream oss(ligne);
-    oss >> m_nbVertices;
-    oss >> m_nbVolumes;
+//    // reading number of vertices/tetrahedra
+//    std::getline (fp, ligne);
+//    std::stringstream oss(ligne);
+//    oss >> m_nbVertices;
+//    oss >> m_nbVolumes;
 
-    //reading vertices
-    std::vector<unsigned int> verticesID;
-    verticesID.reserve(m_nbVertices);
+//    //reading vertices
+//    std::vector<unsigned int> verticesID;
+//    verticesID.reserve(m_nbVertices);
 
-    for(unsigned int i = 0; i < m_nbVertices; ++i)
-    {
-        do
-        {
-            std::getline (fp, ligne);
-        } while (ligne.size() == 0);
+//    for(unsigned int i = 0; i < m_nbVertices; ++i)
+//    {
+//        do
+//        {
+//            std::getline (fp, ligne);
+//        } while (ligne.size() == 0);
 
-        std::stringstream oss(ligne);
+//        std::stringstream oss(ligne);
 
-        float x,y,z;
-        oss >> x;
-        oss >> y;
-        oss >> z;
+//        float x,y,z;
+//        oss >> x;
+//        oss >> y;
+//        oss >> z;
 
-        VEC3 pos(x,y,z);
+//        VEC3 pos(x,y,z);
 
-        unsigned int id = container.insertLine();
+//        unsigned int id = container.insertLine();
 
-        position[id] = pos;
-        verticesID.push_back(id);
+//        position[id] = pos;
+//        verticesID.push_back(id);
 
-        float scal;
-        oss >> scal;
-        scalar[id] = scal;
-    }
+//        float scal;
+//        oss >> scal;
+//        scalar[id] = scal;
+//    }
 
-    //Read and embed all tetrahedrons
-    for(unsigned int i = 0; i < m_nbVolumes ; ++i)
-    {        
-        do
-        {
-            std::getline(fp,ligne);
-        } while(ligne.size() == 0);
+//    //Read and embed all tetrahedrons
+//    for(unsigned int i = 0; i < m_nbVolumes ; ++i)
+//    {
+//        do
+//        {
+//            std::getline(fp,ligne);
+//        } while(ligne.size() == 0);
 
-        std::stringstream oss(ligne);
+//        std::stringstream oss(ligne);
 
-        m_nbVerticesPerVolume.push_back(4);
+//        m_nbFaces.push_back(4);
 
-        int s0,s1,s2,s3,nbe;
+//        int s0,s1,s2,s3,nbe;
 
-        oss >> s0;
-        oss >> s1;
-        oss >> s2;
-        oss >> s3;
+//        oss >> s0;
+//        oss >> s1;
+//        oss >> s2;
+//        oss >> s3;
 
-        typename PFP::VEC3 P = position[verticesID[s0]];
-        typename PFP::VEC3 A = position[verticesID[s1]];
-        typename PFP::VEC3 B = position[verticesID[s2]];
-        typename PFP::VEC3 C = position[verticesID[s3]];
+//        typename PFP::VEC3 P = position[verticesID[s0]];
+//        typename PFP::VEC3 A = position[verticesID[s1]];
+//        typename PFP::VEC3 B = position[verticesID[s2]];
+//        typename PFP::VEC3 C = position[verticesID[s3]];
 
-        if(Geom::testOrientation3D<typename PFP::VEC3>(P,A,B,C) == Geom::UNDER)
-        {
-            int ui = s1;
-            s1 = s2;
-            s2 = ui;
-        }
+//        if(Geom::testOrientation3D<typename PFP::VEC3>(P,A,B,C) == Geom::UNDER)
+//        {
+//            int ui = s1;
+//            s1 = s2;
+//            s2 = ui;
+//        }
 
 
-        //if regions are defined use this number
-        oss >> nbe; //ignored here
+//        //if regions are defined use this number
+//        oss >> nbe; //ignored here
 
-        m_emb.push_back(verticesID[s0]);
-        m_emb.push_back(verticesID[s1]);
-        m_emb.push_back(verticesID[s2]);
-        m_emb.push_back(verticesID[s3]);
-    }
+//        m_emb.push_back(verticesID[s0]);
+//        m_emb.push_back(verticesID[s1]);
+//        m_emb.push_back(verticesID[s2]);
+//        m_emb.push_back(verticesID[s3]);
+//    }
 
-    fp.close();
-    return true;
+//    fp.close();
+   return true;
 }
 
 template <typename PFP>
 bool MeshTablesVolume<PFP>::importMSH(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    //
-    VertexAttribute<VEC3> position =  m_map.template getAttribute<VEC3, VERTEX>("position") ;
+	VertexAttribute<VEC3, MAP> position =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
-    if (!position.isValid())
-        position = m_map.template addAttribute<VEC3, VERTEX>("position") ;
+	if (!position.isValid())
+		position = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(position.name()) ;
 
@@ -836,6 +832,339 @@ bool MeshTablesVolume<PFP>::importMSH(const std::string& filename, std::vector<s
     }
 }
 
+//template <typename PFP>
+//bool MeshTablesVolume<PFP>::importVBGZ(const std::string& filename, std::vector<std::string>& attrNames)
+//{
+//	VertexAttribute<VEC3, MAP> position =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
+
+//	if (!position.isValid())
+//		position = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
+
+//	attrNames.push_back(position.name()) ;
+
+//	//
+//	AttributeContainer& container = m_map.template getAttributeContainer<VERTEX>() ;
+
+//	//open file
+//	igzstream fs(filename.c_str(), std::ios::in|std::ios::binary);
+//	if (!fs.good())
+//	{
+//		CGoGNerr << "Unable to open file " << filename << CGoGNendl;
+//		return false;
+//	}
+
+
+//	unsigned int numbers[3];
+
+//	// read nb of points
+//	fs.read(reinterpret_cast<char*>(numbers), 3*sizeof(unsigned int));
+
+//	VEC3* bufposi;
+//	bufposi = new VEC3[ numbers[0] ];
+//	fs.read(reinterpret_cast<char*>(bufposi), numbers[0]*sizeof(VEC3));
+
+//	std::vector<unsigned int> verticesID;
+//	verticesID.reserve(numbers[0]);
+
+//	for(unsigned int i = 0; i < numbers[0];++i)
+//	{
+//		unsigned int id = container.insertLine();
+//		position[id] = bufposi[i];
+//		verticesID.push_back(id);
+//	}
+//	delete bufposi;
+
+//	unsigned int* bufTetra=NULL;
+//	if (numbers[1] != 0)
+//	{
+//		bufTetra = new unsigned int[ 4*numbers[1] ];
+//		fs.read(reinterpret_cast<char*>(bufTetra), 4*numbers[1]*sizeof(unsigned int));
+//	}
+
+//	unsigned int* bufHexa=NULL;
+//	if (numbers[2] != 0)
+//	{
+//		bufHexa = new unsigned int[ 8*numbers[2] ];
+//		fs.read(reinterpret_cast<char*>(bufHexa), 8*numbers[2]*sizeof(unsigned int));
+//	}
+//	CGoGNout << "nb vertices = " << numbers[0];
+
+//	m_nbVertices = numbers[0];
+//	m_nbVolumes = numbers[1] + numbers[2];
+
+//	if (numbers[1] > 0)
+//	{
+//		//Read and embed all tetrahedrons
+//		for(unsigned int i = 0; i < numbers[1] ; ++i)
+//		{
+//			Geom::Vec4ui pt;
+
+//			m_nbFaces.push_back(4);
+
+//			pt[0] = bufTetra[4*i];
+//			pt[1] = bufTetra[4*i+1];
+//			pt[2] = bufTetra[4*i+2];
+//			pt[3] = bufTetra[4*i+3];
+
+//			m_emb.push_back(verticesID[pt[0]]);
+//			m_emb.push_back(verticesID[pt[1]]);
+//			m_emb.push_back(verticesID[pt[2]]);
+//			m_emb.push_back(verticesID[pt[3]]);
+
+//			//end of tetra
+//		}
+//		CGoGNout << " / nb tetra = " << numbers[1];
+//		delete[] bufTetra;
+//	}
+
+//	if (numbers[2] > 0)
+//	{
+//		//Read and embed all tetrahedrons
+//		for(unsigned int i = 0; i < numbers[2] ; ++i)
+//		{
+//			m_nbFaces.push_back(8);
+//			// one hexa
+//			unsigned int pt[8];
+//			pt[0] = bufHexa[8*i];
+//			pt[1] = bufHexa[8*i+1];
+//			pt[2] = bufHexa[8*i+2];
+//			pt[3] = bufHexa[8*i+3];
+//			pt[4] = bufHexa[8*i+4];
+//			pt[5] = bufHexa[8*i+5];
+//			pt[6] = bufHexa[8*i+6];
+//			pt[7] = bufHexa[8*i+7];
+
+//			m_emb.push_back(verticesID[pt[0]]);
+//			m_emb.push_back(verticesID[pt[1]]);
+//			m_emb.push_back(verticesID[pt[2]]);
+//			m_emb.push_back(verticesID[pt[3]]);
+//			m_emb.push_back(verticesID[pt[4]]);
+//			m_emb.push_back(verticesID[pt[5]]);
+//			m_emb.push_back(verticesID[pt[6]]);
+//			m_emb.push_back(verticesID[pt[7]]);
+//			//end of hexa
+//		}
+//		CGoGNout << " / nb hexa = " << numbers[2];
+//		delete[] bufHexa;
+//	}
+
+//	return true;
+//}
+
+//template <typename PFP>
+//bool MeshTablesVolume<PFP>::importVTU(const std::string& filename, std::vector<std::string>& attrNames)
+//{
+//	VertexAttribute<VEC3, MAP> position =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
+
+//	if (!position.isValid())
+//		position = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
+
+//	attrNames.push_back(position.name()) ;
+
+//	//
+//	AttributeContainer& container = m_map.template getAttributeContainer<VERTEX>() ;
+
+//	xmlDocPtr doc = xmlReadFile(filename.c_str(), NULL, 0);
+//	xmlNodePtr vtu_node = xmlDocGetRootElement(doc);
+
+//	//	std::cout << " NAME "<<vtu_node->name << std::endl;
+
+//	xmlChar *prop = xmlGetProp(vtu_node, BAD_CAST "type");
+//	//	std::cout << "type = "<< prop << std::endl;
+
+//	xmlNode* grid_node = vtu_node->children;
+//	while (strcmp((char*)(grid_node->name),(char*)"UnstructuredGrid")!=0)
+//		grid_node = grid_node->next;
+
+//	xmlNode* piece_node = grid_node->children;
+//	while (strcmp((char*)(piece_node->name),(char*)"Piece")!=0)
+//		piece_node = piece_node->next;
+
+//	prop = xmlGetProp(piece_node, BAD_CAST "NumberOfPoints");
+//	m_nbVertices = atoi((char*)(prop));
+
+//	prop = xmlGetProp(piece_node, BAD_CAST "NumberOfCells");
+//	m_nbVolumes = atoi((char*)(prop));
+
+//	std::cout << "Number of points = "<< m_nbVertices<< std::endl;
+//	std::cout << "Number of cells = "<< m_nbVolumes << std::endl;
+
+//	xmlNode* points_node = piece_node->children;
+//	while (strcmp((char*)(points_node->name),(char*)"Points")!=0)
+//		points_node = points_node->next;
+
+//	points_node = points_node->children;
+//	while (strcmp((char*)(points_node->name),(char*)"DataArray")!=0)
+//		points_node = points_node->next;
+
+//	std::vector<unsigned int> verticesID;
+//	verticesID.reserve(m_nbVertices);
+
+//	std::stringstream ss((char*)(xmlNodeGetContent(points_node->children)));
+//	for (unsigned int i=0; i< m_nbVertices; ++i)
+//	{
+//		typename PFP::VEC3 P;
+//		ss >> P[0]; ss >> P[1]; ss >> P[2];
+//		unsigned int id = container.insertLine();
+//		position[id] = P;
+//		verticesID.push_back(id);
+//	}
+
+//	xmlNode* cell_node = piece_node->children;
+//	while (strcmp((char*)(cell_node->name),(char*)"Cells")!=0)
+//		cell_node = cell_node->next;
+
+//	std::cout <<"CELL NODE = "<< cell_node->name << std::endl;
+
+
+//	std::vector<unsigned char> typeVols;
+//	typeVols.reserve(m_nbVolumes);
+//	std::vector<unsigned int> offsets;
+//	offsets.reserve(m_nbVolumes);
+//	std::vector<unsigned int> indices;
+//	indices.reserve(m_nbVolumes*4);
+
+//	for (xmlNode* x_node = cell_node->children; x_node!=NULL; x_node = x_node->next)
+//	{
+//		while ((x_node!=NULL) && (strcmp((char*)(x_node->name),(char*)"DataArray")!=0))
+//			x_node = x_node->next;
+
+//		if (x_node == NULL)
+//			break;
+//		else
+//		{
+//			xmlChar* type = xmlGetProp(x_node, BAD_CAST "Name");
+
+//			if (strcmp((char*)(type),(char*)"connectivity")==0)
+//			{
+//				std::stringstream ss((char*)(xmlNodeGetContent(x_node->children)));
+//				while (!ss.eof())
+//				{
+//					unsigned int ind;
+//					ss >> ind;
+//					indices.push_back(ind);
+//				}
+//			}
+//			if (strcmp((char*)(type),(char*)"offsets")==0)
+//			{
+//				std::stringstream ss((char*)(xmlNodeGetContent(x_node->children)));
+//				for (unsigned int i=0; i< m_nbVolumes; ++i)
+//				{
+//					unsigned int o;
+//					ss >> o;
+//					offsets.push_back(o);
+//				}
+//			}
+//			if (strcmp((char*)(type),(char*)"types")==0)
+//			{
+//				bool unsupported = false;
+//				std::stringstream ss((char*)(xmlNodeGetContent(x_node->children)));
+//				for (unsigned int i=0; i< m_nbVolumes; ++i)
+//				{
+//					unsigned int t;
+//					ss >> t;
+//					if ((t != 12) && (t!= 10))
+//					{
+//						unsupported = true;
+//						typeVols.push_back(0);
+//					}
+//					else
+//					{
+//						typeVols.push_back((unsigned char)t);
+//					}
+//				}
+//				if (unsupported)
+//					CGoGNerr << "warning, some unsupported volume cell types"<< CGoGNendl;
+//			}
+//		}
+//	}
+
+//	xmlFreeDoc(doc);
+
+//	unsigned int currentOffset = 0;
+//	for (unsigned int i=0; i< m_nbVolumes; ++i)
+//	{
+//		if (typeVols[i]==12)
+//		{
+//			m_nbFaces.push_back(8);
+
+//			unsigned int pt[8];
+//			pt[0] = indices[currentOffset];
+//			pt[1] = indices[currentOffset+1];
+//			pt[2] = indices[currentOffset+2];
+//			pt[3] = indices[currentOffset+3];
+//			pt[4] = indices[currentOffset+4];
+//			typename PFP::VEC3 P = position[verticesID[indices[currentOffset+4]]];
+//			typename PFP::VEC3 A = position[verticesID[indices[currentOffset  ]]];
+//			typename PFP::VEC3 B = position[verticesID[indices[currentOffset+1]]];
+//			typename PFP::VEC3 C = position[verticesID[indices[currentOffset+2]]];
+
+//			if (Geom::testOrientation3D<typename PFP::VEC3>(P,A,B,C) == Geom::OVER)
+//			{
+
+//				pt[0] = indices[currentOffset+3];
+//				pt[1] = indices[currentOffset+2];
+//				pt[2] = indices[currentOffset+1];
+//				pt[3] = indices[currentOffset+0];
+//				pt[4] = indices[currentOffset+7];
+//				pt[5] = indices[currentOffset+6];
+//				pt[6] = indices[currentOffset+5];
+//				pt[7] = indices[currentOffset+4];
+//			}
+//			else
+//			{
+//				pt[0] = indices[currentOffset+0];
+//				pt[1] = indices[currentOffset+1];
+//				pt[2] = indices[currentOffset+2];
+//				pt[3] = indices[currentOffset+3];
+//				pt[4] = indices[currentOffset+4];
+//				pt[5] = indices[currentOffset+5];
+//				pt[6] = indices[currentOffset+6];
+//				pt[7] = indices[currentOffset+7];
+//			}
+
+//			m_emb.push_back(verticesID[pt[0]]);
+//			m_emb.push_back(verticesID[pt[1]]);
+//			m_emb.push_back(verticesID[pt[2]]);
+//			m_emb.push_back(verticesID[pt[3]]);
+//			m_emb.push_back(verticesID[pt[4]]);
+//			m_emb.push_back(verticesID[pt[5]]);
+//			m_emb.push_back(verticesID[pt[6]]);
+//			m_emb.push_back(verticesID[pt[7]]);
+
+//		}
+//		else if (typeVols[i]==10)
+//		{
+//			m_nbFaces.push_back(4);
+
+//			Geom::Vec4ui pt;
+//			pt[0] = indices[currentOffset];
+//			pt[1] = indices[currentOffset+1];
+//			pt[2] = indices[currentOffset+2];
+//			pt[3] = indices[currentOffset+3];
+
+//			typename PFP::VEC3 P = position[verticesID[pt[0]]];
+//			typename PFP::VEC3 A = position[verticesID[pt[1]]];
+//			typename PFP::VEC3 B = position[verticesID[pt[2]]];
+//			typename PFP::VEC3 C = position[verticesID[pt[3]]];
+
+//			if (Geom::testOrientation3D<typename PFP::VEC3>(P,A,B,C) == Geom::OVER)
+//			{
+//				unsigned int ui=pt[1];
+//				pt[1] = pt[2];
+//				pt[2] = ui;
+//			}
+
+//			m_emb.push_back(verticesID[pt[0]]);
+//			m_emb.push_back(verticesID[pt[1]]);
+//			m_emb.push_back(verticesID[pt[2]]);
+//			m_emb.push_back(verticesID[pt[3]]);
+//		}
+//		currentOffset = offsets[i];
+//	}
+
+//	return true;
+//}
 
 } // namespace Import
 

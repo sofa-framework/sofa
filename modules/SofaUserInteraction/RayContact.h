@@ -38,8 +38,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 class RayModel;
 
 class SOFA_USER_INTERACTION_API BaseRayContact : public core::collision::Contact

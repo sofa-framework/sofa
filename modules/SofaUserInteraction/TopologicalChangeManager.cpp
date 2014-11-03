@@ -147,7 +147,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                     {
                         vector<unsigned int> indices;
                         topoMap->getFromIndex( indices, *it);
-                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
+                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
                             //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
@@ -312,7 +312,7 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                     {
                         vector<unsigned int> indices;
                         topoMap->getFromIndex( indices, *it);
-                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
+                        for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
                             //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
@@ -384,8 +384,7 @@ int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisio
 
 
 // Handle Cutting (activated only for a triangular topology), using global variables to register the two last input points
-bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, Vector3& pos, const bool firstInput,
-        int snapingValue, int snapingBorderValue)
+bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, defaulttype::Vector3& pos, const bool firstInput, int snapingValue, int snapingBorderValue)
 {
     Triangle triangle(elem);
     TriangleModel* model = triangle.getCollisionModel();

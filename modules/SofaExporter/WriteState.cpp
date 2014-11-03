@@ -106,7 +106,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
             ws->f_writeX.setValue(recordX);
             ws->f_writeV.setValue(recordV);
             ws->f_writeF.setValue(recordF);
-            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
+            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
                 ws->addTag(*it);
 
         }

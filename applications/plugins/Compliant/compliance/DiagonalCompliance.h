@@ -36,9 +36,10 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     enum { N=DataTypes::deriv_total_size };
 
+	// TODO why bother with VecDeriv instead of just SReal vec ?
     Data< VecDeriv > diagonal; ///< diagonal values
 
-    Data< Real > damping; ///< a unique damping value (could be diagonal to...)
+    Data< vector<SReal> > damping; ///< diagonal damping
 
     virtual void init();
 
@@ -57,6 +58,12 @@ public:
 
     /// addDForce does nothing when this component is processed like a compliance.
     virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
+
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    {
+        serr << "getPotentialEnergy() not implemented" << sendl;
+        return 0.0;
+    }
 
 protected:
     DiagonalCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);

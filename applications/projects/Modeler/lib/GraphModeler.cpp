@@ -294,7 +294,7 @@ Base* GraphModeler::getComponent(Q3ListViewItem *item) const
 {
     if (!item) return NULL;
     std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
-    for (it = graphListener->items.begin(); it != graphListener->items.end(); it++)
+    for (it = graphListener->items.begin(); it != graphListener->items.end(); ++it)
     {
         if (it->second == item)
         {
@@ -341,7 +341,7 @@ Q3ListViewItem *GraphModeler::getItem(Base *component) const
 {
     if (!component) return NULL;
     std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
-    for (it = graphListener->items.begin(); it != graphListener->items.end(); it++)
+    for (it = graphListener->items.begin(); it != graphListener->items.end(); ++it)
     {
         if (it->first == component)
         {
@@ -1055,7 +1055,7 @@ bool GraphModeler::isNodeErasable ( BaseNode* node)
     }
     // check if there is already a dialog opened for that item in the graph
     std::map< void*, Q3ListViewItem*>::iterator it;
-    for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
+    for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
     {
         if (it->second == item) return false;
     }
@@ -1064,7 +1064,7 @@ bool GraphModeler::isNodeErasable ( BaseNode* node)
     Q3ListViewItem *child = item->firstChild();
     while (child != NULL)
     {
-        for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
+        for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
         {
             if( it->second == child) return false;
         }
@@ -1078,7 +1078,7 @@ bool GraphModeler::isObjectErasable ( core::objectmodel::Base* element )
 {
     Q3ListViewItem* item = graphListener->items[element];
     std::map< void*, Q3ListViewItem*>::iterator it;
-    for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
+    for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
     {
         if (it->second == item) return false;
     }
@@ -1183,7 +1183,7 @@ void GraphModeler::closeDialogs()
     std::map< void*, QDialog* >::iterator it;    ;
     for (it=map_modifyObjectWindow.begin();
             it!=map_modifyObjectWindow.end();
-            it++)
+            ++it)
     {
         delete it->second;
     }

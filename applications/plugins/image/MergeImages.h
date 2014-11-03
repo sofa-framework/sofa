@@ -196,7 +196,7 @@ protected:
 
             Data<t>* d = new Data<t>();
             d->setName(name_i);
-            d->setHelpMsg(help.c_str());
+            d->setHelp(help.c_str());
             d->setReadOnly(true);
 
             vf.push_back(d);
@@ -308,14 +308,14 @@ protected:
                     if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());
+                            pt.vals.push_back(vector<double>());                         
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).atXYZ(sofa::helper::round((double)inp[0]),sofa::helper::round((double)inp[1]),sofa::helper::round((double)inp[2]),k));
                         }
                     else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
                         for(unsigned int t=0; t<indim[4] && t<dim[4]; t++) // time
                         {
-                            pt.vals.push_back(vector<double>());
+                            pt.vals.push_back(vector<double>());                        
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).linear_atXYZ(inp[0],inp[1],inp[2],k));
                         }
@@ -325,18 +325,25 @@ protected:
                             pt.vals.push_back(vector<double>());
                             for(unsigned int k=0; k<indim[3] && k<dim[3]; k++) // channels
                                 pt.vals[t].push_back((double)inImg(t).cubic_atXYZ(inp[0],inp[1],inp[2],k));
+
                         }
                     pt.u=Coord( ( inp[0]< indim[0]-inp[0]-1)? inp[0]: indim[0]-inp[0]-1 ,
                             ( inp[1]< indim[1]-inp[1]-1)? inp[1]: indim[1]-inp[1]-1 ,
                             ( inp[2]< indim[2]-inp[2]-1)? inp[2]: indim[2]-inp[2]-1 ); // distance from border
-                    pts.push_back(pt);
+
+                    bool isnotnull=false;
+                    for(unsigned int t=0; t<pt.vals.size(); t++) for(unsigned int k=0; k<pt.vals[t].size(); k++) if(pt.vals[t][k]!=(T)0) isnotnull=true;
+                    if(isnotnull) pts.push_back(pt);
+
                 }
             }
             unsigned int nbp=pts.size();
             if(nbp==0) continue;
-            else if(nbp==1) { for(unsigned int t=0; t<pts[0].vals.size(); t++) for(unsigned int k=0; k<pts[0].vals[t].size(); k++) if((T)pts[0].vals[t][k]!=(T)0) img(t)(x,y,z,k) = (T)pts[0].vals[t][k]; }
+            else if(nbp==1) {                
+                    for(unsigned int t=0; t<pts[0].vals.size(); t++) for(unsigned int k=0; k<pts[0].vals[t].size(); k++) if((T)pts[0].vals[t][k]!=(T)0) img(t)(x,y,z,k) = (T)pts[0].vals[t][k];
+            }
             else if(nbp>1)
-            {
+            {                
                 unsigned int nbt=pts[0].vals.size();
                 unsigned int nbc=pts[0].vals[0].size();
                 if(overlp==AVERAGE)
@@ -350,10 +357,10 @@ protected:
                 }
                 else if(overlp==ALPHABLEND)
                 {
-                    unsigned int dir=0; if(pts[1].u[1]!=pts[0].u[1]) dir=1; if(pts[1].u[2]!=pts[0].u[2]) dir=2; // blending direction = direction where distance to border is different
-                    double count=pts[0].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k]*=pts[0].u[dir];
-                    for(unsigned int j=1; j<nbp; j++) { count+=pts[j].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k]*pts[j].u[dir]; }
-                    for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]/count);
+                   unsigned int dir=0; if(pts[1].u[1]!=pts[0].u[1]) dir=1; if(pts[1].u[2]!=pts[0].u[2]) dir=2; // blending direction = direction where distance to border is different
+                   double count=pts[0].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k]*=pts[0].u[dir];
+                   for(unsigned int j=1; j<nbp; j++) { count+=pts[j].u[dir]; for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) pts[0].vals[t][k] += pts[j].vals[t][k]*pts[j].u[dir]; }
+                   for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]/count);
                 }
                 else if(overlp==SEPARATE)
                 {
@@ -370,6 +377,7 @@ protected:
                     for(unsigned int j=1; j<nbp; j++) for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) if (pts[0].vals[t][k] && pts[j].vals[t][k]) pts[0].vals[t][k] = (T)0.0;
                     for(unsigned int t=0; t<nbt; t++) for(unsigned int k=0; k<nbc; k++) img(t)(x,y,z,k) = (T)(pts[0].vals[t][k]);
                 }
+
             }
         }
 

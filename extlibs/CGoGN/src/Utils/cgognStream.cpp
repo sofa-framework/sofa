@@ -71,20 +71,20 @@ void allToConsole(Utils::QT::SimpleQT* sqt)
 
 }
 
-//void allToStatusBar(Utils::QT::SimpleQGLV* sqglv)
-//{
-//	CGoGNout.toStatusBar(sqglv);
-//	CGoGNerr.toStatusBar(sqglv);
-//	CGoGNdbg.toStatusBar(sqglv);
-//}
+void allToStatusBar(Utils::QT::SimpleQGLV* sqglv)
+{
+	CGoGNout.toStatusBar(sqglv);
+	CGoGNerr.toStatusBar(sqglv);
+	CGoGNdbg.toStatusBar(sqglv);
+}
 
-//void allToConsole(Utils::QT::SimpleQGLV* sqglv)
-//{
-//	CGoGNout.toConsole(sqglv);
-//	CGoGNerr.toConsole(sqglv);
-//	CGoGNdbg.toConsole(sqglv);
+void allToConsole(Utils::QT::SimpleQGLV* sqglv)
+{
+	CGoGNout.toConsole(sqglv);
+	CGoGNerr.toConsole(sqglv);
+	CGoGNdbg.toConsole(sqglv);
 
-//}
+}
 #endif
 
 void allToBuffer(std::stringstream* ss)
@@ -196,24 +196,24 @@ void Out::toConsole(Utils::QT::SimpleQT* sqt)
 	m_sqt_console = sqt;
 }
 
-//void Out::toStatusBar(Utils::QT::SimpleQGLV* sqglv)
-//{
-//	if (sqglv != NULL)
-//		m_out_mode |= QTSTATUSBAR;
-//	else
-//		m_out_mode &= ~QTSTATUSBAR;
+void Out::toStatusBar(Utils::QT::SimpleQGLV* sqglv)
+{
+	if (sqglv != NULL)
+		m_out_mode |= QTSTATUSBAR;
+	else
+		m_out_mode &= ~QTSTATUSBAR;
 //	m_sqglv_bar = sqglv;
-//}
+}
 
 
-//void Out::toConsole(Utils::QT::SimpleQGLV* sqglv)
-//{
-//	if (sqglv)
-//		m_out_mode |= QTCONSOLE;
-//	else
-//		m_out_mode &= ~QTCONSOLE;
+void Out::toConsole(Utils::QT::SimpleQGLV* sqglv)
+{
+	if (sqglv)
+		m_out_mode |= QTCONSOLE;
+	else
+		m_out_mode &= ~QTCONSOLE;
 //	m_sqglv_console = sqglv;
-//}
+}
 
 #endif
 

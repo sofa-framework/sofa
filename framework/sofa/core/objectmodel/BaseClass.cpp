@@ -95,6 +95,10 @@ std::string BaseClass::decodeTypeName(const std::type_info& t)
         {
             start = i+1;
         }
+        else if (c == ' ' && i >= 6 && realname[i-6] == 's' && realname[i-5] == 't' && realname[i-4] == 'r' && realname[i-3] == 'u' && realname[i-2] == 'c' && realname[i-1] == 't')
+        {
+            start = i+1;
+        }
         else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
         {
             // write result
@@ -211,6 +215,10 @@ std::string BaseClass::decodeNamespaceName(const std::type_info& t)
         {
             start = i+1;
         }
+        else if (c == ' ' && i >= 6 && realname[i-6] == 's' && realname[i-5] == 't' && realname[i-4] == 'r' && realname[i-3] == 'u' && realname[i-2] == 'c' && realname[i-1] == 't')
+        {
+            start = i+1;
+        }
         else if (c == ':' && (i<1 || realname[i-1]!=':'))
         {
             last = i-1;
@@ -248,6 +256,10 @@ std::string BaseClass::decodeTemplateName(const std::type_info& t)
             start = i+1;
         }
         else if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
+        {
+            start = i+1;
+        }
+        else if (c == ' ' && i >= 6 && realname[i-6] == 's' && realname[i-5] == 't' && realname[i-4] == 'r' && realname[i-3] == 'u' && realname[i-2] == 'c' && realname[i-1] == 't')
         {
             start = i+1;
         }

@@ -14,20 +14,17 @@ namespace component
 namespace loader
 {
 
-using sofa::core::topology::Topology;
-using sofa::defaulttype::Vector3;
-
 class GIDMeshLoader : public sofa::core::loader::MeshLoader
 {
 public :
 	SOFA_CLASS(GIDMeshLoader, sofa::core::loader::MeshLoader);
 
-	typedef Topology::Edge Edge;
-	typedef Topology::Triangle Triangle;
-	typedef Topology::Quad Quad;
-	typedef Topology::Tetrahedron Tetrahedron;
-	typedef Topology::Hexahedron Hexahedron;
-	typedef Vector3 Coord;
+    typedef sofa::core::topology::Topology::Edge Edge;
+    typedef sofa::core::topology::Topology::Triangle Triangle;
+    typedef sofa::core::topology::Topology::Quad Quad;
+    typedef sofa::core::topology::Topology::Tetrahedron Tetrahedron;
+    typedef sofa::core::topology::Topology::Hexahedron Hexahedron;
+    typedef sofa::defaulttype::Vector3 Coord;
 
 
 public :

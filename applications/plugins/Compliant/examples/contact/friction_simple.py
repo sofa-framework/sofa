@@ -14,10 +14,16 @@ def createScene(node):
 
     manager = node.getObject('manager')
     manager.response = 'FrictionCompliantContact'
-    manager.responseParams = 'mu=0' # per object friction coefficient (the friction coef between 2 objects is approximated as the product of both coefs)
+    
+    node.createObject('CompliantAttachButton')
+    
+    
+    globalMu = 0 # per object friction coefficient (the friction coef between 2 objects is approximated as the product of both coefs)
+    manager.responseParams = 'mu='+str(globalMu)+"&horizontalConeProjection=1"  # perfom an horizontal Coulomb cone projection
+                            
 
     ode = node.getObject('ode')
-    ode.stabilization = True
+    ode.stabilization = "pre-stabilization"
     ode.debug = False
 
     num = node.createObject('SequentialSolver',

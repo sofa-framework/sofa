@@ -163,6 +163,7 @@ public:
     Data< bool >  showVectors;
     Data< float > showVectorsScale;
     Data< int > drawMode;
+    Data< defaulttype::Vec4f > d_color;  ///< drawing color
     Data < bool > isToPrint;
 
     virtual void init();
@@ -253,6 +254,9 @@ public:
     /// Get the indices of the particles located in the given bounding box
     void getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
 
+    /// update the given bounding box, to include this
+    virtual bool addBBox(double* minBBox, double* maxBBox);
+
     /// @name Base Matrices and Vectors Interface
     /// @{
 
@@ -315,7 +319,7 @@ public:
 
     virtual void endIntegration(const core::ExecParams* params /* PARAMS FIRST */, Real dt);
 
-    virtual void accumulateForce(const core::ExecParams* params);
+    virtual void accumulateForce(const core::ExecParams* params); // see BaseMechanicalState::accumulateForce(const ExecParams*, VecId)
 
     /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
     virtual void vAvail(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId& v);
@@ -497,6 +501,8 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 #endif
 template<>
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams);
+
+
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
 #ifndef SOFA_FLOAT

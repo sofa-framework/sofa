@@ -62,8 +62,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
 template <class TIn, class TOut>
 typename CurveMapping<TIn, TOut>::Real CurveMapping<TIn, TOut>::advanceAbscissa(Real ab, Real dist)
 {
@@ -81,23 +79,23 @@ typename CurveMapping<TIn, TOut>::Real CurveMapping<TIn, TOut>::advanceAbscissa(
     return (Real) (integer + fraction);
 }
 
-inline Quat computeOrientation(const Vec3d& AB, const Quat& Q)
+inline sofa::defaulttype::Quat computeOrientation(const sofa::defaulttype::Vec3d& AB, const sofa::defaulttype::Quat& Q)
 {
-    Vec3d PQ = AB;
-    Quat quat = Q;
+    sofa::defaulttype::Vec3d PQ = AB;
+    sofa::defaulttype::Quat quat = Q;
 
-    Vec3d x = quat.rotate(Vec3d(1,0,0));
+    sofa::defaulttype::Vec3d x = quat.rotate(sofa::defaulttype::Vec3d(1,0,0));
     PQ.normalize();
 
     if (dot(x, PQ) > 0.99)
         return Q;
 
-    Vec3d y;
+    sofa::defaulttype::Vec3d y;
     double alpha;
 
     if (dot(x, PQ) < -0.99)
     {
-        y = quat.rotate(Vec3d(0,0,1));
+        y = quat.rotate(sofa::defaulttype::Vec3d(0,0,1));
         alpha = M_PI;
     }
     else
@@ -107,7 +105,7 @@ inline Quat computeOrientation(const Vec3d& AB, const Quat& Q)
         alpha = acos(dot(x, PQ));
     }
 
-    Quat qaux = Quat(y, alpha);
+    sofa::defaulttype::Quat qaux = sofa::defaulttype::Quat(y, alpha);
 
     return (qaux * quat);
 }
@@ -137,7 +135,7 @@ void CurveMapping<TIn, TOut>::init()
         a[ai++] = a0;
     angle.endEdit();
     quatElements.resize(nin-1);
-    Quat q(0,0,0,1);
+    sofa::defaulttype::Quat q(0,0,0,1);
     for (int i=0; i<nin-1; i++)
     {
         quatElements[i] = computeOrientation(x0[i+1]-x0[i], q);
@@ -242,7 +240,7 @@ void CurveMapping<TIn, TOut>::rotateElements()
     Real a = angle.getValue()[0];
     for (int i=0; i<nin-1; i++)
     {
-        rotatedQuatElements[i] = quatElements[i]*Quat(Vec3d(1.0,0.0,0.0), a);
+        rotatedQuatElements[i] = quatElements[i]*sofa::defaulttype::Quat(sofa::defaulttype::Vec3d(1.0,0.0,0.0), a);
         rotatedQuatElements[i].normalize();
     }
 }
@@ -481,8 +479,8 @@ template <class TIn, class TOut>
 void CurveMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings()) return;
-    std::vector< Vector3 > points;
-    Vector3 point;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    sofa::defaulttype::Vector3 point;
 
     const VecCoord& x = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
@@ -490,7 +488,7 @@ void CurveMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         point = DataTypes::getCPos(x[i]);
         points.push_back(point);
     }
-    vparams->drawTool()->drawPoints(points, 5, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(points, 5, sofa::defaulttype::Vec<4,float>(1,1,0,1));
 
 }
 

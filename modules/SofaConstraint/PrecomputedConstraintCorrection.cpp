@@ -60,14 +60,14 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid3dTy
             Deriv& n = colIt.val();
             const unsigned int localRowNodeIdx = colIt.index();
 
-            Quat q;
+            sofa::defaulttype::Quat q;
             if (m_restRotations.getValue())
                 q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
             else
                 q = x[localRowNodeIdx].getOrientation();
 
-            Vec3d n_i = q.inverseRotate(getVCenter(n));
-            Vec3d wn_i= q.inverseRotate(getVOrientation(n));
+            sofa::defaulttype::Vec3d n_i = q.inverseRotate(getVCenter(n));
+            sofa::defaulttype::Vec3d wn_i= q.inverseRotate(getVOrientation(n));
 
             if(back)
             {
@@ -102,7 +102,7 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTyp
     {
         // on passe les deplacements du repere local (au repos) au repere global
         Deriv temp ;
-        Quat q;
+        sofa::defaulttype::Quat q;
         if (m_restRotations.getValue())
             q = x[j].getOrientation() * x0[j].getOrientation().inverse();
         else
@@ -158,14 +158,14 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid3fTy
             Deriv& n = colIt.val();
             const unsigned int localRowNodeIdx = colIt.index();
 
-            Quat q;
+            sofa::defaulttype::Quat q;
             if (m_restRotations.getValue())
                 q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
             else
                 q = x[localRowNodeIdx].getOrientation();
 
-            Vec3f n_i = q.inverseRotate(getVCenter(n));
-            Vec3f wn_i= q.inverseRotate(getVOrientation(n));
+            sofa::defaulttype::Vec3f n_i = q.inverseRotate(getVCenter(n));
+            sofa::defaulttype::Vec3f wn_i= q.inverseRotate(getVOrientation(n));
 
             if(back)
             {
@@ -199,7 +199,7 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTyp
     {
         // on passe les deplacements du repere local (au repos) au repere global
         Deriv temp ;
-        Quat q;
+        sofa::defaulttype::Quat q;
         if (m_restRotations.getValue())
             q = x[j].getOrientation() * x0[j].getOrientation().inverse();
         else

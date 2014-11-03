@@ -49,9 +49,6 @@ namespace component
 namespace interactionforcefield
 {
 
-using namespace sofa::core::topology;
-
-
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
     : Inherit(mstate1, mstate2)
@@ -198,6 +195,8 @@ void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, 
 template<class DataTypes>
 void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    using namespace sofa::defaulttype;
+
     if (!((this->mstate1 == this->mstate2)?vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
     const VecCoord& p1 =this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 =this->mstate2->read(core::ConstVecCoordId::position())->getValue();
@@ -336,7 +335,7 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::topology::Topology 
                 case core::topology::POINTSREMOVED:
                 {
                     int nbPoints = _topology->getNbPoints();
-                    const sofa::helper::vector<unsigned int>& tab = (static_cast<const PointsRemoved *>(*changeIt))->getArray();
+                    const sofa::helper::vector<unsigned int>& tab = (static_cast<const sofa::core::topology::PointsRemoved *>(*changeIt))->getArray();
 
                     helper::vector<Spring>& springs = *this->springs.beginEdit();
                     // springs.push_back(Spring(m1,m2,ks,kd,initpos));

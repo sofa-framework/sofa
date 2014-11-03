@@ -74,6 +74,7 @@ public:
     void initVisual() { core::visual::VisualModel::initVisual(); }
     void pushValue() { initVisual(); }
     void reinit() { init();	initVisual(); }
+	void updateVisual() { initVisual(); }
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
     virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_VARIABLE; }
@@ -239,10 +240,10 @@ public:
     virtual void initVisual();
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloatVector2Variable : public OglFloatVectorVariable
+class SOFA_OPENGL_VISUAL_API OglFloatVector2Variable : public OglVariable<helper::vector<defaulttype::Vec2f> >
 {
 public:
-    SOFA_CLASS(OglFloatVector2Variable,OglFloatVectorVariable);
+    SOFA_CLASS(OglFloatVector2Variable, OglVariable<helper::vector<defaulttype::Vec2f> >);
 
     OglFloatVector2Variable();
     virtual ~OglFloatVector2Variable() { }
@@ -251,10 +252,10 @@ public:
     virtual void initVisual();
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloatVector3Variable : public OglFloatVectorVariable
+class SOFA_OPENGL_VISUAL_API OglFloatVector3Variable : public OglVariable<helper::vector<defaulttype::Vec3f> >
 {
 public:
-    SOFA_CLASS(OglFloatVector3Variable,OglFloatVectorVariable);
+    SOFA_CLASS(OglFloatVector3Variable, OglVariable<helper::vector<defaulttype::Vec3f> >);
 
     OglFloatVector3Variable();
     virtual ~OglFloatVector3Variable() { }
@@ -263,10 +264,10 @@ public:
     virtual void initVisual();
 };
 
-class SOFA_OPENGL_VISUAL_API OglFloatVector4Variable : public OglFloatVectorVariable
+class SOFA_OPENGL_VISUAL_API OglFloatVector4Variable : public OglVariable<helper::vector<defaulttype::Vec4f> >
 {
 public:
-    SOFA_CLASS(OglFloatVector4Variable,OglFloatVectorVariable);
+    SOFA_CLASS(OglFloatVector4Variable, OglVariable<helper::vector<defaulttype::Vec4f> >);
 
     OglFloatVector4Variable();
     virtual ~OglFloatVector4Variable() { }

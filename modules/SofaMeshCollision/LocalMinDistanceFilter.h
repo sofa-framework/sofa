@@ -38,7 +38,6 @@ namespace component
 
 namespace collision
 {
-using namespace defaulttype;
 
 class LocalMinDistanceFilter;
 
@@ -196,7 +195,7 @@ public:
      */
     void invalidate();
 protected:
-    Rigid3Types::Coord *pos;
+    defaulttype::Rigid3Types::Coord *pos;
 
 
 private:

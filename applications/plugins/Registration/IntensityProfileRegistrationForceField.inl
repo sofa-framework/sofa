@@ -69,6 +69,7 @@ IntensityProfileRegistrationForceField<DataTypes, ImageTypes>::IntensityProfileR
     , profiles(initData(&profiles,ImageTypes(),"profiles","computed intensity profiles"))
     , similarity(initData(&similarity,similarityTypes(),"similarity","similarity image"))
     , edgeIntensityThreshold(initData(&edgeIntensityThreshold,(Real)0.0,"edgeIntensityThreshold", "The threshold value between two edges."))
+    , useAnisotropicStiffness(initData(&useAnisotropicStiffness,false,"useAnisotropicStiffness", "use more accurate but non constant stiffness matrix."))
     , highToLowSignal(initData(&highToLowSignal,true,"highToLowSignal", ""))
     , Sizes(initData(&Sizes,Vec<2,unsigned int>(5,5),"sizes","Inwards/outwards profile size."))
     , Step(initData(&Step,(Real)1E-2,"step","Spacing of the profile discretization."))
@@ -78,7 +79,6 @@ IntensityProfileRegistrationForceField<DataTypes, ImageTypes>::IntensityProfileR
     , searchRange(initData(&searchRange,(unsigned int)10,"searchRange","Number of inwards/outwards steps for searching the most similar profiles."))
     , ks(initData(&ks,(Real)100.0,"stiffness","uniform stiffness for the all springs"))
     , kd(initData(&kd,(Real)5.0,"damping","uniform damping for the all springs"))
-    , springs(initData(&springs,"spring","index, stiffness, damping"))
     , showArrowSize(initData(&showArrowSize,0.01f,"showArrowSize","size of the axis"))
     , drawMode(initData(&drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
 {
@@ -88,7 +88,7 @@ IntensityProfileRegistrationForceField<DataTypes, ImageTypes>::IntensityProfileR
 
     helper::OptionsGroup MeasureOptions(2,"Sum of square differences", "Normalized cross correlation");
     MeasureOptions.setSelectedItem(SIMILARITY_NCC);
-    SimilarityMeasure.setValue(MeasureOptions); 
+    SimilarityMeasure.setValue(MeasureOptions);
 
     refImage.setReadOnly(true);           refImage.setGroup("Inputs");
     image.setReadOnly(true);              image.setGroup("Inputs");
@@ -100,20 +100,12 @@ IntensityProfileRegistrationForceField<DataTypes, ImageTypes>::IntensityProfileR
     refProfiles.setReadOnly(true);       refProfiles.setGroup("Outputs");
     profiles.setReadOnly(true);          profiles.setGroup("Outputs");
     similarity.setReadOnly(true);        similarity.setGroup("Outputs");
-    springs.setReadOnly(true);           springs.setGroup("Outputs");
-
 }
 
 
 template<class DataTypes,class ImageTypes>
 void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::reinit()
 {
-    for (unsigned int i=0;i<springs.getValue().size();++i)
-    {
-        (*springs.beginEdit())[i].ks = (Real) ks.getValue();
-        (*springs.beginEdit())[i].kd = (Real) kd.getValue();
-    }
-
     this->udpateProfiles(true);
 }
 
@@ -127,11 +119,8 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::init()
 
     if(this->mstate)
     {
-        // add a spring for every input point
-        const VecCoord& x = *this->mstate->getX();
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         //RDataRefVecCoord x(*this->getMState()->read(core::ConstVecCoordId::position()));
-        this->clearSprings(x.size());
-        for(unsigned int i=0;i<x.size();i++) this->addSpring(i, (Real) ks.getValue(),(Real) kd.getValue());
 
         RDataRefVecCoord dir(this->directions);
         if(dir.size() != x.size()) serr<<"IntensityProfileRegistrationForceField: invalid 'directions' size "<< endl;
@@ -149,7 +138,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::init()
     usingThresholdFinding = false;
     if(edgeIntensityThreshold.getValue())
     {
-            usingThresholdFinding = true;
+        usingThresholdFinding = true;
     }
 
     if(!usingThresholdFinding)
@@ -162,6 +151,11 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::init()
 
 }
 
+
+
+/// compute intensity profile image by sampling the input image along 'direction'.
+/// can be done for the current or reference position/image
+/// Inward and outward profile sizes are defined by data 'Sizes' (+ searchRange, if done on current position)
 
 template<class DataTypes,class ImageTypes>
 void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfiles(bool ref)
@@ -179,7 +173,9 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 
     // get current data
     const CImg<T>& img = in->getCImg(t);
-    const VecCoord& pos = *(ref?this->mstate->getX0():this->mstate->getX());
+    const VecCoord& pos = (ref?
+                           this->mstate->read(core::ConstVecCoordId::restPosition())->getValue():
+                           this->mstate->read(core::ConstVecCoordId::position())->getValue());
     const RDataRefVecCoord dir(ref?this->refDirections:this->directions);
     if(dir.size() != pos.size()) return;
 
@@ -190,7 +186,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 
     waImage out(ref?this->refProfiles:this->profiles);
     if( out->isEmpty() )  out->getCImgList().push_back(CImg<T>());
-    CImg<T> &prof = out->getCImg(0);    
+    CImg<T> &prof = out->getCImg(0);
 
     if(dims[0]!= (unsigned int)prof.width() || dims[1]!=(unsigned int)prof.height() || dims[2]!=(unsigned int)prof.depth()  || dims[3]!=(unsigned int)prof.spectrum())
         prof.assign(dims[0],dims[1],dims[2],dims[3]);
@@ -206,7 +202,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
     if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
     {
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+# pragma omp parallel for
 #endif
         for(unsigned int i=0;i<dims[1];i++)
         {
@@ -224,7 +220,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
     else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
     {
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+# pragma omp parallel for
 #endif
         for(unsigned int i=0;i<dims[1];i++)
         {
@@ -234,7 +230,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
             {
                 Coord Tp = inT->toImage(p);
                 if(!in->isInside(Tp[0],Tp[1],Tp[2])) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
-                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = img.linear_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue);
+                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = (T)img.linear_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue);
                 p+=dp;
             }
         }
@@ -242,7 +238,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
     else    // INTERPOLATION_CUBIC
     {
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+# pragma omp parallel for
 #endif
         for(unsigned int i=0;i<dims[1];i++)
         {
@@ -252,13 +248,15 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
             {
                 Coord Tp = inT->toImage(p);
                 if(!in->isInside(Tp[0],Tp[1],Tp[2])) for(unsigned int k=0;k<dims[3];k++) { prof(j,i,0,k) = OutValue; msk(j,i,0,k) = 1; }
-                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue,cimg::type<T>::min(),cimg::type<T>::max());
+                else for(unsigned int k=0;k<dims[3];k++) prof(j,i,0,k) = (T)img.cubic_atXYZ(Tp[0],Tp[1],Tp[2],k,OutValue,cimg::type<T>::min(),cimg::type<T>::max());
                 p+=dp;
             }
         }
     }
 }
 
+/// compute silarity image by convoluing current and reference profiles
+/// the width of the resulting image is 2*searchRange
 
 template<class DataTypes,class ImageTypes>
 void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilarity()
@@ -268,7 +266,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 
     if( IP->isEmpty() || IPref->isEmpty() || !this->mstate)  return;
 
-    const VecCoord& pos = *this->mstate->getX();
+    const VecCoord& pos = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const CImg<T>& prof = IP->getCImg(0);
     const CImg<T>& profref = IPref->getCImg(0);
 
@@ -300,7 +298,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
     if(this->SimilarityMeasure.getValue().getSelectedId()==SIMILARITY_SSD)
     {
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+# pragma omp parallel for
 #endif
         for(unsigned int i=0;i<dims[1];i++)
         {
@@ -325,7 +323,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
     else // SIMILARITY_NCC
     {
 #ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+# pragma omp parallel for
 #endif
         for(unsigned int i=0;i<dims[1];i++)
         {
@@ -373,62 +371,6 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 }
 
 
-template<class DataTypes,class ImageTypes>
-void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addSpringForce(double& potentialEnergy, VecDeriv& f,const  VecCoord& p,const VecDeriv& v,int i, const Spring& spring)
-{
-    int a = spring.m1;
-    Coord u = this->targetPos[i]-p[a];
-    Real d = u.norm();
-    if( d>1.0e-4 )
-    {
-        Real inverseLength = 1.0f/d;
-        u *= inverseLength;
-        Real elongation = (Real)d;
-        potentialEnergy += elongation * elongation * spring.ks / 2;
-        /*          serr<<"addSpringForce, p = "<<p<<sendl;
-            serr<<"addSpringForce, new potential energy = "<<potentialEnergy<<sendl;*/
-        Deriv relativeVelocity = -v[a];
-        Real elongationVelocity = dot(u,relativeVelocity);
-        Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
-        Deriv force = u*forceIntensity;
-        f[a]+=force;
-        Mat& m = this->dfdx[i];
-        Real tgt = forceIntensity * inverseLength;
-        for( int j=0; j<N; ++j )
-        {
-            // anisotropic
-            for( int k=0; k<N; ++k ) m[j][k] = tgt * u[j] * u[k];
-            /*
-          // isotropic
-          for( int k=0; k<N; ++k ) m[j][k] = ((Real)spring.ks-tgt) * u[j] * u[k];
-          m[j][j] += tgt;
-          */
-        }
-    }
-    else // null length, no force and no stiffness
-    {
-        Mat& m = this->dfdx[i];
-        for( int j=0; j<N; ++j )
-        {
-            for( int k=0; k<N; ++k )
-            {
-                m[j][k] = 0;
-            }
-        }
-    }
-}
-
-template<class DataTypes,class ImageTypes>
-void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addSpringDForce(VecDeriv& df,const  VecDeriv& dx, int i, const Spring& spring, double kFactor, double /*bFactor*/)
-{
-    const int a = spring.m1;
-    const Coord d = -dx[a];
-    Deriv dforce = this->dfdx[i]*d;
-    dforce *= kFactor;
-    df[a]+=dforce;
-    //serr<<"addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
-}
-
 
 
 template<class DataTypes,class ImageTypes>
@@ -439,9 +381,11 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addForce(cons
     const VecDeriv&  v = _v.getValue();			//RDataRefVecDeriv v(_v);
     RDataRefVecCoord dirs ( directions );
 
-    const helper::vector<Spring>& s= this->springs.getValue();
-    this->dfdx.resize(s.size());
-    this->targetPos.resize(s.size());
+    unsigned int nb = x.size();
+
+    if(this->useAnisotropicStiffness.getValue())    this->dfdx.resize(nb);
+    this->targetPos.resize(nb);
+    Real k = this->ks.getValue(),kd=this->kd.getValue();
 
     udpateProfiles();
     if(usingThresholdFinding)
@@ -457,11 +401,11 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addForce(cons
 
     m_potentialEnergy = 0;
     //serr<<"addForce()"<<sendl;
-    for (unsigned int i=0; i<s.size(); i++)
+    for (unsigned int i=0; i<nb; i++)
     {
         if(usingThresholdFinding)
         {
-            targetPos[i]=x[s[i].m1]+dirs[s[i].m1]*(Real)closestThreshold[i]*Step.getValue();
+            targetPos[i]=x[i]+dirs[i]*(Real)closestThreshold[i]*Step.getValue();
         }
         else
         {
@@ -472,21 +416,32 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addForce(cons
             int L=(int)searchRange.getValue();
 
             const Ts* ptr=simi.data(0,i);
-            Ts minimum=(Ts)threshold.getValue(); 
-            int lmin=0; 
-            for (int l=-L; l<=L; l++) 
-            { 
-                if(*ptr<minimum) 
-                { 
-                    minimum=*ptr; 
-                    lmin=l; 
-                } 
-                ptr++; 
+            Ts minimum=(Ts)threshold.getValue();
+            int lmin=0;
+            for (int l=-L; l<=L; l++)
+            {
+                if(*ptr<minimum)
+                {
+                    minimum=*ptr;
+                    lmin=l;
+                }
+                ptr++;
             }
-            targetPos[i]=x[s[i].m1]+dirs[s[i].m1]*(Real)lmin*Step.getValue();
+            targetPos[i]=x[i]+dirs[i]*(Real)lmin*Step.getValue();
         }
-        this->addSpringForce(m_potentialEnergy,f,x,v, i, s[i]);
-        //serr<<"addForce() between "<<springs[i].m1<<" and "<<targetPos[springs[i].m1]<<sendl;
+
+        // add rest spring force
+        //serr<<"addForce() between "<<i<<" and "<<closestPos[i]<<sendl;
+        Coord u = this->targetPos[i]-x[i];
+        Real nrm2 = u.norm2();
+        f[i]+=k*u;
+        if(this->useAnisotropicStiffness.getValue())
+        {
+            if(nrm2) this->dfdx[i] = defaulttype::dyad(u,u)/u.norm2();
+            else this->dfdx[i].Identity(); // use to stabilize points with no force
+        }
+        m_potentialEnergy += nrm2 * k * 0.5;
+        if(kd && nrm2) f[i]-=kd*u*dot(u,v[i])/u.norm2();
     }
     _f.endEdit();
 }
@@ -596,9 +551,6 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::updateThresho
             closestThreshold[i] = 0;
         }
     }
-
-
-
 }
 
 /*
@@ -614,21 +566,21 @@ bool IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::getSignalLoca
     const CImg<T>& prof = IP->getCImg(0);
     CImg<bool> &msk= this->mask;
 
-       Real lowerThreshold = 0;
-        Real upperThreshold = 0;
-        if(highToLowSignal.getValue())
-        {
-            lowerThreshold = edgeIntensityThreshold.getValue();
-            upperThreshold = (Real)cimg::type<T>::max();
-        }
-        else
-        {
-            lowerThreshold = (Real)cimg::type<T>::min();
-            upperThreshold = edgeIntensityThreshold.getValue();
-        }
+    Real lowerThreshold = 0;
+    Real upperThreshold = 0;
+    if(highToLowSignal.getValue())
+    {
+        lowerThreshold = edgeIntensityThreshold.getValue();
+        upperThreshold = (Real)cimg::type<T>::max();
+    }
+    else
+    {
+        lowerThreshold = (Real)cimg::type<T>::min();
+        upperThreshold = edgeIntensityThreshold.getValue();
+    }
 
-     T value = prof(signal, point);
- 
+    T value = prof(signal, point);
+
     if(msk(signal, point))
         return IN_BACKGROUND;
 
@@ -642,75 +594,72 @@ bool IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::getSignalLoca
 template<class DataTypes,class ImageTypes>
 void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addDForce(const core::MechanicalParams* mparams,DataVecDeriv& _df , const DataVecDeriv&  _dx )
 {
-    VecDeriv& df = *_df.beginEdit();		//WDataRefVecDeriv df(_df);
-    const VecDeriv&  dx = _dx.getValue();	// RDataRefVecDeriv dx(_dx);
+    sofa::helper::WriteAccessor< DataVecDeriv > df = _df;
+    sofa::helper::ReadAccessor< DataVecDeriv > dx = _dx;
+    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue())  * this->ks.getValue() ;
+    if(!k) return;
 
-    double kFactor       =  mparams->kFactor();
-    double bFactor       =  mparams->bFactor();
-
-    const helper::vector<Spring>& s = this->springs.getValue();
-
-    //serr<<"addDForce, dx = "<<dx<<sendl;
-    //serr<<"addDForce, df before = "<<f<<sendl;
-    for (unsigned int i=0; i<s.size(); i++)
-    {
-        this->addSpringDForce(df,dx, i, s[i], kFactor, bFactor);
-    }
-    //serr<<"addDForce, df = "<<f<<sendl;
-    _df.endEdit();
+    if(this->useAnisotropicStiffness.getValue())
+        for (unsigned int i=0; i<dx.size(); i++)        df[i] -= this->dfdx[i]*dx[i]  * k;
+    else
+        for (unsigned int i=0; i<dx.size(); i++)        df[i] -= dx[i] * k;
 }
+
 
 template<class DataTypes,class ImageTypes>
 void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addKToMatrix(const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    double kFact = mparams->kFactor();
+    Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) * this->ks.getValue();
+    if(!k) return;
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
+    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
+    unsigned int offset = mref.offset;
+    const int N = Coord::total_size, nb= this->targetPos.size();
 
-    sofa::core::behavior::MultiMatrixAccessor::MatrixRef mat = matrix->getMatrix(this->mstate);
-    if (!mat) return;
-    const sofa::helper::vector<Spring >& ss = this->springs.getValue();
-    const unsigned int n = ss.size() < this->dfdx.size() ? ss.size() : this->dfdx.size();
-    for (unsigned int e=0; e<n; e++)
+    if(this->useAnisotropicStiffness.getValue())
     {
-        const Spring& s = ss[e];
-        unsigned p1 = mat.offset+Deriv::total_size*s.m1;
-        const Mat& m = this->dfdx[e];
-        for(int i=0; i<N; i++)
-            for (int j=0; j<N; j++)
-            {
-                Real k = (Real)(m[i][j]*kFact);
-                mat.matrix->add(p1+i,p1+j, -k);
-            }
+        for (unsigned int index = 0; index <nb; index++)
+            for(int i = 0; i < N; i++)
+                for(int j = 0; j < N; j++)
+                    mat->add(offset + N * index + i, offset + N * index + j, -k*this->dfdx[index][i][j]);
     }
+    else
+    {
+        for (unsigned int index = 0; index <nb; index++)
+            for(int i = 0; i < N; i++)
+                mat->add(offset + N * index + i, offset + N * index + i, -k);
+    }
+
 }
 
 template<class DataTypes,class ImageTypes>
 void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::draw(const core::visual::VisualParams* vparams)
 {
+    if(ks.getValue()==0) return;
+
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (this->targetPos.size()!=springs.getValue().size()) return;
 
     RDataRefVecCoord x(*this->getMState()->read(core::ConstVecCoordId::position()));
-    //const VecCoord& x = *this->mstate->getX();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    std::vector< Vector3 > points;
-
-    const helper::vector<Spring>& springs = this->springs.getValue();
-
-    for (unsigned int i=0; i<springs.size(); i++)
+    unsigned int nb = this->targetPos.size();
+    if (vparams->displayFlags().getShowForceFields())
     {
-        Vector3 point2,point1;
-        point1 = DataTypes::getCPos(x[springs[i].m1]);
-        point2 = DataTypes::getCPos(this->targetPos[i]);
-        points.push_back(point1);
-        points.push_back(point2);
+        std::vector< Vector3 > points;
+        for (unsigned int i=0; i<nb; i++)
+        {
+            Vector3 point1 = DataTypes::getCPos(x[i]);
+            Vector3 point2 = DataTypes::getCPos(this->targetPos[i]);
+            points.push_back(point1);
+            points.push_back(point2);
+        }
+
+        const Vec<4,float> c(0,1,0.5,1);
+        if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)	vparams->drawTool()->drawLines(points, 1, c);
+        else if (drawMode.getValue() == 1)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawCylinder(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
+        else if (drawMode.getValue() == 2)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawArrow(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
+        else serr << "No proper drawing mode found!" << sendl;
     }
-
-    const Vec<4,float> c(0,1,0.5,1);
-
-    if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)	vparams->drawTool()->drawLines(points, 1, c);
-    else if (drawMode.getValue() == 1)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawCylinder(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
-    else if (drawMode.getValue() == 2)	for (unsigned int i=0;i<points.size()/2;++i) vparams->drawTool()->drawArrow(points[2*i+1], points[2*i], showArrowSize.getValue(), c);
-    else serr << "No proper drawing mode found!" << sendl;
 }
 
 

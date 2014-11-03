@@ -37,6 +37,8 @@ namespace component
 namespace engine
 {
 
+using namespace sofa::defaulttype;
+
 SOFA_DECL_CLASS(SubsetTopology)
 
 int SubsetTopologyClass = core::RegisterObject("Engine used to create subset topology given box, sphere, plan, ...")

@@ -41,10 +41,6 @@ namespace component
 namespace constraintset
 {
 
-using helper::vector;
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class DistanceLMConstraintInternalData
@@ -81,16 +77,16 @@ protected:
 
     DistanceLMConstraint( MechanicalState *dof)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof)
-        , vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+        , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
 
     DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2)
         : core::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2)
-        , vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+        , vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
 
     DistanceLMConstraint()
-        : vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+        : vecConstraint(sofa::core::objectmodel::Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {}
 
     ~DistanceLMConstraint() {};

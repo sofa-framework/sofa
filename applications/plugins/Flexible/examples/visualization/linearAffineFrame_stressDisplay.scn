@@ -28,17 +28,17 @@
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" src="@../loader" /> 
 		<MechanicalObject  template="Vec3d" name="pts"  useMask="1"  />
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+	    	<LinearMapping template="Affine,Vec3d"/>
 	    </Node>
 
 	  <Node 	name="behavior"   >
 	  	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="300" clearData="false"/>
 		<MechanicalObject template="F331" name="F" />
-	    	<LinearMapping template="Mapping&lt;Affine,F331&gt;"  />
+	    	<LinearMapping template="Affine,F331"  />
 
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" name="E"  /> 
-		    <GreenStrainMapping template="Mapping&lt;F331,E331&gt;"    />
+		    <GreenStrainMapping template="F331,E331"    />
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="5"/> 
 		    <!-- pyhon script takes a path to a node containing a static mesh named 'mesh' and mapped points -->
 		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Frame" variables="../../collision "/> 
@@ -47,7 +47,7 @@
 
 	    <Node 	name="visual"   >
 		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
-	    	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+	    	<LinearMapping template="Affine,ExtVec3f"/>
 	    </Node>
     </Node>
 

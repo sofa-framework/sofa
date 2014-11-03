@@ -4,4 +4,5 @@ set(PYTHON_FILES
     python/LambdaPropagation.py
     python/UniformCompliance.py
     python/GenerateRigid.py
+    python/friction.py
 )

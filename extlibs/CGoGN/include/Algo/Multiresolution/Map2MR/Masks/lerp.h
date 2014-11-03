@@ -56,8 +56,11 @@ public:
 
 	bool operator() (Dart d)
 	{
+		std::cout << "dartIndex(d) = " << m_map.dartIndex(d) << std::endl;
 		m_map.decCurrentLevel() ;
+		std::cout << "dartIndex(d) = " << m_map.dartIndex(d) << std::endl;
 		typename PFP::VEC3 p = m_position[d] ;
+		std::cout << "p = " << p << std::endl;
 		m_map.incCurrentLevel() ;
 
 		m_position[d] = p ;

@@ -43,10 +43,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 NormalsFromPoints<DataTypes>::NormalsFromPoints()
     :   position(initData(&position,"position","Vertices of the mesh"))
@@ -62,7 +58,7 @@ NormalsFromPoints<DataTypes>::NormalsFromPoints()
 template <class DataTypes>
 void NormalsFromPoints<DataTypes>::init()
 {
-    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     addInput(&position);
     addInput(&triangles);
     addInput(&quads);

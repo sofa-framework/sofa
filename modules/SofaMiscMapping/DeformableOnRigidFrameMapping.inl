@@ -56,8 +56,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
 template <class TIn, class TInRoot, class TOut>
 DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::DeformableOnRigidFrameMapping()
     : index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) )
@@ -713,13 +711,13 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateV()
 //{
 //	if (m_fromModel!=NULL && m_toModel->getV()!=NULL && m_fromModel->getV()!=NULL)
-//		applyJ(m_toModel->read(core::ConstVecCoordId::velocity())->getValue(), m_fromModel->read(core::ConstVecCoordId::velocity())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
+//		applyJ(m_toModel->read(core::ConstVecDerivId::velocity())->getValue(), m_fromModel->read(core::ConstVecCoordId::velocity())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getV()));
 //
 //	if( this->f_printLog.getValue()){
 //		serr<<"DeformableOnRigidFrameMapping::propagateV processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
-//			serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecCoordId::velocity())->getValue();
-//		serr<<"  - V input: "<<m_fromModel->read(core::ConstVecCoordId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
+//			serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecDerivId::velocity())->getValue();
+//		serr<<"  - V input: "<<m_fromModel->read(core::ConstVecDerivId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
 //	}
 //
 //}
@@ -844,8 +842,8 @@ template <class TIn, class TInRoot, class TOut>
 void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings()) return;
-    std::vector< Vector3 > points;
-    Vector3 point;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    sofa::defaulttype::Vector3 point;
 
     const typename Out::VecCoord& x = m_toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
@@ -853,7 +851,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::draw(const core::visual:
         point = Out::getCPos(x[i]);
         points.push_back(point);
     }
-    vparams->drawTool()->drawPoints(points, 7, Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->drawPoints(points, 7, sofa::defaulttype::Vec<4,float>(1,1,0,1));
 }
 
 } // namespace mapping

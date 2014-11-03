@@ -56,10 +56,6 @@ namespace component
 namespace mass
 {
 
-using sofa::component::topology::PointData;
-
-// template<class Vec> void readVec1(Vec& vec, const char* str);
-
 template<class DataTypes, class TMassType>
 class DiagonalMassInternalData
 {
@@ -115,7 +111,7 @@ public:
     {
     public:
         typedef typename DiagonalMass<DataTypes,TMassType>::MassVector MassVector;
-        DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, PointData<MassVector>* _data) : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm) {}
+        DMassPointHandler(DiagonalMass<DataTypes,TMassType>* _dm, sofa::component::topology::PointData<MassVector>* _data) : topology::TopologyDataHandler<Point,MassVector>(_data), dm(_dm) {}
 
         void applyCreateFunction(unsigned int pointIndex, TMassType& m, const Point&, const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double > &);

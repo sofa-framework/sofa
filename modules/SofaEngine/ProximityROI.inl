@@ -48,10 +48,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 ProximityROI<DataTypes>::ProximityROI()
     : centers( initData(&centers, "centers", "Center(s) of the sphere(s)") )
@@ -80,11 +76,11 @@ void ProximityROI<DataTypes>::init()
 {
     if (!f_X0.isSet())
     {
-        MechanicalState<DataTypes>* mstate;
+        sofa::core::behavior::MechanicalState<DataTypes>* mstate;
         this->getContext()->get(mstate);
         if (mstate)
         {
-            BaseData* parent = mstate->findData("rest_position");
+            sofa::core::objectmodel::BaseData* parent = mstate->findData("rest_position");
             if (parent)
             {
                 f_X0.setParent(parent);
@@ -97,7 +93,7 @@ void ProximityROI<DataTypes>::init()
             this->getContext()->get(loader);
             if (loader)
             {
-                BaseData* parent = loader->findData("position");
+                sofa::core::objectmodel::BaseData* parent = loader->findData("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);

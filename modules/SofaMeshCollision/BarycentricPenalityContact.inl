@@ -38,9 +38,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace core::collision;
-
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricPenalityContact(CollisionModel1* _model1, CollisionModel2* _model2, Intersection* _intersectionMethod)
     : model1(_model1), model2(_model2), intersectionMethod(_intersectionMethod), ff(NULL), parent(NULL)
@@ -77,8 +74,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
-        MechanicalState1* mstate1 = mapper1.createMapping();
-        MechanicalState2* mstate2 = mapper2.createMapping();
+        MechanicalState1* mstate1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
+        MechanicalState2* mstate2 = mapper2.createMapping(GenerateStirngID::generate().c_str());
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
         ff->setName( getName() );
         setInteractionTags(mstate1, mstate2);
@@ -101,13 +98,13 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 
     for (int i=0; i<insize; i++)
     {
-        DetectionOutput* o = &outputs[i];
+        core::collision::DetectionOutput* o = &outputs[i];
         // find this contact in contactIndex, possibly creating a new entry initialized by 0
         int& index = contactIndex[o->id];
         if (index < 0) // duplicate contact
         {
             int i2 = -1-index;
-            DetectionOutput* o2 = &outputs[i2];
+            core::collision::DetectionOutput* o2 = &outputs[i2];
             if (o2->value <= o->value)
             {
                 // current contact is ignored
@@ -178,7 +175,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
     {
         int index = oldIndex[i];
         if (index < 0) continue; // this contact is ignored
-        DetectionOutput* o = &outputs[i];
+        core::collision::DetectionOutput* o = &outputs[i];
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
@@ -283,4 +280,3 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 
 
 #endif
-

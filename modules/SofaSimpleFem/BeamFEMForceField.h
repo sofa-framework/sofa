@@ -49,12 +49,6 @@ class PoissonContainer;
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using sofa::helper::vector;
-using topology::EdgeData;
-using topology::Edge;
-using topology::TopologyDataHandler;
-
 /** Compute Finite Element forces based on 6D beam elements.
 */
 template<class DataTypes>
@@ -78,11 +72,11 @@ public:
     typedef topology::Edge Element;
     typedef sofa::helper::vector<topology::Edge> VecElement;
     typedef helper::vector<unsigned int> VecIndex;
-    typedef Vec<3, Real> Vec3;
+    typedef defaulttype::Vec<3, Real> Vec3;
 
 protected:
 
-    typedef Vec<12, Real> Displacement;        ///< the displacement vector
+    typedef defaulttype::Vec<12, Real> Displacement;        ///< the displacement vector
 
     //typedef Mat<6, 6, Real> MaterialStiffness;    ///< the matrix of material stiffness
     //typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
@@ -92,10 +86,10 @@ protected:
     //typedef vector<StrainDisplacement> VecStrainDisplacement;        ///< a vector of strain-displacement matrices
     //VecStrainDisplacement _strainDisplacements;                       ///< the strain-displacement matrices vector
 
-    typedef Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
+    typedef defaulttype::Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
 
 
-    typedef Mat<12, 12, Real> StiffnessMatrix;
+    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
     //typedef topology::EdgeData<StiffnessMatrix> VecStiffnessMatrices;         ///< a vector of stiffness matrices
     //VecStiffnessMatrices _stiffnessMatrices;                    ///< the material stiffness matrices vector
 
@@ -134,7 +128,7 @@ protected:
 
         //NewMAT::Matrix _Ke;
 
-        Quat quat;
+        defaulttype::Quat quat;
 
         //void localStiffness();
         void init(double E, double L, double nu, double r, double rInner);
@@ -182,22 +176,22 @@ protected:
     //just for draw forces
     VecDeriv _forces;
 
-    EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
+    topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
 #ifdef SOFA_HAVE_EIGEN2
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 #endif
 
-    class BeamFFEdgeHandler : public TopologyDataHandler<Edge,sofa::helper::vector<BeamInfo> >
+    class BeamFFEdgeHandler : public topology::TopologyDataHandler<topology::Edge,sofa::helper::vector<BeamInfo> >
     {
     public:
         typedef typename BeamFEMForceField<DataTypes>::BeamInfo BeamInfo;
-        BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, EdgeData<sofa::helper::vector<BeamInfo> >* data)
-            :TopologyDataHandler<Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
+        BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<BeamInfo> >* data)
+            :topology::TopologyDataHandler<topology::Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex, BeamInfo&,
-                const Edge& e,
-                const sofa::helper::vector<unsigned int> &,
-                const sofa::helper::vector< double > &);
+                                 const topology::Edge& e,
+                                 const sofa::helper::vector<unsigned int> &,
+                                 const sofa::helper::vector< double > &);
 
     protected:
         BeamFEMForceField<DataTypes>* ff;
@@ -229,7 +223,7 @@ protected:
     container::PoissonContainer* poissonContainer;
 //	container::RadiusContainer* radiusContainer;
 
-    Quat& beamQuat(int i)
+    defaulttype::Quat& beamQuat(int i)
     {
         helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
         return bd[i].quat;
@@ -268,10 +262,10 @@ public:
 
 protected:
 
-    void drawElement(int i, std::vector< Vector3 >* points, const VecCoord& x);
+    void drawElement(int i, std::vector< defaulttype::Vector3 >* points, const VecCoord& x);
 
     //void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
-    Real peudo_determinant_for_coef ( const Mat<2, 3, Real>&  M );
+    Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
 
     //void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
 

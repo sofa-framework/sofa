@@ -3,11 +3,10 @@
 	<VisualStyle name="visualStyle1"  displayFlags="hideVisual showBehaviorModels showForceFields showMappings" />
 	<CompliantAttachButtonSetting button="Left" />
 	
-	      <RequiredPlugin pluginName="Flexible"/>
       <RequiredPlugin pluginName="Compliant"/>
 	
 	<Node 	 name="complianceSolverScene"  >
-		<AssembledSolver />
+		<CompliantImplicitSolver />
 		<LDLTSolver/>
                 <GridMeshCreator name="loader"  filename="nofile"  rotation="90 0 0"  scale3d="1 1 1"  resolution="5 5"  trianglePattern="0" />
 		<MeshTopology name="mesh"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />

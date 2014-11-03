@@ -38,14 +38,15 @@
 	   <!--  <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="-1 -1 4"/>  -->
  
 	<MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;Affine,F332&gt;"  />
+    	<LinearMapping template="Affine,F332"  />
 
 	<Node 	name="E"   >
 	    <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
 
-	    <MechanicalObject  template="E333" name="E"  />
-	    <GreenStrainMapping template="Mapping&lt;F332,E333&gt;"  />
-	    <HookeForceField  template="E333" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="0"  />
+	    <MechanicalObject  template="E332" name="E"  />
+<!-- 	    <GreenStrainMapping template="F332,E332"  /> -->
+            <CorotationalStrainMapping template="F332,E332" geometricStiffness="true" />
+	    <HookeForceField  template="E332" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="0"  />
 	</Node>
 		
     </Node>
@@ -55,12 +56,12 @@
 			<Mesh src="@MeshLoader" /> 
 			<MechanicalObject  name="PointSet" useMask="0"/>
 			<UniformMass totalMass="1000" />		
-			<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+			<LinearMapping template="Affine,Vec3d"/>
 		</Node>
 
 		<Node name="Visu">
-			<OglModel name="Beam" fileMesh="../data/mesh/steak.obj" texturename="../data/mesh/steak.png" normals="0" color="1 .8 .3 1" />
-			<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+			<OglModel name="Beam" fileMesh="../data/mesh/steak.obj" texturename="../data/mesh/steak.png" normals="0" />
+			<LinearMapping template="Affine,ExtVec3f"/>
 		</Node>
     </Node>
 </Node>

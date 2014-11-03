@@ -34,8 +34,6 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 
@@ -52,12 +50,6 @@ namespace component
 
 namespace projectiveconstraintset
 {
-
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
 
 
 
@@ -106,7 +98,7 @@ const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const cor
 //                cerr<<"PointConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix before = " << jacobian << endl;
         for(unsigned j=0; j<blockSize; j++)
             jacobian.set( f_indices.getValue()[i]*blockSize+j, f_indices.getValue()[i]*blockSize+j, 0);
-        cerr<<"PointConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix after = " << jacobian << endl;
+        std::cerr<<"PointConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix after = " << jacobian << std::endl;
     }
 
     return &jacobian;
@@ -217,8 +209,8 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector< Vector3 > points;
-        Vector3 point;
+        std::vector< sofa::defaulttype::Vector3 > points;
+        sofa::defaulttype::Vector3 point;
         //serr<<"PointConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         for (SetIndexArray::const_iterator it = indices.begin();
                 it != indices.end();
@@ -227,12 +219,12 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
     }
     else // new drawing by spheres
     {
-        std::vector< Vector3 > points;
-        Vector3 point;
+        std::vector< sofa::defaulttype::Vector3 > points;
+        sofa::defaulttype::Vector3 point;
         glColor4f (1.0f,0.35f,0.35f,1.0f);
         for (SetIndexArray::const_iterator it = indices.begin();
                 it != indices.end();
@@ -241,7 +233,7 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 #endif /* SOFA_NO_OPENGL */
 }
@@ -249,15 +241,15 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 // Specialization for rigids
 #ifndef SOFA_FLOAT
 template <>
-void PointConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
+void PointConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void PointConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
+void PointConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void PointConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
+void PointConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
 template <>
-void PointConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
+void PointConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 
 

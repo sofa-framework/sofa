@@ -29,6 +29,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sstream>
 
 namespace sofa
 {
@@ -121,7 +122,9 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
                 //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
                     skipToEOL(file);
-                    while (fscanf(file, "%s", cmd) != EOF)
+                    std::ostringstream cmdScanFormat;
+                    cmdScanFormat << "%" << (sizeof(cmd) - 1) << "s";
+                    while (fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF)
                     {
                         if (!strcmp(cmd,"inrt"))
                         {
@@ -494,7 +497,9 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
                 //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
                 {
                     skipToEOL(file);
-                    while (fscanf(file, "%s", cmd) != EOF)
+                    std::ostringstream cmdScanFormat;
+                    cmdScanFormat << "%" << (sizeof(cmd) - 1) << "s";
+                    while (fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF)
                     {
                         if (!strcmp(cmd,"inrt"))
                         {

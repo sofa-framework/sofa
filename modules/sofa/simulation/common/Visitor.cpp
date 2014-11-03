@@ -47,9 +47,9 @@ Visitor::~Visitor()
 {
 }
 
-void Visitor::execute(sofa::core::objectmodel::BaseContext* c)
+void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool precomputedOrder)
 {
-    c->executeVisitor(this);
+    c->executeVisitor(this, precomputedOrder);
 }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -72,7 +72,7 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
     //Traversing the Graph: print the name of the context
     if (context != enteringBase)
     {
-        std::string info;
+        //std::string info;
         if (dirDown)
         {
             printNode("Node",context->getName());
@@ -139,7 +139,7 @@ void Visitor::startDumpVisitor(std::ostream *s, double time)
     std::cout << "startDumpVisitor" << std::endl;
     initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
     printActivated=true; outputVisitor=s;
-    std::string initDump;
+    //std::string initDump;
     std::ostringstream ff; ff << "<TraceVisitor time=\"" << time << "\">\n";
     dumpInfo(ff.str());
 };
@@ -180,7 +180,7 @@ void Visitor::printVector(core::behavior::BaseMechanicalState *mm, core::ConstVe
 
 void Visitor::printNode(const std::string &type, const std::string &name, const TRACE_ARGUMENT &arguments)
 {
-    std::cout << "printNode " << type << " " << name << std::endl;
+//    std::cout << "printNode " << type << " " << name << std::endl;
     if (Visitor::printActivated)
     {
         std::ostringstream s;

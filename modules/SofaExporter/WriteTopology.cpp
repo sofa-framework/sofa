@@ -103,7 +103,7 @@ void WriteTopologyCreator::addWriteTopology(core::topology::BaseMeshTopology* to
             gnode->addObject(wt);
             wt->f_writeContainers.setValue(recordContainers);
             wt->f_writeShellContainers.setValue(recordShellContainers);
-            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
+            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
                 wt->addTag(*it);
         }
 

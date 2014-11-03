@@ -46,9 +46,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-
 typedef container::DistanceGrid DistanceGrid;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,8 +65,8 @@ public:
     DistanceGrid* getGrid();
 
     bool isTransformed();
-    const Matrix3& getRotation();
-    const Vector3& getTranslation();
+    const defaulttype::Matrix3& getRotation();
+    const defaulttype::Vector3& getTranslation();
     bool isFlipped();
 
     void setGrid(DistanceGrid* surf);
@@ -78,13 +75,13 @@ public:
     /// Used to estimate velocity in case the distance grid itself is dynamic
     /// @{
     DistanceGrid* getPrevGrid();
-    const Matrix3& getPrevRotation();
-    const Vector3& getPrevTranslation();
+    const defaulttype::Matrix3& getPrevRotation();
+    const defaulttype::Vector3& getPrevTranslation();
     double getPrevDt();
     /// @}
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+    void setNewState(double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const defaulttype::Vector3& translation);
 };
 
 class SOFA_VOLUMETRIC_DATA_API RigidDistanceGridCollisionModel : public core::CollisionModel
@@ -97,16 +94,16 @@ protected:
     class ElementData
     {
     public:
-        Matrix3 rotation;
-        Vector3 translation;
+        defaulttype::Matrix3 rotation;
+        defaulttype::Vector3 translation;
         DistanceGrid* grid;
 
         /// @name Previous state data
         /// Used to estimate velocity in case the distance grid itself is dynamic
         /// @{
         DistanceGrid* prevGrid; ///< Previous grid
-        Matrix3 prevRotation; ///< Previous rotation
-        Vector3 prevTranslation; ///< Previous translation
+        defaulttype::Matrix3 prevRotation; ///< Previous rotation
+        defaulttype::Vector3 prevTranslation; ///< Previous translation
         double prevDt; ///< Time difference between previous and current state
         /// @}
 
@@ -116,20 +113,20 @@ protected:
 
     sofa::helper::vector<ElementData> elems;
     bool modified;
-    core::behavior::MechanicalState<RigidTypes>* rigid;
+    core::behavior::MechanicalState<defaulttype::RigidTypes>* rigid;
 
     void updateGrid();
 
 public:
-    typedef Rigid3Types InDataTypes;
-    typedef Vec3Types DataTypes;
+    typedef defaulttype::Rigid3Types InDataTypes;
+    typedef defaulttype::Vec3Types DataTypes;
     typedef RigidDistanceGridCollisionElement Element;
 
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileRigidDistanceGrid;
     Data< double > scale;
-    Data< Vector3 > translation;
-    Data< Vector3 > rotation;
+    Data< defaulttype::Vector3 > translation;
+    Data< defaulttype::Vector3 > rotation;
     Data< double > sampling;
     Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
     Data< int > nx;
@@ -161,29 +158,29 @@ public:
     {
         return elems[index].isTransformed;
     }
-    const Matrix3& getRotation(int index=0) const
+    const defaulttype::Matrix3& getRotation(int index=0) const
     {
         return elems[index].rotation;
     }
-    const Vector3& getTranslation(int index=0) const
+    const defaulttype::Vector3& getTranslation(int index=0) const
     {
         return elems[index].translation;
     }
 
-    const Vector3& getInitTranslation() const
+    const defaulttype::Vector3& getInitTranslation() const
     {
         return translation.getValue();
     }
 
-    const Matrix3 getInitRotation() const
+    const defaulttype::Matrix3 getInitRotation() const
     {
         SReal x = rotation.getValue()[0] * M_PI / 180;
         SReal y = rotation.getValue()[1] * M_PI / 180;
         SReal z = rotation.getValue()[2] * M_PI / 180;
 
-        Matrix3 X(Vector3(1,0,0), Vector3(0, cos(x), -sin(x)), Vector3(0, sin(x), cos(x)));
-        Matrix3 Y(Vector3(cos(y), 0, sin(y)), Vector3(0, 1, 0), Vector3(-sin(y), 0, cos(y)));
-        Matrix3 Z(Vector3(cos(z), -sin(z), 0), Vector3(sin(z), cos(z), 0), Vector3(0, 0, 1));
+        defaulttype::Matrix3 X(defaulttype::Vector3(1,0,0), defaulttype::Vector3(0, cos(x), -sin(x)), defaulttype::Vector3(0, sin(x), cos(x)));
+        defaulttype::Matrix3 Y(defaulttype::Vector3(cos(y), 0, sin(y)), defaulttype::Vector3(0, 1, 0), defaulttype::Vector3(-sin(y), 0, cos(y)));
+        defaulttype::Matrix3 Z(defaulttype::Vector3(cos(z), -sin(z), 0), defaulttype::Vector3(sin(z), cos(z), 0), defaulttype::Vector3(0, 0, 1));
         
         return X * Y * Z;
     }
@@ -199,11 +196,11 @@ public:
     {
         return elems[index].prevGrid;
     }
-    const Matrix3& getPrevRotation(int index=0) const
+    const defaulttype::Matrix3& getPrevRotation(int index=0) const
     {
         return elems[index].prevRotation;
     }
-    const Vector3& getPrevTranslation(int index=0) const
+    const defaulttype::Vector3& getPrevTranslation(int index=0) const
     {
         return elems[index].prevTranslation;
     }
@@ -213,7 +210,7 @@ public:
     }
 
     /// Set new grid and transform, keeping the old state to estimate velocity
-    void setNewState(int index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+    void setNewState(int index, double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const defaulttype::Vector3& translation);
 
     /// @}
 
@@ -248,16 +245,16 @@ inline DistanceGrid* RigidDistanceGridCollisionElement::getGrid() { return model
 inline void RigidDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
 
 inline bool RigidDistanceGridCollisionElement::isTransformed() { return model->isTransformed(index); }
-inline const Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
-inline const Vector3& RigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
+inline const defaulttype::Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
+inline const defaulttype::Vector3& RigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
 inline bool RigidDistanceGridCollisionElement::isFlipped() { return model->isFlipped(); }
 
 inline DistanceGrid* RigidDistanceGridCollisionElement::getPrevGrid() { return model->getPrevGrid(index); }
-inline const Matrix3& RigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
-inline const Vector3& RigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
+inline const defaulttype::Matrix3& RigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
+inline const defaulttype::Vector3& RigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
 inline double RigidDistanceGridCollisionElement::getPrevDt() { return model->getPrevDt(index); }
 
-inline void RigidDistanceGridCollisionElement::setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+inline void RigidDistanceGridCollisionElement::setNewState(double dt, DistanceGrid* grid, const defaulttype::Matrix3& rotation, const defaulttype::Vector3& translation)
 {
     return model->setNewState(this->getIndex(), dt, grid, rotation, translation);
 }
@@ -313,7 +310,7 @@ public:
                 C011 = 0+2+4,
                 C111 = 1+2+4
              };
-        typedef Vec<4,GSReal> Plane; ///< plane equation as defined by Plane.(x y z 1) = 0
+        typedef defaulttype::Vec<4,GSReal> Plane; ///< plane equation as defined by Plane.(x y z 1) = 0
         Plane faces[6]; ///< planes corresponding to the six faces (FX0,FX1,FY0,FY1,FZ0,FZ1)
         enum {FX0 = 0+0,
                 FX1 = 0+1,
@@ -386,9 +383,9 @@ public:
         }
 
         /// Get the local jacobian matrix of the deformation
-        Mat<3,3,double> Jdeform(const GCoord& b) const
+        defaulttype::Mat<3,3,double> Jdeform(const GCoord& b) const
         {
-            Mat<3,3,double> J;
+            defaulttype::Mat<3,3,double> J;
             for (int i=0; i<3; i++)
             {
                 // dp/dx = Dx + Dxy*y + Dxz*z + Dxyz*y*z
@@ -418,8 +415,8 @@ public:
         {
             // we want to find b2 so that deform(b2)-deform(b) = dir
             // we can use Newton's method using the jacobian of the deformation.
-            Mat<3,3,double> m = Jdeform(b);
-            Mat<3,3,double> minv;
+            defaulttype::Mat<3,3,double> m = Jdeform(b);
+            defaulttype::Mat<3,3,double> minv;
             minv.invert(m);
             return minv*dir;
         }
@@ -442,7 +439,7 @@ protected:
     Data< int > nz;
     sofa::core::objectmodel::DataFileName dumpfilename;
 
-    core::behavior::MechanicalState<Vec3Types>* ffd;
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* ffd;
     core::topology::BaseMeshTopology* ffdMesh;
     //topology::RegularGridTopology* ffdGrid;
     topology::RegularGridTopology* ffdRGrid;
@@ -450,8 +447,8 @@ protected:
 
     void updateGrid();
 public:
-    typedef Vec3Types InDataTypes;
-    typedef Vec3Types DataTypes;
+    typedef defaulttype::Vec3Types InDataTypes;
+    typedef defaulttype::Vec3Types DataTypes;
     typedef topology::RegularGridTopology Topology;
     typedef FFDDistanceGridCollisionElement Element;
 
@@ -519,7 +516,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     int addPoint(const Coord& P, int index, Real&)
     {
-        Vector3 bary;
+        defaulttype::Vector3 bary;
         int elem = this->model->getDeformCube(index).elem; //getDeformGrid()->findCube(P,bary[0],bary[1],bary[2]);
         bary = this->model->getDeformCube(index).baryCoords(P);
         //if (elem == -1)
@@ -610,7 +607,7 @@ public:
                     DistanceGrid::Coord coefs;
                     int i = prevGrid->index(P, coefs);
                     SReal d = prevGrid->interp(i,coefs);
-                    if (rabs(d) < 0.3) // todo : control threshold
+                    if (sofa::helper::rabs(d) < 0.3) // todo : control threshold
                     {
                         DistanceGrid::Coord n = prevGrid->grad(i,coefs);
                         v += n * (d  / ( n.norm() * gdt));

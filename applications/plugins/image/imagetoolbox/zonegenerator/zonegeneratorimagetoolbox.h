@@ -124,7 +124,7 @@ public:
         ListVec2i last;
     };
 
-    T color(int index,int max)
+    T color(int index,int /*max*/)
     {
         return index;
     }
@@ -178,10 +178,10 @@ public:
 
         const unsigned int dimX = im_in->getCImg().width();
         const unsigned int dimY = im_in->getCImg().height();
-        const unsigned int dimZ = im_in->getCImg().depth();
+//        const unsigned int dimZ = im_in->getCImg().depth();
         const unsigned int dimS = im_in->getCImg().spectrum();
 
-        const unsigned int nbPixels = dimX*dimY;
+//        const unsigned int nbPixels = dimX*dimY;
 
 
 
@@ -196,7 +196,7 @@ public:
         const float k = d_k.getValue();
         const Vec2d size = d_size.getValue();
 
-        const Vec2i resoBG(size.x()/(radius/sqrt(2)),size.y()/(radius/sqrt(2)));
+        const Vec2i resoBG(size.x()/(radius/sqrt(2.0)),size.y()/(radius/sqrt(2.0)));
         const Vec2d sizeCellBG(size.x()/(float)resoBG.x(),size.y()/(float)resoBG.y());
 
         VecVec2d BG;
@@ -297,7 +297,7 @@ public:
         for(unsigned int j=0;j<dimY;j++)
         {
             T* pColor = new T[dimS];// = {0};//(unsigned short)(((float)i/(float)dimX)*(float)USHRT_MAX)};
-            for(int c=0;c<dimS;c++)pColor[c]=color(0,1);
+            for(int c=0;c<(int)dimS;c++)pColor[c]=color(0,1);
             //std::cout <<pColor[0]<<std::endl;
 
             im_out->getCImg().draw_point(i, j, 0, pColor);
@@ -343,7 +343,7 @@ public:
             delete [] pColor;
         }
 
-        unsigned int probcount = sizemax+sizemax/2;
+//        unsigned int probcount = sizemax+sizemax/2;
 
         int kk=sizemax;
         vector< unsigned int> test;
@@ -409,7 +409,7 @@ public:
                     }
                 }
 
-                if(v.x()<dimX-1)
+                if(v.x()<(int)(dimX-1))
                 {
                     if(im_out->getCImg()(v.x()+1,v.y(),0,0)==0)
                     {
@@ -425,7 +425,7 @@ public:
                     }
                 }
 
-                if(v.y()<dimY-1)
+                if(v.y()<(int)(dimY-1))
                 {
                     if(im_out->getCImg()(v.x(),v.y()+1,0,0)==0)
                     {

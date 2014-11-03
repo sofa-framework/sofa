@@ -56,7 +56,7 @@ template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_DOUBLE
 //template class SOFA_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
 
-} // namespace constraint
+} // namespace engine
 
 } // namespace component
 

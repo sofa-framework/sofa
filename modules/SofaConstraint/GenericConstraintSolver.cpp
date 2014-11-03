@@ -26,7 +26,6 @@
 #include <SofaConstraint/GenericConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/SolveVisitor.h>
@@ -95,6 +94,9 @@ GenericConstraintSolver::GenericConstraintSolver()
 	currentIterations.setGroup("Stats");
 	currentError.setReadOnly(true);
 	currentError.setGroup("Stats");
+
+	maxIt.setRequired(true);
+	tolerance.setRequired(true);
 }
 
 GenericConstraintSolver::~GenericConstraintSolver()
@@ -124,7 +126,7 @@ bool GenericConstraintSolver::prepareStates(const core::ConstraintParams *cParam
 
 	time = 0.0;
 	timeTotal = 0.0;
-	timeScale = 1000.0 / (double)CTime::getTicksPerSec();
+    timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
 	simulation::common::VectorOperations vop(cParams, this->getContext());
 	vop.v_clear(this->m_fId);
@@ -179,7 +181,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 			cc->resetForUnbuiltResolution(current_cp->getF(), current_cp->constraints_sequence); 
 		}
  
-		SparseMatrix<double>* Wdiag = &current_cp->Wdiag;
+        sofa::component::linearsolver::SparseMatrix<double>* Wdiag = &current_cp->Wdiag;
 		Wdiag->resize(numConstraints, numConstraints);
 
 		// for each contact, the constraint corrections that are involved with the contact are memorized
@@ -260,13 +262,12 @@ void GenericConstraintSolver::rebuildSystem(double massFactor, double forceFacto
 
 void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim, bool printMatrix = true)
 {
-	int compteur, compteur2;
 	file.precision(9);
 	// affichage de la matrice du LCP
         if (printMatrix) {
         file << std::endl << " M = [";
-	for(compteur=0;compteur<dim;compteur++) {
-		for(compteur2=0;compteur2<dim;compteur2++) {
+	for(int compteur=0;compteur<dim;compteur++) {
+		for(int compteur2=0;compteur2<dim;compteur2++) {
 			file << "\t" << M[compteur][compteur2];
 		}
 		file << std::endl;
@@ -276,14 +277,14 @@ void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim, b
 
 	// affichage de q
 	file << " q = [";
-	for(compteur=0;compteur<dim;compteur++) {
+	for(int compteur=0;compteur<dim;compteur++) {
 		file << "\t" << q[compteur];
 	}
 	file << "      ];" << std::endl << std::endl;
 
 	// affichage de f
 	file << " f = [";
-	for(compteur=0;compteur<dim;compteur++) {
+	for(int compteur=0;compteur<dim;compteur++) {
 		file << "\t" << f[compteur];
 	}
 	file << "      ];" << std::endl << std::endl;
@@ -484,8 +485,8 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         return;
     }
 
-	double t0 = (double)CTime::getTime() ;
-	double timeScale = 1.0 / (double)CTime::getTicksPerSec();
+    double t0 = (double)sofa::helper::system::thread::CTime::getTime() ;
+    double timeScale = 1.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
 	double *dfree = getDfree();
 	double *force = getF();
@@ -655,7 +656,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 				force[j] = sor * force[j] + (1-sor) * tempForces[j];
 		}
 
-		double t1 = (double)CTime::getTime();
+        double t1 = (double)sofa::helper::system::thread::CTime::getTime();
 		double dt = (t1 - t0)*timeScale;
 
 		if(timeout && dt > timeout)
@@ -748,8 +749,8 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
         return;
     }
 
-	double t0 = (double)CTime::getTime();
-	double timeScale = 1.0 / (double)CTime::getTicksPerSec();
+    double t0 = (double)sofa::helper::system::thread::CTime::getTime();
+    double timeScale = 1.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
 	double *dfree = getDfree();
 	double *force = getF();
@@ -931,7 +932,7 @@ void GenericConstraintProblem::unbuiltGaussSeidel(double timeout, GenericConstra
 		}
         if(timeout)
         {
-            double t1 = (double)CTime::getTime();
+            double t1 = (double)sofa::helper::system::thread::CTime::getTime();
             double dt = (t1 - t0)*timeScale;
 
             if(dt > timeout)

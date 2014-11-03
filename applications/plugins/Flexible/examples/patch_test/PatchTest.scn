@@ -33,12 +33,12 @@
     <Node 	name="Elasticity" >
       <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject template="F332"  name="MoElasticity" showObject="1" />
-      <LinearMapping template="Mapping&lt;Vec3,F332&gt;"  />
+      <LinearMapping template="Vec3,F332"  />
       
       <!--Material-->
       <Node 	name="Material" >
         <MechanicalObject template="E332"  name="VoigtStrainDOF" />
-        <CorotationalStrainMapping template="Mapping&lt;F332,E332&gt;" method="polar"/> 
+        <CorotationalStrainMapping template="F332,E332" method="polar"/> 
         <HookeForceField template="E332" youngModulus="1000" poissonRatio="0" />
       </Node>
     

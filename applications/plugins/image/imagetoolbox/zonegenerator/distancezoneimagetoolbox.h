@@ -146,22 +146,22 @@ public:
 
         const unsigned int dimX = im_in->getCImg().width();
         const unsigned int dimY = im_in->getCImg().height();
-        const unsigned int dimZ = im_in->getCImg().depth();
+//        const unsigned int dimZ = im_in->getCImg().depth();
         const unsigned int dimS = im_in->getCImg().spectrum();
 
-        const unsigned int nbPixels = dimX*dimY;
+//        const unsigned int nbPixels = dimX*dimY;
 
-        unsigned int max = 1 + (unsigned int)(sqrt((double)(dimX*dimX+dimY*dimY)));
+//        unsigned int max = 1 + (unsigned int)(sqrt((double)(dimX*dimX+dimY*dimY)));
 
         double maxdistance=0;
         // calculate max distance
-        for(int i=0;i<dimX;i++)
-        for(int j=0;j<dimY;j++)
+        for(int i=0;i<(int)dimX;i++)
+        for(int j=0;j<(int)dimY;j++)
         {
             unsigned int currentColor = im_in->getCImg()(i,j,0,0,0);
 
-            for(int ii=0;ii<dimX;ii++)
-            for(int jj=0;jj<dimY;jj++)
+            for(int ii=0;ii<(int)dimX;ii++)
+            for(int jj=0;jj<(int)dimY;jj++)
             {
                 unsigned int color2 = im_in->getCImg()(ii,jj,0,0,0);
                 int x = i-ii, y= j-jj;
@@ -177,8 +177,8 @@ public:
 
 
         // set color
-        for(int i=0;i<dimX;i++)
-        for(int j=0;j<dimY;j++)
+        for(int i=0;i<(int)dimX;i++)
+        for(int j=0;j<(int)dimY;j++)
         {
             unsigned int currentColor = im_in->getCImg()(i,j,0,0,0);
 
@@ -188,8 +188,8 @@ public:
 
 
 
-            for(int ii=0;ii<dimX;ii++)
-            for(int jj=0;jj<dimY;jj++)
+            for(int ii=0;ii<(int)dimX;ii++)
+            for(int jj=0;jj<(int)dimY;jj++)
             {
                 unsigned int color2 = im_in->getCImg()(ii,jj,0,0,0);
                 int x = i-ii, y= j-jj;

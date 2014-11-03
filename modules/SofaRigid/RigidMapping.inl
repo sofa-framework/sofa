@@ -45,9 +45,6 @@
 #include <string.h>
 #include <iostream>
 #include <cassert>
-using std::cout;
-using std::endl;
-using std::cerr;
 
 namespace sofa
 {
@@ -57,8 +54,6 @@ namespace component
 
 namespace mapping
 {
-
-using namespace sofa::defaulttype;
 
 extern void rigidMappingDummyFunction(); ///< Used for setting breakpoints, since gdb sometimes fails at breaking within template methods. Implemented in RigidMapping.C
 
@@ -585,7 +580,6 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 
 }
 
-//            using defaulttype::Vec;
 //
 //            /** Symmetric cross cross product.
 //              Let [a×(.×c)] be the linear operator such that: a×(b×c) = [a×(.×c)]b, where × denotes the cross product.
@@ -1022,8 +1016,8 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
     {
         updateJ = false;
         if (matrixJ.get() == 0 ||
-                matrixJ->rowBSize() != out.size() ||
-                matrixJ->colBSize() != in.size())
+                (unsigned int)matrixJ->rowBSize() != out.size() ||
+                (unsigned int)matrixJ->colBSize() != in.size())
         {
             matrixJ.reset(new MatrixType(out.size() * NOut, in.size() * NIn));
         }
@@ -1144,8 +1138,8 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings() || this->toModel==NULL )
         return;
-    std::vector<Vector3> points;
-    Vector3 point;
+    std::vector<defaulttype::Vector3> points;
+    defaulttype::Vector3 point;
 
     const VecCoord& x =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i = 0; i < x.size(); i++)
@@ -1154,7 +1148,7 @@ void RigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         points.push_back(point);
     }
     vparams->drawTool()->drawPoints(points, 7,
-                                    Vec<4, float>(1, 1, 0,1));
+                                    defaulttype::Vec<4, float>(1, 1, 0,1));
 }
 
 } // namespace mapping

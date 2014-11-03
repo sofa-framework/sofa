@@ -41,7 +41,6 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::helper;
 
 
 // Define TestNewPointFunction

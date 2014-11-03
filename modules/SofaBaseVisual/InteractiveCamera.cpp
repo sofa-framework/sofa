@@ -63,7 +63,6 @@ void InteractiveCamera::internalUpdate()
 
 void InteractiveCamera::moveCamera(int x, int y)
 {
-    float x1, x2, y1, y2;
     Quat newQuat;
     const unsigned int widthViewport = p_widthViewport.getValue();
     const unsigned int heightViewport = p_heightViewport.getValue();
@@ -77,10 +76,10 @@ void InteractiveCamera::moveCamera(int x, int y)
     {
         if (currentMode == TRACKBALL_MODE)
         {
-            x1 = (2.0f * widthViewport / 2.0f - widthViewport) / widthViewport;
-            y1 = (heightViewport- 2.0f *heightViewport / 2.0f) /heightViewport;
-            x2 = (2.0f * (x + (-lastMousePosX + widthViewport / 2.0f)) - widthViewport) / widthViewport;
-            y2 = (heightViewport- 2.0f * (y + (-lastMousePosY +heightViewport / 2.0f))) /heightViewport;
+            float x1 = (2.0f * widthViewport / 2.0f - widthViewport) / widthViewport;
+            float y1 = (heightViewport- 2.0f *heightViewport / 2.0f) /heightViewport;
+            float x2 = (2.0f * (x + (-lastMousePosX + widthViewport / 2.0f)) - widthViewport) / widthViewport;
+            float y2 = (heightViewport- 2.0f * (y + (-lastMousePosY +heightViewport / 2.0f))) /heightViewport;
 
             currentTrackball.ComputeQuaternion(x1, y1, x2, y2);
             //fetch rotation
@@ -171,12 +170,14 @@ void InteractiveCamera::moveCamera(int x, int y)
 
 void InteractiveCamera::manageEvent(core::objectmodel::Event* e)
 {
-    core::objectmodel::MouseEvent* me;
-    core::objectmodel::KeypressedEvent* kpe;
-    core::objectmodel::KeyreleasedEvent* kre;
+
 
     if(p_activated.getValue())
     {
+        core::objectmodel::MouseEvent* me;
+        core::objectmodel::KeypressedEvent* kpe;
+        core::objectmodel::KeyreleasedEvent* kre;
+
         //Dispatch event
         if ((me = dynamic_cast<core::objectmodel::MouseEvent* > (e)))
             processMouseEvent(me);

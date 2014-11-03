@@ -99,6 +99,8 @@ if(SOFA-MISC_NO_EXCEPTIONS)
 	
 	if(MSVC)
 	STRING(REPLACE "/EHsc" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	# due to default microsoft STL using always a try catch block, we have to deactivate the warning C4530
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -wd4530")
 	endif()
 
 	if(XBOX)
@@ -106,7 +108,11 @@ if(SOFA-MISC_NO_EXCEPTIONS)
 	endif()
 	
 	if(PS3)
-	STRING(REPLACE "-fexceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	STRING(REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+	endif()
+	
+	if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+	STRING(REPLACE "-fno-exceptions" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 	endif()
 endif()
 

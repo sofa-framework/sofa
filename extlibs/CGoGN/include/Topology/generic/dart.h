@@ -26,6 +26,7 @@
 #define DART_H_
 
 #include <iostream>
+#include <string>
 
 namespace CGoGN
 {
@@ -41,6 +42,7 @@ const unsigned int NB_THREAD = 16;
 const unsigned int NB_ORBITS	= 11;
 
 const unsigned int DART			= 0;
+
 const unsigned int VERTEX		= 1;
 const unsigned int EDGE			= 2;
 const unsigned int FACE			= 3;
@@ -54,87 +56,95 @@ const unsigned int VERTEX2		= 8;
 const unsigned int EDGE2		= 9;
 const unsigned int FACE2		= 10;
 
-
-
 struct Dart
 {
-    Dart(): index(INVALID_INDEX) {}
-    inline static Dart create(unsigned int i) { return Dart(i); }
-    static std::string CGoGNnameOfType()  { return "Dart"; }
-private:
-    Dart(unsigned int v): index(v) {}
+	unsigned int index;
+	Dart(): index(0xffffffff) {}
+	static Dart nil() { Dart d; d.index = 0xffffffff; return d; }
+	static Dart create(unsigned int i) { Dart d; d.index = i; return d; }
+	explicit Dart(unsigned int v): index(v) {}
+	bool isNil() const { return index == 0xffffffff ; }
+	/**
+	 * affectation operator
+	 * @param d the dart to store in this
+	 */
+	Dart operator=(Dart d) { index = d.index; return *this; }
+	/**
+	 * equality operator
+	 * @param d the dart to compare with
+	 */
+	bool operator==(Dart d) const { return d.index == index; }
+	/**
+	 * different operator
+	 * @param d the dart to compare with
+	 */
+	bool operator!=(Dart d) const { return d.index != index; }
+	/**
+	 * less operator, can be used for sorting
+	 * @param d the dart to compare with
+	 */
+	bool operator<(Dart d) const { return index < d.index; }
 
-public:
-    static const Dart& nil() { const static Dart nullDart(INVALID_INDEX);  return nullDart; }
-
-    bool isNil() const { return index == INVALID_INDEX ; }
-
-    /**
-     * affectation operator
-     * @param d the dart to store in this
-     */
-    Dart operator=(Dart d) { index = d.index; return *this; }
-
-    /**
-     * equality operator
-     * @param d the dart to compare with
-     */
-    bool operator==(Dart d) const { return d.index == index; }
-
-    /**
-     * different operator
-     * @param d the dart to compare with
-     */
-    bool operator!=(Dart d) const { return d.index != index; }
-
-    /**
-     * less operator, can be used for sorting
-     * @param d the dart to compare with
-     */
-    bool operator<(Dart d) const { return index < d.index; }
-
-    /**
-     * label is the index (cleaner that use d.index outside of maps
-     */
-    unsigned int label() const { return index; }
+	friend std::ostream& operator<<( std::ostream &out, const Dart& fa ) { return out << fa.index; }
+	friend std::istream& operator>>( std::istream &in, Dart& fa ) { in >> fa.index; return in; }
 
 
-    unsigned int index;
+	/**
+	 * CGoGN name
+	 */
+	static std::string CGoGNnameOfType() { return "Dart"; }
 
-    friend std::ostream& operator<<( std::ostream &out, const Dart& fa ) { return out << fa.index; }
-    friend std::istream& operator>>( std::istream &in, Dart& fa ) { in >> fa.index; return in; }
+	/**
+	 * label is the index (cleaner that use d.index outside of maps
+	 */
+	unsigned int label() { return index; }
 };
 
 const Dart NIL = Dart::nil();
 
-template <unsigned int ORBIT>
-class Cell
+template<unsigned int ORBIT>
+inline std::string orbitName()
 {
-public:
-    Cell(): dart() {}
-    inline Cell(Dart d): dart(d) {}
-    inline Cell(const Cell& c): dart(c.dart) {}
-    Cell operator=(Cell c) { this->dart = c.dart; return *this; }
-    inline ~Cell() {}
+    switch(ORBIT)
+	{
+	case DART:
+		return "DART";
+		break;
+	case VERTEX:
+		return "VERTEX";
+		break;
+	case EDGE:
+		return "EDGE";
+		break;
+	case FACE:
+		return "FACE";
+		break;
+	case VOLUME:
+		return "VOLUME";
+		break;
+	case CC:
+		return "CC";
+		break;
+	case VERTEX1:
+		return "VERTEX1";
+		break;
+	case EDGE1:
+		return "EDGE1";
+		break;
+	case VERTEX2:
+		return "VERTEX2";
+		break;
+	case EDGE2:
+		return "EDGE2";
+		break;
+	case FACE2:
+		return "FACE2";
+	default:
+		break;
 
-    inline unsigned int index() const { return dart.index ;}
-    inline operator Dart() const { return dart; }
-
-    inline bool valid() const { return !dart.isNil(); }
-    inline bool operator==(Cell c) const { return dart == c.dart; }
-    inline bool operator!=(Cell c) const { return dart != c.dart; }
-    inline bool operator<(Cell c) const {return this->index() < c.index(); }
-    static unsigned int dimension() {return ORBIT;}
-    friend std::ostream& operator<<( std::ostream &out, const Cell<ORBIT>& fa ) { return out << fa.dart; }
-private:
-    Dart dart;
-
-};
-
-typedef Cell<VERTEX> VertexCell;
-typedef Cell<EDGE>   EdgeCell;
-typedef Cell<FACE>   FaceCell;
-typedef Cell<VOLUME> VolumeCell;
+	}
+	return "UNKNOWN";
+}
 
 
 }

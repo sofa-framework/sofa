@@ -32,8 +32,6 @@
 #include <sofa/helper/vector.h>
 #include <Eigen/Core>
 #include <Eigen/Sparse>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -251,7 +249,7 @@ public:
 
             for( unsigned r=0; r<Nout; r++ )   // process one scalar row after another
             {
-                if(r+ blRow*Nout >= this->rowSize() ) break;
+                if(r+ blRow*Nout >= (unsigned)this->rowSize() ) break;
 //                cerr<<"copyFrom,  startVec " << rowStarted << endl;
 //                this->compressedMatrix.startVec(rowStarted++);
 
@@ -260,7 +258,7 @@ public:
                 {
                     int blCol = crs.colsIndex[xj];     // block column
                     const Block& b = crs.colsValue[xj]; // block value
-                    for( unsigned c=0; c<Nin; c++ ) if( c+ blCol*Nin < this->colSize() )
+                    for( unsigned c=0; c<Nin; c++ ) if( c+ blCol*Nin < (unsigned)this->colSize() )
                         {
                         this->add(r + blRow*Nout, c + blCol*Nin, b[r][c]);
 //                        this->compressedMatrix.insertBack(r + blRow*Nout, c + blCol*Nin) = b[r][c];

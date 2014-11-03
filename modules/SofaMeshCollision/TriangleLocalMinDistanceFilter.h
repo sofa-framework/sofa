@@ -103,7 +103,7 @@ public:
 protected:
 
 
-    Vector3 m_normal; ///< Stored normal of the triangle.
+    sofa::defaulttype::Vector3 m_normal; ///< Stored normal of the triangle.
 };
 
 

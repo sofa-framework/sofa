@@ -421,19 +421,44 @@ public:
         return m_values[aspect].beginEdit();
     }
 
+    /// BeginEdit method if it is only to write the value
+    inline T* beginWriteOnly(const core::ExecParams* params = 0)
+    {
+        size_t aspect = DDGNode::currentAspect(params);
+        ++this->m_counters[aspect];
+        this->m_isSets[aspect] = true;
+        BaseData::setDirtyOutputs(params);
+        return m_values[aspect].beginEdit();
+    }
+
     inline void endEdit(const core::ExecParams* params = 0)
     {
         m_values[DDGNode::currentAspect(params)].endEdit();
     }
 
-    inline void setValue(const T& value)
+    /// If it is only to write the value set the bool writeOnly to true
+    inline void setValue(const T& value, const bool writeOnly = false)
     {
+        if(writeOnly)
+        {
+            *beginWriteOnly()=value;
+             endEdit();
+             return;
+        }
+    
         *beginEdit() = value;
         endEdit();
     }
 
-    inline void setValue(const core::ExecParams* params, const T& value)
+    /// If it is only to write the value set the bool writeOnly to true
+    inline void setValue(const core::ExecParams* params, const T& value, const bool writeOnly = false)
     {
+        if(writeOnly)
+        {
+            *beginWriteOnly(params)=value;
+            endEdit(params);
+            return;
+        }
         *beginEdit(params) = value;
         endEdit(params);
     }

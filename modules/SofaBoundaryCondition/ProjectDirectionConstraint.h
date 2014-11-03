@@ -48,11 +48,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using helper::vector;
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::component::topology;
-
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class ProjectDirectionConstraintInternalData
@@ -80,6 +75,7 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
     typedef helper::vector<unsigned int> Indices;
+    typedef sofa::defaulttype::Vector3 Vector3;
     typedef sofa::component::topology::PointSubsetData< Indices > IndexSubsetData;
     typedef linearsolver::EigenBaseSparseMatrix<SReal> BaseSparseMatrix;
     typedef linearsolver::EigenSparseMatrix<DataTypes,DataTypes> SparseMatrix;
@@ -130,17 +126,17 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams);
 
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, Indices >
+    class FCPointHandler : public component::topology::TopologySubsetDataHandler<component::topology::Point, Indices >
     {
     public:
         typedef typename ProjectDirectionConstraint<DataTypes>::Indices Indices;
+        typedef sofa::core::topology::Point Point;
+        FCPointHandler(ProjectDirectionConstraint<DataTypes>* _fc, component::topology::PointSubsetData<Indices>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<sofa::core::topology::Point, Indices >(_data), fc(_fc) {}
 
-        FCPointHandler(ProjectDirectionConstraint<DataTypes>* _fc, PointSubsetData<Indices>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, Indices >(_data), fc(_fc) {}
 
 
-
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
 
         bool applyTestCreateFunction(unsigned int /*index*/,

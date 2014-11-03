@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_INL
 
 #include "../deformationMapping/BaseDeformationMapping.h"
+#include "../deformationMapping/BaseDeformationImpl.inl"
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
@@ -42,15 +43,10 @@
 
 namespace sofa
 {
-
-/** determinant for 1x1 matrix  to complement 2x2 and 3x3 implementations (used for visualization of  det F ) **/
-namespace defaulttype { template<class real> inline real determinant(const Mat<1,1,real>& m) { return m(0,0);} }
-
 namespace component
 {
 namespace mapping
 {
-
 
 template <class JacobianBlockType>
 BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State<In>* from , core::State<Out>* to)
@@ -140,7 +136,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : found shape function "<<_shapeFunction->getName()<<std::endl;
         vector<mCoord> mpos0;
         mpos0.resize(pos0.size());
-        for(size_t i=0; i<pos0.size(); ++i)  StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
+        for(size_t i=0; i<pos0.size(); ++i) defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
         // interpolate weights at sample positions
         if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),this->f_cell.getValue());
@@ -159,29 +155,35 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     {
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : using filled data" <<std::endl;
 
-        VMaterialToSpatial& F0	= *f_F0.beginEdit();
-        vector<VReal>& w		= *f_w.beginEdit();
-        vector<VGradient>& dw	= *f_dw.beginEdit();
-        vector<VHessian>& ddw	= *f_ddw.beginEdit();
+        // MattN 01/09/14
+        // it can make too many allocations, are default weight gradients really necessary?
+        // it does not seems so, but I am not sure (sorry...)
 
-        F0.assign(pos0.size(), MaterialToSpatial());
-        dw.assign(pos0.size(), VGradient());
-        ddw.assign(pos0.size(), VHessian());
+//        VMaterialToSpatial& F0	= *f_F0.beginEdit();
+//        vector<VReal>& w		= *f_w.beginEdit();
+//        vector<VGradient>& dw	= *f_dw.beginEdit();
+//        vector<VHessian>& ddw	= *f_ddw.beginEdit();
 
-        for(size_t i = 0; i < pos0.size(); ++i)
-        {
-            dw[i].assign(w.size(), Gradient());
-            ddw[i].assign(w.size(), Hessian());
-        }
+//        F0.assign(pos0.size(), MaterialToSpatial());
+//        dw.assign(pos0.size(), VGradient());
+//        ddw.assign(pos0.size(), VHessian());
 
-        f_ddw.endEdit();
-        f_dw.endEdit();
-        f_F0.endEdit();
+//        for(size_t i = 0; i < pos0.size(); ++i)
+//        {
+//            dw[i].assign(w.size(), Gradient());
+//            ddw[i].assign(w.size(), Hessian());
+//        }
+
+//        f_ddw.endEdit();
+//        f_dw.endEdit();
+//        f_F0.endEdit();
 
         // use custom rest positions (to set material directions or set residual deformations)
         if(restPositionSet)
         {
             helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+            F0.wref().resize(pos0.size());
+
             for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
             if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
         }
@@ -206,14 +208,14 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
         helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(int i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
+        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
     }
 }
 
 
 
 template <class JacobianBlockType>
-void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
+void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
@@ -252,7 +254,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     {
         helper::ReadAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
         helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(int i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
+        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
     }
 }
 
@@ -645,44 +647,13 @@ void BaseDeformationMappingT<JacobianBlockType>::ForwardMapping(Coord& p,const C
     if ( !_shapeFunction ) return;
 
     // interpolate weights at sample positions
-    mCoord mp0;        StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
+    mCoord mp0;        defaulttype::StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
     MaterialToSpatial M;  VRef ref; VReal w;
     _shapeFunction->computeShapeFunction(mp0,M,ref,w);
 
     // map using specific instanciation
     this->mapPosition(p,p0,ref,w);
 }
-
-
-
-/** inversion of rectangular deformation gradients (used in backward mapping) **/
-template <int L,typename Real>
-inline static void invert(defaulttype::Mat<L,L,Real> &Minv, const defaulttype::Mat<L,L,Real> &M)
-{
-    //    Eigen::Map<const Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eM(&M[0][0]);
-    //    Eigen::Map<Eigen::Matrix<Real,L,L,Eigen::RowMajor> >  eMinv(&Minv[0][0]);
-    //    eMinv=eM.inverse();
-    Minv.invert(M);
-}
-
-template <int L,typename Real>
-inline static void invert(defaulttype::Mat<1,L,Real> &Minv, const defaulttype::Mat<L,1,Real> &M)
-{
-    Real n2inv=0; for(size_t i=0; i<L; i++) n2inv+=M[i][0]*M[i][0];
-    n2inv=1./n2inv;
-    for(size_t i=0; i<L; i++)  Minv[0][i]=M[i][0]*n2inv;
-}
-
-template <typename Real>
-inline static void invert(defaulttype::Mat<2,3,Real> &Minv, const defaulttype::Mat<3,2,Real> &M)
-{
-    defaulttype::Vec<3,Real> u=M.transposed()[0],v=M.transposed()[1],w=cross(u,v);
-    w.normalize();
-    defaulttype::Mat<3,3,Real> Mc; for(size_t i=0; i<3; i++) {Mc[i][0]=M[i][0]; Mc[i][1]=M[i][1]; Mc[i][2]=w[i];}
-    defaulttype::Mat<3,3,Real> Mcinv; invert(Mcinv,Mc);
-    for(size_t i=0; i<2; i++) for(size_t j=0; j<3; j++) Minv[i][j]=Mcinv[i][0];
-}
-
 
 
 template <class JacobianBlockType>
@@ -701,7 +672,7 @@ void BaseDeformationMappingT<JacobianBlockType>::BackwardMapping(Coord& p0,const
 
     while(count<NbMaxIt)
     {
-        StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
+        defaulttype::StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
         _shapeFunction->computeShapeFunction(mp0,F0,ref,w,&dw);
         if(!w[0]) { p0=Coord(); return; } // outside object
 
@@ -753,38 +724,6 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
     return index;
 }
 
-template<int matdim,typename Real>
-void drawEllipsoid(const Mat<3,matdim,Real> & F, const Vec<3,Real> &p, const float& scale)
-{
-#ifndef SOFA_NO_OPENGL
-    glPushMatrix();
-
-    GLdouble transformMatrix[16];
-    for(size_t i=0; i<3; i++) for(size_t j=0; j<matdim; j++) transformMatrix[4*j+i] = (double)F(i,j)*scale;
-
-    if(matdim==1)
-    {
-        for(size_t i=0; i<3; i++) for(size_t j=1; j<3; j++) transformMatrix[4*j+i] = 0;
-    }
-    else if(matdim==2)
-    {
-        Vec<3,Real> w=cross(F.transposed()[0],F.transposed()[1]); w.normalize();
-        for(size_t i=0; i<3; i++)  transformMatrix[8+i]=(double)w[i]*scale*0.01; // arbitrarily small thickness
-    }
-
-    for(size_t i=0; i<3; i++)  transformMatrix[i+12]=p[i];
-    for(size_t i=0; i<3; i++)  transformMatrix[4*i+3]=0; transformMatrix[15] = 1;
-    glMultMatrixd(transformMatrix);
-
-    GLUquadricObj* ellipsoid = gluNewQuadric();
-    gluSphere(ellipsoid, 1.0, 10, 10);
-    gluDeleteQuadric(ellipsoid);
-
-    glPopMatrix();
-#endif
-}
-
-
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
@@ -810,7 +749,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
     if (vparams->displayFlags().getShowMechanicalMappings())
     {
         vector< defaulttype::Vector3 > edge;     edge.resize(2);
-        Vec<4,float> col;
+        defaulttype::Vec<4,float> col;
 
         for(size_t i=0; i<out.size(); i++ )
         {
@@ -830,36 +769,36 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         const Data<OutVecDeriv>* outf = this->toModel->read(core::ConstVecDerivId::force());
         glEnable ( GL_LIGHTING );
         float scale=showDeformationGradientScale.getValue();
-        Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
-        Mat<3,3,float> F;
-        Vec<3,float> p;
+        defaulttype::Vec<4,float> col( 0.5, 0.5, 0.0, 1.0 );
+        defaulttype::Mat<3,3,float> F;
+        defaulttype::Vec<3,float> p;
 
         static const int subdiv = 8;
 
         for(size_t i=0; i<out.size(); i++ )
         {
-            if(OutDataTypesInfo<Out>::FMapped) F=(Mat<3,3,float>)OutDataTypesInfo<Out>::getF(out[i]); else F=(Mat<3,3,float>)f_F[i];
+            if(OutDataTypesInfo<Out>::FMapped) F=(defaulttype::Mat<3,3,float>)OutDataTypesInfo<Out>::getF(out[i]); else F=(defaulttype::Mat<3,3,float>)f_F[i];
             if(OutDataTypesInfo<Out>::positionMapped) Out::get(p[0],p[1],p[2],out[i]); else p=f_pos[i];
 
             if(showDeformationGradientStyle.getValue().getSelectedId()==0)
                 for(int j=0; j<material_dimensions; j++)
                 {
-                    Vec<3,float> u=F.transposed()(j)*0.5*scale;
+                    defaulttype::Vec<3,float> u=F.transposed()(j)*0.5*scale;
                     vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
                 }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==1)
             {
-                Vec<3,float> u=F.transposed()(0)*0.5*scale;
+                defaulttype::Vec<3,float> u=F.transposed()(0)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==2)
             {
-                Vec<3,float> u=F.transposed()(1)*0.5*scale;
+                defaulttype::Vec<3,float> u=F.transposed()(1)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==3)
             {
-                Vec<3,float> u=F.transposed()(2)*0.5*scale;
+                defaulttype::Vec<3,float> u=F.transposed()(2)*0.5*scale;
                 vparams->drawTool()->drawCylinder(p-u,p+u,0.05*scale,col,subdiv);
             }
             else if(showDeformationGradientStyle.getValue().getSelectedId()==4) // strain
@@ -870,7 +809,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
             else if(showDeformationGradientStyle.getValue().getSelectedId()==5 && outf) // stress
                 if(OutDataTypesInfo<Out>::FMapped)
                 {
-                    F=(Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf->getValue()[i]);
+                    F=(defaulttype::Mat<3,3,float>)OutDataTypesInfo<Out>::getF(outf->getValue()[i]);
                     vparams->drawTool()->setMaterial(col);
                     drawEllipsoid(F,p,0.5*scale);
                 }
@@ -901,7 +840,7 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
         if(extTriangles) nb+=extTriangles->size();
 
         std::vector< defaulttype::Vector3 > points(3*nb),normals;
-        std::vector< Vec<4,float> > colors(3*nb);
+        std::vector< defaulttype::Vec<4,float> > colors(3*nb);
         size_t count=0;
 
         if(triangles)

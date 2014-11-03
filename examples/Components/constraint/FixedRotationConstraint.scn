@@ -6,28 +6,28 @@
     <DefaultContactManager name="Response" response="default" />
     <DefaultCollisionGroupManager name="Group" />
     <Node name="scene" gravity="0 -9.81 0">
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" constraintVel="1" constraintPos="1" constraintResolution="1" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-12" threshold="1e-09" />
         <Node name="Rotation around Z axis not authorized" gravity="0 -9.81 0">
-            <MechanicalObject template="Rigid" name="default0" translation="0 0 0" rotation="0 0 0" restScale="1" debugViewIndices="0" position="0 0 0 0 0 0 1 1 0 0 0 0 0 1" />
+            <MechanicalObject template="Rigid" name="default0" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 1 0 0 0 0 0 1" />
             <FixedConstraint template="Rigid" name="default1" indices="0" />
             <FixedRotationConstraint template="Rigid" name="default2" FixedXRotation="0" FixedYRotation="0" FixedZRotation="1" />
             <UniformMass template="Rigid" name="default3" showAxisSizeFactor="1" />
             <Node name="spring" gravity="0 -9.81 0">
-                <MechanicalObject template="Rigid" name="default4" translation="0 0 0" rotation="0 0 0" restScale="1" debugViewIndices="1" position="0 0 0 0 0 0 1 -1 0 0 0 0 0 1" />
+                <MechanicalObject template="Rigid" name="default4" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 -1 0 0 0 0 0 1" />
                 <UniformMass template="Rigid" name="default54" showAxisSizeFactor="1" />
-                <RigidRigidMapping template="MechanicalMapping&lt;Rigid,Rigid&gt;" name="default1" repartition="1 1" axisLength="0.001" />
+                <RigidRigidMapping template="Rigid,Rigid" name="default1" repartition="1 1" axisLength="0.001" />
                 <JointSpringForceField template="Rigid" name="default5" spring="BEGIN_SPRING  0 1  KS_T 1e+06 100000  KS_R 0 1000  KS_B 100  END_SPRING&#x0A;" />
             </Node>
         </Node>
         <Node name="Rotation around Z axis is free" gravity="0 -9.81 0">
-            <MechanicalObject template="Rigid" name="default6" translation="0 0 0" rotation="0 0 0" restScale="1" debugViewIndices="0" position="3 0 0 0 0 0 1 4 0 0 0 0 0 1" />
+            <MechanicalObject template="Rigid" name="default6" translation="0 0 0" rotation="0 0 0" restScale="1" position="3 0 0 0 0 0 1 4 0 0 0 0 0 1" />
             <FixedConstraint template="Rigid" name="default7" indices="0" />
             <UniformMass template="Rigid" name="default54" showAxisSizeFactor="1" />
             <Node name="spring" gravity="0 -9.81 0">
-                <MechanicalObject template="Rigid" name="default9" translation="0 0 0" rotation="0 0 0" restScale="1" debugViewIndices="1" position="0 0 0 0 0 0 1 -1 0 0 0 0 0 1" />
+                <MechanicalObject template="Rigid" name="default9" translation="0 0 0" rotation="0 0 0" restScale="1" position="0 0 0 0 0 0 1 -1 0 0 0 0 0 1" />
                 <UniformMass template="Rigid" name="default10" showAxisSizeFactor="1" />
-                <RigidRigidMapping template="MechanicalMapping&lt;Rigid,Rigid&gt;" name="default11" repartition="1 1" axisLength="0.001" />
+                <RigidRigidMapping template="Rigid,Rigid" name="default11" repartition="1 1" axisLength="0.001" />
                 <JointSpringForceField template="Rigid" name="default12" spring="BEGIN_SPRING  0 1  END_SPRING&#x0A;" />
             </Node>
         </Node>

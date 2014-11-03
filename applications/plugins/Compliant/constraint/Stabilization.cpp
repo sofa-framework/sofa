@@ -16,9 +16,9 @@ using namespace utils;
 
 Stabilization::Stabilization( mstate_type* mstate )
     : BaseConstraintValue( mstate )
-    , mask(initData(&mask, "mask", "dofs to be stabilized")) {
-	
-}
+    , mask(initData(&mask, "mask", "dofs to be stabilized"))
+    , m_holonomic( false )
+{}
 
 void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
 	assert( mstate );
@@ -38,8 +38,7 @@ void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core:
 	unsigned i = 0;
     for(SReal* last = dst + size; dst < last; ++dst, ++i) {
 		if( !mask.empty() && !mask[i] ) *dst = 0;
-	}
-	
+    }
 }
 
 
@@ -55,7 +54,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
 
     // if there is no stabilization, the constraint must be corrected by the dynamics pass
     // if there is stabilization, the velocities will be corrected by the correction pass
-    if( stabilization )
+    if( stabilization || m_holonomic )
     {
         const mask_type& mask = this->mask.getValue();
         // zero for stabilized, since the position error will be handled by the correction

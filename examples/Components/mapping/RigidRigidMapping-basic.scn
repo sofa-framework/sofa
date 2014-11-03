@@ -2,15 +2,15 @@
 <Node name="Root" gravity="0 0 0" time="0" animate="0">
     <VisualStyle displayFlags="showBehaviorModels showMapping" />
     <Node name="parent node with independent DOFs">
-        <!-- 		<EulerImplicitSolver name="ODE solver" printLog="1"  verbose="1" rayleighStiffness="0.0" rayleighMass="0"/> -->
+        <!-- 		<EulerImplicitSolver name="ODE solver" printLog="0" verbose="0" rayleighStiffness="0.0" rayleighMass="0"/> -->
         <StaticSolver name="ODE solver" printLog="0" />
-        <CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" printLog="1" verbose="10" />
+        <CGLinearSolver template="GraphScattered" name="linear solver used by implicit ODE solvers" printLog="0" verbose="0" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" />
         <PartialFixedConstraint fixedDirections="1 1 1 0 0 0" />
         <UniformMass template="Rigid" name="mass" />
         <Node name="child node with DOFs mapped from the parent">
             <MechanicalObject template="Rigid" name="endpoint coordinates" position="1 0 0 0 0 0 1" useMask="0" />
-            <RigidRigidMapping name="angle-&gt;coord mapping" input="@.." output="@." index="0" />
+            <RigidRigidMapping name="angle-coord mapping" input="@.." output="@." index="0" />
             <ConstantForceField force="1 -1 0 0 0 0" points="0" />
         </Node>
     </Node>

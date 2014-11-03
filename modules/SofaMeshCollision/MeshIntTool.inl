@@ -5,8 +5,6 @@ namespace component
 {
 namespace collision
 {
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
 
 
 template <class DataTypes>
@@ -23,11 +21,11 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Point & pnt,SRea
 }
 
 template <class DataTypes>
-int MeshIntTool::doCapPointInt(TCapsule<DataTypes>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts){
-    const Vector3 p1 = cap.point1();
-    const Vector3 p2 = cap.point2();
-    const Vector3 AB = p2-p1;
-    const Vector3 AQ = q -p1;
+int MeshIntTool::doCapPointInt(TCapsule<DataTypes>& cap, const defaulttype::Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+    const defaulttype::Vector3 p1 = cap.point1();
+    const defaulttype::Vector3 p2 = cap.point2();
+    const defaulttype::Vector3 AB = p2-p1;
+    const defaulttype::Vector3 AQ = q -p1;
     SReal A;
     SReal b;
     A = AB*AB;
@@ -45,7 +43,7 @@ int MeshIntTool::doCapPointInt(TCapsule<DataTypes>& cap, const Vector3& q,SReal 
         else if (alpha > 1.0) alpha = 1.0;
     }
 
-    Vector3 p,pq;
+    defaulttype::Vector3 p,pq;
     p = p1 + AB * alpha;
     pq = q-p;
 
@@ -73,10 +71,10 @@ template <class DataTypes>
 int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Line & lin,SReal alarmDist,SReal contactDist,OutputVector* contacts)
 {
     SReal cap_rad = cap.radius();
-    const Vector3 p1 = cap.point1();
-    const Vector3 p2 = cap.point2();
-    const Vector3 q1 = lin.p1();
-    const Vector3 q2 = lin.p2();
+    const defaulttype::Vector3 p1 = cap.point1();
+    const defaulttype::Vector3 p2 = cap.point2();
+    const defaulttype::Vector3 q1 = lin.p1();
+    const defaulttype::Vector3 q2 = lin.p2();
 
     if(doCapLineInt(p1,p2,cap_rad,q1,q2,alarmDist,contactDist,contacts)){
         OutputVector::iterator detection = contacts->end()-1;
@@ -90,11 +88,11 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Line & lin,SReal
 }
 
 template <class DataTypes>
-int MeshIntTool::doCapLineInt(TCapsule<DataTypes> & cap,const Vector3 & q1,const Vector3 & q2 ,SReal alarmDist,SReal contactDist,OutputVector* contacts, bool ignore_p1, bool ignore_p2)
+int MeshIntTool::doCapLineInt(TCapsule<DataTypes> & cap,const defaulttype::Vector3 & q1,const defaulttype::Vector3 & q2 ,SReal alarmDist,SReal contactDist,OutputVector* contacts, bool ignore_p1, bool ignore_p2)
 {
     SReal cap_rad = cap.radius();
-    const Vector3 p1 = cap.point1();
-    const Vector3 p2 = cap.point2();
+    const defaulttype::Vector3 p1 = cap.point1();
+    const defaulttype::Vector3 p2 = cap.point2();
 
     return doCapLineInt(p1,p2,cap_rad,q1,q2,alarmDist,contactDist,contacts,ignore_p1,ignore_p2);
 }
@@ -107,14 +105,14 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
     int id = cap.getIndex();
     int n = 0;
 
-    const Vector3 cap_p1 = cap.point1();
-    const Vector3 cap_p2 = cap.point2();
+    const defaulttype::Vector3 cap_p1 = cap.point1();
+    const defaulttype::Vector3 cap_p2 = cap.point2();
     SReal cap_rad = cap.radius();
     SReal dist2 = (alarmDist + cap_rad) * (alarmDist + cap_rad);
 
-    const Vector3 tri_p1 = tri.p1();
-    const Vector3 tri_p2 = tri.p2();
-    const Vector3 tri_p3 = tri.p3();
+    const defaulttype::Vector3 tri_p1 = tri.p1();
+    const defaulttype::Vector3 tri_p2 = tri.p2();
+    const defaulttype::Vector3 tri_p3 = tri.p3();
 
     SReal substract_dist = contactDist + cap_rad;
     n += doIntersectionTrianglePoint(dist2,tri_flg,tri_p1,tri_p2,tri_p3,cap_p1,contacts,true);

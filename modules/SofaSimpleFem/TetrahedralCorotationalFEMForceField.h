@@ -54,9 +54,7 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
 using sofa::helper::vector;
-using namespace sofa::component::topology;
 
 
 
@@ -89,19 +87,19 @@ protected:
     /// @{
 
     /// Displacement vector (deformation of the 4 corners of a tetrahedron
-    typedef VecNoInit<12, Real> Displacement;
+    typedef defaulttype::VecNoInit<12, Real> Displacement;
 
     /// Material stiffness matrix of a tetrahedron
-    typedef Mat<6, 6, Real> MaterialStiffness;
+    typedef defaulttype::Mat<6, 6, Real> MaterialStiffness;
 
     /// Strain-displacement matrix
-    typedef Mat<12, 6, Real> StrainDisplacementTransposed;
+    typedef defaulttype::Mat<12, 6, Real> StrainDisplacementTransposed;
 
     /// Rigid transformation (rotation) matrix
-    typedef MatNoInit<3, 3, Real> Transformation;
+    typedef defaulttype::MatNoInit<3, 3, Real> Transformation;
 
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
-    typedef Mat<12, 12, Real> StiffnessMatrix;
+    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
 
     /// @}
 
@@ -136,7 +134,7 @@ protected:
         }
     };
     /// container that stotes all requires information for each tetrahedron
-    TetrahedronData<sofa::helper::vector<TetrahedronInformation> > tetrahedronInfo;
+    topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> > tetrahedronInfo;
 
     /// @name Full system matrix assembly support
     /// @{
@@ -153,19 +151,19 @@ protected:
 
     sofa::core::topology::BaseMeshTopology* _topology;
 public:
-    class TetrahedronHandler : public TopologyDataHandler<Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
+    class TetrahedronHandler : public topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >
     {
     public :
         typedef typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation TetrahedronInformation;
         TetrahedronHandler(TetrahedralCorotationalFEMForceField<DataTypes>* ff,
-                TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
-            :TopologyDataHandler<Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
+                           topology::TetrahedronData<sofa::helper::vector<TetrahedronInformation> >* data)
+            :topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronInformation> >(data)
             ,ff(ff)
         {
 
         }
 
-        void applyCreateFunction(unsigned int, TetrahedronInformation &t, const Tetrahedron &,
+        void applyCreateFunction(unsigned int, TetrahedronInformation &t, const topology::Tetrahedron &,
                 const sofa::helper::vector<unsigned int> &,
                 const sofa::helper::vector<double> &);
 
@@ -223,14 +221,14 @@ public:
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
-    void getElementStiffnessMatrix(Real* stiffness, Tetrahedron& te);
+    void getElementStiffnessMatrix(Real* stiffness, topology::Tetrahedron& te);
 
     void draw(const core::visual::VisualParams* vparams);
 
 protected:
 
     void computeStrainDisplacement( StrainDisplacementTransposed &J, Coord a, Coord b, Coord c, Coord d );
-    Real peudo_determinant_for_coef ( const Mat<2, 3, Real>&  M );
+    Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
 
     void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacementTransposed &J, const Transformation& Rot );
 

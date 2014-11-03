@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/wiki/TutorialBasicCube -->
-<Node name="root" dt="0.01" gravity="0 0 -9.81" showBehavior="1">
-
+<Node name="root" dt="0.01" gravity="0 0 -9.81">
+  <VisualStyle displayFlags="showBehavior" />
   <EulerImplicitSolver name="EulerImplicit" />
-  <CGLinearSolver name="CG Solver" />
+  <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
 
   <MechanicalObject name="Particles" template="Vec3d"
 		    position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" />

@@ -39,6 +39,8 @@
 **
 ****************************************************************************/
 
+#include "stdafx.h"
+
 #include "../SofaGL.h"
 #include "Viewer.h"
 #include "Scene.h"
@@ -49,30 +51,45 @@
 #include <QVector>
 #include <QVector4D>
 #include <QTime>
+#include <QThread>
 
 Viewer::Viewer() :
-    myRenderShaderProgram(0),
-    myCompositionShaderProgram(0),
-    myFramebuffer(0),
 	myScene(0),
-	mySofaGL(0)
+	mySofaGL(0),
+	myProgram(0)
 {
+	setFlag(QQuickItem::ItemHasContents);
+
     connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
+}
+
+Viewer::~Viewer()
+{
+	delete myProgram;
 }
 
 void Viewer::setScene(Scene* scene)
 {
-	if(scene == myScene)
+	if(!scene || scene == myScene)
 		return;
 
+	clear();
+
+	delete myScene;
 	myScene = scene;
 
+	connect(myScene, SIGNAL(opened()), this, SLOT(clear()));
+
+	if(window())
+		window()->update();
+}
+
+void Viewer::clear()
+{
 	delete mySofaGL;
 	mySofaGL = 0;
 
-	sofa::newgui::SofaScene* sofaScene = dynamic_cast<sofa::newgui::SofaScene*>(myScene);
-	if(sofaScene)
-		mySofaGL = new sofa::newgui::SofaGL(sofaScene);
+	// do not init a new SofaGL here since we may not have a valid GL context
 
 	if(window())
 		window()->update();
@@ -86,7 +103,6 @@ void Viewer::handleWindowChanged(QQuickWindow *win)
         // Since this call is executed on the rendering thread it must be
         // a Qt::DirectConnection
         connect(win, SIGNAL(beforeRendering()), this, SLOT(paint()), Qt::DirectConnection);
-        connect(win, SIGNAL(afterRendering()), this, SLOT(grab()), Qt::DirectConnection);
         connect(win, SIGNAL(beforeSynchronizing()), this, SLOT(sync()), Qt::DirectConnection);
 
         // If we allow QML to do the clearing, they would clear what we paint
@@ -97,152 +113,87 @@ void Viewer::handleWindowChanged(QQuickWindow *win)
 
 void Viewer::paint()
 {
-    if(!myRenderShaderProgram)
-    {
-        myRenderShaderProgram = new QOpenGLShaderProgram();
-        myRenderShaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resource/shaders/render.vs");
-        myRenderShaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resource/shaders/render.fs");
+	if(!myProgram)
+	{
+        myProgram = new QOpenGLShaderProgram();
+        myProgram->addShaderFromSourceCode(QOpenGLShader::Vertex,
+                                           "attribute highp vec4 vertices;"
+                                           "varying highp vec2 coords;"
+                                           "void main() {"
+                                           "    gl_Position = vertices;"
+                                           "    coords = vertices.xy;"
+                                           "}");
+        myProgram->addShaderFromSourceCode(QOpenGLShader::Fragment,
+                                           "uniform lowp float t;"
+                                           "varying highp vec2 coords;"
+                                           "void main() {"
+                                           "    lowp float i = 1. - (pow(abs(coords.x), 4.) + pow(abs(coords.y), 4.));"
+                                           "    i = smoothstep(t - 0.8, t + 0.8, i);"
+                                           "    i = floor(i * 20.) / 20.;"
+                                           "    gl_FragColor = vec4(coords * .5 + .5, i, i);"
+                                           "}");
 
-        myRenderShaderProgram->bindAttributeLocation("vertices", 0);
-        myRenderShaderProgram->link();
-
-        connect(window()->openglContext(), SIGNAL(aboutToBeDestroyed()),
-                this, SLOT(cleanup()), Qt::DirectConnection);
+        //myProgram->bindAttributeLocation("vertices", 0);
+        myProgram->link();
     }
+	
+	// we need to bind/release a shader once before drawing anything, currently i don't know why ...
+	myProgram->bind();
+	myProgram->release();
 
-    QSize size = QSize(width(), height());
-    if(!myFramebuffer || size != myFramebuffer->size())
-    {
-        delete myFramebuffer;
-        myFramebuffer = new QOpenGLFramebufferObject(size, QOpenGLFramebufferObject::CombinedDepthStencil);
-    }
-
-    myFramebuffer->bind();
-
-    myRenderShaderProgram->bind();
-
-    myRenderShaderProgram->enableAttributeArray(0);
-
-    float values[] = {
-        -1, -1,
-        1, -1,
-        -1, 1,
-        1, 1
-    };
-    myRenderShaderProgram->setAttributeArray(0, GL_FLOAT, values, 2);
-    myRenderShaderProgram->setUniformValue("Time", 0.0f);
+	if(!mySofaGL && myScene && myScene->isLoaded())
+	{
+		sofa::simplegui::SofaScene* sofaScene = dynamic_cast<sofa::simplegui::SofaScene*>(myScene);
+		if(sofaScene)
+		{
+			delete mySofaGL;
+			mySofaGL = new sofa::simplegui::SofaGL(sofaScene);
+		}
+	}
 
     // compute the correct viewer position
-    //QPointF pos = mapToScene(QPointF(0.0, 0.0));
-    //pos.setY(window()->height() - height() - pos.y()); // opengl has its Y coordinate inverted compared to qt
+    QPointF pos = mapToScene(QPointF(0.0, 0.0));
+    pos.setY(window()->height() - height() - pos.y()); // opengl has its Y coordinate inverted compared to qt
 
     // clear the viewer rectangle and just its area, not the whole OpenGL buffer
-    //glScissor(pos.x(), pos.y(), width(), height());
-    //glEnable(GL_SCISSOR_TEST);
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
-    //glDisable(GL_SCISSOR_TEST);
+    glScissor(pos.x(), pos.y(), width(), height());
+    glEnable(GL_SCISSOR_TEST);
+    glClearColor(0.25, 0.25, 0.25, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDisable(GL_SCISSOR_TEST);
 
     // set the viewer viewport
-    //glViewport(pos.x(), pos.y(), width(), height());
-    glViewport(0, 0, width(), height());
-
-    glDisable(GL_DEPTH_TEST);
-
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-    myRenderShaderProgram->disableAttributeArray(0);
-    myRenderShaderProgram->release();
-
-    myFramebuffer->release();
-
-    if(window()->renderTarget())
-        window()->renderTarget()->bind();
-}
-
-void Viewer::grab()
-{
-//    static int init = 0;
-//    if(1 == init++)
-//    {
-//        QImage&& image = myFramebuffer->toImage();
-//        if(image.save("viewer_output.png"))
-//            qDebug() << "SAVED";
-//        else
-//            qDebug() << "NOT SAVED";
-//    }
-
-    // draw the grabbed scene
-    if(!myCompositionShaderProgram)
-    {
-        myCompositionShaderProgram = new QOpenGLShaderProgram();
-        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resource/shaders/composition.vs");
-        myCompositionShaderProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resource/shaders/composition.fs");
-
-        myCompositionShaderProgram->bindAttributeLocation("vertices", 0);
-        myCompositionShaderProgram->link();
-
-        myCompositionShaderProgram->setUniformValue("uTexture", 0);
-
-        connect(window()->openglContext(), SIGNAL(aboutToBeDestroyed()),
-                this, SLOT(cleanup()), Qt::DirectConnection);
-    }
-
-    myCompositionShaderProgram->bind();
-
-    myCompositionShaderProgram->enableAttributeArray(0);
-
-    float values[] = {
-        -1, -1,
-        1, -1,
-        -1, 1,
-        1, 1
-    };
-    myCompositionShaderProgram->setAttributeArray(0, GL_FLOAT, values, 2);
-    glBindTexture(GL_TEXTURE_2D, myFramebuffer->texture());
-
-    QPointF pos = mapToScene(QPointF(0.0, 0.0));
-    pos.setY(window()->height() - height() - pos.y()); // OpenGL has its Y coordinate inverted compared to qt
     glViewport(pos.x(), pos.y(), width(), height());
+    //glViewport(0, 0, width(), height());
 
     glDisable(GL_DEPTH_TEST);
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glOrtho(-20.0, 20.0, -20.0, 20.0, -100.0, 100.0);
+	gluPerspective(55.0, (GLfloat) width()/(GLfloat) height(), 0.1, 1000.0);
 
-    glBindTexture(GL_TEXTURE_2D, 0);
-    myCompositionShaderProgram->disableAttributeArray(0);
-    myCompositionShaderProgram->release();
-}
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslated(0.0, -30.0, -100.0);
 
-void Viewer::saveScreenshot(const QString& imagePath)
-{
-    QString finalImagePath = imagePath;
-    if(finalImagePath.isEmpty())
-        finalImagePath = QString("screenshot_") + QDate::currentDate().toString("yyyy-MM-dd_") + QTime::currentTime().toString("hh.mm.ss") + QString(".png");
+	GLfloat light_position[] = { 25.0, 0.0, 25.0, 1.0 }; // w = 0.0 => directional light ; w = 1.0 => point light (hemi) or spot light
+	GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 0.0 };
+	GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 0.0 };
+	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 0.0 };
 
-    QImage&& image = myFramebuffer->toImage();
-    if(image.save(finalImagePath))
-        qDebug() << "SAVED";
-    else
-        qDebug() << "NOT SAVED";
-}
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
-void Viewer::cleanup()
-{
-    if (myCompositionShaderProgram)
-    {
-        delete myCompositionShaderProgram;
-        myCompositionShaderProgram = 0;
-    }
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+	glDepthMask(GL_TRUE);
 
-    if (myRenderShaderProgram)
-    {
-        delete myRenderShaderProgram;
-        myRenderShaderProgram = 0;
-    }
+	if(mySofaGL)
+		mySofaGL->draw();
 }
 
 void Viewer::sync()

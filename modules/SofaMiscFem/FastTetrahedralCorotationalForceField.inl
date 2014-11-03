@@ -43,23 +43,17 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
+typedef core::topology::BaseMeshTopology::Tetra Tetra;
+typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
 
-using core::topology::BaseMeshTopology;
-
-typedef BaseMeshTopology::Tetra				Tetra;
-typedef BaseMeshTopology::EdgesInTetrahedron		EdgesInTetrahedron;
-
-typedef Tetra			        Tetrahedron;
-typedef EdgesInTetrahedron		EdgesInTetrahedron;
+typedef topology::Tetra Tetrahedron;
+typedef topology::EdgesInTetrahedron EdgesInTetrahedron;
 
 
 template< class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::applyCreateFunction(unsigned int tetrahedronIndex,
         TetrahedronRestInformation &my_tinfo,
-        const Tetrahedron &,
+        const topology::Tetrahedron &,
         const sofa::helper::vector<unsigned int> &,
         const sofa::helper::vector<double> &)
 {
@@ -101,7 +95,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::FTCFTetrahedronHandler::a
         /// compute the edge stiffness of the linear elastic material
         for(j=0; j<6; ++j)
         {
-            Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
+            topology::Edge e=ff->_topology->getLocalEdgesInTetrahedron(j);
             k=e[0];
             l=e[1];
 
@@ -252,9 +246,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
     {
         tetinfo=&tetrahedronInf[i];
         /// describe the jth edge index of triangle no i
-        const EdgesInTetrahedron &tea= _topology->getEdgesInTetrahedron(i);
+        const topology::EdgesInTetrahedron &tea= _topology->getEdgesInTetrahedron(i);
         /// describe the jth vertex index of triangle no i
-        const Tetrahedron &ta= _topology->getTetrahedron(i);
+        const topology::Tetrahedron &ta= _topology->getTetrahedron(i);
 
         for (j=0; j<4; ++j)
         {

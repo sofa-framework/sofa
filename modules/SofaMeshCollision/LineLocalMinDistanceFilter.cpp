@@ -64,8 +64,8 @@ void LineInfo::buildFilter(unsigned int edge_index)
 
 //	vector< Vector3 >& x =(l.getCollisionModel()->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
 
-    const Vector3 &pt1 = (*this->position_filtering)[e[0]];
-    const Vector3 &pt2 = (*this->position_filtering)[e[1]];
+    const sofa::defaulttype::Vector3 &pt1 = (*this->position_filtering)[e[0]];
+    const sofa::defaulttype::Vector3 &pt2 = (*this->position_filtering)[e[1]];
 
     if (debug)
         std::cout<<"pt1: "<<pt1<<"  - pt2: "<<pt2;
@@ -107,7 +107,7 @@ void LineInfo::buildFilter(unsigned int edge_index)
 
     // compute the normal of the triangle situated on the right
     const BaseMeshTopology::Triangle& triangleRight = triangle0_is_left ? bmt->getTriangle(trianglesAroundEdge[1]): bmt->getTriangle(trianglesAroundEdge[0]);
-    Vector3 n1 = cross(x[triangleRight[1]] - x[triangleRight[0]], x[triangleRight[2]] - x[triangleRight[0]]);
+    sofa::defaulttype::Vector3 n1 = cross(x[triangleRight[1]] - x[triangleRight[0]], x[triangleRight[2]] - x[triangleRight[0]]);
     n1.normalize();
     m_nMean = n1;
     m_triangleRight = cross(n1, m_lineVector);
@@ -115,7 +115,7 @@ void LineInfo::buildFilter(unsigned int edge_index)
 
     // compute the normal of the triangle situated on the left
     const BaseMeshTopology::Triangle& triangleLeft = triangle0_is_left ? bmt->getTriangle(trianglesAroundEdge[0]): bmt->getTriangle(trianglesAroundEdge[1]);
-    Vector3 n2 = cross(x[triangleLeft[1]] - x[triangleLeft[0]], x[triangleLeft[2]] - x[triangleLeft[0]]);
+    sofa::defaulttype::Vector3 n2 = cross(x[triangleLeft[1]] - x[triangleLeft[0]], x[triangleLeft[2]] - x[triangleLeft[0]]);
     n2.normalize();
     m_nMean += n2;
     m_triangleLeft = cross(m_lineVector, n2);
@@ -186,7 +186,7 @@ bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector
         }
         else
         {
-            Vector3 PQnormalized = PQ;
+            sofa::defaulttype::Vector3 PQnormalized = PQ;
             PQnormalized.normalize();
 
             if (fabs(dot(m_lineVector, PQnormalized)) > m_lmdFilters->getConeMinAngle() + 0.001)		// dot(AB,n1) should be equal to 0
@@ -257,7 +257,7 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned 
     sofa::core::topology::BaseMeshTopology * bmt = lLMDFilter->bmt; //getContext()->getTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
+    component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
     if(mstateVec3d != NULL)
     {
         pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
@@ -282,7 +282,7 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned i
 
 
     /////// TODO : template de la classe
-    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
+    component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(lLMDFilter->getContext()->getMechanicalState());
     if(mstateVec3d != NULL)
     {
         lInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());

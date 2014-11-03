@@ -43,12 +43,6 @@ namespace topology
 {
 
 
-using namespace sofa::defaulttype;
-
-using namespace sofa::component::topology;
-using namespace sofa::core::topology;
-
-using namespace sofa::core;
 
 /**
 * This class, called Quad2TriangleTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
@@ -60,11 +54,11 @@ using namespace sofa::core;
 *
 */
 
-class SOFA_TOPOLOGY_MAPPING_API Quad2TriangleTopologicalMapping : public TopologicalMapping
+class SOFA_TOPOLOGY_MAPPING_API Quad2TriangleTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 
 public:
-    SOFA_CLASS(Quad2TriangleTopologicalMapping,TopologicalMapping);
+    SOFA_CLASS(Quad2TriangleTopologicalMapping,sofa::core::topology::TopologicalMapping);
 protected:
     /** \brief Constructor.
     *

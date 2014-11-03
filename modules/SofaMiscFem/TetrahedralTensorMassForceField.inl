@@ -43,21 +43,15 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
-using core::topology::BaseMeshTopology;
-
-typedef BaseMeshTopology::Tetra				Tetra;
-typedef BaseMeshTopology::EdgesInTetrahedron		EdgesInTetrahedron;
+typedef core::topology::BaseMeshTopology::Tetra				Tetra;
+typedef core::topology::BaseMeshTopology::EdgesInTetrahedron		EdgesInTetrahedron;
 
 typedef Tetra			Tetrahedron;
 typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(unsigned int, EdgeRestInformation &ei, const Edge &edge, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::applyCreateFunction(unsigned int, EdgeRestInformation &ei, const topology::Edge &edge, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {

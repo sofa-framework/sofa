@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.5" showAxis="true">
+  <RequiredPlugin pluginName="Flexible"/>
+
+  <!--Solver-->
+  <StaticSolver/>
+  <CGLinearSolver template="GraphScattered" name="linear solver" iterations="1000" tolerance="1e-12" threshold="1e-12" />
+
+  <!--Mechanical Object-->
+  <MechanicalObject name="DOFs" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" position="0 0 0 1 0 0 0 1 0 1 1 0 0 0 1 1 0 1 0 1 1 1 1 1" />
+  
+  <!--Topology Tetrahedra-->
+  <MeshTopology name="tetrahedra" tetrahedra="0 5 1 6  0 1 3 6  1 3 6 2  6 3 0 7  6 7 0 5  7 5 4 0 " drawTetrahedra="1" position="@DOFs.position"/>
+  
+  <!--MeshMatrixMass-->
+  <UniformMass totalMass="1" />
+
+  <!--maintain point (0,0,0) fixed -->
+  <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   0.01 0.01 0.01  "  drawPoints="1" drawSize="30" />
+  <ProjectToPointConstraint point="0 0 0" indices="@[-1].indices" />
+
+  <!--constrain point (0,1,0) to the y axis -->
+  <BoxROI template="Vec3d" name="Oy_line_box_roi" box="-0.01 0.99 -0.01   0.01 1.01 0.01  "  drawPoints="1" drawSize="30" />
+  <ProjectToLineConstraint origin="0 0 0" direction="0 1 0" indices="@[-1].indices" />
+
+  <!--constraint face x=0 to stay in this plane-->
+  <BoxROI template="Vec3d" name="Oyz_plane_box_roi" box="-0.01 -0.01 -0.01   0.01 1.01 1.01  " drawBoxes="1" drawSize="1" />
+  <ProjectToPlaneConstraint normal="1 0 0" indices="@[-1].indices" />
+
+  <BarycentricShapeFunction template="ShapeFunctiond" />
+
+  <!--Decomposition of the cubes in triangles -->
+  <Node name="Triangles" >
+    <TriangleSetTopologyContainer name="triangleContainer" triangles="1 7 3 5 1 7"/>
+    <TriangleSetTopologyModifier />
+    <TriangleSetTopologyAlgorithms template="Vec3d" />
+    <TriangleSetGeometryAlgorithms template="Vec3d" />
+    <TrianglePressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" showForces="1"/>
+  </Node>
+
+  <Node name="behavior">
+    <TopologyGaussPointSampler name="sampler" inPosition="@../tetrahedra.position" showSamplesScale="0" method="0" order="1" />
+  
+    <!--Material-->
+    <Node name="Strain"   >
+    </Node>
+
+  </Node>
+  
+</Node>

@@ -44,33 +44,30 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::collision;
-
 
 template<class T>
 bool MeshDiscreteIntersection::testIntersection( TSphere<T>& sph, Triangle& triangle)
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
-    Vector3 p0 = triangle.p1();
-    Vector3 p1 = triangle.p2();
-    Vector3 p2 = triangle.p3();
+    defaulttype::Vector3 p0 = triangle.p1();
+    defaulttype::Vector3 p1 = triangle.p2();
+    defaulttype::Vector3 p2 = triangle.p3();
 
     // Center of the sphere
-    const Vector3 sphCenter(sph.center());
+    const defaulttype::Vector3 sphCenter(sph.center());
     // Radius of the sphere
     const double r = sph.r();
 
     //Normal to the plane (plane spanned by tree points of the triangle)
-    Vector3 normal = cross( (p1 - p0), (p2 - p0) );
+    defaulttype::Vector3 normal = cross( (p1 - p0), (p2 - p0) );
     normal.normalize();
 
     //Distance from the center of the sphere to the plane.
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    Vector3 projPoint = sphCenter - normal*distance;
+    defaulttype::Vector3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)
@@ -104,24 +101,24 @@ int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& tr
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
-    Vector3 p0 = triangle.p1();
-    Vector3 p1 = triangle.p2();
-    Vector3 p2 = triangle.p3();
+    defaulttype::Vector3 p0 = triangle.p1();
+    defaulttype::Vector3 p1 = triangle.p2();
+    defaulttype::Vector3 p2 = triangle.p3();
 
     // Center of the sphere
-    const Vector3 sphCenter(sph.center());
+    const defaulttype::Vector3 sphCenter(sph.center());
     // Radius of the sphere
     const double r = sph.r();
 
     //Normal to the plane (plane spanned by tree points of the triangle)
-    Vector3 normal = cross( (p1 - p0), (p2 - p0) );
+    defaulttype::Vector3 normal = cross( (p1 - p0), (p2 - p0) );
     normal.normalize();
 
     //Distance from the center of the sphere to the plane.
     double distance = sphCenter*normal - normal*p0;
 
     //Projection of the center of the sphere onto the plane
-    Vector3 projPoint = sphCenter - normal*distance;
+    defaulttype::Vector3 projPoint = sphCenter - normal*distance;
 
     //Distance correction in case is negative.
     if (distance < 0.0)
@@ -145,7 +142,7 @@ int MeshDiscreteIntersection::computeIntersection( TSphere<T>& sph, Triangle& tr
     if ( (SAMESIDE(projPoint,p0,p1,p2) && SAMESIDE(projPoint,p1,p0,p2) && SAMESIDE(projPoint,p2,p0,p1)))
     {
         contacts->resize(contacts->size()+1);
-        DetectionOutput *detection = &*(contacts->end()-1);
+        core::collision::DetectionOutput *detection = &*(contacts->end()-1);
         detection->normal = -normal;
         detection->point[1] = projPoint;
         detection->point[0] = sph.getContactPointByNormal( detection->normal );

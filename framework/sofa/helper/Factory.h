@@ -135,7 +135,7 @@ public:
     typedef typename Factory::ObjectPtr ObjectPtr;
     typedef typename Factory::Argument  Argument;
     typedef typename Factory::Key       Key;
-    Creator(Key key, bool multi=false)
+    explicit Creator(Key key, bool multi=false)
         : Key(key)
     {
         Factory::getInstance()->registerCreator(key, this, multi);
@@ -149,6 +149,13 @@ public:
     {
         return typeid(RealObject);
     }
+
+	// Dummy function to avoid dead stripping symbol
+	void registerInFactory()
+	{
+		printf("[SOFA]Registration of class : %s\n", type().name());
+	}
+
 };
 /*
 /// Generic object creator. Can be specialized for custom objects creation

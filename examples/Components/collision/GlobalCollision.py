@@ -23,11 +23,12 @@ class GlobalCollision(Sofa.PythonScriptController):
 		floorNode.createObject('MeshObjLoader', name='loader', filename='mesh/SaladBowl.obj')
 		floorNode.createObject('Mesh', src='@loader')
 		mec=floorNode.createObject('MechanicalObject', src='@loader',name='the_bol')
+		floorNode.createObject("UniformMass", name="floorMass")
 		mec.applyScale(50,50,50)
 		floorNode.createObject('Triangle', name='Floor', simulated=0, moving=0)
 		#floorNode.createObject('Line', name='Floor', simulated=0, moving=0)
 		floorNode.createObject('OglModel', name='FloorV', filename='mesh/SaladBowl.obj',texturename='textures/texture.bmp')#, texturename='textures/SaladBowl$.bmp')
-
+		floorNode.createObject("FixedConstraint", name="fixedConstraint", fixAll=1)
 		#self.generatePrimitives1(40)
 
 		return 0

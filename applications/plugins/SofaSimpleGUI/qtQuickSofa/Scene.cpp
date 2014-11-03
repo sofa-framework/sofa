@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Scene.h"
 
 #include <QTimer>
@@ -11,10 +12,27 @@ Scene::Scene(QObject *parent) :
 
 }
 
-void Scene::open(const char *filename )
+void Scene::open(const QString& filename)
 {
-    SofaScene::open(filename);
-    emit opened();
+	QString finalFilename = QUrl(filename).toLocalFile();
+	if(finalFilename.isEmpty())
+		finalFilename = filename;
+
+	std::string filepath = finalFilename.toLatin1().constData();
+	if(sofa::helper::system::DataRepository.findFile(filepath))
+		finalFilename = filepath.c_str();
+
+	qDebug() << "-------------------------------------------------- " << endl << "Loading:" << finalFilename;
+    SofaScene::setScene(finalFilename.toLatin1().constData());
+	if(!_currentFileName.empty())
+	{
+		qDebug() << "Scene loaded";	
+		emit opened();
+	}
+	else
+	{
+		qDebug() << "Scene could not be loaded";
+	}
 }
 
 void Scene::reload()
@@ -24,6 +42,9 @@ void Scene::reload()
 
 void Scene::step()
 {
+	if(!isLoaded())
+		return;
+
     SofaScene::step(_dt);
     emit stepEnd();
 }
@@ -35,6 +56,11 @@ void Scene::setTimeStep( SReal dt ){
 SReal Scene::dt() const
 {
 	return _dt;
+}
+
+bool Scene::isLoaded() const
+{
+	return !_currentFileName.empty();
 }
 
 bool Scene::isPlaying() const

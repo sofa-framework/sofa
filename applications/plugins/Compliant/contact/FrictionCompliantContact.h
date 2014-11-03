@@ -34,17 +34,20 @@ public:
     typedef typename Inherit::Intersection Intersection;
 
     Data< SReal > mu; ///< friction coef
+    Data< bool > horizontalConeProjection; ///< should the cone projection be horizontal? By default a regular orthogonal cone projection is performed.
 
 protected:
 
     FrictionCompliantContact()
         : Inherit()
         , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
+        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal? By default a regular orthogonal cone projection is performed.") )
     {}
 
     FrictionCompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
         , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
+        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal? By default a regular orthogonal cone projection is performed.") )
     {}
 
 
@@ -62,6 +65,9 @@ protected:
 
         delta.node->addChild( contact_node.get() );
 
+        // ensure all graph context parameters (e.g. dt are well copied)
+        contact_node->updateSimulationContext();
+
         typedef defaulttype::Vec3Types contact_type;
 
         typedef container::MechanicalObject<contact_type> contact_dofs_type;
@@ -76,8 +82,8 @@ protected:
         contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
         contact_node->addObject( contact_map.get() );
 
-        this->copyNormals( contact_map->normal );
-        this->copyPenetrations( contact_map->penetrations );
+        this->copyNormals( *edit(contact_map->normal) );
+        this->copyPenetrations( *edit(contact_map->penetrations) );
 
         // every contact points must propagate constraint forces
         for(unsigned i = 0; i < size; ++i)
@@ -110,6 +116,7 @@ protected:
         // projector
         typedef linearsolver::CoulombConstraint proj_type;
         proj_type::SPtr projector = sofa::core::objectmodel::New<proj_type>( frictionCoefficient );
+        projector->horizontalProjection = horizontalConeProjection.getValue();
         contact_node->addObject( projector.get() );
         if( restitutionCoefficient )
         {

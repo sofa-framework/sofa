@@ -6,11 +6,12 @@
   
       <RequiredPlugin pluginName="Flexible"/>
       <RequiredPlugin pluginName="Compliant"/>
+      
  <CompliantAttachButtonSetting compliance="0.001" isCompliance="0"/>
 	<Node name="compliant-stiffness (red)" activated="1" >
-		<AssembledSolver warm_start="true" />
-		
-		<MinresSolver iterations="200" precision="0" relative="false" />
+		<CompliantImplicitSolver warm_start="true" />
+<!--             <CompliantNLImplicitSolver iteration="100" precision="1e-5"/> -->
+		<MinresSolver iterations="200" precision="1e-5" relative="false" />
 		
 		<Node name="Flexible"  >
 			
@@ -24,28 +25,28 @@
 			<Node name="behavior"   >
 				<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" />
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="true"/>
+    		<LinearMapping template="Vec3d,F331" assemble="true"/>
 				<Node 	name="Strain"   >
 					<MechanicalObject  template="E331" name="E"  />
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="true" method="svd" geometricStiffness="1"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="true" method="svd" geometricStiffness="1"/>
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="true" isCompliance="false"/>
 				</Node>
 			</Node>
 			<Node 	name="mass"   >
 				<MechanicalObject position="@../mesh.position" />
 				<UniformMass totalMass="250" />
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="true"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="true"/>
 			</Node>
 			<Node name="Visual"  >
 				<VisualModel  fileMesh="mesh/torus.obj" color="red" />
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>
 	</Node>
 
 	<Node name="compliant-compliant RG (blue)" activated="1">
-		<AssembledSolver warm_start="true" neglecting_compliance_forces_in_geometric_stiffness="false"/>
-		<MinresSolver iterations="200" precision="0" relative="false" />
+		<CompliantImplicitSolver warm_start="true" neglecting_compliance_forces_in_geometric_stiffness="false"/>
+		<MinresSolver iterations="200" precision="1e-5" relative="false" />
 		
 		<Node name="Flexible"  >
 			
@@ -59,30 +60,28 @@
 			<Node name="behavior"   >
 				<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position"  />
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="true"/>
+    		<LinearMapping template="Vec3d,F331" assemble="true"/>
 				<Node 	name="Strain"   >
 					<MechanicalObject  template="E331" name="E"  />
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="true" method="svd" geometricStiffness="1"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="true" method="svd" geometricStiffness="1"/>
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="true" isCompliance="true"/>
-					<Stabilization/>
-<!--   <ConstraintValue/> -->
 				</Node>
 			</Node>
 			<Node 	name="mass"   >
 				<MechanicalObject position="@../mesh.position" />
 				<UniformMass totalMass="250" />
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="true"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="true"/>
 			</Node>
 			<Node name="Visual"  >
 				<VisualModel  fileMesh="mesh/torus.obj" color="blue" />
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>
 	</Node>
 	
 	<Node name="compliant-compliant no RG (green)" activated="1">
-		<AssembledSolver warm_start="true" neglecting_compliance_forces_in_geometric_stiffness="true"/>
-		<MinresSolver iterations="200" precision="0" relative="false" />
+		<CompliantImplicitSolver warm_start="true" neglecting_compliance_forces_in_geometric_stiffness="true"/>
+		<MinresSolver iterations="200" precision="1e-5" relative="false" />
 		
 		<Node name="Flexible"  >
 			
@@ -96,31 +95,29 @@
 			<Node name="behavior"   >
 				<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position"  />
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="true"/>
+    		<LinearMapping template="Vec3d,F331" assemble="true"/>
 				<Node 	name="Strain"   >
 					<MechanicalObject  template="E331" name="E"  />
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="true" method="svd" geometricStiffness="1"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="true" method="svd" geometricStiffness="1"/>
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="true" isCompliance="true"/>
-<!-- 					<Stabilization/> -->
-  <ConstraintValue/>
 				</Node>
 			</Node>
 			<Node 	name="mass"   >
 				<MechanicalObject position="@../mesh.position" />
 				<UniformMass totalMass="250" />
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="true"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="true"/>
 			</Node>
 			<Node name="Visual"  >
 				<VisualModel  fileMesh="mesh/torus.obj" color="green" />
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>
 	</Node>
 
-	<Node name="not-assembled-stiffness second order (grey)" activated="1">
+	<Node name="not-assembled-stiffness second order (grey)" activated="0">
 		
 		<EulerImplicitSolver rayleighStiffness="0" rayleighMass="0" vdamping="0"  />
-		<MinResLinearSolver iterations="200" tolerance="0" />
+		<MinResLinearSolver iterations="200" tolerance="1e-5" />
 		<Node name="Flexible2"  >
 			
 			<MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
@@ -133,21 +130,21 @@
 			<Node name="behavior"   >
 				<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" />
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="1"/>
+    		<LinearMapping template="Vec3d,F331" assemble="1"/>
 				<Node 	name="Strain"   >
 					<MechanicalObject  template="E331" name="E"  />
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="1" method="svd" geometricStiffness="1"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="1" method="svd" geometricStiffness="1"/>
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="true" isCompliance="false"/>	    
 				</Node>
 			</Node>
 			<Node 	name="mass"   >
 				<MechanicalObject position="@../mesh.position" />
 				<UniformMass totalMass="250" />
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="false"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="false"/>
 			</Node>
 			<Node name="Visual"  >
 				<VisualModel  fileMesh="mesh/torus.obj" />
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>
 	</Node>
@@ -170,21 +167,21 @@
 			<Node name="behavior"   >
 				<TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position"  />
 				<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    		<LinearMapping template="Mapping&lt;Vec3d,F331&gt;" assemble="false"/>
+    		<LinearMapping template="Vec3d,F331" assemble="false"/>
 				<Node 	name="Strain"   >
 					<MechanicalObject  template="E331" name="E"  />
-	    		<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;" assemble="false" method="svd" geometricStiffness="1"/>
+	    		<CorotationalStrainMapping template="F331,E331" assemble="false" method="svd" geometricStiffness="1"/>
 					<HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="2" assemble="false" isCompliance="false"/>	    
 				</Node>
 			</Node>
 			<Node 	name="mass"   >
 				<MechanicalObject position="@../mesh.position" />
 				<UniformMass totalMass="250" />
-				<LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;" assemble="false"/>
+				<LinearMapping template="Vec3d,Vec3d" assemble="false"/>
 			</Node>
 			<Node name="Visual"  >
 				<VisualModel  fileMesh="mesh/torus.obj" color="yellow"/>
-				<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;" />
+				<LinearMapping template="Vec3d,ExtVec3f" />
 			</Node>
 		</Node>
 	</Node>-->

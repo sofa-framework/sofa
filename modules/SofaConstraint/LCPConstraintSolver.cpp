@@ -26,7 +26,6 @@
 #include <SofaConstraint/LCPConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/SolveVisitor.h>
@@ -63,14 +62,14 @@ bool LCPConstraintSolver::prepareStates(const core::ConstraintParams * /*cParams
     sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
     last_lcp = lcp;
-    simulation::MechanicalVOpVisitor(core::ExecParams::defaultInstance(), (VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
+    simulation::MechanicalVOpVisitor(core::ExecParams::defaultInstance(), (core::VecId)core::VecDerivId::dx()).setMapped(true).execute( context); //dX=0
 
     if( f_printLog.getValue())
         serr<<" propagate DXn performed - collision called"<<sendl;
 
     time = 0.0;
     timeTotal=0.0;
-    timeScale = 1000.0 / (double)CTime::getTicksPerSec();
+    timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -310,8 +309,10 @@ LCPConstraintSolver::LCPConstraintSolver()
     //_PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
     //_cont_id_list = (long *)malloc(MAX_NUM_CONSTRAINTS * sizeof(long));
 
-    _Wdiag = new SparseMatrix<double>();
+    _Wdiag = new sofa::component::linearsolver::SparseMatrix<double>();
 
+	tol.setRequired(true);
+	maxIt.setRequired(true);
 }
 
 LCPConstraintSolver::~LCPConstraintSolver()
@@ -884,7 +885,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
 
     //helper::system::thread::CTime timer;
     double time = 0.0;
-    double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
+    double timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
     if ( displayTime.getValue() )
     {
         time = (double) helper::system::thread::CTime::getTime();
@@ -1081,7 +1082,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
         std::list<unsigned int>::iterator it_c ;
         error =0;
 
-        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; it_c++ )
+        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end() ; ++it_c )
         {
 
 
@@ -1090,7 +1091,9 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
             c1 = constraint/3;
 
             //constraints are treated 3x3 (friction contact)
-            it_c++; it_c++;
+            ++it_c; 
+            if(it_c != contact_sequence.end()) 
+                ++it_c;
 
 
 
@@ -1218,7 +1221,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
     if ( displayTime.getValue() )
     {
         time = (double) helper::system::thread::CTime::getTime();
-        timeScale = 1000.0 / (double)CTime::getTicksPerSec();
+        timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
     }
 
 
@@ -1345,7 +1348,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
         std::list<unsigned int>::iterator it_c;
         error =0;
 
-        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end(); it_c++)
+        for (it_c = contact_sequence.begin(); it_c != contact_sequence.end(); ++it_c)
         {
 
             c1 = *it_c;

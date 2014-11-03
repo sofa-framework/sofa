@@ -7,12 +7,12 @@
 
 <CompliantAttachButtonSetting button="Left" />
 <Node 	name="complianceSolverScene" >
-        <AssembledSolver/>
+        <CompliantImplicitSolver/>
 	<LDLTSolver/>
 <!--    <MinresSolver iterations="20" precision="1e-3" /> -->
    
     <GridMeshCreator name="loader" filename="nofile" resolution="5 5" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
-    <MeshTopology name="mesh" src="@loader" />
+    <MeshTopology name="mesh" src="@loader" drawQuads="1" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
     <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
     <UniformMass  name="mass" />

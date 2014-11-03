@@ -40,8 +40,6 @@ namespace component
 namespace visualmodel
 {
 
-using namespace sofa::defaulttype;
-
 template<class DataTypes>
 OglTetrahedralModel<DataTypes>::OglTetrahedralModel()
     : m_topology(NULL)
@@ -118,7 +116,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     {
         if( this->f_printLog.getValue() ) 
             sout<< "OglTetrahedralModel: copying "<< m_topology->getNbPoints() << "points from topology." <<sendl;
-        helper::WriteAccessor<  Data<ResizableExtVector<Coord> > > position = m_positions;
+        helper::WriteAccessor<  Data<sofa::defaulttype::ResizableExtVector<Coord> > > position = m_positions;
         position.resize(m_topology->getNbPoints());
         for( unsigned int i = 0; i<position.size(); i++ ) {
             position[i][0] = (Real)m_topology->getPX(i);
@@ -130,7 +128,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     {
         if( this->f_printLog.getValue() ) 
             sout<<"OglTetrahedralModel: copying "<< mstate->getSize()<< " points from mechanical state." <<sendl;
-        helper::WriteAccessor< Data<ResizableExtVector<Coord> > > position = m_positions;
+        helper::WriteAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > position = m_positions;
         position.resize(mstate->getSize());
         for( unsigned int i = 0; i<position.size(); i++ ) 
         {
@@ -148,7 +146,7 @@ void OglTetrahedralModel<DataTypes>::computeMesh()
     const topology::BaseMeshTopology::SeqTetrahedra& inputTetrahedrons = m_topology->getTetrahedra();
     if( this->f_printLog.getValue() ) 
         sout<<"OglTetrahedralModel: copying "<< inputTetrahedrons.size() << " tetrahedrons from topology." <<sendl;
-    helper::WriteAccessor< Data< ResizableExtVector<Tetrahedron> > > tetrahedrons = m_tetrahedrons; 
+    helper::WriteAccessor< Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > > tetrahedrons = m_tetrahedrons;
     tetrahedrons.resize(inputTetrahedrons.size());
     for( unsigned int i = 0; i<inputTetrahedrons.size(); i++ ) {
         tetrahedrons[i] = inputTetrahedrons[i];
@@ -180,7 +178,7 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 
     glBegin(GL_LINES_ADJACENCY_EXT);
 
-    const ResizableExtVector<Coord> position = m_positions.getValue();
+    const sofa::defaulttype::ResizableExtVector<Coord> position = m_positions.getValue();
     for( it = vec.begin(); it!=vec.end(); it++ ) {
         // for every tetrahedron, get its four vertices
         for( unsigned int i = 0; i<4; i++ ) {
@@ -252,14 +250,14 @@ void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params
         const core::topology::BaseMeshTopology::SeqTetrahedra& vec = m_topology->getTetrahedra();
         core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
         Coord v;
-        const ResizableExtVector<Coord>& position = m_positions.getValue();
+        const sofa::defaulttype::ResizableExtVector<Coord>& position = m_positions.getValue();
         const SReal max_real = std::numeric_limits<SReal>::max();
         const SReal min_real = std::numeric_limits<SReal>::min();
 
         SReal maxBBox[3] = {min_real,min_real,min_real};
         SReal minBBox[3] = {max_real,max_real,max_real};
 
-        for(it = vec.begin() ; it != vec.end() ; it++)
+        for(it = vec.begin() ; it != vec.end() ; ++it)
         {
             for (unsigned int i=0 ; i< 4 ; i++)
             {

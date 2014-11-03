@@ -16,6 +16,7 @@ namespace collision
 using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::Node;
+using core::collision::Contact;
 
 SOFA_DECL_CLASS(FrictionCompliantContact)
 
@@ -44,7 +45,12 @@ Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, RigidSphereMod
 Creator<Contact::Factory, FrictionCompliantContact<RigidSphereModel, PointModel> > RigidSpherePointFrictionCompliantContactClass("FrictionCompliantContact",true);
 Creator<Contact::Factory, FrictionCompliantContact<CapsuleModel, RigidSphereModel> > CapsuleRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
 Creator<Contact::Factory, FrictionCompliantContact<RigidSphereModel, OBBModel> > RigidSphereOBBFrictionCompliantContactClass("FrictionCompliantContact",true);
-
+Creator<Contact::Factory, FrictionCompliantContact<OBBModel ,RigidSphereModel> > OBBRigidSphereFrictionCompliantContactClass("FrictionCompliantContact",true);
+Creator<Contact::Factory, FrictionCompliantContact<CylinderModel, OBBModel> >	CylinderModelOBBModelFrictionCompliantContactClass("FrictionCompliantContact",true);
+Creator<Contact::Factory, FrictionCompliantContact<CylinderModel, TriangleModel> >	CylinderModelTriangleModelFrictionCompliantContactClass("FrictionCompliantContact",true);
+Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, CylinderModel> >	TriangleModelCylinderModelFrictionCompliantContactClass("FrictionCompliantContact",true);
+Creator<Contact::Factory, FrictionCompliantContact<CylinderModel, SphereModel> >	CylinderModelSphereModelFrictionCompliantContactClass("FrictionCompliantContact",true);
+Creator<Contact::Factory, FrictionCompliantContact<SphereModel, CylinderModel> >	SphereModelCylinderModelFrictionCompliantContactClass("FrictionCompliantContact",true);
 
 } // namespace collision
 

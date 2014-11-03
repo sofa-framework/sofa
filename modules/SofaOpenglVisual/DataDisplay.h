@@ -57,7 +57,7 @@ protected:
         : f_maximalRange(initData(&f_maximalRange, true, "maximalRange", "Keep the maximal range through all timesteps"))
           , f_pointData(initData(&f_pointData, "pointData", "Data associated with nodes"))
           , f_cellData(initData(&f_cellData, "cellData", "Data associated with elements"))
-          , f_colorNaN(initData(&f_colorNaN, Vec4f(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values"))
+          , f_colorNaN(initData(&f_colorNaN, sofa::defaulttype::Vec4f(0.0f,0.0f,0.0f,1.0f), "colorNaN", "Color used for NaN values"))
           , state(NULL)
           , topology(NULL)
           , oldMin(0)
@@ -69,7 +69,7 @@ public:
     Data<bool> f_maximalRange;
     Data<VecPointData> f_pointData;
     Data<VecCellData> f_cellData;
-    Data<Vec4f> f_colorNaN; // Color for NaNs (alpha channel is not used)
+    Data<sofa::defaulttype::Vec4f> f_colorNaN; // Color for NaNs (alpha channel is not used)
 
     visualmodel::ColorMap *colorMap;
     core::State<DataTypes> *state;
@@ -84,7 +84,12 @@ public:
     //void initTextures() {}
     void drawVisual(const core::visual::VisualParams* vparams);
     //void drawTransparent(const VisualParams* /*vparams*/)
-    //void updateVisual();
+    void updateVisual();
+
+protected:
+
+    void computeNormals();
+    helper::vector<defaulttype::Vec3f> m_normals;
 
 };
 

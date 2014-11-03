@@ -63,7 +63,6 @@ typedef double Real; ///< alias
 
 class TriangleIncisionInformation;
 
-using namespace defaulttype;
 /** Read file containing topological modification. Or apply input modifications
  * A timestep has to be established for each modification.
  *
@@ -156,7 +155,7 @@ protected:
 
     std::vector<Real> getValuesInLine(std::string line, unsigned int nbElements);
 
-    void findElementIndex(Vector3 coord, int& triangleIndex, int oldTriangleIndex);
+    void findElementIndex(defaulttype::Vector3 coord, int& triangleIndex, int oldTriangleIndex);
     void saveIndices();//only for incision
     void inciseWithSavedIndices();
 
@@ -168,10 +167,10 @@ class TriangleIncisionInformation
 {
 public:
     std::vector<unsigned int>      triangleIndices;
-    std::vector<Vector3>                barycentricCoordinates;
+    std::vector<defaulttype::Vector3>                barycentricCoordinates;
     Real                                           timeToIncise;
 
-    std::vector<Vector3>                coordinates;
+    std::vector<defaulttype::Vector3>                coordinates;
 
     void display()
     {
@@ -192,9 +191,9 @@ public:
     }
 
 
-    std::vector<Vector3> computeCoordinates(core::topology::BaseMeshTopology *topology)
+    std::vector<defaulttype::Vector3> computeCoordinates(core::topology::BaseMeshTopology *topology)
     {
-        sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
+        sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeo;
         topology->getContext()->get(triangleGeo);
 
         coordinates.clear();
@@ -209,7 +208,7 @@ public:
 
         for (unsigned int i = 0 ; i < coordinates.size() ; i++)
         {
-            Vec3Types::Coord coord[3];
+            defaulttype::Vec3Types::Coord coord[3];
             unsigned int triIndex = triangleIndices[i];
 
             if ( (int)triIndex >= topology->getNbTriangles())

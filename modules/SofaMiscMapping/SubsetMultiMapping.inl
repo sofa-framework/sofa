@@ -32,8 +32,6 @@
 #endif
 #include <sofa/core/MultiMapping.inl>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -43,9 +41,6 @@ namespace component
 
 namespace mapping
 {
-
-using namespace sofa::core;
-
 
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::init()
@@ -153,7 +148,7 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int i
 
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::apply(const MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
+void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
     //apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos)
     //OutVecCoord& out = *outPos[0];
@@ -196,7 +191,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /* cparams */ /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ )
 {
-    cerr<<"WARNING ! SubsetMultiMapping<TIn, TOut>::applyJT not implemented for MatrixDeriv ! " << endl;
+    std::cerr<<"WARNING ! SubsetMultiMapping<TIn, TOut>::applyJT not implemented for MatrixDeriv ! " << std::endl;
 }
 
 

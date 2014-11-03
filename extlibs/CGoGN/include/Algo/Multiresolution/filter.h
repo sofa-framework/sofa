@@ -27,7 +27,6 @@
 
 #include <cmath>
 
-
 namespace CGoGN
 {
 
@@ -46,20 +45,18 @@ public:
 } ;
 
 template <typename PFP>
-unsigned int vertexLevel(typename PFP::MAP& map, Dart d)
+unsigned int vertexLevel(typename PFP::MAP& map, Vertex v)
 {
-	assert(map.getDartLevel(d) <= map.getCurrentLevel() || !"edgeLevel : called with a dart inserted after current level") ;
+    assert(map.getDartLevel(v) <= map.getCurrentLevel() || !"vertexLevel : called with a dart inserted after current level") ;
 
 	unsigned int level = map.getMaxLevel();
 
-	TraversorDartsOfOrbit<typename PFP::MAP,VERTEX> tv(map,d);
-
-	for(Dart dit = tv.begin() ; dit != tv.end() ; dit = tv.next())
+	map.foreach_dart_of_orbit(v, [&] (Dart d)
 	{
-		unsigned int ldit = map.getDartLevel(dit) ;
+		unsigned int ldit = map.getDartLevel(d) ;
 		if(ldit < level)
 			level = ldit;
-	}
+	});
 
 //	Dart dit = d;
 //	do
@@ -77,7 +74,7 @@ unsigned int vertexLevel(typename PFP::MAP& map, Dart d)
 
 
 template <typename PFP, typename T>
-void filterLowPass(typename PFP::MAP& map, VertexAttribute<T>& attIn, unsigned int cutoffLevel)
+void filterLowPass(typename PFP::MAP& map, VertexAttribute<T, typename PFP::MAP>& attIn, unsigned int cutoffLevel)
 {
 	unsigned int cur = map.getCurrentLevel();
 	unsigned int max = map.getMaxLevel();
@@ -95,7 +92,7 @@ void filterLowPass(typename PFP::MAP& map, VertexAttribute<T>& attIn, unsigned i
 }
 
 template <typename PFP, typename T>
-void filterHighPass(typename PFP::MAP& map, VertexAttribute<T>& attIn, unsigned int cutoffLevel)
+void filterHighPass(typename PFP::MAP& map, VertexAttribute<T, typename PFP::MAP>& attIn, unsigned int cutoffLevel)
 {
 	unsigned int cur = map.getCurrentLevel();
 	unsigned int max = map.getMaxLevel();
@@ -113,7 +110,7 @@ void filterHighPass(typename PFP::MAP& map, VertexAttribute<T>& attIn, unsigned 
 }
 
 template <typename PFP, typename T>
-void filterBandPass(typename PFP::MAP& map, VertexAttribute<T>& attIn, unsigned int cutoffLevelLow, unsigned int cutoffLevelHigh)
+void filterBandPass(typename PFP::MAP& map, VertexAttribute<T, typename PFP::MAP>& attIn, unsigned int cutoffLevelLow, unsigned int cutoffLevelHigh)
 {
 	unsigned int cur = map.getCurrentLevel();
 	unsigned int max = map.getMaxLevel();
@@ -149,7 +146,7 @@ typename PFP::VEC3 doTwist(typename PFP::VEC3 pos, float t )
 }
 
 template <typename PFP>
-void frequencyDeformation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& attIn, unsigned int cutoffLevel)
+void frequencyDeformation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& attIn, unsigned int cutoffLevel)
 {
 	float time = 1.0;
 	//float angle_deg_max = 0.4;
@@ -162,7 +159,6 @@ void frequencyDeformation(typename PFP::MAP& map, VertexAttribute<typename PFP::
 	TraversorV<typename PFP::MAP> tv(map);
 	for (Dart d = tv.begin(); d != tv.end(); d = tv.next())
 	{
-
 		typename PFP::VEC3 p = attIn[d];
 
 		float dist = std::sqrt(p[0]*p[0] + p[2]*p[2]);
@@ -178,10 +174,6 @@ void frequencyDeformation(typename PFP::MAP& map, VertexAttribute<typename PFP::
 	}
 }
 
-
-
-
-
 } // namespace MR
 
 } // namespace Algo
@@ -189,4 +181,3 @@ void frequencyDeformation(typename PFP::MAP& map, VertexAttribute<typename PFP::
 } // namespace CGoGN
 
 #endif
-

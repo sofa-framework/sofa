@@ -39,9 +39,6 @@ namespace component
 namespace misc
 {
 
-using namespace core::objectmodel;
-using namespace std;
-
 template <class DataTypes>
 class Monitor: public virtual core::objectmodel::BaseObject
 {

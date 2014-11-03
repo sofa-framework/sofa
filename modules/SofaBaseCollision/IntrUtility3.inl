@@ -9,9 +9,6 @@ namespace sofa{
 namespace component{
 namespace collision{
 
-using namespace sofa::defaulttype;
-
-
 template <typename Real>
 IntrConfiguration<Real> & IntrConfiguration<Real>::operator=(const IntrConfiguration & other){
     this->mMap = other.mMap;
@@ -35,24 +32,24 @@ CapIntrConfiguration<Real> & CapIntrConfiguration<Real>::operator=(const CapIntr
 }
 
 template <typename Real>
-Vec<3,Real> CapIntrConfiguration<Real>::leftContactPoint(const Vec<3,Real> * seg,Real radius)const{
+defaulttype::Vec<3,Real> CapIntrConfiguration<Real>::leftContactPoint(const defaulttype::Vec<3,Real> * seg,Real radius)const{
     return seg[this->mIndex[0]] - (axis) * radius;
 }
 
 template <typename Real>
-Vec<3,Real> CapIntrConfiguration<Real>::rightContactPoint(const Vec<3,Real> * seg,Real radius)const{
+defaulttype::Vec<3,Real> CapIntrConfiguration<Real>::rightContactPoint(const defaulttype::Vec<3,Real> * seg,Real radius)const{
     return seg[this->mIndex[1]] + (axis) * radius;
 }
 
 template <typename Real>
-void CapIntrConfiguration<Real>::leftSegment(const Vec<3,Real> * seg,Real radius, Vec<3,Real> *lseg)const{
+void CapIntrConfiguration<Real>::leftSegment(const defaulttype::Vec<3,Real> * seg,Real radius, defaulttype::Vec<3,Real> *lseg)const{
     for(int i = 0 ; i < 2 ; ++i)
         lseg[i] = seg[i] - (axis) * radius;
 }
 
 
 template <typename Real>
-void CapIntrConfiguration<Real>::rightSegment(const Vec<3,Real> * seg,Real radius,Vec<3,Real> * rseg)const{
+void CapIntrConfiguration<Real>::rightSegment(const defaulttype::Vec<3,Real> * seg,Real radius,defaulttype::Vec<3,Real> * rseg)const{
     for(int i = 0 ; i < 2 ; ++i)
         rseg[i] = seg[i] + (axis) * radius;
 }
@@ -81,7 +78,7 @@ bool IntrAxis<TOBB<TDataTypes> >::Find (const Coord& axis,
 //----------------------------------------------------------------------------
 template <class TDataTypes>
 bool IntrAxis<TOBB<TDataTypes> >::Find(const Coord& axis,
-    const Vec<3,Real> segment[2],Real radius, const Box& box,
+    const defaulttype::Vec<3,Real> segment[2],Real radius, const Box& box,
     Real dmax, Real& dfirst,
     int& side, CapIntrConfiguration<Real>& capCfgFinal,
     IntrConfiguration<Real>& boxCfgFinal,bool & config_modified)
@@ -97,8 +94,8 @@ bool IntrAxis<TOBB<TDataTypes> >::Find(const Coord& axis,
 }
 //----------------------------------------------------------------------------
 template <typename Real>
-void IntrConfigManager<Real>::init (const Vec<3,Real>& axis,
-    const Vec<3,Real> segment[2], IntrConfiguration<Real>& cfg)
+void IntrConfigManager<Real>::init (const defaulttype::Vec<3,Real>& axis,
+    const defaulttype::Vec<3,Real> segment[2], IntrConfiguration<Real>& cfg)
 {
     Real dot[2] =
     {
@@ -132,8 +129,8 @@ void IntrConfigManager<Real>::init (const Vec<3,Real>& axis,
 }
 
 template <typename Real>
-void IntrConfigManager<Real>::init(const Vec<3,Real> & axis,
-                                const Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> &cfg)
+void IntrConfigManager<Real>::init(const defaulttype::Vec<3,Real> & axis,
+                                const defaulttype::Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> &cfg)
 {
     cfg.axis = axis;
 
@@ -169,7 +166,7 @@ void IntrConfigManager<Real>::init(const Vec<3,Real> & axis,
 }
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-void IntrConfigManager<TOBB<TDataTypes> >::init (const Vec<3,Real> & axis,
+void IntrConfigManager<TOBB<TDataTypes> >::init (const defaulttype::Vec<3,Real> & axis,
     const Box & box, IntrConfiguration<Real>& cfg)
 {
     // Description of coordinate ordering scheme for IntrConfiguration.mIndex.
@@ -578,13 +575,13 @@ bool IntrConfigManager<Real>::Find (const Config0& cfg0Start,
 }
 //----------------------------------------------------------------------------
 template <class TDataTypes>
-void FindContactSet<TOBB<TDataTypes> >::FindContactConfig(const Vec<3,Real> & axis,const Vec<3,Real> & segP0, Real radius,const Box & box,CapIntrConfiguration<Real> &capCfg,
-    int side,Vec<3, Real> & pt_on_capsule, Vec<3, Real> &pt_on_box){
+void FindContactSet<TOBB<TDataTypes> >::FindContactConfig(const defaulttype::Vec<3,Real> & axis,const defaulttype::Vec<3,Real> & segP0, Real radius,const Box & box,CapIntrConfiguration<Real> &capCfg,
+    int side,defaulttype::Vec<3, Real> & pt_on_capsule, defaulttype::Vec<3, Real> &pt_on_box){
     bool adjust = false;
     pt_on_box = box.center();
 
     Real coord_i;
-    Vec<3,Real> centered_seg = segP0 - box.center();
+    defaulttype::Vec<3,Real> centered_seg = segP0 - box.center();
 
     for(int i = 0 ; i < 3 ; ++i){
         coord_i = box.axis(i) * (centered_seg);
@@ -602,7 +599,7 @@ void FindContactSet<TOBB<TDataTypes> >::FindContactConfig(const Vec<3,Real> & ax
     }
 
     if(adjust){
-        Vec<3,Real> segPP0n(pt_on_box - segP0);
+        defaulttype::Vec<3,Real> segPP0n(pt_on_box - segP0);
         if((segPP0n.cross(axis)).norm2() < IntrUtil<Real>::ZERO_TOLERANCE()){
             if(side == IntrConfiguration<Real>::LEFT)
                 capCfg.axis *= -1.0;
@@ -626,10 +623,10 @@ void FindContactSet<TOBB<TDataTypes> >::FindContactConfig(const Vec<3,Real> & ax
 
 
 template <class TDataTypes>
-FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2], Real radius,const Box& box,const Vec<3,Real> & axis,
+FindContactSet<TOBB<TDataTypes> >::FindContactSet (const defaulttype::Vec<3,Real> segment[2], Real radius,const Box& box,const defaulttype::Vec<3,Real> & axis,
     int side, CapIntrConfiguration<Real> &capCfg,
     const IntrConfiguration<Real>& boxCfg,
-    Real tfirst, Vec<3,Real> & pt_on_capsule,Vec<3,Real> & pt_on_box){
+    Real tfirst, defaulttype::Vec<3,Real> & pt_on_capsule,defaulttype::Vec<3,Real> & pt_on_box){
     int quantity;
 
     const int* bIndex = boxCfg.mIndex;
@@ -638,7 +635,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2],
     if (side == IntrConfiguration<Real>::LEFT)
     {
         // Move the segment to its new position.
-        Vec<3,Real> segFinal[2] =
+        defaulttype::Vec<3,Real> segFinal[2] =
         {
             segment[0] - tfirst*axis,
             segment[1] - tfirst*axis
@@ -657,7 +654,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2],
         else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
         {
             // segment-segment intersection
-            Vec<3,Real> boxSeg[2],cap_pt;
+            defaulttype::Vec<3,Real> boxSeg[2],cap_pt;
             boxSeg[0] = getPointFromIndex(bIndex[6], box);
             boxSeg[1] = getPointFromIndex(bIndex[7], box);
 
@@ -672,16 +669,16 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2],
         else // boxCfg.mMap == IntrConfiguration<Real>::m44
         {
             // segment-boxface intersection
-            Vec<3,Real> boxFace[4];
+            defaulttype::Vec<3,Real> boxFace[4];
             boxFace[0] = getPointFromIndex(bIndex[4], box);
             boxFace[1] = getPointFromIndex(bIndex[5], box);
             boxFace[2] = getPointFromIndex(bIndex[6], box);
             boxFace[3] = getPointFromIndex(bIndex[7], box);
 
-            Vec<3,Real> capSeg[2];
+            defaulttype::Vec<3,Real> capSeg[2];
             capCfg.leftSegment(segFinal,radius,capSeg);
 
-            Vec<3,Real> P[2];
+            defaulttype::Vec<3,Real> P[2];
             IntrUtil<Real>::CoplanarSegmentRectangle(capSeg, boxFace, quantity,P);
 
             if(quantity != 0){
@@ -699,7 +696,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2],
     else // side == RIGHT
     {
         // Move the segment to its new position.
-        Vec<3,Real> segFinal[2] =
+        defaulttype::Vec<3,Real> segFinal[2] =
         {
             segment[0] + tfirst*axis,
             segment[1] + tfirst*axis
@@ -719,7 +716,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2],
         else if (boxCfg.mMap == IntrConfiguration<Real>::m2_2)
         {
             // segment-segment intersection
-            Vec<3,Real> boxSeg[2],cap_pt;
+            defaulttype::Vec<3,Real> boxSeg[2],cap_pt;
             boxSeg[0] = getPointFromIndex(bIndex[0], box);
             boxSeg[1] = getPointFromIndex(bIndex[1], box);
 
@@ -734,16 +731,16 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2],
         else // boxCfg.mMap == IntrConfiguration<Real>::m44
         {
             // segment-boxface intersection
-            Vec<3,Real> boxFace[4];
+            defaulttype::Vec<3,Real> boxFace[4];
             boxFace[0] = getPointFromIndex(bIndex[0], box);
             boxFace[1] = getPointFromIndex(bIndex[1], box);
             boxFace[2] = getPointFromIndex(bIndex[2], box);
             boxFace[3] = getPointFromIndex(bIndex[3], box);
 
-            Vec<3,Real> capSeg[2];
+            defaulttype::Vec<3,Real> capSeg[2];
             capCfg.rightSegment(segFinal,radius,capSeg);
 
-            Vec<3,Real> P[2];
+            defaulttype::Vec<3,Real> P[2];
             IntrUtil<Real>::CoplanarSegmentRectangle(capSeg, boxFace, quantity,P);
 
 
@@ -761,9 +758,9 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2],
 }
 
 template <typename Real>
-Vec<3,Real> IntrUtil<Real>::nearestPointOnSeg(const Vec<3,Real> & seg0,const Vec<3,Real> & seg1,const Vec<3,Real> & point){
-    const Vec<3,Real> AB = seg1-seg0;
-    const Vec<3,Real> AQ = point -seg0;
+defaulttype::Vec<3,Real> IntrUtil<Real>::nearestPointOnSeg(const defaulttype::Vec<3,Real> & seg0,const defaulttype::Vec<3,Real> & seg1,const defaulttype::Vec<3,Real> & point){
+    const defaulttype::Vec<3,Real> AB = seg1-seg0;
+    const defaulttype::Vec<3,Real> AQ = point -seg0;
     Real A;
     Real b;
     A = AB*AB;
@@ -783,14 +780,14 @@ Vec<3,Real> IntrUtil<Real>::nearestPointOnSeg(const Vec<3,Real> & seg0,const Vec
 
 
 template <typename Real>
-void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> & p1, const Vec<3,Real> & q0,const Vec<3,Real> & q1,Vec<3,Real> & P,Vec<3,Real> & Q,
+void IntrUtil<Real>::segNearestPoints(const defaulttype::Vec<3,Real> & p0,const defaulttype::Vec<3,Real> & p1, const defaulttype::Vec<3,Real> & q0,const defaulttype::Vec<3,Real> & q1,defaulttype::Vec<3,Real> & P,defaulttype::Vec<3,Real> & Q,
                                       SReal & alpha,SReal & beta){
-    const Vec<3,Real> AB = p1-p0;
-    const Vec<3,Real> CD = q1-q0;
-    const Vec<3,Real> AC = q0-p0;
+    const defaulttype::Vec<3,Real> AB = p1-p0;
+    const defaulttype::Vec<3,Real> CD = q1-q0;
+    const defaulttype::Vec<3,Real> AC = q0-p0;
 
-    Matrix2 Amat;//matrix helping us to find the two nearest points lying on the segments of the two segments
-    Vector2 b;
+    defaulttype::Matrix2 Amat;//matrix helping us to find the two nearest points lying on the segments of the two segments
+    defaulttype::Vector2 b;
 
     Amat[0][0] = AB*AB;
     Amat[1][1] = CD*CD;
@@ -824,8 +821,8 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> &
         //So the nearest points are p and q which are respecively in the middle of cB and Cb:
         //            A--------c---p---B
         //                     C---q---b--------D
-        Vec<3,Real> AD = q1 - p0;
-        Vec<3,Real> CB = p1 - q0;
+        defaulttype::Vec<3,Real> AD = q1 - p0;
+        defaulttype::Vec<3,Real> CB = p1 - q0;
 
         SReal c_proj= b[0]/AB_norm2;//alpha = (AB * AC)/AB_norm2
         SReal d_proj = (AB * AD)/AB_norm2;
@@ -936,7 +933,7 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> &
 
 
 template <typename Real>
-void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> & p1, const Vec<3,Real> & q0,const Vec<3,Real> & q1,Vec<3,Real> & P,Vec<3,Real> & Q){
+void IntrUtil<Real>::segNearestPoints(const defaulttype::Vec<3,Real> & p0,const defaulttype::Vec<3,Real> & p1, const defaulttype::Vec<3,Real> & q0,const defaulttype::Vec<3,Real> & q1,defaulttype::Vec<3,Real> & P,defaulttype::Vec<3,Real> & Q){
     SReal alpha,beta;
     segNearestPoints(p0,p1,q0,q1,P,Q,alpha,beta);
 }
@@ -944,7 +941,7 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> & p0,const Vec<3,Real> &
 
 
 template <typename Real>
-void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> * q,Vec<3,Real> & P,Vec<3,Real> & Q)
+void IntrUtil<Real>::segNearestPoints(const defaulttype::Vec<3,Real> * p, const defaulttype::Vec<3,Real> * q,defaulttype::Vec<3,Real> & P,defaulttype::Vec<3,Real> & Q)
 {
     segNearestPoints(p[0],p[1],q[0],q[1],P,Q);
 }
@@ -952,12 +949,12 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> *
 //----------------------------------------------------------------------------
 template <class TDataTypes>
 FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
-    const Box& box1,const Vec<3,Real> & axis,int side, const IntrConfiguration<Real>& box0Cfg,
+    const Box& box1,const defaulttype::Vec<3,Real> & axis,int side, const IntrConfiguration<Real>& box0Cfg,
     const IntrConfiguration<Real>& box1Cfg,
-    Real tfirst,Vec<3,Real> & pt_on_first,Vec<3,Real> & pt_on_second)
+    Real tfirst,defaulttype::Vec<3,Real> & pt_on_first,defaulttype::Vec<3,Real> & pt_on_second)
 {
     int quantity;
-    Vec<3,Real> P[8];
+    defaulttype::Vec<3,Real> P[8];
 
     const int* b0Index = box0Cfg.mIndex;
     const int* b1Index = box1Cfg.mIndex;
@@ -982,7 +979,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
             if (box1Cfg.mMap == IntrConfiguration<Real>::m2_2)
             {
                 // box0edge-box1edge intersection
-                Vec<3,Real> edge0[2], edge1[2];
+                defaulttype::Vec<3,Real> edge0[2], edge1[2];
                 edge0[0] = getPointFromIndex(b0Index[0], box0);
                 edge0[1] = getPointFromIndex(b0Index[1], box0);
                 edge1[0] = getPointFromIndex(b1Index[6], box1);
@@ -1001,7 +998,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
                 }
 
                 // box0edge-box1face intersection
-                Vec<3,Real> edge0[2], face1[4];
+                defaulttype::Vec<3,Real> edge0[2], face1[4];
                 edge0[0] = getPointFromIndex(b0Index[0], box0);
                 edge0[1] = getPointFromIndex(b0Index[1], box0);
                 face1[0] = GetPointFromIndex(b1Index[4], box1Final);
@@ -1033,7 +1030,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
                 }
 
                 // box0face-box1edge intersection
-                Vec<3,Real> face0[4], edge1[2];
+                defaulttype::Vec<3,Real> face0[4], edge1[2];
                 face0[0] = getPointFromIndex(b0Index[0], box0);
                 face0[1] = getPointFromIndex(b0Index[1], box0);
                 face0[2] = getPointFromIndex(b0Index[2], box0);
@@ -1063,7 +1060,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
                 }
 
                 // box0face-box1face intersection
-                Vec<3,Real> face0[4], face1[4];
+                defaulttype::Vec<3,Real> face0[4], face1[4];
                 face0[0] = getPointFromIndex(b0Index[0], box0);
                 face0[1] = getPointFromIndex(b0Index[1], box0);
                 face0[2] = getPointFromIndex(b0Index[2], box0);
@@ -1103,7 +1100,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
             if (box1Cfg.mMap == IntrConfiguration<Real>::m2_2)
             {
                 // box0edge-box1edge intersection
-                Vec<3,Real> edge0[2], edge1[2];
+                defaulttype::Vec<3,Real> edge0[2], edge1[2];
                 edge0[0] = getPointFromIndex(b0Index[6], box0);
                 edge0[1] = getPointFromIndex(b0Index[7], box0);
                 edge1[0] = getPointFromIndex(b1Index[0], box1);
@@ -1122,7 +1119,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
                 }
 
                 // box0edge-box1face intersection
-                Vec<3,Real> edge0[2], face1[4];
+                defaulttype::Vec<3,Real> edge0[2], face1[4];
                 edge0[0] = getPointFromIndex(b0Index[6], box0);
                 edge0[1] = getPointFromIndex(b0Index[7], box0);
                 face1[0] = GetPointFromIndex(b1Index[0], box1Final);
@@ -1154,7 +1151,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
                 }
 
                 // box0face-box1edge intersection
-                Vec<3,Real> face0[4], edge1[2];
+                defaulttype::Vec<3,Real> face0[4], edge1[2];
                 face0[0] = getPointFromIndex(b0Index[4], box0);
                 face0[1] = getPointFromIndex(b0Index[5], box0);
                 face0[2] = getPointFromIndex(b0Index[6], box0);
@@ -1183,7 +1180,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
                 }
 
                 // box0face-box1face intersection
-                Vec<3,Real> face0[4], face1[4];
+                defaulttype::Vec<3,Real> face0[4], face1[4];
                 face0[0] = getPointFromIndex(b0Index[4], box0);
                 face0[1] = getPointFromIndex(b0Index[5], box0);
                 face0[2] = getPointFromIndex(b0Index[6], box0);
@@ -1209,8 +1206,8 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
 }
 //----------------------------------------------------------------------------
 template <typename Real>
-void IntrUtil<Real>::ColinearSegments (const Vec<3,Real> segment0[2],
-    const Vec<3,Real> segment1[2], int& quantity, Vec<3,Real>* P)
+void IntrUtil<Real>::ColinearSegments (const defaulttype::Vec<3,Real> segment0[2],
+    const defaulttype::Vec<3,Real> segment1[2], int& quantity, defaulttype::Vec<3,Real>* P)
 {
     // The potential intersection is initialized to segment0 and clipped
     // against segment1.
@@ -1221,7 +1218,7 @@ void IntrUtil<Real>::ColinearSegments (const Vec<3,Real> segment0[2],
     }
 
     // point 0
-    Vec<3,Real> V = segment1[1] - segment1[0];
+    defaulttype::Vec<3,Real> V = segment1[1] - segment1[0];
     Real c = V * segment1[0];
     ClipConvexPolygonAgainstPlane(V, c, quantity, P);
 
@@ -1233,8 +1230,8 @@ void IntrUtil<Real>::ColinearSegments (const Vec<3,Real> segment0[2],
 //----------------------------------------------------------------------------
 template <typename Real>
 void IntrUtil<Real>::SegmentThroughPlane (
-    const Vec<3,Real> segment[2], const Vec<3,Real>& planeOrigin,
-    const Vec<3,Real>& planeNormal, int& quantity, Vec<3,Real>* P)
+    const defaulttype::Vec<3,Real> segment[2], const defaulttype::Vec<3,Real>& planeOrigin,
+    const defaulttype::Vec<3,Real>& planeNormal, int& quantity, defaulttype::Vec<3,Real>* P)
 {
     quantity = 1;
 
@@ -1250,12 +1247,12 @@ void IntrUtil<Real>::SegmentThroughPlane (
 }
 //----------------------------------------------------------------------------
 template <typename Real>
-void IntrUtil<Real>::SegmentSegment (const Vec<3,Real> segment0[2],
-    const Vec<3,Real> segment1[2], int& quantity, Vec<3,Real>* P)
+void IntrUtil<Real>::SegmentSegment (const defaulttype::Vec<3,Real> segment0[2],
+    const defaulttype::Vec<3,Real> segment1[2], int& quantity, defaulttype::Vec<3,Real>* P)
 {
-    Vec<3,Real> dir0 = segment0[1] - segment0[0];
-    Vec<3,Real> dir1 = segment1[1] - segment1[0];
-    Vec<3,Real> normal = dir0.cross(dir1);
+    defaulttype::Vec<3,Real> dir0 = segment0[1] - segment0[0];
+    defaulttype::Vec<3,Real> dir1 = segment1[1] - segment1[0];
+    defaulttype::Vec<3,Real> normal = dir0.cross(dir1);
 
     // The comparison is sin(kDir0,kDir1) < epsilon.
     Real sqrLen0 = dir0.norm2();
@@ -1274,8 +1271,8 @@ void IntrUtil<Real>::SegmentSegment (const Vec<3,Real> segment0[2],
 //----------------------------------------------------------------------------
 template <typename Real>
 void IntrUtil<Real>::ColinearSegmentTriangle (
-    const Vec<3,Real> segment[2], const Vec<3,Real> triangle[3],
-    int& quantity, Vec<3,Real>* P)
+    const defaulttype::Vec<3,Real> segment[2], const defaulttype::Vec<3,Real> triangle[3],
+    int& quantity, defaulttype::Vec<3,Real>* P)
 {
     // The potential intersection is initialized to the line segment and then
     // clipped against the three sides of the tri
@@ -1286,18 +1283,18 @@ void IntrUtil<Real>::ColinearSegmentTriangle (
         P[i] = segment[i];
     }
 
-    Vec<3,Real> side[3] =
+    defaulttype::Vec<3,Real> side[3] =
     {
         triangle[1] - triangle[0],
         triangle[2] - triangle[1],
         triangle[0] - triangle[2]
     };
 
-    Vec<3,Real> normal = side[0].cross(side[1]);
+    defaulttype::Vec<3,Real> normal = side[0].cross(side[1]);
     for (i = 0; i < 3; ++i)
     {
         // Normal pointing inside the triangle.
-        Vec<3,Real> sideN = normal.cross(side[i]);
+        defaulttype::Vec<3,Real> sideN = normal.cross(side[i]);
         Real constant = sideN * triangle[i];
         ClipConvexPolygonAgainstPlane(sideN, constant, quantity, P);
     }
@@ -1305,8 +1302,8 @@ void IntrUtil<Real>::ColinearSegmentTriangle (
 //----------------------------------------------------------------------------
 template <typename Real>
 void IntrUtil<Real>::CoplanarSegmentRectangle (
-    const Vec<3,Real> segment[2], const Vec<3,Real> rectangle[4],
-    int& quantity, Vec<3,Real>* P)
+    const defaulttype::Vec<3,Real> segment[2], const defaulttype::Vec<3,Real> rectangle[4],
+    int& quantity, defaulttype::Vec<3,Real>* P)
 {
     // The potential intersection is initialized to the line segment and then
     // clipped against the four sides of the rect
@@ -1318,7 +1315,7 @@ void IntrUtil<Real>::CoplanarSegmentRectangle (
 
     for (int i0 = 3, i1 = 0; i1 < 4; i0 = i1++)
     {
-        Vec<3,Real> normal = rectangle[i1] - rectangle[i0];
+        defaulttype::Vec<3,Real> normal = rectangle[i1] - rectangle[i0];
         Real constant = normal * rectangle[i0];
         ClipConvexPolygonAgainstPlane(normal, constant, quantity, P);
     }
@@ -1326,8 +1323,8 @@ void IntrUtil<Real>::CoplanarSegmentRectangle (
 //----------------------------------------------------------------------------
 template <typename Real>
 void IntrUtil<Real>::CoplanarTriangleRectangle (
-    const Vec<3,Real> triangle[3], const Vec<3,Real> rectangle[4],
-    int& quantity, Vec<3,Real>* P)
+    const defaulttype::Vec<3,Real> triangle[3], const defaulttype::Vec<3,Real> rectangle[4],
+    int& quantity, defaulttype::Vec<3,Real>* P)
 {
     // The potential intersection is initialized to the triangle, and then
     // clipped against the sides of the box
@@ -1339,7 +1336,7 @@ void IntrUtil<Real>::CoplanarTriangleRectangle (
 
     for (int i0 = 3, i1 = 0; i1 < 4; i0 = i1++)
     {
-        Vec<3,Real> normal = rectangle[i1] - rectangle[i0];
+        defaulttype::Vec<3,Real> normal = rectangle[i1] - rectangle[i0];
         Real constant = normal * rectangle[i0];
         ClipConvexPolygonAgainstPlane(normal, constant, quantity, P);
     }
@@ -1347,8 +1344,8 @@ void IntrUtil<Real>::CoplanarTriangleRectangle (
 //----------------------------------------------------------------------------
 template <typename Real>
 void IntrUtil<Real>::CoplanarRectangleRectangle (
-    const Vec<3,Real> rectangle0[4], const Vec<3,Real> rectangle1[4],
-    int& quantity, Vec<3,Real>* P)
+    const defaulttype::Vec<3,Real> rectangle0[4], const defaulttype::Vec<3,Real> rectangle1[4],
+    int& quantity, defaulttype::Vec<3,Real>* P)
 {
     // The potential intersection is initialized to face 0, and then clipped
     // against the four sides of face 1.
@@ -1360,16 +1357,16 @@ void IntrUtil<Real>::CoplanarRectangleRectangle (
 
     for (int i0 = 3, i1 = 0; i1 < 4; i0 = i1++)
     {
-        Vec<3,Real> normal = rectangle1[i1] - rectangle1[i0];
+        defaulttype::Vec<3,Real> normal = rectangle1[i1] - rectangle1[i0];
         Real constant = normal * rectangle1[i0];
         ClipConvexPolygonAgainstPlane(normal, constant, quantity, P);
     }
 }
 //----------------------------------------------------------------------------
 template <typename Real>
-void IntrUtil<Real>::projectIntPoints(const Vec<3, Real> &velocity, Real contactTime, const Vec<3, Real> *points, int n, Vec<3, Real> &proj_pt){
+void IntrUtil<Real>::projectIntPoints(const defaulttype::Vec<3, Real> &velocity, Real contactTime, const defaulttype::Vec<3, Real> *points, int n, defaulttype::Vec<3, Real> &proj_pt){
     proj_pt.set(0,0,0);
-    Vec<3,Real> v0 = velocity * contactTime;
+    defaulttype::Vec<3,Real> v0 = velocity * contactTime;
     for(int i = 0 ; i < n ; ++i){
         proj_pt += points[i] + v0;
     }
@@ -1378,8 +1375,8 @@ void IntrUtil<Real>::projectIntPoints(const Vec<3, Real> &velocity, Real contact
 }
 //----------------------------------------------------------------------------
 template <typename Real>
-void IntrUtil<Real>::projectPointOnCapsuleAndFindCapNormal(const Vec<3,Real> & pt,const Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> & capCfg,Vec<3,Real> & pt_on_capsule){
-    Vec<3,Real> dir(segment[1] - segment[0]);
+void IntrUtil<Real>::projectPointOnCapsuleAndFindCapNormal(const defaulttype::Vec<3,Real> & pt,const defaulttype::Vec<3,Real> segment[2],Real radius,CapIntrConfiguration<Real> & capCfg,defaulttype::Vec<3,Real> & pt_on_capsule){
+    defaulttype::Vec<3,Real> dir(segment[1] - segment[0]);
     Real alpha = dir * (pt - segment[0]) / dir.norm2();
 
     if(alpha < 0)
@@ -1387,8 +1384,8 @@ void IntrUtil<Real>::projectPointOnCapsuleAndFindCapNormal(const Vec<3,Real> & p
     else if(alpha > 1)
         alpha = 1;
 
-    Vec<3,Real> segP = segment[0] + alpha * dir;
-    Vec<3,Real> segPpt = pt - segP;
+    defaulttype::Vec<3,Real> segP = segment[0] + alpha * dir;
+    defaulttype::Vec<3,Real> segPpt = pt - segP;
 
     IntrUtil<Real>::normalize(segPpt);
 
@@ -1399,10 +1396,10 @@ void IntrUtil<Real>::projectPointOnCapsuleAndFindCapNormal(const Vec<3,Real> & p
 }
 
 template <typename Real>
-Real IntrUtil<Real>::projectOnTriangle(Vec<3,Real> & pt,const Vec<3,Real> & t_p0,const Vec<3,Real> & t_p1,const Vec<3,Real> & t_p2,Real & s,Real & t){
-    Vec<3,Real> diff = t_p0 - pt;
-    Vec<3,Real> edge0 = t_p1 - t_p0;
-    Vec<3,Real> edge1 = t_p2 - t_p0;
+Real IntrUtil<Real>::projectOnTriangle(defaulttype::Vec<3,Real> & pt,const defaulttype::Vec<3,Real> & t_p0,const defaulttype::Vec<3,Real> & t_p1,const defaulttype::Vec<3,Real> & t_p2,Real & s,Real & t){
+    defaulttype::Vec<3,Real> diff = t_p0 - pt;
+    defaulttype::Vec<3,Real> edge0 = t_p1 - t_p0;
+    defaulttype::Vec<3,Real> edge1 = t_p2 - t_p0;
     Real a00 = edge0.norm2();
     Real a01 = edge0 *edge1;
     Real a11 = edge1.norm2();
@@ -1632,30 +1629,30 @@ Real IntrUtil<Real>::projectOnTriangle(Vec<3,Real> & pt,const Vec<3,Real> & t_p0
 
 
 template <typename Real>
-Real IntrUtil<Real>::facesNearestPoints(const Vec<3,Real> *first_face,int first_size,const Vec<3,Real> *second_face,int second_size, Vec<3,Real> &pt_on_first, Vec<3,Real> &pt_on_second){
+Real IntrUtil<Real>::facesNearestPoints(const defaulttype::Vec<3,Real> *first_face,int first_size,const defaulttype::Vec<3,Real> *second_face,int second_size, defaulttype::Vec<3,Real> &pt_on_first, defaulttype::Vec<3,Real> &pt_on_second){
     Real min = std::numeric_limits<Real>::max();
     Real new_min;
 
-    Vec<3,Real> cur_pt_on_first,cur_pt_on_second;
-    Vec<3,Real> * seg1;
-    Vec<3,Real> * seg2;
+    defaulttype::Vec<3,Real> cur_pt_on_first,cur_pt_on_second;
+    defaulttype::Vec<3,Real> * seg1;
+    defaulttype::Vec<3,Real> * seg2;
 
     for(int i = 0 ; i < first_size ; ++i){
         if(i < first_size - 1){
-            seg1 = const_cast<Vec<3,Real> *>(&first_face[i]);
+            seg1 = const_cast<defaulttype::Vec<3,Real> *>(&first_face[i]);
         }
         else{
-            seg1 = new Vec<3,Real>[2];
+            seg1 = new defaulttype::Vec<3,Real>[2];
             seg1[0] = first_face[first_size - 1];
             seg1[1] = first_face[0];
         }
 
         for(int j = 0 ; j < second_size ; ++j){
             if(j < second_size - 1){
-                seg2 = const_cast<Vec<3,Real> *>(&second_face[j]);
+                seg2 = const_cast<defaulttype::Vec<3,Real> *>(&second_face[j]);
             }
             else{
-                seg2 = new Vec<3,Real>[2];
+                seg2 = new defaulttype::Vec<3,Real>[2];
                 seg2[0] = second_face[second_size - 1];
                 seg2[1] = second_face[0];
             }
@@ -1681,16 +1678,16 @@ Real IntrUtil<Real>::facesNearestPoints(const Vec<3,Real> *first_face,int first_
 }
 
 template <typename Real>
-Real IntrUtil<Real>::faceSegNearestPoints(const Vec<3,Real> face[4],const Vec<3,Real> seg[2], Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg){
+Real IntrUtil<Real>::faceSegNearestPoints(const defaulttype::Vec<3,Real> face[4],const defaulttype::Vec<3,Real> seg[2], defaulttype::Vec<3,Real> & pt_on_face,defaulttype::Vec<3,Real> & pt_on_seg){
     return faceSegNearestPoints(face,4,seg,pt_on_face,pt_on_seg);
 }
 
 
 template <typename Real>
-Real IntrUtil<Real>::faceSegNearestPoints(const Vec<3,Real> * face,int n,const Vec<3,Real> seg[2], Vec<3,Real> & pt_on_face,Vec<3,Real> & pt_on_seg){
+Real IntrUtil<Real>::faceSegNearestPoints(const defaulttype::Vec<3,Real> * face,int n,const defaulttype::Vec<3,Real> seg[2], defaulttype::Vec<3,Real> & pt_on_face,defaulttype::Vec<3,Real> & pt_on_seg){
     Real min = std::numeric_limits<Real>::max();
-    Vec<3,Real> cur_pt_on_face,cur_pt_on_seg;
-    Vec<3,Real> face_seg[2];
+    defaulttype::Vec<3,Real> cur_pt_on_face,cur_pt_on_seg;
+    defaulttype::Vec<3,Real> face_seg[2];
     Real new_min;
 
     for(int j = 0 ; j < n ; ++j){
@@ -1730,12 +1727,12 @@ bool IntrUtil<Real>::inf(Real a,Real b){
 }
 
 template <class TDataTypes>
-void IntrUtil<TOBB<TDataTypes> >::project(Vec<3,Real> & point,const Box & box){
+void IntrUtil<TOBB<TDataTypes> >::project(defaulttype::Vec<3,Real> & point,const Box & box){
     int min_ind = -1;
     bool neg = false;
     bool is_in = true;
     SReal diff = std::numeric_limits<SReal>::max();
-    Vec<3,Real> centeredPt = point - box.center();
+    defaulttype::Vec<3,Real> centeredPt = point - box.center();
     point = box.center();
 
     Real coord_i;
@@ -1774,14 +1771,14 @@ void IntrUtil<TOBB<TDataTypes> >::project(Vec<3,Real> & point,const Box & box){
 }
 
 template <typename Real>
-bool IntrUtil<Real>::equal(const Vec<3,Real> & vec0,const Vec<3,Real> & vec1){
+bool IntrUtil<Real>::equal(const defaulttype::Vec<3,Real> & vec0,const defaulttype::Vec<3,Real> & vec1){
     return (vec0 - vec1).norm2() < SQ_ZERO_TOLERANCE();
 }
 
 //----------------------------------------------------------------------------
 template <class Real>
-void ClipConvexPolygonAgainstPlane (const Vec<3,Real>& normal,
-    Real constant, int& quantity, Vec<3,Real>* P)
+void ClipConvexPolygonAgainstPlane (const defaulttype::Vec<3,Real>& normal,
+    Real constant, int& quantity, defaulttype::Vec<3,Real>* P)
 {
     // The input vertices are assumed to be in counterclockwise order.  The
     // ordering is an invariant of this function.  The size of array P is
@@ -1861,7 +1858,7 @@ void ClipConvexPolygonAgainstPlane (const Vec<3,Real>& normal,
             if (negative > 0)
             {
                 // plane transversely intersects polygon
-                Vec<3,Real> CV[8];
+                defaulttype::Vec<3,Real> CV[8];
                 int cQuantity = 0, cur, prv;
                 Real t;
 
@@ -1935,7 +1932,7 @@ void ClipConvexPolygonAgainstPlane (const Vec<3,Real>& normal,
                 }
 
                 currQuantity = cQuantity;
-                memcpy(P, CV, cQuantity*sizeof(Vec<3,Real>));
+                memcpy(P, CV, cQuantity*sizeof(defaulttype::Vec<3,Real>));
             }
             // else polygon fully on positive side of plane, nothing to do
 
@@ -1952,9 +1949,9 @@ void ClipConvexPolygonAgainstPlane (const Vec<3,Real>& normal,
 }
 //----------------------------------------------------------------------------
 template <class TReal>
-Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal> &box)
+defaulttype::Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal> &box)
 {
-    Vec<3,TReal> point = box.Center;
+    defaulttype::Vec<3,TReal> point = box.Center;
 
     if (index & 4)
     {
@@ -1987,9 +1984,9 @@ Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal> &box)
 }
 
 template <typename TDataTypes>
-Vec<3,typename TDataTypes::Real> getPointFromIndex(int index, const TOBB<TDataTypes>& box)
+defaulttype::Vec<3,typename TDataTypes::Real> getPointFromIndex(int index, const TOBB<TDataTypes>& box)
 {
-    Vec<3,typename TDataTypes::Real> point = box.center();
+    defaulttype::Vec<3,typename TDataTypes::Real> point = box.center();
 
     if (index & 4)
     {
@@ -2023,10 +2020,10 @@ Vec<3,typename TDataTypes::Real> getPointFromIndex(int index, const TOBB<TDataTy
 
 template <class TReal>
 void MyBox<TReal>::showVertices()const{
-    std::vector<Vec<3,TReal> > vs;
-    Vec<3,TReal> a0(Axis[0] * Extent[0]);
-    Vec<3,TReal> a1(Axis[1] * Extent[1]);
-    Vec<3,TReal> a2(Axis[2] * Extent[2]);
+    std::vector<defaulttype::Vec<3,TReal> > vs;
+    defaulttype::Vec<3,TReal> a0(Axis[0] * Extent[0]);
+    defaulttype::Vec<3,TReal> a1(Axis[1] * Extent[1]);
+    defaulttype::Vec<3,TReal> a2(Axis[2] * Extent[2]);
 
     vs.push_back(Center - a0 + a1 - a2);
     vs.push_back(Center + a0 + a1 - a2);

@@ -28,11 +28,11 @@
                 <TetrahedronSetTopologyAlgorithms template="Vec3d" name="tetraAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS2" />
-                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping12" mapMatrices="true" input="@../MS1" output="@MS2" />
+                <BarycentricMapping template="Vec3d,Vec3d" name="mapping12" mapMatrices="true" input="@../MS1" output="@MS2" />
             </Node>
             <Node name="VisuA">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS1" output="@Visual" />
+                <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS1" output="@Visual" />
             </Node>
         </Node>
     </Node>
@@ -56,11 +56,11 @@
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS2" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="200" poissonRatio="0.3" method="large" drawing="1" />
-                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping12" input="@../MS1" output="@MS2" />
+                <BarycentricMapping template="Vec3d,Vec3d" name="mapping12" input="@../MS1" output="@MS2" />
             </Node>
             <Node name="VisuA">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS1" output="@Visual" />
+                <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS1" output="@Visual" />
             </Node>
         </Node>
     </Node>

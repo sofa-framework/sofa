@@ -49,11 +49,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
-
-
-
 template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::init()
 {
@@ -125,7 +120,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
     for (unsigned int i=0; i<_p0.size(); i++)
     {
-        Vector3 coefs;
+        sofa::defaulttype::Vector3 coefs;
 // 		int elementIdx = _sparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
 // 		if (elementIdx==-1)
 // 		{
@@ -239,7 +234,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
     const InVecCoord& in = inData.getValue();
 
     // les deplacements des noeuds grossiers
-    helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    helper::vector< sofa::defaulttype::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
     for(int i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
@@ -316,7 +311,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::Mech
     const InVecDeriv& in = inData.getValue();
 
     // les deplacements des noeuds grossiers
-    helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    helper::vector< sofa::defaulttype::Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
     for(int i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
         const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
@@ -393,7 +388,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::Mec
         {
             Transformation& rotation = _rotations[ (*it).first];
 
-            Vec< 24 > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
+            sofa::defaulttype::Vec< 24 > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
 
             const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron( (*it).first );
             for(int w=0; w<8; ++w)
@@ -413,8 +408,8 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::Visua
 {
     if (!vparams->displayFlags().getShowMappings()) return;
 
-    std::vector< Vector3 > points;
-    Vector3 point;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    sofa::defaulttype::Vector3 point;
 
     for(unsigned int i=0; i<_qFine.size(); i++)
     {
@@ -423,7 +418,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::draw(const core::visual::Visua
     }
 
 
-    vparams->drawTool()->drawPoints(points, 7, Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
+    vparams->drawTool()->drawPoints(points, 7, sofa::defaulttype::Vec<4,float>(0.2f,1.0f,0.0f,1.0f));
 }
 
 

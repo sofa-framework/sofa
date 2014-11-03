@@ -10,7 +10,7 @@
     <TetrahedronFEMForceField template="Vec3d" name="forcefield" youngModulus="200" poissonRatio="0.4" method="polar" />
     <BoxROI name="Box" box="-0.1 -0.1 -0.1  1.1 1.1 1.1"/>
     <PairBoxROI name="PairBox" inclusiveBox="-0.1 -0.1 -0.1  1.1 1.1 1.1" includedBox="0.1 0.1 0.1 0.9 0.9 0.9"/>
-    <BilinearMovementConstraint name="bilinearConstraint" template="Vec3d" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI" cornerMovements=" 0 0 0
+    <PatchTestMovementConstraint name="bilinearConstraint" template="Vec3d" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI" cornerMovements=" 0 0 0
                                                                                                                                                                                                0.1 -0.1 -0.1
                                                                                                                                                                                                0.1 0.1 -0.1
                                                                                                                                                                                                -0.1 0.1 0.1

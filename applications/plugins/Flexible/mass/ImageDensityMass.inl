@@ -94,7 +94,7 @@ typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::Real Image
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
 const typename ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::VecCoord* ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getX0()
 {
-    return this->mstate->getX0();
+    return &this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 }
 
 
@@ -371,7 +371,7 @@ double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotential
     DataTypes::set ( theGravity, g[0], g[1], g[2] );
     for( unsigned int i=0 ; i<_x.size() ; i++ )
     {
-        e -= theGravity*Mx[i];
+        e -= Mx[i]*theGravity;
     }
     return e;
 }
@@ -451,7 +451,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getElementMass
 
 //    std::cerr<<"ImageDensityMass::getElementMass "<<std::endl;
 
-    const unsigned dimension = DataTypes::deriv_total_size;
+    static const BaseMatrix::Index dimension = (BaseMatrix::Index) DataTypes::deriv_total_size;
 
     if( m->rowSize() != dimension || m->colSize() != dimension ) m->resize( dimension, dimension );
 

@@ -25,6 +25,7 @@ set(SOFADEFAULTTYPE_HEADERS
 	SolidTypes.h	
 	SolidTypes.inl	
 	#SparseConstraintTypes.h	
+	TemplatesAliases.h
 	Vec.h	
 	VecTypes.h	
 	MatSym.h	
@@ -38,6 +39,7 @@ set(SOFADEFAULTTYPE_SOURCES
 	Frame.cpp
 	#RigidInertia.cpp
 	SolidTypes.cpp
+	TemplatesAliases.cpp
 	)
   
 add_library(${PROJECT_NAME} SHARED ${SOFADEFAULTTYPE_HEADERS} ${SOFADEFAULTTYPE_SOURCES})

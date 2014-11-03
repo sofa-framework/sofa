@@ -40,8 +40,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 class RayModel;
 
 class Ray : public core::TCollisionElementIterator<RayModel>
@@ -51,12 +49,12 @@ public:
 
     explicit Ray(const core::CollisionElementIterator& i);
 
-    const Vector3& origin() const;
-    const Vector3& direction() const;
+    const defaulttype::Vector3& origin() const;
+    const defaulttype::Vector3& direction() const;
     SReal l() const;
 
-    void setOrigin(const Vector3& newOrigin);
-    void setDirection(const Vector3& newDirection);
+    void setOrigin(const defaulttype::Vector3& newOrigin);
+    void setDirection(const defaulttype::Vector3& newDirection);
     void setL(SReal newL);
 };
 
@@ -67,8 +65,8 @@ class SOFA_USER_INTERACTION_API RayModel : public core::CollisionModel
 public:
     SOFA_CLASS(RayModel, core::CollisionModel);
 
-    typedef Vec3Types InDataTypes;
-    typedef Vec3Types DataTypes;
+    typedef sofa::defaulttype::Vec3Types InDataTypes;
+    typedef sofa::defaulttype::Vec3Types DataTypes;
     typedef Ray Element;
     friend class Ray;
 protected:
@@ -84,9 +82,9 @@ public:
     void draw(const core::visual::VisualParams*,int index);
     void draw(const core::visual::VisualParams* vparams);
 
-    core::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
     // ----------------------------
-    int addRay(const Vector3& origin, const Vector3& direction, SReal length);
+    int addRay(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, SReal length);
     Ray getRay(int index) { return Ray(this, index); }
 
     int getNbRay() const { return size; }
@@ -101,12 +99,12 @@ public:
 
 protected:
     sofa::helper::vector<SReal> length;
-    sofa::helper::vector<Vector3> direction;
+    sofa::helper::vector<defaulttype::Vector3> direction;
 
     Data<SReal> defaultLength;
 
     std::set<BaseRayContact*> contacts;
-    core::behavior::MechanicalState<Vec3Types>* mstate;
+    core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;
 
 };
 
@@ -119,35 +117,35 @@ inline Ray::Ray(const core::CollisionElementIterator& i)
 {
 }
 
-inline const Vector3& Ray::origin() const
+inline const defaulttype::Vector3& Ray::origin() const
 {
     return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue()[index];
 }
 
-inline const Vector3& Ray::direction() const
+inline const defaulttype::Vector3& Ray::direction() const
 {
     return model->direction[index];
 }
 
-inline Vector3::value_type Ray::l() const
+inline defaulttype::Vector3::value_type Ray::l() const
 {
     return model->length[index];
 }
 
-inline void Ray::setOrigin(const Vector3& newOrigin)
+inline void Ray::setOrigin(const defaulttype::Vector3& newOrigin)
 {
-    helper::WriteAccessor<Data<helper::vector<Vector3> > > xData =
+    helper::WriteAccessor<Data<helper::vector<defaulttype::Vector3> > > xData =
         *model->getMechanicalState()->write(core::VecCoordId::position());
     xData.wref()[index] = newOrigin;
 
-    helper::WriteAccessor<Data<helper::vector<Vector3> > > xDataFree =
+    helper::WriteAccessor<Data<helper::vector<defaulttype::Vector3> > > xDataFree =
         *model->getMechanicalState()->write(core::VecCoordId::freePosition());
-    Vec3Types::VecCoord& freePos = xDataFree.wref();
+    defaulttype::Vec3Types::VecCoord& freePos = xDataFree.wref();
     freePos.resize(model->getMechanicalState()->getSize());
     freePos[index] = newOrigin;
 }
 
-inline void Ray::setDirection(const Vector3& newDirection)
+inline void Ray::setDirection(const defaulttype::Vector3& newDirection)
 {
     model->direction[index] = newDirection;
 }

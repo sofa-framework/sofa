@@ -38,7 +38,6 @@
 #define TIXML_USE_STL
 #endif
 #include <tinyxml.h>
-#include <tinystr.h>
 
 #include <map>
 

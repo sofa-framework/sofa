@@ -48,17 +48,21 @@ namespace Filters
 template <typename PFP>
 class CCVertexSynthesisFilter : public Algo::MR::Filter
 {
+	typedef typename PFP::MAP MAP;
+	typedef typename PFP::VEC3 VEC3;
+	typedef typename PFP::REAL REAL;
+
 protected:
-	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	MAP& m_map ;
+	VertexAttribute<VEC3, MAP>& m_position ;
 
 public:
-	CCVertexSynthesisFilter(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	CCVertexSynthesisFilter(MAP& m, VertexAttribute<VEC3, MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	void operator() ()
 	{
-		TraversorV<typename PFP::MAP> trav(m_map) ;
+		TraversorV<MAP> trav(m_map) ;
 		for (Dart dV = trav.begin(); dV != trav.end(); dV = trav.next())
 		{
 			m_map.incCurrentLevel() ;
@@ -69,11 +73,11 @@ public:
 			{
 				Dart d = m_map.phi1(m_map.phi2(m_map.phi1(m_map.phi2(dit))));
 				unsigned int degree = m_map.faceDegree(d);
-				typename PFP::VEC3 p(0.0);
+				VEC3 p(0.0);
 
-				typename PFP::REAL a0 = 1.0 / 2.0 + 1.0 / (4.0 * typename PFP::REAL(degree));
-				typename PFP::REAL a1 = 1.0 / 8.0 + 1.0 / (4.0 * typename PFP::REAL(degree));
-				typename PFP::REAL ak_1 = a1;
+				REAL a0 = 1.0 / 2.0 + 1.0 / (4.0 * REAL(degree));
+				REAL a1 = 1.0 / 8.0 + 1.0 / (4.0 * REAL(degree));
+				REAL ak_1 = a1;
 
 				if(degree == 3)
 				{
@@ -86,7 +90,7 @@ public:
 				}
 				else if(degree == 4)
 				{
-					typename PFP::REAL a2 = 1.0 / (4.0 * typename PFP::REAL(degree));
+					REAL a2 = 1.0 / (4.0 * REAL(degree));
 
 					p += a0 * m_position[d] + a1 * m_position[m_map.phi1(d)] + a2 * m_position[m_map.phi1(m_map.phi1(d))] + ak_1 * m_position[m_map.phi_1(d)];
 
@@ -102,7 +106,7 @@ public:
 					Dart dit = m_map.phi1(m_map.phi1(d));
 					do
 					{
-						typename PFP::REAL ai = 1.0 / (4.0 * typename PFP::REAL(degree));
+						REAL ai = 1.0 / (4.0 * REAL(degree));
 						p += ai * m_position[dit];
 
 						dit = m_map.phi1(dit);
@@ -125,7 +129,6 @@ public:
 	}
 } ;
 
-
 } // namespace Masks
 
 } // namespace Primal
@@ -139,4 +142,3 @@ public:
 } // namespace CGoGN
 
 #endif
-

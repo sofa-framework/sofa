@@ -11,6 +11,7 @@ namespace collision
 
 template <class DataTypes1,class DataTypes2>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & e1,TCapsule<DataTypes2> & e2,SReal alarmDist,SReal contactDist,OutputVector * contacts){
+    using namespace sofa::defaulttype;
     if(shareSameVertex(e1,e2))
         return 0;
 
@@ -193,6 +194,7 @@ int CapsuleIntTool::computeIntersection(TCapsule<DataTypes1> & e1,TCapsule<DataT
 
 template <class DataTypes>
 int CapsuleIntTool::computeIntersection(TCapsule<DataTypes> & cap, OBB& obb,SReal alarmDist,SReal contactDist,OutputVector* contacts){
+    using namespace sofa::defaulttype;
     TIntrCapsuleOBB<DataTypes,RigidTypes> intr(cap,obb);
     if(intr.Find(alarmDist)){
         OBB::Real dist2 = (intr.pointOnFirst() - intr.pointOnSecond()).norm2();

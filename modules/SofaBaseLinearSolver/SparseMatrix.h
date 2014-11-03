@@ -136,7 +136,7 @@ public:
         LElementConstIterator ite = it->second.find(j);
         if (ite == it->second.end())
             return 0.0;
-        return ite->second;
+        return (SReal)ite->second;
     }
 
     void set(Index i, Index j, double v)
@@ -558,8 +558,12 @@ public:
         addEqual(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)));
     }
 
-    static const char* Name() { return "SparseMatrix"; }
+    static const char* Name();
 };
+
+template<> inline const char* SparseMatrix<double>::Name() { return "SparseMatrix"; }
+template<> inline const char* SparseMatrix<float>::Name() { return "SparseMatrixf"; }
+
 
 template<class R1, class R2>
 class MatrixProductOp<SparseMatrix<R1>, SparseMatrix<R2> >

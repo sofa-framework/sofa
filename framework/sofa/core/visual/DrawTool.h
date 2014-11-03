@@ -116,6 +116,20 @@ public:
     virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
             const Vector3 &normal,
             const Vec4f &c1, const Vec4f &c2, const Vec4f &c3) = 0 ;
+    virtual void drawTriangle(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,
+            const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3,
+            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3) = 0 ;
+
+    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal) = 0 ;
+    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal, const Vec4f &c) = 0 ;
+    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal,
+            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4) = 0 ;
+    virtual void drawQuad(const Vector3 &p1,const Vector3 &p2,const Vector3 &p3,const Vector3 &p4,
+            const Vector3 &normal1, const Vector3 &normal2, const Vector3 &normal3, const Vector3 &normal4,
+            const Vec4f &c1, const Vec4f &c2, const Vec4f &c3, const Vec4f &c4) = 0 ;
 
     virtual void drawSphere( const Vector3 &p, float radius) = 0 ;
 

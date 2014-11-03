@@ -28,8 +28,6 @@
 #include "DistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -40,14 +38,13 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
-
 template <class TIn, class TOut>
 DistanceMapping<TIn, TOut>::DistanceMapping()
     : Inherit()
     , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections."))
+    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
+    , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
+    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
 {
 }
 
@@ -102,7 +99,7 @@ void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 {
     helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::WriteAccessor<Data<vector<Real> > > restLengths(f_restLengths);
+    helper::ReadAccessor<Data<vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = edgeContainer->getEdges();
 
     //    jacobian.clear();
@@ -202,7 +199,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 
     for(unsigned i=0; i<links.size(); i++ )
     {
-        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
         for(unsigned j=0; j<Nin; j++)
         {
             for(unsigned k=0; k<Nin; k++)
@@ -262,7 +259,7 @@ const vector<defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getKs()
     for(size_t i=0; i<links.size(); i++)
     {
 
-        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
         for(unsigned j=0; j<Nin; j++)
         {
             for(unsigned k=0; k<Nin; k++)
@@ -292,17 +289,31 @@ const vector<defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getKs()
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
+    if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
+
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     SeqEdges links = edgeContainer->getEdges();
 
-    vector< Vector3 > points;
 
-    for(unsigned i=0; i<links.size(); i++ )
+    if( d_showObjectScale.getValue() == 0 )
     {
-        points.push_back( Vector3( TIn::getCPos(pos[links[i][0]]) ) );
-        points.push_back( Vector3( TIn::getCPos(pos[links[i][1]]) ));
+        vector< defaulttype::Vector3 > points;
+        for(unsigned i=0; i<links.size(); i++ )
+        {
+            points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][0]]) ) );
+            points.push_back( sofa::defaulttype::Vector3( TIn::getCPos(pos[links[i][1]]) ));
+        }
+        vparams->drawTool()->drawLines ( points, 1, d_color.getValue() );
     }
-    vparams->drawTool()->drawLines ( points, 1, Vec<4,float> ( 1,1,0,1 ) );
+    else
+    {
+        for(unsigned i=0; i<links.size(); i++ )
+        {
+            defaulttype::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
+            defaulttype::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
+            vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
+        }
+    }
 }
 
 

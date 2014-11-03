@@ -25,6 +25,7 @@
 #include <SofaLoader/SphereLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sstream>
 
 using namespace sofa::core::loader;
 using namespace sofa::defaulttype;
@@ -83,7 +84,9 @@ bool SphereLoader::load()
     }
     skipToEOL(file);
 
-    while (fscanf(file, "%s", cmd) != EOF)
+    std::ostringstream cmdScanFormat;
+    cmdScanFormat << "%" << (sizeof(cmd) - 1) << "s";
+    while (fscanf(file, cmdScanFormat.str().c_str(), cmd ) != EOF)
     {
         if (!strcmp(cmd,"nums"))
         {

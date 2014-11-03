@@ -53,8 +53,6 @@ namespace component
 namespace controller
 {
 
-using namespace sofa::defaulttype;
-
 /**
  * @brief MechanicalStateControllerOmni Class
  *
@@ -180,8 +178,8 @@ protected:
     //int eventX, eventY; ///< Mouse current position in pixel
     //double deviceX, deviceY, deviceZ;
     //int mouseSavedPosX, mouseSavedPosY; ///< Last recorded mouse position
-    Vector3 position;
-    Quat orientation;
+    sofa::defaulttype::Vector3 position;
+    sofa::defaulttype::Quat orientation;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_USER_INTERACTION)

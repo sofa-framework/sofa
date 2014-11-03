@@ -42,8 +42,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-
 
 /**
  * @brief SurfacePressureForceField Class
@@ -62,7 +60,7 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
-    typedef Mat<3,3,Real> Mat33;
+    typedef defaulttype::Mat<3,3,Real> Mat33;
     typedef helper::vector< Mat33 > Vec3DerivValues;
     typedef helper::vector< unsigned int > Vec3DerivIndices;
     typedef helper::vector< Vec3DerivValues> VecVec3DerivValues;
@@ -165,44 +163,44 @@ protected:
 
 #ifndef SOFA_FLOAT
 template<>
-void SurfacePressureForceField<Rigid3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */);
+void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */);
 
 template<>
-SurfacePressureForceField<Rigid3dTypes>::Real SurfacePressureForceField<Rigid3dTypes>::computeMeshVolume(const VecDeriv& f,const VecCoord& x);
+SurfacePressureForceField<defaulttype::Rigid3dTypes>::Real SurfacePressureForceField<defaulttype::Rigid3dTypes>::computeMeshVolume(const VecDeriv& f,const VecCoord& x);
 
 template<>
-void SurfacePressureForceField<Rigid3dTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/, bool computeDerivatives);
+void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/, bool computeDerivatives);
 
 template<>
-void SurfacePressureForceField<Rigid3dTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/);
+void SurfacePressureForceField<defaulttype::Rigid3dTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/);
 
 template<>
-void SurfacePressureForceField<Rigid3dTypes>::verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
+void SurfacePressureForceField<defaulttype::Rigid3dTypes>::verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
 
 
 template<>
-void SurfacePressureForceField<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
+void SurfacePressureForceField<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
 
 #endif
 
 #ifndef SOFA_DOUBLE
 template<>
-void SurfacePressureForceField<Rigid3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */);
+void SurfacePressureForceField<defaulttype::Rigid3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */);
 
 template<>
-SurfacePressureForceField<Rigid3fTypes>::Real SurfacePressureForceField<Rigid3fTypes>::computeMeshVolume(const VecDeriv& f,const VecCoord& x);
+SurfacePressureForceField<defaulttype::Rigid3fTypes>::Real SurfacePressureForceField<defaulttype::Rigid3fTypes>::computeMeshVolume(const VecDeriv& f,const VecCoord& x);
 
 template<>
-void SurfacePressureForceField<Rigid3fTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/, bool computeDerivatives);
+void SurfacePressureForceField<defaulttype::Rigid3fTypes>::addTriangleSurfacePressure(unsigned int triId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/, bool computeDerivatives);
 
 template<>
-void SurfacePressureForceField<Rigid3fTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/);
+void SurfacePressureForceField<defaulttype::Rigid3fTypes>::addQuadSurfacePressure(unsigned int quadId, VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const Real& /*pressure*/);
 
 template<>
-void SurfacePressureForceField<Rigid3fTypes>::verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
+void SurfacePressureForceField<defaulttype::Rigid3fTypes>::verifyDerivative(VecDeriv& v_plus, VecDeriv& v,  VecVec3DerivValues& DVval, VecVec3DerivIndices& DVind, const VecDeriv& Din);
 
 template<>
-void SurfacePressureForceField<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
+void SurfacePressureForceField<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
 
 #endif
 

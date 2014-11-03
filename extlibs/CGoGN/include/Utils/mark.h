@@ -43,7 +43,7 @@ class Mark
 {
 	friend class MarkSet;
 
-    typedef unsigned int value_type;
+	typedef unsigned int value_type;
 	value_type m_bits;
 
 public:
@@ -54,7 +54,7 @@ public:
 	}
 
 	//! Constructor
-    Mark() : m_bits(0u) {}
+	Mark() : m_bits(0) {}
 
 	Mark(unsigned int a) : m_bits(a) {}
 

@@ -44,10 +44,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace core::topology;
-
-
 template <class DataTypes>
 TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
 
@@ -68,6 +64,8 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_currentSurfaceArea(initData(&m_currentSurfaceArea, (Real)0.0, "currentSurfaceArea", "OUT: Current surface area, as computed from the last surface position")),
     m_drawForceScale(initData(&m_drawForceScale, (Real)0.001, "drawForceScale", "DEBUG: scale used to render force vectors")),
     m_drawForceColor(initData(&m_drawForceColor, defaulttype::Vec4f(0,1,1,1), "drawForceColor", "DEBUG: color used to render force vectors")),
+    m_volumeAfterTC(initData(&m_volumeAfterTC, "volumeAfterTC", "OUT: Volume after a topology change")),
+    m_surfaceAreaAfterTC(initData(&m_surfaceAreaAfterTC, (Real)0.0, "surfaceAreaAfterTC", "OUT: Surface area after a topology change")),
     m_topology(NULL),
     lastTopologyRevision(-1)
 {
@@ -95,6 +93,10 @@ TaitSurfacePressureForceField<DataTypes>::TaitSurfacePressureForceField():
     m_initialSurfaceArea.setReadOnly(true);
     m_currentSurfaceArea.setGroup("Stats");
     m_currentSurfaceArea.setReadOnly(true);
+    m_volumeAfterTC.setGroup("Results");
+    m_volumeAfterTC.setReadOnly(true);
+    m_surfaceAreaAfterTC.setGroup("Results");
+    m_surfaceAreaAfterTC.setReadOnly(true);
     this->f_listening.setValue(true);
 }
 
@@ -170,12 +172,20 @@ void TaitSurfacePressureForceField<DataTypes>::updateFromTopology()
     {
         if (lastTopologyRevision >= 0)
             serr << "NEW TOPOLOGY v" << m_topology->getRevision() << sendl;
+
         lastTopologyRevision = m_topology->getRevision();
         computePressureTriangles();
-        computeMeshVolumeAndArea(*m_initialVolume.beginEdit(), *m_initialSurfaceArea.beginEdit(), this->mstate->read(core::ConstVecCoordId::restPosition()));
-        m_initialVolume.endEdit();
-        m_initialSurfaceArea.endEdit();
+
+        computeMeshVolumeAndArea(*m_volumeAfterTC.beginEdit(), *m_surfaceAreaAfterTC.beginEdit(), this->mstate->read(core::ConstVecCoordId::restPosition()));
+        m_volumeAfterTC.endEdit();
+        m_surfaceAreaAfterTC.endEdit();
+		if (lastTopologyRevision == 0)
+		{
+			m_initialVolume.setValue(m_volumeAfterTC.getValue());
+			m_initialSurfaceArea.setValue(m_surfaceAreaAfterTC.getValue());
+		}
     }
+
     m_v0.setValue(m_initialVolume.getValue() + m_currentInjectedVolume.getValue());
 }
 
@@ -212,13 +222,20 @@ void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalPa
     computeMeshVolumeAndArea(*m_currentVolume.beginEdit(), *m_currentSurfaceArea.beginEdit(), x);
     m_currentVolume.endEdit();
     m_currentSurfaceArea.endEdit();
-    const Real currentVolume = m_currentVolume.getValue();
+    Real currentVolume = m_currentVolume.getValue();
+    computeStatistics(x);
     Real currentStiffness = 0;
     Real currentPressure = 0;
+	// apply volume correction after a topological change
+
+    if (m_volumeAfterTC.isSet())
+    {
+	    currentVolume -= (m_volumeAfterTC.getValue() - m_initialVolume.getValue());
+    }
+
     computePressureAndStiffness(currentPressure, currentStiffness, currentVolume, m_v0.getValue());
     m_currentPressure.setValue(currentPressure);
     m_currentStiffness.setValue(currentStiffness);
-    computeStatistics(x);
 
     // first compute gradV
     helper::WriteAccessor<VecDeriv> gradV = this->gradV;
@@ -303,9 +320,9 @@ void TaitSurfacePressureForceField<DataTypes>::addKToMatrix(const core::Mechanic
 
 /// Convert a vector cross-product to a to matrix multiplication, i.e. cross(a,b) = matCross(a)*b
 template <typename T>
-inline Mat<3,3,T> matCross( const Vec<3,T>& u )
+inline sofa::defaulttype::Mat<3,3,T> matCross( const sofa::defaulttype::Vec<3,T>& u )
 {
-    Mat<3,3,T> res(NOINIT);
+    sofa::defaulttype::Mat<3,3,T> res(sofa::defaulttype::NOINIT);
     res[0][0] =  0   ; res[0][1] = -u[2]; res[0][2] =  u[1];
     res[1][0] =  u[2]; res[1][1] =  0   ; res[1][2] = -u[0];
     res[2][0] = -u[1]; res[2][1] =  u[0]; res[2][2] =  0   ;
@@ -412,11 +429,8 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
 
     helper::ReadAccessor< Data< SeqTriangles > > pressureTriangles = m_pressureTriangles;
 
-    using defaulttype::Vector3;
-    using defaulttype::Vec3i;
-
-    std::vector< defaulttype::Vector3 > points;
-    std::vector< Vec3i > indices;
+    std::vector< sofa::defaulttype::Vector3 > points;
+    std::vector< sofa::defaulttype::Vec3i > indices;
     std::vector< defaulttype::Vector3 > normals;
     if (m_drawForceScale.getValue() != (Real)0.0)
     {
@@ -425,11 +439,11 @@ void TaitSurfacePressureForceField<DataTypes>::draw(const core::visual::VisualPa
         for (unsigned int i=0; i<pressureTriangles.size(); i++)
         {
             Triangle t = pressureTriangles[i];
-            Vector3 a = x[t[0]];
-            Vector3 b = x[t[1]];
-            Vector3 c = x[t[2]];
-            Vector3 n = cross(b-a,c-a) * fscale;
-            Vector3 center = (a+b+c)/(Real)3;
+            sofa::defaulttype::Vector3 a = x[t[0]];
+            sofa::defaulttype::Vector3 b = x[t[1]];
+            sofa::defaulttype::Vector3 c = x[t[2]];
+            sofa::defaulttype::Vector3 n = cross(b-a,c-a) * fscale;
+            sofa::defaulttype::Vector3 center = (a+b+c)/(Real)3;
             points.push_back(center);
             points.push_back(center+n);
         }

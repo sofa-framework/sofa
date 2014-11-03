@@ -200,13 +200,7 @@ protected:
 
 	void setNeighbour(L_DART d1, L_DART d2);
 
-	L_DART createTriEmb(unsigned int e1, unsigned int e2, unsigned int e3) {
-		L_DART d = m_map->newFace(3);
-		m_map->setSingleVertexEmb(d,e1); d = m_map->phi1(d);
-		m_map->setSingleVertexEmb(d,e2); d = m_map->phi1(d);
-		m_map->setSingleVertexEmb(d,e3); d = m_map->phi1(d);
-		return d;
-	}
+	L_DART createTriEmb(unsigned int e1, unsigned int e2, unsigned int e3);
 
 public:
 	/**

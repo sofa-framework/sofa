@@ -34,9 +34,9 @@ class Frame:
                         self.translation = [0, 0, 0]
                         self.rotation = [0, 0, 0, 1]
                 
-        def insert(self, parent, **args):
+        def insert(self, parent, template='Rigid', **args):
                 return parent.createObject('MechanicalObject', 
-                                           template = 'Rigid',
+                                           template = template,
                                            position = str(self),
                                            **args)
                 
@@ -83,22 +83,36 @@ class Frame:
                         setattr(self, k, kwargs[k])
                         
                 return self
-					  
-        # TODO more: apply( vec3 ), wrench/twist frame change.
+
+        # TODO more: wrench/twist frame change.
+
+        def apply(self, vec):
+            """ apply transformation to vec (a [x,y,z] vector)
+            return the result
+            """
+            return array(quat.rotate(self.rotation, vec) + asarray(self.translation))
+
+        def applyInv(self, vec):
+            """ apply the inverse transformation to vec (a [x,y,z] vector)
+            return the result
+            """
+            return self.inv().apply(vec)
 
 
 class MassInfo:
         pass
 
 # front-end to sofa GenerateRigid tool. density unit is kg/m^3
-def generate_rigid(filename, density = 1000.0, scale=[1,1,1], rotation=[0,0,0]):
+def generate_rigid(filename, density = 1000.0, scale=[1,1,1], rotation=[0,0,0], rigidFilename=None):
 
         # TODO bind GenerateRigid
         # - faster than writing in a file
         # - more robust (if several processes try to work in the same file)
 
-
-        tmpfilename = Tools.path( __file__ ) +"/tmp.rigid"
+        if rigidFilename is None:
+            tmpfilename = Tools.path( __file__ ) +"/tmp.rigid"
+        else:
+            tmpfilename = rigidFilename
 
         cmd = [ Sofa.build_dir() + '/bin/GenerateRigid', filename, tmpfilename, str(density), str(scale[0]), str(scale[1]), str(scale[2]), str(rotation[0]), str(rotation[1]), str(rotation[2]) ]
 
@@ -119,51 +133,50 @@ def generate_rigid(filename, density = 1000.0, scale=[1,1,1], rotation=[0,0,0]):
                     raise
 
         output.communicate() # wait until Popen command is finished!!!
+        return read_rigid(tmpfilename)
 
         # GenerateRigid output is stored in the file tmpfilename
-        rigidFile = open( tmpfilename, "r" )
-        line = list( rigidFile )
-        rigidFile.close()
-        
+
+# parse a .rigid file
+def read_rigid(rigidFileName):
+    rigidFile = open( rigidFileName, "r" )
+    line = list( rigidFile )
+    rigidFile.close()
 #        for i in xrange(len(line)):
 #            print str(i) + str(line[i])
                     
-        start = 1
-        
-        res = MassInfo()
-        
-        res.mass = float( line[start].split(' ')[1] )
-        #volm = float( line[start + 1].split(' ')[1] )
-        res.com = map(float, line[start + 3].split(' ')[1:] )
+    start = 1
 
+    res = MassInfo()
 
-        inertia = map(float, line[start + 2].split(' ')[1:] ) # pick inertia matrix from file
-        res.inertia = array( [res.mass * x for x in inertia] ).reshape( 3, 3 ) # convert it in numpy 3x3 matrix
+    res.mass = float( line[start].split(' ')[1] )
+    #volm = float( line[start + 1].split(' ')[1])
+    res.com = map(float, line[start + 3].split(' ')[1:] )
 
+    inertia = map(float, line[start + 2].split(' ')[1:] ) # pick inertia matrix from file
+    res.inertia = array( [res.mass * x for x in inertia] ).reshape( 3, 3 ) # convert it in numpy 3x3 matrix
 
-        # extracting principal axes basis and corresponding rotation and diagonal inertia
+    # extracting principal axes basis and corresponding rotation and diagonal inertia
 
-        if inertia[1]>1e-5 or inertia[2]>1e-5 or inertia[5]>1e-5 : # if !diagonal (1e-5 seems big but the precision from a mesh is poor)
-#            print res.inertia
-            U, res.diagonal_inertia, V = linalg.svd(res.inertia)
-            # det should be 1->rotation or -1->reflexion
-            if linalg.det(U) < 0 : # reflexion
-                # made it a rotation by negating a column
-#                print "REFLEXION"
-                U[:,0] = -U[:,0]
-            res.inertia_rotation = quat.from_matrix( U )
-#            print "generate_rigid not diagonal U" +str(U)
-#            print "generate_rigid not diagonal V" +str(V)
-#            print "generate_rigid not diagonal d" +str(res.diagonal_inertia)
-        else :
-            res.diagonal_inertia = res.inertia.diagonal()
-            res.inertia_rotation = [0,0,0,1]
-
-        
+    if inertia[1]>1e-5 or inertia[2]>1e-5 or inertia[5]>1e-5 : # if !diagonal (1e-5 seems big but the precision from a mesh is poor)
+#        print res.inertia
+        U, res.diagonal_inertia, V = linalg.svd(res.inertia)
+        # det should be 1->rotation or -1->reflexion
+        if linalg.det(U) < 0 : # reflexion
+            # made it a rotation by negating a column
+#            print "REFLEXION"
+            U[:,0] = -U[:,0]
+        res.inertia_rotation = quat.from_matrix( U )
+#       print "generate_rigid not diagonal U" +str(U)
+#       print "generate_rigid not diagonal V" +str(V)
+#       print "generate_rigid not diagonal d" +str(res.diagonal_inertia)
+    else :
+        res.diagonal_inertia = res.inertia.diagonal()
+        res.inertia_rotation = [0,0,0,1]
 
 #        print "generate_rigid " + str(res.mass) + " " + str( res.inertia ) + " " + str( res.diagonal_inertia )
 
-        return res
+    return res
 
 
 
@@ -243,7 +256,7 @@ class Body:
                                                   scale3d = concat(self.scale))
                         
                         visual_map = visual.createObject('RigidMapping', 
-                                                         template = 'Rigid' + ', ' + visual_template, 
+                                                         template = 'Rigid' + ',' + visual_template,
                                                          input = '@../')
                 # collision model
                 if self.collision != None:
@@ -396,7 +409,7 @@ class Joint:
             
             target_constraint = target.createChild("target_constraint")
             target_constraint.createObject('MechanicalObject', template = 'Vec1d', name = 'dofs')
-            target_constraint.createObject('OffsetMapping', name = 'mapping', template = 'Vec1d,Vec1d', input = '@../', output = '@dofs', offsets = concat(maskedTargetPose) )
+            target_constraint.createObject('DifferenceFromTargetMapping', name = 'mapping', template = 'Vec1d,Vec1d', input = '@../', output = '@dofs', targets = concat(maskedTargetPose) )
             target_constraint.createObject('UniformCompliance', name = 'compliance', template = 'Vec1d', compliance = compliance, damping=damping)
 
 # and now for more specific joints:
@@ -435,7 +448,7 @@ class RevoluteJoint(Joint):
                 limit = res.createChild('limit')
 
                 dofs = limit.createObject('MechanicalObject', template = 'Vec1d')
-                map = limit.createObject('ProjectionMapping', template = 'Vec6d, Vec1d' )
+                map = limit.createObject('ProjectionMapping', template = 'Vec6d,Vec1d' )
 
                 limit.createObject('UniformCompliance', template = 'Vec1d', compliance = '0' )
                 limit.createObject('UnilateralConstraint');

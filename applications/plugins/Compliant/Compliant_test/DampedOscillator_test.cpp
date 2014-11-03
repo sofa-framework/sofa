@@ -2,7 +2,7 @@
 #include <plugins/Compliant/numericalsolver/LDLTSolver.h>
 #include <plugins/Compliant/numericalsolver/LDLTResponse.h>
 #include <plugins/Compliant/Compliant_test/Compliant_test.h>
-#include <plugins/Compliant/odesolver/AssembledSolver.h>
+#include <plugins/Compliant/odesolver/CompliantImplicitSolver.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
@@ -11,7 +11,7 @@ namespace sofa
 {
 
 /**
- * @brief Integrate a one-dimensional damped oscillator in time, using an AssembledSolver.
+ * @brief Integrate a one-dimensional damped oscillator in time, using an CompliantImplicitSolver.
  * The oscillator is composed of one fixed and one moving particle, connected by a spring with damping.
  * We check if the trajectory x(t) of the particle corresponds to the theory
  */
@@ -199,7 +199,7 @@ TEST_F(DampedOscillator_test, stiffness_first_degree )
     setup( 1.0, 1.0, 1.0, 1.0, 0.0 );// mass, stiffness, damping, x0, v0
 
     // === Numerical integrators
-    odesolver::AssembledSolver::SPtr complianceSolver = addNew<odesolver::AssembledSolver>(node);
+    odesolver::CompliantImplicitSolver::SPtr complianceSolver = addNew<odesolver::CompliantImplicitSolver>(node);
     complianceSolver->debug.setValue( false );
     complianceSolver->alpha.setValue(1.0);
     complianceSolver->beta.setValue(1.0);
@@ -222,7 +222,7 @@ TEST_F(DampedOscillator_test, stiffness_second_degree )
     setup( 1.0, 1.0, 1.0, 1.0, 0.0 );// mass, stiffness, damping, x0, v0
 
     // === Numerical integrators
-    odesolver::AssembledSolver::SPtr complianceSolver = addNew<odesolver::AssembledSolver>(node);
+    odesolver::CompliantImplicitSolver::SPtr complianceSolver = addNew<odesolver::CompliantImplicitSolver>(node);
     complianceSolver->debug.setValue( false );
     complianceSolver->alpha.setValue(0.5);
     complianceSolver->beta.setValue(1.0);
@@ -287,7 +287,7 @@ TEST_F(DampedOscillator_test, compliance_second_degree )
 
 
     // === Numerical integrators
-    odesolver::AssembledSolver::SPtr complianceSolver = addNew<odesolver::AssembledSolver>(node);
+    odesolver::CompliantImplicitSolver::SPtr complianceSolver = addNew<odesolver::CompliantImplicitSolver>(node);
     complianceSolver->debug.setValue( false );
     complianceSolver->alpha.setValue(0.5);
     complianceSolver->beta.setValue(1.0);

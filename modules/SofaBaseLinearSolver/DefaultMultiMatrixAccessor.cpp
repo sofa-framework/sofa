@@ -26,6 +26,7 @@
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 
+using sofa::core::behavior::BaseMechanicalState;
 
 namespace sofa
 {

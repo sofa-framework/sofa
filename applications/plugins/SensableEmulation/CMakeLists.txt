@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     #NewOmniDriverEmu.h 
+	initSensableEmulation.h
     OmniDriverEmu.h
 	pthread/pthread.h
 	)

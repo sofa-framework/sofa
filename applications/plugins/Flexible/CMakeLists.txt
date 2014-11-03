@@ -2,7 +2,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
 
-    initFlexible.h 
+    initFlexible.h
     BaseJacobian.h 
     helper.h 
     types/DeformationGradientTypes.h 
@@ -22,10 +22,12 @@ set(HEADER_FILES
     quadrature/TopologyGaussPointSampler.h 
     quadrature/GaussPointContainer.h
     shapeFunction/BaseShapeFunction.h
+    shapeFunction/ImageShapeFunctionSelectNode.h
     shapeFunction/ShepardShapeFunction.h 
     shapeFunction/HatShapeFunction.h 
     shapeFunction/BarycentricShapeFunction.h 
     shapeFunction/BezierShapeFunction.h
+    deformationMapping/BaseDeformationImpl.inl 
     deformationMapping/BaseDeformationMapping.h
     deformationMapping/BaseDeformationMapping.inl 
     deformationMapping/CustomJacobianBlock.h
@@ -50,6 +52,9 @@ set(HEADER_FILES
     deformationMapping/TriangleStrainAverageMapping.inl 
     deformationMapping/VolumeMapping.h
     deformationMapping/CorotationalMeshMapping.h
+    engine/ComputeDualQuatEngine.h
+    engine/ComputeDualQuatEngine.inl
+    engine/ComputeWeightEngine.h
     strainMapping/BaseStrainMapping.h
     strainMapping/CauchyStrainMapping.h
     strainMapping/CauchyStrainJacobianBlock.h
@@ -91,7 +96,9 @@ set(HEADER_FILES
     material/MuscleMaterialBlock.h
     material/TendonMaterialForceField.h
     material/TendonMaterialBlock.h
-    #forceField/Flex    ibleTetrahedronFEMForceField.h
+    material/ProjectiveForceField.h
+    material/ProjectiveMaterialBlock.h
+    #forceField/FlexibleTetrahedronFEMForceField.h
 
 	)
 
@@ -107,6 +114,7 @@ set(SOURCE_FILES
     quadrature/TopologyGaussPointSampler.cpp 
     quadrature/GaussPointContainer.cpp
     shapeFunction/BaseShapeFunction.cpp
+    shapeFunction/ImageShapeFunctionSelectNode.cpp
     shapeFunction/ShepardShapeFunction.cpp 
     shapeFunction/HatShapeFunction.cpp 
     shapeFunction/BarycentricShapeFunction.cpp 
@@ -124,6 +132,8 @@ set(SOURCE_FILES
     deformationMapping/TriangleStrainAverageMapping.cpp 
     deformationMapping/VolumeMapping.cpp
     deformationMapping/CorotationalMeshMapping.cpp
+    engine/ComputeDualQuatEngine.cpp
+    engine/ComputeWeightEngine.cpp
     strainMapping/CauchyStrainMapping.cpp
     strainMapping/GreenStrainMapping.cpp
     strainMapping/CorotationalStrainMapping.cpp 
@@ -141,6 +151,7 @@ set(SOURCE_FILES
     material/PolynomialMaterialForceField.cpp
     material/MuscleMaterialForceField.cpp
     material/TendonMaterialForceField.cpp
+    material/ProjectiveForceField.cpp
     #forceField/FlexibleTetrahedronFEMForceField.cpp
 
 	)

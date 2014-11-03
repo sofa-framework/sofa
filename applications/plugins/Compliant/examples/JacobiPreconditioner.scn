@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.01" >
+<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+
+    <RequiredPlugin name="Compliant" pluginName="Compliant" />
+    <CompliantAttachButton />
+
+        
+    <CompliantImplicitSolver/>
+    <PreconditionedCgSolver iterations="100" precision="1e-15" verbose="1"/>
+    <CompliantJacobiPreconditioner/>
+<!--     <CgSolver iterations="100" precision="1e-10"/> -->
+    
+    
+    <GridMeshCreator name="loader" filename="nofile" resolution="50 50" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
+    <MeshTopology name="mesh" src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+    <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
+    <UniformMass  name="mass" />
+    <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1.0e-4" isCompliance="0" />
+    </Node>
+        
+    
+    
+</Node>

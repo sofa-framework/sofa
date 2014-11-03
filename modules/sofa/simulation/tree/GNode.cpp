@@ -338,7 +338,7 @@ bool GNode::hasAncestor(const BaseContext* context) const
 
 /// Execute a recursive action starting from this node
 /// This method bypass the actionScheduler of this node if any.
-void GNode::doExecuteVisitor(simulation::Visitor* action)
+void GNode::doExecuteVisitor(simulation::Visitor* action, bool)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     action->setNode(this);
@@ -427,7 +427,6 @@ Node* GNode::findCommonParent( simulation::Node* node2 )
         if (it != hierarchyParent.end())
         {
             return gnodeGroup2;
-            break;
         }
         gnodeGroup2=static_cast<GNode*>(gnodeGroup2->getParent());
     }

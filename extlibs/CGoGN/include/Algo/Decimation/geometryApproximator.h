@@ -50,10 +50,10 @@ public:
 	typedef typename PFP::REAL REAL ;
 
 protected:
-	VertexAttribute<Utils::Quadric<REAL> > m_quadric ;
+	VertexAttribute<Utils::Quadric<REAL>, MAP> m_quadric ;
 
 public:
-	Approximator_QEM(MAP& m, std::vector<VertexAttribute<VEC3>* > pos, Predictor<PFP, VEC3>* pred = NULL) :
+	Approximator_QEM(MAP& m, std::vector<VertexAttribute<VEC3, MAP>*> pos, Predictor<PFP, VEC3>* pred = NULL) :
 		Approximator<PFP, VEC3, EDGE>(m, pos, pred)
 	{
 		assert(pos.size() > 0 || !"Approximator_QEM: attribute vector is empty") ;
@@ -74,10 +74,10 @@ public:
 	typedef typename PFP::REAL REAL ;
 
 protected:
-	VertexAttribute<Utils::Quadric<REAL> > m_quadric ;
+	VertexAttribute<Utils::Quadric<REAL>, MAP> m_quadric ;
 
 public:
-	Approximator_QEMhalfEdge(MAP& m, std::vector<VertexAttribute<VEC3>* > pos, Predictor<PFP, VEC3>* pred = NULL) :
+	Approximator_QEMhalfEdge(MAP& m, std::vector<VertexAttribute<VEC3, MAP>*> pos, Predictor<PFP, VEC3>* pred = NULL) :
 		Approximator<PFP, VEC3, DART>(m, pos, pred)
 	{
 		assert(pos.size() > 0 || !"Approximator_QEMhalfEdge: attribute vector is empty") ;
@@ -97,7 +97,7 @@ public:
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL ;
 
-	Approximator_MidEdge(MAP& m, std::vector<VertexAttribute<VEC3>* > pos, Predictor<PFP, VEC3>* pred = NULL) :
+	Approximator_MidEdge(MAP& m, std::vector<VertexAttribute<VEC3, MAP>*> pos, Predictor<PFP, VEC3>* pred = NULL) :
 		Approximator<PFP, VEC3, EDGE>(m, pos, pred)
 	{
 		assert(pos.size() > 0 || !"Approximator_MidEdge: attribute vector is empty") ;
@@ -117,7 +117,7 @@ public:
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL ;
 
-	Approximator_HalfCollapse(MAP& m, std::vector<VertexAttribute<VEC3>* > pos, Predictor<PFP, VEC3>* pred = NULL) :
+	Approximator_HalfCollapse(MAP& m, std::vector<VertexAttribute<VEC3, MAP>*> pos, Predictor<PFP, VEC3>* pred = NULL) :
 		Approximator<PFP, VEC3, DART>(m, pos, pred)
 	{
 		assert(pos.size() > 0 || !"Approximator_HalfCollapse: attribute vector is empty") ;
@@ -137,7 +137,7 @@ public:
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL ;
 
-	Approximator_CornerCutting(MAP& m, std::vector<VertexAttribute<VEC3>* > pos, Predictor<PFP, VEC3>* pred = NULL) :
+	Approximator_CornerCutting(MAP& m, std::vector<VertexAttribute<VEC3, MAP>*> pos, Predictor<PFP, VEC3>* pred = NULL) :
 		Approximator<PFP, VEC3, EDGE>(m, pos, pred)
 	{
 		assert(pos.size() > 0 || !"Approximator_CornerCutting: attribute vector is empty") ;
@@ -158,10 +158,10 @@ public:
 	typedef typename PFP::REAL REAL ;
 
 protected:
-	EdgeAttribute<Geom::Matrix<3,3,REAL> > edgeMatrix ;
+	EdgeAttribute<Geom::Matrix<3,3,REAL>, MAP> edgeMatrix ;
 
 public:
-	Approximator_NormalArea(MAP& m, std::vector<VertexAttribute<VEC3>* > pos, Predictor<PFP, VEC3>* pred = NULL) :
+	Approximator_NormalArea(MAP& m, std::vector<VertexAttribute<VEC3, MAP>*> pos, Predictor<PFP, VEC3>* pred = NULL) :
 		Approximator<PFP, VEC3, EDGE>(m, pos, pred)
 	{
 		assert(pos.size() > 0 || !"Approximator_NormalArea: attribute vector is empty") ;
@@ -173,14 +173,13 @@ public:
 	void approximate(Dart d) ;
 } ;
 
-
-} //namespace Decimation
+} // namespace Decimation
 
 } // namespace Surface
 
-} //namespace Algo
+} // namespace Algo
 
-} //namespace CGoGN
+} // namespace CGoGN
 
 #include "Algo/Decimation/geometryApproximator.hpp"
 

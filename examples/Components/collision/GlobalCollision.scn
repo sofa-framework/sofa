@@ -4,12 +4,13 @@
 	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
 	<BruteForceDetection name="Detection" />
 	<DefaultContactManager name="Response"  response="default" />
-	<CollisionGroupManager name="Group" />
-	<NewProximityIntersection name="newProximityIntersection0" />
+	<DefaultCollisionGroupManager name="Group" />
+	<NewProximityIntersection name="newProximityIntersection0" alarmDistance="1" contactDistance="0.5"/>
 	<EulerImplicitSolver name="Implicit Euler Solver" />
-	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
-	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
-             <RequiredPlugin name="SofaPython"  printLog="1"  pluginName="SofaPython" />
-	         <PythonScriptController name="pythonScriptCapsule"  listening="1"  filename="GlobalCollision.py"  classname="GlobalCollision" />
+	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
+	<Node 	 name="gNode4"  gravity="0 0 -9.81"  dt="0.05"  >
+		<RequiredPlugin name="SofaPython"  printLog="1"  pluginName="SofaPython" />
+		<PythonScriptController name="pythonScriptCapsule"  listening="1"  filename="GlobalCollision.py"  classname="GlobalCollision" />
+		
 	</Node>
 </Node>

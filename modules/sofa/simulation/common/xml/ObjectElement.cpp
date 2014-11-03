@@ -88,7 +88,7 @@ bool ObjectElement::initNode()
     }
     setObject(obj);
     // display any unused attributes
-    std::string unused;
+    //std::string unused;
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {
         if (!it->second.isAccessed())
@@ -96,8 +96,8 @@ bool ObjectElement::initNode()
             std::string name = it->first;
             // ignore some prefix that are used to quickly disable parameters in XML files
             if (name.substr(0,1) == "_" || name.substr(0,2) == "NO") continue;
-            unused += ' ';
-            unused += name;
+            //unused += ' ';
+            //unused += name;
 
             obj->serr <<"Unused Attribute: \""<<it->first <<"\" with value: \"" <<it->second.c_str() <<"\"" << obj->sendl;
         }

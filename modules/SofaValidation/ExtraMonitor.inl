@@ -48,9 +48,6 @@ namespace component
 namespace misc
 {
 
-using namespace sofa::defaulttype;
-using namespace std;
-
 
 ///////////////////////////// Monitor /////////////////////////////////////
 template <class DataTypes>
@@ -115,18 +112,18 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
                     ( *this->saveGnuplotX ) << "# Gnuplot File : displacement of ";
                 }
                 ( *this->saveGnuplotX )<< this->indices.getValue().size() << " particle(s) Monitored"
-                        <<  endl;
+                        <<  std::endl;
                 ( *this->saveGnuplotX ) << "# 1st Column : time, others : particle(s) number ";
 
                 for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
                     ( *this->saveGnuplotX ) << this->indices.getValue()[i] << " ";
-                ( *this->saveGnuplotX ) << endl;
+                ( *this->saveGnuplotX ) << std::endl;
             }
             else
             {
                 ( *this->saveGnuplotX ) << "# Gnuplot File : resultant of the positions of "
                         << this->indices.getValue().size() << " particle(s) Monitored"
-                        << endl;
+                        << std::endl;
                 ( *this->saveGnuplotX ) << "# 1st Column : time";
                 if (minX.getValue() != -1)
                 {
@@ -136,7 +133,7 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
                 {
                     ( *this->saveGnuplotX )<<", maximum displacement on "<<maxX.getValue()<<" coordinate";
                 }
-                ( *this->saveGnuplotX )<< endl;
+                ( *this->saveGnuplotX )<< std::endl;
             }
         }
 
@@ -147,12 +144,12 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
             this->saveGnuplotV = new std::ofstream ( ( path + this->getName() +"_v.txt" ).c_str() );
             ( *this->saveGnuplotV ) << "# Gnuplot File : velocities of "
                     << this->indices.getValue().size() << " particle(s) Monitored"
-                    <<  endl;
+                    <<  std::endl;
             ( *this->saveGnuplotV ) << "# 1st Column : time, others : particle(s) number ";
 
             for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
                 ( *this->saveGnuplotV ) << this->indices.getValue()[i] << " ";
-            ( *this->saveGnuplotV ) << endl;
+            ( *this->saveGnuplotV ) << std::endl;
         }
 
         if ( this->saveFToGnuplot.getValue() )
@@ -163,20 +160,20 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
             {
                 ( *this->saveGnuplotF ) << "# Gnuplot File : forces of "
                         << this->indices.getValue().size() << " particle(s) Monitored"
-                        <<  endl;
+                        <<  std::endl;
                 ( *this->saveGnuplotF ) << "# 1st Column : time, others : particle(s) number ";
 
                 for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
                     ( *this->saveGnuplotF ) << this->indices.getValue()[i] << " ";
-                ( *this->saveGnuplotF ) << endl;
+                ( *this->saveGnuplotF ) << std::endl;
             }
             else
             {
                 ( *this->saveGnuplotF ) << "# Gnuplot File : resultant of the forces of "
                         << this->indices.getValue().size() << " particle(s) Monitored"
-                        << endl;
+                        << std::endl;
                 ( *this->saveGnuplotF ) << "# 1st Column : time, other : resultant force "
-                        << endl;
+                        << std::endl;
             }
         }
 
@@ -184,16 +181,16 @@ void ExtraMonitor<DataTypes>::initGnuplot ( const std::string path )
         {
             if ( this->saveGnuplotWcin != NULL ) delete this->saveGnuplotWcin;
             this->saveGnuplotWcin = new std::ofstream ( ( path + this->getName() + "_wcin.txt" ).c_str() );
-            ( *this->saveGnuplotWcin ) << "# Gnuplot File : kinetic energy of the system "<<endl;
-            ( *this->saveGnuplotWcin ) << "# 1st Column : time, 2nd : kinetic energy"<< endl;
+            ( *this->saveGnuplotWcin ) << "# Gnuplot File : kinetic energy of the system "<<std::endl;
+            ( *this->saveGnuplotWcin ) << "# 1st Column : time, 2nd : kinetic energy"<< std::endl;
         }// saveWcinToGnuplot
 
         if ( this->saveWextToGnuplot.getValue() )
         {
             if ( this->saveGnuplotWext != NULL ) delete this->saveGnuplotWext;
             this->saveGnuplotWext = new std::ofstream ( ( path + this->getName() + "_wext.txt" ).c_str() );
-            ( *this->saveGnuplotWext ) << "# Gnuplot File : external energy of the system "<<endl;
-            ( *this->saveGnuplotWext ) << "# 1st Column : time, 2nd : external energy"<< endl;
+            ( *this->saveGnuplotWext ) << "# Gnuplot File : external energy of the system "<<std::endl;
+            ( *this->saveGnuplotWext ) << "# 1st Column : time, 2nd : external energy"<< std::endl;
         }// saveWextToGnuplot
     }
 }
@@ -244,13 +241,13 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
                 for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
                     ( *this->saveGnuplotX ) << (*this->X)[this->indices.getValue()[i]][disp.getValue()] - initialPos[i]<< "\t";
             }
-            ( *this->saveGnuplotX ) << endl;
+            ( *this->saveGnuplotX ) << std::endl;
         }
         else
         {
             if (minX.getValue() != -1)
             {
-                Real min = numeric_limits<Real>::max();
+                Real min = std::numeric_limits<Real>::max();
                 Real displ = 0.0;
                 for (unsigned i = 0; i < this->indices.getValue().size(); i++)
                 {
@@ -263,7 +260,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
             }
             if (maxX.getValue() != -1)
             {
-                Real max = numeric_limits<Real>::min();
+                Real max = std::numeric_limits<Real>::min();
                 Real displ = 0.0;
                 for (unsigned i = 0; i < this->indices.getValue().size(); i++)
                 {
@@ -274,7 +271,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
                 }
                 ( *this->saveGnuplotX ) << max;
             }
-            ( *this->saveGnuplotX ) << endl;
+            ( *this->saveGnuplotX ) << std::endl;
         }
     }
     if ( this->saveVToGnuplot.getValue() && this->V->size()>0 )
@@ -283,7 +280,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
 
         for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
             ( *this->saveGnuplotV ) << (*this->V)[this->indices.getValue()[i]] << "\t";
-        ( *this->saveGnuplotV ) << endl;
+        ( *this->saveGnuplotV ) << std::endl;
     }
 
     if ( this->saveFToGnuplot.getValue() && this->F->size()>0)
@@ -294,7 +291,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
         {
             for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
                 ( *this->saveGnuplotF ) << (*this->F)[this->indices.getValue()[i]] << "\t";
-            ( *this->saveGnuplotF ) << endl;
+            ( *this->saveGnuplotF ) << std::endl;
         }
         else
         {
@@ -302,7 +299,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
             for (unsigned int i = 0; i < this->indices.getValue().size(); i++)
                 resultant += (*this->F)[this->indices.getValue()[i]];
 
-            (*this->saveGnuplotF ) << resultant << endl;
+            (*this->saveGnuplotF ) << resultant << std::endl;
         }
     }
 
@@ -311,7 +308,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
         sofa::simulation::MechanicalComputeEnergyVisitor *kineticEnergy = new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
         kineticEnergy->execute( this->getContext() );
         ( *this->saveGnuplotWcin ) << time <<"\t";
-        ( *this->saveGnuplotWcin ) << kineticEnergy->getKineticEnergy() << endl;
+        ( *this->saveGnuplotWcin ) << kineticEnergy->getKineticEnergy() << std::endl;
     }// export kinetic energy
 
     if ( this->saveWextToGnuplot.getValue() )
@@ -319,7 +316,7 @@ void ExtraMonitor<DataTypes>::exportGnuplot ( Real time )
         sofa::simulation::MechanicalComputeEnergyVisitor *potentialEnergy= new sofa::simulation::MechanicalComputeEnergyVisitor(core::MechanicalParams::defaultInstance());
         potentialEnergy->execute( this->getContext() );
         ( *this->saveGnuplotWext ) << time <<"\t";
-        ( *this->saveGnuplotWext ) << potentialEnergy->getPotentialEnergy() << endl;
+        ( *this->saveGnuplotWext ) << potentialEnergy->getPotentialEnergy() << std::endl;
     }// export external energy
 
 }

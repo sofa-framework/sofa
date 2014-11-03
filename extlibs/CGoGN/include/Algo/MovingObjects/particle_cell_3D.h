@@ -1,5 +1,5 @@
-#ifndef PARTCELL_H
-#define PARTCELL_H
+#ifndef PARTCELL_3D_H
+#define PARTCELL_3D_H
 
 #include "Algo/MovingObjects/particle_base.h"
 
@@ -7,6 +7,7 @@
 #include "Geometry/intersection.h"
 #include "Geometry/orientation.h"
 #include "Geometry/plane_3d.h"
+
 #include <iostream>
 
 /* A particle cell is a particle base within a map, within a precise cell, the displacement function should indicate
@@ -34,11 +35,11 @@ template <typename PFP>
 class ParticleCell3D : public Algo::MovingObjects::ParticleBase<PFP>
 {
 public :
-	typedef typename PFP::MAP Map;
+	typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;
-	typedef VertexAttribute<VEC3> TAB_POS;
+	typedef VertexAttribute<VEC3, MAP> TAB_POS;
 
-	Map& m;
+	MAP& m;
 
 	const TAB_POS& position;
 
@@ -51,10 +52,10 @@ public :
 
 	unsigned int crossCell ;
 
-	ParticleCell3D(Map& map) : m(map)
+	ParticleCell3D(MAP& map) : m(map)
 	{}
 
-	ParticleCell3D(Map& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos) :
+	ParticleCell3D(MAP& map, Dart belonging_cell, VEC3 pos, const TAB_POS& tabPos) :
 		Algo::MovingObjects::ParticleBase<PFP>(pos),
 		m(map),
 		position(tabPos),
@@ -86,11 +87,11 @@ public :
 
 	bool isRightDFace(VEC3 c, Dart d, VEC3 base, VEC3 normal);
 
-	Dart nextDartOfVertexNotMarked(Dart d, CellMarkerStore<FACE>& mark);
+	Dart nextDartOfVertexNotMarked(Dart d, CellMarkerStore<MAP, FACE>& mark);
 
 	Dart nextNonPlanar(Dart d);
 
-	Dart nextFaceNotMarked(Dart d,CellMarkerStore<FACE>& mark);
+	Dart nextFaceNotMarked(Dart d, CellMarkerStore<MAP, FACE>& mark);
 
 	Geom::Orientation3D whichSideOfEdge(VEC3 c, Dart d);
 
@@ -100,12 +101,11 @@ public :
 
 	void edgeState(const VEC3& current);
 
-	void faceState(const VEC3& current, Geom::Orientation3D sideOfFace=Geom::ON);
+	void faceState(const VEC3& current, Geom::Orientation3D sideOfFace = Geom::ON);
 
 	void volumeState(const VEC3& current);
 
 	void volumeSpecialCase(const VEC3& current);
-
 
 	void move(const VEC3& newCurrent)
 	{
@@ -125,12 +125,14 @@ public :
 	}
 };
 
-} //MovingObjects
-} //Volume
-} //Algo
-} //CGoGN
+} // namespace MovingObjects
 
-#include "particle_cell_3D.hpp"
+} // namespace Surface
 
+} // namespace Algo
+
+} // namespace CGoGN
+
+#include "Algo/MovingObjects/particle_cell_3D.hpp"
 
 #endif

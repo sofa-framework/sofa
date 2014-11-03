@@ -41,12 +41,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::behavior;
-using namespace sofa::helper;
-
-using namespace sofa::core::topology;
-
 // Define TestNewPointFunction
 template< class DataTypes>
 bool FixedTranslationConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
@@ -67,10 +61,10 @@ void FixedTranslationConstraint<DataTypes>::FCPointHandler::applyDestroyFunction
 template< class DataTypes>
 FixedTranslationConstraint<DataTypes>::FixedTranslationConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , f_indices( BaseObject::initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_fixAll( BaseObject::initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , _drawSize( BaseObject::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
-    , f_coordinates( BaseObject::initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
+    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
+    , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
+    , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , f_coordinates( initData(&f_coordinates,"coordinates","Coordinates of the fixed points") )
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
@@ -212,14 +206,14 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            gl::glVertexT(x[i].getCenter());
+            sofa::helper::gl::glVertexT(x[i].getCenter());
         }
     }
     else
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            gl::glVertexT(x[*it].getCenter());
+            sofa::helper::gl::glVertexT(x[*it].getCenter());
         }
     }
     glEnd();

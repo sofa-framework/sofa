@@ -64,7 +64,7 @@ void PointInfo::buildFilter(unsigned int p_index)
 
     // get the positions:
     const sofa::helper::vector<sofa::defaulttype::Vector3>& x = *this->position_filtering;
-    const Vector3 &pt = x[p_index];
+    const sofa::defaulttype::Vector3 &pt = x[p_index];
 
     //std::cout<<"  pt"<<pt<<std::endl;
 
@@ -87,11 +87,11 @@ void PointInfo::buildFilter(unsigned int p_index)
     // 1. using triangle around the point
     vector< unsigned int >::const_iterator triIt = trianglesAroundVertex.begin();
     vector< unsigned int >::const_iterator triItEnd = trianglesAroundVertex.end();
-    Vector3 nMean;
+    sofa::defaulttype::Vector3 nMean;
     while (triIt != triItEnd)
     {
         const BaseMeshTopology::Triangle& triangle = bmt->getTriangle(*triIt);
-        Vector3 nCur = (x[triangle[1]] - x[triangle[0]]).cross(x[triangle[2]] - x[triangle[0]]);
+        sofa::defaulttype::Vector3 nCur = (x[triangle[1]] - x[triangle[0]]).cross(x[triangle[2]] - x[triangle[0]]);
         nCur.normalize();
         nMean += nCur;
         ++triIt;
@@ -109,7 +109,7 @@ void PointInfo::buildFilter(unsigned int p_index)
         {
             const BaseMeshTopology::Edge& edge = bmt->getEdge(*edgeIt);
 
-            Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
+            sofa::defaulttype::Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
             l.normalize();
             nMean += l;
             ++edgeIt;
@@ -138,7 +138,7 @@ void PointInfo::buildFilter(unsigned int p_index)
     {
         const BaseMeshTopology::Edge& edge = bmt->getEdge(*edgeIt);
 
-        Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
+        sofa::defaulttype::Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
         l.normalize();
 
 
@@ -281,7 +281,7 @@ void PointLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned
     sofa::core::topology::BaseMeshTopology * bmt = pLMDFilter->bmt; //getContext()->getMeshTopology();
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
-    component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(pLMDFilter->getContext()->getMechanicalState());
+    component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<sofa::defaulttype::Vec3Types>*>(pLMDFilter->getContext()->getMechanicalState());
     if(pLMDFilter->isRigid())
     {
         /////// TODO : template de la classe

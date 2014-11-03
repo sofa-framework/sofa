@@ -45,10 +45,6 @@ namespace component
 
 namespace forcefield
 {
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 
 template<class DataTypes>
 class TriangularTensorMassForceField : public core::behavior::ForceField<DataTypes>
@@ -65,8 +61,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv>    DataVecDeriv;
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
-
-    class Mat3 : public fixed_array<Deriv,3>
+    class Mat3 : public sofa::helper::fixed_array<Deriv,3>
     {
     public:
         Deriv operator*(const Deriv& v)
@@ -106,28 +101,28 @@ protected:
         }
     };
 
-    EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
 
-    class TriangularTMEdgeHandler : public TopologyDataHandler<Edge,sofa::helper::vector<EdgeRestInformation> >
+    class TriangularTMEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge,sofa::helper::vector<EdgeRestInformation> >
     {
     public:
         typedef typename TriangularTensorMassForceField<DataTypes>::EdgeRestInformation EdgeRestInformation;
 
         TriangularTMEdgeHandler(
             TriangularTensorMassForceField<DataTypes>* ff,
-            EdgeData<sofa::helper::vector<EdgeRestInformation> >* data
+            sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> >* data
         )
-            :TopologyDataHandler<Edge,sofa::helper::vector<EdgeRestInformation> >(data),ff(ff)
+            :sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge,sofa::helper::vector<EdgeRestInformation> >(data),ff(ff)
         {
         }
 
         void applyCreateFunction(unsigned int edgeIndex, EdgeRestInformation&,
-                const Edge& e,
+                const sofa::component::topology::Edge& e,
                 const sofa::helper::vector<unsigned int> &,
                 const sofa::helper::vector<double> &);
 
         void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
-                const sofa::helper::vector<Triangle> & ,
+                const sofa::helper::vector<sofa::component::topology::Triangle> & ,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
@@ -191,7 +186,7 @@ public:
 
 protected :
 
-    EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 
 };
 #ifndef SOFA_FLOAT

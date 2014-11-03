@@ -37,19 +37,28 @@
 #include <fstream>
 #include <ctime>
 #include <GL/glew.h>
-#include <GL/glut.h>
+#include <sofa/helper/system/glut.h>
 using std::endl;
 using std::cout;
 
 #include <sofa/helper/ArgumentParser.h>
-#include <SofaSimpleGUI/SofaGLScene.h>
-using namespace sofa::newgui;
+//#include <SofaSimpleGUI/SofaGLScene.h>
+#include <SofaSimpleGUI/SofaScene.h>
+#include <SofaSimpleGUI/SofaGL.h>
+using namespace sofa::simplegui;
 
 // ---------------------------------------------------------------------
 // Sofa interface
 // ---------------------------------------------------------------------
-sofa::newgui::SofaGLScene sofaScene;     ///< The interface of the application with Sofa
-sofa::newgui::SpringInteractor* drag = NULL; ///< Mouse interactor
+//sofa::simplegui::SofaGLScene sofaScene;     ///< The interface of the application with Sofa
+sofa::simplegui::SofaScene* sofaScene;     ///< The interface of the application with Sofa
+sofa::simplegui::SofaGL* sofaGL;     ///< The interface of the application with the viewer
+sofa::simplegui::SpringInteractor* drag = NULL; ///< Mouse interactor
+
+#include "oneTetra.h"
+
+#include <SofaSimpleGUI/Camera.h>
+sofa::simplegui::Camera camera;
 
 
 // ---------------------------------------------------------------------
@@ -92,16 +101,16 @@ void display(void)
     glLoadIdentity ();
 
     glLightfv(GL_LIGHT0, GL_POSITION, light_position); // WARNING: positioning light before camera imply that the light will follow the camera
-    gluLookAt ( camera_position[0],camera_position[1],camera_position[2], 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    camera.lookAt(); // apply viewing transform
 
-    sofaScene.glDraw();
+    sofaGL->draw();
 
     // display a box, for debug
     glColor3f (1.0, 0.0, 0.0);
     glutWireCube (1.0);
     glutSwapBuffers();
 
-    // Due to some bug, the first display displays nothing. Hence this poor fix:
+    // Due to some bug, the first call displays nothing. Hence the poor following fix. Contributions are welcome.
     static int first = true;
     if( first ) { glutPostRedisplay(); first = false; }
 }
@@ -135,50 +144,62 @@ void idle()
     if( !animating )
         return;
 
-    sofaScene.animate();
+    sofaScene->step(0.04);
     glutPostRedisplay();
 }
 
 
 void mouseButton(int button, int state, int x, int y)
 {
-//    cout<<"mousebutton, modifiers = " << glutGetModifiers() << endl;
+    //    cout<<"mousebutton, modifiers = " << glutGetModifiers() << endl;
 
-    switch (button) {
-    case GLUT_LEFT_BUTTON:
-        if (state == GLUT_DOWN)
+    if( interacting && button==GLUT_LEFT_BUTTON && state == GLUT_UP ) // interaction release
+    {
+        sofaGL->detach(drag);
+        delete drag;
+
+        interacting = false;
+        return;
+    }
+
+    if( isShiftPressed() ){
+        switch (button) {
+        case GLUT_LEFT_BUTTON:
+            if (state == GLUT_DOWN)
+            {
+                //PickedPoint glpicked = sofaGL->pick(camera_position[0],camera_position[1],camera_position[2], x,y);
+                PickedPoint glpicked = sofaGL->pick(camera.eye()[0],camera.eye()[1],camera.eye()[2], x,y);
+                if( glpicked )
+                {
+                    interacting = true;
+
+                    drag = new SpringInteractor(glpicked);
+                    sofaGL->attach(drag);
+                    //                cout << "Particle glpicked: " << glpicked << endl;
+                    sofaScene->printGraph();
+                }
+                else {
+                    cout << "no particle glpicked" << endl;
+                }
+            }
+            break;
+        case GLUT_RIGHT_BUTTON:
+            //        if (state == GLUT_DOWN)
+            //            exit(0);
+            break;
+        default:
+            break;
+        }
+    } else { // shift not pressed
+        if( camera.handleMouseButton(
+            button==GLUT_LEFT_BUTTON ? Camera::ButtonLeft : button==GLUT_MIDDLE_BUTTON ? Camera::ButtonMiddle : Camera::ButtonRight ,
+            state==GLUT_DOWN ? Camera::ButtonDown : Camera::ButtonUp,
+            x, y
+                    ))
         {
-            PickedPoint glpicked = sofaScene.pick(camera_position[0],camera_position[1],camera_position[2], x,y);
-            if( glpicked )
-            {
-                interacting = true;
-
-                drag = new SpringInteractor(glpicked);
-                sofaScene.attach(drag);
-//                cout << "Particle glpicked: " << glpicked << endl;
-                sofaScene.printGraph();
-            }
-            else {
-                cout << "no particle glpicked" << endl;
-            }
+            return;
         }
-        else
-        {       
-            if( interacting )
-            {
-                sofaScene.detach(drag);
-                delete drag;
 
-                interacting = false;
-            }
-        }
-        break;
-    case GLUT_RIGHT_BUTTON:
-        //        if (state == GLUT_DOWN)
-        //            exit(0);
-        break;
-    default:
-        break;
     }
 
     glutPostRedisplay();
@@ -189,15 +210,21 @@ void mouseMotion(int x, int y)
 
     if( interacting )
     {
-        sofaScene.move(drag, x,y);
+        sofaGL->move(drag, x,y);
     }
     else{
+        if( camera.handleMouseMotion(x,y) )
+        {
+            glutPostRedisplay();
+            return;
+        }
     }
 }
 
 
 int main(int argc, char** argv)
 {
+    glewInit();
     glutInit(&argc,argv);
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
     glutInitWindowSize (500, 500);
@@ -213,15 +240,30 @@ int main(int argc, char** argv)
 
     // --- Parameter initialisation ---
     std::string fileName ;
+    std::vector<std::string> plugins;
 
     sofa::helper::parse("Simple glut application featuring a Sofa scene.")
-            .option(&sofaScene.plugins,'l',"load","load given plugins")
-            .parameter(&fileName,'f',"file","scene file to load")
+            .option(&plugins,'l',"load","load given plugins") // example to load Flexible and Compliant: -l Flexible -l Compliant
+            .option(&fileName,'f',"file","scene file to load")
             (argc,argv);
 
-    // --- Init sofa ---
-    sofaScene.init(fileName);
 
+    // --- Init sofa ---
+    sofaScene = new SofaScene;
+    sofaScene->loadPlugins( plugins );
+    if( fileName.empty() ){
+        cout << "No scene file provided, creating default scene " << endl;
+        sofaScene->setScene( oneTetra() );
+    }
+    else
+        sofaScene->open(fileName);
+
+    sofaGL = new SofaGL(sofaScene);
+
+    // initial viewpoint
+    camera.setlookAt ( 0,0,25,    0.0, 0.0, 0.0,    0.0, 1.0, 0.0);
+
+    // Run main loop
     glutMainLoop();
 
 

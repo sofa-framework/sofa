@@ -39,9 +39,9 @@ namespace mapping
 {
 
 template <class TIn, class TOut>
-Vec<3,double> LineSetSkinningMapping<TIn, TOut>::projectToSegment(const Vec<3,Real>& first, const Vec<3,Real>& last, const OutCoord& vertice)
+defaulttype::Vec<3,double> LineSetSkinningMapping<TIn, TOut>::projectToSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice)
 {
-    Vec3d segment,v_f,v_l;
+    defaulttype::Vec3d segment,v_f,v_l;
 
     segment = last - first;
     v_f = vertice-first;
@@ -62,11 +62,11 @@ Vec<3,double> LineSetSkinningMapping<TIn, TOut>::projectToSegment(const Vec<3,Re
 }
 
 template <class TIn, class TOut>
-double LineSetSkinningMapping<TIn, TOut>::convolutionSegment(const Vec<3,Real>& first, const Vec<3,Real>& last, const OutCoord& vertice)
+double LineSetSkinningMapping<TIn, TOut>::convolutionSegment(const defaulttype::Vec<3,Real>& first, const defaulttype::Vec<3,Real>& last, const OutCoord& vertice)
 {
     int steps = 1000;
     double sum = 0.0;
-    Vec<3,Real> dist, line;
+    defaulttype::Vec<3,Real> dist, line;
 
     line=last-first;
 
@@ -218,7 +218,7 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
             //Vec<3,Real> v = xfrom[t->getLine(iline.lineIndex)[0]].getCenter() + xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
             const sofa::core::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][lineInfluencedIndex].lineIndex);
-            Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
+            defaulttype::Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
 
             glColor3f ((GLfloat) iline.weight, (GLfloat) 0, (GLfloat) (1.0-iline.weight));
@@ -263,7 +263,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalPara
         for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-            Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+            defaulttype::Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
             out[verticeIndex] += (getVCenter(in[t->getLine(iline.lineIndex)[0]]) - IP.cross(getVOrientation(in[t->getLine(iline.lineIndex)[0]]))) * iline.weight;
         }
     }
@@ -289,7 +289,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPar
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
             unsigned int I =t->getLine(iline.lineIndex)[0];
 
-            Vec<3,Real> IP = xfrom[I].getOrientation().rotate(iline.position);
+            defaulttype::Vec<3,Real> IP = xfrom[I].getOrientation().rotate(iline.position);
 
             getVCenter(out[I]) += f * iline.weight;
             getVOrientation(out[I]) += IP.cross(f) *  iline.weight;
@@ -343,7 +343,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintPar
                 for (unsigned int lineInfluencedIndex = 0; lineInfluencedIndex < linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
                 {
                     influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
-                    Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+                    defaulttype::Vec<3,Real> IP = xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
                     InDeriv direction;
                     getVCenter(direction) = data * iline.weight;
                     //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());

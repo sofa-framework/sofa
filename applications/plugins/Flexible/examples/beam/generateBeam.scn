@@ -4,12 +4,12 @@
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
 
-  <MeshObjLoader name="mesh" filename="mesh/beam.obj" triangulate="1"/>
-  <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/beam.obj" color="0.5 0.8 0.5 0.6"/>
+  <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>
+  <OglModel template="ExtVec3f" name="Visual" fileMesh="beam.obj" color="0.5 0.8 0.5 0.6"/>
 
             <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.02" padSize="1" rotateImage="false" />
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 	    <ImageViewer template="ImageUC" src="@image" />
-	    <ImageExporter template="ImageUC" src="@image" filename="/home/benjamin/Sofa/applications-dev/plugins/FlexibleDev/examples/mesh/beam.raw"/>
+	    <ImageExporter template="ImageUC" src="@image" filename="beam.mhd"/>
 
 </Node>

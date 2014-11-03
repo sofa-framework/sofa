@@ -39,9 +39,6 @@
     #include <omp.h>
 #endif
 
-using std::cerr;
-using std::endl;
-
 namespace sofa
 {
 
@@ -75,10 +72,6 @@ inline defaulttype::Vec<3,Real>& center(defaulttype::RigidCoord<3,Real>& c)
     return c.getCenter();
 }
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 ShapeMatching<DataTypes>::ShapeMatching()
     : 	  iterations(initData(&iterations, (unsigned int)1, "iterations", "Number of iterations."))
@@ -99,7 +92,7 @@ ShapeMatching<DataTypes>::ShapeMatching()
 template <class DataTypes>
 void ShapeMatching<DataTypes>::init()
 {
-    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     addInput(&fixedPosition0);
     addInput(&fixedPosition);
     addInput(&position);
@@ -233,11 +226,11 @@ void ShapeMatching<DataTypes>::update()
 // Specialization for rigids
 #ifndef SOFA_FLOAT
 template <>
-void ShapeMatching<Rigid3dTypes >::update();
+void ShapeMatching<sofa::defaulttype::Rigid3dTypes >::update();
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void ShapeMatching<Rigid3fTypes >::update();
+void ShapeMatching<sofa::defaulttype::Rigid3fTypes >::update();
 #endif
 
 

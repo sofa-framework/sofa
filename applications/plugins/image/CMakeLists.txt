@@ -1,6 +1,5 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
-
 set(SOURCE_FILES
     initImage.cpp
     ImageContainer.cpp
@@ -17,7 +16,8 @@ set(SOURCE_FILES
     ImageSampler.cpp 
     ImageExporter.cpp 
     ImageDataDisplay.cpp
-    VoronoiToMeshEngine.cpp)
+    VoronoiToMeshEngine.cpp
+)
 
 set(HEADER_FILES
     initImage.h
@@ -39,7 +39,8 @@ set(HEADER_FILES
     ImageAlgorithms.h 
     Containers.h 
     ImageDataDisplay.h
-    VoronoiToMeshEngine.h)
+    VoronoiToMeshEngine.h
+)
 
 set(README_FILES image.txt)
 

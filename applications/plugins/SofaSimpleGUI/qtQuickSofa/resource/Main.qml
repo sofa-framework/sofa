@@ -3,10 +3,9 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.0
 
-import Window 1.0
 import "gui"
 
-Window {
+ApplicationWindow {
     id: window
 
     title: "QtQuick SofaViewer"
@@ -14,18 +13,61 @@ Window {
     height: 720    
     property string filePath: ""
 
+    menuBar: MenuBar {
+        Menu {
+            title: "&File"
+            visible: true
+
+            MenuItem { action: openAction }
+            MenuItem { action: reloadAction }
+            MenuItem { action: saveAction }
+            MenuItem { action: saveAsAction }
+            MenuSeparator { }
+            MenuItem {
+                text: "Exit"
+                shortcut: "Ctrl+Q"
+                onTriggered: close()
+            }
+        }
+        Menu {
+            title: "&Edit"
+            //MenuItem { action: cutAction }
+            //MenuItem { action: copyAction }
+            //MenuItem { action: pasteAction }
+            MenuSeparator { }
+            MenuItem {
+                text: "Empty"
+                enabled: false
+            }
+        }
+        Menu {
+            title: "&View"
+            MenuItem {
+                text: "Empty"
+                enabled: false
+            }
+        }
+        Menu {
+            title: "&Help"
+            MenuItem {
+                text: "Empty"
+                enabled: false
+            }
+        }
+    }
+
 	// sofa scene
-	Scene {
+    Scene {
 		id: scene
-	}
+    }
 
     // dialog
     FileDialog {
         id: openDialog
         nameFilters: ["Scene files (*.xml *.scn *.pscn *.py *.simu *)"]
         onAccepted: {
-            filePath = fileUrl
-            Sofa.open(filePath)
+            filePath = fileUrl;
+            scene.open(fileUrl);
         }
     }
 
@@ -34,8 +76,8 @@ Window {
         selectExisting: false
         nameFilters: ["Scene files (*.scn)"]
         onAccepted: {
-            filePath = fileUrl
-            Sofa.save(filePath)
+            filePath = fileUrl;
+            scene.save(filePath);
         }
     }
 
@@ -45,7 +87,7 @@ Window {
         id: openAction
         text: "&Open..."
         shortcut: "Ctrl+O"
-        onTriggered: openDialog.open()
+        onTriggered: openDialog.open();
         tooltip: "Open a Sofa Scene"
     }
 
@@ -53,7 +95,7 @@ Window {
         id: reloadAction
         text: "&Reload"
         shortcut: "Ctrl+R"
-        onTriggered: Sofa.reload()
+        onTriggered: scene.reload();
         tooltip: "Reload the Sofa Scene"
     }
 
@@ -61,23 +103,15 @@ Window {
         id: saveAction
         text: "&Save"
         shortcut: "Ctrl+S"
-        onTriggered: if(0 == filePath.length) saveDialog.open(); else Sofa.save(filePath)
+        onTriggered: if(0 == filePath.length) saveDialog.open(); else scene.save(filePath);
         tooltip: "Save the Sofa Scene"
     }
 
     Action {
         id: saveAsAction
         text: "&Save As..."
-        onTriggered: saveDialog.open()
+        onTriggered: saveDialog.open();
         tooltip: "Save the Sofa Scene at a specific location"
-    }
-
-    Action {
-        id: saveScreenshot
-        text: "Save screenshot"
-        shortcut: "Ctrl+P"
-        onTriggered: window.saveScreenshot()
-        tooltip: "Take a screenshot of the window and save it next to the application executable"
     }
 
     // content
@@ -85,12 +119,6 @@ Window {
     ColumnLayout {
         id: mainLayout
         anchors.fill: parent
-
-        Header {
-            id: header
-            Layout.fillWidth: true
-            height: 30
-        }
 
         RowLayout {
             Layout.fillWidth: true
@@ -111,7 +139,7 @@ Window {
                 Layout.fillHeight: true
                 width: 70
 
-				scene: scene
+                scene: scene
             }
         }
 

@@ -45,10 +45,6 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Event.h>
 
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-
 namespace sofa
 {
 

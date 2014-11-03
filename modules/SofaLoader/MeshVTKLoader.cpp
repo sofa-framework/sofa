@@ -145,7 +145,7 @@ bool MeshVTKLoader::setInputsMesh()
         }
         else
         {
-            std::cout << "Type of coordinate (X,Y,Z) not supported" << std::endl;
+            serr << "Type of coordinate (X,Y,Z) not supported" << sendl;
             return false;
         }
     }
@@ -233,7 +233,7 @@ bool MeshVTKLoader::setInputsMesh()
             else
             {
                 nv = inFP[i]; ++i;
-            }           
+            }
 
             switch (t)
             {
@@ -392,7 +392,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     }
     else
     {
-        std::cout << "Error: Unrecognized format in file '" << filename << "'." << std::endl;
+        serr << "Error: Unrecognized format in file '" << filename << "'." << sendl;
         inVTKFile.close();
         return false;
     }
@@ -416,11 +416,10 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     sout << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header << sendl;
     //VTKDataIO<double>* inputPointsDouble = NULL;
     VTKDataIO<int>* inputPolygonsInt = NULL;
-    VTKDataIO<int>* inputCellsInt = NULL;    
+    VTKDataIO<int>* inputCellsInt = NULL;
     VTKDataIO<int>* inputCellTypesInt = NULL;
     inputCellOffsets = NULL;
 
-    int /*nbp = 0, */nbf = 0;
     while(!inVTKFile.eof())
     {
         std::getline(inVTKFile, line);
@@ -433,7 +432,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             int n;
             std::string typestr;
             ln >> n >> typestr;
-            std::cout << "Found " << n << " " << typestr << " points" << std::endl;
+            sout << "Found " << n << " " << typestr << " points" << sendl;
             inputPoints = newVTKDataIO(typestr);
             //inputPoints = new VTKDataIO<double>;
             if (inputPoints == NULL) return false;
@@ -444,31 +443,30 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
         {
             int n, ni;
             ln >> n >> ni;
-            std::cout << "Found " << n << " polygons ( " << (ni - 3*n) << " triangles )" << std::endl;
+            sout << "Found " << n << " polygons ( " << (ni - 3*n) << " triangles )" << sendl;
             inputPolygons = new VTKDataIO<int>;
             inputPolygonsInt = dynamic_cast<VTKDataIO<int>* > (inputPolygons);
             if (!inputPolygons->read(inVTKFile, ni, binary)) return false;
-            nbf = ni - 3*n;
         }
         else if (kw == "CELLS")
         {
             int n, ni;
             ln >> n >> ni;
-            std::cout << "Found " << n << " cells" << std::endl;
+            sout << "Found " << n << " cells" << sendl;
             inputCells = new VTKDataIO<int>;
             inputCellsInt = dynamic_cast<VTKDataIO<int>* > (inputCells);
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
-            numberOfCells = nbf = n;
+            numberOfCells = n;
         }
          else if (kw == "LINES")
         {
             int n, ni;
             ln >> n >> ni;
-            std::cout << "Found " << n << " lines" << std::endl;
+            sout << "Found " << n << " lines" << sendl;
             inputCells = new VTKDataIO<int>;
             inputCellsInt = dynamic_cast<VTKDataIO<int>* > (inputCellsInt);
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
-            numberOfCells = nbf = n;
+            numberOfCells = n;
 
             inputCellTypes = new VTKDataIO<int>;
             inputCellTypesInt = dynamic_cast<VTKDataIO<int>* > (inputCellTypes);
@@ -495,14 +493,14 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             std::string dataStructure, dataName, dataType;
             lnData >> dataStructure;
 
-            std::cout << "Data structure: " << dataStructure << std::endl;
+            sout << "Data structure: " << dataStructure << sendl;
 
             if (dataStructure == "SCALARS") {
                 size_t sz = inputCellDataVector.size();
 
                 inputCellDataVector.resize(sz+1);
                 lnData >> dataName;
-                lnData >> dataType;                                
+                lnData >> dataType;
 
                 inputCellDataVector[sz] = newVTKDataIO(dataType);
                 if (inputCellDataVector[sz] == NULL) return false;
@@ -511,7 +509,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
 
                 if (!inputCellDataVector[sz]->read(inVTKFile,n, binary)) return false;
                 inputCellDataVector[sz]->name = dataName;
-                std::cout << "Read cell data: " << inputCellDataVector[sz]->dataSize << std::endl;
+                sout << "Read cell data: " << inputCellDataVector[sz]->dataSize << sendl;
             }
             else if (dataStructure == "FIELD") {
                 std::getline(inVTKFile,line);
@@ -524,7 +522,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
                 if (dataStructure == "Topology") {
                     int perCell, cells;
                     lnData >> perCell >> cells;
-                    std::cout << "Reading topology for lines: "<< perCell << " " << cells << std::endl;
+                    sout << "Reading topology for lines: "<< perCell << " " << cells << sendl;
 
                     size_t sz = inputCellDataVector.size();
 
@@ -543,7 +541,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
         else if (!kw.empty())
             std::cerr << "WARNING: Unknown keyword " << kw << std::endl;
 
-        std::cout << "LNG: " << inputCellDataVector.size() << std::endl;
+        sout << "LNG: " << inputCellDataVector.size() << sendl;
 
         if (inputPoints && inputPolygons) break; // already found the mesh description, skip the rest
         if (inputPoints && inputCells && inputCellTypes && inputCellDataVector.size() > 0) break; // already found the mesh description, skip the rest

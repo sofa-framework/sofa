@@ -54,6 +54,10 @@ BVHJoint::BVHJoint(const char *_name, bool _endSite, BVHJoint *_parent)
     offset = NULL;
     channels = NULL;
     motion = NULL;
+    parent = NULL ;
+
+    if(_parent)
+        parent = _parent ;
 
     id = lastId++;
 

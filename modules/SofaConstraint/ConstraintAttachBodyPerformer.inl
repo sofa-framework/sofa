@@ -185,16 +185,16 @@ bool ConstraintAttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& p
 //    helper::ReadAccessor<Data <VecCoord> > x1 = *mstate1->read(core::VecCoordId::position());
 //    helper::ReadAccessor<Data <VecCoord> > x2 = *mstate2->read(core::VecCoordId::position());
 
-    Vec3d point1;
-    Vec3d point2;
+    defaulttype::Vec3d point1;
+    defaulttype::Vec3d point2;
 
     using constraintset::BilateralInteractionConstraint;
 
-    m_constraint = sofa::core::objectmodel::New<constraintset::BilateralInteractionConstraint<Vec3Types> >(mstate1, mstate2);
-    BilateralInteractionConstraint< DataTypes >* bconstraint = static_cast< BilateralInteractionConstraint< Vec3Types >* >(m_constraint.get());
+    m_constraint = sofa::core::objectmodel::New<constraintset::BilateralInteractionConstraint<sofa::defaulttype::Vec3Types> >(mstate1, mstate2);
+    BilateralInteractionConstraint< DataTypes >* bconstraint = static_cast< BilateralInteractionConstraint< sofa::defaulttype::Vec3Types >* >(m_constraint.get());
     bconstraint->setName("Constraint-Mouse-Contact");
 
-    Vec3d normal = point1-point2;
+    defaulttype::Vec3d normal = point1-point2;
 
     bconstraint->addContact(normal, point1, point2, (point2-point1).norm(), 0, index, point2, point1);
 

@@ -14,17 +14,17 @@
 	<MeshObjLoader name="MeshLoader" filename="mesh/ball.obj"/>
 	<Mesh src="@MeshLoader" /> 
 	<MechanicalObject  template="DefGradient331" name="F"  showObject="0" showObjectScale="0.05" />
-    	<LinearMapping template="Mapping&lt;Vec3d,DefGradient331&gt;"  />
+    	<LinearMapping template="Vec3d,DefGradient331"  />
 
 	    <Node 	name="Child"   >
 		<MechanicalObject  template="Strain331" name="E"  showObject="1" showObjectScale="0.05" />
-	    	<GreenStrainMapping template="Mapping&lt;DefGradient331,Strain331&gt;"  />
+	    	<GreenStrainMapping template="DefGradient331,Strain331"  />
 	    </Node>
 
     </Node>
 
     <Node 	name="visual"   >
 	<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/ball.obj"/>
-    	<LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+    	<LinearMapping template="Vec3d,ExtVec3f"/>
     </Node>
 </Node>

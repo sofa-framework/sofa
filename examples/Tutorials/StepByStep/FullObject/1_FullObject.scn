@@ -7,7 +7,7 @@
     <DefaultContactManager name="Response" response="default" />
     <Node name="Object" gravity="0 -9.81 0">
         <EulerImplicitSolver name="Implicit Euler Solver" />
-        <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
+        <CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Vec3d" name="Particles" restScale="1" position="0 0 0" />
         <UniformMass template="Vec3d" name="Mass" />
         <PlaneForceField template="Vec3d" name="Plane" normal="0 0 1" d="-10" />

@@ -44,10 +44,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 TextureInterpolation<DataTypes>::TextureInterpolation()
     : _inputField (initData (&_inputField, "input_states", "input array of state values."))
@@ -270,8 +266,8 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
 
     if (drawPotentiels.getValue())
     {
-        Mat<4,4, GLfloat> modelviewM;
-        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
+        sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
 
         const VecCoord& realPotentiels = _inputField.getValue();
         const VecCoord3D& coords = _inputCoords.getValue();
@@ -337,7 +333,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* )
             glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp(coords[i][0], coords[i][1], coords[i][2]);
+            sofa::defaulttype::Vec3d temp(coords[i][0], coords[i][1], coords[i][2]);
             temp = modelviewM.transform(temp);
 
             //glLoadMatrixf(modelview);

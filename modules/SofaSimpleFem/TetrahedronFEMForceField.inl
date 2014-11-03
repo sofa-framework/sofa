@@ -48,12 +48,6 @@ namespace forcefield
 {
 
 
-using std::set;
-
-
-using namespace sofa::defaulttype;
-
-
 
 //////////////////////////////////////////////////////////////////////
 ////////////////////  basic computation methods  /////////////////////
@@ -63,7 +57,7 @@ template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d )
 {
     // shape functions matrix
-    Mat<2, 3, Real> M;
+    defaulttype::Mat<2, 3, Real> M;
 
     M[0][0] = b[1];
     M[0][1] = c[1];
@@ -141,7 +135,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeStrainDisplacement( Stra
 }
 
 template<class DataTypes>
-typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<DataTypes>::peudo_determinant_for_coef ( const Mat<2, 3, Real>&  M )
+typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<DataTypes>::peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M )
 {
     return  M[0][1]*M[1][2] - M[1][1]*M[0][2] -  M[0][0]*M[1][2] + M[1][0]*M[0][2] + M[0][0]*M[1][1] - M[1][0]*M[0][1];
 }
@@ -149,13 +143,13 @@ typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<Data
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot )
 {
-    MatNoInit<6, 12, Real> Jt;
+    defaulttype::MatNoInit<6, 12, Real> Jt;
     Jt.transpose( J );
 
-    MatNoInit<12, 12, Real> JKJt;
+    defaulttype::MatNoInit<12, 12, Real> JKJt;
     JKJt = J*K*Jt;
 
-    MatNoInit<12, 12, Real> RR,RRt;
+    defaulttype::MatNoInit<12, 12, Real> RR,RRt;
     RR.clear();
     RRt.clear();
     for(int i=0; i<3; ++i)
@@ -308,6 +302,8 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     Coord C = initialPoints[d] - initialPoints[a];
     Coord AB = cross(A, B);
     Real volumes6 = fabs( dot( AB, C ) );
+
+    m_restVolume += volumes6/6;
     if (volumes6<0)
     {
         serr << "ERROR: Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
@@ -341,6 +337,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiff
     Coord C = (X0)[d] - (X0)[a];
     Coord AB = cross(A, B);
     Real volumes6 = fabs( dot( AB, C ) );
+    m_restVolume += volumes6/6;
     if (volumes6<0)
     {
         serr << "ERROR: Negative volume for tetra"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
@@ -517,7 +514,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
     J[11][0]  J[11][1]            J[11][3]
     */
 
-    VecNoInit<6,Real> JtD;
+    defaulttype::VecNoInit<6,Real> JtD;
     JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
             J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
             J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
@@ -545,7 +542,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
 //         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<sendl;
 //         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<sendl;
 
-    VecNoInit<6,Real> KJtD;
+    defaulttype::VecNoInit<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
             /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
     KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
@@ -807,7 +804,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
         return;
     }
 
-    BaseMeshTopology::TetrahedraAroundVertex liste_tetra = _mesh->getTetrahedraAroundVertex(nodeIdx);
+    core::topology::BaseMeshTopology::TetrahedraAroundVertex liste_tetra = _mesh->getTetrahedraAroundVertex(nodeIdx);
 
     R[0][0] = 0.0 ; R[0][1] = 0.0 ; R[0][2] = 0.0 ;
     R[1][0] = 0.0 ; R[1][1] = 0.0 ;  R[1][2] = 0.0 ;
@@ -1169,9 +1166,9 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
     A[1] = p[index[2]]-p[index[0]];
     A[2] = p[index[3]]-p[index[0]];
 
-    Mat<3,3,Real> R_0_2;
+    defaulttype::Mat<3,3,Real> R_0_2;
 
-    Mat<3,3,Real> F = A * _initialTransformation[elementIndex];
+    defaulttype::Mat<3,3,Real> F = A * _initialTransformation[elementIndex];
 
     if( determinant(F) < 1e-6 ) // inverted or too flat element -> SVD decomposition + handle degenerated cases
     {
@@ -1500,6 +1497,8 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
         updateVonMisesStress = true;
     }
 
+    m_restVolume = 0;
+
     unsigned int i;
     typename VecElement::const_iterator it;
     switch(method)
@@ -1766,8 +1765,8 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
 #ifdef SIMPLEFEM_COLORMAP
     if (_showVonMisesStressPerNode.getValue()) {
-        std::vector<Vec4f> nodeColors(x.size());
-        std::vector<Vector3> pts(x.size());
+        std::vector<defaulttype::Vec4f> nodeColors(x.size());
+        std::vector<defaulttype::Vector3> pts(x.size());
         visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVMN, maxVMN);
         for (size_t nd = 0; nd < x.size(); nd++) {
             pts[nd] = x[nd];
@@ -1779,7 +1778,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
     if (edges)
     {
-        std::vector< Vector3 > points[3];
+        std::vector< defaulttype::Vector3 > points[3];
         typename VecElement::const_iterator it;
         int i;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
@@ -1815,9 +1814,9 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             {
                 float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
                 float fac = col * 0.5f;
-                Vec<4,float> color2 = Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
-                Vec<4,float> color3 = Vec<4,float>(col      , 1.0f - fac , 1.0f-col,1.0f);
-                Vec<4,float> color4 = Vec<4,float>(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
+                defaulttype::Vec<4,float> color2 = defaulttype::Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
+                defaulttype::Vec<4,float> color3 = defaulttype::Vec<4,float>(col      , 1.0f - fac , 1.0f-col,1.0f);
+                defaulttype::Vec<4,float> color4 = defaulttype::Vec<4,float>(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
 
                 vparams->drawTool()->drawLines(points[0],1,color2 );
                 vparams->drawTool()->drawLines(points[1],1,color3 );
@@ -1855,15 +1854,15 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 #endif
         )
         {
-            vparams->drawTool()->drawLines(points[0], 1, Vec<4,float>(0.0,0.5,1.0,1.0));
-            vparams->drawTool()->drawLines(points[1], 1, Vec<4,float>(0.0,1.0,1.0,1.0));
-            vparams->drawTool()->drawLines(points[2], 1, Vec<4,float>(0.5,1.0,1.0,1.0));
+            vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
+            vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
         }
     }
     else
     {
 
-        std::vector< Vector3 > points[4];
+        std::vector< defaulttype::Vector3 > points[4];
         typename VecElement::const_iterator it;
         int i;
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
@@ -1902,10 +1901,10 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             {
                 float col = (float)((youngModulus[i]-minYoung) / (maxYoung-minYoung));
                 float fac = col * 0.5f;
-                Vec<4,float> color1 = Vec<4,float>(col      , 0.0f - fac , 1.0f-col,1.0f);
-                Vec<4,float> color2 = Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
-                Vec<4,float> color3 = Vec<4,float>(col      , 1.0f - fac , 1.0f-col,1.0f);
-                Vec<4,float> color4 = Vec<4,float>(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
+                defaulttype::Vec<4,float> color1 = defaulttype::Vec<4,float>(col      , 0.0f - fac , 1.0f-col,1.0f);
+                defaulttype::Vec<4,float> color2 = defaulttype::Vec<4,float>(col      , 0.5f - fac , 1.0f-col,1.0f);
+                defaulttype::Vec<4,float> color3 = defaulttype::Vec<4,float>(col      , 1.0f - fac , 1.0f-col,1.0f);
+                defaulttype::Vec<4,float> color4 = defaulttype::Vec<4,float>(col+0.5f , 1.0f - fac , 1.0f-col,1.0f);
 
                 vparams->drawTool()->drawTriangles(points[0],color1 );
                 vparams->drawTool()->drawTriangles(points[1],color2 );
@@ -1917,7 +1916,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 #ifdef SIMPLEFEM_COLORMAP
                 if (_computeVonMisesStress.getValue() > 0) {
                     visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
-                    Vec4f col = evalColor(vM[i]); //*vM[i]);
+                    defaulttype::Vec4f col = evalColor(vM[i]); //*vM[i]);
 
                     col[3] = 1.0f;
                     vparams->drawTool()->drawTriangles(points[0],col);
@@ -1929,7 +1928,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 
                     /*visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVMN, maxVMN);
                     std::vector<Vec4f> col(3);
-                    std::vector< Vector3 > normals;
+                    std::vector< defaulttype::Vector3 > normals;
                     normals.clear();
                     col[0] = evalColor(vMN[a]);
                     col[1] = evalColor(vMN[b]);
@@ -1948,10 +1947,10 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
 #endif
         )
         {
-            vparams->drawTool()->drawTriangles(points[0], Vec<4,float>(0.0,0.0,1.0,1.0));
-            vparams->drawTool()->drawTriangles(points[1], Vec<4,float>(0.0,0.5,1.0,1.0));
-            vparams->drawTool()->drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
-            vparams->drawTool()->drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
+            vparams->drawTool()->drawTriangles(points[0], defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
+            vparams->drawTool()->drawTriangles(points[1], defaulttype::Vec<4,float>(0.0,0.5,1.0,1.0));
+            vparams->drawTool()->drawTriangles(points[2], defaulttype::Vec<4,float>(0.0,1.0,1.0,1.0));
+            vparams->drawTool()->drawTriangles(points[3], defaulttype::Vec<4,float>(0.5,1.0,1.0,1.0));
         }
 
     }
@@ -1960,7 +1959,7 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
     if (vparams->displayFlags().getShowNormals())
     {
 
-        std::vector< Vector3 > points[3];
+        std::vector< defaulttype::Vector3 > points[3];
 
         for(unsigned ii = 0; ii<  x.size() ; ii++)
         {
@@ -1989,15 +1988,25 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             points[2].push_back(b);
         }
 
-        vparams->drawTool()->drawLines(points[0], 5, Vec<4,float>(1,0,0,1));
-        vparams->drawTool()->drawLines(points[1], 5, Vec<4,float>(0,1,0,1));
-        vparams->drawTool()->drawLines(points[2], 5, Vec<4,float>(0,0,1,1));
+        vparams->drawTool()->drawLines(points[0], 5, defaulttype::Vec<4,float>(1,0,0,1));
+        vparams->drawTool()->drawLines(points[1], 5, defaulttype::Vec<4,float>(0,1,0,1));
+        vparams->drawTool()->drawLines(points[2], 5, defaulttype::Vec<4,float>(0,0,1,1));
 
     }
 
     //glDisable(GL_BLEND);
     //glDepthMask(1);
 }
+
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+{
+    sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
+    if (r)
+        addKToMatrix(r.matrix, mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()), r.offset);
+    else serr<<"ERROR("<<getClassName()<<"): addKToMatrix found no valid matrix accessor." << sendl;
+}
+
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
@@ -2348,7 +2357,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     helper::WriteAccessor<Data<helper::vector<Real> > > vME =  _vonMisesPerElement;
     for(it = _indexedElements->begin(), el = 0 ; it != _indexedElements->end() ; ++it, ++el)
     {
-        Vec<6,Real> vStrain;
+        defaulttype::Vec<6,Real> vStrain;
         Mat33 gradU;
 
         if (_computeVonMisesStress.getValue() == 2) {
@@ -2497,7 +2506,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     /// compute the values of vonMises stress in nodes
     for(size_t dof = 0; dof < dofs.size(); dof++) {
-        BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = _mesh->getTetrahedraAroundVertex(dof);
+        core::topology::BaseMeshTopology::TetrahedraAroundVertex tetrasAroundDOF = _mesh->getTetrahedraAroundVertex(dof);
 
         vMN[dof] = 0.0;
         for (size_t at = 0; at < tetrasAroundDOF.size(); at++)
@@ -2508,7 +2517,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     updateVonMisesStress=false;
 
-    helper::WriteAccessor<Data<helper::vector<Vec3f> > > vonMisesStressColors(_vonMisesStressColors);
+    helper::WriteAccessor<Data<helper::vector<defaulttype::Vec3f> > > vonMisesStressColors(_vonMisesStressColors);
     vonMisesStressColors.clear();
     helper::vector<unsigned int> vonMisesStressColorsCoeff;
 
@@ -2525,16 +2534,16 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 #ifdef SIMPLEFEM_COLORMAP
     //std::cout << "Min VMs: " << minVM << "   max: " << maxVM << std::endl;
     maxVM*=_showStressAlpha.getValue();
-    int i;
     vonMisesStressColors.resize(_mesh->getNbPoints());
     vonMisesStressColorsCoeff.resize(_mesh->getNbPoints());
     std::fill(vonMisesStressColorsCoeff.begin(), vonMisesStressColorsCoeff.end(), 0);
 #ifndef SOFA_NO_OPENGL
-    for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
+    unsigned int i = 0;
+    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
     {
         visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
-        Vec4f col = evalColor(vME[i]); //*vM[i]);
-        Vec3f col3(col[0], col[1], col[2]);
+        defaulttype::Vec4f col = evalColor(vME[i]); //*vM[i]);
+        defaulttype::Vec3f col3(col[0], col[1], col[2]);
         Tetrahedron tetra = (*_indexedElements)[i];//_mesh->getTetra(i);
 
         for(unsigned int j=0 ; j<4 ; j++)

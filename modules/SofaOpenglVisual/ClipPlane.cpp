@@ -43,8 +43,8 @@ int ClipPlaneClass = core::RegisterObject("OpenGL Clipping Plane")
 
 
 ClipPlane::ClipPlane()
-    : position(initData(&position, Vector3(0,0,0), "position", "Point crossed by the clipping plane"))
-    , normal(initData(&normal, Vector3(1,0,0), "normal", "Normal of the clipping plane, pointing toward the clipped region"))
+    : position(initData(&position, sofa::defaulttype::Vector3(0,0,0), "position", "Point crossed by the clipping plane"))
+    , normal(initData(&normal, sofa::defaulttype::Vector3(1,0,0), "normal", "Normal of the clipping plane, pointing toward the clipped region"))
     , id(initData(&id, 0, "id", "Clipping plane OpenGL ID"))
     , active(initData(&active,true,"active","Control whether the clipping plane should be applied or not"))
 {
@@ -70,8 +70,8 @@ void ClipPlane::fwdDraw(core::visual::VisualParams*)
     if (active.getValue())
     {
         glGetClipPlane(GL_CLIP_PLANE0+id.getValue(), saveEq);
-        Vector3 p = position.getValue();
-        Vector3 n = normal.getValue();
+        sofa::defaulttype::Vector3 p = position.getValue();
+        sofa::defaulttype::Vector3 n = normal.getValue();
         GLdouble c[4] = { (GLdouble) -n[0], (GLdouble)-n[1], (GLdouble)-n[2], (GLdouble)(p*n) };
         glClipPlane(GL_CLIP_PLANE0+id.getValue(), c);
         if (!wasActive)
@@ -86,8 +86,8 @@ void ClipPlane::fwdDraw(core::visual::VisualParams*)
 	///\todo save clip plane in this class and restore it because PS3 SDK doesn't have glGetClipPlane
 	if (active.getValue())
     {
-        Vector3 p = position.getValue();
-        Vector3 n = normal.getValue();
+        sofa::defaulttype::Vector3 p = position.getValue();
+        sofa::defaulttype::Vector3 n = normal.getValue();
         GLdouble c[4] = { (GLdouble) -n[0], (GLdouble)-n[1], (GLdouble)-n[2], (GLdouble)(p*n) };
         glClipPlanef(GL_CLIP_PLANE0+id.getValue(), c);
         glEnable(GL_CLIP_PLANE0+id.getValue());

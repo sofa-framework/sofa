@@ -49,10 +49,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 TransformPosition<DataTypes>::TransformPosition()
     : f_origin( initData(&f_origin, "origin", "A 3d point on the plane/Center of the scale") )
@@ -71,7 +67,6 @@ TransformPosition<DataTypes>::TransformPosition()
     , f_drawInput(initData(&f_drawInput, false, "drawInput", "Draw input points") )
     , f_drawOutput(initData(&f_drawOutput, false, "drawOutput", "Draw output points") )
     , f_pointSize(initData(&f_pointSize, (Real)1.0, "pointSize", "Point size") )
-    , mstate(NULL), x0(NULL)
 {
     addAlias(&f_inputX, "inputPosition");
     addAlias(&f_outputX, "outputPosition");
@@ -234,7 +229,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
         }
 
         if (!found) serr << "Transformation not found in " << fname << sendl;
-        f_affineMatrix.setValue(mat);
+        f_affineMatrix.setValue(mat,true);
     }
     else
     {
@@ -301,7 +296,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
                 {
                     tr[i] = mat[i][3] = atof(vLine[i].c_str());
                 }
-                f_translation.setValue(tr);
+                f_translation.setValue(tr,true);
 
             }
             else
@@ -312,7 +307,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             }
 
         }
-        f_affineMatrix.setValue(mat);
+        f_affineMatrix.setValue(mat,true);
     }
     else
     {
@@ -374,7 +369,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
                 mat[nbLines-1][i] = atof(vLine[i].c_str());
         }
-        f_affineMatrix.setValue(mat);
+        f_affineMatrix.setValue(mat,true);
 
     }
     else
@@ -445,7 +440,7 @@ void TransformPosition<DataTypes>::update()
         break;
     case ROTATION :
     {
-        Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
+        sofa::defaulttype::Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {
@@ -455,7 +450,7 @@ void TransformPosition<DataTypes>::update()
     break;
     case SCALE_ROTATION_TRANSLATION :
     {
-        Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
+        sofa::defaulttype::Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {
@@ -487,19 +482,19 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
     if (f_drawInput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
-        std::vector<Vector3> points;
+        std::vector<sofa::defaulttype::Vector3> points;
         for (unsigned int i=0; i < in.size(); i++)
             points.push_back(in[i]);
-        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), Vec4f(0.8, 0.2, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.8, 0.2, 0.2, 1.0));
     }
 
     if (f_drawOutput.getValue())
     {
         helper::ReadAccessor< Data<VecCoord> > out = f_outputX;
-        std::vector<Vector3> points;
+        std::vector<sofa::defaulttype::Vector3> points;
         for (unsigned int i=0; i < out.size(); i++)
             points.push_back(out[i]);
-        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), Vec4f(0.2, 0.8, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), sofa::defaulttype::Vec4f(0.2, 0.8, 0.2, 1.0));
     }
 }
 

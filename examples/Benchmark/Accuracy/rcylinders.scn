@@ -2,8 +2,8 @@
 <!-- Cylindrical beam under gravity : read state scenes -->
 <!-- Date : 07/24/08 -->
 
-<Node name="root" dt="100" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
-
+<Node name="root" dt="100">
+  <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings showForceFields" />
   <Node name="Reference">
      <CoordinateSystem origin="-0.20 0 0" />
      <include href="cylinder_PhantomSolution.scn" />

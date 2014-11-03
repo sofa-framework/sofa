@@ -38,10 +38,6 @@ namespace component
 namespace engine
 {
 
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace core::objectmodel;
-
 template <class DataTypes>
 MergeMeshes<DataTypes>::MergeMeshes()
     : f_nbMeshes( initData (&f_nbMeshes, (unsigned)2, "nbMeshes", "number of meshes to merge") )
@@ -81,7 +77,7 @@ void MergeMeshes<DataTypes>::createInputMeshesData(int nb)
     createInputDataVector(n, vf_tetrahedra, "tetrahedra", "input tetrahedra for mesh ");
     createInputDataVector(n, vf_hexahedra, "hexahedra", "input hexahedra for mesh ");
     if (n != f_nbMeshes.getValue())
-        f_nbMeshes.setValue(n);
+        f_nbMeshes.setValue(n,true);
 }
 
 

@@ -44,8 +44,6 @@ namespace component
 namespace mapping
 {
 
-using namespace sofa::defaulttype;
-
 template <class TIn, class TOut>
 class RigidRigidMapping : public core::Mapping<TIn, TOut>
 {
@@ -69,7 +67,7 @@ public:
     typedef typename Out::Coord::value_type Real;
     enum { N=OutDataTypes::spatial_dimensions };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Vec<N,Real> Vector ;
+    typedef defaulttype::Vec<N,Real> Vector ;
 
 protected:
     Data < OutVecCoord > points;
@@ -145,28 +143,18 @@ protected:
     bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMechanicalMappings(); }
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Rigid2dTypes;
-using sofa::defaulttype::Rigid3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Rigid2fTypes;
-using sofa::defaulttype::Rigid3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_RIGID_API RigidRigidMapping< Rigid3dTypes, Rigid3dTypes >;
+extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RigidRigidMapping< Rigid3fTypes, Rigid3fTypes >;
+extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_RIGID_API RigidRigidMapping< Rigid3dTypes, Rigid3fTypes >;
-extern template class SOFA_RIGID_API RigidRigidMapping< Rigid3fTypes, Rigid3dTypes >;
+extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
+extern template class SOFA_RIGID_API RigidRigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
 #endif
 #endif
 #endif

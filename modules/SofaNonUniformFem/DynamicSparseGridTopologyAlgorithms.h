@@ -26,6 +26,13 @@
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_H
 
 #include <SofaBaseTopology/HexahedronSetTopologyAlgorithms.h>
+#include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
+#include <SofaNonUniformFem/DynamicSparseGridTopologyModifier.h>
+#include <SofaNonUniformFem/DynamicSparseGridTopologyAlgorithms.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <SofaNonUniformFem/DynamicSparseGridGeometryAlgorithms.h>
+#include <algorithm>
+#include <functional>
 
 namespace sofa
 {

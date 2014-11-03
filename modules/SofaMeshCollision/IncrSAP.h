@@ -154,9 +154,6 @@ public:
     static double tolerance;
 };
 
-
-using namespace sofa::defaulttype;
-
 /**
   *Implementation of incremental sweep and prune. i.e. collision are stored and updated which should speed up
   *the collision detection compared to the DirectSAP.
@@ -230,7 +227,7 @@ private:
 
     Data<bool> bDraw;
 
-    Data< helper::fixed_array<Vector3,2> > box;
+    Data< helper::fixed_array<defaulttype::Vector3,2> > box;
 
     CubeModel::SPtr boxModel;
 

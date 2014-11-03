@@ -15,7 +15,7 @@ An assemblage of all the previous steps altogether
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" />
 
     <FreeMotionAnimationLoop />
-    <LCPConstraintSolver />
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
 
     <Node name="Head">
 	<Node name="Head Visual Model" activated="true">
@@ -87,7 +87,7 @@ An assemblage of all the previous steps altogether
         <UncoupledConstraintCorrection />
         <Node name="VisualModel">
             <OglModel name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="0.8 0.8 0.8 1.0" />
-            <RigidMapping name="MM-&gt;VM mapping" input="@../instrumentState" output="@InstrumentVisualModel" />
+            <RigidMapping name="MM-VM mapping" input="@../instrumentState" output="@InstrumentVisualModel" />
         </Node>
         <Node name="CollisionModel">
             <MeshObjLoader filename="data/mesh/dental_instrument_centerline.obj" name="loader" />
@@ -95,7 +95,7 @@ An assemblage of all the previous steps altogether
             <MechanicalObject src="@loader" name="instrumentCollisionState" translation="0 -2 0" />
             <Line name="instrument" contactStiffness="10" />
             <Point name="instrument" contactStiffness="10" />
-            <RigidMapping name="MM-&gt;CM mapping" input="@../instrumentState" output="@instrumentCollisionState" />
+            <RigidMapping name="MM-CM mapping" input="@../instrumentState" output="@instrumentCollisionState" />
         </Node>
 
     <VectorSpringForceField object1="@InstrControl/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="1000" viscosity="0" />

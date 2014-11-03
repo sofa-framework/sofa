@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#include "stdafx.h"
 #include <plugins/SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -104,7 +104,7 @@ namespace sofa {
             root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         }
 
-        void SetRandomAffineTransform (int seed)
+        void SetRandomAffineTransform (int /*seed*/)
         {
             // Random Matrix 3*3
             for( int j=0; j<testedRotation.nbCols; j++)
@@ -134,7 +134,7 @@ namespace sofa {
             VecCoord finalPos;
             typename AffineMovementConstraint::SPtr affineConstraint  = root->get<AffineMovementConstraint>(root->SearchDown);
             typename MechanicalObject::SPtr dofs = root->get<MechanicalObject>(root->SearchDown);
-            typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
+            typename MechanicalObject::ReadVecCoord x0 = dofs->readPositions();
             affineConstraint->getFinalPositions( finalPos,*dofs->write(core::VecCoordId::position()) );
             
             // Set random rotation and translation for affine constraint
@@ -182,11 +182,11 @@ namespace sofa {
             bool succeed=true;
             for(size_t i=0; i<finalPos.size(); i++ )
             {
-                if((finalPos[i]-x[i]).norm()>diffMaxBetweenSimulatedAndTheoreticalPosition)
+                if((finalPos[i]-x0[i]).norm()>diffMaxBetweenSimulatedAndTheoreticalPosition)
                 {   
                     succeed = false;
-                    ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl 
-                        << "difference = " <<(finalPos[i]-x[i]).norm() << std::endl;
+                    ADD_FAILURE() << "final Position of point " << i << " is wrong: " << x0[i] << std::endl <<"the expected Position is " << finalPos[i] << std::endl
+                        << "difference = " <<(finalPos[i]-x0[i]).norm() << std::endl;
                 }
             }
             return succeed;

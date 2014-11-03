@@ -8,9 +8,9 @@ import os
 def datatostr(component,data):
 	return str(component.findData(data).value).replace('[', '').replace("]", '').replace(",", ' ')
 
-def affineDatatostr(component,data):
+def affineDatatostr(data):
 	L = ""
-	for it in component.findData(data).value :
+	for it in data :
 		for i in xrange(3):
 			L = L+ str(it[i])+" "
 		L = L+ "["
@@ -20,18 +20,31 @@ def affineDatatostr(component,data):
 	return L
 
 
+
+
 ##   Write state of an 'affine' mechanicalObject in a python file 'filename'
 # 'loadDofs(node)' function from this file allows to recreate the MechanicalObject
 def export_AffineFrames(mechanicalObject, filename):
 	f = open(filename, 'w')
 	f.write("def loadDofs(node):\n\tcomponent=node.createObject('MechanicalObject', template='Affine',name='"+mechanicalObject.name+"'")
 	f.write(", showObject='"+datatostr(mechanicalObject,'showObject')+"', showObjectScale='"+datatostr(mechanicalObject,'showObjectScale')+"'")
-	f.write(", rest_position='"+affineDatatostr(mechanicalObject,'rest_position')+"'")
-	f.write(", position='"+affineDatatostr(mechanicalObject,'position')+"'")
+	f.write(", rest_position='"+affineDatatostr(mechanicalObject.findData('rest_position').value)+"'")
+	f.write(", position='"+affineDatatostr(mechanicalObject.findData('position').value)+"'")
 	f.write(")\n\treturn component\n")
 	f.close()
 	return 0
 
+##   Write state of an 'affine' mechanicalObject in a python file 'filename'
+# 'loadDofs(node)' function from this file allows to recreate the MechanicalObject
+def export_RigidFrames(mechanicalObject, filename):
+	f = open(filename, 'w')
+	f.write("def loadDofs(node):\n\tcomponent=node.createObject('MechanicalObject', template='Rigid',name='"+mechanicalObject.name+"'")
+	f.write(", showObject='"+datatostr(mechanicalObject,'showObject')+"', showObjectScale='"+datatostr(mechanicalObject,'showObjectScale')+"'")
+	f.write(", rest_position='"+datatostr(mechanicalObject,'rest_position')+"'")
+	f.write(", position='"+datatostr(mechanicalObject,'position')+"'")
+	f.write(")\n\treturn component\n")
+	f.close()
+	return 0
 
 ##   Write state of a 'GaussPointSampler' in a python file 'filename'
 # 'loadGPs(node)' function from this file allows to create a GaussPointContainer with similar points

@@ -248,7 +248,6 @@ core::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
 core::visual::Shader* BaseContext::getShader() const
 {
     return this->get<sofa::core::visual::Shader>();
-    return NULL;
 }
 
 /// Propagate an event
@@ -257,7 +256,7 @@ void BaseContext::propagateEvent( const core::ExecParams* /* PARAMS FIRST */, Ev
     serr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<sendl;
 }
 
-void BaseContext::executeVisitor( simulation::Visitor* )
+void BaseContext::executeVisitor(simulation::Visitor*, bool)
 {
     serr<<"WARNING !!! BaseContext::executeVisitor not overloaded, does nothing"<<sendl;
     //assert(false);

@@ -43,7 +43,6 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
 
 template<class DataTypes>
 class TCapsuleModel;
@@ -142,7 +141,7 @@ public:
     //Returns the point1-point2 normalized vector
     Coord axis(int index)const;
 
-    Quaternion orientation(int index)const;
+    sofa::defaulttype::Quaternion orientation(int index)const;
 
     int point1Index(int index)const;
 
@@ -201,8 +200,8 @@ inline TCapsule<DataTypes>::TCapsule(const core::CollisionElementIterator& i)
 }
 
 
-typedef TCapsuleModel<Vec3Types> CapsuleModel;
-typedef TCapsule<Vec3Types> Capsule;
+typedef TCapsuleModel<sofa::defaulttype::Vec3Types> CapsuleModel;
+typedef TCapsule<sofa::defaulttype::Vec3Types> Capsule;
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
 #ifndef SOFA_FLOAT

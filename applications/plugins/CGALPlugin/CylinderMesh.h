@@ -95,16 +95,16 @@ public:
     }
 
     //Inputs
-    Data<double> m_diameter;
-    Data<double> m_length;
-    Data<int> m_number;
-    Data<bool> m_bScale;
-    Data<bool> m_viewPoints;
-    Data<bool> m_viewTetras;
+    sofa::core::objectmodel::Data<double> m_diameter;
+    sofa::core::objectmodel::Data<double> m_length;
+    sofa::core::objectmodel::Data<int> m_number;
+    sofa::core::objectmodel::Data<bool> m_bScale;
+    sofa::core::objectmodel::Data<bool> m_viewPoints;
+    sofa::core::objectmodel::Data<bool> m_viewTetras;
 
     //Outputs
-    Data<VecCoord> m_points;
-    Data<SeqTetrahedra> m_tetras;
+    sofa::core::objectmodel::Data<VecCoord> m_points;
+    sofa::core::objectmodel::Data<SeqTetrahedra> m_tetras;
 
     //Parameters
     Real m_interval;

@@ -89,7 +89,7 @@ protected:
 	CGoGNGLuint m_uniform_planeY;
 
 public:
-    Strings3D(bool withBackground = true, const Geom::Vec3f& bgc = Geom::Vec3f(0.0f, 0.0f, 0.0f), bool with_plane=false);
+	Strings3D(bool withBackground = true, const Geom::Vec3f& bgc = Geom::Vec3f(0.0f, 0.0f, 0.0f), bool with_plane=false);
 
 	~Strings3D();
 

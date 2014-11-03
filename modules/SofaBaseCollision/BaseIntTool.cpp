@@ -5,10 +5,10 @@ namespace sofa{namespace component{namespace collision{
 //template<>
 bool BaseIntTool::testIntersection(Cube &cube1, Cube &cube2,SReal alarmDist)
 {
-    const Vector3& minVect1 = cube1.minVect();
-    const Vector3& minVect2 = cube2.minVect();
-    const Vector3& maxVect1 = cube1.maxVect();
-    const Vector3& maxVect2 = cube2.maxVect();
+    const defaulttype::Vector3& minVect1 = cube1.minVect();
+    const defaulttype::Vector3& minVect2 = cube2.minVect();
+    const defaulttype::Vector3& maxVect1 = cube1.maxVect();
+    const defaulttype::Vector3& maxVect2 = cube2.maxVect();
 
     for (int i = 0; i < 3; i++)
     {

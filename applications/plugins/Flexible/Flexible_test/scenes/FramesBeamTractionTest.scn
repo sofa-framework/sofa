@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0 " dt="1"  >
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="image"/>
+  <DefaultAnimationLoop />
+
+  <Node 	name="Flexible"   >
+    <EulerImplicitSolver />
+    <CGLinearSolver iterations="25" tolerance="1e-10" threshold="1e-10"/>
+
+    <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>
+    <ImageContainer template="ImageUC" name="image" filename="beam.raw" drawBB="false"/>
+    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="8" fixedPosition="0 0 -0.999 0 0 0.999" printLog="false"/>
+    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" showIndices="1"  showIndicesScale="0.0003" />
+    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="6"/>
+
+    <Node 	name="behavior"   >
+      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="100"/>
+      <MechanicalObject template="F332" name="F" />
+      <LinearMapping template="Affine,F332"  />
+
+      <Node 	name="Strain"   >
+        <MechanicalObject  template="E332" name="E"  />
+        <CorotationalStrainMapping template="F332,E332"   method="polar" />
+      </Node>
+    </Node>
+
+    <Node 	name="mass"   >
+      <MechanicalObject position="@../behavior/sampler.position"  />
+
+      <LinearMapping template="Affine,Vec3d"  showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1" />
+    </Node>
+
+    <Node 	name="collision"   >
+      <Mesh name="mesh" src="@../mesh" />
+      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+      <UniformMass totalMass="10" />
+
+      <BoxROI name="boxPressureBottom" template="Vec3d" box="-1 -1 -1.1 1 1 -0.99"   drawBoxes="1" drawSize="20" drawTriangles="1" triangles="@mesh.triangles"/>
+      <SurfacePressureForceField name="bottomFF" min="0 0 -1.1" max="0 0 -0.99" triangleIndices="@boxPressureBottom.triangleIndices" mainDirection="0 0 1"/>
+
+      <BoxROI name="boxPressureUp" template="Vec3d" box="-1 -1 0.99 1 1 1.1 "   drawBoxes="1" drawSize="20" drawTriangles="1" triangles="@mesh.triangles"/>
+      <SurfacePressureForceField name="upFF" min="0 0 0.99" max="0 0 1.1" triangleIndices="@boxPressureUp.triangleIndices" mainDirection="0 0 1"/>
+
+      <LinearMapping template="Affine,Vec3d"/>
+    </Node>
+
+  </Node>
+
+</Node>

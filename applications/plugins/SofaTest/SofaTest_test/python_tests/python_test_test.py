@@ -1,8 +1,5 @@
 import sys
 
-import numpy
-import numpy.linalg
-
 from SofaTest.Macro import *
 
 # arguments are an option in python tests
@@ -23,5 +20,5 @@ def run():
     # a very small value
     e = 1e-8
     ok &= EXPECT_FLOAT_EQ(1.0, 1.0+e, "EXPECT_FLOAT_EQ")
-    ok &= EXPECT_VEC_EQ([1., 2., 3.], [1., 2., 3.], "EXPECT_VEC_EQ")
+    ok &= EXPECT_VEC_EQ([1.+e, 2.-e, 3.], [1., 2., 3.], "EXPECT_VEC_EQ")
     return ok

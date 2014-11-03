@@ -71,7 +71,7 @@ bool MeshTablesSurface<PFP>::importMesh(const std::string& filename, std::vector
         CGoGNout << "TYPE: PLY" << CGoGNendl;
         return importPly(filename, attrNames);
         break;
-/*	case PLYPTM:
+        /*	case PLYPTM:
         CGoGNout << "TYPE: PLYPTM" << CGoGNendl;
         return importPlyPTM(filename, attrNames);
         break;
@@ -100,12 +100,12 @@ bool MeshTablesSurface<PFP>::importMesh(const std::string& filename, std::vector
         return importSTLAscii(filename, attrNames);
         break;
     default:
-    #ifdef WITH_ASSIMP
+#ifdef WITH_ASSIMP
         CGoGNout << "TYPE: ASSIMP" << CGoGNendl;
         return importASSIMP(filename, attrNames);
-    #else
+#else
         CGoGNout << "unsupported file type"<< CGoGNendl;
-    #endif
+#endif
         break;
     }
     return false;
@@ -114,10 +114,10 @@ bool MeshTablesSurface<PFP>::importMesh(const std::string& filename, std::vector
 template<typename PFP>
 bool MeshTablesSurface<PFP>::importTrian(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<typename PFP::VEC3> positions =  m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(positions.name()) ;
 
@@ -181,10 +181,10 @@ bool MeshTablesSurface<PFP>::importTrian(const std::string& filename, std::vecto
 template<typename PFP>
 bool MeshTablesSurface<PFP>::importTrianBinGz(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<typename PFP::VEC3> positions =  m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(positions.name()) ;
 
@@ -251,10 +251,10 @@ bool MeshTablesSurface<PFP>::importTrianBinGz(const std::string& filename, std::
 template<typename PFP>
 bool MeshTablesSurface<PFP>::importOff(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<typename PFP::VEC3> positions = m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions = m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(positions.name()) ;
 
@@ -350,10 +350,10 @@ bool MeshTablesSurface<PFP>::importOff(const std::string& filename, std::vector<
 template<typename PFP>
 bool MeshTablesSurface<PFP>::importVoxellisation(Algo::Surface::Modelisation::Voxellisation& voxellisation, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<typename PFP::VEC3> positions = m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions = m_map.template getAttribute<VEC3, VERTEX>("position") ;
 
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX>("position") ;
 
     attrNames.push_back(positions.name()) ;
 
@@ -394,11 +394,11 @@ bool MeshTablesSurface<PFP>::importVoxellisation(Algo::Surface::Modelisation::Vo
 template<typename PFP>
 bool MeshTablesSurface<PFP>::importMeshBin(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<typename PFP::VEC3> positions = m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions = m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
     if (!positions.isValid())
     {
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
     }
 
     attrNames.push_back(positions.name()) ;
@@ -465,10 +465,10 @@ bool MeshTablesSurface<PFP>::importMeshBin(const std::string& filename, std::vec
 template <typename PFP>
 bool MeshTablesSurface<PFP>::importObj(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<typename PFP::VEC3> positions =  m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(positions.name()) ;
 
@@ -482,10 +482,10 @@ bool MeshTablesSurface<PFP>::importObj(const std::string& filename, std::vector<
         return false;
     }
 
-//	fp.seekg(0, std::ios::end);
-//	int ab = fp.tellg();
-//	fp.seekg(0, std::ios::beg);
-//	int ac = fp.tellg();
+    //	fp.seekg(0, std::ios::end);
+    //	int ab = fp.tellg();
+    //	fp.seekg(0, std::ios::beg);
+    //	int ac = fp.tellg();
 
     std::string ligne;
     std::string tag;
@@ -580,7 +580,7 @@ bool MeshTablesSurface<PFP>::importObj(const std::string& filename, std::vector<
         }
         fp >> tag;
         std::getline(fp, ligne);
-     } while (!fp.eof());
+    } while (!fp.eof());
 
     fp.close ();
     return true;
@@ -589,10 +589,10 @@ bool MeshTablesSurface<PFP>::importObj(const std::string& filename, std::vector<
 template<typename PFP>
 bool MeshTablesSurface<PFP>::importPly(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<typename PFP::VEC3> positions =  m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(positions.name()) ;
 
@@ -606,11 +606,11 @@ bool MeshTablesSurface<PFP>::importPly(const std::string& filename, std::vector<
         return false;
     }
 
-    VertexAttribute<typename PFP::VEC3> colors = m_map.template getAttribute<typename PFP::VEC3, VERTEX>("color") ;
+    VertexAttribute<VEC3, MAP> colors = m_map.template getAttribute<VEC3, VERTEX, MAP>("color") ;
     if (pid.hasColors())
     {
         if(!colors.isValid())
-            colors = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("color") ;
+            colors = m_map.template addAttribute<VEC3, VERTEX, MAP>("color") ;
         attrNames.push_back(colors.name()) ;
     }
 
@@ -769,51 +769,51 @@ bool MeshTablesSurface<PFP>::importPlySLFgeneric(const std::string& filename, st
     } while (tag != std::string("end_header")) ;
 
     // Define containers
-    VertexAttribute<typename PFP::VEC3> positions =  m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
-;
+    VertexAttribute<VEC3, MAP> positions =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
+    ;
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
     attrNames.push_back(positions.name()) ;
 
-    VertexAttribute<typename PFP::VEC3> *frame = new VertexAttribute<typename PFP::VEC3>[3] ;
-    frame[0] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("frameT") ; // Tangent
-    frame[0] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("frameB") ; // Binormal
-    frame[0] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("frameN") ; // Normal
+    VertexAttribute<VEC3, MAP> *frame = new VertexAttribute<VEC3, MAP>[3] ;
+    frame[0] = m_map.template addAttribute<VEC3, VERTEX, MAP>("frameT") ; // Tangent
+    frame[0] = m_map.template addAttribute<VEC3, VERTEX, MAP>("frameB") ; // Binormal
+    frame[0] = m_map.template addAttribute<VEC3, VERTEX, MAP>("frameN") ; // Normal
     attrNames.push_back(frame[0].name()) ;
     attrNames.push_back(frame[1].name()) ;
     attrNames.push_back(frame[2].name()) ;
 
-    VertexAttribute<typename PFP::VEC3> *PBcoefs = NULL, *SHcoefs = NULL ;
+    VertexAttribute<VEC3, MAP> *PBcoefs = NULL, *SHcoefs = NULL ;
     if (PTM)
     {
-        PBcoefs = new VertexAttribute<typename PFP::VEC3>[nbCoefs] ;
+        PBcoefs = new VertexAttribute<VEC3, MAP>[nbCoefs] ;
         for (unsigned int i = 0 ; i < nbCoefs ; ++i)
         {
             std::stringstream name ;
             name << "PBcoefs" << i ;
-            PBcoefs[i] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>(name.str()) ;
+            PBcoefs[i] = m_map.template addAttribute<VEC3, VERTEX, MAP>(name.str()) ;
             attrNames.push_back(PBcoefs[i].name()) ;
         }
     }
 
     if (SH)
     {
-        SHcoefs = new VertexAttribute<typename PFP::VEC3>[nbCoefs] ;
+        SHcoefs = new VertexAttribute<VEC3, MAP>[nbCoefs] ;
         for (unsigned int i = 0 ; i < nbCoefs ; ++i)
         {
             std::stringstream name ;
             name << "SHcoefs" << i ;
-            SHcoefs[i] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>(name.str()) ;
+            SHcoefs[i] = m_map.template addAttribute<VEC3, VERTEX, MAP>(name.str()) ;
             attrNames.push_back(SHcoefs[i].name()) ;
         }
     }
 
-    VertexAttribute<typename PFP::REAL> *remainders = new VertexAttribute<typename PFP::REAL>[nbRemainders] ;
+    VertexAttribute<REAL, MAP> *remainders = new VertexAttribute<REAL, MAP>[nbRemainders] ;
     for (unsigned int i = 0 ; i < nbRemainders ; ++i)
     {
         std::stringstream name ;
         name << "remainderNo" << i ;
-        remainders[i] = m_map.template addAttribute<typename PFP::REAL, VERTEX>(name.str()) ;
+        remainders[i] = m_map.template addAttribute<REAL, VERTEX, MAP>(name.str()) ;
         attrNames.push_back(remainders[i].name()) ;
     }
 
@@ -1019,59 +1019,59 @@ bool MeshTablesSurface<PFP>::importPlySLFgenericBin(const std::string& filename,
     delete[] endline ;
 
     // Define containers
-    VertexAttribute<typename PFP::VEC3> positions = m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions = m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
     attrNames.push_back(positions.name()) ;
 
-    VertexAttribute<typename PFP::VEC3> *frame = new VertexAttribute<typename PFP::VEC3>[3] ;
+    VertexAttribute<VEC3, MAP> *frame = new VertexAttribute<VEC3, MAP>[3] ;
     if (tangent)
     {
-        frame[0] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("frameT") ; // Tangent
+        frame[0] = m_map.template addAttribute<VEC3, VERTEX, MAP>("frameT") ; // Tangent
         attrNames.push_back(frame[0].name()) ;
     }
     if (binormal)
     {
-        frame[1] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("frameB") ; // Bitangent
+        frame[1] = m_map.template addAttribute<VEC3, VERTEX, MAP>("frameB") ; // Bitangent
         attrNames.push_back(frame[0].name()) ;
     }
     if (normal)
     {
-        frame[2] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("frameN") ; // Normal
+        frame[2] = m_map.template addAttribute<VEC3, VERTEX, MAP>("frameN") ; // Normal
         attrNames.push_back(frame[0].name()) ;
     }
 
-    VertexAttribute<typename PFP::VEC3> *PBcoefs = NULL, *SHcoefs = NULL ;
+    VertexAttribute<VEC3, MAP> *PBcoefs = NULL, *SHcoefs = NULL ;
     if (PTM)
     {
-        PBcoefs = new VertexAttribute<typename PFP::VEC3>[nbCoefs] ;
+        PBcoefs = new VertexAttribute<VEC3, MAP>[nbCoefs] ;
         for (unsigned int i = 0 ; i < nbCoefs ; ++i)
         {
             std::stringstream name ;
             name << "PBcoefs" << i ;
-            PBcoefs[i] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>(name.str()) ;
+            PBcoefs[i] = m_map.template addAttribute<VEC3, VERTEX, MAP>(name.str()) ;
             attrNames.push_back(PBcoefs[i].name()) ;
         }
     }
 
     if (SH)
     {
-        SHcoefs = new VertexAttribute<typename PFP::VEC3>[nbCoefs] ;
+        SHcoefs = new VertexAttribute<VEC3, MAP>[nbCoefs] ;
         for (unsigned int i = 0 ; i < nbCoefs ; ++i)
         {
             std::stringstream name ;
             name << "SHcoefs" << i ;
-            SHcoefs[i] = m_map.template addAttribute<typename PFP::VEC3, VERTEX>(name.str()) ;
+            SHcoefs[i] = m_map.template addAttribute<VEC3, VERTEX, MAP>(name.str()) ;
             attrNames.push_back(SHcoefs[i].name()) ;
         }
     }
 
-    VertexAttribute<typename PFP::REAL> *remainders = new VertexAttribute<typename PFP::REAL>[nbRemainders] ;
+    VertexAttribute<REAL, MAP> *remainders = new VertexAttribute<REAL, MAP>[nbRemainders] ;
     for (unsigned int i = 0 ; i < nbRemainders ; ++i)
     {
         std::stringstream name ;
         name << "remainderNo" << i ;
-        remainders[i] = m_map.template addAttribute<typename PFP::REAL, VERTEX>(name.str()) ;
+        remainders[i] = m_map.template addAttribute<REAL, VERTEX, MAP>(name.str()) ;
         attrNames.push_back(remainders[i].name()) ;
     }
 
@@ -1377,10 +1377,10 @@ bool MeshTablesSurface<PFP>::importAHEM(const std::string& filename, std::vector
 
     // Read positions
 
-    VertexAttribute<typename PFP::VEC3> position =  m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> position =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
     if (!position.isValid())
-        position = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        position = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(position.name()) ;
 
@@ -1505,15 +1505,15 @@ bool MeshTablesSurface<PFP>::mergeCloseVertices()
     const int NBV = 64; // seems to be good
 
     const int NEIGH[27] = {
-    -NBV*NBV - NBV - 1, 	-NBV*NBV - NBV, 	-NBV*NBV - NBV + 1,
-    -NBV*NBV - 1, 	-NBV*NBV, 	-NBV*NBV + 1,
-    -NBV*NBV + NBV - 1,	-NBV*NBV + NBV,	- NBV*NBV + NBV + 1,
-    -NBV - 1,	- NBV,	-NBV + 1,
-    -1,	0,	1,
-    NBV - 1,	NBV,	NBV + 1,
-    NBV*NBV - NBV - 1,	NBV*NBV - NBV,	NBV*NBV - NBV + 1,
-    NBV*NBV - 1,	NBV*NBV,	NBV*NBV + 1,
-    NBV*NBV + NBV - 1,	NBV*NBV + NBV,	NBV*NBV + NBV + 1};
+        -NBV*NBV - NBV - 1, 	-NBV*NBV - NBV, 	-NBV*NBV - NBV + 1,
+        -NBV*NBV - 1, 	-NBV*NBV, 	-NBV*NBV + 1,
+        -NBV*NBV + NBV - 1,	-NBV*NBV + NBV,	- NBV*NBV + NBV + 1,
+        -NBV - 1,	- NBV,	-NBV + 1,
+        -1,	0,	1,
+        NBV - 1,	NBV,	NBV + 1,
+        NBV*NBV - NBV - 1,	NBV*NBV - NBV,	NBV*NBV - NBV + 1,
+        NBV*NBV - 1,	NBV*NBV,	NBV*NBV + 1,
+        NBV*NBV + NBV - 1,	NBV*NBV + NBV,	NBV*NBV + NBV + 1};
 
     std::vector<unsigned int>** grid;
     grid = new std::vector<unsigned int>*[NBV*NBV*NBV];
@@ -1522,7 +1522,7 @@ bool MeshTablesSurface<PFP>::mergeCloseVertices()
     for (unsigned int i=0; i<NBV*NBV*NBV; ++i)
         grid[i] = NULL;
 
-    VertexAttribute<typename PFP::VEC3> positions = m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position");
+    VertexAttribute<VEC3, MAP> positions = m_map.template getAttribute<VEC3, VERTEX, MAP>("position");
 
     // compute BB
     Geom::BoundingBox<typename PFP::VEC3> bb(positions[ positions.begin() ]) ;
@@ -1539,8 +1539,8 @@ bool MeshTablesSurface<PFP>::mergeCloseVertices()
     bb.addPoint( bb.max() + one);
     bbsize = (bb.max() - bb.min());
 
-    VertexAutoAttribute<unsigned int> gridIndex(m_map, "gridIndex");
-    VertexAutoAttribute<unsigned int> newIndices(m_map, "newIndices");
+    VertexAutoAttribute<unsigned int, MAP> gridIndex(m_map, "gridIndex");
+    VertexAutoAttribute<unsigned int, MAP> newIndices(m_map, "newIndices");
 
     // Store each vertex in the grid and store voxel index in vertex attribute
     for (unsigned int i = positions.begin(); i != positions.end(); positions.next(i))
@@ -1652,10 +1652,10 @@ bool MeshTablesSurface<PFP>::mergeCloseVertices()
 template<typename PFP>
 bool MeshTablesSurface<PFP>::importSTLAscii(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<typename PFP::VEC3> positions =  m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(positions.name()) ;
 
@@ -1740,10 +1740,10 @@ bool MeshTablesSurface<PFP>::importSTLAscii(const std::string& filename, std::ve
 template<typename PFP>
 bool MeshTablesSurface<PFP>::importSTLBin(const std::string& filename, std::vector<std::string>& attrNames)
 {
-    VertexAttribute<typename PFP::VEC3> positions =  m_map.template getAttribute<typename PFP::VEC3, VERTEX>("position") ;
+    VertexAttribute<VEC3, MAP> positions =  m_map.template getAttribute<VEC3, VERTEX, MAP>("position") ;
 
     if (!positions.isValid())
-        positions = m_map.template addAttribute<typename PFP::VEC3, VERTEX>("position") ;
+        positions = m_map.template addAttribute<VEC3, VERTEX, MAP>("position") ;
 
     attrNames.push_back(positions.name()) ;
 
@@ -1811,18 +1811,9 @@ bool MeshTablesSurface<PFP>::importSTLBin(const std::string& filename, std::vect
     return true;
 }
 
-
-
-
-
-
-
-
-
-
 } // namespace Import
 
-}
+} // namespace Surface
 
 } // namespace Algo
 

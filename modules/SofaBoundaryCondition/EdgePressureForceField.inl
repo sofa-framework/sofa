@@ -32,9 +32,6 @@
 #include <vector>
 #include <set>
 
-using std::cout;
-using std::cerr;
-using std::endl;
 
 // #define DEBUG_TRIANGLEFEM
 
@@ -46,9 +43,6 @@ namespace component
 
 namespace forcefield
 {
-
-using namespace sofa::defaulttype;
-using namespace core::topology;
 
 
 template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForceField()
@@ -161,7 +155,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
             binormal.normalize();
             for(unsigned int i = 0; i < my_map.size() ; i++)
             {
-                Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
+                sofa::component::topology::Edge e = _topology->getEdge(my_map[i]);  // FF,13/03/2012: This seems more consistent
 
                 Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
                 Coord normal = binormal.cross(tang);
@@ -179,7 +173,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
         {
             for(unsigned i = 0; i < my_map.size() ; i++)
             {
-                Edge e = _topology->getEdge(my_map[i]), f;
+                sofa::component::topology::Edge e = _topology->getEdge(my_map[i]), f;
 
                 Vec3d tang, n1, n2;
                 n2 = Vec3d(0,0,1);
@@ -204,11 +198,11 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
                 }
 
-                TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
+                sofa::component::topology::TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
 
                 if(t_a_E.size() == 1) // 2D cases
                 {
-                    Triangle t = _completeTopology->getTriangle(t_a_E[0]);
+                    sofa::component::topology::Triangle t = _completeTopology->getTriangle(t_a_E[0]);
                     Vec3d vert;
 
 
@@ -259,11 +253,11 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
     sofa::helper::vector<EdgePressureInformation>& my_subset = *(edgePressureMap).beginEdit();
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        Vec3d p1 = x[_topology->getEdge(my_map[i])[0]];
-        Vec3d p2 = x[_topology->getEdge(my_map[i])[1]];
-        Vec3d orig(0,0,0);
+        sofa::defaulttype::Vec3d p1 = x[_topology->getEdge(my_map[i])[0]];
+        sofa::defaulttype::Vec3d p2 = x[_topology->getEdge(my_map[i])[1]];
+        sofa::defaulttype::Vec3d orig(0,0,0);
 
-        Vec3d tang = p2 - p1;
+        sofa::defaulttype::Vec3d tang = p2 - p1;
         tang.norm(); /// @todo: shouldn't this be normalize() ?
 
         Deriv myPressure;
@@ -353,17 +347,17 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromString()
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesFromEdgeList()
 {
-    const helper::vector<Edge>& inputEdges = edges.getValue();
-    const helper::vector<Edge>& topologyEdges = _topology->getEdges();
+    const helper::vector<sofa::component::topology::Edge>& inputEdges = edges.getValue();
+    const helper::vector<sofa::component::topology::Edge>& topologyEdges = _topology->getEdges();
 
     helper::vector<unsigned int> indices(inputEdges.size());
 
     for(unsigned int i=0; i<inputEdges.size(); i++)
     {
-        Edge inputEdge = inputEdges[i];
+        sofa::component::topology::Edge inputEdge = inputEdges[i];
         for(unsigned int j=0; j<topologyEdges.size(); j++)
         {
-            Edge topologyEdge = topologyEdges[j];
+            sofa::component::topology::Edge topologyEdge = topologyEdges[j];
             //If they are the same edge
             if(inputEdge[0] == topologyEdge[0] && inputEdge[1] == topologyEdge[1])
             {
@@ -395,10 +389,10 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams*)
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        Vec3d p = (x[_topology->getEdge(my_map[i])[0]] + x[_topology->getEdge(my_map[i])[1]]) / 2.0;
-        helper::gl::glVertexT(p);
+        sofa::defaulttype::Vec3d p = (x[_topology->getEdge(my_map[i])[0]] + x[_topology->getEdge(my_map[i])[1]]) / 2.0;
+        sofa::helper::gl::glVertexT(p);
 
-        Vec3d f = my_subset[i].force;
+        sofa::defaulttype::Vec3d f = my_subset[i].force;
         //f.normalize();
         f *= aSC;
         helper::gl::glVertexT(p + f);

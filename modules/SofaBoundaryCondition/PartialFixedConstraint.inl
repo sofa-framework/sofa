@@ -47,13 +47,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
-
 // Define TestNewPointFunction
 template< class DataTypes>
 bool PartialFixedConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
@@ -352,8 +345,8 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
 
     if (_drawSize.getValue() == 0) // old classical drawing by points
     {
-        std::vector<Vector3> points;
-        Vector3 point;
+        std::vector<sofa::defaulttype::Vector3> points;
+        sofa::defaulttype::Vector3 point;
         //serr<<"PartialFixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         if (f_fixAll.getValue() == true)
         {
@@ -372,12 +365,12 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
                 points.push_back(point);
             }
         }
-        vparams->drawTool()->drawPoints(points, 10, Vec<4, float> (1, 0.5, 0.5, 1));
+        vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4, float> (1, 0.5, 0.5, 1));
     }
     else // new drawing by spheres
     {
-        std::vector<Vector3> points;
-        Vector3 point;
+        std::vector<sofa::defaulttype::Vector3> points;
+        sofa::defaulttype::Vector3 point;
         if (f_fixAll.getValue() == true)
         {
             for (unsigned i = 0; i < x.size(); i++)
@@ -395,7 +388,7 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
                 points.push_back(point);
             }
         }
-        vparams->drawTool()->drawSpheres(points, (float) _drawSize.getValue(), Vec<4, float> (1.0f, 0.35f, 0.35f, 1.0f));
+        vparams->drawTool()->drawSpheres(points, (float) _drawSize.getValue(), sofa::defaulttype::Vec<4, float> (1.0f, 0.35f, 0.35f, 1.0f));
     }
 }
 

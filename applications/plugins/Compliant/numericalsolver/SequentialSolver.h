@@ -12,8 +12,6 @@
 #include <Eigen/SparseCholesky>
 #include <Eigen/Cholesky>
 
-#include <boost/function.hpp>
-
 namespace sofa {
 namespace component {
 namespace linearsolver {
@@ -48,8 +46,8 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 							const vec& rhs,
 							bool correct) const;
 
-	// performs a single iteration
-	SReal step(vec& lambda, 
+    // performs a single iteration
+    SReal step(vec& lambda,
 	           vec& net, 
 	           const system_type& sys,
 	           const vec& rhs,
@@ -57,7 +55,8 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 			   bool correct = false) const;
 	
 	// response matrix
-	Response::SPtr response;
+	typedef Response response_type;
+	response_type::SPtr response;
 	
 	// mapping matrix response 
     typedef Response::cmat cmat;
@@ -69,13 +68,13 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 		block();
         unsigned offset, size;
         Constraint* projector;
-        bool activated; // is the constraint activated, otherwise its lambda is enforce to be 0
+        bool activated; // is the constraint activated, otherwise its lambda is forced to be 0
 	};
 	
 	typedef std::vector<block> blocks_type;
 	blocks_type blocks;
 	
-	void fetch_blocks(const system_type& system);
+    virtual void fetch_blocks(const system_type& system);
 
 	// constraint responses
 	typedef Eigen::Matrix< system_type::real, Eigen::Dynamic, Eigen::Dynamic > dense_matrix;

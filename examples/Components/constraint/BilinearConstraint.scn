@@ -10,7 +10,9 @@
     <MeshSpringForceField template="Vec3d" name="forcefield" linesStiffness="10" />
     <BoxROI name="Box" box="-0.1 -0.1 0  1.1 1.1 0"/>
     <PairBoxROI name="PairBox" inclusiveBox="-0.1 -0.1 0  1.1 1.1 0" includedBox="0.1 0.1 0 0.9 0.9 0"/>
-    <BilinearMovementConstraint name="bilinearConstraint" template="Vec3d" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI" cornerMovements=" -0.3 -0.1 0
-
+    <PatchTestMovementConstraint name="patchTestConstraint" template="Vec3d" indices="@PairBox.indices" meshIndices = "@Box.indices" constrainedPoints="@PairBox.pointsInROI" cornerMovements="-0.2 -0.1 0
+															  0.1 -0.1 0
+															  0.1 0.1 0
+															 -0.1 0.3 0"/>
   </Node>
 </Node>

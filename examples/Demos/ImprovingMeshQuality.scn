@@ -19,7 +19,7 @@
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Visual2">
-                <OglModel name="Visual" color="red" dz="0.01" />&quot;/&gt;
+                <OglModel name="Visual" color="red" dz="0.01" />&quot;/
             </Node>
             <Node name="Barycenters">
                 <PointSetTopologyContainer name="Container2" />
@@ -28,14 +28,14 @@
                 <MechanicalObject name="Points" />
                 <Mesh2PointMechanicalMapping />
             </Node>
-            <Node name="Circumcenters">
+            <!--Node name="Circumcenters">
                 <PointSetTopologyContainer name="Container2" />
                 <PointSetTopologyModifier />
                 <Mesh2PointTopologicalMapping input="@Container1" output="@Container2" triangleBaryCoords="0.33 0.33 0" />
                 <MechanicalObject name="Points" />
                 <CircumcenterMapping />
                 <Sphere radius="0.01" />
-            </Node>
+            </Node-->
         </Node>
         <VectorSpringForceField object1="@Mesh/Barycenters/Points" object2="@Mesh/Circumcenters/Points" stiffness="1000" viscosity="1" />
     </Node>

@@ -156,72 +156,47 @@ public:
 template <int N, int M, class Real>
 struct IdentityMappingMatrixHelper;
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec1dTypes;
-using sofa::defaulttype::Vec2dTypes;
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec6dTypes;
-using sofa::defaulttype::Rigid2dTypes;
-using sofa::defaulttype::Rigid3dTypes;
-using sofa::defaulttype::ExtVec1dTypes;
-using sofa::defaulttype::ExtVec2dTypes;
-using sofa::defaulttype::ExtVec3dTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec1fTypes;
-using sofa::defaulttype::Vec2fTypes;
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::Vec6fTypes;
-using sofa::defaulttype::ExtVec1fTypes;
-using sofa::defaulttype::ExtVec2fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-using sofa::defaulttype::Rigid2fTypes;
-using sofa::defaulttype::Rigid3fTypes;
-#endif
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2dTypes, Vec2dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1dTypes, Vec1dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec6dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Rigid3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Rigid2dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Vec2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::Vec2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec6dTypes, sofa::defaulttype::Vec6dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Rigid2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2fTypes, Vec2fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1fTypes, Vec1fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec6fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Rigid3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Rigid2fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Vec2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec2fTypes, sofa::defaulttype::Vec2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec6fTypes, sofa::defaulttype::Vec6fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Rigid2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2dTypes, Vec2fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2fTypes, Vec2dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1dTypes, Vec1fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1fTypes, Vec1dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6dTypes, Vec6fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec6dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Rigid3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3dTypes, Rigid3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Rigid2fTypes >;
-extern template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Rigid2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec2dTypes, sofa::defaulttype::Vec2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec2fTypes, sofa::defaulttype::Vec2dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec6dTypes, sofa::defaulttype::Vec6fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Vec6fTypes, sofa::defaulttype::Vec6dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Rigid2fTypes >;
+extern template class SOFA_BASE_MECHANICS_API IdentityMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Rigid2dTypes >;
 #endif
 #endif
 

@@ -41,13 +41,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using namespace core::topology;
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-using namespace sofa::core::behavior;
-
-
 
 template <class DataTypes>
 PositionBasedDynamicsConstraint<DataTypes>::PositionBasedDynamicsConstraint()
@@ -160,11 +153,11 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
 // Specialization for rigids
 #ifndef SOFA_FLOAT
 template <>
-void PositionBasedDynamicsConstraint<Rigid3dTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+void PositionBasedDynamicsConstraint<defaulttype::Rigid3dTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void PositionBasedDynamicsConstraint<Rigid3fTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+void PositionBasedDynamicsConstraint<defaulttype::Rigid3fTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
 #endif
 
 

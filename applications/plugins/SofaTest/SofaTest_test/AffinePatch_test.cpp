@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-
+#include "stdafx.h"
 #include "Elasticity_test.h"
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/RandomGenerator.h>

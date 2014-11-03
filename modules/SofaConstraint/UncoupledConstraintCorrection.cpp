@@ -46,7 +46,7 @@ namespace constraintset
 using namespace sofa::defaulttype;
 
 template<>
-SOFA_CONSTRAINT_API UncoupledConstraintCorrection< defaulttype::Rigid3Types >::UncoupledConstraintCorrection(behavior::MechanicalState<defaulttype::Rigid3Types> *mm)
+SOFA_CONSTRAINT_API UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3Types> *mm)
     : Inherit(mm)
     , compliance(initData(&compliance, "compliance", "Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
 {
@@ -109,9 +109,9 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 
 #ifndef NEW_VERSION
 template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
+SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
-    const MatrixDeriv& constraints = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     Deriv weightedNormal;
     Deriv comp_wN;
@@ -346,7 +346,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = forceData.wref();
-    const MatrixDeriv& constraints = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
 
     unsigned int dof;
     Deriv weightedNormal;
@@ -389,7 +389,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     helper::WriteAccessor<Data<VecDeriv> > vData = *this->mstate->write(core::VecDerivId::velocity());
     VecDeriv& v = vData.wref();
 
-    const VecDeriv& v_free = this->mstate->read(ConstVecDerivId::freeVelocity())->getValue();
+    const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
     const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
 
     const double dt = this->getContext()->getDt();
@@ -418,7 +418,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * df, int begin, int end, bool update)
 {
-    const MatrixDeriv& constraints = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
     const VecReal& usedComp = compliance.getValue();
 
     if (!update)
@@ -463,7 +463,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
-    const MatrixDeriv& constraints = this->mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
     const VecReal& usedComp = compliance.getValue();
 
     if (this->f_printLog.getValue()) // debug

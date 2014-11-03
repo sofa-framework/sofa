@@ -66,11 +66,14 @@ if(SOFA-EXTERNAL_BOOST)
 
 	if(SOFA-MISC_STATIC_LINK_BOOST)
 		set(Boost_USE_STATIC_LIBS ON)
-		set(Boost_USE_STATIC_RUNTIME ON)
 	else()
 		set(Boost_USE_STATIC_LIBS OFF)
-		set(Boost_USE_STATIC_RUNTIME OFF)
 	endif()
+
+	# this setting should match the standard library usage of Sofa libraries, not the value of SOFA-MISC_STATIC_LINK_BOOST 
+	# ie. on Win32 it should be OFF if we link with msvcrt (/MD) or ON if we link with libcmt (/MT).
+	# Sofa links with msvcrt for now (which is the recommended default on Windows).
+	set(Boost_USE_STATIC_RUNTIME OFF) 
 	
 	if(WIN32)
 		  # Setting some more suffixes for the library

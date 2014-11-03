@@ -100,7 +100,7 @@ void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::
     // Update the data
     unsigned int nbElt = iirg.size();
     std::map< unsigned int, BaseMeshTopology::HexaID>& regularG2Topo = *m_DynContainer->idInRegularGrid2IndexInTopo.beginEdit();
-    for ( sofa::helper::vector<unsigned int>::const_iterator it = hexahedra.begin(); it != hexahedra.end(); it++ )
+    for ( sofa::helper::vector<unsigned int>::const_iterator it = hexahedra.begin(); it != hexahedra.end(); ++it )
     {
         nbElt--;
 

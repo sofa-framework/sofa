@@ -31,7 +31,7 @@ using namespace sofa::component::loader;
 
 namespace sofa {
 
-class SOFA_TestPlugin_API MeshObjLoader_test  : public ::testing::Test, public MeshObjLoader
+class MeshObjLoader_test  : public ::testing::Test, public MeshObjLoader
 {
 public :
 

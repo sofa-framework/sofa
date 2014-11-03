@@ -251,6 +251,8 @@ public:
 private:
     boost::shared_ptr< IdMap > idMap_ptr;
 
+	template <VecType vtype2, VecAccess vaccess2> friend class TMultiVecId;
+
 protected:
     IdMap& writeIdMap()
     {
@@ -316,8 +318,28 @@ public:
         BOOST_STATIC_ASSERT( vtype != vtype2 || vaccess != vaccess2 );
         if (mv.hasIdMap())
         {
-            IdMap& map = writeIdMap();
-            std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
+#ifdef MAP_PTR
+			// When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
+			// share the maps like with a copy constructor, because otherwise a simple operation like passing a
+			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
+			// will cause a temporary copy of the map, which this define was meant to avoid!
+			if (vtype2 == vtype)
+            {
+#ifndef _MSC_VER
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
+#endif
+                idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+#ifndef _MSC_VER
+#pragma GCC diagnostic pop
+#endif
+			}
+			else
+#endif
+			{
+				IdMap& map = writeIdMap();
+				std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
+			}
         }
     }
     //// Provides explicit conversions from MultiVecId to MultiVecCoordId/...

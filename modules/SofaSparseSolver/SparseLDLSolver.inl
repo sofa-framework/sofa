@@ -45,8 +45,8 @@ namespace linearsolver {
 
 template<class TMatrix, class TVector, class TThreadManager>
 SparseLDLSolver<TMatrix,TVector,TThreadManager>::SparseLDLSolver()
-    : f_saveMatrixToFile( initData(&f_saveMatrixToFile, false, "saveMatrixToFile", "save matrix to a text file (can be very slow, as full matrix is stored"))
-    , numStep(0)
+    : numStep(0)
+    , f_saveMatrixToFile( initData(&f_saveMatrixToFile, false, "saveMatrixToFile", "save matrix to a text file (can be very slow, as full matrix is stored"))
 {}
 
 template<class TMatrix, class TVector, class TThreadManager>
@@ -102,7 +102,7 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
     }
 
     //Solve the lower triangular system
-    for (unsigned c=0;c<J->rowSize();c++) {
+    for (unsigned c=0;c<(unsigned)J->rowSize();c++) {
         Real * line = Jdense[c];
 
         for (int j=0; j<data->n; j++) {
@@ -115,21 +115,21 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
     }
 
     //apply diagonal
-    for (unsigned j=0; j<J->rowSize(); j++) {
+    for (unsigned j=0; j<(unsigned)J->rowSize(); j++) {
         Real * lineD = Jdense[j];
         Real * lineM = Jminv[j];
-        for (unsigned i=0;i<J->colSize();i++) {
+        for (unsigned i=0;i<(unsigned)J->colSize();i++) {
             lineM[i] = lineD[i] * data->invD[i];
         }
     }
 
-    for (unsigned j=0; j<J->rowSize(); j++) {
+    for (unsigned j=0; j<(unsigned)J->rowSize(); j++) {
         Real * lineJ = Jminv[j];
-        for (unsigned i=j;i<J->rowSize();i++) {
+        for (unsigned i=j;i<(unsigned)J->rowSize();i++) {
             Real * lineI = Jdense[i];
 
             double acc = 0.0;
-            for (unsigned k=0;k<J->colSize();k++) {
+            for (unsigned k=0;k<(unsigned)J->colSize();k++) {
                 acc += lineJ[k] * lineI[k];
             }
             result->add(j,i,acc*fact);

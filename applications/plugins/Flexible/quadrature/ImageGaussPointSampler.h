@@ -671,11 +671,11 @@ protected:
 
         vector<vector<unsigned int> > index(nb);
         vector<vector<Real> > w(nb);
-        vector<vector<Vec<spatial_dimensions,Real> > > dw(nb);
-        vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
+        vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw(nb);
+        vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
 
-        Mat<spatial_dimensions,spatial_dimensions,Real> I=Mat<spatial_dimensions,spatial_dimensions,Real>::Identity(); // could be image orientation
-        vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0((int)nb,I);
+        defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> I=defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real>::Identity(); // could be image orientation
+        vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0((int)nb,I);
 
         for(unsigned int i=0; i<nb; i++)
         {

@@ -1,6 +1,6 @@
 <Node name="TorusSpring">
 	<EulerImplicitSolver rayleighStiffness="0.01" />
-	<CGLinearSolver iterations="25" />
+	<CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05" />
 	<MeshGmshLoader name="meshLoader" filename="mesh/torus_low_res.msh"/>
 	<Mesh src="@meshLoader"/>
 	<MechanicalObject  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>

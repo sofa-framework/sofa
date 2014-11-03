@@ -81,7 +81,7 @@ bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("AnalyseConstraints");
 #endif
-    const helper::vector< BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
+    const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
 
     JacobianRows rowsL ; rowsL.reserve(numConstraint);
     JacobianRows rowsLT; rowsLT.reserve(numConstraint);
@@ -214,22 +214,22 @@ bool LMConstraintDirectSolver::solveSystem(const core::ConstraintParams* cParams
 }
 
 
-void LMConstraintDirectSolver::analyseConstraints(const helper::vector< BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
+void LMConstraintDirectSolver::analyseConstraints(const helper::vector< sofa::core::behavior::BaseLMConstraint* > &LMConstraints, core::ConstraintParams::ConstOrder order,
         JacobianRows &rowsL,JacobianRows &rowsLT, helper::vector< unsigned int > &rightHandElements) const
 {
     //Iterate among all the Sofa LMConstraint
     for (unsigned int componentConstraint=0; componentConstraint<LMConstraints.size(); ++componentConstraint)
     {
-        BaseLMConstraint *constraint=LMConstraints[componentConstraint];
+        sofa::core::behavior::BaseLMConstraint *constraint=LMConstraints[componentConstraint];
         //Find the constraint dealing with contact
         if (ContactDescriptionHandler* contactDescriptor=dynamic_cast<ContactDescriptionHandler*>(constraint))
         {
-            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
+            const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
             //Iterate among all the contacts
-            for (helper::vector< ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
+            for (helper::vector< sofa::core::behavior::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
             {
-                const ConstraintGroup* group=*itGroup;
-                const ContactDescription& contact=contactDescriptor->getContactDescription(group);
+                const sofa::core::behavior::ConstraintGroup* group=*itGroup;
+                const sofa::component::constraintset::ContactDescription& contact=contactDescriptor->getContactDescription(group);
 
                 const unsigned int idxEquation=group->getConstraint(0).idx;
 
@@ -284,12 +284,12 @@ void LMConstraintDirectSolver::analyseConstraints(const helper::vector< BaseLMCo
         else
         {
             //Non contact constraints: we add all the equations
-            const helper::vector< ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
-            for (helper::vector< ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
+            const helper::vector< sofa::core::behavior::ConstraintGroup* > &constraintOrder=constraint->getConstraintsOrder(order);
+            for (helper::vector< sofa::core::behavior::ConstraintGroup* >::const_iterator itGroup=constraintOrder.begin(); itGroup!=constraintOrder.end(); ++itGroup)
             {
-                const ConstraintGroup* group=*itGroup;
-                std::pair< ConstraintGroup::EquationConstIterator,ConstraintGroup::EquationConstIterator> range=group->data();
-                for ( ConstraintGroup::EquationConstIterator it=range.first; it!=range.second; ++it)
+                const sofa::core::behavior::ConstraintGroup* group=*itGroup;
+                std::pair< sofa::core::behavior::ConstraintGroup::EquationConstIterator,sofa::core::behavior::ConstraintGroup::EquationConstIterator> range=group->data();
+                for ( sofa::core::behavior::ConstraintGroup::EquationConstIterator it=range.first; it!=range.second; ++it)
                 {
                     rowsL.push_back(linearsolver::LLineManipulator().addCombination(it->idx));
                     rowsLT.push_back(rowsL.back());

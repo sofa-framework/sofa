@@ -150,41 +150,29 @@ protected:
     sofa::core::topology::BaseMeshTopology* topology;
 };
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-using sofa::defaulttype::Vec1dTypes;
-using sofa::defaulttype::Rigid3dTypes;
-#endif
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::Vec1fTypes;
-using sofa::defaulttype::Rigid3fTypes;
-#endif
-using sofa::defaulttype::ExtVec3fTypes;
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1dTypes, Vec1dTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3dTypes, Rigid3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1dTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1fTypes, Vec1fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3fTypes, ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3fTypes, Rigid3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ExtVec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1dTypes, Vec1fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Vec1fTypes, Vec1dTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3dTypes, Rigid3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API SubsetMapping< Rigid3fTypes, Rigid3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3dTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1fTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1dTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3fTypes >;
+extern template class SOFA_BASE_MECHANICS_API SubsetMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3dTypes >;
 #endif
 #endif
 

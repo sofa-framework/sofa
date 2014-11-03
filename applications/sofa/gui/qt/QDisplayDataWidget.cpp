@@ -100,7 +100,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     }
 
 	datawidget_= DataWidget::CreateDataWidget(dwarg);
-	
+
     if (datawidget_ == 0)
     {
         datawidget_ = new QDataSimpleEdit(this,dwarg.data->getName().c_str(), dwarg.data);
@@ -117,7 +117,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
 	datawidget_->setContentsMargins(0, 0, 0, 0);
 	datawidget_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-	
+
 	const std::string valuetype = data_->getValueTypeString();
 	if (!valuetype.empty())
 		datawidget_->setToolTip(valuetype.c_str());
@@ -128,6 +128,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     connect(this, SIGNAL( WidgetUpdate() ), datawidget_, SLOT( updateWidgetValue() ) );
     connect(this, SIGNAL( DataUpdate() ), datawidget_, SLOT(updateDataValue() ) );
     connect(datawidget_,SIGNAL(DataOwnerDirty(bool)),this,SIGNAL(DataOwnerDirty(bool)) );
+    connect(datawidget_,SIGNAL(dataValueChanged(QString)),this,SIGNAL(dataValueChanged(QString)) );
 
     if(flags.PROPERTY_WIDGET_FLAG)
     {
@@ -192,7 +193,7 @@ bool QDataSimpleEdit::createWidgets()
     {
         innerWidget_.type = TEXTEDIT;
         innerWidget_.widget.textEdit = new QTextEdit(this); innerWidget_.widget.textEdit->setText(str);
-        connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT ( update() ) );
+        connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT ( setWidgetDirty() ) );
         layout->add(innerWidget_.widget.textEdit);
     }
     else
@@ -200,7 +201,7 @@ bool QDataSimpleEdit::createWidgets()
         innerWidget_.type = LINEEDIT;
         innerWidget_.widget.lineEdit  = new QLineEdit(this);
         innerWidget_.widget.lineEdit->setText(str);
-        connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT( update() ) );
+        connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT( setWidgetDirty() ) );
         layout->add(innerWidget_.widget.lineEdit);
     }
 

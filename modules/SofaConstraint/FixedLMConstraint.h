@@ -40,14 +40,12 @@ namespace component
 namespace constraintset
 {
 
-using namespace sofa::core::topology;
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
 class FixedLMConstraintInternalData
 {
 };
 
-using namespace sofa::component::topology;
 
 
 /** Keep two particules at an initial distance
@@ -135,12 +133,12 @@ public:
     Data<double> _drawSize;
 
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+    class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >
     {
     public:
         typedef typename FixedLMConstraint<DataTypes>::SetIndexArray SetIndexArray;
-        FCPointHandler(FixedLMConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray >* _data)
-            : TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+        FCPointHandler(FixedLMConstraint<DataTypes>* _fc, sofa::component::topology::PointSubsetData<SetIndexArray >* _data)
+            : TopologySubsetDataHandler<sofa::component::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 
 
 

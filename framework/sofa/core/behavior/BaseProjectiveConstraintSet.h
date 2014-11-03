@@ -69,6 +69,10 @@ public:
     /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
     void setGroup(int g) { group.setValue(g); }
 
+
+    /// Return the lists of models this constraint applies to. 
+    virtual helper::vector< core::BaseState* > getModels() = 0;
+
     /// @name Vector operations
     /// @{
 

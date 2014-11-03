@@ -42,7 +42,7 @@ def createScene(node):
 
     ode = node.getObject('ode')
 
-    ode.stabilization = False
+    ode.stabilization = "no stabilization"
     ode.warm_start = False
 
     # ode.debug = True
@@ -81,7 +81,7 @@ def createScene(node):
                      position = '0 0 0')
     
     sub.createObject('IdentityMapping',
-                     template = 'Vec3d')
+                     template = 'Vec3d,Vec3d')
 
     compliance = 1/stiff
 

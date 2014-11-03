@@ -38,20 +38,24 @@ namespace Remeshing
 {
 
 template <typename PFP>
-void pliantRemeshing(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>& position, VertexAttribute<typename PFP::VEC3>& normal)
+void pliantRemeshing(
+	typename PFP::MAP& map,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position,
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& normal)
 {
+	typedef typename PFP::MAP MAP ;
 	typedef typename PFP::VEC3 VEC3 ;
 	typedef typename PFP::REAL REAL ;
 
 	// compute the mean edge length
-	DartMarker m1(map) ;
+	DartMarker<MAP> m1(map) ;
 	REAL meanEdgeLength = 0 ;
 	unsigned int nbEdges = 0 ;
 	for(Dart d = map.begin(); d != map.end(); map.next(d))
 	{
 		if(!m1.isMarked(d))
 		{
-			m1.markOrbit<EDGE>(d) ;
+			m1.template markOrbit<EDGE>(d) ;
 			meanEdgeLength += Geometry::edgeLength<PFP>(map, d, position) ;
 			++nbEdges ;
 		}
@@ -63,12 +67,12 @@ void pliantRemeshing(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>
 	REAL edgeLengthSup = REAL(4) / REAL(3) * meanEdgeLength ;
 
 	// split long edges
-	DartMarker m2(map) ;
+	DartMarker<MAP> m2(map) ;
 	for(Dart d = map.begin(); d != map.end(); map.next(d))
 	{
 		if(!m2.isMarked(d))
 		{
-			m2.markOrbit<EDGE>(d) ;
+			m2.template markOrbit<EDGE>(d) ;
 			REAL length = Geometry::edgeLength<PFP>(map, d, position) ;
 			if(length > edgeLengthSup)
 			{
@@ -84,18 +88,18 @@ void pliantRemeshing(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>
 	}
 
 	// compute feature edges
-	CellMarker<EDGE> featureEdge(map) ;
+	CellMarker<MAP, EDGE> featureEdge(map) ;
 	Geometry::featureEdgeDetection<PFP>(map, position, featureEdge) ;
 
 	// compute feature vertices
-	CellMarker<VERTEX> featureVertex(map) ;
-	CellMarker<VERTEX> cornerVertex(map) ;
-	DartMarker m3(map) ;
+	CellMarker<MAP, VERTEX> featureVertex(map) ;
+	CellMarker<MAP, VERTEX> cornerVertex(map) ;
+	DartMarker<MAP> m3(map) ;
 	for(Dart d = map.begin(); d != map.end(); map.next(d))
 	{
 		if(!m3.isMarked(d))
 		{
-			m3.markOrbit<VERTEX>(d) ;
+			m3.template markOrbit<VERTEX>(d) ;
 			unsigned int nbFeatureEdges = 0 ;
 			Dart vit = d ;
 			do
@@ -119,7 +123,7 @@ void pliantRemeshing(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>
 	{
 		if(m3.isMarked(d))
 		{
-			m3.unmarkOrbit<EDGE>(d) ;
+			m3.template unmarkOrbit<EDGE>(d) ;
 			Dart d1 = map.phi1(d) ;
 			if(!cornerVertex.isMarked(d) && !cornerVertex.isMarked(d1) &&
 				( (featureVertex.isMarked(d) && featureVertex.isMarked(d1)) || (!featureVertex.isMarked(d) && !featureVertex.isMarked(d1)) ))
@@ -152,7 +156,7 @@ void pliantRemeshing(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>
 	{
 		if(!m3.isMarked(d))
 		{
-			m3.markOrbit<EDGE>(d) ;
+			m3.template markOrbit<EDGE>(d) ;
 			Dart e = map.phi2(d) ;
 			if(!featureEdge.isMarked(d) && e != d)
 			{
@@ -168,10 +172,10 @@ void pliantRemeshing(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>
 				if(flip > 1)
 				{
 					map.flipEdge(d) ;
-					m3.markOrbit<EDGE>(map.phi1(d)) ;
-					m3.markOrbit<EDGE>(map.phi_1(d)) ;
-					m3.markOrbit<EDGE>(map.phi1(e)) ;
-					m3.markOrbit<EDGE>(map.phi_1(e)) ;
+					m3.template markOrbit<EDGE>(map.phi1(d)) ;
+					m3.template markOrbit<EDGE>(map.phi_1(d)) ;
+					m3.template markOrbit<EDGE>(map.phi1(e)) ;
+					m3.template markOrbit<EDGE>(map.phi_1(e)) ;
 				}
 			}
 		}
@@ -181,10 +185,10 @@ void pliantRemeshing(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>
 	Algo::Surface::Geometry::computeNormalVertices<PFP>(map, position, normal) ;
 
 	// tangential relaxation
-	VertexAttribute<VEC3> centroid = map.template addAttribute<VEC3, VERTEX>("centroid") ;
+	VertexAttribute<VEC3, MAP> centroid = map.template addAttribute<VEC3, VERTEX>("centroid") ;
 	Surface::Geometry::computeNeighborhoodCentroidVertices<PFP>(map, position, centroid) ;
 
-	CellMarker<VERTEX> vm(map) ;
+	CellMarker<MAP, VERTEX> vm(map) ;
 	for(Dart d = map.begin(); d != map.end(); map.next(d))
 	{
 		if(!vm.isMarked(d))
@@ -205,7 +209,7 @@ void pliantRemeshing(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3>
 
 } // namespace Remeshing
 
-}
+} // namespace Surface
 
 } // namespace Algo
 

@@ -48,10 +48,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 template<class DataTypes>
 class AffineMovementConstraintInternalData
@@ -85,7 +81,7 @@ public:
     typedef core::objectmodel::Data<MatrixDeriv>    DataMatrixDeriv;
 
     static const unsigned int CoordSize = Coord::total_size;
-    typedef Mat<3,3,Real> RotationMatrix;
+    typedef defaulttype::Mat<3,3,Real> RotationMatrix;
 
 protected:
     AffineMovementConstraintInternalData<DataTypes> *data;
@@ -152,15 +148,15 @@ public:
     /// Draw the constrained points (= border mesh points)
      virtual void draw(const core::visual::VisualParams* vparams);
 
-    class FCPointHandler : public TopologySubsetDataHandler<Point, SetIndexArray >
+     class FCPointHandler : public component::topology::TopologySubsetDataHandler<component::topology::Point, SetIndexArray >
     {
     public:
         typedef typename AffineMovementConstraint<DataTypes>::SetIndexArray SetIndexArray;
 
-        FCPointHandler(AffineMovementConstraint<DataTypes>* _fc, PointSubsetData<SetIndexArray>* _data)
-            : sofa::component::topology::TopologySubsetDataHandler<Point, SetIndexArray >(_data), fc(_fc) {}
+        FCPointHandler(AffineMovementConstraint<DataTypes>* _fc, component::topology::PointSubsetData<SetIndexArray>* _data)
+            : sofa::component::topology::TopologySubsetDataHandler<component::topology::Point, SetIndexArray >(_data), fc(_fc) {}
 
-        void applyDestroyFunction(unsigned int /*index*/, value_type& /*T*/);
+        void applyDestroyFunction(unsigned int /*index*/, core::objectmodel::Data<value_type>& /*T*/);
 
         bool applyTestCreateFunction(unsigned int /*index*/,
                 const sofa::helper::vector< unsigned int > & /*ancestors*/,

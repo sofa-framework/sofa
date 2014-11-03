@@ -46,14 +46,6 @@ namespace component
 
 namespace linearsolver
 {
-using core::VecId;
-using namespace sofa::defaulttype;
-using namespace sofa::core::behavior;
-using namespace sofa::simulation;
-#ifdef DISPLAY_TIME
-using sofa::helper::system::thread::CTime;
-#endif
-
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
@@ -68,8 +60,12 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
 #ifdef DISPLAY_TIME
-    timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
+    timeStamp = 1.0 / (double)sofa::helper::system::thread::CTime::getRefTicksPerSec();
 #endif
+
+	f_maxIter.setRequired(true);
+	f_tolerance.setRequired(true);
+	f_smallDenominatorThreshold.setRequired(true);
 }
 
 template<class TMatrix, class TVector>
@@ -85,14 +81,14 @@ template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
 #ifdef DISPLAY_TIME
-    CTime * timer;
-    time2 = (double) timer->getTime();
+    sofa::helper::system::thread::CTime timer;
+    time2 = (double) timer.getTime();
 #endif
 
     Inherit::setSystemMBKMatrix(mparams);
 
 #ifdef DISPLAY_TIME
-    time2 = ((double) timer->getTime() - time2)  * timeStamp;
+    time2 = ((double) timer.getTime() - time2)  * timeStamp;
 #endif
 }
 
@@ -120,7 +116,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     double rho, rho_1=0, alpha, beta;
 
     if( verbose )
-        serr<<"CGLinearSolver, b = "<< b <<sendl;
+        sout<<"CGLinearSolver, b = "<< b <<sendl;
 
     if( f_warmStart.getValue() )
     {
@@ -144,8 +140,8 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     const char* endcond = "iterations";
 
 #ifdef DISPLAY_TIME
-    CTime * timer;
-    time1 = (double) timer->getTime();
+    sofa::helper::system::thread::CTime timer;
+    time1 = (double) timer.getTime();
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -195,7 +191,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         if( verbose )
         {
-            serr<<"p : "<<p<<sendl;
+            sout<<"p : "<<p<<sendl;
         }
 
         // matrix-vector product
@@ -203,7 +199,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         if( verbose )
         {
-            serr<<"q = M p : "<<q<<sendl;
+            sout<<"q = M p : "<<q<<sendl;
         }
 
         double den = p.dot(q);
@@ -215,7 +211,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             endcond = "threshold";
             if( verbose )
             {
-                serr<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<sendl;
+                sout<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<sendl;
             }
 #ifdef SOFA_DUMP_VISITOR_INFO
             if (simulation::Visitor::isPrintActivated())
@@ -229,9 +225,9 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         cgstep_alpha(params /* PARAMS FIRST */, x,r,p,q,alpha);
         if( verbose )
         {
-            serr<<"den = "<<den<<", alpha = "<<alpha<<sendl;
-            serr<<"x : "<<x<<sendl;
-            serr<<"r : "<<r<<sendl;
+            sout<<"den = "<<den<<", alpha = "<<alpha<<sendl;
+            sout<<"x : "<<x<<sendl;
+            sout<<"r : "<<r<<sendl;
         }
 
         rho_1 = rho;
@@ -242,7 +238,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     }
 
 #ifdef DISPLAY_TIME
-    time1 = (double)(((double) timer->getTime() - time1) * timeStamp / (nb_iter-1));
+    time1 = (double)(((double) timer.getTime() - time1) * timeStamp / (nb_iter-1));
 #endif
 
     f_graph.endEdit();
@@ -255,11 +251,11 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 #ifdef DISPLAY_TIME
         std::cerr<<"CGLinearSolver::solve, CG = "<<time1<<" build = "<<time2<<std::endl;
 #endif
-        serr<<"CGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<sendl;
+        sout<<"CGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<sendl;
     }
     if( verbose )
     {
-        serr<<"CGLinearSolver::solve, solution = "<<x<<sendl;
+        sout<<"CGLinearSolver::solve, solution = "<<x<<sendl;
     }
     vtmp.deleteTempVector(&p);
     vtmp.deleteTempVector(&q);

@@ -4,32 +4,32 @@
     <BruteForceDetection name="default0" />
     <DefaultContactManager name="default1" response="default" />
     <DefaultPipeline name="default2" />
-    <MinProximityIntersection name="default3" />
+    <MinProximityIntersection name="default3" alarmDistance="1" contactDistance="0.5"/>
     <Node name="default4" gravity="0 -9.81 0">
-        <CGLinearSolver template="GraphScattered" name="default0" />
+        <CGLinearSolver template="GraphScattered" name="default0" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <EulerImplicitSolver name="default1" />
         <MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1 1 0 0 0.707914 0 0 0.707914" velocity="0 0 0 0 0 0" force="0 0 0 0 0 0" externalForce="0 0 0 0 0 0" derivX="0 0 0 0 0 0" free_position="0 0 0 0 0 0 1" free_velocity="0 0 0 0 0 0" restScale="1" />
         <UniformMass template="Rigid" name="mass" mass="1 1 [1 0 0,0 1 0,0 0 1]" />
         <FixedConstraint template="Rigid" name="fixOrigin" indices="0" />
         <Node name="default5" gravity="0 -9.81 0">
             <MechanicalObject template="Rigid" name="attaches" position="0 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914" velocity="0 0 0 0 0 0" force="0 0 0 0 0 0" externalForce="0 0 0 0 0 0" derivX="0 0 0 0 0 0" free_position="0 0 0 0 0 0 1" free_velocity="0 0 0 0 0 0" restScale="1" />
-            <RigidRigidMapping template="Mapping&lt;Rigid,Rigid&gt;" name="default6" input="@.." output="@." repartition="1 1" />
+            <RigidRigidMapping template="Rigid,Rigid" name="default6" input="@.." output="@." repartition="1 1" />
             <JointSpringForceField template="Rigid" name="joint springs" spring="BEGIN_SPRING  0 1  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING&#x0A;" />
         </Node>
         <Node name="Root" gravity="0 -9.81 0" dt="0.02">
             <MechanicalObject template="Vec3d" name="default0" position="0 0 0" velocity="0 0 0" force="0 0 0" externalForce="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" />
             <MeshTopology name="default1" />
             <MultiMeshObjLoader name="loader" filenamelist="mesh/ball.obj mesh/cube.obj" />
-            <RigidMapping template="Mapping&lt;Rigid,Vec3d&gt;" name="default0" input="@.." output="@." repartition="@loader.nbPointsPerMesh" globalToLocalCoords="1" />
+            <RigidMapping template="Rigid,Vec3d" name="default0" input="@.." output="@." repartition="@loader.nbPointsPerMesh" globalToLocalCoords="1" />
             <TTriangleModel template="Vec3d" name="default1" />
         </Node>
         <Node name="default0" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="visual" fileMesh="mesh/ball.obj" />
-            <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="default1" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@visual" globalToLocalCoords="1" />
+            <RigidMapping template="Rigid,ExtVec3f" name="default1" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@visual" globalToLocalCoords="1" />
         </Node>
         <Node name="default0" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="visual" fileMesh="mesh/cube.obj" translation="0 0 0" scale3d="1 1 1" material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45" />
-            <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="default4" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@visual" repartition="0 8" globalToLocalCoords="1" />
+            <RigidMapping template="Rigid,ExtVec3f" name="default4" mapForces="0" mapConstraints="0" mapMasses="0" input="@.." output="@visual" repartition="0 8" globalToLocalCoords="1" />
         </Node>
     </Node>
 </Node>

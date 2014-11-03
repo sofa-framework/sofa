@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0 " dt="1"  >
+      <RequiredPlugin pluginName="Flexible"/>
+      <RequiredPlugin pluginName="image"/>
+
+    <VisualStyle displayFlags="hideWireframe showBehaviorModels" />
+    <DefaultAnimationLoop />
+    <DefaultVisualManagerLoop />
+
+    <Node 	name="ref_highresFEM"   >
+	<VisualStyle displayFlags="hideWireframe" />
+        <OglModel template="ExtVec3f" name="Visual" fileMesh="../beam/refBeam_Flex.obj" color="0.5 0.5 0.5" translation="-0.5 0 0"/>
+    </Node>
+
+  <Node name="Flexible"   >
+    <StaticSolver />
+    <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
+
+    <MeshObjLoader name="mesh" filename="../beam/beam.obj" triangulate="1"/>
+    <!--  <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.02" padSize="1" rotateImage="true" />-->
+    <ImageContainer template="ImageUC" name="imageIn" filename="../beam/beam.raw" drawBB="false"/>
+<!--    <ImageFilter filter="20" param="-0.23 -0.23 -1.03 48 48 208 0.01 0.01 0.01 0" name="filter" src="@imageIn" />-->
+<!--    <ImageFilter filter="20" param="-0.23 -0.23 -1.03 24 24 104 0.02 0.02 0.02 0" name="filter" src="@imageIn" />-->
+    <ImageFilter filter="20" param="-0.23 -0.23 -1.03 12 12 52 0.04 0.04 0.04 0" name="filter" src="@imageIn" />
+    <ImageContainer template="ImageUC" name="image" image="@filter.outputImage" transform="@filter.outputTransform" drawBB="false"/>
+
+    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -0.9 0 0 0.9" printLog="false"/> 
+    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" />
+
+    <DiffusionShapeFunction name="SF" position="@parent.rest_position" src="@image" clearData="0" iterations="1000" tolerance="-1"/>
+<!--    <ImageViewer template="ImageD" name="viewer" image="@SF.distances" transform="@SF.transform" />  -->
+   <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="6 6 30"/> 
+
+<!--    <FixedConstraint indices="0 1 2 3 4 5 6 7 8" />  -->
+<!--    <PartialFixedConstraint indices="0 1 2 3 4 5 6 7 8" fixedDirections="1 1 1 1 1 0 1 1 0 1 1 0" /> -->
+
+    <Node 	name="behavior"   >
+        <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" targetNumber="1000"/>
+<!--   <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 6 30"/> -->
+<!--   <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 6 30"/> -->
+	<MechanicalObject template="F331" name="F"  />
+	<LinearMapping template="Mapping&lt;Affine,F331&gt;"  />
+
+	<Node 	name="E"   >
+	    <VisualStyle displayFlags="hideBehaviorModels " />
+	    <MechanicalObject  template="E331" name="E"  /> 
+	    <CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="polar" />
+	    <HookeForceField  template="E331" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0"/>
+	</Node>
+    </Node>
+
+    <Node 	name="collision"   >
+        <VisualStyle displayFlags="hideBehaviorModels " />
+	<Mesh name="mesh" src="@../mesh" /> 
+	<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+	<UniformMass totalMass="10" />
+	<BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" /> 
+	<ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
+	<BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.9"  position="@mesh.position" /> 
+	<RestShapeSpringsForceField template="Vec3d" points="@[-1].indices" stiffness="1E5"/> 
+	<LinearMapping template="MechanicalMapping&lt;Affine,Vec3d&gt;"/>
+    </Node>
+
+    <Node 	name="visual"   >
+<VisualStyle displayFlags="showWireframe" />
+        <OglModel template="ExtVec3f" name="Visual" fileMesh="../beam/beam.obj" color="1 0.8 0.8"/>
+	<LinearMapping template="MechanicalMapping&lt;Affine,ExtVec3f&gt;"/>
+    </Node>
+</Node>
+
+</Node>

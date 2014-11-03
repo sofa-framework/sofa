@@ -44,9 +44,6 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-
 #ifndef NDEBUG
 #define DEBUGGRID
 #endif
@@ -56,7 +53,7 @@ class SOFA_EULERIAN_FLUID_API Grid2D
 public:
 
     typedef float real;
-    typedef Vec<2,real> vec2;
+    typedef sofa::defaulttype::Vec<2,real> vec2;
 
     struct Cell
     {
@@ -122,7 +119,7 @@ public:
 
     int index(const vec2& p) const
     {
-        return index(rnear(p[0]), rnear(p[1]));
+        return index(sofa::helper::rnear(p[0]), sofa::helper::rnear(p[1]));
     }
 
     Cell* get(int x, int y, Cell* base) const
@@ -161,12 +158,12 @@ public:
 
     Cell* get(const vec2& p)
     {
-        return get(rnear(p[0]),rnear(p[1]));
+        return get(sofa::helper::rnear(p[0]),sofa::helper::rnear(p[1]));
     }
 
     const Cell* get(const vec2& p) const
     {
-        return get(rnear(p[0]),rnear(p[1]));
+        return get(sofa::helper::rnear(p[0]),sofa::helper::rnear(p[1]));
     }
 
     template<int C> real interp(const Cell* base, real fx, real fy) const
@@ -178,8 +175,8 @@ public:
     template<int C> real interp(vec2 p) const
     {
         p[C] += 0.5;
-        int ix = rfloor(p[0]);
-        int iy = rfloor(p[1]);
+        int ix = sofa::helper::rfloor(p[0]);
+        int iy = sofa::helper::rfloor(p[1]);
         const Cell* base = get(ix,iy);
         return interp<C>(base, p[0]-ix, p[1]-iy);
     }
@@ -200,8 +197,8 @@ public:
     template<int C> void impulse(vec2 p, real i)
     {
         p[C] += 0.5;
-        int ix = rfloor(p[0]);
-        int iy = rfloor(p[1]);
+        int ix = sofa::helper::rfloor(p[0]);
+        int iy = sofa::helper::rfloor(p[1]);
         Cell* base = get(ix,iy);
         impulse<C>(base, p[0]-ix, p[1]-iy, i);
     }
@@ -219,8 +216,8 @@ public:
 
     real getpressure(vec2 p)
     {
-        int ix = rfloor(p[0]);
-        int iy = rfloor(p[1]);
+        int ix = sofa::helper::rfloor(p[0]);
+        int iy = sofa::helper::rfloor(p[1]);
         real fx = p[0]-ix;
         real fy = p[1]-iy;
         real* base = getpressure(ix,iy);
@@ -235,8 +232,8 @@ public:
 
     real getlevelset(vec2 p)
     {
-        int ix = rfloor(p[0]);
-        int iy = rfloor(p[1]);
+        int ix = sofa::helper::rfloor(p[0]);
+        int iy = sofa::helper::rfloor(p[1]);
         real fx = p[0]-ix;
         real fy = p[1]-iy;
         real* base = getlevelset(ix,iy);

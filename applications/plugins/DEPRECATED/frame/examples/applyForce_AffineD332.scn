@@ -15,7 +15,7 @@
 		<Node name="Physics">
 			<MechanicalObject template="DeformationGradient332" name="PointSet" useMask="0"  position="0 0 0  1 0 0 0 1 0 0 0 1      0 0 0 0 0 0 0 0 0     0 0 0 0 0 0 0 0 0"  showObject="1" showObjectScale="0.05"/>
 
-			<FrameBlendingMapping template="MechanicalMapping&lt;FrameAffine,DeformationGradient332&gt;"  input="@../DOFs"  output="@PointSet"  />
+			<FrameBlendingMapping template="FrameAffine,DeformationGradient332"  input="@../DOFs"  output="@PointSet"  />
 			<CorotationalForceField template="DeformationGradient332"   printLog="0" />
 		</Node>
 

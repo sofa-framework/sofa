@@ -64,16 +64,12 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace	sofa::component::topology;
-using namespace core::topology;
-
 // --------------------------------------------------------------------------------------
 // ---  Topology Creation/Destruction functions
 // --------------------------------------------------------------------------------------
 
 template< class DataTypes>
-void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, TriangleInformation &, const Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
+void TriangularFEMForceField<DataTypes>::TRQSTriangleHandler::applyCreateFunction(unsigned int triangleIndex, TriangleInformation &, const topology::Triangle &t, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
     if (ff)
     {
@@ -137,6 +133,9 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     f_graphCriteria.setWidget("graph");
     f_graphOrientation.setWidget("graph");
 #endif
+
+	f_poisson.setRequired(true);
+	f_young.setRequired(true);
 }
 
 
@@ -755,7 +754,7 @@ void TriangularFEMForceField<DataTypes>::computeStrainDisplacement(StrainDisplac
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStiffness(StrainDisplacement &J, Stiffness &K, MaterialStiffness &D)
 {
-    Mat<3,6,Real> Jt;
+    defaulttype::Mat<3,6,Real> Jt;
     Jt.transpose(J);
     K=J*D*Jt;
 }
@@ -764,9 +763,9 @@ void TriangularFEMForceField<DataTypes>::computeStiffness(StrainDisplacement &J,
 // --- Strain = StrainDisplacement * Displacement = JtD = Bd
 // --------------------------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStrain(Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D)
+void TriangularFEMForceField<DataTypes>::computeStrain(defaulttype::Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D)
 {
-    Mat<3,6,Real> Jt;
+    defaulttype::Mat<3,6,Real> Jt;
     Jt.transpose(J);
 
     if (_anisotropicMaterial || method == SMALL)
@@ -790,7 +789,7 @@ void TriangularFEMForceField<DataTypes>::computeStrain(Vec<3,Real> &strain, cons
 // --- Stress = K * Strain = KJtD = KBd
 // --------------------------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStress(Vec<3,Real> &stress, MaterialStiffness &K, Vec<3,Real> &strain)
+void TriangularFEMForceField<DataTypes>::computeStress(defaulttype::Vec<3,Real> &stress, MaterialStiffness &K, defaulttype::Vec<3,Real> &strain)
 {
     if (_anisotropicMaterial || method == SMALL)
     {
@@ -812,7 +811,7 @@ void TriangularFEMForceField<DataTypes>::computeStress(Vec<3,Real> &stress, Mate
 // ---	Compute direction of maximum strain (strain = JtD = BD)
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, Vec<3,Real> &strain )
+void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementIndex, defaulttype::Vec<3,Real> &strain )
 {
     NEWMAT::SymmetricMatrix e(2);
     e = 0.0;
@@ -854,7 +853,7 @@ void TriangularFEMForceField<DataTypes>::computePrincipalStrain(Index elementInd
 // ---	Compute direction of maximum stress (stress = KJtD = KBD)
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, Vec<3,Real> &stress)
+void TriangularFEMForceField<DataTypes>::computePrincipalStress(Index elementIndex, defaulttype::Vec<3,Real> &stress)
 {
     NEWMAT::SymmetricMatrix e(2);
     e = 0.0;
@@ -1040,8 +1039,8 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
     Displacement D;
     StrainDisplacement J;
     Stiffness K;
-    Vec<3,Real> strain;
-    Vec<3,Real> stress;
+    defaulttype::Vec<3,Real> strain;
+    defaulttype::Vec<3,Real> stress;
     Transformation R_0_2, R_2_0;
 
     Index a = _topology->getTriangle(elementIndex)[0];
@@ -1125,13 +1124,13 @@ void TriangularFEMForceField<DataTypes>::computeForce(Displacement &F, Index ele
 
 /// Compute current stress
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStress(Vec<3,Real> &stress, Index elementIndex)
+void TriangularFEMForceField<DataTypes>::computeStress(defaulttype::Vec<3,Real> &stress, Index elementIndex)
 {
     //	sofa::helper::system::thread::Trace::print(1, "Hello from computeForce()\n");
 
     Displacement D;
     StrainDisplacement J;
-    Vec<3,Real> strain;
+    defaulttype::Vec<3,Real> strain;
     Transformation R_0_2, R_2_0;
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     Index a = _topology->getTriangle(elementIndex)[0];
@@ -1184,9 +1183,9 @@ void TriangularFEMForceField<DataTypes>::computeStress(Vec<3,Real> &stress, Inde
 // ---	Compute value of stress along a given direction (typically the fiber direction and transverse direction in anisotropic materials)
 // ----------------------------------------------------------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &dir, const Vec<3,Real> &stress)
+void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &dir, const defaulttype::Vec<3,Real> &stress)
 {
-    Mat<3,3,Real> R, Rt;
+    defaulttype::Mat<3,3,Real> R, Rt;
 
     helper::vector<TriangleInformation>& triangleInf = *(this->triangleInfo.beginEdit());
 
@@ -1207,7 +1206,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stres
 }
 
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir, const Vec<3,Real> &stress)
+void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stress_across_dir, Index elementIndex, const Coord &dir, const defaulttype::Vec<3,Real> &stress)
 {
     Index a = _topology->getTriangle(elementIndex)[0];
     Index b = _topology->getTriangle(elementIndex)[1];
@@ -1234,7 +1233,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAcrossDirection(Real &stre
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stress_along_dir, Index elementIndex, const Coord &dir)
 {
-    Vec<3,Real> stress;
+    defaulttype::Vec<3,Real> stress;
     this->computeStress(stress, elementIndex);
     this->computeStressAlongDirection(stress_along_dir, elementIndex, dir, stress);
 }
@@ -1253,8 +1252,8 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
     sout << "TriangularFEMForceField::applyStiffnessSmall"<<sendl;
 #endif
 
-    Mat<6,3,Real> J;
-    Vec<3,Real> strain, stress;
+    defaulttype::Mat<6,3,Real> J;
+    defaulttype::Vec<3,Real> strain, stress;
     Displacement D, F;
     unsigned int nbTriangles=_topology->getNbTriangles();
 
@@ -1308,8 +1307,8 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
     sout << "TriangularFEMForceField::applyStiffnessLarge"<<sendl;
 #endif
 
-    Mat<6,3,Real> J;
-    Vec<3,Real> strain, stress;
+    defaulttype::Mat<6,3,Real> J;
+    defaulttype::Vec<3,Real> strain, stress;
     MaterialStiffness K;
     Displacement D;
     Coord x_2;
@@ -1811,7 +1810,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         double maxStress = 0.0;
         for ( unsigned int i = 0 ; i < vertexInf.size() ; i++)
         {
-            BaseMeshTopology::TrianglesAroundVertex triangles = _topology->getTrianglesAroundVertex(i);
+            core::topology::BaseMeshTopology::TrianglesAroundVertex triangles = _topology->getTrianglesAroundVertex(i);
             double averageStress = 0.0;
             double sumArea = 0.0;
             for ( unsigned int v = 0 ; v < triangles.size() ; v++)

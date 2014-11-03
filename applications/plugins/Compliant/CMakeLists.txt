@@ -19,7 +19,6 @@ set(HEADER_FILES
     mapping/ProjectionMapping.h
     mapping/RigidComMultiMapping.h
     mapping/AffineMultiMapping.h
-    mapping/OffsetMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/LDLTSolver.h
@@ -37,15 +36,18 @@ set(HEADER_FILES
     numericalsolver/PreconditionedCgSolver.h
 
     preconditioner/BasePreconditioner.h
-    preconditioner/LDLTPreconditioner.h
+    preconditioner/CompliantLDLTPreconditioner.h
     #preconditioner/IncompleteCholeskyPreconditioner.h
+    preconditioner/CompliantJacobiPreconditioner.h
 
     assembly/AssemblyHelper.h
     assembly/AssemblyVisitor.h
     assembly/AssembledSystem.h
 
-    odesolver/AssembledSolver.h
-    odesolver/ConstantAssembledSolver.h
+    odesolver/CompliantImplicitSolver.h
+    odesolver/ConstantCompliantImplicitSolver.h
+    odesolver/CompliantNLImplicitSolver.h
+    odesolver/CompliantPostStabilizationAnimationLoop.h
 
     compliance/UniformCompliance.h
     compliance/UniformCompliance.inl
@@ -56,12 +58,16 @@ set(HEADER_FILES
     constraint/Constraint.h
     constraint/CoulombConstraint.h
     constraint/UnilateralConstraint.h
+    constraint/ResistanceConstraint.h
 
     constraint/BaseConstraintValue.h
     constraint/Stabilization.h
     constraint/ConstraintValue.h
     constraint/Restitution.h
     constraint/DampingValue.h
+    constraint/OffsettedConstraintValue.h
+    constraint/HolonomicConstraintValue.h
+    constraint/VelocityConstraintValue.h
 
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -110,7 +116,6 @@ set(SOURCE_FILES
     mapping/ProjectionMapping.cpp
     mapping/RigidComMultiMapping.cpp
     mapping/AffineMultiMapping.cpp
-    mapping/OffsetMapping.cpp
 
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp
@@ -125,22 +130,29 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
 
-    preconditioner/LDLTPreconditioner.cpp
+    preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
+    preconditioner/CompliantJacobiPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp
     assembly/AssembledSystem.cpp
 
-    odesolver/AssembledSolver.cpp
-    odesolver/ConstantAssembledSolver.cpp
+    odesolver/CompliantImplicitSolver.cpp
+    odesolver/ConstantCompliantImplicitSolver.cpp
+    odesolver/CompliantNLImplicitSolver.cpp
+    odesolver/CompliantPostStabilizationAnimationLoop.cpp
 
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
+    constraint/ResistanceConstraint.cpp
 
     constraint/ConstraintValue.cpp
     constraint/Stabilization.cpp
     constraint/Restitution.cpp
     constraint/DampingValue.cpp
+    constraint/OffsettedConstraintValue.cpp
+    constraint/HolonomicConstraintValue.cpp
+    constraint/VelocityConstraintValue.cpp
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
@@ -188,12 +200,15 @@ AddSourceDependencies( GenerateRigid )
 # linking with boost-system is needed
 # that means an installed version of boost is mandatory (sadly)
 # I loved the header-only boost
-if(NOT SOFA-EXTERNAL_BOOST)
-    message(FATAL_ERROR "Compliant plugin needs a compiled Boost library >= 1.48. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
-endif()
 
-find_package(Boost COMPONENTS system REQUIRED)
-AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+# max: hopefully this is not needed anymore
+
+# if(NOT SOFA-EXTERNAL_BOOST)
+#    message(FATAL_ERROR "Compliant plugin needs a compiled Boost library >= 1.48. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
+# endif()
+# find_package(Boost COMPONENTS system REQUIRED)
+# AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+
 
 if(LINUX OR UNIX AND NOT APPLE)
     AddLinkerDependencies( rt ) # clock_gettime

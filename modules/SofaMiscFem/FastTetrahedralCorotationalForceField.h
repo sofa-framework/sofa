@@ -47,9 +47,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-
 
 template<class DataTypes>
 class FastTetrahedralCorotationalForceField : public core::behavior::ForceField<DataTypes>
@@ -67,7 +64,7 @@ public:
     typedef Data<VecCoord>                  DataVecCoord;
     typedef Data<VecDeriv>                  DataVecDeriv;
 
-    typedef Mat<3,3,Real>       Mat3x3  ;
+    typedef defaulttype::Mat<3,3,Real>       Mat3x3  ;
 
     typedef enum
     {
@@ -136,29 +133,31 @@ protected:
         }
     };
 
-    class FTCFTetrahedronHandler : public TopologyDataHandler<Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >
+    class FTCFTetrahedronHandler : public topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >
     {
     public:
         typedef typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation TetrahedronRestInformation;
 
         FTCFTetrahedronHandler(FastTetrahedralCorotationalForceField<DataTypes>* ff,
-                TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> >* data )
-            :TopologyDataHandler<Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >(data)
+                topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> >* data )
+            :topology::TopologyDataHandler<topology::Tetrahedron, sofa::helper::vector<TetrahedronRestInformation> >(data)
             ,ff(ff)
         {
 
         }
 
-        void applyCreateFunction(unsigned int, TetrahedronRestInformation &t, const Tetrahedron
-                &, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &);
+        void applyCreateFunction(unsigned int, TetrahedronRestInformation &t,
+                                 const topology::Tetrahedron&,
+                                 const sofa::helper::vector<unsigned int> &,
+                                 const sofa::helper::vector<double> &);
 
     protected:
         FastTetrahedralCorotationalForceField<DataTypes>* ff;
 
     };
 
-    EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
-    TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
+    topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
 
 
     sofa::core::topology::BaseMeshTopology* _topology;
@@ -221,15 +220,15 @@ protected :
 
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
-    EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<Vec3dTypes>;
+extern template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<sofa::defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<Vec3fTypes>;
+extern template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 #endif
 

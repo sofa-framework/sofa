@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include <sofa/helper/Quater.h>
 
 #include "../types/DeformationGradientTypes.h"
@@ -64,6 +65,8 @@ namespace sofa {
             cerr<<"StrainMappingTest::runTest, f="<< f << endl;
             cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
 
+            static_cast<_Mapping*>(this->mapping)->assemble.setValue(true);
+
             return Inherited::runTest(xin,xout,xin,expectedChildCoords);
         }
 
@@ -119,8 +122,8 @@ namespace sofa {
                 expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
 //              cerr<<"voigt strain = " << defo << endl;
 
-//              helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
-                helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // random rotation to combine to strain
+                helper::Quater<Real>::fromEuler( 0.1, -.2, .3 ).toMatrix(rotation); // random rotation to combine to strain
+//                helper::Quater<Real>::fromEuler( 0,0,0 ).toMatrix(rotation); // random rotation to combine to strain
 
                 return Inherited::runTest( rotation, symGradDef, expectedChildCoords );
 
@@ -232,6 +235,7 @@ namespace sofa {
         typedef typename Inherited::Real Real;
         typedef typename Inherited::OutVecCoord OutVecCoord;
         typedef typename Inherited::OutCoord OutCoord;
+        typedef typename Inherited::OutDeriv OutDeriv;
         typedef typename Inherited::OutVecDeriv OutVecDeriv;
 
 
@@ -247,9 +251,9 @@ namespace sofa {
 
 
         /// since principal stretches are oder-independent, sort them before comparison
-        virtual OutCoord difference( const OutCoord& a, const OutCoord& b )
+        virtual OutDeriv difference( const OutCoord& a, const OutCoord& b )
         {
-            return sort(a)-sort(b);
+            return (OutDeriv)(sort(a)-sort(b));
         }
 
 

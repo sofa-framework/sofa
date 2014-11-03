@@ -91,6 +91,7 @@ void VTKExporter::init()
         serr << "VTKExporter : error, no topology ." << sendl;
         return;
     }
+    else sout << "VTKExporter: found topology " << topology->getName() << sendl;
 
     nbFiles = 0;
 // 	const std::string& filename = vtkFilename.getFullPath();
@@ -585,6 +586,19 @@ void VTKExporter::writeVTKXML()
             +( (writeQuads.getValue()) ? topology->getNbQuads() : 0 )
             +( (writeTetras.getValue()) ? topology->getNbTetras() : 0 )
             +( (writeHexas.getValue()) ? topology->getNbHexas() : 0 );
+
+    if (this->f_printLog.getValue())
+    {
+        std::cout << "### VTKExporter[" << this->getName() << "] ###" << std::endl;
+        std::cout << "Nb points: " << nbp << std::endl;
+        std::cout << "Nb edges: " << ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 ) << std::endl;
+        std::cout << "Nb triangles: " << ( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 ) << std::endl;
+        std::cout << "Nb quads: " << ( (writeQuads.getValue()) ? topology->getNbQuads() : 0 ) << std::endl;
+        std::cout << "Nb tetras: " << ( (writeTetras.getValue()) ? topology->getNbTetras() : 0 ) << std::endl;
+        std::cout << "Nb hexas: " << ( (writeHexas.getValue()) ? topology->getNbHexas() : 0 ) << std::endl;
+        std::cout << "### ###" << std::endl;
+        std::cout << "Total nb cells: " << numberOfCells << std::endl;
+    }
 //	unsigned int totalSize =     ( (writeEdges.getValue()) ? 3 * topology->getNbEdges() : 0 )
 // 				   +( (writeTriangles.getValue()) ? 4 *topology->getNbTriangles() : 0 )
 // 				   +( (writeQuads.getValue()) ? 5 *topology->getNbQuads() : 0 )
@@ -711,7 +725,7 @@ void VTKExporter::writeVTKXML()
     {
         for (int i=0 ; i<topology->getNbHexas() ; i++)
         {
-            num += 6;
+            num += 8;
             *outfile << num << " ";
         }
     }

@@ -63,7 +63,7 @@ namespace sofa
 
                         // Set the current camera's orientation in recorded camera for navigation
                         sofa::component::visualmodel::RecordedCamera::Quat _ori = currentCamera->p_orientation.getValue();
-                        sofa::helper::vector<Quat>oris = currentCamera->m_translationOrientations.getValue();//push_back(m_vectorOrientations);
+                        sofa::helper::vector<sofa::component::visualmodel::RecordedCamera::Quat>oris = currentCamera->m_translationOrientations.getValue();//push_back(m_vectorOrientations);
                         oris.push_back(_ori);
                         currentCamera->m_translationOrientations.setValue(oris);
 

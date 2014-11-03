@@ -40,11 +40,6 @@ namespace component
 {
 namespace topology
 {
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
-using namespace sofa::core::topology;
-using namespace sofa::core;
-
 /**
  * This class, called SimpleTesselatedTetraTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
  *
@@ -55,10 +50,10 @@ using namespace sofa::core;
  *
 */
 
-class SimpleTesselatedTetraTopologicalMapping : public TopologicalMapping
+class SimpleTesselatedTetraTopologicalMapping : public sofa::core::topology::TopologicalMapping
 {
 public:
-    SOFA_CLASS(SimpleTesselatedTetraTopologicalMapping,TopologicalMapping);
+    SOFA_CLASS(SimpleTesselatedTetraTopologicalMapping,sofa::core::topology::TopologicalMapping);
 protected:
     /** \brief Constructor.
          *

@@ -65,9 +65,6 @@ namespace component
 
 namespace forcefield
 {
-using namespace sofa::helper;
-using namespace sofa::defaulttype;
-using namespace sofa::component::topology;
 
 /**
 Bending elastic force added between vertices of triangles sharing a common edge.
@@ -124,8 +121,8 @@ protected:
     {
     public:
         enum {A=0,B,C,D};     ///< vertex names as in Volino's paper
-        Vec<4,unsigned> vid;  ///< vertex indices, in circular order
-        Vec<4,Real> alpha;    ///< weight of each vertex in the bending vector
+        sofa::defaulttype::Vec<4,unsigned> vid;  ///< vertex indices, in circular order
+        sofa::defaulttype::Vec<4,Real> alpha;    ///< weight of each vertex in the bending vector
         //mutable Deriv dpKfact[4];
         Real lambda;          ///< bending stiffness
 
@@ -184,6 +181,7 @@ protected:
         // Optimized version of addDForce
         void addDForce( VecDeriv& df, const VecDeriv& dp, Real kfactor) const
         {
+            using namespace sofa::component::topology;
             if( !is_activated ) return;
 
             Deriv dpKfact[4];
@@ -260,22 +258,22 @@ protected:
     };
 
     /// The list of edge springs, one for each edge between two triangles
-    EdgeData<helper::vector<EdgeSpring> > edgeSprings;
+    sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > edgeSprings;
 
-    class TriangularBSEdgeHandler : public TopologyDataHandler<Edge,vector<EdgeSpring> >
+    class TriangularBSEdgeHandler : public sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, vector<EdgeSpring> >
     {
     public:
         typedef typename FastTriangularBendingSprings<DataTypes>::EdgeSpring EdgeSpring;
-        TriangularBSEdgeHandler(FastTriangularBendingSprings<DataTypes>* _ff, EdgeData<sofa::helper::vector<EdgeSpring> >* _data)
-            : TopologyDataHandler<Edge, sofa::helper::vector<EdgeSpring> >(_data), ff(_ff) {}
+        TriangularBSEdgeHandler(FastTriangularBendingSprings<DataTypes>* _ff, sofa::component::topology::EdgeData<sofa::helper::vector<EdgeSpring> >* _data)
+            : sofa::component::topology::TopologyDataHandler<sofa::component::topology::Edge, sofa::helper::vector<EdgeSpring> >(_data), ff(_ff) {}
 
         void applyCreateFunction(unsigned int edgeIndex,
                 EdgeSpring &ei,
-                const Edge& ,  const sofa::helper::vector< unsigned int > &,
+                const sofa::component::topology::Edge& ,  const sofa::helper::vector< unsigned int > &,
                 const sofa::helper::vector< double >&);
 
         void applyTriangleCreation(const sofa::helper::vector<unsigned int> &triangleAdded,
-                const sofa::helper::vector<Triangle> & ,
+                const sofa::helper::vector<sofa::component::topology::Triangle> & ,
                 const sofa::helper::vector<sofa::helper::vector<unsigned int> > & ,
                 const sofa::helper::vector<sofa::helper::vector<double> > &);
 
@@ -306,7 +304,7 @@ protected:
 
     virtual ~FastTriangularBendingSprings();
 
-    EdgeData<helper::vector<EdgeSpring> > &getEdgeInfo() {return edgeSprings;}
+    sofa::component::topology::EdgeData<helper::vector<EdgeSpring> > &getEdgeInfo() {return edgeSprings;}
 
     TriangularBSEdgeHandler* edgeHandler;
 

@@ -2,7 +2,8 @@
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />
-    <CollisionGroup />-
+    <CollisionGroup />
+    <DiscreteIntersection />
     <Node name="Liver">
         <EulerImplicit name="cg_odesolver" rayleighMass="0.1" rayleighStiffness="0.2" printLog="false" />
 <!--        <CGLinearSolver template="CompressedRowSparseMatrix3d" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />-->

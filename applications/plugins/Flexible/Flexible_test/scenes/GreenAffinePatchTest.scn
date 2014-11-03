@@ -5,7 +5,7 @@
   <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields" />
 
   <Node name="Patch" >
-    <AssembledSolver/>
+    <CompliantImplicitSolver/>
     <LDLTSolver/> 
 
     <!--Nodes-->
@@ -27,13 +27,13 @@
     <Node 	name="Elasticity" >
       <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" showSamplesScale="0" method="0" order="1" />
       <MechanicalObject template="F332"  name="MoElasticity" showObject="1" showObjectScale="5"/>
-      <LinearMapping template="Mapping&lt;Vec3d,F332&gt;" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"/>
+      <LinearMapping template="Vec3d,F332" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1" assemble="1"/>
 
       <!--Material-->
       <Node 	name="Material" >
         <MechanicalObject  template="E332" name="E"  />
-        <GreenStrainMapping template="Mapping&lt;F332,E332&gt;"/>
-        <HookeForceField  template="E332" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0"/> 
+        <GreenStrainMapping template="F332,E332" assemble="1"/>
+        <HookeForceField  template="E332" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0" assemble="1"/> 
       </Node>
     
     </Node>

@@ -8,5 +8,5 @@
   <CGLinearSolver name="linear solver"  iterations="50"  tolerance="1e-009"  threshold="1e-009" />
   <MechanicalObject template="Rigid" name="DOFs"  rest_position="	0 0 0 0 0 0 1"/>
   <OglModel name="Visual" fileMesh="data/pelvis_f.obj" color="1 .4 0.5 1" />
-  <RigidMapping template="Mapping&lt;Rigid,ExtVec3f&gt;"  input='@.'  output='@Visual' />
+  <RigidMapping template="Rigid,ExtVec3f"  input='@.'  output='@Visual' />
 </Node>

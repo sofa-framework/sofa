@@ -176,7 +176,7 @@ void InciseAlongPathPerformer::PerformCompleteIncision()
     // - Creating direction of incision
     sofa::defaulttype::Vector3 dir = startBody.point - the_point;
     // - looking for triangle in this direction
-    sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeometry;
+    sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* triangleGeometry;
     startBody.body->getContext()->get(triangleGeometry);
     int the_triangle = triangleGeometry->getTriangleInDirection(initialNbPoints, dir);
 
@@ -226,7 +226,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
 
     BodyPicked currentBody=this->interactor->getBodyPicked();
 
-    sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* topoGeo;
+    sofa::component::topology::TriangleSetGeometryAlgorithms<defaulttype::Vec3Types>* topoGeo;
     firstBody.body->getContext()->get(topoGeo);
 
     if (!topoGeo)
@@ -241,11 +241,11 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
     // Output declarations
     sofa::helper::vector< sofa::core::topology::TopologyObjectType> topoPath_list;
     sofa::helper::vector<unsigned int> indices_list;
-    sofa::helper::vector< Vec<3, double> > coords2_list;
+    sofa::helper::vector< sofa::defaulttype::Vec<3, double> > coords2_list;
     sofa::defaulttype::Vec<3,double> pointA = firstBody.point;
     sofa::defaulttype::Vec<3,double> pointB = currentBody.point;
 
-    sofa::helper::vector< Vec<3, double> > positions;
+    sofa::helper::vector< sofa::defaulttype::Vec<3, double> > positions;
     bool path_ok = topoGeo->computeIntersectedObjectsList(0, pointA, pointB, firstBody.indexCollisionElement, currentBody.indexCollisionElement, topoPath_list, indices_list, coords2_list);
 
     if (!path_ok)
@@ -265,7 +265,7 @@ void InciseAlongPathPerformer::draw(const core::visual::VisualParams* )
         else if (topoPath_list[i] == sofa::core::topology::EDGE)
         {
             sofa::core::topology::BaseMeshTopology::Edge theEdge = topoCon->getEdge(indices_list[i]);
-            const Vec<3, double> AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
+            const sofa::defaulttype::Vec<3, double> AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
             positions[i] = topoGeo->getPointPosition(theEdge[0]) + AB *coords2_list[i][0];
         }
         else if(topoPath_list[i] == sofa::core::topology::TRIANGLE)

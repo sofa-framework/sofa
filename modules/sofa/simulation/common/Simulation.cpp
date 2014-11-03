@@ -139,6 +139,25 @@ void Simulation::exportXML ( Node* root, const char* fileName )
     }
 }
 
+/// Print all object in the graph
+void Simulation::exportGraph ( Node* root, const char* filename )
+{
+    if ( !root ) return;
+
+    SceneLoader *exporter = SceneLoaderFactory::getInstance()->getExporterEntryFileName(filename);
+
+    if (exporter)
+    {
+        exporter->write(root,filename);
+    }
+    else
+    {
+        // unable to write the file
+        std::cerr << "Simulation::exportGraph : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export" << std::endl;
+    }
+}
+
+
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
@@ -298,6 +317,7 @@ void Simulation::initTextures ( Node* root )
 /// Compute the bounding box of the scene.
 void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
 {
+	if ( !root ) return;
     sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
     core::visual::VisualLoop* vloop = root->getVisualLoop();
     if(vloop)
@@ -308,6 +328,19 @@ void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool 
     {
         serr<<"ERROR in computeBBox() : VisualLoop expected at the root node"<<sendl;
         return;
+    }
+}
+
+/// Compute the bounding box of the scene.
+void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
+{
+    assert ( root!=NULL );
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    root->execute<UpdateBoundingBoxVisitor>( params );
+    defaulttype::BoundingBox bb = root->f_bbox.getValue();
+    for(int i=0; i<3; i++){
+        minBBox[i]= bb.minBBox()[i];
+        maxBBox[i]= bb.maxBBox()[i];
     }
 }
 
@@ -416,9 +449,8 @@ Node::SPtr Simulation::load ( const char *filename )
     }
 
     // unable to load file
-    std::cerr << "Simulation : Error : extension not handled" << std::endl;
+    std::cerr << "Simulation : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << std::endl;
     return NULL;
-
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid

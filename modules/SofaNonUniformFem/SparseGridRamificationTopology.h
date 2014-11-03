@@ -36,8 +36,6 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
 /// a SparseGridTopology where each resulting cube contains only one independant connexe component (nodes can be multiplied by using virtual nodes)
 class SOFA_NON_UNIFORM_FEM_API SparseGridRamificationTopology : public SparseGridTopology
 {
@@ -97,7 +95,7 @@ public:
     /// a connexion corresponds to a connexe component in each regular hexa (each non-void hexa has at less one connexion)
     struct Connexion
     {
-        Connexion():_parent(NULL) {};
+        Connexion():_parent(NULL), _coarsestParent(0), _hexaIdx(0), _nonRamifiedHexaIdx(0), _tmp(0) {};
 
         helper::fixed_array< std::set<Connexion*>,NUM_CONNECTED_NODES >	_neighbors;	// the connexion graph at a given level (it can have several neighbors in each direction)
 

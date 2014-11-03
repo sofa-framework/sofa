@@ -29,11 +29,11 @@
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS3" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
-                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping13"  mapMatrices="true"  input="@../MS1" output="@MS3" />
+                <BarycentricMapping template="Vec3d,Vec3d" name="mapping13"  mapMatrices="true"  input="@../MS1" output="@MS3" />
             </Node>
             <Node name="VisuA">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS1" output="@Visual" />
+                <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS1" output="@Visual" />
             </Node>
         </Node>
         <Node name="HexahedraB">
@@ -52,11 +52,11 @@
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS4" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
-                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping24"  mapMatrices="true" input="@../MS2" output="@MS4" />
+                <BarycentricMapping template="Vec3d,Vec3d" name="mapping24"  mapMatrices="true" input="@../MS2" output="@MS4" />
             </Node>
             <Node name="VisuA">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS2" output="@Visual" />
+                <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS2" output="@Visual" />
             </Node>
         </Node>
         <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="@HexahedraA/MappedTetrahedronA" object2="@HexahedraB/MappedTetrahedronB" />
@@ -81,11 +81,11 @@
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS3" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
-                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping13" input="@../MS1" output="@MS3" />
+                <BarycentricMapping template="Vec3d,Vec3d" name="mapping13" input="@../MS1" output="@MS3" />
             </Node>
             <Node name="VisuA">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS1" output="@Visual" />
+                <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS1" output="@Visual" />
             </Node>
         </Node>
         <Node name="HexahedraB">
@@ -104,11 +104,11 @@
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="tetraGeomAlgo" />
                 <MechanicalObject name="MS4" />
                 <TetrahedralCorotationalFEMForceField name="TetraFF3" youngModulus="10" poissonRatio="0.3" method="large" drawing="1" />
-                <BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="mapping13" input="@../MS2" output="@MS4" />
+                <BarycentricMapping template="Vec3d,Vec3d" name="mapping13" input="@../MS2" output="@MS4" />
             </Node>
             <Node name="VisuA">
                 <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />
-                <IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="visualMapping" input="@../MS2" output="@Visual" />
+                <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS2" output="@Visual" />
             </Node>
         </Node>
         <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="@HexahedraA/MappedTetrahedronA" object2="@HexahedraB/MappedTetrahedronB" />

@@ -58,7 +58,7 @@ namespace component
 namespace container
 {
 
-using namespace sofa::helper;
+
 
 template<class DataTypes>
 typename SpatialGrid<DataTypes>::Grid SpatialGrid<DataTypes>::emptyGrid;
@@ -142,9 +142,9 @@ typename SpatialGrid<DataTypes>::Grid* SpatialGrid<DataTypes>::getGrid(const Key
 template<class DataTypes>
 typename SpatialGrid<DataTypes>::Cell* SpatialGrid<DataTypes>::getCell(const Coord& x)
 {
-    int ix = rfloor(x[0]*invCellWidth);
-    int iy = rfloor(x[1]*invCellWidth);
-    int iz = rfloor(x[2]*invCellWidth);
+    int ix = sofa::helper::rfloor(x[0]*invCellWidth);
+    int iy = sofa::helper::rfloor(x[1]*invCellWidth);
+    int iz = sofa::helper::rfloor(x[2]*invCellWidth);
     Key k(ix >> GRIDDIM_LOG2, iy >> GRIDDIM_LOG2, iz >> GRIDDIM_LOG2);
     ix &= GRIDDIM-1;
     iy &= GRIDDIM-1;
@@ -287,7 +287,7 @@ void SpatialGrid<DataTypes>::computeField(ParticleField* field, Real dist)
 {
     //dist /= cellWidth;
     const Real dist2 = dist*dist;
-    const int r = rceil(dist/cellWidth)+1;
+    const int r = sofa::helper::rceil(dist/cellWidth)+1;
     int x,y,z;
     int x2,y2,z2;
     if (r > GRIDDIM)
@@ -454,9 +454,9 @@ void SpatialGrid<DataTypes>::begin()
 template<class DataTypes>
 void SpatialGrid<DataTypes>::add(int i, const Coord& pos, bool allNeighbors)
 {
-    int ix = rfloor(pos[0]*invCellWidth);
-    int iy = rfloor(pos[1]*invCellWidth);
-    int iz = rfloor(pos[2]*invCellWidth);
+    int ix = sofa::helper::rfloor(pos[0]*invCellWidth);
+    int iy = sofa::helper::rfloor(pos[1]*invCellWidth);
+    int iz = sofa::helper::rfloor(pos[2]*invCellWidth);
     Key k(ix >> GRIDDIM_LOG2, iy >> GRIDDIM_LOG2, iz >> GRIDDIM_LOG2);
     ix &= GRIDDIM-1;
     iy &= GRIDDIM-1;

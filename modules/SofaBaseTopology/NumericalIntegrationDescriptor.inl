@@ -37,9 +37,6 @@ namespace component
 namespace topology
 {
 
-using namespace sofa::defaulttype;
-
-
 template< typename Real, int N>
 typename NumericalIntegrationDescriptor<Real,N>::QuadraturePointArray NumericalIntegrationDescriptor<Real,N>::getQuadratureMethod(const QuadratureMethod qt, const IntegrationOrder order) const
 {

@@ -84,10 +84,6 @@ else()
     set(SOFA-EXTERNAL_TINYXML 1 CACHE INTERNAL "Use the system / user compiled tinyxml library instead of miniBoost" FORCE)
 endif()
 
-## bullet
-#set(BULLET_PATH "${SOFA_EXTLIBS_DIR}/bullet-2.82-r2704")
-#sofa_option(SOFA-EXTERNAL_BULLET_PATH PATH "${BULLET_PATH}" "Bullet path, set to blank if you want to use the bullet you built on your system or set a path if you want to use a compiled bullet")
-
 #sofa_option(SOFA-EXTERNAL_TINYXML_INCLUDE_DIR PATH "" "For pre-compiled tinyxml: library where headers are available")
 #sofa_option(SOFA-EXTERNAL_TINYXML_LIBRARY PATH "" "For pre-compiled tinyxml: release-mode library name")
 #sofa_option(SOFA-EXTERNAL_TINYXML_DEBUG_LIBRARY PATH "" "For pre-compiled tinyxml: debug-mode library name")
@@ -474,10 +470,10 @@ if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
     set(CUDA_HOST_COMPILER "gcc" CACHE STRING "Host side compiler used by NVCC" FORCE)
 endif()
 
-# in debug mode, enforce cuda to compile host code in debug (the same could be done for device code with -G)
-set(CUDA_NVCC_FLAGS_DEBUG ${CUDA_NVCC_FLAGS_DEBUG} -g)
-# in release mode, enforce optimizations for host code
-set(CUDA_NVCC_FLAGS_RELEASE ${CUDA_NVCC_FLAGS_RELEASE} -O2 -DNDEBUG)
+## in debug mode, enforce cuda to compile host code in debug (the same could be done for device code with -G)
+set(CUDA_NVCC_FLAGS_DEBUG "-g" CACHE STRING "Semi-colon delimit multiple arguments" FORCE)
+## in release mode, enforce optimizations for host code
+set(CUDA_NVCC_FLAGS_RELEASE "-DNDEBUG" CACHE STRING "Semi-colon delimit multiple arguments" FORCE)
 
 
 # plugins (auto-search)

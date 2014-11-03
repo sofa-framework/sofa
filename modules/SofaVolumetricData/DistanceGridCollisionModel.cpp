@@ -499,7 +499,7 @@ void FFDDistanceGridCollisionModel::init()
     if (box.getValue()[0][0]<box.getValue()[1][0]) sout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     sout << sendl;
     grid = DistanceGrid::loadShared(fileFFDDistanceGrid.getFullPath(), scale.getValue(), sampling.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
-    if (grid && !dumpfilename.getValue().empty())
+    if (!dumpfilename.getValue().empty())
     {
         sout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<sendl;
         grid->save(dumpfilename.getFullPath());
@@ -691,7 +691,7 @@ void FFDDistanceGridCollisionModel::updateGrid()
                 SReal r2 = (cube.corners[j] - cube.center).norm2();
                 if (r2 > radius2) radius2 = r2;
             }
-            cube.radius = rsqrt(radius2);
+            cube.radius = sofa::helper::rsqrt(radius2);
             cube.updateDeform();
             cube.pointsUpdated = false;
             cube.facesUpdated = false;

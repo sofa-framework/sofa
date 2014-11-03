@@ -100,7 +100,7 @@ void MeshSTL::readSTL (const std::string &filename)
     #ifndef NDEBUG
     std::size_t namepos = filename.find_last_of("/");
     std::string name = filename.substr(namepos+1);
-    std::cout << "Reading STL file : " << name << std::endl;
+    sout << "Reading STL file : " << name << sendl;
     #endif
     
     vector< vector<int> > vertNormTexIndices;
@@ -178,7 +178,6 @@ void MeshSTL::readBinarySTL (const std::string &filename)
     #endif
     
     std::ifstream dataFile(filename.c_str(), std::ios::in | std::ios::binary);
-    std::string line;
     std::streampos position = 0;
     std::streampos length;
     unsigned long int nbrFacet;

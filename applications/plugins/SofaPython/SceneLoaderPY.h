@@ -28,29 +28,77 @@
 #include "SofaPython.h"
 #include <sofa/simulation/common/SceneLoaderFactory.h>
 
+
+#include <sofa/simulation/common/Visitor.h>
+#include <string>
+#include <map>
+
 namespace sofa
 {
 
 namespace simulation
 {
 
-class SceneLoaderPY : public SceneLoader
+
+// The scene loader/exporter for python scene files
+class SOFA_SOFAPYTHON_API SceneLoaderPY : public SceneLoader
 {
 public:
     /// Pre-loading check
-    SOFA_SOFAPYTHON_API virtual bool canLoadFileExtension(const char *extension);
+    virtual bool canLoadFileExtension(const char *extension);
+    /// Pre-saving check
+    virtual bool canWriteFileExtension(const char *extension);
 
     /// load the file
-    SOFA_SOFAPYTHON_API virtual Node::SPtr load(const char *filename);
-    SOFA_SOFAPYTHON_API Node::SPtr loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
-    SOFA_SOFAPYTHON_API bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+    virtual Node::SPtr load(const char *filename);
+    Node::SPtr loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+    bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+
+    /// write the file
+    virtual void write(Node* node, const char *filename);
 
     /// get the file type description
-    SOFA_SOFAPYTHON_API virtual std::string getFileTypeDesc();
+    virtual std::string getFileTypeDesc();
 
     /// get the list of file extensions
-    SOFA_SOFAPYTHON_API virtual void getExtensionList(ExtensionList* list);
+    virtual void getExtensionList(ExtensionList* list);
 };
+
+///////////
+
+
+
+/// Export the scene graph in Python format
+void SOFA_SOFAPYTHON_API exportPython( Node* node, const char* fileName=NULL );
+
+
+
+/// Visitor that exports all nodes/components in python
+class SOFA_SOFAPYTHON_API PythonExporterVisitor : public Visitor
+{
+
+protected:
+
+    std::ostream& m_out; ///< the output stream
+
+    std::map<core::objectmodel::BaseNode*, std::string > m_mapNodeVariable; ///< gives a python variable name per node
+    unsigned m_variableIndex; ///< unique index per node to garanty a unique variablename
+
+public:
+
+    PythonExporterVisitor(std::ostream& out) : Visitor(sofa::core::ExecParams::defaultInstance()), m_out(out), m_variableIndex(0) {}
+
+    template<class T> void processObject( T obj, const std::string& nodeVariable );
+
+    virtual Result processNodeTopDown(Node* node);
+    virtual void processNodeBottomUp(Node* node);
+
+    virtual const char* getClassName() const { return "PythonExporterVisitor"; }
+
+};
+
+
+
 
 } // namespace simulation
 

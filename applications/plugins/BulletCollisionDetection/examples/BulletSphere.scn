@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Node 	 name="Root"  gravity="0 0 0"  dt="1"  >
+	<RequiredPlugin name="detection"  printLog="1"  pluginName="BulletCollisionDetection" />
+	<BulletCollisionDetection name="bulletCollisionDetection0" />
+	<VisualStyle name="displayFlags"  displayFlags="showAll" />
+	<DefaultPipeline name="DefaultCollisionPipeline"  verbose="0"  draw="0"  depth="6" />
+	<DefaultContactManager name="Response"  response="default" />
+	<DefaultCollisionGroupManager name="Group" />
+	<EulerImplicitSolver name="Implicit Euler Solver"  rayleighMass="0" />
+	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" />
+	<BulletIntersection name="1"  contactDistance="0.04" />
+	<Node 	 name="RigMec"  gravity="0 0 0"  >
+		<MechanicalObject template="Vec3d" name="falling_particle"  position="0 0 5 3 3 6 6 7 7"  velocity="0 0 -0.01 0 0 -0.01 0 0 -0.01"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  reserve="0" />
+		<TBulletSphereModel template="Vec3d" name="tBulletTriangleModel2"  proximity="0"  margin="0.04" />
+		<UniformMass template="Vec3d" name="Mass"  mass="0.33" />
+	</Node>
+	<Node 	 name="Floor"  >
+		<Node 	 name="TRIANGLE"  >
+			<MechanicalObject template="Vec3d" name="fix"  position="0 0 0 3 3 0 6 7 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  reserve="0" />
+			<UniformMass template="Vec3d" name="Mass"  mass="0.33333" />
+			<TBulletSphereModel template="Vec3d" name="tBulletTriangleModel2"  proximity="0"  margin="0.04" />
+			<FixedConstraint template="Vec3d" name="fixedConstraint0"  indices="0 1 2" />
+		</Node>
+	</Node>
+</Node>

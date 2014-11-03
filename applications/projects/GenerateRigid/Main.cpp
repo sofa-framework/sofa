@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 //////// SCALE //////
 	Vec3d scale(1, 1, 1);
 
-	for( unsigned i = 0; i < 3; ++i) {
+    for( int i = 0; i < 3; ++i) {
 		if( argc > 4 + i ) scale[i] = std::atof(argv[4 + i]);
 	}
 
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
 //////// ROTATION from euler angles in degrees //////
     Vec3d rotation(0,0,0);
 
-    for( unsigned i = 0; i < 3; ++i) {
+    for( int i = 0; i < 3; ++i) {
         if( argc > 7 + i ) rotation[i] = std::atof(argv[7 + i]);
     }
 

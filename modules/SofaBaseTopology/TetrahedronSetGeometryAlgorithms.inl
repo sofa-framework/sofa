@@ -37,7 +37,7 @@ namespace component
 
 namespace topology
 {
-using namespace sofa::defaulttype;
+
 const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 
 template< class DataTypes>
@@ -331,8 +331,6 @@ typename DataTypes::Coord TetrahedronSetGeometryAlgorithms<DataTypes>::computeTe
     sofa::defaulttype::Vec<3,Real> a(t1[0], t1[1], t1[2]);
     sofa::defaulttype::Vec<3,Real> b(t2[0], t2[1], t2[2]);
     sofa::defaulttype::Vec<3,Real> c(t3[0], t3[1], t3[2]);
-
-//		using namespace sofa::defaulttype;
     sofa::defaulttype::Vec<3,Real> d = (cross(b, c) * a.norm2() + cross(c, a) * b.norm2() + cross(a, b) * c.norm2()) / (12* computeTetrahedronVolume(i));
 
     center[0] += d[0];
@@ -724,7 +722,11 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
 }
 
 template <typename DataTypes>
-bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPlane(Vec<3,Real>& p1, sofa::defaulttype::Vec<3,Real>& p2, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, sofa::defaulttype::Vec<3,Real>& intersection)
+bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPlane(sofa::defaulttype::Vec<3,Real>& p1,
+                                                                                   sofa::defaulttype::Vec<3,Real>& p2,
+                                                                                   sofa::defaulttype::Vec<3,Real>& c,
+                                                                                   sofa::defaulttype::Vec<3,Real>& normal,
+                                                                                   sofa::defaulttype::Vec<3,Real>& intersection)
 {
     //plane equation
     normal.normalize();
@@ -814,7 +816,8 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
     //Draw tetra indices
     if (showTetrahedraIndices.getValue())
     {
-        Mat<4,4, GLfloat> modelviewM;
+        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
+
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::defaulttype::Vec3f& color = _drawColor.getValue();
         glColor3f(color[0], color[1], color[2]);

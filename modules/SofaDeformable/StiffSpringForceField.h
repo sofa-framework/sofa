@@ -48,8 +48,6 @@ Stiffness is evaluated and stored by the addForce method.
 When explicit integration is used, SpringForceField is slightly more efficient.
 */
 
-using namespace sofa::core;
-
 template<class DataTypes>
 class StiffSpringForceField : public sofa::component::interactionforcefield::SpringForceField<DataTypes>
 {
@@ -96,7 +94,7 @@ public:
     virtual void init();
 
     /// Accumulate f corresponding to x,v
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
+    virtual void addForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
     ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
     /// Accumulate df corresponding to dx
@@ -106,7 +104,7 @@ public:
     virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const { return this->m_potentialEnergy; }
     ///SOFA_DEPRECATED_ForceField <<<virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double kFact);
 
-    virtual void addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_DEFORMABLE)

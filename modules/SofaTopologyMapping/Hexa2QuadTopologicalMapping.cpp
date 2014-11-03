@@ -100,8 +100,6 @@ void Hexa2QuadTopologicalMapping::init()
 
             const sofa::helper::vector<Quad> &quadArray=fromModel->getQuads();
 
-            unsigned int nb_visible_quads = 0;
-
             sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
             Loc2GlobVec.clear();
             Glob2LocMap.clear();
@@ -125,8 +123,6 @@ void Hexa2QuadTopologicalMapping::init()
 
                     Loc2GlobVec.push_back(i);
                     Glob2LocMap[i]=Loc2GlobVec.size()-1;
-
-                    nb_visible_quads+=1;
                 }
             }
 
@@ -206,7 +202,6 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                     for (unsigned int i = 0; i <tab.size(); ++i)
                     {
                         unsigned int k = tab[i];
-                        unsigned int ind_k;
 
                         std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
                         if(iter_1 != Glob2LocMap.end())
@@ -214,7 +209,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                             ind_last = ind_last - 1;
 
-                            ind_k = Glob2LocMap[k];
+                            unsigned int ind_k = Glob2LocMap[k];
                             ind_real_last = ind_k;
 
                             std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);

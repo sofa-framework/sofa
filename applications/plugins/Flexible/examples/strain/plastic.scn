@@ -25,14 +25,14 @@
         <Node 	name="behavior"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
 	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
+    	    <LinearMapping template="Vec3d,F331"  />
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="svd"/>
+	    	<CorotationalStrainMapping template="F331,E331"   method="svd"/>
 	        <Node 	name="PlasticStrain"   >
 		  <MechanicalObject  template="E331" name="E"  />
-		  <PlasticStrainMapping template="Mapping&lt;E331,E331&gt;"   method="addition" max="0.35" yield="0.3" creep="1"/>
+		  <PlasticStrainMapping template="E331,E331"   method="addition" max="0.35" yield="0.3" creep="1"/>
 		  <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0"    />	    
 		</Node>    
 	    </Node>
@@ -41,7 +41,7 @@
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../mesh.position"  />
 	     <UniformMass totalMass="250" />
-	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"  />
+	     <LinearMapping template="Vec3d,Vec3d"  />
         </Node>
 
 	<Node name="collision"  >
@@ -49,12 +49,12 @@
 	     <Mesh src="@loader"/>
  	     <MechanicalObject useMask="true" />
              <Triangle />
-             <LinearMapping template="MechanicalMapping&lt;Vec3d,Vec3f&gt;"/>
+             <LinearMapping template="Vec3d,Vec3f"/>
 	</Node>
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/torus.obj" />
-             <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+             <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>
     
@@ -72,14 +72,14 @@
         <Node 	name="behavior"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
 	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
+    	    <LinearMapping template="Vec3d,F331"  />
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="svd"/>
+	    	<CorotationalStrainMapping template="F331,E331"   method="svd"/>
 	        <Node 	name="PlasticStrain"   >
 		  <MechanicalObject  template="E331" name="E"  />
-		  <PlasticStrainMapping template="Mapping&lt;E331,E331&gt;"   method="multiplication" max="0.35" yield="0.3" creep="1"/>
+		  <PlasticStrainMapping template="E331,E331"   method="multiplication" max="0.35" yield="0.3" creep="1"/>
 		  <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0"    />	    
 		</Node>    
 	    </Node>
@@ -88,7 +88,7 @@
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../mesh.position"  />
 	     <UniformMass totalMass="250" />
-	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"  />
+	     <LinearMapping template="Vec3d,Vec3d"  />
         </Node>
 
 	<Node name="collision"  >
@@ -96,12 +96,12 @@
 	     <Mesh src="@loader"/>
  	     <MechanicalObject useMask="true" />
              <Triangle />
-             <LinearMapping template="MechanicalMapping&lt;Vec3d,Vec3f&gt;"/>
+             <LinearMapping template="Vec3d,Vec3f"/>
 	</Node>
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/torus.obj" color="0.2 0.8 0.2 1"/>
-             <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+             <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>
     
@@ -121,11 +121,11 @@
         <Node 	name="behavior"   >
 	    <TopologyGaussPointSampler name="sampler" inPosition="@../mesh.position" showSamplesScale="0" method="0" order="1" />
 	    <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
-    	    <LinearMapping template="Mapping&lt;Vec3d,F331&gt;"  />
+    	    <LinearMapping template="Vec3d,F331"  />
 
 	    <Node 	name="Strain"   >
 		<MechanicalObject  template="E331" name="E"  />
-	    	<CorotationalStrainMapping template="Mapping&lt;F331,E331&gt;"   method="svd"/>
+	    	<CorotationalStrainMapping template="F331,E331"   method="svd"/>
 	        <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0"    />	    
 	    </Node>
         </Node>
@@ -133,7 +133,7 @@
 	<Node 	name="mass"   >
 	     <MechanicalObject position="@../mesh.position"  />
 	     <UniformMass totalMass="250" />
-	     <LinearMapping template="Mapping&lt;Vec3d,Vec3d&gt;"  />
+	     <LinearMapping template="Vec3d,Vec3d"  />
         </Node>
 
 	<Node name="collision"  >
@@ -141,12 +141,12 @@
 	     <Mesh src="@loader"/>
  	     <MechanicalObject useMask="true" />
              <Triangle />
-             <LinearMapping template="MechanicalMapping&lt;Vec3d,Vec3f&gt;"/>
+             <LinearMapping template="Vec3d,Vec3f"/>
 	</Node>
 
 	<Node name="Visual"  >
 	     <VisualModel  fileMesh="mesh/torus.obj" color="1 .4 0.5 1"/>
-             <LinearMapping template="MechanicalMapping&lt;Vec3d,ExtVec3f&gt;"/>
+             <LinearMapping template="Vec3d,ExtVec3f"/>
 	</Node>
     </Node>
     

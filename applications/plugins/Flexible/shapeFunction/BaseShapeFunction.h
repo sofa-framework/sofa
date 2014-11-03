@@ -129,7 +129,7 @@ public:
     }
 
     /// interpolate shape function values (and their first and second derivatives) at a given child position
-    /// 'cell' might be used to target a specific element/voxel in case on overlapping elements/voxels.
+    /// 'cell' might be used to target a specific element/voxel in case of overlapping elements/voxels.
     /// this function is typically used for collision and visual points
 	virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)=0;
 

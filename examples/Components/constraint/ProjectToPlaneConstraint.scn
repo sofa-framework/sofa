@@ -4,7 +4,7 @@
         <Node 	name="Square"  >
                 <EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.5"  rayleighMass="0.5"  vdamping="0"  verbose="0" />
 		<CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="40"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />
-                <RegularGrid nx="3" ny="3" nz="3" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" />
+                <RegularGrid name="grid" nx="3" ny="3" nz="3" xmin="0" xmax="1" ymin="0" ymax="1" zmin="0" zmax="1" />
                 <MechanicalObject template="Vec3d" name="mObject1"   showIndices="false" showIndicesScale="0.001" />
                 <UniformMass template="Vec3d"  />
                 <BoxConstraint box="-0.05 -0.05 -0.05    0.05 0.05 0.05" drawBoxes="1"  />
@@ -15,9 +15,9 @@
                         <TriangleSetTopologyModifier name="Modifier" />
                         <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  drawTriangles="1" />
-                        <Hexa2TriangleTopologicalMapping name="Mapping"  input="@../Container"  output="@Container" />
+                        <Tetra2TriangleTopologicalMapping name="Mapping"  input="@../grid"  output="@Container" />
                         <BoxROI box="0.95 -0.05 -0.05    1.05 1.05 1.05" drawBoxes="1" position="@../mObject1.rest_position" drawTriangles="1" triangles="@Container.edges" name="pressureBox" />
-                        <TrianglePressureForceField template="Vec3d" triangleIndices="@pressureBox.triangleIndices" p_intensity="-10" showForces="1" arrowSizeCoef="1"/>
+                        <TrianglePressureForceField template="Vec3d" showForces="1"/>
                 </Node>
 	</Node>
 </Node>

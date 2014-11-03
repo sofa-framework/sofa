@@ -29,7 +29,6 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/BaseController.h>
-#include <sofa/component/visualModel/OglModel.h>
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/SolidTypes.h>

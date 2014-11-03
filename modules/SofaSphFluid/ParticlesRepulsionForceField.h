@@ -45,8 +45,6 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::component::container;
-
 template<class DataTypes>
 class ParticlesRepulsionForceField : public sofa::core::behavior::ForceField<DataTypes>
 {
@@ -68,7 +66,7 @@ public:
     Data< Real > stiffness;
     Data< Real > damping;
 
-    typedef SpatialGridContainer<DataTypes> Grid;
+    typedef sofa::component::container::SpatialGridContainer<DataTypes> Grid;
 
     Grid* grid;
 
@@ -102,7 +100,8 @@ public:
     virtual double getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& /* x */) const
     {
         serr << "getPotentialEnergy not implemented" << sendl;
-        return 0;
+
+        return 0.0;
     }
 
     void draw(const core::visual::VisualParams* vparams);
