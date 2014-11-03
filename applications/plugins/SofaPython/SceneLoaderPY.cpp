@@ -46,14 +46,30 @@ bool SceneLoaderPY::canLoadFileExtension(const char *extension)
 {
     std::string ext = extension;
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-    return (ext=="py");
+
+    if( ext=="py" )
+    {
+        std::cerr<<"WARNING: loading .py files is obsolete and will be removed soon, please use the SOFA specific extension .pys\n";
+        return true;
+    }
+
+    return (ext=="pys");
 }
 
 
 
 bool SceneLoaderPY::canWriteFileExtension(const char *extension)
 {
-    return canLoadFileExtension(extension);
+    std::string ext = extension;
+    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+    if( ext=="py" )
+    {
+        std::cerr<<"SOFA scene cannot be exported in a .py python file, please use the SOFA specific extension .pys\n";
+        return false;
+    }
+
+    return (ext=="pys");
 }
 
 /// get the file type description
@@ -66,8 +82,8 @@ std::string SceneLoaderPY::getFileTypeDesc()
 void SceneLoaderPY::getExtensionList(ExtensionList* list)
 {
     list->clear();
-   // list->push_back("pyscn");
-    list->push_back("py");
+//    list->push_back("py");
+    list->push_back("pys");
 }
 
 sofa::simulation::Node::SPtr SceneLoaderPY::load(const char *filename)
