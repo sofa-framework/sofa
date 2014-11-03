@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaBaseVisual/BaseVisual.h>
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>
@@ -40,8 +39,7 @@ using namespace sofa::core::visual;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 
-int VisualStyleClass =
-    BaseVisualPlugin::registerObject("Edit the visual style.\n Allowed values for displayFlags data are a combination of the following:\n\
+int VisualStyleClass = core::RegisterObject("Edit the visual style.\n Allowed values for displayFlags data are a combination of the following:\n\
 showAll, hideAll,\n\
     showVisual, hideVisual,\n\
         showVisualModels, hideVisualModels,\n\
