@@ -12,7 +12,7 @@ set(HEADER_FILES
     DynamicSparseGridGeometryAlgorithms.h
     DynamicSparseGridGeometryAlgorithms.inl
     DynamicSparseGridTopologyAlgorithms.h
-    DynamicSparseGridTopologyAlgorithms.inl
+#    DynamicSparseGridTopologyAlgorithms.inl
     DynamicSparseGridTopologyContainer.h
     DynamicSparseGridTopologyModifier.h
     MultilevelHexahedronSetTopologyContainer.h
