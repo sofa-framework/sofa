@@ -27,13 +27,10 @@
 
 #include "ui_PluginManager.h"
 #include "SofaGUIQt.h"
-#ifdef SOFA_QT4
-#include <Q3ListViewItem>
-#else
-#include <qlistview.h>
-#endif
-#include <set>
 
+#include <Q3ListViewItem>
+
+#include <set>
 
 namespace sofa
 {
@@ -53,7 +50,6 @@ public:
 
     SofaPluginManager();
 
-
 signals:
 
     void libraryAdded();
@@ -63,13 +59,10 @@ public slots:
 
     void addLibrary();
     void removeLibrary();
-#ifdef SOFA_QT4
+
     void updateComponentList(Q3ListViewItem*);
     void updateDescription(Q3ListViewItem*);
-#else
-    void updateComponentList(QListViewItem*);
-    void updateDescription(QListViewItem*);
-#endif
+
 private :
     void updatePluginsListView();
     void initPluginListView();
