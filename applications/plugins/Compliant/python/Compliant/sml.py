@@ -46,6 +46,7 @@ class Scene:
         with open(self.filename,'r') as f:
             # relative path with respect to the scene file
             self.sceneDir = os.path.dirname(self.filename)
+                        
             # TODO automatic DTD validation could go here, not available in python builtin ElementTree module
             model = etree.parse(f).getroot()
             if self.name is None:
@@ -62,16 +63,19 @@ class Scene:
                 print "rigid:", r.attrib["name"]
                 rigid = StructuralAPI.RigidBody(self.node, r.attrib["name"])
                 self.rigids[r.attrib["name"]] = rigid
+                
+                meshfile = os.path.join(self.sceneDir, r.find("mesh").text)
+                
                 # TODO set manually using <mass> if present
                 if r.find("density") is not None:
-                    rigid.setFromMesh(os.path.join(self.sceneDir, r.find("mesh").text), density=float(r.find("density").text), offset= SofaPython.Tools.strToListFloat(r.find("position").text))
+                    rigid.setFromMesh(meshfile, density=float(r.find("density").text), offset= SofaPython.Tools.strToListFloat(r.find("position").text))
                 #else: TODO
                     #r.find("mass")
                 rigid.dofs.showObject = self.param.showRigid
                 rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
                 # visual
-                rigid.addVisualModel(r.find("mesh").text)
-                rigid.addCollisionMesh(r.find("mesh").text)
+                rigid.addVisualModel(meshfile)
+                rigid.addCollisionMesh(meshfile)
             
             # joints
             self.joints=dict()
@@ -89,7 +93,7 @@ class Scene:
                     mask[int(dof.attrib["index"])]=0
                     #TODO limits !
                 
-                joint = StructuralAPI.GenericRigidJoint(self.node, j.attrib["name"], parentOffset.node, childOffset.node, mask)
+                joint = StructuralAPI.GenericRigidJoint(j.attrib["name"], parentOffset.node, childOffset.node, mask)
                 self.joints[j.attrib["name"]] = joint
                         
     def addOffset(self, name, rigidName, xmlOffset):
