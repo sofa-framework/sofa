@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 
 set(SOLUTION_NAME "SofaDeps")
 project(${SOLUTION_NAME})
-message("CMAKE_FILES_DIRECTORY ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}" )
-message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 # Temporary variable until we move the sub projects
 set( SofaDeps_ACTUAL_SOURCE_DIR ${SofaDeps_SOURCE_DIR}/../extlibs)

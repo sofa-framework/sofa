@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 
 set(SOLUTION_NAME "SofaFramework")
 project(${SOLUTION_NAME})
-message("CMAKE_FILES_DIRECTORY ${CMAKE_BINARY_DIR}${CMAKE_FILES_DIRECTORY}" )
-message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 # Temporary variable until we move the sub projects
 set( SofaFramework_ACTUAL_SOURCE_DIR ${SofaFramework_SOURCE_DIR}/../framework)
@@ -33,12 +31,6 @@ set(SOFAFRAMEWORK_INSTALL_LIB_DIR     lib                      CACHE PATH "Insta
 set(SOFAFRAMEWORK_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAFRAMEWORK_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAFRAMEWORK_INSTALL_CMAKE_DIR   lib/cmake/SofaFramework  CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
-
-if( CMAKE_CL_64 )
-  set( LIB "lib/win64" )
-else( CMAKE_CL_64 )
-  set( LIB "lib/win32" )
-endif( CMAKE_CL_64 )
 
 set(SOFAFRAMEWORK_DEPENDENCY_LINK)
 set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
