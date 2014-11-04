@@ -6,8 +6,6 @@ cmake_minimum_required(VERSION 2.8.12)
 project(tinyxml)
 
 
-message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
-
 set(TINYXML_MAJOR_VERSION 2)
 set(TINYXML_MINOR_VERSION 6)
 set(TINYXML_PATCH_VERSION 2)
