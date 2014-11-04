@@ -126,7 +126,7 @@ TYPED_TEST( HexahedronFEMForceField_test , extension )
 {
     this->errorMax = 10000;
     this->deltaMax = 10000;
-    this->debug = true;
+    this->debug = false;
 
     // run test
     this->test_valueForce();

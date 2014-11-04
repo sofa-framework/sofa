@@ -159,7 +159,10 @@ public:
     /** Return pointers to the geometric stiffness matrices. 
 	This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product. 
 	These matrices are associated with the parent DOFs. 
-    @todo Are there  cross-dependencies between the parents, resulting in off-diagonal geometric stiffness blocks ? I do not think so but I am not totally sure (FF, June 2013)
+    @todo Are there cross-dependencies between the parents, resulting in off-diagonal geometric stiffness blocks? I do not think so but I am not totally sure (FF, June 2013)
+    Answer (M Nesme, oct. 2014): there can be off-diagonal blocks and only specific non-linear multimappings can be implemented. A workaround is to decompose the problematic
+        non-linear multimappings in a small graph including only linear multimappings + non-linear simple mappings (where geometric stiffness can be implemented).
+        e.g.: A DistanceMultimapping (non-linear) is not implementable with this API, but can be decomposed in a SubsetMultiMapping (linear) + a DistanceMapping (non-linear)
     */
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getKs() { return NULL; }
 

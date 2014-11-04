@@ -23,7 +23,7 @@ public:
 
 //    virtual void cleanup(){return Parent::cleanup();}
 
-    int addPoint(const typename TVec3Types::Coord & P, int index,typename TVec3Types::Real & r)
+    int addPoint(const typename TVec3Types::Coord & P, int /*index*/,typename TVec3Types::Real & r)
     {
         r = 0;
         const typename TVec3Types::Coord & cP = P - this->model->center();

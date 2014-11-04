@@ -116,7 +116,7 @@ struct CompPEndPoint{
             return ep1->value < ep2->value;
         }
         else if(ep1->boxID() == ep2->boxID()){
-            return ep2->max();
+            return ep1->min() && ep2->max();
         }
         else{
             return ep1->boxID() < ep2->boxID();

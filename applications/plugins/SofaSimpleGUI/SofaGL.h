@@ -74,6 +74,13 @@ public:
      */
     PickedPoint pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y);
 
+    /** @brief Try to pick a particle along a ray, using OpenGL picking.
+     * The ray starts at the camera center and passes through point with coordinates x,y
+     * ox, oy, oz are the camera center in world coordinates.
+     * x,y in image coordinates (origin on top left).
+     */
+    void glPick(int x, int y);
+
     /** @brief Insert an interactor in the scene
      * Does not check if it is already there, so be careful not to insert the same twice
      */
@@ -123,6 +130,14 @@ protected:
      */
     Picked_to_Interactor _picked_to_interactor;
     Interactor* _drag;                            ///< The currently active interactor
+
+
+    // OpenGL picking data
+    bool _isPicking;        ///< if we are doing OpenGL picking
+    GLint pickX, pickY;     // window coordinates of the pick point
+    enum {BUFSIZE=1024};
+    GLuint selectBuf[BUFSIZE];
+    GLint hits;
 
 
 };

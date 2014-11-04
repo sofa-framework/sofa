@@ -20,6 +20,8 @@ def affineDatatostr(data):
 	return L
 
 
+
+
 ##   Write state of an 'affine' mechanicalObject in a python file 'filename'
 # 'loadDofs(node)' function from this file allows to recreate the MechanicalObject
 def export_AffineFrames(mechanicalObject, filename):
@@ -32,12 +34,25 @@ def export_AffineFrames(mechanicalObject, filename):
 	f.close()
 	return 0
 
+##   Write state of an 'affine' mechanicalObject in a python file 'filename'
+# 'loadDofs(node)' function from this file allows to recreate the MechanicalObject
+def export_RigidFrames(mechanicalObject, filename):
+	f = open(filename, 'w')
+	f.write("def loadDofs(node):\n\tcomponent=node.createObject('MechanicalObject', template='Rigid',name='"+mechanicalObject.name+"'")
+	f.write(", showObject='"+datatostr(mechanicalObject,'showObject')+"', showObjectScale='"+datatostr(mechanicalObject,'showObjectScale')+"'")
+	f.write(", rest_position='"+datatostr(mechanicalObject,'rest_position')+"'")
+	f.write(", position='"+datatostr(mechanicalObject,'position')+"'")
+	f.write(")\n\treturn component\n")
+	f.close()
+	return 0
 
 ##   Write state of a 'GaussPointSampler' in a python file 'filename'
 # 'loadGPs(node)' function from this file allows to create a GaussPointContainer with similar points
 def export_GaussPoints(gpsampler, filename):
 	f = open(filename, 'w')
-	volDim = len(gpsampler.findData('volume').value)/ len(gpsampler.findData('position').value)
+	volDim=1
+	if isinstance(gpsampler.findData('volume').value, list) is True: # when volume is a list (several GPs or order> 1)
+		volDim = len(gpsampler.findData('volume').value)/ len(gpsampler.findData('position').value)
 	f.write("\ndef loadGPs(node):\n\tcomponent=node.createObject('GaussPointContainer',name='GPContainer'")
 	f.write(", volumeDim='"+str(volDim)+"'")
 	f.write(", inputVolume='"+datatostr(gpsampler,'volume')+"'")

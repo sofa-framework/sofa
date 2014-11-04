@@ -43,7 +43,6 @@ namespace defaulttype
 {
 
 using helper::vector;
-using helper::symrand;
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class StdVectorTypes
@@ -89,10 +88,11 @@ public:
     }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue )
+    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
     {
         Deriv result;
-        set( result, symrand(maxValue), symrand(maxValue), symrand(maxValue) );
+        helper::RandomGenerator randomGenerator(seed);
+        set( result, randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
         return result;
     }
 

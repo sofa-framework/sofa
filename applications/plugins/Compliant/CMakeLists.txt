@@ -58,6 +58,7 @@ set(HEADER_FILES
     constraint/Constraint.h
     constraint/CoulombConstraint.h
     constraint/UnilateralConstraint.h
+    constraint/ResistanceConstraint.h
 
     constraint/BaseConstraintValue.h
     constraint/Stabilization.h
@@ -66,6 +67,7 @@ set(HEADER_FILES
     constraint/DampingValue.h
     constraint/OffsettedConstraintValue.h
     constraint/HolonomicConstraintValue.h
+    constraint/VelocityConstraintValue.h
 
     contact/CompliantContact.h
     contact/FrictionCompliantContact.h
@@ -142,6 +144,7 @@ set(SOURCE_FILES
 
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
+    constraint/ResistanceConstraint.cpp
 
     constraint/ConstraintValue.cpp
     constraint/Stabilization.cpp
@@ -149,6 +152,7 @@ set(SOURCE_FILES
     constraint/DampingValue.cpp
     constraint/OffsettedConstraintValue.cpp
     constraint/HolonomicConstraintValue.cpp
+    constraint/VelocityConstraintValue.cpp
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp

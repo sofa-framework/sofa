@@ -61,7 +61,7 @@ template<class DataTypes>
 class MechanicalObjectInternalData
 {
 public:
-    MechanicalObjectInternalData(MechanicalObject<DataTypes>* = NULL) {};
+    MechanicalObjectInternalData(MechanicalObject<DataTypes>* = NULL) {}
 };
 
 /**
@@ -96,6 +96,7 @@ public:
     using Inherited::getX0;
     using Inherited::getN;
     using Inherited::getDx;
+    using Inherited::getC;
 protected:
     MechanicalObject();
 public:
@@ -169,7 +170,8 @@ public:
     Data< bool >  showVectors;
     Data< float > showVectorsScale;
     Data< int > drawMode;
-    Data < bool > isToPrint;
+    Data< defaulttype::Vec4f > d_color;  ///< drawing color
+    Data < bool > isToPrint; ///< ignore some Data for file export
 
     virtual void init();
     virtual void reinit();
@@ -294,24 +296,24 @@ public:
     virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const;
     virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int line, core::ConstVecId id);
 
-    void setFilename(std::string s) {filename.setValue(s);};
+    void setFilename(std::string s) {filename.setValue(s);}
 
     /// @name Initial transformations accessors.
     /// @{
 
-    void setTranslation(double dx, double dy, double dz) {translation.setValue(Vector3(dx,dy,dz));};
-    void setRotation(double rx, double ry, double rz) {rotation.setValue(Vector3(rx,ry,rz));};
-    void setScale(double sx, double sy, double sz) {scale.setValue(Vector3(sx,sy,sz));};
+    void setTranslation(double dx, double dy, double dz) {translation.setValue(Vector3(dx,dy,dz));}
+    void setRotation(double rx, double ry, double rz) {rotation.setValue(Vector3(rx,ry,rz));}
+    void setScale(double sx, double sy, double sz) {scale.setValue(Vector3(sx,sy,sz));}
 
-    virtual Vector3 getTranslation() const {return translation.getValue();};
-    virtual Vector3 getRotation() const {return rotation.getValue();};
-    virtual Vector3 getScale() const {return scale.getValue();};
+    virtual Vector3 getTranslation() const {return translation.getValue();}
+    virtual Vector3 getRotation() const {return rotation.getValue();}
+    virtual Vector3 getScale() const {return scale.getValue();}
 
     /// @}
 
     void setIgnoreLoader(bool b) {ignoreLoader.setValue(b);}
 
-    std::string getFilename() {return filename.getValue();};
+    std::string getFilename() {return filename.getValue();}
 
     /// Renumber the constraint ids with the given permutation vector
     void renumberConstraintId(const sofa::helper::vector< unsigned >& renumbering);
@@ -410,6 +412,10 @@ public:
     /// Returns false if this object does not support picking
     virtual bool pickParticles(const core::ExecParams* params /* PARAMS FIRST */, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
             std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles);
+
+
+   /// if this mechanical object stores independent dofs (in opposition to mapped dofs)
+   bool isIndependent() const;
 
 protected :
 

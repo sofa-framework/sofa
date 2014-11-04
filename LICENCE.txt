@@ -4,26 +4,16 @@
 
 LICENSES: 
 
-The SOFA distribution is composed of three parts:
- - SOFA FRAMEWORK: this is essential the core of SOFA
- - SOFA MODULES: represent the functionalities available in SOFA
- - SOFA APPLICATIONS: they are built using the SOFA framework and modules.
+SOFA is LGPL, except:
+- sofa/applications/ which is GPL, except:
+  - sofa/applications/plugins which is LGPL, except:
+     - sub-directories with a licence file which specifies a different licence
 
-SOFA is free software; you can redistribute it and/or modify it under the 
-terms of the following licenses.
-
-The SOFA FRAMEWORK can be redistributed and/or modified under the terms of 
-the GNU Lesser General Public License as published by the Free Software 
+LGPL refers to the GNU Lesser General Public License as published by the Free Software
 Foundation; either version 2.1 of the License, or (at your option) any later 
 version.
 
-The SOFA MODULES can be redistributed and/or modified under the terms of 
-the GNU Lesser General Public License as published by the Free Software 
-Foundation; either version 2.1 of the License, or (at your option) any later 
-version.
-
-This SOFA APPLICATIONS can be redistributed and/or modified under the terms of
-the GNU General Public License as published by the Free Software Foundation;
+GPL refers to the GNU General Public License as published by the Free Software Foundation;
 either version 2 of the License, or (at your option) any later version.
 
 This library is distributed in the hope that it will be useful, but 

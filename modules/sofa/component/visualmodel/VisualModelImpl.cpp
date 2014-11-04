@@ -1421,7 +1421,7 @@ void VisualModelImpl::handleTopologyChange()
             const sofa::core::topology::QuadsAdded *qa = static_cast< const sofa::core::topology::QuadsAdded * >( *itBegin );
             Quad q;
             const unsigned int nbAddedQuads = qa->getNbAddedQuads();
-            const unsigned int nbQuaduads = triangles.size();
+            const unsigned int nbQuaduads = quads.size();
             quads.resize(nbQuaduads + nbAddedQuads);
 
             for (unsigned int i = 0; i < nbAddedQuads; ++i)
