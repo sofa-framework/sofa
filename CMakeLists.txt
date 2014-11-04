@@ -52,10 +52,8 @@ if(EXISTS ${SOFA_EXTERNALS_DIR} )
             list(APPEND CMAKE_LIBRARY_PATH ${SOFA_EXTERNALS_DIR}/lib/win32)
         endif()
     endif() 
+    add_subdirectory("${SOFA_EXTERNALS_DIR}")
 endif()
-
-# externals
-add_subdirectory("${SOFA_EXTERNALS_DIR}")
 
 # deps
 add_subdirectory("${SOFA_DEPS_DIR}")
