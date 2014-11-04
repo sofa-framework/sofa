@@ -180,7 +180,12 @@ if(SOFA-PLUGIN_IMAGE)
         AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+
+# include python files
+include(./python/python.cmake)
+
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Flexible")
 AddLinkerDependencies(SofaEigen2Solver SofaBaseVisual)
