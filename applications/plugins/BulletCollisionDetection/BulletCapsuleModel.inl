@@ -10,12 +10,18 @@ namespace collision
 {
 
 template <class TDataTypes>
-TBulletCapsuleModel<TDataTypes>::TBulletCapsuleModel() : TCapsuleModel<TDataTypes>(),_bt_cshape(0x0),
-margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet")){}
+TBulletCapsuleModel<TDataTypes>::TBulletCapsuleModel()
+    : TCapsuleModel<TDataTypes>()
+    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    ,_bt_cshape(0x0)
+{}
 
 template<class DataTypes>
-TBulletCapsuleModel<DataTypes>::TBulletCapsuleModel(core::behavior::MechanicalState<DataTypes>* _mstate ) : TCapsuleModel<DataTypes>(_mstate),_bt_cshape(0x0),
-    margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet")){}
+TBulletCapsuleModel<DataTypes>::TBulletCapsuleModel(core::behavior::MechanicalState<DataTypes>* _mstate )
+    : TCapsuleModel<DataTypes>(_mstate)
+    , margin(initData(&margin, (SReal)0.04, "margin","Margin used for collision detection within bullet"))
+    ,_bt_cshape(0x0)
+{}
 
 static btRigidBody* localCreateRigidBody(float mass, const btTransform& startTransform,btCollisionShape* shape,float processingThreshold)
 {

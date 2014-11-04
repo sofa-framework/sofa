@@ -40,7 +40,7 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
     Data<bool> relative;          ///< Relative precision?
     Data<unsigned> iterations;    ///< Max number of iterations of the Newton method.
     Data<SReal> newtonStepLength; ///< the portion of correction applied while it is converging (can be applied several times - until complete correction - at each Newton iteration)
-    Data<bool> staticSolver;      ///< solve a static analysis (dynamics otherwise) WIP
+//    Data<bool> staticSolver;      ///< solve a static analysis (dynamics otherwise) WIP
 
 	CompliantNLImplicitSolver();
     virtual ~CompliantNLImplicitSolver(){}

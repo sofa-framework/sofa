@@ -39,8 +39,14 @@ public:
     /// Pre-loading check
     virtual bool canLoadFileExtension(const char *extension);
 
+    /// Pre-saving check
+    virtual bool canWriteFileExtension(const char *extension);
+
     /// load the file
     virtual sofa::simulation::Node::SPtr load(const char *filename);
+
+    /// write the file
+    virtual void write(sofa::simulation::Node* node, const char *filename);
 
     /// generic function to process xml tree (after loading the xml structure)
     static Node::SPtr processXML(xml::BaseElement* xml, const char *filename);

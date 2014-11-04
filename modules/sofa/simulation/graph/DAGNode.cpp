@@ -47,7 +47,13 @@ DAGNode::DAGNode(const std::string& name, DAGNode* parent)
 }
 
 DAGNode::~DAGNode()
-{}
+{
+	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    {
+		DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
+		dagnode->l_parents.remove(this);
+	}
+}
 
 /// Create, add, then return the new child of this Node
 Node::SPtr DAGNode::createChild(const std::string& nodeName)
@@ -365,7 +371,7 @@ core::objectmodel::BaseNode::Parents DAGNode::getParents() const
 {
     Parents p;
 
-    LinkParents::Container parents = l_parents.getValue();
+    const LinkParents::Container& parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; i++)
     {
         if (parents[i])

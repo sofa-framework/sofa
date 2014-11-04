@@ -13,8 +13,6 @@ set(HEADER_FILES
     ../interactionforcefield/PenalityContactForceField.inl 
     ../interactionforcefield/RepulsiveSpringForceField.h 
     ../interactionforcefield/RepulsiveSpringForceField.inl
-    ../interactionforcefield/PartialRigidificationForceField.h
-    ../interactionforcefield/PartialRigidificationForceField.inl
 
     )
     
@@ -26,7 +24,6 @@ set(SOURCE_FILES
     ../interactionforcefield/InteractionEllipsoidForceField.cpp 
     ../interactionforcefield/PenalityContactForceField.cpp 
     ../interactionforcefield/RepulsiveSpringForceField.cpp
-    ../interactionforcefield/PartialRigidificationForceField.cpp
  
     )
 

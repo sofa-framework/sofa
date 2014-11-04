@@ -1,5 +1,5 @@
 #ifndef BT_DYNAMIC_MESH_H
-#define BT_DYNAMIC_MESH
+#define BT_DYNAMIC_MESH_H
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 
 class BtDynamicMeshPart : public btGImpactMeshShapePart{

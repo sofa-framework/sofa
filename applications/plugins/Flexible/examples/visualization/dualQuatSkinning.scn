@@ -3,7 +3,7 @@
       
   <RequiredPlugin name="Compliant" pluginName="Compliant" />
   <RequiredPlugin name="Flexible" pluginName="Flexible" />
-  <RequiredPlugin name="Image" pluginName="Image" />
+  <RequiredPlugin name="image" pluginName="image" />
     <DefaultPipeline depth="6" />
     <VisualStyle displayFlags="showCollisionModels showMappings hideVisual" />
     <BruteForceDetection />
@@ -36,7 +36,7 @@
 
                     <Node name="E"   >
                         <MechanicalObject  template="E331" name="E"  /> 
-                        <GreenStrainMapping template="Mapping&lt;F331,E331&gt;"    />
+                        <GreenStrainMapping template="F331,E331"    />
                         <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.4" viscosity="0"/> 
                     </Node>
                 </Node>
@@ -71,7 +71,7 @@
                         <Mesh src="@loader" />
                         <MechanicalObject name="falling_particle" src="@loader" />
                         <TTriangleModel template="Vec3d" name="tTriangleModel12"  bothSide="1" />
-                        <LinearMultiMapping template="Rigid,Affine,ExtVec3f" input1="@../.." input2="@.." output="@falling_particle" printLog="0" assemble="0"/>
+                        <LinearMultiMapping template="Rigid,Affine,Vec3d" input1="@../.." input2="@.." output="@falling_particle" printLog="0" assemble="0"/>
                 </Node>
 
             </Node>
@@ -133,7 +133,7 @@
     
     <Node name="Floor"  >
         <MechanicalObject template="Rigid" name="mObjectGround"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  reserve="1" />
-        <OBBModel template="Vec3d" name="sol" extents="100 1 100" simulated="0" moving="0" contactFriction="0.5" contactRestitution="0.5"/>
+        <OBBModel template="Rigid" name="sol" extents="100 1 100" simulated="0" moving="0" contactFriction="0.5" contactRestitution="0.5"/>
         <RigidMass mass="1000" inertia="166.7 166.7 166.7" />
         <FixedConstraint template="Rigid" name="fixedConstraint0" indices="0"/>
     </Node>

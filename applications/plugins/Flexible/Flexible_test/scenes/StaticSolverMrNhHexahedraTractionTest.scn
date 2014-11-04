@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.5" showAxis="true">
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="Compliant"/>
+
+    <!--Solver-->
+    <StaticSolver/>
+    <CGLinearSolver template="GraphScattered" name="linear solver" iterations="200" tolerance="1e-12" threshold="1e-12" />
+
+    <!--Topology Hexahedra-->
+    <RegularGridTopology name="hexahedra" n="2 5 5" min="0 0 0" max="1 1 1"/>
+
+    <!--MechanicalObject-->
+    <MechanicalObject name="DOFs" template="Vec3d"  showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" />
+  
+    <!--MeshMatrixMass-->
+    <UniformMass totalMass="1" />
+
+    <!--maintain point (0,0,0) fixed -->
+    <BoxROI template="Vec3d" name="O_box_roi" box="-0.01 -0.01 -0.01   0.01 0.01 0.01  "  drawPoints="1" drawSize="30" />
+    <ProjectToPointConstraint point="0 0 0" indices="@[-1].indices" />
+
+    <!--constrain point (0,1,0) to the y axis -->
+    <BoxROI template="Vec3d" name="Oy_line_box_roi" box="-0.01 0.99 -0.01   0.01 1.01 0.01  "  drawPoints="1" drawSize="30" />
+    <ProjectToLineConstraint origin="0 0 0" direction="0 1 0" indices="@[-1].indices" />
+
+    <!--constraint face x=0 to stay in this plane-->
+    <BoxROI template="Vec3d" name="Oyz_plane_box_roi" box="-0.01 -0.01 -0.01   0.01 1.01 1.01  " drawBoxes="1" drawSize="1" />
+    <ProjectToPlaneConstraint normal="1 0 0" indices="@[-1].indices" />
+
+    <BarycentricShapeFunction template="ShapeFunctiond" />
+    
+    <!--Decomposition of the cubes in tetrahedra -->
+    <Node name="Quads" >
+
+      <!--Quads for QuadPressureForceField-->
+      <QuadSetTopologyContainer name="QuadContainer" />
+      <QuadSetTopologyModifier />
+      <QuadSetTopologyAlgorithms template="Vec3d" />
+      <QuadSetGeometryAlgorithms template="Vec3d" />
+      <Hexa2QuadTopologicalMapping name="default28" object1="../hexahedra" object2="QuadContainer" />
+      <!--Compression-->
+      <QuadPressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" showForces="1"/>
+     
+    </Node>
+
+      <Node name="behavior">
+        <TopologyGaussPointSampler name="sampler" inPosition="@../hexahedra.position" showSamplesScale="0" method="0" order="2" />
+        <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+        <LinearMapping template="Vec3d,F331" showDeformationGradientScale="0.05"  showDeformationGradientStyle="0 - All axis"  showColorOnTopology="2 - sqrt(det(F^T.F))-1"  />
+
+          <Node name="Strain">
+          </Node>
+
+    </Node>
+
+</Node>

@@ -8,10 +8,12 @@ using std::endl;
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
 // sofa types should not be exposed
 //typedef sofa::defaulttype::Vector3 Vec3;
 //typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > Vec3DOF;
+typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
 
 
 namespace sofa {
@@ -28,7 +30,7 @@ SofaScene::SofaScene()
     boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;// = NULL;
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
 
-    sofa::simulation::setSimulation(new SofaSimulation());
+    sofaSimulation = sofa::simulation::graph::getSimulation(); // creates one if it is not already created
 
     sofa::component::init();
     sofa::simulation::xml::initXml();
@@ -36,31 +38,31 @@ SofaScene::SofaScene()
 
 void SofaScene::step( SReal dt)
 {
-    sofa::simulation::getSimulation()->animate(_groot.get(),dt);
+    sofaSimulation->animate(_groot.get(),dt);
 }
 
 void SofaScene::printGraph()
 {
-    sofa::simulation::getSimulation()->print(_groot.get());
+    sofaSimulation->print(_groot.get());
 }
 
 void SofaScene::loadPlugins( std::vector<std::string> plugins )
 {
     for (unsigned int i=0; i<plugins.size(); i++){
-        sout<<"SofaScene::init, loading plugin " << plugins[i] << sendl;
+        cout<<"SofaScene::init, loading plugin " << plugins[i] << endl;
         sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
     }
 
     sofa::helper::system::PluginManager::getInstance().init();
 }
 
-void SofaScene::setScene(const std::string& fileName )
+void SofaScene::open(const std::string& fileName )
 {
     // --- Create simulation graph ---
     assert( !fileName.empty());
 
-    if(_groot) unload (_groot);
-    _groot = load( fileName.c_str() );
+    if(_groot) sofaSimulation->unload (_groot);
+    _groot = sofaSimulation->load( fileName.c_str() );
     if(!_groot)
     {
         cerr << "loading failed" << endl;
@@ -69,25 +71,29 @@ void SofaScene::setScene(const std::string& fileName )
 
     _iroot = _groot->createChild("iroot");
 
-    _currentFileName = fileName;
+//    _currentFileName = fileName;
 
-    SofaSimulation::init(_groot.get());
+    sofaSimulation->init(_groot.get());
 
-//    open(fileName.c_str() );
+    printGraph();
+    SReal xm,xM,ym,yM,zm,zM;
+    getBoundingBox(&xm,&xM,&ym,&yM,&zm,&zM);
+    cout<<"SofaScene::setScene, xm="<<xm<<", xM"<< xM<< ", ym="<< ym<<", yM="<< yM<<", zm="<< zm<<", zM="<< zM<<endl;
+
 }
 
 void SofaScene::setScene( Node::SPtr node )
 {
-    if(_groot) unload (_groot);
-    _groot = sofa::simulation::getSimulation()->createNewGraph("root");
+    if(_groot) sofaSimulation->unload (_groot);
+    _groot = sofaSimulation->createNewGraph("root");
     _groot->addChild(node);
     _iroot = _groot->createChild("iroot");
-    SofaSimulation::init(_groot.get());
+    sofaSimulation->init(_groot.get());
 }
 
 void SofaScene::reset()
 {
-    SofaSimulation::reset(_groot.get());
+    sofaSimulation->reset(_groot.get());
 }
 
 //void SofaScene::open(const char *filename)
@@ -105,7 +111,7 @@ void SofaScene::reset()
 
 //    _currentFileName = filename;
 
-//    SofaSimulation::init(_groot.get());
+//    sofaSimulation->::init(_groot.get());
 ////    cout<<"SofaScene::init, scene loaded" << endl;
 ////    printGraph();
 //}
@@ -113,7 +119,7 @@ void SofaScene::reset()
 void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax )
 {
     SReal pmin[3], pmax[3];
-    computeBBox( _groot.get(), pmin, pmax );
+    sofaSimulation->computeTotalBBox( _groot.get(), pmin, pmax );
     *xmin = pmin[0]; *xmax = pmax[0];
     *ymin = pmin[1]; *ymax = pmax[1];
     *zmin = pmin[2]; *zmax = pmax[2];

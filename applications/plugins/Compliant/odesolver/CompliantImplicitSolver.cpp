@@ -227,7 +227,7 @@ using namespace core::behavior;
             f_k->eq( f, factor );
         }
 
-        if( !neglecting_compliance_forces_in_geometric_stiffness.getValue() )
+        if( sys.n && !neglecting_compliance_forces_in_geometric_stiffness.getValue() )
         {
             scoped::timer substep("f += fc");
 
@@ -236,8 +236,6 @@ using namespace core::behavior;
             // to geometric sitffness generation for this step.
             simulation::MechanicalAddComplianceForce lvis( &sop.mparams(), f, lagrange, factor ); // f += fc  with  fc = lambda / dt
             send( lvis );
-
-            // TODO have a look about reseting or not forces of mapped dofs
         }
     }
 

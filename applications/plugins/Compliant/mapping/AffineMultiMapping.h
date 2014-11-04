@@ -15,7 +15,7 @@ namespace mapping {
 	where x is the concatenation of input dofs, in the order specified
 	in fromModel().
 
-	A is given as rows, b as a vector.
+	A is given row-major in a single vector, b as a vector.
 
 	this is mostly useful to python scripts that need to compute
 	arbitrary multimappings.

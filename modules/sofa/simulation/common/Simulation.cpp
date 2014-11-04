@@ -139,6 +139,25 @@ void Simulation::exportXML ( Node* root, const char* fileName )
     }
 }
 
+/// Print all object in the graph
+void Simulation::exportGraph ( Node* root, const char* filename )
+{
+    if ( !root ) return;
+
+    SceneLoader *exporter = SceneLoaderFactory::getInstance()->getExporterEntryFileName(filename);
+
+    if (exporter)
+    {
+        exporter->write(root,filename);
+    }
+    else
+    {
+        // unable to write the file
+        std::cerr << "Simulation::exportGraph : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled for export" << std::endl;
+    }
+}
+
+
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
@@ -312,6 +331,19 @@ void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool 
     }
 }
 
+/// Compute the bounding box of the scene.
+void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
+{
+    assert ( root!=NULL );
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    root->execute<UpdateBoundingBoxVisitor>( params );
+    defaulttype::BoundingBox bb = root->f_bbox.getValue();
+    for(int i=0; i<3; i++){
+        minBBox[i]= bb.minBBox()[i];
+        maxBBox[i]= bb.maxBBox()[i];
+    }
+}
+
 /// Update contexts. Required before drawing the scene if root flags are modified.
 void Simulation::updateContext ( Node* root )
 {
@@ -417,9 +449,8 @@ Node::SPtr Simulation::load ( const char *filename )
     }
 
     // unable to load file
-    std::cerr << "Simulation : Error : extension not handled" << std::endl;
+    std::cerr << "Simulation : Error : extension ("<<sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" << std::endl;
     return NULL;
-
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid

@@ -32,6 +32,9 @@ namespace sofa
 namespace simulation
 {
 
+using std::cerr;
+using std::endl;
+
 UpdateBoundingBoxVisitor::UpdateBoundingBoxVisitor(const sofa::core::ExecParams* params)
     :Visitor(params)
 {
@@ -49,7 +52,9 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
         (*object)->computeBBox(params);
+//        cerr<<"UpdateBoundingBoxVisitor::processNodeTopDown object " << (*object)->getName() << " = "<< (*object)->f_bbox.getValue(params) << endl;
         nodeBBox->include((*object)->f_bbox.getValue(params));
+//        cerr << "   new bbox = " << *nodeBBox << endl;
     }
     node->f_bbox.endEdit(params);
     return RESULT_CONTINUE;
@@ -61,6 +66,7 @@ void UpdateBoundingBoxVisitor::processNodeBottomUp(simulation::Node* node)
     Node::ChildIterator childNode;
     for( childNode = node->child.begin(); childNode!=node->child.end(); ++childNode)
     {
+//        cerr<<"   UpdateBoundingBoxVisitor::processNodeBottomUpDown object " << (*childNode)->getName() << endl;
         nodeBBox->include((*childNode)->f_bbox.getValue(params));
     }
     node->f_bbox.endEdit(params);

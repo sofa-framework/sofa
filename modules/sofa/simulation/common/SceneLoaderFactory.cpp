@@ -67,6 +67,33 @@ SceneLoader* SceneLoaderFactory::getEntryFileName(std::string filename)
     return 0;
 }
 
+
+SceneLoader* SceneLoaderFactory::getExporterEntryFileExtension(std::string extension)
+{
+    SceneLoaderList::iterator it = registry.begin();
+    while (it!=registry.end())
+    {
+        if ((*it)->canWriteFileExtension(extension.c_str()))
+            return *it;
+        it++;
+    }
+    // not found, sorry....
+    return 0;
+}
+
+SceneLoader* SceneLoaderFactory::getExporterEntryFileName(std::string filename)
+{
+    SceneLoaderList::iterator it = registry.begin();
+    while (it!=registry.end())
+    {
+        if ((*it)->canWriteFileName(filename.c_str()))
+            return *it;
+        it++;
+    }
+    // not found, sorry....
+    return 0;
+}
+
 /// Add a scene loader
 SceneLoader* SceneLoaderFactory::addEntry(SceneLoader *loader)
 {

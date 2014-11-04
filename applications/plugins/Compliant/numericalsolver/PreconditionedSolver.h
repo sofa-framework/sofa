@@ -28,13 +28,21 @@ class SOFA_Compliant_API PreconditionedSolver {
 
 
     struct Preconditioner {
-        BasePreconditioner* preconditioner;const AssembledSystem& sys;
+        BasePreconditioner* preconditioner;
+        const AssembledSystem& sys;
 
         Preconditioner(const AssembledSystem& sys, BasePreconditioner* p)
             : preconditioner(p)
             , sys(sys)
         {
-            p->compute(sys.H);
+            if( sys.isPIdentity )
+                p->compute(sys.H);
+            else
+            {
+                AssembledSystem::cmat identity(sys.H.rows(),sys.H.cols());
+                identity.setIdentity();
+                p->compute( sys.P.transpose()*sys.H*sys.P + identity * std::numeric_limits<SReal>::epsilon() );
+            }
         }
 
         mutable AssembledSystem::vec result;
@@ -42,7 +50,6 @@ class SOFA_Compliant_API PreconditionedSolver {
         template<class Vec>
         const AssembledSystem::vec& operator()(const Vec& x) const {
                 preconditioner->apply( result, x );
-                result = sys.P.selfadjointView<Eigen::Upper>() * result;
                 return result;
         }
 

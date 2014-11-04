@@ -9,6 +9,7 @@ SpringInteractor.h
 PickedPoint.h
 SofaScene.h
 SofaGL.h
+VisualPickVisitor.h
 
 	)
 
@@ -20,10 +21,11 @@ Interactor.cpp
 SpringInteractor.cpp
 SofaScene.cpp
 SofaGL.cpp
+VisualPickVisitor.cpp
 
 	)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES}  ${MOC_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SOFASIMPLEGUI")
 AddLinkerDependencies(SofaSimulationGraph SofaComponentMain)
