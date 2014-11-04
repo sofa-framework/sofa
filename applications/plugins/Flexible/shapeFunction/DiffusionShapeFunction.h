@@ -371,7 +371,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class DiffusionShapeFunction>
     static void solveGS(DiffusionShapeFunction* This, CImg<float>& values, CImg<char>& mask)
     {
-        DiffusionSolver<float>::solveGS( values, mask, This->iterations.getValue(), This->tolerance.getValue(), This->d_weightThreshold.getValue() );
+        DiffusionSolver<float>::solveGS( values, mask, This->iterations.getValue(), This->tolerance.getValue()/*, This->d_weightThreshold.getValue()*/ );
 
         if( This->d_outsideDiffusion.getValue() )
         {
@@ -569,6 +569,9 @@ public:
             CImg<float> values;
             CImg<char> mask;
 
+            //#ifdef USING_OMP_PRAGMAS
+            //        #pragma omp parallel for
+            //#endif
             for(unsigned int i=0; i<this->f_position.getValue().size(); i++)
             {
                 DiffusionShapeFunctionSpecialization<ImageTypes::label>::buildDiffusionProblem(this,i,values,mask);
