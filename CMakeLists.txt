@@ -7,14 +7,19 @@ project(${SOLUTION_NAME})
 if(MSVC)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 endif()
+
 if( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
   set( CMAKE_INSTALL_PREFIX ${Sofa_SOURCE_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE )
 endif (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
+
+message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
 
 # Set the output directories globally
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+
 
 # Environment
 set(SOFA_CMAKE_DIR "${Sofa_SOURCE_DIR}/cmake" )
@@ -23,7 +28,8 @@ include("${SOFA_CMAKE_DIR}/SofaBuildFlags.cmake")
 
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
-
+# Sofa libraries
+set(SOFA_EXTERNALS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sofa-win-dependencies-21-11-2013" )
 set(SOFA_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeps")
 set(SOFA_FRAMEWORK_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
 set(SOFA_SIMULATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimulation")
@@ -33,6 +39,23 @@ set(SOFA_GENERAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGeneral")
 set(SOFA_ADVANCED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaAdvanced")
 set(SOFA_MISC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaMisc")
 set(SOFA_GUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGui")
+set(SOFA_EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+set(SOFA_SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+
+# externals
+if(EXISTS ${SOFA_EXTERNALS_DIR} )
+    list(APPEND CMAKE_INCLUDE_PATH ${SOFA_EXTERNALS_DIR}/include)
+    if(MSVC)
+        if(CMAKE_CL_64)
+            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_EXTERNALS_DIR}/lib/win64)
+        else()
+            list(APPEND CMAKE_LIBRARY_PATH ${SOFA_EXTERNALS_DIR}/lib/win32)
+        endif()
+    endif() 
+endif()
+
+# externals
+add_subdirectory("${SOFA_EXTERNALS_DIR}")
 
 # deps
 add_subdirectory("${SOFA_DEPS_DIR}")
@@ -60,3 +83,14 @@ add_subdirectory("${SOFA_MISC_DIR}")
 
 # gui
 add_subdirectory("${SOFA_GUI_DIR}")
+
+# examples
+add_subdirectory("${SOFA_EXAMPLES_DIR}")
+
+# share 
+add_subdirectory("${SOFA_SHARE_DIR}")
+
+    
+
+
+
