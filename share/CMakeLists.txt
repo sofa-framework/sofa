@@ -10,7 +10,7 @@ if(WIN32)
     file(COPY "${CMAKE_CURRENT_SOURCE_DIR}" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 else()
     execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_CURRENT_SOURCE_DIR}
-                                                               ${CMAKE_BINARY_DIR} )                                                     
+                                                               ${CMAKE_BINARY_DIR}/sofa/share )
 endif()
 
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION ${SOFA_INSTALL_SHARE_DIR}
