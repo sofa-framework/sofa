@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8.12)
 set(SOLUTION_NAME "SofaBase")
 project(${SOLUTION_NAME})
 
-message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
-
 #temporary until we move the sub projects
 set( SofaBase_ACTUAL_SOURCE_DIR ${SofaBase_SOURCE_DIR}/../modules/)
 
