@@ -19,7 +19,7 @@ def createScene(node):
     scene_bielle_manivelle.param.showOffset=True
     scene_bielle_manivelle.createScene(node)
     
-    scene_bielle_manivelle.rigids["Corps"].node.createObject('FixedConstraint')
+    scene_bielle_manivelle.rigids["1"].node.createObject('FixedConstraint')
     
     return node
 
