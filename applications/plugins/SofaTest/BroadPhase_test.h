@@ -455,7 +455,7 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector
     return obbCollisionModel;
 }
 
-Vector3 randVect(const Vector3 & min,const Vector3 & max,int seed){
+Vector3 randVect(const Vector3 & min,const Vector3 & max,int /*seed*/){
     Vector3 ret;
     Vector3 extents = max - min;
 
