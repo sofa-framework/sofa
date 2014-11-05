@@ -182,10 +182,10 @@ MechanicalObject<DataTypes>::MechanicalObject()
 //    freeVelocity.setDisplayed( false );
 
     // do not forget to delete these in the destructor
-    // are null() vectors must be allocated?
-//    write(VecCoordId::null())->forceSet();
-//    write(VecDerivId::null())->forceSet();
-//    write(VecDerivId::dforce())->forceSet();
+    // null() vectors must be allocated
+    write(VecCoordId::null())->forceSet();
+    write(VecDerivId::null())->forceSet();
+    // write(VecDerivId::dforce())->forceSet();
 
     // default size is 1
     resize(1);
