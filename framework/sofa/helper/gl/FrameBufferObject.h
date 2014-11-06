@@ -36,7 +36,7 @@
 
 #ifdef SOFA_HAVE_GLEW
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 #include <sofa/helper/system/gl.h>
 
 

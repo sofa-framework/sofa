@@ -26,7 +26,7 @@
 #define SOFA_DEFAULTTYPE_BOUNDINGBOX_H
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/SofaFramework.h>
 
 
 namespace sofa

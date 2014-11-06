@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_MAP_PTR_STABLE_COMPARE_H
 #define SOFA_HELPER_MAP_PTR_STABLE_COMPARE_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 #include <memory>
 #include <map>
 

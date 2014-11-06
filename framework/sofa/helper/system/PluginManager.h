@@ -28,7 +28,7 @@
 #include <sofa/helper/system/DynamicLibrary.h>
 #include <boost/shared_ptr.hpp>
 #include <map>
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

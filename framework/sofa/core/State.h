@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_STATE_H
 #define SOFA_CORE_STATE_H
 
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 #include <sofa/core/BaseState.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/defaulttype/VecTypes.h>

@@ -39,7 +39,7 @@
 #include <string>
 #include <string.h>
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 #include <vector>
 #include <map>
 #include <iostream>

@@ -31,7 +31,7 @@
 #include <assert.h>
 #include <iostream>
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

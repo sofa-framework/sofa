@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_BACKTRACE_H
 #define SOFA_HELPER_BACKTRACE_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

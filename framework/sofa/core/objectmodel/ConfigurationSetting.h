@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_CONFIGURATIONSETTING_H
 #define SOFA_CORE_OBJECTMODEL_CONFIGURATIONSETTING_H
 
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa

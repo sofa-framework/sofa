@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_LIST_H
 #define SOFA_HELPER_LIST_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 #include <list>
 #include <iostream>

@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_SYSTEM_UTILS_H
 #define SOFA_HELPER_SYSTEM_UTILS_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 #include <string>
 

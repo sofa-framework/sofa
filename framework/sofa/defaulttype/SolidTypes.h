@@ -28,7 +28,7 @@
 #ifndef SOFA_DEFAULTTYPE_SOLIDTYPES_H
 #define SOFA_DEFAULTTYPE_SOLIDTYPES_H
 
-#include <sofa/defaulttype/defaulttype.h>
+#include <sofa/SofaFramework.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>

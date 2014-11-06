@@ -25,7 +25,7 @@
 #ifndef MARCHINGCUBEUTILITY_H
 #define MARCHINGCUBEUTILITY_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>

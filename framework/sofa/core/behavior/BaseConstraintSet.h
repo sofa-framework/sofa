@@ -28,7 +28,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 
 #include <sofa/defaulttype/BaseVector.h>
 

@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_RMATH_H
 #define SOFA_HELPER_RMATH_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 #include <math.h>
 #include <limits>
 

@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_SYSTEM_DYNAMICLIBRARY_H
 #define SOFA_HELPER_SYSTEM_DYNAMICLIBRARY_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 #include <boost/shared_ptr.hpp>
 #include <iostream>
 

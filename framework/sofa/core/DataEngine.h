@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <list>

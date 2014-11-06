@@ -26,7 +26,7 @@
 #define SOFA_HELPER_DECOMPOSE_H
 
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 #include <sofa/defaulttype/Mat.h>
 

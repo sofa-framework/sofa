@@ -33,7 +33,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 #include <map>
 

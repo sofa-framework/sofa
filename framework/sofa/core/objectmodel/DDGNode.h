@@ -31,7 +31,7 @@
 
 #include <sofa/helper/fixed_array.h>
 #include <sofa/core/ExecParams.h>
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <list>

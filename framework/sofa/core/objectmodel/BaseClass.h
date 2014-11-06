@@ -27,7 +27,7 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/vector.h>
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 #include <sofa/core/objectmodel/SPtr.h>
 #include <string>
 #include <map>

@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {
