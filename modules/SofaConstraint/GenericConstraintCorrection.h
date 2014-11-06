@@ -25,6 +25,8 @@
 #ifndef SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
 #define SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_H
 
+#include <sofa/SofaGeneral.h>
+
 #include <sofa/core/behavior/ConstraintCorrection.h>
 
 #include <sofa/core/behavior/OdeSolver.h>

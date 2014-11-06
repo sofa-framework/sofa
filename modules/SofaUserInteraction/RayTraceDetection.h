@@ -25,12 +25,12 @@
 #ifndef SOFA_COMPONENT_COLLISION_OCTREEDETECTION_H
 #define SOFA_COMPONENT_COLLISION_OCTREEDETECTION_H
 
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/collision/BroadPhaseDetection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
-
 
 namespace sofa
 {
@@ -40,7 +40,6 @@ namespace component
 
 namespace collision
 {
-
 
 /**
  *  \brief It is a Ray Trace based collision detection algorithm

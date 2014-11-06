@@ -26,6 +26,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_TOPOLOGICALCHANGEMANAGER_H
 #define SOFA_COMPONENT_COLLISION_TOPOLOGICALCHANGEMANAGER_H
 
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/CollisionElement.h>
 
 #include <sofa/core/BehaviorModel.h>

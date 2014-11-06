@@ -28,7 +28,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <SofaBaseTopology/TopologyData.inl>

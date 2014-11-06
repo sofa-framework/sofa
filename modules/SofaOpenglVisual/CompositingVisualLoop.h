@@ -32,7 +32,7 @@
 #ifndef SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
 #define SOFA_SIMULATION_COMPOSITINGVISUALLOOP_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/simulation/common/DefaultVisualManagerLoop.h>
 #include <sofa/core/visual/VisualParams.h>
 

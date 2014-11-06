@@ -31,7 +31,7 @@
 #ifndef SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
 #define SOFA_COMPONENT_VISUALMANAGER_SECONDARY_PASS_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <SofaOpenglVisual/VisualManagerPass.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <SofaOpenglVisual/OglShader.h>

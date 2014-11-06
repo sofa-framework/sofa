@@ -38,7 +38,7 @@
 #define SOFA_COMPONENT_LIGHTMANAGER_H
 
 #include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <SofaOpenglVisual/Light.h>
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/objectmodel/Event.h>

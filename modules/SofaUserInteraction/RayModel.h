@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_COLLISION_RAYMODEL_H
 #define SOFA_COMPONENT_COLLISION_RAYMODEL_H
 
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <set>
-
 
 namespace sofa
 {

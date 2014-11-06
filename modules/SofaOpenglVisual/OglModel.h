@@ -31,7 +31,7 @@
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <SofaBaseVisual/VisualModelImpl.h>

@@ -28,7 +28,7 @@
 #ifndef SOFA_NO_OPENGL
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vector.h>

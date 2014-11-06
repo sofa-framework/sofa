@@ -25,6 +25,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_GENERICCONSTRAINTSOLVER_H
 #define SOFA_COMPONENT_CONSTRAINTSET_GENERICCONSTRAINTSOLVER_H
 
+#include <sofa/SofaGeneral.h>
+
 #include <SofaConstraint/ConstraintSolverImpl.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/ConstraintSolver.h>

@@ -25,10 +25,11 @@
 #ifndef SOFA_COMPONENT_CONSTRAINTSET_CONSTRAINTSOLVERIMPL_H
 #define SOFA_COMPONENT_CONSTRAINTSET_CONSTRAINTSOLVERIMPL_H
 
+#include <sofa/SofaGeneral.h>
+
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
-
 #include <sofa/simulation/common/MechanicalVisitor.h>
-
 #include <SofaBaseLinearSolver/FullMatrix.h>
 
 namespace sofa

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_ODESOLVER_NEWMARKIMPLICITSOLVER_H
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 
 namespace sofa
 {
