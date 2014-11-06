@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 
 #include <SofaEigen2Solver/EigenMatrixManipulator.h>

@@ -27,7 +27,7 @@
 
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
 #include <SofaConstraint/LCPConstraintSolver.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

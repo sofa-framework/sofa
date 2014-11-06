@@ -34,7 +34,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

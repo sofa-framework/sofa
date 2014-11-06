@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_H
 #define SOFA_COMPONENT_ENGINE_GENERATERIGIDMASS_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/io/Mesh.h>

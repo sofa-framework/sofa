@@ -32,7 +32,7 @@
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/helper/Factory.inl>
 
 

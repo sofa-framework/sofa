@@ -33,7 +33,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>

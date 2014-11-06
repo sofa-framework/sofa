@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/PairInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <iostream>
 #include <map>

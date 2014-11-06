@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

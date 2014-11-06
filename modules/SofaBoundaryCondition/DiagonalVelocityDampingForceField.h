@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_H
 
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

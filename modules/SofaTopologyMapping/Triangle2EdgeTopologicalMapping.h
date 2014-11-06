@@ -31,7 +31,7 @@
 #include <map>
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

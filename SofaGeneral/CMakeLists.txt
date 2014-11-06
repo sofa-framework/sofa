@@ -14,8 +14,8 @@ set( SOFAGENERAL_BUILD_VERSION 1 )
 
 set( SOFAGENERAL_VERSION ${SOFAGENERAL_MAJOR_VERSION}.${SOFAGENERAL_MINOR_VERSION}.${SOFAGENERAL_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SOFAGENERAL_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAGENERAL_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
+set(SOFAGENERAL_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(SOFAGENERAL_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(SOFAGENERAL_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAGENERAL_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaGeneral)
 
@@ -39,7 +39,8 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaGeneral_ACTUAL_SOURCE_DIR}/)
 
-set(SOFAGENERAL_TARGETS SofaValidation SofaExporter SofaGraphComponent SofaTopologyMapping SofaBoundaryCondition SofaComponentGeneral SofaEngine SofaUserInteraction SofaConstraint SofaHaptics SofaPreconditioner)
+set(SOFAGENERAL_TARGETS SofaValidation SofaExporter SofaGraphComponent SofaTopologyMapping SofaBoundaryCondition 
+    SofaComponentGeneral SofaEngine SofaUserInteraction SofaConstraint SofaHaptics SofaPreconditioner)
 
 if(SOFA_HAVE_NEWMAT)
   list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)

@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_NORMENGINE_H
 #define SOFA_COMPONENT_ENGINE_NORMENGINE_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/Vec.h>
 

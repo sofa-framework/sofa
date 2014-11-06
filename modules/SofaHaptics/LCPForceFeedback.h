@@ -30,7 +30,7 @@
 
 #include <sofa/helper/system/thread/CTime.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

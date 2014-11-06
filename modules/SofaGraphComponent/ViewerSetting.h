@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_VIEWER_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 
