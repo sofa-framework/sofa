@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaConstraint/FrictionContact.inl>
-
+#include <SofaMiscCollision/TetrahedronModel.h>
 
 using namespace sofa::core::collision;
 

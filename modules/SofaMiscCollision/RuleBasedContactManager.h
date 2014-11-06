@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_RULEBASEDCONTACTMANAGER_H
 #define SOFA_COMPONENT_COLLISION_RULEBASEDCONTACTMANAGER_H
 
+#include <sofa/SofaMisc.h>
 #include <SofaBaseCollision/DefaultContactManager.h>
 
 namespace sofa

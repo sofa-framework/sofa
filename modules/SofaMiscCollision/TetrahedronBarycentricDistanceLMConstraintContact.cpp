@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <SofaConstraint/BarycentricDistanceLMConstraintContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.h>
-
+#include <SofaMiscCollision/TetrahedronModel.h>
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;

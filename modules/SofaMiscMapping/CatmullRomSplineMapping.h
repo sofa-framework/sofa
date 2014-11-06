@@ -28,7 +28,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyModifier.h>
 

@@ -39,7 +39,7 @@
 #include <string>
 #include <map>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 
 namespace sofa
 {

@@ -16,7 +16,9 @@ set(HEADER_FILES
 	MooneyRivlin.h
 	STVenantKirchhoff.h
 	VerondaWestman.h
-
+    material/BaseMaterial.h
+    material/NeoHookean.h
+    material/Ogden.h
     )
 
 set(SOURCE_FILES
@@ -43,6 +45,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaSimpleFem)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_BUILD_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_DEPENDENCY_DIR}>")
 
 set( SOFAMISCFEM_COMPILER_FLAGS "-DSOFA_BUILD_MISC_FEM")
 

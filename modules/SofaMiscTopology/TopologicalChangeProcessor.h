@@ -35,7 +35,7 @@
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/defaulttype/Vec.h>

@@ -29,7 +29,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 #include <map>

@@ -28,7 +28,8 @@
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
-#include <sofa/component/component.h>
+
+#include <sofa/SofaMisc.h>
 #include <SofaMiscFem/HyperelasticMaterial.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
