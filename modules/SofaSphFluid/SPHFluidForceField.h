@@ -33,7 +33,7 @@
 #include <vector>
 #include <math.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaAdvanced.h>
 
 namespace sofa
 {

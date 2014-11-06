@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYCONTAINER_H
 
+#include <sofa/SofaAdvanced.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/helper/map.h>

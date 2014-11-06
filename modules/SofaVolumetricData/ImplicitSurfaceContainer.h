@@ -27,7 +27,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaAdvanced.h>
 
 
 namespace sofa

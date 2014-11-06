@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRONFEMFORCEFIELD_H
 
-
+#include <sofa/SofaAdvanced.h>
 #include <SofaSimpleFem/HexahedronFEMForceFieldAndMass.h>
 
 namespace sofa
@@ -52,7 +52,6 @@ url          = "http://www-evasion.imag.fr/Publications/2006/NPF06"
 
 
 */
-
 
 template<class DataTypes>
 class NonUniformHexahedronFEMForceFieldAndMass : virtual public HexahedronFEMForceFieldAndMass<DataTypes>

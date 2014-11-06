@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_SPH_FLUID_INIT_H
 #define SOFA_COMPONENT_SPH_FLUID_INIT_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaAdvanced.h>
 
 namespace sofa
 {

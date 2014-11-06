@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_MULTILEVELHEXAHEDRONSETTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_MULTILEVELHEXAHEDRONSETTOPOLOGYCONTAINER_H
 
+#include <sofa/SofaAdvanced.h>
 #include <SofaBaseTopology/HexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.h>
 #include <sofa/core/topology/Topology.h>
