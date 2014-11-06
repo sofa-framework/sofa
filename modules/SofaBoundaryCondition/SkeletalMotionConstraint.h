@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_H
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_H
 
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/helper/SVector.h>
 #include <boost/type_traits/is_same.hpp>

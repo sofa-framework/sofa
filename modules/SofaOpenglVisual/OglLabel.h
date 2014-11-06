@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_VISUALMODEL_LABEL_H
 
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vector.h>

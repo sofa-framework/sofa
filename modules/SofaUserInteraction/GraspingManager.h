@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_GRASPINGMANAGER_H
 #define SOFA_COMPONENT_COLLISION_GRASPINGMANAGER_H
 
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <SofaBaseCollision/SphereModel.h>

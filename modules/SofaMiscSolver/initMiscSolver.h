@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MISC_SOLVER_INIT_H
 #define SOFA_COMPONENT_MISC_SOLVER_INIT_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 
 namespace sofa
 {

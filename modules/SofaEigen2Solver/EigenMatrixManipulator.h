@@ -27,7 +27,7 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 #include <Eigen/Core>
 #ifndef EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET

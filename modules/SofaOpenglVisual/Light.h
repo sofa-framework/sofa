@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 #ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/FrameBufferObject.h>

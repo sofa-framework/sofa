@@ -28,7 +28,7 @@ set(SOFAGENERAL_INSTALL_CMAKE_DIR   lib/cmake/SofaGeneral   CACHE PATH "Installa
 ## SofaGeneral dependencies
 ##
 find_package(SofaCommon REQUIRED)
-#include_directories( ${SofaCommon_INCLUDE_DIRS} )
+set(SOFAGENERAL_DEPENDENCY_INCLUDE_DIR ${SofaCommon_INCLUDE_DIRS})
 
 configure_file( ${SofaGeneral_SOURCE_DIR}/SofaGeneral.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h )

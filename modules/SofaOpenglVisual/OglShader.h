@@ -42,7 +42,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/GLSLShader.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa

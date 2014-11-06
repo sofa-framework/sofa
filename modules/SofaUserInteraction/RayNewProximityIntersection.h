@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_RAYNEWPROXIMITYINTERSECTION_H
 #define SOFA_COMPONENT_COLLISION_RAYNEWPROXIMITYINTERSECTION_H
 
+#include <sofa/SofaGeneral.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <SofaBaseCollision/SphereModel.h>
