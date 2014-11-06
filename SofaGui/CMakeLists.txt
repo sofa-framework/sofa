@@ -15,8 +15,8 @@ set( SOFAGUI_BUILD_VERSION 1 )
 
 set( SOFAGUI_VERSION ${SOFAGUI_MAJOR_VERSION}.${SOFAGUI_MINOR_VERSION}.${SOFAGUI_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SOFAGUI_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAGUI_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
+set(SOFAGUI_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(SOFAGUI_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(SOFAGUI_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAGUI_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaGui)
 
@@ -29,6 +29,8 @@ set(SOFAGUI_INSTALL_CMAKE_DIR   lib/cmake/SofaGui   CACHE PATH "Installation dir
 ## SofaGui dependencies
 ##
 find_package(SofaFramework REQUIRED)
+set(SOFAGUI_DEPENDENCY_DIR ${SofaFramework_INCLUDE_DIRS})
+
 find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
 
 set(SOFA_HAVE_QT ${Qt4_FOUND} )
