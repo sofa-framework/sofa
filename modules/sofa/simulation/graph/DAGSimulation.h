@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_GRAPH_DAGSIMULATION_H
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/graph/graph.h>
+#include <sofa/SofaSimulation.h>
 #include <memory>
 
 

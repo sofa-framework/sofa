@@ -30,7 +30,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/simulation/common/common.h>
+#include <sofa/SofaSimulation.h>
 #include <string>
 #include <list>
 #include <map>

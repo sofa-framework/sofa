@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_COMMON_MUTATIONLISTENER_H
 #define SOFA_SIMULATION_COMMON_MUTATIONLISTENER_H
 
-#include <sofa/simulation/common/common.h>
+#include <sofa/SofaSimulation.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa

@@ -37,7 +37,7 @@
 #define SOFA_SIMULATION_ANIMATEBEGINEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/common/common.h>
+#include <sofa/SofaSimulation.h>
 
 namespace sofa
 {

@@ -25,7 +25,7 @@
 #ifndef SOFA_SIMULATION_COMMON_XML_INIT_H
 #define SOFA_SIMULATION_COMMON_XML_INIT_H
 
-#include <sofa/simulation/common/common.h>
+#include <sofa/SofaSimulation.h>
 
 namespace sofa
 {

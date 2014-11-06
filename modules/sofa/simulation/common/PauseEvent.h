@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_PAUSEEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/common/common.h>
+#include <sofa/SofaSimulation.h>
 
 namespace sofa
 {
