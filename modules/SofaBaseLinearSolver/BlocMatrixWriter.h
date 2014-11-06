@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCMATRIXWRITER_H
 #define SOFA_COMPONENT_LINEARSOLVER_BLOCMATRIXWRITER_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>

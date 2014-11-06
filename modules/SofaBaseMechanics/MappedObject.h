@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPEDOBJECT_H
 
 #include <sofa/core/State.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 #include <vector>
 #include <assert.h>
 #include <fstream>

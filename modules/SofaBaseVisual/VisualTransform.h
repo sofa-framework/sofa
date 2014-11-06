@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_VISUALTRANSFORM_H
 #define SOFA_COMPONENT_VISUALMODEL_VISUALTRANSFORM_H
 
-#include <sofa/component/component.h>
+#include<sofa/SofaBase.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

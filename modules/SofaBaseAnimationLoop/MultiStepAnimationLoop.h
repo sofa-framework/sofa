@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/simulation/common/CollisionAnimationLoop.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 
 namespace sofa
 {

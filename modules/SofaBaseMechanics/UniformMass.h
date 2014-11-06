@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 
 namespace sofa
 {

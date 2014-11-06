@@ -29,7 +29,7 @@
 #include <map>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 
 namespace sofa
 {

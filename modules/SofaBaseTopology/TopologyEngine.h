@@ -34,8 +34,6 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/list.h>
-#include <sofa/component/component.h>
-
 
 namespace sofa
 {

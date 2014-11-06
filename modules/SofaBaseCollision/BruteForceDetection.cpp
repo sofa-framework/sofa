@@ -24,11 +24,7 @@
 ******************************************************************************/
 #include <SofaBaseCollision/BruteForceDetection.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/Sphere.h>
-#include <SofaMeshCollision/Triangle.h>
-#include <SofaMeshCollision/Line.h>
-#include <SofaMeshCollision/Point.h>
+
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
 #include <map>
