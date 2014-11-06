@@ -203,6 +203,9 @@ class GenericRigidJoint:
 
 
     class PositionController:
+        """ Set the joint position to the offset
+        WARNING: for angular dof position, the value mus be in ]-pi,pi]
+        """
         def __init__(self, node, masks, offsets, compliance):
             self.node = node.createChild( "controller" )
 
