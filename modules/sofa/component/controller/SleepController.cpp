@@ -201,62 +201,21 @@ void SleepController::putNodesToSleep()
 
 void SleepController::wakeUpNodes()
 {
-	std::vector<core::collision::Contact::SPtr> contacts;
-	core::collision::ContactManager* contactManager;
-	core::objectmodel::BaseContext* root = getContext()->getRootContext();
+	std::vector<BaseContexts> wakeupPairs; // For each context that can sleep, all linked contexts
+	wakeupPairs.resize(m_statesThatCanSleep.size());
 
-	root->get(contactManager);
-	if (contactManager)
-		contacts = contactManager->getContacts();
-	else
-		root->get<core::collision::Contact>(&contacts, core::objectmodel::BaseContext::SearchDown);
-
-	std::vector<BaseContexts> contactsPairs; // For each context that can sleep, all contacts
-	contactsPairs.resize(m_statesThatCanSleep.size());
-
-	BaseContexts::const_iterator contextsBegin = m_contextsThatCanSleep.begin();
-	BaseContexts::const_iterator contextsEnd = m_contextsThatCanSleep.end();
-
-	for (unsigned int i = 0, nbContacts = contacts.size(); i < nbContacts; ++i)
-	{
-		std::pair<core::CollisionModel*, core::CollisionModel*> collisionModels = contacts[i]->getCollisionModels();
-
-		// We ignore contacts where one object is set to be non-moving
-		if (!collisionModels.first->isMoving() || !collisionModels.second->isMoving())
-			continue;
-
-		core::objectmodel::BaseContext* context1 = getParentContextThatCanSleep(collisionModels.first->getContext());
-		core::objectmodel::BaseContext* context2 = getParentContextThatCanSleep(collisionModels.second->getContext());
-
-		BaseContexts::const_iterator iter = std::find(contextsBegin, contextsEnd, context1);
-		if (iter != contextsEnd)
-		{
-			int index = iter - contextsBegin;
-			BaseContexts& contactPairRef = contactsPairs[index];
-			if(std::find(contactPairRef.begin(), contactPairRef.end(), context2) == contactPairRef.end()) // No duplicates
-				contactPairRef.push_back(context2);
-		}
-
-		iter = std::find(contextsBegin, contextsEnd, context2);
-		if (iter != contextsEnd)
-		{
-			int index = iter - contextsBegin;
-			BaseContexts& contactPairRef = contactsPairs[index];
-			if(std::find(contactPairRef.begin(), contactPairRef.end(), context1) == contactPairRef.end()) // No duplicates
-				contactPairRef.push_back(context1);
-		}
-	}
+	collectWakeupPairs(wakeupPairs);
 	
-	// Debug of the contact pairs
+	// Debug of the pairs
 /*	if (f_printLog.getValue())
 	{
-		for (unsigned int i = 0, nbContactsPairs = contactsPairs.size(); i < nbContactsPairs; ++i)
+		for (unsigned int i = 0, nbWakeupPairs = wakeupPairs.size(); i < nbWakeupPairs; ++i)
 		{
-			const BaseContexts& contactPairRef = contactsPairs[i];
-			if (!contactPairRef.empty())
+			const BaseContexts& wakeupPairRef = wakeupPairs[i];
+			if (!wakeupPairRef.empty())
 			{
-				for (unsigned int j = 0, nbContacts = contactPairRef.size(); j < nbContacts; ++j)
-					std::cout << m_contextsThatCanSleep[i]->getName() << " --> " << contactPairRef[j]->getName() << std::endl;
+				for (unsigned int j = 0, nbLinks = wakeupPairRef.size(); j < nbLinks; ++j)
+					std::cout << m_contextsThatCanSleep[i]->getName() << " --> " << wakeupPairRef[j]->getName() << std::endl;
 			}
 		}
 	} */
@@ -273,10 +232,10 @@ void SleepController::wakeUpNodes()
 			if (!context->isSleeping())
 				continue;
 
-			const BaseContexts& contactPair = contactsPairs[i];
-			for (unsigned int j = 0, nbContacts = contactPair.size(); j < nbContacts; ++j)
+			const BaseContexts& wakeupPair = wakeupPairs[i];
+			for (unsigned int j = 0, nbLinks = wakeupPair.size(); j < nbLinks; ++j)
 			{
-				if (!contactPair[j]->isSleeping())
+				if (!wakeupPair[j]->isSleeping())
 				{
 					changed = true;
 					context->setSleeping(false);
@@ -300,6 +259,59 @@ void SleepController::updateTimeSinceWakeUp()
 			m_timeSinceWakeUp[i] = 0.0;
 		else
 			m_timeSinceWakeUp[i] += context->getDt();
+	}
+}
+
+void SleepController::collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs)
+{
+	std::vector<core::collision::Contact::SPtr> contacts;
+	core::collision::ContactManager* contactManager;
+	core::objectmodel::BaseContext* root = getContext()->getRootContext();
+
+	root->get(contactManager);
+	if (contactManager)
+		contacts = contactManager->getContacts();
+	else
+		root->get<core::collision::Contact>(&contacts, core::objectmodel::BaseContext::SearchDown);
+
+	for (unsigned int i = 0, nbContacts = contacts.size(); i < nbContacts; ++i)
+	{
+		std::pair<core::CollisionModel*, core::CollisionModel*> collisionModels = contacts[i]->getCollisionModels();
+
+		// We ignore contacts where one object is set to be non-moving
+		if (!collisionModels.first->isMoving() || !collisionModels.second->isMoving())
+			continue;
+
+		addWakeupPair(wakeupPairs, collisionModels.first->getContext(), collisionModels.second->getContext());
+	}
+}
+
+void SleepController::addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core::objectmodel::BaseContext* context1, core::objectmodel::BaseContext* context2)
+{
+	context1 = getParentContextThatCanSleep(context1);
+	context2 = getParentContextThatCanSleep(context2);
+	if (context1 == NULL || context2 == NULL)
+		return;
+
+	BaseContexts::const_iterator contextsBegin = m_contextsThatCanSleep.begin();
+	BaseContexts::const_iterator contextsEnd = m_contextsThatCanSleep.end();
+
+	BaseContexts::const_iterator iter = std::find(contextsBegin, contextsEnd, context1);
+	if (iter != contextsEnd)
+	{
+		int index = iter - contextsBegin;
+		BaseContexts& wakeupPairRef = wakeupPairs[index];
+		if(std::find(wakeupPairRef.begin(), wakeupPairRef.end(), context2) == wakeupPairRef.end()) // No duplicates
+			wakeupPairRef.push_back(context2);
+	}
+
+	iter = std::find(contextsBegin, contextsEnd, context2);
+	if (iter != contextsEnd)
+	{
+		int index = iter - contextsBegin;
+		BaseContexts& wakeupPairRef = wakeupPairs[index];
+		if(std::find(wakeupPairRef.begin(), wakeupPairRef.end(), context1) == wakeupPairRef.end()) // No duplicates
+			wakeupPairRef.push_back(context1);
 	}
 }
 

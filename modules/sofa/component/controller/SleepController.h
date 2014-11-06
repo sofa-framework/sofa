@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
-#define SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
+#ifndef SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
+#define SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/common/Visitor.h>
@@ -90,6 +90,9 @@ protected:
 	typedef std::vector<StateTesterPtr> StateTesters;
 	StateTesters m_stateTesters; // All supported templates
 	StateTesters m_correspondingTesters; // The correct template for each state of the list m_statesThanCanSleep
+
+	virtual void collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs);
+	void addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core::objectmodel::BaseContext* context1, core::objectmodel::BaseContext* context2);
 };
 
 /**
@@ -112,4 +115,4 @@ protected:
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONTROLLER_CONTROLLER_H
+#endif // SOFA_COMPONENT_CONTROLLER_SLEEPCONTROLLER_H
