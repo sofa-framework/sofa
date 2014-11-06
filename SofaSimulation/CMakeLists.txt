@@ -25,9 +25,12 @@ set(SOFASIMULATION_INSTALL_BIN_DIR     bin     					  CACHE PATH "Installation d
 set(SOFASIMULATION_INSTALL_INCLUDE_DIR include 					  CACHE PATH "Installation directory for header files")
 set(SOFASIMULATION_INSTALL_CMAKE_DIR   lib/cmake/SofaSimulation   CACHE PATH "Installation directory for CMake files")
 
+set(SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS )
 ## SofaSimulation dependencies
 ##
 find_package(SofaFramework REQUIRED)
+
+list(APPEND SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS ${SofaFramework_INCLUDE_DIRS})
 #include_directories( ${SofaFramework_INCLUDE_DIRS} )
 
 configure_file( ${SofaSimulation_SOURCE_DIR}/SofaSimulation.h.in
