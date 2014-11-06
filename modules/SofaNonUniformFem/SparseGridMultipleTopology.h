@@ -26,10 +26,8 @@
 #define SOFA_COMPONENT_TOPOLOGY_SPARSEGRIDMULTIPLETOPOLOGY_H
 
 #include <string>
-
-
+#include <sofa/SofaAdvanced.h>
 #include <SofaNonUniformFem/SparseGridRamificationTopology.h>
-
 
 namespace sofa
 {
