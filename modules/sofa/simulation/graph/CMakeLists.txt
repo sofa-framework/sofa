@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 project(SofaSimulationGraph)
 
 set(SOFASIMULATION_HEADERS
-
-	graph.h 
 	DAGNode.h 
 	DAGNodeMultiMappingElement.h 
 	DAGSimulation.h 

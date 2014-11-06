@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_VISITORSCHEDULER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/simulation/common/common.h>
+#include <sofa/SofaSimulation.h>
 #include "ClassSystem.h"
 
 namespace sofa

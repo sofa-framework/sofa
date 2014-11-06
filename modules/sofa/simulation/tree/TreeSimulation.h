@@ -26,7 +26,7 @@
 #define SOFA_SIMULATION_TREE_TREESIMULATION_H
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/SofaSimulation.h>
 #include <memory>
 
 
