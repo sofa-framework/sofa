@@ -73,6 +73,8 @@ set(HEADER_FILES
     contact/FrictionCompliantContact.h
     contact/BaseContact.h
     contact/PenalityCompliantContact.h
+
+    controller/CompliantSleepController.h
     
     utils/basis.h
     utils/cast.h
@@ -156,7 +158,9 @@ set(SOURCE_FILES
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
-    contact/PenalityCompliantContact.cpp)
+    contact/PenalityCompliantContact.cpp
+	
+	controller/CompliantSleepController.cpp)
 
 set(README_FILES Compliant.txt)
 
