@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONTAINER_DISTANCEGRIDCOLLISIONMODEL_H
 #define SOFA_COMPONENT_CONTAINER_DISTANCEGRIDCOLLISIONMODEL_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaAdvanced.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/io/Mesh.h>
 

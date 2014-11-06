@@ -30,7 +30,7 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaVolumetricData/DistanceGrid.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaAdvanced.h>
 
 namespace sofa
 {
