@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 
 namespace sofa
 {

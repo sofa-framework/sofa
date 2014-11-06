@@ -32,7 +32,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 
 #include <sofa/helper/map.h>
 

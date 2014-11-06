@@ -28,7 +28,7 @@
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa

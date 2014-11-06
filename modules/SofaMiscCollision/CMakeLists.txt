@@ -58,6 +58,7 @@ target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaMeshCollision SofaCon
 #endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_BUILD_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_DEPENDENCY_DIR}>")
 
 set( SOFAMISCCOLLISION_COMPILER_FLAGS "-DSOFA_BUILD_MISC_COLLISION")
 

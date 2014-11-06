@@ -14,8 +14,8 @@ set( SOFAMISC_BUILD_VERSION 1 )
 
 set( SOFAMISC_VERSION ${SOFAMISC_MAJOR_VERSION}.${SOFAMISC_MINOR_VERSION}.${SOFAMISC_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SOFAMISC_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFAMISC_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
+set(SOFAMISC_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(SOFAMISC_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(SOFAMISC_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAMISC_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaMisc)
 
@@ -28,7 +28,7 @@ set(SOFAMISC_INSTALL_CMAKE_DIR   lib/cmake/SofaMisc   CACHE PATH "Installation d
 ## SofaMisc dependencies
 ##
 find_package(SofaCommon REQUIRED)
-#include_directories( ${SofaCommon_INCLUDE_DIRS} )
+set(SOFAMISC_DEPENDENCY_DIR ${SofaCommon_INCLUDE_DIRS})
 
 configure_file( ${SofaMisc_SOURCE_DIR}/SofaMisc.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaMisc.h )
@@ -38,7 +38,8 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaMisc.h
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaMisc_ACTUAL_SOURCE_DIR}/../../)
 
-set(SOFAMISC_TARGETS SofaMiscTopology SofaMiscMapping SofaMiscForceField SofaMiscFem SofaMiscEngine SofaMiscCollision SofaMiscSolver SofaMisc SofaComponentMisc)
+set(SOFAMISC_TARGETS SofaMiscTopology SofaMiscMapping SofaMiscForceField SofaMiscFem SofaMiscEngine 
+    SofaMiscCollision SofaMiscSolver SofaMisc SofaComponentMisc)
 
 foreach(TARGET ${SOFAMISC_TARGETS})
   add_subdirectory(${SofaMisc_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})

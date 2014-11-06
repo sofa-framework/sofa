@@ -28,7 +28,7 @@
 #include <sofa/core/Multi2Mapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 

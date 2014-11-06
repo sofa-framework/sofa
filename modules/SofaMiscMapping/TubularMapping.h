@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_TUBULARMAPPING_H
 #define SOFA_COMPONENT_MAPPING_TUBULARMAPPING_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/MechanicalState.h>

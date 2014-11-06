@@ -27,7 +27,7 @@
 
 #include <sofa/core/Mapping.inl>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaMisc.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
