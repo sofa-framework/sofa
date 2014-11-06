@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_VISUALMODEL_VISUALSTYLE_H
 #define SOFA_COMPONENT_VISUALMODEL_VISUALSTYLE_H
 
-#include <sofa/component/component.h>
+#include<sofa/SofaBase.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/common/Node.h>

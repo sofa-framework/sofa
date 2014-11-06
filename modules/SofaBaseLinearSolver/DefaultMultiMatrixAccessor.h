@@ -28,7 +28,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>

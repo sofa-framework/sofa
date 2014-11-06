@@ -28,7 +28,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/topology/BaseTopology.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 
 namespace sofa
 {

@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_SingleMatrixAccessor_H
 #define SOFA_CORE_BEHAVIOR_SingleMatrixAccessor_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 

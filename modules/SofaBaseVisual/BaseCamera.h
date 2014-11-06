@@ -27,7 +27,7 @@
 
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/component.h>
+#include<sofa/SofaBase.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Quater.h>
 #include <sofa/helper/gl/Trackball.h>

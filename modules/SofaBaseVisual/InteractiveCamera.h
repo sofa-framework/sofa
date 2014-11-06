@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_VISUALMODEL_INTERACTIVECAMERA_H
 
 #include <SofaBaseVisual/BaseCamera.h>
-#include <sofa/component/component.h>
+#include<sofa/SofaBase.h>
 namespace sofa
 {
 

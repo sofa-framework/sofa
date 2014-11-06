@@ -25,9 +25,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_DEFAULTPIPELINE_H
 #define SOFA_COMPONENT_COLLISION_DEFAULTPIPELINE_H
 
+#include <sofa/SofaBase.h>
 #include <sofa/simulation/common/PipelineImpl.h>
-
-#include <sofa/component/component.h>
 
 namespace sofa
 {

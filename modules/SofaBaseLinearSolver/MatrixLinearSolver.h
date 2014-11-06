@@ -30,7 +30,7 @@
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>

@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_TOPOLOGYSUBSETDATA_H
 
 #include <sofa/helper/vector.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaBase.h>
 
 #include <sofa/core/topology/BaseTopologyData.h>
 #include <SofaBaseTopology/TopologyEngine.h>

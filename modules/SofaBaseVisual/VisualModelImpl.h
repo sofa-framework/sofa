@@ -35,7 +35,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
-#include <sofa/component/component.h>
+#include<sofa/SofaBase.h>
 
 #include <map>
 #include <string>
