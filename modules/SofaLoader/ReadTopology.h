@@ -31,7 +31,7 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #ifdef SOFA_HAVE_ZLIB

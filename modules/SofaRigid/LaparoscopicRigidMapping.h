@@ -27,7 +27,7 @@
 
 #include <sofa/core/Mapping.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/Quat.h>

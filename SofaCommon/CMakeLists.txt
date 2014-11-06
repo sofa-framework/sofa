@@ -14,8 +14,8 @@ set( SOFACOMMON_BUILD_VERSION 1 )
 
 set( SOFACOMMON_VERSION ${SOFACOMMON_MAJOR_VERSION}.${SOFACOMMON_MINOR_VERSION}.${SOFACOMMON_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
 
-set(SOFACOMMON_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR})
-set(SOFACOMMON_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR})
+set(SOFACOMMON_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(SOFACOMMON_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
 set(SOFACOMMON_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFACOMMON_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaCommon)
 
@@ -38,7 +38,8 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaCommon.h
 #include_directories(${CMAKE_CURRENT_BINARY_DIR})
 #include_directories(${SofaCommon_ACTUAL_SOURCE_DIR})
 
-set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObjectInteraction SofaMeshCollision SofaExplicitOdeSolver SofaImplicitOdeSolver SofaComponentCommon)
+set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObjectInteraction 
+    SofaMeshCollision SofaExplicitOdeSolver SofaImplicitOdeSolver SofaComponentCommon)
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
   add_subdirectory(${SofaCommon_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})

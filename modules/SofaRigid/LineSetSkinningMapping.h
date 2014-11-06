@@ -32,7 +32,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 
 #include <vector>
 

@@ -37,7 +37,7 @@
 #include <map>
 #include <set>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 
 namespace sofa
 {

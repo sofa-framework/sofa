@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LOADER_MESHOFFLOADER_H
 
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 
 namespace sofa
 {

@@ -33,7 +33,7 @@
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/CubeModel.h>
-#include <SofaVolumetricData/DistanceGridCollisionModel.h>
+//#include <SofaVolumetricData/DistanceGridCollisionModel.h>
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <SofaMeshCollision/MeshIntTool.h>
 

@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/io/bvh/BVHLoader.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>

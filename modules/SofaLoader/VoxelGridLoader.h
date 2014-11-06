@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LOADER_VOXELGRIDLOADER
 
 #include <sofa/core/loader/VoxelLoader.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/fixed_array.h>

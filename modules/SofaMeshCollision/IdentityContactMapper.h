@@ -37,10 +37,10 @@
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMiscCollision/TetrahedronModel.h>
+//#include <SofaMiscCollision/TetrahedronModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
-#include <SofaVolumetricData/DistanceGridCollisionModel.h>
+//#include <SofaVolumetricData/DistanceGridCollisionModel.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <iostream>
 
