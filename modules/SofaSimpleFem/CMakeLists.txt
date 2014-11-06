@@ -57,6 +57,7 @@ target_link_libraries( ${PROJECT_NAME} SofaBaseTopology)
 #AddSourceDependencies(eigen)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFACOMMON_BUILD_INCLUDE_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFACOMMON_DEPENDENCY_INCLUDE_DIR}>")
 
 set( SOFASIMPLEFEM_COMPILER_FLAGS "-DSOFA_BUILD_SIMPLE_FEM")
 
