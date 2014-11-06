@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_RAYCONTACT_H
 
 #include <sofa/core/collision/Contact.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/helper/Factory.h>
 
 namespace sofa

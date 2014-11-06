@@ -28,7 +28,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa

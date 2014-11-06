@@ -27,7 +27,7 @@
 #define REQUIREDPLUGIN_H_
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseForceField.h>

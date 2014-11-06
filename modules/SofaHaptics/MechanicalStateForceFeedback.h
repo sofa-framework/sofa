@@ -27,7 +27,7 @@
 
 #include <SofaHaptics/ForceFeedback.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 
 namespace sofa

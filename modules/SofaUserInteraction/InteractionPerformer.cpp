@@ -26,7 +26,7 @@
 
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa

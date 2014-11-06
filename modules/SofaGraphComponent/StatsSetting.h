@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_STATS_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa

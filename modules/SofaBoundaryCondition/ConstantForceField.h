@@ -27,7 +27,7 @@
 
 #include <sofa/core/behavior/ForceField.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
 
 

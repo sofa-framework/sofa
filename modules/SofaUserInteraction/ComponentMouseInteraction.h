@@ -29,7 +29,7 @@
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/Mapping.h>
 
 namespace sofa

@@ -33,7 +33,7 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 #ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>

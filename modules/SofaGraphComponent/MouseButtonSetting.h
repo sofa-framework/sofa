@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_MOUSEBUTTONSETTING_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/core/objectmodel/DataFileName.h>

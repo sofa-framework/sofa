@@ -40,7 +40,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/SVector.h>
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {

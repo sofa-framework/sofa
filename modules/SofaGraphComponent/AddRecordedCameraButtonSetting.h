@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_ADDRECORDEDCAMERABUTTON_H
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 #include <SofaBaseVisual/RecordedCamera.h>
 
