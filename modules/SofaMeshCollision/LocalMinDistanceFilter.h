@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_LOCALMINDISTANCEFILTER_H
 #define SOFA_COMPONENT_COLLISION_LOCALMINDISTANCEFILTER_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>

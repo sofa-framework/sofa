@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_LOADER_OFFSEQUENCELOADER_H
 
 #include <SofaLoader/MeshOffLoader.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 
 namespace sofa
 {
@@ -39,7 +39,7 @@ namespace loader
 
 /** This class load a sequence of .off mesh files, ordered by index in their name
 */
-class OffSequenceLoader : public sofa::component::loader::MeshOffLoader
+class SOFA_LOADER_API OffSequenceLoader : public sofa::component::loader::MeshOffLoader
 {
 public:
     SOFA_CLASS(OffSequenceLoader,sofa::component::loader::MeshOffLoader);

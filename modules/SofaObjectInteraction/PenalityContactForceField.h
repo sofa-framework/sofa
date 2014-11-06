@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 #include <vector>
 #include <sofa/core/MechanicalParams.h>
 

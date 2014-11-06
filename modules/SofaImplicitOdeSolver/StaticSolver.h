@@ -29,7 +29,7 @@
 #define SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
 
 #include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 
 
 namespace sofa

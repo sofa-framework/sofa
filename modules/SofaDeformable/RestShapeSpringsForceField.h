@@ -33,7 +33,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
 
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 
 namespace sofa
 {

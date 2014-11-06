@@ -30,7 +30,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 #include <vector>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>

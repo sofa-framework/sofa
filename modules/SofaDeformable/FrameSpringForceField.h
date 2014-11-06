@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <vector>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 #include <sofa/core/MechanicalParams.h>
 
 

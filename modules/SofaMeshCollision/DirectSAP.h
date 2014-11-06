@@ -30,7 +30,7 @@
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/component/collision/EndPoint.h>
 #include <sofa/defaulttype/Vec.h>

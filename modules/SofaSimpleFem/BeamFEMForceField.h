@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
 
-
+#include <sofa/SofaCommon.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaBaseTopology/TopologyData.h>
 

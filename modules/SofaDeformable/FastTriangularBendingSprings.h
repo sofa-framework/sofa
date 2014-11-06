@@ -40,7 +40,7 @@
 #pragma once
 #endif
 
-//#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/SofaCommon.h>
 #include <map>
 
 #include <sofa/core/behavior/ForceField.h>

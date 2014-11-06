@@ -30,7 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 #include <sofa/helper/SVector.h>
-#include <sofa/component/component.h>
+#include <sofa/SofaCommon.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
