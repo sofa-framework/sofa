@@ -26,7 +26,7 @@
 #define SOFA_HELPER_IO_BVH_BVHMOTION_H
 
 #include <vector>
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

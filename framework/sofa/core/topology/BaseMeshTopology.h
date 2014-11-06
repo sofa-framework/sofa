@@ -37,7 +37,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/vector.h>
 
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

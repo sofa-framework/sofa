@@ -26,7 +26,7 @@
 #define SOFA_CORE_EXEC_PARAMS_H
 
 #include <sofa/helper/system/atomic.h>
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

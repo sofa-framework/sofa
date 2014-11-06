@@ -27,7 +27,7 @@
 
 #include <sofa/helper/io/bvh/BVHJoint.h>
 #include <sofa/helper/io/bvh/BVHMotion.h>
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

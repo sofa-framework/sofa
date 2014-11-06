@@ -26,6 +26,10 @@
 #ifndef _SOFA_FRAMEWORK_H_
 #define _SOFA_FRAMEWORK_H_
 
+#define SOFAFRAMEWORK_MAJOR_VERSION ${SOFAFRAMEWORK_MAJOR_VERSION}
+#define SOFAFRAMEWORK_MINOR_VERSION ${SOFAFRAMEWORK_MINOR_VERSION}
+#define SOFAFRAMEWORK_BUILD_VERSION ${SOFAFRAMEWORK_BUILD_VERSION}
+
 #cmakedefine SOFA_HAVE_ZLIB
 
 #cmakedefine SOFA_HAVE_PNG
@@ -44,9 +48,43 @@
 
 #cmakedefine SOFA_HAVE_EIGEN2
 
+// Use of "extern template" is activated by the following macro
+// It must be used for DLLs on windows, and is now also activated
+// on other platforms (unless SOFA_NO_EXTERN_TEMPLATE is set), as
+// it can fix RTTI issues (typeid / dynamic_cast) on Mac and can
+// significantly speed-up compilation and link
+#ifndef SOFA_NO_EXTERN_TEMPLATE
+#define SOFA_EXTERN_TEMPLATE
+#endif
 
-#define SOFAFRAMEWORK_MAJOR_VERSION ${SOFAFRAMEWORK_MAJOR_VERSION}
-#define SOFAFRAMEWORK_MINOR_VERSION ${SOFAFRAMEWORK_MINOR_VERSION}
-#define SOFAFRAMEWORK_BUILD_VERSION ${SOFAFRAMEWORK_BUILD_VERSION}
+#ifndef WIN32
+#	define SOFA_EXPORT_DYNAMIC_LIBRARY
+#   define SOFA_IMPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#   define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#   ifdef _MSC_VER
+#       pragma warning(disable : 4231)
+#       pragma warning(disable : 4910)
+#   endif
+#endif
+
+#ifdef SOFA_BUILD_HELPER
+#	define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_DEFAULTTYPE
+#	define SOFA_DEFAULTTYPE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_DEFAULTTYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#ifdef SOFA_BUILD_CORE
+#	define SOFA_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif // _SOFA_FRAMEWORK_H_

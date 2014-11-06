@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_ADVANCEDTIMER_H
 #define SOFA_HELPER_ADVANCEDTIMER_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 #include <string>
 #include <iostream>
 

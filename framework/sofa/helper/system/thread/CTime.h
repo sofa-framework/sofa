@@ -26,7 +26,7 @@
 #define SOFA_HELPER_SYSTEM_THREAD_CTIME_H
 
 #include <time.h>
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 #ifdef WIN32
 # include <windows.h>

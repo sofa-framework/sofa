@@ -26,7 +26,7 @@
 #define SOFA_HELPER_IO_TRIANGLELOADER_H
 
 #include <stdio.h>
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

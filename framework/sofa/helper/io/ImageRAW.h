@@ -29,7 +29,7 @@
 #include <string>
 
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

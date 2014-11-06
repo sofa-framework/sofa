@@ -3,8 +3,6 @@ project(SofaDefaultType)
 
 
 set(SOFADEFAULTTYPE_HEADERS
-
-	defaulttype.h	
 	BaseMatrix.h	
 	BaseVector.h	
 	BoundingBox.h	

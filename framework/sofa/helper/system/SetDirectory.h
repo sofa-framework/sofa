@@ -27,7 +27,7 @@
 
 #include <string>
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

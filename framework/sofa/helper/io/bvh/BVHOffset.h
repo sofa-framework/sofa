@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_IO_BVH_BVHOFFSET_H
 #define SOFA_HELPER_IO_BVH_BVHOFFSET_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {

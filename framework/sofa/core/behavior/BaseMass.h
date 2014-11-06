@@ -25,7 +25,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMASS_H
 #define SOFA_CORE_BEHAVIOR_BASEMASS_H
 
-#include <sofa/core/core.h>
+#include <sofa/SofaFramework.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/BaseObject.h>

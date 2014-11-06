@@ -3,7 +3,6 @@ project(SofaCore)
 
 
 set(SOFACORE_HEADERS
-	core.h
 	VecId.h
 #	Plugin.h
 #	PluginManager.h

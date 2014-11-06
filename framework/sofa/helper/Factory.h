@@ -29,7 +29,7 @@
 #include <iostream>
 #include <typeinfo>
 
-#include <sofa/helper/helper.h>
+#include <sofa/SofaFramework.h>
 
 namespace sofa
 {
