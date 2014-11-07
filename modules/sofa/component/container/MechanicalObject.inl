@@ -172,7 +172,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     x               .forceSet();
     //  x0              .forceSet();
     v               .forceSet();
-//    dx              .forceSet();
+    dx              .forceSet();
     f               .forceSet();
     externalForces  .forceSet();
 
@@ -185,7 +185,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     // null() vectors must be allocated
     write(VecCoordId::null())->forceSet();
     write(VecDerivId::null())->forceSet();
-    // write(VecDerivId::dforce())->forceSet();
+    write(VecDerivId::dforce())->forceSet();
 
     // default size is 1
     resize(1);
