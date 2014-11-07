@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	 name="root"  gravity="0 -9.8 0"  dt="0.01"  >
+<Node 	 name="root" gravity="0 -9.8 0"  dt="0.01"  >
 	<VisualStyle name="VisualStyle"  displayFlags="hideVisual showBehavior showCollisionModels hideBoundingCollisionModels hideMapping hideOptions" />
 	<RequiredPlugin name="Compliant"  printLog="1"  pluginName="Compliant" />
 	<CompliantAttachButtonSetting button="Left" />
@@ -9,15 +9,15 @@
 	<DefaultCollisionGroupManager name="defaultCollisionGroupManager15" />
 	<NewProximityIntersection name="newProximityIntersection16"  alarmDistance="0.5"  contactDistance="0.05" />
 	<BruteForceDetection name="bruteForceDetection1" />
-	<DefaultContactManager name="defaultContactManager1"  response="FrictionCompliantContact"  responseParams="mu=0restitution=0.5" />
+ 	<DefaultContactManager name="defaultContactManager1"  response="FrictionCompliantContact"  responseParams="mu=0.01" />
 	<DefaultPipeline name="defaultPipeline1"  depth="6" />
 	<CollisionResponse name="Response" response="FrictionContact" responseParams="mu=0.2" />
 	<CompliantSleepController name="sleepController1"  printLog="1"  listening="1"  minTimeSinceWakeUp="0.1"  immobileThreshold="0.1" />
-	<Node 	 name="distance"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  >
-		<Node 	 name="distance_body1"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  canChangeSleepingState="1"  >
-			<MechanicalObject template="Rigid3d" name="dofs"  position="0 3 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1"  showObjectScale="1" />
+	<Node 	 name="distance"        >
+		<Node 	 name="distance_body1"        canChangeSleepingState="1"  >
+			<MechanicalObject template="Rigid3d" name="dofs"  position="0 3 0 0 0 0 1"        showObject="1"  showObjectScale="1" />
 			<RigidMass template="Rigid3d" name="mass"  mass="1"  inertia="1 1 1"  inertia_forces="0" />
-			<Node 	 name="collision"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  >
+			<Node 	 name="collision"        >
 				<MeshObjLoader name="loader"  filename="mesh/cube.obj"  triangulate="1"  translation="0 0 0"  rotation="0 -0 0"  scale3d="1 1 1" />
 				<MeshTopology name="topology"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 				<MechanicalObject template="Vec3d" name="dofs"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
@@ -25,33 +25,33 @@
 				<RigidMapping template="Rigid3d,Vec3d" name="mapping"  input="@../"  output="@./" />
 			</Node>
 		</Node>
-		<Node 	 name="distance_body2"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  canChangeSleepingState="1"  >
-			<MechanicalObject template="Rigid3d" name="dofs"  position="0 -3 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1"  showObjectScale="1" />
+<!--		<Node 	 name="distance_body2"        canChangeSleepingState="1"  >
+			<MechanicalObject template="Rigid3d" name="dofs"  position="0 -3 0 0 0 0 1"        showObject="1"  showObjectScale="1" />
 			<RigidMass template="Rigid3d" name="mass"  mass="1"  inertia="1 1 1"  inertia_forces="0" />
-			<Node 	 name="collision"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  >
+			<Node 	 name="collision"        >
 				<MeshObjLoader name="loader"  filename="mesh/cube.obj"  triangulate="1"  translation="0 0 0"  rotation="0 -0 0"  scale3d="1 1 1" />
 				<MeshTopology name="topology"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 				<MechanicalObject template="Vec3d" name="dofs"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
 				<TTriangleModel template="Vec3d" name="model" />
 				<RigidMapping template="Rigid3d,Vec3d" name="mapping"  input="@../"  output="@./" />
 			</Node>
-		</Node>
-		<Node 	 name="joint"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  >
-			<MechanicalObject template="Rigid3d" name="dofs"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
+		</Node>-->
+<!--		<Node 	 name="joint"        >
+			<MechanicalObject template="Rigid3d" name="dofs"  position="0 0 0 0 0 0 1"       />
 			<SubsetMultiMapping template="Rigid3d,Rigid3d" name="mapping"  indexPairs="0 0 1 0"  input="@../..//distance/distance_body1/dofs @../..//distance/distance_body2/dofs"  output="@dofs" />
-			<Node 	 name="constraint"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  >
+			<Node 	 name="constraint"        >
 				<MechanicalObject template="Vec1d" name="dofs"  position="0"  velocity="0"  force="0"  externalForce="0"  derivX="0"  restScale="1" />
 				<EdgeSetTopologyContainer name="EdgeSetTopologyContainer"  edges="0 1 " />
 				<DistanceMapping template="Rigid3d,Vec1d" name="mapping"  input="@../"  output="@./" />
 				<UniformCompliance template="Vec1d" name="compliance"  isCompliance="1"  compliance="0" />
 				<Stabilization name="Stabilization" />
 			</Node>
-		</Node>
+		</Node>-->
 	</Node>
-	<Node 	 name="standalone_body"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  canChangeSleepingState="1"  >
-		<MechanicalObject template="Rigid3d" name="dofs"  position="-8 3 0 0 0 0 1"  velocity="1 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1"  showObject="1"  showObjectScale="1" />
+	<Node 	 name="standalone_body"        canChangeSleepingState="1"  >
+		<MechanicalObject template="Rigid3d" name="dofs"  position="-4 3 0 0 0 0 1"  velocity="1 0 0 0 0 0"      showObject="1"  showObjectScale="1" />
 		<RigidMass template="Rigid3d" name="mass"  mass="1"  inertia="1 1 1"  inertia_forces="0" />
-		<Node 	 name="collision"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  >
+		<Node 	 name="collision"        >
 			<MeshObjLoader name="loader"  filename="mesh/cube.obj"  triangulate="1"  translation="0 0 0"  rotation="0 -0 0"  scale3d="1 1 1" />
 			<MeshTopology name="topology"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="dofs"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
@@ -59,11 +59,11 @@
 			<RigidMapping template="Rigid3d,Vec3d" name="mapping"  input="@../"  output="@./" />
 		</Node>
 	</Node>
-	<Node 	 name="ground_body"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  >
-		<MechanicalObject template="Rigid3d" name="dofs"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  restScale="1" />
+	<Node 	 name="ground_body"        >
+		<MechanicalObject template="Rigid3d" name="dofs"  position="0 0 0 0 0 0 1"       />
 		<RigidMass template="Rigid3d" name="mass"  mass="1"  inertia="1 1 1"  inertia_forces="0" />
 		<FixedConstraint template="Rigid3d" name="FixedConstraint"  indices="0" />
-		<Node 	 name="collision"  gravity="0 -9.8 0"  dt="0.001"  time="0"  animate="0"  >
+		<Node 	 name="collision"        >
 			<MeshObjLoader name="loader"  filename="mesh/cube.obj"  triangulate="1"  translation="0 0 0"  rotation="0 -0 0"  scale3d="20 1 10" />
 			<MeshTopology name="topology"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 			<MechanicalObject template="Vec3d" name="dofs"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
