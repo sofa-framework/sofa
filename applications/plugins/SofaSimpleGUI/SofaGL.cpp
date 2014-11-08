@@ -61,11 +61,11 @@ void SofaGL::draw()
         glMultMatrixd(_projmatrix);
         glMatrixMode(GL_MODELVIEW);
 
-
         // draw
         _vparams->pass() = sofa::core::visual::VisualParams::Std;
         VisualPickVisitor pick ( _vparams );
         pick.setTags(_sofaScene->getSimulation()->GetRoot()->getTags());
+        cerr<<"SofaGL::draw root used " <<  endl;
         _sofaScene->getSimulation()->GetRoot()->execute ( &pick );
 
         // stop picking
