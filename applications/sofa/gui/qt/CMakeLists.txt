@@ -159,7 +159,7 @@ endif()
 find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
 
 # Required for setting QT_LIBRARIES
-INCLUDE(${QT_USE_FILE})
+include(${QT_USE_FILE})
 
 list(APPEND SOFAGUIQT_LINK_LIBRARIES
     ${QT_LIBRARIES}
