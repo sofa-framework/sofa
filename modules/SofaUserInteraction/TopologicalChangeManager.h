@@ -27,6 +27,10 @@
 #define SOFA_COMPONENT_COLLISION_TOPOLOGICALCHANGEMANAGER_H
 
 #include <sofa/SofaGeneral.h>
+
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Vec3Types.h>
+
 #include <sofa/core/CollisionElement.h>
 
 #include <sofa/core/BehaviorModel.h>
@@ -37,8 +41,6 @@
 #include <SofaUserInteraction/CuttingPoint.h>
 
 
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/Vec3Types.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/common/Node.h>
