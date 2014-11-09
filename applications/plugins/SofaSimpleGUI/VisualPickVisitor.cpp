@@ -25,7 +25,7 @@ Visitor::Result VisualPickVisitor::processNodeTopDown(simulation::Node* node)
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
 #endif
-    cerr <<"VisualPickVisitor::processNodeTopDown" << endl;
+//    cerr <<"VisualPickVisitor::processNodeTopDown" << endl;
     hasShader = (node->getShader()!=NULL);
 
     for_each(this, node, node->visualModel,     &VisualPickVisitor::fwdVisualModel);
@@ -39,7 +39,7 @@ Visitor::Result VisualPickVisitor::processNodeTopDown(simulation::Node* node)
 
 void VisualPickVisitor::processNodeBottomUp(simulation::Node* node)
 {
-    cerr <<"VisualPickVisitor::processNodeBottomUp" << endl;
+//    cerr <<"VisualPickVisitor::processNodeBottomUp" << endl;
     for_each(this, node, node->visualModel,     &VisualPickVisitor::bwdVisualModel);
 }
 
@@ -48,12 +48,12 @@ void VisualPickVisitor::processObject(simulation::Node* /*node*/, core::objectmo
 #ifdef DEBUG_DRAW
         std::cerr << ">" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
 #endif
-        cout<<"VisualPickVisitor::processObject push name of "<< o->getName() << " = " << pickedId << endl;
+//        cout<<"VisualPickVisitor::processObject push name of "<< o->getName() << " = " << pickedId << endl;
         names.push_back(o->getName());
         glPushName(pickedId++);
         o->draw(vparams);
         glPopName();
-        cout<<"VisualPickVisitor::processObject end " << endl;
+//        cout<<"VisualPickVisitor::processObject end " << endl;
 
 #ifdef DEBUG_DRAW
         std::cerr << "<" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
