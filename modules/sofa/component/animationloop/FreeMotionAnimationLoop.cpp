@@ -75,10 +75,11 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 void FreeMotionAnimationLoop::init()
 {
 
+    {
     simulation::common::VectorOperations vop(core::ExecParams::defaultInstance(), this->getContext());
-    MultiVecDeriv null(&vop, core::VecDerivId::null() ); null.realloc( &vop, true, true );
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
     MultiVecDeriv df(&vop, core::VecDerivId::dforce() ); df.realloc( &vop, true, true );
+    }
 
 
 
@@ -128,9 +129,10 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     MultiVecCoord freePos(&vop, core::VecCoordId::freePosition() );
     MultiVecDeriv freeVel(&vop, core::VecDerivId::freeVelocity() );
 
-    MultiVecDeriv null(&vop, core::VecDerivId::null() ); null.realloc( &vop, true, true );
+    {
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
     MultiVecDeriv df(&vop, core::VecDerivId::dforce() ); df.realloc( &vop, true, true );
+    }
 
 
 
