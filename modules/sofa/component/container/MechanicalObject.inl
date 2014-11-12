@@ -182,9 +182,10 @@ MechanicalObject<DataTypes>::MechanicalObject()
 //    freeVelocity.setDisplayed( false );
 
     // do not forget to delete these in the destructor
-    // null() vectors must be allocated
-    write(VecCoordId::null())->forceSet();
-    write(VecDerivId::null())->forceSet();
+    // null() vectors must be allocated for now -> TODO how to define an implicit null vector?
+    // not to allocate plenty of 0 everywhere...
+//    write(VecCoordId::null())->forceSet();
+//    write(VecDerivId::null())->forceSet();
 //    write(VecDerivId::dforce())->forceSet();
 
     // default size is 1
@@ -1467,6 +1468,11 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
             vectorsCoord[v.index]->beginEdit()->reserve(f_reserve.getValue());
             vectorsCoord[v.index]->endEdit();
         }
+        if( vectorsCoord[v.index]->getValue().size() != getSize() )
+        {
+            vectorsCoord[v.index]->beginEdit()->resize( getSize() );
+            vectorsCoord[v.index]->endEdit();
+        }
     }
     Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
 #if defined(SOFA_DEBUG) || !defined(NDEBUG)
@@ -1524,6 +1530,11 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
         if (f_reserve.getValue() > 0)
         {
             vectorsDeriv[v.index]->beginEdit()->reserve(f_reserve.getValue());
+            vectorsDeriv[v.index]->endEdit();
+        }
+        if( vectorsDeriv[v.index]->getValue().size() != getSize() )
+        {
+            vectorsDeriv[v.index]->beginEdit()->resize( getSize() );
             vectorsDeriv[v.index]->endEdit();
         }
     }
