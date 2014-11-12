@@ -9,6 +9,7 @@ set(HEADER_FILES
     misc/FailNode.h
 
     mapping/RigidJointMapping.h
+	mapping/RigidJointMultiMapping.h
     mapping/AssembledRigidRigidMapping.h
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h

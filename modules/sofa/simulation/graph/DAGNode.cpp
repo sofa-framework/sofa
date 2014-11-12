@@ -420,18 +420,19 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
 }
 
 
-void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
+void DAGNode::precomputeTraversalOrder( const core::ExecParams* params, bool canAccessSleepingNode )
 {
     // acumulating traversed Nodes
     class TraversalOrderVisitor : public Visitor
     {
         NodeList& _orderList;
     public:
-        TraversalOrderVisitor(const core::ExecParams* params, NodeList& orderList )
+        TraversalOrderVisitor(const core::ExecParams* params, NodeList& orderList, bool canAccessSleepingNode )
             : Visitor(params)
             , _orderList( orderList )
         {
             _orderList.clear();
+			canAccessSleepingNode = canAccessSleepingNode;
         }
 
         virtual Result processNodeTopDown(Node* node)
@@ -443,7 +444,8 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
         virtual const char* getClassName() const {return "TraversalOrderVisitor";}
     };
 
-    TraversalOrderVisitor tov( params, _precomputedTraversalOrder );
+	_precomputedCanAccessSleepingNode = canAccessSleepingNode;
+    TraversalOrderVisitor tov( params, _precomputedTraversalOrder, canAccessSleepingNode );
     executeVisitor( &tov, false );
 }
 
@@ -453,7 +455,7 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 /// This method bypass the actionScheduler of this node if any.
 void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder)
 {
-    if( precomputedOrder && !_precomputedTraversalOrder.empty() )
+	if( precomputedOrder && !_precomputedTraversalOrder.empty() && _precomputedCanAccessSleepingNode == action->canAccessSleepingNode )
     {
 //        std::cerr<<SOFA_CLASS_METHOD<<"precomputed "<<_precomputedTraversalOrder<<std::endl;
 
@@ -465,6 +467,8 @@ void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrde
     }
     else
     {
+		if (debug_ && precomputedOrder && !_precomputedTraversalOrder.empty())
+			std::cerr<<SOFA_CLASS_METHOD<<"not precomputed with the right sleeping node access for "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
 
 //        std::cerr<<SOFA_CLASS_METHOD<<"not precomputed "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
 
