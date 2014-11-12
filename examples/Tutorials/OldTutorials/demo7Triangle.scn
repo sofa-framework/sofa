@@ -8,8 +8,9 @@
     <Node name="Poutre1">
         <EulerImplicit />
         <CGLinearSolver iterations="10" />
+        <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />
         <Node name="M1">
-            <MechanicalObject filename="BehaviorModels/smCube27.xs3" dz="-21.0" />
+            <MechanicalObject src="@../meshLoader" dz="-21.0" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <FixedConstraint indices="0 3 6 9 12 15 18 21 24" />
@@ -31,7 +32,7 @@
             <MechanicalObject template="Rigid" dz="-10.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" filename="BehaviorModels/smCube27.xs3" />
+                <MechanicalObject template="Vec3d" src="@../../meshLoader" />
                 <RigidMapping />
             </Node>
             <Node name="Surf">
@@ -49,7 +50,7 @@
             </Node>
         </Node>
         <Node name="M3">
-            <MechanicalObject filename="BehaviorModels/smCube27.xs3" />
+            <MechanicalObject src="@../meshLoader" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <Node name="Visu">
@@ -70,7 +71,7 @@
             <MechanicalObject template="Rigid" dz="10.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" filename="BehaviorModels/smCube27.xs3" />
+                <MechanicalObject template="Vec3d" src="@../../meshLoader" />
                 <RigidMapping />
                 <Node name="Visu">
                     <OglModel name="Visual" filename="mesh/smCube27.obj" />
@@ -88,7 +89,7 @@
             </Node>
         </Node>
         <Node name="M5">
-            <MechanicalObject filename="BehaviorModels/smCube27.xs3" dz="21" />
+            <MechanicalObject src="@../meshLoader" dz="21" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <Node name="Visu">
@@ -109,7 +110,7 @@
             <MechanicalObject template="Rigid" dz="31.5" />
             <UniformMass filename="BehaviorModels/rigid.xs3" />
             <Node name="Points">
-                <MechanicalObject template="Vec3d" filename="BehaviorModels/smCube27.xs3" />
+                <MechanicalObject template="Vec3d" src="@../../meshLoader" />
                 <RigidMapping />
             </Node>
             <Node name="Visu">

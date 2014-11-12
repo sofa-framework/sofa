@@ -4,21 +4,23 @@
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse name="Response" response="default" />
+    <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />
     <Node name="M1">
         <EulerImplicit />
         <CGLinearSolver iterations="100" />
-        <MechanicalObject filename="BehaviorModels/smCube27.xs3" dz="-21.0" />
+        <MechanicalObject src="@../meshLoader" dz="-21.0" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
         <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="yellow" />
             <IdentityMapping object1="../.." object2="Visual" />
         </Node>
-        <MeshLoader filename="mesh/smCube27.mesh" name="loader" />
+        <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
         <Mesh src="@loader" />
         <Node name="Surf">
             <MechanicalObject dz="-21.0" />
-            <Sphere filename="mesh/smCube27b.sph" />
+            <SphereLoader filename="mesh/smCube27b.sph" />
+            <Sphere listRadius="@[-1].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -28,12 +30,13 @@
         <MechanicalObject template="Rigid" dz="-10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
-            <MechanicalObject template="Vec3d" filename="BehaviorModels/smCube27.xs3" />
+            <MechanicalObject template="Vec3d" src="@../../meshLoader" />
             <RigidMapping />
         </Node>
         <Node name="Surf">
             <MechanicalObject />
-            <Sphere filename="mesh/smCube27b.sph" />
+            <SphereLoader filename="mesh/smCube27b.sph" />
+            <Sphere listRadius="@[-1].listRadius" />
             <RigidMapping />
         </Node>
         <Node name="Visu">
@@ -44,18 +47,19 @@
     <Node name="M3">
         <EulerImplicit />
         <CGLinearSolver iterations="100" />
-        <MechanicalObject filename="BehaviorModels/smCube27.xs3" />
+        <MechanicalObject src="@../meshLoader" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
         <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="red" />
             <IdentityMapping object1="../.." object2="Visual" />
         </Node>
-        <MeshLoader filename="mesh/smCube27.mesh" name="loader" />
+        <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
         <Mesh src="@loader" />
         <Node name="Surf">
             <MechanicalObject />
-            <Sphere filename="mesh/smCube27b.sph" />
+            <SphereLoader filename="mesh/smCube27b.sph" />
+            <Sphere listRadius="@[-1].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -65,7 +69,7 @@
         <MechanicalObject template="Rigid" dz="10.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
-            <MechanicalObject template="Vec3d" filename="BehaviorModels/smCube27.xs3" />
+            <MechanicalObject template="Vec3d" src="@../../meshLoader" />
             <RigidMapping />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" />
@@ -74,25 +78,27 @@
         </Node>
         <Node name="Surf">
             <MechanicalObject />
-            <Sphere filename="mesh/smCube27b.sph" />
+            <SphereLoader filename="mesh/smCube27b.sph" />
+            <Sphere listRadius="@[-1].listRadius" />
             <RigidMapping />
         </Node>
     </Node>
     <Node name="M5">
         <EulerImplicit />
         <CGLinearSolver iterations="100" />
-        <MechanicalObject filename="BehaviorModels/smCube27.xs3" dz="21" />
+        <MechanicalObject src="@../meshLoader" dz="21" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
         <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube27.obj" color="cyan" />
             <IdentityMapping object1="../.." object2="Visual" />
         </Node>
-        <MeshLoader filename="mesh/smCube27.mesh" name="loader" />
+        <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
         <Mesh src="@loader" />
         <Node name="Surf">
             <MechanicalObject dz="21" />
-            <Sphere filename="mesh/smCube27b.sph" />
+            <SphereLoader filename="mesh/smCube27b.sph" />
+            <Sphere listRadius="@[-1].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
@@ -102,7 +108,7 @@
         <MechanicalObject template="Rigid" dz="31.5" />
         <UniformMass filename="BehaviorModels/rigid.xs3" />
         <Node name="Points">
-            <MechanicalObject template="Vec3d" filename="BehaviorModels/smCube27.xs3" />
+            <MechanicalObject template="Vec3d" src="@../../meshLoader"/>
             <RigidMapping />
         </Node>
         <Node name="Visu">
@@ -111,11 +117,13 @@
         </Node>
         <Node name="Surf">
             <MechanicalObject />
-            <Sphere filename="mesh/dragon.sph" />
+            <SphereLoader filename="mesh/dragon.sph" />
+            <Sphere listRadius="@[-1].listRadius" />
             <RigidMapping />
         </Node>
     </Node>
     <MechanicalObject dy="-20" />
-    <Sphere name="Floor" filename="mesh/floor.sph" simulated="0" moving="0" />
+    <SphereLoader filename="mesh/floor.sph"/>
+    <Sphere listRadius="@[-1].listRadius"  simulated="0" moving="0" />
     <OglModel name="FloorV" filename="mesh/floor.obj" texturename="textures/floor.bmp" dy="-20" />
 </Node>
