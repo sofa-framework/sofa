@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_MESH2POINTMAPPING_H
 
 #include <sofa/core/Mapping.h>
-
+#include <sofa/SofaGeneral.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa { namespace core { namespace topology { class BaseMeshTopology; } } }
