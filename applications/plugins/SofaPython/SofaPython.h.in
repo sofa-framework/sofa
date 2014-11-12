@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,42 +16,29 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFAPYTHON_H
-#define INITSOFAPYTHON_H
 
+#ifndef _SOFA_PYTHON_H_
+#define _SOFA_PYTHON_H_
 
-#include <sofa/helper/system/config.h>
-#include <sofa/core/Plugin.h>
+#include <sofa/SofaGui.h>
+
+#define SOFAPYTHON_MAJOR_VERSION ${SOFAPYTHON_MAJOR_VERSION}
+#define SOFAPYTHON_MINOR_VERSION ${SOFAPYTHON_MINOR_VERSION}
+#define SOFAPYTHON_BUILD_VERSION ${SOFAPYTHON_BUILD_VERSION}
+
+#define SOFA_HAVE_PYTHON
 
 #ifdef SOFA_BUILD_SOFAPYTHON
-#define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#  define SOFA_TARGET SofaPython
+#  define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#define SOFAPYTHON_VERSION "0.2"
-
-class PythonPlugin : public sofa::core::Plugin
-{
-public:
-    PythonPlugin();
-    SOFA_PLUGIN(PythonPlugin)
-
-    virtual bool init();
-
-    virtual bool exit() { return true; }
-    virtual bool canBeUnloaded() { return false; }  // the scene loader annot be uninitialized yet
-
-};
-
-/** \mainpage
-  This is a the starting page of the Python plugin documentation.
-  */
-
-#endif // INITEmptyPlugin_H
+#endif // _SOFA_PYTHON_H_

@@ -24,6 +24,8 @@
 ******************************************************************************/
 
 #include "Binding_LinearSpring.h"
+#include <SofaDeformable/SpringForceField.h>
+using namespace sofa::component::interactionforcefield;
 
 extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
 {

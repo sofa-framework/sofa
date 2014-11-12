@@ -22,42 +22,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PYTHONENVIRONMENT_H
-#define PYTHONENVIRONMENT_H
+#ifndef INITSOFAPYTHON_H
+#define INITSOFAPYTHON_H
 
-#include "PythonCommon.h"
-
-//#include <sofa/simulation/tree/GNode.h>
-#include "Binding.h"
 #include <sofa/SofaPython.h>
-#include <vector>
-#include <string>
+
 
 namespace sofa
 {
 
-namespace simulation
+namespace component
 {
 
+extern "C" {
+    SOFA_SOFAPYTHON_API void initExternalModule();
+    SOFA_SOFAPYTHON_API const char* getModuleName();
+    SOFA_SOFAPYTHON_API const char* getModuleVersion();
+    SOFA_SOFAPYTHON_API const char* getModuleLicense();
+    SOFA_SOFAPYTHON_API const char* getModuleDescription();
+    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
+}
 
-class SOFA_SOFAPYTHON_API PythonEnvironment
-{
-public:
-    static void     Init();
-    static void     Release();
+}
 
-    // helper functions
-    //static sofa::simulation::tree::GNode::SPtr  initGraphFromScript( const char *filename );        // returns root node
+}
 
-    // basic script functions
-    static PyObject*    importScript( const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0) );
-    //static bool         initGraph(PyObject *script, sofa::simulation::tree::GNode::SPtr graphRoot);  // calls the method "initGraph(root)" of the script
-};
+/** \mainpage
+  This is a the starting page of the plugin documentation, defined in file initEmptyPlugin.h
+  */
 
-
-} // namespace core
-
-} // namespace sofa
-
-
-#endif // PYTHONENVIRONMENT_H
+#endif // INITEmptyPlugin_H

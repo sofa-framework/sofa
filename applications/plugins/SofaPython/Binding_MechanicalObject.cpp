@@ -27,12 +27,14 @@
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_Vector.h"
 
-#include <sofa/component/typedef/Sofa_typedef.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <SofaBaseMechanics/MechanicalObject.inl>
 
 using namespace sofa::core::behavior;
 using namespace sofa::core;
+using namespace sofa::defaulttype;
 
-
+typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
 extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject * args)
 {

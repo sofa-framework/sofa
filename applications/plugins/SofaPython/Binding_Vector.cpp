@@ -24,6 +24,8 @@
 ******************************************************************************/
 
 #include "Binding_Vector.h"
+#include <sofa/defaulttype/Vec.h>
+using namespace sofa::defaulttype;
 
 SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
 {

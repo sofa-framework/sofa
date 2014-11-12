@@ -27,7 +27,7 @@
 
 #include "PythonCommon.h"
 
-#include "SofaPython.h"
+#include <sofa/SofaPython.h>
 #include "ScriptEvent.h"
 
 

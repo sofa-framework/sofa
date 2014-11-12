@@ -26,7 +26,7 @@
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_BaseState.h"
 
-#include <sofa/component/typedef/Sofa_typedef.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 
 using namespace sofa::core::behavior;
 using namespace sofa::core;
