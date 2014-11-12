@@ -254,7 +254,7 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED ${SOFACORE_HEADERS} ${SOFACORE_SOURCES})
 target_link_libraries( ${PROJECT_NAME} PUBLIC SofaDefaultType)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/../../") 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../>") 
 
 set( SOFACORE_COMPILER_FLAGS "-DSOFA_BUILD_CORE")
 # make the name of debug libraries end in _d.
