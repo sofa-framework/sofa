@@ -27,8 +27,6 @@
 
 #include "PythonMacros.h"
 
-#include <sofa/defaulttype/Vec.h>
-using namespace sofa::defaulttype;
 
 SP_DECLARE_CLASS_TYPE(Vector3)
 

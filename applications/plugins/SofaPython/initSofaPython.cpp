@@ -23,25 +23,77 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SceneLoaderPY.h"
-#include "SofaPython.h"
+#include "initSofaPython.h"
 
-PythonPlugin::PythonPlugin() : sofa::core::Plugin("Python")
+namespace sofa
 {
-    setDescription("Imbeds Python scripts in Sofa");
-    setVersion(SOFAPYTHON_VERSION);
-    setLicense("LGPL");
-    setAuthors("The SOFA Team");
+
+namespace component
+{
+
+//Here are just several convenient functions to help user to know what contains the plugin
+/*
+extern "C" {
+    SOFA_SOFAPYTHON_API void initExternalModule();
+    SOFA_SOFAPYTHON_API const char* getModuleName();
+    SOFA_SOFAPYTHON_API const char* getModuleVersion();
+    SOFA_SOFAPYTHON_API const char* getModuleLicense();
+    SOFA_SOFAPYTHON_API const char* getModuleDescription();
+    SOFA_SOFAPYTHON_API const char* getModuleComponentList();
+}
+*/
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;        
+    }
+}
+
+const char* getModuleName()
+{
+    return "SofaPython";
+}
+
+const char* getModuleVersion()
+{
+    return "0.2";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "Imbeds Python scripts in Sofa";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    return "PythonScriptController";
+}
+
+
 
 }
 
-bool PythonPlugin::init()
-{
-    // register the loader in the factory
-    static sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
-
-    return true;
 }
 
+/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
+//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
+//SOFA_LINK_CLASS(MyBehaviorModel)
+//SOFA_LINK_CLASS(MyProjectiveConstraintSet)
+SOFA_LINK_CLASS(PythonController)
 
 
-SOFA_PLUGIN_ENTRY_POINT(PythonPlugin);
+// register the loader in the factory
+static sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
+
+
+

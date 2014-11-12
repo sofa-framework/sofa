@@ -1,0 +1,21 @@
+# - Config file for the SofaPython package
+# It defines the following variables
+#  SofaPython_INCLUDE_DIRS - include directories for SofaPython
+#  SofaPython_LIBRARIES    - libraries to link against
+
+@PACKAGE_INIT@
+
+set_and_check(SOFAPYTHON_INCLUDE_DIR  "@PACKAGE_SOFAPYTHON_INCLUDE_DIR@")
+
+check_required_components(SofaPython)
+
+find_package(SofaGui REQUIRED)
+
+set(SOFA_HAVE_PYTHON "@SOFA_HAVE_PYTHON@")
+
+if( NOT TARGET SofaPython )
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaPythonTargets.cmake")
+endif() 
+
+set(SofaPython_LIBRARIES SofaPython )
+set(SofaPython_INCLUDE_DIRS ${SOFAPYTHON_INCLUDE_DIR} ${SofaGui_INCLUDE_DIRS} )

@@ -14,7 +14,6 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
-#include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/component/typedef/Mapping_double.h>
 #include <sofa/core/BaseMapping.h>
 
@@ -43,6 +42,10 @@
 //#include "Binding_MultiMapping.h"
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
+
+typedef sofa::component::container::MechanicalObject< sofa::defaulttype::Vec3Types > MechanicalObject3;
+
+
 
 // crée un objet Python à partir d'un objet Cpp héritant de Base,
 // retournant automatiquement le type Python de plus haut niveau possible

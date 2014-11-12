@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "PythonScriptController.h"
 #include "PythonMacros.h"
-#include "SofaPython.h"
+#include <sofa/core/ObjectFactory.h>
 
 #include "Binding_Base.h"
 #include "Binding_BaseContext.h"
@@ -41,7 +41,7 @@ namespace controller
 {
 
 
-int PythonScriptControllerClass = PythonPlugin::registerObject("A Sofa controller scripted in python")
+int PythonScriptControllerClass = core::RegisterObject("A Sofa controller scripted in python")
         .add< PythonScriptController >()
         //.addAlias("PythonController")
         ;
