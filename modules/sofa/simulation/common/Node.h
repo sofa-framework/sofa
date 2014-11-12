@@ -182,7 +182,7 @@ public:
     }
 
     /// Possible optimization with traversal precomputation, not mandatory and does nothing by default
-    virtual void precomputeTraversalOrder( const core::ExecParams* ) {}
+    virtual void precomputeTraversalOrder( const core::ExecParams*, bool canAccessSleepingNode ) {}
 
     /// @}
 

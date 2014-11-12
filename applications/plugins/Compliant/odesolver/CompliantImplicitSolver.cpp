@@ -545,7 +545,7 @@ using namespace core::behavior;
                                 core::MultiVecCoordId posId,
                                 core::MultiVecDerivId velId) {
 
-        static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( params );
+        static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( params, false );
 
         assert(kkt);
 
@@ -712,7 +712,7 @@ using namespace core::behavior;
 
         if( realloc )
         {
-            static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( &sop.mparams() ); // if the graph changed, the traversal order needs to be updated
+            static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( &sop.mparams(), false ); // if the graph changed, the traversal order needs to be updated
             _ck.realloc( &sop.vop, false, true ); // the right part of the implicit system (c_k term)
         }
 
