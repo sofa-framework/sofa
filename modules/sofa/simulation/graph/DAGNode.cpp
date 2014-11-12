@@ -427,12 +427,12 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params, bool can
     {
         NodeList& _orderList;
     public:
-        TraversalOrderVisitor(const core::ExecParams* params, NodeList& orderList, bool canAccessSleepingNode )
+        TraversalOrderVisitor(const core::ExecParams* params, NodeList& orderList, bool canAccessSleepingNodeArg )
             : Visitor(params)
             , _orderList( orderList )
         {
             _orderList.clear();
-			canAccessSleepingNode = canAccessSleepingNode;
+			canAccessSleepingNode = canAccessSleepingNodeArg;
         }
 
         virtual Result processNodeTopDown(Node* node)
