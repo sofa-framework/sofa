@@ -71,6 +71,7 @@ AddLinkerDependencies(
     SofaSimulationGraph
     SofaBoundaryCondition
     SofaEngine
+    SofaMiscMapping
 )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
