@@ -25,15 +25,8 @@
 #ifndef PYTHONMACROS_H
 #define PYTHONMACROS_H
 
-// Python.h should be included before any std header
-#if defined(_MSC_VER) && !defined(NDEBUG)
-// BUT boost/intrusive_ptr.hpp must be included before python.h on Windows to support debug compilation.
-#include <boost/intrusive_ptr.hpp>
-#include "PythonCommon.h"
-#else
 #include "PythonCommon.h"
 #include <boost/intrusive_ptr.hpp>
-#endif
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
