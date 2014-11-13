@@ -92,7 +92,7 @@ void GetConstrainedContextPairs::processNodeBottomUp(simulation::Node* node)
 				case 2:
 				{
 					// multi-mapping + compliance creates a dependency between the two input mechanical states, this is what we track.
-					m_sleepController->addWakeupPair(m_wakeupPairs, states[0]->getContext(), states[1]->getContext());
+					m_sleepController->addWakeupPair(m_wakeupPairs, states[0]->getContext(), true, states[1]->getContext(), true);
 					break;
 				}
 				default:

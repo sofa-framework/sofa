@@ -92,7 +92,7 @@ protected:
 	StateTesters m_correspondingTesters; // The correct template for each state of the list m_statesThanCanSleep
 
 	virtual void collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs);
-	void addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core::objectmodel::BaseContext* context1, core::objectmodel::BaseContext* context2);
+	void addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core::objectmodel::BaseContext* context1, bool moving1, core::objectmodel::BaseContext* context2, bool moving2);
 };
 
 /**

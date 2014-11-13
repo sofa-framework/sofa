@@ -278,16 +278,19 @@ void SleepController::collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs)
 	{
 		std::pair<core::CollisionModel*, core::CollisionModel*> collisionModels = contacts[i]->getCollisionModels();
 
-		// We ignore contacts where one object is set to be non-moving
-		if (!collisionModels.first->isMoving() || !collisionModels.second->isMoving())
-			continue;
-
-		addWakeupPair(wakeupPairs, collisionModels.first->getContext(), collisionModels.second->getContext());
+		addWakeupPair(wakeupPairs, collisionModels.first->getContext(), collisionModels.first->isMoving(), 
+									collisionModels.second->getContext(), collisionModels.second->isMoving());
 	}
 }
 
-void SleepController::addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core::objectmodel::BaseContext* context1, core::objectmodel::BaseContext* context2)
+void SleepController::addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core::objectmodel::BaseContext* context1, bool moving1, core::objectmodel::BaseContext* context2, bool moving2)
 {
+	// NB: an unmoving object never wakeups a moving one, but you can (and should) allow unmoving objects to sleep, 
+	// and thus it must be possible to wake them up when entering contact with a moving object.
+
+	if (!moving1 && !moving2)
+		return;
+
 	context1 = getParentContextThatCanSleep(context1);
 	context2 = getParentContextThatCanSleep(context2);
 	if (context1 == NULL || context2 == NULL)
@@ -296,22 +299,28 @@ void SleepController::addWakeupPair(std::vector<BaseContexts>& wakeupPairs, core
 	BaseContexts::const_iterator contextsBegin = m_contextsThatCanSleep.begin();
 	BaseContexts::const_iterator contextsEnd = m_contextsThatCanSleep.end();
 
-	BaseContexts::const_iterator iter = std::find(contextsBegin, contextsEnd, context1);
-	if (iter != contextsEnd)
+	if (moving2)
 	{
-		int index = iter - contextsBegin;
-		BaseContexts& wakeupPairRef = wakeupPairs[index];
-		if(std::find(wakeupPairRef.begin(), wakeupPairRef.end(), context2) == wakeupPairRef.end()) // No duplicates
-			wakeupPairRef.push_back(context2);
+		BaseContexts::const_iterator iter = std::find(contextsBegin, contextsEnd, context1);
+		if (iter != contextsEnd)
+		{
+			int index = iter - contextsBegin;
+			BaseContexts& wakeupPairRef = wakeupPairs[index];
+			if(std::find(wakeupPairRef.begin(), wakeupPairRef.end(), context2) == wakeupPairRef.end()) // No duplicates
+				wakeupPairRef.push_back(context2);
+		}
 	}
 
-	iter = std::find(contextsBegin, contextsEnd, context2);
-	if (iter != contextsEnd)
+	if (moving1)
 	{
-		int index = iter - contextsBegin;
-		BaseContexts& wakeupPairRef = wakeupPairs[index];
-		if(std::find(wakeupPairRef.begin(), wakeupPairRef.end(), context1) == wakeupPairRef.end()) // No duplicates
-			wakeupPairRef.push_back(context1);
+		BaseContexts::const_iterator iter = std::find(contextsBegin, contextsEnd, context2);
+		if (iter != contextsEnd)
+		{
+			int index = iter - contextsBegin;
+			BaseContexts& wakeupPairRef = wakeupPairs[index];
+			if(std::find(wakeupPairRef.begin(), wakeupPairRef.end(), context1) == wakeupPairRef.end()) // No duplicates
+				wakeupPairRef.push_back(context1);
+		}
 	}
 }
 
