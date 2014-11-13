@@ -4,7 +4,7 @@ from Compliant import StructuralAPI, Tools
 
 path = Tools.path( __file__ )
 
-def createFixedRigidBody(node,name,pos=[0,0,0],size=[1,1,1]):
+def createFixedRigidBody(node,name,sleep,pos=[0,0,0],size=[1,1,1]):
     body = StructuralAPI.RigidBody( node, name )
     body.setManually( [pos[0],pos[1],pos[2],0,0,0,1], 1, [1,1,1] )
     body.dofs.showObject=True
@@ -12,14 +12,15 @@ def createFixedRigidBody(node,name,pos=[0,0,0],size=[1,1,1]):
     body.node.createObject('FixedConstraint')
     collisionModel = body.addCollisionMesh( "mesh/cube.obj", size )
     collisionModel.triangles.moving = False
+    body.node.canChangeSleepingState=sleep
     return body
 
-def createRigidBody(node,name,pos=[0,0,0],size=[1,1,1]):
+def createRigidBody(node,name,sleep,pos=[0,0,0],size=[1,1,1]):
     body = StructuralAPI.RigidBody( node, name )
     body.setManually( [pos[0],pos[1],pos[2],0,0,0,1], 1, [1,1,1] )
     body.dofs.showObject=True
     body.dofs.showObjectScale=1
-    body.node.canChangeSleepingState=True
+    body.node.canChangeSleepingState=sleep
     collisionModel = body.addCollisionMesh( "mesh/cube.obj", size )
     return body
 
@@ -51,15 +52,14 @@ def createScene(root):
     ##### Sleep
     root.createObject('CompliantSleepController', printLog=1, listening=1, minTimeSinceWakeUp=1.0, immobileThreshold=0.02, rotationThreshold=0.1)
     
-    
-    ground_body = createFixedRigidBody(root, 'ground_body', [0,0,0], [20,1,10])
+    ##### Bodies
+    ground_body = createFixedRigidBody(root, 'ground_body', True, [0,0,2], [20,1,10])
 
-    standalone_body = createRigidBody(root, 'standalone_body', [-4,3,0])
-    standalone_body.dofs.velocity = "1 0 0 0 0 0"
+    standalone_body = createRigidBody(root, 'standalone_body', True, [-4,3,0])
+    standalone_body.dofs.velocity = "2 0 0 0 0 0"
 
-    # DISTANCE
     distanceNode = root.createChild('distance')
-    distance_body1 = createRigidBody(distanceNode, 'distance_body1', [0,3,0] )
-    distance_body2 = createRigidBody(distanceNode, 'distance_body2', [0,-3,0] )
+    distance_body1 = createRigidBody(distanceNode, 'distance_body1', True, [0,3,0] )
+    distance_body2 = createRigidBody(distanceNode, 'distance_body2', True, [0,-3,0] )
     distance = StructuralAPI.DistanceRigidJoint( 'joint', distance_body1.node, distance_body2.node )
 
