@@ -115,6 +115,7 @@ void MechanicalStateController<DataTypes>::applyController()
         if (mState)
         {
             helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::VecCoordId::position());
+            mState->vRealloc( sofa::core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
             helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());
 
             unsigned int i = index.getValue();
