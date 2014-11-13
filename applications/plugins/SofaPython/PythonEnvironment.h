@@ -25,9 +25,9 @@
 #ifndef PYTHONENVIRONMENT_H
 #define PYTHONENVIRONMENT_H
 
-#include "PythonCommon.h"
 
 //#include <sofa/simulation/tree/GNode.h>
+#include "PythonCommon.h"
 #include "Binding.h"
 #include <sofa/SofaPython.h>
 #include <vector>

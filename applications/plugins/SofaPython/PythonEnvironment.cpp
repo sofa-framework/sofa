@@ -25,11 +25,12 @@
 #include "PythonEnvironment.h"
 #include "PythonMacros.h"
 
+
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-
 #include "PythonScriptController.h"
+
 using namespace sofa::component::controller;
 
 //using namespace sofa::simulation::tree;
@@ -48,8 +49,14 @@ namespace sofa
 namespace simulation
 {
 
+
+static bool m_Initialized = false;
+
+
+
 void PythonEnvironment::Init()
 {
+    if (m_Initialized) return;
     // Initialize the Python Interpreter
     // SP_MESSAGE_INFO( "Initializing python framework..." )
 
@@ -77,11 +84,11 @@ void PythonEnvironment::Init()
     bindSofaPythonModule();
 
     // load a python script which search for python packages defined in the modules
-    //std::string scriptPy = std::string(SOFA_SRC_DIR) + "/applications/plugins/SofaPython/SofaPython.py";
-
-
+//    std::string scriptPy = std::string(SOFA_SRC_DIR) + "/applications/plugins/SofaPython/SofaPython.py";
+//
+//
 //#ifdef WIN32
-//    char* scriptPyChar = (char*) malloc((scriptPy.size()+1)*sizeof(char));
+//    char* scriptPyChar = (char*) malloc(scriptPy.size()*sizeof(char));
 //    strcpy(scriptPyChar,scriptPy.c_str());
 //    PyObject* PyFileObject = PyFile_FromString(scriptPyChar, "r");
 //    PyRun_SimpleFileEx(PyFile_AsFile(PyFileObject), scriptPyChar, 1);
@@ -91,17 +98,21 @@ void PythonEnvironment::Init()
 //    PyRun_SimpleFile(scriptPyFile, scriptPy.c_str());
 //    fclose(scriptPyFile);
 //#endif 
-//
+
     //SP_MESSAGE_INFO( "Initialization done." )
+
+    m_Initialized = true;
 
 }
 
 void PythonEnvironment::Release()
 {
+    if (!m_Initialized) return;
     // Finish the Python Interpreter
     Py_Finalize();
+
+    m_Initialized = false;
 }
-  
 /*
 // helper functions
 sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( const char *filename )
@@ -129,28 +140,10 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
 
 
 
-  // some basic RAII stuff to handle init/termination cleanly
-  namespace {
-	
-  	struct raii {
-  	  raii() {
-  		PythonEnvironment::Init();
-  	  }
-
-  	  ~raii() {
-  		PythonEnvironment::Release();
-  	  }
-	  
-  	};
-
-  	static raii singleton;
-  }
-  
-
 // basic script functions
 PyObject* PythonEnvironment::importScript( const char *filename, const std::vector<std::string>& arguments )
 {
-  // Init(); // MUST be called at least once; so let's call it each time we load a python script
+    Init(); // MUST be called at least once; so let's call it each time we load a python script
 
 //    SP_MESSAGE_INFO( "Loading python script \""<<filename<<"\"" )
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
