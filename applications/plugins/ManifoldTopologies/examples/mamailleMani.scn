@@ -8,7 +8,7 @@
 	<Object type="CollisionGroup" />
 	<Node name="SquareGravity">
 		<Object type="CGImplicit" iterations="40" tolerance="1e-6" threshold="1e-10"/>
-		<Object type="MeshGmshLoader" name="loader" filename="mesh/square1.msh" />
+                <Object type="MeshObjLoader" name="loader" filename="mesh/square1.obj" />
 		<Object type="MechanicalObject" src="@loader" scale="10" />
 		
 	<Object type="ManifoldTriangleSetTopologyContainer" src="@loader"  name="Container" fileTopology=""/>
@@ -17,9 +17,9 @@
   	<Object type="TriangleSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />
 
 		<Object type="DiagonalMass" massDensity="0.15" />
-		<Object type="FixedConstraint" indices="2 3"/>
+                <Object type="FixedConstraint" indices="2 3"/>
 		<Object type="TriangularFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />  
-		<Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>
+                <Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>
 		<Object type="TriangleSet"/>
 		<Object type="OglModel" name="Visual" color="red"/>
 		<Object type="IdentityMapping" object1=".." object2="Visual"/>
