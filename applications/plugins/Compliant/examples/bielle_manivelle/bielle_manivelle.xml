@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<model name="bielle_manivelle">
+    <units mass="kg" length="m" time="s" />
+
+    <rigid name="Corps">
+        <position>0 0 0 0 0 0 1</position>
+        <velocity>0 0 0 0 0 0</velocity>
+        <mesh format="obj">/local/usr/src/sofa/applications/plugins/Compliant/examples/bielle_manivelle/0.obj</mesh>
+    </rigid>
+    
+    <rigid name="Roue">
+        <position>0 0 -0.148 0 0 0 1</position>
+        <mesh format="obj">3.obj</mesh>
+    </rigid>
+    
+    <rigid name="Came">
+        <position>1.085 -0.072 0.33 0 0 0 1</position>
+        <mesh format="obj">2.obj</mesh>
+    </rigid>
+    
+    <rigid name="Piston">
+        <position>2.05 0 0.33 0 0 0 1</position>
+        <mesh format="obj">1.obj</mesh>
+    </rigid>
+    
+    <joint name="hinge_corps-roue">
+        <parent name="Corps">
+            <offset type="relative">0 0 0 0 0 0 1</offset>
+        </parent>
+        <child name="Roue">
+            <offset type="relative">0 0 0.148 0 0 0 1</offset>
+        </child>
+        <dof index="5"/>
+    </joint>
+    
+    <joint name="hinge_roue-came">
+        <parent name="Roue">
+            <offset type="relative">0.24 -0.145 0.478 0 0 0 1</offset>
+        </parent>
+        <child name="Came">
+            <offset type="relative">-0.845 -0.073 0 0 0 0 1</offset>
+        </child>
+        <dof index="5"/>
+    </joint>
+    
+    <joint name="hinge_came-piston">
+        <parent name="Came">
+            <offset type="relative">0.852 0.072 0 0 0 0 1</offset>
+        </parent>
+        <child name="Piston">
+            <offset type="relative">-0.113 0 0 0 0 0 1</offset>
+        </child>
+        <dof index="5"/>
+    </joint>
+    
+    <joint name="slider_corps-piston">
+        <parent name="Piston">
+            <offset type="relative">0.15 0 0 0 0 0 1</offset>
+        </parent>
+        <child name="Corps">
+            <offset type="relative">2.2 0 0.33 0 0 0 1</offset>
+        </child>
+        <dof index="0"/>
+    </joint>    
+
+</model>

@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/common/Simulation.h>
 
-#include <SofaBaseMechanics/MechanicalObject.inl>
+//#include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/core/Mapping.inl>
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>

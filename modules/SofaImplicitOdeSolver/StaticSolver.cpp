@@ -70,6 +70,9 @@ void StaticSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, doub
 //    MultiVecDeriv b(&vop);
     MultiVecDeriv x(&vop);
 
+    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+
     mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to add G to v separately from the other forces.
 
     // compute the right-hand term of the equation system

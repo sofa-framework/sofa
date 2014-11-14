@@ -796,7 +796,7 @@ bool Map2<MAP_IMPL>::sameOrientedVolume(Vol v1, Vol v2) const
 	DartMarkerStore<Map2<MAP_IMPL> > mark(*this);	// Lock a marker
 
 	std::list<Dart> visitedFaces;		// Faces that are traversed
-	visitedFaces.push_back(v1.dart);	// Start with a face of v1
+    visitedFaces.push_back(v1);	// Start with a face of v1
 	std::list<Dart>::iterator face;
 
 	// For every face added to the list
@@ -808,12 +808,12 @@ bool Map2<MAP_IMPL>::sameOrientedVolume(Vol v1, Vol v2) const
 			Dart it = *face ;
 			do
 			{
-				if(it == v2.dart)
+                if(it == static_cast<Dart>(v2))
 					return true;
 
 				mark.mark(it);						// Mark
 				Dart adj = phi2(it);				// Get adjacent face
-				if (!this->isBoundaryMarked2(adj) && !mark.isMarked(adj))
+                if (!this->template isBoundaryMarked<2>(adj) && !mark.isMarked(adj))
 					visitedFaces.push_back(adj);	// Add it
 				it = this->phi1(it);
 			} while(it != *face);
@@ -1077,7 +1077,7 @@ template <typename MAP_IMPL>
 template <typename FUNC>
 void Map2<MAP_IMPL>::foreach_dart_of_cc(Dart d, const FUNC& f, unsigned int thread) const
 {
-	DartMarkerStore<Map2<MAP_IMPL> > mark(*this, thread);	// Lock a marker
+    DartMarker<Map2<MAP_IMPL> > mark(*this, thread);	// Lock a marker
     std::vector<Dart>& visitedFaces = *(this->askDartBuffer(thread));	// Faces that are traversed
     visitedFaces.push_back(d);		// Start with the face of d
 

@@ -1,50 +1,10 @@
-/****************************************************************************
-**
-** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
-**
-** This file is part of the demonstration applications of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
-#include "stdafx.h"
-
-#include "../SofaGL.h"
+#include <GL/glew.h>
 #include "Viewer.h"
 #include "Scene.h"
+#include "Camera.h"
 
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawToolGL.h>
 #include <QtQuick/qquickwindow.h>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLContext>
@@ -55,59 +15,48 @@
 
 Viewer::Viewer() :
 	myScene(0),
-	mySofaGL(0),
+	myCamera(new Camera(this)),
+	myTexturesDirty(false),
 	myProgram(0)
 {
 	setFlag(QQuickItem::ItemHasContents);
 
+	connect(this, &Viewer::sceneChanged, this, &Viewer::handleSceneChanged);
     connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
 }
 
 Viewer::~Viewer()
 {
-	delete myProgram;
+	
 }
 
-void Viewer::setScene(Scene* scene)
+void Viewer::handleSceneChanged(Scene* scene)
 {
-	if(!scene || scene == myScene)
-		return;
+	if(scene)
+	{
+		if(scene->isReady())
+		{
+			myTexturesDirty = true;
+			viewAll();
+		}
 
-	clear();
-
-	delete myScene;
-	myScene = scene;
-
-	connect(myScene, SIGNAL(opened()), this, SLOT(clear()));
-
-	if(window())
-		window()->update();
+		connect(scene, &Scene::loaded, this, [&]() {myTexturesDirty = true; viewAll();});
+	}
 }
 
-void Viewer::clear()
+void Viewer::handleWindowChanged(QQuickWindow* window)
 {
-	delete mySofaGL;
-	mySofaGL = 0;
-
-	// do not init a new SofaGL here since we may not have a valid GL context
-
-	if(window())
-		window()->update();
-}
-
-void Viewer::handleWindowChanged(QQuickWindow *win)
-{
-    if(win)
+    if(window)
     {
         // Connect the beforeRendering signal to our paint function.
         // Since this call is executed on the rendering thread it must be
         // a Qt::DirectConnection
-        connect(win, SIGNAL(beforeRendering()), this, SLOT(paint()), Qt::DirectConnection);
-        connect(win, SIGNAL(beforeSynchronizing()), this, SLOT(sync()), Qt::DirectConnection);
+        connect(window, SIGNAL(beforeRendering()), this, SLOT(paint()), Qt::DirectConnection);
+        connect(window, SIGNAL(beforeSynchronizing()), this, SLOT(sync()), Qt::DirectConnection);
 
         // If we allow QML to do the clearing, they would clear what we paint
         // and nothing would show.
-        win->setClearBeforeRendering(false);
+        window->setClearBeforeRendering(false);
     }
 }
 
@@ -115,7 +64,9 @@ void Viewer::paint()
 {
 	if(!myProgram)
 	{
-        myProgram = new QOpenGLShaderProgram();
+		glewInit();
+
+        myProgram = new QOpenGLShaderProgram(this);
         myProgram->addShaderFromSourceCode(QOpenGLShader::Vertex,
                                            "attribute highp vec4 vertices;"
                                            "varying highp vec2 coords;"
@@ -141,16 +92,6 @@ void Viewer::paint()
 	myProgram->bind();
 	myProgram->release();
 
-	if(!mySofaGL && myScene && myScene->isLoaded())
-	{
-		sofa::simplegui::SofaScene* sofaScene = dynamic_cast<sofa::simplegui::SofaScene*>(myScene);
-		if(sofaScene)
-		{
-			delete mySofaGL;
-			mySofaGL = new sofa::simplegui::SofaGL(sofaScene);
-		}
-	}
-
     // compute the correct viewer position
     QPointF pos = mapToScene(QPointF(0.0, 0.0));
     pos.setY(window()->height() - height() - pos.y()); // opengl has its Y coordinate inverted compared to qt
@@ -162,20 +103,23 @@ void Viewer::paint()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_SCISSOR_TEST);
 
+	if(!myScene || !myScene->isReady())
+		return;
+
     // set the viewer viewport
     glViewport(pos.x(), pos.y(), width(), height());
-    //glViewport(0, 0, width(), height());
 
     glDisable(GL_DEPTH_TEST);
 
+	myCamera->setAspectRatio(width() / (float) height());
+
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//glOrtho(-20.0, 20.0, -20.0, 20.0, -100.0, 100.0);
-	gluPerspective(55.0, (GLfloat) width()/(GLfloat) height(), 0.1, 1000.0);
+	glPushMatrix();
+	glLoadMatrixf(myCamera->projection().constData());
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslated(0.0, -30.0, -100.0);
+	glPushMatrix();
+	glLoadMatrixf(myCamera->modelView().constData());
 
 	GLfloat light_position[] = { 25.0, 0.0, 25.0, 1.0 }; // w = 0.0 => directional light ; w = 1.0 => point light (hemi) or spot light
 	GLfloat light_ambient[] = { 0.0, 0.0, 0.0, 0.0 };
@@ -192,8 +136,53 @@ void Viewer::paint()
     glEnable(GL_LIGHT0);
 	glDepthMask(GL_TRUE);
 
-	if(mySofaGL)
-		mySofaGL->draw();
+	sofa::core::visual::VisualParams* _vparams = sofa::core::visual::VisualParams::defaultInstance();
+	if(!_vparams->drawTool())
+	{
+		_vparams->drawTool() = new sofa::core::visual::DrawToolGL();
+		_vparams->setSupported(sofa::core::visual::API_OpenGL);
+	}
+
+	if(_vparams)
+	{
+		GLint _viewport[4];
+		GLdouble _mvmatrix[16], _projmatrix[16];
+
+		glGetIntegerv (GL_VIEWPORT, _viewport);
+		glGetDoublev (GL_MODELVIEW_MATRIX, _mvmatrix);
+		glGetDoublev (GL_PROJECTION_MATRIX, _projmatrix);
+
+		_vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
+		_vparams->sceneBBox() = myScene->sofaSimulation()->GetRoot()->f_bbox.getValue();
+		_vparams->setProjectionMatrix(_projmatrix);
+		_vparams->setModelViewMatrix(_mvmatrix);
+	}
+
+	if(myTexturesDirty)
+	{
+		myScene->sofaSimulation()->initTextures(myScene->sofaSimulation()->GetRoot().get());
+		myTexturesDirty = false;
+	}
+
+	myScene->sofaSimulation()->updateVisual(myScene->sofaSimulation()->GetRoot().get());
+	myScene->sofaSimulation()->draw(_vparams, myScene->sofaSimulation()->GetRoot().get());
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
+void Viewer::viewAll()
+{
+	if(!myScene || !myScene->isReady())
+		return;
+
+	SReal min[3], max[3];
+	myScene->sofaSimulation()->computeTotalBBox(myScene->sofaSimulation()->GetRoot().get(), min, max );
+
+	myCamera->fit(QVector3D(min[0], min[1], min[2]), QVector3D(max[0], max[1], max[2]));
 }
 
 void Viewer::sync()

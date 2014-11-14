@@ -193,11 +193,11 @@ public:
 
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue )
+    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL) )
     {
         Deriv result;
         for( unsigned int i=0 ; i<VSize ; ++i )
-            result[i] = helper::symrand(maxValue);
+            result[i] = helper::symrand(maxValue,seed);
         return result;
     }
 
@@ -746,36 +746,59 @@ namespace container
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_StrainTYPES_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E331dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E331dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E331dTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E332dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E332dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E332dTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E333dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E333dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E333dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E321dTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E321dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E311dTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E311dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E221dTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E221dTypes>;
 
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I331dTypes>;
+
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I331dTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I331dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I332dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I332dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I333dTypes>;
-//extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I333dTypes>;
+
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::U331dTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U331dTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::U321dTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U321dTypes>;
+
+
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E331fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E331fTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E331fTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E332fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E332fTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E332fTypes>;
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E333fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E333fTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E333fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E321fTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E321fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E311fTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E311fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::E221fTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::E221fTypes>;
 
-extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I331fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I331fTypes>;
 extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I331fTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I332fTypes>;
-//extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I332fTypes>;
-//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::I333fTypes>;
-//extern template class SOFA_Flexible_API MechanicalObject<defaulttype::I333fTypes>;
+
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::U331fTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U331fTypes>;
+//extern template class SOFA_Flexible_API MechanicalObjectInternalData<defaulttype::U321fTypes>;
+extern template class SOFA_Flexible_API MechanicalObject<defaulttype::U321fTypes>;
 #endif
 #endif
+
+
+
+
+
+
 
 } // namespace container
 

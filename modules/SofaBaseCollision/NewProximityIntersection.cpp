@@ -75,6 +75,7 @@ void NewProximityIntersection::init()
     intersectors.add<RigidCapsuleModel,SphereModel, NewProximityIntersection> (this);
     intersectors.add<RigidCapsuleModel,OBBModel, NewProximityIntersection> (this);
     intersectors.add<RigidCapsuleModel,RigidSphereModel, NewProximityIntersection> (this);
+	//intersectors.add<RayModel, OBBModel, NewProximityIntersection>(this);
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 

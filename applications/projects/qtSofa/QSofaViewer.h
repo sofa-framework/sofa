@@ -6,7 +6,7 @@
 #include <plugins/SofaSimpleGUI/SofaScene.h>
 #include <plugins/SofaSimpleGUI/SofaGL.h>
 #include <plugins/SofaSimpleGUI/Camera.h>
-#include <plugins/SofaSimpleGUI/QSofaScene.h>
+#include "QSofaScene.h"
 
 using sofa::simplegui::SofaScene;
 using sofa::simplegui::SofaGL;
@@ -25,7 +25,7 @@ class QSofaViewer : public QGLWidget
     Q_OBJECT
 
 public:
-    explicit QSofaViewer(sofa::simplegui::QSofaScene* sofaScene, QGLWidget* contextSharing, QWidget *parent = 0);
+    explicit QSofaViewer(QSofaScene* sofaScene, QGLWidget* contextSharing, QWidget *parent = 0);
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);

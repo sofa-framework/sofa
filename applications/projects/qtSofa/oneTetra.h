@@ -63,6 +63,7 @@ using sofa::core::objectmodel::New;
 // ---------------------------------------------------------------------
 Node::SPtr oneTetra()
 {
+	sofa::simulation::getSimulation()->unload(sofa::simulation::getSimulation()->GetRoot());
     Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
 
     // solver
