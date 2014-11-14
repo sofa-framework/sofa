@@ -483,9 +483,9 @@ Quater<Real> Quater<Real>::axisToQuat(defaulttype::Vec<3,Real> a, Real phi)
 /// Given a quaternion, compute an axis and angle
 template<class Real>
 void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle)
-{    
+{
     double  sine  = sin( acos(_q[3]) );
-    if(sine == 0){
+    if(sine == 0) {
         sine = sqrt(_q[0]*_q[0]+_q[1]*_q[1]+_q[2]*_q[2]);
         angle = 2.0*asin(sine);
     }

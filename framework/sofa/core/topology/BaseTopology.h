@@ -165,7 +165,7 @@ public:
     */
     virtual void propagateTopologicalChanges();
 
-    /** \notify the end for the current sequence of topological change events.
+    /** \brief notify the end for the current sequence of topological change events.
     */
     virtual void notifyEndingEvent();
 

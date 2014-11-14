@@ -982,21 +982,20 @@ TEST_F( Assembly_test, testConstrainedHardString )
     //    cout<<"testConstrainedHardString results compared"<< endl;
 }
 
-// TODO with the actual API this test can not work
-// the solver is allocating the vectors for the subgraph it controls
-//TEST_F( Assembly_test, testExternallyConstrainedHardString )
-//{
-//    unsigned numParticles=2;
-//    ::testing::Message() << "Assembly_test: hard string of " << numParticles << " particles attached using a constraint with an out-of-scope particle";
-//    testExternallyConstrainedHardString(numParticles);
-//    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
-//    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
-//    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
-//    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
-//    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
-//    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
-//    //    //    cout<<"testExternallyConstrainedHardString results compared"<< endl;
-//}
+
+TEST_F( Assembly_test, testExternallyConstrainedHardString )
+{
+    unsigned numParticles=2;
+    ::testing::Message() << "Assembly_test: hard string of " << numParticles << " particles attached using a constraint with an out-of-scope particle";
+    testExternallyConstrainedHardString(numParticles);
+    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
+    ASSERT_TRUE(matricesAreEqual( expected.P, complianceSolver->P() ));
+    ASSERT_TRUE(matricesAreEqual( expected.J, complianceSolver->J() ));
+    ASSERT_TRUE(matricesAreEqual( expected.C, complianceSolver->C() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.dv, complianceSolver->getDv() ));
+    ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
+    //    //    cout<<"testExternallyConstrainedHardString results compared"<< endl;
+}
 
 
 TEST_F( Assembly_test, testAttachedConnectedHardStrings )

@@ -61,7 +61,7 @@ public:
     virtual const char* getClassName() const { return "XMLPrintVisitor"; }
     int getLevel() const {return level;}
     void setLevel(int l) {level=l;};
-
+	virtual bool treeTraversal(TreeTraversalRepetition& repeat);
 };
 
 } // namespace simulation

@@ -138,11 +138,9 @@ void RigidRigidMapping<TIn, TOut>::init()
             case 0 :
                 for (i = 0; i < x.size(); i++)
                 {
-                    pts[i] = x[i] - xfrom[0];
-                    /*
-                    pts[i].getCenter() = x[i].getCenter() - xfrom[0].getCenter();
-                    pts[i].getOrientation() = quatDiff(x[i].getOrientation(), xfrom[0].getOrientation());
-                    */
+                    // pts[i] = x[i] - xfrom[0];
+                    pts[i].getCenter() = xfrom[index.getValue()].getOrientation().inverse().rotate( x[i].getCenter() - xfrom[index.getValue()].getCenter() ) ;
+                    pts[i].getOrientation() = xfrom[index.getValue()].getOrientation().inverse() * x[i].getOrientation() ;
                 }
                 break;
             case 1 :

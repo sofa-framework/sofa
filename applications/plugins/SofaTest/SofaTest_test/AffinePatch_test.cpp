@@ -298,7 +298,7 @@ TYPED_TEST( AffinePatch_test , patchTest2D )
 TYPED_TEST( AffinePatch_test , patchTest3D )
 {
     this->createScene3DRegularGrid();
-    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(9e-6,9e-5));
+    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-5,1e-4));
 }
 
 

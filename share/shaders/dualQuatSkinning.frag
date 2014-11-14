@@ -1,4 +1,4 @@
-#version 330
+#version 330 compatibility
 
 // Input for phong lighting
 in vec3 normal;

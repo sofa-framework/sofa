@@ -137,6 +137,7 @@ void ArticulatedHierarchyBVHController::applyController(void)
                     {
                         double diffMotions = (*it)->motion[frame+1] - (*it)->motion[frame];
                         helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > x = *(*articulatedObjIt)->write(sofa::core::VecCoordId::position());
+                        this->getContext()->getMechanicalState()->vRealloc( sofa::core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
                         helper::WriteAccessor<Data<sofa::defaulttype::Vec1Types::VecCoord> > xfree = *(*articulatedObjIt)->write(sofa::core::VecCoordId::freePosition());
 
                         x[(*it)->articulationIndex.getValue()] = (*it)->motion[frame] + alpha*diffMotions;

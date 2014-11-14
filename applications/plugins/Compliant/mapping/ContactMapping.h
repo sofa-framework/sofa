@@ -48,7 +48,7 @@ public:
 	typedef vector< real > penetration_type;
     Data<penetration_type> penetrations;
 
-  ContactMapping() : normal(initData(&normal, "normal", "contact normals")),
+    ContactMapping() : normal(initData(&normal, "normal", "contact normals")),
 					 penetrations(initData(&penetrations, "penetrations", "contact penetrations")) {
 
   }
@@ -144,6 +144,11 @@ protected:
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ContactMapping_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3dTypes, defaulttype::Vec1dTypes >;
+extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3fTypes, defaulttype::Vec1fTypes >;
+extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
 #endif
 #endif
 

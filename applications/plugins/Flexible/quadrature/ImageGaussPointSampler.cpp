@@ -43,9 +43,11 @@ SOFA_DECL_CLASS(ImageGaussPointSampler)
 int ImageGaussPointSamplerClass = core::RegisterObject("Samples an object represented by an image with gauss points")
 
         .add<ImageGaussPointSampler<Image<SReal>,ImageUC> >(true)
+        .add<ImageGaussPointSampler<Image<SReal>,ImageB> >()
         ;
 
 template class SOFA_Flexible_API ImageGaussPointSampler<Image<SReal>,ImageUC>;
+template class SOFA_Flexible_API ImageGaussPointSampler<Image<SReal>,ImageB>;
 
 } // namespace engine
 } // namespace component
