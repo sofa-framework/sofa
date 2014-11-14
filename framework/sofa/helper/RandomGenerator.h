@@ -65,12 +65,9 @@ private:
 
     void __dorand48(unsigned short xseed[3]);
 
-protected:
-
+public:
     /// integer between [0, 2^32-1)
     unsigned long int randomBase();
-
-public:
 
     RandomGenerator();
     RandomGenerator(long seed);
@@ -149,8 +146,10 @@ inline float RandomGenerator::random()
 
 /** Pseudo-random number between -vmax and +vmax. Uses the seed defined using the standard srand(unsigned int) function of the stdlib
 */
-inline SReal symrand(SReal vmax){
-    return -vmax + 2 * vmax * std::rand()/RAND_MAX;
+inline SReal symrand(SReal vmax,int seed = 0){
+    RandomGenerator randomgenerator(seed);
+    SReal randomReal = -vmax + ((2*vmax)*(SReal)randomgenerator.randomBase())/(SReal)4294967295U;
+    return (SReal)(randomReal);
 }
 
 }

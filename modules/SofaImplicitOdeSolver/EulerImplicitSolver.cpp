@@ -98,6 +98,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST *
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
 
+    // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+
     x.realloc( &vop, true, true );
 
 

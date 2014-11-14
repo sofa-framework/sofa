@@ -32,7 +32,7 @@
 #include "../deformationMapping/MLSJacobianBlock_affine.inl"
 #include "../deformationMapping/MLSJacobianBlock_rigid.inl"
 #include "../deformationMapping/MLSJacobianBlock_quadratic.inl"
-#include <SofaBaseMechanics/MechanicalObject.inl>
+//#include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/core/State.inl>
 
 

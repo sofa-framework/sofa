@@ -1,6 +1,8 @@
 #ifndef STDAFX_H
 #define STDAFX_H
 
+#ifdef WIN32
+
 #include "SofaGL.h"
 #include "SofaScene.h"
 
@@ -18,5 +20,6 @@
 #include <QOpenGLContext>
 #include <QImage>
 
+#endif
 
 #endif // STDAFX_H

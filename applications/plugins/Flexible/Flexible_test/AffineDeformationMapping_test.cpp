@@ -76,13 +76,12 @@ namespace sofa {
         AffineLinearDeformationMappings_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "AffineLineDeformationMapping.scn")
         {   
             Inherited::errorMax = 5000;
-            seed=2;
             // Set random rotation and translation
-            randomGenerator.initSeed(seed);
-            this->SetRandomAffineTransform(seed);
+            randomGenerator.initSeed(BaseSofa_test::seed);
+            this->SetRandomAffineTransform();
         }
              
-        void SetRandomAffineTransform (int /*seed*/)
+        void SetRandomAffineTransform ()
         {
             // Matrix 3*3
             for( int j=0; j<testedRotation.nbCols; j++)

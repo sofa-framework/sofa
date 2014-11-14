@@ -151,7 +151,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     static void generateRandomMat( defaulttype::Mat<nbrows,nbcols,Real>& mat, bool sparse=false )
     {
         sofa::helper::RandomGenerator randomGenerator;
-        randomGenerator.initSeed( (long)time(0) );
+        randomGenerator.initSeed( BaseSofa_test::seed );
 
         for( int j=0; j<mat.nbCols; j++)
         {
@@ -184,7 +184,7 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     /// Create the context for the matrix tests.
     TestSparseMatrices()
     {
-        //std::cout<<"Matrix_test "<<NumRows<<" "<<NumCols<<" "<<BlockRows<<" "<<BlockCols<<std::endl;
+        //std::cout<<"Matrix_test "<<NumRows<<" "<<NumCols<<" "<<BlockRows<<" "<<BlockCols<<std::endl << "seed number = " << BaseSofa_test::seed<<std::endl;
 
         // resize and fill the matrices
         generateRandomMat( mat, true );
@@ -441,7 +441,7 @@ TEST_F(TsProductTimings, benchmark )
         res.resize(nbrows,NBCOLSRHS);
 
         sofa::helper::RandomGenerator randomGenerator;
-        randomGenerator.initSeed( (long)time(0) );
+        randomGenerator.initSeed( BaseSofa_test::seed);
 
         for( unsigned j=0; j<nbcols; j++)
         {

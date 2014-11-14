@@ -146,7 +146,8 @@ void QSofaMainWindow::initSofa(string fileName )
     if(fileName.empty())
     {
         cout << "no fileName provided, using default scene" << endl;
-        sofaScene.setScene(oneTetra());
+		oneTetra();
+        //sofaScene.setScene(oneTetra()); // the sofa::Simulation is a singleton, the call to oneTetra already loaded the scene
     }
     else {
         sofaScene.open(fileName.c_str());

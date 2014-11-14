@@ -17,6 +17,7 @@ import Tools
 from Tools import cat as concat
 import numpy
 from SofaPython import Quaternion
+import SofaPython.Tools
 import math
 
 # to specify the floating point encoding (double by default)
@@ -122,7 +123,8 @@ class RigidBody:
                 global idxVisualModel;
                 self.node = node.createChild( "visual" )  # node
                 r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-                self.model = self.node.createObject('VisualModel', template='ExtVec3f', name='model'+str(idxVisualModel), fileMesh=filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r) )
+                meshLoader = SofaPython.Tools.meshLoader(self.node, filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
+                self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), src="@"+meshLoader.name)
                 self.mapping = self.node.createObject('RigidMapping', name="mapping")
                 idxVisualModel+=1
 

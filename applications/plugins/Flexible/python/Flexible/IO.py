@@ -50,7 +50,9 @@ def export_RigidFrames(mechanicalObject, filename):
 # 'loadGPs(node)' function from this file allows to create a GaussPointContainer with similar points
 def export_GaussPoints(gpsampler, filename):
 	f = open(filename, 'w')
-	volDim = len(gpsampler.findData('volume').value)/ len(gpsampler.findData('position').value)
+	volDim=1
+	if isinstance(gpsampler.findData('volume').value, list) is True: # when volume is a list (several GPs or order> 1)
+		volDim = len(gpsampler.findData('volume').value)/ len(gpsampler.findData('position').value)
 	f.write("\ndef loadGPs(node):\n\tcomponent=node.createObject('GaussPointContainer',name='GPContainer'")
 	f.write(", volumeDim='"+str(volDim)+"'")
 	f.write(", inputVolume='"+datatostr(gpsampler,'volume')+"'")

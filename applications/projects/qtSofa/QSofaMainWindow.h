@@ -6,7 +6,7 @@
 using std::string;
 #include <vector>
 using std::vector;
-#include <plugins/SofaSimpleGUI/QSofaScene.h>
+#include <QSofaScene.h>
 #include <sofa/helper/system/PluginManager.h>
 class QSofaViewer;
 
@@ -25,7 +25,7 @@ public:
     /**
      * @brief The simulated scene
      */
-    sofa::simplegui::QSofaScene sofaScene;
+    QSofaScene sofaScene;
 
     /**
      * @brief Default viewer, set as central widget.

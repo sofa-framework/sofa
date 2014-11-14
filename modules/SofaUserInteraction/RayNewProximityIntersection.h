@@ -33,6 +33,7 @@
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaUserInteraction/RayModel.h>
+#include <SofaBaseCollision/OBBModel.h>
 
 namespace sofa
 {
@@ -50,9 +51,11 @@ class SOFA_USER_INTERACTION_API RayNewProximityIntersection : public core::colli
 public:
     RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
 
-    bool testIntersection(Ray&, Triangle&);
+    bool testIntersection(Ray& t1, Triangle& t2);
+    bool testIntersection(Ray& rRay, OBB& rOBB);
 
-    int computeIntersection(Ray&, Triangle&, OutputVector*);
+    int computeIntersection(Ray& t1, Triangle& t2, OutputVector*);
+    int computeIntersection(Ray& rRay, OBB& rOBB, OutputVector*);
 
 protected:
 
