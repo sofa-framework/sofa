@@ -125,61 +125,31 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
     }
 
-    //    MultiMapping_test(std::string fileName):deltaMax(1000),errorMax(100)
-    //    {
-    //        sofa::component::init();
-    //        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-
-    //        /// Load the scene
-    //        root = simulation->createNewGraph("root");
-    //        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
-
-    //        // InDofs
-    //         inDofs = root->get<InDOFs>(root->SearchDown);
-
-    //         // Get child nodes
-    //         simulation::Node::SPtr patchNode = root->getChild("Patch");
-    //         simulation::Node::SPtr elasticityNode = patchNode->getChild("Elasticity");
-
-    //         // Add OutDofs
-    //         outDofs = modeling::addNew<OutDOFs>(elasticityNode);
-
-    //         // Add mapping to the scene
-    //         mapping = modeling::addNew<Mapping>(elasticityNode).get();
-    //         mapping->setModels(inDofs.get(),outDofs.get());
-
-    //    }
 
 
     /** Returns OutCoord substraction a-b (should return a OutDeriv, but???)
       */
-    virtual OutDeriv difference( const OutCoord& a, const OutCoord& b )
+    OutDeriv difference( const OutCoord& c1, const OutCoord& c2 )
     {
-        return Out::coordDifference(a,b);
+        return Out::coordDifference(c1,c2);
     }
-
-    //    /** Possible child force pre-treatment, does nothing by default
-    //      */
-    //    virtual OutVecDeriv preTreatment( const OutVecDeriv& f ) { return f; }
 
 
     /** Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
-     * The mapping is initialized using the two first parameters,
-     * then a new parent position is applied,
-     * and the new child position is compared with the expected one.
+     * The parent position is applied,
+     * the the resulting child position is compared with the expected one.
      * Additionally, the Jacobian-related methods are tested using finite differences.
      *
-     * The initialization values can used when the mapping is an embedding, e.g. to attach a mesh to a rigid object we compute the local coordinates of the vertices based on their world coordinates and the frame coordinates.
-     * In other cases, such as mapping from pairs of points to distances, no initialization values are necessary, an one can use the same values as for testing, i.e. runTest( xp, expected_xc, xp, expected_xc).
+     * The parent coordinates are transfered in the parent states, then the scene is initialized, then various mapping functions are applied.
+     * The parent states are resized based on the size of the parentCoords vectors. The child state is not resized. Its should be already sized,
+     * or its size set automatically during initialization.
      *
-     *\param parentInit initial parent position
-     *\param childInit initial child position
-     *\param parentNew new parent position
-     *\param expectedChildNew expected position of the child corresponding to the new parent position
+     *\param parentCoords Parent positions (one InVecCoord per parent)
+     *\param expectedChildCoords expected position of the child corresponding to the parent positions
      */
-    bool runTest( const vector<InVecCoord>& parentNew,
-                  const OutVecCoord& expectedChildNew)
+    bool runTest( const vector<InVecCoord>& parentCoords,
+                  const OutVecCoord& expectedChildCoords)
     {
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
@@ -187,11 +157,11 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         mparams.setSymmetricMatrix(false);
 
         // transfer the parent values in the parent states
-        for( int i=0; i<parentNew.size(); i++ )
+        for( int i=0; i<parentCoords.size(); i++ )
         {
-            this->inDofs[i]->resize(parentNew[i].size());
+            this->inDofs[i]->resize(parentCoords[i].size());
             WriteInVecCoord xin = inDofs[i]->writePositions();
-            copyToData(xin,parentNew[i]); // xin = parentNew[i]
+            copyToData(xin,parentCoords[i]); // xin = parentNew[i]
         }
 
         /// Init
@@ -206,14 +176,14 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         ReadOutVecCoord xout = outDofs->readPositions();
         for( Index i=0; i<xout.size(); i++ )
         {
-            if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
-                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i];
+            if( !this->isSmall( difference(xout[i],expectedChildCoords[i]).norm(), errorMax ) ) {
+                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildCoords[i];
                 succeed = false;
             }
         }
 
 
-        /// test applyJ and everything related to Jacobians
+        /// test applyJ and everything related to Jacobians. First, create auxiliary vectors.
         const Index Nc=outDofs->getSize();
         vector<Index> Np(inDofs.size());
         for(Index i=0; i<Np.size(); i++)
@@ -234,7 +204,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         // set random child forces and propagate them to the parent
         for( unsigned i=0; i<Nc; i++ ){
             fc[i] = Out::randomDeriv( 1.0 );
-            cout<<"random child forces  fc[" << i <<"] = "<<fc[i]<<endl;
+//            cout<<"random child forces  fc[" << i <<"] = "<<fc[i]<<endl;
         }
         for(Index p=0; p<Np.size(); p++) {
             fp2[p]=InVecDeriv(Np[p], InDeriv() ); // null vector of appropriate size
@@ -253,9 +223,9 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             xp1[p].resize(Np[p]);
             for( unsigned i=0; i<Np[p]; i++ ){
                 vp[p][i] = In::randomDeriv( this->epsilon() * deltaMax );
-                cout<<"parent velocities vp[" << p <<"] = " << vp[p] << endl;
+//                cout<<"parent velocities vp[" << p <<"] = " << vp[p] << endl;
                 xp1[p][i] = xp[p][i] + vp[p][i];
-                cout<<"new parent positions xp1["<< p <<"] = " << xp1[p] << endl;
+//                cout<<"new parent positions xp1["<< p <<"] = " << xp1[p] << endl;
             }
         }
 
@@ -265,7 +235,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             copyToData( vin, vp[p] );
         }
         mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
-        WriteOutVecDeriv vout = outDofs->writeVelocities();
+        ReadOutVecDeriv vout = outDofs->readVelocities();
         copyFromData( vc, vout);
         //        cout<<"child velocity vc = " << vc << endl;
 
@@ -281,14 +251,14 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( dfp[p], inDofs[p]->readForces() ); // fp + df due to geometric stiffness
-            cout<<"dfp["<< p <<"] = " << dfp[p] << endl;
+//            cout<<"dfp["<< p <<"] = " << dfp[p] << endl;
         }
 
         // Jacobian will be obsolete after applying new positions
         const vector<defaulttype::BaseMatrix*>* J = mapping->getJs();
         OutVecDeriv Jv(Nc);
         for( Index p=0; p<Np.size(); p++ ){
-            cout<<"J["<< p <<"] = "<< endl << *(*J)[p] << endl;
+            //cout<<"J["<< p <<"] = "<< endl << *(*J)[p] << endl;
             EigenSparseMatrix* JJ = dynamic_cast<EigenSparseMatrix*>((*J)[p]);
             assert(JJ!=NULL);
             JJ->addMult(Jv,vp[p]);
@@ -340,12 +310,12 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         for( Index p=0; p<Np.size(); p++ ){
             WriteInVecCoord pin = inDofs[p]->writePositions();
             copyToData( pin, xp1[p] );
-            cout<<"new parent positions xp1["<< p << "] = " << xp1[p] << endl;
+//            cout<<"new parent positions xp1["<< p << "] = " << xp1[p] << endl;
         }
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
         WriteOutVecCoord pout = outDofs->writePositions();
         copyFromData( xc1, pout );
-        //        cout<<"new child positions xc1 = " << xc1 << endl;
+//        cout<<"new child positions xc1 = " << xc1 << endl;
 
         // ================ test applyJ: compute the difference between propagated displacements and velocities
         OutVecDeriv dxc(Nc);
@@ -372,12 +342,12 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         vector<InVecDeriv> fp12(Np.size());
         for( Index p=0; p<Np.size(); p++ ){
             copyFromData( fp2[p], inDofs[p]->readForces() );
-            cout<<"updated parent forces fp2["<< p <<"] = "<< fp2[p] << endl;
+//            cout<<"updated parent forces fp2["<< p <<"] = "<< fp2[p] << endl;
             fp12[p].resize(Np[p]);
             for(unsigned i=0; i<Np[p]; i++){
                 fp12[p][i] = fp2[p][i]-fp[p][i];       // fp2 - fp
             }
-            cout<<"fp2["<< p <<"] - fp["<< p <<"] = " << fp12[p] << endl;
+//            cout<<"fp2["<< p <<"] - fp["<< p <<"] = " << fp12[p] << endl;
             // ================ test applyDJT()
             if( this->vectorMaxDiff(dfp[p],fp12[p])>this->epsilon()*errorMax ){
                 succeed = false;
@@ -387,9 +357,6 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             }
         }
 
-
-
-
         return succeed;
     }
 
@@ -398,21 +365,6 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         if (root!=NULL)
             sofa::simulation::getSimulation()->unload(root);
     }
-
-    //    /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
-    //    static EigenSparseMatrix* getMatrix(const vector<sofa::defaulttype::BaseMatrix*>* matrices)
-    //    {
-    //        if( matrices->size() != 1 ){
-    //            ADD_FAILURE()<< "Matrix list should have size == 1 in simple mappings";
-    //        }
-    //        EigenSparseMatrix* ei = dynamic_cast<EigenSparseMatrix*>((*matrices)[0] );
-    //        if( ei == NULL ){
-    //            ADD_FAILURE() << "getJs returns a matrix of non-EigenSparseMatrix type";
-    //        }
-    //        return ei;
-    //    }
-
-
 
 };
 
