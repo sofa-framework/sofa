@@ -25,12 +25,11 @@
 
 #include "stdafx.h"
 #include "Mapping_test.h"
-#include <sofa/component/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/mapping/RigidRigidMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaRigid/RigidRigidMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 namespace sofa {

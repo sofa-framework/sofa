@@ -297,16 +297,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                 ADD_FAILURE() << "getJs() test failed"<<endl<<"vp = " << vp << endl<<"Jvp = " << Jv << endl <<"vc  = " << vc << endl;
             }
         }
-        // ================ test getJs()
-        // check that J.vp = vc
-        if( this->vectorMaxDiff(Jv,vc)>this->epsilon()*errorMax ){
-            succeed = false;
-                    cout<<"vp = " << vp << endl;
-                    cout<<"Jvp = " << Jv << endl;
-                    cout<<"vc  = " << vc << endl;
-            ADD_FAILURE() << "getJs() test failed"<<endl<<"vp = " << vp << endl<<"Jvp = " << Jv << endl <<"vc  = " << vc << endl;
-        }
-
 
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
         // the pre-treatement can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
