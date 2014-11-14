@@ -177,7 +177,7 @@ void randMoving(sofa::core::CollisionModel* cm,const sofa::defaulttype::Vector3 
     randomGenerator.initSeed(seed);
 
     for(int i = 0 ; i < dof->getSize() ; ++i){
-        if(rand() < RAND_MAX/2.0){//make it move !
+        if(randomGenerator.random<double>() < RAND_MAX/2.0){//make it move !
             velocities[i] = sofa::defaulttype::Vector3(1,1,1);//velocity is used only to know if a primitive moves, its direction is not important
             positions[i] = sofa::defaulttype::Rigid3Types::Coord(randVect(min_vect,max_vect, seed),sofa::defaulttype::Quaternion(0,0,0,1));
         }

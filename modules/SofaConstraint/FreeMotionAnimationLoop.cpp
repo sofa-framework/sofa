@@ -83,6 +83,16 @@ void FreeMotionAnimationLoop::parse ( sofa::core::objectmodel::BaseObjectDescrip
 
 void FreeMotionAnimationLoop::init()
 {
+
+    {
+    simulation::common::VectorOperations vop(core::ExecParams::defaultInstance(), this->getContext());
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv df(&vop, core::VecDerivId::dforce() ); df.realloc( &vop, true, true );
+    }
+
+
+
+
     getContext()->get(constraintSolver, core::objectmodel::BaseContext::SearchDown);
     if (constraintSolver == NULL && defaultSolver != NULL)
     {
@@ -127,6 +137,14 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecCoord freePos(&vop, core::VecCoordId::freePosition() );
     MultiVecDeriv freeVel(&vop, core::VecDerivId::freeVelocity() );
+
+    {
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv df(&vop, core::VecDerivId::dforce() ); df.realloc( &vop, true, true );
+    }
+
+
+
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.

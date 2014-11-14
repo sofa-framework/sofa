@@ -1,0 +1,12 @@
+# This runs very slowly, so compute only a few iterations
+iterations "Components/solver/NewmarkImplicitSolver.scn" "10"
+timeout "Components/solver/NewmarkImplicitSolver.scn" "60"
+
+# Idem
+iterations "Components/forcefield/FastTetrahedronCorotationalForceField.scn" "10"
+timeout "Components/forcefield/FastTetrahedronCorotationalForceField.scn" "90"
+
+timeout "Components/linearsolver/MatrixContributions123.scn" "60"
+
+# Big, long, PrecomputedConstraintCorrection in this scene:
+timeout "Components/animationloop/FreeMotionAnimationLoop.scn" "180"

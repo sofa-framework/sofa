@@ -1,8 +1,11 @@
 #include <GL/glew.h>
 #include "SofaGL.h"
 #include "VisualPickVisitor.h"
+#include <sofa/core/objectmodel/Tag.h>
 
 namespace sofa {
+using core::objectmodel::Tag;
+
 namespace simplegui {
 
 template <typename T> inline T sqr(const T& t){ return t*t; }
@@ -26,7 +29,7 @@ SofaGL::SofaGL(SofaScene *s) :
     _isPicking = false;
 
 
-    sofa::simulation::getSimulation()->initTextures(_sofaScene->groot().get());
+    _sofaScene->initVisual();
 }
 
 void SofaGL::draw()
@@ -38,12 +41,15 @@ void SofaGL::draw()
     if(_vparams)
     {
         _vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
-        _vparams->sceneBBox() = _sofaScene->groot()->f_bbox.getValue();
+        SReal xmin,xmax,ymin,ymax,zmin,zmax;
+        _sofaScene->getBoundingBox(&xmin,&xmax,&ymin,&ymax,&zmin,&zmax);
+        _vparams->sceneBBox() = sofa::defaulttype::BoundingBox(xmin,xmax,ymin,ymax,zmin,zmax);
         _vparams->setProjectionMatrix(_projmatrix);
         _vparams->setModelViewMatrix(_mvmatrix);
     }
 
-    sofa::simulation::getSimulation()->updateVisual(_sofaScene->groot().get()); // needed to update normals and VBOs ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
+    //_sofaScene->getSimulation()->updateVisual(_sofaScene->getSimulation()->GetRoot().get()); // needed to update normals and VBOs ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
+    _sofaScene->updateVisual(); // needed to update normals and VBOs ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
 
     if( _isPicking ){
 
@@ -61,11 +67,11 @@ void SofaGL::draw()
         glMultMatrixd(_projmatrix);
         glMatrixMode(GL_MODELVIEW);
 
-
         // draw
         _vparams->pass() = sofa::core::visual::VisualParams::Std;
         VisualPickVisitor pick ( _vparams );
         pick.setTags(_sofaScene->groot()->getTags());
+        cerr<<"SofaGL::draw root used " <<  endl;
         _sofaScene->groot()->execute ( &pick );
 
         // stop picking
@@ -109,7 +115,18 @@ void SofaGL::draw()
         _isPicking = false;
 
     }
-    sofa::simulation::getSimulation()->draw(_vparams, _sofaScene->groot().get());
+
+//    _sofaScene->getSimulation()->draw(_vparams, _sofaScene->getSimulation()->GetRoot().get());
+    draw(_vparams);
+}
+
+void SofaGL::draw(sofa::core::visual::VisualParams* vparams)
+{
+    core::visual::VisualLoop* vloop = _sofaScene->groot()->getVisualLoop();
+    assert(vloop);
+    if (!vparams) vparams = sofa::core::visual::VisualParams::defaultInstance();
+    vparams->update();
+    vloop->drawStep(vparams);
 }
 
 void SofaGL::getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y )

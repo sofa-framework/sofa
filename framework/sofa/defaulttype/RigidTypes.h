@@ -378,9 +378,9 @@ public:
     static RigidCoord rand(SReal a,int seed = (unsigned int)time(NULL))
     {
         RigidCoord t;
-        using helper::symrand;
-        t.center = Pos( symrand(a,seed), symrand(a,seed), symrand(a,seed) );
-        t.orientation = Quat::fromEuler( symrand(a,seed), symrand(a,seed), symrand(a,seed) );
+        helper::RandomGenerator randomGenerator(seed);
+        t.center = Pos( randomGenerator.symrand(a), randomGenerator.symrand(a), randomGenerator.symrand(a) );
+        t.orientation = Quat::fromEuler( randomGenerator.symrand(a), randomGenerator.symrand(a), randomGenerator.symrand(a) );
         return t;
     }
 
@@ -889,16 +889,17 @@ public:
     static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
     {
         Deriv result;
-        using helper::symrand;
-        set( result, symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed) );
+        helper::RandomGenerator randomGenerator(seed);
+        set( result, randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
         return result;
     }
 
     static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
         defaulttype::Vector3 vCenter = c1.getCenter() - c2.getCenter();
-        defaulttype::Quat quat, quat1(c1.getOrientation()), quat0(c2.getOrientation());
-        quat = quat1.quatDiff(quat1, quat0);
+        defaulttype::Quat quat, quat1(c1.getOrientation()), quat2(c2.getOrientation());
+        // Transformation between c2 and c1 frames
+        quat = quat1*quat2.inverse();
         quat.normalize();
         defaulttype::Vector3 axis; defaulttype::Quat::value_type angle; quat.quatToAxis(axis, angle);
         axis*=angle;
@@ -1268,9 +1269,9 @@ public:
     static RigidCoord rand(SReal a)
     {
         RigidCoord t;
-        using helper::symrand;
-        t.center = Pos( symrand(a), symrand(a) );
-        t.orientation = symrand(a);
+        helper::RandomGenerator randomGenerator;
+        t.center = Pos( randomGenerator.symrand(a), randomGenerator.symrand(a) );
+        t.orientation = randomGenerator.symrand(a);
         return t;
     }
 
@@ -1768,8 +1769,8 @@ public:
     static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
     {
         Deriv result;
-        using helper::symrand;
-        set( result, symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed) );
+        helper::RandomGenerator randomGenerator(seed);
+        set( result, randomGenerator.symrand(maxValue),randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue),randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
         return result;
     }
 
