@@ -43,7 +43,7 @@ namespace sofa
 namespace core
 {
 
-/** An interface to convert a model state to tan other model state.
+/** An interface to convert a model state to an other model state.
 The model states are positions and velocities or generalizations of these (class sofa::core::BaseState).
 The source is denoted using various names: from, input, master, parent…
 The target is denoted using various names: to, output, slave, child…
