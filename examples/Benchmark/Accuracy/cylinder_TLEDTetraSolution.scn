@@ -6,7 +6,7 @@
     <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
     <VisualStyle displayFlags="showBehaviorModels hideCollisionModels hideMappings hideForceFields" />
 	<Gravity name="G" gravity="0 -9.8 0" />
-	
+
 	<!-- Phantom Solution -->
     <Node name="Reference">
         <Node name="Visual">
@@ -25,7 +25,7 @@
             <Point />
         </Node>
 	</Node>
-	
+
 	<!-- FEM TLED Tetrahedra Solution -->
 	<Node name="CylinderFEMTetra">
         <CentralDifferenceSolver rayleighMass="5"/>

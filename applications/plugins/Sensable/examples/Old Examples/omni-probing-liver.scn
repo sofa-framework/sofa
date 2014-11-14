@@ -18,7 +18,7 @@
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-009"  threshold="1e-009" />
 		<Node 	name="Visu" tags="Visual" gravity="0 -9.81 0"  >
 			<OglModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/liver-smooth.obj" />
-			<BarycentricMapping template="Vec3d,ExtVec3f" name="visual mapping"  object1="../.."  object2="VisualModel" />
+			<BarycentricMapping template="Vec3d,ExtVec3f" name="visual mapping"  input="@.."  output="@VisualModel" />
 		</Node>
 		<Node 	name="Surf" gravity="0 -9.81 0"  >
 			<TSphereModel template="Vec3d" name="CollisionModel"  fileSphere="mesh/liver.sph" />
@@ -36,15 +36,15 @@
 			<TTriangleModel template="Vec3d" name="instrument"  contactStiffness="10" />
 			<LineModel name="instrument"  contactStiffness="10" />
 			<PointModel name="instrument"  contactStiffness="10" />
-			<RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  object1="Instrument/rigidDOF"  object2="Instrument/Collision/collisionDOF" />
+			<RigidMapping template="Rigid,Vec3d" name="MM->CM mapping"  input="@Instrument/rigidDOF"  output="@Instrument/Collision/collisionDOF" />
 		</Node>
 		<Node 	name="Visual-blade-tooltip" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<OglModel template="ExtVec3f" name="visual"  fileMesh="mesh/blade_instrument_tip.obj"  translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 0.666667 0 0 1 Ambient 1 0.2 0.0392157 0.0392157 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
-			<RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  object1="Instrument/rigidDOF"  object2="Instrument/Visual-blade-tooltip/visual" />
+			<RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@Instrument/rigidDOF"  output="@Instrument/Visual-blade-tooltip/visual" />
 		</Node>
 		<Node 	name="Visual-blade-handle" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
 			<OglModel template="ExtVec3f" name="visual"  fileMesh="mesh/blade_instrument_handle.obj"  translation="0 0 0"  rotation="0 0 0"  material="Default Diffuse 1 1 1 0 1 Ambient 1 0.2 0.0392157 0.0392157 1 Specular 0 1 0.2 0.2 1 Emissive 0 1 0.2 0.2 1 Shininess 0 45" />
-			<RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  object1="Instrument/rigidDOF"  object2="Instrument/Visual-blade-handle/visual" />
+			<RigidMapping template="Rigid,ExtVec3f" name="MM->VM mapping"  input="@Instrument/rigidDOF"  output="@Instrument/Visual-blade-handle/visual" />
 		</Node>
 	</Node>
 </Node>

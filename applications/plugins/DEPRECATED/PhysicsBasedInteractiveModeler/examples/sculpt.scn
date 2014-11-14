@@ -20,7 +20,7 @@
 		<Triangle />
 		<Node > 
 	        	<OglModel name="VisualModel" color="0.93 0.83 0.81 1" />
-			<IdentityMapping object1="../.." object2="VisualModel" />
+			<IdentityMapping input="@.." output="@VisualModel" />
 		</Node>	
 		<Node name="SculptedPoints" >
 			<MechanicalObject name="mstate"/>
@@ -51,6 +51,6 @@
 	</Node>
 		
 	<!-- used to fix dynamic matter -->
-	<StiffSpringForceField name="fixSpring" object1="StaticMatter" object2="DynamicMatter" stiffness="1000"/>
-	<StiffSpringForceField name="fix2Spring" object1="Body/SculptedPoints" object2="DynamicMatter/SculptedPoints" stiffness="100000000000000"/>
+	<StiffSpringForceField name="fixSpring" object1="@StaticMatter" object2="@DynamicMatter" stiffness="1000"/>
+	<StiffSpringForceField name="fix2Spring" object1="@Body/SculptedPoints" object2="@DynamicMatter/SculptedPoints" stiffness="100000000000000"/>
 </Node>

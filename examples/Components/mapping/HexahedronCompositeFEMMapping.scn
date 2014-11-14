@@ -5,7 +5,7 @@
     <Node name="HexahedronCompositeFEMMapping">
         <SparseGridMultiple n="2 2 2" fileTopology="mesh/grape_out.obj" fileTopologies="mesh/grape_out.obj mesh/grape_in.obj" stiffnessCoefs="1 1000000" massCoefs="1 1" nbVirtualFinerLevels="4" finestConnectivity="false" />
         <EulerImplicit rayleighMass="0" rayleighStiffness="0" />
-        <CGLinearSolver iterations="2000" />
+        <CGLinearSolver iterations="2000" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="15" />
         <HexahedronCompositeFEMForceFieldAndMass completeInterpolation="false" nbVirtualFinerLevels="3" youngModulus="100" poissonRatio="0.35" method="large" density="2" updateStiffnessMatrix="false" printLog="0" useMass="false" totalMass="1" drawSize=".5" />
         <BoxConstraint box="-30 -11 -30   100 -9 30" drawSize="0.75" />
@@ -30,7 +30,7 @@
     <Node name="BarycentricMapping">
         <SparseGridMultiple n="2 2 2" fileTopology="mesh/grape_out.obj" fileTopologies="mesh/grape_out.obj mesh/grape_in.obj" stiffnessCoefs="1 1000000" massCoefs="1 1" nbVirtualFinerLevels="4" finestConnectivity="false" />
         <EulerImplicit rayleighMass="0" rayleighStiffness="0" />
-        <CGLinearSolver iterations="2000" />
+        <CGLinearSolver iterations="2000" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="-15" />
         <HexahedronCompositeFEMForceFieldAndMass completeInterpolation="true" nbVirtualFinerLevels="3" youngModulus="100" poissonRatio="0.35" method="large" density="2" updateStiffnessMatrix="false" printLog="0" useMass="false" totalMass="1" drawSize=".5" />
         <BoxConstraint box="-100 -11 -30   30 -9 30" drawSize="0.75"/>

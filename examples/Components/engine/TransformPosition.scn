@@ -6,16 +6,16 @@
     <DefaultContactManager name="Response" response="default" />
     <Node name="Object" gravity="0 -9.81 0">
         <EulerImplicitSolver name="Implicit Euler Solver" />
-        <CGLinearSolver  name="Conjugate Gradient" />
+        <CGLinearSolver  name="Conjugate Gradient" tolerance="1e-05" threshold="1e-05" iterations="5"/>
         <SparseGridTopology name="grid" fileTopology="mesh/dragon.obj" n="7 6 5" />
         <TransformPosition name="transfo" method="fromFile" filename="transfo.tfm" input_position="@grid.position"/>
         <MechanicalObject  name="Particles" restScale="1" position="@transfo.output_position" />
         <UniformMass  name="Mass" />
         <PlaneForceField  name="Plane" normal="0 0 1" d="-10" />
-        <HexahedronFEMForceField  name="FEM" youngModulus="200" />
+        <HexahedronFEMForceField  name="FEM" youngModulus="200" poissonRatio="0.45"/>
         <Node name="VisualNode" gravity="0 -9.81 0">
             <OglModel name="Objective" fileMesh="mesh/dragon.obj" />
-            <BarycentricMapping  name="Visual Mapping" object2="Objective"  />
+            <BarycentricMapping  name="Visual Mapping" output="@Objective"  />
         </Node>
     </Node>
     <Node name="Floor">

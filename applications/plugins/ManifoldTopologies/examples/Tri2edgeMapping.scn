@@ -26,7 +26,7 @@
 			<Triangle2EdgeTopologicalMapping name="Mapping"/>
 			<Node 	name="visu" gravity="0 -9.81 0"  >
 				<OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45"/>
-				<IdentityMapping template="Vec3d,ExtVec3f" name="default8" object1="../../mechanical" object2="Visual"/>
+				<IdentityMapping template="Vec3d,ExtVec3f" name="default8" input="@../mechanical" output="@Visual"/>
 			</Node>
 		</Node>
 	</Node>

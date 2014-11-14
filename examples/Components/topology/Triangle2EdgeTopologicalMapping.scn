@@ -18,13 +18,13 @@
         <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
         <TriangleSet />
         <OglModel name="Visual" color="red" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping input="@." output="@Visual" />
         <Node name="Edge Mesh">
             <EdgeSetTopologyContainer name="Container" />
             <EdgeSetTopologyModifier name="Modifier" />
             <EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawEdges="1" />
-            <Triangle2EdgeTopologicalMapping name="Mapping" object1="../../Container" object2="Container" />
+            <Triangle2EdgeTopologicalMapping name="Mapping" input="@../Container" output="@Container" />
         </Node>
     </Node>
 </Node>

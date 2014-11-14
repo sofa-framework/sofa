@@ -10,3 +10,8 @@ timeout "Components/linearsolver/MatrixContributions123.scn" "60"
 
 # Big, long, PrecomputedConstraintCorrection in this scene:
 timeout "Components/animationloop/FreeMotionAnimationLoop.scn" "180"
+
+# Temporarily ignore this scene, because it produces litterally
+# millions of warnings:
+# WARNING[default2(MinProximityIntersection)]: WARNING: null distance between contact detected
+ignore "Tutorials/Mappings/TutorialMappingOctopusArticulated.scn"

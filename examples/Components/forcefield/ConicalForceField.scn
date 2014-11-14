@@ -3,6 +3,7 @@
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />
+    <DiscreteIntersection />
     <!--<CollisionGroup />-->
     <Node name="Liver">
         <EulerImplicit name="cg_odesolver" printLog="false" />
@@ -15,7 +16,7 @@
         <ConicalForceField template="Vec3f" coneCenter="0.0 -10.0 0.0" coneHeight="0 20 0" coneAngle="40" />
         <Node name="Visu">
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
-            <BarycentricMapping object1="../.." object2="VisualModel" />
+            <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />

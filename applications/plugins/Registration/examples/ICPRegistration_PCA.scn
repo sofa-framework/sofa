@@ -61,7 +61,7 @@
 		<FixedConstraint template='Vec1d' name='constraint'  indices='0' />
 	</Node>
 	
-	<StiffSpringForceField  template="Vec1d" name="ExternalSprings" object1="Femur/weights" object2="Ground/ground"
+	<StiffSpringForceField  template="Vec1d" name="ExternalSprings" object1="@Femur/weights" object2="@Ground/ground"
 							spring="0 0 1 0 0
 									1 0 1 0 0
 									2 0 1 0 0

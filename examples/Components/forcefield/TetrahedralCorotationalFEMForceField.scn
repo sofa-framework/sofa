@@ -1,30 +1,101 @@
 <?xml version="1.0" ?>
-<!-- Mechanical MassSpring Group Basic Example -->
+<!-- Mechanical Tetrahedral Corotational FEM Basic Example -->
 <Node name="root" dt="0.05" showBoundingTree="0" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionGroup />
     <Node name="TT">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader filename="mesh/cylinder.msh" name="loader" />
         <MechanicalObject src="@loader" name="Volume" />
-        <include href="Objects/TetrahedronSetTopology.xml" src="@loader" />
+		<TetrahedronSetTopologyContainer name="Container" position="@loader.position" tetrahedra="@loader.tetrahedra" /> 
         <DiagonalMass massDensity="0.5" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint indices="0" />
         <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <Node name="T">
-            <include href="Objects/TriangleSetTopology.xml" />
-            <Tetra2TriangleTopologicalMapping object1="../../Container" object2="Container" />
-            <TriangleSet />
+			<TriangleSetTopologyContainer name="ContainerT"/> 
+			<TriangleSetTopologyModifier />
+			<TriangleSetTopologyAlgorithms name="TopoAlgo" />
+			<TriangleSetGeometryAlgorithms name="GeomAlgo" showTriangleIndices="false"/>
+            <Tetra2TriangleTopologicalMapping input="@../Container" output="@ContainerT" flipNormals="true"/>
+            <Triangle/>
             <Node name="Visu">
                 <OglModel name="Visual" color="yellow" />
-                <IdentityMapping object1="../../../Volume" object2="Visual" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
             </Node>
         </Node>
     </Node>
+	<!-- <Node name="TT1">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader filename="mesh/cylinder.msh" name="loader" />
+        <MechanicalObject src="@loader" name="Volume" dx="1"/>
+		<TetrahedronSetTopologyContainer name="Container" position="@loader.position" tetrahedra="@loader.tetrahedra" /> 
+        <DiagonalMass massDensity="0.5" />
+        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedConstraint indices="0" />
+        <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
+        <Node name="T">
+			<TriangleSetTopologyContainer name="ContainerT"/> 
+			<TriangleSetTopologyModifier />
+			<TriangleSetTopologyAlgorithms name="TopoAlgo" />
+			<TriangleSetGeometryAlgorithms name="GeomAlgo" showTriangleIndices="false"/>
+            <Tetra2TriangleTopologicalMapping object1="../../Container" object2="ContainerT" flipNormals="true"/>
+            <Triangle/>
+            <Node name="Visu">
+                <OglModel name="Visual" color="yellow" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+	<Node name="TT2">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader filename="mesh/cylinder.msh" name="loader" />
+        <MechanicalObject src="@loader" name="Volume" dx="2"/>
+		<TetrahedronSetTopologyContainer name="Container" position="@loader.position" tetrahedra="@loader.tetrahedra" /> 
+        <DiagonalMass massDensity="0.5" />
+        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedConstraint indices="0" />
+        <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
+        <Node name="T">
+			<TriangleSetTopologyContainer name="ContainerT"/> 
+			<TriangleSetTopologyModifier />
+			<TriangleSetTopologyAlgorithms name="TopoAlgo" />
+			<TriangleSetGeometryAlgorithms name="GeomAlgo" showTriangleIndices="false"/>
+            <Tetra2TriangleTopologicalMapping object1="../../Container" object2="ContainerT" flipNormals="true"/>
+            <Triangle/>
+            <Node name="Visu">
+                <OglModel name="Visual" color="yellow" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+    </Node>
+	<Node name="TT3">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader filename="mesh/cylinder.msh" name="loader" />
+        <MechanicalObject src="@loader" name="Volume" dx="3"/>
+		<TetrahedronSetTopologyContainer name="Container" position="@loader.position" tetrahedra="@loader.tetrahedra" /> 
+        <DiagonalMass massDensity="0.5" />
+        <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
+        <FixedConstraint indices="0" />
+        <TetrahedralCorotationalFEMForceField name="CFEM" youngModulus="360" poissonRatio="0.3" method="large" />
+        <Node name="T">
+			<TriangleSetTopologyContainer name="ContainerT"/> 
+			<TriangleSetTopologyModifier />
+			<TriangleSetTopologyAlgorithms name="TopoAlgo" />
+			<TriangleSetGeometryAlgorithms name="GeomAlgo" showTriangleIndices="false"/>
+            <Tetra2TriangleTopologicalMapping object1="../../Container" object2="ContainerT" flipNormals="true"/>
+            <Triangle/>
+            <Node name="Visu">
+                <OglModel name="Visual" color="yellow" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
+            </Node>
+        </Node>
+    </Node> -->
 </Node>

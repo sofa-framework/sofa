@@ -15,7 +15,7 @@ An assemblage of all the previous steps altogether
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" />
 
     <FreeMotionAnimationLoop />
-    <LCPConstraintSolver />
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
 
     <Node name="Head">
 	<Node name="Head Visual Model" activated="true">
@@ -98,7 +98,7 @@ An assemblage of all the previous steps altogether
             <RigidMapping name="MM-CM mapping" input="@../instrumentState" output="@instrumentCollisionState" />
         </Node>
 
-    <VectorSpringForceField object1="InstrControl/RefModel/instrumentCollisionState" object2="Instrument/CollisionModel/instrumentCollisionState" stiffness="1000" viscosity="0" />
+    <VectorSpringForceField object1="@InstrControl/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="1000" viscosity="0" />
 
     </Node>
 

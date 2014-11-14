@@ -26,7 +26,7 @@
             <TetrahedronSetTopologyModifier />
             <TetrahedronSetTopologyAlgorithms template="Vec3d" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" />
-            <Hexa2TetraTopologicalMapping name="default28" object1="../grid" object2="TetraContainer" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@grid" output="@TetraContainer" />
             <BarycentricShapeFunction position="@../DOF.rest_position" />
 
             <Node 	name="behavior"   >

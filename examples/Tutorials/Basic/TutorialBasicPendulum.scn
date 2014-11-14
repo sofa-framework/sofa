@@ -1,9 +1,10 @@
 <?xml version="1.0" ?>
 <!-- See http://wiki.sofa-framework.org/mediawiki/index.php/TutorialBasicPendulum -->
-<Node name="root" dt="0.1" gravity="0 0 0" showBehavior="1" showCollisionModel="1">
+<Node name="root" dt="0.1" gravity="0 0 0">
+  <VisualStyle displayFlags="showBehavior" />
  <!-- Try to test with different solver -->
   <EulerImplicitSolver name="Euler Implicit" />
-  <CGLinearSolver name="CG Solver" />
+  <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
  
   <MechanicalObject name="Particles" template="Vec3d"
                     position="0 0 0 0 0 1"

@@ -16,7 +16,7 @@
         <Node name="Surf" gravity="0 -9.81 0">
             <VisualStyle displayFlags="hideBehavior showCollision showWireframe" />
 	    <SphereLoader filename="mesh/liver.sph" />
-            <MechanicalObject position="@[-1].position" />
+            <MechanicalObject name="spheres" position="@[-1].position" />
             <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius" />
             <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
         </Node>
