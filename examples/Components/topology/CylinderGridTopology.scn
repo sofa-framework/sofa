@@ -5,7 +5,7 @@
     </Node>
     <Node name="CylinderFEMTetra">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tolerance="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject dx="-10" />
         <UniformMass totalmass="15" />
         <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />
@@ -14,7 +14,7 @@
     </Node>
     <Node name="CylinderFEM">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tolerance="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject />
         <UniformMass totalmass="15" />
         <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />
@@ -23,7 +23,7 @@
     </Node>
     <Node name="CylinderSpring">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tolerance="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject dx="10" />
         <UniformMass totalmass="15" />
         <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />

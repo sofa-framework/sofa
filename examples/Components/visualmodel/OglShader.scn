@@ -2,7 +2,8 @@
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />
-    <CollisionGroup />-
+    <CollisionGroup />
+    <DiscreteIntersection />
     <Node name="Liver">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -15,7 +16,7 @@
         <Node name="Visu">
             <OglShader fragFilename="shaders/toonShading.frag" vertFilename="shaders/toonShading.vert" />
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
-            <BarycentricMapping object1="../.." object2="VisualModel" />
+            <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />

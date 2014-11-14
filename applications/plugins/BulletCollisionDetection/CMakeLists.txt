@@ -396,10 +396,14 @@ else()
 #AddLinkerDependencies(LinearMath BulletCollisions BulletDynamics)
 include_directories(${SOFA-EXTERNAL_BULLET_PATH}/src ${SOFA-EXTERNAL_BULLET_PATH}/../src)
 
+#FIND_BULLET_LIBRARY(LinearMath)
+#FIND_BULLET_LIBRARY(BulletCollision)
+#FIND_BULLET_LIBRARY(BulletDynamics)
+endif()
+
 FIND_BULLET_LIBRARY(LinearMath)
 FIND_BULLET_LIBRARY(BulletCollision)
 FIND_BULLET_LIBRARY(BulletDynamics)
-endif()
 
 AddLinkerDependencies(LinearMath BulletCollision BulletDynamics HACD)
 

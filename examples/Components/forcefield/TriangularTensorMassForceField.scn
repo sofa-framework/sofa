@@ -17,6 +17,6 @@
         <TriangularTensorMassForceField name="TM" youngModulus="15" poissonRatio="0.9" />
         <TriangleSet />
         <OglModel name="Visual" color="yellow" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping input="@." output="@Visual" />
     </Node>
 </Node>

@@ -27,7 +27,7 @@
 		  		zmin="0" zmax="15"
 		  	/>
 		  <MappedObject name="Mapped" template="CudaVec3f" />
-		  <SubsetMapping object2="Mapped" />
+		  <SubsetMapping output="@Mapped" />
 		  <Node>
 		  	<CudaVisualModel template="CudaVec3f" diffuse="0.8 0.8 0.8 1.0" computeNormals="true" />
 		  </Node>

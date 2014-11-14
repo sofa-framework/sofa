@@ -3,16 +3,16 @@
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
     <Node name="Poutre1">
         <EulerImplicit />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/smCube27.msh" />
         <Node name="M1">
-           <MechanicalObject src="@../loader" dz="-21.0" />
+            <MechanicalObject src="@../loader" dz="-21.0" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <FixedConstraint indices="0 3 6 9 12 15 18 21 24" />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" color="yellow" />
-                <IdentityMapping object1="../.." object2="Visual" />
+                <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
             <Mesh src="@loader" />
@@ -38,7 +38,7 @@
             </Node>
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
         </Node>
         <Node name="M3">
@@ -47,7 +47,7 @@
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" color="red" />
-                <IdentityMapping object1="../.." object2="Visual" />
+                <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
             <Mesh src="@loader" />
@@ -66,7 +66,7 @@
                 <RigidMapping />
                 <Node name="Visu">
                     <OglModel name="Visual" filename="mesh/smCube27.obj" />
-                    <IdentityMapping object1="../.." object2="Visual" />
+                    <IdentityMapping input="@.." output="@Visual" />
                 </Node>
             </Node>
             <Node name="Surf">
@@ -82,7 +82,7 @@
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/smCube27.obj" color="cyan" />
-                <IdentityMapping object1="../.." object2="Visual" />
+                <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <MeshGmshLoader filename="mesh/smCube27.msh" name="loader" />
             <Mesh src="@loader" />
@@ -102,7 +102,7 @@
             </Node>
             <Node name="Visu">
                 <OglModel name="Visual" filename="mesh/dragon.obj" color="gray" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf">
                 <MechanicalObject />
@@ -111,10 +111,10 @@
                 <RigidMapping />
             </Node>
         </Node>
-        <StiffSpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2/Points" />
-        <StiffSpringForceField name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="M2/Points" object2="M3" />
-        <StiffSpringForceField name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="M3" object2="M4/Points" />
-        <StiffSpringForceField name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="M4/Points" object2="M5" />
-        <StiffSpringForceField name="ExternalSprings5" filename="BehaviorModels/linkSmCube27.xs3" object1="M5" object2="M6/Points" />
+        <StiffSpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="@M1" object2="@Points" />
+        <StiffSpringForceField name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="@Points" object2="@M3" />
+        <StiffSpringForceField name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="@M3" object2="@Points" />
+        <StiffSpringForceField name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="@Points" object2="@M5" />
+        <StiffSpringForceField name="ExternalSprings5" filename="BehaviorModels/linkSmCube27.xs3" object1="@M5" object2="@Points" />
     </Node>
 </Node>

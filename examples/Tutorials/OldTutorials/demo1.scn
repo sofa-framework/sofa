@@ -3,7 +3,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
     <Node name="Poutre1">
         <EulerImplicit />
-        <CGLinearSolver />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/smCube27.msh" />
         <Node name="M1">
             <MechanicalObject src="@../loader"/>
@@ -31,9 +31,9 @@
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
-        <StiffSpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2" />
-        <StiffSpringForceField name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="M2" object2="M3" />
-        <StiffSpringForceField name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="M3" object2="M4" />
-        <StiffSpringForceField name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="M4" object2="M5" />
+        <StiffSpringForceField name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="@M1" object2="@M2" />
+        <StiffSpringForceField name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="@M2" object2="@M3" />
+        <StiffSpringForceField name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="@M3" object2="@M4" />
+        <StiffSpringForceField name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="@M4" object2="@M5" />
     </Node>
 </Node>

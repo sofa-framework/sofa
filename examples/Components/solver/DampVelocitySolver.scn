@@ -2,7 +2,7 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="M0">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <DampVelocity rate="0.9" threshold="0.01" printLog="0" name="damp" />
         <MechanicalObject position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="1 0 0  1 0 0  1 0 0  1 0 0" />
         <UniformMass mass="0.1" />
@@ -10,7 +10,7 @@
         <TriangleFEMForceField name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

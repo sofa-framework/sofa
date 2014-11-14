@@ -8,7 +8,7 @@
     <TreeCollisionGroupManager name="Group" />
     <Node name="Cylinder" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" />
-        <CGLinearSolver template="GraphScattered" name="default18" iterations="100" />
+        <CGLinearSolver template="GraphScattered" name="default18" iterations="100" tolerance="1e-05" threshold="1e-05"/>
         <MechanicalObject template="Rigid" name="rigid" position="0 0 0 0 0 0 1" velocity="0 0 0 0 0 0" force="0 0 0 0 0 0" externalForce="0 0 0 0 0 0" derivX="0 0 0 0 0 0" free_position="0 0 0 0 0 0 1" free_velocity="0 0 0 0 0 0" restScale="1" />
         <UniformMass template="Rigid" name="default0" />
         <Node name="topology" gravity="0 -9.81 0">
