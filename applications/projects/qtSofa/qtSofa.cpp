@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 	instream.close();
 
     // Load default sofa scene
-    fileName = std::string(QTSOFA_SRC_DIR) + "/../../../examples/Demos/caduceus.scn";
+    fileName = std::string(QTSOFA_SRC_DIR) + "/../../../examples/Demos/liver.scn";
 	fileName = sofa::helper::system::DataRepository.getFile(fileName);
 	
 	// parse input data

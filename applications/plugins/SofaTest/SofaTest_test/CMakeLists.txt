@@ -29,8 +29,9 @@ set(SOURCE_FILES
     RigidMapping_test.cpp
     Simulation_test.cpp
     Sphere_test.cpp
-    TetrahedronFEMForceField_test.cpp
     StiffSpringForceField_test.cpp
+    SubsetMultiMapping_test.cpp
+    TetrahedronFEMForceField_test.cpp
     TetrahedronNumericalIntegration_test.cpp
 )
 
@@ -71,6 +72,7 @@ AddLinkerDependencies(
     SofaSimulationGraph
     SofaBoundaryCondition
     SofaEngine
+    SofaMiscMapping
 )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

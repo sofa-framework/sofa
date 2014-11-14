@@ -12,6 +12,7 @@ set(HEADER_FILES
     TetrahedronModel.h
     BarycentricStickContact.h
     BarycentricStickContact.inl
+    RayTriangleVisitor.h
 
     )
 
@@ -30,6 +31,7 @@ set(SOURCE_FILES
     TetrahedronRayContact.cpp
     TetrahedronFrictionContact.cpp
     BarycentricStickContact.cpp
+    RayTriangleVisitor.cpp
 
 	TetrahedronBarycentricDistanceLMConstraintContact.cpp # eigen2solver
 	BarycentricDistanceLMConstraintContact_DistanceGrid.cpp # eigen2solver

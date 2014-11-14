@@ -5,6 +5,7 @@ set(HEADER_FILES
     InitPlugin_test.h
     Sofa_test.h
     Mapping_test.h
+    MultiMapping_test.h
     Elasticity_test.h
     Elasticity_test.inl
     ForceField_test.h
