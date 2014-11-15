@@ -103,6 +103,15 @@ public:
      */
     void glPick(int x, int y);
 
+    /**
+     * @brief getPickDirection Compute the direction of a button click, returned as a unit vector
+     * @param dx normalized direction
+     * @param dy normalized direction
+     * @param dz normalized direction
+     * @param x x-coordinate of the click
+     * @param y y-coordinate of the click (origin on top)
+     */
+    void getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y );
 
 
 protected:
@@ -124,15 +133,6 @@ protected:
      */
     Picked_to_Interactor _picked_to_interactor;
     Interactor* _drag;                            ///< The currently active interactor
-    /**
-     * @brief getPickDirection Compute the direction of a button click, returned as a unit vector
-     * @param dx normalized direction
-     * @param dy normalized direction
-     * @param dz normalized direction
-     * @param x x-coordinate of the click
-     * @param y y-coordinate of the click (origin on top)
-     */
-    void getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y );
 
 
 
