@@ -38,8 +38,9 @@ namespace sofa
 
 using core::objectmodel::BaseObject;
 
-namespace registration
-{
+namespace component{
+namespace collision {
+
 
 RayTriangleVisitor::RayTriangleVisitor(const core::ExecParams* params):Visitor(params)
 {}
@@ -256,7 +257,7 @@ Visitor::Result RayTriangleVisitor::processNodeTopDown(simulation::Node* node)
 }
 
 
-} // namespace simulation
-
+}
+}
 } // namespace sofa
 

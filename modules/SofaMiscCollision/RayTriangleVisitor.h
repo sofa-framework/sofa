@@ -38,15 +38,16 @@ namespace sofa
 
 typedef defaulttype::Vec<3,SReal> Vec3;
 
-namespace registration
-{
+namespace component {
+namespace collision {
+
 
 /** Detects intersections of a ray with the TriangleModels and the OglModels.
  * The intersections behind the starting point are not reported.
  * We are only interested in counting the intersections, not modeling their geometry.
  * @author Francois Faure, 2014
  */
-class SOFA_SIMULATION_COMMON_API RayTriangleVisitor : public Visitor
+class  SOFA_MISC_COLLISION_API  RayTriangleVisitor : public Visitor
 {
 
 public:
@@ -82,8 +83,8 @@ private:
 
 };
 
-} // namespace simulation
-
+}
+}
 } // namespace sofa
 
 #endif
