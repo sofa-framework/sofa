@@ -1,3 +1,17 @@
 #  TetrahedronFEMForceField is not compiled yet 
 ignore "forcefield/FlexibleTetrahedronFEMForceField.scn"
 
+# Long increase timeout
+timeout "beam/generateRefBeam_flex.scn" "50"
+
+# Long increase timeout
+timeout "beam/linearAffine_flex332.scn" "60"
+
+# Long increase timeout
+timeout "beam/linearQuadratic_flex331.scn" "70"
+
+# Long increase timeout
+timeout "beam/linearQuadratic_flex332.scn" "50"
+
+# Long, generate topologies of armadillo
+timeout "demo/linearHexaFEM-armadillo.scn" "50"

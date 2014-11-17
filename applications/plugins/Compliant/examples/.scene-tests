@@ -1,0 +1,3 @@
+# Long increase timeout
+timeout "validations/rayleighDamping_mass.scn" "80"
+
