@@ -77,12 +77,39 @@ namespace component
  * - BulletSphere.scn is a very simple scene :
  * \image html BulletSphere.png
  *
- * Dependencies:
- * - You must have bullet 2.82 installed and specify its location in the CMakeCache.txt by filling the paths BULLET_INCLUDE_PATH (for bullet include files) and BULLET_LIB_PATH (for bullet binary files).
- *   WARNING, when installing bullet write in the bullet CMakeLists.txt the line add_definitions(-DBULLET_TRIANGLE_COLLISION)
- * - HACD (a part of bullet for convex hull decomposition) must also be installed at the same locations than bullet
+ * <h3>Dependencies</h3>
+ * This plugin depends on Bullet 2.82, with the following peculiarities:
+ * - you must compile with the BULLET_TRIANGLE_COLLISION definition;
+ * - under Linux, you need to compile with the -fPIC option;
+ * - you need to install the "extra" libraries (CMake option:
+ *   INSTALL_EXTRA_LIBS).
  *
- * Issues:
+ * If you choose to install Bullet in a non-standard location, then in order to
+ * build this plugin you should either add the installation prefix of Bullet to
+ * CMAKE_PREFIX_PATH or set Bullet_DIR to the directory containing
+ * BulletConfig.cmake (<prefix>/lib/cmake/bullet).
+ *
+ * For reference, the following snippet downloads Bullet 2.82, compiles it with
+ * the appropriate options, and installs it in ~/bullet.  One would then pass
+ * "-DBullet_DIR=~/bullet/lib/cmake/bullet" as an argument to cmake to compile
+ * this plugin:
+ *
+ * \code
+ * BULLET_INSTALL_PREFIX=~/bullet
+ * wget https://bullet.googlecode.com/files/bullet-2.82-r2704.tgz
+ * rm -rf bullet-2.82-r2704
+ * tar -xzf bullet-2.82-r2704.tgz
+ * cd bullet-2.82-r2704
+ * patch CMakeLists.txt <<EOF
+ * 13a14
+ * > add_definitions(-DBULLET_TRIANGLE_COLLISION)
+ * EOF
+ * cmake -DINSTALL_EXTRA_LIBS=ON -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX="$BULLET_INSTALL_PREFIX" .
+ * make
+ * make install
+ * \endcode
+ *
+ * <h3>Issues</h3>
  * - Currently, the plugin doesn't work well with CompliantContacts
  * - Some improvements to static meshes could be done by using another Bullet mesh class in this case
  */
