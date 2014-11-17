@@ -32,8 +32,8 @@
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
-#include <sofa/simulation/common/CollisionBeginEvent.h>
-#include <sofa/simulation/common/CollisionEndEvent.h>
+//#include <sofa/simulation/common/CollisionBeginEvent.h>
+//#include <sofa/simulation/common/CollisionEndEvent.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/ResetVisitor.h>
