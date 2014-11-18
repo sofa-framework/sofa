@@ -64,7 +64,7 @@
 
        <Node 	name="VisualNode">
             <OglModel template="ExtVec3f" name="Visual" color="red" />
-            <IdentityMapping template="Vec3d,ExtVec3f" name="default1"  object1="../../Triangles"  object2="../Visual" />
+            <IdentityMapping template="Vec3d,ExtVec3f" name="default1"  input="@../Triangles"  output="@Visual" />
        </Node>
   </Node>
 

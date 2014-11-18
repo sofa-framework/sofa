@@ -4,6 +4,7 @@
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" name="collision response" />
+    <DiscreteIntersection />
     <Node name="MeshTopology">
         <TetrahedronSetTopologyContainer name="Container1" fileTopology="mesh/cylinder.msh" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
@@ -13,7 +14,7 @@
  		<StaticSolver  />  
 			<TetrahedronSetTopologyContainer name="Container2" />
 			<TetrahedronSetGeometryAlgorithms drawEdges="1" drawColorEdges="0 1 0" name="GeomAlgo" />
-			 <SimpleTesselatedTetraTopologicalMapping object1="Container1" object2="Container2" />
+			 <SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container2" />
             <MechanicalObject translation="0 0 0" />
 			<MeshMatrixMass name="mass" lumping="1" printMass="0" massDensity="1" />	
 			<BoxROI box="-1.2 -1.2 -0.01 1.2 1.2 0.01" drawBoxes="1" name="fixedPlane2"  />
@@ -27,7 +28,7 @@
 		<StaticSolver  /> 
 			<TetrahedronSetTopologyContainer name="Container3" />
 			<TetrahedronSetGeometryAlgorithms drawEdges="1" drawColorEdges="1 0 0" name="GeomAlgo" />
-			 <SimpleTesselatedTetraTopologicalMapping object1="Container1" object2="Container3" />
+			 <SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container3" />
             <MechanicalObject translation="0 0 0" />
 			<MeshMatrixMass name="mass" lumping="1" printMass="0" massDensity="1" />	
 			<BoxROI box="-1.2 -1.2 -0.01 1.2 1.2 0.01" drawBoxes="1" name="fixedPlane"  />

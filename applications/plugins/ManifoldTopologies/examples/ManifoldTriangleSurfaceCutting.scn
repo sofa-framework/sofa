@@ -1,27 +1,28 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" showBoundingTree="0" gravity="0 -9 1">
-	<Object type="CollisionPipeline" verbose="0" />
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="CollisionResponse" response="default" />
-	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-	<Object type="CollisionGroup" />
+    <RequiredPlugin name="ManifoldTopologies"/>
+	<CollisionPipeline verbose="0" />
+	<BruteForceDetection name="N2" />
+	<CollisionResponse response="default" />
+	<MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+	<CollisionGroup />
 	<Node name="SquareGravity">
-		<Object type="CGImplicit" iterations="40" tolerance="1e-6" threshold="1e-10"/>
-		<Object type="MeshGmshLoader" name="loader" filename="mesh/square3.msh" />
-		<Object type="MechanicalObject" src="@loader" scale="10" />
+		<CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
+		<MeshGmshLoader name="loader" filename="mesh/square3.msh" />
+		<MechanicalObject src="@loader" scale="10" />
 		
-	<Object type="ManifoldTriangleSetTopologyContainer" src="@loader"  name="Container" fileTopology=""/>
-  	<Object type="ManifoldTriangleSetTopologyModifier"   name="Modifier" />
-  	<Object type="ManifoldTriangleSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
-  	<Object type="TriangleSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />
+	<ManifoldTriangleSetTopologyContainer src="@loader"  name="Container" fileTopology=""/>
+  	<ManifoldTriangleSetTopologyModifier   name="Modifier" />
+  	<ManifoldTriangleSetTopologyAlgorithms name="TopoAlgo"   template="Vec3d" />
+  	<TriangleSetGeometryAlgorithms name="GeomAlgo"   template="Vec3d" />
 
-		<Object type="DiagonalMass" massDensity="0.15" />
-		<Object type="FixedConstraint" indices="0 1"/>
-		<Object type="TriangularFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />  
-		<Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>
-		<Object type="TriangleSet"/>
-		<Object type="OglModel" name="Visual" color="red"/>
-		<Object type="IdentityMapping" object1=".." object2="Visual"/>
+		<DiagonalMass massDensity="0.15" />
+		<FixedConstraint indices="0 1"/>
+		<TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />  
+		<TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0"/>
+		<TriangleSet/>
+		<OglModel name="Visual" color="red"/>
+		<IdentityMapping input="@." output="@Visual"/>
 	</Node>
 </Node>
 

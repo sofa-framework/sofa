@@ -1,6 +1,6 @@
 <Node name="root" dt="0.03" gravity="0 -9.810 0">
     <VisualStyle displayFlags="showVisual showBehaviorModels" />
-	<LCPConstraintSolver tolerance="1e-6" initial_guess="false" build_lcp="true" multi_grid="false" printLog="0" mu="0.000000000000000001"/>
+	<LCPConstraintSolver maxIt="1000" tolerance="1e-6" initial_guess="false" build_lcp="true" multi_grid="false" printLog="0" mu="0.000000000000000001"/>
     <FreeMotionAnimationLoop />
     <CollisionPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
@@ -12,11 +12,11 @@
         <CollisionGroup name="Group" />
         <Node name="TORUS">
             <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />
-            <UniformMass mass="40.0" />
+            <UniformMass totalmass="40.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="1.0" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" triangulate="true" />
@@ -32,11 +32,11 @@
 		<Node name="MAN">
 			<EulerSolver/>
 			<MechanicalObject template="Rigid"  dx="0.0" dy="0.0" dz="0.0"/>
-			<UniformMass mass="100.0"/>
+			<UniformMass totalmass="100.0"/>
 			<UncoupledConstraintCorrection/>
 			<Node name="Visu">
 				<OglModel name="Visual" fileMesh="mesh/man.obj" color="0.8 0.8 0.8 1.0" scale="10" dy="-3.0"/>
-				<RigidMapping object1="../.." object2="Visual" />
+				<RigidMapping input="@.." output="@Visual" />
 			</Node>
 			<Node name="Surf2">
 				<MeshObjLoader name="loader" filename="mesh/man.obj" triangulate="true"/>
@@ -51,11 +51,11 @@
 -->
         <Node name="CUBE">
             <MechanicalObject template="Rigid" scale="0.3" dx="-2.0" dy="-3.5" dz="-0.5" rx="10" />
-            <UniformMass mass="100.0" />
+            <UniformMass totalmass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.3" />
-                <RigidMapping object1="../.." object2="Visual" />
+                <RigidMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/smCube27.obj" triangulate="true" />
@@ -71,11 +71,11 @@
 		<Node name="DRAGON1">
 			<EulerSolver/>
 			<MechanicalObject template="Rigid" scale="10.0"  dx="0.0" dy="2.5" dz="0.0"/>
-			<UniformMass mass="100.0"/>
+			<UniformMass totalmass="100.0"/>
 			<UncoupledConstraintCorrection/>
 			<Node name="Visu">
 				<OglModel name="Visual" fileMesh="mesh/dragon_clean.obj" color="0.8 0.8 0.8 1.0" scale="0.25"/>
-				<RigidMapping object1="../.." object2="Visual" />
+				<RigidMapping input="@.." output="@Visual" />
 			</Node>
 			<Node name="Surf2">
 				<MeshObjLoader name="loader" filename="mesh/dragon_clean.obj" triangulate="true"/>

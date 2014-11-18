@@ -4,9 +4,9 @@
     <BruteForceDetection name="default0" />
     <DefaultContactManager name="default1" response="default" />
     <DefaultPipeline name="default2" />
-    <MinProximityIntersection name="default3" />
+    <MinProximityIntersection name="default3" alarmDistance="1" contactDistance="0.5"/>
     <Node name="default4" gravity="0 -9.81 0">
-        <CGLinearSolver template="GraphScattered" name="default0" />
+        <CGLinearSolver template="GraphScattered" name="default0" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <EulerImplicitSolver name="default1" />
         <MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1 1 0 0 0.707914 0 0 0.707914" velocity="0 0 0 0 0 0" force="0 0 0 0 0 0" externalForce="0 0 0 0 0 0" derivX="0 0 0 0 0 0" free_position="0 0 0 0 0 0 1" free_velocity="0 0 0 0 0 0" restScale="1" />
         <UniformMass template="Rigid" name="mass" mass="1 1 [1 0 0,0 1 0,0 0 1]" />

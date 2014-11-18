@@ -5,17 +5,18 @@
     <BruteForceDetection name="N2" />
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
+    <DiscreteIntersection/>
     <Node name="DragonCoarse">
         <SparseGrid n="6 5 4" fileTopology="mesh/dragon.obj" />
         <EulerImplicit />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <UniformMass mass="0.5" />
         <MeshSpringForceField name="Springs" stiffness="500" damping="10" />
         <BoxConstraint box="10 -10 -6 12 10 6" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/dragon.sph" />
@@ -27,36 +28,38 @@
     <Node name="DragonMiddle">
         <SparseGrid n="12 9 6" fileTopology="mesh/dragon.obj" />
         <EulerImplicit />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dz="15" />
         <UniformMass mass="0.5" />
         <MeshSpringForceField name="Springs" stiffness="500" damping="10" />
         <BoxConstraint box="10 -10 10 12 10 22" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Sphere filename="mesh/dragon.sph" />
+	    <SphereLoader filename="mesh/dragon.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Sphere listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>
     <Node name="DragonFine">
         <SparseGrid n="25 20 9" fileTopology="mesh/dragon.obj" />
         <EulerImplicit />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dz="30" />
         <UniformMass mass="0.5" />
         <MeshSpringForceField name="Springs" stiffness="500" damping="10" />
         <BoxConstraint box="10 -10 26 12 10 38" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
-            <MechanicalObject />
-            <Sphere filename="mesh/dragon.sph" />
+	    <SphereLoader filename="mesh/dragon.sph" />
+            <MechanicalObject position="@[-1].position" />
+            <Sphere listRadius="@[-2].listRadius" />
             <BarycentricMapping />
         </Node>
     </Node>

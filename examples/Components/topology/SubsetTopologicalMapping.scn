@@ -23,7 +23,7 @@
             <TriangleSetTopologyContainer name="Container2" position="@../loader.position" triangles="@subsetROI.trianglesInROI" />
             <TriangleSetTopologyModifier />
             <TriangleSetGeometryAlgorithms name="GeomAlgo" />
-            <SubsetTopologicalMapping object1="Container1" object2="Container2" samePoints="true" />
+            <SubsetTopologicalMapping input="@Container1" output="@Container2" samePoints="true" />
             <MechanicalObject />
             <IdentityMapping />
             <TriangleModel color="1 0 0 1" group="1" printLog="1" />
@@ -33,7 +33,7 @@
             <TriangleSetTopologyContainer name="Container2" position="@../loader.position" triangles="@subsetROI.trianglesInROI" />
             <TriangleSetTopologyModifier />
             <TriangleSetGeometryAlgorithms name="GeomAlgo" />
-            <SubsetTopologicalMapping object1="Container1" object2="Container2" samePoints="true" />
+            <SubsetTopologicalMapping input="@Container1" output="@Container2" samePoints="true" />
             <MechanicalObject />
             <IdentityMapping />
             <TriangleModel group="1" printLog="1" />

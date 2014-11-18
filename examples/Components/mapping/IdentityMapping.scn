@@ -8,7 +8,7 @@
     <CollisionGroup />
     <Node name="tshirt">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/tshirt_0.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" scale="10" />
@@ -19,7 +19,7 @@
         <Triangle />
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

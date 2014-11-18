@@ -7,6 +7,7 @@
     <LocalMinDistance name="Proximity" alarmDistance="0.3" contactDistance="0.1" />
     <CollisionResponse name="Response" response="FrictionContact" />
     <CollisionGroup name="Group" />
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <Node name="ChainRigid">
         <Node name="TorusFixed">
             <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -29,7 +30,7 @@
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
             <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
             <MechanicalObject />
-            <TetrahedronFEMForceField youngModulus="1e4" />
+            <TetrahedronFEMForceField youngModulus="1e4" poissonRatio="0.45"/>
             <BoxConstraint box="-1 -1 -1 1 1 1" />
             <PrecomputedConstraintCorrection recompute="true" />
             <Node name="DeformableMappedModel">
@@ -47,7 +48,7 @@
                 </Node>
                 <Node name="Visu">
                     <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
-                    <BarycentricMapping object1="../.." object2="Visual" />
+                    <BarycentricMapping input="@.." output="@Visual" />
                 </Node>
             </Node>
         </Node>

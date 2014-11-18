@@ -26,7 +26,7 @@
 			<PlaneConstraint plane="@[-1].outPlane" />
 <!--						<Node > 
 				<OglModel name="VisualModel" color="green" />
-				<IdentityMapping object1="../.." object2="VisualModel" />
+				<IdentityMapping input="@.." output="@VisualModel" />
 			</Node>-->
 		</Node>
 		
@@ -37,7 +37,7 @@
 			<MechanicalObject name="mObject" scale="0.1"/>
 			<Node > 
 				<OglModel name="VisualModel" color="red" />
-				<IdentityMapping object1="../.." object2="VisualModel" />
+				<IdentityMapping input="@.." output="@VisualModel" />
 			</Node>
 		</Node>
 		
@@ -51,7 +51,7 @@
 			<MechanicalObject name="mObject"/>
 			<Node > 
 				<OglModel name="VisualModel" color="grey" />
-				<IdentityMapping object1="../.." object2="VisualModel" />
+				<IdentityMapping input="@.." output="@VisualModel" />
 			</Node>
 		</Node> -->
 		
@@ -62,7 +62,7 @@
 			<MechanicalObject name="mObject" position="@[-1].output_position" />
 <!--			<Node > 
 				<OglModel name="VisualModel" />
-				<IdentityMapping object1="../.." object2="VisualModel" />
+				<IdentityMapping input="@.." output="@VisualModel" />
 			</Node>-->
 		</Node>
 		
@@ -86,7 +86,7 @@
 				<Mesh name="mesh" />
 				<TransformEngine template="Vec3d" input_position="@[-2].vertices" rotationMatrix="@../../../param.rotationMat" translation="@../../../param.translation" scale="@../../../param.scale3d" />
 				<OglModel name="VisualModel" position="@[-1].output_position" triangles="@[-2].triangles" color="0.93 0.83 0.81 0.2"/>
-				<BarycentricMapping object1="../.." object2="VisualModel" />
+				<BarycentricMapping input="@.." output="@VisualModel" />
 			</Node>
 			<Node name="test"> 
 				<MeshLoader name="meshLoader" filename="mesh/victoria/tbme/muscle.obj" /> 
@@ -96,10 +96,10 @@
 				<Triangle/>
 				<Line />
 				<Point />
-				<BarycentricMapping object1="../.." object2="mObject" />
+				<BarycentricMapping input="@.." output="@mObject" />
 				<Node > 
 					<OglModel name="VisualModel" color="0.93 0.83 0.81 1.0"/>
-					<IdentityMapping object1="../.." object2="VisualModel" />
+					<IdentityMapping input="@.." output="@VisualModel" />
 				</Node>
 			</Node>
 			<Node > 
@@ -109,7 +109,7 @@
 			</Node>
 		</Node>
 		
-		<VectorSpringForceField name="fixSpring" object2="FatTetraMesh/test" object1="MuscleTriangularMesh" stiffness="30"/>
+		<VectorSpringForceField name="fixSpring" object2="@FatTetraMesh/test" object1="@MuscleTriangularMesh" stiffness="30"/>
 	</Node>
 	
 <!--	<Node name="back" >
@@ -141,7 +141,7 @@
 		<Triangle/>
 		<Node > 
 			<OglModel name="VisualModel" color="0.045 0.817 1.0 0.328"/>
-			<IdentityMapping object1="../.." object2="VisualModel" />
+			<IdentityMapping input="@.." output="@VisualModel" />
 		</Node>
 	</Node>-->
 	

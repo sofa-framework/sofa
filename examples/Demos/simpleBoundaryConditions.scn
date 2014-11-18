@@ -4,7 +4,7 @@
     <VisualStyle displayFlags="showBehavior hideVisual" />
     <Node name="Cube grid" >
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
-        <CGLinearSolver template="GraphScattered" name="linear solver"  />
+        <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-05" threshold="1e-05" />
 
         <!--Subdivided cube-->
         <RegularGridTopology name="grid" n="5 5 5" min="0 0 0" max="1 1 1"  />
@@ -30,7 +30,7 @@
             <TetrahedronSetTopologyModifier />
             <TetrahedronSetTopologyAlgorithms template="Vec3d" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" />
-            <Hexa2TetraTopologicalMapping name="default28" object1="../grid" object2="TetraContainer" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@grid" output="@TetraContainer" />
             <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" />
 
             <!--Extraction of the external triangles of the tetrahedra -->
@@ -39,7 +39,7 @@
                 <TriangleSetTopologyModifier />
                 <TriangleSetTopologyAlgorithms template="Vec3d" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" />
-                <Tetra2TriangleTopologicalMapping object1="../TetraContainer" object2="TriangleContainer" />
+                <Tetra2TriangleTopologicalMapping input="@TetraContainer" output="@TriangleContainer" />
 
                 <!--Apply a pressure to the triangles in the x=1 plane -->
                 <TrianglePressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" pressure="100 0 0"  showForces="1"/>

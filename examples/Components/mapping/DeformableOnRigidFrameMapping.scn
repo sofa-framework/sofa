@@ -26,7 +26,7 @@
             <Node name="TorusDeformLocal">
                 <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
                 <MechanicalObject />
-                <TetrahedronFEMForceField youngModulus="125" />
+                <TetrahedronFEMForceField youngModulus="125" poissonRatio="0.45" />
                 <BoxConstraint box="-1 -1 -1 1 1 1" />
                 <Node name="DeformableMappedModel">
                     <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
@@ -42,7 +42,7 @@
                     </Node>
                     <Node name="Visu">
                         <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" />
-                        <BarycentricMapping object1="../.." object2="Visual" />
+                        <BarycentricMapping input="@.." output="@Visual" />
                     </Node>
                 </Node>
             </Node>

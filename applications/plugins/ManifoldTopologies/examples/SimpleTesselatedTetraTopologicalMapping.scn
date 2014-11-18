@@ -1,27 +1,28 @@
 <Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1" showBoundingTree="0" gravity="0 0 0">
-	<Object type="CollisionPipeline" verbose="0" name="CollisionPipeline"/>
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="CollisionResponse" response="default" name="collision response"/>
+    <RequiredPlugin name="ManifoldTopologies"/>
+	<CollisionPipeline verbose="0" name="CollisionPipeline"/>
+	<BruteForceDetection name="N2" />
+	<CollisionResponse response="default" name="collision response"/>
 	<Node name="TetraTopology1">
-		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<Object type="TetrahedronSetTopologyContainer" name="Container1" fileTopology="mesh/liver.msh" />
-		<Object type="TetrahedronSetTopologyModifier"/>
-		<Object type="TetrahedronSetTopologyAlgorithms" template="Vec3d" />
-		<Object type="TetrahedronSetGeometryAlgorithms" template="Vec3d" />
-		<Object type="MechanicalObject" name="dofs" />
-                <Object type="FixedConstraint" name="FixedConstraint" indices="3 39 64" />
-		<Object type="DiagonalMass" massDensity="1" name="computed using mass density"/>
-		<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
+		<EulerImplicit name="cg_odesolver" printLog="false"/>
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<TetrahedronSetTopologyContainer name="Container1" fileTopology="mesh/liver.msh" />
+		<TetrahedronSetTopologyModifier/>
+		<TetrahedronSetTopologyAlgorithms template="Vec3d" />
+		<TetrahedronSetGeometryAlgorithms template="Vec3d" />
+		<MechanicalObject name="dofs" />
+                <FixedConstraint name="FixedConstraint" indices="3 39 64" />
+		<DiagonalMass massDensity="1" name="computed using mass density"/>
+		<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"/> 
 		<Node name="TetraTopology2">
-			<Object type="TetrahedronSetTopologyContainer" name="Container2"/>
-			<Object type="TetrahedronSetTopologyModifier"/>
-			<Object type="TetrahedronSetTopologyAlgorithms" template="Vec3d" />
-			<Object type="TetrahedronSetGeometryAlgorithms" template="Vec3d" />
-			<Object type="SimpleTesselatedTetraTopologicalMapping" object1="Container1" object2="Container2"/>
-			<Object type="MechanicalObject"/>
-			<Object type="SimpleTesselatedTetraMechanicalMapping"/>
-			<Object type="Triangle" />
+			<TetrahedronSetTopologyContainer name="Container2"/>
+			<TetrahedronSetTopologyModifier/>
+			<TetrahedronSetTopologyAlgorithms template="Vec3d" />
+			<TetrahedronSetGeometryAlgorithms template="Vec3d" />
+			<SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container2"/>
+			<MechanicalObject/>
+			<SimpleTesselatedTetraMechanicalMapping/>
+			<Triangle />
 		</Node>
 	</Node>
 </Node>

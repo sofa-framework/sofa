@@ -22,14 +22,14 @@
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="360" poissonRatio="0.3" method="large" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Tetra2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
             <TrianglePressureForceField normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0.4 0 0" />
             <TriangleSet />
             <Node name="Visu">
                 <OglModel name="Visual" color="blue" />
-                <IdentityMapping object1="../../../Volume" object2="Visual" />
+                <IdentityMapping input="@../../Volume" output="@Visual" />
             </Node>
         </Node>
     </Node>

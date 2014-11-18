@@ -17,7 +17,7 @@
 			  -->
 		<Node name="Visu">
 			<OglModel name="Visual" color="red"/>
-			<IdentityMapping object1="../.." object2="Visual"/>
+			<IdentityMapping input="@.." output="@Visual"/>
 		</Node>
 	</Node>
 	<Node name="SquareCloth1">
@@ -37,7 +37,7 @@
 		<PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" />
 		<Node name="Visu">
 			<OglModel name="Visual" color="green"/>
-			<IdentityMapping object1="../.." object2="Visual"/>
+			<IdentityMapping input="@.." output="@Visual"/>
 		</Node>
 		<Node>
 			<RegularGrid

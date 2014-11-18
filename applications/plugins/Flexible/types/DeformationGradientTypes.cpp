@@ -244,17 +244,36 @@ SOFA_DECL_CLASS ( DefGradientMechanicalObject )
 using namespace sofa::defaulttype;
 
 int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
-        .add< MechanicalObject<F331Types> >()
-        .add< MechanicalObject<F321Types> >()
-        .add< MechanicalObject<F311Types> >()
-        .add< MechanicalObject<F332Types> >()
-        .add< MechanicalObject<F221Types> >();
+#ifndef SOFA_FLOAT
+        .add< MechanicalObject<F331dTypes> >()
+        .add< MechanicalObject<F321dTypes> >()
+        .add< MechanicalObject<F311dTypes> >()
+        .add< MechanicalObject<F332dTypes> >()
+        .add< MechanicalObject<F221dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< MechanicalObject<F331fTypes> >()
+        .add< MechanicalObject<F321fTypes> >()
+        .add< MechanicalObject<F311fTypes> >()
+        .add< MechanicalObject<F332fTypes> >()
+        .add< MechanicalObject<F221fTypes> >()
+#endif
+		;
 
-template class SOFA_Flexible_API MechanicalObject<F331Types>;
-template class SOFA_Flexible_API MechanicalObject<F321Types>;
-template class SOFA_Flexible_API MechanicalObject<F311Types>;
-template class SOFA_Flexible_API MechanicalObject<F332Types>;
-template class SOFA_Flexible_API MechanicalObject<F221Types>;
+#ifndef SOFA_FLOAT
+template class SOFA_Flexible_API MechanicalObject<F331dTypes>;
+template class SOFA_Flexible_API MechanicalObject<F321dTypes>;
+template class SOFA_Flexible_API MechanicalObject<F311dTypes>;
+template class SOFA_Flexible_API MechanicalObject<F332dTypes>;
+template class SOFA_Flexible_API MechanicalObject<F221dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_Flexible_API MechanicalObject<F331fTypes>;
+template class SOFA_Flexible_API MechanicalObject<F321fTypes>;
+template class SOFA_Flexible_API MechanicalObject<F311fTypes>;
+template class SOFA_Flexible_API MechanicalObject<F332fTypes>;
+template class SOFA_Flexible_API MechanicalObject<F221fTypes>;
+#endif
 
 } // namespace container
 } // namespace component

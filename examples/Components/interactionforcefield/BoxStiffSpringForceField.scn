@@ -6,11 +6,11 @@
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
     <EulerImplicit />
-    <CGLinearSolver iterations="25" />
+    <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="Liver1">
         <!--<CGImplicit iterations="25"/>-->
         <EulerImplicit />
-        <CGLinearSolver iterations="25" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="Liver1MS" />
@@ -19,7 +19,7 @@
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
-            <BarycentricMapping object1="../.." object2="VisualModel" />
+            <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />
@@ -31,7 +31,7 @@
     <Node name="Liver2">
         <!--<CGImplicit iterations="25"/>-->
         <EulerImplicit />
-        <CGLinearSolver iterations="25" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="Liver2MS" dx="10" ry="180" />
@@ -39,7 +39,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="Visu">
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="blue" dx="10" ry="180" />
-            <BarycentricMapping object1="../.." object2="VisualModel" />
+            <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />
@@ -51,7 +51,7 @@
     <Node name="Liver3">
         <!--<CGImplicit iterations="25"/>-->
         <EulerImplicit />
-        <CGLinearSolver iterations="25" />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" template="Vec3d" name="Liver3MS" dx="20" ry="90" />
@@ -60,7 +60,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <Node name="Visu">
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="magenta" dx="20" ry="90" />
-            <BarycentricMapping object1="../.." object2="VisualModel" />
+            <BarycentricMapping input="@.." output="@VisualModel" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />
@@ -69,6 +69,6 @@
             <BarycentricMapping />
         </Node>
     </Node>
-    <BoxStiffSpringForceField template="Vec3d" name="Spring" stiffness="100000" object1="Liver1/Surf" object2="Liver2/Surf" box_object1="0.5 3 -1 2 6 2" box_object2="7 3 -1 9.5 6 2" />
-    <BoxStiffSpringForceField template="Vec3d" name="Spring" stiffness="1000000" object1="Liver2" object2="Liver3" box_object1="13 0 -3 15 1 2" box_object2="18 3 -1 20 6 0" />
+    <BoxStiffSpringForceField template="Vec3d" name="Spring" stiffness="100000" object1="@Liver1/Surf" object2="@Liver2/Surf" box_object1="0.5 3 -1 2 6 2" box_object2="7 3 -1 9.5 6 2" />
+    <BoxStiffSpringForceField template="Vec3d" name="Spring" stiffness="1000000" object1="@Liver2" object2="@Liver3" box_object1="13 0 -3 15 1 2" box_object2="18 3 -1 20 6 0" />
 </Node>

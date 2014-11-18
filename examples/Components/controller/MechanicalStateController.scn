@@ -17,6 +17,6 @@
         <FixedConstraint name="FixedConstraint" indices="0" />
         <UniformMass mass="1 1 0.1 0 0 0 0.1 0 0 0 0.1" printLog="false" /> 
 
-        <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" />
+        <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" poissonRatio=".49"/>
     </Node>
 </Node>

@@ -12,19 +12,19 @@
         <ConstantForceField points="0 1 2 3" forces="-1 -1 0  1 -1 0  1 1 0  -1 1 0" />
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="TorusRigid">
         <EulerImplicitSolver rayleighStiffness="0.01" />
-        <CGLinearSolver iterations="25" threshold="0.00000001" />
+        <CGLinearSolver iterations="25" threshold="0.00000001" tolerance="1e-5"/>
         <MechanicalObject template="Rigid" dx="2" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
         <UniformMass />
         <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
         <ConstantForceField points="0" forces="0 0.10 0     0 1 0 0" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="0.3" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

@@ -2,7 +2,7 @@
 <Node name="root" dt="0.001" gravity="0 -9.81 0">
     <VisualStyle displayFlags="showForceFields showVisual showBehavior" />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver />
+    <GenericConstraintSolver maxIterations="1000" tolerance="0.001"/>
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
@@ -19,7 +19,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <Mesh filename="mesh/cube.obj" />
@@ -34,7 +34,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <SlidingConstraint name="constraint1" object1="SlidingPoint/points" object2="CUBE_1/Constraints/points" sliding_point="0" axis_1="0" axis_2="1" />
+    <SlidingConstraint name="constraint1" object1="@SlidingPoint/points" object2="@CUBE_1/Constraints/points" sliding_point="0" axis_1="0" axis_2="1" />
     <Node name="Line">
         <MechanicalObject name="points" template="Vec3d" position="6 1.25 1&#x09;6 1.25 -1" free_position="6 1.25 1&#x09;6 1.25 -1" />
     </Node>
@@ -46,7 +46,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <Mesh filename="mesh/cube.obj" />
@@ -61,5 +61,5 @@
             <RigidMapping />
         </Node>
     </Node>
-    <SlidingConstraint name="constraint2" object1="CUBE_2/Constraints/points" object2="Line/points" sliding_point="0" axis_1="0" axis_2="1" />
+    <SlidingConstraint name="constraint2" object1="@CUBE_2/Constraints/points" object2="@Line/points" sliding_point="0" axis_1="0" axis_2="1" />
 </Node>

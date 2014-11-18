@@ -22,7 +22,7 @@
             <TriangleSet />
             <LineSet />
             <PointSet />
-            <IdentityMapping object1="../.." object2="CollisionModelTissue" />
+            <IdentityMapping input="@.." output="@CollisionModelTissue" />
         </Node>
     </Node>
     <Node name="Instrument">
@@ -37,7 +37,7 @@
         </Node>
         <Node name="Visual">
             <OglModel name="Visual" fileMesh="mesh/sphere.obj" color="1.0 0.0 0.0 1.0" scale="0.2" />
-            <RigidMapping object1="../../Instrument" object2="Visual" />
+            <RigidMapping input="@../Instrument" output="@Visual" />
         </Node>
     </Node>
 </Node>

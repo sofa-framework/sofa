@@ -580,6 +580,7 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 //this->getContext()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &omniEvent);
 
                 helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > x = *this->mState->write(core::VecCoordId::position());
+                this->getContext()->getMechanicalState()->vRealloc( sofa::core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition() ); // freePosition is not allocated by default
                 helper::WriteAccessor<Data<helper::vector<RigidCoord<3,double> > > > xfree = *this->mState->write(core::VecCoordId::freePosition());
 
 

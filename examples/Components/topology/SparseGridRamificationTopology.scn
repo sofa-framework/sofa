@@ -9,13 +9,13 @@
     <Node name="NonUniformC">
         <SparseGridRamification n="5 2 2" fileTopology="mesh/c.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
         <EulerImplicit />
-        <CGLinearSolver iterations="10" />
+        <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <NonUniformHexahedronFEMForceFieldAndMass nbVirtualFinerLevels="3" youngModulus="6400000" poissonRatio="0.3" method="large" density="10" updateStiffnessMatrix="false" printLog="0" />
         <BoxConstraint box="-16 -10 -3 -14 10 3" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/c.obj" color="blue" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
@@ -30,13 +30,13 @@
     <Node name="UniformC">
         <SparseGridRamification n="5 2 2" fileTopology="mesh/c.obj" nbVirtualFinerLevels="3" finestConnectivity="0" />
         <EulerImplicit />
-        <CGLinearSolver iterations="10" />
+        <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="40" />
         <HexahedronFEMForceFieldAndMass youngModulus="300000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
         <BoxConstraint box="24 -10 -3 26 10 3" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/c.obj" color="red" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
@@ -51,13 +51,13 @@
     <Node name="UniformC and finestConnectivity">
         <SparseGridRamification n="5 3 3" fileTopology="mesh/c.obj" nbVirtualFinerLevels="0" finestConnectivity="1" />
         <EulerImplicit />
-        <CGLinearSolver iterations="10" />
+        <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dx="80" />
         <HexahedronFEMForceFieldAndMass youngModulus="20000" poissonRatio="0.3" method="large" density="3" updateStiffnessMatrix="false" printLog="0" />
         <BoxConstraint box="64 -10 -3 66 10 3" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/c.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/c.obj" />
