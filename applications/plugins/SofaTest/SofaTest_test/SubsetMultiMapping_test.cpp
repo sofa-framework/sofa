@@ -78,13 +78,12 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
     typedef typename OutMechanicalObject::ReadVecDeriv ReadOutVecDeriv;
 
 
-    SubsetMultiMapping* smm;
 
-    SubsetMultiMappingTest()
-    {
-        smm = static_cast<SubsetMultiMapping*>( this->mapping );
-        cerr<<"SubsetMultiMappingTest created " << endl;
-    }
+//    SubsetMultiMappingTest()
+//    {
+//        //smm = static_cast<SubsetMultiMapping*>( this->mapping );
+//        cerr<<"SubsetMultiMappingTest created " << endl;
+//    }
 
 
     /** @name Test_Cases
@@ -97,6 +96,7 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
     {
         const int NP = 2;
         this->setupScene(NP); // NP parents, 1 child
+        SubsetMultiMapping* smm = static_cast<SubsetMultiMapping*>( this->mapping );
 
         // parent positions
         vector< InVecCoord > incoords(NP);
@@ -107,8 +107,8 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
         }
 
         // subset
-        smm->addPoint(0,0);  // parent, index in parent
-        smm->addPoint(1,0);  // parent, index in parent
+        smm->addPoint(smm->getMechFrom()[0],0);  // parent, index in parent
+        smm->addPoint(smm->getMechFrom()[1],0);  // parent, index in parent
 
         // expected child positions
         OutVecCoord outcoords(2);
@@ -117,9 +117,6 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
 
         return this->runTest(incoords,outcoords);
     }
-
-
-    /// @todo test with several frames
 
 
     ///@}
@@ -140,7 +137,6 @@ TYPED_TEST_CASE(SubsetMultiMappingTest, DataTypes);
 // first test case
 TYPED_TEST( SubsetMultiMappingTest , two_parents_two_children )
 {
-    // child coordinates given directly in parent frame
     ASSERT_TRUE(this->test_two_parents_two_children());
 }
 
