@@ -44,6 +44,7 @@ template class SOFA_CORE_API MultiMapping< Vec3dTypes, Vec3dTypes >;
 template class SOFA_CORE_API MultiMapping< Vec3dTypes, Vec1dTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3dTypes, Vec3dTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3dTypes, Vec6dTypes >;
+template class SOFA_CORE_API MultiMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -52,6 +53,7 @@ template class SOFA_CORE_API MultiMapping< Vec3fTypes, Vec3fTypes >;
 template class SOFA_CORE_API MultiMapping< Vec3fTypes, Vec1fTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3fTypes, Vec3fTypes >;
 template class SOFA_CORE_API MultiMapping< Rigid3fTypes, Vec6fTypes >;
+template class SOFA_CORE_API MultiMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
