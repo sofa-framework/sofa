@@ -43,13 +43,11 @@ SOFA_DECL_CLASS(DiffusionShapeFunction)
 // Register in the Factory
 int DiffusionShapeFunctionClass = core::RegisterObject("Computes shape functions based on diffusion in images")
 
-        .add< DiffusionShapeFunction<ShapeFunction,ImageUC> >(true)
-        .add< DiffusionShapeFunction<ShapeFunction,ImageB> >()
-        .add< DiffusionShapeFunction<ShapeFunction,ImageD> >()
+        .add< DiffusionShapeFunction<ShapeFunction,ImageUC> >()
+        .add< DiffusionShapeFunction<ShapeFunction,ImageD> >(true)
         ;
 
 template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction,ImageUC>;
-template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction,ImageB>;
 template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction,ImageD>;
 
 }
