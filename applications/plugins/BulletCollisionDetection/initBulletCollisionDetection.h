@@ -81,6 +81,8 @@ namespace component
  * This plugin depends on Bullet 2.82, with the following peculiarities:
  * - you must compile with the BULLET_TRIANGLE_COLLISION definition;
  * - under Linux, you need to compile with the -fPIC option;
+ * - you should compile it as shared libraries to avoid undefined references
+ *   when loading the plugin (CMake option: BUILD_SHARED_LIBS)
  * - you need to install the "extra" libraries (CMake option:
  *   INSTALL_EXTRA_LIBS).
  *
@@ -104,7 +106,7 @@ namespace component
  * 13a14
  * > add_definitions(-DBULLET_TRIANGLE_COLLISION)
  * EOF
- * cmake -DINSTALL_EXTRA_LIBS=ON -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX="$BULLET_INSTALL_PREFIX" .
+ * cmake -DBUILD_SHARED_LIBS=ON -DINSTALL_EXTRA_LIBS=ON -DCMAKE_CXX_FLAGS=-fPIC -DCMAKE_INSTALL_PREFIX="$BULLET_INSTALL_PREFIX" .
  * make
  * make install
  * \endcode
