@@ -57,6 +57,9 @@ namespace sofa {
 
     /// Clear the scene graph
     void clearSceneGraph();
+
+    /// Seed value
+    static int seed;
 };
 
 

@@ -41,19 +41,31 @@ namespace system
 namespace Utils
 {
 
-#if defined WIN32 || defined _XBOX
-
 /// @brief Convert a string to a wstring.
 ///
-/// This will purely and simply truncate 'wchar' to 'char', which is terrible,
-/// but should work at least for ASCII characters. This is useful under Windows,
-/// because Sofa is compiled with Unicode support, and thus functions from the
-/// Windows API use wchar (e.g. for error messages), which can be a pain in some
-/// cases.
+/// This function uses mbsrtowcs(3) internally, and thus depends on on the
+/// LC_CTYPE category of the current locale.
+///
+/// If you are getting errors from this function, check that your program calls
+/// setlocale(LC_CTYPE, "") at the beginning to set the locale according to the
+/// environnement variables, and check that those are set to appropriate values.
+///
+/// @return The converted string on success, or a empty string on failure.
 SOFA_HELPER_API std::wstring s2ws(const std::string& s);
 
 /// @brief Convert a wstring to a string.
+///
+/// This function uses wcstombs(3) internally, and thus depends on
+/// on the LC_CTYPE category of the current locale.
+///
+/// If you are getting errors from this function, check that your program calls
+/// setlocale(LC_CTYPE, "") at the beginning to set the locale according to the
+/// environnement variables, and check that those are set to appropriate values.
+///
+/// @return The converted string on success, or a empty string on failure.
 SOFA_HELPER_API std::string ws2s(const std::wstring& ws);
+
+#if defined WIN32 || defined _XBOX
 
 /// @brief Simple wrapper around the Windows function GetLastError().
 ///
@@ -62,6 +74,12 @@ SOFA_HELPER_API std::string ws2s(const std::wstring& ws);
 SOFA_HELPER_API std::string GetLastError();
 
 #endif
+
+/// @brief Get the path of the current executable.
+///
+/// Note that this function uses various non-portable tricks to achieve its
+/// goal, and it might not be the most reliable thing ever written.
+SOFA_HELPER_API std::string getExecutablePath();
 
 }
 

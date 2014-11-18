@@ -981,6 +981,8 @@ TEST_F( Assembly_test, testConstrainedHardString )
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
     //    cout<<"testConstrainedHardString results compared"<< endl;
 }
+
+
 TEST_F( Assembly_test, testExternallyConstrainedHardString )
 {
     unsigned numParticles=2;
@@ -994,6 +996,8 @@ TEST_F( Assembly_test, testExternallyConstrainedHardString )
     ASSERT_TRUE(vectorsAreEqual( expected.lambda, complianceSolver->getLambda() ));
     //    //    cout<<"testExternallyConstrainedHardString results compared"<< endl;
 }
+
+
 TEST_F( Assembly_test, testAttachedConnectedHardStrings )
 {
     unsigned numParticles=2;

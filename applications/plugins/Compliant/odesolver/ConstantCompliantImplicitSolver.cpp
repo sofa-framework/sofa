@@ -15,7 +15,7 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-SOFA_DECL_CLASS(ConstantCompliantImplicitSolver);
+SOFA_DECL_CLASS(ConstantCompliantImplicitSolver)
 int ConstantCompliantImplicitSolverClass = core::RegisterObject("Pre-assembled AssembedSolver").add< ConstantCompliantImplicitSolver >();
 
 using namespace sofa::defaulttype;

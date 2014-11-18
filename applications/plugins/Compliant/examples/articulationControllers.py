@@ -143,26 +143,26 @@ def createScene(root):
     global sliderfingerLarm_forceController
     global sliderfingerRarm_forceController
     
-    hingebasearm = StructuralAPI.HingeRigidJoint( 2, root, "hingebasearm", basearmoffset.node, armbaseoffset.node )
+    hingebasearm = StructuralAPI.HingeRigidJoint( 2, "hingebasearm", basearmoffset.node, armbaseoffset.node )
     
     hingebasearm0_positionController = hingebasearm.addPositionController(hingebasearm0_offset,1e-8)
     hingebasearm.addLimits(-hingebasearm0_limit,hingebasearm0_limit)
     
     
-    hingearm0arm = StructuralAPI.HingeRigidJoint( 2, root, "hingearm0arm", arm0armoffset.node, armarm0offset.node )
+    hingearm0arm = StructuralAPI.HingeRigidJoint( 2, "hingearm0arm", arm0armoffset.node, armarm0offset.node )
     hingearm0arm_velocityController = hingearm0arm.addVelocityController(hingearm0arm_velocity,0)
     #hingearm0arm.addLimits(-.75,.75)  # limits with velocity controller are not well handled
     
     
     
-    sliderfingerLarm = StructuralAPI.SliderRigidJoint( 0, root, "sliderfingerLarm", armfingeroffset.node, fingerLarmoffset.node )
+    sliderfingerLarm = StructuralAPI.SliderRigidJoint( 0, "sliderfingerLarm", armfingeroffset.node, fingerLarmoffset.node )
     sliderfingerLarm_forceController = sliderfingerLarm.addForceController(-sliderfinger_force)
     sliderfingerLarm.addLimits(-2,-0.25)
     
     
     
     
-    sliderfingerRarm = StructuralAPI.SliderRigidJoint( 0, root, "sliderfingerRarm", armfingeroffset.node, fingerRarmoffset.node )
+    sliderfingerRarm = StructuralAPI.SliderRigidJoint( 0, "sliderfingerRarm", armfingeroffset.node, fingerRarmoffset.node )
     sliderfingerRarm_forceController = sliderfingerRarm.addForceController(sliderfinger_force)
     sliderfingerRarm.addLimits(0.25,2)
     

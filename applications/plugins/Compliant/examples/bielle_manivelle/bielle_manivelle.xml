@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+
+<!--<!DOCTYPE sml SYSTEM "sml.dtd">-->
+
+<sml name="bielle_manivelle">
+    <units mass="kg" length="m" time="s" />
+
+    <rigid id="1">
+        <name>Corps</name>
+        <position>0 0 0 0 0 0 1</position>
+        <mesh format="obj">0.obj</mesh>
+        <density>7.8e+3</density>
+    </rigid>
+    
+    <rigid id="2">
+        <name>Roue</name>
+        <position>0 0 -0.148 0 0 0 1</position>
+        <mesh format="obj">3.obj</mesh>
+        <density>7.8e+3</density>
+    </rigid>
+    
+    <rigid id="3">
+        <name>Came</name>
+        <position>1.085 -0.072 0.33 0 0 0 1</position>
+        <mesh format="obj">2.obj</mesh>
+        <density>7.8e+3</density>
+    </rigid>
+    
+    <rigid id="4">
+        <name>Piston</name>
+        <position>2.05 0 0.33 0 0 0 1</position>
+        <mesh format="obj">1.obj</mesh>
+        <density>7.8e+3</density>
+    </rigid>
+    
+    <joint id="5">
+        <name>hinge_corps-roue</name>
+        <parent id="1">
+            <offset type="relative">0 0 0 0 0 0 1</offset>
+        </parent>
+        <child id="2">
+            <offset type="relative">0 0 0.148 0 0 0 1</offset>
+        </child>
+        <dof index="5"/>
+    </joint>
+    
+    <joint id="6">
+        <name>hinge_roue-came</name>
+        <parent id="2">
+            <offset type="relative">0.24 -0.145 0.478 0 0 0 1</offset>
+        </parent>
+        <child id="3">
+            <offset type="relative">-0.845 -0.073 0 0 0 0 1</offset>
+        </child>
+        <dof index="5"/>
+    </joint>
+    
+    <joint id="7">
+        <name>hinge_came-piston</name>
+        <parent id="3">
+            <offset type="relative">0.852 0.072 0 0 0 0 1</offset>
+        </parent>
+        <child id="4">
+            <offset type="relative">-0.113 0 0 0 0 0 1</offset>
+        </child>
+        <dof index="5"/>
+    </joint>
+    
+    <joint id="8">
+        <name>slider_corps-piston</name>
+        <parent id="4">
+            <offset type="relative">0.15 0 0 0 0 0 1</offset>
+        </parent>
+        <child id="1">
+            <offset type="relative">2.2 0 0.33 0 0 0 1</offset>
+        </child>
+        <dof index="0"/>
+    </joint>
+
+</sml>

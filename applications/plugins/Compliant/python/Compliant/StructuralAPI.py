@@ -17,6 +17,7 @@ import Tools
 from Tools import cat as concat
 import numpy
 from SofaPython import Quaternion
+import SofaPython.Tools
 import math
 
 # to specify the floating point encoding (double by default)
@@ -122,7 +123,8 @@ class RigidBody:
                 global idxVisualModel;
                 self.node = node.createChild( "visual" )  # node
                 r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-                self.model = self.node.createObject('VisualModel', template='ExtVec3f', name='model'+str(idxVisualModel), fileMesh=filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r) )
+                meshLoader = SofaPython.Tools.meshLoader(self.node, filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
+                self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), src="@"+meshLoader.name)
                 self.mapping = self.node.createObject('RigidMapping', name="mapping")
                 idxVisualModel+=1
 
@@ -148,14 +150,15 @@ class RigidBody:
 class GenericRigidJoint:
     ## Generic kinematic joint between two Rigids
 
-    def __init__(self, node, name, node1, node2, mask, compliance=0, index1=0, index2=0):
-        self.node = node.createChild( name )
+    def __init__(self, name, node1, node2, mask, compliance=0, index1=0, index2=0):
+        self.node = node1.createChild( name )
         self.dofs = self.node.createObject('MechanicalObject', template = 'Vec6'+template_suffix, name = 'dofs', position = '0 0 0 0 0 0' )
         input = [] # @internal
         input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
         input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
         self.mapping = self.node.createObject('RigidJointMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
         self.constraint = GenericRigidJoint.Constraint( self.node, mask, compliance )
+        node2.addChild( self.node )
 
     class Constraint:
         def __init__(self, node, mask, compliance):
@@ -249,14 +252,15 @@ class CompleteRigidJoint:
     ## A complete kinematic joint between two Rigids
     # for advanced users!
 
-    def __init__(self, node, name, node1, node2, compliances=[0,0,0,0,0,0], index1=0, index2=0):
-        self.node = node.createChild( name )
+    def __init__(self, name, node1, node2, compliances=[0,0,0,0,0,0], index1=0, index2=0):
+        self.node = node1.createChild( name )
         self.dofs = self.node.createObject('MechanicalObject', template='Vec6'+template_suffix, name='dofs', position='0 0 0 0 0 0' )
         input = [] # @internal
         input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
         input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
         self.mapping = self.node.createObject('RigidJointMultiMapping',  name='mapping', input=concat(input), output='@dofs', pairs=str(index1)+" "+str(index2))
         self.constraint = CompleteRigidJoint.Constraint( self.node, compliances ) # the constraint compliance cannot be in the same branch as eventual limits...
+        node2.addChild( self.node )
 
     class Constraint:
         def __init__(self, node, compliances):
@@ -297,9 +301,9 @@ class CompleteRigidJoint:
 class HingeRigidJoint(GenericRigidJoint):
     ## Hinge/Revolute joint around the given axis (0->x, 1->y, 2->z)
 
-    def __init__(self, axis, node, name, node1, node2, compliance=0, index1=0, index2=0 ):
+    def __init__(self, axis, name, node1, node2, compliance=0, index1=0, index2=0 ):
         self.mask = [1] * 6; self.mask[3+axis]=0
-        GenericRigidJoint.__init__(self, node, name, node1, node2, self.mask, compliance, index1, index2)
+        GenericRigidJoint.__init__(self, name, node1, node2, self.mask, compliance, index1, index2)
 
     def addLimits( self, lower, upper, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
@@ -329,9 +333,9 @@ class HingeRigidJoint(GenericRigidJoint):
 class SliderRigidJoint(GenericRigidJoint):
     ## Slider/Prismatic joint along the given axis (0->x, 1->y, 2->z)
 
-    def __init__(self, axis, node, name, node1, node2, compliance=0, index1=0, index2=0 ):
+    def __init__(self, axis, name, node1, node2, compliance=0, index1=0, index2=0 ):
         self.mask = [1] * 6; self.mask[axis]=0
-        GenericRigidJoint.__init__(self, node, name, node1, node2, self.mask, compliance, index1, index2)
+        GenericRigidJoint.__init__(self, name, node1, node2, self.mask, compliance, index1, index2)
 
     def addLimits( self, lower, upper, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
@@ -361,12 +365,12 @@ class SliderRigidJoint(GenericRigidJoint):
 class CylindricalRigidJoint(GenericRigidJoint):
     ## Cylindrical joint along and around the given axis (0->x, 1->y, 2->z)
 
-    def __init__(self, axis, node, name, node1, node2, compliance=0, index1=0, index2=0 ):
+    def __init__(self, axis, name, node1, node2, compliance=0, index1=0, index2=0 ):
         mask = [1] * 6
         mask[axis]=0
         mask[3+axis]=0
         self.axis = axis
-        GenericRigidJoint.__init__(self,node, name, node1, node2, mask, compliance, index1, index2)
+        GenericRigidJoint.__init__(self, name, node1, node2, mask, compliance, index1, index2)
 
     def addLimits( self, translation_lower, translation_upper, rotation_lower, rotation_upper, compliance=0 ):
         mask_t_l = [0]*6; mask_t_l[self.axis]=1;
@@ -382,8 +386,8 @@ class CylindricalRigidJoint(GenericRigidJoint):
 class BallAndSocketRigidJoint(GenericRigidJoint):
     ## Ball and Socket / Spherical joint
 
-    def __init__(self, node, name, node1, node2, compliance=0, index1=0, index2=0 ):
-        GenericRigidJoint.__init__(self, node, name, node1, node2, [1,1,1,0,0,0], compliance, index1, index2)
+    def __init__(self, name, node1, node2, compliance=0, index1=0, index2=0 ):
+        GenericRigidJoint.__init__(self, name, node1, node2, [1,1,1,0,0,0], compliance, index1, index2)
 
     def addLimits( self, rotationX_lower, rotationX_upper, rotationY_lower, rotationY_upper, rotationZ_lower, rotationZ_upper, compliance=0 ):
         mask_x_l = [0]*6; mask_x_l[3]=1;
@@ -401,10 +405,10 @@ class BallAndSocketRigidJoint(GenericRigidJoint):
 class PlanarRigidJoint(GenericRigidJoint):
     ## Planar joint for the given axis as plane normal (0->x, 1->y, 2->z)
 
-    def __init__(self, normal, node, name, node1, node2, compliance=0, index1=0, index2=0 ):
+    def __init__(self, normal, name, node1, node2, compliance=0, index1=0, index2=0 ):
         self.normal = normal
         mask = [1]*6; mask[(normal+1)%3]=0; mask[(normal+2)%3]=0
-        GenericRigidJoint.__init__(self, node, name, node1, node2, mask, compliance, index1, index2)
+        GenericRigidJoint.__init__(self, name, node1, node2, mask, compliance, index1, index2)
 
     def addLimits( self, translation1_lower, translation1_upper, translation2_lower, translation2_upper, compliance=0 ):
         axis1 = (self.normal+1)%3; axis2 = (self.normal+2)%3
@@ -427,10 +431,10 @@ class PlanarRigidJoint(GenericRigidJoint):
 class GimbalRigidJoint(GenericRigidJoint):
     ## Gimbal/Universal joint
 
-    def __init__(self, axis, node, name, node1, node2, compliance=0, index1=0, index2=0 ):
+    def __init__(self, axis, name, node1, node2, compliance=0, index1=0, index2=0 ):
         self.axis = axis
         mask = [1]*6; mask[3+(axis+1)%3]=0; mask[3+(axis+2)%3]=0
-        GenericRigidJoint.__init__(self, node, name, node1, node2, mask, compliance, index1, index2)
+        GenericRigidJoint.__init__(self, name, node1, node2, mask, compliance, index1, index2)
 
     def addLimits( self, rotation1_lower, rotation1_upper, rotation2_lower, rotation2_upper, compliance=0 ):
         index1 = 3+(self.axis+1)%3; index2 = 3+(self.axis+2)%3
@@ -454,21 +458,22 @@ class GimbalRigidJoint(GenericRigidJoint):
 class FixedRigidJoint(GenericRigidJoint):
     ## Fixed joint
 
-    def __init__(self, node, name, node1, node2, compliance=0, index1=0, index2=0 ):
-        GenericRigidJoint.__init__(self, node, name, node1, node2, [1]*6, compliance, index1, index2)
+    def __init__(self, name, node1, node2, compliance=0, index1=0, index2=0 ):
+        GenericRigidJoint.__init__(self, name, node1, node2, [1]*6, compliance, index1, index2)
 
 
 class DistanceRigidJoint:
     ## keep Distance between two rigid frames
 
-    def __init__(self, node, name, node1, node2, compliance=0, index1=0, index2=0, rest_lenght=-1 ):
-        self.node = node.createChild( name )
+    def __init__(self, name, node1, node2, compliance=0, index1=0, index2=0, rest_lenght=-1 ):
+        self.node = node1.createChild( name )
         self.dofs = self.node.createObject('MechanicalObject', template='Rigid3'+template_suffix, name='dofs' )
         input = [] # @internal
         input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
         input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
         self.mapping = self.node.createObject('SubsetMultiMapping', name='mapping', input = concat(input), output = '@dofs', indexPairs="0 "+str(index1)+" 1 "+str(index2) )
         self.constraint = DistanceRigidJoint.Constraint(self.node, compliance, rest_lenght)
+        node2.addChild( self.node )
 
 
     class Constraint:
@@ -483,8 +488,8 @@ class DistanceRigidJoint:
 class RigidJointSpring:
     ## A 6D spring between two Rigids
 
-    def __init__(self, node, name, node1, node2, stiffnesses=[0,0,0,0,0,0], index1=0, index2=0):
-            self.node = node.createChild( name )
+    def __init__(self, name, node1, node2, stiffnesses=[0,0,0,0,0,0], index1=0, index2=0):
+            self.node = node1.createChild( name )
             self.dofs = self.node.createObject('MechanicalObject', template = 'Vec6'+template_suffix, name = 'dofs', position = '0 0 0 0 0 0' )
             input = [] # @internal
             input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
@@ -492,6 +497,7 @@ class RigidJointSpring:
             self.mapping = self.node.createObject('RigidJointMultiMapping',  name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
             compliances = 1./numpy.array(stiffnesses);
             self.compliance = self.node.createObject('DiagonalCompliance', name='compliance', compliance=concat(compliances), isCompliance=0)
+            node2.addChild( self.node )
 
 ## @TODO handle joints with diagonalcompliance / diagonaldamper...
 ## @TODO add mappings for more complex joints (eg with coupled dofs ie skrew, winch...)

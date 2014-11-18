@@ -14,7 +14,7 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-SOFA_DECL_CLASS(CompliantImplicitSolver);
+SOFA_DECL_CLASS(CompliantImplicitSolver)
 int CompliantImplicitSolverClass = core::RegisterObject("Example compliance solver using assembly")
         .add< CompliantImplicitSolver >()
         .addAlias("AssembledSolver"); // deprecated, for backward compatibility only
@@ -227,7 +227,7 @@ using namespace core::behavior;
             f_k->eq( f, factor );
         }
 
-        if( !neglecting_compliance_forces_in_geometric_stiffness.getValue() )
+        if( sys.n && !neglecting_compliance_forces_in_geometric_stiffness.getValue() )
         {
             scoped::timer substep("f += fc");
 

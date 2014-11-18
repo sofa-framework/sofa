@@ -482,16 +482,19 @@ Quater<Real> Quater<Real>::axisToQuat(defaulttype::Vec<3,Real> a, Real phi)
 
 /// Given a quaternion, compute an axis and angle
 template<class Real>
-void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi)
+void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle)
 {
-    const double  sine  = sin( acos(_q[3]) );
+    double  sine  = sin( acos(_q[3]) );
+    if(sine == 0) {
+        sine = sqrt(_q[0]*_q[0]+_q[1]*_q[1]+_q[2]*_q[2]);
+        angle = 2.0*asin(sine);
+    }
+    else angle = 2.0*acos(_q[3]);
 
-    if (!sine)
-        a = defaulttype::Vec<3,Real>(0.0,1.0,0.0);
+    if (sine==0)
+        axis = defaulttype::Vec<3,Real>(0.0,1.0,0.0);
     else
-        a = defaulttype::Vec<3,Real>(_q[0],_q[1],_q[2])/ sine;
-
-    phi =  (Real) (acos(_q[3]) * 2.0) ;
+        axis = defaulttype::Vec<3,Real>(_q[0],_q[1],_q[2])/ sine;
 }
 
 

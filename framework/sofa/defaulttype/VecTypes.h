@@ -43,7 +43,6 @@ namespace defaulttype
 {
 
 using helper::vector;
-using helper::symrand;
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class StdVectorTypes
@@ -89,10 +88,11 @@ public:
     }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue )
+    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
     {
         Deriv result;
-        set( result, symrand(maxValue), symrand(maxValue), symrand(maxValue) );
+        helper::RandomGenerator randomGenerator(seed);
+        set( result, randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
         return result;
     }
 
@@ -487,21 +487,21 @@ template<> inline const char* ExtVec6fTypes::Name() { return "ExtVec6f"; }
 
 
 #ifdef SOFA_FLOAT
-/// 6D DOFs, double precision (default)
+/// 6D DOFs, single precision (default)
 typedef Vec6fTypes Vec6Types;
-/// 3D DOFs, double precision (default)
+/// 3D DOFs, single precision (default)
 typedef Vec3fTypes Vec3Types;
-/// 2D DOFs, double precision (default)
+/// 2D DOFs, single precision (default)
 typedef Vec2fTypes Vec2Types;
-/// 1D DOFs, double precision (default)
+/// 1D DOFs, single precision (default)
 typedef Vec1fTypes Vec1Types;
-/// 6D external DOFs, double precision (default)
+/// 6D external DOFs, single precision (default)
 typedef ExtVec6fTypes ExtVec6Types;
-/// 3D external DOFs, double precision (default)
+/// 3D external DOFs, single precision (default)
 typedef ExtVec3fTypes ExtVec3Types;
-/// 2D external DOFs, double precision (default)
+/// 2D external DOFs, single precision (default)
 typedef ExtVec2fTypes ExtVec2Types;
-/// 1D external DOFs, double precision (default)
+/// 1D external DOFs, single precision (default)
 typedef ExtVec1fTypes ExtVec1Types;
 #else
 /// 6D DOFs, double precision (default)

@@ -25,11 +25,21 @@
 #include <sofa/helper/system/Utils.h>
 
 #ifdef WIN32
-# include <windows.h>
+# include <Windows.h>
 # include <StrSafe.h>
 #elif defined _XBOX
 # include <xtl.h>
+#elif defined __APPLE__
+# include <mach-o/dyld.h>       // for _NSGetExecutablePath()
+#else
+# include <unistd.h>            // for readlink()
+# include <errno.h>
+# include <linux/limits.h>      // for PATH_MAX
 #endif
+
+#include <stdlib.h>
+#include <vector>
+#include <iostream>
 
 namespace sofa
 {
@@ -42,27 +52,65 @@ namespace system
 namespace Utils
 {
 
-#if defined WIN32 || defined _XBOX
 std::wstring s2ws(const std::string& s)
 {
-    int len;
-    int slength = (int)s.length() + 1;
-    len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
-    wchar_t* buf = new wchar_t[len];
-    MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
-    std::wstring r(buf);
-    delete[] buf;
-    return r;
+    const char * src = s.c_str();
+    // Call mbsrtowcs() once to find out the length of the converted string.
+    size_t length = mbsrtowcs(NULL, &src, 0, NULL);
+    if (length == size_t(-1)) {
+        int error = errno;
+        std::cerr << "Error: Utils::s2ws(): " << strerror(error) << std::endl;
+        return L"";
+    }
+
+    // Call mbsrtowcs() again with a correctly sized buffer to actually do the conversion.
+    wchar_t * buffer = new wchar_t[length + 1];
+    length = mbsrtowcs(buffer, &src, length + 1, NULL);
+    if (length == size_t(-1)) {
+        int error = errno;
+        std::cerr << "Error: Utils::s2ws(): " << strerror(error) << std::endl;
+        delete[] buffer;
+        return L"";
+    }
+
+    if (src != NULL) {
+        std::cerr << "Error: Utils::s2ws(): conversion failed." << std::endl;
+        delete[] buffer;
+        return L"";
+    }
+
+    std::wstring result(buffer);
+    delete[] buffer;
+    return result;
 }
+
 
 std::string ws2s(const std::wstring& ws)
 {
-    // This is terrible, it will truncate wchar to char,
-    // but it should work for ASCII characters.
-    return std::string(ws.begin(), ws.end());
+    const wchar_t * src = ws.c_str();
+    // Call wcstombs() once to find out the length of the converted string.
+    size_t length = wcstombs(NULL, src, 0);
+    if (length == size_t(-1)) {
+        std::cerr << "Error: Utils::s2ws(): conversion failed." << std::endl;
+        return "";
+    }
+
+    // Call wcstombs() again with a correctly sized buffer to actually do the conversion.
+    char * buffer = new char[length + 1];
+    length = wcstombs(buffer, src, length + 1);
+    if (length == size_t(-1)) {
+        std::cerr << "Error: Utils::s2ws(): conversion failed." << std::endl;
+        delete[] buffer;
+        return "";
+    }
+
+    std::string result(buffer);
+    delete[] buffer;
+    return result;
 }
 
-#ifdef WIN32
+#if defined WIN32 || defined _XBOX
+# ifdef WIN32
 std::string GetLastError() {
     LPVOID lpErrMsgBuf;
     LPVOID lpMessageBuf;
@@ -92,16 +140,60 @@ std::string GetLastError() {
     LocalFree(lpMessageBuf);
     return ws2s(wsMessage);
 }
-#else
+# else  // XBOX
 std::string GetLastError() {
-	DWORD dwErrorCode = ::GetLastError();
-	char buffer[32];
-	sprintf_s(buffer, 32, "0x%08.8X", dwErrorCode);
-	return buffer;
+    DWORD dwErrorCode = ::GetLastError();
+    char buffer[32];
+    sprintf_s(buffer, 32, "0x%08.8X", dwErrorCode);
+    return buffer;
 }
+# endif
 #endif
 
+std::string getExecutablePath() {
+
+#if defined(_XBOX) || defined(PS3)
+    std::cerr << "Error: Utils::getExecutablePath() is not implemented." << std::endl;
+    return "";
+
+#elif defined(WIN32)
+    std::vector<TCHAR> lpFilename(MAX_PATH);
+    int ret = GetModuleFileName(NULL, /* NULL --> executable of the current process */
+        &lpFilename[0],
+        MAX_PATH);
+    if (ret == 0 || ret == MAX_PATH) {
+        std::cerr << "Utils::getExecutablePath(): " << GetLastError() << std::endl;
+        return "";
+    } else {
+        return ws2s(std::wstring(&lpFilename[0]));
+    }
+
+#elif defined(__APPLE__)
+    std::vector<char> path(PATH_MAX);
+    std::vector<char> real_path(PATH_MAX);
+    uint32_t size = path.size();
+    if (_NSGetExecutablePath(&path[0], &size) != 0) {
+        std::cerr << "Utils::getExecutablePath(): _NSGetExecutablePath() failed" << std::endl;
+        return "";
+    }
+    if (realpath(&path[0], &real_path[0]) == 0) {
+        std::cerr << "Utils::getExecutablePath(): realpath() failed" << std::endl;
+        return "";
+    }
+    return std::string(&real_path[0]);
+
+#else  // Linux
+    std::vector<char> buffer(PATH_MAX);
+    if (readlink("/proc/self/exe", &buffer[0], buffer.size()) == -1) {
+        int error = errno;
+        std::cerr << "Utils::getExecutablePath(): " << strerror(error) << std::endl;
+        return "";
+    } else {
+        return std::string(&buffer[0]);
+    }
 #endif
+}
+
 
 } // namespace Utils
 

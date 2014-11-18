@@ -45,6 +45,7 @@ using namespace sofa::simulation;
 using namespace sofa::component::container;
 using namespace sofa::component::loader;
 using namespace sofa::component::topology;
+using sofa::core::objectmodel::New;
 
 Node *createChainHybrid(Node *root)
 {

@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project(SofaFramework_test)
 
 set(SOURCE_FILES
+    main.cpp
     defaulttype/VecTypesTest.cpp
     #defaulttype/MatTypesTest.cpp
     helper/system/atomicTest.cpp

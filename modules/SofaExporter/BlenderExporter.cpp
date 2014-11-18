@@ -38,11 +38,17 @@ namespace sofa
             SOFA_DECL_CLASS(BlenderExporter)
 
                 int BlenderExportClass = core::RegisterObject("Export the simulation result as blender point cache files")
+#ifndef SOFA_FLOAT
                 .add< BlenderExporter<Vec3dTypes> >()
-                .add< BlenderExporter<Vec3fTypes> >()
-                .add< BlenderExporter<ExtVec3fTypes> >()
                 .add< BlenderExporter<Rigid3dTypes> >()
-                .add< BlenderExporter<Rigid3fTypes> >();
+				.add< BlenderExporter<ExtVec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+				.add< BlenderExporter<Vec3fTypes> >()
+				.add< BlenderExporter<Rigid3fTypes> >()
+				.add< BlenderExporter<ExtVec3fTypes> >()
+#endif
+				;
 
         } // namespace misc
 

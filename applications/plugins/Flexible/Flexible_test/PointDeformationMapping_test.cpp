@@ -76,18 +76,15 @@ namespace sofa {
         defaulttype::Mat<3,3,Real> testedRotation;
         /// Tested Translation: random translation
         Vec<3,Real> testedTranslation;
-        /// Seed for random value
-        long seed;
         /// Random generator
         sofa::helper::RandomGenerator randomGenerator;
 
         // Constructor: call the constructor of the base class which loads the scene to test
         PointsDeformationMapping_test() : Inherited::Mapping_test(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "LinearDeformationMappingPoint.scn")
         {   
-            seed=1;
             // rotation and translation
-            randomGenerator.initSeed(seed);
-            this->SetRandomAffineTransform(seed);
+            randomGenerator.initSeed(BaseSofa_test::seed);
+            this->SetRandomAffineTransform();
 
             // Get rotation from affine constraint
             simulation::Node::SPtr rootNode =  Inherited::root;
@@ -96,7 +93,7 @@ namespace sofa {
             affineConstraint->m_translation.setValue(testedTranslation);
         }
              
-        void SetRandomAffineTransform (int /*seed*/)
+        void SetRandomAffineTransform ()
         {
             // Matrix 3*3
             for( int j=0; j<testedRotation.nbCols; j++)

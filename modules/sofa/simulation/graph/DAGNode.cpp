@@ -47,7 +47,13 @@ DAGNode::DAGNode(const std::string& name, DAGNode* parent)
 }
 
 DAGNode::~DAGNode()
-{}
+{
+	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    {
+		DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
+		dagnode->l_parents.remove(this);
+	}
+}
 
 /// Create, add, then return the new child of this Node
 Node::SPtr DAGNode::createChild(const std::string& nodeName)
@@ -644,7 +650,6 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
 
     action->processNodeBottomUp(this);
 }
-
 
 
 void DAGNode::initVisualContext()

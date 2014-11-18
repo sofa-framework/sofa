@@ -56,12 +56,14 @@ std::vector<GenericMap*>*  GenericMap::s_instances=NULL;
 
 void GenericMap::allocVdartsBuffers()
 {
-    if ((s_vdartsBuffers != NULL) && (s_vintsBuffers != NULL))
-        deleteBuffers();
-    else {
+    if ((s_vdartsBuffers == NULL) && (s_vintsBuffers == NULL)) {
         s_vdartsBuffers = new std::vector< std::vector<Dart>* >[NB_THREAD];
         s_vintsBuffers = new std::vector< std::vector<unsigned int>* >[NB_THREAD];
     }
+    //    else {
+    //                    deleteBuffers();
+    //    }
+
     for(unsigned int i = 0; i < NB_THREAD; ++i)
     {
         s_vdartsBuffers[i].reserve(8);
@@ -108,6 +110,8 @@ GenericMap::GenericMap():
         registerAttribute<Geom::Matrix44d>(Geom::Matrix44d::CGoGNnameOfType());
 
         registerAttribute<MarkerBool>("MarkerBool");
+
+        allocVdartsBuffers();
     }
 
 
@@ -132,14 +136,21 @@ GenericMap::GenericMap():
 
 void GenericMap::deleteBuffers()
 {
-    typedef typename std::vector< std::vector<Dart>* >::iterator VectorVectorDartIterator;
-    typedef typename std::vector< std::vector<unsigned int>* >::iterator VectorVectorUnsignedIterator;
-    for(unsigned int i = 0; i < NB_THREAD; ++i)
-    {
-        for (VectorVectorDartIterator it =s_vdartsBuffers[i].begin(); it != s_vdartsBuffers[i].end(); ++it)
-            delete *it;
-        for (VectorVectorUnsignedIterator it =s_vintsBuffers[i].begin(); it != s_vintsBuffers[i].end(); ++it)
-            delete *it;
+    if (s_instances->size() == 0) {
+        typedef typename std::vector< std::vector<Dart>* >::iterator VectorVectorDartIterator;
+        typedef typename std::vector< std::vector<unsigned int>* >::iterator VectorVectorUnsignedIterator;
+        for(unsigned int i = 0; i < NB_THREAD; ++i)
+        {
+            for (VectorVectorDartIterator it =s_vdartsBuffers[i].begin(); it != s_vdartsBuffers[i].end(); ++it) {
+                delete *it;
+            }
+            for (VectorVectorUnsignedIterator it =s_vintsBuffers[i].begin(); it != s_vintsBuffers[i].end(); ++it) {
+                delete *it;
+            }
+            //            s_vdartsBuffers->clear();
+            //            s_vintsBuffers->clear();
+        }
+
     }
 }
 
@@ -155,7 +166,6 @@ GenericMap::~GenericMap()
         (*it).second->setInvalid() ;
     attributeHandlers.clear() ;
 
-
     // clean type registry if necessary
     m_nbInstances--;
     if (m_nbInstances <= 0)
@@ -165,10 +175,7 @@ GenericMap::~GenericMap()
 
         delete m_attributes_registry_map;
         m_attributes_registry_map = NULL;
-
         deleteBuffers();
-
-
     }
 
     // remove instance of table
@@ -210,8 +217,7 @@ void GenericMap::init(bool addBoundaryMarkers)
 
 void GenericMap::clear(bool removeAttrib)
 {
-    removeMarkVectors();
-    allocVdartsBuffers();
+
     if (removeAttrib)
         init();
     else

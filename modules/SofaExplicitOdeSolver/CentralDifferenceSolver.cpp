@@ -94,7 +94,7 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params /* PARAMS FIR
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
     MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
-    MultiVecDeriv dx (&vop, core::VecDerivId::dx() );
+    MultiVecDeriv dx (&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
 
     const double r = f_rayleighMass.getValue();

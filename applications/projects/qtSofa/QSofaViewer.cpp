@@ -23,7 +23,7 @@ GLfloat zfar = 35;
 GLfloat DegToRad = 3.1415927 / 180;
 
 
-QSofaViewer::QSofaViewer(sofa::simplegui::QSofaScene *sofaScene, QGLWidget* contextSharing, QWidget *parent) :
+QSofaViewer::QSofaViewer(QSofaScene *sofaScene, QGLWidget* contextSharing, QWidget *parent) :
     QGLWidget(parent, contextSharing), _sofaScene(sofaScene), _sofaGL(0)
 {
     _drag = NULL;
@@ -193,6 +193,10 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
         else {
             cout << "no particle glpicked" << endl;
         }
+    }
+    else if(isControlPressed()){
+        _sofaGL->glPick(event->x(), event->y());
+        update();
     }
     else {
         if( _camera.handleMouseButton(

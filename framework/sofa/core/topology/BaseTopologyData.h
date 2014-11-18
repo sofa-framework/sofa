@@ -59,36 +59,27 @@ public:
         T value;
     };
 
-    /** Constructor
-            this constructor should be used through the initData() methods
-         */
+    /** \copydoc Data(const BaseData::BaseInitData&) */
     explicit BaseTopologyData(const sofa::core::objectmodel::BaseData::BaseInitData& init)
         : Data<T>(init)
     {
     }
 
-    /** Constructor
-            this constructor should be used through the initData() methods
-         */
+    /** \copydoc Data(const InitData&) */
     explicit BaseTopologyData(const InitData& init)
         : Data<T>(init)
     {
     }
 
 
-    /** Constructor
-        \param helpMsg help on the field
-         */
+    /** \copydoc Data(const char*, bool, bool) */
     BaseTopologyData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
         : Data<T>(helpMsg, isDisplayed, isReadOnly)
     {
 
     }
 
-    /** Constructor
-        \param value default value
-        \param helpMsg help on the field
-         */
+    /** \copydoc Data(const T&, const char*, bool, bool) */
     BaseTopologyData( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
         : Data<T>(helpMsg, isDisplayed, isReadOnly)
     {

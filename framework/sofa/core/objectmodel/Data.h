@@ -51,10 +51,7 @@ namespace core
 namespace objectmodel
 {
 
-/**
- *  \brief Abstract templated data, readable and writable from/to a string.
- *
- */
+/** \brief Abstract base class template for Data. */
 template < class T >
 class TData : public BaseData
 {
@@ -321,10 +318,40 @@ public:
 };
 
 
-
-/**
- *  \brief Container of data, readable and writable from/to a string.
+/** \brief Container that holds a variable for a component.
  *
+ * This is a fundamental class template in Sofa.  Data are used to encapsulated
+ * member variables of Sofa components (i.e. classes that somehow inherit from
+ * Base) in order to access them dynamically and generically: briefly, Data can
+ * be retrieved at run-time by their name, and they can be assigned a value from
+ * a string, or be printed as a string.
+ *
+ * More concretely, from the perspective of XML scene files, each Data declared
+ * in a component corresponds to an attribute of this component.
+ *
+ * ### Example ###
+ *
+ * If a component *Foo* has a boolean parameter *bar*, it does not simply declares it
+ * as `bool m_bar`, but rather like this:
+ *
+ * \code
+ *  Data<bool> d_bar;
+ * \endcode
+ *
+ * Then, this Data must be initialized to provide its name and default value.
+ * This is typically done in the initialization list of *each constructor* of
+ * the component, using the helper function Base::initData():
+ *
+ * \code
+ * Foo::Foo(): d_bar(initData(&d_bar, true, "bar", "Here is a little description of this Data.")) {
+ *     // ...
+ * }
+ * \endcode
+ *
+ * And this Data can be assigned a value in XML scene files like so:
+ * \code
+ * <Foo bar="false"/>
+ * \endcode
  */
 template < class T = void* >
 class Data : public TData<T>
@@ -359,18 +386,14 @@ public:
         T value;
     };
 
-    /** Constructor
-        this constructor should be used through the initData() methods
-     */
+    /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
         : TData<T>(init)
         , shared(NULL)
     {
     }
 
-    /** Constructor
-        this constructor should be used through the initData() methods
-     */
+    /** \copydoc Data(const BaseData::BaseInitData&) */
     explicit Data(const InitData& init)
         : TData<T>(init)
         , m_values()
@@ -379,9 +402,7 @@ public:
         m_values[DDGNode::currentAspect()] = ValueType(init.value);
     }
 
-    /** Constructor
-    \param helpMsg help on the field
-     */
+    /** \copydoc BaseData(const char*, bool, bool) */
     Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
         , m_values()
@@ -391,9 +412,8 @@ public:
         m_values.assign(val);
     }
 
-    /** Constructor
-    \param value default value
-    \param helpMsg help on the field
+    /** \copydoc BaseData(const char*, bool, bool)
+     *  \param value The default value.
      */
     Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
         : TData<T>(helpMsg, isDisplayed, isReadOnly)
@@ -403,6 +423,7 @@ public:
         m_values[DDGNode::currentAspect()] = ValueType(value);
     }
 
+    /// Destructor.
     virtual ~Data()
     {}
 
