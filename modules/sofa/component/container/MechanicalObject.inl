@@ -184,8 +184,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     // do not forget to delete these in the destructor
     // null() vectors must be allocated for now -> TODO how to define an implicit null vector?
     // not to allocate plenty of 0 everywhere...
-//    write(VecCoordId::null())->forceSet();
-//    write(VecDerivId::null())->forceSet();
+    write(VecCoordId::null())->forceSet();
+    write(VecDerivId::null())->forceSet();
 //    write(VecDerivId::dforce())->forceSet();
 
     // default size is 1
