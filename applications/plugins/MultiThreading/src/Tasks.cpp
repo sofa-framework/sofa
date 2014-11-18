@@ -25,8 +25,8 @@ namespace sofa
 		//InitPerThreadDataTask::InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus ) 
 		ThreadSpecificTask::ThreadSpecificTask(helper::system::atomic<int>* atomicCounter, boost::mutex* mutex, Task::Status* pStatus ) 
 			: Task(pStatus)
-			, mThreadSpecificMutex(mutex)
 			, mAtomicCounter(atomicCounter) 
+			, mThreadSpecificMutex(mutex)
 		{}
 
 		ThreadSpecificTask::~ThreadSpecificTask()

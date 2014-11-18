@@ -3,7 +3,7 @@
     <VisualStyle displayFlags="showBehavior hideCollision hideVisual " />
     <EdgeSetGeometryAlgorithms />
     <EulerImplicitSolver />
-    <CGLinearSolver />
+    <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="Thin shell">
                 <MeshObjLoader name="loader" filename="mesh/triangleGrid_10_10.obj" />
                 <MeshTopology src="@loader" />

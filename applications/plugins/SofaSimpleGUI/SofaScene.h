@@ -3,12 +3,14 @@
 
 #include "initSimpleGUI.h"
 #include <sofa/config.h>
-//#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/simulation/common/Simulation.h>
-//typedef sofa::simulation::graph::DAGSimulation SofaSimulation;
+#include <vector>
+#include <string>
 
 namespace sofa {
-using simulation::Node;
+namespace simulation {
+    class Simulation;
+    class Node;
+}
 
 namespace simplegui {
 
@@ -17,36 +19,29 @@ class Interactor;
 
 /** @brief A sofa scene graph with simulation functions.
  *
+ * There are methods to initialize and update the visual models, but rendering must be performed externally, see e.g. class SofaGL.
+ *
  * The typical life cycle is:
  *
- * SofaScene();
- * loadPlugins( list of plugin names );
- * setScene( filename or scenegraph );
- * [ your main loop: ]
- *      step(dt);
- *      [ use a SofaGL object to display the simulated objects ]
- * ~SofaScene();
- *
- * Node _groot is the root of the scene.
- * Interactors are set under its child node _iroot.
+        loadPlugins( list of plugin names );
+        setScene( scenegraph ); or open(filename)
+        initVisual()
+        [ your main loop: ]
+            step(dt);
+            updateVisual();
+            [ use a SofaGL object to display the simulated objects ]
+
 
  * @author Francois Faure, 2014
  */
-class SOFA_SOFASIMPLEGUI_API  SofaScene //: public SofaSimulation
+class SOFA_SOFASIMPLEGUI_API  SofaScene
 {
-protected:
-
-
-    Node::SPtr _groot; ///< root of the scene
-    Node::SPtr _iroot; ///< root of the interactors, child of _groot
-
 public:
     /**
      * @brief Initialize Sofa
      */
     SofaScene();
     virtual ~SofaScene(){}
-
 
     /**
      * @brief load the given plugin
@@ -62,7 +57,7 @@ public:
      * @brief Set the scene graph. The previous scene graph, if any, is deleted.
      * @param graph the scene to simulate
      */
-    void setScene( Node::SPtr graph );
+    void setScene( simulation::Node* graph );
     /**
      * @brief Print the scene graph on the standard ouput, for debugging.
      */
@@ -86,21 +81,36 @@ public:
      */
     void getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax );
 
-//    /**
-//     * @return The root of the loaded scene.
-//     */
-//    Node::SPtr groot(){ return _groot; }
-    /**
-     * @return The root of the interactors.
-     */
-    Node::SPtr iroot(){ return _iroot; }
+    /// To do once before rendering a scene, typically at initialization time
+    void initVisual();
 
-    simulation::Simulation* getSimulation() { return sofaSimulation; }
+    /// Update the visual models. To do after animating and before rendering.
+    void updateVisual();
+
+
+
+    /** @name Developer API
+     * To be used to create new functionalities.
+     */
+    ///@{
+
+    /// Root of the simulated scene.
+    simulation::Node* groot();
+
+    /// Root of the interactors, set as child of groot
+    simulation::Node* iroot(){ return _iroot; }
 
     /// Do not use this directly. Use Interactor::attach, which calls this.
     void insertInteractor( Interactor* );
 
-private:
+    ///@}
+
+
+
+
+protected:
+    simulation::Node* _groot; ///< root of the scene
+    simulation::Node* _iroot; ///< root of the interactors, child of _groot
     simulation::Simulation* sofaSimulation;
 
 };

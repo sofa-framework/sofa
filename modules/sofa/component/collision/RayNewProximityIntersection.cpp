@@ -95,12 +95,12 @@ bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
         return false;
 }
 
-bool RayNewProximityIntersection::testIntersection( Ray& rRay, OBB& rOBB )
+bool RayNewProximityIntersection::testIntersection( Ray& /*rRay*/, OBB& /*rOBB*/ )
 {
 	return false;
 }
 
-bool RayNewProximityIntersection::testIntersection( Ray& rRay, RigidSphere& rSphere )
+bool RayNewProximityIntersection::testIntersection( Ray& /*rRay*/, RigidSphere& /*rSphere*/ )
 {
 	return false;
 }
@@ -288,7 +288,7 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 
 	if (bHit)
 	{
-		const SReal contactDist = fHitFraction;
+//		const SReal contactDist = fHitFraction;
 		contacts->resize(contacts->size()+1);
 		DetectionOutput *detection = &*(contacts->end()-1);
 
@@ -353,7 +353,7 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 		Vector3 v3ContactPoint = rRay.origin() + v3RayVector * fHitFraction;
 		Vector3 v3Normal = (v3ContactPoint - v3SphereCenter)/ fSphereRadii; 
 		
-		const SReal contactDist = fHitFraction;
+//		const SReal contactDist = fHitFraction;
 		contacts->resize(contacts->size()+1);
 		DetectionOutput *detection = &*(contacts->end()-1);
 
@@ -384,7 +384,7 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 			Vector3 v3ContactPoint = rRay.origin() + v3RayVector * fHitFraction;
 			Vector3 v3Normal = ( v3ContactPoint - v3SphereCenter ) / fSphereRadii;
 
-			const SReal contactDist = fHitFraction;
+//			const SReal contactDist = fHitFraction;
 			contacts->resize(contacts->size()+1);
 			DetectionOutput *detection = &*(contacts->end()-1);
 
@@ -409,7 +409,7 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 			Vector3 v3Normal = ( v3ContactPoint - v3SphereCenter ) / fSphereRadii; 
 
 
-			const SReal contactDist = fHitFraction;
+//			const SReal contactDist = fHitFraction;
 			contacts->resize(contacts->size()+1);
 			DetectionOutput *detection = &*(contacts->end()-1);
 

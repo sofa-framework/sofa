@@ -4,6 +4,7 @@
     <BruteForceDetection name="N2" />
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
+    <DiscreteIntersection />
     <Node name="cubeFEM">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -13,7 +14,7 @@
         <TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" computeGlobalMatrix="false" updateStiffnessMatrix="false" method="large" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="red" />
-            <SurfaceIdentityMapping object1="../.." object2="Visual" />
+            <SurfaceIdentityMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
 	    <VisualStyle displayFlags="hideCollision" />

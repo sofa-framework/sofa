@@ -14,7 +14,7 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-SOFA_DECL_CLASS(CompliantImplicitSolver);
+SOFA_DECL_CLASS(CompliantImplicitSolver)
 int CompliantImplicitSolverClass = core::RegisterObject("Example compliance solver using assembly")
         .add< CompliantImplicitSolver >()
         .addAlias("AssembledSolver"); // deprecated, for backward compatibility only

@@ -1,0 +1,28 @@
+#  TetrahedronFEMForceField is not compiled yet 
+ignore "forcefield/FlexibleTetrahedronFEMForceField.scn"
+
+# This runs very slowly, so compute only a few iterations
+iterations "beam/generateRefBeam_flex.scn" "10"
+timeout "beam/generateRefBeam_flex.scn" "50"
+
+# This runs very slowly, so compute only a few iterations
+iterations "beam/linearAffine_flex332.scn" "10"
+timeout "beam/linearAffine_flex332.scn" "60"
+
+# This runs very slowly, so compute only a few iterations
+iterations "beam/linearQuadratic_flex331.scn" "10"
+timeout "beam/linearQuadratic_flex331.scn" "70"
+
+# This runs very slowly, so compute only a few iterations
+iterations "beam/linearQuadratic_flex332.scn" "10"
+timeout "beam/linearQuadratic_flex332.scn" "50"
+
+# This runs very slowly, so compute only a few iterations
+iterations "beam/linearRigid_flex332.scn" "10"
+timeout "beam/linearRigid_flex332.scn" "50"
+
+# This runs very slowly (generate topologies of armadillo) so compute only a few iterations 
+iterations "demo/linearHexaFEM-armadillo.scn" "10"
+timeout "demo/linearHexaFEM-armadillo.scn" "50"
+
+

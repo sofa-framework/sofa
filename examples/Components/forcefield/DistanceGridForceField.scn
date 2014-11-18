@@ -18,7 +18,7 @@
             <DistanceGridForceField filename="share/mesh/aneurysm3D_3.fmesh" stiffnessIn="10" stiffnessOut="10" stiffnessArea="10" draw="true" maxdist="2" minArea="0.2" />
             <Node name="Visual">
                 <OglModel name="Visual" color="green" />
-                <IdentityMapping object1="../.." object2="Visual" />
+                <IdentityMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Visual2">
                 <OglModel name="Visual" color="red" dz="0.01" />
@@ -26,19 +26,19 @@
             <Node name="Barycenters">
                 <PointSetTopologyContainer name="Container2" />
                 <PointSetTopologyModifier />
-                <Mesh2PointTopologicalMapping object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
+                <Mesh2PointTopologicalMapping input="@Container1" output="@Container2" triangleBaryCoords="0.33 0.33 0" />
                 <MechanicalObject name="Points" />
                 <Mesh2PointMechanicalMapping />
             </Node>
             <Node name="Circumcenters">
                 <PointSetTopologyContainer name="Container2" />
                 <PointSetTopologyModifier />
-                <Mesh2PointTopologicalMapping object1="Container1" object2="Container2" triangleBaryCoords="0.33 0.33 0" />
+                <Mesh2PointTopologicalMapping input="@Container1" output="@Container2" triangleBaryCoords="0.33 0.33 0" />
                 <MechanicalObject name="Points" />
                 <CircumcenterMapping />
                 <Sphere radius="0.01" />
             </Node>
         </Node>
-        <VectorSpringForceField object1="Mesh/Barycenters/Points" object2="Mesh/Circumcenters/Points" stiffness="0.1" viscosity="0" />
+        <VectorSpringForceField object1="@Mesh/Barycenters/Points" object2="@Mesh/Circumcenters/Points" stiffness="0.1" viscosity="0" />
     </Node>
 </Node>

@@ -5,12 +5,13 @@
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
     <CollisionResponse name="Response" response="FrictionContact" />
+    <LCPConstraintSolver maxIt="1000" tolerance="0.001" />
     <Node name="articulatedObject1">
         <!--		<ComplianceArticulatedSystemSolver/> -->
         <MechanicalObject name="ArticulatedObject" template="Vec1d" />
         <Node name="6D_DOFs1">
             <MechanicalObject name="6D_Dof" template="Rigid" />
-            <UniformMass mass="0.5" />
+            <UniformMass totalmass="0.5" />
             <ArticulatedSystemMapping input1="@../ArticulatedObject" input2="" output="@6D_Dof" />
         </Node>
         <ArticulatedHierarchyContainer filename="BehaviorModels/manWalking.bvh" />

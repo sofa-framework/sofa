@@ -12,8 +12,8 @@ and stiffness coefficients for the collision models.
 	<DefaultCollisionGroupManager />
   <Node name="Rigid" >
     <EulerImplicitSolver />
-    <LMConstraintSolver />
-    <CGLinearSolver />
+    <LMConstraintSolver numIterations="27" maxError="1e-7"/>
+    <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <MechanicalObject template="Rigid" translation="0 3 0" />
     <UniformMass totalMass="4" />
     <Node name="Collision" >
@@ -28,12 +28,12 @@ and stiffness coefficients for the collision models.
   </Node>
 	<Node 	name="FEM"   >
 		<EulerImplicitSolver  />
-	  <LMConstraintSolver  />
-	  <CGLinearSolver  />
+	  <LMConstraintSolver numIterations="27" maxError="1e-7"/>
+	  <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <SparseGridTopology  fileTopology="mesh/sphere.obj"  n="4 4 4" />
 		<MechanicalObject name="INDE1"  translation="0 6 0"   />
 		<UniformMass separateGravity="0"  totalmass="4" />
-		<TetrahedronFEMForceField   youngModulus="1000" />
+		<TetrahedronFEMForceField   youngModulus="1000" poissonRatio="0.45"/>
 		<Node 	name="CollisionNode"   >
 			<MeshObjLoader name="loader"  filename="mesh/sphere.obj" />
 			<MeshTopology src="@loader" />

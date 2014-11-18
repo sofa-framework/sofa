@@ -2,7 +2,7 @@
 <Node name="root" dt="0.001" gravity="0 -981 0">
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
-    <GenericConstraintSolver />
+    <GenericConstraintSolver tolerance="0.001" maxIterations="1000"/>
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
@@ -33,7 +33,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" triangulate="1" />
@@ -49,7 +49,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3d" object1="CUBE_0/Constraints/points" object2="CUBE_1/Constraints/points" first_point="0" second_point="0" />
+    <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_0/Constraints/points" object2="@CUBE_1/Constraints/points" first_point="0" second_point="0" />
     <Node name="CUBE_2">
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -58,7 +58,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 1 0 1.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
@@ -74,7 +74,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3d" object1="CUBE_1/Constraints/points" object2="CUBE_2/Constraints/points" first_point="1" second_point="0" />
+    <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_1/Constraints/points" object2="@CUBE_2/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_3">
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -83,7 +83,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 1 1 1.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
@@ -99,7 +99,7 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3d" object1="CUBE_2/Constraints/points" object2="CUBE_3/Constraints/points" first_point="1" second_point="0" />
+    <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_2/Constraints/points" object2="@CUBE_3/Constraints/points" first_point="1" second_point="0" />
     <Node name="CUBE_4">
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -108,7 +108,7 @@
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 0 1 1.0" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="ColliCube">
             <MeshObjLoader name="loader" filename="mesh/cube.obj" />
@@ -124,5 +124,5 @@
             <RigidMapping />
         </Node>
     </Node>
-    <BilateralInteractionConstraint template="Vec3d" object1="CUBE_2/Constraints/points" object2="CUBE_4/Constraints/points" first_point="1" second_point="0" />
+    <BilateralInteractionConstraint template="Vec3d" object1="@CUBE_2/Constraints/points" object2="@CUBE_4/Constraints/points" first_point="1" second_point="0" />
 </Node>

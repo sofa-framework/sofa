@@ -194,6 +194,10 @@ void QSofaViewer::mousePressEvent ( QMouseEvent * event )
             cout << "no particle glpicked" << endl;
         }
     }
+    else if(isControlPressed()){
+        _sofaGL->glPick(event->x(), event->y());
+        update();
+    }
     else {
         if( _camera.handleMouseButton(
             event->button()==Qt::LeftButton ? Camera::ButtonLeft : event->button()==Qt::MiddleButton ? Camera::ButtonMiddle : Camera::ButtonRight ,

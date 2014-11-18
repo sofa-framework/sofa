@@ -12,7 +12,7 @@
         <!--  Barycenter = 0, Circumcenter = 1 -->
         <Node name="VisualModel">
             <OglModel name="Space" color="green" />
-            <IdentityMapping name="mapping" object1="../.." object2="Space" />
+            <IdentityMapping name="mapping" input="@.." output="@Space" />
         </Node>
     </Node>
 </Node>

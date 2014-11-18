@@ -25,7 +25,7 @@
             <TriangleSetTopologyContainer name="Container2" position="@../loader.position" triangles="@subsetROI.trianglesInROI" />
             <TriangleSetTopologyModifier />
             <TriangleSetGeometryAlgorithms name="GeomAlgo" />
-            <SubsetTopologicalMapping object1="Container1" object2="Container2" samePoints="true" handleTriangles="true" printLog="1" />
+            <SubsetTopologicalMapping input="@Container1" output="@Container2" samePoints="true" handleTriangles="true" printLog="1" />
             <MechanicalObject />
             <IdentityMapping />
             <TriangularFEMForceFieldOptim name="FEM1" youngModulus="1000" poissonRatio="0.3" showStressColorMap="red  1 0 0 1  1 0.5 0.5 1" />
@@ -37,7 +37,7 @@
             <TriangleSetTopologyContainer name="Container2" position="@../loader.position" triangles="@subsetROI.trianglesInROI" />
             <TriangleSetTopologyModifier />
             <TriangleSetGeometryAlgorithms name="GeomAlgo" />
-            <SubsetTopologicalMapping object1="Container1" object2="Container2" samePoints="true" handleTriangles="true" printLog="1" />
+            <SubsetTopologicalMapping input="@Container1" output="@Container2" samePoints="true" handleTriangles="true" printLog="1" />
             <MechanicalObject />
             <IdentityMapping />
             <TriangularFEMForceFieldOptim name="FEM2" youngModulus="10000" poissonRatio="0.4" showStressColorMap="green  0 0.5 0 1  0.5 1 0 1" />

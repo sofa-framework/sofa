@@ -1,7 +1,7 @@
 <Node name="Scene" gravity="0 0 0" dt="0.1">
     <VisualStyle displayFlags="showBehavior showVisual" />
     <EulerImplicitSolver rayleighStiffness="1" rayleighMass="1" />
-    <CGLinearSolver template="GraphScattered" iterations="50" threshold="1e-008" />
+    <CGLinearSolver template="GraphScattered" iterations="50" threshold="1e-008" tolerance="1e-5"/>
     <MechanicalObject template="Rigid" name="rigidframe" position="0 0 0 0 0 0 1" />
     <UniformMass template="Rigid" name="mass" filename="BehaviorModels/r_femur.rigid" showAxisSizeFactor="1" />
     <FixedConstraint template="Rigid" name="constraint" indices="0" />
@@ -25,14 +25,14 @@
 			<MeshObjLoader name="loader" filename="mesh/r_femur.obj" />
 			<Mesh src="@loader" />
             <MechanicalObject template="Vec3d" name="deformed" />
-            <PCAOnRigidFrameMapping name="PCAmapping" template="Multi2[Vec1d,Rigid],Vec3d" basis="@../../basis/basis.position" input1="@../weights" input2="@../../rigidframe" output="@deformed" />
+            <PCAOnRigidFrameMapping name="PCAmapping" template="Vec1d,Rigid,Vec3d" basis="@../../basis/basis.position" input1="@../weights" input2="@../../rigidframe" output="@deformed" />
             <Node name="Visu">
                 <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/r_femur.obj" />
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
         </Node>
     </Node>
-	<StiffSpringForceField  template="Vec1d" name="ExternalSprings" object1="Femur/weights" object2="Ground/ground"
+	<StiffSpringForceField  template="Vec1d" name="ExternalSprings" object1="@Femur/weights" object2="@Ground/ground"
 							spring="0 0 10 0 0
 									1 0 10 0 0
 									2 0 10 0 0

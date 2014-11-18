@@ -1,7 +1,7 @@
 <Node name="root" dt="0.01">
     <VisualStyle displayFlags="showForceFields showCollisionModels" />
     <EulerImplicitSolver rayleighStiffness="0.01" rayleighMass="0.01" />
-    <CGLinearSolver template="GraphScattered" iterations="20" threshold="1e-008" />
+    <CGLinearSolver template="GraphScattered" iterations="20" threshold="1e-008" tolerance="1e-5" />
     <Node name="beamsprings">
         <MechanicalObject template="Vec3d" name="DOFs" translation="0 0 1" position="0 0 0  1 0 0  2 0 0  3 0 0  4 0 0  5 0 0  6 0 0  7 0 0" />
         <UniformMass mass="0.314" />
@@ -18,7 +18,7 @@
             <Point />
             <Node name="Visu">
                 <OglModel name="VisualModel" color="blue" />
-                <IdentityMapping object1="../.." object2="VisualModel" />
+                <IdentityMapping input="@.." output="@VisualModel" />
             </Node>
         </Node>
     </Node>
@@ -40,7 +40,7 @@
 						
 			<Node name="Visu">
 				<OglModel name="VisualModel" color="green" />
-				<IdentityMapping object1="../.." object2="VisualModel" />
+				<IdentityMapping input="@.." output="@VisualModel" />
 			</Node>
 		</Node> 
    </Node>  -->

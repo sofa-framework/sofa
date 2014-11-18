@@ -15,7 +15,7 @@
     <Node name="Composite elements with 3 differents material stiffnesses">
         <SparseGridMultipleTopology n="6 3 3" fileTopology="mesh/bubille_out.obj" fileTopologies="mesh/bubille_out.obj mesh/bubille_in1.obj mesh/bubille_in2.obj" nbVirtualFinerLevels="3" finestConnectivity="false" stiffnessCoefs="1 0.0001 50" massCoefs="1 1 1" />
         <EulerImplicit vdamping="0" rayleighMass="0" rayleighStiffness="0" />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
         <HexahedronCompositeFEMForceFieldAndMass drawType="0" lumpedMass="false" nbVirtualFinerLevels="2" youngModulus="600" poissonRatio="0.3" method="polar" density=".1" updateStiffnessMatrix="false" printLog="0" />
         <BoxConstraint box="-5 -2.1 -10    10 -1.9 10" />
@@ -27,16 +27,16 @@
             <Triangle />
             <Node name="Soft gelatin">
                 <OglModel name="VisualBody" fileMesh="mesh/bubille_out.obj" normals="0" color="0.1 .8 .3 .6" />
-                <IdentityMapping object1="../.." object2="VisualBody" />
+                <IdentityMapping input="@.." output="@VisualBody" />
             </Node>
         </Node>
         <Node name="soft bead">
             <OglModel name="VisualBody1" fileMesh="mesh/bubille_in1.obj" normals="0" color="1 0 0 1" />
-            <HexahedronCompositeFEMMapping object1="../.." object2="VisualBody1" />
+            <HexahedronCompositeFEMMapping input="@.." output="@VisualBody1" />
         </Node>
         <Node name="stiff bead">
             <OglModel name="VisualBody2" fileMesh="mesh/bubille_in2.obj" normals="0" color="0 0 1 1" />
-            <HexahedronCompositeFEMMapping object1="../.." object2="VisualBody2" />
+            <HexahedronCompositeFEMMapping input="@.." output="@VisualBody2" />
         </Node>
     </Node>
 </Node>

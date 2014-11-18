@@ -9,11 +9,11 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" name="DOFs" position="0 0 0 0 0 0 1" />
-        <UniformMass name="mass" mass="1" showAxisSizeFactor="0.1" />
+        <UniformMass name="mass" totalmass="1" showAxisSizeFactor="0.1" />
         <ParabolicConstraint name="parabol" indices="0" P1="1 0 0" P2="5 3 1" P3="7 6 -5" BeginTime="0.5" EndTime="1.5" />
         <Node name="Visu">
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
-            <RigidMapping object1="../.." object2="VisualModel" name="visual mapping" />
+            <RigidMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />

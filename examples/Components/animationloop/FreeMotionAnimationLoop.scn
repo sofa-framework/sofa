@@ -29,7 +29,7 @@
         <PrecomputedConstraintCorrection rotations="true" recompute="1"/>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="-12" dy="0" dz="0" rx="0" ry="0" rz="0" scale="5.0"/>
-            <BarycentricMapping object1="../.." object2="Visual"/>
+            <BarycentricMapping input="@.." output="@Visual"/>
         </Node>
         <Node name="Surf2">
             <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj"/>
@@ -43,13 +43,13 @@
     </Node>
     <Node name="Torus3">
         <EulerImplicitSolver/>
-        <CGLinearSolver iterations="25"/>
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject template="Rigid" scale="5.0" dx="-25" dy="0"/>
         <UniformMass filename="BehaviorModels/torus2.rigid" totalMass="0.02"/>
         <UncoupledConstraintCorrection/>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="1.0 0.5 0.25 1.0" scale="5.0"/>
-            <RigidMapping object1="../.." object2="Visual"/>
+            <RigidMapping input="@.." output="@Visual"/>
         </Node>
         <Node name="Surf2">
             <MeshObjLoader filename="mesh/torus2_for_collision.obj" name="loader"/>

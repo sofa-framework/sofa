@@ -145,13 +145,34 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
     }
     BaseObject::SPtr sptr;
     context->get<BaseObject>(sptr,path);
-	if (!sptr)
-	{
+    if (!sptr)
+    {
         SP_MESSAGE_WARNING( "BaseContext_getObject: component "<<path<<" not found (the complete relative path is needed)" )
-		Py_RETURN_NONE;
-	}
+        Py_RETURN_NONE;
+    }
 
     return SP_BUILD_PYSPTR(sptr.get());
+}
+
+extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * /*args*/)
+{
+    BaseContext* context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
+
+    if (!context)
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+    BaseObject::SPtr sptr;
+
+    sofa::helper::vector< boost::intrusive_ptr<BaseObject> > list;
+    context->get<BaseObject>(&list,sofa::core::objectmodel::BaseContext::Local);
+
+    PyObject *pyList = PyList_New(list.size());
+    for (size_t i=0; i<list.size(); i++)
+        PyList_SetItem(pyList, (Py_ssize_t)i, SP_BUILD_PYSPTR(list[i].get()));
+
+    return pyList;
 }
 
 SP_CLASS_METHODS_BEGIN(BaseContext)
@@ -162,6 +183,7 @@ SP_CLASS_METHOD(BaseContext,getGravity)
 SP_CLASS_METHOD(BaseContext,setGravity)
 SP_CLASS_METHOD_KW(BaseContext,createObject)
 SP_CLASS_METHOD(BaseContext,getObject)
+SP_CLASS_METHOD(BaseContext,getObjects)
 SP_CLASS_METHODS_END
 
 

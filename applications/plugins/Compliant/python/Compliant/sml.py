@@ -60,9 +60,17 @@ class Scene:
             # rigids
             self.rigids=dict()
             for r in model.iter("rigid"):
-                print "rigid:", r.attrib["name"]
-                rigid = StructuralAPI.RigidBody(self.node, r.attrib["name"])
-                self.rigids[r.attrib["name"]] = rigid
+                name = r.attrib["id"]
+                if r.find("name") is not None:
+                    name = r.find("name").text
+                print "rigid:", name
+                
+                if r.attrib["id"] in self.rigids:
+                    print "ERROR: Compliant.sml.scene: rigid defined twice, id:", r.attrib["id"]
+                    return
+                
+                rigid = StructuralAPI.RigidBody(self.node, name)
+                self.rigids[r.attrib["id"]] = rigid
                 
                 meshfile = os.path.join(self.sceneDir, r.find("mesh").text)
                 
@@ -80,12 +88,19 @@ class Scene:
             # joints
             self.joints=dict()
             for j in model.iter("joint"):
-                print "joint:", j.attrib["name"]
+                name = j.attrib["id"]
+                if j.find("name") is not None:
+                    name = j.find("name").text
+                print "joint:", name
+                
+                if j.attrib["id"] in self.joints:
+                    logging.error("ERROR: Compliant.sml.scene: joint defined twice, id:", j.attrib["id"])
+                    return
                 
                 parent = j.find("parent")
-                parentOffset = self.addOffset("offset_{0}".format(j.attrib["name"]), parent.attrib["name"], parent.find("offset"))
+                parentOffset = self.addOffset("offset_{0}".format(name), parent.attrib["id"], parent.find("offset"))
                 child = j.find("child")
-                childOffset = self.addOffset("offset_{0}".format(j.attrib["name"]), child.attrib["name"], child.find("offset"))
+                childOffset = self.addOffset("offset_{0}".format(name), child.attrib["id"], child.find("offset"))
                 
                 # dofs
                 mask = [1] * 6
@@ -93,24 +108,24 @@ class Scene:
                     mask[int(dof.attrib["index"])]=0
                     #TODO limits !
                 
-                joint = StructuralAPI.GenericRigidJoint(j.attrib["name"], parentOffset.node, childOffset.node, mask)
-                self.joints[j.attrib["name"]] = joint
+                joint = StructuralAPI.GenericRigidJoint(name, parentOffset.node, childOffset.node, mask)
+                self.joints[j.attrib["id"]] = joint
                         
-    def addOffset(self, name, rigidName, xmlOffset):
+    def addOffset(self, name, rigidId, xmlOffset):
         """ add xml defined offset to rigid
         """
-        if rigidName not in self.rigids:
-            print "ERROR: Compliant.sml.Scene: rigid {0} is unknown".format(rigidName)
+        if rigidId not in self.rigids:
+            print "ERROR: Compliant.sml.Scene: rigid {0} is unknown".format(rigidId)
             return None
         
         if xmlOffset is None:
             # just return rigid frame
-            return self.rigids[rigidName]
+            return self.rigids[rigidId]
         
         if xmlOffset.attrib["type"] is "absolute":
-            offset = self.rigids[rigidName].addAbsoluteOffset(name, SofaPython.Tools.strToListFloat(xmlOffset.text))
+            offset = self.rigids[rigidId].addAbsoluteOffset(name, SofaPython.Tools.strToListFloat(xmlOffset.text))
         else:
-            offset = self.rigids[rigidName].addOffset(name, SofaPython.Tools.strToListFloat(xmlOffset.text))
+            offset = self.rigids[rigidId].addOffset(name, SofaPython.Tools.strToListFloat(xmlOffset.text))
         offset.dofs.showObject = self.param.showOffset
         offset.dofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showOffsetScale)
         return offset

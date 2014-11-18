@@ -11,7 +11,7 @@
     <Node name="Pendulum Static Mesh">
         <MechanicalObject template="Vec3d" name="DOF" position="0 0 4 1 0 4 2 0 4 3 0 4 4 0 4 5 0 4" />
         <UniformMass template="Vec3d" name="Mass" totalmass="1" />
-        <CGLinearSolver template="GraphScattered" name="CG solver" />
+        <CGLinearSolver template="GraphScattered" name="CG solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <EulerImplicitSolver name="EulerImplicit" />
         <FixedConstraint template="Vec3d" name="Fixed dof" indices="0" />
         <MeshTopology name="Static Mesh" edges="0 1  1 2  2 3  3 4  4 5 " />
@@ -20,7 +20,7 @@
     <Node name="Pendulum No Mesh">
         <MechanicalObject template="Vec3d" name="DOF" position="0 0 -4 1 0 -4 2 0 -4 3 0 -4 4 0 -4 5 0 -4" />
         <UniformMass template="Vec3d" name="Mass" totalmass="1" />
-        <CGLinearSolver template="GraphScattered" name="CG solver" />
+        <CGLinearSolver template="GraphScattered" name="CG solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <EulerImplicitSolver name="EulerImplicit" />
         <FixedConstraint template="Vec3d" name="Fixed dof" indices="0" />
         <MeshTopology name="Static Mesh" />

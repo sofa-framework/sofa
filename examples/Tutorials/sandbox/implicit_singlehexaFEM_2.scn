@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <Node dt="0.02"  >
 	<EulerImplicitSolver />
-	<CGLinearSolver  />
-    <VisualStyle displayFlags="showBehavior" />
+	<CGLinearSolver  iterations="25" tolerance="1e-5" threshold="1e-5"/>
+        <VisualStyle displayFlags="showBehavior" />
 	<Node >
 		<RegularGridTopology />
 		<MechanicalObject showIndices="1"  showIndicesScale="0.0004" />

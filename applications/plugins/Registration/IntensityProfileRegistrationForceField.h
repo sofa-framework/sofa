@@ -134,12 +134,13 @@ public:
     CImg<bool> mask;
     CImg<bool> similarityMask;
 
-    Data<bool> useAnisotropicStiffness;
-
     /*
         The threshold for the signal between two 'edges'
     */
     Data<Real> edgeIntensityThreshold;
+
+    Data<bool> useAnisotropicStiffness;
+
     /*
         True if the point should look for a change from high to low 
         signal value in the direction of its normal.

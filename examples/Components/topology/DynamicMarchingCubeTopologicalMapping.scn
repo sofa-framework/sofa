@@ -7,7 +7,7 @@
     <DefaultCollisionGroupManager name="default0" />
     <Node name="Voxels">
         <EulerImplicitSolver />
-        <CGLinearSolver />
+        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <VoxelGridLoader name="gridLoader" filename="textures/Test_64_64_4.raw" voxelSize="1 1 1" resolution="64 64 4" bgValue="0" />
         <MechanicalObject name="Hexa" src="@gridLoader" translation="5 5 5" />
         <DynamicSparseGridTopologyContainer name="Container" src="@gridLoader" />
@@ -23,11 +23,11 @@
             <TriangleSetTopologyModifier />
             <TriangleSetTopologyAlgorithms />
             <TriangleSetGeometryAlgorithms />
-            <DynamicMarchingCubeTopologicalMapping name="TopoMapping" listening="1" object1="../../Container" object2="Container" smoothIterations="10" />
-            <BarycentricMapping name="BarycentricMapping" object1="../../Hexa" object2="Triangles" />
+            <DynamicMarchingCubeTopologicalMapping name="TopoMapping" listening="1" input="@../Container" output="@Container" smoothIterations="10" />
+            <BarycentricMapping name="BarycentricMapping" input="@../Hexa" output="@Triangles" />
             <Node name="Visual Model">
                 <OglModel name="Visual" />
-                <IdentityMapping name="IdentityMapping" object1="../../Triangles" object2="Visual" />
+                <IdentityMapping name="IdentityMapping" input="@../Triangles" output="@Visual" />
             </Node>
             <Node name="Collision Model">
                 <TriangleModel name="CollisionModel" />
