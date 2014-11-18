@@ -153,17 +153,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 
         //ctime_t t0 = begin(node, node->collisionPipeline);
 #ifndef SOFA_SMP
-        {
-            CollisionBeginEvent evBegin;
-            PropagateEventVisitor eventPropagation(this->params /* PARAMS FIRST */, &evBegin);
-            eventPropagation.execute(node);
-        }
         processCollisionPipeline(node, node->collisionPipeline);
-        {
-            CollisionEndEvent evEnd;
-            PropagateEventVisitor eventPropagation(this->params /* PARAMS FIRST */, &evEnd);
-            eventPropagation.execute(node);
-        }
 #endif
         //end(node, node->collisionPipeline, t0);
     }
