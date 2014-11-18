@@ -118,6 +118,9 @@ void SpringForceField<DataTypes>::reinit()
 template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
+    // Load
+    if (!fileSprings.getValue().empty())
+        load(fileSprings.getFullPath().c_str());
     this->Inherit::init();
     updateMaskStatus();
 }
@@ -206,7 +209,6 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     //if (!external)
     //	glColor4f(1,1,1,1);
     const helper::vector<Spring>& springs = this->springs.getValue();
-
     for (unsigned int i=0; i<springs.size(); i++)
     {
         Real d = (p2[springs[i].m2]-p1[springs[i].m1]).norm();

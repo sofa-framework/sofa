@@ -1,7 +1,7 @@
 #define SOFA_COMPONENT_COLLISION_RIGIDCONTACTMAPPER_CPP
 #include "BulletConvexHullContactMapper.h"
 #include <sofa/helper/Factory.inl>
-#include <sofa/component/collision/RigidContactMapper.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
 
 
 namespace sofa

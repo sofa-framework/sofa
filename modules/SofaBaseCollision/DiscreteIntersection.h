@@ -36,6 +36,7 @@
 #include <SofaBaseCollision/OBBIntTool.h>
 #include <SofaBaseCollision/BaseIntTool.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
+#include <SofaUserInteraction/RayModel.h>
 
 namespace sofa
 {

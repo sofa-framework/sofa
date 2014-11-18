@@ -69,8 +69,6 @@ namespace sofa {
         Quat testedQuaternion;
         /// Tested Translation: random translation
         Vec3 testedTranslation;
-        /// Seed for random value
-        long seed;
         /// Random generator
         sofa::helper::RandomGenerator randomGenerator;
 
@@ -78,10 +76,9 @@ namespace sofa {
         RigidLinearDeformationMappings_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "RigidLineDeformationMapping.scn")
         {   
             Inherited::errorMax = 5000;
-            seed=2;
             // rotation and translation
-            randomGenerator.initSeed(seed);
-            this->SetRandomTestedRotationAndTranslation(seed);
+            randomGenerator.initSeed(BaseSofa_test::seed);
+            this->SetRandomTestedRotationAndTranslation();
             typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
             typename AffineMovementConstraint::SPtr affineConstraint  = this->root->template get<AffineMovementConstraint>(this->root->SearchDown);
             affineConstraint->m_quaternion.setValue(testedQuaternion);
@@ -90,7 +87,7 @@ namespace sofa {
 
         }
              
-        void SetRandomTestedRotationAndTranslation(int /*seedValue*/)
+        void SetRandomTestedRotationAndTranslation()
         {
             // Random Rotation
             SReal x,y,z,w;

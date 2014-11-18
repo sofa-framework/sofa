@@ -97,6 +97,8 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
     void draw(const core::visual::VisualParams* vparams)
     {
+
+#ifndef SOFA_NO_OPENGL
         if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
         glEnable(GL_LIGHTING);
@@ -123,6 +125,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
             }
         }
+#endif /* SOFA_NO_OPENGL */
     }
 	
 };

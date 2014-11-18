@@ -108,11 +108,9 @@ Dart EmbeddedMap3::cutEdge(Dart d)
         Dart f = d;
         do
         {
-            if (!this->isBoundaryMarked<3>(f)) {
-                unsigned int fEmb = getEmbedding<FACE>(f) ;
-                setDartEmbedding<FACE>(phi1(f), fEmb);
-                setDartEmbedding<FACE>(phi3(f), fEmb);
-            }
+            unsigned int fEmb = getEmbedding<FACE>(f) ;
+            setDartEmbedding<FACE>(phi1(f), fEmb);
+            setDartEmbedding<FACE>(phi3(f), fEmb);
             f = alpha2(f);
         } while(f != d);
     }
@@ -122,11 +120,9 @@ Dart EmbeddedMap3::cutEdge(Dart d)
         Dart f = d;
         do
         {
-            if (!this->isBoundaryMarked<3>(f)) {
-                unsigned int vEmb = getEmbedding<VOLUME>(f) ;
-                setDartEmbedding<VOLUME>(phi1(f), vEmb);
-                setDartEmbedding<VOLUME>(phi2(f), vEmb);
-            }
+            unsigned int vEmb = getEmbedding<VOLUME>(f) ;
+            setDartEmbedding<VOLUME>(phi1(f), vEmb);
+            setDartEmbedding<VOLUME>(phi2(f), vEmb);
             f = alpha2(f);
         } while(f != d);
     }
@@ -260,22 +256,18 @@ void EmbeddedMap3::splitFace(Dart d, Dart e)
         setDartEmbedding<FACE>(phi_1(ee), fEmb) ;
         Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(*this, e);
         Algo::Topo::copyCellAttributes<FACE>(*this, e, d);
+
     }
 
     if(isOrbitEmbedded<VOLUME>())
     {
-        if (!this->isBoundaryMarked<3>(d)) {
-            unsigned vEmb1 = getEmbedding<VOLUME>(d) ;
-            if (vEmb1 == EMBNULL)
-                std::exit(3);
-            setDartEmbedding<VOLUME>(phi_1(d),  vEmb1);
-            setDartEmbedding<VOLUME>(phi_1(e),  vEmb1);
-        }
-        if (!this->isBoundaryMarked<3>(dd)) {
-            unsigned int vEmb2 = getEmbedding<VOLUME>(dd) ;
-            setDartEmbedding<VOLUME>(phi_1(dd),  vEmb2);
-            setDartEmbedding<VOLUME>(phi_1(ee),  vEmb2);
-        }
+        unsigned int vEmb1 = getEmbedding<VOLUME>(d) ;
+        setDartEmbedding<VOLUME>(phi_1(d),  vEmb1);
+        setDartEmbedding<VOLUME>(phi_1(e),  vEmb1);
+
+        unsigned int vEmb2 = getEmbedding<VOLUME>(dd) ;
+        setDartEmbedding<VOLUME>(phi_1(dd),  vEmb2);
+        setDartEmbedding<VOLUME>(phi_1(ee),  vEmb2);
     }
 }
 
@@ -455,7 +447,6 @@ bool EmbeddedMap3::mergeVolumes(Dart d, bool deleteFace)
     if (deleteVolumeID == CGoGN::EMBNULL)
         return false;
     //    std::cerr << "mergeVolumes deletedFaceID = " << deletedFaceID << std::endl;
-
     if(Map3::mergeVolumes(d, deleteFace))
     {
         if (isOrbitEmbedded<VOLUME>())
@@ -466,8 +457,10 @@ bool EmbeddedMap3::mergeVolumes(Dart d, bool deleteFace)
         if (deleteFace && (deletedFaceID != EMBNULL)) {
             getAttributeContainer(FACE).updateHole(deletedFaceID);
         }
+//        this->check();
         return true;
     }
+//    this->check();
     return false;
 }
 
@@ -528,7 +521,7 @@ void EmbeddedMap3::splitVolume(std::vector<Dart>& vd)
         Algo::Topo::copyCellAttributes<VOLUME>(*this, v23, v);
         Algo::Topo::setOrbitEmbedding<VOLUME>(*this,v, this->getEmbedding<VOLUME>(v));
     }
-//    assert(this->template checkEmbeddings<VOLUME>());
+    //    assert(this->template checkEmbeddings<VOLUME>());
 }
 
 //! Split a volume into two volumes along a edge path and add the given face between
@@ -707,6 +700,9 @@ bool EmbeddedMap3::check() const
                     getEmbedding<FACE>(d) != getEmbedding<FACE>(phi3(d)) )
             {
                 std::cerr << "Check: different embeddings on face" << std::endl ;
+                std::cerr << "getEmbedding<FACE>(d) : " << getEmbedding<FACE>(d) << std::endl;
+                std::cerr << "getEmbedding<FACE>(phi1(d)) : " << getEmbedding<FACE>(phi1(d)) << std::endl;
+                std::cerr << "getEmbedding<FACE>(phi3(d)) : " << getEmbedding<FACE>(phi3(d)) << std::endl;
                 return false ;
             }
         }

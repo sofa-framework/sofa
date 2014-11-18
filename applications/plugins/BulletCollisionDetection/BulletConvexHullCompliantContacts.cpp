@@ -4,9 +4,9 @@
 #include <Compliant/contact/FrictionCompliantContact.h>
 
 
-#include <sofa/component/collision/FrictionContact.inl>
-#include <sofa/component/collision/RigidContactMapper.inl>
-#include <sofa/component/collision/BarycentricContactMapper.inl>
+#include <SofaConstraint/FrictionContact.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
 #include "BulletConvexHullContactMapper.h"
 
 
@@ -22,6 +22,7 @@ namespace collision
 using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::Node;
+using core::collision::Contact;
 
 Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, BulletConvexHullModel> > BCHullBCHullCompliantContactClassClass("CompliantContact",true);
 Creator<Contact::Factory, CompliantContact<BulletConvexHullModel, CylinderModel> > BCHullCylinderCompliantContactClassClass("CompliantContact",true);

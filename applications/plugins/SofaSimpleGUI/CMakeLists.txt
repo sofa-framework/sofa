@@ -25,17 +25,6 @@ VisualPickVisitor.cpp
 
 	)
 
-if(SOFA-LIB_GUI_QT)
-    UseQt()
-    set(SOURCE_FILES  ${SOURCE_FILES}
-        QSofaScene.cpp
-    )
-    set(HEADER_FILES ${HEADER_FILES}
-        QSofaScene.h
-    )
-    SOFA_QT4_WRAP_CPP(MOC_FILES QSofaScene.h)
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES}  ${MOC_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SOFASIMPLEGUI")

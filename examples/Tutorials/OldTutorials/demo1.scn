@@ -4,29 +4,30 @@
     <Node name="Poutre1">
         <EulerImplicit />
         <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+        <MeshGmshLoader name="loader" filename="mesh/smCube27.msh" />
         <Node name="M1">
-            <MechanicalObject filename="BehaviorModels/smCube27.xs3" />
+            <MechanicalObject src="@../loader"/>
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
-            <FixedConstraint indices="0" />
+            <FixedConstraint indices="0 3 6 9 12 15 18 21 24" />
         </Node>
         <Node name="M2">
-            <MechanicalObject filename="BehaviorModels/smCube27.xs3" dz="10.5" />
+            <MechanicalObject src="@../loader" dz="10.5" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
         <Node name="M3">
-            <MechanicalObject filename="BehaviorModels/smCube27.xs3" dz="21" />
+            <MechanicalObject src="@../loader" dz="21" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
         <Node name="M4">
-            <MechanicalObject filename="BehaviorModels/smCube27.xs3" dz="31.5" />
+            <MechanicalObject src="@../loader" dz="31.5" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>
         <Node name="M5">
-            <MechanicalObject filename="BehaviorModels/smCube27.xs3" dz="42" />
+            <MechanicalObject src="@../loader" dz="42" />
             <DiagonalMass filename="BehaviorModels/smCube27.xs3" />
             <StiffSpringForceField name="Springs" filename="BehaviorModels/smCube27.xs3" />
         </Node>

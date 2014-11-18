@@ -30,6 +30,7 @@
 //#include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
 #include <sstream>
+#include <typeinfo>
 
 namespace sofa
 {
@@ -154,6 +155,8 @@ public:
     virtual void setScalarValue (void* data, size_t index, double value) const = 0;
     virtual void setTextValue(void* data, size_t index, const std::string& value) const = 0;
 
+	virtual const std::type_info* type_info() const = 0;
+
 protected: // only derived types can instantiate this class
     AbstractTypeInfo() {}
     virtual ~AbstractTypeInfo() {}
@@ -236,6 +239,9 @@ public:
     {
         Info::setValueString(*(DataType*)data, index, value);
     }
+
+    virtual const std::type_info* type_info() const { return &typeid(DataType); }
+
 
 protected: // only derived types can instantiate this class
     VirtualTypeInfo() {}

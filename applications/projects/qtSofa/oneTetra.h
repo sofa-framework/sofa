@@ -41,7 +41,7 @@
 //#include <sofa/helper/system/glut.h>
 
 //#include <sofa/simulation/tree/GNode.h>
-//#include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 
 #include <iostream>
 #include <fstream>
@@ -63,6 +63,7 @@ using sofa::core::objectmodel::New;
 // ---------------------------------------------------------------------
 Node::SPtr oneTetra()
 {
+	sofa::simulation::getSimulation()->unload(sofa::simulation::getSimulation()->GetRoot());
     Node::SPtr groot = sofa::simulation::getSimulation()->createNewGraph("root");
 
     // solver

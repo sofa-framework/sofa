@@ -112,8 +112,7 @@ public:
     static MyVecId externalForce()  { return MyVecId(6); }
     static MyVecId dx()             { return MyVecId(7); }
     static MyVecId dforce()         { return MyVecId(8); }
-    static MyVecId accFromFrame()   { return MyVecId(9); }
-    enum { V_FIRST_DYNAMIC_INDEX = 11 }; ///< This is the first index used for dynamically allocated vectors
+    enum { V_FIRST_DYNAMIC_INDEX = 9 }; ///< This is the first index used for dynamically allocated vectors
 
     static std::string getName(const MyVecId& v)
     {
@@ -137,8 +136,6 @@ public:
         case 7: result+= "dx";
             break;
         case 8: result+= "dforce";
-            break;
-        case 9: result+= "accFromFrame";
             break;
         default:
             std::ostringstream out;

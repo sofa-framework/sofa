@@ -82,14 +82,14 @@ def createScene(root):
     ##### JOINTS
     
     
-    hinge = StructuralAPI.HingeRigidJoint( 2, root, "hinge", basearmoffset.node, armbaseoffset.node )
+    hinge = StructuralAPI.HingeRigidJoint( 2, "hinge", basearmoffset.node, armbaseoffset.node )
     hinge.addLimits(-1,1)
     hinge.addResistance(100)
     
     
     
    
-    slider = StructuralAPI.SliderRigidJoint( 0, root, "slider", baseslideoffset.node, sliding.node )
+    slider = StructuralAPI.SliderRigidJoint( 0, "slider", baseslideoffset.node, sliding.node )
     slider.addResistance(10)
     slider.addLimits(-3,3)
     
