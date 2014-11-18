@@ -179,12 +179,11 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
             if( dist(x,y,z)>This->d_weightThreshold.getValue() ) // neglecting too small values
             {
                 unsigned int j=0;
-                while(j!=nbref && weights(x,y,z,j)>=dist(x,y,z)) j++;
-                if(j!=nbref)
+                while(j<nbref && weights(x,y,z,j)>=dist(x,y,z)) j++; // find the right ordered place
+                if(j<nbref) // no too small weight
                 {
-                    if(j!=nbref-1) for(unsigned int k=nbref-1; k>j; k--) { weights(x,y,z,k)=weights(x,y,z,k-1); indices(x,y,z,k)=indices(x,y,z,k-1); }
-                    weights(x,y,z,j)=dist(x,y,z);
-                    indices(x,y,z,j)=index+1;
+                    /*if(j!=nbref-1) */for(unsigned int k=nbref-1; k>j; k--) { weights(x,y,z,k)=weights(x,y,z,k-1); indices(x,y,z,k)=indices(x,y,z,k-1); } // ending weights are moved back
+                    weights(x,y,z,j)=dist(x,y,z); indices(x,y,z,j)=index+1; // current weight is inserted
                 }
             }
         }
@@ -633,7 +632,7 @@ public:
                 materialPtr = &material;
             }
 
-            if( materialPtr ) materialPtr->display("materialPtr");
+//            if( materialPtr ) materialPtr->display("materialPtr");
 
 
 
@@ -664,7 +663,7 @@ public:
                         break;
                 }
 
-                values.display("diffused");
+//                values.display("diffused");
 
                 DiffusionShapeFunctionSpecialization<ImageTypes::label>::updateWeights(this,i);
             }
