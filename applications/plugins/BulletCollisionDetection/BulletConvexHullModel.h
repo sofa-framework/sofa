@@ -2,19 +2,19 @@
 #define BULLET_CONVEX_HULL_MODEL
 
 #include <sofa/core/CollisionModel.h>
-#include "BulletCollision/CollisionShapes/btTriangleMesh.h"
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
-#include "BulletCollisionModel.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
+#include <BulletCollision/CollisionShapes/btTriangleMesh.h>
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
+#include <BulletCollisionModel.h>
+#include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "initBulletCollisionDetection.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <stack>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
-#include <bullet/HACD/hacdHACD.h>
+#include <HACD/hacdHACD.h>
 
 namespace sofa
 {

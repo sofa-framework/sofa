@@ -129,10 +129,10 @@ public:
         addForce(NULL, *this->mstate->write(core::VecDerivId::force()), *this->mstate->read(core::ConstVecCoordId::position()), *this->mstate->read(core::ConstVecDerivId::velocity()));
 
         // reinit matrices
-        if(this->assemble.getValue())
+        if(this->assemble.getValue() && BlockType::constantK)
         {
-            updateC();
-            updateK();
+            if( this->isCompliance.getValue() ) updateC();
+            else updateK();
             updateB();
         }
 
@@ -153,12 +153,12 @@ public:
         }
         _f.endEdit();
 
-//        if(!BlockType::constantK && this->assemble.getValue())
-//        {
-////            updateC(); // no need to update C on regular basis, if C is needed, the forcefield is a compliance and addForce is not call
-//            updateK();
-//            updateB();
-//        }
+        if(!BlockType::constantK && this->assemble.getValue())
+        {
+            /*if( this->isCompliance.getValue() ) updateC(); // addForce is not call for compliances (in the general case). Non-linear Compliance uses a non optimal as-hoc update in getComplianceMatrix
+            else*/ updateK();
+            updateB();
+        }
 
         if(this->f_printLog.getValue())
         {
@@ -191,7 +191,7 @@ public:
 
     const defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams * /*mparams*/)
     {
-        if(!this->assemble.getValue() || !BlockType::constantK)
+        if( !this->assemble.getValue() || !BlockType::constantK)
         {
             // MattN: quick and dirty fix to update the compliance matrix for a non-linear material
             // C is generally computed as K^{-1}, K is computed in addForce that is not call for compliances...
@@ -273,22 +273,15 @@ protected:
 
     void updateC()
     {
-        if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
         typename mstateType::ReadVecCoord X = this->mstate->readPositions();
 
         C.resizeBlocks(X.size(),X.size());
         for(unsigned int i=0; i<material.size(); i++)
         {
-//            vector<MatBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( material[i].getC() );
-//            C.appendBlockRow( i, columns, blocks );
             C.beginBlockRow(i);
             C.createBlock(i,material[i].getC());
             C.endBlockRow();
         }
-//        C.endEdit();
         C.compress();
     }
 
@@ -296,22 +289,15 @@ protected:
 
     void updateK()
     {
-        if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
         typename mstateType::ReadVecCoord X = this->mstate->readPositions();
 
         K.resizeBlocks(X.size(),X.size());
         for(unsigned int i=0; i<material.size(); i++)
         {
-//            vector<MatBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( material[i].getK() );
-//            K.appendBlockRow( i, columns, blocks );
             K.beginBlockRow(i);
             K.createBlock(i,material[i].getK());
             K.endBlockRow();
         }
-//        K.endEdit();
         K.compress();
     }
 
@@ -320,22 +306,15 @@ protected:
 
     void updateB()
     {
-        if(!(this->mstate)) { serr<<"state not found"<< sendl; return; }
         typename mstateType::ReadVecCoord X = this->mstate->readPositions();
 
         B.resizeBlocks(X.size(),X.size());
         for(unsigned int i=0; i<material.size(); i++)
         {
-//            vector<MatBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( material[i].getB() );
-//            B.appendBlockRow( i, columns, blocks );
             B.beginBlockRow(i);
             B.createBlock(i,material[i].getB());
             B.endBlockRow();
         }
-//        B.endEdit();
         B.compress();
     }
 

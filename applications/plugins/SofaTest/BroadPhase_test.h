@@ -460,7 +460,7 @@ sofa::defaulttype::Vector3 randVect(const sofa::defaulttype::Vector3 & min,const
     sofa::defaulttype::Vector3 extents = max - min;
 
     sofa::helper::RandomGenerator randomGenerator;
-    randomGenerator.initSeed((unsigned int)time(NULL));
+    randomGenerator.initSeed(seed);
 
     for(int i = 0 ; i < 3 ; ++i){
         ret[i] = ((randomGenerator.random<double>())/RAND_MAX) * extents[i] + min[i];

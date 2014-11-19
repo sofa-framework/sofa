@@ -34,6 +34,7 @@ class ColorMap_Image(Sofa.PythonScriptController):
 #		data = [ [vonMises3d(item)] for item in E]
 		data = [ [norm(item)] for item in E]
 		self.disp.findData('VoxelData').value= str(data)
+		self.disp.reinit()
 		return 0
 
 

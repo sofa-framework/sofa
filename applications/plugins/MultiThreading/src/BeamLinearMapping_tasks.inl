@@ -44,8 +44,8 @@ namespace mapping
 	BeamLinearMapping_mt< TIn, TOut>::applyTask::applyTask( const simulation::Task::Status* status ) 
 		: Task( status )
 		, _mapping(0)	
-		, _out(0)
 		, _in(0)
+		, _out(0)
 		, _firstPoint(0)
 		, _lastPoint(0)
 
@@ -56,12 +56,10 @@ namespace mapping
 	template <class TIn, class TOut>
 	bool BeamLinearMapping_mt< TIn, TOut>::applyTask::run( simulation::WorkerThread* )
 	{
-		bool result = true;
-
-		for(int i = _firstPoint; i < _lastPoint; ++i )	
+		for (size_t i = _firstPoint; i < _lastPoint; ++i )
 		{
 			Coord inpos = _mapping->points[i];
-			int in0 = helper::rfloor(inpos[0]);
+			size_t in0 = helper::rfloor(inpos[0]);
 			if (in0<0) 
 				in0 = 0; 
 			else if (in0 > (int)_in->size()-2) 
@@ -83,11 +81,8 @@ namespace mapping
 			Real fact = (Real)inpos[0];
 			fact = 3*(fact*fact)-2*(fact*fact*fact);
 			(*_out)[i] = out0 * (1-fact) + out1 * (fact);
-
 		}
-
-
-		return result;
+		return true;
 	}
 
 
@@ -95,8 +90,8 @@ namespace mapping
 	BeamLinearMapping_mt< TIn, TOut>::applyJTask::applyJTask( const simulation::Task::Status* status ) 
 		: Task( status )
 		, _mapping(0)	
-		, _out(0)
 		, _in(0)
+		, _out(0)
 		, _firstPoint(0)
 		, _lastPoint(0)
 
@@ -107,9 +102,7 @@ namespace mapping
 	template <class TIn, class TOut>
 	bool BeamLinearMapping_mt< TIn, TOut>::applyJTask::run( simulation::WorkerThread* )
 	{
-		bool result = true;
-
-		for(int i = _firstPoint; i < _lastPoint; ++i )	
+		for (size_t i = _firstPoint; i < _lastPoint; ++i )
 		{
 
 			// out = J in
@@ -117,7 +110,7 @@ namespace mapping
 			//out[i] =  v - cross(rotatedPoints[i],omega);
 
             defaulttype::Vec<N, typename In::Real> inpos = _mapping->points[i];
-			int in0 = helper::rfloor(inpos[0]);
+			size_t in0 = helper::rfloor(inpos[0]);
 			if (in0<0) 
 				in0 = 0; 
 			else if (in0 > (int)_in->size()-2) 
@@ -126,7 +119,6 @@ namespace mapping
 
             const typename In::Deriv _in0 = (*_in)[in0];
             const typename In::Deriv _in1 = (*_in)[in0+1];
-			Real beamLengh = _mapping->beamLength[in0];
 			Coord& rotatedPoint0 = _mapping->rotatedPoints0[i];
 			Coord& rotatedPoint1 = _mapping->rotatedPoints1[i];
 
@@ -138,10 +130,7 @@ namespace mapping
 			fact = 3*(fact*fact)-2*(fact*fact*fact);
 			
 			(*_out)[i] = out0 * (1-fact) + out1 * (fact);
-
 		}
-
-
 		return true;
 	}
 
@@ -150,8 +139,8 @@ namespace mapping
 	BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::applyJTmechTask( const simulation::Task::Status* status ) 
 		: Task( status )
 		, _mapping(0)	
-		, _out(0)
 		, _in(0)
+		, _out(0)
 		, _firstPoint(0)
 		, _lastPoint(0)
 
@@ -162,9 +151,7 @@ namespace mapping
 	template <class TIn, class TOut>
 	bool BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask::run( simulation::WorkerThread* )
 	{
-		bool result = true;
-
-		for(int i = _firstPoint; i < _lastPoint; ++i )	
+		for (size_t i = _firstPoint; i < _lastPoint; ++i )
 		{
 
 			// out = Jt in
@@ -177,7 +164,7 @@ namespace mapping
 			//omega += cross(rotatedPoints[i],f);
 
 			defaulttype::Vec<N, typename In::Real> inpos = _mapping->points[i];
-			int in0 = helper::rfloor(inpos[0]);
+			size_t in0 = helper::rfloor(inpos[0]);
 			if (in0<0) 
 				in0 = 0; 
 			else if (in0 > (int)_out->size()-2) 
@@ -199,8 +186,6 @@ namespace mapping
 			getVOrientation(_out1) += cross( rotatedPoint1, f) * (fact);
 
 		}
-
-
 		return true;
 	}
 
@@ -209,8 +194,8 @@ namespace mapping
 	//BeamLinearMapping_mt< TIn, TOut>::applyJTconstrTask::applyJTconstrTask( const simulation::Task::Status* status ) 
 	//	: Task( status )
 	//	, _mapping(0)	
-	//	, _out(0)
 	//	, _in(0)
+	//	, _out(0)
 	//	, _firstPoint(0)
 	//	, _lastPoint(0)
 
@@ -223,7 +208,7 @@ namespace mapping
 	//{
 	//	bool result = true;
 
-	//	for(int i = _firstPoint; i < _lastPoint; ++i )	
+	//	for (size_t i = _firstPoint; i < _lastPoint; ++i )
 	//	{
 
 	//	}

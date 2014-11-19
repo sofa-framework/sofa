@@ -226,8 +226,11 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(core::MultiVecDerivId 
     {
         setGroup(g);
         currentGroup->solutionVecId = v;
-        //this->multiVector2BaseVector(v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor));
-        executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::ExecParams::defaultInstance(), v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+        if (!currentGroup->solutionVecId.isNull())
+        {
+            //this->multiVector2BaseVector(v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor));
+            executeVisitor( simulation::MechanicalMultiVectorToBaseVectorVisitor( core::ExecParams::defaultInstance(), v, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) );
+        }
     }
 }
 

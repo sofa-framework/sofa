@@ -135,7 +135,7 @@
 
 	    	<MechanicalObject template="F331" name="F"  />
 	    	<GaussPointContainer position="@sampler.position"  showSamplesScale="0"/>
-	    	<LinearMapping template="Affine,F331" restPosition="@sampler.position" showDeformationGradientScale="0" mapForces="0"/>
+	    	<LinearMapping template="Vec3d,F331" restPosition="@sampler.position" showDeformationGradientScale="0" mapForces="0"/>
 
 	      	<Node 	name="E"   >
 			<MechanicalObject  template="E331" name="E"  />
