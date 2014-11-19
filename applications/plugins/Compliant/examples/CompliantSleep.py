@@ -46,7 +46,6 @@ def createScene(root):
     root.createObject('NewProximityIntersection', alarmDistance=0.5, contactDistance=0.05)
     root.createObject('BruteForceDetection')
     root.createObject('DefaultContactManager', response='FrictionCompliantContact', responseParams="mu=0.01")
-    root.createObject('BruteForceDetection')
     root.createObject('DefaultPipeline', depth=6)
 
     ##### Sleep
