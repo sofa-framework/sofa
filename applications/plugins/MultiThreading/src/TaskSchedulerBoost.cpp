@@ -39,12 +39,10 @@ namespace sofa
 			if ( mIsInitialized ) 
 			{
 				//stop();
-				mThread;
 			}
 			if ( mThread[0] != 0 )
 			{
 				//delete mThread[0]; 
-				mThread;
 			}
 		}
 
@@ -197,13 +195,12 @@ namespace sofa
 
 		WorkerThread::~WorkerThread()
 		{
-			this->mThread;
 			//{
 			//	release( this->mThread );
 			//}
 		}		
 
-        bool WorkerThread::attachToThisThread(TaskScheduler* pScheduler)
+        bool WorkerThread::attachToThisThread(TaskScheduler* /*pScheduler*/)
 		{
 
 			mTaskCount		= 0;
@@ -228,7 +225,7 @@ namespace sofa
 
 
 
-		boost::shared_ptr<boost::thread> WorkerThread::create_and_attach( TaskScheduler* const & taskScheduler)
+		boost::shared_ptr<boost::thread> WorkerThread::create_and_attach( TaskScheduler* const & /*taskScheduler*/)
 		{
 
 			//boost::shared_ptr<WorkerThread> worker( new WorkerThread(taskScheduler) );
@@ -499,7 +496,7 @@ namespace sofa
 		
 		// called once by each thread used
 		// by the TaskScheduler
-		bool runThreadSpecificTask(WorkerThread* thread, const Task *task )
+		bool runThreadSpecificTask(WorkerThread* thread, const Task * /*task*/ )
 		{
 
 			

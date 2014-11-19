@@ -34,7 +34,13 @@
    	<!--   <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="-1 -1 4"/>  -->
 	<!--   <ImageViewer template="ImageD" name="viewer" image="@SF.weights" transform="@SF.transform" plane="-1 -1 4"/>   -->
 
-   <ImageDensityMass  template="Affine3d,ShapeFunctiond" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" /> 
+<!--    <Node name="SFDisplay">
+        <ImageShapeFunctionSelectNode template="ImageD" name="selectNode" shapeFunctionWeights="@../SF.weights" shapeFunctionIndices="@../SF.indices" nodeIndex="1" />
+        <ImageViewer template="ImageD" name="viewerImage" image="@selectNode.nodeWeights" transform="@../../extruder.outputTransform" plane="5 5 5"/>
+    </Node>-->
+    
+    
+   <ImageDensityMass  template="Affine" densityImage="@../densityTF.outputImage" transform="@../extruder.outputTransform" lumping="0" /> 
 
     <Node 	name="behavior"   >
 
@@ -49,8 +55,8 @@
 	    <ImageValuesFromPositions name="youngM" position="@../sampler.position" image="@../../../youngM.outputImage" transform="@../../../extruder.outputTransform" />
 
 	    <MechanicalObject  template="E332" name="E"  />
-	    <GreenStrainMapping template="F332,E332"  />
-<!--             <CorotationalStrainMapping template="F332,E332" geometricStiffness="true" /> -->
+<!-- 	    <GreenStrainMapping template="F332,E332"  /> -->
+            <CorotationalStrainMapping template="F332,E332" geometricStiffness="false" method="svd" />
 	    <HookeForceField  template="E332" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="0"  />
 	</Node>
 		

@@ -2,13 +2,13 @@
 #define BULLET_CAPSULE_MODEL
 
 #include <SofaBaseCollision/CapsuleModel.h>
-#include "BulletCollision/CollisionShapes/btCompoundShape.h"
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
 #include "BulletCollisionModel.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
+#include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/RigidCapsuleModel.h>
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "initBulletCollisionDetection.h"
 #include <stack>
 

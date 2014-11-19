@@ -154,7 +154,7 @@ extern "C" PyObject * BaseContext_getObject(PyObject * self, PyObject * args)
     return SP_BUILD_PYSPTR(sptr.get());
 }
 
-extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
+extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * /*args*/)
 {
     BaseContext* context=dynamic_cast<BaseContext*>(((PySPtr<Base>*)self)->object.get());
 
@@ -169,8 +169,8 @@ extern "C" PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
     context->get<BaseObject>(&list,sofa::core::objectmodel::BaseContext::Local);
 
     PyObject *pyList = PyList_New(list.size());
-    for (int i=0; i<list.size(); i++)
-        PyList_SetItem(pyList,i,SP_BUILD_PYSPTR(list[i].get()));
+    for (size_t i=0; i<list.size(); i++)
+        PyList_SetItem(pyList, (Py_ssize_t)i, SP_BUILD_PYSPTR(list[i].get()));
 
     return pyList;
 }
