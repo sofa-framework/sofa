@@ -461,7 +461,7 @@ void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
 {
     assert(kkt);
 
-    static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( eparams, false );
+    static_cast<simulation::Node*>(getContext())->precomputeTraversalOrder( eparams );
 
     SolverOperations sop( eparams, this->getContext(), alpha.getValue(), beta.getValue(), dt, posId, velId, true/*, staticSolver.getValue()*/ );
 
