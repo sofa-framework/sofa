@@ -104,14 +104,13 @@ protected:
     {
         cleanDirty();
 
-        if(!this->VoxelData.getValue().size()) return;
-
         const SVector<SVector<To> >& dat = this->VoxelData.getValue();
+
         waImageo out(this->outputImage);
         raImagei in(this->inputImage);
         imCoordi dim = in->getDimensions();
         dim[InImageTypes::DIMENSION_T] = 1;
-        dim[InImageTypes::DIMENSION_S] = dat[0].size();
+        dim[InImageTypes::DIMENSION_S] = dat.size()?dat[0].size():1;
         out->setDimensions(dim);
 
         const CImg<Ti>& inImg=in->getCImg();
