@@ -27,7 +27,7 @@
 
 #include <vector>
 #include <sofa/helper/fixed_array.h>
-//#include <sofa/helper/vector.h>
+#include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
 #include <sstream>
 #include <typeinfo>
@@ -44,37 +44,77 @@ class vector;
 namespace defaulttype
 {
 
-/** Type traits class for objects stored in Data
+/** Type traits class for objects stored in Data.
 
-    DataTypeInfo is part of the introspection/reflection capabilities of the
-    Sofa scene graph API; it is used to manipulate Data values generically
-    in template code, and work with different types of containers, integers,
-    scalars (float, double...), strings, etc
+    %DataTypeInfo is part of the introspection/reflection capabilities of the
+    Sofa scene graph API; it is used to manipulate Data values generically in \a
+    template code, working transparently with different types of containers
+    (vector, fixed_array, etc), and different types of values (integers, scalars
+    (float, double), strings, etc). For example, it can be used to work with
+    arrays without having to handle all the possible array classes used in Sofa:
+    fixed or dynamic size, CPU or GPU, etc.
 
-    For example, it can be used to work with arrays without having to handle all
-    the possible array classes used in Sofa: fixed or dynamic size, CPU or GPU,
-    etc.
+    <h4>Small example</h4>
+
+    Iterate over the values of a DataType in templated code:
+    
+    \code{.cpp}
+    template<DataType>
+    MyComponent::someMethod(DataType& data) {
+        const size_t dim = defaulttype::DataTypeInfo<Coord>::size();
+        for(size_t i = 0; i < dim; ++i) {
+            DataTypeInfo<DataType>::ValueType value;
+            DataTypeInfo<Coord>::getValue(data, i, value);
+            // [...] Do something with 'value'
+        }
+    }
+    \endcode
+
+
+    <h4>Note about size and indices</h4>
+
+    The getValue() and setValue() methods take an index as a parameter, with the
+    following conventions:
+
+    - If a type is not a container, then the index \b must be 0.
+
+    - Multi-dimensional containers are abstracted to a single dimension.  This
+      allows iterating over any container using a single index, at the price of
+      some limitations.
+
+    \see AbstractTypeInfo provides similar mechanisms to manipulate Data objects
+    generically in non-template code.
 */
 template<class TDataType>
 struct DataTypeInfo
 {
+    /// Template parameter.
     typedef TDataType DataType;
-    typedef DataType BaseType; ///< class of type contained in DataType
-    typedef DataType ValueType; ///< type of the final atomic values
+    /// If the type is a container, this the type of the values inside this
+    /// container, otherwise this is DataType.
+    typedef DataType BaseType;
+    /// Type of the final atomic values (i.e. the values indexed by getValue()).
+    typedef DataType ValueType;
+    /// TypeInfo for BaseType
     typedef DataTypeInfo<BaseType> BaseTypeInfo;
+    /// TypeInfo for ValueType
     typedef DataTypeInfo<ValueType> ValueTypeInfo;
+    /**
+       \{
+     */
+    enum { ValidInfo       = 0 /**< 1 if this type has valid infos*/ };
+    enum { FixedSize       = 0 /**< 1 if this type has a fixed size*/ };
+    enum { ZeroConstructor = 0 /**< 1 if the constructor is equivalent to setting memory to 0*/ };
+    enum { SimpleCopy      = 0 /**< 1 if copying the data can be done with a memcpy*/ };
+    enum { SimpleLayout    = 0 /**< 1 if the layout in memory is simply N values of the same base type*/ };
+    enum { Integer         = 0 /**< 1 if this type uses integer values*/ };
+    enum { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
+    enum { Text            = 0 /**< 1 if this type uses text values*/ };
+    enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write*/ };
+    enum { Size = 1 /**< largest known fixed size for this type, as returned by size() */ };
 
-    enum { ValidInfo       = 0 }; ///< 1 if this type has valid infos
-    enum { FixedSize       = 0 }; ///< 1 if this type has a fixed size
-    enum { ZeroConstructor = 0 }; ///< 1 if the constructor is equivalent to setting memory to 0
-    enum { SimpleCopy      = 0 }; ///< 1 if copying the data can be done with a memcpy
-    enum { SimpleLayout    = 0 }; ///< 1 if the layout in memory is simply N values of the same base type
-    enum { Integer         = 0 }; ///< 1 if this type uses integer values
-    enum { Scalar          = 0 }; ///< 1 if this type uses scalar values
-    enum { Text            = 0 }; ///< 1 if this type uses text values
-    enum { CopyOnWrite     = 0 }; ///< 1 if this type uses copy-on-write
+    // \}
 
-    enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
     static size_t size() { return 1; }
 
     static size_t size(const DataType& /*data*/) { return 1; }
@@ -110,51 +150,119 @@ struct DataTypeName : public DataTypeInfo<TDataType>
 };
 
 
-/** Abstract type traits class for objects stored in Data
+/** Information about the type of a value stored in a Data.
 
-    AbstractTypeInfo is part of the introspection/reflection capabilities of the
-    Sofa scene graph API; it is used to manipulate Data values generically when
-    their type is unknown, and to get information about their type (Is it a
-    primitive type ? A string ? How much memory should be allocated to copy it?)
+    %AbstractTypeInfo is part of the introspection/reflection capabilities of
+    the Sofa scene graph API. It provides information about the type of the
+    content of Data objects (Is it a simple type?  A container? How much memory
+    should be allocated to copy it?), and allows manipulating Data generically,
+    without knowing their exact type.
 
-    Use BaseData::getValueTypeInfo() to get a pointer to an AbtractTypeInfo.
-
-    This class is primarily used to copy information accross BaseData, for
-    example when there exists a link between two instances of BaseData.
+    This class is primarily used to copy information accross BaseData objects,
+    for example when there exists a link between two instances of BaseData.
     E.g. this mecanism allows you to copy the content of a Data<vector<int>>
     into a Data<vector<double>>, because there is an acceptable conversion
     between integer and double, and because both Data use a resizable container.
+
+    <h4>Using TypeInfo</h4>
+
+    Use BaseData::getValueTypeInfo() to get a pointer to an AbtractTypeInfo, and
+    BaseData::getValueVoidPtr() to get a pointer to the content of a Data. You
+    can then use the methods of AbtractTypeInfo to access the Data generically.
+
+    Very basic example:
+    \code{.cpp}
+    BaseData *data = getADataFromSomewhere();
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    const void* ptr = data->getValueVoidPtr();
+    for (int i = 0 ; i < typeinfo->size(ptr) ; i++)
+    std::string value = typeinfo->getTextValue(ptr, 0);
+    \endcode
+
+    <h4>Note about size and indices</h4>
+
+    All the getValue() and setValue() methods take an index as a parameter,
+    which means that every type is abstracted to a one-dimensional container.
+    See the detailed description of DataTypeInfo for more explanations.
+
+    \see DataTypeInfo provides similar mechanisms to manipulate Data objects
+    generically in template code.
 */
 class AbstractTypeInfo
 {
 public:
+    /// If the type is a container, returns the TypeInfo for the type of the
+    /// values inside this container.
+    /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
+    /// returns the TypeInfo for `fixed_array<int, 2>`.
     virtual const AbstractTypeInfo* BaseType() const = 0;
+    /// Returns the TypeInfo for the type of the values accessible by the
+    /// get*Value() functions.
+    /// For example, if the type is `fixed_array<fixed_array<int, 2> 3>`, it
+    /// returns the TypeInfo for `int`.
     virtual const AbstractTypeInfo* ValueType() const = 0;
 
+    /// \brief Returns the name of this type.
     virtual std::string name() const = 0;
 
+    /// True iff the TypeInfo for this type contains valid information.
     virtual bool ValidInfo() const = 0;
+    /// True iff this type has a fixed size.
     virtual bool FixedSize() const = 0;
+    /// True iff the default constructor of this type is equivalent to setting the memory to 0.
     virtual bool ZeroConstructor() const = 0;
+    /// True iff copying the data can be done with a memcpy().
     virtual bool SimpleCopy() const = 0;
+    /// True iff the layout in memory is simply N values of the same base type.
     virtual bool SimpleLayout() const = 0;
+    /// True iff this type uses integer values.
     virtual bool Integer() const = 0;
+    /// True iff this type uses scalar values.
     virtual bool Scalar() const = 0;
+    /// True iff this type uses text values.
     virtual bool Text() const = 0;
+    /// True iff this type uses copy-on-write.
     virtual bool CopyOnWrite() const = 0;
+    /// True iff this type is a container of some sort.
+    ///
+    /// That is, if it can contain several values. In particular, strings are
+    /// not considered containers.
+    virtual bool Container() const = 0;
 
+    /// The size of this type, in number of elements.
+    /// For example, the size of a `fixed_array<fixed_array<int, 2> 3>` is 6,
+    /// and those six elements are conceptually numbered from 0 to 5.  This is
+    /// relevant only if FixedSize() is true.
     virtual size_t size() const = 0;
+    /// The size of \a data, in number of elements.
     virtual size_t size(const void* data) const = 0;
+    /// Resize \a data to \a size elements, if relevant.
+
+    /// But resizing is not always relevant, for example:
+    /// - nothing happens if FixedSize() is true;
+    /// - sets can't be resized; they are cleared instead;
+    /// - nothing happens for vectors containing resizable values (i.e. when
+    ///   BaseType()::FixedSize() is false), because of the "single index"
+    ///   abstraction;
     virtual void setSize(void* data, size_t size) const = 0;
 
+    /// Get the value at \a index of \a data as an integer.
+    /// Relevant only if this type can be casted to `long long`.
     virtual long long   getIntegerValue(const void* data, size_t index) const = 0;
+    /// Get the value at \a index of \a data as a scalar.
+    /// Relevant only if this type can be casted to `double`.
     virtual double      getScalarValue (const void* data, size_t index) const = 0;
+    /// Get the value at \a index of \a data as a string.
     virtual std::string getTextValue   (const void* data, size_t index) const = 0;
 
+    /// Set the value at \a index of \a data from an integer value.
     virtual void setIntegerValue(void* data, size_t index, long long value) const = 0;
+    /// Set the value at \a index of \a data from a scalar value.
     virtual void setScalarValue (void* data, size_t index, double value) const = 0;
+    /// Set the value at \a index of \a data from a string value.
     virtual void setTextValue(void* data, size_t index, const std::string& value) const = 0;
 
+    /// Get the type_info for this type.
 	virtual const std::type_info* type_info() const = 0;
 
 protected: // only derived types can instantiate this class
@@ -253,21 +361,21 @@ struct IntegerTypeInfo
     typedef TDataType DataType;
     typedef DataType BaseType;
     typedef DataType ValueType;
-    typedef long long ConvType; ///< preferred type for conversions (i.e. long long for integers, double for scalars)
+    typedef long long ConvType;
     typedef IntegerTypeInfo<DataType> BaseTypeInfo;
     typedef IntegerTypeInfo<DataType> ValueTypeInfo;
 
-    enum { ValidInfo       = 1 }; ///< 1 if this type has valid infos
-    enum { FixedSize       = 1 }; ///< 1 if this type has a fixed size
-    enum { ZeroConstructor = 1 }; ///< 1 if the constructor is equivalent to setting memory to 0
-    enum { SimpleCopy      = 1 }; ///< 1 if copying the data can be done with a memcpy
-    enum { SimpleLayout    = 1 }; ///< 1 if the layout in memory is simply N values of the same base type
-    enum { Integer         = 1 }; ///< 1 if this type uses integer values
-    enum { Scalar          = 0 }; ///< 1 if this type uses scalar values
-    enum { Text            = 0 }; ///< 1 if this type uses text values
-    enum { CopyOnWrite     = 0 }; ///< 1 if this type uses copy-on-write
+    enum { ValidInfo       = 1 };
+    enum { FixedSize       = 1 };
+    enum { ZeroConstructor = 1 };
+    enum { SimpleCopy      = 1 };
+    enum { SimpleLayout    = 1 };
+    enum { Integer         = 1 };
+    enum { Scalar          = 0 };
+    enum { Text            = 0 };
+    enum { CopyOnWrite     = 0 };
 
-    enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
+    enum { Size = 1 };
     static size_t size() { return 1; }
 
     static size_t size(const DataType& /*data*/) { return 1; }
@@ -306,21 +414,21 @@ struct BoolTypeInfo
     typedef bool DataType;
     typedef DataType BaseType;
     typedef DataType ValueType;
-    typedef long long ConvType; ///< preferred type for conversions (i.e. long long for integers, double for scalars)
+    typedef long long ConvType;
     typedef IntegerTypeInfo<DataType> BaseTypeInfo;
     typedef IntegerTypeInfo<DataType> ValueTypeInfo;
 
-    enum { ValidInfo       = 1 }; ///< 1 if this type has valid infos
-    enum { FixedSize       = 1 }; ///< 1 if this type has a fixed size
-    enum { ZeroConstructor = 1 }; ///< 1 if the constructor is equivalent to setting memory to 0
-    enum { SimpleCopy      = 1 }; ///< 1 if copying the data can be done with a memcpy
-    enum { SimpleLayout    = 1 }; ///< 1 if the layout in memory is simply N values of the same base type
-    enum { Integer         = 1 }; ///< 1 if this type uses integer values
-    enum { Scalar          = 0 }; ///< 1 if this type uses scalar values
-    enum { Text            = 0 }; ///< 1 if this type uses text values
-    enum { CopyOnWrite     = 0 }; ///< 1 if this type uses copy-on-write
+    enum { ValidInfo       = 1 };
+    enum { FixedSize       = 1 };
+    enum { ZeroConstructor = 1 };
+    enum { SimpleCopy      = 1 };
+    enum { SimpleLayout    = 1 };
+    enum { Integer         = 1 };
+    enum { Scalar          = 0 };
+    enum { Text            = 0 };
+    enum { CopyOnWrite     = 0 };
 
-    enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
+    enum { Size = 1 };
     static size_t size() { return 1; }
 
     static size_t size(const DataType& /*data*/) { return 1; }
@@ -375,21 +483,21 @@ struct ScalarTypeInfo
     typedef TDataType DataType;
     typedef DataType BaseType;
     typedef DataType ValueType;
-    typedef long long ConvType; ///< preferred type for conversions (i.e. long long for integers, double for scalars)
+    typedef long long ConvType;
     typedef ScalarTypeInfo<TDataType> BaseTypeInfo;
     typedef ScalarTypeInfo<TDataType> ValueTypeInfo;
 
-    enum { ValidInfo       = 1 }; ///< 1 if this type has valid infos
-    enum { FixedSize       = 1 }; ///< 1 if this type has a fixed size
-    enum { ZeroConstructor = 1 }; ///< 1 if the constructor is equivalent to setting memory to 0
-    enum { SimpleCopy      = 1 }; ///< 1 if copying the data can be done with a memcpy
-    enum { SimpleLayout    = 1 }; ///< 1 if the layout in memory is simply N values of the same base type
-    enum { Integer         = 0 }; ///< 1 if this type uses integer values
-    enum { Scalar          = 1 }; ///< 1 if this type uses scalar values
-    enum { Text            = 0 }; ///< 1 if this type uses text values
-    enum { CopyOnWrite     = 0 }; ///< 1 if this type uses copy-on-write
+    enum { ValidInfo       = 1 };
+    enum { FixedSize       = 1 };
+    enum { ZeroConstructor = 1 };
+    enum { SimpleCopy      = 1 };
+    enum { SimpleLayout    = 1 };
+    enum { Integer         = 0 };
+    enum { Scalar          = 1 };
+    enum { Text            = 0 };
+    enum { CopyOnWrite     = 0 };
 
-    enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
+    enum { Size = 1 };
     static size_t size() { return 1; }
 
     static size_t size(const DataType& /*data*/) { return 1; }
@@ -429,21 +537,21 @@ struct TextTypeInfo
     typedef TDataType DataType;
     typedef DataType BaseType;
     typedef DataType ValueType;
-    typedef long long ConvType; ///< preferred type for conversions (i.e. long long for integers, double for scalars)
+    typedef long long ConvType;
     typedef ScalarTypeInfo<TDataType> BaseTypeInfo;
     typedef ScalarTypeInfo<TDataType> ValueTypeInfo;
 
-    enum { ValidInfo       = 1 }; ///< 1 if this type has valid infos
-    enum { FixedSize       = 0 }; ///< 1 if this type has a fixed size
-    enum { ZeroConstructor = 0 }; ///< 1 if the constructor is equivalent to setting memory to 0
-    enum { SimpleCopy      = 0 }; ///< 1 if copying the data can be done with a memcpy
-    enum { SimpleLayout    = 0 }; ///< 1 if the layout in memory is simply N values of the same base type
-    enum { Integer         = 0 }; ///< 1 if this type uses integer values
-    enum { Scalar          = 0 }; ///< 1 if this type uses scalar values
-    enum { Text            = 1 }; ///< 1 if this type uses text values
-    enum { CopyOnWrite     = 1 }; ///< 1 if this type uses copy-on-write
+    enum { ValidInfo       = 1 };
+    enum { FixedSize       = 0 };
+    enum { ZeroConstructor = 0 };
+    enum { SimpleCopy      = 0 };
+    enum { SimpleLayout    = 0 };
+    enum { Integer         = 0 };
+    enum { Scalar          = 0 };
+    enum { Text            = 1 };
+    enum { CopyOnWrite     = 1 };
 
-    enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
+    enum { Size = 1 };
     static size_t size() { return 1; }
 
     static size_t size(const DataType& /*data*/) { return 1; }
@@ -487,17 +595,17 @@ struct FixedArrayTypeInfo
     typedef typename BaseTypeInfo::ValueType ValueType;
     typedef DataTypeInfo<ValueType> ValueTypeInfo;
 
-    enum { ValidInfo       = BaseTypeInfo::ValidInfo       }; ///< 1 if this type has valid infos
-    enum { FixedSize       = BaseTypeInfo::FixedSize       }; ///< 1 if this type has a fixed size
-    enum { ZeroConstructor = BaseTypeInfo::ZeroConstructor }; ///< 1 if the constructor is equivalent to setting memory to 0
-    enum { SimpleCopy      = BaseTypeInfo::SimpleCopy      }; ///< 1 if copying the data can be done with a memcpy
-    enum { SimpleLayout    = BaseTypeInfo::SimpleLayout    }; ///< 1 if the layout in memory is simply N values of the same base type
-    enum { Integer         = BaseTypeInfo::Integer         }; ///< 1 if this type uses integer values
-    enum { Scalar          = BaseTypeInfo::Scalar          }; ///< 1 if this type uses scalar values
-    enum { Text            = BaseTypeInfo::Text            }; ///< 1 if this type uses text values
-    enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write
+    enum { ValidInfo       = BaseTypeInfo::ValidInfo       };
+    enum { FixedSize       = BaseTypeInfo::FixedSize       };
+    enum { ZeroConstructor = BaseTypeInfo::ZeroConstructor };
+    enum { SimpleCopy      = BaseTypeInfo::SimpleCopy      };
+    enum { SimpleLayout    = BaseTypeInfo::SimpleLayout    };
+    enum { Integer         = BaseTypeInfo::Integer         };
+    enum { Scalar          = BaseTypeInfo::Scalar          };
+    enum { Text            = BaseTypeInfo::Text            };
+    enum { CopyOnWrite     = 1                             };
 
-    enum { Size = static_size * BaseTypeInfo::Size }; ///< largest known fixed size for this type, as returned by size()
+    enum { Size = static_size * BaseTypeInfo::Size };
     static size_t size()
     {
         return DataType::size() * BaseTypeInfo::size();
@@ -643,17 +751,17 @@ struct VectorTypeInfo
     typedef typename BaseTypeInfo::ValueType ValueType;
     typedef DataTypeInfo<ValueType> ValueTypeInfo;
 
-    enum { ValidInfo       = BaseTypeInfo::ValidInfo       }; ///< 1 if this type has valid infos
-    enum { FixedSize       = 0                             }; ///< 1 if this type has a fixed size
-    enum { ZeroConstructor = 0                             }; ///< 1 if the constructor is equivalent to setting memory to 0
-    enum { SimpleCopy      = 0                             }; ///< 1 if copying the data can be done with a memcpy
-    enum { SimpleLayout    = BaseTypeInfo::SimpleLayout    }; ///< 1 if the layout in memory is simply N values of the same base type
-    enum { Integer         = BaseTypeInfo::Integer         }; ///< 1 if this type uses integer values
-    enum { Scalar          = BaseTypeInfo::Scalar          }; ///< 1 if this type uses scalar values
-    enum { Text            = BaseTypeInfo::Text            }; ///< 1 if this type uses text values
-    enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write
+    enum { ValidInfo       = BaseTypeInfo::ValidInfo       };
+    enum { FixedSize       = 0                             };
+    enum { ZeroConstructor = 0                             };
+    enum { SimpleCopy      = 0                             };
+    enum { SimpleLayout    = BaseTypeInfo::SimpleLayout    };
+    enum { Integer         = BaseTypeInfo::Integer         };
+    enum { Scalar          = BaseTypeInfo::Scalar          };
+    enum { Text            = BaseTypeInfo::Text            };
+    enum { CopyOnWrite     = 1                             };
 
-    enum { Size = BaseTypeInfo::Size }; ///< largest known fixed size for this type, as returned by size()
+    enum { Size = BaseTypeInfo::Size };
     static size_t size()
     {
         return BaseTypeInfo::size();
@@ -796,17 +904,17 @@ struct SetTypeInfo
     typedef typename BaseTypeInfo::ValueType ValueType;
     typedef DataTypeInfo<ValueType> ValueTypeInfo;
 
-    enum { ValidInfo       = BaseTypeInfo::ValidInfo       }; ///< 1 if this type has valid infos
-    enum { FixedSize       = 0                             }; ///< 1 if this type has a fixed size
-    enum { ZeroConstructor = 0                             }; ///< 1 if the constructor is equivalent to setting memory to 0
-    enum { SimpleCopy      = 0                             }; ///< 1 if copying the data can be done with a memcpy
-    enum { SimpleLayout    = 0                             }; ///< 1 if the layout in memory is simply N values of the same base type
-    enum { Integer         = BaseTypeInfo::Integer         }; ///< 1 if this type uses integer values
-    enum { Scalar          = BaseTypeInfo::Scalar          }; ///< 1 if this type uses scalar values
-    enum { Text            = BaseTypeInfo::Text            }; ///< 1 if this type uses text values
-    enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write
+    enum { ValidInfo       = BaseTypeInfo::ValidInfo       };
+    enum { FixedSize       = 0                             };
+    enum { ZeroConstructor = 0                             };
+    enum { SimpleCopy      = 0                             };
+    enum { SimpleLayout    = 0                             };
+    enum { Integer         = BaseTypeInfo::Integer         };
+    enum { Scalar          = BaseTypeInfo::Scalar          };
+    enum { Text            = BaseTypeInfo::Text            };
+    enum { CopyOnWrite     = 1                             };
 
-    enum { Size = BaseTypeInfo::Size }; ///< largest known fixed size for this type, as returned by size()
+    enum { Size = BaseTypeInfo::Size };
     static size_t size()
     {
         return BaseTypeInfo::size();
