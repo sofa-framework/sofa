@@ -67,6 +67,7 @@ protected:
 	void putNodesToSleep();
 	void wakeUpNodes();
 	void updateTimeSinceWakeUp();
+	void updateSleepStatesRecursive();
 
 	// Return a parent node that can change its sleeping state (if it exists, else return the same node)
 	core::objectmodel::BaseContext* getParentContextThatCanSleep(core::objectmodel::BaseContext* context);
@@ -107,6 +108,17 @@ public:
 
 protected:
 	std::vector<core::behavior::BaseMechanicalState*>& m_states;
+};
+
+/**
+ * @brief A visitor that sets the sleep state of all nodes based on their parents being asleep.
+ */
+class SOFA_USER_INTERACTION_API UpdateAllSleepStates : public simulation::Visitor
+{
+public:
+	UpdateAllSleepStates(const core::ExecParams* params);
+
+	virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 };
 
 } // namespace controller

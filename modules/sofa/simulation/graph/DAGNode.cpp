@@ -420,19 +420,18 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
 }
 
 
-void DAGNode::precomputeTraversalOrder( const core::ExecParams* params, bool canAccessSleepingNode )
+void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 {
     // acumulating traversed Nodes
     class TraversalOrderVisitor : public Visitor
     {
         NodeList& _orderList;
     public:
-        TraversalOrderVisitor(const core::ExecParams* params, NodeList& orderList, bool canAccessSleepingNodeArg )
+        TraversalOrderVisitor(const core::ExecParams* params, NodeList& orderList )
             : Visitor(params)
             , _orderList( orderList )
         {
             _orderList.clear();
-			canAccessSleepingNode = canAccessSleepingNodeArg;
         }
 
         virtual Result processNodeTopDown(Node* node)
@@ -444,8 +443,7 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params, bool can
         virtual const char* getClassName() const {return "TraversalOrderVisitor";}
     };
 
-	_precomputedCanAccessSleepingNode = canAccessSleepingNode;
-    TraversalOrderVisitor tov( params, _precomputedTraversalOrder, canAccessSleepingNode );
+    TraversalOrderVisitor tov( params, _precomputedTraversalOrder );
     executeVisitor( &tov, false );
 }
 
@@ -455,21 +453,24 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params, bool can
 /// This method bypass the actionScheduler of this node if any.
 void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder)
 {
-	if( precomputedOrder && !_precomputedTraversalOrder.empty() && _precomputedCanAccessSleepingNode == action->canAccessSleepingNode )
+	if( precomputedOrder && !_precomputedTraversalOrder.empty() )
     {
 //        std::cerr<<SOFA_CLASS_METHOD<<"precomputed "<<_precomputedTraversalOrder<<std::endl;
 
         for( NodeList::iterator it = _precomputedTraversalOrder.begin(), itend = _precomputedTraversalOrder.end() ; it != itend ; ++it )
-            action->processNodeTopDown( *it );
+		{
+			if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
+				action->processNodeTopDown( *it );
+		}
 
         for( NodeList::reverse_iterator it = _precomputedTraversalOrder.rbegin(), itend = _precomputedTraversalOrder.rend() ; it != itend ; ++it )
-            action->processNodeBottomUp( *it );
+		{
+			if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
+	            action->processNodeBottomUp( *it );
+		}
     }
     else
     {
-		if (debug_ && precomputedOrder && !_precomputedTraversalOrder.empty())
-			std::cerr<<SOFA_CLASS_METHOD<<"not precomputed with the right sleeping node access for "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
-
 //        std::cerr<<SOFA_CLASS_METHOD<<"not precomputed "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
 
 

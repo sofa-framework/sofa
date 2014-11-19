@@ -55,7 +55,7 @@ def createScene(root):
     ##### Bodies
     ground_body = createFixedRigidBody(root, 'ground_body', True, [0,0,2], [20,1,10])
 
-    standalone_body = createRigidBody(root, 'standalone_body', True, [-4,3,0])
+    standalone_body = createRigidBody(root, 'standalone_body', True, [-6,3,0])
     standalone_body.dofs.velocity = "2 0 0 0 0 0"
 
     distanceNode = root.createChild('distance')

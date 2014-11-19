@@ -170,7 +170,10 @@ void SleepController::handleEvent(core::objectmodel::Event* event)
 	if (dynamic_cast<sofa::simulation::AnimateBeginEvent*>(event))
 		putNodesToSleep();
     else if (dynamic_cast<sofa::simulation::CollisionEndEvent*>(event))
+	{
 		wakeUpNodes();
+		updateSleepStatesRecursive();
+	}
 	else if (dynamic_cast<sofa::simulation::AnimateEndEvent*>(event))
 		updateTimeSinceWakeUp();
 }
@@ -260,6 +263,11 @@ void SleepController::updateTimeSinceWakeUp()
 		else
 			m_timeSinceWakeUp[i] += context->getDt();
 	}
+}
+
+void SleepController::updateSleepStatesRecursive()
+{
+	UpdateAllSleepStates(core::ExecParams::defaultInstance()).execute(getContext()->getRootContext());
 }
 
 void SleepController::collectWakeupPairs(std::vector<BaseContexts>& wakeupPairs)
@@ -362,6 +370,32 @@ void GetStatesThatCanSleep::processNodeBottomUp(simulation::Node* node)
 {
 	if (node->canChangeSleepingState() && node->mechanicalState != NULL)
 		m_states.push_back(node->mechanicalState.get());
+}
+
+UpdateAllSleepStates::UpdateAllSleepStates(const core::ExecParams* params)
+	: simulation::Visitor(params)
+{}
+
+Visitor::Result UpdateAllSleepStates::processNodeTopDown(simulation::Node* node)
+{
+	if (!node->canChangeSleepingState()) // nodes that can change their sleep state are directly manipulated and do not depend on their parents
+	{
+		bool sleeping = false;
+
+		core::objectmodel::BaseNode::Parents parents = node->getParents();
+		if (parents.size())
+		{
+			sleeping = true;
+			for ( unsigned int i = 0; i < parents.size(); i++ )
+			{
+				sleeping &= parents[i]->getContext()->isSleeping();
+			}
+		}
+
+		node->getContext()->setSleeping(sleeping);
+	}
+
+	return RESULT_CONTINUE;
 }
 
 int SleepControllerClass = core::RegisterObject("A controller that puts node into sleep when the objects are not moving, and wake them up again when there are in collision with a moving object")

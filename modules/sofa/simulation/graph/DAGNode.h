@@ -152,7 +152,7 @@ public:
     virtual Node* findCommonParent( Node* node2 );
 
     /// compute the traversal order from this Node
-    virtual void precomputeTraversalOrder( const core::ExecParams* params, bool canAccessSleepingNode );
+    virtual void precomputeTraversalOrder( const core::ExecParams* params );
 
 protected:
 
@@ -224,7 +224,6 @@ protected:
 
     /// the ordered list of Node to traverse from this Node
     NodeList _precomputedTraversalOrder;
-	bool _precomputedCanAccessSleepingNode;
 
     /// @internal performing only the top-down traversal on a DAG
     /// @executedNodes will be fill with the DAGNodes where the top-down action is processed
