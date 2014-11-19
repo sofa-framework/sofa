@@ -99,7 +99,6 @@ public:
 
 protected:
 
-
     Data<OutVecCoord> f_initPos;  // initial child coordinates in the world reference frame
 
     // data for linear blending
