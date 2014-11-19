@@ -57,7 +57,7 @@ namespace defaulttype
     <h4>Small example</h4>
 
     Iterate over the values of a DataType in templated code:
-    
+
     \code{.cpp}
     template<DataType>
     MyComponent::someMethod(DataType& data) {
@@ -111,6 +111,7 @@ struct DataTypeInfo
     enum { Scalar          = 0 /**< 1 if this type uses scalar values*/ };
     enum { Text            = 0 /**< 1 if this type uses text values*/ };
     enum { CopyOnWrite     = 0 /**< 1 if this type uses copy-on-write*/ };
+    enum { Container       = 0 /**< 1 if this type is a container*/ };
     enum { Size = 1 /**< largest known fixed size for this type, as returned by size() */ };
 
     // \}
@@ -298,6 +299,7 @@ public:
     virtual bool Scalar() const          { return Info::Scalar; }
     virtual bool Text() const            { return Info::Text; }
     virtual bool CopyOnWrite() const     { return Info::CopyOnWrite; }
+    virtual bool Container() const       { return Info::Container; }
 
     virtual size_t size() const
     {
@@ -374,6 +376,7 @@ struct IntegerTypeInfo
     enum { Scalar          = 0 };
     enum { Text            = 0 };
     enum { CopyOnWrite     = 0 };
+    enum { Container       = 0 };
 
     enum { Size = 1 };
     static size_t size() { return 1; }
@@ -427,6 +430,7 @@ struct BoolTypeInfo
     enum { Scalar          = 0 };
     enum { Text            = 0 };
     enum { CopyOnWrite     = 0 };
+    enum { Container       = 0 };
 
     enum { Size = 1 };
     static size_t size() { return 1; }
@@ -496,6 +500,7 @@ struct ScalarTypeInfo
     enum { Scalar          = 1 };
     enum { Text            = 0 };
     enum { CopyOnWrite     = 0 };
+    enum { Container       = 0 };
 
     enum { Size = 1 };
     static size_t size() { return 1; }
@@ -550,6 +555,7 @@ struct TextTypeInfo
     enum { Scalar          = 0 };
     enum { Text            = 1 };
     enum { CopyOnWrite     = 1 };
+    enum { Container       = 0 };
 
     enum { Size = 1 };
     static size_t size() { return 1; }
@@ -604,6 +610,7 @@ struct FixedArrayTypeInfo
     enum { Scalar          = BaseTypeInfo::Scalar          };
     enum { Text            = BaseTypeInfo::Text            };
     enum { CopyOnWrite     = 1                             };
+    enum { Container       = 1                             };
 
     enum { Size = static_size * BaseTypeInfo::Size };
     static size_t size()
@@ -760,6 +767,7 @@ struct VectorTypeInfo
     enum { Scalar          = BaseTypeInfo::Scalar          };
     enum { Text            = BaseTypeInfo::Text            };
     enum { CopyOnWrite     = 1                             };
+    enum { Container       = 1                             };
 
     enum { Size = BaseTypeInfo::Size };
     static size_t size()
@@ -913,6 +921,7 @@ struct SetTypeInfo
     enum { Scalar          = BaseTypeInfo::Scalar          };
     enum { Text            = BaseTypeInfo::Text            };
     enum { CopyOnWrite     = 1                             };
+    enum { Container       = 1                             };
 
     enum { Size = BaseTypeInfo::Size };
     static size_t size()
