@@ -101,9 +101,9 @@ public:
         const helper::vector< In2DataVecDeriv*>& dataVecOut2Force,
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce);
     virtual void applyJT(
-        const core::ConstraintParams* cparams /* PARAMS FIRST */, const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
-        const helper::vector< In2DataMatrixDeriv*>&  dataMatOut2Const ,
-        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst)
+        const core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
+        const helper::vector< In2DataMatrixDeriv*>&  /*dataMatOut2Const*/ ,
+        const helper::vector<const OutDataMatrixDeriv*>& /*dataMatInConst*/)
     {
         serr << "applyJT(constraint) not implemented" << sendl;
     }

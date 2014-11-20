@@ -168,7 +168,7 @@ struct RotationSpecialized<DataTypes, 2, false> : public TransformOperation<Data
             rotZ = -rotZ;
     }
 
-    void configure(const defaulttype::Quaternion &qi, bool inverse, sofa::core::objectmodel::Base* pBase)
+    void configure(const defaulttype::Quaternion &/*qi*/, bool /*inverse*/, sofa::core::objectmodel::Base* pBase)
     {
         assert(pBase);
         pBase->serr << "'void RotationSpecialized::configure(const defaulttype::Quaternion &qi, bool inverse)' is not implemented for two-dimensional data types" << pBase->sendl;

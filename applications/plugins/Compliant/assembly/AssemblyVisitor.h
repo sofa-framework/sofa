@@ -97,7 +97,7 @@ public:
 
         if( !ff || !ff->isCompliance.getValue() )
         {
-            core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
+//            core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
             const core::VecDerivId& lambdasid = lambdas.getId(mm);
             if( !lambdasid.isNull() ) // previously allocated
             {

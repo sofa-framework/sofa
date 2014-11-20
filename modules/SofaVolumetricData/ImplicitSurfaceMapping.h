@@ -30,6 +30,7 @@
 #include <sofa/helper/MarchingCubeUtility.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+
 namespace sofa
 {
 
@@ -105,12 +106,12 @@ public:
 
     void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
     void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
-    void applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in)
+    void applyJT( const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, InDataVecDeriv& /*out*/, const OutDataVecDeriv& /*in*/)
     {
         serr << "applyJT(dx) is not implemented" << sendl;
     }
 
-    void applyJT( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
+    void applyJT( const sofa::core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/)
     {
         serr << "applyJT(constraint) is not implemented" << sendl;
     }
@@ -209,29 +210,21 @@ Y
 
 */
 
-#ifndef SOFA_FLOAT
-using sofa::defaulttype::Vec3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-using sofa::defaulttype::Vec3fTypes;
-using sofa::defaulttype::ExtVec3fTypes;
-#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3dTypes, ExtVec3fTypes >;
+extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3fTypes, ExtVec3fTypes >;
+extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< defaulttype::Vec3fTypes, defaulttype::ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3dTypes, Vec3fTypes >;
-extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< Vec3fTypes, Vec3dTypes >;
+extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< defaulttype::Vec3dTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_VOLUMETRIC_DATA_API ImplicitSurfaceMapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes >;
 #endif
 #endif
 #endif

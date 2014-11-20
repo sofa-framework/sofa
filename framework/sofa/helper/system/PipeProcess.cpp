@@ -79,7 +79,7 @@ PipeProcess::~PipeProcess()
   *   and argument filenameStdin is currently ignored
   */
 
-bool PipeProcess::executeProcess(const std::string &command,  const std::vector<std::string> &args, const std::string &filenameStdin, std::string & outString, std::string & errorString)
+bool PipeProcess::executeProcess(const std::string &command,  const std::vector<std::string> &args, const std::string &/*filenameStdin*/, std::string & outString, std::string & errorString)
 {
 #if defined (_XBOX) || defined(PS3)
 	return false; // not supported
