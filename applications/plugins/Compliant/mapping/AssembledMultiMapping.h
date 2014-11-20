@@ -103,36 +103,29 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 	}
 
 
-	virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, 
-	                    const helper::vector<const  InVecDeriv*>& inDeriv) {
-
-		unsigned n = js.size();
-
-		// working around zeroing outvecderivs (how to do that simply
-		// anyways ?)
-		bool first = true;
-        
-		for(unsigned i = 0; i < n ; ++i ) {
-			if( jacobian(i).rowSize() > 0 ) {
-				if( first ) {
-					first = false;
-					jacobian(i).mult(*outDeriv[0], *inDeriv[i]);
-				}
-				else {
-					jacobian(i).addMult(*outDeriv[0], *inDeriv[i]);
-				}
-			}
-	        
-		}
-	}
 
     virtual void applyJ(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
     {
-        static int i = 0;
-        if (i < 10) {
-            serr << "applyJ() not implemented" << sendl;
-            i++;
-        }
+        assert( dataVecOutVel.size() == 1 ); // only one child here
+        assert( dataVecInVel.size() == js.size() );
+
+        unsigned n = js.size();
+
+        // Note the working around zeroing outvecderivs
+
+        unsigned int i = 0;
+        for(; i < n ; ++i ) {
+             if( jacobian(i).rowSize() > 0 ) {
+                 jacobian(i).mult(*dataVecOutVel[0], *dataVecInVel[i]);
+                 break;
+             }
+         }
+        for(++i; i < n ; ++i ) {
+             if( jacobian(i).rowSize() > 0 ) {
+                 jacobian(i).addMult(*dataVecOutVel[0], *dataVecInVel[i]);
+                 break;
+             }
+         }
     }
 
 
