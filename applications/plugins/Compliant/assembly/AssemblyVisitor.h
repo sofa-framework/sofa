@@ -45,27 +45,28 @@ namespace simulation {
 // but it is not proven that is more efficient
 
 
-/// compute forces only for compliant forcefields (after reseting the mapped dof forces and accumulate them toward the independant dofs)
-class MechanicalComputeComplianceForceVisitor : public MechanicalComputeForceVisitor
-{
-public:
-    MechanicalComputeComplianceForceVisitor(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res )
-        : MechanicalComputeForceVisitor(mparams,res,true)
-    {
-    }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) { return RESULT_CONTINUE; }
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->resetForce(this->params /* PARAMS FIRST */, res.getId(mm));
-        return RESULT_CONTINUE;
-    }
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
-    {
-        if( ff->isCompliance.getValue() ) ff->addForce(this->mparams, res);
-        return RESULT_CONTINUE;
-    }
 
-};
+///// compute forces only for compliant forcefields (after reseting the mapped dof forces and accumulate them toward the independant dofs)
+//class MechanicalComputeComplianceForceVisitor : public MechanicalComputeForceVisitor
+//{
+//public:
+//    MechanicalComputeComplianceForceVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId res )
+//        : MechanicalComputeForceVisitor(mparams,res,true)
+//    {
+//    }
+//    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) { return RESULT_CONTINUE; }
+//    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
+//    {
+//        mm->resetForce(this->params /* PARAMS FIRST */, res.getId(mm));
+//        return RESULT_CONTINUE;
+//    }
+//    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
+//    {
+//        if( ff->isCompliance.getValue() ) ff->addForce(this->mparams, res);
+//        return RESULT_CONTINUE;
+//    }
+
+//};
 
 
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
