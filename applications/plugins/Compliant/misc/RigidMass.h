@@ -260,6 +260,9 @@ public:
 		}
 		
 	}
+
+    virtual void addKToMatrix(const core::MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) {}
+    virtual void addBToMatrix(const core::MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) {}
 };
 
 }
