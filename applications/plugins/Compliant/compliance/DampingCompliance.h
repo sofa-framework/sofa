@@ -15,6 +15,8 @@ namespace forcefield
 
 /** 
     A compliance for viscous damping, i.e. generates a force along - \alpha.v
+    This component must be a compliance, otherwise there is other way to generate damping (regular B matrix)
+    @warning: must be coupled with a DampingValue
  */
 
 template<class TDataTypes>
@@ -35,46 +37,59 @@ public:
 	typedef core::objectmodel::Data<VecCoord> DataVecCoord;
 	typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    DampingCompliance() : damping(initData(&damping, real(0.0), "damping", "damping value")) { this->isCompliance.setValue(true); }
+
+    DampingCompliance()
+        : damping(initData(&damping, real(0.0), "damping", "damping value"))
+    {
+        this->isCompliance.setValue(true);
+        this->isCompliance.setDisplayed( false );
+        this->isCompliance.setReadOnly( true );
+    }
+
+
+    virtual void reinit()
+    {
+        this->rayleighStiffness.setValue(0); // Rayleigh damping makes no sense here
+
+        // if no damping, set it as a stiffness that does nothing
+        if( !damping.getValue() )
+        {
+            this->isCompliance.setValue(false);
+            matC.resize(0,0);
+            return;
+        }
+
+
+        this->isCompliance.setValue(true);
+        m_lastDt = this->getContext()->getDt();
+
+        unsigned int matrixsize = this->mstate->getMatrixSize();
+
+        real compliance = this->getContext()->getDt() / damping.getValue();
+
+        matC.resize(matrixsize,matrixsize);
+
+        for(unsigned i = 0; i < matrixsize; ++i) {
+            matC.compressedMatrix.startVec( i );
+            matC.compressedMatrix.insertBack(i, i) = compliance;
+        }
+        matC.compressedMatrix.finalize();
+
+    }
+
 
     /// Return a pointer to the compliance matrix
-	virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams* params) {
-		if( !damping.getValue() ) return 0;
-		
-		real value = params->dt() / damping.getValue();
-		
-		typename matrix_type::CompressedMatrix& C = matrix.compressedMatrix;
-
-		C.resize( this->mstate->getMatrixSize(),
-		          this->mstate->getMatrixSize() );
-
-		C.setZero();
-
-		for(unsigned i = 0, n = this->mstate->getMatrixSize(); i < n; ++i) {
-			C.startVec( i );
-			C.insertBack(i, i) = value;
-		}
-		
-		C.finalize();
-
-		return &matrix;
+    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams* params) {
+        if( m_lastDt != this->getContext()->getDt() ) reinit();
+        return &matC;
 	}
 
 
-	/// this does nothing as we are a compliance
-	virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &)  { }
-
-    virtual void addDForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv&   /*df*/ , const DataVecDeriv&  /*dx*/)
-    {
-        serr << "addDForce() not implemented" << sendl;
-    }
-
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
-    {
-        serr << "getPotentialEnergy() not implemented" << sendl;
-        return 0.0;
-    }
-
+    // stiffness implementation makes no sense
+    virtual double getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix*, double, unsigned int& ) {}
+    virtual void addForce(const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) {}
+    virtual void addDForce(const core::MechanicalParams*, DataVecDeriv&, const DataVecDeriv&) {}
 
 
 protected:
@@ -83,8 +98,12 @@ protected:
 	Data<real> damping;
 
 	typedef linearsolver::EigenBaseSparseMatrix<real> matrix_type;
-	matrix_type matrix; ///< compliance matrix
+    matrix_type matC; ///< compliance matrix
+
+    real m_lastDt; /// is the dt changed, the compliance matrix must be updated
+
 };
+
 
 }
 }
