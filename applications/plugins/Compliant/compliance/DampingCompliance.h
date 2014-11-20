@@ -79,7 +79,7 @@ public:
 
 
     /// Return a pointer to the compliance matrix
-    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams* params) {
+    virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*) {
         if( m_lastDt != this->getContext()->getDt() ) reinit();
         return &matC;
 	}
