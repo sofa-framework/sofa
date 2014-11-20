@@ -22,9 +22,11 @@ void DampingValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool, const co
 {
     assert( mstate );
 
+    unsigned size = n*dim;
+
     // we sneakily fake constraint error with reflected-adjusted relative velocity
-    mstate->copyToBuffer(dst, velId.getId(mstate.get()), n);
-    map(dst, n) = -map(dst, n);
+    mstate->copyToBuffer(dst, velId.getId(mstate.get()), size);
+    map(dst, size) = -map(dst, size);
 }
 
 
