@@ -8,16 +8,16 @@ namespace component {
 namespace odesolver {
 
 // Constraint value for damping compliance
-class SOFA_Compliant_API DampingValue : public ConstraintValue {
+class SOFA_Compliant_API DampingValue : public ConstraintValue
+{
   public:
 
     SOFA_CLASS(DampingValue, ConstraintValue);
 
-    DampingValue() {}
-    DampingValue( mstate_type* mstate );
+    DampingValue( mstate_type* mstate = NULL );
 
     // value for dynamics
-    virtual void dynamics(SReal* dst, unsigned n) const;
+    virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
 
 };
 

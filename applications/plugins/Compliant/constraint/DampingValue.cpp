@@ -8,7 +8,7 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(DampingValue);
+SOFA_DECL_CLASS(DampingValue)
 int DampingValueClass = core::RegisterObject("Constraint value for damping compliance").add< DampingValue >();
 
 
@@ -18,12 +18,12 @@ DampingValue::DampingValue( mstate_type* mstate )
 
 using namespace utils;
 
-void DampingValue::dynamics(SReal* dst, unsigned n) const
+void DampingValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId&, const core::MultiVecDerivId& velId) const
 {
     assert( mstate );
 
     // we sneakily fake constraint error with reflected-adjusted relative velocity
-    mstate->copyToBuffer(dst, core::VecDerivId::velocity(), n);
+    mstate->copyToBuffer(dst, velId.getId(mstate.get()), n);
     map(dst, n) = -map(dst, n);
 }
 
