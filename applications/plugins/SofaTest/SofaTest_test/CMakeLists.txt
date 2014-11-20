@@ -41,6 +41,7 @@ if(APPLE)
 endif()
 
 if(WIN32)
+    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
     link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
 
     list(APPEND HEADER_FILES "stdafx.h")
