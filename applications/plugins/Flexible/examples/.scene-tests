@@ -25,4 +25,9 @@ timeout "beam/linearRigid_flex332.scn" "50"
 iterations "demo/linearHexaFEM-armadillo.scn" "10"
 timeout "demo/linearHexaFEM-armadillo.scn" "50"
 
+#This scene needs long timeout because DT is big (DT=1) so compute only a few iterations
+iterations "visualization/strainDiscretizer.scn" "10"
+timeout "visualization/strainDiscretizer.scn" "50"
+
+
 
