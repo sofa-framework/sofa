@@ -106,7 +106,7 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */,
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx , double factor )
+void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*f*/, const DataVecDeriv& /*dx*/ , double /*factor*/ )
 {
     serr << "ERROR("<<getClassName()<< "): addMDx(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv&  , double  ) not implemented." << sendl;
 }

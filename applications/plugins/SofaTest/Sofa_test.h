@@ -262,7 +262,7 @@ struct setRotWrapper
 
 template<class DataTypes, int N>
 struct setRotWrapper<DataTypes, N, true>
-{ static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot) {} };
+{ static void setRot(typename DataTypes::Coord& /*coord*/, const sofa::helper::Quater<SReal>& /*rot*/) {} };
 
 template<class DataTypes>
 struct setRotWrapper<DataTypes, 2, false>

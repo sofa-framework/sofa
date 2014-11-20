@@ -199,7 +199,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* cparams /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& dOut, const helper::vector< const OutDataMatrixDeriv* >& dIn)
+void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& dOut, const helper::vector< const OutDataMatrixDeriv* >& dIn)
 {
     vector<unsigned>  indexP = indexPairs.getValue();
 

@@ -104,7 +104,7 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 
 
 
-    virtual void applyJ(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
+    virtual void applyJ(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
     {
         assert( dataVecOutVel.size() == 1 ); // only one child here
         assert( dataVecInVel.size() == js.size() );

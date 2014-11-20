@@ -67,12 +67,12 @@ public:
 
     MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
         : simulation::BaseMechanicalVisitor(params)
-        , _cparams(params)
         , _blocks(blocks)
         , _ids(ids)
         , _positions(positions)
         , _directions(directions)
         , _areas(areas)
+        , _cparams(params)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
