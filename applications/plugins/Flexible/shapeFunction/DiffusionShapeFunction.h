@@ -353,7 +353,8 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class DiffusionShapeFunction>
     static void solveGS(DiffusionShapeFunction* This, CImg<float>& values, CImg<char>& mask, CImg<float>* material=NULL)
     {
-        DiffusionSolver<float>::solveGS( values, mask, This->iterations.getValue(), This->tolerance.getValue(), 1.5, material /*This->d_weightThreshold.getValue()*/ );
+        typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
+        DiffusionSolver<float>::solveGS( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), 1.5, material /*This->d_weightThreshold.getValue()*/ );
 
         if( This->d_outsideDiffusion.getValue() )
         {
@@ -364,7 +365,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 else m = DiffusionSolver<float>::DIRICHLET;
             }
 
-            DiffusionSolver<float>::solveGS( values, mask, This->iterations.getValue(), This->tolerance.getValue(), 1.5 /*This->d_weightThreshold.getValue()*/ );
+            DiffusionSolver<float>::solveGS( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), 1.5 /*This->d_weightThreshold.getValue()*/ );
         }
 
         // convert from float // TODO improve that
@@ -376,7 +377,8 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class DiffusionShapeFunction>
     static void solveJacobi(DiffusionShapeFunction* This, CImg<float>& values, CImg<char>& mask, CImg<float>* material=NULL)
     {
-        DiffusionSolver<float>::solveJacobi( values, mask, This->iterations.getValue(), This->tolerance.getValue(), material );
+        typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
+        DiffusionSolver<float>::solveJacobi( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
 
         if( This->d_outsideDiffusion.getValue() )
         {
@@ -387,7 +389,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 else m = DiffusionSolver<float>::DIRICHLET;
             }
 
-            DiffusionSolver<float>::solveJacobi( values, mask, This->iterations.getValue(), This->tolerance.getValue() );
+            DiffusionSolver<float>::solveJacobi( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue() );
         }
 
         // convert from float // TODO improve that
@@ -399,7 +401,8 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class DiffusionShapeFunction>
     static void solveCG(DiffusionShapeFunction* This, CImg<float>& values, CImg<char>& mask, CImg<float>* material=NULL)
     {
-        DiffusionSolver<float>::solveCG( values, mask, This->iterations.getValue(), This->tolerance.getValue(), material );
+        typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
+        DiffusionSolver<float>::solveCG( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
 
         if( This->d_outsideDiffusion.getValue() )
         {
@@ -410,7 +413,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
                 else m = DiffusionSolver<float>::DIRICHLET;
             }
 
-            DiffusionSolver<float>::solveCG( values, mask, This->iterations.getValue(), This->tolerance.getValue() );
+            DiffusionSolver<float>::solveCG( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue() );
         }
 
         // convert from float // TODO improve that

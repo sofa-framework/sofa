@@ -182,11 +182,13 @@ MechanicalObject<DataTypes>::MechanicalObject()
 //    freeVelocity.setDisplayed( false );
 
     // do not forget to delete these in the destructor
-    // null() vectors must be allocated for now -> TODO how to define an implicit null vector?
-    // not to allocate plenty of 0 everywhere...
-    write(VecCoordId::null())->forceSet();
-    write(VecDerivId::null())->forceSet();
-//    write(VecDerivId::dforce())->forceSet();
+    //    write(VecDerivId::dforce())->forceSet();
+
+    // What is exactly the need for allocating null vectors?
+    // if sofa crashes because of a wrong access to the null vector
+    // I would suspect a bug in your algo rather than the need for allocating it
+//    write(VecCoordId::null())->forceSet();
+//    write(VecDerivId::null())->forceSet();
 
     // default size is 1
     resize(1);
