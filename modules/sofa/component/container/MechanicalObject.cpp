@@ -357,7 +357,11 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
             vparams->drawTool()->multMatrix( glTransform );
             vparams->drawTool()->scale ( scale );
 
-            switch( drawMode.getValue() )
+			if (getContext()->isSleeping())
+			{
+				vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0.5,0.5,0.5,1) );
+			}
+			else switch( drawMode.getValue() )
             {
                 case 1:
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );

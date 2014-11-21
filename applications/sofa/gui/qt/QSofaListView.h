@@ -118,6 +118,7 @@ Q_SIGNALS:
     void RequestSaving(sofa::simulation::Node*);
     void RequestExportOBJ(sofa::simulation::Node* node, bool exportMTL);
     void RequestActivation(sofa::simulation::Node*,bool);
+	void RequestSleeping(sofa::simulation::Node*, bool);
     void RootNodeChanged(sofa::simulation::Node* newroot, const char* newpath);
     void NodeRemoved();
     void Updated();
@@ -138,6 +139,8 @@ protected Q_SLOTS:
     void ShowDatas();
     void DeactivateNode();
     void ActivateNode();
+	void PutNodeToSleep();
+    void WakeUpNode();
     void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale );
 #ifdef SOFA_QT4
     void updateMatchingObjectmodel(Q3ListViewItem* item);

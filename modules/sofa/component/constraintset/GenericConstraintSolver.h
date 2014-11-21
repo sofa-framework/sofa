@@ -133,6 +133,7 @@ protected:
 	GenericConstraintProblem cp1, cp2, cp3;
 	GenericConstraintProblem *current_cp, *last_cp;
 	std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
+	std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
 
 	simulation::Node *context;
 
