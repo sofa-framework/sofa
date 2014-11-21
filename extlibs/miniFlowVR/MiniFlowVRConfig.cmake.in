@@ -1,0 +1,18 @@
+# - Config file for the MiniFlowVR package
+# It defines the following variables
+#  MiniFlowVR_INCLUDE_DIRS  - include directories for MiniFlowVR
+#  MiniFlowVR_LIBRARIES     - libraries to link against
+
+@PACKAGE_INIT@
+
+set_and_check(MINIFLOWVR_INCLUDE_DIR "@PACKAGE_MINIFLOWVR_INCLUDE_DIR@")
+
+check_required_components(MiniFlowVR)
+
+if( NOT TARGET miniFlowVR ) 
+	include("${CMAKE_CURRENT_LIST_DIR}/MiniFlowVRTargets.cmake")
+endif() 
+
+# Variables for compatibility with MODULE mode find_package. 
+set(MiniFlowVR_LIBRARIES miniFlowVR)
+set(MiniFlowVR_INCLUDE_DIRS ${MINIFLOWVR_INCLUDE_DIR})

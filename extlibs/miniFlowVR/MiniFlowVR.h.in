@@ -1,0 +1,33 @@
+/******* COPYRIGHT ************************************************
+*                                                                 *
+*                         FlowVR Render                           *
+*                   Parallel Rendering Library                    *
+*                                                                 *
+*-----------------------------------------------------------------*
+* COPYRIGHT (C) 2005 by                                           *
+* Laboratoire Informatique et Distribution (UMR5132) and          *
+* INRIA Project MOVI. ALL RIGHTS RESERVED.                        *
+*                                                                 *
+* This source is covered by the GNU LGPL, please refer to the     *
+* COPYING-LIB file for further information.                       *
+*                                                                 *
+*-----------------------------------------------------------------*
+*                                                                 *
+*  Original Contributors:                                         *
+*    Jeremie Allard,                                              *
+*    Clement Menier.                                              *
+*                                                                 * 
+*******************************************************************
+*                                                                 *
+* File: GENERATED MiniFlowVR.h DO NOT EDIT                        *
+*                                                                 *
+* Contacts:                                                       *
+*                                                                 *
+******************************************************************/
+
+#ifndef FLOWVR_MINIFLOWVR_H
+#define FLOWVR_MINIFLOWVR_H
+
+#cmakedefine MINI_FLOWVR
+
+#endif // FLOWVR_MINIFLOWVR_H
