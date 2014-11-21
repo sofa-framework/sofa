@@ -60,7 +60,6 @@ namespace qt
 namespace viewer
 {
 
-using namespace sofa::defaulttype;
 enum
 {
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,

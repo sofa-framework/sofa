@@ -7,6 +7,7 @@
 
 using namespace sofa::modeling;
 using namespace sofa::component;
+using namespace sofa::simulation;
 using namespace sofa;
 
 

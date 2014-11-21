@@ -108,7 +108,7 @@ struct VoronoiShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         waDist distData(This->f_distances);         distData->setDimensions(dim);
         typename DistTypes::CImgT& dist = distData->getCImg(); dist.fill(-1);
-        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg::type<DistT>::max();
+        cimg_forXYZC(inimg,x,y,z,c) if(inimg(x,y,z,c)) dist(x,y,z)=cimg_library::cimg::type<DistT>::max();
 
         // init indices and weights images
         unsigned int nbref=This->f_nbRef.getValue();        dim[ImageTypes::DIMENSION_S]=nbref;

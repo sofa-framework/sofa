@@ -129,9 +129,12 @@
 #include <algorithm>
 
 
-
 namespace sofa
 {
+
+#ifdef SOFA_PML
+using namespace filemanager::pml;
+#endif
 
 namespace gui
 {

@@ -289,7 +289,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 #ifdef SOFA_HAVE_MGDIFFUSI0N
 
     template<class DiffusionShapeFunction>
-    static void buildMaterialImage(DiffusionShapeFunction* This, CImg<float>& material)
+    static void buildMaterialImage(DiffusionShapeFunction* This, cimg_library::CImg<float>& material)
     {
         typename DiffusionShapeFunction::raImage in(This->image);
         if(in->isEmpty())  { This->serr<<"Image not found"<<This->sendl; return; }
@@ -297,7 +297,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     template<class DiffusionShapeFunction>
-    static void buildDiffusionProblem(DiffusionShapeFunction* This, const unsigned index, CImg<float>& values, CImg<char>& mask)
+    static void buildDiffusionProblem(DiffusionShapeFunction* This, const unsigned index, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask)
     {
         // retrieve data
         typename DiffusionShapeFunction::raImage in(This->image);
@@ -351,7 +351,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
 
     template<class DiffusionShapeFunction>
-    static void solveGS(DiffusionShapeFunction* This, CImg<float>& values, CImg<char>& mask, CImg<float>* material=NULL)
+    static void solveGS(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveGS( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), 1.5, material /*This->d_weightThreshold.getValue()*/ );
@@ -375,7 +375,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     template<class DiffusionShapeFunction>
-    static void solveJacobi(DiffusionShapeFunction* This, CImg<float>& values, CImg<char>& mask, CImg<float>* material=NULL)
+    static void solveJacobi(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveJacobi( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
@@ -399,7 +399,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     template<class DiffusionShapeFunction>
-    static void solveCG(DiffusionShapeFunction* This, CImg<float>& values, CImg<char>& mask, CImg<float>* material=NULL)
+    static void solveCG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
     {
         typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
         DiffusionSolver<float>::solveCG( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
@@ -423,7 +423,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     }
 
     template<class DiffusionShapeFunction>
-    static void solveMG(DiffusionShapeFunction* This, CImg<float>& values, CImg<char>& mask, CImg<float>* /*material*/=NULL)
+    static void solveMG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* /*material*/=NULL)
     {
         DiffusionSolver<float>::solveMG( values, mask, This->tolerance.getValue(), 0, This->iterations.getValue() );
 
@@ -505,7 +505,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename DiffusionShapeFunction::DistT DistT;
 
         // laplacian stencil
-        CImg<DistT> stencil(3,3,3);
+        cimg_library::CImg<DistT> stencil(3,3,3);
         stencil.fill(0);
         stencil(1,1,1)=-6.0;
         stencil(0,1,1)=stencil(2,1,1)=stencil(1,0,1)=stencil(1,2,1)=stencil(1,1,0)=stencil(1,1,2)=1.0;
@@ -625,9 +625,9 @@ public:
 //            DiffusionSolver<float>::setNbThreads( 1 );
             DiffusionSolver<float>::setDefaultNbThreads();
 
-            CImg<float> values;
-            CImg<char> mask;
-            CImg<float> material, *materialPtr = NULL;
+            cimg_library::CImg<float> values;
+            cimg_library::CImg<char> mask;
+            cimg_library::CImg<float> material, *materialPtr = NULL;
 
             if( biasDistances.getValue() )
             {

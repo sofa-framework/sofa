@@ -115,7 +115,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::reinit()
     m_totalVolume = 0;
 
     // get the density image
-    const CImg<double>& densityImage = f_densityImage.getValue().getCImg(0);
+    const cimg_library::CImg<double>& densityImage = f_densityImage.getValue().getCImg(0);
 
     // for each density voxel
     cimg_forXYZ( densityImage, x, y, z )

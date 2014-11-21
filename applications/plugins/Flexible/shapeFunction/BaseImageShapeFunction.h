@@ -107,9 +107,9 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         if(P[0]<=0 || P[1]<=0 || P[2]<=0 || P[0]>=indices.width()-1 || P[1]>=indices.height()-1 || P[2]>=indices.depth()-1 ||
                 indices(P[0],P[1],P[2],0)==0)
         {
-            Real dmin=cimg::type<Real>::max();
+            Real dmin=cimg_library::cimg::type<Real>::max();
             cimg_for_insideXYZ(indices,x,y,z,1) if(indices(x,y,z,0)) {Real d=(Coord(x,y,z)-p).norm2(); if(d<dmin) { P.set(x,y,z); dmin=d; } }
-            if(dmin==cimg::type<Real>::max()) return;
+            if(dmin==cimg_library::cimg::type<Real>::max()) return;
         }
 
         // prepare neighborood

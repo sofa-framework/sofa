@@ -79,9 +79,6 @@ class BaseViewer;
 
 namespace qt
 {
-#ifdef SOFA_PML
-using namespace sofa::filemanager::pml;
-#endif
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
 class QSofaRecorder;
@@ -197,8 +194,8 @@ private:
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);
     virtual void lmlOpen(const char* filename);
-    PMLReader *pmlreader;
-    LMLReader *lmlreader;
+    filemanager::pml::PMLReader *pmlreader;
+    filemanager::pml::LMLReader *lmlreader;
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
