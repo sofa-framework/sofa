@@ -490,6 +490,9 @@ public:
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
 
+	/// override context setSleeping to add notification.
+	virtual void setSleeping(bool /*val*/);
+
 protected:
     bool debug_;
     bool initialized;
@@ -506,6 +509,7 @@ protected:
     virtual void notifyAddObject(core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyRemoveObject(core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyMoveObject(core::objectmodel::BaseObject::SPtr obj, Node* prev);
+	virtual void notifySleepChanged();
 
 
     BaseContext* _context;

@@ -294,6 +294,12 @@ void Node::notifyMoveSlave(core::objectmodel::BaseObject* previousMaster, core::
         (*it)->moveSlave(previousMaster, master, slave);
 }
 
+void Node::notifySleepChanged()
+{
+    for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->sleepChanged(this);
+}
+
 void Node::addListener(MutationListener* obj)
 {
     // make sure we don't add the same listener twice
@@ -1135,6 +1141,14 @@ Node::SPtr Node::create( const std::string& name )
     return getSimulation()->createNewNode(name);
 }
 
+void Node::setSleeping(bool val)
+{
+	if (val != d_isSleeping.getValue())
+	{
+		d_isSleeping.setValue(val);
+		notifySleepChanged();
+	}
+}
 
 SOFA_DECL_CLASS(Node)
 //create method of Node called if the user wants the default node. The object created will depend on the simulation currently in use.
