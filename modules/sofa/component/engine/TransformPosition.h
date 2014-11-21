@@ -49,10 +49,6 @@ namespace component
 namespace engine
 {
 
-using namespace core::objectmodel;
-using namespace core::behavior;
-using namespace core::topology;
-using namespace core::objectmodel;
 
 /**
  * This class transforms the positions of one DataFields into new positions after applying a transformation
@@ -154,7 +150,7 @@ protected:
     Data<long> f_seed; // the seed for the random generator
     Data<Real> f_maxRandomDisplacement; // the maximum displacement for the random generator
     Data<SetIndex> f_fixedIndices; // the indices of the elements that are not transformed
-    DataFileName f_filename; //filename of an affine matrix
+    core::objectmodel::DataFileName f_filename; //filename of an affine matrix
     Data<bool> f_drawInput;
     Data<bool> f_drawOutput;
     Data<Real> f_pointSize;
