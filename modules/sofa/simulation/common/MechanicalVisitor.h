@@ -96,8 +96,11 @@ public:
 
     BaseMechanicalVisitor(const core::ExecParams* params)
         : Visitor(params)
-        , root(NULL), rootData(NULL)
-    {}
+		, root(NULL), rootData(NULL)
+    {
+		// mechanical visitors shouldn't be able to acess a sleeping node, only visual visitor should
+		canAccessSleepingNode = false;
+	}
 
     /// Return true if this visitor need to read the node-specific data if given
     virtual bool readNodeData() const

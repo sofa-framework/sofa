@@ -123,6 +123,12 @@ public:
     /// State of the context
     virtual void setActive(bool) {};
 
+	/// Sleeping state of the context
+	virtual bool isSleeping() const;
+
+	/// Whether the context can change its sleeping state or not
+	virtual bool canChangeSleepingState() const;
+
     /// Simulation time
     virtual double getTime() const;
 
@@ -378,6 +384,14 @@ public:
     /// Animation flag
     virtual void setAnimate(bool /*val*/)
     { }
+
+	/// Sleeping state of the context
+	virtual void setSleeping(bool /*val*/) 
+	{ }
+
+	/// Sleeping state change of the context
+	virtual void setChangeSleepingState(bool /*val*/)
+	{ }
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel

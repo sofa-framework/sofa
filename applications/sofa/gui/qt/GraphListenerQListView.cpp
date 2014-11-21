@@ -32,6 +32,7 @@
 #include "iconnode.xpm"
 #include "iconwarning.xpm"
 #include "icondata.xpm"
+#include "iconsleep.xpm"
 
 
 namespace sofa
@@ -63,8 +64,16 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
 
     if (dynamic_cast<core::objectmodel::BaseNode*>(obj))
     {
-        static QPixmap pixNode((const char**)iconnode_xpm);
-        return &pixNode;
+		if (dynamic_cast<core::objectmodel::BaseNode*>(obj)->getContext()->isSleeping())
+		{
+			static QPixmap pixNode((const char**)iconsleep_xpm);
+			return &pixNode;
+		}
+		else
+		{
+			static QPixmap pixNode((const char**)iconnode_xpm);
+			return &pixNode;
+		}
         //flags |= 1 << NODE;
     }
     else if (dynamic_cast<core::objectmodel::BaseObject*>(obj))
@@ -501,6 +510,17 @@ void GraphListenerQListView::moveSlave(core::objectmodel::BaseObject* previous, 
     }
 }
 
+/*****************************************************************************************************************/
+void GraphListenerQListView::sleepChanged(Node* node)
+{
+	if (items.count(node))
+    {
+		Q3ListViewItem* item = items[node];
+		QPixmap* pix = getPixmap(node);
+		if (pix)
+			item->setPixmap(0, *pix);
+	}
+}
 
 /*****************************************************************************************************************/
 void GraphListenerQListView::freeze(Node* groot)

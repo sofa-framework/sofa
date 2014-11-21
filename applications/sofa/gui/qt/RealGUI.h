@@ -374,6 +374,7 @@ private:
 public slots:
     virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
     virtual void ActivateNode(sofa::simulation::Node* , bool );
+	virtual void setSleepingNode(sofa::simulation::Node*, bool);
     virtual void fileSaveAs(sofa::simulation::Node *node);
     virtual void LockAnimation(bool);
     virtual void fileRecentlyOpened(int id);

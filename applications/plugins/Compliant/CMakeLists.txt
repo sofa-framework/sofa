@@ -9,6 +9,7 @@ set(HEADER_FILES
     misc/FailNode.h
 
     mapping/RigidJointMapping.h
+	mapping/RigidJointMultiMapping.h
     mapping/AssembledRigidRigidMapping.h
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h
@@ -73,6 +74,8 @@ set(HEADER_FILES
     contact/FrictionCompliantContact.h
     contact/BaseContact.h
     contact/PenalityCompliantContact.h
+
+    controller/CompliantSleepController.h
     
     utils/basis.h
     utils/cast.h
@@ -156,7 +159,9 @@ set(SOURCE_FILES
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
-    contact/PenalityCompliantContact.cpp)
+    contact/PenalityCompliantContact.cpp
+	
+	controller/CompliantSleepController.cpp)
 
 set(README_FILES Compliant.txt)
 

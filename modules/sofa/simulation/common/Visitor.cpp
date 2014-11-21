@@ -36,6 +36,7 @@ namespace simulation
 
 Visitor::Visitor(const core::ExecParams* p)
     : params(p)
+	, canAccessSleepingNode(true)
 {
     //params = core::MechanicalParams::defaultInstance();
 #ifdef SOFA_DUMP_VISITOR_INFO

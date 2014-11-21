@@ -101,6 +101,10 @@ void MutationListener::moveSlave(core::objectmodel::BaseObject* previousMaster, 
     addSlave(master, slave);
 }
 
+void MutationListener::sleepChanged(Node* /*node*/)
+{
+}
+
 } // namespace simulation
 
 } // namespace sofa
