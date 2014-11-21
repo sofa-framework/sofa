@@ -268,7 +268,7 @@ void QtGLViewer::init(void)
         // change status so we only do this stuff once
         initialized = true;
 
-        _beginTime = CTime::getTime();
+        _beginTime = helper::system::thread::CTime::getTime();
 
         printf("\n");
 

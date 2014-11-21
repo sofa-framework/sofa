@@ -64,15 +64,10 @@ namespace viewer
 
 namespace qgl
 {
-using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
-using namespace sofa::helper::system::thread;
-using namespace sofa::component::collision;
-
 
 class SOFA_SOFAGUIQT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
 {
-    typedef Vector3::value_type Real;
+    typedef defaulttype::Vector3::value_type Real;
     Q_OBJECT
 private:
 
@@ -100,7 +95,7 @@ private:
 
     int _renderingMode;
 
-    ctime_t _beginTime;
+    helper::system::thread::ctime_t _beginTime;
 
 
     bool _waitForRender;
@@ -145,11 +140,11 @@ public:
     int GetWidth()
     {
         return _W;
-    };
+    }
     int GetHeight()
     {
         return _H;
-    };
+    }
     bool ready() {return !_waitForRender;}
     void wait() {_waitForRender = true;}
 

@@ -8,6 +8,7 @@ namespace sofa
 
 using namespace modeling;
 using namespace component;
+using namespace simulation;
 
 /** Test suite for matrix assembly.
  */

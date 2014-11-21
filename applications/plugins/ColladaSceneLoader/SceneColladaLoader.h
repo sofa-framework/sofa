@@ -45,14 +45,7 @@ namespace component
 namespace loader
 {
 
-//  using namespace sofa::defaulttype;
-//  using namespace sofa::helper::io;
-using sofa::defaulttype::Vec4f;
-using sofa::defaulttype::Mat4x4f;
-using namespace sofa::simulation;
-using namespace sofa::component::projectiveconstraintset;
-
-/*
+/**
 	current limitation : one animation per scene
 */
 class SOFA_COLLADASCENELOADER_API SceneColladaLoader : public sofa::core::loader::SceneLoader
@@ -67,11 +60,11 @@ public:
     {
         std::size_t			mChildIndex;		// index of the current child node to process
         aiNode*				mAiNode;		// aiNode being processed
-        Node::SPtr			mNode;			// corresponding Node created in the sofa scene graph
+        simulation::Node::SPtr			mNode;			// corresponding Node created in the sofa scene graph
         NodeInfo*			mParentNode;		// parent node (useful to retrieve mesh skeleton and to compute world transformation matrix)
         aiMatrix4x4			mTransformation;	// matrix that transforms from node space to world space
 
-        NodeInfo(aiNode* pAiNode, Node::SPtr pNode, NodeInfo* mParentNode = NULL) :
+        NodeInfo(aiNode* pAiNode, simulation::Node::SPtr pNode, NodeInfo* mParentNode = NULL) :
             mChildIndex(0),
             mAiNode(pAiNode),
             mNode(pNode),
@@ -142,7 +135,7 @@ protected:
 private:
 
     // build the joints and bones array used in the SkeletalMotionConstraint
-    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<SkeletonJoint<Rigid3dTypes> >& skeletonJoints, helper::vector<SkeletonBone>& skeletonBones) const;
+    bool fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<projectiveconstraintset::SkeletonJoint<defaulttype::Rigid3dTypes> >& skeletonJoints, helper::vector<projectiveconstraintset::SkeletonBone>& skeletonBones) const;
 
     // clean the scene graph of its empty and useless intermediary nodes
     void removeEmptyNodes();
@@ -152,7 +145,7 @@ public:
     virtual std::string type() { return "The format of this scene is Collada (.dae)."; }
 
 private:
-    Node::SPtr subSceneRoot;		// the Node containing the whole Collada loaded scene
+    simulation::Node::SPtr subSceneRoot;		// the Node containing the whole Collada loaded scene
 
     Assimp::Importer importer;		// the Assimp importer used to easily load the Collada scene
 

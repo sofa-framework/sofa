@@ -74,6 +74,7 @@ using namespace sofa::component::visualmodel;
 using namespace sofa::component::mapping;
 using namespace sofa::component::collision;
 using namespace sofa::component::projectiveconstraintset;
+using namespace sofa::simulation;
 
 SOFA_DECL_CLASS(SceneColladaLoader)
 
