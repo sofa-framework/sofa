@@ -44,7 +44,7 @@ class ColorMap_Image(Sofa.PythonScriptController):
 
 class ColorMap_Frame(Sofa.PythonScriptController):
 	def createGraph(self,node):
-		path = '@../'+self.findData('variables').value
+		path = '@../'+self.variables[0][0]
 		staticmesh = path+'/mesh'
 
 		self.strain=node.getObject('E')			
