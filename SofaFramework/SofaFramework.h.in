@@ -44,9 +44,17 @@
 
 #cmakedefine SOFA_HAVE_BOOST_SYSTEM
 
+#cmakedefine SOFA_HAVE_BOOST_DATE_TIME
+
+#cmakedefine SOFA_HAVE_BOOST_CHRONO
+
 #cmakedefine SOFA_HAVE_TINYXML
 
 #cmakedefine SOFA_HAVE_EIGEN2
+
+#cmakedefine DETECTIONOUTPUT_FREEMOTION
+
+#cmakedefine DETECTIONOUTPUT_BARYCENTRICINFO
 
 // Use of "extern template" is activated by the following macro
 // It must be used for DLLs on windows, and is now also activated
@@ -70,18 +78,21 @@
 #endif
 
 #ifdef SOFA_BUILD_HELPER
+#   define SOFA_TARGET SofaHelper
 #	define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #	define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #ifdef SOFA_BUILD_DEFAULTTYPE
+#   define SOFA_TARGET SofaDefaulttype
 #	define SOFA_DEFAULTTYPE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #	define SOFA_DEFAULTTYPE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #ifdef SOFA_BUILD_CORE
+#   define SOFA_TARGET   SofaCore
 #	define SOFA_CORE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #	define SOFA_CORE_API SOFA_IMPORT_DYNAMIC_LIBRARY
