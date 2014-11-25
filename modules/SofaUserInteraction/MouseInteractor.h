@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_H
 #define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_H
 
-
+#include <sofa/SofaCommon.h>
 #include <SofaUserInteraction/InteractionPerformer.h>
 #include <SofaUserInteraction/RayModel.h>
 #include <sofa/core/collision/DetectionOutput.h>
@@ -53,7 +53,7 @@ struct BodyPicked
     unsigned int indexCollisionElement;
     defaulttype::Vector3 point;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-    Vector3 baryCoords;
+    defaulttype::Vector3 baryCoords;
 #endif
     SReal dist;
     SReal rayLength;
