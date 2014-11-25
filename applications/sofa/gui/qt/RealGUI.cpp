@@ -317,7 +317,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     descriptionScene(NULL),
     htmlPage(NULL),
     animationState(false),
-    frameCounter(0)
+    frameCounter(0),
+    m_viewerMSAANbSampling(1)
 {
     setupUi(this),
     parseOptions(options);
@@ -383,7 +384,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 	createSimulationGraph();
 
     //disable widget, can be bothersome with objects with a lot of data
-    createPropertyWidget();
+    // createPropertyWidget();
 
     //viewer
     informationOnPickCallBack = InformationOnPickCallBack(this);
@@ -1306,7 +1307,7 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
         if( strcmp( iter_map->first.c_str(), _viewerName ) == 0 )
         {
             removeViewer();
-            ViewerQtArgument viewerArg = ViewerQtArgument("viewer", left_stack);
+            ViewerQtArgument viewerArg = ViewerQtArgument("viewer", left_stack, m_viewerMSAANbSampling);
             registerViewer( helper::SofaViewerFactory::CreateObject(iter_map->first, viewerArg) );
             iter_map->second->setOn(true);
         }
@@ -1742,6 +1743,17 @@ void RealGUI::parseOptions(const std::vector<std::string>& options)
     {
         if (options[i] == "noViewers")
             mCreateViewersOpt = false;
+        if (options[i].substr(0,4).compare("msaa") == 0)
+        {
+            std::string::size_type pos = options[i].find('=') + 1;
+            if(pos < options[i].npos)
+            {
+                std::string strNb = options[i].substr(pos);
+                m_viewerMSAANbSampling = atoi(strNb.c_str());
+                if(m_viewerMSAANbSampling < 2 || m_viewerMSAANbSampling > 32)
+                    m_viewerMSAANbSampling = 1;
+            }
+        }
     }
 }
 

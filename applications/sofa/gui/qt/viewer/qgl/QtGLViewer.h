@@ -108,8 +108,8 @@ public:
         BaseViewerArgument* pArg = &arg;
         ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
         return viewerArg ?
-                new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
-                new QtGLViewer(NULL, pArg->getName().c_str() )
+                new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
+                new QtGLViewer(NULL, pArg->getName().c_str(), pArg->getNbMSAASamples() )
                 ;
     }
 
@@ -119,12 +119,13 @@ public:
 
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
 
-    QtGLViewer( QWidget* parent, const char* name="" );
+    QtGLViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
     ~QtGLViewer();
 
     QWidget* getQWidget() { return this; }
 
 protected:
+     static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
 
     //     void calcProjection();
     void init();
@@ -190,7 +191,6 @@ protected:
     virtual void mouseMoveEvent ( QMouseEvent * e );
     virtual void wheelEvent(QWheelEvent* e);
     bool         mouseEvent( QMouseEvent * e );
-
 
 
 

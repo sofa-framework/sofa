@@ -255,6 +255,7 @@ private:
     QTextBrowser* htmlPage;
     bool animationState;
     int frameCounter;
+    unsigned int m_viewerMSAANbSampling;
 //-----------------DATAS MEMBER------------------------}
 
 
