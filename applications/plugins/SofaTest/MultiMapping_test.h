@@ -138,7 +138,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     /** Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
      * The parent position is applied,
-     * the the resulting child position is compared with the expected one.
+     * the resulting child position is compared with the expected one.
      * Additionally, the Jacobian-related methods are tested using finite differences.
      *
      * The parent coordinates are transfered in the parent states, then the scene is initialized, then various mapping functions are applied.
