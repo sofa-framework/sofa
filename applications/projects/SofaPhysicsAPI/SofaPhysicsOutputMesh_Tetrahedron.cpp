@@ -228,7 +228,7 @@ unsigned int SofaPhysicsOutputMeshTetrahedron::Impl::getNbAttributes(int index) 
     if ((unsigned)index >= sVA.size())
       return 0;
     else 
-      return sVA[index]->getSETotolSize();
+      return sVA[index]->getSETotalSize();
      // return dynamic_cast< Data<ResizableExtVector<Real> >* >(sVA[index]->getSEValue())->getValue().size();
 }
 
