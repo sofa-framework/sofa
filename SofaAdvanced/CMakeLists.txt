@@ -27,8 +27,14 @@ set(SOFAADVANCED_INSTALL_CMAKE_DIR   lib/cmake/SofaAdvanced   CACHE PATH "Instal
 
 ## SofaAdvanced dependencies
 ##
-find_package(SofaCommon REQUIRED)
-set(SOFAADVANCED_DEPENDENCY_DIR ${SofaCommon_INCLUDE_DIRS} )
+find_package(SofaGeneral REQUIRED)
+find_package(MiniFlowVR)
+
+set(SOFA_HAVE_MINIFLOWVR ${MiniFlowVR_FOUND} )
+
+set(SOFAADVANCED_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS} ${MiniFlowVR_INCLUDE_DIRS} )
+set(SOFAADVANCED_DEPENDENCY_LINK ${MiniFlowVR_LIBRARIES})
+
 
 configure_file( ${SofaAdvanced_SOURCE_DIR}/SofaAdvanced.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaAdvanced.h )
