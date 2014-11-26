@@ -53,4 +53,6 @@ add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QR
 AddLinkerDependencies(SofaSimulationGraph SofaComponentMain Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
-
+if(NOT WIN32)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+endif()
