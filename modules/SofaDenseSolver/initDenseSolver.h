@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_DENSE_SOLVER_INIT_H
 #define SOFA_COMPONENT_DENSE_SOLVER_INIT_H
 
-#include <sofa/component/component.h>
+#include <sofa/SofaGeneral.h>
 
 namespace sofa
 {
