@@ -28,21 +28,24 @@ set(SOFAGENERAL_INSTALL_CMAKE_DIR   lib/cmake/SofaGeneral   CACHE PATH "Installa
 ## SofaGeneral dependencies
 ##
 find_package(SofaCommon REQUIRED)
+find_package(Newmat)
+
+set(SOFA_HAVE_NEWMAT ${Newmat_FOUND} )
+
 set(SOFAGENERAL_DEPENDENCY_INCLUDE_DIR ${SofaCommon_INCLUDE_DIRS})
+
 
 configure_file( ${SofaGeneral_SOURCE_DIR}/SofaGeneral.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h
          DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/sofa")
 
-# make sure everyone in the build tree can see <sofa/SofaGeneral.h>
-#include_directories(${CMAKE_CURRENT_BINARY_DIR})
-#include_directories(${SofaGeneral_ACTUAL_SOURCE_DIR}/)
-
 set(SOFAGENERAL_TARGETS SofaValidation SofaExporter SofaGraphComponent SofaTopologyMapping SofaBoundaryCondition 
     SofaComponentGeneral SofaEngine SofaUserInteraction SofaConstraint SofaHaptics SofaPreconditioner)
 
 if(SOFA_HAVE_NEWMAT)
+  list(APPEND SOFAGENERAL_DEPENDENCY_LINK ${Newmat_LIBRARIES} )
+  list(APPEND SOFAGENERAL_DEPENDENCY_INCLUDE_DIR ${Newmat_INCLUDE_DIRS} )
   list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
 endif()
 
