@@ -191,3 +191,6 @@ install(TARGETS ${PROJECT_NAME}
     PUBLIC_HEADER DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
     )
  
+# SofaPythonTargets.cmake (installed)
+install(EXPORT SofaPythonTargets
+        DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR} )
