@@ -14,11 +14,16 @@ iterations "Components/mapping/BarycentricMapping.scn" "10"
 timeout "Components/mapping/BarycentricMapping.scn" "60"
 
 # Long compute only a few iterations
+iterations "Components/linearsolver/MatrixContributions123.scn" "10"
+timeout "Components/linearsolver/MatrixContributions123.scn" "60"
+
+# Long compute only a few iterations
 iterations "Components/mapping/SPHFluidSurfaceMapping.scn" "10"
 timeout "Components/mapping/SPHFluidSurfaceMapping.scn" "60"
 
 # Big, long, PrecomputedConstraintCorrection in this scene:
-timeout "Components/animationloop/FreeMotionAnimationLoop.scn" "180"
+iterations "Components/animationloop/FreeMotionAnimationLoop.scn" "10"
+timeout "Components/animationloop/FreeMotionAnimationLoop.scn" "90"
 
 # Temporarily ignore this scene, because it produces litterally
 # millions of warnings:
