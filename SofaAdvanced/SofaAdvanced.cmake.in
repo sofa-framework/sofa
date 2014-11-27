@@ -6,10 +6,13 @@
 @PACKAGE_INIT@
 
 set(SOFAADVANCED_INCLUDE_DIR "@PACKAGE_SOFAADVANCED_INCLUDE_DIR@")
-check_required_components(SofaAdvanced)
 
 # required for transitive dependencies
 find_package(SofaCommon REQUIRED)
+
+set(SofaAdvanced_TARGETS @SOFAADVANCED_TARETS@)
+
+check_required_components( ${SofaAdvanced_TARGETS} )
 
 if( NOT TARGET SofaComponentAdvanced )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaAdvancedTargets.cmake")

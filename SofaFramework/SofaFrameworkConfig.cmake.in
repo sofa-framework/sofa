@@ -7,7 +7,7 @@
 
 set_and_check(SOFAFRAMEWORK_INCLUDE_DIR  "@PACKAGE_SOFAFRAMEWORK_INCLUDE_DIR@")
 
-check_required_components(SofaFramework)
+check_required_components(SofaHelper SofaDefaultType SofaCore)
 
 find_package(TinyXML REQUIRED)
 
