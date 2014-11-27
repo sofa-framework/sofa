@@ -43,6 +43,9 @@ set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObj
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
   add_subdirectory(${SofaCommon_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+  if(MSVC)
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaCommon")
+  endif()
 endforeach()
 
 include(CMakePackageConfigHelpers)

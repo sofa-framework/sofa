@@ -43,6 +43,10 @@ set(SOFAMISC_TARGETS SofaMiscTopology SofaMiscMapping SofaMiscForceField SofaMis
 
 foreach(TARGET ${SOFAMISC_TARGETS})
   add_subdirectory(${SofaMisc_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+  # set IDE project filter
+  if(MSVC)
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaMisc")
+  endif()
 endforeach()
 
 include(CMakePackageConfigHelpers)

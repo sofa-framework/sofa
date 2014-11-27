@@ -45,6 +45,9 @@ set(SOFABASE_TARGETS SofaBaseTopology SofaBaseLinearSolver SofaBaseMechanics Sof
 
 foreach(TARGET ${SOFABASE_TARGETS})
   add_subdirectory(${SofaBase_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+  if(MSVC)
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaBase")
+  endif()
 endforeach()
 
 include(CMakePackageConfigHelpers)
