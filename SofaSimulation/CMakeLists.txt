@@ -45,6 +45,13 @@ add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/common ${CMAKE_CURRENT_BINA
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/tree   ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree   )
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/graph  ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph  )
 
+# set IDE project filter
+if(MSVC)
+    set_target_properties(SofaSimulationCommon PROPERTIES FOLDER "SofaSimulation")
+    set_target_properties(SofaSimulationTree   PROPERTIES FOLDER "SofaSimulation")
+    set_target_properties(SofaSimulationGraph  PROPERTIES FOLDER "SofaSimulation")
+endif()
+
 include(CMakePackageConfigHelpers)
 
 # SofaSimulationConfigVersion.cmake file (same for build tree and intall)

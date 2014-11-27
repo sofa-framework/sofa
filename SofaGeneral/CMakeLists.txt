@@ -64,6 +64,10 @@ endif()
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})
   add_subdirectory(${SofaGeneral_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+  # set IDE project filter
+  if(MSVC)
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGeneral")
+  endif()
 endforeach()
 
 include(CMakePackageConfigHelpers)

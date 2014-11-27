@@ -48,6 +48,9 @@ set(SOFAADVANCED_TARGETS SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaN
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})
   add_subdirectory(${SofaAdvanced_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+  if(MSVC)
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaAdvanced")
+  endif()
 endforeach()
 
 include(CMakePackageConfigHelpers)

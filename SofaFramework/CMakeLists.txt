@@ -140,6 +140,14 @@ add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/defaulttype ${CMAKE_CU
 add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/core        ${CMAKE_CURRENT_BINARY_DIR}/SofaCore )
 add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/framework_test        ${CMAKE_CURRENT_BINARY_DIR}/framework_test )
 
+# set IDE project filter
+if(MSVC)
+    #message("${PROJECT_NAME} in ${GLOBAL_PROJECT_OPTION_FOLDER_${PROJECT_NAME}}")
+    set_target_properties(SofaHelper      PROPERTIES FOLDER "SofaFramework")
+    set_target_properties(SofaDefaultType PROPERTIES FOLDER "SofaFramework")
+    set_target_properties(SofaCore        PROPERTIES FOLDER "SofaFramework")
+endif()
+
 include(CMakePackageConfigHelpers)
 
 # SofaFrameworkConfigVersion.cmake file (same for build tree and intall)
