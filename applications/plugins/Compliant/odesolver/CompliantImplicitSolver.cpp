@@ -392,7 +392,7 @@ using namespace core::behavior;
 
                 res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - v_constraint;
 
-                res.segment(off,total_dim) /= beta.getValue();
+                if( beta.getValue() != 1 ) res.segment(off,total_dim) /= beta.getValue();
 
                 break;
             }

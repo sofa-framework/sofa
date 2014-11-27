@@ -273,9 +273,9 @@ protected:
 
     void updateC()
     {
-        typename mstateType::ReadVecCoord X = this->mstate->readPositions();
+        unsigned int size = this->mstate->getMatrixSize();
 
-        C.resizeBlocks(X.size(),X.size());
+        C.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
         {
             C.beginBlockRow(i);
@@ -289,9 +289,9 @@ protected:
 
     void updateK()
     {
-        typename mstateType::ReadVecCoord X = this->mstate->readPositions();
+        unsigned int size = this->mstate->getMatrixSize();
 
-        K.resizeBlocks(X.size(),X.size());
+        K.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
         {
             K.beginBlockRow(i);
@@ -306,9 +306,9 @@ protected:
 
     void updateB()
     {
-        typename mstateType::ReadVecCoord X = this->mstate->readPositions();
+        unsigned int size = this->mstate->getMatrixSize();
 
-        B.resizeBlocks(X.size(),X.size());
+        B.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
         {
             B.beginBlockRow(i);
