@@ -17,6 +17,7 @@ static struct Tests : public Python_test_list
         addTest( "AffineMultiMapping.py", scenePath );
         addTest( "restitution.py", scenePath );
         addTest( "friction.py", scenePath );
+        addTest( "ManyCollisions.py", scenePath );
 
         // add python tests here
     }
