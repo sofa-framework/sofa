@@ -6,10 +6,10 @@
 @PACKAGE_INIT@
 
 set(SOFASIMULATION_INCLUDE_DIR "@PACKAGE_SOFASIMULATION_INCLUDE_DIR@")
-check_required_components(SofaSimulation)
+check_required_components(SofaSimulationCommon SofaSimulationTree SofaSimulationGraph)
 
 # required for transitive dependencies
-find_package(SofaFramework REQUIRED)
+find_package(SofaFramework REQUIRED )
 
 if( NOT TARGET SofaSimulationCommon )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaSimulationTargets.cmake")

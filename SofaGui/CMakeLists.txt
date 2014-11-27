@@ -28,8 +28,8 @@ set(SOFAGUI_INSTALL_CMAKE_DIR   lib/cmake/SofaGui   CACHE PATH "Installation dir
 
 ## SofaGui dependencies
 ##
-find_package(SofaFramework REQUIRED)
-set(SOFAGUI_DEPENDENCY_DIR ${SofaFramework_INCLUDE_DIRS})
+find_package(SofaGeneral REQUIRED)
+set(SOFAGUI_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
 
 find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
 

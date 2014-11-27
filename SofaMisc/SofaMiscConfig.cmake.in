@@ -6,7 +6,9 @@
 @PACKAGE_INIT@
 
 set(SOFAMISC_INCLUDE_DIR "@PACKAGE_SOFAMISC_INCLUDE_DIR@")
-check_required_components(SofaMisc)
+
+set(SofaMisc_TARGETS @SOFAMISC_TARGETS@)
+check_required_components( ${SofaMisc_TARGETS} )
 
 # required for transitive dependencies
 find_package(SofaAdvanced REQUIRED)
@@ -16,5 +18,5 @@ if( NOT TARGET SofaComponentMisc )
 endif()
  
 # For compatibility only
-set(SofaMisc_LIBRARIES @SOFAMISC_TARGETS@)
+set(SofaMisc_LIBRARIES SofaComponentMisc)
 set(SofaMisc_INCLUDE_DIRS ${SOFAMISC_INCLUDE_DIR} ${SofaAdvanced_INCLUDE_DIRS} )

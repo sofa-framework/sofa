@@ -6,10 +6,13 @@
 @PACKAGE_INIT@
 
 set(SOFACOMMON_INCLUDE_DIR "@PACKAGE_SOFACOMMON_INCLUDE_DIR@")
-check_required_components(SofaCommon)
 
 # required for transitive dependencies
-find_package(SofaBase REQUIRED)
+find_package(SofaBase REQUIRED SofaComponentBase)
+
+set(SofaCommon_TARGETS @SOFACOMMON_TARGETS@)
+
+check_required_components(${SofaCommon_TARGETS})
 
 
 if( NOT TARGET SofaComponentCommon )
