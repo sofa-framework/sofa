@@ -95,12 +95,7 @@ public:
 
 protected :
 
-    SubsetMultiMapping()
-        : Inherit()
-        , indexPairs( initData( &indexPairs, vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
-    {
-    }
-
+    SubsetMultiMapping();
     virtual ~SubsetMultiMapping();
 
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
