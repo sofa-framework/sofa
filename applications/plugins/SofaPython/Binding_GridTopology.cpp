@@ -28,6 +28,7 @@
 
 #include <SofaBaseTopology/GridTopology.h>
 using namespace sofa::component::topology;
+using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * GridTopology_setSize(PyObject *self, PyObject * args)
 {

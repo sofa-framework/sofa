@@ -30,6 +30,7 @@
 #include <sofa/core/topology/Topology.h>
 using namespace sofa::core::topology;
 using namespace sofa::core;
+using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * Topology_hasPos(PyObject *self, PyObject * /*args*/)
 {

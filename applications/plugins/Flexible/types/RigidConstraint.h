@@ -43,9 +43,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-using helper::vector;
-
-using namespace sofa::defaulttype;
 /** Make non-rigid frames rigid.
 */
 template <class DataTypes>
@@ -94,7 +91,7 @@ public:
         f_index.setValue(tmp);
 
         // store positions to compute jacobian
-        const vector<unsigned> & indices = f_index.getValue();
+        const helper::vector<unsigned> & indices = f_index.getValue();
         oldPos.resize(indices.size());
         helper::ReadAccessor< Data< VecCoord > > pos(*this->getMState()->read(core::ConstVecCoordId::position()));
         for(unsigned i=0; i<indices.size(); i++)       oldPos[i]=pos[indices[i]];
@@ -103,7 +100,7 @@ public:
     template <class VecDerivType>
     void projectResponseT( VecDerivType& res)
     {
-        const vector<unsigned> & indices = f_index.getValue();
+        const helper::vector<unsigned> & indices = f_index.getValue();
         for(unsigned ind=0; ind<indices.size(); ind++) res[indices[ind]].setRigid( oldPos[ind]);
     }
 
@@ -122,7 +119,7 @@ public:
     virtual void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
     {
         helper::WriteAccessor<DataVecCoord> res = xData;
-        const vector<unsigned> & indices = f_index.getValue();
+        const helper::vector<unsigned> & indices = f_index.getValue();
         oldPos.resize(indices.size());
         for(unsigned i=0; i<indices.size(); i++)      { oldPos[i]=res[indices[i]];  res[indices[i]].setRigid(); }
     }
@@ -162,7 +159,7 @@ public:
         jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
 
         // fill jacobian
-        const vector<unsigned> & indices = f_index.getValue();
+        const helper::vector<unsigned> & indices = f_index.getValue();
         unsigned i = 0, j = 0;
         while( i < numBlocks )
         {
@@ -198,21 +195,25 @@ protected:
         if (!vparams->displayFlags().getShowBehaviorModels()) return;
         if (!this->isActive()) return;
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        const vector<unsigned> & indices = f_index.getValue();
-        std::vector< Vector3 > points;
-        for (vector<unsigned>::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(DataTypes::getCPos(x[*it]));
-        if( _drawSize.getValue() == 0)  vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.0,0.5,1)); // old classical drawing by points
-        else  vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.0f,0.35f,1.0f)); // new drawing by spheres
+        const helper::vector<unsigned> & indices = f_index.getValue();
+        std::vector< defaulttype::Vector3 > points;
+        for (helper::vector<unsigned>::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(DataTypes::getCPos(x[*it]));
+        if( _drawSize.getValue() == 0)  vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4,float>(1,0.0,0.5,1)); // old classical drawing by points
+        else  vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), defaulttype::Vec<4,float>(1.0f,0.0f,0.35f,1.0f)); // new drawing by spheres
     }
 
 
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(FLEXIBLE_RigidConstraint_CPP)
-extern template class SOFA_Flexible_API RigidConstraint<Affine3dTypes>;
-extern template class SOFA_Flexible_API RigidConstraint<Quadratic3dTypes>;
-extern template class SOFA_Flexible_API RigidConstraint<Affine3fTypes>;
-extern template class SOFA_Flexible_API RigidConstraint<Quadratic3fTypes>;
+#ifndef SOFA_FLOAT
+extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Affine3dTypes>;
+extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Quadratic3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Affine3fTypes>;
+extern template class SOFA_Flexible_API RigidConstraint<defaulttype::Quadratic3fTypes>;
+#endif
 #endif
 
 }

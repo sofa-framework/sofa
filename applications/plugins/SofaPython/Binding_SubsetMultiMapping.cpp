@@ -34,6 +34,7 @@
 #endif
 #include <sofa/core/BaseState.h>
 using namespace sofa::component::mapping;
+using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * SubsetMultiMapping3_to_3_addPoint(PyObject *self, PyObject * args)
 {

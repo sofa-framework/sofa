@@ -28,6 +28,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 using namespace sofa::core::topology;
+using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * BaseMeshTopology_getNbEdges(PyObject *self, PyObject * /*args*/)
 {

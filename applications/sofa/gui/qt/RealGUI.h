@@ -82,9 +82,6 @@ class BaseViewer;
 
 namespace qt
 {
-#ifdef SOFA_PML
-using namespace sofa::filemanager::pml;
-#endif
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
 class QSofaRecorder;
@@ -200,8 +197,8 @@ private:
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);
     virtual void lmlOpen(const char* filename);
-    PMLReader *pmlreader;
-    LMLReader *lmlreader;
+    filemanager::pml::PMLReader *pmlreader;
+    filemanager::pml::LMLReader *lmlreader;
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -264,6 +261,7 @@ private:
     QTextBrowser* htmlPage;
     bool animationState;
     int frameCounter;
+    unsigned int m_viewerMSAANbSampling;
 //-----------------DATAS MEMBER------------------------}
 
 
@@ -380,6 +378,7 @@ private:
 public slots:
     virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
     virtual void ActivateNode(sofa::simulation::Node* , bool );
+	virtual void setSleepingNode(sofa::simulation::Node*, bool);
     virtual void fileSaveAs(sofa::simulation::Node *node);
     virtual void LockAnimation(bool);
     virtual void fileRecentlyOpened(int id);

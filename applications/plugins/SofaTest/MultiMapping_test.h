@@ -90,6 +90,8 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     vector<InDOFs*>  inDofs;  ///< mapping input
     OutDOFs* outDofs; ///< mapping output
     simulation::Node* root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
+    simulation::Node::SPtr child; ///< Child node, created by setupScene
+    vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
     Real deltaMax; ///< The maximum magnitude of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
@@ -110,15 +112,16 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         root = simulation->createNewGraph("root").get();
 
         /// Child node
-        simulation::Node::SPtr childNode = root->createChild("childNode");
-        outDofs = modeling::addNew<OutDOFs>(childNode).get();
-        mapping = modeling::addNew<Mapping>(childNode).get();
+        child = root->createChild("childNode");
+        outDofs = modeling::addNew<OutDOFs>(child).get();
+        mapping = modeling::addNew<Mapping>(child).get();
         mapping->addOutputModel(outDofs);
 
-        /// Parent states, all added to the root node. This is not a simulable scene.
+        /// Parent states, added to specific parentNode{i} nodes. This is not a simulable scene.
         for( int i=0; i<numParents; i++ )
         {
-            typename InDOFs::SPtr inDof = modeling::addNew<InDOFs>(root);
+            parents.push_back(root->createChild("parentNode"+i));
+            typename InDOFs::SPtr inDof = modeling::addNew<InDOFs>(parents[i]);
             mapping->addInputModel( inDof.get() );
             inDofs.push_back(inDof.get());
         }
@@ -138,7 +141,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     /** Test the mapping using the given values and small changes.
      * Return true in case of success, if all errors are below maxError*epsilon.
      * The parent position is applied,
-     * the the resulting child position is compared with the expected one.
+     * the resulting child position is compared with the expected one.
      * Additionally, the Jacobian-related methods are tested using finite differences.
      *
      * The parent coordinates are transfered in the parent states, then the scene is initialized, then various mapping functions are applied.

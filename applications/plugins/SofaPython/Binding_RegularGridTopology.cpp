@@ -28,6 +28,7 @@
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 using namespace sofa::component::topology;
+using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * RegularGridTopology_setPos(PyObject *self, PyObject * args)
 {
