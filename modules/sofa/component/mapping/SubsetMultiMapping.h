@@ -103,10 +103,6 @@ protected :
 
     virtual ~SubsetMultiMapping();
 
-
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
-
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 };
