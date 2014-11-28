@@ -76,7 +76,7 @@ public:
     {
         if(this->mergeChannels==_mergeChannels) return;
         this->mergeChannels=_mergeChannels;
-        this->setClamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()));
+        this->setClamp(Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()));
         this->update();
     }
     

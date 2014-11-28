@@ -121,6 +121,7 @@ int main(int argc, char** argv)
     bool        temporaryFile = false;
 	bool		testMode = false;
     int	        nbIterations = sofa::gui::BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
+    unsigned int nbMSSASamples = 1;
     unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
     std::string gui = "";
@@ -155,6 +156,7 @@ int main(int argc, char** argv)
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
 	.option(&testMode,'m',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
+    .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
 #ifdef SOFA_SMP
     .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
     .option(&nProcs,'c',"nprocs","Number of processor")
@@ -215,6 +217,14 @@ int main(int argc, char** argv)
         std::ostringstream oss ;
         oss << "nbIterations=";
         oss << nbIterations;
+        sofa::gui::GUIManager::AddGUIOption(oss.str().c_str());
+    }
+
+    if(nbMSSASamples > 1)
+    {
+        std::ostringstream oss ;
+        oss << "msaa=";
+        oss << nbMSSASamples;
         sofa::gui::GUIManager::AddGUIOption(oss.str().c_str());
     }
 

@@ -149,12 +149,10 @@ protected:
     Data<long> f_seed; // the seed for the random generator
     Data<Real> f_maxRandomDisplacement; // the maximum displacement for the random generator
     Data<SetIndex> f_fixedIndices; // the indices of the elements that are not transformed
-    sofa::core::objectmodel::DataFileName f_filename; //filename of an affine matrix
+    core::objectmodel::DataFileName f_filename; //filename of an affine matrix
     Data<bool> f_drawInput;
     Data<bool> f_drawOutput;
     Data<Real> f_pointSize;
-    sofa::core::behavior::MechanicalState<DataTypes>* mstate;
-    const VecCoord* x0;
 
 };
 

@@ -27,6 +27,7 @@
 
 #include <sofa/core/visual/DisplayFlags.h>
 using namespace sofa::core::visual;
+using namespace sofa::core::objectmodel;
 
 SP_CLASS_METHODS_BEGIN(DisplayFlagsData)
 SP_CLASS_METHODS_END

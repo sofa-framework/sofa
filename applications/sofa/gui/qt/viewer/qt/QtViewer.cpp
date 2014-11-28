@@ -38,9 +38,9 @@
 
 #include <qevent.h>
 
-//#ifdef __APPLE__
-//#include <OpenGL.h>
-//#endif
+#ifdef __APPLE__
+#include <OpenGL/OpenGL.h>
+#endif
 
 #include "GenGraphForm.h"
 
@@ -96,11 +96,28 @@ bool QtViewer::_mouseRotate = false;
 Quaternion QtViewer::_mouseInteractorNewQuat;
 
 
-QGLFormat QtViewer::setupGLFormat()
+QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
 {
     QGLFormat f = QGLFormat::defaultFormat();
+
+    if(nbMSAASamples > 1)
+    {
+        std::cout <<"QtViewer: Set multisampling anti-aliasing (MSSA) with " << nbMSAASamples << " samples." << std::endl;
+        f.setSampleBuffers(true);
+        f.setSamples(nbMSAASamples);
+    }
+
+    int val = 0;
+
+//#ifdef __APPLE__
+//        std::cout << "QtViewer: disabling vertical refresh sync (Mac version)" << std::endl;
+//        const GLint swapInterval = 0;
+//        CGLSetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &swapInterval);
+//        //std::cout << this->format().swapInterval() << std::endl;
+//#endif
+
 #if defined(QT_VERSION) && QT_VERSION >= 0x040200
-    //std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
+    std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
     f.setSwapInterval(0); // disable vertical refresh sync
 #endif
 #if defined(QT_VERSION) && QT_VERSION >= 0x040700
@@ -117,8 +134,8 @@ QGLFormat QtViewer::setupGLFormat()
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
-QtViewer::QtViewer(QWidget* parent, const char* name)
-    : QGLWidget(setupGLFormat(), parent, name)
+QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
+    : QGLWidget(setupGLFormat(nbMSAASamples), parent, name)
 {
 #if defined(QT_VERSION) && QT_VERSION >= 0x040700
     std::cout << "QtViewer: OpenGL " << format().majorVersion() << "." << format().minorVersion() << " context created." << std::endl;
@@ -194,12 +211,6 @@ void QtViewer::initializeGL(void)
     {
         //std::cout << "progname=" << sofa::gui::qt::progname << std::endl;
         //sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::qt::progname));
-
-//#ifdef __APPLE__
-//        std::cout << "QtViewer: disabling vertical refresh sync (Mac version)" << std::endl;
-//        const GLint swapInterval = 0;
-//        CGLSetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &swapInterval);
-//#endif
 
         // Define light parameters
         //_lightPosition[0] = 0.0f;
@@ -1058,7 +1069,6 @@ void QtViewer::calcProjection(int width, int height)
 // ---------------------------------------------------------
 void QtViewer::paintGL()
 {
-
     // clear buffers (color and depth)
     if (_background == 0)
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1080,6 +1090,17 @@ void QtViewer::paintGL()
         _waitForRender = false;
 
     emit( redrawn());
+}
+
+void QtViewer::paintEvent(QPaintEvent* qpe)
+{
+    QGLWidget::paintEvent(qpe );
+/*
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::HighQualityAntialiasing, true);
+    painter.setRenderHint(QPainter::TextAntialiasing, false);
+*/
 }
 
 // ---------------------------------------------------------

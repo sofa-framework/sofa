@@ -85,8 +85,22 @@ SOFA_DECL_CLASS ( QGLViewerGUI )
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
-QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
-    : QGLViewer(parent, name)
+
+QGLFormat QtGLViewer::setupGLFormat(const unsigned int nbMSAASamples)
+{
+    QGLFormat f = QGLFormat::defaultFormat();
+
+    if(nbMSAASamples > 1)
+    {
+        f.setSampleBuffers(true);
+        f.setSamples(nbMSAASamples);
+    }
+
+    return f;
+}
+
+QtGLViewer::QtGLViewer(QWidget* parent, const char* name, const unsigned int nbMSAASamples)
+    : QGLViewer(setupGLFormat(nbMSAASamples), parent, name)
 {
     groot = NULL;
     initTexturesDone = false;
@@ -268,7 +282,7 @@ void QtGLViewer::init(void)
         // change status so we only do this stuff once
         initialized = true;
 
-        _beginTime = CTime::getTime();
+        _beginTime = helper::system::thread::CTime::getTime();
 
         printf("\n");
 

@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 0 0 " dt="1"  >
+  <VisualStyle displayFlags="showWireframe showBehaviorModels" />
+  <DefaultAnimationLoop />
+  <DefaultVisualManagerLoop />
+
+  <RequiredPlugin pluginName="image"/>
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="SofaPython"/>
+
+
+  <EulerImplicitSolver />
+  <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
+
+  <Node 	name="ref_highresFEM"   >
+    <VisualStyle displayFlags="hideWireframe" />
+    <OglModel template="ExtVec3f" name="Visual" fileMesh="../beam/refBeam_Flex.obj" color="0.5 0.5 0.5" translation="-0.5 0 0"/>
+  </Node>
+
+
+
+  <Node name="AffineFrames"   >
+	<MeshObjLoader name="mesh" filename="../beam/beam.obj" triangulate="1"/>
+    	<ImageContainer template="ImageUC" name="image" filename="../beam/beam.raw" drawBB="false"/>
+
+    	<ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -1   0 0 -0.8   0 0 -0.6  0 0 -0.4   0 0 -0.2   0 0 0    0 0 0.2   0 0 0.4  0 0 0.6  0 0 0.8  0 0 1" printLog="false"/>
+    	<MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+    	<MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" src="@merged" />
+
+	<!--linear weights-->
+	<Mesh name="edges" position="@parent.rest_position" edges="0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10"/>
+	<BarycentricShapeFunction  position="@parent.rest_position" nbRef="2" tolerance="-10000"/>
+	<ShapeFunctionDiscretizer name="SF" src="@image" />
+
+	<!-- <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="5" />-->
+
+    	<Node 	name="behavior"   >
+      		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1"/>
+      		<MechanicalObject template="F332" name="F"  />
+      		<LinearMapping template="Affine,F332"  />
+
+      		<Node 	name="E"   >
+        		<VisualStyle displayFlags="hideBehaviorModels " />
+        		<MechanicalObject  template="E332" name="E"  />
+        		<CorotationalStrainMapping template="F332,E332"   method="polar" />
+        		<HookeForceField  template="E332" name="ff" youngModulus="1000.0" poissonRatio="0" viscosity="0"/>
+      		</Node>
+    	</Node>
+        
+        <Node   name="collision"   >
+                <VisualStyle displayFlags="hideBehaviorModels " />
+                <Mesh name="mesh" src="@../mesh" />
+                <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+                <UniformMass totalMass="10" />
+                <BoxROI template="Vec3d" box="-1 -1 0.99 1 1 1.1"  position="@mesh.position" />
+                <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/>
+                <BoxROI template="Vec3d" box="-1 -1 -1.1 1 1 -0.9"  position="@mesh.position" />
+                <RestShapeSpringsForceField template="Vec3d" points="@[-1].indices" stiffness="1E5"/>
+                <LinearMapping template="Affine,Vec3d"/>
+                
+                
+                <TransformPosition name="ref_position" input_position="@../../ref_highresFEM/Visual.position"  translation="0.5 0 0" method="translation" />
+                <DifferenceEngine name="position_error" input="@pts.position" substractor="@ref_position.output_position" />
+                <NormEngine name="norm_error" input="@position_error.output" normType="2" />
+                
+                <Node name="Difference with ref_highresFEM">
+                    <DataDisplay position="@../pts.position" pointData="@../norm_error.output" />
+                    <ColorMap colorScheme="Blue to Red" />
+                </Node>
+                
+        </Node>
+
+   
+  </Node>
+
+
+
+
+  <Node name="hexaFEM"  >
+        <VisualStyle displayFlags="showWireframe hideBehaviorModels" />
+
+        <MechanicalObject template="Vec3d" name="parent" showObject="false" />
+        <RegularGrid 
+                   n="5 5 21"
+                   min="-1.2 -0.2  -1"
+                   max=" -0.8  0.2   1"/> 
+
+        <BoxROI template="Vec3d" box="-2 -1 -1.1 0 1 -0.99" />
+        <FixedConstraint indices="@[-1].indices" />
+
+        <BoxROI template="Vec3d" box="-2 -1 0.99 0 1 1.1 "  drawBoxes="0" /> 
+        <ConstantForceField template="Vec3d" points="@[-1].indices" totalForce="0 -1 0"/> 
+
+        <UniformMass totalMass="10" />
+
+        <BarycentricShapeFunction position="@parent.rest_position" nbRef="8" />
+
+        <HexahedronFEMForceField youngModulus="1000.0" poissonRatio="0" method="polar" updateStiffnessMatrix="false" />
+
+
+        <Node name="Visual"  >
+                <VisualModel name="mesh" fileMesh="../beam/beam.obj" translation="-1 0 0" color="blue" />
+                <BarycentricMapping input="@.." output="@." />
+                
+                <TransformPosition name="ref_position" input_position="@../../AffineFrames/collision/pts.position"  translation="-1 0 0" method="translation" />
+                <DifferenceEngine name="position_error" input="@mesh.position" substractor="@ref_position.output_position" />
+                <NormEngine name="norm_error" input="@position_error.output" normType="2" />
+                                
+                <Node name="Difference with AffineFrames">
+                    <MeshObjLoader name="loader" filename="../beam/beam.obj" triangulate="1"/>
+                    <Mesh src="@loader" />
+                    <DataDisplay name="mesh" position="@../mesh.position" pointData="@../norm_error.output"/>
+                    <ColorMap colorScheme="Blue to Red" />
+                </Node>
+                
+        </Node>
+  </Node>
+
+
+
+</Node>
+
+

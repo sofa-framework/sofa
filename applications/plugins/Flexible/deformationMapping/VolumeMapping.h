@@ -92,6 +92,8 @@ public:
         this->getToModel()->resize( 1 );
         baseMatrices.resize( 1 );
         baseMatrices[0] = &jacobian;
+        baseStiffnessMatrices.resize( 1 );
+        baseStiffnessMatrices[0] = &geometricStiffness;
 
         this->Inherit::init();
     }
@@ -129,17 +131,17 @@ public:
         for(unsigned j=0; j<Nin; j++ )
             for(unsigned k=0; k<Nin; k++ )
             {
-                geometricStiffness.add(a*Nin+j, a*Nin+k,  DsnDA[j][k] );
-                geometricStiffness.add(b*Nin+j, a*Nin+k,  DsnDA[j][k] );
-                geometricStiffness.add(c*Nin+j, a*Nin+k,  DsnDA[j][k] );
+                baseGeometricStiffness.add(a*Nin+j, a*Nin+k,  DsnDA[j][k] );
+                baseGeometricStiffness.add(b*Nin+j, a*Nin+k,  DsnDA[j][k] );
+                baseGeometricStiffness.add(c*Nin+j, a*Nin+k,  DsnDA[j][k] );
 
-                geometricStiffness.add(a*Nin+j, b*Nin+k,  DsnDB[j][k] );
-                geometricStiffness.add(b*Nin+j, b*Nin+k,  DsnDB[j][k] );
-                geometricStiffness.add(c*Nin+j, b*Nin+k,  DsnDB[j][k] );
+                baseGeometricStiffness.add(a*Nin+j, b*Nin+k,  DsnDB[j][k] );
+                baseGeometricStiffness.add(b*Nin+j, b*Nin+k,  DsnDB[j][k] );
+                baseGeometricStiffness.add(c*Nin+j, b*Nin+k,  DsnDB[j][k] );
 
-                geometricStiffness.add(a*Nin+j, c*Nin+k,  DsnDC[j][k] );
-                geometricStiffness.add(b*Nin+j, c*Nin+k,  DsnDC[j][k] );
-                geometricStiffness.add(c*Nin+j, c*Nin+k,  DsnDC[j][k] );
+                baseGeometricStiffness.add(a*Nin+j, c*Nin+k,  DsnDC[j][k] );
+                baseGeometricStiffness.add(b*Nin+j, c*Nin+k,  DsnDC[j][k] );
+                baseGeometricStiffness.add(c*Nin+j, c*Nin+k,  DsnDC[j][k] );
             }
 
         return sn[2] * (A[2] + B[2] + C[2]);
@@ -154,7 +156,7 @@ public:
 
         v[0][0] = offset.getValue();
         jacobian.resizeBlocks(v.size(),x.size());
-        geometricStiffness.resizeBlocks(x.size(),x.size());
+        baseGeometricStiffness.resizeBlocks(x.size(),x.size());
 
         for (int i = 0; i < m_topology->getNbTriangles(); i++)
         {
@@ -170,7 +172,7 @@ public:
         }
 
         jacobian.compress();
-        geometricStiffness.compress();
+        baseGeometricStiffness.compress();
     }
 
     virtual void applyJ(const core::MechanicalParams */*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)    { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn);    }
@@ -183,9 +185,15 @@ public:
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
         const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
         helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
-        geometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[0][0]);
+        baseGeometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[0][0]);
     }
 
+    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    {
+        const OutVecDeriv& childForce = this->toModel->readForces().ref();
+        geometricStiffness.compressedMatrix = baseGeometricStiffness.compressedMatrix * childForce[0][0];
+        return &baseStiffnessMatrices;
+    }
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()    { return &baseMatrices; }
@@ -205,8 +213,9 @@ protected:
     Data<Real> offset;
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
-    SparseKMatrixEigen geometricStiffness;               ///< Stiffness due to the non-linearity of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
+    SparseKMatrixEigen baseGeometricStiffness, geometricStiffness; ///< Stiffness due to the non-linearity of the mapping
+    vector<defaulttype::BaseMatrix*> baseStiffnessMatrices; ///< Vector of geometric stiffness matrices
 };
 
 

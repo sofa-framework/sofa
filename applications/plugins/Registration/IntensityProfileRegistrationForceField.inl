@@ -54,6 +54,7 @@ namespace forcefield
 
 
 using namespace helper;
+using namespace cimg_library;
 
 
 template<class DataTypes, class ImageTypes>

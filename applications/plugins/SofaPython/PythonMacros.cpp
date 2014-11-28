@@ -44,6 +44,10 @@
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_VisualModel.h"
 
+
+using namespace sofa::core::objectmodel;
+
+
 // crée un objet Python à partir d'un objet Cpp héritant de Base,
 // retournant automatiquement le type Python de plus haut niveau possible
 // en fonction du type de l'objet Cpp

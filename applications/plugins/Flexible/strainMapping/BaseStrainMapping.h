@@ -107,10 +107,11 @@ public:
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
-        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-        this->toModel->resize(in.size());
+        unsigned int size = this->fromModel->getSize();
 
-        jacobian.resize(in.size());
+        this->toModel->resize(size);
+
+        jacobian.resize(size);
 
         reinit();
     }
@@ -313,9 +314,10 @@ protected:
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
     void updateJ()
     {
-        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-        helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-        eigenJacobian.resizeBlocks(out.size(),in.size());
+        unsigned int insize = this->fromModel->getSize();
+        unsigned int outsize = this->toModel->getSize();
+
+        eigenJacobian.resizeBlocks(outsize,insize);
         for(size_t i=0; i<jacobian.size(); i++)
         {
 //            vector<MatBlock> blocks;
@@ -335,8 +337,8 @@ protected:
     vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     void updateK(const OutVecDeriv& childForce)
     {
-        helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
-        K.resizeBlocks(in.size(),in.size());
+        unsigned int size = this->fromModel->getSize();
+        K.resizeBlocks(size,size);
         for(size_t i=0; i<jacobian.size(); i++)
         {
 //            vector<KBlock> blocks;

@@ -34,6 +34,7 @@ namespace sofa {
 namespace {
 
 using namespace modeling;
+using namespace simulation;
 
 
 /** Check the traversal of a Directed Acyclic Graph.
