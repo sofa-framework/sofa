@@ -11,7 +11,7 @@ set(MINIFLOWVR_BUILD_CMAKE_DIR ${CMAKE_BINARY_DIR}/MiniFlowVR/)
 # Offer the user the choice of overriding the installation directories
 set(MINIFLOWVR_INSTALL_LIB_DIR     lib                   CACHE PATH "Installation directory for libraries")
 set(MINIFLOWVR_INSTALL_BIN_DIR     bin                   CACHE PATH "Installation directory for executables")
-set(MINIFLOWVR_INSTALL_INCLUDE_DIR include/sofa          CACHE PATH "Installation directory for header files")
+set(MINIFLOWVR_INSTALL_INCLUDE_DIR include               CACHE PATH "Installation directory for header files")
 set(MINIFLOWVR_INSTALL_CMAKE_DIR   lib/cmake/MiniFlowVR  CACHE PATH "Installation directory for CMake files")
 
 find_package(Boost REQUIRED)
@@ -78,7 +78,7 @@ install(TARGETS miniFlowVR
         RUNTIME DESTINATION "${MINIFLOWVR_INSTALL_BIN_DIR}" 
         LIBRARY DESTINATION "${MINIFLOWVR_INSTALL_LIB_DIR}" 
         ARCHIVE DESTINATION "${MINIFLOWVR_INSTALL_LIB_DIR}" 
-        PUBLIC_HEADER DESTINATION "${MINIFLOWVR_INSTALL_INCLUDE_DIR}" )
+        PUBLIC_HEADER DESTINATION "${MINIFLOWVR_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" )
 include(CMakePackageConfigHelpers)
 
 # MiniFlowVRConfigVersion.cmake file (same for build tree and intall)
