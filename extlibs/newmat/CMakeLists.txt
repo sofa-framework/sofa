@@ -10,7 +10,7 @@ set(NEWMAT_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/Newmat)
 # Offer the user the choice of overriding the installation directories
 set(NEWMAT_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(NEWMAT_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
-set(NEWMAT_INSTALL_INCLUDE_DIR include/sofa             CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(NEWMAT_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 set(NEWMAT_INSTALL_CMAKE_DIR   lib/cmake/Newmat         CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
@@ -87,12 +87,11 @@ install(FILES ${NEWMAT_BUILD_CMAKE_DIR}/NewmatConfigInstall.cmake
         RENAME NewmatConfig.cmake)
 
 install(TARGETS ${PROJECT_NAME}
-    COMPONENT Newmat_libraries
     EXPORT  NewmatTargets
-    RUNTIME DESTINATION "${NEWMAT_INSTALL_BIN_DIR}"
-    LIBRARY DESTINATION "${NEWMAT_INSTALL_LIB_DIR}"
-    ARCHIVE DESTINATION "${NEWMAT_INSTALL_LIB_DIR}"
-    PUBLIC_HEADER DESTINATION "${NEWMAT_INSTALL_INCLUDE_DIR}"
+    RUNTIME DESTINATION "${NEWMAT_INSTALL_BIN_DIR}" COMPONENT Newmat_libraries
+    LIBRARY DESTINATION "${NEWMAT_INSTALL_LIB_DIR}" COMPONENT Newmat_libraries
+    ARCHIVE DESTINATION "${NEWMAT_INSTALL_LIB_DIR}" COMPONENT Newmat_libraries
+    PUBLIC_HEADER DESTINATION "${NEWMAT_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT Newmat_headers
     )
         
 # NewmatTargets.cmake (installed)
