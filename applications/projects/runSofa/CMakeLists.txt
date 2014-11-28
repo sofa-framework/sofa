@@ -24,8 +24,11 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAGUI_BUILD_INCLUDE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 
+# make the name of debug applications end in _d.
+set_target_properties( ${PROJECT_NAME}  PROPERTIES DEBUG_POSTFIX "_d" )
+
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaGui_libraries
+        COMPONENT SofaGui_applications
         EXPORT  SofaGuiTargets
         RUNTIME DESTINATION "${SOFAGUI_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}"
