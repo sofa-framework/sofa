@@ -88,14 +88,13 @@ void RequiredPlugin::loadPlugin()
     for (std::size_t nameIndex = 0; nameIndex < nameVec.size(); ++nameIndex)
     {
         const std::string& name = nameVec[nameIndex];
-        std::cout << "Loading " << name << std::endl;
+        //sout << "Loading " << name << sendl;
         bool nameLoaded = false;
         for (std::size_t suffixIndex = 0; suffixIndex < suffixVec.size(); ++suffixIndex)
         {
             const std::string& suffix = suffixVec[suffixIndex];
             std::string pluginPath = name;
             bool result = pluginManager->findPlugin(pluginPath, suffix, false).empty();
-            std::cout << "\tPlugin path" << name << std::endl;
             if (!result && !pluginManager->pluginIsLoaded(pluginPath))
             {
                 result = pluginManager->loadPlugin(pluginPath, &errmsg, suffix);
