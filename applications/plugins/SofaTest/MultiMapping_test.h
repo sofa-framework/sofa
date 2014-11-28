@@ -93,7 +93,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     simulation::Node::SPtr child; ///< Child node, created by setupScene
     vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
-    Real deltaMax; ///< The maximum magnitude of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
+    Real deltaMax; ///< The maximum magnitude of the change of each scalar value of the small displacement is deltaMax * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
 
 
