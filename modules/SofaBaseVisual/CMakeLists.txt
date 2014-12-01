@@ -39,6 +39,10 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFABASE_VERSION} )
 set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COMPILER_FLAGS}"  )
 set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
+if(TARGET gtest)
+    add_subdirectory(SofaBaseVisual_test)
+endif()
+
 install(TARGETS ${PROJECT_NAME}
         EXPORT  SofaBaseTargets
         RUNTIME DESTINATION "${SOFABASE_INSTALL_BIN_DIR}" COMPONENT SofaBase_libraries
