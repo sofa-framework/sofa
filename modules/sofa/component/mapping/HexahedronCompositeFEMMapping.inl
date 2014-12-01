@@ -65,7 +65,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
     if(!_sparseGrid)
     {
         serr<<"HexahedronCompositeFEMMapping can only be used with a SparseGridTopology"<<sendl;
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 
 
@@ -73,7 +73,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
     if(!_forcefield)
     {
         serr<<"HexahedronCompositeFEMMapping can only be used with a HexahedronCompositeFEMForceFieldAndMass"<<sendl;
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 
 
