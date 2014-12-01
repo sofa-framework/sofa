@@ -27,6 +27,8 @@
 #ifndef SOFA_STANDARDTEST_MultiMapping_test_H
 #define SOFA_STANDARDTEST_MultiMapping_test_H
 
+#include <sstream>
+
 #include "Sofa_test.h"
 #include <sofa/component/init.h>
 #include <sofa/core/MechanicalParams.h>
@@ -120,7 +122,9 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         /// Parent states, added to specific parentNode{i} nodes. This is not a simulable scene.
         for( int i=0; i<numParents; i++ )
         {
-            parents.push_back(root->createChild("parentNode"+i));
+            std::stringstream ss;
+            ss << "parentNode" << i;
+            parents.push_back(root->createChild(ss.str()));
             typename InDOFs::SPtr inDof = modeling::addNew<InDOFs>(parents[i]);
             mapping->addInputModel( inDof.get() );
             inDofs.push_back(inDof.get());
