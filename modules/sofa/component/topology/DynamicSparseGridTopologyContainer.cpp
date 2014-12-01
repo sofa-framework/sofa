@@ -68,7 +68,7 @@ void DynamicSparseGridTopologyContainer::init()
     if ( !VoxelLoader )
     {
         this->serr << "DynamicSparseGridTopologyContainer::init(): No VoxelLoader found! Aborting..." << this->sendl;
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 
     const helper::vector<BaseMeshTopology::HexaID>& iirg = idxInRegularGrid.getValue();
