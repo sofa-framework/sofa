@@ -23,14 +23,14 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Sofa_test.h"
+#include <gtest/gtest.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa {
 
 template <typename _DataTypes>
-struct VisualModelImpl_test : public Sofa_test<typename _DataTypes::Real>
+struct VisualModelImpl_test : public ::testing::Test
 {
     typedef _DataTypes DataTypes;
 
