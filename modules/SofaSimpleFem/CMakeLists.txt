@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaSimpleFem)
 
 set(HEADER_FILES
@@ -63,21 +63,12 @@ set( SOFASIMPLEFEM_COMPILER_FLAGS "-DSOFA_BUILD_SIMPLE_FEM")
 set_target_properties( ${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d" )
 set_target_properties( ${PROJECT_NAME} PROPERTIES VERSION ${SOFACOMMON_VERSION} )
 set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFASIMPLEFEM_COMPILER_FLAGS}"  )
-
+set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaCommon_libraries
         EXPORT  SofaCommonTargets
-        RUNTIME DESTINATION "${SOFACOMMON_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${SOFACOMMON_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${SOFACOMMON_INSTALL_LIB_DIR}"
-        )
-
-install(DIRECTORY ${SofaSimpleFem_SOURCE_DIR}/ DESTINATION "${SOFACOMMON_INSTALL_INCLUDE_DIR}/SofaSimpleFem"
-        COMPONENT SofaCommon_headers
-        FILES_MATCHING
-            PATTERN "*.h"
-            PATTERN "*.inl"
-            PATTERN "*.hxx"
-            PATTERN "*.hpp"
+        RUNTIME DESTINATION "${SOFACOMMON_INSTALL_BIN_DIR}" COMPONENT SofaCommon_libraries
+        LIBRARY DESTINATION "${SOFACOMMON_INSTALL_LIB_DIR}" COMPONENT SofaCommon_libraries
+        ARCHIVE DESTINATION "${SOFACOMMON_INSTALL_LIB_DIR}" COMPONENT SofaCommon_libraries
+        PUBLIC_HEADER DESTINATION "${SOFACOMMON_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaCommon_headers
         )
