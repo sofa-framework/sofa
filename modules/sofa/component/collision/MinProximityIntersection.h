@@ -49,6 +49,7 @@ public:
     Data<bool> usePointPoint;
     Data<bool> useSurfaceNormals;
     Data<bool> useLinePoint;
+    Data<bool> useLineLine;
     Data<bool> useTriangleLine;
 
 protected:
