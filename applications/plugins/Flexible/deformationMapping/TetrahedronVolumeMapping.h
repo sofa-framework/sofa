@@ -1,27 +1,3 @@
-/******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_TetrahedronVolumeMapping_H
 #define SOFA_COMPONENT_MAPPING_TetrahedronVolumeMapping_H
 
@@ -73,6 +49,10 @@ public:
 
     Data<OutVecCoord> d_offsets;
 
+    /// dispatch the volume per nodes (each node taking a quarter of its incident tetrahedra)
+    /// inspired from "Volume Conserving Finite Element Simulations of Deformable Models", Irving, Schroeder, Fedkiw, SIGGRAPH 2007
+    Data<bool> d_volumePerNodes;
+
     virtual void init()
     {
         m_topology = this->getContext()->getMeshTopology();
@@ -80,7 +60,11 @@ public:
         int nbTetra = m_topology->getNbTetrahedra();
         if( !nbTetra ) { serr<<"The Topology constains no tetrahedra."<<sendl; return; }
 
-        this->getToModel()->resize( nbTetra );
+        if( d_volumePerNodes.getValue() )
+            this->getToModel()->resize( m_topology->getNbPoints() );
+        else
+            this->getToModel()->resize( nbTetra );
+
         baseMatrices.resize( 1 );
         baseMatrices[0] = &jacobian;
         baseStiffnessMatrices.resize( 1 );
@@ -102,13 +86,35 @@ public:
         helper::ReadAccessor< Data<InVecCoord> >  x = dIn;
 
         jacobian.resizeBlocks(v.size(),x.size());
-        baseGeometricStiffness.resizeBlocks(x.size(),x.size());
+        hessian.resizeBlocks(x.size(),x.size());
 
 
-        for (int i = 0, nbTetra = m_topology->getNbTetrahedra(); i < nbTetra; i++)
+        if( d_volumePerNodes.getValue() )
         {
-            Tetra t = m_topology->getTetra(i);
-            v[i][0] = processTetra(i,t[0],t[1],t[2],t[3],x[t[0]],x[t[1]],x[t[2]],x[t[3]]);
+            for( int i=0 ; i<v.size() ; i++ ) v[i][0] = 0;
+            SparseMatrixEigen tetraJ( m_topology->getNbTetrahedra(), x.size()*Nin );
+            SparseMatrixEigen TetraToNode( v.size(), m_topology->getNbTetrahedra() );
+            for (int i = 0, nbTetra = m_topology->getNbTetrahedra(); i < nbTetra; i++)
+            {
+                Tetra t = m_topology->getTetra(i);
+                Real tetravol = .25 * processTetra( i, t[0],t[1],t[2],t[3], x[t[0]],x[t[1]],x[t[2]],x[t[3]], tetraJ, hessian );
+                for( int j=0 ; j<4 ; ++j )
+                {
+                    TetraToNode.add( t[j], i, 0.25 );
+                    v[t[j]][0] += tetravol;
+                }
+            }
+            tetraJ.compress();
+            TetraToNode.compress();
+            jacobian.compressedMatrix = TetraToNode.compressedMatrix * tetraJ.compressedMatrix;
+        }
+        else
+        {
+            for (int i = 0, nbTetra = m_topology->getNbTetrahedra(); i < nbTetra; i++)
+            {
+                Tetra t = m_topology->getTetra(i);
+                v[i][0] = processTetra( i, t[0],t[1],t[2],t[3], x[t[0]],x[t[1]],x[t[2]],x[t[3]], jacobian, hessian );
+            }
         }
 
         if( this->f_applyRestPosition.getValue() && !d_offsets.getValue().empty() )
@@ -120,7 +126,7 @@ public:
         }
 
         jacobian.compress();
-        baseGeometricStiffness.compress();
+        hessian.compress();
     }
 
     virtual void applyJ(const core::MechanicalParams */*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)    { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn);    }
@@ -133,13 +139,13 @@ public:
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
         const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
         helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
-        baseGeometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[0][0]);
+        hessian.addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[0][0]);
     }
 
     virtual const vector<defaulttype::BaseMatrix*>* getKs()
     {
         const OutVecDeriv& childForce = this->toModel->readForces().ref();
-        geometricStiffness.compressedMatrix = baseGeometricStiffness.compressedMatrix * childForce[0][0];
+        geometricStiffness.compressedMatrix = hessian.compressedMatrix * childForce[0][0];
         return &baseStiffnessMatrices;
     }
 
@@ -150,6 +156,7 @@ protected:
     TetrahedronVolumeMapping (core::State<TIn>* from = NULL, core::State<TOut>* to= NULL)
         : Inherit ( from, to )
         , d_offsets(initData(&d_offsets, "offsets", "offsets removed from output volume"))
+        , d_volumePerNodes(initData(&d_volumePerNodes, "volumePerNodes", "Dispatch the volume on nodes"))
     {
     }
 
@@ -160,11 +167,11 @@ protected:
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
-    SparseKMatrixEigen baseGeometricStiffness, geometricStiffness; ///< Stiffness due to the non-linearity of the mapping
+    SparseKMatrixEigen hessian, geometricStiffness; ///< Stiffness due to the non-linearity of the mapping
     vector<defaulttype::BaseMatrix*> baseStiffnessMatrices; ///< Vector of geometric stiffness matrices
 
 
-    Real processTetra( int i, const unsigned a, const unsigned b, const unsigned c, const unsigned d, const InCoord A, const InCoord B, const InCoord C, const InCoord D )
+    Real processTetra( int i, const unsigned a, const unsigned b, const unsigned c, const unsigned d, const InCoord A, const InCoord B, const InCoord C, const InCoord D, SparseMatrixEigen& J, SparseKMatrixEigen& H )
     {
         const Real& p00 = A[0];
         const Real& p01 = A[1];
@@ -356,164 +363,164 @@ protected:
         Real t482 = t138 * t93 * inv6;
 
         // K
-        baseGeometricStiffness.add(a*Nin+0, a*Nin+0, -t52 * t50 * inv6 + t52 * t54 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, a*Nin+1, t66 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, a*Nin+2, t76 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, b*Nin+0, t84 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, b*Nin+1, t96 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, b*Nin+2, t107 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, c*Nin+0, t113 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, c*Nin+1, t122 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, c*Nin+2, t131 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, d*Nin+0, t137 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, d*Nin+1, t145 * inv6 );
-        baseGeometricStiffness.add(a*Nin+0, d*Nin+2, t153 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, a*Nin+0, t66 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, a*Nin+1, -t154 * t50 * inv6 + t154 * t54 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, a*Nin+2, t161 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, b*Nin+0, t166 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, b*Nin+1, t170 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, b*Nin+2, t176 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, c*Nin+0, t181 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, c*Nin+1, t185 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, c*Nin+2, t191 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, d*Nin+0, t196 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, d*Nin+1, t200 * inv6 );
-        baseGeometricStiffness.add(a*Nin+1, d*Nin+2, t206 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, a*Nin+0, t76 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, a*Nin+1, t161 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, a*Nin+2, -t207 * t50 * inv6 + t207 * t54 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, b*Nin+0, t215 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, b*Nin+1, t220 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, b*Nin+2, t224 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, c*Nin+0, t229 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, c*Nin+1, t234 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, c*Nin+2, t238 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, d*Nin+0, t243 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, d*Nin+1, t248 * inv6 );
-        baseGeometricStiffness.add(a*Nin+2, d*Nin+2, t252 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, a*Nin+0, t84 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, a*Nin+1, t166 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, a*Nin+2, t215 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, b*Nin+0, -t253 * t50 * inv6 + t253 * t54 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, b*Nin+1, t260 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, b*Nin+2, t264 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, c*Nin+0, t268 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, c*Nin+1, t274 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, c*Nin+2, t280 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, d*Nin+0, t284 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, d*Nin+1, t290 * inv6 );
-        baseGeometricStiffness.add(b*Nin+0, d*Nin+2, t296 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, a*Nin+0, t96 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, a*Nin+1, t170 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, a*Nin+2, t220 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, b*Nin+0, t260 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, b*Nin+1, -t297 * t50 * inv6 + t297 * t54 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, b*Nin+2, t304 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, c*Nin+0, t309 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, c*Nin+1, t313 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, c*Nin+2, t319 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, d*Nin+0, t324 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, d*Nin+1, t328 * inv6 );
-        baseGeometricStiffness.add(b*Nin+1, d*Nin+2, t334 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, a*Nin+0, t107 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, a*Nin+1, t176 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, a*Nin+2, t224 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, b*Nin+0, t264 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, b*Nin+1, t304 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, b*Nin+2, -t335 * t50 * inv6 + t335 * t54 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, c*Nin+0, t343 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, c*Nin+1, t348 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, c*Nin+2, t352 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, d*Nin+0, t357 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, d*Nin+1, t362 * inv6 );
-        baseGeometricStiffness.add(b*Nin+2, d*Nin+2, t366 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, a*Nin+0, t113 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, a*Nin+1, t181 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, a*Nin+2, t229 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, b*Nin+0, t268 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, b*Nin+1, t309 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, b*Nin+2, t343 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, c*Nin+0, -t367 * t50 * inv6 + t367 * t54 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, c*Nin+1, t374 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, c*Nin+2, t378 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, d*Nin+0, t382 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, d*Nin+1, t388 * inv6 );
-        baseGeometricStiffness.add(c*Nin+0, d*Nin+2, t394 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, a*Nin+0, t122 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, a*Nin+1, t185 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, a*Nin+2, t234 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, b*Nin+0, t274 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, b*Nin+1, t313 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, b*Nin+2, t348 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, c*Nin+0, t374 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, c*Nin+1, -t395 * t50 * inv6 + t395 * t54 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, c*Nin+2, t402 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, d*Nin+0, t407 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, d*Nin+1, t411 * inv6 );
-        baseGeometricStiffness.add(c*Nin+1, d*Nin+2, t417 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, a*Nin+0, t131 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, a*Nin+1, t191 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, a*Nin+2, t238 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, b*Nin+0, t280 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, b*Nin+1, t319 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, b*Nin+2, t352 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, c*Nin+0, t378 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, c*Nin+1, t402 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, c*Nin+2, -t418 * t50 * inv6 + t418 * t54 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, d*Nin+0, t426 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, d*Nin+1, t431 * inv6 );
-        baseGeometricStiffness.add(c*Nin+2, d*Nin+2, t435 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, a*Nin+0, t137 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, a*Nin+1, t196 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, a*Nin+2, t243 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, b*Nin+0, t284 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, b*Nin+1, t324 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, b*Nin+2, t357 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, c*Nin+0, t382 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, c*Nin+1, t407 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, c*Nin+2, t426 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, d*Nin+0, -t436 * t50 * inv6 + t436 * t54 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, d*Nin+1, t443 * inv6 );
-        baseGeometricStiffness.add(d*Nin+0, d*Nin+2, t447 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, a*Nin+0, t145 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, a*Nin+1, t200 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, a*Nin+2, t248 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, b*Nin+0, t290 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, b*Nin+1, t328 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, b*Nin+2, t362 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, c*Nin+0, t388 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, c*Nin+1, t411 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, c*Nin+2, t431 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, d*Nin+0, t443 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, d*Nin+1,	 -t448 * t50 * inv6 + t448 * t54 * inv6 );
-        baseGeometricStiffness.add(d*Nin+1, d*Nin+2,	 t455 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, a*Nin+0, t153 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, a*Nin+1, t206 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, a*Nin+2, t252 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, b*Nin+0, t296 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, b*Nin+1, t334 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, b*Nin+2, t366 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, c*Nin+0, t394 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, c*Nin+1, t417 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, c*Nin+2, t435 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, d*Nin+0, t447 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, d*Nin+1,	 t455 * inv6 );
-        baseGeometricStiffness.add(d*Nin+2, d*Nin+2,	 -t456 * t50 * inv6 + t456 * t54 * inv6 );
+        H.add(a*Nin+0, a*Nin+0, -t52 * t50 * inv6 + t52 * t54 * inv6 );
+        H.add(a*Nin+0, a*Nin+1, t66 * inv6 );
+        H.add(a*Nin+0, a*Nin+2, t76 * inv6 );
+        H.add(a*Nin+0, b*Nin+0, t84 * inv6 );
+        H.add(a*Nin+0, b*Nin+1, t96 * inv6 );
+        H.add(a*Nin+0, b*Nin+2, t107 * inv6 );
+        H.add(a*Nin+0, c*Nin+0, t113 * inv6 );
+        H.add(a*Nin+0, c*Nin+1, t122 * inv6 );
+        H.add(a*Nin+0, c*Nin+2, t131 * inv6 );
+        H.add(a*Nin+0, d*Nin+0, t137 * inv6 );
+        H.add(a*Nin+0, d*Nin+1, t145 * inv6 );
+        H.add(a*Nin+0, d*Nin+2, t153 * inv6 );
+        H.add(a*Nin+1, a*Nin+0, t66 * inv6 );
+        H.add(a*Nin+1, a*Nin+1, -t154 * t50 * inv6 + t154 * t54 * inv6 );
+        H.add(a*Nin+1, a*Nin+2, t161 * inv6 );
+        H.add(a*Nin+1, b*Nin+0, t166 * inv6 );
+        H.add(a*Nin+1, b*Nin+1, t170 * inv6 );
+        H.add(a*Nin+1, b*Nin+2, t176 * inv6 );
+        H.add(a*Nin+1, c*Nin+0, t181 * inv6 );
+        H.add(a*Nin+1, c*Nin+1, t185 * inv6 );
+        H.add(a*Nin+1, c*Nin+2, t191 * inv6 );
+        H.add(a*Nin+1, d*Nin+0, t196 * inv6 );
+        H.add(a*Nin+1, d*Nin+1, t200 * inv6 );
+        H.add(a*Nin+1, d*Nin+2, t206 * inv6 );
+        H.add(a*Nin+2, a*Nin+0, t76 * inv6 );
+        H.add(a*Nin+2, a*Nin+1, t161 * inv6 );
+        H.add(a*Nin+2, a*Nin+2, -t207 * t50 * inv6 + t207 * t54 * inv6 );
+        H.add(a*Nin+2, b*Nin+0, t215 * inv6 );
+        H.add(a*Nin+2, b*Nin+1, t220 * inv6 );
+        H.add(a*Nin+2, b*Nin+2, t224 * inv6 );
+        H.add(a*Nin+2, c*Nin+0, t229 * inv6 );
+        H.add(a*Nin+2, c*Nin+1, t234 * inv6 );
+        H.add(a*Nin+2, c*Nin+2, t238 * inv6 );
+        H.add(a*Nin+2, d*Nin+0, t243 * inv6 );
+        H.add(a*Nin+2, d*Nin+1, t248 * inv6 );
+        H.add(a*Nin+2, d*Nin+2, t252 * inv6 );
+        H.add(b*Nin+0, a*Nin+0, t84 * inv6 );
+        H.add(b*Nin+0, a*Nin+1, t166 * inv6 );
+        H.add(b*Nin+0, a*Nin+2, t215 * inv6 );
+        H.add(b*Nin+0, b*Nin+0, -t253 * t50 * inv6 + t253 * t54 * inv6 );
+        H.add(b*Nin+0, b*Nin+1, t260 * inv6 );
+        H.add(b*Nin+0, b*Nin+2, t264 * inv6 );
+        H.add(b*Nin+0, c*Nin+0, t268 * inv6 );
+        H.add(b*Nin+0, c*Nin+1, t274 * inv6 );
+        H.add(b*Nin+0, c*Nin+2, t280 * inv6 );
+        H.add(b*Nin+0, d*Nin+0, t284 * inv6 );
+        H.add(b*Nin+0, d*Nin+1, t290 * inv6 );
+        H.add(b*Nin+0, d*Nin+2, t296 * inv6 );
+        H.add(b*Nin+1, a*Nin+0, t96 * inv6 );
+        H.add(b*Nin+1, a*Nin+1, t170 * inv6 );
+        H.add(b*Nin+1, a*Nin+2, t220 * inv6 );
+        H.add(b*Nin+1, b*Nin+0, t260 * inv6 );
+        H.add(b*Nin+1, b*Nin+1, -t297 * t50 * inv6 + t297 * t54 * inv6 );
+        H.add(b*Nin+1, b*Nin+2, t304 * inv6 );
+        H.add(b*Nin+1, c*Nin+0, t309 * inv6 );
+        H.add(b*Nin+1, c*Nin+1, t313 * inv6 );
+        H.add(b*Nin+1, c*Nin+2, t319 * inv6 );
+        H.add(b*Nin+1, d*Nin+0, t324 * inv6 );
+        H.add(b*Nin+1, d*Nin+1, t328 * inv6 );
+        H.add(b*Nin+1, d*Nin+2, t334 * inv6 );
+        H.add(b*Nin+2, a*Nin+0, t107 * inv6 );
+        H.add(b*Nin+2, a*Nin+1, t176 * inv6 );
+        H.add(b*Nin+2, a*Nin+2, t224 * inv6 );
+        H.add(b*Nin+2, b*Nin+0, t264 * inv6 );
+        H.add(b*Nin+2, b*Nin+1, t304 * inv6 );
+        H.add(b*Nin+2, b*Nin+2, -t335 * t50 * inv6 + t335 * t54 * inv6 );
+        H.add(b*Nin+2, c*Nin+0, t343 * inv6 );
+        H.add(b*Nin+2, c*Nin+1, t348 * inv6 );
+        H.add(b*Nin+2, c*Nin+2, t352 * inv6 );
+        H.add(b*Nin+2, d*Nin+0, t357 * inv6 );
+        H.add(b*Nin+2, d*Nin+1, t362 * inv6 );
+        H.add(b*Nin+2, d*Nin+2, t366 * inv6 );
+        H.add(c*Nin+0, a*Nin+0, t113 * inv6 );
+        H.add(c*Nin+0, a*Nin+1, t181 * inv6 );
+        H.add(c*Nin+0, a*Nin+2, t229 * inv6 );
+        H.add(c*Nin+0, b*Nin+0, t268 * inv6 );
+        H.add(c*Nin+0, b*Nin+1, t309 * inv6 );
+        H.add(c*Nin+0, b*Nin+2, t343 * inv6 );
+        H.add(c*Nin+0, c*Nin+0, -t367 * t50 * inv6 + t367 * t54 * inv6 );
+        H.add(c*Nin+0, c*Nin+1, t374 * inv6 );
+        H.add(c*Nin+0, c*Nin+2, t378 * inv6 );
+        H.add(c*Nin+0, d*Nin+0, t382 * inv6 );
+        H.add(c*Nin+0, d*Nin+1, t388 * inv6 );
+        H.add(c*Nin+0, d*Nin+2, t394 * inv6 );
+        H.add(c*Nin+1, a*Nin+0, t122 * inv6 );
+        H.add(c*Nin+1, a*Nin+1, t185 * inv6 );
+        H.add(c*Nin+1, a*Nin+2, t234 * inv6 );
+        H.add(c*Nin+1, b*Nin+0, t274 * inv6 );
+        H.add(c*Nin+1, b*Nin+1, t313 * inv6 );
+        H.add(c*Nin+1, b*Nin+2, t348 * inv6 );
+        H.add(c*Nin+1, c*Nin+0, t374 * inv6 );
+        H.add(c*Nin+1, c*Nin+1, -t395 * t50 * inv6 + t395 * t54 * inv6 );
+        H.add(c*Nin+1, c*Nin+2, t402 * inv6 );
+        H.add(c*Nin+1, d*Nin+0, t407 * inv6 );
+        H.add(c*Nin+1, d*Nin+1, t411 * inv6 );
+        H.add(c*Nin+1, d*Nin+2, t417 * inv6 );
+        H.add(c*Nin+2, a*Nin+0, t131 * inv6 );
+        H.add(c*Nin+2, a*Nin+1, t191 * inv6 );
+        H.add(c*Nin+2, a*Nin+2, t238 * inv6 );
+        H.add(c*Nin+2, b*Nin+0, t280 * inv6 );
+        H.add(c*Nin+2, b*Nin+1, t319 * inv6 );
+        H.add(c*Nin+2, b*Nin+2, t352 * inv6 );
+        H.add(c*Nin+2, c*Nin+0, t378 * inv6 );
+        H.add(c*Nin+2, c*Nin+1, t402 * inv6 );
+        H.add(c*Nin+2, c*Nin+2, -t418 * t50 * inv6 + t418 * t54 * inv6 );
+        H.add(c*Nin+2, d*Nin+0, t426 * inv6 );
+        H.add(c*Nin+2, d*Nin+1, t431 * inv6 );
+        H.add(c*Nin+2, d*Nin+2, t435 * inv6 );
+        H.add(d*Nin+0, a*Nin+0, t137 * inv6 );
+        H.add(d*Nin+0, a*Nin+1, t196 * inv6 );
+        H.add(d*Nin+0, a*Nin+2, t243 * inv6 );
+        H.add(d*Nin+0, b*Nin+0, t284 * inv6 );
+        H.add(d*Nin+0, b*Nin+1, t324 * inv6 );
+        H.add(d*Nin+0, b*Nin+2, t357 * inv6 );
+        H.add(d*Nin+0, c*Nin+0, t382 * inv6 );
+        H.add(d*Nin+0, c*Nin+1, t407 * inv6 );
+        H.add(d*Nin+0, c*Nin+2, t426 * inv6 );
+        H.add(d*Nin+0, d*Nin+0, -t436 * t50 * inv6 + t436 * t54 * inv6 );
+        H.add(d*Nin+0, d*Nin+1, t443 * inv6 );
+        H.add(d*Nin+0, d*Nin+2, t447 * inv6 );
+        H.add(d*Nin+1, a*Nin+0, t145 * inv6 );
+        H.add(d*Nin+1, a*Nin+1, t200 * inv6 );
+        H.add(d*Nin+1, a*Nin+2, t248 * inv6 );
+        H.add(d*Nin+1, b*Nin+0, t290 * inv6 );
+        H.add(d*Nin+1, b*Nin+1, t328 * inv6 );
+        H.add(d*Nin+1, b*Nin+2, t362 * inv6 );
+        H.add(d*Nin+1, c*Nin+0, t388 * inv6 );
+        H.add(d*Nin+1, c*Nin+1, t411 * inv6 );
+        H.add(d*Nin+1, c*Nin+2, t431 * inv6 );
+        H.add(d*Nin+1, d*Nin+0, t443 * inv6 );
+        H.add(d*Nin+1, d*Nin+1,	 -t448 * t50 * inv6 + t448 * t54 * inv6 );
+        H.add(d*Nin+1, d*Nin+2,	 t455 * inv6 );
+        H.add(d*Nin+2, a*Nin+0, t153 * inv6 );
+        H.add(d*Nin+2, a*Nin+1, t206 * inv6 );
+        H.add(d*Nin+2, a*Nin+2, t252 * inv6 );
+        H.add(d*Nin+2, b*Nin+0, t296 * inv6 );
+        H.add(d*Nin+2, b*Nin+1, t334 * inv6 );
+        H.add(d*Nin+2, b*Nin+2, t366 * inv6 );
+        H.add(d*Nin+2, c*Nin+0, t394 * inv6 );
+        H.add(d*Nin+2, c*Nin+1, t417 * inv6 );
+        H.add(d*Nin+2, c*Nin+2, t435 * inv6 );
+        H.add(d*Nin+2, d*Nin+0, t447 * inv6 );
+        H.add(d*Nin+2, d*Nin+1,	 t455 * inv6 );
+        H.add(d*Nin+2, d*Nin+2,	 -t456 * t50 * inv6 + t456 * t54 * inv6 );
 
         // J
-        jacobian.add(i, a*Nin+0,t462 );
-        jacobian.add(i, a*Nin+1,t464 );
-        jacobian.add(i, a*Nin+2,t466 );
-        jacobian.add(i, b*Nin+0,t468 );
-        jacobian.add(i, b*Nin+1,t470 );
-        jacobian.add(i, b*Nin+2,t472 );
-        jacobian.add(i, c*Nin+0,t474 );
-        jacobian.add(i, c*Nin+1,t476 );
-        jacobian.add(i, c*Nin+2,t478 );
-        jacobian.add(i, d*Nin+0,t480 );
-        jacobian.add(i, d*Nin+1, t482 );
-        jacobian.add(i, d*Nin+2, t146 * t93 * inv6 );
+        J.add(i, a*Nin+0,t462 );
+        J.add(i, a*Nin+1,t464 );
+        J.add(i, a*Nin+2,t466 );
+        J.add(i, b*Nin+0,t468 );
+        J.add(i, b*Nin+1,t470 );
+        J.add(i, b*Nin+2,t472 );
+        J.add(i, c*Nin+0,t474 );
+        J.add(i, c*Nin+1,t476 );
+        J.add(i, c*Nin+2,t478 );
+        J.add(i, d*Nin+0,t480 );
+        J.add(i, d*Nin+1, t482 );
+        J.add(i, d*Nin+2, t146 * t93 * inv6 );
 
         // tetra volume
         return  t47 * inv6;
