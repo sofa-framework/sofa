@@ -24,7 +24,7 @@ set(SOFAGUI_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaGui)
 set(SOFAGUI_INSTALL_LIB_DIR     lib     					  CACHE PATH "Installation directory for libraries")
 set(SOFAGUI_INSTALL_BIN_DIR     bin     					  CACHE PATH "Installation directory for executables")
 set(SOFAGUI_INSTALL_INCLUDE_DIR include 					  CACHE PATH "Installation directory for header files")
-set(SOFAGUI_INSTALL_CMAKE_DIR   lib/cmake/SofaGui   CACHE PATH "Installation directory for CMake files")
+set(SOFAGUI_INSTALL_CMAKE_DIR   ${SOFAGUI_INSTALL_LIB_DIR}/cmake/SofaGui   CACHE PATH "Installation directory for CMake files")
 
 ## SofaGui dependencies
 ##
