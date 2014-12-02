@@ -200,8 +200,8 @@ public slots:
     void setSizeW(int);
     void setSizeH(int);
 
-    virtual void getView(Vec3d& pos, Quat& ori) const;
-    virtual void setView(const Vec3d& pos, const Quat &ori);
+    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const;
+    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
     virtual void captureEvent() { SofaViewer::captureEvent(); }
     void fitObjectBBox(sofa::core::objectmodel::BaseObject* object)
     {
