@@ -23,7 +23,7 @@ set(SOFAADVANCED_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaAdvanced)
 set(SOFAADVANCED_INSTALL_LIB_DIR     lib     					  CACHE PATH "Installation directory for libraries")
 set(SOFAADVANCED_INSTALL_BIN_DIR     bin     					  CACHE PATH "Installation directory for executables")
 set(SOFAADVANCED_INSTALL_INCLUDE_DIR include 					  CACHE PATH "Installation directory for header files")
-set(SOFAADVANCED_INSTALL_CMAKE_DIR   ${SOFAADVANCED_INSTALL_CMAKE_DIR}/cmake/SofaAdvanced   CACHE PATH "Installation directory for CMake files")
+set(SOFAADVANCED_INSTALL_CMAKE_DIR   ${SOFAADVANCED_INSTALL_CMAKE_DIR}/cmake/SofaAdvanced )
 
 ## SofaAdvanced dependencies
 ##
