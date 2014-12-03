@@ -118,7 +118,7 @@ void ArgumentParser::operator () ( std::list<std::string> str )
             std::cout << std::noboolalpha;
             if( files )
                 std::cout << "others: file names" << std::endl;
-            exit(1);
+            exit(EXIT_FAILURE);
         }
 
         // not an option
@@ -185,7 +185,7 @@ void ArgumentParser::operator () ( std::list<std::string> str )
             (*cm)->print();
         }
     }
-    if( unset ) exit(1);
+    if( unset ) exit(EXIT_FAILURE);
 }
 
 } // namespace helper

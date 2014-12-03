@@ -60,12 +60,15 @@ MeshMinProximityIntersection::MeshMinProximityIntersection(MinProximityIntersect
         else
             intersection->intersectors.ignore<PointModel, PointModel>();
 
-        intersection->intersectors.add<LineModel, LineModel, MeshMinProximityIntersection>(this);
-
         if(intersection->useLinePoint.getValue())
             intersection->intersectors.add<LineModel, PointModel, MeshMinProximityIntersection>(this);
         else
             intersection->intersectors.ignore<LineModel, PointModel>();
+
+        if(intersection->useLineLine.getValue())
+            intersection->intersectors.add<LineModel, LineModel, MeshMinProximityIntersection>(this);
+        else
+            intersection->intersectors.ignore<LineModel, LineModel>();
 
         intersection->intersectors.add<TriangleModel, PointModel, MeshMinProximityIntersection>(this);
         intersection->intersectors.ignore<TriangleModel, LineModel>();

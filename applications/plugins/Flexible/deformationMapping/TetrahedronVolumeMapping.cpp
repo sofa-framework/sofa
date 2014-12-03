@@ -16,72 +16,39 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_H
+#define SOFA_COMPONENT_MAPPING_TetrahedronVolumeMapping_CPP
 
-#include <SofaBaseCollision/BaseProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/BaseIntTool.h>
+#include "../initFlexible.h"
+#include "TetrahedronVolumeMapping.h"
+#include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa
 {
-
 namespace component
 {
-
-namespace collision
+namespace mapping
 {
 
-class SOFA_BASE_COLLISION_API MinProximityIntersection : public BaseProximityIntersection
-{
-public:
-    SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
-    Data<bool> useSphereTriangle;
-    Data<bool> usePointPoint;
-    Data<bool> useSurfaceNormals;
-    Data<bool> useLinePoint;
-    Data<bool> useLineLine;
-    Data<bool> useTriangleLine;
+SOFA_DECL_CLASS(TetrahedronVolumeMapping);
 
-protected:
-    MinProximityIntersection();
-public:
-    typedef core::collision::IntersectorFactory<MinProximityIntersection> IntersectorFactory;
+using namespace defaulttype;
 
-    virtual void init();
+// Register in the Factory
+int TetrahedronVolumeMappingClass = core::RegisterObject("Map deformation gradients to the invariants of the right Cauchy Green deformation tensor: I1, I2 and J")
 
-    bool getUseSurfaceNormals();
+        .add< TetrahedronVolumeMapping< Vec3Types, Vec1Types > >(true)
+        ;
 
-    void draw(const core::visual::VisualParams* vparams);
+template class SOFA_Flexible_API TetrahedronVolumeMapping< Vec3Types, Vec1Types >;
 
-private:
-    SReal mainAlarmDistance;
-    SReal mainContactDistance;
-};
-
-} // namespace collision
-
+} // namespace mapping
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
-extern template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
-#endif
-}
-}
-
 } // namespace sofa
 
-#endif

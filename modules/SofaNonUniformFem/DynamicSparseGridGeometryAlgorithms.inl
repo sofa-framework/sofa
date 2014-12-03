@@ -47,7 +47,7 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
     if ( !topoContainer )
     {
         serr << "buildTriangleMesh(). Error: can't find the mapping on the triangular topology." << sendl;
-        exit(0);
+        exit(EXIT_FAILURE);
     }
     this->getContext()->get( dof);
     if( !dof)
