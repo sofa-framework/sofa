@@ -11,7 +11,7 @@ set(NEWMAT_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/Newmat)
 set(NEWMAT_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(NEWMAT_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(NEWMAT_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(NEWMAT_INSTALL_CMAKE_DIR   lib/cmake/Newmat         CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
+set(NEWMAT_INSTALL_CMAKE_DIR   ${NEWMAT_INSTALL_LIB_DIR}/cmake/Newmat )
 
 set(HEADER_FILES
 

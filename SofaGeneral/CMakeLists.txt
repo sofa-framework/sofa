@@ -23,7 +23,7 @@ set(SOFAGENERAL_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaGeneral)
 set(SOFAGENERAL_INSTALL_LIB_DIR     lib                     CACHE PATH "Installation directory for libraries")
 set(SOFAGENERAL_INSTALL_BIN_DIR     bin                     CACHE PATH "Installation directory for executables")
 set(SOFAGENERAL_INSTALL_INCLUDE_DIR include                 CACHE PATH "Installation directory for header files")
-set(SOFAGENERAL_INSTALL_CMAKE_DIR   ${SOFAGENERAL_INSTALL_LIB_DIR}/cmake/SofaGeneral   CACHE PATH "Installation directory for CMake files")
+set(SOFAGENERAL_INSTALL_CMAKE_DIR   ${SOFAGENERAL_INSTALL_LIB_DIR}/cmake/SofaGeneral )
 
 ## SofaGeneral dependencies
 ##

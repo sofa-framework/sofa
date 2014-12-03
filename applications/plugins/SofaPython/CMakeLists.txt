@@ -20,7 +20,7 @@ set(SOFAPYTHON_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaPython)
 set(SOFAPYTHON_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAPYTHON_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAPYTHON_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAPYTHON_INSTALL_CMAKE_DIR   lib/cmake/SofaPython     CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAPYTHON_INSTALL_CMAKE_DIR   ${SOFAPYTHON_INSTALL_LIB_DIR}/cmake/SofaPython     CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
 
 ## plugin external dependencies
 if (APPLE)
