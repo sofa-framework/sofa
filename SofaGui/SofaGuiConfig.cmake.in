@@ -7,15 +7,18 @@
 
 set(SOFAGUI_INCLUDE_DIR "@PACKAGE_SOFAGUI_INCLUDE_DIR@")
 set(SofaGUI_TARGETS @SOFAGUI_TARGETS@)
-check_required_components(${SofaGUI_TARGETS})
 
 # required for transitive dependencies
 find_package(SofaGeneral REQUIRED)
+find_package(SofaMisc REQUIRED)
+find_package(SofaAdvanced REQUIRED)
 
 if( NOT TARGET SofaGuiCommon )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaGuiTargets.cmake")
 endif()
- 
+
+check_required_components(${SofaGUI_TARGETS})
+
 # For compatibility only
 set(SofaGui_LIBRARIES SofaGuiCommon)
 set(SofaGui_INCLUDE_DIRS ${SOFAGUI_INCLUDE_DIR} ${SofaSimulation_INCLUDE_DIRS})

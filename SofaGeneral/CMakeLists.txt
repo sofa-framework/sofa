@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 set(SOLUTION_NAME "SofaGeneral")
 project(${SOLUTION_NAME})
 
+include(CMakeSofaCreateTarget)
+
 #temporary until we move the sub projects
 set( SofaGeneral_ACTUAL_SOURCE_DIR ${SofaGeneral_SOURCE_DIR}/../modules)
 
@@ -29,7 +31,6 @@ set(SOFAGENERAL_INSTALL_CMAKE_DIR   ${SOFAGENERAL_INSTALL_LIB_DIR}/cmake/SofaGen
 ##
 find_package(SofaCommon REQUIRED)
 find_package(Newmat)
-
 set(SOFA_HAVE_NEWMAT ${Newmat_FOUND} )
 
 set(SOFAGENERAL_DEPENDENCY_INCLUDE_DIR ${SofaCommon_INCLUDE_DIRS})
@@ -44,8 +45,7 @@ set(SOFAGENERAL_TARGETS SofaValidation SofaExporter SofaGraphComponent SofaTopol
     SofaComponentGeneral SofaEngine SofaUserInteraction SofaConstraint SofaHaptics SofaPreconditioner)
 
 if(SOFA_HAVE_NEWMAT)
-  list(APPEND SOFAGENERAL_DEPENDENCY_LINK ${Newmat_LIBRARIES} )
-  list(APPEND SOFAGENERAL_DEPENDENCY_INCLUDE_DIR ${Newmat_INCLUDE_DIRS} )
+  list(APPEND SOFAGENERAL_DEPENDENCY_LINK newmat )
   list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
 endif()
 

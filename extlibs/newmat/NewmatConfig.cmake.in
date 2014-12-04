@@ -7,11 +7,11 @@
 
 set_and_check(NEWMAT_INCLUDE_DIR "@PACKAGE_NEWMAT_INCLUDE_DIR@")
 
-check_required_components(Newmat)
-
 if( NOT TARGET newmat ) 
 	include("${CMAKE_CURRENT_LIST_DIR}/NewmatTargets.cmake")
 endif() 
+
+check_required_components(newmat)
 
 # Variables for compatibility with MODULE mode find_package. 
 set(Newmat_LIBRARIES newmat)

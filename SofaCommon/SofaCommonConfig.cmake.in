@@ -6,19 +6,17 @@
 @PACKAGE_INIT@
 
 set(SOFACOMMON_INCLUDE_DIR "@PACKAGE_SOFACOMMON_INCLUDE_DIR@")
+set(SofaCommon_TARGETS @SOFACOMMON_TARGETS@)
 
 # required for transitive dependencies
 find_package(SofaBase REQUIRED SofaComponentBase)
 
-set(SofaCommon_TARGETS @SOFACOMMON_TARGETS@)
-
-check_required_components(${SofaCommon_TARGETS})
-
-
 if( NOT TARGET SofaComponentCommon )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaCommonTargets.cmake")
 endif()
+
+check_required_components(${SofaCommon_TARGETS})
  
 # For compatibility only
-set(SofaCommon_LIBRARIES @SOFACOMMON_TARGETS@)
+set(SofaCommon_LIBRARIES SofaComponentCommon)
 set(SofaCommon_INCLUDE_DIRS ${SOFACOMMON_INCLUDE_DIR} ${SofaBase_INCLUDE_DIRS})

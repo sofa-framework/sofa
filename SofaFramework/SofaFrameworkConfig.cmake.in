@@ -5,25 +5,52 @@
 
 @PACKAGE_INIT@
 
+include(CMakeSofaCreateTarget)
+
 set_and_check(SOFAFRAMEWORK_INCLUDE_DIR  "@PACKAGE_SOFAFRAMEWORK_INCLUDE_DIR@")
 
-check_required_components(SofaHelper SofaDefaultType SofaCore)
-
 find_package(TinyXML REQUIRED)
+sofa_create_target(TinyXML SofaFramework ${TinyXML_LIBRARIES} ${TinyXML_INCLUDE_DIRS} )
 
-set(SOFA_HAVE_PNG     "@SOFA_HAVE_PNG@"    )
 set(SOFA_HAVE_ZLIB    "@SOFA_HAVE_ZLIB@"   )
-set(SOFA_HAVE_GLEW    "@SOFA_HAVE_GLUT@"   )
+set(SOFA_HAVE_PNG     "@SOFA_HAVE_PNG@"    )
+set(SOFA_HAVE_GLEW    "@SOFA_HAVE_GLEW@"   )
 set(SOFA_HAVE_GLUT    "@SOFA_HAVE_GLUT@"   )
-set(SOFA_HAVE_TINYXML "@SOFA_HAVE_TINYXML@")
 set(SOFA_HAVE_BOOST   "@SOFA_HAVE_BOOST@"  )
-set(SOFA_HAVE_BOOST_THREAD "@SOFA_HAVE_BOOST_THREAD@")
-set(SOFA_HAVE_BOOST_SYSTEM "@SOFA_HAVE_BOOST_SYSTEM@")
 set(SOFA_HAVE_EIGEN2  "@SOFA_HAVE_EIGEN2@" )
+
+if(SOFA_HAVE_ZLIB)
+    find_package(ZLIB REQUIRED)
+    sofa_create_target(ZLIB SofaFramework ${ZLIB_LIBRARIES} ${ZLIB_INCLUDE_DIRS} )
+endif()
+
+if(SOFA_HAVE_PNG)
+    find_package(PNG REQUIRED)
+    sofa_create_target(PNG SofaFramework ${PNG_LIBRARY} ${PNG_INCLUDE_DIRS} )
+endif()
+
+if(SOFA_HAVE_GLEW)
+    find_package(GLEW REQUIRED)
+    sofa_create_target(GLEW SofaFramework ${GLEW_LIBRARIES} ${GLEW_INCLUDE_DIRS} )
+endif()
+
+if(SOFA_HAVE_GLUT)
+    find_package(GLUT REQUIRED)
+    sofa_create_target(GLUT SofaFramework ${GLUT_LIBRARIES} ${GLUT_INCLUDE_DIR} )
+endif()
+
+if(SOFA_HAVE_BOOST)
+    sofa_create_target(BoostSystem SofaFramework ${Boost_SYSTEM_LIBRARY} ${Boost_INCLUDE_DIRS} )
+    sofa_create_target(BoostThread SofaFramework ${Boost_THREAD_LIBRARY} ${Boost_INCLUDE_DIRS} )
+    sofa_create_target(BoostDateTime SofaFramework ${Boost_DATE_TIME_LIBRARY} ${Boost_INCLUDE_DIRS} )
+    sofa_create_target(BoostChrono SofaFramework ${Boost_CHRONO_LIBRARY} ${Boost_INCLUDE_DIRS} )
+endif()
 
 if( NOT TARGET SofaCore )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaFrameworkTargets.cmake")
-endif() 
+endif()
+
+check_required_components(SofaHelper SofaDefaultType SofaCore)
 
 set(SofaFramework_LIBRARIES SofaHelper SofaDefaultType SofaCore)
 set(SofaFramework_INCLUDE_DIRS ${SOFAFRAMEWORK_INCLUDE_DIR} ${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIR} )

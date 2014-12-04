@@ -5,19 +5,27 @@
 
 @PACKAGE_INIT@
 
+include(CMakeSofaCreateTarget)
+
 set(SOFAGENERAL_INCLUDE_DIR "@PACKAGE_SOFAGENERAL_INCLUDE_DIR@")
 
 # required for transitive dependencies
 find_package(SofaCommon REQUIRED)
 
+set(SOFA_HAVE_NEWMAT @SOFA_HAVE_NEWMAT@)
 set(SofaGeneral_TARGETS @SOFAGENERAL_TARGETS@)
 
-check_required_components( ${SofaGeneral_TARGETS} )
+if(SOFA_HAVE_NEWMAT)
+    find_package(Newmat REQUIRED)
+endif()
+
 
 if( NOT TARGET SofaComponentGeneral )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaGeneralTargets.cmake")
 endif()
- 
+
+check_required_components( ${SofaGeneral_TARGETS} )
+
 # For compatibility only
 set(SofaGeneral_LIBRARIES SofaComponentGeneral)
 set(SofaGeneral_INCLUDE_DIRS ${SOFAGENERAL_INCLUDE_DIR} ${SofaCommon_INCLUDE_DIRS} )
