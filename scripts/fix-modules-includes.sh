@@ -8,4 +8,4 @@ if [ "$#" -eq 0 ]; then
     exit 1
 fi
 
-find $* "(" -iname "*.h" -o -iname "*.cpp" -o -iname "*.inl" -o -iname "*.txt" ")" -exec sed -i -f scripts/fix-modules-includes.sed {} \; 
+find $* "(" -iname "*.h" -o -iname "*.cpp" -o -iname "*.inl" ")" -exec sed -i -f scripts/fix-modules-includes.sed {} \;

@@ -3,7 +3,7 @@
 
 #include "../initFlexible.h"
 #include <sofa/core/Mapping.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
