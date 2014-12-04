@@ -245,6 +245,48 @@ bool Node::removeObject(BaseObject::SPtr obj)
     return true;
 }
 
+/// Remove an object
+void Node::removeAllObjects()
+{
+	for (Node::ObjectIterator it = object.begin(); it != object.end(); ++it)
+	{
+        notifyRemoveObject(*it);
+	    this->clearObjectContext(*it);
+	}
+
+    object.clear();
+    animationManager.clear();
+    solver.clear();
+    linearSolver.clear();
+    constraintSolver.clear();
+    visualLoop.clear();
+    state.clear();
+    mechanicalState.clear();
+    mechanicalMapping.clear();
+    mass.clear();
+    topology.clear();
+    meshTopology.clear();
+    topologyObject.clear();
+    shaders.clear();
+
+    forceField.clear();
+    interactionForceField.clear();
+    projectiveConstraintSet.clear();
+    constraintSet.clear();
+    mapping.clear();
+    behaviorModel.clear();
+    visualModel.clear();
+    visualManager.clear();
+    collisionModel.clear();
+    contextObject.clear();
+    configurationSetting.clear();
+    collisionPipeline.clear();
+
+    actionScheduler.clear();
+
+    unsorted.clear();
+}
+
 /// Move an object from another node
 void Node::moveObject(BaseObject::SPtr obj)
 {
