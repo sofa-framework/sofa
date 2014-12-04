@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/RandomGenerator.h>
+#include <sofa/helper/random.h>
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
@@ -375,12 +375,11 @@ public:
      * @param a Range of each random value: (-a,+a)
      * @return random rigid transform
      */
-    static RigidCoord rand(SReal a,int seed = (unsigned int)time(NULL))
+    static RigidCoord rand(SReal a)
     {
         RigidCoord t;
-        helper::RandomGenerator randomGenerator(seed);
-        t.center = Pos( randomGenerator.symrand(a), randomGenerator.symrand(a), randomGenerator.symrand(a) );
-        t.orientation = Quat::fromEuler( randomGenerator.symrand(a), randomGenerator.symrand(a), randomGenerator.symrand(a) );
+        t.center = Pos(  SReal(helper::drand(a)), SReal(helper::drand(a)), SReal(helper::drand(a)) );
+        t.orientation = Quat::fromEuler( SReal(helper::drand(a)),SReal(helper::drand(a)), SReal(helper::drand(a)));
         return t;
     }
 
@@ -886,11 +885,10 @@ public:
     static const char* Name();
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
+    static Deriv randomDeriv( Real maxValue)
     {
         Deriv result;
-        helper::RandomGenerator randomGenerator(seed);
-        set( result, randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
+        set( result, Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)) );
         return result;
     }
 
@@ -1269,9 +1267,8 @@ public:
     static RigidCoord rand(SReal a)
     {
         RigidCoord t;
-        helper::RandomGenerator randomGenerator;
-        t.center = Pos( randomGenerator.symrand(a), randomGenerator.symrand(a) );
-        t.orientation = randomGenerator.symrand(a);
+        t.center = Pos( SReal(helper::drand(a)), SReal(helper::drand(a)));
+        t.orientation = SReal(helper::drand(a));
         return t;
     }
 
@@ -1766,11 +1763,10 @@ public:
     }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
+    static Deriv randomDeriv( Real maxValue)
     {
         Deriv result;
-        helper::RandomGenerator randomGenerator(seed);
-        set( result, randomGenerator.symrand(maxValue),randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue),randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
+        set( result, Real(helper::drand(maxValue)),Real(helper::drand(maxValue)), Real(helper::drand(maxValue)),Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)));
         return result;
     }
 

@@ -49,6 +49,7 @@ set(HEADER_FILES
     Quater.h
     Quater.inl
     rmath.h
+    random.h
     RandomGenerator.h
     set.h
     SVector.h
