@@ -24,6 +24,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Environment
 set(SOFA_CMAKE_DIR "${Sofa_SOURCE_DIR}/cmake" )
 list(APPEND CMAKE_MODULE_PATH "${SOFA_CMAKE_DIR}/Modules")
+
 include("${SOFA_CMAKE_DIR}/SofaBuildFlags.cmake")
 
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
@@ -41,6 +42,9 @@ set(SOFA_MISC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaMisc")
 set(SOFA_GUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGui")
 set(SOFA_EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 set(SOFA_SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+
+# cmake functions specific to sofa that needs to be redistributed.
+add_subdirectory( ${SOFA_CMAKE_DIR} )
 
 # externals
 if(EXISTS ${SOFA_EXTERNALS_DIR} )
@@ -87,8 +91,3 @@ add_subdirectory("${SOFA_EXAMPLES_DIR}")
 
 # share 
 add_subdirectory("${SOFA_SHARE_DIR}")
-
-    
-
-
-

@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 
+include(CMakeSofaCreateTarget)
+
 set(SOLUTION_NAME "SofaFramework")
 project(${SOLUTION_NAME})
 
@@ -44,79 +46,78 @@ set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 ## Dependencies lookup 
 ##
 # OpenGL ( glu )
-if(PS3)
-    set(OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/PSGL/RSX/ultra-opt/libPSGL.a")
-    list (APPEND OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/PSGL/RSX/ultra-opt/libPSGLU.a")
-    list (APPEND OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/libgcm_cmd.a")
-    list (APPEND OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/libgcm_pm.a")
-    list (APPEND OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/libgcm_sys_stub.a")
-    list (APPEND OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/libsysutil_avconf_ext_stub.a")
-    list (APPEND OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/libresc_stub.a")
-    list (APPEND OPENGL_LIBRARIES "$(SCE_PS3_ROOT)/target/ppu/lib/libsysutil_stub.a")
-    message( "OPENGL PS3 LIBS" ${OPENGL_LIBRARIES} )
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES} )
-else()
-    find_package(OpenGL REQUIRED)
-    list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES} )
-endif(PS3)
+find_package(OpenGL REQUIRED)
+# no target support for OpenGL on windows yet see https://github.com/Kitware/CMake/commit/02e34de2b6c27ee5d367be4fa280ffd3ad1965ba
+# it is not too harmful since this particular library gives symbolic names that can be consumed upon install on the target system.
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES})
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
 
 #tinyxml
-find_package(TinyXML  REQUIRED)
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${TinyXML_LIBRARIES} )
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${TinyXML_INCLUDE_DIRS} )
+find_package(TinyXML REQUIRED)
+sofa_create_target(TinyXML SofaFramework ${TinyXML_LIBRARIES} ${TinyXML_INCLUDE_DIRS} )
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${TinyXML_Target})
 set(SOFA_HAVE_TINYXML 1)
 
 #zlib
 find_package(ZLIB)
 if(ZLIB_FOUND)
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${ZLIB_INCLUDE_DIRS})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_LIBRARIES})
+    sofa_create_target(ZLIB SofaFramework ${ZLIB_LIBRARIES} ${ZLIB_INCLUDE_DIRS} )
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_Target})
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
 # PNG
 find_package(PNG)
 if( PNG_FOUND)
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${PNG_INCLUDE_DIRS})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_LIBRARIES})
+    sofa_create_target(PNG SofaFramework ${PNG_LIBRARY} ${PNG_INCLUDE_DIRS} )
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target} )
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
 
 # GLEW
 find_package(GLEW)
 if( GLEW_FOUND)
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLEW_INCLUDE_DIRS})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_LIBRARIES})
+    sofa_create_target(GLEW SofaFramework ${GLEW_LIBRARIES} ${GLEW_INCLUDE_DIRS} )
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_Target} )
 endif()
 set(SOFA_HAVE_GLEW ${GLEW_FOUND})
 
 # GLUT
 find_package(GLUT)
 if( GLUT_FOUND )
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${GLUT_INCLUDE_DIR})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_LIBRARIES})
+    sofa_create_target(GLUT SofaFramework ${GLUT_LIBRARIES} ${GLUT_INCLUDE_DIR} )
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target} )
 endif()
 set(SOFA_HAVE_GLUT ${GLUT_FOUND})
 
 # Boost
-find_package(Boost COMPONENTS thread system date_time chrono QUIET)
+find_package(Boost COMPONENTS thread thread date_time chrono QUIET)
 
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND} )
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND} )
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND} )
 set(SOFA_HAVE_BOOST_CHRONO ${Boost_CHRONO_FOUND})
 
+list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR} )
+
 if(SOFA_HAVE_BOOST_SYSTEM AND 
    SOFA_HAVE_BOOST_THREAD AND 
    SOFA_HAVE_BOOST_DATE_TIME AND 
    SOFA_HAVE_BOOST_CHRONO)
     set(SOFA_HAVE_BOOST 1)
+    
+    sofa_create_target(BoostSystem SofaFramework ${Boost_SYSTEM_LIBRARY} ${Boost_INCLUDE_DIRS} )
+    sofa_create_target(BoostThread SofaFramework ${Boost_THREAD_LIBRARY} ${Boost_INCLUDE_DIRS} )
+    sofa_create_target(BoostDateTime SofaFramework ${Boost_DATE_TIME_LIBRARY} ${Boost_INCLUDE_DIRS} )
+    sofa_create_target(BoostChrono SofaFramework ${Boost_CHRONO_LIBRARY} ${Boost_INCLUDE_DIRS} )
+    
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target} )
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target} )
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target} )
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostChrono_Target} )
+else()
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif()
-
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR})
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${Boost_LIBRARIES} )
 
 #Eigen
 find_package(Eigen3 REQUIRED)

@@ -6,9 +6,7 @@
 @PACKAGE_INIT@
 
 set(SOFAMISC_INCLUDE_DIR "@PACKAGE_SOFAMISC_INCLUDE_DIR@")
-
 set(SofaMisc_TARGETS @SOFAMISC_TARGETS@)
-check_required_components( ${SofaMisc_TARGETS} )
 
 # required for transitive dependencies
 find_package(SofaAdvanced REQUIRED)
@@ -16,7 +14,9 @@ find_package(SofaAdvanced REQUIRED)
 if( NOT TARGET SofaComponentMisc )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscTargets.cmake")
 endif()
- 
+
+check_required_components( ${SofaMisc_TARGETS} )
+
 # For compatibility only
 set(SofaMisc_LIBRARIES SofaComponentMisc)
 set(SofaMisc_INCLUDE_DIRS ${SOFAMISC_INCLUDE_DIR} ${SofaAdvanced_INCLUDE_DIRS} )
