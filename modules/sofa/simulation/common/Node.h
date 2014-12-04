@@ -316,6 +316,9 @@ public:
     /// Remove an object
     virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj);
 
+	/// Remove all objects
+	virtual void removeAllObjects();
+
     /// Move an object from another node
     virtual void moveObject(core::objectmodel::BaseObject::SPtr obj);
 

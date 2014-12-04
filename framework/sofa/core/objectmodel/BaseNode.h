@@ -99,6 +99,9 @@ public:
     /// Remove a generic object
     virtual bool removeObject(BaseObject::SPtr obj) = 0;
 
+	/// Remove all objects (faster than individually removing all objects)
+	virtual void removeAllObjects() = 0;
+
     /// Move an object from a node to another node
     virtual void moveObject(BaseObject::SPtr obj) = 0;
 

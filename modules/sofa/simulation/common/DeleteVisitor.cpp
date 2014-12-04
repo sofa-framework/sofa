@@ -43,12 +43,8 @@ void DeleteVisitor::processNodeBottomUp(Node* node)
         node->removeChild(child);
         child.reset();
     }
-    while (!node->object.empty())
-    {
-        core::objectmodel::BaseObject::SPtr object = *node->object.begin();
-        node->removeObject(object);
-        object.reset();
-    }
+
+	node->removeAllObjects();
 }
 
 } // namespace simulation

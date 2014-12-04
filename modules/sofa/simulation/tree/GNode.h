@@ -73,6 +73,9 @@ public:
     /// Remove an object
     virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj) { return simulation::Node::removeObject(obj); }
 
+	/// Remove all objects
+	virtual void removeAllObjects() { return simulation::Node::removeAllObjects(); }
+
     /// Remove the current node from the graph: consists in removing the link to its parent
     virtual void detachFromGraph();
 
