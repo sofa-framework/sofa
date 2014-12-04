@@ -34,6 +34,7 @@
 #else
 # include <unistd.h>            // for readlink()
 # include <errno.h>
+# include <string.h>            // for strerror()
 # include <linux/limits.h>      // for PATH_MAX
 #endif
 
