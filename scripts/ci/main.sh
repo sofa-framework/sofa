@@ -83,7 +83,7 @@ count_warnings() {
 if [ -e "$build_dir/full-build" ]; then
     warning_count=$(count_warnings)
     echo "Counted $warning_count compiler warnings."
-    send_build_report "fullbuild=true" "warnings=$warning_count"
+    send-message-to-dashboard "fullbuild=true" "warnings=$warning_count"
 fi
 
 ## Test scenes
