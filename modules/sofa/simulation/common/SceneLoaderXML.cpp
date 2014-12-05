@@ -115,7 +115,7 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
     {
         std::cerr << "LOAD ERROR: XML Root Node is not an Element."<<std::endl;
         loadSucceed = false;
-        std::exit(1);
+        std::exit(EXIT_FAILURE);
     }
     else if( !(nodeElt->init()) )
     {

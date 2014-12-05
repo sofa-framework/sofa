@@ -1,0 +1,11 @@
+# This runs very slowly, so compute only a few iterations
+iterations "validations/rayleighDamping_mass.scn" "10"
+timeout "validations/rayleighDamping_mass.scn" "80"
+
+# This runs very slowly, so compute only a few iterations
+iterations "validations/rayleighDamping_stiffness.scn" "10"
+timeout "validations/rayleighDamping_stiffness.scn" "80"
+
+# This runs very slowly, so compute only a few iterations
+iterations "validations/damping.scn" "10"
+timeout "validations/damping.scn" "50"

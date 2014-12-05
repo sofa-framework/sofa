@@ -18,20 +18,19 @@ namespace simulation
 
 	StepTask::StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus) 
 			: Task(pStatus)
-			, dt( t )
 			, animationloop(aloop)
+			, dt(t)
 		{
 		}
 
 		StepTask::~StepTask()
 		{
-			animationloop;
 		}
 
 
 		bool StepTask::run(WorkerThread* )
 		{
-			animationloop->step( core::ExecParams::defaultInstance() ,dt);
+			animationloop->step( core::ExecParams::defaultInstance(), dt);
 			return true;
 		}
 
@@ -45,7 +44,6 @@ namespace simulation
 
 		InitPerThreadDataTask::~InitPerThreadDataTask()
 		{
-			mAtomicCounter;
 		}
 
 		bool InitPerThreadDataTask::run(WorkerThread* )

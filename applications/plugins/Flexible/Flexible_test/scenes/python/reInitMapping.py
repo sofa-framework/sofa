@@ -64,7 +64,7 @@ def createBarycentricFrame( parentNode, name ):
  
     #Solver
     node.createObject('EulerImplicit', name='integrator')
-    node.createObject('CGLinearSolver', name='linearSolver', iteration='200', tolerance="1e-15", threshold='1.0e-15')
+    node.createObject('CGLinearSolver', name='linearSolver', iterations='200', tolerance="1e-15", threshold='1.0e-15')
 
     #Frame
     dofPosition="0 1.0 -0.999 1 0 0 0 1 0 0 0 1 " + "0 1.0 0.999 1 0 0 0 1 0 0 0 1 "
@@ -100,7 +100,7 @@ def createVoronoiFrame( parentNode, name ):
  
     #Solver
     node.createObject('EulerImplicit', name='integrator')
-    node.createObject('CGLinearSolver', name='linearSolver', iteration='200', tolerance="1e-15", threshold='1.0e-15')
+    node.createObject('CGLinearSolver', name='linearSolver', iterations='200', tolerance="1e-15", threshold='1.0e-15')
 
     #Frame
     node.createObject("MeshObjLoader", name="mesh", filename=mesh_path+"beam.obj", triangulate="1")

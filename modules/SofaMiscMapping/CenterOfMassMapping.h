@@ -91,7 +91,7 @@ public:
     virtual void applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in);
     //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    virtual void applyJT( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in)
+    virtual void applyJT( const sofa::core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/)
     {
         serr << "applyJT(constraint ) not implemented" << sendl;
     }

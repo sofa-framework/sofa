@@ -30,6 +30,7 @@ using namespace sofa::component::controller;
 
 #include <sofa/simulation/common/Node.h>
 using namespace sofa::simulation;
+using namespace sofa::core::objectmodel;
 
 // These functions are empty ones;
 // they are meant to be overriden by real python controller scripts

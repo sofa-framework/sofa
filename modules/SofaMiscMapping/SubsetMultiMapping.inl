@@ -106,6 +106,12 @@ void SubsetMultiMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
+SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
+    : Inherit()
+    , indexPairs( initData( &indexPairs, vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
+{}
+
+template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
 {
     for(unsigned i=0; i<baseMatrices.size(); i++ )
@@ -199,7 +205,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* cparams /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& dOut, const helper::vector< const OutDataMatrixDeriv* >& dIn)
+void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& dOut, const helper::vector< const OutDataMatrixDeriv* >& dIn)
 {
     vector<unsigned>  indexP = indexPairs.getValue();
 

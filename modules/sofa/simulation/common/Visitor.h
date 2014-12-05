@@ -205,6 +205,9 @@ public:
     Visitor& addTag(Tag t) { subsetsToManage.insert(t); return *this; }
     Visitor& removeTag(Tag t) { subsetsToManage.erase(t); return *this; }
 
+	/// Can the visitor access sleeping nodes?
+	bool canAccessSleepingNode;
+
 protected:
     const core::ExecParams* params;
 

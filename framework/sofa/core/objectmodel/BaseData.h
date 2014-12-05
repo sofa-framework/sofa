@@ -104,49 +104,55 @@ public:
     explicit BaseData(const BaseInitData& init);
 
     /** Constructor.
-     *  \param helpMsg A help message that describes the Data.
-     *  \param flags The flags for this Data (see \ref DataFlagsEnum).
+     *  \param helpMsg A help message that describes this %Data.
+     *  \param flags The flags for this %Data (see \ref DataFlagsEnum).
      */
     BaseData(const char* helpMsg, DataFlags flags = FLAG_DEFAULT);
 
     /** Constructor.
-     *  \param helpMsg A help message that describes the Data.
-     *  \param isDisplayed Whether this Data should be displayed in GUIs.
-     *  \param isReadOnly Whether this Data should be modifiable in GUIs.
+     *  \param helpMsg A help message that describes this %Data.
+     *  \param isDisplayed Whether this %Data should be displayed in GUIs.
+     *  \param isReadOnly Whether this %Data should be modifiable in GUIs.
      */
     BaseData(const char* helpMsg, bool isDisplayed=true, bool isReadOnly=false);
 
     /// Destructor.
     virtual ~BaseData();
 
-    /// Assign a value to the Data from a string representation.
+    /// Assign a value to this %Data from a string representation.
     /// \return true on success.
     virtual bool read(const std::string& value) = 0;
 
-    /// Print the value of the Data to a stream.
+    /// Print the value of this %Data to a stream.
     virtual void printValue(std::ostream&) const = 0;
 
-    /// Get a string representation of the value held in this Data.
+    /// Get a string representation of the value held in this %Data.
     virtual std::string getValueString() const = 0;
 
-    /// Get the name of the type of the value held in this Data.
+    /// Get the name of the type of the value held in this %Data.
     virtual std::string getValueTypeString() const = 0;
 
-    /// Get the TypeInfo for the type of the value held in this Data.
+    /// Get the TypeInfo for the type of the value held in this %Data.
+    ///
+    /// This can be used to access the content of the %Data generically, without
+    /// knowing its type.
+    /// \see sofa::defaulttype::AbstractTypeInfo
     virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const = 0;
 
-    /// Get a constant void pointer to the value held in this Data.
+    /// Get a constant void pointer to the value held in this %Data, to be used with AbstractTypeInfo.
     ///
-    /// Use getValueTypeInfo() to find out how to use this pointer.
+    /// This pointer should be used via the instance of AbstractTypeInfo
+    /// returned by getValueTypeInfo().
     virtual const void* getValueVoidPtr() const = 0;
 
-    /// Get a void pointer to the value held in this Data, in order to modify it.
+    /// Get a void pointer to the value held in this %Data, to be used with AbstractTypeInfo.
     ///
-    /// Use getValueTypeInfo() to find out how to use this pointer.
+    /// This pointer should be used via the instance of AbstractTypeInfo
+    /// returned by getValueTypeInfo().
     /// \warning You must call endEditVoidPtr() once you're done modifying the value.
     virtual void* beginEditVoidPtr() = 0;
 
-    /// Must be called after beginEditVoidPtr(), after you are finished modifying the Data.
+    /// Must be called after beginEditVoidPtr(), after you are finished modifying this %Data.
     virtual void endEditVoidPtr() = 0;
 
     /// Copy the value from another Data.
@@ -161,7 +167,7 @@ public:
     /// Release memory allocated for the specified aspect.
     virtual void releaseAspect(int aspect) = 0;
 
-    /// Get a help message that describes this Data.
+    /// Get a help message that describes this %Data.
     const char* getHelp() const { return help; }
 
     /// Set the help message.
@@ -193,7 +199,7 @@ public:
     /// True if the counter of modification gives valid information.
     virtual bool isCounterValid() const = 0;
 
-    /// Reset the isSet flag to false, to indicate that the current value is the default for this Data.
+    /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
     void unset() { m_isSets[currentAspect()] = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
@@ -208,22 +214,22 @@ public:
     /// Get one of the flags.
     bool getFlag(DataFlagsEnum flag) const { return (m_dataFlags&(DataFlags)flag)!=0; }
 
-    /// Return whether the Data has to be displayed in GUIs.
+    /// Return whether this %Data has to be displayed in GUIs.
     bool isDisplayed() const  { return getFlag(FLAG_DISPLAYED); }
-    /// Return whether the Data will be read-only in GUIs.
+    /// Return whether this %Data will be read-only in GUIs.
     bool isReadOnly() const   { return getFlag(FLAG_READONLY); }
-    /// Return whether the Data contains persistent information.
+    /// Return whether this %Data contains persistent information.
     bool isPersistent() const { return getFlag(FLAG_PERSISTENT); }
-    /// Return whether the Data should be autolinked when using the src="" syntax.
+    /// Return whether this %Data should be autolinked when using the src="" syntax.
     bool isAutoLink() const { return getFlag(FLAG_AUTOLINK); }
     /// Return whether the Data has to be set by the user for the owner component to be valid
     bool isRequired() const { return getFlag(FLAG_REQUIRED); }
 
-    /// Set whether this Data should be displayed in GUIs.
+    /// Set whether this %Data should be displayed in GUIs.
     void setDisplayed(bool b)  { setFlag(FLAG_DISPLAYED,b); }
-    /// Set whether this Data is read-only.
+    /// Set whether this %Data is read-only.
     void setReadOnly(bool b)   { setFlag(FLAG_READONLY,b); }
-    /// Set whether this Data contains persistent information.
+    /// Set whether this %Data contains persistent information.
     void setPersistent(bool b) { setFlag(FLAG_PERSISTENT,b); }
     /// Set whether this data should be autolinked when using the src="" syntax
     void setAutoLink(bool b) { setFlag(FLAG_AUTOLINK,b); }
@@ -234,15 +240,15 @@ public:
     /// If we use the Data as a link and not as value directly
     //void setLinkPath(const std::string &path) { m_linkPath = path; }
     std::string getLinkPath() const { return parentBaseData.getPath(); }
-    /// Return whether this Data can be used as a linkPath.
+    /// Return whether this %Data can be used as a linkPath.
     ///
     /// True by default.
     /// Useful if you want to customize the use of @ syntax (see ObjectRef and DataObjectRef)
     virtual bool canBeLinked() const { return true; }
 
-    /// Return the Base component owning this Data.
+    /// Return the Base component owning this %Data.
     Base* getOwner() const { return m_owner; }
-    /// Set the owner of this Data.
+    /// Set the owner of this %Data.
     void setOwner(Base* o) { m_owner=o; }
 
     /// This method is needed by DDGNode
@@ -251,11 +257,11 @@ public:
         return const_cast<BaseData*>(this);
     }
 
-    /// Return the name of this Data within the Base component
+    /// Return the name of this %Data within the Base component
     const std::string& getName() const { return m_name; }
-    /// Set the name of this Data.
+    /// Set the name of this %Data.
     ///
-    /// This method should not be called directly, the Data registration methods in Base should be used instead.
+    /// This method should not be called directly, the %Data registration methods in Base should be used instead.
     void setName(const std::string& name) { m_name=name; }
 
     /// Return the number of changes since creation.
@@ -271,7 +277,7 @@ public:
     /// (even if the parent's value has not been modified)
     bool isSet(const core::ExecParams* params) const { return m_isSets[currentAspect(params)]; }
 
-    /// Reset the isSet flag to false, to indicate that the current value is the default for this Data.
+    /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
     void unset(const core::ExecParams* params) { m_isSets[currentAspect(params)] = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
@@ -292,7 +298,7 @@ public:
 
     BaseData* getParent() const { return parentBaseData.get(); }
 
-    /// Update the value of this Data
+    /// Update the value of this %Data
     void update();
 
     /// @name Links management
@@ -335,7 +341,7 @@ protected:
 
     virtual void doDelInput(DDGNode* n);
 
-    /// Update this Data from the value of its parent
+    /// Update this %Data from the value of its parent
     virtual bool updateFromParentValue(const BaseData* parent);
 
     /// Help message
@@ -348,11 +354,11 @@ protected:
     const char* widget;
     /// Number of changes since creation
     helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
-    /// True if the Data is set, i.e. its value is different from the default value
+    /// True if this %Data is set, i.e. its value is different from the default value
     helper::fixed_array<bool, SOFA_DATA_MAX_ASPECTS> m_isSets;
-    /// Flags indicating the purpose and behaviour of the Data
+    /// Flags indicating the purpose and behaviour of this %Data
     DataFlags m_dataFlags;
-    /// Return the Base component owning this Data
+    /// Return the Base component owning this %Data
     Base* m_owner;
     /// Data name within the Base component
     std::string m_name;

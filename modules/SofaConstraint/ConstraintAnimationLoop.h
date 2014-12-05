@@ -56,7 +56,7 @@ class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simu
 {
 public:
     MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
-        : simulation::BaseMechanicalVisitor(params), _cparams(params), _res(res),_offset(offset)
+        : simulation::BaseMechanicalVisitor(params), _res(res),_offset(offset), _cparams(params)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

@@ -64,15 +64,10 @@ namespace viewer
 
 namespace qgl
 {
-using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
-using namespace sofa::helper::system::thread;
-using namespace sofa::component::collision;
-
 
 class SOFA_SOFAGUIQT_API QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::OglModelSofaViewer
 {
-    typedef Vector3::value_type Real;
+    typedef defaulttype::Vector3::value_type Real;
     Q_OBJECT
 private:
 
@@ -100,7 +95,7 @@ private:
 
     int _renderingMode;
 
-    ctime_t _beginTime;
+    helper::system::thread::ctime_t _beginTime;
 
 
     bool _waitForRender;
@@ -113,8 +108,8 @@ public:
         BaseViewerArgument* pArg = &arg;
         ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
         return viewerArg ?
-                new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
-                new QtGLViewer(NULL, pArg->getName().c_str() )
+                new QtGLViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
+                new QtGLViewer(NULL, pArg->getName().c_str(), pArg->getNbMSAASamples() )
                 ;
     }
 
@@ -124,12 +119,13 @@ public:
 
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
 
-    QtGLViewer( QWidget* parent, const char* name="" );
+    QtGLViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
     ~QtGLViewer();
 
     QWidget* getQWidget() { return this; }
 
 protected:
+     static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
 
     //     void calcProjection();
     void init();
@@ -145,11 +141,11 @@ public:
     int GetWidth()
     {
         return _W;
-    };
+    }
     int GetHeight()
     {
         return _H;
-    };
+    }
     bool ready() {return !_waitForRender;}
     void wait() {_waitForRender = true;}
 
@@ -198,15 +194,14 @@ protected:
 
 
 
-
 public slots:
     void resetView();
     void saveView();
     void setSizeW(int);
     void setSizeH(int);
 
-    virtual void getView(Vec3d& pos, Quat& ori) const;
-    virtual void setView(const Vec3d& pos, const Quat &ori);
+    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const;
+    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
     virtual void captureEvent() { SofaViewer::captureEvent(); }
     void fitObjectBBox(sofa::core::objectmodel::BaseObject* object)
     {

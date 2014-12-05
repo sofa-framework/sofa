@@ -33,6 +33,7 @@
 
 #include <sstream>
 
+using namespace sofa::core::objectmodel;
 
 namespace sofa
 {

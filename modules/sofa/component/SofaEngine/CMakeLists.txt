@@ -91,6 +91,8 @@ set(HEADER_FILES
     ../engine/MeshSampler.inl
     ../engine/NormEngine.h
     ../engine/NormEngine.inl
+    ../engine/DifferenceEngine.h
+    ../engine/DifferenceEngine.inl
     )
     
 set(SOURCE_FILES
@@ -141,6 +143,7 @@ set(SOURCE_FILES
     ../engine/HausdorffDistance.cpp
     ../engine/MeshSampler.cpp
     ../engine/NormEngine.cpp
+    ../engine/DifferenceEngine.cpp
     )
 
 set(GROUP_BASE_DIR "..")

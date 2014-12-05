@@ -6,6 +6,7 @@
 #include <plugins/SceneCreator/SceneCreator.h>
 using namespace sofa::modeling;
 using namespace sofa::component;
+using namespace sofa::simulation;
 
 namespace sofa
 {

@@ -130,16 +130,17 @@ public:
 
 
     // mask for values outside images
-    CImg<bool> refMask;
-    CImg<bool> mask;
-    CImg<bool> similarityMask;
-
-    Data<bool> useAnisotropicStiffness;
+    cimg_library::CImg<bool> refMask;
+    cimg_library::CImg<bool> mask;
+    cimg_library::CImg<bool> similarityMask;
 
     /*
         The threshold for the signal between two 'edges'
     */
     Data<Real> edgeIntensityThreshold;
+
+    Data<bool> useAnisotropicStiffness;
+
     /*
         True if the point should look for a change from high to low 
         signal value in the direction of its normal.
@@ -205,11 +206,11 @@ protected :
     /*
         Keeps the original location of each point at the start of each time step.
     */
-    CImg<int> originalLocation;
+    cimg_library::CImg<int> originalLocation;
     /*
         Holds the closest threshold change for each point
     */
-    CImg<int> closestThreshold;
+    cimg_library::CImg<int> closestThreshold;
     /*
         True if the Threshold Registration algorithm is being used instead of 
         the traditional Intensity Profile Registration.

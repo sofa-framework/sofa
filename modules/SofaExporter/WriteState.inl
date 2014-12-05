@@ -162,7 +162,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 {
                     // Error: the mechanical model has no mass
                     serr << "Error: Kinetic energy can not be computed. The mass for " << mmodel->getName() << " has no been defined" << sendl;
-                    exit(-1);
+                    exit(EXIT_FAILURE);
                 }
                 else
                 {

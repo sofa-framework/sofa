@@ -47,12 +47,12 @@ int InertiaAlignClass = core::RegisterObject("An engine computing inertia matrix
 SOFA_DECL_CLASS(InertiaAlign)
 
 InertiaAlign::InertiaAlign()
-    : m_positions( initData(&m_positions,"sourcePosition","input: positions of the source vertices") )
-    , m_positiont( initData(&m_positiont,"targetPosition","input: positions of the target vertices") )
-    , targetC( initData(&targetC,"targetCenter","input: the gravity center of the target mesh") )
+    : targetC( initData(&targetC,"targetCenter","input: the gravity center of the target mesh") )
     , sourceC( initData(&sourceC,"sourceCenter","input: the gravity center of the source mesh") )
     , targetInertiaMatrix( initData(&targetInertiaMatrix,"targetInertiaMatrix","input: the inertia matrix of the target mesh") )
     , sourceInertiaMatrix( initData(&sourceInertiaMatrix,"sourceInertiaMatrix","input: the inertia matrix of the source mesh") )
+    , m_positiont( initData(&m_positiont,"targetPosition","input: positions of the target vertices") )
+    , m_positions( initData(&m_positions,"sourcePosition","input: positions of the source vertices") )
 {
 
 }

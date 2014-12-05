@@ -28,6 +28,7 @@
 #include "Binding_BaseState.h"
 
 using namespace sofa::component::visualmodel;
+using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * VisualModel_setColor(PyObject *self, PyObject * args)
 {

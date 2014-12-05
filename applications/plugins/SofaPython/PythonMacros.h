@@ -38,9 +38,6 @@
 
 
 
-using namespace sofa::core::objectmodel;
-
-
 
 // =============================================================================
 // Python structures names in sofa...
@@ -100,7 +97,7 @@ PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
 // nouvelle version, retournant automatiquement le type Python de plus haut niveau possible,
 // en fonction du type de l'objet Cpp
 // afin de permettre l'utilisation de fonctions des sous-classes de Base
-SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(Base* obj);
+SOFA_SOFAPYTHON_API PyObject* SP_BUILD_PYSPTR(sofa::core::objectmodel::Base* obj);
 
 
 

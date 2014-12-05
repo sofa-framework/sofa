@@ -90,8 +90,11 @@ public:
 
     BaseMechanicalVisitor(const core::ExecParams* params)
         : Visitor(params)
-        , root(NULL), rootData(NULL)
-    {}
+		, root(NULL), rootData(NULL)
+    {
+		// mechanical visitors shouldn't be able to acess a sleeping node, only visual visitor should
+		canAccessSleepingNode = false;
+	}
 
     /// Return true if this visitor need to read the node-specific data if given
     virtual bool readNodeData() const
@@ -953,7 +956,7 @@ public:
     sofa::core::ConstMultiVecId a;
     unsigned l; ///< Type of norm:  for l>0, \f$ \|v\|_l = ( \sum_{i<dim(v)} \|v[i]\|^{l} )^{1/l} \f$, while we use l=0 for the infinite norm: \f$ \|v\|_\infinite = \max_{i<dim(v)} \|v[i]\| \f$
     MechanicalVNormVisitor(const sofa::core::ExecParams* params, sofa::core::ConstMultiVecId a, unsigned l)
-        : BaseMechanicalVisitor(params) , a(a), l(l)
+        : BaseMechanicalVisitor(params), accum(0), a(a), l(l)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();

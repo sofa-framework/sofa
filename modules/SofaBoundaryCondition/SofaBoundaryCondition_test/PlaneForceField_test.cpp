@@ -98,15 +98,10 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
         mechanicalObj->x0.setValue(points);
 
         std::string name = DataTypeInfo<DataTypes>::name();
+#ifndef SOFA_FLOAT
         if(name=="Rigid")
         {
-            typename mass::UniformMass<RigidTypes,Rigid3dMass>::SPtr uniformMass = New<mass::UniformMass<RigidTypes,Rigid3dMass> >();
-            root->addObject(uniformMass);
-            uniformMass->totalMass.setValue(1);
-        }
-        else if(name=="Rigid3f")
-        {
-            typename mass::UniformMass<Rigid3fTypes,Rigid3fMass>::SPtr uniformMass = New<mass::UniformMass<Rigid3fTypes,Rigid3fMass> >();
+            typename mass::UniformMass<Rigid3dTypes,Rigid3dMass>::SPtr uniformMass = New<mass::UniformMass<Rigid3dTypes,Rigid3dMass> >();
             root->addObject(uniformMass);
             uniformMass->totalMass.setValue(1);
         }
@@ -134,6 +129,14 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
             root->addObject(uniformMass);
             uniformMass->totalMass.setValue(1);
         }
+#endif
+#ifndef SOFA_DOUBLE
+        else if(name=="Rigid3f")
+        {
+            typename mass::UniformMass<Rigid3fTypes,Rigid3fMass>::SPtr uniformMass = New<mass::UniformMass<Rigid3fTypes,Rigid3fMass> >();
+            root->addObject(uniformMass);
+            uniformMass->totalMass.setValue(1);
+        }
         else if(name=="Vec1f" )
         {
             typename mass::UniformMass<Vec1fTypes,float>::SPtr uniformMass = New<mass::UniformMass<Vec1fTypes,float> >();
@@ -158,6 +161,7 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
             root->addObject(uniformMass);
             uniformMass->totalMass.setValue(1);
         }
+#endif
         else
             return;
 
@@ -199,16 +203,21 @@ struct PlaneForceField_test : public Sofa_test<typename _DataTypes::Real>
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<
+#ifndef SOFA_FLOAT
   defaulttype::Vec1dTypes
 , defaulttype::Vec2dTypes
 , defaulttype::Vec3dTypes
 , defaulttype::Vec6dTypes
+, defaulttype::Rigid3dTypes
+#endif
+#ifndef SOFA_DOUBLE
 , defaulttype::Vec1fTypes
 , defaulttype::Vec2fTypes
 , defaulttype::Vec3fTypes
 , defaulttype::Vec6fTypes
-, defaulttype::Rigid3dTypes
-, defaulttype::Rigid3fTypes> DataTypes;// the types to instanciate.
+, defaulttype::Rigid3fTypes
+#endif
+> DataTypes;// the types to instanciate.
 
 // Test suite for all the instanciations
 TYPED_TEST_CASE(PlaneForceField_test, DataTypes);

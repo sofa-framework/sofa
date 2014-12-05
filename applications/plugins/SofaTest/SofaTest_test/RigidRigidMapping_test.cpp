@@ -293,7 +293,7 @@ TYPED_TEST( RigidRigidMappingTest , test_translation )
 
 TYPED_TEST( RigidRigidMappingTest , no_index_no_movement_worldCoords )
 {
-    this->errorMax = 100;
+    this->errorMax = 150;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_no_index_no_movement_worldCoords());
 }

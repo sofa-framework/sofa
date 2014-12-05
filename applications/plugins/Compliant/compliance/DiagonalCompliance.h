@@ -46,6 +46,8 @@ public:
     /// Compute the compliance matrix
     virtual void reinit();
 
+    virtual double getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x ) const;
+
     /// Return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*);
 
@@ -59,11 +61,6 @@ public:
     /// addDForce does nothing when this component is processed like a compliance.
     virtual void addDForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecDeriv &);
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
-    {
-        serr << "getPotentialEnergy() not implemented" << sendl;
-        return 0.0;
-    }
 
 protected:
     DiagonalCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
@@ -74,6 +71,8 @@ protected:
     typedef linearsolver::EigenSparseMatrix<TDataTypes,TDataTypes> block_matrix_type;
     block_matrix_type matK; ///< stiffness matrix (Negative S.D.)
     block_matrix_type matB; /// damping matrix (Negative S.D.)
+
+    static const Real s_complianceEpsilon; /// threshold for which stiffness can be computed by inverting compliance
 };
 
 }

@@ -30,6 +30,7 @@
 
 using namespace sofa::core::behavior;
 using namespace sofa::core;
+using namespace sofa::core::objectmodel;
 
 
 

@@ -135,8 +135,8 @@ public:
         BaseViewerArgument* pArg = &arg;
         ViewerQtArgument* viewerArg = dynamic_cast<ViewerQtArgument*>(pArg);
         return viewerArg ?
-                new QtViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str() ) :
-                new QtViewer(NULL, pArg->getName().c_str() )
+                new QtViewer(viewerArg->getParentWidget(), viewerArg->getName().c_str(), viewerArg->getNbMSAASamples() ) :
+                new QtViewer(NULL, pArg->getName().c_str(), pArg->getNbMSAASamples() )
                 ;
     }
 
@@ -160,10 +160,8 @@ public:
     /// and can be used to unregister classes associated with in the the ObjectFactory.
     static int DisableViewer();
 
-
-
-    static QGLFormat setupGLFormat();
-    QtViewer( QWidget* parent, const char* name="" );
+    static QGLFormat setupGLFormat(const unsigned int nbMSAASamples = 1);
+    QtViewer( QWidget* parent, const char* name="", const unsigned int nbMSAASamples = 1 );
     ~QtViewer();
 
     QWidget* getQWidget() { return this; }
@@ -177,10 +175,10 @@ public slots:
     virtual void setSizeW(int);
     virtual void setSizeH(int);
 
-    virtual void getView(Vec3d& pos, Quat& ori) const;
-    virtual void setView(const Vec3d& pos, const Quat &ori);
+    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const;
+    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
     virtual void newView();
-    virtual void moveView(const Vec3d& pos, const Quat &ori);
+    virtual void moveView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
     virtual void captureEvent() { SofaViewer::captureEvent(); }
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode * node ) { SofaViewer::fitNodeBBox(node); }
@@ -198,6 +196,7 @@ protected:
     void calcProjection( int width = 0, int height = 0 );
     void initializeGL();
     void paintGL();
+    void paintEvent(QPaintEvent* qpe);
     void resizeGL( int w, int h );
     /// Overloaded from SofaViewer
     virtual void viewAll() {}

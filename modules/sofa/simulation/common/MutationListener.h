@@ -59,6 +59,8 @@ public:
     virtual void removeSlave(core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
 
     virtual void moveSlave(core::objectmodel::BaseObject* previousMaster, core::objectmodel::BaseObject* master, core::objectmodel::BaseObject* slave);
+
+	virtual void sleepChanged(Node* node);
 };
 
 } // namespace simulation

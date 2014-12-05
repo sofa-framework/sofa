@@ -79,7 +79,7 @@ void NodeToggleController::toggle()
     Node::Children children = context->getChildren();
     if (children.size()==0) return; // no subnode, return directly
     int prevNodeIndex = -1;
-    int newNodeIndex = -1;
+//    int newNodeIndex = -1;
     for (int i=0; i<(int)children.size() && prevNodeIndex==-1; i++)
     {
         Node* n = dynamic_cast<Node*>(children[i]);

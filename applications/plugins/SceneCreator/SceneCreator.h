@@ -75,8 +75,6 @@ SOFA_SceneCreator_API simulation::Node::SPtr createGridScene(Vec3 startPoint, Ve
 SOFA_SceneCreator_API void addCollisionModels(simulation::Node::SPtr CollisionNode, const std::vector<std::string> &elements);
 
 
-using namespace simulation;
-
 
 typedef Eigen::VectorXd Vector;
 typedef Eigen::Matrix<SReal, Eigen::Dynamic,Eigen::Dynamic> DenseMatrix;
@@ -89,7 +87,7 @@ typedef component::linearsolver::FullVector<SReal> FullVector;
 
 
 /** Create a string composed of particles (at least 2) and springs */
-SOFA_SceneCreator_API Node::SPtr massSpringString(
+SOFA_SceneCreator_API simulation::Node::SPtr massSpringString(
         simulation::Node::SPtr parent,
         double x0, double y0, double z0, // start point,
         double x1, double y1, double z1, // end point
@@ -106,7 +104,7 @@ class addNew : public core::objectmodel::New<T>
 {
     typedef typename T::SPtr SPtr;
 public:
-    addNew( Node::SPtr parent, const char* name="")
+    addNew( simulation::Node::SPtr parent, const char* name="")
     {
         parent->addObject(*this);
         (*this)->setName(name);
@@ -114,14 +112,14 @@ public:
 };
 
 
-SOFA_SceneCreator_API Node::SPtr getRoot();
+SOFA_SceneCreator_API simulation::Node::SPtr getRoot();
 
 /// Get a state vector from the scene graph. Includes only the independent state values, or also the mapped ones, depending on the flag.
 SOFA_SceneCreator_API Vector getVector( core::ConstVecId id, bool independentOnly=true );
 
 /** Initialize the sofa library and create the root of the scene graph
   */
-SOFA_SceneCreator_API Node::SPtr initSofa();
+SOFA_SceneCreator_API simulation::Node::SPtr initSofa();
 
 /** Initialize the scene graph
   */
