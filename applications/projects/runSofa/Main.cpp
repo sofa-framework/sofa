@@ -126,8 +126,8 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
-	bool		testMode = false;
-    int	        nbIterations = sofa::gui::BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
+    bool        testMode = false;
+    int         nbIterations = sofa::gui::BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
     unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
@@ -161,7 +161,7 @@ int main(int argc, char** argv)
     .option(&loadRecent,'r',"recent","load most recently opened file")
     .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree, smp)")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
-	.option(&testMode,'m',"test","select test mode with xml output after N iteration")
+    .option(&testMode,'x',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
     .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
 #ifdef SOFA_SMP
@@ -309,7 +309,7 @@ int main(int argc, char** argv)
     {
         std::string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
         std::cout << "Exporting to XML " << xmlname << std::endl;
-		sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
+        sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
     }
 
     if (groot!=NULL)
