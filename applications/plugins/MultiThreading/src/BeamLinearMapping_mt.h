@@ -127,8 +127,8 @@ private:
 		const helper::ReadAccessor< Data< typename In::VecCoord > >* _in;
 		helper::WriteAccessor< Data< typename Out::VecCoord > >* _out;
 
-		unsigned int _firstPoint;
-		unsigned int _lastPoint;
+		size_t _firstPoint;
+		size_t _lastPoint;
 
 		friend class BeamLinearMapping_mt<TIn,TOut>;
 	};
@@ -153,8 +153,8 @@ private:
 		const helper::ReadAccessor< Data< typename In::VecDeriv > >* _in;
 		helper::WriteAccessor< Data< typename Out::VecDeriv > >* _out;
 
-		unsigned int _firstPoint;
-		unsigned int _lastPoint;
+		size_t _firstPoint;
+		size_t _lastPoint;
 
 		friend class BeamLinearMapping_mt<TIn,TOut>;
 	};
@@ -178,8 +178,8 @@ private:
 		const helper::ReadAccessor< Data< typename Out::VecDeriv > >* _in;
 		helper::WriteAccessor< Data< typename In::VecDeriv > >* _out;
 
-		unsigned int _firstPoint;
-		unsigned int _lastPoint;
+		size_t _firstPoint;
+		size_t _lastPoint;
 
 		friend class BeamLinearMapping_mt<TIn,TOut>;
 	};
@@ -199,8 +199,8 @@ private:
 	//	helper::WriteAccessor< Data< typename In::MatrixDeriv > >* _out;
 	//	const helper::ReadAccessor< Data< typename Out::MatrixDeriv > >* _in;
 
-	//	unsigned int _firstPoint;
-	//	unsigned int _lastPoint;
+	//	size_t _firstPoint;
+	//	size_t _lastPoint;
 
 	//	friend class BeamLinearMapping_mt<TIn,TOut>;
 	//};

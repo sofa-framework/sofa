@@ -23,7 +23,7 @@
           <FixedConstraint indices="@FixedROI.indices" />
 
 	  <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 3E-3"/>
-	  <ImageDensityMass  template="Affine3d,ShapeFunctiond" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" /> 
+	  <ImageDensityMass  template="Affine" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" /> 
 
 	    <Node 	name="collision"   >
 		<Mesh name="mesh" src="@../loader" /> 
@@ -41,7 +41,7 @@
 		    <GreenStrainMapping template="F331,E331"    />
 		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="5"/> 
 		    <!-- pyhon script takes a path to a node containing a static mesh named 'mesh' and mapped points -->
-		<PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Frame" variables="../../collision "/> 
+                    <PythonScriptController filename="../../python/Flexible/StressVisu" classname="ColorMap_Frame" variables="../../collision "/> 
 		</Node>
 	  </Node>
 

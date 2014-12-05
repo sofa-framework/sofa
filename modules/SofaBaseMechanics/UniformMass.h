@@ -88,7 +88,7 @@ public:
     void setTotalMass(double m);
 
     void setFileMass(const std::string& file) {filenameMass.setValue(file);}
-    std::string getFileMass() const {return filenameMass.getFullPath();};
+    std::string getFileMass() const {return filenameMass.getFullPath();}
 
     void loadRigidMass(std::string filename);
     // -- Mass interface
@@ -117,10 +117,13 @@ public:
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
+    virtual void addKToMatrix(const core::MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) {}
+    virtual void addBToMatrix(const core::MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) {}
+
     double getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
-    bool isDiagonal() {return true;};
+    bool isDiagonal() {return true;}
 
     void draw(const core::visual::VisualParams* vparams);
 };

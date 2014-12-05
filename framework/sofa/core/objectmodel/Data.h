@@ -329,27 +329,27 @@ public:
  * More concretely, from the perspective of XML scene files, each Data declared
  * in a component corresponds to an attribute of this component.
  *
- * ### Example ###
+ * <h4> Example </h4>
  *
- * If a component *Foo* has a boolean parameter *bar*, it does not simply declares it
- * as `bool m_bar`, but rather like this:
+ * If a component \c Foo has a boolean parameter \c bar, it does not simply declares it
+ * as <tt>bool m_bar</tt>, but rather like this:
  *
- * \code
+ * \code{.cpp}
  *  Data<bool> d_bar;
  * \endcode
  *
- * Then, this Data must be initialized to provide its name and default value.
- * This is typically done in the initialization list of *each constructor* of
+ * Then, this %Data must be initialized to provide its name and default value.
+ * This is typically done in the initialization list of \b each constructor of
  * the component, using the helper function Base::initData():
  *
- * \code
+ * \code{.cpp}
  * Foo::Foo(): d_bar(initData(&d_bar, true, "bar", "Here is a little description of this Data.")) {
  *     // ...
  * }
  * \endcode
  *
- * And this Data can be assigned a value in XML scene files like so:
- * \code
+ * And this %Data can be assigned a value in XML scene files like so:
+ * \code{.xml}
  * <Foo bar="false"/>
  * \endcode
  */
@@ -466,7 +466,7 @@ public:
              endEdit();
              return;
         }
-    
+
         *beginEdit() = value;
         endEdit();
     }

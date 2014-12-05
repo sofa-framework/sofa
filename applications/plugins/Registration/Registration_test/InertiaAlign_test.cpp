@@ -2,9 +2,9 @@
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <assert.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/component/loader/MeshObjLoader.h>
-#include <sofa/component/loader/MeshObjLoader.h>
-#include <sofa/component/engine/GenerateRigidMass.h>
+#include <SofaLoader/MeshObjLoader.h>
+#include <SofaLoader/MeshObjLoader.h>
+#include <SofaEngine/GenerateRigidMass.h>
 #include <sofa/simulation/common/Node.h>
 #include <plugins/Registration/InertiaAlign.h>
 //#include <projects/GenerateRigid/GenerateRigid.h>

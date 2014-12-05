@@ -59,8 +59,8 @@ public:
     Data <sofa::defaulttype::Vector3> sourceC;
 
     Data < Mat3x3 > targetInertiaMatrix;
-
     Data < Mat3x3 > sourceInertiaMatrix;
+
     /// input//output
     Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positiont;
     Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positions;

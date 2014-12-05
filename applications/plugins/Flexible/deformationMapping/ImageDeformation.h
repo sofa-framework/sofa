@@ -58,11 +58,6 @@ namespace component
 namespace engine
 {
 
-using helper::vector;
-using helper::round;
-using defaulttype::Vec;
-using defaulttype::Mat;
-using namespace cimg_library;
 
 /**
  * This class deforms an image based on an existing deformation mapping using forward or inverse mapping
@@ -94,9 +89,9 @@ public:
     Data<helper::OptionsGroup> deformationMethod; ///< forward, backward
     Data<helper::OptionsGroup> interpolation; ///< Nearest,Linear,Cubic
     Data<bool> weightByVolumeChange;
-    Data< Vec<3,unsigned int> > dimensions;
+    Data< defaulttype::Vec<3,unsigned int> > dimensions;
 
-    typedef vector<double> ParamTypes;
+    typedef helper::vector<double> ParamTypes;
     typedef helper::ReadAccessor<Data< ParamTypes > > raParam;
     Data< ParamTypes > param;
 
@@ -114,7 +109,7 @@ public:
         , deformationMethod ( initData ( &deformationMethod,"deformationMethod","" ) )
         , interpolation ( initData ( &interpolation,"interpolation","" ) )
         , weightByVolumeChange ( initData ( &weightByVolumeChange,false,"weightByVolumeChange","for images representing densities, weight intensities according to the local volume variation" ) )
-        , dimensions ( initData ( &dimensions,Vec<3,unsigned int>(1,1,1),"dimensions","output image dimensions" ) )
+        , dimensions ( initData ( &dimensions,defaulttype::Vec<3,unsigned int>(1,1,1),"dimensions","output image dimensions" ) )
         , param ( initData ( &param,"param","Parameters" ) )
         , inputImage(initData(&inputImage,ImageTypes(),"inputImage",""))
         , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
@@ -169,7 +164,7 @@ protected:
         raTransform outT(this->outputTransform);
 
         if(in->isEmpty()) return;
-        const CImg<T>& img = in->getCImg(this->time);
+        const cimg_library::CImg<T>& img = in->getCImg(this->time);
         imCoord dim = in->getDimensions();
 
         waImage out(this->outputImage);
@@ -180,7 +175,7 @@ protected:
         outDim[3]=dim[3]; // channels
         outDim[4]=1;      // time (current)
         out->setDimensions(outDim);
-        CImg<T>& outImg = out->getCImg(0);
+        cimg_library::CImg<T>& outImg = out->getCImg(0);
 
         unsigned int interp=this->interpolation.getValue().getSelectedId();
 
@@ -217,7 +212,7 @@ protected:
                 Real tolerance=1e-15; // tolerance for trilinear weights computation
 
                 // create floating point image of transformed voxel corners
-                CImg<Real> flt(dim[0]+1,dim[1]+1,dim[2]+1,3);
+                cimg_library::CImg<Real> flt(dim[0]+1,dim[1]+1,dim[2]+1,3);
 
 #ifdef USING_OMP_PRAGMAS
                 #pragma omp parallel for
@@ -272,7 +267,7 @@ protected:
                                                                             {
                                                                                 Coord pi(x+w[0]-0.5,y+w[1]-0.5,z+w[2]-0.5);
                                                                                 if(interp==0)        cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.atXYZ(sofa::helper::round((double)pi[0]),sofa::helper::round((double)pi[1]),sofa::helper::round((double)pi[2]),c));
-                                                                                else if(interp==2)   cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg::type<T>::min(),cimg::type<T>::max()));
+                                                                                else if(interp==2)   cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()));
                                                                                 else                        cimg_forC(img,c) outImg(xo,yo,zo,c) =  (T)(dv*img.linear_atXYZ(pi[0],pi[1],pi[2],c,0));
                                                                             }
                                                     }
@@ -310,7 +305,7 @@ protected:
                             if(pi[0]>=0) if(pi[1]>=0) if(pi[2]>=0) if(pi[0]<img.width()) if(pi[1]<img.height()) if(pi[2]<img.depth())
                                                 {
                                                     if(interp==0)        cimg_forC(img,c) outImg(x,y,z,c) = img.atXYZ(sofa::helper::round((double)pi[0]),sofa::helper::round((double)pi[1]),sofa::helper::round((double)pi[2]),c);
-                                                    else if(interp==2)   cimg_forC(img,c) outImg(x,y,z,c) = (T)img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg::type<T>::min(),cimg::type<T>::max()); // warning cast for non-floating types
+                                                    else if(interp==2)   cimg_forC(img,c) outImg(x,y,z,c) = (T)img.cubic_atXYZ(pi[0],pi[1],pi[2],c,0,cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()); // warning cast for non-floating types
                                                     else                        cimg_forC(img,c) outImg(x,y,z,c) = (T)img.linear_atXYZ(pi[0],pi[1],pi[2],c,0); // warning cast for non-floating types
                                                 }
                         }
@@ -338,14 +333,14 @@ protected:
             Coord f = p[0]*g[0]*g[2]*g[1] + p[1]*w[0]*g[2]*g[1] + p[2]*w[0]*w[2]*g[1] + p[3]*g[0]*w[2]*g[1] + p[4]*g[0]*g[2]*w[1] + p[5]*w[0]*g[2]*w[1] + p[6]*w[0]*w[2]*w[1] + p[7]*g[0]*w[2]*w[1] - x; // function to minimize
             if(f.norm2()<tolerance) {  return; }
 
-            Mat<3,3,Real> df;
+            defaulttype::Mat<3,3,Real> df;
             df[0] = - p[0]*g[2]*g[1] + p[1]*g[2]*g[1] + p[2]*w[2]*g[1] - p[3]*w[2]*g[1] - p[4]*g[2]*w[1] + p[5]*g[2]*w[1] + p[6]*w[2]*w[1] - p[7]*w[2]*w[1];
             df[1] = - p[0]*g[0]*g[2] - p[1]*w[0]*g[2] - p[2]*w[0]*w[2] - p[3]*g[0]*w[2] + p[4]*g[0]*g[2] + p[5]*w[0]*g[2] + p[6]*w[0]*w[2] + p[7]*g[0]*w[2];
             df[2] = - p[0]*g[0]*g[1] - p[1]*w[0]*g[1] + p[2]*w[0]*g[1] + p[3]*g[0]*g[1] - p[4]*g[0]*w[1] - p[5]*w[0]*w[1] + p[6]*w[0]*w[1] + p[7]*g[0]*w[1];
 
             Real det=determinant(df);
             if ( -MIN_DETERMINANT<=det && det<=MIN_DETERMINANT) { return; }
-            Mat<3,3,Real> dfinv;
+            defaulttype::Mat<3,3,Real> dfinv;
             dfinv(0,0)= (df(1,1)*df(2,2) - df(2,1)*df(1,2))/det;
             dfinv(0,1)= (df(1,2)*df(2,0) - df(2,2)*df(1,0))/det;
             dfinv(0,2)= (df(1,0)*df(2,1) - df(2,0)*df(1,1))/det;

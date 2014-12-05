@@ -5,7 +5,7 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <QTimer>
 #include <QString>
 #include <QUrl>

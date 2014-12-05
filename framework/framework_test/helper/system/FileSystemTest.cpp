@@ -24,9 +24,9 @@ TEST(FileSystemTest, listDirectory_nonEmpty)
     FileSystem::listDirectory(getPath("non-empty-directory"), fileList);
     // Workaround: svn adds a '.svn' directory in each subdirectory
     if (std::find(fileList.begin(), fileList.end(), ".svn") != fileList.end())
-        EXPECT_EQ(fileList.size(), 4);
+        EXPECT_EQ(fileList.size(), 4u);
     else
-        EXPECT_EQ(fileList.size(), 3);
+        EXPECT_EQ(fileList.size(), 3u);
     EXPECT_TRUE(std::find(fileList.begin(), fileList.end(), "fileA.txt") != fileList.end());
     EXPECT_TRUE(std::find(fileList.begin(), fileList.end(), "fileB.txt") != fileList.end());
     EXPECT_TRUE(std::find(fileList.begin(), fileList.end(), "fileC.so") != fileList.end());
@@ -38,9 +38,9 @@ TEST(FileSystemTest, listDirectory_nonEmpty_trailingSlash)
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList);
     // Workaround: svn adds a '.svn' directory in each subdirectory
     if (std::find(fileList.begin(), fileList.end(), ".svn") != fileList.end())
-        EXPECT_EQ(fileList.size(), 4);
+        EXPECT_EQ(fileList.size(), 4u);
     else
-        EXPECT_EQ(fileList.size(), 3);
+        EXPECT_EQ(fileList.size(), 3u);
     EXPECT_TRUE(std::find(fileList.begin(), fileList.end(), "fileA.txt") != fileList.end());
     EXPECT_TRUE(std::find(fileList.begin(), fileList.end(), "fileB.txt") != fileList.end());
     EXPECT_TRUE(std::find(fileList.begin(), fileList.end(), "fileC.so") != fileList.end());
@@ -50,7 +50,7 @@ TEST(FileSystemTest, listDirectory_withExtension_multipleMatches)
 {
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList, "txt");
-    EXPECT_EQ(fileList.size(), 2);
+    EXPECT_EQ(fileList.size(), 2u);
     EXPECT_TRUE(std::find(fileList.begin(), fileList.end(), "fileA.txt") != fileList.end());
     EXPECT_TRUE(std::find(fileList.begin(), fileList.end(), "fileB.txt") != fileList.end());
 }
@@ -59,7 +59,7 @@ TEST(FileSystemTest, listDirectory_withExtension_oneMatch)
 {
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList, "so");
-    EXPECT_EQ(fileList.size(), 1);
+    EXPECT_EQ(fileList.size(), 1u);
     EXPECT_TRUE(std::find(fileList.begin(), fileList.end(), "fileC.so") != fileList.end());
 }
 

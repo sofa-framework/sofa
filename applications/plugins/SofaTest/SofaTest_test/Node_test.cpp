@@ -56,9 +56,9 @@ struct Node_test : public Sofa_test<>
 
     }
 
-    Node::SPtr root;
-    Node::SPtr A;
-    Node::SPtr B;
+    simulation::Node::SPtr root;
+    simulation::Node::SPtr A;
+    simulation::Node::SPtr B;
 
 };
 

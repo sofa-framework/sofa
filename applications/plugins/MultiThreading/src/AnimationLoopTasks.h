@@ -84,10 +84,10 @@ namespace simulation
 
 	private:
 
+		boost::mutex*	 IdFactorygetIDMutex;
+
 		//volatile long* mAtomicCounter;
 		helper::system::atomic<int>* mAtomicCounter;
-
-		boost::mutex*	 IdFactorygetIDMutex;
 
 	};
 

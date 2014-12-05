@@ -342,6 +342,10 @@ void QSofaListView::RunSofaRightClicked( Q3ListViewItem *item,
             contextMenu->insertItem ( "Deactivate", this, SLOT ( DeactivateNode() ) );
         else
             contextMenu->insertItem ( "Activate", this, SLOT ( ActivateNode() ) );
+		if (object_.ptr.Node->isSleeping())
+            contextMenu->insertItem ( "Wake up", this, SLOT ( WakeUpNode() ) );
+        else
+            contextMenu->insertItem ( "Put to sleep", this, SLOT ( PutNodeToSleep() ) );
         contextMenu->insertSeparator ();
         /*****************************************************************************************************************/
 
@@ -412,6 +416,16 @@ void QSofaListView::DeactivateNode()
 void QSofaListView::ActivateNode()
 {
     emit RequestActivation(object_.ptr.Node,true);
+}
+
+void QSofaListView::PutNodeToSleep()
+{
+    emit RequestSleeping(object_.ptr.Node, true);
+}
+
+void QSofaListView::WakeUpNode()
+{
+    emit RequestSleeping(object_.ptr.Node, false);
 }
 
 void QSofaListView::SaveNode()

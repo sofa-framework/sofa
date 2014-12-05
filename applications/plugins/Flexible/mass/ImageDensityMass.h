@@ -155,6 +155,9 @@ public:
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
+    void addKToMatrix(const core::MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) {}
+    void addBToMatrix(const core::MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) {}
+
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
 

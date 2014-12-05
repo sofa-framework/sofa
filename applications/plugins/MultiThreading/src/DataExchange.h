@@ -149,7 +149,6 @@ namespace sofa
 			//SingleLink< DataExchange<DataTypes>, Data<DataTypes>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> mDestinationObject;
 
 
-			
 
 			DataTypes* mSourcePtr;
 			DataTypes* mDestinationPtr;

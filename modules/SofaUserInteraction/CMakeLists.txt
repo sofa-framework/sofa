@@ -44,6 +44,7 @@ set(HEADER_FILES
 	MechanicalStateControllerOmni.inl
     NodeToggleController.h
     InterpolationController.h
+    SleepController.h
     )
 
 set(SOURCE_FILES
@@ -78,6 +79,7 @@ set(SOURCE_FILES
     NodeToggleController.cpp
     InterpolationController.cpp
     InterpolationController.inl
+    SleepController.cpp
     )
 
 set(GROUP_BASE_DIR "..")

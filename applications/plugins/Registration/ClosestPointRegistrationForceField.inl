@@ -379,10 +379,11 @@ void ClosestPointRegistrationForceField<DataTypes>::addKToMatrix(const core::Mec
     Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue()) * this->ks.getValue();
     if(!k) return;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
-    sofa::defaulttype::BaseMatrix* mat = mref.matrix;
-    unsigned int offset = mref.offset;
-    const int N = Coord::total_size, nb= this->closestPos.size();
-    for (unsigned int index = 0; index <nb; index++)
+    sofa::defaulttype::BaseMatrix *mat = mref.matrix;
+    const int offset = (int)mref.offset;
+    const int N = Coord::total_size;
+    const int nb = this->closestPos.size();
+    for (int index = 0; index < nb; index++)
         for(int i = 0; i < N; i++)
             mat->add(offset + N * index + i, offset + N * index + i, -k);
 }

@@ -45,7 +45,7 @@
 
 	    <MechanicalObject  template="E332" name="E"  />
 <!-- 	    <GreenStrainMapping template="F332,E332"  /> -->
-            <CorotationalStrainMapping template="F332,E332" geometricStiffness="true" />
+            <CorotationalStrainMapping template="F332,E332" geometricStiffness="false" method="svd" />
 	    <HookeForceField  template="E332" name="ff" youngModulus="@youngM.values" poissonRatio="0" viscosity="0"  />
 	</Node>
 		

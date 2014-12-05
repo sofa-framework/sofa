@@ -203,6 +203,9 @@ class GenericRigidJoint:
 
 
     class PositionController:
+        """ Set the joint position to the offset
+        WARNING: for angular dof position, the value mus be in ]-pi,pi]
+        """
         def __init__(self, node, masks, offsets, compliance):
             self.node = node.createChild( "controller" )
 
@@ -401,6 +404,13 @@ class BallAndSocketRigidJoint(GenericRigidJoint):
     def addSpring( self, stiffnessX, stiffnessY, stiffnessZ ):
         mask = [0, 0, 0, 1.0/stiffnessX, 1.0/stiffnessY, 1.0/stiffnessZ ]
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
+
+    def addPositionController( self, axis, offset, compliance=0 ):
+        """ control rotation around axis (0->x, 1->y, 2->z)
+        """
+        mask = [0]*6
+        mask[3+axis]=1
+        return GenericRigidJoint.PositionController( self.node, [mask], [offset], compliance )
 
 class PlanarRigidJoint(GenericRigidJoint):
     ## Planar joint for the given axis as plane normal (0->x, 1->y, 2->z)

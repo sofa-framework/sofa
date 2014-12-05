@@ -51,6 +51,7 @@ set(HEADER_FILES
     deformationMapping/TriangleStrainAverageMapping.h 
     deformationMapping/TriangleStrainAverageMapping.inl 
     deformationMapping/VolumeMapping.h
+    deformationMapping/TetrahedronVolumeMapping.h
     deformationMapping/CorotationalMeshMapping.h
     engine/ComputeDualQuatEngine.h
     engine/ComputeDualQuatEngine.inl
@@ -131,6 +132,7 @@ set(SOURCE_FILES
     deformationMapping/TriangleDeformationMapping.cpp 
     deformationMapping/TriangleStrainAverageMapping.cpp 
     deformationMapping/VolumeMapping.cpp
+    deformationMapping/TetrahedronVolumeMapping.cpp
     deformationMapping/CorotationalMeshMapping.cpp
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
