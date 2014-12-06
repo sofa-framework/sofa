@@ -42,7 +42,12 @@ endif()
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaSimpleFem)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem )
+
+if(SOFA_HAVE_NEWMAT)
+    target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
+endif()
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_BUILD_INCLUDE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_DEPENDENCY_DIR}>")
