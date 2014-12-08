@@ -48,6 +48,8 @@ template<class T>
 class vectorData : public vector< core::objectmodel::Data<T>* > {
 
 public:
+    typedef vector< core::objectmodel::Data<T>* > Inherit;
+
     vectorData(core::objectmodel::Base* component, std::string const& name, std::string const& help)
         : m_component(component)
         , m_name(name)
@@ -93,9 +95,17 @@ public:
     void resize(unsigned int size)
     {
         core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
-        // TODO delete if size is less
-        for (unsigned int i=this->size(); i<size; ++i)
-        {
+        if (size < this->size()) {
+            // some data if size is inferior than current size
+            core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
+            for (unsigned int i=size; i<this->size(); ++i) {
+                if (componentAsDataEngine!=NULL)
+                    componentAsDataEngine->delInput((*this)[i]);
+                delete (*this)[i];
+            }
+            Inherit::resize(size);
+        }
+        for (unsigned int i=this->size(); i<size; ++i) {
             std::ostringstream oname, ohelp;
             oname << m_name << (i+1);
             ohelp << m_help << "(" << (i+1) << ")";
