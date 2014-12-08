@@ -53,6 +53,7 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
 {
 
     typedef _RigidMapping RigidMapping;
+    typedef Mapping_test<RigidMapping> Inherit;
 
     typedef typename RigidMapping::In InDataTypes;
     typedef typename InDataTypes::VecCoord InVecCoord;
@@ -85,6 +86,10 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
 
     RigidMappingTest(){
         rigidMapping = static_cast<RigidMapping*>( this->mapping );
+        // RigidMapping::getKs is not implemented
+        // because it leads to a non symmetric stiffness matrix
+        // see RigidMapping implementation for more details
+        this->flags &= ~Inherit::TEST_getKs;
     }
 
 

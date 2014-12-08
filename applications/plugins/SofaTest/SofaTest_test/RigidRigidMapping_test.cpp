@@ -52,6 +52,7 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
 {
 
     typedef _RigidRigidMapping RigidRigidMapping;
+    typedef Mapping_test<RigidRigidMapping> Inherit;
 
     typedef typename RigidRigidMapping::In In;
     typedef typename In::VecCoord InVecCoord;
@@ -86,6 +87,9 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
     RigidRigidMappingTest()
     {
         rigidRigidMapping = static_cast<RigidRigidMapping*>( this->mapping );
+        // RigidRigidMapping assembly is not implemented
+        // you can use Compliant AssembledRigidRigidMapping for that purpose
+        this->flags &= ~Inherit::TEST_ASSEMBLY_API;
     }
 
     OutVecCoord create_childCoord()
