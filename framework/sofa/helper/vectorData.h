@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_COMPONENTVARIABLEDATA_H
-#define SOFA_HELPER_COMPONENTVARIABLEDATA_H
+#ifndef SOFA_HELPER_VECTORDATA_H
+#define SOFA_HELPER_VECTORDATA_H
 
 #include <string>
 
@@ -128,4 +128,4 @@ protected:
 
 } // namespace sofa
 
-#endif // SOFA_HELPER_COMPONENTVARIABLEDATA_H
+#endif // SOFA_HELPER_VECTORDATA_H
