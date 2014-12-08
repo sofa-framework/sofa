@@ -91,6 +91,7 @@ set(HEADER_FILES
     SortedPermutation.h
     kdTree.inl
     kdTree.h
+    vectorData.h
 	)
 
 set(SOURCE_FILES
