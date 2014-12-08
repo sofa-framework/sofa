@@ -380,12 +380,12 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             InVecDeriv Kv(Np);
             K->mult(Kv,vp);
 
-            // check that K.vp = fp2 - fp
-            if( this->vectorMaxDiff(Kv,fp12)>this->epsilon()*errorMax*dJErrorFactor ){
+            // check that K.vp = dfp
+            if( this->vectorMaxDiff(Kv,dfp)>this->epsilon()*errorMax*dJErrorFactor ){
                 succeed = false;
                 ADD_FAILURE() << "K test failed" << endl <<
                                  "Kv    = " << Kv << endl <<
-                                 "fp2-fp = " << fp12 << endl;
+                                 "dfp = " << fp12 << endl;
             }
         }
 
