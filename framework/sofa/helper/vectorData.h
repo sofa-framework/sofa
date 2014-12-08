@@ -73,7 +73,7 @@ public:
             std::string nbStr = p;
 //            sout << "parse: setting " << size.getName() << "="<<nbStr<<sendl;
             size.read(nbStr);
-            updateDataVectorSize(size.getValue());
+            resize(size.getValue());
         }
     }
 
@@ -86,11 +86,11 @@ public:
             std::string nbStr = *it->second;
 //            sout << "parseFields: setting "<< size.getName() << "=" <<nbStr<<sendl;
             size.read(nbStr);
-            updateDataVectorSize(size.getValue());
+            resize(size.getValue());
         }
     }
 
-    void updateDataVectorSize(unsigned int size)
+    void resize(unsigned int size)
     {
         core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
         // TODO delete if size is less
