@@ -58,6 +58,7 @@ CMakeLists.txt.user*
 build/
 buildDebug/
 buildRelease/
+buildClang/
 /applications/plugins/branchingimage/BranchingCellIndicesFromPositions.cpp
 /applications/plugins/branchingimage/BranchingCellIndicesFromPositions.h
 /applications/plugins/branchingimage/BranchingCellOffsetsFromPositions.cpp
