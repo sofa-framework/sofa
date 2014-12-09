@@ -56,8 +56,6 @@ macro(_eigen3_check_version)
   endif(NOT EIGEN3_VERSION_OK)
 endmacro(_eigen3_check_version)
 
-message("EIGEN_ROOT ${EIGEN_ROOT}")
-message("signature_of_eigen3_matrix_library ${signature_of_eigen3_matrix_library}")
 if (EIGEN3_INCLUDE_DIR)
 
   # in cache already
