@@ -14,7 +14,8 @@
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
-#include <sofa/component/typedef/Mapping_double.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <sofa/core/BaseMapping.h>
 
 
@@ -44,7 +45,7 @@
 #include "Binding_VisualModel.h"
 
 typedef sofa::component::container::MechanicalObject< sofa::defaulttype::Vec3Types > MechanicalObject3;
-
+typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
 
 
 // crée un objet Python à partir d'un objet Cpp héritant de Base,
@@ -88,7 +89,7 @@ PyObject* SP_BUILD_PYSPTR(Base* obj)
     if (dynamic_cast<sofa::component::controller::PythonScriptController*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(PythonScriptController));
 
-    if (dynamic_cast<SubsetMultiMapping3d_to_3d*>(obj))
+    if (dynamic_cast<SubsetMultiMapping3_to_3*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(SubsetMultiMapping3_to_3));
     if (dynamic_cast<sofa::core::BaseMapping*>(obj))
         return BuildPySPtr<Base>(obj,&SP_SOFAPYTYPEOBJECT(BaseMapping));
