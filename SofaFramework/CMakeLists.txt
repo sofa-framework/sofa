@@ -109,6 +109,7 @@ install(DIRECTORY ${Eigen_INCLUDE_DIRS}/
         COMPONENT SofaFramework_headers
         DESTINATION "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}"
         FILES_MATCHING
+            PATTERN "Eigen/*"
             PATTERN "*.h"
             PATTERN "*.inl"
             PATTERN "*.hxx"
