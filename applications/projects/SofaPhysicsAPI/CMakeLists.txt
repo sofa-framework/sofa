@@ -19,7 +19,7 @@ set(SOFAPHYSICSAPI_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaPhysicsAPI)
 set(SOFAPHYSICSAPI_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAPHYSICSAPI_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAPHYSICSAPI_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAPHYSICSAPI_INSTALL_CMAKE_DIR   lib/cmake/SofaPhysicsAPI     CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAPHYSICSAPI_INSTALL_CMAKE_DIR   ${SOFAPHYSICSAPI_INSTALL_LIB_DIR}/cmake/SofaPhysicsAPI)
 
 set(HEADER_FILES
     
@@ -73,14 +73,14 @@ install(FILES ${SOFAPHYSICSAPI_BUILD_CMAKE_DIR}/SofaPhysicsAPIConfigVersion.cmak
 
 # SofaPhysicsAPIConfig.cmake (build tree)
 set(SOFAPHYSICSAPI_INCLUDE_DIR "${SOFAPHYSICSAPI_BUILD_INCLUDE_DIR}")
-configure_package_config_file(SofaPhysicsAPIConfig.cmake.in
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaPhysicsAPIConfig.cmake.in
                               ${SOFAPHYSICSAPI_BUILD_CMAKE_DIR}/SofaPhysicsAPIConfig.cmake
                               INSTALL_DESTINATION ${SOFAPHYSICSAPI_BUILD_CMAKE_DIR}
                               PATH_VARS SOFAPHYSICSAPI_INCLUDE_DIR)
 
 # SofaPhysicsAPIConfig.cmake (installed)
 set(SOFAPHYSICSAPI_INCLUDE_DIR "${SOFAPHYSICSAPI_INSTALL_INCLUDE_DIR}")
-configure_package_config_file(SofaPhysicsAPIConfig.cmake.in
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaPhysicsAPIConfig.cmake.in
                               ${SOFAPHYSICSAPI_BUILD_CMAKE_DIR}/SofaPhysicsAPIConfigInstall.cmake
                               INSTALL_DESTINATION ${SOFAPHYSICSAPI_INSTALL_CMAKE_DIR}
                               PATH_VARS SOFAPHYSICSAPI_INCLUDE_DIR)
