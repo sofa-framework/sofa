@@ -21,7 +21,7 @@ set(SOFAHAPI_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaHAPI)
 set(SOFAHAPI_INSTALL_LIB_DIR     lib                    CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAHAPI_INSTALL_BIN_DIR     bin                    CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAHAPI_INSTALL_INCLUDE_DIR include                CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAHAPI_INSTALL_CMAKE_DIR   lib/cmake/SofaHAPI     CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAHAPI_INSTALL_CMAKE_DIR   ${SOFAHAPI_INSTALL_LIB_DIR}/cmake/SofaHAPI )
 
 set(HEADER_FILES 
     initSofaHAPI.h
