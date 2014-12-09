@@ -159,21 +159,6 @@ public:
         vOrientation /= a;
     }
 
-    template<typename real2>
-    RigidDeriv<3,real> operator*(real2 a) const
-    {
-        RigidDeriv r = *this;
-        r*=a;
-        return r;
-    }
-
-    template<typename real2>
-    RigidDeriv<3,real> operator/(real2 a) const
-    {
-        RigidDeriv r = *this;
-        r/=a;
-        return r;
-    }
 
 
     RigidDeriv<3,real> operator-() const
@@ -282,6 +267,19 @@ public:
 
 };
 
+template<typename real, typename real2>
+inline  RigidDeriv<3,real> operator*(RigidDeriv<3, real> r, real2 a)
+{
+    r*=a;
+    return r;
+}
+
+template<typename real, typename real2>
+inline RigidDeriv<3,real> operator/(RigidDeriv<3, real> r,real2 a)
+{
+    r/=a;
+    return r;
+}
 
 template<int N,typename T>
 typename RigidDeriv<N,T>::Pos& getLinear(RigidDeriv<N,T>& v)
@@ -1120,21 +1118,7 @@ public:
         vOrientation /= (Real)a;
     }
 
-    template<typename real2>
-    RigidDeriv<2,real> operator*(real2 a) const
-    {
-        RigidDeriv<2,real> r = *this;
-        r *= a;
-        return r;
-    }
 
-    template<typename real2>
-    RigidDeriv<2,real> operator/(real2 a) const
-    {
-        RigidDeriv<2,real> r = *this;
-        r /= a;
-        return r;
-    }
 
     RigidDeriv<2,real> operator-() const
     {
@@ -1232,6 +1216,20 @@ public:
 
     /// @}
 };
+
+template<typename real, typename real2>
+inline RigidDeriv<2,real> operator*(RigidDeriv<2,real> r, real2 a)
+{
+    r *= a;
+    return r;
+}
+
+template<typename real, typename real2>
+inline RigidDeriv<2,real> operator/(RigidDeriv<2,real> r, real2 a)
+{
+    r /= a;
+    return r;
+}
 
 /// Velocity at point p, where p is the offset from the origin of the frame, given in the same coordinate system as the velocity of the origin.
 template<typename R, typename T>
