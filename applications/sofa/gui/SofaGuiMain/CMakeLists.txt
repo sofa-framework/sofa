@@ -2,14 +2,12 @@ cmake_minimum_required(VERSION 2.8)
 project(SofaGuiMain)
 
 set(HEADER_FILES
-
-	../Main.h
-	)
+    ../Main.h
+    )
 
 set(SOURCE_FILES
-
-	../Main.cpp
-	)
+    ../Main.cpp
+    )
 
 set(GROUP_BASE_DIR "..")
 
@@ -37,11 +35,6 @@ install(TARGETS ${PROJECT_NAME}
         ARCHIVE DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}"
         )
 
-install(DIRECTORY ${SofaGuiMain_SOURCE_DIR}/ DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/SofaGuiMain"
+install(FILES ${HEADER_FILES} DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa/gui"
         COMPONENT SofaGui_headers
-        FILES_MATCHING
-            PATTERN "*.h"
-            PATTERN "*.inl"
-            PATTERN "*.hxx"
-            PATTERN "*.hpp"
         )
