@@ -111,7 +111,8 @@ public:
             Data< T >* d = new Data< T >(ohelp.str().c_str(), true, false);
             d->setName(oname.str());
             this->push_back(d);
-            m_component->addData(d);
+            if (m_component!=NULL)
+                m_component->addData(d);
             if (componentAsDataEngine!=NULL)
                 componentAsDataEngine->addInput(d);
         }
