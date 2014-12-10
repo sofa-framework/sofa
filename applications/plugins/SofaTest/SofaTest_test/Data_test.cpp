@@ -66,8 +66,8 @@ struct DataLink_test : public Sofa_test<>
 
 };
 
-// Test 
-TEST_F(DataLink_test , test_update )
+// Test
+TEST_F(DataLink_test , testDataLink )
 {
     this->testDataLink();
 }
