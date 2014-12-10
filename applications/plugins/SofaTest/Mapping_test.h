@@ -110,7 +110,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
     Real deltaMax; ///< The maximum magnitude of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
-    Real dJErrorFactor;  ///< a specific tolerance for geometric stiffness that is generally less precise. using dJErrorFactor*maxError
 
 
     static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
@@ -119,7 +118,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
 
-    Mapping_test():deltaMax(1000),errorMax(10),dJErrorFactor(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test():deltaMax(1000),errorMax(10),flags(TEST_ASSEMBLY_API)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -135,7 +134,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100),dJErrorFactor(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100),flags(TEST_ASSEMBLY_API)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -364,7 +363,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // ================ test applyDJT()
-        if( this->vectorMaxDiff(dfp,fp12)>this->epsilon()*errorMax*dJErrorFactor ){
+        if( this->vectorMaxDiff(dfp,fp12)>this->epsilon()*errorMax ){
             succeed = false;
             ADD_FAILURE() << "applyDJT test failed" << endl <<
                              "dfp    = " << dfp << endl <<
@@ -381,7 +380,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             K->mult(Kv,vp);
 
             // check that K.vp = dfp
-            if( this->vectorMaxDiff(Kv,dfp)>this->epsilon()*errorMax*dJErrorFactor ){
+            if( this->vectorMaxDiff(Kv,dfp)>this->epsilon()*errorMax ){
                 succeed = false;
                 ADD_FAILURE() << "K test failed" << endl <<
                                  "Kv    = " << Kv << endl <<
