@@ -97,7 +97,6 @@ public:
         core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
         if (size < this->size()) {
             // some data if size is inferior than current size
-            core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
             for (unsigned int i=size; i<this->size(); ++i) {
                 if (componentAsDataEngine!=NULL)
                     componentAsDataEngine->delInput((*this)[i]);
