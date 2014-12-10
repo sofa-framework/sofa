@@ -24,8 +24,11 @@
 ******************************************************************************/
 
 #include "stdafx.h"
+
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/helper/vectorData.h>
 #include <plugins/SceneCreator/SceneCreator.h>
+
 #include "Sofa_test.h"
 
 namespace sofa {
@@ -70,6 +73,52 @@ struct DataLink_test : public Sofa_test<>
 TEST_F(DataLink_test , testDataLink )
 {
     this->testDataLink();
+}
+
+/** Test suite for vectorData
+ *
+ * @author Thomas Lemaire @date 2014
+ */
+struct vectorData_test : public Sofa_test<>
+{
+    core::objectmodel::Data<int> data1;
+    helper::vectorData<int> vDataInt;
+
+    vectorData_test()
+        : vDataInt(NULL,"","")
+    { }
+
+    void SetUp()
+    {}
+
+    void test_resize()
+    {
+       vDataInt.resize(3);
+       ASSERT_EQ(vDataInt.size(),3);
+       vDataInt.resize(10);
+       ASSERT_EQ(vDataInt.size(),10);
+       vDataInt.resize(8);
+       ASSERT_EQ(vDataInt.size(),8);
+    }
+
+    void test_link()
+    {
+        vDataInt.resize(5);
+        sofa::modeling::setDataLink(&data1,vDataInt[3]);
+        data1.setValue(1);
+        ASSERT_EQ(vDataInt[3]->getValue(),1);
+    }
+
+};
+
+// Test
+TEST_F(vectorData_test , test_resize )
+{
+    this->test_resize();
+}
+TEST_F(vectorData_test , test_link )
+{
+    this->test_link();
 }
 
 }// namespace sofa
