@@ -23,9 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#define SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_CPP
+
 #include "ComplementaryROI.inl"
 
-#include <sstream>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/component.h>
 
