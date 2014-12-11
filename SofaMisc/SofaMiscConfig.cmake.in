@@ -10,6 +10,7 @@ check_required_components(SofaMisc)
 
 # required for transitive dependencies
 find_package(SofaAdvanced REQUIRED)
+find_package(SofaGeneral REQUIRED)
 
 if( NOT TARGET SofaComponentMisc )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscTargets.cmake")
