@@ -25,13 +25,17 @@
 
 #include "Binding_SubsetMultiMapping.h"
 #include "Binding_BaseMapping.h"
+#include <SofaMiscMapping/SubsetMultiMapping.h>
 
+
+typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
 #ifndef SOFA_FLOAT
-#include <sofa/component/typedef/Mapping_double.h>
+typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes > SubsetMultiMapping3d_to_3d;
 #endif
 #ifndef SOFA_DOUBLE
-#include <sofa/component/typedef/Mapping_float.h>
+typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes > SubsetMultiMapping3f_to_3f;
 #endif
+
 #include <sofa/core/BaseState.h>
 using namespace sofa::component::mapping;
 using namespace sofa::core::objectmodel;
