@@ -36,22 +36,22 @@ find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
 set(SOFA_HAVE_QT ${Qt4_FOUND} )
 set(SOFA_QT4 ${Qt4_FOUND} )
 
-#set(SOFAGUI_TARGETS SofaGuiCommon SofaGuiQt SofaGuiQTViewer SofaGuiGlut SofaGuiMain)
+#set(SOFAGUI_LIBRARIES SofaGuiCommon SofaGuiQt SofaGuiQTViewer SofaGuiGlut SofaGuiMain)
 
-set(SOFAGUI_TARGETS SofaGuiCommon)
+set(SOFAGUI_LIBRARIES SofaGuiCommon)
 
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiCommon)
 
 if(SOFA_HAVE_GLUT)
     set(SOFA_GUI_GLUT 1)
-    list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
+    list(APPEND SOFAGUI_LIBRARIES SofaGuiGlut)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/glut          ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
 endif()
 
 if(Qt4_FOUND)
     set(SOFA_GUI_QT 1)
 
-    list(APPEND SOFAGUI_TARGETS SofaGuiQt)
+    list(APPEND SOFAGUI_LIBRARIES SofaGuiQt)
     add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/qt            ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
     set(SOFA_GUI_QTVIEWER 1)
     
@@ -60,14 +60,14 @@ if(Qt4_FOUND)
 endif(Qt4_FOUND)
 
 
-list(APPEND SOFAGUI_TARGETS SofaGuiMain)
+list(APPEND SOFAGUI_LIBRARIES SofaGuiMain)
 add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
 
 # applications
 if(Qt4_FOUND)
     add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/Modeler            ${CMAKE_CURRENT_BINARY_DIR}/Modeler)
 endif(Qt4_FOUND)
-list(APPEND SOFAGUI_TARGETS runSofa)
+
 add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/runSofa            ${CMAKE_CURRENT_BINARY_DIR}/runSofa)
 
 
