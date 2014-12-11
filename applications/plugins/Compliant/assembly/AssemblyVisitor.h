@@ -418,13 +418,13 @@ public:
 				
 		unsigned offset, size;
 
-		mat C; ///< Compliance matrix
-		mat P; ///< Projective constraint matrix
+        mat C; ///< Compliance matrix (only valid for mapped dof with a compliance)
+        mat P; ///< Projective constraint matrix (only valid for master dof)
 		mat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
+        mat Ktilde; ///< geometric stiffness (only valid for mapped dof) @warning: size=parent*parent
 				
 		struct mapped {
-			mat J; ///< mapping jacobian
-			mat K; ///< geometric stiffness
+            mat J; ///< mapping jacobian
 		};
 
 		// this is to remove f*cking mouse dofs
@@ -450,6 +450,7 @@ public:
 public:
 
 	mat compliance(simulation::Node* node);
+    mat geometricStiffness(simulation::Node* node);
 	mat proj(simulation::Node* node);
 	mat odeMatrix(simulation::Node* node);
 			
@@ -468,8 +469,9 @@ public:
 	// TODO remove maps, stick everything in chunk ? again, adaptive
 	// stuff might need it
 
-	// full mapping/stiffness matrices
-	typedef std::map<dofs_type*, mat> full_type;
+    /// full mapping matrices
+    /// for a dof, gives it full mapping from master level
+    typedef std::map<dofs_type*, mat> fullmapping_type;
 
 	// dof offset
 	typedef std::map<dofs_type*, unsigned> offset_type;
@@ -478,7 +480,8 @@ public:
 		unsigned size_m;
 		unsigned size_c;
 				
-		full_type full;
+        fullmapping_type fullmapping; ///< full mapping from a dof to the master level
+        fullmapping_type fullmappinggeometricstiffness; ///< full mapping from a dof-1 level to the master level (used to map the geometric stiffness)
 				
 		// offsets
 		struct {
@@ -547,8 +550,16 @@ private:
 
 };
 
-// TODO why is this here ?
-// multiplies mapping matrices together for everyone in the graph
+
+
+
+
+/// Computing the full jacobian matrices from masters to every mapped dofs
+/// ie multiplies mapping matrices together for everyone in the graph
+// TODO why is this here?
+// -> because we need an access to it when deriving AssemblyVisitor
+// -> could be moved in AssemblyHelper?
+// -> or at least its implementation could be written in the .cpp
 struct AssemblyVisitor::process_helper {
 
     process_type& res;
@@ -565,25 +576,26 @@ struct AssemblyVisitor::process_helper {
         chunk* c = g[v].data;
 
         const unsigned& size_m = res.size_m;
-        full_type& full = res.full;
+        fullmapping_type& full = res.fullmapping;
         offset_type& offsets = res.offset.master;
 
-        if( !c->mechanical ) return;
+        if( c->master() || !c->mechanical ) return;
 
         mat& Jc = full[ curr ];
         assert( empty(Jc) );
 
-        // TODO use graph and out_edges
-        for( graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
 
-            vertex vp = g[ boost::target(*e.first, g) ];
+        if( boost::out_degree(v,g) == 1 ) // simple mapping
+        {
+            graph_type::out_edge_iterator e = boost::out_edges(v, g).first;
+            vertex vp = g[ boost::target(*e, g) ];
 
             // parent data chunk/mapping matrix
             const chunk* p = vp.data;
             mat& Jp = full[ vp.dofs ];
             {
                 // mapping blocks
-                const mat& jc = g[*e.first].data->J;
+                const mat& jc = g[*e].data->J;
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
@@ -591,10 +603,10 @@ struct AssemblyVisitor::process_helper {
                 if( p->master() && empty(Jp) ) {
                     // scoped::timer step("shift matrix");
 
-					// note: we *DONT* filter mass/stiffness at this
-					// stage since this would break direct solvers
-					// (non-invertible H matrix)
-					Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
+                    // note: we *DONT* filter mass/stiffness at this
+                    // stage since this would break direct solvers
+                    // (non-invertible H matrix)
+                    Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
                 }
 
                 // Jp is empty for children of a non-master dof (e.g. mouse)
@@ -607,27 +619,64 @@ struct AssemblyVisitor::process_helper {
                     assert( false && "parent has empty J matrix :-/" );
                 }
             }
+        }
+        else // multi-mapping
+        {
+            mat& geometricStiffnessJc = res.fullmappinggeometricstiffness[ curr ];
 
-            if( ! (c->master() || !zero(Jc) )  )  {
-                using namespace std;
+            for( graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
 
-                cerr << "houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
-                     << "master: " << c->master() << endl
-                     << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
-                     << "p mechanical ? " << p->mechanical << endl
-                     << "empty Jp " << empty(Jp) << endl
-                     << "empty Jc " << empty(Jc) << endl;
+                vertex vp = g[ boost::target(*e.first, g) ];
 
-                assert( false );
-            }
+                // parent data chunk/mapping matrix
+                const chunk* p = vp.data;
+                mat& Jp = full[ vp.dofs ];
+                {
+                    // todo compute geometricStiffnessJc only if K!=0
 
+                    mat shift = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
 
+                    // mapping blocks
+                    const mat& jc = g[*e.first].data->J;
 
+                    // parent is not mapped: we put a shift matrix with the
+                    // correct offset as its full mapping matrix, so that its
+                    // children will get the right place on multiplication
+                    if( p->master() && empty(Jp) ) {
+                        Jp = shift;
+                    }
+
+                    // Jp is empty for children of a non-master dof (e.g. mouse)
+                    if(!empty(Jp) ){
+                        // scoped::timer step("mapping matrix product");
+
+                        // TODO optimize this, it is the most costly part
+                        add(Jc, jc * Jp );
+                        shift = shift.transpose()*shift;
+                        add(geometricStiffnessJc, shift );
+                    } else {
+                        assert( false && "parent has empty J matrix :-/" );
+                    }
+                }
+           }
+
+//            std::cerr<<"Assembly::geometricStiffnessJc "<<geometricStiffnessJc<<" "<<curr->getName()<<std::endl;
         }
 
+        if( zero(Jc) )  {
+            using namespace std;
 
+            cerr << "houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
+                 << "master: " << c->master() << endl
+//                 << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
+//                 << "p mechanical ? " << p->mechanical << endl
+//                 << "empty Jp " << empty(Jp) << endl
+                 << "empty Jc " << empty(Jc) << endl;
 
-    };
+            assert( false );
+        }
+
+    }
 
 
 };

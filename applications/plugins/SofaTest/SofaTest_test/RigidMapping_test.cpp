@@ -86,10 +86,10 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
 
     RigidMappingTest(){
         rigidMapping = static_cast<RigidMapping*>( this->mapping );
-        // RigidMapping::getKs is not implemented
+        // RigidMapping::getK is not implemented
         // because it leads to a non symmetric stiffness matrix
         // see RigidMapping implementation for more details
-        this->flags &= ~Inherit::TEST_getKs;
+        this->flags &= ~Inherit::TEST_getK;
     }
 
 

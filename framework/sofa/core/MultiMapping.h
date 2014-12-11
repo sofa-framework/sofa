@@ -86,7 +86,7 @@ protected:
     /// Constructor
     MultiMapping();
     /// Destructor
-    virtual ~MultiMapping() {};
+    virtual ~MultiMapping() {}
 public:
 
     void addInputModel(BaseState* model, const std::string& path = "" );
@@ -142,7 +142,7 @@ public:
     }
     /// Compat Method
     /// @deprecated
-    virtual void apply(const helper::vector<OutVecCoord*>&  /* outPos */, const helper::vector<const InVecCoord*>& /* inPos */) { };
+    virtual void apply(const helper::vector<OutVecCoord*>&  /* outPos */, const helper::vector<const InVecCoord*>& /* inPos */) {}
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJ ///
@@ -178,7 +178,7 @@ public:
     }
     /// Compat Method
     /// @deprecated
-    virtual void applyJ(const helper::vector< OutVecDeriv*>& /* outDeriv */, const helper::vector<const InVecDeriv*>& /* inDeriv */) { };
+    virtual void applyJ(const helper::vector< OutVecDeriv*>& /* outDeriv */, const helper::vector<const InVecDeriv*>& /* inDeriv */) {}
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJT (Force)///
@@ -214,7 +214,7 @@ public:
     }
     /// Compat Method
     /// @deprecated
-    virtual void applyJT(const helper::vector< InVecDeriv*>& /* outDeriv */, const helper::vector<const OutVecDeriv*>& /* inDeriv */) { };
+    virtual void applyJT(const helper::vector< InVecDeriv*>& /* outDeriv */, const helper::vector<const OutVecDeriv*>& /* inDeriv */) {}
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJT (Constraint)///
