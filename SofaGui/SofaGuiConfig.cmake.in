@@ -19,5 +19,5 @@ if( NOT TARGET SofaGuiCommon )
 endif()
  
 # For compatibility only
-set(SofaGui_LIBRARIES @SOFAGUI_TARGETS@)
+set(SofaGui_LIBRARIES @SOFAGUI_LIBRARIES@)
 set(SofaGui_INCLUDE_DIRS ${SOFAGUI_INCLUDE_DIR} ${SofaSimulation_INCLUDE_DIRS})
