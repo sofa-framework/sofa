@@ -107,3 +107,8 @@ install(FILES ${SOFAGUI_BUILD_CMAKE_DIR}/SofaGuiConfigInstall.cmake
 # SofaGuiTargets.cmake (installed)
 install(EXPORT SofaGuiTargets
         DESTINATION ${SOFAGUI_INSTALL_CMAKE_DIR} )
+
+install(DIRECTORY ${SofaGui_ACTUAL_SOURCE_DIR}
+        DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa"
+        COMPONENT SofaGui_headers
+        FILES_MATCHING PATTERN "*.h")
