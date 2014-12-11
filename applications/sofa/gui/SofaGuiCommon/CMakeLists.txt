@@ -52,12 +52,3 @@ install(TARGETS ${PROJECT_NAME}
         LIBRARY DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}"
         ARCHIVE DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}"
         )
-        
-install(DIRECTORY ${SofaGuiCommon_SOURCE_DIR}/ DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/SofaGuiCommon"
-        COMPONENT SofaGui_headers
-        FILES_MATCHING 
-            PATTERN "*.h"
-            PATTERN "*.inl"
-            PATTERN "*.hxx"
-            PATTERN "*.hpp"
-        )
