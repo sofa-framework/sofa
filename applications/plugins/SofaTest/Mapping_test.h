@@ -113,8 +113,8 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
     static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
-    static const unsigned char TEST_getKs = 2; ///< testing getKs used in assembly API
-    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getKs; ///< testing functions used in assembly API getJS getKS
+    static const unsigned char TEST_getK = 2; ///< testing getK used in assembly API
+    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getKS
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
 
@@ -193,7 +193,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                           const OutVecCoord expectedChildNew)
     {
         if( !(flags & TEST_getJs) ) std::cerr<<"WARNING: MappingTest is not testing getJs\n";
-        if( !(flags & TEST_getKs) ) std::cerr<<"WARNING: MappingTest is not testing getKs\n";
+        if( !(flags & TEST_getK) ) std::cerr<<"WARNING: MappingTest is not testing getK\n";
 
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         MechanicalParams mparams;
@@ -370,11 +370,20 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                              "fp2-fp = " << fp12 << endl;
         }
 
-        if( flags & TEST_getKs )
+        if( flags & TEST_getK )
         {
-            // ================ test getKs()
+            // ================ test getK()
+            const BaseMatrix* bk = mapping->getK();
+            if( bk == NULL ){
+                ADD_FAILURE() << "getK returns a null matrix";
+            }
+
             typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
-            EigenSparseKMatrix* K = this->getMatrix<EigenSparseKMatrix>(mapping->getKs());
+            const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
+            if( K == NULL ){
+                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
+                // TODO perform a slow conversion with a big warning rather than a failure?
+            }
 
             InVecDeriv Kv(Np);
             K->mult(Kv,vp);
@@ -387,7 +396,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                                  "dfp = " << fp12 << endl;
             }
         }
-
 
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << BaseSofa_test::seed << std::endl;}

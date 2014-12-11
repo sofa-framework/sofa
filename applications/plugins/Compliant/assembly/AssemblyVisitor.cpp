@@ -53,7 +53,7 @@ static inline std::string mapping_name(simulation::Node* node) {
 	return node->mechanicalMapping->getName() + " (class: " + node->mechanicalMapping->getClassName() + ") ";
 }
 
-// mapping informations as a map (parent dofs -> (J, K) matrices )
+// mapping informations as a map (parent dofs -> J matrix )
 AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node) {
 	chunk::map_type res;
 
@@ -68,7 +68,6 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
     ForceMaskActivate(node->mechanicalMapping->getMechFrom());
 
     const vector<sofa::defaulttype::BaseMatrix*>* js = node->mechanicalMapping->getJs();
-    const vector<sofa::defaulttype::BaseMatrix*>* ks = node->mechanicalMapping->getKs();
 
     ForceMaskDeactivate(node->mechanicalMapping->getMechTo());
 
@@ -94,12 +93,6 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 			assert( false );
 
 			throw std::logic_error(msg);
-		}
-
-//        std::cerr<<"AssemblyVisitor::mapping "<<node->mechanicalMapping->getName()<<" "<<c.J<<std::endl;
-
-        if( ks && (*ks)[i] ) {
-            c.K = convert<mat>( (*ks)[i] );
         }
 
 	}
@@ -179,6 +172,21 @@ AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node)
     return mat();
 }
 
+
+// geometric stiffness matrix
+AssemblyVisitor::mat AssemblyVisitor::geometricStiffness(simulation::Node* node)
+{
+//    std::cerr<<"AssemblyVisitor::geometricStiffness "<<node->getName()<<" "<<node->mechanicalMapping->getName()<<std::endl;
+
+    core::BaseMapping* mapping = node->mechanicalMapping;
+    if( mapping )
+    {
+        const sofa::defaulttype::BaseMatrix* k = mapping->getK();
+        if( k ) return convert<mat>( k );
+    }
+
+    return mat();
+}
 
 // ode matrix
 AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
@@ -279,11 +287,15 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 		c.P = proj( node );
 	} else {
 		// mapped dofs
+
+        // compliance
 		c.C = compliance( node );
-		
 		if( !empty(c.C) ) {
 			c.mechanical = true;
 		}
+
+        // geometric stiffness
+        c.Ktilde = geometricStiffness( node );
 	}
 }
 
@@ -325,6 +337,7 @@ void AssemblyVisitor::chunk::debug() const {
 	     << "H:" << endl << H << endl
 	     << "P:" << endl << P << endl
 	     << "C:" << endl << C << endl
+         << "Ktilde:" << endl << Ktilde << endl
 	     << "map: " << endl
 		;
 
@@ -332,9 +345,7 @@ void AssemblyVisitor::chunk::debug() const {
 	    mi != me; ++mi) {
 		cout << "from: " << mi->first->getName() << endl
 		     << "J: " << endl
-		     << mi->second.J << endl
-		     << "K: " << endl
-		     << mi->second.K << endl
+             << mi->second.J << endl
 			;
 	}
 }
@@ -360,7 +371,6 @@ struct AssemblyVisitor::propagation_helper {
 
     void operator()( unsigned v ) const {
 
-//		dofs_type* dofs = g[v].dofs;
 		chunk* c = g[v].data;
 
         // if the current child is a mechanical dof
@@ -371,15 +381,6 @@ struct AssemblyVisitor::propagation_helper {
 
 				chunk* p = g[ boost::target(*e.first, g) ].data;
                 p->mechanical = true; // a parent of a mechanical child is necessarily mechanical
-
-                // add the eventual geometric stiffness to parent
-                if(!zero( g[*e.first].data->K)) {
-                    add(p->H, mparams->kFactor() * g[*e.first].data->K ); // todo how to include rayleigh damping for geometric stiffness?
-				}
-
-                // max: no we don't
-//                p->H = p->P.transpose() * p->H * p->P;   /// \warning project the ODE matrix
-
             }
 
 		}
@@ -413,8 +414,6 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 
     unsigned& size_m = res->size_m;
     unsigned& size_c = res->size_c;
-
-//	full_type& full = res->full;
 
 	// independent dofs offsets (used for shifting parent)
     offset_type& offsets = res->offset.master;
@@ -479,6 +478,56 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 	res.dt = mparams->dt();
     res.isPIdentity = isPIdentity;
 
+
+
+    // Geometric Stiffness must be processed first, from mapped dofs to master dofs
+    // warning, inverse order is important, to treat mapped dofs before master dofs
+    // so mapped dofs can transfer their geometric stiffness to master dofs that will add it to the assembled matrix
+    for( int i = (int)prefix.size()-1 ; i >=0 ; --i ) {
+
+        const chunk& c = *graph[ prefix[i] ].data;
+        assert( c.size );
+
+        // only consider mechanical mapped dofs that have geometric stiffness
+        if( !c.mechanical || c.master() || zero(c.Ktilde) ) continue;
+
+        if( boost::out_degree(prefix[i],graph) == 1 ) // simple mapping
+        {
+//            std::cerr<<"simple mapping "<<c.dofs->getName()<<std::endl;
+            // add the geometric stiffness to its only parent that will map it to the master level
+            graph_type::out_edge_iterator parentIterator = boost::out_edges(prefix[i],graph).first;
+            chunk* p = graph[ boost::target(*parentIterator, graph) ].data;
+            add(p->H, mparams->kFactor() * c.Ktilde ); // todo how to include rayleigh damping for geometric stiffness?
+
+//            std::cerr<<"Assembly: "<<c.Ktilde<<std::endl;
+        }
+        else // multimapping
+        {
+//            std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
+            // directly add the geometric stiffness to the assembled level
+            // by mapping with the specific jacobian from master to the (current-1) level
+
+
+
+            // full mapping chunk for geometric stiffness
+            const mat& geometricStiffnessJc = _processed->fullmappinggeometricstiffness[ graph[ prefix[i] ].dofs ];
+//std::cerr<<geometricStiffnessJc<<std::endl;
+//std::cerr<<c.Ktilde<<std::endl;
+
+//            std::cerr<<res.H.rows()<<" "<<geometricStiffnessJc.rows()<<std::endl;
+
+            res.H += ltdl(geometricStiffnessJc, mparams->kFactor() * c.Ktilde);
+        }
+
+    }
+
+
+
+
+
+
+
+
 	// master/compliant offsets
 	unsigned off_m = 0;
 	unsigned off_c = 0;
@@ -492,16 +541,13 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 #endif
 
 	// assemble system
-	for(unsigned i = 0, n = prefix.size(); i < n; ++i) {
+    for( unsigned i = 0, n = prefix.size() ; i < n ; ++i ) {
 
 		// current chunk
         const chunk& c = *graph[ prefix[i] ].data;
         assert( c.size );
 
         if( !c.mechanical ) continue;
-
-		// full mapping chunk
-        const mat& Jc = _processed->full[ graph[ prefix[i] ].dofs ];
 
 		// independent dofs: fill mass/stiffness
         if( c.master() ) {
@@ -535,6 +581,9 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 		// mapped dofs
 		else {
 
+            // full mapping chunk
+            const mat& Jc = _processed->fullmapping[ graph[ prefix[i] ].dofs ];
+
 			if( !zero(Jc) ) {
                 assert( Jc.cols() == int(_processed->size_m) );
 
@@ -549,8 +598,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
                     res.H += ltdl(Jc, c.H);
 #endif
                 }
+            }
 
-			}
 
 			// compliant dofs: fill compliance/phi/lambda
 			if( c.compliant() ) {

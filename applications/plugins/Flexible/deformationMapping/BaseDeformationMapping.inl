@@ -281,9 +281,6 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
     baseMatrices.resize( 1 ); // just a wrapping for getJs()
     baseMatrices[0] = &eigenJacobian;
 
-    stiffnessBaseMatrices.resize(1);
-    stiffnessBaseMatrices[0] = &K;
-
     resizeOut();
 
     Inherit::init();
