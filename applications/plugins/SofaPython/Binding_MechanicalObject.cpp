@@ -30,8 +30,9 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <SofaBaseMechanics/MechanicalObject.inl>
 
-using namespace sofa::core::behavior;
 using namespace sofa::core;
+using namespace sofa::core::behavior;
+using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 
 typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
