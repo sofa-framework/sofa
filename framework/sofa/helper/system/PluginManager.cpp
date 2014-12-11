@@ -25,6 +25,8 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/config.h>
+
 #include <fstream>
 namespace sofa
 {
