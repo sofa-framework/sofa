@@ -134,7 +134,7 @@ PyObject *GetDataValuePython(BaseData* data)
         SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
         return PyString_FromString(data->getValueString().c_str());
     }
-    else
+    else if (typeinfo->ValidInfo())
     {
         // this is a vector; return a python list of the corresponding type (ints, scalars or strings)
 
@@ -177,8 +177,7 @@ PyObject *GetDataValuePython(BaseData* data)
 
         return rows;
     }
-
-    // default (should not happen)...
+    // default (only happens if typeinfo->name() == "vector<unknown>")...
     SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
     return PyString_FromString(data->getValueString().c_str());
 }
