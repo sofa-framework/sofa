@@ -31,6 +31,8 @@ set(SOFAGUI_INSTALL_CMAKE_DIR   ${SOFAGUI_INSTALL_LIB_DIR}/cmake/SofaGui)
 find_package(SofaGeneral REQUIRED)
 set(SOFAGUI_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
 
+set(QT_USE_IMPORTED_TARGETS 1)
+set(QT4_NO_LINK_QTMAIN 1)
 find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
 
 set(SOFA_HAVE_QT ${Qt4_FOUND} )
