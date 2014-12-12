@@ -120,7 +120,7 @@ def createScene(node):
     ## create joints
     for l in links:
       
-      j = l[3] (l[4], scene, l[0], offsets[l[1]].node, offsets[l[2]].node )
+      j = l[3] (l[4], l[0], offsets[l[1]].node, offsets[l[2]].node )
       j.constraint.compliance.compliance = compliance
       
       joints.append( j )

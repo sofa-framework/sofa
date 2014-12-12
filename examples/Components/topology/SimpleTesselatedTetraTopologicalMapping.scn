@@ -4,6 +4,7 @@
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" name="collision response" />
+    <DiscreteIntersection/>
     <Node name="TetraTopology1">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -20,7 +21,7 @@
             <TetrahedronSetTopologyModifier />
             <TetrahedronSetTopologyAlgorithms template="Vec3d" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" drawTetrahedra="1" drawColorTetrahedra="1 0 0" />
-            <SimpleTesselatedTetraTopologicalMapping object1="Container1" object2="Container2" />
+            <SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container2" />
             <MechanicalObject />
             <SimpleTesselatedTetraMechanicalMapping />
             <Triangle />

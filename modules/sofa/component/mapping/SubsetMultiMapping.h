@@ -72,7 +72,10 @@ public:
 
     virtual void init();
 
+    // Append particle of given index within the given model to the subset.
     void addPoint(const core::BaseState* fromModel, int index);
+    // Append particle of given index within the given model to the subset.
+    void addPoint(int fromModel, int index);
 
     virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
     virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
@@ -92,17 +95,8 @@ public:
 
 protected :
 
-    SubsetMultiMapping()
-        : Inherit()
-        , indexPairs( initData( &indexPairs, vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
-    {
-    }
-
+    SubsetMultiMapping();
     virtual ~SubsetMultiMapping();
-
-
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
 
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 

@@ -60,6 +60,12 @@ RayNewProximityIntersection::RayNewProximityIntersection(NewProximityIntersectio
     {
         intersection->intersectors.ignore<RayModel, PointModel>();
         intersection->intersectors.ignore<RayModel, LineModel>();
+
+	//	intersection->intersectors.add<RayModel, RigidSphere, RayNewProximityIntersection>(this);
+
+	//	intersection->intersectors.add<RayModel, SphereModel, RayNewProximityIntersection>(this);
+		intersection->intersectors.add<RayModel, RigidSphereModel, RayNewProximityIntersection>(this);
+
 		intersection->intersectors.add<RayModel, OBBModel, RayNewProximityIntersection>(this);
         intersection->intersectors.add<RayModel, TriangleModel, RayNewProximityIntersection>(this);
     }
@@ -89,11 +95,15 @@ bool RayNewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
         return false;
 }
 
-bool RayNewProximityIntersection::testIntersection( Ray& rRay, OBB& rOBB )
+bool RayNewProximityIntersection::testIntersection( Ray& /*rRay*/, OBB& /*rOBB*/ )
 {
 	return false;
 }
 
+bool RayNewProximityIntersection::testIntersection( Ray& /*rRay*/, RigidSphere& /*rSphere*/ )
+{
+	return false;
+}
 
 int RayNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
 {
@@ -244,7 +254,7 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 			bHit = true;			
 			fHitFraction = fFar / rRay.l();
 			v3Normal = v3NormalAtFar;
-			v3HitLocation = rRay.origin() + rRay.direction() * rRay.l();		
+			v3HitLocation = rRay.origin() + rRay.direction() * rRay.l() * fHitFraction;		
 		}
 
 	}
@@ -278,7 +288,7 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 
 	if (bHit)
 	{
-		const SReal contactDist = fHitFraction;
+//		const SReal contactDist = fHitFraction;
 		contacts->resize(contacts->size()+1);
 		DetectionOutput *detection = &*(contacts->end()-1);
 
@@ -295,8 +305,133 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 
 	return 0;
 
-
 }
+
+
+
+
+int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSphere, OutputVector* contacts)
+{
+
+	Vector3 v3SphereCenter = rSphere.center( );
+	SReal fSphereRadii = rSphere.r();
+
+	Vector3 v3RayOriginToSphereCenter = rRay.origin() - v3SphereCenter;
+	SReal fB = v3RayOriginToSphereCenter * rRay.direction();
+	SReal fC = v3RayOriginToSphereCenter * v3RayOriginToSphereCenter - fSphereRadii * fSphereRadii;
+
+	// Exit if ray's origin outside sphere & ray's pointing away from sphere
+	if((fC > 0.f) && (fB > 0.f))
+	{
+		return false;
+	}
+
+	// A negative discriminant corresponds to ray missing sphere
+	SReal fDiscr = fB * fB - fC;
+	if(fDiscr < 0.f)
+	{
+		return false;
+	}
+
+	// Ray intersects sphere, compute hits values
+	int iHit = 0;
+	Vector3 v3RayVector =  rRay.origin() + rRay.direction() * rRay.l();
+
+	if(fDiscr < 1e-6f)
+	{
+		// One hit (on tangent)
+		SReal fHitLength = -fB;
+
+		// Make sure hit is on ray
+		if((fHitLength < 0.f) || (fHitLength > rRay.l()))
+		{
+			return false;
+		}
+
+
+		SReal fHitFraction = fHitLength * (1.f / rRay.l() );		
+		Vector3 v3ContactPoint = rRay.origin() + v3RayVector * fHitFraction;
+		Vector3 v3Normal = (v3ContactPoint - v3SphereCenter)/ fSphereRadii; 
+		
+//		const SReal contactDist = fHitFraction;
+		contacts->resize(contacts->size()+1);
+		DetectionOutput *detection = &*(contacts->end()-1);
+
+		detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
+		detection->point[1] = v3ContactPoint;
+		detection->point[0] = v3ContactPoint;
+		detection->normal = v3Normal;
+		detection->value = fHitFraction;
+		detection->value -= fHitFraction;
+
+
+
+		iHit = 1;
+	}
+	else
+	{
+		// Two hits, add contacts if on ray
+		SReal fDiscrSqrt =   sqrt(fDiscr); //gnSqrt(fDiscr);
+		SReal fHitLengthMin = -fB - fDiscrSqrt;
+		SReal fHitLengthMax = -fB + fDiscrSqrt;
+
+		if(( fHitLengthMin >= 0.f ) && ( fHitLengthMin <= rRay.l() ))
+		{
+			iHit = 1;
+
+			//Contact 1		
+			SReal fHitFraction = fHitLengthMin  * ( 1.0f/rRay.l() );
+			Vector3 v3ContactPoint = rRay.origin() + v3RayVector * fHitFraction;
+			Vector3 v3Normal = ( v3ContactPoint - v3SphereCenter ) / fSphereRadii;
+
+//			const SReal contactDist = fHitFraction;
+			contacts->resize(contacts->size()+1);
+			DetectionOutput *detection = &*(contacts->end()-1);
+
+			detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
+			detection->point[1] = v3ContactPoint;
+			detection->point[0] = v3ContactPoint;
+			detection->normal = v3Normal;
+			detection->value = fHitFraction;
+			detection->value -= fHitFraction;
+
+
+		}
+
+
+		if((fHitLengthMax >= 0.f) && (fHitLengthMax <= rRay.l()))
+		{
+			iHit = 1;
+
+			//Contact 2
+			SReal fHitFraction = fHitLengthMax * ( 1.0f/rRay.l() ); 
+			Vector3 v3ContactPoint = rRay.origin() + v3RayVector * fHitFraction;
+			Vector3 v3Normal = ( v3ContactPoint - v3SphereCenter ) / fSphereRadii; 
+
+
+//			const SReal contactDist = fHitFraction;
+			contacts->resize(contacts->size()+1);
+			DetectionOutput *detection = &*(contacts->end()-1);
+
+			detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(rRay, rSphere);
+			detection->point[1] = v3ContactPoint;
+			detection->point[0] = v3ContactPoint;
+			detection->normal = v3Normal;
+			detection->value = fHitFraction;
+			detection->value -= fHitFraction;
+
+
+		}
+	}
+
+
+
+
+
+	return iHit;
+	
+}
+
 
 } // namespace collision
 

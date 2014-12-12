@@ -6,7 +6,7 @@
         <MechanicalObject name="dofs" position="@[-3].output_position"/>
         <Node name="BezierTetrahedronTopology">
         	<BezierTetrahedronSetTopologyContainer name="ContainerBezier"/>	
-			<Mesh2BezierTopologicalMapping object1="Container1" object2="ContainerBezier" bezierTetrahedronDegree="2" />
+			<Mesh2BezierTopologicalMapping input="@Container1" output="@ContainerBezier" bezierTetrahedronDegree="2" />
 			<MechanicalObject name="BezierMechanicalObject"/>	
 			<BezierTetrahedronSetGeometryAlgorithms name="GeomAlgo" drawControlPointsEdges="true"/>
         	<MeshMatrixMass name="mass" lumping="0"  massDensity="1"  integrationMethod="analytical" numericalIntegrationMethod="0" integrationOrder="6"/>	

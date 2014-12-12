@@ -4,11 +4,11 @@
 #include <sofa/component/collision/CylinderModel.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 #include "BulletCollisionModel.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
+#include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <sofa/component/collision/CylinderModel.h>
 #include <sofa/core/CollisionModel.h>
-#include "BulletDynamics/Dynamics/btRigidBody.h"
+#include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "initBulletCollisionDetection.h"
 #include <stack>
 

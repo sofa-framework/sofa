@@ -169,7 +169,7 @@ public:
     /// @deprecated
     virtual void apply(const helper::vector<OutVecCoord*>& /* outPos */,
             const helper::vector<const In1VecCoord*>& /* inPos1 */,
-            const helper::vector<const In2VecCoord*>& /* inPos2 */) { };
+            const helper::vector<const In2VecCoord*>& /* inPos2 */) {}
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJ ///

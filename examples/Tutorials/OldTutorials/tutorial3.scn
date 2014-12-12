@@ -7,14 +7,14 @@
     <CollisionGroup name="Group" />
     <Node name="M1">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.01" threshold="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="18" dy="17" dz="29" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <RegularGridSpringForceField name="Springs" stiffness="200" damping="1" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="green" dx="18" dy="17" dz="29" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
@@ -28,14 +28,14 @@
     </Node>
     <Node name="M3">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.01" threshold="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="17" dz="29" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="300" poissonRatio="0.3" method="polar" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="cyan" dx="0" dy="17" dz="29" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
@@ -49,7 +49,7 @@
     </Node>
     <Node name="M4">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.00001" threshold="0.000001" stiffness="0.2" />
+        <CGLinearSolver iterations="25" tolerance="0.00001" threshold="0.000001" />
         <!--
 		<RungeKutta4 />
 		<Euler />
@@ -58,7 +58,7 @@
         <UniformMass filename="BehaviorModels/smCube125.rigid" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="white" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />
@@ -77,6 +77,6 @@
         <Triangle name="Floor" simulated="0" moving="0" />
         <Line name="Floor" simulated="0" moving="0" />
         <Point name="Floor" simulated="0" moving="0" />
-        <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" notexturename="textures/floor.bmp" color="gray" dy="-10" />
+        <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" color="gray" dy="-10" />
     </Node>
 </Node>

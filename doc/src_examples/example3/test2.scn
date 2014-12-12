@@ -5,7 +5,7 @@
 			<MechanicalModel type="Vec3d" name="Points">
 				<ForceField type="StiffSpringForceField" filename="test2.xs3"/>
 			</MechanicalModel>
-			<Mapping type="LineMapping" object1=".." object2="Points" />
+			<Mapping type="LineMapping" input="@." output="@Points" />
 		</DynamicModel>
 	</Group>
 </Scene>

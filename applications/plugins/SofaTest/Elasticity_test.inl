@@ -22,7 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#ifndef SOFA_Elasticity_test_INL
+#define SOFA_Elasticity_test_INL
 
 #include "Elasticity_test.h"
 
@@ -387,4 +388,6 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
 
 }// sofa
+
+#endif
 

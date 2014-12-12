@@ -5,27 +5,47 @@
     <BruteForceDetection name="detection" />
     <CollisionResponse name="response" response="default" />
     <DiscreteIntersection name="proximity" />
-    <Node name="RigidLiver">
-            <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="white" />
-            <DistanceGrid fileRigidDistanceGrid="mesh/liver-smooth.obj" scale="1.0" usePoints="0" proximity="0.08" contactStiffness="50.0" contactFriction="0.0" />
+    
+    <EulerImplicit name="cg_odesolver" printLog="false" />
+    <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        
+    
+    <Node name="DeformableLiver">
+        
+        <VisualStyle displayFlags="showForceFields" />
+        
+        <MechanicalObject />
+        <UniformMass totalmass="1000.0" />
+        <SparseGrid n="8 6 6" fileTopology="mesh/liver-smooth.obj" />
+        <BoxConstraint box="-2.5 0 -2.5 7.5 3 2" />
+        <HexahedronFEMForceField poissonRatio="0" youngModulus="7000"/>
+        <FFDDistanceGrid fileFFDDistanceGrid="mesh/liver-smooth.obj" scale="1.0" usePoints="0" proximity="0.1" contactStiffness="500.0" contactFriction="0.0" />
+        <Node name="Visu">
+            <OglModel name="Visual" fileMesh="mesh/liver-smooth.obj" color="red" translation="0 0 0" />
+            <BarycentricMapping input="@.." output="@Visual" />
+        </Node>
     </Node>
-    <Node name="SquareGravity">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
-        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <RegularGrid nx="50" ny="1" nz="50" xmin="-9" xmax="5" ymin="7" ymax="7" zmin="-7" zmax="7" name="Container" />
+    
+    
+    <Node name="Cloth">
+        
+        <VisualStyle displayFlags="hideForceFields" />
+        
+        <RegularGrid nx="50" ny="1" nz="50" xmin="-6" xmax="2" ymin="6" ymax="6" zmin="-4" zmax="4" name="Container" />
         <MechanicalObject name="dofs" />
         <UniformMass totalmass="100" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
-            <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />
+            <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />
             <TriangleModel />
             <PointModel />
             <Node name="Visu">
                 <OglModel name="Visual" material="mat1 Diffuse 1 0.5 1.0 0.75 0.8 Ambient 1 0.2 0.2 0.2 1 Specular 1 0.6 0.6 0.6 0.6  Emissive 0 0 0 0 0 Shininess 0 45" />
-                <IdentityMapping object1="../../../dofs" object2="Visual" />
+                <IdentityMapping input="@../../dofs" output="@Visual" />
             </Node>
         </Node>
     </Node>
+    
 </Node>

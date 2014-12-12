@@ -2,38 +2,26 @@
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" name="collision response" />
-    <Node name="Cubes">
+    <DiscreteIntersection/>
+
+    <Node name="Cubes" >
+	<VisualStyle displayFlags="showForceFields" />
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <CubeTopology internalPoints="0" splitNormals="1" name="cubeTopo" nx="3" ny="3" nz="5" min="-0.015 -0.015 -0.075" max="0.015 0.015 0.075" />
-        <MechanicalObject name="dofs" />
-        <FixedConstraint name="FixedConstraint" indices="3 39 64" />
-        <TriangleFEMForceField name="FEM1" youngModulus="500" poissonRatio="0.3" method="large" />
-        <UniformMass mass="0.1" />
-        <Node name="T">
-            <!--			<include href="Objects/TriangleSetTopology.xml" />
-			<Quad2TriangleTopologicalMapping object1="../../cubeTopo" object2="Container"/>            
-		        <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
-			<TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>	
-			
-			<TriangleSet/>							
-	
-			<Node name="Visu">
-				<OglModel name="Visual" color="red" />
-				<IdentityMapping object1="../../../dofs" object2="Visual" />
-			</Node>	-->
-            <!--		<TriangleFEMForceField name="FEM1" youngModulus="500" poissonRatio="0.3" method="large"/>
-		<UniformMass mass="0.1" />
-                <FixedConstraint name="FixedConstraint" indices="3 39 64" />-->
-            <!--		<Node name="Visu">
-			<OglModel name="VisualModel" color="red" />
-			<IdentityMapping object1="../.." object2="VisualModel" name="visual mapping"/>
-		</Node>-->
-            <!--		<Node name="Surf">
-			<MechanicalObject />
-			<TriangleSet name="CollisionModel" />
-			<IdentityMapping name="mapping" input=".." output=""/>
-		</Node>-->
+        <Node name="topoTriangle" >
+            <include href="Objects/TriangleSetTopology.xml" />
+            <Quad2TriangleTopologicalMapping input="@../cubeTopo" output="@Container"/>
+            <MechanicalObject name="dofs" />
+            <FixedConstraint name="FixedConstraint" indices="3 39 64" />
+            <TriangleFEMForceField name="FEM1" youngModulus="500" poissonRatio="0.3" method="large" />
+            <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>
+            <UniformMass mass="0.1" />
+            
+            <Node name="Visu">
+                <OglModel name="Visual" color="red" />
+                <IdentityMapping input="@../dofs" output="@Visual" />
+            </Node>
         </Node>
     </Node>
 </Node>

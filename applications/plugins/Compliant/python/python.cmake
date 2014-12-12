@@ -1,5 +1,4 @@
 set(PYTHON_FILES
-
         python/Compliant/__init__.py
         python/Compliant/Control.py
         python/Compliant/Quaternion.py
@@ -8,5 +7,5 @@ set(PYTHON_FILES
         python/Compliant/Tools.py
         python/Compliant/Vec.py
         python/Compliant/StructuralAPI.py
-
+        python/Compliant/sml.py
         )

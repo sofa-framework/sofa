@@ -92,7 +92,7 @@ PyObject *GetDataValuePython(BaseData* data)
 
     }
 
-    if (typeinfo->size(valueVoidPtr)==1)
+    if (!typeinfo->Container())
     {
         // this type is NOT a vector; return directly the proper native type
         if (typeinfo->Text())

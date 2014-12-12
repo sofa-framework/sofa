@@ -5,12 +5,13 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-    <Node name="LiverFEM" gravity="0 -9.81 0" depend="topo dofs">
+    <DiscreteIntersection />
+    <Node name="LiverFEM" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshTopology name="mesh" fileTopology="mesh/liver.msh" />
         <MechanicalObject template="Vec3d" name="dofs" />
-        <TetrahedronFEMForceField template="Vec3d" name="FEM" youngModulus="50" />
+        <TetrahedronFEMForceField template="Vec3d" name="FEM" youngModulus="50" poissonRatio="0.45" />
         <UniformMass name="mass" totalmass="1" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" gravity="0 -9.81 0">

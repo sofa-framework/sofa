@@ -6,13 +6,13 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
 
-# alphabetical order
+ #alphabetical order
     AffinePatch_test.cpp
     BaryMapper_test.cpp
     BezierTetrahedronTopology_test.cpp
     BroadPhase_test.cpp
     DAG_test.cpp
-    DataLink_test.cpp
+    Data_test.cpp
     Engine_test.cpp
     RigidMapping_test.cpp
     EulerImplicit_test.cpp
@@ -27,10 +27,12 @@ set(SOURCE_FILES
     ProjectToPlaneConstraint_test.cpp
     QuadPressureForceField_test.cpp
     RigidMapping_test.cpp
+    RigidRigidMapping_test.cpp
     Simulation_test.cpp
     Sphere_test.cpp
-    TetrahedronFEMForceField_test.cpp
     StiffSpringForceField_test.cpp
+    SubsetMultiMapping_test.cpp
+    TetrahedronFEMForceField_test.cpp
     TetrahedronNumericalIntegration_test.cpp
 )
 
@@ -39,6 +41,7 @@ if(APPLE)
 endif()
 
 if(WIN32)
+    AddCompilerDefinitions("EIGEN_DONT_ALIGN")
     link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
 
     list(APPEND HEADER_FILES "stdafx.h")
@@ -71,6 +74,7 @@ AddLinkerDependencies(
     SofaSimulationGraph
     SofaBoundaryCondition
     SofaEngine
+    SofaMiscMapping
 )
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

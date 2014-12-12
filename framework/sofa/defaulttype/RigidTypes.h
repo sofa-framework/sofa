@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/RandomGenerator.h>
+#include <sofa/helper/random.h>
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
@@ -375,12 +375,11 @@ public:
      * @param a Range of each random value: (-a,+a)
      * @return random rigid transform
      */
-    static RigidCoord rand(SReal a,int seed = (unsigned int)time(NULL))
+    static RigidCoord rand(SReal a)
     {
         RigidCoord t;
-        using helper::symrand;
-        t.center = Pos( symrand(a,seed), symrand(a,seed), symrand(a,seed) );
-        t.orientation = Quat::fromEuler( symrand(a,seed), symrand(a,seed), symrand(a,seed) );
+        t.center = Pos(  SReal(helper::drand(a)), SReal(helper::drand(a)), SReal(helper::drand(a)) );
+        t.orientation = Quat::fromEuler( SReal(helper::drand(a)),SReal(helper::drand(a)), SReal(helper::drand(a)));
         return t;
     }
 
@@ -886,19 +885,19 @@ public:
     static const char* Name();
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
+    static Deriv randomDeriv( Real maxValue)
     {
         Deriv result;
-        using helper::symrand;
-        set( result, symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed) );
+        set( result, Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)) );
         return result;
     }
 
     static Deriv coordDifference(const Coord& c1, const Coord& c2)
     {
         defaulttype::Vector3 vCenter = c1.getCenter() - c2.getCenter();
-        defaulttype::Quat quat, quat1(c1.getOrientation()), quat0(c2.getOrientation());
-        quat = quat1.quatDiff(quat1, quat0);
+        defaulttype::Quat quat, quat1(c1.getOrientation()), quat2(c2.getOrientation());
+        // Transformation between c2 and c1 frames
+        quat = quat1*quat2.inverse();
         quat.normalize();
         defaulttype::Vector3 axis; defaulttype::Quat::value_type angle; quat.quatToAxis(axis, angle);
         axis*=angle;
@@ -1268,9 +1267,8 @@ public:
     static RigidCoord rand(SReal a)
     {
         RigidCoord t;
-        using helper::symrand;
-        t.center = Pos( symrand(a), symrand(a) );
-        t.orientation = symrand(a);
+        t.center = Pos( SReal(helper::drand(a)), SReal(helper::drand(a)));
+        t.orientation = SReal(helper::drand(a));
         return t;
     }
 
@@ -1765,11 +1763,10 @@ public:
     }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
+    static Deriv randomDeriv( Real maxValue)
     {
         Deriv result;
-        using helper::symrand;
-        set( result, symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed), symrand(maxValue,seed) );
+        set( result, Real(helper::drand(maxValue)),Real(helper::drand(maxValue)), Real(helper::drand(maxValue)),Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)));
         return result;
     }
 

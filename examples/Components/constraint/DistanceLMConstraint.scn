@@ -1,8 +1,8 @@
 <Node name="root" dt="0.02">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <EulerImplicitSolver />
-    <CGLinearSolver />
-    <LMConstraintSolver />
+    <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+    <LMConstraintSolver numIterations="27" maxError="1e-7"/>
     <Node name="AttachOneWay">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -31,6 +31,6 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
         </Node>
         <DistanceLMConstraint object1="M1" object2="M2"  vecConstraint="144 0 145 1 146 2 147 3 148 4 149 5 150 6 151 7 152 8 153 9 154 10 155 11 156 12 157 13 158 14 159 15"  />
-       <DistanceLMConstraint object1="M2" object2="M3" vecConstraint="144 0 145 1 146 2 147 3 148 4 149 5 150 6 151 7 152 8 153 9 154 10 155 11 156 12 157 13 158 14 159 15" />
+        <DistanceLMConstraint object1="M2" object2="M3" vecConstraint="144 0 145 1 146 2 147 3 148 4 149 5 150 6 151 7 152 8 153 9 154 10 155 11 156 12 157 13 158 14 159 15" />
     </Node>
 </Node>

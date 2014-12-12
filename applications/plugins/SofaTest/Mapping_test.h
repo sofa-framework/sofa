@@ -112,7 +112,13 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
 
 
-    Mapping_test():deltaMax(1000),errorMax(10)
+    static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
+    static const unsigned char TEST_getKs = 2; ///< testing getKs used in assembly API
+    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getKs; ///< testing functions used in assembly API getJS getKS
+    unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
+
+
+    Mapping_test():deltaMax(1000),errorMax(10),flags(TEST_ASSEMBLY_API)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -128,7 +134,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100)
+    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100),flags(TEST_ASSEMBLY_API)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -138,18 +144,18 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
 
         // InDofs
-         inDofs = root->get<InDOFs>(root->SearchDown);
+        inDofs = root->get<InDOFs>(root->SearchDown);
 
-         // Get child nodes
-         simulation::Node::SPtr patchNode = root->getChild("Patch");
-         simulation::Node::SPtr elasticityNode = patchNode->getChild("Elasticity");
+        // Get child nodes
+        simulation::Node::SPtr patchNode = root->getChild("Patch");
+        simulation::Node::SPtr elasticityNode = patchNode->getChild("Elasticity");
 
-         // Add OutDofs
-         outDofs = addNew<OutDOFs>(elasticityNode);
+        // Add OutDofs
+        outDofs = addNew<OutDOFs>(elasticityNode);
 
-         // Add mapping to the scene
-         mapping = addNew<Mapping>(elasticityNode).get();
-         mapping->setModels(inDofs.get(),outDofs.get());
+        // Add mapping to the scene
+        mapping = addNew<Mapping>(elasticityNode).get();
+        mapping->setModels(inDofs.get(),outDofs.get());
         
     }
 
@@ -181,11 +187,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
      *\param parentNew new parent position
      *\param expectedChildNew expected position of the child corresponding to the new parent position
      */
-    bool runTest( const InVecCoord& parentInit,
-                  const OutVecCoord& childInit,
-                  const InVecCoord parentNew,
-                  const OutVecCoord expectedChildNew)
+    virtual bool runTest( const InVecCoord& parentInit,
+                          const OutVecCoord& childInit,
+                          const InVecCoord parentNew,
+                          const OutVecCoord expectedChildNew)
     {
+        if( !(flags & TEST_getJs) ) std::cerr<<"WARNING: MappingTest is not testing getJs\n";
+        if( !(flags & TEST_getKs) ) std::cerr<<"WARNING: MappingTest is not testing getKs\n";
+
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         MechanicalParams mparams;
         mparams.setKFactor(1.0);
@@ -198,7 +207,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         outDofs->resize(childInit.size());
         WriteOutVecCoord xout = outDofs->writePositions();
         copyToData(xout,childInit);
-   
+
         /// Init based on parentInit
         sofa::simulation::getSimulation()->init(root.get());
 
@@ -228,32 +237,32 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         // get position data
         copyFromData( xp,inDofs->readPositions() );
         copyFromData( xc,  outDofs->readPositions() ); // positions and have already been propagated
-//        cout<<"parent positions xp = "<< xp << endl;
-//        cout<<"child  positions xc = "<< xc << endl;
+        //          cout<<"parent positions xp = "<< xp << endl;
+        //          cout<<"child  positions xc = "<< xc << endl;
 
         // set random child forces and propagate them to the parent
         for( unsigned i=0; i<Nc; i++ ){
-            fc[i] = Out::randomDeriv( 1.0 , BaseSofa_test::seed  );
+            fc[i] = Out::randomDeriv( 1.0);
         }
         fp2.fill( InDeriv() );
         WriteInVecDeriv fin = inDofs->writeForces();
         copyToData( fin, fp2 );  // reset parent forces before accumulating child forces
-//        cout<<"random child forces  fc = "<<fc<<endl;
+        //        cout<<"random child forces  fc = "<<fc<<endl;
         WriteOutVecDeriv fout = outDofs->writeForces();
         copyToData( fout, fc );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( fp, inDofs->readForces() );
-//        cout<<"parent forces fp = "<<fp<<endl;
+        //          cout<<"parent forces fp = "<<fp<<endl;
 
         // set small parent velocities and use them to update the child
         for( unsigned i=0; i<Np; i++ ){
-            vp[i] = In::randomDeriv( this->epsilon() * deltaMax , BaseSofa_test::seed );
+            vp[i] = In::randomDeriv( this->epsilon() * deltaMax);
         }
 //        cout<<"parent velocities vp = " << vp << endl;
         for( unsigned i=0; i<Np; i++ ){             // and small displacements
             xp1[i] = xp[i] + vp[i];
         }
-//        cout<<"new parent positions xp1 = " << xp1 << endl;
+        //          cout<<"new parent positions xp1 = " << xp1 << endl;
 
         // propagate small velocity
         WriteInVecDeriv vin = inDofs->writeVelocities();
@@ -261,7 +270,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->applyJ( &mparams, core::VecDerivId::velocity(), core::VecDerivId::velocity() );
         WriteOutVecDeriv vout = outDofs->writeVelocities();
         copyFromData( vc, vout);
-//        cout<<"child velocity vc = " << vc << endl;
+        //          cout<<"child velocity vc = " << vc << endl;
 
 
         // apply geometric stiffness
@@ -272,31 +281,33 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData( fin, dfp );
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( dfp, inDofs->readForces() ); // fp + df due to geometric stiffness
-//        cout<<"dfp = " << dfp << endl;
+        //        cout<<"dfp = " << dfp << endl;
 
         // Jacobian will be obsolete after applying new positions
-        EigenSparseMatrix* J = this->getMatrix(mapping->getJs());
-//        cout<<"J = "<< endl << *J << endl;
-        OutVecDeriv Jv(Nc);
-        J->mult(Jv,vp);
+        if( flags & TEST_getJs )
+        {
+            EigenSparseMatrix* J = this->getMatrix<EigenSparseMatrix>(mapping->getJs());
+            //        cout<<"J = "<< endl << *J << endl;
+            OutVecDeriv Jv(Nc);
+            J->mult(Jv,vp);
 
-        // ================ test applyJT()
-        InVecDeriv jfc( (long)Np,InDeriv());
-        J->addMultTranspose(jfc,fc);
-        if( this->vectorMaxDiff(jfc,fp)>this->epsilon()*errorMax ){
-            succeed = false;
-            ADD_FAILURE() << "applyJT test failed"<<endl<<"jfc = " << jfc << endl<<" fp = " << fp << endl;
+            // ================ test applyJT()
+            InVecDeriv jfc( (long)Np,InDeriv());
+            J->addMultTranspose(jfc,fc);
+            if( this->vectorMaxDiff(jfc,fp)>this->epsilon()*errorMax ){
+                succeed = false;
+                ADD_FAILURE() << "applyJT test failed"<<endl<<"jfc = " << jfc << endl<<" fp = " << fp << endl;
+            }
+            // ================ test getJs()
+            // check that J.vp = vc
+            if( this->vectorMaxDiff(Jv,vc)>this->epsilon()*errorMax ){
+                succeed = false;
+                cout<<"vp = " << vp << endl;
+                cout<<"Jvp = " << Jv << endl;
+                cout<<"vc  = " << vc << endl;
+                ADD_FAILURE() << "getJs() test failed"<<endl<<"vp = " << vp << endl<<"Jvp = " << Jv << endl <<"vc  = " << vc << endl;
+            }
         }
-        // ================ test getJs()
-        // check that J.vp = vc
-        if( this->vectorMaxDiff(Jv,vc)>this->epsilon()*errorMax ){
-            succeed = false;
-                    cout<<"vp = " << vp << endl;
-                    cout<<"Jvp = " << Jv << endl;
-                    cout<<"vc  = " << vc << endl;
-            ADD_FAILURE() << "getJs() test failed"<<endl<<"vp = " << vp << endl<<"Jvp = " << Jv << endl <<"vc  = " << vc << endl;
-        }
-
 
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)
         // the pre-treatement can be useful to be able to compute 2 comparable results of applyJT with a small displacement to test applyDJT
@@ -314,17 +325,19 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         // propagate small displacement
         WriteInVecCoord pin (inDofs->writePositions());
         copyToData( pin, xp1 );
-//        cout<<"new parent positions xp1 = " << xp1 << endl;
+        //            cout<<"new parent positions xp1 = " << xp1 << endl;
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
-        WriteOutVecDeriv pout = outDofs->writePositions();
+        WriteOutVecCoord pout = outDofs->writePositions();
         copyFromData( xc1, pout );
-//        cout<<"new child positions xc1 = " << xc1 << endl;
+        //            cout<<"old child positions xc = " << xc << endl;
+        //            cout<<"new child positions xc1 = " << xc1 << endl;
 
         // ================ test applyJ: compute the difference between propagated displacements and velocities
         OutVecDeriv dxc(Nc);
         for(unsigned i=0; i<Nc; i++ ){
             dxc[i] = difference( xc1[i], xc[i] );
         }
+
         if( this->vectorMaxDiff(dxc,vc)>this->epsilon()*errorMax ){
             succeed = false;
             ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax  << endl
@@ -340,12 +353,12 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData( fout, preTreatment(fc) );
         mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( fp2, inDofs->readForces() );
-//        cout<<"updated parent forces fp2 = "<< fp2 << endl;
+        //        cout<<"updated parent forces fp2 = "<< fp2 << endl;
         InVecDeriv fp12(Np);
         for(unsigned i=0; i<Np; i++){
             fp12[i] = fp2[i]-fp[i];       // fp2 - fp
         }
-//        cout<<"fp2 - fp = " << fp12 << endl;
+        //        cout<<"fp2 - fp = " << fp12 << endl;
 
 
 
@@ -356,6 +369,25 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                              "dfp    = " << dfp << endl <<
                              "fp2-fp = " << fp12 << endl;
         }
+
+        if( flags & TEST_getKs )
+        {
+            // ================ test getKs()
+            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+            EigenSparseKMatrix* K = this->getMatrix<EigenSparseKMatrix>(mapping->getKs());
+
+            InVecDeriv Kv(Np);
+            K->mult(Kv,vp);
+
+            // check that K.vp = dfp
+            if( this->vectorMaxDiff(Kv,dfp)>this->epsilon()*errorMax ){
+                succeed = false;
+                ADD_FAILURE() << "K test failed" << endl <<
+                                 "Kv    = " << Kv << endl <<
+                                 "dfp = " << fp12 << endl;
+            }
+        }
+
 
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << BaseSofa_test::seed << std::endl;}
@@ -368,15 +400,22 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             sofa::simulation::getSimulation()->unload(root);
     }
 
+protected:
+
     /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
-    static EigenSparseMatrix* getMatrix(const vector<sofa::defaulttype::BaseMatrix*>* matrices)
+    template<class EigenSparseMatrixType>
+    static EigenSparseMatrixType* getMatrix(const vector<sofa::defaulttype::BaseMatrix*>* matrices)
     {
+        if( !matrices ){
+            ADD_FAILURE()<< "Matrix list is NULL (API for assembly is not implemented)";
+        }
         if( matrices->size() != 1 ){
             ADD_FAILURE()<< "Matrix list should have size == 1 in simple mappings";
         }
-        EigenSparseMatrix* ei = dynamic_cast<EigenSparseMatrix*>((*matrices)[0] );
+        EigenSparseMatrixType* ei = dynamic_cast<EigenSparseMatrixType*>((*matrices)[0] );
         if( ei == NULL ){
             ADD_FAILURE() << "getJs returns a matrix of non-EigenSparseMatrix type";
+            // TODO perform a slow conversion with a big warning rather than a failure?
         }
         return ei;
     }

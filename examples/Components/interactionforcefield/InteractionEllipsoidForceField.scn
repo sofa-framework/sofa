@@ -21,11 +21,11 @@
         <BoxConstraint box="10 7 12 12 7 12" />
         <MeshSpringForceField name="Springs" stiffness="2000" damping="0" />
         <QuadBendingSprings name="Bend" stiffness="20" damping="0" />
-        <InteractionEllipsoidForceField object1="@MS1" object2="@../RotatingObstacle/MS2" stiffness="1000" damping="1" center="0 0 0 0 -5 0" vradius="6 2 4   2 4 2" object2_forces="false" object2_invert="false" />
+        <InteractionEllipsoidForceField template="Vec3d,Rigid3d" object1="@MS1" object2="@../RotatingObstacle/MS2" stiffness="1000" damping="1" center="0 0 0 0 -5 0" vradius="6 2 4   2 4 2" object2_forces="false" object2_invert="false" />
         <!--EllipsoidForceField stiffness="1000" damping="1" center="0 5 3" vradius="6 2 6" /-->
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

@@ -20,7 +20,7 @@
         <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangleModel name="models" />
         <OglModel name="Visual" template="ExtVec3f" color="red" />
-        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" object1=".." object2="Visual" />
+        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" input="@." output="@Visual" />
     </Node>
     <Node name="Cloth Regular Mesh">
         <MechanicalObject name="DOFs" template="Vec3d" translation="0 0 -10" />
@@ -32,7 +32,7 @@
         <RegularGridSpringForceField template="Vec3d" />
         <QuadBendingSprings template="Vec3d" name="Bend" stiffness="20" damping="0" />
         <OglModel name="Visual" template="ExtVec3f" color="blue" />
-        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" object1=".." object2="Visual" />
+        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" input="@." output="@Visual" />
     </Node>
     <Node name="Cloth Dynamic Mesh">
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" />
@@ -49,6 +49,6 @@
         <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="60" />
         <TriangleModel name="models" />
         <OglModel name="Visual" template="ExtVec3f" color="green" />
-        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" object1=".." object2="Visual" />
+        <IdentityMapping name="Mapping" template="Vec3d,ExtVec3f" input="@." output="@Visual" />
     </Node>
 </Node>

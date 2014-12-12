@@ -1,4 +1,4 @@
-#version 330
+#version 330 compatibility
 
 /* Dual Quaternion Skinning
 

@@ -63,6 +63,8 @@ public:
     Data<double> dt_;
     Data<double> time_;
     Data<bool> animate_;
+	Data<bool> d_isSleeping;				/// Tells if the context is sleeping, and thus ignored by visitors
+	Data<bool> d_canChangeSleepingState;	/// Tells if the context can change its sleeping state
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// @name For multiresolution (UNSTABLE)
     /// @{
@@ -92,6 +94,12 @@ public:
     virtual bool isActive() const;
     /// State of the context
     virtual void setActive(bool val);
+
+	/// The Context is sleeping
+	virtual bool isSleeping() const;
+
+	/// The Context can change its sleeping state
+	virtual bool canChangeSleepingState() const;
 
     /// Gravity in local coordinates
     virtual const Vec3& getGravity() const;
@@ -163,6 +171,12 @@ public:
 
     /// Animation flag
     virtual void setAnimate(bool val);
+
+	/// Sleeping state of the context
+	virtual void setSleeping(bool val);
+
+	/// Sleeping state change of the context
+	virtual void setChangeSleepingState(bool val);
 
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }

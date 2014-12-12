@@ -42,6 +42,8 @@ Context::Context()
     , dt_(initData(&dt_,0.01,"dt","Time step"))
     , time_(initData(&time_,0.,"time","Current time"))
     , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))
+	, d_isSleeping(initData(&d_isSleeping, false, "sleeping", "The node is sleeping, and thus ignored by visitors."))
+	, d_canChangeSleepingState(initData(&d_canChangeSleepingState, false, "canChangeSleepingState", "The node can change its sleeping state."))
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     , currentLevel_(initData(&currentLevel_,0,"currentLevel","Current level of details"))
     , coarsestLevel_(initData(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
@@ -73,6 +75,30 @@ bool Context::isActive() const {return is_activated.getValue();}
 void Context::setActive(bool val)
 {
     is_activated.setValue(val);
+}
+
+/// The Context is sleeping
+bool Context::isSleeping() const 
+{
+	return d_isSleeping.getValue();
+}
+
+/// Sleeping state of the context
+void Context::setSleeping(bool val)
+{
+	d_isSleeping.setValue(val);
+}
+
+/// The Context can change its sleeping state
+bool Context::canChangeSleepingState() const 
+{ 
+	return d_canChangeSleepingState.getValue(); 
+}
+
+/// Sleeping state change of the context
+void Context::setChangeSleepingState(bool val)
+{
+	d_canChangeSleepingState.setValue(val);
 }
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES

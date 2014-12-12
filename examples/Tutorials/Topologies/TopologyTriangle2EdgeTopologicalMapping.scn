@@ -20,13 +20,13 @@
         <DiagonalMass template="Vec3d" name="mass" massDensity="0.15" />
         <FixedConstraint template="Vec3d" name="FixedDofs" indices="0 1" />
         <OglModel name="Visual" color="red" />
-        <IdentityMapping template="Vec3d,ExtVec3f" name="default17" object1=".." object2="Visual" />
+        <IdentityMapping template="Vec3d,ExtVec3f" name="default17" input="@." output="@Visual" />
         <Node name="Edge Mesh">
             <EdgeSetTopologyContainer name="Container" />
             <EdgeSetTopologyModifier name="Modifier" />
             <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawEdges="1" />
             <EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-            <Triangle2EdgeTopologicalMapping name="Mapping" object1="../../Container" object2="Container" />
+            <Triangle2EdgeTopologicalMapping name="Mapping" input="@../Container" output="@Container" />
             <MeshSpringForceField template="Vec3d" stiffness="100" damping="1" />
             <Node name="Visu" />
         </Node>

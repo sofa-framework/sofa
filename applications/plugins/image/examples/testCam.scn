@@ -1,3 +1,4 @@
+<!--To launch this scene install opencv and activate SOFA_IMAGE_HAVE_OPENCV-->
 <?xml version="1.0"?>
 <Node 	name="root" gravity="0 0 0" dt="1"  >
   <RequiredPlugin pluginName="image"/>

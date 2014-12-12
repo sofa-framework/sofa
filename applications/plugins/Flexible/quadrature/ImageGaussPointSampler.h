@@ -136,7 +136,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             {
                 cimg_forXYZ(regimg,x,y,z) if(regimg(x,y,z)==*(This->Reg[i].voronoiIndices.begin()) )
                 {
-                    dist(x,y,z)=cimg::type<DistT>::max();
+                    dist(x,y,z)=cimg_library::cimg::type<DistT>::max();
                     regimg(x,y,z)=0;
                 }
                 This->Reg.erase (This->Reg.begin()+i); i--;  //  erase region (soft regions will be generated after uniform sampling)
@@ -194,7 +194,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         {
             converged=!(Lloyd<DistT>(newpos_voxelIndex,newpos_voronoiIndex,regimg));
             // recompute voronoi
-            cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<DistT>::max();
+            cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg_library::cimg::type<DistT>::max();
             for(unsigned int i=0; i<fpos_voxelIndex.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, fpos_voxelIndex[i],fpos_voronoiIndex[i]);
             for(unsigned int i=0; i<newpos_voxelIndex.size(); i++) AddSeedPoint<DistT>(trial,dist,regimg, newpos_voxelIndex[i],newpos_voronoiIndex[i]);
             if(This->useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg,voxelsize); else fastMarching<DistT,DistT>(trial,dist, regimg,voxelsize);
@@ -339,11 +339,11 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         for(unsigned int i=0; i<This->Reg.size(); i++) if(vorindex[1]==*(This->Reg[i].voronoiIndices.begin())) vorindex[1]++; // check that the voronoi index is unique. not necessary in principle
 
         // get closest/farthest point from c and init distance image
-        Real dmin=cimg::type<Real>::max(),dmax=0;
+        Real dmin=cimg_library::cimg::type<Real>::max(),dmax=0;
         cimg_forXYZ(regimg,x,y,z)
                 if(regimg(x,y,z)==vorindex[0])
         {
-            dist(x,y,z)=cimg::type<DistT>::max();
+            dist(x,y,z)=cimg_library::cimg::type<DistT>::max();
             Coord p = Coord(x,y,z);
             Real d = (transform->fromImage(p)-This->Reg[index].center).norm2();
             if(dmin>d) {dmin=d; pos[0]=p;}
@@ -364,7 +364,7 @@ struct ImageGaussPointSamplerSpecialization<defaulttype::IMAGELABEL_IMAGE>
         {
             converged=!(Lloyd<DistT>(pos,vorindex,regimg));
             // recompute voronoi
-            cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg::type<DistT>::max();
+            cimg_foroff(dist,off) if(dist[off]!=-1) dist[off]=cimg_library::cimg::type<DistT>::max();
             for(unsigned int i=0; i<2; i++) AddSeedPoint<DistT>(trial,dist,regimg, pos[i],vorindex[i]);
             if(This->useDijkstra.getValue()) dijkstra<DistT,DistT>(trial,dist, regimg,voxelsize); else fastMarching<DistT,DistT>(trial,dist, regimg,voxelsize);
             it++; if(it>=This->iterations.getValue()) converged=true;

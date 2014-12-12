@@ -15,7 +15,7 @@
         <PlaneForceField normal="0 0 -1" d="-10" />
         <Node id="Visual">
             <OglModel name="VModel" color="blue" useVBO="false" />
-            <ImplicitSurfaceMapping name="MarchingCube" object1="../../MModel" object2="VModel" isoValue="0.75" radius="3" step="0.75" />
+            <ImplicitSurfaceMapping name="MarchingCube" input="@../MModel" output="@VModel" isoValue="0.75" radius="3" step="0.75" />
         </Node>
     </Node>
 </Node>

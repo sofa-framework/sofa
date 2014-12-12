@@ -18,6 +18,6 @@
         <TriangularBendingSprings name="BS" stiffness="300" damping="1.0" />
         <TriangleSet />
         <OglModel name="Visual" color="yellow" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping input="@." output="@Visual" />
     </Node>
 </Node>

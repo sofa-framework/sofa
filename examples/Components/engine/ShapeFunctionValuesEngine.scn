@@ -39,7 +39,7 @@
         <ShapeFunctionValuesEngine template="Vec3d" name="ValuesLocalInput" valuesCompute="true" derivativesCompute="true" commputationMethod="Local" InputMeshName="TopoOneTetra" InputShapeFunctionName="interpolationpolynomial" input_pointsList="@quadratureOnTetra.canonicalCoords" />
         <Node name="Visu">
             <OglModel name="Visual" color="yellow" />
-            <IdentityMapping object1="../../CanonicalTetrahedron" object2="Visual" />
+            <IdentityMapping input="@../CanonicalTetrahedron" output="@Visual" />
         </Node>
     </Node>
 </Node>

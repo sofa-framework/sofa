@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node 	name="root" gravity="0 0 3" dt="0.05"  >
+<Node 	name="root" gravity="0 0 3" dt="0.04"  >
 	<DefaultPipeline name="defaultPipeline1"  verbose="0" />
 	<BruteForceDetection name="N2" />
 	<DefaultContactManager name="defaultContactManager1"  response="default" />
@@ -7,7 +7,7 @@
 	<TreeCollisionGroupManager name="treeCollisionGroupManager1" />
 	<Node 	name="SquareGravity"  >
 		<EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.1"  rayleighMass="0.1"  vdamping="0"  verbose="0" />
-		<CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="40"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />
+		<CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="100"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />
 		<MeshGmshLoader name="loader"  filename="mesh/square3.msh" />
 		<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="@loader.translation"  rotation="@loader.rotation"  scale3d="@loader.scale3d" />
 		<TriangleSetTopologyContainer name="Container"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles" />
@@ -27,7 +27,7 @@
 			<EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
 			<EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"  drawEdges="1" />
 			<Triangle2EdgeTopologicalMapping name="Mapping"  input="@../Container"  output="@Container" />
-			<EdgePressureForceField template="Vec3d" name="edgePressureFF0"  edgeList="@Container.edges" pressure="0 0 -0.1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10"/>
+			<EdgePressureForceField template="Vec3d" name="edgePressureFF0"  edges="@Container.edges" pressure="0 0 -0.1" normal="0 0 1"  p_intensity="1" arrowSizeCoef="10"/>
 		</Node>
 		<StiffSpringForceField template="Vec3d" name="FF" />
 	</Node>

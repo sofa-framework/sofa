@@ -4,6 +4,8 @@
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" name="collision response" />
+    <DiscreteIntersection/>
+
     <Node name="MeshTopology">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -16,11 +18,11 @@
         <Node name="PointSetTopology">
 	        <TetrahedronSetTopologyModifier />
         	<BezierTetrahedronSetTopologyContainer name="ContainerBezier"/>	
-			<Mesh2BezierTopologicalMapping object1="Container1" object2="ContainerBezier" bezierTetrahedronDegree="3" />
+			<Mesh2BezierTopologicalMapping input="@Container1" output="@ContainerBezier" bezierTetrahedronDegree="3" />
 			<MechanicalObject />	
 	
 			<BezierTetrahedronSetGeometryAlgorithms name="GeomAlgo" drawControlPointsEdges="true"/>
-        	<MeshMatrixMass name="mass" lumping="0" printMass="1" massDensity="1"  integrationMethod="1" numericalIntegrationMethod="0" integrationOrder="6"/>	
+        	<MeshMatrixMass name="mass" lumping="0" printMass="1" massDensity="1"  integrationMethod="exact" numericalIntegrationMethod="0" integrationOrder="6"/>	
             <SphereModel radius="0.05" />
         </Node>
     </Node>

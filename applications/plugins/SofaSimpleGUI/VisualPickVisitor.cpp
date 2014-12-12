@@ -25,10 +25,10 @@ Visitor::Result VisualPickVisitor::processNodeTopDown(simulation::Node* node)
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
 #endif
+//    cerr <<"VisualPickVisitor::processNodeTopDown" << endl;
     hasShader = (node->getShader()!=NULL);
 
     for_each(this, node, node->visualModel,     &VisualPickVisitor::fwdVisualModel);
-//    for_each(this, node, node->object, &VisualPickVisitor::processObject);
     this->VisualVisitor::processNodeTopDown(node);
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
@@ -39,6 +39,7 @@ Visitor::Result VisualPickVisitor::processNodeTopDown(simulation::Node* node)
 
 void VisualPickVisitor::processNodeBottomUp(simulation::Node* node)
 {
+//    cerr <<"VisualPickVisitor::processNodeBottomUp" << endl;
     for_each(this, node, node->visualModel,     &VisualPickVisitor::bwdVisualModel);
 }
 
@@ -52,6 +53,8 @@ void VisualPickVisitor::processObject(simulation::Node* /*node*/, core::objectmo
         glPushName(pickedId++);
         o->draw(vparams);
         glPopName();
+//        cout<<"VisualPickVisitor::processObject end " << endl;
+
 #ifdef DEBUG_DRAW
         std::cerr << "<" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
 #endif

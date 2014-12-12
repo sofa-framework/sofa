@@ -20,8 +20,6 @@ namespace simplegui {
  * It is up to the application to create the appropriate Interactor, which can then be inserted in the Sofa scene.
  * This class provides the functions to attach/detach an interactor and move it.
  *
- * @todo Construction/initialization is questionable. Should they be merged ? Should the initTextures be made in sofaScene ?
- *
  * @author Francois Faure, 2014
 
  */
@@ -29,7 +27,6 @@ class SOFA_SOFASIMPLEGUI_API  SofaGL
 {
 public:
     /**
-     * @brief SofaGL
      * @param s The Sofa scene to interact with, the scene MUST already be opened !
      */
     SofaGL( SofaScene* s );
@@ -53,18 +50,11 @@ public:
      */
     void viewAll( SReal* xcam, SReal* ycam, SReal* zcam, SReal* xcen, SReal* ycen, SReal* zcen, SReal a, SReal* nearPlane, SReal* farPlane);
 
+    /// Compute the bounding box of the scene
     void getSceneBBox( float* xmin, float* ymin, float* zmin, float* xmax, float* ymax, float* zmax );
 
-    /**
-     * @brief getPickDirection Compute the direction of a button click, returned as a unit vector
-     * @param dx normalized direction
-     * @param dy normalized direction
-     * @param dz normalized direction
-     * @param x x-coordinate of the click
-     * @param y y-coordinate of the click (origin on top)
-     */
-    void getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y );
-
+    /// @name Interaction
+    /// @{
     /** @brief Try to pick a particle along a ray.
      * The ray starts at the camera center and passes through point with coordinates x,y
      * ox, oy, oz are the camera center in world coordinates.
@@ -74,12 +64,6 @@ public:
      */
     PickedPoint pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y);
 
-    /** @brief Try to pick a particle along a ray, using OpenGL picking.
-     * The ray starts at the camera center and passes through point with coordinates x,y
-     * ox, oy, oz are the camera center in world coordinates.
-     * x,y in image coordinates (origin on top left).
-     */
-    void glPick(int x, int y);
 
     /** @brief Insert an interactor in the scene
      * Does not check if it is already there, so be careful not to insert the same twice
@@ -111,6 +95,15 @@ public:
     /// Remove the interactor from the scene, without deleting it.
     void detach(Interactor*);
 
+    /// @}
+
+    /** @brief Try to pick a displayed thing along a ray, using OpenGL picking.
+     * The ray starts at the camera center and passes through point with coordinates x,y in image coordinates (origin on top left).
+     * In this experimental implementation, this function just prints something on the standard output.
+     */
+    void glPick(int x, int y);
+
+
 
 protected:
     SofaScene* _sofaScene;
@@ -122,6 +115,7 @@ protected:
     // rendering tools
     sofa::core::visual::DrawToolGL   _drawToolGL;
     sofa::core::visual::VisualParams* _vparams;
+    void draw(sofa::core::visual::VisualParams*);
 
     // Interaction tools
     typedef map< PickedPoint, Interactor*> Picked_to_Interactor;
@@ -130,6 +124,16 @@ protected:
      */
     Picked_to_Interactor _picked_to_interactor;
     Interactor* _drag;                            ///< The currently active interactor
+    /**
+     * @brief getPickDirection Compute the direction of a button click, returned as a unit vector
+     * @param dx normalized direction
+     * @param dy normalized direction
+     * @param dz normalized direction
+     * @param x x-coordinate of the click
+     * @param y y-coordinate of the click (origin on top)
+     */
+    void getPickDirection( GLdouble* dx, GLdouble* dy, GLdouble* dz, int x, int y );
+
 
 
     // OpenGL picking data

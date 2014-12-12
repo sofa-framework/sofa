@@ -29,6 +29,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 using namespace sofa::core::loader;
 using namespace sofa::core;
+using namespace sofa::core::objectmodel;
 
 extern "C" PyObject * MeshLoader_reinit(PyObject *self, PyObject * /*args*/)
 {

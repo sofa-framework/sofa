@@ -55,9 +55,6 @@ namespace sofa
 namespace defaulttype
 {
 
-using namespace cimg_library;
-using helper::vector;
-
 
 /// type identifier, must be unique
 static const int IMAGELABEL_IMAGE = 0;
@@ -72,14 +69,14 @@ struct Image
 {
     typedef _T T;
     typedef Vec<5,unsigned int> imCoord; // [x,y,z,s,t]
-    typedef CImg<T> CImgT;
+    typedef cimg_library::CImg<T> CImgT;
 
     static const int label = IMAGELABEL_IMAGE; // type identifier, must be unique
     /// the 5 dimension labels of an image ( x, y, z, spectrum=nb channels , time )
     typedef enum{ DIMENSION_X=0, DIMENSION_Y, DIMENSION_Z, DIMENSION_S /* spectrum = nb channels*/, DIMENSION_T /*4th dimension = time*/, NB_DimensionLabel } DimensionLabel;
 
 protected:
-    CImgList<T> img; // list of images along temporal dimension. Each image is 4-dimensional (x,y,z,s) where s is the spectrum (e.g. channels for color images, vector or tensor values, etc.)
+    cimg_library::CImgList<T> img; // list of images along temporal dimension. Each image is 4-dimensional (x,y,z,s) where s is the spectrum (e.g. channels for color images, vector or tensor values, etc.)
 
 public:
     static const char* Name();
@@ -90,7 +87,7 @@ public:
 
     // shared instances
     Image( const Image<T>& _img ):img(_img.getCImgList(),true)		{}
-    Image( const CImg<T>& _img ):img(_img,true)		{}
+    Image( const cimg_library::CImg<T>& _img ):img(_img,true)		{}
     Image<T>& operator=(const Image<T>& im)
     {
         if(im.getCImgList().size()) img.assign(im.getCImgList(),true);
@@ -101,11 +98,11 @@ public:
     ~Image() { clear(); }
 
     //accessors
-    CImgList<T>& getCImgList() { return img; }
-    const CImgList<T>& getCImgList() const { return img; }
+    cimg_library::CImgList<T>& getCImgList() { return img; }
+    const cimg_library::CImgList<T>& getCImgList() const { return img; }
 
-    CImg<T>& getCImg(const unsigned int t=0) { if (t>=img.size())   return *img._data;		return img(t);    }
-    const CImg<T>& getCImg(const unsigned int t=0) const {   if (t>=img.size())   return *img._data;		return img(t);   }
+    cimg_library::CImg<T>& getCImg(const unsigned int t=0) { if (t>=img.size())   return *img._data;		return img(t);    }
+    const cimg_library::CImg<T>& getCImg(const unsigned int t=0) const {   if (t>=img.size())   return *img._data;		return img(t);   }
 
     inline bool isEmpty() const {return img.size()==0;}
 
@@ -143,7 +140,7 @@ public:
     {
         cimglist_for(img,l) img(l).resize(dim[0],dim[1],dim[2],dim[3]);
         if(img.size()>dim[4]) img.remove(dim[4],img.size()-1);
-        else if(img.size()<dim[4]) img.insert(dim[4]-img.size(),CImg<T>(dim[0],dim[1],dim[2],dim[3]));
+        else if(img.size()<dim[4]) img.insert(dim[4]-img.size(),cimg_library::CImg<T>(dim[0],dim[1],dim[2],dim[3]));
     }
 
 
@@ -184,20 +181,20 @@ public:
     * the returned image size is [dimx,1,1,mergeChannels?1:nbChannels]
     * Returns min / max values
     */
-    CImg<unsigned int> get_histogram(T& value_min, T& value_max, const unsigned int dimx, const bool mergeChannels=false) const
+    cimg_library::CImg<unsigned int> get_histogram(T& value_min, T& value_max, const unsigned int dimx, const bool mergeChannels=false) const
     {
-        if(!img.size()) return CImg<unsigned int>();
+        if(!img.size()) return cimg_library::CImg<unsigned int>();
         const unsigned int s=mergeChannels?1:img(0).spectrum();
-        CImg<unsigned int> res(dimx,1,1,s,0);
+        cimg_library::CImg<unsigned int> res(dimx,1,1,s,0);
 
         if(mergeChannels)
         {
-            value_min=cimg::type<T>::max();
-            value_max=cimg::type<T>::min();
+            value_min=cimg_library::cimg::type<T>::max();
+            value_max=cimg_library::cimg::type<T>::min();
             cimglist_for(img,l)
                     cimg_forXYZ(img(l),x,y,z)
             {
-                CImg<long double> vect=img(l).get_vector_at(x,y,z);
+                cimg_library::CImg<long double> vect=img(l).get_vector_at(x,y,z);
                 long double val=vect.magnitude();
                 T tval=(T)val;
                 if(value_min>tval) value_min=tval;
@@ -207,7 +204,7 @@ public:
             cimglist_for(img,l)
                     cimg_forXYZ(img(l),x,y,z)
             {
-                CImg<long double> vect=img(l).get_vector_at(x,y,z);
+                cimg_library::CImg<long double> vect=img(l).get_vector_at(x,y,z);
                 long double val=vect.magnitude();
                 long double v = ((long double)val-(long double)value_min)/((long double)value_max-(long double)value_min)*((long double)(dimx-1));
                 if(v<0) v=0;
@@ -236,7 +233,7 @@ public:
     }
 
     // returns an image corresponing to a plane indexed by "coord" along "axis" and inside a bounding box
-    CImg<T> get_plane(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const unsigned int t=0, const bool mergeChannels=false) const
+    cimg_library::CImg<T> get_plane(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const unsigned int t=0, const bool mergeChannels=false) const
     {
         if(mergeChannels)    return get_plane(coord,axis,ROI,t,false).norm();
         else
@@ -250,13 +247,13 @@ public:
     // returns a binary image cutting through 3D input meshes, corresponding to a plane indexed by "coord" along "axis" and inside a bounding box
     // positions are in image coordinates
     template<typename Real>
-    CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const ResizableExtVector<Vec<3,Real> >& position, const ResizableExtVector< component::visualmodel::VisualModelImpl::Triangle >& triangle, const ResizableExtVector< component::visualmodel::VisualModelImpl::Quad >& quad) const
+    cimg_library::CImg<bool> get_slicedModels(const unsigned int coord,const unsigned int axis,const Mat<2,3,unsigned int>& ROI,const ResizableExtVector<Vec<3,Real> >& position, const ResizableExtVector< component::visualmodel::VisualModelImpl::Triangle >& triangle, const ResizableExtVector< component::visualmodel::VisualModelImpl::Quad >& quad) const
     {
         const unsigned int dim[3]= {ROI[1][0]-ROI[0][0]+1,ROI[1][1]-ROI[0][1]+1,ROI[1][2]-ROI[0][2]+1};
-        CImg<bool> ret;
-        if(axis==0)  ret=CImg<bool>(dim[2],dim[1]);
-        else if(axis==1)  ret=CImg<bool>(dim[0],dim[2]);
-        else ret=CImg<bool>(dim[0],dim[1]);
+        cimg_library::CImg<bool> ret;
+        if(axis==0)  ret=cimg_library::CImg<bool>(dim[2],dim[1]);
+        else if(axis==1)  ret=cimg_library::CImg<bool>(dim[0],dim[2]);
+        else ret=cimg_library::CImg<bool>(dim[0],dim[1]);
         ret.fill(false);
 
         if(triangle.size()==0 && quad.size()==0) //pt visu
@@ -560,8 +557,8 @@ protected:
 
     double scaleVal;	double offsetVal;		// output histo abscisse to intensity transfer function :  intensity = x * scaleVal + offsetVal
 
-    CImg<unsigned int> histogram;	// output image of size [dimx,1,1,nbChannels]
-    CImg<bool> image;				// output image of size [dimx,dimy,1,nbChannels]
+    cimg_library::CImg<unsigned int> histogram;	// output image of size [dimx,1,1,nbChannels]
+    cimg_library::CImg<bool> image;				// output image of size [dimx,dimy,1,nbChannels]
 
     Vec<2,T> clamp;					// stored clamp values (for visualization)
 
@@ -570,7 +567,7 @@ public:
 
     Histogram(const unsigned int _dimx=256, const unsigned int _dimy=256, const bool _mergeChannels=false)
         :img(NULL),dimx(_dimx),dimy(_dimy),mergeChannels(_mergeChannels),
-          clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()))
+          clamp(Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()))
     { }
 
     void setInput(const ImageTypes& _img)
@@ -579,8 +576,8 @@ public:
         update();
     }
 
-    const CImg<bool>& getImage() const {return image;}
-    const CImg<unsigned int>& getHistogram() const {return histogram;}
+    const cimg_library::CImg<bool>& getImage() const {return image;}
+    const cimg_library::CImg<unsigned int>& getHistogram() const {return histogram;}
     const Vec<2,T>& getClamp() const {return clamp;}
     void setClamp(const Vec<2,T> _clamp)  { clamp[0] = _clamp[0]; clamp[1] = _clamp[1];	}
     const bool& getMergeChannels() const {return this->mergeChannels;}
@@ -588,7 +585,7 @@ public:
     {
         if(this->mergeChannels==_mergeChannels) return;
         this->mergeChannels=_mergeChannels;
-        this->setClamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max()));
+        this->setClamp(Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()));
         this->update();
     }
 
@@ -606,7 +603,7 @@ public:
 
         offsetVal = (double)vmin;
         scaleVal = (double)(vmax-vmin)/(double)(dimx-1);
-        image = CImg<bool>(dimx,dimy,1,histogram.spectrum(),0);
+        image = cimg_library::CImg<bool>(dimx,dimy,1,histogram.spectrum(),0);
         bool tru=true;
         cimg_forC(histogram,c) image.get_shared_channel(c).draw_graph(histogram.get_shared_channel(c),&tru,1,3,0);
 
@@ -671,7 +668,8 @@ public:
     static const char* Name() { return "ImagePlane"; }
 
     ImagePlane()
-        :img(NULL), plane(pCoord(0,0,0)), time(0), clamp(Vec<2,T>(cimg::type<T>::min(),cimg::type<T>::max())) , newPointClicked(false), imagePlaneDirty(true), mergeChannels(false)//, point(0,0,0) // set by user or other objects
+        :img(NULL), plane(pCoord(0,0,0)), time(0), clamp(Vec<2,T>(cimg_library::cimg::type<T>::min(),cimg_library::cimg::type<T>::max()))
+        , newPointClicked(false), imagePlaneDirty(true), mergeChannels(false)//, point(0,0,0) // set by user or other objects
     {
     }
 
@@ -742,26 +740,26 @@ public:
 
     void setNewPointClicked(const bool val) { newPointClicked = val;}
     // returns value at point (for the widget)
-    CImg<T> get_point(const Coord& p) const
+    cimg_library::CImg<T> get_point(const Coord& p) const
     {
-        if(!this->img) return CImg<T>();
-        if(!this->img->getCImgList().size()) return CImg<T>();
-        if(this->time>=this->img->getDimensions()[4]) return CImg<T>();
-        for(unsigned int i=0; i<3; i++) if(p[i]<0 || p[i]>this->img->getDimensions()[i]-1) return CImg<T>();
-        CImg<T> ret(1,1,1,this->img->getDimensions()[3]);
+        if(!this->img) return cimg_library::CImg<T>();
+        if(!this->img->getCImgList().size()) return cimg_library::CImg<T>();
+        if(this->time>=this->img->getDimensions()[4]) return cimg_library::CImg<T>();
+        for(unsigned int i=0; i<3; i++) if(p[i]<0 || p[i]>this->img->getDimensions()[i]-1) return cimg_library::CImg<T>();
+        cimg_library::CImg<T> ret(1,1,1,this->img->getDimensions()[3]);
         cimg_forC(ret,c) ret(0,0,0,c)=this->img->getCImg(this->time).atXYZC((unsigned int)helper::round(p[0]),(unsigned int)helper::round(p[1]),(unsigned int)helper::round(p[2]),c);
         return ret;
     }
     // returns slice image
-    CImg<T> get_slice(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
+    cimg_library::CImg<T> get_slice(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
     {
-        if(!this->img) return CImg<T>();
-        if(!this->img->getCImgList().size()) return CImg<T>();
-        if(index>=this->img->getDimensions()[axis] || this->time>=this->img->getDimensions()[4]) return CImg<T>();			// discard out of volume planes
-        if((this->img->getDimensions()[0]==1 && axis!=0) || (this->img->getDimensions()[1]==1 && axis!=1) || (this->img->getDimensions()[2]==1 && axis!=2)) return CImg<T>();  // discard unit width/height images
+        if(!this->img) return cimg_library::CImg<T>();
+        if(!this->img->getCImgList().size()) return cimg_library::CImg<T>();
+        if(index>=this->img->getDimensions()[axis] || this->time>=this->img->getDimensions()[4]) return cimg_library::CImg<T>();			// discard out of volume planes
+        if((this->img->getDimensions()[0]==1 && axis!=0) || (this->img->getDimensions()[1]==1 && axis!=1) || (this->img->getDimensions()[2]==1 && axis!=2)) return cimg_library::CImg<T>();  // discard unit width/height images
         return this->img->get_plane(index,axis,roi,this->time,this->mergeChannels);
     }
-    CImg<T> get_slice(const unsigned int index,const unsigned int axis) const
+    cimg_library::CImg<T> get_slice(const unsigned int index,const unsigned int axis) const
     {
         Mat<2,3,unsigned int> roi;
         for(unsigned int i=0; i<3; i++) { roi[0][i]=0; roi[1][i]=img->getDimensions()[i]-1; }
@@ -769,18 +767,18 @@ public:
     }
 
     // returns 8-bits color image cutting through visual models
-    CImg<unsigned char> get_slicedModels(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
+    cimg_library::CImg<unsigned char> get_slicedModels(const unsigned int index,const unsigned int axis,const Mat<2,3,unsigned int>& roi) const
     {
-        if(!this->img) return CImg<unsigned char>();
-        if(!this->img->getCImgList().size()) return CImg<unsigned char>();
-        if(index>=this->img->getDimensions()[axis] || this->time>=this->img->getDimensions()[4]) return CImg<unsigned char>();			// discard out of volume planes
-        if((this->img->getDimensions()[0]==1 && axis!=0) || (this->img->getDimensions()[1]==1 && axis!=1) || (this->img->getDimensions()[2]==1 && axis!=2)) return CImg<unsigned char>();  // discard unit width/height images
+        if(!this->img) return cimg_library::CImg<unsigned char>();
+        if(!this->img->getCImgList().size()) return cimg_library::CImg<unsigned char>();
+        if(index>=this->img->getDimensions()[axis] || this->time>=this->img->getDimensions()[4]) return cimg_library::CImg<unsigned char>();			// discard out of volume planes
+        if((this->img->getDimensions()[0]==1 && axis!=0) || (this->img->getDimensions()[1]==1 && axis!=1) || (this->img->getDimensions()[2]==1 && axis!=2)) return cimg_library::CImg<unsigned char>();  // discard unit width/height images
 
         const unsigned int dim[3]= {roi[1][0]-roi[0][0]+1,roi[1][1]-roi[0][1]+1,roi[1][2]-roi[0][2]+1};
-        CImg<unsigned char> ret;
-        if(axis==0)  ret=CImg<unsigned char>(dim[2],dim[1],1,3);
-        else if(axis==1)  ret=CImg<unsigned char>(dim[0],dim[2],1,3);
-        else ret=CImg<unsigned char>(dim[0],dim[1],1,3);
+        cimg_library::CImg<unsigned char> ret;
+        if(axis==0)  ret=cimg_library::CImg<unsigned char>(dim[2],dim[1],1,3);
+        else if(axis==1)  ret=cimg_library::CImg<unsigned char>(dim[0],dim[2],1,3);
+        else ret=cimg_library::CImg<unsigned char>(dim[0],dim[1],1,3);
         ret.fill(0);
 
         for(unsigned int m=0; m<visualModels.size(); m++)
@@ -799,7 +797,7 @@ public:
             helper::ReadAccessor<Data< core::loader::Material > > mat(visualModels[m]->material);
             const unsigned char color[3]= {(unsigned char)helper::round(mat->diffuse[0]*255.),(unsigned char)helper::round(mat->diffuse[1]*255.),(unsigned char)helper::round(mat->diffuse[2]*255.)};
 
-            CImg<bool> tmp = this->img->get_slicedModels(index,axis,roi,tposition,visualModels[m]->getTriangles(),visualModels[m]->getQuads());
+            cimg_library::CImg<bool> tmp = this->img->get_slicedModels(index,axis,roi,tposition,visualModels[m]->getTriangles(),visualModels[m]->getQuads());
             cimg_foroff(tmp,off)
                     if(tmp[off])
             {
@@ -813,7 +811,7 @@ public:
 
     }
 
-    CImg<unsigned char> get_slicedModels(const unsigned int index,const unsigned int axis) const
+    cimg_library::CImg<unsigned char> get_slicedModels(const unsigned int index,const unsigned int axis) const
     {
         Mat<2,3,unsigned int> roi;
         for(unsigned int i=0; i<3; i++) { roi[0][i]=0; roi[1][i]=img->getDimensions()[i]-1; }

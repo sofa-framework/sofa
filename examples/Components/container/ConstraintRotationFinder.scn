@@ -4,6 +4,7 @@
     <BruteForceDetection name="N2" />
     <LocalMinDistance name="Proximity" alarmDistance="0.50" contactDistance="0.25" />
     <CollisionResponse name="Response" response="FrictionContact" />
+    <LCPConstraintSolver maxIt="1000" tolerance="0.001" />
     <Node name="Floor">
         <RegularGrid nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />
         <MechanicalObject />
@@ -12,7 +13,7 @@
         <Point simulated="0" moving="0" group="1" />
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="Sphere">
@@ -24,12 +25,12 @@
         <Point simulated="0" moving="0" group="1" />
         <Node name="Visu">
             <OglModel name="Visual" color="blue" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="SquareCloth1">
         <EulerImplicit rayleighMass="0.05" />
-        <CGLinearSolver iterations="10" threshold="0.000001" />
+        <CGLinearSolver iterations="10" threshold="0.000001"  tolerance="1e-5"/>
         <RegularGrid nx="15" ny="1" nz="15" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject />
         <UniformMass totalmass="100" />
@@ -40,7 +41,7 @@
         <PrecomputedConstraintCorrection rotations="1" />
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <Point group="2" />
     </Node>

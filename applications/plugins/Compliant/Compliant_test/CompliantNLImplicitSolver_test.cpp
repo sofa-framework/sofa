@@ -7,6 +7,7 @@
 
 using namespace sofa::modeling;
 using namespace sofa::component;
+using namespace sofa::simulation;
 using namespace sofa;
 
 
@@ -369,8 +370,8 @@ TEST_F(CompliantNLImplicitSolver_test, OneFixedOneComplianceSpringX200 ){    tes
 //// simple nonlinear cases
 TEST_F(CompliantNLImplicitSolver_test, OneFixedOneSpringGravityStiffness ) { testLinearOneFixedOneSpringGravity(false);  }
 TEST_F(CompliantNLImplicitSolver_test, OneFixedOneSpringGravityCompliance ){ testLinearOneFixedOneSpringGravity(true);  }
-TEST_F(CompliantNLImplicitSolver_test, NonlinearStiffness ){                 testNonlinear(false,true); }
-TEST_F(CompliantNLImplicitSolver_test, NonlinearCompliance ){                testNonlinear(true,true); }
+TEST_F(CompliantNLImplicitSolver_test, NonlinearStiffness ){                 testNonlinear(false); }
+TEST_F(CompliantNLImplicitSolver_test, NonlinearCompliance ){                testNonlinear(true); }
 
 
 

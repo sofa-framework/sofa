@@ -1,7 +1,10 @@
 import os
 import os.path
 import sys
+import locale
+
 import Sofa
+
 
 
 # add plugin path to sys.path
@@ -21,3 +24,6 @@ for relative in plugins_paths:
                     sys.path.append( python )
 
 # add more customization here if needed
+
+# force C locale
+locale.setlocale(locale.LC_ALL, 'C')

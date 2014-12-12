@@ -22,7 +22,7 @@
       <OglModel name="VM" fileMesh="dt/cube_low_res.obj" scale="0.003" dy="0.015"  dz="0.030"/>
       <OglModel name="VM" fileMesh="dt/cube_low_res.obj" scale="0.003" dy="0.030"  dz="0.030"/>
       <OglModel name="VM" fileMesh="dt/cube_low_res.obj" scale="0.0005"  dy="0.038" />
-      <RigidMapping object1="../.." object2="VM" index="0"/>
+      <RigidMapping input="@.." output="@VM" index="0"/>
     </Node>
 
     <Node name="Grasper">
@@ -41,7 +41,7 @@
 
         <Node name="Tool1VM">
           <OglModel name="VM" fileMesh="dt/aspi.trian" scale="0.001" rx="90.0" />
-          <RigidMapping object1="../.." object2="VM" index="1"/>
+          <RigidMapping input="@.." output="@VM" index="1"/>
         </Node>
 
         <Node name="Tool1CM">
@@ -49,13 +49,13 @@
           <MechanicalObject name="Endoscope Collision State"/>
           <Line group="1"/>
           <Point group="1"/>
-          <RigidMapping name="MM->CM mapping" object1="../.." index="1"/>
+          <RigidMapping name="MM->CM mapping" input="@.." index="1"/>
         </Node>
 
 		<!-- broche N1 
         <Node name="Grasp1_1VM">
           <OglModel name="VM" fileMesh="dt/mors1.trian" color="0.9 0.9 0.2 1.0" scale="0.001"  dy="0.025"/>
-          <RigidMapping object1="../.." object2="VM" index="2"/>
+          <RigidMapping input="@.." output="@VM" index="2"/>
         </Node>
 
         <Node name="Grasp1_1CM">
@@ -65,7 +65,7 @@
           <Triangle group="1"/>
           <Line group="1"/>
           <Point group="1"/>
-          <RigidMapping object1="../.." object2="CM" index="2"/>
+          <RigidMapping input="@.." output="@CM" index="2"/>
         </Node>
         
         -->
@@ -73,7 +73,7 @@
 		<!-- broche N2 
         <Node name="Grasp1_2VM">
           <OglModel name="VM" fileMesh="dt/mors2.trian" color="0.9 0.9 0.2 1.0" scale="0.001"   dy="0.025"/>
-          <RigidMapping object1="../.." object2="VM" index="3"/>
+          <RigidMapping input="@.." output="@VM" index="3"/>
         </Node>
 
         <Node name="Grasp1_2CM">
@@ -83,7 +83,7 @@
           <Triangle group="1"/>
           <Line group="1"/>
           <Point group="1"/>
-          <RigidMapping object1="../.." object2="CM" index="3"/>
+          <RigidMapping input="@.." output="@CM" index="3"/>
         </Node>
 -->
         <ArticulatedSystemMapping input1="@../Articulations" output="@GrasperDOFs" />

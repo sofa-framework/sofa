@@ -9,7 +9,7 @@
     <MinProximityIntersection alarmDistance="0.5" contactDistance="0.2" />
     <Node name="SolverNode">
         <EulerImplicitSolver name="EulerImplicit" />
-        <CGLinearSolver name="CG Solver" />
+        <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <Node name="CubeSphere1">
             <MechanicalObject name="Particles" template="Vec3d" position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" translation="-2 1 2" />
             <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
