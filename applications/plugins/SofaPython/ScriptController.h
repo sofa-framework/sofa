@@ -122,7 +122,7 @@ public:
 	/**
 	 * @brief call to script function callback.
 	 */
-	void ScriptController::call(const core::objectmodel::ScriptFunction*, const core::objectmodel::ScriptFunctionParameter*, core::objectmodel::ScriptFunctionResult*);
+	virtual void call(const core::objectmodel::ScriptFunction*, const core::objectmodel::ScriptFunctionParameter*, core::objectmodel::ScriptFunctionResult*);
 
 	/**
 	 * @brief draw callback.
