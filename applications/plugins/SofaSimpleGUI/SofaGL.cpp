@@ -43,7 +43,7 @@ void SofaGL::draw()
         _vparams->setModelViewMatrix(_mvmatrix);
     }
 
-    sofa::simulation::getSimulation()->updateVisual(_sofaScene->groot().get()); // needed to update normals and VBOs ! (i think it should be better if updateVisual() was called from draw(), why it is not already the case ?)
+    sofa::simulation::getSimulation()->updateVisual(_sofaScene->groot().get()); // needed to update normals and VBOs !
 
     if( _isPicking ){
 
