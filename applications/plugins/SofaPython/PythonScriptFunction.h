@@ -82,7 +82,7 @@ private:
 
 class SOFA_SOFAPYTHON_API PythonScriptFunction : public ScriptFunction
 {
-	friend sofa::component::controller::PythonScriptController;
+	friend class sofa::component::controller::PythonScriptController;
 
 public:
 	explicit PythonScriptFunction(component::controller::PythonScriptController* pythonScriptController, const std::string& funcName);

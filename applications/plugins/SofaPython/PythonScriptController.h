@@ -53,7 +53,7 @@ namespace controller
 
 class SOFA_SOFAPYTHON_API PythonScriptController : public ScriptController
 {
-	friend sofa::core::objectmodel::PythonScriptFunction;
+	friend class sofa::core::objectmodel::PythonScriptFunction;
 
 public:
     SOFA_CLASS(PythonScriptController,ScriptController);
