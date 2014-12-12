@@ -9,7 +9,7 @@
     <Node name="Cube" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
-        <MechanicalObject template="Vec3d" name="mecaObj" position="0 0 0" velocity="0 0 0" force="0 0 0" internalForce="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" />
+        <MechanicalObject template="Vec3d" name="mecaObj" position="0 0 0" velocity="0 0 0" force="0 0 0" derivX="0 0 0" free_position="0 0 0" free_velocity="0 0 0" restScale="1" />
         <UniformMass template="Vec3d" name="default25" mass="0.25" />
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
         <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" computeGlobalMatrix="0" />
@@ -21,7 +21,7 @@
             <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
             <TTriangleModel template="Vec3d" name="default30" />
-            <Hexa2TetraTopologicalMapping name="default28" object1="../../grid" object2="Container" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@../grid" output="@Container" />
             <Node name="interpol" gravity="0 -9.81 0">
                 <ValuesFromPositions template="Vec3d" direction="1 1 0" position="@../../mecaObj.position" fieldType="Vector" drawVectors="1" drawVectorLength="5" />
             </Node>

@@ -65,9 +65,12 @@ private:
 
     void __dorand48(unsigned short xseed[3]);
 
-public:
+protected:
+
     /// integer between [0, 2^32-1)
     unsigned long int randomBase();
+
+public:
 
     RandomGenerator();
     RandomGenerator(long seed);
@@ -96,6 +99,11 @@ public:
         return (T)random<long>( (long)min, (long)max );  // default implementation for integer types. Specialization for floating types in .cpp
     }
 
+    /// number between [-vmax, vmax] (vmax has less chance to appear)
+    template<class T> T symrand(T vmax)
+    {
+        return random<T>(-vmax, +vmax);
+    }
 
     /// number between [T::min, T::max)  (max has less chance to appear)
     /// note that "only" 2^32 different values can be generated
@@ -154,14 +162,6 @@ template<>
 inline float RandomGenerator::random()
 {
 	return random<float>( -(float)RANDOM_BASE_MAX, (float)RANDOM_BASE_MAX );
-}
-
-/** Pseudo-random number between -vmax and +vmax. Uses the seed defined using the standard srand(unsigned int) function of the stdlib
-*/
-inline SReal symrand(SReal vmax,int seed = 0){
-    RandomGenerator randomgenerator(seed);
-    SReal randomReal = -vmax + ((2*vmax)*(SReal)randomgenerator.randomBase())/(SReal)4294967295U;
-    return (SReal)(randomReal);
 }
 
 }

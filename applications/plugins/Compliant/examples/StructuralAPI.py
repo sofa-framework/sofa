@@ -48,7 +48,7 @@ def createScene(root):
     hingeNode = root.createChild('hinge')
     hinge_body1 = createFixedRigidBody(hingeNode, "hinge_body1", -25 )
     hinge_body2 = createRigidBody(hingeNode, "hinge_body2", -25 )
-    hinge = StructuralAPI.HingeRigidJoint( 2, hingeNode, "joint", hinge_body1.node, hinge_body2.node )
+    hinge = StructuralAPI.HingeRigidJoint( 2, "joint", hinge_body1.node, hinge_body2.node )
     hinge.addLimits(-1,0.75)
     hinge.addSpring(100)
     
@@ -58,7 +58,7 @@ def createScene(root):
     sliderNode = root.createChild('slider')
     slider_body1 = createFixedRigidBody(sliderNode, "slider_body1", -20 )
     slider_body2 = createRigidBody(sliderNode, "slider_body2", -20 )
-    slider = StructuralAPI.SliderRigidJoint( 1, sliderNode, "joint", slider_body1.node, slider_body2.node )
+    slider = StructuralAPI.SliderRigidJoint( 1, "joint", slider_body1.node, slider_body2.node )
     slider.addLimits(-1,5)
     slider.addSpring(100)
     
@@ -67,7 +67,7 @@ def createScene(root):
     cylindricalNode = root.createChild('cylindrical')
     cylindrical_body1 = createFixedRigidBody(cylindricalNode, "cylindrical_body1", -15 )
     cylindrical_body2 = createRigidBody(cylindricalNode, "cylindrical_body2", -15 )
-    cylindrical = StructuralAPI.CylindricalRigidJoint( 1, cylindricalNode, "joint", cylindrical_body1.node, cylindrical_body2.node )
+    cylindrical = StructuralAPI.CylindricalRigidJoint( 1, "joint", cylindrical_body1.node, cylindrical_body2.node )
     cylindrical.addLimits(-1,5,-1,0.75)
     cylindrical.addSpring(100,100)
     
@@ -77,7 +77,7 @@ def createScene(root):
     ballandsocketNode = root.createChild('ballandsocket')
     ballandsocket_body1 = createFixedRigidBody(ballandsocketNode, "ballandsocket_body1", -10 )
     ballandsocket_body2 = createRigidBody(ballandsocketNode, "ballandsocket_body2", -10 )
-    ballandsocket = StructuralAPI.BallAndSocketRigidJoint( ballandsocketNode, "joint", ballandsocket_body1.node, ballandsocket_body2.node )
+    ballandsocket = StructuralAPI.BallAndSocketRigidJoint( "joint", ballandsocket_body1.node, ballandsocket_body2.node )
     ballandsocket.addLimits( -1,1,-0.5,0.5,-0.75,0.75 )
     ballandsocket.addSpring( 100,100,100 )
     
@@ -86,7 +86,7 @@ def createScene(root):
     planarNode = root.createChild('planar')
     planar_body1 = createFixedRigidBody(planarNode, "planar_body1", -5 )
     planar_body2 = createRigidBody(planarNode, "planar_body2", -5 )
-    planar = StructuralAPI.PlanarRigidJoint( 2, planarNode, "joint", planar_body1.node, planar_body2.node )
+    planar = StructuralAPI.PlanarRigidJoint( 2, "joint", planar_body1.node, planar_body2.node )
     planar.addLimits(-0.5,1,-3,3)
     planar.addSpring( 100,100 )
     
@@ -95,7 +95,7 @@ def createScene(root):
     gimbalNode = root.createChild('gimbal')
     gimbal_body1 = createFixedRigidBody(gimbalNode, "gimbal_body1", 0 )
     gimbal_body2 = createRigidBody(gimbalNode, "gimbal_body2", 0 )
-    gimbal = StructuralAPI.GimbalRigidJoint( 2, gimbalNode, "joint", gimbal_body1.node, gimbal_body2.node )
+    gimbal = StructuralAPI.GimbalRigidJoint( 2, "joint", gimbal_body1.node, gimbal_body2.node )
     gimbal.addLimits(-0.5,1,-3,3)
     gimbal.addSpring( 100,100 )
     
@@ -103,19 +103,19 @@ def createScene(root):
     fixedNode = root.createChild('fixed')
     fixed_body1 = createFixedRigidBody(fixedNode, "fixed_body1", 5 )
     fixed_body2 = createRigidBody(fixedNode, "fixed_body2", 5 )
-    fixed = StructuralAPI.FixedRigidJoint( fixedNode, "joint", fixed_body1.node, fixed_body2.node )
+    fixed = StructuralAPI.FixedRigidJoint( "joint", fixed_body1.node, fixed_body2.node )
   
     # DISTANCE
     distanceNode = root.createChild('distance')
     distance_body1 = createFixedRigidBody(distanceNode, "distance_body1", 10 )
     distance_body2 = createRigidBody(distanceNode, "distance_body2", 10, 4 )
-    distance = StructuralAPI.DistanceRigidJoint( distanceNode, "joint", distance_body1.node, distance_body2.node )
+    distance = StructuralAPI.DistanceRigidJoint( "joint", distance_body1.node, distance_body2.node )
   
     # 6D spring
     springNode = root.createChild('6Dspring')
     spring_body1 = createFixedRigidBody(springNode, "spring_body1", 15 )
     spring_body2 = createRigidBody(springNode, "spring_body2", 15 )
-    spring = StructuralAPI.RigidJointSpring( springNode, "joint", spring_body1.node, spring_body2.node, [100000,100000,100000,100000,100000,10000] )
+    spring = StructuralAPI.RigidJointSpring( "joint", spring_body1.node, spring_body2.node, [100000,100000,100000,100000,100000,10000] )
   
   
   
@@ -159,7 +159,7 @@ def createScene(root):
     body2.visualModel.model.setColor(0,1,0,1)
     
     ##### JOINT
-    joint1 = StructuralAPI.SliderRigidJoint( 0, complexNode, "joint1", body1_offset1.node, body2.node )
+    joint1 = StructuralAPI.SliderRigidJoint( 0, "joint1", body1_offset1.node, body2.node )
     joint1.addLimits( -10, 10 )
     joint1.addDamper( 5 )
     

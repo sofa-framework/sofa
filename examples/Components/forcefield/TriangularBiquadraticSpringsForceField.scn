@@ -17,6 +17,6 @@
         <TriangularBiquadraticSpringsForceField name="BQS" youngModulus="15" poissonRatio="0.9" useAngularSprings="1" dampingRatio="0.00" />
         <TriangleSet />
         <VisualModel name="Visual" color="yellow" />
-        <IdentityMapping object1=".." object2="Visual" />
+        <IdentityMapping input="@." output="@Visual" />
     </Node>
 </Node>

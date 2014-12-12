@@ -15,7 +15,7 @@
         <FixedConstraint name="FixedConstraint" indices="0 19" />
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MechanicalObject />

@@ -6,7 +6,7 @@
     <CollisionGroup name="Group" />
     <Node name="Frog">
         <EulerImplicit />
-        <CGLinearSolver iterations="30" />
+        <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/frog.obj" />
         <MechanicalObject dx="-10.0" />
         <UniformMass mass="1.0" />
@@ -29,7 +29,7 @@
     </Node>
     <Node name="Frog2">
         <EulerImplicit />
-        <CGLinearSolver iterations="30" />
+        <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/frog_quads.obj" />
         <MechanicalObject dx="10.0" />
         <UniformMass mass="1.0" />

@@ -111,6 +111,7 @@ void GenericConstraintSolver::init()
 	}
 
 	getContext()->get<core::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
+	constraintCorrectionIsActive.resize(constraintCorrections.size());
 
 	context = (simulation::Node*) getContext();
 }
@@ -169,6 +170,10 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
     sofa::helper::AdvancedTimer::stepEnd("Get Constraint Resolutions");
 
     if (this->f_printLog.getValue()) sout<<"GenericConstraintSolver: "<<numConstraints<<" constraints"<<sendl;
+
+	// Test if the nodes containing the constraint correction are active (not sleeping)
+	for (unsigned int i = 0; i < constraintCorrections.size(); i++)
+		constraintCorrectionIsActive[i] = !constraintCorrections[i]->getContext()->isSleeping();
 
     if (unbuilt.getValue())
 	{
@@ -360,6 +365,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 		core::MultiVecDerivId vId(res2);
 		for (unsigned int i = 0; i < constraintCorrections.size(); i++)
 		{
+			if (!constraintCorrectionIsActive[i]) continue;
 			BaseConstraintCorrection* cc = constraintCorrections[i];
 			cc->computeAndApplyMotionCorrection(cParams, xId, vId, this->m_fId, &current_cp->f);
 		}
@@ -369,6 +375,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
 		core::MultiVecCoordId xId(res1);
 		for (unsigned int i = 0; i < constraintCorrections.size(); i++)
 		{
+			if (!constraintCorrectionIsActive[i]) continue;
 			BaseConstraintCorrection* cc = constraintCorrections[i];
 			cc->computeAndApplyPositionCorrection(cParams, xId, this->m_fId, &current_cp->f);
 		}
@@ -378,6 +385,7 @@ bool GenericConstraintSolver::applyCorrection(const core::ConstraintParams *cPar
         core::MultiVecDerivId vId(res1);
 		for (unsigned int i = 0; i < constraintCorrections.size(); i++)
 		{
+			if (!constraintCorrectionIsActive[i]) continue;
 			BaseConstraintCorrection* cc = constraintCorrections[i];
 			cc->computeAndApplyVelocityCorrection(cParams, vId, this->m_fId, &current_cp->f);
 		}

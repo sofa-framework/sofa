@@ -19,7 +19,7 @@
             <TetrahedronSetTopologyModifier />
             <TetrahedronSetTopologyAlgorithms template="Vec3d" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" />
-            <Hexa2TetraTopologicalMapping name="default28" object1="../grid" object2="TetraContainer" />
+            <Hexa2TetraTopologicalMapping name="default28" input="@grid" output="@TetraContainer" />
             <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="polar" poissonRatio="0" youngModulus="1000" />
 
             <!--Extraction of the external triangles of the tetrahedra -->
@@ -28,7 +28,7 @@
                 <TriangleSetTopologyModifier />
                 <TriangleSetTopologyAlgorithms template="Vec3d" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" />
-                <Tetra2TriangleTopologicalMapping object1="../TetraContainer" object2="TriangleContainer" />
+                <Tetra2TriangleTopologicalMapping input="@TetraContainer" output="@TriangleContainer" />
 
                 <!--Apply a pressure to the triangles in the x=1 plane -->
                 <TrianglePressureForceField normal="1 0 0" dmin="-0.01" dmax="0.01" pressure="100 0 0"  showForces="1"/>

@@ -99,23 +99,23 @@ protected:
         cleanDirty();
 
         raDist weightData(this->d_weights);
-        CImg<DistT> const& weight=weightData->getCImg();
+        cimg_library::CImg<DistT> const& weight=weightData->getCImg();
         raInd indicesData(this->d_indices);
-        CImg<IndT> const& indices=indicesData->getCImg();
+        cimg_library::CImg<IndT> const& indices=indicesData->getCImg();
 
         waDist nodeWeighData(this->d_nodeWeights);
         imCoord dim = weightData->getDimensions();
         // only one node
         dim[ImageTypes::DIMENSION_S]=1;
         nodeWeighData->setDimensions(dim);
-        CImg<DistT>& nodeWeigh = nodeWeighData->getCImg();
+        cimg_library::CImg<DistT>& nodeWeigh = nodeWeighData->getCImg();
         nodeWeigh.fill(0);
 
         // loop over index image
-        for(unsigned int z=0; z<indices.depth(); z++)
-            for(unsigned int y=0; y<indices.height(); y++)
-                for(unsigned int x=0; x<indices.width(); x++)
-                    for(unsigned int i=0; i<indices.spectrum(); i++)
+        for(int z=0; z<indices.depth(); z++)
+            for(int y=0; y<indices.height(); y++)
+                for(int x=0; x<indices.width(); x++)
+                    for(int i=0; i<indices.spectrum(); i++)
                         if (indices(x,y,z,i)==d_nodeIndex.getValue())
                             nodeWeigh(x,y,z,0)=weight(x,y,z,i);
 

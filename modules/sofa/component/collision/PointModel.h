@@ -126,6 +126,8 @@ public:
 
     //virtual const char* getTypeName() const { return "Point"; }
 
+    Deriv getNormal(int index){ return (normals.size()) ? normals[index] : Deriv();}
+
     PointLocalMinDistanceFilter *getFilter() const;
 
     //template< class TFilter >

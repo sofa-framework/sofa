@@ -14,7 +14,7 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-SOFA_DECL_CLASS(CompliantImplicitSolver);
+SOFA_DECL_CLASS(CompliantImplicitSolver)
 int CompliantImplicitSolverClass = core::RegisterObject("Example compliance solver using assembly")
         .add< CompliantImplicitSolver >()
         .addAlias("AssembledSolver"); // deprecated, for backward compatibility only
@@ -392,7 +392,7 @@ using namespace core::behavior;
 
                 res.segment(off,total_dim).noalias() = res.segment(off,total_dim) - v_constraint;
 
-                res.segment(off,total_dim) /= beta.getValue();
+                if( beta.getValue() != 1 ) res.segment(off,total_dim) /= beta.getValue();
 
                 break;
             }

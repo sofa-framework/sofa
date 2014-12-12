@@ -167,7 +167,7 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@./"  object2="@./" />
+"  object1="@"  object2="@" />
 		</Node>
 		<Node 	 name="M5"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
@@ -331,7 +331,7 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@./"  object2="@./" />
+"  object1="@"  object2="@" />
 		</Node>
 		<Node 	 name="M4"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
@@ -495,7 +495,7 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@./"  object2="@./" />
+"  object1="@"  object2="@" />
 		</Node>
 		<Node 	 name="M3"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
@@ -659,7 +659,7 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@./"  object2="@./" />
+"  object1="@"  object2="@" />
 		</Node>
 		<Node 	 name="M2"  >
 			<MeshGmshLoader name="loader"  filename="mesh/smCube27.msh" />
@@ -823,7 +823,7 @@
  22 20 500 5 4.94975
  24 22 500 5 4.94975
  25 23 500 5 4.94975
-"  object1="@./"  object2="@./" />
+"  object1="@"  object2="@" />
 		</Node>
 		<StiffSpringForceField template="Vec3d" name="ExternalSprings1"  spring="2 0 500 5 3.5
  5 3 500 5 3.5

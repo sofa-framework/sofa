@@ -67,6 +67,12 @@ bool BaseContext::isActive() const { return true;};
 bool BaseContext::is_partition() const { return false;};
 #endif
 
+/// The Context is not sleeping by default
+bool BaseContext::isSleeping() const { return false; }
+
+/// The Context can not change its sleeping state by default
+bool BaseContext::canChangeSleepingState() const { return false; }
+
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 /// Gravity in the local coordinate system
 BaseContext::Vec3 BaseContext::getLocalGravity() const

@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <Node name="Root"  printLog="1"  dt="0.01" gravity="0 -10 0" >
-	<VisualStyle name="visualStyle"  displayFlags="showVisual showBehaviorModels hideForceFields hideInteractionForceFields showCollision hideMapping hideOptions" />
+	<VisualStyle name="visualStyle"  displayFlags="showVisual showBehaviorModels showMapping hideForceFields hideInteractionForceFields showCollision hideOptions" />
 	
+        <DefaultAnimationLoop/>
+        <DefaultVisualManagerLoop/>
+        
 	<RequiredPlugin pluginName="Compliant"/>
 	<CompliantAttachButtonSetting compliance="0.001" isCompliance="1"/>
 	

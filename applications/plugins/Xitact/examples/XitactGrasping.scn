@@ -27,7 +27,7 @@
     <UncoupledConstraintCorrection />
 		<Node name="Visu">
 			<OglModel name="Visual" fileMesh="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="8.0" rx="90.0" invertPrimOrientation="1"/>
-			<RigidMapping object1="../.." object2="Visual"/>
+			<RigidMapping input="@.." output="@Visual"/>
 		</Node>
 		
 		<Node name="Surf2">
@@ -43,28 +43,28 @@
 
 
   <Node name="TorusFEM">
-    <Object type="EulerImplicitSolver" rayleighMass="0.01"  rayleighStiffness="0.001" />
-    <Object type="CGLinearSolver" iterations="25" threshold="1.0e-15"  tolerance="1.0e-9" />
+    <EulerImplicitSolver rayleighMass="0.01"  rayleighStiffness="0.001" />
+    <CGLinearSolver iterations="25" threshold="1.0e-15"  tolerance="1.0e-9" />
     <!--<SparseLDLSolver /-->>
-    <Object type="MeshLoader" name="meshLoader" filename="mesh/torus_low_res.msh"/>
-    <Object type="Mesh"/>
-    <Object type="MechanicalObject" dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0" scale="8.0" />
-    <Object type="UniformMass" totalmass="0.01" />
-    <Object type="TetrahedronFEMForceField" name="FEM" youngModulus="10000" poissonRatio="0.48" computeGlobalMatrix="false" method="polar"/>
+    <MeshLoader name="meshLoader" filename="mesh/torus_low_res.msh"/>
+    <Mesh/>
+    <MechanicalObject dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0" scale="8.0" />
+    <UniformMass totalmass="0.01" />
+    <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.48" computeGlobalMatrix="false" method="polar"/>
     <!--<LinearSolverConstraintCorrection />-->
     <PrecomputedConstraintCorrection rotations="true" recompute="0"/>
     <Node name="Visu">
-      <Object type="OglModel" name="Visual" fileMesh="mesh/torus.obj" color="red" dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0" scale="8.0"/>
-      <Object type="BarycentricMapping" object1="../.." object2="Visual" />
+      <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0" scale="8.0"/>
+      <BarycentricMapping input="@.." output="@Visual" />
     </Node>
     <Node name="Surf2">
-      <Object type="MeshLoader" name="meshLoader" filename="mesh/torus_for_collision.obj"/>
-      <Object type="Mesh"/>
-      <Object type="MechanicalObject" dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0" scale="8.0"/>
-      <Object type="Triangle" contactStiffness="0.1"/>
-      <Object type="Line" />
-      <Object type="Point" />
-      <Object type="BarycentricMapping" />
+      <MeshLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>
+      <Mesh/>
+      <MechanicalObject dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0" scale="8.0"/>
+      <Triangle contactStiffness="0.1"/>
+      <Line />
+      <Point />
+      <BarycentricMapping />
     </Node>
   </Node>
 
@@ -88,9 +88,9 @@
       <OglModel name="VM1" fileMesh="dt/cube_low_res.obj" scale="3"   dy="15.0" dz="30" />
       <OglModel name="VM2" fileMesh="dt/cube_low_res.obj" scale="3"   dy="30.0" dz="30" />
       <OglModel name="VM3" fileMesh="dt/cube_low_res.obj" scale="0.5" dy="38" />
-      <RigidMapping object1="../.." object2="VM1" index="0"/>
-      <RigidMapping object1="../.." object2="VM2" index="0"/>
-      <RigidMapping object1="../.." object2="VM3" index="0"/>
+      <RigidMapping input="@.." output="@VM1" index="0"/>
+      <RigidMapping input="@.." output="@VM2" index="0"/>
+      <RigidMapping input="@.." output="@VM3" index="0"/>
     </Node>
 
     <Node name="Grasper">
@@ -109,7 +109,7 @@
 
         <Node name="Tool1VM">
           <OglModel name="VM" fileMesh="dt/aspi.trian" scale="1" rx="90.0" />
-          <RigidMapping object1="../.." object2="VM" index="1"/>
+          <RigidMapping input="@.." output="@VM" index="1"/>
         </Node>
 
         <Node name="Tool1CM">
@@ -117,13 +117,13 @@
           <MechanicalObject name="Endoscope Collision State"/>
           <Line group="1"/>
           <Point group="1"/>
-          <RigidMapping name="MM->CM mapping" object1="../.." index="1"/>
+          <RigidMapping name="MM->CM mapping" input="@.." index="1"/>
         </Node>
 
 
         <Node name="Grasp1_1VM">
           <OglModel name="VM" fileMesh="dt/mors1.trian" color="0.9 0.9 0.2 1.0" scale="1"  dy="25"/>
-          <RigidMapping object1="../.." object2="VM" index="2"/>
+          <RigidMapping input="@.." output="@VM" index="2"/>
         </Node>
 
         <Node name="Grasp1_1CM">
@@ -133,12 +133,12 @@
           <Triangle group="1"/>
           <Line group="1"/>
           <Point group="1"/>
-          <RigidMapping object1="../.." object2="CM" index="2"/>
+          <RigidMapping input="@.." output="@CM" index="2"/>
         </Node>
 
         <Node name="Grasp1_2VM">
           <OglModel name="VM" fileMesh="dt/mors2.trian" color="0.9 0.9 0.2 1.0" scale="1"   dy="25"/>
-          <RigidMapping object1="../.." object2="VM" index="3"/>
+          <RigidMapping input="@.." output="@VM" index="3"/>
         </Node>
 
         <Node name="Grasp1_2CM">
@@ -148,7 +148,7 @@
           <Triangle group="1"/>
           <Line group="1"/>
           <Point group="1"/>
-          <RigidMapping object1="../.." object2="CM" index="3"/>
+          <RigidMapping input="@.." output="@CM" index="3"/>
         </Node>
 
         <ArticulatedSystemMapping input1="@../Articulations" output="@GrasperDOFs" input2="@../../bati"/>

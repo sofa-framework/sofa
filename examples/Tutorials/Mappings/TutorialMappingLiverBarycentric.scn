@@ -3,6 +3,7 @@
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" name="collision response" />
+    <DiscreteIntersection />
     <!--<CollisionGroup />-->
     <Node name="Liver" depend="topo dofs">
         <!--<CGImplicit iterations="25"/>-->
@@ -20,7 +21,7 @@
         <Node name="Visu" tags="Visual">
             <!-- Using material contained in liver-smooth.obj -->
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
-            <BarycentricMapping object1="../.." object2="VisualModel" name="visual mapping" />
+            <BarycentricMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf" tags="Surf">
             <SphereLoader name="loaderSphere" filename="mesh/liver.sph"/>

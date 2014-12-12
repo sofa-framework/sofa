@@ -13,15 +13,15 @@
 			  -->
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="SquareCloth1">
         <EulerImplicit />
-        <CGLinearSolver iterations="10" rayleighMass="0.05" threshold="0.000001" />
+        <CGLinearSolver iterations="10" threshold="0.000001" tolerance="1e-5"/>
         <RegularGrid nx="25" ny="1" nz="25" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject />
-        <UniformMass totalmass="100" />
+        <UniformMass rayleighMass="0.05" totalmass="100" />
         <BoxConstraint box="-12.1 7 11.9 -9.9 7 12.1    9.9 7 11.9 12.1 7 12.1" />
         <MeshSpringForceField name="Springs" stiffness="1000" damping="0" />
         <QuadBendingSprings name="Bend" stiffness="2000" damping="1" />
@@ -30,7 +30,7 @@
         <RotationFinder showRotations="true" axisToFlip="1" />
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <Triangle />
     </Node>

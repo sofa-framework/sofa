@@ -59,7 +59,7 @@
                 <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS2" output="@Visual" />
             </Node>
         </Node>
-        <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="HexahedraA/MappedTetrahedronA" object2="HexahedraB/MappedTetrahedronB" />
+        <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="@HexahedraA/MappedTetrahedronA" object2="@HexahedraB/MappedTetrahedronB" />
     </Node>
     <!-- uncomment to see the comparison between direct solver (contribution of interaction & mapping to the global matrix) and the iterative solver
     <Node name="IterativeSolverNode">
@@ -111,7 +111,7 @@
                 <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../MS2" output="@Visual" />
             </Node>
         </Node>
-        <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="HexahedraA/MappedTetrahedronA" object2="HexahedraB/MappedTetrahedronB" />
+        <StiffSpringForceField name="ExternalSprings1" spring="0 0 6 0.6 3" object1="@HexahedraA/MappedTetrahedronA" object2="@HexahedraB/MappedTetrahedronB" />
     </Node>
     <EvalPointsDistance name="comparator" object1="@DirectSolverNode/HexahedraA/MS1" object2="@IterativeSolverNode/HexahedraA/MS1" printLog="1" draw="1" />
 -->

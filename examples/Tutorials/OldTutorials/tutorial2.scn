@@ -2,49 +2,49 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node name="M1">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.01" threshold="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="0" dy="0" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <RegularGridSpringForceField name="Springs" stiffness="100" damping="1" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="green" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <PlaneForceField normal="0 1 -0.5" d="-10" />
         <PlaneForceField normal="0 0 1" d="-50" />
     </Node>
     <Node name="M2">
         <EulerImplicit />
-        <CGLinearSolver iterations="100" tol="0.0001" threshold="0.000000001" />
+        <CGLinearSolver iterations="100" tolerance="0.0001" threshold="0.000000001" />
         <MechanicalObject dx="-12" dy="0" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="150" poissonRatio="0.3" method="small" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="yellow" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <PlaneForceField normal="0 1 -0.5" d="-10" />
         <PlaneForceField normal="0 0 1" d="-50" />
     </Node>
     <Node name="M3">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.01" threshold="0.000001" />
+        <CGLinearSolver iterations="25" tolerance="0.01" threshold="0.000001" />
         <MechanicalObject dx="-24" dy="0" />
         <UniformMass totalmass="10" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="150" poissonRatio="0.3" method="polar" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="cyan" />
-            <BarycentricMapping object1="../.." object2="Visual" />
+            <BarycentricMapping input="@.." output="@Visual" />
         </Node>
         <PlaneForceField normal="0 1 -0.5" d="-10" />
         <PlaneForceField normal="0 0 1" d="-50" />
     </Node>
     <Node name="M4">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tol="0.00001" threshold="0.000001" stiffness="0.2" />
+        <CGLinearSolver iterations="25" tolerance="0.00001" threshold="0.000001" />
         <!--
 		<RungeKutta4 />
 		<Euler />
@@ -53,7 +53,7 @@
         <UniformMass filename="BehaviorModels/smCube125.rigid" />
         <Node name="Visu">
             <OglModel name="Visual" filename="mesh/smCube125.obj" color="white" />
-            <RigidMapping object1="../.." object2="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader filename="mesh/smCube125.obj" name="loader" />

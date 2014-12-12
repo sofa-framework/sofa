@@ -29,7 +29,7 @@ template<class DataTypes>
 void DiagonalCompliance<DataTypes>::init()
 {
     Inherit::init();
-    if( this->getMState()==NULL ) serr<<"DiagonalCompliance<DataTypes>::init(), no mstate !" << sendl;
+    if( this->getMState()==NULL ) serr<<"init(), no mstate !" << sendl;
     reinit();
 }
 

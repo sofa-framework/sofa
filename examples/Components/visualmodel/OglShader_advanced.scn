@@ -8,7 +8,7 @@
             <OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/tetra.vert" geoFilename="shaders/tetra_triangles.geo" fragFilename="shaders/tetra.frag" />
             <OglFloatVector4Variable id="MappingTable" values="&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;&#x0A;&#x09;0 0 1 0 &#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;0 0 0 1 &#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0" />
             <OglFloatVector4Variable id="RunSelectTable" values="&#x0A;0. 1. 0. 0.&#x0A;0. 0. 0. 0.&#x0A;0. 0. 1. 0.&#x0A;0. 0. 1. 0.&#x0A;1. 0. 0. 0.&#x0A;1. 0. 0. 0.&#x0A;0. 0. 0. 1.&#x0A;0. 0. 0. 1.&#x0A;0. 0. 1. 0.&#x0A;0. 1. 0. 0." />
-            <OglTetrahedralModel />
+            <OglTetrahedralModel template="Vec3d" />
         </Node>
         <Node>
             <OglShader geometryVerticesOut="12" geometryInputType="10" geometryOutputType="5" vertFilename="shaders/PT.vert" geoFilename="shaders/PT.geo" fragFilename="shaders/PT.frag" />
@@ -16,7 +16,7 @@
             <OglFloatVariable id="fragmentOpacity" value="1.0" />
             <OglFloatVector4Variable id="MappingTable" values="&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;&#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;&#x0A;&#x09;0 0 1 0 &#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 0 1 &#x0A;&#x09;0 1 0 0 &#x0A;&#x09;&#x0A;&#x09;0 0 0 1 &#x0A;&#x09;1 0 0 0 &#x0A;&#x09;0 0 1 0 &#x0A;&#x09;0 1 0 0" />
             <OglFloatVector4Variable id="RunSelectTable" values="&#x0A;0. 1. 0. 0.&#x0A;0. 0. 0. 0.&#x0A;0. 0. 1. 0.&#x0A;0. 0. 1. 0.&#x0A;1. 0. 0. 0.&#x0A;1. 0. 0. 0.&#x0A;0. 0. 0. 1.&#x0A;0. 0. 0. 1.&#x0A;0. 0. 1. 0.&#x0A;0. 1. 0. 0." />
-            <OglTetrahedralModel />
+            <OglTetrahedralModel template="Vec3d" />
         </Node>
     </Node>
 </Node>

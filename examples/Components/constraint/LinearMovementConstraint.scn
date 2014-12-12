@@ -14,11 +14,11 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
             <TriangleMeshModel moving="1" simulated="1" contactStiffness="100000000"/>
-            <RigidMapping />
+            <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver.obj" color="red" />
-            <RigidMapping name="default161" object1="../.." object2="Visual" />
+            <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
     <Node name="Spoon2">
@@ -35,11 +35,11 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
             <TriangleMeshModel moving="1" simulated="1" contactStiffness="100000000" />
-            <RigidMapping />
+            <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver.obj" color="green" />
-            <RigidMapping name="default161" object1="../.." object2="Visual"/>
+            <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual"/>
         </Node>
     </Node>
     <Node name="Spoon3">
@@ -56,11 +56,11 @@
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" template="Vec3d" name="dofs" />
             <TriangleMeshModel moving="1" simulated="1" contactStiffness="100000000" />
-            <RigidMapping />
+            <RigidMapping template="Rigid3d,Vec3d" />
         </Node>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/liver.obj" color="blue" />
-            <RigidMapping name="default161" object1="../.." object2="Visual" />
+            <RigidMapping template="Rigid3d,ExtVec3f" name="default161" input="@.." output="@Visual" />
         </Node>
     </Node>
 </Node>

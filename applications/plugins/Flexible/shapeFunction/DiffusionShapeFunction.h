@@ -43,14 +43,17 @@
 //#include <Eigen/SparseCholesky>
 //#include <Eigen/IterativeLinearSolvers>
 
-#define HARMONIC 0
-#define BIHARMONIC 1
-#define ANISOTROPIC 2
+//#define HARMONIC 0
+//#define BIHARMONIC 1
+//#define ANISOTROPIC 2
 
 #define GAUSS_SEIDEL 0
-#define LDLT 1
+#ifdef SOFA_HAVE_MGDIFFUSI0N
+#define JACOBI 1
 #define CG 2
-#define biCG 3
+#define MULTIGRID 3
+#include <DiffusionSolver.h>
+#endif
 
 
 namespace sofa
@@ -165,21 +168,23 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     static void updateWeights(DiffusionShapeFunction* This, const unsigned index)
     {
         // retrieve data
-        typename DiffusionShapeFunction::raDist distData(This->f_distances);           const typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
-        typename DiffusionShapeFunction::waInd indData(This->f_index);                 typename DiffusionShapeFunction::IndTypes::CImgT& indices = indData->getCImg();
-        typename DiffusionShapeFunction::waDist weightData(This->f_w);                 typename DiffusionShapeFunction::DistTypes::CImgT& weights = weightData->getCImg();
+        typename DiffusionShapeFunction::raDist distData(This->f_distances);  const typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
+        typename DiffusionShapeFunction::waInd indData(This->f_index);        typename DiffusionShapeFunction::IndTypes::CImgT& indices = indData->getCImg();
+        typename DiffusionShapeFunction::waDist weightData(This->f_w);        typename DiffusionShapeFunction::DistTypes::CImgT& weights = weightData->getCImg();
 
         // copy from dist
         unsigned int nbref=This->f_nbRef.getValue();
-        cimg_forXYZ(dist,x,y,z) if(dist(x,y,z)>0)
+        cimg_forXYZ(dist,x,y,z)
         {
-            unsigned int j=0;
-            while(j!=nbref && weights(x,y,z,j)>=dist(x,y,z)) j++;
-            if(j!=nbref)
+            if( dist(x,y,z)>This->d_weightThreshold.getValue() ) // neglecting too small values
             {
-                if(j!=nbref-1) for(unsigned int k=nbref-1; k>j; k--) { weights(x,y,z,k)=weights(x,y,z,k-1); indices(x,y,z,k)=indices(x,y,z,k-1); }
-                weights(x,y,z,j)=dist(x,y,z);
-                indices(x,y,z,j)=index+1;
+                unsigned int j=0;
+                while(j<nbref && weights(x,y,z,j)>=dist(x,y,z)) j++; // find the right ordered place
+                if(j<nbref) // no too small weight
+                {
+                    /*if(j!=nbref-1) */for(unsigned int k=nbref-1; k>j; k--) { weights(x,y,z,k)=weights(x,y,z,k-1); indices(x,y,z,k)=indices(x,y,z,k-1); } // ending weights are moved back
+                    weights(x,y,z,j)=dist(x,y,z); indices(x,y,z,j)=index+1; // current weight is inserted
+                }
             }
         }
     }
@@ -189,7 +194,8 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
     template<class DiffusionShapeFunction>
     static void normalizeWeights(DiffusionShapeFunction* This)
     {
-        typename DiffusionShapeFunction::waDist weightData(This->f_w);                 typename DiffusionShapeFunction::DistTypes::CImgT& weights = weightData->getCImg();
+        typename DiffusionShapeFunction::waDist weightData(This->f_w);
+        typename DiffusionShapeFunction::DistTypes::CImgT& weights = weightData->getCImg();
         cimg_forXYZ(weights,x,y,z)
         {
             typename DiffusionShapeFunction::DistT totW=0;
@@ -216,12 +222,17 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // init temperatures
         dist.fill(-1);
-        cimg_foroff(inimg,off) if(inimg[off]) dist[off]=DiffusionShapeFunction::MAXTEMP*0.5;
+        cimg_foroff(inimg,off) if(inimg[off]) dist[off]=
+#ifdef SOFA_HAVE_MGDIFFUSI0N
+                0;
+#else
+                0.5;  // by default 0 value must encode a Neuman condition?
+#endif
 
         for(unsigned int i=0; i<parent.size(); i++)
         {
             typename DiffusionShapeFunction::Coord p = inT->toImageInt(parent[i]);
-            if(in->isInside(p[0],p[1],p[2])) dist(p[0],p[1],p[2])=(i==index)?DiffusionShapeFunction::MAXTEMP:0;
+            if(in->isInside(p[0],p[1],p[2])) dist(p[0],p[1],p[2])=(i==index)?1:0;
         }
 
         if(index<This->nbBoundaryConditions.getValue())
@@ -258,6 +269,17 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 //            if(in->isInside(p[0],p[1],p[2])) mask(p[0],p[1],p[2])=0; // dirichlet
 //        }
 
+//        if(index<This->nbBoundaryConditions.getValue())
+//        {
+//            typename DiffusionShapeFunction::raDist bcData(This->f_boundaryConditions[index]);
+//            if(!bcData->isEmpty())
+//            {
+//                const  typename DiffusionShapeFunction::DistTypes::CImgT& bc = bcData->getCImg();
+//                cimg_foroff(bc,off)
+//                        if(bc[off]>=0) mask[off]=0; // dirichlet
+//            }
+//        }
+
 //        std::stringstream ss2;
 //        ss2 << "/tmp/DiffusionShapeFunction"<<index<<"_mask_"<<dist.width()<<"_"<<dist.height()<<"_"<<dist.depth()<<"_"<<sizeof(char)<<".raw";
 //        mask.save( ss2.str().c_str() );
@@ -268,6 +290,171 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
     }
 
+
+#ifdef SOFA_HAVE_MGDIFFUSI0N
+
+    template<class DiffusionShapeFunction>
+    static void buildMaterialImage(DiffusionShapeFunction* This, cimg_library::CImg<float>& material)
+    {
+        typename DiffusionShapeFunction::raImage in(This->image);
+        if(in->isEmpty())  { This->serr<<"Image not found"<<This->sendl; return; }
+        material = in->getCImg(0);
+    }
+
+    template<class DiffusionShapeFunction>
+    static void buildDiffusionProblem(DiffusionShapeFunction* This, const unsigned index, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask)
+    {
+        // retrieve data
+        typename DiffusionShapeFunction::raImage in(This->image);
+        typename DiffusionShapeFunction::raTransform inT(This->transform);
+        if(in->isEmpty())  { This->serr<<"Image not found"<<This->sendl; return; }
+        const typename DiffusionShapeFunction::ImageTypes::CImgT& inimg = in->getCImg(0);  // suppose time=0
+
+        typename DiffusionShapeFunction::raVecCoord parent(This->f_position);
+        if(!parent.size()) { This->serr<<"Parent nodes not found"<<This->sendl; return; }
+
+        // init temperatures
+        values.resize(inimg.width(),inimg.height(),inimg.depth(),1);
+        values.fill(0);
+
+        mask.resize(inimg.width(),inimg.height(),inimg.depth(),1);
+        cimg_foroff(mask,off)
+            mask[off] = !inimg[off] ? DiffusionSolver<float>::OUTSIDE : DiffusionSolver<float>::INSIDE;
+
+
+        for(unsigned int i=0; i<parent.size(); i++)
+        {
+            typename DiffusionShapeFunction::Coord p = inT->toImageInt(parent[i]);
+            if(in->isInside(p[0],p[1],p[2]))
+            {
+                values(p[0],p[1],p[2])=(i==index)?1:0;
+                mask(p[0],p[1],p[2]) = DiffusionSolver<float>::DIRICHLET;
+            }
+        }
+
+        if(index<This->nbBoundaryConditions.getValue())
+        {
+            typename DiffusionShapeFunction::raDist bcData(This->f_boundaryConditions[index]);
+            if(!bcData->isEmpty())
+            {
+                const  typename DiffusionShapeFunction::DistTypes::CImgT& bc = bcData->getCImg();
+                cimg_foroff(bc,off)
+                {
+                    if(bc[off]>=0)
+                    {
+                        values[off]=bc[off];
+                        mask[off] = DiffusionSolver<float>::DIRICHLET; // dirichlet
+                    }
+                }
+            }
+        }
+
+    }
+
+
+
+
+
+    template<class DiffusionShapeFunction>
+    static void solveGS(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    {
+        typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
+        DiffusionSolver<float>::solveGS( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), 1.5, material /*This->d_weightThreshold.getValue()*/ );
+
+        if( This->d_outsideDiffusion.getValue() )
+        {
+            cimg_for_insideXYZ(mask,x,y,z,1) // at least a one pixel outside border
+            {
+                char& m = mask(x,y,z);
+                if( m == DiffusionSolver<float>::OUTSIDE ) m = DiffusionSolver<float>::INSIDE;
+                else m = DiffusionSolver<float>::DIRICHLET;
+            }
+
+            DiffusionSolver<float>::solveGS( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), 1.5 /*This->d_weightThreshold.getValue()*/ );
+        }
+
+        // convert from float // TODO improve that
+        typename DiffusionShapeFunction::waDist distData(This->f_distances);
+        typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
+        dist = values;
+    }
+
+    template<class DiffusionShapeFunction>
+    static void solveJacobi(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    {
+        typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
+        DiffusionSolver<float>::solveJacobi( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
+
+        if( This->d_outsideDiffusion.getValue() )
+        {
+            cimg_for_insideXYZ(mask,x,y,z,1) // at least a one pixel outside border
+            {
+                char& m = mask(x,y,z);
+                if( m == DiffusionSolver<float>::OUTSIDE ) m = DiffusionSolver<float>::INSIDE;
+                else m = DiffusionSolver<float>::DIRICHLET;
+            }
+
+            DiffusionSolver<float>::solveJacobi( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue() );
+        }
+
+        // convert from float // TODO improve that
+        typename DiffusionShapeFunction::waDist distData(This->f_distances);
+        typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
+        dist = values;
+    }
+
+    template<class DiffusionShapeFunction>
+    static void solveCG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* material=NULL)
+    {
+        typename DiffusionShapeFunction::TransformType::Coord spacing = This->transform.getValue().getScale();
+        DiffusionSolver<float>::solveCG( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue(), material );
+
+        if( This->d_outsideDiffusion.getValue() )
+        {
+            cimg_for_insideXYZ(mask,x,y,z,1) // at least a one pixel outside border
+            {
+                char& m = mask(x,y,z);
+                if( m == DiffusionSolver<float>::OUTSIDE ) m = DiffusionSolver<float>::INSIDE;
+                else m = DiffusionSolver<float>::DIRICHLET;
+            }
+
+            DiffusionSolver<float>::solveCG( values, mask, spacing[0], spacing[1], spacing[2], This->iterations.getValue(), This->tolerance.getValue() );
+        }
+
+        // convert from float // TODO improve that
+        typename DiffusionShapeFunction::waDist distData(This->f_distances);
+        typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
+        dist = values;
+    }
+
+    template<class DiffusionShapeFunction>
+    static void solveMG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* /*material*/=NULL)
+    {
+        DiffusionSolver<float>::solveMG( values, mask, This->tolerance.getValue(), 0, This->iterations.getValue() );
+
+        if( This->d_outsideDiffusion.getValue() )
+        {
+            cimg_for_insideXYZ(mask,x,y,z,1) // at least a one pixel outside border
+            {
+                char& m = mask(x,y,z);
+                if( m == DiffusionSolver<float>::OUTSIDE ) m = DiffusionSolver<float>::INSIDE;
+                else m = DiffusionSolver<float>::DIRICHLET;
+            }
+
+            DiffusionSolver<float>::solveMG( values, mask, This->tolerance.getValue(), 0, This->iterations.getValue() );
+        }
+
+        // convert from float // TODO improve that
+        typename DiffusionShapeFunction::waDist distData(This->f_distances);
+        typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
+        dist = values;
+    }
+
+
+
+
+
+#endif
 
     /**
     * do one gauss seidel diffusion step : each pixel is replaced by the weighted average of its neighbors
@@ -323,7 +510,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         typedef typename DiffusionShapeFunction::DistT DistT;
 
         // laplacian stencil
-        CImg<DistT> stencil(3,3,3);
+        cimg_library::CImg<DistT> stencil(3,3,3);
         stencil.fill(0);
         stencil(1,1,1)=-6.0;
         stencil(0,1,1)=stencil(2,1,1)=stencil(1,0,1)=stencil(1,2,1)=stencil(1,1,0)=stencil(1,1,2)=1.0;
@@ -370,7 +557,7 @@ template <class ShapeFunctionTypes_,class ImageTypes_>
 class DiffusionShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
 {
     friend struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+//    friend struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DiffusionShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_));
@@ -408,13 +595,17 @@ public:
 
     /** @name  Options */
     //@{
-    Data<bool> f_clearData;
     Data<helper::OptionsGroup> method;
     Data<helper::OptionsGroup> solver;
     Data<unsigned int> iterations;
     Data<Real> tolerance;
+    Data<Real> d_weightThreshold; ///< neglect smaller weights (another way to limit parents with nbref)
     Data<bool> biasDistances;
-    static const DistT MAXTEMP;
+
+
+    Data<bool> d_clearData;
+    Data<bool> d_outsideDiffusion;
+
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }
@@ -430,8 +621,64 @@ public:
         // init weight and indice image
         DiffusionShapeFunctionSpecialization<ImageTypes::label>::init( this );
 
-        if (this->method.getValue().getSelectedId() == HARMONIC)
+//        if (this->method.getValue().getSelectedId() == HARMONIC)
         {
+
+#ifdef SOFA_HAVE_MGDIFFUSI0N
+
+
+//            DiffusionSolver<float>::setNbThreads( 1 );
+            DiffusionSolver<float>::setDefaultNbThreads();
+
+            cimg_library::CImg<float> values;
+            cimg_library::CImg<char> mask;
+            cimg_library::CImg<float> material, *materialPtr = NULL;
+
+            if( biasDistances.getValue() )
+            {
+                DiffusionShapeFunctionSpecialization<ImageTypes::label>::buildMaterialImage(this,material);
+                materialPtr = &material;
+            }
+
+//            if( materialPtr ) materialPtr->display("materialPtr");
+
+
+
+
+            for(unsigned int i=0; i<this->f_position.getValue().size(); i++)
+            {
+                DiffusionShapeFunctionSpecialization<ImageTypes::label>::buildDiffusionProblem(this,i,values,mask);
+
+//                values.display("values");
+//                mask.display("mask");
+
+
+
+                switch( this->solver.getValue().getSelectedId() )
+                {
+                    case JACOBI:
+                        DiffusionShapeFunctionSpecialization<ImageTypes::label>::solveJacobi(this,values,mask,materialPtr);
+                        break;
+                    case CG:
+                        DiffusionShapeFunctionSpecialization<ImageTypes::label>::solveCG(this,values,mask,materialPtr);
+                        break;
+                    case MULTIGRID:
+                        DiffusionShapeFunctionSpecialization<ImageTypes::label>::solveMG(this,values,mask);
+                        break;
+                    case GAUSS_SEIDEL:
+                    default:
+                        DiffusionShapeFunctionSpecialization<ImageTypes::label>::solveGS(this,values,mask,materialPtr);
+                        break;
+                }
+
+//                values.display("diffused");
+
+                DiffusionShapeFunctionSpecialization<ImageTypes::label>::updateWeights(this,i);
+            }
+
+
+#else
+
             if (this->solver.getValue().getSelectedId() == GAUSS_SEIDEL)
             {
                 for(unsigned int i=0; i<this->f_position.getValue().size(); i++)
@@ -495,13 +742,13 @@ public:
                                 std::cout << "estimated error: " << cg.error()      << std::endl;
                 }
             }*/
-
+#endif
 
         }
 
         DiffusionShapeFunctionSpecialization<ImageTypes::label>::normalizeWeights( this );
 
-        if(this->f_clearData.getValue())
+        if(this->d_clearData.getValue())
         {
             waDist dist(this->f_distances); dist->clear();
         }
@@ -541,25 +788,33 @@ protected:
         :Inherit()
         , f_distances(initData(&f_distances,DistTypes(),"distances",""))
         , nbBoundaryConditions(initData(&nbBoundaryConditions,(unsigned int)0,"nbBoundaryConditions","Number of boundary condition images provided"))
-        , f_clearData(initData(&f_clearData,true,"clearData","clear diffusion image after computation?"))
-        , method ( initData ( &method,"method","method" ) )
+//        , method ( initData ( &method,"method","method" ) )
         , solver ( initData ( &solver,"solver","solver (param)" ) )
         , iterations(initData(&iterations,(unsigned int)100,"iterations","Max number of iterations for iterative solvers"))
-        , tolerance(initData(&tolerance,(Real)1e-8,"tolerance","Error tolerance for iterative solvers"))
+        , tolerance(initData(&tolerance,(Real)1e-6,"tolerance","Error tolerance for iterative solvers"))
+        , d_weightThreshold(initData(&d_weightThreshold,(Real)0,"weightThreshold","Thresold to neglect too small weights"))
         , biasDistances(initData(&biasDistances,false,"bias","Bias distances using inverse pixel values"))
+        , d_clearData(initData(&d_clearData,true,"clearData","clear diffusion image after computation?"))
+        , d_outsideDiffusion(initData(&d_outsideDiffusion,false,"outsideDiffusion","propagate shape function outside of the object? (can be useful for embeddings)"))
     {
-        helper::OptionsGroup methodOptions(3,"0 - Harmonic"
-                                           ,"1 - bi-Harmonic"
-                                           ,"2 - Anisotropic"
-                                           );
-        methodOptions.setSelectedItem(HARMONIC);
-        method.setValue(methodOptions);
-        method.setGroup("parameters");
+//        helper::OptionsGroup methodOptions(3,"0 - Harmonic"
+//                                           ,"1 - bi-Harmonic"
+//                                           ,"2 - Anisotropic"
+//                                           );
+//        methodOptions.setSelectedItem(HARMONIC);
+//        method.setValue(methodOptions);
+//        method.setGroup("parameters");
 
-        helper::OptionsGroup solverOptions(4,"0 - Gauss-Seidel"
-                                           ,"1 - LDLT"
+        helper::OptionsGroup solverOptions(1
+#ifdef SOFA_HAVE_MGDIFFUSI0N
+                                          +3
+#endif
+                                           ,"0 - Gauss-Seidel"
+                                   #ifdef SOFA_HAVE_MGDIFFUSI0N
+                                           ,"1 - Jacobi"
                                            ,"2 - CG"
-                                           ,"3 - biCG"
+                                           ,"3 - Multigrid"
+#endif
                                            );
         solverOptions.setSelectedItem(GAUSS_SEIDEL);
         solver.setValue(solverOptions);
@@ -608,9 +863,6 @@ protected:
         createInputDataVector(this->nbBoundaryConditions.getValue(), f_boundaryConditions, "boundaryConditions", "boundaryConditions");
     }
 };
-
-template<class ShapeFunctionTypes,class ImageTypes>
-const typename DiffusionShapeFunction<ShapeFunctionTypes,ImageTypes>::DistT DiffusionShapeFunction<ShapeFunctionTypes,ImageTypes>::MAXTEMP = (DistT)1.0;
 
 }
 }

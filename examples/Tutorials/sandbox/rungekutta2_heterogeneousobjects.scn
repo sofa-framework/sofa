@@ -9,8 +9,7 @@
 <Node name="mapped">
 	<MechanicalObject />
 	<RegularGridTopology p0="-0.5 -0.5 -0.5"/>
-	<MechanicalObject />
-	<RigidMapping />
+	<RigidMapping input="@.." output="@."/>
 </Node>
 </Node>
 

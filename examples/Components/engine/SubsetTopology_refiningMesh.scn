@@ -6,7 +6,7 @@
     <DefaultContactManager name="Response" response="default" />
     <Node name="SquareGravity">
         <EulerImplicitSolver name="cg_odesolver" />
-        <CGLinearSolver iterations="100" />
+        <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="meshLoader" filename="mesh/truthcylinder1.msh" />
         <SubsetTopology template="Vec3d" box="-5 -20 -5 5 -10 5" drawROI="0" src="@meshLoader" rest_position="@meshLoader.position" name="Subset" localIndices="1" />
         <Node name="in">
@@ -24,7 +24,7 @@
                 <TriangleSetTopologyModifier name="Modifier" />
                 <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                 <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-                <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../Container" object2="ContainerTri" />
+                <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@ContainerTri" />
                 <VisualModel name="Visual" color="red" dx="60" />
                 <IdentityMapping input="@.." output="@Visual" />
             </Node>
@@ -33,26 +33,26 @@
             <MechanicalObject template="Vec3d" name="mecaObj2" />
             <SparseGridTopology n="4 7 4" vertices="@../Subset.pointsOutROI" name="name" drawHexahedra="0" />
             <UniformMass totalmass="15" />
-            <HexahedronFEMForceField template="Vec3d" name="FEM" youngModulus="50" />
+            <HexahedronFEMForceField template="Vec3d" name="FEM" youngModulus="50" poissonRatio="0.49" />
             <Node name="tetra">
                 <TetrahedronSetTopologyContainer name="Container" position="@../../Subset.pointsOutROI" tetrahedra="@../../Subset.tetrahedraOutROI" />
                 <TetrahedronSetTopologyModifier name="Modifier" />
                 <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                 <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTetrahedra="0" />
                 <MechanicalObject name="mecaObj3" />
-                <BarycentricMapping object1="../.." object2=".." />
+                <BarycentricMapping input="@.." output="@." />
                 <Node>
                     <TriangleSetTopologyContainer name="ContainerTri" />
                     <TriangleSetTopologyModifier name="Modifier" />
                     <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
                     <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
-                    <Tetra2TriangleTopologicalMapping name="Mapping" object1="../../Container" object2="ContainerTri" />
+                    <Tetra2TriangleTopologicalMapping name="Mapping" input="@../Container" output="@ContainerTri" />
                     <TriangleModel template="Vec3d" name="default7" />
                     <VisualModel name="Visual" color="blue" dx="60" />
                     <IdentityMapping input="@.." output="@Visual" />
                 </Node>
             </Node>
         </Node>
-        <StiffSpringForceField name="Spring" object1="../in/mecaObj1" object2="../Out/tetra/mecaObj3" tags="extraSpring" spring="0 0 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       1 1 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       2 2 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       3 3 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       4 4 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       5 5 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       6 6 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       7 7 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       8 8 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       9 9 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       10 10 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       11 11 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       12 12 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       13 13 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       14 14 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       15 15 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       16 16 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       17 17 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       18 18 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       19 19 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       20 20 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       21 21 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       22 22 10000 0 0" />
+        <StiffSpringForceField name="Spring" object1="@in/mecaObj1" object2="@Out/tetra/mecaObj3" tags="extraSpring" spring="0 0 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       1 1 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       2 2 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       3 3 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       4 4 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       5 5 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       6 6 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       7 7 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       8 8 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       9 9 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       10 10 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       11 11 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       12 12 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       13 13 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       14 14 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       15 15 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       16 16 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       17 17 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       18 18 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       19 19 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       20 20 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       21 21 10000 0 0&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;       22 22 10000 0 0" />
     </Node>
 </Node>

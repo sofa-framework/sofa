@@ -4,6 +4,7 @@
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" name="collision response" />
+    <DiscreteIntersection/>
     <Node name="MeshTopology">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -17,8 +18,8 @@
         <Node name="PointSetTopology">
             <PointSetTopologyContainer name="Container2" />
             <!--<PointSetTopologyModifier/>-->
-            <!--<Mesh2PointTopologicalMapping object1="Container1" object2="Container2" pointBaryCoords="0 0 0" tetraBaryCoords="0.25 0.25 0.25" />-->
-            <Mesh2PointTopologicalMapping object1="Container1" object2="Container2" pointBaryCoords="0 0 0" edgeBaryCoords="0.5 0.5 0.0" />
+            <!--<Mesh2PointTopologicalMapping input="@Container1" output="@Container2" pointBaryCoords="0 0 0" tetraBaryCoords="0.25 0.25 0.25" />-->
+            <Mesh2PointTopologicalMapping input="@Container1" output="@Container2" pointBaryCoords="0 0 0" edgeBaryCoords="0.5 0.5 0.0" />
             <MechanicalObject />
             <!--<Mesh2PointMechanicalMapping/>-->
             <SphereModel radius="0.25" />

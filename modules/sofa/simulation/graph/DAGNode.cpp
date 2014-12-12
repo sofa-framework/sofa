@@ -47,7 +47,13 @@ DAGNode::DAGNode(const std::string& name, DAGNode* parent)
 }
 
 DAGNode::~DAGNode()
-{}
+{
+	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    {
+		DAGNode::SPtr dagnode = sofa::core::objectmodel::SPtr_static_cast<DAGNode>(*it);
+		dagnode->l_parents.remove(this);
+	}
+}
 
 /// Create, add, then return the new child of this Node
 Node::SPtr DAGNode::createChild(const std::string& nodeName)
@@ -365,7 +371,7 @@ core::objectmodel::BaseNode::Parents DAGNode::getParents() const
 {
     Parents p;
 
-    LinkParents::Container parents = l_parents.getValue();
+    const LinkParents::Container& parents = l_parents.getValue();
     for ( unsigned int i = 0; i < parents.size() ; i++)
     {
         if (parents[i])
@@ -447,19 +453,24 @@ void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 /// This method bypass the actionScheduler of this node if any.
 void DAGNode::doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder)
 {
-    if( precomputedOrder && !_precomputedTraversalOrder.empty() )
+	if( precomputedOrder && !_precomputedTraversalOrder.empty() )
     {
 //        std::cerr<<SOFA_CLASS_METHOD<<"precomputed "<<_precomputedTraversalOrder<<std::endl;
 
         for( NodeList::iterator it = _precomputedTraversalOrder.begin(), itend = _precomputedTraversalOrder.end() ; it != itend ; ++it )
-            action->processNodeTopDown( *it );
+		{
+			if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
+				action->processNodeTopDown( *it );
+		}
 
         for( NodeList::reverse_iterator it = _precomputedTraversalOrder.rbegin(), itend = _precomputedTraversalOrder.rend() ; it != itend ; ++it )
-            action->processNodeBottomUp( *it );
+		{
+			if ( action->canAccessSleepingNode || !(*it)->getContext()->isSleeping() )
+	            action->processNodeBottomUp( *it );
+		}
     }
     else
     {
-
 //        std::cerr<<SOFA_CLASS_METHOD<<"not precomputed "<<action->getClassName()<<"      -  "<<action->getCategoryName()<<" "<<action->getInfos()<<std::endl;
 
 
@@ -506,7 +517,13 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         return;
     }
 
+	if( this->isSleeping() && !action->canAccessSleepingNode )
+	{
+        // do not execute the visitor on this node
+        statusMap[this] = PRUNED;
 
+        return;
+    }
 
     // pour chaque noeud "prune" on continue à parcourir quand même juste pour marquer le noeud comme parcouru
 
@@ -617,6 +634,13 @@ void DAGNode::executeVisitorTreeTraversal( simulation::Visitor* action, StatusMa
 {
     if( !this->isActive() )
     {
+        // do not execute the visitor on this node
+        statusMap[this] = PRUNED;
+        return;
+    }
+
+	if( this->isSleeping() && !action->canAccessSleepingNode )
+	{
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
         return;

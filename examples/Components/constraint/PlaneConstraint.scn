@@ -3,6 +3,7 @@
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" name="CollisionPipeline" />
     <BruteForceDetection name="N2" />
+    <DiscreteIntersection />
     <CollisionResponse response="default" name="collision response" />
     <!--<CollisionGroup />-->
     <Node name="Liver">
@@ -16,7 +17,7 @@
         <PlaneConstraint plane="-4 3 0 1 2 1 0 0 1 2" />
         <Node name="Visu">
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" color="red" />
-            <BarycentricMapping object1="../.." object2="VisualModel" name="visual mapping" />
+            <BarycentricMapping input="@.." output="@VisualModel" name="visual mapping" />
         </Node>
         <Node name="Surf">
 	    <SphereLoader filename="mesh/liver.sph" />

@@ -15,7 +15,7 @@
         <ShapeMatchingForceField name="ShapeMatching" stiffness="10000" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/dragon.obj" color="red" dz="10" />
-            <IdentityMapping object1="../.." object2="Visual" />
+            <IdentityMapping input="@.." output="@Visual" />
         </Node>
         <Node name="Surf">
             <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
@@ -34,6 +34,6 @@
         <Triangle name="FloorTriangle" simulated="0" moving="0" />
         <Line name="FloorLine" simulated="0" moving="0" />
         <Point name="FloorLine" simulated="0" moving="0" />
-        <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" scaleTex="0.2" dy="-10" scale="1.75" />
+        <OglModel name="FloorV" fileMesh="mesh/floor3.obj" texturename="textures/brushed_metal.bmp" dy="-10" scale="1.75" />
     </Node>
 </Node>

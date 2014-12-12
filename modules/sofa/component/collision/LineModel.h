@@ -77,6 +77,8 @@ public:
     const Deriv& v1() const;
     const Deriv& v2() const;
 
+    Deriv n() const;
+
     /// Return true if the element stores a free position vector
     bool hasFreePosition() const;
 
@@ -276,6 +278,8 @@ inline const typename DataTypes::Deriv& TLine<DataTypes>::v1() const { return (*
 template<class DataTypes>
 inline const typename DataTypes::Deriv& TLine<DataTypes>::v2() const { return (*this->model->mstate->getV())[this->model->elems[this->index].p[1]]; }
 
+template<class DataTypes>
+inline typename DataTypes::Deriv TLine<DataTypes>::n() const {return (this->model->mpoints->getNormal(this->i1()) + this->model->mpoints->getNormal( this->i2())).normalized();}
 
 template<class DataTypes>
 inline typename TLineModel<DataTypes>::Deriv TLineModel<DataTypes>::velocity(int index) const { return ((*mstate->getV())[elems[index].p[0]] + (*mstate->getV())[elems[index].p[1]])/((Real)(2.0)); }

@@ -53,7 +53,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
         EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (getRoot() );
         CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>   (getRoot() );
 
-        Node::SPtr string = massSpringString(
+        simulation::Node::SPtr string = massSpringString(
                     getRoot(), // attached to root node
                     0,1,0,     // first particle position
                     0,0,0,     // last  particle position

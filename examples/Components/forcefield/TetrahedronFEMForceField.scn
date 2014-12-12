@@ -24,7 +24,7 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="2.5" />
-                <BarycentricMapping object1="../.." object2="Visual" />
+                <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
@@ -44,7 +44,7 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="blue" dx="5" />
-                <BarycentricMapping object1="../.." object2="Visual" />
+                <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus2_for_collision.obj" />
@@ -64,7 +64,7 @@
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="svd" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" dx="7.5" />
-                <BarycentricMapping object1="../.." object2="Visual" />
+                <BarycentricMapping input="@.." output="@Visual" />
             </Node>
             <Node name="Surf2">
                 <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />

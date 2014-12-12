@@ -34,6 +34,7 @@ class ColorMap_Image(Sofa.PythonScriptController):
 #		data = [ [vonMises3d(item)] for item in E]
 		data = [ [norm(item)] for item in E]
 		self.disp.findData('VoxelData').value= str(data)
+		self.disp.reinit()
 		return 0
 
 
@@ -43,7 +44,7 @@ class ColorMap_Image(Sofa.PythonScriptController):
 
 class ColorMap_Frame(Sofa.PythonScriptController):
 	def createGraph(self,node):
-		path = '@../'+self.findData('variables').value
+		path = '@../'+self.variables[0][0]
 		staticmesh = path+'/mesh'
 
 		self.strain=node.getObject('E')			

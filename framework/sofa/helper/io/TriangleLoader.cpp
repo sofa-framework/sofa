@@ -140,7 +140,7 @@ void TriangleLoader::loadTriangles(FILE *file)
                 break;
             default:
                 printf("loadTriangles(): Unknown token \"%s\".\n", buf);
-                exit(1);
+                exit(EXIT_FAILURE);
                 break;
             }
             break;

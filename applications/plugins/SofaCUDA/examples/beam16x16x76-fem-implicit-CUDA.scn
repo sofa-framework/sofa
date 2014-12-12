@@ -14,7 +14,7 @@
 		<MechanicalObject />
 		<Node name="Visu">
 			<OglModel name="Visual" color="red"/>
-			<IdentityMapping object1="../.." object2="Visual"/>
+			<IdentityMapping input="@.." output="@Visual"/>
 		</Node>
 	</Node>
 	<Node name="M1">
@@ -53,7 +53,7 @@
 				zmin="-7.5" zmax="7.5"
 			/>
 			<MappedObject name="Mapped" template="CudaVec3f" />
-			<SubsetMapping object2="Mapped" />
+			<SubsetMapping output="@Mapped" />
 			<Node>
 				<CudaVisualModel template="CudaVec3f" diffuse="0.8 0.8 0.8 1.0" computeNormals="true" />
 			</Node>

@@ -9,16 +9,17 @@
     <LocalMinDistance name="Proximity" alarmDistance="0.2" contactDistance="0.09" angleCone="0.0" />
     <CollisionResponse name="Response" response="FrictionContact" />
     <CollisionGroup />
+    <LCPConstraintSolver tolerance="0.001" maxIterations="1000"/>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube">
         <EulerImplicit name="EulerImplicit" />
-        <CGLinearSolver name="CG Solver" />
+        <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="2" />
         <UniformMass name="UniformMass" totalmass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visual Model">
             <OglModel name="Visual Cube" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube RigidDOF" object2="Visual Cube" />
+            <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube RigidDOF" output="@Visual Cube" />
         </Node>
         <Node name="Collision Model">
             <Mesh name="Cube Mesh" filename="mesh/cube.obj" />
@@ -27,19 +28,19 @@
             <Triangle name="Cube Triangle For Collision" />
             <Line name="Cube Edge For Collision" />
             <Point name="Cube Point For Collision" />
-            <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube RigidDOF" object2="Collision Cube" />
+            <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube RigidDOF" output="@Collision Cube" />
         </Node>
     </Node>
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube">
         <EulerImplicit name="EulerImplicit" />
-        <CGLinearSolver name="CG Solver" />
+        <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject name="Cube RigidDOF" template="Rigid" dy="5" dx="1" />
         <UniformMass name="UniformMass" totalmass="10.0" />
         <UncoupledConstraintCorrection />
         <Node name="Visual Model">
             <OglModel name="Visual Cube" filename="mesh/cube.obj" color="1 1 0 1.0" />
-            <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube RigidDOF" object2="Visual Cube" />
+            <RigidMapping name="RigidMapping Visual-RigidDOF" input="@../Cube RigidDOF" output="@Visual Cube" />
         </Node>
         <Node name="Collision Model">
             <Mesh name="Cube Mesh" filename="mesh/cube.obj" />
@@ -48,7 +49,7 @@
             <Triangle name="Cube Triangle For Collision" />
             <Line name="Cube Edge For Collision" />
             <Point name="Cube Point For Collision" />
-            <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube RigidDOF" object2="Collision Cube" />
+            <RigidMapping name="RigidMapping Collision-RigidDOF" input="@../Cube RigidDOF" output="@Collision Cube" />
         </Node>
     </Node>
     <Node name="Floor">
