@@ -13,6 +13,14 @@ find_package(SofaGeneral REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SofaAdvanced REQUIRED)
 
+set(SOFA_HAVE_QT @SOFA_HAVE_QT@)
+
+if(SOFA_HAVE_QT)
+    set(QT_USE_IMPORTED_TARGETS TRUE)
+    set(QT4_NO_LINK_QTMAIN TRUE)
+    find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
+endif()
+
 if( NOT TARGET SofaGuiCommon )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaGuiTargets.cmake")
 endif()
