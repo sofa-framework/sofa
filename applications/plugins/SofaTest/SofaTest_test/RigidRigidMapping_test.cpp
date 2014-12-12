@@ -298,7 +298,7 @@ TYPED_TEST( RigidRigidMappingTest , test_translation )
 
 TYPED_TEST( RigidRigidMappingTest , no_index_no_movement_worldCoords )
 {
-    this->errorMax = 150;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_no_index_no_movement_worldCoords());
 }
@@ -306,28 +306,28 @@ TYPED_TEST( RigidRigidMappingTest , no_index_no_movement_worldCoords )
 
 TYPED_TEST( RigidRigidMappingTest , with_index_no_movement_worldCoords )
 {
-    this->errorMax = 100;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_with_index_no_movement_worldCoords());
 }
 
 TYPED_TEST( RigidRigidMappingTest , no_index_worldCoords )
 {
-    this->errorMax = 100;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_no_index_worldCoords());
 }
 
 TYPED_TEST( RigidRigidMappingTest , index_0_worldCoords )
 {
-    this->errorMax = 100;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_index_0_worldCoords());
 }
 
 TYPED_TEST( RigidRigidMappingTest , index_2_worldCoords )
 {
-    this->errorMax = 100;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_index_2_worldCoords());
 }
