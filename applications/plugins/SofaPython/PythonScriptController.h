@@ -30,9 +30,20 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include "PythonScriptEvent.h"
+#include "PythonScriptFunction.h"
 
 namespace sofa
 {
+
+namespace core
+{
+
+namespace objectmodel
+{
+	class PythonScriptFunction;
+}
+
+}
 
 namespace component
 {
@@ -42,6 +53,8 @@ namespace controller
 
 class SOFA_SOFAPYTHON_API PythonScriptController : public ScriptController
 {
+	friend sofa::core::objectmodel::PythonScriptFunction;
+
 public:
     SOFA_CLASS(PythonScriptController,ScriptController);
 
@@ -82,6 +95,9 @@ protected:
 
     /// Script events; user data is implementation-dependant
     virtual void script_onScriptEvent(core::objectmodel::ScriptEvent* event);
+
+	/// Call to script function
+	virtual void script_call(const core::objectmodel::ScriptFunction*, const core::objectmodel::ScriptFunctionParameter*, core::objectmodel::ScriptFunctionResult*);
 
 	/// drawing
 	virtual void script_draw(const core::visual::VisualParams*);

@@ -30,6 +30,7 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/common/Node.h>
 #include "ScriptEvent.h"
+#include "ScriptFunction.h"
 
 namespace sofa
 {
@@ -118,7 +119,11 @@ public:
 
     virtual void handleEvent(core::objectmodel::Event *);
 
-	
+	/**
+	 * @brief call to script function callback.
+	 */
+	void ScriptController::call(const core::objectmodel::ScriptFunction*, const core::objectmodel::ScriptFunctionParameter*, core::objectmodel::ScriptFunctionResult*);
+
 	/**
 	 * @brief draw callback.
 	 */
@@ -162,6 +167,9 @@ protected:
 
     /// Script events; user data is implementation-dependant
     virtual void script_onScriptEvent(core::objectmodel::ScriptEvent *) = 0;
+
+	/// Call to script function
+	virtual void script_call(const core::objectmodel::ScriptFunction*, const core::objectmodel::ScriptFunctionParameter*, core::objectmodel::ScriptFunctionResult*) = 0;
 
 	/// drawing
 	virtual void script_draw(const core::visual::VisualParams*) = 0;
