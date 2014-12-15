@@ -62,6 +62,24 @@ static mat shift_right(unsigned off, unsigned size, unsigned total_cols, SReal v
 }
 
 
+// middle-shift matrix (total_cols x total_cols) square matrix with an Identity (size x size) block at position off
+template<class mat>
+static mat shift_middle(unsigned off, unsigned size, unsigned total_cols, SReal value = 1.0 ) {
+    mat res( total_cols, total_cols );
+    assert( total_cols >= (off + size) );
+
+    res.reserve( size );
+
+    for(unsigned i = 0; i < size; ++i) {
+        unsigned index = off + i;
+        res.startVec( index );
+        res.insertBack(index,index) = value;
+    }
+    res.finalize();
+
+    return res;
+}
+
 
 template<class Triplet, class mat>
 static void add_shifted_right( std::vector<Triplet>& res, const mat& m, unsigned off, SReal factor = 1.0 )

@@ -585,27 +585,25 @@ struct AssemblyVisitor::process_helper {
         assert( empty(Jc) );
 
 
-        if( boost::out_degree(v,g) == 1 ) // simple mapping
-        {
-            graph_type::out_edge_iterator e = boost::out_edges(v, g).first;
-            vertex vp = g[ boost::target(*e, g) ];
+        // full jacobian for multimapping's geometric stiffness
+        mat* geometricStiffnessJc = NULL;
+        if( boost::out_degree(v,g)>1 && !zero(c->Ktilde) ) geometricStiffnessJc = &res.fullmappinggeometricstiffness[ curr ];
+
+        for( graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
+
+            vertex vp = g[ boost::target(*e.first, g) ];
 
             // parent data chunk/mapping matrix
             const chunk* p = vp.data;
             mat& Jp = full[ vp.dofs ];
             {
                 // mapping blocks
-                const mat& jc = g[*e].data->J;
+                const mat& jc = g[*e.first].data->J;
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
                 // children will get the right place on multiplication
                 if( p->master() && empty(Jp) ) {
-                    // scoped::timer step("shift matrix");
-
-                    // note: we *DONT* filter mass/stiffness at this
-                    // stage since this would break direct solvers
-                    // (non-invertible H matrix)
                     Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
                 }
 
@@ -614,51 +612,18 @@ struct AssemblyVisitor::process_helper {
                     // scoped::timer step("mapping matrix product");
 
                     // TODO optimize this, it is the most costly part
-                    add(Jc, jc * Jp );
+                    add(Jc, jc * Jp ); // full mapping
+
+                    if( geometricStiffnessJc )
+                    {
+                        // mapping for geometric stiffness
+                        add( *geometricStiffnessJc, shift_middle<mat>( find(offsets, vp.dofs), p->size, size_m ) );
+                        // TODO centralize the computation of the global offset for all dofs?
+                    }
                 } else {
                     assert( false && "parent has empty J matrix :-/" );
                 }
             }
-        }
-        else // multi-mapping
-        {
-            mat& geometricStiffnessJc = res.fullmappinggeometricstiffness[ curr ];
-
-            for( graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
-
-                vertex vp = g[ boost::target(*e.first, g) ];
-
-                // parent data chunk/mapping matrix
-                const chunk* p = vp.data;
-                mat& Jp = full[ vp.dofs ];
-                {
-                    // todo compute geometricStiffnessJc only if K!=0
-
-                    mat shift = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
-
-                    // mapping blocks
-                    const mat& jc = g[*e.first].data->J;
-
-                    // parent is not mapped: we put a shift matrix with the
-                    // correct offset as its full mapping matrix, so that its
-                    // children will get the right place on multiplication
-                    if( p->master() && empty(Jp) ) {
-                        Jp = shift;
-                    }
-
-                    // Jp is empty for children of a non-master dof (e.g. mouse)
-                    if(!empty(Jp) ){
-                        // scoped::timer step("mapping matrix product");
-
-                        // TODO optimize this, it is the most costly part
-                        add(Jc, jc * Jp );
-                        shift = shift.transpose()*shift;
-                        add(geometricStiffnessJc, shift );
-                    } else {
-                        assert( false && "parent has empty J matrix :-/" );
-                    }
-                }
-           }
 
 //            std::cerr<<"Assembly::geometricStiffnessJc "<<geometricStiffnessJc<<" "<<curr->getName()<<std::endl;
         }
