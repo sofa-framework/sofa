@@ -226,7 +226,7 @@ public:
 
 void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
 {
-    sofa::helper::AdvancedTimer::stepBegin("BruteForceDetection::addCollisionPair");
+    sofa::helper::AdvancedTimer::StepVar bfTimer("BruteForceDetection::addCollisionPair");
     typedef std::pair< std::pair<core::CollisionElementIterator,core::CollisionElementIterator>, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> > TestPair;
 
     core::CollisionModel *cm1 = cmPair.first; //->getNext();
