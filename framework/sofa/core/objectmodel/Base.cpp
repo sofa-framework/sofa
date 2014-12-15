@@ -145,14 +145,20 @@ void Base::addData(BaseData* f, const std::string& name)
         //exit(1);
     }
     m_vecData.push_back(f);
-    m_aliasData.insert(std::make_pair(name, f));
+	if (f->hasDdg())
+	{
+		m_aliasData.insert(std::make_pair(name, f));
+	}
     f->setOwner(this);
 }
 
 /// Add an alias to a Data
 void Base::addAlias( BaseData* field, const char* alias)
 {
-    m_aliasData.insert(std::make_pair(std::string(alias),field));
+	if (field->hasDdg())
+	{
+		m_aliasData.insert(std::make_pair(std::string(alias),field));
+	}
 }
 
 /// Add a link.

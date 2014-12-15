@@ -49,12 +49,159 @@ namespace objectmodel
 
 class Base;
 class BaseData;
+class DDGDataNode;
+
+/**
+ *  \brief Class for a Data node in the Data dependency graph.
+ *
+ *  It's meant to be created and managed by the BaseData class, but it's presence is now optional,
+ *  with any Data being able to be created disconnected from the DDG or to be disconnected later 
+ *  (but for now not reconnected, as we also lose the RTTI information that is only available at creation).
+ *
+ *  The ability to skip the DDGDataNode part for a given BaseData allows for much faster creation and much
+ *  lighter memory footprint, at the cost of losing some additional features 
+ *  (serialisation and exposition for the editor, data propagation in the dependency graph)
+ *  for those nodes beyond the basic data storage and ability to use their values during the simulation.
+ *
+ *  This is intended mainly for modules that dynamically create and destroy lots of nodes, 
+ *  (typically collision detection and response), but can be used anywhere, if for example you
+ *  create your objects in code rather than from a scene file (and do not specify references by name).
+ */
+class SOFA_CORE_API DDGDataNode : public DDGNode
+{
+public:
+    /// @name Class reflection system
+    /// @{
+    typedef TClass<DDGDataNode,DDGNode> MyClass;
+    static const MyClass* GetClass() { return MyClass::get(); }
+    virtual const BaseClass* getClass() const
+    { return GetClass(); }
+    /// @}
+
+	/// Bit field that holds flags value.
+    typedef unsigned DataFlags;
+	/// This internal class is used by the initData() methods to store initialization parameters of a Data
+    class BaseInitData
+    {
+    public:
+        BaseInitData();
+
+		BaseData* data;
+        const char* helpMsg;
+        DataFlags dataFlags;
+        Base* owner;
+        const char* name;
+        const char* ownerClass;
+        const char* group;
+        const char* widget;
+    };
+
+	explicit DDGDataNode(const BaseInitData& init);
+
+	explicit DDGDataNode(BaseData* data, const char* h);
+
+    /// @name DDGNode interface
+    /// @{
+
+	/// Return the name of this %Data within the Base component
+    const std::string& getName() const { return m_name; }
+    /// Set the name of this %Data.
+    ///
+    /// This method should not be called directly, the %Data registration methods in Base should be used instead.
+    void setName(const std::string& name) { m_name=name; }
+
+	///  This method is needed by DDGNode
+    Base* getOwner() const;
+
+	/// This method is needed by DDGNode
+    BaseData* getData() const;
+
+    /// Update the value of this %Data
+    void update();
+
+	/// @}
+
+
+    /// @name Links management
+    /// @{
+
+    typedef std::vector<BaseLink*> VecLink;
+    /// Accessor to the vector containing all the fields of this object
+    const VecLink& getLinks() const { return m_vecLink; }
+
+    bool setParent(DDGDataNode* parent, const std::string& path = std::string());
+    bool setParent(const std::string& path);
+	void removeParent();
+
+    /// Add a link.
+    void addLink(BaseLink* l);
+
+    BaseLink::InitLink<DDGDataNode>
+    initLink(const char* name, const char* help)
+    {
+        return BaseLink::InitLink<DDGDataNode>(this, name, help);
+    }
+
+	virtual bool findDataLinkDest(DDGDataNode*& ptr, const std::string& path, const BaseLink* link);
+
+    /// List of links
+    VecLink m_vecLink;
+
+    /// @}
+
+    virtual void doDelInput(DDGNode* n);
+
+    /// Copy the value of an aspect into another one.
+    virtual void copyAspect(int destAspect, int srcAspect);
+
+    /// Release memory allocated for the specified aspect.
+    virtual void releaseAspect(int aspect);
+
+    /// Help message
+    const char* help;
+    /// Owner class
+    const char* ownerClass;
+    /// group
+    const char* group;
+    /// widget
+    const char* widget;
+
+    /// Number of changes since creation
+    helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
+    /// True if this %Data is set, i.e. its value is different from the default value
+    helper::fixed_array<bool, SOFA_DATA_MAX_ASPECTS> m_isSets;
+    /// Flags indicating the purpose and behaviour of this %Data
+
+    /// Data name within the Base component
+    std::string m_name;
+    /// Parent Node
+    SingleLink<DDGDataNode,DDGDataNode,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> m_parent;
+	/// BaseData for value storage
+	BaseData* m_data;
+
+	static const std::string NO_NAME;
+	static const DDGLinkContainer NO_LINKS;
+
+	static void enableCreation(bool enable);
+
+	static bool isCreationEnabled();
+
+private:
+	class CreationArray : public helper::fixed_array<bool, SOFA_DATA_MAX_ASPECTS>
+	{
+	public:
+		CreationArray(bool init) { assign(init); }
+	};
+
+	static CreationArray m_creationEnabled;
+};
+
 
 /**
  *  \brief Abstract base class for Data.
  *
  */
-class SOFA_CORE_API BaseData : public DDGNode
+class SOFA_CORE_API BaseData
 {
 public:
     /// Flags that describe some properties of a Data, and that can be OR'd together.
@@ -71,33 +218,72 @@ public:
         FLAG_HAPTICS_INSTANCE = 1 << 12,
     };
     /// Bit field that holds flags value.
-    typedef unsigned DataFlags;
+    typedef DDGDataNode::DataFlags DataFlags;
 
     /// Default value used for flags.
     enum { FLAG_DEFAULT = FLAG_DISPLAYED | FLAG_PERSISTENT | FLAG_AUTOLINK };
 
     /// @name Class reflection system
     /// @{
-    typedef TClass<BaseData,DDGNode> MyClass;
+
+    typedef TClass<BaseData> MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const
     { return GetClass(); }
+
+    template<class T>
+    static void dynamicCast(T*& ptr, Base* /*b*/)
+    {
+        ptr = NULL; // BaseData does not derive from Base
+    }
+
+    /// Helper method to get the type name of type T
+    template<class T>
+    static std::string typeName(const T* = NULL)
+    {
+        if (defaulttype::DataTypeInfo<T>::ValidInfo)
+            return defaulttype::DataTypeName<T>::name();
+        else
+            return decodeTypeName(typeid(T));
+    }
+
+    /// Helper method to get the class name of a type derived from this class
+    template<class T>
+    static std::string className(const T* ptr= NULL)
+    {
+        return BaseClass::defaultClassName(ptr);
+    }
+
+    /// Helper method to get the namespace name of a type derived from this class
+    template<class T>
+    static std::string namespaceName(const T* ptr= NULL)
+    {
+        return BaseClass::defaultNamespaceName(ptr);
+    }
+
+    /// Helper method to get the template name of a type derived from this class
+    template<class T>
+    static std::string templateName(const T* ptr= NULL)
+    {
+        return BaseClass::defaultTemplateName(ptr);
+    }
+
+    /// Helper method to get the shortname of a type derived from this class.
+    template< class T>
+    static std::string shortName( const T* ptr = NULL, BaseObjectDescription* = NULL )
+    {
+        std::string shortname = T::className(ptr);
+        if( !shortname.empty() )
+        {
+            *shortname.begin() = ::tolower(*shortname.begin());
+        }
+        return shortname;
+    }
+
     /// @}
 
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
-    class BaseInitData
-    {
-    public:
-        BaseInitData() : data(NULL), helpMsg(""), dataFlags(FLAG_DEFAULT), owner(NULL), name(""), ownerClass(""), group(""), widget("") {}
-        BaseData* data;
-        const char* helpMsg;
-        DataFlags dataFlags;
-        Base* owner;
-        const char* name;
-        const char* ownerClass;
-        const char* group;
-        const char* widget;
-    };
+    typedef DDGDataNode::BaseInitData BaseInitData;
 
     /** Constructor used via the Base::initData() methods. */
     explicit BaseData(const BaseInitData& init);
@@ -160,52 +346,79 @@ public:
     /// @return true if the copy was successful.
     virtual bool copyValue(const BaseData* parent);
 
+    /// Update this %Data from the value of its parent
+    virtual bool updateFromParentValue(const BaseData* parent);
+
+    /// Returns true if the DDGNode needs to be updated
+    bool isDirty(const core::ExecParams* params = 0) const { return m_ddg ? m_ddg->isDirty(params) : false; }
+
+	/// Indicate the value needs to be updated
+	void setDirtyValue(const core::ExecParams* params = 0) { if (m_ddg) m_ddg->setDirtyValue(params); }
+
+    /// Set dirty flag to false
+	void cleanDirty(const core::ExecParams* params = 0) { if (m_ddg) m_ddg->cleanDirty(params); }
+
+	/// Utility method to call update if necessary.
+	void updateIfDirty(const core::ExecParams* params = 0) const { if (m_ddg) m_ddg->updateIfDirty(params); }
+
+	/// Update this value (forced).
+	void update() { if (m_ddg) m_ddg->update(); }
+
     /// Copy the value of an aspect into another one.
-    virtual void copyAspect(int destAspect, int srcAspect) = 0;
+    virtual void copyAspect(int destAspect, int srcAspect);
 
     /// Release memory allocated for the specified aspect.
-    virtual void releaseAspect(int aspect) = 0;
+    virtual void releaseAspect(int aspect);
+
+	/// Return the name of this %Data within the Base component
+	const std::string& getName() const { return m_ddg ? m_ddg->m_name : DDGDataNode::NO_NAME; }
+
+	/// @deprecated Set the name of this %Data.
+	///
+	/// You should be using the initData constructor instead.
+	/// @note If you do call this method, don't change the name of a %Data after adding it to the Base component.
+	void setName(const std::string& name) { if (m_ddg) m_ddg->m_name = name; }
 
     /// Get a help message that describes this %Data.
-    const char* getHelp() const { return help; }
+    const char* getHelp() const { return m_ddg ? m_ddg->help : ""; }
 
     /// Set the help message.
-    void setHelp(const char* val) { help = val; }
+    void setHelp(const char* val) { if (m_ddg) m_ddg->help = val; }
 
     /// @deprecated Set the help message.
-    void setHelpMsg(const char* val) { help = val; }
+    void setHelpMsg(const char* val) { setHelp(val); }
 
     /// Get owner class
-    const char* getOwnerClass() const { return ownerClass; }
+    const char* getOwnerClass() const { return m_ddg ? m_ddg->ownerClass : ""; }
 
     /// Set owner class
-    void setOwnerClass(const char* val) { ownerClass = val; }
+    void setOwnerClass(const char* val) { if (m_ddg) m_ddg->ownerClass = val; }
 
     /// Get group
-    const char* getGroup() const { return group; }
+    const char* getGroup() const { return m_ddg ? m_ddg->group : ""; }
 
     /// Set group
-    void setGroup(const char* val) { group = val; }
+    void setGroup(const char* val) { if (m_ddg) m_ddg->group = val; }
 
     /// Get widget
-    const char* getWidget() const { return widget; }
+    const char* getWidget() const { return m_ddg ? m_ddg->widget : ""; }
 
     /// Set widget
-    void setWidget(const char* val) { widget = val; }
+    void setWidget(const char* val) { if (m_ddg) m_ddg->widget = val; }
 
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)
-    bool isSet() const { return m_isSets[currentAspect()]; }
+    bool isSet() const { return m_ddg ? m_ddg->m_isSets[DDGNode::currentAspect()] : true; }
 
     /// True if the counter of modification gives valid information.
     virtual bool isCounterValid() const = 0;
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    void unset() { m_isSets[currentAspect()] = false; }
+    void unset() { if (m_ddg) m_ddg->m_isSets[DDGNode::currentAspect()] = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    void forceSet() { m_isSets[currentAspect()] = true; }
+    void forceSet() { if (m_ddg) m_ddg->m_isSets[DDGNode::currentAspect()] = true; }
 
     /// @name Flags
     /// @{
@@ -237,7 +450,7 @@ public:
 
     /// If we use the Data as a link and not as value directly
     //void setLinkPath(const std::string &path) { m_linkPath = path; }
-    std::string getLinkPath() const { return parentBaseData.getPath(); }
+    std::string getLinkPath() const { return m_ddg ? m_ddg->m_parent.getPath() : std::string(); }
     /// Return whether this %Data can be used as a linkPath.
     ///
     /// True by default.
@@ -249,22 +462,9 @@ public:
     /// Set the owner of this %Data.
     void setOwner(Base* o) { m_owner=o; }
 
-    /// This method is needed by DDGNode
-    BaseData* getData() const
-    {
-        return const_cast<BaseData*>(this);
-    }
-
-    /// Return the name of this %Data within the Base component
-    const std::string& getName() const { return m_name; }
-    /// Set the name of this %Data.
-    ///
-    /// This method should not be called directly, the %Data registration methods in Base should be used instead.
-    void setName(const std::string& name) { m_name=name; }
-
     /// Return the number of changes since creation.
     /// This can be used to efficiently detect changes.
-    int getCounter() const { return m_counters[currentAspect()]; }
+    int getCounter() const { return m_ddg ? m_ddg->m_counters[DDGNode::currentAspect()] : 0; }
 
 
     /// @name Optimized edition and retrieval API (for multi-threading performances)
@@ -273,40 +473,45 @@ public:
     /// True if the value has been modified
     /// If this data is linked, the value of this data will be considered as modified
     /// (even if the parent's value has not been modified)
-    bool isSet(const core::ExecParams* params) const { return m_isSets[currentAspect(params)]; }
+    bool isSet(const core::ExecParams* params) const { return m_ddg ? m_ddg->m_isSets[DDGNode::currentAspect(params)] : true; }
 
     /// Reset the isSet flag to false, to indicate that the current value is the default for this %Data.
-    void unset(const core::ExecParams* params) { m_isSets[currentAspect(params)] = false; }
+    void unset(const core::ExecParams* params) { if (m_ddg) m_ddg->m_isSets[DDGNode::currentAspect(params)] = false; }
 
     /// Reset the isSet flag to true, to indicate that the current value has been modified.
-    void forceSet(const core::ExecParams* params) { m_isSets[currentAspect(params)] = true; }
+    void forceSet(const core::ExecParams* params) { if (m_ddg) m_ddg->m_isSets[DDGNode::currentAspect(params)] = true; }
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
-    int getCounter(const core::ExecParams* params) const { return m_counters[currentAspect(params)]; }
+    int getCounter(const core::ExecParams* params) const { return m_ddg ? m_ddg->m_counters[DDGNode::currentAspect(params)] : 0; }
 
     /// @}
 
     /// Link to a parent data. The value of this data will automatically duplicate the value of the parent data.
     bool setParent(BaseData* parent, const std::string& path = std::string());
     bool setParent(const std::string& path);
+	void removeParent();
 
     /// Check if a given Data can be linked as a parent of this data
     virtual bool validParent(BaseData* parent);
 
-    BaseData* getParent() const { return parentBaseData.get(); }
+	BaseData* getParent() const 
+	{
+		DDGDataNode* ddg = m_ddg ? m_ddg->m_parent.get() : NULL;
+		return ddg ? ddg->getData() : NULL;
+	}
 
-    /// Update the value of this %Data
-    void update();
+    /// @deprecated Remove an input from this %Data (use clearParent, as it is the only valid input node for a %Data)
+    void delInput(BaseData* data) { if (m_ddg) m_ddg->delInput(ddg(data)); }
 
-    /// @name Links management
-    /// @{
+    /// Add a new output to this %Data
+    void addOutput(DDGNode* n) { if (m_ddg) m_ddg->addOutput(n); }
 
-    typedef std::vector<BaseLink*> VecLink;
-    /// Accessor to the vector containing all the fields of this object
-    const VecLink& getLinks() const { return m_vecLink; }
+    /// Remove an output from this %Data
+	void delOutput(DDGNode* n) { if (m_ddg) m_ddg->delOutput(n); }
 
-    virtual bool findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link);
+    /// Get the list of outputs for this %Data
+	const DDGNode::DDGLinkContainer& getOutputs() { return m_ddg ? m_ddg->getOutputs() : DDGDataNode::NO_LINKS; }
 
     virtual bool findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link);
 
@@ -319,64 +524,25 @@ public:
         return (ptr != NULL);
     }
 
-    /// Add a link.
-    void addLink(BaseLink* l);
+	/// Cast a BaseData to a dependency graph node, for when you want to use it as input or output in a graph.
+	static DDGDataNode* ddg(BaseData* data) { return data ? data->m_ddg : NULL; }
+
+	/// Check if the ddg part of this %Data is present or if it is a light version.
+	bool hasDdg() const { return m_ddg != NULL; }
 
 protected:
 
-    BaseLink::InitLink<BaseData>
-    initLink(const char* name, const char* help)
-    {
-        return BaseLink::InitLink<BaseData>(this, name, help);
-    }
+	friend class DDGDataNode;
+	virtual void onParentChanged(BaseData* parent) {}
 
-    /// List of links
-    VecLink m_vecLink;
-
-    /// @}
-
-    virtual void doSetParent(BaseData* parent);
-
-    virtual void doDelInput(DDGNode* n);
-
-    /// Update this %Data from the value of its parent
-    virtual bool updateFromParentValue(const BaseData* parent);
-
-    /// Help message
-    const char* help;
-    /// Owner class
-    const char* ownerClass;
-    /// group
-    const char* group;
-    /// widget
-    const char* widget;
-    /// Number of changes since creation
-    helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
-    /// True if this %Data is set, i.e. its value is different from the default value
-    helper::fixed_array<bool, SOFA_DATA_MAX_ASPECTS> m_isSets;
-    /// Flags indicating the purpose and behaviour of this %Data
     DataFlags m_dataFlags;
+	/// Optional data dependency graph node.
+	DDGDataNode* m_ddg;
     /// Return the Base component owning this %Data
     Base* m_owner;
-    /// Data name within the Base component
-    std::string m_name;
-//    /// Link to another Data, if used as an input from another Data (@ typo).
-//    std::string m_linkPath;
-    /// Parent Data
-    SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentBaseData;
 
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
-
-    /// Helper method to get the type name of type T
-    template<class T>
-    static std::string typeName(const T* = NULL)
-    {
-        if (defaulttype::DataTypeInfo<T>::ValidInfo)
-            return defaulttype::DataTypeName<T>::name();
-        else
-            return decodeTypeName(typeid(T));
-    }
 };
 
 template<class Type>
@@ -388,6 +554,27 @@ public:
     static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
     static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
 };
+
+template<>
+class LinkTraitsPtrCasts<DDGDataNode>
+{
+public:
+    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::DDGDataNode* n);
+    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::DDGDataNode* n);
+};
+
+inline 
+DDGDataNode::BaseInitData::BaseInitData()
+	: data(NULL)
+	, helpMsg("")
+	, dataFlags(BaseData::FLAG_DEFAULT)
+	, owner(NULL)
+	, name("")
+	, ownerClass("")
+	, group("")
+	, widget("")
+{
+}
 
 } // namespace objectmodel
 

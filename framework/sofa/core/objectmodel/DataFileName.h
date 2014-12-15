@@ -101,22 +101,25 @@ public:
     virtual const std::string& getRelativePath() const { return getValue(); }
     virtual const std::string& getFullPath() const
     {
-        this->updateIfDirty();
+        if (m_ddg)
+			m_ddg->updateIfDirty();
         return fullpath;
     }
     virtual const std::string& getAbsolutePath() const
     {
-        this->updateIfDirty();
+        if (m_ddg)
+			m_ddg->updateIfDirty();
         return fullpath;
     }
 
-    virtual void update()
+protected:
+	virtual bool updateFromParentValue(const BaseData* parent)
     {
-        this->Inherit::update();
-        this->updatePath();
+		bool success = this->Inherit::updateFromParentValue(parent);
+		this->updatePath();
+		return success;
     }
 
-protected:
     void updatePath();
 
     std::string fullpath;
@@ -195,22 +198,26 @@ public:
     virtual const std::string& getRelativePath(unsigned int i) { return getValue()[i]; }
     virtual const std::string& getFullPath(unsigned int i) const
     {
-        this->updateIfDirty();
+        if (m_ddg)
+			m_ddg->updateIfDirty();
         return fullpath[i];
     }
     virtual const std::string& getAbsolutePath(unsigned int i) const
     {
-        this->updateIfDirty();
+        if (m_ddg)
+			m_ddg->updateIfDirty();
         return fullpath[i];
     }
 
-    virtual void update()
+protected:
+	virtual bool updateFromParentValue(const BaseData* parent)
     {
-        this->Inherit::update();
-        this->updatePath();
+		bool success = this->Inherit::updateFromParentValue(parent);
+		this->updatePath();
+		return success;
     }
 
-protected:
+
     void updatePath();
 
     sofa::helper::vector<std::string> fullpath;

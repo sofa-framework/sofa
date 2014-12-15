@@ -206,7 +206,7 @@ bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const Bas
         return false;
     if (self)
     {
-        ptr = owner->findData(dataStr);
+        ptr = BaseData::ddg(owner->findData(dataStr));
         return (ptr != NULL);
     }
     else
@@ -216,7 +216,7 @@ bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const Bas
             return false;
         if (!obj)
             return false;
-        ptr = obj->findData(dataStr);
+        ptr = BaseData::ddg(obj->findData(dataStr));
         return (ptr != NULL);
     }
     return false;
