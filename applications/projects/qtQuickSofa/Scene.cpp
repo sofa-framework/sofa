@@ -77,13 +77,8 @@ void Scene::componentComplete()
 		open();
 }
 
-static bool LoaderProcess(Scene* scene, const QString& scenePath)
+static bool LoaderProcess(sofa::simulation::Simulation* sofaSimulation, const QString& scenePath)
 {
-	if(!scene)
-		return false;
-
-	sofa::simulation::Simulation* sofaSimulation = scene->sofaSimulation();
-
 	if(!sofaSimulation || scenePath.isEmpty())
 		return false;
 
@@ -98,16 +93,7 @@ static bool LoaderProcess(Scene* scene, const QString& scenePath)
 		sofaSimulation->init(sofaSimulation->GetRoot().get());
 
 		if(sofaSimulation->GetRoot())
-		{
-			std::string qmlFilepath = (scenePath + ".qml").toLatin1().constData();
-			if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
-				qmlFilepath.clear();
-
-			if(!qmlFilepath.empty())
-				scene->setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
-
 			return true;
-		}
 	}
 
 	return false;
@@ -116,8 +102,8 @@ static bool LoaderProcess(Scene* scene, const QString& scenePath)
 class LoaderThread : public QThread
 {
 public:
-	LoaderThread(Scene* scene, const QString& scenePath) :
-		myScene(scene),
+	LoaderThread(sofa::simulation::Simulation* sofaSimulation, const QString& scenePath) :
+		mySofaSimulation(sofaSimulation),
 		myScenepath(scenePath),
 		myIsLoaded(false)
 	{
@@ -126,19 +112,21 @@ public:
 
 	void run()
 	{
-		myIsLoaded = LoaderProcess(myScene, myScenepath);
+		myIsLoaded = LoaderProcess(mySofaSimulation, myScenepath);
 	}
 
 	bool isLoaded() const			{return myIsLoaded;}
 
 private:
-	Scene*							myScene;
+	sofa::simulation::Simulation*	mySofaSimulation;
 	QString							myScenepath;
 	bool							myIsLoaded;
 };
 
 void Scene::open()
 {
+	setSourceQML(QUrl());
+
 	if(Status::Loading == myStatus) // return now if a scene is already loading
 		return;
 
@@ -164,18 +152,27 @@ void Scene::open()
 	setPlay(false);
 	myIsInit = false;
 
-	setSourceQML(QUrl());
+	std::string qmlFilepath = (finalFilename + ".qml").toLatin1().constData();
+	if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
+		qmlFilepath.clear();
 
 	if(myAsynchronous)
 	{
-		LoaderThread* loaderThread = new LoaderThread(this, finalFilename);
+		LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
 		connect(loaderThread, &QThread::finished, this, [this, loaderThread]() {setStatus(loaderThread && loaderThread->isLoaded() ? Status::Ready : Status::Error);});
+		
+		if(!qmlFilepath.empty())
+			connect(loaderThread, &QThread::finished, this, [=]() {setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));});
+
 		connect(loaderThread, &QThread::finished, loaderThread, &QObject::deleteLater);
 		loaderThread->start();
 	}
 	else
 	{
-		setStatus(LoaderProcess(this, finalFilename) ? Status::Ready : Status::Error);
+		setStatus(LoaderProcess(mySofaSimulation, finalFilename) ? Status::Ready : Status::Error);
+		
+		if(!qmlFilepath.empty())
+			setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 	}
 }
 
@@ -193,6 +190,8 @@ void Scene::setSource(const QUrl& newSource)
 {
 	if(newSource == mySource || Status::Loading == myStatus)
 		return;
+
+	setStatus(Status::Null);
 
 	mySource = newSource;
 
