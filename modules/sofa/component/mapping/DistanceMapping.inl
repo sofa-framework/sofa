@@ -191,7 +191,6 @@ void DistanceMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparam
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
 {
-    std::cerr<<SOFA_CLASS_METHOD<<mparams->kFactor()<<std::endl;
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get(mparams)].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
     Real kfactor = mparams->kFactor();
@@ -501,74 +500,72 @@ void DistanceMultiMapping<TIn, TOut>::applyJT(const helper::vector< InVecDeriv*>
 }
 
 template <class TIn, class TOut>
-void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId)
+void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId)
 {
-//    serr<<SOFA_CLASS_METHOD<<"is not implemented"<<sendl;
-
     // NOT OPTIMIZED AT ALL, but will do the job for now
 
-//    getK();
+    Real kfactor = mparams->kFactor();
+    const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
+    SeqEdges links = edgeContainer->getEdges();
+    const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
-//    if( !K.compressedMatrix.nonZeros() ) return;
+    unsigned size = this->getFromModels().size();
 
-//    core::State<In>* fromModel0 = this->getFromModels()[0];
-//    const Data<InVecDeriv>& parentDisplacementData0 = *mparams->readDx(fromModel0);
-//    const InVecDeriv& pd0 = parentDisplacementData0.getValue();
-
-//    core::State<In>* fromModel1 = this->getFromModels()[1];
-//    const Data<InVecDeriv>& parentDisplacementData1 = *mparams->readDx(fromModel1);
-//    const InVecDeriv& pd1 = parentDisplacementData1.getValue();
-
-//    InVecDeriv fulldp( fromModel0->getSize() + fromModel1->getSize() );
-
-
-//    std::copy( pd0.begin(), pd0.end(), fulldp.begin() );
-//    std::copy( pd1.begin(), pd1.end(), fulldp.begin()+fromModel0->getSize() );
-////    std::copy( mparams->readDx(this->getFromModels()[1])->begin(), mparams->readDx(this->getFromModels()[1])->end(), fulldp.begin()+this->getFromModels()[0]->getSize() );
-
-//    InVecDeriv fulldf(fromModel0->getSize() + fromModel1->getSize());
-//    K.addMult( fulldf, fulldp, mparams->kFactor() );
-
-//    std::cerr<<fulldf<<"     "<<mparams->kFactor()<<std::endl;
+    vector<InVecDeriv*> parentForce( size );
+    vector<const InVecDeriv*> parentDisplacement( size );
+    for( unsigned i=0; i< size ; i++ )
+    {
+        core::State<In>* fromModel = this->getFromModels()[i];
+        parentForce[i] = parentDfId[fromModel].write()->beginEdit();
+        parentDisplacement[i] = &mparams->readDx(fromModel)->getValue();
+    }
 
 
-//    std::cerr<<SOFA_CLASS_METHOD<<K<<std::endl;
-
-//    size_t offset = 0;
-
-//    for( unsigned i=0 ; i<this->getFromModels().size() ; ++i )
-//    {
-//        core::State<In>* fromModel = this->getFromModels()[i];
-//        Data<InVecDeriv>& parentForceData = *inForce[fromModel].write();
-//        const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(fromModel);
+    for(unsigned i=0; i<links.size(); i++ )
+    {
+        const Vec2f& pair0 = pairs[ links[i][0] ];
+        const Vec2f& pair1 = pairs[ links[i][1] ];
 
 
-//        InVecDeriv& pf = *parentForceData.beginEdit();
-//        const InVecDeriv& pd = parentDisplacementData.getValue();
-
-//        typedef Eigen::Matrix< InReal, Eigen::Dynamic, 1 > EigenType;
-//        typedef Eigen::Map< EigenType > MapType;
-//        typedef Eigen::Map< const EigenType > ConstMapType;
-
-//        size_t size = fromModel->getSize()*Nin;
-
-//        MapType pfm = MapType( &pf[0][0], size );
-//        ConstMapType pdm = ConstMapType( &pd[0][0], size );
-
-//        SparseKMatrixEigen Klocal;
-//        Klocal.compressedMatrix = K.compressedMatrix.middleRows(offset, size);
+        InVecDeriv& parentForce0 = *parentForce[pair0[0]];
+        InVecDeriv& parentForce1 = *parentForce[pair1[0]];
+        const InVecDeriv& parentDisplacement0 = *parentDisplacement[pair0[0]];
+        const InVecDeriv& parentDisplacement1 = *parentDisplacement[pair1[0]];
 
 
-//        pfm.noalias() = pfm + Klocal.compressedMatrix * (pdm * mparams->kFactor());
+        Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+        for(unsigned j=0; j<Nin; j++)
+        {
+            for(unsigned k=0; k<Nin; k++)
+            {
+                if( j==k )
+                    b[j][k] = 1. - directions[i][j]*directions[i][k];
+                else
+                    b[j][k] =    - directions[i][j]*directions[i][k];
+            }
+        }
+        b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
+        // note that computing a block is not efficient here, but it would make sense for storing a stiffness matrix
 
+        InDeriv dx = parentDisplacement1[pair1[1]] - parentDisplacement0[pair0[1]];
+        InDeriv df;
+        for(unsigned j=0; j<Nin; j++)
+        {
+            for(unsigned k=0; k<Nin; k++)
+            {
+                df[j]+=b[j][k]*dx[k];
+            }
+        }
+        parentForce0[pair0[1]] -= df;
+        parentForce1[pair1[1]] += df;
+ //       cerr<<"DistanceMapping<TIn, TOut>::applyDJT, df = " << df << endl;
+    }
 
-////        std::cerr<<i<<"    "<<pf<<"     "<<pd<<" "<<K.compressedMatrix.middleRows(offset, size)<<std::endl;
-//        std::cerr<<"$$$$$"<<Klocal<<std::endl<<std::endl<<pdm<<std::endl<<std::endl<<Klocal.compressedMatrix*pdm<<std::endl<<std::endl<<pfm<<std::endl;
-
-//        parentForceData.endEdit();
-
-//        offset += size;
-//    }
+    for( unsigned i=0; i< size ; i++ )
+    {
+        core::State<In>* fromModel = this->getFromModels()[i];
+        parentDfId[fromModel].write()->endEdit();
+    }
 }
 
 
