@@ -125,7 +125,7 @@ public:
     }
     /// Compat Method
     /// @deprecated
-    virtual void apply( OutVecCoord& /* out */, const InVecCoord& /* in */) { };
+    virtual void apply( OutVecCoord& /* out */, const InVecCoord& /* in */) {}
 #endif //SOFA_DEPRECATE_OLD_API
 
     /// ApplyJ ///
