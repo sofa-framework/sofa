@@ -115,6 +115,8 @@ struct Assembly_test : public CompliantSolver_test
 //        root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(getRoot());
+        (void) response;
 
         // The string
         simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
@@ -206,6 +208,8 @@ struct Assembly_test : public CompliantSolver_test
         //        complianceSolver->debug.setValue(true);
         linearSolver = addNew<LinearSolver>(root);
         //        linearSolver->debug.setValue(true);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // The string
         simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
@@ -285,6 +289,8 @@ struct Assembly_test : public CompliantSolver_test
         complianceSolver->beta.setValue(1.0);
 
         linearSolver = addNew<LinearSolver>(root);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // The string
         Vec3 startPoint(0,0,0);
@@ -406,6 +412,8 @@ struct Assembly_test : public CompliantSolver_test
         linearSolver = addNew<LinearSolver>(solverObject);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(solverObject);
+        (void) response;
 
 
         // ========  string
@@ -539,6 +547,8 @@ struct Assembly_test : public CompliantSolver_test
         root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // ========  strings
         Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0 );
@@ -687,6 +697,8 @@ struct Assembly_test : public CompliantSolver_test
         root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // ========= The rigid object
         simulation::Node::SPtr rigid = root->createChild("rigid");
@@ -814,6 +826,8 @@ struct Assembly_test : public CompliantSolver_test
         linearSolver = addNew<LinearSolver>(root);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // ========= DOF1
         simulation::Node::SPtr node1 = root->createChild("node1");
@@ -917,6 +931,7 @@ struct Assembly_test : public CompliantSolver_test
         linearSolver = addNew<LinearSolver>(root);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        response = addNew<linearsolver::LDLTResponse>(root);
 
         // ========= DOF1
         node1 = root->createChild("node1");
@@ -976,6 +991,7 @@ struct Assembly_test : public CompliantSolver_test
         linearSolver = addNew<LinearSolver>(root);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        response = addNew<linearsolver::LDLTResponse>(root);
         createCompliantString( root, p0, p1, 2, 2, 1.0/stiffness, false, 1 );
         sofa::simulation::getSimulation()->init(root.get());
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
