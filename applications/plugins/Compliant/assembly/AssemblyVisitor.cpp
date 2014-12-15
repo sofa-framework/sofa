@@ -3,6 +3,7 @@
 
 #include <sofa/component/linearsolver/EigenVectorWrapper.h>
 #include <sofa/component/linearsolver/SingleMatrixAccessor.h>
+#include <sofa/component/linearsolver/DefaultMultiMatrixAccessor.h>
 
 #include "./utils/scoped.h"
 #include "./utils/cast.h"
@@ -188,6 +189,40 @@ AssemblyVisitor::mat AssemblyVisitor::geometricStiffness(simulation::Node* node)
     return mat();
 }
 
+
+
+// interaction forcefied in a node w/o a mechanical state
+void AssemblyVisitor::interactionForceField(simulation::Node* node)
+{
+    for(unsigned i = 0; i < node->interactionForceField.size(); ++i )
+    {
+        BaseInteractionForceField* ffield = node->interactionForceField[i];
+
+        if( ffield->getMechModel1() != ffield->getMechModel2() )
+        {
+            typedef EigenBaseSparseMatrix<SReal> BigSqmat;
+            unsigned bigsize = ffield->getMechModel1()->getMatrixSize() + ffield->getMechModel2()->getMatrixSize();
+            BigSqmat bigSqmat( bigsize, bigsize );
+            DefaultMultiMatrixAccessor accessor;
+            accessor.setGlobalMatrix( &bigSqmat );
+            accessor.addMechanicalState( ffield->getMechModel1() );
+            accessor.addMechanicalState( ffield->getMechModel2() );
+
+            // an interactionFF is always a stiffness
+            ffield->addMBKToMatrix( mparams, &accessor );
+            bigSqmat.compress();
+
+            if( !zero(bigSqmat.compressedMatrix) )
+                interactionForceFieldList.push_back( InteractionForceField(bigSqmat.compressedMatrix,ffield) );
+
+
+//            std::cerr<<"AssemblyVisitor::interactionForceField "<<ffield->getMechModel1()->getName()<<" "<<ffield->getMechModel2()->getName()<<" "<<bigSqmat<<std::endl;
+        }
+    }
+}
+
+
+
 // ode matrix
 AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
 {
@@ -202,7 +237,25 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
 
         if( ffield->getMechModel1() != ffield->getMechModel2() )
         {
-            std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" will be treated as explicit, external forces (interactionForceFields are not handled by Compliant assembly, the same scene should be modelised with MultiMappings)"<<std::endl;
+//            std::cerr<<SOFA_CLASS_METHOD<<"WARNING: interactionForceField "<<ffield->getName()<<" will be treated as explicit, external forces (interactionForceFields are not handled by Compliant assembly, the same scene should be modelised with MultiMappings)"<<std::endl;
+
+            typedef EigenBaseSparseMatrix<SReal> BigSqmat;
+            unsigned bigsize = ffield->getMechModel1()->getMatrixSize() + ffield->getMechModel2()->getMatrixSize();
+            BigSqmat bigSqmat( bigsize, bigsize );
+            DefaultMultiMatrixAccessor accessor;
+            accessor.setGlobalMatrix( &bigSqmat );
+            accessor.addMechanicalState( ffield->getMechModel1() );
+            accessor.addMechanicalState( ffield->getMechModel2() );
+
+            // an interactionFF is always a stiffness
+            ffield->addMBKToMatrix( mparams, &accessor );
+            bigSqmat.compress();
+
+            if( !zero(bigSqmat.compressedMatrix) )
+                interactionForceFieldList.push_back( InteractionForceField(bigSqmat.compressedMatrix,ffield) );
+
+
+//            std::cerr<<"AssemblyVisitor::odeMatrix "<<ffield->getName()<<" "<<bigSqmat<<std::endl;
         }
         else
         {
@@ -442,6 +495,27 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 	// prefix mapping concatenation and stuff
     std::for_each(prefix.begin(), prefix.end(), process_helper(*res, graph) ); 	// TODO merge with offsets computation ?
 
+
+    // special treatment for interaction forcefields
+    fullmapping_type& full = res->fullmapping;
+    for( InteractionForceFieldList::iterator it=interactionForceFieldList.begin(),itend=interactionForceFieldList.end();it!=itend;++it)
+    {
+        mat& Jp0 = full[ it->ff->getMechModel1() ];
+        mat& Jp1 = full[ it->ff->getMechModel2() ];
+
+        if( empty(Jp0) ) {
+            Jp0 = shift_right<mat>( find(offsets, it->ff->getMechModel1()), it->ff->getMechModel1()->getMatrixSize(), size_m);
+        }
+        if( empty(Jp1) ) {
+            Jp1 = shift_right<mat>( find(offsets, it->ff->getMechModel2()), it->ff->getMechModel2()->getMatrixSize(), size_m);
+        }
+
+        it->J.resize( it->H.rows(), size_m );
+
+        add( it->J, shift_left<mat>( 0, it->ff->getMechModel1()->getMatrixSize(), it->H.rows() ) * Jp0 );
+        add( it->J, shift_left<mat>( it->ff->getMechModel1()->getMatrixSize(), it->ff->getMechModel2()->getMatrixSize(), it->H.rows() ) * Jp1 );
+    }
+
 	return res;
 }
 
@@ -522,8 +596,11 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
     }
 
 
-
-
+    // Then add interaction forcefields
+    for( InteractionForceFieldList::iterator it=interactionForceFieldList.begin(),itend=interactionForceFieldList.end();it!=itend;++it)
+    {
+        res.H += ltdl(it->J, it->H);
+    }
 
 
 
@@ -721,6 +798,7 @@ Visitor::Result AssemblyVisitor::processNodeTopDown(simulation::Node* node) {
     }
 
 	if( node->mechanicalState ) fill_prefix( node );
+    else if( !node->interactionForceField.empty() ) interactionForceField( node );
 	return RESULT_CONTINUE;
 }
 
