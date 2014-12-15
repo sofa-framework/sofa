@@ -1,10 +1,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QObject>
 #include <QQuickWindow>
-#include <QtGui/QOpenGLFramebufferObject>
-#include <QtGui/QOpenGLShaderProgram>
+#include <QApplication>
 
 class Window : public QQuickWindow
 {
@@ -13,6 +11,20 @@ class Window : public QQuickWindow
 public:
     explicit Window(QWindow* parent = 0);
     ~Window();
+
+public:
+	Q_PROPERTY(int overrideCursorShape READ overrideCursorShape WRITE setOverrideCursorShape NOTIFY overrideCursorShapeChanged);
+
+public:
+	int overrideCursorShape() const {return QApplication::overrideCursor() ? QApplication::overrideCursor()->shape() : Qt::ArrowCursor;}
+	void setOverrideCursorShape(int newCursorShape);
+	
+	Q_INVOKABLE void trimCache(QObject* object = 0);
+
+	Q_INVOKABLE void clearSettingGroup(const QString& group);
+
+signals:
+	void overrideCursorShapeChanged();
 
 };
 

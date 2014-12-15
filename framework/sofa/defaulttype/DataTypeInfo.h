@@ -1260,7 +1260,7 @@ struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<
 {
     enum { SimpleLayout = 0 };
 
-    static std::string name() { std::ostringstream o; o << "vector<" << DataTypeName<bool>::name() << ">"; return o.str(); }
+    static std::string name() { std::ostringstream o; o << "vector<bool>"; return o.str(); }
 
     static const void* getValuePtr(const sofa::helper::vector<bool,Alloc>& data) { return NULL; }
     static void* getValuePtr(sofa::helper::vector<bool,Alloc>& data) { return NULL; }

@@ -1,43 +1,95 @@
 #include "Camera.h"
 
+#include <qqml.h>
 #include <qmath.h>
 #include <QDebug>
 
+static int registerType = qmlRegisterType<Camera>("Camera", 1, 0, "Camera");
+
 Camera::Camera(QObject* parent) : QObject(parent),
+	myDistanceToCenter(1.0),
+	myZoomFactor(1.0),
+	mySmoothedZoomFactor(1.0),
+	mySmoothZoom(true),
+	myZoomSpeed(1.1),
+	myZoomedDistanceToCenter(myDistanceToCenter),
 	myFovY(55.0),
 	myAspectRatio(16.0 / 9.0),
 	myZNear(0.1),
-	myZFar(1000.0),
+	myZFar(10000.0),
 	myProjection(),
-	myModelView(),
+	myView(),
+	myModel(),
 	myProjectionDirty(true),
-	myModelViewDirty(true)
+	myModelDirty(true)
 {
-	
+	connect(this, &Camera::smoothedZoomFactorChanged, this, &Camera::applyZoom);
+}
+
+Camera::~Camera()
+{
+
+}
+
+void Camera::setZoomFactor(double newZoomFactor)
+{
+	if(newZoomFactor == myZoomFactor)
+		return;
+
+	myZoomFactor = newZoomFactor;
+
+	zoomFactorChanged(newZoomFactor);
+}
+
+void Camera::setSmoothedZoomFactor(double newSmoothedZoomFactor)
+{
+	if(newSmoothedZoomFactor == mySmoothedZoomFactor)
+		return;
+
+	mySmoothedZoomFactor = newSmoothedZoomFactor;
+
+	smoothedZoomFactorChanged(newSmoothedZoomFactor);
+}
+
+void Camera::setSmoothZoom(bool newSmoothZoom)
+{
+	if(newSmoothZoom == mySmoothZoom)
+		return;
+
+	mySmoothZoom = newSmoothZoom;
+
+	smoothZoomChanged(newSmoothZoom);
 }
 
 const QMatrix4x4& Camera::projection() const
 {
 	if(myProjectionDirty) // update projection if needed
 	{
+		myProjection.setToIdentity();
 		myProjection.perspective(myFovY, myAspectRatio, 0.1, 1000.0);
 		myProjectionDirty = false;
 	}
 
 	return myProjection;
 }
-const QMatrix4x4& Camera::modelView() const
-{
-	if(myModelViewDirty) // update modelview if needed
-	{
-		
-		myModelViewDirty = false;
-	}
 
-	return myModelView;
+const QMatrix4x4& Camera::view() const
+{
+	return myView;
 }
 
-void Camera::setFovY(float fovY)
+const QMatrix4x4& Camera::model() const
+{
+	if(myModelDirty)
+	{
+		myModel = myView.inverted();
+		myModelDirty = false;
+	}
+
+	return myModel;
+}
+
+void Camera::setFovY(double fovY)
 {
 	if(fovY == myFovY)
 		return;
@@ -47,7 +99,7 @@ void Camera::setFovY(float fovY)
 	myProjectionDirty = true;
 }
 
-void Camera::setAspectRatio(float aspectRatio)
+void Camera::setAspectRatio(double aspectRatio)
 {
 	if(aspectRatio == myAspectRatio)
 		return;
@@ -57,7 +109,7 @@ void Camera::setAspectRatio(float aspectRatio)
 	myProjectionDirty = true;
 }
 
-void Camera::setZNear(float zNear)
+void Camera::setZNear(double zNear)
 {
 	if(zNear == myZNear)
 		return;
@@ -67,7 +119,7 @@ void Camera::setZNear(float zNear)
 	myProjectionDirty = true;
 }
 
-void Camera::setZFar(float zFar)
+void Camera::setZFar(double zFar)
 {
 	if(zFar == myZFar)
 		return;
@@ -79,17 +131,73 @@ void Camera::setZFar(float zFar)
 
 void Camera::fit(const QVector3D& min, const QVector3D& max)
 {
-	QVector3D center = (min + max) * 0.5f;
+	QVector3D center = (min + max) * 0.5;
 	QVector3D diagonal = max - min;
-	float radius = diagonal.length();
-	float distance = 1.5f * radius / qTan(myFovY * M_PI / 180.0f);
+	double radius = diagonal.length();
+	double distance = 1.5 * radius / qTan(myFovY * M_PI / 180.0);
 
 	QVector3D eye = center - direction().normalized() * distance;
 
-	//myZNear = newDistance - newRadius * 1.5f;
-	//myZFar  = newDistance + newRadius * 1.5f;
+	//setZNear(qMax(0.01, distance - radius * 1.5));
+	//setZFar(distance + radius * 1.5);
 
-	myModelView.setToIdentity();
-	myModelView.lookAt(eye, center, up());
-	myModelViewDirty = false;
+	double distanceToCenter = (eye - center).length();
+	if(distanceToCenter < 0.0001 || !(distanceToCenter == distanceToCenter)) // return if incorrect value, i.e < epsilon or nan
+		return;
+
+	myDistanceToCenter = distanceToCenter;
+	myZoomedDistanceToCenter = myDistanceToCenter;
+
+	bool smoothZoom = Camera::smoothZoom();
+	setSmoothZoom(false);
+	setZoomFactor(1.0);
+	setSmoothZoom(smoothZoom);
+
+	myView.setToIdentity();
+	myView.lookAt(eye, center, up());
+	myModelDirty = true;
+}
+
+void Camera::move(double x, double y, double z)
+{
+	double moveSpeed = myDistanceToCenter * 0.0133;
+
+	myView.translate(-(right() * x + up() * y + direction() * z) * moveSpeed);
+
+	myModelDirty = true;
+}
+
+void Camera::turn(double angleAroundX, double angleAroundY, double angleAroundZ)
+{
+	myView.rotate(angleAroundY, up());
+	myView.rotate(angleAroundX, right());
+	myView.rotate(angleAroundZ, direction());
+	
+	myModelDirty = true;
+}
+
+void Camera::zoom(double factor, bool smooth)
+{
+	factor *= myZoomFactor;
+
+	if(factor <= 0.0)
+		return;
+
+	bool smoothZoom = Camera::smoothZoom();
+	setSmoothZoom(smooth);
+	setZoomFactor(factor);
+	setSmoothZoom(smoothZoom);
+}
+
+void Camera::applyZoom()
+{
+	if(mySmoothedZoomFactor <= 0.0)
+		return;
+
+	double factor = 1.0 / mySmoothedZoomFactor;
+
+	myView.translate(-(direction() * myZoomedDistanceToCenter - direction() * myDistanceToCenter * factor));
+	myZoomedDistanceToCenter = myDistanceToCenter * factor;
+
+	myModelDirty = true;
 }

@@ -1,64 +1,59 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
+import SofaBasics 1.0
 
-Rectangle {
-    id: root
+ToolBar {
+    height: 20
+    anchors.margins: 0
+    anchors.leftMargin: 0
 
-    property int physicalFrameCount: 0
-
-    gradient: Gradient {
-        GradientStop {position: 0.0; color: "lightgrey"}
-        GradientStop {position: 1.0; color: "white"}
-    }
+    property alias  statusMessage:  statusLabel.text
+    property int    statusDuration: 5000
 
     RowLayout {
         anchors.fill: parent
 
         Rectangle {
-            color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
-            Layout.fillWidth: true
             Layout.fillHeight: true
-            width: 10
+            Layout.preferredWidth: 60
+            color: "transparent"
+            border.width: 1
+            border.color: "grey"
+            radius: 2
 
             FPSDisplay {
                 anchors.fill: parent
-                anchors.centerIn: parent.Center
-                horizontalAlignment: Text.AlignHCenter
+                anchors.margins: 5
                 verticalAlignment: Text.AlignVCenter
             }
         }
 
         Rectangle {
-            color: Qt.rgba(0.75, 0.75, 0.75, 1.0)
-            Layout.fillHeight: true
-            width: 2
-        }
-
-        /*Rectangle {
-            color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
             Layout.fillWidth: true
             Layout.fillHeight: true
-            width: 10
+            Layout.minimumWidth: 256
+            color: "transparent"
+            border.width: 1
+            border.color: "grey"
+            radius: 2
 
             Label {
-                anchors.centerIn: parent
-                horizontalAlignment: Text.AlignHCenter
-                text: "Time"
+                id: statusLabel
+                anchors.fill: parent
+                anchors.margins: 5
+                verticalAlignment: Text.AlignVCenter
+
+                onTextChanged: clearStatusTimer.restart()
+
+                Timer {
+                    id: clearStatusTimer
+                    running: false
+                    repeat: false
+                    interval: statusDuration
+                    onTriggered: statusLabel.text = ""
+                }
             }
-        }
-
-        Rectangle {
-            color: Qt.rgba(0.75, 0.75, 0.75, 1.0)
-            Layout.fillHeight: true
-            width: 5
-        }*/
-
-        Rectangle {
-            color: Qt.rgba(0.0, 0.0, 0.0, 0.0)
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            width: 80
         }
     }
 }
