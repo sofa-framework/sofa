@@ -1412,7 +1412,16 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
     this->addSlave(_virtualFinerLevels[0]); //->setContext( this->getContext( ) );
-    _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
+    const std::string& fileTopology = this->fileTopology.getValue();
+    if (fileTopology.empty()) // If no file is defined, try to build from the input Datas
+    {
+        _virtualFinerLevels[0]->vertices.setParent(&this->vertices);
+        _virtualFinerLevels[0]->facets.setParent(&this->facets);
+        _virtualFinerLevels[0]->input_triangles.setParent(&this->input_triangles);
+        _virtualFinerLevels[0]->input_quads.setParent(&this->input_quads);
+    }
+    else
+        _virtualFinerLevels[0]->load(fileTopology.c_str());
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->init();
 
