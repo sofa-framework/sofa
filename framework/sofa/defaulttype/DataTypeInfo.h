@@ -143,12 +143,12 @@ struct DataTypeInfo
 
     static const void* getValuePtr(const DataType& /*type*/)
     {
-        return nullptr;
+        return NULL;
     }
 
     static void* getValuePtr(DataType& /*type*/)
     {
-        return nullptr;
+        return NULL;
     }
 
     static const char* name() { return "unknown"; }
@@ -660,12 +660,12 @@ struct TextTypeInfo
 
     static const void* getValuePtr(const DataType& data)
     {
-        return nullptr;
+        return NULL;
     }
 
     static void* getValuePtr(DataType& data)
     {
-        return nullptr;
+        return NULL;
     }
 };
 
@@ -1140,12 +1140,12 @@ struct SetTypeInfo
 
     static const void* getValuePtr(const DataType& data)
     {
-        return nullptr;
+        return NULL;
     }
 
     static void* getValuePtr(DataType& data)
     {
-    return nullptr;
+    return NULL;
     }
 };
 
@@ -1262,8 +1262,8 @@ struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<
 
     static std::string name() { std::ostringstream o; o << "vector<" << DataTypeName<bool>::name() << ">"; return o.str(); }
 
-    static const void* getValuePtr(const sofa::helper::vector<bool,Alloc>& data) { return nullptr; }
-    static void* getValuePtr(sofa::helper::vector<bool,Alloc>& data) { return nullptr; }
+    static const void* getValuePtr(const sofa::helper::vector<bool,Alloc>& data) { return NULL; }
+    static void* getValuePtr(sofa::helper::vector<bool,Alloc>& data) { return NULL; }
 };
 
 template<class T, class Compare, class Alloc>
