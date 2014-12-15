@@ -51,7 +51,7 @@ def createScene(root):
 	root.createObject('LDLTResponse')
 	
 	##### Collisions
-	root.createObject('DefaultCollisionGroupManager')
+	# root.createObject('DefaultCollisionGroupManager')
 	root.createObject('NewProximityIntersection', alarmDistance=0.5, contactDistance=0.05)
 	root.createObject('BruteForceDetection')
 	root.createObject('DefaultContactManager', response='FrictionCompliantContact', responseParams="mu=0.01")
@@ -65,15 +65,18 @@ def createScene(root):
 	ground_body = createRigidBoxBody(root, 'ground_body', [0,-3,0], [20,1,20])
 	# ground_body = createRigidBody(root, 'ground_body', "mesh/floor3.obj", [0,-2,0])
 	setFixed(ground_body)
+	
+	spacing = 2.4 # colliding (4fps)
+	# spacing = 5 # uncolliding (150fps)
 
 	random.seed(0x12345678)
 	for i in range(-3,4):
 		for j in range(-3,4):
 			for k in range(0,2):
-				body = createRigidBoxBody(root, ('cube'+str(i)+'_'+str(j)+'_'+str(k)), [i*2.4,k*2.4,j*2.4])
+				body = createRigidBoxBody(root, ('cube'+str(i)+'_'+str(j)+'_'+str(k)), [i*spacing,k*spacing,j*spacing])
 				body.dofs.velocity = "" + str(random.random()*4-2) + " 0 " + str(random.random()*4-2) + " 0 0 0"
 				
-	script = root.createObject('PythonScriptController', filename = __file__, classname = 'Controller')				
+	script = root.createObject('PythonScriptController', filename = __file__, classname = 'Controller')	
 
 
 class Controller(SofaTest.Controller):
