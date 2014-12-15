@@ -32,6 +32,7 @@ def createScene(root):
         
         root.createObject('CompliantImplicitSolver',stabilization="1")
         root.createObject('SequentialSolver',iterations="10",precision="1e-10")
+        root.createObject('LDLTResponse')
                 
         
         
