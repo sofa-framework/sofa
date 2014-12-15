@@ -798,10 +798,15 @@ struct Assembly_test : public CompliantSolver_test
     */
     void testDecomposedString( SReal stiffness = 1e4 )
     {
+
+
+        /////// SUBSETMULTIMAPPING + DISTANCEMAPPING
+
+
         Node::SPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
 
-        Vec3 p0(0,0,0), p1(2,0,0); // make it deformed at start, such as it creates a force and geometric stiffness
+        const Vec3 p0(0,0,0), p1(2,0,0); // make it deformed at start, such as it creates a force and geometric stiffness
 
         // The solver
         complianceSolver = addNew<OdeSolver>(root);
@@ -855,25 +860,18 @@ struct Assembly_test : public CompliantSolver_test
         compliance->isCompliance.setValue(false);
 
 
-        // ***** Expected results
-        expected.M = expected.P = DenseMatrix::Identity( 6, 6 );
-        expected.dv = Vector::Zero(6);        // equilibrium
 
-        expected.C = DenseMatrix::Zero(0,0); // null compliance
-        expected.phi = Vector::Zero(0);       // null imposed constraint value
-        expected.J = DenseMatrix::Zero(0,0);
-        expected.lambda.resize(0);
 
+        // ***** Perform initialization
+        sofa::simulation::getSimulation()->init(root.get());
+
+        // intermediate expectation
         expected.K = DenseMatrix::Zero(6,6);
         for( int i=0 ; i<6 ; i+=3 )
         {
             expected.K(i,i) = -stiffness;
             expected.K(i, (i+3)%6) = stiffness;
         }
-
-        // ***** Perform initialization
-        sofa::simulation::getSimulation()->init(root.get());
-
 
         // before deformation and associated geometric stiffness
         assembled.K = getAssembledStiffnessMatrix( root );
@@ -883,7 +881,7 @@ struct Assembly_test : public CompliantSolver_test
         // ***** Perform simulation
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
-        // after animation, the force has been computed as weel as the geometric stiffness
+        // after animation, the force has been computed as well as the geometric stiffness
 
 
         assembled.M = getAssembledMassMatrix( root );
@@ -904,6 +902,73 @@ struct Assembly_test : public CompliantSolver_test
         ASSERT_TRUE( ok );
 
 
+
+
+
+        /////// DISTANCEMULTIMAPPING
+
+
+        root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
+
+        // The solver
+        complianceSolver = addNew<OdeSolver>(root);
+//        complianceSolver->storeDynamicsSolution(true);
+        linearSolver = addNew<LinearSolver>(root);
+        complianceSolver->alpha.setValue(1.0);
+        complianceSolver->beta.setValue(1.0);
+
+        // ========= DOF1
+        node1 = root->createChild("node1");
+        dof1 = addNew<MechanicalObject3>(node1);
+        dof1->resize(1);
+        MechanicalObject3::WriteVecCoord x3 = dof1->writePositions();
+        x3[0] = p0;
+        mass1 = addNew<UniformMass3>(node1);
+        mass1->setTotalMass( 1 );
+
+        // ========= DOF2
+        node2 = root->createChild("node2");
+        dof2 = addNew<MechanicalObject3>(node2);
+        dof2->resize(1);
+        MechanicalObject3::WriteVecCoord x4 = dof2->writePositions();
+        x4[0] = p1;
+        mass2 = addNew<UniformMass3>(node2);
+        mass1->setTotalMass( 1 );
+
+        // =========== common DOFs
+        extension_node = node1->createChild( "ExtensionNode");
+        node2->addChild( extension_node );
+        extensions = addNew<MechanicalObject1>(extension_node);
+        edgeSet = addNew<EdgeSetTopologyContainer>(extension_node);
+        edgeSet->addEdge(0,1);
+        DistanceMultiMapping31::SPtr distanceMultiMapping = addNew<DistanceMultiMapping31>(extension_node);
+        distanceMultiMapping->addInputModel( dof1.get() );
+        distanceMultiMapping->addInputModel( dof2.get() );
+        distanceMultiMapping->addOutputModel( extensions.get() );
+        distanceMultiMapping->addPoint( dof1.get(), 0 );
+        distanceMultiMapping->addPoint( dof2.get(), 0 );
+        distanceMultiMapping->f_restLengths.setValue( restLengths );
+        compliance = addNew<UniformCompliance1>(extension_node);
+        compliance->compliance.setValue(1.0/stiffness);
+        compliance->isCompliance.setValue(false);
+
+
+        // ***** Perform initialization
+        sofa::simulation::getSimulation()->init(root.get());
+        // ***** Perform simulation
+        sofa::simulation::getSimulation()->animate(root.get(),1.0);
+
+        // after animation, the force has been computed as well as the geometric stiffness
+
+        SparseMatrix DistanceMultiMapping_K = getAssembledStiffnessMatrix( root );
+
+
+
+
+
+        ///////// SIMPLE SPRING
+
         // build a spring stiffness matrix from a simple mapping to test the values
         root = clearScene();
         root->setGravity( Vec3(0,0,0) );complianceSolver = addNew<OdeSolver>(root);
@@ -914,7 +979,27 @@ struct Assembly_test : public CompliantSolver_test
         createCompliantString( root, p0, p1, 2, 2, 1.0/stiffness, false, 1 );
         sofa::simulation::getSimulation()->init(root.get());
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
+
+
+
+
+
+
+        // ***** Expected results
+        expected.M = expected.P = DenseMatrix::Identity( 6, 6 );
+        expected.dv = Vector::Zero(6);        // equilibrium
+
+        expected.C = DenseMatrix::Zero(0,0); // null compliance
+        expected.phi = Vector::Zero(0);       // null imposed constraint value
+        expected.J = DenseMatrix::Zero(0,0);
+        expected.lambda.resize(0);
+
         expected.K = getAssembledStiffnessMatrix( root );
+
+
+
+        // testing DistanceMultiMapping here to have only one test
+        ASSERT_TRUE( matricesAreEqual( expected.K, DistanceMultiMapping_K ) );
 
 
 

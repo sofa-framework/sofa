@@ -283,6 +283,8 @@ const defaulttype::BaseMatrix* DistanceMapping<TIn, TOut>::getK()
     }
     K.compress();
 
+//    std::cerr<<SOFA_CLASS_METHOD<<K<<std::endl;
+
     return &K;
 }
 
@@ -345,6 +347,34 @@ template <class TIn, class TOut>
 DistanceMultiMapping<TIn, TOut>::~DistanceMultiMapping()
 {
     release();
+}
+
+
+template <class TIn, class TOut>
+void DistanceMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int index)
+{
+
+    // find the index of the parent state
+    unsigned i;
+    for(i=0; i<this->fromModels.size(); i++)
+        if(this->fromModels.get(i)==from )
+            break;
+    if(i==this->fromModels.size())
+    {
+        serr<<"SubsetMultiMapping<TIn, TOut>::addPoint, parent "<<from->getName()<<" not found !"<< sendl;
+        assert(0);
+    }
+
+    addPoint(i, index);
+}
+
+template <class TIn, class TOut>
+void DistanceMultiMapping<TIn, TOut>::addPoint( int from, int index)
+{
+    assert(from<this->fromModels.size());
+    vector<defaulttype::Vec2i>& indexPairsVector = *d_indexPairs.beginEdit();
+    indexPairsVector.push_back(defaulttype::Vec2i(from,index));
+    d_indexPairs.endEdit();
 }
 
 
