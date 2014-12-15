@@ -52,6 +52,7 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
 {
 
     typedef _RigidRigidMapping RigidRigidMapping;
+    typedef Mapping_test<RigidRigidMapping> Inherit;
 
     typedef typename RigidRigidMapping::In In;
     typedef typename In::VecCoord InVecCoord;
@@ -86,6 +87,9 @@ struct RigidRigidMappingTest : public Mapping_test<_RigidRigidMapping>
     RigidRigidMappingTest()
     {
         rigidRigidMapping = static_cast<RigidRigidMapping*>( this->mapping );
+        // RigidRigidMapping assembly is not implemented
+        // you can use Compliant AssembledRigidRigidMapping for that purpose
+        this->flags &= ~Inherit::TEST_ASSEMBLY_API;
     }
 
     OutVecCoord create_childCoord()
@@ -294,7 +298,7 @@ TYPED_TEST( RigidRigidMappingTest , test_translation )
 
 TYPED_TEST( RigidRigidMappingTest , no_index_no_movement_worldCoords )
 {
-    this->errorMax = 150;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_no_index_no_movement_worldCoords());
 }
@@ -302,28 +306,28 @@ TYPED_TEST( RigidRigidMappingTest , no_index_no_movement_worldCoords )
 
 TYPED_TEST( RigidRigidMappingTest , with_index_no_movement_worldCoords )
 {
-    this->errorMax = 100;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_with_index_no_movement_worldCoords());
 }
 
 TYPED_TEST( RigidRigidMappingTest , no_index_worldCoords )
 {
-    this->errorMax = 100;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_no_index_worldCoords());
 }
 
 TYPED_TEST( RigidRigidMappingTest , index_0_worldCoords )
 {
-    this->errorMax = 100;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_index_0_worldCoords());
 }
 
 TYPED_TEST( RigidRigidMappingTest , index_2_worldCoords )
 {
-    this->errorMax = 100;
+    this->errorMax = 200;
     this->deltaMax = this->errorMax*100;
     ASSERT_TRUE(this->test_index_2_worldCoords());
 }

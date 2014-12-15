@@ -131,6 +131,22 @@ void DataDisplay::drawVisual(const core::visual::VisualParams* vparams)
             if (max < *i) max = *i;
         }
     }
+
+    if( d_userRange.getValue()[0] < d_userRange.getValue()[1] )
+    {
+        if( f_maximalRange.getValue() )
+        {
+            if( max > d_userRange.getValue()[1] ) max=d_userRange.getValue()[1];
+            if( min < d_userRange.getValue()[0] ) min=d_userRange.getValue()[0];
+        }
+        else
+        {
+            max=d_userRange.getValue()[1];
+            min=d_userRange.getValue()[0];
+        }
+    }
+
+
     if (max > oldMax) oldMax = max;
     if (min < oldMin) oldMin = min;
 

@@ -283,24 +283,24 @@ public:
         if( sho!=0 && shortName.find(sho) != shortName.end() )
         {
             std::cerr << "name " << sn << " already used !" << std::endl;
-            exit( 1 );
+            exit(EXIT_FAILURE);
         }
 
         if( ln.size()>0 && longName.find(ln) != longName.end() )
         {
             std::cerr << "name " << ln << " already used !" << std::endl;
-            exit( 1 );
+            exit(EXIT_FAILURE);
         }
 
         if( sho!=0 && sho == helpShortName )
         {
             std::cerr << "name " << sho << " reserved for help !" << std::endl;
-            exit( 1 );
+            exit(EXIT_FAILURE);
         }
         if( ln.size()>0 && lon == helpLongName )
         {
             std::cerr << "name " << lon << " reserved for help !" << std::endl;
-            exit( 1 );
+            exit(EXIT_FAILURE);
         }
 
         ArgumentBase* c = new Argument<T>(ptr,sho,ln,h,false);
@@ -324,24 +324,24 @@ public:
         if( sho!=0 && shortName.find(sho) != shortName.end() )
         {
             std::cerr << "name " << sn << " already used !" << std::endl;
-            exit( 1 );
+            exit(EXIT_FAILURE);
         }
 
         if( ln.size()>0 && longName.find(ln) != longName.end() )
         {
             std::cerr << "name " << ln << " already used !" << std::endl;
-            exit( 1 );
+            exit(EXIT_FAILURE);
         }
 
         if( sho!=0 && sho == helpShortName )
         {
             std::cerr << "name " << sho << " reserved for help !" << std::endl;
-            exit( 1 );
+            exit(EXIT_FAILURE);
         }
         if( ln.size()>0 && lon == helpLongName )
         {
             std::cerr << "name " << lon << " reserved for help !" << std::endl;
-            exit( 1 );
+            exit(EXIT_FAILURE);
         }
 
         ArgumentBase* c = new Argument<T>(ptr,sho,ln,h,true);

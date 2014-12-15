@@ -112,7 +112,13 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
 
 
-    Mapping_test():deltaMax(1000),errorMax(10)
+    static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
+    static const unsigned char TEST_getKs = 2; ///< testing getKs used in assembly API
+    static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getKs; ///< testing functions used in assembly API getJS getKS
+    unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
+
+
+    Mapping_test():deltaMax(1000),errorMax(10),flags(TEST_ASSEMBLY_API)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -128,7 +134,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100)
+    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100),flags(TEST_ASSEMBLY_API)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -186,6 +192,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                           const InVecCoord parentNew,
                           const OutVecCoord expectedChildNew)
     {
+        if( !(flags & TEST_getJs) ) std::cerr<<"WARNING: MappingTest is not testing getJs\n";
+        if( !(flags & TEST_getKs) ) std::cerr<<"WARNING: MappingTest is not testing getKs\n";
+
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         MechanicalParams mparams;
         mparams.setKFactor(1.0);
@@ -233,7 +242,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set random child forces and propagate them to the parent
         for( unsigned i=0; i<Nc; i++ ){
-            fc[i] = Out::randomDeriv( 1.0 , BaseSofa_test::seed  );
+            fc[i] = Out::randomDeriv( 1.0);
         }
         fp2.fill( InDeriv() );
         WriteInVecDeriv fin = inDofs->writeForces();
@@ -247,7 +256,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set small parent velocities and use them to update the child
         for( unsigned i=0; i<Np; i++ ){
-            vp[i] = In::randomDeriv( this->epsilon() * deltaMax , BaseSofa_test::seed);
+            vp[i] = In::randomDeriv( this->epsilon() * deltaMax);
         }
 //        cout<<"parent velocities vp = " << vp << endl;
         for( unsigned i=0; i<Np; i++ ){             // and small displacements
@@ -275,9 +284,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         //        cout<<"dfp = " << dfp << endl;
 
         // Jacobian will be obsolete after applying new positions
-        if( mapping->getClassName() != "RigidRigidMapping" ) // Because RigidRigidMapping: getJs not implemented
+        if( flags & TEST_getJs )
         {
-            EigenSparseMatrix* J = this->getMatrix(mapping->getJs());
+            EigenSparseMatrix* J = this->getMatrix<EigenSparseMatrix>(mapping->getJs());
             //        cout<<"J = "<< endl << *J << endl;
             OutVecDeriv Jv(Nc);
             J->mult(Jv,vp);
@@ -360,7 +369,25 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                              "dfp    = " << dfp << endl <<
                              "fp2-fp = " << fp12 << endl;
         }
-        //}
+
+        if( flags & TEST_getKs )
+        {
+            // ================ test getKs()
+            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+            EigenSparseKMatrix* K = this->getMatrix<EigenSparseKMatrix>(mapping->getKs());
+
+            InVecDeriv Kv(Np);
+            K->mult(Kv,vp);
+
+            // check that K.vp = dfp
+            if( this->vectorMaxDiff(Kv,dfp)>this->epsilon()*errorMax ){
+                succeed = false;
+                ADD_FAILURE() << "K test failed" << endl <<
+                                 "Kv    = " << Kv << endl <<
+                                 "dfp = " << fp12 << endl;
+            }
+        }
+
 
         if(!succeed)
         { ADD_FAILURE() << "Failed Seed number = " << BaseSofa_test::seed << std::endl;}
@@ -373,15 +400,22 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             sofa::simulation::getSimulation()->unload(root);
     }
 
+protected:
+
     /// Get one EigenSparseMatrix out of a list. Error if not one single matrix in the list.
-    static EigenSparseMatrix* getMatrix(const vector<sofa::defaulttype::BaseMatrix*>* matrices)
+    template<class EigenSparseMatrixType>
+    static EigenSparseMatrixType* getMatrix(const vector<sofa::defaulttype::BaseMatrix*>* matrices)
     {
+        if( !matrices ){
+            ADD_FAILURE()<< "Matrix list is NULL (API for assembly is not implemented)";
+        }
         if( matrices->size() != 1 ){
             ADD_FAILURE()<< "Matrix list should have size == 1 in simple mappings";
         }
-        EigenSparseMatrix* ei = dynamic_cast<EigenSparseMatrix*>((*matrices)[0] );
+        EigenSparseMatrixType* ei = dynamic_cast<EigenSparseMatrixType*>((*matrices)[0] );
         if( ei == NULL ){
             ADD_FAILURE() << "getJs returns a matrix of non-EigenSparseMatrix type";
+            // TODO perform a slow conversion with a big warning rather than a failure?
         }
         return ei;
     }

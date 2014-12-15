@@ -111,6 +111,12 @@ void SubsetMultiMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
+SubsetMultiMapping<TIn, TOut>::SubsetMultiMapping()
+    : Inherit()
+    , indexPairs( initData( &indexPairs, vector<unsigned>(), "indexPairs", "list of couples (parent index + index in the parent)"))
+{}
+
+template <class TIn, class TOut>
 SubsetMultiMapping<TIn, TOut>::~SubsetMultiMapping()
 {
     for(unsigned i=0; i<baseMatrices.size(); i++ )
@@ -143,12 +149,7 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int i
         assert(0);
     }
 
-
-    vector<unsigned>& indexPairsVector = *indexPairs.beginEdit();
-    indexPairsVector.push_back(i);
-    indexPairsVector.push_back(index);
-    indexPairs.endEdit();
-
+    addPoint(i, index);
 }
 
 template <class TIn, class TOut>

@@ -46,20 +46,24 @@ SOFA_DECL_CLASS(SubsetMultiMapping)
 int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
 #ifndef SOFA_FLOAT
     .add< SubsetMultiMapping< Vec3dTypes, Vec3dTypes > >()
+    .add< SubsetMultiMapping< Vec1dTypes, Vec1dTypes > >()
     .add< SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
     .add< SubsetMultiMapping< Vec3fTypes, Vec3fTypes > >()
+    .add< SubsetMultiMapping< Vec1fTypes, Vec1fTypes > >()
     .add< SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes > >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1dTypes, Vec1dTypes >;
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
+template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1fTypes, Vec1fTypes >;
 template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes >;
 #endif
 
