@@ -97,6 +97,7 @@ public:
     // Vec3-Vec1
     typedef sofa::component::mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
     typedef sofa::component::mapping::DistanceFromTargetMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceFromTargetMapping31;
+    typedef sofa::component::mapping::DistanceMultiMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMultiMapping31;
 
 protected:
     /** @name Helpers */

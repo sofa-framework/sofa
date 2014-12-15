@@ -166,6 +166,13 @@ public:
     Data< defaulttype::Vec4f > d_color;         ///< drawing color
     Data< vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
 
+    // Append particle of given index within the given model to the subset.
+    void addPoint(const core::BaseState* fromModel, int index);
+    // Append particle of given index within the given model to the subset.
+    void addPoint(int fromModel, int index);
+
+
+
     virtual void init();
 
     virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
