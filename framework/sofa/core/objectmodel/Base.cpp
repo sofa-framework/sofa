@@ -43,8 +43,12 @@ using std::string;
 
 static const std::string unnamed_label=std::string("unnamed");
 
-Base::Base()
+Base::BaseInit Base::defaultInitSettings(40, 8);
+
+Base::Base(const BaseInit& init)
     : ref_counter(0)
+	, m_vecData(init.numDatas, VecData::RESERVE)
+	, m_vecLink(init.numLinks, VecLink::RESERVE)
     , name(initData(&name,unnamed_label,"name","object name"))
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))

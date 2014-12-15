@@ -74,6 +74,8 @@ public:
         typedef vector< T2,CPUMemoryManager<T2> > other;
     };
 
+	enum Reserve { RESERVE };
+
     /// Basic constructor
     vector() : std::vector<T,Alloc>() {}
     /// Constructor
@@ -86,6 +88,8 @@ public:
     explicit vector(size_type n): std::vector<T,Alloc>(n) {}
     /// Constructor
     vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}
+    /// Constructor
+    vector(size_type n, Reserve): std::vector<T,Alloc>() { reserve(n); }
     /// Constructor
     vector<T, Alloc>& operator=(const std::vector<T, Alloc>& x)
     {

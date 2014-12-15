@@ -37,7 +37,8 @@ namespace tree
 {
 
 GNode::GNode(const std::string& name, GNode* parent)
-    : simulation::Node(name)
+    : core::objectmodel::Base(BaseInit(8, 32))
+	, simulation::Node(name)
     , l_parent(initLink("parent", "Parent node in the graph"))
 {
     if( parent )
