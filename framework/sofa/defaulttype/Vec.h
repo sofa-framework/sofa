@@ -664,6 +664,14 @@ public:
         normalizeWithNorm(norm(),threshold);
     }
 
+    /// Return the normalized the vector.
+    Vec<N,real> normalized()
+    {
+        Vec<N,real> r(*this);
+        r.normalize();
+        return r;
+    }
+
     /// return true iff norm()==1
     bool isNormalized( real threshold=std::numeric_limits<real>::epsilon()*(real)10 ) const { return helper::rabs<real>( norm2()-(real)1 ) <= threshold; }
 

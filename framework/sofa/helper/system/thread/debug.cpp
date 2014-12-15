@@ -84,7 +84,7 @@ void Trace::print(int level, const char *chaine)
 
     case TRACE_ERROR:
         printf("ERROR: %s\n", chaine );
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 }
 

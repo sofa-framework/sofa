@@ -83,7 +83,7 @@ BaseData::BaseData( const BaseInitData& init)
             std::cerr << " created by class " << init.owner->getClassName();
         std::cerr << "!...aborting" << std::endl;
         sofa::helper::BackTrace::dump();
-        exit( 1 );
+        exit( EXIT_FAILURE );
     }
     //setAutoLink(true);
     if (m_owner) m_owner->addData(this, m_name);
