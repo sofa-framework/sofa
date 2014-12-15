@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "PythonEnvironment.h"
 #include "PythonMacros.h"
-
+#include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -79,8 +79,14 @@ void PythonEnvironment::Init()
     bindSofaPythonModule();
 
     // load a python script which search for python packages defined in the modules
-    std::string scriptPy = std::string(SOFA_SRC_DIR) + "/applications/plugins/SofaPython/SofaPython.py";
-
+    //sofaPython.py should imo be located outside of the sources at install stage for instance, like in the shared directory ; 
+    //and so do the different plugins python script
+    std::string scriptPy = "applications/plugins/SofaPython/SofaPython.py"; 
+    if( !sofa::helper::system::DataRepository.findFile(scriptPy) )
+    {
+       std::cerr << "SofaPython.py configuration file NOT FOUND in: " << sofa::helper::system::DataRepository << std::endl;
+        return ;
+    }
 
 #ifdef WIN32
     char* scriptPyChar = (char*) malloc((scriptPy.size()+1)*sizeof(char));
