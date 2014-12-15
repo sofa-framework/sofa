@@ -61,7 +61,22 @@ static mat shift_right(unsigned off, unsigned size, unsigned total_cols, SReal v
     return res;
 }
 
+// left-shift matrix, (off + size) x size matrix: (0 ; id)
+template<class mat>
+static mat shift_left(unsigned off, unsigned size, unsigned total_rows, SReal value = 1.0 ) {
+    mat res( total_rows, size);
+    assert( total_rows >= (off + size) );
 
+    res.reserve( size );
+
+    for(unsigned i = 0; i < size; ++i) {
+        res.startVec( off + i );
+        res.insertBack(off + i, i) = value;
+    }
+    res.finalize();
+
+    return res;
+}
 
 template<class Triplet, class mat>
 static void add_shifted_right( std::vector<Triplet>& res, const mat& m, unsigned off, SReal factor = 1.0 )
