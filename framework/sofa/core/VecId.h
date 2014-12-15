@@ -237,11 +237,11 @@ public:
     VecType getType() const { return type; }
     unsigned int getIndex() const { return index; }
 
-protected:
-	BaseVecId(VecType t, unsigned int i) : type(t), index(i) {}
-
 	VecType type;
     unsigned int index;
+
+protected:
+	BaseVecId(VecType t, unsigned int i) : type(t), index(i) {}
 };
 
 /// This class is only here as fix for a VC2010 compiler otherwise padding TVecId<V_ALL,?> with 4 more bytes than TVecId<?,?>, 
