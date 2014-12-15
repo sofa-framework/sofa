@@ -58,7 +58,6 @@ void UniformCompliance<DataTypes>::reinit()
     }
     else matC.compressedMatrix.resize(0,0);
 
-    // matK must be computed since it is used by MechanicalComputeComplianceForceVisitor to compute the compliance forces
 //    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
 //    {
         // the stiffness df/dx is the opposite of the inverse compliance
