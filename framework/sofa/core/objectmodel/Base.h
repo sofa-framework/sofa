@@ -200,15 +200,15 @@ public:
     /// Note that this method should only be called if the Data was not initialized with the initData method
     void addData(BaseData* f);
 
-    /// Remove a data field.
-    void removeData(BaseData* f);
-
     /// @deprecated
     void addField(BaseData* f, const char* name)
     {
         if (name && *name) f->setName(name);
         addData(f);
     }
+
+    /// Remove a data field.
+    void removeData(BaseData* f);
 
     /// Add an alias to a Data
     void addAlias( BaseData* field, const char* alias);

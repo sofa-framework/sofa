@@ -181,6 +181,9 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 
 void DefaultPipeline::doCollisionResponse()
 {
+	bool oldCreationState = DDGDataNode::isCreationEnabled();
+	DDGDataNode::enableCreation(false);
+
     core::objectmodel::BaseContext* scene = getContext();
     // then we start the creation of contacts
     if (contactManager==NULL) return; // can't go further
@@ -224,6 +227,8 @@ void DefaultPipeline::doCollisionResponse()
         VERBOSE(sout << "Create Groups "<<groupManager->getName()<<sendl);
         groupManager->createGroups(scene, notStaticContacts);
     }
+
+	DDGDataNode::enableCreation(oldCreationState);
 }
 
 helper::set< std::string > DefaultPipeline::getResponseList() const

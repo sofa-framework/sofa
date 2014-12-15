@@ -46,13 +46,13 @@ void DataEngine::addInput(objectmodel::BaseData* n)
 {
     if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
         n->setGroup("Inputs"); // set the group of input Datas if not yet set
-    core::objectmodel::DDGNode::addInput(n);
+    core::objectmodel::DDGNode::addInput(objectmodel::BaseData::ddg(n));
 }
 
 /// Remove an input from this engine
 void DataEngine::delInput(objectmodel::BaseData* n)
 {
-    core::objectmodel::DDGNode::delInput(n);
+    core::objectmodel::DDGNode::delInput(objectmodel::BaseData::ddg(n));
 }
 
 /// Add a new output to this engine
@@ -60,13 +60,13 @@ void DataEngine::addOutput(objectmodel::BaseData* n)
 {
     if (n->getOwner() == this && (!n->getGroup() || !n->getGroup()[0]))
         n->setGroup("Outputs"); // set the group of output Datas if not yet set
-    core::objectmodel::DDGNode::addOutput(n);
+    core::objectmodel::DDGNode::addOutput(objectmodel::BaseData::ddg(n));
 }
 
 /// Remove an output from this engine
 void DataEngine::delOutput(objectmodel::BaseData* n)
 {
-    core::objectmodel::DDGNode::delOutput(n);
+    core::objectmodel::DDGNode::delOutput(objectmodel::BaseData::ddg(n));
 }
 
 } // namespace core

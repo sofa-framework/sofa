@@ -73,12 +73,12 @@ public:
     /// @}
 
     explicit TData(const BaseInitData& init)
-        : BaseData(init), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
+        : BaseData(init), m_parent(NULL)
     {
     }
 
     TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
-        : BaseData(helpMsg, isDisplayed, isReadOnly), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
+        : BaseData(helpMsg, isDisplayed, isReadOnly), m_parent(NULL)
     {
     }
 
@@ -169,31 +169,23 @@ public:
 
 protected:
 
-    BaseLink::InitLink<TData<T> >
-    initLink(const char* name, const char* help)
+	void onParentChanged(BaseData* parent)
     {
-        return BaseLink::InitLink<TData<T> >(this, name, help);
-    }
-
-    void doSetParent(BaseData* parent)
-    {
-        parentData.set(dynamic_cast<TData<T>*>(parent));
-        BaseData::doSetParent(parent);
+		m_parent = dynamic_cast<TData<T>*>(parent);
     }
 
     bool updateFromParentValue(const BaseData* parent)
     {
-        if (parent == parentData.get())
+		if (parent && m_parent == parent)
         {
-            //virtualSetValue(parentData->virtualGetValue());
-            virtualSetLink(*parentData.get());
+            virtualSetLink(*parent);
             return true;
         }
         else
             return BaseData::updateFromParentValue(parent);
     }
 
-    SingleLink<TData<T>,TData<T>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentData;
+    TData<T>* m_parent;
 };
 
 template <class T, bool COW>
@@ -435,10 +427,13 @@ public:
     inline T* beginEdit(const core::ExecParams* params = 0)
     {
         size_t aspect = DDGNode::currentAspect(params);
-        this->updateIfDirty(params);
-        ++this->m_counters[aspect];
-        this->m_isSets[aspect] = true;
-        BaseData::setDirtyOutputs(params);
+		if (m_ddg)
+		{
+	        m_ddg->updateIfDirty(params);
+			++m_ddg->m_counters[aspect];
+			m_ddg->m_isSets[aspect] = true;
+			m_ddg->setDirtyOutputs(params);
+		}
         return m_values[aspect].beginEdit();
     }
 
@@ -446,9 +441,12 @@ public:
     inline T* beginWriteOnly(const core::ExecParams* params = 0)
     {
         size_t aspect = DDGNode::currentAspect(params);
-        ++this->m_counters[aspect];
-        this->m_isSets[aspect] = true;
-        BaseData::setDirtyOutputs(params);
+ 		if (m_ddg)
+		{
+			++m_ddg->m_counters[aspect];
+			m_ddg->m_isSets[aspect] = true;
+			m_ddg->setDirtyOutputs(params);
+		}
         return m_values[aspect].beginEdit();
     }
 
@@ -486,7 +484,8 @@ public:
 
     inline const T& getValue(const core::ExecParams* params = 0) const
     {
-        this->updateIfDirty(params);
+		if (m_ddg)
+			m_ddg->updateIfDirty(params);
         return m_values[DDGNode::currentAspect(params)].getValue();
     }
 
@@ -499,6 +498,7 @@ public:
     void releaseAspect(int aspect)
     {
         m_values[aspect].release();
+		BaseData::releaseAspect(aspect);
     }
     /// @}
 
@@ -510,16 +510,18 @@ public:
 
     virtual void virtualSetLink(const BaseData& bd)
     {
-        const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
-        if (d)
-        {
-            size_t aspect = DDGNode::currentAspect();
-            this->m_values[aspect] = d->m_values[aspect];
-            //FIX: update counter
-            ++this->m_counters[aspect];
-            this->m_isSets[aspect] = true;
-            BaseData::setDirtyOutputs();
-        }
+		const Data<T>* d = dynamic_cast< const Data<T>* >(&bd);
+		if (d)
+		{
+			size_t aspect = DDGNode::currentAspect();
+			this->m_values[aspect] = d->m_values[aspect];
+			if (m_ddg)
+			{
+				++m_ddg->m_counters[aspect];
+				m_ddg->m_isSets[aspect] = true;
+				m_ddg->setDirtyOutputs();
+			}
+		}
     }
 
     virtual T* virtualBeginEdit() { return beginEdit(); }

@@ -44,8 +44,8 @@ bool DataFileName::read( std::string& s )
 void DataFileName::updatePath()
 {
     DataFileName* parentDataFileName = NULL;
-    if (parentData)
-        parentDataFileName = dynamic_cast<DataFileName*>(parentData.get());
+    if (m_parent)
+        parentDataFileName = dynamic_cast<DataFileName*>(m_parent);
     if (parentDataFileName)
     {
         fullpath = parentDataFileName->getFullPath();
@@ -54,7 +54,7 @@ void DataFileName::updatePath()
     }
     else
     {
-        fullpath = m_values[currentAspect()].getValue();
+        fullpath = m_values[DDGNode::currentAspect()].getValue();
         if (!fullpath.empty())
             helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
     }
@@ -63,11 +63,11 @@ void DataFileName::updatePath()
 void DataFileNameVector::updatePath()
 {
     DataFileNameVector* parentDataFileNameVector = NULL;
-    if (parentData)
+    if (m_parent)
     {
-        parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(parentData.get());
+        parentDataFileNameVector = dynamic_cast<DataFileNameVector*>(m_parent);
     }
-    fullpath = m_values[currentAspect()].getValue();
+    fullpath = m_values[DDGNode::currentAspect()].getValue();
     if (!fullpath.empty())
         for (unsigned int i=0 ; i<fullpath.size() ; i++)
         {

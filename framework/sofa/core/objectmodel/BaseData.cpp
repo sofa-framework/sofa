@@ -37,45 +37,217 @@ namespace objectmodel
 
 //#define SOFA_DDG_TRACE
 
-BaseData::BaseData(const char* h, DataFlags dataflags)
+const std::string DDGDataNode::NO_NAME;
+const DDGNode::DDGLinkContainer DDGDataNode::NO_LINKS;
+DDGDataNode::CreationArray DDGDataNode::m_creationEnabled(true);
+
+DDGDataNode::DDGDataNode(BaseData* data, const char* h)
     : help(h), ownerClass(""), group(""), widget("")
-    , m_counters(), m_isSets(), m_dataFlags(dataflags)
-    , m_owner(NULL), m_name("")
-    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
+    , m_counters(), m_isSets()
+    , m_name("")
+    , m_parent(initLink("parent", "Linked Data, from which values are automatically copied"))
+	, m_data(data)
 {
     addLink(&inputs);
     addLink(&outputs);
     m_counters.assign(0);
     m_isSets.assign(false);
-    //setAutoLink(true);
-    //if (owner) owner->addData(this);
+}
+
+DDGDataNode::DDGDataNode(const BaseInitData& init)
+    : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
+    , m_counters(), m_isSets()
+    , m_name(init.name)
+    , m_parent(initLink("parent", "Linked Data, from which values are automatically copied"))
+	, m_data(init.data)
+{
+    addLink(&inputs);
+    addLink(&outputs);
+    m_counters.assign(0);
+    m_isSets.assign(false);
+}
+
+Base* DDGDataNode::getOwner() const
+{
+	return m_data->getOwner();
+}
+
+BaseData* DDGDataNode::getData() const
+{
+	return const_cast<BaseData*>(m_data);
+}
+
+void DDGDataNode::update()
+{
+    cleanDirty();
+    for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
+    {
+        if ((*it)->isDirty())
+        {
+            (*it)->update();
+        }
+    }
+
+    if (m_parent)
+    {
+#ifdef SOFA_DDG_TRACE
+        if (getOwner())
+            getOwner()->sout << "Data " << m_name << ": update from parent " << m_parent->m_name << getOwner()->sendl;
+#endif
+		m_data->updateFromParentValue(m_parent->m_data);
+
+        // If the value is dirty clean it
+        if(this->isDirty())
+        {
+            cleanDirty();
+        }
+    }
+}
+
+bool DDGDataNode::setParent(DDGDataNode* parent, const std::string& path)
+{
+    // First remove previous parents
+    while (!this->inputs.empty())
+        this->delInput(*this->inputs.begin());
+
+    if (parent && !m_data->validParent(parent->m_data))
+    {
+        if (getOwner())
+        {
+            getOwner()->serr << "Invalid Data link from " << (parent->getOwner() ? parent->getOwner()->getName() : std::string("?")) << "." << parent->getName() << " to " << getOwner()->getName() << "." << getName() << getOwner()->sendl;
+            if (!m_data->getValueTypeInfo()->ValidInfo())
+                getOwner()->serr << "  Possible reason: destination Data " << getName() << " has an unknown type" << getOwner()->sendl;
+            if (!parent->m_data->getValueTypeInfo()->ValidInfo())
+                getOwner()->serr << "  Possible reason: source Data " << parent->getName() << " has an unknown type" << getOwner()->sendl;
+        }
+        return false;
+    }
+
+	if (!path.empty())
+		m_parent.set(parent, path);
+	else
+		m_parent.set(parent);
+
+    if (parent)
+    {
+        addInput(parent);
+        setDirtyValue();
+        if (!m_data->isCounterValid())
+            update();
+
+        m_counters[currentAspect()]++;
+        m_isSets[currentAspect()] = true;
+    }
+
+	m_data->onParentChanged(parent ? parent->m_data : NULL);
+
+    return true;
+}
+
+void DDGDataNode::removeParent()
+{
+	if (m_parent.get())
+		delInput(m_parent.get());
+}
+
+/// Add a link.
+/// Note that this method should only be called if the link was not initialized with the initLink method
+void DDGDataNode::addLink(BaseLink* l)
+{
+    m_vecLink.push_back(l);
+    //l->setOwner(this);
+}
+
+bool DDGDataNode::findDataLinkDest(DDGDataNode*& ptr, const std::string& path, const BaseLink* link)
+{
+	Base* owner = getOwner();
+    if (owner)
+	{
+		BaseData* data = ptr->m_data;
+        bool result = owner->findDataLinkDest(data, path, link);
+		ptr = BaseData::ddg(data);
+		return result;
+	}
+    else
+    {
+        std::cerr << "DATA LINK ERROR: no owner defined for Data " << getName() << ", cannot lookup Data link " << path << std::endl;
+        return false;
+    }
+}
+
+void DDGDataNode::doDelInput(DDGNode* n)
+{
+    if (m_parent == n)
+        m_parent.set(NULL);
+    DDGNode::doDelInput(n);
+}
+
+void DDGDataNode::copyAspect(int destAspect, int srcAspect)
+{
+    m_counters[destAspect] = m_counters[srcAspect];
+    m_isSets[destAspect] = m_isSets[srcAspect];
+    DDGNode::copyAspect(destAspect, srcAspect);
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    {
+        //std::cout << "  " << iLink->first;
+        (*iLink)->copyAspect(destAspect, srcAspect);
+    }
+}
+
+void DDGDataNode::releaseAspect(int aspect)
+{
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+    {
+        (*iLink)->releaseAspect(aspect);
+    }
+}
+
+void DDGDataNode::enableCreation(bool enable)
+{
+	m_creationEnabled[currentAspect()] = enable;
+}
+
+bool DDGDataNode::isCreationEnabled()
+{
+	return m_creationEnabled[currentAspect()];
+}
+
+
+
+sofa::core::objectmodel::Base* LinkTraitsPtrCasts<DDGDataNode>::getBase(sofa::core::objectmodel::DDGDataNode* n)
+{
+    if (!n) return NULL;
+    return n->getOwner();
+}
+
+sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<DDGDataNode>::getData(sofa::core::objectmodel::DDGDataNode* n)
+{
+    if (!n) return NULL;
+    return n->getData();
+}
+
+
+
+BaseData::BaseData(const char* h, DataFlags dataflags)
+    : m_dataFlags(dataflags), m_ddg(NULL), m_owner(NULL)
+{
+	if (DDGDataNode::isCreationEnabled())
+		m_ddg = new DDGDataNode(this, h);
 }
 
 BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly)
-    : help(h), ownerClass(""), group(""), widget("")
-    , m_counters(), m_isSets(), m_dataFlags(FLAG_DEFAULT), m_owner(NULL), m_name("")
-    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
+    : m_dataFlags(FLAG_DEFAULT), m_ddg(NULL), m_owner(NULL)
 {
-    addLink(&inputs);
-    addLink(&outputs);
-    m_counters.assign(0);
-    m_isSets.assign(false);
     setFlag(FLAG_DISPLAYED,isDisplayed);
     setFlag(FLAG_READONLY,isReadOnly);
-    //setAutoLink(true);
-    //if (owner) owner->addData(this);
+    
+	if (DDGDataNode::isCreationEnabled())
+		m_ddg = new DDGDataNode(this, h);
 }
 
 BaseData::BaseData( const BaseInitData& init)
-    : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
-    , m_counters(), m_isSets(), m_dataFlags(init.dataFlags)
-    , m_owner(init.owner), m_name(init.name)
-    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
+    : m_dataFlags(init.dataFlags), m_ddg(NULL), m_owner(init.owner)
 {
-    addLink(&inputs);
-    addLink(&outputs);
-    m_counters.assign(0);
-    m_isSets.assign(false);
     if (init.data && init.data != this)
     {
         std::cerr << "CODE ERROR: initData POINTER MISMATCH: field name \"" << init.name << "\"";
@@ -85,12 +257,18 @@ BaseData::BaseData( const BaseInitData& init)
         sofa::helper::BackTrace::dump();
         exit( EXIT_FAILURE );
     }
-    //setAutoLink(true);
-    if (m_owner) m_owner->addData(this, m_name);
+
+	if (DDGDataNode::isCreationEnabled())
+		m_ddg = new DDGDataNode(init);
+    
+    if (m_owner)
+		m_owner->addData(this);
 }
 
 BaseData::~BaseData()
 {
+	if (m_ddg)
+		delete m_ddg;
 }
 
 bool BaseData::validParent(BaseData* parent)
@@ -107,86 +285,28 @@ bool BaseData::validParent(BaseData* parent)
 
 bool BaseData::setParent(BaseData* parent, const std::string& path)
 {
-    // First remove previous parents
-    while (!this->inputs.empty())
-        this->delInput(*this->inputs.begin());
-    if (parent && !validParent(parent))
-    {
-        if (m_owner)
-        {
-            m_owner->serr << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << m_owner->sendl;
-            if (!this->getValueTypeInfo()->ValidInfo())
-                m_owner->serr << "  Possible reason: destination Data " << getName() << " has an unknown type" << m_owner->sendl;
-            if (!parent->getValueTypeInfo()->ValidInfo())
-                m_owner->serr << "  Possible reason: source Data " << parent->getName() << " has an unknown type" << m_owner->sendl;
-        }
-        return false;
-    }
-    doSetParent(parent);
-    if (!path.empty())
-        parentBaseData.set(parent, path);
-    if (parent)
-    {
-        addInput(parent);
-        BaseData::setDirtyValue();
-        if (!isCounterValid())
-            update();
-
-        m_counters[currentAspect()]++;
-        m_isSets[currentAspect()] = true;
-    }
-    return true;
+	if (m_ddg)
+	{
+		return m_ddg->setParent(parent ? parent->m_ddg : NULL, path);
+	}
+	return false;
 }
 
 bool BaseData::setParent(const std::string& path)
 {
-    BaseData* parent = NULL;
-    if (this->findDataLinkDest(parent, path, &parentBaseData))
-        return setParent(parent, path);
-    else // simply set the path
-    {
-        if (parentBaseData.get())
-            this->delInput(parentBaseData.get());
-        parentBaseData.set(parent, path);
-        return false;
+	if (m_ddg)
+	{
+		BaseData* parent = NULL;
+		bool resolved = findDataLinkDest(parent, path, &m_ddg->m_parent);
+		return m_ddg->setParent(parent ? parent->m_ddg : NULL, path) && resolved;
     }
+    return false;
 }
 
-void BaseData::doSetParent(BaseData* parent)
+void BaseData::removeParent()
 {
-    parentBaseData.set(parent);
-}
-
-void BaseData::doDelInput(DDGNode* n)
-{
-    if (parentBaseData == n)
-        doSetParent(NULL);
-    DDGNode::doDelInput(n);
-}
-
-void BaseData::update()
-{
-    cleanDirty();
-    for(DDGLinkIterator it=inputs.begin(); it!=inputs.end(); ++it)
-    {
-        if ((*it)->isDirty())
-        {
-            (*it)->update();
-        }
-    }
-    if (parentBaseData)
-    {
-#ifdef SOFA_DDG_TRACE
-        if (m_owner)
-            m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
-#endif
-        updateFromParentValue(parentBaseData);
-        // If the value is dirty clean it
-        if(this->isDirty())
-        {
-            cleanDirty();
-        }
-    }
+	if (m_ddg)
+		m_ddg->removeParent();
 }
 
 /// Update this Data from the value of its parent
@@ -297,11 +417,6 @@ bool BaseData::copyValue(const BaseData* parent)
     return false;
 }
 
-bool BaseData::findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link)
-{
-    return DDGNode::findDataLinkDest(ptr, path, link);
-}
-
 bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const BaseLink* link)
 {
     if (m_owner)
@@ -313,32 +428,16 @@ bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const B
     }
 }
 
-/// Add a link.
-/// Note that this method should only be called if the link was not initialized with the initLink method
-void BaseData::addLink(BaseLink* l)
-{
-    m_vecLink.push_back(l);
-    //l->setOwner(this);
-}
-
 void BaseData::copyAspect(int destAspect, int srcAspect)
 {
-    m_counters[destAspect] = m_counters[srcAspect];
-    m_isSets[destAspect] = m_isSets[srcAspect];
-    DDGNode::copyAspect(destAspect, srcAspect);
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
-    {
-        //std::cout << "  " << iLink->first;
-        (*iLink)->copyAspect(destAspect, srcAspect);
-    }
+	if (m_ddg)
+		m_ddg->copyAspect(destAspect, srcAspect);
 }
 
 void BaseData::releaseAspect(int aspect)
 {
-    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
-    {
-        (*iLink)->releaseAspect(aspect);
-    }
+	if (m_ddg)
+		m_ddg->releaseAspect(aspect);
 }
 
 std::string BaseData::decodeTypeName(const std::type_info& t)
