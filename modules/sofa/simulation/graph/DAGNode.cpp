@@ -39,7 +39,8 @@ namespace graph
 
 
 DAGNode::DAGNode(const std::string& name, DAGNode* parent)
-    : simulation::Node(name)
+    : core::objectmodel::Base(BaseInit(8, 32))
+	, simulation::Node(name)
     , l_parents(initLink("parents", "Parents nodes in the graph"))
 {
     if( parent )

@@ -77,9 +77,18 @@ public:
     }
 
 protected:
-    /// Constructor cannot be called directly
+	struct BaseInit
+	{
+		int numDatas;
+		int numLinks;
+		BaseInit(int d, int l) : numDatas(d), numLinks(l) {}
+	};
+
+	static BaseInit defaultInitSettings;
+
+	/// Constructor cannot be called directly
     /// Use the New() method instead
-    Base();
+    Base(const BaseInit& init = defaultInitSettings);
 
     /// Direct calls to destructor are forbidden.
     /// Smart pointers must be used to manage creation/destruction of objects
