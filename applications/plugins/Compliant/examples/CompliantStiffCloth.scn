@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <Node 	 name="Root"  gravity="0 -1 0"  dt="0.01"  time="0"  animate="0"  >
-	<VisualStyle name="visualStyle1"  displayFlags="hideVisual showBehaviorModels showForceFields showMappings" />
-	<CompliantAttachButtonSetting button="Left" />
+	<VisualStyle name="visualStyle1"  displayFlags="hideVisual showBehaviorModels showForceFields showMechanicalMappings" />
 	
       <RequiredPlugin pluginName="Compliant"/>
+<!--       <CompliantAttachButton/> -->
 	
 	<Node 	 name="complianceSolverScene"  >
 		<CompliantImplicitSolver />
-		<LDLTSolver/>
+                <LDLTSolver/><LDLTResponse/>
                 <GridMeshCreator name="loader"  filename="nofile"  rotation="90 0 0"  scale3d="1 1 1"  resolution="5 5"  trianglePattern="0" />
 		<MeshTopology name="mesh"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles"  quads="@loader.quads"  tetrahedra="@loader.tetras"  hexahedra="@loader.hexas" />
 		<MechanicalObject template="Vec3d" name="defoDOF"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
