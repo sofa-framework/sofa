@@ -403,7 +403,7 @@ public:
 
     std::string getName() const
     {
-        if (hasIdMap())
+        if (!hasIdMap())
             return defaultId.getName();
         else
         {
@@ -645,7 +645,7 @@ public:
 
     std::string getName() const
     {
-        if (hasIdMap())
+        if (!hasIdMap())
             return defaultId.getName();
         else
         {
