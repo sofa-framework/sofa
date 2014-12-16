@@ -27,8 +27,8 @@ set(SOFAMISC_INSTALL_CMAKE_DIR   lib/cmake/SofaMisc   CACHE PATH "Installation d
 
 ## SofaMisc dependencies
 ##
-find_package(SofaCommon REQUIRED)
-set(SOFAMISC_DEPENDENCY_DIR ${SofaCommon_INCLUDE_DIRS})
+find_package(SofaGeneral REQUIRED)
+set(SOFAMISC_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
 
 configure_file( ${SofaMisc_SOURCE_DIR}/SofaMisc.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaMisc.h )
