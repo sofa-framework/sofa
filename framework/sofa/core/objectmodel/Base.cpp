@@ -178,14 +178,20 @@ void Base::addLink(BaseLink* l)
         //exit(1);
     }
     m_vecLink.push_back(l);
-    m_aliasLink.insert(std::make_pair(name, l));
+	if (l->hasDdg())
+	{
+		m_aliasLink.insert(std::make_pair(name, l));
+	}
     //l->setOwner(this);
 }
 
 /// Add an alias to a Link
 void Base::addAlias( BaseLink* link, const char* alias)
 {
-    m_aliasLink.insert(std::make_pair(std::string(alias),link));
+	if (link->hasDdg())
+	{
+		m_aliasLink.insert(std::make_pair(std::string(alias),link));
+	}
 }
 
 /// Copy the source aspect to the destination aspect for each Data in the component.
