@@ -85,7 +85,7 @@ set(SOFA_HAVE_GLEW ${GLEW_FOUND})
 # GLUT
 find_package(GLUT)
 if( GLUT_FOUND )
-    sofa_create_target(GLUT SofaFramework ${GLUT_LIBRARIES} ${GLUT_INCLUDE_DIR} )
+    sofa_create_target(GLUT SofaFramework ${GLUT_glut_LIBRARY} ${GLUT_INCLUDE_DIR} )
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target} )
 endif()
 set(SOFA_HAVE_GLUT ${GLUT_FOUND})
