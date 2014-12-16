@@ -24,10 +24,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Environment
 set(SOFA_CMAKE_DIR "${Sofa_SOURCE_DIR}/cmake" )
 list(APPEND CMAKE_MODULE_PATH "${SOFA_CMAKE_DIR}/Modules")
-
-include("${SOFA_CMAKE_DIR}/SofaBuildFlags.cmake")
-
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
+
+include(CMakeSofaBuildFlags)
+
+
 
 # Sofa libraries
 set(SOFA_EXTERNALS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sofa-win-dependencies-21-11-2013" )
