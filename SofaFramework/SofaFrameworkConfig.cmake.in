@@ -36,7 +36,7 @@ endif()
 
 if(SOFA_HAVE_GLUT)
     find_package(GLUT REQUIRED)
-    sofa_create_target(GLUT SofaFramework ${GLUT_LIBRARIES} ${GLUT_INCLUDE_DIR} )
+    sofa_create_target(GLUT SofaFramework  ${GLUT_glut_LIBRARY} ${GLUT_INCLUDE_DIR} )
 endif()
 
 if(SOFA_HAVE_BOOST)
