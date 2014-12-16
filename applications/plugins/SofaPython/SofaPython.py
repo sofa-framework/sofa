@@ -14,7 +14,7 @@ plugins_paths = ['applications/plugins',
 for relative in plugins_paths:
     absolute = os.path.join(Sofa.src_dir(), relative)
     if __name__ == "__main__":
-        if sys.argc>=2 and os.path.isdir(os.path.abspath(sys.argv[1])):
+        if len(sys.argv)>=2 and os.path.isdir(os.path.abspath(sys.argv[1])):
             absolute=os.path.join(os.path.abspath(sys.argv[1]),relative)
 
     if os.path.exists(absolute): # applications-dev is not necessarily existing
@@ -26,6 +26,7 @@ for relative in plugins_paths:
                     print "SofaPython: added plugin path for", plugin
                     sys.path.insert(0, python )
                     #print "SofaPython: located in ", python					
+                    print "SofaPython: located in ", python					
 
 # add more customization here if needed
 
