@@ -11,6 +11,15 @@ import xml.etree.ElementTree as ET
 from subprocess import check_output
 import argparse
 
+
+def stringToVariableName(s):
+        ### converting a string in a valid variable name
+        # replace invalid characters
+        s = re.sub('[^0-9a-zA-Z_]', '_', s)
+        # replace leading characters until we find a letter or underscore
+        s = re.sub('^[^a-zA-Z_]+', '_', s)
+        return s
+
 def chopStringAtChar(stringToChop,char,useContentBeforeChar=0) :
 	choppedString = stringToChop
 	choppedString_re = re.search(char,stringToChop[::-1])
@@ -50,7 +59,7 @@ def childAttributesToStringPython(child,tabs) :
 	attribute_str = str()
 	for item in child.items() :
 		if (not (item[0] == 'name') ):
-			attribute_str += tabs+child.get('name')+"." + item[0] + " = \'" + item[1] + "\'\n"
+			attribute_str += tabs+stringToVariableName(child.get('name'))+"." + item[0] + " = \'" + item[1] + "\'\n"
 	return attribute_str;
 
 def attributesToStringXML(child) :
@@ -68,13 +77,14 @@ def createChild(child) :
 	#createChild_str = "createChild(\'" + child.get('name') + "\'" + attributesToStringPython(child,0) +")"
 	return createChild_str;
 
+
 def parentVariableName(parent,scenePath) :
 	parentPythonVariableName = str()
-	if parent.get('name') == 'root' or parent.get('name') == scenePath:
+	if parent.get('name').lower() == 'root' or parent.get('name') == scenePath:
 		parentPythonVariableName = 'rootNode'
 	else :
 		parentPythonVariableName = parent.get('name')
-	return parentPythonVariableName;
+	return stringToVariableName(parentPythonVariableName);
 
 def printChildren(parent, tabs, scenePath='rootNode') :
 	myChildren = str()
@@ -82,7 +92,7 @@ def printChildren(parent, tabs, scenePath='rootNode') :
 		if child.tag == "Node" :
 			currentScenePath = scenePath+"/"+child.get('name')
 			myChildren += "\n"+tabs+"# "+currentScenePath+"\n"
-			myChildren += tabs+child.get('name')+" = "+parentVariableName(parent,scenePath)+"."+createChild(child)+"\n"
+			myChildren += tabs+stringToVariableName(child.get('name'))+" = "+parentVariableName(parent,scenePath)+"."+createChild(child)+"\n"
 			myChildren += childAttributesToStringPython(child,tabs)
 			myChildren += printChildren(child,tabs,scenePath=currentScenePath)
 		else :
