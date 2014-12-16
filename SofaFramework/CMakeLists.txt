@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
+
 include(CMakeSofaCreateTarget)
 
 set(SOLUTION_NAME "SofaFramework")
@@ -178,6 +180,14 @@ configure_package_config_file(SofaFrameworkConfig.cmake.in
 install(FILES ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigInstall.cmake
         DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR}
         RENAME SofaFrameworkConfig.cmake)
+
+# CMakeSofaCreateTarget (build)
+configure_file( ${SofaFramework_SOURCE_DIR}/CMakeSofaCreateTarget.cmake
+                ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/CMakeSofaCreateTarget.cmake COPYONLY)
+        
+# CMakeSofaCreateTarget (installed)
+install(FILES ${SofaFramework_SOURCE_DIR}/CMakeSofaCreateTarget.cmake 
+        DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR} )
 
 # SofaFrameworkTargets.cmake (installed)
 install(EXPORT SofaFrameworkTargets
