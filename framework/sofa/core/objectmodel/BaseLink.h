@@ -64,6 +64,7 @@ public:
         FLAG_DATALINK   = 1 << 3, ///< True if link points to a Data
         FLAG_DUPLICATE  = 1 << 4, ///< True if link duplicates another one (possibly with a different/specialized DestType)
         FLAG_STOREPATH  = 1 << 5, ///< True if link requires a path string in order to be created
+		FLAG_DDG		= 1 << 6, ///< True (the default) if the link stores RTTI and DGG information.
     };
     typedef unsigned LinkFlags;
 
@@ -89,13 +90,13 @@ public:
     virtual ~BaseLink();
 
     const std::string& getName() const { return m_name; }
-    void setName(const std::string& name) { m_name = name; }
+    void setName(const std::string& name) { if (hasDdg()) m_name = name; }
 
     /// Get help message
     const char* getHelp() const { return m_help; }
 
     /// Set help message
-    void setHelp(const char* val) { m_help = val; }
+    void setHelp(const char* val) { if (hasDdg()) m_help = val; }
 
     virtual Base* getOwnerBase() const = 0;
     virtual BaseData* getOwnerData() const = 0;
@@ -109,6 +110,7 @@ public:
     bool isDoubleLink() const { return getFlag(FLAG_DOUBLELINK); }
     bool isDuplicate() const { return getFlag(FLAG_DUPLICATE); }
     bool storePath() const { return getFlag(FLAG_STOREPATH); }
+	bool hasDdg() const { return getFlag(FLAG_DDG); }
 
     /// Alias to match BaseData API
     bool isPersistent() const { return storePath(); }
