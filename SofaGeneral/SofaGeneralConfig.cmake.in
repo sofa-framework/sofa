@@ -5,8 +5,6 @@
 
 @PACKAGE_INIT@
 
-include(CMakeSofaCreateTarget)
-
 set(SOFAGENERAL_INCLUDE_DIR "@PACKAGE_SOFAGENERAL_INCLUDE_DIR@")
 
 # required for transitive dependencies
