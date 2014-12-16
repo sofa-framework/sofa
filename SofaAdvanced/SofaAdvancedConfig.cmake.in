@@ -25,4 +25,4 @@ check_required_components(${SofaAdvanced_TARGETS})
  
 # For compatibility only
 set(SofaAdvanced_LIBRARIES SofaComponentAdvanced)
-set(SofaAdvanced_INCLUDE_DIRS ${SOFAADVANCED_INCLUDE_DIR} ${SofaCommon_INCLUDE_DIRS} )
+set(SofaAdvanced_INCLUDE_DIRS ${SOFAADVANCED_INCLUDE_DIR} ${SofaGeneral_INCLUDE_DIRS} )

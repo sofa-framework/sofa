@@ -29,4 +29,4 @@ check_required_components(${SofaGUI_TARGETS})
 
 # For compatibility only
 set(SofaGui_LIBRARIES SofaGuiCommon)
-set(SofaGui_INCLUDE_DIRS ${SOFAGUI_INCLUDE_DIR} ${SofaSimulation_INCLUDE_DIRS})
+set(SofaGui_INCLUDE_DIRS ${SOFAGUI_INCLUDE_DIR} ${SofaGeneral_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})
