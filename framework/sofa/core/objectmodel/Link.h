@@ -398,7 +398,7 @@ public:
         if (!v && path.empty()) return false;
         const int aspect = core::ExecParams::currentAspect();
         unsigned int index = TraitsContainer::add(m_value[aspect],v);
-		if (hasDdg())
+		if (this->hasDdg())
 			TraitsValueType::setPath(m_value[aspect][index],path);
         this->updateCounter(aspect);
         added(v, index);
@@ -812,7 +812,7 @@ public:
         const DestPtr before = TraitsValueType::get(value);
         if (v != before)
             TraitsValueType::set(value, v);
-		if (hasDdg())
+		if (this->hasDdg())
 			TraitsValueType::setPath(value, path);
         this->updateCounter(aspect);
         if (v != before)
