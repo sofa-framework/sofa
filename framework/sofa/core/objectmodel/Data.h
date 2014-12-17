@@ -427,12 +427,12 @@ public:
     inline T* beginEdit(const core::ExecParams* params = 0)
     {
         size_t aspect = DDGNode::currentAspect(params);
-		if (m_ddg)
+		if (this->m_ddg)
 		{
-	        m_ddg->updateIfDirty(params);
-			++m_ddg->m_counters[aspect];
-			m_ddg->m_isSets[aspect] = true;
-			m_ddg->setDirtyOutputs(params);
+	        this->m_ddg->updateIfDirty(params);
+			++this->m_ddg->m_counters[aspect];
+			this->m_ddg->m_isSets[aspect] = true;
+			this->m_ddg->setDirtyOutputs(params);
 		}
         return m_values[aspect].beginEdit();
     }
@@ -441,11 +441,11 @@ public:
     inline T* beginWriteOnly(const core::ExecParams* params = 0)
     {
         size_t aspect = DDGNode::currentAspect(params);
- 		if (m_ddg)
+ 		if (this->m_ddg)
 		{
-			++m_ddg->m_counters[aspect];
-			m_ddg->m_isSets[aspect] = true;
-			m_ddg->setDirtyOutputs(params);
+			++this->m_ddg->m_counters[aspect];
+			this->m_ddg->m_isSets[aspect] = true;
+			this->m_ddg->setDirtyOutputs(params);
 		}
         return m_values[aspect].beginEdit();
     }
@@ -484,8 +484,8 @@ public:
 
     inline const T& getValue(const core::ExecParams* params = 0) const
     {
-		if (m_ddg)
-			m_ddg->updateIfDirty(params);
+		if (this->m_ddg)
+			this->m_ddg->updateIfDirty(params);
         return m_values[DDGNode::currentAspect(params)].getValue();
     }
 
@@ -515,11 +515,11 @@ public:
 		{
 			size_t aspect = DDGNode::currentAspect();
 			this->m_values[aspect] = d->m_values[aspect];
-			if (m_ddg)
+			if (this->m_ddg)
 			{
-				++m_ddg->m_counters[aspect];
-				m_ddg->m_isSets[aspect] = true;
-				m_ddg->setDirtyOutputs();
+				++this->m_ddg->m_counters[aspect];
+				this->m_ddg->m_isSets[aspect] = true;
+				this->m_ddg->setDirtyOutputs();
 			}
 		}
     }
