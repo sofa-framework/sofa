@@ -913,6 +913,7 @@ bool Map2<MAP_IMPL>::isTriangular() const
 template <typename MAP_IMPL>
 bool Map2<MAP_IMPL>::check() const
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
 	CGoGNout << "Check: topology begin" << CGoGNendl;
 	DartMarker<Map2<MAP_IMPL> > m(*this);
 	for(Dart d = Map2::begin(); d != Map2::end(); Map2::next(d))

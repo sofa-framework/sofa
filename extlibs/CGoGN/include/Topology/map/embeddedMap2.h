@@ -53,7 +53,8 @@ public:
 
 	static const unsigned int DIMENSION = TOPO_MAP::DIMENSION ;
 
-	EmbeddedMap2() {}
+    EmbeddedMap2() {
+    }
 
 	/*
 	 */
@@ -170,7 +171,7 @@ public:
 	/**
 	 *
 	 */
-	bool check() ;
+    virtual bool check() const;
 } ;
 
 } // namespace CGoGN
