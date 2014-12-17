@@ -65,7 +65,10 @@ private:
 
 
 public:
-    /// @name Compliance Matrix API
+
+	virtual bool isActive() { return this->getContext()->isActive(); }
+
+	/// @name Compliance Matrix API
     /// @{
 
     virtual void addComplianceInConstraintSpace(const ConstraintParams *, defaulttype::BaseMatrix* W) = 0;
