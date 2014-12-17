@@ -22,15 +22,16 @@ bool empty(const Matrix& m) {
 }
 
 
-/// test if present value are all zero (not optimized sparse matrix but existing)
-template<class SparseMatrix>
-bool fillWithZeros(const SparseMatrix& m) {
-    for( unsigned i=0 ; i<m.data().size() ; ++i )
-    {
-        if( m.valuePtr()[i] != 0 ) return false;
-    }
-    return true;
-}
+/// test if present values are all zero
+/// @warning not optimized for eigen sparse matrices
+//template<class SparseMatrix>
+//bool fillWithZeros(const SparseMatrix& m) {
+//    for( unsigned i=0 ; i<m.data().size() ; ++i )
+//    {
+//        if( m.valuePtr()[i] != 0 ) return false;
+//    }
+//    return true;
+//}
 
 
 template<class LValue, class RValue>
@@ -168,16 +169,17 @@ template<class mat>
 mat convert( const defaulttype::BaseMatrix* m) {
     assert( m );
 
+    {
     typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
-
     const matrixd* smd = dynamic_cast<const matrixd*> (m);
     if ( smd ) return smd->compressedMatrix.cast<SReal>();
+    }
 
+    {
     typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
-
     const matrixf* smf = dynamic_cast<const matrixf*>(m);
     if( smf ) return smf->compressedMatrix.cast<SReal>();
-
+    }
 
     std::cerr << "warning: slow matrix conversion (AssemblyHelper)" << std::endl;
 
@@ -195,6 +197,65 @@ mat convert( const defaulttype::BaseMatrix* m) {
 }
 
 
+
+/// Smart pointer that can point to an existing data without taking ownership
+/// Or that can point to a new temporary Data that must be deleted when this
+/// smart pointer is deleted (taking ownership)
+// maybe an equivalent smart pointer exists in boost but I do not now
+template<class T>
+class MySPtr
+{
+    const T* t;
+    mutable bool ownership;
+public:
+    MySPtr() : t(NULL), ownership(false) {}
+    MySPtr( const T* t, bool ownership ) : t(t), ownership(ownership) {}
+    MySPtr( const MySPtr<T>& other ) : t(other.t), ownership(other.ownership) { other.ownership=false; }
+    ~MySPtr() { if( ownership ) delete t; }
+    void operator=(const MySPtr<T>& other) { t=other.t; ownership=other.ownership; other.ownership=false; }
+    const T& operator*() const { return *t; }
+    const T* operator->() const { return t; }
+};
+
+
+// convert a basematrix to a sparse matrix. TODO move this somewhere else ?
+template<class mat>
+MySPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
+    assert( m );
+
+    {
+    typedef component::linearsolver::EigenBaseSparseMatrix<SReal> matrixr;
+    const matrixr* smr = dynamic_cast<const matrixr*> (m);
+    if ( smr ) return MySPtr<mat>(&smr->compressedMatrix, false);
+    }
+
+    {
+    typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
+    const matrixd* smd = dynamic_cast<const matrixd*> (m);
+    if ( smd ) return MySPtr<mat>( new mat(smd->compressedMatrix.cast<SReal>()), true );
+    }
+
+    {
+    typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
+    const matrixf* smf = dynamic_cast<const matrixf*>(m);
+    if( smf ) return MySPtr<mat>( new mat(smf->compressedMatrix.cast<SReal>()), true );
+    }
+
+
+    std::cerr << "warning: slow matrix conversion (AssemblyHelper)" << std::endl;
+
+    mat* res = new mat(m->rowSize(), m->colSize());
+
+    res->reserve(res->rows() * res->cols());
+    for(unsigned i = 0, n = res->rows(); i < n; ++i) {
+        res->startVec( i );
+        for(unsigned j = 0, k = res->cols(); j < k; ++j) {
+            res->insertBack(i, j) = m->element(i, j);
+        }
+    }
+
+    return MySPtr<mat>(res, true);
+}
 
 
 

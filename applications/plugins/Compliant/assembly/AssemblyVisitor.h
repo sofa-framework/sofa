@@ -405,8 +405,7 @@ struct AssemblyVisitor::process_helper {
             mat& Jp = full[ vp.dofs ];
             {
                 // mapping blocks
-                // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
-                mat jc = convert<mat>( g[*e.first].data->J );
+                MySPtr<mat> jc( convertSPtr<mat>( g[*e.first].data->J ) );
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
@@ -420,7 +419,7 @@ struct AssemblyVisitor::process_helper {
                     // scoped::timer step("mapping matrix product");
 
                     // TODO optimize this, it is the most costly part
-                    add(Jc, jc * Jp ); // full mapping
+                    add(Jc, *jc * Jp ); // full mapping
 
                     if( geometricStiffnessJc )
                     {

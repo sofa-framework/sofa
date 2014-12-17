@@ -133,8 +133,11 @@ const BaseMatrix* compliance_impl( const MechanicalParams* mparams, BaseForceFie
 {
     const BaseMatrix* c = ffield->getComplianceMatrix(mparams);
 
-    if( c )
+
+    if( notempty(c) )
+    {
         return c;
+    }
     else
     {
         std::cerr<<"AssemblyVisitor::compliance: "<<ffield->getName()<<" getComplianceMatrix not implemented"<< std::endl;
@@ -148,6 +151,7 @@ const BaseMatrix* compliance_impl( const MechanicalParams* mparams, BaseForceFie
 // compliance matrix
 const BaseMatrix* AssemblyVisitor::compliance(simulation::Node* node)
 {
+
     for(unsigned i = 0; i < node->forceField.size(); ++i )
     {
 		BaseForceField* ffield = node->forceField[i];
@@ -569,9 +573,9 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
         if( !c.mechanical || c.master() || !c.Ktilde ) continue;
 
         // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
-        mat Ktilde = convert<mat>( c.Ktilde );
+        MySPtr<mat> Ktilde( convertSPtr<mat>( c.Ktilde ) );
 
-        if( zero( Ktilde ) ) continue;
+        if( zero( *Ktilde ) ) continue;
 
         if( boost::out_degree(prefix[i],graph) == 1 ) // simple mapping
         {
@@ -579,7 +583,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
             // add the geometric stiffness to its only parent that will map it to the master level
             graph_type::out_edge_iterator parentIterator = boost::out_edges(prefix[i],graph).first;
             chunk* p = graph[ boost::target(*parentIterator, graph) ].data;
-            add(p->H, mparams->kFactor() * Ktilde ); // todo how to include rayleigh damping for geometric stiffness?
+            add(p->H, mparams->kFactor() * *Ktilde ); // todo how to include rayleigh damping for geometric stiffness?
 
 //            std::cerr<<"Assembly: "<<c.Ktilde<<std::endl;
         }
@@ -598,7 +602,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
 //            std::cerr<<res.H.rows()<<" "<<geometricStiffnessJc.rows()<<std::endl;
 
-            res.H += ltdl(geometricStiffnessJc, mparams->kFactor() * Ktilde);
+            res.H += ltdl(geometricStiffnessJc, mparams->kFactor() * *Ktilde);
         }
 
     }
@@ -694,7 +698,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
 
                 // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
-                mat C = convert<mat>( c.C );
+                MySPtr<mat> C( convertSPtr<mat>( c.C ) );
 
 
                 // fetch projector and constraint value if any
@@ -707,7 +711,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
                 if( !constraint.value ) {
 
                     // a non bilateral constraint should be stabilizable, as a non compliant (hard) bilateral constraint
-                    if( constraint.projector || zero(C) /*|| fillWithZeros(c.C)*/ ) constraint.value = new component::odesolver::Stabilization( c.dofs );
+                    if( constraint.projector || zero(*C) /*|| fillWithZeros(*C)*/ ) constraint.value = new component::odesolver::Stabilization( c.dofs );
                     // by default, a compliant bilateral constraint is considered as elastic and is so not stabilized
                     else constraint.value = new component::odesolver::ConstraintValue( c.dofs );
 
@@ -722,21 +726,21 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
                 // compliance
 
-                if( !zero( C ) )
+                if( !zero( *C ) )
                 {
                     SReal factor = 1.0 /
                         ( res.dt * res.dt * mparams->implicitVelocity() * mparams->implicitPosition() );
 					
 #if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
-                        add_shifted_right( C_triplets, C, off_c, factor );
+                        add_shifted_right( C_triplets, *C, off_c, factor );
 #elif USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX
-                        add_shifted_right( res.C, C, off_c, factor );
+                        add_shifted_right( res.C, *C, off_c, factor );
 #elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
-                        add_shifted_right( C, C, off_c, factor );
+                        add_shifted_right( *C, C, off_c, factor );
 #elif SHIFTING_MATRIX_WITHOUT_MULTIPLICATION
-                        res.C.middleRows(off_c, c.size) = shifted_matrix( C, off_c, _processed->size_c, factor );
+                        res.C.middleRows(off_c, c.size) = shifted_matrix( *C, off_c, _processed->size_c, factor );
 #else
-                        res.C.middleRows(off_c, c.size) = C * shift_right<mat>(off_c, c.size, _processed->size_c, factor);
+                        res.C.middleRows(off_c, c.size) = *C * shift_right<mat>(off_c, c.size, _processed->size_c, factor);
 #endif
                 }
 				off_c += c.size;
