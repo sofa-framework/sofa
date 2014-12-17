@@ -16,7 +16,7 @@ include(CMakeSofaCreateTarget)
 set_and_check(SOFAFRAMEWORK_INCLUDE_DIR  "@PACKAGE_SOFAFRAMEWORK_INCLUDE_DIR@")
 
 find_package(TinyXML REQUIRED)
-sofa_create_target(TinyXML SofaFramework ${TinyXML_LIBRARIES} ${TinyXML_INCLUDE_DIRS} )
+sofa_create_target(TinyXML SofaFramework "${TinyXML_LIBRARIES}" "${TinyXML_INCLUDE_DIRS}" )
 
 set(SOFA_HAVE_ZLIB    "@SOFA_HAVE_ZLIB@"   )
 set(SOFA_HAVE_PNG     "@SOFA_HAVE_PNG@"    )
