@@ -858,12 +858,18 @@ template<int N, typename real>
 struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+#ifndef SOFA_MAX_THREADS
+	enum { CopyOnWrite = N > 6 ? 1 : 0 };
+#endif
 };
 
 template<int N, typename real>
 struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
 {
     static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+#ifndef SOFA_MAX_THREADS
+	enum { CopyOnWrite = N > 6 ? 1 : 0 };
+#endif
 };
 
 // The next line hides all those methods from the doxygen documentation
