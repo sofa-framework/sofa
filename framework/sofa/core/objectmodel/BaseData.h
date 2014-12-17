@@ -533,7 +533,7 @@ public:
 protected:
 
 	friend class DDGDataNode;
-	virtual void onParentChanged(BaseData* parent) {}
+	virtual void onParentChanged(BaseData* /*parent*/) {}
 
     DataFlags m_dataFlags;
 	/// Optional data dependency graph node.
