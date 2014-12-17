@@ -89,7 +89,7 @@ public:
     /// Constructor
     vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}
     /// Constructor
-    vector(size_type n, Reserve): std::vector<T,Alloc>() { reserve(n); }
+    vector(size_type n, Reserve): std::vector<T,Alloc>() { this->reserve(n); }
     /// Constructor
     vector<T, Alloc>& operator=(const std::vector<T, Alloc>& x)
     {
