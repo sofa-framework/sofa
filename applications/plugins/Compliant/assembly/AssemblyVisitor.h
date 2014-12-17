@@ -206,20 +206,20 @@ public:
 				
 		unsigned offset, size;
 
-        mat C; ///< Compliance matrix (only valid for mapped dof with a compliance)
+        const BaseMatrix* C; ///< Compliance matrix (only valid for mapped dof with a compliance)
         mat P; ///< Projective constraint matrix (only valid for master dof)
 		mat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
-        mat Ktilde; ///< geometric stiffness (only valid for mapped dof) @warning: size=parent*parent
+        const BaseMatrix* Ktilde; ///< geometric stiffness (only valid for mapped dof) @warning: size=parent*parent
 				
 		struct mapped {
-            mat J; ///< mapping jacobian
+            const BaseMatrix* J; ///< mapping jacobian
 		};
 
 		// this is to remove f*cking mouse dofs
 		bool mechanical; ///< is it a mechanical dof i.e. influenced by a mass or stiffness or compliance
 		
 		bool master() const { return mechanical && map.empty(); }
-		bool compliant() const { return mechanical && C.size(); }
+        bool compliant() const { return mechanical && notempty(C); }
 		
 		unsigned vertex;
 		
@@ -250,8 +250,8 @@ public:
 
 public:
 
-	mat compliance(simulation::Node* node);
-    mat geometricStiffness(simulation::Node* node);
+    const BaseMatrix* compliance(simulation::Node* node);
+    const BaseMatrix* geometricStiffness(simulation::Node* node);
 	mat proj(simulation::Node* node);
     mat odeMatrix(simulation::Node* node);
     void interactionForceField(simulation::Node* node);
@@ -390,7 +390,7 @@ struct AssemblyVisitor::process_helper {
         // full jacobian for multimapping's geometric stiffness
         mat* geometricStiffnessJc = NULL;
         unsigned localOffsetParentInMapped = 0; // only used for multimappings
-        if( boost::out_degree(v,g)>1 && !zero(c->Ktilde) )
+        if( boost::out_degree(v,g)>1 && c->Ktilde )
         {
             geometricStiffnessJc = &res.fullmappinggeometricstiffness[ curr ];
         }
@@ -405,7 +405,8 @@ struct AssemblyVisitor::process_helper {
             mat& Jp = full[ vp.dofs ];
             {
                 // mapping blocks
-                const mat& jc = g[*e.first].data->J;
+                // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
+                mat jc = convert<mat>( g[*e.first].data->J );
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
@@ -424,7 +425,7 @@ struct AssemblyVisitor::process_helper {
                     if( geometricStiffnessJc )
                     {
                         // mapping for geometric stiffness
-                        add( *geometricStiffnessJc, shift_left<mat>( localOffsetParentInMapped, p->size, c->Ktilde.rows() ) * Jp );
+                        add( *geometricStiffnessJc, shift_left<mat>( localOffsetParentInMapped, p->size, c->Ktilde->rows() ) * Jp );
                         localOffsetParentInMapped += p->size;
                     }
                 } else {

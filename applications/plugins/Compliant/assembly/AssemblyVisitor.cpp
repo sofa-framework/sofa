@@ -72,6 +72,11 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
     ForceMaskDeactivate(node->mechanicalMapping->getMechTo());
 
+    if( !js )
+    {
+        std::cerr<<"ERROR: AssemblyVisitor: null mapping blocks for " + mapping_name(node) + " (is mapping getJs implemented?)"<<std::endl;
+        return res;;
+    }
 
     vector<core::BaseState*> from = node->mechanicalMapping->getFrom();
 
@@ -83,19 +88,17 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 		// skip non-mechanical dofs
 		if(!p) continue;
 
+        if( !notempty((*js)[i]) )
+        {
+            std::cerr<<"ERROR: AssemblyVisitor: empty mapping block for " + mapping_name(node) + " (is mapping matrix assembled?)"<<std::endl;
+            continue;
+        }
+
 		// mapping wrt p
         chunk::mapped& c = res[p];
 
-        if( js ) c.J = convert<mat>( (*js)[i] );
-
-		if( empty(c.J) ) {
-			
-			std::string msg("empty mapping block for " + mapping_name(node) + " (is mapping matrix assembled ?)" );
-			assert( false );
-
-			throw std::logic_error(msg);
-        }
-
+        // getting BaseMatrix pointer
+        c.J = (*js)[i];
 	}
 
 	return res;
@@ -126,24 +129,24 @@ AssemblyVisitor::mat AssemblyVisitor::proj(simulation::Node* node) {
 
 
 
-AssemblyVisitor::mat compliance_impl( const MechanicalParams* mparams, BaseForceField* ffield )
+const BaseMatrix* compliance_impl( const MechanicalParams* mparams, BaseForceField* ffield )
 {
     const BaseMatrix* c = ffield->getComplianceMatrix(mparams);
 
     if( c )
-        return convert<AssemblyVisitor::mat>( c );
+        return c;
     else
     {
         std::cerr<<"AssemblyVisitor::compliance: "<<ffield->getName()<<" getComplianceMatrix not implemented"<< std::endl;
         // TODO inverting stiffness matrix
     }
 
-    return AssemblyVisitor::mat();
+    return NULL;
 }
 
 
 // compliance matrix
-AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node)
+const BaseMatrix* AssemblyVisitor::compliance(simulation::Node* node)
 {
     for(unsigned i = 0; i < node->forceField.size(); ++i )
     {
@@ -170,12 +173,12 @@ AssemblyVisitor::mat AssemblyVisitor::compliance(simulation::Node* node)
         }
     }
 
-    return mat();
+    return NULL;
 }
 
 
 // geometric stiffness matrix
-AssemblyVisitor::mat AssemblyVisitor::geometricStiffness(simulation::Node* node)
+const BaseMatrix* AssemblyVisitor::geometricStiffness(simulation::Node* node)
 {
 //    std::cerr<<"AssemblyVisitor::geometricStiffness "<<node->getName()<<" "<<node->mechanicalMapping->getName()<<std::endl;
 
@@ -183,10 +186,10 @@ AssemblyVisitor::mat AssemblyVisitor::geometricStiffness(simulation::Node* node)
     if( mapping )
     {
         const sofa::defaulttype::BaseMatrix* k = mapping->getK();
-        if( k ) return convert<mat>( k );
+        if( k ) return k;
     }
 
-    return mat();
+    return NULL;
 }
 
 
@@ -343,7 +346,7 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
         // compliance
 		c.C = compliance( node );
-		if( !empty(c.C) ) {
+        if( notempty(c.C) ) {
 			c.mechanical = true;
 		}
 
@@ -482,7 +485,7 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 		if( c->master() ) {
 			offsets[ graph[ prefix[i] ].dofs ] = off_m;
 			off_m += c->size;
-		} else if( !empty(c->C) ) {
+        } else if( notempty(c->C) ) {
 			off_c += c->size;
 		}
 
@@ -563,7 +566,12 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
         assert( c.size );
 
         // only consider mechanical mapped dofs that have geometric stiffness
-        if( !c.mechanical || c.master() || zero(c.Ktilde) ) continue;
+        if( !c.mechanical || c.master() || !c.Ktilde ) continue;
+
+        // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
+        mat Ktilde = convert<mat>( c.Ktilde );
+
+        if( zero( Ktilde ) ) continue;
 
         if( boost::out_degree(prefix[i],graph) == 1 ) // simple mapping
         {
@@ -571,7 +579,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
             // add the geometric stiffness to its only parent that will map it to the master level
             graph_type::out_edge_iterator parentIterator = boost::out_edges(prefix[i],graph).first;
             chunk* p = graph[ boost::target(*parentIterator, graph) ].data;
-            add(p->H, mparams->kFactor() * c.Ktilde ); // todo how to include rayleigh damping for geometric stiffness?
+            add(p->H, mparams->kFactor() * Ktilde ); // todo how to include rayleigh damping for geometric stiffness?
 
 //            std::cerr<<"Assembly: "<<c.Ktilde<<std::endl;
         }
@@ -590,7 +598,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
 //            std::cerr<<res.H.rows()<<" "<<geometricStiffnessJc.rows()<<std::endl;
 
-            res.H += ltdl(geometricStiffnessJc, mparams->kFactor() * c.Ktilde);
+            res.H += ltdl(geometricStiffnessJc, mparams->kFactor() * Ktilde);
         }
 
     }
@@ -685,6 +693,10 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 				assert( !zero(Jc) );
 
 
+                // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
+                mat C = convert<mat>( c.C );
+
+
                 // fetch projector and constraint value if any
                 AssembledSystem::constraint_type constraint;
                 constraint.projector = c.dofs->getContext()->get<component::linearsolver::Constraint>( core::objectmodel::BaseContext::Local );
@@ -695,7 +707,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
                 if( !constraint.value ) {
 
                     // a non bilateral constraint should be stabilizable, as a non compliant (hard) bilateral constraint
-                    if( constraint.projector || zero(c.C) /*|| fillWithZeros(c.C)*/ ) constraint.value = new component::odesolver::Stabilization( c.dofs );
+                    if( constraint.projector || zero(C) /*|| fillWithZeros(c.C)*/ ) constraint.value = new component::odesolver::Stabilization( c.dofs );
                     // by default, a compliant bilateral constraint is considered as elastic and is so not stabilized
                     else constraint.value = new component::odesolver::ConstraintValue( c.dofs );
 
@@ -705,31 +717,28 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
                 res.constraints.push_back( constraint );
 
 
-
-
-
 				// mapping
 				res.J.middleRows(off_c, c.size) = Jc;
 
-				// compliance
-				if(!zero(c.C) ) {
+                // compliance
 
+                if( !zero( C ) )
+                {
                     SReal factor = 1.0 /
-						( res.dt * res.dt * mparams->implicitVelocity() * mparams->implicitPosition() );
+                        ( res.dt * res.dt * mparams->implicitVelocity() * mparams->implicitPosition() );
 					
 #if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
-                    add_shifted_right( C_triplets, c.C, off_c, factor );
+                        add_shifted_right( C_triplets, C, off_c, factor );
 #elif USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX
-                    add_shifted_right( res.C, c.C, off_c, factor );
+                        add_shifted_right( res.C, C, off_c, factor );
 #elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
-                    add_shifted_right( C, c.C, off_c, factor );
+                        add_shifted_right( C, C, off_c, factor );
 #elif SHIFTING_MATRIX_WITHOUT_MULTIPLICATION
-                    res.C.middleRows(off_c, c.size) = shifted_matrix( c.C, off_c, _processed->size_c, factor );
+                        res.C.middleRows(off_c, c.size) = shifted_matrix( C, off_c, _processed->size_c, factor );
 #else
-                    res.C.middleRows(off_c, c.size) = c.C * shift_right<mat>(off_c, c.size, _processed->size_c, factor);
+                        res.C.middleRows(off_c, c.size) = C * shift_right<mat>(off_c, c.size, _processed->size_c, factor);
 #endif
-				}
-
+                }
 				off_c += c.size;
 			}
 		}
@@ -762,14 +771,14 @@ bool AssemblyVisitor::chunk::check() const {
 	assert( dofs && size == dofs->getMatrixSize() );
 
 	if( master() ) {
-		assert( empty(C) );
+        assert( !notempty(C) );
 		assert( !empty(P) );
 
 		// TODO size checks on M, J, ...
 
 	} else {
 
-		if(!empty(C)) {
+        if(notempty(C)) {
 			assert( C.rows() == int(size) );
 		}
 
