@@ -779,7 +779,7 @@ bool AssemblyVisitor::chunk::check() const {
 	} else {
 
         if(notempty(C)) {
-			assert( C.rows() == int(size) );
+            assert( C->rows() == int(size) );
 		}
 
 	}
