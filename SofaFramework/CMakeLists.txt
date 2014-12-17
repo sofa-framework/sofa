@@ -56,14 +56,14 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
 
 #tinyxml
 find_package(TinyXML REQUIRED)
-sofa_create_target(TinyXML SofaFramework ${TinyXML_LIBRARIES} ${TinyXML_INCLUDE_DIRS} )
+sofa_create_target(TinyXML SofaFramework "${TinyXML_LIBRARIES}" "${TinyXML_INCLUDE_DIRS}" )
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${TinyXML_Target})
 set(SOFA_HAVE_TINYXML 1)
 
 #zlib
 find_package(ZLIB)
 if(ZLIB_FOUND)
-    sofa_create_target(ZLIB SofaFramework ${ZLIB_LIBRARIES} ${ZLIB_INCLUDE_DIRS} )
+    sofa_create_target(ZLIB SofaFramework "${ZLIB_LIBRARIES}" "${ZLIB_INCLUDE_DIRS}" )
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${ZLIB_Target})
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
@@ -71,7 +71,7 @@ set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 # PNG
 find_package(PNG)
 if( PNG_FOUND)
-    sofa_create_target(PNG SofaFramework ${PNG_LIBRARY} ${PNG_INCLUDE_DIRS} )
+    sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}" )
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target} )
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
@@ -79,7 +79,7 @@ set(SOFA_HAVE_PNG ${PNG_FOUND})
 # GLEW
 find_package(GLEW)
 if( GLEW_FOUND)
-    sofa_create_target(GLEW SofaFramework ${GLEW_LIBRARIES} ${GLEW_INCLUDE_DIRS} )
+    sofa_create_target(GLEW SofaFramework "${GLEW_LIBRARIES}" "${GLEW_INCLUDE_DIRS}" )
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_Target} )
 endif()
 set(SOFA_HAVE_GLEW ${GLEW_FOUND})
@@ -87,13 +87,13 @@ set(SOFA_HAVE_GLEW ${GLEW_FOUND})
 # GLUT
 find_package(GLUT)
 if( GLUT_FOUND )
-    sofa_create_target(GLUT SofaFramework ${GLUT_glut_LIBRARY} ${GLUT_INCLUDE_DIR} )
+    sofa_create_target(GLUT SofaFramework "${GLUT_glut_LIBRARY}" "${GLUT_INCLUDE_DIR}" )
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target} )
 endif()
 set(SOFA_HAVE_GLUT ${GLUT_FOUND})
 
 # Boost
-find_package(Boost COMPONENTS thread thread date_time chrono QUIET)
+find_package(Boost COMPONENTS thread system date_time chrono QUIET)
 
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND} )
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND} )
@@ -108,10 +108,10 @@ if(SOFA_HAVE_BOOST_SYSTEM AND
    SOFA_HAVE_BOOST_CHRONO)
     set(SOFA_HAVE_BOOST 1)
     
-    sofa_create_target(BoostSystem SofaFramework ${Boost_SYSTEM_LIBRARY} ${Boost_INCLUDE_DIRS} )
-    sofa_create_target(BoostThread SofaFramework ${Boost_THREAD_LIBRARY} ${Boost_INCLUDE_DIRS} )
-    sofa_create_target(BoostDateTime SofaFramework ${Boost_DATE_TIME_LIBRARY} ${Boost_INCLUDE_DIRS} )
-    sofa_create_target(BoostChrono SofaFramework ${Boost_CHRONO_LIBRARY} ${Boost_INCLUDE_DIRS} )
+    sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}" )
+    sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}" )
+    sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}" )
+    sofa_create_target(BoostChrono SofaFramework "${Boost_CHRONO_LIBRARY}" "${Boost_INCLUDE_DIRS}" )
     
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target} )
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target} )
@@ -189,6 +189,14 @@ configure_file( ${SofaFramework_SOURCE_DIR}/CMakeSofaCreateTarget.cmake
 install(FILES ${SofaFramework_SOURCE_DIR}/CMakeSofaCreateTarget.cmake 
         DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR} )
 
+# CMakeParseLibraryList (build)
+configure_file( ${SofaFramework_SOURCE_DIR}/CMakeParseLibraryList.cmake
+                ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/CMakeParseLibraryList.cmake COPYONLY)
+        
+# CMakeParseLibraryList (installed)
+install(FILES ${SofaFramework_SOURCE_DIR}/CMakeParseLibraryList.cmake 
+        DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR} )
+        
 # SofaFrameworkTargets.cmake (installed)
 install(EXPORT SofaFrameworkTargets
         DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR} )
