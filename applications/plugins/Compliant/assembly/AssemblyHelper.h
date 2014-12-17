@@ -12,9 +12,15 @@ bool zero(const Matrix& m) {
 }
 
 template<class Matrix>
+bool notempty(const Matrix* m) {
+    return m && m->rows();
+}
+
+template<class Matrix>
 bool empty(const Matrix& m) {
     return !m.rows();
 }
+
 
 /// test if present value are all zero (not optimized sparse matrix but existing)
 template<class SparseMatrix>
