@@ -45,8 +45,10 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	QVector<QString> plugins;
 	plugins.append("SofaPython");
 
-	for(const QString& plugin : plugins)
-		sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin.toStdString());
+    for(const QString& plugin : plugins) {
+        std::string s = plugin.toStdString();
+        sofa::helper::system::PluginManager::getInstance().loadPlugin(s);
+    }
 
 	sofa::helper::system::PluginManager::getInstance().init();
 
