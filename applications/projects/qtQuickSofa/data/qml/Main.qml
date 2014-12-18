@@ -17,30 +17,26 @@ Window {
         id: menuBar
     }
 
-    Item {
+    RowLayout {
         anchors.fill: parent
+        spacing: 0
 
-        RowLayout {
-            anchors.fill: parent
-            spacing: 0
+        Component {
+            id: dynamicContentComponent
 
-            Component {
-                id: dynamicContentComponent
-
-                DynamicContent {
-                    id: dynamicContent
-                    defaultContentName: "Viewer"
-                    sourceDir: "qrc:/SofaWidgets"
-                }
+            DynamicContent {
+                id: dynamicContent
+                defaultContentName: "Viewer"
+                sourceDir: "qrc:/SofaWidgets"
             }
+        }
 
-            DynamicSplitView {
-                id: dynamicSplitView
-                uiId: 1
-                sourceComponent: dynamicContentComponent
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
+        DynamicSplitView {
+            id: dynamicSplitView
+            uiId: 1
+            sourceComponent: dynamicContentComponent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
         }
     }
 

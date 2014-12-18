@@ -27,16 +27,16 @@ Scene {
     }
 
     onStatusChanged: {
+        var path = source.toString().replace("file:///", "").replace("file:", "");
         switch(status) {
         case Scene.Loading:
-            statusMessage = 'Loading "' + source.toString() + '" please wait';
+            statusMessage = 'Loading "' + path + '" please wait';
             break;
         case Scene.Error:
-            statusMessage = 'Scene "' + source.toString() + '" issued an error during loading';
+            statusMessage = 'Scene "' + path + '" issued an error during loading';
             break;
         case Scene.Ready:
-            statusMessage = 'Scene "' + source.toString() + '" loaded successfully';
-            var path = source.toString().replace("file:///", "").replace("file:", "");
+            statusMessage = 'Scene "' + path + '" loaded successfully';
             settings.source = path;
             recentSettings.add(path);
             break;

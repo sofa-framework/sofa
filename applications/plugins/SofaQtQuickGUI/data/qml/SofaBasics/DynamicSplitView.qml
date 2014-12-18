@@ -387,6 +387,63 @@ Item {
         }
     }
 
+    function evaluateViewSwapping(view, location) {
+        if(!view || !view.isView)
+            return false;
+
+        var swappingItem = childAt(location.x, location.y);
+        if(!swappingItem)
+            return false;
+
+        var swappingView;
+        if(swappingItem.isCorner) {
+            var swappingCorner = swappingItem;
+            swappingView = swappingCorner.view;
+        } else if(swappingItem.isView) {
+            swappingView = swappingItem;
+        }
+
+        if(!swappingView || !swappingView.isView || view === swappingView)
+            return false;
+
+        return true;
+    }
+
+    function swapView(view, location) {
+        if(!view || !view.isView)
+            return;
+
+        var swappingItem = childAt(location.x, location.y);
+        if(!swappingItem)
+            return;
+
+        var swappingView;
+        if(swappingItem.isCorner) {
+            var swappingCorner = swappingItem;
+            swappingView = swappingCorner.view;
+        } else if(swappingItem.isView) {
+            swappingView = swappingItem;
+        }
+
+        if(!swappingView || !swappingView.isView || view === swappingView)
+            return;
+
+        var topEdge     = swappingView.topEdge;
+        var bottomEdge  = swappingView.bottomEdge;
+        var leftEdge    = swappingView.leftEdge;
+        var rightEdge   = swappingView.rightEdge;
+
+        swappingView.topEdge    = view.topEdge;
+        swappingView.bottomEdge = view.bottomEdge;
+        swappingView.leftEdge   = view.leftEdge;
+        swappingView.rightEdge  = view.rightEdge;
+
+        view.topEdge    = topEdge;
+        view.bottomEdge = bottomEdge;
+        view.leftEdge   = leftEdge;
+        view.rightEdge  = rightEdge;
+    }
+
     // View Component
     Component {
         id: viewComponent
@@ -512,16 +569,22 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
 
                     onReleased: {
                         if(!dragTarget)
                         {
-                            // merging ?
-                            if(mouse.x >= width && mouse.y >= 0) {
-                                mergeView(view, mapToItem(root, mouse.x, mouse.y));
-                            }
-                            else if(mouse.x <= width && mouse.y <= 0) {
-                                mergeView(view, mapToItem(root, mouse.x, mouse.y));
+                            if(Qt.LeftButton === mouse.button) {
+                                // merging ?
+                                if(mouse.x >= width && mouse.y >= 0) {
+                                    mergeView(view, mapToItem(root, mouse.x, mouse.y));
+                                }
+                                else if(mouse.x <= width && mouse.y <= 0) {
+                                    mergeView(view, mapToItem(root, mouse.x, mouse.y));
+                                }
+                            } else if(Qt.RightButton === mouse.button) {
+                                // swap ?
+                                swapView(view, mapToItem(root, mouse.x, mouse.y));
                             }
                         }
 
@@ -530,7 +593,7 @@ Item {
                     }
 
                     onPositionChanged: {
-                        if(!dragTarget) {
+                        if(!dragTarget && (pressedButtons & Qt.LeftButton)) {
                             if(mouse.x <= -splittingMarginThreshold && mouse.y >= 0 && mouse.y <= height + splittingMarginThreshold && view.width > splitterMarginThreshold * 2) {
                                 var splitter = splitView(view, Qt.Horizontal, mapToItem(root, mouse.x, mouse.y));
                                 dragTarget = splitter;
@@ -558,7 +621,9 @@ Item {
                                 }
                             }
                         } else {
-                            if(evaluateViewMerging(view, mapToItem(root, mouse.x, mouse.y)))
+                            if((pressedButtons & Qt.LeftButton) && evaluateViewMerging(view, mapToItem(root, mouse.x, mouse.y)))
+                                overrideCursorShape = Qt.OpenHandCursor;
+                            else if((pressedButtons & Qt.RightButton) && evaluateViewSwapping(view, mapToItem(root, mouse.x, mouse.y)))
                                 overrideCursorShape = Qt.OpenHandCursor;
                             else
                                 overrideCursorShape = Qt.ForbiddenCursor;
@@ -596,16 +661,22 @@ Item {
 
                 MouseArea {
                     anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
 
                     onReleased: {
                         if(!dragTarget)
                         {
                             // merging ?
-                            if(mouse.x <= 0 && mouse.y <= height) {
-                                mergeView(view, mapToItem(root, mouse.x, mouse.y));
-                            }
-                            else if(mouse.x >= 0 && mouse.y >= height) {
-                                mergeView(view, mapToItem(root, mouse.x, mouse.y));
+                            if(Qt.LeftButton === mouse.button) {
+                                if(mouse.x <= 0 && mouse.y <= height) {
+                                    mergeView(view, mapToItem(root, mouse.x, mouse.y));
+                                }
+                                else if(mouse.x >= 0 && mouse.y >= height) {
+                                    mergeView(view, mapToItem(root, mouse.x, mouse.y));
+                                }
+                            } else if(Qt.RightButton === mouse.button) {
+                                // swap ?
+                                swapView(view, mapToItem(root, mouse.x, mouse.y));
                             }
                         }
 
@@ -614,7 +685,7 @@ Item {
                     }
 
                     onPositionChanged: {
-                        if(!dragTarget) {
+                        if(!dragTarget && (pressedButtons & Qt.LeftButton)) {
                             if(mouse.x >= width + splittingMarginThreshold && mouse.y >= -splittingMarginThreshold && mouse.y <= height && view.width > splitterMarginThreshold * 2) {
                                 var splitter = splitView(view, Qt.Horizontal, mapToItem(root, mouse.x, mouse.y));
                                 dragTarget = splitter;
@@ -642,7 +713,9 @@ Item {
                                 }
                             }
                         } else {
-                            if(evaluateViewMerging(view, mapToItem(root, mouse.x, mouse.y)))
+                            if((pressedButtons & Qt.LeftButton) && evaluateViewMerging(view, mapToItem(root, mouse.x, mouse.y)))
+                                overrideCursorShape = Qt.OpenHandCursor;
+                            else if((pressedButtons & Qt.RightButton) && evaluateViewSwapping(view, mapToItem(root, mouse.x, mouse.y)))
                                 overrideCursorShape = Qt.OpenHandCursor;
                             else
                                 overrideCursorShape = Qt.ForbiddenCursor;
