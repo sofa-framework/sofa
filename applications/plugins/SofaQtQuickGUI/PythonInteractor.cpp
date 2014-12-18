@@ -137,7 +137,7 @@ static QVariant ExtractPythonValueHelper(PyObject* parameter)
 		if(PyBool_Check(parameter))
 			value = (Py_False != parameter);
 		else if(PyInt_Check(parameter))
-			value = PyInt_AsLong(parameter);
+            value = (int)PyInt_AsLong(parameter);
 		else if(PyFloat_Check(parameter))
 			value = PyFloat_AsDouble(parameter);
 		else if(PyString_Check(parameter))
