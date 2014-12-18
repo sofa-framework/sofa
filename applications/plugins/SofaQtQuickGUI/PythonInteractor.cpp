@@ -120,12 +120,22 @@ static PyObject* PythonBuildTupleHelper(const QVariant& parameter, bool mustBeTu
 		}
 		else if(QVariant::Map == parameter.type())
 		{
-			tuple = PyDict_New();
+			PyObject* dict = PyDict_New();
 
 			QVariantMap map = parameter.value<QVariantMap>();
 
 			for(QVariantMap::const_iterator i = map.begin(); i != map.end(); ++i)
-				PyDict_SetItemString(tuple, i.key().toLatin1().constData(), PythonBuildTupleHelper(i.value(), false));
+				PyDict_SetItemString(dict, i.key().toLatin1().constData(), PythonBuildTupleHelper(i.value(), false));
+
+			if(mustBeTuple)
+			{
+				tuple = PyTuple_New(1);
+				PyTuple_SetItem(tuple, 0, dict);
+			}
+			else
+			{
+				tuple = dict;
+			}
 		}
 		else
 		{
@@ -217,7 +227,7 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 	return value;
 }
 
-QVariant PythonInteractor::call(const QString& pythonClassName, const QString& funcName, const QVariant& parameter)
+QVariant PythonInteractor::onCall(const QString& pythonClassName, const QString& funcName, const QVariant& parameter)
 {
 	QVariant result;
 
