@@ -41,7 +41,7 @@ function(PARSE_LIBRARY_LIST)
         _print_usage()
         message(FATAL_ERROR "Invalid arguments")
     endif() 
-    message( "PARSE_LIBRARY_LIST ${_parse_list}" )
+    # message( "PARSE_LIBRARY_LIST ${_parse_list}" )
     # Now split the list
     set(_debug_libs "") 
     set(_opt_libs "") 
