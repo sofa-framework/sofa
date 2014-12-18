@@ -129,55 +129,106 @@ Item {
 
     readonly property alias contentItem: loaderLocation.contentItem
     Item {
-        id: loaderLocation
         anchors.fill: parent
 
-        property Item contentItem
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 0
 
-        onContentItemChanged: {
-            refreshStandbyItem();
-        }
+            Item {
+                id: loaderLocation
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
-        function refresh() {
-            if(-1 === comboBox.currentIndex || comboBox.currentIndex >= listModel.count)
-                return;
+                property Item contentItem
 
-            var currentData = listModel.get(comboBox.currentIndex);
-            if(currentData) {
-                var source = listModel.get(comboBox.currentIndex).filePath;
-
-                if(root.currentContentName === comboBox.currentText && null !== loaderLocation.contentItem)
-                    return;
-
-                root.currentContentName = comboBox.currentText;
-
-                if(loaderLocation.contentItem) {
-                    if(undefined !== loaderLocation.contentItem.setNoSettings)
-                        loaderLocation.contentItem.setNoSettings();
-
-                    loaderLocation.contentItem.destroy();
-                    loaderLocation.contentItem = null;
+                onContentItemChanged: {
+                    refreshStandbyItem();
                 }
 
-                var contentComponent = Qt.createComponent(source);
-                if(contentComponent.status === Component.Error) {
-                    loaderLocation.errorMessage = contentComponent.errorString();
-                    refreshStandbyItem();
-                } else {
-                    if(0 === root.contentUiId)
-                        root.contentUiId = globalUiSettings.generateUiId();
+                property string errorMessage
+                function refresh() {
+                    if(-1 === comboBox.currentIndex || comboBox.currentIndex >= listModel.count)
+                        return;
 
-                    var content = contentComponent.createObject(loaderLocation, {"uiId": root.contentUiId, "anchors.fill": loaderLocation});
+                    var currentData = listModel.get(comboBox.currentIndex);
+                    if(currentData) {
+                        var source = listModel.get(comboBox.currentIndex).filePath;
 
-                    if(undefined !== content.uiId)
-                        root.contentUiId = Qt.binding(function() {return content.uiId;});
-                    else
-                    {
-                        globalUiSettings.removeUiId(root.contentUiId);
-                        root.contentUiId = 0;
+                        if(root.currentContentName === comboBox.currentText && null !== loaderLocation.contentItem)
+                            return;
+
+                        root.currentContentName = comboBox.currentText;
+
+                        if(loaderLocation.contentItem) {
+                            if(undefined !== loaderLocation.contentItem.setNoSettings)
+                                loaderLocation.contentItem.setNoSettings();
+
+                            loaderLocation.contentItem.destroy();
+                            loaderLocation.contentItem = null;
+                        }
+
+                        var contentComponent = Qt.createComponent(source);
+                        if(contentComponent.status === Component.Error) {
+                            loaderLocation.errorMessage = contentComponent.errorString();
+                            refreshStandbyItem();
+                        } else {
+                            if(0 === root.contentUiId)
+                                root.contentUiId = globalUiSettings.generateUiId();
+
+                            var content = contentComponent.createObject(loaderLocation, {"uiId": root.contentUiId, "anchors.fill": loaderLocation});
+
+                            if(undefined !== content.uiId)
+                                root.contentUiId = Qt.binding(function() {return content.uiId;});
+                            else
+                            {
+                                globalUiSettings.removeUiId(root.contentUiId);
+                                root.contentUiId = 0;
+                            }
+
+                            loaderLocation.contentItem = content;
+                        }
                     }
+                }
 
-                    loaderLocation.contentItem = content;
+                function refreshStandbyItem() {
+                    if(contentItem) {
+                        timer.stop();
+                        standbyItem.visible = false;
+                    } else {
+                        timer.start();
+                    }
+                }
+            }
+
+            Rectangle {
+                id: toolBar
+                Layout.fillWidth: true
+                Layout.preferredHeight: visible ? 22 : 0
+                color: "lightgrey"
+                visible: toolBarMode.displayToolbar
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 32
+
+                        ComboBox {
+                            id: comboBox
+                            Layout.preferredWidth: 150
+                            Layout.preferredHeight: 20
+                            textRole: "fileBaseName"
+                            model: ListModel {
+                                id: listModel
+                            }
+
+                            onCurrentIndexChanged: {
+                                loaderLocation.refresh();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -191,7 +242,6 @@ Item {
             source: displayToolbar ? "qrc:/icon/minus.png" : "qrc:/icon/plus.png"
             width: 12
             height: width
-            z: 2
 
             property bool displayToolbar: false
             MouseArea {
@@ -200,51 +250,6 @@ Item {
             }
         }
 
-        Rectangle {
-            id: toolBar
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            height: 22
-            color: "lightgrey"
-            visible: toolBarMode.displayToolbar
-            opacity: 0.75
-            z: 1
-
-            MouseArea {
-                anchors.fill: parent
-
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 32
-
-                    ComboBox {
-                        id: comboBox
-                        Layout.preferredWidth: 150
-                        Layout.preferredHeight: 20
-                        textRole: "fileBaseName"
-                        model: ListModel {
-                            id: listModel
-                        }
-
-                        onCurrentIndexChanged: {
-                            loaderLocation.refresh();
-                        }
-                    }
-                }
-            }
-        }
-
-        function refreshStandbyItem() {
-            if(contentItem) {
-                timer.stop();
-                standbyItem.visible = false;
-            } else {
-                timer.start();
-            }
-        }
-
-        property string errorMessage
         Rectangle {
             id: standbyItem
             anchors.fill: parent
