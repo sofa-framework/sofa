@@ -109,7 +109,7 @@ static PyObject* PythonBuildTupleHelper(const QVariant& parameter, bool mustBeTu
 
 	if(!parameter.isNull())
 	{
-		if(parameter.canConvert<QVariantList>())
+		if(QVariant::List == parameter.type())
 		{
 			QSequentialIterable parameterIterable = parameter.value<QSequentialIterable>();
 			tuple = PyTuple_New(parameterIterable.size());
@@ -117,6 +117,15 @@ static PyObject* PythonBuildTupleHelper(const QVariant& parameter, bool mustBeTu
 			int count = 0;
 			for(const QVariant& i : parameterIterable)
 				PyTuple_SetItem(tuple, count++, PythonBuildTupleHelper(i, false));
+		}
+		else if(QVariant::Map == parameter.type())
+		{
+			tuple = PyDict_New();
+
+			QVariantMap map = parameter.value<QVariantMap>();
+
+			for(QVariantMap::const_iterator i = map.begin(); i != map.end(); ++i)
+				PyDict_SetItemString(tuple, i.key().toLatin1().constData(), PythonBuildTupleHelper(i.value(), false));
 		}
 		else
 		{
@@ -165,19 +174,11 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 	{
 		QVariantList tuple;
 
-		if(PyList_Check(parameter))
-			qDebug() << "length:" << PyList_Size(parameter);
-		else
-			qDebug() << "length:" << PyTuple_Size(parameter);
-
 		PyObject *iterator = PyObject_GetIter(parameter);
 		PyObject *item;
 
 		if(!iterator)
-		{
-			qDebug() << "ERROR: Python tuple/list is empty";
 			return value;
-		}
 
 		while(item = PyIter_Next(iterator))
 		{
@@ -192,8 +193,26 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 
 		return tuple;
 	}
+	else if(PyDict_Check(parameter))
+	{
+		QVariantMap map;
 
-	value = ExtractPythonValueHelper(parameter);
+		PyObject* key;
+		PyObject* item;
+		Py_ssize_t pos = 0;
+
+		while(PyDict_Next(parameter, &pos, &key, &item))
+			map.insert(PyString_AsString(key), ExtractPythonTupleHelper(item));
+
+		if(PyErr_Occurred())
+			qDebug() << "ERROR: during python dictionary iteration";
+
+		return map;
+	}
+	else
+	{
+		value = ExtractPythonValueHelper(parameter);
+	}	
 
 	return value;
 }
