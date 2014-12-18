@@ -24,6 +24,9 @@
 ******************************************************************************/
 
 #include "ScriptFunction.h"
+#include "ScriptEnvironment.h"
+
+using namespace sofa::simulation;
 
 namespace sofa
 {
@@ -62,6 +65,13 @@ ScriptFunction::ScriptFunction()
 ScriptFunction::~ScriptFunction()
 {
 
+}
+
+void ScriptFunction::operator()(const ScriptFunctionParameter* parameter, ScriptFunctionResult* result) const
+{
+	onCall(parameter, result);
+
+	ScriptEnvironment::initScriptNodes();
 }
 
 } // namespace objectmodel

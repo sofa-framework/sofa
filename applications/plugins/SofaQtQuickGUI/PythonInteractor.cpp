@@ -6,6 +6,7 @@
 #include <SofaPython/ScriptEnvironment.h>
 #include <SofaPython/PythonMacros.h>
 #include <SofaPython/PythonScriptController.h>
+#include <SofaPython/PythonScriptFunction.h>
 
 #include <qqml.h>
 #include <QDebug>
@@ -191,13 +192,25 @@ QVariant PythonInteractor::call(const QString& pythonClassName, const QString& f
 
 	if(!myScene)
 	{
-		qDebug() << "ERROR: cannot send Python event on a null scene";
+		qDebug() << "ERROR: cannot call Python function on a null scene";
 		return result;
 	}
 
 	if(!myScene->isReady())
 	{
-		qDebug() << "ERROR: cannot send Python event on a scene that is still loading";
+		qDebug() << "ERROR: cannot call Python function on a scene that is still loading";
+		return result;
+	}
+
+	if(pythonClassName.isEmpty())
+	{
+		qDebug() << "ERROR: cannot call Python function without a valid python class name";
+		return result;
+	}
+
+	if(funcName.isEmpty())
+	{
+		qDebug() << "ERROR: cannot call Python function without a valid python function name";
 		return result;
 	}
 
@@ -220,14 +233,23 @@ QVariant PythonInteractor::call(const QString& pythonClassName, const QString& f
 	}
 
 	PythonScriptController* pythonScriptController = pythonScriptControllerIterator.value();
+	if(pythonScriptController)
 	{
-		PythonScriptFunction pythonScriptFunction(pythonScriptController, funcName.toStdString());
-		PythonScriptFunctionParameter pythonScriptParameter(PythonBuildTupleHelper(parameter), true);
-		PythonScriptFunctionResult pythonScriptResult;
+		PyObject* pyCallableObject = PyObject_GetAttrString(pythonScriptController->scriptControllerInstance(), funcName.toLatin1().constData());
+		if(!pyCallableObject)
+		{
+			qDebug() << "ERROR: cannot call Python function without a valid python class and function name";
+		}
+		else
+		{
+			PythonScriptFunction pythonScriptFunction(pyCallableObject, true);
+			PythonScriptFunctionParameter pythonScriptParameter(PythonBuildTupleHelper(parameter), true);
+			PythonScriptFunctionResult pythonScriptResult;
 
-		pythonScriptController->call(&pythonScriptFunction, &pythonScriptParameter, &pythonScriptResult);
+			pythonScriptFunction(&pythonScriptParameter, &pythonScriptResult);
 
-		result = ExtractPythonTupleHelper(pythonScriptResult.data());
+			result = ExtractPythonTupleHelper(pythonScriptResult.data());
+		}
 	}
 
 	return result;

@@ -187,12 +187,6 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
     else Controller::handleEvent(event);
 }
 
-void ScriptController::call(const ScriptFunction* function, const ScriptFunctionParameter* parameter, core::objectmodel::ScriptFunctionResult* result)
-{
-	script_call(function, parameter, result);
-	ScriptEnvironment::initScriptNodes();
-}
-
 void ScriptController::draw(const core::visual::VisualParams* vis)
 {
 	script_draw(vis);
