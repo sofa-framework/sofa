@@ -5,6 +5,7 @@
         <file>SofaBasics/DefaultMenuBar.qml</file>
         <file>SofaBasics/Window.qml</file>
         <file>SofaBasics/Scene.qml</file>
+        <file>SofaBasics/PythonInteractor.qml</file>
         <file>SofaBasics/FPSDisplay.qml</file>
         <file>SofaBasics/Camera.qml</file>
         <file>SofaBasics/Actor.qml</file>

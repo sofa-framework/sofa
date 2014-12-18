@@ -36,7 +36,7 @@ class PythonScript(Sofa.PythonScriptController) :
         return self.node.gravity[0]
 
     def setGravity(self, x, y, z):
-        self.node.gravity = [x, y, z]
+        self.node.gravity = [[x, y, z]]
 
     def getPointLocation(self):
         global m1
