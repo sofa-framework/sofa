@@ -103,7 +103,7 @@ static PyObject* PythonBuildValueHelper(const QVariant& parameter)
 	return value;
 }
 
-static PyObject* PythonBuildTupleHelper(const QVariant& parameter)
+static PyObject* PythonBuildTupleHelper(const QVariant& parameter, bool mustBeTuple)
 {
 	PyObject* tuple = 0;
 
@@ -116,12 +116,19 @@ static PyObject* PythonBuildTupleHelper(const QVariant& parameter)
 
 			int count = 0;
 			for(const QVariant& i : parameterIterable)
-				PyTuple_SetItem(tuple, count++, PythonBuildValueHelper(i));
+				PyTuple_SetItem(tuple, count++, PythonBuildTupleHelper(i, false));
 		}
 		else
 		{
-			tuple = PyTuple_New(1);
-			PyTuple_SetItem(tuple, 0, PythonBuildValueHelper(parameter));
+			if(mustBeTuple)
+			{
+				tuple = PyTuple_New(1);
+				PyTuple_SetItem(tuple, 0, PythonBuildValueHelper(parameter));
+			}
+			else
+			{
+				tuple = PythonBuildValueHelper(parameter);
+			}
 		}
 	}
 
@@ -158,6 +165,11 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 	{
 		QVariantList tuple;
 
+		if(PyList_Check(parameter))
+			qDebug() << "length:" << PyList_Size(parameter);
+		else
+			qDebug() << "length:" << PyTuple_Size(parameter);
+
 		PyObject *iterator = PyObject_GetIter(parameter);
 		PyObject *item;
 
@@ -169,7 +181,7 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 
 		while(item = PyIter_Next(iterator))
 		{
-			tuple.append(ExtractPythonValueHelper(item));
+			tuple.append(ExtractPythonTupleHelper(item));
 
 			Py_DECREF(item);
 		}
@@ -243,7 +255,7 @@ QVariant PythonInteractor::call(const QString& pythonClassName, const QString& f
 		else
 		{
 			PythonScriptFunction pythonScriptFunction(pyCallableObject, true);
-			PythonScriptFunctionParameter pythonScriptParameter(PythonBuildTupleHelper(parameter), true);
+			PythonScriptFunctionParameter pythonScriptParameter(PythonBuildTupleHelper(parameter, true), true);
 			PythonScriptFunctionResult pythonScriptResult;
 
 			pythonScriptFunction(&pythonScriptParameter, &pythonScriptResult);
