@@ -95,6 +95,8 @@ if [[ -n "$CI_TEST_SCENES" ]]; then
 fi
 
 "$src_dir/scripts/ci/tests.sh" print-summary "$build_dir" "$src_dir"
-"$src_dir/scripts/ci/scene-tests.sh" print-summary "$build_dir" "$src_dir"
+if [[ -n "$CI_TEST_SCENES" ]]; then
+    "$src_dir/scripts/ci/scene-tests.sh" print-summary "$build_dir" "$src_dir"
+fi
 
 send-message-to-dashboard "status=success"
