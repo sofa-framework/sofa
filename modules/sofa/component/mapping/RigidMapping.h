@@ -60,7 +60,7 @@ template <class TIn, class TOut>
 class RigidMapping : public core::Mapping<TIn, TOut>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(RigidMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
+    SOFA_POOLABLE_CLASS(SOFA_TEMPLATE2(RigidMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
     typedef core::Mapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -216,5 +216,27 @@ extern template class SOFA_RIGID_API RigidMapping< Rigid2fTypes, Vec2dTypes >;
 } // namespace component
 
 } // namespace sofa
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes > >;
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes > >;
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes > >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes > >;
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes > >;
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes > >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes > >;
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes > >;
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2fTypes > >;
+extern template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2dTypes > >;
+#endif
+#endif
+#endif
 
 #endif

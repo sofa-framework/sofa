@@ -71,7 +71,7 @@ template <class DataTypes>
 class MechanicalObject : public sofa::core::behavior::MechanicalState<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(MechanicalObject, DataTypes),SOFA_TEMPLATE(sofa::core::behavior::MechanicalState, DataTypes));
+    SOFA_POOLABLE_CLASS(SOFA_TEMPLATE(MechanicalObject, DataTypes),SOFA_TEMPLATE(sofa::core::behavior::MechanicalState, DataTypes));
 
     typedef sofa::core::behavior::MechanicalState<DataTypes>      Inherited;
     typedef typename Inherited::VMultiOp    VMultiOp;
@@ -540,5 +540,25 @@ extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Lapa
 } // namespace component
 
 } // namespace sofa
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3dTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec2dTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec1dTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec6dTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid2dTypes> >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3fTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec2fTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec1fTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec6fTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3fTypes> >;
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid2fTypes> >;
+#endif
+extern template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::LaparoscopicRigid3Types> >;
+#endif
 
 #endif

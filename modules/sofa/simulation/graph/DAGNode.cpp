@@ -47,6 +47,13 @@ DAGNode::DAGNode(const std::string& name, DAGNode* parent)
         parent->addChild((Node*)this);
 }
 
+void DAGNode::construct( const std::string& name, DAGNode* parent )
+{
+    setName(name);
+    if( parent )
+        parent->addChild((Node*)this);
+}
+
 DAGNode::~DAGNode()
 {
 	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
@@ -746,3 +753,4 @@ helper::Creator<xml::NodeElement::Factory, DAGNode> DAGNodeClass("DAGNode");
 
 } // namespace sofa
 
+template class SOFA_SIMULATION_GRAPH_API sofa::core::objectmodel::Pool<sofa::simulation::graph::DAGNode>;

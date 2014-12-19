@@ -155,6 +155,13 @@ public:
     typedef Parent Inherit1; \
     SOFA_ABSTRACT_CLASS_DECL
 
+// This macro should now be used at the beginning of all declarations of classes with 1 base class
+#define SOFA_POOLABLE_CLASS(T,Parent) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, Parent > MyClass; \
+    typedef Parent Inherit1; \
+    SOFA_POOLABLE_CLASS_DECL
+
 // This macro should now be used at the beginning of all declarations of classes with 2 base classes
 #define SOFA_CLASS2(T,Parent1,Parent2) \
     typedef T MyType;                                               \
@@ -170,6 +177,14 @@ public:
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     SOFA_ABSTRACT_CLASS_DECL
+
+// This macro should now be used at the beginning of all declarations of classes with 2 base classes
+#define SOFA_POOLABLE_CLASS2(T,Parent1,Parent2) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,Parent2> > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    SOFA_POOLABLE_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 3 base classes
 #define SOFA_CLASS3(T,Parent1,Parent2,Parent3) \
@@ -188,6 +203,15 @@ public:
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
     SOFA_ABSTRACT_CLASS_DECL
+
+// This macro should now be used at the beginning of all declarations of classes with 3 base classes
+#define SOFA_POOLABLE_CLASS3(T,Parent1,Parent2,Parent3) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,std::pair<Parent2,Parent3> > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    SOFA_POOLABLE_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 4 base classes
 #define SOFA_CLASS4(T,Parent1,Parent2,Parent3,Parent4) \
@@ -208,6 +232,16 @@ public:
     typedef Parent3 Inherit3; \
     typedef Parent4 Inherit4; \
     SOFA_ABSTRACT_CLASS_DECL
+
+// This macro should now be used at the beginning of all declarations of classes with 4 base classes
+#define SOFA_POOLABLE_CLASS4(T,Parent1,Parent2,Parent3,Parent4) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,Parent4> > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    typedef Parent4 Inherit4; \
+    SOFA_POOLABLE_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
 #define SOFA_CLASS5(T,Parent1,Parent2,Parent3,Parent4,Parent5) \
@@ -230,6 +264,17 @@ public:
     typedef Parent4 Inherit4; \
     typedef Parent5 Inherit5; \
     SOFA_ABSTRACT_CLASS_DECL
+
+// This macro should now be used at the beginning of all declarations of classes with 5 base classes
+#define SOFA_POOLABLE_CLASS5(T,Parent1,Parent2,Parent3,Parent4,Parent5) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,std::pair<Parent4,Parent5> > > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    typedef Parent4 Inherit4; \
+    typedef Parent5 Inherit5; \
+    SOFA_POOLABLE_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 5 base classes
 #define SOFA_CLASS6(T,Parent1,Parent2,Parent3,Parent4,Parent5,Parent6) \
@@ -255,8 +300,20 @@ public:
     typedef Parent6 Inherit6; \
     SOFA_ABSTRACT_CLASS_DECL
 
-// Do not use this macro directly, use SOFA_ABSTRACT_CLASS instead
-#define SOFA_ABSTRACT_CLASS_DECL                                        \
+// This macro should now be used at the beginning of all declarations of classes with 5 base classes
+#define SOFA_POOLABLE_CLASS6(T,Parent1,Parent2,Parent3,Parent4,Parent5,Parent6) \
+    typedef T MyType;                                               \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<std::pair<Parent3,Parent4>,std::pair<Parent5,Parent6> > > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    typedef Parent4 Inherit4; \
+    typedef Parent5 Inherit5; \
+    typedef Parent6 Inherit6; \
+    SOFA_POOLABLE_CLASS_DECL
+
+// Do not use this macro directly, use SOFA_ABSTRACT_CLASS or SOFA_CLASS instead
+#define SOFA_COMMON_CLASS_DECL                                          \
     typedef MyType* Ptr;                                                \
     typedef boost::intrusive_ptr<MyType> SPtr;                          \
                                                                         \
@@ -303,12 +360,28 @@ public:
     using Inherit1::serr;                                               \
     using Inherit1::sendl
 
+// Do not use this macro directly, use SOFA_ABSTRACT_CLASS instead
+#define SOFA_ABSTRACT_CLASS_DECL                               \
+    SOFA_COMMON_CLASS_DECL;                                    \
+                                                               \
+    enum { POOL_COMPATIBLE = false };                          \
+    virtual void destroy() { assert(0); } // can't be created
+
 // Do not use this macro directly, use SOFA_CLASS instead
 #define SOFA_CLASS_DECL                                        \
-    SOFA_ABSTRACT_CLASS_DECL;                                  \
+    SOFA_COMMON_CLASS_DECL;                                    \
                                                                \
-    friend class sofa::core::objectmodel::New<MyType>
+    enum { POOL_COMPATIBLE = false };                          \
+	virtual void destroy() { delete this; }	                   \
+    friend class sofa::core::objectmodel::BaseNew<MyType, POOL_COMPATIBLE>
 
+// Do not use this macro directly, use SOFA_CLASS instead
+#define SOFA_POOLABLE_CLASS_DECL                               \
+    SOFA_COMMON_CLASS_DECL;                                    \
+                                                               \
+    enum { POOL_COMPATIBLE = true };                           \
+	virtual void destroy() { sofa::core::objectmodel::Pool<MyType>::release(this); }	   \
+    friend class sofa::core::objectmodel::BaseNew<MyType, POOL_COMPATIBLE>
 
 template <class Parents>
 class TClassParents

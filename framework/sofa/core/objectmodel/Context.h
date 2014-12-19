@@ -206,7 +206,8 @@ public:
     /// Copy the context variables of visualization from the given instance
     void copySimulationContext(const Context& c);
 
-
+	/// Reset the context as if just created
+	void recycle();
 
 };
 

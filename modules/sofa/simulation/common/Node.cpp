@@ -185,6 +185,34 @@ void Node::reinit(const core::ExecParams* params)
     deactivate.execute( this );
 }
 
+/// Reset the node as if just created
+void Node::recycle()
+{
+	debug_ = false;
+    initialized = false;
+	sofa::helper::vector < std::string >& dependVal = *depend.beginWriteOnly();
+	dependVal.clear();
+	depend.endEdit();
+
+	// TODO: share with DeleteVisitor.
+    while (!child.empty())
+    {
+        Node::SPtr n = *child.begin();
+        removeChild(n);
+        n.reset();
+    }
+
+    while (!object.empty())
+    {
+        core::objectmodel::BaseObject::SPtr o = *object.begin();
+        removeObject(o);
+        o.reset();
+    }
+
+	Context::recycle();
+	Base::recycle();
+}
+
 /// Do one step forward in time
 //void Node::animate(const core::ExecParams* params /* PARAMS FIRST */, double dt)
 //{

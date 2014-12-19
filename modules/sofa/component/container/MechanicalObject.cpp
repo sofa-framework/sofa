@@ -733,3 +733,23 @@ void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::vi
 } // namespace component
 
 } // namespace sofa
+
+#ifndef SOFA_FLOAT
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3dTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec2dTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec1dTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec6dTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid2dTypes> >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3fTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec2fTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec1fTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Vec6fTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid3fTypes> >;
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::Rigid2fTypes> >;
+#endif
+
+template class SOFA_BASE_MECHANICS_API sofa::core::objectmodel::Pool< sofa::component::container::MechanicalObject<sofa::defaulttype::LaparoscopicRigid3Types> >;

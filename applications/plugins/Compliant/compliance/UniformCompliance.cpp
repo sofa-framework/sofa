@@ -41,3 +41,15 @@ template class SOFA_Compliant_API UniformCompliance<Vec6fTypes>;
 }
 }
 }
+
+#ifndef SOFA_FLOAT
+template class sofa::core::objectmodel::Pool< sofa::component::forcefield::UniformCompliance<sofa::defaulttype::Vec1dTypes> >;
+template class sofa::core::objectmodel::Pool< sofa::component::forcefield::UniformCompliance<sofa::defaulttype::Vec3dTypes> >;
+template class sofa::core::objectmodel::Pool< sofa::component::forcefield::UniformCompliance<sofa::defaulttype::Vec6dTypes> >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class sofa::core::objectmodel::Pool< sofa::component::forcefield::UniformCompliance<sofa::defaulttype::Vec1fTypes> >;
+template class sofa::core::objectmodel::Pool< sofa::component::forcefield::UniformCompliance<sofa::defaulttype::Vec3fTypes> >;
+template class sofa::core::objectmodel::Pool< sofa::component::forcefield::UniformCompliance<sofa::defaulttype::Vec6fTypes> >;
+#endif

@@ -45,3 +45,11 @@ template class SOFA_Compliant_API ContactMapping<  Vec3fTypes, Vec3fTypes >;
 } // namespace sofa
 
 
+#ifndef SOFA_FLOAT
+template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::ContactMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec1dTypes > >;
+template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::ContactMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes > >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::ContactMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec1fTypes > >;
+template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::ContactMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes > >;
+#endif

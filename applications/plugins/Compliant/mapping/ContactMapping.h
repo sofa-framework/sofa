@@ -38,7 +38,7 @@ class ContactMapping : public AssembledMapping<TIn, TOut>
 {
 	typedef ContactMapping self;
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(ContactMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
+    SOFA_POOLABLE_CLASS(SOFA_TEMPLATE2(ContactMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 
 	typedef typename TIn::Real real;
 
@@ -155,5 +155,16 @@ extern template class SOFA_Compliant_API ContactMapping< defaulttype::Vec3fTypes
 }
 }
 }
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ContactMapping_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::ContactMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec1dTypes > >;
+extern template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::ContactMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes > >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::ContactMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec1fTypes > >;
+extern template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::ContactMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes > >;
+#endif
+#endif
 
 #endif

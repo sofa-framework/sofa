@@ -117,6 +117,9 @@ protected:
     Node(const std::string& name="");
 
     virtual ~Node();
+	
+	void recycle();
+	
 public:
     /// Create, add, then return the new child of this Node
     virtual Node::SPtr createChild(const std::string& nodeName)=0;

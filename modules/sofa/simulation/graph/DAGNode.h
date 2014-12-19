@@ -56,7 +56,7 @@ class SOFA_SIMULATION_GRAPH_API DAGNode : public simulation::Node
 {
 public:
     typedef Node::DisplayFlags DisplayFlags;
-    SOFA_CLASS(DAGNode, simulation::Node);
+    SOFA_POOLABLE_CLASS(DAGNode, simulation::Node);
 
     typedef MultiLink<DAGNode,DAGNode,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DOUBLELINK> LinkParents;
     typedef LinkParents::const_iterator ParentIterator;
@@ -64,6 +64,7 @@ public:
 
 protected:
     DAGNode( const std::string& name="", DAGNode* parent=NULL  );
+	void construct( const std::string& name="", DAGNode* parent=NULL );
 
     virtual ~DAGNode();
 
@@ -338,6 +339,10 @@ protected:
 } // namespace simulation
 
 } // namespace sofa
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SIMULATION_GRAPH)
+extern template class SOFA_SIMULATION_GRAPH_API sofa::core::objectmodel::Pool<sofa::simulation::graph::DAGNode>;
+#endif
 
 #endif
 
