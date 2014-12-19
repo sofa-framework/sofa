@@ -43,9 +43,11 @@ AssemblyVisitor::~AssemblyVisitor()
 AssemblyVisitor::chunk::chunk()
 	: offset(0),
 	  size(0),
+      C(NULL),
+      Ktilde(NULL),
 	  mechanical(false),
 	  vertex(-1),
-	  dofs(0) {
+      dofs(NULL) {
 
 }
 
