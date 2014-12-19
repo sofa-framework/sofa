@@ -94,4 +94,7 @@ if [[ -n "$CI_TEST_SCENES" ]]; then
     send-message-to-dashboard "scenes_errors=$scenes_error_count"
 fi
 
+"$src_dir/scripts/ci/tests.sh" print-summary "$build_dir" "$src_dir"
+"$src_dir/scripts/ci/scene-tests.sh" print-summary "$build_dir" "$src_dir"
+
 send-message-to-dashboard "status=success"
