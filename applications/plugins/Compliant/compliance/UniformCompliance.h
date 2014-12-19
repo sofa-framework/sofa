@@ -19,7 +19,7 @@ template<class TDataTypes>
 class UniformCompliance : public core::behavior::ForceField<TDataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(UniformCompliance, TDataTypes), SOFA_TEMPLATE(core::behavior::ForceField, TDataTypes));
+    SOFA_POOLABLE_CLASS(SOFA_TEMPLATE(UniformCompliance, TDataTypes), SOFA_TEMPLATE(core::behavior::ForceField, TDataTypes));
 
     typedef TDataTypes DataTypes;
     typedef core::behavior::ForceField<TDataTypes> Inherit;
@@ -57,6 +57,8 @@ public:
 
 protected:
     UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
+
+	void construct( core::behavior::MechanicalState<DataTypes> *mm ) { mstate.add(mm); }
 
 	typedef linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matrix_type;
 	matrix_type matC; ///< compliance matrix

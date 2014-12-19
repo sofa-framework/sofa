@@ -183,6 +183,8 @@ void DefaultPipeline::doCollisionResponse()
 {
 	bool oldCreationState = DDGDataNode::isCreationEnabled();
 	DDGDataNode::enableCreation(false);
+	bool oldPoolingState = PoolSettings::isEnabled();
+	PoolSettings::enable(true);
 
     core::objectmodel::BaseContext* scene = getContext();
     // then we start the creation of contacts
@@ -228,6 +230,7 @@ void DefaultPipeline::doCollisionResponse()
         groupManager->createGroups(scene, notStaticContacts);
     }
 
+	PoolSettings::enable(oldPoolingState);
 	DDGDataNode::enableCreation(oldCreationState);
 }
 

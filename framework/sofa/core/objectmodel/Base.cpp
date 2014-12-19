@@ -47,6 +47,7 @@ Base::BaseInit Base::defaultInitSettings(40, 8);
 
 Base::Base(const BaseInit& init)
     : ref_counter(0)
+	, pooled(false)
 	, m_vecData(init.numDatas, VecData::RESERVE)
 	, m_vecLink(init.numLinks, VecLink::RESERVE)
     , name(initData(&name,unnamed_label,"name","object name"))
@@ -87,9 +88,19 @@ void Base::release()
 
 // This delete can cause a crash on Windows with sofa cuda build with msvc
 #if !(defined(_MSC_VER) && defined(SOFA_GPU_CUDA))
-        delete this;
+        destroy();
 #endif
     }
+}
+
+void Base::recycle()
+{
+	name.beginWriteOnly()->clear();
+	name.endEdit();
+	f_printLog.setValue(false);
+	f_tags.beginWriteOnly()->clear();
+	f_tags.endEdit();
+	f_bbox.setValue(sofa::defaulttype::BoundingBox(), true);
 }
 
 /// Helper method used by initData()

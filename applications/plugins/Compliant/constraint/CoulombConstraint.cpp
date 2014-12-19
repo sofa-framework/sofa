@@ -18,6 +18,12 @@ CoulombConstraint::CoulombConstraint(SReal mu)
 	assert(mu >= 0); 
 }
 
+void CoulombConstraint::construct( SReal m )
+{
+	mu = m;
+	assert(mu >= 0);
+}
+
 void CoulombConstraint::project( SReal* out, unsigned n, unsigned /*index*/, bool correct ) const
 {
     assert( n >= 3 );

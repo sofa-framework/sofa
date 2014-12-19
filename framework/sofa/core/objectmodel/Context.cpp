@@ -336,6 +336,37 @@ void Context::copySimulationContext(const Context& c)
 }
 
 
+void Context::recycle()
+{
+	is_activated.setValue(true);
+	worldGravity_.setValue(Vec3((SReal)0,(SReal)-9.81,(SReal)0));
+	dt_.setValue(0.01);
+	time_.setValue(0.);
+	animate_.setValue(false);
+	d_isSleeping.setValue(false);
+	d_canChangeSleepingState.setValue(false);
+
+#ifdef SOFA_SUPPORT_MULTIRESOLUTION
+    currentLevel_.setValue(0);
+    coarsestLevel_.setValue(3);
+    finestLevel_.setValue(0);
+#endif
+
+#ifdef SOFA_SMP
+    processor.setValue((int )-1);
+    gpuPrioritary.setValue(false);
+    partition_ = 0;
+    is_partition_.setValue(false);
+#endif
+
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+    setPositionInWorld(objectmodel::BaseContext::getPositionInWorld());
+    setGravity(objectmodel::BaseContext::getLocalGravity());
+    setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
+    setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
+#endif
+}
+
 
 
 } // namespace objectmodel

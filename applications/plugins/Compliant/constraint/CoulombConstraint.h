@@ -18,6 +18,8 @@ struct SOFA_Compliant_API CoulombConstraint : Constraint {
 
     CoulombConstraint( SReal mu = 1.0 );
 
+	void construct( SReal mu );
+
     virtual void project( SReal* out, unsigned n, unsigned index, bool correctionPass=false ) const;
 
 

@@ -38,6 +38,63 @@ namespace core
 namespace objectmodel
 {
 
+template<class T, bool pooled>
+class BaseNew;
+
+template<class T>
+class Pool;
+
+/** \brief Implementation of class New for classes that do no support object pooling.
+ *  @see class New
+ */
+template<class T>
+class BaseNew<T,false> : public T::SPtr
+{
+protected:
+	typedef typename T::SPtr SPtr;
+	BaseNew() : T::SPtr(new T()) {}
+	template<class A1>
+	BaseNew(A1 a1) : T::SPtr(new T(a1)) {}
+    template <class A1, class A2>
+    BaseNew(A1 a1, A2 a2) : SPtr(new T(a1,a2)) {}
+    template <class A1, class A2, class A3>
+    BaseNew(A1 a1, A2 a2, A3 a3) : SPtr(new T(a1,a2,a3)) {}
+    template <class A1, class A2, class A3, class A4>
+    BaseNew(A1 a1, A2 a2, A3 a3, A4 a4) : SPtr(new T(a1,a2,a3,a4)) {}
+    template <class A1, class A2, class A3, class A4, class A5>
+    BaseNew(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) : SPtr(new T(a1,a2,a3,a4,a5)) {}
+    template <class A1, class A2, class A3, class A4, class A5, class A6>
+    BaseNew(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) : SPtr(new T(a1,a2,a3,a4,a5,a6)) {}
+};
+
+/** \brief Implementation of class New for classes that do no support object pooling.
+ *  @see class New
+ */
+template<class T>
+class BaseNew<T,true> : public T::SPtr
+{
+protected:
+	typedef typename T::SPtr SPtr;
+	BaseNew() : SPtr(Pool<T>::allocate()) {}
+	template<class A1>
+	BaseNew(A1 a1) : SPtr(Pool<T>::allocate()) { get()->construct(a1); }
+    template <class A1, class A2>
+    BaseNew(A1 a1, A2 a2) : SPtr(Pool<T>::allocate()) { get()->construct(a1,a2); }
+    template <class A1, class A2, class A3>
+    BaseNew(A1 a1, A2 a2, A3 a3) : SPtr(Pool<T>::allocate()) { get()->construct(a1,a2,a3); }
+    template <class A1, class A2, class A3, class A4>
+    BaseNew(A1 a1, A2 a2, A3 a3, A4 a4) : SPtr(Pool<T>::allocate()) { get()->construct(a1,a2,a3,a4); }
+    template <class A1, class A2, class A3, class A4, class A5>
+    BaseNew(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) : SPtr(Pool<T>::allocate()) { get()->construct(a1,a2,a3,a4,a5); }
+    template <class A1, class A2, class A3, class A4, class A5, class A6>
+    BaseNew(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) : SPtr(Pool<T>::allocate()) { get()->construct(a1,a2,a3,a4,a5,a6); }
+
+private:
+	friend class Pool<T>;
+	static T* internal_allocate() { return new T; }
+	static void internal_release(T* p) { delete p; }
+};
+
 /**
  *  \brief new operator for classes with smart pointers (such as all components deriving from Base)
  *
@@ -53,23 +110,22 @@ namespace objectmodel
  *
  */
 template<class T>
-class New : public T::SPtr
+class New : public BaseNew<T, T::POOL_COMPATIBLE>
 {
-    typedef typename T::SPtr SPtr;
 public:
-    New() : SPtr(new T) {}
+    New() : BaseNew() {}
     template <class A1>
-    New(A1 a1) : SPtr(new T(a1)) {}
+    New(A1 a1) : BaseNew(a1) {}
     template <class A1, class A2>
-    New(A1 a1, A2 a2) : SPtr(new T(a1,a2)) {}
+    New(A1 a1, A2 a2) : BaseNew(a1,a2) {}
     template <class A1, class A2, class A3>
-    New(A1 a1, A2 a2, A3 a3) : SPtr(new T(a1,a2,a3)) {}
+    New(A1 a1, A2 a2, A3 a3) : BaseNew(a1,a2,a3) {}
     template <class A1, class A2, class A3, class A4>
-    New(A1 a1, A2 a2, A3 a3, A4 a4) : SPtr(new T(a1,a2,a3,a4)) {}
+    New(A1 a1, A2 a2, A3 a3, A4 a4) : BaseNew(a1,a2,a3,a4) {}
     template <class A1, class A2, class A3, class A4, class A5>
-    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) : SPtr(new T(a1,a2,a3,a4,a5)) {}
+    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) : BaseNew(a1,a2,a3,a4,a5) {}
     template <class A1, class A2, class A3, class A4, class A5, class A6>
-    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) : SPtr(new T(a1,a2,a3,a4,a5,a6)) {}
+    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) : BaseNew(a1,a2,a3,a4,a5,a6) {}
 };
 
 /// dynamic_cast operator for SPtr

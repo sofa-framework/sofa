@@ -95,3 +95,23 @@ void rigidMappingDummyFunction()
 
 } // namespace sofa
 
+#ifndef SOFA_FLOAT
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes > >;
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes > >;
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes > >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3fTypes > >;
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes > >;
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3fTypes > >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3fTypes > >;
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes > >;
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2fTypes > >;
+template class SOFA_RIGID_API sofa::core::objectmodel::Pool< sofa::component::mapping::RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2dTypes > >;
+#endif
+#endif
+

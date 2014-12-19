@@ -45,10 +45,11 @@ class SOFA_SIMULATION_TREE_API GNode : public simulation::Node
 {
 public:
     typedef Node::DisplayFlags DisplayFlags;
-    SOFA_CLASS(GNode, simulation::Node);
+    SOFA_POOLABLE_CLASS(GNode, simulation::Node);
 
 protected:
     GNode( const std::string& name="", GNode* parent=NULL  );
+	void construct( const std::string& name="", GNode* parent=NULL );
 
     virtual ~GNode();
 
@@ -172,5 +173,9 @@ protected:
 } // namespace simulation
 
 } // namespace sofa
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_SIMULATION_TREE)
+extern template class SOFA_SIMULATION_TREE_API sofa::core::objectmodel::Pool<sofa::simulation::tree::GNode>;
+#endif
 
 #endif

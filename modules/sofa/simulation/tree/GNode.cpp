@@ -45,6 +45,13 @@ GNode::GNode(const std::string& name, GNode* parent)
         parent->addChild((Node*)this);
 }
 
+void GNode::construct( const std::string& name, GNode* parent )
+{
+	setName(name);
+    if( parent )
+        parent->addChild((Node*)this);
+}
+
 GNode::~GNode()
 {
 	for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
@@ -454,3 +461,4 @@ helper::Creator<xml::NodeElement::Factory, GNode> GNodeClass("GNode");
 
 } // namespace sofa
 
+template class SOFA_SIMULATION_TREE_API sofa::core::objectmodel::Pool<sofa::simulation::tree::GNode>;

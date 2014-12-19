@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/SPtr.h>
+#include <sofa/core/objectmodel/SPtrPool.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -76,6 +77,8 @@ public:
         ptr = dynamic_cast<T*>(b);
     }
 
+	enum { POOL_COMPATIBLE = false };
+
 protected:
 	struct BaseInit
 	{
@@ -93,6 +96,9 @@ protected:
     /// Direct calls to destructor are forbidden.
     /// Smart pointers must be used to manage creation/destruction of objects
     virtual ~Base();
+
+	/// This method will be overriden to either delete this or release to the corresponding pool.
+	virtual void destroy() = 0;
 
 private:
     /// Copy constructor is not allowed
@@ -112,9 +118,15 @@ private:
         p->release();
     }
 
+	bool pooled;
+	bool isPooled() const { return pooled; }
+	void setPooled(bool p) { pooled = p; }
+protected:
+	/// override this method to do cleanup when released to a pool.
+	virtual void recycle();
+	template<class T> friend struct PoolPolicy;
+
 public:
-
-
 
     /// Accessor to the object name
     const std::string& getName() const
