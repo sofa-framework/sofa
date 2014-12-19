@@ -45,7 +45,7 @@ macro(sofa_create_target TARGETNAME NAMESPACE LIBRARY_PATH INCLUDE_DIRS)
     parse_library_list( "${LIBRARY_PATH}" FOUND LIB_FOUND DEBUG LIB_DEBUG OPT LIB_OPT GENERAL LIB_GEN )
     
     # message("FOUND ${LIB_FOUND} DEBUG: ${LIB_DEBUG} OPT: ${LIB_OPT} GEN: ${LIB_GEN}")
-    if(${LIB_FOUND} ) 
+    if(LIB_FOUND) 
         if(NOT TARGET ${TARGETNAME} )
             set(${TARGETNAME}_Target ${NAMESPACE_TARGETNAME} )
             if(NOT TARGET ${NAMESPACE_TARGETNAME} )
