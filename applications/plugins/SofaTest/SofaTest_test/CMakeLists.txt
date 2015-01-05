@@ -17,6 +17,7 @@ set(SOURCE_FILES
     RigidMapping_test.cpp
     EulerImplicit_test.cpp
     HexahedronFEMForceField_test.cpp
+    KdTree_test.cpp
     LinearElasticity_test.cpp
     LoadScene_test.cpp
     Matrix_test.cpp

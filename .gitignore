@@ -18,15 +18,6 @@
 .*.swp
 .*.swo
 
-# Sofa user-specific files
-share/config/sofaplugins_release.ini
-share/config/sofaplugins_debug.ini
-share/config/lastUsedGUI.ini
-share/config/Modeler.ini
-share/config/Sofa.ini
-share/config/plugins.cfg
-share/config/Ogre.log
-
 # git diff temporary files
 *.orig
 
@@ -37,10 +28,8 @@ share/config/Ogre.log
 *.pyc
 
 # Misc
-doc/doxygen.git/
-share/screenshots/
-/applications/plugins/EmptyPlugin/
-/applications-dev/
+/applications/plugins/EmptyPlugin
+/applications-dev
 
 # Files related to cmake builds (when in-source)
 CMakeFiles/*
@@ -52,57 +41,3 @@ CMakeLists.txt.user*
 # anything user-specific (as opposed to repository-specific) should go
 # to .git/info/exclude instead of .gitignore. Also, .gitignore files
 # can be placed in sub-directories to avoid polluting the root one.
-
-
-.svn/
-build/
-buildDebug/
-buildRelease/
-buildClang/
-/applications/plugins/branchingimage/BranchingCellIndicesFromPositions.cpp
-/applications/plugins/branchingimage/BranchingCellIndicesFromPositions.h
-/applications/plugins/branchingimage/BranchingCellOffsetsFromPositions.cpp
-/applications/plugins/branchingimage/BranchingCellOffsetsFromPositions.h
-/applications/plugins/branchingimage/BranchingCellVolumes.cpp
-/applications/plugins/branchingimage/BranchingCellVolumes.h
-/applications/plugins/branchingimage/BranchingImage.h
-/applications/plugins/branchingimage/BranchingImage.txt
-/applications/plugins/branchingimage/BranchingImageConverter.cpp
-/applications/plugins/branchingimage/BranchingImageConverter.h
-/applications/plugins/branchingimage/BranchingImage_test/BranchingImage_test.cpp
-/applications/plugins/branchingimage/BranchingImage_test/BranchingImage_test.inl
-/applications/plugins/branchingimage/CMakeLists.txt
-/applications/plugins/branchingimage/CMakeListsOld.txt
-/applications/plugins/branchingimage/ImageAlgorithms.h
-/applications/plugins/branchingimage/ImageContainer.cpp
-/applications/plugins/branchingimage/ImageContainer.h
-/applications/plugins/branchingimage/ImageExporter.cpp
-/applications/plugins/branchingimage/ImageExporter.h
-/applications/plugins/branchingimage/ImageSampler.cpp
-/applications/plugins/branchingimage/ImageSampler.h
-/applications/plugins/branchingimage/ImageValuesFromPositions.cpp
-/applications/plugins/branchingimage/ImageValuesFromPositions.h
-/applications/plugins/branchingimage/MergeBranchingImages.cpp
-/applications/plugins/branchingimage/MergeBranchingImages.h
-/applications/plugins/branchingimage/TransferFunction.cpp
-/applications/plugins/branchingimage/TransferFunction.h
-/applications/plugins/branchingimage/examples/BranchingImageConverter.scn
-/applications/plugins/branchingimage/examples/BranchingImageRegularSampler.scn
-/applications/plugins/branchingimage/examples/BranchingImageUniformSampler.scn
-/applications/plugins/branchingimage/examples/BranchingImage_HexaFEM.scn
-/applications/plugins/branchingimage/examples/BranchingImage_HexaFEM2.scn
-/applications/plugins/branchingimage/examples/BranchingImage_frames.scn
-/applications/plugins/branchingimage/examples/ImplicitAttachment.scn
-/applications/plugins/branchingimage/examples/ImplicitAttachment_testload.scn
-/applications/plugins/branchingimage/examples/Teodule.scn
-/applications/plugins/branchingimage/examples/imageVsBranchingimage.scn
-/applications/plugins/branchingimage/examples/testImportExport.scn
-/applications/plugins/branchingimage/flexible/quadrature/ImageGaussPointSampler.cpp
-/applications/plugins/branchingimage/flexible/quadrature/ImageGaussPointSampler.h
-/applications/plugins/branchingimage/flexible/shapeFunction/BaseImageShapeFunction.h
-/applications/plugins/branchingimage/flexible/shapeFunction/ImageShapeFunctionContainer.cpp
-/applications/plugins/branchingimage/flexible/shapeFunction/VoronoiShapeFunction.cpp
-/applications/plugins/branchingimage/flexible/shapeFunction/VoronoiShapeFunction.h
-/applications/plugins/branchingimage/initBranchingImage.cpp
-/applications/plugins/branchingimage/initBranchingImage.h
-/applications/projects/runSofa/sofa.aps

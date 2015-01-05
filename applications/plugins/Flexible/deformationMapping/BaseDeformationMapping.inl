@@ -704,7 +704,7 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
             this->f_KdTree.build(f_pos);
             this->KdTreeDirty=false;
         }
-        index=this->f_KdTree.getClosest(p);
+        index=this->f_KdTree.getClosest(p,f_pos);
         x=f_pos[index];
     }
     else
