@@ -57,7 +57,7 @@ protected:
 
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> MatrixEigen;
     typedef linearsolver::VectorEigen          VectorEigen;
-    typedef linearsolver::VectorEigen::Index   Index;
+    typedef defaulttype::BaseVector::Index     Index;
     typedef linearsolver::SparseMatrixEigen    SparseMatrixEigen;
     typedef linearsolver::SparseVectorEigen    SparseVectorEigen;
 
