@@ -224,14 +224,14 @@ void EdgeSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
 
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    const unsigned int numVertices = (unsigned int)vect_c.size();
+    const size_t numVertices = vect_c.size();
 
     myfile << "$NOD\n";
     myfile << numVertices <<"\n";
 
-    for (unsigned int i=0; i<numVertices; ++i)
+    for (size_t i=0; i<numVertices; ++i)
     {
-        double x=0,y=0,z=0; DataTypes::get(x,y,z, vect_c[i]);
+        double x=0,y=0,z=0;DataTypes::get(x,y,z, vect_c[i]);
 
         myfile << i+1 << " " << x << " " << y << " " << z <<"\n";
     }
@@ -616,7 +616,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
         //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, point " << pointId << endl;
         EdgesAroundVertex ve = this->m_topology->getEdgesAroundVertex(pointId);
         edgeVec.resize(ve.size());
-        numEdges.push_back(ve.size());            // number of edges attached to this point
+        numEdges.push_back((unsigned)ve.size());            // number of edges attached to this point
         Matrix3 EEt,L;
 
         // Solve E.W = I , where each column of E is an adjacent edge vector, W are the desired weights, and I is the 3x3 identity
@@ -643,7 +643,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
         // decompose E.Et for system solution
         if( cholDcmp(L,EEt) ) // Cholesky decomposition of the covariance matrix succeeds, we use it to solve the systems
         {
-            unsigned n = weights.size();     // start index for this vertex
+            size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
             Vector3 a,u;
 
@@ -651,7 +651,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             a=Vector3(1,0,0);
             cholBksb(u,L,a); // solve EEt.u=x using the Cholesky decomposition
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
-            for(unsigned i=0; i<ve.size(); i++ )
+            for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][0] = u * edgeVec[i];
                 //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to x = " << weights[n+i][0] << endl;
@@ -661,7 +661,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             a=Vector3(0,1,0);
             cholBksb(u,L,a); // solve EEt.u=y using the Cholesky decomposition
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
-            for(unsigned i=0; i<ve.size(); i++ )
+            for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][1] = u * edgeVec[i];
                 //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to y = " << weights[n+i][1] << endl;
@@ -671,7 +671,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             a=Vector3(0,0,1);
             cholBksb(u,L,a); // solve EEt.u=z using the Cholesky decomposition
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
-            for(unsigned i=0; i<ve.size(); i++ )
+            for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][2] = u * edgeVec[i];
                 //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;
@@ -680,7 +680,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
         else
         {
 #ifdef SOFA_HAVE_EIGEN2   // use the SVD decomposition of Eigen
-            unsigned n = weights.size();     // start index for this vertex
+            size_t n = weights.size();     // start index for this vertex
             weights.resize( n + ve.size() ); // concatenate all the W of the nodes
             Vector3 a,u;
 
@@ -697,7 +697,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
-            for(unsigned i=0; i<ve.size(); i++ )
+            for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][0] = u * edgeVec[i];
                 //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to x = " << weights[n+i][0] << endl;
@@ -710,7 +710,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
-            for(unsigned i=0; i<ve.size(); i++ )
+            for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][1] = u * edgeVec[i];
                 //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to y = " << weights[n+i][1] << endl;
@@ -723,7 +723,7 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( vecto
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
             //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
-            for(unsigned i=0; i<ve.size(); i++ )
+            for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][2] = u * edgeVec[i];
                 //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;

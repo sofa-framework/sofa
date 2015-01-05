@@ -753,9 +753,9 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
         const SeqTriangles& triangles = this->input_triangles.getValue();
         const SeqQuads& quads = this->input_quads.getValue();
         mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
-        for (unsigned int i=0; i<facets.size(); ++i)
+        for (size_t i=0; i<facets.size(); ++i)
             mesh->getFacets()[i].push_back(facets[i]);
-        for (unsigned int i0 = facets.size(), i=0; i<triangles.size(); ++i)
+        for (size_t i0 = facets.size(), i=0; i<triangles.size(); ++i)
         {
             mesh->getFacets()[i0+i].resize(1);
             mesh->getFacets()[i0+i][0].resize(3);
@@ -763,7 +763,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
             mesh->getFacets()[i0+i][0][1] = triangles[i][1];
             mesh->getFacets()[i0+i][0][2] = triangles[i][2];
         }
-        for (unsigned int i0 = facets.size()+triangles.size(), i=0; i<quads.size(); ++i)
+        for (size_t i0 = facets.size()+triangles.size(), i=0; i<quads.size(); ++i)
         {
             mesh->getFacets()[i0+i].resize(1);
             mesh->getFacets()[i0+i][0].resize(4);
@@ -844,13 +844,13 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
     //}
 
     const helper::vector< Vector3 >& vertices = mesh->getVertices();
-    const unsigned int vertexSize = vertices.size();
+    const size_t vertexSize = vertices.size();
     helper::vector< int > verticesHexa(vertexSize);
     helper::vector< bool > facetDone;
-    Vector3 delta = (regularGrid->getDx() + regularGrid->getDy() + regularGrid->getDz()) / 2;
+    const Vector3 delta = (regularGrid->getDx() + regularGrid->getDy() + regularGrid->getDz()) / 2;
 
     // Compute the grid element for each mesh vertex
-    for (unsigned int i = 0; i < vertexSize; ++i)
+    for (size_t i = 0; i < vertexSize; ++i)
     {
         const Vector3& vertex = vertices[i];
         int index = regularGrid->findHexa(vertex);
@@ -1067,7 +1067,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology::SPtr reg
     }
 
     this->seqPoints.beginEdit();
-    nbPoints = cubeCornerPositionIndiceMap.size();
+    nbPoints = (int)cubeCornerPositionIndiceMap.size();
 
     SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
 
@@ -1205,7 +1205,7 @@ void SparseGridTopology::buildFromFiner(  )
 
                 cubeCorners.push_back(corners);
 
-                _indicesOfRegularCubeInSparseGrid[coarseRegularIndice] = cubeCorners.size()-1;
+                _indicesOfRegularCubeInSparseGrid[coarseRegularIndice] = (int)cubeCorners.size()-1;
                 _indicesOfCubeinRegularGrid.push_back( coarseRegularIndice );
 
                 // 			_hierarchicalCubeMap[cubeCorners.size()-1]=fineIndices;
@@ -1224,7 +1224,7 @@ void SparseGridTopology::buildFromFiner(  )
         seqPoints.push_back( (*it).first );
     }
     this->seqPoints.endEdit();
-    nbPoints = cubeCornerPositionIndiceMap.size();
+    nbPoints = (int)cubeCornerPositionIndiceMap.size();
 
     SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
     for( unsigned w=0; w<cubeCorners.size(); ++w)
