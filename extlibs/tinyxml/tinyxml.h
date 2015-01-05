@@ -81,7 +81,7 @@ distribution.
 	#endif
 #endif	
 
-#ifndef WIN32
+#if defined SOFA_STATIC_LIBRARY || !defined WIN32 
 #	define SOFA_TINYXML_API
 #else
 #   ifdef SOFA_BUILD_TINYXML
