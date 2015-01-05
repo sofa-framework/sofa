@@ -244,6 +244,13 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		return dynamic_cast<core::behavior::BaseMechanicalState* > (this->getTo()[i]);
 	}
 
+	void recycle()
+	{
+		typedef core::MultiMapping<TIn, TOut> base;
+		//release();
+		//js.clear();
+		base::recycle();
+	}
 	
   public:
 	

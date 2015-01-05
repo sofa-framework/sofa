@@ -76,3 +76,11 @@ template class SOFA_Compliant_API DifferenceMultiMapping< Vec1fTypes, Vec1fTypes
 }
 
 
+#ifndef SOFA_FLOAT
+template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::DifferenceMultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes > >;
+template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::DifferenceMultiMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1dTypes > >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::DifferenceMultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes > >;
+template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::DifferenceMultiMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1fTypes > >;
+#endif
