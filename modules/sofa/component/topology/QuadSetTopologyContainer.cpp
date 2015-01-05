@@ -98,7 +98,7 @@ void QuadSetTopologyContainer::createQuadsAroundVertexArray()
         // adding quad i in the quad shell of all points
         for (size_t j=0; j<4; ++j)
         {
-            m_quadsAroundVertex[ m_quad[i][j] ].push_back( i );
+            m_quadsAroundVertex[ m_quad[i][j] ].push_back((unsigned int)i);
         }
     }
 }
@@ -139,7 +139,7 @@ void QuadSetTopologyContainer::createQuadsAroundEdgeArray()
         // adding quad i in the quad shell of all edges
         for (size_t j=0; j<4; ++j)
         {
-            m_quadsAroundEdge[ m_edgesInQuad[i][j] ].push_back( i );
+            m_quadsAroundEdge[ m_edgesInQuad[i][j] ].push_back((unsigned int)i);
         }
     }
 }
@@ -189,7 +189,7 @@ void QuadSetTopologyContainer::createEdgeSetArray()
             if(edgeMap.find(e) == edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                const int edgeIndex = edgeMap.size();
+                const unsigned int edgeIndex = (unsigned int)edgeMap.size();
                 edgeMap[e] = edgeIndex;
                 m_edge.push_back(e);
             }
@@ -302,7 +302,7 @@ int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, P
 unsigned int QuadSetTopologyContainer::getNumberOfQuads() const
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
-    return m_quad.size();
+    return (unsigned int)m_quad.size();
 }
 
 
@@ -566,14 +566,14 @@ unsigned int QuadSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecQuadID elemAll = this->getConnectedElement(0);
-    size_t cpt = 1;
+    unsigned int cpt = 1;
 
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        size_t other_QuadID = elemAll.size();
+        QuadID other_QuadID = (QuadID)elemAll.size();
 
-        for (size_t i = 0; i<elemAll.size(); ++i)
+        for (QuadID i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_QuadID = i;

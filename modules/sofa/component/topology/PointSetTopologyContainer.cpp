@@ -78,7 +78,7 @@ void PointSetTopologyContainer::addPoint(double px, double py, double pz)
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.push_back(InitTypes::Coord((SReal)px, (SReal)py, (SReal)pz));
     if (initPoints.size() > nbPoints.getValue())
-        nbPoints.setValue(initPoints.size());
+        nbPoints.setValue((unsigned int)initPoints.size());
 }
 
 bool PointSetTopologyContainer::hasPos() const
@@ -120,7 +120,7 @@ void PointSetTopologyContainer::init()
 
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if (nbPoints.getValue() == 0 && !initPoints.empty())
-        nbPoints.setValue(initPoints.size());
+        nbPoints.setValue((unsigned int)initPoints.size());
 }
 
 void PointSetTopologyContainer::addPoints(const unsigned int nPoints)

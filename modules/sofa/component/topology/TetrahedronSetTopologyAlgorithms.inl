@@ -69,7 +69,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     int nbTetra=this->m_container->getNbTetrahedra();
 
     //Number of to be added points
-    int nbTobeAddedPoints=intersectedEdgeID.size()*2;
+    unsigned int nbTobeAddedPoints=(unsigned int)intersectedEdgeID.size()*2;
 
     //barycentric coodinates of to be added points
     sofa::helper::vector< sofa::helper::vector<unsigned int> > ancestors;
@@ -152,7 +152,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
 
     //tetrahedron addition
     m_modifier->addTetrahedraProcess(toBeAddedTetra);
-    m_modifier->addTetrahedraWarning(toBeAddedTetra.size(), (const sofa::helper::vector< Tetra >&) toBeAddedTetra, toBeAddedTetraIndex);
+    m_modifier->addTetrahedraWarning((unsigned int)toBeAddedTetra.size(), (const sofa::helper::vector< Tetra >&) toBeAddedTetra, toBeAddedTetraIndex);
 
     m_modifier->propagateTopologicalChanges();
 
@@ -172,7 +172,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     int nbTetra=this->m_container->getNbTetrahedra();
 
     //Number of to be added points
-    int nbTobeAddedPoints=intersectedEdgeID.size()*2;
+    unsigned int nbTobeAddedPoints=(unsigned int)intersectedEdgeID.size()*2;
 
     //barycentric coodinates of to be added points
     sofa::helper::vector< sofa::helper::vector<unsigned int> > ancestors;
@@ -262,7 +262,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
 
     //tetrahedron addition
     m_modifier->addTetrahedraProcess(toBeAddedTetra);
-    m_modifier->addTetrahedraWarning(toBeAddedTetra.size(), (const sofa::helper::vector< Tetra >&) toBeAddedTetra, toBeAddedTetraIndex);
+    m_modifier->addTetrahedraWarning((unsigned int)toBeAddedTetra.size(), (const sofa::helper::vector< Tetra >&) toBeAddedTetra, toBeAddedTetraIndex);
 
     m_modifier->propagateTopologicalChanges();
 
@@ -1180,7 +1180,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
     int nbTetra=this->m_container->getNbTetrahedra();
 
     //Number of to be added points
-    int nbTobeAddedPoints=intersectedEdgeID.size()*2;
+    unsigned int nbTobeAddedPoints=(unsigned int)intersectedEdgeID.size()*2;
 
     //barycentric coodinates of to be added points
     sofa::helper::vector< sofa::helper::vector<unsigned int> > ancestors;
@@ -1263,7 +1263,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
 
     //tetrahedron addition
     m_modifier->addTetrahedraProcess(toBeAddedTetra);
-    m_modifier->addTetrahedraWarning(toBeAddedTetra.size(), (const sofa::helper::vector< Tetra >&) toBeAddedTetra, toBeAddedTetraIndex);
+    m_modifier->addTetrahedraWarning((unsigned int)toBeAddedTetra.size(), (const sofa::helper::vector< Tetra >&) toBeAddedTetra, toBeAddedTetraIndex);
 
     m_modifier->propagateTopologicalChanges();
 
@@ -1283,7 +1283,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
     int nbTetra=this->m_container->getNbTetrahedra();
 
     //Number of to be added points
-    int nbTobeAddedPoints=intersectedEdgeID.size()*2;
+    unsigned int nbTobeAddedPoints=(unsigned int)intersectedEdgeID.size()*2;
 
     //barycentric coodinates of to be added points
     sofa::helper::vector< sofa::helper::vector<unsigned int> > ancestors;
@@ -1373,7 +1373,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
 
     //tetrahedron addition
     m_modifier->addTetrahedraProcess(toBeAddedTetra);
-    m_modifier->addTetrahedraWarning(toBeAddedTetra.size(), (const sofa::helper::vector< Tetra >&) toBeAddedTetra, toBeAddedTetraIndex);
+    m_modifier->addTetrahedraWarning((unsigned int)toBeAddedTetra.size(), (const sofa::helper::vector< Tetra >&) toBeAddedTetra, toBeAddedTetraIndex);
 
     m_modifier->propagateTopologicalChanges();
 

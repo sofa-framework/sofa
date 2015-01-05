@@ -266,7 +266,7 @@ void QuadSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename) co
 
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
-    const unsigned int numVertices = vect_c.size();
+    const size_t numVertices = vect_c.size();
 
     myfile << "$NOD\n";
     myfile << numVertices <<"\n";
