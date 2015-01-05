@@ -87,6 +87,15 @@ protected:
     MultiMapping();
     /// Destructor
     virtual ~MultiMapping() {};
+
+	void recycle()
+	{
+		fromModels.clear();
+		toModels.clear();
+		f_applyRestPosition.setValue(false);
+		Inherit1::recycle();
+	}
+
 public:
 
     void addInputModel(BaseState* model, const std::string& path = "" );

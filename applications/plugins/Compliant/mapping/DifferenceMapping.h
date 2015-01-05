@@ -19,7 +19,7 @@ template <class TIn, class TOut >
 class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 {
   public:
-    SOFA_CLASS(SOFA_TEMPLATE2(DifferenceMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
+    SOFA_POOLABLE_CLASS(SOFA_TEMPLATE2(DifferenceMapping,TIn,TOut), SOFA_TEMPLATE2(AssembledMapping,TIn,TOut));
 	
 	typedef DifferenceMapping self;
 	
@@ -155,7 +155,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
         typedef DifferenceMultiMapping self;
 
     public:
-        SOFA_CLASS(SOFA_TEMPLATE2(DifferenceMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
+        SOFA_POOLABLE_CLASS(SOFA_TEMPLATE2(DifferenceMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
 
         typedef core::Mapping<TIn, TOut> Inherit;
         typedef TIn In;
@@ -258,5 +258,15 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 }
 }
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_ContactMapping_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::DifferenceMultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes > >;
+extern template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::DifferenceMultiMapping< sofa::defaulttype::Vec1dTypes, sofa::defaulttype::Vec1dTypes > >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::DifferenceMultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes > >;
+extern template class SOFA_Compliant_API sofa::core::objectmodel::Pool< sofa::component::mapping::DifferenceMultiMapping< sofa::defaulttype::Vec1fTypes, sofa::defaulttype::Vec1fTypes > >;
+#endif
+#endif
 
 #endif

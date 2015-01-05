@@ -61,6 +61,16 @@ protected:
 
     /// Destructor
     virtual ~BaseMapping();
+
+	void recycle()
+	{
+		f_mapForces.setValue(true);
+		f_mapConstraints.setValue(true);
+		f_mapMasses.setValue(true);
+		f_mapMatrices.setValue(false);
+		Inherit1::recycle();
+	}
+
 public:
     Data<bool> f_mapForces;
     Data<bool> f_mapConstraints;
