@@ -217,7 +217,7 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
 {
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get(mparams)].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
-    Real kfactor = mparams->kFactor();
+    const SReal kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
     helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
 
@@ -229,9 +229,9 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
             for(unsigned k=0; k<Nin; k++)
             {
                 if( j==k )
-                    b[j][k] = 1. - directions[i][j]*directions[i][k];
+                    b[j][k] = 1.f - directions[i][j]*directions[i][k];
                 else
-                    b[j][k] =    - directions[i][j]*directions[i][k];
+                    b[j][k] =     - directions[i][j]*directions[i][k];
             }
         }
         b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
@@ -286,9 +286,9 @@ const defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
             for(unsigned k=0; k<Nin; k++)
             {
                 if( j==k )
-                    b[j][k] = 1. - directions[i][j]*directions[i][k];
+                    b[j][k] = 1.f - directions[i][j]*directions[i][k];
                 else
-                    b[j][k] =    - directions[i][j]*directions[i][k];
+                    b[j][k] =     - directions[i][j]*directions[i][k];
             }
         }
         b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
@@ -327,7 +327,7 @@ void DistanceFromTargetMapping<TIn, TOut>::draw(const core::visual::VisualParams
         vparams->drawTool()->drawLines ( points, 1, _color );
     else
         for (unsigned int i=0; i<points.size()/2; ++i)
-            vparams->drawTool()->drawArrow( points[2*i+1], points[2*i], _arrowSize, _color );
+            vparams->drawTool()->drawArrow( points[2*i+1], points[2*i], (float)_arrowSize, _color );
 
 }
 

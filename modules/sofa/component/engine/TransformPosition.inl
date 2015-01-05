@@ -213,7 +213,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
                 {
                     std::string c = *it;
                     if ( c.find_first_of("1234567890.-") != std::string::npos)
-                        values.push_back(atof(c.c_str()));
+                        values.push_back((Real)atof(c.c_str()));
                 }
 
                 if (values.size() != 12)
@@ -298,7 +298,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
                 Coord tr;
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
                 {
-                    tr[i] = mat[i][3] = atof(vLine[i].c_str());
+                    tr[i] = mat[i][3] = (Real)atof(vLine[i].c_str());
                 }
                 f_translation.setValue(tr,true);
 
@@ -307,7 +307,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             {
                 //rotation matrix
                 for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)3); i++)
-                    mat[nbLines-2][i] = atof(vLine[i].c_str());
+                    mat[nbLines-2][i] = (Real)atof(vLine[i].c_str());
             }
 
         }
@@ -371,7 +371,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             else if (vLine.size()<4) {serr << "Matrix is not 4x4." << sendl;continue;}
 
             for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
-                mat[nbLines-1][i] = atof(vLine[i].c_str());
+                mat[nbLines-1][i] = (Real)atof(vLine[i].c_str());
         }
         f_affineMatrix.setValue(mat,true);
 
@@ -489,7 +489,7 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
         std::vector<Vector3> points;
         for (unsigned int i=0; i < in.size(); i++)
             points.push_back(in[i]);
-        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), Vec4f(0.8, 0.2, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), Vec4f(0.8, 0.2, 0.2, 1.0));
     }
 
     if (f_drawOutput.getValue())
@@ -498,7 +498,7 @@ void TransformPosition<DataTypes>::draw(const core::visual::VisualParams* vparam
         std::vector<Vector3> points;
         for (unsigned int i=0; i < out.size(); i++)
             points.push_back(out[i]);
-        vparams->drawTool()->drawPoints(points, f_pointSize.getValue(), Vec4f(0.2, 0.8, 0.2, 1.0));
+        vparams->drawTool()->drawPoints(points, (float)f_pointSize.getValue(), Vec4f(0.2, 0.8, 0.2, 1.0));
     }
 }
 

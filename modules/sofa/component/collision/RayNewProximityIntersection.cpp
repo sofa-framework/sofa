@@ -159,8 +159,8 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 	//Ray
 	const Vector3& v3Origin = rRay.origin();
 	const Vector3& v3Direction = rRay.direction();
-		
-	//Box 
+
+	//Box
 	const Vector3 v3HalfExtents = rObb.extents();
 	const Vector3& v3BoxCenter = rObb.center();
 	const Quaternion& qOrientation = rObb.orientation();
@@ -178,14 +178,14 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 	for(unsigned int i = 0; i < 3; i++)
 	{
 		Vector3 v3CurrAxis = m33Orientation.col(i); //TODO: implement the return of a reference instead of a copy of the column
-		float fR = v3CurrAxis*v3RayOriginToBoxCenter;
-		float fBoxMax = v3HalfExtents[i];
-		float fBoxMin = - v3HalfExtents[i];  
+		float fR = (float)(v3CurrAxis*v3RayOriginToBoxCenter);
+		float fBoxMax = (float)v3HalfExtents[i];
+		float fBoxMin = (float)-v3HalfExtents[i];
 		float fNormal = 1.f;
 
 		//Check if planes are parallel
 		if(fabs(v3Direction*v3CurrAxis) < fEPSILON)
-		{	
+		{
 			if(fBoxMin > fR || fBoxMax < fR)
 			{
 				return 0;
@@ -194,7 +194,7 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 		else
 		{
 			// Ray not parallel to planes, so find intersection parameters
-			float fS = v3Direction*v3CurrAxis; 
+			float fS = (float)(v3Direction*v3CurrAxis);
 			float fT0 = (fR + fBoxMax)/ fS;
 			float fT1 = (fR + fBoxMin)/ fS;
 
@@ -230,7 +230,7 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 			if(fFar < 0)
 			{
 				return 0;
-			}	
+			}
 
 			// Ray ends before box, returns directly
 			if(fNear > rRay.l())
@@ -251,10 +251,10 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 		// Make sure it does not ends strictly inside box
 		if(fFar <= rRay.l())
 		{
-			bHit = true;			
-			fHitFraction = fFar / rRay.l();
+			bHit = true;
+			fHitFraction = fFar / (float)rRay.l();
 			v3Normal = v3NormalAtFar;
-			v3HitLocation = rRay.origin() + rRay.direction() * rRay.l() * fHitFraction;		
+			v3HitLocation = rRay.origin() + rRay.direction() * rRay.l() * fHitFraction;
 		}
 
 	}
@@ -264,27 +264,27 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 		if( fabs(fNear-fFar) < fEPSILON )
 		{
 			bHit = true;
-			fHitFraction = fNear / rRay.l();	
-			v3Normal = v3NormalAtNear;			
+			fHitFraction = fNear / (float)rRay.l();
+			v3Normal = v3NormalAtNear;
 			v3HitLocation = rRay.origin() + rRay.direction() * rRay.l();
 		}
 		else
 		{
 			bHit = true;
-			fHitFraction =  fNear / rRay.l();	
-			v3Normal = v3NormalAtNear;	
+			fHitFraction =  fNear / (float)rRay.l();
+			v3Normal = v3NormalAtNear;
 			v3HitLocation =  rRay.origin() + rRay.direction() * fNear;
-			
+
 			// Ignore far hit if ends inside box
 			//if(fFar <= rRay.l())
 			//{
 			//	bHit = true;
 			//	fHitFraction = fFar / rRay.l();
 			//	v3Normal = v3NormalAtFar;
-			//	v3HitLocation = rRay.origin() + rRay.direction() * fFar;				
+			//	v3HitLocation = rRay.origin() + rRay.direction() * fFar;
 			//}
 		}
-	}	
+	}
 
 	if (bHit)
 	{
@@ -301,7 +301,7 @@ int  RayNewProximityIntersection::computeIntersection(Ray& rRay, OBB& rObb, Outp
 
 		return 1;
 	}
-	 
+
 
 	return 0;
 
@@ -349,10 +349,10 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 		}
 
 
-		SReal fHitFraction = fHitLength * (1.f / rRay.l() );		
+		SReal fHitFraction = fHitLength * (1.f / rRay.l() );
 		Vector3 v3ContactPoint = rRay.origin() + v3RayVector * fHitFraction;
-		Vector3 v3Normal = (v3ContactPoint - v3SphereCenter)/ fSphereRadii; 
-		
+		Vector3 v3Normal = (v3ContactPoint - v3SphereCenter)/ fSphereRadii;
+
 //		const SReal contactDist = fHitFraction;
 		contacts->resize(contacts->size()+1);
 		DetectionOutput *detection = &*(contacts->end()-1);
@@ -379,7 +379,7 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 		{
 			iHit = 1;
 
-			//Contact 1		
+			//Contact 1
 			SReal fHitFraction = fHitLengthMin  * ( 1.0f/rRay.l() );
 			Vector3 v3ContactPoint = rRay.origin() + v3RayVector * fHitFraction;
 			Vector3 v3Normal = ( v3ContactPoint - v3SphereCenter ) / fSphereRadii;
@@ -404,9 +404,9 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 			iHit = 1;
 
 			//Contact 2
-			SReal fHitFraction = fHitLengthMax * ( 1.0f/rRay.l() ); 
+			SReal fHitFraction = fHitLengthMax * ( 1.0f/rRay.l() );
 			Vector3 v3ContactPoint = rRay.origin() + v3RayVector * fHitFraction;
-			Vector3 v3Normal = ( v3ContactPoint - v3SphereCenter ) / fSphereRadii; 
+			Vector3 v3Normal = ( v3ContactPoint - v3SphereCenter ) / fSphereRadii;
 
 
 //			const SReal contactDist = fHitFraction;
@@ -429,7 +429,7 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 
 
 	return iHit;
-	
+
 }
 
 
@@ -438,4 +438,3 @@ int RayNewProximityIntersection::computeIntersection(Ray& rRay, RigidSphere& rSp
 } // namespace component
 
 } // namespace sofa
-
