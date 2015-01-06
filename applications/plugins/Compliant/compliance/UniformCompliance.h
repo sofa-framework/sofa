@@ -58,7 +58,7 @@ public:
 protected:
     UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
-	void construct( core::behavior::MechanicalState<DataTypes> *mm ) { mstate.add(mm); }
+	void construct( core::behavior::MechanicalState<DataTypes> *mm ) { this->mstate.add(mm); }
 
 	typedef linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matrix_type;
 	matrix_type matC; ///< compliance matrix
