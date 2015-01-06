@@ -164,6 +164,12 @@ else()
     set(SOFA_VISUAL_LIB SofaOpenglVisual)
 endif()
 
+# pooled sparse
+sofa_option(SOFA-MISC_POOLED_SPARSE BOOL OFF "Use pools for sparse matrices")
+if(SOFA-MISC_POOLED_SPARSE)
+    list(APPEND compilerDefines SOFA_POOLED_SPARSE)
+endif()
+
 ## SOFA_NO_UPDATE_BBOX
 sofa_option(SOFA-MISC_NO_UPDATE_BBOX BOOL OFF "No BBOX update")
 if(SOFA-MISC_NO_UPDATE_BBOX)

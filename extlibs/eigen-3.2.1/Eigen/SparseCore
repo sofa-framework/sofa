@@ -35,9 +35,16 @@ struct Sparse {};
 
 #include "src/SparseCore/SparseUtil.h"
 #include "src/SparseCore/SparseMatrixBase.h"
+
+#ifdef SOFA_POOLED_SPARSE
+#include "sofa/helper/pooledEigen/CompressedStorage.h"
+#include "sofa/helper/pooledEigen/SparseMatrix.h"
+#else
 #include "src/SparseCore/CompressedStorage.h"
-#include "src/SparseCore/AmbiVector.h"
 #include "src/SparseCore/SparseMatrix.h"
+#endif
+
+#include "src/SparseCore/AmbiVector.h"
 #include "src/SparseCore/MappedSparseMatrix.h"
 #include "src/SparseCore/SparseVector.h"
 #include "src/SparseCore/SparseBlock.h"
