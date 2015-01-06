@@ -380,8 +380,9 @@ public:
     SOFA_COMMON_CLASS_DECL;                                    \
                                                                \
     enum { POOL_COMPATIBLE = true };                           \
-	virtual void destroy() { sofa::core::objectmodel::Pool<MyType>::release(this); }	   \
-    friend class sofa::core::objectmodel::BaseNew<MyType, POOL_COMPATIBLE>
+	virtual void destroy() { sofa::core::objectmodel::Pool<MyType>::release(this); }    \
+    friend class sofa::core::objectmodel::BaseNew<MyType, POOL_COMPATIBLE>;             \
+	friend struct sofa::core::objectmodel::PoolPolicy<MyType>
 
 template <class Parents>
 class TClassParents

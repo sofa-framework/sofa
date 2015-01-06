@@ -101,15 +101,13 @@ private:
 	int allocated;
 };
 
-class Base;
-
 /// Major operations and settings on how to manipulate a pooled object are defined
 /// through a policy in case you need to implement them differently for a given type.
 template<class T>
 struct PoolPolicy
 {
 	enum { ReserveCount = 128 };
-	static void recycle(T* obj) { static_cast<Base*>(obj)->recycle(); }
+	static void recycle(T* obj) { obj->recycle(); }
 	static bool isPooled(const T* obj) { return obj->isPooled(); }
 	static void setPooled(T* obj, bool pooled) { return obj->setPooled(pooled); }
 };
