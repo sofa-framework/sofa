@@ -61,6 +61,49 @@ public:
 
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?
 
+    //Pierre-Luc : I added this function to use some functionalities of the mapping component whitout using it as a sofa graph component (protected)
+    virtual void initJacobianBlock( vector<BlockType>& jacobianBlock )
+    {
+        if(this->f_printLog.getValue()==true)
+            std::cout << SOFA_CLASS_METHOD << std::endl;
+
+        switch( f_method.getValue().getSelectedId() )
+        {
+        case SMALL:
+        {
+            for( size_t i=0 ; i<jacobianBlock.size() ; i++ )
+            {
+                jacobianBlock[i].init_small();
+            }
+            break;
+        }
+        case QR:
+        {
+            for( size_t i=0 ; i<jacobianBlock.size() ; i++ )
+            {
+                jacobianBlock[i].init_qr( f_geometricStiffness.getValue() );
+            }
+            break;
+        }
+        case POLAR:
+        {
+            for( size_t i=0 ; i<jacobianBlock.size() ; i++ )
+            {
+                jacobianBlock[i].init_polar( f_geometricStiffness.getValue() );
+            }
+            break;
+        }
+        case SVD:
+        {
+            for( size_t i=0 ; i<jacobianBlock.size() ; i++ )
+            {
+                jacobianBlock[i].init_svd( f_geometricStiffness.getValue() );
+            }
+            break;
+        }
+        }
+    }
+
     virtual void reinit()
     {
         Inherit::reinit();
@@ -120,6 +163,69 @@ protected:
     }
 
     virtual ~CorotationalStrainMapping() { }
+
+    virtual void applyBlock(Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn, vector<BlockType>& jacobianBlock)
+    {
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
+
+        typename Inherit::OutVecCoord& out = *dOut.beginEdit();
+        const typename Inherit::InVecCoord&  in  =  dIn.getValue();
+
+        switch( f_method.getValue().getSelectedId() )
+        {
+        case SMALL:
+        {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+            for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                jacobianBlock[i].addapply_small( out[i], in[i] );
+            }
+            break;
+        }
+        case QR:
+        {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+            for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                jacobianBlock[i].addapply_qr( out[i], in[i] );
+            }
+            break;
+        }
+        case POLAR:
+        {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+            for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                //std::cout << "applyBlock_polar : Index : " << i << std::endl;
+                jacobianBlock[i].addapply_polar( out[i], in[i] );
+            }
+            break;
+        }
+        case SVD:
+        {
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+            for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
+            {
+                out[i] = typename Inherit::OutCoord();
+                jacobianBlock[i].addapply_svd( out[i], in[i] );
+            }
+            break;
+        }
+        }
+
+        dOut.endEdit();
+    }
 
     virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
     {
