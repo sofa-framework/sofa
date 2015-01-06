@@ -50,6 +50,9 @@ class SOFA_CORE_API BaseInteractionForceField : public BaseForceField
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseInteractionForceField, BaseForceField);
+protected:
+	virtual BaseInteractionForceField* toInteractionForceField() { return this; }
+public:
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()

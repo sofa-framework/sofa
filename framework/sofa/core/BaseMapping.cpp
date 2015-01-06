@@ -141,13 +141,7 @@ sofa::defaulttype::BaseMatrix* BaseMapping::createMappedMatrix(const behavior::B
 
 bool BaseMapping::testMechanicalState(BaseState* state)
 {
-    bool isMecha = false;
-    if(state)
-    {
-        behavior::BaseMechanicalState* toMechaModel = dynamic_cast<behavior::BaseMechanicalState* > (state);
-        isMecha = (toMechaModel) ? true : false;
-    }
-    return isMecha;
+	return state && state->toMechanicalState() != NULL;
 }
 
 } // namespace core

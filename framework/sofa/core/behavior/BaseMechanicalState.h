@@ -80,6 +80,8 @@ protected:
     BaseMechanicalState();
 
     virtual ~BaseMechanicalState();
+
+	virtual BaseMechanicalState* toMechanicalState() { return this; }
 public:
     /// @name Methods allowing to have access to the geometry without a template class (generic but not efficient)
     /// @{

@@ -113,6 +113,7 @@ protected:
     {
 
     }
+	virtual CollisionModel* toCollisionModel() { return this; }
 public:
     virtual void bwdInit()
     {

@@ -49,6 +49,7 @@ public:
 protected:
     /// Destructor
     virtual ~Shader() { }
+	virtual Shader* toShader() { return this; }
 public:
     /// Start the shader
     virtual void start() = 0;

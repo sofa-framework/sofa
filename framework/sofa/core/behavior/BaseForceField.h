@@ -65,6 +65,7 @@ public:
 protected:
     BaseForceField();
     virtual ~BaseForceField() {}
+	virtual BaseForceField* toForceField() { return this; }
 public:
     /// @name Vector operations
     /// @{

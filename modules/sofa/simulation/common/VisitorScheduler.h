@@ -55,6 +55,8 @@ protected:
 
     virtual ~VisitorScheduler() {}
 
+	virtual VisitorScheduler* toVisitorScheduler() { return this; }
+
     /// Execute the given action recursively
     void doExecuteVisitor(simulation::Node* node, Visitor* act);
 };

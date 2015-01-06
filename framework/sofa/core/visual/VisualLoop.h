@@ -51,6 +51,8 @@ public:
 protected:
     /// Destructor
     virtual ~VisualLoop() { }
+
+	virtual VisualLoop* toVisualLoop() { return this; }
 public:
     /// Initialize the textures
     virtual void initStep(sofa::core::ExecParams* /*params*/) {}

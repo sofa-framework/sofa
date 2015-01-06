@@ -618,14 +618,14 @@ void Node::doAddObject(BaseObject::SPtr sobj)
     object.add(sobj);
     BaseObject* obj = sobj.get();
     int inserted=0;
-    inserted+= animationManager.add(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
-    inserted+= solver.add(dynamic_cast< core::behavior::OdeSolver* >(obj));
-    inserted+= linearSolver.add(dynamic_cast< core::behavior::BaseLinearSolver* >(obj));
-    inserted+= constraintSolver.add(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
-    inserted+= visualLoop.add(dynamic_cast< core::visual::VisualLoop* >(obj));
-    inserted+= state.add(dynamic_cast< core::BaseState* >(obj));
-    inserted+= mechanicalState.add(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
-    core::BaseMapping* bmap = dynamic_cast< core::BaseMapping* >(obj);
+    inserted+= animationManager.add(obj->toAnimationLoop());
+    inserted+= solver.add(obj->toOdeSolver());
+    inserted+= linearSolver.add(obj->toLinearSolver());
+    inserted+= constraintSolver.add(obj->toConstraintSolver());
+    inserted+= visualLoop.add(obj->toVisualLoop());
+    inserted+= state.add(obj->toState());
+    inserted+= mechanicalState.add(obj->toMechanicalState());
+    core::BaseMapping* bmap = obj->toMapping();
     bool isMechanicalMapping = false;
     if(bmap)
     {
@@ -636,26 +636,26 @@ void Node::doAddObject(BaseObject::SPtr sobj)
             inserted += mapping.add(bmap);
     }
 
-    inserted+= mass.add(dynamic_cast< core::behavior::BaseMass* >(obj));
-    inserted+= topology.add(dynamic_cast< core::topology::Topology* >(obj));
-    inserted+= meshTopology.add(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
-    inserted+= topologyObject.add(dynamic_cast< core::topology::BaseTopologyObject* >(obj));
-    inserted+= shaders.add(dynamic_cast< sofa::core::visual::Shader* >(obj));
+    inserted+= mass.add(obj->toMass());
+    inserted+= topology.add(obj->toTopology());
+    inserted+= meshTopology.add(obj->toMeshTopology());
+    inserted+= topologyObject.add(obj->toTopologyObject());
+    inserted+= shaders.add(obj->toShader());
 
-    bool isInteractionForceField = interactionForceField.add(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
+    bool isInteractionForceField = interactionForceField.add(obj->toInteractionForceField());
     inserted+= isInteractionForceField;
     if (!isInteractionForceField)
-        forceField.add(dynamic_cast< core::behavior::BaseForceField* >(obj));
-    inserted+= projectiveConstraintSet.add(dynamic_cast< core::behavior::BaseProjectiveConstraintSet* >(obj));
-    inserted+= constraintSet.add(dynamic_cast< core::behavior::BaseConstraintSet* >(obj));
-    inserted+= behaviorModel.add(dynamic_cast< core::BehaviorModel* >(obj));
-    inserted+= visualModel.add(dynamic_cast< core::visual::VisualModel* >(obj));
-    inserted+= visualManager.add(dynamic_cast< core::visual::VisualManager* >(obj));
-    inserted+= collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
-    inserted+= contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
-    inserted+= configurationSetting.add(dynamic_cast< core::objectmodel::ConfigurationSetting* >(obj));
-    inserted+= collisionPipeline.add(dynamic_cast< core::collision::Pipeline* >(obj));
-    inserted+= actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
+        forceField.add(obj->toForceField());
+    inserted+= projectiveConstraintSet.add(obj->toProjectiveConstraintSet());
+    inserted+= constraintSet.add(obj->toConstraintSet());
+    inserted+= behaviorModel.add(obj->toBehaviorModel());
+    inserted+= visualModel.add(obj->toVisualModel());
+    inserted+= visualManager.add(obj->toVisualManager());
+    inserted+= collisionModel.add(obj->toCollisionModel());
+    inserted+= contextObject.add(obj->toContextObject());
+    inserted+= configurationSetting.add(obj->toConfigurationSetting());
+    inserted+= collisionPipeline.add(obj->toCollisionPipeline());
+    inserted+= actionScheduler.add(obj->toVisitorScheduler());
 
     if ( inserted==0 )
     {
@@ -675,34 +675,34 @@ void Node::doRemoveObject(BaseObject::SPtr sobj)
     this->clearObjectContext(sobj);
     object.remove(sobj);
     BaseObject* obj = sobj.get();
-    animationManager.remove(dynamic_cast< core::behavior::BaseAnimationLoop* >(obj));
-    solver.remove(dynamic_cast< core::behavior::OdeSolver* >(obj));
-    linearSolver.remove(dynamic_cast< core::behavior::BaseLinearSolver* >(obj));
-    constraintSolver.remove(dynamic_cast< core::behavior::ConstraintSolver* >(obj));
-    visualLoop.remove(dynamic_cast< core::visual::VisualLoop* >(obj));
-    state.remove(dynamic_cast< core::BaseState* >(obj));
-    mechanicalState.remove(dynamic_cast< core::behavior::BaseMechanicalState* >(obj));
-    mechanicalMapping.remove(dynamic_cast< core::BaseMapping* >(obj));
-    mass.remove(dynamic_cast< core::behavior::BaseMass* >(obj));
-    topology.remove(dynamic_cast< core::topology::Topology* >(obj));
-    meshTopology.remove(dynamic_cast< core::topology::BaseMeshTopology* >(obj));
-    topologyObject.remove(dynamic_cast< core::topology::BaseTopologyObject* >(obj));
-    shaders.remove(dynamic_cast<sofa::core::visual::Shader* >(obj));
+    animationManager.remove(obj->toAnimationLoop());
+    solver.remove(obj->toOdeSolver());
+    linearSolver.remove(obj->toLinearSolver());
+    constraintSolver.remove(obj->toConstraintSolver());
+    visualLoop.remove(obj->toVisualLoop());
+    state.remove(obj->toState());
+    mechanicalState.remove(obj->toMechanicalState());
+    mechanicalMapping.remove(obj->toMapping());
+    mass.remove(obj->toMass());
+    topology.remove(obj->toTopology());
+    meshTopology.remove(obj->toMeshTopology());
+    topologyObject.remove(obj->toTopologyObject());
+    shaders.remove(obj->toShader());
 
-    forceField.remove(dynamic_cast< core::behavior::BaseForceField* >(obj));
-    interactionForceField.remove(dynamic_cast< core::behavior::BaseInteractionForceField* >(obj));
-    projectiveConstraintSet.remove(dynamic_cast< core::behavior::BaseProjectiveConstraintSet* >(obj));
-    constraintSet.remove(dynamic_cast< core::behavior::BaseConstraintSet* >(obj));
-    mapping.remove(dynamic_cast< core::BaseMapping* >(obj));
-    behaviorModel.remove(dynamic_cast< core::BehaviorModel* >(obj));
-    visualModel.remove(dynamic_cast< core::visual::VisualModel* >(obj));
-    visualManager.remove(dynamic_cast< core::visual::VisualManager* >(obj));
-    collisionModel.remove(dynamic_cast< core::CollisionModel* >(obj));
-    contextObject.remove(dynamic_cast<core::objectmodel::ContextObject* >(obj));
-    configurationSetting.remove(dynamic_cast<core::objectmodel::ConfigurationSetting* >(obj));
-    collisionPipeline.remove(dynamic_cast< core::collision::Pipeline* >(obj));
+    forceField.remove(obj->toForceField());
+    interactionForceField.remove(obj->toInteractionForceField());
+    projectiveConstraintSet.remove(obj->toProjectiveConstraintSet());
+    constraintSet.remove(obj->toConstraintSet());
+    mapping.remove(obj->toMapping());
+    behaviorModel.remove(obj->toBehaviorModel());
+    visualModel.remove(obj->toVisualModel());
+    visualManager.remove(obj->toVisualManager());
+    collisionModel.remove(obj->toCollisionModel());
+    contextObject.remove(obj->toContextObject());
+    configurationSetting.remove(obj->toConfigurationSetting());
+    collisionPipeline.remove(obj->toCollisionPipeline());
 
-    actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
+    actionScheduler.remove(obj->toVisitorScheduler());
 
     unsorted.remove(obj);
 }

@@ -49,6 +49,8 @@ protected:
     ConfigurationSetting(); ///< Default constructor.
 
     virtual ~ConfigurationSetting();
+
+	virtual ConfigurationSetting* toConfigurationSetting() { return this; }
 public:
     virtual void init();
 };

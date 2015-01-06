@@ -60,6 +60,8 @@ protected:
 
     virtual ~BaseAnimationLoop();
 
+	virtual BaseAnimationLoop* toAnimationLoop() { return this; }
+
     /// Stores starting time of the simulation
     double m_resetTime;
 

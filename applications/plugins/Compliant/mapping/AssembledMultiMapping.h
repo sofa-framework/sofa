@@ -236,12 +236,14 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 	
 	core::behavior::BaseMechanicalState* from(unsigned i) {
 		// TODO assert
-		return dynamic_cast<core::behavior::BaseMechanicalState* > (this->getFrom()[i]);
+		core::BaseState* from = this->getFrom()[i];
+		return from ? from->toMechanicalState() : NULL;
 	}
 
 	core::behavior::BaseMechanicalState* to(unsigned i) {
 		// TODO assert
-		return dynamic_cast<core::behavior::BaseMechanicalState* > (this->getTo()[i]);
+		core::BaseState* to = this->getTo()[i];
+		return to ? to->toMechanicalState() : NULL;
 	}
 
 	void recycle()

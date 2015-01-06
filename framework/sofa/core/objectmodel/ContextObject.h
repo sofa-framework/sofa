@@ -51,6 +51,8 @@ protected:
 
     virtual ~ContextObject()
     {}
+
+	virtual ContextObject* toContextObject() { return this; }
 public:
     /// modify the Context
     virtual void apply()=0;

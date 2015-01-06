@@ -99,7 +99,8 @@ public:
     typedef sofa::helper::vector<HexaID>			HexahedraAroundQuad;
     /// @}
 protected:
-    BaseMeshTopology()	;
+    BaseMeshTopology();
+	virtual BaseMeshTopology* toMeshTopology() { return this; }
 public:
     virtual void init();
 

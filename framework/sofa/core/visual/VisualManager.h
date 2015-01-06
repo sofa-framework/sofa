@@ -45,6 +45,8 @@ public:
 protected:
     /// Destructor
     virtual ~VisualManager() { }
+
+	virtual VisualManager* toVisualManager() { return this; }
 public:
     /**
      *  \brief Called before rendering the scene

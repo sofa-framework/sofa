@@ -55,6 +55,8 @@ protected:
     }
 
     virtual ~BaseConstraintSet() { }
+
+	virtual BaseConstraintSet* toConstraintSet() { return this; }
 public:
     virtual void resetConstraint() {};
 

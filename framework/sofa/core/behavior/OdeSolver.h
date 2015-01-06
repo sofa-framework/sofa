@@ -68,6 +68,8 @@ protected:
     OdeSolver();
 
     virtual ~OdeSolver();
+
+	virtual OdeSolver* toOdeSolver() { return this; }
 public:
     /// Main computation method.
     ///

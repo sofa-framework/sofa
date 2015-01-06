@@ -80,6 +80,8 @@ protected:
     Pipeline();
 
     virtual ~Pipeline();
+
+	virtual Pipeline* toCollisionPipeline() { return this; }
 public:
     virtual void reset()=0;
 

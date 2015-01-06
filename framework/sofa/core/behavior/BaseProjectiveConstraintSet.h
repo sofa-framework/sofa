@@ -60,6 +60,8 @@ protected:
     }
 
     virtual ~BaseProjectiveConstraintSet() {}
+
+	virtual BaseProjectiveConstraintSet* toProjectiveConstraintSet() { return this; }
 public:
     /// Get the ID of the group containing this constraint.
     /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
