@@ -66,7 +66,7 @@ public:
 
 	/// Removes all available objects from the the pool, freeing them immediately.
 	/// @note objects currently allocated from the pool will still be released into it once they lose their last reference.
-	/// @note this is not really usefull while the program is running, but can be used to release memory at the end of the program
+	/// @note this is not really useful while the program is running, but can be used to release memory at the end of the program
 	///       sooner than when the static pool object will be released. It's also useful for tests, to get the pool to a known state.
 	static void clear();
 
@@ -76,9 +76,15 @@ public:
 	/// Gets the current number of objects available for reuse in this pool.
 	static int getAvailableCount() { return instance().store.size(); }
 
+	/// Call instead of "new" for pooled instances (automatic if you use the New<T> wrapper for allocation)
+	static T* allocate();
+
+	/// Call instead of delete for pooled instances (automatic if you used the New<T> wrapper for allocation)
+	static void release(T* ptr);
+
 private:
 	friend class BaseNew<T, true>;
-	friend typename T;
+
 	typedef helper::vector<T*> PoolVector;
 	class PoolLock 
 	{
@@ -87,8 +93,6 @@ private:
 		~PoolLock() {}
 	}; // TODO: In multi-threaded mode, this should lock a mutex guarding access to the pool in the constructor, and unlock it in the destructor.
 
-	static T* allocate();
-	static void release(T*);
 	static Pool& instance();
 	Pool();
 	~Pool();
@@ -97,12 +101,14 @@ private:
 	int allocated;
 };
 
+class Base;
+
 /// Major operations and settings on how to manipulate a pooled object are defined
 /// through a policy in case you need to implement them differently for a given type.
 template<class T>
-struct PoolPolicy 
+struct PoolPolicy
 {
-	enum { ReserveCount = 128 }; 
+	enum { ReserveCount = 128 };
 	static void recycle(T* obj) { static_cast<Base*>(obj)->recycle(); }
 	static bool isPooled(const T* obj) { return obj->isPooled(); }
 	static void setPooled(T* obj, bool pooled) { return obj->setPooled(pooled); }
@@ -144,7 +150,7 @@ void Pool<T>::clear()
 
 	if (!pool.store.empty())
 	{
-		for (PoolVector::iterator it = pool.store.begin(), end = pool.store.end(); it != end; ++it)
+		for (typename PoolVector::iterator it = pool.store.begin(), end = pool.store.end(); it != end; ++it)
 			BaseNew<T,true>::internal_release(*it);
 		std::swap(pool.store, PoolVector());
 		pool.store.reserve(PoolPolicy<T>::ReserveCount);
@@ -215,7 +221,7 @@ Pool<T>::Pool()
 template<class T>
 Pool<T>::~Pool() 
 {
-	for (PoolVector::iterator it = store.begin(), end = store.end(); it != end; ++it)
+	for (typename PoolVector::iterator it = store.begin(), end = store.end(); it != end; ++it)
 		BaseNew<T,true>::internal_release(*it);
 }
 
