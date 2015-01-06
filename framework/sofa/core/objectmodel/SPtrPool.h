@@ -150,7 +150,8 @@ void Pool<T>::clear()
 	{
 		for (typename PoolVector::iterator it = pool.store.begin(), end = pool.store.end(); it != end; ++it)
 			BaseNew<T,true>::internal_release(*it);
-		std::swap(pool.store, PoolVector());
+		PoolVector emptyPool;
+		std::swap(pool.store, emptyPool);
 		pool.store.reserve(PoolPolicy<T>::ReserveCount);
 	}
 }
