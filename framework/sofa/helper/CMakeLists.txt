@@ -92,6 +92,9 @@ set(HEADER_FILES
     kdTree.inl
     kdTree.h
     vectorData.h
+    pooledEigen/Pool.h
+    pooledEigen/CompressedStorage.h
+    pooledEigen/SparseMatrix.h
 	)
 
 set(SOURCE_FILES
@@ -144,6 +147,7 @@ set(SOURCE_FILES
     OptionsGroup.cpp
     Polynomial_LD.cpp
     UnitTest.cpp
+    pooledEigen/Pool.cpp
 	)
 
 if(SOFA-EXTERNAL_BOOST)
