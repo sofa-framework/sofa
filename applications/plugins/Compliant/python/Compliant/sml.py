@@ -17,6 +17,23 @@ def parseUnits(xmlModel):
             message+= " "+unit+":"+xmlUnits.attrib[unit]
         print message
 
+class Mesh:
+    pass
+
+def parseMesh(xmlModel):
+    """ parse meshes and their attribute
+    """
+    meshes=dict()
+    for m in xmlModel.iter("mesh"):
+        if not m.find("source") is None:
+            if m.attrib["id"] in meshes:
+                print "WARNING: Compliant.sml.parseMesh: mesh id {0} already defined".format(m.attrib["id"])
+            meshes[m.attrib["id"]]=Mesh()
+            meshes[m.attrib["id"]].format = m.find("source").attrib["format"]
+            meshes[m.attrib["id"]].source = m.find("source").text
+            
+    return meshes
+
 class Scene:
     """ Builds a (sub)scene from a sml file using compliant formulation
     
@@ -56,6 +73,9 @@ class Scene:
 
             # units
             parseUnits(model)
+            
+            # meshes
+            meshes = parseMesh(model)
 
             # rigids
             self.rigids=dict()
@@ -72,7 +92,7 @@ class Scene:
                 rigid = StructuralAPI.RigidBody(self.node, name)
                 self.rigids[r.attrib["id"]] = rigid
                 
-                meshfile = os.path.join(self.sceneDir, r.find("mesh").text)
+                meshfile = os.path.join(self.sceneDir, meshes[r.find("mesh").attrib["id"]].source)
                 
                 # TODO set manually using <mass> if present
                 if r.find("density") is not None:
