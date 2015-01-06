@@ -35,6 +35,7 @@ set(HEADER_FILES
     numericalsolver/BenchmarkSolver.h
     numericalsolver/PreconditionedSolver.h
     numericalsolver/PreconditionedCgSolver.h
+    numericalsolver/AnalysisSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
@@ -132,6 +133,7 @@ set(SOURCE_FILES
     numericalsolver/BenchmarkSolver.cpp
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
+    numericalsolver/AnalysisSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
