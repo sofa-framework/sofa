@@ -436,7 +436,7 @@ public:
             std::string p = getPath(index);
             if (p == path)
             {
-                DestPtr v = m_value[aspect][index];
+                DestPtr v = TraitsValueType::get(m_value[aspect][index]);
                 TraitsContainer::remove(m_value[aspect],index);
                 this->updateCounter(aspect);
                 removed(v, index);
@@ -452,7 +452,7 @@ public:
 		unsigned int n = (unsigned int)m_value[aspect].size();
 		for (unsigned int index=0; index<n; ++index)
         {
-			DestPtr v = m_value[aspect][(unsigned int)0];
+			DestPtr v = TraitsValueType::get(m_value[aspect][(unsigned int)0]);
 			TraitsContainer::remove(m_value[aspect],0);
 			this->updateCounter(aspect);
 			removed(v, 0);
