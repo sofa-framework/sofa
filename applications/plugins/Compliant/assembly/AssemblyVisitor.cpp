@@ -507,20 +507,23 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
     fullmapping_type& full = res->fullmapping;
     for( InteractionForceFieldList::iterator it=interactionForceFieldList.begin(),itend=interactionForceFieldList.end();it!=itend;++it)
     {
+
+        it->J.resize( it->H.rows(), size_m );
+
         mat& Jp0 = full[ it->ff->getMechModel1() ];
         mat& Jp1 = full[ it->ff->getMechModel2() ];
 
         if( empty(Jp0) ) {
-            Jp0 = shift_right<mat>( find(offsets, it->ff->getMechModel1()), it->ff->getMechModel1()->getMatrixSize(), size_m);
+            offset_type::const_iterator itoff = offsets.find(it->ff->getMechModel1());
+            if( itoff != offsets.end() ) Jp0 = shift_right<mat>( itoff->second, it->ff->getMechModel1()->getMatrixSize(), size_m);
         }
         if( empty(Jp1) ) {
-            Jp1 = shift_right<mat>( find(offsets, it->ff->getMechModel2()), it->ff->getMechModel2()->getMatrixSize(), size_m);
+            offset_type::const_iterator itoff = offsets.find(it->ff->getMechModel2());
+            if( itoff != offsets.end() ) Jp1 = shift_right<mat>( itoff->second, it->ff->getMechModel2()->getMatrixSize(), size_m);
         }
 
-        it->J.resize( it->H.rows(), size_m );
-
-        add( it->J, shift_left<mat>( 0, it->ff->getMechModel1()->getMatrixSize(), it->H.rows() ) * Jp0 );
-        add( it->J, shift_left<mat>( it->ff->getMechModel1()->getMatrixSize(), it->ff->getMechModel2()->getMatrixSize(), it->H.rows() ) * Jp1 );
+        if( !empty(Jp0) ) add( it->J, shift_left<mat>( 0, it->ff->getMechModel1()->getMatrixSize(), it->H.rows() ) * Jp0 );
+        if( !empty(Jp1) ) add( it->J, shift_left<mat>( it->ff->getMechModel1()->getMatrixSize(), it->ff->getMechModel2()->getMatrixSize(), it->H.rows() ) * Jp1 );
     }
 
 	return res;
