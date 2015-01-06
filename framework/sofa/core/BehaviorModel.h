@@ -52,6 +52,7 @@ public:
 protected:
     /// Destructor
     virtual ~BehaviorModel() {}
+	virtual BehaviorModel* toBehaviorModel() { return this; }
 public:
     /// Computation of a new simulation step.
     virtual void updatePosition(double dt) = 0;

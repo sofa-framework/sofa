@@ -65,6 +65,8 @@ protected:
     virtual ~BaseMass()
     {
     }
+
+	virtual BaseMass* toMass() { return this; }
 public:
     /// @name Vector operations
     /// @{

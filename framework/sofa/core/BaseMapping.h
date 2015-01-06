@@ -62,6 +62,8 @@ protected:
     /// Destructor
     virtual ~BaseMapping();
 
+	virtual BaseMapping* toMapping() { return this; }
+
 	void recycle()
 	{
 		f_mapForces.setValue(true);

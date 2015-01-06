@@ -60,6 +60,8 @@ public:
 protected:
     /// Destructor
     virtual ~VisualModel() { }
+
+	virtual VisualModel* toVisualModel() { return this; }
 public:
     /**
      *  \brief Initialize the textures, or other graphical resources.

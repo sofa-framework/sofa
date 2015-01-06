@@ -101,7 +101,8 @@ helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechFrom
     helper::vector<behavior::BaseMechanicalState*> mechFromVec;
     for (size_t i=0 ; i<this->fromModels.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshFrom = dynamic_cast<behavior::BaseMechanicalState*> (this->fromModels.get(i));
+		core::BaseState* stateFrom = this->fromModels.get(i);
+        behavior::BaseMechanicalState* meshFrom = stateFrom ? stateFrom->toMechanicalState() : NULL;
         if(meshFrom)
             mechFromVec.push_back(meshFrom);
     }
@@ -114,7 +115,8 @@ helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
     helper::vector<behavior::BaseMechanicalState*> mechToVec;
     for (size_t i=0 ; i<this->toModels.size() ; i++)
     {
-        behavior::BaseMechanicalState* meshTo = dynamic_cast<behavior::BaseMechanicalState*> (this->toModels.get(i));
+		core::BaseState* stateTo = this->toModels.get(i);
+        behavior::BaseMechanicalState* meshTo = stateTo ? stateTo->toMechanicalState() : NULL;
         if(meshTo)
             mechToVec.push_back(meshTo);
     }

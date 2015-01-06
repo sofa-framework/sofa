@@ -43,6 +43,7 @@ public:
 protected:
     virtual ~BaseTopologyObject() {}
 
+	virtual BaseTopologyObject* toTopologyObject() { return this; }
 };
 
 } // namespace topology

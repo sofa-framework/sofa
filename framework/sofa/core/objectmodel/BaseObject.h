@@ -44,6 +44,11 @@ namespace sofa
 {
 using helper::vector;
 
+namespace simulation
+{
+class VisitorScheduler;
+}
+
 namespace core
 {
 
@@ -51,20 +56,51 @@ namespace core
 namespace topology
 {
 class Topology;
+class BaseMeshTopology;
+class BaseTopologyObject;
 } // namespace topology
 
 namespace visual
 {
 class VisualParams;
 class DisplayFlags;
+class Shader;
+class VisualLoop;
+class VisualManager;
+class VisualModel;
 }
 
+class BaseMapping;
+class BaseState;
+class BehaviorModel;
+class CollisionModel;
+
+namespace behavior
+{
+class BaseAnimationLoop;
+class BaseConstraintSet;
+class BaseForceField;
+class BaseInteractionForceField;
+class BaseLinearSolver;
+class BaseMass;
+class BaseMechanicalState;
+class BaseProjectiveConstraintSet;
+class ConstraintSolver;
+class OdeSolver;
+}
+
+namespace collision
+{
+class Pipeline;
+}
 
 namespace objectmodel
 {
 
 class Event;
 class BaseNode;
+class ConfigurationSetting;
+class ContextObject;
 
 /**
  *  \brief Base class for simulation components.
@@ -488,6 +524,44 @@ protected:
 #ifdef SOFA_SMP
     Iterative::IterativePartition *partition_;
 #endif
+
+	/// @name dynamic cast helpers
+	///    A set of helper functions to cast a BaseObject to the most common subtypes of the Sofa framework
+	///    without needing to use a dynamic_cast which is 2 orders of magnitude slower.
+	/// @{
+public:
+	virtual core::BaseMapping* toMapping() { return NULL; }
+	virtual core::BaseState* toState() { return NULL; }
+	virtual core::BehaviorModel* toBehaviorModel() { return NULL; }
+
+	virtual core::behavior::BaseAnimationLoop* toAnimationLoop() { return NULL; }
+	virtual core::behavior::BaseConstraintSet* toConstraintSet() { return NULL; }
+	virtual core::behavior::BaseForceField* toForceField() { return NULL; }
+	virtual core::behavior::BaseInteractionForceField* toInteractionForceField() { return NULL; }
+	virtual core::behavior::BaseLinearSolver* toLinearSolver() { return NULL; }
+	virtual core::behavior::BaseMass* toMass() { return NULL; }
+	virtual core::behavior::BaseMechanicalState* toMechanicalState() { return NULL; }
+	virtual core::behavior::BaseProjectiveConstraintSet* toProjectiveConstraintSet() { return NULL; }
+	virtual core::behavior::ConstraintSolver* toConstraintSolver() { return NULL; }
+	virtual core::behavior::OdeSolver* toOdeSolver() { return NULL; }
+
+	virtual core::CollisionModel* toCollisionModel() { return NULL; }
+	virtual core::collision::Pipeline* toCollisionPipeline() { return NULL; }
+
+	virtual core::objectmodel::ConfigurationSetting* toConfigurationSetting() { return NULL; }
+	virtual core::objectmodel::ContextObject* toContextObject() { return NULL; }
+
+	virtual core::topology::BaseMeshTopology* toMeshTopology() { return NULL; }
+	virtual core::topology::BaseTopologyObject* toTopologyObject() { return NULL; }
+	virtual core::topology::Topology* toTopology() { return NULL; }
+
+	virtual core::visual::Shader* toShader() { return NULL; }
+	virtual core::visual::VisualLoop* toVisualLoop() { return NULL; }
+	virtual core::visual::VisualManager* toVisualManager() { return NULL; }
+	virtual core::visual::VisualModel* toVisualModel() { return NULL; }
+
+	virtual simulation::VisitorScheduler* toVisitorScheduler() { return NULL; }
+	/// @}
 };
 
 } // namespace objectmodel

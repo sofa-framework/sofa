@@ -48,6 +48,7 @@ public:
     SOFA_ABSTRACT_CLASS(BaseState, objectmodel::BaseObject);
 protected:
     virtual ~BaseState() { }
+	virtual BaseState* toState() { return this; }
 public:
     /// Current size of all stored vectors
     virtual int getSize() const = 0;

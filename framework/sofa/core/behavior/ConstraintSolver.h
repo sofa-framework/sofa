@@ -55,6 +55,8 @@ protected:
     ConstraintSolver();
 
     virtual ~ConstraintSolver();
+
+	virtual ConstraintSolver* toConstraintSolver() { return this; }
 public:
     /**
      * Launch the sequence of operations in order to solve the constraints
