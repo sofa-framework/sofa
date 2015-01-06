@@ -1,3 +1,4 @@
+#ifdef SOFA_POOLED_SPARSE
 
 #include "Pool.h"
 
@@ -12,7 +13,7 @@ boost::pool<>* Pool::get_pool(size_t N)
 {
 	const size_t n = (size_t) ceilf(logf(N) * (1.0/M_LN2));
 
-	if( gs_pools[n] == nullptr )
+	if( gs_pools[n] == NULL )
 		gs_pools[n] = new boost::pool<>(1 << n);
 
 	return gs_pools[n];
@@ -20,3 +21,5 @@ boost::pool<>* Pool::get_pool(size_t N)
 
 } // namespace internal
 } // namespace Eigen
+
+#endif // SOFA_POOLED_SPARSE
