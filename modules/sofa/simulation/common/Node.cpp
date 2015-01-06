@@ -202,12 +202,7 @@ void Node::recycle()
         n.reset();
     }
 
-    while (!object.empty())
-    {
-        core::objectmodel::BaseObject::SPtr o = *object.begin();
-        removeObject(o);
-        o.reset();
-    }
+	removeAllObjects();
 
 	Context::recycle();
 	Base::recycle();
