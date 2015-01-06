@@ -128,6 +128,13 @@ public:
 
     }
 
+    //Pierre-Luc : I added these two functions to fill indices, weights and derivatives from an external component. I also wanted to make a difference between gauss points and mesh vertices.
+    virtual void fillWithMeshQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< MaterialToSpatial >& /*M*/, sofa::helper::vector< VReal >& /*w*/,
+                                    sofa::helper::vector< VGradient >& /*dw*/, sofa::helper::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
+
+    virtual void fillWithGaussQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< MaterialToSpatial >& /*M*/, sofa::helper::vector< VReal >& /*w*/,
+                                     sofa::helper::vector< VGradient >& /*dw*/, sofa::helper::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
+
     /// interpolate shape function values (and their first and second derivatives) at a given child position
     /// 'cell' might be used to target a specific element/voxel in case of overlapping elements/voxels.
     /// this function is typically used for collision and visual points

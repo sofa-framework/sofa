@@ -277,6 +277,8 @@ public:
     virtual size_t getToSize()  const { return this->toModel->getSize(); }
     ///@brief Get child to parent indices as a const reference
     virtual const vector<VRef>& getChildToParentIndex() { return  f_index.getValue(); }
+    ///@brief Get parent indices of the i-th child
+        virtual const VRef& getChildToParentIndex( int i) { return  f_index.getValue()[i]; }
     ///@brief Get a structure storing parent to child indices as a const reference
     ///@see f_index_parentToChild to know how to properly use it
     virtual const vector<VRef>& getParentToChildIndex() { return f_index_parentToChild; }
@@ -288,6 +290,10 @@ public:
     virtual vector<VGradient> getWeightsGradient(){ return f_dw.getValue(); }
     ///@brief Get parent's influence weights hessian on each child
     virtual vector<VHessian> getWeightsHessian(){ return f_ddw.getValue(); }
+    ///@brief Get mapped positions
+    VecCoord getMappedPositions() { return f_pos; }
+    ///@brief Get init positions
+    VecCoord getInitPositions() { return f_pos0.getValue(); }
 
     /** @name PointMapper functions */
     //@{
@@ -334,20 +340,26 @@ protected:
     Data<VecCoord >    f_pos0; ///< initial spatial positions of children
 
     VecCoord f_pos;
+
+    KDT f_KdTree;
+    VMaterialToSpatial f_F;
+
+
+public:
+
     void mapPositions() ///< map initial spatial positions stored in f_pos0 to f_pos (used for visualization)
     {
         this->f_pos.resize(this->f_pos0.getValue().size());
         for(size_t i=0; i<this->f_pos.size(); i++ ) mapPosition(f_pos[i],this->f_pos0.getValue()[i],this->f_index.getValue()[i],this->f_w.getValue()[i]);
     }
-    KDT f_KdTree;
 
-    VMaterialToSpatial f_F;
     void mapDeformationGradients() ///< map initial deform  gradients stored in f_F0 to f_F      (used for visualization)
     {
         this->f_F.resize(this->f_pos0.getValue().size());
         for(size_t i=0; i<this->f_F.size(); i++ ) mapDeformationGradient(f_F[i],this->f_pos0.getValue()[i],this->f_F0.getValue()[i],this->f_index.getValue()[i],this->f_w.getValue()[i],this->f_dw.getValue()[i]);
     }
 
+protected :
     bool missingInformationDirty;  ///< tells if pos or F need to be updated (to speed up visualization)
     bool KdTreeDirty;              ///< tells if kdtree need to be updated (to speed up closest point search)
 
