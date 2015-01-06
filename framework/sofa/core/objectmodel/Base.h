@@ -118,13 +118,16 @@ private:
         p->release();
     }
 
+
+	template<class T> friend struct PoolPolicy;
+private:
 	bool pooled;
 	bool isPooled() const { return pooled; }
 	void setPooled(bool p) { pooled = p; }
 protected:
-	/// override this method to do cleanup when released to a pool.
+	/// override this method to do cleanup when released to a pool
 	virtual void recycle();
-	template<class T> friend struct PoolPolicy;
+
 
 public:
 
