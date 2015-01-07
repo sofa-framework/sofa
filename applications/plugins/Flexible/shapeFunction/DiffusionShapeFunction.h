@@ -222,7 +222,12 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // init temperatures
         dist.fill(-1);
-        cimg_foroff(inimg,off) if(inimg[off]) dist[off]=0;
+        cimg_foroff(inimg,off) if(inimg[off]) dist[off]=
+#ifdef SOFA_HAVE_MGDIFFUSI0N
+                0;
+#else
+                0.5;  // by default 0 value must encode a Neuman condition?
+#endif
 
         for(unsigned int i=0; i<parent.size(); i++)
         {

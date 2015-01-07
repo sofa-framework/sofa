@@ -48,8 +48,9 @@ class Cell
 public:
     Cell(): dart() {}
     inline Cell(Dart d): dart(d) {}
-    inline Cell(const Cell& c): dart(c.dart) {}
-    Cell operator=(Cell c) { this->dart = c.dart; return *this; }
+    inline Cell(const Cell& c): dart(c.dart) {} //TODO : lots of problems when marking it "explicit"
+    inline explicit Cell(unsigned int idx) : dart(Dart(idx)) {}
+    Cell& operator=(Cell c) { this->dart = c.dart; return *this; }
     inline ~Cell() {}
 
     inline unsigned int index() const { return dart.index ;}

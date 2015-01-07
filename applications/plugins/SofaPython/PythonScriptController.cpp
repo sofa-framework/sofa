@@ -30,6 +30,9 @@
 #include "Binding_BaseContext.h"
 #include "Binding_Node.h"
 #include "Binding_PythonScriptController.h"
+#include "ScriptEnvironment.h"
+
+using namespace sofa::core::objectmodel;
 
 namespace sofa
 {
@@ -40,15 +43,12 @@ namespace component
 namespace controller
 {
 
-
 int PythonScriptControllerClass = core::RegisterObject("A Sofa controller scripted in python")
         .add< PythonScriptController >()
         //.addAlias("PythonController")
         ;
 
 SOFA_DECL_CLASS(PythonController)
-
-
 
 PythonScriptController::PythonScriptController()
     : ScriptController()
@@ -62,9 +62,6 @@ PythonScriptController::PythonScriptController()
 {
     // various initialization stuff here...
 }
-
-
-
 
 void PythonScriptController::loadScript()
 {
@@ -174,7 +171,6 @@ using namespace sofa::core::objectmodel;
     else \
         Py_DECREF(res); \
 }
-
 
 void PythonScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
@@ -292,6 +288,21 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
     //TODO
 }
 
+void PythonScriptController::script_call(const ScriptFunction* function, const ScriptFunctionParameter* parameter, ScriptFunctionResult* result)
+{
+	const PythonScriptFunction* pyFunction = dynamic_cast<const PythonScriptFunction*>(function);
+	if(0 == pyFunction)
+	{
+		SP_MESSAGE_EXCEPTION( "in " << m_classname.getValueString() << ".script_call, trying to call a non-Python function")
+		PyErr_Print();
+		return;
+	}
+
+	const PythonScriptFunctionParameter* pyParameter = dynamic_cast<const PythonScriptFunctionParameter*>(parameter);
+	PythonScriptFunctionResult* pyResult = dynamic_cast<PythonScriptFunctionResult*>(result);
+
+	(*pyFunction)(pyParameter, pyResult);
+}
 
 void PythonScriptController::script_draw(const core::visual::VisualParams*)
 {

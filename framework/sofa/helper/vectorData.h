@@ -97,7 +97,6 @@ public:
         core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
         if (size < this->size()) {
             // some data if size is inferior than current size
-            core::DataEngine* componentAsDataEngine = dynamic_cast<core::DataEngine*>(m_component);
             for (unsigned int i=size; i<this->size(); ++i) {
                 if (componentAsDataEngine!=NULL)
                     componentAsDataEngine->delInput((*this)[i]);
@@ -112,7 +111,8 @@ public:
             Data< T >* d = new Data< T >(ohelp.str().c_str(), true, false);
             d->setName(oname.str());
             this->push_back(d);
-            m_component->addData(d);
+            if (m_component!=NULL)
+                m_component->addData(d);
             if (componentAsDataEngine!=NULL)
                 componentAsDataEngine->addInput(d);
         }

@@ -2,23 +2,30 @@
 #define SCENE_H
 
 #include <QObject>
+#include <QQmlParserStatus>
 #include <QUrl>
 #include <sofa/simulation/common/Simulation.h>
 
 class QTimer;
+class QVector3D;
 
-class Scene : public QObject
+class Scene : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
+	Q_INTERFACES(QQmlParserStatus)
 
 public:
     explicit Scene(QObject *parent = 0);
 	~Scene();
 
+	void classBegin();
+	void componentComplete();
+
 public:
 	Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged);
-	Q_PROPERTY(QUrl source MEMBER mySource NOTIFY sourceChanged);
-	Q_PROPERTY(double dt MEMBER myDt NOTIFY dtChanged);
+	Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged);
+	Q_PROPERTY(QUrl sourceQML READ sourceQML WRITE setSourceQML NOTIFY sourceQMLChanged);
+	Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged);
 	Q_PROPERTY(bool play READ playing WRITE setPlay NOTIFY playChanged)
 	Q_PROPERTY(bool asynchronous MEMBER myAsynchronous NOTIFY asynchronousChanged)
 
@@ -31,39 +38,53 @@ public:
 	};
 
 public:
-	Status status()	const				{return myStatus;}
+	Status status()	const							{return myStatus;}
 	void setStatus(Status newStatus);
 
-	const QUrl& source() const			{return mySource;}
-	double dt() const					{return myDt;}
+	const QUrl& source() const						{return mySource;}
+	void setSource(const QUrl& newSource);
+
+	const QUrl& sourceQML() const					{return mySourceQML;}
+	void setSourceQML(const QUrl& newSourceQML);
+
+	double dt() const								{return myDt;}
+	void setDt(double newDt);
 	
-	bool playing() const				{return myPlay;}
+	bool playing() const							{return myPlay;}
 	void setPlay(bool newPlay);
 
-	bool isReady() const				{return Status::Ready == myStatus;}
+	bool isReady() const							{return Status::Ready == myStatus;}
+	bool isInit() const								{return myIsInit;}
 
 signals:
 	void loaded();
 	void statusChanged(Status newStatus);
 	void sourceChanged(const QUrl& newSource);
+	void sourceQMLChanged(const QUrl& newSourceQML);
 	void dtChanged(double newDt);
 	void playChanged(bool newPlay);
 	void asynchronousChanged(bool newAsynchronous);
 
+public:
+	Q_INVOKABLE double radius();
+	Q_INVOKABLE void computeBoundingBox(QVector3D& min, QVector3D& max);
+	Q_INVOKABLE QString dumpGraph();
+
 public slots:
-	/// re-open the current scene
+	void init();
 	void reload();
-	/// apply one simulation time step, the simulation must be paused (play = false)
 	void step();
-	/// restart at the beginning, without reloading the file
 	void reset();
+	void draw();
+
+	void onKeyPressed(char key);
+	void onKeyReleased(char key);
 
 signals:
 	void stepBegin();
     void stepEnd();
 
 private slots:
-    /// open a scene according to the source
 	void open();
 
 public:
@@ -72,6 +93,9 @@ public:
 private:
 	Status							myStatus;
 	QUrl							mySource;
+	QUrl							mySourceQML;
+	bool							myIsInit;
+	bool							myVisualDirty;
 	double							myDt;
 	bool							myPlay;
 	bool							myAsynchronous;
