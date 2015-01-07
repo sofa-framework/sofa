@@ -600,7 +600,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 }
 
 template <class JacobianBlockType1,class JacobianBlockType2>
-void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId )
+void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId )
 {
 
     serr<<"applyDJT is not implemented\n";

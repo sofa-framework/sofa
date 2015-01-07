@@ -101,7 +101,7 @@ public:
          typedef component::engine::BaseGaussPointSampler::volumeIntegralType volumeIntegralType;
          vector<volumeIntegralType> _volIntType;
          _volIntType.resize(_vol.size());
-         for(int i=0; i<_volIntType.size(); ++i)
+         for(size_t i=0; i<_volIntType.size(); ++i)
          {
              _volIntType[i].resize(1);
              _volIntType[i][0] = _vol[i];
