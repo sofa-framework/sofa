@@ -97,12 +97,13 @@ class Scene:
                     meshfile = os.path.join(self.sceneDir, meshes[r.find("mesh").attrib["id"]].source)
                 offset=SofaPython.Tools.strToListFloat(r.find("position").text)
 
-                # TODO set manually using <mass> if present
                 if r.find("density") is not None:
                     rigid.setFromMesh(meshfile, density=float(r.find("density").text), offset=offset)
                 else:
-                    #r.find("mass")
-                    rigid.setManually(offset=offset)
+                    mass=1.
+                    if not r.find("mass") is None:
+                        mass = float(r.find("mass").text)
+                    rigid.setManually(offset=offset,mass=mass)
                 rigid.dofs.showObject = self.param.showRigid
                 rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
                 # visual
