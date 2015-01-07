@@ -31,8 +31,8 @@ class RigidBody:
 
     def __init__(self, node, name):
         self.node = node.createChild( name )  # node
-        self.dofs = 0   # dofs
-        self.mass = 0   # mass
+        self.dofs = None   # dofs
+        self.mass = None   # mass
         self.frame = Rigid.Frame()
         self.framecom = Rigid.Frame()
 
