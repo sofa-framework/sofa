@@ -5,7 +5,7 @@
 #include <SofaTest/PrimitiveCreation.h>
 #include <SofaBaseCollision/DefaultPipeline.h>
 #include <SofaBaseCollision/BruteForceDetection.h>
-#include <sofa/helper/RandomGenerator.h>
+#include <sofa/helper/random.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/CollisionEndEvent.h>
@@ -101,13 +101,11 @@ sofa::component::collision::BulletOBBModel::SPtr makeBulletOBB(const Vec3 & p,co
     return obbCollisionModel;
 }
 
-static void randTrans(Vec3 & angles,Vec3 & new_pos,int seed){
-    new_pos = randVect(st_pos_min,st_pos_max,seed);
+static void randTrans(Vec3 & angles,Vec3 & new_pos){
+    new_pos = randVect(st_pos_min,st_pos_max);
 
-    sofa::helper::RandomGenerator randomGenerator;
-    randomGenerator.initSeed(seed);
     for(int i = 0 ; i < 3 ; ++i){
-        angles[i] = (randomGenerator.random<SReal>())/RAND_MAX *  2 * M_PI;
+        angles[i] = (sofa::helper::drand())*  2 * M_PI;
     }
 }
 
@@ -264,14 +262,12 @@ struct copyBulletConvexHull{
 //    return obbCollisionModel;
 //}
 
-static sofa::component::collision::OBBModel::SPtr makeRandOBB(const Vec3 & pos_min,const Vec3 & pos_max,sofa::simulation::Node::SPtr &father,int seed){
-    Vec3 p = randVect(pos_min,pos_max,seed);
+static sofa::component::collision::OBBModel::SPtr makeRandOBB(const Vec3 & pos_min,const Vec3 & pos_max,sofa::simulation::Node::SPtr &father){
+    Vec3 p = randVect(pos_min,pos_max);
     SReal angles[3];
-    sofa::helper::RandomGenerator randomGenerator;
-    randomGenerator.initSeed(seed);
 
     for(int i = 0 ; i < 3 ; ++i){
-        angles[i] = (randomGenerator.random<SReal>())/RAND_MAX *  2 * M_PI;
+        angles[i] = (sofa::helper::drand())*  2 * M_PI;
 
         //ret[i] = ((double)(rand())/RAND_MAX) * extents[i] + min[i];
 
@@ -281,7 +277,7 @@ static sofa::component::collision::OBBModel::SPtr makeRandOBB(const Vec3 & pos_m
 
 
     Vec3 v(0,0,0);
-    Vec3 extents(randVect(Vec3(0.5,0.5,0.5),Vec3(3,3,3),seed));
+    Vec3 extents(randVect(Vec3(0.5,0.5,0.5),Vec3(3,3,3)));
 
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(p,angles,order,v,extents,father);
 
@@ -314,6 +310,8 @@ static sofa::component::collision::OBBModel::SPtr makeRandOBB(const Vec3 & pos_m
 template <class CollModel,class CopyConstructor>
 bool BCD_test::randTest(int seed,int nb_move){
 
+    sofa::helper::srand(seed);
+
     sofa::simulation::Node::SPtr bullet_scn = New<sofa::simulation::tree::GNode>();
     sofa::simulation::Node::SPtr sofa_scn = New<sofa::simulation::tree::GNode>();
 
@@ -334,8 +332,8 @@ bool BCD_test::randTest(int seed,int nb_move){
     sofa_scn->addObject(new_prox);
 
     //copying collision models and adding them to the scene
-    sofa::component::collision::OBBModel::SPtr obb1s = makeRandOBB(st_pos_min,st_pos_max,sofa_scn,seed);
-    sofa::component::collision::OBBModel::SPtr obb2s = makeRandOBB(st_pos_min,st_pos_max,sofa_scn,seed);
+    sofa::component::collision::OBBModel::SPtr obb1s = makeRandOBB(st_pos_min,st_pos_max,sofa_scn);
+    sofa::component::collision::OBBModel::SPtr obb2s = makeRandOBB(st_pos_min,st_pos_max,sofa_scn);
 
     //setting id to collision models
     std::string name1("1");
@@ -423,7 +421,7 @@ bool BCD_test::randTest(int seed,int nb_move){
         }
 
         //moving collision models
-        randTrans(angles,new_pos,seed);
+        randTrans(angles,new_pos);
         transMechaRigid(angles,new_pos,sofa_scn);
         transMechaRigid(angles,new_pos,bullet_scn);
     }

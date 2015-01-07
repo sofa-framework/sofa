@@ -22,14 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP
 
-#include <SofaMiscMapping/SubsetMultiMapping.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#include "ComplementaryROI.inl"
+
+#include <sstream>
 #include <sofa/core/ObjectFactory.h>
-
-using namespace sofa::defaulttype;
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -37,37 +35,30 @@ namespace sofa
 namespace component
 {
 
-namespace mapping
+namespace engine
 {
 
-SOFA_DECL_CLASS(SubsetMultiMapping)
+using namespace sofa::defaulttype;
 
-// Register in the Factory
-int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
+SOFA_DECL_CLASS(ComplementaryROI)
+
+int ComplementaryROIClass = core::RegisterObject("Find the points NOT in the input sets")
 #ifndef SOFA_FLOAT
-    .add< SubsetMultiMapping< Vec3dTypes, Vec3dTypes > >()
-    .add< SubsetMultiMapping< Vec1dTypes, Vec1dTypes > >()
-    .add< SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes > >()
-#endif
+        .add<ComplementaryROI<Vec3dTypes> >()
+#endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-    .add< SubsetMultiMapping< Vec3fTypes, Vec3fTypes > >()
-    .add< SubsetMultiMapping< Vec1fTypes, Vec1fTypes > >()
-    .add< SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes > >()
-#endif
+        .add<ComplementaryROI<Vec3fTypes> >()
+#endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1dTypes, Vec1dTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes >;
-#endif
+template class SOFA_ENGINE_API ComplementaryROI<Vec3dTypes>;
+#endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1fTypes, Vec1fTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes >;
-#endif
+template class SOFA_ENGINE_API ComplementaryROI<Vec3fTypes>;
+#endif //SOFA_DOUBLE
 
-} // namespace mapping
+} // namespace engine
 
 } // namespace component
 

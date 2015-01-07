@@ -94,7 +94,7 @@ struct SubsetMultiMappingTest : public MultiMapping_test<_SubsetMultiMapping>
     ///@{
     /** Two parent particles, two children
     */
-    bool test_two_parents_two_children()
+    bool test_two_parents_one_child()
     {
         const int NP = 2;
         this->setupScene(NP); // NP parents, 1 child
@@ -137,9 +137,9 @@ mapping::SubsetMultiMapping<defaulttype::Vec3Types,defaulttype::Vec3Types>
 // Test suite for all the instanciations
 TYPED_TEST_CASE(SubsetMultiMappingTest, DataTypes);
 // first test case
-TYPED_TEST( SubsetMultiMappingTest , two_parents_two_children )
+TYPED_TEST( SubsetMultiMappingTest , two_parents_one_child )
 {
-    ASSERT_TRUE(this->test_two_parents_two_children());
+    ASSERT_TRUE(this->test_two_parents_one_child());
 }
 
 } // namespace

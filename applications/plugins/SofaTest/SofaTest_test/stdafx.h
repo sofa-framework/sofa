@@ -5,7 +5,6 @@
 #ifdef WIN32
 
 #include <sofa/helper/Quater.h>
-#include <sofa/helper/RandomGenerator.h>
 #include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
@@ -94,7 +93,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/RandomGenerator.h>
 
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <plugins/SceneCreator/SceneCreator.h>

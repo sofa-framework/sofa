@@ -223,11 +223,14 @@ public:
     {
         std::string input  = arg->getAttribute("input","");
         std::string output = arg->getAttribute("output","");
-        if (input.empty() || !LinkFromModels::CheckPaths(input, context))
+        if (input.empty() || !LinkFromModels::CheckPaths(input, context)) {
+            std::cerr << "[" << arg->getAttribute("name") << "(" << arg->getAttribute("type") << ")]: " << "bad input" << std::endl;
             return false;
-        if (output.empty() || !LinkToModels::CheckPaths(output, context))
+        }
+        if (output.empty() || !LinkToModels::CheckPaths(output, context)) {
+            std::cerr << "[" << arg->getAttribute("name") << "(" << arg->getAttribute("type") << ")]: " << "bad output" << std::endl;
             return false;
-
+        }
         return BaseMapping::canCreate(obj, context, arg);
     }
 

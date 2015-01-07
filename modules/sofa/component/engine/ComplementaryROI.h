@@ -22,14 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP
+#ifndef SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_H
+#define SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_H
 
-#include <SofaMiscMapping/SubsetMultiMapping.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/DataEngine.h>
 
-using namespace sofa::defaulttype;
+#include <sofa/component/component.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+
+#include <sofa/helper/vectorData.h>
 
 namespace sofa
 {
@@ -37,38 +39,70 @@ namespace sofa
 namespace component
 {
 
-namespace mapping
+namespace engine
 {
 
-SOFA_DECL_CLASS(SubsetMultiMapping)
+/**
+ * Output the positions and their indices in the global mesh not in the specified sets
+ *
+ * example in ComplementaryROI.scn
+ *
+ * @todo make it general as other ROI (edges, triangles,...)
+ *
+ * @author Thomas Lemaire @date 2014
+ */
+template <class DataTypes>
+class ComplementaryROI : public core::DataEngine
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(ComplementaryROI, DataTypes), core::DataEngine);
 
-// Register in the Factory
-int SubsetMultiMappingClass = core::RegisterObject("Compute a subset of the input MechanicalObjects according to a dof index list")
-#ifndef SOFA_FLOAT
-    .add< SubsetMultiMapping< Vec3dTypes, Vec3dTypes > >()
-    .add< SubsetMultiMapping< Vec1dTypes, Vec1dTypes > >()
-    .add< SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< SubsetMultiMapping< Vec3fTypes, Vec3fTypes > >()
-    .add< SubsetMultiMapping< Vec1fTypes, Vec1fTypes > >()
-    .add< SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes > >()
-#endif
-        ;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef core::topology::BaseMeshTopology::index_type index_type;
+    typedef core::topology::BaseMeshTopology::SetIndex SetIndex;
 
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1dTypes, Vec1dTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3dTypes, Rigid3dTypes >;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec3fTypes, Vec3fTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Vec1fTypes, Vec1fTypes >;
-template class SOFA_MISC_MAPPING_API SubsetMultiMapping< Rigid3fTypes, Rigid3fTypes >;
-#endif
 
-} // namespace mapping
+    ComplementaryROI();
+    ~ComplementaryROI();
+
+    /// Update
+    void update();
+
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+
+    /// Assign the field values stored in the given map of name -> value pairs
+    void parseFields ( const std::map<std::string,std::string*>& str );
+
+
+    virtual void init();
+    virtual void reinit();
+
+    virtual std::string getTemplateName() const;
+
+    static std::string templateName(const ComplementaryROI<DataTypes>* = NULL);
+
+protected:
+
+    /// inputs
+    /// @{
+    Data<VecCoord> d_position; ///< input positions
+    Data<unsigned int> d_nbSet; ///< number of sets
+    helper::vectorData< SetIndex > vd_setIndices; ///< for each set, indices of the included points
+    /// @}
+
+    /// outputs
+    /// @{
+    Data<SetIndex> d_indices; ///< ROI indices
+    Data<VecCoord> d_pointsInROI; ///< ROI positions
+    /// @}
+
+};
+
+} // namespace engine
 
 } // namespace component
 
 } // namespace sofa
+
+#endif // SOFA_COMPONENT_ENGINE_COMPLEMENTARYROI_H

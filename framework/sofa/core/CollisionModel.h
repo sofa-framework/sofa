@@ -105,7 +105,7 @@ protected:
         , numberOfContacts(0)
         , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
         , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
-
+		, userData(NULL)
     {
     }
     /// Destructor
@@ -438,6 +438,12 @@ public:
         return enum_type;
     }
 
+	/// Set user data
+	void SetUserData(void* pUserData)  { userData = pUserData; }
+
+	/// Get user data
+	void* GetUserData() { return userData; }
+
 protected:
 
     /// flag indicating if this collision model is active and should be included in default
@@ -484,6 +490,8 @@ protected:
     /// an int corresponding to the type of this.
     /// Useful for optimizations involving static_cast
     int enum_type;
+
+	void* userData;
 };
 
 } // namespace core
