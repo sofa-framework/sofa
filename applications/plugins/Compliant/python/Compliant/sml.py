@@ -1,10 +1,14 @@
 import os.path
+import math
 import xml.etree.ElementTree as etree
 
 from Compliant import StructuralAPI
 
 import SofaPython.Tools
 import SofaPython.units
+from SofaPython import Quaternion
+
+from SofaPython.Tools import listToStr as concat
 
 def parseUnits(xmlModel):
     """ set SofaPython.units.local_* to units specified in <units />
@@ -136,6 +140,22 @@ class Scene:
                 
                 joint = StructuralAPI.GenericRigidJoint(name, parentOffset.node, childOffset.node, mask)
                 self.joints[j.attrib["id"]] = joint
+                
+            #deformable
+            self.deformable=dict()
+            for d in model.iter("deformable"):
+                name = d.attrib["id"]
+                if d.find("name") is not None:
+                    name = d.find("name").text
+                print "deformable:", name
+                node = self.node.createChild( name )
+                position = SofaPython.Tools.strToListFloat(d.find("position").text)
+                mesh = meshes[d.find("mesh").attrib["id"]]
+                r = Quaternion.to_euler(position[3:])  * 180.0 / math.pi
+                meshLoader = SofaPython.Tools.meshLoader(node, mesh.source, translation=concat(position[:3]) , rotation=concat(r))
+                node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+meshLoader.name)
+                
+                self.deformable[d.attrib["id"]]=node
                         
     def addOffset(self, name, rigidId, xmlOffset):
         """ add xml defined offset to rigid
