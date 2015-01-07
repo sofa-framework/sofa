@@ -37,7 +37,7 @@ def parseMesh(xmlModel):
 class Scene:
     """ Builds a (sub)scene from a sml file using compliant formulation
     
-    <rigid> if <density> is given, inertia is computed from mesh, else <mass> must be given
+    <rigid>: if <density> is given, inertia is computed from mesh, else <mass> must be given
     """
     
     class Param:
@@ -92,18 +92,23 @@ class Scene:
                 rigid = StructuralAPI.RigidBody(self.node, name)
                 self.rigids[r.attrib["id"]] = rigid
                 
-                meshfile = os.path.join(self.sceneDir, meshes[r.find("mesh").attrib["id"]].source)
-                
+                meshfile = None
+                if not r.find("mesh") is None:
+                    meshfile = os.path.join(self.sceneDir, meshes[r.find("mesh").attrib["id"]].source)
+                offset=SofaPython.Tools.strToListFloat(r.find("position").text)
+
                 # TODO set manually using <mass> if present
                 if r.find("density") is not None:
-                    rigid.setFromMesh(meshfile, density=float(r.find("density").text), offset= SofaPython.Tools.strToListFloat(r.find("position").text))
-                #else: TODO
+                    rigid.setFromMesh(meshfile, density=float(r.find("density").text), offset=offset)
+                else:
                     #r.find("mass")
+                    rigid.setManually(offset=offset)
                 rigid.dofs.showObject = self.param.showRigid
                 rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
                 # visual
-                rigid.addVisualModel(meshfile)
-                rigid.addCollisionMesh(meshfile)
+                if not meshfile is None:
+                    rigid.addVisualModel(meshfile)
+                    rigid.addCollisionMesh(meshfile)
             
             # joints
             self.joints=dict()
