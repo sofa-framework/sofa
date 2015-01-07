@@ -35,7 +35,7 @@
     <ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@image.transform" />
     <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1"/>
     <!-- 	<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@image.transform" /> -->
-    <ImageDensityMass template="Vec3d,ShapeFunctiond" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="0"  printMassMatrix="true"/>
+    <ImageDensityMass template="Vec3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="0"  printMassMatrix="true"/>
 
 
     <Node 	name="behavior"   >
@@ -78,7 +78,7 @@
     <ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@image.transform" />
     <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 1"/>
     <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
-    <ImageDensityMass template="Vec3d,ShapeFunctiond" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1"  printMassMatrix="true"/>
+    <ImageDensityMass template="Vec3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1"  printMassMatrix="true"/>
 
     <!--EACH NODE OF THE TETRA SHOULD CARRY A MASS OF 41.6666... -->
 
@@ -123,7 +123,7 @@
     <ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@rasterizer.transform" />
     <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.06"/>
     <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
-    <ImageDensityMass  template="Vec3d,ShapeFunctiond" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true" />
+    <ImageDensityMass  template="Vec3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true" />
 
     <!--EACH NODE OF THE TRIANGLE SHOULD CARRY A MASS OF 10 -->
 
@@ -164,7 +164,7 @@
     <ImageViewer template="ImageUC" name="viewer" image="@rasterizer.image" transform="@rasterizer.transform" />
     <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.06"/>
     <!--<ImageViewer template="ImageD" name="viewer" image="@densityTF.outputImage" transform="@densityTF.outputTransform" />-->
-    <ImageDensityMass  template="Vec3d,ShapeFunctiond" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true" />
+    <ImageDensityMass  template="Vec3d" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true" />
 
     <!--EACH NODE OF THE TRIANGLE SHOULD CARRY A MASS OF 10 -->
 

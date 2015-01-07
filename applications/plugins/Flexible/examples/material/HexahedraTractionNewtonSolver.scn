@@ -6,7 +6,7 @@
   
   <!--Solver-->
   
-    <CompliantNLImplicitSolver precision="1e-9" iterations="100"/>
+    <CompliantNLImplicitSolver precision="1e-9" iterations="100" stabilization="0"/>
     <LDLTSolver/>
 
     <!--Topology Hexahedra-->

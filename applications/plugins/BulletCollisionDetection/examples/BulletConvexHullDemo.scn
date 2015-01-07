@@ -8,7 +8,7 @@
 	<!-- <TreeCollisionGroupManager name="Group" /> -->
 	<EulerImplicitSolver name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1"/>
 	<CGLinearSolver template="GraphScattered" name="linear solver" iterations="15" tolerance="1.0e-5" threshold="1.0e-5"/>
-    <LMConstraintSolver listening="1" warm_start = "false" stabilization="1" constraintVel="1" constraintPos="1" numIterations="25" />
+        <LMConstraintSolver listening="1" constraintVel="1" constraintPos="1" numIterations="25" />
 	<BulletIntersection contactDistance="1"/>
 	<Node 	 name="Dragon"  >
 	    <MeshObjLoader name="loader"  filename="mesh/dragon.obj" />
