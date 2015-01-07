@@ -21,7 +21,7 @@
 
 		<Node 	name="Strain"   >
 		    <MechanicalObject  template="E331" name="E"  />
-		    <GreenStrainMapping template="F331,E331"   method="polar"/>
+		    <GreenStrainMapping template="F331,E331" />
 		    <HookeForceField  template="E331" name="ff" youngModulus="1000" poissonRatio="0" viscosity="0"/>
 		</Node>
 	    </Node>

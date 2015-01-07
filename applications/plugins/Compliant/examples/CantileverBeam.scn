@@ -1,5 +1,7 @@
+<?xml version="1.0"?>
 <Node name="" gravity="0 0 0" dt="0.01">
     <VisualStyle displayFlags="showBehavior hideVisual" />
+    <RequiredPlugin name="Compliant" pluginName="Compliant" />
     <Node name="Cube grid" >
 <!--        <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-6" />-->
 <!--        <MinresSolver verbose="0" implicitVelocity="1" implicitPosition="1" kkt="true" warm="false" maxIterations="25" precision="1e-6" />-->
