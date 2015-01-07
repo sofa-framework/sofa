@@ -62,7 +62,6 @@ struct TetrahedronVolumeMappingTest : public Mapping_test<_TestedMapping>
 
     TetrahedronVolumeMappingTest(){
         _testedMapping = static_cast<TestedMapping*>( this->mapping );
-        this->dJErrorFactor = 50; // accepting a larger error for dJ test (J is highly non-linear)
     }
 
 
