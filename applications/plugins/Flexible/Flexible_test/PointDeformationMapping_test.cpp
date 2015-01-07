@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include "stdafx.h"
 #include <sofa/helper/Quater.h>
-#include <sofa/helper/RandomGenerator.h>
 
 // Including component
 
@@ -76,14 +75,11 @@ namespace sofa {
         defaulttype::Mat<3,3,Real> testedRotation;
         /// Tested Translation: random translation
         Vec<3,Real> testedTranslation;
-        /// Random generator
-        sofa::helper::RandomGenerator randomGenerator;
 
         // Constructor: call the constructor of the base class which loads the scene to test
         PointsDeformationMapping_test() : Inherited::Mapping_test(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "LinearDeformationMappingPoint.scn")
         {   
-            // rotation and translation
-            randomGenerator.initSeed(BaseSofa_test::seed);
+            // Random affine transform
             this->SetRandomAffineTransform();
 
             // Get rotation from affine constraint
@@ -100,15 +96,14 @@ namespace sofa {
             {
                 for( int i=0; i<testedRotation.nbLines; i++)
                 {
-                    Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
-                    testedRotation(i,j)=random;
+                    testedRotation(i,j)=Real(helper::drand(1));
                 }
             }
 
             // Translation
             for(size_t i=0;i<testedTranslation.size();++i)
             {
-                testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
+                testedTranslation[i]=helper::drand(2);
             }
 
         }

@@ -173,6 +173,8 @@ protected:
 
     Real processTetra( int i, const unsigned a, const unsigned b, const unsigned c, const unsigned d, const InCoord A, const InCoord B, const InCoord C, const InCoord D, SparseMatrixEigen& J, SparseKMatrixEigen& H )
     {
+        // TODO it can be optimized a lot!
+
         const Real& p00 = A[0];
         const Real& p01 = A[1];
         const Real& p02 = A[2];

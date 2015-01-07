@@ -144,12 +144,7 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( const core::BaseState* from, int i
         assert(0);
     }
 
-
-    vector<unsigned>& indexPairsVector = *indexPairs.beginEdit();
-    indexPairsVector.push_back(i);
-    indexPairsVector.push_back(index);
-    indexPairs.endEdit();
-
+    addPoint(i, index);
 }
 
 template <class TIn, class TOut>

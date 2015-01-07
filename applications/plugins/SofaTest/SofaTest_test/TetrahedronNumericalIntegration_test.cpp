@@ -90,9 +90,6 @@ struct TetrahedronNumericalIntegration_test : public Sofa_test<typename _DataTyp
 		Real integral,weight;
 		typename NumericalIntegrationDescriptor::BarycentricCoordinatesType bc;
 		Vec<4,unsigned short> randomPolynomial;
-        /// Random generator
-        sofa::helper::RandomGenerator randomGenerator;
-        randomGenerator.initSeed(BaseSofa_test::seed);
 
 		// get the descriptor of numerical integration on tetrahedra
         NumericalIntegrationDescriptor &nid=geo->getTetrahedronNumericalIntegrationDescriptor();
@@ -111,7 +108,7 @@ struct TetrahedronNumericalIntegration_test : public Sofa_test<typename _DataTyp
 				/// such that i+j+k+l= degree
 				for(k=0;k<4;++k) randomPolynomial[k]=0; 
 				for (k=0;k<(*itio);++k) {
-                    randomPolynomial[randomGenerator.random<unsigned short>()%4]++;
+                    randomPolynomial[helper::irand()%4]++;
 				}
 				// compute the integral over the tetrahedron through numerical integration
 				integral=(Real)0;

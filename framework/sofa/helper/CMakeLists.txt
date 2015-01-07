@@ -49,6 +49,7 @@ set(HEADER_FILES
     Quater.h
     Quater.inl
     rmath.h
+    random.h
     RandomGenerator.h
     set.h
     SVector.h
@@ -90,6 +91,7 @@ set(HEADER_FILES
     SortedPermutation.h
     kdTree.inl
     kdTree.h
+    vectorData.h
 	)
 
 set(SOURCE_FILES
