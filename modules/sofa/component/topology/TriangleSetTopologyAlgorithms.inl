@@ -2383,7 +2383,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     }
 
     // STEP 2b: Find the triangles linking each edge to the next, by starting from the last triangle, rotate around each point until the next point is reached
-    for (int i = 0 ; i < nbEdges-1 ; ++i)
+    for (size_t i = 0 ; i < nbEdges-1 ; ++i)
     {
         PointID p1 = init_points[i];
         PointID p0 = init_points[i+1];
