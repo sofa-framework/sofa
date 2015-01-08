@@ -10,7 +10,7 @@
     <Node name="TriangularBendingSprings">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 0"/>
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 0" createSubelements="true"/>
         <MechanicalObject name="TriangularBendingSprings" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
@@ -26,7 +26,7 @@
     <Node name="TriangularBiquadratic">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="loader" filename="mesh/square3.msh" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject name="TriangularBiquadratic" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
@@ -42,7 +42,7 @@
     <Node name="TriangularQuadratic">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="1 0 0"/>
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="1 0 0" createSubelements="true"/>
         <MechanicalObject name="TriangularQuadratic" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
@@ -57,7 +57,7 @@
     <Node name="TriangularFEM">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 -1"/>
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="-1 0 -1" createSubelements="true"/>
         <MechanicalObject name="TriangularFEM" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
@@ -73,7 +73,7 @@
     <Node name="TriangularTensorMass_nothandled">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="0 0 -1" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="0 0 -1" createSubelements="true" />
         <MechanicalObject name="TriangularTensorMass_nothandled" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
@@ -88,7 +88,7 @@
     <Node name="TrianglePressureForceField">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="1 0 -1" />
+        <MeshGmshLoader name="loader" filename="mesh/square3.msh" translation="1 0 -1" createSubelements="true"/>
         <MechanicalObject name="TrianglePressureForceField" src="@loader" scale="10" />
         <include href="Objects/TriangleSetTopology.xml" src="@loader" />
         <DiagonalMass massDensity="0.015" />
