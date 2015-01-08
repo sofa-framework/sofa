@@ -1,8 +1,0 @@
-Actor 1.0 Actor.qml
-Camera 1.0 Camera.qml
-FPSDisplay 1.0 FPSDisplay.qml
-ContentItem 1.0 ContentItem.qml
-CollapsibleGroupBox 1.0 CollapsibleGroupBox.qml
-Vector3DSpinBox 1.0 Vector3DSpinBox.qml
-DynamicSplitView 1.0 DynamicSplitView.qml
-DynamicContent 1.0 DynamicContent.qml

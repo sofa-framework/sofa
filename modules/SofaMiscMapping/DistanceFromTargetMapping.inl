@@ -118,9 +118,6 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
 
-    stiffnessBaseMatrices.resize(1);
-    stiffnessBaseMatrices[0] = &K;
-
     this->Inherit::init();  // applies the mapping, so after the Data init
 }
 
@@ -266,7 +263,7 @@ const vector<sofa::defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOu
 }
 
 template <class TIn, class TOut>
-const vector<defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOut>::getKs()
+const defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
 {
 //    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*this->toModel->read(core::ConstVecDerivId::force()));
     const OutVecDeriv& childForce = this->toModel->readForces().ref();
@@ -299,7 +296,7 @@ const vector<defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOut>::ge
     }
     K.compress();
 
-    return &stiffnessBaseMatrices;
+    return &K;
 }
 
 

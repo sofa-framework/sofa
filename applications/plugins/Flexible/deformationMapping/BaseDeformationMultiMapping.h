@@ -222,11 +222,10 @@ public:
         return &baseMatrices;
     }
 
-    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    virtual const defaulttype::BaseMatrix* getK()
     {
-        updateK1(this->toModel->readForces().ref());
-        updateK2(this->toModel->readForces().ref());
-        return &stiffnessBaseMatrices;
+        updateK(this->toModel->readForces().ref());
+        return &K;
     }
 
     void draw(const core::visual::VisualParams* vparams);
@@ -315,11 +314,9 @@ protected:
     void updateJ2();
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
-    SparseKMatrixEigen1 K1;  ///< Assembled geometric stiffness matrix
-    void updateK1(const OutVecDeriv& childForce);
-    SparseKMatrixEigen2 K2;  ///< Assembled geometric stiffness matrix
-    void updateK2(const OutVecDeriv& childForce);
-    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
+    SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
+    void updateK(const OutVecDeriv& childForce);
+
     helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization

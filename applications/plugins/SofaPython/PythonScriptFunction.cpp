@@ -22,10 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include "PythonScriptFunction.h"
-#include "PythonScriptController.h"
-#include "PythonMacros.h"
 
 namespace sofa
 {
@@ -35,8 +32,6 @@ namespace core
 
 namespace objectmodel
 {
-
-using namespace sofa::component::controller;
 
 PythonScriptFunctionParameter::PythonScriptFunctionParameter() : ScriptFunctionParameter(),
 	m_own(false),
@@ -78,20 +73,20 @@ PythonScriptFunctionResult::~PythonScriptFunctionResult()
 		Py_DECREF(m_pyData);
 }
 
-PythonScriptFunction::PythonScriptFunction(PythonScriptController* pythonScriptController, const std::string& funcName) : ScriptFunction(),
-	m_pyCallableObject(0)
+PythonScriptFunction::PythonScriptFunction(PyObject* pyCallableObject, bool own) : ScriptFunction(),
+	m_own(own),
+	m_pyCallableObject(pyCallableObject)
 {
-	if(pythonScriptController && !funcName.empty())
-		m_pyCallableObject = PyObject_GetAttrString(pythonScriptController->m_ScriptControllerInstance, funcName.c_str());
+	
 }
 
 PythonScriptFunction::~PythonScriptFunction()
 {
-	if(m_pyCallableObject)
+	if(m_own && m_pyCallableObject)
 		Py_DECREF(m_pyCallableObject);
 }
 
-void PythonScriptFunction::operator()(const ScriptFunctionParameter* parameter, ScriptFunctionResult* result) const
+void PythonScriptFunction::onCall(const ScriptFunctionParameter* parameter, ScriptFunctionResult* result) const
 {
 	if(!m_pyCallableObject)
 		return;

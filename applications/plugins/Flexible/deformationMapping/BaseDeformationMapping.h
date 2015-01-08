@@ -261,10 +261,10 @@ public:
         return &baseMatrices;
     }
 
-    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    virtual const defaulttype::BaseMatrix* getK()
     {
         updateK(this->toModel->readForces().ref());
-        return &stiffnessBaseMatrices;
+        return &K;
     }
 
     void draw(const core::visual::VisualParams* vparams);
@@ -365,7 +365,6 @@ protected:
     helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
-    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     void updateK(const OutVecDeriv& childForce);
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
