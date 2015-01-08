@@ -224,35 +224,58 @@ public:
     }
 };
 
+/// This is a base class for TVecId that contains all the data stored.
+///
+/// @note TVecId itself stores no data, in order to be able to convert between templates inplace with reinterpret_cast
+/// for performance reasons (typically when working with TMultiVecId instances, which would otherwise copy maps of TVecId).
+/// This is (a little) less efficient for non V_ALL versions, but is without comparison with the loss of performance
+/// with the typical operation of passing a stored "TMultiVecId<!V_ALL,V_WRITE>" to a method taking a "const TMultiVecId<V_ALL,V_READ>&".
+class BaseVecId
+{
+public:
+    VecType getType() const { return type; }
+    unsigned int getIndex() const { return index; }
+
+	VecType type;
+    unsigned int index;
+
+protected:
+	BaseVecId(VecType t, unsigned int i) : type(t), index(i) {}
+};
+
+/// This class is only here as fix for a VC2010 compiler otherwise padding TVecId<V_ALL,?> with 4 more bytes than TVecId<?,?>, 
+/// probably due to some weird rule requiring to have distinct base pointers with multiple inheritance that's imo
+/// wrongly applied for base classes without data members, and hopefully should not make anything worse for other compilers.
+/// @note Just in case, we have a static size assertion at the end of the file, so you will know if there is a problem.
+class VecIdAlignFix {};
+
 /// Identify a vector of a given type stored in State
 /// This class is templated in order to create different variations (generic versus specific type, read-only vs write access)
 template <VecType vtype, VecAccess vaccess>
-class TVecId : public TStandardVec<vtype, vaccess>
+class TVecId : public BaseVecId, public TStandardVec<vtype, vaccess>, public VecIdAlignFix
 {
 public:
-    unsigned int index;
-    TVecId() : index(0) { }
-    TVecId(unsigned int i) : index(i) { }
+    TVecId() : BaseVecId(vtype, 0) { }
+    TVecId(unsigned int i) : BaseVecId(vtype, i) { }
     /// Copy from another VecId, possibly with another type of access, with the
     /// constraint that the access must be compatible (i.e. cannot create
     /// a write-access VecId from a read-only VecId.
     template<VecAccess vaccess2>
-    TVecId(const TVecId<vtype, vaccess2>& v) : index(v.getIndex())
+    TVecId(const TVecId<vtype, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
         BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
     }
 
-    TVecId(const TVecId<vtype, V_WRITE>& v) : index(v.getIndex()) { }
+    TVecId(const TVecId<vtype, V_WRITE>& v) : BaseVecId(vtype, v.getIndex()) { }
 
-    explicit TVecId(const TVecId<V_ALL, vaccess>& v) : index(v.getIndex())
+	template<VecAccess vaccess2>
+    explicit TVecId(const TVecId<V_ALL, vaccess2>& v) : BaseVecId(vtype, v.getIndex())
     {
+		BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
 #ifndef NDEBUG
         assert(v.getType() == vtype);
 #endif
     }
-
-    VecType getType() const { return vtype; }
-    unsigned int getIndex() const { return index; }
 
     template<VecType vtype2, VecAccess vaccess2>
     bool operator==(const TVecId<vtype2, vaccess2>& v) const
@@ -282,27 +305,19 @@ public:
 
 /// Identify any vector stored in State
 template<VecAccess vaccess>
-class TVecId<V_ALL, vaccess> : public TStandardVec<V_ALL, vaccess>
+class TVecId<V_ALL, vaccess> : public BaseVecId, public TStandardVec<V_ALL, vaccess>
 {
 public:
-    typedef VecType Type;
-    VecType type;
-    unsigned int index;
-    TVecId() : type(V_ALL), index(0) { }
-    TVecId(VecType t, unsigned int i) : type(t), index(i) { }
-    template<VecType vtype2, VecAccess vaccess2>
+    TVecId() : BaseVecId(V_ALL, 0) { }
+    TVecId(VecType t, unsigned int i) : BaseVecId(t, i) { }
     /// Create a generic VecId from a specific or generic one, with the
     /// constraint that the access must be compatible (i.e. cannot create
     /// a write-access VecId from a read-only VecId.
-    TVecId(const TVecId<vtype2, vaccess2>& v) : type(v.getType()), index(v.getIndex())
+    template<VecType vtype2, VecAccess vaccess2>
+    TVecId(const TVecId<vtype2, vaccess2>& v) : BaseVecId(v.getType(), v.getIndex())
     {
         BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
     }
-
-    //operator TVecId<V_ALL, V_READ>() const { return TVecId<V_ALL, V_READ>(getType(), getIndex()); }
-
-    VecType getType() const { return type; }
-    unsigned int getIndex() const { return index; }
 
     template<VecType vtype2, VecAccess vaccess2>
     bool operator==(const TVecId<vtype2, vaccess2>& v) const
@@ -330,7 +345,6 @@ public:
     }
 };
 
-
 /// Identify one vector stored in State
 /// A ConstVecId only provides a read-only access to the underlying vector.
 typedef TVecId<V_ALL, V_READ> ConstVecId;
@@ -346,6 +360,8 @@ typedef TVecId<V_DERIV, V_READ> ConstVecDerivId;
 typedef TVecId<V_DERIV, V_WRITE>     VecDerivId;
 typedef TVecId<V_MATDERIV, V_READ> ConstMatrixDerivId;
 typedef TVecId<V_MATDERIV, V_WRITE>     MatrixDerivId;
+
+BOOST_STATIC_ASSERT(sizeof(VecId) == sizeof(VecCoordId));
 
 } // namespace core
 

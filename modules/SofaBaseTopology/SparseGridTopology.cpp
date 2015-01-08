@@ -158,6 +158,7 @@ SparseGridTopology::SparseGridTopology(Vec3i numVertices, BoundingBox box, bool 
     _usingMC = false;
 
     _regularGrid = sofa::core::objectmodel::New<RegularGridTopology>();
+
     //Add alias to use MeshLoader
     addAlias(&vertices,"position");
     addAlias(&input_triangles,"triangles");
@@ -167,6 +168,7 @@ SparseGridTopology::SparseGridTopology(Vec3i numVertices, BoundingBox box, bool 
     setMin(box.minBBox());
     setMax(box.maxBBox());
 }
+
 
 void SparseGridTopology::init()
 {
@@ -438,7 +440,7 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
                 {
                     setVoxel(x + (int)numVoxels[0] * (y + (int)numVoxels[1] * z),1);
                 }
-                ++f;
+                f++;
             }
         }
     }
@@ -1413,17 +1415,16 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
     this->addSlave(_virtualFinerLevels[0]); //->setContext( this->getContext( ) );
-
-    if(this->fileTopology.getValue().empty() )
-    {   
-        _virtualFinerLevels[0]->vertices.setValue( this->vertices.getValue() );
-        _virtualFinerLevels[0]->input_triangles.setValue( this->input_triangles.getValue() );
-        _virtualFinerLevels[0]->input_quads.setValue( this->input_quads.getValue() );
+    const std::string& fileTopology = this->fileTopology.getValue();
+    if (fileTopology.empty()) // If no file is defined, try to build from the input Datas
+    {
+        _virtualFinerLevels[0]->vertices.setParent(&this->vertices);
+        _virtualFinerLevels[0]->facets.setParent(&this->facets);
+        _virtualFinerLevels[0]->input_triangles.setParent(&this->input_triangles);
+        _virtualFinerLevels[0]->input_quads.setParent(&this->input_quads);
     }
     else
-    {
-        _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
-    }
+        _virtualFinerLevels[0]->load(fileTopology.c_str());
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->init();
 

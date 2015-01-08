@@ -130,10 +130,6 @@ public:
         baseMatrices.resize( 1 ); // just a wrapping for getJs()
         baseMatrices[0] = &eigenJacobian;
 
-        // init geometric stiffnesses
-        stiffnessBaseMatrices.resize(1);
-        stiffnessBaseMatrices[0] = &K;
-
         resizeOut();
         Inherit::init();
     }
@@ -334,7 +330,6 @@ protected:
     }
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
-    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     void updateK(const OutVecDeriv& childForce)
     {
         unsigned int size = this->fromModel->getSize();
@@ -353,10 +348,10 @@ protected:
 //        K.endEdit();
         K.compress();
     }
-    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    virtual const defaulttype::BaseMatrix* getK()
     {
         updateK(this->toModel->readForces().ref());
-        return &stiffnessBaseMatrices;
+        return &K;
     }
 };
 

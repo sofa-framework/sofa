@@ -159,7 +159,7 @@ void Base::addAlias( BaseData* field, const char* alias)
 /// Note that this method should only be called if the link was not initialized with the initLink method
 void Base::addLink(BaseLink* l)
 {
-    std::string name = l->getName();
+    const std::string& name = l->getName();
     if (name.size() > 0 && (findData(name) || findLink(name)))
     {
         serr << "Link name " << name

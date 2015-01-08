@@ -93,9 +93,39 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
         _connexions[i].push_back( new Connexion() ); // at the finest level, each hexa corresponds exatly to one connexion
 
     helper::io::Mesh* mesh = helper::io::Mesh::Create(this->fileTopology.getValue().c_str());
-    if( mesh==NULL && _finestConnectivity.getValue() )
+    if (mesh == NULL && _finestConnectivity.getValue())
     {
-        serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
+        if (vertices.getValue().empty())
+            serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
+        else
+        { // We can rebuild it
+            mesh = new helper::io::Mesh();
+            for (unsigned int i = 0; i<vertices.getValue().size(); ++i)
+                mesh->getVertices().push_back(vertices.getValue()[i]);
+            const vector < vector <int> >& facets = this->facets.getValue();
+            const SeqTriangles& triangles = this->input_triangles.getValue();
+            const SeqQuads& quads = this->input_quads.getValue();
+            mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
+            for (unsigned int i = 0; i<facets.size(); ++i)
+                mesh->getFacets()[i].push_back(facets[i]);
+            for (unsigned int i0 = facets.size(), i = 0; i<triangles.size(); ++i)
+            {
+                mesh->getFacets()[i0 + i].resize(1);
+                mesh->getFacets()[i0 + i][0].resize(3);
+                mesh->getFacets()[i0 + i][0][0] = triangles[i][0];
+                mesh->getFacets()[i0 + i][0][1] = triangles[i][1];
+                mesh->getFacets()[i0 + i][0][2] = triangles[i][2];
+            }
+            for (unsigned int i0 = facets.size() + triangles.size(), i = 0; i<quads.size(); ++i)
+            {
+                mesh->getFacets()[i0 + i].resize(1);
+                mesh->getFacets()[i0 + i][0].resize(4);
+                mesh->getFacets()[i0 + i][0][0] = quads[i][0];
+                mesh->getFacets()[i0 + i][0][1] = quads[i][1];
+                mesh->getFacets()[i0 + i][0][2] = quads[i][2];
+                mesh->getFacets()[i0 + i][0][3] = quads[i][3];
+            }
+        }
     }
 
 
@@ -963,17 +993,16 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->setMin( _min.getValue() );
     _virtualFinerLevels[0]->setMax( _max.getValue() );
-
-    if(this->fileTopology.getValue().empty() )
+    const std::string& fileTopology = this->fileTopology.getValue();
+    if (fileTopology.empty()) // If no file is defined, try to build from the input Datas
     {
-        _virtualFinerLevels[0]->vertices.setValue( this->vertices.getValue() );
-        _virtualFinerLevels[0]->input_triangles.setValue( this->input_triangles.getValue() );
-        _virtualFinerLevels[0]->input_quads.setValue( this->input_quads.getValue() );
+        _virtualFinerLevels[0]->vertices.setParent(&this->vertices);
+        _virtualFinerLevels[0]->facets.setParent(&this->facets);
+        _virtualFinerLevels[0]->input_triangles.setParent(&this->input_triangles);
+        _virtualFinerLevels[0]->input_quads.setParent(&this->input_quads);
     }
     else
-    {
-        _virtualFinerLevels[0]->load(this->fileTopology.getValue().c_str());
-    }
+        _virtualFinerLevels[0]->load(fileTopology.c_str());
     _virtualFinerLevels[0]->init();
 
     sout<<"buildVirtualFinerLevels : ";
