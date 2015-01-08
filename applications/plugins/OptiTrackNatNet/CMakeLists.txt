@@ -20,7 +20,7 @@ set(SOURCE_FILES
 
 	)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_OPTITRACKNATNET")
 AddLinkerDependencies(SofaCore SofaSimulationCommon SofaUserInteraction ${Boost_LIBRARIES})

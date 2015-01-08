@@ -24,7 +24,7 @@ if(SOFA-MISC_SMP)
 	list(APPEND SOURCE_FILES "SMPSimulation.cpp")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SIMULATION_TREE")
 AddLinkerDependencies(SofaSimulationCommon)

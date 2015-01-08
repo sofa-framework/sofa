@@ -45,7 +45,7 @@ if(WIN32)
 
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES})
 AddCompilerDefinitions("SOFA_BUILD_SOFAHAPI")
 AddLinkerDependencies(SofaComponentGeneral SofaHaptics ${HAPI_LIBRARIES} ${H3DUTIL_LIBRARIES} )
 

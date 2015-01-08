@@ -22,7 +22,7 @@ set(SOURCE_FILES
 #	include_directories("/usr/include/suitesparse/")
 #endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 #AddCompilerDefinitions("SOFA_BUILD_THMPGSpatialHashing")
 #AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)

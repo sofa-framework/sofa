@@ -23,7 +23,7 @@ set(README_FILES
 	PluginXitact.txt
 	)
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_XITACTPLUGIN")
 AddLinkerDependencies(SofaComponentMain SofaGui SofaGuiQt XiRobot)

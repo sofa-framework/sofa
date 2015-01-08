@@ -187,7 +187,7 @@ endif()
 include(./python/python.cmake)
 
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Flexible")
 AddLinkerDependencies(SofaEigen2Solver SofaBaseVisual)

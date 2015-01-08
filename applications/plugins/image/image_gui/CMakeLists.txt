@@ -38,7 +38,7 @@ if(SOFA-LIB_GUI_QT)
     set(MOC_FILES_GROUP "Generated")
 
 
-    add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${HEADER_MOC_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
+    add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${HEADER_MOC_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
     AddCompilerDefinitions("SOFA_BUILD_IMAGE_GUI")
     AddLinkerDependencies(SofaGuiQt image ${OPENGL_LIBRARIES})

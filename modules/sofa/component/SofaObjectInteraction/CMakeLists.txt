@@ -29,7 +29,7 @@ set(SOURCE_FILES
 
 set(GROUP_BASE_DIR "..")
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_OBJECT_INTERACTION")
 AddLinkerDependencies(SofaDeformable SofaRigid SofaMiscMapping)

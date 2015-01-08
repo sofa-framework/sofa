@@ -17,7 +17,7 @@ find_package(OpenHaptics REQUIRED)
 include_directories(${OPENHAPTICS_INCLUDE_DIR})
 include_directories(${OPENHAPTICS_UTIL_INCLUDE_DIR})
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SENSABLEPLUGIN")
 AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaBaseCollision SofaHaptics ${OPENHAPTICS_LIBRARIES})

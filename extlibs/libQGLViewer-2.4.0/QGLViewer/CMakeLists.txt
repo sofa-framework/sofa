@@ -98,7 +98,7 @@ if(WIN32)
 	AddCompilerDefinitions(CREATE_QGLVIEWER_DLL)
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${MOC_UI_FILES} ${FORM_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${MOC_FILES} ${MOC_UI_FILES} ${FORM_FILES} ${SOURCE_FILES})
 AddLinkerDependencies(${OPENGL_LIBRARIES})
 
 # The code must be relocatable if we want to link a shared library against it
