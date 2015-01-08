@@ -70,6 +70,7 @@ class Scene:
             print "ERROR: Compliant.sml.Scene: file {0} not found".format(filename)
             return None
 
+        parentNode.createObject('RequiredPlugin', name = 'Flexible' )
         parentNode.createObject('RequiredPlugin', name = 'Compliant' )
 
         with open(self.filename,'r') as f:
@@ -150,6 +151,18 @@ class Scene:
                 self.joints[j.attrib["id"]] = joint
                 
             #deformable
+            # all rigids (bones) must be gathered in a single node
+            bonesNode = self.node.createChild("bones")
+            bones = bonesNode.createObject("MechanicalObject", template = "Rigid3d", name="dofs")
+            input=""
+            indexPairs=""
+            for i,r in enumerate(self.rigids.values()):
+                r.node.addChild(bonesNode)
+                input += '@'+r.node.getPathName()+" "
+                indexPairs += str(i) + " 0 "
+                r.boneIndex=i
+            bonesNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs )
+            
             self.deformable=dict()
             for d in model.iter("deformable"):
                 name = d.attrib["id"]
@@ -160,8 +173,38 @@ class Scene:
                 position = SofaPython.Tools.strToListFloat(d.find("position").text)
                 mesh = meshes[d.find("mesh").attrib["id"]]
                 r = Quaternion.to_euler(position[3:])  * 180.0 / math.pi
-                meshLoader = SofaPython.Tools.meshLoader(node, mesh.source, translation=concat(position[:3]) , rotation=concat(r))
+                meshLoader = SofaPython.Tools.meshLoader(node, os.path.join(os.path.dirname(self.filename),mesh.source), translation=concat(position[:3]) , rotation=concat(r))
                 node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+meshLoader.name)
+                
+                indices=dict()
+                weights=dict()
+                nbref=dict()
+                for s in d.iter("skinning"):
+                    if not s.attrib["rigid"] in self.rigids:
+                        print "ERROR: Compliant.sml.Scene: skinning for deformable {0}: rigid {1} is not defined".format(name, s.attrib["rigid"])
+                        continue
+                    currentBone = self.rigids[s.attrib["rigid"]].boneIndex
+                    if not (s.attrib["group"] in mesh.group and s.attrib["group"] in mesh.weight):
+                        print "ERROR: Compliant.sml.Scene: skinning for deformable {0}: group {1} is not defined".format(name, s.attrib["group"])
+                        continue
+                    for index,weight in zip(mesh.group[s.attrib["group"]], mesh.weight[s.attrib["group"]]):
+                        if not index in indices:
+                            indices[index]=list()
+                            weights[index]=list()
+                            nbref[index]=0
+                        nbref[index]+=1
+                        indices[index].append(currentBone)
+                        weights[index].append(weight)
+                print nbref
+                print bonesNode.getPathName()
+                print indices
+                print weights
+                bonesNode.addChild(node)
+                
+                node.createObject("SkinningMapping", template="Rigid3d,Vec3d", name="skinning", input="@"+bonesNode.getPathName(), nbref="2", indices="[0,1] [0,1] [0,1]", weight="[1,0] [0.5,0.5] [0,1]" )
+                
+                #node.createObject("LinearMapping", template="Rigid3d,Vec3d", name="skinning", input="@"+bonesNode.getPathName(), indices="[0] [0] [0]", weights="[1] [1] [1]")
+                #node.createObject("LinearMapping", template="Rigid3d,Vec3d", name="skinning", input="@"+bonesNode.getPathName(), indices=concat(indices.values()), weights=concat(weights.values()))
                 
                 self.deformable[d.attrib["id"]]=node
                         
