@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/MatSym.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/SVector.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 
 
@@ -48,6 +49,7 @@ using defaulttype::Vec;
 using defaulttype::Mat;
 using defaulttype::MatSym;
 using helper::vector;
+using helper::SVector;
 
 template<typename TShapeFunctionTypes>
 struct ShapeFunctionInternalData
@@ -217,8 +219,8 @@ struct ShapeFunctionTypes
 	typedef int Cell;
 	typedef vector<Cell> VCell;
 
-	typedef vector<VRef> VecVRef;
-	typedef vector<VReal> VecVReal;
+    typedef vector< SVector<unsigned int> > VecVRef;
+    typedef vector< SVector<Real> > VecVReal;
 	typedef vector<VGradient> VecVGradient;
 	typedef vector<VHessian> VecVHessian;
 

@@ -163,8 +163,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     initJacobianBlocks();
 
     // update indices for each parent type
-    helper::WriteAccessor<Data<vector<VRef> > > wa_index1 (this->f_index1);   wa_index1.resize(size);
-    helper::WriteAccessor<Data<vector<VRef> > > wa_index2 (this->f_index2);   wa_index2.resize(size);
+    helper::WriteAccessor<Data<VecVRef > > wa_index1 (this->f_index1);   wa_index1.resize(size);
+    helper::WriteAccessor<Data<VecVRef > > wa_index2 (this->f_index2);   wa_index2.resize(size);
     for(size_t i=0; i<size; i++ )
     {
         for(size_t j=0; j<this->f_index.getValue()[i].size(); j++ )
@@ -199,8 +199,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     this->toModel->resize(size);
     pos0.resize(size);  for(size_t i=0; i<size; i++ )        pos0[i]=position0[i];
 
-    helper::WriteAccessor<Data<vector<VRef> > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
-    helper::WriteAccessor<Data<vector<VReal> > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
+    helper::WriteAccessor<Data<VecVRef > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
+    helper::WriteAccessor<Data<VecVReal > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
     helper::WriteAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
     helper::WriteAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
     helper::WriteAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
@@ -211,8 +211,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     initJacobianBlocks();
 
     // update indices for each parent type
-    helper::WriteAccessor<Data<vector<VRef> > > wa_index1 (this->f_index1);   wa_index1.resize(size);
-    helper::WriteAccessor<Data<vector<VRef> > > wa_index2 (this->f_index2);   wa_index2.resize(size);
+    helper::WriteAccessor<Data<VecVRef > > wa_index1 (this->f_index1);   wa_index1.resize(size);
+    helper::WriteAccessor<Data<VecVRef > > wa_index2 (this->f_index2);   wa_index2.resize(size);
     for(size_t i=0; i<size; i++ )
     {
         for(size_t j=0; j<this->f_index.getValue()[i].size(); j++ )
@@ -856,8 +856,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::draw(c
     helper::ReadAccessor<Data<InVecCoord1> > in1 (*this->fromModel1->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<InVecCoord2> > in2 (*this->fromModel2->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    helper::ReadAccessor<Data<vector<VRef> > > ref (this->f_index);
-    helper::ReadAccessor<Data<vector<VReal> > > w (this->f_w);
+    helper::ReadAccessor<Data<VecVRef > > ref (this->f_index);
+    helper::ReadAccessor<Data<VecVReal > > w (this->f_w);
     size_t size1=this->getFromSize1();
 
     if(this->missingInformationDirty)
