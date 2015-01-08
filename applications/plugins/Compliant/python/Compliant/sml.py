@@ -32,9 +32,17 @@ def parseMesh(xmlModel):
         if not m.find("source") is None:
             if m.attrib["id"] in meshes:
                 print "WARNING: Compliant.sml.parseMesh: mesh id {0} already defined".format(m.attrib["id"])
-            meshes[m.attrib["id"]]=Mesh()
-            meshes[m.attrib["id"]].format = m.find("source").attrib["format"]
-            meshes[m.attrib["id"]].source = m.find("source").text
+            mesh=Mesh()
+            mesh.format = m.find("source").attrib["format"]
+            mesh.source = m.find("source").text
+        
+            mesh.group=dict()
+            mesh.weight=dict()
+            for g,w in zip(m.iter("group"),m.iter("weight")):
+                mesh.group[g.attrib["id"]] = SofaPython.Tools.strToListInt(g.text)
+                mesh.weight[g.attrib["id"]] = SofaPython.Tools.strToListFloat(w.text)
+                
+            meshes[m.attrib["id"]] = mesh
             
     return meshes
 
