@@ -206,7 +206,7 @@ extern "C" PyObject * TriangleSetTopologyModifier_addRemoveTriangles(PyObject *s
         sofa::helper::vector< unsigned int       > triangleIndices    = parseVector<unsigned int>( triangleIndicesArg );
         sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = parseVectorOfVector<unsigned int>( ancestorsArg );
         sofa::helper::vector< sofa::helper::vector< double       > > coefs     = parseVectorOfVector<double>(coefsArg);
-        sofa::helper::vector< unsigned int >& triangles2remove = parseVector<unsigned int>(triangles2RemoveArg);
+        sofa::helper::vector< unsigned int > triangles2remove = parseVector<unsigned int>(triangles2RemoveArg);
 
         obj->addRemoveTriangles(triangles.size(),triangles,triangleIndices,ancestors,coefs, triangles2remove );
 
