@@ -28,6 +28,9 @@ set(HEADER_FILES
     Binding_Mapping.h
 #    Binding_MechanicalObject.h
     Binding_MeshLoader.h
+    Binding_TopologyChange.h
+    Binding_PointSetTopologyModifier.h
+    Binding_TriangleSetTopologyModifier.h
     Binding_MeshTopology.h
     Binding_MultiMapping.h
     Binding_Node.h
@@ -78,6 +81,9 @@ set(SOURCE_FILES
     Binding_Mapping.cpp
 #    Binding_MechanicalObject.cpp
     Binding_MeshLoader.cpp
+    Binding_TopologyChange.cpp
+    Binding_PointSetTopologyModifier.cpp
+    Binding_TriangleSetTopologyModifier.cpp
     Binding_MeshTopology.cpp
     Binding_MultiMapping.cpp
     Binding_Node.cpp
