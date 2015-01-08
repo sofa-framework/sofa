@@ -56,7 +56,7 @@ find_package(Bullet CONFIG REQUIRED)
 include_directories(${BULLET_INCLUDE_DIRS})
 link_directories(${BULLET_LIBRARY_DIRS})
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_BULLETCOLLISIONDETECTION")
 AddLinkerDependencies(SofaMeshCollision SofaMiscCollision SofaVolumetricData)

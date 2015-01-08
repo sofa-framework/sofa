@@ -44,7 +44,7 @@ else()
 	include_directories("/usr/include/suitesparse/")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${MOC_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${MOC_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_COMPLIANT_GUI")
 AddLinkerDependencies(SofaGuiMain Compliant)

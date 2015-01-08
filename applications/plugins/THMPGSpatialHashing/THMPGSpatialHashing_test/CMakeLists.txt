@@ -11,7 +11,7 @@ set(SOURCE_FILES
 include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
 link_directories("${SOFA_EXTLIBS_DIR}/gtest/lib")
 
-#add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+#add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES})
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
 AddCompilerDefinitions("")

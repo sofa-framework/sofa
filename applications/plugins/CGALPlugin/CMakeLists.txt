@@ -56,7 +56,7 @@ endif()
 
 AddCompilerDefinitions("SOFA_BUILD_CGALPLUGIN")
 AddLinkerDependencies(SofaGuiQt ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

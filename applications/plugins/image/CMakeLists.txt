@@ -60,7 +60,7 @@ if(SOFA-EXTERNAL_ZLIB)
     AddLinkerDependencies(${ZLIB_LIBRARIES})
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE")
 AddLinkerDependencies(SofaBaseVisual)

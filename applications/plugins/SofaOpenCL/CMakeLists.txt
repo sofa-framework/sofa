@@ -121,7 +121,7 @@ set(OTHER_FILES
 
 include_directories(${OPENCL_INCLUDE_DIRS})
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${OTHER_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${OTHER_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_GPU_OPENCL")
 AddLinkerDependencies(${OPENCL_LIBRARIES} SofaHelper SofaEngine SofaSphFluid SofaUserInteraction csparse) # taucs taucs_mt system-taucs)

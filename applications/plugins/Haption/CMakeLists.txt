@@ -22,7 +22,7 @@ set(README_FILES
 	PluginHaption.txt
 	)	
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_HAPTIONPLUGIN")
 AddLinkerDependencies(SofaComponentMain )

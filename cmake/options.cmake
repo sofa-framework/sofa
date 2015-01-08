@@ -186,6 +186,12 @@ if(SOFA-MISC_DUMP_VISITOR_INFO)
     list(APPEND compilerDefines SOFA_DUMP_VISITOR_INFO)
 endif()
 
+sofa_option(SOFA-MISC_STATIC_LIBRARY BOOL OFF "Build sofa libraries as static instead of dynamic")
+set(SOFA_LIB_TYPE SHARED)
+if(SOFA-MISC_STATIC_LIBRARY)
+    list(APPEND compilerDefines SOFA_STATIC_LIBRARY)
+	set(SOFA_LIB_TYPE STATIC)
+endif()
 
 ## tutorials
 if(PS3)

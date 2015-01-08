@@ -249,7 +249,7 @@ if(PS3)
 	list(APPEND SOURCE_FILES "ps3/cxa_demangle.cpp")
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_CORE")
 AddLinkerDependencies(SofaDefaultType ${GLEW_LIBRARIES} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})

@@ -16,7 +16,7 @@ if(SOFA-EXTERNAL_BOOST)
 	list(APPEND SOURCE_FILES MultithreadGUI.cpp)
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${MOC_HEADER_FILES} ${SOURCE_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SOFAGUIGLUT")
 AddLinkerDependencies(SofaGuiCommon ${GLUT_LIBRARIES})

@@ -29,7 +29,7 @@ find_package(Boost COMPONENTS thread REQUIRED)
 #find_package(Threads REQUIRED)
 #include_directories(${THREADS_PTHREADS_INCLUDE_DIR})
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SENSABLEEMULATIONPLUGIN")
 AddLinkerDependencies(SofaGuiQt SofaComponentGeneral SofaHaptics ${Boost_THREAD_LIBRARY})
