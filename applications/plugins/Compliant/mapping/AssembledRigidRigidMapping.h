@@ -93,8 +93,11 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         J.resize(6 * source.getValue().size(),
 		         6 * in_pos.size() );
 		J.setZero();
-		
-        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
+
+		const unsigned n = source.getValue().size();
+		J.reserve(n * 6 * 6);
+
+        for(unsigned i = 0; i < n; ++i) {
             const source_type& s = source.getValue()[i];
 			
             typename se3::mat66 block = se3::dR(s.second(), in_pos[ s.first() ] );

@@ -223,6 +223,8 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 this->jacobian(i).compressedMatrix.resize( Nout * p.size(), Nin * in[i].size());
                 this->jacobian(i).compressedMatrix.setZero();
 
+				this->jacobian(i).compressedMatrix.reserve(p.size() * Nout);
+
                 Real sign = (i == 0) ? -1 : 1;
 
                 for(unsigned k = 0, n = p.size(); k < n; ++k) {

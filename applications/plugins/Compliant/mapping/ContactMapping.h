@@ -93,7 +93,9 @@ protected:
 		J.resize( n * self::Nout, n * self::Nin );
 		
 		J.setZero();
-		
+
+		J.reserve(n * self::Nout * self::Nin);
+
 		for(unsigned i = 0; i < n; ++i)
 			{
 			  assert( !normal.getValue().empty() );

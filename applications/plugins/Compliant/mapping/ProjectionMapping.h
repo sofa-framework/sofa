@@ -62,7 +62,10 @@ protected:
 		
 		J.setZero();
 
-		for( unsigned i = 0, n = s.size(); i < n; ++i) {
+		const unsigned n = s.size();
+		J.reserve(n * self::Nin);
+
+		for( unsigned i = 0; i < n; ++i) {
 			unsigned row = i;
 
 			J.startVec( row );

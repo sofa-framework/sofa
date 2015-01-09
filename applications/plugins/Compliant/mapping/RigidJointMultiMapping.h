@@ -131,7 +131,9 @@ protected:
 				
 
 				mat66 block = ddelta;
-				
+
+				J.reserve(6*6);
+
 				// each row
 				for( unsigned u = 0; u < 6; ++u) {
 					unsigned row = 6 * i + u;
