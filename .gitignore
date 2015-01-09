@@ -18,15 +18,6 @@
 .*.swp
 .*.swo
 
-# Sofa user-specific files
-share/config/sofaplugins_release.ini
-share/config/sofaplugins_debug.ini
-share/config/lastUsedGUI.ini
-share/config/Modeler.ini
-share/config/Sofa.ini
-share/config/plugins.cfg
-share/config/Ogre.log
-
 # git diff temporary files
 *.orig
 
@@ -37,10 +28,8 @@ share/config/Ogre.log
 *.pyc
 
 # Misc
-doc/doxygen.git/
-share/screenshots/
-/applications/plugins/EmptyPlugin/
-/applications-dev/
+/applications/plugins/EmptyPlugin
+/applications-dev
 
 # Files related to cmake builds (when in-source)
 CMakeFiles/*
@@ -52,7 +41,3 @@ CMakeLists.txt.user*
 # anything user-specific (as opposed to repository-specific) should go
 # to .git/info/exclude instead of .gitignore. Also, .gitignore files
 # can be placed in sub-directories to avoid polluting the root one.
-
-
-.svn/
-build/

@@ -212,6 +212,7 @@ public:
         const defaulttype::BaseMatrix* Ktilde; ///< geometric stiffness (only valid for mapped dof) @warning: size=parent*parent
 				
 		struct mapped {
+            mapped() : J(NULL) {}
             const defaulttype::BaseMatrix* J; ///< mapping jacobian
 		};
 
