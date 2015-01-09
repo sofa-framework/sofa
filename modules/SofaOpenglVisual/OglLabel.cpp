@@ -212,7 +212,7 @@ void OglLabel::setColor(std::string color)
             //in contrast mode, the text color is selected between black or white depending on the background color
             defaulttype::Vector3 backgroundColor = backgroundSetting->color.getValue();
             backgroundColor *= 255;
-            float yiq = backgroundColor[0]*299 + backgroundColor[1]*587 + backgroundColor[2]*114;
+            float yiq = (float)(backgroundColor[0]*299 + backgroundColor[1]*587 + backgroundColor[2]*114);
             yiq /= 1000;
             if (yiq >= 128)
             {

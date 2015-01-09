@@ -115,7 +115,7 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
             if(edgeMap.find(e)==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                const int edgeIndex = edgeMap.size();
+                const unsigned int edgeIndex = (unsigned int)edgeMap.size();
                 edgeMap[e] = edgeIndex;
                 m_edge.push_back(e);
             }
@@ -187,13 +187,13 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
         }
 
         // sort vertices in lexicographics order
-        int quadIndex;
+        unsigned int quadIndex;
         Quad qu(v[0],v[3],v[2],v[1]);
         std::map<Quad,unsigned int>::iterator itt = quadMap.find(qu);
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=m_quad.size();
+            quadIndex=(unsigned int)m_quad.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -220,7 +220,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=m_quad.size();
+            quadIndex=(unsigned int)m_quad.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -244,7 +244,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=m_quad.size();
+            quadIndex=(unsigned int)m_quad.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -268,7 +268,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=m_quad.size();
+            quadIndex=(unsigned int)m_quad.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -295,7 +295,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=m_quad.size();
+            quadIndex=(unsigned int)m_quad.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -322,7 +322,7 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
         if(itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=m_quad.size();
+            quadIndex=(unsigned int)m_quad.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -522,7 +522,7 @@ const Hexahedron HexahedronSetTopologyContainer::getHexahedron(HexaID i)
 
 unsigned int HexahedronSetTopologyContainer::getNumberOfHexahedra() const
 {
-    return (d_hexahedron.getValue()).size();
+    return (unsigned int)d_hexahedron.getValue().size();
 }
 
 
@@ -918,9 +918,9 @@ unsigned int HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        unsigned int other_HexaID = elemAll.size();
+        HexaID other_HexaID = (HexaID)elemAll.size();
 
-        for (unsigned int i = 0; i<elemAll.size(); ++i)
+        for (HexaID i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_HexaID = i;
@@ -951,7 +951,7 @@ const VecHexaID HexahedronSetTopologyContainer::getConnectedElement(HexaID elem)
     VecHexaID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     unsigned int cpt = 0;
-    unsigned int nbr = this->getNbHexahedra();
+    const unsigned int nbr = this->getNbHexahedra();
 
     // init algo
     elemAll.push_back(elem);
@@ -970,7 +970,7 @@ const VecHexaID HexahedronSetTopologyContainer::getConnectedElement(HexaID elem)
             bool find = false;
             HexaID id = elemNextFront[i];
 
-            for (unsigned int j = 0; j<elemAll.size(); ++j)
+            for (HexaID j = 0; j<elemAll.size(); ++j)
                 if (id == elemAll[j])
                 {
                     find = true;
@@ -985,7 +985,7 @@ const VecHexaID HexahedronSetTopologyContainer::getConnectedElement(HexaID elem)
         }
 
         // cpt for connexity
-        cpt +=elemPreviousFront.size();
+        cpt += (unsigned int)elemPreviousFront.size();
 
         if (elemPreviousFront.empty())
         {

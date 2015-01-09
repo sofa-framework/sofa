@@ -188,7 +188,7 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 {
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get(mparams)].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
-    Real kfactor = mparams->kFactor();
+    const SReal kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
     SeqEdges links = edgeContainer->getEdges();
 
@@ -528,7 +528,7 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
 {
     // NOT OPTIMIZED AT ALL, but will do the job for now
 
-    Real kfactor = mparams->kFactor();
+    const SReal kfactor = mparams->kFactor();
     const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
     SeqEdges links = edgeContainer->getEdges();
     const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
@@ -563,9 +563,9 @@ void DistanceMultiMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mpa
             for(unsigned k=0; k<Nin; k++)
             {
                 if( j==k )
-                    b[j][k] = 1. - directions[i][j]*directions[i][k];
+                    b[j][k] = 1.f - directions[i][j]*directions[i][k];
                 else
-                    b[j][k] =    - directions[i][j]*directions[i][k];
+                    b[j][k] =     - directions[i][j]*directions[i][k];
             }
         }
         b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
@@ -617,9 +617,9 @@ const defaulttype::BaseMatrix* DistanceMultiMapping<TIn, TOut>::getK()
             for(unsigned k=0; k<Nin; k++)
             {
                 if( j==k )
-                    b[j][k] = 1. - directions[i][j]*directions[i][k];
+                    b[j][k] = 1.f - directions[i][j]*directions[i][k];
                 else
-                    b[j][k] =    - directions[i][j]*directions[i][k];
+                    b[j][k] =     - directions[i][j]*directions[i][k];
             }
         }
         b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
@@ -699,7 +699,7 @@ void DistanceMultiMapping<TIn, TOut>::draw(const core::visual::VisualParams* vpa
 
             defaulttype::Vector3 p0 = TIn::getCPos(pos0);
             defaulttype::Vector3 p1 = TIn::getCPos(pos1);
-            vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
+            vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
 }

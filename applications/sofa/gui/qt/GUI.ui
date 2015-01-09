@@ -33,9 +33,9 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>22</y>
+     <y>25</y>
      <width>800</width>
-     <height>578</height>
+     <height>575</height>
     </rect>
    </property>
    <layout class="QVBoxLayout">
@@ -89,6 +89,16 @@
                 <width>80</width>
                 <height>32767</height>
                </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="realTimeCheckBox">
+              <property name="toolTip">
+               <string>Use the duration of the previous simulation step as the next DT</string>
+              </property>
+              <property name="text">
+               <string>Real Time</string>
               </property>
              </widget>
             </item>
@@ -476,7 +486,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="fileMenu">

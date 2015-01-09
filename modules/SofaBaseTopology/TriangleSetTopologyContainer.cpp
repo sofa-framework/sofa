@@ -202,7 +202,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
             if(edgeMap.find(e) == edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                const int edgeIndex = edgeMap.size();
+                const unsigned int edgeIndex = (unsigned int)edgeMap.size();
                 edgeMap[e] = edgeIndex;
 //	      m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
                 m_edge.push_back(Edge(v1,v2));
@@ -256,7 +256,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                 if(edgeMap.find(e) == edgeMap.end())
                 {
                     // edge not in edgeMap so create a new one
-                    const int edgeIndex = edgeMap.size();
+                    const unsigned int edgeIndex = (unsigned int)edgeMap.size();
                     /// add new edge
                     edgeMap[e] = edgeIndex;
 //			  m_edge.push_back(e);
@@ -487,7 +487,7 @@ int TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, Point
 
 unsigned int TriangleSetTopologyContainer::getNumberOfTriangles() const
 {
-    return (d_triangle.getValue()).size();
+    return (unsigned int)d_triangle.getValue().size();
 }
 
 unsigned int TriangleSetTopologyContainer::getNumberOfElements() const
@@ -823,9 +823,9 @@ unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        unsigned int other_triangleID = elemAll.size();
+        TriangleID other_triangleID = elemAll.size();
 
-        for (unsigned int i = 0; i<elemAll.size(); ++i)
+        for (TriangleID i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_triangleID = i;
@@ -854,8 +854,8 @@ const VecTriangleID TriangleSetTopologyContainer::getConnectedElement(TriangleID
     VecTriangleID elemAll;
     VecTriangleID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
-    unsigned int cpt = 0;
-    unsigned int nbr = this->getNbTriangles();
+    size_t cpt = 0;
+    size_t nbr = this->getNbTriangles();
 
     // init algo
     elemAll.push_back(elem);

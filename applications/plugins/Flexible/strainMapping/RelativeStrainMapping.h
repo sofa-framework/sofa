@@ -67,8 +67,6 @@ public:
 
     virtual void reinit()
     {
-        Inherit::reinit();
-
         typename Inherit::InCoord off = typename Inherit::InCoord();
         if(offset.getValue().size()==1) off = offset.getValue()[0];
 
@@ -77,6 +75,8 @@ public:
             if(i<offset.getValue().size()) off = offset.getValue()[i];
             this->jacobian[i].init(off,inverted.getValue());
         }
+
+        Inherit::reinit();
     }
 
 protected:

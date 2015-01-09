@@ -80,10 +80,7 @@ public:
 protected :
 
     simulation::Node* gnode;  ///< the node controlled by the loop
-    bool firstIteration;
-    bool realTimeAnimation;
-    double previousDt;
-    clock_t m_previousTime;
+
 };
 
 } // namespace simulation

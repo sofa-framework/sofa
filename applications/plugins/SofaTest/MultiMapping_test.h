@@ -164,7 +164,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
         mparams.setSymmetricMatrix(false);
 
         // transfer the parent values in the parent states
-        for( int i=0; i<parentCoords.size(); i++ )
+        for( size_t i=0; i<parentCoords.size(); i++ )
         {
             this->inDofs[i]->resize(parentCoords[i].size());
             WriteInVecCoord xin = inDofs[i]->writePositions();

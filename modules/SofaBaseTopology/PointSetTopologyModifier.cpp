@@ -340,7 +340,7 @@ void PointSetTopologyModifier::removePointsProcess(const sofa::helper::vector<un
     {
         propagateStateChanges();
     }
-    m_container->removePoints(indices.size());
+    m_container->removePoints((unsigned int)indices.size());
 }
 
 

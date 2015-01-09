@@ -391,7 +391,7 @@ struct AssemblyVisitor::process_helper {
         // full jacobian for multimapping's geometric stiffness
         mat* geometricStiffnessJc = NULL;
         unsigned localOffsetParentInMapped = 0; // only used for multimappings
-        if( boost::out_degree(v,g)>1 && c->Ktilde )
+        if( boost::out_degree(v,g)>1 && notempty(c->Ktilde) )
         {
             geometricStiffnessJc = &res.fullmappinggeometricstiffness[ curr ];
         }

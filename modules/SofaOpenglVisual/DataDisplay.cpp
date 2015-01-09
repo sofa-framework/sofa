@@ -255,7 +255,7 @@ void DataDisplay::computeNormals()
 
         Coord edge0 = (x[t[1]]-x[t[0]]); edge0.normalize();
         Coord edge1 = (x[t[2]]-x[t[0]]); edge1.normalize();
-        Real triangleSurface = edge0*edge1*0.5;
+        Real triangleSurface = (Real)(edge0*edge1*0.5);
         Vec3f triangleNormal = cross( edge0, edge1 ) * triangleSurface;
 
         for( int i=0 ; i<3 ; ++i )
@@ -272,7 +272,7 @@ void DataDisplay::computeNormals()
         {
             Coord edge0 = (x[q[(i+1)%3]]-x[q[i]]); edge0.normalize();
             Coord edge1 = (x[q[(i+2)%3]]-x[q[i]]); edge1.normalize();
-            Real triangleSurface = edge0*edge1*0.5;
+            Real triangleSurface = (Real)(edge0*edge1*0.5);
             Vec3f quadNormal = cross( edge0, edge1 ) * triangleSurface;
 
             m_normals[q[i]] += quadNormal;

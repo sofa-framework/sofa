@@ -17,8 +17,8 @@
 
 	 <VoronoiToMeshEngine  name="VoronoiToMesh"  template="ImageUI"  transform="@image.transform"  image="@sampler.voronoi"  showMesh="0" minLength="2" printLog="1"/>
 
-	 <VisualModel position="@VoronoiToMesh.position" edges="@VoronoiToMesh.edges" color="red" lineWidth="1" lineSmooth="1"/>
-	 <VisualModel position="@VoronoiToMesh.position" triangles="@VoronoiToMesh.triangles" color="5e-1 5e-1 10e-1 1e-1" lineWidth="1"/>
+	 <OglModel position="@VoronoiToMesh.position" edges="@VoronoiToMesh.edges" color="red" lineWidth="1" lineSmooth="1"/>
+	 <OglModel position="@VoronoiToMesh.position" triangles="@VoronoiToMesh.triangles" color="5e-1 5e-1 10e-1 1e-1" lineWidth="1"/>
 
 </Node>
 
@@ -39,8 +39,8 @@
 
 	 <VoronoiToMeshEngine  name="VoronoiToMesh"  template="ImageUI"  transform="@image.transform"  image="@sampler.voronoi"  background="@sampler_background.voronoi"  showMesh="0" minLength="2" printLog="1"/>
 
-	 <VisualModel position="@VoronoiToMesh.position" edges="@VoronoiToMesh.edges" color="red" lineWidth="1" lineSmooth="1"/>
-	 <VisualModel position="@VoronoiToMesh.position" triangles="@VoronoiToMesh.triangles" color="5e-1 5e-1 10e-1 1e-1" lineWidth="1"/>
+	 <OglModel position="@VoronoiToMesh.position" edges="@VoronoiToMesh.edges" color="red" lineWidth="1" lineSmooth="1"/>
+	 <OglModel position="@VoronoiToMesh.position" triangles="@VoronoiToMesh.triangles" color="5e-1 5e-1 10e-1 1e-1" lineWidth="1"/>
 </Node>
 
 <!--	  <ClipPlane normal="0 1 0" position="0 0 0"/>-->
