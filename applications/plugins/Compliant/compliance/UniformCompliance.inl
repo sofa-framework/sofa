@@ -70,7 +70,10 @@ void UniformCompliance<DataTypes>::reinit()
 
         if( k )
         {
-            for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
+			const unsigned n = state->getMatrixSize();
+			matK.compressedMatrix.reserve(n);
+
+            for(unsigned i=0; i < n; i++) {
                 matK.compressedMatrix.startVec(i);
                 matK.compressedMatrix.insertBack(i, i) = k;
             }

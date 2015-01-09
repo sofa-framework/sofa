@@ -215,8 +215,11 @@ class CompressedStorage
       internal::smart_copy(m_values, m_values+copySize, newValues);
       internal::smart_copy(m_indices, m_indices+copySize, newIndices);
       // delete old stuff
-	  Pool::deallocate< Scalar >( m_values );
-	  Pool::deallocate< Index >( m_indices );
+	  if( m_allocatedSize != 0 )
+	  {
+		  Pool::deallocate< Scalar >( m_values );
+		  Pool::deallocate< Index >( m_indices );
+	  }
       m_values = newValues;
       m_indices = newIndices;
       m_allocatedSize = size;

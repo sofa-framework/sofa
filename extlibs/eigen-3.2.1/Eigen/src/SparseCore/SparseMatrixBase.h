@@ -239,10 +239,19 @@ template<typename Derived> class SparseMatrixBase : public EigenBase<Derived>
 
       const Index outerSize = other.outerSize();
       //typedef typename internal::conditional<transpose, LinkedVectorMatrix<Scalar,Flags&RowMajorBit>, Derived>::type TempType;
-      // thanks to shallow copies, we always eval to a tempary
+      // thanks to shallow copies, we always eval to a temporary
       Derived temp(other.rows(), other.cols());
 
-      temp.reserve((std::max)(this->rows(),this->cols())*2);
+      unsigned n = (std::max)(this->rows(),this->cols())*2;// since this is often an underestimate (or overestimate)
+
+	  n = 0;// it is worth counting explicitly to avoid copying thousands of entries upon growth reallocations
+      for (Index j=0; j<outerSize; ++j)
+      {
+        for (typename OtherDerived::InnerIterator it(other.derived(), j); it; ++it)
+          n++;
+      }
+      temp.reserve(n);
+
       for (Index j=0; j<outerSize; ++j)
       {
         temp.startVec(j);

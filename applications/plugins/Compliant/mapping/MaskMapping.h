@@ -62,7 +62,10 @@ protected:
 		
 		J.setZero();
 
-		for( unsigned i = 0, n = index.size(); i < n; ++i) {
+		const unsigned n = index.size();
+		J.reserve(n);
+
+		for( unsigned i = 0; i < n; ++i) {
 			unsigned row = i;
 			J.startVec(row);
 

@@ -959,6 +959,8 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
             outputPerInput = pointsPerFrame.getValue()[0];
         }
 
+		J.reserve((inIdxEnd - inIdxBegin) * outputPerInput * NOut * NIn);
+
 		// matrix chunk
 		typedef typename TOut::Real real;
 		typedef Eigen::Matrix<real, NOut, NIn> block_type;
