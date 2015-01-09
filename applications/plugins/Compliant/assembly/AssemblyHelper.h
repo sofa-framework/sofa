@@ -189,7 +189,8 @@ mat convert( const defaulttype::BaseMatrix* m) {
     for(unsigned i = 0, n = res.rows(); i < n; ++i) {
         res.startVec( i );
         for(unsigned j = 0, k = res.cols(); j < k; ++j) {
-            res.insertBack(i, j) = m->element(i, j);
+            SReal e = m->element(i, j);
+            if( e ) res.insertBack(i, j) = e;
         }
     }
 
@@ -250,7 +251,8 @@ MySPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
     for(unsigned i = 0, n = res->rows(); i < n; ++i) {
         res->startVec( i );
         for(unsigned j = 0, k = res->cols(); j < k; ++j) {
-            res->insertBack(i, j) = m->element(i, j);
+            SReal e = m->element(i, j);
+            if( e ) res->insertBack(i, j) = e;
         }
     }
 

@@ -43,9 +43,11 @@ AssemblyVisitor::~AssemblyVisitor()
 AssemblyVisitor::chunk::chunk()
 	: offset(0),
 	  size(0),
+      C(NULL),
+      Ktilde(NULL),
 	  mechanical(false),
 	  vertex(-1),
-	  dofs(0) {
+      dofs(NULL) {
 
 }
 
@@ -128,7 +130,6 @@ const defaulttype::BaseMatrix* compliance_impl( const core::MechanicalParams* mp
 {
     const defaulttype::BaseMatrix* c = ffield->getComplianceMatrix(mparams);
 
-
     if( notempty(c) )
     {
         return c;
@@ -146,7 +147,6 @@ const defaulttype::BaseMatrix* compliance_impl( const core::MechanicalParams* mp
 // compliance matrix
 const defaulttype::BaseMatrix* AssemblyVisitor::compliance(simulation::Node* node)
 {
-
     for(unsigned i = 0; i < node->forceField.size(); ++i )
     {
 		BaseForceField* ffield = node->forceField[i];

@@ -28,6 +28,7 @@ set(QML_FILES
 		data/qml/SofaBasics/DefaultStatusBar.qml
 		data/qml/SofaBasics/DefaultMenuBar.qml
 		data/qml/SofaBasics/Scene.qml
+		data/qml/SofaBasics/PythonInteractor.qml
 		data/qml/SofaBasics/Actor.qml
 		data/qml/SofaBasics/Camera.qml
 		data/qml/SofaBasics/FPSDisplay.qml

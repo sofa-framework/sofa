@@ -103,25 +103,51 @@ static PyObject* PythonBuildValueHelper(const QVariant& parameter)
 	return value;
 }
 
-static PyObject* PythonBuildTupleHelper(const QVariant& parameter)
+static PyObject* PythonBuildTupleHelper(const QVariant& parameter, bool mustBeTuple)
 {
 	PyObject* tuple = 0;
 
 	if(!parameter.isNull())
 	{
-		if(parameter.canConvert<QVariantList>())
+		if(QVariant::List == parameter.type())
 		{
 			QSequentialIterable parameterIterable = parameter.value<QSequentialIterable>();
 			tuple = PyTuple_New(parameterIterable.size());
 
 			int count = 0;
 			for(const QVariant& i : parameterIterable)
-				PyTuple_SetItem(tuple, count++, PythonBuildValueHelper(i));
+				PyTuple_SetItem(tuple, count++, PythonBuildTupleHelper(i, false));
+		}
+		else if(QVariant::Map == parameter.type())
+		{
+			PyObject* dict = PyDict_New();
+
+			QVariantMap map = parameter.value<QVariantMap>();
+
+			for(QVariantMap::const_iterator i = map.begin(); i != map.end(); ++i)
+				PyDict_SetItemString(dict, i.key().toLatin1().constData(), PythonBuildTupleHelper(i.value(), false));
+
+			if(mustBeTuple)
+			{
+				tuple = PyTuple_New(1);
+				PyTuple_SetItem(tuple, 0, dict);
+			}
+			else
+			{
+				tuple = dict;
+			}
 		}
 		else
 		{
-			tuple = PyTuple_New(1);
-			PyTuple_SetItem(tuple, 0, PythonBuildValueHelper(parameter));
+			if(mustBeTuple)
+			{
+				tuple = PyTuple_New(1);
+				PyTuple_SetItem(tuple, 0, PythonBuildValueHelper(parameter));
+			}
+			else
+			{
+				tuple = PythonBuildValueHelper(parameter);
+			}
 		}
 	}
 
@@ -162,14 +188,11 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 		PyObject *item;
 
 		if(!iterator)
-		{
-			qDebug() << "ERROR: Python tuple/list is empty";
 			return value;
-		}
 
 		while(item = PyIter_Next(iterator))
 		{
-			tuple.append(ExtractPythonValueHelper(item));
+			tuple.append(ExtractPythonTupleHelper(item));
 
 			Py_DECREF(item);
 		}
@@ -180,13 +203,31 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 
 		return tuple;
 	}
+	else if(PyDict_Check(parameter))
+	{
+		QVariantMap map;
 
-	value = ExtractPythonValueHelper(parameter);
+		PyObject* key;
+		PyObject* item;
+		Py_ssize_t pos = 0;
+
+		while(PyDict_Next(parameter, &pos, &key, &item))
+			map.insert(PyString_AsString(key), ExtractPythonTupleHelper(item));
+
+		if(PyErr_Occurred())
+			qDebug() << "ERROR: during python dictionary iteration";
+
+		return map;
+	}
+	else
+	{
+		value = ExtractPythonValueHelper(parameter);
+	}	
 
 	return value;
 }
 
-QVariant PythonInteractor::call(const QString& pythonClassName, const QString& funcName, const QVariant& parameter)
+QVariant PythonInteractor::onCall(const QString& pythonClassName, const QString& funcName, const QVariant& parameter)
 {
 	QVariant result;
 
@@ -243,7 +284,7 @@ QVariant PythonInteractor::call(const QString& pythonClassName, const QString& f
 		else
 		{
 			PythonScriptFunction pythonScriptFunction(pyCallableObject, true);
-			PythonScriptFunctionParameter pythonScriptParameter(PythonBuildTupleHelper(parameter), true);
+			PythonScriptFunctionParameter pythonScriptParameter(PythonBuildTupleHelper(parameter, true), true);
 			PythonScriptFunctionResult pythonScriptResult;
 
 			pythonScriptFunction(&pythonScriptParameter, &pythonScriptResult);
