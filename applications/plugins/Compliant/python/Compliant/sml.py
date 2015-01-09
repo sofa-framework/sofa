@@ -24,6 +24,17 @@ def parseUnits(xmlModel):
 class Mesh:
     pass
 
+class Deformable:
+    
+    def __init__(self, node, name):
+        self.node = node.createChild( name )
+        self.dofs=None
+        
+    def setMesh(self, position, meshPath):
+        r = Quaternion.to_euler(position[3:])  * 180.0 / math.pi
+        self.meshLoader = SofaPython.Tools.meshLoader(self.node, meshPath, translation=concat(position[:3]) , rotation=concat(r))
+        self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
+
 def parseMesh(xmlModel):
     """ parse meshes and their attribute
     """
@@ -161,7 +172,7 @@ class Scene:
                 input += '@'+r.node.getPathName()+" "
                 indexPairs += str(i) + " 0 "
                 r.boneIndex=i
-            bonesNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs )
+            bonesNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
             
             self.deformable=dict()
             for d in model.iter("deformable"):
@@ -169,16 +180,15 @@ class Scene:
                 if d.find("name") is not None:
                     name = d.find("name").text
                 print "deformable:", name
-                node = self.node.createChild( name )
+                
                 position = SofaPython.Tools.strToListFloat(d.find("position").text)
                 mesh = meshes[d.find("mesh").attrib["id"]]
-                r = Quaternion.to_euler(position[3:])  * 180.0 / math.pi
-                meshLoader = SofaPython.Tools.meshLoader(node, os.path.join(os.path.dirname(self.filename),mesh.source), translation=concat(position[:3]) , rotation=concat(r))
-                node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+meshLoader.name)
+                deformable=Deformable(self.node,name)
+                bonesNode.addChild(deformable.node)
+                deformable.setMesh(position, os.path.join(os.path.dirname(self.filename),mesh.source))
                 
                 indices=dict()
                 weights=dict()
-                nbref=dict()
                 for s in d.iter("skinning"):
                     if not s.attrib["rigid"] in self.rigids:
                         print "ERROR: Compliant.sml.Scene: skinning for deformable {0}: rigid {1} is not defined".format(name, s.attrib["rigid"])
@@ -191,22 +201,12 @@ class Scene:
                         if not index in indices:
                             indices[index]=list()
                             weights[index]=list()
-                            nbref[index]=0
-                        nbref[index]+=1
                         indices[index].append(currentBone)
                         weights[index].append(weight)
-                print nbref
-                print bonesNode.getPathName()
-                print indices
-                print weights
-                bonesNode.addChild(node)
                 
-                node.createObject("SkinningMapping", template="Rigid3d,Vec3d", name="skinning", input="@"+bonesNode.getPathName(), nbref="2", indices="[0,1] [0,1] [0,1]", weight="[1,0] [0.5,0.5] [0,1]" )
+                deformable.node.createObject("LinearMapping", template="Rigid3d,Vec3d", name="skinning", input="@"+bonesNode.getPathName(), indices=concat(indices.values()), weights=concat(weights.values()))
                 
-                #node.createObject("LinearMapping", template="Rigid3d,Vec3d", name="skinning", input="@"+bonesNode.getPathName(), indices="[0] [0] [0]", weights="[1] [1] [1]")
-                #node.createObject("LinearMapping", template="Rigid3d,Vec3d", name="skinning", input="@"+bonesNode.getPathName(), indices=concat(indices.values()), weights=concat(weights.values()))
-                
-                self.deformable[d.attrib["id"]]=node
+                self.deformable[d.attrib["id"]]=deformable
                         
     def addOffset(self, name, rigidId, xmlOffset):
         """ add xml defined offset to rigid
