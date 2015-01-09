@@ -87,7 +87,7 @@ namespace sofa
             }
 
             template<class DataTypes>
-            void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix */*mat*/, double /*bFact*/, unsigned int& /*offset*/)
+            void DiagonalVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int& /*offset*/)
             {
 //                const unsigned int size = this->mstate->getSize();
 //                unsigned nbDampingCoeff = dampingCoefficients.getValue().size();

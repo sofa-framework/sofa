@@ -73,14 +73,14 @@ void TriangleSetTopologyAlgorithms< DataTypes >::reinit()
         sofa::helper::vector< TriangleID > new_triangles_id;
 
         for (unsigned int i = 0; i < (m_listTriAdd.getValue ()).size(); i++)
-            new_triangles_id.push_back (m_container->getNbTriangles()-(m_listTriAdd.getValue ()).size()+i);
+            new_triangles_id.push_back((unsigned int)(m_container->getNbTriangles()-(m_listTriAdd.getValue ()).size()+i));
 
         //	  std::cout << "new tri ID: "<< new_triangles_id<<std::endl;
         //	  std::cout << "params: " << (m_listTriAdd.getValue ()).size()<< m_listTriAdd.getValue () <<  new_triangles_id << std::endl;
 
         if (nbrBefore != m_container->getNbTriangles()) // Triangles have been added
         {
-            m_modifier->addTrianglesWarning((m_listTriAdd.getValue ()).size(), m_listTriAdd.getValue (), new_triangles_id);
+            m_modifier->addTrianglesWarning((unsigned int)m_listTriAdd.getValue().size(), m_listTriAdd.getValue(), new_triangles_id);
             m_modifier->propagateTopologicalChanges();
         }
         else
@@ -169,7 +169,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(
 {
     // HYP : input_points.size() == input_triangles.size()
 
-    unsigned int points_size = input_points.size();
+    size_t points_size = input_points.size();
 
     // Initialization for INTERSECTION method
     sofa::helper::vector< unsigned int > triangles_list;
@@ -214,10 +214,10 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(
     const Triangle &tb=m_container->getTriangle(ind_tb);
 
     //const typename DataTypes::VecCoord& vect_c =topology->getDOF()->read(core::ConstVecCoordId::position())->getValue();
-    unsigned int nb_points =  m_container->getTrianglesAroundVertexArray().size() - 1; //vect_c.size() -1;
+    const unsigned int nb_points =  (unsigned int)m_container->getTrianglesAroundVertexArray().size() - 1; //vect_c.size() -1;
 
     const sofa::helper::vector<Triangle> &vect_t=m_container->getTriangleArray();
-    unsigned int nb_triangles =  vect_t.size() -1;
+    const unsigned int nb_triangles = (unsigned int)vect_t.size() -1;
 
     // Variables to accumulate the number of elements registered to be created (so as to remember their indices)
     unsigned int acc_nb_points=nb_points;
@@ -743,7 +743,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(
         m_modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create) ; // WARNING called after the creation process by the method "addTrianglesProcess"
 
         // Warn for the creation of all the triangles registered to be created
-        m_modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
+        m_modifier->addTrianglesWarning((unsigned int)triangles_to_create.size(), triangles_to_create, trianglesIndexList);
 
         // Propagate the topological changes *** not necessary
         //m_modifier->propagateTopologicalChanges();
@@ -811,7 +811,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
     // Output declarations:
 
-    unsigned int nb_points = indices_list.size();
+    const size_t nb_points = indices_list.size();
     sofa::helper::vector< sofa::helper::vector< PointID > > p_ancestors; p_ancestors.reserve(nb_points);// WARNING
     sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs; p_baryCoefs.reserve(nb_points);
     PointID next_point = m_container->getNbPoints();
@@ -1587,8 +1587,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     // Warn for the creation of all the points registered to be created
     //std::cout << "passe la: addPointsWarning" << std::endl;
     //m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
-    unsigned int newP0 = next_point - srcElems.size();
-    m_modifier->addPoints(srcElems.size(), srcElems);
+    PointID newP0 = next_point - (PointID)srcElems.size();
+    m_modifier->addPoints((unsigned int)srcElems.size(), srcElems);
 
     // m_modifier->propagateTopologicalChanges();
 
@@ -1656,7 +1656,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
     //Add and remove triangles lists
     //std::cout << "passe la: addRemoveTriangles" << std::endl;
-    m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
+    m_modifier->addRemoveTriangles((unsigned int)new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
     
     unsigned int nbEdges2 = m_container->getNbEdges();
 
@@ -1741,7 +1741,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     }
     //std::cout << "new_edges: " << new_edges << std::endl;
     //std::cout << "END splitAlongPAth" << std::endl;
-    return p_ancestors.size();
+    return (int)p_ancestors.size();
 }
 
 
@@ -1960,7 +1960,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
     //std::cout <<"start moving point" << std::endl;
     for (it = map_point2snap.begin(); it != map_point2snap.end(); ++it)
     {
-        unsigned int size = ((*it).second).size();
+        const size_t size = ((*it).second).size();
         if (size == 1) // for border case or reincision
         {
             points2Snap.resize (points2Snap.size()-1);
@@ -2174,7 +2174,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
 
                     while (find)
                     {
-                        unsigned int pos = topoPath_list.size()-2;
+                        const size_t pos = topoPath_list.size()-2;
                         pointDone = true;
                         allDone = true;
                         if (topoPath_list[pos] == core::topology::EDGE) // just remove or need to projection?
@@ -2273,7 +2273,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     sofa::helper::vector< sofa::helper::vector< double > >  triangles_barycoefs;
 
 
-    int nbEdges = edges.size();
+    const size_t nbEdges = edges.size();
     if (nbEdges == 0) return true;
     sofa::helper::vector<PointID> init_points;
     Edge edge;
@@ -2291,7 +2291,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
             init_points[1] = t;
         }
         // add the rest of the points
-        for (int i=1; i<nbEdges; ++i)
+        for (size_t i=1; i<nbEdges; ++i)
         {
             edge = m_container->getEdge(edges[i]);
             if (edge[0] == init_points.back())
@@ -2309,7 +2309,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     //this->serr << "Points on the path: " << init_points << this->sendl;
 
     sofa::helper::vector< std::pair<TriangleID,TriangleID> > init_triangles;
-    for (int i=0; i<nbEdges; ++i)
+    for (size_t i=0; i<nbEdges; ++i)
     {
         const sofa::helper::vector<TriangleID>& shell = m_container->getTrianglesAroundEdge(edges[i]);
         if (shell.size() != 2)
@@ -2337,10 +2337,10 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
 
 
     /// STEP 1: Create the new points corresponding the one of the side of the now separated edges
-    int first_new_point = beginOnBorder ? 0 : 1;
-    int last_new_point = endOnBorder ? init_points.size()-1 : init_points.size()-2;
+    const size_t first_new_point = beginOnBorder ? 0 : 1;
+    const size_t last_new_point = endOnBorder ? init_points.size()-1 : init_points.size()-2;
     std::map<PointID, PointID> splitMap;
-    for (int i = first_new_point ; i <= last_new_point ; ++i)
+    for (size_t i = first_new_point ; i <= last_new_point ; ++i)
     {
         PointID p = init_points[i];
         p_ancestors.resize(p_ancestors.size()+1);
@@ -2382,7 +2382,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     }
 
     // STEP 2b: Find the triangles linking each edge to the next, by starting from the last triangle, rotate around each point until the next point is reached
-    for (int i = 0 ; i < nbEdges-1 ; ++i)
+    for (size_t i = 0 ; i < nbEdges-1 ; ++i)
     {
         PointID p1 = init_points[i];
         PointID p0 = init_points[i+1];
@@ -2465,15 +2465,15 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     // FINAL STEP : Apply changes
     // Create all the points registered to be created
     //std::cout << "passe la ensuite: addPointsProcess" << std::endl;
-    m_modifier->addPointsProcess(p_ancestors.size());
+    m_modifier->addPointsProcess((unsigned int)p_ancestors.size());
 
     // Warn for the creation of all the points registered to be created
     //std::cout << "passe la ensuite: addPointsWarning" << std::endl;
-    m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
+    m_modifier->addPointsWarning((unsigned int)p_ancestors.size(), p_ancestors, p_baryCoefs);
 
     //Add and remove triangles lists
     //std::cout << "passe la ensuite: addRemoveTriangles" << std::endl;
-    m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
+    m_modifier->addRemoveTriangles((unsigned int)new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
 
 
     //std::cout << "end incise" << std::endl;
@@ -2589,9 +2589,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     m_container->getTrianglesAroundVertexArray();
 
     //const typename DataTypes::VecCoord& vect_c =topology->getDOF()->read(core::ConstVecCoordId::position())->getValue();
-    unsigned int nb_points =  m_container->getTrianglesAroundVertexArray().size(); //vect_c.size();
+    const unsigned int nb_points = (unsigned int)m_container->getTrianglesAroundVertexArray().size(); //vect_c.size();
     const sofa::helper::vector<Triangle> &vect_t=m_container->getTriangleArray();
-    unsigned int nb_triangles =  vect_t.size();
+    const unsigned int nb_triangles = (unsigned int)vect_t.size();
 
     // Variables to accumulate the number of elements registered to be created (so as to remember their indices)
     unsigned int acc_nb_points=nb_points;
@@ -2696,7 +2696,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     m_modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create) ; // WARNING called after the creation process by the method "addTrianglesProcess"
 
     // Warn for the creation of all the triangles registered to be created
-    m_modifier->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList);
+    m_modifier->addTrianglesWarning((unsigned int)triangles_to_create.size(), triangles_to_create, trianglesIndexList);
 
     // Propagate the topological changes *** not necessary
     //m_modifier->propagateTopologicalChanges();

@@ -116,6 +116,11 @@ public:
         reinit();
     }
 
+    //Pierre-Luc : I added this function to be able to use the mapping functionnalities without using the whole component
+    virtual void initJacobianBlock( vector<BlockType>& /*jacobianBlock*/)
+    {
+        std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;
+    }
 
     /** @name Mapping functions */
     //@{
@@ -151,6 +156,46 @@ public:
     {
         applyJT(NULL, *this->fromModel->write(core::VecDerivId::force()), *this->toModel->read(core::ConstVecDerivId::force()));
        //TODO applyDJT(NULL, *this->fromModel->write(core::VecDerivId::force()), *this->toModel->read(core::ConstVecDerivId::force()));
+    }
+
+    //Pierre-Luc : I added these function to be able to use the mapping functionnalities without using the whole component
+    virtual void applyBlock(Data<OutVecCoord>& /*dOut*/, const Data<InVecCoord>& /*dIn*/, vector<BlockType>& /*jacobianBlock*/)
+    {
+        std::cout << SOFA_CLASS_METHOD << " : do nothing" << std::endl;
+    }
+
+    virtual void apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+    {
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
+
+        const InVecCoord&  in = dIn.getValue();
+
+        vector< BlockType > jacobianBlock;
+        jacobianBlock.resize(in.size());
+        initJacobianBlock(jacobianBlock);
+        applyBlock(dOut, dIn, jacobianBlock);
+    }
+
+    virtual void applyJ(Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+    {
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":applyJ"<<std::endl;
+
+        const InVecDeriv&  in = dIn.getValue();
+
+        vector< BlockType > jacobianBlock;
+        jacobianBlock.resize(in.size());
+        initJacobianBlock(jacobianBlock);
+
+        OutVecDeriv&  out = *dOut.beginEdit();
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
+#endif
+        for(size_t i=0; i < jacobianBlock.size(); i++)
+        {
+            out[i]=OutDeriv();
+            jacobianBlock[i].addmult(out[i],in[i]);
+        }
+        dOut.endEdit();
     }
 
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)

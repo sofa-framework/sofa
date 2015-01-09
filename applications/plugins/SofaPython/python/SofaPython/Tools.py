@@ -12,6 +12,11 @@ def strToListFloat(s):
     """
     return map(float,s.split())
 
+def strToListInt(s):
+    """ Convert a string to a list of float
+    """
+    return map(int,s.split())
+
 def getNode(rootNode, path):
     """ Return node at path or None if not found
     """

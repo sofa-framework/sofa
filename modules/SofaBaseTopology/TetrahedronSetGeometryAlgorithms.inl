@@ -773,12 +773,12 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    const unsigned int numVertices = vect_c.size();
+    const size_t numVertices = vect_c.size();
 
     myfile << "$NOD\n";
     myfile << numVertices <<"\n";
 
-    for (unsigned int i=0; i<numVertices; ++i)
+    for (size_t i=0; i<numVertices; ++i)
     {
         double x = (double) vect_c[i][0];
         double y = (double) vect_c[i][1];

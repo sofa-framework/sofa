@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"   >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+<RequiredPlugin name="Compliant" pluginName="Compliant" />
 <CompliantAttachButtonSetting button="Left" />
 <Node 	name="Create here an example of the plugin" >
     <MechanicalObject name="pendulum" template="Vec3" position="0 0 0   0 -1 0" showObject="1"  showObjectScale="5"  showIndices="1" />

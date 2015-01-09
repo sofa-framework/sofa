@@ -1,35 +1,45 @@
 <?xml version="1.0"?>
-
-<!--<!DOCTYPE sml SYSTEM "sml.dtd">-->
+<!DOCTYPE sml SYSTEM "sml.dtd">
 
 <sml name="bielle_manivelle">
     <units mass="kg" length="m" time="s" />
-
+    
+    <mesh id="2.obj">
+        <source format="obj">2.obj</source>
+    </mesh>
+    <mesh id="3.obj">
+        <source format="obj">3.obj</source>
+    </mesh>
+    
     <rigid id="1">
         <name>Corps</name>
         <position>0 0 0 0 0 0 1</position>
-        <mesh format="obj">0.obj</mesh>
+        <mesh id="0.obj">
+            <source format="obj">0.obj</source>
+        </mesh>
         <density>7.8e+3</density>
     </rigid>
     
     <rigid id="2">
         <name>Roue</name>
         <position>0 0 -0.148 0 0 0 1</position>
-        <mesh format="obj">3.obj</mesh>
+        <mesh id="3.obj" />
         <density>7.8e+3</density>
     </rigid>
     
     <rigid id="3">
         <name>Came</name>
         <position>1.085 -0.072 0.33 0 0 0 1</position>
-        <mesh format="obj">2.obj</mesh>
+        <mesh id="2.obj" />
         <density>7.8e+3</density>
     </rigid>
     
     <rigid id="4">
         <name>Piston</name>
         <position>2.05 0 0.33 0 0 0 1</position>
-        <mesh format="obj">1.obj</mesh>
+        <mesh id="1.obj">
+            <source format="obj">1.obj</source>
+        </mesh>
         <density>7.8e+3</density>
     </rigid>
     

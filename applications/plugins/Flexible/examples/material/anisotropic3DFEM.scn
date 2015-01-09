@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <Node name="" gravity="0 0 0" dt="0.05">
     <VisualStyle displayFlags="showVisualModels hideBehaviorModels showForceFields hideWireframe" />
+    
+    <RequiredPlugin name="Flexible"/>
 
     <Node name="Hexa" >
         <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 

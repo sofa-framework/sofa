@@ -80,7 +80,7 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
     SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
     seqEdges.clear();
     std::map<Edge,unsigned int> edgeMap;
-    int edgeIndex;
+    unsigned int edgeIndex;
 
     const SeqTetrahedra& tetrahedra = topology->getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
     const unsigned int edgesInTetrahedronArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
@@ -103,7 +103,7 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
             if (ite==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                edgeIndex=seqEdges.size();
+                edgeIndex=(unsigned int)seqEdges.size();
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
             }
@@ -142,7 +142,7 @@ void MeshTopology::EdgeUpdate::updateFromVolume()
             if (ite==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                edgeIndex=seqEdges.size();
+                edgeIndex=(unsigned int)seqEdges.size();
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
 
@@ -166,7 +166,7 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
     typedef MeshTopology::Quad         Quad;
 
     std::map<Edge,unsigned int> edgeMap;
-    int edgeIndex;
+    unsigned int edgeIndex;
     SeqEdges& seqEdges = *topology->seqEdges.beginEdit();
     seqEdges.clear();
     const SeqTriangles& triangles = topology->getTriangles(); // do not use seqTriangles directly as it might not be up-to-date
@@ -188,7 +188,7 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
             if (ite==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                edgeIndex=seqEdges.size();
+                edgeIndex=(unsigned int)seqEdges.size();
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
             }
@@ -219,7 +219,7 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
             if (ite==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                edgeIndex=seqEdges.size();
+                edgeIndex=(unsigned int)seqEdges.size();
                 edgeMap[e]=edgeIndex;
                 seqEdges.push_back(e);
             }
@@ -255,7 +255,7 @@ void MeshTopology::TriangleUpdate::update()
     std::map<Triangle,unsigned int> triangleMap;
     std::map<Triangle,unsigned int>::iterator itt;
     Triangle tr;
-    int triangleIndex;
+    unsigned int triangleIndex;
     unsigned int v[3],val;
     /// create the m_edge array at the same time than it fills the m_trianglesInTetrahedron array
     for (unsigned int i = 0; i < tetrahedra.size(); ++i)
@@ -283,7 +283,7 @@ void MeshTopology::TriangleUpdate::update()
             if (itt==triangleMap.end())
             {
                 // edge not in edgeMap so create a new one
-                triangleIndex=seqTriangles.size();
+                triangleIndex=(unsigned int)seqTriangles.size();
                 tr=Triangle(v[0],v[1],v[2]);
                 triangleMap[tr]=triangleIndex;
                 seqTriangles.push_back(tr);
@@ -325,7 +325,7 @@ void MeshTopology::QuadUpdate::update()
     std::map<Quad,unsigned int>::iterator itt;
     Quad qu;
     unsigned int v[4],val;
-    int quadIndex;
+    unsigned int quadIndex;
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
     for (unsigned int i = 0; i < hexahedra.size(); ++i)
     {
@@ -347,7 +347,7 @@ void MeshTopology::QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=seqQuads.size();
+            quadIndex=(unsigned int)seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -376,7 +376,7 @@ void MeshTopology::QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=seqQuads.size();
+            quadIndex=(unsigned int)seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -405,7 +405,7 @@ void MeshTopology::QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=seqQuads.size();
+            quadIndex=(unsigned int)seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -433,7 +433,7 @@ void MeshTopology::QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=topology->seqQuads.getValue().size();
+            quadIndex=(unsigned int)topology->seqQuads.getValue().size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -461,7 +461,7 @@ void MeshTopology::QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=seqQuads.size();
+            quadIndex=(unsigned int)seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -489,7 +489,7 @@ void MeshTopology::QuadUpdate::update()
         if (itt==quadMap.end())
         {
             // quad not in edgeMap so create a new one
-            quadIndex=seqQuads.size();
+            quadIndex=(unsigned int)seqQuads.size();
             quadMap[qu]=quadIndex;
             qu=Quad(v[0],v[1],v[2],v[3]);
             quadMap[qu]=quadIndex;
@@ -666,8 +666,8 @@ void MeshTopology::addPoint(double px, double py, double pz)
 {
     seqPoints.beginEdit()->push_back(defaulttype::Vec<3,SReal>((SReal)px, (SReal)py, (SReal)pz));
     seqPoints.endEdit();
-    if (seqPoints.getValue().size() > (unsigned)nbPoints)
-        nbPoints = seqPoints.getValue().size();
+    if (seqPoints.getValue().size() > (size_t)nbPoints)
+        nbPoints = (int)seqPoints.getValue().size();
 }
 
 void MeshTopology::addEdge( int a, int b )
@@ -729,8 +729,8 @@ void MeshTopology::addUV(double u, double v)
 {
     seqUVs.beginEdit()->push_back(defaulttype::Vec<2,SReal>((SReal)u, (SReal)v));
     seqUVs.endEdit();
-    if (seqUVs.getValue().size() > (unsigned)nbPoints)
-        nbPoints = seqUVs.getValue().size();
+    if (seqUVs.getValue().size() > (size_t)nbPoints)
+        nbPoints = (int)seqUVs.getValue().size();
 }
 
 const MeshTopology::SeqEdges& MeshTopology::getEdges()
@@ -786,32 +786,32 @@ void MeshTopology::setNbPoints(int n)
 
 int MeshTopology::getNbEdges()
 {
-    return getEdges().size();
+    return (int)getEdges().size();
 }
 
 int MeshTopology::getNbTriangles()
 {
-    return getTriangles().size();
+    return (int)getTriangles().size();
 }
 
 int MeshTopology::getNbQuads()
 {
-    return getQuads().size();
+    return (int)getQuads().size();
 }
 
 int MeshTopology::getNbTetrahedra()
 {
-    return getTetrahedra().size();
+    return (int)getTetrahedra().size();
 }
 
 int MeshTopology::getNbHexahedra()
 {
-    return getHexahedra().size();
+    return (int)getHexahedra().size();
 }
 
 int MeshTopology::getNbUVs()
 {
-    return getUVs().size();
+    return (int)getUVs().size();
 }
 
 const MeshTopology::Edge MeshTopology::getEdge(index_type i)
@@ -2376,7 +2376,7 @@ unsigned int MeshTopology::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        unsigned int other_ID = elemAll.size();
+        unsigned int other_ID = (unsigned int)elemAll.size();
 
         for (unsigned int i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
@@ -2447,7 +2447,7 @@ const sofa::helper::vector <unsigned int> MeshTopology::getConnectedElement(unsi
         }
 
         // cpt for connexity
-        cpt +=elemPreviousFront.size();
+        cpt += (unsigned int)elemPreviousFront.size();
 
         if (elemPreviousFront.empty())
         {

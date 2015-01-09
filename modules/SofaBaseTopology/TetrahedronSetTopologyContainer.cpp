@@ -149,7 +149,7 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
             if (edgeMap.find(e)==edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                const int edgeIndex = edgeMap.size();
+                const unsigned int edgeIndex = (unsigned int)edgeMap.size();
                 edgeMap[e] = edgeIndex;
                 m_edge.push_back(e);
             }
@@ -201,7 +201,7 @@ void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
                 if (edgeMap.find(e)==edgeMap.end())
                 {
                     // edge not in edgeMap so create a new one
-                    const int edgeIndex = edgeMap.size();
+                    const unsigned int edgeIndex = (unsigned int)edgeMap.size();
                     edgeMap[e] = edgeIndex;
                     m_edge.push_back(e);
                 }
@@ -312,7 +312,7 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
                 tr = Triangle(v[0], v[1], v[2]);
                 if (triangleMap.find(tr) == triangleMap.end())
                 {
-                    triangleMap[tr] = m_triangle.size();
+                    triangleMap[tr] = (unsigned int)m_triangle.size();
                     m_triangle.push_back(tr);
                 }
                 else
@@ -473,7 +473,7 @@ int TetrahedronSetTopologyContainer::getTetrahedronIndex(PointID v1, PointID v2,
 unsigned int TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
-    return m_tetrahedron.size();
+    return (unsigned int)m_tetrahedron.size();
 }
 
 unsigned int TetrahedronSetTopologyContainer::getNumberOfElements() const
@@ -788,9 +788,9 @@ unsigned int TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        unsigned int other_tetraID = elemAll.size();
+        TetraID other_tetraID = elemAll.size();
 
-        for (unsigned int i = 0; i<elemAll.size(); ++i)
+        for (TetraID i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_tetraID = i;
@@ -820,8 +820,8 @@ const VecTetraID TetrahedronSetTopologyContainer::getConnectedElement(TetraID el
     VecTetraID elemAll;
     VecTetraID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
-    unsigned int cpt = 0;
-    unsigned int nbr = this->getNbTetrahedra();
+    size_t cpt = 0;
+    size_t nbr = this->getNbTetrahedra();
 
     // init algo
     elemAll.push_back(elem);
@@ -835,12 +835,12 @@ const VecTetraID TetrahedronSetTopologyContainer::getConnectedElement(TetraID el
         elemNextFront = this->getElementAroundElements(elemOnFront); // for each TetraID on the propagation front
 
         // Second Step - Avoid backward direction
-        for (unsigned int i = 0; i<elemNextFront.size(); ++i)
+        for (size_t i = 0; i<elemNextFront.size(); ++i)
         {
             bool find = false;
             TetraID id = elemNextFront[i];
 
-            for (unsigned int j = 0; j<elemAll.size(); ++j)
+            for (size_t j = 0; j<elemAll.size(); ++j)
                 if (id == elemAll[j])
                 {
                     find = true;

@@ -7,7 +7,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(BenchSolver);
+SOFA_DECL_CLASS(BenchSolver)
 int BenchmarkSolverClass = core::RegisterObject("Benchmark solver: runs other KKTSolvers successively on a given problem").add< BenchmarkSolver >();
 
 BenchmarkSolver::BenchmarkSolver() { }

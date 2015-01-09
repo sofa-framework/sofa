@@ -66,13 +66,13 @@ public:
 
     virtual bool canLoadFileExtension(const char *extension) = 0;
 
-    virtual bool canWriteFileExtension(const char */*extension*/) { return false; }
+    virtual bool canWriteFileExtension(const char * /*extension*/) { return false; }
 
     /// load the file
     virtual sofa::simulation::Node::SPtr load(const char *filename) = 0;
 
     /// write scene graph in the file
-    virtual void write(sofa::simulation::Node* /*node*/, const char */*filename*/) {}
+    virtual void write(sofa::simulation::Node* /*node*/, const char * /*filename*/) {}
 
     /// get the file type description
     virtual std::string getFileTypeDesc() = 0;

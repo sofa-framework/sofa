@@ -183,6 +183,8 @@ void SubsetMapping<TIn, TOut>::init()
 template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::postInit()
 {
+    const IndexArray& indices = f_indices.getValue();
+    this->toModel->resize(indices.size());
 }
 
 template <class TIn, class TOut>

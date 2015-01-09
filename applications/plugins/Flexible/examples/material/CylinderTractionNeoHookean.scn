@@ -5,7 +5,7 @@
 <RequiredPlugin pluginName="Compliant"/>
   
   <!--Solver-->
-  <CompliantNLImplicitSolver precision="1e-9" iterations="1000"/>
+  <CompliantNLImplicitSolver precision="1e-9" iterations="1000" stabilization="0"/>
   <LDLTSolver/>
   <!-- <StaticSolver/>
   <CGLinearSolver template="GraphScattered" name="linear solver" iterations="3000" tolerance="1e-9" threshold="1e-9" /> -->

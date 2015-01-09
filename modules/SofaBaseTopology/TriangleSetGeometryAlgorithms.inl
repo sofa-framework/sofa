@@ -1906,12 +1906,12 @@ void TriangleSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filename
 
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    const unsigned int numVertices = vect_c.size();
+    const size_t numVertices = vect_c.size();
 
     myfile << "$NOD\n";
     myfile << numVertices <<"\n";
 
-    for (unsigned int i=0; i<numVertices; ++i)
+    for (size_t i=0; i<numVertices; ++i)
     {
         double x = (double) vect_c[i][0];
         double y = (double) vect_c[i][1];
@@ -2301,7 +2301,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     {
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
-        unsigned int nbrTtri = triangleArray.size();
+        size_t nbrTtri = triangleArray.size();
 
         Coord point2;
         sofa::defaulttype::Vec<3,double> colors;
@@ -2313,7 +2313,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         for (unsigned int i =0; i<nbrTtri; i++)
         {
             Triangle _tri = triangleArray[i];
-            sofa::defaulttype::Vec<3,double> normal = this->computeTriangleNormal(i);
+            sofa::defaulttype::Vec<3,double> normal = this->computeTriangleNormal((TriangleID)i);
             normal.normalize();
 
             // compute bary triangle
