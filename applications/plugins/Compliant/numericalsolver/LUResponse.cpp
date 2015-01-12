@@ -26,12 +26,12 @@ void LUResponse::factor(const mat& H, bool semidefinite ) {
         // TODO add epsilon only on the empty diagonal entries?
         system_type::rmat identity(H.rows(),H.cols());
         identity.setIdentity();
-        response.compute( ( H + identity * regularize.getValue() ).selfadjointView<Eigen::Upper>() );
+        response.compute( ( H + identity * regularize.getValue() ) );
     }
     else
     {
         // TODO make sure no temporary is used ?
-        response.compute( H.selfadjointView<Eigen::Upper>() );
+        response.compute( H );
     }
 
 	
