@@ -1,4 +1,4 @@
-#include "LDLTResponse.h"
+#include "LUResponse.h"
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -6,34 +6,20 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(LDLTResponse)
-int LDLTResponseClass = core::RegisterObject("A sparse Cholesky factorization of the response matrix.").add< LDLTResponse >();
+SOFA_DECL_CLASS(LUResponse)
+int LUResponseClass = core::RegisterObject("A sparse LU factorization of the response matrix.").add< LUResponse >();
  
 
-LDLTResponse::LDLTResponse()
+LUResponse::LUResponse()
     : regularize( initData(&regularize, 
                            std::numeric_limits<real>::epsilon(),
 						   "regularize", 
-						   "add identity*regularize to matrix H to make it definite.")),
-	  constant( initData(&constant, 
-						 false,
-						 "constant",
-                         "reuse first factorization")),
-    factorized( false )
+                           "add identity*regularize to matrix H to make it definite."))
 {}
 
 
-void LDLTResponse::reinit()
-{
-    Response::reinit();
-    factorized = false;
-}
 
-void LDLTResponse::factor(const mat& H, bool semidefinite ) {
-
-    if( constant.getValue() && factorized ) return;
-
-    factorized = true;
+void LUResponse::factor(const mat& H, bool semidefinite ) {
 
     if( regularize.getValue() && semidefinite ) {
 		// add a tiny diagonal matrix to make H psd.
@@ -57,13 +43,13 @@ void LDLTResponse::factor(const mat& H, bool semidefinite ) {
 
 }
 
-void LDLTResponse::solve(cmat& res, const cmat& M) const {
+void LUResponse::solve(cmat& res, const cmat& M) const {
 	assert( response.rows() );
 	res = response.solve( M );
 }
 
 
-void LDLTResponse::solve(vec& res, const vec& x) const {
+void LUResponse::solve(vec& res, const vec& x) const {
 	assert( response.rows() );
 	res = response.solve( x );
 }
