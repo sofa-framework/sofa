@@ -25,9 +25,10 @@
 #ifndef PYTHONSCRIPTFUNCTION_H
 #define PYTHONSCRIPTFUNCTION_H
 
+#include "PythonMacros.h"
 #include "initSofaPython.h"
 #include "ScriptFunction.h"
-#include "PythonMacros.h"
+
 
 namespace sofa
 {
