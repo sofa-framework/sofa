@@ -609,16 +609,7 @@ class SparseMatrix
       m_data.clear();
       if (m_outerSize != outerSize || m_outerSize==0)
       {
-#if 0
         m_outerIndex = internal::Pool::reallocate< Index >( m_outerIndex, outerSize + 1 );
-#else
-for( int i = 0; i < 1; i++ )
-{
-		internal::Pool::deallocate< Index >( m_outerIndex );
-		//std::cerr << "Sparse::resize malloc" << std::endl;
-        m_outerIndex = internal::Pool::allocate< Index >( outerSize + 10 );
-}
-#endif
         if (!m_outerIndex) internal::throw_std_bad_alloc();
         
         m_outerSize = outerSize;
