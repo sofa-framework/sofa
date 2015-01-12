@@ -317,7 +317,7 @@ public:
 	//! Tell if the vertex of d is on the boundary
 	/*! @param d a dart
 	 */
-    bool isBoundaryVertex(Dart d) const;
+	bool isBoundaryVertex(Dart d) const;
 
 	//! Find the dart of vertex that belong to the boundary
 	/*! return NIL if the vertex is not on the boundary
@@ -389,80 +389,80 @@ public:
 	/*! @param c a cell
 	 *  @param f a function
 	 */
-//    template <unsigned int ORBIT, typename FUNC>
-//    void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread = 0) const ;
-    template <unsigned int ORBIT, typename FUNC>
-    void foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f, unsigned int thread = 0) const ;
+//	template <unsigned int ORBIT, typename FUNC>
+//	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f) const ;
+	template <unsigned int ORBIT, typename FUNC>
+	void foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f) const ;
 
 	//! Apply a functor on each dart of a vertex
 	/*! @param d a dart of the vertex
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_vertex(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_vertex(Dart d, const FUNC& f) const;
 
 	//! Apply a functor on each dart of an edge
 	/*! @param d a dart of the oriented edge
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_edge(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_edge(Dart d, const FUNC& f) const;
 
 	//! Apply a functor on each dart of a face
 	/*! @param d a dart of the oriented face
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_face(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_face(Dart d, const FUNC& f) const;
 
 	//! Apply a functor on each dart of a face
 	/*! @param d a dart of the oriented face
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_volume(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_volume(Dart d, const FUNC& f) const;
 
 	//! Apply a functor on each dart of a vertex
 	/*! @param d a dart of the vertex
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_vertex1(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_vertex1(Dart d, const FUNC& f) const;
 
 	//! Apply a functor on each dart of an edge
 	/*! @param d a dart of the oriented edge
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_edge1(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_edge1(Dart d, const FUNC& f) const;
 
 	//! Apply a functor on each dart of a vertex
 	/*! @param d a dart of the vertex
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_vertex2(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_vertex2(Dart d, const FUNC& f) const;
 
 	//! Apply a functor on each dart of an edge
 	/*! @param d a dart of the oriented edge
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_edge2(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_edge2(Dart d, const FUNC& f) const;
 
 	//! Apply a functor on each dart of an oriented face
 	/*! @param d a dart of the oriented face
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_face2(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_face2(Dart d, const FUNC& f) const;
 
 	//! Apply a functor on each dart of a cc
 	/*! @param d a dart of the cc
 	 *  @param fonct the functor
 	 */
 	template <typename FUNC>
-    void foreach_dart_of_cc(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_cc(Dart d, const FUNC& f) const;
 
 	//@}
 
@@ -483,7 +483,7 @@ public:
 	 *  @param forboundary tag the created face as boundary (default is true)
 	 *  @return the degree of the created volume
 	 */
-	virtual unsigned int closeHole(Dart d, bool forboundary = true);
+	virtual unsigned int closeHole(Dart d);
 
 	//! Close the map removing topological holes: DO NOT USE, only for import/creation algorithm
 	/*! Add volumes to the map that close every existing hole.
@@ -515,7 +515,7 @@ public:
 	// - triangule chaque face
 	// - ferme par phi3 chaque volume
 	// - recoud le tout
-	Dart explodBorderTopo(Dart d);
+	Dart explodBorderTopo(/*Dart d*/);
 
 	void computeDualTest();
 	//@}

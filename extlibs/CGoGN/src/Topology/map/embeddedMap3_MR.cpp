@@ -600,9 +600,9 @@ Dart EmbeddedMap3_MR::collapseVolume(Dart d, bool delDegenerateVolumes)
 }
 
 
-unsigned int EmbeddedMap3_MR::closeHole(Dart d, bool forboundary)
+unsigned int EmbeddedMap3_MR::closeHole(Dart d)
 {
-    unsigned int nbF = Map3::closeHole(d, forboundary) ;
+    unsigned int nbF = Map3::closeHole(d) ;
 
     DartMarkerStore<EmbeddedMap3_MR> mark(*this);	// Lock a marker
 

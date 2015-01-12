@@ -21,67 +21,63 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
+#ifndef __BARRIER_THREAD__
+#define __BARRIER_THREAD__
 
-#ifndef __TRAVERSOR_DOO_H__
-#define __TRAVERSOR_DOO_H__
 
-#include "Topology/generic/dart.h"
-#include "Topology/generic/traversor/traversorGen.h"
+#include <boost/thread/thread.hpp>
+#include <boost/thread/barrier.hpp>
+#include <boost/thread/condition_variable.hpp>
+
 
 namespace CGoGN
 {
 
-template <typename MAP, unsigned int ORBIT>
-class TraversorDartsOfOrbit //: public Traversor<MAP>
+namespace Utils
+{
+
+/**
+* Implementation of simple counter barrier (rdv)
+* for boost::thread
+*/
+class Barrier
 {
 private:
-	std::vector<Dart>::iterator m_current ;
-	std::vector<Dart>* m_vd ;
-	const GenericMap* m_map;
-
-	TraversorDartsOfOrbit( const TraversorDartsOfOrbit<MAP,ORBIT>& /*tr*/){}
-
-public:
-	TraversorDartsOfOrbit(const MAP& map, Cell<ORBIT> c) ;
-
-	 ~TraversorDartsOfOrbit();
-
-//	TraversorDartsOfOrbit(TraversorDartsOfOrbit<MAP,ORBIT>&& tr):
-//		 m_current(tr.m_current),m_vd(tr.m_vd)
-//	{
-//	}
-
-	inline Dart begin() ;
-
-	inline Dart end() ;
-
-	inline Dart next() ;
-} ;
-
-template <typename MAP, unsigned int ORBIT>
-class VTraversorDartsOfOrbit : public Traversor
-{
-private:
-	std::vector<Dart>::iterator m_current ;
-	std::vector<Dart>* m_vd ;
-	const GenericMap* m_map;
-
-	VTraversorDartsOfOrbit( const VTraversorDartsOfOrbit<MAP,ORBIT>& /*tr*/){}
+	unsigned int m_initCount;
+	unsigned int m_count;
+	unsigned int m_generation;
+	
+	boost::mutex m_protect;
+	boost::condition_variable  m_cond;
 
 public:
-	VTraversorDartsOfOrbit(const MAP& map, Cell<ORBIT> c) ;
 
-	~VTraversorDartsOfOrbit();
+	/**
+	* constructor
+	* @param count number of threads to syncronize
+	*/
+	inline Barrier(unsigned int count):
+		m_initCount(count), m_count(count), m_generation(0) {}
+	
+	inline bool wait()
+	{
+                boost::unique_lock<boost::mutex> lock(m_protect);
+		unsigned int gen = m_generation;
+		if (--m_count == 0)
+		{
+			m_generation++;
+			m_count = m_initCount;
+			m_cond.notify_all();
+			return true;
+		}
 
-	inline Dart begin() ;
+		while (gen == m_generation)
+			m_cond.wait(lock);
+		return false;
+	}
+};
 
-	inline Dart end() ;
-
-	inline Dart next() ;
-} ;
-
-} // namespace CGoGN
-
-#include "Topology/generic/traversor/traversorDoO.hpp"
+}
+}
 
 #endif
