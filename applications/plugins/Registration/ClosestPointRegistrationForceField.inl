@@ -197,7 +197,6 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
 # pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbs;i++)
-        {
             if(rejectOutsideBbox.getValue() && !targetBbox.contains(x[i])) sourceIgnored[i]=true;
             else targetKdTree.getNClosestCached(closestSource[i], cacheThresh_max[i], cacheThresh_min[i], this->previousX[i], x[i], this->targetPositions.getValue(), this->cacheSize.getValue());
     }
@@ -209,7 +208,7 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
 # pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbt;i++)
-            sourceKdTree.getNClosest(closestTarget[i],tp[i],*this->mstate->getX(),1);
+            sourceKdTree.getNClosest(closestTarget[i],tp[i], this->mstate->read(core::ConstVecCoordId::position())->getValue(),1);
     }
 
 
