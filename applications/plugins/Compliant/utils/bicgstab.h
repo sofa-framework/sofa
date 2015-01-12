@@ -67,22 +67,14 @@ struct bicgstab
     {
 
         vec p;			// descent direction
-
-        vec r, r0;			// residual
-
+        vec r, r0;	    // residual  Note that initial residual is there used as the arbitary vector that must not be orthogonal with the initial residual)
         vec v;
+        vec s, t;      // matrix-vector results
 
-        vec s, t;
-
-
-
-
-        vec Ap;			// A(p)
-
-        real phi;
+        real phi;      // residual norm (only used as a stop criterion, could we do better?)
         real omega;
         real alpha;
-        real rho, rho_prev;
+        real rho;
 
         natural k;		// iteration
 
@@ -92,10 +84,11 @@ struct bicgstab
 
 			r = rr;
             r0 = r;
-            p = zero;
+            p = r;
             v = zero;
 
-            rho_prev = omega = alpha = 1;
+            omega = alpha = 1;
+            rho = r0.dot(r);
 
             k = 1;
 
@@ -110,39 +103,30 @@ struct bicgstab
         {
             if( !phi ) return true;
 
-            rho = r0.dot(r);
-
-            if( !rho_prev || !omega ) return false;
-
-            real beta = (rho/rho_prev)/(alpha/omega);
-
-            p = r + beta * ( p - omega*v );
 
             v = A(p);
-
             real denom = r0.dot(v);
             if( !denom ) return false;
-
             alpha = rho / denom;
 
             s = r - alpha * v;
-
             t = A(s);
-
             denom = t.dot(t);
             if( !denom ) return false;
-
             omega = t.dot(s) / denom;
 
             x += alpha*p + omega*s;
-
             r = s - omega*t;
-
-            rho_prev = rho;
-
-
             phi = r.norm();
+            // could stop here if phi is small enough
 
+
+            real rho_prev = rho;
+            rho = r0.dot(r);
+
+            if( !rho_prev || !omega ) return false;
+            real beta = (rho/rho_prev)*(alpha/omega);
+            p = r + beta * ( p - omega*v );
 
             return true;
         }
