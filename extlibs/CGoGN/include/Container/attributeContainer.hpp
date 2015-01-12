@@ -43,6 +43,11 @@ inline void AttributeContainer::setOrbit(unsigned int orbit)
 		if (m_tableAttribs[i] != NULL)
 			m_tableAttribs[i]->setOrbit(orbit);
 	}
+
+	for(unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+	{
+		m_tableMarkerAttribs[i]->setOrbit(orbit);
+	}
 }
 
 inline void AttributeContainer::setRegistry(std::map< std::string, RegisteredBaseAttribute* >* re)
@@ -224,7 +229,12 @@ inline unsigned int AttributeContainer::memorySize() const
 
 inline bool AttributeContainer::used(unsigned int index) const
 {
-	return m_holesBlocks[index / _BLOCKSIZE_]->used(index % _BLOCKSIZE_);
+	return m_holesBlocks[index / _BLOCKSIZE_]->used(index % _BLOCKSIZE_) != 0;
+}
+
+inline float AttributeContainer::fragmentation()
+{
+	return float(m_size) / float(m_maxSize);
 }
 
 /**************************************
@@ -295,6 +305,31 @@ inline void AttributeContainer::realNext(unsigned int &it) const
 	} while ((it < m_maxSize) && (!used(it)));
 }
 
+
+inline unsigned int AttributeContainer::realRBegin() const
+{
+	unsigned int it = m_maxSize-1;
+	while ((it != 0xffffffff) && (!used(it)))
+		--it;
+	return it;
+}
+
+inline unsigned int AttributeContainer::realREnd() const
+{
+	return 0xffffffff; // -1
+}
+
+inline void AttributeContainer::realRNext(unsigned int &it) const
+{
+	do
+	{
+		--it;
+	} while ((it !=0xffffffff) && (!used(it)));
+}
+
+
+
+
 /**************************************
  *          LINES MANAGEMENT          *
  **************************************/
@@ -308,6 +343,15 @@ inline void AttributeContainer::initLine(unsigned int index)
 	}
 }
 
+inline void AttributeContainer::initMarkersOfLine(unsigned int index)
+{
+	for(unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+	{
+		m_tableMarkerAttribs[i]->initElt(index);
+	}
+}
+
+
 inline void AttributeContainer::copyLine(unsigned int dstIndex, unsigned int srcIndex)
 {
 	for(unsigned int i = 0; i < m_tableAttribs.size(); ++i)
@@ -315,6 +359,12 @@ inline void AttributeContainer::copyLine(unsigned int dstIndex, unsigned int src
 		if (m_tableAttribs[i] != NULL)
 			m_tableAttribs[i]->copyElt(dstIndex, srcIndex);
 	}
+
+	for(unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+	{
+		m_tableMarkerAttribs[i]->copyElt(dstIndex, srcIndex);
+	}
+
 }
 
 inline void AttributeContainer::refLine(unsigned int index)
@@ -391,6 +441,17 @@ AttributeMultiVector<T>* AttributeContainer::getDataVector(const std::string& at
 	return atm;
 }
 
+
+inline CGoGNCodeType AttributeContainer::getTypeCode(const std::string& attribName) const
+{
+	unsigned int index = getAttributeIndex(attribName) ;
+	if(index == UNKNOWN)
+		return CGoGNUNKNOWNTYPE ;
+	return m_tableAttribs[index]->getTypeCode();
+}
+
+
+
 inline AttributeMultiVectorGen* AttributeContainer::getVirtualDataVector(const std::string& attribName)
 {
 	unsigned int index = getAttributeIndex(attribName) ;
@@ -438,5 +499,13 @@ inline void AttributeContainer::setData(unsigned int attrIndex, unsigned int elt
 
 	atm->operator[](eltIndex) = data;
 }
+
+
+inline std::vector<AttributeMultiVector<MarkerBool>*>& AttributeContainer::getMarkerAttributes()
+{
+	return m_tableMarkerAttribs;
+}
+
+
 
 } // namespace CGoGN

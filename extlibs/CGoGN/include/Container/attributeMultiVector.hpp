@@ -21,6 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
+#include "Geometry/vector_gen.h"
 
 namespace CGoGN
 {
@@ -84,6 +85,10 @@ inline unsigned int AttributeMultiVectorGen::getBlockSize() const
 	return _BLOCKSIZE_ ;
 }
 
+inline CGoGNCodeType AttributeMultiVectorGen::getTypeCode() const
+{
+	return m_typeCode;
+}
 
 /***************************************************************************************************/
 /***************************************************************************************************/
@@ -350,7 +355,7 @@ inline unsigned int AttributeMultiVectorGen::loadBinInfos(CGoGNistream& fs, std:
 	unsigned int len1 = nbs[1];
 	unsigned int len2 = nbs[2];
 
-    char* buffer = new char[256];
+	char buffer[256];
 	fs.read(buffer, (len1+len2)*sizeof(char));
 
 	name = std::string(buffer);
@@ -412,5 +417,96 @@ void AttributeMultiVector<T>::dump(unsigned int i) const
 {
 	CGoGNout << this->operator[](i);
 }
+
+template <typename T>
+inline bool AttributeMultiVector<T>::isMarkerBool()
+{
+	return false;
+}
+
+template <typename T>
+inline void AttributeMultiVector<T>::setTypeCode()
+{
+	m_typeCode = CGoGNUNKNOWNTYPE;
+}
+
+template <>
+inline void AttributeMultiVector<int>::setTypeCode()
+{
+	m_typeCode = CGoGNINT;
+}
+template <>
+inline void AttributeMultiVector<unsigned int>::setTypeCode()
+{
+	m_typeCode = CGoGNUINT;
+}
+template <>
+inline void AttributeMultiVector<short>::setTypeCode()
+{
+	m_typeCode = CGoGNSHORT;
+}
+template <>
+inline void AttributeMultiVector<unsigned short>::setTypeCode()
+{
+	m_typeCode = CGoGNUSHORT;
+}
+template <>
+inline void AttributeMultiVector<char>::setTypeCode()
+{
+	m_typeCode = CGoGNCHAR;
+}
+template <>
+inline void AttributeMultiVector<unsigned char>::setTypeCode()
+{
+	m_typeCode = CGoGNUCHAR;
+}
+
+template <>
+inline void AttributeMultiVector<float>::setTypeCode()
+{
+	m_typeCode = CGoGNFLOAT;
+}
+template <>
+inline void AttributeMultiVector<double>::setTypeCode()
+{
+	m_typeCode = CGoGNDOUBLE;
+}
+
+template <>
+inline void AttributeMultiVector<Geom::Vec2f>::setTypeCode()
+{
+	m_typeCode = CGoGNVEC2F;
+}
+
+template <>
+inline void AttributeMultiVector<Geom::Vec2d>::setTypeCode()
+{
+	m_typeCode = CGoGNVEC2D;
+}
+
+template <>
+inline void AttributeMultiVector<Geom::Vec3f>::setTypeCode()
+{
+	m_typeCode = CGoGNVEC3F;
+}
+
+template <>
+inline void AttributeMultiVector<Geom::Vec3d>::setTypeCode()
+{
+	m_typeCode = CGoGNVEC3D;
+}
+
+template <>
+inline void AttributeMultiVector<Geom::Vec4f>::setTypeCode()
+{
+	m_typeCode = CGoGNVEC4F;
+}
+
+template <>
+inline void AttributeMultiVector<Geom::Vec4d>::setTypeCode()
+{
+	m_typeCode = CGoGNVEC4D;
+}
+
 
 } // namespace CGoGN

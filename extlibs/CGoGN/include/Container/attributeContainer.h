@@ -77,6 +77,11 @@ protected:
 	std::vector<AttributeMultiVectorGen*> m_tableAttribs;
 
 	/**
+	* vector of pointers to AttributeMultiVectors of MarkerBool
+	*/
+	std::vector<AttributeMultiVector<MarkerBool>*> m_tableMarkerAttribs;
+
+	/**
 	 * vector of free indices in the vector of AttributeMultiVectors
 	 */
 	std::vector<unsigned int> m_freeIndices;
@@ -146,6 +151,8 @@ public:
 
 	void setContainerBrowser(ContainerBrowser* bro) { m_currentBrowser = bro;}
 
+	bool hasBrowser() { return m_currentBrowser != NULL; }
+
 	/**************************************
 	 *          BASIC FEATURES            *
 	 **************************************/
@@ -158,6 +165,19 @@ public:
 	 */
 	template <typename T>
 	AttributeMultiVector<T>* addAttribute(const std::string& attribName);
+
+	/// special version for marker
+	AttributeMultiVector<MarkerBool>* addMarkerAttribute(const std::string& attribName);
+
+
+	/**
+	 * add a new attribute to the container
+	 * @param typeName type of the new attribute in a string
+	 * @param attribName name of the new attribute
+	 * @return pointer to the new AttributeMultiVectorGen (unknown type inside)
+	 */
+	AttributeMultiVectorGen* addAttribute(const std::string& typeName, const std::string& attribName);
+
 
 protected:
 	/**
@@ -178,6 +198,8 @@ public:
 	*/
 	template <typename T>
 	bool removeAttribute(const std::string& attribName);
+
+	bool removeMarkerAttribute(const std::string& attribName);
 
 	/**
 	* Remove an attribute (destroys data)
@@ -221,6 +243,11 @@ public:
 	*/
 	inline bool used(unsigned int index) const;
 
+	/**
+	 * @brief check if container contain marker attribute
+	 */
+	bool hasMarkerAttribute() const;
+
 	/**************************************
 	 *         CONTAINER TRAVERSAL        *
 	 **************************************/
@@ -231,7 +258,7 @@ public:
 	unsigned int begin() const;
 
 	/**
-	 * return the index of the last line of the container
+	 * return the index after the last line of the container
 	 */
 	unsigned int end() const;
 
@@ -246,19 +273,35 @@ public:
 	/**
 	 * return the index of the first line of the container
 	 */
-    inline unsigned int realBegin() const;
+	unsigned int realBegin() const;
 
 	/**
-	 * return the index of the last line of the container
+	 * return the index after the last line of the container
 	 */
-    inline unsigned int realEnd() const;
+	unsigned int realEnd() const;
 
 	/**
 	 * get the index of the line after it in the container
 	 * MUST BE USED INSTEAD OF ++ !
 	 */
-    inline void realNext(unsigned int &it) const;
+	void realNext(unsigned int &it) const;
 
+
+	/**
+	 * return the index of the last line of the container
+	 */
+	unsigned int realRBegin() const;
+
+	/**
+	 * return the index before the first line of the container
+	 */
+	unsigned int realREnd() const;
+
+	/**
+	 * get the index of the line before "it" in the container
+	 * MUST BE USED INSTEAD OF ++ !
+	 */
+	void realRNext(unsigned int &it) const;
 
 	/**************************************
 	 *       INFO ABOUT ATTRIBUTES        *
@@ -269,7 +312,7 @@ public:
 	* @param attribName nom de l'attribut
 	* @return l'indice de l'attribut
 	*/
-	unsigned int getAttributeIndex(const std::string& attribName);
+	unsigned int getAttributeIndex(const std::string& attribName) const;
 
 	/**
 	 * get the name of an attribute, given its index in the container
@@ -300,6 +343,8 @@ public:
 	 */
 	unsigned int getAttributesTypes(std::vector<std::string>& types);
 
+	std::vector<AttributeMultiVector<MarkerBool>*>& getMarkerAttributes();
+
 	/**************************************
 	 *        CONTAINER MANAGEMENT        *
 	 **************************************/
@@ -320,6 +365,13 @@ public:
 	 * @param mapOldNew table that contains a map from old indices to new indices (holes -> 0xffffffff)
 	 */
 	void compact(std::vector<unsigned int>& mapOldNew);
+
+	/**
+	 * Test the fragmentation of container,
+	 * in fact just size/max_size
+	 * @return 1 if full filled - 0 is lots of holes
+	 */
+	inline float fragmentation();
 
 	/**************************************
 	 *          LINES MANAGEMENT          *
@@ -343,6 +395,11 @@ public:
 	 * initialize a line of the container (an element of each attribute)
 	 */
 	void initLine(unsigned int index);
+
+	/**
+	 * initialize all markers of a line of the container
+	 */
+	void initMarkersOfLine(unsigned int index);
 
 	/**
 	 * copy the content of line src in line dst
@@ -393,6 +450,8 @@ public:
 	/**************************************
 	 *       ATTRIBUTES DATA ACCESS       *
 	 **************************************/
+
+	inline CGoGNCodeType getTypeCode(const std::string& attribName) const;
 
 	/**
 	* get an AttributeMultiVector

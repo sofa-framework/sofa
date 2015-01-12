@@ -176,36 +176,52 @@ public:
 		return sizeof(bool); // ?
 	}
 
-    inline bool isAllFalse() {
-        for (unsigned int i = 0; i < m_tableData.size(); ++i)
-        {
-            unsigned int *ptr =m_tableData[i];
-            for (unsigned int j=0, max = _BLOCKSIZE_/32u; j< max;++j)
-                if((*ptr++) != 0u)
-                    return false;
-        }
-        return true;
-    }
+
 
 	inline void allFalse()
 	{
 		for (unsigned int i = 0; i < m_tableData.size(); ++i)
 		{
 			unsigned int *ptr =m_tableData[i];
-            for (unsigned int j=0, max = _BLOCKSIZE_/32u; j< max;++j)
-                *ptr++ = 0;
+			for (unsigned int j=0; j<_BLOCKSIZE_/32;++j)
+				*ptr++ = 0;
 		}
 	}
 
-    inline void allTrue()
-    {
-        for (unsigned int i = 0; i < m_tableData.size(); ++i)
-        {
-            unsigned int *ptr =m_tableData[i];
-            for (unsigned int j=0, max = _BLOCKSIZE_/32u ; j < max ; ++j)
-                *ptr++ = 0xffffffff;
-        }
-    }
+	inline void allTrue()
+	{
+		for (unsigned int i = 0; i < m_tableData.size(); ++i)
+		{
+			unsigned int *ptr =m_tableData[i];
+			for (unsigned int j=0; j<_BLOCKSIZE_/32;++j)
+				*ptr++ = 0xffffffff;
+		}
+		//memset(m_tableData[i],0,_BLOCKSIZE_/8);
+	}
+
+	inline bool isAllFalse()
+	{
+		for (unsigned int i = 0; i < m_tableData.size(); ++i)
+		{
+			unsigned int *ptr =m_tableData[i];
+			for (unsigned int j=0; j<_BLOCKSIZE_/32;++j)
+				if (*ptr++ != 0)
+					return false;
+		}
+		return true;
+	}
+
+	inline bool isAllTrue()
+	{
+		for (unsigned int i = 0; i < m_tableData.size(); ++i)
+		{
+			unsigned int *ptr =m_tableData[i];
+			for (unsigned int j=0; j<_BLOCKSIZE_/32;++j)
+				if (*ptr++ != 0xffffffff)
+					return false;
+		}
+		return true;
+	}
 
 	/**************************************
 	 *             DATA ACCESS            *
@@ -216,9 +232,9 @@ public:
 	{
 		unsigned int jj = i / _BLOCKSIZE_;
 		unsigned int j = i % _BLOCKSIZE_;
-        unsigned int x = j/32;
-        unsigned int y = j%32;
-        unsigned int mask = 1 << y;
+		unsigned int x = j/32;
+		unsigned int y = j%32;
+		unsigned int mask = 1 << y;
 		m_tableData[jj][x] &= ~mask;
 	}
 
@@ -386,6 +402,12 @@ public:
 	{
 		CGoGNout << this->operator[](i);
 	}
+
+	inline bool isMarkerBool()
+	{
+		return true;
+	}
+
 };
 
 
