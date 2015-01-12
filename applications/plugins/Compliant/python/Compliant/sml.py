@@ -49,9 +49,9 @@ def parseMesh(xmlModel):
         
             mesh.group=dict()
             mesh.weight=dict()
-            for g,w in zip(m.iter("group"),m.iter("weight")):
-                mesh.group[g.attrib["id"]] = SofaPython.Tools.strToListInt(g.text)
-                mesh.weight[g.attrib["id"]] = SofaPython.Tools.strToListFloat(w.text)
+            for g in m.iter("group"):
+                mesh.group[g.attrib["id"]] =  SofaPython.Tools.strToListInt(g.find("index").text)
+                mesh.weight[g.attrib["id"]] = SofaPython.Tools.strToListFloat(g.find("weight").text)
                 
             meshes[m.attrib["id"]] = mesh
             
