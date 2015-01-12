@@ -822,7 +822,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     Real totalMass=0.0;
 
     std::vector<  Vector3 > points;
-    std::vector< Vec<2,int> > indices;
+//    std::vector< Vec<2,int> > indices;
 
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -834,7 +834,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
         totalMass += masses[i];
     }
 
-    vparams->drawTool()->drawPoints(points, 2, Vec<4,float>(1,1,1,1));
+//    vparams->drawTool()->drawPoints(points, 2, Vec<4,float>(1,1,1,1));
 
     if(showCenterOfGravity.getValue())
     {
