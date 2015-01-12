@@ -21,12 +21,6 @@ CgSolver::CgSolver()
 	
 }
 
-// TODO: copy pasta; put this in utils (see MinresSolver.cpp)
-template<class Params>
-static void report(const Params& p) {
-	std::cerr << "cg: " << p.iterations 
-			  << " iterations, absolute residual: " << p.precision << std::endl;
-}
 
 // delicious copypasta (see minres) TODO factor this in utils
 void CgSolver::solve_schur(AssembledSystem::vec& x,
@@ -57,7 +51,8 @@ void CgSolver::solve_schur(AssembledSystem::vec& x,
 
 		x.head( sys.m ) += tmp;
 		x.tail( sys.n ) = lambda;
-		
+
+        report("cg (schur)", p );
 	}
 
 }
