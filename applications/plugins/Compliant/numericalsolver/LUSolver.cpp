@@ -1,7 +1,8 @@
-#include "LDLTSolver.h"
-#include "LDLTResponse.h"
+#include "LUSolver.h"
+#include "LUResponse.h"
 
 #include <sofa/core/ObjectFactory.h>
+
 
 #include "../utils/scoped.h"
 
@@ -12,8 +13,8 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(LDLTSolver)
-int LDLTSolverClass = core::RegisterObject("Direct LDLT solver").add< LDLTSolver >();
+SOFA_DECL_CLASS(LUSolver)
+int LUSolverClass = core::RegisterObject("Direct LU solver").add< LUSolver >();
 
 typedef AssembledSystem::vec vec;
 
@@ -22,19 +23,19 @@ typedef AssembledSystem::vec vec;
 
 
 
-LDLTSolver::LDLTSolver() 
+LUSolver::LUSolver()
     : KKTSolver()
     , pimpl()
 {
 
 }
 
-LDLTSolver::~LDLTSolver() {
+LUSolver::~LUSolver() {
 
 }
 
 
-void LDLTSolver::init() {
+void LUSolver::init() {
 
     KKTSolver::init();
 
@@ -43,9 +44,9 @@ void LDLTSolver::init() {
 
     // fallback in case we missed
     if( !response ) {
-        response = new LDLTResponse();
+        response = new LUResponse();
         this->getContext()->addObject( response );
-        std::cout << "LDLTSolver: fallback response class: "
+        std::cout << "LUSolver: fallback response class: "
                   << response->getClassName()
                   << " added to the scene" << std::endl;
     }
@@ -53,26 +54,26 @@ void LDLTSolver::init() {
 
 
 
-void LDLTSolver::factor_schur( const pimpl_type::cmat& schur )
+void LUSolver::factor_schur( const pimpl_type::cmat& schur )
 {
     if( debug.getValue() ){
         typedef AssembledSystem::dmat dmat;
-        cerr<< "LDLTSolver::factor, HinvPJT = " << endl << dmat(pimpl->HinvPJT) << endl;
-        cerr<< "LDLTSolver::factor, schur = " << endl << dmat(schur) << endl;
+        cerr<< "LUSolver::factor, HinvPJT = " << endl << dmat(pimpl->HinvPJT) << endl;
+        cerr<< "LUSolver::factor, schur = " << endl << dmat(schur) << endl;
     }
 
     {
         scoped::timer step("Schur factorization");
-        pimpl->schur.compute( schur.selfadjointView<Eigen::Upper>() );
+        pimpl->schur.compute( schur );
     }
 
     if( pimpl->schur.info() == Eigen::NumericalIssue ){
-        std::cerr << "LDLTSolver::factor: schur is not psd. System solution will be wrong." << std::endl;
+        std::cerr << "LUSolver::factor: schur is not psd. System solution will be wrong." << std::endl;
         std::cerr << schur << std::endl;
     }
 }
 
-void LDLTSolver::factor(const AssembledSystem& sys) {
+void LUSolver::factor(const AssembledSystem& sys) {
 
     // response matrix
     assert( response );
@@ -102,7 +103,7 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
 }
 
 
-void LDLTSolver::solve(AssembledSystem::vec& res,
+void LUSolver::solve(AssembledSystem::vec& res,
                        const AssembledSystem& sys,
                        const AssembledSystem::vec& rhs) const {
 
@@ -115,18 +116,18 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
     typedef AssembledSystem::dmat dmat;
 
     if( debug.getValue() ){
-        cerr<<"LDLTSolver::solve, rhs = " << rhs.transpose() << endl;
-        cerr<<"LDLTSolver::solve, Pv = " << Pv.transpose() << endl;
-        cerr<<"LDLTSolver::solve, H = " << endl << dmat(sys.H) << endl;
+        cerr<<"LUSolver::solve, rhs = " << rhs.transpose() << endl;
+        cerr<<"LUSolver::solve, Pv = " << Pv.transpose() << endl;
+        cerr<<"LUSolver::solve, H = " << endl << dmat(sys.H) << endl;
     }
 
     // in place solve
     response->solve( Pv, Pv );
 
     if( debug.getValue() ){
-        cerr<<"LDLTSolver::solve, free motion solution = " << Pv.transpose() << endl;
-        cerr<<"LDLTSolver::solve, verification = " << (sys.H * Pv).transpose() << endl;
-        cerr<<"LDLTSolver::solve, sys.m = " << sys.m << ", sys.n = " << sys.n << ", rhs.size = " << rhs.size() << endl;
+        cerr<<"LUSolver::solve, free motion solution = " << Pv.transpose() << endl;
+        cerr<<"LUSolver::solve, verification = " << (sys.H * Pv).transpose() << endl;
+        cerr<<"LUSolver::solve, sys.m = " << sys.m << ", sys.n = " << sys.n << ", rhs.size = " << rhs.size() << endl;
 
     }
     res.head( sys.m ) = sys.P * Pv;
@@ -141,9 +142,9 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
         // constraint forces
         res.head( sys.m ) += sys.P * (pimpl->HinvPJT * res.tail( sys.n));
         if( debug.getValue() ){
-            cerr<<"LDLTSolver::solve, free motion constraint error= " << -tmp.transpose() << endl;
-            cerr<<"LDLTSolver::solve, lambda = " << res.tail(sys.n).transpose() << endl;
-            cerr<<"LDLTSolver::solve, constraint forces = " << (sys.P * (pimpl->HinvPJT * res.tail( sys.n))).transpose() << endl;
+            cerr<<"LUSolver::solve, free motion constraint error= " << -tmp.transpose() << endl;
+            cerr<<"LUSolver::solve, lambda = " << res.tail(sys.n).transpose() << endl;
+            cerr<<"LUSolver::solve, constraint forces = " << (sys.P * (pimpl->HinvPJT * res.tail( sys.n))).transpose() << endl;
         }
     }
 

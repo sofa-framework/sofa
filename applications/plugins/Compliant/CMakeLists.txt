@@ -37,6 +37,7 @@ set(HEADER_FILES
     numericalsolver/PreconditionedCgSolver.h
     numericalsolver/AnalysisSolver.h
     numericalsolver/LumpedResponse.h
+    numericalsolver/LUSolver.h
     numericalsolver/LUResponse.h
     numericalsolver/BiCgStabSolver.h
 
@@ -141,6 +142,7 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedCgSolver.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/LumpedResponse.cpp
+    numericalsolver/LUSolver.cpp
     numericalsolver/LUResponse.cpp
     numericalsolver/BiCgStabSolver.cpp
 

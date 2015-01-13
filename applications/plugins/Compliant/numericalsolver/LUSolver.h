@@ -1,11 +1,11 @@
-#ifndef LDLTSOLVER_H
-#define LDLTSOLVER_H
+#ifndef LUSOLVER_H
+#define LUSOLVER_H
 
 #include "KKTSolver.h"
 #include "Response.h"
 
-#include <Eigen/SparseCholesky>
 
+#include <Eigen/SparseLU>
 
 #include "utils/thread_local.h"
 
@@ -15,12 +15,12 @@ namespace component {
 namespace linearsolver {
 
 /// Solve a dynamics system including bilateral constraints
-/// with a Schur complement factorization (LDL^T Cholesky)
+/// with a Schur complement factorization (LU)
 /// Note that the dynamics equation is solved by an external Response component
-class SOFA_Compliant_API LDLTSolver : public KKTSolver {
+class SOFA_Compliant_API LUSolver : public KKTSolver {
   public:
 	
-	SOFA_CLASS(LDLTSolver, KKTSolver);
+    SOFA_CLASS(LUSolver, KKTSolver);
 	
 	virtual void solve(vec& x,
 	                   const AssembledSystem& system,
@@ -31,8 +31,8 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 
     virtual void init();
 
-	LDLTSolver();
-	~LDLTSolver();
+    LUSolver();
+    ~LUSolver();
 
 
   protected:
@@ -47,7 +47,7 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
 		typedef Eigen::SparseMatrix<real, Eigen::ColMajor> cmat;
 		typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
 		
-        typedef Eigen::SimplicialLDLT< cmat >  solver_type;
+        typedef Eigen::SparseLU< cmat > solver_type;
 
         solver_type schur;
         cmat HinvPJT;
