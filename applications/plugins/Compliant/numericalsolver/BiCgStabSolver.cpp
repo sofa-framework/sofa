@@ -1,29 +1,27 @@
-#include "CgSolver.h"
+#include "BiCgStabSolver.h"
 
 #include <sofa/core/ObjectFactory.h>
 
 
 #include "utils/schur.h"
 #include "utils/kkt.h"
-#include "utils/cg.h"
-#include "utils/preconditionedcg.h"
+#include "utils/bicgstab.h"
 
 
 namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(CgSolver)
-int CgSolverClass = core::RegisterObject("Sparse CG linear solver").add< CgSolver >();
+SOFA_DECL_CLASS(BiCgStabSolver)
+int BiCgStabSolverClass = core::RegisterObject("Sparse biCGStab linear solver").add< BiCgStabSolver >();
 
-CgSolver::CgSolver() 
+BiCgStabSolver::BiCgStabSolver()
 {
 	
 }
 
-
 // delicious copypasta (see minres) TODO factor this in utils
-void CgSolver::solve_schur(AssembledSystem::vec& x,
+void BiCgStabSolver::solve_schur(AssembledSystem::vec& x,
 						   const AssembledSystem& sys,
 						   const AssembledSystem::vec& b,
 						   real damping) const {
@@ -41,7 +39,7 @@ void CgSolver::solve_schur(AssembledSystem::vec& x,
 		
 		vec lambda = x.tail(sys.n);
 
-		typedef ::cg<real> solver_type;		
+        typedef ::bicgstab<real> solver_type;
 		
 		solver_type::params p = params(rhs);
 		solver_type::solve(lambda, A, rhs, p);
@@ -51,14 +49,14 @@ void CgSolver::solve_schur(AssembledSystem::vec& x,
 
 		x.head( sys.m ) += tmp;
 		x.tail( sys.n ) = lambda;
-
-        report("cg (schur)", p );
+		
+        report("bicgstab (schur)", p );
 	}
 
 }
 
-// this code could also be factorized with minres code (maybe in KrylovSolver?)
-void CgSolver::solve_kkt(AssembledSystem::vec& x,
+// this code could also be factorized with cg/minres code (maybe in KrylovSolver?)
+void BiCgStabSolver::solve_kkt(AssembledSystem::vec& x,
                          const AssembledSystem& system,
                          const AssembledSystem::vec& b,
                          real damping ) const {
@@ -70,10 +68,10 @@ void CgSolver::solve_kkt(AssembledSystem::vec& x,
 
     kkt A(system, false, damping);
 
-    typedef ::cg<real> solver_type;
+    typedef ::bicgstab<real> solver_type;
     solver_type::solve(x, A, rhs, p);
 
-    report("cg (kkt)", p );
+    report("bicgstab (kkt)", p );
 }
 
 

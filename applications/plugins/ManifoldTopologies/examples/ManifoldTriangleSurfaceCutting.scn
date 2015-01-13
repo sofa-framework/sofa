@@ -8,7 +8,7 @@
 	<CollisionGroup />
 	<Node name="SquareGravity">
 		<CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
-		<MeshGmshLoader name="loader" filename="mesh/square3.msh" />
+                <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
 		<MechanicalObject src="@loader" scale="10" />
 		
 	<ManifoldTriangleSetTopologyContainer src="@loader"  name="Container" fileTopology=""/>

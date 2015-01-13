@@ -15,7 +15,7 @@
         <Node name="TorusTensorMass">
             <EulerImplicit name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-            <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+            <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" createSubelements="true"/>
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="2.5" template="Vec3d" />
             <UniformMass totalmass="5" />
@@ -35,7 +35,7 @@
         <Node name="TorusFEM_POLAR">
             <EulerImplicit name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-            <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
+            <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" createSubelements="true"/>
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="5" />
             <UniformMass totalmass="5" />
@@ -55,7 +55,7 @@
         <Node name="TorusFEM_SVD">
             <EulerImplicit name="cg_odesolver" printLog="false" />
             <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-            <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+            <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" createSubelements="true"/>
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="7.5" />
             <UniformMass totalmass="5" />

@@ -52,7 +52,9 @@ namespace sofa {
 				virtual void applyJ(const core::MechanicalParams*,
 				                    Data<typename self::OutVecDeriv>& out, 
 				                    const Data<typename self::InVecDeriv>& in) {
-					if( jacobian.rowSize() > 0 ) jacobian.mult(out, in);
+					if( jacobian.compressedMatrix.nonZeros() > 0 ) {
+                        jacobian.mult(out, in);
+                    }
 				}
 
 				void debug() {
@@ -68,7 +70,9 @@ namespace sofa {
 				                     Data<typename self::InVecDeriv>& in, 
 				                     const Data<typename self::OutVecDeriv>& out) {
 					// debug();
-					if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
+					if( jacobian.compressedMatrix.nonZeros() > 0 ) {
+                        jacobian.addMultTranspose(in, out);
+                    }
 				}
 
 				virtual void applyJT(const core::ConstraintParams*,
@@ -78,6 +82,26 @@ namespace sofa {
 					// if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
 				}
 
+
+                virtual const defaulttype::BaseMatrix* getK() {
+                    if( geometric.compressedMatrix.nonZeros() ) return &geometric;
+                    else return 0;
+                }
+
+                virtual void applyDJT(const core::MechanicalParams* mparams,
+                                      core::MultiVecDerivId inForce,
+                                      core::ConstMultiVecDerivId outForce) {
+                    if( geometric.compressedMatrix.nonZeros() ) {
+                        const core::State<In>* from_read = this->getFromModel();
+                        core::State<In>* from_write = this->getFromModel();
+
+                        // TODO does this even make sense ?
+                        geometric.addMult(*inForce[from_write].write(),
+                                          *outForce[from_read].read());
+                    }
+                    
+                }
+                
 
 			protected:
 				enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
@@ -103,6 +127,9 @@ namespace sofa {
 	
 				typedef linearsolver::EigenSparseMatrix<In, Out> jacobian_type;
 				jacobian_type jacobian;
+
+                typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
+                geometric_type geometric;
 			};
 
 		}

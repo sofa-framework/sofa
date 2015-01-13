@@ -28,13 +28,20 @@
         <position>0 0 0 0 0 0 1</position>
         <mesh id="skin">
             <source format="obj">minimal_skin.obj</source>
-            <group id="bone01">0 1</group>
-            <weight>1. 0.75</weight>
-            <group id="bone02">1 2</group>
-            <weight>0.25 1.</weight>
+            
+            <group id="group01">
+                <index>0 1</index>
+                <weight>1. 0.75</weight>
+            </group>
+            
+            <group id="group02">
+                <index>1 2</index> 
+                <weight>0.25 1.</weight>
+            </group>
+            
         </mesh>
-        <skinning group="bone01" rigid="bone01" />
-        <skinning group="bone02" rigid="bone02" />
+        <skinning group="group01" rigid="bone01" />
+        <skinning group="group02" rigid="bone02" />
     </deformable>
     
 </sml>
