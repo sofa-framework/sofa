@@ -108,10 +108,10 @@ protected:
 
 				typename self::jacobian_type::CompressedMatrix& J = this->jacobian(j).compressedMatrix;
 				
-				mat33 Rp = se3::rotation(parent).toRotationMatrix();
-				mat33 Rc = se3::rotation(child).toRotationMatrix();
+				const mat33 Rp = se3::rotation(parent).toRotationMatrix();
+				const mat33 Rc = se3::rotation(child).toRotationMatrix();
 //				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
-				mat33 dlog = se3::dlog( se3::rotation(delta) );
+				const mat33 dlog = se3::dlog( se3::rotation(delta) );
 				
 				mat66 ddelta; 
 
@@ -128,16 +128,16 @@ protected:
 				}
 				
 
-				mat66 block = ddelta;
+				const mat66& block = ddelta;
 				
 				// each row
 				for( unsigned u = 0; u < 6; ++u) {
-					unsigned row = 6 * i + u;
+					const unsigned row = 6 * i + u;
 					J.startVec( row );
 					
 					for( unsigned v = 0; v < 6; ++v) {
-						unsigned col = 6 * p[i][j] + v; 
-						J.insertBack(row, col) = block(u, v);
+						const unsigned col = 6 * p[i][j] + v; 
+						if( block(u, v) ) J.insertBack(row, col) = block(u, v);
 					} 
 				}		 
 				

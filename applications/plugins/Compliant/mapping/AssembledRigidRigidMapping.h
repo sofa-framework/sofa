@@ -112,7 +112,9 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 				
 				for(unsigned k = 0; k < 6; ++k) {
                     unsigned col = 6 * s.first() + k;
-					J.insertBack(row, col) = block(j, k);
+					if( block(j, k) ) {
+                        J.insertBack(row, col) = block(j, k);
+                    }
 				}
 			}			
  		}
@@ -165,7 +167,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 				for(unsigned k = 0; k < 3; ++k) {
                     const unsigned col = 6 * s.first() + 3 + k;
                     
-					dJ.insertBack(row, col) = block(j, k);
+					if( block(j, k) ) dJ.insertBack(row, col) = block(j, k);
 				}
 			}			
  		}
