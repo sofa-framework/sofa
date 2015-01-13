@@ -884,8 +884,6 @@ void OglModel::initTextures()
 #ifdef SOFA_HAVE_GLEW
 void OglModel::createVertexBuffer()
 {
-
-
     glGenBuffersARB(1, &vbo);
     initVertexBuffer();
     VBOGenDone = true;

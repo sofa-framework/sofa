@@ -1,13 +1,13 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.0
+import QtQuick.Dialogs 1.1
 import QtQuick.Controls.Private 1.0
 import Qt.labs.settings 1.0
 import Window 1.0
 
 Window {
     id: root
-    readonly property alias window: root
 
     title: Qt.application.name
 
@@ -15,11 +15,13 @@ Window {
     property alias scene: scene
     Scene {
         id: scene
+
+        onStatusMessageChanged: root.statusMessage = statusMessage
     }
 
     overrideCursorShape: 0
 
-    property string statusMessage
+    property string statusMessage: ""
     property int    statusDuration: 5000
 
     onStatusMessageChanged: clearStatusTimer.restart()
@@ -30,6 +32,29 @@ Window {
         repeat: false
         interval: statusDuration
         onTriggered: statusMessage = ""
+    }
+
+    //////////////////////////////////////////////////
+
+    // dialog
+    property FileDialog openSofaSceneDialog: openSofaSceneDialog
+    FileDialog {
+        id: openSofaSceneDialog
+        nameFilters: ["Scene files (*.xml *.scn *.pscn *.py *.simu *)"]
+        onAccepted: {
+            scene.source = fileUrl;
+            console.log("scene.source");
+        }
+    }
+
+    property FileDialog saveSofaSceneDialog: saveSofaSceneDialog
+    FileDialog {
+        id: saveSofaSceneDialog
+        selectExisting: false
+        nameFilters: ["Scene files (*.scn)"]
+        onAccepted: {
+            scene.save(fileUrl);
+        }
     }
 
     //////////////////////////////////////////////////
@@ -104,29 +129,6 @@ Window {
             for(var i = 0; i < uiIdList.length; ++i)
                 if(0 !== uiIdList[i].length)
                     uiIds += uiIdList[i] + ";";
-        }
-    }
-
-    // recent opened scene settings
-    property alias recentSettings: recentSettings
-    Settings {
-        id: recentSettings
-        category: "recent"
-
-        Component.onCompleted: {
-            scenesChanged();
-        }
-
-        property string scenes
-
-        function add(sceneSource) {
-            sceneSource += ";";
-            scenes = scenes.replace(sceneSource, "");
-            scenes = sceneSource + scenes;
-        }
-
-        function clear() {
-            scenes = "";
         }
     }
 

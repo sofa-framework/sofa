@@ -10,23 +10,35 @@ Scene {
     asynchronous: true
     source: ""
     sourceQML: ""
+    property string statusMessage: ""
 
     Component.onCompleted: {
-        if(0 !== settings.source.toString().length)
-            source = "file:" + settings.source;
+        if(0 !== settings.recent.length)
+            source = "file:" + settings.recent.replace(/;.*$/m, "");
 
         if(0 === source.toString().length)
             source = "file:Demos/caduceus.scn";
     }
 
-    property var settings: Settings {
+    property string recentScenes: ""
+
+    function addRecentScene(sceneSource) {
+        recentScenes = sceneSource + ";" + recentScenes.replace(sceneSource + ";", "");
+    }
+
+    function clearRecentScenes() {
+        recentScenes = "";
+    }
+
+    property Settings settings: Settings {
+        id: settings
         category: "scene"
 
-        property string source
+        property alias recent: root.recentScenes    // recently opened scenes
     }
 
     onStatusChanged: {
-        var path = source.toString().replace("file:///", "").replace("file:", "");
+        var path = source.toString().replace("///", "/").replace("file:", "");
         switch(status) {
         case Scene.Loading:
             statusMessage = 'Loading "' + path + '" please wait';
@@ -36,8 +48,7 @@ Scene {
             break;
         case Scene.Ready:
             statusMessage = 'Scene "' + path + '" loaded successfully';
-            settings.source = path;
-            recentSettings.add(path);
+            addRecentScene(path);
             break;
         }
     }

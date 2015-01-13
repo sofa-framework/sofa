@@ -28,6 +28,7 @@ public:
 	Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged);
 	Q_PROPERTY(bool play READ playing WRITE setPlay NOTIFY playChanged)
 	Q_PROPERTY(bool asynchronous MEMBER myAsynchronous NOTIFY asynchronousChanged)
+    Q_PROPERTY(bool visualDirty READ visualDirty NOTIFY visualDirtyChanged)
 
 	Q_ENUMS(Status)
 	enum Status {
@@ -56,6 +57,9 @@ public:
 	bool isReady() const							{return Status::Ready == myStatus;}
 	bool isInit() const								{return myIsInit;}
 
+    bool visualDirty() const						{return myVisualDirty;}
+    void setVisualDirty(bool newVisualDirty);
+
 signals:
 	void loaded();
 	void statusChanged(Status newStatus);
@@ -64,6 +68,7 @@ signals:
 	void dtChanged(double newDt);
 	void playChanged(bool newPlay);
 	void asynchronousChanged(bool newAsynchronous);
+    void visualDirtyChanged(bool newVisualDirty);
 
 public:
 	Q_INVOKABLE double radius();
@@ -71,7 +76,7 @@ public:
 	Q_INVOKABLE QString dumpGraph();
 
 public slots:
-	void init();
+    void init();        // need an opengl context made current
 	void reload();
 	void step();
 	void reset();
@@ -83,6 +88,7 @@ public slots:
 signals:
 	void stepBegin();
     void stepEnd();
+    void reseted();
 
 private slots:
 	void open();

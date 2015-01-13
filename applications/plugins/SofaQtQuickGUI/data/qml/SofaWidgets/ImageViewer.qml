@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.1
+import QtQuick.Controls.Styles 1.2
 import Qt.labs.folderlistmodel 2.1
 import Qt.labs.settings 1.0
 
@@ -157,6 +158,7 @@ Item {
                             anchors.rightMargin: 1
                             textRole: "title"
                             model: imageListModel
+                            style: ComboBoxStyle {}
                         }
                     }
 
@@ -169,7 +171,7 @@ Item {
                     }
 
                     Button {
-                        Layout.preferredWidth: 50
+                        Layout.preferredWidth: 55
                         Layout.fillHeight: true
                         text: "50%"
 
@@ -180,7 +182,7 @@ Item {
                     }
 
                     Button {
-                        Layout.preferredWidth: 50
+                        Layout.preferredWidth: 55
                         Layout.fillHeight: true
                         text: "100%"
 
@@ -191,7 +193,7 @@ Item {
                     }
 
                     Button {
-                        Layout.preferredWidth: 50
+                        Layout.preferredWidth: 55
                         Layout.fillHeight: true
                         text: "200%"
 
@@ -202,7 +204,7 @@ Item {
                     }
 
                     Button {
-                        Layout.preferredWidth: 50
+                        Layout.preferredWidth: 55
                         Layout.fillHeight: true
                         text: "Fit"
 

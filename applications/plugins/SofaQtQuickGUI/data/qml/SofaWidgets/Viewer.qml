@@ -9,10 +9,10 @@ Viewer {
     clip: true
 
     Timer {
-        interval: 16
         running: true
         repeat: true
-        onTriggered: root.update()
+        interval: 16
+        onTriggered: root.update() // TODO: warning, does not work with multithreaded render loop
     }
 
     BusyIndicator {
@@ -171,9 +171,16 @@ Viewer {
                     if(0 === wheel.angleDelta.y)
                         return;
 
-                    var factor = wheel.angleDelta.y / 120.0 * camera.zoomSpeed;
-                    if(factor < 0.0)
-                        factor = 1.0 / -factor;
+                    var boundary = 2.0;
+                    var factor = Math.max(-boundary, Math.min(wheel.angleDelta.y / 120.0, boundary)) / boundary;
+                    if(factor < 0.0) {
+                        factor = 1.0 + 0.5 * factor;
+                        factor /= camera.zoomSpeed;
+                    }
+                    else {
+                        factor = 1.0 + factor;
+                        factor *= camera.zoomSpeed;
+                    }
 
                     camera.zoom(factor, true);
                 });

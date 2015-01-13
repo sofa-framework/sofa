@@ -3,24 +3,27 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 
 ToolBar {
+    id: root
     height: 20
     anchors.margins: 0
     anchors.leftMargin: 0
+    property string statusMessage: ""
 
     RowLayout {
         anchors.fill: parent
 
         Rectangle {
             Layout.fillHeight: true
-            Layout.preferredWidth: 60
+            Layout.preferredWidth: fpsDisplay.implicitWidth + 10
             color: "transparent"
             border.width: 1
             border.color: "grey"
             radius: 2
 
             FPSDisplay {
+                id: fpsDisplay
                 anchors.fill: parent
-                anchors.margins: 5
+                horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
             }
         }
@@ -39,7 +42,7 @@ ToolBar {
                 anchors.fill: parent
                 anchors.margins: 5
                 verticalAlignment: Text.AlignVCenter
-                text: window.statusMessage
+                text: root.statusMessage
             }
         }
     }

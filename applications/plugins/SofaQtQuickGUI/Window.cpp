@@ -1,4 +1,3 @@
-#include <GL/glew.h>
 #include "Window.h"
 
 #include <qqml.h>
@@ -6,20 +5,25 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QSettings>
-//#include <QOpenGLContext>
 
-Window::Window(QWindow* parent) : QQuickWindow(parent)
+#include <QOpenGLContext>
+#include <QOpenGLDebugLogger>
+
+Window::Window(QWindow* parent) : QQuickWindow(parent),
+    myOpenglDebugLogger(0)
 {
-    // since we draw our scene in a fbo it is not useful anymore, let qt clear the render buffer for us
-    setClearBeforeRendering(false);
+    QSurfaceFormat format;
+    format.setMajorVersion(4);
+    format.setMinorVersion(2);
+    format.setProfile(QSurfaceFormat::CompatibilityProfile);
+    format.setOption(QSurfaceFormat::DebugContext);
+    format.setDepthBufferSize(24);
+    format.setStencilBufferSize(8);
+    format.setSamples(4);
+    setFormat(format);
 
-// 	QSurfaceFormat format;
-// 	format.setMajorVersion(3);
-// 	format.setMajorVersion(2);
-// 	format.setProfile(QSurfaceFormat::OpenGLContextProfile::CompatibilityProfile);
-// 	setFormat(format);
-
-	connect(this, &Window::sceneGraphInitialized, &glewInit);
+    connect(this, &Window::sceneGraphInitialized, this, &Window::initialize);
+    connect(this, &Window::sceneGraphInvalidated, this, &Window::invalidate);
 }
 
 Window::~Window()
@@ -37,4 +41,35 @@ void Window::setOverrideCursorShape(int newCursorShape)
 		QApplication::setOverrideCursor(QCursor((Qt::CursorShape) newCursorShape));
 
 	overrideCursorShapeChanged();
+}
+
+void Window::initialize()
+{
+    QOpenGLContext *ctx = QOpenGLContext::currentContext();
+    qDebug() << "OpenGL Context" << (QString::number(ctx->format().majorVersion()) + "." + QString::number(ctx->format().minorVersion())).toLatin1().constData();
+    qDebug() << "Graphics Card Vendor:" << (char*) glGetString(GL_VENDOR);
+    qDebug() << "Graphics Card Model:" << (char*) glGetString(GL_RENDERER);
+    qDebug() << "Graphics Card Drivers:" << (char*) glGetString(GL_VERSION);
+
+    if(ctx->hasExtension(QByteArrayLiteral("GL_KHR_debug")))
+    {
+        myOpenglDebugLogger = new QOpenGLDebugLogger(this);
+        if(!myOpenglDebugLogger->initialize())
+            qDebug() << "OpenGL debug logging disabled: error - the logger could not be initialized";
+        else
+            qDebug() << "OpenGL debug logging enabled";
+
+        connect(myOpenglDebugLogger, &QOpenGLDebugLogger::messageLogged, [](const QOpenGLDebugMessage &debugMessage) {qDebug() << "OpenGL" << debugMessage.type() << "-" << "Severity;" << debugMessage.severity() << "- Source:" << debugMessage.source() <<  "- Message:" << debugMessage.message();});
+        myOpenglDebugLogger->startLogging(QOpenGLDebugLogger::SynchronousLogging);
+    }
+    else
+    {
+        qDebug() << "OpenGL debug logging disabled: your graphics card does not support this functionality";
+    }
+}
+
+void Window::invalidate()
+{
+    delete myOpenglDebugLogger;
+    myOpenglDebugLogger = 0;
 }
