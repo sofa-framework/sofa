@@ -36,7 +36,7 @@ struct kkt {
 		template<class Vec>
 		const vec& operator()(const Vec& x) const {
 			result.noalias() = sys.P.selfadjointView<Eigen::Upper>() * x;
-			tmp.noalias() = sys.H.selfadjointView<Eigen::Upper>() * result;
+			tmp.noalias() = sys.H * result;
 			result.noalias() = sys.P.selfadjointView<Eigen::Upper>() * tmp;
 			return result;
 		}

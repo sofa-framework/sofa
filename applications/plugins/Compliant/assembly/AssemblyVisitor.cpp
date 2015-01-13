@@ -286,7 +286,7 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
     }
 
     sqmat.compress();
-    return sqmat.compressedMatrix.selfadjointView<Eigen::Upper>();
+    return sqmat.compressedMatrix;
 }
 
 
