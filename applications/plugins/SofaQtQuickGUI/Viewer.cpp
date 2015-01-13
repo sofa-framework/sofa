@@ -145,19 +145,26 @@ void Viewer::handleScenePathChanged()
 void Viewer::handleWindowChanged(QQuickWindow* window)
 {
     if(window)
+    {
+        window->setClearBeforeRendering(false);
         connect(window, SIGNAL(beforeRendering()), this, SLOT(paint()), Qt::DirectConnection);
+    }
 }
 
 void Viewer::paint()
 {
+    if(!window())
+        return;
+
     // compute the correct viewer position and size
     QPointF realPos(mapToScene(QPointF(0.0, 0.0)));
+    realPos.setX(realPos.x() * window()->devicePixelRatio());
+    realPos.setY((window()->height() - height()) * window()->devicePixelRatio() - realPos.y() * window()->devicePixelRatio());  // OpenGL has its Y coordinate inverted compared to Qt
 
-	QPoint pos(qFloor(realPos.x()), qFloor(realPos.y()));
-    pos.setY(window()->height() - height() - pos.y()); // OpenGL has its Y coordinate inverted compared to Qt
-	QSize size(qCeil(width()), qCeil(height()));
+    QPoint pos(qFloor(realPos.x()), qFloor(realPos.y()));
+    QSize size((qCeil(width()) + qCeil(pos.x() - realPos.x())) * window()->devicePixelRatio(), (qCeil((height()) + qCeil(pos.y() - realPos.y())) * window()->devicePixelRatio()));
 	if(!size.isValid())
-		return;
+        return;
 
     // clear the viewer rectangle and just its area, not the whole OpenGL buffer
     glScissor(pos.x(), pos.y(), size.width(), size.height());
@@ -232,7 +239,7 @@ void Viewer::paint()
 		_vparams->setModelViewMatrix(_mvmatrix);
 	}
 
-	myScene->draw();
+    myScene->draw();
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();

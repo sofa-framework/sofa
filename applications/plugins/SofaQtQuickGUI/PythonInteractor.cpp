@@ -190,7 +190,7 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 		if(!iterator)
 			return value;
 
-		while(item = PyIter_Next(iterator))
+        while((item = PyIter_Next(iterator)))
 		{
 			tuple.append(ExtractPythonTupleHelper(item));
 

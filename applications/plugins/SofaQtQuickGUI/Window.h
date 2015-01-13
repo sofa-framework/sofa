@@ -4,6 +4,8 @@
 #include <QQuickWindow>
 #include <QApplication>
 
+class QOpenGLDebugLogger;
+
 class Window : public QQuickWindow
 {
     Q_OBJECT
@@ -21,6 +23,13 @@ public:
 	
 signals:
 	void overrideCursorShapeChanged();
+
+private:
+    void initialize();
+    void invalidate();
+
+private:
+    QOpenGLDebugLogger* myOpenglDebugLogger;
 
 };
 

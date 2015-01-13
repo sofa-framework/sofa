@@ -20,7 +20,7 @@ Application::Application(QObject* parent) : QQmlApplicationEngine(parent)
 Application::Application(const QUrl& url, QObject* parent) : QQmlApplicationEngine(parent)
 {
 	init();
-	load(url);
+    load(url);
 }
 
 Application::Application(const QString& filePath, QObject* parent) : QQmlApplicationEngine(parent)

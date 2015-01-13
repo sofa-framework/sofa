@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include "Scene.h"
 
 #include <sofa/component/init.h>
@@ -23,7 +24,7 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	mySource(),
 	mySourceQML(),
 	myIsInit(false),
-	myVisualDirty(true),
+    myVisualDirty(false),
 	myDt(0.04),
 	myPlay(false),
 	myAsynchronous(true),
@@ -81,8 +82,6 @@ static bool LoaderProcess(sofa::simulation::Simulation* sofaSimulation, const QS
 {
 	if(!sofaSimulation || scenePath.isEmpty())
 		return false;
-
-	sofaSimulation->unload(sofaSimulation->GetRoot());
 
 	sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
 	if(vparams)
@@ -156,6 +155,8 @@ void Scene::open()
 	if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
 		qmlFilepath.clear();
 
+    mySofaSimulation->unload(mySofaSimulation->GetRoot());
+
 	if(myAsynchronous)
 	{
 		LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
@@ -228,6 +229,16 @@ void Scene::setPlay(bool newPlay)
 	playChanged(newPlay);
 }
 
+void Scene::setVisualDirty(bool newVisualDirty)
+{
+    if(newVisualDirty == myVisualDirty)
+        return;
+
+    myVisualDirty = newVisualDirty;
+
+    visualDirtyChanged(newVisualDirty);
+}
+
 double Scene::radius()
 {
 	QVector3D min, max;
@@ -270,6 +281,10 @@ void Scene::init()
 	if(!mySofaSimulation->GetRoot())
 		return;
 
+    GLenum err = glewInit();
+    if(0 != err)
+        qDebug() << "GLEW Initialization failed with error code:" << err;
+
 	mySofaSimulation->initTextures(mySofaSimulation->GetRoot().get());
 	setDt(mySofaSimulation->GetRoot()->getDt());
 
@@ -278,7 +293,10 @@ void Scene::init()
 
 void Scene::reload()
 {
-	open();
+    // TODO: ! NEED CURRENT OPENGL CONTEXT while releasing the old sofa scene
+    //qDebug() << "reload - thread" << QThread::currentThread() << QOpenGLContext::currentContext() << (void*) &glLightfv;
+
+    open();
 }
 
 void Scene::step()
@@ -288,16 +306,19 @@ void Scene::step()
 
 	emit stepBegin();
     mySofaSimulation->animate(mySofaSimulation->GetRoot().get(), myDt);
-	myVisualDirty = true;
+    setVisualDirty(true);
     emit stepEnd();
 }
 
 void Scene::reset()
 {
-	if(!mySofaSimulation->GetRoot())
-		return;
+    if(!mySofaSimulation->GetRoot())
+        return;
 
+    // TODO: ! NEED CURRENT OPENGL CONTEXT
     mySofaSimulation->reset(mySofaSimulation->GetRoot().get());
+    setVisualDirty(true);
+    emit reseted();
 }
 
 void Scene::draw()
@@ -305,10 +326,12 @@ void Scene::draw()
 	if(!mySofaSimulation->GetRoot())
 		return;
 
-	if(myVisualDirty)
-	{
-		mySofaSimulation->updateVisual(mySofaSimulation->GetRoot().get());
-		myVisualDirty = false;
+    //qDebug() << "draw - thread" << QThread::currentThread() << QOpenGLContext::currentContext();
+
+    if(visualDirty())
+    {
+        mySofaSimulation->updateVisual(mySofaSimulation->GetRoot().get());
+        setVisualDirty(false);
 	}
 
 	mySofaSimulation->draw(sofa::core::visual::VisualParams::defaultInstance(), mySofaSimulation->GetRoot().get());

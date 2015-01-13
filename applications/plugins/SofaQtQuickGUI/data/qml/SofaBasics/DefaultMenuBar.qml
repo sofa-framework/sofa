@@ -5,33 +5,16 @@ import QtQuick.Dialogs 1.1
 import Qt.labs.settings 1.0
 
 MenuBar {
+    id: menuBar
 
     property list<QtObject> objects: [
-
-        // dialog
-        FileDialog {
-            id: openDialog
-            nameFilters: ["Scene files (*.xml *.scn *.pscn *.py *.simu *)"]
-            onAccepted: {
-                scene.source = fileUrl;
-            }
-        },
-
-        FileDialog {
-            id: saveDialog
-            selectExisting: false
-            nameFilters: ["Scene files (*.scn)"]
-            onAccepted: {
-                scene.save(fileUrl);
-            }
-        },
 
         // action
         Action {
             id: openAction
             text: "&Open..."
             shortcut: "Ctrl+O"
-            onTriggered: openDialog.open();
+            onTriggered: openSofaSceneDialog.open();
             tooltip: "Open a Sofa Scene"
         },
 
@@ -47,7 +30,7 @@ MenuBar {
         Action {
             id: clearRecentAction
             text: "&Clear"
-            onTriggered: recentSettings.clear();
+            onTriggered: scene.clearRecentSettings();
             tooltip: "Clear history"
         },
 
@@ -63,14 +46,14 @@ MenuBar {
 //            id: saveAction
 //            text: "&Save"
 //            shortcut: "Ctrl+S"
-//            onTriggered: if(0 == filePath.length) saveDialog.open(); else scene.save(filePath);
+//            onTriggered: if(0 == filePath.length) saveSofaSceneDialog.open(); else scene.save(filePath);
 //            tooltip: "Save the Sofa Scene"
 //        },
 
         Action {
             id: saveAsAction
             text: "&Save As..."
-            onTriggered: saveDialog.open();
+            onTriggered: saveSofaSceneDialog.open();
             tooltip: "Save the Sofa Scene at a specific location"
         },
 
@@ -85,7 +68,7 @@ MenuBar {
         MessageDialog {
             id: aboutDialog
             title: "About"
-            text: "Welcome in the " + window.title +" Application"
+            text: "Welcome in the " + Qt.application.name +" Application"
             onAccepted: visible = false
         },
 
@@ -110,10 +93,10 @@ MenuBar {
             visible: 0 !== items.length
 
             Connections {
-                target: recentSettings
-                onScenesChanged: {
+                target: scene
+                onRecentScenesChanged: {
                     recentMenu.clear();
-                    var sceneList = recentSettings.scenes.split(';');
+                    var sceneList = scene.recentScenes.split(';');
                     if(0 === sceneList.length)
                         return;
 

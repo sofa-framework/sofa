@@ -21,5 +21,6 @@
         <file>SofaWidgets/Viewer.qml</file>
         <file>SofaWidgets/ImageViewer.qml</file>
         <file>SofaWidgets/ToolPanel.qml</file>
+        <file>SofaCommon/Settings.js</file>
     </qresource>
 </RCC>

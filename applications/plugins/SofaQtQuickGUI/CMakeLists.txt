@@ -6,7 +6,7 @@ set(SOURCE_FILES
 		Window.cpp
 		Viewer.cpp
 		Camera.cpp
-        Scene.cpp
+                Scene.cpp
 		PythonInteractor.cpp
 		PickingInteractor.cpp
 )
@@ -17,12 +17,13 @@ set(HEADER_FILES
 		Window.h
 		Viewer.h
 		Camera.h
-        Scene.h
+                Scene.h
 		PythonInteractor.h
 		PickingInteractor.h
 )
 
 set(QML_FILES
+                data/qml/SofaCommon/Settings.js
 		data/qml/SofaBasics/qmldir
 		data/qml/SofaBasics/Window.qml
 		data/qml/SofaBasics/DefaultStatusBar.qml
@@ -32,11 +33,11 @@ set(QML_FILES
 		data/qml/SofaBasics/Actor.qml
 		data/qml/SofaBasics/Camera.qml
 		data/qml/SofaBasics/FPSDisplay.qml
-        data/qml/SofaBasics/ContentItem.qml
-        data/qml/SofaBasics/CollapsibleGroupBox.qml
+                data/qml/SofaBasics/ContentItem.qml
+                data/qml/SofaBasics/CollapsibleGroupBox.qml
 		data/qml/SofaBasics/Vector3DSpinBox.qml
 		data/qml/SofaBasics/DynamicSplitView.qml
-        data/qml/SofaBasics/DynamicContent.qml
+                data/qml/SofaBasics/DynamicContent.qml
 		data/qml/SofaTools/qmldir
 		data/qml/SofaTools/SimulationControl.qml
 		data/qml/SofaTools/SceneGUILoader.qml

@@ -118,11 +118,11 @@ CollapsibleGroupBox {
             Dialog {
                 id: displayGraphDialog
                 title: "Simulation Scene Graph"
-                width: window.width * 2.0 / 3.0
-                height: window.height * 2.0 / 3.0
+                width: 800
+                height: 600
 
                 contentItem: Item {
-                    GridLayout {
+                    ColumnLayout {
                         anchors.fill: parent
                         anchors.margins: 5
                         TextArea {
@@ -134,6 +134,11 @@ CollapsibleGroupBox {
                             Component.onCompleted: {
                                 wrapMode = TextEdit.NoWrap;
                             }
+                        }
+                        Button {
+                            Layout.fillWidth: true
+                            text: "Hide"
+                            onClicked: displayGraphDialog.close()
                         }
                     }
                 }

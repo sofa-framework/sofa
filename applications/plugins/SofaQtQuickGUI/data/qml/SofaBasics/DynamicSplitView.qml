@@ -847,20 +847,14 @@ Item {
     function shareEdge(splitter, otherSplitter) {
         if((null !== splitter.bottomRightEdge && splitter.bottomRightEdge === otherSplitter.topLeftEdge) ||
            (null !== splitter.topLeftEdge && splitter.topLeftEdge === otherSplitter.bottomRightEdge)) {
-
-            if(splitter.orientation !== otherSplitter.orientation)
-                return true;
-            else if(Qt.Horizontal === splitter.orientation && Math.round(splitter.y) === Math.round(otherSplitter.y))
-                return true;
-            else if(Qt.Vertical === splitter.orientation && Math.round(splitter.x) === Math.round(otherSplitter.x))
-                return true;
+            return true;
         }
 
         return false;
     }
 
     function mergeSplitter(splitter, otherSplitter) {
-        if(splitter !== otherSplitter && shareEdge(splitter, otherSplitter) && (Math.abs(splitter.relativeX - otherSplitter.relativeX) < 0.00001 || Math.abs(splitter.relativeY - otherSplitter.relativeY) < 0.00001)) {
+        if(splitter !== otherSplitter && shareEdge(splitter, otherSplitter) && (Math.abs(splitter.x - otherSplitter.x) < splitterMagnetizeThreshold || Math.abs(splitter.y - otherSplitter.y) < splitterMagnetizeThreshold)) {
             if(null !== otherSplitter.bottomRightEdge && otherSplitter.bottomRightEdge === splitter.topLeftEdge) {
                 otherSplitter.bottomRightEdge = splitter.bottomRightEdge;
             } else if(null !== otherSplitter.topLeftEdge && otherSplitter.topLeftEdge === splitter.bottomRightEdge) {
