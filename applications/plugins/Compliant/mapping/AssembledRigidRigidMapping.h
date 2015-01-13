@@ -75,7 +75,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         use_geometric(initData(&use_geometric,
                                false,
                                "use_geometric",
-                               "use geometric stiffness (YOU NEED ORDERED SOURCE INDICES)")) {
+                               "assemble (and use) geometric stiffness (non symmetric !)")) {
                 
     }
 
@@ -121,6 +121,15 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
         // we're done
         if( not use_geometric.getValue() ) return;
+
+        // sorted in-out
+        typedef std::map<unsigned, unsigned> in_out_type;
+        in_out_type in_out;
+
+        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
+            const source_type& s = source.getValue()[i];
+            in_out[ s.first() ] = i;
+        }
         
         typename self::jacobian_type::CompressedMatrix& dJ = this->geometric.compressedMatrix;
         typename self::out_force_type out_force = this->out_force();
@@ -130,10 +139,13 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
         dJ.setZero();
 
-        // TODO DAMMIT we need ordered source indices
-        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
-            const source_type& s = source.getValue()[i];
+        for(in_out_type::const_iterator it = in_out.begin(), end = in_out.end();
+            it != end; ++it) {
 
+            const unsigned i = it->second;
+            const source_type& s = source.getValue()[i];
+            assert( it->first == s.first() );
+            
 			const typename TOut::Deriv& lambda = out_force[i];
             const typename TOut::Deriv::Vec3& f = lambda.getLinear();
 
