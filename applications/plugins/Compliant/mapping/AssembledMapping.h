@@ -126,9 +126,12 @@ namespace sofa {
 				enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
 				typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
+                
 				typedef helper::WriteAccessor< Data< typename self::OutVecCoord > > out_pos_type;
 
                 typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > out_force_type;
+
+                typedef helper::WriteAccessor< Data< typename self::InVecDeriv > > in_vel_type;
                 
 				in_pos_type in_pos() {
 
