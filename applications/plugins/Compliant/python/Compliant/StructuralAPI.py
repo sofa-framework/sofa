@@ -26,6 +26,11 @@ template_suffix="d"
 # global variable to give a different name to each visual model
 idxVisualModel = 0
 
+# to use geometric_stiffness of rigid mappings
+geometric_stiffness = False
+
+
+
 class RigidBody:
     ## Generic Rigid Body
 
@@ -133,7 +138,7 @@ class RigidBody:
             self.node = node.createChild( name )
             self.frame = Rigid.Frame( offset )
             self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
-            self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame))
+            self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), use_geometric=geometric_stiffness)
 
         def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
             ## adding a relative offset to the offset
