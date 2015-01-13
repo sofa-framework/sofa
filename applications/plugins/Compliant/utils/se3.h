@@ -34,10 +34,9 @@ struct SE3 {
 
 	typedef Eigen::Quaternion<real> quat;
 
-	// order: translation, rotation
+	// sofa order: (translation, rotation)
 	typedef vec6 twist;
-
-
+    
 	// easy mappings between sofa/eigen vectors
 	template<int I>
 	static Eigen::Map< Eigen::Matrix<real, I, 1> > map(::sofa::defaulttype::Vec<I, real>& v) {
