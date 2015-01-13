@@ -38,6 +38,10 @@ class PID:
                                       name = 'dofs',
                                       template = 'Vec1d',
                                       position = '0')
+
+        node.createObject('ConstantForceField',
+                          template = 'Vec1d',
+                          forces = '0')
         
         self.map = node.createObject('ProjectionMapping',
                                      set = '0 ' + Tools.cat(self.basis) )
@@ -58,17 +62,18 @@ class PID:
             if len(current) == 0:
                 value = 0
             else:
-                value = current[0]
+                value = current[0][0]
         else:
             value = current
 
+        print value, tau
         value += tau
 
         self.dofs.externalForce = str(value)
 
     def pid(self, dt):
-        p = self.dofs.position - self.pos
-        d = self.dofs.velocity - self.vel
+        p = self.dofs.position[0][0] - self.pos
+        d = self.dofs.velocity[0][0] - self.vel
         i = self.integral + dt * p
 
         return p, i, d
@@ -175,13 +180,13 @@ class ImplicitPID:
 
     # force applied at the end of time step
     def post_force(self):
-        return self.dofs.force - self.kd * self.dofs.velocity + self.explicit
+        return self.dofs.force - self.kd * self.dofs.velocity[0][0] + self.explicit
 
     # call this during onEndAnimationStep
     def post_step(self, dt):
 
         # update integral with error on time step start
-        self.integral = self.integral + dt * self.dofs.position
+        self.integral = self.integral + dt * self.dofs.position[0][0]
         
         # sanity check
         # check = self.kp * self.dofs.position + self.kd * self.dofs.velocity + self.ki * self.integral

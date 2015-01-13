@@ -6,7 +6,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(LDLTResponse);
+SOFA_DECL_CLASS(LDLTResponse)
 int LDLTResponseClass = core::RegisterObject("A sparse Cholesky factorization of the response matrix.").add< LDLTResponse >();
  
 
