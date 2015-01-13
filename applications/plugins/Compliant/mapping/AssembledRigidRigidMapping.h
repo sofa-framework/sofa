@@ -84,6 +84,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
     Data<bool> use_geometric;
 
+    typedef typename TIn::Real Real;
+
   protected:
 	typedef SE3< typename TIn::Real > se3;
   
