@@ -108,7 +108,9 @@ namespace sofa {
 
 				typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
 				typedef helper::WriteAccessor< Data< typename self::OutVecCoord > > out_pos_type;
-	
+
+                typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > out_force_type;
+                
 				in_pos_type in_pos() {
 
 					const core::State<In>* fromModel = this->getFromModel();
@@ -120,7 +122,21 @@ namespace sofa {
 					
 					return *in;
 				}
-	
+
+
+                out_force_type out_force() {
+
+					const core::State<Out>* toModel = this->getToModel();
+					assert( toModel );
+					
+					core::ConstMultiVecDerivId outForce = core::ConstVecDerivId::force();
+	  
+					const typename self::OutDataVecDeriv* out = outForce[toModel].read();
+					
+					return *out;
+				}
+
+
 
 				virtual void assemble( const in_pos_type& in ) = 0;
 				virtual void apply(out_pos_type& out, const in_pos_type& in ) = 0;
@@ -130,6 +146,7 @@ namespace sofa {
 
                 typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
                 geometric_type geometric;
+
 			};
 
 		}

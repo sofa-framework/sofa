@@ -71,12 +71,18 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
 	
 	AssembledRigidRigidMapping() 
-		: source(initData(&source, "source", "input dof and rigid offset for each output dof" )) {
-		
-	}
+		: source(initData(&source, "source", "input dof and rigid offset for each output dof" )),
+        use_geometric(initData(&use_geometric,
+                               false,
+                               "use_geometric",
+                               "use geometric stiffness (YOU NEED ORDERED SOURCE INDICES)")) {
+                
+    }
 
 	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
 	Data< vector< source_type > > source;
+
+    Data<bool> use_geometric;
 
   protected:
 	typedef SE3< typename TIn::Real > se3;
@@ -112,6 +118,47 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
  		}
 
 		J.finalize();
+
+        // we're done
+        if( not use_geometric.getValue() ) return;
+        
+        typename self::jacobian_type::CompressedMatrix& dJ = this->geometric.compressedMatrix;
+        typename self::out_force_type out_force = this->out_force();
+
+        dJ.resize( 6 * in_pos.size(),
+                   6 * in_pos.size() );
+
+        dJ.setZero();
+
+        // TODO DAMMIT we need ordered source indices
+        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
+            const source_type& s = source.getValue()[i];
+
+			const typename TOut::Deriv& lambda = out_force[i];
+            const typename TOut::Deriv::Vec3& f = lambda.getLinear();
+
+            const typename TOut::Deriv::Quat& R = in_pos[ s.first() ].getOrientation();
+            const typename TOut::Deriv::Vec3& t = s.second().getCenter();
+
+            const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
+
+            typename se3::mat33 block = se3::hat( se3::map(f) ) * se3::hat( se3::map(Rt));
+
+			for(unsigned j = 0; j < 3; ++j) {
+                
+				const unsigned row = 6 * s.first() + 3 + j;
+                
+				dJ.startVec( row );
+				
+				for(unsigned k = 0; k < 3; ++k) {
+                    const unsigned col = 6 * s.first() + 3 + k;
+                    
+					dJ.insertBack(row, col) = block(j, k);
+				}
+			}			
+ 		}
+
+        dJ.finalize();
 	}
 
 
