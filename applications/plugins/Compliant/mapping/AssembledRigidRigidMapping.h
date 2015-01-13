@@ -88,40 +88,12 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 	typedef SE3< typename TIn::Real > se3;
   
 	typedef AssembledRigidRigidMapping self;
-	
-	virtual void assemble( const typename self::in_pos_type& in_pos ) {
 
-		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
 
-		assert( in_pos.size() );
-        assert( source.getValue().size() );
-		
-        J.resize(6 * source.getValue().size(),
-		         6 * in_pos.size() );
-		J.setZero();
-		
-        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
-            const source_type& s = source.getValue()[i];
-			
-            typename se3::mat66 block = se3::dR(s.second(), in_pos[ s.first() ] );
-			
-			for(unsigned j = 0; j < 6; ++j) {
-				unsigned row = 6 * i + j;
-				
-				J.startVec( row );
-				
-				for(unsigned k = 0; k < 6; ++k) {
-                    unsigned col = 6 * s.first() + k;
-					if( block(j, k) ) {
-                        J.insertBack(row, col) = block(j, k);
-                    }
-				}
-			}			
- 		}
+    virtual void assemble_geometric(const typename self::in_pos_type& in_pos,
+                                    const typename self::out_force_type& out_force) {
 
-		J.finalize();
-
-        // we're done
+        // we're done lol
         if( not use_geometric.getValue() ) return;
 
         // sorted in-out
@@ -134,7 +106,6 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         }
         
         typename self::jacobian_type::CompressedMatrix& dJ = this->geometric.compressedMatrix;
-        typename self::out_force_type out_force = this->out_force();
 
         dJ.resize( 6 * in_pos.size(),
                    6 * in_pos.size() );
@@ -173,6 +144,41 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
  		}
 
         dJ.finalize();
+
+    }
+
+	virtual void assemble( const typename self::in_pos_type& in_pos ) {
+
+		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
+
+		assert( in_pos.size() );
+        assert( source.getValue().size() );
+		
+        J.resize(6 * source.getValue().size(),
+		         6 * in_pos.size() );
+		J.setZero();
+		
+        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
+            const source_type& s = source.getValue()[i];
+			
+            typename se3::mat66 block = se3::dR(s.second(), in_pos[ s.first() ] );
+			
+			for(unsigned j = 0; j < 6; ++j) {
+				unsigned row = 6 * i + j;
+				
+				J.startVec( row );
+				
+				for(unsigned k = 0; k < 6; ++k) {
+                    unsigned col = 6 * s.first() + k;
+					if( block(j, k) ) {
+                        J.insertBack(row, col) = block(j, k);
+                    }
+				}
+			}			
+ 		}
+
+		J.finalize();
+
 	}
 
 
