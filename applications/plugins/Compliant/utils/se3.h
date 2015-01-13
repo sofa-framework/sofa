@@ -310,7 +310,22 @@ struct SE3 {
 	}
 
 	// TODO provide exponential lol
-	
+
+    // SO(3) exponential
+    static quat exp(const vec3& v) {
+        const real theta = v.norm();
+
+        const real c = std::cos( theta / 2.0 );
+        const real sc = sinc( theta / 2.0 ) / 2.0;
+        
+        quat res;
+
+        res.w() = std::cos( theta / 2.0 );
+        res.vec() = sc * v;
+        
+        return res;
+    }
+    
 	// static mat33 dexp(const vec3& x) {
 	// 	return dexp(x, exp(x) );
 	// }

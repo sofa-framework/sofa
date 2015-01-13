@@ -84,13 +84,26 @@ namespace sofa {
 
 
                 virtual const defaulttype::BaseMatrix* getK() {
+
+                    // trigger assembly
+                    this->assemble_geometric(this->in_pos(),
+                                             this->out_force() );
+                    
                     if( geometric.compressedMatrix.nonZeros() ) return &geometric;
                     else return 0;
+                    
                 }
 
                 virtual void applyDJT(const core::MechanicalParams* mparams,
                                       core::MultiVecDerivId inForce,
                                       core::ConstMultiVecDerivId outForce) {
+                    // TODO FIXME
+                    // trigger K recomputation 
+                    this->getK();
+                    
+                    std::cout << "WARNING: geometric stiffness might be reassembled everytime !"
+                              << std::endl;
+                    
                     if( geometric.compressedMatrix.nonZeros() ) {
                         const core::State<In>* from_read = this->getFromModel();
                         core::State<In>* from_write = this->getFromModel();
@@ -99,6 +112,7 @@ namespace sofa {
                         geometric.addMult(*inForce[from_write].write(),
                                           *outForce[from_read].read());
                     }
+
                     
                 }
                 
@@ -139,6 +153,9 @@ namespace sofa {
 
 
 				virtual void assemble( const in_pos_type& in ) = 0;
+                virtual void assemble_geometric( const in_pos_type& in,
+                                                 const out_force_type& out) { };
+                
 				virtual void apply(out_pos_type& out, const in_pos_type& in ) = 0;
 	
 				typedef linearsolver::EigenSparseMatrix<In, Out> jacobian_type;
