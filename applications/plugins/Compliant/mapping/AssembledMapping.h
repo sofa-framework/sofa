@@ -96,7 +96,7 @@ namespace sofa {
 
                 virtual void applyDJT(const core::MechanicalParams* mparams,
                                       core::MultiVecDerivId inForce,
-                                      core::ConstMultiVecDerivId outForce) {
+                                      core::ConstMultiVecDerivId /* inDx */ ) {
                     // TODO FIXME
                     // trigger K recomputation 
                     this->getK();
@@ -105,12 +105,17 @@ namespace sofa {
                               << std::endl;
                     
                     if( geometric.compressedMatrix.nonZeros() ) {
+
+                        const Data<typename self::InVecDeriv>& inDx =
+                            *mparams->readDx(this->fromModel);
+                        
                         const core::State<In>* from_read = this->getFromModel();
                         core::State<In>* from_write = this->getFromModel();
 
                         // TODO does this even make sense ?
                         geometric.addMult(*inForce[from_write].write(),
-                                          *outForce[from_read].read());
+                                          inDx,
+                                          mparams->kFactor());
                     }
 
                     
