@@ -53,10 +53,10 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries( ${PROJECT_NAME} SofaMeshCollision ${SOFAADVANCED_DEPENDENCY_LINK} ) 
+target_link_libraries( ${PROJECT_NAME} PUBLIC SofaMeshCollision ${SOFAADVANCED_DEPENDENCY_LINK} ) 
 
 if( SOFA_HAVE_MINIFLOWVR )
-    target_link_libraries( ${PROJECT_NAME} SofaUserInteraction )
+    target_link_libraries( ${PROJECT_NAME} PUBLIC SofaUserInteraction )
 endif() 
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")

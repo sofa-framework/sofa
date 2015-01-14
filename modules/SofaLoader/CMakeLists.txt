@@ -49,7 +49,7 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries( ${PROJECT_NAME} SofaSimulationTree SofaHelper)
+target_link_libraries( ${PROJECT_NAME} PUBLIC SofaSimulationTree SofaHelper)
 
 set( SOFALOADER_COMPILER_FLAGS "-DSOFA_BUILD_LOADER")
 
