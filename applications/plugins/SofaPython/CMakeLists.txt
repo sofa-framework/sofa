@@ -149,7 +149,7 @@ set( SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
 # compile with -fno-strict-aliasing to prevent the compiler from relying on
 # those rules to optimize the code.
 if(${CMAKE_COMPILER_IS_GNUCC})
-    list(APPEND SOFAPYTHON_COMPILER_FLAGS "-fno-strict-aliasing")
+    set(SOFAPYTHON_COMPILER_FLAGS "${SOFAPYTHON_COMPILER_FLAGS} -fno-strict-aliasing")
 endif()
 
 # make the name of debug libraries end in _d.
