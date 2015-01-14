@@ -127,7 +127,7 @@ set(GROUP_BASE_DIR "..")
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} SofaBaseTopology )
+target_link_libraries( ${PROJECT_NAME} PUBLIC SofaBaseTopology )
 #if(SOFA_HAVE_EIGEN2)
 #    target_link_libraries( ${PROJECT_NAME} SofaEigen2Solver )
 #endif()
