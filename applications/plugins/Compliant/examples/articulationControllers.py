@@ -200,7 +200,7 @@ class Controller(Sofa.PythonScriptController):
             hingebasearm0_offset += 0.1
             if( hingebasearm0_offset > hingebasearm0_limit ) :
                 hingebasearm0_offset = hingebasearm0_limit
-            hingebasearm0_positionController.setOffsets([hingebasearm0_offset])
+            hingebasearm0_positionController.setTarget([hingebasearm0_offset])
             print "Controlling hinge 'base-arm0' position "+str(hingebasearm0_offset)
             
         # DOWN key -> hinge angle between base and arm0
@@ -208,7 +208,7 @@ class Controller(Sofa.PythonScriptController):
             hingebasearm0_offset -= 0.1
             if( hingebasearm0_offset < -hingebasearm0_limit ) :
                 hingebasearm0_offset = -hingebasearm0_limit
-            hingebasearm0_positionController.setOffsets([hingebasearm0_offset])
+            hingebasearm0_positionController.setTarget([hingebasearm0_offset])
             print "Controlling hinge 'base-arm0' position "+str(hingebasearm0_offset)
             
         # RIGHT key -> hinge velocity between arm and arm0
