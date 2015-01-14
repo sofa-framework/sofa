@@ -209,25 +209,22 @@ class GenericRigidJoint:
 
 
     class PositionController:
-        """ Set the joint position to the offset
-        WARNING: for angular dof position, the value mus be in ]-pi,pi]
+        """ Set the joint position to the target
+        WARNING: for angular dof position, the value must be in ]-pi,pi]
         """
-        def __init__(self, node, masks, offsets, compliance):
-            self.node = node.createChild( "controller" )
+        def __init__(self, node, mask, target, compliance):
+            self.node = node.createChild( "controller-mask" )
 
-            set = []
-            position = [0] * len(masks)
+            self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs')
+            self.node.createObject('MaskMapping', dofs=concat(mask))
+            self.nodeTarget = self.node.createChild( "controller-target" )
+            self.nodeTarget.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs')
+            self.mapping = self.nodeTarget.createObject('DifferenceFromTargetMapping', targets=concat(target))
+            self.compliance = self.nodeTarget.createObject('UniformCompliance', name='compliance', compliance=compliance, isCompliance=0)
+            self.type = self.nodeTarget.createObject('Stabilization')
 
-            for i in range(len(masks)):
-                set = set + [0] + masks[i]
-
-            self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
-            self.mapping = self.node.createObject('ProjectionMapping', set=concat(set), offset=concat(offsets))
-            self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance, isCompliance=0)
-            self.type = self.node.createObject('Stabilization')
-
-        def setOffsets( self, offsets ):
-            self.mapping.offset = concat(offsets)
+        def setTarget( self, target ):
+            self.mapping.targets = concat(target)
 
 
     class ForceController:
@@ -322,9 +319,9 @@ class HingeRigidJoint(GenericRigidJoint):
         mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
 
-    def addPositionController( self, offset, compliance=0 ):
+    def addPositionController( self, target, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.PositionController( self.node, [mask], [offset], compliance )
+        return GenericRigidJoint.PositionController( self.node, mask, [target], compliance )
 
     def addVelocityController( self, velocity, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
@@ -354,9 +351,9 @@ class SliderRigidJoint(GenericRigidJoint):
         mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
 
-    def addPositionController( self, offset, compliance=0 ):
+    def addPositionController( self, target, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.PositionController( self.node, [mask], [offset], compliance )
+        return GenericRigidJoint.PositionController( self.node, mask, [target], compliance )
 
     def addVelocityController( self, velocity, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
@@ -411,12 +408,12 @@ class BallAndSocketRigidJoint(GenericRigidJoint):
         mask = [0, 0, 0, 1.0/stiffnessX, 1.0/stiffnessY, 1.0/stiffnessZ ]
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
 
-    def addPositionController( self, axis, offset, compliance=0 ):
+    def addPositionController( self, axis, target, compliance=0 ):
         """ control rotation around axis (0->x, 1->y, 2->z)
         """
         mask = [0]*6
         mask[3+axis]=1
-        return GenericRigidJoint.PositionController( self.node, [mask], [offset], compliance )
+        return GenericRigidJoint.PositionController( self.node, mask, [target], compliance )
 
 class PlanarRigidJoint(GenericRigidJoint):
     ## Planar joint for the given axis as plane normal (0->x, 1->y, 2->z)
