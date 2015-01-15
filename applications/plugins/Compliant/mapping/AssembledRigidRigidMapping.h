@@ -96,7 +96,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
                                     const typename self::out_force_type& out_force) {
 
         // we're done lol
-        if( not geometricStiffness.getValue() ) return;
+        if( ! geometricStiffness.getValue() ) return;
 
         // sorted in-out
         typedef std::map<unsigned, unsigned> in_out_type;
