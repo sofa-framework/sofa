@@ -22,22 +22,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef INITSOFAQTQUICKSOFA_H
-#define INITSOFAQTQUICKSOFA_H
+#ifndef SOFAQTQUICKSOFA_H
+#define SOFAQTQUICKSOFA_H
 
 #include <QQmlExtensionPlugin>
 
 class SofaQtQuickGUI : public QQmlExtensionPlugin
 {
     Q_OBJECT
-	Q_PLUGIN_METADATA(IID "SofaQtQuickGUI")
+    Q_PLUGIN_METADATA(IID "SofaQtQuickGUI")
 
 public:
     explicit SofaQtQuickGUI(QObject *parent = 0);
 
 private:
+    void init();
     void registerTypes(const char *uri);
 
 };
 
-#endif // INITSOFAQTQUICKSOFA_H
+#endif // SOFAQTQUICKSOFA_H

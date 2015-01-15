@@ -1,13 +1,8 @@
-import Qt.labs.settings 1.0
-import "qrc:/SofaCommon/ToolsScript.js" as ToolsScript
+import QtQuick 2.0
+import Tools 1.0
 
-Settings {
+Tools {
     id: root
-    category: "ui"
 
-    property string uiIds: ";"
-
-    function remove(uiId) {
-        ToolsScript.Tools.clearSettingGroup("ui_" + uiId.toString());
-    }
+    overrideCursorShape: 0
 }

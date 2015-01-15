@@ -2,8 +2,8 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
 		SofaQtQuickGUI.cpp
-		Application.cpp
-		Window.cpp
+                Tools.cpp
+                Window.cpp
 		Viewer.cpp
 		Camera.cpp
                 Scene.cpp
@@ -13,7 +13,7 @@ set(SOURCE_FILES
 
 set(HEADER_FILES
 		SofaQtQuickGUI.h
-		Application.h
+                Tools.h
 		Window.h
 		Viewer.h
 		Camera.h
@@ -23,8 +23,13 @@ set(HEADER_FILES
 )
 
 set(QML_FILES
-                data/qml/SofaCommon/Settings.js
-		data/qml/SofaBasics/qmldir
+                data/qml/SofaCommon/SofaCommonScript.js
+                data/qml/SofaCommon/SofaToolsScript.js
+                data/qml/SofaCommon/SofaSettingsScript.js
+                data/qml/SofaBasics/qmldir
+                data/qml/SofaBasics/RecentSettings.qml
+                data/qml/SofaBasics/UISettings.qml
+                data/qml/SofaBasics/Tools.qml
 		data/qml/SofaBasics/Window.qml
 		data/qml/SofaBasics/DefaultStatusBar.qml
 		data/qml/SofaBasics/DefaultMenuBar.qml
@@ -90,10 +95,8 @@ qt5_wrap_cpp(MOC_FILES ${HEADER_FILES}) # do not use "set(CMAKE_AUTOMOC ON)" sin
 qt5_add_resources(RESOURCE_FILES ${QRC_FILES})
 
 add_definitions(-DQT_PLUGIN)
-add_definitions(-DQT_STATICPLUGIN)
 
-add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QRC_FILES} ${RESOURCE_FILES} ${QML_FILES} ${CONFIG_FILES})
-set_property(TARGET ${PROJECT_NAME} PROPERTY QT_STATICPLUGIN 1)
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QRC_FILES} ${RESOURCE_FILES} ${QML_FILES} ${CONFIG_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SOFAQTQUICKGUI")
 AddLinkerDependencies(SofaPython SofaSimulationGraph SofaComponentMain Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)

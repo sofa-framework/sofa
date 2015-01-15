@@ -3,6 +3,7 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.1
 import Qt.labs.settings 1.0
+import "qrc:/SofaCommon/SofaSettingsScript.js" as SofaSettingsScript
 
 MenuBar {
     id: menuBar
@@ -30,7 +31,7 @@ MenuBar {
         Action {
             id: clearRecentAction
             text: "&Clear"
-            onTriggered: scene.clearRecentSettings();
+            onTriggered: SofaSettingsScript.Recent.clear();
             tooltip: "Clear history"
         },
 
@@ -92,36 +93,40 @@ MenuBar {
 
             visible: 0 !== items.length
 
-            Connections {
-                target: scene
-                onRecentScenesChanged: {
-                    recentMenu.clear();
-                    var sceneList = scene.recentScenes.split(';');
-                    if(0 === sceneList.length)
-                        return;
+            function update() {
+                recentMenu.clear();
+                var sceneList = SofaSettingsScript.Recent.sceneList();
+                if(0 === sceneList.length)
+                    return;
 
-                    for(var j = 0; j < sceneList.length; ++j) {
-                        var sceneSource = sceneList[j];
-                        if(0 === sceneSource.length)
-                            continue;
+                for(var j = 0; j < sceneList.length; ++j) {
+                    var sceneSource = sceneList[j];
+                    if(0 === sceneSource.length)
+                        continue;
 
-                        var sceneName = sceneSource.replace(/^.*[//\\]/m, "");
-                        var title = j.toString() + " - " + sceneName + " - \"" + sceneSource + "\"";
+                    var sceneName = sceneSource.replace(/^.*[//\\]/m, "");
+                    var title = j.toString() + " - " + sceneName + " - \"" + sceneSource + "\"";
 
-                        var openRecentItem = recentMenu.addItem(title);
-                        openRecentItem.action = openRecentAction;
+                    var openRecentItem = recentMenu.addItem(title);
+                    openRecentItem.action = openRecentAction;
 
-                        if(10 === recentMenu.items.length)
-                            break;
-                    }
-
-                    if(0 === recentMenu.items.length)
-                        return;
-
-                    recentMenu.addSeparator();
-                    var clearRecentItem = recentMenu.addItem("Clear");
-                    clearRecentItem.action = clearRecentAction;
+                    if(10 === recentMenu.items.length)
+                        break;
                 }
+
+                if(0 === recentMenu.items.length)
+                    return;
+
+                recentMenu.addSeparator();
+                var clearRecentItem = recentMenu.addItem("Clear");
+                clearRecentItem.action = clearRecentAction;
+            }
+
+            Component.onCompleted: recentMenu.update()
+
+            Connections {
+                target: SofaSettingsScript.Recent
+                onScenesChanged: recentMenu.update()
             }
         }
 

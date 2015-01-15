@@ -31,18 +31,6 @@ Window::~Window()
 	
 }
 
-void Window::setOverrideCursorShape(int newCursorShape)
-{
-	if(newCursorShape == overrideCursorShape())
-		return;
-
-	QApplication::restoreOverrideCursor();
-	if(Qt::ArrowCursor != newCursorShape)
-		QApplication::setOverrideCursor(QCursor((Qt::CursorShape) newCursorShape));
-
-	overrideCursorShapeChanged();
-}
-
 void Window::initialize()
 {
     QOpenGLContext *ctx = QOpenGLContext::currentContext();

@@ -1,22 +1,13 @@
 .pragma library
 
-function InstanciateComponent(url) {
-    console.log("a");
-    var component = Qt.createComponent(url);
-    console.log("b");
-    var incubator = component.incubateObject();
-    console.log("c");
-    incubator.forceCompletion();
-    console.log("d");
-    return incubator.object;
-}
+Qt.include("SofaCommonScript.js")
 
-////////////////////    TOOLS    ////////////////////
-
-var Tools = new InstanciateComponent("qrc:/SofaBasics/Tools.qml");
-
-//////////////////// UI SETTINGS ////////////////////
+//////////////////// UI
 
 var Ui = new InstanciateComponent("qrc:/SofaBasics/UISettings.qml");
 
-/////////////////////////////////////////////////////
+//////////////////// RECENT
+
+var Recent = new InstanciateComponent("qrc:/SofaBasics/RecentSettings.qml");
+
+////////////////////
