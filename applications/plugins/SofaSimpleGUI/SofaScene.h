@@ -2,7 +2,6 @@
 #define SOFA_NEWGUI_SofaScene_H
 
 #include "initSimpleGUI.h"
-#include <sofa/config.h>
 #include <vector>
 #include <string>
 
