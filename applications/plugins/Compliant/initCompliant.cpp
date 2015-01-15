@@ -27,6 +27,7 @@
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>
 #include <contact/CompliantContact.h>
+#include <contact/FrictionCompliantContact.h>
 
 namespace sofa
 {
@@ -90,6 +91,7 @@ const char* getModuleComponentList()
 SOFA_Compliant_API void initCompliant()
 {
 	component::collision::registerContactClasses();
+	component::collision::registerFrictionCompliantContactClasses();
 }
 
 }
