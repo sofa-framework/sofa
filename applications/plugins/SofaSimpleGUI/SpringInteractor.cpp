@@ -4,9 +4,11 @@ using namespace std;
 #include "PickedPoint.h"
 #include <sofa/core/SofaLibrary.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 
 namespace sofa{
 namespace simplegui{
+typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::Vec3Types> FixedConstraint3;
 
 SpringInteractor::SpringInteractor(const PickedPoint &picked, SReal stiffness)
     : Interactor(picked)
