@@ -9,6 +9,12 @@
 class QTimer;
 class QVector3D;
 
+namespace sofa
+{
+
+namespace qtquick
+{
+
 class Scene : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
@@ -109,5 +115,9 @@ private:
 	sofa::simulation::Simulation*	mySofaSimulation;
 	QTimer*							myStepTimer;
 };
+
+}
+
+}
 
 #endif // SCENE_H

@@ -3,7 +3,6 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(SOURCE_FILES
 		SofaQtQuickGUI.cpp
                 Tools.cpp
-                Window.cpp
 		Viewer.cpp
 		Camera.cpp
                 Scene.cpp
@@ -14,7 +13,6 @@ set(SOURCE_FILES
 set(HEADER_FILES
 		SofaQtQuickGUI.h
                 Tools.h
-		Window.h
 		Viewer.h
 		Camera.h
                 Scene.h
@@ -30,7 +28,6 @@ set(QML_FILES
                 data/qml/SofaBasics/RecentSettings.qml
                 data/qml/SofaBasics/UISettings.qml
                 data/qml/SofaBasics/Tools.qml
-		data/qml/SofaBasics/Window.qml
 		data/qml/SofaBasics/DefaultStatusBar.qml
 		data/qml/SofaBasics/DefaultMenuBar.qml
 		data/qml/SofaBasics/Scene.qml

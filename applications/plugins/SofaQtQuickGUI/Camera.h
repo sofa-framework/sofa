@@ -6,6 +6,12 @@
 #include <QVector3D>
 #include <QPoint>
 
+namespace sofa
+{
+
+namespace qtquick
+{
+
 class Camera : public QObject
 {
 	Q_OBJECT
@@ -82,5 +88,9 @@ private:
 	mutable bool		myProjectionDirty;
 	mutable bool		myModelDirty;
 };
+
+}
+
+}
 
 #endif // CAMERA_H

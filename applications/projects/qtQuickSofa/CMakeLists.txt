@@ -9,7 +9,7 @@ set(HEADER_FILES
 )
 
 set(QML_FILES
-		data/qml/Main.qml
+                data/qml/Main.qml
 )
 
 set(CONFIG_FILES

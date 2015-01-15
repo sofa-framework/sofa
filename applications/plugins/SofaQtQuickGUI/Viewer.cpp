@@ -15,11 +15,17 @@
 #include <qqml.h>
 #include <qmath.h>
 
+namespace sofa
+{
+
+namespace qtquick
+{
+
 Viewer::Viewer(QQuickItem* parent) : QQuickItem(parent),
 	myScene(0),
 	myCamera(0)
 {
-	setFlag(QQuickItem::ItemHasContents);
+    setFlag(QQuickItem::ItemHasContents);
 
 	connect(this, &Viewer::sceneChanged, this, &Viewer::handleSceneChanged);
 	connect(this, &Viewer::scenePathChanged, this, &Viewer::handleScenePathChanged);
@@ -257,4 +263,8 @@ void Viewer::viewAll()
 	myScene->computeBoundingBox(min, max);
 
 	myCamera->fit(min, max);
+}
+
+}
+
 }

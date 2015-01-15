@@ -8,7 +8,8 @@ ContentItem {
     id: root
 
     property int priority: 50
-    property url source: scene.sourceQML
+    property Scene scene
+    property url source: scene ? scene.sourceQML : ""
     readonly property alias status: d.status
     readonly property alias item: d.item
 

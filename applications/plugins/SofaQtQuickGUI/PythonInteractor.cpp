@@ -14,6 +14,12 @@
 #include <QJSValue>
 #include <vector>
 
+namespace sofa
+{
+
+namespace qtquick
+{
+
 PythonInteractor::PythonInteractor(QObject *parent) : QObject(parent), QQmlParserStatus(),
 	myScene(0),
 	myPythonScriptControllers()
@@ -351,4 +357,8 @@ void PythonInteractor::sendEventToAll(const QString& eventName, const QVariant& 
 {
 	for(const QString& pythonClassName : myPythonScriptControllers.keys())
 		sendEvent(pythonClassName, eventName, parameter);
+}
+
+}
+
 }

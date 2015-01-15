@@ -19,6 +19,12 @@
 #include <QThread>
 #include <QDebug>
 
+namespace sofa
+{
+
+namespace qtquick
+{
+
 Scene::Scene(QObject *parent) : QObject(parent),
 	myStatus(Status::Null),
 	mySource(),
@@ -353,4 +359,8 @@ void Scene::onKeyReleased(char key)
 
 	sofa::core::objectmodel::KeyreleasedEvent keyEvent(key);
 	sofaSimulation()->GetRoot()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &keyEvent);
+}
+
+}
+
 }

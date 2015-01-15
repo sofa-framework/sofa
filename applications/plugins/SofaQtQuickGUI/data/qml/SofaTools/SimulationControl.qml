@@ -11,7 +11,9 @@ CollapsibleGroupBox {
     title: "Simulation Control"
     property int priority: 100
 
-    enabled: scene.ready
+    property Scene scene
+
+    enabled: scene ? scene.ready : false
 
     GridLayout {
         anchors.fill: parent
@@ -23,7 +25,7 @@ CollapsibleGroupBox {
             Layout.fillWidth: true
             text: "Animate"
             checkable: true
-            onCheckedChanged: scene.play = animateButton.checked
+            onCheckedChanged: if(scene) scene.play = animateButton.checked
             tooltip: ""
 
             Connections {
@@ -43,9 +45,8 @@ CollapsibleGroupBox {
             tooltip: ""
 
             onClicked: {
-                if(scene) {
+                if(scene)
                     scene.step();
-                }
             }
         }
         Button {
@@ -56,9 +57,8 @@ CollapsibleGroupBox {
             tooltip: "Reset the scene"
 
             onClicked: {
-                if(scene) {
+                if(scene)
                     scene.reset();
-                }
             }
         }
 
@@ -74,8 +74,8 @@ CollapsibleGroupBox {
             prefix: value <= 0 ? "Real-time " : ""
             suffix: " seconds"
             stepSize: 0.001
-            value: scene.dt
-            onValueChanged: scene.dt = value
+            value: scene ? scene.dt : 0.04
+            onValueChanged: if(scene) scene.dt = value
 
             Component.onCompleted: {
                 valueChanged();
@@ -90,8 +90,8 @@ CollapsibleGroupBox {
             id: interactionStiffnessSlider
             Layout.fillWidth: true
             maximumValue: 1000
-            value: scene.pickingInteractor.stiffness
-            onValueChanged: scene.pickingInteractor.stiffness = value
+            value: scene ? scene.pickingInteractor.stiffness : 100
+            onValueChanged: if(scene) scene.pickingInteractor.stiffness = value
             stepSize: 1
 
             Component.onCompleted: {
@@ -111,7 +111,7 @@ CollapsibleGroupBox {
             text: "Display scene graph"
             tooltip: ""
             onClicked: {
-                displayGraphText.text = scene.dumpGraph();
+                displayGraphText.text = scene ? scene.dumpGraph() : ""
                 displayGraphDialog.open();
             }
 

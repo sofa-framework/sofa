@@ -3,7 +3,6 @@
         <file>SofaBasics/qmldir</file>
         <file>SofaBasics/DefaultStatusBar.qml</file>
         <file>SofaBasics/DefaultMenuBar.qml</file>
-        <file>SofaBasics/Window.qml</file>
         <file>SofaBasics/Scene.qml</file>
         <file>SofaBasics/PythonInteractor.qml</file>
         <file>SofaBasics/FPSDisplay.qml</file>

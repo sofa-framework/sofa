@@ -4,6 +4,8 @@
 #include <QDebug>
 #include "Tools.h"
 
+using namespace sofa::qtquick;
+
 int main(int argc, char **argv)
 {
     // TODO: this command disable the multithreaded render loop, currently we need this on Linux/OSX because our implementation of the sofa interface is not thread-safe
