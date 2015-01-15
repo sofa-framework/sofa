@@ -19,4 +19,4 @@ check_required_components( ${SofaMisc_TARGETS} )
 
 # For compatibility only
 set(SofaMisc_LIBRARIES SofaComponentMisc)
-set(SofaMisc_INCLUDE_DIRS ${SOFAMISC_INCLUDE_DIR} ${SofaAdvanced_INCLUDE_DIRS} )
+set(SofaMisc_INCLUDE_DIRS ${SOFAMISC_INCLUDE_DIR} ${SofaAdvanced_INCLUDE_DIRS})
