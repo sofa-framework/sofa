@@ -3,6 +3,7 @@ import QtQuick.Controls 1.2
 import SofaBasics 1.0
 import Viewer 1.0
 import Scene 1.0
+import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 
 Viewer {
     id: root
@@ -118,7 +119,7 @@ Viewer {
                     previousX = mouse.x;
                     previousY = mouse.y;
 
-                    overrideCursorShape = Qt.ClosedHandCursor;
+                    SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
                     setMouseMoveMapping(function(mouse) {
                         if(!camera)
@@ -136,14 +137,14 @@ Viewer {
                 addMouseReleasedMapping(Qt.RightButton, function(mouse) {
                     setMouseMoveMapping(null);
 
-                    overrideCursorShape = 0;
+                    SofaToolsScript.Tools.overrideCursorShape = 0;
                 });
 
                 addMousePressedMapping (Qt.MiddleButton, function(mouse) {
                     previousX = mouse.x;
                     previousY = mouse.y;
 
-                    overrideCursorShape = Qt.ClosedHandCursor;
+                    SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
                     setMouseMoveMapping(function(mouse) {
                         if(!camera)
@@ -161,7 +162,7 @@ Viewer {
                 addMouseReleasedMapping(Qt.MiddleButton, function(mouse) {
                     setMouseMoveMapping(null);
 
-                    overrideCursorShape = 0;
+                    SofaToolsScript.Tools.overrideCursorShape = 0;
                 });
 
                 setMouseWheelMapping(function(wheel) {

@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 1.2
 import QtQuick.Layouts 1.0
 import SofaBasics 1.0
+import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 
 ContentItem {
     id: root
@@ -46,7 +47,7 @@ ContentItem {
             errorLabel.text = "";
 
             // use a fresh version of the gui if it's a reload by removing the old version of the cache
-            application.trimCache();
+            SofaToolsScript.Tools.trimCache();
 
             if(0 !== root.source.toString().length) {
                 d.componentFactory = Qt.createComponent(root.source);

@@ -3,6 +3,8 @@ import QtQuick.Controls 1.0
 import Qt.labs.settings 1.0
 import Scene 1.0
 import PickingInteractor 1.0
+import "qrc:/SofaCommon/SofaSettingsScript.js" as SofaSettingsScript
+import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 
 Scene {
     id: root
@@ -13,28 +15,11 @@ Scene {
     property string statusMessage: ""
 
     Component.onCompleted: {
-        if(0 !== settings.recent.length)
-            source = "file:" + settings.recent.replace(/;.*$/m, "");
+        if(0 !== SofaSettingsScript.Recent.scenes.length)
+            source = "file:" + SofaSettingsScript.Recent.scenes.replace(/;.*$/m, "");
 
         if(0 === source.toString().length)
             source = "file:Demos/caduceus.scn";
-    }
-
-    property string recentScenes: ""
-
-    function addRecentScene(sceneSource) {
-        recentScenes = sceneSource + ";" + recentScenes.replace(sceneSource + ";", "");
-    }
-
-    function clearRecentScenes() {
-        recentScenes = "";
-    }
-
-    property Settings settings: Settings {
-        id: settings
-        category: "scene"
-
-        property alias recent: root.recentScenes    // recently opened scenes
     }
 
     onStatusChanged: {
@@ -48,7 +33,7 @@ Scene {
             break;
         case Scene.Ready:
             statusMessage = 'Scene "' + path + '" loaded successfully';
-            addRecentScene(path);
+            SofaSettingsScript.Recent.add(path);
             break;
         }
     }
@@ -63,7 +48,7 @@ Scene {
     property var pickingInteractor: PickingInteractor {
         stiffness: 100
 
-        onPickingChanged: overrideCursorShape = picking ? Qt.BlankCursor : 0
+        onPickingChanged: SofaToolsScript.Tools.overrideCursorShape = picking ? Qt.BlankCursor : 0
     }
 
     function keyPressed(event) {

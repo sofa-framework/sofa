@@ -5,6 +5,7 @@ import QtQuick.Dialogs 1.1
 import QtQuick.Controls.Private 1.0
 import Qt.labs.settings 1.0
 import Window 1.0
+import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 
 Window {
     id: root
@@ -18,8 +19,6 @@ Window {
 
         onStatusMessageChanged: root.statusMessage = statusMessage
     }
-
-    overrideCursorShape: 0
 
     property string statusMessage: ""
     property int    statusDuration: 5000
@@ -43,7 +42,6 @@ Window {
         nameFilters: ["Scene files (*.xml *.scn *.pscn *.py *.simu *)"]
         onAccepted: {
             scene.source = fileUrl;
-            console.log("scene.source");
         }
     }
 
@@ -54,81 +52,6 @@ Window {
         nameFilters: ["Scene files (*.scn)"]
         onAccepted: {
             scene.save(fileUrl);
-        }
-    }
-
-    //////////////////////////////////////////////////
-
-    // ui settings
-    property alias globalUiSettings: globalUiSettings
-    Settings {
-        id: globalUiSettings
-        category: "ui"
-
-        property string uiIds: ";"
-
-        function generateUiId() {
-            var uiId = 1;
-            var uiIdList = uiIds.split(";");
-
-            var previousId = 0;
-            for(var i = 0; i < uiIdList.length; ++i) {
-                if(0 === uiIdList[i].length)
-                    continue;
-
-                uiId = Number(uiIdList[i]);
-
-                if(previousId + 1 !== uiId) {
-                    uiId = previousId + 1;
-                    break;
-                }
-
-                previousId = uiId;
-                ++uiId;
-            }
-
-            return uiId;
-        }
-
-        function addUiId(uiId) {
-            if(0 === uiId)
-                return;
-
-            if(-1 === uiIds.search(";" + uiId.toString() + ";")) {
-                uiIds += uiId.toString() + ";";
-                update();
-            }
-        }
-
-        function removeUiId(uiId) {
-            if(0 === uiId)
-                return;
-
-            uiIds = uiIds.replace(";" + uiId.toString() + ";", ";");
-
-            application.clearSettingGroup("ui_" + uiId.toString());
-        }
-
-        function replaceUiId(previousUiId, uiId) {
-            if(0 === uiId)
-                return;
-
-            uiIds = uiIds.replace(";" + uiId.toString() + ";", ";");
-
-            if(-1 === uiIds.search(";" + uiId.toString() + ";")) {
-                uiIds += uiId.toString() + ";";
-                update();
-            }
-        }
-
-        function update() {
-            var uiIdList = uiIds.split(";");
-            uiIdList.sort(function(a, b) {return Number(a) - Number(b);});
-
-            uiIds = ";";
-            for(var i = 0; i < uiIdList.length; ++i)
-                if(0 !== uiIdList[i].length)
-                    uiIds += uiIdList[i] + ";";
         }
     }
 
