@@ -26,4 +26,4 @@ check_required_components( ${SofaGeneral_TARGETS} )
 
 # For compatibility only
 set(SofaGeneral_LIBRARIES SofaComponentGeneral)
-set(SofaGeneral_INCLUDE_DIRS ${SOFAGENERAL_INCLUDE_DIR} ${SofaCommon_INCLUDE_DIRS} )
+set(SofaGeneral_INCLUDE_DIRS ${SOFAGENERAL_INCLUDE_DIR} ${SofaCommon_INCLUDE_DIRS})

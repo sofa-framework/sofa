@@ -19,4 +19,4 @@ check_required_components( ${SofaBase_TARGETS} )
  
 # For compatibility only
 set(SofaBase_LIBRARIES SofaComponentBase)
-set(SofaBase_INCLUDE_DIRS ${SOFABASE_INCLUDE_DIR} ${SofaSimulation_INCLUDE_DIRS} )
+set(SofaBase_INCLUDE_DIRS ${SOFABASE_INCLUDE_DIR} ${SofaSimulation_INCLUDE_DIRS})
