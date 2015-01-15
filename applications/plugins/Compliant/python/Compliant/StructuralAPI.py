@@ -208,7 +208,7 @@ class GenericRigidJoint:
             self.type.velocities = concat(velocities)
 
 
-    class PositionController:
+    class DefaultPositionController:
         """ Set the joint position to the target
         WARNING: for angular dof position, the value must be in ]-pi,pi]
         """
@@ -226,6 +226,8 @@ class GenericRigidJoint:
         def setTarget( self, target ):
             self.mapping.targets = concat(target)
 
+    # The PositionController can be redefined
+    PositionController=DefaultPositionController
 
     class ForceController:
         def __init__(self, node, mask, forces):
