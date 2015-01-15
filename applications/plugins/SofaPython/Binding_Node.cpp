@@ -224,30 +224,6 @@ extern "C" PyObject * Node_removeObject(PyObject *self, PyObject * args)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Node_getObject(PyObject *self, PyObject * args)
-{
-    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
-    char *name;
-    if (!PyArg_ParseTuple(args, "s",&name))
-        Py_RETURN_NONE;
-    if (!node || !name)
-    {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
-    }
-
-    BaseObject* object = node->getObject(name);
-
-    if (!object)
-    {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
-    }
-    return SP_BUILD_PYSPTR(object);
-}
-
-
-
 extern "C" PyObject * Node_addChild(PyObject *self, PyObject * args)
 {
     Node* obj=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
@@ -358,7 +334,6 @@ SP_CLASS_METHOD(Node,getParents)
 SP_CLASS_METHOD(Node,getPathName)
 SP_CLASS_METHOD(Node,createChild)
 SP_CLASS_METHOD(Node,addObject)
-SP_CLASS_METHOD(Node,getObject)
 SP_CLASS_METHOD(Node,removeObject)
 SP_CLASS_METHOD(Node,addChild)
 SP_CLASS_METHOD(Node,removeChild)
