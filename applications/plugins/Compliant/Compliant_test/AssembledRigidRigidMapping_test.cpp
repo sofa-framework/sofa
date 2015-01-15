@@ -90,7 +90,7 @@ struct AssembledRigidRigidMappingTest : public Mapping_test<Mapping>
 
         // mapping parameters
         edit(this->mapping->source)->push_back(src);
-        this->mapping->use_geometric.setValue( true );
+        this->mapping->geometricStiffness.setValue( 1 ); // non-symmetric geometric stiffness
         
         return this->runTest(xin, xout, xin, expected);
     }

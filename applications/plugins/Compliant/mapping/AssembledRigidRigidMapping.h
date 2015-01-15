@@ -72,17 +72,17 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 	
 	AssembledRigidRigidMapping() 
 		: source(initData(&source, "source", "input dof and rigid offset for each output dof" )),
-        use_geometric(initData(&use_geometric,
-                               false,
-                               "use_geometric",
-                               "assemble (and use) geometric stiffness (non symmetric !)")) {
+        geometricStiffness(initData(&geometricStiffness,
+                               0,
+                               "geometricStiffness",
+                               "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)")) {
                 
     }
 
 	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
 	Data< vector< source_type > > source;
 
-    Data<bool> use_geometric;
+    Data<int> geometricStiffness;
 
     typedef typename TIn::Real Real;
 
@@ -96,7 +96,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
                                     const typename self::out_force_type& out_force) {
 
         // we're done lol
-        if( not use_geometric.getValue() ) return;
+        if( not geometricStiffness.getValue() ) return;
 
         // sorted in-out
         typedef std::map<unsigned, unsigned> in_out_type;
@@ -146,6 +146,13 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
  		}
 
         dJ.finalize();
+
+        if( geometricStiffness.getValue() == 2 )
+        {
+            // is there a more efficient way to symmetrize?
+            dJ += typename self::jacobian_type::CompressedMatrix( dJ.transpose() );
+            dJ /= 2.0;
+        }
 
     }
 
