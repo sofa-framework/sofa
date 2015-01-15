@@ -158,6 +158,7 @@ class GenericRigidJoint:
 
     def __init__(self, name, node1, node2, mask, compliance=0, index1=0, index2=0):
         self.node = node1.createChild( name )
+        self.mask=mask
         self.dofs = self.node.createObject('MechanicalObject', template = 'Vec6'+template_suffix, name = 'dofs', position = '0 0 0 0 0 0' )
         input = [] # @internal
         input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
@@ -207,7 +208,6 @@ class GenericRigidJoint:
         def setVelocities( self, velocities ):
             self.type.velocities = concat(velocities)
 
-
     class DefaultPositionController:
         """ Set the joint position to the target
         WARNING: for angular dof position, the value must be in ]-pi,pi]
@@ -228,6 +228,16 @@ class GenericRigidJoint:
 
     # The PositionController can be redefined
     PositionController=DefaultPositionController
+
+    def addGenericPositionController(self, target, compliance=0, mask=None):
+        """ Add a controller to this joint. target list must match mask list.
+        mask selects the controlled dof, if mask is None the joint natural dof are used
+        """
+        if not mask is None:
+            m=mask
+        else:
+            m = [ (1 - d) for d in self.mask ]
+        return GenericRigidJoint.PositionController(self.node, m, target, compliance)
 
     class ForceController:
         def __init__(self, node, mask, forces):
