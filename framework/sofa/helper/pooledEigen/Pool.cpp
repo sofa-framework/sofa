@@ -9,9 +9,21 @@ static boost::pool<>* gs_pools[sizeof(size_t) * 8] = {0};
 namespace Eigen { 
 namespace internal {
 
+size_t fit_pow2(size_t N)
+{
+	// NB: N > 0 guaranteed for our use.
+#if defined(WIN32)
+	return 32 - __lzcnt(N - 1);
+#elif defined(_XBOX)
+	return 32 - _CountLeadingZeros(N - 1);
+#else
+	return (size_t) ceilf(logf((float)N) * (float)(1.0/M_LN2));
+#endif
+}
+
 boost::pool<>* Pool::get_pool(size_t N)
 {
-	const size_t n = (size_t) ceilf(logf((float)N) * (float)(1.0/M_LN2));
+	const size_t n = fit_pow2(N);
 
 	if( gs_pools[n] == NULL )
 		gs_pools[n] = new boost::pool<>(1 << n);
