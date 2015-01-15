@@ -51,6 +51,10 @@ Creator<Contact::Factory, FrictionCompliantContact<TriangleModel, CylinderModel>
 Creator<Contact::Factory, FrictionCompliantContact<CylinderModel, SphereModel> >	CylinderModelSphereModelFrictionCompliantContactClass("FrictionCompliantContact",true);
 Creator<Contact::Factory, FrictionCompliantContact<SphereModel, CylinderModel> >	SphereModelCylinderModelFrictionCompliantContactClass("FrictionCompliantContact",true);
 
+void registerFrictionCompliantContactClasses()
+{
+}
+
 } // namespace collision
 
 } // namespace component
