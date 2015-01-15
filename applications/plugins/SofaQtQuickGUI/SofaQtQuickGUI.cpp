@@ -30,7 +30,8 @@
 #include "PythonInteractor.h"
 #include "Scene.h"
 #include "Viewer.h"
-#include "Window.h"
+
+using namespace sofa::qtquick;
 
 const int versionMajor = 1;
 const int versionMinor = 0;
@@ -54,9 +55,8 @@ void SofaQtQuickGUI::registerTypes(const char *uri)
 
     qmlRegisterType<Tools>				("Tools"			, versionMajor, versionMinor, "Tools");
     qmlRegisterType<Camera>				("Camera"			, versionMajor, versionMinor, "Camera");
-	qmlRegisterType<PickingInteractor>	("PickingInteractor", versionMajor, versionMinor, "PickingInteractor");
-	qmlRegisterType<PythonInteractor>	("PythonInteractor"	, versionMajor, versionMinor, "PythonInteractor");
-	qmlRegisterType<Scene>				("Scene"			, versionMajor, versionMinor, "Scene");
-	qmlRegisterType<Viewer>				("Viewer"			, versionMajor, versionMinor, "Viewer");
-	qmlRegisterType<Window>				("Window"			, versionMajor, versionMinor, "Window");
+    qmlRegisterType<PickingInteractor>	("PickingInteractor", versionMajor, versionMinor, "PickingInteractor");
+    qmlRegisterType<PythonInteractor>	("PythonInteractor"	, versionMajor, versionMinor, "PythonInteractor");
+    qmlRegisterType<Scene>				("Scene"			, versionMajor, versionMinor, "Scene");
+    qmlRegisterType<Viewer>				("Viewer"			, versionMajor, versionMinor, "Viewer");
 }

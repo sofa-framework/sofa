@@ -48,9 +48,6 @@ Viewer {
         Connections {
             target: scene ? scene.pickingInteractor : null
             onPositionChanged: {
-                if(!scene)
-                    return;
-
                 var position = root.mapFromWorld(scene.pickingInteractor.position)
                 if(position.z > 0.0 && position.z < 1.0) {
                     handIcon.x = position.x - 6;
@@ -66,7 +63,8 @@ Viewer {
     }
 
     onSceneChanged: {
-        actor.init();
+        if(scene)
+            actor.init();
     }
 
     property alias actor: actor
@@ -87,10 +85,6 @@ Viewer {
             property real zoomFactor: 1.25
 
             function init() {
-                // set the default mapping
-                if(!scene)
-                    return;
-
                 addMousePressedMapping (Qt.LeftButton, function(mouse) {
                     var nearPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 0.0));
                     var farPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 1.0));

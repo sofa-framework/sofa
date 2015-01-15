@@ -8,6 +8,8 @@ import "qrc:/SofaCommon/SofaSettingsScript.js" as SofaSettingsScript
 MenuBar {
     id: menuBar
 
+    property Scene scene
+
     property list<QtObject> objects: [
 
         // action

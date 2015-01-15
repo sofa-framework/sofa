@@ -7,7 +7,25 @@ ToolBar {
     height: 20
     anchors.margins: 0
     anchors.leftMargin: 0
+
+    property Scene scene
     property string statusMessage: ""
+    property int    statusDuration: 5000
+
+    onStatusMessageChanged: clearStatusTimer.restart()
+
+    Timer {
+        id: clearStatusTimer
+        running: false
+        repeat: false
+        interval: statusDuration
+        onTriggered: statusMessage = ""
+    }
+
+    Connections {
+        target: scene
+        onStatusMessageChanged: statusMessage = scene.statusMessage;
+    }
 
     RowLayout {
         anchors.fill: parent

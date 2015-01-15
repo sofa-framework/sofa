@@ -5,19 +5,29 @@
 #include <QQmlParserStatus>
 #include <QVector3D>
 
-class Scene;
+namespace sofa
+{
 
-namespace sofa {
-namespace core {
-namespace behavior {
+namespace core
+{
+
+namespace behavior
+{
 	class BaseMechanicalState;
 	class BaseInteractionForceField;
 }
-namespace objectmodel {
+
+namespace objectmodel
+{
 	class BaseNode;
 }
+
 }
-}
+
+namespace qtquick
+{
+
+class Scene;
 
 class PickingInteractor : public QObject, public QQmlParserStatus
 {
@@ -42,7 +52,7 @@ public:
 	void componentComplete();
 	
 public:
-	Q_PROPERTY(Scene* scene READ scene WRITE setScene NOTIFY sceneChanged);
+    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged);
 	Q_PROPERTY(double stiffness MEMBER myStiffness NOTIFY stiffnessChanged);
 	Q_PROPERTY(bool picking READ picking NOTIFY pickingChanged);
 	Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged);
@@ -59,7 +69,7 @@ public:
 	void setPosition(const QVector3D& position);
 	
 signals:
-	void sceneChanged(Scene* newScene);
+    void sceneChanged(sofa::qtquick::Scene* newScene);
 	void stiffnessChanged(double newStiffness);
 	void pickingChanged(bool newPicking);
 	void positionChanged(const QVector3D& newPosition);
@@ -90,5 +100,9 @@ private:
 	double									myStiffness;
 	
 };
+
+}
+
+}
 
 #endif // PICKINGINTERACTOR_H

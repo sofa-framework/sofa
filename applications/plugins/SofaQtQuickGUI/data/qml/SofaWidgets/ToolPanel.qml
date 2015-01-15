@@ -8,8 +8,9 @@ import Qt.labs.folderlistmodel 2.1
 Rectangle {
     id: root
     clip: true
-
     color: "lightgrey"
+
+    property Scene scene
 
     FolderListModel {
         id: folderListModel
@@ -37,7 +38,7 @@ Rectangle {
             if(contentComponent.status === Component.Error) {
                 console.log("LOADING ERROR:", contentComponent.errorString());
             } else {
-                contentList.push(contentComponent.createObject(root, {"Layout.fillWidth": true}));
+                contentList.push(contentComponent.createObject(root, {"Layout.fillWidth": true, "scene": scene}));
             }
         }
 

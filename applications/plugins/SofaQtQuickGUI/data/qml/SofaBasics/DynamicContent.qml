@@ -56,6 +56,8 @@ Item {
     property string sourceDir: "qrc:/SofaWidgets"
     property int    contentUiId: 0
 
+    property var    properties
+
     onSourceDirChanged: update()
     onCurrentContentNameChanged: update()
     Component.onCompleted: {
@@ -178,7 +180,13 @@ Item {
                             if(0 === root.contentUiId)
                                 root.contentUiId = SofaSettingsScript.Ui.generate();
 
-                            var content = contentComponent.createObject(loaderLocation, {"uiId": root.contentUiId, "anchors.fill": loaderLocation});
+                            var contentProperties = root.properties;
+                            if(!contentProperties)
+                                contentProperties = {};
+
+                            contentProperties["uiId"] = root.contentUiId;
+                            contentProperties["anchors.fill"] = loaderLocation;
+                            var content = contentComponent.createObject(loaderLocation, contentProperties);
 
                             if(undefined !== content.uiId)
                                 root.contentUiId = Qt.binding(function() {return content.uiId;});

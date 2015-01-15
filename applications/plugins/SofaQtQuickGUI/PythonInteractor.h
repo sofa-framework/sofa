@@ -12,15 +12,23 @@ struct _object;
 typedef _object PyObject;
 #endif
 
-class Scene;
+namespace sofa
+{
 
-namespace sofa {
-namespace component {
-namespace controller {
+namespace component
+{
+
+namespace controller
+{
 	class PythonScriptController;
 }
+
 }
-}
+
+namespace qtquick
+{
+
+class Scene;
 
 class PythonInteractor : public QObject, public QQmlParserStatus
 {
@@ -35,14 +43,14 @@ public:
 	void componentComplete();
 	
 public:
-	Q_PROPERTY(Scene* scene READ scene WRITE setScene NOTIFY sceneChanged);
+    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged);
 
 public:
 	Scene* scene() const	{return myScene;}
 	void setScene(Scene* newScene);
 	
 signals:
-	void sceneChanged(Scene* newScene);
+    void sceneChanged(sofa::qtquick::Scene* newScene);
 	
 protected slots:
 	QVariant onCall(const QString& pythonClassName, const QString& funcName, const QVariant& parameter = QVariant());
@@ -62,5 +70,9 @@ private:
 	QMap<QString, PythonScriptController*>	myPythonScriptControllers;
 	
 };
+
+}
+
+}
 
 #endif // PYTHONINTERACTOR_H

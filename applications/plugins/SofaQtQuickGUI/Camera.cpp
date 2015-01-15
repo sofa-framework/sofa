@@ -4,6 +4,12 @@
 #include <qmath.h>
 #include <QDebug>
 
+namespace sofa
+{
+
+namespace qtquick
+{
+
 Camera::Camera(QObject* parent) : QObject(parent),
 	myDistanceToCenter(1.0),
 	myZoomFactor(1.0),
@@ -198,4 +204,8 @@ void Camera::applyZoom()
 	myZoomedDistanceToCenter = myDistanceToCenter * factor;
 
 	myModelDirty = true;
+}
+
+}
+
 }
