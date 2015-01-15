@@ -313,7 +313,7 @@ public:
         return jacobian;
     }
 
-    void setWeights(const vector<VReal>& weights, const vector<VRef>& indices)
+    void setWeights(const VecVReal& weights, const VecVRef& indices)
     {
         f_index = indices;
         f_w = weights;
