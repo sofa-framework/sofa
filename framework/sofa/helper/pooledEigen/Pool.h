@@ -41,9 +41,6 @@ public:
 	  if ( pool )
 	  {
 		buffer = (pool->malloc)();
-		bool ok = pool->is_from(buffer);
-		if( !ok )
-		  assert(false);
 	  }
 	  else
 	  {
