@@ -236,18 +236,21 @@ struct SE3 {
 		
 		quat q = qq;
 		q.normalize();
-		
-		// flip if needed
+
+		// // flip if needed
 		if( q.w() < 0 ) q.coeffs() = -q.coeffs();
-		
+
+        const real w = std::min<real>(1.0, q.w());
+        
 		// (half) rotation angle
-		real half_theta = std::acos( q.w() );
-		real theta = 2 * half_theta;
+		const real half_theta = std::acos( w ); // in (0, pi / 2)
+		const real theta = 2 * half_theta;      // in (0, pi)
 		
 		if( std::abs(theta) < epsilon() ) {
 			return q.vec();
 		} else {
 			// TODO q.vec() / sinc(theta) instead ?
+            // return 2 * q.vec() / SE3::sinc(half_theta);
 			return theta * q.vec().normalized();
 		}
 

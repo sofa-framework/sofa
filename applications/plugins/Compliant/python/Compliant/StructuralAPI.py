@@ -163,7 +163,8 @@ class GenericRigidJoint:
         input = [] # @internal
         input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
         input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-        self.mapping = self.node.createObject('RigidJointMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
+        self.mapping = self.node.createObject('RigidJointMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2),
+                                              geometricStiffness = geometric_stiffness)
         self.constraint = GenericRigidJoint.Constraint( self.node, mask, compliance )
         node2.addChild( self.node )
 
@@ -276,7 +277,8 @@ class CompleteRigidJoint:
         input = [] # @internal
         input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
         input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-        self.mapping = self.node.createObject('RigidJointMultiMapping',  name='mapping', input=concat(input), output='@dofs', pairs=str(index1)+" "+str(index2))
+        self.mapping = self.node.createObject('RigidJointMultiMapping',  name='mapping', input=concat(input), output='@dofs', pairs=str(index1)+" "+str(index2),
+                                              geometricStiffness = geometric_stiffness)
         self.constraint = CompleteRigidJoint.Constraint( self.node, compliances ) # the constraint compliance cannot be in the same branch as eventual limits...
         node2.addChild( self.node )
 
@@ -519,7 +521,9 @@ class RigidJointSpring:
             input = [] # @internal
             input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
             input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-            self.mapping = self.node.createObject('RigidJointMultiMapping',  name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
+            
+            self.mapping = self.node.createObject('RigidJointMultiMapping',  name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2),
+                                                  geometricStiffness = geometric_stiffness)
             compliances = 1./numpy.array(stiffnesses);
             self.compliance = self.node.createObject('DiagonalCompliance', name='compliance', compliance=concat(compliances), isCompliance=0)
             node2.addChild( self.node )

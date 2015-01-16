@@ -14,18 +14,13 @@ namespace component {
 namespace linearsolver {
 
 SOFA_DECL_CLASS(LUSolver)
-int LUSolverClass = core::RegisterObject("Direct LU solver").add< LUSolver >();
+static int LUSolverClass = core::RegisterObject("Direct LU solver").add< LUSolver >();
 
 typedef AssembledSystem::vec vec;
 
 
 
-
-
-
 LUSolver::LUSolver()
-    : KKTSolver()
-    , pimpl()
 {
 
 }
@@ -68,7 +63,7 @@ void LUSolver::factor_schur( const pimpl_type::cmat& schur )
     }
 
     if( pimpl->schur.info() == Eigen::NumericalIssue ){
-        std::cerr << "LUSolver::factor: schur is not psd. System solution will be wrong." << std::endl;
+        std::cerr << "LUSolver::factor: schur factorization failed." << std::endl;
         std::cerr << schur << std::endl;
     }
 }
