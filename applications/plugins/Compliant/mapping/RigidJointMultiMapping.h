@@ -87,9 +87,6 @@ protected:
 
 
 
-#undef NDEBUG
-
-
     void assemble_geometric(const vector<typename self::const_in_coord_type>& in_pos,
                             const typename self::const_out_deriv_type& out_force) {
         // we're done lol
