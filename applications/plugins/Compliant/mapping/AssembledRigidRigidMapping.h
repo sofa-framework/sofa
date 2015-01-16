@@ -106,8 +106,9 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
             const source_type& s = source.getValue()[i];
             in_out[ s.first() ] = i;
         }
-        
-        typename self::geometric_type::CompressedMatrix& dJ = this->geometric.compressedMatrix;
+
+        typedef typename self::geometric_type::CompressedMatrix matrix_type;
+        matrix_type& dJ = this->geometric.compressedMatrix;
 
         dJ.resize( 6 * in_pos.size(),
                    6 * in_pos.size() );
@@ -147,11 +148,8 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
         dJ.finalize();
 
-        if( geometricStiffness.getValue() == 2 )
-        {
-            // is there a more efficient way to symmetrize?
-            dJ += typename self::jacobian_type::CompressedMatrix( dJ.transpose() );
-            dJ /= 2.0;
+        if( geometricStiffness.getValue() == 2 ) {
+            dJ = (dJ + matrix_type(dJ.transpose())) / 2.0;
         }
 
     }
