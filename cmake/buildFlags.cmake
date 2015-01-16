@@ -86,11 +86,13 @@ endif()
 
 # SSE2 Flags on Win32
 if(SOFA-MISC_VECTORIZE)
-    if(MSVC)
-	set(ARCH_FLAGS "/arch:SSE2 /fp:fast")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCH_FLAGS}")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ARCH_FLAGS}")
-    endif(MSVC)
+	if(XBOX)
+		list(APPEND compilerDefines "__ALTIVEC__")
+    elseif(MSVC)
+		set(ARCH_FLAGS "/arch:SSE2 /fp:fast")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ARCH_FLAGS}")
+		set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ARCH_FLAGS}")
+    endif()
 endif()
 
 # Exception deactivation

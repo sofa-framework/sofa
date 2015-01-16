@@ -57,6 +57,16 @@ BaseLink::~BaseLink()
 {
 }
 
+void BaseLink::cleanDdg()
+{
+	if (hasDdg())
+	{
+		m_flags &= ~FLAG_DDG;
+		m_name.clear();
+		m_help = "";
+	}
+}
+
 /// Print the value of the associated variable
 void BaseLink::printValue( std::ostream& o ) const
 {

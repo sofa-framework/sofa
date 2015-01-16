@@ -559,7 +559,7 @@ bool IntrConfigManager<Real>::Find (const Config0& cfg0Start,
         {
             // find first time of contact on this axis
             d = (cfg1Start.mMin - cfg0Start.mMax);
-            assert(d < 0);
+            assert(d <= 0);
 
             // If this is the new maximum first time of contact,  set side and
             // configuration.

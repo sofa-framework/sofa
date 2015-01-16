@@ -134,11 +134,9 @@ protected:
     void update_node( typename node_type::SPtr ) {
         // TODO
     }
-
-
-
 };
 
+void registerFrictionCompliantContactClasses();
 
 } // namespace collision
 } // namespace component

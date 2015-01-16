@@ -16,86 +16,37 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
+*                               SOFA :: Modules                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "initCompliant.h"
-#include "misc/CompliantSolverMerger.h"
-#include <sofa/gui/OperationFactory.h>
-#include <sofa/gui/MouseOperations.h>
-#include <contact/CompliantContact.h>
-#include <contact/FrictionCompliantContact.h>
+#ifndef SOFA_SIMULATION_COMMON_CLEANDATASANDLINKSVISITOR_H
+#define SOFA_SIMULATION_COMMON_CLEANDATASANDLINKSVISITOR_H
+
+#include <sofa/simulation/common/Visitor.h>
+#include <sofa/core/ExecParams.h>
 
 namespace sofa
 {
 
-
-namespace component
+namespace simulation
 {
 
-//Here are just several convenient functions to help user to know what contains the plugin
 
-extern "C" {
-    SOFA_Compliant_API void initExternalModule();
-    SOFA_Compliant_API const char* getModuleName();
-    SOFA_Compliant_API const char* getModuleVersion();
-    SOFA_Compliant_API const char* getModuleLicense();
-    SOFA_Compliant_API const char* getModuleDescription();
-    SOFA_Compliant_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+class SOFA_SIMULATION_COMMON_API CleanDatasAndLinksVisitor : public Visitor
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+public:
+    CleanDatasAndLinksVisitor(const core::ExecParams* params ) :Visitor(params) {}
 
-        component::collision::CompliantSolverMerger::add();
-    }
-}
-
-const char* getModuleName()
-{
-    return "Compliant";
-}
-
-const char* getModuleVersion()
-{
-    return "0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+    virtual Result processNodeTopDown(Node* node);
+    virtual const char* getClassName() const { return "CleanDatasAndLinksVisitor"; }
+};
 
 
-const char* getModuleDescription()
-{
-    return "Simulation of deformable object using a formulation similar to the KKT system for hard constraints, regularized using a compliance matrix";
-}
+} // namespace simulation
 
-const char* getModuleComponentList()
-{
-    return ""; /// @TODO
-}
+} // namespace sofa
 
-}
-
-// Ensure that our abstract factories do the registration and avoid symbol stripping on agressive
-// compilers like the ones found on consoles.
-SOFA_Compliant_API void initCompliant()
-{
-	component::collision::registerContactClasses();
-	component::collision::registerFrictionCompliantContactClasses();
-}
-
-}
-
-
-//SOFA_LINK_CLASS(MyMappingPendulumInPlane)
-
+#endif

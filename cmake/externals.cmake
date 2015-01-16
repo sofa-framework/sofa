@@ -88,6 +88,10 @@ if(SOFA-EXTERNAL_BOOST)
 #    message( "Boost - lib path: " ${Boost_LIBRARY_DIRS} " - include path: " ${Boost_INCLUDE_DIRS} )
 else()
     list(APPEND GLOBAL_INCLUDE_DIRECTORIES "${SOFA-EXTERNAL_BOOST_PATH}")
+	
+	if (XBOX)
+		set(GLOBAL_COMPILER_DEFINES ${GLOBAL_COMPILER_DEFINES} BOOST_ALL_NO_LIB CACHE INTERNAL "Global Compiler Defines" FORCE)
+	endif()
 endif()
 
 # packages and libraries
