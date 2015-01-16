@@ -36,7 +36,7 @@ void LUResponse::factor(const mat& H, bool semidefinite ) {
 
 	
 	if( response.info() != Eigen::Success ) {
-        serr << "non invertible response" << sendl;
+        serr << "non-invertible response" << sendl;
 	}
 
 	assert( response.info() == Eigen::Success );

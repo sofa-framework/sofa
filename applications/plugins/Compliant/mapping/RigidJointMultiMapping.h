@@ -91,7 +91,7 @@ protected:
     void assemble_geometric(const vector<typename self::const_in_coord_type>& in_pos,
                             const typename self::const_out_deriv_type& out_force) {
         // we're done lol
-        if( ! geometricStiffness.getValue() ) return;
+        if( true or ! geometricStiffness.getValue() ) return;
         
         assert( this->getFromModels().size() == 2 );
         assert( this->getFromModels()[0] != this->getFromModels()[1] );
