@@ -127,7 +127,9 @@ protected:
 //				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
 				const typename se3::vec3 s = se3::translation(child) - se3::translation(parent);
 
-                const mat33 dlog = se3::dlog( se3::rotation(delta) );
+                // dlog in spatial coordinates
+                const mat33 dlog = se3::dlog( se3::rotation(delta) ) * Rc.transpose() * Rp;
+                // const mat33 dlog = mat33::Identity();
                  
 				mat66 ddelta; 
 

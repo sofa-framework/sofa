@@ -82,13 +82,35 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		base::init();
 	}
 
+    typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
+    geometric_type geometric;
+    
+    // virtual const defaulttype::BaseMatrix* getK() {
+
+	// 	const unsigned n = this->getFrom().size();
+
+	// 	vector<in_pos_type> in_vec; in_vec.reserve(n);
+
+	// 	for( unsigned i = 0; i < n; ++i ) {
+	// 		in_vec.push_back( in_pos_type( dataVecInPos[i]) );
+	// 	}
+
+
+    //     // this->assemble_geometric(this->in_pos(),
+    //     //                          this->out_force() );
+        
+    //     // if( geometric.compressedMatrix.nonZeros() ) return &geometric;
+    //     // else return 0;
+        
+    // }
+
 	
 	virtual void apply(const core::MechanicalParams*  /* PARAMS FIRST */, 
 	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
 	                   const helper::vector<const InDataVecCoord*>& dataVecInPos) {
 		alloc();
 	
-		unsigned n = this->getFrom().size();
+		const unsigned n = this->getFrom().size();
 
 		vector<in_pos_type> in_vec; in_vec.reserve(n);
 
