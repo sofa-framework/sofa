@@ -63,7 +63,7 @@ protected:
 	
 	void apply(typename self::out_pos_type& out,
 	           const vector< typename self::in_pos_type >& in ) {
-		assert( this->getFrom().size() == 2 );
+		// assert( this->getFrom().size() == 2 );
 
 		const pairs_type& p = pairs.getValue();
 		
@@ -92,11 +92,11 @@ protected:
         // we're done lol
         if( true or ! geometricStiffness.getValue() ) return;
         
-        assert( this->getFromModels().size() == 2 );
-        assert( this->getFromModels()[0] != this->getFromModels()[1] );
+        // assert( this->getFromModels().size() == 2 );
+        // assert( this->getFromModels()[0] != this->getFromModels()[1] );
 
-        assert( this->getToModels().size() == 1 );
-        assert( this->getToModels()[0]->size() == 1 );
+        // assert( this->getToModels().size() == 1 );
+        // assert( this->getToModels()[0]->size() == 1 );
 
         typedef typename self::geometric_type::CompressedMatrix matrix_type;
         matrix_type& dJ = this->geometric.compressedMatrix;
@@ -122,7 +122,7 @@ protected:
         const pairs_type& p = pairs.getValue();
 
         // TODO we really need sorted pairs here, is this even possible ?
-        assert( p.size() == 1 && "not sure if work");
+        // assert( p.size() == 1 && "not sure if work");
         
         // alright, let's do this
         for(unsigned i = 0, n = p.size(); i < n; ++i) {
