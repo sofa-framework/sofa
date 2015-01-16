@@ -170,10 +170,6 @@ public:
     /// Checks wether or nor kFactor is used in ForceFields. Temporary here for compatiblity reasons
     void setKFactorUsed(bool b) const { m_kFactorUsed = b; }
     bool getKFactorUsed() const { return m_kFactorUsed; }
-protected:
-    /// Checks if the stiffness matrix contributions factor has been accessed
-    mutable bool m_kFactorUsed;
-public:
 #else
     void setKFactorUsed(bool) const {}
 #endif
@@ -280,7 +276,10 @@ public:
 
 protected:
 
-    /// Time step
+    /// Checks if the stiffness matrix contributions factor has been accessed (only set in debug)
+    mutable bool m_kFactorUsed;
+
+	/// Time step
     SReal m_dt;
 
     /// Is the time integration scheme implicit ?
