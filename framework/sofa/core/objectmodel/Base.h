@@ -246,6 +246,10 @@ public:
     /// Add an alias to a Link
     void addAlias( BaseLink* link, const char* alias);
 
+	/// Clean the unused ddg part of our datas and links, almost as-if the object had been created while DDGDataNode::isCreationEnabled() is false.
+	/// @note Links won't resolve anymore afterwards, but existing links will be preserved and thus the associated ddg nodes won't be deleted.
+	void cleanDatasAndLinks();
+
     typedef helper::vector<BaseData*> VecData;
     typedef std::multimap<std::string, BaseData*> MapData;
     typedef helper::vector<BaseLink*> VecLink;

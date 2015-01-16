@@ -530,6 +530,9 @@ public:
 	/// Check if the ddg part of this %Data is present or if it is a light version.
 	bool hasDdg() const { return m_ddg != NULL; }
 
+	/// Removes the ddg part of an existing data, but only if there is no input or output link.
+	void cleanDdg();
+
 protected:
 
 	friend class DDGDataNode;
