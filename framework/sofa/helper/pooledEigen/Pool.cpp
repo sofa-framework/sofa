@@ -9,11 +9,13 @@ static boost::pool<>* gs_pools[sizeof(size_t) * 8] = {0};
 namespace Eigen { 
 namespace internal {
 
-size_t fit_pow2(size_t N)
+inline size_t fit_pow2(size_t N)
 {
 	// NB: N > 0 guaranteed for our use.
 #if defined(WIN32)
-	return 32 - __lzcnt(N - 1);
+	unsigned long index;
+	_BitScanReverse(&index, N);// __lzcnt can be unsupported and requires a check
+	return index;
 #elif defined(_XBOX)
 	return 32 - _CountLeadingZeros(N - 1);
 #else
