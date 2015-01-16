@@ -87,12 +87,12 @@ class RigidBody:
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
         return RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
 
-    def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
+    def addOffset(self, name, offset=[0,0,0,0,0,0,1], geometricStiffness = geometric_stiffness):
         ## adding a relative offset to the rigid body (e.g. used as a joint location)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+        return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Rigid.Frame(offset) ).offset(), geometricStiffness )
 
-    def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
+    def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], geometricStiffness = geometric_stiffness):
         ## adding a offset given in absolute coordinates to the rigid body
         return RigidBody.Offset( self.node, name, (self.frame.inv()*Rigid.Frame(offset)).offset() )
 
@@ -135,19 +135,19 @@ class RigidBody:
             idxVisualModel+=1
 
     class Offset:
-        def __init__(self, node, name, offset):
+        def __init__(self, node, name, offset, geometricStiffness):
             self.node = node.createChild( name )
             self.frame = Rigid.Frame( offset )
             self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
-            self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), geometricStiffness=geometric_stiffness)
+            self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), geometricStiffness=geometricStiffness)
 
-        def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
+        def addOffset(self, name, offset=[0,0,0,0,0,0,1], geometricStiffness=geometric_stiffness):
             ## adding a relative offset to the offset
-            return RigidBody.Offset( self.node, name, offset )
+            return RigidBody.Offset( self.node, name, offset, geometricStiffness )
 
-        def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
+        def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1], geometricStiffness=geometric_stiffness):
             ## adding a offset given in absolute coordinates to the offset
-            return RigidBody.Offset( self.node, name, (Rigid.Frame(offset) * self.frame.inv()).offset() )
+            return RigidBody.Offset( self.node, name, (Rigid.Frame(offset) * self.frame.inv()).offset(), geometricStiffness )
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
