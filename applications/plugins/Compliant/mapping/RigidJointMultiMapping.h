@@ -86,11 +86,25 @@ protected:
 	}
 
 
-    void assemble_geometric(const typename self::in_pos_type& in_pos,
-                            const typename self::out_force_type& out_force) {
+    void assemble_geometric(const vector<typename self::const_in_coord_type>& in_pos,
+                            const typename self::const_out_deriv_type& out_force) {
+
+        typename self::geometric_type::CompressedMatrix& dJ = this->geometric.compressedMatrix;
+
+        unsigned size = 0;
+
+        for(unsigned i = 0, n = in_pos.size(); i < n; ++i) {
+            size += this->from(i)->getMatrixSize();
+        }
+
+        dJ.resize( size, size );
+        dJ.setZero();
+
+        // alright, let's do this
+        
 
 
-
+        dJ.finalize();
     }
 
 	void assemble(const vector< typename self::in_pos_type >& in ) {
