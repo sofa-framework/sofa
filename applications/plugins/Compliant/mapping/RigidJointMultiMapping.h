@@ -46,14 +46,20 @@ public:
 	typedef AssembledMultiMapping<TIn, TOut> base;
 	typedef RigidJointMultiMapping self;
 
+    Data<int> geometricStiffness;
+
 protected:
 	typedef SE3< in_real > se3;
 	typedef typename se3::coord_type coord_type;
 	
 
 	RigidJointMultiMapping()
-		: pairs(initData(&pairs, "pairs", "index pairs for each joint"))
-    {}
+		: pairs(initData(&pairs, "pairs", "index pairs (parent, child) for each joint")),
+          geometricStiffness(initData(&geometricStiffness,
+                                      0,
+                                      "geometricStiffness",
+                                      "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)"))
+        {}
 	
 	void apply(typename self::out_pos_type& out,
 	           const vector< typename self::in_pos_type >& in ) {
@@ -71,13 +77,21 @@ protected:
 			coord_type delta = se3::prod( se3::inv(parent), child);
 
 			typename se3::deriv_type value = se3::product_log( delta );
+            
             utils::map(out[i]).template head<3>() =  utils::map(value.getLinear()).template cast<out_real>();
             utils::map(out[i]).template tail<3>() =  utils::map(value.getAngular()).template cast<out_real>();
 			
 		}
 		
 	}
-	
+
+
+    void assemble_geometric(const typename self::in_pos_type& in_pos,
+                            const typename self::out_force_type& out_force) {
+
+
+
+    }
 
 	void assemble(const vector< typename self::in_pos_type >& in ) {
 		assert(this->getFrom()[0] != this->getFrom()[1]);
@@ -98,10 +112,10 @@ protected:
 		// each pair
 		for(unsigned i = 0, n = p.size(); i < n; ++i) {
 			
-			coord_type parent = in[0][ p[i](0) ];
-			coord_type child = in[1][ p[i](1) ];
+			const coord_type parent = in[0][ p[i](0) ];
+			const coord_type child = in[1][ p[i](1) ];
 			
-			coord_type delta = se3::prod( se3::inv(parent), child);
+			const coord_type delta = se3::prod( se3::inv(parent), child);
 			
 			// each parent mstate
 			for(unsigned j = 0, m = in.size(); j < m; ++j) {
@@ -111,20 +125,22 @@ protected:
 				const mat33 Rp = se3::rotation(parent).toRotationMatrix();
 				const mat33 Rc = se3::rotation(child).toRotationMatrix();
 //				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
-				const mat33 dlog = se3::dlog( se3::rotation(delta) );
-				
+				const typename se3::vec3 s = se3::translation(child) - se3::translation(parent);
+
+                const mat33 dlog = se3::dlog( se3::rotation(delta) );
+                 
 				mat66 ddelta; 
 
 				if( j ) {
 					// child
 					ddelta << 
 						Rp.transpose(), mat33::Zero(),
-						mat33::Zero(), dlog * Rc.transpose();
+						mat33::Zero(), dlog * Rp.transpose();
 				} else {
 					// parent
-						ddelta << 
-						-Rp.transpose(), mat33::Zero(),
-							mat33::Zero(), -dlog * Rc.transpose();
+                    ddelta << 
+                        -Rp.transpose(), Rp.transpose() * se3::hat(s),
+                        mat33::Zero(), -dlog * Rp.transpose();
 				}
 				
 
