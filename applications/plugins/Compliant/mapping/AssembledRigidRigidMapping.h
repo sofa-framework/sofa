@@ -107,7 +107,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
             in_out[ s.first() ] = i;
         }
         
-        typename self::jacobian_type::CompressedMatrix& dJ = this->geometric.compressedMatrix;
+        typename self::geometric_type::CompressedMatrix& dJ = this->geometric.compressedMatrix;
 
         dJ.resize( 6 * in_pos.size(),
                    6 * in_pos.size() );
