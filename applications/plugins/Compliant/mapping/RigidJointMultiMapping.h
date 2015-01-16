@@ -90,13 +90,13 @@ protected:
     void assemble_geometric(const vector<typename self::const_in_coord_type>& in_pos,
                             const typename self::const_out_deriv_type& out_force) {
         // we're done lol
-        if( true or ! geometricStiffness.getValue() ) return;
+        if( true || ! geometricStiffness.getValue() ) return;
         
         // assert( this->getFromModels().size() == 2 );
         // assert( this->getFromModels()[0] != this->getFromModels()[1] );
 
         // assert( this->getToModels().size() == 1 );
-        // assert( this->getToModels()[0]->size() == 1 );
+        // assert( this->getToModels()[0]->getSize() == 1 );
 
         typedef typename self::geometric_type::CompressedMatrix matrix_type;
         matrix_type& dJ = this->geometric.compressedMatrix;
@@ -243,13 +243,14 @@ protected:
 
 				typename self::jacobian_type::CompressedMatrix& J = this->jacobian(j).compressedMatrix;
 				
-				const mat33 Rp = se3::rotation(parent).toRotationMatrix();
-				const mat33 Rc = se3::rotation(child).toRotationMatrix();
+				const mat33 Rp = se3::rotation(parent).normalized().toRotationMatrix();
+				const mat33 Rc = se3::rotation(child).normalized().toRotationMatrix();
+
 //				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
 				const typename se3::vec3 s = se3::translation(child) - se3::translation(parent);
 
                 // dlog in spatial coordinates
-                const mat33 dlog = se3::dlog( se3::rotation(delta) ) * Rc.transpose() * Rp;
+                const mat33 dlog = se3::dlog( se3::rotation(delta).normalized() ); // * Rc.transpose() * Rp;
                 // const mat33 dlog = mat33::Identity();
                  
 				mat66 ddelta; 
@@ -258,12 +259,12 @@ protected:
 					// child
 					ddelta << 
 						Rp.transpose(), mat33::Zero(),
-						mat33::Zero(), dlog * Rp.transpose();
+						mat33::Zero(), dlog * Rc.transpose();
 				} else {
 					// parent
                     ddelta << 
                         -Rp.transpose(), Rp.transpose() * se3::hat(s),
-                        mat33::Zero(), -dlog * Rp.transpose();
+                        mat33::Zero(), -dlog * Rc.transpose();
 				}
 				
 
