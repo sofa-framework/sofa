@@ -124,7 +124,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
 			#pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( int i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];
@@ -138,7 +138,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
 			#pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+            for( int i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];

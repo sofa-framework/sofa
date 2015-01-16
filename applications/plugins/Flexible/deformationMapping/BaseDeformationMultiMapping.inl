@@ -445,7 +445,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-    for(unsigned int i=0; i<jacobian1.size(); i++)
+    for(int i=0; i<jacobian1.size(); i++)
     {
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian1[i].size(); j++)
@@ -518,7 +518,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-            for(unsigned int i=0; i<jacobian1.size(); i++)
+            for(int i=0; i<jacobian1.size(); i++)
             {
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian1[i].size(); j++)
@@ -588,7 +588,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 #pragma omp parallel for
 #endif
 
-            for(unsigned int i=0; i<this->f_index_parentToChild1.size(); i++)
+            for(int i=0; i<this->f_index_parentToChild1.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild1[i].size(); j+=2)
                 {
@@ -600,7 +600,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-            for(unsigned int i=0; i<this->f_index_parentToChild2.size(); i++)
+            for(int i=0; i<this->f_index_parentToChild2.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild2[i].size(); j+=2)
                 {
@@ -680,7 +680,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-                for(unsigned int i=0; i<this->f_index_parentToChild1.size(); i++)
+                for(int i=0; i<this->f_index_parentToChild1.size(); i++)
                 {
                     for(size_t j=0; j<this->f_index_parentToChild1[i].size(); j+=2)
                     {
@@ -694,7 +694,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-                for(unsigned int i=0; i<this->f_index_parentToChild2.size(); i++)
+                for(int i=0; i<this->f_index_parentToChild2.size(); i++)
                 {
                     for(size_t j=0; j<this->f_index_parentToChild2[i].size(); j+=2)
                     {
