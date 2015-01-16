@@ -22,19 +22,8 @@ set(SOFAPYTHON_INSTALL_BIN_DIR     bin                      CACHE PATH "Installa
 set(SOFAPYTHON_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAPYTHON_INSTALL_CMAKE_DIR   ${SOFAPYTHON_INSTALL_LIB_DIR}/cmake/SofaPython )
 
-## plugin external dependencies
-if (APPLE)
-    # on MacOS you must use macport to use python SDK
-    # standard FindPythonLibs script mess with macports and apple version
-    set(PYTHON_LIBRARIES "-F/opt/local/Library/Frameworks/ -framework Python")
-    set(PYTHON_INCLUDE_DIRS "/opt/local/Library/Frameworks/Python.framework/Headers")	 
-    # fixes compilation on 10.9, where python 2.7 is a system
-    # framework
-    set(PYTHON_LIBRARIES "-F/System/Library/Frameworks/ -framework Python")
-    set(PYTHON_INCLUDE_DIRS "/System/Library/Frameworks/Python.framework/Headers")
-else()
-    find_package(PythonLibs 2.7 REQUIRED)
-endif()
+
+find_package(PythonLibs 2.7 REQUIRED)
 
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
