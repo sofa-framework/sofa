@@ -86,25 +86,133 @@ protected:
 	}
 
 
+    
+
     void assemble_geometric(const vector<typename self::const_in_coord_type>& in_pos,
                             const typename self::const_out_deriv_type& out_force) {
+        // we're done lol
+        if( ! geometricStiffness.getValue() ) return;
+        
+        assert( this->getFromModels().size() == 2 );
+        assert( this->getFromModels()[0] != this->getFromModels()[1] );
 
-        typename self::geometric_type::CompressedMatrix& dJ = this->geometric.compressedMatrix;
+        assert( this->getToModels().size() == 1 );
+        assert( this->getToModels()[0].size() == 1 );
 
-        unsigned size = 0;
+        typedef typename self::geometric_type::CompressedMatrix matrix_type;
+        matrix_type& dJ = this->geometric.compressedMatrix;
 
-        for(unsigned i = 0, n = in_pos.size(); i < n; ++i) {
-            size += this->from(i)->getMatrixSize();
-        }
+        // out wrench
+        const typename TOut::Deriv& mu = out_force[0];
 
+        // TODO put these in se3::angular/linear
+        typedef typename se3::vec3 vec3;
+        const vec3 f = se3::map(mu).template head<3>();
+        const vec3 tau = se3::map(mu).template tail<3>();
+        
+        // matrix sizes
+        const unsigned size_p = this->from(0)->getMatrixSize();
+        const unsigned size_c = this->from(1)->getMatrixSize();
+
+        const unsigned size = size_p + size_c;
+        
         dJ.resize( size, size );
         dJ.setZero();
 
-        // alright, let's do this
-        
+        // lets process pairs
+        const pairs_type& p = pairs.getValue();
 
+        // TODO we really need sorted pairs here, is this even possible ?
+        assert( p.size() == 1 && "not sure if work");
+        
+        // alright, let's do this
+        for(unsigned i = 0, n = p.size(); i < n; ++i) {
+
+            const unsigned index_p = p[i](0);
+            const unsigned index_c = p[i](1);
+
+			const coord_type parent = in_pos[0][ index_p ];
+			const coord_type child = in_pos[1][ index_c ];
+
+            typedef typename se3::mat33 mat33;
+            typedef typename se3::mat66 mat66;
+            typedef typename se3::vec3 vec3;
+            
+            const mat33 Rp = se3::rotation(parent).toRotationMatrix();
+
+            const vec3 Rp_f = Rp * f;
+            const vec3 Rp_tau = Rp * tau;
+
+            const mat33 Rp_f_hat = se3::hat(Rp_f);
+            const mat33 Rp_tau_hat = se3::hat(Rp_tau);
+
+            const vec3 s = se3::translation(child) - se3::translation(parent);
+
+            // parent rows
+            {
+                // (p, p) block
+                mat66 block_pp;
+
+                block_pp <<
+                    mat33::Zero(), Rp_f_hat,
+                    -Rp_f_hat, se3::hat(s) * Rp_f_hat + Rp_tau_hat;
+            
+                // (p, c) block
+                typename se3::mat66 block_pc;
+
+                block_pc <<
+                    se3::mat36::Zero(),
+                    Rp_f_hat, mat33::Zero();
+
+                // fill parent rows
+                for(unsigned i = 0; i < 6; ++i) {
+                    const unsigned row = 6 * index_p + i;
+
+                    dJ.startVec(row);
+                
+                    // pp
+                    for(unsigned j = 0; j < 6; ++j) {
+                        const unsigned col = 6 * index_p + j;
+                        if(block_pp(i, j)) dJ.insertBack(row, col) = block_pp(i, j);
+                    }
+
+                    // pc
+                    for(unsigned j = 0; j < 6; ++j) {
+                        const unsigned col = size_p + 6 * index_c + j;
+                        if(block_pc(i, j)) dJ.insertBack(row, col) = block_pc(i, j);
+                    }
+                }
+            }
+
+            // child rows
+            {
+                // (c, p) block
+                mat66 block_cp;
+                block_cp <<
+                    mat33::Zero(), -Rp_f_hat,
+                    mat33::Zero(), -Rp_tau_hat;
+
+                // fill child rows
+                for(unsigned i = 0; i < 6; ++i) {
+                    const unsigned row = size_p + 6 * index_c + i;
+                
+                    dJ.startVec(row);
+                
+                    for(unsigned j = 0; j < 6; ++j) {
+                        const unsigned col = 6 * index_p + j;
+                        if(block_cp(i, j)) dJ.insertBack(row, col) = block_cp(i, j);
+                    }
+                }
+            }
+
+        }
 
         dJ.finalize();
+        
+        if( geometricStiffness.getValue() == 2 ) {
+            dJ = (dJ + matrix_type(dJ.transpose())) / 2.0;
+        }
+        
     }
 
 	void assemble(const vector< typename self::in_pos_type >& in ) {
