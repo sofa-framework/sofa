@@ -130,11 +130,16 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaPython.h
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} )
 target_link_libraries( ${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
+    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>") 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>") 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAPYTHON_DEPENDENCY_INCLUDE_DIR}>")
 set( SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
-# Python's implementation deliberately breaks strict-aliasing rules, so we
+
+# The implementation of Python deliberately breaks strict-aliasing rules, so we
 # compile with -fno-strict-aliasing to prevent the compiler from relying on
 # those rules to optimize the code.
 if(${CMAKE_COMPILER_IS_GNUCC})
