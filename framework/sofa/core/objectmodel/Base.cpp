@@ -205,6 +205,21 @@ void Base::addAlias( BaseLink* link, const char* alias)
 	}
 }
 
+void Base::cleanDatasAndLinks()
+{
+    for(VecData::const_iterator iData = m_vecData.begin(); iData != m_vecData.end(); ++iData)
+	{
+		(*iData)->cleanDdg();
+	}
+	m_aliasData.clear();
+
+    for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
+	{
+        (*iLink)->cleanDdg();
+	}
+	m_aliasLink.clear();
+}
+
 /// Copy the source aspect to the destination aspect for each Data in the component.
 void Base::copyAspect(int destAspect, int srcAspect)
 {

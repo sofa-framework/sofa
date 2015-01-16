@@ -134,6 +134,8 @@ public:
     virtual BaseData* getLinkedData(unsigned int index=0) const = 0;
     virtual std::string getLinkedPath(unsigned int index=0) const = 0;
 
+	void cleanDdg();
+
     /// @name Serialization API
     /// @{
 

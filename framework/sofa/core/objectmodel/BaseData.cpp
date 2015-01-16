@@ -440,6 +440,18 @@ void BaseData::releaseAspect(int aspect)
 		m_ddg->releaseAspect(aspect);
 }
 
+void BaseData::cleanDdg()
+{
+	if (m_ddg)
+	{
+		if (m_ddg->getInputs().empty() && m_ddg->getOutputs().empty())
+		{
+			delete m_ddg;
+			m_ddg = NULL;
+		}
+	}
+}
+
 std::string BaseData::decodeTypeName(const std::type_info& t)
 {
     return BaseClass::decodeTypeName(t);
