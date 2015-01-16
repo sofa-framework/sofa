@@ -419,7 +419,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=0; i<nbedg; i++)
+        for(int i=0; i<nbedg; i++)
         {
             Coord pts[2];
             for(size_t j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
@@ -444,7 +444,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=0; i<nbtri; i++)
+        for(int i=0; i<nbtri; i++)
         {
             Coord pts[3];
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
@@ -478,7 +478,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+        for(int i=previousClosingTriSize; i<cltri.size(); i++)
         {
             Coord pts[3];
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
@@ -555,7 +555,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=0; i<nbedg; i++)
+        for(int i=0; i<nbedg; i++)
         {
             Coord pts[2];
             T colors[2];
@@ -575,7 +575,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(unsigned int i=0; i<nbtri; i++)
+        for(int i=0; i<nbtri; i++)
         {
             Coord pts[3];
             T colors[3];
@@ -612,7 +612,7 @@ protected:
     #ifdef USING_OMP_PRAGMAS
             #pragma omp parallel for
     #endif
-            for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+            for(int i=previousClosingTriSize; i<cltri.size(); i++)
             {
                 Coord pts[3];
                 for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
@@ -634,7 +634,7 @@ protected:
     #ifdef USING_OMP_PRAGMAS
             #pragma omp parallel for
     #endif
-            for(unsigned int i=previousClosingTriSize; i<cltri.size(); i++)
+            for(int i=previousClosingTriSize; i<cltri.size(); i++)
             {
                 Coord pts[3];
                 T colors[3];
