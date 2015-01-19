@@ -548,13 +548,13 @@ void MeshTopology::init()
     if (nbPoints==0)
     {
         // looking for upper topology
-        if (seqHexahedra.isSet())
+        if (!seqHexahedra.getValue().empty())
             UpperTopology = sofa::core::topology::HEXAHEDRON;
-        else if (seqTetrahedra.isSet())
+        else if (!seqTetrahedra.getValue().empty())
             UpperTopology = sofa::core::topology::TETRAHEDRON;
-        else if (seqQuads.isSet())
+        else if (!seqQuads.getValue().empty())
             UpperTopology = sofa::core::topology::QUAD;
-        else if (seqTriangles.isSet())
+        else if (!seqTriangles.getValue().empty())
             UpperTopology = sofa::core::topology::TRIANGLE;
         else
             UpperTopology = sofa::core::topology::EDGE;
