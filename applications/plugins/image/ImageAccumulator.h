@@ -33,7 +33,6 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/system/thread/CTime.h>
 
 

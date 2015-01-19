@@ -33,8 +33,6 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/component/component.h>
-
 #ifdef USING_OMP_PRAGMAS
     #include <omp.h>
 #endif

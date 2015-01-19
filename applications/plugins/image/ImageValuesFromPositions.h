@@ -27,7 +27,6 @@
 
 #include "initImage.h"
 #include "ImageTypes.h"
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/helper/OptionsGroup.h>

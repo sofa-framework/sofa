@@ -30,7 +30,6 @@
 #include "ImageTypes.h"
 #include "VectorVis.h"
 
-#include <sofa/component/component.h>
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/core/objectmodel/BaseContext.h>
