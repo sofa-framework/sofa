@@ -194,7 +194,7 @@ public:
 		for(unsigned i = 0, n = x.size(); i < n; ++i) {
 			const unsigned index = clamp(i);
 	
-			res += mass.getValue()[index] * (g * x[i].getCenter()); 
+			res -= mass.getValue()[index] * (g * x[i].getCenter()); 
 		}
 		
 		return res;
