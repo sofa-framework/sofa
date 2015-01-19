@@ -49,7 +49,7 @@ void SofaQtQuickGUI::init()
     registerTypes("SofaQtQuickGUI");
 }
 
-void SofaQtQuickGUI::registerTypes(const char *uri)
+void SofaQtQuickGUI::registerTypes(const char* /*uri*/)
 {
 	//Q_ASSERT(QLatin1String(uri) == QLatin1String("SofaQtQuickGUI"));
 
