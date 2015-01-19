@@ -337,7 +337,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
     if(!m_container->hasHexahedra())
         return;
 
-    bool removeIsolatedVertices = removeIsolatedItems;
+    bool removeIsolatedVertices = removeIsolatedItems && removeIsolated.getValue();
     bool removeIsolatedEdges = removeIsolatedItems && m_container->hasEdges();
     bool removeIsolatedQuads = removeIsolatedItems && m_container->hasQuads();
 
