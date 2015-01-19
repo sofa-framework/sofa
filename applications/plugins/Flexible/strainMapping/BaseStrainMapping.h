@@ -27,7 +27,6 @@
 
 #include "../initFlexible.h"
 #include <sofa/core/Mapping.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/common/Simulation.h>

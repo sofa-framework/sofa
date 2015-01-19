@@ -755,7 +755,7 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRA
     double e = 0;
     const MassType& m = mass.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+    defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
 
@@ -792,7 +792,7 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRA
     double e = 0;
     const MassType& m = mass.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+    defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
 

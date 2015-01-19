@@ -25,13 +25,7 @@
 #ifndef INITFlexible_H
 #define INITFlexible_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_Flexible
-#define SOFA_Flexible_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_Flexible_API  SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <Flexible/Flexible.h>
 
 /** \mainpage
    Flexible plugin provides a unified approach to the simulation of deformable solids. It uses a three-level kinematic structure:

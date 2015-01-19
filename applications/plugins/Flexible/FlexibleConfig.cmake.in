@@ -1,0 +1,20 @@
+# - Config file for the Flexible package
+# It defines the following variables
+#  Flexible_INCLUDE_DIRS - include directories for Flexible
+#  Flexible_LIBRARIES    - libraries to link against
+
+@PACKAGE_INIT@
+
+set_and_check(FLEXIBLE_INCLUDE_DIR  "@PACKAGE_FLEXIBLE_INCLUDE_DIR@")
+
+check_required_components(Flexible)
+
+find_package(SofaMisc REQUIRED)
+find_package(image)
+
+if(NOT TARGET Flexible)
+	include("${CMAKE_CURRENT_LIST_DIR}/FlexibleTargets.cmake")
+endif() 
+
+set(Flexible_LIBRARIES Flexible)
+set(Flexible_INCLUDE_DIRS ${FLEXIBLE_INCLUDE_DIR})
