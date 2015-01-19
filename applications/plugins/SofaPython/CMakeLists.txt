@@ -124,9 +124,9 @@ set(PYTHON_FILES
 include(./python/python.cmake)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaPython.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaPython.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaPython.h
-         DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/sofa")
+                ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h)
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h
+         DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/SofaPython")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} )
 target_link_libraries( ${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
