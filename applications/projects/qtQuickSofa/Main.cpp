@@ -1,3 +1,4 @@
+#include <QtCore/QCoreApplication>
 #include <QtWidgets/QApplication>
 #include <QQmlApplicationEngine>
 #include <QPluginLoader>
@@ -12,7 +13,8 @@ int main(int argc, char **argv)
     qputenv("QML_BAD_GUI_RENDER_LOOP", "1");
 
 	QApplication app(argc, argv);
-    app.addLibraryPath("../lib/");
+    qDebug() << QCoreApplication::applicationDirPath();
+    app.addLibraryPath(QCoreApplication::applicationDirPath() + "/../lib/");
 
     // application specific settings
 	app.setOrganizationName("Sofa");
