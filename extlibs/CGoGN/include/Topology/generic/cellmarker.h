@@ -45,7 +45,6 @@ class CellMarkerGen
 protected:
 	AttributeMultiVector<MarkerBool>* m_markVector ;
 	unsigned int m_cell ;
-	unsigned int m_thread;
 
 public:
 	CellMarkerGen(unsigned int cell) :

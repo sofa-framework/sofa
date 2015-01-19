@@ -106,14 +106,8 @@ public:
 
 
 
-//template <typename MAP, unsigned int ORBIT, const class FUNC& F, TraversalOptim OPT = AUTO>
-//class TraversorCellConditional : public TraversorCell<MAP, ORBIT, OPT> {
-//public:
-//    TraversorCellConditional(const MAP& map, bool forceDartMarker = false, unsigned int thread = 0)  : TraversorCell<MAP, ORBIT, OPT>(map, forceDartMarker, thread) {}
-//    TraversorCellConditional(const TraversorCellConditional& tcc) : TraversorCell<MAP, ORBIT, OPT>(tcc) {}
-//    inline Cell<ORBIT> begin() ;
-//    inline Cell<ORBIT> next() ;
-//} ;
+
+
 
 /*
  * Executes function f on each ORBIT

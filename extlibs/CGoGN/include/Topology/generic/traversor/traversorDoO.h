@@ -39,6 +39,7 @@ private:
 	std::vector<Dart>* m_vd ;
 	const GenericMap* m_map;
 
+public:
 	TraversorDartsOfOrbit( const TraversorDartsOfOrbit<MAP,ORBIT>& /*tr*/){}
 
 public:

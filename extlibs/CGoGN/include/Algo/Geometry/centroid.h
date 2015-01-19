@@ -50,7 +50,7 @@ namespace Geometry
 * @param attributs the vector of attribute or cell
 */
 template <typename PFP, typename V_ATT>
-typename V_ATT::DATA_TYPE volumeCentroid(typename PFP::MAP& map, Vol d, const V_ATT& attributs, unsigned int thread = 0);
+typename V_ATT::DATA_TYPE volumeCentroid(typename PFP::MAP& map, Vol d, const V_ATT& attributs);
 
 /**
 * Compute volume centroid weighted by edge length (generic version)
@@ -63,7 +63,7 @@ typename V_ATT::DATA_TYPE volumeCentroid(typename PFP::MAP& map, Vol d, const V_
 * @param attributs the vector of attribute or cell
 */
 template <typename PFP, typename V_ATT>
-typename V_ATT::DATA_TYPE volumeCentroidELW(typename PFP::MAP& map, Vol d, const V_ATT& attributs, unsigned int thread = 0);
+typename V_ATT::DATA_TYPE volumeCentroidELW(typename PFP::MAP& map, Vol d, const V_ATT& attributs);
 
 /**
  * Compute face centroid (generic version)
@@ -109,7 +109,7 @@ typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Ver
  * @param thread the thread id (default 0)
  */
 template <typename PFP, typename V_ATT, typename F_ATT>
-void computeCentroidFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& face_centroid, unsigned int thread = 0);
+void computeCentroidFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& face_centroid);
 
 /**
  * Compute centroid of all faces (Edge Length Weighted)
@@ -119,7 +119,7 @@ void computeCentroidFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& 
  * @param thread the thread id (default 0)
  */
 template <typename PFP, typename V_ATT, typename F_ATT>
-void computeCentroidELWFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& face_centroid, unsigned int thread = 0) ;
+void computeCentroidELWFaces(typename PFP::MAP& map, const V_ATT& position, F_ATT& face_centroid) ;
 
 /**
  * Compute neighborhood centroid of all vertices
@@ -129,7 +129,7 @@ void computeCentroidELWFaces(typename PFP::MAP& map, const V_ATT& position, F_AT
  * @param thread the thread id (default 0)
  */
 template <typename PFP, typename V_ATT>
-void computeNeighborhoodCentroidVertices(typename PFP::MAP& map, const V_ATT& position, V_ATT& vertex_centroid, unsigned int thread = 0) ;
+void computeNeighborhoodCentroidVertices(typename PFP::MAP& map, const V_ATT& position, V_ATT& vertex_centroid) ;
 
 
 namespace Parallel
@@ -189,7 +189,7 @@ namespace Geometry
  * @param position the vector of attribute or cell
  */
 template <typename PFP, typename V_ATT>
-typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Vertex d, const V_ATT& attributs, unsigned int thread = 0);
+typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Vertex d, const V_ATT& attributs);
 
 /**
  * compute centroid of all volumes
@@ -198,10 +198,10 @@ typename V_ATT::DATA_TYPE vertexNeighborhoodCentroid(typename PFP::MAP& map, Ver
  * @param vol_centroid volume attribute where to store the centroids
  */
 template <typename PFP, typename V_ATT, typename W_ATT>
-void computeCentroidVolumes(typename PFP::MAP& map, const V_ATT& position, W_ATT& vol_centroid, unsigned int thread = 0);
+void computeCentroidVolumes(typename PFP::MAP& map, const V_ATT& position, W_ATT& vol_centroid);
 
 template <typename PFP, typename V_ATT, typename W_ATT>
-void computeCentroidELWVolumes(typename PFP::MAP& map, const V_ATT& position, W_ATT& vol_centroid, unsigned int thread = 0);
+void computeCentroidELWVolumes(typename PFP::MAP& map, const V_ATT& position, W_ATT& vol_centroid);
 
 /**
  * compute centroid of all vertices
@@ -210,7 +210,7 @@ void computeCentroidELWVolumes(typename PFP::MAP& map, const V_ATT& position, W_
  * @param vertex_centroid vertex attribute to store the centroids
  */
 template <typename PFP, typename V_ATT>
-void computeNeighborhoodCentroidVertices(typename PFP::MAP& map, const V_ATT& position, V_ATT& vertex_centroid, unsigned int thread = 0) ;
+void computeNeighborhoodCentroidVertices(typename PFP::MAP& map, const V_ATT& position, V_ATT& vertex_centroid) ;
 
 
 namespace Parallel

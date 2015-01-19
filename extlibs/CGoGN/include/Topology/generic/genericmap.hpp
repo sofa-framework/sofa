@@ -236,7 +236,7 @@ inline void GenericMap::initCell(unsigned int i)
  *   ATTRIBUTES CONTAINERS MANAGEMENT   *
  ****************************************/
 
-inline unsigned int GenericMap::getNbCells(unsigned int orbit)
+inline unsigned int GenericMap::getNbCells(unsigned int orbit) const
 {
 	return m_attribs[orbit].size() ;
 }

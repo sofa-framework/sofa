@@ -533,46 +533,46 @@ inline void foreach_cell(const MAP& map, FUNC f, TraversalOptim opt)
 	}
 }
 
-template <unsigned int ORBIT, typename MAP, typename FUNC>
-inline void foreach_cell_until(const MAP& map, FUNC f, TraversalOptim opt)
-{
-	switch(opt)
-	{
-		case FORCE_DART_MARKING:
-		{
-			TraversorCell<MAP, ORBIT,FORCE_DART_MARKING> trav(map, false);
-			for (Cell<ORBIT> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
-				if (!f(c))
-					break;
-		}
-			break;
-		case FORCE_CELL_MARKING:
-		{
-			TraversorCell<MAP, ORBIT,FORCE_CELL_MARKING> trav(map, false);
-			for (Cell<ORBIT> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
-				if (!f(c))
-					break;
-		}
-			break;
-		case FORCE_QUICK_TRAVERSAL:
-		{
-			TraversorCell<MAP, ORBIT,FORCE_QUICK_TRAVERSAL> trav(map, false);
-			for (Cell<ORBIT> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
-				if (!f(c))
-					break;
-		}
-			break;
-		case AUTO:
-		default:
-		{
-			TraversorCell<MAP, ORBIT,AUTO> trav(map, false);
-			for (Cell<ORBIT> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
-				if (!f(c))
-					break;
-		}
-			break;
-	}
-}
+//template <unsigned int ORBIT, typename MAP, typename FUNC>
+//inline void foreach_cell_until(const MAP& map, FUNC f, TraversalOptim opt)
+//{
+//	switch(opt)
+//	{
+//		case FORCE_DART_MARKING:
+//		{
+//			TraversorCell<MAP, ORBIT,FORCE_DART_MARKING> trav(map, false);
+//			for (Cell<ORBIT> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
+//				if (!f(c))
+//					break;
+//		}
+//			break;
+//		case FORCE_CELL_MARKING:
+//		{
+//			TraversorCell<MAP, ORBIT,FORCE_CELL_MARKING> trav(map, false);
+//			for (Cell<ORBIT> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
+//				if (!f(c))
+//					break;
+//		}
+//			break;
+//		case FORCE_QUICK_TRAVERSAL:
+//		{
+//			TraversorCell<MAP, ORBIT,FORCE_QUICK_TRAVERSAL> trav(map, false);
+//			for (Cell<ORBIT> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
+//				if (!f(c))
+//					break;
+//		}
+//			break;
+//		case AUTO:
+//		default:
+//		{
+//			TraversorCell<MAP, ORBIT,AUTO> trav(map, false);
+//			for (Cell<ORBIT> c = trav.begin(), e = trav.end(); c.dart != e.dart; c = trav.next())
+//				if (!f(c))
+//					break;
+//		}
+//			break;
+//	}
+//}
 
 
 

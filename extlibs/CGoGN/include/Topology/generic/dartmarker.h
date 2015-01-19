@@ -32,6 +32,7 @@
 #include "Utils/static_assert.h"
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
+#include <boost/lambda/if.hpp>
 #include <boost/bind.hpp>
 
 namespace bl = boost::lambda;
@@ -388,28 +389,35 @@ public:
 	inline void markOrbit(Cell<ORBIT> c)
 	{
 		assert(this->m_markVector != NULL);
-		this->m_map.foreach_dart_of_orbit(c, [&] (Dart d)
-		{
-			if (!this->isMarked(d))
-			{
-				this->m_markVector->setTrue(this->m_map.dartIndex(d));
-				m_counter++;
-			}
-		}) ;
+        this->m_map.foreach_dart_of_orbit(c, [&] (Dart d)
+        {
+            if (!this->isMarked(d))
+            {
+                this->m_markVector->setTrue(this->m_map.dartIndex(d));
+                m_counter++;
+            }
+        }) ;
 	}
 
 	template <unsigned int ORBIT>
 	inline void unmarkOrbit(Cell<ORBIT> c)
 	{
-		assert(this->m_markVector != NULL);
-		this->m_map.foreach_dart_of_orbit(c, [&] (Dart d)
-		{
-			if (this->isMarked(d))
-			{
-				this->m_markVector->setFalse(this->m_map.dartIndex(d));
-				m_counter--;
-			}
-		}) ;
+//		assert(this->m_markVector != NULL);
+//		this->m_map.foreach_dart_of_orbit(c, [&] (Dart d)
+//		{
+//			if (this->isMarked(d))
+//			{
+//				this->m_markVector->setFalse(this->m_map.dartIndex(d));
+//				m_counter--;
+//			}
+//		}) ;
+         using bl::var;
+        this->m_map.foreach_dart_of_orbit(c, (
+                                              bl::if_(bl::bind(&DartMarkerNoUnmark::isMarked,this, bl::_1))[
+                                                bl::bind(&AttributeMultiVector<MarkerBool>::setFalse, boost::ref(*(this->m_markVector)), bl::bind(&MAP::dartIndex, boost::ref(this->m_map), bl::_1))
+                                              ]
+                                          , bl::var(m_counter)--
+                                          )) ;
 	}
 #endif
 
