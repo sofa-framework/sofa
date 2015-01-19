@@ -32,7 +32,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/SVector.h>
 
-#include <sofa/component/component.h>
 
 namespace sofa
 {
