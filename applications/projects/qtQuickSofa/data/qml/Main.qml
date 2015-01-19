@@ -6,6 +6,7 @@ import QtQuick.Controls.Styles 1.3
 import SofaBasics 1.0
 import SofaTools 1.0
 import SofaWidgets 1.0
+import "qrc:/SofaCommon/SofaSettingsScript.js" as SofaSettingsScript
 
 ApplicationWindow {
     id: root
@@ -18,6 +19,16 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        if (Qt.application.arguments.length>1)
+            scene.source = "file:" + Qt.application.arguments[1]
+        else {
+            if(0 !== SofaSettingsScript.Recent.scenes.length)
+                scene.source = "file:" + SofaSettingsScript.Recent.scenes.replace(/;.*$/m, "");
+
+            else
+                scene.source = "file:Demos/caduceus.scn";
+        }
+
         visible = true;
     }
 
