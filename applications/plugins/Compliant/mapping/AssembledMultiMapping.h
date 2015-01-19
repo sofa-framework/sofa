@@ -9,8 +9,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/component/component.h>
-
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
