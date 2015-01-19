@@ -28,8 +28,10 @@ int main(int argc, char **argv)
     QPluginLoader pluginLoader("SofaQtQuickGUI");
 
     // first call to instance() initialize the plugin
-    if(0 == pluginLoader.instance())
+    if(0 == pluginLoader.instance()) {
         qCritical() << "SofaQtQuickGUI plugin has not been found!";
+        return -1;
+    }
 
     // launch the main script
     QQmlApplicationEngine applicationEngine;
