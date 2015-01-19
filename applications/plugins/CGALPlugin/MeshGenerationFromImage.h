@@ -47,7 +47,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/rmath.h>
-#include <ImageTypes.h>
+#include <image/ImageTypes.h>
 
 //CGAL
 typedef CGAL::Exact_predicates_inexact_constructions_kernel K;
