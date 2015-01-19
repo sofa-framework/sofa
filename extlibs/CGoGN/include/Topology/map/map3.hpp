@@ -930,7 +930,7 @@ bool Map3<MAP_IMPL>::isBoundaryVertex(Dart d) const
 
 	for(unsigned int i = 0; i < darts.size(); ++i)
 	{
-		if(this->isBoundaryMarked3(darts[i]))
+        if(this->template isBoundaryMarked<3>(darts[i]))
 			return true ;
 
 		//add phi21 and phi23 successor if they are not marked yet
@@ -966,7 +966,7 @@ Dart Map3<MAP_IMPL>::findBoundaryFaceOfVertex(Dart d) const
 
 	for(unsigned int i = 0; i < darts.size(); ++i)
 	{
-		if(this->isBoundaryMarked3(darts[i]))
+        if(this->isBoundaryMarkedCurrent(darts[i]))
 			return darts[i];
 
 		//add phi21 and phi23 successor if they are not marked yet

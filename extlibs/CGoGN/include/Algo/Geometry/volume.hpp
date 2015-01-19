@@ -62,19 +62,19 @@ typename PFP::REAL tetrahedronVolume(typename PFP::MAP& map, Vol v, const Vertex
 }
 
 template <typename PFP>
-typename PFP::REAL convexPolyhedronVolume(typename PFP::MAP& map, Vol v, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, unsigned int thread)
+typename PFP::REAL convexPolyhedronVolume(typename PFP::MAP& map, Vol v, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position)
 {
 	typedef typename PFP::MAP MAP;
 	typedef typename PFP::VEC3 VEC3;
 
-	if (Volume::Modelisation::Tetrahedralization::isTetrahedron<PFP>(map, v, thread))
+	if (Volume::Modelisation::Tetrahedralization::isTetrahedron<PFP>(map, v))
 		return tetrahedronVolume<PFP>(map, v, position) ;
 	else
 	{
 		typename PFP::REAL vol = 0 ;
-		VEC3 vCentroid = Algo::Surface::Geometry::volumeCentroid<PFP>(map, v, position, thread) ;
+		VEC3 vCentroid = Algo::Surface::Geometry::volumeCentroid<PFP>(map, v, position) ;
 
-		DartMarkerStore<MAP> mark(map, thread) ;	// Lock a marker
+		DartMarkerStore<MAP> mark(map) ;	// Lock a marker
 
 		std::vector<Face> visitedFaces ;
 		visitedFaces.reserve(100) ;
@@ -124,18 +124,18 @@ typename PFP::REAL convexPolyhedronVolume(typename PFP::MAP& map, Vol v, const V
 }
 
 template <typename PFP>
-typename PFP::REAL totalVolume(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position, unsigned int thread)
+typename PFP::REAL totalVolume(typename PFP::MAP& map, const VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& position)
 {
-	if ((CGoGN::Parallel::NumberOfThreads > 1) && (thread == 0))
+	if (CGoGN::Parallel::NumberOfThreads > 1)
 	{
 		return Parallel::totalVolume<PFP>(map, position);
 	}
 
 	double vol = 0.0 ;
 
-	TraversorW<typename PFP::MAP> t(map, thread) ;
+	TraversorW<typename PFP::MAP> t(map) ;
 	for(Dart d = t.begin(); d != t.end(); d = t.next())
-		vol += convexPolyhedronVolume<PFP>(map, d, position, thread) ;
+		vol += convexPolyhedronVolume<PFP>(map, d, position) ;
 	return typename PFP::REAL(vol) ;
 }
 
@@ -148,15 +148,15 @@ typename PFP::REAL totalVolume(typename PFP::MAP& map, const VertexAttribute<typ
 {
     typedef typename PFP::REAL Real;
 	// allocate a vector of 1 accumulator for each thread
-    std::vector<Real> vols(CGoGN::Parallel::NumberOfThreads-1, 0.0);
+	std::vector<typename PFP::REAL> vols(CGoGN::Parallel::NumberOfThreads-1, 0.0);
 
 	// foreach volume
     CGoGN::Parallel::foreach_cell<VOLUME>(map,
-                                          (bl::bind<Real&>(static_cast<Real& (std::vector<Real>::*)(std::size_t)>(&std::vector<Real>::operator[]),boost::ref(vols),  bl::_2 -1 ) += bl::bind<Real>(&convexPolyhedronVolume<PFP>, boost::ref(map), bl::_1, boost::cref(position), bl::_2))
+                                          (bl::bind<Real&>(static_cast<Real& (std::vector<Real>::*)(std::size_t)>(&std::vector<Real>::operator[]),boost::ref(vols),  bl::_2 -1 ) += bl::bind<Real>(&convexPolyhedronVolume<PFP>, boost::ref(map), bl::_1, boost::cref(position)))
                                           );
 //    {
 //         add volume to the thread accumulator
-//        vols[thr-1] += convexPolyhedronVolume<PFP>(map, v, position, thr) ;
+//        vols[thr-1] += convexPolyhedronVolume<PFP>(map, v, position) ;
 //    });
 
 	// compute the sum of volumes

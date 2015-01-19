@@ -54,7 +54,7 @@ public:
 	unsigned int degree(Dart d) const;
 
 	template <unsigned int ORBIT>
-	bool sameOrbit(Cell<ORBIT> c1, Cell<ORBIT> c2, unsigned int thread = 0) const;
+    bool sameOrbit(Cell<ORBIT> c1, Cell<ORBIT> c2) const;
 
 	/****************************************
 	 *         EMBEDDING MANAGEMENT         *

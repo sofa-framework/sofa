@@ -145,9 +145,9 @@ Traversor3XY<MAP, ORBX, ORBY>::Traversor3XY(const Traversor3XY& tra3xy)
     std::cerr << "Traversor3XY copy constructor (should not happen)...ORBX =" << ORBX << " & ORBY = " << ORBY << std::endl;
     if (m_QLT == NULL) {
         if(tra3xy.m_cmark != NULL)
-            m_cmark = new CellMarkerStore<MAP, ORBY>(m_map, tra3xy.m_cmark->getThread()) ;
+            m_cmark = new CellMarkerStore<MAP, ORBY>(m_map) ;
         else
-            m_dmark = new DartMarkerStore<MAP>(m_map, tra3xy.m_dmark->getThread()) ;
+            m_dmark = new DartMarkerStore<MAP>(m_map) ;
     }
 
 }
