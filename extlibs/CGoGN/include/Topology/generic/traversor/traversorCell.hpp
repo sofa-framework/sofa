@@ -681,8 +681,8 @@ public:
 
 		while (!m_finished)
 		{
-			for (typename std::vector<CELL>::const_iterator it = m_cells.begin(); it != m_cells.end(); ++it)
-				m_lambda(*it, m_id);
+            for (typename std::vector<CELL>::const_iterator it = m_cells.begin(); it != m_cells.end(); ++it)
+                m_lambda(*it, m_id);
 			m_cells.clear();
 			m_sync1.wait(); // wait every body has finished
 			m_sync2.wait(); // wait vectors has been refilled

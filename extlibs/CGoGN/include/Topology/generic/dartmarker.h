@@ -292,6 +292,10 @@ public:
 //			DartMarkerTmpl<MAP>::mark(d) ;
 //			m_markedDarts->push_back(d) ;
 //		}) ;
+        this->m_map.foreach_dart_of_orbit(c, (
+                                     bl::bind(&DartMarkerTmpl<MAP>::mark,this, bl::_1)
+                                     ,bl::bind(&std::vector<Dart>::push_back, boost::ref(*m_markedDarts), bl::_1)
+                                        ));
 	}
 
 	inline void unmarkAll()
@@ -389,14 +393,21 @@ public:
 	inline void markOrbit(Cell<ORBIT> c)
 	{
 		assert(this->m_markVector != NULL);
-        this->m_map.foreach_dart_of_orbit(c, [&] (Dart d)
-        {
-            if (!this->isMarked(d))
-            {
-                this->m_markVector->setTrue(this->m_map.dartIndex(d));
-                m_counter++;
-            }
-        }) ;
+//        this->m_map.foreach_dart_of_orbit(c, [&] (Dart d)
+//        {
+//            if (!this->isMarked(d))
+//            {
+//                this->m_markVector->setTrue(this->m_map.dartIndex(d));
+//                m_counter++;
+//            }
+//        }) ;
+        using bl::var;
+       this->m_map.foreach_dart_of_orbit(c, (
+                                             bl::if_(!bl::bind(&DartMarkerNoUnmark::isMarked,this, bl::_1))[
+                                                (bl::bind(&AttributeMultiVector<MarkerBool>::setTrue, boost::ref(*(this->m_markVector)), bl::bind(&MAP::dartIndex, boost::ref(this->m_map), bl::_1))
+                                                ,bl::var(m_counter)++
+                                                 )]
+                                         )) ;
 	}
 
 	template <unsigned int ORBIT>
@@ -414,9 +425,9 @@ public:
          using bl::var;
         this->m_map.foreach_dart_of_orbit(c, (
                                               bl::if_(bl::bind(&DartMarkerNoUnmark::isMarked,this, bl::_1))[
-                                                bl::bind(&AttributeMultiVector<MarkerBool>::setFalse, boost::ref(*(this->m_markVector)), bl::bind(&MAP::dartIndex, boost::ref(this->m_map), bl::_1))
-                                              ]
-                                          , bl::var(m_counter)--
+                                                (bl::bind(&AttributeMultiVector<MarkerBool>::setFalse, boost::ref(*(this->m_markVector)), bl::bind(&MAP::dartIndex, boost::ref(this->m_map), bl::_1))
+                                                ,bl::var(m_counter)--
+                                           )]
                                           )) ;
 	}
 #endif

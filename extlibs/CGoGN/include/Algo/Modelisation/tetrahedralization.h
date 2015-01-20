@@ -110,7 +110,7 @@ public:
 //	void trianguleFace(Dart d, DartMarker& mark);
 	void trianguleFace(Dart d);
 
-	void triangule(unsigned int thread = 0);
+    void triangule();
 
     std::vector<Dart> getResultingTets() const { return m_resTets; }
 };
@@ -153,7 +153,7 @@ Dart splitVertex(typename PFP::MAP& map, std::vector<Dart>& vd);
  *
  */
 template <typename PFP>
-bool isTetrahedron(typename PFP::MAP& map, Dart d, unsigned int thread = 0);
+bool isTetrahedron(typename PFP::MAP& map, Dart d);
 
 //!
 /*!

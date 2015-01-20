@@ -395,14 +395,14 @@ void computeCentroidELWVolumes(typename PFP::MAP& map, const V_ATT& position, W_
 {
     typedef typename V_ATT::DATA_TYPE EMBV;
     typedef typename W_ATT::DATA_TYPE EMBW;
-    //    CGoGN::Parallel::foreach_cell<VOLUME>(map, [&] (Vol v, unsigned int thr)
-    //    {
-    //        vol_centroid[v] = Surface::Geometry::volumeCentroidELW<PFP,V_ATT>(map, v, position, thr) ;
-    //    });
+//    CGoGN::Parallel::foreach_cell<VOLUME>(map, [&] (Vol v, unsigned int /*thr*/)
+//	{
+//		vol_centroid[v] = Surface::Geometry::volumeCentroidELW<PFP,V_ATT>(map, v, position) ;
+//	});
 
     CGoGN::Parallel::foreach_cell<VOLUME, typename PFP::MAP>(map,
                                                              (
-                                                                 bl::bind<EMBW&>(static_cast<EMBW& (EMBW::*)(const EMBW&)>(&EMBW::operator=), bl::bind<EMBW&>(static_cast<EMBW& (W_ATT::*)(Vol)>(&W_ATT::operator[]),boost::ref(vol_centroid),bl::_1),  bl::bind<EMBV>(&Surface::Geometry::volumeCentroidELW<PFP,V_ATT>,boost::ref(map), bl::_1, boost::cref(position), bl::_2))
+                                                                 bl::bind<EMBW&>(static_cast<EMBW& (EMBW::*)(const EMBW&)>(&EMBW::operator=), bl::bind<EMBW&>(static_cast<EMBW& (W_ATT::*)(Vol)>(&W_ATT::operator[]),boost::ref(vol_centroid),bl::_1),  bl::bind<EMBV>(&Surface::Geometry::volumeCentroidELW<PFP,V_ATT>,boost::ref(map), bl::_1, boost::cref(position)))
                                                                  )
                                                              );
 }
