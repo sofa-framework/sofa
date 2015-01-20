@@ -27,7 +27,6 @@
 
 #include "initRegistration.h"
 #include <sofa/core/DataEngine.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/decompose.h>
