@@ -76,11 +76,18 @@ QCompliantAttachOperation::QCompliantAttachOperation()
     QLabel *labelColor=new QLabel(QString("Color"), this);
     colorWidget = createWidgetFromData(&(this->setting->color));
 
+    QLabel *labelVM=new QLabel(QString("Add VisualModel?"), this);
+    visualModelWidget = createWidgetFromData(&(this->setting->visualmodel));
+
+
     layout1->addWidget(label);
     layout1->addWidget(complianceWidget);
 
     layout1->addWidget(labelIs);
     layout1->addWidget(isComplianceWidget);
+
+    layout1->addWidget(labelVM);
+    layout1->addWidget(visualModelWidget);
 
     layout2->addWidget(labelColor);
     layout2->addWidget(colorWidget);
@@ -100,11 +107,12 @@ void QCompliantAttachOperation::configure(PickHandler *picker, sofa::component::
         setting->arrowSize.copyValue(&(attachSetting->arrowSize) );
         setting->isCompliance.copyValue(&( attachSetting->isCompliance) ) ;
         setting->color.copyValue(&( attachSetting->color) ) ;
+        setting->visualmodel.copyValue(&( attachSetting->visualmodel) ) ;
 
         complianceWidget->updateWidgetValue();
         isComplianceWidget->updateWidgetValue();
         arrowSizeWidget->updateWidgetValue();
-        colorWidget->updateWidgetValue();
+        visualModelWidget->updateWidgetValue();
     }
     else CompliantAttachOperation::configure(picker,GetMouseId(button->button.getValue().getSelectedId()));
 }
