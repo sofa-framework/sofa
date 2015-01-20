@@ -15,6 +15,7 @@ set( SofaFramework_ACTUAL_SOURCE_DIR ${SofaFramework_SOURCE_DIR}/../framework)
 ##
 option(SOFAFRAMEWORK_DETECTIONOUTPUT_FREEMOTION      "Compile SofaCore library with DETECTIONOUTPUT_FREEMOTION preprocessor definition" OFF)
 option(SOFAFRAMEWORK_DETECTIONOUTPUT_BARYCENTRICINFO "Compile SofaCore library with DETECTIONOUTPUT_BARYCENTRICINFO preprocessor definition" OFF)
+option(SOFA_NO_OPENGL                                "Compile SofaFramework libraries without OpenGL dependencies" OFF )
 
 set(DETECTIONOUTPUT_FREEMOTION ${SOFAFRAMEWORK_DETECTIONOUTPUT_FREEMOTION} )
 set(DETECTIONOUTPUT_BARYCENTRICINFO ${SOFAFRAMEWORK_DETECTIONOUTPUT_BARYCENTRICINFO} )
@@ -47,12 +48,33 @@ set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 ##
 ## Dependencies lookup 
 ##
-# OpenGL ( glu )
-find_package(OpenGL REQUIRED)
-# no target support for OpenGL on windows yet see https://github.com/Kitware/CMake/commit/02e34de2b6c27ee5d367be4fa280ffd3ad1965ba
-# it is not too harmful since this particular library gives symbolic names that can be consumed upon install on the target system.
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES})
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
+
+if( NOT SOFA_NO_OPENGL )
+
+    # OpenGL ( glu )
+    find_package(OpenGL REQUIRED)
+    # no target support for OpenGL on windows yet see https://github.com/Kitware/CMake/commit/02e34de2b6c27ee5d367be4fa280ffd3ad1965ba
+    # it is not too harmful since this particular library gives symbolic names that can be consumed upon install on the target system.
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${OPENGL_LIBRARIES})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${OPENGL_INCLUDE_DIR})
+
+    # GLEW
+    find_package(GLEW)
+    if( GLEW_FOUND)
+        sofa_create_target(GLEW SofaFramework "${GLEW_LIBRARIES}" "${GLEW_INCLUDE_DIRS}" )
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_Target} )
+    endif()
+    set(SOFA_HAVE_GLEW ${GLEW_FOUND})
+
+    # GLUT
+    find_package(GLUT)
+    if( GLUT_FOUND )
+        sofa_create_target(GLUT SofaFramework "${GLUT_glut_LIBRARY}" "${GLUT_INCLUDE_DIR}" )
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target} )
+    endif()
+    set(SOFA_HAVE_GLUT ${GLUT_FOUND})
+    
+endif() 
 
 #tinyxml
 find_package(TinyXML REQUIRED)
@@ -75,22 +97,6 @@ if( PNG_FOUND)
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target} )
 endif()
 set(SOFA_HAVE_PNG ${PNG_FOUND})
-
-# GLEW
-find_package(GLEW)
-if( GLEW_FOUND)
-    sofa_create_target(GLEW SofaFramework "${GLEW_LIBRARIES}" "${GLEW_INCLUDE_DIRS}" )
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLEW_Target} )
-endif()
-set(SOFA_HAVE_GLEW ${GLEW_FOUND})
-
-# GLUT
-find_package(GLUT)
-if( GLUT_FOUND )
-    sofa_create_target(GLUT SofaFramework "${GLUT_glut_LIBRARY}" "${GLUT_INCLUDE_DIR}" )
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target} )
-endif()
-set(SOFA_HAVE_GLUT ${GLUT_FOUND})
 
 # Boost
 find_package(Boost COMPONENTS thread system date_time chrono QUIET)
