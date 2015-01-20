@@ -27,5 +27,5 @@ add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/CImg ${CMAKE_CURRENT_BINARY_DIR}/
 if(MSVC)
     set_target_properties(miniFlowVR PROPERTIES FOLDER "SofaExtlibs")
     set_target_properties(newmat     PROPERTIES FOLDER "SofaExtlibs")
-    set_target_properties(CImg       PROPERTIES FOLDER "SofaExtlibs")
+    # set_target_properties(CImg       PROPERTIES FOLDER "SofaExtlibs")
 endif()
