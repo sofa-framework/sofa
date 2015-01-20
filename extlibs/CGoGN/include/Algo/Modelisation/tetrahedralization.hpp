@@ -253,7 +253,7 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
 }
 
 template<typename PFP>
-void EarTriangulation<PFP>::triangule(unsigned int thread)
+void EarTriangulation<PFP>::triangule()
 {
     //	DartMarker m(m_map, thread);
     //
@@ -268,7 +268,7 @@ void EarTriangulation<PFP>::triangule(unsigned int thread)
     //	}
     //	m.unmarkAll();
 
-    TraversorF<typename PFP::MAP> trav(m_map,thread);
+    TraversorF<typename PFP::MAP> trav(m_map);
 
     for(Dart d = trav.begin(); d != trav.end(); d = trav.next())
     {
@@ -626,12 +626,12 @@ Dart splitVertex(typename PFP::MAP& map, std::vector<Dart>& vd)
  *************************************************************************************************/
 
 template <typename PFP>
-bool isTetrahedron(typename PFP::MAP& map, Vol v, unsigned int thread)
+bool isTetrahedron(typename PFP::MAP& map, Vol v)
 {
     unsigned int nbFaces = 0;
 
     //Test the number of faces end its valency
-    Traversor3WF<typename PFP::MAP> travWF(map, v, false, thread);
+    Traversor3WF<typename PFP::MAP> travWF(map, v, false);
     for(Dart dit = travWF.begin() ; dit != travWF.end(); dit = travWF.next())
     {
         //increase the number of faces
