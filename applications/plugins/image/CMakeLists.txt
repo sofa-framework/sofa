@@ -70,12 +70,10 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/image.h.in
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/image/image.h
          DESTINATION "${IMAGE_INSTALL_INCLUDE_DIR}/image")
 
-# todo
-
-# if (NOT SOFA-MISC_NO_OPENGL)
+if (NOT SOFA-NO_OPENGL)
     list(APPEND HEADER_FILES "ImageViewer.h")
     list(APPEND SOURCE_FILES "ImageViewer.cpp")
-# endif()
+endif()
 
 # todo
 
