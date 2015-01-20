@@ -219,7 +219,7 @@ class Scene:
             # just return rigid frame
             return self.rigids[rigidId]
         
-        if xmlOffset.attrib["type"] is "absolute":
+        if xmlOffset.attrib["type"] == "absolute":
             offset = self.rigids[rigidId].addAbsoluteOffset(name, SofaPython.Tools.strToListFloat(xmlOffset.text))
         else:
             offset = self.rigids[rigidId].addOffset(name, SofaPython.Tools.strToListFloat(xmlOffset.text))
