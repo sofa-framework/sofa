@@ -1,6 +1,7 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
+#include "SofaQtQuickGUI.h"
 #include <QQmlApplicationEngine>
 #include <QApplication>
 #include <QSettings>
@@ -13,7 +14,7 @@ namespace sofa
 namespace qtquick
 {
 
-class Tools : public QObject
+class SOFA_SOFAQTQUICKGUI_API Tools : public QObject
 {
     Q_OBJECT
 

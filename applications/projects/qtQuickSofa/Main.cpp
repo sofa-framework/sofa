@@ -13,7 +13,6 @@ int main(int argc, char **argv)
     qputenv("QML_BAD_GUI_RENDER_LOOP", "1");
 
 	QApplication app(argc, argv);
-    qDebug() << QCoreApplication::applicationDirPath();
     app.addLibraryPath(QCoreApplication::applicationDirPath() + "/../lib/");
 
     // application specific settings
@@ -27,7 +26,11 @@ int main(int argc, char **argv)
     Tools::useDefaultSettingsAtFirstLaunch();
 
     // plugin initialization
-    QPluginLoader pluginLoader("SofaQtQuickGUI");
+	QString pluginName("SofaQtQuickGUI");
+#ifdef SOFA_LIBSUFFIX
+	pluginName += sofa_tostring(SOFA_LIBSUFFIX);
+#endif
+	QPluginLoader pluginLoader(pluginName);
 
     // first call to instance() initialize the plugin
     if(0 == pluginLoader.instance()) {

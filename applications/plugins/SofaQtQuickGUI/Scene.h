@@ -1,6 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "SofaQtQuickGUI.h"
 #include <QObject>
 #include <QQmlParserStatus>
 #include <QUrl>
@@ -15,7 +16,7 @@ namespace sofa
 namespace qtquick
 {
 
-class Scene : public QObject, public QQmlParserStatus
+class SOFA_SOFAQTQUICKGUI_API Scene : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)

@@ -1,6 +1,7 @@
 #ifndef VIEWER_H
 #define VIEWER_H
 
+#include "SofaQtQuickGUI.h"
 #include <QtQuick/QQuickItem>
 #include <QVector3D>
 
@@ -13,7 +14,7 @@ namespace qtquick
 class Scene;
 class Camera;
 
-class Viewer : public QQuickItem
+class SOFA_SOFAQTQUICKGUI_API Viewer : public QQuickItem
 {
     Q_OBJECT
 

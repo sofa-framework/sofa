@@ -1,6 +1,7 @@
 #ifndef PICKINGINTERACTOR_H
 #define PICKINGINTERACTOR_H
 
+#include "SofaQtQuickGUI.h"
 #include <QObject>
 #include <QQmlParserStatus>
 #include <QVector3D>
@@ -29,7 +30,7 @@ namespace qtquick
 
 class Scene;
 
-class PickingInteractor : public QObject, public QQmlParserStatus
+class SOFA_SOFAQTQUICKGUI_API PickingInteractor : public QObject, public QQmlParserStatus
 {
 	Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)

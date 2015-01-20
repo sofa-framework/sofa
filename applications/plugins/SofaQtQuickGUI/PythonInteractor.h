@@ -1,6 +1,7 @@
 #ifndef PYTHONINTERACTOR_H
 #define PYTHONINTERACTOR_H
 
+#include "SofaQtQuickGUI.h"
 #include <QObject>
 #include <QQmlParserStatus>
 #include <QMap>
@@ -30,7 +31,7 @@ namespace qtquick
 
 class Scene;
 
-class PythonInteractor : public QObject, public QQmlParserStatus
+class SOFA_SOFAQTQUICKGUI_API PythonInteractor : public QObject, public QQmlParserStatus
 {
 	Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)
