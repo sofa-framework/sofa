@@ -14,14 +14,6 @@ Scene {
     sourceQML: ""
     property string statusMessage: ""
 
-    Component.onCompleted: {
-        if(0 !== SofaSettingsScript.Recent.scenes.length)
-            source = "file:" + SofaSettingsScript.Recent.scenes.replace(/;.*$/m, "");
-
-        if(0 === source.toString().length)
-            source = "file:Demos/caduceus.scn";
-    }
-
     onStatusChanged: {
         var path = source.toString().replace("///", "/").replace("file:", "");
         switch(status) {

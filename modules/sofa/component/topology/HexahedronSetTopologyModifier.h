@@ -59,11 +59,14 @@ public:
 protected:
     HexahedronSetTopologyModifier()
         : QuadSetTopologyModifier()
+        , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
     { }
 
     virtual ~HexahedronSetTopologyModifier() {}
 public:
     virtual void init();
+
+    Data< bool > removeIsolated; ///< Controlled DOF index.
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
     virtual void propagateTopologicalEngineChanges();
