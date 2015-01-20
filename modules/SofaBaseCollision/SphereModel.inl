@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/SofaFramework.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
