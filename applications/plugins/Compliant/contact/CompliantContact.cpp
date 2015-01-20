@@ -58,6 +58,28 @@ Creator<Contact::Factory, CompliantContact<CapsuleModel, CylinderModel> > Capsul
 Creator<Contact::Factory, CompliantContact<TriangleModel, CylinderModel> > TriangleCylinderCompliantContactClass("CompliantContact",true);
 Creator<Contact::Factory, CompliantContact<CylinderModel, OBBModel > > OBBCylinderompliantContactClass("CompliantContact",true);
 
+
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, TriangleModel> > RigidCapsuleTriangleCompliantContactClass("CompliantContact",true);
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, LineModel> > RigidCapsuleLineCompliantContactClass("CompliantContact",true);
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, RigidCapsuleModel> > RigidCapsuleRigidCapsuleCompliantContactClass("CompliantContact",true);
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, CapsuleModel> > CapsuleRigidCapsuleCompliantContactClass("CompliantContact",true);
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, SphereModel> > RigidCapsuleSphereCompliantContactClass("CompliantContact",true);
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, RigidSphereModel> > RigidCapsuleRigidSphereCompliantContactClass("CompliantContact",true);
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, OBBModel> > RigidCapsuleOBBCompliantContactClass("CompliantContact",true);
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, CylinderModel> > RigidCapsuleCylinderCompliantContactClass("CompliantContact",true);
+
+
+
+
+
+
+
+////////////////////
+
+
+
+
+
 Creator<Contact::Factory, CompliantContact<PointModel, PointModel> >* PointPointCompliantContactClassNoStrip;
 Creator<Contact::Factory, CompliantContact<LineModel, SphereModel> >* LineSphereCompliantContactClassNoStrip;
 Creator<Contact::Factory, CompliantContact<LineModel, PointModel> >* LinePointCompliantContactClassNoStrip;
@@ -89,6 +111,17 @@ Creator<Contact::Factory, CompliantContact<CapsuleModel, CylinderModel> >* Capsu
 Creator<Contact::Factory, CompliantContact<TriangleModel, CylinderModel> >* TriangleCylinderCompliantContactClassNoStrip;
 Creator<Contact::Factory, CompliantContact<OBBModel, CylinderModel> >* OBBCylinderompliantContactClassNoStrip;
 Creator<Contact::Factory, CompliantContact<CylinderModel, OBBModel> >* CylinderOBBompliantContactClassNoStrip;
+
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, TriangleModel> >* RigidCapsuleTriangleCompliantContactClassNoStrip;
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, LineModel> >* RigidCapsuleLineCompliantContactClassNoStrip;
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, RigidCapsuleModel> >* RigidCapsuleRigidCapsuleCompliantContactClassNoStrip;
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, CapsuleModel> >* CapsuleRigidCapsuleCompliantContactClassNoStrip;
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, SphereModel> >* RigidCapsuleSphereCompliantContactClassNoStrip;
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, RigidSphereModel> >* RigidCapsuleRigidSphereCompliantContactClassNoStrip;
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, OBBModel> >* RigidCapsuleOBBCompliantContactClassNoStrip;
+Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, CylinderModel> >* RigidCapsuleCylinderCompliantContactClassNoStrip;
+
+
 
 
 void registerContactClasses()
@@ -124,8 +157,20 @@ void registerContactClasses()
 	CapsuleCylinderCompliantContactClassNoStrip = new Creator<Contact::Factory, CompliantContact<CapsuleModel, CylinderModel> >("CompliantContact", true);
 	TriangleCylinderCompliantContactClassNoStrip = new Creator<Contact::Factory, CompliantContact<TriangleModel, CylinderModel> >("CompliantContact", true);
 	OBBCylinderompliantContactClassNoStrip = new Creator<Contact::Factory, CompliantContact<OBBModel, CylinderModel> >("CompliantContact", true);
-
 	CylinderOBBompliantContactClassNoStrip = new Creator<Contact::Factory, CompliantContact<CylinderModel, OBBModel> >("CompliantContact", true);
+
+
+    // TODO
+    //Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, TriangleModel> >* RigidCapsuleTriangleCompliantContactClassNoStrip;
+//    Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, LineModel> >* RigidCapsuleLineCompliantContactClassNoStrip;
+//    Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, RigidCapsuleModel> >* RigidCapsuleRigidCapsuleCompliantContactClassNoStrip;
+//    Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, CapsuleModel> >* CapsuleRigidCapsuleCompliantContactClassNoStrip;
+//    Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, SphereModel> >* RigidCapsuleSphereCompliantContactClassNoStrip;
+//    Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, RigidSphereModel> >* RigidCapsuleRigidSphereCompliantContactClassNoStrip;
+//    Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, OBBModel> >* RigidCapsuleOBBCompliantContactClassNoStrip;
+//    Creator<Contact::Factory, CompliantContact<RigidCapsuleModel, CylinderModel> >* RigidCapsuleCylinderCompliantContactClassNoStrip;
+
+
 	
 	TriangleOBBCompliantContactClassNoStrip->registerInFactory(); // Dummy function to avoid symbol stripping with some compilers
 }
