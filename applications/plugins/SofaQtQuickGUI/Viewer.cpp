@@ -4,6 +4,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/helper/system/glut.h>
 
 #include <QtQuick/qquickwindow.h>
 #include <QQmlEngine>
@@ -228,6 +229,8 @@ void Viewer::paint()
 	{
 		if(!_vparams->drawTool())
 		{
+            int argc = 0;
+            glutInit(&argc, NULL);
 			_vparams->drawTool() = new sofa::core::visual::DrawToolGL();
 			_vparams->setSupported(sofa::core::visual::API_OpenGL);
 		}
