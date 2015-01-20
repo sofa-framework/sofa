@@ -75,14 +75,14 @@ if (NOT SOFA-NO_OPENGL)
     list(APPEND SOURCE_FILES "ImageViewer.cpp")
 endif()
 
-# todo
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+find_package(Freenect)
 
-# if(SOFA-EXTERNAL_LIBFREENECT)
-#     list(APPEND HEADER_FILES "Kinect.h")
-#     list(APPEND SOURCE_FILES "Kinect.cpp")
-#     AddLinkerDependencies("freenect")
-#     AddLinkerDependencies("freenect_sync")
-# endif()
+if(FREENECT_FOUND)
+    list(APPEND IMAGE_DEPENDENCY_INCLUDE_DIR ${FREENECT_INCLUDE_DIR})
+    list(APPEND HEADER_FILES "Kinect.h")
+    list(APPEND SOURCE_FILES "Kinect.cpp")
+endif()
 
 # todo
 
@@ -97,6 +97,11 @@ endif()
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase)
 target_link_libraries(${PROJECT_NAME} newmat)
+
+if(FREENECT_FOUND)
+    target_link_libraries(${PROJECT_NAME} freenect)
+    target_link_libraries(${PROJECT_NAME} freenect_sync)
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>") 
