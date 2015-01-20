@@ -1,0 +1,20 @@
+# - Config file for the SceneCreator package
+# It defines the following variables
+#  SceneCreator_INCLUDE_DIRS - include directories for SceneCreator
+#  SceneCreator_LIBRARIES    - libraries to link against
+
+@PACKAGE_INIT@
+
+set_and_check(SCENECREATOR_INCLUDE_DIR  "@PACKAGE_SCENECREATOR_INCLUDE_DIR@")
+
+check_required_components(SceneCreator)
+
+find_package(SofaSimulation REQUIRED)
+find_package(SofaMisc REQUIRED)
+
+if(NOT TARGET SceneCreator)
+	include("${CMAKE_CURRENT_LIST_DIR}/SceneCreatorTargets.cmake")
+endif() 
+
+set(SceneCreator_LIBRARIES SceneCreator)
+set(SceneCreator_INCLUDE_DIRS ${SCENECREATOR_INCLUDE_DIR})
