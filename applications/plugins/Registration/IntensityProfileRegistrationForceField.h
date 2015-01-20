@@ -26,16 +26,14 @@
 #define INTENSITYPROFILEREGISTRATIONFORCEFIELD_H
 
 #include "initRegistration.h"
-#include <ImageTypes.h>
+#include <image/ImageTypes.h>
 
-#include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
 
 

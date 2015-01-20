@@ -1,0 +1,19 @@
+# - Config file for the Registration package
+# It defines the following variables
+#  Registration_INCLUDE_DIRS - include directories for Registration
+#  Registration_LIBRARIES    - libraries to link against
+
+@PACKAGE_INIT@
+
+set_and_check(REGISTRATION_INCLUDE_DIR  "@PACKAGE_REGISTRATION_INCLUDE_DIR@")
+
+check_required_components(Registration)
+
+find_package(SofaGui REQUIRED)
+
+if(NOT TARGET Registration)
+	include("${CMAKE_CURRENT_LIST_DIR}/RegistrationTargets.cmake")
+endif() 
+
+set(Registration_LIBRARIES Registration)
+set(Registration_INCLUDE_DIRS ${REGISTRATION_INCLUDE_DIR})

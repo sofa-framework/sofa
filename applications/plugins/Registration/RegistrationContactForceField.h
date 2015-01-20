@@ -32,7 +32,6 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/component.h>
 #include <vector>
 
 namespace sofa
