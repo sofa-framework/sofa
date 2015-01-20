@@ -34,6 +34,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/gui/MouseOperations.h>
 
+#include <sofa/component/visualmodel/OglModel.h>
 
 #include "../misc/CompliantAttachButtonSetting.h"
 
@@ -89,12 +90,18 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
     Point3dState* mouseState;                  ///< Mouse state container  (position, velocity)
     typename DistanceFromTargetMapping31::SPtr distanceMapping; ///< computes the distance from the picked point to its target
 
+
+    // HACK FOR VISUAL MODEL EXPORT
+    visualmodel::OglModel::SPtr _vm;
+
+
     void clear();                             ///< release the current interaction
 
     SReal _compliance;
     bool _isCompliance;
     SReal _arrowSize;
     defaulttype::Vec<4,SReal> _color;
+    bool _visualmodel;  // to be able to export the mouse spring in obj
 
 
 public:
