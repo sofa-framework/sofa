@@ -29,9 +29,6 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <SofaComponentMain/init.h>
-
-
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -64,6 +61,12 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaOpenglVisual/OglModel.h>
 
+#include <SofaRigid/RigidMapping.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+
 namespace sofa
 {
 namespace modeling {
@@ -77,10 +80,14 @@ using namespace component::container;
 using namespace component::topology;
 using namespace component::collision;
 using namespace component::visualmodel;
-using namespace component::mapping;
-using namespace component::forcefield;
 
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
+typedef component::mapping::BarycentricMapping<defaulttype::Vec3Types, defaulttype::Vec3Types > BarycentricMapping3_to_3;
+typedef component::mapping::BarycentricMapping<defaulttype::Vec3Types, defaulttype::ExtVec3fTypes> BarycentricMapping3_to_Ext3;
+typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::Vec3Types > RigidMappingRigid3_to_3;
+typedef component::mapping::RigidMapping<defaulttype::Rigid3Types, defaulttype::ExtVec3fTypes > RigidMappingRigid3_to_Ext3;
+typedef component::mass::UniformMass<defaulttype::Vec3Types, double> UniformMass3;
+typedef component::interactionforcefield::StiffSpringForceField<defaulttype::Vec3Types > StiffSpringForceField3;
 
 simulation::Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
@@ -429,7 +436,6 @@ simulation::Node::SPtr massSpringString
 Node::SPtr initSofa()
 {
     setSimulation(new simulation::graph::DAGSimulation());
-    sofa::component::init();
     return simulation::getSimulation()->createNewGraph("root");
 //    root = modeling::newRoot();
 //    root->setName("Solver_test_scene_root");
