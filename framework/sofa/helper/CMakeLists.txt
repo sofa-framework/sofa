@@ -12,8 +12,6 @@ set(SOFAHELPER_HEADERS
     Factory.inl
     FnDispatcher.h
     FnDispatcher.inl
-    gl/Trackball.h
-    gl/Transformation.h
 	integer_id.h
     io/Image.h
     io/ImageBMP.h
@@ -51,8 +49,6 @@ set(SOFAHELPER_HEADERS
     set.h
     SVector.h
     system/config.h
-    system/gl.h
-    system/glu.h
     system/SetDirectory.h
     system/FileRepository.h
     system/atomic.h
@@ -116,7 +112,6 @@ set(SOFAHELPER_SOURCES
     decompose.cpp
     Quater.cpp
     RandomGenerator.cpp
-	system/gl.cpp
     system/SetDirectory.cpp
     system/FileRepository.cpp
     system/thread/CTime.cpp
@@ -150,24 +145,29 @@ if(Boost_thread_FOUND )
 	list(APPEND SOFAHELPER_SOURCES "system/thread/TimeoutWatchdog.cpp")
 endif()
 
-if(NOT SOFA-MISC_NO_OPENGL)
+if(NOT SOFA_NO_OPENGL)
 	if(SOFA_HAVE_GLUT)
 		list(APPEND SOFAHELPER_HEADERS
 		system/glut.h
 		gl/Axis.h
 		gl/BasicShapes.h
 		gl/Cylinder.h
+        gl/Trackball.h
+        gl/Transformation.h
 		gl/glText.inl
 		gl/glText.h
 		)
+        
 		list(APPEND SOFAHELPER_SOURCES
-		gl/Axis.cpp
+        gl/Axis.cpp
 		gl/Cylinder.cpp
 		gl/glText.cpp
 		)
 	endif(SOFA_HAVE_GLUT)
 	
 	list(APPEND SOFAHELPER_HEADERS
+    system/gl.h
+    system/glu.h
 	gl/Capture.h
 	gl/Color.h
 	gl/glfont.h
@@ -175,6 +175,7 @@ if(NOT SOFA-MISC_NO_OPENGL)
 	gl/template.h)
 			
 	list(APPEND SOFAHELPER_SOURCES
+    system/gl.cpp
 	gl/Capture.cpp
 	gl/Color.cpp
 	gl/glfont.cpp
@@ -190,7 +191,7 @@ if(NOT SOFA-MISC_NO_OPENGL)
 			gl/FrameBufferObject.cpp
 			gl/GLSLShader.cpp)
 	endif(SOFA_HAVE_GLEW)
-endif(NOT SOFA-MISC_NO_OPENGL)
+endif(NOT SOFA_NO_OPENGL)
 
 if(SOFA-EXTERNAL_HAVE_FFMPEG)
 	list(APPEND SOFAHELPER_HEADERS "gl/VideoRecorder.h")
