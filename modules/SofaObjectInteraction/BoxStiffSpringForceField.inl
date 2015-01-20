@@ -29,6 +29,7 @@
 #pragma once
 #endif
 
+#include <sofa/SofaFramework.h>
 #include <SofaObjectInteraction/BoxStiffSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
