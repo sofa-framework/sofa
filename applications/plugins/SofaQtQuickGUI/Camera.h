@@ -1,6 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "SofaQtQuickGUI.h"
 #include <QObject>
 #include <QMatrix4x4>
 #include <QVector3D>
@@ -12,7 +13,7 @@ namespace sofa
 namespace qtquick
 {
 
-class Camera : public QObject
+class SOFA_SOFAQTQUICKGUI_API Camera : public QObject
 {
 	Q_OBJECT
 
