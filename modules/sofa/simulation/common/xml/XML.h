@@ -29,9 +29,6 @@
 #include <sofa/simulation/common/xml/Element.h>
 
 #ifdef SOFA_XML_PARSER_TINYXML
-#ifndef TIXML_USE_STL
-#define TIXML_USE_STL
-#endif
 #include <tinyxml.h>
 #endif
 #ifdef SOFA_XML_PARSER_LIBXML
