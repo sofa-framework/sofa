@@ -234,8 +234,6 @@ if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
 endif()
 
 if(WIN32)
-    # todo
-	# include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
     set(FLEXIBLE_COMPILER_FLAGS "${FLEXIBLE_COMPILER_FLAGS} -DEIGEN_DONT_ALIGN")
 else()
 	include_directories("/usr/include/suitesparse/")
