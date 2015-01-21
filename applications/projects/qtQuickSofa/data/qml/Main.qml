@@ -23,8 +23,7 @@ ApplicationWindow {
             scene.source = "file:" + Qt.application.arguments[1]
         else {
             if(0 !== SofaSettingsScript.Recent.scenes.length)
-                scene.source = "file:" + SofaSettingsScript.Recent.scenes.replace(/;.*$/m, "");
-
+                scene.source = SofaSettingsScript.Recent.mostRecent();
             else
                 scene.source = "file:Demos/caduceus.scn";
         }
