@@ -9,6 +9,10 @@ Settings {
         scenes = path + ";" + scenes.replace(path + ";", "");
     }
 
+    function mostRecent() {
+        return "file:" + scenes.replace(/;.*$/m, "");
+    }
+
     function sceneList() {
         return scenes.split(';');
     }
