@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include "Viewer.h"
 #include "Scene.h"
 #include "Camera.h"
