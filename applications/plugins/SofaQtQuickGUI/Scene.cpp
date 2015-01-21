@@ -10,6 +10,8 @@
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawToolGL.h>
+#include <sofa/helper/system/glut.h>
 
 #include <qqml.h>
 #include <QVector3D>
@@ -25,7 +27,7 @@ namespace sofa
 namespace qtquick
 {
 
-Scene::Scene(QObject *parent) : QObject(parent),
+Scene::Scene(QObject *parent) : QObject(parent), QQmlParserStatus(),
 	myStatus(Status::Null),
 	mySource(),
 	mySourceQML(),
@@ -35,7 +37,8 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	myPlay(false),
 	myAsynchronous(true),
 	mySofaSimulation(0),
-	myStepTimer(new QTimer(this))
+    myStepTimer(new QTimer(this)),
+    myComponentCount(0)
 {
 	// sofa init
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
@@ -72,7 +75,93 @@ Scene::~Scene()
 	if(mySofaSimulation == sofa::simulation::getSimulation())
 		sofa::simulation::setSimulation(0);
 }
+/*
+int	Scene::rowCount(const QModelIndex & parent) const
+{
+    return myComponentCount;
+}
 
+QVariant Scene::data(const QModelIndex& index, int role) const
+{
+    qDebug() << "data" << index.row();
+
+    if(!index.isValid())
+        return QVariant("Error");
+
+    using sofa::core::objectmodel::BaseNode;
+    BaseNode* node = static_cast<BaseNode*>(index.internalPointer());
+    if(0 == node)
+        return QVariant("Error");
+
+    return QVariant::fromValue(QString(node->name.getValue().c_str()));
+}
+
+QModelIndex Scene::index(int row, int column, const QModelIndex& parent) const
+{
+    using sofa::core::objectmodel::BaseNode;
+    std::stack<BaseNode*> nodeStack;
+
+    int id = 0;
+
+    nodeStack.push(sofaSimulation()->GetRoot().get());
+    while(!nodeStack.empty())
+    {
+        BaseNode* node = nodeStack.top();
+        nodeStack.pop();
+
+        if(0 == node)
+            continue;
+
+        qDebug() << rowCount() << count;
+        if(rowCount() == count)
+            return createIndex(row, column, (void*) node);
+
+        ++id;
+
+        for(int i = 0; i < node->getChildren().size(); ++i)
+        {
+            int j = node->getChildren().size() - 1 - i;
+            nodeStack.push(node->getChildren()[j]);
+        }
+    }
+
+    return QModelIndex();
+}
+
+void Scene::update()
+{
+    myComponentCount = 0;
+
+    using sofa::core::objectmodel::BaseNode;
+    std::stack<BaseNode*> nodeStack;
+
+    nodeStack.push(sofaSimulation()->GetRoot().get());
+    while(!nodeStack.empty())
+    {
+        BaseNode* node = nodeStack.top();
+        nodeStack.pop();
+
+        if(0 == node)
+            continue;
+
+        ++myComponentCount;
+
+        for(int i = 0; i < node->getChildren().size(); ++i)
+        {
+            int j = node->getChildren().size() - 1 - i;
+            nodeStack.push(node->getChildren()[j]);
+        }
+    }
+
+    beginInsertRows(QModelIndex(), 0, myComponentCount - 1);
+//    for(int i = 0; i < mySofaSimulation->GetRoot()->getChildren().size(); ++i)
+//    {
+//        sofa::core::objectmodel::BaseNode* baseNode = mySofaSimulation->GetRoot()->getChildren()[i];
+//        qDebug() << "base" << baseNode;
+//    }
+    endInsertRows();
+}
+*/
 void Scene::classBegin()
 {
 
@@ -291,10 +380,33 @@ void Scene::init()
     if(0 != err)
         qDebug() << "GLEW Initialization failed with error code:" << err;
 
+    // prepare the sofa visual params
+    sofa::core::visual::VisualParams* visualParams = sofa::core::visual::VisualParams::defaultInstance();
+    if(visualParams)
+    {
+        if(!visualParams->drawTool())
+        {
+            visualParams->drawTool() = new sofa::core::visual::DrawToolGL();
+            visualParams->setSupported(sofa::core::visual::API_OpenGL);
+        }
+    }
+
+#ifdef __linux__
+    static bool glutInited = false;
+    if(!glutInited)
+    {
+        int argc = 0;
+        glutInit(&argc, NULL);
+        glutInited = true;
+    }
+#endif
+
 	mySofaSimulation->initTextures(mySofaSimulation->GetRoot().get());
 	setDt(mySofaSimulation->GetRoot()->getDt());
 
-	myIsInit = true;
+    myIsInit = true;
+
+    //update();
 }
 
 void Scene::reload()
@@ -331,6 +443,23 @@ void Scene::draw()
 {
 	if(!mySofaSimulation->GetRoot())
 		return;
+
+    // prepare the sofa visual params
+    sofa::core::visual::VisualParams* visualParams = sofa::core::visual::VisualParams::defaultInstance();
+    if(visualParams)
+    {
+        GLint _viewport[4];
+        GLdouble _mvmatrix[16], _projmatrix[16];
+
+        glGetIntegerv(GL_VIEWPORT, _viewport);
+        glGetDoublev(GL_MODELVIEW_MATRIX, _mvmatrix);
+        glGetDoublev(GL_PROJECTION_MATRIX, _projmatrix);
+
+        visualParams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
+        visualParams->sceneBBox() = mySofaSimulation->GetRoot()->f_bbox.getValue();
+        visualParams->setProjectionMatrix(_projmatrix);
+        visualParams->setModelViewMatrix(_mvmatrix);
+    }
 
     //qDebug() << "draw - thread" << QThread::currentThread() << QOpenGLContext::currentContext();
 

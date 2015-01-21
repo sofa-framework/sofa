@@ -28,7 +28,7 @@ set(QML_FILES
                 data/qml/SofaBasics/RecentSettings.qml
                 data/qml/SofaBasics/UISettings.qml
                 data/qml/SofaBasics/Tools.qml
-		data/qml/SofaBasics/DefaultStatusBar.qml
+                data/qml/SofaBasics/DefaultStatusBar.qml
 		data/qml/SofaBasics/DefaultMenuBar.qml
 		data/qml/SofaBasics/Scene.qml
 		data/qml/SofaBasics/PythonInteractor.qml
@@ -42,6 +42,8 @@ set(QML_FILES
                 data/qml/SofaBasics/DynamicContent.qml
 		data/qml/SofaTools/qmldir
 		data/qml/SofaTools/SimulationControl.qml
+                data/qml/SofaTools/SceneGraphView.qml
+                data/qml/SofaTools/DataView.qml
 		data/qml/SofaTools/SceneGUILoader.qml
 		data/qml/SofaWidgets/qmldir
 		data/qml/SofaWidgets/Viewer.qml

@@ -26,5 +26,7 @@
         <file>SofaCommon/SofaToolsScript.js</file>
         <file>SofaCommon/SofaSettingsScript.js</file>
         <file>SofaBasics/RecentSettings.qml</file>
+        <file>SofaTools/SceneGraphView.qml</file>
+        <file>SofaTools/DataView.qml</file>
     </qresource>
 </RCC>
