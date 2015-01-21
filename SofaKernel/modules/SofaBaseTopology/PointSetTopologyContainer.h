@@ -102,6 +102,9 @@ public:
     /** \brief Returns the Z coordinate of the ith DOF. */
     virtual SReal getPZ(int i) const;
 
+   	/** \brief Returns the type of the topology */
+   	virtual sofa::core::topology::TopologyObjectType getTopologyType() const {return sofa::core::topology::POINT;}
+    
     /// @}
 
 
