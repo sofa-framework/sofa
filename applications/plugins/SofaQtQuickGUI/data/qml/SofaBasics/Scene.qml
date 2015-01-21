@@ -59,4 +59,8 @@ Scene {
         onTriggered: root.reset();
         tooltip: "Reset the simulation"
     }
+
+    /*property var sceneGraphModel: ListModel {
+
+    }*/
 }

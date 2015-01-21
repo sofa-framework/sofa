@@ -1,2 +1,4 @@
+SceneGraphView 1.0 SceneGraphView.qml
+DataView 1.0 DataView.qml
 SimulationControl 1.0 SimulationControl.qml
 SceneGUILoader 1.0 SceneGUILoader.qml

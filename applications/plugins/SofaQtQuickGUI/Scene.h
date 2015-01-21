@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QQmlParserStatus>
 #include <QUrl>
+#include <QAbstractListModel>
 #include <sofa/simulation/common/Simulation.h>
 
 class QTimer;
@@ -16,7 +17,7 @@ namespace sofa
 namespace qtquick
 {
 
-class SOFA_SOFAQTQUICKGUI_API Scene : public QObject, public QQmlParserStatus
+class Scene : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)
@@ -24,7 +25,12 @@ class SOFA_SOFAQTQUICKGUI_API Scene : public QObject, public QQmlParserStatus
 public:
     explicit Scene(QObject *parent = 0);
 	~Scene();
-
+/*
+    int	rowCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
+    void update();
+*/
 	void classBegin();
 	void componentComplete();
 
@@ -115,6 +121,8 @@ private:
 
 	sofa::simulation::Simulation*	mySofaSimulation;
 	QTimer*							myStepTimer;
+
+    int                             myComponentCount;
 };
 
 }
