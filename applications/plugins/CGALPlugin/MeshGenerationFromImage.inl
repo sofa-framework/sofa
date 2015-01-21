@@ -404,11 +404,15 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
 //    }
 
     for (unsigned int i = 0 ; i < tetraDomain.size(); i++)
+    {
+        std::cout << "tetraDomain " << tetraDomain[i] << std::endl;
         data.push_back(labelCellData.getValue()[tetraDomain[i]-1]);
+    }
 
     sout << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra." << sendl;
 
     frozen.setValue(true);
+
 }
 
 template <class DataTypes, class _ImageTypes>
@@ -421,8 +425,9 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::vis
         helper::ReadAccessor< Data< vector<int> > > tetraDomain = f_tetraDomain;
 
         vparams->drawTool()->setLightingEnabled(false);
-        std::vector< std::vector<defaulttype::Vector3> > pointsDomains;
-        pointsDomains.resize(tetraDomainLabels.size());
+        std::vector< std::vector<defaulttype::Vector3> > pointsDomains[4];
+        for(unsigned int i=0; i<4; ++i)
+            pointsDomains[i].resize(tetraDomainLabels.size());
         int domainLabel = 0;
         for(unsigned int i=0; i<tetrahedra.size(); ++i)
         {            
@@ -438,25 +443,28 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::vis
             Coord pc = (x[c]+center)*(Real)0.666667;
             Coord pd = (x[d]+center)*(Real)0.666667;
 
-            pointsDomains[domainLabel].push_back(pa);
-            pointsDomains[domainLabel].push_back(pb);
-            pointsDomains[domainLabel].push_back(pc);
+            pointsDomains[0][domainLabel].push_back(pa);
+            pointsDomains[0][domainLabel].push_back(pb);
+            pointsDomains[0][domainLabel].push_back(pc);
 
-            pointsDomains[domainLabel].push_back(pb);
-            pointsDomains[domainLabel].push_back(pc);
-            pointsDomains[domainLabel].push_back(pd);
+            pointsDomains[1][domainLabel].push_back(pb);
+            pointsDomains[1][domainLabel].push_back(pc);
+            pointsDomains[1][domainLabel].push_back(pd);
 
-            pointsDomains[domainLabel].push_back(pc);
-            pointsDomains[domainLabel].push_back(pd);
-            pointsDomains[domainLabel].push_back(pa);
+            pointsDomains[2][domainLabel].push_back(pc);
+            pointsDomains[2][domainLabel].push_back(pd);
+            pointsDomains[2][domainLabel].push_back(pa);
 
-            pointsDomains[domainLabel].push_back(pd);
-            pointsDomains[domainLabel].push_back(pa);
-            pointsDomains[domainLabel].push_back(pb);
+            pointsDomains[3][domainLabel].push_back(pd);
+            pointsDomains[3][domainLabel].push_back(pa);
+            pointsDomains[3][domainLabel].push_back(pb);
         }
 
         for(size_t i=0; i<tetraDomainLabels.size(); i++) {
-            vparams->drawTool()->drawTriangles(pointsDomains[i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5), fmod(0.5-fmod(i*0.5,1.5),1.5), 1.0-fmod(i*0.5,1.5), 0.8));
+            vparams->drawTool()->drawTriangles(pointsDomains[0][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5), fmod(0.5-fmod(i*0.5,1.5),1.5)-0.1, 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[1][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.1, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.2, 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[2][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.2, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.3, 1.0-fmod(i*0.5,1.5), 1));
+            vparams->drawTool()->drawTriangles(pointsDomains[3][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.3, fmod(0.5-fmod(i*0.5,1.5),1.5), 1.0-fmod(i*0.5,1.5), 1));
         }
     }
 }
