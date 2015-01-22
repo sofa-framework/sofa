@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_MANUALLINEARMAPPING_H
 
 #include <sofa/core/Mapping.h>
-#include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
 #include <memory>
