@@ -206,30 +206,4 @@ endif()
 
 
 
-sofa_option(SOFA-EXTERNAL_MGDIFFUSI0N_PATH PATH "" "Path to the MGDIFFUSI0N library")
-if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
-    AddCompilerDefinitions("SOFA_HAVE_MGDIFFUSI0N")
-    include_directories( "${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/" )
-
-#    link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/ )
-#    AddLinkerDependencies("DiffusionSolver")
-#    link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/ )
-#    link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/ )
-#    AddLinkerDependencies("PhysBAM_PhysBAM_Tools" "Threading_Tools")
-
-
-# TODO fix this!
-# link_directories does not add a -Lpath to the link command so I found this workaround for now
-
-    target_link_libraries (${PROJECT_NAME} ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/libDiffusionSolver.so
-                                            ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/libPhysBAM_PhysBAM_Tools.so
-                                            ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/libThreading_Tools.so )
-
-
-endif()
-
-
-
-
-
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
