@@ -8,8 +8,8 @@
 
 
 #if SOFA_HAVE_FLEXIBLE
-#include <plugins/Flexible/types/AffineTypes.h>
-#include <plugins/Flexible/types/QuadraticTypes.h>
+#include <Flexible/types/AffineTypes.h>
+#include <Flexible/types/QuadraticTypes.h>
 #endif
 
 

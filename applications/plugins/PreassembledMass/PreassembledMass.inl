@@ -5,7 +5,7 @@
 
 #include <sofa/core/objectmodel/BaseNode.h>
 
-#include <plugins/Compliant/assembly/AssemblyVisitor.h>
+#include <Compliant/assembly/AssemblyVisitor.h>
 
 namespace sofa
 {
