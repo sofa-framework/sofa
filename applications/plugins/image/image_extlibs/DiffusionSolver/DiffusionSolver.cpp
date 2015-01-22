@@ -246,7 +246,11 @@ void genericColoredGSImpl(ImageType& img, const MaskType& mask, unsigned iterati
         // TODO find a way to only loop over good colors
 
         #pragma omp parallel for shared(it,OK,img,mask,material,minValueThreshold,sor,change) private(average)
+#ifdef WIN32
+        for( long int i = 0 ; i<OK->size() ; ++i )
+#else
         for( size_t i = 0 ; i<OK->size() ; ++i )
+#endif
         {
             const unsigned long& off = (*OK)[i];
 
@@ -367,7 +371,11 @@ void genericJacobiImpl(ImageType& img, const MaskType& mask, unsigned iterations
         change = false;
 
         #pragma omp parallel for shared(it,previous,current,mask,material,minValueThreshold,change) private(average)
+#ifdef WIN32
+        for( long int off = 0 ; off<img.size() ; ++off  )
+#else
         for( unsigned long off = 0 ; off<img.size() ; ++off )
+#endif
         {
             char m = mask[off];
 
@@ -487,7 +495,11 @@ void matrixmult(ImageType& res, const ImageType& x, const MaskType& mask, size_t
     typedef DiffusionSolver<Real> DiffusionSolverReal;
 
     #pragma omp parallel for shared(res,x,mask,material,lineSize,sliceSize)
+#ifdef WIN32
+    for( long int off = 0 ; off<x.size() ; ++off )
+#else
     for( unsigned long off = 0 ; off<x.size() ; ++off )
+#endif
     {
         if( mask[off] == DiffusionSolverReal::INSIDE )
         {
@@ -504,7 +516,11 @@ Real img_dot( const ImageType& i, const ImageType& j )
 //    return i.dot(j);
     Real d = 0;
     #pragma omp parallel for shared(i,j) reduction(+:d)
+#ifdef WIN32
+    for( long int off = 0 ; off<i.size() ; ++off )
+#else
     for( unsigned long off = 0 ; off<i.size() ; ++off )
+#endif
         d += i[off]*j[off];
     return d;
 }
@@ -514,7 +530,11 @@ void img_eq( ImageType& res, const ImageType& in )
 {
 //    res = in;
     #pragma omp parallel for shared(res,in)
+#ifdef WIN32
+    for( long int off = 0 ; off<res.size() ; ++off )
+#else
     for( unsigned long off = 0 ; off<res.size() ; ++off )
+#endif
         res[off] = in[off];
 }
 
@@ -523,7 +543,11 @@ void img_peq( ImageType& res, const ImageType& in )
 {
 //    res += in;
     #pragma omp parallel for shared(res,in)
+#ifdef WIN32
+    for( long int off = 0 ; off<res.size() ; ++off )
+#else
     for( unsigned long off = 0 ; off<res.size() ; ++off )
+#endif
         res[off] += in[off];
 }
 
@@ -532,7 +556,11 @@ void img_peq( ImageType& res, const ImageType& in, Real a )
 {
 //    res += a*in;
     #pragma omp parallel for shared(res,in,a)
+#ifdef WIN32
+    for( long int off = 0 ; off<res.size() ; ++off )
+#else
     for( unsigned long off = 0 ; off<res.size() ; ++off )
+#endif
         res[off] += a*in[off];
 }
 
@@ -541,7 +569,11 @@ void img_meq( ImageType& res, const ImageType& in, Real a )
 {
 //    res -= a*in;
     #pragma omp parallel for shared(res,in,a)
+#ifdef WIN32
+    for( long int off = 0 ; off<res.size() ; ++off )
+#else
     for( unsigned long off = 0 ; off<res.size() ; ++off )
+#endif
         res[off] -= a*in[off];
 }
 
@@ -550,7 +582,11 @@ void img_teq( ImageType& res, Real a )
 {
 //    res *= a;
     #pragma omp parallel for shared(res,a)
+#ifdef WIN32
+    for( long int off = 0 ; off<res.size() ; ++off )
+#else
     for( unsigned long off = 0 ; off<res.size() ; ++off )
+#endif
         res[off] *= a;
 }
 
@@ -575,7 +611,11 @@ void genericCGImpl(ImageType& img, const MaskType& mask, unsigned iterations, Re
     // r = b - A * img
 
     #pragma omp parallel for shared(r,mask,img)
+#ifdef WIN32
+    for( long int off = 0 ; off<img.size() ; ++off  )
+#else
     for( unsigned long off = 0 ; off<img.size() ; ++off )
+#endif
     {
         r[off] += Value::cgrhs( off, img, mask, lineSize, sliceSize,spacingX,spacingY,spacingZ, material );
     }
