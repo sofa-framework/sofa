@@ -137,11 +137,11 @@ template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::reinit()
 {
 
-    if (_initialPoints.getValue().size() == 0)
-    {
-        const VecCoord& p = *this->mstate->getX();
+    //if (_initialPoints.getValue().size() == 0)
+    //{
+        const VecCoord& p = *this->mstate->getX0();
         _initialPoints.setValue(p);
-    }
+    //}
 
     _materialsStiffnesses.resize(this->getIndexedElements()->size() );
     _rotations.resize( this->getIndexedElements()->size() );

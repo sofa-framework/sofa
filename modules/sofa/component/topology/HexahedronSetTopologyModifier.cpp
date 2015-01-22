@@ -257,9 +257,27 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         m_container->m_edgesInHexahedron.resize(hexahedronIndex+1);
         for(unsigned int edgeIdx=0; edgeIdx<12; ++edgeIdx)
         {
-            const int edgeIndex=m_container->getEdgeIndex(t[edgesInHexahedronArray[edgeIdx][0]],
-                    t[edgesInHexahedronArray[edgeIdx][1]]);
-            assert(edgeIndex!= -1);
+            unsigned p0 = edgesInHexahedronArray[edgeIdx][0];
+            unsigned p1 = edgesInHexahedronArray[edgeIdx][1];
+
+            int edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
+
+            // we must create the edge
+            if (edgeIndex==-1)
+            {
+                sofa::helper::vector< Edge > v;
+                Edge e1(t[p0],t[p1]);
+                v.push_back(e1);
+
+                addEdgesProcess((const sofa::helper::vector< Edge > &) v);
+
+                edgeIndex=m_container->getEdgeIndex(t[p0],t[p1]);
+
+                sofa::helper::vector< unsigned int > edgeIndexList;
+                edgeIndexList.push_back(edgeIndex);
+                addEdgesWarning((unsigned int)v.size(), v, edgeIndexList);
+            }
+
             m_container->m_edgesInHexahedron[hexahedronIndex][edgeIdx]= edgeIndex;
         }
 
