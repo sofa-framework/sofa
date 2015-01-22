@@ -49,9 +49,9 @@ public:
     core::ConstraintParams cparams;
     core::objectmodel::BaseContext* ctx;
 
-    MechanicalOperations(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder=false);
+    MechanicalOperations(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::objectmodel::BaseContext* ctx);
 
-    MechanicalOperations(const core::ExecParams* params /* PARAMS FIRST */, core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder=false);
+    MechanicalOperations(const core::ExecParams* params /* PARAMS FIRST */, core::objectmodel::BaseContext* ctx);
 
     core::MechanicalParams* operator->() { return &mparams; }
     operator const core::MechanicalParams*() { return &mparams; }
@@ -80,7 +80,8 @@ public:
     void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, double factor = 1.0); ///< res += factor M.dx
     void integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, double dt); ///< res = x + v.dt
     void accFromF(core::MultiVecDerivId a, core::ConstMultiVecDerivId f); ///< a = M^-1 . f
-
+	/// Compute Energy 
+    void computeEnergy(double &kineticEnergy, double &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true, bool neglectingCompliance=true);
     /// Compute the current force delta (given the latest propagated displacement)
