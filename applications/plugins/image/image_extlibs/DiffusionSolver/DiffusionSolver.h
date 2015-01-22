@@ -37,6 +37,7 @@ struct DiffusionSolver
     static void setNbThreads( unsigned nb );
     static void setDefaultNbThreads();
     static void setMaxNbThreads();
+    static int getMaxNbThreads();
 
 
 
