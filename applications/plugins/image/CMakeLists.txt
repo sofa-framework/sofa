@@ -1,5 +1,7 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
+add_subdirectory(image_extlibs/DiffusionSolver)
+
 set(SOURCE_FILES
     initImage.cpp
     ImageContainer.cpp
@@ -85,8 +87,7 @@ endif()
 
 AddLinkerDependencies(newmat)
 
-
-AddLinkerDependencies(DiffusionSolver)
+target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
