@@ -24,13 +24,18 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
     set (CMAKE_CXX_LINK_FLAGS_RELEASE "${CMAKE_CXX_LINK_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
 else()
-    # parallelism is essential for this solver, force to compile with g++ if the current compiler does not support openmp
-    # if your computer does not have g++ I am not sure what to do...
-    message( "WARNING: DiffusionSolver: your compiler does not implement openmp, trying to compile with g++ and openmp" )
-    set (CMAKE_CXX_COMPILER             "/usr/bin/g++")
-    set ( CMAKE_CXX_COMPILER_ARG1 "" )
-    set (CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -fopenmp")
-    set (CMAKE_CXX_LINK_FLAGS_RELEASE "${CMAKE_CXX_LINK_FLAGS_RELEASE} -fopenmp")
+    IF("${CMAKE_SYSTEM}" MATCHES "Linux")
+        # parallelism is essential for this solver, force to compile with g++ if the current compiler does not support openmp
+        # if your computer does not have g++ I am not sure what to do...
+        message( "WARNING: DiffusionSolver: your compiler does not implement openmp, trying to compile with g++ and openmp" )
+        set (CMAKE_CXX_COMPILER   "/usr/bin/g++")
+        set (CMAKE_CXX_COMPILER_ARG1 "")
+        set (CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -fopenmp")
+        set (CMAKE_CXX_LINK_FLAGS_RELEASE "${CMAKE_CXX_LINK_FLAGS_RELEASE} -fopenmp")
+    else()
+        # no openmp on mac?
+        message( "WARNING: DiffusionSolver: your compiler does not implement openmp, the solver will be single-threaded and very inefficient..." )
+    endif()
 endif()
 
 set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
