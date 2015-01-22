@@ -563,7 +563,7 @@ protected:
                                            ,"0 - Gauss-Seidel"
                                            ,"1 - Jacobi"
                                            ,"2 - CG" );
-        solverOptions.setSelectedItem(CG);
+        solverOptions.setSelectedItem(GAUSS_SEIDEL);
         solver.setValue(solverOptions);
         solver.setGroup("parameters");
 
