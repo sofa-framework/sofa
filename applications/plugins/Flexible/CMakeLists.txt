@@ -176,10 +176,11 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
    	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
    	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
-        list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
+    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
 
-        AddLinkerDependencies(image)
-        AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
+    AddLinkerDependencies(image DiffusionSolver)
+    AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
+
 endif()
 
 
