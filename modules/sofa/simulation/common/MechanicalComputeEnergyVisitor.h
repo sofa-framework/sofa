@@ -74,10 +74,10 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalComputeEnergyVisitor"; }
 
-    virtual void execute( sofa::core::objectmodel::BaseContext* c )
+    virtual void execute( sofa::core::objectmodel::BaseContext* c, bool precomputedTraversalOrder=false )
     {
         m_kineticEnergy = m_potentialEnergy = 0;
-        sofa::simulation::MechanicalVisitor::execute( c );
+        sofa::simulation::MechanicalVisitor::execute( c, precomputedTraversalOrder );
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
