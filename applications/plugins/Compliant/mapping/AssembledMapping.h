@@ -109,7 +109,7 @@ namespace sofa {
                         const Data<typename self::InVecDeriv>& inDx =
                             *mparams->readDx(this->fromModel);
                         
-                        const core::State<In>* from_read = this->getFromModel();
+//                        const core::State<In>* from_read = this->getFromModel();
                         core::State<In>* from_write = this->getFromModel();
 
                         // TODO does this even make sense ?
@@ -161,8 +161,8 @@ namespace sofa {
 
 
 				virtual void assemble( const in_pos_type& in ) = 0;
-                virtual void assemble_geometric( const in_pos_type& in,
-                                                 const out_force_type& out) { };
+                virtual void assemble_geometric( const in_pos_type& /*in*/,
+                                                 const out_force_type& /*out*/) { }
                 
 				virtual void apply(out_pos_type& out, const in_pos_type& in ) = 0;
 	

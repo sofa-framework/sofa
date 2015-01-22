@@ -240,8 +240,8 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 	// TODO pass out value as well ?
 	virtual void assemble( const vector<in_pos_type>& in ) = 0;
 
-	virtual void assemble_geometric( const vector<const_in_coord_type>& in,
-                                     const const_out_deriv_type& out) { }
+    virtual void assemble_geometric( const vector<const_in_coord_type>& /*in*/,
+                                     const const_out_deriv_type& /*out*/) { }
     
 	// perform mapping operation on positions
     virtual void apply(out_pos_type& out, 
