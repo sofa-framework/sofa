@@ -86,4 +86,7 @@ endif()
 AddLinkerDependencies(newmat)
 
 
+AddLinkerDependencies(DiffusionSolver)
+
+
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
