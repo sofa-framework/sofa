@@ -25,7 +25,7 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_LINK_FLAGS_RELEASE "${CMAKE_CXX_LINK_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
 else()
     # parallelism is essential for this solver, force to compile with g++ if the current compiler does not support openmp
-    # if you computer does not have g++ I am not sure what to do...
+    # if your computer does not have g++ I am not sure what to do...
     message( "WARNING: DiffusionSolver: your compiler does not implement openmp, trying to compile with g++ and openmp" )
     set (CMAKE_CXX_COMPILER             "/usr/bin/g++")
     set ( CMAKE_CXX_COMPILER_ARG1 "" )
