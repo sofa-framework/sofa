@@ -51,7 +51,7 @@
         <object id="2">
             <offset type="relative">0 0 0.148 0 0 0 1</offset>
         </object>
-        <dof index="5"/>
+        <dof index="rz"/>
     </jointGeneric>
     
     <jointGeneric id="6">
@@ -62,7 +62,7 @@
         <object id="3">
             <offset type="relative">-0.845 -0.073 0 0 0 0 1</offset>
         </object>
-        <dof index="5"/>
+        <dof index="rz"/>
     </jointGeneric>
     
     <jointGeneric id="7">
@@ -73,7 +73,7 @@
         <object id="4">
             <offset type="relative">-0.113 0 0 0 0 0 1</offset>
         </object>
-        <dof index="5"/>
+        <dof index="rz"/>
     </jointGeneric>
     
     <jointGeneric id="8">
@@ -84,7 +84,7 @@
         <object id="1">
             <offset type="relative">2.2 0 0.33 0 0 0 1</offset>
         </object>
-        <dof index="0"/>
+        <dof index="x"/>
     </jointGeneric>
 
 </sml>

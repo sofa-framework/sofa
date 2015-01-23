@@ -140,6 +140,8 @@ class Scene:
 
     def insertJoints(self, modelXml):
         
+        dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
+        
         for j in modelXml.iter("jointGeneric"):
             name = j.attrib["id"]
             if j.find("name") is not None:
@@ -163,7 +165,7 @@ class Scene:
             # dofs
             mask = [1] * 6
             for dof in j.iter("dof"):
-                mask[int(dof.attrib["index"])]=0
+                mask[dofIndex[dof.attrib["index"]]]=0
                 #TODO limits !
 
             joint = StructuralAPI.GenericRigidJoint(name, frames[0].node, frames[1].node, mask)

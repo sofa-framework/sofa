@@ -19,9 +19,9 @@
         <object id="bone02">
             <offset type="relative">-0.5 0 0 0 0 0 1</offset>
         </object>
-        <dof index="3"/>
-        <dof index="4"/>
-        <dof index="5"/>
+        <dof index="rx"/>
+        <dof index="ry"/>
+        <dof index="rz"/>
     </jointGeneric>
     
     <deformable id="skin">
