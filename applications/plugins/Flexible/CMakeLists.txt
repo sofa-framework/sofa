@@ -178,7 +178,7 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
     list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
 
-    AddLinkerDependencies(image DiffusionSolver)
+    AddLinkerDependencies(image)
     AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
 
 endif()

@@ -46,7 +46,7 @@ if(WIN32 AND NOT CMAKE_CL_64)
     AddCompilerDefinitions("EIGEN_DONT_ALIGN")
 endif()
 
-AddLinkerDependencies(Flexible SofaTest image Compliant)
+AddLinkerDependencies(Flexible SofaTest image Compliant DiffusionSolver)
 
 #Needed by python test
 AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
