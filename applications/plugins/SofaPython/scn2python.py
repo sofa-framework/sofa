@@ -10,7 +10,7 @@ import re
 import xml.etree.ElementTree as ET
 from subprocess import check_output
 import argparse
-
+import sys
 
 def stringToVariableName(s):
     ### converting a string in a valid variable name
@@ -55,11 +55,11 @@ def rootAttributesToStringPython(root,tabs) :
             attribute_str += tabs+"rootNode.findData(\'" + item[0] + "\').value = \'" + item[1] + "\'\n"
     return attribute_str;
 
-def childAttributesToStringPython(child,tabs) :
+def childAttributesToStringPython(child,childName,tabs) :
     attribute_str = str()
     for item in child.items() :
         if (not (item[0] == 'name') ):
-            attribute_str += tabs+stringToVariableName(child.get('name'))+"." + item[0] + " = \'" + item[1] + "\'\n"
+            attribute_str += tabs+stringToVariableName(childName)+"." + item[0] + " = \'" + item[1] + "\'\n"
     return attribute_str;
 
 def attributesToStringXML(child) :
@@ -72,31 +72,34 @@ def createObject(child) :
     createObject_str = "createObject(\'" + child.tag + "\'" + attributesToStringPython(child,1) +")"
     return createObject_str;
     
-def createChild(child) :
-    createChild_str = "createChild(\'" + child.get('name') + "\'" +")"
-    #createChild_str = "createChild(\'" + child.get('name') + "\'" + attributesToStringPython(child,0) +")"
+def createChild(childName) :
+    createChild_str = "createChild(\'" + childName + "\'" +")"
     return createChild_str;
 
+def getNodeName(node,numberOfUnnamedNodes) :
+    nodeName = node.get('name')
+    if nodeName is None :
+        nodeName = 'unnamedNode_'+str(numberOfUnnamedNodes)
+        node.set('name',nodeName)
+        print "WARNING: unnamed node in input scene, used name "+nodeName
+        numberOfUnnamedNodes += 1
+    return nodeName,numberOfUnnamedNodes
 
-def parentVariableName(parent,scenePath) :
-    parentPythonVariableName = str()
-    if parent.get('name').lower() == 'root' or parent.get('name') == scenePath:
-        parentPythonVariableName = 'rootNode'
-    else :
-        parentPythonVariableName = parent.get('name')
-    return stringToVariableName(parentPythonVariableName);
-
-def printChildren(parent, tabs, scenePath='rootNode') :
+def printChildren(parent, tabs, numberOfUnnamedNodes, scenePath='rootNode', nodeIsRootNode=0) :
+    parentName = parent.get('name')
+    if nodeIsRootNode :
+        parentName = 'rootNode'
     myChildren = str()
     for child in parent :
         if child.tag == "Node" :
-            currentScenePath = scenePath+"/"+child.get('name')
+            childName, numberOfUnnamedNodes = getNodeName(child,numberOfUnnamedNodes)
+            currentScenePath = scenePath+"/"+childName
             myChildren += "\n"+tabs+"# "+currentScenePath+"\n"
-            myChildren += tabs+stringToVariableName(child.get('name'))+" = "+parentVariableName(parent,scenePath)+"."+createChild(child)+"\n"
-            myChildren += childAttributesToStringPython(child,tabs)
-            myChildren += printChildren(child,tabs,scenePath=currentScenePath)
+            myChildren += tabs+stringToVariableName(childName)+" = "+parentName+"."+createChild(childName)+"\n"
+            myChildren += childAttributesToStringPython(child,childName,tabs)
+            myChildren += printChildren(child,tabs,numberOfUnnamedNodes,scenePath=currentScenePath)
         else :
-            myChildren += tabs+parentVariableName(parent,scenePath)+"."+createObject(child)+"\n"
+            myChildren += tabs+parentName+"."+createObject(child)+"\n"
     return myChildren;
 
 def getElement (node,name) :
@@ -104,7 +107,7 @@ def getElement (node,name) :
         curChild = node[childId]
         if curChild.get('name') == name :
             return node, curChild, childId
-        if curChild.tag == "Node" :
+        if curChild.tag == 'Node' :
             resultParent,resultChild,resultChildId = getElement (curChild,name)
             if resultParent is not None :
                 return resultParent,resultChild,resultChildId
@@ -135,8 +138,9 @@ def parseInput() :
     parser.add_argument('inputScenes', metavar='I', type=str, nargs='+',help='filename(s) of the standard scene(s)')
     parser.add_argument('-n', nargs='?', help='node to replace by python script, if N the complete scene is replaced by a python script')
     parser.add_argument('-o', nargs='*', help='filename(s) of the transformed scene(s)')
-    parser.add_argument('--py', dest='onlyOutputPythonScript', action='store_const', default=0, const=1, help='output only a .py file')
-    return parser;
+    parser.add_argument('-p', dest='onlyOutputPythonScript', action='store_const', default=0, const=1, help='output only a .py file')
+    args = parser.parse_args()
+    return parser,args;
 
 def pythonScriptControllerFunctions(produceSceneAndPythonFile) :
     allScriptControllerFunctions = ['onKeyPressed(self,c)','onKeyReleased(self,c)','onLoaded(self,node)','onMouseButtonLeft(self,mouseX,mouseY,isPressed)','onMouseButtonRight(self,mouseX,mouseY,isPressed)','onMouseButtonMiddle(self,mouseX,mouseY,isPressed)','onMouseWheel(self,mouseX,mouseY,wheelDelta)','onGUIEvent(self,strControlID,valueName,strValue)','onBeginAnimationStep(self,deltaTime)','onEndAnimationStep(self,deltaTime)','onScriptEvent(self,senderNode, eventName,data)','initGraph(self,node)','bwdInitGraph(self,node)','storeResetState(self)','reset(self)','cleanup(self)']
@@ -148,11 +152,14 @@ def pythonScriptControllerFunctions(produceSceneAndPythonFile) :
         result += '\n'+tabs+'def ' + curFct + ' : \n'+tabs+'    return 0;\n'
     return result
 
-def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produceSceneAndPythonFile=1) :
+def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produceSceneAndPythonFile=1,nodeIsRootNode=1) :
     # get correct number of tabs
     tabs = "    "    
     if produceSceneAndPythonFile :
-        tabs = "        "        
+        tabs = "        "
+
+    # introduce parameter that counts the number of unnamed nodes
+    numberOfUnnamedNodes = 0
 
     # construct a string, with all the python commands
     pythonFile_str = "\"\"\"\n"
@@ -165,8 +172,12 @@ def writePythonFile(info_str,classNamePythonFile,node,outputFilenamePython,produ
     else :
         pythonFile_str += "def createScene(rootNode):\n\n"
         pythonFile_str += rootAttributesToStringPython(node,tabs)
-    pythonFile_str += tabs+"# "+classNamePythonFile+"\n"
-    pythonFile_str += printChildren(node,tabs,classNamePythonFile)
+    if nodeIsRootNode :
+        pythonFile_str += tabs+"# rootNode\n"
+        pythonFile_str += printChildren(node,tabs,numberOfUnnamedNodes,nodeIsRootNode=1)
+    else :
+        pythonFile_str += tabs+"# "+classNamePythonFile+"\n"
+        pythonFile_str += printChildren(node,tabs,numberOfUnnamedNodes,classNamePythonFile,nodeIsRootNode=1)
     pythonFile_str += "\n"+tabs+"return 0;"
     pythonFile_str += pythonScriptControllerFunctions(produceSceneAndPythonFile)
 
@@ -183,7 +194,6 @@ def transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPyth
 
     # get absolute paths
     inputSceneWithAbsPath = getAbsolutePath(inputScene)
-    pythonFilenameWithAbsPath = getAbsolutePath(pythonFilename)
     outputFilenameWithAbsPath = getAbsolutePath(outputFilename)
 
     # string with a few informations on the file
@@ -202,7 +212,7 @@ def transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPyth
         info_str += "\nThe sofa python plugin has to be added in the sofa plugin manager, \ni.e. add the sofa python plugin in runSofa->Edit->PluginManager."
     info_str += "\n\n"
     info_str += "The current file has been written by the python script\n"
-    info_str += pythonFilenameWithAbsPath + "\n"
+    info_str += pythonFilename + "\n"
     info_str += "Author of " + pythonFilenameWithoutPath + ": Christoph PAULUS, christoph.paulus@inria.fr\n"
 
     # load the xml file into the internal values
@@ -212,12 +222,16 @@ def transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPyth
         if nodeToPythonScript is not None :
             # change the xmltree - only a node has been replaced by a python script
             parent,node,nodeId = getElement(root,nodeToPythonScript)
+            if node == None :
+                print "ERROR: node "+nodeToPythonScript+" is not part of "+inputScene
+                sys.exit()
+            print "Information: replacing a node by a python script, may result in broken links in the scene"
             parent.remove(node)
             outputPythonFilename = outputFilename+nodeToPythonScript+".py"
             outputPythonFilenameWithoutPath = outputFilenameWithoutPath+nodeToPythonScript+".py"
             pythonObject = ET.Element('PythonScriptController',attrib=dict(name=nodeToPythonScript,listening="1",filename=outputPythonFilenameWithoutPath,classname=nodeToPythonScript))
             parent.insert(nodeId,pythonObject)
-            writePythonFile(info_str,nodeToPythonScript,node,outputPythonFilename)
+            writePythonFile(info_str,nodeToPythonScript,node,outputPythonFilename,nodeIsRootNode=0)
         else :
             # write a xml tree to lance the python script
             outputPythonFilename = outputFilename+".py"
@@ -243,9 +257,8 @@ def transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPyth
 
 def main() :
     # parse the console input
-    parser = parseInput()
-    args = parser.parse_args()
-    pythonFilename = parser.prog
+    parser,args = parseInput()
+    pythonFilename = sys.argv[0]
     produceSceneAndPythonFile = not args.onlyOutputPythonScript
 
     # transform each standard scene to a python scene
@@ -256,8 +269,9 @@ def main() :
         if args.o is not None :
             if i < len(args.o) :
                 outputFilename = args.o[i]
-        print 'Input Scene: '+inputScene+', Node replaced: '+str(nodeToPythonScript)+', Output: '+outputFilename+', produce .scn and .py: '+str(produceSceneAndPythonFile)
+        print 'Input Scene: '+inputScene+', replace node: '+str(nodeToPythonScript)+', output: '+outputFilename+', produce .scn and .py: '+str(produceSceneAndPythonFile)
         transformXMLSceneToPythonScene(pythonFilename,inputScene,produceSceneAndPythonFile,outputFilename,nodeToPythonScript)
 
 if __name__ == "__main__":
     main()
+    
