@@ -155,7 +155,7 @@ class Scene:
                 if not o.find("offset") is None:
                     frames.append(self.addOffset("offset_{0}".format(name), o.attrib["id"], o.find("offset")))
                 else:
-                    frame.append(self.rigids[o.attrib["id"]])
+                    frames.append(self.rigids[o.attrib["id"]])
             
             if len(frames) != 2:
                 logging.error("ERROR: Compliant.sml.scene: generic joint expect two objects, {0} specified".format(len(frames)))
