@@ -297,7 +297,7 @@ void BaseObject::init()
 	{
 		if ((*iData)->isRequired() && !(*iData)->isSet())
 		{
-            serr << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" << sendl;
+			serr << "Required data " << (*iData)->getName() << " has not been set. (Current value is " << (*iData)->getValueString() << ")" << sendl;
 		}
 	}
 }
