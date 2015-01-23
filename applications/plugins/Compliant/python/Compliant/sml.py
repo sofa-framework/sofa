@@ -130,7 +130,7 @@ class Scene:
 
     def insertJoints(self, modelXml):
         
-        for j in modelXml.iter("joint"):
+        for j in modelXml.iter("jointGeneric"):
             name = j.attrib["id"]
             if j.find("name") is not None:
                 name = j.find("name").text
@@ -140,10 +140,15 @@ class Scene:
                 logging.error("ERROR: Compliant.sml.scene: joint defined twice, id:", j.attrib["id"])
                 return
 
-            parent = j.find("parent")
-            parentOffset = self.addOffset("offset_{0}".format(name), parent.attrib["id"], parent.find("offset"))
-            child = j.find("child")
-            childOffset = self.addOffset("offset_{0}".format(name), child.attrib["id"], child.find("offset"))
+            frames=list()
+            for o in j.iter("object"):
+                if not o.find("offset") is None:
+                    frames.append(self.addOffset("offset_{0}".format(name), o.attrib["id"], o.find("offset")))
+                else:
+                    frame.append(self.rigids[o.attrib["id"]])
+            
+            if len(frames) != 2:
+                logging.error("ERROR: Compliant.sml.scene: generic joint expect two objects, {0} specified".format(len(frames)))
 
             # dofs
             mask = [1] * 6
@@ -151,7 +156,7 @@ class Scene:
                 mask[int(dof.attrib["index"])]=0
                 #TODO limits !
 
-            joint = StructuralAPI.GenericRigidJoint(name, parentOffset.node, childOffset.node, mask)
+            joint = StructuralAPI.GenericRigidJoint(name, frames[0].node, frames[1].node, mask)
             self.joints[j.attrib["id"]] = joint
 
     def insertDeformables(self, modelXml, parentNode):

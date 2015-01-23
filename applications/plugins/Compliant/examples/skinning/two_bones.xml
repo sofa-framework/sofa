@@ -12,17 +12,17 @@
         <position>1 0 0 0 0 0 1</position>
     </rigid>
     
-    <joint id="joint01">
-        <parent id="bone01">
+    <jointGeneric id="joint01">
+        <object id="bone01">
             <offset type="absolute">0.5 0 0 0 0 0 1</offset>
-        </parent>
-        <child id="bone02">
+        </object>
+        <object id="bone02">
             <offset type="relative">-0.5 0 0 0 0 0 1</offset>
-        </child>
+        </object>
         <dof index="3"/>
         <dof index="4"/>
         <dof index="5"/>
-    </joint>
+    </jointGeneric>
     
     <deformable id="skin">
         <position>0 0 0 0 0 0 1</position>
