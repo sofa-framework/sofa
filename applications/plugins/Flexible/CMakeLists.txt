@@ -168,7 +168,7 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
-        list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
+    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
 
    	list(APPEND SOURCE_FILES "quadrature/ImageGaussPointSampler.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/VoronoiShapeFunction.cpp")
@@ -178,7 +178,6 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
     list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
 
-    AddLinkerDependencies(image)
     AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
 
 endif()
@@ -189,6 +188,11 @@ include(./python/python.cmake)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+
+if(SOFA-PLUGIN_IMAGE)
+    AddLinkerDependencies(image)
+    target_link_libraries(${PROJECT_NAME} DiffusionSolver)
+endif()
 
 AddCompilerDefinitions("SOFA_BUILD_Flexible")
 AddLinkerDependencies(SofaEigen2Solver SofaBaseVisual)
