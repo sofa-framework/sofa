@@ -47,6 +47,16 @@ class Deformable:
             self.model = self.node.createObject('VisualModel', name="model")
             self.mapping = self.node.createObject('IdentityMapping', name="mapping")
 
+def parseData(xmlData):
+    """ return the list of data in xmlData
+    """
+    if xmlData.attrib["type"]=="float":
+        return SofaPython.Tools.strToListFloat(xmlData.text)
+    elif xmlData.attrib["type"]=="int":
+        return SofaPython.Tools.strToListInt(xmlData.text)
+    elif xmlData.attrib["type"]=="string":
+        return xmlData.text.split()
+
 def parseMesh(xmlModel):
     """ parse meshes and their attribute
     """
@@ -66,7 +76,7 @@ def parseMesh(xmlModel):
                 mesh.group[g.attrib["id"]].index = SofaPython.Tools.strToListInt(g.find("index").text)
                 mesh.group[g.attrib["id"]].data = dict()
                 for d in g.iter("data"):
-                    mesh.group[g.attrib["id"]].data[d.attrib["name"]]=SofaPython.Tools.strToListFloat(d.text)
+                    mesh.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)
                 
             meshes[m.attrib["id"]] = mesh
             
