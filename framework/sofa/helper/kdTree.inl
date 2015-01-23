@@ -51,7 +51,7 @@ void kdTree<Coord>::build(const VecCoord& positions, const vector<unsigned int> 
 {
     unsigned int nbp=ROI.size();
     UIlist list;   for(unsigned int i=0; i<nbp; i++) list.push_back(ROI[i]);
-    tree.resize(nbp);
+    tree.resize(positions.size());
     firstNode=build(list,(unsigned char)0, positions);
 }
 
