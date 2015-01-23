@@ -22,6 +22,8 @@ def parseUnits(xmlModel):
         print message
 
 class Mesh:
+    class Group:
+        pass
     pass
 
 class Deformable:
@@ -58,10 +60,13 @@ def parseMesh(xmlModel):
             mesh.source = m.find("source").text
         
             mesh.group=dict()
-            mesh.weight=dict()
+            mesh.data=dict()
             for g in m.iter("group"):
-                mesh.group[g.attrib["id"]] =  SofaPython.Tools.strToListInt(g.find("index").text)
-                mesh.weight[g.attrib["id"]] = SofaPython.Tools.strToListFloat(g.find("weight").text)
+                mesh.group[g.attrib["id"]] = Mesh.Group()
+                mesh.group[g.attrib["id"]].index = SofaPython.Tools.strToListInt(g.find("index").text)
+                mesh.group[g.attrib["id"]].data = dict()
+                for d in g.iter("data"):
+                    mesh.group[g.attrib["id"]].data[d.attrib["name"]]=SofaPython.Tools.strToListFloat(d.text)
                 
             meshes[m.attrib["id"]] = mesh
             
@@ -124,6 +129,7 @@ class Scene:
                 rigid.addCollisionMesh(meshfile)
 
     def insertJoints(self, modelXml):
+        
         for j in modelXml.iter("joint"):
             name = j.attrib["id"]
             if j.find("name") is not None:
@@ -169,10 +175,12 @@ class Scene:
                     print "ERROR: Compliant.sml.Scene: skinning for deformable {0}: rigid {1} is not defined".format(name, s.attrib["rigid"])
                     continue
                 currentBone = self.rigids[s.attrib["rigid"]].boneIndex
-                if not (s.attrib["group"] in mesh.group and s.attrib["group"] in mesh.weight):
-                    print "ERROR: Compliant.sml.Scene: skinning for deformable {0}: group {1} is not defined".format(name, s.attrib["group"])
+                if not (s.attrib["group"] in mesh.group and s.attrib["weight"] in mesh.group[s.attrib["group"]].data):
+                    print "ERROR: Compliant.sml.Scene: skinning for deformable {0}: group {1} - weight {2} is not defined".format(name, s.attrib["group"], s.attrib["weight"])
                     continue
-                for index,weight in zip(mesh.group[s.attrib["group"]], mesh.weight[s.attrib["group"]]):
+                group = mesh.group[s.attrib["group"]]
+                weight = group.data[s.attrib["weight"]]
+                for index,weight in zip(group.index, weight):
                     if not index in indices:
                         indices[index]=list()
                         weights[index]=list()

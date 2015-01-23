@@ -31,17 +31,17 @@
             
             <group id="group01">
                 <index>0 1</index>
-                <weight>1. 0.75</weight>
+                <data type="float" name="weight">1. 0.75</data>
             </group>
             
             <group id="group02">
                 <index>1 2</index> 
-                <weight>0.25 1.</weight>
+                <data type="float" name="weight">0.25 1.</data>
             </group>
             
         </mesh>
-        <skinning group="group01" rigid="bone01" />
-        <skinning group="group02" rigid="bone02" />
+        <skinning rigid="bone01" group="group01" weight="weight" />
+        <skinning rigid="bone02" group="group02" weight="weight" />
     </deformable>
     
 </sml>
