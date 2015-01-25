@@ -15,20 +15,6 @@ CollapsibleGroupBox {
 
     enabled: scene ? scene.ready : false
 
-    /*ListView {
-        anchors.fill: parent
-
-        model: ListModel {
-            ListElement {
-                name: "root"
-            }
-        }
-
-        delegate: Text {
-            text: "name is " + name
-        }
-    }*/
-/*
     GridLayout {
         id: layout
         anchors.fill: parent
@@ -37,22 +23,67 @@ CollapsibleGroupBox {
         Component {
             id: delegate
             Item {
-                height: 20
-                Column {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.leftMargin: (depth) * 16
+                height: visible ? 16 : 0
+                //visible: listView.elementCollasped(parentIndex)
+                Row {
+
+                    Button {
+                        visible: isNode
+                        checkable: true
+                        checked: true
+                        height: 16
+                        width: height
+                        //onClicked: listView.setElementCollapsed(index, checked)
+                    }
+
                     Text {
-                        text: display
+                        text: type + " - " + name
+                        color: Qt.darker(Qt.rgba((depth * 6) % 9 / 8.0, depth % 9 / 8.0, (depth * 3) % 9 / 8.0, 1.0), 1.5)
+                        font.bold: isNode
                     }
                 }
             }
         }
 
-        ListView {
+        ScrollView {
             Layout.fillWidth: true
-            Layout.preferredHeight: 300
-            model: scene
-            delegate: delegate
-            focus: true
+            Layout.preferredHeight:400
+
+            ListView {
+                id: listView
+                anchors.fill: parent
+                clip: true
+                model: scene
+                delegate: delegate
+                focus: true
+
+                property var elements
+
+                Component.onCompleted: modelChanged()
+                onModelChanged: {
+                    elements = Array(model.count).join[{"collapsed": false}];
+                }
+
+                function elementCollapsed(index) {
+                    return elements[index].collapsed;
+                }
+
+                function setElementCollapsed(index, state) {
+                    if(state === elements[index].collapsed)
+                        return;
+
+                    elements[index].collapsed = state;
+
+                    refresh();
+                }
+
+                function refresh() {
+
+                }
+            }
         }
     }
-*/
 }

@@ -63,4 +63,24 @@ Scene {
     /*property var sceneGraphModel: ListModel {
 
     }*/
+
+    function getData(dataName) {
+        if(arguments.length == 1) {
+            return onGetData(dataName);
+        }
+
+        console.debug("ERROR: Scene - using getData with an invalid number of arguments:", arguments.length);
+    }
+
+    function setData(dataName) {
+        if(arguments.length > 1){
+            var packedArguments = [];
+            for(var i = 1; i < arguments.length; i++)
+                packedArguments.push(arguments[i]);
+
+            return onSetData(dataName, packedArguments);
+        }
+
+        console.debug("ERROR: Scene - using setData with an invalid number of arguments:", arguments.length);
+    }
 }

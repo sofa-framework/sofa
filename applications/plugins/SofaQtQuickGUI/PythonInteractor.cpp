@@ -242,6 +242,11 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 	return value;
 }
 
+QVariant PythonInteractor::call(const QString& pythonClassName, const QString& funcName, const QVariant& parameter)
+{
+    return onCall(pythonClassName, funcName, parameter);
+}
+
 QVariant PythonInteractor::onCall(const QString& pythonClassName, const QString& funcName, const QVariant& parameter)
 {
 	QVariant result;

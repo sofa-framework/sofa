@@ -70,7 +70,7 @@ const QMatrix4x4& Camera::projection() const
 	if(myProjectionDirty) // update projection if needed
 	{
 		myProjection.setToIdentity();
-		myProjection.perspective((float) myFovY, (float) myAspectRatio, 0.1f, 1000.0f);
+        myProjection.perspective((float) myFovY, (float) myAspectRatio, myZNear, myZFar);
 		myProjectionDirty = false;
 	}
 
