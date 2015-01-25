@@ -107,23 +107,19 @@ CollapsibleGroupBox {
                     stepSize:0.01
                     enabled: false
 
-                    Timer {
-                        id: timer
-                        running: false
-                        repeat: true
-                        interval: 20
-
-                        onTriggered: if(scene.ready) pointLocation.update()
+                    Connections {
+                        target: scene
+                        onStepEnd: if(scene.ready) pointLocation.update()
+                        onReseted: if(scene.ready) pointLocation.update()
+                        Component.onCompleted: if(scene.ready) pointLocation.update()
                     }
 
                     function update() {
-                        setValueFromArray(scene.getData("@P0/M0.position")[1]);
+                        setValueFromArray(scene.getData("@P1/M1.position")[0]);
 
                         // this is how to set new positions:
-                        //scene.setData("@P0/M0.position", [[3, 2, 1], [6, 5, 4]]);
+                        //scene.setData("@P1/M1.position", [[3, 2, 1]]);
                     }
-
-                    Component.onCompleted: timer.start()
                 }
             }
         }

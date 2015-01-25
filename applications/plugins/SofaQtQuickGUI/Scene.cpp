@@ -678,16 +678,6 @@ QVariant Scene::onGetData(const QString& path) const
     return value;
 }
 
-static void SofaBuildValueHelper(const QVariant& value, BaseData* data)
-{
-
-}
-
-static void SofaBuildListHelper(const QVariantList& list, BaseData* data)
-{
-
-}
-
 void Scene::onSetData(const QString& path, const QVariant& value)
 {
     BaseData* data = 0;
