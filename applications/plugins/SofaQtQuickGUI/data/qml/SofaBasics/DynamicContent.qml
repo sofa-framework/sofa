@@ -19,6 +19,17 @@ Item {
         SofaSettingsScript.Ui.replace(previousUiId, uiId);
     }
 
+    QtObject {
+        id: d
+
+        property Timer timer: Timer {
+            interval: 200
+            running: false
+            repeat: false
+            onTriggered: standbyItem.visible = true
+        }
+    }
+
     Settings {
         id: uiSettings
         category: 0 !== root.uiId ? "ui_" + root.uiId : "dummy"
@@ -203,10 +214,10 @@ Item {
 
                 function refreshStandbyItem() {
                     if(contentItem) {
-                        timer.stop();
+                        d.timer.stop();
                         standbyItem.visible = false;
                     } else {
-                        timer.start();
+                        d.timer.start();
                     }
                 }
             }
@@ -279,14 +290,6 @@ Item {
                 wrapMode: Text.WordWrap
                 font.bold: true
             }
-        }
-
-        Timer {
-            id: timer
-            interval: 200
-            running: false
-            repeat: false
-            onTriggered: standbyItem.visible = true
         }
     }
 }
