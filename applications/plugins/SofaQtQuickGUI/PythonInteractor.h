@@ -53,8 +53,11 @@ public:
 signals:
     void sceneChanged(sofa::qtquick::Scene* newScene);
 	
-protected slots:
-	QVariant onCall(const QString& pythonClassName, const QString& funcName, const QVariant& parameter = QVariant());
+public:
+    QVariant call(const QString& pythonClassName, const QString& funcName, const QVariant& parameter = QVariant());
+
+protected:
+    Q_INVOKABLE QVariant onCall(const QString& pythonClassName, const QString& funcName, const QVariant& parameter = QVariant());
 
 public slots:
 	void sendEvent(const QString& pythonClassName, const QString& eventName, const QVariant& parameter = QVariant());

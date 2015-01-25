@@ -31,7 +31,7 @@ CollapsibleGroupBox {
 
                         wrapMode: Text.WordWrap
                         text: "<b>About ?</b><br />
-                            The goal of this example is to show you how to call Python functions defined in your scene to get / set data using the PythonInteractor QML object.<br />"
+                            The goal of this example is to show you how to get / set Sofa data directly from the Scene QML object.<br />"
                     }
                 }
 
@@ -82,11 +82,11 @@ CollapsibleGroupBox {
                     stepSize:0.01
 
                     function update() {
-                        scene.pythonInteractor.call("PythonScript", "setGravity", vx, vy, vz);
+                        scene.setData("@.gravity", [[vx, vy, vz]])
                     }
 
                     Component.onCompleted: {
-                        setValueFromArray(scene.pythonInteractor.call("PythonScript", "getGravity"));
+                        setValueFromArray(scene.getData("@.gravity")[0]);
 
                         onVxChanged.connect(update);
                         onVyChanged.connect(update);
@@ -117,7 +117,10 @@ CollapsibleGroupBox {
                     }
 
                     function update() {
-                        setValueFromArray(scene.pythonInteractor.call("PythonScript", "getPointLocation"));
+                        setValueFromArray(scene.getData("@P0/M0.position")[1]);
+
+                        // this is how to set new positions:
+                        //scene.setData("@P0/M0.position", [[3, 2, 1], [6, 5, 4]]);
                     }
 
                     Component.onCompleted: timer.start()

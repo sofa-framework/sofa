@@ -7,7 +7,9 @@
         <file>icon/plus.png</file>
         <file>icon/minus.png</file>
         <file>config/default.ini</file>
-		<file>scene/sample0.py</file>
-		<file>scene/sample0.py.qml</file>
+        <file>scene/sample0.py</file>
+        <file>scene/sample0.py.qml</file>
+        <file>scene/sample1.py</file>
+        <file>scene/sample1.py.qml</file>
     </qresource>
 </RCC>
