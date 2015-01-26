@@ -228,6 +228,13 @@ AddSourceDependencies( GenerateRigid )
 # AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
 
 
+if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES DEBUG)
+    # c'est à n'y rien comprendre mais j'en ai besoin uniquement en debug avec certains compilos (e.g. gcc4.6)
+    find_package(Boost COMPONENTS system REQUIRED)
+    AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+endif()
+
+
 if(LINUX OR UNIX AND NOT APPLE)
     AddLinkerDependencies( rt ) # clock_gettime
 endif()
