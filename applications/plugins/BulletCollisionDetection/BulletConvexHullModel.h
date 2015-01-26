@@ -14,7 +14,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
-#include <bullet/HACD/hacdHACD.h>
+#include <HACD/hacdHACD.h>
 
 namespace sofa
 {
