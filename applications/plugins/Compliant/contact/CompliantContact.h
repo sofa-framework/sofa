@@ -133,7 +133,7 @@ protected:
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
 
         // constraint value
-        this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
+        const vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         // projector
         typedef linearsolver::UnilateralConstraint projector_type;
@@ -142,10 +142,7 @@ protected:
         if( restitutionCoefficient )
         {
             // for restitution, only activate violated constraints
-            // todo, mutualize code with mask in addConstraintValue
-            projector->mask.resize( this->mappedContacts.size() );
-            for(unsigned i = 0; i < this->mappedContacts.size(); ++i)
-                projector->mask[i] = ( (*this->contacts)[i].value <= 0 );
+            projector->mask = cvmask;
         }
 
         return delta.node;

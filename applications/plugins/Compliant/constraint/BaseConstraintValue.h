@@ -68,7 +68,7 @@ class SOFA_Compliant_API BaseConstraintValue : public core::objectmodel::BaseObj
     /// but in some case (eg Restitution), they must be deactivated
     /// @param n nb constraint blocks
     /// @param dim nb lines per constraint
-    virtual void filterConstraints( std::vector<bool>& /*activateMask*/, const core::MultiVecCoordId& /*posId*/, unsigned /*n*/, unsigned /*dim*/ ) { /*all constraints are active by default*/ }
+    virtual void filterConstraints( const std::vector<bool>* /*activateMask*/, const core::MultiVecCoordId& /*posId*/, unsigned /*n*/, unsigned /*dim*/ ) { /*all constraints are active by default*/ }
 
     /// clear an eventual violated mask
     virtual void clear() {}
