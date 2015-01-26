@@ -39,7 +39,6 @@ find_package(SofaFramework REQUIRED)
 find_package(CGAL REQUIRED)
 # CGAL uses boost_system and boost_thread
 find_package(Boost REQUIRED COMPONENTS system thread)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Modules")
 
 find_package(image)
 if(image_FOUND)
