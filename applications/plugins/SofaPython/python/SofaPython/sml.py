@@ -180,6 +180,13 @@ def insertVisual(parentNode,obj,color):
     rotation = Quaternion.to_euler(obj.position[3:])  * 180.0 / math.pi
     Tools.meshLoader(node, obj.mesh.source, name="loader_"+obj.name, translation=concat(translation),rotation=concat(rotation))
     node.createObject("OglModel",src="@loader_"+obj.name, color=color)
+    
+def setupUnits(myUnits):
+    message = "units:"
+    for quantity,unit in myUnits.iteritems():
+        exec("units.local_{0} = units.{0}_{1}".format(quantity,unit))
+        message+=" "+quantity+":"+unit
+    print message
 
 class BaseScene:
     class Param:
@@ -189,13 +196,6 @@ class BaseScene:
         self.param=BaseScene.Param()
         self.nodes = dict() # to store special nodes
         self.node=parentNode.createChild(self.model.name)
-        
-    def setupUnits(self):
-        message = "units:"
-        for unit,value in self.model.units.iteritems():
-            exec("SofaPython.units.local_{0} = SofaPython.units.{0}_{1}".format(unit,value))
-            message+=" "+unit+":"+value
-        print message
 
 class SceneDisplay(BaseScene):
     def __init__(self,parentNode,model):
