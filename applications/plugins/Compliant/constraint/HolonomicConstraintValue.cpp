@@ -8,7 +8,7 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(HolonomicConstraintValue);
+SOFA_DECL_CLASS(HolonomicConstraintValue)
 int HolonomicConstraintValueClass = core::RegisterObject("Holonomic constraint").add< HolonomicConstraintValue >();
 
 
@@ -19,12 +19,31 @@ HolonomicConstraintValue::HolonomicConstraintValue( mstate_type* mstate )
 {}
 
 
-void HolonomicConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool /*stabilization*/, const core::MultiVecCoordId&, const core::MultiVecDerivId&) const {
+void HolonomicConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool /*stabilization*/, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
 	assert( mstate );
 
     const unsigned size = n*dim;
 
-    memset( dst, 0, size*sizeof(SReal) );
+    // warning only cancelling relative velocities of violated constraints (given by mask)
+
+    const mask_type& mask = this->mask.getValue();
+    assert( mask.getValue().empty() || mask.getValue().size() == size );
+
+    if( mask.empty() ){
+        memset( dst, 0, size*sizeof(SReal) );
+    }
+    else {
+        // by default elastic constraint, for not yet violated constraints
+        mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
+        map(dst, size) = -map(dst, size) / this->getContext()->getDt();
+
+        unsigned i = 0;
+        for(SReal* last = dst + size; dst < last; ++dst, ++i) {
+            if( mask[i] ) *dst = 0; // already violated
+        }
+    }
+
+
 }
 
 

@@ -12,7 +12,7 @@
 
 #include "../utils/edit.h"
 #include "../constraint/Restitution.h"
-#include "../constraint/Stabilization.h"
+#include "../constraint/HolonomicConstraintValue.h"
 
 
 namespace sofa
@@ -385,12 +385,31 @@ protected:
 ////            constraintValue->dampingRatio.setValue( damping );
 //            constraintValue->init();
 //        }
+        else if( holonomic.getValue() ) // holonomic constraint (cancel relative velocity, w/o stabilization, contact penetration is not canceled)
+        {
+            // with stabilization holonomic and stabilization constraint values are equivalent
+
+            typedef odesolver::HolonomicConstraintValue stab_type;
+            stab_type::SPtr stab = sofa::core::objectmodel::New<stab_type>( dofs );
+            node->addObject( stab.get() );
+
+            // don't stabilize non-penetrating contacts (normal component only)
+            edit(stab->mask)->resize( size * this->mappedContacts.size() );
+            for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
+                (*edit(stab->mask))[size * i] = ( (*this->contacts)[i].value <= 0 );
+
+                for(unsigned j = 1; j < size; ++j) {
+                    (*edit(stab->mask))[size * i + j] = false;
+                }
+            }
+
+            stab->init();
+        }
         else // stabilized constraint
         {
             // stabilizer
             typedef odesolver::Stabilization stab_type;
             stab_type::SPtr stab = sofa::core::objectmodel::New<stab_type>( dofs );
-            stab->m_holonomic = holonomic.getValue();
             node->addObject( stab.get() );
 
             // don't stabilize non-penetrating contacts (normal component only)

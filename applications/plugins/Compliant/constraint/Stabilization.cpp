@@ -8,7 +8,7 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(Stabilization);
+SOFA_DECL_CLASS(Stabilization)
 int StabilizationClass = core::RegisterObject("Kinematic constraint stabilization").add< Stabilization >();
 
 
@@ -17,7 +17,6 @@ using namespace utils;
 Stabilization::Stabilization( mstate_type* mstate )
     : BaseConstraintValue( mstate )
     , mask(initData(&mask, "mask", "dofs to be stabilized"))
-    , m_holonomic( false )
 {}
 
 void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
@@ -43,24 +42,34 @@ void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core:
 
 
 void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilization, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
-	assert( mstate );
+    assert( mstate );
 
-    unsigned size = n*dim;
+    const unsigned size = n*dim;
 
+    // warning iff stabilization, only cancelling relative velocities of violated constraints (given by mask)
+
+    const mask_type& mask = this->mask.getValue();
     assert( mask.getValue().empty() || mask.getValue().size() == size );
 
-    mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
-    map(dst, size) = -map(dst, size) / this->getContext()->getDt();
-
-    // if there is no stabilization, the constraint must be corrected by the dynamics pass
-    // if there is stabilization, the velocities will be corrected by the correction pass
-    if( stabilization || m_holonomic )
+    if( !stabilization )
     {
-        const mask_type& mask = this->mask.getValue();
-        // zero for stabilized, since the position error will be handled by the correction
-        unsigned i = 0;
-        for(SReal* last = dst + size; dst < last; ++dst, ++i) {
-            if( mask.empty() || mask[i] ) *dst = 0;
+        // elastic constraints
+        mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
+        map(dst, size) = -map(dst, size) / this->getContext()->getDt();
+    }
+    else
+    {
+        if( mask.empty() ) memset( dst, 0, size*sizeof(SReal) ); // all violated
+        else
+        {
+            // by default elastic constraint, for not yet violated constraints
+            mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
+            map(dst, size) = -map(dst, size) / this->getContext()->getDt();
+
+            unsigned i = 0;
+            for(SReal* last = dst + size; dst < last; ++dst, ++i) {
+                if( mask[i] ) *dst = 0; // already violated
+            }
         }
     }
 }

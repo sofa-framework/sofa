@@ -7,7 +7,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(UnilateralConstraint);
+SOFA_DECL_CLASS(UnilateralConstraint)
 int UnilateralConstraintClass = core::RegisterObject("Unilateral constraint")
         .add< UnilateralConstraint >()
         .addAlias("UnilateralProjector"); // eheh :p

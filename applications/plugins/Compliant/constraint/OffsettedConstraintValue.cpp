@@ -8,7 +8,7 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(OffsettedConstraintValue);
+SOFA_DECL_CLASS(OffsettedConstraintValue)
 int OffsettedConstraintValueClass = core::RegisterObject("Constraint value abstraction").add< OffsettedConstraintValue >();
 
 
