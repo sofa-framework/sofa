@@ -62,13 +62,13 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
         if( mask.empty() ) memset( dst, 0, size*sizeof(SReal) ); // all violated
         else
         {
-            // by default elastic constraint, for not yet violated constraints
+            // for possible elastic constraint
             mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
-            map(dst, size) = -map(dst, size) / this->getContext()->getDt();
 
             unsigned i = 0;
             for(SReal* last = dst + size; dst < last; ++dst, ++i) {
                 if( mask[i] ) *dst = 0; // already violated
+                else *dst = -*dst / this->getContext()->getDt();
             }
         }
     }
