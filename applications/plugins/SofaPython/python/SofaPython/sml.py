@@ -205,11 +205,11 @@ class SceneDisplay(BaseScene):
    
     def createScene(self):
         model=self.model # shortcut
-        for name,rigid in model.rigids.iteritems():
-            print "Display rigid:",name
-            insertVisual(name, self.node, rigid, self.param.rigidColor)
+        for rigid in model.rigids.values():
+            print "Display rigid:",rigid.name
+            insertVisual(self.node, rigid, self.param.rigidColor)
         
-        for name,deformable in model.deformables.iteritems():
-            print "Display deformable:",name
-            insertVisual(name, self.node, deformable, self.param.deformableColor)
+        for deformable in model.deformables.values():
+            print "Display deformable:",deformable.name
+            insertVisual(self.node, deformable, self.param.deformableColor)
             
