@@ -91,7 +91,10 @@ int	Scene::rowCount(const QModelIndex & parent) const
 QVariant Scene::data(const QModelIndex& index, int role) const
 {
     if(!index.isValid() || index.row() >= mySceneModelItems.size())
-        return QVariant("Error");
+    {
+        qWarning("Invalid index");
+        return QVariant();
+    }
 
     const SceneModelItem& sceneModelItem = mySceneModelItems[index.row()];
 
@@ -101,7 +104,10 @@ QVariant Scene::data(const QModelIndex& index, int role) const
     BaseObject* object = sceneModelItem.object;
 
     if(0 == base)
-        return QVariant("Error");
+    {
+        qWarning("Item empty");
+        return QVariant();
+    }
 
     switch(role)
     {
@@ -117,7 +123,8 @@ QVariant Scene::data(const QModelIndex& index, int role) const
         return QVariant::fromValue(!object);
     }
 
-    return QVariant("");
+    qWarning("Role unknown");
+    return QVariant();
 }
 
 QHash<int,QByteArray> Scene::roleNames() const
@@ -693,8 +700,6 @@ void Scene::onSetData(const QString& path, const QVariant& value)
 
     if(!value.isNull())
     {
-        const void* valueVoidPtr = data->getValueVoidPtr();
-
         QVariant finalValue = value;
         if(finalValue.userType() == qMetaTypeId<QJSValue>())
             finalValue = finalValue.value<QJSValue>().toVariant();
