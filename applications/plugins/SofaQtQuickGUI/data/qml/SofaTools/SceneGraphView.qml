@@ -14,7 +14,7 @@ CollapsibleGroupBox {
     property Scene scene
 
     enabled: scene ? scene.ready : false
-
+/*
     GridLayout {
         id: layout
         anchors.fill: parent
@@ -86,4 +86,5 @@ CollapsibleGroupBox {
             }
         }
     }
+*/
 }
