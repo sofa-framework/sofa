@@ -27,7 +27,7 @@ void HolonomicConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bo
     // warning only cancelling relative velocities of violated constraints (given by mask)
 
     const mask_type& mask = this->mask.getValue();
-    assert( mask.getValue().empty() || mask.getValue().size() == size );
+    assert( mask.getValue().empty() || mask.getValue().size() == n );
 
     if( mask.empty() ){
         memset( dst, 0, size*sizeof(SReal) );
@@ -37,9 +37,9 @@ void HolonomicConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bo
         mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
 
         unsigned i = 0;
-        for(SReal* last = dst + size; dst < last; ++dst, ++i) {
-            if( mask[i] ) *dst = 0; // already violated
-            else *dst =  -*dst / this->getContext()->getDt(); // not violated -> elastic constraint
+        for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
+            if( mask[i] ) memset( dst, 0, dim*sizeof(SReal) ); // already violated
+            else map(dst, dim) = -map(dst, dim) / this->getContext()->getDt(); // not violated
         }
     }
 

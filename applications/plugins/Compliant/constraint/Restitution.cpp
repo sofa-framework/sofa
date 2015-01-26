@@ -1,4 +1,5 @@
 #include "Restitution.h"
+#include "../utils/map.h"
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -9,6 +10,8 @@ namespace odesolver {
 
 SOFA_DECL_CLASS(Restitution)
 int RestitutionClass = core::RegisterObject("Constraint value for elastic contact (with restitution)").add< Restitution >();
+
+using namespace utils;
 
 Restitution::Restitution( mstate_type* mstate )
     : ConstraintValue( mstate )
@@ -26,7 +29,7 @@ void Restitution::correction(SReal* dst, unsigned n, unsigned dim, const core::M
 
     unsigned size = n*dim;
 
-    assert( mask.getValue().empty() || mask.getValue().size() == size );
+    assert( mask.getValue().empty() || mask.getValue().size() == n );
 
     // copy constraint violation
     mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
@@ -38,11 +41,11 @@ void Restitution::correction(SReal* dst, unsigned n, unsigned dim, const core::M
     const mask_type& mask = this->mask.getValue();
 
     unsigned i = 0;
-    for(SReal* last = dst + size; dst < last; ++dst, ++i) {
-        if( (!mask.empty() && !mask[i]) || std::fabs(v[i]) > HARD_CODED_VELOCITY_THRESHOLD )
-            *dst = 0; // do not stabilize non violated or fast enough constraints
+    for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
+        if( (!mask.empty() && !mask[i]) || std::fabs(v[i*dim]) > HARD_CODED_VELOCITY_THRESHOLD )
+            memset( dst, 0, dim*sizeof(SReal) ); // do not stabilize non violated or fast enough constraints
         else
-            *dst = - *dst / this->getContext()->getDt(); // regular stabilized constraint
+            map(dst, dim) = -map(dst, dim) / this->getContext()->getDt(); // regular stabilized constraint
     }
 
     delete [] v;
@@ -76,21 +79,24 @@ void Restitution::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilizat
         //// first entry, along the normal
         unsigned line = i*dim;
 
-        if( ( mask.empty() || mask[line] ) ) // violated constraint
+        if( ( mask.empty() || mask[i] ) ) // violated constraint
         {
             if( std::fabs(v[line]) > HARD_CODED_VELOCITY_THRESHOLD ) // the constraint is fast enough too be solved in pure velocity
             {
                 dst[line] = - v[line] * restitution.getValue(); // we sneakily fake constraint error with reflected-adjusted relative velocity
+
+                //// next entries
+                if( dim > 1 )
+                {
+                    if( stabilization ) memset( &dst[line+1], 0, (dim-1)*sizeof(SReal) ); // regular stabilized constraint
+                    else map(&dst[line+1], dim-1) = -map(&dst[line+1], dim-1) / this->getContext()->getDt(); // regular elastic constraint
+                }
             }
             else
             {
-                if( stabilization ) dst[line] = 0;
-                else dst[line] = - dst[line] / this->getContext()->getDt(); // regular non stabilized unilateral contact
+                if( stabilization ) memset( &dst[line], 0, dim*sizeof(SReal) ); // regular stabilized constraint
+                else map(&dst[line], dim) = -map(&dst[line], dim) / this->getContext()->getDt(); // regular elastic constraint
             }
-
-            //// next entries
-            for( unsigned j=1 ; j<dim ; ++j )
-                dst[line+j] = - dst[line+j] / this->getContext()->getDt(); // regular non stabilized unilateral contact
 
         }
         else // non-violated
@@ -101,8 +107,7 @@ void Restitution::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilizat
             // and its lambda should be filtered out by the solver
 
             // to be more compatible with existing solver, let an approximation by enforcing to keep the same velocity
-            for( unsigned j=0 ; j<dim ; ++j )
-                dst[line+j] = v[line+j];
+            map(&dst[line], dim) = map(&v[line], dim);
         }
 
     }
@@ -111,7 +116,7 @@ void Restitution::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilizat
 }
 
 
-void Restitution::filterConstraints( std::vector<bool>& activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
+void Restitution::filterConstraints( const std::vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
 {
     // non-violated constraints with restitution MUST be deactivated
 
@@ -120,34 +125,31 @@ void Restitution::filterConstraints( std::vector<bool>& activateMask, const core
     unsigned size = n*dim;
 
     mask_type& mask = *this->mask.beginEdit();
-    mask.resize( size );
+    mask.resize( n );
 
-    activateMask.resize( n );
 
     SReal* violation = new SReal[size];
     mstate->copyToBuffer(violation, posId.getId(mstate.get()), size);
 
 
-    for( unsigned i=0 ; i<n ; ++i )
+    for( unsigned block=0 ; block<n ; ++block )
     {
-        unsigned line = i*dim; // first contraint line
+        unsigned line = block*dim; // first contraint line
         if( violation[line]<0 ) // violated constraint
         {
-            activateMask[i] = true;
-            for( unsigned int j=0 ; j<dim ; ++j )
-                mask[line+j]=1;
+            mask[block]=true;
         }
         else
         {
-            activateMask[i] = false;
-            for( unsigned int j=0 ; j<dim ; ++j )
-                mask[line+j]=0;
+            mask[block]=false;
         }
 
     }
 
     this->mask.endEdit();
     delete [] violation;
+
+    activateMask = &this->mask.getValue();
 
 }
 
