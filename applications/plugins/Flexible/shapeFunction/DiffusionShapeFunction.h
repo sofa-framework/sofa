@@ -50,7 +50,7 @@
 #define GAUSS_SEIDEL 0
 #define JACOBI 1
 #define CG 2
-#include <image/image_extlibs/DiffusionSolver/DiffusionSolver.h>
+#include <image/extlibs/DiffusionSolver/DiffusionSolver.h>
 
 
 
@@ -477,6 +477,14 @@ public:
 
 //                values.display("values");
 //                mask.display("mask");
+
+#ifndef NDEBUG
+                // checking that there is at least a one pixel outside border
+                // it is a limitation that dramatically improves performances by removing boundary testing
+                cimg_forXYZ(mask,x,y,z)
+                    if( x==0 || y==0 || z==0 || x==mask.width()-1 || y==mask.height()-1 || z==mask.depth()-1 )
+                        assert( mask(x,y,z) == DiffusionSolver<float>::OUTSIDE && "DiffusionShapeFunction mask must have at least one pixel outside border" );
+#endif
 
                 switch( this->solver.getValue().getSelectedId() )
                 {
