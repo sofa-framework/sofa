@@ -27,14 +27,12 @@ void VelocityConstraintValue::correction(SReal* dst, unsigned n, unsigned dim, c
 }
 
 
-void VelocityConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const
+void VelocityConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId&, const core::MultiVecDerivId&) const
 {
     assert( mstate );
 
     unsigned size = n*dim;
     assert( d_velocities.getValue().size() == size );
-
-    mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
 
 	using namespace utils;
     map(dst, size) = map( &d_velocities.getValue()[0], size );
