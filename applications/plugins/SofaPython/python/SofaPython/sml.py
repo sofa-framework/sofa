@@ -32,11 +32,10 @@ class Model:
             self.data=dict()
             for g in meshXml.iter("group"):
                 self.group[g.attrib["id"]] = Mesh.Group()
-                self.group[g.attrib["id"]].index = SofaPython.Tools.strToListInt(g.find("index").text)
+                self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
                 self.group[g.attrib["id"]].data = dict()
                 for d in g.iter("data"):
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)                    
-
     
     class Rigid:
         def __init__(self, objXml):
@@ -135,7 +134,7 @@ class Model:
         xmlUnits = modelXml.find("units")
         if not xmlUnits is None:
             for u in xmlUnits.attrib:
-                self.units[u]=float(xmlUnits.attrib[u])
+                self.units[u]=xmlUnits.attrib[u]
                 
     def parseMesh(self, obj, objXml):
         if not objXml.find("mesh") is None:
@@ -175,7 +174,7 @@ class Model:
             #joint = StructuralAPI.GenericRigidJoint(name, frames[0].node, frames[1].node, mask)
             #self.jointGenerics[j.attrib["id"]] = joint
             
-def insertVisual(self,parentNode,obj,color):
+def insertVisual(parentNode,obj,color):
     node = parentNode.createChild("node_"+obj.name)
     translation=obj.position[:3]
     rotation = Quaternion.to_euler(obj.position[3:])  * 180.0 / math.pi
