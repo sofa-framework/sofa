@@ -34,20 +34,20 @@ public:
     typedef typename Inherit::Intersection Intersection;
 
     Data< SReal > mu; ///< friction coef
-    Data< bool > horizontalConeProjection; ///< should the cone projection be horizontal? By default a regular orthogonal cone projection is performed.
+    Data< bool > horizontalConeProjection; ///< should the cone projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.
 
 protected:
 
     FrictionCompliantContact()
         : Inherit()
         , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
-        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal? By default a regular orthogonal cone projection is performed.") )
+        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.") )
     {}
 
     FrictionCompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
         , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
-        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal? By default a regular orthogonal cone projection is performed.") )
+        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.") )
     {}
 
 
