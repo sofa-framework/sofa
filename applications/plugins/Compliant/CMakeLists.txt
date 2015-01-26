@@ -103,6 +103,7 @@ set(HEADER_FILES
     utils/krylov.h
     utils/map.h
     utils/minres.h
+    utils/nan.h
     utils/pair.h
     utils/preconditionedcg.h
     utils/schur.h
@@ -208,8 +209,12 @@ install(TARGETS ${PROJECT_NAME}
         EXPORT  CompliantTargets
         RUNTIME DESTINATION "${COMPLIANT_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${COMPLIANT_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${COMPLIANT_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${COMPLIANT_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}")
+        ARCHIVE DESTINATION "${COMPLIANT_INSTALL_LIB_DIR}")
+
+foreach(HEADER ${HEADER_FILES})
+    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
+    install(FILES ${HEADER} DESTINATION "${COMPLIANT_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}/${DIR}")
+endforeach(HEADER HEADERS)
 
 
 include(CMakePackageConfigHelpers)
