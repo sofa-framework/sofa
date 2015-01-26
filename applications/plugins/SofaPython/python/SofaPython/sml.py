@@ -42,8 +42,6 @@ class Model:
         def __init__(self, xml):
             parseIdName(self,xml)
             self.position=Tools.strToListFloat(xml.find("position").text)
-            if not xml.find("mesh") is None:
-                self.mesh = xml.find("mesh").attrib["id"]
             if not xml.find("density") is None:
                 self.density=float(xml.find("density").text)
             if not xml.find("mass") is None:
@@ -100,6 +98,7 @@ class Model:
                     print "ERROR: sml.Model: rigid defined twice, id:", r.attrib["id"]
                     continue
                 rigid=Model.Rigid(r)
+                self.parseMesh(rigid, r)
                 self.rigids[rigid.id]=rigid
             
             # joints
@@ -111,7 +110,8 @@ class Model:
                     print "ERROR: sml.Model: deformable defined twice, id:", d.attrib["id"]
                     continue
                 deformable=Model.Deformable(d)
-                mesh=self.meshes[deformable.mesh] # shortcut
+                self.parseMesh(deformable, d)
+                mesh=deformable.mesh # shortcut
                 for s in d.iter("skinning"):
                     if not s.attrib["rigid"] in self.rigids:
                         print "ERROR: Compliant.sml.Scene: skinning for deformable {0}: rigid {1} is not defined".format(name, s.attrib["rigid"])
@@ -135,6 +135,14 @@ class Model:
         if not xmlUnits is None:
             for u in xmlUnits.attrib:
                 self.units[u]=float(xmlUnits.attrib[u])
+                
+    def parseMesh(self, obj, xml):
+        if not xml.find("mesh") is None:
+            meshId = xml.find("mesh").attrib["id"]
+            if meshId in self.meshes:
+                obj.mesh = self.meshes[meshId]
+            else:
+                print "ERROR: sml.Model: object {0} references undefined mesh {1}".format(obj.name, meshId)
 
     #def parseJointGenerics(self,modelXml): 
         #for j in modelXml.iter("jointGeneric"):
@@ -200,9 +208,9 @@ class SceneDisplay(BaseScene):
         model=self.model # shortcut
         for name,rigid in model.rigids.iteritems():
             print "Display rigid:",name
-            self.insertVisual(name,model.meshes[rigid.mesh].source,rigid.position,self.param.rigidColor)
+            self.insertVisual(name,rigid.mesh.source,rigid.position,self.param.rigidColor)
         
         for name,deformable in model.deformables.iteritems():
             print "Display deformable:",name
-            self.insertVisual(name,model.meshes[deformable.mesh].source,deformable.position,self.param.deformableColor)
+            self.insertVisual(name,deformable.mesh.source,deformable.position,self.param.deformableColor)
             
