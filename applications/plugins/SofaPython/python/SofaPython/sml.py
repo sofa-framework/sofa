@@ -198,7 +198,6 @@ class SceneDisplay(BaseScene):
 
     def insertVisual(self,name,mesh,position,color):
         node = self.node.createChild("node_"+name)
-        print "position:",position
         translation=position[:3]
         rotation = Quaternion.to_euler(position[3:])  * 180.0 / math.pi
         Tools.meshLoader(node, mesh, name="loader_"+name, translation=concat(translation),rotation=concat(rotation))
