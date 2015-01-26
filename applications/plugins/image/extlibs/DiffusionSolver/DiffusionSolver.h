@@ -1,7 +1,7 @@
 #ifndef __DIFFUSIONSOLVER_H__
 #define __DIFFUSIONSOLVER_H__
 
-#include "CImg/CImg.h"
+#include <CImg/CImg.h>
 
 /** Solving diffusion on 3D regular grids (stored as CImg)
  * @param size (in) the size of the regular domain in the 3 directions.
