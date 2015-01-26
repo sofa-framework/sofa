@@ -39,22 +39,23 @@ class Model:
 
     
     class Rigid:
-        def __init__(self, xml):
-            parseIdName(self,xml)
-            self.position=Tools.strToListFloat(xml.find("position").text)
-            if not xml.find("density") is None:
-                self.density=float(xml.find("density").text)
-            if not xml.find("mass") is None:
-                self.mass = float(xml.find("mass").text)
+        def __init__(self, objXml):
+            parseIdName(self,objXml)
+            self.position=Tools.strToListFloat(objXml.find("position").text)
+            self.mesh = None
+            if not objXml.find("density") is None:
+                self.density=float(objXml.find("density").text)
+            if not objXml.find("mass") is None:
+                self.mass = float(objXml.find("mass").text)
             
     #class JointGeneric:
         #def __init__(self, name="Unknown",object1,offset1,object2,offset2):
         #pass
     class Deformable:
-        def __init__(self,xml):
-            parseIdName(self,xml)
-            self.position = Tools.strToListFloat(xml.find("position").text)
-            self.mesh = xml.find("mesh").attrib["id"]
+        def __init__(self,objXml):
+            parseIdName(self,objXml)
+            self.position = Tools.strToListFloat(objXml.find("position").text)
+            self.mesh = None
             self.indices=dict()
             self.weights=dict()
     
@@ -136,9 +137,9 @@ class Model:
             for u in xmlUnits.attrib:
                 self.units[u]=float(xmlUnits.attrib[u])
                 
-    def parseMesh(self, obj, xml):
-        if not xml.find("mesh") is None:
-            meshId = xml.find("mesh").attrib["id"]
+    def parseMesh(self, obj, objXml):
+        if not objXml.find("mesh") is None:
+            meshId = objXml.find("mesh").attrib["id"]
             if meshId in self.meshes:
                 obj.mesh = self.meshes[meshId]
             else:
