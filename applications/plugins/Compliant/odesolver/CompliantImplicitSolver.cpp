@@ -270,7 +270,7 @@ using namespace core::behavior;
 
             if( !constraint.projector ) continue; // if bilateral nothing to filter
 
-            constraint.projector->mask.clear();
+            constraint.projector->mask = NULL;
             constraint.value->clear();
         }
     }
