@@ -16,6 +16,16 @@ def parseIdName(obj,objXml):
     obj.name = obj.id
     if not objXml.find("name") is None:
         obj.name = objXml.find("name").text
+        
+def parseData(xmlData):
+    """ return the list of data in xmlData
+    """
+    if xmlData.attrib["type"]=="float":
+        return Tools.strToListFloat(xmlData.text)
+    elif xmlData.attrib["type"]=="int":
+        return Tools.strToListInt(xmlData.text)
+    elif xmlData.attrib["type"]=="string":
+        return xmlData.text.split()
 
 class Model:
 
@@ -46,10 +56,35 @@ class Model:
                 self.density=float(objXml.find("density").text)
             if not objXml.find("mass") is None:
                 self.mass = float(objXml.find("mass").text)
+
+    class Offset:
+        def __init__(self, offsetXml):
+            self.name = "offset"
+            self.value = Tools.strToListFloat(offsetXml.text)
+            self.type = offsetXml.attrib["type"]
             
-    #class JointGeneric:
+        def isAbsolute(self):
+            return self.type == "absolute"
+        
+    class JointGeneric:
         #def __init__(self, name="Unknown",object1,offset1,object2,offset2):
-        #pass
+        def __init__(self, jointXml):
+            parseIdName(self,jointXml)
+            self.objects = [None,None]
+            # offsets
+            self.offsets = [None,None]
+            objects = jointXml.findall("object")
+            for i in range(0,2):
+                if not objects[i].find("offset") is None:
+                    self.offsets[i] = Model.Offset(objects[i].find("offset"))
+                    self.offsets[i].name = "offset_{0}".format(self.name)
+                    
+            # dofs
+            self.dofs = [0] * 6
+            for dof in jointXml.iter("dof"):
+                self.dofs[Model.dofIndex[dof.attrib["index"]]]=1
+                #TODO limits !
+        
     class Deformable:
         def __init__(self,objXml):
             parseIdName(self,objXml)
@@ -67,7 +102,7 @@ class Model:
         self.meshes=dict()
         self.rigids=dict()
         #self.rigidsbyType=dict()
-        self.jointGenerics=dict()
+        self.genericJoints=dict()
         self.deformables=dict()
         #self.deformablesByType=dict()
         
@@ -79,6 +114,7 @@ class Model:
 
             # units
             self.parseUnits(modelXml)
+            
             # meshes
             for m in modelXml.iter("mesh"):
                 if not m.find("source") is None:
@@ -102,7 +138,7 @@ class Model:
                 self.rigids[rigid.id]=rigid
             
             # joints
-            #self.parseJoints(modelXml)
+            self.parseJointGenerics(modelXml)
             
             #deformable
             for d in modelXml.iter("deformable"):
@@ -144,35 +180,21 @@ class Model:
             else:
                 print "ERROR: sml.Model: object {0} references undefined mesh {1}".format(obj.name, meshId)
 
-    #def parseJointGenerics(self,modelXml): 
-        #for j in modelXml.iter("jointGeneric"):
-            #joint=JointGeneric()
-            #parseIdName(joint,j)
+    def parseJointGenerics(self,modelXml):
+        for j in modelXml.iter("jointGeneric"):
+            if j.attrib["id"] in self.genericJoints:
+                print "ERROR: sml.Model: joint defined twice, id:", j.attrib["id"]
+                continue
 
-            #if j.attrib["id"] in self.joints:
-                #print "ERROR: sml.Model: joint defined twice, id:", j.attrib["id"]
-                #continue
-
-            #frames=list()
-            #for o in j.iter("object"):
-                #if not o.find("offset") is None:
-                    #frames.append(self.addOffset("offset_{0}".format(name), o.attrib["id"], o.find("offset")))
-                #else:
-                    #frames.append(self.rigids[o.attrib["id"]])
-            
-            #if len(frames) != 2:
-                #logging.error("ERROR: Compliant.sml.scene: generic joint expect two objects, {0} specified".format(len(frames)))
-
-            ## dofs
-            #mask = [1] * 6
-            #for dof in j.iter("dof"):
-                #mask[dofIndex[dof.attrib["index"]]]=0
-                ##TODO limits !
-
-            #self.jointGeneric[r.attrib["id"]]=rigid
-
-            #joint = StructuralAPI.GenericRigidJoint(name, frames[0].node, frames[1].node, mask)
-            #self.jointGenerics[j.attrib["id"]] = joint
+            joint=Model.JointGeneric(j)
+            objects=j.findall("object")
+            for i,o in enumerate(objects):
+                if o.attrib["id"] in self.rigids:
+                    joint.objects[i] = self.rigids[o.attrib["id"]]
+                #elif o.attrib["id"] in self.deformables: # TODO check id uniqueness in rigids and deformables first !
+                else:
+                    print "ERROR: sml.Model: in joint {0}, unknown object {1} referenced".format(joint.name, o.attrib["id"])
+            self.genericJoints[joint.id]=joint
             
 def insertVisual(parentNode,obj,color):
     node = parentNode.createChild("node_"+obj.name)
