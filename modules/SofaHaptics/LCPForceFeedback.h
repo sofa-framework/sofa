@@ -84,6 +84,9 @@ public:
     // deriv (or not) the rotations when updating the violations 
     Data <bool> d_derivRotations; 
 
+    // Enable/disable constraint haptic influence from all frames
+    Data< bool > d_localHapticConstraintAllFrames;
+
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz);
     virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &world_H_tool, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &V_tool_world, sofa::defaulttype::SolidTypes<SReal>::SpatialVector &W_tool_world );
     virtual void computeForce(const  VecCoord& state,  VecDeriv& forces);

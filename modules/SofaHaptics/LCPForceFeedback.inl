@@ -149,6 +149,7 @@ LCPForceFeedback<DataTypes>::LCPForceFeedback()
     : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
     , solverTimeout(initData(&solverTimeout, 0.0008, "solverTimeout","max time to spend solving constraints."))
     , d_derivRotations(initData(&d_derivRotations, false, "derivRotations", "if true, deriv the rotations when updating the violations"))
+    , d_localHapticConstraintAllFrames(initData(&d_localHapticConstraintAllFrames, false, "localHapticConstraintAllFrames", "Flag to enable/disable constraint haptic influence from all frames"))
     , mState(NULL)
     , mNextBufferId(0)
     , mCurBufferId(0)
@@ -281,6 +282,8 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
 
         derivVectors< DataTypes >(val, state, dx, d_derivRotations.getValue());
 
+        const bool localHapticConstraintAllFrames = d_localHapticConstraintAllFrames.getValue();
+
         // Modify Dfree
         MatrixDerivRowConstIterator rowItEnd = constraints.end();
         num_constraints = constraints.size();
@@ -291,7 +294,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
 
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                cp->getDfree()[rowIt.index()] += computeDot<DataTypes>(colIt.val(), dx[colIt.index()]);
+                cp->getDfree()[rowIt.index()] += computeDot<DataTypes>(colIt.val(), dx[localHapticConstraintAllFrames ? 0 : colIt.index()]);
             }
         }
 
@@ -309,7 +312,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
 
             for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
             {
-                cp->getDfree()[rowIt.index()] -= computeDot<DataTypes>(colIt.val(), dx[colIt.index()]);
+                cp->getDfree()[rowIt.index()] -= computeDot<DataTypes>(colIt.val(), dx[localHapticConstraintAllFrames ? 0 : colIt.index()]);
             }
         }
 
@@ -324,7 +327,7 @@ void LCPForceFeedback<DataTypes>::doComputeForce(const VecCoord& state,  VecDeri
 
                 for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
                 {
-                    tempForces[colIt.index()] += colIt.val() * cp->getF()[rowIt.index()];
+                    tempForces[localHapticConstraintAllFrames ? 0 : colIt.index()] += colIt.val() * cp->getF()[rowIt.index()];
                 }
             }
         }
