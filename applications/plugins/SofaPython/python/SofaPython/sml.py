@@ -175,6 +175,12 @@ class Model:
             #joint = StructuralAPI.GenericRigidJoint(name, frames[0].node, frames[1].node, mask)
             #self.jointGenerics[j.attrib["id"]] = joint
             
+def insertVisual(self,parentNode,obj,color):
+    node = parentNode.createChild("node_"+obj.name)
+    translation=obj.position[:3]
+    rotation = Quaternion.to_euler(obj.position[3:])  * 180.0 / math.pi
+    Tools.meshLoader(node, obj.mesh.source, name="loader_"+obj.name, translation=concat(translation),rotation=concat(rotation))
+    node.createObject("OglModel",src="@loader_"+obj.name, color=color)
 
 class BaseScene:
     class Param:
@@ -182,6 +188,7 @@ class BaseScene:
     def __init__(self,parentNode,model):
         self.model=model
         self.param=BaseScene.Param()
+        self.nodes = dict() # to store special nodes
         self.node=parentNode.createChild(self.model.name)
         
     def setupUnits(self):
@@ -196,21 +203,14 @@ class SceneDisplay(BaseScene):
         BaseScene.__init__(self,parentNode,model)
         self.param.rigidColor="1. 0. 0."
         self.param.deformableColor="0. 1. 0."
-
-    def insertVisual(self,name,mesh,position,color):
-        node = self.node.createChild("node_"+name)
-        translation=position[:3]
-        rotation = Quaternion.to_euler(position[3:])  * 180.0 / math.pi
-        Tools.meshLoader(node, mesh, name="loader_"+name, translation=concat(translation),rotation=concat(rotation))
-        node.createObject("OglModel",src="@loader_"+name, color=color)
-        
+   
     def createScene(self):
         model=self.model # shortcut
         for name,rigid in model.rigids.iteritems():
             print "Display rigid:",name
-            self.insertVisual(name,rigid.mesh.source,rigid.position,self.param.rigidColor)
+            insertVisual(name, self.node, rigid, self.param.rigidColor)
         
         for name,deformable in model.deformables.iteritems():
             print "Display deformable:",name
-            self.insertVisual(name,deformable.mesh.source,deformable.position,self.param.deformableColor)
+            insertVisual(name, self.node, deformable, self.param.deformableColor)
             
