@@ -7,7 +7,7 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(Restitution);
+SOFA_DECL_CLASS(Restitution)
 int RestitutionClass = core::RegisterObject("Constraint value for elastic contact (with restitution)").add< Restitution >();
 
 Restitution::Restitution( mstate_type* mstate )

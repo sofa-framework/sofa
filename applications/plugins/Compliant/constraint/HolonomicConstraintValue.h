@@ -7,8 +7,10 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-/// a constraint value that always enforces null relative velocity
-/// Jv+C\lambda=0
+/// a constraint value that always enforces null relative velocity Jv+C\lambda=0
+/// - the dynamics pass cancels relative velocity
+/// - the optional correction pass cancels the constraint violation
+/// W/o stabilization the constraints remains violated
 class SOFA_Compliant_API HolonomicConstraintValue : public Stabilization {
   public:
 

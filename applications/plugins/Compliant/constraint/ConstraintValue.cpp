@@ -10,13 +10,12 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(ConstraintValue);
+SOFA_DECL_CLASS(ConstraintValue)
 int ConstaintValueClass = core::RegisterObject("Constraint value abstraction").add< ConstraintValue >();
 
 
 ConstraintValue::ConstraintValue( mstate_type* mstate )
     : BaseConstraintValue( mstate )
-//    , dampingRatio( initData(&dampingRatio, SReal(0.0), "dampingRatio", "Weight of the velocity in the constraint violation"))
 {
 }
 
@@ -39,8 +38,6 @@ void ConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bool, const
 
 	using namespace utils;
     map(dst, size) = -map(dst, size) / this->getContext()->getDt();
-
-    // TODO damping
 	
 }
 

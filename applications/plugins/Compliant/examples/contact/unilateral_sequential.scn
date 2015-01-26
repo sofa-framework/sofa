@@ -10,7 +10,7 @@
   <BruteForceDetection />
 <!--   <DiscreteIntersection/> -->
   <NewProximityIntersection alarmDistance=".5" contactDistance=".05" />
-  <DefaultContactManager responseParams="damping=0&amp;compliance=0&amp;restitution=0" response="CompliantContact" />
+  <DefaultContactManager responseParams="damping=0&amp;compliance=0&amp;restitution=0&amp;holonomic=0" response="CompliantContact" />
 
   <CompliantImplicitSolver stabilization="1" />
   <SequentialSolver precision="1e-10" relative="false" iterations="500" />

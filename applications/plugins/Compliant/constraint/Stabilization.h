@@ -7,7 +7,13 @@ namespace sofa {
 namespace component {
 namespace odesolver {
 
-// a constraint value for stabilized holonomic constraints
+/// W/o stabilization it results in Elastic constraints (cf ConstraintValue.h)
+/// - the dynamics pass cancels the constraint violation
+/// - no correction pass
+///
+/// W stabilisation it results in Holonomic Constraints
+/// - the dynamics pass cancels relative velocity
+/// - the correction pass cancels the constraint violation
 class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
   public:
 
@@ -17,8 +23,7 @@ class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
 
 	/// flagging which constraint lines must be stabilized (if empty, all constraints are stabilized)
 	typedef vector<bool> mask_type;
-	Data<mask_type> mask;
-    bool m_holonomic;
+    Data<mask_type> mask;
 	
 	// value for stabilization
     virtual void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
