@@ -114,11 +114,11 @@ class Model:
                 mesh=deformable.mesh # shortcut
                 for s in d.iter("skinning"):
                     if not s.attrib["rigid"] in self.rigids:
-                        print "ERROR: Compliant.sml.Scene: skinning for deformable {0}: rigid {1} is not defined".format(name, s.attrib["rigid"])
+                        print "ERROR: sml.Model: skinning for deformable {0}: rigid {1} is not defined".format(name, s.attrib["rigid"])
                         continue
                     currentBone = self.rigids[s.attrib["rigid"]].boneIndex
                     if not (s.attrib["group"] in mesh.group and s.attrib["weight"] in mesh.group[s.attrib["group"]].data):
-                        print "ERROR: Compliant.sml.Scene: skinning for deformable {0}: group {1} - weight {2} is not defined".format(name, s.attrib["group"], s.attrib["weight"])
+                        print "ERROR: sml.Model: skinning for deformable {0}: group {1} - weight {2} is not defined".format(name, s.attrib["group"], s.attrib["weight"])
                         continue
                     group = mesh.group[s.attrib["group"]]
                     weight = group.data[s.attrib["weight"]]
