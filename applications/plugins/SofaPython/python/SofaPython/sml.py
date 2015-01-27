@@ -32,7 +32,9 @@ class Model:
     class Mesh:
 
         class Group:
-            pass
+            def __init__(self):
+                self.index=list()
+                self.data=dict()
         
         def __init__(self, meshXml):
             self.format = meshXml.find("source").attrib["format"]
@@ -41,9 +43,8 @@ class Model:
             self.group=dict()
             self.data=dict()
             for g in meshXml.iter("group"):
-                self.group[g.attrib["id"]] = Mesh.Group()
+                self.group[g.attrib["id"]] = Model.Mesh.Group()
                 self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
-                self.group[g.attrib["id"]].data = dict()
                 for d in g.iter("data"):
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)                    
     
@@ -52,6 +53,8 @@ class Model:
             parseIdName(self,objXml)
             self.position=Tools.strToListFloat(objXml.find("position").text)
             self.mesh = None
+            self.density=None
+            self.mass=None
             if not objXml.find("density") is None:
                 self.density=float(objXml.find("density").text)
             if not objXml.find("mass") is None:
@@ -86,12 +89,22 @@ class Model:
                 #TODO limits !
         
     class Deformable:
+        
+        class Skinning:
+            """ Skinning definition, vertices index influenced by rigid with weight
+            """
+            def __init__(self):
+                self.rigid=None
+                self.index=list()
+                self.weight=list()
+        
         def __init__(self,objXml):
             parseIdName(self,objXml)
             self.position = Tools.strToListFloat(objXml.find("position").text)
             self.mesh = None
             self.indices=dict()
             self.weights=dict()
+            self.skinnings=list()
     
     dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
     
@@ -148,22 +161,20 @@ class Model:
                 deformable=Model.Deformable(d)
                 self.parseMesh(deformable, d)
                 mesh=deformable.mesh # shortcut
+                
                 for s in d.iter("skinning"):
                     if not s.attrib["rigid"] in self.rigids:
                         print "ERROR: sml.Model: skinning for deformable {0}: rigid {1} is not defined".format(name, s.attrib["rigid"])
                         continue
-                    currentBone = self.rigids[s.attrib["rigid"]].boneIndex
+                    skinning = Model.Deformable.Skinning()
+                    skinning.rigid = self.rigids[s.attrib["rigid"]]
                     if not (s.attrib["group"] in mesh.group and s.attrib["weight"] in mesh.group[s.attrib["group"]].data):
                         print "ERROR: sml.Model: skinning for deformable {0}: group {1} - weight {2} is not defined".format(name, s.attrib["group"], s.attrib["weight"])
                         continue
-                    group = mesh.group[s.attrib["group"]]
-                    weight = group.data[s.attrib["weight"]]
-                    for index,weight in zip(group.index, weight):
-                        if not index in indices:
-                            indices[index]=list()
-                            weights[index]=list()
-                        deformable.indices[index].append(currentBone)
-                        deformable.weights[index].append(weight)
+                    skinning.index = mesh.group[s.attrib["group"]].index
+                    skinning.weight = mesh.group[s.attrib["group"]].data[s.attrib["weight"]]
+                    deformable.skinnings.append(skinning)
+                
                 self.deformables[deformable.id]=deformable
 
     def parseUnits(self, modelXml):
