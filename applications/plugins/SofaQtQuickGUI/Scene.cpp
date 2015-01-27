@@ -153,8 +153,11 @@ void Scene::update()
         BaseNode*   node;
     };
     std::stack<NodeIterator> nodeIterarorStack;
-
-    nodeIterarorStack.push({-1, 0, sofaSimulation()->GetRoot().get()});
+	NodeIterator nodeObject;
+	nodeObject.parent = -1;
+	nodeObject.depth = 0;
+	nodeObject.node = sofaSimulation()->GetRoot().get();
+    nodeIterarorStack.push(nodeObject);
     while(!nodeIterarorStack.empty())
     {
         NodeIterator& nodeIterator = nodeIterarorStack.top();
@@ -205,9 +208,11 @@ void Scene::update()
 
         // nodes
         for(int i = 0; i < node->getChildren().size(); ++i)
-        {
-            int j = node->getChildren().size() - 1 - i;
-            nodeIterarorStack.push({id, depth + 1, node->getChildren()[j]});
+		{
+			NodeIterator nodeTmp;
+			int j = node->getChildren().size() - 1 - i;
+			nodeTmp.parent=id; nodeTmp.depth=depth + 1; nodeTmp.node=node->getChildren()[j];
+            nodeIterarorStack.push(nodeTmp);
         }
     }
 
