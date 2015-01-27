@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 	app.setOrganizationName("Sofa");
 	app.setApplicationName("qtQuickSofa");
 
-    QSettings::setPath(QSettings::Format::IniFormat, QSettings::Scope::UserScope, "./user/config/");
+    QSettings::setPath(QSettings::Format::IniFormat, QSettings::Scope::UserScope, QCoreApplication::applicationDirPath() + "/config/");
     QSettings::setDefaultFormat(QSettings::Format::IniFormat);
 
     // use the default.ini settings if it is the first time the user launch the application
