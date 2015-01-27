@@ -1,7 +1,9 @@
-#include <GL/glew.h>
 #include "Viewer.h"
 #include "Scene.h"
 #include "Camera.h"
+
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawToolGL.h>
 
 #include <QtQuick/qquickwindow.h>
 #include <QQmlEngine>
@@ -200,8 +202,14 @@ void Viewer::paint()
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadMatrixf(myCamera->view().constData());
+	
+	// Get the camera position
+	QVector3D camera_position(myCamera->eye());
+	float cx = camera_position[0]; 
+	float cy = camera_position[1];
+	float cz = camera_position[2];
 
-	float light_position[] = { 1.0f, 1.0f, 1.0f, 0.0f};
+	float light_position[] = { cx, cy, cz, 0.0f};	// Use of the camera position for light
 	float light_ambient[]  = { 0.0f, 0.0f, 0.0f, 0.0f};
 	float light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 0.0f};
 	float light_specular[] = { 1.0f, 1.0f, 1.0f, 0.0f};
@@ -213,12 +221,35 @@ void Viewer::paint()
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
 
-	glEnable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 
 	// qt does not release its shader program and we do not use one so we have to release the current bound program
 	glUseProgram(0);
+
+	// prepare the sofa visual params
+	sofa::core::visual::VisualParams* _vparams = sofa::core::visual::VisualParams::defaultInstance();
+	if(_vparams)
+	{
+		if(!_vparams->drawTool())
+		{
+			_vparams->drawTool() = new sofa::core::visual::DrawToolGL();
+			_vparams->setSupported(sofa::core::visual::API_OpenGL);
+		}
+
+		GLint _viewport[4];
+		GLdouble _mvmatrix[16], _projmatrix[16];
+
+		glGetIntegerv (GL_VIEWPORT, _viewport);
+		glGetDoublev (GL_MODELVIEW_MATRIX, _mvmatrix);
+		glGetDoublev (GL_PROJECTION_MATRIX, _projmatrix);
+
+		_vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
+		_vparams->sceneBBox() = myScene->sofaSimulation()->GetRoot()->f_bbox.getValue();
+		_vparams->setProjectionMatrix(_projmatrix);
+		_vparams->setModelViewMatrix(_mvmatrix);
+	}
 
     myScene->draw();
 
