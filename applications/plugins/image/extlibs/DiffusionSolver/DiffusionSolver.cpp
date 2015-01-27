@@ -717,10 +717,18 @@ void DiffusionSolver< Real >::solveCG( ImageType& img, const MaskType& mask, Rea
 }
 
 
-
+#if !defined WIN32
+    #define EXPORT_DYNAMIC_LIBRARY
+#else
+    #define EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+    #ifdef _MSC_VER
+        #pragma warning(disable : 4231)
+        #pragma warning(disable : 4910)
+    #endif
+#endif
 
 
 // precompilation for single and double floating points
-template class DIFFUSION_SOLVER_DYNAMIC_LIBRARY DiffusionSolver<float>;
-//template class DIFFUSION_SOLVER_DYNAMIC_LIBRARY DiffusionSolver<double>;
+template class EXPORT_DYNAMIC_LIBRARY DiffusionSolver<float>;
+//template class EXPORT_DYNAMIC_LIBRARY DiffusionSolver<double>;
 
