@@ -65,20 +65,25 @@ endif()
 #for preprocessor definition of MINI_FLOWVR  
 set(MINI_FLOWVR TRUE)
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/MiniFlowVR.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/MiniFlowVR.h )
+                ${CMAKE_CURRENT_BINARY_DIR}/flowvr/MiniFlowVR.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/MiniFlowVR.h
-         DESTINATION "${MINIFLOWVR_INSTALL_INCLUDE_DIR}/miniFlowVR")
+         DESTINATION "${MINIFLOWVR_INSTALL_INCLUDE_DIR}/flowvr")
 
 set_target_properties( miniFlowVR  PROPERTIES DEBUG_POSTFIX "_d" )
 # set_target_properties( miniFlowVR  PROPERTIES VERSION ${MINIFLOWVR_VERSION} )
-set_target_properties( miniFlowVR  PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
+# set_target_properties( miniFlowVR  PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
 install(TARGETS miniFlowVR
         EXPORT  MiniFlowVRTargets
         RUNTIME DESTINATION "${MINIFLOWVR_INSTALL_BIN_DIR}" 
         LIBRARY DESTINATION "${MINIFLOWVR_INSTALL_LIB_DIR}" 
-        ARCHIVE DESTINATION "${MINIFLOWVR_INSTALL_LIB_DIR}" 
-        PUBLIC_HEADER DESTINATION "${MINIFLOWVR_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" )
+        ARCHIVE DESTINATION "${MINIFLOWVR_INSTALL_LIB_DIR}")
+
+foreach(HEADER ${HEADER_FILES})
+    string(REGEX MATCH "f(.*)[/\\]" DIR ${HEADER})
+    install(FILES ${HEADER} DESTINATION "${MINIFLOWVR_INSTALL_INCLUDE_DIR}/${DIR}")
+endforeach(HEADER HEADERS)
+
 include(CMakePackageConfigHelpers)
 
 # MiniFlowVRConfigVersion.cmake file (same for build tree and intall)
