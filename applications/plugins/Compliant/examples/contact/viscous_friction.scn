@@ -19,7 +19,7 @@
   <!-- same behavior for restitution -->
   <DefaultContactManager response="CompliantContact" responseParams="viscousFriction=0&amp;restitution=0" />
 	
-  <CompliantImplicitSolver stabilization="0" warm_start="1" />
+  <CompliantImplicitSolver stabilization="1" warm_start="1" />
 
   <SequentialSolver precision="1e-10" relative="false" iterations="1000" />
 	
