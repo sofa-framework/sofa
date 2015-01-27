@@ -104,7 +104,7 @@ template <>
 double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getElementMass(unsigned int ) const;
 
 template <>
-void UniformMass<gpu::cuda::CudaRigid3dTypes, Rigid3dMass>::draw(const core::visual::VisualParams* vparams);
+void UniformMass<gpu::cuda::CudaRigid3dTypes, sofa::defaulttype::Rigid3dMass>::draw(const core::visual::VisualParams* vparams);
 
 // CudaVec3d1
 template <>

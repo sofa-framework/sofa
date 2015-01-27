@@ -388,7 +388,7 @@ double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::RigidMass<3,do
 }
 
 template <>
-void UniformMass<gpu::cuda::CudaRigid3dTypes, RigidMass<3,double> >::draw(const core::visual::VisualParams* vparams )
+void UniformMass<gpu::cuda::CudaRigid3dTypes, sofa::defaulttype::RigidMass<3,double> >::draw(const core::visual::VisualParams* vparams )
 {
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;

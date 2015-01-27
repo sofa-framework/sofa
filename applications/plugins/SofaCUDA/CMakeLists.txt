@@ -1,9 +1,9 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(SofaCUDA)
 
-find_package(CUDA REQUIRED)
-
-# quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
-set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+set(SOFACUDA_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFACUDA_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFACUDA_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     sofa/gpu/cuda/mycuda.h
@@ -178,33 +178,94 @@ set(CUDA_SOURCES
 set(README_FILES SofaCUDA.txt)
 
 
-if(SOFA-EXTERNAL_HAVE_THRUST)
-    AddCompilerDefinitions("SOFA_GPU_THRUST")
-    AddLinkerDependencies(thrusT)
-endif()
+find_package(SofaAdvanced REQUIRED)
+find_package(CUDA REQUIRED)
 
-#Give current directory to nvcc compiler
+set(SOFACUDA_COMPILE_DEFINITIONS "-DSOFA_BUILD_GPU_CUDA")
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+# Give include directories to nvcc compiler
 cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-cuda_include_directories(${SOFA_FRAMEWORK_DIR})
-cuda_include_directories(${SOFA_EXTLIBS_DIR})
-cuda_include_directories(${SOFA_INC_DIR})
+cuda_include_directories(${SofaFramework_INCLUDE_DIRS})
 
-#Make these compiler definition available to nvcc
-add_definitions("-DSOFA_BUILD_GPU_CUDA")
-if(SOFA-EXTERNAL_GLEW)
-    add_definitions("-DSOFA_HAVE_GLEW")
+
+option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
+if(SOFACUDA_VERBOSE_PTXAS)
+    set(VERBOSE_PTXAS --ptxas-options=-v)
 endif()
 
-#Get nvcc compiler to build the library
+# Let nvcc build the library
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS})
-if(SOFA-CUDA_CUBLAS)
-    CUDA_ADD_CUBLAS_TO_TARGET(${PROJECT_NAME})
+
+option(SOFACUDA_DOUBLE "Activate double-precision support in CUDA (requires GT200+ GPU and -arch sm_13 flag." OFF)
+if(SOFACUDA_DOUBLE)
+    set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DSOFA_GPU_CUDA_DOUBLE")
+endif()
+
+option(SOFACUDA_PRECISE "Use IEEE 754-compliant floating point operations." OFF)
+if(SOFACUDA_PRECISE)
+    set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DSOFA_GPU_CUDA_PRECISE")
+endif()
+
+option(SOFACUDA_DOUBLE_PRECISE "Enable double-precision for sqrt/div... (requires compute capability >= 2 and CUDA_VERSION > 3.0)" OFF)
+# Note: with SOFA_GPU_CUDA_PRECISE and SOFA_GPU_CUDA_DOUBLE you get IEEE
+# 754-compliant floating point operations for addition and multiplication only.
+if(SOFACUDA_DOUBLE_PRECISE)
+    set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DSOFA_GPU_CUDA_DOUBLE_PRECISE")
+endif()
+
+option(SOFACUDA_CUBLAS "Activate cublas support in CUDA (requires SOFACUDA_DOUBLE)." OFF)
+if(SOFACUDA_CUBLAS)
+    cuda_add_cublas_to_target(${PROJECT_NAME})
+    list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
     find_package(CUDASparse REQUIRED)
-    #message(STATUS CUDA_SPARSE_LIBRARY=${CUDA_SPARSE_LIBRARY})
     target_link_libraries(${PROJECT_NAME} ${CUDA_SPARSE_LIBRARY})
 endif()
 
-AddCompilerDefinitions("SOFA_BUILD_GPU_CUDA")
-AddLinkerDependencies(SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
+option(SOFACUDA_CUDPP "Activate CUDPP (for RadixSort)." OFF)
+if(SOFACUDA_CUDPP)
+    set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DSOFA_GPU_CUDPP")
+    target_link_libraries(${PROJECT_NAME} cudpp)
+endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+# Note: THRUST is included in CUDA SDK 4.0+, it is recommended to use it if available
+option(SOFACUDA_THRUST "Activate THRUST (for RadixSort)" ON)
+if(SOFACUDA_USE_THRUST)
+    set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DSOFA_GPU_THRUST")
+    target_link_libraries(${PROJECT_NAME} thrust)
+endif()
+
+set(SOFACUDA_ARCH "sm_20" CACHE STRING "GPU architecture, as passed to nvcc with the -arch option.")
+
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -arch ${SOFA-CUDA_ARCH} -Xcompiler)
+
+if(NOT WIN32)
+    set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} -fPIC)
+endif()
+
+# nvcc uses a "host code compiler" to compile CPU code, specified by CUDA_HOST_COMPILER.
+# With some versions of CMake, CUDA_HOST_COMPILER defaults to CMAKE_C_COMPILER,
+# but few host compilers are actually supported. Workarounds should go here.
+if (${CUDA_HOST_COMPILER} MATCHES "ccache$")
+    set(CUDA_HOST_COMPILER "gcc" CACHE STRING "Host side compiler used by NVCC" FORCE)
+endif()
+
+# quick and dirty fix for nvcc compatibility with -fno-partial-inlining flag
+set(CUDA_PROPAGATE_HOST_FLAGS OFF)
+
+set(CUDA_NVCC_FLAGS_DEBUG "-g")
+set(CUDA_NVCC_FLAGS_RELEASE "-DNDEBUG")
+
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
+target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData SofaComponentAdvanced)
+
+# Make the compiler definitions available to nvcc
+add_definitions("${SOFACUDA_COMPILE_DEFINITIONS}")
+
+install(TARGETS ${PROJECT_NAME}
+    COMPONENT SofaCUDA_libraries
+    EXPORT SofaCUDATargets
+    RUNTIME DESTINATION "${SOFACUDA_INSTALL_BIN_DIR}"
+    LIBRARY DESTINATION "${SOFACUDA_INSTALL_LIB_DIR}"
+    ARCHIVE DESTINATION "${SOFACUDA_INSTALL_LIB_DIR}")
