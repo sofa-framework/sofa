@@ -27,7 +27,6 @@
 
 #include "initPlugin.h"
 #include <sofa/core/loader/SceneLoader.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/simulation/common/Node.h>
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
