@@ -182,6 +182,8 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
 
     assert(mBox->onSurface(_pt_on_second));
 
+	_is_colliding = true;
+
     return true;
 }
 
