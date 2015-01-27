@@ -106,7 +106,7 @@ void Restitution::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilizat
             // (ie flagged in Constraint::mask in projector)
             // and its lambda should be filtered out by the solver
 
-            // to be more compatible with existing solver, let an approximation by enforcing to keep the same velocity
+            // to be more compatible with existing solvers, let an approximation by enforcing to keep the same velocity
             map(&dst[line], dim) = map(&v[line], dim);
         }
 
@@ -116,7 +116,7 @@ void Restitution::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilizat
 }
 
 
-void Restitution::filterConstraints( const std::vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
+void Restitution::filterConstraints( const vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
 {
     // non-violated constraints with restitution MUST be deactivated
 

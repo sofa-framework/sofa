@@ -71,8 +71,6 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
 
-    // Define a
-    MultiVecDeriv a(&vop, pID);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
@@ -114,15 +112,25 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST
 
     if (cpt == 0 || this->getContext()->getTime()==0.0)
     {
-        a.clear();
         vop.v_alloc(pID);
-        mop.computeAcc(0,a,pos,vel);
 
+    }
+
+    // Define a
+    MultiVecDeriv a(&vop, pID);
+    if(cpt ==0)
+    {
+        a.clear();
+        mop.computeAcc(0,a,pos,vel);
     }
     cpt++;
 
     if( verbose )
+     {
         serr<<"NewmarkImplicitSolver, aPrevious = "<< a <<sendl;
+        serr<<"NewmarkImplicitSolver, xPrevious = "<< pos <<sendl;
+        serr<<"NewmarkImplicitSolver, vPrevious = "<< vel <<sendl;
+    }
 
     // 2. Compute right hand term of equation on a_{t+h}
 
