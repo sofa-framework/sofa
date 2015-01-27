@@ -230,15 +230,24 @@ class GenericRigidJoint:
     # The PositionController can be redefined
     PositionController=DefaultPositionController
 
-    def addGenericPositionController(self, target, compliance=0, mask=None):
-        """ Add a controller to this joint. target list must match mask list.
-        mask selects the controlled dof, if mask is None the joint natural dof are used
+    def addGenericPositionController(self, target=None, compliance=0, mask=None):
+        """ Add a controller to this joint.
+        The target list must match mask list, il no target is specified, current position is used as a target.
+        The mask list selects the controlled dof, if mask is None the joint natural dof are used.
         """
         if not mask is None:
             m=mask
         else:
             m = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.PositionController(self.node, m, target, compliance)
+        if not target is None:
+            t=target
+        else:
+            t=list()
+            for i,v in enumerate(m):
+                if v==1:
+                    t.append(self.dofs.position[0][i])
+        print "addGenericPositionController: target:", t
+        return GenericRigidJoint.PositionController(self.node, m, t, compliance)
 
     class ForceController:
         def __init__(self, node, mask, forces):
