@@ -92,8 +92,14 @@ void LennardJonesForceField<DataTypes>::addForce(const core::MechanicalParams* /
             if (d2 >= dmax2) continue;
             const Real d = (Real)sqrt(d2);
             const Real fa = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1);
+            Real forceIntensity;
             const Real fb = b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
-            Real forceIntensity = fa - fb;
+
+            if(beta.getValue() > 0)
+                forceIntensity = fa - fb;
+
+            else
+                forceIntensity = fa;
             //sout << ia<<"-"<<ib<<" d="<<d<<" f="<<forceIntensity<<sendl;
             DForce df;
             df.a = ia;
@@ -105,7 +111,11 @@ void LennardJonesForceField<DataTypes>::addForce(const core::MechanicalParams* /
             }
             else
             {
-                df.df = ((-alpha.getValue()-1)*fa - (-beta.getValue()-1)*fb)/(d*d2);
+                if(beta.getValue() > 0)
+                    df.df = ((-alpha.getValue()-1)*fa - (-beta.getValue()-1)*fb)/(d*d2);
+                else
+                    df.df = ((-alpha.getValue()-1)*fa)/(d*d2);
+
             }
             this->dforces.push_back(df);
             Deriv force = u*(forceIntensity/d);

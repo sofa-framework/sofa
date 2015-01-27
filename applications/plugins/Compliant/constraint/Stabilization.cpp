@@ -48,8 +48,9 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
 
     // warning iff stabilization, only cancelling relative velocities of violated constraints (given by mask)
 
+
+    assert( mask.getValue().empty() || mask.getValue().size() == n );
     const mask_type& mask = this->mask.getValue();
-    assert( mask.empty() || mask.size() == n );
 
     if( !stabilization )
     {
@@ -76,7 +77,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
 
 
 
-void Stabilization::filterConstraints( const std::vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
+void Stabilization::filterConstraints( const vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
 {
     // All the constraints remain active
     // but non-violated constraint must not be stabilized

@@ -11,6 +11,10 @@
 
 
 
+template < typename Real > const char DiffusionSolver< Real >::OUTSIDE   = -1;
+template < typename Real > const char DiffusionSolver< Real >::INSIDE    =  1;
+template < typename Real > const char DiffusionSolver< Real >::DIRICHLET =  0;
+
 
 template < typename Real >
 void DiffusionSolver< Real >::setNbThreads( unsigned nb )
@@ -717,18 +721,14 @@ void DiffusionSolver< Real >::solveCG( ImageType& img, const MaskType& mask, Rea
 }
 
 
-
-
-
-// visual studio export
 #ifndef WIN32
-#   define EXPORT_DYNAMIC_LIBRARY
+    #define EXPORT_DYNAMIC_LIBRARY
 #else
-#   define EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#   ifdef _MSC_VER
-#       pragma warning(disable : 4231)
-#       pragma warning(disable : 4910)
-#   endif
+    #define EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+    #ifdef _MSC_VER
+        #pragma warning(disable : 4231)
+        #pragma warning(disable : 4910)
+    #endif
 #endif
 
 
