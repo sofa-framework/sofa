@@ -119,6 +119,16 @@ simulation::Node::SPtr createGridScene(
         SReal stiffnessValue,
         SReal dampingRatio );
 
+simulation::Node::SPtr createMassSpringSystem(
+        simulation::Node::SPtr root,
+        double stiffness,
+        double mass,
+        double restLength,
+        VecCoord xFixedPoint,
+        VecDeriv vFixedPoint,
+        VecCoord xMass,
+        VecDeriv vMass);
+
 
 };
 
