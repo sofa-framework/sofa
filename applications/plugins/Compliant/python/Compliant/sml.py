@@ -9,29 +9,7 @@ import SofaPython.units
 from SofaPython import Quaternion
 from SofaPython.Tools import listToStr as concat
 import SofaPython.sml
-
-
-
-class Deformable:
-    
-    def __init__(self, node, name):
-        self.node = node.createChild( name )
-        self.dofs=None
-        
-    def setMesh(self, position, meshPath):
-        r = Quaternion.to_euler(position[3:])  * 180.0 / math.pi
-        self.meshLoader = SofaPython.Tools.meshLoader(self.node, meshPath, translation=concat(position[:3]) , rotation=concat(r))
-        self.topology = self.node.createObject('MeshTopology', name='topology', src="@"+self.meshLoader.name )
-        self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
-        
-    def addVisual(self):
-        return Deformable.VisualModel(self.node)
-    
-    class VisualModel:
-        def __init__(self, node ):
-            self.node = node.createChild("visual")
-            self.model = self.node.createObject('VisualModel', name="model")
-            self.mapping = self.node.createObject('IdentityMapping', name="mapping")
+import Flexible.sml
 
 def insertRigid(parentNode, rigidModel, param):
     print "rigid:", rigidModel.name
@@ -101,18 +79,30 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         for jointModel in self.model.genericJoints.values():
             self.joints[jointModel.id] = insertJoint(jointModel, self.rigids, self.param)
 
+class SceneSkinning(SceneArticulatedRigid) :
+    
+    def __init__(self, parentNode, model):
+        SceneArticulatedRigid.__init__(self, parentNode, model)
+        self.deformables = dict()
+        
+    def createScene(self):
+        SceneArticulatedRigid.createScene(self)
+        
         # all rigids (bones) must be gathered in a single node
         self.nodes["bones"] = self.node.createChild("bones")
-        bones = self.nodes["bones"].createObject("MechanicalObject", template = "Rigid3d", name="dofs")
+        self.nodes["bones"].createObject("MechanicalObject", template = "Rigid3d", name="dofs")
+        bonesId = list() # keep track of merged bones, bone index and bone id
         input=""
         indexPairs=""
-        for i,r in enumerate(self.rigids.values()):
-            r.node.addChild(self.nodes["bones"])
-            input += '@'+r.node.getPathName()+" "
-            indexPairs += str(i) + " 0 "
-            r.boneIndex=i
+        for rigidId,rigid in self.rigids.iteritems():
+            rigid.node.addChild(self.nodes["bones"])
+            input += '@'+rigid.node.getPathName()+" "
+            indexPairs += str(len(bonesId)) + " 0 "
+            bonesId.append(rigidId)
         self.nodes["bones"].createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
         
         #deformable
-        self.insertDeformables(modelXml, parentNode)
-                        
+        for deformableModel in self.model.deformables.values():
+            self.deformables[deformableModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, deformableModel, self.nodes["bones"].getPathName(), bonesId)
+        
+        
