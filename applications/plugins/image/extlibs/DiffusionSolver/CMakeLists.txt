@@ -9,7 +9,7 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
         set(CMAKE_C_LINK_FLAGS_RELEASE "${CMAKE_C_LINK_FLAGS_RELEASE} ${OpenMP_C_FLAGS}")
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
         set(CMAKE_CXX_LINK_FLAGS_RELEASE "${CMAKE_CXX_LINK_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
-        set(COMPILER_DEFINES "USING_OMP_PRAGMAS")
+        add_definitions(-DUSING_OMP_PRAGMAS)
     else()
         if(UNIX AND NOT APPLE)
             # GCC implements OpenMP, so if OpenMP is not "FOUND", then the current
@@ -19,7 +19,7 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
             set(CMAKE_CXX_COMPILER_ARG1 "")
             set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fopenmp")
             set(CMAKE_CXX_LINK_FLAGS_RELEASE "${CMAKE_CXX_LINK_FLAGS_RELEASE} -fopenmp")
-            set(COMPILER_DEFINES "USING_OMP_PRAGMAS")
+            add_definitions(-DUSING_OMP_PRAGMAS)
         else()
             # Using clang on OS X? Then no OpenMP...
             message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be single-threaded and very inefficient..." )
@@ -29,6 +29,8 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 endif()
+
+add_definitions(-DBUILD_DIFFUSIONSOLVER)
 
 add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
 

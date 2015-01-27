@@ -56,6 +56,29 @@ struct DiffusionSolver
 };
 
 
+#if !defined WIN32
+    #define EXPORT_DYNAMIC_LIBRARY
+    #define IMPORT_DYNAMIC_LIBRARY
+#else
+    #define EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+    #define IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+    #ifdef _MSC_VER
+        #pragma warning(disable : 4231)
+        #pragma warning(disable : 4910)
+    #endif
+#endif
+
+#ifdef BUILD_DIFFUSIONSOLVER
+    #define DIFFUSION_SOLVER_DYNAMIC_LIBRARY EXPORT_DYNAMIC_LIBRARY
+#else
+    #define DIFFUSION_SOLVER_DYNAMIC_LIBRARY IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#if !defined(DIFFUSIONSOLVER_CPP)
+    extern template class DIFFUSION_SOLVER_DYNAMIC_LIBRARY DiffusionSolver<float>;
+#endif
+
+
 
 
 #endif // __DIFFUSIONSOLVER_H__
