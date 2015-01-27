@@ -1,69 +1,35 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(THMPGSpatialHashing)
+
+set(THMPGSPATIALHASHING_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(THMPGSPATIALHASHING_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(THMPGSPATIALHASHING_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     initTHMPGSpatialHashingPlugin.h
-  THMPGSpatialHashing.h
-  THMPGHashTable.h
-)
+    THMPGSpatialHashing.h
+    THMPGHashTable.h)
 
 set(SOURCE_FILES
     initTHMPGSpatialHashingPlugin.cpp
-  THMPGSpatialHashing.cpp
-  THMPGHashTable.cpp
-)
+    THMPGSpatialHashing.cpp
+    THMPGHashTable.cpp)
 
-#set(README_FILES Compliant.txt)
-
-
-#if(WIN32)
-#	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-#	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-#else()
-#	include_directories("/usr/include/suitesparse/")
-#endif()
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-
-#AddCompilerDefinitions("SOFA_BUILD_THMPGSpatialHashing")
-#AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)
-
-# is this really useful?
-#if(NOT APPLE)
-#	AddLinkerDependencies(amd lapack blas camd colamd cholmod)
-#endif()
-
-# WIN32: copy the needed dlls from the lib dir to the Sofa bin dir
-#if(WIN32)
-#	file(GLOB sharedObjects "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
-#	foreach(sharedObject ${sharedObjects})
-#		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-#	endforeach()
-#endif()
-
-AddCompilerDefinitions("SOFA_BUILD_THMPGSPATIALHASHING")
-
-
-
-
-
-
-#### BOOST ######
-
-# linking with boost-system is needed
-# that means an installed version of boost is mandatory (sadly)
-# I loved the header-only boost
-if(NOT SOFA-EXTERNAL_BOOST)
-    message(FATAL_ERROR "THMPGSpatialHashing plugin needs a compiled Boost library >= 1.48. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
-endif()
-
+find_package(SofaBase REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
-AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_THMPGSPATIALHASHING")
+target_link_libraries(${PROJECT_NAME} SofaComponentBase)
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 if(LINUX OR UNIX AND NOT APPLE)
-    AddLinkerDependencies( rt ) # clock_gettime
+    target_link_libraries(${PROJECT_NAME} rt)   # for clock_gettime()
 endif()
 
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-include(custom.cmake OPTIONAL)
-
+install(TARGETS ${PROJECT_NAME}
+    COMPONENT THMPGSpatialHashing_libraries
+    EXPORT THMPGSpatialHashingTargets
+    RUNTIME DESTINATION "${THMPGSPATIALHASHING_INSTALL_BIN_DIR}"
+    LIBRARY DESTINATION "${THMPGSPATIALHASHING_INSTALL_LIB_DIR}"
+    ARCHIVE DESTINATION "${THMPGSPATIALHASHING_INSTALL_LIB_DIR}")
