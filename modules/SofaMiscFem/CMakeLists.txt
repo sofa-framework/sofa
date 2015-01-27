@@ -16,9 +16,9 @@ set(HEADER_FILES
 	MooneyRivlin.h
 	STVenantKirchhoff.h
 	VerondaWestman.h
-    material/BaseMaterial.h
-    material/NeoHookean.h
-    material/Ogden.h
+    BaseMaterial.h
+    NeoHookean.h
+    Ogden.h
     )
 
 set(SOURCE_FILES

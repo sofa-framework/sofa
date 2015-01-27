@@ -34,7 +34,7 @@
 #define SOFA_DOUBLE
 #endif
 
-#include <SofaMiscFem/material/BaseMaterial.h>
+#include <SofaMiscFem/BaseMaterial.h>
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
 #include <sofa/defaulttype/Vec.h>
