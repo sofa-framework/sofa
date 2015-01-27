@@ -12,7 +12,7 @@
   <NewProximityIntersection alarmDistance="2" contactDistance="0.1" />
 <!--   <MinProximityIntersection alarmDistance="2" contactDistance="0.1" /> -->
 
-	<!-- e = 0.5, the box should bounce to e^2 = 0.25 of the previous height -->
+   <!-- a null global friction coefficient force to use the product of frictionCoef per CollisionModel pair -->
   <DefaultContactManager response="FrictionCompliantContact" />
 	
   <CompliantImplicitSolver stabilization="1" warm_start="1" />
