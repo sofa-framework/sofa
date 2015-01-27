@@ -197,8 +197,9 @@ protected:
 
                 // compliance
                 typedef forcefield::UniformCompliance<defaulttype::Vec2Types> compliance_type;
+                compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
                 contact_node->addObject( compliance.get() );
-                compliance->compliance.setValue( this->compliance_value.getValue() );
+                compliance->compliance.setValue( this->compliance_value.getValue() + 1e-10 ); // viscous friction constraints are not prioritary
                 compliance->damping.setValue( this->damping_ratio.getValue() );
                 compliance->init();
 

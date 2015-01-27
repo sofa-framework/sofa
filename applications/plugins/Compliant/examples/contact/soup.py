@@ -1,7 +1,12 @@
 import Sofa
 
 
-FRICTION = 1
+NO_FRICTION = 0
+DRY_FRICTION = 1
+VISCOUS_FRICTION = 2
+
+
+FRICTION = VISCOUS_FRICTION
 
 
 def createScene(root):
@@ -26,8 +31,10 @@ def createScene(root):
 	root.createObject('NewProximityIntersection', name="Proximity", alarmDistance="0.2", contactDistance="0")
 	root.createObject('DefaultCollisionGroupManager')
 	
-	if FRICTION:
+	if FRICTION == DRY_FRICTION:
 		root.createObject('DefaultContactManager', name="Response", response="FrictionCompliantContact", responseParams="compliance=0&restitution=0&mu=0.1" )
+        elif FRICTION == VISCOUS_FRICTION:
+                root.createObject('DefaultContactManager', name="Response", response="CompliantContact", responseParams="compliance=0&restitution=0&viscousFriction=0.1" )
 	else:
 		root.createObject('DefaultContactManager', name="Response", response="CompliantContact", responseParams="compliance=0&restitution=0" )
 	
