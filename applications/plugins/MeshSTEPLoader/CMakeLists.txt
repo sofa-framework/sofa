@@ -1,80 +1,54 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(MeshSTEPLoader)
+
+set(MESHSTEPLOADER_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(MESHSTEPLOADER_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(MESHSTEPLOADER_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     MeshSTEPLoader.h
-    ParametricTriangleTopologyContainer.h 
+    ParametricTriangleTopologyContainer.h
     SingleComponent.inl
-    SingleComponent.h 
-    STEPShapeMapping.h 
+    SingleComponent.h
+    STEPShapeMapping.h
     initMeshSTEPLoader.h)
 
 set(SOURCE_FILES
-    MeshSTEPLoader.cpp 
-    ParametricTriangleTopologyContainer.cpp 
-    SingleComponent.cpp 
-    STEPShapeMapping.cpp 
+    MeshSTEPLoader.cpp
+    ParametricTriangleTopologyContainer.cpp
+    SingleComponent.cpp
+    STEPShapeMapping.cpp
     initMeshSTEPLoader.cpp)
 
 set(README_FILES PluginMeshSTEPLoader.txt)
 
+find_package(SofaBase REQUIRED)
 
-## OpenCascade
-if(WIN32 AND NOT SOFA-EXTERNAL_OPENCASCADE_PATH STREQUAL "")
-    set(OPENCASCADE_INCLUDE_DIR "${SOFA-EXTERNAL_OPENCASCADE_PATH}/ros/inc"
-        CACHE INTERNAL "OpenCascade include directory" FORCE)
-    set(OPENCASCADE_LIBRARIES_DIR "${SOFA-EXTERNAL_OPENCASCADE_PATH}/ros/win32/vc9/lib"
-        CACHE INTERNAL "OpenCascade library directory" FORCE)
-    mark_as_advanced(OPENCASCADE_INCLUDE_DIR)
-    mark_as_advanced(OPENCASCADE_LIBRARIES_DIR)
-else()
-    find_package(OpenCascade REQUIRED)
-endif()
-
-include_directories(${OPENCASCADE_INCLUDE_DIR})
-link_directories(${OPENCASCADE_LIBRARIES_DIR})
-
-if(WIN32)
-    #required for OpenCASCADE
-    AddCompilerDefinitions("WNT")
-endif()
-
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+find_package(OpenCascade REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+set(MESHSTEPLOADER_COMPILER_FLAGS "-DSOFA_BUILD_MESHSTEPLOADERPLUGIN")
+target_link_libraries(${PROJECT_NAME} SofaBaseTopology)
+target_link_libraries(${PROJECT_NAME} ${OPENCASCADE_LIBRARIES})
+include_directories(${OPENCASCADE_INCLUDE_DIR})
 
-AddCompilerDefinitions("SOFA_BUILD_MESHSTEPLOADERPLUGIN")
-AddLinkerDependencies(SofaBaseTopology)
-
-set(TKLibraries
-    TKBRep
-    TKernel
-    TKG3d
-    TKGeomBase
-    TKMath
-    TKMesh
-    TKPrim
-    TKShHealing
-    TKSTEP
-    TKSTEPBase
-    TKTopAlgo
-    TKXSBase)
-
-foreach(TKLibrary ${TKLibraries})
-    AddLinkerDependencies(${TKLibrary})
-endforeach()
-
-# copy dlls on Windows
 if(WIN32)
-    ## OpenCascade third party
-    file(GLOB sharedObjects "${SOFA-EXTERNAL_OPENCASCADE_PATH}/3rdparty/tbb30_018oss/bin/ia32/vc9/*.dll")
-    foreach(sharedObject ${sharedObjects})
-	file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-    endforeach()
-
-    ## OpenCascade core
-    file(GLOB sharedObjects "${SOFA-EXTERNAL_OPENCASCADE_PATH}/ros/win32/vc9/bin/*.dll")
-    foreach(sharedObject ${sharedObjects})
-	file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-    endforeach()
+    # required for OpenCASCADE
+    set(MESHSTEPLOADER_COMPILER_FLAGS "${MESHSTEPLOADER_COMPILER_FLAGS} -DWNT")
 endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_MESHSTEPLOADERPLUGIN")
+
+install(TARGETS ${PROJECT_NAME}
+    COMPONENT MeshSTEPLoader_libraries
+    EXPORT MeshSTEPLoaderTargets
+    RUNTIME DESTINATION "${MESHSTEPLOADER_INSTALL_BIN_DIR}"
+    LIBRARY DESTINATION "${MESHSTEPLOADER_INSTALL_LIB_DIR}"
+    ARCHIVE DESTINATION "${MESHSTEPLOADER_INSTALL_LIB_DIR}")
+
+if(WIN32)
+    # Copy OpenCascade DLLs
+    file(COPY ${OPENCASCADE_DLLS} DESTINATION bin)
+    install(FILES ${OPENCASCADE_DLLS} DESTINATION ${MESHSTEPLOADER_INSTALL_BIN_DIR})
+endif()
