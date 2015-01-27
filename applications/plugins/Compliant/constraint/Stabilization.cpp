@@ -49,7 +49,7 @@ void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabiliz
     // warning iff stabilization, only cancelling relative velocities of violated constraints (given by mask)
 
     const mask_type& mask = this->mask.getValue();
-    assert( mask.getValue().empty() || mask.getValue().size() == n );
+    assert( mask.empty() || mask.size() == n );
 
     if( !stabilization )
     {
