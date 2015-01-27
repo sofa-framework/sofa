@@ -70,7 +70,7 @@ def insertJoint(jointModel, rigids, param):
     #TODO limits !
     return joint
 
-class Scene(SofaPython.sml.BaseScene):
+class SceneArticulatedRigid(SofaPython.sml.BaseScene):
     """ Builds a (sub)scene from a model using compliant formulation
     
     <rigid>: if <density> is given, inertia is computed from mesh, else <mass> must be given
@@ -81,35 +81,11 @@ class Scene(SofaPython.sml.BaseScene):
         
         self.rigids = dict()
         self.joints = dict()
-        self.deformable = dict()
         
         self.param.showRigid=False
         self.param.showRigidScale=0.5 # SI unit (m)
         self.param.showOffset=False
         self.param.showOffsetScale=0.1 # SI unit (m)    
-
-    def insertDeformables(self, modelXml, parentNode):
-        for d in modelXml.iter("deformable"):
-            name = d.attrib["id"]
-            if d.find("name") is not None:
-                name = d.find("name").text
-            print "deformable:", name
-
-            position = SofaPython.Tools.strToListFloat(d.find("position").text)
-            mesh = self.meshes[d.find("mesh").attrib["id"]]
-            deformable=Deformable(parentNode,name)
-            self.nodes["bones"].addChild(deformable.node)
-            deformable.setMesh(position, os.path.join(os.path.dirname(self.filename),mesh.source))
-            deformable.addVisual()
-
-            indices=dict()
-            weights=dict()
-            
-
-            if len(indices)>0:
-                deformable.node.createObject("LinearMapping", template="Rigid3d,Vec3d", name="skinning", input="@"+self.nodes["bones"].getPathName(), indices=concat(indices.values()), weights=concat(weights.values()))
-
-            self.deformable[d.attrib["id"]]=deformable
 
     def createScene(self):
         self.node.createObject('RequiredPlugin', name = 'Flexible' )
@@ -124,8 +100,6 @@ class Scene(SofaPython.sml.BaseScene):
         # joints
         for jointModel in self.model.genericJoints.values():
             self.joints[jointModel.id] = insertJoint(jointModel, self.rigids, self.param)
-        
-        return
 
         # all rigids (bones) must be gathered in a single node
         self.nodes["bones"] = self.node.createChild("bones")

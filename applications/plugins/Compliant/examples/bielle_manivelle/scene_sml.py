@@ -17,7 +17,7 @@ def createScene(node):
     
     model = SofaPython.sml.Model(os.path.join(os.path.dirname(__file__), "bielle_manivelle.xml"))
     
-    scene_bielle_manivelle = Compliant.sml.Scene(node, model)
+    scene_bielle_manivelle = Compliant.sml.SceneArticulatedRigid(node, model)
     
     scene_bielle_manivelle.param.showRigid=True
     scene_bielle_manivelle.param.showOffset=True
