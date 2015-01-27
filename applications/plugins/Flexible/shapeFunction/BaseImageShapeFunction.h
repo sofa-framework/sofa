@@ -78,7 +78,7 @@ struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
     /// interpolate weights and their derivatives at a spatial position
     template<class BaseImageShapeFunction>
-    static void computeShapeFunction( BaseImageShapeFunction* This, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::MaterialToSpatial& /*M*/, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1 )
+    static void computeShapeFunction( BaseImageShapeFunction* This, const typename BaseImageShapeFunction::Coord& childPosition, typename BaseImageShapeFunction::VRef& ref, typename BaseImageShapeFunction::VReal& w, typename BaseImageShapeFunction::VGradient* dw=NULL, typename BaseImageShapeFunction::VHessian* ddw=NULL, const int /*cell*/=-1 )
     {
         typedef typename BaseImageShapeFunction::Real Real;
         typedef typename BaseImageShapeFunction::IndT IndT;
@@ -194,8 +194,6 @@ public:
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
-    typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
-    typedef typename Inherit::VMaterialToSpatial VMaterialToSpatial;
     //@}
 
     /** @name  Image data */
@@ -231,7 +229,7 @@ public:
 
 
     /// interpolate weights and their derivatives at a spatial position
-    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1)
+    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const int cell=-1)
     {
         // resize input
         unsigned int nbRef=this->f_nbRef.getValue();
@@ -240,12 +238,12 @@ public:
         if(dw) { dw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*dw)[j].fill(0); }
         if(ddw) { ddw->resize(nbRef); for (unsigned int j=0; j<nbRef; j++ ) (*ddw)[j].fill(0); }
 
-        // material to world transformation = image orientation
-        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(this->transform.getValue().getRotation() * (Real)M_PI / (Real)180.0);
-        Mat<3,3,Real> R; q.toMatrix(R);
-        for ( unsigned int i = 0; i < BaseImageShapeFunction::spatial_dimensions; i++ )  for ( unsigned int j = 0; j < BaseImageShapeFunction::spatial_dimensions; j++ ) M[i][j]=R[i][j];
+//        // material to world transformation = image orientation
+//        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(this->transform.getValue().getRotation() * (Real)M_PI / (Real)180.0);
+//        Mat<3,3,Real> R; q.toMatrix(R);
+//        for ( unsigned int i = 0; i < BaseImageShapeFunction::spatial_dimensions; i++ )  for ( unsigned int j = 0; j < BaseImageShapeFunction::spatial_dimensions; j++ ) M[i][j]=R[i][j];
 
-        BaseImageShapeFunctionSpecialization<ImageTypes::label>::computeShapeFunction( this, childPosition, M, ref, w, dw, ddw, cell );
+        BaseImageShapeFunctionSpecialization<ImageTypes::label>::computeShapeFunction( this, childPosition, ref, w, dw, ddw, cell );
 
         // normalize
         this->normalize(w,dw,ddw);
