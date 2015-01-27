@@ -27,7 +27,7 @@ void HolonomicConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, bo
     // warning only cancelling relative velocities of violated constraints (given by mask)
 
     const mask_type& mask = this->mask.getValue();
-    assert( mask.getValue().empty() || mask.getValue().size() == n );
+    assert( mask.empty() || mask.size() == n );
 
     if( mask.empty() ){
         memset( dst, 0, size*sizeof(SReal) );
