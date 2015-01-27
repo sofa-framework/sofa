@@ -238,8 +238,7 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -266,9 +265,8 @@ public:
         PFa=block.PFa;
     }
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         Ft=F0.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
@@ -337,8 +335,7 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -365,9 +362,8 @@ public:
         PFa=block.PFa;
     }
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         Ft=F0.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
@@ -437,8 +433,7 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -465,9 +460,8 @@ public:
         PFa=block.PFa;
     }
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Real& w, const Gradient& dw, const Hessian& /*ddw*/)
     {
-        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         Ft=F0.transposed()*dw;
         InCoord inverseInitialTransform = In::inverse(InPos);   // A0^{-1}
         SpatialCoord vectorInLocalCoordinates = inverseInitialTransform.pointToParent(SPos);  // q0
@@ -535,8 +529,7 @@ public:
     typedef Vec<dim,Real> Gradient;
     typedef Mat<dim,dim,Real> Hessian;
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     typedef Vec<mdim,Real> mGradient;
     typedef Mat<dim,mdim,Real> mHessian;
@@ -569,10 +562,8 @@ public:
         PFdFa=block.PFdFa;
     }
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Real& w, const Gradient& dw, const Hessian& ddw)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Real& w, const Gradient& dw, const Hessian& ddw)
     {
-        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
-
         Ft=F0.transposed()*dw;
         dFt=ddw.transposed()*F0;
 

@@ -242,8 +242,7 @@ class MLSJacobianBlock< Affine3(InReal) , F331(OutReal) > :
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -268,9 +267,8 @@ class MLSJacobianBlock< Affine3(InReal) , F331(OutReal) > :
     OutCoord PFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
     OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M      =  constant term
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
     {
-        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
         Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
@@ -343,8 +341,7 @@ class MLSJacobianBlock< Affine3(InReal) , F321(OutReal) > :
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -369,9 +366,8 @@ class MLSJacobianBlock< Affine3(InReal) , F321(OutReal) > :
     OutCoord PFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
     OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M      =  constant term
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
     {
-        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
         Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
@@ -444,8 +440,7 @@ class MLSJacobianBlock< Affine3(InReal) , F311(OutReal) > :
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     typedef Vec<mdim,Real> mGradient;
 
@@ -470,9 +465,8 @@ class MLSJacobianBlock< Affine3(InReal) , F311(OutReal) > :
     OutCoord PFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M   =  dF/dA
     OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M      =  constant term
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Basis& p, const Gradient& dp, const Hessian& /*ddp*/)
     {
-        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
         Ft=F0.transposed()*dw;
         Mat<dim,dim,Real> gradps; for (unsigned int j = 0; j < dim; ++j) for (unsigned int k = 0; k < dim; ++k) gradps(j,k)=dp[k][j+1];
@@ -544,8 +538,7 @@ class MLSJacobianBlock< Affine3(InReal) , F332(OutReal) > :
     typedef Mat<dim,dim,Basis> Hessian;
 
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     typedef Vec<mdim,Real> mGradient;
     typedef Mat<dim,mdim,Real> mHessian;
@@ -576,9 +569,8 @@ class MLSJacobianBlock< Affine3(InReal) , F332(OutReal) > :
     OutCoord PFdFa;      ///< =   A0^{-1}.(grad p*- t0.grad w).M, [A0^{-1}.[ grad2(p*)_k - t0.grad2(w)_k].M]   =  dF/dA , d (grad F)_k/dA
     OutCoord C;   ///< =  (p0.grad w + w.I - grad p*).M , [( I_k.grad w + p0.(grad2 w)_k + (grad w)_k.I - (grad2 p*)_k).M ]       =  constant term
 
-    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& M, const Basis& p, const Gradient& dp, const Hessian& ddp)
+    void init( const InCoord& InPos, const OutCoord& /*OutPos*/, const SpatialCoord& SPos, const MaterialToSpatial& F0, const Basis& p, const Gradient& dp, const Hessian& ddp)
     {
-        Ftype F0; for(unsigned int i=0; i<dim; ++i) for(unsigned int j=0; j<mdim; ++j) F0[i][j]=M[i][j];
         Mat<dim,dim,Real> A0inv=In::inverse(InPos).getAffine();
 
         SpatialCoord dw; for(unsigned int i=0; i<dim; i++) dw[i]=dp[i][0];
