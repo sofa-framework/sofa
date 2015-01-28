@@ -3,16 +3,16 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initMiscSolver.h 
-    ../odesolver/DampVelocitySolver.h 
-    ../odesolver/NewmarkImplicitSolver.h
+    # ../odesolver/DampVelocitySolver.h 
+    # ../odesolver/NewmarkImplicitSolver.h
 
     )
     
 set(SOURCE_FILES
 
     ../initMiscSolver.cpp 
-    ../odesolver/DampVelocitySolver.cpp 
-    ../odesolver/NewmarkImplicitSolver.cpp 
+    # ../odesolver/DampVelocitySolver.cpp 
+    # ../odesolver/NewmarkImplicitSolver.cpp 
     
     )
 

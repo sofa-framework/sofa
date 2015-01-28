@@ -3,14 +3,14 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initMisc.h 
-    ../misc/MeshTetraStuffing.h
+    # ../misc/MeshTetraStuffing.h
 
     )
     
 set(SOURCE_FILES
 
     ../initMisc.cpp 
-    ../misc/MeshTetraStuffing.cpp
+    # ../misc/MeshTetraStuffing.cpp
   
     )
 

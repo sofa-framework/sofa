@@ -3,20 +3,20 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initExplicitODESolver.h 
-    ../odesolver/CentralDifferenceSolver.h 
+    # ../odesolver/CentralDifferenceSolver.h 
     ../odesolver/EulerSolver.h 
-    ../odesolver/RungeKutta2Solver.h 
-    ../odesolver/RungeKutta4Solver.h
+    # ../odesolver/RungeKutta2Solver.h 
+    # ../odesolver/RungeKutta4Solver.h
 
     )
     
 set(SOURCE_FILES
 
     ../initExplicitODESolver.cpp 
-    ../odesolver/CentralDifferenceSolver.cpp 
+    # ../odesolver/CentralDifferenceSolver.cpp 
     ../odesolver/EulerSolver.cpp 
-    ../odesolver/RungeKutta2Solver.cpp 
-    ../odesolver/RungeKutta4Solver.cpp
+    # ../odesolver/RungeKutta2Solver.cpp 
+    # ../odesolver/RungeKutta4Solver.cpp
 
     )
 

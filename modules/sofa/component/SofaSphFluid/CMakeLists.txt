@@ -3,16 +3,16 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initSPHFluid.h 
-    ../container/SpatialGridContainer.h 
-    ../container/SpatialGridContainer.inl 
-    ../forcefield/SPHFluidForceField.h 
-    ../forcefield/SPHFluidForceField.inl 
-    ../mapping/SPHFluidSurfaceMapping.h 
-    ../mapping/SPHFluidSurfaceMapping.inl 
-    ../misc/ParticleSink.h 
-    ../misc/ParticleSource.h 
-    ../forcefield/ParticlesRepulsionForceField.h 
-    ../forcefield/ParticlesRepulsionForceField.inl
+    # ../container/SpatialGridContainer.h 
+    # ../container/SpatialGridContainer.inl 
+    # ../forcefield/SPHFluidForceField.h 
+    # ../forcefield/SPHFluidForceField.inl 
+    # ../mapping/SPHFluidSurfaceMapping.h 
+    # ../mapping/SPHFluidSurfaceMapping.inl 
+    # ../misc/ParticleSink.h 
+    # ../misc/ParticleSource.h 
+    # ../forcefield/ParticlesRepulsionForceField.h 
+    # ../forcefield/ParticlesRepulsionForceField.inl
 
     )
     

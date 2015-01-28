@@ -42,7 +42,7 @@ void initGraphComponent()
     }
 }
 
-SOFA_LINK_CLASS(AddFrameButtonSetting)
+//SOFA_LINK_CLASS(AddFrameButtonSetting)
 SOFA_LINK_CLASS(AttachBodyButtonSetting)
 SOFA_LINK_CLASS(BackgroundSetting)
 SOFA_LINK_CLASS(FixPickedParticleButtonSetting)

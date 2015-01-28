@@ -42,7 +42,7 @@ void initExplicitODESolver()
     }
 }
 
-SOFA_LINK_CLASS(CentralDifferenceSolver)
+//SOFA_LINK_CLASS(CentralDifferenceSolver)
 
 } // namespace component
 

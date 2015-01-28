@@ -42,7 +42,7 @@ void initMisc()
     }
 }
 
-SOFA_LINK_CLASS(MeshTetraStuffing)
+//SOFA_LINK_CLASS(MeshTetraStuffing)
 
 } // namespace component
 

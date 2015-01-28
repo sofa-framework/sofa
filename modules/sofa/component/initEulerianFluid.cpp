@@ -42,8 +42,8 @@ void initEulerianFluid()
     }
 }
 
-SOFA_LINK_CLASS(Fluid2D)
-SOFA_LINK_CLASS(Fluid3D)
+//SOFA_LINK_CLASS(Fluid2D)
+//SOFA_LINK_CLASS(Fluid3D)
 
 } // namespace component
 

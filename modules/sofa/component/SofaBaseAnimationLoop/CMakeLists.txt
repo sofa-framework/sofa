@@ -3,15 +3,15 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	../initBaseAnimationLoop.h
-    ../animationloop/MultiStepAnimationLoop.h
-    ../animationloop/MultiTagAnimationLoop.h
+    # ../animationloop/MultiStepAnimationLoop.h
+    # ../animationloop/MultiTagAnimationLoop.h
 	)
 
 set(SOURCE_FILES
 
 	../initBaseAnimationLoop.cpp
-    ../animationloop/MultiStepAnimationLoop.cpp
-    ../animationloop/MultiTagAnimationLoop.cpp
+    # ../animationloop/MultiStepAnimationLoop.cpp
+    # ../animationloop/MultiTagAnimationLoop.cpp
 	)
 
 set(GROUP_BASE_DIR "..")

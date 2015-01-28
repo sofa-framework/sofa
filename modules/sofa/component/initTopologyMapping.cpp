@@ -42,19 +42,19 @@ void initTopologyMapping()
     }
 }
 
-SOFA_LINK_CLASS(Mesh2PointMechanicalMapping)
-SOFA_LINK_CLASS(SimpleTesselatedTetraMechanicalMapping)
-SOFA_LINK_CLASS(CenterPointTopologicalMapping)
-SOFA_LINK_CLASS(Edge2QuadTopologicalMapping)
-SOFA_LINK_CLASS(Hexa2QuadTopologicalMapping)
-SOFA_LINK_CLASS(Hexa2TetraTopologicalMapping)
-SOFA_LINK_CLASS(Mesh2PointTopologicalMapping)
-SOFA_LINK_CLASS(Quad2TriangleTopologicalMapping)
-SOFA_LINK_CLASS(SimpleTesselatedHexaTopologicalMapping)
-SOFA_LINK_CLASS(SimpleTesselatedTetraTopologicalMapping)
-SOFA_LINK_CLASS(Tetra2TriangleTopologicalMapping)
-SOFA_LINK_CLASS(Triangle2EdgeTopologicalMapping)
-SOFA_LINK_CLASS(IdentityTopologicalMapping)
+//SOFA_LINK_CLASS(Mesh2PointMechanicalMapping)
+//SOFA_LINK_CLASS(SimpleTesselatedTetraMechanicalMapping)
+//SOFA_LINK_CLASS(CenterPointTopologicalMapping)
+//SOFA_LINK_CLASS(Edge2QuadTopologicalMapping)
+//SOFA_LINK_CLASS(Hexa2QuadTopologicalMapping)
+//SOFA_LINK_CLASS(Hexa2TetraTopologicalMapping)
+//SOFA_LINK_CLASS(Mesh2PointTopologicalMapping)
+//SOFA_LINK_CLASS(Quad2TriangleTopologicalMapping)
+//SOFA_LINK_CLASS(SimpleTesselatedHexaTopologicalMapping)
+//SOFA_LINK_CLASS(SimpleTesselatedTetraTopologicalMapping)
+//SOFA_LINK_CLASS(Tetra2TriangleTopologicalMapping)
+//SOFA_LINK_CLASS(Triangle2EdgeTopologicalMapping)
+//SOFA_LINK_CLASS(IdentityTopologicalMapping)
 
 
 } // namespace component

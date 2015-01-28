@@ -3,29 +3,29 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initMiscFEM.h 
-    ../forcefield/FastTetrahedralCorotationalForceField.h 
-    ../forcefield/FastTetrahedralCorotationalForceField.inl 
-    ../forcefield/TetrahedralTensorMassForceField.h 
-    ../forcefield/TetrahedralTensorMassForceField.inl 
-	../forcefield/StandardTetrahedralFEMForceField.h
-	../forcefield/StandardTetrahedralFEMForceField.inl
-	../fem/material/BoyceAndArruda.h
-	../fem/material/Costa.h
-	../fem/material/HyperelasticMaterial.h
-	../fem/material/MooneyRivlin.h
-	../fem/material/PlasticMaterial.h
-	../fem/material/STVenantKirchhoff.h
-	../fem/material/VerondaWestman.h
+ #    ../forcefield/FastTetrahedralCorotationalForceField.h 
+ #    ../forcefield/FastTetrahedralCorotationalForceField.inl 
+ #    ../forcefield/TetrahedralTensorMassForceField.h 
+ #    ../forcefield/TetrahedralTensorMassForceField.inl 
+	# ../forcefield/StandardTetrahedralFEMForceField.h
+	# ../forcefield/StandardTetrahedralFEMForceField.inl
+	# ../fem/material/BoyceAndArruda.h
+	# ../fem/material/Costa.h
+	# ../fem/material/HyperelasticMaterial.h
+	# ../fem/material/MooneyRivlin.h
+	# ../fem/material/PlasticMaterial.h
+	# ../fem/material/STVenantKirchhoff.h
+	# ../fem/material/VerondaWestman.h
 
     )
     
 set(SOURCE_FILES
 
     ../initMiscFEM.cpp 
-    ../forcefield/FastTetrahedralCorotationalForceField.cpp 
-    ../forcefield/TetrahedralTensorMassForceField.cpp 
- 	../forcefield/StandardTetrahedralFEMForceField.cpp
-	../fem/material/PlasticMaterial.cpp
+ #    ../forcefield/FastTetrahedralCorotationalForceField.cpp 
+ #    ../forcefield/TetrahedralTensorMassForceField.cpp 
+ # 	../forcefield/StandardTetrahedralFEMForceField.cpp
+	# ../fem/material/PlasticMaterial.cpp
 
     )
 

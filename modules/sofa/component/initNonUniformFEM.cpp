@@ -42,17 +42,17 @@ void initNonUniformFEM()
     }
 }
 
-SOFA_LINK_CLASS(NonUniformHexahedralFEMForceFieldAndMass)
-//SOFA_LINK_CLASS(NonUniformHexahedronFEMForceFieldDensity)
-SOFA_LINK_CLASS(DynamicSparseGridGeometryAlgorithms)
-SOFA_LINK_CLASS(DynamicSparseGridTopologyAlgorithms)
-SOFA_LINK_CLASS(DynamicSparseGridTopologyContainer)
-SOFA_LINK_CLASS(DynamicSparseGridTopologyModifier)
-SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyContainer)
-SOFA_LINK_CLASS(SparseGridMultipleTopology)
-SOFA_LINK_CLASS(SparseGridRamificationTopology)
-SOFA_LINK_CLASS(HexahedronCompositeFEMForceFieldAndMass)
-SOFA_LINK_CLASS(HexahedronCompositeFEMMapping)
+// SOFA_LINK_CLASS(NonUniformHexahedralFEMForceFieldAndMass)
+// //SOFA_LINK_CLASS(NonUniformHexahedronFEMForceFieldDensity)
+// SOFA_LINK_CLASS(DynamicSparseGridGeometryAlgorithms)
+// SOFA_LINK_CLASS(DynamicSparseGridTopologyAlgorithms)
+// SOFA_LINK_CLASS(DynamicSparseGridTopologyContainer)
+// SOFA_LINK_CLASS(DynamicSparseGridTopologyModifier)
+// SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyContainer)
+// SOFA_LINK_CLASS(SparseGridMultipleTopology)
+// SOFA_LINK_CLASS(SparseGridRamificationTopology)
+// SOFA_LINK_CLASS(HexahedronCompositeFEMForceFieldAndMass)
+// SOFA_LINK_CLASS(HexahedronCompositeFEMMapping)
 
 } // namespace component
 

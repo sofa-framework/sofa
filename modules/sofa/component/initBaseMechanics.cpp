@@ -48,7 +48,7 @@ SOFA_LINK_CLASS(DiagonalMass)
 SOFA_LINK_CLASS(UniformMass)
 SOFA_LINK_CLASS(BarycentricMapping)
 SOFA_LINK_CLASS(IdentityMapping)
-SOFA_LINK_CLASS(SubsetMapping)
+//SOFA_LINK_CLASS(SubsetMapping)
 
 } // namespace component
 

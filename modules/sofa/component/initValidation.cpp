@@ -42,13 +42,13 @@ void initValidation()
     }
 }
 
-SOFA_LINK_CLASS(DevAngleCollisionMonitor)
-SOFA_LINK_CLASS(DevTensionMonitor)
-SOFA_LINK_CLASS(DevMonitorManager)
-SOFA_LINK_CLASS(ExtraMonitor)
-SOFA_LINK_CLASS(Monitor)
-SOFA_LINK_CLASS(EvalPointsDistance)
-SOFA_LINK_CLASS(EvalSurfaceDistance)
+//SOFA_LINK_CLASS(DevAngleCollisionMonitor)
+//SOFA_LINK_CLASS(DevTensionMonitor)
+//SOFA_LINK_CLASS(DevMonitorManager)
+//SOFA_LINK_CLASS(ExtraMonitor)
+//SOFA_LINK_CLASS(Monitor)
+//SOFA_LINK_CLASS(EvalPointsDistance)
+//SOFA_LINK_CLASS(EvalSurfaceDistance)
 
 } // namespace component
 

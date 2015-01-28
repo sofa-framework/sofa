@@ -3,18 +3,18 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initDenseSolver.h 
-    ../linearsolver/LULinearSolver.h 
-    ../linearsolver/NewMatVector.h 
-    ../linearsolver/NewMatMatrix.h
+    # ../linearsolver/LULinearSolver.h 
+    # ../linearsolver/NewMatVector.h 
+    # ../linearsolver/NewMatMatrix.h
     
     )
     
 set(SOURCE_FILES
 
     ../initDenseSolver.cpp 
-    ../linearsolver/LULinearSolver.cpp 
-    ../linearsolver/NewMatCGLinearSolver.cpp 
-    ../linearsolver/NewMatCholeskySolver.cpp
+    # ../linearsolver/LULinearSolver.cpp 
+    # ../linearsolver/NewMatCGLinearSolver.cpp 
+    # ../linearsolver/NewMatCholeskySolver.cpp
     
     )
 

@@ -3,36 +3,36 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initMiscCollision.h 
-    ../collision/TriangleModelInRegularGrid.h
-    ../collision/RuleBasedContactManager.h 
-    ../collision/DefaultCollisionGroupManager.h 
-    ../collision/SolverMerger.h 
-    ../collision/TetrahedronDiscreteIntersection.h 
-    ../collision/SpatialGridPointModel.h 
-    ../collision/TetrahedronModel.h 
-    ../collision/BarycentricStickContact.h 
-    ../collision/BarycentricStickContact.inl 
+    # ../collision/TriangleModelInRegularGrid.h
+    # ../collision/RuleBasedContactManager.h 
+#    ../collision/DefaultCollisionGroupManager.h
+#     ../collision/SolverMerger.h
+    # ../collision/TetrahedronDiscreteIntersection.h 
+    # ../collision/SpatialGridPointModel.h 
+    # ../collision/TetrahedronModel.h 
+    # ../collision/BarycentricStickContact.h 
+    # ../collision/BarycentricStickContact.inl 
 
     )
     
 set(SOURCE_FILES
 
     ../initMiscCollision.cpp 
-	../collision/FrictionContact_DistanceGrid.cpp 
-    ../collision/TriangleModelInRegularGrid.cpp
-    ../collision/RuleBasedContactManager.cpp 
-    ../collision/DefaultCollisionGroupManager.cpp 
-    ../collision/SolverMerger.cpp 
-	../collision/TetrahedronDiscreteIntersection.cpp 
-    ../collision/SpatialGridPointModel.cpp 
-    ../collision/TetrahedronModel.cpp 
-    ../collision/TetrahedronBarycentricPenalityContact.cpp 
-    ../collision/TetrahedronRayContact.cpp 
-    ../collision/TetrahedronFrictionContact.cpp 
-    ../collision/BarycentricStickContact.cpp 
+	# ../collision/FrictionContact_DistanceGrid.cpp 
+ #    ../collision/TriangleModelInRegularGrid.cpp
+ #    ../collision/RuleBasedContactManager.cpp 
+#    ../collision/DefaultCollisionGroupManager.cpp
+#     ../collision/SolverMerger.cpp
+	# ../collision/TetrahedronDiscreteIntersection.cpp 
+ #    ../collision/SpatialGridPointModel.cpp 
+ #    ../collision/TetrahedronModel.cpp 
+ #    ../collision/TetrahedronBarycentricPenalityContact.cpp 
+ #    ../collision/TetrahedronRayContact.cpp 
+ #    ../collision/TetrahedronFrictionContact.cpp 
+ #    ../collision/BarycentricStickContact.cpp 
  
-	../collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp # eigen2solver
-	../collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp # eigen2solver
+#	../collision/TetrahedronBarycentricDistanceLMConstraintContact.cpp # eigen2solver
+#	../collision/BarycentricDistanceLMConstraintContact_DistanceGrid.cpp # eigen2solver
     )
 
 if(SOFA-MISC_SMP)

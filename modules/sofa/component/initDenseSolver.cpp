@@ -42,7 +42,7 @@ void initDenseSolver()
     }
 }
 
-SOFA_LINK_CLASS(LULinearSolver)
+//SOFA_LINK_CLASS(LULinearSolver)
 
 
 } // namespace component

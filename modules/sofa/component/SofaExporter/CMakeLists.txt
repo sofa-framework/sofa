@@ -3,29 +3,29 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initExporter.h 
-    ../misc/WriteState.h 
-    ../misc/WriteState.inl 
-    ../misc/WriteTopology.h 
-    ../misc/WriteTopology.inl 
-    ../misc/VTKExporter.h 
-    ../misc/OBJExporter.h
-	../misc/BlenderExporter.h 
-	../misc/BlenderExporter.inl 
-    ../misc/STLExporter.h 
-    ../misc/MeshExporter.h
+     ../misc/WriteState.h
+     ../misc/WriteState.inl
+ #    ../misc/WriteTopology.h 
+ #    ../misc/WriteTopology.inl 
+ #    ../misc/VTKExporter.h 
+ #    ../misc/OBJExporter.h
+	# ../misc/BlenderExporter.h 
+	# ../misc/BlenderExporter.inl 
+ #    ../misc/STLExporter.h 
+ #    ../misc/MeshExporter.h
 
     )
     
 set(SOURCE_FILES
 
     ../initExporter.cpp 
-    ../misc/WriteState.cpp 
-    ../misc/WriteTopology.cpp 
-    ../misc/VTKExporter.cpp 
-    ../misc/OBJExporter.cpp 
-	../misc/BlenderExporter.cpp
-    ../misc/STLExporter.cpp 
-    ../misc/MeshExporter.cpp
+     ../misc/WriteState.cpp
+ #    ../misc/WriteTopology.cpp 
+ #    ../misc/VTKExporter.cpp 
+ #    ../misc/OBJExporter.cpp 
+	# ../misc/BlenderExporter.cpp
+ #    ../misc/STLExporter.cpp 
+ #    ../misc/MeshExporter.cpp
  
     )
 

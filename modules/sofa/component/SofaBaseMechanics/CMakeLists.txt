@@ -16,8 +16,8 @@ set(HEADER_FILES
     ../mapping/BarycentricMapping.inl 
     ../mapping/IdentityMapping.h 
     ../mapping/IdentityMapping.inl 
-    ../mapping/SubsetMapping.h 
-    ../mapping/SubsetMapping.inl
+    # ../mapping/SubsetMapping.h 
+    # ../mapping/SubsetMapping.inl
 
     )
     
@@ -30,7 +30,7 @@ set(SOURCE_FILES
     ../mass/UniformMass.cpp 
     ../mapping/BarycentricMapping.cpp 
     ../mapping/IdentityMapping.cpp 
-    ../mapping/SubsetMapping.cpp
+    # ../mapping/SubsetMapping.cpp
     
     )
     

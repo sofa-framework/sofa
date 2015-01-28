@@ -42,7 +42,7 @@ void initMiscEngine()
     }
 }
 
-SOFA_LINK_CLASS(Distances)
+//SOFA_LINK_CLASS(Distances)
 
 } // namespace component
 

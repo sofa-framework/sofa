@@ -4,9 +4,9 @@ set(HEADER_FILES
 
     ../initBaseTopology.h 
     ../topology/CommonAlgorithms.h 
-    ../topology/CubeTopology.h 
-    ../topology/CylinderGridTopology.h 
-    ../topology/SphereQuadTopology.h 
+    # ../topology/CubeTopology.h 
+    # ../topology/CylinderGridTopology.h 
+    # ../topology/SphereQuadTopology.h 
     ../topology/EdgeSetGeometryAlgorithms.h 
     ../topology/EdgeSetGeometryAlgorithms.inl 
     ../topology/EdgeSetTopologyAlgorithms.h 
@@ -20,8 +20,8 @@ set(HEADER_FILES
     ../topology/HexahedronSetTopologyAlgorithms.inl 
     ../topology/HexahedronSetTopologyContainer.h 
     ../topology/HexahedronSetTopologyModifier.h 
-	../topology/NumericalIntegrationDescriptor.h 
-	../topology/NumericalIntegrationDescriptor.inl 
+	# ../topology/NumericalIntegrationDescriptor.h 
+	# ../topology/NumericalIntegrationDescriptor.inl 
     ../topology/MeshTopology.h 
     ../topology/PointSetGeometryAlgorithms.h 
     ../topology/PointSetGeometryAlgorithms.inl 
@@ -39,12 +39,12 @@ set(HEADER_FILES
     ../topology/SparseGridTopology.h 
     ../topology/TetrahedronSetGeometryAlgorithms.h 
     ../topology/TetrahedronSetGeometryAlgorithms.inl 
-    ../topology/BezierTetrahedronSetGeometryAlgorithms.h 
-    ../topology/BezierTetrahedronSetGeometryAlgorithms.inl 
+    # ../topology/BezierTetrahedronSetGeometryAlgorithms.h 
+    # ../topology/BezierTetrahedronSetGeometryAlgorithms.inl 
     ../topology/TetrahedronSetTopologyAlgorithms.h 
     ../topology/TetrahedronSetTopologyAlgorithms.inl 
     ../topology/TetrahedronSetTopologyContainer.h 
-    ../topology/BezierTetrahedronSetTopologyContainer.h 
+    # ../topology/BezierTetrahedronSetTopologyContainer.h 
     ../topology/TetrahedronSetTopologyModifier.h 
     ../topology/TriangleSetGeometryAlgorithms.h 
     ../topology/TriangleSetGeometryAlgorithms.inl 
@@ -72,9 +72,9 @@ set(HEADER_FILES
 set(SOURCE_FILES
 
     ../initBaseTopology.cpp 
-    ../topology/CubeTopology.cpp 
-    ../topology/CylinderGridTopology.cpp 
-    ../topology/SphereQuadTopology.cpp 
+    # ../topology/CubeTopology.cpp 
+    # ../topology/CylinderGridTopology.cpp 
+    # ../topology/SphereQuadTopology.cpp 
     ../topology/EdgeSetGeometryAlgorithms.cpp 
     ../topology/EdgeSetTopologyAlgorithms.cpp 
     ../topology/EdgeSetTopologyContainer.cpp 
@@ -85,7 +85,7 @@ set(SOURCE_FILES
     ../topology/HexahedronSetTopologyContainer.cpp 
     ../topology/HexahedronSetTopologyModifier.cpp 
     ../topology/MeshTopology.cpp
-	../topology/NumericalIntegrationDescriptor.cpp  
+	# ../topology/NumericalIntegrationDescriptor.cpp  
     ../topology/PointSetGeometryAlgorithms.cpp 
     ../topology/PointSetTopologyAlgorithms.cpp 
     ../topology/PointSetTopologyContainer.cpp 
@@ -97,10 +97,10 @@ set(SOURCE_FILES
     ../topology/RegularGridTopology.cpp 
     ../topology/SparseGridTopology.cpp 
     ../topology/TetrahedronSetGeometryAlgorithms.cpp 
-    ../topology/BezierTetrahedronSetGeometryAlgorithms.cpp 
+    # ../topology/BezierTetrahedronSetGeometryAlgorithms.cpp 
     ../topology/TetrahedronSetTopologyAlgorithms.cpp 
     ../topology/TetrahedronSetTopologyContainer.cpp 
-    ../topology/BezierTetrahedronSetTopologyContainer.cpp
+    # ../topology/BezierTetrahedronSetTopologyContainer.cpp
     ../topology/TetrahedronSetTopologyModifier.cpp 
     ../topology/TriangleSetGeometryAlgorithms.cpp 
     ../topology/TriangleSetTopologyAlgorithms.cpp 

@@ -3,23 +3,23 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initHaptics.h 
-    ../controller/ForceFeedback.h 
-    ../controller/NullForceFeedbackT.h 
-    ../controller/NullForceFeedback.h 
+    # ../controller/ForceFeedback.h 
+    # ../controller/NullForceFeedbackT.h 
+    # ../controller/NullForceFeedback.h 
     #../controller/EnslavementForceFeedback.h 
-    ../controller/LCPForceFeedback.h 
-    ../controller/LCPForceFeedback.inl 
-    ../controller/MechanicalStateForceFeedback.h
+    # ../controller/LCPForceFeedback.h 
+    # ../controller/LCPForceFeedback.inl 
+    # ../controller/MechanicalStateForceFeedback.h
 
     )
     
 set(SOURCE_FILES
 
     ../initHaptics.cpp 
-    ../controller/NullForceFeedback.cpp 
-    ../controller/NullForceFeedbackT.cpp 
+    # ../controller/NullForceFeedback.cpp 
+    # ../controller/NullForceFeedbackT.cpp 
     #../controller/EnslavementForceFeedback.cpp 
-    ../controller/LCPForceFeedback.cpp
+    # ../controller/LCPForceFeedback.cpp
  
     )
  

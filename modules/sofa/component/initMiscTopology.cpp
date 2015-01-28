@@ -42,7 +42,7 @@ void initMiscTopology()
     }
 }
 
-SOFA_LINK_CLASS(TopologicalChangeProcessor)
+//SOFA_LINK_CLASS(TopologicalChangeProcessor)
 
 } // namespace component
 

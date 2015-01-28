@@ -45,17 +45,17 @@ void initMeshCollision()
         first = false;
     }
 
-	IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>("Mesh");
-    (void) pMeshNewProximityIntersectors;
+//	IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new IntersectorCreator<NewProximityIntersection, MeshNewProximityIntersection>("Mesh");
+//    (void) pMeshNewProximityIntersectors;
 }
 
 SOFA_LINK_CLASS(BarycentricPenalityContact)
 SOFA_LINK_CLASS(BarycentricContactMapper)
 SOFA_LINK_CLASS(IdentityContactMapper)
-SOFA_LINK_CLASS(SubsetContactMapper)
-SOFA_LINK_CLASS(MeshDiscreteIntersection)
-SOFA_LINK_CLASS(MeshMinProximityIntersection)
-SOFA_LINK_CLASS(MeshNewProximityIntersection)
+//SOFA_LINK_CLASS(SubsetContactMapper)
+//SOFA_LINK_CLASS(MeshDiscreteIntersection)
+//SOFA_LINK_CLASS(MeshMinProximityIntersection)
+//SOFA_LINK_CLASS(MeshNewProximityIntersection)
 SOFA_LINK_CLASS(Point)
 SOFA_LINK_CLASS(Line)
 SOFA_LINK_CLASS(Triangle)

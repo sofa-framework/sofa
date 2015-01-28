@@ -3,13 +3,13 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
     ../initMiscTopology.h
-    ../misc/TopologicalChangeProcessor.h
+    # ../misc/TopologicalChangeProcessor.h
     )
     
 set(SOURCE_FILES
 
     ../initMiscTopology.cpp
-    ../misc/TopologicalChangeProcessor.cpp
+    # ../misc/TopologicalChangeProcessor.cpp
     )
 
 set(GROUP_BASE_DIR "..")

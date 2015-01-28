@@ -13,7 +13,7 @@ set(HEADER_FILES
     ../collision/DiscreteIntersection.h
     ../collision/BruteForceDetection.h
     ../collision/DefaultContactManager.h
-    ../collision/MinProximityIntersection.h
+    # ../collision/MinProximityIntersection.h
     ../collision/NewProximityIntersection.h
     ../collision/NewProximityIntersection.inl
     ../collision/CapsuleModel.h
@@ -38,7 +38,7 @@ set(HEADER_FILES
     ../collision/IntrSphereOBB.inl
     ../collision/Intersector.h
     ../collision/BaseIntTool.h
-    ../collision/ContactListener.h
+ #    ../collision/ContactListener.h
     )
 
 set(SOURCE_FILES
@@ -52,7 +52,7 @@ set(SOURCE_FILES
     ../collision/DiscreteIntersection.cpp
     ../collision/BruteForceDetection.cpp
     ../collision/DefaultContactManager.cpp
-    ../collision/MinProximityIntersection.cpp
+    # ../collision/MinProximityIntersection.cpp
     ../collision/NewProximityIntersection.cpp
     ../collision/BaseProximityIntersection.cpp
     ../collision/CapsuleIntTool.cpp

@@ -3,21 +3,20 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(HEADER_FILES
 
 	../initEigen2Solver.h 
-	../linearsolver/EigenMatrixManipulator.h 
-	../linearsolver/EigenBaseSparseMatrix.h 
-        ../linearsolver/EigenBaseSparseMatrix_MT.h
-	../linearsolver/EigenSparseMatrix.h 
-#    ../linearsolver/EigenSparseSquareMatrix.h 
-	../linearsolver/EigenVector.h 
-	../linearsolver/EigenVectorWrapper.h 
-	../linearsolver/SVDLinearSolver.h
+	# ../linearsolver/EigenMatrixManipulator.h 
+	# ../linearsolver/EigenBaseSparseMatrix.h 
+ #    ../linearsolver/EigenBaseSparseMatrix_MT.h
+	# ../linearsolver/EigenSparseMatrix.h 
+	# ../linearsolver/EigenVector.h 
+	# ../linearsolver/EigenVectorWrapper.h 
+	# ../linearsolver/SVDLinearSolver.h
 	)
 
 set(SOURCE_FILES
 
-	../initEigen2Solver.cpp 
-	../linearsolver/EigenMatrixManipulator.cpp 
-	../linearsolver/SVDLinearSolver.cpp
+         ../initEigen2Solver.cpp
+	# ../linearsolver/EigenMatrixManipulator.cpp 
+	# ../linearsolver/SVDLinearSolver.cpp
 	)
 
 include_directories("${SOFA_EXTLIBS_DIR}/newmat")    
