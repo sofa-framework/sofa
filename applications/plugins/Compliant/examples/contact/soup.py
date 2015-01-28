@@ -1,4 +1,5 @@
 import Sofa
+import random
 
 
 NO_FRICTION = 0
@@ -34,7 +35,7 @@ def createScene(root):
 	if FRICTION == DRY_FRICTION:
 		root.createObject('DefaultContactManager', name="Response", response="FrictionCompliantContact", responseParams="compliance=0&restitution=0&mu=0.1" )
         elif FRICTION == VISCOUS_FRICTION:
-                root.createObject('DefaultContactManager', name="Response", response="CompliantContact", responseParams="compliance=0&restitution=0&viscousFriction=0.1" )
+                root.createObject('DefaultContactManager', name="Response", response="CompliantContact", responseParams="compliance=0&restitution=0&viscousFriction=1" )
 	else:
 		root.createObject('DefaultContactManager', name="Response", response="CompliantContact", responseParams="compliance=0&restitution=0" )
 	
@@ -67,7 +68,8 @@ def createScene(root):
 	spherePos = ""
 	for x in range(-3,3):
 		for y in range(-3,3):
-			spherePos += str(x*2.5)+" "+str(y*2.5)+" 20  "
+                        r = random.random()*2e-1
+			spherePos += str(x*2.5+r)+" "+str(y*2.5+r)+" 20  "
 	
 	sphereNode = root.createChild('Spheres')
 	sphereNode.createObject('MechanicalObject',template='Vec3d',position=spherePos, velocity='0 0 -1')
@@ -80,9 +82,10 @@ def createScene(root):
 	i=0
 	for x in range(-3,3):
 		for y in range(-3,3):
+                        r = random.random()*2e-1
                         for z in xrange(1):
                             sphereNode = root.createChild('Sphere'+str(i))
-                            sphereNode.createObject('MechanicalObject',template='Vec3d',position=str(x*2.5)+" "+str(y*2.5)+" "+str(20+2.5*(z+1)), velocity='0 0 -1')
+                            sphereNode.createObject('MechanicalObject',template='Vec3d',position=str(x*2.5+r)+" "+str(y*2.5+r)+" "+str(20+2.5*(z+1)), velocity='0 0 -1')
                             sphereNode.createObject('TSphereModel',template='Vec3d',name='sphere_model',radius=1,selfCollision="0")
                             sphereNode.createObject('UniformMass',name='mass',mass=.1)
                             i+=1
