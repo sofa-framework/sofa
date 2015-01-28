@@ -31,6 +31,7 @@ set(SOURCE_FILES
     RigidRigidMapping_test.cpp
     Simulation_test.cpp
     Sphere_test.cpp
+    SpringSolverDynamic_test.cpp
     StiffSpringForceField_test.cpp
     SubsetMultiMapping_test.cpp
     TetrahedronFEMForceField_test.cpp

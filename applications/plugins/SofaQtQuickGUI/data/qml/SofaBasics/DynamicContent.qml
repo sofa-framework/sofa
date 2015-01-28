@@ -2,8 +2,10 @@ import QtQuick 2.0
 import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.1
+import QtQuick.Controls.Styles 1.2
 import Qt.labs.folderlistmodel 2.1
 import Qt.labs.settings 1.0
+import "qrc:/SofaCommon/SofaSettingsScript.js" as SofaSettingsScript
 
 Item {
     id: root
@@ -14,7 +16,18 @@ Item {
     property int uiId: 0
     property int previousUiId: uiId
     onUiIdChanged: {
-        globalUiSettings.replaceUiId(previousUiId, uiId);
+        SofaSettingsScript.Ui.replace(previousUiId, uiId);
+    }
+
+    QtObject {
+        id: d
+
+        property Timer timer: Timer {
+            interval: 200
+            running: false
+            repeat: false
+            onTriggered: standbyItem.visible = true
+        }
     }
 
     Settings {
@@ -45,7 +58,7 @@ Item {
     }
 
     function setNoSettings() {
-        globalUiSettings.removeUiId(uiId);
+        SofaSettingsScript.Ui.remove(uiId);
         uiId = 0;
     }
 
@@ -53,6 +66,8 @@ Item {
     property string currentContentName
     property string sourceDir: "qrc:/SofaWidgets"
     property int    contentUiId: 0
+
+    property var    properties
 
     onSourceDirChanged: update()
     onCurrentContentNameChanged: update()
@@ -63,7 +78,7 @@ Item {
                 load();
             }
             else
-                root.uiId = globalUiSettings.generateUiId();
+                root.uiId = SofaSettingsScript.Ui.generate();
         }
         else
             load();
@@ -174,15 +189,21 @@ Item {
                             refreshStandbyItem();
                         } else {
                             if(0 === root.contentUiId)
-                                root.contentUiId = globalUiSettings.generateUiId();
+                                root.contentUiId = SofaSettingsScript.Ui.generate();
 
-                            var content = contentComponent.createObject(loaderLocation, {"uiId": root.contentUiId, "anchors.fill": loaderLocation});
+                            var contentProperties = root.properties;
+                            if(!contentProperties)
+                                contentProperties = {};
+
+                            contentProperties["uiId"] = root.contentUiId;
+                            contentProperties["anchors.fill"] = loaderLocation;
+                            var content = contentComponent.createObject(loaderLocation, contentProperties);
 
                             if(undefined !== content.uiId)
                                 root.contentUiId = Qt.binding(function() {return content.uiId;});
                             else
                             {
-                                globalUiSettings.removeUiId(root.contentUiId);
+                                SofaSettingsScript.Ui.remove(root.contentUiId);
                                 root.contentUiId = 0;
                             }
 
@@ -193,10 +214,10 @@ Item {
 
                 function refreshStandbyItem() {
                     if(contentItem) {
-                        timer.stop();
+                        d.timer.stop();
                         standbyItem.visible = false;
                     } else {
-                        timer.start();
+                        d.timer.start();
                     }
                 }
             }
@@ -220,6 +241,8 @@ Item {
                             Layout.preferredWidth: 150
                             Layout.preferredHeight: 20
                             textRole: "fileBaseName"
+                            style: ComboBoxStyle {}
+
                             model: ListModel {
                                 id: listModel
                             }
@@ -267,14 +290,6 @@ Item {
                 wrapMode: Text.WordWrap
                 font.bold: true
             }
-        }
-
-        Timer {
-            id: timer
-            interval: 200
-            running: false
-            repeat: false
-            onTriggered: standbyItem.visible = true
         }
     }
 }

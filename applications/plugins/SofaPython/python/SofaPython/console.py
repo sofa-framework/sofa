@@ -13,6 +13,7 @@ import os
 import sys
 import signal
 
+
 if __name__ == '__main__':
 
     import readline
@@ -54,7 +55,26 @@ if __name__ == '__main__':
         def __exit__(self, type, value, traceback):
             readline.write_history_file( self.filename )
 
+    def cleanup(*args):
+        print('console cleanup')
+        os.system('stty sane')
 
+
+    for sig in [signal.SIGQUIT,
+                signal.SIGTERM,
+                signal.SIGILL,
+                signal.SIGSEGV]:
+            
+        old = signal.getsignal(sig)
+
+        def new(*args):
+            cleanup()
+            signal.signal(sig, old)
+            os.kill(os.getpid(), sig)
+            
+        signal.signal(sig, new)
+    
+    
     # main loop
     try:
         with History( "~/.sofa-console" ):
@@ -65,8 +85,14 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print 'console exited (SIGINT)'
     except EOFError:
-        print 'console exited (EOF), terminating parent process'
-        os.kill(os.getppid(), signal.SIGINT)
+        ppid = os.getppid()
+        try:
+            os.kill(os.getppid(), signal.SIGTERM)
+            print 'console exited (EOF), terminating parent process'
+        except OSError:
+            pass
+
+        
         
 else:
 
@@ -150,7 +176,6 @@ else:
                             str(prompt[0]), str(cmd[1])],
                            stdin = sys.stdin)
 
-    
     # open the tubes !
     prompt_out = os.fdopen(prompt[1], 'w')
     cmd_in = os.fdopen(cmd[0], 'r')
@@ -158,20 +183,40 @@ else:
     # we're ready
     send('>>> ')
     
-    # send SIGINT to child so that readline does not bork terminal
-    def exit_handler():
-        sub.send_signal(signal.SIGINT)
+        
+    # def cleanup(*args):
+    #     print('console cleanup')
+    #     os.system('stty sane')
+
+    # def exit(*args):
+    #     print 'exit'
+    #     cleanup()
+
+    # sys.exit(0) forces cleanup *from python* before the gui
+    # closes. otherwise pyside causes segfault on python finalize.
+    def handler(*args):
+        sub.terminate()
         sub.wait()
-
-    atexit.register( exit_handler )
-    
-
-    # this forces cleanup from python before the gui closes. otherwise
-    # pyside causes segfault on python finalize.
-    def gui_handler():
         sys.exit(0)
-
+        
     from PySide import QtCore
-    
     app = QtCore.QCoreApplication.instance()
-    app.aboutToQuit.connect( gui_handler )
+    app.aboutToQuit.connect( handler )
+
+    # import atexit
+    # atexit.register( handler )
+    
+    # import atexit
+    # atexit.register(  exit )
+    
+    # for sig in [signal.SIGSEGV, signal.SIGILL]:
+    #     old = signal.getsignal(sig)
+        
+    #     def h(*args):
+    #         print args
+    #         sub.terminate()
+    #         signal.signal(sig, old)
+    #         os.kill(os.getpid(), sig)
+            
+    #     signal.signal(sig, h)
+ 

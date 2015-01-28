@@ -3,7 +3,6 @@
         <file>SofaBasics/qmldir</file>
         <file>SofaBasics/DefaultStatusBar.qml</file>
         <file>SofaBasics/DefaultMenuBar.qml</file>
-        <file>SofaBasics/Window.qml</file>
         <file>SofaBasics/Scene.qml</file>
         <file>SofaBasics/PythonInteractor.qml</file>
         <file>SofaBasics/FPSDisplay.qml</file>
@@ -21,5 +20,13 @@
         <file>SofaWidgets/Viewer.qml</file>
         <file>SofaWidgets/ImageViewer.qml</file>
         <file>SofaWidgets/ToolPanel.qml</file>
+        <file>SofaCommon/SofaCommonScript.js</file>
+        <file>SofaBasics/UISettings.qml</file>
+        <file>SofaBasics/Tools.qml</file>
+        <file>SofaCommon/SofaToolsScript.js</file>
+        <file>SofaCommon/SofaSettingsScript.js</file>
+        <file>SofaBasics/RecentSettings.qml</file>
+        <file>SofaTools/SceneGraphView.qml</file>
+        <file>SofaTools/DataView.qml</file>
     </qresource>
 </RCC>

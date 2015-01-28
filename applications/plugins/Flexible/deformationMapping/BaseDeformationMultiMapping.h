@@ -134,8 +134,6 @@ public:
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
     typedef typename BaseShapeFunction::VecVRef VecVRef;
-    typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< MaterialToSpatial transformation = deformation gradient type
-    typedef typename BaseShapeFunction::VMaterialToSpatial VMaterialToSpatial;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
     //@}
 
@@ -143,6 +141,8 @@ public:
     //@{
     typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef vector<Coord> VecCoord;
+    typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local liner transformation from material space to world space
+    typedef vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
     //@}
@@ -265,7 +265,7 @@ public:
     Data<VecVReal >       f_w;
     Data<vector<VGradient> >   f_dw;
     Data<vector<VHessian> >    f_ddw;
-    Data<VMaterialToSpatial>    f_F0;
+    Data<VMaterialToSpatial>    f_F0;   ///< initial value of deformation gradients
     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
@@ -285,7 +285,7 @@ protected:
     }
     KDT f_KdTree;
 
-    VMaterialToSpatial f_F;
+    VMaterialToSpatial f_F;     ///< current value of deformation gradients (for visualisation)
     void mapDeformationGradients() ///< map initial deform  gradients stored in f_F0 to f_F      (used for visualization)
     {
         this->f_F.resize(this->f_pos0.getValue().size());

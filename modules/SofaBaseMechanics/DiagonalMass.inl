@@ -814,7 +814,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     Real totalMass=0.0;
 
     std::vector<  sofa::defaulttype::Vector3 > points;
-    std::vector<  sofa::defaulttype::Vec<2,int> > indices;
+//    std::vector<  sofa::defaulttype::Vec<2,int> > indices;
 
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -826,7 +826,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
         totalMass += masses[i];
     }
 
-    vparams->drawTool()->drawPoints(points, 2, sofa::defaulttype::Vec<4,float>(1,1,1,1));
+//    vparams->drawTool()->drawPoints(points, 2, sofa::defaulttype::Vec<4,float>(1,1,1,1));
 
     if(showCenterOfGravity.getValue())
     {

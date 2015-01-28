@@ -82,13 +82,41 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		base::init();
 	}
 
+    typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
+    geometric_type geometric;
+    
+    virtual const defaulttype::BaseMatrix* getK() {
+
+		const unsigned n = this->getFrom().size();
+
+		vector<const_in_coord_type> in_vec; in_vec.reserve(n);
+
+        core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
+        core::ConstMultiVecDerivId force = core::ConstVecDerivId::force();
+        
+		for( unsigned i = 0; i < n; ++i ) {
+            const core::State<TIn>* from = this->getFromModels()[i];
+            const_in_coord_type in_pos( *pos[from].read() );
+			in_vec.push_back( in_pos );
+		}
+
+        const core::State<TOut>* to = this->getToModels()[0];
+        const_out_deriv_type out_force(  *force[to].read() );
+
+        this->assemble_geometric(in_vec, out_force);
+        
+        if( geometric.compressedMatrix.nonZeros() ) return &geometric;
+        else return 0;
+        
+    }
+
 	
 	virtual void apply(const core::MechanicalParams*  /* PARAMS FIRST */, 
 	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
 	                   const helper::vector<const InDataVecCoord*>& dataVecInPos) {
 		alloc();
 	
-		unsigned n = this->getFrom().size();
+		const unsigned n = this->getFrom().size();
 
 		vector<in_pos_type> in_vec; in_vec.reserve(n);
 
@@ -185,6 +213,21 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 
 	enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
+
+    // let's do this once and for all
+    typedef helper::ReadAccessor< Data< typename self::InVecCoord > > const_in_coord_type;
+    typedef helper::WriteAccessor< Data< typename self::InVecCoord > > in_coord_type;
+
+    typedef helper::ReadAccessor< Data< typename self::OutVecCoord > > const_out_coord_type;
+    typedef helper::WriteAccessor< Data< typename self::OutVecCoord > > out_coord_type;
+
+    typedef helper::ReadAccessor< Data< typename self::InVecDeriv > > const_in_deriv_type;
+    typedef helper::WriteAccessor< Data< typename self::InVecDeriv > > in_deriv_type;
+    
+    typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > const_out_deriv_type;
+    typedef helper::WriteAccessor< Data< typename self::OutVecDeriv > > out_deriv_type;
+
+
 	// TODO rename in_coord_type/out_coord_type
     typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
     typedef helper::WriteAccessor< Data< typename self::OutVecCoord > > out_pos_type;
@@ -200,6 +243,9 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 	// TODO pass out value as well ?
 	virtual void assemble( const vector<in_pos_type>& in ) = 0;
 
+    virtual void assemble_geometric( const vector<const_in_coord_type>& /*in*/,
+                                     const const_out_deriv_type& /*out*/) { }
+    
 	// perform mapping operation on positions
     virtual void apply(out_pos_type& out, 
 					   const vector<in_pos_type>& in ) = 0;

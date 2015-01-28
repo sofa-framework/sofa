@@ -11,6 +11,12 @@
 #include <qqml.h>
 #include <QDebug>
 
+namespace sofa
+{
+
+namespace qtquick
+{
+
 typedef sofa::simulation::Node Node;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3dTypes> MechanicalObject3d;
 typedef sofa::component::projectiveconstraintset::FixedConstraint<sofa::defaulttype::Vec3dTypes> FixedConstraint3d;
@@ -195,4 +201,8 @@ void PickingInteractor::release()
 
 	if(picking)
 		pickingChanged(false);
+}
+
+}
+
 }

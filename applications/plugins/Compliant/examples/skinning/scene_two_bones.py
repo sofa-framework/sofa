@@ -2,6 +2,7 @@ import os.path
 
 import Sofa
 
+import SofaPython.sml
 import Compliant.sml
 
 def createScene(node):
@@ -14,14 +15,15 @@ def createScene(node):
     node.createObject('CompliantImplicitSolver', name='odesolver',stabilization=1)
     node.createObject('MinresSolver', name='numsolver', iterations='250', precision='1e-14');
     
-    scene_two_bones = Compliant.sml.Scene(os.path.join(os.path.dirname(__file__),"two_bones.xml"))
+    model = SofaPython.sml.Model(os.path.join(os.path.dirname(__file__),"two_bones.xml"))
+    scene_two_bones = Compliant.sml.SceneSkinning(node, model)
     scene_two_bones.param.showRigid=True
     scene_two_bones.param.showOffset=True
-    scene_two_bones.createScene(node)
+    
+    scene_two_bones.createScene()
     
     scene_two_bones.rigids["bone01"].node.createObject('FixedConstraint')
-    
-    scene_two_bones.deformable["skin"].dofs.showObject=True
-    scene_two_bones.deformable["skin"].dofs.drawMode=1
+    scene_two_bones.deformables["skin"].dofs.showObject=True
+    scene_two_bones.deformables["skin"].dofs.drawMode=1
     
     return node

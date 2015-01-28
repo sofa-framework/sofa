@@ -30,6 +30,7 @@
 #include <iostream>
 
 #include "Container/attributeContainer.h"
+#include "Container/attributeMultiVector.h"
 #include "Topology/generic/dart.h"
 
 namespace CGoGN
@@ -68,7 +69,7 @@ AttributeContainer::~AttributeContainer()
  *       INFO ABOUT ATTRIBUTES        *
  **************************************/
 
-unsigned int AttributeContainer::getAttributeIndex(const std::string& attribName)
+unsigned int AttributeContainer::getAttributeIndex(const std::string& attribName) const
 {
     unsigned int index ;
     bool found = false ;
@@ -139,11 +140,12 @@ void AttributeContainer::swap(AttributeContainer& cont)
 {
     // swap everything but the orbit
 
-    m_tableAttribs.swap(cont.m_tableAttribs);
-    m_freeIndices.swap(cont.m_freeIndices);
-    m_holesBlocks.swap(cont.m_holesBlocks);
-    m_tableBlocksWithFree.swap(cont.m_tableBlocksWithFree);
-    m_tableBlocksEmpty.swap(cont.m_tableBlocksEmpty);
+	m_tableAttribs.swap(cont.m_tableAttribs);
+	m_tableMarkerAttribs.swap(cont.m_tableMarkerAttribs);
+	m_freeIndices.swap(cont.m_freeIndices);
+	m_holesBlocks.swap(cont.m_holesBlocks);
+	m_tableBlocksWithFree.swap(cont.m_tableBlocksWithFree);
+	m_tableBlocksEmpty.swap(cont.m_tableBlocksEmpty);
 
     unsigned int temp = m_nbAttributes;
     m_nbAttributes = cont.m_nbAttributes;
@@ -196,115 +198,114 @@ void AttributeContainer::clear(bool removeAttrib)
         // nb a zero
         m_nbAttributes = 0;
 
-        // detruit tous les attributs
-        for (std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
-        {
-            if ((*it) != NULL)
-                delete (*it);
-        }
+		// detruit tous les attributs
+		for (std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
+		{
+			if ((*it) != NULL)
+				delete (*it);
+		}
+		std::vector<AttributeMultiVectorGen*> amg;
+		m_tableAttribs.swap(amg);
 
-        std::vector<AttributeMultiVectorGen*> amg;
-        m_tableAttribs.swap(amg);
+		// detruit tous les attributs MarkerBool
+		for (std::vector<AttributeMultiVector<MarkerBool>*>::iterator it = m_tableMarkerAttribs.begin(); it != m_tableMarkerAttribs.end(); ++it)
+		{
+			if ((*it) != NULL)
+				delete (*it);
+		}
+		std::vector<AttributeMultiVector<MarkerBool>*> amgb;
+		m_tableMarkerAttribs.swap(amgb);
 
         std::vector<unsigned int> fi;
         m_freeIndices.swap(fi);
     }
 }
 
+bool AttributeContainer::hasMarkerAttribute() const
+{
+	// not only size() != 0 because of BoundaryMarkers !
+    for (std::vector<AttributeMultiVector<MarkerBool>*>::const_iterator it = m_tableMarkerAttribs.begin(); it != m_tableMarkerAttribs.end(); ++it)
+	{
+		std::string strMarker = (*it)->getName().substr(0,6);
+		if (strMarker=="marker")
+		return true;
+	}
+	return false;
+
+}
+
+
 void AttributeContainer::compact(std::vector<unsigned int>& mapOldNew)
 {
-    unsigned int nbe = _BLOCKSIZE_ * m_holesBlocks.size();
+	mapOldNew.clear();
+	mapOldNew.resize(realEnd(),0xffffffff);
 
-    unsigned int nbb = m_holesBlocks.size() - 1;
-    while ((m_holesBlocks[nbb])->empty())
-    {
-        --nbb;
-        nbe -= _BLOCKSIZE_;
-    }
-    ++nbb;
+//VERSION THAT PRESERVE ORDER OF ELEMENTS ?
+//	unsigned int down = 0;
+//	for (unsigned int occup = realBegin(); occup != realEnd(); next(occup))
+//	{
+//		mapOldNew[occup] = down;
+//		copyLine(down,occup);
+//		// copy ref counter
+//		setNbRefs(down,getNbRefs(occup));
+//		down++;
+//	}
 
-    mapOldNew.clear();
-    mapOldNew.reserve(nbe);
+	// fill the holes with data & create the map Old->New
+	unsigned int up = realRBegin();
+	unsigned int down = 0;
 
-    // now get the holes
-    unsigned int baseAdr = 0;
-    for (unsigned int i = 0; i < nbb; ++i)
-    {
-        HoleBlockRef* block = m_holesBlocks[i];
+	while (down < up)
+	{
+		if (!used(down))
+		{
+			mapOldNew[up] = down;
+			// copy data
+			copyLine(down,up);
+			// copy ref counter
+			setNbRefs(down,getNbRefs(up));
+			// set next element to catch for hole filling
+			realRNext(up);
+		}
+		down++;
+	}
 
-        for (unsigned int j = 0; j < _BLOCKSIZE_; ++j)
-        {
-            if (j < block->sizeTable())
-            {
-                if (block->used(j))
-                    mapOldNew.push_back(baseAdr);
-                else
-                    mapOldNew.push_back(0xffffffff);
-            }
-            else
-                mapOldNew.push_back(0xffffffff);
-            baseAdr++;
-        }
-    }
+	// end of table = nb elements
+	m_maxSize = m_size;
 
-    unsigned int last = mapOldNew.size() - 1;
+	// no more blocks empty
+	m_tableBlocksEmpty.clear();
 
-    for (unsigned int i = 0 ; i < last; ++i)
-    {
-        unsigned int val = mapOldNew[i];
-        if (val == 0xffffffff)
-        {
-            // first find last element
-            while (mapOldNew[last] == 0xffffffff)
-                --last;
+	// only the last block has free indices
+	m_tableBlocksWithFree.clear();
 
-            // store it in the hole
-            // find the blocks and indices
-            unsigned int bi = i / _BLOCKSIZE_;
-            unsigned int ib = i % _BLOCKSIZE_;
-            unsigned int bj = last / _BLOCKSIZE_;
-            unsigned int jb = last % _BLOCKSIZE_;
+	// compute nb block full
+	unsigned int nbb = m_size / _BLOCKSIZE_;
+	// update holeblock
+	for (unsigned int i=0; i<nbb; ++i)
+		m_holesBlocks[i]->compressFull(_BLOCKSIZE_);
 
-            //overwrite attributes
-            for(unsigned int j = 0; j < m_tableAttribs.size(); ++j)
-            {
-                if (m_tableAttribs[j] != NULL)
-                    m_tableAttribs[j]->overwrite(bj, jb, bi, ib);
-            }
+	//update last holeblock
+	unsigned int nbe = m_size % _BLOCKSIZE_;
+	if (nbe != 0)
+	{
+		m_holesBlocks[nbb]->compressFull(nbe);
+		m_tableBlocksWithFree.push_back(nbb);
+		nbb++;
+	}
 
-            // overwrite emptyLine with last line in free blocks
-            m_holesBlocks[bi]->overwrite(ib, m_holesBlocks[bj], jb);
+	// free memory and resize
+	for (int i = m_holesBlocks.size() - 1; i > int(nbb); --i)
+		delete m_holesBlocks[i];
+	m_holesBlocks.resize(nbb);
 
-            // set the map value
-            mapOldNew[last] = i;
-            --last;
-        }
-    }
 
-    for (int i = m_holesBlocks.size() - 1; i >= 0; --i)
-    {
-        HoleBlockRef* ptr = m_holesBlocks[i];
-        if (ptr->compressFree())
-        {
-            delete ptr;
-            m_holesBlocks.pop_back();
-        }
-    }
-
-    // maj de la table de block libre
-    m_tableBlocksWithFree.clear();
-    HoleBlockRef* block = m_holesBlocks.back();
-    if (!block->full())
-        m_tableBlocksWithFree.push_back(m_holesBlocks.size() - 1);
-
-    // detruit les blocks de donnees inutiles
-    for(unsigned int j = 0; j < m_tableAttribs.size(); ++j)
-    {
-        if (m_tableAttribs[j] != NULL)
-            m_tableAttribs[j]->setNbBlocks(m_holesBlocks.size());
-    }
-
-    m_maxSize = (m_holesBlocks.back())->sizeTable() + (m_holesBlocks.size() - 1) * _BLOCKSIZE_;
+	// release unused data memory
+	for(unsigned int j = 0; j < m_tableAttribs.size(); ++j)
+	{
+		if (m_tableAttribs[j] != NULL)
+			m_tableAttribs[j]->setNbBlocks(m_holesBlocks.size());
+	}
 }
 
 void AttributeContainer::printFreeIndices() {
@@ -430,50 +431,63 @@ unsigned int AttributeContainer::insertLine()
                 m_tableAttribs[i]->addBlock();					// add a block to every attribute
         }
 
-        // inc nb of elements
-        ++m_size;
+		for(unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+		{
+			if (m_tableMarkerAttribs[i] != NULL)
+				m_tableMarkerAttribs[i]->addBlock();					// add a block to every attribute
+		}
 
         // add new element in block and compute index
 
-        unsigned int ne = ptr->newRefElt(m_maxSize);
-        return _BLOCKSIZE_ * numBlock + ne;
-    }
-    // else
+		// inc nb of elements
+		++m_size;
 
-    // get the first free block index (last in vector)
-    unsigned int bf = m_tableBlocksWithFree.back();
-    // get the block
-    HoleBlockRef* block = m_holesBlocks[bf];
+		// add new element in block and compute index
 
-    // add new element in block and compute index
-    unsigned int ne = block->newRefElt(m_maxSize);
-    unsigned int index = _BLOCKSIZE_ * bf + ne;
+		unsigned int ne = ptr->newRefElt(m_maxSize);
+		return _BLOCKSIZE_ * numBlock + ne;
+	}
+	// else
 
-    if (ne == _BLOCKSIZE_-1)
-    {
-        if (bf == (m_holesBlocks.size()-1))
-        {
-            // we are filling the last line of capacity
-            HoleBlockRef* ptr = new HoleBlockRef();					// new block
-            unsigned int numBlock = m_holesBlocks.size();
-            m_tableBlocksWithFree.back() = numBlock;
-            m_tableBlocksWithFree.push_back(bf);
-            m_holesBlocks.push_back(ptr);
+	// get the first free block index (last in vector)
+	unsigned int bf = m_tableBlocksWithFree.back();
+	// get the block
+	HoleBlockRef* block = m_holesBlocks[bf];
 
-            for(unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-            {
-                if (m_tableAttribs[i] != NULL)
-                    m_tableAttribs[i]->addBlock();					// add a block to every attribute
-            }
-        }
-    }
+	// add new element in block and compute index
+	unsigned int ne = block->newRefElt(m_maxSize);
+	unsigned int index = _BLOCKSIZE_ * bf + ne;
 
-    // if no more room in block remove it from free_blocks
-    if (block->full())
-        m_tableBlocksWithFree.pop_back();
+	if (ne == _BLOCKSIZE_-1)
+	{
+		if (bf == (m_holesBlocks.size()-1))
+		{
+			// we are filling the last line of capacity
+			HoleBlockRef* ptr = new HoleBlockRef();					// new block
+			unsigned int numBlock = m_holesBlocks.size();
+			m_tableBlocksWithFree.back() = numBlock;
+			m_tableBlocksWithFree.push_back(bf);
+			m_holesBlocks.push_back(ptr);
 
-    ++m_size;
-    return index;
+			for(unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+			{
+				if (m_tableAttribs[i] != NULL)
+					m_tableAttribs[i]->addBlock();					// add a block to every attribute
+			}
+			for(unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+			{
+				if (m_tableMarkerAttribs[i] != NULL)
+					m_tableMarkerAttribs[i]->addBlock();					// add a block to every attribute
+			}
+		}
+	}
+
+	// if no more room in block remove it from free_blocks
+	if (block->full())
+		m_tableBlocksWithFree.pop_back();
+
+	++m_size;
+	return index;
 }
 
 
@@ -503,501 +517,396 @@ void AttributeContainer::removeLine(unsigned int index)
 /**************************************
  *            SAVE & LOAD             *
  **************************************/
-//
-//bool AttributeContainer::loadXmlBWF(xmlNodePtr node)
-//{
-//	xmlChar* prop = xmlGetProp(node, BAD_CAST "nb");
-//	unsigned int nb = atoi((char*)prop);
-//	m_tableBlocksWithFree.clear();
-//
-//	// charge et cree les  attributs
-//	for (xmlNode* x_node = node->children; x_node != NULL; x_node = x_node->next)
-//	{
-//		unsigned int ind = atoi((char*)(xmlNodeGetContent(x_node)));
-//		m_tableBlocksWithFree.push_back(ind);
-//	}
-//	if (m_tableBlocksWithFree.size() != nb)
-//	{
-//		CGoGNerr <<"Erreur lecture fichier XML incoherent"<< CGoGNendl;
-//		return false;
-//	}
-//	return true;
-//}
-//
-//bool AttributeContainer::loadXmlAN(xmlNodePtr node, unsigned int nbb)
-//{
-//	xmlChar* prop = xmlGetProp(node, BAD_CAST "nb");
-////	unsigned int nb = atoi((char*)prop);
-//	prop = xmlGetProp(node, BAD_CAST "sv");
-////	unsigned int sv = atoi((char*)prop);
-//
-//	// Noooooooo!!!!
-////	m_tableAttribs.resize(sv);
-////	for (unsigned int i=0; i< sv; ++i)
-////			m_tableAttribs[i]=NULL;
-//
-//	// charge et cree les  attributs
-//	for (xmlNode* x_node = node->children; x_node != NULL; x_node = x_node->next)
-//	{
-//		prop = xmlGetProp(x_node, BAD_CAST "id");
-////		unsigned int id = unsigned int(atoi((char*)prop);
-//
-//		prop = xmlGetProp(x_node, BAD_CAST "type");
-//		// recupere l'attribut enregistrer par son type
-//		if (m_attributes_registry_map !=NULL)
-//		{
-//			std::map<std::string, RegisteredBaseAttribute*>::iterator itAtt = m_attributes_registry_map->find(std::string((char*)prop));
-//			if (itAtt == m_attributes_registry_map->end())
-//			{
-//				CGoGNout << "Skipping non registred attribute "<< std::string((char*)prop)<<CGoGNendl;
-//			}
-//			else
-//			{
-//				RegisteredBaseAttribute* ra = itAtt->second;
-//				prop = xmlGetProp(x_node, BAD_CAST "name");
-////				ra->addAttribute(*this, std::string((char*)prop), id);
-//				AttributeMultiVectorGen* amvg = ra->addAttribute(*this, std::string((char*)prop));
-//				amvg->setNbBlocks(nbb);
-//			}
-//		}
-//		else
-//		{
-//			CGoGNerr << "Attribute Registry non initialized"<< CGoGNendl;
-//			return false;
-//		}
-//	}
-////	if (m_attribNameMap.size() != nb)
-////	{
-////		CGoGNerr << "Pb lecture attributs"<< CGoGNendl;
-////		return false;
-////	}
-//	return true;
-//}
-//
-//bool AttributeContainer::loadXmlDL(xmlNodePtr node)
-//{
-//	// charge et cree les  attributs
-//	for (xmlNode* x_node = node->children; x_node != NULL; x_node = x_node->next)
-//	{
-//		// get index
-//		xmlChar* prop = xmlGetProp(x_node, BAD_CAST "id");
-//		unsigned int id = atoi((char*)prop);
-//		// get & set nbref
-//		prop = xmlGetProp(x_node, BAD_CAST "refs");
-//		unsigned int nbr = atoi((char*)prop);
-//		setNbRefs(id, nbr);
-//
-//		if (nbr > 0)
-//		{
-////			for (MapNameId::iterator it = m_attribNameMap.begin(); it != m_attribNameMap.end(); ++it)
-////			{
-////				prop = xmlGetProp(x_node, BAD_CAST (it->first).c_str());
-////				// if name of data unkwown then error
-////				if (prop == NULL)
-////				{
-////					CGoGNerr << "inconsistent xml file"<<CGoGNendl;
-////					return false;
-////				}
-////				m_tableAttribs[it->second]->input(id, std::string((char*)prop));
-////			}
-//		}
-//	}
-//	return true;
-//}
-//
-//void AttributeContainer::saveXml(xmlTextWriterPtr writer, unsigned int id)
-//{
-//	if (m_nbAttributes == 0)
-//		return;
-//
-//	// noeud du container
-//	int rc = xmlTextWriterStartElement(writer, BAD_CAST "Attributes_Container");
-//	rc = xmlTextWriterWriteFormatAttribute(writer,  BAD_CAST "id","%u",id);
-//	rc = xmlTextWriterWriteFormatAttribute(writer,  BAD_CAST "BlockSize","%u",_BLOCKSIZE_);
-//	rc = xmlTextWriterWriteFormatAttribute(writer,  BAD_CAST "size","%u",m_maxSize);
-//
-//	// recuperer le nombre d'attributs
-//	unsigned int nbAtt = m_nbAttributes;
-//	unsigned int sizeVectAtt = m_tableAttribs.size();
-//
-//	// noeud avec la liste de attributs
-//	rc = xmlTextWriterStartElement(writer, BAD_CAST "Attributes_Names");
-//	rc = xmlTextWriterWriteFormatAttribute(writer,  BAD_CAST "nb","%u",nbAtt);
-//	rc = xmlTextWriterWriteFormatAttribute(writer,  BAD_CAST "sv","%u",sizeVectAtt);
-//
-//	// recuperer les attributs dans la map et les sauver
-////	for (std::map<std::string, unsigned int>::iterator it = m_attribNameMap.begin(); it!= m_attribNameMap.end(); ++it)
-////	{
-////		int rc = xmlTextWriterStartElement(writer, BAD_CAST "Attribute");
-////		rc = xmlTextWriterWriteAttribute(writer,  BAD_CAST "name",BAD_CAST (it->first).c_str());
-////		const std::string& str_type = m_tableAttribs[it->second]->getTypeName();
-////		rc = xmlTextWriterWriteAttribute(writer,  BAD_CAST "type",BAD_CAST str_type.c_str());
-////		rc = xmlTextWriterWriteFormatAttribute(writer,  BAD_CAST "id","%u",it->second);
-////		rc = xmlTextWriterEndElement(writer);
-////	}
-//	// fin du noeud
-//	rc = xmlTextWriterEndElement(writer);
-//
-//	// parcourir le container et sauver les lignes
-//	rc = xmlTextWriterStartElement(writer, BAD_CAST "Data_Lines");
-////	rc = xmlTextWriterWriteFormatAttribute(writer,  BAD_CAST "size","%u",m_maxSize);
-//	for (unsigned int i = 0; i != m_maxSize; ++i)
-//	{
-//		unsigned int nbr = getNbRefs(i);
-//		rc = xmlTextWriterStartElement(writer, BAD_CAST "Line");
-//		rc = xmlTextWriterWriteFormatAttribute(writer,  BAD_CAST "id","%u",i);
-//		rc = xmlTextWriterWriteFormatAttribute(writer,  BAD_CAST "refs","%u",nbr);
-//		if (nbr > 0)
-//		{
-//			// tous les attributs de la ligne
-////			for (MapNameId::iterator it = m_attribNameMap.begin(); it!= m_attribNameMap.end(); ++it)
-////			{
-////				std::string st_att = m_tableAttribs[it->second]->output(i);
-////				rc = xmlTextWriterWriteAttribute(writer,(xmlChar*)( (it->first).c_str()), (xmlChar*)( st_att.c_str()));
-////			}
-//		}
-//		// fin du noeud Line
-//		rc = xmlTextWriterEndElement(writer);
-//	}
-//	// fin du noeud Data Lines
-//	rc = xmlTextWriterEndElement(writer);
-//
-//	// fin du noeud Container
-//	rc = xmlTextWriterEndElement(writer);
-//}
-//
-//unsigned int AttributeContainer::getIdXmlNode(xmlNodePtr node)
-//{
-//	xmlChar *prop = xmlGetProp(node, BAD_CAST "id");
-//	unsigned int id = atoi((char*)prop);
-//	return id;
-//}
-//
-//bool AttributeContainer::loadXml(xmlNodePtr node)
-//{
-//	xmlChar *prop = xmlGetProp(node, BAD_CAST "BlockSize");
-//	unsigned int bs = atoi((char*)prop);
-//
-//	if (bs != _BLOCKSIZE_)
-//	{
-//		CGoGNerr << "Chargement impossible, tailles de block differentes: "<<_BLOCKSIZE_<<" / " << bs << CGoGNendl;
-//		return false;
-//	}
-//
-////	prop = xmlGetProp(node, BAD_CAST "id");
-////	unsigned int id = atoi((char*)prop);
-//
-//	prop = xmlGetProp(node, BAD_CAST "size");
-//	m_maxSize = atoi((char*)prop);
-//
-//	char* ANnode = (char*)"Attributes_Names";
-//	char* DLnode= (char*)"Data_Lines";
-//
-//	// calcul le nombre de block et les alloue
-//	unsigned int nbb = m_maxSize/_BLOCKSIZE_;
-//	if (m_maxSize%_BLOCKSIZE_)
-//			nbb++;
-//
-//	m_holesBlocks.resize(nbb);
-//	for (unsigned int i=0; i<nbb; ++i)
-//		m_holesBlocks[i] = new HoleBlockRef;
-//
-//	//load Attributes
-//	xmlNode* cur = node->children;
-//	while ( strcmp((char*)(cur->name),ANnode))
-//		cur = cur->next;
-//	loadXmlAN(cur,nbb);
-//
-//	cur = node->children;
-//	while ( strcmp((char*)(cur->name),DLnode))
-//		cur = cur->next;
-//	loadXmlDL(cur);
-//
-//	// recreate free holes in blocks
-//	nbb--;
-//	for (unsigned int i = 0; i < nbb; ++i)
-//	{
-//		if (m_holesBlocks[i]->updateHoles(_BLOCKSIZE_))
-//			m_tableBlocksWithFree.push_back(i);
-//	}
-//	m_holesBlocks[nbb]->updateHoles(m_maxSize - nbb * _BLOCKSIZE_);
-//
-//	return true;
-//}
+
 
 void AttributeContainer::saveBin(CGoGNostream& fs, unsigned int id) const
 {
-    std::vector<AttributeMultiVectorGen*> bufferamv;
-    bufferamv.reserve(m_tableAttribs.size());
+	std::vector<AttributeMultiVectorGen*> bufferamv;
+	bufferamv.reserve(m_tableAttribs.size());
 
-    for(std::vector<AttributeMultiVectorGen*>::const_iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
-    {
-        if (*it != NULL)
-        {
-            const std::string& attName = (*it)->getName();
-            std::string markName = attName.substr(0,7);
-            if (markName != "marker_")
-                bufferamv.push_back(*it);
-        }
-    }
+//	for(std::vector<AttributeMultiVectorGen*>::const_iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
+//	{
+//		if (*it != NULL)
+//		{
+//			const std::string& attName = (*it)->getName();
+//			std::string markName = attName.substr(0,7);
+//			if (markName != "marker_")
+//				bufferamv.push_back(*it);
+//		}
+//	}
+	for(std::vector<AttributeMultiVectorGen*>::const_iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
+	{
+		if (*it != NULL)
+			bufferamv.push_back(*it);
+	}
 
+	// en ascii id et les tailles
 
-    // en ascii id et les tailles
+	std::vector<unsigned int> bufferui;
+	bufferui.reserve(10);
 
-    std::vector<unsigned int> bufferui;
-    bufferui.reserve(10);
+	bufferui.push_back(id);
+	bufferui.push_back(_BLOCKSIZE_);
+	bufferui.push_back(m_holesBlocks.size());
+	bufferui.push_back(m_tableBlocksWithFree.size());
+	bufferui.push_back(bufferamv.size());
+	bufferui.push_back(m_size);
+	bufferui.push_back(m_maxSize);
+	bufferui.push_back(m_orbit);
+	bufferui.push_back(m_nbUnknown);
 
-    bufferui.push_back(id);
-    bufferui.push_back(_BLOCKSIZE_);
-    bufferui.push_back(m_holesBlocks.size());
-    bufferui.push_back(m_tableBlocksWithFree.size());
-    //	bufferui.push_back(m_nbAttributes);
-    bufferui.push_back(bufferamv.size());
-    bufferui.push_back(m_size);
-    bufferui.push_back(m_maxSize);
-    bufferui.push_back(m_orbit);
-    bufferui.push_back(m_nbUnknown);
+	// count attribute of boundary markers and increase nb of saved attributes
+	for(std::vector<AttributeMultiVector<MarkerBool>*>::const_iterator it = m_tableMarkerAttribs.begin(); it != m_tableMarkerAttribs.end(); ++it)
+	{
+		const std::string& attName = (*it)->getName();
+		if (attName[0] == 'B') // for BoundaryMark0/1
+			bufferui[4]++;
+	}
 
+	fs.write(reinterpret_cast<const char*>(&bufferui[0]), bufferui.size()*sizeof(unsigned int));
 
-    fs.write(reinterpret_cast<const char*>(&bufferui[0]), bufferui.size()*sizeof(unsigned int));
+	unsigned int i = 0;
 
-    unsigned int i = 0;
+	for(std::vector<AttributeMultiVector<MarkerBool>*>::const_iterator it = m_tableMarkerAttribs.begin(); it != m_tableMarkerAttribs.end(); ++it)
+	{
+		const std::string& attName = (*it)->getName();
+		if (attName[0] == 'B') // for BoundaryMark0/1
+			(*it)->saveBin(fs, i++);
+	}
 
-    for(std::vector<AttributeMultiVectorGen*>::const_iterator it = bufferamv.begin(); it != bufferamv.end(); ++it)
-    {
-        if (*it != NULL)
-        {
-            const std::string& attName = (*it)->getName();
-            std::string markName = attName.substr(0,7);
-            if (markName != "marker_")
-                (*it)->saveBin(fs, i++);
-        }
-        else
-        {
-            CGoGNerr << "PB saving, NULL ptr in m_tableAttribs" <<  CGoGNendl;
-            i++;
-        }
-    }
+	for(std::vector<AttributeMultiVectorGen*>::const_iterator it = bufferamv.begin(); it != bufferamv.end(); ++it)
+	{
+		(*it)->saveBin(fs, i++);
+	}
 
-    //en binaire les blocks de ref
-    for (std::vector<HoleBlockRef*>::const_iterator it = m_holesBlocks.begin(); it != m_holesBlocks.end(); ++it)
-        (*it)->saveBin(fs);
+	//en binaire les blocks de ref
+	for (std::vector<HoleBlockRef*>::const_iterator it = m_holesBlocks.begin(); it != m_holesBlocks.end(); ++it)
+		(*it)->saveBin(fs);
 
-    // les indices des blocks libres
-    fs.write(reinterpret_cast<const char*>(&m_tableBlocksWithFree[0]), m_tableBlocksWithFree.size() * sizeof(unsigned int));
+	// les indices des blocks libres
+	fs.write(reinterpret_cast<const char*>(&m_tableBlocksWithFree[0]), m_tableBlocksWithFree.size() * sizeof(unsigned int));
 }
 
 unsigned int AttributeContainer::loadBinId(CGoGNistream& fs)
 {
-    unsigned int id;
-    fs.read(reinterpret_cast<char*>(&id), sizeof(unsigned int));
-    return id;
+	unsigned int id;
+	fs.read(reinterpret_cast<char*>(&id), sizeof(unsigned int));
+	return id;
 }
 
 bool AttributeContainer::loadBin(CGoGNistream& fs)
 {
-    if (m_attributes_registry_map == NULL)
-    {
-        CGoGNerr << "Attribute Registry non initialized"<< CGoGNendl;
-        return false;
-    }
+	if (m_attributes_registry_map == NULL)
+	{
+		CGoGNerr << "Attribute Registry non initialized"<< CGoGNendl;
+		return false;
+	}
 
-    std::vector<unsigned int> bufferui;
-    bufferui.resize(256);
+	std::vector<unsigned int> bufferui;
+	bufferui.resize(256);
 
-    fs.read(reinterpret_cast<char*>(&(bufferui[0])), 8*sizeof(unsigned int));	//WARNING 9 hard coded
+	fs.read(reinterpret_cast<char*>(&(bufferui[0])), 8*sizeof(unsigned int));	//WARNING 9 hard coded
 
-    unsigned int bs, szHB, szBWF, nbAtt;
-    bs = bufferui[0];
-    szHB = bufferui[1];
-    szBWF = bufferui[2];
-    nbAtt = bufferui[3];
-    m_size = bufferui[4];
-    m_maxSize = bufferui[5];
-    m_orbit = bufferui[6];
-    m_nbUnknown = bufferui[7];
-
-
-    if (bs != _BLOCKSIZE_)
-    {
-        CGoGNerr << "Loading unavailable, different block sizes: "<<_BLOCKSIZE_<<" / " << bs << CGoGNendl;
-        return false;
-    }
+	unsigned int bs, szHB, szBWF, nbAtt;
+	bs = bufferui[0];
+	szHB = bufferui[1];
+	szBWF = bufferui[2];
+	nbAtt = bufferui[3];
+	m_size = bufferui[4];
+	m_maxSize = bufferui[5];
+	m_orbit = bufferui[6];
+	m_nbUnknown = bufferui[7];
 
 
-    for (unsigned int j = 0; j < nbAtt; ++j)
-    {
-        std::string nameAtt;
-        std::string typeAtt;
-        /*unsigned int id = */AttributeMultiVectorGen::loadBinInfos(fs,nameAtt, typeAtt);
+	if (bs != _BLOCKSIZE_)
+	{
+		CGoGNerr << "Loading unavailable, different block sizes: "<<_BLOCKSIZE_<<" / " << bs << CGoGNendl;
+		return false;
+	}
 
-        std::map<std::string, RegisteredBaseAttribute*>::iterator itAtt = m_attributes_registry_map->find(typeAtt);
-        if (itAtt == m_attributes_registry_map->end())
-        {
-            CGoGNout << "Skipping non registred attribute of typename "<< typeAtt <<CGoGNendl;
-            AttributeMultiVectorGen::skipLoadBin(fs);
-        }
-        else
-        {
-            RegisteredBaseAttribute* ra = itAtt->second;
-            AttributeMultiVectorGen* amvg = ra->addAttribute(*this, nameAtt);
-            amvg->loadBin(fs);
-        }
-    }
 
-    m_holesBlocks.resize(szHB);
+	for (unsigned int j = 0; j < nbAtt; ++j)
+	{
+		std::string nameAtt;
+		std::string typeAtt;
+		/*unsigned int id = */AttributeMultiVectorGen::loadBinInfos(fs,nameAtt, typeAtt);
 
-    // blocks
-    for (unsigned int i = 0; i < szHB; ++i)
-    {
-        m_holesBlocks[i] = new HoleBlockRef;
-        m_holesBlocks[i]->loadBin(fs);
-    }
+		std::map<std::string, RegisteredBaseAttribute*>::iterator itAtt = m_attributes_registry_map->find(typeAtt);
+		if (itAtt == m_attributes_registry_map->end())
+		{
+			CGoGNout << "Skipping non registred attribute of type name"<< typeAtt <<CGoGNendl;
+			AttributeMultiVectorGen::skipLoadBin(fs);
+		}
+		else
+		{
+			if (typeAtt == "MarkerBool")
+			{
+				assert(j<m_tableMarkerAttribs.size());
+				m_tableMarkerAttribs[j]->loadBin(fs); // use j because BM are saved first
+			}
+			else
+			{
+				RegisteredBaseAttribute* ra = itAtt->second;
+				AttributeMultiVectorGen* amvg = ra->addAttribute(*this, nameAtt);
+				amvg->loadBin(fs);
+			}
+		}
+	}
 
-    // les indices des blocks libres
-    m_tableBlocksWithFree.resize(szBWF);
-    fs.read(reinterpret_cast<char*>(&(m_tableBlocksWithFree[0])), szBWF*sizeof(unsigned int));
+	m_holesBlocks.resize(szHB);
 
-    return true;
+	// blocks
+	for (unsigned int i = 0; i < szHB; ++i)
+	{
+		m_holesBlocks[i] = new HoleBlockRef;
+		m_holesBlocks[i]->loadBin(fs);
+	}
+
+	// les indices des blocks libres
+	m_tableBlocksWithFree.resize(szBWF);
+	fs.read(reinterpret_cast<char*>(&(m_tableBlocksWithFree[0])), szBWF*sizeof(unsigned int));
+
+	return true;
 }
 
 void  AttributeContainer::copyFrom(const AttributeContainer& cont)
 {
-    // 	clear is done from the map
+// 	clear is done from the map
 
-    m_size = cont.m_size;
-    m_maxSize = cont.m_maxSize;
-    m_orbit = cont.m_orbit;
-    m_nbUnknown = cont.m_nbUnknown;
-    m_nbAttributes = cont.m_nbAttributes;
-    m_lineCost = cont.m_lineCost;
+	m_size = cont.m_size;
+	m_maxSize = cont.m_maxSize;
+	m_orbit = cont.m_orbit;
+	m_nbUnknown = cont.m_nbUnknown;
+	m_nbAttributes = cont.m_nbAttributes;
+	m_lineCost = cont.m_lineCost;
 
-    // blocks
-    unsigned int sz = cont.m_holesBlocks.size();
-    m_holesBlocks.resize(sz);
-    for (unsigned int i = 0; i < sz; ++i)
-        m_holesBlocks[i] = new HoleBlockRef(*(cont.m_holesBlocks[i]));
+	// blocks
+	unsigned int sz = cont.m_holesBlocks.size();
+	m_holesBlocks.resize(sz);
+	for (unsigned int i = 0; i < sz; ++i)
+		m_holesBlocks[i] = new HoleBlockRef(*(cont.m_holesBlocks[i]));
 
-    //  free indices
-    sz = cont.m_freeIndices.size();
-    m_freeIndices.resize(sz);
-    for (unsigned int i = 0; i < sz; ++i)
-        m_freeIndices[i] = cont.m_freeIndices[i];
+	//  free indices
+	sz = cont.m_freeIndices.size();
+	m_freeIndices.resize(sz);
+	for (unsigned int i = 0; i < sz; ++i)
+		m_freeIndices[i] = cont.m_freeIndices[i];
 
-    // blocks with free
-    sz = cont.m_tableBlocksWithFree.size();
-    m_tableBlocksWithFree.resize(sz);
-    for (unsigned int i = 0; i < sz; ++i)
-        m_tableBlocksWithFree[i] = cont.m_tableBlocksWithFree[i];
+	// blocks with free
+	sz = cont.m_tableBlocksWithFree.size();
+	m_tableBlocksWithFree.resize(sz);
+	for (unsigned int i = 0; i < sz; ++i)
+		m_tableBlocksWithFree[i] = cont.m_tableBlocksWithFree[i];
 
-    // empty blocks
-    sz = cont.m_tableBlocksEmpty.size();
-    m_tableBlocksEmpty.resize(sz);
-    for (unsigned int i = 0; i < sz; ++i)
-        m_tableBlocksEmpty[i] = cont.m_tableBlocksEmpty[i];
+	// empty blocks
+	sz = cont.m_tableBlocksEmpty.size();
+	m_tableBlocksEmpty.resize(sz);
+	for (unsigned int i = 0; i < sz; ++i)
+		m_tableBlocksEmpty[i] = cont.m_tableBlocksEmpty[i];
 
-    //attributes (warning attribute can have different numbers than in original)
-    m_tableAttribs.reserve(m_nbAttributes);
-    sz = cont.m_tableAttribs.size();
-    for (unsigned int i = 0; i < sz; ++i)
-    {
-        if (cont.m_tableAttribs[i] != NULL)
-        {
-            std::string sub = cont.m_tableAttribs[i]->getName().substr(0, 5);
-            if (sub != "Mark_") // Mark leaved by
-            {
-                AttributeMultiVectorGen* ptr = cont.m_tableAttribs[i]->new_obj();
-                ptr->setName(cont.m_tableAttribs[i]->getName());
-                ptr->setOrbit(cont.m_tableAttribs[i]->getOrbit());
-                ptr->setIndex(m_tableAttribs.size());
-                ptr->setNbBlocks(cont.m_tableAttribs[i]->getNbBlocks());
-                ptr->copy(cont.m_tableAttribs[i]);
-                m_tableAttribs.push_back(ptr);
-            }
-            else
-            {
-                // get id of thread
-                const std::string& str = cont.m_tableAttribs[i]->getName();
-                unsigned int thId = (unsigned int)(str[5]-'0');
-                if (str.size()==7)
-                    thId = 10*thId +  (unsigned int)(sub[6]-'0');
-                // Mark always at the begin, because called after clear
-                AttributeMultiVectorGen* ptr = m_tableAttribs[thId];
-                ptr->setNbBlocks(cont.m_tableAttribs[i]->getNbBlocks());
-                ptr->copy(cont.m_tableAttribs[i]);
-            }
-        }
-    }
+	//attributes (warning attribute can have different numbers than in original)
+	m_tableAttribs.reserve(m_nbAttributes);
+	sz = cont.m_tableAttribs.size();
+	for (unsigned int i = 0; i < sz; ++i)
+	{
+		if (cont.m_tableAttribs[i] != NULL)
+		{
+			AttributeMultiVectorGen* ptr = cont.m_tableAttribs[i]->new_obj();
+			ptr->setName(cont.m_tableAttribs[i]->getName());
+			ptr->setOrbit(cont.m_tableAttribs[i]->getOrbit());
+			ptr->setIndex(m_tableAttribs.size());
+			ptr->setNbBlocks(cont.m_tableAttribs[i]->getNbBlocks());
+			ptr->copy(cont.m_tableAttribs[i]);
+			m_tableAttribs.push_back(ptr);
+		}
+	}
+	sz = cont.m_tableMarkerAttribs.size();
+	for (unsigned int i = 0; i < sz; ++i)
+	{
+		AttributeMultiVector<MarkerBool>* ptr = new AttributeMultiVector<MarkerBool>;
+		ptr->setTypeName(cont.m_tableMarkerAttribs[i]->getTypeName());
+		ptr->setName(cont.m_tableMarkerAttribs[i]->getName());
+		ptr->setOrbit(cont.m_tableMarkerAttribs[i]->getOrbit());
+		ptr->setIndex(m_tableMarkerAttribs.size());
+		ptr->setNbBlocks(cont.m_tableMarkerAttribs[i]->getNbBlocks());
+		ptr->copy(cont.m_tableMarkerAttribs[i]);
+		m_tableMarkerAttribs.push_back(ptr);
+	}
 }
 
 void AttributeContainer::dumpCSV() const
 {
-//    CGoGNout << "Container of "<<orbitName(this->getOrbit())<< CGoGNendl;
+	CGoGNout << "Name ; ;";
+	for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+	{
+		if (m_tableAttribs[i] != NULL)
+		{
+			CGoGNout << m_tableAttribs[i]->getName() << " ; ";
+		}
+	}
+	for (unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+	{
+		CGoGNout << m_tableMarkerAttribs[i]->getName() << " ; ";
+	}
+	CGoGNout << CGoGNendl;
+	CGoGNout << "Type  ; ;";
+	for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+	{
+		if (m_tableAttribs[i] != NULL)
+		{
+			CGoGNout << m_tableAttribs[i]->getTypeName() << " ; ";
+		}
+	}
+	for (unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+	{
+		CGoGNout << m_tableMarkerAttribs[i]->getTypeName() << " ; ";
+	}
+	CGoGNout << CGoGNendl;
+	CGoGNout << "line ; refs ;";
+	for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+	{
+		if (m_tableAttribs[i] != NULL)
+		{
+			CGoGNout << "value;";
+		}
+	}
+	for (unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+	{
+		CGoGNout << "value;";
+	}
+	CGoGNout << CGoGNendl;
 
-    CGoGNout << "Name ; ;";
-    for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-    {
-        if (m_tableAttribs[i] != NULL)
-        {
-            CGoGNout << m_tableAttribs[i]->getName() << " ; ";
-        }
-    }
-    CGoGNout << CGoGNendl;
-    CGoGNout << "Type  ; ;";
-    for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-    {
-        if (m_tableAttribs[i] != NULL)
-        {
-            CGoGNout << m_tableAttribs[i]->getTypeName() << " ; ";
-        }
-    }
-    CGoGNout << CGoGNendl;
-    CGoGNout << "line ; refs ;";
-    for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-    {
-        if (m_tableAttribs[i] != NULL)
-        {
-            CGoGNout << "value;";
-        }
-    }
-    CGoGNout << CGoGNendl;
+	for (unsigned int l=this->begin(); l!= this->end(); this->next(l))
+	{
+		CGoGNout << l << " ; "<< this->getNbRefs(l)<< " ; ";
+		for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+		{
+			if (m_tableAttribs[i] != NULL)
+			{
+				m_tableAttribs[i]->dump(l);
+				CGoGNout << " ; ";
+			}
+		}
+		for (unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+		{
+				m_tableMarkerAttribs[i]->dump(l);
+				CGoGNout << " ; ";
+		}
 
-    for (unsigned int l=this->begin(); l!= this->end(); this->next(l))
-    {
-        CGoGNout << l << " ; "<< this->getNbRefs(l)<< " ; ";
-        for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-        {
-            if (m_tableAttribs[i] != NULL)
-            {
-                m_tableAttribs[i]->dump(l);
-                CGoGNout << " ; ";
-            }
-        }
-        CGoGNout << CGoGNendl;
-    }
+		CGoGNout << CGoGNendl;
+	}
+	CGoGNout << CGoGNendl;
 }
 
 void AttributeContainer::dumpByLines() const
 {
-//    CGoGNout << "Container of "<<orbitName(this->getOrbit())<< CGoGNendl;
-    for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
-    {
-        if (m_tableAttribs[i] != NULL)
-        {
-            CGoGNout << "Name: "<< m_tableAttribs[i]->getName();
-            CGoGNout << " / Type: "<< m_tableAttribs[i]->getTypeName();
-            for (unsigned int l=this->begin(); l!= this->end(); this->next(l))
-            {
-                CGoGNout << l << " ; ";
-                m_tableAttribs[i]->dump(l);
-                CGoGNout << CGoGNendl;
-            }
+	CGoGNout << "Container of "<<orbitName(this->getOrbit())<< CGoGNendl;
+	for (unsigned int i = 0; i < m_tableAttribs.size(); ++i)
+	{
+		if (m_tableAttribs[i] != NULL)
+		{
+			CGoGNout << "Name: "<< m_tableAttribs[i]->getName();
+			CGoGNout << " / Type: "<< m_tableAttribs[i]->getTypeName();
+			for (unsigned int l=this->begin(); l!= this->end(); this->next(l))
+			{
+				CGoGNout << l << " ; ";
+				m_tableAttribs[i]->dump(l);
+				CGoGNout << CGoGNendl;
+			}
+		}
+	}
+	for (unsigned int i = 0; i < m_tableMarkerAttribs.size(); ++i)
+	{
+		CGoGNout << "Name: "<< m_tableMarkerAttribs[i]->getName();
+		CGoGNout << " / Type: "<< m_tableMarkerAttribs[i]->getTypeName();
+		for (unsigned int l=this->begin(); l!= this->end(); this->next(l))
+		{
+			CGoGNout << l << " ; ";
+			m_tableMarkerAttribs[i]->dump(l);
+			CGoGNout << CGoGNendl;
+		}
+	}
+}
 
-        }
+AttributeMultiVectorGen* AttributeContainer::addAttribute(const std::string& typeName, const std::string& attribName)
+{
+	// first check if attribute already exist
+	unsigned int index = UNKNOWN ;
+	if (attribName != "")
+	{
+		index = getAttributeIndex(attribName) ;
+		if (index != UNKNOWN)
+		{
+			CGoGNerr << "attribute " << attribName << " already found.." << CGoGNendl ;
+			return NULL ;
+		}
+	}
 
-    }
+	// create the new attribute
+	std::map<std::string, RegisteredBaseAttribute*>::iterator itAtt = m_attributes_registry_map->find(typeName);
+	if (itAtt == m_attributes_registry_map->end())
+	{
+		CGoGNerr << "type " << typeName << " not registred.." << CGoGNendl ;
+		return NULL ;
+	}
+
+	RegisteredBaseAttribute* ra = itAtt->second;
+	AttributeMultiVectorGen* amv = ra->addAttribute(*this, attribName);
+
+	return amv ;
 }
 
 
+AttributeMultiVector<MarkerBool>* AttributeContainer::addMarkerAttribute(const std::string& attribName)
+{
+	// first check if attribute already exist
+	unsigned int index ;
+	if (attribName != "")
+	{
+		index = getAttributeIndex(attribName) ;
+		if (index != UNKNOWN)
+		{
+			std::cout << "attribute " << attribName << " already found.." << std::endl ;
+			return NULL ;
+		}
+	}
 
+	// create the new attribute
+	AttributeMultiVector<MarkerBool>* amv = new AttributeMultiVector<MarkerBool>(attribName, "MarkerBool") ;
+
+	index = m_tableMarkerAttribs.size() ;
+	m_tableMarkerAttribs.push_back(amv) ;
+
+	amv->setOrbit(m_orbit) ;
+	amv->setIndex(index) ;
+
+	// resize the new attribute so that it has the same size than others
+	amv->setNbBlocks(m_holesBlocks.size()) ;
+
+	return amv ;
 }
+
+
+bool AttributeContainer::removeMarkerAttribute(const std::string& attribName)
+{
+	unsigned int index ;
+	bool found = false ;
+	for (index = 0; index < m_tableAttribs.size() && !found; ++index)
+	{
+		if (m_tableMarkerAttribs[index]->getName() == attribName)
+			found = true ;
+	}
+
+	if (!found)
+		return false;
+
+	index--; // because of for loop
+
+	delete m_tableMarkerAttribs[index] ;
+	m_tableMarkerAttribs[index] = m_tableMarkerAttribs.back() ;
+	m_tableMarkerAttribs.pop_back() ;
+
+	return true;
+}
+
+} //namespace CGoGN

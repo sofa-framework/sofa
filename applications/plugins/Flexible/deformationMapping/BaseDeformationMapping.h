@@ -184,8 +184,6 @@ public:
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
     typedef typename BaseShapeFunction::VecVRef VecVRef;
-    typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< MaterialToSpatial transformation = deformation gradient type
-    typedef typename BaseShapeFunction::VMaterialToSpatial VMaterialToSpatial;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
     //@}
 
@@ -193,6 +191,8 @@ public:
     //@{
     typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef vector<Coord> VecCoord;
+    typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;     ///< local liner transformation from material space to world space = deformation gradient type
+    typedef vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
     //@}
@@ -313,7 +313,7 @@ public:
         return jacobian;
     }
 
-    void setWeights(const vector<VReal>& weights, const vector<VRef>& indices)
+    void setWeights(const VecVReal& weights, const VecVRef& indices)
     {
         f_index = indices;
         f_w = weights;
@@ -329,7 +329,7 @@ public:
     Data<VecVReal >       f_w;         ///< Influence weights of the parents for each child
     Data<vector<VGradient> >   f_dw;        ///< Influence weight gradients
     Data<vector<VHessian> >    f_ddw;       ///< Influence weight hessians
-    Data<VMaterialToSpatial>    f_F0;
+    Data<VMaterialToSpatial>    f_F0;       ///< initial value of deformation gradients
     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
@@ -344,7 +344,7 @@ protected:
     VecCoord f_pos;
 
     KDT f_KdTree;
-    VMaterialToSpatial f_F;
+    VMaterialToSpatial f_F;         ///< current value of deformation gradients (for visualisation)
 
 
 public:

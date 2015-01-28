@@ -58,6 +58,8 @@ public:
     typedef Inherited::SeqPositions SeqPositions;
     typedef Inherited::raPositions raPositions;
     typedef Inherited::waPositions waPositions;
+    typedef Inherited::VTransform VTransform;
+    typedef Inherited::Transform Transform;
     //@}
 
     /** @name  topology */
@@ -69,6 +71,12 @@ public:
 
     typedef topology::TetrahedronSetGeometryAlgorithms<defaulttype::StdVectorTypes<Coord,Coord,Real> > TetraGeoAlg;
     TetraGeoAlg* tetraGeoAlgo;
+    //@}
+
+    /** @name orientation data */
+    //@{
+    Data< SeqPositions > f_orientation; // = rest deformation gradient orientation in each cell (Euler angles)
+    Data< bool > f_useLocalOrientation;
     //@}
 
     Data< vector<Real> > f_fineVolumes;
@@ -105,6 +113,8 @@ protected:
       , parentTopology( 0 )
       , f_cell(initData(&f_cell,"cell","cell index associated with each sample"))
       , tetraGeoAlgo( 0 )
+      , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))
+      , f_useLocalOrientation(initData(&f_useLocalOrientation,true,"useLocalOrientation","tells if orientations are defined in the local basis on each cell"))
       , f_fineVolumes(initData(&f_fineVolumes,"fineVolumes","input cell volumes (typically computed from a fine model)"))
     {
     }
@@ -131,6 +141,7 @@ protected:
 
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
+        helper::WriteAccessor<Data< VTransform > > transforms(this->f_transforms);
 
         helper::WriteAccessor<Data< vector<unsigned int> > > cel(this->f_cell);
 
@@ -145,6 +156,7 @@ protected:
                 {
                     pos.resize ( edges.size() );
                     vol.resize ( pos.size() );
+                    transforms.resize ( pos.size() );
                     cel.resize ( pos.size() );
                     for (unsigned int i=0; i<edges.size(); i++ )
                     {
@@ -152,6 +164,7 @@ protected:
                         pos[i] = (p1+p2)*0.5;
                         vol[i].resize(1);  if(f_fineVolumes.getValue().size()>i) vol[i][0]=f_fineVolumes.getValue()[i]; else  vol[i][0]=(p1-p2).norm();
                         cel[i] = i;
+                        transforms[i] = getLocalFrame1D(p1,p2);
                         // to do : volume integrals for elastons
                     }
                 }
@@ -164,6 +177,7 @@ protected:
                 {
                     pos.resize ( triangles.size() +quads.size() );
                     vol.resize ( pos.size() );
+                    transforms.resize ( pos.size() );
                     cel.resize ( pos.size() );
                     for ( unsigned int i = 0; i < triangles.size(); i++ )
                     {
@@ -172,6 +186,11 @@ protected:
                         vol[i].resize(1);  if(f_fineVolumes.getValue().size()>i) vol[i][0]=f_fineVolumes.getValue()[i]; else  vol[i][0] = cross(p2-p1,p3-p1).norm()*0.5;
                         cel[i] = i;
                         // to do : volume integrals for elastons
+                        // compute local orientation given user input and local element frame
+                        Transform U=this->getUserOrientation(i),R;
+                        R = getLocalFrame2D(p1,p2,p3);
+                        if(this->f_useLocalOrientation.getValue()) transforms[i] = reorientGlobalOrientation(R*U,R);
+                        else transforms[i] = reorientGlobalOrientation(U,R);
                     }
                     int c0 = triangles.size();
                     for ( unsigned int i = 0; i < quads.size(); i++ )
@@ -181,12 +200,18 @@ protected:
                         vol[i+c0].resize(1);  if(f_fineVolumes.getValue().size()>i+c0) vol[i+c0][0]=f_fineVolumes.getValue()[i+c0]; else  vol[i+c0][0] = cross(p2-p1,p3-p1).norm();
                         cel[i+c0] = i+c0;
                         // to do : volume integrals for elastons
+                        // compute local orientation given user input and local element frame
+                        Transform U=this->getUserOrientation(i+c0),R;
+                        R = getLocalFrame2D(p1,p2,p4);
+                        if(this->f_useLocalOrientation.getValue()) transforms[i+c0] = reorientGlobalOrientation(R*U,R);
+                        else transforms[i+c0] = reorientGlobalOrientation(U,R);
                     }
                 }
                 else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE || this->f_order.getValue()==2)
                 {
                     pos.resize ( 4*quads.size() );
                     vol.resize ( pos.size() );
+                    transforms.resize ( pos.size() );
                     cel.resize ( pos.size() );
 
                     // 4 points per quad at [ +-1/sqrt(3), +-1/sqrt(3)], weight = volume/4
@@ -200,6 +225,12 @@ protected:
                         if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]*0.25; else  V=u.norm()*v.norm()*0.25;
                         u*=offset; v*=offset;
                         const Coord c = (p1+p2+p3+p4)*0.25;
+                        // compute local orientation given user input and local element frame
+                        Transform U=this->getUserOrientation(i),R,M;
+                        R = getLocalFrame2D(p1,p2,p4);
+                        if(this->f_useLocalOrientation.getValue()) M = reorientGlobalOrientation(R*U,R);
+                        else M = reorientGlobalOrientation(U,R);
+
                         for (int gx2=-1; gx2<=1; gx2+=2)
                             for (int gx3=-1; gx3<=1; gx3+=2)
                             {
@@ -207,7 +238,7 @@ protected:
                                 vol[count].resize(1); vol[count][0] = V;
                                 cel[count] = i;
                                 //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
-                                //
+                                transforms[count] = M;
                                 count++;
                             }
                     }
@@ -222,6 +253,7 @@ protected:
             {
                 pos.resize ( tetrahedra.size() +cubes.size() );
                 vol.resize ( pos.size() );
+                transforms.resize ( pos.size() );
                 cel.resize ( pos.size() );
                 for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
                 {
@@ -230,6 +262,10 @@ protected:
                     vol[i].resize(1); if(f_fineVolumes.getValue().size()>i) vol[i][0]=f_fineVolumes.getValue()[i]; else  vol[i][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1))/(Real)6.;
                     cel[i] = i;
                     // to do : volume integrals for elastons
+                    // compute local orientation given user input and local element frame
+                    Transform U=this->getUserOrientation(i);
+                    if(this->f_useLocalOrientation.getValue()) transforms[i] = getLocalFrame2D(p1,p2,p3) * U;
+                    else transforms[i]=U;
                 }
                 int c0 = tetrahedra.size();
                 for ( unsigned int i = 0; i < cubes.size(); i++ )
@@ -240,6 +276,10 @@ protected:
                     getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
                     if(f_fineVolumes.getValue().size()>i+c0) { Real fact=f_fineVolumes.getValue()[i+c0]/vol[i+c0][0];   for (unsigned int j=0; j<vol[i+c0].size(); j++) vol[i+c0][j]*=fact; }
                     //vol[i+c0].resize(1); if(f_fineVolumes.getValue().size()>i+c0) vol[i+c0][0]=f_fineVolumes.getValue()[i+c0]; else  vol[i+c0][0] = fabs(dot(cross(p4-p1,p3-p1),p2-p1));
+                    // compute local orientation given user input and local element frame
+                    Transform U=this->getUserOrientation(i+c0);
+                    if(this->f_useLocalOrientation.getValue()) transforms[i+c0] = getLocalFrame2D(p1,p2,p5) * U;
+                    else transforms[i+c0]=U;
                 }
             }
             else if(this->f_method.getValue().getSelectedId() == GAUSSLEGENDRE)
@@ -250,17 +290,23 @@ protected:
                     IntegrationDescriptor::QuadraturePointArray qpa=tetraGeoAlgo->getTetrahedronNumericalIntegrationDescriptor().getQuadratureMethod( (IntegrationDescriptor::QuadratureMethod)0,this->f_order.getValue());
                     pos.resize ( qpa.size()*tetrahedra.size());
                     vol.resize ( pos.size() );
+                    transforms.resize ( pos.size() );
                     cel.resize ( pos.size() );
                     unsigned int count=0;
                     for ( unsigned int i = 0; i < tetrahedra.size(); i++ )
                     {
                         const Coord p[4]={parent[tetrahedra[i][0]],parent[tetrahedra[i][1]],parent[tetrahedra[i][2]],parent[tetrahedra[i][3]]};
                         Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)6.;
+                        // compute local orientation given user input and local element frame
+                        Transform U=this->getUserOrientation(i),M;
+                        if(this->f_useLocalOrientation.getValue()) M= getLocalFrame2D(p[0],p[1],p[3]) * U;
+                        else M=U;
                         for ( unsigned int j = 0; j < qpa.size(); j++ )
                         {
                             pos[count]=Coord(); for ( unsigned int k = 0; k < qpa[j].first.size(); k++ ) pos[count]+=p[k]*qpa[j].first[k];
                             vol[count].resize(1); vol[count][0] = V*qpa[j].second*(Real)6.0;        // todo: change weight in TetrahedronGeoAlgo to correspond to tet volume weighting (not 6xtet volume weighting)
                             cel[count] = i;
+                            transforms[count]=M;
                             count++;
                         }
                     }
@@ -269,6 +315,7 @@ protected:
                 {
                     pos.resize ( 4*tetrahedra.size() + 8*cubes.size() );
                     vol.resize ( pos.size() );
+                    transforms.resize ( pos.size() );
                     cel.resize ( pos.size() );
                     unsigned int count=0;
 
@@ -281,13 +328,18 @@ protected:
                         {
                             const Coord p[4]={parent[tetrahedra[i][0]],parent[tetrahedra[i][1]],parent[tetrahedra[i][2]],parent[tetrahedra[i][3]]};
                             Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/4.0; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)24.;
+                            // compute local orientation given user input and local element frame
+                            Transform U=this->getUserOrientation(i),M;
+                            if(this->f_useLocalOrientation.getValue()) M = getLocalFrame2D(p[0],p[1],p[3]) * U;
+                            else M=U;
                             for ( unsigned int j = 0; j < 4; j++ )
                             {
                                 pos[count] = (p[0]+p[1]+p[2]+p[3])*offsetB + p[j]*offsetA;
                                 vol[count].resize(1); vol[count][0] = V;
                                 cel[count] = i;
-                                count++;
                                 // to do : volume integrals for elastons
+                                transforms[count]=M;
+                                count++;
                             }
                         }
                     }
@@ -302,7 +354,10 @@ protected:
                             Coord u=(p2-p1),v=(p5-p1),w=(p4-p1);
                             Real V;
                             if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/(Real)8; else  V=u.norm()*v.norm()*w.norm()/(Real)8.;
-
+                            // compute local orientation given user input and local element frame
+                            Transform U=this->getUserOrientation(i+tetrahedra.size()),M;
+                            if(this->f_useLocalOrientation.getValue()) M = getLocalFrame2D(p1,p2,p5) * U;
+                            else M=U;
                             u*=offset; v*=offset; w*=offset;
                             const Coord c = (p1+p2+p3+p4+p5+p6+p7+p8)*0.125;
                             for (int gx1=-1; gx1<=1; gx1+=2)
@@ -313,7 +368,7 @@ protected:
                                         vol[count].resize(1); vol[count][0] = V;
                                         cel[count] = i;
                                         //getCubeVolumes(vol[i+c0],p1,p2,p3,p4,this->f_order.getValue());
-                                        //
+                                        transforms[count]=M;
                                         count++;
                                     }
                         }
@@ -373,6 +428,47 @@ protected:
     }
 
 
+    // local coordinate systems
+    static Transform getLocalFrame1D( const Coord &p1,const Coord &p2)
+    {
+        Transform R;
+        R(0) = p2-p1; R(0).normalize();
+        R(1) = Coord(1,0,0); if(dot(R(0),R(1))==1.) R(1) = Coord(0,1,0); if(dot(R(0),R(1))==1.) R(1) = Coord(0,0,1);
+        R(2) = cross(R(0),R(1)); R(2).normalize();
+        R(1) = cross(R(2),R(0));
+        R.transpose();
+        return R;
+    }
+    static Transform getLocalFrame2D( const Coord &p1, const Coord &p2,const Coord &p3)
+    {
+        Transform R;
+        R(0) = p2-p1; R(0).normalize();
+        R(1) = p3-p1;
+        R(2) = cross(R(0),R(1)); R(2).normalize();
+        R(1)=cross(R(2),R(0));
+        R.transpose();
+        return R;
+    }
+    // align user provided global orientation to 2D manifold
+    static Transform reorientGlobalOrientation( const Transform& Global, const Transform& Local)
+    {
+        Transform R;
+        R(2)=Local.transposed()(2); // third axis = face normal
+        R(0)=Global.transposed()(0) - R(2)*dot(R(2),Global.transposed()(0)); R(0).normalize();
+        R(1)= cross(R(2),R(0));
+        R.transpose();
+        return R;
+    }
+
+
+    // user provided orientation
+    Transform getUserOrientation(const unsigned int index) const
+    {
+        Coord orient; if(this->f_orientation.getValue().size()) orient=(this->f_orientation.getValue().size()>index)?this->f_orientation.getValue()[index]:this->f_orientation.getValue()[0];
+        helper::Quater<Real> q = helper::Quater< Real >::createQuaterFromEuler(orient * (Real)M_PI / (Real)180.0);
+        Transform R; q.toMatrix(R);
+        return R;
+    }
 
 
 };

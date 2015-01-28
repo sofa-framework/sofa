@@ -9,7 +9,7 @@ set(HEADER_FILES
 )
 
 set(QML_FILES
-		data/qml/Main.qml
+                data/qml/Main.qml
 )
 
 set(CONFIG_FILES
@@ -29,6 +29,10 @@ if(WIN32)
 	else()
 		set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files (x86)/Windows Kits/8.0/Lib/win8/um/x86")
 	endif()
+endif()
+
+if(NOT MSVC)
+    add_definitions(-std=gnu++11)
 endif()
 
 find_package(Qt5 COMPONENTS Core Gui Widgets Quick Qml REQUIRED PATHS "${SOFA-EXTERNAL_QT5_PATH}")

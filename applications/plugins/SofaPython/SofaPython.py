@@ -27,3 +27,10 @@ for relative in plugins_paths:
 
 # force C locale
 locale.setlocale(locale.LC_ALL, 'C')
+
+# try to import numpy and to launch numpy.finfo to cache data (avoid a deadlock when calling numpy.finfo from a worker thread)
+try:
+    import numpy
+    numpy.finfo(float)
+except:
+    pass

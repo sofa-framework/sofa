@@ -3,6 +3,8 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.1
 import Qt.labs.settings 1.0
+import "qrc:/SofaCommon/SofaSettingsScript.js" as SofaSettingsScript
+import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 
 Item {
     id: root
@@ -11,7 +13,7 @@ Item {
     property int uiId: 0
     property int previousUiId: uiId
     onUiIdChanged: {
-        globalUiSettings.replaceUiId(previousUiId, uiId);
+        SofaSettingsScript.Ui.replace(previousUiId, uiId);
     }
 
     property real splitterThickness: 1
@@ -56,7 +58,7 @@ Item {
 
     Component.onCompleted: {
         if(0 === uiId) {
-            uiId = globalUiSettings.generateUiId();
+            uiId = SofaSettingsScript.Ui.generate();
         } else {
             // try to load a previous configuration
             var viewIdArray = uiSettings.viewIds.split(';');
@@ -458,7 +460,7 @@ Item {
             property int uiId: 0
             property int previousUiId: uiId
             onUiIdChanged: {
-                globalUiSettings.replaceUiId(previousUiId, uiId);
+                SofaSettingsScript.Ui.replace(previousUiId, uiId);
                 init();
             }
 
@@ -504,7 +506,7 @@ Item {
 
             Component.onCompleted: {
                 if(0 === uiId) {
-                    uiId = globalUiSettings.generateUiId();
+                    uiId = SofaSettingsScript.Ui.generate();
                     init();
                 }
             }
@@ -516,7 +518,7 @@ Item {
                 if(isUserDestroyed) {
                     var previousUiId = uiId;
                     uiId = 0;
-                    globalUiSettings.removeUiId(previousUiId);
+                    SofaSettingsScript.Ui.remove(previousUiId);
                 }
             }
 
@@ -588,7 +590,7 @@ Item {
                             }
                         }
 
-                        overrideCursorShape = 0;
+                        SofaToolsScript.Tools.overrideCursorShape = 0;
                         dragTarget = null;
                     }
 
@@ -622,11 +624,11 @@ Item {
                             }
                         } else {
                             if((pressedButtons & Qt.LeftButton) && evaluateViewMerging(view, mapToItem(root, mouse.x, mouse.y)))
-                                overrideCursorShape = Qt.OpenHandCursor;
+                                SofaToolsScript.Tools.overrideCursorShape = Qt.OpenHandCursor;
                             else if((pressedButtons & Qt.RightButton) && evaluateViewSwapping(view, mapToItem(root, mouse.x, mouse.y)))
-                                overrideCursorShape = Qt.OpenHandCursor;
+                                SofaToolsScript.Tools.overrideCursorShape = Qt.OpenHandCursor;
                             else
-                                overrideCursorShape = Qt.ForbiddenCursor;
+                                SofaToolsScript.Tools.overrideCursorShape = Qt.ForbiddenCursor;
                         }
                     }
 
@@ -639,12 +641,12 @@ Item {
                             if(dragTarget.isSplitter) {
                                 var splitter = dragTarget;
                                 if(Qt.Horizontal !== splitter.orientation)
-                                    overrideCursorShape = Qt.SplitHCursor;
+                                    SofaToolsScript.Tools.overrideCursorShape = Qt.SplitHCursor;
                                 else
-                                    overrideCursorShape = Qt.SplitVCursor;
+                                    SofaToolsScript.Tools.overrideCursorShape = Qt.SplitVCursor;
                             }
                         } else {
-                            overrideCursorShape = 0;
+                            SofaToolsScript.Tools.overrideCursorShape = 0;
                             updateSplitters();
                         }
                     }
@@ -680,7 +682,7 @@ Item {
                             }
                         }
 
-                        overrideCursorShape = 0;
+                        SofaToolsScript.Tools.overrideCursorShape = 0;
                         dragTarget = null;
                     }
 
@@ -714,11 +716,11 @@ Item {
                             }
                         } else {
                             if((pressedButtons & Qt.LeftButton) && evaluateViewMerging(view, mapToItem(root, mouse.x, mouse.y)))
-                                overrideCursorShape = Qt.OpenHandCursor;
+                                SofaToolsScript.Tools.overrideCursorShape = Qt.OpenHandCursor;
                             else if((pressedButtons & Qt.RightButton) && evaluateViewSwapping(view, mapToItem(root, mouse.x, mouse.y)))
-                                overrideCursorShape = Qt.OpenHandCursor;
+                                SofaToolsScript.Tools.overrideCursorShape = Qt.OpenHandCursor;
                             else
-                                overrideCursorShape = Qt.ForbiddenCursor;
+                                SofaToolsScript.Tools.overrideCursorShape = Qt.ForbiddenCursor;
                         }
                     }
 
@@ -731,12 +733,12 @@ Item {
                             if(dragTarget.isSplitter) {
                                 var splitter = dragTarget;
                                 if(Qt.Horizontal !== splitter.orientation)
-                                    overrideCursorShape = Qt.SplitHCursor;
+                                    SofaToolsScript.Tools.overrideCursorShape = Qt.SplitHCursor;
                                 else
-                                    overrideCursorShape = Qt.SplitVCursor;
+                                    SofaToolsScript.Tools.overrideCursorShape = Qt.SplitVCursor;
                             }
                         } else {
-                            overrideCursorShape = 0;
+                            SofaToolsScript.Tools.overrideCursorShape = 0;
                             updateSplitters();
                         }
                     }
@@ -847,20 +849,14 @@ Item {
     function shareEdge(splitter, otherSplitter) {
         if((null !== splitter.bottomRightEdge && splitter.bottomRightEdge === otherSplitter.topLeftEdge) ||
            (null !== splitter.topLeftEdge && splitter.topLeftEdge === otherSplitter.bottomRightEdge)) {
-
-            if(splitter.orientation !== otherSplitter.orientation)
-                return true;
-            else if(Qt.Horizontal === splitter.orientation && Math.round(splitter.y) === Math.round(otherSplitter.y))
-                return true;
-            else if(Qt.Vertical === splitter.orientation && Math.round(splitter.x) === Math.round(otherSplitter.x))
-                return true;
+            return true;
         }
 
         return false;
     }
 
     function mergeSplitter(splitter, otherSplitter) {
-        if(splitter !== otherSplitter && shareEdge(splitter, otherSplitter) && (Math.abs(splitter.relativeX - otherSplitter.relativeX) < 0.00001 || Math.abs(splitter.relativeY - otherSplitter.relativeY) < 0.00001)) {
+        if(splitter !== otherSplitter && shareEdge(splitter, otherSplitter) && (Math.abs(splitter.x - otherSplitter.x) < splitterMagnetizeThreshold || Math.abs(splitter.y - otherSplitter.y) < splitterMagnetizeThreshold)) {
             if(null !== otherSplitter.bottomRightEdge && otherSplitter.bottomRightEdge === splitter.topLeftEdge) {
                 otherSplitter.bottomRightEdge = splitter.bottomRightEdge;
             } else if(null !== otherSplitter.topLeftEdge && otherSplitter.topLeftEdge === splitter.bottomRightEdge) {
@@ -987,7 +983,7 @@ Item {
             property int uiId: 0
             property int previousUiId: uiId
             onUiIdChanged: {
-                globalUiSettings.replaceUiId(previousUiId, uiId);
+                SofaSettingsScript.Ui.replace(previousUiId, uiId);
             }
 
             Settings {
@@ -1023,7 +1019,7 @@ Item {
 
             Component.onCompleted: {
                 if(0 === uiId) {
-                    uiId = globalUiSettings.generateUiId();
+                    uiId = SofaSettingsScript.Ui.generate();
                     init();
                 }
             }
@@ -1033,7 +1029,7 @@ Item {
                 if(isUserDestroyed) {
                     var previousUiId = uiId;
                     uiId = 0;
-                    globalUiSettings.removeUiId(previousUiId);
+                    SofaSettingsScript.Ui.remove(previousUiId);
                 }
             }
 
@@ -1117,11 +1113,11 @@ Item {
                     if(dragTarget) {
                         var splitter = dragTarget;
                         if(Qt.Horizontal !== splitter.orientation)
-                            overrideCursorShape = Qt.SizeHorCursor;
+                            SofaToolsScript.Tools.overrideCursorShape = Qt.SizeHorCursor;
                         else
-                            overrideCursorShape = Qt.SizeVerCursor;
+                            SofaToolsScript.Tools.overrideCursorShape = Qt.SizeVerCursor;
                     } else {
-                        overrideCursorShape = 0;
+                        SofaToolsScript.Tools.overrideCursorShape = 0;
                         updateSplitters();
                     }
                 }

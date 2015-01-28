@@ -1,12 +1,19 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "SofaQtQuickGUI.h"
 #include <QObject>
 #include <QMatrix4x4>
 #include <QVector3D>
 #include <QPoint>
 
-class Camera : public QObject
+namespace sofa
+{
+
+namespace qtquick
+{
+
+class SOFA_SOFAQTQUICKGUI_API Camera : public QObject
 {
 	Q_OBJECT
 
@@ -82,5 +89,9 @@ private:
 	mutable bool		myProjectionDirty;
 	mutable bool		myModelDirty;
 };
+
+}
+
+}
 
 #endif // CAMERA_H

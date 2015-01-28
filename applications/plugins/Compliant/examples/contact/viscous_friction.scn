@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<Node animate="0" name="Root" dt="0.005" gravity="0 -10 0">
+  
+  <RequiredPlugin name="Compliant" pluginName="Compliant" />
+<!--   <CompliantAttachButtonSetting/> -->
+  
+  <VisualStyle displayFlags="showCollisionModels hideVisual showMappings" />
+  <DefaultPipeline depth="6" />
+  <BruteForceDetection />
+  
+  <NewProximityIntersection alarmDistance="1.5" contactDistance="0.1" />
+<!--   <MinProximityIntersection alarmDistance="2" contactDistance="0.1" /> -->
+
+  
+   <!-- a not null global (i.e. in responseParams) friction coefficient is used for every contacts -->
+   <!-- a null global friction coefficient forces to use the product of CollisionModel::contactFriction pair -->
+  <!-- same behavior for restitution -->
+  <DefaultContactManager response="CompliantContact" responseParams="viscousFriction=0&amp;restitution=0" />
+	
+  <CompliantImplicitSolver stabilization="1" warm_start="1" />
+
+  <SequentialSolver precision="1e-10" relative="false" iterations="1000" />
+	
+  
+ <Node name="Triangles">
+    <MechanicalObject name="dofs" template="Rigid" position="-5 3 10 0 0 0 1" velocity="10 -10 0 0 0 0" />
+    <RigidMass mass="10" inertia="10 10 10" />
+    <Node name="collision">
+      <MeshObjLoader name="loader" filename="mesh/cube.obj" />
+      <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
+      <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
+      <TriangleModel template="Vec3d" contactFriction="100" contactRestitution="0"/>
+<!--       <LineModel template="Vec3d" contactFriction="100" contactRestitution="0"/> -->
+<!--       <PointModel template="Vec3d" contactFriction="100" contactRestitution="0"/> -->
+      <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
+    </Node>
+  </Node> 
+  
+
+ 
+   <Node name="Ball">
+    <MechanicalObject name="dofs" template="Rigid" position="0 2.1 10 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
+    <RigidMass mass="1" inertia="1 1 1" />
+    <Sphere radius="1" contactFriction="10" contactRestitution="0.5" />
+  </Node>
+  
+  
+  
+  
+  
+  <Node name="ground">
+		<!-- adjusted with contact distance, so that we end-up at zero -->
+    <MechanicalObject name="dofs" template="Rigid" position="0 -3.2 0 0 0 0 1" />
+    <RigidMass mass="1" inertia="15 1 15" />
+<!--     <OBB extents="15 1 15" contactRestitution="1"/> -->
+    <Node name="collision">
+      <MeshObjLoader filename="mesh/cube.obj" name="loader" scale3d="20 2 20" />
+      <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
+      <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
+      <TriangleModel template="Vec3d" simulated="0" moving="0" contactFriction="1" contactRestitution="1"/>
+<!--       <LineModel template="Vec3d" contactFriction="1" contactRestitution="0"/> -->
+<!--       <PointModel template="Vec3d" contactFriction="1" contactRestitution="0"/> -->
+      <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
+    </Node>
+    <FixedConstraint indices="0" />
+  </Node>
+ 
+</Node>

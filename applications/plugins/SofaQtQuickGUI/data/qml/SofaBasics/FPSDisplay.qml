@@ -3,30 +3,33 @@ import QtQuick.Controls 1.0
 
 Label {
     id: root
-    text: "FPS: " + timer.fps
+    text: "FPS: " + d.timer.fps
 
-    Timer {
-        id: timer
-        running: true
-        repeat: true
-        interval: 1
+    QtObject {
+        id : d
 
-        property int frameCount: 0
-        property int previousTime: 0
-        property int fps: 0
-        onTriggered: {
-            frameCount++;
-            var currentTime = new Date().getSeconds();
+        property Timer timer: Timer {
+            running: true
+            repeat: true
+            interval: 1
 
-            if(currentTime > previousTime)
-            {
-                previousTime = currentTime;
-                fps = frameCount;
-                frameCount = 0;
-            }
-            else
-            {
-                previousTime = currentTime;
+            property int frameCount: 0
+            property int previousTime: 0
+            property int fps: 0
+            onTriggered: {
+                frameCount++;
+                var currentTime = new Date().getSeconds();
+
+                if(currentTime > previousTime)
+                {
+                    previousTime = currentTime;
+                    fps = frameCount;
+                    frameCount = 0;
+                }
+                else
+                {
+                    previousTime = currentTime;
+                }
             }
         }
     }

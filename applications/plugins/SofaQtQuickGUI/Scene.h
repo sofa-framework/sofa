@@ -1,25 +1,42 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "SofaQtQuickGUI.h"
 #include <QObject>
-#include <QQmlParserStatus>
 #include <QUrl>
+#include <QAbstractListModel>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/common/MutationListener.h>
 
 class QTimer;
 class QVector3D;
 
-class Scene : public QObject, public QQmlParserStatus
+namespace sofa
+{
+
+namespace qtquick
+{
+
+class Scene : public QAbstractListModel, private sofa::simulation::MutationListener
 {
     Q_OBJECT
-	Q_INTERFACES(QQmlParserStatus)
+
+    enum {
+        NameRole = Qt::UserRole + 1,
+        ParentIndexRole,
+        DepthRole,
+        TypeRole,
+        IsNodeRole
+    };
 
 public:
     explicit Scene(QObject *parent = 0);
 	~Scene();
 
-	void classBegin();
-	void componentComplete();
+    int	rowCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    QHash<int,QByteArray> roleNames() const;
+    void update();
 
 public:
 	Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged);
@@ -28,6 +45,7 @@ public:
 	Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged);
 	Q_PROPERTY(bool play READ playing WRITE setPlay NOTIFY playChanged)
 	Q_PROPERTY(bool asynchronous MEMBER myAsynchronous NOTIFY asynchronousChanged)
+    Q_PROPERTY(bool visualDirty READ visualDirty NOTIFY visualDirtyChanged)
 
 	Q_ENUMS(Status)
 	enum Status {
@@ -56,6 +74,9 @@ public:
 	bool isReady() const							{return Status::Ready == myStatus;}
 	bool isInit() const								{return myIsInit;}
 
+    bool visualDirty() const						{return myVisualDirty;}
+    void setVisualDirty(bool newVisualDirty);
+
 signals:
 	void loaded();
 	void statusChanged(Status newStatus);
@@ -64,14 +85,23 @@ signals:
 	void dtChanged(double newDt);
 	void playChanged(bool newPlay);
 	void asynchronousChanged(bool newAsynchronous);
+    void visualDirtyChanged(bool newVisualDirty);
 
 public:
 	Q_INVOKABLE double radius();
 	Q_INVOKABLE void computeBoundingBox(QVector3D& min, QVector3D& max);
-	Q_INVOKABLE QString dumpGraph();
+    Q_INVOKABLE QString dumpGraph();
+
+public:
+    QVariant getData(const QString& path) const;
+    void setData(const QString& path, const QVariant& value);
+
+protected:
+    Q_INVOKABLE QVariant onGetData(const QString& path) const;
+    Q_INVOKABLE void onSetData(const QString& path, const QVariant& value);
 
 public slots:
-	void init();
+    void init();        // need an opengl context made current
 	void reload();
 	void step();
 	void reset();
@@ -83,12 +113,31 @@ public slots:
 signals:
 	void stepBegin();
     void stepEnd();
+    void reseted();
 
 private slots:
 	void open();
 
 public:
 	sofa::simulation::Simulation* sofaSimulation() const {return mySofaSimulation;}
+
+private:
+    int findItemIndex(sofa::core::objectmodel::Base* base) const;
+    int findItemIndex(sofa::core::objectmodel::BaseNode* parent, sofa::core::objectmodel::Base* base) const;
+
+    bool isAncestor(sofa::core::objectmodel::BaseNode* ancestor, sofa::core::objectmodel::BaseNode* node) const;
+
+protected:
+    void addChild(sofa::simulation::Node* parent, sofa::simulation::Node* child);
+    void removeChild(sofa::simulation::Node* parent, sofa::simulation::Node* child);
+    //void moveChild(sofa::simulation::Node* previous, sofa::simulation::Node* parent, sofa::simulation::Node* child);
+    void addObject(sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
+    void removeObject(sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
+    //void moveObject(sofa::simulation::Node* previous, sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
+    void addSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    void removeSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    //void moveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
+    //void sleepChanged(sofa::simulation::Node* node);
 
 private:
 	Status							myStatus;
@@ -102,6 +151,23 @@ private:
 
 	sofa::simulation::Simulation*	mySofaSimulation;
 	QTimer*							myStepTimer;
+
+    struct SceneModelItem
+    {
+        int                                     parentIndex;
+        int                                     depth;
+
+        sofa::core::objectmodel::Base*          base;
+        sofa::core::objectmodel::BaseObject*    object;
+        sofa::core::objectmodel::BaseContext*   context;
+        sofa::core::objectmodel::BaseNode*      node;
+        sofa::core::objectmodel::BaseNode*      parent;
+    };
+    QVector<SceneModelItem>         mySceneModelItems;
 };
+
+}
+
+}
 
 #endif // SCENE_H

@@ -16,11 +16,24 @@ CollapsibleGroupBox {
         GroupBox {
             Layout.fillWidth: true
 
-            title: "Parameters"
-
             GridLayout {
                 anchors.fill: parent
                 columns: 3
+
+                Item {
+                    Layout.columnSpan: 3
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: aboutLabel.implicitHeight
+
+                    Label {
+                        id: aboutLabel
+                        anchors.fill: parent
+
+                        wrapMode: Text.WordWrap
+                        text: "<b>About ?</b><br />
+                            The goal of this example is to show you how to call Python functions defined in your scene to get / set data using the PythonInteractor QML object.<br />"
+                    }
+                }
 
                 Label {
                     Layout.preferredWidth: implicitWidth
@@ -94,20 +107,16 @@ CollapsibleGroupBox {
                     stepSize:0.01
                     enabled: false
 
-                    Timer {
-                        id: timer
-                        running: false
-                        repeat: true
-                        interval: 20
-
-                        onTriggered: if(scene.ready) pointLocation.update()
+                    Connections {
+                        target: scene
+                        onStepEnd: if(scene.ready) pointLocation.update()
+                        onReseted: if(scene.ready) pointLocation.update()
+                        Component.onCompleted: if(scene.ready) pointLocation.update()
                     }
 
                     function update() {
                         setValueFromArray(scene.pythonInteractor.call("PythonScript", "getPointLocation"));
                     }
-
-                    Component.onCompleted: timer.start()
                 }
             }
         }
