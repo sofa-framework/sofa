@@ -66,6 +66,9 @@ namespace component
 namespace forcefield
 {
 
+using std::set;
+using namespace sofa::defaulttype;
+
 #ifndef SOFA_NEW_HEXA
 template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,1,3,2,4,5,7,6};
 // template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {4,5,7,6,0,1,3,2};
@@ -107,18 +110,6 @@ void HexahedronFEMForceField<DataTypes>::init()
 
 
 
-    if (_initialPoints.getValue().size() == 0)
-    {
-        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        _initialPoints.setValue(p);
-    }
-
-    _materialsStiffnesses.resize(this->getIndexedElements()->size() );
-    _rotations.resize( this->getIndexedElements()->size() );
-    _rotatedInitialElements.resize(this->getIndexedElements()->size());
-    _initialrotations.resize( this->getIndexedElements()->size() );
-
-
 // 	if( _elementStiffnesses.getValue().empty() )
 // 		_elementStiffnesses.beginEdit()->resize(this->getIndexedElements()->size());
     // 	_stiffnesses.resize( _initialPoints.getValue().size()*3 ); // assembly ?
@@ -145,6 +136,18 @@ void HexahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::reinit()
 {
+
+    //if (_initialPoints.getValue().size() == 0)
+    //{
+        const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+        _initialPoints.setValue(p);
+    //}
+
+    _materialsStiffnesses.resize(this->getIndexedElements()->size() );
+    _rotations.resize( this->getIndexedElements()->size() );
+    _rotatedInitialElements.resize(this->getIndexedElements()->size());
+    _initialrotations.resize( this->getIndexedElements()->size() );
+
     if (f_method.getValue() == "large")
         this->setMethod(LARGE);
     else if (f_method.getValue() == "polar")
@@ -193,6 +196,12 @@ void HexahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
     RDataRefVecCoord _p = p;
 
     _f.resize(_p.size());
+
+    if (needUpdateTopology)
+    {
+        reinit();
+        needUpdateTopology = false;
+    }
 
     unsigned int i=0;
     typename VecElement::const_iterator it;
@@ -831,6 +840,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     // Rotation matrix (initial Tetrahedre/world)
     // edges mean on 3 directions
 
+
     defaulttype::Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
 #ifndef SOFA_NEW_HEXA
@@ -860,7 +870,6 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
 
     computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, _sparseGrid?_sparseGrid->getStiffnessCoef(i):1.0 );
 // 	computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i, i==1?10.0:1.0 );
-
 
 // 	printMatlab( serr,this->_elementStiffnesses.getValue()[0] );
 

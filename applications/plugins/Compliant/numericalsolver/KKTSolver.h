@@ -1,9 +1,9 @@
 #ifndef COMPLIANT_NUMSOLVER_KKTSOLVER_H
 #define COMPLIANT_NUMSOLVER_KKTSOLVER_H
 
-#include "initCompliant.h"
-
+#include "../initCompliant.h"
 #include "../assembly/AssembledSystem.h"
+
 #include <sofa/core/behavior/LinearSolver.h>
 
 

@@ -49,6 +49,14 @@ public:
         assert( (unsigned)TIn::deriv_total_size == (unsigned)TIn::coord_total_size && "not vector input dofs !" );
 	}
 	
+
+    virtual void init()
+    {
+        this->getToModel()->resize( set.getValue().size() );
+        AssembledMapping<TIn, TOut>::init();
+    }
+
+
 protected:
 	
 	virtual void assemble( const typename self::in_pos_type& in) {

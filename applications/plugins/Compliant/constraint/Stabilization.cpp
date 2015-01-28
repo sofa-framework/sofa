@@ -8,7 +8,7 @@ namespace component {
 namespace odesolver {
 
 
-SOFA_DECL_CLASS(Stabilization);
+SOFA_DECL_CLASS(Stabilization)
 int StabilizationClass = core::RegisterObject("Kinematic constraint stabilization").add< Stabilization >();
 
 
@@ -17,7 +17,6 @@ using namespace utils;
 Stabilization::Stabilization( mstate_type* mstate )
     : BaseConstraintValue( mstate )
     , mask(initData(&mask, "mask", "dofs to be stabilized"))
-    , m_holonomic( false )
 {}
 
 void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
@@ -25,49 +24,60 @@ void Stabilization::correction(SReal* dst, unsigned n, unsigned dim, const core:
 
     unsigned size = n*dim;
 
-    assert( mask.getValue().empty() || mask.getValue().size() == size );
+    assert( mask.getValue().empty() || mask.getValue().size() == n );
 	
     mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
-	
-	// TODO needed ?
     map(dst, size) = -map(dst, size) / this->getContext()->getDt();
 
 	const mask_type& mask = this->mask.getValue();
+
+    if( mask.empty() ) return; // all stabilized
 	
-	// non-zero for stabilized
+    // zero for non-stabilized
 	unsigned i = 0;
-    for(SReal* last = dst + size; dst < last; ++dst, ++i) {
-		if( !mask.empty() && !mask[i] ) *dst = 0;
+    for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
+        if( !mask[i] ) memset( dst, 0, dim*sizeof(SReal) );
     }
 }
 
 
 void Stabilization::dynamics(SReal* dst, unsigned n, unsigned dim, bool stabilization, const core::MultiVecCoordId& posId, const core::MultiVecDerivId&) const {
-	assert( mstate );
+    assert( mstate );
 
-    unsigned size = n*dim;
+    const unsigned size = n*dim;
 
-    assert( mask.getValue().empty() || mask.getValue().size() == size );
+    // warning iff stabilization, only cancelling relative velocities of violated constraints (given by mask)
 
-    mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
-    map(dst, size) = -map(dst, size) / this->getContext()->getDt();
 
-    // if there is no stabilization, the constraint must be corrected by the dynamics pass
-    // if there is stabilization, the velocities will be corrected by the correction pass
-    if( stabilization || m_holonomic )
+    assert( mask.getValue().empty() || mask.getValue().size() == n );
+    const mask_type& mask = this->mask.getValue();
+
+    if( !stabilization )
     {
-        const mask_type& mask = this->mask.getValue();
-        // zero for stabilized, since the position error will be handled by the correction
-        unsigned i = 0;
-        for(SReal* last = dst + size; dst < last; ++dst, ++i) {
-            if( mask.empty() || mask[i] ) *dst = 0;
+        // elastic constraints
+        mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
+        map(dst, size) = -map(dst, size) / this->getContext()->getDt();
+    }
+    else
+    {
+        if( mask.empty() ) memset( dst, 0, size*sizeof(SReal) ); // all violated
+        else
+        {
+            // for possible elastic constraint
+            mstate->copyToBuffer(dst, posId.getId(mstate.get()), size);
+
+            unsigned i = 0;
+            for(SReal* last = dst + size; dst < last; dst+=dim, ++i) {
+                if( mask[i] ) memset( dst, 0, dim*sizeof(SReal) ); // already violated
+                else map(dst, dim) = -map(dst, dim) / this->getContext()->getDt(); // not violated
+            }
         }
     }
 }
 
 
 
-void Stabilization::filterConstraints( std::vector<bool>& activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
+void Stabilization::filterConstraints( const vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim )
 {
     // All the constraints remain active
     // but non-violated constraint must not be stabilized
@@ -77,27 +87,20 @@ void Stabilization::filterConstraints( std::vector<bool>& activateMask, const co
     unsigned size = n*dim;
 
     mask_type& mask = *this->mask.beginEdit();
-    mask.resize( size );
+    mask.resize( n );
 
-    activateMask.clear(); // all activated
+    activateMask = NULL; // all activated
 
     SReal* violation = new SReal[size];
     mstate->copyToBuffer(violation, posId.getId(mstate.get()), size);
 
-    for( unsigned i=0 ; i<n ; ++i )
+    for( unsigned block=0 ; block<n ; ++block )
     {
-        unsigned line = i*dim; // first constraint line
+        unsigned line = block*dim; // first constraint line
         if( violation[line]<0 ) // violated constraint
-        {
-            mask[line]=1;
-            for( unsigned int j=1 ; j<dim ; ++j )
-                mask[line+j]=0;
-        }
+            mask[block]=true;
         else
-        {
-            for( unsigned int j=0 ; j<dim ; ++j )
-                mask[line+j]=0;
-        }
+            mask[block]=false;
     }
 
     this->mask.endEdit();

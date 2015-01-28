@@ -67,8 +67,6 @@ public:
 
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
-    typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
-    typedef typename Inherit::VMaterialToSpatial VMaterialToSpatial;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
 
     typedef topology::BezierTetrahedronSetTopologyContainer BezierTopoContainer;
@@ -96,9 +94,9 @@ public:
         return res;
     }
 
-    void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
+    void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)
     {
-        Inherit::computeShapeFunction(childPosition,M,ref,w,dw,ddw,cell);
+        Inherit::computeShapeFunction(childPosition,ref,w,dw,ddw,cell);
 
         if(!this->container ||  !this->geoAlgo) return;
         if(this->cellIndex==-1) return;

@@ -47,7 +47,7 @@
     <Node name="SquareGravity">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="100" />
+        <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="100" createSubelements="true"/>
         <include href="Objects/TriangleSetTopology.xml" src="@meshLoader" />
         <MechanicalObject name="ms" rx2="90" dy2="50" />
         <DiagonalMass massDensity="0.15" />

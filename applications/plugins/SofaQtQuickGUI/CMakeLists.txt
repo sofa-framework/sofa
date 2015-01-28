@@ -2,43 +2,48 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
 		SofaQtQuickGUI.cpp
-		Application.cpp
-		Window.cpp
+                Tools.cpp
 		Viewer.cpp
 		Camera.cpp
-        Scene.cpp
+                Scene.cpp
 		PythonInteractor.cpp
 		PickingInteractor.cpp
 )
 
 set(HEADER_FILES
 		SofaQtQuickGUI.h
-		Application.h
-		Window.h
+                Tools.h
 		Viewer.h
 		Camera.h
-        Scene.h
+                Scene.h
 		PythonInteractor.h
 		PickingInteractor.h
 )
 
 set(QML_FILES
-		data/qml/SofaBasics/qmldir
-		data/qml/SofaBasics/Window.qml
-		data/qml/SofaBasics/DefaultStatusBar.qml
+                data/qml/SofaCommon/SofaCommonScript.js
+                data/qml/SofaCommon/SofaToolsScript.js
+                data/qml/SofaCommon/SofaSettingsScript.js
+                data/qml/SofaBasics/qmldir
+                data/qml/SofaBasics/RecentSettings.qml
+                data/qml/SofaBasics/UISettings.qml
+                data/qml/SofaBasics/Tools.qml
+                data/qml/SofaBasics/DefaultStatusBar.qml
 		data/qml/SofaBasics/DefaultMenuBar.qml
 		data/qml/SofaBasics/Scene.qml
 		data/qml/SofaBasics/PythonInteractor.qml
 		data/qml/SofaBasics/Actor.qml
 		data/qml/SofaBasics/Camera.qml
 		data/qml/SofaBasics/FPSDisplay.qml
-        data/qml/SofaBasics/ContentItem.qml
-        data/qml/SofaBasics/CollapsibleGroupBox.qml
+                data/qml/SofaBasics/ContentItem.qml
+                data/qml/SofaBasics/CollapsibleGroupBox.qml
 		data/qml/SofaBasics/Vector3DSpinBox.qml
 		data/qml/SofaBasics/DynamicSplitView.qml
-        data/qml/SofaBasics/DynamicContent.qml
+                data/qml/SofaBasics/DynamicContent.qml
 		data/qml/SofaTools/qmldir
 		data/qml/SofaTools/SimulationControl.qml
+                data/qml/SofaTools/SceneGraphView.qml
+                data/qml/SofaTools/DataView.qml
 		data/qml/SofaTools/SceneGUILoader.qml
 		data/qml/SofaWidgets/qmldir
 		data/qml/SofaWidgets/Viewer.qml
@@ -67,7 +72,7 @@ if(WIN32)
 endif()
 
 if(NOT MSVC)
-    set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=gnu++11")
+    add_definitions(-std=gnu++11)
 endif()
 
 find_package(Qt5 COMPONENTS Core Gui Widgets Quick Qml REQUIRED PATHS "${SOFA-EXTERNAL_QT5_PATH}")
@@ -85,14 +90,18 @@ add_definitions(${Qt5Widgets_DEFINITIONS})
 add_definitions(${Qt5Qml_DEFINITIONS})
 add_definitions(${Qt5Quick_DEFINITIONS})
 
+if (WIN32)
+	if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+		add_definitions(-DQT_NO_DEBUG)
+	endif()
+endif()
+	
 qt5_wrap_cpp(MOC_FILES ${HEADER_FILES}) # do not use "set(CMAKE_AUTOMOC ON)" since all the mocced files will be compiled by a single compilation unit leading to a "out of heap space" issue on MSVC
 qt5_add_resources(RESOURCE_FILES ${QRC_FILES})
 
 add_definitions(-DQT_PLUGIN)
-add_definitions(-DQT_STATICPLUGIN)
 
-add_library(${PROJECT_NAME} STATIC ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QRC_FILES} ${RESOURCE_FILES} ${QML_FILES} ${CONFIG_FILES})
-set_property(TARGET ${PROJECT_NAME} PROPERTY QT_STATICPLUGIN 1)
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QRC_FILES} ${RESOURCE_FILES} ${QML_FILES} ${CONFIG_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_SOFAQTQUICKGUI")
 AddLinkerDependencies(SofaPython SofaSimulationGraph SofaComponentMain Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)

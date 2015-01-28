@@ -67,10 +67,10 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
 //    MultiVecDeriv f(&vop, core::VecDerivId::force() );
     MultiVecDeriv b(&vop);
-    MultiVecDeriv a(&vop);
     MultiVecDeriv aResult(&vop);
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
+
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
@@ -98,7 +98,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST
     $
     *   $ ( (1 + h \gamma r_M) M + (h^2 \beta + h \gamma r_K) K ) a_{t+h} =
     f_ext - (r_M M + r_K K) v_t - K x_t - (r_M M + r_K K) ( h (1-\gamma) a_t ) - K (
-    h v_t + h^2/2 (1-2\beta) a_t ) $
+    h v_t + h^2/2 (1-2\beta) a_t) $
     *   $ ( (1 + h \gamma r_M) M + (h^2 \beta + h \gamma r_K) K ) a_{t+h} = Ma_t
     - (r_M M + r_K K) ( h (1-\gamma) a_t ) - K ( h v_t + h^2/2 (1-2\beta) a_t ) $
     *
@@ -110,22 +110,39 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST
     //we need to initialize a_t and to store it as a vecId to be used in the resolution of this solver (using as well old xand v). Once we have a_{t+dt} we
 //can update the new x and v.
 
-    if(cpt==0)
+    if (cpt == 0 || this->getContext()->getTime()==0.0)
+    {
+        vop.v_alloc(pID);
+
+    }
+
+    // Define a
+    MultiVecDeriv a(&vop, pID);
+    if(cpt ==0)
     {
         a.clear();
+        mop.computeAcc(0,a,pos,vel);
     }
     cpt++;
+
+    if( verbose )
+     {
+        serr<<"NewmarkImplicitSolver, aPrevious = "<< a <<sendl;
+        serr<<"NewmarkImplicitSolver, xPrevious = "<< pos <<sendl;
+        serr<<"NewmarkImplicitSolver, vPrevious = "<< vel <<sendl;
+    }
+
     // 2. Compute right hand term of equation on a_{t+h}
 
     mop.computeForce(b,true,false);
     //b = f;
     // b = M a
     if (rM != 0.0 || rK != 0.0 || beta != 0.5)
-    {
+    {  
         mop.propagateDx(a);
 
         mop.addMBKdx(b, -h*(1-gamma)*rM, h*(1-gamma), h*(1-gamma)*rK + h*h*(1-2*beta)/2.0,true,true);
-        // b += ( -h (1-\gamma)(r_M M + r_K K) - h^2/2 (1-2\beta) K ) a
+        // b += (-h (1-\gamma)(r_M M + r_K K) - h^2/2 (1-2\beta) K ) a
 
     }
 
@@ -146,11 +163,12 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST
 
     matrix = MechanicalMatrix::K * (-h*h*beta - h*rK*gamma) + MechanicalMatrix::B*(-h)*gamma + MechanicalMatrix::M * (1 + h*gamma*rM);
 
-    //if( verbose )
-    //	serr<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K *(h*h*beta + h*rK) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix<<sendl;
+ //   if( verbose )
+ //       serr<<"NewmarkImplicitSolver, matrix = "<< MechanicalMatrix::K *(-h*h*beta + -h*rK*gamma) + MechanicalMatrix::M * (1 + h*gamma*rM) << " = " << matrix<<sendl;
+
 
     matrix.solve(aResult, b);
-    mop.projectResponse(aResult);
+    //mop.projectResponse(aResult);
 
     if( verbose )
         serr<<"NewmarkImplicitSolver, a1 = "<< aResult <<sendl;

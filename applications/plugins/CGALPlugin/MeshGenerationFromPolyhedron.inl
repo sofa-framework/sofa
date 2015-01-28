@@ -90,7 +90,9 @@ MeshGenerationFromPolyhedron<DataTypes>::MeshGenerationFromPolyhedron()
     , lloyd_max_it(initData(&lloyd_max_it, 200, "lloyd_max_it", "lloyd max iteration number"))
     , perturb_max_time(initData(&perturb_max_time, 20.0, "perturb_max_time", "perturb maxtime"))
     , exude_max_time(initData(&exude_max_time, 20.0, "exude_max_time", "exude max time"))
-    , ordering(initData(&ordering, 0, "ordering", "Output points and elements ordering (0 = none, 1 = longest bbox axis)"))
+    , ordering(initData(&ordering, 0, "ordering", "output points and elements ordering (0 = none, 1 = longest bbox axis)"))
+    , constantMeshProcess(initData(&constantMeshProcess, false, "constantMeshProcess", "deterministic choice of first point used in meshing process (true = constant output / false = variable output)"))
+    , meshingSeed(initData(&meshingSeed, (unsigned int)0, "meshingSeed", "seed used when picking first point in meshing process"))
     , drawTetras(initData(&drawTetras, false, "drawTetras", "display generated tetra mesh"))
     , drawSurface(initData(&drawSurface, false, "drawSurface", "display input surface mesh"))
 {
@@ -245,6 +247,16 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
         domain.detect_features(sharpEdgeAngle.getValue());
     }
 #endif
+
+//    Mesh generation random or deterministic
+    if (constantMeshProcess.getValue())
+    {
+        CGAL::default_random = CGAL::Random(meshingSeed.getValue());
+    }
+    else
+    {
+        CGAL::default_random = CGAL::Random();
+    }
 
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
     // Mesh criteria (no cell_size set)
@@ -413,6 +425,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     sout << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra." << sendl;
 
     frozen.setValue(true);
+    meshingSeed.setValue(CGAL::default_random.get_seed());
 }
 
 template <class DataTypes>

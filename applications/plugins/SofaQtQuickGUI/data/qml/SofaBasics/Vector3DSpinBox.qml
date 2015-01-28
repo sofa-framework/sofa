@@ -10,9 +10,15 @@ GridLayout {
     property alias  vz:                 vzSpinBox.value
 
     function setValueFromArray(array) {
-        vx = array[0];
-        vy = array[1];
-        vz = array[2];
+        var values = [Number(array[0]), Number(array[1]), Number(array[2])];
+        if(values[0] !== values[0] || values[1] !== values[1] || values[2] !== values[2]) {
+            console.error("Value is Nan");
+            return;
+        }
+
+        vx = values[0];
+        vy = values[1];
+        vz = values[2];
     }
 
     property real   minimumValue:      -9999999.0

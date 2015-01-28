@@ -3,35 +3,21 @@ import QtQuick.Controls 1.0
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.1
 import Qt.labs.settings 1.0
+import "qrc:/SofaCommon/SofaSettingsScript.js" as SofaSettingsScript
 
 MenuBar {
+    id: menuBar
+
+    property Scene scene
 
     property list<QtObject> objects: [
-
-        // dialog
-        FileDialog {
-            id: openDialog
-            nameFilters: ["Scene files (*.xml *.scn *.pscn *.py *.simu *)"]
-            onAccepted: {
-                scene.source = fileUrl;
-            }
-        },
-
-        FileDialog {
-            id: saveDialog
-            selectExisting: false
-            nameFilters: ["Scene files (*.scn)"]
-            onAccepted: {
-                scene.save(fileUrl);
-            }
-        },
 
         // action
         Action {
             id: openAction
             text: "&Open..."
             shortcut: "Ctrl+O"
-            onTriggered: openDialog.open();
+            onTriggered: openSofaSceneDialog.open();
             tooltip: "Open a Sofa Scene"
         },
 
@@ -47,7 +33,7 @@ MenuBar {
         Action {
             id: clearRecentAction
             text: "&Clear"
-            onTriggered: recentSettings.clear();
+            onTriggered: SofaSettingsScript.Recent.clear();
             tooltip: "Clear history"
         },
 
@@ -63,14 +49,14 @@ MenuBar {
 //            id: saveAction
 //            text: "&Save"
 //            shortcut: "Ctrl+S"
-//            onTriggered: if(0 == filePath.length) saveDialog.open(); else scene.save(filePath);
+//            onTriggered: if(0 == filePath.length) saveSofaSceneDialog.open(); else scene.save(filePath);
 //            tooltip: "Save the Sofa Scene"
 //        },
 
         Action {
             id: saveAsAction
             text: "&Save As..."
-            onTriggered: saveDialog.open();
+            onTriggered: saveSofaSceneDialog.open();
             tooltip: "Save the Sofa Scene at a specific location"
         },
 
@@ -85,7 +71,7 @@ MenuBar {
         MessageDialog {
             id: aboutDialog
             title: "About"
-            text: "Welcome in the " + window.title +" Application"
+            text: "Welcome in the " + Qt.application.name +" Application"
             onAccepted: visible = false
         },
 
@@ -109,36 +95,40 @@ MenuBar {
 
             visible: 0 !== items.length
 
-            Connections {
-                target: recentSettings
-                onScenesChanged: {
-                    recentMenu.clear();
-                    var sceneList = recentSettings.scenes.split(';');
-                    if(0 === sceneList.length)
-                        return;
+            function update() {
+                recentMenu.clear();
+                var sceneList = SofaSettingsScript.Recent.sceneList();
+                if(0 === sceneList.length)
+                    return;
 
-                    for(var j = 0; j < sceneList.length; ++j) {
-                        var sceneSource = sceneList[j];
-                        if(0 === sceneSource.length)
-                            continue;
+                for(var j = 0; j < sceneList.length; ++j) {
+                    var sceneSource = sceneList[j];
+                    if(0 === sceneSource.length)
+                        continue;
 
-                        var sceneName = sceneSource.replace(/^.*[//\\]/m, "");
-                        var title = j.toString() + " - " + sceneName + " - \"" + sceneSource + "\"";
+                    var sceneName = sceneSource.replace(/^.*[//\\]/m, "");
+                    var title = j.toString() + " - " + sceneName + " - \"" + sceneSource + "\"";
 
-                        var openRecentItem = recentMenu.addItem(title);
-                        openRecentItem.action = openRecentAction;
+                    var openRecentItem = recentMenu.addItem(title);
+                    openRecentItem.action = openRecentAction;
 
-                        if(10 === recentMenu.items.length)
-                            break;
-                    }
-
-                    if(0 === recentMenu.items.length)
-                        return;
-
-                    recentMenu.addSeparator();
-                    var clearRecentItem = recentMenu.addItem("Clear");
-                    clearRecentItem.action = clearRecentAction;
+                    if(10 === recentMenu.items.length)
+                        break;
                 }
+
+                if(0 === recentMenu.items.length)
+                    return;
+
+                recentMenu.addSeparator();
+                var clearRecentItem = recentMenu.addItem("Clear");
+                clearRecentItem.action = clearRecentAction;
+            }
+
+            Component.onCompleted: recentMenu.update()
+
+            Connections {
+                target: SofaSettingsScript.Recent
+                onScenesChanged: recentMenu.update()
             }
         }
 

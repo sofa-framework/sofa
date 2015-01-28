@@ -24,31 +24,39 @@
 ******************************************************************************/
 
 #include "SofaQtQuickGUI.h"
+#include "Tools.h"
 #include "Camera.h"
 #include "PickingInteractor.h"
 #include "PythonInteractor.h"
 #include "Scene.h"
 #include "Viewer.h"
-#include "Window.h"
+
+using namespace sofa::qtquick;
 
 const int versionMajor = 1;
 const int versionMinor = 0;
 
 SofaQtQuickGUI::SofaQtQuickGUI(QObject *parent) : QQmlExtensionPlugin(parent)
 {
-	registerTypes("SofaQtQuickGUI");
+    init();
 }
 
-void SofaQtQuickGUI::registerTypes(const char *uri)
+void SofaQtQuickGUI::init()
+{
+    Q_INIT_RESOURCE(sofaQML);
+    Q_INIT_RESOURCE(sofaQtQuickResources);
+
+    registerTypes("SofaQtQuickGUI");
+}
+
+void SofaQtQuickGUI::registerTypes(const char* /*uri*/)
 {
 	//Q_ASSERT(QLatin1String(uri) == QLatin1String("SofaQtQuickGUI"));
-	Q_INIT_RESOURCE(sofaQML);
-	Q_INIT_RESOURCE(sofaQtQuickResources);
 
-	qmlRegisterType<Camera>				("Camera"			, versionMajor, versionMinor, "Camera");
-	qmlRegisterType<PickingInteractor>	("PickingInteractor", versionMajor, versionMinor, "PickingInteractor");
-	qmlRegisterType<PythonInteractor>	("PythonInteractor"	, versionMajor, versionMinor, "PythonInteractor");
-	qmlRegisterType<Scene>				("Scene"			, versionMajor, versionMinor, "Scene");
-	qmlRegisterType<Viewer>				("Viewer"			, versionMajor, versionMinor, "Viewer");
-	qmlRegisterType<Window>				("Window"			, versionMajor, versionMinor, "Window");
+    qmlRegisterType<Tools>				("Tools"			, versionMajor, versionMinor, "Tools");
+    qmlRegisterType<Camera>				("Camera"			, versionMajor, versionMinor, "Camera");
+    qmlRegisterType<PickingInteractor>	("PickingInteractor", versionMajor, versionMinor, "PickingInteractor");
+    qmlRegisterType<PythonInteractor>	("PythonInteractor"	, versionMajor, versionMinor, "PythonInteractor");
+    qmlRegisterType<Scene>				("Scene"			, versionMajor, versionMinor, "Scene");
+    qmlRegisterType<Viewer>				("Viewer"			, versionMajor, versionMinor, "Viewer");
 }

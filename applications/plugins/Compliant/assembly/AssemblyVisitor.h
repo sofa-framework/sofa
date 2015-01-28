@@ -94,7 +94,7 @@ public:
         map->applyJT( this->mparams, lambdas, lambdas );
     }
 
-    // for all dofs, f += lamda / dt
+    // for all dofs, f += lambda / dt
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
         const core::VecDerivId& lambdasid = lambdas.getId(mm);
@@ -102,18 +102,7 @@ public:
         {
             const core::VecDerivId& resid = res.getId(mm);
 
-//            mm->vOp( this->params, resid, resid, lambdasid, invdt ); // f += lambda / dt
-
-            // hack to improve stability and energy preservation
-            // TO BE STUDIED: lambda must be negative to generate geometric stiffness
-            // TODO find a more efficient way to implemented it
-            const size_t dim = mm->getMatrixSize();
-            component::linearsolver::AssembledSystem::vec buffer( dim );
-            mm->copyToBuffer( &buffer(0), lambdasid, dim );
-            for( size_t i=0 ; i<dim ; ++i )
-                if( buffer[i] > 0 ) buffer[i] *= -invdt;
-                else buffer[i] *= invdt; // constraint_force = lambda / dt
-            mm->addFromBuffer( resid, &buffer(0), dim ); // f += lambda / dt
+            mm->vOp( this->params, resid, resid, lambdasid, invdt ); // f += lambda / dt
         }
     }
 

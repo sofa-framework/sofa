@@ -34,26 +34,24 @@ public:
     typedef typename Inherit::Intersection Intersection;
 
     Data< SReal > mu; ///< friction coef
-    Data< bool > horizontalConeProjection; ///< should the cone projection be horizontal? By default a regular orthogonal cone projection is performed.
+    Data< bool > horizontalConeProjection; ///< should the cone projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.
 
 protected:
 
-    FrictionCompliantContact()
-        : Inherit()
-        , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
-        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal? By default a regular orthogonal cone projection is performed.") )
-    {}
+//    FrictionCompliantContact()
+//        : Inherit()
+//        , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
+//        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.") )
+//    {}
 
     FrictionCompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
         , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
-        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal? By default a regular orthogonal cone projection is performed.") )
     {}
 
 
     typename node_type::SPtr create_node()
     {
-
         const unsigned size = this->mappedContacts.size();
 
         delta_type delta = this->make_delta();
@@ -110,22 +108,18 @@ protected:
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
 
+
         // constraint value
-        this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient, 3 );
+        const vector<bool>* cvmask = this->addConstraintValue( contact_node.get(), contact_dofs.get(), restitutionCoefficient );
 
         // projector
         typedef linearsolver::CoulombConstraint proj_type;
         proj_type::SPtr projector = sofa::core::objectmodel::New<proj_type>( frictionCoefficient );
         projector->horizontalProjection = horizontalConeProjection.getValue();
         contact_node->addObject( projector.get() );
-        if( restitutionCoefficient )
-        {
-            // for restitution, only activate violated constraints
-            // todo, mutualize code with mask in addConstraintValue
-            projector->mask.resize( this->mappedContacts.size() );
-            for(unsigned i = 0; i < this->mappedContacts.size(); ++i)
-                projector->mask[i] = ( (*this->contacts)[i].value <= 0 );
-        }
+        // for restitution, only activate violated constraints
+        if( restitutionCoefficient ) projector->mask = cvmask;
+
 
         return delta.node;
     }

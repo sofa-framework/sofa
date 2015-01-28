@@ -21,7 +21,7 @@ struct SOFA_Compliant_API CoulombConstraint : Constraint {
     virtual void project( SReal* out, unsigned n, unsigned index, bool correctionPass=false ) const;
 
 
-    bool horizontalProjection; ///< should the projection be horizontal? By default a regular orthogonal cone projection is performed.
+    bool horizontalProjection; ///< should the projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.
 	
 };
 

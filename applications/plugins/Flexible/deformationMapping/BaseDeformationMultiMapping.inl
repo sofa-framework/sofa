@@ -105,6 +105,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
     helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
+    helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update mapped spatial positions if needed for visualization
 
     size_t size;
@@ -117,9 +118,20 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
     if(sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
     {
         size = sampler->getNbSamples();
-        if(rest.size()==size && size!=1) restPositionSet=true;
+        if(rest.size()==size && size!=1)  restPositionSet=true;
+
         this->toModel->resize(size);
-        pos0.resize(size);  for(size_t i=0; i<size; i++) pos0[i]=sampler->getSample(i);
+        pos0.resize(size);  for(size_t i=0; i<size; i++) pos0[i]=sampler->getSamples()[i];
+        F0.resize(size);
+        if(restPositionSet)     // use custom rest positions defined in state (to set material directions or set residual deformations)
+        {
+            for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
+            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
+        }
+        else
+        {
+            for(size_t i=0; i<size; ++i) F0[i]=sampler->getTransforms()[i];
+        }
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" gauss points imported"<<std::endl;
     }
     else  // retrieve initial positions from children dofs (vec types)
@@ -146,17 +158,9 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::resize
         for(size_t i=0; i<pos0.size(); ++i)  defaulttype::StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
         // interpolate weights at sample positions
-        if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),this->f_cell.getValue());
-        else _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
-        this->f_index.endEdit();     this->f_F0.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
-
-        // use custom rest positions (to set material directions or set residual deformations)
-        if(restPositionSet)
-        {
-            helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
-            for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
-            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
-        }
+        if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),this->f_cell.getValue());
+        else _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+        this->f_index.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
     }
 
     // init jacobians
@@ -768,8 +772,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::Forwar
 
     // interpolate weights at sample positions
     mCoord mp0;        defaulttype::StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
-    MaterialToSpatial M;  VRef ref; VReal w;
-    _shapeFunction->computeShapeFunction(mp0,M,ref,w);
+    VRef ref; VReal w;
+    _shapeFunction->computeShapeFunction(mp0,ref,w);
 
     // map using specific instanciation
     this->mapPosition(p,p0,ref,w);
@@ -787,13 +791,13 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::Backwa
     MaterialToSpatial F0;  VRef ref; VReal w; VGradient dw;
     Coord pnew;
     MaterialToSpatial F;
-    MaterialToSpatial Finv;
-    MaterialToSpatial F0Finv;
+    defaulttype::Mat<material_dimensions,spatial_dimensions,Real> Finv;
 
+    identity(F0);
     while(count<NbMaxIt)
     {
         defaulttype::StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
-        _shapeFunction->computeShapeFunction(mp0,F0,ref,w,&dw);
+        _shapeFunction->computeShapeFunction(mp0,ref,w,&dw);
         if(!w[0]) { p0=Coord(); return; } // outside object
 
         this->mapPosition(pnew,p0,ref,w);
@@ -801,8 +805,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::Backwa
         this->mapDeformationGradient(F,p0,F0,ref,w,dw);
 
         invert(Finv,F);
-        F0Finv=F0*Finv;
-        p0+=F0Finv*(p-pnew);
+        p0+=F0*Finv*(p-pnew);
         count++;
     }
 }

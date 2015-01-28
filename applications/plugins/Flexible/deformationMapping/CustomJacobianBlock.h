@@ -88,8 +88,7 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     MatBlock J;
     OutCoord X0;
@@ -124,8 +123,7 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     MatBlock J;
     OutCoord X0;
@@ -160,8 +158,7 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     MatBlock J;
     OutCoord X0;
@@ -196,8 +193,7 @@ public:
     enum { dim = Out::spatial_dimensions };
     enum { mdim = Out::material_dimensions };
     typedef Vec<dim, Real> SpatialCoord;
-    typedef Mat<dim,dim,Real> MaterialToSpatial;
-    typedef Mat<dim,mdim,Real> Ftype;
+    typedef Mat<dim,mdim,Real> MaterialToSpatial;
 
     MatBlock J;
     OutCoord X0;
