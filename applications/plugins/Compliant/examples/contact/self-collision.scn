@@ -4,6 +4,7 @@
   
   
   <RequiredPlugin name="Compliant" pluginName="Compliant" />
+  <CompliantAttachButton/>
   
   <DefaultPipeline depth="6" />
   <BruteForceDetection />

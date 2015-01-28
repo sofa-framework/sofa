@@ -154,17 +154,15 @@ public:
     /// @{
 
     /// Returns pointers to Jacobian matrices associated with parent states, consistently with getFrom(). Most mappings have only one parent, however Multimappings have several parents.
+    /// For efficiency concerns, please return pointers to defaulttype::EigenBaseSparseMatrix
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()  { serr<<"getJs not implemented"<<sendl; return 0; }
 
-    /** Return pointers to the geometric stiffness matrices. 
+    /** Return a pointer to the geometric stiffness matrix.
 	This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product. 
-	These matrices are associated with the parent DOFs. 
-    @todo Are there cross-dependencies between the parents, resulting in off-diagonal geometric stiffness blocks? I do not think so but I am not totally sure (FF, June 2013)
-    Answer (M Nesme, oct. 2014): there can be off-diagonal blocks and only specific non-linear multimappings can be implemented. A workaround is to decompose the problematic
-        non-linear multimappings in a small graph including only linear multimappings + non-linear simple mappings (where geometric stiffness can be implemented).
-        e.g.: A DistanceMultimapping (non-linear) is not implementable with this API, but can be decomposed in a SubsetMultiMapping (linear) + a DistanceMapping (non-linear)
+    This matrix is associated with the parent DOFs. It is a square SPD matrix with a size of the total number of parent DOFs.
+    For efficiency concerns, please return a pointer to a defaulttype::EigenBaseSparseMatrix
     */
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getKs() { return NULL; }
+    virtual const defaulttype::BaseMatrix* getK() { return NULL; }
 
     /// @}
 

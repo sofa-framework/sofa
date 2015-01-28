@@ -29,7 +29,7 @@
 
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/RandomGenerator.h>
+#include <sofa/helper/random.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <iostream>
 #include <algorithm>
@@ -88,11 +88,10 @@ public:
     }
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue, int seed = (unsigned int)time(NULL))
+    static Deriv randomDeriv( Real maxValue)
     {
         Deriv result;
-        helper::RandomGenerator randomGenerator(seed);
-        set( result, randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue), randomGenerator.symrand(maxValue) );
+        set( result, Real(helper::drand(maxValue)), Real(helper::drand(maxValue)), Real(helper::drand(maxValue)) );
         return result;
     }
 

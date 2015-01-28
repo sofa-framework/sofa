@@ -64,7 +64,7 @@ public:
 template <typename MAP, unsigned int ORBX, unsigned int ORBY>
 class Traversor3XY
 {
-    BOOST_STATIC_ASSERT(MAP::DIMENSION >= 3u) ;
+//    BOOST_STATIC_ASSERT(MAP::DIMENSION >= 3u) ;   // WARNING: have to remove the assertion because it makes mpl::if_ fail !
 private:
 	const MAP& m_map ;
     DartMarkerStore<MAP>* m_dmark ;

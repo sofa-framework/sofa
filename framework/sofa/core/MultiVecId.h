@@ -313,9 +313,9 @@ public:
     template< VecType vtype2, VecAccess vaccess2>
     TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
     {
-        BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
-        BOOST_STATIC_ASSERT( vtype == V_ALL || vtype2 == vtype );
-        BOOST_STATIC_ASSERT( vtype != vtype2 || vaccess != vaccess2 );
+        BOOST_STATIC_ASSERT( vaccess2 > vaccess );
+        BOOST_STATIC_ASSERT( vtype != V_ALL ); // we should be using the V_ALL specific specialization in this case.
+		BOOST_STATIC_ASSERT( vtype2 == vtype );
         if (mv.hasIdMap())
         {
 #ifdef MAP_PTR
@@ -323,23 +323,18 @@ public:
 			// share the maps like with a copy constructor, because otherwise a simple operation like passing a
 			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
 			// will cause a temporary copy of the map, which this define was meant to avoid!
-			if (vtype2 == vtype)
-            {
-#ifndef _MSC_VER
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
+#	ifndef _MSC_VER
+#		pragma GCC diagnostic push
+#		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
+#	endif
+            idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+#	ifndef _MSC_VER
+#		pragma GCC diagnostic pop
+#	endif
+#else
+			IdMap& map = writeIdMap();
+			std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
 #endif
-                idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
-#ifndef _MSC_VER
-#pragma GCC diagnostic pop
-#endif
-			}
-			else
-#endif
-			{
-				IdMap& map = writeIdMap();
-				std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
-			}
         }
     }
     //// Provides explicit conversions from MultiVecId to MultiVecCoordId/...
@@ -408,7 +403,7 @@ public:
 
     std::string getName() const
     {
-        if (hasIdMap())
+        if (!hasIdMap())
             return defaultId.getName();
         else
         {
@@ -520,6 +515,8 @@ public:
 private:
     boost::shared_ptr< IdMap > idMap_ptr;
 
+	template <VecType vtype2, VecAccess vaccess2> friend class TMultiVecId;
+
 protected:
     IdMap& writeIdMap()
     {
@@ -582,8 +579,23 @@ public:
 
         if (mv.hasIdMap())
         {
-            IdMap& map = writeIdMap();
-            std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
+#ifdef MAP_PTR
+			// When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
+			// share the maps like with a copy constructor, because otherwise a simple operation like passing a
+			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
+			// will cause a temporary copy of the map, which this define was meant to avoid!
+#	ifndef _MSC_VER
+#		pragma GCC diagnostic push
+#		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
+#	endif
+            idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+#	ifndef _MSC_VER
+#		pragma GCC diagnostic pop
+#	endif
+#else
+			IdMap& map = writeIdMap();
+			std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
+#endif
         }
     }
 
@@ -633,7 +645,7 @@ public:
 
     std::string getName() const
     {
-        if (hasIdMap())
+        if (!hasIdMap())
             return defaultId.getName();
         else
         {

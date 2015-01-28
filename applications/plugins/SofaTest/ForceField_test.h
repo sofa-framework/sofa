@@ -181,7 +181,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         // change position
         VecDeriv dX(n);
         for( unsigned i=0; i<n; i++ ){
-            dX[i] = DataTypes::randomDeriv(deltaMax * this->epsilon(),BaseSofa_test::seed );  // todo: better random, with negative values
+            dX[i] = DataTypes::randomDeriv(deltaMax * this->epsilon() );  // todo: better random, with negative values
             xdof[i] += dX[i];
         }
 

@@ -39,13 +39,16 @@ void DiagonalCompliance<DataTypes>::init()
 template<class DataTypes>
 void DiagonalCompliance<DataTypes>::reinit()
 {
+    core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
+    assert(state);
+
 //    cerr<<SOFA_CLASS_METHOD<<std::endl;
 
-    unsigned int m = this->mstate->getMatrixBlockSize(), n = this->mstate->getSize(), matrixsize = this->mstate->getMatrixSize();
+    unsigned int m = state->getMatrixBlockSize(), n = state->getSize();
 
     if( this->isCompliance.getValue() )
     {
-        matC.resize(matrixsize,matrixsize);
+        matC.resize(state->getMatrixSize(), state->getMatrixSize());
 
         unsigned int row = 0;
         for(unsigned i = 0; i < n; ++i)
@@ -60,12 +63,11 @@ void DiagonalCompliance<DataTypes>::reinit()
         }
         matC.compress();
     }
-    else matC.resize(0,0);
+    else matC.compressedMatrix.resize(0,0);
 
-    // the stiffness matrix needs to be computed for NewtonSolver, but I need to check why
 //    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
-    {
-        matK.resize(matrixsize,matrixsize);
+//    {
+        matK.resize(state->getMatrixSize(), state->getMatrixSize());
 
         unsigned int row = 0;
         for(unsigned i = 0; i < n; ++i)
@@ -73,23 +75,23 @@ void DiagonalCompliance<DataTypes>::reinit()
             for(unsigned int j = 0; j < m; ++j)
             {
                 // the stiffness df/dx is the opposite of the inverse compliance
-                Real k = diagonal.getValue()[i][j] > s_complianceEpsilon ?
-                        -1. / diagonal.getValue()[i][j] :
-                        -1. / s_complianceEpsilon;
+                Real k = diagonal.getValue()[i][j] > std::numeric_limits<Real>::epsilon() ?
+                        -1 / diagonal.getValue()[i][j] :
+                        -1 / std::numeric_limits<Real>::epsilon();
 
                 if( k ) matK.insertBack(row, row, k);
                 ++row;
             }
         }
         matK.compress();
-    }
-//    else matK.resize(0,0);
+//    }
+//    else matK.compressedMatrix.resize(0,0);
 
 		if( damping.getValue().size() > 1 || damping.getValue()[0] > 0 ) {
 		
-        matB.resize(matrixsize,matrixsize);
+        matB.resize(state->getMatrixSize(), state->getMatrixSize());
 
-        for(unsigned i=0; i < matrixsize; i++) {
+        for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
 			const unsigned index = std::min<unsigned>(i, damping.getValue().size() - 1);
 			
 			const SReal d = damping.getValue()[index];
@@ -100,9 +102,8 @@ void DiagonalCompliance<DataTypes>::reinit()
 
         matB.compressedMatrix.finalize();
     }
-    else matB.resize(0,0);
+    else matB.compressedMatrix.resize(0,0);
 }
-
 
 template<class DataTypes>
 double DiagonalCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
@@ -126,6 +127,18 @@ double DiagonalCompliance<DataTypes>::getPotentialEnergy( const core::Mechanical
     return e;
 }
 
+//template<class DataTypes>
+//void DiagonalCompliance<DataTypes>::setCompliance( Real c )
+//{
+//    if(isCompliance.getValue() )
+//        compliance.setValue(c);
+//    else {
+//        assert( c!= (Real)0 );
+//        for(unsigned i=0; i<C.size(); i++ )
+//            C[i][i] = 1/c;
+//    }
+//    compliance.setValue(C);
+//}
 
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)

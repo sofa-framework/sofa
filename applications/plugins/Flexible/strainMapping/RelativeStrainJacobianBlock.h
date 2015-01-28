@@ -62,47 +62,57 @@ public:
     enum { spatial_dimensions = TStrain::spatial_dimensions };
 
     static const bool constant = true;
-
+    InCoord offset;
+    Real multfactor;
 
     /**
-    Mapping:   ADDITION -> \f$ E_elastic = E_total - E_offset \f ; MULTIPLICATION -> \f$ E_elastic = E_total * E_offset^-1 \f$
+    Mapping:   ADDITION -> \f$ E_elastic = E_total - E_offset \f$;
+               MULTIPLICATION -> \f$ S_elastic = S_total * S_offset^-1 , E_elastic = S_elastic - I \f$
     Jacobian:    \f$  dE = Id \f$
     */
 
-    void addapply( OutCoord& /*result*/, const InCoord& /*data*/ ) {}
 
-    void addapply_multiplication( OutCoord& result, const InCoord& data, const InCoord& offset )
+//    void addapply_multiplication( OutCoord& result, const InCoord& data, const InCoord& offset)
+//    {
+//        StrainMat plasticStrainMat = StrainVoigtToMat( offset.getStrain() ) + StrainMat::Identity();
+//        StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
+
+//        StrainMat elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
+//        StrainVec elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::Identity() );
+
+//        result.getStrain() += elasticStrainVec;
+//    }
+
+//    void addapply_addition( OutCoord& result, const InCoord& data, const InCoord& offset)
+//    {
+//        result.getStrain() += (data.getStrain() - offset.getStrain());
+//    }
+    void init( const InCoord& off, const bool& inverted)
     {
-        StrainMat plasticStrainMat = StrainVoigtToMat( offset.getStrain() ) + StrainMat::Identity();
-        StrainMat plasticStrainMatInverse; plasticStrainMatInverse.invert( plasticStrainMat );
-
-        StrainMat elasticStrainMat = ( StrainVoigtToMat( data.getStrain() ) + StrainMat::Identity() ) * plasticStrainMatInverse;
-        StrainVec elasticStrainVec = StrainMatToVoigt( elasticStrainMat - StrainMat::Identity() );
-
-        result.getStrain() += elasticStrainVec;
+        offset=off;
+        multfactor=inverted?(Real)-1.:(Real)1.;
     }
 
-    void addapply_addition( OutCoord& result, const InCoord& data, const InCoord& offset )
+    void addapply( OutCoord& result, const InCoord& data)
     {
-        result.getStrain() += data.getStrain() - offset.getStrain();
+        result.getStrain() += (data.getStrain() - offset.getStrain())*multfactor;
     }
 
     void addmult( OutDeriv& result,const InDeriv& data )
     {
-        result += data;
+        result += data*multfactor;
     }
 
     void addMultTranspose( InDeriv& result, const OutDeriv& data )
     {
-        result += data;
+        result += data*multfactor;
     }
 
     MatBlock getJ()
     {
-        return MatBlock::Identity();
+        return MatBlock::Identity()*multfactor;
     }
 
-    // Not Yet implemented..
     KBlock getK(const OutDeriv& /*childForce*/)
     {
         return KBlock();

@@ -49,14 +49,8 @@ namespace sofa
 namespace simulation
 {
 
-
-static bool m_Initialized = false;
-
-
-
 void PythonEnvironment::Init()
 {
-    if (m_Initialized) return;
     // Initialize the Python Interpreter
     // SP_MESSAGE_INFO( "Initializing python framework..." )
 
@@ -101,18 +95,15 @@ void PythonEnvironment::Init()
 
     //SP_MESSAGE_INFO( "Initialization done." )
 
-    m_Initialized = true;
 
 }
 
 void PythonEnvironment::Release()
 {
-    if (!m_Initialized) return;
     // Finish the Python Interpreter
     Py_Finalize();
-
-    m_Initialized = false;
 }
+  
 /*
 // helper functions
 sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( const char *filename )
@@ -140,10 +131,28 @@ sofa::simulation::tree::GNode::SPtr PythonEnvironment::initGraphFromScript( cons
 
 
 
+  // some basic RAII stuff to handle init/termination cleanly
+  namespace {
+	
+  	struct raii {
+  	  raii() {
+  		PythonEnvironment::Init();
+  	  }
+
+  	  ~raii() {
+  		PythonEnvironment::Release();
+  	  }
+	  
+  	};
+
+  	static raii singleton;
+  }
+  
+
 // basic script functions
 PyObject* PythonEnvironment::importScript( const char *filename, const std::vector<std::string>& arguments )
 {
-    Init(); // MUST be called at least once; so let's call it each time we load a python script
+  // Init(); // MUST be called at least once; so let's call it each time we load a python script
 
 //    SP_MESSAGE_INFO( "Loading python script \""<<filename<<"\"" )
     std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);

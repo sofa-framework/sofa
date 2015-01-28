@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/">
+        <file>SofaBasics/qmldir</file>
+        <file>SofaBasics/DefaultStatusBar.qml</file>
+        <file>SofaBasics/DefaultMenuBar.qml</file>
+        <file>SofaBasics/Window.qml</file>
+        <file>SofaBasics/Scene.qml</file>
+        <file>SofaBasics/PythonInteractor.qml</file>
+        <file>SofaBasics/FPSDisplay.qml</file>
+        <file>SofaBasics/Camera.qml</file>
+        <file>SofaBasics/Actor.qml</file>
+        <file>SofaBasics/ContentItem.qml</file>
+        <file>SofaBasics/CollapsibleGroupBox.qml</file>
+        <file>SofaBasics/Vector3DSpinBox.qml</file>
+        <file>SofaBasics/DynamicSplitView.qml</file>
+        <file>SofaBasics/DynamicContent.qml</file>
+        <file>SofaTools/qmldir</file>
+        <file>SofaTools/SimulationControl.qml</file>
+        <file>SofaTools/SceneGUILoader.qml</file>
+        <file>SofaWidgets/qmldir</file>
+        <file>SofaWidgets/Viewer.qml</file>
+        <file>SofaWidgets/ImageViewer.qml</file>
+        <file>SofaWidgets/ToolPanel.qml</file>
+    </qresource>
+</RCC>

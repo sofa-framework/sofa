@@ -24,7 +24,6 @@
 ******************************************************************************/
 #include "stdafx.h"
 #include <sofa/helper/Quater.h>
-#include <sofa/helper/RandomGenerator.h>
 
 // Including component
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
@@ -69,15 +68,12 @@ namespace sofa {
         Quat testedQuaternion;
         /// Tested Translation: random translation
         Vec3 testedTranslation;
-        /// Random generator
-        sofa::helper::RandomGenerator randomGenerator;
 
         // Constructor: call the constructor of the base class which loads the scene to test
         RigidLinearDeformationMappings_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "RigidLineDeformationMapping.scn")
         {   
             Inherited::errorMax = 5000;
             // rotation and translation
-            randomGenerator.initSeed(BaseSofa_test::seed);
             this->SetRandomTestedRotationAndTranslation();
             typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
             typename AffineMovementConstraint::SPtr affineConstraint  = this->root->template get<AffineMovementConstraint>(this->root->SearchDown);
@@ -92,9 +88,9 @@ namespace sofa {
             // Random Rotation
             SReal x,y,z,w;
             // Random axis
-            x = randomGenerator.random<SReal>(-1.0,1.0);
-            y = randomGenerator.random<SReal>(-1.0,1.0);
-            z = randomGenerator.random<SReal>(-1.0,1.0);   
+            x = SReal(helper::drand(1));
+            y = SReal(helper::drand(1));
+            z = SReal(helper::drand(1));
             // If the rotation axis is null
             Vec3 rotationAxis(x,y,z);
             if(rotationAxis.norm() < 1e-7)
@@ -102,15 +98,15 @@ namespace sofa {
                 rotationAxis = Vec3(0,0,1);
             }
             rotationAxis.normalize();
-            // Random angle
-            w = randomGenerator.random<SReal>(0.0, M_PI);
+            // Random angle between 0 and M_PI
+            w = helper::drand()* M_PI;
             // Quat = (rotationAxis*sin(angle/2) , cos(angle/2)) angle = 2*w
             testedQuaternion = Quat(sin(w)*rotationAxis[0],rotationAxis[1]*sin(w),rotationAxis[2]*sin(w),cos(w));
    
             // Translation
            for(size_t i=0;i<testedTranslation.size();++i)
            {
-               testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
+               testedTranslation[i]=helper::drand(2);
            }
 
         }

@@ -306,6 +306,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     m_displayComputationTime(false),
     m_fullScreen(false),
     mViewer(NULL),
+    m_clockBeforeLastStep(0),
 	propertyWidget(NULL),
     currentTab ( NULL ),
     statWidget(NULL),
@@ -329,12 +330,17 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
 
     createRecentFilesMenu(); // configure Recently Opened Menu
 
+    QDoubleValidator *dtValidator = new QDoubleValidator(dtEdit);
+    dtValidator->setBottom(0.000000001);
+    dtEdit->setValidator(dtValidator);
+
     timerStep = new QTimer(this);
     connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
     connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
     connect ( ResetSceneButton, SIGNAL ( clicked() ), this, SLOT ( resetScene() ) );
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
+    connect ( realTimeCheckBox, SIGNAL ( stateChanged ( int ) ), this, SLOT ( updateDtEditState() ) );
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );
     connect ( dumpStateCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( dumpState ( bool ) ) );
     connect ( displayComputationTimeCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayComputationTime ( bool ) ) );
@@ -886,6 +892,7 @@ void RealGUI::fileOpenSimu ( std::string s )
             fileOpen(filename.c_str());
 
             dtEdit->setText(QString(dT.c_str()));
+
 #ifndef SOFA_GUI_QT_NO_RECORDER
             if (recorder)
                 recorder->SetSimulation(currentSimulation(), initT, endT, writeName);
@@ -2048,13 +2055,11 @@ void RealGUI::fileRecentlyOpened(int id)
 void RealGUI::playpauseGUI ( bool value )
 {
     startButton->setOn ( value );
-    Node* root = currentSimulation();
-    if(root->getDt() == 0)
-        root->getContext()->setDt(-1);
     if ( currentSimulation() )
         currentSimulation()->getContext()->setAnimate ( value );
     if(value)
     {
+        m_clockBeforeLastStep = 0;
         frameCounter=0;
         timerStep->start(0);
     }
@@ -2118,8 +2123,22 @@ void RealGUI::step()
     if ( !getViewer()->ready() ) return;
 
     //root->setLogTime(true);
-    //T=T+DT
-    SReal dt=root->getDt();
+
+    // If dt is zero, the actual value of dt will be taken from the graph.
+    double dt = 0.0;
+    if (realTimeCheckBox->isChecked() && startButton->isOn())
+    {
+        const clock_t currentClock = clock();
+        // If animation has already started
+        if (m_clockBeforeLastStep != 0)
+        {
+            // then dt <- "time since last step"
+            dt = (double)(currentClock - m_clockBeforeLastStep) / CLOCKS_PER_SEC;
+            // dt = std::min(dt, dtEdit->text().toDouble());
+        }
+        m_clockBeforeLastStep = currentClock;
+    }
+
     simulation::getSimulation()->animate ( root, dt );
     simulation::getSimulation()->updateVisual( root );
 
@@ -2153,19 +2172,17 @@ void RealGUI::step()
 
 //------------------------------------
 
-// Set the time between each iteration of the Sofa Simulation
-void RealGUI::setDt ( double value )
+void RealGUI::updateDtEditState()
 {
-    Node* root = currentSimulation();
-    if ( value >= 0.0 && root)
-        root->getContext()->setDt ( value );
+    dtEdit->setEnabled(!realTimeCheckBox->isChecked());
 }
 
-//------------------------------------
-
-void RealGUI::setDt ( const QString& value )
+void RealGUI::setDt(const QString& value)
 {
-    setDt ( value.toDouble() );
+    const double dt = value.toDouble();
+    // Input is validated, but value may be 0 anywway, while it is being entered.
+    if (dt > 0.0)
+        currentSimulation()->getContext()->setDt(dt);
 }
 
 //------------------------------------
@@ -2186,8 +2203,6 @@ void RealGUI::resetScene()
     }
     getViewer()->getPickHandler()->reset();
     stopDumpVisitor();
-    if(root->getDt() == 0)
-        root->getContext()->setDt(-1);
 }
 
 //------------------------------------

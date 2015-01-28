@@ -177,11 +177,13 @@ public:
     typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
     typedef typename BaseShapeFunction::VReal VReal;
+    typedef typename BaseShapeFunction::VecVReal VecVReal;
     typedef typename BaseShapeFunction::Gradient Gradient;
     typedef typename BaseShapeFunction::VGradient VGradient;
     typedef typename BaseShapeFunction::Hessian Hessian;
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
+    typedef typename BaseShapeFunction::VecVRef VecVRef;
     typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< MaterialToSpatial transformation = deformation gradient type
     typedef typename BaseShapeFunction::VMaterialToSpatial VMaterialToSpatial;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
@@ -261,10 +263,10 @@ public:
         return &baseMatrices;
     }
 
-    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    virtual const defaulttype::BaseMatrix* getK()
     {
         updateK(this->toModel->readForces().ref());
-        return &stiffnessBaseMatrices;
+        return &K;
     }
 
     void draw(const core::visual::VisualParams* vparams);
@@ -276,18 +278,24 @@ public:
     ///@brief Get child state size
     virtual size_t getToSize()  const { return this->toModel->getSize(); }
     ///@brief Get child to parent indices as a const reference
-    virtual const vector<VRef>& getChildToParentIndex() { return  f_index.getValue(); }
+    virtual const VecVRef& getChildToParentIndex() { return  f_index.getValue(); }
+    ///@brief Get parent indices of the i-th child
+        virtual const VRef& getChildToParentIndex( int i) { return  f_index.getValue()[i]; }
     ///@brief Get a structure storing parent to child indices as a const reference
     ///@see f_index_parentToChild to know how to properly use it
     virtual const vector<VRef>& getParentToChildIndex() { return f_index_parentToChild; }
     ///@brief Get a pointer to the shape function where the weights are computed
     virtual BaseShapeFunction* getShapeFunction() { return _shapeFunction; }
     ///@brief Get parent's influence weights on each child
-    virtual vector<VReal> getWeights(){ return f_w.getValue(); }
+    virtual VecVReal getWeights(){ return f_w.getValue(); }
     ///@brief Get parent's influence weights gradient on each child
     virtual vector<VGradient> getWeightsGradient(){ return f_dw.getValue(); }
     ///@brief Get parent's influence weights hessian on each child
     virtual vector<VHessian> getWeightsHessian(){ return f_ddw.getValue(); }
+    ///@brief Get mapped positions
+    VecCoord getMappedPositions() { return f_pos; }
+    ///@brief Get init positions
+    VecCoord getInitPositions() { return f_pos0.getValue(); }
 
     /** @name PointMapper functions */
     //@{
@@ -313,12 +321,12 @@ public:
 
     Data<std::string> f_shapeFunction_name; ///< Name of the shape function component (optional: if not specified, will searchup)
     BaseShapeFunction* _shapeFunction;      ///< Where the weights are computed
-    Data<vector<VRef> > f_index;            ///< Store child to parent relationship. index[i][j] is the index of the j-th parent influencing child i.
+    Data<VecVRef > f_index;            ///< Store child to parent relationship. index[i][j] is the index of the j-th parent influencing child i.
     vector<VRef> f_index_parentToChild;     ///< Store parent to child relationship.
                                             /**< @warning For each parent i, child index <b>and parent index (again)</b> are stored.
                                                  @warning Therefore to get access to parent's child index only you have to perform a loop over index[i] with an offset of size 2.
                                              */
-    Data<vector<VReal> >       f_w;         ///< Influence weights of the parents for each child
+    Data<VecVReal >       f_w;         ///< Influence weights of the parents for each child
     Data<vector<VGradient> >   f_dw;        ///< Influence weight gradients
     Data<vector<VHessian> >    f_ddw;       ///< Influence weight hessians
     Data<VMaterialToSpatial>    f_F0;
@@ -334,20 +342,26 @@ protected:
     Data<VecCoord >    f_pos0; ///< initial spatial positions of children
 
     VecCoord f_pos;
+
+    KDT f_KdTree;
+    VMaterialToSpatial f_F;
+
+
+public:
+
     void mapPositions() ///< map initial spatial positions stored in f_pos0 to f_pos (used for visualization)
     {
         this->f_pos.resize(this->f_pos0.getValue().size());
         for(size_t i=0; i<this->f_pos.size(); i++ ) mapPosition(f_pos[i],this->f_pos0.getValue()[i],this->f_index.getValue()[i],this->f_w.getValue()[i]);
     }
-    KDT f_KdTree;
 
-    VMaterialToSpatial f_F;
     void mapDeformationGradients() ///< map initial deform  gradients stored in f_F0 to f_F      (used for visualization)
     {
         this->f_F.resize(this->f_pos0.getValue().size());
         for(size_t i=0; i<this->f_F.size(); i++ ) mapDeformationGradient(f_F[i],this->f_pos0.getValue()[i],this->f_F0.getValue()[i],this->f_index.getValue()[i],this->f_w.getValue()[i],this->f_dw.getValue()[i]);
     }
 
+protected :
     bool missingInformationDirty;  ///< tells if pos or F need to be updated (to speed up visualization)
     bool KdTreeDirty;              ///< tells if kdtree need to be updated (to speed up closest point search)
 
@@ -365,7 +379,6 @@ protected:
     helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
-    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     void updateK(const OutVecDeriv& childForce);
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization

@@ -107,7 +107,7 @@ QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
         f.setSamples(nbMSAASamples);
     }
 
-    int val = 0;
+//    int val = 0;
 
 //#ifdef __APPLE__
 //        std::cout << "QtViewer: disabling vertical refresh sync (Mac version)" << std::endl;

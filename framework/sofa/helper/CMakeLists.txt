@@ -47,6 +47,7 @@ set(SOFAHELPER_HEADERS
     Quater.h
     Quater.inl
     rmath.h
+    random.h
     RandomGenerator.h
     set.h
     SVector.h
@@ -87,6 +88,7 @@ set(SOFAHELPER_HEADERS
     SortedPermutation.h
     kdTree.inl
     kdTree.h
+    vectorData.h
 	)
 
 set(SOFAHELPER_SOURCES

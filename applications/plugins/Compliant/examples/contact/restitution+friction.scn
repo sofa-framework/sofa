@@ -3,7 +3,7 @@
 <Node animate="0" name="Root" dt="0.005" gravity="0 0 0">
   
   <RequiredPlugin name="Compliant" pluginName="Compliant" />
-<!--   <CompliantAttachButtonSetting/> -->
+  <CompliantAttachButton/>
   
   <VisualStyle displayFlags="showCollisionModels hideVisual showMappings" />
   <DefaultPipeline depth="6" />

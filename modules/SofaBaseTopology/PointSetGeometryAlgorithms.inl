@@ -185,20 +185,20 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const helper::vector
     helper::vector< VecCoord* > pointsAddedVecCoords;
     helper::vector< VecDeriv* > pointsAddedVecDerivs;
 
-    const unsigned int nbPointCoords = coordVecs.size();
-    const unsigned int nbPointDerivs = derivVecs.size();
+    const size_t nbPointCoords = coordVecs.size();
+    const size_t nbPointDerivs = derivVecs.size();
 
-    for (unsigned int i=0; i < nbPointCoords; i++)
+    for (size_t i=0; i < nbPointCoords; i++)
     {
         pointsAddedVecCoords.push_back(this->object->write(coordVecs[i])->beginEdit());
     }
 
-    for (unsigned int i=0; i < nbPointDerivs; i++)
+    for (size_t i=0; i < nbPointDerivs; i++)
     {
         pointsAddedVecDerivs.push_back(this->object->write(derivVecs[i])->beginEdit());
     }
 
-    for (unsigned int i=0; i < indices.size(); i++)
+    for (size_t i=0; i < indices.size(); i++)
     {
         if (ancestorElems[i].index != BaseMeshTopology::InvalidID)
         {
@@ -206,12 +206,12 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const helper::vector
         }
     }
 
-    for (unsigned int i=0; i < nbPointCoords; i++)
+    for (size_t i=0; i < nbPointCoords; i++)
     {
         this->object->write(coordVecs[i])->endEdit();
     }
 
-    for (unsigned int i=0; i < nbPointDerivs; i++)
+    for (size_t i=0; i < nbPointDerivs; i++)
     {
         this->object->write(derivVecs[i])->endEdit();
     }

@@ -239,7 +239,7 @@ public:
 
     unsigned int getNbModifiedHexahedra() const
     {
-        return _modifiedHexahedraArray.size();
+        return (unsigned int)_modifiedHexahedraArray.size();
     }
 
 private:

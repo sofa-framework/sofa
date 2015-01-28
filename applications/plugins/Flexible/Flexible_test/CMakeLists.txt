@@ -18,6 +18,7 @@ set(SOURCE_FILES
    ShapeFunction_test.cpp
    StabilizedNeoHookeHexahedraMaterial_test.cpp
    TetrahedraMaterial_test.cpp
+   TetrahedronVolumeMapping_test.cpp
         )
 
 if(WIN32)

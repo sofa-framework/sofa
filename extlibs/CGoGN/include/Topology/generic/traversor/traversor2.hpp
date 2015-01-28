@@ -32,7 +32,7 @@ namespace CGoGN
 // Traversor2VE
 
 template <typename MAP>
-Traversor2VE<MAP>::Traversor2VE(const MAP& map, Vertex v) : m(map), start(v),m_QLT(NULL)
+Traversor2VE<MAP>::Traversor2VE(const MAP& map, Vertex v) : m(map), start(Edge::convertCell(v)),m_QLT(NULL)
 {
 	const AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* quickTraversal = map.template getQuickIncidentTraversal<VERTEX,EDGE>() ;
 	if (quickTraversal != NULL)

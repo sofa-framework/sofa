@@ -34,7 +34,7 @@ def createTeta( node, name, perNodeConstraint, torus ):
         localNode.createObject('FixedConstraint', indices="0" )
     
     localNode.createObject('BarycentricShapeFunction' )
-    localNode.createObject('UniformMass' )
+    localNode.createObject('UniformMass',totalMass="250" )
  
 
     behaviorNode = localNode.createChild("behavior")
@@ -44,8 +44,8 @@ def createTeta( node, name, perNodeConstraint, torus ):
 
     strainNode = behaviorNode.createChild("strain")
     strainNode.createObject('MechanicalObject', template="E331", name="E" )
-    strainNode.createObject('CorotationalStrainMapping', template="F331,E331", method="svd", assemble=1 )
-    strainNode.createObject('HookeForceField',  template="E331" ,name="ff", assemble=1, youngModulus="2000.0", poissonRatio="0"  )   
+    strainNode.createObject('CorotationalStrainMapping', template="F331,E331", method="svd", assemble=1,geometricStiffness=1 )
+    strainNode.createObject('HookeForceField',  template="E331" ,name="ff", assemble=1, youngModulus="2000.0", poissonRatio="0.49",viscosity="0",rayleighStiffness="0",isCompliance="1"  )   
 
     volNode = localNode.createChild("vol")
     volNode.createObject('MechanicalObject',  template="Vec1d", name="Volume"  )

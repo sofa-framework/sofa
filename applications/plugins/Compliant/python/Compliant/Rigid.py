@@ -114,9 +114,10 @@ def generate_rigid(filename, density = 1000.0, scale=[1,1,1], rotation=[0,0,0], 
         else:
             tmpfilename = rigidFilename
 
-        cmd = [ Sofa.build_dir() + '/bin/GenerateRigid', filename, tmpfilename, str(density), str(scale[0]), str(scale[1]), str(scale[2]), str(rotation[0]), str(rotation[1]), str(rotation[2]) ]
-
-#        print cmd
+        cmdRel = [ 'GenerateRigid', filename, tmpfilename, str(density), str(scale[0]), str(scale[1]), str(scale[2]), str(rotation[0]), str(rotation[1]), str(rotation[2]) ]
+        cmd = list(cmdRel)
+        cmd[0] = Sofa.build_dir() + '/bin/' + cmd[0]
+        #print cmd
                          
         try:
 
@@ -129,8 +130,19 @@ def generate_rigid(filename, density = 1000.0, scale=[1,1,1], rotation=[0,0,0], 
             try:
                     output = Popen(cmd, stdout=PIPE)
             except OSError:
-                    print 'error when calling GenerateRigid, do you have GenerateRigid built in SOFA?'
-                    raise
+                
+                    try:
+                    #try if it is accessible from PATH
+                            output = Popen(cmdRel, stdout=PIPE)
+
+                    except OSError:
+                            # try the debug version
+                            cmdRel[0] += 'd'                    
+                            try:
+                                    output = Popen(cmdRel, stdout=PIPE)
+                            except OSError:
+                                    print 'error when calling GenerateRigid, do you have GenerateRigid built in SOFA?'
+                                    raise
 
         output.communicate() # wait until Popen command is finished!!!
         return read_rigid(tmpfilename)

@@ -30,6 +30,7 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/common/Node.h>
 #include "ScriptEvent.h"
+#include "ScriptFunction.h"
 
 namespace sofa
 {
@@ -118,7 +119,6 @@ public:
 
     virtual void handleEvent(core::objectmodel::Event *);
 
-	
 	/**
 	 * @brief draw callback.
 	 */

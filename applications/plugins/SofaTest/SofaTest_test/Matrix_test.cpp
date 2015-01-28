@@ -38,8 +38,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/RandomGenerator.h>
-
 
 #define BENCHMARK_MATRIX_PRODUCT 0
 
@@ -150,14 +148,11 @@ struct TestSparseMatrices : public Sofa_test<_Real>
     template<int nbrows,int nbcols>
     static void generateRandomMat( defaulttype::Mat<nbrows,nbcols,Real>& mat, bool sparse=false )
     {
-        sofa::helper::RandomGenerator randomGenerator;
-        randomGenerator.initSeed( BaseSofa_test::seed );
-
         for( int j=0; j<mat.nbCols; j++)
         {
             for( int i=0; i<mat.nbLines; i++)
             {
-                Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
+                Real random = Real(helper::drand(1));
                 if( sparse && random > -0.5 && random < 0.5 ) random = 0;
                 mat(i,j)=random;
             }
@@ -440,12 +435,9 @@ TEST_F(TsProductTimings, benchmark )
         rhs.resize(nbcols,NBCOLSRHS);
         res.resize(nbrows,NBCOLSRHS);
 
-        sofa::helper::RandomGenerator randomGenerator;
-        randomGenerator.initSeed( BaseSofa_test::seed);
-
         for( unsigned j=0; j<nbcols; j++)
         {
-            Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
+            Real random = Real(helper::drand(1));
             for( unsigned i=0; i<NBCOLSRHS; i++)
                 rhs.coeffRef(j,i) = random;
             for( unsigned i=0; i<nbrows; i++)

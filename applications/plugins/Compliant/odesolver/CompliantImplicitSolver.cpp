@@ -575,6 +575,11 @@ using namespace core::behavior;
 
         // debugging
         if( debug.getValue() ) sys.debug();
+        if( f_printLog.getValue() )
+        {
+            sout << "dynamics size m: " <<sys.m<< sendl;
+            sout << "constraint size n: " <<sys.n<< sendl;
+        }
 
         // look for violated and active constraints
         // must be performed after assembly and before system factorization

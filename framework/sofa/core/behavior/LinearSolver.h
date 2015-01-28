@@ -46,7 +46,7 @@ namespace behavior
  *  \brief Abstract base class (as type identifier) for linear system solvers without any API
  *
  */
-class SOFA_CORE_API BaseLinearSolver : public virtual objectmodel::BaseObject
+class SOFA_CORE_API BaseLinearSolver : public objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(BaseLinearSolver, objectmodel::BaseObject);

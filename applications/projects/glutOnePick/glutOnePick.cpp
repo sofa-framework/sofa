@@ -253,7 +253,7 @@ int main(int argc, char** argv)
     sofaScene->loadPlugins( plugins );
     if( fileName.empty() ){
         cout << "No scene file provided, creating default scene " << endl;
-        sofaScene->setScene( oneTetra() );
+        sofaScene->setScene( oneTetra().get() );
     }
     else
         sofaScene->open(fileName);

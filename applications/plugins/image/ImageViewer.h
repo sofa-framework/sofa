@@ -143,6 +143,7 @@ public:
     /**@}*/
     
     Data <int> scroll;
+    Data <bool> display; ///< Boolean to activate/desactivate the display of the image
 
     typedef component::visualmodel::VisualModelImpl VisuModelType;
     
@@ -157,6 +158,7 @@ public:
       , points ( initData ( &points, helper::vector<Coord> (), "points" , "" ) )
       , vectorVisualization ( initData (&vectorVisualization, defaulttype::VectorVis(), "vectorvis", ""))
       , scroll( initData (&scroll, int(0), "scrollDirection", "0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right"))
+      , display( initData(&display, true, "display", "true if image is displayed, false otherwise"))
     {
         this->addAlias(&image, "outputImage");
         this->addAlias(&transform, "outputTransform");
@@ -332,8 +334,8 @@ public:
     
     virtual void draw(const core::visual::VisualParams* vparams)
     {
-        if (!vparams->displayFlags().getShowVisualModels()) return;
-        
+        if (!vparams->displayFlags().getShowVisualModels() || display.getValue()==false) return;
+
         waPoints wpoints(this->points);
         waPlane wplane(this->plane);
         wplane->setTime( this->getContext()->getTime() );

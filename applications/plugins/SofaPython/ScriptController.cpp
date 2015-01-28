@@ -33,6 +33,7 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
 using namespace sofa::simulation;
+using namespace sofa::core::objectmodel;
 
 namespace sofa
 {
@@ -42,8 +43,6 @@ namespace component
 
 namespace controller
 {
-
-
 
 ScriptController::ScriptController()
     : Controller()
@@ -187,7 +186,6 @@ void ScriptController::handleEvent(core::objectmodel::Event *event)
     }
     else Controller::handleEvent(event);
 }
-
 
 void ScriptController::draw(const core::visual::VisualParams* vis)
 {

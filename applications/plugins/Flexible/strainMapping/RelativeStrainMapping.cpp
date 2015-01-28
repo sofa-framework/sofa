@@ -46,6 +46,7 @@ using namespace defaulttype;
 int RelativeStrainMappingClass = core::RegisterObject("Map a total strain to an elastic strain + offset")
 
         .add< RelativeStrainMapping< E331Types > >(true)
+        .add< RelativeStrainMapping< E311Types > >()
         .add< RelativeStrainMapping< E321Types > >()
         .add< RelativeStrainMapping< E332Types > >()
         .add< RelativeStrainMapping< E333Types > >()
@@ -56,6 +57,7 @@ int RelativeStrainMappingClass = core::RegisterObject("Map a total strain to an 
         ;
 
 template class SOFA_Flexible_API RelativeStrainMapping< E331Types >;
+template class SOFA_Flexible_API RelativeStrainMapping< E311Types >;
 template class SOFA_Flexible_API RelativeStrainMapping< E321Types >;
 template class SOFA_Flexible_API RelativeStrainMapping< E332Types >;
 template class SOFA_Flexible_API RelativeStrainMapping< E333Types >;

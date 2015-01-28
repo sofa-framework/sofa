@@ -1,0 +1,8 @@
+Makefile
+Makefile.Debug
+Makefile.Release
+bin
+debug
+qtQuickSofa.pro.user
+release
+vc110.pdb
