@@ -3,11 +3,12 @@
 
 #include "BaseContact.h"
 #include "../constraint/UnilateralConstraint.h"
-#include "../constraint/VelocityConstraintValue.h"
+#include "../constraint/DampingValue.h"
 
 #include "../initCompliant.h"
 
 #include "../compliance/UniformCompliance.h"
+#include "../compliance/DampingCompliance.h"
 
 #include "../mapping/ContactMapping.h" 		// should be normal mapping
 
@@ -152,7 +153,7 @@ protected:
         if( frictionCoefficient )
         {
 
-            frictionCoefficient = 1.0 - frictionCoefficient;
+//            frictionCoefficient = 1.0 - frictionCoefficient;
 
             // counting violated contacts to create only these ones
             int nout = !cvmask ? size : std::count( cvmask->begin(), cvmask->end(), true );
@@ -195,33 +196,20 @@ protected:
                 contact_map->init();
 
 
+
+                // TODO check if it cannot be done by a forcefield rather than constraints
+
                 // compliance
-                typedef forcefield::UniformCompliance<defaulttype::Vec2Types> compliance_type;
-                compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
+                typedef forcefield::DampingCompliance<defaulttype::Vec2Types> compliance_type;
+                compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>();
                 contact_node->addObject( compliance.get() );
-                compliance->compliance.setValue( this->compliance_value.getValue() + 1e-10 ); // viscous friction constraints are not prioritary
-                compliance->damping.setValue( this->damping_ratio.getValue() );
+                compliance->damping.setValue( frictionCoefficient );
                 compliance->init();
 
-
                 // constraint value
-                typedef odesolver::VelocityConstraintValue cv_type;
+                typedef odesolver::DampingValue cv_type;
                 cv_type::SPtr cv = sofa::core::objectmodel::New<cv_type>( contact_dofs.get() );
-                SReal* v = new SReal[contact_dofs->getMatrixSize()];
-                contact_dofs.get()->copyToBuffer(v, core::VecId::velocity(), contact_dofs->getMatrixSize());
-                vector<SReal>& vel = *cv->d_velocities.beginEdit();
-                vel.resize( nout*2 );
-                for( int w=0,i=0;w<this->mappedContacts.size();++w)
-                {
-                    if( cvmask && !(*cvmask)[w] ) continue;
-                    vel[i*2+0] = v[i*2+0] * frictionCoefficient;
-                    vel[i*2+1] = v[i*2+1] * frictionCoefficient;
-                    ++i;
-                }
-                cv->d_velocities.endEdit();
-                delete [] v;
                 contact_node->addObject( cv.get() );
-
                 cv->init();
             }
         }

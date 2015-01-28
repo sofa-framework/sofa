@@ -15,7 +15,6 @@
   
    <!-- a not null global (i.e. in responseParams) friction coefficient is used for every contacts -->
    <!-- a null global friction coefficient forces to use the product of CollisionModel::contactFriction pair -->
-   <!-- for viscous friction the coef should be between 0 (no friction) and 1 (no sliding) -->
   <!-- same behavior for restitution -->
   <DefaultContactManager response="CompliantContact" responseParams="viscousFriction=0&amp;restitution=0" />
 	
@@ -31,9 +30,9 @@
       <MeshObjLoader name="loader" filename="mesh/cube.obj" />
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
-      <TriangleModel template="Vec3d" contactFriction=".1" contactRestitution="0"/>
-<!--       <LineModel template="Vec3d" contactFriction="10" contactRestitution="0"/> -->
-<!--       <PointModel template="Vec3d" contactFriction="10" contactRestitution="0"/> -->
+      <TriangleModel template="Vec3d" contactFriction="100" contactRestitution="0"/>
+<!--       <LineModel template="Vec3d" contactFriction="100" contactRestitution="0"/> -->
+<!--       <PointModel template="Vec3d" contactFriction="100" contactRestitution="0"/> -->
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
   </Node> 
@@ -43,7 +42,7 @@
    <Node name="Ball">
     <MechanicalObject name="dofs" template="Rigid" position="0 2.1 10 0 0 0 1" velocity="10 -10 0 0 0 0" showObject="1" showObjectScale="1" />
     <RigidMass mass="1" inertia="1 1 1" />
-    <Sphere radius="1" contactFriction=".1" contactRestitution="0.5" />
+    <Sphere radius="1" contactFriction="10" contactRestitution="0.5" />
   </Node>
   
   
@@ -60,8 +59,8 @@
       <MeshTopology tetrahedra="@loader.tetras" name="topology" position="@loader.position" hexahedra="@loader.hexas" edges="@loader.edges" quads="@loader.quads" triangles="@loader.triangles" />
       <MechanicalObject name="vertices" template="Vec3d" position="@loader.position" />
       <TriangleModel template="Vec3d" simulated="0" moving="0" contactFriction="1" contactRestitution="1"/>
-<!--       <LineModel template="Vec3d" contactFriction="10" contactRestitution="0"/> -->
-<!--       <PointModel template="Vec3d" contactFriction="10" contactRestitution="0"/> -->
+<!--       <LineModel template="Vec3d" contactFriction="1" contactRestitution="0"/> -->
+<!--       <PointModel template="Vec3d" contactFriction="1" contactRestitution="0"/> -->
       <RigidMapping input="@../" template="Rigid,Vec3d" output="@./" />
     </Node>
     <FixedConstraint indices="0" />
