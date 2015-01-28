@@ -2,15 +2,23 @@
 #define SOFA_COMPONENT_COLLISION_COMPLIANTCONTACT_H
 
 #include "BaseContact.h"
-#include "../constraint/UnilateralConstraint.h"
-#include "../constraint/DampingValue.h"
 
 #include "../initCompliant.h"
 
-#include "../compliance/UniformCompliance.h"
-#include "../compliance/DampingCompliance.h"
 
-#include "../mapping/ContactMapping.h" 		// should be normal mapping
+#include "../constraint/UnilateralConstraint.h"
+#include "../compliance/UniformCompliance.h"
+
+// for constraint version
+//#include "../constraint/DampingValue.h"
+//#include "../compliance/DampingCompliance.h"
+
+// for forcefield version
+#include <sofa/component/forcefield/UniformVelocityDampingForceField.h>
+
+
+
+#include "../mapping/ContactMapping.h"
 
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/TetrahedronModel.h>
@@ -197,20 +205,31 @@ protected:
 
 
 
-                // TODO check if it cannot be done by a forcefield rather than constraints
+                // cheap forcefield version
+
+                typedef forcefield::UniformVelocityDampingForceField<defaulttype::Vec2Types> damping_type;
+                damping_type::SPtr damping = sofa::core::objectmodel::New<damping_type>();
+                contact_node->addObject( damping.get() );
+                damping->dampingCoefficient.setValue( frictionCoefficient );
+                damping->init();
+
+
+
+
+                // constraint version
 
                 // compliance
-                typedef forcefield::DampingCompliance<defaulttype::Vec2Types> compliance_type;
-                compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>();
-                contact_node->addObject( compliance.get() );
-                compliance->damping.setValue( frictionCoefficient );
-                compliance->init();
+//                typedef forcefield::DampingCompliance<defaulttype::Vec2Types> compliance_type;
+//                compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>();
+//                contact_node->addObject( compliance.get() );
+//                compliance->damping.setValue( frictionCoefficient );
+//                compliance->init();
 
-                // constraint value
-                typedef odesolver::DampingValue cv_type;
-                cv_type::SPtr cv = sofa::core::objectmodel::New<cv_type>( contact_dofs.get() );
-                contact_node->addObject( cv.get() );
-                cv->init();
+//                // constraint value
+//                typedef odesolver::DampingValue cv_type;
+//                cv_type::SPtr cv = sofa::core::objectmodel::New<cv_type>( contact_dofs.get() );
+//                contact_node->addObject( cv.get() );
+//                cv->init();
             }
         }
 
