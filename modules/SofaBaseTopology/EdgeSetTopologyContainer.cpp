@@ -111,7 +111,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
 
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     m_edgesAroundVertex.resize( getNbPoints() );
-    for (size_t edge=0; edge<m_edge.size(); ++edge)
+    for (unsigned int edge=0; edge<m_edge.size(); ++edge)
     {
         // adding edge in the edge shell of both points
         m_edgesAroundVertex[ m_edge[edge][0] ].push_back(edge);
@@ -292,14 +292,14 @@ unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecEdgeID elemAll = this->getConnectedElement(0);
-    size_t cpt = 1;
+    unsigned int cpt = 1;
 
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        size_t other_edgeID = elemAll.size();
+        EdgeID other_edgeID = elemAll.size();
 
-        for (size_t i = 0; i<elemAll.size(); ++i)
+        for (EdgeID i = 0; i<(EdgeID)elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_edgeID = i;
@@ -483,7 +483,7 @@ const VecEdgeID EdgeSetTopologyContainer::getElementAroundElements(VecEdgeID ele
 unsigned int EdgeSetTopologyContainer::getNumberOfEdges() const
 {
     d_edge.updateIfDirty();
-    return (d_edge.getValue()).size();
+    return (unsigned int)d_edge.getValue().size();
 }
 
 unsigned int EdgeSetTopologyContainer::getNumberOfElements() const

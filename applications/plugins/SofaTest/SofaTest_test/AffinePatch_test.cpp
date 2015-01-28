@@ -26,7 +26,6 @@
 #include "stdafx.h"
 #include "Elasticity_test.h"
 #include <sofa/helper/Quater.h>
-#include <sofa/helper/RandomGenerator.h>
 #include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
@@ -46,7 +45,6 @@
 #include <plugins/SceneCreator/SceneCreator.h>
 
 namespace sofa {
-namespace {
 
 using std::cout;
 using std::cerr;
@@ -85,8 +83,6 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
     defaulttype::Mat<3,3,Real> testedRotation;
     /// Tested Translation: random translation
     Coord testedTranslation;
-    // Random generator
-    sofa::helper::RandomGenerator randomGenerator;
     
     /// Create the context for the scene
     void SetUp()
@@ -97,8 +93,6 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
 
          root = simulation::getSimulation()->createNewGraph("root");
 
-         // Init seed with a random value between 0 and 100
-         randomGenerator.initSeed(BaseSofa_test::seed);
     }
 
     /// Create a scene with a 2D regular grid and an affine constraint
@@ -128,7 +122,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
             x = 0;
             y = 0;
             z = 1;
-            w = randomGenerator.random<SReal>(0.0,360.0);
+            w = SReal(helper::drand()*360.0);
             Quat quat(x,y,z,w);
             quat.normalize();
             quat.toMatrix(testedRotation);
@@ -140,7 +134,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
         {
             for(size_t i=0;i<Coord::total_size;++i)
             {
-                testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
+                testedTranslation[i]=helper::drand(2);
                 if(i==2)
                     testedTranslation[i]=0;
             }
@@ -174,16 +168,16 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
         if(randomRotation)
         {
             SReal x,y,z,w;
-            x = randomGenerator.random<SReal>(-1.0,1.0);
-            y = randomGenerator.random<SReal>(-1.0,1.0);
-            z = randomGenerator.random<SReal>(-1.0,1.0);
+            x = SReal(helper::drand(1));
+            y = SReal(helper::drand(1));
+            z = SReal(helper::drand(1));
             // If the rotation axis is null
             Vec3 rotationAxis(x,y,z);
             if(rotationAxis.norm() < 1e-7)
             {
                 rotationAxis = Vec3(0,0,1);
             }
-            w = randomGenerator.random<SReal>(0.0,360.0);
+            w = SReal(helper::drand()*360.0);
             Quat quat(x,y,z,w);
             quat.normalize();
             quat.toMatrix(testedRotation);
@@ -195,7 +189,7 @@ struct AffinePatch_test : public Elasticity_test<_DataTypes>
         {
             for(size_t i=0;i<Coord::total_size;++i)
             {
-                testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
+                testedTranslation[i] = helper::drand(2);
             }
         }
         patchStruct.affineConstraint->m_translation.setValue(testedTranslation);
@@ -298,9 +292,7 @@ TYPED_TEST( AffinePatch_test , patchTest2D )
 TYPED_TEST( AffinePatch_test , patchTest3D )
 {
     this->createScene3DRegularGrid();
-    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-5,1e-4));
+    ASSERT_TRUE( this->compareSimulatedToTheoreticalPositions(1e-5,1.1e-4));
 }
 
-
-} // namespace
 } // namespace sofa

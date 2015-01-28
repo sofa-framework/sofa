@@ -10,7 +10,7 @@
     <Node name="gmsh file">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="GmshLoader" filename="mesh/square3.msh" />
+        <MeshGmshLoader name="GmshLoader" filename="mesh/square3.msh" createSubelements="true" />
         <MechanicalObject name="dofs" scale="10" src="@GmshLoader" />
         <TriangleSetTopologyContainer name="topo" src="@GmshLoader" />
         <TriangleSetTopologyModifier name="modif" />

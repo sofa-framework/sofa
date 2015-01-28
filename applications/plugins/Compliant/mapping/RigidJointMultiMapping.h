@@ -53,9 +53,7 @@ protected:
 
 	RigidJointMultiMapping()
 		: pairs(initData(&pairs, "pairs", "index pairs for each joint"))
-		{
-			
-	}
+    {}
 	
 	void apply(typename self::out_pos_type& out,
 	           const vector< typename self::in_pos_type >& in ) {

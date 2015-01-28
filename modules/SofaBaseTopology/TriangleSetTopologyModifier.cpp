@@ -112,7 +112,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
             trianglesIndex.push_back(nTriangles+i);
 
         // add topology event in the stack of topological events
-        addTrianglesWarning( triangles.size(), triangles, trianglesIndex);
+        addTrianglesWarning((unsigned int)triangles.size(), triangles, trianglesIndex);
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
@@ -146,7 +146,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
             trianglesIndex.push_back(nTriangles+i);
 
         // add topology event in the stack of topological events
-        addTrianglesWarning( triangles.size(), triangles, trianglesIndex, ancestors, baryCoefs);
+        addTrianglesWarning((unsigned int)triangles.size(), triangles, trianglesIndex, ancestors, baryCoefs);
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
@@ -234,7 +234,6 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
             shell.push_back( triangleIndex );
         }
     }
-
 
     m_triangle.push_back(t);
 }
@@ -632,7 +631,7 @@ void TriangleSetTopologyModifier::movePointsProcess (const sofa::helper::vector 
     m_container->setTriangleTopologyToDirty();
 
     (void)moveDOF;
-    unsigned int nbrVertex = id.size();
+    const size_t nbrVertex = id.size();
     bool doublet;
     sofa::helper::vector< unsigned int > trianglesAroundVertex2Move;
     sofa::helper::vector< Triangle > trianglesArray;

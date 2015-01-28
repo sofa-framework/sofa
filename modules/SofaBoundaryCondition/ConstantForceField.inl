@@ -79,51 +79,49 @@ void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* /*par
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f1;
     _f1.resize(p1.getValue().size());
 
-//        sout << "Points = " << points.getValue() << sendl;
     Deriv singleForce;
-    if ( totalForce.getValue()*totalForce.getValue() > 0.0)
-    {
-        for (unsigned comp = 0; comp < totalForce.getValue().size(); comp++)
-            singleForce[comp] = (totalForce.getValue()[comp])/(Real(points.getValue().size()));
-        //std::cout << "Setting forces for each node to = " << singleForce << std::endl;
-    }
-    else if (force.getValue()*force.getValue() > 0.0)
-    {
-        singleForce = force.getValue();
-        //std::cout << "Setting forces for each node to = " << singleForce << std::endl;
-    }
-
+    const Deriv& forceVal = force.getValue();
+    const Deriv& totalForceVal = totalForce.getValue();
     const VecIndex& indices = points.getValue();
-//        sout << "indices = " << indices << sendl;
     const VecDeriv& f = forces.getValue();
-    //const Deriv f_end = (f.empty()? force.getValue() : f[f.size()-1]);
-    const Deriv f_end = (f.empty()? singleForce : f[f.size()-1]);
-    unsigned int i = 0;
+    unsigned int i = 0, nbForcesIn = f.size(), nbForcesOut = _f1.size();
 
-
-    if (!indexFromEnd.getValue())
+    if (totalForceVal * totalForceVal > 0)
     {
-        for (; i < f.size(); i++)
-        {
-            sout<<"_f1[indices[i]] += f[i], "<< _f1[indices.empty() ? i : indices[i]] << " += " << f[i] << sendl;
-            _f1[ indices.empty() ? i : indices[i] ] += f[i];  // if indices are not set, use the force indices
+        unsigned int nbForces = indices.empty() ? nbForcesOut : indices.size();
+        singleForce = totalForceVal / (Real)nbForces;
+    }
+    else if (forceVal * forceVal > 0.0)
+        singleForce = forceVal;
 
-        }
-        for (; i < indices.size(); i++)
-        {
-//                    sout<<"_f1[indices[i]] += f_end, "<< _f1[indices[i]] << " += " << f_end << sendl;
-            _f1[indices[i]] += f_end;
-        }
+    const Deriv f_end = (f.empty() ? singleForce : f.back());
+
+    // When no indices are given, copy the forces from the start
+    if (indices.empty())
+    {
+        unsigned int nbCopy = std::min(nbForcesIn, nbForcesOut);
+        for (; i < nbCopy; ++i) // Copy from the forces list
+            _f1[i] += f[i];
+        for (; i < nbForcesOut; ++i) // Copy from the single value or the last value of the forces list
+            _f1[i] += f_end;
     }
     else
     {
-        for (; i < f.size(); i++)
+        unsigned int nbIndices = indices.size();
+        unsigned int nbCopy = std::min(nbForcesIn, nbIndices); // forces & points are not garanteed to be of the same size
+        if (!indexFromEnd.getValue())
         {
-            _f1[_f1.size() - indices[i] - 1] += f[i];
+            for (; i < nbCopy; ++i)
+                _f1[indices[i]] += f[i];
+            for (; i < nbIndices; ++i)
+                _f1[indices[i]] += f_end;
         }
-        for (; i < indices.size(); i++)
+        else
         {
-            _f1[_f1.size() - indices[i] - 1] += f_end;
+            for (; i < nbCopy; ++i)
+                _f1[nbForcesOut - indices[i] - 1] += f[i];
+            for (; i < nbIndices; ++i)
+                _f1[nbForcesOut - indices[i] - 1] += f_end;
         }
     }
 }
@@ -254,8 +252,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
             float norm = (float)(p2-p1).norm();
 
-//            static const defaulttype::Vec<4,float> color(1.0f,0.4f,0.4f,1.0f);
-            static const defaulttype::Vec<4,float> color(0.2,0.9,0.3,1.0f);
+            static const defaulttype::Vec<4,float> color(0.2f,0.9f,0.3f,1.0f);
 
             if( aSC > 0)
             {

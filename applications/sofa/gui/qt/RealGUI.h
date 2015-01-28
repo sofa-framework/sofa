@@ -228,6 +228,9 @@ protected:
     bool m_displayComputationTime;
     bool m_fullScreen;
     BaseViewer* mViewer;
+    // Clock before the last simulation step (or zero if the
+    // simulation hasn't run yet).
+    clock_t m_clockBeforeLastStep;
 
 	// Component Properties
     QDisplayPropertyWidget* propertyWidget;
@@ -386,8 +389,10 @@ public slots:
     virtual void playpauseGUI(bool value);
     virtual void interactionGUI(bool value);
     virtual void step();
-    virtual void setDt(double);
+    // virtual void setDt(double);
     virtual void setDt(const QString&);
+    // Disable dtEdit when realTimeCheckBox is checked
+    virtual void updateDtEditState();
     virtual void resetScene();
     virtual void screenshot();
     virtual void showhideElements();

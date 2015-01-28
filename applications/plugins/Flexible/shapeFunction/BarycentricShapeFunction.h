@@ -64,7 +64,7 @@ public:
     typedef typename Inherit::Cell Cell;
 
     typedef sofa::core::topology::BaseMeshTopology Topo;
-    Topo* parentTopology;
+    SingleLink<BarycentricShapeFunction<ShapeFunctionTypes_>, Topo, 0> parentTopology;
 
     typedef typename Inherit::Gradient Gradient;
     typedef typename Inherit::Hessian Hessian;
@@ -706,8 +706,10 @@ public:
 
         if( !parentTopology )
         {
-            this->getContext()->get(parentTopology,core::objectmodel::BaseContext::SearchUp);
-            if(!this->parentTopology) { serr<<"MeshTopology not found"<<sendl; return; }
+            Topo* topo;
+            this->getContext()->get(topo,core::objectmodel::BaseContext::SearchUp);
+            if(!topo) { serr<<"MeshTopology not found"<<sendl; return; }
+            parentTopology.set(topo);
         }
 
         InternalShapeFunction<spatial_dimensions>::init( this );
@@ -716,7 +718,7 @@ public:
 protected:
     BarycentricShapeFunction()
         : Inherit()
-        , parentTopology( NULL )
+        , parentTopology(BaseLink::InitLink< BarycentricShapeFunction<ShapeFunctionTypes_> >(this, "parentTopology", ""))
         , f_tolerance(initData(&f_tolerance,(Real)-1.0,"tolerance","minimum weight (allows for mapping outside elements)"))
         , cellIndex(-1)
         , f_orientation(initData(&f_orientation,"orientation","input orientation (Euler angles) inside each cell"))

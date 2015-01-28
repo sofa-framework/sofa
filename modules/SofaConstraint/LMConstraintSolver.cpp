@@ -635,7 +635,7 @@ void LMConstraintSolver::buildRightHandTerm( const helper::vector< core::behavio
         MultiVecId /*id*/, ConstOrder Order) const
 {
 
-    FullVector<SReal> c_fullvector(c.data(), c.rows());
+    FullVector<SReal> c_fullvector(c.data(), (Index)c.rows());
     for (unsigned int mat=0; mat<LMConstraints.size(); ++mat)  LMConstraints[mat]->getConstraintViolation(&c_fullvector, Order);
 }
 
@@ -860,7 +860,7 @@ void LMConstraintSolver::constraintStateCorrection(VecId id,  core::ConstraintPa
                 Acorrection(l+6+offset)=q[3];
             }
             offset=0;
-            FullVector<SReal> v(Acorrection.data(),Acorrection.rows());
+            FullVector<SReal> v(Acorrection.data(), (Index)Acorrection.rows());
 
             if (f_printLog.getValue())  cerr << "Lambda Corrected for Rigid " << "\n" << Acorrection << endl;
             dofs->addFromBaseVectorSameSize(id,&v,offset );

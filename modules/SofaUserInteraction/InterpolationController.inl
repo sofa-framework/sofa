@@ -115,7 +115,7 @@ void InterpolationController<DataTypes>::handleEvent(core::objectmodel::Event *e
             //VecCoord& interpXs = interpXData.wref();
 
             //dAlpha computation(period,dt)
-            dAlpha = 1.0 / (f_period.getValue() / this->getContext()->getDt());
+            dAlpha = (float)(1.0 / (f_period.getValue() / this->getContext()->getDt()));
 
             //alpha computation(evolution,alpha,alphaMax,dAlpha)
             switch (static_cast<Evolution_Type>(f_evolution.getValue()))
@@ -167,7 +167,11 @@ void InterpolationController<DataTypes>::draw(const core::visual::VisualParams* 
         break;
     }
 
-    float norm = Vector3(this->toXs[0][0][0] - this->fromXs[0][0][0], this->toXs[0][0][1] - this->fromXs[0][0][1], this->toXs[0][0][2] - this->fromXs[0][0][2]).norm()/10.0;
+    const Vector3 fromXs_to_toXs(this->toXs[0][0][0] - this->fromXs[0][0][0],
+                                 this->toXs[0][0][1] - this->fromXs[0][0][1],
+                                 this->toXs[0][0][2] - this->fromXs[0][0][2]);
+    const float norm = (float)(fromXs_to_toXs.norm()/10.0);
+
     for (unsigned ptIter = 0; ptIter < fromXs[0].size(); ptIter += fromXs[0].size()/80)
     {
         Vector3 p1(interpValues[ptIter][0],interpValues[ptIter][1],interpValues[ptIter][2]), p2;

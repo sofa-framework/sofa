@@ -45,10 +45,12 @@ int DiffusionShapeFunctionClass = core::RegisterObject("Computes shape functions
 
         .add< DiffusionShapeFunction<ShapeFunction,ImageUC> >()
         .add< DiffusionShapeFunction<ShapeFunction,ImageD> >(true)
+        .add< DiffusionShapeFunction<ShapeFunction,ImageB> >()
         ;
 
 template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction,ImageUC>;
 template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction,ImageD>;
+template class SOFA_Flexible_API DiffusionShapeFunction<ShapeFunction,ImageB>;
 
 }
 }

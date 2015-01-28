@@ -35,6 +35,10 @@ set(HEADER_FILES
     numericalsolver/BenchmarkSolver.h
     numericalsolver/PreconditionedSolver.h
     numericalsolver/PreconditionedCgSolver.h
+    numericalsolver/AnalysisSolver.h
+    numericalsolver/LumpedResponse.h
+    numericalsolver/LUResponse.h
+    numericalsolver/BiCgStabSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
@@ -79,7 +83,6 @@ set(HEADER_FILES
     
     utils/basis.h
     utils/cast.h
-    utils/cg.h
     utils/cone.h
     utils/edit.h
     utils/find.h
@@ -88,14 +91,18 @@ set(HEADER_FILES
     utils/kkt.h
     utils/krylov.h
     utils/map.h
-    utils/minres.h
     utils/pair.h
-    utils/preconditionedcg.h
     utils/schur.h
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
-    utils/thread_local.h)
+    utils/thread_local.h
+
+    utils/cg.h
+    utils/preconditionedcg.h
+    utils/minres.h
+    utils/bicgstab.h
+)
 
 set(SOURCE_FILES
     initCompliant.cpp
@@ -132,6 +139,10 @@ set(SOURCE_FILES
     numericalsolver/BenchmarkSolver.cpp
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
+    numericalsolver/AnalysisSolver.cpp
+    numericalsolver/LumpedResponse.cpp
+    numericalsolver/LUResponse.cpp
+    numericalsolver/BiCgStabSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp

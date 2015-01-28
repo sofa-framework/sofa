@@ -46,6 +46,8 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(getRoot());
         linearSolver->debug.setValue(debug);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(getRoot());
+        (void) response;
 
         // The string
         ParticleString  string1( root, Vec3(0,0,0), Vec3(1,0,0), 2, 1.0*2 ); // two particles
@@ -123,6 +125,8 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
         linearSolver->debug.setValue(debug);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // The string
         ParticleString  string1( root, Vec3(0,0,0), Vec3(1,0,0), 2, 1.0*2 ); // two particles
@@ -202,6 +206,9 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
 //        linearSolver->debug.setValue(debug);
+        (void) linearSolver;
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // The string
         ParticleString  string1( root, Vec3(0,0,0), Vec3(1,0,0), 2, 1.0*2 ); // two particles
@@ -292,6 +299,9 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 
         linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
 //        linearSolver->debug.setValue( debug );
+        (void) linearSolver;
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // The string
         int nump = 3;

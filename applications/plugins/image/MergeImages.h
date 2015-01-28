@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/helper/vectorData.h>
 
 #include <sofa/component/component.h>
 
@@ -94,8 +95,8 @@ public:
     Data<helper::OptionsGroup> Interpolation;
     Data<unsigned int> nbImages;
 
-    helper::vector<Data<ImageTypes>*> inputImages;
-    helper::vector<Data<TransformType>*> inputTransforms;
+    helper::vectorData<ImageTypes> inputImages;
+    helper::vectorData<TransformType> inputTransforms;
 
     Data<ImageTypes> image;
     Data<TransformType> transform;
@@ -107,10 +108,13 @@ public:
         , overlap ( initData ( &overlap,"overlap","method for handling overlapping regions" ) )
         , Interpolation( initData ( &Interpolation,"interpolation","Interpolation method." ) )
         , nbImages ( initData ( &nbImages,(unsigned int)0,"nbImages","number of images to merge" ) )
+        , inputImages(this, "image", "input image")
+        , inputTransforms(this, "transform", "input transform")
         , image(initData(&image,ImageTypes(),"image","Image"))
         , transform(initData(&transform,TransformType(),"transform","Transform"))
     {
-        createInputImagesData();
+        inputImages.resize(nbImages.getValue());
+        inputTransforms.resize(nbImages.getValue());
         image.setReadOnly(true);
         transform.setReadOnly(true);
         this->addAlias(&image, "outputImage");
@@ -132,15 +136,13 @@ public:
     }
 
     virtual ~MergeImages()
-    {
-        deleteInputDataVector(inputImages);
-        deleteInputDataVector(inputTransforms);
-    }
+    { }
 
     virtual void init()
     {
         addInput(&nbImages);
-        createInputImagesData();
+        inputImages.resize(nbImages.getValue());
+        inputTransforms.resize(nbImages.getValue());
 
         addOutput(&image);
         addOutput(&transform);
@@ -150,7 +152,8 @@ public:
 
     virtual void reinit()
     {
-        createInputImagesData();
+        inputImages.resize(nbImages.getValue());
+        inputTransforms.resize(nbImages.getValue());
         update();
     }
 
@@ -158,28 +161,16 @@ public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
     {
-        const char* p = arg->getAttribute(nbImages.getName().c_str());
-        if (p)
-        {
-            std::string nbStr = p;
-            sout << "parse: setting nbImages="<<nbStr<<sendl;
-            nbImages.read(nbStr);
-            createInputImagesData();
-        }
+        inputImages.parseSizeData(arg, nbImages);
+        inputTransforms.parseSizeData(arg, nbImages);
         Inherit1::parse(arg);
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
     void parseFields ( const std::map<std::string,std::string*>& str )
     {
-        std::map<std::string,std::string*>::const_iterator it = str.find(nbImages.getName());
-        if (it != str.end() && it->second)
-        {
-            std::string nbStr = *it->second;
-            sout << "parseFields: setting nbImages="<<nbStr<<sendl;
-            nbImages.read(nbStr);
-            createInputImagesData();
-        }
+        inputImages.parseFieldsSizeData(str, nbImages);
+        inputTransforms.parseFieldsSizeData(str, nbImages);
         Inherit1::parseFields(str);
     }
 
@@ -215,17 +206,6 @@ protected:
         vf.clear();
     }
 
-    void createInputImagesData(int nb=-1)
-    {
-        unsigned int n = (nb < 0) ? nbImages.getValue() : (unsigned int)nb;
-
-        createInputDataVector(n, inputImages, "image", "image");
-        createInputDataVector(n, inputTransforms, "transform", "transform");
-        if (n != nbImages.getValue())
-            nbImages.setValue(n);
-    }
-
-
     struct pttype  // to handle overlaps, we need to record some values and positions for each image
     {
         vector<vector<double> > vals;
@@ -235,9 +215,10 @@ protected:
     virtual void update()
     {
         cleanDirty();
-        createInputImagesData();
 
         unsigned int nb = nbImages.getValue();
+        inputImages.resize(nb);
+        inputTransforms.resize(nb);
         if(!nb) return;
 
         Vec<2,Coord> BB = this->getBB(0);//bounding box of the output image

@@ -27,7 +27,6 @@
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/Quater.h>
-#include <sofa/helper/RandomGenerator.h>
 #include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
@@ -77,10 +76,6 @@ namespace sofa {
         defaulttype::Mat<3,3,Real> testedRotation;
         /// Tested Translation: random translation
         Vec3 testedTranslation;
-        /// Seed for random value
-        long seed;
-        /// Random generator
-        sofa::helper::RandomGenerator randomGenerator;
 
         /// Create the context for the scene
         void SetUp()
@@ -90,10 +85,6 @@ namespace sofa {
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
             root = simulation::getSimulation()->createNewGraph("root");
-
-            // Init seed with a random value between 0 and 100
-            randomGenerator.initSeed( (long)time(0) );
-            seed = randomGenerator.random<long>(0,100);
         }
 
         /// Load the scene to test
@@ -104,22 +95,21 @@ namespace sofa {
             root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         }
 
-        void SetRandomAffineTransform (int /*seed*/)
+        void SetRandomAffineTransform ()
         {
             // Random Matrix 3*3
             for( int j=0; j<testedRotation.nbCols; j++)
             {
                 for( int i=0; i<testedRotation.nbLines; i++)
                 {
-                    Real random = randomGenerator.random<Real>( (Real) -1, (Real) 1 );
-                    testedRotation(i,j)=random;
+                    testedRotation(i,j)=helper::drand(1);
                 }
             }
 
             // Random Translation
             for(size_t i=0;i<testedTranslation.size();++i)
             {
-                testedTranslation[i]=randomGenerator.random<SReal>(-2.0,2.0);
+                testedTranslation[i]=helper::drand(2);
             }
 
         }
@@ -138,8 +128,8 @@ namespace sofa {
             affineConstraint->getFinalPositions( finalPos,*dofs->write(core::VecCoordId::position()) );
             
             // Set random rotation and translation for affine constraint
-            randomGenerator.initSeed(seed);
-            this->SetRandomAffineTransform(seed);
+            this->SetRandomAffineTransform();
+
             // Set data values of affine movement constraint
             affineConstraint->m_rotation.setValue(testedRotation);
             affineConstraint->m_translation.setValue(testedTranslation);

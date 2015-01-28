@@ -32,10 +32,9 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/helper/RandomGenerator.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/RandomGenerator.h>
+#include <sofa/helper/random.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */
@@ -186,12 +185,11 @@ struct DefGradientTypes
     //@}
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue , int seed = (unsigned int)time(NULL))
+    static Deriv randomDeriv( Real maxValue)
     {
         Deriv result;
-        helper::RandomGenerator randomGenerator(seed);
         for( unsigned int i=0 ; i<VSize ; ++i )
-            result[i] = randomGenerator.symrand(maxValue);
+            result[i] = Real(helper::drand(maxValue));
         return result;
     }
 

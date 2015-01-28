@@ -1,34 +1,23 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
-		Window.cpp
-		Viewer.cpp
-		Camera.cpp
-        Scene.cpp
-		
 		Main.cpp
 )
 
 set(HEADER_FILES
-		Window.h
-		Viewer.h
-		Camera.h
-        Scene.h
+		""
 )
 
 set(QML_FILES
 		data/qml/Main.qml
-		data/qml/FileBrowser.qml
-		data/qml/Footer.qml
-		data/qml/Header.qml
-		data/qml/Scene.qml
-		data/qml/Viewer.qml
-		data/qml/SimulationControl.qml
-		data/qml/FPSDisplay.qml
+)
+
+set(CONFIG_FILES
+		data/config/default.ini
 )
 
 set(QRC_FILES
-		resource.qrc
+		data/resource.qrc
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -45,14 +34,24 @@ endif()
 find_package(Qt5 COMPONENTS Core Gui Widgets Quick Qml REQUIRED PATHS "${SOFA-EXTERNAL_QT5_PATH}")
 # make sure to use QT > 5.0
 
+include_directories(${Qt5Core_INCLUDE_DIRS})
+include_directories(${Qt5Gui_INCLUDE_DIRS})
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
+include_directories(${Qt5Qml_INCLUDE_DIRS})
+include_directories(${Qt5Quick_INCLUDE_DIRS})
+
+add_definitions(${Qt5Core_DEFINITIONS})
+add_definitions(${Qt5Gui_DEFINITIONS})
+add_definitions(${Qt5Widgets_DEFINITIONS})
+add_definitions(${Qt5Qml_DEFINITIONS})
+add_definitions(${Qt5Quick_DEFINITIONS})
+
 qt5_wrap_cpp(MOC_FILES ${HEADER_FILES}) # do not use "set(CMAKE_AUTOMOC ON)" since all the mocced files will be compiled by a single compilation unit leading to a "out of heap space" issue on MSVC
 qt5_add_resources(RESOURCE_FILES ${QRC_FILES})
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QRC_FILES} ${RESOURCE_FILES} ${QML_FILES})
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${QRC_FILES} ${RESOURCE_FILES} ${QML_FILES} ${CONFIG_FILES})
 
-AddLinkerDependencies(SofaSimulationGraph SofaComponentMain Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
+AddLinkerDependencies(SofaQtQuickGUI Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Qml Qt5::Quick)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
-if(NOT WIN32)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-endif()
+

@@ -31,6 +31,7 @@
 # include <xtl.h>
 #elif defined __APPLE__
 # include <mach-o/dyld.h>       // for _NSGetExecutablePath()
+# include <errno.h>
 #else
 # include <unistd.h>            // for readlink()
 # include <errno.h>

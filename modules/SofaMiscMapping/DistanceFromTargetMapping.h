@@ -112,7 +112,7 @@ public:
 
     virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
-    virtual const vector<defaulttype::BaseMatrix*>* getKs();
+    virtual const defaulttype::BaseMatrix* getK();
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
@@ -128,7 +128,6 @@ protected:
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
-    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
     vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
     vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 

@@ -1231,14 +1231,14 @@ public:
 
         }
 
-        m.resize( lines.size(), lines[0].size() );
+        m.resize( (Index)lines.size(), (Index)lines[0].size() );
 
-        for( unsigned i=0; i<lines.size();++i)
+        for( size_t i=0; i<lines.size();++i)
         {
             assert( lines[i].size() == lines[0].size() ); // all line should have the same number of columns
-            for( unsigned j=0; j<lines[i].size();++j)
+            for( size_t j=0; j<lines[i].size();++j)
             {
-                m.add( i, j, lines[i][j] );
+                m.add( (Index)i, (Index)j, lines[i][j] );
             }
         }
 

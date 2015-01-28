@@ -92,8 +92,6 @@ public:
         this->getToModel()->resize( 1 );
         baseMatrices.resize( 1 );
         baseMatrices[0] = &jacobian;
-        baseStiffnessMatrices.resize( 1 );
-        baseStiffnessMatrices[0] = &geometricStiffness;
 
         this->Inherit::init();
     }
@@ -188,11 +186,11 @@ public:
         hessian.addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[0][0]);
     }
 
-    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    virtual const defaulttype::BaseMatrix* getK()
     {
         const OutVecDeriv& childForce = this->toModel->readForces().ref();
         geometricStiffness.compressedMatrix = hessian.compressedMatrix * childForce[0][0];
-        return &baseStiffnessMatrices;
+        return &geometricStiffness;
     }
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
@@ -215,7 +213,6 @@ protected:
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen hessian, geometricStiffness; ///< Stiffness due to the non-linearity of the mapping
-    vector<defaulttype::BaseMatrix*> baseStiffnessMatrices; ///< Vector of geometric stiffness matrices
 };
 
 

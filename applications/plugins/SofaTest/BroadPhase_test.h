@@ -12,6 +12,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/random.h>
 
 //#include <sofa/simulation/tree/TreeSimulation.h>
 #ifdef SOFA_HAVE_DAG
@@ -23,7 +24,6 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/RandomGenerator.h>
 
 #include <SofaComponentMain/init.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
@@ -151,7 +151,7 @@ double alarmDist = proxIntersection->getAlarmDistance();
 template<class Detection>
 bool genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection);
 
-static sofa::defaulttype::Vector3 randVect(const sofa::defaulttype::Vector3 & min,const sofa::defaulttype::Vector3 & max, int seed=0);
+static sofa::defaulttype::Vector3 randVect(const sofa::defaulttype::Vector3 & min,const sofa::defaulttype::Vector3 & max);
 
 void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
     sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel*>(cm->getLast()->getPrevious());
@@ -163,7 +163,7 @@ void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
 
 sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<sofa::defaulttype::Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent);
 
-void randMoving(sofa::core::CollisionModel* cm,const sofa::defaulttype::Vector3 & min_vect,const sofa::defaulttype::Vector3 & max_vect, int seed){
+void randMoving(sofa::core::CollisionModel* cm,const sofa::defaulttype::Vector3 & min_vect,const sofa::defaulttype::Vector3 & max_vect){
     sofa::component::collision::OBBModel * obbm = dynamic_cast<sofa::component::collision::OBBModel*>(cm->getLast());
     MechanicalObjectRigid3* dof = dynamic_cast<MechanicalObjectRigid3*>(obbm->getMechanicalState());
 
@@ -173,13 +173,11 @@ void randMoving(sofa::core::CollisionModel* cm,const sofa::defaulttype::Vector3 
     //Editting the velocity of the OBB
     sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
-    sofa::helper::RandomGenerator randomGenerator;
-    randomGenerator.initSeed(seed);
 
     for(int i = 0 ; i < dof->getSize() ; ++i){
-        if(randomGenerator.random<double>() < RAND_MAX/2.0){//make it move !
+        if( (sofa::helper::irand()) < RAND_MAX/2.0){//make it move !
             velocities[i] = sofa::defaulttype::Vector3(1,1,1);//velocity is used only to know if a primitive moves, its direction is not important
-            positions[i] = sofa::defaulttype::Rigid3Types::Coord(randVect(min_vect,max_vect, seed),sofa::defaulttype::Quaternion(0,0,0,1));
+            positions[i] = sofa::defaulttype::Rigid3Types::Coord(randVect(min_vect,max_vect),sofa::defaulttype::Quaternion(0,0,0,1));
         }
     }
 
@@ -455,15 +453,12 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<sofa::
     return obbCollisionModel;
 }
 
-sofa::defaulttype::Vector3 randVect(const sofa::defaulttype::Vector3 & min,const sofa::defaulttype::Vector3 & max, int seed){
+sofa::defaulttype::Vector3 randVect(const sofa::defaulttype::Vector3 & min,const sofa::defaulttype::Vector3 & max){
     sofa::defaulttype::Vector3 ret;
     sofa::defaulttype::Vector3 extents = max - min;
 
-    sofa::helper::RandomGenerator randomGenerator;
-    randomGenerator.initSeed(seed);
-
     for(int i = 0 ; i < 3 ; ++i){
-        ret[i] = ((randomGenerator.random<double>())/RAND_MAX) * extents[i] + min[i];
+        ret[i] = (sofa::helper::drand()) * extents[i] + min[i];
     }
 
     return ret;
@@ -477,10 +472,10 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed, int nb1, int nb2, const sofa
     std::vector<sofa::defaulttype::Vector3> secondCollision;
 
     for(int i = 0 ; i < nb1 ; ++i)
-        firstCollision.push_back(randVect(min,max,seed));
+        firstCollision.push_back(randVect(min,max));
 
     for(int i = 0 ; i < nb2 ; ++i)
-        secondCollision.push_back(randVect(min,max,seed));
+        secondCollision.push_back(randVect(min,max));
 
     sofa::simulation::Node::SPtr scn = sofa::core::objectmodel::New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbm1,obbm2;
@@ -497,8 +492,8 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed, int nb1, int nb2, const sofa
         if(!GENTest(obbm1.get(),obbm2.get(),broadphase))
             return false;
 
-        randMoving(obbm1.get(),min,max,seed);
-        randMoving(obbm2.get(),min,max,seed);
+        randMoving(obbm1.get(),min,max);
+        randMoving(obbm2.get(),min,max);
     }
 
     return true;

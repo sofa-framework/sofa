@@ -34,9 +34,10 @@ BaseSofa_test::BaseSofa_test(){
 
     seed = testing::seedValue;
     modeling::initSofa();
-    //if you want to generate the same sequence of pseudo-random numbers than a specific test suites use the same seed
-    //pass the seed in command argument line (the seed value is indicated at the 2nd line of test results)
-    srand(BaseSofa_test::seed);
+    //if you want to generate the same sequence of pseudo-random numbers than a specific test suites
+    //use the same seed (the seed value is indicated at the 2nd line of test results)
+    //and pass the seed in command argument line ex: SofaTest_test.exe seed 32
+    helper::srand(seed);
 }
 
 BaseSofa_test::~BaseSofa_test(){ clearSceneGraph(); }

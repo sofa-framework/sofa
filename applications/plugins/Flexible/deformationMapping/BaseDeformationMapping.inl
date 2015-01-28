@@ -228,8 +228,8 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     this->toModel->resize(size);
     pos0.resize(size);  for(size_t i=0; i<size; i++ )        pos0[i]=position0[i];
 
-    helper::WriteAccessor<Data<vector<VRef> > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
-    helper::WriteAccessor<Data<vector<VReal> > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
+    helper::WriteAccessor<Data<VecVRef > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
+    helper::WriteAccessor<Data<VecVReal > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
     helper::WriteAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
     helper::WriteAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
     helper::WriteAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
@@ -280,9 +280,6 @@ void BaseDeformationMappingT<JacobianBlockType>::init()
 
     baseMatrices.resize( 1 ); // just a wrapping for getJs()
     baseMatrices[0] = &eigenJacobian;
-
-    stiffnessBaseMatrices.resize(1);
-    stiffnessBaseMatrices[0] = &K;
 
     resizeOut();
 
@@ -707,7 +704,7 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
             this->f_KdTree.build(f_pos);
             this->KdTreeDirty=false;
         }
-        index=this->f_KdTree.getClosest(p);
+        index=this->f_KdTree.getClosest(p,f_pos);
         x=f_pos[index];
     }
     else
@@ -729,15 +726,15 @@ template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowMechanicalMappings() && !showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) return;
+    if (!vparams->displayFlags().getShowMechanicalMappings() || (!showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) ) return;
 
 
     glPushAttrib ( GL_LIGHTING_BIT );
 
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    helper::ReadAccessor<Data<vector<VRef> > > ref (this->f_index);
-    helper::ReadAccessor<Data<vector<VReal> > > w (this->f_w);
+    helper::ReadAccessor<Data<VecVRef > > ref (this->f_index);
+    helper::ReadAccessor<Data<VecVReal > > w (this->f_w);
 
     if(this->missingInformationDirty)
     {

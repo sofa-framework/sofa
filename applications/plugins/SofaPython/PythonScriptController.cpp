@@ -30,6 +30,7 @@
 #include "Binding_BaseContext.h"
 #include "Binding_Node.h"
 #include "Binding_PythonScriptController.h"
+#include "ScriptEnvironment.h"
 
 namespace sofa
 {
@@ -40,15 +41,12 @@ namespace component
 namespace controller
 {
 
-
 int PythonScriptControllerClass = core::RegisterObject("A Sofa controller scripted in python")
         .add< PythonScriptController >()
         //.addAlias("PythonController")
         ;
 
 SOFA_DECL_CLASS(PythonController)
-
-
 
 PythonScriptController::PythonScriptController()
     : ScriptController()
@@ -62,9 +60,6 @@ PythonScriptController::PythonScriptController()
 {
     // various initialization stuff here...
 }
-
-
-
 
 void PythonScriptController::loadScript()
 {
@@ -174,7 +169,6 @@ using namespace sofa::core::objectmodel;
     else \
         Py_DECREF(res); \
 }
-
 
 void PythonScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
@@ -291,7 +285,6 @@ void PythonScriptController::script_onScriptEvent(core::objectmodel::ScriptEvent
 
     //TODO
 }
-
 
 void PythonScriptController::script_draw(const core::visual::VisualParams*)
 {

@@ -92,11 +92,10 @@ public:
     {
         if(!(this->mstate)) return;
 
-        if(this->f_printLog.getValue()) std::cout<<"Material::resize()"<<std::endl;
-
         // init material
-        typename mstateType::ReadVecCoord X = this->mstate->readPositions();
-        material.resize(X.size());
+        material.resize( this->mstate->getSize() );
+
+        if(this->f_printLog.getValue()) std::cout<<SOFA_CLASS_METHOD<<" "<<material.size()<<std::endl;
 
         // retrieve volume integrals
         engine::BaseGaussPointSampler* sampler=NULL;
@@ -139,6 +138,12 @@ public:
         Inherit::reinit();
     }
 
+    //Pierre-Luc : Implementation in HookeForceField
+    virtual void addForce(DataVecDeriv& /*_f*/ , const DataVecCoord& /*_x*/ , const DataVecDeriv& /*_v*/, const vector<SReal> /*_vol*/)
+    {
+        std::cout << "Do nothing" << std::endl;
+    }
+
     virtual void addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
     {
         if(this->mstate->getSize()!=(int)material.size()) resize();
@@ -167,7 +172,7 @@ public:
         }
     }
 
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   _df , const DataVecDeriv&   _dx )
+    virtual void addDForce( const core::MechanicalParams* mparams, DataVecDeriv&  _df, const DataVecDeriv& _dx )
     {
         VecDeriv&  df = *_df.beginEdit();
         const VecDeriv&  dx = _dx.getValue();
@@ -273,7 +278,7 @@ protected:
 
     void updateC()
     {
-        unsigned int size = this->mstate->getMatrixSize();
+        unsigned int size = this->mstate->getSize();
 
         C.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
@@ -289,7 +294,7 @@ protected:
 
     void updateK()
     {
-        unsigned int size = this->mstate->getMatrixSize();
+        unsigned int size = this->mstate->getSize();
 
         K.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)
@@ -306,7 +311,7 @@ protected:
 
     void updateB()
     {
-        unsigned int size = this->mstate->getMatrixSize();
+        unsigned int size = this->mstate->getSize();
 
         B.resizeBlocks(size,size);
         for(unsigned int i=0; i<material.size(); i++)

@@ -45,6 +45,8 @@ class SOFA_SOFAPYTHON_API PythonScriptController : public ScriptController
 public:
     SOFA_CLASS(PythonScriptController,ScriptController);
 
+	PyObject* scriptControllerInstance() const {return m_ScriptControllerInstance;}
+
 protected:
     PythonScriptController();
 

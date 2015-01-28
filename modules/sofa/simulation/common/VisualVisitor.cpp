@@ -43,7 +43,9 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
 #endif
-    hasShader = (node->getShader()!=NULL);
+	// NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
+	// which will most probably be the case when there are no visual models, so we skip the search unless we have visual models. 
+	hasShader = !node->visualModel.empty() && (node->getShader()!=NULL); 
 
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
     this->VisualVisitor::processNodeTopDown(node);

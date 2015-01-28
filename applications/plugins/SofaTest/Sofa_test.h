@@ -36,6 +36,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/simulation/common/Node.h>
+#include <sofa/helper/random.h>
 #include <time.h>
 #include <iostream>
 using std::cout;

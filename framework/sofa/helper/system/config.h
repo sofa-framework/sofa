@@ -170,14 +170,35 @@ typedef double SReal;
 
 #if !defined(MAKEFOURCC)
 #	define MAKEFOURCC(ch0, ch1, ch2, ch3) \
-		(uint(uint8_t(ch0)) | (uint(uint8_t(ch1)) << 8) | \
-		(uint(uint8_t(ch2)) << 16) | (uint(uint8_t(ch3)) << 24 ))
+        (uint32_t(uint8_t(ch0)) | (uint32_t(uint8_t(ch1)) << 8) | \
+        (uint32_t(uint8_t(ch2)) << 16) | (uint32_t(uint8_t(ch3)) << 24 ))
 #endif
 
 // Prevent compiler warnings about 'unused variables'.
 // This should be used when a parameter name is needed (e.g. for
 // documentation purposes) even if it is not used in the code.
 #define SOFA_UNUSED(x) (void)(x)
+
+// Use of "extern template" is activated by the following macro
+// It must be used for DLLs on windows, and is now also activated
+// on other platforms (unless SOFA_NO_EXTERN_TEMPLATE is set), as
+// it can fix RTTI issues (typeid / dynamic_cast) on Mac and can
+// significantly speed-up compilation and link
+#ifndef SOFA_NO_EXTERN_TEMPLATE
+#define SOFA_EXTERN_TEMPLATE
+#endif
+
+#ifndef WIN32
+#	define SOFA_EXPORT_DYNAMIC_LIBRARY
+#   define SOFA_IMPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#   define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#   ifdef _MSC_VER
+#       pragma warning(disable : 4231)
+#       pragma warning(disable : 4910)
+#   endif
+#endif
 
 
 // utility for debug tracing

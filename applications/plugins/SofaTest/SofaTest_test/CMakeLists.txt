@@ -12,11 +12,12 @@ set(SOURCE_FILES
     BezierTetrahedronTopology_test.cpp
     BroadPhase_test.cpp
     DAG_test.cpp
-    DataLink_test.cpp
+    Data_test.cpp
     Engine_test.cpp
     RigidMapping_test.cpp
     EulerImplicit_test.cpp
     HexahedronFEMForceField_test.cpp
+    KdTree_test.cpp
     LinearElasticity_test.cpp
     LoadScene_test.cpp
     Matrix_test.cpp

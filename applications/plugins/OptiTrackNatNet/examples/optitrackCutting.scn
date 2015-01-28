@@ -23,7 +23,7 @@
 
     </Node>
     <Node name="GrabSurfaceL">
-      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left_cut.obj" triangulate="1" />
+      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_left_cut.obj" triangulate="1" createSubelements="true"/>
       <Mesh src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleModel group="1" simulated="0" moving="1" />
@@ -32,7 +32,7 @@
       <RigidMapping index="1" />
     </Node>
     <Node name="GrabSurfaceR">
-      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right_cut.obj" triangulate="1" />
+      <MeshObjLoader name="loaderPince" filename="./data/pince_cm_right_cut.obj" triangulate="1" createSubelements="true"/>
       <Mesh src="@loaderPince" />
       <MechanicalObject name="vertices" src="@loaderPince" />
       <TriangleModel group="1" simulated="0" moving="1" />
@@ -55,7 +55,7 @@
     <Node name="SquareGravity">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="100" />
+        <MeshGmshLoader name="meshLoader" filename="mesh/square3.msh" scale="100" createSubelements="true"/>
         <include href="Objects/TriangleSetTopology.xml" src="@meshLoader" />
         <MechanicalObject rx2="90" dx2="-50" dy2="0" dz2="0" />
         <DiagonalMass massDensity="0.15" />

@@ -69,7 +69,7 @@ void MultilevelHexahedronSetTopologyContainer::init()
 
     _fineComponentInRegularGrid.resize(_fineResolution[0] * _fineResolution[1] * _fineResolution[2], NULL);
 
-    const unsigned int numVoxels = d_hexahedron.getValue().size();
+    const size_t numVoxels = d_hexahedron.getValue().size();
 
     // initialize the components
     // at the beginning the components of both levels are the same

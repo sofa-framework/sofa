@@ -67,8 +67,6 @@ public:
 
         baseMatrices.resize( 1 );
         baseMatrices[0] = &jacobian;
-        baseStiffnessMatrices.resize( 1 );
-        baseStiffnessMatrices[0] = &geometricStiffness;
 
         this->Inherit::init();
 
@@ -85,24 +83,26 @@ public:
         helper::WriteAccessor< Data<OutVecCoord> >  v = dOut;
         helper::ReadAccessor< Data<InVecCoord> >  x = dIn;
 
-        jacobian.resizeBlocks(v.size(),x.size());
-        hessian.resizeBlocks(x.size(),x.size());
+        jacobian.resizeBlocks( v.size(), x.size() );
+        hessians.resize( m_topology->getNbTetrahedra() );
+        geometricStiffness.resizeBlocks( x.size(), x.size() );
 
-
+        typename Hessians::iterator hessianIt = hessians.begin();
         if( d_volumePerNodes.getValue() )
         {
-            for( int i=0 ; i<v.size() ; i++ ) v[i][0] = 0;
+            for( size_t i=0 ; i<v.size() ; i++ ) v[i][0] = 0;
             SparseMatrixEigen tetraJ( m_topology->getNbTetrahedra(), x.size()*Nin );
             SparseMatrixEigen TetraToNode( v.size(), m_topology->getNbTetrahedra() );
             for (int i = 0, nbTetra = m_topology->getNbTetrahedra(); i < nbTetra; i++)
             {
                 Tetra t = m_topology->getTetra(i);
-                Real tetravol = .25 * processTetra( i, t[0],t[1],t[2],t[3], x[t[0]],x[t[1]],x[t[2]],x[t[3]], tetraJ, hessian );
+                Real tetravol = .25 * processTetra( i, t[0],t[1],t[2],t[3], x[t[0]],x[t[1]],x[t[2]],x[t[3]], tetraJ, *hessianIt );
                 for( int j=0 ; j<4 ; ++j )
                 {
                     TetraToNode.add( t[j], i, 0.25 );
                     v[t[j]][0] += tetravol;
                 }
+                ++hessianIt;
             }
             tetraJ.compress();
             TetraToNode.compress();
@@ -113,8 +113,9 @@ public:
             for (int i = 0, nbTetra = m_topology->getNbTetrahedra(); i < nbTetra; i++)
             {
                 Tetra t = m_topology->getTetra(i);
-                v[i][0] = processTetra( i, t[0],t[1],t[2],t[3], x[t[0]],x[t[1]],x[t[2]],x[t[3]], jacobian, hessian );
+                v[i][0] = processTetra( i, t[0],t[1],t[2],t[3], x[t[0]],x[t[1]],x[t[2]],x[t[3]], jacobian, *hessianIt );
             }
+            ++hessianIt;
         }
 
         if( this->f_applyRestPosition.getValue() && !d_offsets.getValue().empty() )
@@ -126,7 +127,6 @@ public:
         }
 
         jacobian.compress();
-        hessian.compress();
     }
 
     virtual void applyJ(const core::MechanicalParams */*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)    { if( jacobian.rowSize() > 0 ) jacobian.mult(dOut,dIn);    }
@@ -137,16 +137,50 @@ public:
     {
         Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
-        const Data<OutVecDeriv>& childForceData = *mparams->readF(this->toModel);
-        helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
-        hessian.addMult(parentForceData,parentDisplacementData,mparams->kFactor()*childForce[0][0]);
+
+        // OPTIMIZABLE!!!
+        getK();
+        geometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
     }
 
-    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    virtual const defaulttype::BaseMatrix* getK()
     {
         const OutVecDeriv& childForce = this->toModel->readForces().ref();
-        geometricStiffness.compressedMatrix = hessian.compressedMatrix * childForce[0][0];
-        return &baseStiffnessMatrices;
+        const OutVecDeriv* cf; // force per tetra
+        if( d_volumePerNodes.getValue() )
+        {
+            // if per node -> compute force per tetra
+            OutVecDeriv* localcf = new OutVecDeriv( m_topology->getNbTetrahedra() );
+            cf = localcf;
+
+            for (int i = 0, nbTetra = m_topology->getNbTetrahedra(); i < nbTetra; i++)
+            {
+                Tetra t = m_topology->getTetra(i);
+                (*localcf)[i][0] += 0.25*(childForce[t[0]][0]+childForce[t[1]][0]+childForce[t[2]][0]+childForce[t[3]][0]);
+            }
+        }
+        else cf = &childForce;
+
+
+        typename Hessians::const_iterator hessianIt = hessians.begin();
+        for( int i = 0, nbTetra = m_topology->getNbTetrahedra() ; i < nbTetra ; i++ )
+        {
+            Tetra t = m_topology->getTetra(i);
+
+            for( int p0 = 0 ; p0 < 4 ; ++p0 )
+            for( int p1 = 0 ; p1 < 4 ; ++p1 )
+            for( int p0i = 0 ; p0i < Nin ; ++p0i )
+            for( int p1i = 0 ; p1i < Nin ; ++p1i )
+            {
+                geometricStiffness.add( t[p0]*Nin+p0i, t[p1]*Nin+p1i, (*hessianIt)[p0*Nin+p0i][p1*Nin+p1i]*(*cf)[i][0] );
+            }
+            ++hessianIt;
+            geometricStiffness.compress();
+        }
+
+        if( d_volumePerNodes.getValue() ) delete cf;
+
+        return &geometricStiffness;
     }
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
@@ -167,12 +201,19 @@ protected:
 
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
-    SparseKMatrixEigen hessian, geometricStiffness; ///< Stiffness due to the non-linearity of the mapping
-    vector<defaulttype::BaseMatrix*> baseStiffnessMatrices; ///< Vector of geometric stiffness matrices
+    SparseKMatrixEigen geometricStiffness; ///< Stiffness due to the non-linearity of the mapping
+    typedef defaulttype::Mat<12,12,Real> Hessian;
+    typedef std::list<Hessian> Hessians;
+    Hessians hessians; ///< local dJ per tetrahedron
 
 
-    Real processTetra( int i, const unsigned a, const unsigned b, const unsigned c, const unsigned d, const InCoord A, const InCoord B, const InCoord C, const InCoord D, SparseMatrixEigen& J, SparseKMatrixEigen& H )
+    Real processTetra( int i,
+                       const unsigned a, const unsigned b, const unsigned c, const unsigned d,
+                       const InCoord A, const InCoord B, const InCoord C, const InCoord D,
+                       SparseMatrixEigen& J, Hessian& H )
     {
+        // TODO it can be optimized a lot!
+
         const Real& p00 = A[0];
         const Real& p01 = A[1];
         const Real& p02 = A[2];
@@ -363,150 +404,151 @@ protected:
         Real t482 = t138 * t93 * inv6;
 
         // K
-        H.add(a*Nin+0, a*Nin+0, -t52 * t50 * inv6 + t52 * t54 * inv6 );
-        H.add(a*Nin+0, a*Nin+1, t66 * inv6 );
-        H.add(a*Nin+0, a*Nin+2, t76 * inv6 );
-        H.add(a*Nin+0, b*Nin+0, t84 * inv6 );
-        H.add(a*Nin+0, b*Nin+1, t96 * inv6 );
-        H.add(a*Nin+0, b*Nin+2, t107 * inv6 );
-        H.add(a*Nin+0, c*Nin+0, t113 * inv6 );
-        H.add(a*Nin+0, c*Nin+1, t122 * inv6 );
-        H.add(a*Nin+0, c*Nin+2, t131 * inv6 );
-        H.add(a*Nin+0, d*Nin+0, t137 * inv6 );
-        H.add(a*Nin+0, d*Nin+1, t145 * inv6 );
-        H.add(a*Nin+0, d*Nin+2, t153 * inv6 );
-        H.add(a*Nin+1, a*Nin+0, t66 * inv6 );
-        H.add(a*Nin+1, a*Nin+1, -t154 * t50 * inv6 + t154 * t54 * inv6 );
-        H.add(a*Nin+1, a*Nin+2, t161 * inv6 );
-        H.add(a*Nin+1, b*Nin+0, t166 * inv6 );
-        H.add(a*Nin+1, b*Nin+1, t170 * inv6 );
-        H.add(a*Nin+1, b*Nin+2, t176 * inv6 );
-        H.add(a*Nin+1, c*Nin+0, t181 * inv6 );
-        H.add(a*Nin+1, c*Nin+1, t185 * inv6 );
-        H.add(a*Nin+1, c*Nin+2, t191 * inv6 );
-        H.add(a*Nin+1, d*Nin+0, t196 * inv6 );
-        H.add(a*Nin+1, d*Nin+1, t200 * inv6 );
-        H.add(a*Nin+1, d*Nin+2, t206 * inv6 );
-        H.add(a*Nin+2, a*Nin+0, t76 * inv6 );
-        H.add(a*Nin+2, a*Nin+1, t161 * inv6 );
-        H.add(a*Nin+2, a*Nin+2, -t207 * t50 * inv6 + t207 * t54 * inv6 );
-        H.add(a*Nin+2, b*Nin+0, t215 * inv6 );
-        H.add(a*Nin+2, b*Nin+1, t220 * inv6 );
-        H.add(a*Nin+2, b*Nin+2, t224 * inv6 );
-        H.add(a*Nin+2, c*Nin+0, t229 * inv6 );
-        H.add(a*Nin+2, c*Nin+1, t234 * inv6 );
-        H.add(a*Nin+2, c*Nin+2, t238 * inv6 );
-        H.add(a*Nin+2, d*Nin+0, t243 * inv6 );
-        H.add(a*Nin+2, d*Nin+1, t248 * inv6 );
-        H.add(a*Nin+2, d*Nin+2, t252 * inv6 );
-        H.add(b*Nin+0, a*Nin+0, t84 * inv6 );
-        H.add(b*Nin+0, a*Nin+1, t166 * inv6 );
-        H.add(b*Nin+0, a*Nin+2, t215 * inv6 );
-        H.add(b*Nin+0, b*Nin+0, -t253 * t50 * inv6 + t253 * t54 * inv6 );
-        H.add(b*Nin+0, b*Nin+1, t260 * inv6 );
-        H.add(b*Nin+0, b*Nin+2, t264 * inv6 );
-        H.add(b*Nin+0, c*Nin+0, t268 * inv6 );
-        H.add(b*Nin+0, c*Nin+1, t274 * inv6 );
-        H.add(b*Nin+0, c*Nin+2, t280 * inv6 );
-        H.add(b*Nin+0, d*Nin+0, t284 * inv6 );
-        H.add(b*Nin+0, d*Nin+1, t290 * inv6 );
-        H.add(b*Nin+0, d*Nin+2, t296 * inv6 );
-        H.add(b*Nin+1, a*Nin+0, t96 * inv6 );
-        H.add(b*Nin+1, a*Nin+1, t170 * inv6 );
-        H.add(b*Nin+1, a*Nin+2, t220 * inv6 );
-        H.add(b*Nin+1, b*Nin+0, t260 * inv6 );
-        H.add(b*Nin+1, b*Nin+1, -t297 * t50 * inv6 + t297 * t54 * inv6 );
-        H.add(b*Nin+1, b*Nin+2, t304 * inv6 );
-        H.add(b*Nin+1, c*Nin+0, t309 * inv6 );
-        H.add(b*Nin+1, c*Nin+1, t313 * inv6 );
-        H.add(b*Nin+1, c*Nin+2, t319 * inv6 );
-        H.add(b*Nin+1, d*Nin+0, t324 * inv6 );
-        H.add(b*Nin+1, d*Nin+1, t328 * inv6 );
-        H.add(b*Nin+1, d*Nin+2, t334 * inv6 );
-        H.add(b*Nin+2, a*Nin+0, t107 * inv6 );
-        H.add(b*Nin+2, a*Nin+1, t176 * inv6 );
-        H.add(b*Nin+2, a*Nin+2, t224 * inv6 );
-        H.add(b*Nin+2, b*Nin+0, t264 * inv6 );
-        H.add(b*Nin+2, b*Nin+1, t304 * inv6 );
-        H.add(b*Nin+2, b*Nin+2, -t335 * t50 * inv6 + t335 * t54 * inv6 );
-        H.add(b*Nin+2, c*Nin+0, t343 * inv6 );
-        H.add(b*Nin+2, c*Nin+1, t348 * inv6 );
-        H.add(b*Nin+2, c*Nin+2, t352 * inv6 );
-        H.add(b*Nin+2, d*Nin+0, t357 * inv6 );
-        H.add(b*Nin+2, d*Nin+1, t362 * inv6 );
-        H.add(b*Nin+2, d*Nin+2, t366 * inv6 );
-        H.add(c*Nin+0, a*Nin+0, t113 * inv6 );
-        H.add(c*Nin+0, a*Nin+1, t181 * inv6 );
-        H.add(c*Nin+0, a*Nin+2, t229 * inv6 );
-        H.add(c*Nin+0, b*Nin+0, t268 * inv6 );
-        H.add(c*Nin+0, b*Nin+1, t309 * inv6 );
-        H.add(c*Nin+0, b*Nin+2, t343 * inv6 );
-        H.add(c*Nin+0, c*Nin+0, -t367 * t50 * inv6 + t367 * t54 * inv6 );
-        H.add(c*Nin+0, c*Nin+1, t374 * inv6 );
-        H.add(c*Nin+0, c*Nin+2, t378 * inv6 );
-        H.add(c*Nin+0, d*Nin+0, t382 * inv6 );
-        H.add(c*Nin+0, d*Nin+1, t388 * inv6 );
-        H.add(c*Nin+0, d*Nin+2, t394 * inv6 );
-        H.add(c*Nin+1, a*Nin+0, t122 * inv6 );
-        H.add(c*Nin+1, a*Nin+1, t185 * inv6 );
-        H.add(c*Nin+1, a*Nin+2, t234 * inv6 );
-        H.add(c*Nin+1, b*Nin+0, t274 * inv6 );
-        H.add(c*Nin+1, b*Nin+1, t313 * inv6 );
-        H.add(c*Nin+1, b*Nin+2, t348 * inv6 );
-        H.add(c*Nin+1, c*Nin+0, t374 * inv6 );
-        H.add(c*Nin+1, c*Nin+1, -t395 * t50 * inv6 + t395 * t54 * inv6 );
-        H.add(c*Nin+1, c*Nin+2, t402 * inv6 );
-        H.add(c*Nin+1, d*Nin+0, t407 * inv6 );
-        H.add(c*Nin+1, d*Nin+1, t411 * inv6 );
-        H.add(c*Nin+1, d*Nin+2, t417 * inv6 );
-        H.add(c*Nin+2, a*Nin+0, t131 * inv6 );
-        H.add(c*Nin+2, a*Nin+1, t191 * inv6 );
-        H.add(c*Nin+2, a*Nin+2, t238 * inv6 );
-        H.add(c*Nin+2, b*Nin+0, t280 * inv6 );
-        H.add(c*Nin+2, b*Nin+1, t319 * inv6 );
-        H.add(c*Nin+2, b*Nin+2, t352 * inv6 );
-        H.add(c*Nin+2, c*Nin+0, t378 * inv6 );
-        H.add(c*Nin+2, c*Nin+1, t402 * inv6 );
-        H.add(c*Nin+2, c*Nin+2, -t418 * t50 * inv6 + t418 * t54 * inv6 );
-        H.add(c*Nin+2, d*Nin+0, t426 * inv6 );
-        H.add(c*Nin+2, d*Nin+1, t431 * inv6 );
-        H.add(c*Nin+2, d*Nin+2, t435 * inv6 );
-        H.add(d*Nin+0, a*Nin+0, t137 * inv6 );
-        H.add(d*Nin+0, a*Nin+1, t196 * inv6 );
-        H.add(d*Nin+0, a*Nin+2, t243 * inv6 );
-        H.add(d*Nin+0, b*Nin+0, t284 * inv6 );
-        H.add(d*Nin+0, b*Nin+1, t324 * inv6 );
-        H.add(d*Nin+0, b*Nin+2, t357 * inv6 );
-        H.add(d*Nin+0, c*Nin+0, t382 * inv6 );
-        H.add(d*Nin+0, c*Nin+1, t407 * inv6 );
-        H.add(d*Nin+0, c*Nin+2, t426 * inv6 );
-        H.add(d*Nin+0, d*Nin+0, -t436 * t50 * inv6 + t436 * t54 * inv6 );
-        H.add(d*Nin+0, d*Nin+1, t443 * inv6 );
-        H.add(d*Nin+0, d*Nin+2, t447 * inv6 );
-        H.add(d*Nin+1, a*Nin+0, t145 * inv6 );
-        H.add(d*Nin+1, a*Nin+1, t200 * inv6 );
-        H.add(d*Nin+1, a*Nin+2, t248 * inv6 );
-        H.add(d*Nin+1, b*Nin+0, t290 * inv6 );
-        H.add(d*Nin+1, b*Nin+1, t328 * inv6 );
-        H.add(d*Nin+1, b*Nin+2, t362 * inv6 );
-        H.add(d*Nin+1, c*Nin+0, t388 * inv6 );
-        H.add(d*Nin+1, c*Nin+1, t411 * inv6 );
-        H.add(d*Nin+1, c*Nin+2, t431 * inv6 );
-        H.add(d*Nin+1, d*Nin+0, t443 * inv6 );
-        H.add(d*Nin+1, d*Nin+1,	 -t448 * t50 * inv6 + t448 * t54 * inv6 );
-        H.add(d*Nin+1, d*Nin+2,	 t455 * inv6 );
-        H.add(d*Nin+2, a*Nin+0, t153 * inv6 );
-        H.add(d*Nin+2, a*Nin+1, t206 * inv6 );
-        H.add(d*Nin+2, a*Nin+2, t252 * inv6 );
-        H.add(d*Nin+2, b*Nin+0, t296 * inv6 );
-        H.add(d*Nin+2, b*Nin+1, t334 * inv6 );
-        H.add(d*Nin+2, b*Nin+2, t366 * inv6 );
-        H.add(d*Nin+2, c*Nin+0, t394 * inv6 );
-        H.add(d*Nin+2, c*Nin+1, t417 * inv6 );
-        H.add(d*Nin+2, c*Nin+2, t435 * inv6 );
-        H.add(d*Nin+2, d*Nin+0, t447 * inv6 );
-        H.add(d*Nin+2, d*Nin+1,	 t455 * inv6 );
-        H.add(d*Nin+2, d*Nin+2,	 -t456 * t50 * inv6 + t456 * t54 * inv6 );
+        H[0*Nin+0][0*Nin+0] = -t52 * t50 * inv6 + t52 * t54 * inv6 ;
+        H[0*Nin+0][0*Nin+1] = t66 * inv6 ;
+        H[0*Nin+0][0*Nin+2] = t76 * inv6 ;
+        H[0*Nin+0][1*Nin+0] = t84 * inv6 ;
+        H[0*Nin+0][1*Nin+1] = t96 * inv6 ;
+        H[0*Nin+0][1*Nin+2] = t107 * inv6 ;
+        H[0*Nin+0][2*Nin+0] = t113 * inv6 ;
+        H[0*Nin+0][2*Nin+1] = t122 * inv6 ;
+        H[0*Nin+0][2*Nin+2] = t131 * inv6 ;
+        H[0*Nin+0][3*Nin+0] = t137 * inv6 ;
+        H[0*Nin+0][3*Nin+1] = t145 * inv6 ;
+        H[0*Nin+0][3*Nin+2] = t153 * inv6 ;
+        H[0*Nin+1][0*Nin+0] = t66 * inv6 ;
+        H[0*Nin+1][0*Nin+1] = -t154 * t50 * inv6 + t154 * t54 * inv6 ;
+        H[0*Nin+1][0*Nin+2] = t161 * inv6 ;
+        H[0*Nin+1][1*Nin+0] = t166 * inv6 ;
+        H[0*Nin+1][1*Nin+1] = t170 * inv6 ;
+        H[0*Nin+1][1*Nin+2] = t176 * inv6 ;
+        H[0*Nin+1][2*Nin+0] = t181 * inv6 ;
+        H[0*Nin+1][2*Nin+1] = t185 * inv6 ;
+        H[0*Nin+1][2*Nin+2] = t191 * inv6 ;
+        H[0*Nin+1][3*Nin+0] = t196 * inv6 ;
+        H[0*Nin+1][3*Nin+1] = t200 * inv6 ;
+        H[0*Nin+1][3*Nin+2] = t206 * inv6 ;
+        H[0*Nin+2][0*Nin+0] = t76 * inv6 ;
+        H[0*Nin+2][0*Nin+1] = t161 * inv6 ;
+        H[0*Nin+2][0*Nin+2] = -t207 * t50 * inv6 + t207 * t54 * inv6 ;
+        H[0*Nin+2][1*Nin+0] = t215 * inv6 ;
+        H[0*Nin+2][1*Nin+1] = t220 * inv6 ;
+        H[0*Nin+2][1*Nin+2] = t224 * inv6 ;
+        H[0*Nin+2][2*Nin+0] = t229 * inv6 ;
+        H[0*Nin+2][2*Nin+1] = t234 * inv6 ;
+        H[0*Nin+2][2*Nin+2] = t238 * inv6 ;
+        H[0*Nin+2][3*Nin+0] = t243 * inv6 ;
+        H[0*Nin+2][3*Nin+1] = t248 * inv6 ;
+        H[0*Nin+2][3*Nin+2] = t252 * inv6 ;
+        H[1*Nin+0][0*Nin+0] = t84 * inv6 ;
+        H[1*Nin+0][0*Nin+1] = t166 * inv6 ;
+        H[1*Nin+0][0*Nin+2] = t215 * inv6 ;
+        H[1*Nin+0][1*Nin+0] = -t253 * t50 * inv6 + t253 * t54 * inv6 ;
+        H[1*Nin+0][1*Nin+1] = t260 * inv6 ;
+        H[1*Nin+0][1*Nin+2] = t264 * inv6 ;
+        H[1*Nin+0][2*Nin+0] = t268 * inv6 ;
+        H[1*Nin+0][2*Nin+1] = t274 * inv6 ;
+        H[1*Nin+0][2*Nin+2] = t280 * inv6 ;
+        H[1*Nin+0][3*Nin+0] = t284 * inv6 ;
+        H[1*Nin+0][3*Nin+1] = t290 * inv6 ;
+        H[1*Nin+0][3*Nin+2] = t296 * inv6 ;
+        H[1*Nin+1][0*Nin+0] = t96 * inv6 ;
+        H[1*Nin+1][0*Nin+1] = t170 * inv6 ;
+        H[1*Nin+1][0*Nin+2] = t220 * inv6 ;
+        H[1*Nin+1][1*Nin+0] = t260 * inv6 ;
+        H[1*Nin+1][1*Nin+1] = -t297 * t50 * inv6 + t297 * t54 * inv6 ;
+        H[1*Nin+1][1*Nin+2] = t304 * inv6 ;
+        H[1*Nin+1][2*Nin+0] = t309 * inv6 ;
+        H[1*Nin+1][2*Nin+1] = t313 * inv6 ;
+        H[1*Nin+1][2*Nin+2] = t319 * inv6 ;
+        H[1*Nin+1][3*Nin+0] = t324 * inv6 ;
+        H[1*Nin+1][3*Nin+1] = t328 * inv6 ;
+        H[1*Nin+1][3*Nin+2] = t334 * inv6 ;
+        H[1*Nin+2][0*Nin+0] = t107 * inv6 ;
+        H[1*Nin+2][0*Nin+1] = t176 * inv6 ;
+        H[1*Nin+2][0*Nin+2] = t224 * inv6 ;
+        H[1*Nin+2][1*Nin+0] = t264 * inv6 ;
+        H[1*Nin+2][1*Nin+1] = t304 * inv6 ;
+        H[1*Nin+2][1*Nin+2] = -t335 * t50 * inv6 + t335 * t54 * inv6 ;
+        H[1*Nin+2][2*Nin+0] = t343 * inv6 ;
+        H[1*Nin+2][2*Nin+1] = t348 * inv6 ;
+        H[1*Nin+2][2*Nin+2] = t352 * inv6 ;
+        H[1*Nin+2][3*Nin+0] = t357 * inv6 ;
+        H[1*Nin+2][3*Nin+1] = t362 * inv6 ;
+        H[1*Nin+2][3*Nin+2] = t366 * inv6 ;
+        H[2*Nin+0][0*Nin+0] = t113 * inv6 ;
+        H[2*Nin+0][0*Nin+1] = t181 * inv6 ;
+        H[2*Nin+0][0*Nin+2] = t229 * inv6 ;
+        H[2*Nin+0][1*Nin+0] = t268 * inv6 ;
+        H[2*Nin+0][1*Nin+1] = t309 * inv6 ;
+        H[2*Nin+0][1*Nin+2] = t343 * inv6 ;
+        H[2*Nin+0][2*Nin+0] = -t367 * t50 * inv6 + t367 * t54 * inv6 ;
+        H[2*Nin+0][2*Nin+1] = t374 * inv6 ;
+        H[2*Nin+0][2*Nin+2] = t378 * inv6 ;
+        H[2*Nin+0][3*Nin+0] = t382 * inv6 ;
+        H[2*Nin+0][3*Nin+1] = t388 * inv6 ;
+        H[2*Nin+0][3*Nin+2] = t394 * inv6 ;
+        H[2*Nin+1][0*Nin+0] = t122 * inv6 ;
+        H[2*Nin+1][0*Nin+1] = t185 * inv6 ;
+        H[2*Nin+1][0*Nin+2] = t234 * inv6 ;
+        H[2*Nin+1][1*Nin+0] = t274 * inv6 ;
+        H[2*Nin+1][1*Nin+1] = t313 * inv6 ;
+        H[2*Nin+1][1*Nin+2] = t348 * inv6 ;
+        H[2*Nin+1][2*Nin+0] = t374 * inv6 ;
+        H[2*Nin+1][2*Nin+1] = -t395 * t50 * inv6 + t395 * t54 * inv6 ;
+        H[2*Nin+1][2*Nin+2] = t402 * inv6 ;
+        H[2*Nin+1][3*Nin+0] = t407 * inv6 ;
+        H[2*Nin+1][3*Nin+1] = t411 * inv6 ;
+        H[2*Nin+1][3*Nin+2] = t417 * inv6 ;
+        H[2*Nin+2][0*Nin+0] = t131 * inv6 ;
+        H[2*Nin+2][0*Nin+1] = t191 * inv6 ;
+        H[2*Nin+2][0*Nin+2] = t238 * inv6 ;
+        H[2*Nin+2][1*Nin+0] = t280 * inv6 ;
+        H[2*Nin+2][1*Nin+1] = t319 * inv6 ;
+        H[2*Nin+2][1*Nin+2] = t352 * inv6 ;
+        H[2*Nin+2][2*Nin+0] = t378 * inv6 ;
+        H[2*Nin+2][2*Nin+1] = t402 * inv6 ;
+        H[2*Nin+2][2*Nin+2] = -t418 * t50 * inv6 + t418 * t54 * inv6 ;
+        H[2*Nin+2][3*Nin+0] = t426 * inv6 ;
+        H[2*Nin+2][3*Nin+1] = t431 * inv6 ;
+        H[2*Nin+2][3*Nin+2] = t435 * inv6 ;
+        H[3*Nin+0][0*Nin+0] = t137 * inv6 ;
+        H[3*Nin+0][0*Nin+1] = t196 * inv6 ;
+        H[3*Nin+0][0*Nin+2] = t243 * inv6 ;
+        H[3*Nin+0][1*Nin+0] = t284 * inv6 ;
+        H[3*Nin+0][1*Nin+1] = t324 * inv6 ;
+        H[3*Nin+0][1*Nin+2] = t357 * inv6 ;
+        H[3*Nin+0][2*Nin+0] = t382 * inv6 ;
+        H[3*Nin+0][2*Nin+1] = t407 * inv6 ;
+        H[3*Nin+0][2*Nin+2] = t426 * inv6 ;
+        H[3*Nin+0][3*Nin+0] = -t436 * t50 * inv6 + t436 * t54 * inv6 ;
+        H[3*Nin+0][3*Nin+1] = t443 * inv6 ;
+        H[3*Nin+0][3*Nin+2] = t447 * inv6 ;
+        H[3*Nin+1][0*Nin+0] = t145 * inv6 ;
+        H[3*Nin+1][0*Nin+1] = t200 * inv6 ;
+        H[3*Nin+1][0*Nin+2] = t248 * inv6 ;
+        H[3*Nin+1][1*Nin+0] = t290 * inv6 ;
+        H[3*Nin+1][1*Nin+1] = t328 * inv6 ;
+        H[3*Nin+1][1*Nin+2] = t362 * inv6 ;
+        H[3*Nin+1][2*Nin+0] = t388 * inv6 ;
+        H[3*Nin+1][2*Nin+1] = t411 * inv6 ;
+        H[3*Nin+1][2*Nin+2] = t431 * inv6 ;
+        H[3*Nin+1][3*Nin+0] = t443 * inv6 ;
+        H[3*Nin+1][3*Nin+1] = -t448 * t50 * inv6 + t448 * t54 * inv6 ;
+        H[3*Nin+1][3*Nin+2] = t455 * inv6 ;
+        H[3*Nin+2][0*Nin+0] = t153 * inv6 ;
+        H[3*Nin+2][0*Nin+1] = t206 * inv6 ;
+        H[3*Nin+2][0*Nin+2] = t252 * inv6 ;
+        H[3*Nin+2][1*Nin+0] = t296 * inv6 ;
+        H[3*Nin+2][1*Nin+1] = t334 * inv6 ;
+        H[3*Nin+2][1*Nin+2] = t366 * inv6 ;
+        H[3*Nin+2][2*Nin+0] = t394 * inv6 ;
+        H[3*Nin+2][2*Nin+1] = t417 * inv6 ;
+        H[3*Nin+2][2*Nin+2] = t435 * inv6 ;
+        H[3*Nin+2][3*Nin+0] = t447 * inv6 ;
+        H[3*Nin+2][3*Nin+1] = t455 * inv6 ;
+        H[3*Nin+2][3*Nin+2] = -t456 * t50 * inv6 + t456 * t54 * inv6 ;
+
 
         // J
         J.add(i, a*Nin+0,t462 );
