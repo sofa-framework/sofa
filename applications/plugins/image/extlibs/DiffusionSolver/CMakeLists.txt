@@ -30,7 +30,6 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
 
 endif()
 
-add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
 
 if(APPLE)
     find_package(X11)
@@ -42,4 +41,7 @@ if(APPLE)
 endif()
 
 # For Cimg
+message(WARNING "${SOFA_EXTLIBS_DIR}")
 include_directories(${SOFA_EXTLIBS_DIR})
+
+add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
