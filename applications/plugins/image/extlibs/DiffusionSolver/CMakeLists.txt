@@ -30,6 +30,10 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
 
 endif()
 
+# For Cimg
+include_directories(${SOFA_EXTLIBS_DIR})
+
+add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
 
 if(APPLE)
     find_package(X11)
@@ -39,9 +43,3 @@ if(APPLE)
     target_link_libraries(${PROJECT_NAME} ${X11_X11_LIB})
     include_directories(${X11_X11_INCLUDE_PATH})
 endif()
-
-# For Cimg
-message(WARNING "${SOFA_EXTLIBS_DIR}")
-include_directories(${SOFA_EXTLIBS_DIR})
-
-add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
