@@ -28,7 +28,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/component.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <Eigen/Dense>

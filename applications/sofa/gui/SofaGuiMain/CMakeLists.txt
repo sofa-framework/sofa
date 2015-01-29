@@ -2,20 +2,18 @@ cmake_minimum_required(VERSION 2.8)
 project(SofaGuiMain)
 
 set(HEADER_FILES
-
-	../Main.h
-	)
+    ../Main.h
+    )
 
 set(SOURCE_FILES
-
-	../Main.cpp
-	)
+    ../Main.cpp
+    )
 
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set(SOFAGUIMAIN_DEPS ${SOFAGUI_LIBRARIES})
+set(SOFAGUIMAIN_DEPS ${SOFAGUI_TARGETS})
 list(REMOVE_ITEM SOFAGUIMAIN_DEPS SofaGuiMain)
 
 target_link_libraries( ${PROJECT_NAME} ${SOFAGUIMAIN_DEPS})
@@ -35,4 +33,8 @@ install(TARGETS ${PROJECT_NAME}
         RUNTIME DESTINATION "${SOFAGUI_INSTALL_BIN_DIR}"
         LIBRARY DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}"
         ARCHIVE DESTINATION "${SOFAGUI_INSTALL_LIB_DIR}"
+        )
+
+install(FILES ${HEADER_FILES} DESTINATION "${SOFAGUI_INSTALL_INCLUDE_DIR}/sofa/gui"
+        COMPONENT SofaGui_headers
         )

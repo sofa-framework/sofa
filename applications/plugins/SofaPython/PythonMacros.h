@@ -34,7 +34,7 @@
 
 
 
-#include <sofa/SofaPython.h>
+#include <SofaPython/SofaPython.h>
 
 
 

@@ -1,65 +1,51 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(ColladaSceneLoader)
+
+set(COLLADASCENELOADER_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(COLLADASCENELOADER_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(COLLADASCENELOADER_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-
 	initPlugin.h
-    SceneColladaLoader.h 
-	)
+    SceneColladaLoader.h)
 
 set(SOURCE_FILES
-
 	initPlugin.cpp
-    SceneColladaLoader.cpp 
-	)
+    SceneColladaLoader.cpp)
 	
 set(README_FILES
+	ColladaSceneLoader.txt)
 
-	ColladaSceneLoader.txt
-	)
-
-
-# find assimp library & include directories...
-if(APPLE)
-	find_path(ASSIMP_INCLUDE_DIR NAMES assimp/Importer.hpp)
-	include_directories(ASSIMP_INCLUDE_DIR)
-else()
-	include_directories("assimp/include")
-endif()
-
-if(WIN32)
-	if(CMAKE_CL_64)
-		link_directories("assimp/lib/x64")
-	else()
-		link_directories("assimp/lib/x86")
-	endif()
-	
-	set(ASSIMP_LIBRARY assimp)
-	
-	## assimp dll
-	if(CMAKE_CL_64)
-		file(GLOB sharedObjects "assimp/lib/x64/*.dll")
-	else()
-		file(GLOB sharedObjects "assimp/lib/x86/*.dll")
-	endif()
-	foreach(sharedObject ${sharedObjects})
-		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-	endforeach()
-else()
-	find_library(ASSIMP_LIBRARY NAMES assimp)
-    #todo add a test for assimp version >= 3
-endif()
+find_package(SofaBase REQUIRED)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+find_package(Assimp REQUIRED)
+find_package(Flexible QUIET)
+find_package(image QUIET)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COLLADASCENELOADER")
+target_link_libraries(${PROJECT_NAME} SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision)
 
-AddCompilerDefinitions("SOFA_BUILD_COLLADASCENELOADER")
-AddLinkerDependencies(SofaLoader SofaSimulationCommon SofaBaseMechanics SofaRigid SofaBoundaryCondition SofaBaseTopology SofaBaseVisual SofaOpenglVisual SofaDeformable SofaMeshCollision ${ASSIMP_LIBRARY})
+include_directories(${ASSIMP_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARIES})
 
-if(SOFA-PLUGIN_FLEXIBLE)
-	AddLinkerDependencies(Flexible)
+if(Flexible_FOUND)
+    target_link_libraries(${PROJECT_NAME} Flexible)
 endif()
 
-if(SOFA-PLUGIN_IMAGE)
-    AddLinkerDependencies(image)
+if(image_FOUND)
+    target_link_libraries(${PROJECT_NAME} image)
 endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(TARGETS ${PROJECT_NAME}
+    COMPONENT ColladaSceneLoader_libraries
+    EXPORT ColladaSceneLoaderTargets
+    RUNTIME DESTINATION "${COLLADASCENELOADER_INSTALL_BIN_DIR}"
+    LIBRARY DESTINATION "${COLLADASCENELOADER_INSTALL_LIB_DIR}"
+    ARCHIVE DESTINATION "${COLLADASCENELOADER_INSTALL_LIB_DIR}")
+
+if(WIN32)
+    # Copy OpenCascade DLLs
+    file(COPY ${ASSIMP_DLLS} DESTINATION bin)
+    install(FILES ${ASSIMP_DLLS} DESTINATION ${COLLADASCENELOADER_INSTALL_BIN_DIR})
+endif()

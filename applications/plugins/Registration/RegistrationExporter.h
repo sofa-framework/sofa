@@ -4,7 +4,6 @@
 #include "initRegistration.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 

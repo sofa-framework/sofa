@@ -54,7 +54,7 @@ endif()
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseTopology SofaMeshCollision SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaImplicitOdeSolver SofaSphFluid SofaOpenglVisual)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaMeshCollision SofaConstraint SofaVolumetricData SofaExplicitOdeSolver SofaImplicitOdeSolver SofaSphFluid SofaOpenglVisual)
 #if(SOFA_HAVE_EIGEN2)
 #    target_link_libraries(${PROJECT_NAME} SofaEigen2Solver)
 #endif()
@@ -72,8 +72,8 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}
 install(TARGETS ${PROJECT_NAME}
         COMPONENT SofaMiscCollision_libraries
         EXPORT    SofaMiscTargets
-        RUNTIME DESTINATION "${SOFAMISC_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${SOFAMISC_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
+        RUNTIME DESTINATION "${SOFAMISC_INSTALL_BIN_DIR}" COMPONENT SofaMisc_libraries
+        LIBRARY DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
+        ARCHIVE DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
+        PUBLIC_HEADER DESTINATION "${SOFAMISC_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaMisc_headers
 )

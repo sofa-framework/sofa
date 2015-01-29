@@ -23,7 +23,7 @@ set(SOFASIMULATION_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaSimulation)
 set(SOFASIMULATION_INSTALL_LIB_DIR     lib     					  CACHE PATH "Installation directory for libraries")
 set(SOFASIMULATION_INSTALL_BIN_DIR     bin     					  CACHE PATH "Installation directory for executables")
 set(SOFASIMULATION_INSTALL_INCLUDE_DIR include 					  CACHE PATH "Installation directory for header files")
-set(SOFASIMULATION_INSTALL_CMAKE_DIR   lib/cmake/SofaSimulation   CACHE PATH "Installation directory for CMake files")
+set(SOFASIMULATION_INSTALL_CMAKE_DIR   ${SOFASIMULATION_INSTALL_LIB_DIR}/cmake/SofaSimulation)
 
 set(SOFASIMULATION_DEPENDENCY_INCLUDE_DIRS )
 ## SofaSimulation dependencies
@@ -44,6 +44,13 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaSimulation.h
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/common ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon )
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/tree   ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationTree   )
 add_subdirectory(${SofaSimulation_ACTUAL_SOURCE_DIR}/graph  ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationGraph  )
+
+# set IDE project filter
+if(MSVC)
+    set_target_properties(SofaSimulationCommon PROPERTIES FOLDER "SofaSimulation")
+    set_target_properties(SofaSimulationTree   PROPERTIES FOLDER "SofaSimulation")
+    set_target_properties(SofaSimulationGraph  PROPERTIES FOLDER "SofaSimulation")
+endif()
 
 include(CMakePackageConfigHelpers)
 

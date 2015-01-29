@@ -1,28 +1,36 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(ARTrack)
+
+set(ARTRACK_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(ARTRACK_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(ARTRACK_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
-
     ARTrackDriver.h
     ARTrackEvent.h
     ARTrackController.h
-    ARTrackController.inl
-	)
+    ARTrackController.inl)
 
 set(SOURCE_FILES
-
     ARTrackDriver.cpp
     initARTrack.cpp
     ARTrackEvent.cpp
-    ARTrackController.cpp
-	)
+    ARTrackController.cpp)
+
+find_package(SofaGeneral REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-
-AddCompilerDefinitions("SOFA_BUILD_ARTRACKPLUGIN")
-AddLinkerDependencies(ARTrackLib SofaUserInteraction)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ARTRACKPLUGIN")
+target_link_libraries(${PROJECT_NAME} SofaUserInteraction)
+target_link_libraries(ARTrackLib SofaUserInteraction)
 
 if(WIN32)
-	AddLinkerDependencies(Ws2_32)
+    target_link_libraries(${PROJECT_NAME} Ws2_32)
 endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+install(TARGETS ${PROJECT_NAME}
+    COMPONENT ARTrack_libraries
+    EXPORT ARTrackTargets
+    RUNTIME DESTINATION "${ARTRACK_INSTALL_BIN_DIR}"
+    LIBRARY DESTINATION "${ARTRACK_INSTALL_LIB_DIR}"
+    ARCHIVE DESTINATION "${ARTRACK_INSTALL_LIB_DIR}")

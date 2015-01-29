@@ -29,7 +29,6 @@
 #include "ImageTypes.h"
 #include <sofa/helper/rmath.h>
 #include <sofa/core/DataEngine.h>
-#include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>

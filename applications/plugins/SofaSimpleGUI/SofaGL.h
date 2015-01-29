@@ -2,7 +2,6 @@
 #define SOFA_NEWGUI_SofaGL_H
 
 #include "initSimpleGUI.h"
-#include <sofa/config.h>
 #include "SofaScene.h"
 #include <sofa/core/visual/DrawToolGL.h>
 
@@ -127,7 +126,7 @@ protected:
     void draw(sofa::core::visual::VisualParams*);
 
     // Interaction tools
-    typedef map< PickedPoint, Interactor*> Picked_to_Interactor;
+    typedef std::map< PickedPoint, Interactor*> Picked_to_Interactor;
     /** Currently available interactors, associated with picked points.
      *  The interactors are not necessarily being manipulated. Only one is typically manipulated at a given time.
      */

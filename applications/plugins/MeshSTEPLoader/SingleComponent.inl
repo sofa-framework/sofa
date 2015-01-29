@@ -26,7 +26,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_SINGLECOMPONENT_INL
 #define SOFA_COMPONENT_ENGINE_SINGLECOMPONENT_INL
 
-#include <SingleComponent.h>
+#include "SingleComponent.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/SetDirectory.h>
 

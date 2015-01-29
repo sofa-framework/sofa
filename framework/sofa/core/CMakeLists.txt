@@ -217,7 +217,7 @@ set(SOFACORE_SOURCES
 	objectmodel/GUIEvent.cpp
 	)
 
-if(NOT SOFA-MISC_NO_OPENGL)
+if(NOT SOFA_NO_OPENGL)
 	if(SOFA_HAVE_GLUT)
 		list(APPEND SOFACORE_HEADERS "visual/DrawToolGL.h")
 		list(APPEND SOFACORE_SOURCES "visual/DrawToolGL.cpp")

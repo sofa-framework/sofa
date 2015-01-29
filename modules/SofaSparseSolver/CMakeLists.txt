@@ -30,7 +30,7 @@ if( SOFA_HAVE_CSPARSE )
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} SofaBaseLinearSolver SofaImplicitOdeSolver SofaSimpleFem )
+target_link_libraries( ${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaImplicitOdeSolver SofaSimpleFem )
 if( SOFA_HAVE_CSPARSE )
 target_link_libraries( ${PROJECT_NAME} csparse )
 endif()

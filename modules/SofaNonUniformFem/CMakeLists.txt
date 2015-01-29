@@ -53,10 +53,10 @@ set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries( ${PROJECT_NAME} SofaSimpleFem SofaBaseTopology SofaBaseMechanics)
+target_link_libraries( ${PROJECT_NAME} PUBLIC SofaSimpleFem SofaBaseTopology SofaBaseMechanics)
 
 if(SOFA_HAVE_NEWMAT)
-  target_link_libraries( ${PROJECT_NAME} SofaDenseSolver ) 
+  target_link_libraries( ${PROJECT_NAME} PUBLIC SofaDenseSolver ) 
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
@@ -71,11 +71,10 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${COMPILER_FLAG
 set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaAdvanced_libraries
         EXPORT  SofaAdvancedTargets
-        RUNTIME DESTINATION "${SOFAADVANCED_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${SOFAADVANCED_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${SOFAADVANCED_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${SOFAADVANCED_INSTALL_INCLUDE_DIR}/SofaNonUniformFem"
+        RUNTIME DESTINATION "${SOFAADVANCED_INSTALL_BIN_DIR}" COMPONENT SofaAdvanced_libraries
+        LIBRARY DESTINATION "${SOFAADVANCED_INSTALL_LIB_DIR}" COMPONENT SofaAdvanced_libraries
+        ARCHIVE DESTINATION "${SOFAADVANCED_INSTALL_LIB_DIR}" COMPONENT SofaAdvanced_libraries
+        PUBLIC_HEADER DESTINATION "${SOFAADVANCED_INSTALL_INCLUDE_DIR}/SofaNonUniformFem" COMPONENT SofaAdvanced_headers
         )
 

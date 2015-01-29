@@ -12,8 +12,6 @@ set(SOFAHELPER_HEADERS
     Factory.inl
     FnDispatcher.h
     FnDispatcher.inl
-    gl/Trackball.h
-    gl/Transformation.h
 	integer_id.h
     io/Image.h
     io/ImageBMP.h
@@ -52,8 +50,6 @@ set(SOFAHELPER_HEADERS
     set.h
     SVector.h
     system/config.h
-    system/gl.h
-    system/glu.h
     system/SetDirectory.h
     system/FileRepository.h
     system/atomic.h
@@ -118,7 +114,6 @@ set(SOFAHELPER_SOURCES
     decompose.cpp
     Quater.cpp
     RandomGenerator.cpp
-	system/gl.cpp
     system/SetDirectory.cpp
     system/FileRepository.cpp
     system/thread/CTime.cpp
@@ -152,24 +147,29 @@ if(Boost_thread_FOUND )
 	list(APPEND SOFAHELPER_SOURCES "system/thread/TimeoutWatchdog.cpp")
 endif()
 
-if(NOT SOFA-MISC_NO_OPENGL)
+if(NOT SOFA_NO_OPENGL)
 	if(SOFA_HAVE_GLUT)
 		list(APPEND SOFAHELPER_HEADERS
 		system/glut.h
 		gl/Axis.h
 		gl/BasicShapes.h
 		gl/Cylinder.h
+        gl/Trackball.h
+        gl/Transformation.h
 		gl/glText.inl
 		gl/glText.h
 		)
+        
 		list(APPEND SOFAHELPER_SOURCES
-		gl/Axis.cpp
+        gl/Axis.cpp
 		gl/Cylinder.cpp
 		gl/glText.cpp
 		)
 	endif(SOFA_HAVE_GLUT)
 	
 	list(APPEND SOFAHELPER_HEADERS
+    system/gl.h
+    system/glu.h
 	gl/Capture.h
 	gl/Color.h
 	gl/glfont.h
@@ -177,6 +177,7 @@ if(NOT SOFA-MISC_NO_OPENGL)
 	gl/template.h)
 			
 	list(APPEND SOFAHELPER_SOURCES
+    system/gl.cpp
 	gl/Capture.cpp
 	gl/Color.cpp
 	gl/glfont.cpp
@@ -192,7 +193,7 @@ if(NOT SOFA-MISC_NO_OPENGL)
 			gl/FrameBufferObject.cpp
 			gl/GLSLShader.cpp)
 	endif(SOFA_HAVE_GLEW)
-endif(NOT SOFA-MISC_NO_OPENGL)
+endif(NOT SOFA_NO_OPENGL)
 
 if(SOFA-EXTERNAL_HAVE_FFMPEG)
 	list(APPEND SOFAHELPER_HEADERS "gl/VideoRecorder.h")
@@ -215,14 +216,14 @@ endif()
 
 
 add_library(${PROJECT_NAME} SHARED ${SOFAHELPER_HEADERS} ${SOFAHELPER_SOURCES})
-target_link_libraries(${PROJECT_NAME} LINK_PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} )
-target_link_libraries(${PROJECT_NAME} LINK_PRIVATE ${SOFA_HELPER_LINK_PRIVATE_DEPENDENCIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} )
+target_link_libraries(${PROJECT_NAME} PRIVATE ${SOFA_HELPER_LINK_PRIVATE_DEPENDENCIES})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../../>" 
 												  "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
 
 # make the name of debug libraries end in _d.
 set_target_properties( ${PROJECT_NAME}  PROPERTIES DEBUG_POSTFIX "_d" )
-
+set_property(SOURCE system/PluginManager.cpp PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
 set_target_properties( ${PROJECT_NAME}  PROPERTIES VERSION ${SOFAFRAMEWORK_VERSION} )
 
 set( SOFAHELPER_COMPILER_FLAGS "-DSOFA_BUILD_HELPER -DUNICODE")

@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_INL
 
+#include <sofa/SofaFramework.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include "HexahedronFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>

@@ -21,7 +21,7 @@ set(SOFAHAPI_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaHAPI)
 set(SOFAHAPI_INSTALL_LIB_DIR     lib                    CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAHAPI_INSTALL_BIN_DIR     bin                    CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAHAPI_INSTALL_INCLUDE_DIR include                CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAHAPI_INSTALL_CMAKE_DIR   lib/cmake/SofaHAPI     CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAHAPI_INSTALL_CMAKE_DIR   ${SOFAHAPI_INSTALL_LIB_DIR}/cmake/SofaHAPI )
 
 set(HEADER_FILES 
     initSofaHAPI.h
@@ -103,9 +103,9 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHAPI_COMP
 set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaHAPI.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaHAPI.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaHAPI.h
-         DESTINATION "${SOFAHAPI_INSTALL_INCLUDE_DIR}/sofa")
+                ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPI/SofaHAPI.h)
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaHAPI/SofaHAPI.h
+         DESTINATION "${SOFAHAPI_INSTALL_INCLUDE_DIR}/SofaHAPI")
 
 include(CMakePackageConfigHelpers)
 # SofaHAPIConfigVersion.cmake file (same for build tree and intall)
@@ -140,3 +140,6 @@ install(TARGETS ${PROJECT_NAME}
     PUBLIC_HEADER DESTINATION "${SOFAHAPI_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
     )
 
+# SofaHAPITargets.cmake (installed)
+# install(EXPORT SofaHAPITargets
+        # DESTINATION ${SOFAHAPI_INSTALL_CMAKE_DIR} )

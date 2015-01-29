@@ -25,6 +25,8 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETGEOMETRYALGORITHMS_INL
 
+#include <sofa/SofaFramework.h>
+
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.inl>
 #include <sofa/core/visual/VisualParams.h>

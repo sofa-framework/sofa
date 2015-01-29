@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 set(SOLUTION_NAME "SofaGeneral")
 project(${SOLUTION_NAME})
 
+
 #temporary until we move the sub projects
 set( SofaGeneral_ACTUAL_SOURCE_DIR ${SofaGeneral_SOURCE_DIR}/../modules)
 
@@ -20,33 +21,34 @@ set(SOFAGENERAL_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SOFAGENERAL_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaGeneral)
 
 # Offer the user the choice of overriding the installation directories
-set(SOFAGENERAL_INSTALL_LIB_DIR     lib                        CACHE PATH "Installation directory for libraries")
-set(SOFAGENERAL_INSTALL_BIN_DIR     bin                        CACHE PATH "Installation directory for executables")
-set(SOFAGENERAL_INSTALL_INCLUDE_DIR include                    CACHE PATH "Installation directory for header files")
-set(SOFAGENERAL_INSTALL_CMAKE_DIR   lib/cmake/SofaGeneral   CACHE PATH "Installation directory for CMake files")
+set(SOFAGENERAL_INSTALL_LIB_DIR     lib                     CACHE PATH "Installation directory for libraries")
+set(SOFAGENERAL_INSTALL_BIN_DIR     bin                     CACHE PATH "Installation directory for executables")
+set(SOFAGENERAL_INSTALL_INCLUDE_DIR include                 CACHE PATH "Installation directory for header files")
+set(SOFAGENERAL_INSTALL_CMAKE_DIR   ${SOFAGENERAL_INSTALL_LIB_DIR}/cmake/SofaGeneral )
 
 ## SofaGeneral dependencies
 ##
 find_package(SofaCommon REQUIRED)
+find_package(Newmat)
+set(SOFA_HAVE_NEWMAT ${Newmat_FOUND} )
+
 set(SOFAGENERAL_DEPENDENCY_INCLUDE_DIR ${SofaCommon_INCLUDE_DIRS})
+
 
 configure_file( ${SofaGeneral_SOURCE_DIR}/SofaGeneral.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h )
 install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaGeneral.h
          DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/sofa")
 
-# make sure everyone in the build tree can see <sofa/SofaGeneral.h>
-#include_directories(${CMAKE_CURRENT_BINARY_DIR})
-#include_directories(${SofaGeneral_ACTUAL_SOURCE_DIR}/)
-
 set(SOFAGENERAL_TARGETS SofaValidation SofaExporter SofaGraphComponent SofaTopologyMapping SofaBoundaryCondition 
     SofaComponentGeneral SofaEngine SofaUserInteraction SofaConstraint SofaHaptics SofaPreconditioner)
 
 if(SOFA_HAVE_NEWMAT)
+  list(APPEND SOFAGENERAL_DEPENDENCY_LINK newmat )
   list(APPEND SOFAGENERAL_TARGETS SofaDenseSolver)
 endif()
 
-if(NOT SOFA-MISC_NO_OPENGL)
+if(NOT SOFA_NO_OPENGL)
    list(APPEND SOFAGENERAL_TARGETS SofaOpenglVisual)
 endif()
 #if(SOFA_HAVE_CSPARSE)
@@ -61,6 +63,10 @@ endif()
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})
   add_subdirectory(${SofaGeneral_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+  # set IDE project filter
+  if(MSVC)
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGeneral")
+  endif()
 endforeach()
 
 include(CMakePackageConfigHelpers)

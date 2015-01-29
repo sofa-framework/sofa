@@ -6,18 +6,27 @@
 @PACKAGE_INIT@
 
 set(SOFAGUI_INCLUDE_DIR "@PACKAGE_SOFAGUI_INCLUDE_DIR@")
-check_required_components(SofaGui)
+set(SofaGUI_TARGETS @SOFAGUI_TARGETS@)
 
 # required for transitive dependencies
-find_package(SofaFramework REQUIRED)
-find_package(SofaGeneral REQUIRED)  # required by SofaGuiCommon
-find_package(SofaAdvanced REQUIRED) # required by SofaGuiCommon
-find_package(SofaMisc REQUIRED)     # required by SofaGuiCommon
+find_package(SofaGeneral REQUIRED)
+find_package(SofaMisc REQUIRED)
+find_package(SofaAdvanced REQUIRED)
+
+set(SOFA_HAVE_QT @SOFA_HAVE_QT@)
+
+if(SOFA_HAVE_QT)
+    set(QT_USE_IMPORTED_TARGETS 1)
+    set(QT4_NO_LINK_QTMAIN      1)
+    find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
+endif()
 
 if( NOT TARGET SofaGuiCommon )
 	include("${CMAKE_CURRENT_LIST_DIR}/SofaGuiTargets.cmake")
 endif()
- 
+
+check_required_components(${SofaGUI_TARGETS})
+
 # For compatibility only
-set(SofaGui_LIBRARIES @SOFAGUI_LIBRARIES@)
-set(SofaGui_INCLUDE_DIRS ${SOFAGUI_INCLUDE_DIR} ${SofaSimulation_INCLUDE_DIRS})
+set(SofaGui_LIBRARIES SofaGuiCommon)
+set(SofaGui_INCLUDE_DIRS ${SOFAGUI_INCLUDE_DIR} ${SofaGeneral_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS} ${SofaAdvanced_INCLUDE_DIRS})

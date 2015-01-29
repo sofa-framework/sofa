@@ -1,16 +1,17 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+project(BulletCollisionDetection)
 
-# WARNING, this plugin requires Bullet to be compiled with the
-# BULLET_TRIANGLE_COLLISION definition.  You can do that by adding the
-# following line somewhere at the beginning of the main CMakeLists.txt
-# of bullet:
-#
-# add_definitions(-DBULLET_TRIANGLE_COLLISION)
+#WARNING, when installing bullet write in the bullet CMakeLists.txt the line add_definitions(-DBULLET_TRIANGLE_COLLISION)
+# todo: is it possible to do a platform check for BULLET_TRIANGLE_COLLISION?
+
+set(BULLETCOLLISIONDETECTION_INSTALL_LIB_DIR     lib     CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(BULLETCOLLISIONDETECTION_INSTALL_BIN_DIR     bin     CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(BULLETCOLLISIONDETECTION_INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
 
 set(HEADER_FILES
     BulletCylinderModel.h
     BulletCylinderModel.inl
-    BulletTriangleModel.h
+	BulletTriangleModel.h
     BulletTriangleModel.inl
     BulletCollisionModel.h
     BulletCollisionDetection.h
@@ -28,38 +29,43 @@ set(HEADER_FILES
     initBulletCollisionDetection.h)
 
 set(SOURCE_FILES
-    BulletCapsuleModel.cpp
+    BulletCylinderModel.cpp
+    BulletTriangleModel.cpp
     BulletCollisionDetection.cpp
+    BulletSphereModel.cpp
+    BulletOBBModel.cpp
+    BulletCapsuleModel.cpp
+    BulletConvexHullModel.cpp
     BulletConvexHullContactMapper.cpp
     BulletConvexHullContacts.cpp
-    BulletConvexHullModel.cpp
-    BulletCylinderModel.cpp
-    BulletOBBModel.cpp
-    BulletSphereModel.cpp
-    BulletTriangleModel.cpp
     initBulletCollisionDetection.cpp)
 
-if(SOFA-PLUGIN_COMPLIANT)
+set(README_FILES
+    BulletCollisionDetection.txt)
+
+find_package(SofaGeneral REQUIRED)
+find_package(Compliant)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+find_package(Bullet REQUIRED)
+
+if(Compliant_FOUND)
     list(APPEND SOURCE_FILES BulletConvexHullCompliantContacts.cpp)
-    AddLinkerDependencies(Compliant)
 endif()
-
-set(README_FILES BulletCollisionDetection.txt)
-
-## No idea what this is for.
-if(WIN32)
-    include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-    link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-endif()
-
-find_package(Bullet CONFIG REQUIRED)
-include_directories(${BULLET_INCLUDE_DIRS})
-link_directories(${BULLET_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_BULLETCOLLISIONDETECTION")
+target_link_libraries(${PROJECT_NAME} SofaMeshCollision SofaMiscCollision SofaVolumetricData)
 
-AddCompilerDefinitions("SOFA_BUILD_BULLETCOLLISIONDETECTION")
-AddLinkerDependencies(SofaMeshCollision SofaMiscCollision SofaVolumetricData)
-AddLinkerDependencies(LinearMath BulletCollision BulletDynamics HACD) # Bullet
+if(Compliant_FOUND)
+    target_link_libraries(${PROJECT_NAME} Compliant)
+endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+include_directories(${BULLET_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${BULLET_LIBRARIES})
+
+install(TARGETS ${PROJECT_NAME}
+    COMPONENT BulletCollisionDetection_libraries
+    EXPORT BulletCollisionDetectionTargets
+    RUNTIME DESTINATION "${BULLETCOLLISIONDETECTION_INSTALL_BIN_DIR}"
+    LIBRARY DESTINATION "${BULLETCOLLISIONDETECTION_INSTALL_LIB_DIR}"
+    ARCHIVE DESTINATION "${BULLETCOLLISIONDETECTION_INSTALL_LIB_DIR}")

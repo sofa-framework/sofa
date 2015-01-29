@@ -25,7 +25,7 @@
 #ifndef SCENELOADERPY_H
 #define SCENELOADERPY_H
 
-#include <sofa/SofaPython.h>
+#include <SofaPython/SofaPython.h>
 #include <sofa/simulation/common/SceneLoaderFactory.h>
 
 

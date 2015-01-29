@@ -23,12 +23,18 @@ set(SOFAADVANCED_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaAdvanced)
 set(SOFAADVANCED_INSTALL_LIB_DIR     lib     					  CACHE PATH "Installation directory for libraries")
 set(SOFAADVANCED_INSTALL_BIN_DIR     bin     					  CACHE PATH "Installation directory for executables")
 set(SOFAADVANCED_INSTALL_INCLUDE_DIR include 					  CACHE PATH "Installation directory for header files")
-set(SOFAADVANCED_INSTALL_CMAKE_DIR   lib/cmake/SofaAdvanced   CACHE PATH "Installation directory for CMake files")
+set(SOFAADVANCED_INSTALL_CMAKE_DIR   ${SOFAADVANCED_INSTALL_LIB_DIR}/cmake/SofaAdvanced )
 
 ## SofaAdvanced dependencies
 ##
-find_package(SofaCommon REQUIRED)
-set(SOFAADVANCED_DEPENDENCY_DIR ${SofaCommon_INCLUDE_DIRS} )
+find_package(SofaGeneral REQUIRED)
+find_package(MiniFlowVR)
+
+set(SOFA_HAVE_MINIFLOWVR ${MiniFlowVR_FOUND} )
+
+set(SOFAADVANCED_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS} ${MiniFlowVR_INCLUDE_DIRS} )
+set(SOFAADVANCED_DEPENDENCY_LINK ${MiniFlowVR_LIBRARIES})
+
 
 configure_file( ${SofaAdvanced_SOURCE_DIR}/SofaAdvanced.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaAdvanced.h )
@@ -42,6 +48,9 @@ set(SOFAADVANCED_TARGETS SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaN
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})
   add_subdirectory(${SofaAdvanced_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+  if(MSVC)
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaAdvanced")
+  endif()
 endforeach()
 
 include(CMakePackageConfigHelpers)

@@ -1,0 +1,20 @@
+# - Config file for the image package
+# It defines the following variables
+#  image_INCLUDE_DIRS - include directories for image
+#  image_LIBRARIES    - libraries to link against
+
+@PACKAGE_INIT@
+
+set_and_check(IMAGE_INCLUDE_DIR  "@PACKAGE_IMAGE_INCLUDE_DIR@")
+
+check_required_components(image)
+
+find_package(SofaBase REQUIRED)
+find_package(Newmat REQUIRED)
+
+if(NOT TARGET image)
+	include("${CMAKE_CURRENT_LIST_DIR}/imageTargets.cmake")
+endif() 
+
+set(image_LIBRARIES image)
+set(image_INCLUDE_DIRS ${IMAGE_INCLUDE_DIR})
