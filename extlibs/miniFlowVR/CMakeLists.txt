@@ -66,7 +66,7 @@ endif()
 set(MINI_FLOWVR TRUE)
 configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/MiniFlowVR.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/flowvr/MiniFlowVR.h )
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/MiniFlowVR.h
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/flowvr/MiniFlowVR.h
          DESTINATION "${MINIFLOWVR_INSTALL_INCLUDE_DIR}/flowvr")
 
 set_target_properties( miniFlowVR  PROPERTIES DEBUG_POSTFIX "_d" )
