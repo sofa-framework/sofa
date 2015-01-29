@@ -28,7 +28,6 @@
 #include "initCompliant.h"
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
-#include <sofa/component/component.h>
 
 namespace sofa
 {

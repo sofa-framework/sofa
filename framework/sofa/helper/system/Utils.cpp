@@ -37,6 +37,7 @@
 # include <errno.h>
 # include <string.h>            // for strerror()
 # include <linux/limits.h>      // for PATH_MAX
+# include <string.h>            // for strerror()
 #endif
 
 #include <stdlib.h>

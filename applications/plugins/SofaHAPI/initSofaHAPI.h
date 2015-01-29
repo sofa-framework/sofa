@@ -25,7 +25,7 @@
 #ifndef SOFAHAPI_INITSOFAHAPI_H
 #define SOFAHAPI_INITSOFAHAPI_H
 
-#include <sofa/SofaHAPI.h>
+#include <SofaHAPI/SofaHAPI.h>
 
 namespace SofaHAPI
 {

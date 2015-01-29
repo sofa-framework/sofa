@@ -34,7 +34,6 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaUserInteraction/RayModel.h>
 #include <SofaVolumetricData/DistanceGridCollisionModel.h>
-#include <SofaMiscCollision/TetrahedronModel.h>
 #include <SofaBaseCollision/DiscreteIntersection.h>
 
 namespace sofa

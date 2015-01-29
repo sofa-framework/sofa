@@ -23,12 +23,12 @@ set(SOFAMISC_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaMisc)
 set(SOFAMISC_INSTALL_LIB_DIR     lib     					  CACHE PATH "Installation directory for libraries")
 set(SOFAMISC_INSTALL_BIN_DIR     bin     					  CACHE PATH "Installation directory for executables")
 set(SOFAMISC_INSTALL_INCLUDE_DIR include 					  CACHE PATH "Installation directory for header files")
-set(SOFAMISC_INSTALL_CMAKE_DIR   lib/cmake/SofaMisc   CACHE PATH "Installation directory for CMake files")
+set(SOFAMISC_INSTALL_CMAKE_DIR   ${SOFAMISC_INSTALL_LIB_DIR}/cmake/SofaMisc)
 
 ## SofaMisc dependencies
 ##
-find_package(SofaCommon REQUIRED)
-set(SOFAMISC_DEPENDENCY_DIR ${SofaCommon_INCLUDE_DIRS})
+find_package(SofaGeneral REQUIRED)
+set(SOFAMISC_DEPENDENCY_DIR ${SofaGeneral_INCLUDE_DIRS})
 
 configure_file( ${SofaMisc_SOURCE_DIR}/SofaMisc.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaMisc.h )
@@ -43,6 +43,10 @@ set(SOFAMISC_TARGETS SofaMiscTopology SofaMiscMapping SofaMiscForceField SofaMis
 
 foreach(TARGET ${SOFAMISC_TARGETS})
   add_subdirectory(${SofaMisc_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+  # set IDE project filter
+  if(MSVC)
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaMisc")
+  endif()
 endforeach()
 
 include(CMakePackageConfigHelpers)

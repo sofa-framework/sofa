@@ -28,8 +28,7 @@
         typedef MType MassType; \
     }; \
 
-#include "Sofa_test.h"
-
+#include <gtest/gtest.h>
 #include <SofaBaseMechanics/DiagonalMass.h>
 
 //TODO : Perform smart tests :) Infrastructure for multi templated tests is ok.

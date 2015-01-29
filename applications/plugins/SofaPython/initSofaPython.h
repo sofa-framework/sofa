@@ -25,7 +25,7 @@
 #ifndef INITSOFAPYTHON_H
 #define INITSOFAPYTHON_H
 
-#include <sofa/SofaPython.h>
+#include <SofaPython/SofaPython.h>
 
 
 namespace sofa

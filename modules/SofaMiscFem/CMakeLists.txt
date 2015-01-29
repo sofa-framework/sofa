@@ -16,9 +16,9 @@ set(HEADER_FILES
 	MooneyRivlin.h
 	STVenantKirchhoff.h
 	VerondaWestman.h
-    material/BaseMaterial.h
-    material/NeoHookean.h
-    material/Ogden.h
+    BaseMaterial.h
+    NeoHookean.h
+    Ogden.h
     )
 
 set(SOURCE_FILES
@@ -42,7 +42,12 @@ endif()
 set(GROUP_BASE_DIR "..")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaSimpleFem)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem )
+
+if(SOFA_HAVE_NEWMAT)
+    target_link_libraries(${PROJECT_NAME} PUBLIC newmat)
+endif()
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_BUILD_INCLUDE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAMISC_DEPENDENCY_DIR}>")
@@ -55,10 +60,9 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAMISCFEM_C
 set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaMiscFem_libraries
         EXPORT    SofaMiscTargets
-        RUNTIME DESTINATION "${SOFAMISC_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${SOFAMISC_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
+        RUNTIME DESTINATION "${SOFAMISC_INSTALL_BIN_DIR}" COMPONENT SofaMisc_libraries
+        LIBRARY DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
+        ARCHIVE DESTINATION "${SOFAMISC_INSTALL_LIB_DIR}" COMPONENT SofaMisc_libraries
+        PUBLIC_HEADER DESTINATION "${SOFAMISC_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaMisc_headers
 )

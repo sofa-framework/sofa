@@ -1,4 +1,21 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(Compliant)
+
+set(COMPLIANT_MAJOR_VERSION 0)
+set(COMPLIANT_MINOR_VERSION 0)
+set(COMPLIANT_BUILD_VERSION 1)
+
+set(COMPLIANT_VERSION ${COMPLIANT_MAJOR_VERSION}.${COMPLIANT_MINOR_VERSION}.${COMPLIANT_BUILD_VERSION} CACHE INTERNAL "Set to internal so it can be changed by sub directories.")
+
+set(COMPLIANT_BUILD_LIB_DIR     ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(COMPLIANT_BUILD_BIN_DIR     ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(COMPLIANT_BUILD_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
+set(COMPLIANT_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/Compliant)
+
+set(COMPLIANT_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
+set(COMPLIANT_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
+set(COMPLIANT_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
+set(COMPLIANT_INSTALL_CMAKE_DIR   ${COMPLIANT_INSTALL_LIB_DIR}/cmake/Compliant )
 
 set(HEADER_FILES
     initCompliant.h
@@ -9,7 +26,6 @@ set(HEADER_FILES
     misc/FailNode.h
 
     mapping/RigidJointMapping.h
-	mapping/RigidJointMultiMapping.h
     mapping/AssembledRigidRigidMapping.h
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h
@@ -35,10 +51,6 @@ set(HEADER_FILES
     numericalsolver/BenchmarkSolver.h
     numericalsolver/PreconditionedSolver.h
     numericalsolver/PreconditionedCgSolver.h
-    numericalsolver/AnalysisSolver.h
-    numericalsolver/LumpedResponse.h
-    numericalsolver/LUResponse.h
-    numericalsolver/BiCgStabSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
@@ -78,11 +90,10 @@ set(HEADER_FILES
     contact/FrictionCompliantContact.h
     contact/BaseContact.h
     contact/PenalityCompliantContact.h
-
-    controller/CompliantSleepController.h
     
     utils/basis.h
     utils/cast.h
+    utils/cg.h
     utils/cone.h
     utils/edit.h
     utils/find.h
@@ -91,18 +102,15 @@ set(HEADER_FILES
     utils/kkt.h
     utils/krylov.h
     utils/map.h
+    utils/minres.h
+    utils/nan.h
     utils/pair.h
+    utils/preconditionedcg.h
     utils/schur.h
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
-    utils/thread_local.h
-
-    utils/cg.h
-    utils/preconditionedcg.h
-    utils/minres.h
-    utils/bicgstab.h
-)
+    utils/thread_local.h)
 
 set(SOURCE_FILES
     initCompliant.cpp
@@ -139,10 +147,6 @@ set(SOURCE_FILES
     numericalsolver/BenchmarkSolver.cpp
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
-    numericalsolver/AnalysisSolver.cpp
-    numericalsolver/LumpedResponse.cpp
-    numericalsolver/LUResponse.cpp
-    numericalsolver/BiCgStabSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
@@ -170,71 +174,77 @@ set(SOURCE_FILES
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
-    contact/PenalityCompliantContact.cpp
-	
-	controller/CompliantSleepController.cpp)
+    contact/PenalityCompliantContact.cpp)
 
 set(README_FILES Compliant.txt)
 
 # include python files
 include(./python/python.cmake)	
-	
-#if(WIN32)
-#	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-#	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-#else()
-#	include_directories("/usr/include/suitesparse/")
-#endif()
+
+
+find_package(SofaSimulation REQUIRED)
+find_package(SofaMisc REQUIRED)
+
+set(COMPLIANT_DEPENDENCY_INCLUDE_DIR ${SofaSimulation_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS})
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Compliant.h.in
+                ${CMAKE_CURRENT_BINARY_DIR}/Compliant/Compliant.h)
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/Compliant/Compliant.h
+         DESTINATION "${COMPLIANT_INSTALL_INCLUDE_DIR}/Compliant")
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)
 
-AddCompilerDefinitions("SOFA_BUILD_Compliant")
-AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)
-AddSourceDependencies( GenerateRigid )
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>") 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>") 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${COMPLIANT_DEPENDENCY_INCLUDE_DIR}>")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${COMPLIANT_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Compliant")
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-# is this really useful?
-#if(NOT APPLE)
-#	AddLinkerDependencies(amd lapack blas camd colamd cholmod)
-#endif()
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT Compliant_libraries
+        EXPORT  CompliantTargets
+        RUNTIME DESTINATION "${COMPLIANT_INSTALL_BIN_DIR}"
+        LIBRARY DESTINATION "${COMPLIANT_INSTALL_LIB_DIR}"
+        ARCHIVE DESTINATION "${COMPLIANT_INSTALL_LIB_DIR}")
 
-# WIN32: copy the needed dlls from the lib dir to the Sofa bin dir
-#if(WIN32)
-#	file(GLOB sharedObjects "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
-#	foreach(sharedObject ${sharedObjects})
-#		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-#	endforeach()
-#endif()
-
-
-
-
-
-
-
-#### BOOST ######
-
-# linking with boost-system is needed
-# that means an installed version of boost is mandatory (sadly)
-# I loved the header-only boost
-
-# max: hopefully this is not needed anymore
-
-# if(NOT SOFA-EXTERNAL_BOOST)
-#    message(FATAL_ERROR "Compliant plugin needs a compiled Boost library >= 1.48. Please modify the SOFA-EXTERNAL_BOOST_PATH option to fix it...")
-# endif()
-# find_package(Boost COMPONENTS system REQUIRED)
-# AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+foreach(HEADER ${HEADER_FILES})
+    string(REGEX MATCH "(.*)[/\\]" DIR ${HEADER})
+    install(FILES ${HEADER} DESTINATION "${COMPLIANT_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}/${DIR}")
+endforeach(HEADER HEADERS)
 
 
-if(LINUX OR UNIX AND NOT APPLE)
-    AddLinkerDependencies( rt ) # clock_gettime
-endif()
+include(CMakePackageConfigHelpers)
+# CompliantConfigVersion.cmake file (same for build tree and intall)
+write_basic_package_version_file(${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigVersion.cmake
+                                 VERSION ${COMPLIANT_VERSION}
+                                 COMPATIBILITY AnyNewerVersion)
+
+install(FILES ${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigVersion.cmake
+        DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR})
 
 
+# CompliantConfig.cmake (build tree)
+set(COMPLIANT_INCLUDE_DIR "${COMPLIANT_BUILD_INCLUDE_DIR}")
+configure_package_config_file(CompliantConfig.cmake.in
+                              ${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfig.cmake
+                              INSTALL_DESTINATION ${COMPLIANT_BUILD_CMAKE_DIR}
+                              PATH_VARS COMPLIANT_INCLUDE_DIR)
 
+# CompliantConfig.cmake (installed)
+set(COMPLIANT_INCLUDE_DIR "${COMPLIANT_INSTALL_INCLUDE_DIR}")
+configure_package_config_file(CompliantConfig.cmake.in
+                              ${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigInstall.cmake
+                              INSTALL_DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR}
+                              PATH_VARS COMPLIANT_INCLUDE_DIR)
 
+install(FILES ${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigInstall.cmake
+        DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR}
+        RENAME CompliantConfig.cmake)
 
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
-include(custom.cmake OPTIONAL)
-
+# CompliantTargets.cmake (installed)
+install(EXPORT CompliantTargets
+        DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR})

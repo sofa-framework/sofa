@@ -20,24 +20,14 @@ set(SOFAPYTHON_BUILD_CMAKE_DIR   ${CMAKE_BINARY_DIR}/SofaPython)
 set(SOFAPYTHON_INSTALL_LIB_DIR     lib                      CACHE PATH "Installation directory for libraries relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAPYTHON_INSTALL_BIN_DIR     bin                      CACHE PATH "Installation directory for executables relative to CMAKE_INSTALL_PREFIX variable")
 set(SOFAPYTHON_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installation directory for header files relative to CMAKE_INSTALL_PREFIX variable")
-set(SOFAPYTHON_INSTALL_CMAKE_DIR   lib/cmake/SofaPython     CACHE PATH "Installation directory for CMake files relative to CMAKE_INSTALL_PREFIX variable")
+set(SOFAPYTHON_INSTALL_CMAKE_DIR   ${SOFAPYTHON_INSTALL_LIB_DIR}/cmake/SofaPython )
 
-## plugin external dependencies
-if (APPLE)
-    # on MacOS you must use macport to use python SDK
-    # standard FindPythonLibs script mess with macports and apple version
-    set(PYTHON_LIBRARIES "-F/opt/local/Library/Frameworks/ -framework Python")
-    set(PYTHON_INCLUDE_DIRS "/opt/local/Library/Frameworks/Python.framework/Headers")	 
-    # fixes compilation on 10.9, where python 2.7 is a system
-    # framework
-    set(PYTHON_LIBRARIES "-F/System/Library/Frameworks/ -framework Python")
-    set(PYTHON_INCLUDE_DIRS "/System/Library/Frameworks/Python.framework/Headers")
-else()
-    find_package(PythonLibs 2.7 REQUIRED)
-endif()
+
+find_package(PythonLibs 2.7 REQUIRED)
 
 find_package(SofaGui REQUIRED)
 find_package(SofaGeneral REQUIRED)
+find_package(SofaMisc REQUIRED)
 set(SOFAPYTHON_DEPENDENCY_INCLUDE_DIR ${SofaGui_INCLUDE_DIRS} ${SofaGeneral_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS} )
 
 set(SOFA_HAVE_PYTHON 1)
@@ -134,17 +124,22 @@ set(PYTHON_FILES
 include(./python/python.cmake)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/SofaPython.h.in
-                ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaPython.h)
-install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaPython.h
-         DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/sofa")
+                ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h)
+install( FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaPython/SofaPython.h
+         DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/SofaPython")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} )
-target_link_libraries( ${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon ${PYTHON_LIBRARIES})
+target_link_libraries( ${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral ${PYTHON_LIBRARIES})
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)
+    target_link_libraries(${PROJECT_NAME} PRIVATE dl)
+endif()
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>") 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>") 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAPYTHON_DEPENDENCY_INCLUDE_DIR}>")
 set( SOFAPYTHON_COMPILER_FLAGS "-DSOFA_BUILD_SOFAPYTHON")
-# Python's implementation deliberately breaks strict-aliasing rules, so we
+
+# The implementation of Python deliberately breaks strict-aliasing rules, so we
 # compile with -fno-strict-aliasing to prevent the compiler from relying on
 # those rules to optimize the code.
 if(${CMAKE_COMPILER_IS_GNUCC})
@@ -191,3 +186,6 @@ install(TARGETS ${PROJECT_NAME}
     PUBLIC_HEADER DESTINATION "${SOFAPYTHON_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
     )
  
+# SofaPythonTargets.cmake (installed)
+install(EXPORT SofaPythonTargets
+        DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR} )

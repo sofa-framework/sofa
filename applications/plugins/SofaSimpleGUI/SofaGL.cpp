@@ -2,9 +2,13 @@
 #include "SofaGL.h"
 #include "VisualPickVisitor.h"
 #include <sofa/core/objectmodel/Tag.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 
 namespace sofa {
 using core::objectmodel::Tag;
+using std::cerr;
+using std::cout;
+using std::endl;
 
 namespace simplegui {
 
@@ -16,7 +20,7 @@ SofaGL::SofaGL(SofaScene *s) :
 {
     if(!_sofaScene)
     {
-        std::cerr << "Error: you are trying to create a SofaGL object with a null SofaScene" << std::endl;
+        cerr << "Error: you are trying to create a SofaGL object with a null SofaScene" << endl;
         return;
     }
 

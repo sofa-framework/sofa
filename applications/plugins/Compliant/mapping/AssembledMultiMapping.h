@@ -9,15 +9,13 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <sofa/component/component.h>
-
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include "initCompliant.h"
+#include "../initCompliant.h"
 
 // #include "debug.h"
 

@@ -33,8 +33,6 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/OptionsGroup.h>
 
-#include <sofa/component/component.h>
-
 #define ADDITION 0
 #define SUBTRACTION 1
 #define MULTIPLICATION 2

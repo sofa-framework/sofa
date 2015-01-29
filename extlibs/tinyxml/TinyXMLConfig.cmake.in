@@ -7,11 +7,11 @@
 
 set_and_check(TINYXML_INCLUDE_DIR "@PACKAGE_TINYXML_INCLUDE_DIR@")
 
-check_required_components(TinyXML)
-
 if( NOT TARGET tinyxml ) 
 	include("${CMAKE_CURRENT_LIST_DIR}/TinyXMLTargets.cmake")
 endif() 
+
+check_required_components(tinyxml)
 
 # Variables for compatibility with MODULE mode find_package. 
 set(TinyXML_LIBRARIES tinyxml)

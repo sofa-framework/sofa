@@ -29,6 +29,7 @@
 #pragma once
 #endif
 
+#include <sofa/SofaFramework.h>
 #include <sofa/SofaCommon.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

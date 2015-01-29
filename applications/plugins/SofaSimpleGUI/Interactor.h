@@ -3,7 +3,6 @@
 
 #include "initSimpleGUI.h"
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/typedef/Sofa_typedef.h>
 #include "PickedPoint.h"
 
 

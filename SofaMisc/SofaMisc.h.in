@@ -26,7 +26,7 @@
 #ifndef _SOFA_MISC_H_
 #define _SOFA_MISC_H_
 
-#include <sofa/SofaCommon.h>
+#include <sofa/SofaGeneral.h>
 
 #define SOFAMISC_MAJOR_VERSION ${SOFAMISC_MAJOR_VERSION}
 #define SOFAMISC_MINOR_VERSION ${SOFAMISC_MINOR_VERSION}

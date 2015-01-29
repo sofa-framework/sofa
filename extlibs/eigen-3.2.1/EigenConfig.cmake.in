@@ -1,0 +1,16 @@
+# - Config file for the miniEigen package of sofa extlibs
+#  It defines the following variables
+#  Eigen_INCLUDE_DIRS - include directories for Eigen
+#  Eigen_LIBRARIES    - libraries for boost 
+@PACKAGE_INIT@
+
+set_and_check(EIGEN_INCLUDE_DIR  "@PACKAGE_EIGEN_INCLUDE_DIR@")
+
+check_required_components(Eigen)
+
+if(NOT TARGET SofaEigenHeaders)
+    include("${CMAKE_CURRENT_LIST_DIR}/EigenTargets.cmake")    
+endif() 
+
+set(Eigen_INCLUDE_DIRS ${EIGEN_INCLUDE_DIR} )
+set(Eigen_LIBRARIES SofaEigenHeaders )

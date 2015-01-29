@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
 #include "initImage.h"
+#include <sofa/helper/system/config.h>
 
 namespace sofa
 {

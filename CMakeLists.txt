@@ -9,7 +9,7 @@ if(MSVC)
 endif()
 
 if( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
-  set( CMAKE_INSTALL_PREFIX ${Sofa_SOURCE_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE )
+    set( CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE )
 endif (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
 
 message("Install prefix: ${CMAKE_INSTALL_PREFIX}")
@@ -24,16 +24,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # Environment
 set(SOFA_CMAKE_DIR "${Sofa_SOURCE_DIR}/cmake" )
 list(APPEND CMAKE_MODULE_PATH "${SOFA_CMAKE_DIR}/Modules")
-include("${SOFA_CMAKE_DIR}/SofaBuildFlags.cmake")
-
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
+include(CMakeSofaBuildFlags)
+
+
+
 # Sofa libraries
-set(SOFA_EXTERNALS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sofa-win-dependencies-21-11-2013" )
+set(SOFA_EXTERNALS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/sofa-win-dependencies-21-11-2013")
 set(SOFA_DEPS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeps")
-set(SOFA_FRAMEWORK_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
+set(SOFA_FRAMEWORK_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaFramework")
 set(SOFA_SIMULATION_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimulation")
-set(SOFA_BASE_DIR   "${CMAKE_CURRENT_SOURCE_DIR}/SofaBase"  )
+set(SOFA_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaBase")
 set(SOFA_COMMON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaCommon")
 set(SOFA_GENERAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGeneral")
 set(SOFA_ADVANCED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaAdvanced")
@@ -41,6 +43,9 @@ set(SOFA_MISC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaMisc")
 set(SOFA_GUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGui")
 set(SOFA_EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 set(SOFA_SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+
+# cmake functions specific to sofa that needs to be redistributed.
+add_subdirectory( ${SOFA_CMAKE_DIR} )
 
 # externals
 if(EXISTS ${SOFA_EXTERNALS_DIR} )
@@ -87,8 +92,3 @@ add_subdirectory("${SOFA_EXAMPLES_DIR}")
 
 # share 
 add_subdirectory("${SOFA_SHARE_DIR}")
-
-    
-
-
-

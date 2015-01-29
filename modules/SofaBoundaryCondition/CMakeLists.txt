@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 project(SofaBoundaryCondition)
 
 set(HEADER_FILES
@@ -127,7 +127,7 @@ set(GROUP_BASE_DIR "..")
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries( ${PROJECT_NAME} SofaBaseTopology )
+target_link_libraries( ${PROJECT_NAME} PUBLIC SofaBaseTopology )
 #if(SOFA_HAVE_EIGEN2)
 #    target_link_libraries( ${PROJECT_NAME} SofaEigen2Solver )
 #endif()
@@ -143,11 +143,9 @@ set_target_properties( ${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFABOUNDARY_
 set_target_properties( ${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}" )
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT SofaBoundaryGeneral_libraries
         EXPORT    SofaGeneralTargets
-        RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}"
-        LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"
-        ARCHIVE DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}"
-        PUBLIC_HEADER DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}"
-
+        RUNTIME DESTINATION "${SOFAGENERAL_INSTALL_BIN_DIR}" COMPONENT SofaGeneral_libraries
+        LIBRARY DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}" COMPONENT SofaGeneral_libraries
+        ARCHIVE DESTINATION "${SOFAGENERAL_INSTALL_LIB_DIR}" COMPONENT SofaGeneral_libraries
+        PUBLIC_HEADER DESTINATION "${SOFAGENERAL_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}" COMPONENT SofaGeneral_headers
 )

@@ -28,7 +28,6 @@
 #ifndef SOFA_NO_OPENGL
 
 #include <sofa/SofaFramework.h>
-#include <sofa/SofaFramework.h>
 #include <sofa/helper/system/config.h>
 #include <string>
 

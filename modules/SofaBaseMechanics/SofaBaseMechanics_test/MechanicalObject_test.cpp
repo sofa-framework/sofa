@@ -23,9 +23,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "Sofa_test.h"
-
+#include <gtest/gtest.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseMechanics/MechanicalObject.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <limits>
 
 namespace sofa
 {
@@ -67,7 +70,7 @@ struct CheckPositionImpl<Vec<N, REAL>, 1>
 {
     void operator () (const Vec<N, REAL>& vec)
     {
-        EXPECT_NEAR(REAL(), vec.x(), Sofa_test<REAL>::epsilon());
+        EXPECT_NEAR(REAL(), vec.x(), std::numeric_limits<REAL>::epsilon());
     }
 };
 
@@ -77,7 +80,7 @@ struct CheckPositionImpl<Vec<N, REAL>, 2>
     void operator () (const Vec<N, REAL>& vec)
     {
         CheckPositionImpl<Vec<N, REAL>, 1>()(vec);
-        EXPECT_NEAR(REAL(), vec.y(), Sofa_test<REAL>::epsilon());
+        EXPECT_NEAR(REAL(), vec.y(), std::numeric_limits<REAL>::epsilon() );
     }
 };
 
@@ -87,7 +90,7 @@ struct CheckPositionImpl<Vec<N, REAL>, 3>
     void operator () (const Vec<N, REAL>& vec)
     {
         CheckPositionImpl<Vec<N, REAL>, 2>()(vec);
-        EXPECT_NEAR(REAL(), vec.z(), Sofa_test<REAL>::epsilon());
+        EXPECT_NEAR(REAL(), vec.z(), std::numeric_limits<REAL>::epsilon());
     }
 };
 
