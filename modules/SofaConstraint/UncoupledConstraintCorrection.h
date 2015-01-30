@@ -127,6 +127,11 @@ public:
 
     Data<bool> f_verbose;
 
+    Data < bool > d_handleTopologyChange;
+      
+    Data< Real > d_correctionVelocityFactor;
+    Data< Real > d_correctionPositionFactor;
+
 private:
     // new :  for non building the constraint system during solving process //
     VecDeriv constraint_disp, constraint_force;

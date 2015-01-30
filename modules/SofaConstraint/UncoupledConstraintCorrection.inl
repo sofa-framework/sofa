@@ -52,6 +52,8 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , compliance(initData(&compliance, "compliance", "compliance value on each dof"))
     , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
+    , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
+    , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
 {
 }
 
@@ -422,6 +424,9 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(c
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
+      
+    const Real xFactor = this->d_correctionPositionFactor.getValue();
+    const Real vFactor = (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
     const double invDt = 1.0 / this->getContext()->getDt();
 
@@ -429,8 +434,8 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(c
     {
         x[i] = x_free[i];
         v[i] = v_free[i];
-        x[i] += dx[i];
-        v[i] += dx[i] * invDt;
+        x[i] += dx[i] * xFactor;
+        v[i] += dx[i] * vFactor;
     }
 
     x_d.endEdit();
@@ -451,9 +456,11 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
 
+    const Real xFactor = this->d_correctionPositionFactor.getValue();
+
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        x[i] = x_free[i] + dx[i];
+        x[i] = x_free[i] + dx[i] * xFactor;
     }
 
     x_d.endEdit();
@@ -472,11 +479,12 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-//	const double invDt = 1.0 / this->getContext()->getDt();
+    //const Real vFactor = (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
+    const Real vFactor = this->d_correctionVelocityFactor.getValue();
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
-        v[i] = v_free[i] + dx[i]/* * invDt*/;
+        v[i] = v_free[i] + dx[i] * vFactor;
     }
 
     v_d.endEdit();
@@ -520,7 +528,9 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     VecDeriv& v = vData.wref();
     const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
     const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
-    const double invDt = 1.0/this->getContext()->getDt();
+
+    const Real xFactor = this->d_correctionPositionFactor.getValue();
+    const Real vFactor = (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
     // Euler integration... will be done in the "integrator" as soon as it exists !
     dx.resize(v.size());
@@ -530,8 +540,8 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
         x[i] = x_free[i];
         v[i] = v_free[i];
         dx[i] = force[i] * (i<comp.size() ? comp[i] : comp0);
-        x[i] += dx[i];
-        v[i] += dx[i]*invDt;
+        x[i] += dx[i] * xFactor;
+        v[i] += dx[i] * vFactor;
     }
 }
 

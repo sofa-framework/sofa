@@ -392,7 +392,8 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
     const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
     const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
 
-    const double dt = this->getContext()->getDt();
+    const Real xFactor = this->d_correctionPositionFactor.getValue();
+    const Real vFactor = (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
     // Euler integration... will be done in the "integrator" as soon as it exists !
     dx.resize(v.size());
@@ -407,10 +408,8 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
         dx[i][3] =  usedComp[1] * force[i][3] +  usedComp[2] * force[i][4] +  usedComp[3] * force[i][5];
         dx[i][4] =  usedComp[2] * force[i][3] +  usedComp[4] * force[i][4] +  usedComp[5] * force[i][5];
         dx[i][5] =  usedComp[3] * force[i][3] +  usedComp[5] * force[i][4] +  usedComp[6] * force[i][5];
-        dx[i] *= (1.0 / dt);
-        v[i] += dx[i];
-        dx[i] *= dt;
-        x[i] += dx[i];
+        v[i] += dx[i] * vFactor;
+        x[i] += dx[i] * xFactor;
     }
 }
 
