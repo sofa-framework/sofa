@@ -356,6 +356,45 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::initNeighbourhoodPoints() {}
 
+
+template <class DataTypes>
+double  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */) const
+{
+	 sofa::helper::AdvancedTimer::stepBegin("getPotentialEnergy");
+
+	const VecCoord &x=*(mstate->getX());
+	double energy=0;
+
+    unsigned int v0,v1;
+    int nbEdges=_topology->getNbEdges();
+
+    const EdgeRestInformation *einfo;
+
+    const edgeRestInfoVector edgeInf = edgeInfo.getValue();
+    Deriv force,dp;
+    Deriv dp0,dp1;
+
+    for(int i=0; i<nbEdges; i++ )
+    {
+        einfo=&edgeInf[i];
+        v0=_topology->getEdge(i)[0];
+        v1=_topology->getEdge(i)[1];
+        dp0=x[v0]-_initialPoints[v0];
+        dp1=x[v1]-_initialPoints[v1];
+        dp = dp1-dp0;
+		force=einfo->DfDx*dp;
+		energy+=dot(force,dp1);
+		force=einfo->DfDx.transposeMultiply(dp);
+		energy-=dot(force,dp0);
+    }
+
+	energy/=-2.0;
+	if (f_printLog.getValue())
+		std::cout << "energy="<<energy<<std::endl;
+    sofa::helper::AdvancedTimer::stepEnd("getPotentialEnergy");
+	return(energy);
+}
+
 template <class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
