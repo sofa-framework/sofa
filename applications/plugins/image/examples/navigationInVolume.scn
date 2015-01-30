@@ -1,14 +1,11 @@
 <?xml version="1.0"?>
-<Node 	 name="root"  gravity="0 0 0"  dt="0.05"  >
-	<RequiredPlugin name="requiredPlugin1"  printLog="1"  pluginName="image" />
-	<ImageContainer template="ImageUC" name="image"  listening="1"  filename="data/pelvis_f.raw" />
+<Node name="root"  >
+    
+	<RequiredPlugin pluginName="image" />
+        
+	<ImageContainer template="ImageUC" name="image"  filename="data/pelvis_f.raw" />
 	<ImageViewer template="ImageUC" name="viewer"  image="@image.image"  transform="@image.transform"  plane="0 226 50"/>
-	<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.5"  rayleighMass="0.5" />
-	<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="50"  tolerance="1e-009"  threshold="1e-009" />
-	<MechanicalObject template="Rigid" name="DOFs"  position="0 0 0 0 0 0 1"  velocity="0 0 0 0 0 0"  force="0 0 0 0 0 0"  externalForce="0 0 0 0 0 0"  derivX="0 0 0 0 0 0"  rest_position="0 0 0 0 0 0 1"  restScale="1" />
-	<OglModel template="ExtVec3f" name="Visual"  fileMesh="data/pelvis_f.obj"  material="Default Diffuse 1 1 0.4 0.5 1 Ambient 1 0.2 0.08 0.1 1 Specular 0 1 0.4 0.5 1 Emissive 0 1 0.4 0.5 1 Shininess 0 45 "  primitiveType="DEFAULT"  blendEquation="GL_FUNC_ADD"  sfactor="GL_SRC_ALPHA"  dfactor="GL_ONE_MINUS_SRC_ALPHA" />
-	<RigidMapping template="Rigid,ExtVec3f" name="rigidMap1"  input="@."  output="@Visual" />
-	<RecordedCamera name="recordedCamera0"  listening="1" translationMode="1" cameraPositions="-1.48 -0.89 0.41
-                                                                                             -1.35 -0.74 0.41 
-                                                                                             -1.03 -0.53 0.41"/>
+        
+	<OglModel name="Mesh" fileMesh="data/pelvis_f.obj" material="Default Diffuse 1 1 0.4 0.5 1 Ambient 1 0.2 0.08 0.1 1 Specular 0 1 0.4 0.5 1 Emissive 0 1 0.4 0.5 1 Shininess 0 45"/>
+        
 </Node>
