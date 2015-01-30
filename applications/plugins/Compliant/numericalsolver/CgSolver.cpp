@@ -68,7 +68,7 @@ void CgSolver::solve_kkt(AssembledSystem::vec& x,
     vec rhs = b;
     if( system.n ) rhs.tail(system.n) = -rhs.tail(system.n);
 
-    kkt A(system, false, damping);
+    kkt A(system, parallel.getValue(), damping);
 
     typedef ::cg<real> solver_type;
     solver_type::solve(x, A, rhs, p);

@@ -40,6 +40,7 @@ set(HEADER_FILES
     numericalsolver/LUSolver.h
     numericalsolver/LUResponse.h
     numericalsolver/BiCgStabSolver.h
+    numericalsolver/NNCGSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
@@ -92,6 +93,7 @@ set(HEADER_FILES
     utils/kkt.h
     utils/krylov.h
     utils/map.h
+    utils/nan.h
     utils/pair.h
     utils/schur.h
     utils/scoped.h
@@ -145,6 +147,7 @@ set(SOURCE_FILES
     numericalsolver/LUSolver.cpp
     numericalsolver/LUResponse.cpp
     numericalsolver/BiCgStabSolver.cpp
+    numericalsolver/NNCGSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
