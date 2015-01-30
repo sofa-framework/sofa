@@ -89,7 +89,7 @@ set(SOURCE_FILES
 	# ../forcefield/UniformVelocityDampingForceField.cpp
 	# ../forcefield/DiagonalVelocityDampingForceField.cpp
  #    ../projectiveconstraintset/AffineMovementConstraint.cpp 
- #    ../projectiveconstraintset/FixedConstraint.cpp 
+     ../projectiveconstraintset/FixedConstraint.cpp 
  #    ../projectiveconstraintset/FixedPlaneConstraint.cpp 
  #    ../projectiveconstraintset/FixedRotationConstraint.cpp 
  #    ../projectiveconstraintset/FixedTranslationConstraint.cpp 

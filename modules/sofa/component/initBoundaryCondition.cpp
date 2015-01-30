@@ -61,7 +61,7 @@ SOFA_LINK_CLASS(ConstantForceField)
 //SOFA_LINK_CLASS(TrianglePressureForceField)
 //#endif
 //SOFA_LINK_CLASS(VaccumSphereForceField)
-//SOFA_LINK_CLASS(FixedConstraint)
+SOFA_LINK_CLASS(FixedConstraint)
 //SOFA_LINK_CLASS(FixedPlaneConstraint)
 //SOFA_LINK_CLASS(FixedRotationConstraint)
 //SOFA_LINK_CLASS(FixedTranslationConstraint)

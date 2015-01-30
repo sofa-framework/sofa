@@ -12,11 +12,11 @@ set(HEADER_FILES
     ../collision/MouseInteractor.inl 
     ../collision/AttachBodyPerformer.h 
     ../collision/AttachBodyPerformer.inl 
-    # ../collision/FixParticlePerformer.h 
-    # ../collision/FixParticlePerformer.inl 
+     ../collision/FixParticlePerformer.h 
+     ../collision/FixParticlePerformer.inl 
      ../collision/InteractionPerformer.h
-    # ../collision/SuturePointPerformer.h 
-    # ../collision/SuturePointPerformer.inl 
+     ../collision/SuturePointPerformer.h 
+     ../collision/SuturePointPerformer.inl 
     # ../collision/GraspingManager.h 
     # ../controller/ArticulatedHierarchyController.h 
     # ../controller/ArticulatedHierarchyBVHController.h 
@@ -30,15 +30,15 @@ set(HEADER_FILES
     # ../collision/RayDiscreteIntersection.h 
     # ../collision/RayDiscreteIntersection.inl 
     # ../collision/RayNewProximityIntersection.h 
-#     ../collision/RemovePrimitivePerformer.h 
-#     ../collision/RemovePrimitivePerformer.inl 
-#     ../collision/InciseAlongPathPerformer.h 
+     ../collision/RemovePrimitivePerformer.h 
+     ../collision/RemovePrimitivePerformer.inl 
+     ../collision/InciseAlongPathPerformer.h 
      ../collision/TopologicalChangeManager.h
-#     ../collision/CuttingPoint.h 
+     ../collision/CuttingPoint.h 
 # #    ../collision/AddFramePerformer.h
-# #    ../collision/AddFramePerformer.inl
-#     ../collision/AddRecordedCameraPerformer.h 
-#     ../collision/StartNavigationPerformer.h
+#    ../collision/AddFramePerformer.inl
+     ../collision/AddRecordedCameraPerformer.h 
+     ../collision/StartNavigationPerformer.h
 #     ../controller/MechanicalStateControllerOmni.h 
 # 	../controller/MechanicalStateControllerOmni.inl 
 #     ../controller/NodeToggleController.h
@@ -55,9 +55,9 @@ set(SOURCE_FILES
      ../collision/ComponentMouseInteraction.cpp
     ../collision/MouseInteractor.cpp 
     ../collision/AttachBodyPerformer.cpp 
-    # ../collision/FixParticlePerformer.cpp 
+     ../collision/FixParticlePerformer.cpp 
      ../collision/InteractionPerformer.cpp
-    # ../collision/SuturePointPerformer.cpp 
+     ../collision/SuturePointPerformer.cpp 
     # ../collision/GraspingManager.cpp 
     # ../controller/ArticulatedHierarchyController.cpp 
     # ../controller/ArticulatedHierarchyBVHController.cpp 
@@ -67,13 +67,13 @@ set(SOURCE_FILES
     ../collision/RayModel.cpp 
     # ../collision/RayDiscreteIntersection.cpp 
     # ../collision/RayNewProximityIntersection.cpp 
-    # ../collision/RemovePrimitivePerformer.cpp 
-    # ../collision/InciseAlongPathPerformer.cpp 
+     ../collision/RemovePrimitivePerformer.cpp 
+     ../collision/InciseAlongPathPerformer.cpp 
      ../collision/TopologicalChangeManager.cpp
-    # ../collision/CuttingPoint.cpp 
-#    ../collision/AddFramePerformer.cpp
- #    ../collision/AddRecordedCameraPerformer.cpp
- #    ../collision/StartNavigationPerformer.cpp
+     ../collision/CuttingPoint.cpp 
+    # ../collision/AddFramePerformer.cpp
+     ../collision/AddRecordedCameraPerformer.cpp
+     ../collision/StartNavigationPerformer.cpp
  #    ../controller/MechanicalStateControllerOmni.cpp 
  #    ../controller/NodeToggleController.cpp
  #    ../controller/InterpolationController.cpp

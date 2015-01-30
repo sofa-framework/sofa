@@ -34,12 +34,12 @@ set(HEADER_FILES
     ../collision/LineLocalMinDistanceFilter.h
     ../collision/TriangleLocalMinDistanceFilter.h
     ../collision/LocalMinDistanceFilter.h
-    # ../collision/MeshIntTool.h
-    # ../collision/MeshIntTool.inl
-    # ../collision/IntrTriangleOBB.h
-    # ../collision/IntrTriangleOBB.inl
-    # ../collision/IntrMeshUtility.h
-    # ../collision/IntrMeshUtility.inl
+    ../collision/MeshIntTool.h
+    ../collision/MeshIntTool.inl
+     ../collision/IntrTriangleOBB.h
+     ../collision/IntrTriangleOBB.inl
+    ../collision/IntrMeshUtility.h
+    ../collision/IntrMeshUtility.inl
     # ../collision/IncrSAP.h
     # ../collision/IncrSAP.inl
     # ../collision/DirectSAP.h
@@ -66,10 +66,10 @@ set(SOURCE_FILES
     ../collision/LineLocalMinDistanceFilter.cpp
     ../collision/TriangleLocalMinDistanceFilter.cpp
     ../collision/LocalMinDistanceFilter.cpp
-    # ../collision/MeshIntTool.cpp
+    ../collision/MeshIntTool.cpp
     # ../collision/RigidContactMapper.cpp
-    # ../collision/IntrTriangleOBB.cpp
-    # ../collision/IntrMeshUtility.cpp
+    ../collision/IntrTriangleOBB.cpp
+    ../collision/IntrMeshUtility.cpp
     # ../collision/IncrSAP.cpp
     # ../collision/DirectSAP.cpp
     )
