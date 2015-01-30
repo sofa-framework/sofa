@@ -5,7 +5,7 @@ set(HEADER_FILES
     ../initBaseVisual.h 
     ../visualmodel/BaseCamera.h 
     ../visualmodel/InteractiveCamera.h 
-    # ../visualmodel/RecordedCamera.h 
+    ../visualmodel/RecordedCamera.h
     ../visualmodel/VisualModelImpl.h 
     ../visualmodel/VisualStyle.h 
     # ../visualmodel/VisualTransform.h
@@ -17,7 +17,7 @@ set(SOURCE_FILES
     ../initBaseVisual.cpp 
     ../visualmodel/BaseCamera.cpp 
     ../visualmodel/InteractiveCamera.cpp 
-    # ../visualmodel/RecordedCamera.cpp 
+    ../visualmodel/RecordedCamera.cpp
     ../visualmodel/VisualModelImpl.cpp 
     ../visualmodel/VisualStyle.cpp 
     # ../visualmodel/VisualTransform.cpp

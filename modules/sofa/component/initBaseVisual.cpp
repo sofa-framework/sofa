@@ -44,7 +44,7 @@ void initBaseVisual()
 
 SOFA_LINK_CLASS(VisualModelImpl)
 SOFA_LINK_CLASS(InteractiveCamera)
-//SOFA_LINK_CLASS(RecordedCamera)
+SOFA_LINK_CLASS(RecordedCamera)
 
 } // namespace component
 
