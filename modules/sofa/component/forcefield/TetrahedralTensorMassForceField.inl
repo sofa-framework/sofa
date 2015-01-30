@@ -362,7 +362,7 @@ double  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const cor
 {
 	 sofa::helper::AdvancedTimer::stepBegin("getPotentialEnergy");
 
-	const VecCoord &x=*(mstate->getX());
+    const VecCoord &x=*(this->mstate->getX());
 	double energy=0;
 
     unsigned int v0,v1;
@@ -389,7 +389,7 @@ double  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const cor
     }
 
 	energy/=-2.0;
-	if (f_printLog.getValue())
+    if (this->f_printLog.getValue())
 		std::cout << "energy="<<energy<<std::endl;
     sofa::helper::AdvancedTimer::stepEnd("getPotentialEnergy");
 	return(energy);
