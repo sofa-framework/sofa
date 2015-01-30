@@ -118,6 +118,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params /* PARAMS FIRST
 
     // Define a
     MultiVecDeriv a(&vop, pID);
+	a.realloc( &vop, true, true );
     if(cpt ==0)
     {
         a.clear();
