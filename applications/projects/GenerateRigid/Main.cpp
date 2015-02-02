@@ -65,7 +65,7 @@ int main(int argc, char** argv)
     Vector3 center;
     Rigid3Mass mass;
 
-    if( !GenerateRigid(mass, center, argv[1], density, scale, rotation) )
+    if( !generateRigid(mass, center, argv[1], density, scale, rotation) )
     {
         return 2;
     }
