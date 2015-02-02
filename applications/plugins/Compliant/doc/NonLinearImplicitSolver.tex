@@ -34,6 +34,8 @@
 \newcommand{\Dv}{\Delta v}
 \newcommand{\lambdap}{\p{\lambda}}
 \newcommand{\phip}{\p{\phi}}
+\newcommand{\JpT}{J^{+^T}}
+\newcommand{\Cp}{\p{C}}
 
 
 \begin{document}
@@ -110,10 +112,9 @@ So \[ \ddd{\fp}{\vp}=h\beta K+B\] and \[\ddd{e}{\vp}=M-h\alpha B-h^2\alpha\beta 
 
 Bilateral, holonomic constraint $\phi(x)=0$, combined with the ODE leads to $Jv=0$ with $J=\ddd{\phi}{x}$, the constraint forces are $-J^T\lambdap$ with $\lambda$ the Lagrange multipliers.
 
-The error becomes \[ e \equiv M(\vp-\vm)-h(\alpha(\fp-J^T\lambdap)+(1-\alpha)\fm)\]
+The error becomes \[ e \equiv M(\vp-\vm)-h(\alpha(\fp-\JpT\lambdap)+(1-\alpha)\fm)\]
 
-For compliant constraints $C\lambda=-\phi$, \[ e \equiv M(\vp-\vm)-h(\alpha(\fp-J^T\lambdap)+(1-\alpha)\fm)-\sum_{i\in iterations}(Ch\lambdap_i-\phip_i)\]
-Note the tricky correction accumulation all along the iterations for compliant constraints.
+For compliant constraints $C\lambda=-\phi$ \[ e \equiv M(\vp-\vm)-h(\alpha(\fp-\JpT\lambdap)+(1-\alpha)\fm)-\Cp h\lambdap+\frac{\phip}{h}\]
 \\
 
 Unilateral constraints $\phi(x)>=0$ are handled the same way, expect they participate to the error only when they are violated (i.e. when then generate a force $\lambda$).
