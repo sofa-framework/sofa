@@ -41,55 +41,35 @@ int main(int argc, char** argv)
     sofa::component::init();
     sofa::simulation::xml::initXml();
 
-    sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(argv[1]);
-
-    if (mesh == NULL)
-    {
-        std::cout << "ERROR loading mesh "<<argv[1]<<std::endl;
-        return 2;
-    }
-
-    Vec3d center;
-    Rigid3Mass mass;
-
 
 //////// SCALE //////
-	Vec3d scale(1, 1, 1);
+    Vector3 scale(1, 1, 1);
 
     for( int i = 0; i < 3; ++i) {
 		if( argc > 4 + i ) scale[i] = std::atof(argv[4 + i]);
 	}
 
-	if( scale != Vec3d(1, 1, 1) ) {
-		for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
-			mesh->getVertices()[i] = mesh->getVertices()[i].linearProduct(scale);
-		}
-	}
 
 //////// ROTATION from euler angles in degrees //////
-    Vec3d rotation(0,0,0);
+    Vector3 rotation(0,0,0);
 
     for( int i = 0; i < 3; ++i) {
         if( argc > 7 + i ) rotation[i] = std::atof(argv[7 + i]);
     }
 
-    if( rotation != Vec3d(0,0,0) ) {
-
-        Quaternion q = sofa::helper::Quater<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
-
-        for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
-            mesh->getVertices()[i] = q.rotate( mesh->getVertices()[i] );
-        }
-    }
-
-
-	
-    projects::GenerateRigid(mass, center, mesh);
-
-    double density = 1000;
+////// DENSITY /////////////
+    SReal density = 1000;
     if (argc >= 4) density = atof( argv[3] );
     std::cout << "Using density = " << density << "kg/m^3" << std::endl;
-    mass.mass *= density;
+
+    Vector3 center;
+    Rigid3Mass mass;
+
+    if( !GenerateRigid(mass, center, argv[1], density, scale, rotation) )
+    {
+        return 2;
+    }
+
 
     std::ostream* out = &std::cout;
     if (argc >= 3)
