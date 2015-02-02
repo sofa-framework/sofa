@@ -37,7 +37,7 @@ namespace helper
 
 using namespace sofa::defaulttype;
 
-void GenerateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Mesh* mesh)
+void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Mesh* mesh)
 {
     using namespace sofa::helper;
     // Geometric Tools, Inc.
@@ -168,7 +168,7 @@ void GenerateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
 
 
 
-bool GenerateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFilename
+bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFilename
                    , SReal density
                    , const Vector3& scale
                    , const Vector3& rotation /*Euler angles*/
@@ -177,7 +177,7 @@ bool GenerateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
     sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
     if (mesh == NULL)
     {
-        std::cout << "ERROR loading mesh "<<meshFilename<<std::endl;
+        std::cerr << "ERROR loading mesh "<<meshFilename<<std::endl;
         return false;
     }
 
@@ -196,12 +196,34 @@ bool GenerateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
         }
     }
 
-    GenerateRigid( mass, center, mesh );
+    generateRigid( mass, center, mesh );
 
     mass.mass *= density;
 
     return true;
 }
+
+
+
+bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
+                                  , const std::string& meshFilename
+                                  , SReal density
+                                  , const defaulttype::Vector3& scale
+                                  )
+{
+    Rigid3Mass rigidMass;
+
+    if( !generateRigid( rigidMass, res.com, meshFilename, density, scale ) )
+        return false;
+
+    res.inertia = rigidMass.inertiaMatrix;
+    res.mass = rigidMass.mass;
+
+    //TODO extracting principal axes basis and corresponding rotation and diagonal inertia
+
+    return true;
+}
+
 
 }
 
