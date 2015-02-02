@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<Node 	name="Root" gravity="0 0 0" time="0" animate="0"  dt="0.5" showAxis="true">
+<MechanicalObject name="DOFs" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" position="0 0 0 1 0 0 0 1 0 1 1 0" />
+<MeshTopology name="quad" quads="0 1 3 2"  drawQuads="1" position="@DOFs.position"/>
+
+<QuadSetTopologyContainer name="QuadContainer" quads="@quad.quads"/>
+<QuadSetTopologyModifier />
+<QuadSetTopologyAlgorithms template="Vec3d" />
+<QuadSetGeometryAlgorithms template="Vec3d" />
+<!--<QuadPressureForceField normal="0 0 1" dmin="-0.01" dmax="0.01" showForces="1" pressure="0 0 0.2"/>-->
+
+</Node>
