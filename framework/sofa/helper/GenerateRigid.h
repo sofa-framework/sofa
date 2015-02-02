@@ -36,10 +36,10 @@ namespace helper
 {
 
 /// base function to compute center of mass, mass and inertia tensor from a mesh
-void GenerateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, const helper::io::Mesh* mesh );
+void SOFA_HELPER_API GenerateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, const helper::io::Mesh* mesh );
 
 /// user friendly function to compute center of mass, mass and inertia tensor from a mesh file, a density, a scale and a rotation
-bool GenerateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, const std::string& meshFilename
+bool SOFA_HELPER_API GenerateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, const std::string& meshFilename
                   , SReal density
                   , const defaulttype::Vector3& scale = defaulttype::Vector3(1,1,1)
                   , const defaulttype::Vector3& rotation /*Euler angles*/ = defaulttype::Vector3(0,0,0)
