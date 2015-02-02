@@ -41,7 +41,7 @@ SOFA_LINK_CLASS(MeshOBJ)
 SOFA_LINK_CLASS(MeshTrian)
 SOFA_LINK_CLASS(MeshSTL)
 
-Mesh* Mesh::Create(std::string filename)
+Mesh* Mesh::Create(const std::string& filename)
 {
     std::string loader="default";
     std::string::size_type p = filename.rfind('.');
@@ -50,7 +50,7 @@ Mesh* Mesh::Create(std::string filename)
     return FactoryMesh::CreateObject(loader, filename);
 }
 
-Mesh* Mesh::Create(std::string loader, std::string filename)
+Mesh* Mesh::Create(const std::string& loader, const std::string& filename)
 {
     return FactoryMesh::CreateObject(loader, filename);
 }

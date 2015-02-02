@@ -70,32 +70,26 @@ public:
     
 public:
 
-    vector<Vector3> & getVertices()
-    {
-        //std::cout << "vertices size : " << vertices.size() << std::endl;
-        return vertices;
-    };
+    vector<Vector3> & getVertices() { return vertices; }
+    const vector<Vector3> & getVertices() const { return vertices; }
     vector<Vector3> & getTexCoords() { return texCoords; }
+    const vector<Vector3> & getTexCoords() const { return texCoords; }
     vector<Vector3> & getNormals() { return normals; }
-    vector< vector < vector <int> > > & getFacets()
-    {
-        //std::cout << "facets size : " << facets.size() << std::endl;
-        return facets;
-    };
-    const Material& getMaterial() {return material; }
+    const vector<Vector3> & getNormals() const { return normals; }
+    vector< vector < vector <int> > > & getFacets() { return facets; }
+    const vector< vector < vector <int> > > & getFacets() const { return facets; }
 
-    const std::vector<Material>& getMaterials() {return materials; }
-    const std::vector<PrimitiveGroup>& getGroups() {return groups; }
+    const Material& getMaterial() const { return material; }
 
-    std::string& getTextureName()
-    {
-        return textureName;
-    };
+    const std::vector<Material>& getMaterials() { return materials; }
+    const std::vector<PrimitiveGroup>& getGroups() { return groups; }
+
+    std::string& getTextureName() { return textureName; }
 
     typedef Factory<std::string, Mesh, std::string> FactoryMesh;
 
-    static Mesh* Create(std::string filename);
-    static Mesh* Create(std::string loader, std::string filename);
+    static Mesh* Create(const std::string &filename);
+    static Mesh* Create(const std::string& loader, const std::string& filename);
 
     template<class Object>
     static Object* create(Object*, std::string arg)
