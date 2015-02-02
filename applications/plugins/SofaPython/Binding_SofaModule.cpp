@@ -36,6 +36,7 @@
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/config.h>
+#include <sofa/helper/GenerateRigid.h>
 
 
 using namespace sofa::core;
@@ -315,6 +316,40 @@ extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 
 
 
+// set the viewer camera
+extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
+{
+
+//    std::cerr<<"Sofa_generateRigid\n";
+
+    char* meshFilename;
+    double density;
+    double sx,sy,sz;
+    if (!PyArg_ParseTuple(args, "sdddd",&meshFilename,&density,&sx,&sy,&sz))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+//    std::cerr<<"meshFilename "<<meshFilename<<std::endl;
+//    std::cerr<<"density "<<density<<std::endl;
+//    std::cerr<<"scale "<<sx<<" "<<sy<<" "<<sz<<std::endl;
+
+    sofa::helper::GenerateRigidInfo rigid;
+    if( !sofa::helper::generateRigid( rigid, meshFilename, density, Vector3(sx,sy,sz) ) )
+        exit(0);
+
+//    std::cerr<<rigid.mass<<std::endl;
+//    std::cerr<<rigid.com<<std::endl;
+
+
+    return Py_BuildValue("dddddddddd",rigid.mass
+                         ,rigid.com[0],rigid.com[1],rigid.com[2]
+                         ,rigid.inertia[0][0],rigid.inertia[0][1],rigid.inertia[0][2],rigid.inertia[1][1],rigid.inertia[1][2],rigid.inertia[2][2]
+            );
+}
+
+
 // Méthodes du module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -329,6 +364,7 @@ SP_MODULE_METHOD(Sofa,setViewerResolution)
 SP_MODULE_METHOD(Sofa,setViewerBackgroundColor)
 SP_MODULE_METHOD(Sofa,setViewerCamera)
 SP_MODULE_METHOD(Sofa,getViewerCamera)
+SP_MODULE_METHOD(Sofa,generateRigid)
 SP_MODULE_METHODS_END
 
 

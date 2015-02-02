@@ -54,7 +54,7 @@ extern "C" {
 }
 
 /** \mainpage
-  This is a the starting page of the plugin documentation, defined in file initEmptyPlugin.h
+  This is a the starting page of the plugin documentation, defined in file initSofaPython.h
   */
 
 #endif // INITEmptyPlugin_H
