@@ -41,7 +41,7 @@ sha=$(git --git-dir="$src_dir/.git" rev-parse HEAD)
 
 ## Check if an incremental build is possible
 
-full_build=""
+full_build="force_full_build"
 if [ ! -z "$CI_FORCE_FULL_BUILD" ]; then
     full_build="Full build forced."
 elif [ ! -e "$build_dir/CMakeCache.txt" ]; then
