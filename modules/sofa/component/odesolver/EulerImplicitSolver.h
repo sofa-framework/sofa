@@ -55,7 +55,7 @@ using namespace sofa::defaulttype;
  *   Newton's law is
  *   \f$ M dv = h f(t+h) \f$
  *   \f$ M dv = h ( f(t) + K dx     + (B - r_M M + r_K K) (v+dv) )\f$
- *   \f$ M dv = h ( f(t) + K h dv   + (B - r_M M + r_K K) (v+dv) )\f$
+ *   \f$ M dv = h ( f(t) + K h (v+dv) + (B - r_M M + r_K K) (v+dv) )\f$
  *
  *   \f$ M \f$ is the mass matrix.
  *   \f$ K = df/dx \f$ is the stiffness implemented (or not) by the force fields.
@@ -70,7 +70,7 @@ using namespace sofa::defaulttype;
  * This is equivalent with multiplying vectors with a projection matrix \f$P\f$.
  * Finally, the equation system set by this ode solver is:
  *
- *   \f$ P ( (1+r_M) M - h B - h(h + r_K) K ) P dv = P h ( f(t) + (h + r_K) K dv - r_M M dv )\f$
+ *   \f$ P ( (1+r_M) M - h B - h(h + r_K) K ) P dv = P h ( f(t) + (h + r_K) K v - r_M M v )\f$
  *
  *** 1st Order ***
  *
