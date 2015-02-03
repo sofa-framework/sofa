@@ -127,7 +127,13 @@ public:
     typedef helper::ReadAccessor<Data< similarityTypes > > raSimilarity;
     typedef helper::WriteAccessor<Data< similarityTypes > > waSimilarity;
     Data < similarityTypes > similarity;
-
+	
+	/* 
+		Add new type to replace unsigned int when openMP is activated on windows to handle compilation issues
+	*/
+#ifdef WIN32 && USING_OMP_PRAGMAS
+	typedef long int w_size_t ;
+#endif
 
     // mask for values outside images
     cimg_library::CImg<bool> refMask;
@@ -147,8 +153,7 @@ public:
     */
     Data<bool> highToLowSignal;
 
-
-
+	
 public:
     IntensityProfileRegistrationForceField(core::behavior::MechanicalState<DataTypes> *mm = NULL);
     virtual ~IntensityProfileRegistrationForceField() {}

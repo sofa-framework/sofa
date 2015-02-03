@@ -203,7 +203,11 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
+#ifdef WIN32 && USING_OMP_PRAGMAS
+		for(w_size_t i=0;i<dims[1];i++)
+#else
         for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -221,7 +225,11 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
+#ifdef WIN32 && USING_OMP_PRAGMAS
+		for(w_size_t i=0;i<dims[1];i++)
+#else
         for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -239,7 +247,11 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
+#ifdef WIN32 && USING_OMP_PRAGMAS
+		for(w_size_t i=0;i<dims[1];i++)
+#else
         for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -299,7 +311,11 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
+#ifdef WIN32 && USING_OMP_PRAGMAS
+		for(w_size_t i=0;i<dims[1];i++)
+#else
         for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             for(unsigned int j=0;j<dims[0];j++)
             {
@@ -324,7 +340,12 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-        for(unsigned int i=0;i<dims[1];i++)
+
+#ifdef WIN32 && USING_OMP_PRAGMAS
+		for(w_size_t i=0;i<dims[1];i++)
+#else
+		for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             for(unsigned int j=0;j<dims[0];j++)
             {
