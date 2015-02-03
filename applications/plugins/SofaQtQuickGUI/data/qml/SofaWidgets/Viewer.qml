@@ -8,6 +8,11 @@ import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 Viewer {
     id: root
     clip: true
+	
+	Action{
+		shortcut: "F5"
+		onTriggered: root.viewAll()
+	}
 
     Timer {
         running: true

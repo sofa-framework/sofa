@@ -8,6 +8,8 @@
 # refer to the python examples in Compliant for more information.
 #
 
+print "WARNING Compliant's Rigid.py is now deprecated (and will be deleted soon), please use StructuralAPI instead"
+
 import Sofa
 
 from subprocess import Popen, PIPE
@@ -21,83 +23,7 @@ from Tools import cat as concat
 
 import os
 
-
-class Frame:
-        # a rigid frame, group operations are available.
-
-        # TODO kwargs
-        def __init__(self, value = None):
-                if value != None:
-                        self.translation = value[:3]
-                        self.rotation = value[3:]
-                else:
-                        self.translation = [0, 0, 0]
-                        self.rotation = [0, 0, 0, 1]
-                
-        def insert(self, parent, template='Rigid', **args):
-                return parent.createObject('MechanicalObject', 
-                                           template = template,
-                                           position = str(self),
-                                           **args)
-                
-        def __str__(self):
-                return concat(self.translation) + ' ' + concat(self.rotation) 
-            
-        def copy(self):
-                # TODO better !
-                return Rigid.Frame().read( str(self) )
-                                          
-        def setValue(self, v):
-             self.translation = v[:3]
-             self.rotation = v[3:]
-             return self
-   
-        def read(self, str):
-                num = map(float, str.split())
-                self.translation = num[:3]
-                self.rotation = num[3:]
-                return self
-
-        def offset(self):
-            return hstack((self.translation, self.rotation))
-
-	def __mul__(self, other):
-		res = Frame()
-		res.translation = vec.sum(self.translation,
-					  quat.rotate(self.rotation,
-						      other.translation))
-		res.rotation = quat.prod( self.rotation,
-					  other.rotation)
-
-		return res
-
-	def inv(self):
-		res = Frame()
-		res.rotation = quat.conj( self.rotation )
-		res.translation = vec.minus( quat.rotate(res.rotation,
-							 self.translation) )
-		return res
-
-        def set(self, **kwargs):
-                for k in kwargs:
-                        setattr(self, k, kwargs[k])
-                        
-                return self
-
-        # TODO more: wrench/twist frame change.
-
-        def apply(self, vec):
-            """ apply transformation to vec (a [x,y,z] vector)
-            return the result
-            """
-            return array(quat.rotate(self.rotation, vec) + asarray(self.translation))
-
-        def applyInv(self, vec):
-            """ apply the inverse transformation to vec (a [x,y,z] vector)
-            return the result
-            """
-            return self.inv().apply(vec)
-
+import Frame
 
 class MassInfo:
         pass
@@ -199,7 +125,7 @@ class Body:
                 self.name = name         # node name
                 self.collision = None # collision mesh
                 self.visual = None    # visual mesh
-                self.dofs = Frame()   # initial dofs
+                self.dofs = Frame.Frame()   # initial dofs
                 self.mass = 1         # mass 
                 self.inertia = [1, 1, 1] # inertia tensor
                 self.color = [1, 1, 1]   # not sure this is used 
@@ -222,7 +148,7 @@ class Body:
                                 info.inertia[1,1],
                                 info.inertia[2,2]]
                 
-                self.offset = Frame()
+                self.offset = Frame.Frame()
                 self.offset.translation = info.com
                 
                 # TODO handle principal axes
@@ -232,7 +158,7 @@ class Body:
                 res = node.createChild( self.name )
 
                 # mass offset, if any
-                off = Frame()
+                off = Frame.Frame()
                 if self.offset != None:
                         off = self.offset
 
@@ -331,7 +257,7 @@ class Joint:
                 for n in nodes:
                         pos = n.getObject('dofs').position
                         s = concat(pos[0])
-                        local = Frame().read( s )
+                        local = Frame.Frame().read( s )
                         self.append(n, local.inv() * frame)
         
         # joint dimension

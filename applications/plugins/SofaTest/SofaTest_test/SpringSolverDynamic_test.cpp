@@ -57,12 +57,7 @@ template <typename _DataTypes>
 struct SpringSolverDynamic_test : public Sofa_test<_DataTypes>
 {
     typedef _DataTypes DataTypes;
-    typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
