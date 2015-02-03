@@ -68,6 +68,16 @@ class Model:
             
         def isAbsolute(self):
             return self.type == "absolute"
+            
+    class Dof:
+        def __init__(self, dofXml):
+            self.index = Model.dofIndex[dofXml.attrib["index"]]
+            self.min = None
+            self.max = None
+            if "min" in dofXml.attrib:
+                self.min = float(dofXml.attrib["min"])
+            if "max" in dofXml.attrib:
+                self.max = float(dofXml.attrib["max"])
         
     class JointGeneric:
         #def __init__(self, name="Unknown",object1,offset1,object2,offset2):
@@ -83,10 +93,9 @@ class Model:
                     self.offsets[i].name = "offset_{0}".format(self.name)
                     
             # dofs
-            self.dofs = [0] * 6
+            self.dofs = [] 
             for dof in jointXml.iter("dof"):
-                self.dofs[Model.dofIndex[dof.attrib["index"]]]=1
-                #TODO limits !
+                self.dofs.append(Model.Dof(dof))
         
     class Deformable:
         

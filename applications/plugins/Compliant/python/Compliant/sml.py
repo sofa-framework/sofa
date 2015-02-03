@@ -20,13 +20,14 @@ def insertRigid(parentNode, rigidModel, param):
         mass=1.
         if not rigidModel.mass is None:
             mass = rigidModel.mass
-        rigid.setManually(offset=rigidModel.position,mass=mass)
+        rigid.setFromMeshWithMass(rigidModel.mesh.source, mass=mass, offset=rigidModel.position)
     rigid.dofs.showObject = param.showRigid
     rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
     # visual
     if not rigidModel.mesh is None:
-        rigid.addVisualModel(rigidModel.mesh.source)
-        rigid.addCollisionMesh(rigidModel.mesh.source)
+        cm = rigid.addCollisionMesh(rigidModel.mesh.source)
+        cm.addVisualModel()
+       
     return rigid
 
 def insertJoint(jointModel, rigids, param):
@@ -43,9 +44,14 @@ def insertJoint(jointModel, rigids, param):
             frames[-1].dofs.showObjectScale = SofaPython.units.length_from_SI(param.showOffsetScale)
         else:
             frames.append(rigid)
-    mask = [(1-d) for d in jointModel.dofs]
-    joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask) 
-    #TODO limits !
+    mask = [1]*6
+    limits=[]
+    for d in jointModel.dofs:
+        limits.append(d.min)
+        limits.append(d.max)
+        mask[d.index] = 0
+    joint = StructuralAPI.GenericRigidJoint(jointModel.name, frames[0].node, frames[1].node, mask)    
+    joint.addLimits(limits)
     return joint
 
 class SceneArticulatedRigid(SofaPython.sml.BaseScene):

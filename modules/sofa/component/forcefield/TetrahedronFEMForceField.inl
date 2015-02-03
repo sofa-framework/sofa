@@ -2508,7 +2508,7 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
 
     updateVonMisesStress=false;
 
-    helper::WriteAccessor<Data<helper::vector<Vec3f> > > vonMisesStressColors(_vonMisesStressColors);
+    helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec3f> > > vonMisesStressColors(_vonMisesStressColors);
     vonMisesStressColors.clear();
     helper::vector<unsigned int> vonMisesStressColorsCoeff;
 
@@ -2532,8 +2532,8 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
     {
         visualmodel::ColorMap::evaluator<Real> evalColor = _showStressColorMapReal->getEvaluator(minVM, maxVM);
-        Vec4f col = evalColor(vME[i]); //*vM[i]);
-        Vec3f col3(col[0], col[1], col[2]);
+        sofa::defaulttype::Vec4f col = evalColor(vME[i]); //*vM[i]);
+        sofa::defaulttype::Vec3f col3(col[0], col[1], col[2]);
         Tetrahedron tetra = (*_indexedElements)[i];//_mesh->getTetra(i);
 
         for(unsigned int j=0 ; j<4 ; j++)

@@ -282,9 +282,9 @@ public:
 
 
     Data<int> _computeVonMisesStress;
-    Data<helper::vector<Real> > _vonMisesPerElement;
-    Data<helper::vector<Real> > _vonMisesPerNode;
-    Data<helper::vector<Vec3f> > _vonMisesStressColors;
+    Data<helper::vector<Real> >						_vonMisesPerElement;
+    Data<helper::vector<Real> >						_vonMisesPerNode;
+    Data<helper::vector<sofa::defaulttype::Vec3f> > _vonMisesStressColors;
 
 #ifndef SOFA_NO_OPENGL
 	visualmodel::ColorMap::SPtr _showStressColorMapReal;

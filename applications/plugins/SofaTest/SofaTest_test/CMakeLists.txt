@@ -36,6 +36,7 @@ set(SOURCE_FILES
     SubsetMultiMapping_test.cpp
     TetrahedronFEMForceField_test.cpp
     TetrahedronNumericalIntegration_test.cpp
+    TrianglePressureForceField_test.cpp
 )
 
 if(APPLE)
