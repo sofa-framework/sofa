@@ -316,12 +316,10 @@ extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 
 
 
-// set the viewer camera
+// from a mesh, a density and a 3d scale
+// computes a mass, a center of mass, a diagonal inertia matrix and a inertia rotation
 extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
 {
-
-//    std::cerr<<"Sofa_generateRigid\n";
-
     char* meshFilename;
     double density;
     double sx,sy,sz;
@@ -331,21 +329,14 @@ extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
         Py_RETURN_NONE;
     }
 
-//    std::cerr<<"meshFilename "<<meshFilename<<std::endl;
-//    std::cerr<<"density "<<density<<std::endl;
-//    std::cerr<<"scale "<<sx<<" "<<sy<<" "<<sz<<std::endl;
-
     sofa::helper::GenerateRigidInfo rigid;
     if( !sofa::helper::generateRigid( rigid, meshFilename, density, Vector3(sx,sy,sz) ) )
         exit(0);
 
-//    std::cerr<<rigid.mass<<std::endl;
-//    std::cerr<<rigid.com<<std::endl;
-
-
-    return Py_BuildValue("dddddddddd",rigid.mass
+    return Py_BuildValue("ddddddddddd",rigid.mass
                          ,rigid.com[0],rigid.com[1],rigid.com[2]
-                         ,rigid.inertia[0][0],rigid.inertia[0][1],rigid.inertia[0][2],rigid.inertia[1][1],rigid.inertia[1][2],rigid.inertia[2][2]
+                         ,rigid.inertia_diagonal[0],rigid.inertia_diagonal[1],rigid.inertia_diagonal[2]
+                         ,rigid.inertia_rotation[0],rigid.inertia_rotation[1],rigid.inertia_rotation[2],rigid.inertia_rotation[3]
             );
 }
 
