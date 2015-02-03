@@ -102,7 +102,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
 
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 	typedef long int w_size_t;
 #endif
 	
@@ -193,7 +193,7 @@ public:
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 		for(w_size_t i=0; i < jacobianBlock.size(); i++)
 #else
         for(size_t i=0; i < jacobianBlock.size(); i++)

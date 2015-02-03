@@ -62,7 +62,7 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos,const std::vector<
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 	for(long int i=0; i<nbp; i++)
 #else
     for (unsigned int i=0; i<nbp; i++)

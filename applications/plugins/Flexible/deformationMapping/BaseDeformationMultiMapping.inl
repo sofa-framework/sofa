@@ -413,7 +413,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 	for(w_size_t i=0; i<jacobian1.size(); i++)
 #else
     for(unsigned int i=0; i<jacobian1.size(); i++)
@@ -490,7 +490,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 			for(w_size_t i=0; i<jacobian1.size(); i++)
 #else
 			for(unsigned int i=0; i<jacobian1.size(); i++)
@@ -563,7 +563,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 			for(w_size_t i=0; i<this->f_index_parentToChild1.size(); i++)
 #else
 			for(unsigned int i=0; i<this->f_index_parentToChild1.size(); i++)
@@ -579,7 +579,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 			for(w_size_t i=0; i<this->f_index_parentToChild2.size(); i++)
 #else
 			for(unsigned int i=0; i<this->f_index_parentToChild2.size(); i++)
