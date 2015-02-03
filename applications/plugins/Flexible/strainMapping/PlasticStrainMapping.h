@@ -49,7 +49,13 @@ public:
     typedef defaulttype::PlasticStrainJacobianBlock<TStrain> BlockType;
     typedef BaseStrainMappingT<BlockType> Inherit;
     typedef typename Inherit::Real Real;
-
+	
+	/* 
+		Add new type to replace unsigned int when openMP is activated on windows to handle compilation issues
+	*/
+#ifdef WIN32 && USING_OMP_PRAGMAS
+	typedef long int w_size_t;
+#endif
 
     SOFA_CLASS(SOFA_TEMPLATE(PlasticStrainMapping,TStrain), SOFA_TEMPLATE(BaseStrainMappingT,BlockType));
 
@@ -124,7 +130,11 @@ protected:
 #ifdef USING_OMP_PRAGMAS
 			#pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#ifdef WIN32 && USING_OMP_PRAGMAS
+			for(w_size_t i=0; i<this->jacobian.size(); i++)
+#else
+			for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#endif
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];
@@ -136,9 +146,13 @@ protected:
         case ADDITION:
         {
 #ifdef USING_OMP_PRAGMAS
-			#pragma omp parallel for
+	#pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#ifdef WIN32 && USING_OMP_PRAGMAS
+			for(w_size_t i=0; i<this->jacobian.size(); i++)
+#else
+			for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#endif
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];
