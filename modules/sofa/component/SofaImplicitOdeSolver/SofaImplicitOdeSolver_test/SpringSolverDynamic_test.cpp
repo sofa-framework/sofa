@@ -22,9 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "stdafx.h"
-#include "Sofa_test.h"
+#include <plugins/SofaTest/Sofa_test.h>
 
 #include <sofa/component/init.h>
 #include <sofa/core/ExecParams.h>
@@ -84,7 +82,7 @@ struct SpringSolverDynamic_test : public Sofa_test<_DataTypes>
     void loadScene(std::string sceneName)
     {
         // Load the scene from the xml file
-        std::string fileName = std::string(SOFATEST_SCENES_DIR) + "/" + sceneName;
+        std::string fileName = std::string(SOFAIMPLICITODESOLVER_TEST_SCENES_DIR) + "/" + sceneName;
         root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
     }
 

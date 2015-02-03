@@ -22,9 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "stdafx.h"
-#include "Sofa_test.h"
+#include <plugins/SofaTest/Sofa_test.h>
 #include <sofa/component/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>

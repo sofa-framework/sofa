@@ -22,9 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "stdafx.h"
-#include "Sofa_test.h"
+#include <plugins/SofaTest/Sofa_test.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>

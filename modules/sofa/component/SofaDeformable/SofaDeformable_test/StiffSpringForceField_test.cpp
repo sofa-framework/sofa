@@ -22,10 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "stdafx.h"
 #include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include "ForceField_test.h"
+#include <plugins/SofaTest/ForceField_test.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
