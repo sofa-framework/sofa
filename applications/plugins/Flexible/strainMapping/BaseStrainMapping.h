@@ -102,10 +102,6 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
 
-#ifdef WIN32 && USING_OMP_PRAGMAS
-	typedef long int w_size_t;
-#endif
-	
     virtual void resizeOut()
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
@@ -193,8 +189,8 @@ public:
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
-		for(w_size_t i=0; i < jacobianBlock.size(); i++)
+#if defined(WIN32) && defined(USING_OMP_PRAGMAS)
+        for(int i=0; i < jacobianBlock.size(); i++)
 #else
         for(size_t i=0; i < jacobianBlock.size(); i++)
 #endif
