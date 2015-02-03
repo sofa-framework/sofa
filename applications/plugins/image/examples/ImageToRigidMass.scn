@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <RequiredPlugin pluginName="image"/>
+  <VisualStyle displayFlags="showWireframe showVisual showBehaviorModels" />
+
+  <MeshObjLoader name="mesh" filename="data/pelvis_f.obj" triangulate="1" />
+  <MeshToImageEngine  name="rasterizer" src="@mesh" voxelSize="0.01" padSize="1" rotateImage="true" printLog="false"/>
+  <ImageContainer template="ImageB" name="image" src="@rasterizer" />
+<!--  <ImageViewer template="ImageB" name="viewer" src="@image" plane="10 10 10"/>-->
+
+  <ImageToRigidMassEngine  template="ImageB" name="imagemass" src="@image" density="1" multiply="false"/>
+
+<!--VERIFICATION-->
+<!--<GenerateRigidMass template="Rigid3d" src="@mesh" density="@imagemass.density"/> -->
+
+  <Node 	name="rigid" >
+	
+    	<EulerImplicitSolver />
+	<CGLinearSolver iterations="25"/>
+
+  	<MechanicalObject template="Rigid" position="@../imagemass.position" showObject="0" showObjectScale="1"/>
+
+<!--COMPLIANT API-->
+<!--  	<RequiredPlugin pluginName="Compliant"/> -->
+<!--  	<RigidMass template="Rigid3d" inertia="@../imagemass.inertia" mass="@../imagemass.mass" draw="1" /> -->
+
+<!--SOFA API-->
+  	<UniformMass template="Rigid3d" mass="@../imagemass.rigidMass" showAxisSizeFactor="1"/>
+	
+	<Node 	name="visual" >
+  		<MechanicalObject name="dofs"  position="@../../mesh.position" /> 
+		<RigidMapping globalToLocalCoords="1"/>
+
+		<Node 	name="visual" >
+	  		<VisualModel name="mesh"  src="@../../../mesh" color="0.8 0.8 0.8 1"/> 
+			<IdentityMapping />
+		</Node>
+	</Node>
+	
+  </Node>
+
+</Node>
+
