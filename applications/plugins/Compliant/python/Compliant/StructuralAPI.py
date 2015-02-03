@@ -285,17 +285,17 @@ class GenericRigidJoint:
             l = 0
             limitMasks=[]
             for m in xrange(6):
-                if self.mask[m] == 0: # unconstrained direction
-                    limits[l*2+1] *= -1 # inverted upper bound
+                if self.mask[m] == 0 and limits[l] != None and limits[l+1] != None: # unconstrained direction with limits
+                    limits[l+1] *= -1.0 # inverted upper bound
                     l+=1
-                    limitMask = [0]*6;
+                    limitMaskL = [0]*6;
+                    limitMaskU = [0]*6;
                     # lower bound
-                    limitMask[m] = 1;
-                    limitMasks.append( limitMask )
+                    limitMaskL[m] = 1;
+                    limitMasks.append( limitMaskL )
                     # upper bound
-                    limitMask[m] = -1;  # inverted upper bound
-                    limitMasks.append( limitMask )
-
+                    limitMaskU[m] = -1;  # inverted upper bound
+                    limitMasks.append( limitMaskU )
             return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
 
     def addDamper( self, damping ):
