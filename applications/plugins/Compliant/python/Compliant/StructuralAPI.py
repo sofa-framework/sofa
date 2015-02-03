@@ -2,7 +2,7 @@
 # An alternative high(mid?)-level python API to describe a Compliant scene.
 #
 # With this API, the SOFA structure is not hidden and must be known by the user.
-# But the obscure python-based structures (like Rigid.Frame) are hidden.
+# But the obscure python-based structures (like Frame) are hidden.
 #
 # An important advantage is that a pointer is accessible for any created node and component
 # (simplifying component customization, manual sub-scene creation, etc.)
@@ -11,8 +11,7 @@
 #
 # see Compliant/examples/StructuralAPI.py for an basic example.
 
-
-import Rigid
+import Frame
 import Tools
 from Tools import cat as concat
 import numpy
@@ -32,127 +31,76 @@ idxVisualModel = 0
 geometric_stiffness = 0
 
 
+
+
+
 class MassInfo:
-        pass
-
-# front-end to sofa GenerateRigid tool. density unit is kg/m^3
-def generate_rigid_with_density(filename, density = 1, scale=[1,1,1]):
-
-
-    titi = Sofa.generateRigid( filename, density, scale[0], scale[1], scale[2] )
-
-    res = MassInfo()
-
-    res.mass = titi[0]
-    res.com = titi[1:4]
-    inertia = [titi[4],titi[5],titi[6], titi[5],titi[7],titi[8],  titi[6],titi[8],titi[9]]
-
-    res.inertia = numpy.array( [res.mass * x for x in inertia] ).reshape( 3, 3 ) # convert it in numpy 3x3 matrix
-
-    # extracting principal axes basis and corresponding rotation and diagonal inertia
-    # TODO DOING THIS IN C++
-
-    if inertia[1]>1e-5 or inertia[2]>1e-5 or inertia[5]>1e-5 : # if !diagonal (1e-5 seems big but the precision from a mesh is poor)
-#        print res.inertia
-        U, res.diagonal_inertia, V = numpy.linalg.svd(res.inertia)
-        # det should be 1->rotation or -1->reflexion
-        if numpy.linalg.det(U) < 0 : # reflexion
-            # made it a rotation by negating a column
-#            print "REFLEXION"
-            U[:,0] = -U[:,0]
-        res.inertia_rotation = Quaternion.from_matrix( U )
-#       print "generate_rigid not diagonal U" +str(U)
-#       print "generate_rigid not diagonal V" +str(V)
-#       print "generate_rigid not diagonal d" +str(res.diagonal_inertia)
-    else :
-        res.diagonal_inertia = res.inertia.diagonal()
-        res.inertia_rotation = [0,0,0,1]
-
-#        print "generate_rigid " + str(res.mass) + " " + str( res.inertia ) + " " + str( res.diagonal_inertia )
-
-    return res
-
-
-# front-end to sofa GenerateRigid tool with a manually given mass
-def generate_rigid_with_mass(filename, mass = 1, scale=[1,1,1]):
-
-
-    titi = Sofa.generateRigid( filename, 1, scale[0], scale[1], scale[2] )
-
-    res = MassInfo()
-
-    res.mass = mass
-    res.com = titi[1:4]
-    inertia = [titi[4],titi[5],titi[6], titi[5],titi[7],titi[8],  titi[6],titi[8],titi[9]]
-
-    res.inertia = numpy.array( [res.mass * x for x in inertia] ).reshape( 3, 3 ) # convert it in numpy 3x3 matrix
-
-    # extracting principal axes basis and corresponding rotation and diagonal inertia
-    # TODO DOING THIS IN C++
-
-    if inertia[1]>1e-5 or inertia[2]>1e-5 or inertia[5]>1e-5 : # if !diagonal (1e-5 seems big but the precision from a mesh is poor)
-#        print res.inertia
-        U, res.diagonal_inertia, V = numpy.linalg.svd(res.inertia)
-        # det should be 1->rotation or -1->reflexion
-        if numpy.linalg.det(U) < 0 : # reflexion
-            # made it a rotation by negating a column
-#            print "REFLEXION"
-            U[:,0] = -U[:,0]
-        res.inertia_rotation = Quaternion.from_matrix( U )
-#       print "generate_rigid not diagonal U" +str(U)
-#       print "generate_rigid not diagonal V" +str(V)
-#       print "generate_rigid not diagonal d" +str(res.diagonal_inertia)
-    else :
-        res.diagonal_inertia = res.inertia.diagonal()
-        res.inertia_rotation = [0,0,0,1]
-
-#        print "generate_rigid " + str(res.mass) + " " + str( res.inertia ) + " " + str( res.diagonal_inertia )
-
-    return res
-
+    ## @internal
+    pass
 
 class RigidBody:
     ## Generic Rigid Body
+
 
     def __init__(self, node, name):
         self.node = node.createChild( name )  # node
         self.dofs = None   # dofs
         self.mass = None   # mass
-        self.frame = Rigid.Frame()
-        self.framecom = Rigid.Frame()
+        self.frame = Frame.Frame()
+        self.framecom = Frame.Frame()
 
     def setFromMesh(self, filepath, density = 1, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
         ## create the rigid body from a mesh (inertia and com are automatically computed)
-        info = generate_rigid_with_density(filepath, density, scale3d)
-        self.setFromRigidInfo(info, offset, inertia_forces)
+        rigidInfo = Sofa.generateRigid( filepath, density, scale3d[0], scale3d[1], scale3d[2] )
 
-    def setFromMeshWithMass(self, filepath, mass, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
-        ## create the rigid body from a mesh (inertia and com are automatically computed)
-        info = generate_rigid_with_mass(filepath, mass, scale3d)
-        self.setFromRigidInfo(info, offset, inertia_forces)
+        massInfo = MassInfo()
+        massInfo.mass = rigidInfo[0]
+        massInfo.com = rigidInfo[1:4]
+        massInfo.diagonal_inertia = rigidInfo[4:7]
+        massInfo.inertia_rotation = rigidInfo[7:11]
+        self.setFromRigidInfo(massInfo, offset, inertia_forces)
 
     def setFromRigidFile(self, rigidfilepath, offset = [0,0,0,0,0,0,1], inertia_forces = False):
         ## create the rigid body from a rigid file (it contains inertia and com)
-        info = Rigid.read_rigid(rigidfilepath)
-        self.setFromRigidInfo(info, offset, inertia_forces)
+        rigidFile = open( rigidfilepath, "r" )
+        line = list( rigidFile )
+        rigidFile.close()
+        start = 1
+        massInfo = MassInfo()
+        massInfo.mass = float( line[start].split(' ')[1] )
+        massInfo.com = map(float, line[start + 3].split(' ')[1:] )
+        inertia = map(float, line[start + 2].split(' ')[1:] ) # pick inertia matrix from file
+        massInfo.inertia = array( [massInfo.mass * x for x in inertia] ).reshape( 3, 3 ) # convert it in numpy 3x3 matrix
+        # extracting principal axes basis and corresponding rotation and diagonal inertia
+        if inertia[1]>1e-5 or inertia[2]>1e-5 or inertia[5]>1e-5 : # if !diagonal (1e-5 seems big but the precision from a mesh is poor)
+            U, massInfo.diagonal_inertia, V = linalg.svd(massInfo.inertia)
+            # det should be 1->rotation or -1->reflexion
+            if linalg.det(U) < 0 : # reflexion
+                # made it a rotation by negating a column
+                U[:,0] = -U[:,0]
+            massInfo.inertia_rotation = quat.from_matrix( U )
+        else :
+            massInfo.diagonal_inertia = res.inertia.diagonal()
+            massInfo.inertia_rotation = [0,0,0,1]
+        self.setFromRigidInfo(massInfo, offset, inertia_forces)
 
     def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = False) :
-        self.framecom = Rigid.Frame()
+        self.framecom = Frame.Frame()
         self.framecom.rotation = info.inertia_rotation
         self.framecom.translation = info.com
 
-        self.frame = Rigid.Frame(offset) * self.framecom
+        self.frame = Frame.Frame(offset) * self.framecom
 
         self.dofs = self.frame.insert( self.node, name = 'dofs', template="Rigid3"+template_suffix )
         self.mass = self.node.createObject('RigidMass',
                                 name = 'mass',
                                 mass = info.mass,
-                                inertia = concat(info.diagonal_inertia.tolist()),
+                                inertia = concat(info.diagonal_inertia),
                                 inertia_forces = inertia_forces )
 
     def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = False ):
         ## create the rigid body by manually giving its inertia
-        self.frame = Rigid.Frame( offset )
+        self.frame = Frame.Frame( offset )
         self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
         self.mass = self.node.createObject('RigidMass',
                                 name = 'mass',
@@ -164,21 +112,21 @@ class RigidBody:
         ## adding a collision mesh to the rigid body with a relative offset
         # (only a Triangle collision model is created, more models can be added manually)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+        return RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
 
     def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
         ## adding a visual model to the rigid body with a relative offset
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+        return RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
 
     def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
         ## adding a relative offset to the rigid body (e.g. used as a joint location)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+        return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
         ## adding a offset given in absolute coordinates to the rigid body
-        return RigidBody.Offset( self.node, name, (self.frame.inv()*Rigid.Frame(offset)).offset() )
+        return RigidBody.Offset( self.node, name, (self.frame.inv()*Frame.Frame(offset)).offset() )
 
     def addMotor( self, forces=[0,0,0,0,0,0] ):
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
@@ -221,7 +169,7 @@ class RigidBody:
     class Offset:
         def __init__(self, node, name, offset):
             self.node = node.createChild( name )
-            self.frame = Rigid.Frame( offset )
+            self.frame = Frame.Frame( offset )
             self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
             self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), geometricStiffness=geometric_stiffness)
 
@@ -231,7 +179,7 @@ class RigidBody:
 
         def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
             ## adding a offset given in absolute coordinates to the offset
-            return RigidBody.Offset( self.node, name, (Rigid.Frame(offset) * self.frame.inv()).offset() )
+            return RigidBody.Offset( self.node, name, (Frame.Frame(offset) * self.frame.inv()).offset() )
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)

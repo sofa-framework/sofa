@@ -51,7 +51,7 @@ bool SOFA_HELPER_API generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::
 struct GenerateRigidInfo
 {
     defaulttype::Matrix3 inertia;
-    defaulttype::Matrix3 inertia_rotation;
+    defaulttype::Quaternion inertia_rotation;
     defaulttype::Vector3 inertia_diagonal;
     defaulttype::Vector3 com;
     SReal mass;
