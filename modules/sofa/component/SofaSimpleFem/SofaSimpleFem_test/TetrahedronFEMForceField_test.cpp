@@ -23,9 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "stdafx.h"
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include "ForceField_test.h"
+#include <plugins/SofaTest/ForceField_test.h>
 
 namespace sofa {
 
@@ -57,7 +56,7 @@ struct TetrahedronFEMForceField_test : public ForceField_test<_TetrahedronFEMFor
     /** @name Test_Cases
       For each of these cases, we check if the accurate forces are computed
     */
-    TetrahedronFEMForceField_test():Inherited::ForceField_test(std::string(SOFATEST_SCENES_DIR) + "/" + "TetrahedronFEMForceFieldRegularTetra.scn")
+    TetrahedronFEMForceField_test():Inherited::ForceField_test(std::string(SOFASIMPLEFEM_TEST_SCENES_DIR) + "/" + "TetrahedronFEMForceFieldRegularTetra.scn")
     {
         //Position
         x.resize(4);
