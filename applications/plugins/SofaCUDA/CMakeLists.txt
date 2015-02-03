@@ -193,6 +193,7 @@ cuda_include_directories(${SOFA_INC_DIR})
 #Make these compiler definition available to nvcc
 if(WIN32)
 	add_definitions("-DWIN32")
+    set(WINDOWSOPTIONS "-MD")
 endif()
 
 add_definitions("-DSOFA_BUILD_GPU_CUDA")
@@ -203,7 +204,7 @@ endif()
 AddCompilerDefinitions("SOFA_BUILD_GPU_CUDA")
 
 #Get nvcc compiler to build the library
-cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} "-MD")
+cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWSOPTIONS})
 if(SOFA-CUDA_CUBLAS)
     CUDA_ADD_CUBLAS_TO_TARGET(${PROJECT_NAME})
     find_package(CUDASparse REQUIRED)
