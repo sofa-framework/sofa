@@ -1,5 +1,4 @@
-#include "stdafx.h"
-#include "../BroadPhase_test.h"
+#include "BroadPhase_test.h"
 
 
 typedef BroadPhaseTest<sofa::component::collision::BruteForceDetection> Brut;

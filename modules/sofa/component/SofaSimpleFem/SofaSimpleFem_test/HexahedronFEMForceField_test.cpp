@@ -23,9 +23,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "stdafx.h"
 #include <sofa/component/forcefield/HexahedronFEMForceField.h>
-#include "ForceField_test.h"
+#include <plugins/SofaTest/ForceField_test.h>
 
 namespace sofa {
 
@@ -54,7 +53,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
     VecCoord x;
     VecDeriv v,f;
 
-    HexahedronFEMForceField_test():Inherited::ForceField_test(std::string(SOFATEST_SCENES_DIR) + "/" + "HexahedronFEMForceField.scn")
+    HexahedronFEMForceField_test():Inherited::ForceField_test(std::string(SOFASIMPLEFEM_TEST_SCENES_DIR) + "/" + "HexahedronFEMForceField.scn")
     {
         //Position
         x.resize(8);

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
@@ -49,8 +48,8 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/collision/MeshIntTool.h>
 
-#include "Sofa_test.h"
-#include "../PrimitiveCreation.h"
+#include <plugins/SofaTest/Sofa_test.h>
+#include <plugins/SofaTest/PrimitiveCreation.h>
 
 using namespace sofa::PrimitiveCreationTest;
 

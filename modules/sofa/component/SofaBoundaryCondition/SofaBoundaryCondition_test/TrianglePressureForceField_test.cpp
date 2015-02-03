@@ -1,14 +1,12 @@
-#include "stdafx.h"
-
 // Base class
-#include "ForceField_test.h"
+#include <plugins/SofaTest/ForceField_test.h>
 //Force field
 #include <sofa/component/forcefield/TrianglePressureForceField.h>
 #include <sofa/component/topology/TopologySparseData.inl>
 
 namespace sofa {
 
-/**  Test QuadPressureForceField.
+/**  Test TrianglePressureForceField.
   */
 template <typename _TrianglePressureForceField>
 struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressureForceField>
@@ -27,7 +25,7 @@ struct TrianglePressureForceField_test : public ForceField_test<_TrianglePressur
     VecCoord x;
     VecDeriv v,f;
 
-    TrianglePressureForceField_test(): Inherited::ForceField_test(std::string(SOFATEST_SCENES_DIR) + "/" + "TrianglePressureForceField.scn")
+    TrianglePressureForceField_test(): Inherited::ForceField_test(std::string(SOFABOUNDARYCONDITION_TEST_SCENES_DIR) + "/" + "TrianglePressureForceField.scn")
     {
         // Set vectors, using DataTypes::set to cope with tests in dimension 2
         //Position

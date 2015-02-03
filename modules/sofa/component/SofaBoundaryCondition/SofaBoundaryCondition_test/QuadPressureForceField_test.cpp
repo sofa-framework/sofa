@@ -1,5 +1,3 @@
-#include "stdafx.h"
-
 // Base class
 #include "ForceField_test.h"
 //Force field
@@ -27,7 +25,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
     VecCoord x;
     VecDeriv v,f;
 
-    QuadPressureForceField_test(): Inherited::ForceField_test(std::string(SOFATEST_SCENES_DIR) + "/" + "QuadPressureForceField.scn")
+    QuadPressureForceField_test(): Inherited::ForceField_test(std::string(SOFABOUNDARYCONDITION_TEST_SCENES_DIR) + "/" + "QuadPressureForceField.scn")
     {
         // Set vectors, using DataTypes::set to cope with tests in dimension 2
         //Position

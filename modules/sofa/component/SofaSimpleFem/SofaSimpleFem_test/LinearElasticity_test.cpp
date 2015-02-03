@@ -22,8 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "stdafx.h"
-#include "Elasticity_test.h"
+#include <plugins/SofaTest/Elasticity_test.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -84,10 +83,6 @@ struct LinearElasticity_test : public Elasticity_test<_DataTypes>
 	CylinderTractionStruct<DataTypes> tractionStruct;
 	/// index of the vertex used to compute the compute the deformation
 	size_t vIndex;
-
-
-     // Define the path for the scenes directory
-    #define ADD_SOFA_TEST_SCENES_PATH( x ) sofa_tostring(SOFA_TEST_SCENES_PATH)sofa_tostring(x) 
 
     // Create the context for the scene
     void SetUp()
