@@ -41,7 +41,6 @@
 namespace sofa {
 
 using namespace component;
-using namespace defaulttype;
 
 /**  Dynamic solver test.
 Test the dynamic behavior of solver: study a mass-spring system under gravity initialize with spring rest length it will oscillate around its equilibrium position if there is no damping.
@@ -55,12 +54,7 @@ template <typename _DataTypes>
 struct SpringSolverDynamic_test : public Sofa_test<_DataTypes>
 {
     typedef _DataTypes DataTypes;
-    typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
@@ -132,7 +126,7 @@ struct SpringSolverDynamic_test : public Sofa_test<_DataTypes>
 // Define the list of DataTypes to instanciate
 using testing::Types;
 typedef Types<
-    Vec3Types
+    defaulttype::Vec3Types
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
