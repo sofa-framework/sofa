@@ -27,9 +27,9 @@ struct DiffusionSolver
 
 
     /// voxel type
-    static const char OUTSIDE;
-    static const char INSIDE;
-    static const char DIRICHLET;
+    static const char OUTSIDE = -1;
+    static const char INSIDE = 1;
+    static const char DIRICHLET = 0;
 
 
 

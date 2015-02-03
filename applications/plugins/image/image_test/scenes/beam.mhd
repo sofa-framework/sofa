@@ -1,0 +1,10 @@
+ObjectType = Image
+NDims = 3
+ElementNumberOfChannels = 1
+DimSize = 20 20 100
+ElementType = MET_UCHAR
+ElementSpacing = 0.02 0.02 0.02
+Position = -0.19 -0.19 -0.99
+Orientation = 1 0 0 0 1 0 0 0 1 
+isPerpective = 0
+ElementDataFile = beam.raw
