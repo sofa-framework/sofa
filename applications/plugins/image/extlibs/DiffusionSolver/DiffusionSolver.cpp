@@ -8,14 +8,6 @@
 #include <omp.h>
 #endif
 
-
-
-
-template < typename Real > const char DiffusionSolver< Real >::OUTSIDE   = -1;
-template < typename Real > const char DiffusionSolver< Real >::INSIDE    =  1;
-template < typename Real > const char DiffusionSolver< Real >::DIRICHLET =  0;
-
-
 template < typename Real >
 void DiffusionSolver< Real >::setNbThreads( unsigned nb )
 {
