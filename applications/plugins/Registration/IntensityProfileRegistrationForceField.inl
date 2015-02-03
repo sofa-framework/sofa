@@ -35,9 +35,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include "float.h"
-#include <sofa/helper/IndexOpenMP.h>
 
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
 #include <omp.h>
 #endif
 
@@ -201,10 +200,14 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 
     if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
     {
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+#ifdef WIN32
+		for(w_size_t i=0;i<dims[1];i++)
+#else
+        for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -219,10 +222,14 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
     }
     else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
     {
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+#ifdef WIN32
+		for(w_size_t i=0;i<dims[1];i++)
+#else
+        for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -237,10 +244,14 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
     }
     else    // INTERPOLATION_CUBIC
     {
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+#ifdef WIN32
+		for(w_size_t i=0;i<dims[1];i++)
+#else
+        for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -297,10 +308,14 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 
     if(this->SimilarityMeasure.getValue().getSelectedId()==SIMILARITY_SSD)
     {
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+#ifdef WIN32
+		for(w_size_t i=0;i<dims[1];i++)
+#else
+        for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             for(unsigned int j=0;j<dims[0];j++)
             {
@@ -322,10 +337,15 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
     }
     else // SIMILARITY_NCC
     {
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
+
+#ifdef WIN32
+		for(w_size_t i=0;i<dims[1];i++)
+#else
+		for(unsigned int i=0;i<dims[1];i++)
+#endif
         {
             for(unsigned int j=0;j<dims[0];j++)
             {

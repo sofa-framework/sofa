@@ -37,8 +37,6 @@
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
-#include <sofa/helper/IndexOpenMP.h>
-
 
 namespace sofa
 {
@@ -103,6 +101,10 @@ public:
     typedef typename BlockType::KBlock  KBlock;  ///< stiffness block matrix
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
+
+#ifdef WIN32
+	typedef long int w_size_t;
+#endif
 	
     virtual void resizeOut()
     {
@@ -188,10 +190,14 @@ public:
         initJacobianBlock(jacobianBlock);
 
         OutVecDeriv&  out = *dOut.beginEdit();
-#ifdef _OPENMP
-		#pragma omp parallel for
+#ifdef USING_OMP_PRAGMAS
+#pragma omp parallel for
 #endif
-        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i < jacobianBlock.size(); i++)
+#ifdef WIN32
+		for(w_size_t i=0; i < jacobianBlock.size(); i++)
+#else
+        for(size_t i=0; i < jacobianBlock.size(); i++)
+#endif
         {
             out[i]=OutDeriv();
             jacobianBlock[i].addmult(out[i],in[i]);
@@ -210,7 +216,7 @@ public:
         OutVecCoord&  out = *dOut.beginEdit();
         const InVecCoord&  in = dIn.getValue();
 
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
         for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -231,7 +237,7 @@ public:
             OutVecDeriv&  out = *dOut.beginEdit();
             const InVecDeriv&  in = dIn.getValue();
 
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -252,7 +258,7 @@ public:
             InVecDeriv&  in = *dIn.beginEdit();
             const OutVecDeriv&  out = dOut.getValue();
 
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -291,7 +297,7 @@ public:
         }
         else
         {
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
 			#pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)

@@ -34,9 +34,8 @@
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
-#include <sofa/helper/IndexOpenMP.h>
 
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
     #include <omp.h>
 #endif
 
@@ -187,10 +186,14 @@ void ShapeMatching<DataTypes>::update()
     for (unsigned int iter=0 ; iter<iterations.getValue()  ; ++iter)
     {
         // this could be speeded up using fast summation technique
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<nbc ; ++i)
+#ifdef WIN32
+		for (w_size_t i=0 ; i<nbc ; ++i)
+#else
+        for (unsigned int i=0 ; i<nbc ; ++i)
+#endif
         {
             Xcm[i] = Coord();
             T[i].fill(0);

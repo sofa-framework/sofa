@@ -30,7 +30,7 @@
 #include "PlasticStrainJacobianBlock.h"
 #include "../types/StrainTypes.h"
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/helper/IndexOpenMP.h>
+
 
 namespace sofa
 {
@@ -49,8 +49,16 @@ public:
     typedef defaulttype::PlasticStrainJacobianBlock<TStrain> BlockType;
     typedef BaseStrainMappingT<BlockType> Inherit;
     typedef typename Inherit::Real Real;
+	
+	/* 
+		Add new type to replace unsigned int when openMP is activated on windows to handle compilation issues
+	*/
+#ifdef WIN32
+	typedef long int w_size_t;
+#endif
 
-	SOFA_CLASS(SOFA_TEMPLATE(PlasticStrainMapping,TStrain), SOFA_TEMPLATE(BaseStrainMappingT,BlockType));
+    SOFA_CLASS(SOFA_TEMPLATE(PlasticStrainMapping,TStrain), SOFA_TEMPLATE(BaseStrainMappingT,BlockType));
+
 
     /// @name  Different ways to decompose the strain
     //@{
@@ -119,10 +127,14 @@ protected:
         {
         case MULTIPLICATION:
         {
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
 			#pragma omp parallel for
 #endif
-			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<this->jacobian.size() ; i++ )
+#ifdef WIN32
+			for(w_size_t i=0; i<this->jacobian.size(); i++)
+#else
+			for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#endif
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];
@@ -133,10 +145,14 @@ protected:
         }
         case ADDITION:
         {
-#ifdef _OPENMP
+#ifdef USING_OMP_PRAGMAS
 	#pragma omp parallel for
 #endif
-			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<this->jacobian.size() ; i++ )
+#ifdef WIN32
+			for(w_size_t i=0; i<this->jacobian.size(); i++)
+#else
+			for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#endif
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];
