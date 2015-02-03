@@ -92,6 +92,7 @@ set(HEADER_FILES
     kdTree.inl
     kdTree.h
     vectorData.h
+    GenerateRigid.h
 	)
 
 set(SOURCE_FILES
@@ -144,6 +145,7 @@ set(SOURCE_FILES
     OptionsGroup.cpp
     Polynomial_LD.cpp
     UnitTest.cpp
+    GenerateRigid.cpp
 	)
 
 if(SOFA-EXTERNAL_BOOST)

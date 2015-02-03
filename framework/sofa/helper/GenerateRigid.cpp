@@ -27,13 +27,18 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sofa/helper/vector.h>
+#include <sofa/defaulttype/Quat.h>
 
-namespace projects
+namespace sofa
 {
 
-bool GenerateRigid(sofa::defaulttype::Rigid3Mass& mass, sofa::defaulttype::Vec3d& center, sofa::helper::io::Mesh* mesh)
+namespace helper
 {
-    using namespace sofa::defaulttype;
+
+using namespace sofa::defaulttype;
+
+void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Mesh* mesh)
+{
     using namespace sofa::helper;
     // Geometric Tools, Inc.
     // http://www.geometrictools.com
@@ -159,7 +164,67 @@ bool GenerateRigid(sofa::defaulttype::Rigid3Mass& mass, sofa::defaulttype::Vec3d
     mass.inertiaMatrix /= mass.mass;
 
     mass.recalc();
+}
+
+
+
+bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFilename
+                   , SReal density
+                   , const Vector3& scale
+                   , const Vector3& rotation /*Euler angles*/
+                  )
+{
+    sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create( meshFilename );
+    if (mesh == NULL)
+    {
+        std::cerr << "ERROR loading mesh "<<meshFilename<<std::endl;
+        return false;
+    }
+
+    if( scale != Vector3(1, 1, 1) ) {
+        for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
+            mesh->getVertices()[i] = mesh->getVertices()[i].linearProduct(scale);
+        }
+    }
+
+    if( rotation != Vector3(0,0,0) ) {
+
+        Quaternion q = sofa::helper::Quater<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
+
+        for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
+            mesh->getVertices()[i] = q.rotate( mesh->getVertices()[i] );
+        }
+    }
+
+    generateRigid( mass, center, mesh );
+
+    mass.mass *= density;
+
     return true;
+}
+
+
+
+bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
+                                  , const std::string& meshFilename
+                                  , SReal density
+                                  , const defaulttype::Vector3& scale
+                                  )
+{
+    Rigid3Mass rigidMass;
+
+    if( !generateRigid( rigidMass, res.com, meshFilename, density, scale ) )
+        return false;
+
+    res.inertia = rigidMass.inertiaMatrix;
+    res.mass = rigidMass.mass;
+
+    //TODO extracting principal axes basis and corresponding rotation and diagonal inertia
+
+    return true;
+}
+
+
 }
 
 }

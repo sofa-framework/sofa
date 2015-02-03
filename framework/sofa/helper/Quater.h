@@ -317,7 +317,7 @@ public:
     }
 
     enum { static_size = 4 };
-    static unsigned int size() {return 4;};
+    static unsigned int size() {return 4;}
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
     enum { total_size = 4 };
