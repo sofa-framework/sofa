@@ -383,7 +383,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 	for(w_size_t i=0; i<jacobian.size(); i++)
 #else
 	for(unsigned int i=0; i<jacobian.size(); i++)
@@ -437,7 +437,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 			for(w_size_t i=0; i<jacobian.size(); i++)
 #else
             for(unsigned int i=0; i<jacobian.size(); i++)
@@ -492,7 +492,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 			for(w_size_t i=0; i<this->f_index_parentToChild.size(); i++)
 #else
             for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
@@ -549,7 +549,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 			for(w_size_t i=0; i<this->f_index_parentToChild.size(); i++)
 #else
             for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)

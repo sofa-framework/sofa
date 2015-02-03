@@ -53,7 +53,7 @@ public:
 	/* 
 		Add new type to replace unsigned int when openMP is activated on windows to handle compilation issues
 	*/
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 	typedef long int w_size_t;
 #endif
 
@@ -130,7 +130,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
 			#pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 			for(w_size_t i=0; i<this->jacobian.size(); i++)
 #else
 			for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
@@ -148,7 +148,7 @@ protected:
 #ifdef USING_OMP_PRAGMAS
 	#pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 			for(w_size_t i=0; i<this->jacobian.size(); i++)
 #else
 			for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
