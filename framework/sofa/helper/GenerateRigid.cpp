@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/decompose.h>
 #include <sofa/defaulttype/Quat.h>
 
 namespace sofa
@@ -216,10 +217,32 @@ bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
     if( !generateRigid( rigidMass, res.com, meshFilename, density, scale ) )
         return false;
 
-    res.inertia = rigidMass.inertiaMatrix;
     res.mass = rigidMass.mass;
+    res.inertia = res.mass * rigidMass.inertiaMatrix;
 
-    //TODO extracting principal axes basis and corresponding rotation and diagonal inertia
+    // extracting principal axes basis to get the corresponding rotation with a diagonal inertia
+    if( res.inertia[0][1]>1e-5 || res.inertia[0][2]>1e-5 || res.inertia[1][2]>1e-5 ) // if !diagonal (1e-5 seems big but the precision from a mesh is poor)
+    {
+        defaulttype::Matrix3 U, V;
+        Decompose<SReal>::SVD( res.inertia, U, res.inertia_diagonal, V );
+
+        // det should be 1->rotation or -1->reflexion
+        if( determinant( U ) < 0 ) // reflexion
+        {
+            // made it a rotation by negating a column
+            U[0][0] = -U[0][0];
+            U[1][0] = -U[1][0];
+            U[2][0] = -U[2][0];
+        }
+        res.inertia_rotation.fromMatrix( U );
+    }
+    else
+    {
+        res.inertia_diagonal[0] = res.inertia[0][0];
+        res.inertia_diagonal[1] = res.inertia[1][1];
+        res.inertia_diagonal[2] = res.inertia[2][2];
+        res.inertia_rotation.clear();
+    }
 
     return true;
 }
