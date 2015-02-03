@@ -3,7 +3,8 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(SOURCE_FILES
 
  #alphabetical order
-    EulerImplicit_test.cpp
+    EulerImplicitSolverStatic_test.cpp
+    EulerImplicitSolverDynamic_test.cpp
     SpringSolverDynamic_test.cpp
 )
 
