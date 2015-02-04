@@ -51,7 +51,9 @@ void initExternalModule()
     if (first)
     {
         first = false;
+#if _WIN32
 		init_DiffusionSolver_module();
+#endif
     }
 }
 
