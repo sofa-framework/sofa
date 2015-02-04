@@ -38,6 +38,7 @@ using std::endl;
 #include <sofa/component/mapping/DistanceFromTargetMapping.inl>
 
 
+
 namespace sofa
 {
 
@@ -57,6 +58,7 @@ CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer(BaseMouseInteracto
     this->interactor->setMouseAttached(false);
     _compliance = 1e-3;
     _isCompliance = true;
+    _visualmodel = false;
 }
 
 
@@ -70,7 +72,7 @@ CompliantAttachPerformer<DataTypes>::~CompliantAttachPerformer()
 template <class DataTypes>
 void CompliantAttachPerformer<DataTypes>::clear()
 {
-//    cerr<<"CompliantAttachPerformer<DataTypes>::clear()" << endl;
+////    cerr<<"CompliantAttachPerformer<DataTypes>::clear()" << endl;
 
     if( interactionNode )
     {
@@ -237,6 +239,27 @@ void CompliantAttachPerformer<DataTypes>::start()
     distanceMapping->_arrowSize = _arrowSize;
     distanceMapping->_color = _color;
 
+
+    if( _visualmodel )
+    {
+        _vm = New<visualmodel::OglModel>();
+        ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginEdit();
+        vmpos.resize(2);
+        vmpos[0] = visualmodel::OglModel::Coord( mstateCollision->getPX(pickedParticleIndex), mstateCollision->getPY(pickedParticleIndex), mstateCollision->getPZ(pickedParticleIndex) );
+        vmpos[1] = pointOnRay;
+        _vm->m_positions.endEdit();
+        ResizableExtVector< visualmodel::OglModel::Triangle >& vmtri= *_vm->m_triangles.beginEdit();
+        vmtri.resize(1);
+        vmtri[0] = visualmodel::OglModel::Triangle( 0, 0, 1 );
+        _vm->m_triangles.endEdit();
+        interactionNode->addObject( _vm );
+        _vm->setName("mouse");
+//        std::cerr<<"mouse: "<<interactionNode->getPathName()<<std::endl;
+    }
+
+
+
+
     //       cerr<<"CompliantAttachPerformer<DataTypes>::start(), create target of " << picked.indexCollisionElement << " at " <<  (*mstateCollision->getX())[picked.indexCollisionElement] << " to " << pointOnRay << ", distance = " << (picked.point-pointOnRay).norm() << endl;
 
     typedef forcefield::UniformCompliance<DataTypes1> UniformCompliance1;
@@ -264,6 +287,19 @@ void CompliantAttachPerformer<DataTypes>::execute()
     distanceMapping->updateTarget(pickedParticleIndex,xmouse[0]);
 
 
+    if( _visualmodel )
+    {
+        core::behavior::BaseMechanicalState* mstateCollision=distanceMapping->getMechFrom()[0];
+        ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginEdit();
+        vmpos[0] = visualmodel::OglModel::Coord( mstateCollision->getPX(pickedParticleIndex), mstateCollision->getPY(pickedParticleIndex), mstateCollision->getPZ(pickedParticleIndex) );
+        vmpos[1] = DataTypes::getCPos(xmouse[0]);
+        _vm->m_positions.endEdit();
+    //    std::cerr<<"mouse: "<<mstateCollision->getName()<<" "<<mstateCollision->getPX(pickedParticleIndex)<<std::endl;
+    }
+
+
+
+
 //    mouseMapping->apply(core::MechanicalParams::defaultInstance());
 //    mouseMapping->applyJ(core::MechanicalParams::defaultInstance());
 
@@ -282,6 +318,7 @@ void CompliantAttachPerformer<DataTypes>::configure(configurationsetting::MouseB
         _isCompliance = s->isCompliance.getValue();
         _arrowSize = s->arrowSize.getValue();
         _color = s->color.getValue();
+        _visualmodel = s->visualmodel.getValue();
     }
 }
 

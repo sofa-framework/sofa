@@ -223,7 +223,6 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 this->jacobian(i).compressedMatrix.resize( Nout * p.size(), Nin * in[i].size());
                 this->jacobian(i).compressedMatrix.setZero();
 
-				this->jacobian(i).compressedMatrix.reserve(p.size() * Nout);
 
                 Real sign = (i == 0) ? -1 : 1;
 
@@ -252,6 +251,16 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 this->jacobian( obj ).compressedMatrix.insertBack(r, c) = sign;
             }
         }
+
+		void recycle()
+		{
+			typedef AssembledMultiMapping<TIn, TOut> base;
+			this->toModels.clear();
+			this->fromModels.clear();
+			pairs.beginEdit()->resize( 0 );
+			pairs.endEdit();
+			base::recycle();
+		}
 
     };
 

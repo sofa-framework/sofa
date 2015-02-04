@@ -4,11 +4,8 @@
 #include "KKTSolver.h"
 #include "Response.h"
 
-#include <Eigen/LU>
-#include <Eigen/Sparse>
 #include <Eigen/SparseCholesky>
 
-#include <Eigen/SVD>
 
 #include "utils/thread_local.h"
 

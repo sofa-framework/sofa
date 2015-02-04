@@ -138,6 +138,12 @@ public:
         Inherit::reinit();
     }
 
+    //Pierre-Luc : Implementation in HookeForceField
+    virtual void addForce(DataVecDeriv& /*_f*/ , const DataVecCoord& /*_x*/ , const DataVecDeriv& /*_v*/, const vector<SReal> /*_vol*/)
+    {
+        std::cout << "Do nothing" << std::endl;
+    }
+
     virtual void addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
     {
         if(this->mstate->getSize()!=(int)material.size()) resize();

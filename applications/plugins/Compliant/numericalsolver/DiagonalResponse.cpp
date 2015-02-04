@@ -7,7 +7,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(DiagonalResponse);
+SOFA_DECL_CLASS(DiagonalResponse)
 int DiagonalResponseClass = core::RegisterObject("A diagonal factorization of the response matrix.").add< DiagonalResponse >();
 
 

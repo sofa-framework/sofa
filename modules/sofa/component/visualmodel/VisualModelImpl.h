@@ -267,17 +267,17 @@ public:
     void setTranslation(SReal dx, SReal dy, SReal dz)
     {
         m_translation.setValue(Vec3Real((Real)dx,(Real)dy,(Real)dz));
-    };
+    }
 
     void setRotation(SReal rx, SReal ry, SReal rz)
     {
         m_rotation.setValue(Vec3Real((Real)rx,(Real)ry,(Real)rz));
-    };
+    }
 
     void setScale(SReal sx, SReal sy, SReal sz)
     {
         m_scale.setValue(Vec3Real((Real)sx,(Real)sy,(Real)sz));
-    };
+    }
     /// @}
 
     Vec3f bbox[2];
@@ -349,7 +349,7 @@ public:
     void setFilename(std::string s)
     {
         fileMesh.setValue(s);
-    };
+    }
 
     std::string getFilename() {return fileMesh.getValue();}
 
@@ -360,29 +360,29 @@ public:
     void setUseNormals(bool val)
     {
         m_useNormals.setValue(val);
-    };
+    }
 
     bool getUseNormals() const
     {
         return m_useNormals.getValue();
-    };
+    }
 
     void setCastShadow(bool val)
     {
         castShadow = val;
-    };
+    }
 
     bool getCastShadow() const
     {
         return castShadow;
-    };
+    }
 
     void setMesh(helper::io::Mesh &m, bool tex=false);
 
     bool isUsingTopology() const
     {
         return useTopology;
-    };
+    }
 
     const ResizableExtVector<Coord>& getVertices() const
     {
@@ -393,83 +393,83 @@ public:
         }
 
         return m_positions.getValue();
-    };
+    }
 
     const ResizableExtVector<Deriv>& getVnormals() const
     {
         return m_vnormals.getValue();
-    };
+    }
 
     const VecTexCoord& getVtexcoords() const
     {
         return m_vtexcoords.getValue();
-    };
+    }
 
     const ResizableExtVector<Coord>& getVtangents() const
     {
         return m_vtangents.getValue();
-    };
+    }
 
     const ResizableExtVector<Coord>& getVbitangents() const
     {
         return m_vbitangents.getValue();
-    };
+    }
 
     const ResizableExtVector<Triangle>& getTriangles() const
     {
         return m_triangles.getValue();
-    };
+    }
 
     const ResizableExtVector<Quad>& getQuads() const
     {
         return m_quads.getValue();
-    };
+    }
     
     const ResizableExtVector<Edge>& getEdges() const
     {
         return m_edges.getValue();
-    };
+    }
 
     void setVertices(ResizableExtVector<Coord> * x)
     {
         //m_vertices2.setValue(*x);
         this->m_positions.setValue(*x);
-    };
+    }
 
     void setVnormals(ResizableExtVector<Deriv> * vn)
     {
         m_vnormals.setValue(*vn);
-    };
+    }
 
     void setVtexcoords(VecTexCoord * vt)
     {
         m_vtexcoords.setValue(*vt);
-    };
+    }
 
     void setVtangents(ResizableExtVector<Coord> * v)
     {
         m_vtangents.setValue(*v);
-    };
+    }
 
     void setVbitangents(ResizableExtVector<Coord> * v)
     {
         m_vbitangents.setValue(*v);
-    };
+    }
 
     void setTriangles(ResizableExtVector<Triangle> * t)
     {
         m_triangles.setValue(*t);
-    };
+    }
 
     void setQuads(ResizableExtVector<Quad> * q)
     {
         m_quads.setValue(*q);
-    };
+    }
     
     void setEdges(ResizableExtVector<Edge> * e)
     {
         m_edges.setValue(*e);
-    };
+    }
 
     virtual void computePositions();
     virtual void computeMesh();
@@ -477,7 +477,7 @@ public:
     virtual void computeTangents();
     virtual void computeBBox(sofa::core::ExecParams* params);
 
-    virtual void updateBuffers() {};
+    virtual void updateBuffers() {}
 
     virtual void updateVisual();
 

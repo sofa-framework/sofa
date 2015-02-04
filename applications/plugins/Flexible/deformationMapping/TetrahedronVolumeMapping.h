@@ -67,8 +67,6 @@ public:
 
         baseMatrices.resize( 1 );
         baseMatrices[0] = &jacobian;
-        baseStiffnessMatrices.resize( 1 );
-        baseStiffnessMatrices[0] = &geometricStiffness;
 
         this->Inherit::init();
 
@@ -92,7 +90,7 @@ public:
         typename Hessians::iterator hessianIt = hessians.begin();
         if( d_volumePerNodes.getValue() )
         {
-            for( int i=0 ; i<v.size() ; i++ ) v[i][0] = 0;
+            for( size_t i=0 ; i<v.size() ; i++ ) v[i][0] = 0;
             SparseMatrixEigen tetraJ( m_topology->getNbTetrahedra(), x.size()*Nin );
             SparseMatrixEigen TetraToNode( v.size(), m_topology->getNbTetrahedra() );
             for (int i = 0, nbTetra = m_topology->getNbTetrahedra(); i < nbTetra; i++)
@@ -141,11 +139,11 @@ public:
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
 
         // OPTIMIZABLE!!!
-        getKs();
+        getK();
         geometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
     }
 
-    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    virtual const defaulttype::BaseMatrix* getK()
     {
         const OutVecDeriv& childForce = this->toModel->readForces().ref();
         const OutVecDeriv* cf; // force per tetra
@@ -164,7 +162,7 @@ public:
         else cf = &childForce;
 
 
-        typename Hessians::iterator hessianIt = hessians.begin();
+        typename Hessians::const_iterator hessianIt = hessians.begin();
         for( int i = 0, nbTetra = m_topology->getNbTetrahedra() ; i < nbTetra ; i++ )
         {
             Tetra t = m_topology->getTetra(i);
@@ -182,7 +180,7 @@ public:
 
         if( d_volumePerNodes.getValue() ) delete cf;
 
-        return &baseStiffnessMatrices;
+        return &geometricStiffness;
     }
 
     virtual const sofa::defaulttype::BaseMatrix* getJ() { return &jacobian; }
@@ -207,7 +205,6 @@ protected:
     typedef defaulttype::Mat<12,12,Real> Hessian;
     typedef std::list<Hessian> Hessians;
     Hessians hessians; ///< local dJ per tetrahedron
-    vector<defaulttype::BaseMatrix*> baseStiffnessMatrices; ///< Vector of geometric stiffness matrices
 
 
     Real processTetra( int i,

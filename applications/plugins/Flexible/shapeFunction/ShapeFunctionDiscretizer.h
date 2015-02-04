@@ -92,7 +92,6 @@ public:
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
     typedef typename BaseShapeFunction::VReal VReal;
     typedef typename BaseShapeFunction::VRef VRef;
-    typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ;
     typedef typename BaseShapeFunction::Coord Coord;
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
     //@}
@@ -163,8 +162,8 @@ protected:
                     if(inimg(x,y,z))
                     {
                         Coord p=inT->fromImage(Coord(x,y,z));
-                        VReal w; VRef ref; MaterialToSpatial M;
-                        _shapeFunction->computeShapeFunction(p,M,ref,w);
+                        VReal w; VRef ref;
+                        _shapeFunction->computeShapeFunction(p,ref,w);
                         for(unsigned int i=0;i<ref.size();i++)
                         {
                             indices(x,y,z,i)=ref[i]+1;

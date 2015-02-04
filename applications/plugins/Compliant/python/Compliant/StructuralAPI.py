@@ -26,137 +26,145 @@ template_suffix="d"
 # global variable to give a different name to each visual model
 idxVisualModel = 0
 
+# to use geometric_stiffness of rigid mappings
+# @warning WIP, the API will change
+geometric_stiffness = 0
+
+
+
 class RigidBody:
-        ## Generic Rigid Body
+    ## Generic Rigid Body
 
-        def __init__(self, node, name):
-                self.node = node.createChild( name )  # node
-                self.dofs = 0   # dofs
-                self.mass = 0   # mass
-                self.frame = Rigid.Frame()
-                self.framecom = Rigid.Frame()
+    def __init__(self, node, name):
+        self.node = node.createChild( name )  # node
+        self.dofs = None   # dofs
+        self.mass = None   # mass
+        self.frame = Rigid.Frame()
+        self.framecom = Rigid.Frame()
 
-        def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
-                ## create the rigid body from a mesh (inertia and com are automatically computed)
-                info = Rigid.generate_rigid(filepath, density, scale3d)
-                self.setFromRigidInfo(info, offset, inertia_forces)
+    def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
+        ## create the rigid body from a mesh (inertia and com are automatically computed)
+        info = Rigid.generate_rigid(filepath, density, scale3d)
+        self.setFromRigidInfo(info, offset, inertia_forces)
 
-        def setFromRigidFile(self, rigidfilepath, offset = [0,0,0,0,0,0,1], inertia_forces = False):
-                ## create the rigid body from a rigid file (it contains inertia and com)
-                info = Rigid.read_rigid(rigidfilepath)
-                self.setFromRigidInfo(info, offset, inertia_forces)
+    def setFromRigidFile(self, rigidfilepath, offset = [0,0,0,0,0,0,1], inertia_forces = False):
+        ## create the rigid body from a rigid file (it contains inertia and com)
+        info = Rigid.read_rigid(rigidfilepath)
+        self.setFromRigidInfo(info, offset, inertia_forces)
 
-        def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = False) :
-                self.framecom = Rigid.Frame()
-                self.framecom.rotation = info.inertia_rotation
-                self.framecom.translation = info.com
+    def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = False) :
+        self.framecom = Rigid.Frame()
+        self.framecom.rotation = info.inertia_rotation
+        self.framecom.translation = info.com
 
-                self.frame = Rigid.Frame(offset) * self.framecom
+        self.frame = Rigid.Frame(offset) * self.framecom
 
-                self.dofs = self.frame.insert( self.node, name = 'dofs', template="Rigid3"+template_suffix )
-                self.mass = self.node.createObject('RigidMass',
-                                        name = 'mass',
-                                        mass = info.mass,
-                                        inertia = concat(info.diagonal_inertia.tolist()),
-                                        inertia_forces = inertia_forces )
+        self.dofs = self.frame.insert( self.node, name = 'dofs', template="Rigid3"+template_suffix )
+        self.mass = self.node.createObject('RigidMass',
+                                name = 'mass',
+                                mass = info.mass,
+                                inertia = concat(info.diagonal_inertia.tolist()),
+                                inertia_forces = inertia_forces )
 
-        def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = False ):
-                ## create the rigid body by manually giving its inertia
-                self.frame = Rigid.Frame( offset )
-                self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
-                self.mass = self.node.createObject('RigidMass',
-                                        name = 'mass',
-                                        mass = mass,
-                                        inertia = concat(inertia),
-                                        inertia_forces = inertia_forces )
+    def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = False ):
+        ## create the rigid body by manually giving its inertia
+        self.frame = Rigid.Frame( offset )
+        self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
+        self.mass = self.node.createObject('RigidMass',
+                                name = 'mass',
+                                mass = mass,
+                                inertia = concat(inertia),
+                                inertia_forces = inertia_forces )
 
-        def addCollisionMesh(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
-            ## adding a collision mesh to the rigid body with a relative offset
-            # (only a Triangle collision model is created, more models can be added manually)
-            # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-            return RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+    def addCollisionMesh(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
+        ## adding a collision mesh to the rigid body with a relative offset
+        # (only a Triangle collision model is created, more models can be added manually)
+        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
+        return RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
 
-        def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
-            ## adding a visual model to the rigid body with a relative offset
-            # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-            return RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+    def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
+        ## adding a visual model to the rigid body with a relative offset
+        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
+        return RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
 
-        def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
-            ## adding a relative offset to the rigid body (e.g. used as a joint location)
-            # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-            return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+    def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
+        ## adding a relative offset to the rigid body (e.g. used as a joint location)
+        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
+        return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
 
-        def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
-            ## adding a offset given in absolute coordinates to the rigid body
-            return RigidBody.Offset( self.node, name, (self.frame.inv()*Rigid.Frame(offset)).offset() )
+    def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
+        ## adding a offset given in absolute coordinates to the rigid body
+        return RigidBody.Offset( self.node, name, (self.frame.inv()*Rigid.Frame(offset)).offset() )
 
-        def addMotor( self, forces=[0,0,0,0,0,0] ):
-            ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
-            return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+    def addMotor( self, forces=[0,0,0,0,0,0] ):
+        ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
+        return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
 
-        class CollisionMesh:
+    class CollisionMesh:
 
-            def __init__(self, node, filepath, scale3d, offset):
-                self.node = node.createChild( "collision" )  # node
-                r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-                self.loader = self.node.createObject("MeshObjLoader", name='loader', filename=filepath, scale3d=concat(scale3d), translation=concat(offset[:3]), rotation=concat(r), triangulate=1 )
-                self.topology = self.node.createObject('MeshTopology', name='topology', src="@loader" )
-                self.dofs = self.node.createObject('MechanicalObject', name='dofs', template="Vec3"+template_suffix )
-                self.triangles = self.node.createObject('TriangleModel', name='model')
-                self.mapping = self.node.createObject('RigidMapping', name="mapping")
+        def __init__(self, node, filepath, scale3d, offset):
+            self.node = node.createChild( "collision" )  # node
+            r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
+            self.loader = self.node.createObject("MeshObjLoader", name='loader', filename=filepath, scale3d=concat(scale3d), translation=concat(offset[:3]), rotation=concat(r), triangulate=1 )
+            self.topology = self.node.createObject('MeshTopology', name='topology', src="@loader" )
+            self.dofs = self.node.createObject('MechanicalObject', name='dofs', template="Vec3"+template_suffix )
+            self.triangles = self.node.createObject('TriangleModel', name='model')
+            self.mapping = self.node.createObject('RigidMapping', name="mapping")
 
-            def addVisualModel(self):
-                ## add a visual model identical to the collision model
-                return RigidBody.CollisionMesh.VisualModel( self.node )
-
-            class VisualModel:
-                def __init__(self, node ):
-                    global idxVisualModel;
-                    self.node = node.createChild( "visual" )  # node
-                    self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel))
-                    self.mapping = self.node.createObject('IdentityMapping', name="mapping")
-                    idxVisualModel+=1
-
+        def addVisualModel(self):
+            ## add a visual model identical to the collision model
+            return RigidBody.CollisionMesh.VisualModel( self.node )
 
         class VisualModel:
-            def __init__(self, node, filepath, scale3d, offset):
+            def __init__(self, node ):
                 global idxVisualModel;
                 self.node = node.createChild( "visual" )  # node
-                r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
-                meshLoader = SofaPython.Tools.meshLoader(self.node, filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
-                self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), src="@"+meshLoader.name)
-                self.mapping = self.node.createObject('RigidMapping', name="mapping")
+                self.model = self.node.createObject('VisualModel', name="model"+str(idxVisualModel))
+                self.mapping = self.node.createObject('IdentityMapping', name="mapping")
                 idxVisualModel+=1
 
-        class Offset:
-            def __init__(self, node, name, offset):
-                self.node = node.createChild( name )
-                self.frame = Rigid.Frame( offset )
-                self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
-                self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame))
 
-            def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
-                ## adding a relative offset to the offset
-                return RigidBody.Offset( self.node, name, offset )
+    class VisualModel:
+        def __init__(self, node, filepath, scale3d, offset):
+            global idxVisualModel;
+            self.node = node.createChild( "visual" )  # node
+            r = Quaternion.to_euler(offset[3:])  * 180.0 / math.pi
+            meshLoader = SofaPython.Tools.meshLoader(self.node, filepath, scale3d=concat(scale3d), translation=concat(offset[:3]) , rotation=concat(r))
+            self.model = self.node.createObject('VisualModel', name="visual"+str(idxVisualModel), src="@"+meshLoader.name)
+            self.mapping = self.node.createObject('RigidMapping', name="mapping")
+            idxVisualModel+=1
 
-            def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
-                ## adding a offset given in absolute coordinates to the offset
-                return RigidBody.Offset( self.node, name, (Rigid.Frame(offset) * self.frame.inv()).offset() )
+    class Offset:
+        def __init__(self, node, name, offset):
+            self.node = node.createChild( name )
+            self.frame = Rigid.Frame( offset )
+            self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
+            self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), geometricStiffness=geometric_stiffness)
 
-            def addMotor( self, forces=[0,0,0,0,0,0] ):
-                ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
-                return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+        def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
+            ## adding a relative offset to the offset
+            return RigidBody.Offset( self.node, name, offset )
+
+        def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
+            ## adding a offset given in absolute coordinates to the offset
+            return RigidBody.Offset( self.node, name, (Rigid.Frame(offset) * self.frame.inv()).offset() )
+
+        def addMotor( self, forces=[0,0,0,0,0,0] ):
+            ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
+            return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
 
 class GenericRigidJoint:
     ## Generic kinematic joint between two Rigids
 
     def __init__(self, name, node1, node2, mask, compliance=0, index1=0, index2=0):
         self.node = node1.createChild( name )
+        self.mask=mask
         self.dofs = self.node.createObject('MechanicalObject', template = 'Vec6'+template_suffix, name = 'dofs', position = '0 0 0 0 0 0' )
         input = [] # @internal
         input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
         input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-        self.mapping = self.node.createObject('RigidJointMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
+        self.mapping = self.node.createObject('RigidJointMultiMapping', name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2),
+                                              geometricStiffness = geometric_stiffness)
         self.constraint = GenericRigidJoint.Constraint( self.node, mask, compliance )
         node2.addChild( self.node )
 
@@ -186,6 +194,26 @@ class GenericRigidJoint:
             self.type = self.node.createObject('Stabilization')
             self.constraint = self.node.createObject('UnilateralConstraint')
 
+    def addLimits( self, limits, compliance=0 ):
+            ## limits is a list of limits in each unconstrained directions
+            ## always lower and upper bounds per direction, so its size is two times the number of unconstrained directions
+            ## (following the order txmin,txmax,tymin,tymax,tzmin,tzmax,rxmin,rxmax,rymin,rymax,rzmin,rzmax)
+            l = 0
+            limitMasks=[]
+            for m in xrange(6):
+                if self.mask[m] == 0: # unconstrained direction
+                    limits[l*2+1] *= -1 # inverted upper bound
+                    l+=1
+                    limitMask = [0]*6;
+                    # lower bound
+                    limitMask[m] = 1;
+                    limitMasks.append( limitMask )
+                    # upper bound
+                    limitMask[m] = -1;  # inverted upper bound
+                    limitMasks.append( limitMask )
+
+            return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
+
     def addDamper( self, damping ):
         return self.node.createObject( 'UniformVelocityDampingForceField', dampingCoefficient=damping )
 
@@ -201,28 +229,45 @@ class GenericRigidJoint:
         def setVelocities( self, velocities ):
             self.type.velocities = concat(velocities)
 
-
-    class PositionController:
-        """ Set the joint position to the offset
-        WARNING: for angular dof position, the value mus be in ]-pi,pi]
+    class DefaultPositionController:
+        """ Set the joint position to the target
+        WARNING: for angular dof position, the value must be in ]-pi,pi]
         """
-        def __init__(self, node, masks, offsets, compliance):
-            self.node = node.createChild( "controller" )
+        def __init__(self, node, mask, target, compliance):
+            self.node = node.createChild( "controller-mask" )
 
-            set = []
-            position = [0] * len(masks)
+            self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs')
+            self.node.createObject('MaskMapping', dofs=concat(mask))
+            self.nodeTarget = self.node.createChild( "controller-target" )
+            self.nodeTarget.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs')
+            self.mapping = self.nodeTarget.createObject('DifferenceFromTargetMapping', targets=concat(target))
+            self.compliance = self.nodeTarget.createObject('UniformCompliance', name='compliance', compliance=compliance, isCompliance=0)
+            self.type = self.nodeTarget.createObject('Stabilization')
 
-            for i in range(len(masks)):
-                set = set + [0] + masks[i]
+        def setTarget( self, target ):
+            self.mapping.targets = concat(target)
 
-            self.dofs = self.node.createObject('MechanicalObject', template='Vec1'+template_suffix, name='dofs', position=concat(position))
-            self.mapping = self.node.createObject('ProjectionMapping', set=concat(set), offset=concat(offsets))
-            self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance, isCompliance=0)
-            self.type = self.node.createObject('Stabilization')
+    # The PositionController can be redefined
+    PositionController=DefaultPositionController
 
-        def setOffsets( self, offsets ):
-            self.mapping.offset = concat(offsets)
-
+    def addGenericPositionController(self, target=None, compliance=0, mask=None):
+        """ Add a controller to this joint.
+        The target list must match mask list, il no target is specified, current position is used as a target.
+        The mask list selects the controlled dof, if mask is None the joint natural dof are used.
+        """
+        if not mask is None:
+            m=mask
+        else:
+            m = [ (1 - d) for d in self.mask ]
+        if not target is None:
+            t=target
+        else:
+            t=list()
+            for i,v in enumerate(m):
+                if v==1:
+                    t.append(self.dofs.position[0][i])
+        print "addGenericPositionController: target:", t
+        return GenericRigidJoint.PositionController(self.node, m, t, compliance)
 
     class ForceController:
         def __init__(self, node, mask, forces):
@@ -261,7 +306,8 @@ class CompleteRigidJoint:
         input = [] # @internal
         input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
         input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-        self.mapping = self.node.createObject('RigidJointMultiMapping',  name='mapping', input=concat(input), output='@dofs', pairs=str(index1)+" "+str(index2))
+        self.mapping = self.node.createObject('RigidJointMultiMapping',  name='mapping', input=concat(input), output='@dofs', pairs=str(index1)+" "+str(index2),
+                                              geometricStiffness = geometric_stiffness)
         self.constraint = CompleteRigidJoint.Constraint( self.node, compliances ) # the constraint compliance cannot be in the same branch as eventual limits...
         node2.addChild( self.node )
 
@@ -316,9 +362,9 @@ class HingeRigidJoint(GenericRigidJoint):
         mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
 
-    def addPositionController( self, offset, compliance=0 ):
+    def addPositionController( self, target, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.PositionController( self.node, [mask], [offset], compliance )
+        return GenericRigidJoint.PositionController( self.node, mask, [target], compliance )
 
     def addVelocityController( self, velocity, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
@@ -348,9 +394,9 @@ class SliderRigidJoint(GenericRigidJoint):
         mask = [ (1 - d) / float(stiffness) for d in self.mask ]
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
 
-    def addPositionController( self, offset, compliance=0 ):
+    def addPositionController( self, target, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
-        return GenericRigidJoint.PositionController( self.node, [mask], [offset], compliance )
+        return GenericRigidJoint.PositionController( self.node, mask, [target], compliance )
 
     def addVelocityController( self, velocity, compliance=0 ):
         mask = [ (1 - d) for d in self.mask ]
@@ -405,12 +451,12 @@ class BallAndSocketRigidJoint(GenericRigidJoint):
         mask = [0, 0, 0, 1.0/stiffnessX, 1.0/stiffnessY, 1.0/stiffnessZ ]
         return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
 
-    def addPositionController( self, axis, offset, compliance=0 ):
+    def addPositionController( self, axis, target, compliance=0 ):
         """ control rotation around axis (0->x, 1->y, 2->z)
         """
         mask = [0]*6
         mask[3+axis]=1
-        return GenericRigidJoint.PositionController( self.node, [mask], [offset], compliance )
+        return GenericRigidJoint.PositionController( self.node, mask, [target], compliance )
 
 class PlanarRigidJoint(GenericRigidJoint):
     ## Planar joint for the given axis as plane normal (0->x, 1->y, 2->z)
@@ -504,7 +550,9 @@ class RigidJointSpring:
             input = [] # @internal
             input.append( '@' + Tools.node_path_rel(self.node,node1) + '/dofs' )
             input.append( '@' + Tools.node_path_rel(self.node,node2) + '/dofs' )
-            self.mapping = self.node.createObject('RigidJointMultiMapping',  name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2))
+            
+            self.mapping = self.node.createObject('RigidJointMultiMapping',  name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2),
+                                                  geometricStiffness = geometric_stiffness)
             compliances = 1./numpy.array(stiffnesses);
             self.compliance = self.node.createObject('DiagonalCompliance', name='compliance', compliance=concat(compliances), isCompliance=0)
             node2.addChild( self.node )

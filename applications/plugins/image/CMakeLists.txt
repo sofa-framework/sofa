@@ -1,5 +1,7 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
+add_subdirectory(extlibs/DiffusionSolver)
+
 set(SOURCE_FILES
     initImage.cpp
     ImageContainer.cpp
@@ -60,7 +62,8 @@ if(SOFA-EXTERNAL_ZLIB)
     AddLinkerDependencies(${ZLIB_LIBRARIES})
 endif()
 
-add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
+include_directories("${SOFA_EXTLIBS_DIR}")
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE")
 AddLinkerDependencies(SofaBaseVisual)
@@ -84,6 +87,7 @@ if(SOFA-EXTERNAL_OPENCV)
 endif()
 
 AddLinkerDependencies(newmat)
+AddLinkerDependencies(DiffusionSolver)
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

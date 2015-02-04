@@ -45,28 +45,6 @@ namespace simulation {
 // but it is not proven that is more efficient
 
 
-/// compute forces only for compliant forcefields (after reseting the mapped dof forces and accumulate them toward the independant dofs)
-class MechanicalComputeComplianceForceVisitor : public MechanicalComputeForceVisitor
-{
-public:
-    MechanicalComputeComplianceForceVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId res )
-        : MechanicalComputeForceVisitor(mparams,res,true)
-    {
-    }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/) { return RESULT_CONTINUE; }
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->resetForce(this->params /* PARAMS FIRST */, res.getId(mm));
-        return RESULT_CONTINUE;
-    }
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
-    {
-        if( ff->isCompliance.getValue() ) ff->addForce(this->mparams, res);
-        return RESULT_CONTINUE;
-    }
-
-};
-
 
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
 class MechanicalAddComplianceForce : public MechanicalVisitor
@@ -116,7 +94,7 @@ public:
         map->applyJT( this->mparams, lambdas, lambdas );
     }
 
-    // for all dofs, f += lamda / dt
+    // for all dofs, f += lambda / dt
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
         const VecDerivId& lambdasid = lambdas.getId(mm);
@@ -124,18 +102,7 @@ public:
         {
             const VecDerivId& resid = res.getId(mm);
 
-//            mm->vOp( this->params, resid, resid, lambdasid, invdt ); // f += lambda / dt
-
-            // hack to improve stability and energy preservation
-            // TO BE STUDIED: lambda must be negative to generate geometric stiffness
-            // TODO find a more efficient way to implemented it
-            const size_t dim = mm->getMatrixSize();
-            component::linearsolver::AssembledSystem::vec buffer( dim );
-            mm->copyToBuffer( &buffer(0), lambdasid, dim );
-            for( size_t i=0 ; i<dim ; ++i )
-                if( buffer[i] > 0 ) buffer[i] *= -invdt;
-                else buffer[i] *= invdt; // constraint_force = lambda / dt
-            mm->addFromBuffer( resid, &buffer(0), dim ); // f += lambda / dt
+            mm->vOp( this->params, resid, resid, lambdasid, invdt ); // f += lambda / dt
         }
     }
 
@@ -168,196 +135,6 @@ public:
     }
 #endif
 };
-
-
-/// compute compliant forces fc and stiffness forces fk (after reseting the mapped dof forces and accumulate them toward the independant dofs)
-class MechanicalComputeStiffnessAndComplianceForcesVisitor : public MechanicalVisitor
-{
-
-    MultiVecDerivId fk,fc;
-
-public:
-
-    MechanicalComputeStiffnessAndComplianceForcesVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId fk, MultiVecDerivId fc )
-        : MechanicalVisitor(mparams), fk(fk),fc(fc)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->resetForce(this->mparams, fk.getId(mm));
-        mm->resetForce(this->mparams, fc.getId(mm));
-        mm->accumulateForce(this->mparams, fk.getId(mm));
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->resetForce(this->mparams, fk.getId(mm));
-        mm->resetForce(this->mparams, fc.getId(mm));
-        mm->accumulateForce(this->mparams, fk.getId(mm));
-        return RESULT_CONTINUE;
-    }
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
-    {
-        if( ff->isCompliance.getValue() ) ff->addForce(this->mparams, fc);
-        else ff->addForce(this->mparams, fk);
-        return RESULT_CONTINUE;
-    }
-
-
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
-    {
-        ForceMaskActivate( map->getMechFrom() );
-        ForceMaskActivate( map->getMechTo() );
-        map->applyJT( this->mparams, fk, fk );
-        map->applyJT( this->mparams, fc, fc );
-        ForceMaskDeactivate( map->getMechTo() );
-    }
-
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->forceMask.activate(false);
-    }
-
-    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {
-    }
-
-    // not necessary, projection matrix is applied later in flat vector representation
-//    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
-//    {
-//        c->projectResponse( this->mparams, fk );
-//        c->projectResponse( this->mparams, fc );
-//    }
-
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalComputeStiffnessAndComplianceForcesVisitor";}
-    virtual std::string getInfos() const
-    {
-        std::string name=std::string("[")+fk.getName()+","+fc.getName()+std::string("]");
-        return name;
-    }
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
-    {
-        return true;
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-        addWriteVector(fk);
-        addWriteVector(fc);
-    }
-#endif
-};
-
-
-
-class MechanicalComputeStiffnessForcesAndAddingPreviousLambdasVisitor : public MechanicalVisitor
-{
-
-    MultiVecDerivId f,fk,fc;
-
-public:
-
-    MechanicalComputeStiffnessForcesAndAddingPreviousLambdasVisitor(const sofa::core::MechanicalParams* mparams, MultiVecDerivId f, MultiVecDerivId fk, MultiVecDerivId fc )
-        : MechanicalVisitor(mparams), f(f), fk(fk),fc(fc)
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    }
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->resetForce(this->mparams, f.getId(mm));
-        mm->resetForce(this->mparams, fk.getId(mm));
-        mm->accumulateForce(this->mparams, fk.getId(mm));
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->resetForce(this->mparams, f.getId(mm));
-        mm->resetForce(this->mparams, fk.getId(mm));
-        mm->accumulateForce(this->mparams, fk.getId(mm));
-        return RESULT_CONTINUE;
-    }
-    virtual Result fwdForceField(simulation::Node* /*node*/, core::behavior::BaseForceField* ff)
-    {
-        if( ff->isCompliance.getValue() )
-        {
-            core::behavior::BaseMechanicalState* mm = ff->getContext()->getMechanicalState();
-            const VecDerivId& fcid = fc.getId(mm);
-            if( !fcid.isNull() ) // previously allocated
-            {
-                const VecDerivId& fid = f.getId(mm);
-                mm->vOp( this->params, fid, fid, fcid );
-            }
-        }
-        else
-        {
-            ff->addForce(this->mparams, fk);
-        }
-        return RESULT_CONTINUE;
-    }
-
-
-    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
-    {
-        ForceMaskActivate( map->getMechFrom() );
-        ForceMaskActivate( map->getMechTo() );
-        map->applyJT( this->mparams, fk, fk );
-        map->applyJT( this->mparams, f, f );
-        ForceMaskDeactivate( map->getMechTo() );
-    }
-
-    virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
-    {
-        mm->forceMask.activate(false);
-    }
-
-    virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* /*mm*/)
-    {
-    }
-
-    virtual void bwdProjectiveConstraintSet(simulation::Node* /*node*/, core::behavior::BaseProjectiveConstraintSet* c)
-    {
-        c->projectResponse( this->mparams, fk );
-        c->projectResponse( this->mparams, f );
-    }
-
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const {return "MechanicalComputeForcesVisitor";}
-    virtual std::string getInfos() const
-    {
-        std::string name=std::string("[")+f.getName()+","+fk.getName()+","+fc.getName()+std::string("]");
-        return name;
-    }
-
-    /// Specify whether this action can be parallelized.
-    virtual bool isThreadSafe() const
-    {
-        return true;
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-        addWriteVector(fk);
-        addWriteVector(fc);
-    }
-#endif
-};
-
 
 
 
@@ -418,20 +195,21 @@ public:
 				
 		unsigned offset, size;
 
-		mat C; ///< Compliance matrix
-		mat P; ///< Projective constraint matrix
+        const BaseMatrix* C; ///< Compliance matrix (only valid for mapped dof with a compliance)
+        mat P; ///< Projective constraint matrix (only valid for master dof)
 		mat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
+        const BaseMatrix* Ktilde; ///< geometric stiffness (only valid for mapped dof) @warning: size=parent*parent
 				
 		struct mapped {
-			mat J; ///< mapping jacobian
-			mat K; ///< geometric stiffness
+            mapped() : J(NULL) {}
+            const BaseMatrix* J; ///< mapping jacobian
 		};
 
 		// this is to remove f*cking mouse dofs
 		bool mechanical; ///< is it a mechanical dof i.e. influenced by a mass or stiffness or compliance
 		
 		bool master() const { return mechanical && map.empty(); }
-		bool compliant() const { return mechanical && C.size(); }
+        bool compliant() const { return mechanical && notempty(C); }
 		
 		unsigned vertex;
 		
@@ -447,11 +225,26 @@ public:
 		void debug() const;
 	};
 
+    // a special structure to handle InteractionForceFields
+    struct InteractionForceField
+    {
+        InteractionForceField( mat H, core::behavior::BaseInteractionForceField* ff ) : H(H), ff(ff) {
+//        std::cerr<<"Assembly InteractionForceField "<<H<<std::endl;
+        }
+        mat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
+        core::behavior::BaseInteractionForceField* ff;
+        mat J;
+    };
+    typedef std::list<InteractionForceField> InteractionForceFieldList;
+    mutable InteractionForceFieldList interactionForceFieldList;
+
 public:
 
-	mat compliance(simulation::Node* node);
+    const BaseMatrix* compliance(simulation::Node* node);
+    const BaseMatrix* geometricStiffness(simulation::Node* node);
 	mat proj(simulation::Node* node);
-	mat odeMatrix(simulation::Node* node);
+    mat odeMatrix(simulation::Node* node);
+    void interactionForceField(simulation::Node* node);
 			
 	chunk::map_type mapping(simulation::Node* node);
 			
@@ -468,8 +261,9 @@ public:
 	// TODO remove maps, stick everything in chunk ? again, adaptive
 	// stuff might need it
 
-	// full mapping/stiffness matrices
-	typedef std::map<dofs_type*, mat> full_type;
+    /// full mapping matrices
+    /// for a dof, gives it full mapping from master level
+    typedef std::map<dofs_type*, mat> fullmapping_type;
 
 	// dof offset
 	typedef std::map<dofs_type*, unsigned> offset_type;
@@ -478,7 +272,8 @@ public:
 		unsigned size_m;
 		unsigned size_c;
 				
-		full_type full;
+        fullmapping_type fullmapping; ///< full mapping from a dof to the master level
+        fullmapping_type fullmappinggeometricstiffness; ///< full mapping from a dof-1 level to the master level (used to map the geometric stiffness)
 				
 		// offsets
 		struct {
@@ -547,8 +342,16 @@ private:
 
 };
 
-// TODO why is this here ?
-// multiplies mapping matrices together for everyone in the graph
+
+
+
+
+/// Computing the full jacobian matrices from masters to every mapped dofs
+/// ie multiplies mapping matrices together for everyone in the graph
+// TODO why is this here?
+// -> because we need an access to it when deriving AssemblyVisitor
+// -> could be moved in AssemblyHelper?
+// -> or at least its implementation could be written in the .cpp
 struct AssemblyVisitor::process_helper {
 
     process_type& res;
@@ -565,15 +368,24 @@ struct AssemblyVisitor::process_helper {
         chunk* c = g[v].data;
 
         const unsigned& size_m = res.size_m;
-        full_type& full = res.full;
+        fullmapping_type& full = res.fullmapping;
         offset_type& offsets = res.offset.master;
 
-        if( !c->mechanical ) return;
+        if( c->master() || !c->mechanical ) return;
 
         mat& Jc = full[ curr ];
         assert( empty(Jc) );
 
-        // TODO use graph and out_edges
+
+        // full jacobian for multimapping's geometric stiffness
+        mat* geometricStiffnessJc = NULL;
+        unsigned localOffsetParentInMapped = 0; // only used for multimappings
+        if( boost::out_degree(v,g)>1 && notempty(c->Ktilde) )
+        {
+            geometricStiffnessJc = &res.fullmappinggeometricstiffness[ curr ];
+        }
+
+
         for( graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
 
             vertex vp = g[ boost::target(*e.first, g) ];
@@ -583,18 +395,13 @@ struct AssemblyVisitor::process_helper {
             mat& Jp = full[ vp.dofs ];
             {
                 // mapping blocks
-                const mat& jc = g[*e.first].data->J;
+                MySPtr<mat> jc( convertSPtr<mat>( g[*e.first].data->J ) );
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
                 // children will get the right place on multiplication
                 if( p->master() && empty(Jp) ) {
-                    // scoped::timer step("shift matrix");
-
-					// note: we *DONT* filter mass/stiffness at this
-					// stage since this would break direct solvers
-					// (non-invertible H matrix)
-					Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
+                    Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
                 }
 
                 // Jp is empty for children of a non-master dof (e.g. mouse)
@@ -602,32 +409,36 @@ struct AssemblyVisitor::process_helper {
                     // scoped::timer step("mapping matrix product");
 
                     // TODO optimize this, it is the most costly part
-                    add(Jc, jc * Jp );
+                    add(Jc, *jc * Jp ); // full mapping
+
+                    if( geometricStiffnessJc )
+                    {
+                        // mapping for geometric stiffness
+                        add( *geometricStiffnessJc, shift_left<mat>( localOffsetParentInMapped, p->size, c->Ktilde->rows() ) * Jp );
+                        localOffsetParentInMapped += p->size;
+                    }
                 } else {
                     assert( false && "parent has empty J matrix :-/" );
                 }
             }
 
-            if( ! (c->master() || !zero(Jc) )  )  {
-                using namespace std;
-
-                cerr << "houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
-                     << "master: " << c->master() << endl
-                     << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
-                     << "p mechanical ? " << p->mechanical << endl
-                     << "empty Jp " << empty(Jp) << endl
-                     << "empty Jc " << empty(Jc) << endl;
-
-                assert( false );
-            }
-
-
-
+//            std::cerr<<"Assembly::geometricStiffnessJc "<<geometricStiffnessJc<<" "<<curr->getName()<<std::endl;
         }
 
+        if( zero(Jc) )  {
+            using namespace std;
 
+            cerr << "houston we have a problem with " << c->dofs->getName()  << " under " << c->dofs->getContext()->getName() << endl
+                 << "master: " << c->master() << endl
+//                 << "mapped: " << (c->map.empty() ? string("nope") : p->dofs->getName() )<< endl
+//                 << "p mechanical ? " << p->mechanical << endl
+//                 << "empty Jp " << empty(Jp) << endl
+                 << "empty Jc " << empty(Jc) << endl;
 
-    };
+            assert( false );
+        }
+
+    }
 
 
 };

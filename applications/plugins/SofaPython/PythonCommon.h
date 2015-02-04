@@ -18,11 +18,10 @@
 // if you use Python on windows in debug build, be sure to provide a compiled version because
 // installation package doesn't come with debug libs.
 #    include <Python.h> 
-#elif defined(__APPLE__) && defined(__MACH__)
-#    include <Python/Python.h>
+//#elif defined(__APPLE__) && defined(__MACH__)
+//#    include <Python/Python.h>
 #else
 #    include <Python.h>
 #endif
-
 
 #endif

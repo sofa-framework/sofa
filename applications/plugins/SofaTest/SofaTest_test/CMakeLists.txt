@@ -17,6 +17,7 @@ set(SOURCE_FILES
     RigidMapping_test.cpp
     EulerImplicit_test.cpp
     HexahedronFEMForceField_test.cpp
+    KdTree_test.cpp
     LinearElasticity_test.cpp
     LoadScene_test.cpp
     Matrix_test.cpp
@@ -30,6 +31,7 @@ set(SOURCE_FILES
     RigidRigidMapping_test.cpp
     Simulation_test.cpp
     Sphere_test.cpp
+    SpringSolverDynamic_test.cpp
     StiffSpringForceField_test.cpp
     SubsetMultiMapping_test.cpp
     TetrahedronFEMForceField_test.cpp

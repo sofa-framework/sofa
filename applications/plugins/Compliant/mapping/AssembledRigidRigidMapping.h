@@ -71,18 +71,125 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
 	
 	AssembledRigidRigidMapping() 
-		: source(initData(&source, "source", "input dof and rigid offset for each output dof" )) {
-		
-	}
+		: source(initData(&source, "source", "input dof and rigid offset for each output dof" )),
+        geometricStiffness(initData(&geometricStiffness,
+                               0,
+                               "geometricStiffness",
+                               "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)")) {
+                
+    }
 
 	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
 	Data< vector< source_type > > source;
+
+    Data<int> geometricStiffness;
+
+    typedef typename TIn::Real Real;
 
   protected:
 	typedef SE3< typename TIn::Real > se3;
   
 	typedef AssembledRigidRigidMapping self;
-	
+
+
+    virtual void assemble_geometric(const typename self::in_pos_type& in_pos,
+                                    const typename self::out_force_type& out_force) {
+
+        // we're done lol
+        if( ! geometricStiffness.getValue() ) return;
+
+        // sorted in-out
+        typedef std::map<unsigned, unsigned> in_out_type;
+        in_out_type in_out;
+
+        for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
+            const source_type& s = source.getValue()[i];
+            in_out[ s.first() ] = i;
+        }
+
+        typedef typename self::geometric_type::CompressedMatrix matrix_type;
+        matrix_type& dJ = this->geometric.compressedMatrix;
+
+        dJ.resize( 6 * in_pos.size(),
+                   6 * in_pos.size() );
+
+        dJ.setZero();
+
+        for(in_out_type::const_iterator it = in_out.begin(), end = in_out.end();
+            it != end; ++it) {
+
+            const unsigned i = it->second;
+            const source_type& s = source.getValue()[i];
+            assert( it->first == s.first() );
+            
+			const typename TOut::Deriv& lambda = out_force[i];
+            const typename TOut::Deriv::Vec3& f = lambda.getLinear();
+
+            const typename TOut::Deriv::Quat& R = in_pos[ s.first() ].getOrientation();
+            const typename TOut::Deriv::Vec3& t = s.second().getCenter();
+
+            const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
+
+            typename se3::mat33 block = se3::hat( se3::map(f) ) * se3::hat( se3::map(Rt));
+
+			for(unsigned j = 0; j < 3; ++j) {
+                
+				const unsigned row = 6 * s.first() + 3 + j;
+                
+				dJ.startVec( row );
+				
+				for(unsigned k = 0; k < 3; ++k) {
+                    const unsigned col = 6 * s.first() + 3 + k;
+                    
+					if( block(j, k) ) dJ.insertBack(row, col) = block(j, k);
+				}
+			}			
+ 		}
+
+        dJ.finalize();
+
+        if( geometricStiffness.getValue() == 2 ) {
+            dJ = (dJ + matrix_type(dJ.transpose())) / 2.0;
+        }
+
+    }
+
+    
+    // virtual void applyDJT(const core::MechanicalParams* mparams,
+    //                       core::MultiVecDerivId inForce,
+    //                       core::ConstMultiVecDerivId /* inDx */ ) {
+    //     std::cout << "PARANOID TEST YO" << std::endl;
+        
+    //     const Data<typename self::InVecDeriv>& inDx =
+    //         *mparams->readDx(this->fromModel);
+            
+    //     const core::State<TIn>* from_read = this->getFromModel();
+    //     core::State<TIn>* from_write = this->getFromModel();
+
+    //     typename self::in_vel_type lvalue( *inForce[from_write].write() );
+
+    //     typename self::in_pos_type in_pos = this->in_pos();
+    //     typename self::out_force_type out_force = this->out_force();
+
+    //     for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
+    //         const source_type& s = source.getValue()[i];
+
+    //         const typename TOut::Deriv& lambda = out_force[i];
+    //         const typename TOut::Deriv::Vec3& f = lambda.getLinear();
+
+    //         const typename TOut::Deriv::Quat& R = in_pos[ s.first() ].getOrientation();
+    //         const typename TOut::Deriv::Vec3& t = s.second().getCenter();
+
+    //         const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
+    //         const typename TIn::Deriv::Vec3& omega = inDx.getValue()[ s.first() ].getAngular();
+            
+    //         lvalue[s.first()].getAngular() -= TIn::crosscross(f, omega, Rt) * mparams->kFactor();
+    //     }
+      
+    // }
+
+
+
 	virtual void assemble( const typename self::in_pos_type& in_pos ) {
 
 		typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
@@ -109,12 +216,15 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 				
 				for(unsigned k = 0; k < 6; ++k) {
                     unsigned col = 6 * s.first() + k;
-					J.insertBack(row, col) = block(j, k);
+					if( block(j, k) ) {
+                        J.insertBack(row, col) = block(j, k);
+                    }
 				}
 			}			
  		}
 
 		J.finalize();
+
 	}
 
 

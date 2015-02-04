@@ -153,7 +153,7 @@ public:
     //!
     /*! No attribute is attached to the new volume
      */
-    virtual unsigned int closeHole(Dart d, bool forboundary = true);
+    virtual unsigned int closeHole(Dart d);
 
     //!
     /*!

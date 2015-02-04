@@ -2,6 +2,7 @@
 <Node 	name="Root" gravity="0 -9.8 0 " dt="0.05"  >
     <RequiredPlugin pluginName="Flexible"/>
     <RequiredPlugin pluginName="image"/>
+    <RequiredPlugin pluginName="SofaPython"/>
     <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showWireframe" />
 
     <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 

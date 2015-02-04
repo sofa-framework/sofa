@@ -39,9 +39,9 @@ QT4_WRAP_CPP(MOC_FILES ${Q_OBJECT_HEADER_FILES})
 # Convert absolute paths of moc-generated files to relative paths
 ToRelativePath(MOC_FILES "${CMAKE_CURRENT_SOURCE_DIR}" "${MOC_FILES}")
 
-add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES})
 
-AddCompilerDefinitions("QT_DLL;QWT_DLL;QWT_MAKEDLL;QWT_NO_SVG")
+AddCompilerDefinitions("QT_DLL;QWT_DLL;QWT_MAKEDLL;QWT_NO_SVG;QT_NO_QT_INCLUDE_WARN")
 if(UNIX AND NOT APPLE)
     AddLinkerDependencies(rt)
 endif()

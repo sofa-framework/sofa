@@ -1,19 +1,9 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 ## plugin external dependencies
-if (APPLE)
-    # on MacOS you must use macport to use python SDK
-    # standard FindPythonLibs script mess with macports and apple version
-    set(PYTHON_LIBRARIES "-F/opt/local/Library/Frameworks/ -framework Python")
-    set(PYTHON_INCLUDE_DIRS "/opt/local/Library/Frameworks/Python.framework/Headers")	 
-    # fixes compilation on 10.9, where python 2.7 is a system
-    # framework
-    set(PYTHON_LIBRARIES "-F/System/Library/Frameworks/ -framework Python")
-    set(PYTHON_INCLUDE_DIRS "/System/Library/Frameworks/Python.framework/Headers")
-
-else()
     find_package(PythonLibs 2.7 REQUIRED)
-endif()
+#    Message(STATUS PYTHON_LIBRARIES=${PYTHON_LIBRARIES})
+#    Message(STATUS PYTHON_INCLUDE_DIRS=${PYTHON_INCLUDE_DIRS})
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 set(HEADER_FILES

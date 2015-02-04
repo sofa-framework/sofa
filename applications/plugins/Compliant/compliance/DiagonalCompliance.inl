@@ -62,7 +62,6 @@ void DiagonalCompliance<DataTypes>::reinit()
     }
     else matC.compressedMatrix.resize(0,0);
 
-    // matK must be computed since it is used by MechanicalComputeComplianceForceVisitor to compute the compliance forces
 //    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
 //    {
         matK.resize(state->getMatrixSize(), state->getMatrixSize());

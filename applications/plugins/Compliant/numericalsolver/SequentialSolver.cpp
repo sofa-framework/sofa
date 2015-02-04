@@ -48,8 +48,8 @@ void SequentialSolver::fetch_blocks(const system_type& system) {
 			b.size = dim;
             b.projector = constraint.projector.get(); // TODO remove this pointer copy
 
-            assert( !b.projector || b.projector->mask.empty() || b.projector->mask.size() == max );
-            b.activated = !b.projector || b.projector->mask.empty() || b.projector->mask[k];
+            assert( !b.projector || !b.projector->mask || b.projector->mask->empty() || b.projector->mask->size() == max );
+            b.activated = !b.projector || !b.projector->mask || b.projector->mask->empty() || (*b.projector->mask)[k];
 
 			blocks.push_back( b );
 
@@ -397,11 +397,14 @@ void SequentialSolver::solve_impl(vec& res,
 		// stop if we only gain one significant digit after precision
 		if( std::sqrt(estimate2) / sys.n <= epsilon ) break;
 	}
-	
-	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
 	res.head( sys.m ) += net;
 	res.tail( sys.n ) = lambda;
+
+
+
+    if( this->f_printLog.getValue() )
+        serr << "iterations: " << k << ", (abs) residual: " << (net - mapping_response * lambda).norm() << sendl;
 	
 
 }

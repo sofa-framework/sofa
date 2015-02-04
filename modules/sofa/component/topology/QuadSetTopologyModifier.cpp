@@ -68,7 +68,7 @@ void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads)
         quadsIndex.push_back(nQuads+i);
 
     // add topology event in the stack of topological events
-    addQuadsWarning( quads.size(), quads, quadsIndex);
+    addQuadsWarning((unsigned int)quads.size(), quads, quadsIndex);
 
     // inform other objects that the edges are already added
     propagateTopologicalChanges();
@@ -92,7 +92,7 @@ void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads,
         quadsIndex.push_back(nQuads+i);
 
     // add topology event in the stack of topological events
-    addQuadsWarning( quads.size(), quads, quadsIndex, ancestors, baryCoefs);
+    addQuadsWarning((unsigned int)quads.size(), quads, quadsIndex, ancestors, baryCoefs);
 
     // inform other objects that the edges are already added
     propagateTopologicalChanges();
@@ -156,7 +156,7 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
                 edgeIndex = m_container->getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
                 sofa::helper::vector< unsigned int > edgeIndexList;
                 edgeIndexList.push_back((unsigned int) edgeIndex);
-                addEdgesWarning( v.size(), v, edgeIndexList);
+                addEdgesWarning((unsigned int)v.size(), v, edgeIndexList);
             }
 
             if(m_container->hasEdgesInQuad())

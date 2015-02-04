@@ -115,6 +115,8 @@ struct Assembly_test : public CompliantSolver_test
 //        root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(getRoot());
+        (void) response;
 
         // The string
         simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
@@ -206,6 +208,8 @@ struct Assembly_test : public CompliantSolver_test
         //        complianceSolver->debug.setValue(true);
         linearSolver = addNew<LinearSolver>(root);
         //        linearSolver->debug.setValue(true);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // The string
         simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
@@ -285,6 +289,8 @@ struct Assembly_test : public CompliantSolver_test
         complianceSolver->beta.setValue(1.0);
 
         linearSolver = addNew<LinearSolver>(root);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // The string
         Vec3 startPoint(0,0,0);
@@ -406,6 +412,8 @@ struct Assembly_test : public CompliantSolver_test
         linearSolver = addNew<LinearSolver>(solverObject);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(solverObject);
+        (void) response;
 
 
         // ========  string
@@ -539,6 +547,8 @@ struct Assembly_test : public CompliantSolver_test
         root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // ========  strings
         Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0 );
@@ -687,6 +697,8 @@ struct Assembly_test : public CompliantSolver_test
         root->addObject( linearSolver);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // ========= The rigid object
         simulation::Node::SPtr rigid = root->createChild("rigid");
@@ -798,10 +810,15 @@ struct Assembly_test : public CompliantSolver_test
     */
     void testDecomposedString( SReal stiffness = 1e4 )
     {
+
+
+        /////// SUBSETMULTIMAPPING + DISTANCEMAPPING
+
+
         Node::SPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
 
-        Vec3 p0(0,0,0), p1(2,0,0); // make it deformed at start, such as it creates a force and geometric stiffness
+        const Vec3 p0(0,0,0), p1(2,0,0); // make it deformed at start, such as it creates a force and geometric stiffness
 
         // The solver
         complianceSolver = addNew<OdeSolver>(root);
@@ -809,6 +826,8 @@ struct Assembly_test : public CompliantSolver_test
         linearSolver = addNew<LinearSolver>(root);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
+        (void) response;
 
         // ========= DOF1
         simulation::Node::SPtr node1 = root->createChild("node1");
@@ -855,78 +874,183 @@ struct Assembly_test : public CompliantSolver_test
         compliance->isCompliance.setValue(false);
 
 
-        // ***** Expected results
-        expected.M = expected.P = DenseMatrix::Identity( 6, 6 );
-        expected.dv = Vector::Zero(6);        // equilibrium
 
-        expected.C = DenseMatrix::Zero(0,0); // null compliance
-        expected.phi = Vector::Zero(0);       // null imposed constraint value
-        expected.J = DenseMatrix::Zero(0,0);
-        expected.lambda.resize(0);
-
-        expected.K = DenseMatrix::Zero(6,6);
-        for( int i=0 ; i<6 ; i+=3 )
-        {
-            expected.K(i,i) = -stiffness;
-            expected.K(i, (i+3)%6) = stiffness;
-        }
 
         // ***** Perform initialization
         sofa::simulation::getSimulation()->init(root.get());
-
-
-        // before deformation and associated geometric stiffness
-        assembled.K = getAssembledStiffnessMatrix( root );
-        ASSERT_TRUE( matricesAreEqual( expected.K, assembled.K ) );
-
-
         // ***** Perform simulation
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
-        // after animation, the force has been computed as weel as the geometric stiffness
+        // after animation, the force has been computed as well as the geometric stiffness
 
 
-        assembled.M = getAssembledMassMatrix( root );
-        assembled.K = getAssembledStiffnessMatrix( root );
+        SparseMatrix SubsetMultimapping_H = complianceSolver->H();
 
 
-        // test the shape of K (but not all the values)
-        bool ok = true;
-        DenseMatrix K = assembled.K;
-        for( int i=0 ; i<6 && ok ; i+=3 )
-        {
-            if( i%3 ) ok = ok && ( K(i,i) == -K(i, (i+3)%6) ) && ( K(i,i) == expected.K(i,i) );
-            ok = ok && ( K(i+1,i+1) == -K(i+1, (i+4)%6) );
-            ok = ok && ( K(i+2,i+2) == -K(i+2, (i+5)%6) );
-            ok = ok && ( K(i+1,i+1) == K(i+2, i+2) );
-            ok = ok && ( K(i+1,i+1) == K((i+4)%6, (i+4)%6) );
-        }
-        ASSERT_TRUE( ok );
 
 
-        // build a spring stiffness matrix from a simple mapping to test the values
+        /////// DISTANCEMULTIMAPPING
+
+
         root = clearScene();
-        root->setGravity( Vec3(0,0,0) );complianceSolver = addNew<OdeSolver>(root);
+        root->setGravity( Vec3(0,0,0) );
+
+        // The solver
+        complianceSolver = addNew<OdeSolver>(root);
+//        complianceSolver->storeDynamicsSolution(true);
+        linearSolver = addNew<LinearSolver>(root);
+        complianceSolver->alpha.setValue(1.0);
+        complianceSolver->beta.setValue(1.0);
+        response = addNew<linearsolver::LDLTResponse>(root);
+
+        // ========= DOF1
+        node1 = root->createChild("node1");
+        dof1 = addNew<MechanicalObject3>(node1);
+        dof1->resize(1);
+        MechanicalObject3::WriteVecCoord x3 = dof1->writePositions();
+        x3[0] = p0;
+        mass1 = addNew<UniformMass3>(node1);
+        mass1->setTotalMass( 1 );
+
+        // ========= DOF2
+        node2 = root->createChild("node2");
+        dof2 = addNew<MechanicalObject3>(node2);
+        dof2->resize(1);
+        MechanicalObject3::WriteVecCoord x4 = dof2->writePositions();
+        x4[0] = p1;
+        mass2 = addNew<UniformMass3>(node2);
+        mass1->setTotalMass( 1 );
+
+        // =========== common DOFs
+        extension_node = node1->createChild( "ExtensionNode");
+        node2->addChild( extension_node );
+        extensions = addNew<MechanicalObject1>(extension_node);
+        edgeSet = addNew<EdgeSetTopologyContainer>(extension_node);
+        edgeSet->addEdge(0,1);
+        DistanceMultiMapping31::SPtr distanceMultiMapping = addNew<DistanceMultiMapping31>(extension_node);
+        distanceMultiMapping->addInputModel( dof1.get() );
+        distanceMultiMapping->addInputModel( dof2.get() );
+        distanceMultiMapping->addOutputModel( extensions.get() );
+        distanceMultiMapping->addPoint( dof1.get(), 0 );
+        distanceMultiMapping->addPoint( dof2.get(), 0 );
+        distanceMultiMapping->f_restLengths.setValue( restLengths );
+        compliance = addNew<UniformCompliance1>(extension_node);
+        compliance->compliance.setValue(1.0/stiffness);
+        compliance->isCompliance.setValue(false);
+
+
+        // ***** Perform initialization
+        sofa::simulation::getSimulation()->init(root.get());
+        // ***** Perform simulation
+        sofa::simulation::getSimulation()->animate(root.get(),1.0);
+
+        // after animation, the force has been computed as well as the geometric stiffness
+
+        SparseMatrix DistanceMultiMapping_H = complianceSolver->H();
+
+
+        ///////// SIMPLE FORCEFIELD SPRING
+
+        root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
+        complianceSolver = addNew<OdeSolver>(root);
         complianceSolver->storeDynamicsSolution(true);
         linearSolver = addNew<LinearSolver>(root);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
-        createCompliantString( root, p0, p1, 2, 2, 1.0/stiffness, false, 1 );
+        response = addNew<linearsolver::LDLTResponse>(root);
+
+        dof1 = addNew<MechanicalObject3>(root);
+        dof1->resize(2);
+        MechanicalObject3::WriteVecCoord x5 = dof1->writePositions();
+        x5[0] = p0;
+        x5[1] = p1;
+        mass1 = addNew<UniformMass3>(root);
+        mass1->setMass( 1 );
+        StiffSpringForceField3::SPtr ff = addNew<StiffSpringForceField3>(root);
+        ff->addSpring(0,1,stiffness,0,1);
+
         sofa::simulation::getSimulation()->init(root.get());
         sofa::simulation::getSimulation()->animate(root.get(),1.0);
-        expected.K = getAssembledStiffnessMatrix( root );
+
+        SparseMatrix SimpleForceField_H = complianceSolver->H();
 
 
 
-        // actual results
-        //        cerr<<"M = " << endl << DenseMatrix(assembled.M) << endl;
-        //        cerr<<"J = " << endl << DenseMatrix(complianceSolver->J()) << endl;
-        //        cerr<<"C = " << endl << DenseMatrix(complianceSolver->C()) << endl;
-        //        cerr<<"P = " << endl << DenseMatrix(complianceSolver->P()) << endl;
-        //        cerr<<"f = " << endl << complianceSolver->getF().transpose() << endl;
-        //        cerr<<"phi = " << complianceSolver->getPhi().transpose() << endl;
-        //        cerr<<"actual dv = " << complianceSolver->getDv().transpose() << endl;
-        //        cerr<<"actual lambda = " << complianceSolver->getLambda().transpose() << endl;
+        ///////// INTERACTIONFORCEFIELD SPRING
+
+        root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
+
+        // The solver
+        complianceSolver = addNew<OdeSolver>(root);
+//        complianceSolver->storeDynamicsSolution(true);
+        linearSolver = addNew<LinearSolver>(root);
+        complianceSolver->alpha.setValue(1.0);
+        complianceSolver->beta.setValue(1.0);
+        response = addNew<linearsolver::LDLTResponse>(root);
+
+        // ========= DOF1
+        node1 = root->createChild("node1");
+        dof1 = addNew<MechanicalObject3>(node1);
+        dof1->setName("dof1");
+        dof1->resize(1);
+        MechanicalObject3::WriteVecCoord x6 = dof1->writePositions();
+        x6[0] = p0;
+        mass1 = addNew<UniformMass3>(node1);
+        mass1->setTotalMass( 1 );
+
+        // ========= DOF2
+        node2 = root->createChild("node2");
+        dof2 = addNew<MechanicalObject3>(node2);
+        dof2->setName("dof2");
+        dof2->resize(1);
+        MechanicalObject3::WriteVecCoord x7 = dof2->writePositions();
+        x7[0] = p1;
+        mass2 = addNew<UniformMass3>(node2);
+        mass1->setTotalMass( 1 );
+
+        ff = New<StiffSpringForceField3>(dof1.get(), dof2.get());
+        root->addObject(ff);
+        ff->addSpring(0,0,stiffness,0,1);
+
+        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::getSimulation()->animate(root.get(),1.0);
+
+        SparseMatrix InteractionForceField_H = complianceSolver->H();
+
+
+
+
+        ///////// SIMPLE DISTANCE MAPPING
+
+        // build a spring stiffness matrix from a simple mapping to test the values
+        root = clearScene();
+        root->setGravity( Vec3(0,0,0) );
+        complianceSolver = addNew<OdeSolver>(root);
+        complianceSolver->storeDynamicsSolution(true);
+        linearSolver = addNew<LinearSolver>(root);
+        complianceSolver->alpha.setValue(1.0);
+        complianceSolver->beta.setValue(1.0);
+        response = addNew<linearsolver::LDLTResponse>(root);
+        createCompliantString( root, p0, p1, 2, 2, 1.0/stiffness, false, 1 );
+
+        sofa::simulation::getSimulation()->init(root.get());
+        sofa::simulation::getSimulation()->animate(root.get(),1.0);
+
+        SparseMatrix SimpleDistanceMapping_H = complianceSolver->H();
+
+
+
+        ///////// COMPARISONS
+
+        ASSERT_TRUE( matricesAreEqual( SimpleForceField_H, SubsetMultimapping_H ) );
+        ASSERT_TRUE( matricesAreEqual( SimpleForceField_H, DistanceMultiMapping_H ) );
+        ASSERT_TRUE( matricesAreEqual( SimpleForceField_H, SimpleDistanceMapping_H ) );
+        ASSERT_TRUE( matricesAreEqual( SimpleForceField_H, InteractionForceField_H ) );
+
+
+
     }
 
     ///@}
@@ -1032,8 +1156,6 @@ TEST_F( Assembly_test, testRigidConnectedToString )
 TEST_F( Assembly_test, testDecomposedString )
 {
     testDecomposedString();
-    ASSERT_TRUE(matricesAreEqual( expected.M, assembled.M ));
-    ASSERT_TRUE(matricesAreEqual( expected.K, assembled.K ));
 }
 
 } // sofa

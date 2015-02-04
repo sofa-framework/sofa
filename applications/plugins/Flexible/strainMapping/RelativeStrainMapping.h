@@ -39,7 +39,7 @@ namespace component
 namespace mapping
 {
 
-/// Decompose the total strain to an elastic strain + an offset
+/// Decompose the total strain to an elastic strain - an offset
 template <class TStrain>
 class RelativeStrainMapping : public BaseStrainMappingT<defaulttype::RelativeStrainJacobianBlock<TStrain> >
 {
@@ -54,71 +54,87 @@ public:
 
     /// @name  Different ways to decompose the strain
     //@{
-    enum RelativeMethod { ADDITION=0, MULTIPLICATION, NB_PlasticMethod }; ///< ADDITION -> Müller method (faster), MULTIPLICATION -> Fedkiw method
-    Data<helper::OptionsGroup> f_method;
+    //    enum RelativeMethod { ADDITION=0, MULTIPLICATION, NB_PlasticMethod }; ///< ADDITION -> Müller method (faster), MULTIPLICATION -> Fedkiw method
+    //    Data<helper::OptionsGroup> f_method;
     //@}
 
     /// @name  Strain offset
     //@{
     Data<typename Inherit::InVecCoord> offset;
+    Data<bool> inverted;
     //@}
+
+
+    virtual void reinit()
+    {
+        typename Inherit::InCoord off = typename Inherit::InCoord();
+        if(offset.getValue().size()==1) off = offset.getValue()[0];
+
+        for( size_t i=0 ; i<this->jacobian.size() ; i++ )
+        {
+            if(i<offset.getValue().size()) off = offset.getValue()[i];
+            this->jacobian[i].init(off,inverted.getValue());
+        }
+
+        Inherit::reinit();
+    }
 
 protected:
 
     RelativeStrainMapping( core::State<TStrain>* from = NULL, core::State<TStrain>* to = NULL )
         : Inherit ( from, to )
-        , f_method ( initData ( &f_method,"method","" ) )
+        //        , f_method ( initData ( &f_method,"method","" ) )
         , offset(initData(&offset,"offset","Strain offset"))
+        , inverted( initData(&inverted, false, "inverted", "offset-Strain (rather than Strain-offset )") )
     {
-        helper::OptionsGroup Options;
-        Options.setNbItems( NB_PlasticMethod );
-        Options.setItemName( ADDITION,       "addition" );
-        Options.setItemName( MULTIPLICATION, "multiplication" );
-        Options.setSelectedItem( ADDITION );
-        f_method.setValue( Options );
+        //        helper::OptionsGroup Options;
+        //        Options.setNbItems( NB_PlasticMethod );
+        //        Options.setItemName( ADDITION,       "addition" );
+        //        Options.setItemName( MULTIPLICATION, "multiplication" );
+        //        Options.setSelectedItem( ADDITION );
+        //        f_method.setValue( Options );
     }
 
     virtual ~RelativeStrainMapping() { }
 
-    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
-    {
-        helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
-        helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
-        if(inpos.size()!=outpos.size()) this->resizeOut();
+    //    virtual void apply( const core::MechanicalParams * /*mparams*/ , Data<typename Inherit::OutVecCoord>& dOut, const Data<typename Inherit::InVecCoord>& dIn )
+    //    {
+    //        helper::ReadAccessor<Data<typename Inherit::InVecCoord> > inpos (*this->fromModel->read(core::ConstVecCoordId::position()));
+    //        helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
+    //        if(inpos.size()!=outpos.size()) this->resizeOut();
 
-        typename Inherit::OutVecCoord& out = *dOut.beginEdit();
-        const typename Inherit::InVecCoord&  in  =  dIn.getValue();
+    //        typename Inherit::OutVecCoord& out = *dOut.beginEdit();
+    //        const typename Inherit::InVecCoord&  in  =  dIn.getValue();
 
-        typename Inherit::InCoord off = typename Inherit::InCoord();
-        if(offset.getValue().size()==1) off = offset.getValue()[0];
+    //        typename Inherit::InCoord off = typename Inherit::InCoord();
+    //        if(offset.getValue().size()==1) off = offset.getValue()[0];
 
-        switch( f_method.getValue().getSelectedId() )
-        {
-        case MULTIPLICATION:
-        {
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
-            {
-                out[i] = typename Inherit::OutCoord();
-                if(i<offset.getValue().size()) off = offset.getValue()[i];
-                this->jacobian[i].addapply_multiplication( out[i], in[i], off );
-            }
-            break;
-        }
-        case ADDITION:
-        {
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
-            {
-                out[i] = typename Inherit::OutCoord();
-                if(i<offset.getValue().size()) off = offset.getValue()[i];
-                this->jacobian[i].addapply_addition( out[i], in[i],  off );
-            }
-            break;
-        }
-        }
+    //        switch( f_method.getValue().getSelectedId() )
+    //        {
+    //        case MULTIPLICATION:
+    //        {
+    //            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+    //            {
+    //                out[i] = typename Inherit::OutCoord();
+    //                if(i<offset.getValue().size()) off = offset.getValue()[i];
+    //                this->jacobian[i].addapply_multiplication( out[i], in[i], off );
+    //            }
+    //            break;
+    //        }
+    //        case ADDITION:
+    //        {
+    //            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+    //            {
+    //                out[i] = typename Inherit::OutCoord();
+    //                if(i<offset.getValue().size()) off = offset.getValue()[i];
+    //                this->jacobian[i].addapply_addition( out[i], in[i],  off );
+    //            }
+    //            break;
+    //        }
+    //        }
 
-        dOut.endEdit();
-
-    }
+    //        dOut.endEdit();
+    //    }
 
 }; // class RelativeStrainMapping
 

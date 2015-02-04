@@ -12,7 +12,7 @@
 
 #include "../utils/edit.h"
 #include "../constraint/Restitution.h"
-#include "../constraint/Stabilization.h"
+#include "../constraint/HolonomicConstraintValue.h"
 
 
 namespace sofa
@@ -351,8 +351,9 @@ protected:
     typedef SReal real;
 // TODO to compliantconstraint
     /// insert a ConstraintValue component in the given graph depending on restitution/damping values
+    /// return possible pointer to the activated constraint mask
     template<class contact_dofs_type>
-    void addConstraintValue( node_type* node, contact_dofs_type* dofs/*, real damping*/, real restitution=0, unsigned size = 1)
+    const vector<bool>* addConstraintValue( node_type* node, contact_dofs_type* dofs/*, real damping*/, real restitution=0 )
     {
         assert( restitution>=0 && restitution<=1 );
 
@@ -364,19 +365,16 @@ protected:
             constraintValue->restitution.setValue( restitution );
 
             // don't activate non-penetrating contacts
-            edit(constraintValue->mask)->resize( size * this->mappedContacts.size() );
+            edit(constraintValue->mask)->resize( this->mappedContacts.size() );
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
 				// (max) watch out: editor is destroyed just after
 				// operator* is called, thus endEdit is called at this
 				// time !
-                (*edit(constraintValue->mask))[size * i] = ( (*this->contacts)[i].value <= 0 );
-
-				for(unsigned j = 1; j < size; ++j) {
-					(*edit(constraintValue->mask))[size * i + j] = false;
-				}
+                (*edit(constraintValue->mask))[i] = ( (*this->contacts)[i].value <= 0 );
             }
 
             constraintValue->init();
+            return &constraintValue->mask.getValue();
         }
 //        else //if( damping ) // damped constraint
 //        {
@@ -385,26 +383,41 @@ protected:
 ////            constraintValue->dampingRatio.setValue( damping );
 //            constraintValue->init();
 //        }
+        else if( holonomic.getValue() ) // holonomic constraint (cancel relative velocity, w/o stabilization, contact penetration is not canceled)
+        {
+            // with stabilization holonomic and stabilization constraint values are equivalent
+
+            typedef odesolver::HolonomicConstraintValue stab_type;
+            stab_type::SPtr stab = sofa::core::objectmodel::New<stab_type>( dofs );
+            node->addObject( stab.get() );
+
+            // don't stabilize non-penetrating contacts (normal component only)
+            edit(stab->mask)->resize(  this->mappedContacts.size() );
+            for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
+                (*edit(stab->mask))[i] = ( (*this->contacts)[i].value <= 0 );
+            }
+
+            stab->init();
+            return &stab->mask.getValue();
+        }
         else // stabilized constraint
         {
             // stabilizer
             typedef odesolver::Stabilization stab_type;
             stab_type::SPtr stab = sofa::core::objectmodel::New<stab_type>( dofs );
-            stab->m_holonomic = holonomic.getValue();
             node->addObject( stab.get() );
 
             // don't stabilize non-penetrating contacts (normal component only)
-            edit(stab->mask)->resize( size * this->mappedContacts.size() );
+            edit(stab->mask)->resize( this->mappedContacts.size() );
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
-                (*edit(stab->mask))[size * i] = ( (*this->contacts)[i].value <= 0 );
-
-                for(unsigned j = 1; j < size; ++j) {
-                    (*edit(stab->mask))[size * i + j] = false;
-                }
+                (*edit(stab->mask))[i] = ( (*this->contacts)[i].value <= 0 );
             }
 
             stab->init();
+            return &stab->mask.getValue();
         }
+
+        return NULL;
     }
 
 

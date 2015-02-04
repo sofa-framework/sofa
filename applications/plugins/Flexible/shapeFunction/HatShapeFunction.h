@@ -65,8 +65,6 @@ public:
     typedef typename Inherit::VHessian VHessian;
 	typedef typename Inherit::VRef VRef;
 	typedef typename Inherit::Cell Cell;
-    typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
-    typedef typename Inherit::VMaterialToSpatial VMaterialToSpatial;
     typedef typename Inherit::Hessian Hessian;
     typedef typename Inherit::VecVRef VecVRef;
     typedef typename Inherit::VecVReal VecVReal;
@@ -81,14 +79,11 @@ public:
     Data<helper::OptionsGroup> method;
     Data< ParamTypes > param;
 
-	virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell /*cell*/=-1)
+    virtual void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell /*cell*/=-1)
     {
         helper::ReadAccessor<Data<VCoord > > parent(this->f_position);
         unsigned int nbp=parent.size(),nbRef=this->f_nbRef.getValue();
         raParam prm(this->param);
-
-        M=MaterialToSpatial();
-        for ( unsigned int i = 0; i < spatial_dimensions; i++ ) M[i][i]=(Real)1.; //identity
 
         // get the nbRef closest parents
         ref.resize(nbRef); ref.fill(0);

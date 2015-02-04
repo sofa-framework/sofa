@@ -612,7 +612,6 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 void Node::doAddObject(BaseObject::SPtr sobj)
 {
-    notifyAddObject(sobj);
     //sobj->setContext(this);
     this->setObjectContext(sobj);
     object.add(sobj);

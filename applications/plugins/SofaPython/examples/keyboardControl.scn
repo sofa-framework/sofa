@@ -4,8 +4,9 @@
  thus demonstrating a way to create new specific components with SofaPython.
 -->
 
-<Node name="root" dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" >
-    <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
+<Node name="root" dt="0.005" >
+        <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
+        <RequiredPlugin name="SofaPython" pluginName="SofaPython" />
 	<Gravity name="G" gravity="10 0 0" />
 	<CollisionPipeline name="pipeline" depth="6" verbose="0"/>
 	<BruteForceDetection name="detection" />

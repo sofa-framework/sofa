@@ -86,12 +86,11 @@ void ComputeWeightEngine::update()
     BaseShapeFunction* sf = l_shapeFunction.get();
     for(unsigned i = 0; i < nb_vertices; ++i )
     {
-        BaseShapeFunction::MaterialToSpatial M;
         BaseShapeFunction::VRef ref;
         BaseShapeFunction::VReal w;
 
         // Compute weights and indices for the given element
-        sf->computeShapeFunction( vertices[i], M, ref, w );
+        sf->computeShapeFunction( vertices[i], ref, w );
         unsigned j = 0;
         for( ; j < ref.size(); ++j )
         {
