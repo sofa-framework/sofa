@@ -203,7 +203,7 @@ class Model:
     def parseJointGenerics(self,modelXml):
         for j in modelXml.iter("jointGeneric"):
             if j.attrib["id"] in self.genericJoints:
-                print "ERROR: sml.Model: joint defined twice, id:", j.attrib["id"]
+                print "ERROR: sml.Model: jointGeneric defined twice, id:", j.attrib["id"]
                 continue
 
             joint=Model.JointGeneric(j)
