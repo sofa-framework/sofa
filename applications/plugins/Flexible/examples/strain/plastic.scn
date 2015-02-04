@@ -49,7 +49,7 @@
 	     <Mesh src="@loader"/>
  	     <MechanicalObject useMask="true" />
              <Triangle />
-             <LinearMapping template="Vec3d,Vec3f"/>
+             <LinearMapping template="Vec3d,Vec3d"/>
 	</Node>
 
 	<Node name="Visual"  >
@@ -96,7 +96,7 @@
 	     <Mesh src="@loader"/>
  	     <MechanicalObject useMask="true" />
              <Triangle />
-             <LinearMapping template="Vec3d,Vec3f"/>
+             <LinearMapping template="Vec3d,Vec3d"/>
 	</Node>
 
 	<Node name="Visual"  >
@@ -141,7 +141,7 @@
 	     <Mesh src="@loader"/>
  	     <MechanicalObject useMask="true" />
              <Triangle />
-             <LinearMapping template="Vec3d,Vec3f"/>
+             <LinearMapping template="Vec3d,Vec3d"/>
 	</Node>
 
 	<Node name="Visual"  >

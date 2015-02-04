@@ -64,14 +64,13 @@ fix-test-report() {
 run-single-test() {
     local test=$1
     local output_file="$output_dir/$test/report.xml"
-    local test_cmd="$build_dir/bin/$test --gtest_output=xml:report.xml 2>&1 | tee $output_dir/$test/output.txt"
+    local test_cmd="$build_dir/bin/$test --gtest_output=xml:$output_file 2>&1"
     local timeout=900
 
     echo "$test_cmd" > "$output_dir/$test/command.txt"
     echo "Running $test with a timeout of $timeout seconds"
     rm -f report.xml
-    "$src_dir/scripts/ci/timeout.sh" test "$test_cmd" $timeout
-    mv report.xml "$output_file" || true
+    "$src_dir/scripts/ci/timeout.sh" test "$test_cmd" $timeout | tee $output_dir/$test/output.txt
 
     if [[ -e test.timeout ]]; then
         echo 'Timeout!'
@@ -81,7 +80,7 @@ run-single-test() {
         cat test.exit_code > "$output_dir/$test/status.txt"
     fi
     rm -f test.exit_code
-    if [ -e "$output_file" ]; then
+    if [ -f "$output_file" ]; then
         fix-test-report "$output_file"
         cp "$output_file" "$output_dir/reports/$test.xml"
     else
@@ -110,7 +109,7 @@ count-crashes() {
 # extract and sum the attribute given in argument
 # This function relies on the element being written on a single line:
 # E.g. <testsuites tests="212" failures="4" disabled="0" errors="0" ...
-tests-get ()
+tests-get()
 {
     # Check the existence of report files
     if ! ls "$output_dir/reports/"*.xml &> /dev/null; then

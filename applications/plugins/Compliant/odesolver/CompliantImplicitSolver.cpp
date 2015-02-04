@@ -270,7 +270,7 @@ using namespace core::behavior;
 
             if( !constraint.projector ) continue; // if bilateral nothing to filter
 
-            constraint.projector->mask.clear();
+            constraint.projector->mask = NULL;
             constraint.value->clear();
         }
     }
@@ -575,6 +575,11 @@ using namespace core::behavior;
 
         // debugging
         if( debug.getValue() ) sys.debug();
+        if( f_printLog.getValue() )
+        {
+            sout << "dynamics size m: " <<sys.m<< sendl;
+            sout << "constraint size n: " <<sys.n<< sendl;
+        }
 
         // look for violated and active constraints
         // must be performed after assembly and before system factorization

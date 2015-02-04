@@ -52,7 +52,9 @@ namespace sofa {
 				virtual void applyJ(const core::MechanicalParams*,
 				                    Data<typename self::OutVecDeriv>& out, 
 				                    const Data<typename self::InVecDeriv>& in) {
-					if( jacobian.rowSize() > 0 ) jacobian.mult(out, in);
+					if( jacobian.compressedMatrix.nonZeros() > 0 ) {
+                        jacobian.mult(out, in);
+                    }
 				}
 
 				void debug() {
@@ -68,7 +70,9 @@ namespace sofa {
 				                     Data<typename self::InVecDeriv>& in, 
 				                     const Data<typename self::OutVecDeriv>& out) {
 					// debug();
-					if( jacobian.rowSize() > 0 ) jacobian.addMultTranspose(in, out);
+					if( jacobian.compressedMatrix.nonZeros() > 0 ) {
+                        jacobian.addMultTranspose(in, out);
+                    }
 				}
 
 				virtual void applyJT(const core::ConstraintParams*,
@@ -79,12 +83,56 @@ namespace sofa {
 				}
 
 
+                virtual const defaulttype::BaseMatrix* getK() {
+
+                    // trigger assembly
+                    this->assemble_geometric(this->in_pos(),
+                                             this->out_force() );
+                    
+                    if( geometric.compressedMatrix.nonZeros() ) return &geometric;
+                    else return 0;
+                    
+                }
+
+                virtual void applyDJT(const core::MechanicalParams* mparams,
+                                      core::MultiVecDerivId inForce,
+                                      core::ConstMultiVecDerivId /* inDx */ ) {
+                    // TODO FIXME
+                    // trigger K recomputation 
+                    this->getK();
+                    
+                    std::cout << "WARNING: geometric stiffness might be reassembled everytime !"
+                              << std::endl;
+                    
+                    if( geometric.compressedMatrix.nonZeros() ) {
+
+                        const Data<typename self::InVecDeriv>& inDx =
+                            *mparams->readDx(this->fromModel);
+                        
+//                        const core::State<In>* from_read = this->getFromModel();
+                        core::State<In>* from_write = this->getFromModel();
+
+                        // TODO does this even make sense ?
+                        geometric.addMult(*inForce[from_write].write(),
+                                          inDx,
+                                          mparams->kFactor());
+                    }
+
+                    
+                }
+                
+
 			protected:
 				enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
 
 				typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
+                
 				typedef helper::WriteAccessor< Data< typename self::OutVecCoord > > out_pos_type;
-	
+
+                typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > out_force_type;
+
+                typedef helper::WriteAccessor< Data< typename self::InVecDeriv > > in_vel_type;
+                
 				in_pos_type in_pos() {
 
 					const core::State<In>* fromModel = this->getFromModel();
@@ -96,13 +144,34 @@ namespace sofa {
 					
 					return *in;
 				}
-	
+
+
+                out_force_type out_force() {
+
+					const core::State<Out>* toModel = this->getToModel();
+					assert( toModel );
+					
+					core::ConstMultiVecDerivId outForce = core::ConstVecDerivId::force();
+	  
+					const typename self::OutDataVecDeriv* out = outForce[toModel].read();
+					
+					return *out;
+				}
+
+
 
 				virtual void assemble( const in_pos_type& in ) = 0;
+                virtual void assemble_geometric( const in_pos_type& /*in*/,
+                                                 const out_force_type& /*out*/) { }
+                
 				virtual void apply(out_pos_type& out, const in_pos_type& in ) = 0;
 	
 				typedef linearsolver::EigenSparseMatrix<In, Out> jacobian_type;
 				jacobian_type jacobian;
+
+                typedef linearsolver::EigenSparseMatrix<In, In> geometric_type;
+                geometric_type geometric;
+
 			};
 
 		}

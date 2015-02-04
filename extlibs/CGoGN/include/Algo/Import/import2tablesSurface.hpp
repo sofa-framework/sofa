@@ -1502,6 +1502,9 @@ bool MeshTablesSurface<PFP>::importAHEM(const std::string& filename, std::vector
 template<typename PFP>
 bool MeshTablesSurface<PFP>::mergeCloseVertices()
 {
+    //TODO : remove return true
+    return true;
+
     const int NBV = 64; // seems to be good
 
     const int NEIGH[27] = {

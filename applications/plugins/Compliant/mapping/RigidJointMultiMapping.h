@@ -46,20 +46,24 @@ public:
 	typedef AssembledMultiMapping<TIn, TOut> base;
 	typedef RigidJointMultiMapping self;
 
+    Data<int> geometricStiffness;
+
 protected:
 	typedef SE3< in_real > se3;
 	typedef typename se3::coord_type coord_type;
 	
 
 	RigidJointMultiMapping()
-		: pairs(initData(&pairs, "pairs", "index pairs for each joint"))
-		{
-			
-	}
+		: pairs(initData(&pairs, "pairs", "index pairs (parent, child) for each joint")),
+          geometricStiffness(initData(&geometricStiffness,
+                                      0,
+                                      "geometricStiffness",
+                                      "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)"))
+        {}
 	
 	void apply(typename self::out_pos_type& out,
 	           const vector< typename self::in_pos_type >& in ) {
-		assert( this->getFrom().size() == 2 );
+		// assert( this->getFrom().size() == 2 );
 
 		const pairs_type& p = pairs.getValue();
 		
@@ -73,13 +77,142 @@ protected:
 			coord_type delta = se3::prod( se3::inv(parent), child);
 
 			typename se3::deriv_type value = se3::product_log( delta );
+            
             utils::map(out[i]).template head<3>() =  utils::map(value.getLinear()).template cast<out_real>();
             utils::map(out[i]).template tail<3>() =  utils::map(value.getAngular()).template cast<out_real>();
 			
 		}
 		
 	}
-	
+
+
+
+    void assemble_geometric(const vector<typename self::const_in_coord_type>& in_pos,
+                            const typename self::const_out_deriv_type& out_force) {
+        // we're done lol
+        if( true || ! geometricStiffness.getValue() ) return;
+        
+        // assert( this->getFromModels().size() == 2 );
+        // assert( this->getFromModels()[0] != this->getFromModels()[1] );
+
+        // assert( this->getToModels().size() == 1 );
+        // assert( this->getToModels()[0]->getSize() == 1 );
+
+        typedef typename self::geometric_type::CompressedMatrix matrix_type;
+        matrix_type& dJ = this->geometric.compressedMatrix;
+
+        // out wrench
+        const typename TOut::Deriv& mu = out_force[0];
+
+        // TODO put these in se3::angular/linear
+        typedef typename se3::vec3 vec3;
+        const vec3 f = se3::map(mu).template head<3>();
+        const vec3 tau = se3::map(mu).template tail<3>();
+        
+        // matrix sizes
+        const unsigned size_p = this->from(0)->getMatrixSize();
+        const unsigned size_c = this->from(1)->getMatrixSize();
+
+        const unsigned size = size_p + size_c;
+        
+        dJ.resize( size, size );
+        dJ.setZero();
+
+        // lets process pairs
+        const pairs_type& p = pairs.getValue();
+
+        // TODO we really need sorted pairs here, is this even possible ?
+        // assert( p.size() == 1 && "not sure if work");
+        
+        // alright, let's do this
+        for(unsigned i = 0, n = p.size(); i < n; ++i) {
+
+            const unsigned index_p = p[i](0);
+            const unsigned index_c = p[i](1);
+
+			const coord_type parent = in_pos[0][ index_p ];
+			const coord_type child = in_pos[1][ index_c ];
+
+            typedef typename se3::mat33 mat33;
+            typedef typename se3::mat66 mat66;
+            typedef typename se3::vec3 vec3;
+            
+            const mat33 Rp = se3::rotation(parent).toRotationMatrix();
+
+            const vec3 Rp_f = Rp * f;
+            const vec3 Rp_tau = Rp * tau;
+
+            const mat33 Rp_f_hat = se3::hat(Rp_f);
+            const mat33 Rp_tau_hat = se3::hat(Rp_tau);
+
+            const vec3 s = se3::translation(child) - se3::translation(parent);
+
+            // parent rows
+            {
+                // (p, p) block
+                mat66 block_pp;
+
+                block_pp <<
+                    mat33::Zero(), Rp_f_hat,
+                    -Rp_f_hat, se3::hat(s) * Rp_f_hat + Rp_tau_hat;
+            
+                // (p, c) block
+                typename se3::mat66 block_pc;
+
+                block_pc <<
+                    se3::mat36::Zero(),
+                    Rp_f_hat, mat33::Zero();
+
+                // fill parent rows
+                for(unsigned i = 0; i < 6; ++i) {
+                    const unsigned row = 6 * index_p + i;
+
+                    dJ.startVec(row);
+                
+                    // pp
+                    for(unsigned j = 0; j < 6; ++j) {
+                        const unsigned col = 6 * index_p + j;
+                        if(block_pp(i, j)) dJ.insertBack(row, col) = block_pp(i, j);
+                    }
+
+                    // pc
+                    for(unsigned j = 0; j < 6; ++j) {
+                        const unsigned col = size_p + 6 * index_c + j;
+                        if(block_pc(i, j)) dJ.insertBack(row, col) = block_pc(i, j);
+                    }
+                }
+            }
+
+            // child rows
+            {
+                // (c, p) block
+                mat66 block_cp;
+                block_cp <<
+                    mat33::Zero(), -Rp_f_hat,
+                    mat33::Zero(), -Rp_tau_hat;
+
+                // fill child rows
+                for(unsigned i = 0; i < 6; ++i) {
+                    const unsigned row = size_p + 6 * index_c + i;
+                
+                    dJ.startVec(row);
+                
+                    for(unsigned j = 0; j < 6; ++j) {
+                        const unsigned col = 6 * index_p + j;
+                        if(block_cp(i, j)) dJ.insertBack(row, col) = block_cp(i, j);
+                    }
+                }
+            }
+
+        }
+
+        dJ.finalize();
+        
+        if( geometricStiffness.getValue() == 2 ) {
+            dJ = (dJ + matrix_type(dJ.transpose())) / 2.0;
+        }
+        
+    }
 
 	void assemble(const vector< typename self::in_pos_type >& in ) {
 		assert(this->getFrom()[0] != this->getFrom()[1]);
@@ -100,21 +233,26 @@ protected:
 		// each pair
 		for(unsigned i = 0, n = p.size(); i < n; ++i) {
 			
-			coord_type parent = in[0][ p[i](0) ];
-			coord_type child = in[1][ p[i](1) ];
+			const coord_type parent = in[0][ p[i](0) ];
+			const coord_type child = in[1][ p[i](1) ];
 			
-			coord_type delta = se3::prod( se3::inv(parent), child);
+			const coord_type delta = se3::prod( se3::inv(parent), child);
 			
 			// each parent mstate
 			for(unsigned j = 0, m = in.size(); j < m; ++j) {
 
 				typename self::jacobian_type::CompressedMatrix& J = this->jacobian(j).compressedMatrix;
 				
-				mat33 Rp = se3::rotation(parent).toRotationMatrix();
-				mat33 Rc = se3::rotation(child).toRotationMatrix();
+				const mat33 Rp = se3::rotation(parent).normalized().toRotationMatrix();
+				const mat33 Rc = se3::rotation(child).normalized().toRotationMatrix();
+
 //				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
-				mat33 dlog = se3::dlog( se3::rotation(delta) );
-				
+				const typename se3::vec3 s = se3::translation(child) - se3::translation(parent);
+
+                // dlog in spatial coordinates
+                const mat33 dlog = se3::dlog( se3::rotation(delta).normalized() ); // * Rc.transpose() * Rp;
+                // const mat33 dlog = mat33::Identity();
+                 
 				mat66 ddelta; 
 
 				if( j ) {
@@ -124,24 +262,22 @@ protected:
 						mat33::Zero(), dlog * Rc.transpose();
 				} else {
 					// parent
-						ddelta << 
-						-Rp.transpose(), mat33::Zero(),
-							mat33::Zero(), -dlog * Rc.transpose();
+                    ddelta << 
+                        -Rp.transpose(), Rp.transpose() * se3::hat(s),
+                        mat33::Zero(), -dlog * Rc.transpose();
 				}
 				
-
-				mat66 block = ddelta;
-
 				J.reserve(6*6);
 
+				const mat66& block = ddelta;
 				// each row
 				for( unsigned u = 0; u < 6; ++u) {
-					unsigned row = 6 * i + u;
+					const unsigned row = 6 * i + u;
 					J.startVec( row );
 					
 					for( unsigned v = 0; v < 6; ++v) {
-						unsigned col = 6 * p[i][j] + v; 
-						J.insertBack(row, col) = block(u, v);
+						const unsigned col = 6 * p[i][j] + v; 
+						if( block(u, v) ) J.insertBack(row, col) = block(u, v);
 					} 
 				}		 
 				

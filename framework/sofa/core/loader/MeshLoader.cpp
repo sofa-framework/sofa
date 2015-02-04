@@ -175,8 +175,7 @@ void MeshLoader::updateElements()
         }
         waQuads.clear();
     }
-    // If ND topological elements are presents as well as (N-1)D elements, make sure all neighbors are created
-    if (hexahedra.getValue().size() > 0 && (quads.getValue().size() > 0 || createSubelements.getValue()))
+    if (hexahedra.getValue().size() > 0 && createSubelements.getValue())
     {
         helper::ReadAccessor<Data<helper::vector< Hexahedron > > > hexahedra = this->hexahedra;
         helper::WriteAccessor<Data<helper::vector< Quad > > > quads = this->quads;
@@ -206,7 +205,7 @@ void MeshLoader::updateElements()
         if (nbnew > 0)
             sout << nbnew << " quads were missing around the hexahedra" << sendl;
     }
-    if (tetrahedra.getValue().size() > 0 && (triangles.getValue().size() > 0 || createSubelements.getValue()))
+    if (tetrahedra.getValue().size() > 0 && createSubelements.getValue())
     {
         helper::ReadAccessor<Data<helper::vector< Tetrahedron > > > tetrahedra = this->tetrahedra;
         helper::WriteAccessor<Data<helper::vector< Triangle > > > triangles = this->triangles;
@@ -230,7 +229,7 @@ void MeshLoader::updateElements()
         if (nbnew > 0)
             sout << nbnew << " triangles were missing around the tetrahedra" << sendl;
     }
-    if (quads.getValue().size() > 0 && (edges.getValue().size() > 0 || createSubelements.getValue()))
+    if (quads.getValue().size() > 0 && createSubelements.getValue())
     {
         helper::ReadAccessor<Data<helper::vector< Quad > > > quads = this->quads;
         helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->edges;
@@ -254,7 +253,7 @@ void MeshLoader::updateElements()
         if (nbnew > 0)
             sout << nbnew << " edges were missing around the quads" << sendl;
     }
-    if (triangles.getValue().size() > 0 && (edges.getValue().size() > 0 || createSubelements.getValue()))
+    if (triangles.getValue().size() > 0 && createSubelements.getValue())
     {
         helper::ReadAccessor<Data<helper::vector< Triangle > > > triangles = this->triangles;
         helper::WriteAccessor<Data<helper::vector< Edge > > > edges = this->edges;

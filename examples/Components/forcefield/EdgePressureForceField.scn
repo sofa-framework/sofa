@@ -8,7 +8,7 @@
 	<Node 	name="SquareGravity"  >
 		<EulerImplicitSolver name="Euler Implicit"  printLog="0"  rayleighStiffness="0.1"  rayleighMass="0.1"  vdamping="0"  verbose="0" />
 		<CGLinearSolver template="GraphScattered" name="CG Solver"  printLog="0"  iterations="100"  tolerance="1e-06"  threshold="1e-10"  verbose="0" />
-		<MeshGmshLoader name="loader"  filename="mesh/square3.msh" />
+		<MeshGmshLoader name="loader"  filename="mesh/square3.msh" createSubelements="true"/>
 		<MechanicalObject template="Vec3d" name="mObject1"  position="@loader.position"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  translation="@loader.translation"  rotation="@loader.rotation"  scale3d="@loader.scale3d" />
 		<TriangleSetTopologyContainer name="Container"  position="@loader.position"  edges="@loader.edges"  triangles="@loader.triangles" />
 		<TriangleSetTopologyModifier name="Modifier" />

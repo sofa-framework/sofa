@@ -1,18 +1,19 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.01" >
-<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMechanicalMappings showForceFields" />
 
   <RequiredPlugin name="Compliant" pluginName="Compliant" />
   <RequiredPlugin name="Flexible" pluginName="Flexible" />
 
-<CompliantAttachButtonSetting button="Left" />
+<!-- <CompliantAttachButton /> -->
+  
 <Node 	name="complianceSolverScene" >
         <CompliantImplicitSolver/>
-	<LDLTSolver/>
+        <LDLTSolver/><LDLTResponse/>
 <!--    <MinresSolver iterations="20" precision="1e-3" /> -->
    
     <GridMeshCreator name="loader" filename="nofile" resolution="5 5" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
-    <MeshTopology name="mesh" src="@loader" drawQuads="1" />
+    <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
     <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
     <UniformMass  name="mass" />

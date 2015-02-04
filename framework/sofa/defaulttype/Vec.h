@@ -650,7 +650,7 @@ public:
     }
 
 
-    /// Normalize the vector with the given norm
+    /// Normalize the vector taking advantage of its already computed norm, equivalent to /=norm
     void normalizeWithNorm(real norm, real threshold=std::numeric_limits<real>::epsilon())
     {
         if (norm>threshold)

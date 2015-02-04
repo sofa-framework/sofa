@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 0 0" dt="1"  >
-	<RequiredPlugin pluginName="Flexible" />
+    
+    <RequiredPlugin pluginName="Flexible" />
     <VisualStyle displayFlags="showBehaviorModels showMechanicalMappings showForceFields" />
 
     <EulerImplicitSolver />
@@ -13,12 +14,12 @@
     <Node 	name="Child"   >
 	<MeshObjLoader name="MeshLoader" filename="mesh/ball.obj"/>
 	<Mesh src="@MeshLoader" /> 
-	<MechanicalObject  template="DefGradient331" name="F"  showObject="0" showObjectScale="0.05" />
-    	<LinearMapping template="Vec3d,DefGradient331"  />
+	<MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
+    	<LinearMapping template="Vec3d,F331"  />
 
 	    <Node 	name="Child"   >
-		<MechanicalObject  template="Strain331" name="E"  showObject="1" showObjectScale="0.05" />
-	    	<GreenStrainMapping template="DefGradient331,Strain331"  />
+		<MechanicalObject  template="E331" name="E"  showObject="1" showObjectScale="0.05" />
+	    	<GreenStrainMapping template="F331,E331"  />
 	    </Node>
 
     </Node>

@@ -13,6 +13,8 @@ struct SOFA_Compliant_API Constraint : public core::objectmodel::BaseObject {
 
     SOFA_ABSTRACT_CLASS(Constraint, sofa::core::objectmodel::BaseObject);
  
+    Constraint() : mask( NULL ) {}
+
     virtual ~Constraint() {}
 	
     /// project the response on the valid sub-space
@@ -21,9 +23,9 @@ struct SOFA_Compliant_API Constraint : public core::objectmodel::BaseObject {
 
     /// Flagging which constraints must be activated (true == active)
     /// ie filter out all deactivated constraints (force lambda to 0)
-    /// If mask is empty, all constraints are activated
+    /// If mask is NULL or empty, all constraints are activated
     /// A value per constraint block (NOT per constraint line)
-    vector<bool> mask;
+    const vector<bool>* mask;
 	
 };
 

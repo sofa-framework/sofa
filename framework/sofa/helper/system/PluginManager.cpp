@@ -26,6 +26,8 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
+#include <boost/algorithm/string.hpp>
+
 namespace sofa
 {
 namespace helper
@@ -142,10 +144,17 @@ bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
         //std::cout << "System-specific plugin filename: " << pluginPath << std::endl;
     }
 
-    if( !PluginRepository.findFile(pluginPath,"",errlog) )
+    if( !PluginRepository.findFile(pluginPath,"",NULL) )
     {
-        if (errlog) (*errlog) << "Plugin " << pluginPath << " NOT FOUND in: " << PluginRepository << std::endl;
-        return false;
+        // try to load the plugin with a lowercase name as a failsafe
+        std::string lowercasePluginPath = pluginPath;
+        boost::algorithm::to_lower(lowercasePluginPath);
+        if( !PluginRepository.findFile(lowercasePluginPath,"",NULL) )
+        {
+            if (errlog) (*errlog) << "WARNING: Plugin " << pluginPath << " NOT FOUND in: " << PluginRepository << std::endl;
+            return false;
+        }
+        else pluginPath = lowercasePluginPath;
     }
     if(m_pluginMap.find(pluginPath) != m_pluginMap.end() )
     {

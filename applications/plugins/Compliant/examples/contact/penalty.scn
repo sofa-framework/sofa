@@ -12,7 +12,7 @@
   <DefaultContactManager response="PenalityCompliantContact" responseParams="stiffness=1e10"  />
 
   <CompliantImplicitSolver stabilization="0" />
-  <LDLTSolver projectH="1" />
+  <LDLTSolver/>
   
   <Node name="ground">
     <MechanicalObject name="grounddof" template="Rigid" position="0 0 0 0.9659258262890683 -0.25881904510252074 0 0" />

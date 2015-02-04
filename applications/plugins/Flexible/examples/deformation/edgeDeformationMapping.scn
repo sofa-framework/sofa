@@ -3,6 +3,7 @@
 <Node 	name="Root" gravity="0 0 1" time="0" animate="0"  dt="0.02" >
   
   <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="Compliant"/>
   
 <VisualStyle displayFlags="showVisualModels showBehaviorModels showCollisionModels" />
 
@@ -82,7 +83,7 @@
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="@../mesh.edges" />
-        <ExtensionMapping  />
+        <DistanceMapping  />
         <UniformCompliance name="ucomp" template="Vec1d" compliance="1" dampingRatio="0."  isCompliance="0" /> 
     </Node>
 

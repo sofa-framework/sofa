@@ -168,7 +168,7 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
-        list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
+    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
 
    	list(APPEND SOURCE_FILES "quadrature/ImageGaussPointSampler.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/VoronoiShapeFunction.cpp")
@@ -176,10 +176,13 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
    	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
    	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
-        list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
+    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
 
-        AddLinkerDependencies(image)
-        AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
+    AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
+
+
+    AddLinkerDependencies(image)
+
 endif()
 
 
@@ -188,6 +191,7 @@ include(./python/python.cmake)
 
 
 add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+
 
 AddCompilerDefinitions("SOFA_BUILD_Flexible")
 AddLinkerDependencies(SofaEigen2Solver SofaBaseVisual)
@@ -203,32 +207,6 @@ if(UNIX)
     link_directories("/usr/lib/x86_64-linux-gnu/")
     AddLinkerDependencies("pthread")
 endif()
-
-
-
-sofa_option(SOFA-EXTERNAL_MGDIFFUSI0N_PATH PATH "" "Path to the MGDIFFUSI0N library")
-if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
-    AddCompilerDefinitions("SOFA_HAVE_MGDIFFUSI0N")
-    include_directories( "${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/" )
-
-#    link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/ )
-#    AddLinkerDependencies("DiffusionSolver")
-#    link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/ )
-#    link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/ )
-#    AddLinkerDependencies("PhysBAM_PhysBAM_Tools" "Threading_Tools")
-
-
-# TODO fix this!
-# link_directories does not add a -Lpath to the link command so I found this workaround for now
-
-    target_link_libraries (${PROJECT_NAME} ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/libDiffusionSolver.so
-                                            ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/libPhysBAM_PhysBAM_Tools.so
-                                            ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/libThreading_Tools.so )
-
-
-endif()
-
-
 
 
 

@@ -47,9 +47,9 @@ unsigned int MapCommon<MAP_IMPL>::degree(Dart d) const
 
 template <typename MAP_IMPL>
 template <unsigned int ORBIT>
-bool MapCommon<MAP_IMPL>::sameOrbit(Cell<ORBIT> c1, Cell<ORBIT> c2, unsigned int thread) const
+bool MapCommon<MAP_IMPL>::sameOrbit(Cell<ORBIT> c1, Cell<ORBIT> c2) const
 {
-	TraversorDartsOfOrbit<MapCommon<MAP_IMPL>, ORBIT> tradoo(*this, c1, thread);
+    TraversorDartsOfOrbit<MapCommon<MAP_IMPL>, ORBIT> tradoo(*this, c1);
 	for (Dart x = tradoo.begin(); x != tradoo.end(); x = tradoo.next())
 	{
         if (x == c2)

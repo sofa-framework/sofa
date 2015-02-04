@@ -3,14 +3,14 @@
 <!-- François Faure, 2012 -->
 
 <Node 	name="Root" gravity="1 0 0" time="0" animate="0"  dt="0.01" >
-<VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
-<CompliantAttachButtonSetting button="Left" />
+    <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 
-      <RequiredPlugin pluginName="Flexible"/>
-      <RequiredPlugin pluginName="Compliant"/>
+    <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin pluginName="Compliant"/>
+    <CompliantAttachButtonSetting button="Left" />
 
 <Node 	name="complianceSolverScene" >
-	<CompliantImplicitSolver use_velocity="false" implicitVelocity="0.5" implicitPosition="1"/>
+	<CompliantImplicitSolver implicitVelocity="0.5" implicitPosition="1"/>
 	<LDLTSolver/>
 	
     <!-- resolution = number of particles (including the fixed one) -->
@@ -28,7 +28,7 @@
         <DistanceMapping  />
 
         <!-- Non-null compliance for elasticity. Compliance=1/stiffness -->
-        <UniformCompliance name="ucomp" template="Vec1d" compliance="1" dampingRatio="0.0"  isCompliance="1" />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1" isCompliance="1" />
     </Node>
 </Node>
 </Node>

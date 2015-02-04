@@ -89,6 +89,7 @@ public:
     typedef helper::fixed_array <unsigned int,3> tri;
     typedef helper::kdTree<Coord> KDT;
     typedef typename KDT::distanceSet distanceSet;
+    typedef typename KDT::distanceToPoint distanceToPoint;
 
 public:
     ClosestPointRegistrationForceField(core::behavior::MechanicalState<DataTypes> *mm = NULL);
@@ -140,7 +141,7 @@ protected :
     Data< helper::vector< tri > > sourceTriangles;
     Data< VecCoord > sourceNormals;
     vector< distanceSet >  closestSource; // CacheSize-closest target points from source
-    vector< Real > cacheDist;	vector< Real > cacheDist2; VecCoord previousX; // storage for cache acceleration
+    vector< distanceToPoint > cacheThresh_max;	vector< distanceToPoint > cacheThresh_min; VecCoord previousX; // storage for cache acceleration
     KDT sourceKdTree;
     vector< bool > sourceBorder;
     vector< bool > sourceIgnored;  // flag ignored vertices

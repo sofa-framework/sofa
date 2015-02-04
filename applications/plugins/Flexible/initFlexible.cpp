@@ -24,6 +24,10 @@
 ******************************************************************************/
 #include "initFlexible.h"
 
+#if _WIN32
+#include "plugins/image/extlibs/DiffusionSolver/DiffusionSolver.h"
+#endif
+
 namespace sofa
 {
 
@@ -47,6 +51,7 @@ void initExternalModule()
     if (first)
     {
         first = false;
+		init_DiffusionSolver_module();
     }
 }
 

@@ -1,9 +1,9 @@
 #ifndef COMPLIANT_RESPONSE_H
 #define COMPLIANT_RESPONSE_H
 
-#include "initCompliant.h"
+#include "../initCompliant.h"
 
-#include "assembly/AssembledSystem.h"
+#include "../assembly/AssembledSystem.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa {

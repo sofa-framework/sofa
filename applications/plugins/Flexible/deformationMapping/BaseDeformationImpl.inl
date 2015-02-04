@@ -98,6 +98,22 @@ inline static void invert(defaulttype::Mat<2,3,Real> &Minv, const defaulttype::M
     for(size_t i=0; i<2; i++) for(size_t j=0; j<3; j++) Minv[i][j]=Mcinv[i][0];
 }
 
+template <int C,int L,typename Real>
+inline static void identity(defaulttype::Mat<C,L,Real> &F)
+{
+    F.clear();
+    if(L>=C) for(size_t i=0; i<C; i++) F[i][i]=1.0;
+    else for(size_t i=0; i<L; i++) F[i][i]=1.0;
+}
+
+template <int C1,int L1,int C2,int L2,typename Real>
+inline static void copy(defaulttype::Mat<C1,L1,Real> &F1, const defaulttype::Mat<C2,L2,Real> &F2)
+{
+    F1.clear();
+    for(size_t c=0; c<C1 && c<C2; c++)
+        for(size_t l=0; l<L1 && l<L2; l++)
+            F1[c][l]=F2[c][l];
+}
 
 } // namespace mapping
 } // namespace component

@@ -44,6 +44,7 @@ def createScene(node):
                             name = 'num',
                             iterations = 1000,
                             precision = 1e-20)
+    node.createObject('LDLTResponse')
     
     proximity = node.getObject('proximity')
 

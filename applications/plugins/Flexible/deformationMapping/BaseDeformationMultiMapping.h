@@ -127,13 +127,13 @@ public:
     typedef core::behavior::ShapeFunctionTypes<spatial_dimensions,Real> ShapeFunctionType;
     typedef core::behavior::BaseShapeFunction<ShapeFunctionType> BaseShapeFunction;
     typedef typename BaseShapeFunction::VReal VReal;
+    typedef typename BaseShapeFunction::VecVReal VecVReal;
     typedef typename BaseShapeFunction::Gradient Gradient;
     typedef typename BaseShapeFunction::VGradient VGradient;
     typedef typename BaseShapeFunction::Hessian Hessian;
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
-    typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< MaterialToSpatial transformation = deformation gradient type
-    typedef typename BaseShapeFunction::VMaterialToSpatial VMaterialToSpatial;
+    typedef typename BaseShapeFunction::VecVRef VecVRef;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
     //@}
 
@@ -141,6 +141,8 @@ public:
     //@{
     typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef vector<Coord> VecCoord;
+    typedef Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local liner transformation from material space to world space
+    typedef vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
     //@}
@@ -222,11 +224,10 @@ public:
         return &baseMatrices;
     }
 
-    virtual const vector<defaulttype::BaseMatrix*>* getKs()
+    virtual const defaulttype::BaseMatrix* getK()
     {
-        updateK1(this->toModel->readForces().ref());
-        updateK2(this->toModel->readForces().ref());
-        return &stiffnessBaseMatrices;
+        updateK(this->toModel->readForces().ref());
+        return &K;
     }
 
     void draw(const core::visual::VisualParams* vparams);
@@ -256,15 +257,15 @@ public:
 
     Data<std::string> f_shapeFunction_name; ///< name of the shape function component (optional: if not specified, will searchup)
     BaseShapeFunction* _shapeFunction;        ///< where the weights are computed
-    Data<vector<VRef> > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
-    Data<vector<VRef> > f_index1;            ///< The numChildren * numRefs column indices. index1[i][j] is the index of the j-th parent of type 1 influencing child i.
-    Data<vector<VRef> > f_index2;            ///< The numChildren * numRefs column indices. index2[i][j] is the index of the j-th parent of type 2 influencing child i.
-    vector<VRef> f_index_parentToChild1;            ///< Constructed at init from f_index1 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 1.
-    vector<VRef> f_index_parentToChild2;            ///< Constructed at init from f_index2 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 2.
-    Data<vector<VReal> >       f_w;
+    Data<VecVRef > f_index;            ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
+    Data<VecVRef > f_index1;            ///< The numChildren * numRefs column indices. index1[i][j] is the index of the j-th parent of type 1 influencing child i.
+    Data<VecVRef > f_index2;            ///< The numChildren * numRefs column indices. index2[i][j] is the index of the j-th parent of type 2 influencing child i.
+    VecVRef f_index_parentToChild1;            ///< Constructed at init from f_index1 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 1.
+    VecVRef f_index_parentToChild2;            ///< Constructed at init from f_index2 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 2.
+    Data<VecVReal >       f_w;
     Data<vector<VGradient> >   f_dw;
     Data<vector<VHessian> >    f_ddw;
-    Data<VMaterialToSpatial>    f_F0;
+    Data<VMaterialToSpatial>    f_F0;   ///< initial value of deformation gradients
     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
@@ -284,7 +285,7 @@ protected:
     }
     KDT f_KdTree;
 
-    VMaterialToSpatial f_F;
+    VMaterialToSpatial f_F;     ///< current value of deformation gradients (for visualisation)
     void mapDeformationGradients() ///< map initial deform  gradients stored in f_F0 to f_F      (used for visualization)
     {
         this->f_F.resize(this->f_pos0.getValue().size());
@@ -315,11 +316,9 @@ protected:
     void updateJ2();
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
-    SparseKMatrixEigen1 K1;  ///< Assembled geometric stiffness matrix
-    void updateK1(const OutVecDeriv& childForce);
-    SparseKMatrixEigen2 K2;  ///< Assembled geometric stiffness matrix
-    void updateK2(const OutVecDeriv& childForce);
-    vector<defaulttype::BaseMatrix*> stiffnessBaseMatrices;      ///< Vector of geometric stiffness matrices, for the Compliant plugin API
+    SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
+    void updateK(const OutVecDeriv& childForce);
+
     helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization

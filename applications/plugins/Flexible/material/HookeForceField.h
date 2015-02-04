@@ -86,6 +86,50 @@ public:
         Inherit::reinit();
     }
 
+    //Pierre-Luc : I added this function to be able to evaluate forces without using visitors
+    virtual void addForce(typename Inherit::DataVecDeriv& _f , const typename Inherit::DataVecCoord& _x , const typename Inherit::DataVecDeriv& _v, const vector<SReal> _vol)
+     {
+         if(this->f_printLog.getValue()==true)
+             std::cout << SOFA_CLASS_METHOD << std::endl;
+
+         typename Inherit::VecDeriv&  f = *_f.beginEdit();
+         const typename Inherit::VecCoord&  x = _x.getValue();
+         const typename Inherit::VecDeriv&  v = _v.getValue();
+
+         //Init material block
+         sofa::helper::vector< BlockType > materialBlock;
+         typedef component::engine::BaseGaussPointSampler::volumeIntegralType volumeIntegralType;
+         vector<volumeIntegralType> _volIntType;
+         _volIntType.resize(_vol.size());
+         for(size_t i=0; i<_volIntType.size(); ++i)
+         {
+             _volIntType[i].resize(1);
+             _volIntType[i][0] = _vol[i];
+         }
+
+         materialBlock.resize(_volIntType.size());
+         for(unsigned int i=0; i<materialBlock.size(); i++)
+             materialBlock[i].volume=&_volIntType[i];
+
+         Real youngModulus=0,poissonRatio=0,viscosity=0;
+         for(unsigned int i=0; i<materialBlock.size(); i++)
+         {
+             if(i<_youngModulus.getValue().size()) youngModulus=_youngModulus.getValue()[i]; else if(_youngModulus.getValue().size()) youngModulus=_youngModulus.getValue()[0];
+             if(i<_poissonRatio.getValue().size()) poissonRatio=_poissonRatio.getValue()[i]; else if(_poissonRatio.getValue().size()) poissonRatio=_poissonRatio.getValue()[0];
+             if(i<_viscosity.getValue().size())    viscosity=_viscosity.getValue()[i];       else if(_viscosity.getValue().size())    viscosity=_viscosity.getValue()[0];
+             assert( helper::isClamped<Real>( poissonRatio, -1+std::numeric_limits<Real>::epsilon(), 0.5-std::numeric_limits<Real>::epsilon() ) );
+             std::vector<Real> params; params.push_back(youngModulus); params.push_back(poissonRatio);
+             materialBlock[i].init( params, viscosity );
+         }
+
+         //Compute
+         for(unsigned int  i=0; i<_volIntType.size(); i++)
+         {
+             materialBlock[i].addForce(f[i],x[i],v[i]);
+         }
+         _f.endEdit();
+     }
+
     void handleEvent(sofa::core::objectmodel::Event *event)
     {
         if ( dynamic_cast<simulation::AnimateEndEvent*>(event))
