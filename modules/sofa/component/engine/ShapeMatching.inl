@@ -189,11 +189,7 @@ void ShapeMatching<DataTypes>::update()
 #ifdef USING_OMP_PRAGMAS
         #pragma omp parallel for
 #endif
-#ifdef WIN32
-		for (w_size_t i=0 ; i<nbc ; ++i)
-#else
-        for (unsigned int i=0 ; i<nbc ; ++i)
-#endif
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<nbc ; ++i)
         {
             Xcm[i] = Coord();
             T[i].fill(0);
