@@ -42,7 +42,7 @@ struct SOFA_HELPER_API IndexOpenMP
 #if defined(USING_OMP_PRAGMAS) && defined(WIN32)
 		typedef typename std::make_signed<T>::type type;
 #else
-		typedef typename T type;
+		typedef T type;
 #endif
 };// struct IndexOpenMP
 
