@@ -118,7 +118,7 @@ class Model:
     dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
     
     def __init__(self, filename, name=None):
-        self.name=os.path.basename(filename)
+        self.name=name
         self.modelDir = os.path.dirname(filename)
         self.units=dict()
         self.meshes=dict()
@@ -131,8 +131,10 @@ class Model:
         with open(filename,'r') as f:
             # TODO automatic DTD validation could go here, not available in python builtin ElementTree module
             modelXml = etree.parse(f).getroot()
-            if name is None:
+            if self.name is None and "name" in modelXml.attrib:
                 self.name = modelXml.attrib["name"]
+            else:
+                self.name = os.path.basename(filename)
 
             # units
             self.parseUnits(modelXml)
