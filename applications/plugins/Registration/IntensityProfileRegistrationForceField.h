@@ -37,6 +37,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/helper/IndexOpenMP.h>
 
 
 #define INTERPOLATION_NEAREST 0
@@ -95,7 +96,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;
-    typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
+    typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;	
 
     typedef helper::ReadAccessor< Data< VecCoord > > RDataRefVecCoord;
 
@@ -128,13 +129,6 @@ public:
     typedef helper::WriteAccessor<Data< similarityTypes > > waSimilarity;
     Data < similarityTypes > similarity;
 	
-	/* 
-		Add new type to replace unsigned int when openMP is activated on windows to handle compilation issues
-	*/
-#ifdef WIN32
-	typedef long int w_size_t ;
-#endif
-
     // mask for values outside images
     cimg_library::CImg<bool> refMask;
     cimg_library::CImg<bool> mask;

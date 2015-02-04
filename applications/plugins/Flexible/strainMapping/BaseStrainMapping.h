@@ -37,6 +37,8 @@
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
+#include <sofa/helper/IndexOpenMP.h>
+
 
 namespace sofa
 {
@@ -101,10 +103,6 @@ public:
     typedef typename BlockType::KBlock  KBlock;  ///< stiffness block matrix
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
-
-#ifdef WIN32
-	typedef long int w_size_t;
-#endif
 	
     virtual void resizeOut()
     {
@@ -191,13 +189,9 @@ public:
 
         OutVecDeriv&  out = *dOut.beginEdit();
 #ifdef USING_OMP_PRAGMAS
-#pragma omp parallel for
+		#pragma omp parallel for
 #endif
-#ifdef WIN32
-		for(w_size_t i=0; i < jacobianBlock.size(); i++)
-#else
-        for(size_t i=0; i < jacobianBlock.size(); i++)
-#endif
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i < jacobianBlock.size(); i++)
         {
             out[i]=OutDeriv();
             jacobianBlock[i].addmult(out[i],in[i]);
