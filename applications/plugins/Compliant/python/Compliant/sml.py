@@ -33,7 +33,7 @@ def insertRigid(parentNode, rigidModel, param):
     # visual
     if not rigidModel.mesh is None:
         cm = rigid.addCollisionMesh(rigidModel.mesh.source)
-        cm.addVisualModel()
+        rigid.visual = cm.addVisualModel()
        
     return rigid
 
