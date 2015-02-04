@@ -27,7 +27,7 @@
 
 #include <cassert>
 #include <iostream>
-#include <type_traits>
+#include <boost/type_traits.hpp>
 #include <sofa/helper/helper.h>
 
 namespace sofa
@@ -49,4 +49,4 @@ struct SOFA_HELPER_API IndexOpenMP
 } // helper
 
 } //
-#endif SOFA_HELPER_INDEX_TYPE_H
+#endif //_SOFA_HELPER_INDEX_TYPE_H
