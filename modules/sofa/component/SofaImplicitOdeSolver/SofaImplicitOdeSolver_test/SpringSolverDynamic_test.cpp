@@ -51,7 +51,7 @@ This test compares siumlated mass position to analytic mass position during 2s e
 */
 
 template <typename _DataTypes>
-struct SpringSolverDynamic_test : public Sofa_test<_DataTypes>
+struct SpringSolverDynamic_test : public Sofa_test<typename _DataTypes::Real>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
