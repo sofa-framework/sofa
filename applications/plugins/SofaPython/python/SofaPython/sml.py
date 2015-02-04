@@ -114,11 +114,25 @@ class Model:
             self.indices=dict()
             self.weights=dict()
             self.skinnings=list()
+
+    class Surface:
+        def __init__(self):
+            self.object=None
+            self.mesh=None
+            self.index=None
+            
+    class ContactSliding:
+        def __init__(self,contactXml):
+            parseIdName(self,contactXml)
+            self.surfaces = [None,None]
+            self.distance=None
+            if contactXml.find("distance"):
+                self.distance=float(contactXml.findText("distance"))
     
     dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
     
     def __init__(self, filename, name=None):
-        self.name=os.path.basename(filename)
+        self.name=name
         self.modelDir = os.path.dirname(filename)
         self.units=dict()
         self.meshes=dict()
@@ -126,13 +140,16 @@ class Model:
         #self.rigidsbyType=dict()
         self.genericJoints=dict()
         self.deformables=dict()
+        self.slidingContacts=dict()
         #self.deformablesByType=dict()
         
         with open(filename,'r') as f:
             # TODO automatic DTD validation could go here, not available in python builtin ElementTree module
             modelXml = etree.parse(f).getroot()
-            if name is None:
+            if self.name is None and "name" in modelXml.attrib:
                 self.name = modelXml.attrib["name"]
+            else:
+                self.name = os.path.basename(filename)
 
             # units
             self.parseUnits(modelXml)
@@ -152,7 +169,7 @@ class Model:
                     
             # rigids
             for r in modelXml.iter("rigid"):
-                if r.attrib["id"] in self.rigids:
+                if r.attrib["id"] in self.rigids: #TODO check deformables too
                     print "ERROR: sml.Model: rigid defined twice, id:", r.attrib["id"]
                     continue
                 rigid=Model.Rigid(r)
@@ -163,7 +180,7 @@ class Model:
             self.parseJointGenerics(modelXml)
             
             #deformable
-            for d in modelXml.iter("deformable"):
+            for d in modelXml.iter("deformable"): #TODO check rigids too
                 if d.attrib["id"] in self.deformables:
                     print "ERROR: sml.Model: deformable defined twice, id:", d.attrib["id"]
                     continue
@@ -185,6 +202,26 @@ class Model:
                     deformable.skinnings.append(skinning)
                 
                 self.deformables[deformable.id]=deformable
+                
+            # contacts
+            for c in modelXml.iter("contactSliding"):
+                if c.attrib["id"] in self.slidingContacts:
+                    print "ERROR: sml.Model: contactSliding defined twice, id:", c.attrib["id"]
+                    continue
+                contact = Model.ContactSliding(c)
+                surfaces=c.findall("surface")
+                for i,s in enumerate(surfaces):
+                    contact.surfaces[i] = Model.Surface()
+                    if s.attrib["object"] in self.rigids:
+                        contact.surfaces[i].object = self.rigids[s.attrib["object"]]
+                    elif s.attrib["object"] in self.deformables:
+                        contact.surfaces[i].object = self.deformables[s.attrib["object"]]
+                    else:
+                        print "ERROR: sml.Model: in contact {0}, unknown object {1} referenced".format(contact.name, s.attrib["object"])
+                    contact.surfaces[i].mesh = contact.surfaces[i].object.mesh # for now a single mesh is supported
+                    contact.surfaces[i].index = contact.surfaces[i].mesh.group[s.attrib["group"]].index
+                self.slidingContacts[contact.id]=contact
+                    
 
     def parseUnits(self, modelXml):
         xmlUnits = modelXml.find("units")
@@ -203,7 +240,7 @@ class Model:
     def parseJointGenerics(self,modelXml):
         for j in modelXml.iter("jointGeneric"):
             if j.attrib["id"] in self.genericJoints:
-                print "ERROR: sml.Model: joint defined twice, id:", j.attrib["id"]
+                print "ERROR: sml.Model: jointGeneric defined twice, id:", j.attrib["id"]
                 continue
 
             joint=Model.JointGeneric(j)

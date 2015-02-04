@@ -78,17 +78,26 @@ template <class DataTypes>
 class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerformer<DataTypes>
 {
     typedef typename DataTypes::Real                                  Real;
-    typedef defaulttype::StdVectorTypes< Vec<1,Real>, Vec<1,Real>  >  DataTypes1;
-    typedef mapping::DistanceFromTargetMapping< DataTypes,DataTypes1 >          DistanceFromTargetMapping31;
     typedef sofa::component::container::MechanicalObject< DataTypes > Point3dState;
+
+    typedef defaulttype::Vec<DataTypes::spatial_dimensions,Real> MouseVec;
+    typedef defaulttype::StdVectorTypes<MouseVec,MouseVec,Real> MouseTypes;
+    typedef sofa::component::collision::BaseContactMapper< MouseTypes > MouseContactMapper;
+
+
+
+    typedef defaulttype::StdVectorTypes< Vec<1,Real>, Vec<1,Real>  >  DataTypes1;
+
 
     simulation::Node::SPtr pickedNode;       ///< Node containing the picked MechanicalState
     int pickedParticleIndex;                 ///< Index of the picked particle in the picked state
     simulation::Node::SPtr interactionNode;  ///< Node used to create the interaction components to constrain the picked point
     core::BaseMapping::SPtr mouseMapping;   ///< Mapping from the mouse position to the 3D point on the ray
-    sofa::component::collision::BaseContactMapper< DataTypes >  *mapper;
+    MouseContactMapper* mapper;
     Point3dState* mouseState;                  ///< Mouse state container  (position, velocity)
-    typename DistanceFromTargetMapping31::SPtr distanceMapping; ///< computes the distance from the picked point to its target
+
+    mapping::BaseDistanceFromTargetMapping* _distanceMapping; ///< computes the distance from the picked point to its target
+    core::behavior::BaseMechanicalState* _baseCollisionMState;
 
 
     // HACK FOR VISUAL MODEL EXPORT

@@ -32,14 +32,12 @@
 namespace sofa
 {
 
-namespace gpu
-{
-
-namespace cuda
+namespace core
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::core;
+using namespace sofa::gpu::cuda;
+
 
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3fTypes, Vec1dTypes>;
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3fTypes, Vec3dTypes>;
@@ -51,8 +49,6 @@ template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3dTypes, Vec3dTypes>;
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3dTypes, Vec1fTypes>;
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3dTypes, Vec3fTypes>;
 #endif
-
-} // namespace cuda
 
 } // namespace gpu
 

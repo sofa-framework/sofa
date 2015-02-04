@@ -40,8 +40,8 @@
             </group>
             
         </mesh>
-        <skinning rigid="bone01" group="group01" weight="weight" />
-        <skinning rigid="bone02" group="group02" weight="weight" />
+        <skinning rigid="bone01" mesh="skin" group="group01" weight="weight" />
+        <skinning rigid="bone02" mesh="skin" group="group02" weight="weight" />
     </deformable>
     
 </sml>
