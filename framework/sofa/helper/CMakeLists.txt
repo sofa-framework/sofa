@@ -93,6 +93,7 @@ set(HEADER_FILES
     kdTree.h
     vectorData.h
     GenerateRigid.h
+	IndexOpenMP.h
 	)
 
 set(SOURCE_FILES
@@ -146,6 +147,7 @@ set(SOURCE_FILES
     Polynomial_LD.cpp
     UnitTest.cpp
     GenerateRigid.cpp
+	IndexOpenMP.cpp
 	)
 
 if(SOFA-EXTERNAL_BOOST)
