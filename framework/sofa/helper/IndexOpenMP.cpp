@@ -35,7 +35,6 @@ namespace helper
 	template struct IndexOpenMP<unsigned int>;
 	template struct IndexOpenMP<long>;
 	template struct IndexOpenMP<unsigned long>;
-	template struct IndexOpenMP<size_t>;
 
 } // namespace helper
 
