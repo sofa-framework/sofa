@@ -50,6 +50,13 @@ public:
 };
 
 
+struct BaseDistanceFromTargetMapping
+{
+    virtual void updateTarget( unsigned index, SReal x, SReal y, SReal z ) = 0;
+};
+
+
+
 /** Maps point positions to distances from target points.
     Only a subset of the parent points is mapped. This can be used to constrain the trajectories of one or several particles.
 
@@ -64,7 +71,7 @@ public:
   @author Francois Faure
   */
 template <class TIn, class TOut>
-class DistanceFromTargetMapping : public core::Mapping<TIn, TOut>
+class DistanceFromTargetMapping : public core::Mapping<TIn, TOut>, public BaseDistanceFromTargetMapping
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DistanceFromTargetMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
@@ -92,10 +99,11 @@ public:
     Data< vector< Real > >   f_restDistances;   ///< rest distance from each position
 
     /// Add a target with a desired distance
-    void createTarget( unsigned index, InCoord position, Real distance);
+    void createTarget( unsigned index, const InCoord& position, Real distance);
 
     /// Update the position of a target
-    void updateTarget( unsigned index, InCoord position);
+    void updateTarget( unsigned index, const InCoord& position);
+    virtual void updateTarget( unsigned index, SReal x, SReal y, SReal z );
 
     /// Remove all targets
     void clear();
