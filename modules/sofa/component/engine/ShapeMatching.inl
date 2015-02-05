@@ -34,6 +34,7 @@
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
+#include <sofa/helper/IndexOpenMP.h>
 
 #ifdef USING_OMP_PRAGMAS
     #include <omp.h>

@@ -147,7 +147,6 @@ set(SOURCE_FILES
     Polynomial_LD.cpp
     UnitTest.cpp
     GenerateRigid.cpp
-	IndexOpenMP.cpp
 	)
 
 if(SOFA-EXTERNAL_BOOST)
