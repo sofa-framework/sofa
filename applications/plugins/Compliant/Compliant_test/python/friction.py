@@ -4,7 +4,7 @@ from SofaTest.Macro import *
 
 import math
 
-from Compliant import Rigid, Vec, Tools, Control, StructuralAPI
+from Compliant import Frame, Vec, Tools, Control, StructuralAPI
 from SofaPython import Quaternion
 import numpy
 import random
@@ -62,6 +62,9 @@ def createScene(node):
     # box
     box = StructuralAPI.RigidBody( node, 'box' )
     box.setFromMesh( 'mesh/cube.obj', 50, [0,2.5,0,0,0,0,1] )
+    #box.setManually( [0,2.5,0,0,0,0,1], 1, [1,1,1] )
+    box.dofs.showObject=True
+    box.dofs.showObjectScale=5
     cm = box.addCollisionMesh( "mesh/cube.obj" )
     cm.addVisualModel()
 
@@ -89,31 +92,45 @@ class Controller(SofaTest.Controller):
 
         # current mu from current plane angle
         currentMu = math.tan( self.currentAngle )
-
+        
+        if self.counter < 100 : # does not rotate the plane for 100 time steps
+            self.counter += 1
+            return 0
+            
         # is it a mu we want to test?
         if numpy.allclose( self.muToTest, currentMu, 1e-3, 1e-3 ) :
-            if self.counter < 100 : # does not rotate the plane for 100 time steps
-                self.counter += 1
-                return 0
+            
+            # at the end of 100 time steps, check if the box was sticking or sliding
+            self.counter = 0
+            self.muToTest += 0.1
+            
+            # look at the box velocity along its x-axis
+            localbox = Quaternion.rotate(Quaternion.conj( Frame.Frame( shared.plane.position[0] ).rotation ),
+                                shared.box.velocity[0][:3])
+            vel = localbox[0]
+
+            #print 'plane/ground angle:', self.currentAngle
+            #print 'velocity:',vel
+
+            #print shared.box.position[0], shared.box.velocity[0][:3]
+
+            #print vel, currentMu, shared.mu
+            
+            
+            testVel = (vel > 1e-1)            
+            if testVel:
+                testMu = (currentMu>=shared.mu-1e-2)
             else:
-                # at the end of 100 time steps, check if the box was sticking or sliding
-                self.counter = 0
-                self.muToTest += 0.1
+                testMu = (currentMu>=shared.mu)
                 
-                # look at the box velocity along its x-axis
-                localbox = Quaternion.rotate(Quaternion.conj( Rigid.Frame( shared.box.position[0] ).rotation ),
-                                  shared.box.velocity[0][:3])
-                vel = localbox[0]
-
-                #print 'plane/ground angle:', self.currentAngle , 'mu = ', mu
-                #print 'velocity:',vel
-
-#                print vel, currentMu, shared.mu
-#                print vel <= 1e-3, currentMu<shared.mu-1e-3
-#                sys.stdout.flush()
-                                
-                EXPECT_FALSE( (vel > 1e-3) ^ (currentMu>=shared.mu-1e-2), 'mu='+str(shared.mu) ) # xor
-
+            
+           
+            
+            EXPECT_FALSE( testVel ^ testMu, str(vel)+' '+str(currentMu)+'mu='+str(shared.mu) ) # xor
+            
+            
+            #print testVel, testMu
+            #sys.stdout.flush()
         
         # all finished
         if currentMu >= shared.mu + .1:
