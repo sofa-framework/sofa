@@ -220,12 +220,12 @@ bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
     res.mass = rigidMass.mass;
     res.inertia = res.mass * rigidMass.inertiaMatrix;
 
-    // if !diagonal (1e-5 seems big but the precision from a mesh is poor)
-    // TODO adapt the threshold in fonction of the matrix content
-    if( res.inertia[0][1]>1.1e-5 || res.inertia[0][2]>1.1e-5 || res.inertia[1][2]>1.1e-5 )
-    {
-        // extracting principal axes basis to get the corresponding rotation with a diagonal inertia
+    // a threshol to test if inertia is diagonal in function of diagonal values
+    SReal threshold = defaulttype::trace( res.inertia ) * 1e-6;
 
+    // if not diagonal, extracting principal axes basis to get the corresponding rotation with a diagonal inertia
+    if( res.inertia[0][1]>threshold || res.inertia[0][2]>threshold || res.inertia[1][2]>threshold )
+    {
         defaulttype::Matrix3 U;
         Decompose<SReal>::eigenDecomposition( res.inertia, U, res.inertia_diagonal );
 
