@@ -39,7 +39,6 @@
 //#include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/SVector.h>
-#include <sofa/helper/IndexOpenMP.h>
 
 #include <sofa/component/component.h>
 

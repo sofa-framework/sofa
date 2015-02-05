@@ -45,6 +45,8 @@
 #include <string.h>
 #include <iostream>
 #include <cassert>
+#include <numeric>
+
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -165,27 +167,62 @@ int RigidMapping<TIn, TOut>::addPoint(const Coord& c)
 template <class TIn, class TOut>
 int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 {
-    helper::WriteAccessor<Data<VecCoord> > points = this->points;
+    // REALLY INEFFICIENT... used for collision detection
+    // could be improved by using a parentIndexPerPoint (size of points)
+    // rather than pointsPerFrame that imposes points to be ordered with the parents
+
+
+    VecCoord& points = *this->points.beginEdit();
+
+
     int i = points.size();
-    points.push_back(c);
-    if (!pointsPerFrame.getValue().empty())
-    {
-        pointsPerFrame.beginEdit()->push_back(indexFrom);
-        pointsPerFrame.endEdit();
-    }
-    else if (!i)
-    {
-        index.setValue(indexFrom);
-    }
-    else if ((int) index.getValue() != indexFrom)
-    {
-        sofa::helper::vector<unsigned int>& rep = *pointsPerFrame.beginEdit();
-        rep.clear();
-        rep.reserve(i + 1);
-        rep.insert(rep.end(), index.getValue(), i);
-        rep.push_back(indexFrom);
-        pointsPerFrame.endEdit();
-    }
+//    if (!pointsPerFrame.getValue().empty())
+//    {
+//        helper::vector<unsigned int>& ppf = *pointsPerFrame.beginEdit();
+//        assert( ppf.size() == this->fromModel->getSize() );
+
+//        // parcourir pointsPerFrame jusqu'à indexFrom pour sommer index courant
+//        unsigned int index = std::accumulate( ppf.begin(), ppf.begin()+indexFrom ,0 );
+
+//        // inserer c au milieu à index courant dans points
+//        // points.insert( points.begin()+index, c ); // not implemented on extvector that is not based on std::vector...
+//        points.resize( points.size() + 1 );
+//        for( size_t j=points.size()-1; j>index ; ++j )
+//            points[j] = points[j-1];
+//        points[index] = c;
+
+//        ppf[indexFrom]++;
+
+//        pointsPerFrame.endEdit();
+//    }
+//    else if (!i)
+//    {
+//        points.push_back(c);
+//        index.setValue(indexFrom);
+//    }
+//    else if ((int) index.getValue() != indexFrom)
+//    {
+//        if(  indexFrom > index.getValue() )
+//            points.push_back(c);
+//        else
+//        {
+//            // if indexFrom < index.getValue() it comes first...
+//            points.resize( points.size() + 1 );
+//            for( size_t j=points.size()-1; j>0 ; ++j )
+//                points[j] = points[j-1];
+//            points[0] = indexFrom;
+//        }
+
+//        helper::vector<unsigned int>& ppf = *pointsPerFrame.beginEdit();
+//        ppf.resize( this->fromModel->getSize() );
+//        std::fill( ppf.begin(), ppf.end(), 0 );
+//        ppf[index.getValue()] = i;
+//        ppf[indexFrom] = 1;
+//        pointsPerFrame.endEdit();
+//    }
+
+//    this->points.endEdit();
+
     return i;
 }
 
@@ -366,7 +403,7 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /
 
     if (repartitionCount > 1 && repartitionCount != in.size())
     {
-        serr << "Error : mapping dofs repartition is not correct" << sendl;
+        serr << "apply Error : mapping dofs repartition is not correct " << sendl;
         return;
     }
 
@@ -441,7 +478,7 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ 
 
     if (repartitionCount > 1 && repartitionCount != in.size())
     {
-        serr << "Error : mapping dofs repartition is not correct" << sendl;
+        serr << "applyJ Error : mapping dofs repartition is not correct" << sendl;
         return;
     }
 
@@ -517,7 +554,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 
     if (repartitionCount > 1 && repartitionCount != out.size())
     {
-        serr << "RigidMapping<TIn, TOut>::applyJT, Error : mapping dofs repartition is not correct" << sendl;
+        serr << "applyJT, Error : mapping dofs repartition is not correct" << sendl;
         return;
     }
 
@@ -642,7 +679,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
 
     if (repartitionCount > 1 && repartitionCount != parentForces.size())
     {
-        serr << "Error : mapping dofs repartition is not correct" << sendl;
+        serr << "applyDJT Error : mapping dofs repartition is not correct" << sendl;
         return;
     }
 
@@ -927,7 +964,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 
         if (repartitionCount > 1 && repartitionCount != in.size())
         {
-            serr << "Error : mapping dofs repartition is not correct" << sendl;
+            serr << "getJs Error : mapping dofs repartition is not correct" << sendl;
             return 0;
         }
 
@@ -1037,7 +1074,7 @@ const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getJ()
 
         if (repartitionCount > 1 && repartitionCount != in.size())
         {
-            serr << "Error : mapping dofs repartition is not correct" << sendl;
+            serr << "getJ Error : mapping dofs repartition is not correct" << sendl;
             return 0;
         }
 

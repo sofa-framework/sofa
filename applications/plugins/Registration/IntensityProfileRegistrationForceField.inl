@@ -35,6 +35,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include "float.h"
+#include <sofa/helper/IndexOpenMP.h>
 
 #ifdef USING_OMP_PRAGMAS
 #include <omp.h>

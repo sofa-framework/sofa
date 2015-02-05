@@ -41,7 +41,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/kdTree.inl>
-#include <sofa/helper/IndexOpenMP.h>
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 

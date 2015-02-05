@@ -25,10 +25,7 @@
 #ifndef SOFA_HELPER_INDEX_TYPE_H
 #define SOFA_HELPER_INDEX_TYPE_H
 
-#include <cassert>
-#include <iostream>
 #include <boost/type_traits.hpp>
-#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -36,17 +33,21 @@ namespace sofa
 namespace helper
 {
 
+/// From any given index type, this struct gives a OpenMP valid index
+/// Versions of OpenMP anterior to 3.0 are only able to manage signed index in a parallel for
+/// Actual versions of visual studio only implement OpenMP 2.5 as old gcc.
 template<class T>
-struct SOFA_HELPER_API IndexOpenMP
+struct IndexOpenMP
 {
-#if defined(USING_OMP_PRAGMAS) && defined(WIN32)
+#if defined(USING_OMP_PRAGMAS) && defined(_OPENMP) && _OPENMP < 200805 /*yearmonth of version 3.0*/
 		typedef typename std::make_signed<T>::type type;
 #else
 		typedef T type;
 #endif
-};// struct IndexOpenMP
+}; // struct IndexOpenMP
 
 } // helper
 
-} //
-#endif //_SOFA_HELPER_INDEX_TYPE_H
+} // sofa
+
+#endif // SOFA_HELPER_INDEX_TYPE_H
