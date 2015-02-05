@@ -33,7 +33,7 @@
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/IndexOpenMP.h>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -381,7 +381,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     OutVecCoord&  out = *dOut.beginEdit();
     const InVecCoord&  in = dIn.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
 	for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
@@ -431,7 +431,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
 
         if( !this->maskTo || !this->maskTo->isInUse() )
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
             for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
@@ -482,7 +482,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
                 for(size_t i=0; i< this->f_index.getValue().size(); i++ ) for(size_t j=0; j< this->f_index.getValue()[i].size(); j++ ) { this->f_index_parentToChild[this->f_index.getValue()[i][j]].push_back(i); this->f_index_parentToChild[this->f_index.getValue()[i][j]].push_back(j); }
             }
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
 			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
@@ -535,7 +535,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
     {
         if( !this->maskTo || !this->maskTo->isInUse() )
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
 			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)

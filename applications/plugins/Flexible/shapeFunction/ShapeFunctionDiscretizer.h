@@ -153,7 +153,7 @@ protected:
         CImg<DistT>& weights = weightData->getCImg(); weights.fill(0);
 
 //        // fill indices and weights images
-//#ifdef USING_OMP_PRAGMAS
+//#ifdef _OPENMP
 //#pragma omp parallel for
 //#endif
         for(int z=0; z<inimg.depth(); z++)

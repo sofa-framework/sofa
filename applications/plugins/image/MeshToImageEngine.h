@@ -41,7 +41,7 @@
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
     #include <omp.h>
 #endif
 
@@ -418,7 +418,7 @@ protected:
 
 
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 		#pragma omp parallel for
 #endif
         for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<nbedg; i++)
@@ -443,7 +443,7 @@ protected:
 //            // draw filled faces
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
 		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<nbtri; i++)
@@ -477,7 +477,7 @@ protected:
 
         raPositions clpos(this->closingPosition);
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
 		for(sofa::helper::IndexOpenMP<unsigned int>::type i=previousClosingTriSize; i<cltri.size(); i++)
@@ -554,7 +554,7 @@ protected:
         // draw edges
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing "<<nbedg<<" edges (mesh "<<meshId<<")..."<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
         for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<nbedg; i++)
@@ -574,7 +574,7 @@ protected:
 //            // draw filled faces
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing "<<nbtri<<" triangles (mesh "<<meshId<<")..."<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
         for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<nbtri; i++)
@@ -611,7 +611,7 @@ protected:
 
             raPositions clpos(this->closingPosition);
 
-    #ifdef USING_OMP_PRAGMAS
+    #ifdef _OPENMP
             #pragma omp parallel for
 	#endif
             for(sofa::helper::IndexOpenMP<unsigned int>::type i=previousClosingTriSize; i<cltri.size(); i++)
@@ -633,7 +633,7 @@ protected:
             raPositions clpos(this->closingPosition);
 
 
-    #ifdef USING_OMP_PRAGMAS
+    #ifdef _OPENMP
             #pragma omp parallel for
 	#endif
             for(sofa::helper::IndexOpenMP<unsigned int>::type i=previousClosingTriSize; i<cltri.size(); i++)

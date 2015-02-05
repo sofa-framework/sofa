@@ -35,7 +35,7 @@
 #include <iostream>
 #include <map>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -193,7 +193,7 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
     if(blendingFactor.getValue()<1) {
 
         //unsigned int count=0;
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbs;i++)
@@ -204,7 +204,7 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
     if(blendingFactor.getValue()>0)
     {
         initSource();
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbt;i++)

@@ -188,7 +188,7 @@ public:
         initJacobianBlock(jacobianBlock);
 
         OutVecDeriv&  out = *dOut.beginEdit();
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 		#pragma omp parallel for
 #endif
         for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i < jacobianBlock.size(); i++)
@@ -210,7 +210,7 @@ public:
         OutVecCoord&  out = *dOut.beginEdit();
         const InVecCoord&  in = dIn.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
         for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -231,7 +231,7 @@ public:
             OutVecDeriv&  out = *dOut.beginEdit();
             const InVecDeriv&  in = dIn.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -252,7 +252,7 @@ public:
             InVecDeriv&  in = *dIn.beginEdit();
             const OutVecDeriv&  out = dOut.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -291,7 +291,7 @@ public:
         }
         else
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 			#pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
