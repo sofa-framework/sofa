@@ -32,6 +32,13 @@ idxVisualModel = 0
 geometric_stiffness = 0
 
 
+
+
+
+class MassInfo:
+    ## @internal
+    pass
+
 class RigidBody:
     ## Generic Rigid Body
 
@@ -49,6 +56,30 @@ class RigidBody:
         ## create the rigid body from a mesh (inertia and com are automatically computed)
         massInfo = SofaPython.mass.RigidMassInfo()
         massInfo.setFromMesh(filepath, density, scale3d)
+        self.setFromRigidInfo(massInfo, offset, inertia_forces)
+
+    def setFromRigidFile(self, rigidfilepath, offset = [0,0,0,0,0,0,1], inertia_forces = False):
+        ## create the rigid body from a rigid file (it contains inertia and com)
+        rigidFile = open( rigidfilepath, "r" )
+        line = list( rigidFile )
+        rigidFile.close()
+        start = 1
+        massInfo = MassInfo()
+        massInfo.mass = float( line[start].split(' ')[1] )
+        massInfo.com = map(float, line[start + 3].split(' ')[1:] )
+        inertia = map(float, line[start + 2].split(' ')[1:] ) # pick inertia matrix from file
+        massInfo.inertia = numpy.array( [massInfo.mass * x for x in inertia] ).reshape( 3, 3 ) # convert it in numpy 3x3 matrix
+        # extracting principal axes basis and corresponding rotation and diagonal inertia
+        if inertia[1]>1e-5 or inertia[2]>1e-5 or inertia[5]>1e-5 : # if !diagonal (1e-5 seems big but the precision from a mesh is poor)
+            U, massInfo.diagonal_inertia, V = numpy.linalg.svd(massInfo.inertia)
+            # det should be 1->rotation or -1->reflexion
+            if numpy.linalg.det(U) < 0 : # reflexion
+                # made it a rotation by negating a column
+                U[:,0] = -U[:,0]
+            massInfo.inertia_rotation = Quaternion.from_matrix( U )
+        else :
+            massInfo.diagonal_inertia = res.inertia.diagonal()
+            massInfo.inertia_rotation = [0,0,0,1]
         self.setFromRigidInfo(massInfo, offset, inertia_forces)
 
     def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = False) :
