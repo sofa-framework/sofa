@@ -9,7 +9,7 @@
 #
 # Note that both python APIs and manual creation can be used together.
 #
-# see Compliant/examples/StructuralAPI.py for an basic example.
+# see Compliant/examples/StructuralAPI.py for a basic example.
 
 import Frame
 import Tools
