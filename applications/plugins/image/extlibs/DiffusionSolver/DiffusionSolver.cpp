@@ -3,8 +3,9 @@
 #include "DiffusionSolver.h"
 #include <assert.h>
 #include <iostream>
-
 #include <vector>
+
+#include <sofa/helper/IndexOpenMP.h>
 
 #ifdef USING_OMP_PRAGMAS
 #include <omp.h>
@@ -681,6 +682,6 @@ void DiffusionSolver< Real >::solveCG( ImageType& img, const MaskType& mask, Rea
 }
 
 // precompilation for single and double floating points
-template class SOFA_DIFFUSION_SOLVER_API DiffusionSolver<float>;
-//template class SOFA_DIFFUSION_SOLVER_API DiffusionSolver<double>;
+template class EXPORT_DYNAMIC_LIBRARY DiffusionSolver<float>;
+//template class EXPORT_DYNAMIC_LIBRARY DiffusionSolver<double>;
 
