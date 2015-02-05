@@ -39,7 +39,7 @@ namespace helper
 template<class T>
 struct IndexOpenMP
 {
-#if defined(USING_OMP_PRAGMAS) && defined(_OPENMP) && _OPENMP < 200805 /*yearmonth of version 3.0*/
+#if defined(_OPENMP) && _OPENMP < 200805 /*yearmonth of version 3.0*/
 		typedef typename std::make_signed<T>::type type;
 #else
 		typedef T type;

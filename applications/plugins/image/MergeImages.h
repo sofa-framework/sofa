@@ -36,7 +36,7 @@
 
 #include <sofa/component/component.h>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
     #include <omp.h>
 #endif
 
@@ -266,7 +266,7 @@ protected:
         CImgList<T>& img = out->getCImgList();
 
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
         cimg_forXYZ(img(0),x,y,z) //space
