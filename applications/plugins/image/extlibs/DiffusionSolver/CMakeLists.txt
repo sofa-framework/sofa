@@ -39,7 +39,7 @@ AddCompilerDefinitions("SOFA_BUILD_DIFFUSION_SOLVER")
 add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
 
 # add Dependency to SofaHelper to be able
-AddLinkerDependencies(SofaHelper)
+AddSourceDependencies(SofaHelper)
 
 if(APPLE)
     find_package(X11)
