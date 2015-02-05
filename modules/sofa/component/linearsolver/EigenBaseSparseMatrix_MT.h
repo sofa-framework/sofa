@@ -280,7 +280,7 @@ struct conservative_sparse_sparse_product_selector_MT<Lhs,Rhs,ResultType,RowMajo
 template<typename Lhs, typename Rhs, typename ResultType>
 void mul_EigenSparseMatrix_MT( ResultType& res, const Lhs& lhs, const Rhs& rhs )
 {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
     assert( &res != &lhs );
     assert( &res != &rhs );
     conservative_sparse_sparse_product_selector_MT< Lhs, Rhs, ResultType >::run(lhs, rhs, res);
@@ -558,7 +558,7 @@ class SparseTimeDenseProduct_MT
 
     template<typename Dest> void scaleAndAddTo(Dest& dest, const Scalar& alpha) const
     {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         // no multithreading for too small vectors
         if( ( m_rhs.cols() == 1 && m_rhs.rows()<3000 ) || m_nbThreads==1 )
             internal::sparse_time_dense_product(m_lhs, m_rhs, dest, alpha);

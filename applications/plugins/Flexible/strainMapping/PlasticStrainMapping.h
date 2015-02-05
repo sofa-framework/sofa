@@ -119,7 +119,7 @@ protected:
         {
         case MULTIPLICATION:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 			#pragma omp parallel for
 #endif
 			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<this->jacobian.size() ; i++ )
@@ -133,7 +133,7 @@ protected:
         }
         case ADDITION:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 	#pragma omp parallel for
 #endif
 			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<this->jacobian.size() ; i++ )

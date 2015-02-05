@@ -33,7 +33,7 @@
 #include <map>
 #include <Eigen/Sparse>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #include "EigenBaseSparseMatrix_MT.h"
 #endif
 
@@ -297,7 +297,7 @@ public:
     void mult_MT( VectorEigen& result, const VectorEigen& data )
     {
         compress();
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         result = linearsolver::mul_EigenSparseDenseMatrix_MT( result, compressedMatrix );
 #else
         result = compressedMatrix * data;
@@ -421,7 +421,7 @@ public:
     /// @warning res MUST NOT be the same variable as this or rhs
     void mul_MT(EigenBaseSparseMatrix<Real>& res, const EigenBaseSparseMatrix<Real>& rhs) const
     {
-    #ifdef USING_OMP_PRAGMAS
+    #ifdef _OPENMP
         assert( &res != this );
         assert( &res != &rhs );
         ((EigenBaseSparseMatrix<Real>*)this)->compress();  /// \warning this violates the const-ness of the method
@@ -442,7 +442,7 @@ public:
     void mul_MT( Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& res, const Eigen::Matrix<Real,Eigen::Dynamic,Eigen::Dynamic>& rhs )
     {
         compress();
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         res = linearsolver::mul_EigenSparseDenseMatrix_MT( compressedMatrix, rhs );
 #else
         res = compressedMatrix * rhs;
