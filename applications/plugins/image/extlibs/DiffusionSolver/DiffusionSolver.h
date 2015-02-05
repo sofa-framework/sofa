@@ -63,6 +63,9 @@ struct DiffusionSolver
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(__DIFFUSIONSOLVER_CPP)
+    extern template class SOFA_DIFFUSION_SOLVER_API DiffusionSolver<float>;
+#endif
 
 
 #endif // __DIFFUSIONSOLVER_H__
