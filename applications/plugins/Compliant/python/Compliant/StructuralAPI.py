@@ -18,6 +18,7 @@ import numpy
 import Sofa
 from SofaPython import Quaternion
 import SofaPython.Tools
+import SofaPython.mass
 import math
 
 # to specify the floating point encoding (double by default)
@@ -53,13 +54,8 @@ class RigidBody:
 
     def setFromMesh(self, filepath, density = 1, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
         ## create the rigid body from a mesh (inertia and com are automatically computed)
-        rigidInfo = Sofa.generateRigid( filepath, density, scale3d[0], scale3d[1], scale3d[2] )
-
-        massInfo = MassInfo()
-        massInfo.mass = rigidInfo[0]
-        massInfo.com = rigidInfo[1:4]
-        massInfo.diagonal_inertia = rigidInfo[4:7]
-        massInfo.inertia_rotation = rigidInfo[7:11]
+        massInfo = SofaPython.mass.RigidMassInfo()
+        massInfo.setFromMesh(filepath, density, scale3d)
         self.setFromRigidInfo(massInfo, offset, inertia_forces)
 
     def setFromRigidFile(self, rigidfilepath, offset = [0,0,0,0,0,0,1], inertia_forces = False):
