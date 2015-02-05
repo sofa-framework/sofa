@@ -1,3 +1,5 @@
+#define __DIFFUSIONSOLVER_CPP
+
 #include "DiffusionSolver.h"
 #include <assert.h>
 #include <iostream>
