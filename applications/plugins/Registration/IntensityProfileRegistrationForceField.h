@@ -37,7 +37,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/helper/IndexOpenMP.h>
 
 
 #define INTERPOLATION_NEAREST 0
