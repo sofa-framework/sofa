@@ -2,14 +2,20 @@
 #define __DIFFUSIONSOLVER_H__
 
 #include <CImg/CImg.h>
-#include <sofa/helper/IndexOpenMP.h>
-#include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_DIFFUSION_SOLVER
-#define SOFA_DIFFUSION_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+
+#ifdef WIN32
+#	define EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#   define IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#   ifdef _MSC_VER
+#       pragma warning(disable : 4231)
+#       pragma warning(disable : 4910)
+#   endif
 #else
-#define SOFA_DIFFUSION_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#	define EXPORT_DYNAMIC_LIBRARY
+#   define IMPORT_DYNAMIC_LIBRARY
 #endif
+
 
 /** Solving diffusion on 3D regular grids (stored as CImg)
  * @param size (in) the size of the regular domain in the 3 directions.
@@ -60,11 +66,11 @@ struct DiffusionSolver
     /// Conjugate Gradient implementation (matrix-free)
     static void solveCG( ImageType& img, const MaskType& mask, Real spacingX, Real spacingY, Real spacingZ, unsigned iterations, Real threshold, const ImageType* material=NULL );
 
-
 };
 
+
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(__DIFFUSIONSOLVER_CPP)
-    extern template class SOFA_DIFFUSION_SOLVER_API DiffusionSolver<float>;
+    extern template class IMPORT_DYNAMIC_LIBRARY DiffusionSolver<float>;
 #endif
 
 
