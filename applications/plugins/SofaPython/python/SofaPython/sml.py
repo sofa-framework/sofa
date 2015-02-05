@@ -268,8 +268,11 @@ def setupUnits(myUnits):
     print message
 
 class BaseScene:
+    """ Base class for Scene class, creates a node for this Scene
+    """
     class Param:
         pass
+
     def __init__(self,parentNode,model):
         self.model=model
         self.param=BaseScene.Param()
@@ -277,6 +280,8 @@ class BaseScene:
         self.node=parentNode.createChild(self.model.name)
 
 class SceneDisplay(BaseScene):
+    """ Creates a scene to display rigids and deformables meshes
+    """
     def __init__(self,parentNode,model):
         BaseScene.__init__(self,parentNode,model)
         self.param.rigidColor="1. 0. 0."
