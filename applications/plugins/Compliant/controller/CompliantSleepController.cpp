@@ -64,6 +64,18 @@ GetConstrainedContextPairs::GetConstrainedContextPairs(const core::ExecParams* p
 
 void GetConstrainedContextPairs::processNodeBottomUp(simulation::Node* node)
 {
+	// Simplified and more generic joint detection, based on the fact that when creating a multimapping,
+	// the mapping node MUST be added as a child of all mapped nodes.
+	// It may detect incorrectly configured relations as valid joints, but it's an acceptable tradeoff as those should not happen anyway,
+	// and the only negative impact is that some nodes may be maintained awake that would otherwise be able to sleep.
+
+	simulation::Node::Parents parents = node->getParents();
+	if (parents.size() == 2)
+	{
+		m_sleepController->addWakeupPair(m_wakeupPairs, parents[0]->getContext(), true, parents[1]->getContext(), true);
+	}
+
+	/*
 	m_processNode = false;
 	for_each(this, node, node->object, &GetConstrainedContextPairs::processObject);
 	if (!m_processNode)
@@ -102,6 +114,7 @@ void GetConstrainedContextPairs::processNodeBottomUp(simulation::Node* node)
 			}
 		}
 	}
+	*/
 }
 
 void GetConstrainedContextPairs::processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o)
