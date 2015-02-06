@@ -1,5 +1,4 @@
-project(DiffusionSolver)
-
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no need for openmp in debug
 
@@ -33,7 +32,7 @@ endif()
 # For Cimg
 include_directories(${SOFA_EXTLIBS_DIR})
 
-add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
+add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} DiffusionSolver.h DiffusionSolver.cpp)
 
 if(APPLE)
     find_package(X11)
@@ -43,3 +42,5 @@ if(APPLE)
     target_link_libraries(${PROJECT_NAME} ${X11_X11_LIB})
     include_directories(${X11_X11_INCLUDE_PATH})
 endif()
+
+include(${SOFA_CMAKE_DIR}/postProject.cmake)
