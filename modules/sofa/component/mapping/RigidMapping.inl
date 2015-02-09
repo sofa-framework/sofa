@@ -45,6 +45,7 @@
 #include <string.h>
 #include <iostream>
 #include <cassert>
+#include <numeric>
 
 using std::cout;
 using std::endl;
@@ -166,27 +167,71 @@ int RigidMapping<TIn, TOut>::addPoint(const Coord& c)
 template <class TIn, class TOut>
 int RigidMapping<TIn, TOut>::addPoint(const Coord& c, int indexFrom)
 {
-    helper::WriteAccessor<Data<VecCoord> > points = this->points;
+    // REALLY INEFFICIENT...
+    // and CANNOT be used for collision detection as it is done right now...
+    // as soon as there are several Rigids in the same MechanicalState
+    // since addPoint is sorting added points and is so changing their indices
+    // that no longer correspond to the indices used in collision reaction.
+    // Could / will be improved by using a parentIndexPerPoint (size of points)
+    // rather than pointsPerFrame that imposes points to be ordered with the parents
+
+
+    VecCoord& points = *this->points.beginEdit();
+
+
     int i = points.size();
-    points.push_back(c);
     if (!pointsPerFrame.getValue().empty())
     {
-        pointsPerFrame.beginEdit()->push_back(indexFrom);
+        helper::vector<unsigned int>& ppf = *pointsPerFrame.beginEdit();
+        assert( ppf.size() == this->fromModel->getSize() );
+
+        // parcourir pointsPerFrame jusqu'à indexFrom pour sommer index courant
+        unsigned int index = std::accumulate( ppf.begin(), ppf.begin()+indexFrom ,0 );
+
+        // inserer c au milieu à index courant dans points
+        // points.insert( points.begin()+index, c ); // not implemented on extvector that is not based on std::vector...
+        points.resize( points.size() + 1 );
+        for( size_t j=points.size()-1; j>index ; --j ) // moving the end of the array
+            points[j] = points[j-1];
+        points[index] = c; // inserting new point in the middle
+
+        ppf[indexFrom]++;
+
         pointsPerFrame.endEdit();
     }
     else if (!i)
     {
+        // the first added point, one parent is enough
+        points.push_back(c);
         index.setValue(indexFrom);
     }
     else if ((int) index.getValue() != indexFrom)
     {
-        sofa::helper::vector<unsigned int>& rep = *pointsPerFrame.beginEdit();
-        rep.clear();
-        rep.reserve(i + 1);
-        rep.insert(rep.end(), index.getValue(), i);
-        rep.push_back(indexFrom);
+        // a second parent is coming
+        // index is no longer enough, pointsPerFrame must be used
+        if(  indexFrom > index.getValue() )
+            points.push_back(c);
+        else
+        {
+            // if indexFrom < index.getValue() it comes first...
+            points.resize( points.size() + 1 );
+            for( size_t j=points.size()-1; j>0 ; --j )
+                points[j] = points[j-1];
+            points[0] = c;
+        }
+
+        helper::vector<unsigned int>& ppf = *pointsPerFrame.beginEdit();
+//        ppf.clear();
+        ppf.resize( this->fromModel->getSize() );
+        std::fill( ppf.begin(), ppf.end(), 0 );
+        ppf[index.getValue()] = i;
+        ppf[indexFrom] = 1;
         pointsPerFrame.endEdit();
     }
+    else points.push_back(c); // only one parent (for now at least)
+
+    this->points.endEdit();
+
     return i;
 }
 
@@ -204,8 +249,8 @@ void RigidMapping<TIn, TOut>::reinit()
         if (globalToLocalCoords.getValue())
         {
             //            cerr<<"globalToLocal is true, compute local coordinates"  << endl;
-            const VecCoord& xTo = *this->toModel->getX();
-            points.resize(xTo.size());
+//            const VecCoord& xTo = *this->toModel->getX();
+//            points.resize(xTo.size());
             unsigned int i = 0, cpt = 0;
             const InVecCoord& xFrom = *this->fromModel->getX();
             switch (pointsPerFrame.getValue().size())
