@@ -312,7 +312,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& optio
     backgroundImage(NULL),
     left_stack(NULL),
     pluginManager_dialog(NULL),
-    recentlyOpenedFilesManager("share/config/Sofa.ini"),
+    recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/Sofa.ini"),
     saveReloadFile(false),
     displayFlag(NULL),
     descriptionScene(NULL),
