@@ -266,8 +266,7 @@ int main(int argc, char** argv)
     {
         if (loadRecent) // try to reload the latest scene
         {
-            std::string scenes = "share/config/Sofa.ini";
-            scenes = sofa::helper::system::DataRepository.getFile( scenes );
+            std::string scenes = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/Sofa.ini";
             std::ifstream mrulist(scenes.c_str());
             std::getline(mrulist,fileName);
             mrulist.close();

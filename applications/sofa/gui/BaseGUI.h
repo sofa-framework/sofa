@@ -106,12 +106,17 @@ public:
     static const char* GetProgramName() { return mProgramName; }
     static void SetProgramName(const char* argv0) { if(argv0) mProgramName = argv0;}
 
+    static const std::string& getPathPrefix();
+    static const std::string& getConfigDirectoryPath();
+    static void setConfigDirectoryPath(const std::string& path);
+
 protected:
     BaseGUI();
     /// The destructor should not be called directly. Use the closeGUI() method instead.
     virtual ~BaseGUI();
 
     static std::string mGuiName; // would like to make it const but not possible with the current implementation of RealGUI...
+    static std::string configDirectoryPath;
     static const char* mProgramName;
 };
 

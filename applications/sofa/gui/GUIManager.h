@@ -86,7 +86,6 @@ public:
     static void SetFullScreen();
     static void SaveScreenshot(const char* filename);
 
-
     /// @}
 protected:
     /*!
@@ -102,7 +101,6 @@ protected:
     static std::vector<std::string> guiOptions;
     static BaseGUI* currentGUI;
     static const char* valid_guiname;
-
 public:
     static BaseGUI* getGUI();
 };
