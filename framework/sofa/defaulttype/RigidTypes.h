@@ -528,6 +528,11 @@ public:
         return orientation.inverseRotate(v);
     }
 
+    Vec3 translate(const Vec3& v) const
+    {
+        return v + center;
+    }
+
     /// Apply a transformation with respect to itself
     void multRight( const RigidCoord<3,real>& c )
     {
@@ -1380,6 +1385,11 @@ public:
         Real c = cos(-orientation);
         return Vec2(c*v[0]-s*v[1],
                 s*v[0]+c*v[1]);
+    }
+
+    Vec2 translate(const Vec2& v) const
+    {
+        return v + center;
     }
 
     static RigidCoord<2,real> identity()
