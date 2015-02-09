@@ -107,13 +107,8 @@ public:
     sofa::core::objectmodel::DataFileName fileRigidMapping;
     Data<bool> useX0;
     Data<bool> indexFromEnd;
-    /**
-     * pointsPerRigid:
-     *  - no value specified : simple rigid mapping, all points attached to the same frame (index=0)
-     *  - one value specified : same number of points for each frame
-     *  - n values are specified : heterogeneous distribution of points per frame
-     */
-    Data<sofa::helper::vector<unsigned int> > pointsPerFrame;
+
+    Data< helper::vector<unsigned int> > rigidIndexPerPoint;
     Data<bool> globalToLocalCoords;
 
     helper::ParticleMask* maskFrom;
@@ -121,9 +116,12 @@ public:
 protected:
     RigidMapping();
     virtual ~RigidMapping() {}
+
+    unsigned int getRigidIndex( unsigned int pointIndex ) const;
+
 public:
     int addPoint(const Coord& c);
-    int addPoint(const Coord& c, int indexFrom);
+    int addPoint(const Coord& c, unsigned int indexFrom);
 
     virtual void init();
 
@@ -152,6 +150,8 @@ public:
 
     void setRepartition(unsigned int value);
     void setRepartition(sofa::helper::vector<unsigned int> values);
+
+    void parse(core::objectmodel::BaseObjectDescription* arg);
 
 protected:
     class Loader;
