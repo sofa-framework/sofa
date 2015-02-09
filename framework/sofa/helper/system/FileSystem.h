@@ -52,7 +52,7 @@ namespace FileSystem
 /// @brief List the content of a directory.
 ///
 /// It pushes the filenames (not their absolute paths) in the vector provided in argument.
-/// The directory must exist.
+/// @warning The directory must exist.
 /// @return true on error
 SOFA_HELPER_API bool listDirectory(const std::string& directoryPath,
                                    std::vector<std::string>& outputFilenames);
@@ -60,19 +60,39 @@ SOFA_HELPER_API bool listDirectory(const std::string& directoryPath,
 /// @brief List the files in a directory which match the given extension.
 ///
 /// It pushes the filenames (not their absolute paths) in the vector provided in argument.
-/// The directory must exist.
+/// @warning The directory must exist.
 /// @return true on error
 SOFA_HELPER_API bool listDirectory(const std::string& directoryPath,
                                    std::vector<std::string>& outputFilenames,
                                    const std::string& extension);
 
-/// @brief Returns true if and only if the given file exists.
+/// @brief Return true if and only if the given file exists.
 SOFA_HELPER_API bool exists(const std::string& path);
 
-/// @brief Returns true if and only if the given file path corresponds to a directory.
+/// @brief Return true if and only if the given file path corresponds to a directory.
 ///
-/// The path must exist.
+/// @warning The path must exist.
 SOFA_HELPER_API bool isDirectory(const std::string& path);
+
+/// @brief Replace backslashes with slashes.
+SOFA_HELPER_API std::string convertBackSlashesToSlashes(const std::string& path);
+
+/// @brief Replace consecutive occurrences of '/' with a single '/'.
+SOFA_HELPER_API std::string removeExtraSlashes(const std::string& path);
+
+/// @brief Clean path (backslashes, extra slashes...)
+SOFA_HELPER_API std::string cleanPath(const std::string& path);
+
+/// @brief Strip the last component from a path.
+/// Return the path given in argument with its last non-slash
+/// component and trailing slashes removed, or "." if the path
+/// contains no slashes.
+/// E.g. /a/b/c --> /a/b
+SOFA_HELPER_API std::string getParentDirectory(const std::string& path);
+
+/// @brief Strip the directory components from a path.
+/// E.g. /a/b/c --> c
+SOFA_HELPER_API std::string stripDirectory(const std::string& path);
 
 };
 
