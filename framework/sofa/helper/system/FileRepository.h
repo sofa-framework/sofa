@@ -142,7 +142,6 @@ protected:
 };
 
 extern SOFA_HELPER_API FileRepository DataRepository; ///< Default repository
-extern SOFA_HELPER_API FileRepository PluginRepository; ///< Default repository
 
 } // namespace system
 
