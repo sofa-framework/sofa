@@ -170,13 +170,13 @@ std::string getExecutablePath() {
     }
 
 #elif defined(__APPLE__)
-    std::vector<char> path(PATH_MAX);
+    std::vector<char> buffer(PATH_MAX);
     std::vector<char> real_path(PATH_MAX);
-    uint32_t size = path.size();
-    if (_NSGetExecutablePath(&path[0], &size) != 0) {
+    uint32_t size = buffer.size();
+    if (_NSGetExecutablePath(&buffer[0], &size) != 0) {
         std::cerr << "Utils::getExecutablePath(): _NSGetExecutablePath() failed" << std::endl;
     }
-    if (realpath(&path[0], &real_path[0]) == 0) {
+    if (realpath(&buffer[0], &real_path[0]) == 0) {
         std::cerr << "Utils::getExecutablePath(): realpath() failed" << std::endl;
     }
     path = std::string(&real_path[0]);
