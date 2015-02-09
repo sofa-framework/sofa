@@ -26,8 +26,7 @@
 
 #include <sstream>
 
-#define TIXML_USE_STL
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
