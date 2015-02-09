@@ -25,6 +25,9 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
+#include <tinyxml.h>
+
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
@@ -43,6 +46,8 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/system/Utils.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
@@ -57,6 +62,31 @@
 #endif
 using std::cerr;
 using std::endl;
+
+using namespace sofa::helper::system;
+
+bool loadConfigurationFile(const std::string& filePath)
+{
+    TiXmlDocument doc;
+    doc.LoadFile();
+
+    if (!(doc.LoadFile(filePath)))
+    {
+        std::cerr << "Error while loading configuration file: " << filePath << std::endl;
+        return false;
+    }
+
+    TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
+    for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
+        elt != NULL;
+        elt = elt->NextSiblingElement("ResourcePath"))
+    {
+        const std::string path = elt->GetText();
+        sofa::helper::system::DataRepository.addFirstPath(path);
+    }
+
+    return true;
+}
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -201,6 +231,9 @@ int main(int argc, char** argv)
 
     sofa::component::init();
     sofa::simulation::xml::initXml();
+
+    const std::string configFilePath = FileSystem::getParentDirectory(FileSystem::getParentDirectory(Utils::getExecutablePath())) + "/etc/runSofa-config.xml";
+    loadConfigurationFile(configFilePath);
 
     if (!files.empty())
         fileName = files[0];

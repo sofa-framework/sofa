@@ -1,0 +1,4 @@
+<RunSofaConfig>
+    <ResourcePath>@SOFA_SHARE_DIR@</ResourcePath>
+    <ResourcePath>@SOFA_EXAMPLES_DIR@</ResourcePath>
+</RunSofaConfig>
