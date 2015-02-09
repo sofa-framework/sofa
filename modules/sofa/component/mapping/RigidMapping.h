@@ -148,6 +148,9 @@ public:
 
     void clear(int reserve = 0);
 
+    /// to give the number of mapped points attached to each rigid frame
+    /// @warning the mapped points must be sorted by their parent frame indices
+    /// for backward compatibility with previous data structure
     void setRepartition(unsigned int value);
     void setRepartition(sofa::helper::vector<unsigned int> values);
 

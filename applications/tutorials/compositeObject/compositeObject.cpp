@@ -213,21 +213,23 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     mappedParticles_dof->resize(numMapped);
     MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions(); // parent positions
     mappedParticles_mapping->globalToLocalCoords.setValue(true);                      // to define the mapped positions in world coordinates
-    vector<unsigned>* pointsPerFrame = mappedParticles_mapping->pointsPerFrame.beginEdit(); // to set how many particles are attached to each frame
+
+    vector<unsigned>& rigidIndexPerPoint = *mappedParticles_mapping->rigidIndexPerPoint.beginEdit(); // to set to which rigid frame is attached each mapped particle
+    rigidIndexPerPoint.clear();
+    rigidIndexPerPoint.reserve( numMapped );
     unsigned mappedIndex=0;
     for( unsigned b=0; b<numRigid; b++ )
     {
         const vector<unsigned>& ind = indices[b];
-        pointsPerFrame->push_back((unsigned)ind.size()); // Tell the mapping the number of points associated with this frame. One box per frame
         for(unsigned i=0; i<ind.size(); i++)
         {
+            rigidIndexPerPoint.push_back( b );
             parentParticles[ind[i]]=make_pair(mappedParticles_dof.get(),mappedIndex);
             xmapped[mappedIndex] = xgrid[ ind[i] ];
             mappedIndex++;
-
         }
     }
-    mappedParticles_mapping->pointsPerFrame.endEdit();
+    mappedParticles_mapping->rigidIndexPerPoint.endEdit();
 
     // Declare all the particles to the multimapping
     for( unsigned i=0; i<xgrid.size(); i++ )
