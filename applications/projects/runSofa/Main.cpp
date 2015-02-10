@@ -103,6 +103,13 @@ bool loadConfigurationFile(const std::string& filePath)
         sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
     }
 
+    TiXmlElement* elt = root->FirstChildElement("ScreenshotDirectory");
+    if (elt != NULL)
+    {
+        const std::string path = elt->GetText();
+        sofa::gui::BaseGUI::setScreenshotDirectoryPath(makeAbsolutePath(path));
+    }
+
     return true;
 }
 
