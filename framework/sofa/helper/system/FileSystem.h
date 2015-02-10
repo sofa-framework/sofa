@@ -74,6 +74,9 @@ SOFA_HELPER_API bool exists(const std::string& path);
 /// @warning The path must exist.
 SOFA_HELPER_API bool isDirectory(const std::string& path);
 
+/// @brief Return true if and only if the given file path is absolute.
+SOFA_HELPER_API bool isAbsolute(const std::string& path);
+
 /// @brief Replace backslashes with slashes.
 SOFA_HELPER_API std::string convertBackSlashesToSlashes(const std::string& path);
 
