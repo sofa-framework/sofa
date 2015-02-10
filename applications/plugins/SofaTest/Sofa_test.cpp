@@ -36,8 +36,8 @@ namespace sofa {
 
 int BaseSofa_test::seed = (unsigned int)time(NULL);
 
-// Fill PluginRepository at load time.
-int initPluginRepository()
+// Fill FileRepositories at load time.
+int initFileRepositories()
 {
 #ifdef WIN32
     const std::string pluginsDir = "bin";
@@ -45,9 +45,10 @@ int initPluginRepository()
     const std::string pluginsDir = "lib";
 #endif
     PluginRepository.addFirstPath(FileSystem::getParentDirectory(FileSystem::getParentDirectory(Utils::getExecutablePath())) + "/" + pluginsDir);
+    DataRepository.addFirstPath(std::string(SOFA_SRC_DIR) + "/share");
     return 42;
 }
-int initPluginPath = initPluginRepository();
+int initPluginPath = initFileRepositories();
 
 BaseSofa_test::BaseSofa_test(){
     seed = testing::seedValue;
