@@ -26,14 +26,33 @@
 #include "Sofa_test.h"
 #include <plugins/SceneCreator/SceneCreator.h>
 
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/system/Utils.h>
+
+using namespace sofa::helper::system;
+
 namespace sofa {
 
 int BaseSofa_test::seed = (unsigned int)time(NULL);
 
-BaseSofa_test::BaseSofa_test(){
+// Fill PluginRepository at load time.
+int initPluginRepository()
+{
+#ifdef WIN32
+    const std::string pluginsDir = "bin";
+#else
+    const std::string pluginsDir = "lib";
+#endif
+    PluginRepository.addFirstPath(FileSystem::getParentDirectory(FileSystem::getParentDirectory(Utils::getExecutablePath())) + "/" + pluginsDir);
+    return 42;
+}
+int initPluginPath = initPluginRepository();
 
+BaseSofa_test::BaseSofa_test(){
     seed = testing::seedValue;
     modeling::initSofa();
+
     //if you want to generate the same sequence of pseudo-random numbers than a specific test suites
     //use the same seed (the seed value is indicated at the 2nd line of test results)
     //and pass the seed in command argument line ex: SofaTest_test.exe seed 32
