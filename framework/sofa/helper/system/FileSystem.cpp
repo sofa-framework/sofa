@@ -213,6 +213,13 @@ static std::string pathDrive(const std::string& path) {
     return path.substr(0, 2);
 }
 
+bool isAbsolute(const std::string& path)
+{
+    return !path.empty()
+        && (pathHasDrive(path)
+            || path[0] == '/');
+}
+
 std::string convertBackSlashesToSlashes(const std::string& path)
 {
     std::string str = path;
