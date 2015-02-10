@@ -39,6 +39,8 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/Utils.h>
 
+#include <sofa/gui/BaseGUI.h>
+
 using namespace sofa::helper::system;
 
 // ---------------------------------------------------------------------
@@ -92,6 +94,8 @@ int main(int argc, char** argv)
 
     QApplication* application = new QApplication(argc, argv);
     (void)application;
+
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
