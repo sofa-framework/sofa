@@ -180,7 +180,6 @@ int GUIManager::Init(const char* argv0, const char* name /* = "" */)
     BaseGUI::SetProgramName(argv0);
     sofa::component::init();
     sofa::simulation::xml::initXml();
-    BaseGUI::setConfigDirectoryPath(BaseGUI::getPathPrefix() + "/config");
 
     if (currentGUI)
         return 0; // already initialized

@@ -249,6 +249,7 @@ int main(int argc, char** argv)
 
     sofa::component::init();
     sofa::simulation::xml::initXml();
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
 
     const std::string configFilePath = FileSystem::getParentDirectory(FileSystem::getParentDirectory(Utils::getExecutablePath())) + "/etc/runSofa-config.xml";
     loadConfigurationFile(configFilePath);
@@ -284,7 +285,7 @@ int main(int argc, char** argv)
     {
         if (loadRecent) // try to reload the latest scene
         {
-            std::string scenes = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/Sofa.ini";
+            std::string scenes = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini";
             std::ifstream mrulist(scenes.c_str());
             std::getline(mrulist,fileName);
             mrulist.close();

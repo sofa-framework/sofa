@@ -32,6 +32,7 @@
 
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
+#include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
 
@@ -178,7 +179,7 @@ void SofaModeler::createToolbar()
     addToolBar(Qt::TopToolBarArea, toolBar);
 }
 
-SofaModeler::SofaModeler():recentlyOpenedFilesManager("share/config/Modeler.ini")
+SofaModeler::SofaModeler():recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/Modeler.ini")
     ,runSofaGUI(NULL)
 {
     setWindowTitle(QString("Sofa Modeler"));
