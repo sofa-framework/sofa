@@ -65,6 +65,16 @@ using std::endl;
 
 using namespace sofa::helper::system;
 
+// Make a path absolute if it is relative: relative paths are relative to the
+// directory containing the application binary.
+static std::string makeAbsolutePath(const std::string& path)
+{
+    if (FileSystem::isAbsolute(path))
+        return path;
+    else
+        return FileSystem::getParentDirectory(Utils::getExecutablePath()) + "/" + path;
+}
+
 bool loadConfigurationFile(const std::string& filePath)
 {
     TiXmlDocument doc;
@@ -82,7 +92,15 @@ bool loadConfigurationFile(const std::string& filePath)
         elt = elt->NextSiblingElement("ResourcePath"))
     {
         const std::string path = elt->GetText();
-        sofa::helper::system::DataRepository.addFirstPath(path);
+        sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
+    }
+
+    for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
+        elt != NULL;
+        elt = elt->NextSiblingElement("PluginPath"))
+    {
+        const std::string path = elt->GetText();
+        sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
     }
 
     return true;
