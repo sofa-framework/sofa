@@ -90,7 +90,7 @@ template <typename T>
 void rotate(T axis_x, T axis_y, T axis_z, T angle, Matrix<4,4,T>& mat);
 
 template <typename T>
-void rotate(Vector<3,T>& axis, T angle, Matrix<4,4,T>& mat);
+void rotate(typename Vector<3,T>::type& axis, T angle, Matrix<4,4,T>& mat);
 
 /**
  * Apply a transformation (stored in matrix) to a 3D point
@@ -98,7 +98,7 @@ void rotate(Vector<3,T>& axis, T angle, Matrix<4,4,T>& mat);
  * @param mat the transformation matrix
  */
 template <typename T>
-Vector<3,T> transform(const Vector<3,T>& P, const Matrix<4,4,T>& mat);
+typename Vector<3,T>::type transform(const typename Vector<3,T>::type& P, const Matrix<4,4,T>& mat);
 
 } // namespace Geom
 

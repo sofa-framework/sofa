@@ -35,5 +35,5 @@ void main()
 		vec3 diffuse = (1.0 - ambientCoef) * texture2D(textureUnit,texCoord).rgb;
 		finalColor += vec4(diffuse*lambertTerm,0.0) + materialSpecular*specular;
 	}
-	gl_FragColor=finalColor;
+	FRAG_OUT=finalColor;
 }

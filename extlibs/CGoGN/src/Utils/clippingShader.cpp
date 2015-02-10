@@ -845,7 +845,7 @@ bool ClippingShader::insertClippingCode()
 	"		#if (CLIPPING_COLOR_ATTENUATION_MODE == CLIPPING_COLOR_ATTENUATION_MODE_QUADRATIC)\n"
 	"			clip_colorAttenuation *= clip_colorAttenuation;\n"
 	"		#endif\n"
-	"		gl_FragColor.rgb /= (1.0 + clip_colorAttenuation);\n"
+	"		FRAG_OUT.rgb /= (1.0 + clip_colorAttenuation);\n"
 	"	#endif;\n";
 
 	// Shader name string
@@ -867,8 +867,8 @@ bool ClippingShader::insertClippingCode()
 
 	// Modify fragment shader source code
 	if (errorRaiseShaderMutatorFailure(
-			   (!SM.setMinShadingLanguageVersion(ShaderMutator::FRAGMENT_SHADER, 120)) // Following code insertions need at least shading language 120 (GLSL arrays)
-			|| (!SM.insertCodeBeforeMainFunction(ShaderMutator::FRAGMENT_SHADER, FS_headInsertion))
+			  /* (!SM.setMinShadingLanguageVersion(ShaderMutator::FRAGMENT_SHADER, 120)) // Following code insertions need at least shading language 120 (GLSL arrays)
+			||*/ (!SM.insertCodeBeforeMainFunction(ShaderMutator::FRAGMENT_SHADER, FS_headInsertion))
 			|| (!SM.insertCodeAtMainFunctionBeginning(ShaderMutator::FRAGMENT_SHADER, FS_mainBeginInsertion))
 			|| (!SM.insertCodeAtMainFunctionEnd(ShaderMutator::FRAGMENT_SHADER, FS_mainEndInsertion)),
 			"ClippingShader::insertClippingCode"))

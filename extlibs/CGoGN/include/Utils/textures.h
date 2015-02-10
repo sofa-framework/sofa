@@ -59,7 +59,7 @@ template < unsigned int DIM, typename TYPE >
 class ImageData: public GTexture
 {
 public:
-	typedef Geom::Vector<DIM,unsigned int> COORD;
+    typedef typename Geom::Vector<DIM,unsigned int>::type COORD;
 
 protected:
 	/// pointer on data
@@ -185,7 +185,7 @@ template <unsigned int DIM>
 class Filter: public ImageData<DIM,double>
 {
 public:
-	typedef Geom::Vector<DIM,unsigned int> COORD;
+    typedef typename Geom::Vector<DIM,unsigned int>::type COORD;
 	static Filter<DIM>* createGaussian(int radius, double sigma);
 	static Filter<DIM>* createAverage(int radius);
 };
@@ -197,7 +197,7 @@ template < unsigned int DIM, typename TYPE >
 class Image: public ImageData<DIM,TYPE>
 {
 public:
-	typedef Geom::Vector<DIM,unsigned int> COORD;
+    typedef typename Geom::Vector<DIM,unsigned int>::type COORD;
 
 protected:
 
@@ -358,7 +358,7 @@ protected:
 	void checkAlignment();
 
 public:
-	typedef Geom::Vector<DIM,unsigned int> COORD;
+    typedef typename Geom::Vector<DIM,unsigned int>::type COORD;
 
 	/**
 	* constructor (gen id)
