@@ -661,8 +661,8 @@ std::string GLSLShader::findFile(const std::string filename)
 		}
 	}
 
-	// LA MACRO SHADERPATH contient le chemin du repertoire qui contient les fichiers textes
-	std::string st(SHADERPATH);
+    // LA MACRO CGOGN_SHADER_PATH contient le chemin du repertoire qui contient les fichiers textes
+    std::string st(CGOGN_SHADER_PATH);
 	st.append(filename);
 
 	std::ifstream file2; // on ne peut pas réutiliser file ????
