@@ -49,7 +49,8 @@ namespace gui
 
 const char* BaseGUI::mProgramName = NULL;
 std::string BaseGUI::mGuiName = "";
-std::string BaseGUI::configDirectoryPath = "";
+std::string BaseGUI::configDirectoryPath = ".";
+std::string BaseGUI::screenshotDirectoryPath = ".";
 
 BaseGUI::BaseGUI()
 {
@@ -151,6 +152,11 @@ const std::string& BaseGUI::getConfigDirectoryPath()
     return configDirectoryPath;
 }
 
+const std::string& BaseGUI::getScreenshotDirectoryPath()
+{
+    return screenshotDirectoryPath;
+}
+
 void BaseGUI::setConfigDirectoryPath(const std::string& path)
 {
     if (!FileSystem::exists(path))
@@ -159,6 +165,16 @@ void BaseGUI::setConfigDirectoryPath(const std::string& path)
         std::cerr << "BaseGUI::setConfigDirectoryPath(): not a directory: " << path << std::endl;
     else
         configDirectoryPath = path;
+}
+
+void BaseGUI::setScreenshotDirectoryPath(const std::string& path)
+{
+    if (!FileSystem::exists(path))
+        std::cerr << "BaseGUI::setScreenshotDirectoryPath(): no such directory: " << path << std::endl;
+    else if (!FileSystem::isDirectory(path))
+        std::cerr << "BaseGUI::setScreenshotDirectoryPath(): not a directory: " << path << std::endl;
+    else
+        screenshotDirectoryPath = path;
 }
 
 
