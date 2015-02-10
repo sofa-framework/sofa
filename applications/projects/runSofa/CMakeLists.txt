@@ -22,6 +22,11 @@ AddLinkerDependencies(SofaSimulationTree SofaGuiMain SofaComponentMain tinyxml)
 # Configuration file for runSofa
 set(SOFA_SHARE_DIR ${SOFA_SRC_DIR}/share)
 set(SOFA_EXAMPLES_DIR ${SOFA_SRC_DIR}/examples)
+if(WIN32)
+    set(SOFA_PLUGINS_DIR ../bin)
+else()
+    set(SOFA_PLUGINS_DIR ../lib)
+endif()
 configure_file(runSofa-config.xml.in ${CMAKE_BINARY_DIR}/etc/runSofa-config.xml)
 
 if(SOFA-LIB_SIMULATION_GRAPH_DAG)
