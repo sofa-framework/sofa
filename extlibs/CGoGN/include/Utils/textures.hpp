@@ -318,7 +318,7 @@ bool Image<DIM,TYPE>::load(const unsigned char *ptr, unsigned int w, unsigned in
 
 
 
-#ifndef WITH_QT
+#ifndef CGOGN_WITH_QT
 
 template < unsigned int DIM, typename TYPE >
 bool Image<DIM,TYPE>::load(const std::string& filename)

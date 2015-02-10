@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-//#ifdef WITH_QT
+//#ifdef CGOGN_WITH_QT
 
 #include "Utils/Shaders/shaderTextureMask.h"
 
