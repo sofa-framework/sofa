@@ -67,6 +67,7 @@ std::string cleanPath( const std::string& path )
     return p;
 }
 
+FileRepository PluginRepository("SOFA_PLUGIN_PATH");
 FileRepository DataRepository("SOFA_DATA_PATH");
 
 #if defined (_XBOX) || defined(PS3)
