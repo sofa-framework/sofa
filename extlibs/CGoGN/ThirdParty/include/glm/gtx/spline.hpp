@@ -1,67 +1,90 @@
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2010 G-Truc Creation (www.g-truc.net)
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Created : 2007-01-25
-// Updated : 2009-02-19
-// Licence : This source is under MIT License
-// File    : glm/gtx/spline.hpp
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Dependency:
-// - GLM core
-///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+/// OpenGL Mathematics (glm.g-truc.net)
+///
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
+/// Permission is hereby granted, free of charge, to any person obtaining a copy
+/// of this software and associated documentation files (the "Software"), to deal
+/// in the Software without restriction, including without limitation the rights
+/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+/// copies of the Software, and to permit persons to whom the Software is
+/// furnished to do so, subject to the following conditions:
+/// 
+/// The above copyright notice and this permission notice shall be included in
+/// all copies or substantial portions of the Software.
+/// 
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+/// THE SOFTWARE.
+///
+/// @ref gtx_spline
+/// @file glm/gtx/spline.hpp
+/// @date 2007-01-25 / 2011-06-07
+/// @author Christophe Riccio
+///
+/// @see core (dependence)
+///
+/// @defgroup gtx_spline GLM_GTX_spline
+/// @ingroup gtx
+/// 
+/// @brief Spline functions
+/// 
+/// <glm/gtx/spline.hpp> need to be included to use these functionalities.
+///////////////////////////////////////////////////////////////////////////////////
 
-#ifndef glm_gtx_spline
-#define glm_gtx_spline
+#ifndef GLM_GTX_spline
+#define GLM_GTX_spline
 
 // Dependency:
 #include "../glm.hpp"
 #include "../gtx/optimum_pow.hpp"
 
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
+#	pragma message("GLM: GLM_GTX_spline extension included")
+#endif
+
 namespace glm
 {
-    namespace gtx{
-	//! GLM_GTX_spline extension: Spline functions
-    namespace spline
-    {
-		using namespace gtx::optimum_pow;
+	/// @addtogroup gtx_spline
+	/// @{
 
-        //! Return a point from a catmull rom curve.
-		//! From GLM_GTX_spline extension.
-		template <typename genType> 
-		genType catmullRom(
-			const genType& v1, 
-			const genType& v2, 
-			const genType& v3, 
-			const genType& v4, 
-			const GLMvalType& s);
+	//! Return a point from a catmull rom curve.
+	/// @see gtx_spline extension.
+	template <typename genType> 
+	GLM_FUNC_DECL genType catmullRom(
+		genType const & v1, 
+		genType const & v2, 
+		genType const & v3, 
+		genType const & v4, 
+		typename genType::value_type const & s);
 		
-		//! Return a point from a hermite curve.
-		//! From GLM_GTX_spline extension.
-        template <typename genType> 
-		genType hermite(
-			const genType& v1, 
-			const genType& t1, 
-			const genType& v2, 
-			const genType& t2, 
-			const GLMvalType& s);
+	//! Return a point from a hermite curve.
+	/// @see gtx_spline extension.
+	template <typename genType> 
+	GLM_FUNC_DECL genType hermite(
+		genType const & v1, 
+		genType const & t1, 
+		genType const & v2, 
+		genType const & t2, 
+		typename genType::value_type const & s);
 		
-        //! Return a point from a cubic curve. 
-		//! From GLM_GTX_spline extension.
-		template <typename genType> 
-		genType cubic(
-			const genType& v1, 
-			const genType& v2, 
-			const genType& v3, 
-			const genType& v4, 
-			const GLMvalType& s);
+	//! Return a point from a cubic curve. 
+	/// @see gtx_spline extension.
+	template <typename genType> 
+	GLM_FUNC_DECL genType cubic(
+		genType const & v1, 
+		genType const & v2, 
+		genType const & v3, 
+		genType const & v4, 
+		typename genType::value_type const & s);
 
-	}//namespace spline
-    }//namespace gtx
+	/// @}
 }//namespace glm
 
 #include "spline.inl"
 
-namespace glm{using namespace gtx::spline;}
-
-#endif//glm_gtx_spline
+#endif//GLM_GTX_spline
 

@@ -10,5 +10,5 @@ void main()
 	if (dot(color,color) == 0.0)
 		discard;
 #endif
-	gl_FragColor=vec4(color,alpha);
+	FRAG_OUT=vec4(color,alpha);
 }

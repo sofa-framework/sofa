@@ -45,12 +45,14 @@ protected:
     // uniform locations
 	CGoGNGLuint m_unif_ambiant;
 	CGoGNGLuint m_unif_diffuse;
+	CGoGNGLuint m_unif_diffuseback;
 	CGoGNGLuint m_unif_lightPos;
 	CGoGNGLuint m_unif_explode;
 
 	float m_explode;
 	Geom::Vec4f m_ambiant;
 	Geom::Vec4f m_diffuse;
+	Geom::Vec4f m_diffuseBack;
 	Geom::Vec3f m_light_pos;
 
 	VBO* m_vboPos;
@@ -68,9 +70,11 @@ public:
 
 	void setDiffuse(const Geom::Vec4f& diffuse);
 
+	void setDiffuseBack(const Geom::Vec4f& diffuseb);
+
 	void setLightPosition(const Geom::Vec3f& lp);
 
-	void setParams(float explode, const Geom::Vec4f& ambiant, const Geom::Vec4f& diffuse, const Geom::Vec3f& lightPos);
+	void setParams(float explode, const Geom::Vec4f& ambiant, const Geom::Vec4f& diffuse, const Geom::Vec4f& diffuseBack, const Geom::Vec3f& lightPos);
 
 	unsigned int setAttributePosition(VBO* vbo);
 };
