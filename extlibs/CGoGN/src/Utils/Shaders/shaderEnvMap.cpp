@@ -485,7 +485,7 @@ bool ShaderEnvMap::setCubeMapCheckered()
 }
 
 
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 bool ShaderEnvMap::setCubeMap(const std::string& filename)
 {
 

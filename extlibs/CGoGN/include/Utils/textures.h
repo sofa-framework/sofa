@@ -29,7 +29,7 @@
 #include "Geometry/vector_gen.h"
 #include <string>
 
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 #include <QImage>
 //#else
 //#error "Texture class need Qt for loading images, please recompile CGoGN with Qt support if necessary"
