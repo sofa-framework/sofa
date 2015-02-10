@@ -65,8 +65,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-extern void rigidMappingDummyFunction(); ///< Used for setting breakpoints, since gdb sometimes fails at breaking within template methods. Implemented in RigidMapping.C
-
 
 template <class TIn, class TOut>
 class RigidMapping<TIn, TOut>::Loader : public helper::io::MassSpringLoader,
@@ -667,7 +665,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
             for(unsigned i = 0; i < NOut; ++i){
                 unsigned row = outIdx * NOut + i;
 
-//                J.startVec( row );
+                J.startVec( row );
 
                 // TODO optimize identity off-diagonal and
                 // skew-symmetric diagonal
@@ -676,11 +674,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 
                     if( block(i, j) != 0 ) {
 
-                        // TODO unfortunatly the col are no longer ordered
-
-//                        J.insertBack(row, col) = block(i, j);
-
-                        J.insert(row, col) = block(i, j);
+                        J.insertBack(row, col) = block(i, j);
 
                     }
 
