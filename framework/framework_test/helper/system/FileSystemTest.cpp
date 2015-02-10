@@ -105,6 +105,21 @@ TEST(FileSystemTest, isDirectory_nope)
     EXPECT_FALSE(FileSystem::isDirectory(getPath("non-empty-directory/fileA.txt")));
 }
 
+TEST(FileSystemTest, isAbsolute)
+{
+    EXPECT_FALSE(FileSystem::isAbsolute(""));
+    EXPECT_FALSE(FileSystem::isAbsolute("abc"));
+    EXPECT_FALSE(FileSystem::isAbsolute("abc/def"));
+    EXPECT_TRUE(FileSystem::isAbsolute("/"));
+    EXPECT_TRUE(FileSystem::isAbsolute("/abc"));
+    EXPECT_TRUE(FileSystem::isAbsolute("/abc/"));
+    EXPECT_TRUE(FileSystem::isAbsolute("/abc/def"));
+    EXPECT_TRUE(FileSystem::isAbsolute("A:/"));
+    EXPECT_TRUE(FileSystem::isAbsolute("B:/abc"));
+    EXPECT_TRUE(FileSystem::isAbsolute("C:/abc/"));
+    EXPECT_TRUE(FileSystem::isAbsolute("D:/abc/def"));
+}
+
 TEST(FileSystemTest, cleanPath)
 {
     EXPECT_EQ("", FileSystem::cleanPath(""));
