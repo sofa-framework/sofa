@@ -34,7 +34,7 @@
 
 #include "glm/gtc/type_precision.hpp"
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_projection.hpp"
+//#include "glm/gtc/matrix_projection.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 
@@ -285,7 +285,7 @@ public:
 
 	void addGroup(SvgGroup* group) { m_groups.push_back(group); }
 
-	void write();
+    void write();
 
 	/**
 	 * @brief set Attenuation Factor of color with depth
@@ -302,7 +302,7 @@ protected:
 
 public:
 
-	void write(const std::string& filename, float timeStep);
+    //void write(const std::string& filename, float timeStep);
 
 	void add(SVGOut* svg);
 

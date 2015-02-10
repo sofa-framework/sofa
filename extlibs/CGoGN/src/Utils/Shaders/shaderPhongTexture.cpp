@@ -97,7 +97,7 @@ void ShaderPhongTexture::setTextureUnit(GLenum texture_unit)
 {
 	bind();
 	int unit = texture_unit - GL_TEXTURE0;
-	glUniform1iARB(*m_unif_unit, unit);
+	glUniform1i(*m_unif_unit, unit);
 	m_unit = unit;
 	unbind();
 }

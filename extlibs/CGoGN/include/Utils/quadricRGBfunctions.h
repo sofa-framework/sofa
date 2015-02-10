@@ -38,8 +38,8 @@ enum channel {RED=0, GREEN, BLUE};
 template <typename REAL>
 class QuadricRGBfunctions {
 public:
-	typedef Geom::Vector<3,REAL> VEC3;
-	typedef Geom::Vector<6,REAL> VEC6;
+    typedef typename Geom::Vector<3,REAL>::type VEC3;
+    typedef typename Geom::Vector<6,REAL>::type VEC6;
 	typedef Geom::Matrix<6,6,REAL> MATRIX66;
 
 	typedef Geom::Matrix<3,3,REAL> MATRIX33;

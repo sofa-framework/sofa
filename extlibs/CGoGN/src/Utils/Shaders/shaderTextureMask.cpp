@@ -57,10 +57,10 @@ void ShaderTextureMask::setTextureUnits(GLenum texture_unit, GLenum texture_unit
 {
 	bind();
 	int unit = texture_unit - GL_TEXTURE0;
-	glUniform1iARB(*m_unif_unit,unit);
+	glUniform1i(*m_unif_unit,unit);
 	m_unit = unit;
 	unit = texture_unitMask - GL_TEXTURE0;
-	glUniform1iARB(*m_unif_unitMask,unit);
+	glUniform1i(*m_unif_unitMask,unit);
 	m_unitMask = unit;
 	unbind();
 }
@@ -102,8 +102,8 @@ void ShaderTextureMask::restoreUniformsAttribs()
 	bind();
 	bindVA_VBO("VertexPosition", m_vboPos);
 	bindVA_VBO("VertexTexCoord", m_vboTexCoord);
-	glUniform1iARB(*m_unif_unit,m_unit);
-	glUniform1iARB(*m_unif_unitMask,m_unitMask);
+	glUniform1i(*m_unif_unit,m_unit);
+	glUniform1i(*m_unif_unitMask,m_unitMask);
 	unbind();
 }
 

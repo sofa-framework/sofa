@@ -45,158 +45,10 @@ namespace Geom
  * Class for the representation of vectors
  */
 template <unsigned int DIM, typename T>
-class Vector
-{
-public:
-	typedef T DATA_TYPE ;
-	enum
-	{
-		DIMENSION = DIM
-	} ;
+struct Vector {
+    typedef sofa::defaulttype::Vec<DIM,T> type;
+};
 
-	static std::string CGoGNnameOfType() ;
-
-	/**********************************************/
-	/*                CONSTRUCTORS                */
-	/**********************************************/
-
-	Vector() ;
-
-	Vector(const Vector<DIM, T>& v) ;
-
-	template <typename T2>
-	Vector(const Vector<DIM, T2>& v) ;
-
-	Vector(T x, T y) ;
-
-	Vector(T x, T y, T z) ;
-
-	Vector(T x, T y, T z, T w) ;
-
-	/**
-	 * constructor that initialize all component to a given value
-	 * @param x the value to assign to all component
-	 */
-	Vector(T x) ;
-
-	void set(T a) ;
-
-	void zero() ;
-
-	/**********************************************/
-	/*                 ACCESSORS                  */
-	/**********************************************/
-
-	T& operator[](unsigned int index) ;
-
-	const T& operator[](unsigned int index) const ;
-
-	unsigned int dimension() const ;
-
-	T* data() ;
-
-	const T* data() const ;
-
-	/**********************************************/
-	/*         ARITHMETIC SELF-OPERATORS          */
-	/**********************************************/
-
-	Vector<DIM, T>& operator+=(const Vector<DIM, T>& v) ;
-
-	Vector<DIM, T>& operator-=(const Vector<DIM, T>& v) ;
-
-	Vector<DIM, T>& operator*=(T a) ;
-
-	Vector<DIM, T>& operator/=(T a) ;
-
-	/**********************************************/
-	/*            ARITHMETIC OPERATORS            */
-	/**********************************************/
-
-	Vector<DIM, T> operator+(const Vector<DIM, T>& v) const ;
-
-	Vector<DIM, T> operator-(const Vector<DIM, T>& v) const ;
-	
-	Vector<DIM, T> operator-() const ;
-
- 	Vector<DIM, T> operator*(T a) const ;
-	
-// 	template <typename T2>
-// 	Vector<DIM, T> operator*(T2 a) const ;
-	
-
-	Vector<DIM, T> operator/(T a) const ;
-
-	/**********************************************/
-	/*             UTILITY FUNCTIONS              */
-	/**********************************************/
-
-	T norm2() const ;
-
-	double norm() const ;
-
-	/*
-	 * normalize the vector and returns its norm
-	 */
-	double normalize() ;
-
-	/*
-	 * Return a normalized copy
-	 */
-	Vector<DIM, T> normalized() const;
-
-	// dot product
-	T operator*(const Vector<DIM, T> v) const ;
-
-	// cross product
-	Vector<DIM, T> operator^(const Vector<DIM, T> v) const ;
-
-	// Equal
-	bool operator==(const Vector<DIM, T>& v) const ;
-
-	// Different
-	bool operator!=(const Vector<DIM, T>& v) const ;
-
-	bool hasNan() const ;
-
-	bool isFinite() const ;
-
-	/**
-	 * Tests if the vector is normalized
-	 * @param epsilon tolerated error
-	 * @return true if the given vector has a unit norm +/- epsilon
-	 */
-	bool isNormalized(const T& epsilon) const ;
-
-	/**
-	 * Tests if current and given vectors are near within 1/precision (equal if precision is zero)
-	 * @param V a vector
-	 * @param epsilon tolerated error
-	 * @return true if orthogonal
-	 */
-	bool isNear(const Vector<DIM, T>& v, int precision) const ;
-
-	/**
-	 * Tests if current and given vectors are orthogonal
-	 * @param V a vector
-	 * @param epsilon tolerated error
-	 * @return true if orthogonal
-	 */
-	bool isOrthogonal(const Vector<DIM, T>& v, const T& epsilon = 1e-5) const ;
-
-	/**********************************************/
-	/*             STREAM OPERATORS               */
-	/**********************************************/
-
-	template <unsigned int DD, typename TT>
-	friend std::ostream& operator<<(std::ostream& out, const Vector<DD, TT>& v) ;
-
-	template <unsigned int DD, typename TT>
-	friend std::istream& operator>>(std::istream& in, Vector<DD, TT>& v) ;
-
-private:
-	T m_data[DIM] ;
-} ;
 
 /***
  * Test if x is null within precision.
@@ -215,10 +67,10 @@ template <typename T>
 bool isNull2(T x, int precision = 0) ;
 
 // template <unsigned int DIM, typename T>
-// Vector<DIM, T> operator*(T a, const Vector<DIM, T>& v) ;
+// typename Vector<DIM, T>::type operator*(T a, const typename Vector<DIM, T>::type& v) ;
 
 template <unsigned int DIM, typename T>
-Vector<DIM, T> operator/(T a, const Vector<DIM, T>& v) ;
+typename Vector<DIM, T>::type operator/(T a, const typename Vector<DIM, T>::type& v) ;
 
 // returns the signed volume of the parallelepiped spanned by vectors v1, v2 and v3
 template <unsigned int DIM, typename T>
@@ -226,10 +78,10 @@ T tripleProduct(const sofa::defaulttype::Vec<DIM, T>& v1, const sofa::defaulttyp
 
 // returns a spherical interpolation of two vectors considering parameter t ((0 <= t <= 1) => result between v1 and v2)
 template <unsigned int DIM, typename T>
-Vector<DIM, T> slerp(const Vector<DIM, T> &v1, const Vector<DIM, T> &v2, const T &t) ;
+typename Vector<DIM, T>::type slerp(const typename Vector<DIM, T>::type &v1, const typename Vector<DIM, T>::type &v2, const T &t) ;
 
 template <unsigned int DIM, typename T, typename T2>
-Vector<DIM, T> operator*(T2 b, const Vector<DIM, T>& v);
+typename Vector<DIM, T>::type operator*(T2 b, const typename Vector<DIM, T>::type& v);
 
 
 /**********************************************/
@@ -254,24 +106,29 @@ Vector<DIM, T> operator*(T2 b, const Vector<DIM, T>& v);
 //typedef Vector<4, int> Vec4i ;
 //typedef Vector<4, unsigned char> Vec4uc ;
 
-typedef sofa::defaulttype::Vec2f Vec2f ;
-typedef sofa::defaulttype::Vec2d Vec2d ;
-typedef sofa::defaulttype::Vec2u Vec2ui ;
-typedef sofa::defaulttype::Vec2i Vec2i ;
-typedef sofa::defaulttype::Vec<2, unsigned char> Vec2uc ;
+typedef typename Vector<2, float>::type Vec2f ;
+typedef typename Vector<2, double>::type Vec2d ;
+typedef typename Vector<2, unsigned int>::type Vec2ui ;
+typedef typename Vector<2, int>::type Vec2i ;
+typedef typename Vector<2, unsigned char>::type Vec2uc ;
 
-typedef sofa::defaulttype::Vec3f Vec3f ;
-typedef sofa::defaulttype::Vec3d Vec3d ;
-typedef sofa::defaulttype::Vec3u Vec3ui ;
-typedef sofa::defaulttype::Vec3i Vec3i ;
-typedef sofa::defaulttype::Vec<3, unsigned char> Vec3uc ;
+typedef typename Vector<3, float>::type Vec3f ;
+typedef typename Vector<3, double>::type Vec3d ;
+typedef typename Vector<3, unsigned int>::type Vec3ui ;
+typedef typename Vector<3, int>::type Vec3i ;
+typedef typename Vector<3, unsigned char>::type Vec3uc ;
 
-typedef sofa::defaulttype::Vec4f Vec4f ;
-typedef sofa::defaulttype::Vec4d Vec4d ;
-typedef sofa::defaulttype::Vec4u Vec4ui ;
-typedef sofa::defaulttype::Vec4i Vec4i ;
-typedef sofa::defaulttype::Vec<4, unsigned char> Vec4uc ;
+typedef typename Vector<4, float>::type Vec4f ;
+typedef typename Vector<4, double>::type Vec4d ;
+typedef typename Vector<4, unsigned int>::type Vec4ui ;
+typedef typename Vector<4, int>::type Vec4i ;
+typedef typename Vector<4, unsigned char>::type Vec4uc ;
 
+typedef typename Vector<6, float>::type Vec6f ;
+typedef typename Vector<6, double>::type Vec6d ;
+typedef typename Vector<6, unsigned int>::type Vec6ui ;
+typedef typename Vector<6, int>::type Vec6i ;
+typedef typename Vector<6, unsigned char>::type Vec6uc ;
 }
 
 }
