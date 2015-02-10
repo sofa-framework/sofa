@@ -108,7 +108,9 @@ public:
 
     static const std::string& getPathPrefix();
     static const std::string& getConfigDirectoryPath();
+    static const std::string& getScreenshotDirectoryPath();
     static void setConfigDirectoryPath(const std::string& path);
+    static void setScreenshotDirectoryPath(const std::string& path);
 
 protected:
     BaseGUI();
@@ -117,6 +119,7 @@ protected:
 
     static std::string mGuiName; // would like to make it const but not possible with the current implementation of RealGUI...
     static std::string configDirectoryPath;
+    static std::string screenshotDirectoryPath;
     static const char* mProgramName;
 };
 

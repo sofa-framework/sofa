@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "BaseViewer.h"
 #include "PickHandler.h"
+#include "BaseGUI.h"
 
 #include <sofa/helper/Factory.inl>
 #include <sofa/component/visualmodel/VisualStyle.h>
@@ -49,6 +50,7 @@ BaseViewer::BaseViewer()
     , _stereoEnabled(false)
     , _stereoMode(STEREO_AUTO)
     , _stereoShift(1.0)
+    , _screenshotDirectory(".")
 {
     pick = new PickHandler();
 }
@@ -79,20 +81,11 @@ void BaseViewer::setSceneFileName(const std::string &f)
 
 void BaseViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filename /* = NULL */, bool /* = false */)
 {
-    std::string file =
-        filename ? sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(
-                filename) : std::string();
-    std::string screenshotPrefix =
-        sofa::helper::system::SetDirectory::GetParentDir(
-                sofa::helper::system::DataRepository.getFirstPath().c_str())
-        + std::string("/share/screenshots/") + file
-        + std::string("_");
-#ifndef SOFA_NO_OPENGL
-    capture.setPrefix(screenshotPrefix);
-#endif
-#ifdef SOFA_HAVE_FFMPEG
-    videoRecorder.setPrefix(screenshotPrefix);
-#endif //SOFA_HAVE_FFMPEG
+    std::string prefix = "";
+    if (filename)
+        prefix = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename) + "_";
+    setPrefix(prefix);
+
     sceneFileName = filename ? filename : std::string("default.scn");
     groot = scene;
     initTexturesDone = false;
@@ -135,14 +128,18 @@ const std::string BaseViewer::screenshotName()
 #endif
 }
 
-void BaseViewer::setPrefix(const std::string filename)
+void BaseViewer::setPrefix(const std::string& prefix)
 {
+    const std::string fullPrefix = sofa::gui::BaseGUI::getScreenshotDirectoryPath() + "/" + prefix;
 #ifndef SOFA_NO_OPENGL
-    capture.setPrefix(filename);
+    capture.setPrefix(fullPrefix);
+#endif
+#ifdef SOFA_HAVE_FFMPEG
+    videoRecorder.setPrefix(fullPrefix);
 #endif
 }
 
-void BaseViewer::screenshot(const std::string filename, int compression_level)
+void BaseViewer::screenshot(const std::string& filename, int compression_level)
 {
 #ifndef SOFA_NO_OPENGL
     capture.saveScreen(filename, compression_level);
