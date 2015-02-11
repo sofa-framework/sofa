@@ -25,7 +25,7 @@
 
 #include <sofa/gui/FilesRecentlyOpenedManager.h>
 
-#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
 #include <fstream>
 #include <algorithm>
 
@@ -42,29 +42,22 @@ FilesRecentlyOpenedManager::FilesRecentlyOpenedManager(const std::string &config
     setPath(configFile);
 }
 
-void FilesRecentlyOpenedManager::setPath(const std::string &configFile)
+void FilesRecentlyOpenedManager::setPath(const std::string &path)
 {
-    path=configFile;
-    if ( !sofa::helper::system::DataRepository.findFile ( path ) )
+    // File does not exist? Create an empty one.
+    if (!sofa::helper::system::FileSystem::exists(path))
     {
-        path = sofa::helper::system::DataRepository.getFirstPath() + "/" + configFile;
-
-		// replacing every occurences of "//" by "/"
-	//	std::string path = sofa::helper::system::DataRepository.cleanPath( path );
-
         std::ofstream ofile(path.c_str());
         ofile << "";
         ofile.close();
     }
-    else path = sofa::helper::system::DataRepository.getFile ( configFile );
 
-
-    //Open the file containing the list of previously opened files
     files.clear();
 
     std::ifstream filesStream(path.c_str());
-    std::string filename;
-    while (std::getline(filesStream, filename)) files.push_back(sofa::helper::system::DataRepository.getFile(filename));
+    std::string filePath;
+    while (std::getline(filesStream, filePath))
+        files.push_back(filePath);
     filesStream.close();
 };
 
@@ -75,29 +68,24 @@ void FilesRecentlyOpenedManager::writeFiles() const
     out.close();
 }
 
-void FilesRecentlyOpenedManager::openFile(const std::string &file)
+void FilesRecentlyOpenedManager::openFile(const std::string &path)
 {
-    //Verify the existence of the file
-    std::string fileLoaded(file);
-    if (file.empty() || !sofa::helper::system::DataRepository.findFile(fileLoaded))
+    // Verify the existence of the file
+    if (path.empty() || !sofa::helper::system::FileSystem::exists(path))
         return;
 
-    fileLoaded=sofa::helper::system::DataRepository.getFile(file);
+    // Remove previous occurence of the file, if any
+    helper::vector<std::string>::iterator fileFound = std::find(files.begin(), files.end(), path);
+    if (fileFound != files.end())
+        files.erase(fileFound);
 
-    //Reformat for Windows
-#ifdef WIN32
-    //Remove all occurences of '\\' in the path
-    std::replace(fileLoaded.begin(), fileLoaded.end(), '\\', '/');
-#endif
-
-    //Remove previous occurence of the file
-    helper::vector<std::string>::iterator fileFound=std::find(files.begin(),files.end(), fileLoaded);
-    if (fileFound != files.end()) files.erase(fileFound);
-    //Add the current file to the list
+    // Add the current file to the list
     helper::vector<std::string>::iterator front=files.begin();
-    files.insert(front, fileLoaded);
-    //Only keep a given number of files
-    if (files.size() > max_num_files) files.resize(max_num_files);
+    files.insert(front, path);
+
+    // Only keep a given number of files
+    if (files.size() > max_num_files)
+        files.resize(max_num_files);
 
     writeFiles();
 }

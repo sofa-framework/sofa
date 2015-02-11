@@ -32,11 +32,6 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-
-//Tinyxml library
-#ifndef TIXML_USE_STL
-#define TIXML_USE_STL
-#endif
 #include <tinyxml.h>
 #include <tinystr.h>
 

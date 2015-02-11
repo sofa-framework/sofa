@@ -44,7 +44,7 @@ class ParticleMask
 {
 public:
     typedef std::set< unsigned int > InternalStorage;
-    ParticleMask(Data<bool> *activator):inUse(activator), activated(true), allComponentsAreUsingMask(true) {};
+    ParticleMask(Data<bool> *activator):inUse(activator), activated(true), allComponentsAreUsingMask(true) {}
 
     /// Insert an entry in the mask
     void insertEntry(unsigned int index)
@@ -53,8 +53,8 @@ public:
     }
 
 
-    const InternalStorage &getEntries() const {return indices;};
-    InternalStorage &getEntries() {return indices;};
+    const InternalStorage &getEntries() const {return indices;}
+    InternalStorage &getEntries() {return indices;}
 
     /// To activate the use of the mask. External components like forcefields and constraints have to use this method if they want to get benefit of the mask mechanism
     /// A mask deactivated previously will remain deactivated until explicit activation using activate method.

@@ -22,10 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-//#include "stdafx.h"
-#include "Sofa_test.h"
-#include "Elasticity_test.h"
+#include <plugins/SofaTest/Elasticity_test.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 #include <sofa/component/init.h>
@@ -36,11 +33,8 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
 
-// Including constraint, force and mass
-#include <sofa/component/mass/UniformMass.h>
+// Including mechanical object
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/core/MechanicalParams.h>
 
 // Solvers
 #include <sofa/component/odesolver/EulerSolver.h>
@@ -59,22 +53,15 @@ Test the dynamic behavior of solver: study a mass-spring system under gravity in
 The movement follows the equation:
 x(t)= A cos(wt + phi) with w the pulsation w=sqrt(K/M), K the stiffness, M the mass and phi the phase.
 In this test: x(t=0)= 1 and v(t=0)=0 and K = spring stiffness and phi = 0 of material thus x(t)= cos(wt)
-This tests generates the discrete mass position obtained with euler implicit solver with different parameter values (K,M,h).
+This tests generates the discrete mass position obtained with euler explicit solver with different parameter values (K,M,h).
 Then it compares the effective mass position to the computed mass position every time step.
 */
 
 template <typename _DataTypes>
 struct EulerExplicitDynamic_test : public Elasticity_test<_DataTypes>
 {
-
-
     typedef _DataTypes DataTypes;
-    typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
     typedef component::odesolver::EulerSolver EulerSolver;
@@ -123,10 +110,6 @@ struct EulerExplicitDynamic_test : public Elasticity_test<_DataTypes>
                 xMass,  // Initial position of mass
                 vMass); // Initial velocity of mass
 
-        // get the xml scene
-       sofa::simulation::getSimulation()->exportXML(root.get(), "SolverDynamicTest.scn" );
-       std::cout << "Export the file ! " << std::endl;
-
     }
 
     /// Generate discrete mass position values with euler explicit solver
@@ -138,7 +121,6 @@ struct EulerExplicitDynamic_test : public Elasticity_test<_DataTypes>
         if((finalTime/h) > 0)
         {
             size = int(finalTime/h);
-            std::cout << "size = " << size << std::endl;
             positionsArray.reserve(size);
             velocitiesArray.reserve(size);
         }

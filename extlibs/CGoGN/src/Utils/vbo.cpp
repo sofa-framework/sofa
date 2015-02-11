@@ -26,6 +26,7 @@
 #include "Utils/GLSLShader.h"
 #include <stdio.h>
 #include <string.h>
+#include "Container/convert.h"
 
 namespace CGoGN
 {
@@ -33,36 +34,33 @@ namespace CGoGN
 namespace Utils
 {
 
-VBO::VBO(const std::string& name) : m_nbElts(0), m_lock(false), m_name(name), m_conv(NULL)
+VBO::VBO(const std::string& name) : m_data_size(0), m_nbElts(0), m_lock(false), m_name(name)/*, m_conv(NULL)*/
 {
 	glGenBuffers(1, &(*m_id));
 	m_refs.reserve(4);
 }
 
-VBO::VBO(ConvertBuffer* conv, const std::string& name) : m_nbElts(0), m_lock(false), m_name(name), m_conv(conv)
-{
-	glGenBuffers(1, &(*m_id));
-	m_refs.reserve(4);
-}
 
 VBO::VBO(const VBO& vbo) :
 	m_data_size(vbo.m_data_size),
 	m_nbElts(vbo.m_nbElts),
-	m_lock(false),
-	m_conv(NULL)
+	m_lock(false)
 {
-	unsigned int nbbytes =  sizeof(float) * m_data_size * m_nbElts;
-
 	glGenBuffers(1, &(*m_id));
 
-	vbo.bind();
-	void* src = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+	unsigned int nbbytes =  sizeof(float) * m_data_size * m_nbElts;
 
-	bind();
-	glBufferData(GL_ARRAY_BUFFER, nbbytes, src, GL_STREAM_DRAW);
+	if (nbbytes != 0)
+	{
+		vbo.bind();
+		void* src = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
 
-	vbo.bind();
-	glUnmapBuffer(GL_ARRAY_BUFFER);
+		bind();
+		glBufferData(GL_ARRAY_BUFFER, nbbytes, src, GL_STREAM_DRAW);
+
+		vbo.bind();
+		glUnmapBuffer(GL_ARRAY_BUFFER);
+	}
 }
 
 VBO::~VBO()
@@ -70,11 +68,6 @@ VBO::~VBO()
 	if (m_lock)
 		releasePtr();
 	glDeleteBuffers(1, &(*m_id));
-}
-
-void VBO::setBufferConverter(ConvertBuffer *conv)
-{
-	m_conv = conv;
 }
 
 void VBO::sameAllocSameBufferSize(const VBO& vbo)
@@ -95,23 +88,52 @@ void VBO::updateData(const AttributeMultiVectorGen* attrib)
 		return;
 	}
 
-	if (m_conv != NULL)
+	//TODO find a more generic way to choose the conversion function ?
+
+	const AttributeMultiVector<Geom::Vec3d>* amv3 = dynamic_cast<const AttributeMultiVector<Geom::Vec3d>*>(attrib);
+	if (amv3 != NULL)
 	{
-		updateData_withConversion(attrib, m_conv);
+		updateDataConversion<Geom::Vec3d,Geom::Vec3f,3>(attrib,DataConversion::funcVecXdToVecXf<3>);
 		return;
 	}
 
+	const AttributeMultiVector<Geom::Vec2d>* amv2 = dynamic_cast<const AttributeMultiVector<Geom::Vec2d>*>(attrib);
+	if (amv2 != NULL)
+	{
+		updateDataConversion<Geom::Vec2d,Geom::Vec2f,2>(attrib,DataConversion::funcVecXdToVecXf<2>);
+
+		return;
+	}
+
+	const AttributeMultiVector<Geom::Vec4d>* amv4 = dynamic_cast<const AttributeMultiVector<Geom::Vec4d>*>(attrib);
+	if (amv4 != NULL)
+	{
+		updateDataConversion<Geom::Vec4d,Geom::Vec4f,4>(attrib,DataConversion::funcVecXdToVecXf<4>);
+
+		return;
+	}
+
+	const AttributeMultiVector<double>* amv1 = dynamic_cast<const AttributeMultiVector<double>*>(attrib);
+	if (amv1 != NULL)
+	{
+		updateDataConversion<double,float,1>(attrib,DataConversion::funcToFloat<double>);
+		return;
+	}
+
+	unsigned int old_nbb =  sizeof(float) * m_data_size * m_nbElts;
 	m_name = attrib->getName();
 	m_typeName = attrib->getTypeName();
-
 	m_data_size = attrib->getSizeOfType() / sizeof(float);
 
 	std::vector<void*> addr;
 	unsigned int byteTableSize;
 	unsigned int nbb = attrib->getBlocksPointers(addr, byteTableSize);
 
+
 	glBindBuffer(GL_ARRAY_BUFFER, *m_id);
-	glBufferData(GL_ARRAY_BUFFER, nbb * byteTableSize, 0, GL_STREAM_DRAW);
+
+	if (nbb!=old_nbb)
+		glBufferData(GL_ARRAY_BUFFER, nbb * byteTableSize, 0, GL_STREAM_DRAW);
 
 	m_nbElts = nbb * byteTableSize / attrib->getSizeOfType();
 
@@ -119,51 +141,12 @@ void VBO::updateData(const AttributeMultiVectorGen* attrib)
 
 	for (unsigned int i = 0; i < nbb; ++i)
 	{
-		glBufferSubDataARB(GL_ARRAY_BUFFER, offset, byteTableSize, addr[i]);
+		glBufferSubData(GL_ARRAY_BUFFER, offset, byteTableSize, addr[i]);
 		offset += byteTableSize;
 	}
 
 }
 
-
-void VBO::updateData_withConversion(const AttributeMultiVectorGen* attrib, ConvertBuffer* conv)
-{
-
-	m_name = attrib->getName();
-	m_typeName = attrib->getTypeName();
-
-//	m_data_size = attrib->getSizeOfType() / conv->sizeElt();
-	m_data_size = conv->vectorSize();
-
-	// alloue la memoire pour le buffer et initialise le conv
-	conv->reserve(attrib->getBlockSize());
-
-	std::vector<void*> addr;
-	unsigned int byteTableSize;
-	unsigned int nbb = attrib->getBlocksPointers(addr, byteTableSize);
-
-	m_nbElts = nbb * attrib->getBlockSize()*m_data_size;
-
-	// bind buffer to update
-	glBindBuffer(GL_ARRAY_BUFFER, *m_id);
-	glBufferData(GL_ARRAY_BUFFER, nbb * conv->sizeBuffer(), 0, GL_STREAM_DRAW);
-
-	unsigned int offset = 0;
-
-	for (unsigned int i = 0; i < nbb; ++i)
-	{
-		// convertit les donnees dans le buffer de conv
-		conv->convert(addr[i]);
-		// update sub-vbo
-		glBufferSubDataARB(GL_ARRAY_BUFFER, offset, conv->sizeBuffer(), conv->buffer());
-		// block suivant
-		offset += conv->sizeBuffer();
-	}
-
-	// libere la memoire de la conversion
-	conv->release();
-
-}
 
 void* VBO::lockPtr()
 {
@@ -207,9 +190,17 @@ void VBO::copyData(void *ptr) const
 void VBO::allocate(unsigned int nbElts)
 {
 	m_nbElts = nbElts;
+
+	if (m_data_size ==0)
+	{
+		CGoGNerr << "Allocate not possible dataSize = 0 (use setDataSize() first)" << CGoGNendl;
+		return;
+	}
+
 	glBindBuffer(GL_ARRAY_BUFFER, *m_id);
 	glBufferData(GL_ARRAY_BUFFER, nbElts * m_data_size * sizeof(float), 0, GL_STREAM_DRAW);
 }
+
 
 } // namespace Utils
 

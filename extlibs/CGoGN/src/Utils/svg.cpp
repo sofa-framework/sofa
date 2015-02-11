@@ -729,8 +729,8 @@ void AnimatedSVGOut::add(SVGOut* svg)
 	m_svgs.push_back(svg);
 }
 
-void AnimatedSVGOut::write(const std::string& filename, float timeStep)
-{
+//void AnimatedSVGOut::write(const std::string& filename, float timeStep)
+//{
 //    std::ofstream outfile(filename.c_str()) ;
 
 //    unsigned int bbX0=1000000;
@@ -788,7 +788,7 @@ void AnimatedSVGOut::write(const std::string& filename, float timeStep)
 
 //    outfile << "</svg>" << std::endl;
 //    outfile.close();
-}
+//}
 
 
 } // namespace SVG

@@ -76,7 +76,6 @@ int main(int argc, char** argv)
 	for (unsigned int i=0; i<plugins.size(); i++)
 		sofa::helper::system::PluginManager::getInstance().loadPlugin(plugins[i]);
 
-	sofa::helper::system::PluginManager::getInstance().initRecentlyOpened();
 	sofa::helper::system::PluginManager::getInstance().init();
 
 

@@ -358,20 +358,20 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // mapped particles
     size_t mappedIndex=0;
-    vector<unsigned>* pointsPerFrame = mappedParticles_mapping->pointsPerFrame.beginEdit();
+    vector<unsigned>* rigidIndexPerPoint = mappedParticles_mapping->rigidIndexPerPoint.beginEdit();
     for( size_t b=0; b<numRigid; b++ )
     {
         const vector<size_t>& ind = indices[b];
-        pointsPerFrame->push_back(ind.size()); // tell the mapping the number of points associated with this frame
         for(size_t i=0; i<ind.size(); i++)
         {
+            rigidIndexPerPoint->push_back( b ); // tell the mapping the number of points associated with this frame
             parentParticles[ind[i]]=make_pair(mappedParticles_dof.get(),mappedIndex);
             xmapped[mappedIndex] = xgrid[ ind[i] ];
             mappedIndex++;
 
         }
     }
-    mappedParticles_mapping->pointsPerFrame.endEdit();
+    mappedParticles_mapping->rigidIndexPerPoint.endEdit();
 
     // now add all the particles to the multimapping
     for( size_t i=0; i<xgrid.size(); i++ )

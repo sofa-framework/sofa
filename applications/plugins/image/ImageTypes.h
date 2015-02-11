@@ -372,13 +372,6 @@ typedef ImageF ImageR;
 typedef ImageD ImageR;
 #endif
 
-/* 
-	Add new type to replace unsigned int when openMP is activated on windows to handle compilation issues
-*/
-#ifdef WIN32
-	typedef long int w_size_t ;
-#endif
-
 template<> inline const char* ImageC::Name() { return "ImageC"; }
 template<> inline const char* ImageUC::Name() { return "ImageUC"; }
 template<> inline const char* ImageI::Name() { return "ImageI"; }
@@ -908,9 +901,12 @@ struct ImageTypeInfo
     enum { Scalar          = 0                             }; ///< 1 if this type uses scalar values
     enum { Text            = 0                             }; ///< 1 if this type uses text values
     enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write -> it seems to be THE important option not to perform too many copies
+    enum { Container       = 1                             }; ///< 1 if this type is a container
 
     enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
+
     static size_t size() { return 1; }
+    static size_t byteSize() { return 1; }
 
     static size_t size(const DataType& /*data*/) { return 1; }
 
@@ -939,14 +935,24 @@ struct ImageTypeInfo
         if (index != 0) return;
         std::istringstream i(value); i >> data;
     }
+
+    static const void* getValuePtr(const DataType&)
+    {
+        return NULL;
+    }
+
+    static void* getValuePtr(DataType&)
+    {
+        return NULL;
+    }
 };
 
 
-//template<class T>
-//struct DataTypeInfo< Image<T> > : public ImageTypeInfo< Image<T> >
-//{
-//    static std::string name() { std::ostringstream o; o << "Image<" << DataTypeName<T>::name() << ">"; return o.str(); }
-//};
+template<class T>
+struct DataTypeInfo< Image<T> > : public ImageTypeInfo< Image<T> >
+{
+    static std::string name() { std::ostringstream o; o << "Image<" << DataTypeName<T>::name() << ">"; return o.str(); }
+};
 
 
 

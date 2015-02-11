@@ -22,10 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-//#include "stdafx.h"
-#include "Sofa_test.h"
-#include "Elasticity_test.h"
+#include <plugins/SofaTest/Elasticity_test.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 #include <sofa/component/init.h>
@@ -36,11 +33,8 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
 
-// Including constraint, force and mass
-#include <sofa/component/mass/UniformMass.h>
+// Including mechanical object
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/core/MechanicalParams.h>
 
 // Solvers
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
@@ -67,15 +61,8 @@ Then it compares the effective mass position to the computed mass position every
 template <typename _DataTypes>
 struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
 {
-
-
     typedef _DataTypes DataTypes;
-    typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
     typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;

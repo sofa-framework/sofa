@@ -31,8 +31,9 @@
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/glu.h>
+#include <sofa/helper/IndexOpenMP.h>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -410,14 +411,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::apply(
     const InVecCoord1&  in1 = dIn1.getValue();
     const InVecCoord2&  in2 = dIn2.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
-#ifdef WIN32
-	for(w_size_t i=0; i<jacobian1.size(); i++)
-#else
-    for(unsigned int i=0; i<jacobian1.size(); i++)
-#endif
+	for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian1.size(); i++)
     {
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian1[i].size(); j++)
@@ -487,14 +484,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 
         if( !this->maskTo || !this->maskTo->isInUse() )
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
-#ifdef WIN32
-			for(w_size_t i=0; i<jacobian1.size(); i++)
-#else
-			for(unsigned int i=0; i<jacobian1.size(); i++)
-#endif
+			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian1.size(); i++)
             {
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian1[i].size(); j++)
@@ -560,14 +553,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
                 for(unsigned int i=0; i<jacobian2.size(); i++) for(size_t j=0; j<jacobian2[i].size(); j++) { size_t indexp=this->f_index2.getValue()[i][j]; this->f_index_parentToChild2[indexp].push_back(i); this->f_index_parentToChild2[indexp].push_back(j); }
             }
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
-#ifdef WIN32
-			for(w_size_t i=0; i<this->f_index_parentToChild1.size(); i++)
-#else
-			for(unsigned int i=0; i<this->f_index_parentToChild1.size(); i++)
-#endif
+			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild1.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild1[i].size(); j+=2)
                 {
@@ -576,14 +565,10 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
                 }
             }
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
-#ifdef WIN32
-			for(w_size_t i=0; i<this->f_index_parentToChild2.size(); i++)
-#else
-			for(unsigned int i=0; i<this->f_index_parentToChild2.size(); i++)
-#endif
+			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild2.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild2[i].size(); j+=2)
                 {
@@ -659,7 +644,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 //        {
 //            if(!BlockType1::constant)
 //            {
-//#ifdef USING_OMP_PRAGMAS
+//#ifdef _OPENMP
 //#pragma omp parallel for
 //#endif
 //                for(unsigned int i=0; i<this->f_index_parentToChild1.size(); i++)
@@ -673,7 +658,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 //            }
 //            if(!BlockType2::constant)
 //            {
-//#ifdef USING_OMP_PRAGMAS
+//#ifdef _OPENMP
 //#pragma omp parallel for
 //#endif
 //                for(unsigned int i=0; i<this->f_index_parentToChild2.size(); i++)

@@ -25,6 +25,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <tinyxml.h>
+
 #include <QtGui/QApplication>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -34,10 +36,57 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/system/Utils.h>
+
+#include <sofa/gui/BaseGUI.h>
+
+using namespace sofa::helper::system;
 
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
+
+// Make a path absolute if it is relative: relative paths are relative to the
+// directory containing the application binary.
+static std::string makeAbsolutePath(const std::string& path)
+{
+    if (FileSystem::isAbsolute(path))
+        return path;
+    else
+        return FileSystem::getParentDirectory(Utils::getExecutablePath()) + "/" + path;
+}
+
+bool loadConfigurationFile(const std::string& filePath)
+{
+    TiXmlDocument doc;
+    doc.LoadFile();
+
+    if (!(doc.LoadFile(filePath)))
+    {
+        std::cerr << "Error while loading configuration file: " << filePath << std::endl;
+        return false;
+    }
+
+    TiXmlElement* root = doc.FirstChildElement("ModelerConfig");
+    for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
+        elt != NULL;
+        elt = elt->NextSiblingElement("ResourcePath"))
+    {
+        const std::string path = elt->GetText();
+        sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
+    }
+
+    for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
+        elt != NULL;
+        elt = elt->NextSiblingElement("PluginPath"))
+    {
+        const std::string path = elt->GetText();
+        sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
+    }
+
+    return true;
+}
 
 int main(int argc, char** argv)
 {
@@ -46,7 +95,12 @@ int main(int argc, char** argv)
     QApplication* application = new QApplication(argc, argv);
     (void)application;
 
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
+
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+
+    const std::string configFilePath = FileSystem::getParentDirectory(FileSystem::getParentDirectory(Utils::getExecutablePath())) + "/etc/Modeler-config.xml";
+    loadConfigurationFile(configFilePath);
 
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();

@@ -29,9 +29,6 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/helper/gl/Axis.h>
 
-#ifndef TIXML_USE_STL
-#define TIXML_USE_STL
-#endif
 #include <tinyxml.h>
 
 namespace sofa

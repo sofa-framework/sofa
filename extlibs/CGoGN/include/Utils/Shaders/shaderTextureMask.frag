@@ -10,5 +10,5 @@ void main()
 	float m = texture2D(textureUnitMask,texCoord).r;
 	if (m < 0.5)
 		discard;
-	gl_FragColor=texture2D(textureUnit,texCoord)*m;
+	FRAG_OUT=texture2D(textureUnit,texCoord)*m;
 }

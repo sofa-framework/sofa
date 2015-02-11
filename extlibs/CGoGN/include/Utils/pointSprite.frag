@@ -18,6 +18,7 @@ uniform vec4 colorsprite;
 
 VARYING_FRAG vec2 spriteCoord;
 VARYING_FRAG vec3 sphereCenter;
+FRAG_OUT_DEF ;
 
 void main(void)
 {
@@ -54,5 +55,5 @@ void main(void)
 	vec4 result = colorsprite*lambertTerm;
 	result.xyz += ambiant;
 
-	gl_FragColor = result;
+	FRAG_OUT = result;
 }
