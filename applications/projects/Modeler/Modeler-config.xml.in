@@ -1,5 +1,0 @@
-<ModelerConfig>
-    <ResourcePath>@SHARE_DIR@</ResourcePath>
-    <ResourcePath>@EXAMPLES_DIR@</ResourcePath>
-    <PluginPath>@PLUGINS_DIR@</PluginPath>
-</ModelerConfig>
