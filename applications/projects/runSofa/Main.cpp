@@ -65,46 +65,43 @@ using std::endl;
 
 using namespace sofa::helper::system;
 
-// Make a path absolute if it is relative: relative paths are relative to the
-// directory containing the application binary.
-static std::string makeAbsolutePath(const std::string& path)
-{
-    if (FileSystem::isAbsolute(path))
-        return path;
-    else
-        return FileSystem::getParentDirectory(Utils::getExecutablePath()) + "/" + path;
-}
+// bool loadConfigurationFile(const std::string& filePath)
+// {
+//     TiXmlDocument doc;
+//     doc.LoadFile();
 
-bool loadConfigurationFile(const std::string& filePath)
-{
-    TiXmlDocument doc;
-    doc.LoadFile();
+//     if (!(doc.LoadFile(filePath)))
+//     {
+//         std::cerr << "Error while loading configuration file: " << filePath << std::endl;
+//         return false;
+//     }
 
-    if (!(doc.LoadFile(filePath)))
-    {
-        std::cerr << "Error while loading configuration file: " << filePath << std::endl;
-        return false;
-    }
+//     TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
+//     for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
+//         elt != NULL;
+//         elt = elt->NextSiblingElement("ResourcePath"))
+//     {
+//         const std::string path = elt->GetText();
+//         sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
+//     }
 
-    TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
-    for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
-        elt != NULL;
-        elt = elt->NextSiblingElement("ResourcePath"))
-    {
-        const std::string path = elt->GetText();
-        sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
-    }
+//     for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
+//         elt != NULL;
+//         elt = elt->NextSiblingElement("PluginPath"))
+//     {
+//         const std::string path = elt->GetText();
+//         sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
+//     }
 
-    for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
-        elt != NULL;
-        elt = elt->NextSiblingElement("PluginPath"))
-    {
-        const std::string path = elt->GetText();
-        sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
-    }
+//     TiXmlElement* elt = root->FirstChildElement("ScreenshotDirectory");
+//     if (elt != NULL)
+//     {
+//         const std::string path = elt->GetText();
+//         sofa::gui::BaseGUI::setScreenshotDirectoryPath(makeAbsolutePath(path));
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -251,8 +248,36 @@ int main(int argc, char** argv)
     sofa::simulation::xml::initXml();
     sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
 
-    const std::string configFilePath = FileSystem::getParentDirectory(FileSystem::getParentDirectory(Utils::getExecutablePath())) + "/etc/runSofa-config.xml";
-    loadConfigurationFile(configFilePath);
+    const std::string binDir = FileSystem::getParentDirectory(Utils::getExecutablePath());
+    const std::string prefix = FileSystem::getParentDirectory(binDir);
+    const std::string etcDir = prefix + "/etc";
+    const std::string sofaIniFilePath = etcDir + "/sofa.ini";
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+
+    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
+    {
+        std::string shareDir = iniFileValues["SHARE_DIR"];
+        if (!FileSystem::isAbsolute(shareDir))
+            shareDir = etcDir + "/" + shareDir;
+        sofa::helper::system::DataRepository.addFirstPath(shareDir);
+    }
+
+    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
+    {
+        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
+        if (!FileSystem::isAbsolute(examplesDir))
+            examplesDir = etcDir + "/" + examplesDir;
+        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
+    }
+
+#ifdef WIN32
+    const std::string pluginDir = "bin";
+#else
+    const std::string pluginDir = "lib";
+#endif
+    sofa::helper::system::PluginRepository.addFirstPath(prefix + "/" + pluginDir);
+
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(prefix + "/screenshots");
 
     if (!files.empty())
         fileName = files[0];
