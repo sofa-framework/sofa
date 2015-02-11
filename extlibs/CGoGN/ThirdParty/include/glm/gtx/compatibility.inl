@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2010 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2007-03-16
 // Updated : 2008-10-24
@@ -7,135 +7,52 @@
 // File    : glm/gtx/compatibility.inl
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace glm{
-namespace gtx{
-namespace compatibility{
-
-// isfinite
-template <typename genType> 
-inline bool isfinite(
-	genType const & x)
+namespace glm
 {
-#ifdef GLM_COMPILER_VC
-	return _finite(x);
-#else//GLM_COMPILER_GCC
-	return std::isfinite(x);
-#endif
-}
+	// isfinite
+	template <typename genType>
+	GLM_FUNC_QUALIFIER bool isfinite(
+		genType const & x)
+	{
+#		if(GLM_LANG & GLM_LANG_CXX11_FLAG)
+			return std::isfinite(x) != 0;
+#		elif(GLM_COMPILER & GLM_COMPILER_VC)
+			return _finite(x);
+#		elif(GLM_COMPILER & GLM_COMPILER_GCC && GLM_PLATFORM & GLM_PLATFORM_ANDROID)
+			return _isfinite(x) != 0;
+#		else
+			return isfinite(x) != 0;
+#		endif
+	}
 
-template <typename valType> 
-inline detail::tvec2<bool> isfinite(
-	detail::tvec2<valType> const & x)
-{
-	return detail::tvec2<bool>(
-		isfinite(x.x),
-		isfinite(x.y));
-}
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tvec2<bool, P> isfinite(
+		detail::tvec2<T, P> const & x)
+	{
+		return detail::tvec2<bool, P>(
+			isfinite(x.x),
+			isfinite(x.y));
+	}
 
-template <typename valType> 
-inline detail::tvec3<bool> isfinite(
-	detail::tvec3<valType> const & x)
-{
-	return detail::tvec3<bool>(
-		isfinite(x.x),
-		isfinite(x.y),
-		isfinite(x.z));
-}
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tvec3<bool, P> isfinite(
+		detail::tvec3<T, P> const & x)
+	{
+		return detail::tvec3<bool, P>(
+			isfinite(x.x),
+			isfinite(x.y),
+			isfinite(x.z));
+	}
 
-template <typename valType> 
-inline detail::tvec4<bool> isfinite(
-	detail::tvec4<valType> const & x)
-{
-	return detail::tvec4<bool>(
-		isfinite(x.x),
-		isfinite(x.y),
-		isfinite(x.z),
-		isfinite(x.w));
-}
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tvec4<bool, P> isfinite(
+		detail::tvec4<T, P> const & x)
+	{
+		return detail::tvec4<bool, P>(
+			isfinite(x.x),
+			isfinite(x.y),
+			isfinite(x.z),
+			isfinite(x.w));
+	}
 
-// isinf
-template <typename genType> 
-inline bool isinf(
-	genType const & x)
-{
-#if(defined(GLM_COMPILER) && (GLM_COMPILER & GLM_COMPILER_VC))
-	return _fpclass(x) == _FPCLASS_NINF || _fpclass(x) == _FPCLASS_PINF;
-#else
-	return std::isinf(x);
-#endif
-}
-
-template <typename valType> 
-inline detail::tvec2<bool> isinf(
-	detail::tvec2<valType> const & x)
-{
-	return detail::tvec2<bool>(
-		isinf(x.x),
-		isinf(x.y));
-}
-
-template <typename valType> 
-inline detail::tvec3<bool> isinf(
-	detail::tvec3<valType> const & x)
-{
-	return detail::tvec3<bool>(
-		isinf(x.x),
-		isinf(x.y),
-		isinf(x.z));
-}
-
-template <typename valType> 
-inline detail::tvec4<bool> isinf(
-	detail::tvec4<valType> const & x)
-{
-	return detail::tvec4<bool>(
-		isinf(x.x),
-		isinf(x.y),
-		isinf(x.z),
-		isinf(x.w));
-}
-
-// isnan
-template <typename genType> 
-inline bool isnan(genType const & x)
-{
-#if(defined(GLM_COMPILER) && (GLM_COMPILER & GLM_COMPILER_VC))
-	return _isnan(x);
-#else
-	return std::isnan(x);
-#endif
-}
-
-template <typename valType> 
-inline detail::tvec2<bool> isnan(
-	detail::tvec2<valType> const & x)
-{
-	return detail::tvec2<bool>(
-		isnan(x.x),
-		isnan(x.y));
-}
-
-template <typename valType> 
-inline detail::tvec3<bool> isnan(
-	detail::tvec3<valType> const & x)
-{
-	return detail::tvec3<bool>(
-		isnan(x.x),
-		isnan(x.y),
-		isnan(x.z));
-}
-
-template <typename valType> 
-inline detail::tvec4<bool> isnan(
-	detail::tvec4<valType> const & x)
-{
-	return detail::tvec4<bool>(
-		isnan(x.x),
-		isnan(x.y),
-		isnan(x.z),
-		isnan(x.w));
-}
-
-}//namespace compatibility
-}//namespace gtx
 }//namespace glm

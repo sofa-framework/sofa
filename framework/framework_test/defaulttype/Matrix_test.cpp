@@ -395,7 +395,7 @@ TEST_F(TsProductTimings, benchmark )
     stop = get_time();
     std::cerr<<"Eigen Base ST:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
     eiBaseMultiplication.clear();
     start = get_time();
     eiBase.mul_MT( eiBaseMultiplication, eiBaseMultiplier );
@@ -408,7 +408,7 @@ TEST_F(TsProductTimings, benchmark )
     stop = get_time();
     std::cerr<<"Eigen Sparse*Dense:\t\t"<<stop-start<<" (ms)"<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
     start = get_time();
     eiDenseMultiplication.noalias() = component::linearsolver::mul_EigenSparseDenseMatrix_MT( eiBase.compressedMatrix, eiDenseMultiplier, omp_get_max_threads()/2 );
     stop = get_time();
@@ -460,7 +460,7 @@ TEST_F(TsProductTimings, benchmark )
 
 
 
-    #ifdef USING_OMP_PRAGMAS
+    #ifdef _OPENMP
         min=std::numeric_limits<double>::max(), max=0, sum=0;
         for( int i=0; i<100 ; ++i )
         {

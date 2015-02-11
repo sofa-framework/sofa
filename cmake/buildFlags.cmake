@@ -74,7 +74,6 @@ endif()
 
 # OpenMP flags
 if(SOFA-MISC_OPENMP)
-    list(APPEND compilerDefines "USING_OMP_PRAGMAS")
     find_package(OpenMP QUIET)
     if (OPENMP_FOUND)
         set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")

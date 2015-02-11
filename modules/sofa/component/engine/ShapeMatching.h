@@ -71,14 +71,7 @@ public:
     typedef core::topology::BaseMeshTopology::PointID ID;
     typedef helper::vector<ID> VI;
     typedef helper::vector<VI> VVI;
-	typedef helper::vector<Real> VD;
-	
-	/* 
-		Add new type to replace unsigned int when openMP is activated on windows to handle compilation issues
-	*/
-#ifdef WIN32
-	typedef long int w_size_t;
-#endif
+	typedef helper::vector<Real> VD;	
 
 public:
 

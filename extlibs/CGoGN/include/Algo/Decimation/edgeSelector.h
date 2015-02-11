@@ -682,7 +682,7 @@ public:
 	typedef typename PFP::MAP MAP ;
 	typedef typename PFP::REAL REAL ;
 	typedef typename PFP::VEC3 VEC3 ;
-	typedef typename Geom::Vector<6,REAL> VEC6 ;
+    typedef typename Geom::Vector<6,REAL>::type VEC6 ;
 
 private:
 	typedef	struct

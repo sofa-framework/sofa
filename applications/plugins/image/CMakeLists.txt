@@ -1,6 +1,8 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+set(SOFA_PROJECT_FOLDER "SofaExternal")
+RegisterProjects("DiffusionSolver" PATH "${CMAKE_CURRENT_LIST_DIR}/extlibs/DiffusionSolver")
 
-add_subdirectory(extlibs/DiffusionSolver)
+set(SOFA_PROJECT_FOLDER "SofaPlugin")
+include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
     initImage.cpp

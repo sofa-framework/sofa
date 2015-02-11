@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2010 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2007-03-05
 // Updated : 2007-03-05
@@ -10,135 +10,114 @@
 // - GLM core
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace glm{
-namespace gtx{
-namespace matrix_query
+namespace glm
 {
-	template<typename T> 
-	inline bool isNull(
-		const detail::tmat2x2<T>& m, 
-		const T epsilon)
+	template<typename T, precision P>
+	GLM_FUNC_QUALIFIER bool isNull(detail::tmat2x2<T, P> const & m, T const & epsilon)
 	{
 		bool result = true;
-		for(int i = 0; result && i < 2 ; ++i)
+		for(length_t i = 0; result && i < 2 ; ++i)
 			result = isNull(m[i], epsilon);
 		return result;
 	}
 
-	template<typename T> 
-	inline bool isNull(
-		const detail::tmat3x3<T>& m, 
-		const T epsilon)
+	template<typename T, precision P>
+	GLM_FUNC_QUALIFIER bool isNull(detail::tmat3x3<T, P> const & m, T const & epsilon)
 	{
 		bool result = true;
-		for(int i = 0; result && i < 3 ; ++i)
+		for(length_t i = 0; result && i < 3 ; ++i)
 			result = isNull(m[i], epsilon);
 		return result;
 	}
 
-	template<typename T> 
-	inline bool isNull(
-		const detail::tmat4x4<T>& m, 
-		const T epsilon)
+	template<typename T, precision P>
+	GLM_FUNC_QUALIFIER bool isNull(detail::tmat4x4<T, P> const & m, T const & epsilon)
 	{
 		bool result = true;
-		for(int i = 0; result && i < 4 ; ++i)
+		for(length_t i = 0; result && i < 4 ; ++i)
 			result = isNull(m[i], epsilon);
 		return result;
 	}
 
-	template<typename genType> 
-	inline bool isIdentity(
-		const genType& m, 
-		const typename genType::value_type epsilon)
+	template<typename T, precision P, template <typename, precision> class matType>
+	GLM_FUNC_QUALIFIER bool isIdentity(matType<T, P> const & m, T const & epsilon)
 	{
 		bool result = true;
-		for(typename genType::value_type i = typename genType::value_type(0); result && i < genType::col_size(); ++i)
+		for(length_t i(0); result && i < m[0].length(); ++i)
 		{
-			for(typename genType::value_type j = typename genType::value_type(0); result && j < i ; ++j)
+			for(length_t j(0); result && j < i ; ++j)
 				result = abs(m[i][j]) <= epsilon;
 			if(result)
-				result = abs(m[i][i] - typename genType::value_type(1)) <= epsilon;
-			for(typename genType::value_type j = i + typename genType::value_type(1); result && j < genType::row_size(); ++j)
+				result = abs(m[i][i] - 1) <= epsilon;
+			for(length_t j(i + 1); result && j < m.length(); ++j)
 				result = abs(m[i][j]) <= epsilon;
 		}
 		return result;
 	}
 
-	template<typename T> 
-	inline bool isNormalized(
-		const detail::tmat2x2<T>& m, 
-		const T epsilon)
+	template<typename T, precision P>
+	GLM_FUNC_QUALIFIER bool isNormalized(detail::tmat2x2<T, P> const & m, T const & epsilon)
 	{
-		bool result = true;
-		for(int i = 0; result && i < 2; ++i)
+		bool result(true);
+		for(length_t i(0); result && i < m.length(); ++i)
 			result = isNormalized(m[i], epsilon);
-		for(int i = 0; result && i < 2; ++i)
+		for(length_t i(0); result && i < m.length(); ++i)
 		{
-			detail::tvec2<T> v;
-			for(int j = 0; j < 2; ++j)
+			typename detail::tmat2x2<T, P>::col_type v;
+			for(length_t j(0); j < m.length(); ++j)
 				v[j] = m[j][i];
 			result = isNormalized(v, epsilon);
 		}
 		return result;
 	}
 
-	template<typename T> 
-	inline bool isNormalized(
-		const detail::tmat3x3<T>& m, 
-		const T epsilon)
+	template<typename T, precision P>
+	GLM_FUNC_QUALIFIER bool isNormalized(detail::tmat3x3<T, P> const & m, T const & epsilon)
 	{
-		bool result = true;
-		for(int i = 0; result && i < 3; ++i)
+		bool result(true);
+		for(length_t i(0); result && i < m.length(); ++i)
 			result = isNormalized(m[i], epsilon);
-		for(int i = 0; result && i < 3; ++i)
+		for(length_t i(0); result && i < m.length(); ++i)
 		{
-			detail::tvec3<T> v;
-			for(int j = 0; j < 3; ++j)
+			typename detail::tmat3x3<T, P>::col_type v;
+			for(length_t j(0); j < m.length(); ++j)
 				v[j] = m[j][i];
 			result = isNormalized(v, epsilon);
 		}
 		return result;
 	}
 
-	template<typename T> 
-	inline bool isNormalized(
-		const detail::tmat4x4<T>& m, 
-		const T epsilon)
+	template<typename T, precision P>
+	GLM_FUNC_QUALIFIER bool isNormalized(detail::tmat4x4<T, P> const & m, T const & epsilon)
 	{
-		bool result = true;
-		for(int i = 0; result && i < 4; ++i)
+		bool result(true);
+		for(length_t i(0); result && i < m.length(); ++i)
 			result = isNormalized(m[i], epsilon);
-		for(int i = 0; result && i < 4; ++i)
+		for(length_t i(0); result && i < m.length(); ++i)
 		{
-			detail::tvec4<T> v;
-			for(int j = 0; j < 4; ++j)
+			typename detail::tmat4x4<T, P>::col_type v;
+			for(length_t j(0); j < m.length(); ++j)
 				v[j] = m[j][i];
 			result = isNormalized(v, epsilon);
 		}
 		return result;
 	}
 
-	template<typename genType> 
-	inline bool isOrthogonal(
-		const genType& m, 
-		const typename genType::value_type epsilon)
+	template<typename T, precision P, template <typename, precision> class matType>
+	GLM_FUNC_QUALIFIER bool isOrthogonal(matType<T, P> const & m, T const & epsilon)
 	{
-		bool result = true;
-		for(int i = 0; result && i < genType::col_size() - 1; ++i)
-		for(int j= i + 1; result && j < genType::col_size(); ++j)
+		bool result(true);
+		for(length_t i(0); result && i < m.length() - 1; ++i)
+		for(length_t j(i + 1); result && j < m.length(); ++j)
 			result = areOrthogonal(m[i], m[j], epsilon);
 
 		if(result)
 		{
-			genType tmp = transpose(m);
-			for(int i = 0; result && i < genType::col_size() - 1 ; ++i)
-			for(int j = i + 1; result && j < genType::col_size(); ++j)
+			matType<T, P> tmp = transpose(m);
+			for(length_t i(0); result && i < m.length() - 1 ; ++i)
+			for(length_t j(i + 1); result && j < m.length(); ++j)
 				result = areOrthogonal(tmp[i], tmp[j], epsilon);
 		}
 		return result;
 	}
-
-}//namespace matrix_query
-}//namespace gtx
 }//namespace glm

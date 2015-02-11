@@ -38,6 +38,6 @@ void main()
 		float specular = pow( max(dot(R, E), 0.0), shininess );
 		finalColor += materialSpecular * specular;
 	}
-	gl_FragColor=finalColor;
-	//gl_FragColor = vec4(lambertTerm,lambertTerm,lambertTerm,0);
+	FRAG_OUT=finalColor;
+	//FRAG_OUT = vec4(lambertTerm,lambertTerm,lambertTerm,0);
 }

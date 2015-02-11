@@ -27,7 +27,7 @@
 #include "Utils/img3D_IO.h"
 #include "Utils/cgognStream.h"
 
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 #include <QImage>
 #include <QString>
 #endif
@@ -38,7 +38,7 @@ namespace CGoGN
 namespace Utils
 {
 
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 namespace Img3D_IO
 {
 

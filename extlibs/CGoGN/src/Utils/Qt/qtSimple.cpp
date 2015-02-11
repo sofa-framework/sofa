@@ -47,7 +47,21 @@ SimpleQT::SimpleQT() :
 	m_modelView_matrix(m_mat.m_matrices[1]),
 	m_transfo_matrix(m_mat.m_matrices[2])
 {
-	m_glWidget = new GLWidget(this);
+	if (GLSLShader::CURRENT_OGL_VERSION >= 3)
+	{
+		QGLFormat format;
+		format.setProfile(QGLFormat::CoreProfile);
+		format.setVersion(GLSLShader::MAJOR_OGL_CORE, GLSLShader::MINOR_OGL_CORE);
+		format.setDepth(true);
+//		format.setDepthBufferSize(24);
+		format.setDoubleBuffer(true);
+
+		m_glWidget = new GLWidget(this,format);
+	}
+	else
+		m_glWidget = new GLWidget(this);
+
+
 	setCentralWidget(m_glWidget);
 	setWindowTitle(tr("CGoGN"));
 
@@ -118,7 +132,14 @@ SimpleQT::SimpleQT(const SimpleQT& sqt):
 	m_modelView_matrix(m_mat.m_matrices[1]),
 	m_transfo_matrix(m_mat.m_matrices[2])
 {
-	m_glWidget = new GLWidget(this);
+	if (GLSLShader::CURRENT_OGL_VERSION >= 3)
+	{
+		QGLFormat format = sqt.m_glWidget->format();
+		m_glWidget = new GLWidget(this,format);
+	}
+	else
+		m_glWidget = new GLWidget(this);
+
 	setCentralWidget(m_glWidget);
 
 	m_dock = new QDockWidget(sqt.m_dock) ;
@@ -146,7 +167,14 @@ SimpleQT::~SimpleQT()
 
 void SimpleQT::operator=(const SimpleQT& sqt)
 {
-	m_glWidget = new GLWidget(this);
+	if (GLSLShader::CURRENT_OGL_VERSION >= 3)
+	{
+		QGLFormat format = sqt.m_glWidget->format();
+		m_glWidget = new GLWidget(this,format);
+	}
+	else
+		m_glWidget = new GLWidget(this);
+
 	setCentralWidget(m_glWidget) ;
 
 	m_dock = new QDockWidget(sqt.m_dock) ;
@@ -316,81 +344,6 @@ void SimpleQT::glMousePosition(int& x, int& y)
 }
 
 
-//GLfloat SimpleQT::getOrthoScreenRay(int x, int y, Geom::Vec3f& rayA, Geom::Vec3f& rayB, int radius)
-//{
-//	// get Z from depth buffer
-//	int yy = y;
-//	GLfloat depth_t[25];
-//	glReadPixels(x-2, yy-2, 5, 5, GL_DEPTH_COMPONENT, GL_FLOAT, depth_t);
-//
-//	GLfloat depth=0.0f;
-//	unsigned int nb=0;
-//	for (unsigned int i=0; i< 25; ++i)
-//	{
-//		if (depth_t[i] != 1.0f)
-//		{
-//			depth += depth_t[i];
-//			nb++;
-//		}
-//	}
-//	if (nb>0)
-//		depth /= float(nb);
-//	else
-//		depth = 0.5f;
-//
-//	glm::i32vec4 viewport;
-//	glGetIntegerv(GL_VIEWPORT, &(viewport[0]));
-//
-//	glm::vec3 win(x, yy, 0.0f);
-//
-//	glm::vec3 P = glm::unProject(win, m_modelView_matrix, m_projection_matrix, viewport);
-//
-//	rayA[0] = P[0];
-//	rayA[1] = P[1];
-//	rayA[2] = P[2];
-//
-//	win[2] = depth;
-//
-//	P = glm::unProject(win, m_modelView_matrix, m_projection_matrix, viewport);
-//	rayB[0] = P[0];
-//	rayB[1] = P[1];
-//	rayB[2] = P[2];
-//
-//	if (depth == 1.0f)	// depth vary in [0-1]
-//		win[2] = 0.5f;
-//
-//	win[0] += radius;
-//	P = glm::unProject(win, m_modelView_matrix, m_projection_matrix, viewport);
-//	Geom::Vec3f Q;
-//	Q[0] = P[0];
-//	Q[1] = P[1];
-//	Q[2] = P[2];
-//
-//	// compute & return distance
-//	Q -= rayB;
-//	return float(Q.norm());
-//}
-//
-//float SimpleQT::getWidthInWorld(unsigned int pixel_width, const Geom::Vec3f& center)
-//{
-//
-//	glm::i32vec4 viewport;
-//	glGetIntegerv(GL_VIEWPORT, &(viewport[0]));
-//
-//	glm::vec3 win = glm::project(glm::vec3(center[0],center[1],center[2]), m_modelView_matrix, m_projection_matrix, viewport);
-//
-//	win[0]-= pixel_width/2;
-//
-//	glm::vec3 P = glm::unProject(win, m_modelView_matrix, m_projection_matrix, viewport);
-//
-//	win[0] += pixel_width;
-//
-//	glm::vec3 Q = glm::unProject(win, m_modelView_matrix, m_projection_matrix, viewport);
-//
-//	return glm::distance(P,Q);
-//}
-//
-
 
 
 void SimpleQT::synchronize(SimpleQT* sqt)
@@ -439,8 +392,8 @@ void SimpleQT::cb_updateMatrix()
 	}
 	else
 	{
-		for(std::set< std::pair<void*, GLSLShader*> >::iterator it = GLSLShader::m_registeredShaders.begin();
-			it != GLSLShader::m_registeredShaders.end();
+		for(std::set< std::pair<void*, GLSLShader*> >::iterator it = GLSLShader::m_registeredShaders->begin();
+			it != GLSLShader::m_registeredShaders->end();
 			++it)
 		{
 			if ((it->first == NULL) || (it->first == this))
@@ -459,12 +412,12 @@ void SimpleQT::updateGL()
 void SimpleQT::updateGLMatrices()
 {
 	m_glWidget->modelModified();
-//	m_glWidget->updateGL();
+    updateGL();
 }
 
 void SimpleQT::transfoRotate(float angle, float x, float y, float z)
 {
-	transfoMatrix() = glm::rotate(transfoMatrix(), angle, glm::vec3(x,y,z));
+	transfoMatrix() = glm::rotate(transfoMatrix(), glm::radians(angle), glm::vec3(x,y,z));
 }
 
 void SimpleQT::transfoTranslate(float tx, float ty, float tz)

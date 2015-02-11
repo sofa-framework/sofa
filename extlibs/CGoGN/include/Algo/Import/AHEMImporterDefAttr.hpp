@@ -166,7 +166,7 @@ class Vec3FloatLoader
 {
 public:
 	static const unsigned int TYPE_SIZE_IN_BUFFER = 12;
-	typedef Geom::Vector<3, float> ATTR_TYPE;
+    typedef typename Geom::Vector<3, float>::type ATTR_TYPE;
 
 	static inline bool Handleable(const AHEMAttributeDescriptor* ad)
 	{

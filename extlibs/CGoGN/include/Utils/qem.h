@@ -69,8 +69,8 @@ public:
 		return "Quadric" ;
 	}
 
-	typedef Geom::Vector<3,REAL> VEC3 ;
-	typedef Geom::Vector<4,REAL> VEC4 ;
+    typedef typename Geom::Vector<3,REAL>::type VEC3 ;
+    typedef typename Geom::Vector<4,REAL>::type VEC4 ;
 	typedef Geom::Matrix<4,4,double> MATRIX44 ; // double is crucial here !
 
 	/*!
@@ -241,8 +241,8 @@ public:
 		return "QuadricNd" ;
 	}
 
-	typedef Geom::Vector<N,REAL> VECN ;
-	typedef Geom::Vector<N+1,REAL> VECNp ;
+    typedef typename Geom::Vector<N,REAL>::type VECN ;
+    typedef typename Geom::Vector<N+1,REAL>::type VECNp ;
 
 	/*!
 	 * \brief Default constructor
@@ -373,7 +373,7 @@ public:
 private:
 	// Double computation is crucial for stability
 	Geom::Matrix<N,N,double> A ; /*!< The first QuadricNd member matrix A */
-	Geom::Vector<N,double> b ; /*!< The second QuadricNd member vector b */
+    typename Geom::Vector<N,double>::type b ; /*!< The second QuadricNd member vector b */
 	double c ;/*!< The third QuadricNd member scalar c */
 
 	/*!
@@ -412,7 +412,7 @@ public:
 	 */
 	static std::string CGoGNnameOfType() { return "QuadricHF" ; }
 
-	typedef Geom::Vector<3,REAL> VEC3 ;
+    typedef typename Geom::Vector<3,REAL>::type VEC3 ;
 
 	/*!
 	 * \brief Constructor
@@ -521,9 +521,9 @@ public:
 	 */
 	friend std::ostream& operator<<(std::ostream& out, const QuadricHF<REAL>& q)
 	{
-		// TODO out << "(" << q.m_A << ", " << q.m_b << ", " << q.m_c << ")" ;
+        out << "(" << q.m_A << ", " << q.m_b << ", " << q.m_c << ")" ;
 		return out ;
-	} ;
+    }
 
 	/*!
 	 * \brief Read from stream operator

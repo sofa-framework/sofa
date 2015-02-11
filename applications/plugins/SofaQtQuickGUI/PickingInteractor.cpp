@@ -127,15 +127,14 @@ bool PickingInteractor::pick(const QVector3D& origin, const QVector3D& ray)
 		myForcefield = stiffSpringForcefield.get();
 
 		Node::SPtr node = myScene->sofaSimulation()->GetRoot()->createChild("Interactor");
-		node->addObject(mechanicalObject);
-		node->addObject(fixedConstraint);
-		node->addObject(stiffSpringForcefield);
+        node->addObject(mechanicalObject);
+        node->addObject(fixedConstraint);
+        node->addObject(stiffSpringForcefield);
 		node->init(sofa::core::ExecParams::defaultInstance());
 		myNode = node.get();
 
-		myNode->removeObject(stiffSpringForcefield);
-		Node* pickedNode = dynamic_cast<Node*>(stiffSpringForcefield->getMState2()->getContext());
-		pickedNode->addObject(stiffSpringForcefield);
+        Node* pickedNode = dynamic_cast<Node*>(stiffSpringForcefield->getMState2()->getContext());
+        pickedNode->moveObject(stiffSpringForcefield);
 
 		pickingChanged(true);
 
@@ -166,7 +165,7 @@ QVector3D PickingInteractor::position() const
 
 void PickingInteractor::setPosition(const QVector3D& position)
 {
-	if(!myPickedPoint)
+    if(!myPickedPoint || !myMechanicalState)
 		return;
 
 	MechanicalObject3d* mechanicalObject = static_cast<MechanicalObject3d*>(myMechanicalState);
@@ -181,10 +180,8 @@ void PickingInteractor::release()
 
 	if(myNode)
 	{
-		StiffSpringForceField3d::SPtr stiffSpringForcefield = static_cast<StiffSpringForceField3d*>(myForcefield);
-		Node* pickedNode = dynamic_cast<Node*>(stiffSpringForcefield->getMState2()->getContext());
-		pickedNode->removeObject(stiffSpringForcefield);
-		myNode->addObject(stiffSpringForcefield);
+        StiffSpringForceField3d::SPtr stiffSpringForcefield = static_cast<StiffSpringForceField3d*>(myForcefield);
+        myNode->moveObject(stiffSpringForcefield);
 
 		Node::SPtr node = static_cast<Node*>(myNode);
 		node->detachFromGraph();
