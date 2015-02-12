@@ -53,21 +53,26 @@ void LennardJonesForceField<DataTypes>::init()
 
     assert( this->mstate );
 
-    a = (p0.getValue() * (Real)pow(d0.getValue(),alpha.getValue())) / (1-alpha.getValue()/beta.getValue());
-    b = (p0.getValue() * (Real)pow(d0.getValue(),beta.getValue())) / (beta.getValue()/alpha.getValue()-1);
-    sout << "Lennard-Jones initialized: alpha="<<alpha.getValue()<<" beta="<<beta.getValue()<<" d0="<<d0.getValue()<<" p0="<<p0.getValue()<<" a="<<a<<" b="<<b<<sendl;
-    // Validity check: compute force and potential at d0
-    Real f0 = a*alpha.getValue()*(Real)pow(d0.getValue(),-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d0.getValue(),-beta.getValue()-1);
-    if (fabs(f0)>0.001)
-        serr << "Lennard-Jones initialization failed: f0="<<f0<<sendl;
-    Real cp0 = (a*(Real)pow(d0.getValue(),-alpha.getValue())-b*(Real)pow(d0.getValue(),-beta.getValue()));
-    if (fabs(cp0/p0.getValue()-1)>0.001)
-        serr << "Lennard-Jones initialization failed: cp0="<<cp0<<sendl;
-    // Debug
-    for (Real d = 0; d<dmax.getValue(); d+= dmax.getValue()/60)
+    if(aInit.getValue()!=0)
+        a = aInit.getValue();
+    else
     {
-        Real f = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
-        sout << "f("<<d<<")="<<f<<sendl;
+        a = (p0.getValue() * (Real)pow(d0.getValue(),alpha.getValue())) / (1-alpha.getValue()/beta.getValue());
+        b = (p0.getValue() * (Real)pow(d0.getValue(),beta.getValue())) / (beta.getValue()/alpha.getValue()-1);
+
+        // Validity check: compute force and potential at d0
+        Real f0 = a*alpha.getValue()*(Real)pow(d0.getValue(),-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d0.getValue(),-beta.getValue()-1);
+        if (fabs(f0)>0.001)
+            serr << "Lennard-Jones initialization failed: f0="<<f0<<sendl;
+        Real cp0 = (a*(Real)pow(d0.getValue(),-alpha.getValue())-b*(Real)pow(d0.getValue(),-beta.getValue()));
+        if (fabs(cp0/p0.getValue()-1)>0.001)
+            serr << "Lennard-Jones initialization failed: cp0="<<cp0<<sendl;
+        // Debug
+        for (Real d = 0; d<dmax.getValue(); d+= dmax.getValue()/60)
+        {
+            Real f = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
+            sout << "f("<<d<<")="<<f<<sendl;
+        }
     }
 }
 
@@ -91,7 +96,13 @@ void LennardJonesForceField<DataTypes>::addForce(const core::MechanicalParams* /
             const Real d2 = u.norm2();
             if (d2 >= dmax2) continue;
             const Real d = (Real)sqrt(d2);
-            const Real fa = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1);
+
+            Real fa ;
+            if(aInit.getValue()!=0)
+                fa = a*alpha.getValue()*(1.0/d2);
+            else
+                fa = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1);
+
             Real forceIntensity;
             const Real fb = b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
 
@@ -100,7 +111,7 @@ void LennardJonesForceField<DataTypes>::addForce(const core::MechanicalParams* /
 
             else
                 forceIntensity = fa;
-            //sout << ia<<"-"<<ib<<" d="<<d<<" f="<<forceIntensity<<sendl;
+
             DForce df;
             df.a = ia;
             df.b = ib;

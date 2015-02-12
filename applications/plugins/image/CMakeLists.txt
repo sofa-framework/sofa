@@ -19,6 +19,7 @@ set(SOURCE_FILES
     ImageExporter.cpp 
     ImageDataDisplay.cpp
     VoronoiToMeshEngine.cpp
+    ImageToRigidMassEngine.cpp
 )
 
 set(HEADER_FILES
@@ -42,6 +43,7 @@ set(HEADER_FILES
     Containers.h 
     ImageDataDisplay.h
     VoronoiToMeshEngine.h
+    ImageToRigidMassEngine.h
 )
 
 set(README_FILES image.txt)

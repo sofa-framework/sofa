@@ -22,11 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "mycuda.h"
-#include <cuda.h>
-#ifdef WIN32
+#ifdef _WIN32
+#include <windows.h>
 #include <sofa/helper/system/gl.h>
 #endif
+
+#include "mycuda.h"
+#include <cuda.h>
 #include <cuda_gl_interop.h>
 
 #include <sofa/helper/BackTrace.h>
