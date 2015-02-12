@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
@@ -51,9 +50,7 @@
 #include <sofa/component/collision/MeshMinProximityIntersection.h>
 #include <sofa/component/collision/MeshNewProximityIntersection.inl>
 
-#include <PrimitiveCreation.h>
-#include "Sofa_test.h"
-
+#include <plugins/SofaTest/PrimitiveCreation.h>
 
 namespace sofa {
 

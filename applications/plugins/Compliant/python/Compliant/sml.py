@@ -20,7 +20,9 @@ def insertRigid(parentNode, rigidModel, param):
         mass=1.
         if not rigidModel.mass is None:
             mass = rigidModel.mass
-        rigid.setFromMeshWithMass(rigidModel.mesh.source, mass=mass, offset=rigidModel.position)
+        rigid.setFromMesh(rigidModel.mesh.source, density=1, offset=rigidModel.position)
+        rigid.mass.inertia = concat( rigid.mass.inertia / rigid.mass * mass )
+        rigid.mass.mass = mass
     rigid.dofs.showObject = param.showRigid
     rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
     # visual

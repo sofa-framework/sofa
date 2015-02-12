@@ -102,7 +102,6 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
 
-
     virtual void resizeOut()
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
@@ -190,12 +189,16 @@ public:
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
+#if defined(WIN32) && defined(USING_OMP_PRAGMAS)
+        for(int i=0; i < jacobianBlock.size(); i++)
+#else
         for(size_t i=0; i < jacobianBlock.size(); i++)
+#endif
         {
             out[i]=OutDeriv();
             jacobianBlock[i].addmult(out[i],in[i]);
         }
-        dOut.endEdit();
+		dOut.endEdit();
     }
 
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
