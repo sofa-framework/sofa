@@ -22,9 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include "stdafx.h"
-#include "Sofa_test.h"
+#include <plugins/SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/component/init.h>
@@ -79,10 +77,6 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
     simulation::Node::SPtr root;      
     /// Simulation
     simulation::Simulation* simulation;  
-    // Structure which contains current node and pointers to the mechanical object and the bilinear constraint
-//    PatchTestStruct<DataTypes> patchStruct;
-     // Define the path for the scenes directory
-    #define ADD_SOFA_TEST_SCENES_PATH( x ) sofa_tostring(SOFA_TEST_SCENES_PATH)sofa_tostring(x) 
 
     // Create the context for the scene
     void SetUp()
@@ -93,16 +87,11 @@ struct BezierTetrahedronTopology_test : public Sofa_test<typename _DataTypes::Re
 
          root = simulation::getSimulation()->createNewGraph("root");
     }
-	 // Load the scene BezierTetrahedronTopology.sc from the Scenes directory
+	 // Load the scene BezierTetrahedronTopology.scn from the scenes directory
     void loadScene(std::string sceneName)
     {
-		// Get the scene directory
-        sofa::helper::system::FileRepository repository("SOFA_DATA_PATH");
-        repository.addFirstPath( ADD_SOFA_TEST_SCENES_PATH( /Scenes ) );
-
-
         // Load the scene from the xml file
-        std::string fileName = repository.getFile(sceneName);
+	std::string fileName = std::string(SOFABASETOPOLOGY_TEST_SCENES_DIR) + "/" + sceneName;
         root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
     }
 	 // Load the scene BezierTetrahedronTopology.sc from the Scenes directory

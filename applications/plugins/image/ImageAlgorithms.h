@@ -62,7 +62,11 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos,const std::vector<
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
+#if defined(WIN32) && defined(USING_OMP_PRAGMAS)
+    for(int i=0; i<nbp; i++)
+#else
     for (unsigned int i=0; i<nbp; i++)
+#endif
     {
         // compute centroid
         Coord C,p;

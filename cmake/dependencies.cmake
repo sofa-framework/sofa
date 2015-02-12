@@ -62,6 +62,7 @@ if(SOFA-MISC_BUILD_GTEST)
 endif()
 
 RegisterProjects("framework_test" OPTION "SOFA-MISC_TESTS" PATH "${SOFA_FRAMEWORK_DIR}/framework_test")
+RegisterProjects("simulation_test" OPTION "SOFA-MISC_TESTS" PATH "${SOFA_MODULES_DIR}/sofa/simulation/simulation_test")
 
 # framework
 set(SOFA_PROJECT_FOLDER "SofaFramework")

@@ -50,7 +50,6 @@ public:
     typedef BaseStrainMappingT<BlockType> Inherit;
     typedef typename Inherit::Real Real;
 
-
     SOFA_CLASS(SOFA_TEMPLATE(PlasticStrainMapping,TStrain), SOFA_TEMPLATE(BaseStrainMappingT,BlockType));
 
 
@@ -124,7 +123,11 @@ protected:
 #ifdef USING_OMP_PRAGMAS
 			#pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#if defined(WIN32) && defined(USING_OMP_PRAGMAS)
+            for( int i=0; i<this->jacobian.size(); i++)
+#else
+			for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#endif
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];
@@ -136,9 +139,13 @@ protected:
         case ADDITION:
         {
 #ifdef USING_OMP_PRAGMAS
-			#pragma omp parallel for
+	#pragma omp parallel for
 #endif
-            for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#if defined(WIN32) && defined(USING_OMP_PRAGMAS)
+            for( int i=0; i<this->jacobian.size(); i++ )
+#else
+			for( unsigned int i=0 ; i<this->jacobian.size() ; i++ )
+#endif
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];

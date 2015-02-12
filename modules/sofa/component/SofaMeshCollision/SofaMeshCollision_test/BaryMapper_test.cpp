@@ -1,7 +1,5 @@
-#include "stdafx.h"
-#include "PrimitiveCreation.h"
-
-#include "Sofa_test.h"
+#include <plugins/SofaTest/Sofa_test.h>
+#include <plugins/SofaTest/PrimitiveCreation.h>
 #include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
 
