@@ -10,6 +10,7 @@ set(SOURCE_FILES
     ImageFilter.cpp
     ImageOperation.cpp
     ImageTransform.cpp
+    ImageTransformEngine.cpp
     TransferFunction.cpp
     ImageValuesFromPositions.cpp
     MergeImages.cpp
@@ -31,6 +32,7 @@ set(HEADER_FILES
     ImageFilter.h
     ImageOperation.h
     ImageTransform.h
+    ImageTransformEngine.h
     TransferFunction.h
     ImageValuesFromPositions.h
     MergeImages.h
