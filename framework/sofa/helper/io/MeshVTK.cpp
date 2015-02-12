@@ -61,7 +61,7 @@ void MeshVTK::init(std::string filename)
 void MeshVTK::readVTU(const std::string &filename)
 {
 
-    tinyxml::TiXmlDocument vtu;
+    TiXmlDocument vtu;
     vtu.LoadFile(filename);
     if (vtu.Error())
     {
@@ -69,7 +69,7 @@ void MeshVTK::readVTU(const std::string &filename)
         std::cerr << vtu.ErrorDesc() << std::endl;
         return;
     }
-    tinyxml::TiXmlElement* piece = vtu.FirstChildElement("VTKFile")->FirstChildElement("UnstructuredGrid")->FirstChildElement("Piece");
+    TiXmlElement* piece = vtu.FirstChildElement("VTKFile")->FirstChildElement("UnstructuredGrid")->FirstChildElement("Piece");
 
     unsigned int nbPoints, nbCells;
     piece->QueryUnsignedAttribute("NumberOfPoints", &nbPoints);
@@ -88,7 +88,7 @@ void MeshVTK::readVTU(const std::string &filename)
     // read triangles
     std::stringstream connectivityDataArray;
     std::stringstream typesDataArray;
-    tinyxml::TiXmlElement* cellDataArray = piece->FirstChildElement("Cells")->FirstChildElement("DataArray");
+    TiXmlElement* cellDataArray = piece->FirstChildElement("Cells")->FirstChildElement("DataArray");
     std::string name;
     while(cellDataArray)
     {
