@@ -205,7 +205,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef USING_OMP_PRAGMAS
 # pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 		for(w_size_t i=0;i<dims[1];i++)
 #else
         for(unsigned int i=0;i<dims[1];i++)
@@ -227,7 +227,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef USING_OMP_PRAGMAS
 # pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 		for(w_size_t i=0;i<dims[1];i++)
 #else
         for(unsigned int i=0;i<dims[1];i++)
@@ -249,7 +249,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef USING_OMP_PRAGMAS
 # pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 		for(w_size_t i=0;i<dims[1];i++)
 #else
         for(unsigned int i=0;i<dims[1];i++)
@@ -313,7 +313,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #ifdef USING_OMP_PRAGMAS
 # pragma omp parallel for
 #endif
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 		for(w_size_t i=0;i<dims[1];i++)
 #else
         for(unsigned int i=0;i<dims[1];i++)
@@ -343,7 +343,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 # pragma omp parallel for
 #endif
 
-#ifdef WIN32 && USING_OMP_PRAGMAS
+#ifdef WIN32
 		for(w_size_t i=0;i<dims[1];i++)
 #else
 		for(unsigned int i=0;i<dims[1];i++)

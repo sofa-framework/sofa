@@ -209,6 +209,12 @@ public:
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
 	
+	/* 
+		Add new type to replace unsigned int when openMP is activated on windows to handle compilation issues
+	*/
+#ifdef WIN32
+	typedef long int w_size_t;
+#endif
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
     virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights

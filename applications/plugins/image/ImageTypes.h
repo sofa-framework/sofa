@@ -372,6 +372,13 @@ typedef ImageF ImageR;
 typedef ImageD ImageR;
 #endif
 
+/* 
+	Add new type to replace unsigned int when openMP is activated on windows to handle compilation issues
+*/
+#ifdef WIN32
+	typedef long int w_size_t ;
+#endif
+
 template<> inline const char* ImageC::Name() { return "ImageC"; }
 template<> inline const char* ImageUC::Name() { return "ImageUC"; }
 template<> inline const char* ImageI::Name() { return "ImageI"; }
