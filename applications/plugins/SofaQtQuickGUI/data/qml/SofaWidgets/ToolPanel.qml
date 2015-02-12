@@ -55,23 +55,40 @@ Rectangle {
             return 0;
         });
 
+        contextMenu = Qt.createQmlObject("import QtQuick.Controls 1.2; Menu {title: 'Tools'}", root, "contextMenu");
         for(var i = 0; i < contentList.length; ++i)
+        {
             contentList[i].parent = loaderLocation;
+            var menuItem = contextMenu.addItem(contentList[i].title);
+            menuItem.checkable = true;
+            menuItem.checked = true;
+
+            var menuSlot = function(content) {return function(checked) {content.visible = checked;}} (contentList[i]);
+            menuItem.toggled.connect(menuSlot);
+        }
     }
 
-    ScrollView {
-        id: scrollView
+    property Menu contextMenu
+
+    MouseArea {
         anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        onClicked: if(contextMenu) contextMenu.popup()
 
-        Flickable {
-            id: flickable
+        ScrollView {
+            id: scrollView
             anchors.fill: parent
-            contentHeight: loaderLocation.implicitHeight
 
-            ColumnLayout {
-                id: loaderLocation
-                width: parent.width - 1
-                spacing: 0
+            Flickable {
+                id: flickable
+                anchors.fill: parent
+                contentHeight: loaderLocation.implicitHeight
+
+                ColumnLayout {
+                    id: loaderLocation
+                    width: parent.width - 1
+                    spacing: 0
+                }
             }
         }
     }
