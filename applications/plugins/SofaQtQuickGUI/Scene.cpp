@@ -52,6 +52,7 @@ Scene::Scene(QObject *parent) : QObject(parent),
     sofa::helper::system::DataRepository.addFirstPath("../../share/");
     sofa::helper::system::DataRepository.addFirstPath("../../examples/");
     sofa::helper::system::PluginRepository.addFirstPath("../bin/");
+    sofa::helper::system::PluginRepository.addFirstPath("../lib/");
 
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
