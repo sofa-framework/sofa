@@ -6,6 +6,7 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -48,6 +49,10 @@ Scene::Scene(QObject *parent) : QObject(parent),
     myStepTimer(new QTimer(this))
 {
 	// sofa init
+    sofa::helper::system::DataRepository.addFirstPath("../../share/");
+    sofa::helper::system::DataRepository.addFirstPath("../../examples/");
+    sofa::helper::system::PluginRepository.addFirstPath("../bin/");
+
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
@@ -664,7 +669,6 @@ void SceneListModel::componentComplete()
 
 void SceneListModel::update()
 {
-    qDebug() << myItems.size();
     int changeNum = myItems.size() - myUpdatedCount;
     if(changeNum > 0)
     {
