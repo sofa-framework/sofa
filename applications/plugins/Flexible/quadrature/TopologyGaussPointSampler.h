@@ -299,7 +299,7 @@ protected:
                         Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)6.;
                         // compute local orientation given user input and local element frame
                         Transform U=this->getUserOrientation(i),M;
-                        if(this->f_useLocalOrientation.getValue()) M= getLocalFrame2D(p[0],p[1],p[3]) * U;
+                        if(this->f_useLocalOrientation.getValue()) M= getLocalFrame2D(p[0],p[1],p[2]) * U;
                         else M=U;
                         for ( unsigned int j = 0; j < qpa.size(); j++ )
                         {
@@ -330,7 +330,7 @@ protected:
                             Real V; if(f_fineVolumes.getValue().size()>i) V=f_fineVolumes.getValue()[i]/4.0; else  V = fabs(dot(cross(p[3]-p[0],p[2]-p[0]),p[1]-p[0]))/(Real)24.;
                             // compute local orientation given user input and local element frame
                             Transform U=this->getUserOrientation(i),M;
-                            if(this->f_useLocalOrientation.getValue()) M = getLocalFrame2D(p[0],p[1],p[3]) * U;
+                            if(this->f_useLocalOrientation.getValue()) M = getLocalFrame2D(p[0],p[1],p[2]) * U;
                             else M=U;
                             for ( unsigned int j = 0; j < 4; j++ )
                             {

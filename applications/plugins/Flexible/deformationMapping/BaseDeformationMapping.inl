@@ -124,7 +124,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         }
         else
         {
-            for(size_t i=0; i<size; ++i) F0[i]=sampler->getTransforms()[i];
+            for(size_t i=0; i<size; ++i) copy(F0[i],sampler->getTransforms()[i]);
         }
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" gauss points imported"<<std::endl;
     }

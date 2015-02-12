@@ -238,7 +238,7 @@ IF(WITH_QT)
         SET (files_utils_withQt ${files_utils} ${files_utils_qt} ${UTILS_QT_HEADERS_MOC})
 ENDIF (WITH_QT)
 
-        SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -Wextra -fPIC" )
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC" )
 #        SET( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS} )
 	add_executable( shader_to_h ${CGoGN_ROOT_DIR}/ThirdParty/Tools/shader_to_h.cpp )
 	add_custom_target(shader_target shader_to_h ${shaders_src}

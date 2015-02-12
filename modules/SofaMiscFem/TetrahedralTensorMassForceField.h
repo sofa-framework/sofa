@@ -69,11 +69,11 @@ public:
     class Mat3 : public helper::fixed_array<Deriv,3>
     {
     public:
-        Deriv operator*(const Deriv& v)
+        Deriv operator*(const Deriv& v) const
         {
             return Deriv((*this)[0]*v,(*this)[1]*v,(*this)[2]*v);
         }
-        Deriv transposeMultiply(const Deriv& v)
+        Deriv transposeMultiply(const Deriv& v) const
         {
             return Deriv(v[0]*((*this)[0])[0]+v[1]*((*this)[1])[0]+v[2]*((*this)[2][0]),
                     v[0]*((*this)[0][1])+v[1]*((*this)[1][1])+v[2]*((*this)[2][1]),
@@ -138,6 +138,7 @@ public:
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
 
+	virtual double getPotentialEnergy(const core::MechanicalParams* mparams) const ;
     void setYoungModulus(const double modulus)
     {
         f_youngModulus.setValue((Real)modulus);
