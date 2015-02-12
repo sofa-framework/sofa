@@ -16,6 +16,7 @@ import Rigid
 import Tools
 from Tools import cat as concat
 import numpy
+import Sofa
 from SofaPython import Quaternion
 import SofaPython.Tools
 import math
@@ -31,6 +32,84 @@ idxVisualModel = 0
 geometric_stiffness = 0
 
 
+class MassInfo:
+        pass
+
+# front-end to sofa GenerateRigid tool. density unit is kg/m^3
+def generate_rigid_with_density(filename, density = 1, scale=[1,1,1]):
+
+
+    titi = Sofa.generateRigid( filename, density, scale[0], scale[1], scale[2] )
+
+    res = MassInfo()
+
+    res.mass = titi[0]
+    res.com = titi[1:4]
+    inertia = [titi[4],titi[5],titi[6], titi[5],titi[7],titi[8],  titi[6],titi[8],titi[9]]
+
+    res.inertia = numpy.array( [res.mass * x for x in inertia] ).reshape( 3, 3 ) # convert it in numpy 3x3 matrix
+
+    # extracting principal axes basis and corresponding rotation and diagonal inertia
+    # TODO DOING THIS IN C++
+
+    if inertia[1]>1e-5 or inertia[2]>1e-5 or inertia[5]>1e-5 : # if !diagonal (1e-5 seems big but the precision from a mesh is poor)
+#        print res.inertia
+        U, res.diagonal_inertia, V = numpy.linalg.svd(res.inertia)
+        # det should be 1->rotation or -1->reflexion
+        if numpy.linalg.det(U) < 0 : # reflexion
+            # made it a rotation by negating a column
+#            print "REFLEXION"
+            U[:,0] = -U[:,0]
+        res.inertia_rotation = Quaternion.from_matrix( U )
+#       print "generate_rigid not diagonal U" +str(U)
+#       print "generate_rigid not diagonal V" +str(V)
+#       print "generate_rigid not diagonal d" +str(res.diagonal_inertia)
+    else :
+        res.diagonal_inertia = res.inertia.diagonal()
+        res.inertia_rotation = [0,0,0,1]
+
+#        print "generate_rigid " + str(res.mass) + " " + str( res.inertia ) + " " + str( res.diagonal_inertia )
+
+    return res
+
+
+# front-end to sofa GenerateRigid tool with a manually given mass
+def generate_rigid_with_mass(filename, mass = 1, scale=[1,1,1]):
+
+
+    titi = Sofa.generateRigid( filename, 1, scale[0], scale[1], scale[2] )
+
+    res = MassInfo()
+
+    res.mass = mass
+    res.com = titi[1:4]
+    inertia = [titi[4],titi[5],titi[6], titi[5],titi[7],titi[8],  titi[6],titi[8],titi[9]]
+
+    res.inertia = numpy.array( [res.mass * x for x in inertia] ).reshape( 3, 3 ) # convert it in numpy 3x3 matrix
+
+    # extracting principal axes basis and corresponding rotation and diagonal inertia
+    # TODO DOING THIS IN C++
+
+    if inertia[1]>1e-5 or inertia[2]>1e-5 or inertia[5]>1e-5 : # if !diagonal (1e-5 seems big but the precision from a mesh is poor)
+#        print res.inertia
+        U, res.diagonal_inertia, V = numpy.linalg.svd(res.inertia)
+        # det should be 1->rotation or -1->reflexion
+        if numpy.linalg.det(U) < 0 : # reflexion
+            # made it a rotation by negating a column
+#            print "REFLEXION"
+            U[:,0] = -U[:,0]
+        res.inertia_rotation = Quaternion.from_matrix( U )
+#       print "generate_rigid not diagonal U" +str(U)
+#       print "generate_rigid not diagonal V" +str(V)
+#       print "generate_rigid not diagonal d" +str(res.diagonal_inertia)
+    else :
+        res.diagonal_inertia = res.inertia.diagonal()
+        res.inertia_rotation = [0,0,0,1]
+
+#        print "generate_rigid " + str(res.mass) + " " + str( res.inertia ) + " " + str( res.diagonal_inertia )
+
+    return res
+
 
 class RigidBody:
     ## Generic Rigid Body
@@ -42,9 +121,14 @@ class RigidBody:
         self.frame = Rigid.Frame()
         self.framecom = Rigid.Frame()
 
-    def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
+    def setFromMesh(self, filepath, density = 1, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
         ## create the rigid body from a mesh (inertia and com are automatically computed)
-        info = Rigid.generate_rigid(filepath, density, scale3d)
+        info = generate_rigid_with_density(filepath, density, scale3d)
+        self.setFromRigidInfo(info, offset, inertia_forces)
+
+    def setFromMeshWithMass(self, filepath, mass, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
+        ## create the rigid body from a mesh (inertia and com are automatically computed)
+        info = generate_rigid_with_mass(filepath, mass, scale3d)
         self.setFromRigidInfo(info, offset, inertia_forces)
 
     def setFromRigidFile(self, rigidfilepath, offset = [0,0,0,0,0,0,1], inertia_forces = False):
@@ -201,17 +285,17 @@ class GenericRigidJoint:
             l = 0
             limitMasks=[]
             for m in xrange(6):
-                if self.mask[m] == 0: # unconstrained direction
-                    limits[l*2+1] *= -1 # inverted upper bound
+                if self.mask[m] == 0 and limits[l] != None and limits[l+1] != None: # unconstrained direction with limits
+                    limits[l+1] *= -1.0 # inverted upper bound
                     l+=1
-                    limitMask = [0]*6;
+                    limitMaskL = [0]*6;
+                    limitMaskU = [0]*6;
                     # lower bound
-                    limitMask[m] = 1;
-                    limitMasks.append( limitMask )
+                    limitMaskL[m] = 1;
+                    limitMasks.append( limitMaskL )
                     # upper bound
-                    limitMask[m] = -1;  # inverted upper bound
-                    limitMasks.append( limitMask )
-
+                    limitMaskU[m] = -1;  # inverted upper bound
+                    limitMasks.append( limitMaskU )
             return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
 
     def addDamper( self, damping ):

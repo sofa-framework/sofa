@@ -41,7 +41,7 @@ namespace mapping
 */
 
 template <class TIn, class TOut >
-class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
+class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 {
 	typedef AssembledMultiMapping self;
   public:
