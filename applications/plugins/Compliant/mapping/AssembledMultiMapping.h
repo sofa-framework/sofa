@@ -56,18 +56,16 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	typedef typename Out::Deriv OutDeriv;
 	typedef typename Out::MatrixDeriv OutMatrixDeriv;
 	typedef typename Out::Real Real;
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
 	typedef typename In::Deriv InDeriv;
 	typedef typename In::MatrixDeriv InMatrixDeriv;
 	typedef typename In::Coord InCoord;
 	typedef typename In::VecCoord InVecCoord;
 	typedef typename In::VecDeriv InVecDeriv;
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
 	typedef linearsolver::EigenSparseMatrix<TIn,TOut>  SparseMatrixEigen;
-
-	typedef Data<OutVecCoord> OutDataVecCoord;
-	typedef Data<OutVecDeriv> OutDataVecDeriv;
-	typedef Data<InVecCoord> InDataVecCoord;
-	typedef Data<InVecDeriv> InDataVecDeriv;
-
 
 	typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
 	typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
@@ -107,7 +105,6 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
         
         if( geometric.compressedMatrix.nonZeros() ) return &geometric;
         else return 0;
-        
     }
 
 	
@@ -131,33 +128,45 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	}
 
 
+	virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, 
+                        const helper::vector<const InVecDeriv*>& inDeriv) {
 
-    virtual void applyJ(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
-    {
-        assert( dataVecOutVel.size() == 1 ); // only one child here
-        assert( dataVecInVel.size() == js.size() );
+		unsigned n = js.size();
+        unsigned i = 0;
 
-        unsigned n = js.size();
+        // let the first valid jacobian set its contribution    out = J_0 * in_0
+        for( ; i < n ; ++i )
+        {
+            if( jacobian(i).rowSize() > 0 )
+            {
+                jacobian(i).mult(*outDeriv[0], *inDeriv[i]);
+                break;
+            }
+        }
 
-        // Note the working around zeroing outvecderivs
+        ++i;
 
-        unsigned int i = 0;
-        for(; i < n ; ++i ) {
-             if( jacobian(i).rowSize() > 0 ) {
-                 jacobian(i).mult(*dataVecOutVel[0], *dataVecInVel[i]);
-                 break;
-             }
-         }
-        for(++i; i < n ; ++i ) {
-             if( jacobian(i).rowSize() > 0 ) {
-                 jacobian(i).addMult(*dataVecOutVel[0], *dataVecInVel[i]);
-                 break;
-             }
-         }
+        // the next valid jacobians will add their contributions    out += J_i * in_i
+        for( ; i < n ; ++i )
+        {
+            if( jacobian(i).rowSize() > 0 )
+                jacobian(i).addMult(*outDeriv[0], *inDeriv[i]);
+        }
+
     }
 
+    virtual void applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
+    {
+        assert(false && "This is a stub!");
+        static int i=0;
+        if (i < 10)
+        {
+            std::cout << "AssembledMultiMapping::applyJ() is not implemented" << std::endl;
+            i++;
+        }
+    }
 
-	void debug() {
+    void debug() {
 		std::cerr << this->getClassName() << std::endl;
 		for( unsigned i = 0, n = js.size(); i < n; ++i) {
 			std::cerr << "from: " <<  this->getFrom()[i]->getContext()->getName() 
@@ -257,20 +266,20 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 		
 		const unsigned n = this->getFrom().size();
 		if( n != js.size() ) {
-			release();
-			
-			// alloc
-			if( js.size() != n ) {
-				js.resize( n );
-				
-				for( unsigned i = 0; i < n; ++i ) js[i] = new SparseMatrixEigen;
-			}
+            release();
+
+            // alloc
+            if( js.size() != n ) {
+                js.resize( n );
+
+                for( unsigned i = 0; i < n; ++i ) js[i] = new SparseMatrixEigen;
+            }
 		}
 	}
 
 	// delete jacobians
-	void release() {
-		for( unsigned i = 0, n = js.size(); i < n; ++i) {
+    void release() {
+        for( unsigned i = 0, n = js.size(); i < n; ++i) {
 			delete js[i];
 			js[i] = 0;
 		}

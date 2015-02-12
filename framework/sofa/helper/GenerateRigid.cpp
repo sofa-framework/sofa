@@ -221,7 +221,7 @@ bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
     res.inertia = res.mass * rigidMass.inertiaMatrix;
 
     // extracting principal axes basis to get the corresponding rotation with a diagonal inertia
-    if( res.inertia[0][1]>1e-5 or res.inertia[0][2]>1e-5 or res.inertia[1][2]>1e-5 ) // if !diagonal (1e-5 seems big but the precision from a mesh is poor)
+    if( res.inertia[0][1]>1e-5 || res.inertia[0][2]>1e-5 || res.inertia[1][2]>1e-5 ) // if !diagonal (1e-5 seems big but the precision from a mesh is poor)
     {
         defaulttype::Matrix3 U, V;
         Decompose<SReal>::SVD( res.inertia, U, res.inertia_diagonal, V );
