@@ -41,6 +41,13 @@ namespace helper
 namespace io
 {
 
+using sofa::helper::vector;
+using sofa::core::loader::Material;
+using sofa::core::loader::PrimitiveGroup;
+using sofa::defaulttype::Vector3;
+
+using sofa::defaulttype::Vec4f;
+
 class SOFA_HELPER_API Mesh
 {    
 public:
@@ -51,32 +58,28 @@ public:
     typedef sofa::defaulttype::Vector3 Vector3;
     typedef sofa::core::loader::PrimitiveGroup PrimitiveGroup;
     typedef sofa::core::loader::Material Material;
-    sofa::helper::vector<Vector3> & getVertices()
-    {
-        //std::cout << "vertices size : " << vertices.size() << std::endl;
-        return vertices;
-    };
+
+    sofa::helper::vector<Vector3> & getVertices() { return vertices; }
+    const sofa::helper::vector<Vector3> & getVertices() const { return vertices; }
     sofa::helper::vector<Vector3> & getTexCoords() { return texCoords; }
+    const sofa::helper::vector<Vector3> & getTexCoords() const { return texCoords; }
     sofa::helper::vector<Vector3> & getNormals() { return normals; }
-    sofa::helper::vector< vector < vector <int> > > & getFacets()
-    {
-        //std::cout << "facets size : " << facets.size() << std::endl;
-        return facets;
-    };
-    const Material& getMaterial() {return material; }
+    const sofa::helper::vector<Vector3> & getNormals() const { return normals; }
+    sofa::helper::vector< vector < vector <int> > > & getFacets() { return facets; }
+    const sofa::helper::vector< vector < vector <int> > > & getFacets() const { return facets; }
 
-    const std::vector<Material>& getMaterials() {return materials; }
-    const std::vector<PrimitiveGroup>& getGroups() {return groups; }
 
-    std::string& getTextureName()
-    {
-        return textureName;
-    };
+    const Material& getMaterial() const { return material; }
+
+    const std::vector<Material>& getMaterials() { return materials; }
+    const std::vector<PrimitiveGroup>& getGroups() { return groups; }
+
+    std::string& getTextureName() { return textureName; }
 
     typedef Factory<std::string, Mesh, std::string> FactoryMesh;
 
-    static Mesh* Create(std::string filename);
-    static Mesh* Create(std::string loader, std::string filename);
+    static Mesh* Create(const std::string &filename);
+    static Mesh* Create(const std::string& loader, const std::string& filename);
 
     template<class Object>
     static Object* create(Object*, std::string arg)

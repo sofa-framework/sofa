@@ -63,6 +63,11 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
 	typedef Response response_type;
 	Response::SPtr response;
 
+
+public:
+
+  Data<bool> parallel;
+
 };
 
 

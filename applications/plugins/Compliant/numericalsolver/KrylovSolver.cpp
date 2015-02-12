@@ -7,11 +7,10 @@ namespace linearsolver {
 
 
 KrylovSolver::KrylovSolver() 
-	: schur(initData(&schur, false, "schur", "perform solving on the schur complement. you *must* have a response component nearby in the graph.")),
-	  verbose(initData(&verbose, false, "verbose", "print debug stuff on std::cerr") )
-{
-	
-}
+    : schur(initData(&schur, false, "schur", "perform solving on the schur complement. you *must* have a response component nearby in the graph."))
+    , verbose(initData(&verbose, false, "verbose", "print debug stuff on std::cerr") )
+    , parallel(initData(&parallel, false, "parallel", "use openmp to parallelize matrix-vector products when use_schur is false (parallelization per KKT blocks, 4 threads)"))
+{}
 
 void KrylovSolver::init() {
 

@@ -14,9 +14,7 @@ namespace linearsolver {
 class SOFA_Compliant_API MinresSolver : public KrylovSolver {
   public:
 	SOFA_CLASS(MinresSolver, KrylovSolver);
-	
-	MinresSolver();				
-	
+
 	typedef AssembledSystem system_type;
 	typedef system_type::vec vec;
 
@@ -31,13 +29,6 @@ class SOFA_Compliant_API MinresSolver : public KrylovSolver {
 	                       const system_type& system,
 	                       const vec& rhs,
 						   real damping) const;
-	
-	
-  public:
-	
-	Data<bool> parallel;
-	
-  protected:
 	
 };
 

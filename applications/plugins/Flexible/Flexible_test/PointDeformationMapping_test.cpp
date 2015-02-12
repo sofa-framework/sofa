@@ -174,10 +174,14 @@ namespace sofa {
             WriteOutVecCoord xoutNew = Inherited::outDofs->writePositions();
             OutVecCoord expectedChildCoords(xoutNew.size());
   
+            typename  OutDOFs::ReadVecCoord xelasticityDofs_rest = Inherited::outDofs->readRestPositions();
+            OutVecCoord xout_rest(xelasticityDofs_rest.size());
+            copyFromData(xout_rest,xelasticityDofs_rest);
+
             for(size_t i=0;i<xoutNew.size();++i)
             {
                 OutFrame &f = expectedChildCoords[i].getF();
-                f = testedRotation;
+                f = testedRotation*xelasticityDofs_rest[i].getF();
             }
 
            // run the mapping test

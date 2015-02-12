@@ -194,6 +194,26 @@ class GenericRigidJoint:
             self.type = self.node.createObject('Stabilization')
             self.constraint = self.node.createObject('UnilateralConstraint')
 
+    def addLimits( self, limits, compliance=0 ):
+            ## limits is a list of limits in each unconstrained directions
+            ## always lower and upper bounds per direction, so its size is two times the number of unconstrained directions
+            ## (following the order txmin,txmax,tymin,tymax,tzmin,tzmax,rxmin,rxmax,rymin,rymax,rzmin,rzmax)
+            l = 0
+            limitMasks=[]
+            for m in xrange(6):
+                if self.mask[m] == 0: # unconstrained direction
+                    limits[l*2+1] *= -1 # inverted upper bound
+                    l+=1
+                    limitMask = [0]*6;
+                    # lower bound
+                    limitMask[m] = 1;
+                    limitMasks.append( limitMask )
+                    # upper bound
+                    limitMask[m] = -1;  # inverted upper bound
+                    limitMasks.append( limitMask )
+
+            return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
+
     def addDamper( self, damping ):
         return self.node.createObject( 'UniformVelocityDampingForceField', dampingCoefficient=damping )
 
