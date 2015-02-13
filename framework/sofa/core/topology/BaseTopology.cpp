@@ -75,7 +75,7 @@ void TopologyModifier::addStateChange(const TopologyChange *topologyChange)
 void TopologyModifier::propagateStateChanges() {}
 void TopologyModifier::propagateTopologicalChanges() {}
 void TopologyModifier::notifyEndingEvent() {}
-void TopologyModifier::removeItems(sofa::helper::vector< unsigned int >& /*items*/) {}
+void TopologyModifier::removeItems(const sofa::helper::vector< unsigned int >& /*items*/) {}
 
 // TopologyContainer implementation
 
