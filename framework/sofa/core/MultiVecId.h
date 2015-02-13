@@ -324,12 +324,16 @@ public:
 			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
 			// will cause a temporary copy of the map, which this define was meant to avoid!
 #	ifndef _MSC_VER
+#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #		pragma GCC diagnostic push
 #		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
+#endif
 #	endif
             idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
 #	ifndef _MSC_VER
+#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #		pragma GCC diagnostic pop
+#endif
 #	endif
 #else
 			IdMap& map = writeIdMap();
@@ -585,12 +589,16 @@ public:
 			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
 			// will cause a temporary copy of the map, which this define was meant to avoid!
 #	ifndef _MSC_VER
+#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #		pragma GCC diagnostic push
 #		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
+#endif
 #	endif
             idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
 #	ifndef _MSC_VER
+#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #		pragma GCC diagnostic pop
+#endif
 #	endif
 #else
 			IdMap& map = writeIdMap();
