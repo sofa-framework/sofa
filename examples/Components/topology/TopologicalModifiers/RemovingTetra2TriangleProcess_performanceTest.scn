@@ -9,7 +9,7 @@
     <Node name="TT">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshVTKLoader name="meshLoader" filename="mesh/HeartTetra_200k.vtk" />
+        <MeshVTKLoader name="meshLoader" filename="mesh/raptorTetra_19409.vtu" />
         <MechanicalObject name="Volume" src="@meshLoader" />
         <TetrahedronSetTopologyContainer name="Container" tetrahedra="@meshLoader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
