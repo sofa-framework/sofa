@@ -178,13 +178,13 @@ public:
     @param removeIsolatedPoints if true isolated vertices are also removed
     *
     */
-    virtual void removeQuads(sofa::helper::vector< unsigned int >& quads,
+    virtual void removeQuads(const sofa::helper::vector<unsigned int> &quadIds,
             const bool removeIsolatedEdges,
             const bool removeIsolatedPoints);
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+    virtual void removeItems(const sofa::helper::vector< unsigned int >& items);
 
     /** \brief Generic method for points renumbering
     */
