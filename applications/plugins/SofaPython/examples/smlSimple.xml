@@ -10,12 +10,20 @@
     </mesh>
     
     <rigid id="armadillo">
+        <tag>tag01</tag>
         <position>0 0 0 0 0 0 1</position>
         <mesh id="armadillo" />
     </rigid>
     
-    <deformable id="ball">
+    <deformable id="ball01">
+        <tag>tag02</tag>
         <position>0 8 -5 0 0 0 1</position>
+        <mesh id="ball" />
+    </deformable>
+    
+    <deformable id="ball02">
+        <tag>tag01</tag>
+        <position>0 8 -7 0 0 0 1</position>
         <mesh id="ball" />
     </deformable>
     
