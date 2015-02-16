@@ -132,7 +132,7 @@ public:
 		unsigned int a = m_map.getEmbedding(c) ;
 
 		if (a == EMBNULL)
-			a = Algo::Topo::setOrbitEmbeddingOnNewCell(m_map, c) ;
+            a = Algo::Topo::template setOrbitEmbeddingOnNewCell<CELL, MAP>(m_map, c) ;
 
 		m_markVector->setTrue(a);
 	}

@@ -75,7 +75,7 @@ inline unsigned int setOrbitEmbeddingOnNewCell(MAP& m, Cell<ORBIT> c)
 {
 	assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
 	unsigned int em = m.template newCell<ORBIT>();
-	setOrbitEmbedding<ORBIT>(m, c, em);
+    setOrbitEmbedding<ORBIT, MAP>(m, c, em);
 	return em;
 }
 
