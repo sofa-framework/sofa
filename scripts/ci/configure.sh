@@ -96,12 +96,12 @@ case $CI_JOB in
     # Build with default options
     *default*)
         # Only change from default configuration: Enable tests
-        append "-DSOFA-MISC_TESTS=ON"
+        # append "-DSOFA-MISC_TESTS=ON"
         ;;
     # Build with as many options enabled
     *options*)
 
-        append "-DSOFA-MISC_TESTS=ON"
+        # append "-DSOFA-MISC_TESTS=ON"
 
         # if [[ -n "$CI_QT_PATH" ]]; then
         #     append "-DSOFA-EXTERNAL_QT_PATH=$CI_QT_PATH"
