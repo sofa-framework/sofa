@@ -16,7 +16,14 @@ def parseIdName(obj,objXml):
     obj.name = obj.id
     if not objXml.find("name") is None:
         obj.name = objXml.find("name").text
-        
+
+def parseTag(obj, objXml):
+    """ set tags of the object
+    """
+    obj.tags=set()
+    for xmlTag in objXml.iter("tag"):
+        obj.tags.add(xmlTag.text)
+
 def parseData(xmlData):
     """ return the list of data in xmlData
     """
@@ -51,6 +58,7 @@ class Model:
     class Rigid:
         def __init__(self, objXml):
             parseIdName(self,objXml)
+            parseTag(self,objXml)
             self.position=Tools.strToListFloat(objXml.find("position").text)
             self.mesh = None
             self.density=None
@@ -109,6 +117,7 @@ class Model:
         
         def __init__(self,objXml):
             parseIdName(self,objXml)
+            parseTag(self,objXml)
             self.position = Tools.strToListFloat(objXml.find("position").text)
             self.mesh = None
             self.indices=dict()
@@ -286,14 +295,29 @@ class SceneDisplay(BaseScene):
         BaseScene.__init__(self,parentNode,model)
         self.param.rigidColor="1. 0. 0."
         self.param.deformableColor="0. 1. 0."
+        self.param.colorByTag=dict()
    
+    def getTagColor(self, tags):
+        tag = tags & set(self.param.colorByTag.keys())
+        if len(tag)==0:
+            return None
+        else:
+            return self.param.colorByTag[tag.pop()]
+
+
     def createScene(self):
         model=self.model # shortcut
         for rigid in model.rigids.values():
             print "Display rigid:",rigid.name
-            insertVisual(self.node, rigid, self.param.rigidColor)
+            color = self.getTagColor(rigid.tags)
+            if color is None:
+                color = self.param.rigidColor
+            insertVisual(self.node, rigid, color)
         
         for deformable in model.deformables.values():
             print "Display deformable:",deformable.name
-            insertVisual(self.node, deformable, self.param.deformableColor)
+            color = self.getTagColor(deformable.tags)
+            if color is None:
+                color = self.param.deformableColor
+            insertVisual(self.node, deformable, color)
             
