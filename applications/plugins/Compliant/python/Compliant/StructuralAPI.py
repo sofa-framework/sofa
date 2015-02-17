@@ -44,6 +44,8 @@ class RigidBody:
 
     def __init__(self, node, name):
         self.node = node.createChild( name )  # node
+        self.collision = None # the added collision mesh if any
+        self.visual = None # the added visual model if any
         self.dofs = None   # dofs
         self.mass = None   # mass
         self.frame = Frame.Frame()
@@ -112,12 +114,14 @@ class RigidBody:
         ## adding a collision mesh to the rigid body with a relative offset
         # (only a Triangle collision model is created, more models can be added manually)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
+        self.collision = RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
+        return self.collision
 
     def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
         ## adding a visual model to the rigid body with a relative offset
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
+        self.visual = RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
+        return self.visual
 
     def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
         ## adding a relative offset to the rigid body (e.g. used as a joint location)

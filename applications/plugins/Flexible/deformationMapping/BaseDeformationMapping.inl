@@ -31,6 +31,7 @@
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/glu.h>
+#include <sofa/helper/IndexOpenMP.h>
 
 #ifdef USING_OMP_PRAGMAS
 #include <omp.h>
@@ -383,11 +384,7 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32
-	for(w_size_t i=0; i<jacobian.size(); i++)
-#else
-	for(unsigned int i=0; i<jacobian.size(); i++)
-#endif
+	for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
     {
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian[i].size(); j++)
@@ -437,11 +434,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32
-			for(w_size_t i=0; i<jacobian.size(); i++)
-#else
-            for(unsigned int i=0; i<jacobian.size(); i++)
-#endif
+            for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
             {
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian[i].size(); j++)
@@ -492,11 +485,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32
-			for(w_size_t i=0; i<this->f_index_parentToChild.size(); i++)
-#else
-            for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
-#endif
+			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
                 {
@@ -549,11 +538,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
 #ifdef USING_OMP_PRAGMAS
 #pragma omp parallel for
 #endif
-#ifdef WIN32
-			for(w_size_t i=0; i<this->f_index_parentToChild.size(); i++)
-#else
-            for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
-#endif
+			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
                 {
