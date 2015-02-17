@@ -4,4 +4,5 @@ list(APPEND PYTHON_FILES
     python/SofaPython/Quaternion.py
     python/SofaPython/units.py
     python/SofaPython/console.py
+    python/SofaPython/sml.py
 )

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -16,58 +16,38 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+* Authors: The SOFA Team (see Authors.txt)                                    *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_RAYNEWPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENT_COLLISION_RAYNEWPROXIMITYINTERSECTION_H
+#ifndef SOFA_HELPER_INDEX_TYPE_H
+#define SOFA_HELPER_INDEX_TYPE_H
 
-#include <SofaBaseCollision/NewProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaMeshCollision/TriangleModel.h>
-#include <SofaMeshCollision/LineModel.h>
-#include <SofaMeshCollision/PointModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaBaseCollision/OBBModel.h>
+#include <boost/type_traits.hpp>
 
 namespace sofa
 {
 
-namespace component
+namespace helper
 {
 
-namespace collision
+/// From any given index type, this struct gives a OpenMP valid index
+/// Versions of OpenMP anterior to 3.0 are only able to manage signed index in a parallel for
+/// Actual versions of visual studio only implement OpenMP 2.5 as old gcc.
+template<class T>
+struct IndexOpenMP
 {
-
-class SOFA_USER_INTERACTION_API RayNewProximityIntersection : public core::collision::BaseIntersector
-{
-    typedef NewProximityIntersection::OutputVector OutputVector;
-
-public:
-    RayNewProximityIntersection(NewProximityIntersection* object, bool addSelf=true);
-
-	bool testIntersection(Ray& t1, Triangle& t2);
-    int computeIntersection(Ray& t1, Triangle& t2, OutputVector*);
-
-    // why rigidsphere has a different collision detection compared to RayDiscreteIntersection?
-    bool testIntersection(Ray& rRay, RigidSphere& rSphere);
-    int computeIntersection(Ray& rRay, RigidSphere& rSphere, OutputVector*);
-
-
-protected:
-
-    NewProximityIntersection* intersection;
-};
-
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
-
+#if defined(USING_OMP_PRAGMAS) && defined(_OPENMP) && _OPENMP < 200805 /*yearmonth of version 3.0*/
+		typedef typename std::make_signed<T>::type type;
+#else
+		typedef T type;
 #endif
+}; // struct IndexOpenMP
+
+} // helper
+
+} // sofa
+
+#endif // SOFA_HELPER_INDEX_TYPE_H

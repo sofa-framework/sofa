@@ -375,7 +375,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             pt_on_tri = tri.p(tIndex[0]);
             pt_on_box = pt_on_tri;
             IntrUtil<Box>::project(pt_on_box,box);
-            assert(box.onSurface(pt_on_box));
+            //assert(box.onSurface(pt_on_box));
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)//box's vertex
         {
@@ -383,7 +383,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             pt_on_box = getPointFromIndex(bIndex[7], box);
             pt_on_tri = pt_on_box;
             IntrUtil<IntrTri>::project(pt_on_tri,tri);
-            assert(box.onSurface(pt_on_box));
+            //assert(box.onSurface(pt_on_box));
         }
         else if (triCfg.mMap == IntrConfiguration<Real>::m21)
         {
@@ -396,7 +396,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 boxSeg[0] = getPointFromIndex(bIndex[6], box);
                 boxSeg[1] = getPointFromIndex(bIndex[7], box);
                 IntrUtil<Real>::segNearestPoints(triSeg,boxSeg,pt_on_tri,pt_on_box);                
-                assert(box.onSurface(pt_on_box));
+                //assert(box.onSurface(pt_on_box));
             }
             else // boxCfg.mMap == IntrConfiguration<Real>::m44, triangles'edge box's face
             {
@@ -424,7 +424,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri - axis * tfirst;
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
 //                    triSeg[0] = tri.p(tIndex[0]);
@@ -432,7 +432,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
 //                    IntrUtil<Real>::faceSegNearestPoints(boxFace,triSeg,pt_on_box,pt_on_tri);
                     IntrUtil<Real>::faceSegNearestPoints(boxFace,triSeg,pt_on_box,pt_on_tri);
                     pt_on_tri += tfirst * axis;
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
             }
         }
@@ -459,11 +459,11 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri - tfirst * axis;
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
                     IntrUtil<IntrTri>::triSegNearestPoints(tri,boxSeg,pt_on_tri,pt_on_box);
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
             }
             else
@@ -480,11 +480,11 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri - tfirst * axis;
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
                     IntrUtil<IntrTri>::triFaceNearestPoints(tri,boxFace,4,pt_on_tri,pt_on_box);
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
             }
         }
@@ -498,14 +498,14 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
             pt_on_tri = tri.p(tIndex[2]);
             pt_on_box = pt_on_tri;
             IntrUtil<Box>::project(pt_on_box,box);
-            assert(box.onSurface(pt_on_box));
+            //assert(box.onSurface(pt_on_box));
         }
         else if (boxCfg.mMap == IntrConfiguration<Real>::m1_1)//box's vertex
         {
             pt_on_box = getPointFromIndex(bIndex[0], box);
             pt_on_tri = pt_on_box;
             IntrUtil<IntrTri>::project(pt_on_tri,tri);
-            assert(box.onSurface(pt_on_box));
+            //assert(box.onSurface(pt_on_box));
         }
         else if (triCfg.mMap == IntrConfiguration<Real>::m12)//triangle's edge
         {
@@ -519,7 +519,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 boxSeg[1] = getPointFromIndex(bIndex[1], box);
 
                 IntrUtil<Real>::segNearestPoints(triSeg,boxSeg,pt_on_tri,pt_on_box);
-                assert(box.onSurface(pt_on_box));
+                //assert(box.onSurface(pt_on_box));
             }
             else // boxCfg.mMap == IntrConfiguration<Real>::m44, box's face
             {
@@ -548,7 +548,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri + tfirst * axis;
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
 //                    triSeg[0] = tri[tIndex[1]];
@@ -556,7 +556,7 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
 //                    IntrUtil<Real>::faceSegNearestPoints(boxFace,4,triSeg,pt_on_box,pt_on_tri);
                     IntrUtil<Real>::faceSegNearestPoints(boxFace,4,triSeg,pt_on_box,pt_on_tri);
                     pt_on_tri -= tfirst * axis;
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
             }
         }
@@ -583,11 +583,11 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri + tfirst * axis;
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
                     IntrUtil<IntrTri>::triSegNearestPoints(tri,boxSeg,pt_on_tri,pt_on_box);
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
             }
             else
@@ -604,11 +604,11 @@ FindContactSet<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >::FindContactSet (const
                 if(quantity != 0){
                     IntrUtil<Real>::projectIntPoints(-axis,tfirst,P,quantity,pt_on_tri);
                     pt_on_box = pt_on_tri + tfirst * axis;
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
                 else{
                     IntrUtil<IntrTri>::triFaceNearestPoints(tri,boxFace,4,pt_on_tri,pt_on_box);
-                    assert(box.onSurface(pt_on_box));
+                    //assert(box.onSurface(pt_on_box));
                 }
             }
         }

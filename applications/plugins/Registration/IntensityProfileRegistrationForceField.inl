@@ -35,6 +35,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include "float.h"
+#include <sofa/helper/IndexOpenMP.h>
 
 #ifdef USING_OMP_PRAGMAS
 #include <omp.h>
@@ -205,11 +206,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef USING_OMP_PRAGMAS
 # pragma omp parallel for
 #endif
-#ifdef WIN32
-		for(w_size_t i=0;i<dims[1];i++)
-#else
-        for(unsigned int i=0;i<dims[1];i++)
-#endif
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -227,11 +224,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef USING_OMP_PRAGMAS
 # pragma omp parallel for
 #endif
-#ifdef WIN32
-		for(w_size_t i=0;i<dims[1];i++)
-#else
-        for(unsigned int i=0;i<dims[1];i++)
-#endif
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -249,11 +242,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 #ifdef USING_OMP_PRAGMAS
 # pragma omp parallel for
 #endif
-#ifdef WIN32
-		for(w_size_t i=0;i<dims[1];i++)
-#else
-        for(unsigned int i=0;i<dims[1];i++)
-#endif
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -313,11 +302,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #ifdef USING_OMP_PRAGMAS
 # pragma omp parallel for
 #endif
-#ifdef WIN32
-		for(w_size_t i=0;i<dims[1];i++)
-#else
-        for(unsigned int i=0;i<dims[1];i++)
-#endif
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             for(unsigned int j=0;j<dims[0];j++)
             {
@@ -342,12 +327,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 #ifdef USING_OMP_PRAGMAS
 # pragma omp parallel for
 #endif
-
-#ifdef WIN32
-		for(w_size_t i=0;i<dims[1];i++)
-#else
-		for(unsigned int i=0;i<dims[1];i++)
-#endif
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             for(unsigned int j=0;j<dims[0];j++)
             {

@@ -2,6 +2,14 @@
 #define __DIFFUSIONSOLVER_H__
 
 #include <CImg/CImg.h>
+#include <sofa/helper/IndexOpenMP.h>
+#include <sofa/helper/system/config.h>
+
+#ifdef SOFA_BUILD_DIFFUSION_SOLVER
+#define SOFA_DIFFUSION_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_DIFFUSION_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 /** Solving diffusion on 3D regular grids (stored as CImg)
  * @param size (in) the size of the regular domain in the 3 directions.
@@ -27,9 +35,9 @@ struct DiffusionSolver
 
 
     /// voxel type
-    static const char OUTSIDE = -1;
-    static const char INSIDE = 1;
-    static const char DIRICHLET = 0;
+    static const char OUTSIDE;
+    static const char INSIDE;
+    static const char DIRICHLET;
 
 
 

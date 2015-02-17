@@ -41,6 +41,7 @@ int main(int argc, char **argv)
     // launch the main script
     QQmlApplicationEngine applicationEngine;
     applicationEngine.addImportPath("qrc:/");
+    applicationEngine.addImportPath(QCoreApplication::applicationDirPath() + "/../lib/qml/");
     applicationEngine.load(QUrl("qrc:/qml/Main.qml"));
 
     return app.exec();
