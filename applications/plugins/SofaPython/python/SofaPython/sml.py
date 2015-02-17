@@ -282,10 +282,13 @@ class BaseScene:
     class Param:
         pass
 
-    def __init__(self,parentNode,model):
+    def __init__(self,parentNode,model,name=None):
         self.model=model
         self.param=BaseScene.Param()
         self.nodes = dict() # to store special nodes
+        n=name
+        if n is None:
+            n=self.model.name
         self.node=parentNode.createChild(self.model.name)
 
 class SceneDisplay(BaseScene):
