@@ -1,8 +1,7 @@
+set(SOFA_PROJECT_FOLDER "SofaExternal")
+RegisterProjects("DiffusionSolver" PATH "${CMAKE_CURRENT_LIST_DIR}/extlibs/DiffusionSolver")
 
 set(SOFA_PROJECT_FOLDER "SofaPlugin")
-RegisterProjects("DiffusionSolver" OPTION SOFA-PLUGIN_IMAGE PATH "${CMAKE_CURRENT_SOURCE_DIR}/extlibs/DiffusionSolver")
-#add_subdirectory(extlibs/DiffusionSolver)
-
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
@@ -11,6 +10,7 @@ set(SOURCE_FILES
     ImageFilter.cpp
     ImageOperation.cpp
     ImageTransform.cpp
+    ImageTransformEngine.cpp
     TransferFunction.cpp
     ImageValuesFromPositions.cpp
     MergeImages.cpp
@@ -22,6 +22,7 @@ set(SOURCE_FILES
     ImageExporter.cpp 
     ImageDataDisplay.cpp
     VoronoiToMeshEngine.cpp
+    ImageToRigidMassEngine.cpp
 )
 
 set(HEADER_FILES
@@ -31,6 +32,7 @@ set(HEADER_FILES
     ImageFilter.h
     ImageOperation.h
     ImageTransform.h
+    ImageTransformEngine.h
     TransferFunction.h
     ImageValuesFromPositions.h
     MergeImages.h
@@ -45,6 +47,7 @@ set(HEADER_FILES
     Containers.h 
     ImageDataDisplay.h
     VoronoiToMeshEngine.h
+    ImageToRigidMassEngine.h
 )
 
 set(README_FILES image.txt)

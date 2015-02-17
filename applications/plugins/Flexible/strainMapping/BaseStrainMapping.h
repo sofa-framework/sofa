@@ -37,6 +37,8 @@
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
+#include <sofa/helper/IndexOpenMP.h>
+
 
 namespace sofa
 {
@@ -101,8 +103,7 @@ public:
     typedef typename BlockType::KBlock  KBlock;  ///< stiffness block matrix
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
-
-
+	
     virtual void resizeOut()
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
@@ -187,15 +188,15 @@ public:
         initJacobianBlock(jacobianBlock);
 
         OutVecDeriv&  out = *dOut.beginEdit();
-#ifdef USING_OMP_PRAGMAS
-#pragma omp parallel for
+#ifdef _OPENMP
+		#pragma omp parallel for
 #endif
-        for(size_t i=0; i < jacobianBlock.size(); i++)
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i < jacobianBlock.size(); i++)
         {
             out[i]=OutDeriv();
             jacobianBlock[i].addmult(out[i],in[i]);
         }
-        dOut.endEdit();
+		dOut.endEdit();
     }
 
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
@@ -209,7 +210,7 @@ public:
         OutVecCoord&  out = *dOut.beginEdit();
         const InVecCoord&  in = dIn.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
         for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -230,7 +231,7 @@ public:
             OutVecDeriv&  out = *dOut.beginEdit();
             const InVecDeriv&  in = dIn.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -251,7 +252,7 @@ public:
             InVecDeriv&  in = *dIn.beginEdit();
             const OutVecDeriv&  out = dOut.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -290,7 +291,7 @@ public:
         }
         else
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 			#pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)

@@ -35,6 +35,11 @@ else()
     configure_file("${SOFA_FRAMEWORK_DIR}/sofa/config.h.in"
                    "${SOFA_BUILD_DIR}/misc/include/sofa/config.h")
 
+    # Configuration file
+    set(SHARE_DIR ${SOFA_SRC_DIR}/share)
+    set(EXAMPLES_DIR ${SOFA_SRC_DIR}/examples)
+    configure_file(etc/sofa.ini.in ${CMAKE_BINARY_DIR}/etc/sofa.ini)
+
     sofa_save_option_list("misc/options.txt")
     sofa_save_compiler_definitions("misc/compiler-definitions.txt")
     sofa_save_dependencies("misc/dependencies.txt")

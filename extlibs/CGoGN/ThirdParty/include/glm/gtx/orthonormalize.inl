@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2010 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2005-12-21
 // Updated : 2005-12-21
@@ -7,43 +7,37 @@
 // File    : glm/gtx/orthonormalize.inl
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace glm{
-namespace gtx{
-namespace orthonormalize{
-
-    template <typename T>
-    inline detail::tmat3x3<T> orthonormalize
+namespace glm
+{
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tmat3x3<T, P> orthonormalize
 	(
-		const detail::tmat3x3<T>& m
+		const detail::tmat3x3<T, P>& m
 	)
-    {
-        detail::tmat3x3<T> r = m;
+	{
+		detail::tmat3x3<T, P> r = m;
 
-        r[0] = normalize(r[0]);
+		r[0] = normalize(r[0]);
 
-	    float d0 = dot(r[0], r[1]);
-	    r[1] -= r[0] * d0;
-	    r[1] = normalize(r[1]);
+		float d0 = dot(r[0], r[1]);
+		r[1] -= r[0] * d0;
+		r[1] = normalize(r[1]);
 
-	    float d1 = dot(r[1], r[2]);
-	    d0 = dot(r[0], r[2]);
-	    r[2] -= r[0] * d0 + r[1] * d1;
-	    r[2] = normalize(r[2]);
+		float d1 = dot(r[1], r[2]);
+		d0 = dot(r[0], r[2]);
+		r[2] -= r[0] * d0 + r[1] * d1;
+		r[2] = normalize(r[2]);
 
-        return r;
-    }
+		return r;
+	}
 
-    template <typename T> 
-    inline detail::tvec3<T> orthonormalize
+	template <typename T, precision P> 
+	GLM_FUNC_QUALIFIER detail::tvec3<T, P> orthonormalize
 	(
-		const detail::tvec3<T>& x, 
-		const detail::tvec3<T>& y
+		const detail::tvec3<T, P>& x, 
+		const detail::tvec3<T, P>& y
 	)
-    {
-        return normalize(x - y * dot(y, x));
-    }
-
-}//namespace orthonormalize
-}//namespace gtx
+	{
+		return normalize(x - y * dot(y, x));
+	}
 }//namespace glm
-

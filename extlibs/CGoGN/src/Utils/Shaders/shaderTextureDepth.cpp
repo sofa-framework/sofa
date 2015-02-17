@@ -59,7 +59,7 @@ void ShaderTextureDepth::setTextureUnit(GLenum texture_unit)
 {
 	this->bind();
 	int unit = texture_unit - GL_TEXTURE0;
-	glUniform1iARB(*m_unif_unit,unit);
+	glUniform1i(*m_unif_unit,unit);
 	m_unit = unit;
 }
 
@@ -67,7 +67,7 @@ void ShaderTextureDepth::setDepthTextureUnit(GLenum texture_unit)
 {
 	this->bind();
 	int unit = texture_unit - GL_TEXTURE0;
-	glUniform1iARB(*m_unif_depthUnit,unit);
+	glUniform1i(*m_unif_depthUnit,unit);
 	m_depthUnit = unit;
 }
 
@@ -103,8 +103,8 @@ void ShaderTextureDepth::restoreUniformsAttribs()
 	bindVA_VBO("VertexTexCoord", m_vboTexCoord);
 	
 	this->bind();
-	glUniform1iARB(*m_unif_unit,m_unit);
-	glUniform1iARB(*m_unif_depthUnit,m_depthUnit);
+	glUniform1i(*m_unif_unit,m_unit);
+	glUniform1i(*m_unif_depthUnit,m_depthUnit);
 	this->unbind();
 }
 

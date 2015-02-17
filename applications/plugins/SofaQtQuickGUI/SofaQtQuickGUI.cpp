@@ -58,5 +58,6 @@ void SofaQtQuickGUI::registerTypes(const char* /*uri*/)
     qmlRegisterType<PickingInteractor>	("PickingInteractor", versionMajor, versionMinor, "PickingInteractor");
     qmlRegisterType<PythonInteractor>	("PythonInteractor"	, versionMajor, versionMinor, "PythonInteractor");
     qmlRegisterType<Scene>				("Scene"			, versionMajor, versionMinor, "Scene");
+    qmlRegisterType<SceneListModel> 	("SceneListModel"   , versionMajor, versionMinor, "SceneListModel");
     qmlRegisterType<Viewer>				("Viewer"			, versionMajor, versionMinor, "Viewer");
 }

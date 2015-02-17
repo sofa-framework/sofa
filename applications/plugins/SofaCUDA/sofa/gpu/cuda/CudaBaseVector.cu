@@ -88,7 +88,7 @@ __global__ void Cuda_vector_vector_peq_kernel(int dim,real f, const real * a, re
     b[ti] += a[ti]*f;
 }
 
-void SOFA_GPU_CUDA_API vector_vector_peqf(int dim,float f,const void * a,void * b)
+void vector_vector_peqf(int dim,float f,const void * a,void * b)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
@@ -115,7 +115,7 @@ __global__ void Cuda_sub_vector_kernel(int dim,const real * a, const real * b, r
     r[ti] = a[ti] - b[ti];
 }
 
-void SOFA_GPU_CUDA_API sub_vector_vectorf(int dim,const void * a, const void * b, void * r)
+void sub_vector_vectorf(int dim,const void * a, const void * b, void * r)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,1);
@@ -142,7 +142,7 @@ __global__ void permute_vector_kernel(int dim,const real * a, const int * perm, 
     b[ti] = a[perm[ti]];
 }
 
-void SOFA_GPU_CUDA_API permute_vectorf(int dim,const void * a, const void * perm, void * b)
+void permute_vectorf(int dim,const void * a, const void * perm, void * b)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((dim+BSIZE-1)/BSIZE,1);

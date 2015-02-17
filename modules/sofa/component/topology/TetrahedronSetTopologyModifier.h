@@ -201,11 +201,11 @@ public:
     @param tetrahedra an array of tetrahedron indices to be removed (note that the array is not const since it needs to be sorted)
     *
     */
-    virtual void removeTetrahedra(sofa::helper::vector< unsigned int >& tetrahedra);
+    virtual void removeTetrahedra(const sofa::helper::vector< unsigned int >& tetrahedraIds);
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+    virtual void removeItems(const sofa::helper::vector<unsigned int> &items);
 
     /** \brief  Removes all tetrahedra in the ball of center "ind_ta" and of radius dist(ind_ta, ind_tb)
     */

@@ -92,6 +92,8 @@ set(HEADER_FILES
     kdTree.inl
     kdTree.h
     vectorData.h
+    GenerateRigid.h
+	IndexOpenMP.h
     pooledEigen/Pool.h
     pooledEigen/CompressedStorage.h
     pooledEigen/SparseMatrix.h
@@ -147,6 +149,7 @@ set(SOURCE_FILES
     OptionsGroup.cpp
     Polynomial_LD.cpp
     UnitTest.cpp
+    GenerateRigid.cpp
     pooledEigen/Pool.cpp
 	)
 

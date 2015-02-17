@@ -10,7 +10,6 @@ if(NOT PRECONFIGURE_DONE)
     if(NOT PS3)
         override_default(SOFA-APPLICATION_RUNSOFA BOOL ON "Build RunSofa application")
         override_default(SOFA-APPLICATION_MODELER BOOL ON "Build Modeler application")
-        override_default(SOFA-APPLICATION_GENERATERIGID BOOL ON "Build GenerateRigid application")
     endif()
 endif()
 

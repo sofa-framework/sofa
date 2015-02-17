@@ -70,6 +70,9 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
         intersection->intersectors.add<RigidSphereModel, PointModel, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<LineModel, RigidSphereModel, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<TriangleModel, RigidSphereModel, MeshNewProximityIntersection>(this);
+
+        intersection->intersectors.add<RigidCapsuleModel, TriangleModel, MeshNewProximityIntersection>(this);
+        intersection->intersectors.add<RigidCapsuleModel, LineModel, MeshNewProximityIntersection>(this);
     }
 }
 

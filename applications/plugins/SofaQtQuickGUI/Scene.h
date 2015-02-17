@@ -2,11 +2,15 @@
 #define SCENE_H
 
 #include "SofaQtQuickGUI.h"
+
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/common/MutationListener.h>
+
 #include <QObject>
 #include <QUrl>
 #include <QAbstractListModel>
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/MutationListener.h>
+#include <QQmlParserStatus>
+#include <QList>
 
 class QTimer;
 class QVector3D;
@@ -17,26 +21,15 @@ namespace sofa
 namespace qtquick
 {
 
-class Scene : public QAbstractListModel, private sofa::simulation::MutationListener
+class SceneListModel;
+
+class Scene : public QObject
 {
     Q_OBJECT
-
-    enum {
-        NameRole = Qt::UserRole + 1,
-        ParentIndexRole,
-        DepthRole,
-        TypeRole,
-        IsNodeRole
-    };
 
 public:
     explicit Scene(QObject *parent = 0);
 	~Scene();
-
-    int	rowCount(const QModelIndex & parent = QModelIndex()) const;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-    QHash<int,QByteArray> roleNames() const;
-    void update();
 
 public:
 	Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged);
@@ -79,6 +72,7 @@ public:
 
 signals:
 	void loaded();
+    void aboutToUnload();
 	void statusChanged(Status newStatus);
 	void sourceChanged(const QUrl& newSource);
 	void sourceQMLChanged(const QUrl& newSourceQML);
@@ -122,10 +116,60 @@ public:
 	sofa::simulation::Simulation* sofaSimulation() const {return mySofaSimulation;}
 
 private:
-    int findItemIndex(sofa::core::objectmodel::Base* base) const;
-    int findItemIndex(sofa::core::objectmodel::BaseNode* parent, sofa::core::objectmodel::Base* base) const;
+	Status							myStatus;
+	QUrl							mySource;
+	QUrl							mySourceQML;
+	bool							myIsInit;
+	bool							myVisualDirty;
+	double							myDt;
+	bool							myPlay;
+	bool							myAsynchronous;
 
-    bool isAncestor(sofa::core::objectmodel::BaseNode* ancestor, sofa::core::objectmodel::BaseNode* node) const;
+	sofa::simulation::Simulation*	mySofaSimulation;
+    QTimer*							myStepTimer;
+};
+
+class SceneListModel : public QAbstractListModel, public QQmlParserStatus, private sofa::simulation::MutationListener
+{
+    Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
+
+public:
+    SceneListModel(QObject* parent = 0);
+    ~SceneListModel();
+
+    void classBegin();
+    void componentComplete();
+
+    Q_INVOKABLE void update();
+
+    Q_ENUMS(Visibility)
+    enum Visibility {
+        Visible     = 0,
+        Collapsed   = 1,
+        Hidden      = 2
+    };
+
+public slots:
+    void handleSceneChange(Scene* newScene);
+    void clear();
+
+public:
+    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged);
+
+public:
+    Scene* scene() const		{return myScene;}
+    void setScene(Scene* newScene);
+
+protected:
+    int	rowCount(const QModelIndex & parent = QModelIndex()) const;
+    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    QHash<int,QByteArray> roleNames() const;
+
+    Q_INVOKABLE void setCollapsed(int row, bool value);
+
+signals:
+    void sceneChanged(sofa::qtquick::Scene* newScene);
 
 protected:
     void addChild(sofa::simulation::Node* parent, sofa::simulation::Node* child);
@@ -140,30 +184,48 @@ protected:
     //void sleepChanged(sofa::simulation::Node* node);
 
 private:
-	Status							myStatus;
-	QUrl							mySource;
-	QUrl							mySourceQML;
-	bool							myIsInit;
-	bool							myVisualDirty;
-	double							myDt;
-	bool							myPlay;
-	bool							myAsynchronous;
+    enum {
+        NameRole = Qt::UserRole + 1,
+        DepthRole,
+        VisibilityRole,
+        TypeRole,
+        IsNodeRole
+    };
 
-	sofa::simulation::Simulation*	mySofaSimulation;
-	QTimer*							myStepTimer;
-
-    struct SceneModelItem
+    struct Item
     {
-        int                                     parentIndex;
+        Item() :
+            parent(0),
+            children(0),
+            depth(0),
+            visibility(0),
+            base(0),
+            object(0),
+            context(0),
+            node(0)
+        {
+
+        }
+
+        Item*                                   parent;
+        QVector<Item*>                          children;
         int                                     depth;
+        int                                     visibility;
 
         sofa::core::objectmodel::Base*          base;
         sofa::core::objectmodel::BaseObject*    object;
         sofa::core::objectmodel::BaseContext*   context;
         sofa::core::objectmodel::BaseNode*      node;
-        sofa::core::objectmodel::BaseNode*      parent;
     };
-    QVector<SceneModelItem>         mySceneModelItems;
+
+    Item buildNodeItem(Item* parent, sofa::core::objectmodel::BaseNode* node);
+    Item buildObjectItem(Item* parent, sofa::core::objectmodel::BaseObject* object);
+
+private:
+    QList<Item>                     myItems;
+    int                             myUpdatedCount;
+    Scene*                          myScene;
+
 };
 
 }

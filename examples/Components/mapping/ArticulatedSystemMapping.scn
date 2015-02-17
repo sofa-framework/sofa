@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <Node dt="0.01" gravity="0 -9.81 0" name="root">
     <BruteForceDetection />
     <DefaultContactManager />
@@ -57,6 +58,6 @@
                 </Node>
             </Node>
         </Node>
-        <StiffSpringForceField name="Spring" input="@articulation" output="@restarticulation" spring=" 1 1 100.0 1.0 0.0  2 2 100.0 1.0 0.0  3 3 100.0 1.0 0.0" />
+        <StiffSpringForceField name="Spring" object1="@articulation" object2="@restarticulation" spring=" 1 1 100.0 1.0 0.0  2 2 100.0 1.0 0.0  3 3 100.0 1.0 0.0" />
     </Node>
 </Node>

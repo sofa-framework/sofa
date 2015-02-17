@@ -183,35 +183,12 @@ set(README_FILES Compliant.txt)
 
 # include python files
 include(./python/python.cmake)	
-	
-#if(WIN32)
-#	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-#	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-#else()
-#	include_directories("/usr/include/suitesparse/")
-#endif()
+
 	
 add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
-AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)
-AddSourceDependencies( GenerateRigid )
-
-# is this really useful?
-#if(NOT APPLE)
-#	AddLinkerDependencies(amd lapack blas camd colamd cholmod)
-#endif()
-
-# WIN32: copy the needed dlls from the lib dir to the Sofa bin dir
-#if(WIN32)
-#	file(GLOB sharedObjects "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
-#	foreach(sharedObject ${sharedObjects})
-#		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-#	endforeach()
-#endif()
-
-
-
+AddLinkerDependencies( SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph )
 
 
 

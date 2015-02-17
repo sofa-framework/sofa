@@ -41,7 +41,7 @@ namespace mapping
 */
 
 template <class TIn, class TOut >
-class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
+class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 {
 	typedef AssembledMultiMapping self;
   public:
@@ -107,7 +107,6 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
         
         if( geometric.compressedMatrix.nonZeros() ) return &geometric;
         else return 0;
-        
     }
 
 	
@@ -132,29 +131,33 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 
 
 	virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, 
-	                    const helper::vector<const  InVecDeriv*>& inDeriv) {
+                        const helper::vector<const InVecDeriv*>& inDeriv) {
 
 		unsigned n = js.size();
+        unsigned i = 0;
 
-		// working around zeroing outvecderivs (how to do that simply
-		// anyways ?)
-		bool first = true;
-        
-		for(unsigned i = 0; i < n ; ++i ) {
-			if( jacobian(i).rowSize() > 0 ) {
-				if( first ) {
-					first = false;
-					jacobian(i).mult(*outDeriv[0], *inDeriv[i]);
-				}
-				else {
-					jacobian(i).addMult(*outDeriv[0], *inDeriv[i]);
-				}
-			}
-	        
-		}
+        // let the first valid jacobian set its contribution    out = J_0 * in_0
+        for( ; i < n ; ++i )
+        {
+            if( jacobian(i).rowSize() > 0 )
+            {
+                jacobian(i).mult(*outDeriv[0], *inDeriv[i]);
+                break;
+            }
+        }
+
+        ++i;
+
+        // the next valid jacobians will add their contributions    out += J_i * in_i
+        for( ; i < n ; ++i )
+        {
+            if( jacobian(i).rowSize() > 0 )
+                jacobian(i).addMult(*outDeriv[0], *inDeriv[i]);
+        }
+
 	}
 
-	void debug() {
+    void debug() {
 		std::cerr << this->getClassName() << std::endl;
 		for( unsigned i = 0, n = js.size(); i < n; ++i) {
 			std::cerr << "from: " <<  this->getFrom()[i]->getContext()->getName() 
@@ -254,20 +257,20 @@ class SOFA_Compliant_API AssembledMultiMapping : public core::MultiMapping<TIn, 
 		
 		const unsigned n = this->getFrom().size();
 		if( n != js.size() ) {
-			release();
-			
-			// alloc
-			if( js.size() != n ) {
-				js.resize( n );
-				
-				for( unsigned i = 0; i < n; ++i ) js[i] = new SparseMatrixEigen;
-			}
+            release();
+
+            // alloc
+            if( js.size() != n ) {
+                js.resize( n );
+
+                for( unsigned i = 0; i < n; ++i ) js[i] = new SparseMatrixEigen;
+            }
 		}
 	}
 
 	// delete jacobians
-	void release() {
-		for( unsigned i = 0, n = js.size(); i < n; ++i) {
+    void release() {
+        for( unsigned i = 0, n = js.size(); i < n; ++i) {
 			delete js[i];
 			js[i] = 0;
 		}

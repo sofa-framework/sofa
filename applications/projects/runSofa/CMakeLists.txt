@@ -17,8 +17,7 @@ endif()
 	
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
 
-AddLinkerDependencies(SofaSimulationTree SofaGuiMain SofaComponentMain)
-
+AddLinkerDependencies(SofaSimulationTree SofaGuiMain SofaComponentMain tinyxml)
 
 if(SOFA-LIB_SIMULATION_GRAPH_DAG)
     AddLinkerDependencies(SofaSimulationGraph)
@@ -26,4 +25,3 @@ if(SOFA-LIB_SIMULATION_GRAPH_DAG)
 endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
-

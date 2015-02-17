@@ -42,7 +42,7 @@
 
 #include "ImageTypes.h"
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -59,10 +59,14 @@ bool Lloyd (std::vector<sofa::defaulttype::Vec<3,real> >& pos,const std::vector<
     unsigned int nbp=pos.size();
     bool moved=false;
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
-    for (int i=0; i<nbp; i++)
+#ifdef WIN32
+	for(long int i=0; i<nbp; i++)
+#else
+    for (unsigned int i=0; i<nbp; i++)
+#endif
     {
         // compute centroid
         Coord C,p;
@@ -328,7 +332,7 @@ template<typename real>
 bool hasConverged(cimg_library::CImg<real>& previous, cimg_library::CImg<real>& current, SReal tolerance)
 {
     bool result=true;
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
     for(int i=0; i<previous.width(); ++i) for(int j=0; j<previous.height(); ++j) for(int k=0; k<previous.depth(); ++k)
@@ -351,7 +355,7 @@ void left(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, cons
 {
     for(int i=d.width()-2; i>=0; --i)
     {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int j=d.height()-2; j>=1; --j)
@@ -378,7 +382,7 @@ void right(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, con
 {
     for(int i=1; i<d.width(); ++i)
     {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int j=1; j<d.height()-1; ++j)
@@ -405,7 +409,7 @@ void down(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, cons
 {
     for(int j=d.height()-2; j>=0; --j)
     {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int i=d.width()-2; i>=1; --i)
@@ -432,7 +436,7 @@ void up(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, const 
 {
     for(int j=1; j<d.height(); ++j)
     {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int i=1; i<d.width()-1; ++i)
@@ -459,7 +463,7 @@ void backward(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, 
 {
     for(int k=d.depth()-2; k>=0; --k)
     {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int i=d.width()-2; i>=1; --i)
@@ -486,7 +490,7 @@ void forward(cimg_library::CImg<unsigned int>& v, cimg_library::CImg<real>& d, c
 {
     for(int k=1; k<d.depth(); ++k)
     {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int i=1; i<d.width()-1; ++i)
@@ -536,7 +540,7 @@ void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<un
     }
     //Build a new distance image from distances.
     cimg_library::CImg<real> v_distances(distances.width(), distances.height(), distances.depth(), 3, std::numeric_limits<real>::max());
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
     for(int i=0; i<distances.width(); ++i) for(int j=0; j<distances.height(); ++j) for(int k=0; k<distances.depth(); ++k)
@@ -557,7 +561,7 @@ void parallelMarching(cimg_library::CImg<real>& distances, cimg_library::CImg<un
     }
 
     //Update distances with v_distances
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
     for(int i=0; i<distances.width(); ++i) for(int j=0; j<distances.height(); ++j) for(int k=0; k<distances.depth(); ++k)

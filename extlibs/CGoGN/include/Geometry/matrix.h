@@ -64,10 +64,10 @@ class Matrix
 		bool setSubMatrix(unsigned int ii, unsigned int jj, const Matrix<K,L,T>& m);
 
 		template <unsigned int K>
-		bool setSubVectorV(unsigned int ii, unsigned int jj, const Vector<K,T>& v) ;
+                bool setSubVectorV(unsigned int ii, unsigned int jj, const typename Vector<K,T>::type& v) ;
 
 		template <unsigned int L>
-		bool setSubVectorH(unsigned int ii, unsigned int jj, const Vector<L,T>& v) ;
+                bool setSubVectorH(unsigned int ii, unsigned int jj, const typename Vector<L,T>::type& v) ;
 
 		/**********************************************/
 		/*                 ACCESSORS                  */
@@ -81,10 +81,10 @@ class Matrix
 		bool getSubMatrix(unsigned int ii, unsigned int jj, Matrix<K,L,T>& m) const;
 
 		template <unsigned int K>
-		bool getSubVectorV(unsigned int ii, unsigned int jj, Vector<K,T>& v) const;
+                bool getSubVectorV(unsigned int ii, unsigned int jj, typename Vector<K,T>::type& v) const;
 
 		template <unsigned int L>
-		bool getSubVectorH(unsigned int ii, unsigned int jj, Vector<L,T>& v) const;
+                bool getSubVectorH(unsigned int ii, unsigned int jj, typename Vector<L,T>::type& v) const;
 
 		unsigned int m() const;
 
@@ -115,7 +115,7 @@ class Matrix
 		Matrix<M,P,T> operator*(const Matrix<N,P,T>& m) const;
 
 		// Matrix / Vector multiplication
-		Vector<M,T> operator*(const Vector<N,T>& v) const;
+                typename Vector<M,T>::type operator*(const typename Vector<N,T>::type& v) const;
 
 		// Matrix / Scalar multiplication
 		Matrix<M,N,T> operator*(T s) const;
@@ -164,11 +164,11 @@ class Matrix
 
 // Vector / Matrix multiplication
 template <unsigned int M, unsigned int N, typename T>
-Vector<N,T> operator*(const Vector<M,T>& v, const Matrix<M,N,T>& m) ;
+typename Vector<N,T>::type operator*(const typename Vector<M,T>::type& v, const Matrix<M,N,T>& m) ;
 
 // Matrix / Vector multiplication
 template <unsigned int M, unsigned int N, typename T>
-Vector<M,T> operator*(const Matrix<M,N,T>& m,const Vector<N,T>& v) ;
+typename Vector<M,T>::type operator*(const Matrix<M,N,T>& m,const typename Vector<N,T>::type & v) ;
 
 // Scalar / Matrix multiplication
 template <unsigned int M, unsigned int N, typename T>
@@ -176,7 +176,7 @@ Matrix<M,N,T> operator*(T s, const Matrix<M,N,T>& m) ;
 
 // Vector / Transposed vector multiplication
 template <unsigned int M, unsigned int N, typename T>
-Matrix<M,N,T> transposed_vectors_mult(const Vector<M,T>& v1, const Vector<N,T>& v2) ;
+Matrix<M,N,T> transposed_vectors_mult(const typename Vector<M,T>::type& v1, const typename Vector<N,T>::type& v2) ;
 
 
 /**********************************************/

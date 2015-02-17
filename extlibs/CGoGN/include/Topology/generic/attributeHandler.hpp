@@ -196,7 +196,7 @@ inline T& AttributeHandler<T, ORBIT, MAP>::operator[](Cell<ORBIT> c)
 	unsigned int a = m_map->getEmbedding(c) ;
 
 	if (a == EMBNULL)
-		a = Algo::Topo::setOrbitEmbeddingOnNewCell(*m_map, c) ;
+        a = Algo::Topo::template setOrbitEmbeddingOnNewCell<ORBIT,MAP>(*m_map, c) ;
 	return m_attrib->operator[](a) ;
 }
 

@@ -27,6 +27,8 @@
 
 #include <cmath>
 
+#include <boost/lambda/lambda.hpp>
+#include <boost/lambda/if.hpp>
 namespace CGoGN
 {
 
@@ -47,16 +49,26 @@ public:
 template <typename PFP>
 unsigned int vertexLevel(typename PFP::MAP& map, Vertex v)
 {
+    typedef typename PFP::MAP MAP;
+    namespace bl = boost::lambda;
+    using bl::var;
     assert(map.getDartLevel(v) <= map.getCurrentLevel() || !"vertexLevel : called with a dart inserted after current level") ;
 
-	unsigned int level = map.getMaxLevel();
+    unsigned int level = map.getMaxLevel();
 
-	map.foreach_dart_of_orbit(v, [&] (Dart d)
-	{
-		unsigned int ldit = map.getDartLevel(d) ;
-		if(ldit < level)
-			level = ldit;
-	});
+//	map.foreach_dart_of_orbit(v, [&] (Dart d)
+//	{
+//		unsigned int ldit = map.getDartLevel(d) ;
+//		if(ldit < level)
+//			level = ldit;
+//	});
+    unsigned int ldit;
+    map.foreach_dart_of_orbit(v,
+    (
+        var(ldit) = bl::bind(&MAP::getDartLevel,boost::ref(map), bl::_1),
+        bl::if_(boost::ref(ldit) < boost::ref(level))[
+            var(level) = boost::ref(ldit)]
+    ));
 
 //	Dart dit = d;
 //	do
