@@ -67,10 +67,10 @@ def createScene( node ):
     femur.mass.box(femur.width, femur.length, femur.width, rho)
 
     radius = 0.05
-    x, y = 2 * radius, - 0.3
+    w, h = 2 * radius, - femur.length / 2.0
 
-    condyles = femur.dofs.map_vec3('condyles', vec( x, y, 0,
-                                                    -x, y, 0) )
+    condyles = femur.dofs.map_vec3('condyles', vec( w, h, 0,
+                                                    -w, h, 0) )
 
     condyles.createObject('SphereModel', radius = radius)
 
@@ -83,16 +83,16 @@ def createScene( node ):
 
     mesh = os.path.join(os.path.dirname(__file__), 'box-inner.obj')
 
-    size = x + radius
+    size = w + radius
 
     tibia.collision = rigid.Collision(tibia.node,
                                       mesh,
                                       scale3d = vec(size, 2 * radius, radius),
-                                      translation = vec(0, -y + radius, 0))
+                                      translation = vec(0, -h + radius, 0))
 
     femur.fixed = True
 
-    femur.attach = femur.dofs.map_vec3('attach', vec(0, y, 0))
+    femur.attach = femur.dofs.map_vec3('attach', vec(0, h, 0))
     tibia.attach = tibia.dofs.map_vec3('attach', vec(0, 0.9 * tibia.length / 2, 0))
 
     delta = scene.createChild('delta')
