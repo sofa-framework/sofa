@@ -25,6 +25,10 @@ timeout "Components/mapping/SPHFluidSurfaceMapping.scn" "60"
 iterations "Components/animationloop/FreeMotionAnimationLoop.scn" "10"
 timeout "Components/animationloop/FreeMotionAnimationLoop.scn" "180"
 
+# Long 
+iterations "Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess_performanceTest.scn" "10"
+timeout "Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess_performanceTest.scn" "180"
+
 # Temporarily ignore this scene, because it produces litterally
 # millions of warnings:
 # WARNING[default2(MinProximityIntersection)]: WARNING: null distance between contact detected

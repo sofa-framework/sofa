@@ -87,6 +87,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     main.cpp
     sofa/gpu/cuda/mycuda.cpp
+	sofa/gpu/cuda/CudaTypes.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
     sofa/gpu/cuda/CudaBoxROI.cpp
     sofa/gpu/cuda/CudaSphereROI.cpp
@@ -190,13 +191,20 @@ cuda_include_directories(${SOFA_EXTLIBS_DIR})
 cuda_include_directories(${SOFA_INC_DIR})
 
 #Make these compiler definition available to nvcc
-add_definitions("-DSOFA_BUILD_GPU_CUDA")
-if(SOFA-EXTERNAL_GLEW)
-    add_definitions("-DSOFA_HAVE_GLEW")
+if(WIN32)
+	add_definitions("-DWIN32")
+    set(WINDOWSOPTIONS "-MD")
 endif()
 
+add_definitions("-DSOFA_BUILD_GPU_CUDA")
+if(SOFA-EXTERNAL_GLEW)
+	add_definitions("-DSOFA_HAVE_GLEW")
+endif()
+
+AddCompilerDefinitions("SOFA_BUILD_GPU_CUDA")
+
 #Get nvcc compiler to build the library
-cuda_add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS})
+cuda_add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWSOPTIONS})
 if(SOFA-CUDA_CUBLAS)
     CUDA_ADD_CUBLAS_TO_TARGET(${PROJECT_NAME})
     find_package(CUDASparse REQUIRED)
@@ -204,7 +212,6 @@ if(SOFA-CUDA_CUBLAS)
     target_link_libraries(${PROJECT_NAME} ${CUDA_SPARSE_LIBRARY})
 endif()
 
-AddCompilerDefinitions("SOFA_BUILD_GPU_CUDA")
 AddLinkerDependencies(SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

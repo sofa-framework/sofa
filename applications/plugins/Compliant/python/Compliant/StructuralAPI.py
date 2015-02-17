@@ -2,22 +2,23 @@
 # An alternative high(mid?)-level python API to describe a Compliant scene.
 #
 # With this API, the SOFA structure is not hidden and must be known by the user.
-# But the obscure python-based structures (like Rigid.Frame) are hidden.
+# But the obscure python-based structures (like Frame) are hidden.
 #
 # An important advantage is that a pointer is accessible for any created node and component
 # (simplifying component customization, manual sub-scene creation, etc.)
 #
 # Note that both python APIs and manual creation can be used together.
 #
-# see Compliant/examples/StructuralAPI.py for an basic example.
+# see Compliant/examples/StructuralAPI.py for a basic example.
 
-
-import Rigid
+import Frame
 import Tools
 from Tools import cat as concat
 import numpy
+import Sofa
 from SofaPython import Quaternion
 import SofaPython.Tools
+import SofaPython.mass
 import math
 
 # to specify the floating point encoding (double by default)
@@ -31,44 +32,42 @@ idxVisualModel = 0
 geometric_stiffness = 0
 
 
-
 class RigidBody:
     ## Generic Rigid Body
 
+
     def __init__(self, node, name):
         self.node = node.createChild( name )  # node
+        self.collision = None # the added collision mesh if any
+        self.visual = None # the added visual model if any
         self.dofs = None   # dofs
         self.mass = None   # mass
-        self.frame = Rigid.Frame()
-        self.framecom = Rigid.Frame()
+        self.frame = Frame.Frame()
+        self.framecom = Frame.Frame()
 
-    def setFromMesh(self, filepath, density = 1000.0, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
+    def setFromMesh(self, filepath, density = 1, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
         ## create the rigid body from a mesh (inertia and com are automatically computed)
-        info = Rigid.generate_rigid(filepath, density, scale3d)
-        self.setFromRigidInfo(info, offset, inertia_forces)
-
-    def setFromRigidFile(self, rigidfilepath, offset = [0,0,0,0,0,0,1], inertia_forces = False):
-        ## create the rigid body from a rigid file (it contains inertia and com)
-        info = Rigid.read_rigid(rigidfilepath)
-        self.setFromRigidInfo(info, offset, inertia_forces)
+        massInfo = SofaPython.mass.RigidMassInfo()
+        massInfo.setFromMesh(filepath, density, scale3d)
+        self.setFromRigidInfo(massInfo, offset, inertia_forces)
 
     def setFromRigidInfo(self, info, offset = [0,0,0,0,0,0,1], inertia_forces = False) :
-        self.framecom = Rigid.Frame()
+        self.framecom = Frame.Frame()
         self.framecom.rotation = info.inertia_rotation
         self.framecom.translation = info.com
 
-        self.frame = Rigid.Frame(offset) * self.framecom
+        self.frame = Frame.Frame(offset) * self.framecom
 
         self.dofs = self.frame.insert( self.node, name = 'dofs', template="Rigid3"+template_suffix )
         self.mass = self.node.createObject('RigidMass',
                                 name = 'mass',
                                 mass = info.mass,
-                                inertia = concat(info.diagonal_inertia.tolist()),
+                                inertia = concat(info.diagonal_inertia),
                                 inertia_forces = inertia_forces )
 
     def setManually(self, offset = [0,0,0,0,0,0,1], mass = 1, inertia = [1,1,1], inertia_forces = False ):
         ## create the rigid body by manually giving its inertia
-        self.frame = Rigid.Frame( offset )
+        self.frame = Frame.Frame( offset )
         self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
         self.mass = self.node.createObject('RigidMass',
                                 name = 'mass',
@@ -80,21 +79,23 @@ class RigidBody:
         ## adding a collision mesh to the rigid body with a relative offset
         # (only a Triangle collision model is created, more models can be added manually)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+        self.collision = RigidBody.CollisionMesh( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
+        return self.collision
 
     def addVisualModel(self, filepath, scale3d=[1,1,1], offset=[0,0,0,0,0,0,1]):
         ## adding a visual model to the rigid body with a relative offset
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+        self.visual = RigidBody.VisualModel( self.node, filepath, scale3d, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
+        return self.visual
 
     def addOffset(self, name, offset=[0,0,0,0,0,0,1]):
         ## adding a relative offset to the rigid body (e.g. used as a joint location)
         # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
-        return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Rigid.Frame(offset) ).offset() )
+        return RigidBody.Offset( self.node, name, ( self.framecom.inv() * Frame.Frame(offset) ).offset() )
 
     def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
         ## adding a offset given in absolute coordinates to the rigid body
-        return RigidBody.Offset( self.node, name, (self.frame.inv()*Rigid.Frame(offset)).offset() )
+        return RigidBody.Offset( self.node, name, (self.frame.inv()*Frame.Frame(offset)).offset() )
 
     def addMotor( self, forces=[0,0,0,0,0,0] ):
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
@@ -137,7 +138,7 @@ class RigidBody:
     class Offset:
         def __init__(self, node, name, offset):
             self.node = node.createChild( name )
-            self.frame = Rigid.Frame( offset )
+            self.frame = Frame.Frame( offset )
             self.dofs = self.frame.insert( self.node, name='dofs', template="Rigid3"+template_suffix )
             self.mapping = self.node.createObject('AssembledRigidRigidMapping', name="mapping", source = '0 '+str(self.frame), geometricStiffness=geometric_stiffness)
 
@@ -147,7 +148,7 @@ class RigidBody:
 
         def addAbsoluteOffset(self, name, offset=[0,0,0,0,0,0,1]):
             ## adding a offset given in absolute coordinates to the offset
-            return RigidBody.Offset( self.node, name, (Rigid.Frame(offset) * self.frame.inv()).offset() )
+            return RigidBody.Offset( self.node, name, (Frame.Frame(offset) * self.frame.inv()).offset() )
 
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
@@ -201,17 +202,17 @@ class GenericRigidJoint:
             l = 0
             limitMasks=[]
             for m in xrange(6):
-                if self.mask[m] == 0: # unconstrained direction
-                    limits[l*2+1] *= -1 # inverted upper bound
+                if self.mask[m] == 0 and limits[l] != None and limits[l+1] != None: # unconstrained direction with limits
+                    limits[l+1] *= -1.0 # inverted upper bound
                     l+=1
-                    limitMask = [0]*6;
+                    limitMaskL = [0]*6;
+                    limitMaskU = [0]*6;
                     # lower bound
-                    limitMask[m] = 1;
-                    limitMasks.append( limitMask )
+                    limitMaskL[m] = 1;
+                    limitMasks.append( limitMaskL )
                     # upper bound
-                    limitMask[m] = -1;  # inverted upper bound
-                    limitMasks.append( limitMask )
-
+                    limitMaskU[m] = -1;  # inverted upper bound
+                    limitMasks.append( limitMaskU )
             return GenericRigidJoint.Limits( self.node, limitMasks, limits, compliance )
 
     def addDamper( self, damping ):

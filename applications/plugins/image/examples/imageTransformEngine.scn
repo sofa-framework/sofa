@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <RequiredPlugin pluginName="image"/>
+  <ImageContainer template="ImageUS" name="image" filename="data/knee.hdr"/>
+  <ImageViewer template="ImageUS" name="viewer" src="@image" plane="70 70 70" />
+
+  <ImageTransformEngine name="transformEngine" inputTransform="@image.transform" translation="50 -100 20" rotation="20 56 -82" scale="0.2"/>
+  <ImageContainer template="ImageUS" name="transformedImage" image="@image.image" transform="@transformEngine.outputTransform"/>
+  <ImageViewer template="ImageUS" name="viewer" src="@transformedImage" plane="70 70 70" />
+
+<!--check if inverse option allows returning to initial transformation-->
+<!--  <ImageTransformEngine name="transformEngine2" inputTransform="@transformEngine.outputTransform" translation="@transformEngine.translation" rotation="@transformEngine.rotation" scale="@transformEngine.scale" inverse="true"/>-->
+<!--  <ImageContainer template="ImageUS" name="transformedImage2" image="@image.image" transform="@transformEngine2.outputTransform"/>-->
+<!--  <ImageViewer template="ImageUS" name="viewer" src="@transformedImage2" plane="70 70 70" />-->
+
+
+</Node>

@@ -30,7 +30,7 @@
 #include "PlasticStrainJacobianBlock.h"
 #include "../types/StrainTypes.h"
 #include <sofa/helper/OptionsGroup.h>
-
+#include <sofa/helper/IndexOpenMP.h>
 
 namespace sofa
 {
@@ -50,9 +50,7 @@ public:
     typedef BaseStrainMappingT<BlockType> Inherit;
     typedef typename Inherit::Real Real;
 
-
-    SOFA_CLASS(SOFA_TEMPLATE(PlasticStrainMapping,TStrain), SOFA_TEMPLATE(BaseStrainMappingT,BlockType));
-
+	SOFA_CLASS(SOFA_TEMPLATE(PlasticStrainMapping,TStrain), SOFA_TEMPLATE(BaseStrainMappingT,BlockType));
 
     /// @name  Different ways to decompose the strain
     //@{
@@ -121,10 +119,10 @@ protected:
         {
         case MULTIPLICATION:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 			#pragma omp parallel for
 #endif
-            for( int i=0 ; i<this->jacobian.size() ; i++ )
+			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];
@@ -135,10 +133,10 @@ protected:
         }
         case ADDITION:
         {
-#ifdef USING_OMP_PRAGMAS
-			#pragma omp parallel for
+#ifdef _OPENMP
+	#pragma omp parallel for
 #endif
-            for( int i=0 ; i<this->jacobian.size() ; i++ )
+			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<this->jacobian.size() ; i++ )
             {
                 out[i] = typename Inherit::OutCoord();
                 Real Max=(_max.getValue().size()<=i)?_max.getValue()[0]:_max.getValue()[i],SquaredYield=(_squaredYield.size()<=i)?_squaredYield[0]:_squaredYield[i] ,Creep=(_creep.getValue().size()<=i)?_creep.getValue()[0]:_creep.getValue()[i];

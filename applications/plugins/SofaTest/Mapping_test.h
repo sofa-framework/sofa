@@ -31,7 +31,6 @@
 #include <sofa/component/init.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/common/VectorOperations.h>
-#include <sofa/component/linearsolver/FullVector.h>
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
@@ -84,8 +83,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     typedef typename InDOFs::WriteVecCoord WriteInVecCoord;
     typedef typename InDOFs::ReadVecDeriv  ReadInVecDeriv;
     typedef typename InDOFs::WriteVecDeriv WriteInVecDeriv;
+    typedef typename InDOFs::MatrixDeriv  InMatrixDeriv;
     typedef Data<InVecCoord> InDataVecCoord;
     typedef Data<InVecDeriv> InDataVecDeriv;
+    typedef Data<InMatrixDeriv> InDataMatrixDeriv;
 
     typedef typename Mapping::Out Out;
     typedef component::container::MechanicalObject<Out> OutDOFs;
@@ -97,8 +98,10 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     typedef typename OutDOFs::WriteVecCoord WriteOutVecCoord;
     typedef typename OutDOFs::ReadVecDeriv  ReadOutVecDeriv;
     typedef typename OutDOFs::WriteVecDeriv WriteOutVecDeriv;
+    typedef typename OutDOFs::MatrixDeriv  OutMatrixDeriv;
     typedef Data<OutVecCoord> OutDataVecCoord;
     typedef Data<OutVecDeriv> OutDataVecDeriv;
+    typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
 
     typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
 
@@ -114,6 +117,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
     static const unsigned char TEST_getK = 2; ///< testing getK used in assembly API
+    static const unsigned char TEST_applyJT_matrix = 3; ///< testing applyJT on matrices
     static const unsigned char TEST_ASSEMBLY_API = TEST_getJs | TEST_getK; ///< testing functions used in assembly API getJS getKS
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
@@ -194,6 +198,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     {
         if( !(flags & TEST_getJs) ) std::cerr<<"WARNING: MappingTest is not testing getJs\n";
         if( !(flags & TEST_getK) ) std::cerr<<"WARNING: MappingTest is not testing getK\n";
+        if( !(flags & TEST_applyJT_matrix) ) std::cerr<<"WARNING: MappingTest is not testing applyJT on matrices\n";
 
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         MechanicalParams mparams;
@@ -242,7 +247,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set random child forces and propagate them to the parent
         for( unsigned i=0; i<Nc; i++ ){
-            fc[i] = Out::randomDeriv( 1.0);
+            fc[i] = Out::randomDeriv( 1.0 );
         }
         fp2.fill( InDeriv() );
         WriteInVecDeriv fin = inDofs->writeForces();
@@ -256,7 +261,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set small parent velocities and use them to update the child
         for( unsigned i=0; i<Np; i++ ){
-            vp[i] = In::randomDeriv( this->epsilon() * deltaMax);
+            vp[i] = In::randomDeriv( this->epsilon() * deltaMax );
         }
 //        cout<<"parent velocities vp = " << vp << endl;
         for( unsigned i=0; i<Np; i++ ){             // and small displacements
@@ -307,6 +312,23 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                 cout<<"vc  = " << vc << endl;
                 ADD_FAILURE() << "getJs() test failed"<<endl<<"vp = " << vp << endl<<"Jvp = " << Jv << endl <<"vc  = " << vc << endl;
             }
+        }
+
+        if( flags & TEST_applyJT_matrix )
+        {
+            // TODO test applyJT on matrices
+            // basic idea build a out random matrix  e.g. with helper::drand(100.0)
+            // call applyJT on both this matrice and on all its lines (oe cols ?) one by one
+            // then compare results
+
+//            OutMatrixDeriv outMatrices(  ); // how to build that, what size?
+//            /*WriteInMatrixDeriv min = */inDofs->write( MatrixDerivId::holonomicC() );
+//            WriteOutMatrixDeriv mout = outDofs->write( MatrixDerivId::holonomicC() );
+//            copyToData(mout,outMatrices);
+
+//            mapping->applyJt(  ConstraintParams*, MatrixDerivId::holonomicC(), MatrixDerivId::holonomicC() );
+
+
         }
 
         // compute parent forces from pre-treated child forces (in most cases, the pre-treatment does nothing)

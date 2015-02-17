@@ -1,57 +1,29 @@
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2010 G-Truc Creation (www.g-truc.net)
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Created : 2005-12-21
-// Updated : 2006-11-13
-// Licence : This source is under MIT License
-// File    : glm/gtx/epsilon.hpp
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Dependency:
-// - GLM core
-// - GLM_GTX_double
-// - GLM_GTX_half
-///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+/// OpenGL Mathematics (glm.g-truc.net)
+///
+/// Copyright (c) 2005 - 2013 G-Truc Creation (www.g-truc.net)
+/// Permission is hereby granted, free of charge, to any person obtaining a copy
+/// of this software and associated documentation files (the "Software"), to deal
+/// in the Software without restriction, including without limitation the rights
+/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+/// copies of the Software, and to permit persons to whom the Software is
+/// furnished to do so, subject to the following conditions:
+/// 
+/// The above copyright notice and this permission notice shall be included in
+/// all copies or substantial portions of the Software.
+/// 
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+/// THE SOFTWARE.
+///////////////////////////////////////////////////////////////////////////////////
 
-#ifndef glm_gtx_epsilon
-#define glm_gtx_epsilon
+#if(defined(GLM_MESSAGES))
+#	pragma message("GLM: GLM_GTX_epsilon extension is deprecated, include GLM_GTC_epsilon (glm/gtc/epsilon) instead")
+#endif
 
-// Dependency:
-#include "../glm.hpp"
-#include "../gtc/double_float.hpp"
-#include "../gtc/half_float.hpp"
-
-namespace glm
-{
-	namespace test{
-		void main_gtx_epsilon();
-	}//namespace test
-
-	namespace gtx{
-	//! GLM_GTX_epsilon extension: Comparaison functions for a user defined epsilon values.
-	namespace epsilon
-	{
-		//! Returns the component-wise compare of |x - y| < epsilon.
-		//! From GLM_GTX_epsilon extension.
-		template <typename genTypeT, typename genTypeU> 
-		bool equalEpsilon(
-			genTypeT const & x, 
-			genTypeT const & y, 
-			genTypeU const & epsilon);
-		
-		//! Returns the component-wise compare of |x - y| >= epsilon.
-		//! From GLM_GTX_epsilon extension.
-		template <typename genTypeT, typename genTypeU>
-		bool notEqualEpsilon(
-			genTypeT const & x, 
-			genTypeT const & y, 
-			genTypeU const & epsilon);
-
-	}//namespace epsilon
-	}//namespace gtx
-}//namespace glm
-
-#include "epsilon.inl"
-
-namespace glm{using namespace gtx::epsilon;}
-
-#endif//glm_gtx_epsilon
+// Promoted:
+#include "../gtc/epsilon.hpp"

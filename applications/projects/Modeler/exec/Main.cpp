@@ -25,6 +25,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <tinyxml.h>
+
 #include <QtGui/QApplication>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -34,6 +36,12 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/system/Utils.h>
+
+#include <sofa/gui/BaseGUI.h>
+
+using namespace sofa::helper::system;
 
 // ---------------------------------------------------------------------
 // ---
@@ -46,7 +54,38 @@ int main(int argc, char** argv)
     QApplication* application = new QApplication(argc, argv);
     (void)application;
 
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
+
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+
+    const std::string binDir = FileSystem::getParentDirectory(Utils::getExecutablePath());
+    const std::string prefix = FileSystem::getParentDirectory(binDir);
+    const std::string etcDir = prefix + "/etc";
+    const std::string sofaIniFilePath = etcDir + "/sofa.ini";
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+
+    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
+    {
+        std::string shareDir = iniFileValues["SHARE_DIR"];
+        if (!FileSystem::isAbsolute(shareDir))
+            shareDir = etcDir + "/" + shareDir;
+        sofa::helper::system::DataRepository.addFirstPath(shareDir);
+    }
+
+    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
+    {
+        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
+        if (!FileSystem::isAbsolute(examplesDir))
+            examplesDir = etcDir + "/" + examplesDir;
+        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
+    }
+
+#ifdef WIN32
+    const std::string pluginDir = "bin";
+#else
+    const std::string pluginDir = "lib";
+#endif
+    sofa::helper::system::PluginRepository.addFirstPath(prefix + "/" + pluginDir);
 
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();

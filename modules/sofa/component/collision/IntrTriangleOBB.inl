@@ -180,7 +180,7 @@ bool TIntrTriangleOBB<TDataTypes,TDataTypes2>::Find (Real dmax,int tri_flg)
     if(side == IntrConfiguration<Real>::LEFT)
         _sep_axis *= -1.0;
 
-    assert(mBox->onSurface(_pt_on_second));
+//    assert(mBox->onSurface(_pt_on_second));
 
 	_is_colliding = true;
 

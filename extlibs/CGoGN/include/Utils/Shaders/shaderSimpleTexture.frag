@@ -6,5 +6,5 @@ uniform sampler2D textureUnit;
 FRAG_OUT_DEF;
 void main()
 {
-	gl_FragColor=texture2D(textureUnit,texCoord);
+	FRAG_OUT=texture2D(textureUnit,texCoord);
 }

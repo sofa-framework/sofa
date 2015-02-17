@@ -3,6 +3,20 @@
 
 #include <CImg/CImg.h>
 
+
+#ifdef WIN32
+#	define EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#   define IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#   ifdef _MSC_VER
+#       pragma warning(disable : 4231)
+#       pragma warning(disable : 4910)
+#   endif
+#else
+#	define EXPORT_DYNAMIC_LIBRARY
+#   define IMPORT_DYNAMIC_LIBRARY
+#endif
+
+
 /** Solving diffusion on 3D regular grids (stored as CImg)
  * @param size (in) the size of the regular domain in the 3 directions.
  * @param img (in-out) the image to diffuse. It contains the Dirichlet boundary values and contains warm-start values (must be set to 0 for no warm-start).
@@ -69,12 +83,15 @@ struct EXPORT_DYNAMIC_LIBRARY DiffusionSolver
     /// Conjugate Gradient implementation (matrix-free)
     static void solveCG( ImageType& img, const MaskType& mask, Real spacingX, Real spacingY, Real spacingZ, unsigned iterations, Real threshold, const ImageType* material=NULL );
 
-
 };
 
 #if _WIN32
 // anti strip symbol for windows
 EXPORT_DYNAMIC_LIBRARY char init_DiffusionSolver_module();
+#endif
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(__DIFFUSIONSOLVER_CPP)
+    extern template class IMPORT_DYNAMIC_LIBRARY DiffusionSolver<float>;
 #endif
 
 

@@ -177,7 +177,7 @@ glm::mat4&  Pickable::transfo()
 
 void Pickable::rotate(float angle, const Geom::Vec3f& Axis)
 {
-	m_transfo = glm::rotate(m_transfo, angle, glm::vec3(Axis[0],Axis[1],Axis[2]));
+	m_transfo = glm::rotate(m_transfo, glm::radians(angle), glm::vec3(Axis[0],Axis[1],Axis[2]));
 }
 //void Pickable::rotate(float angle, const Geom::Vec3f& Axis)
 //{

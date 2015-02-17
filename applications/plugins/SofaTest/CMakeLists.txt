@@ -23,6 +23,7 @@ set(SOURCE_FILES
 AddCompilerDefinitions("SOFA_BUILD_TEST")
 AddCompilerDefinitions("GTEST_LINKED_AS_SHARED_LIBRARY")
 AddCompilerDefinitions("_VARIADIC_MAX=10")
+AddCompilerDefinitions("SOFA_SRC_DIR=\"${SOFA_SRC_DIR}\"")
 set(PYTHON_FILES "")
 
 if(SOFA-PLUGIN_SOFAPYTHON)

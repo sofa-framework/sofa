@@ -11,7 +11,7 @@ void main()
 {
 //	float s = scalar * 10.0;
 //	if( s - floor(s) <= 0.05 )
-//		gl_FragColor = vec4(0.0);
+//		FRAG_OUT = vec4(0.0);
 //	else
-		gl_FragColor = vec4(color, 0.0);
+		FRAG_OUT = vec4(color, 0.0);
 }

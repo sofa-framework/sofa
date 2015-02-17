@@ -28,6 +28,7 @@
 #include <sofa/helper/helper.h>
 
 #include <string>
+#include <map>
 
 namespace sofa
 {
@@ -80,6 +81,12 @@ SOFA_HELPER_API std::string GetLastError();
 /// Note that this function uses various non-portable tricks to achieve its
 /// goal, and it might not be the most reliable thing ever written.
 SOFA_HELPER_API std::string getExecutablePath();
+
+/// @brief Read a file written in a very basic ini-like format.
+///
+/// For each line that contains a '=' character, (e.g. "key=value"), the returned
+/// map will contains a pair <"key", "value">.  Other lines will be ignored.
+SOFA_HELPER_API std::map<std::string, std::string> readBasicIniFile(const std::string& path);
 
 }
 

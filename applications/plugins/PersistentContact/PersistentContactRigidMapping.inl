@@ -89,7 +89,7 @@ int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(co
     unsigned int inputIdx = m_inputMapping->index.getValue();
 
     this->index.setValue(inputIdx);
-    this->pointsPerFrame.setValue(m_inputMapping->pointsPerFrame.getValue());
+    this->rigidIndexPerPoint.setValue(m_inputMapping->rigidIndexPerPoint.getValue());
     Coord x_local = xfrom[inputIdx].inverseRotate(posContact - xfrom[inputIdx].getCenter());
 
     this->addPoint(x_local, inputIdx);
@@ -112,7 +112,7 @@ int PersistentContactRigidMapping<TIn, TOut>::keepContactPointFromInputMapping(c
     unsigned int inputIdx = m_inputMapping->index.getValue();
 
     this->index.setValue(inputIdx);
-    this->pointsPerFrame.setValue(m_inputMapping->pointsPerFrame.getValue());
+    this->rigidIndexPerPoint.setValue(m_inputMapping->rigidIndexPerPoint.getValue());
 
     if (_index > (int)m_previousPoints.size())
     {

@@ -7,6 +7,8 @@ import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 ContentItem {
     id: root
 
+    property string title: "Scene GUI"
+
     property int priority: 50
     property Scene scene
     property url source: scene ? scene.sourceQML : ""

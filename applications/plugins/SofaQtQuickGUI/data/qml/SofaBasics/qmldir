@@ -2,6 +2,7 @@ Tools 1.0 Tools.qml
 UISettings 1.0 UISettings.qml
 RecentSettings 1.0 RecentSettings.qml
 Scene 1.0 Scene.qml
+SceneListModel 1.0 SceneListModel.qml
 DefaultMenuBar 1.0 DefaultMenuBar.qml
 DefaultStatusBar 1.0 DefaultStatusBar.qml
 Actor 1.0 Actor.qml

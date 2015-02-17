@@ -28,6 +28,7 @@
 #include "initImage.h"
 #include "ImageTypes.h"
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/IndexOpenMP.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -40,7 +41,7 @@
 #include <newmat/newmat.h>
 #include <newmat/newmatap.h>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
     #include <omp.h>
 #endif
 
@@ -125,6 +126,7 @@ public:
     helper::vector< Data< SeqIndex >*> vf_roiVertices;
     helper::vector< Data< double >*> vf_roiValue;
 
+	
 
     Data< double > closingValue;
     Data< double > backgroundValue;
@@ -416,10 +418,10 @@ protected:
 
 
 
-#ifdef USING_OMP_PRAGMAS
-        #pragma omp parallel for
+#ifdef _OPENMP
+		#pragma omp parallel for
 #endif
-        for(int i=0; i<nbedg; i++)
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<nbedg; i++)
         {
             Coord pts[2];
             for(size_t j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
@@ -441,10 +443,10 @@ protected:
 //            // draw filled faces
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
-        for(int i=0; i<nbtri; i++)
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<nbtri; i++)
         {
             Coord pts[3];
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
@@ -475,10 +477,10 @@ protected:
 
         raPositions clpos(this->closingPosition);
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
-        for(int i=previousClosingTriSize; i<cltri.size(); i++)
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=previousClosingTriSize; i<cltri.size(); i++)
         {
             Coord pts[3];
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
@@ -552,10 +554,10 @@ protected:
         // draw edges
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing "<<nbedg<<" edges (mesh "<<meshId<<")..."<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
-        for(int i=0; i<nbedg; i++)
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<nbedg; i++)
         {
             Coord pts[2];
             T colors[2];
@@ -572,10 +574,10 @@ protected:
 //            // draw filled faces
         if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing "<<nbtri<<" triangles (mesh "<<meshId<<")..."<<std::endl;
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
-        for(int i=0; i<nbtri; i++)
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<nbtri; i++)
         {
             Coord pts[3];
             T colors[3];
@@ -609,10 +611,10 @@ protected:
 
             raPositions clpos(this->closingPosition);
 
-    #ifdef USING_OMP_PRAGMAS
+    #ifdef _OPENMP
             #pragma omp parallel for
-    #endif
-            for(int i=previousClosingTriSize; i<cltri.size(); i++)
+	#endif
+            for(sofa::helper::IndexOpenMP<unsigned int>::type i=previousClosingTriSize; i<cltri.size(); i++)
             {
                 Coord pts[3];
                 for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(clpos[cltri[i][j]])));
@@ -631,10 +633,10 @@ protected:
             raPositions clpos(this->closingPosition);
 
 
-    #ifdef USING_OMP_PRAGMAS
+    #ifdef _OPENMP
             #pragma omp parallel for
-    #endif
-            for(int i=previousClosingTriSize; i<cltri.size(); i++)
+	#endif
+            for(sofa::helper::IndexOpenMP<unsigned int>::type i=previousClosingTriSize; i<cltri.size(); i++)
             {
                 Coord pts[3];
                 T colors[3];

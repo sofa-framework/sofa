@@ -35,6 +35,7 @@ def createScene(node):
 
     proximity.alarmDistance = 0.5
     proximity.contactDistance = 0.2
+    proximity.useLineLine = True
 
   
     # plane
@@ -42,7 +43,7 @@ def createScene(node):
     plane.visual = dir + '/../mesh/ground.obj'
     plane.collision = plane.visual
     plane.mass_from_mesh( plane.visual, 10 )
-    plane.mu = 0.8 # per object friction coefficient
+    plane.mu = 0.5 # per object friction coefficient
     plane.node = plane.insert( scene )
     plane.node.createObject('FixedConstraint', indices = '0')
     

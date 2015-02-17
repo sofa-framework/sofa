@@ -216,13 +216,12 @@ public:
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
     *
     */
-    // side effect: edges are sorted in removeEdgesWarning
-    virtual void removeEdges(/*const*/ sofa::helper::vector< unsigned int >& edges,
+    virtual void removeEdges(const sofa::helper::vector<unsigned int> &edgeIds,
             const bool removeIsolatedPoints = true, const bool resetTopoChange = true);
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(/*const*/ sofa::helper::vector< unsigned int >& items);
+    virtual void removeItems(const sofa::helper::vector<unsigned int> &items);
 
     /** \brief Generic method for points renumbering
     */

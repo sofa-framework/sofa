@@ -16,7 +16,14 @@ def parseIdName(obj,objXml):
     obj.name = obj.id
     if not objXml.find("name") is None:
         obj.name = objXml.find("name").text
-        
+
+def parseTag(obj, objXml):
+    """ set tags of the object
+    """
+    obj.tags=set()
+    for xmlTag in objXml.iter("tag"):
+        obj.tags.add(xmlTag.text)
+
 def parseData(xmlData):
     """ return the list of data in xmlData
     """
@@ -51,6 +58,7 @@ class Model:
     class Rigid:
         def __init__(self, objXml):
             parseIdName(self,objXml)
+            parseTag(self,objXml)
             self.position=Tools.strToListFloat(objXml.find("position").text)
             self.mesh = None
             self.density=None
@@ -68,6 +76,16 @@ class Model:
             
         def isAbsolute(self):
             return self.type == "absolute"
+            
+    class Dof:
+        def __init__(self, dofXml):
+            self.index = Model.dofIndex[dofXml.attrib["index"]]
+            self.min = None
+            self.max = None
+            if "min" in dofXml.attrib:
+                self.min = float(dofXml.attrib["min"])
+            if "max" in dofXml.attrib:
+                self.max = float(dofXml.attrib["max"])
         
     class JointGeneric:
         #def __init__(self, name="Unknown",object1,offset1,object2,offset2):
@@ -83,10 +101,9 @@ class Model:
                     self.offsets[i].name = "offset_{0}".format(self.name)
                     
             # dofs
-            self.dofs = [0] * 6
+            self.dofs = [] 
             for dof in jointXml.iter("dof"):
-                self.dofs[Model.dofIndex[dof.attrib["index"]]]=1
-                #TODO limits !
+                self.dofs.append(Model.Dof(dof))
         
     class Deformable:
         
@@ -100,16 +117,31 @@ class Model:
         
         def __init__(self,objXml):
             parseIdName(self,objXml)
+            parseTag(self,objXml)
             self.position = Tools.strToListFloat(objXml.find("position").text)
             self.mesh = None
             self.indices=dict()
             self.weights=dict()
             self.skinnings=list()
+
+    class Surface:
+        def __init__(self):
+            self.object=None
+            self.mesh=None
+            self.index=None
+            
+    class ContactSliding:
+        def __init__(self,contactXml):
+            parseIdName(self,contactXml)
+            self.surfaces = [None,None]
+            self.distance=None
+            if contactXml.find("distance"):
+                self.distance=float(contactXml.findText("distance"))
     
     dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
     
     def __init__(self, filename, name=None):
-        self.name=os.path.basename(filename)
+        self.name=name
         self.modelDir = os.path.dirname(filename)
         self.units=dict()
         self.meshes=dict()
@@ -117,13 +149,16 @@ class Model:
         #self.rigidsbyType=dict()
         self.genericJoints=dict()
         self.deformables=dict()
+        self.slidingContacts=dict()
         #self.deformablesByType=dict()
         
         with open(filename,'r') as f:
             # TODO automatic DTD validation could go here, not available in python builtin ElementTree module
             modelXml = etree.parse(f).getroot()
-            if name is None:
+            if self.name is None and "name" in modelXml.attrib:
                 self.name = modelXml.attrib["name"]
+            else:
+                self.name = os.path.basename(filename)
 
             # units
             self.parseUnits(modelXml)
@@ -143,7 +178,7 @@ class Model:
                     
             # rigids
             for r in modelXml.iter("rigid"):
-                if r.attrib["id"] in self.rigids:
+                if r.attrib["id"] in self.rigids: #TODO check deformables too
                     print "ERROR: sml.Model: rigid defined twice, id:", r.attrib["id"]
                     continue
                 rigid=Model.Rigid(r)
@@ -154,7 +189,7 @@ class Model:
             self.parseJointGenerics(modelXml)
             
             #deformable
-            for d in modelXml.iter("deformable"):
+            for d in modelXml.iter("deformable"): #TODO check rigids too
                 if d.attrib["id"] in self.deformables:
                     print "ERROR: sml.Model: deformable defined twice, id:", d.attrib["id"]
                     continue
@@ -176,6 +211,26 @@ class Model:
                     deformable.skinnings.append(skinning)
                 
                 self.deformables[deformable.id]=deformable
+                
+            # contacts
+            for c in modelXml.iter("contactSliding"):
+                if c.attrib["id"] in self.slidingContacts:
+                    print "ERROR: sml.Model: contactSliding defined twice, id:", c.attrib["id"]
+                    continue
+                contact = Model.ContactSliding(c)
+                surfaces=c.findall("surface")
+                for i,s in enumerate(surfaces):
+                    contact.surfaces[i] = Model.Surface()
+                    if s.attrib["object"] in self.rigids:
+                        contact.surfaces[i].object = self.rigids[s.attrib["object"]]
+                    elif s.attrib["object"] in self.deformables:
+                        contact.surfaces[i].object = self.deformables[s.attrib["object"]]
+                    else:
+                        print "ERROR: sml.Model: in contact {0}, unknown object {1} referenced".format(contact.name, s.attrib["object"])
+                    contact.surfaces[i].mesh = contact.surfaces[i].object.mesh # for now a single mesh is supported
+                    contact.surfaces[i].index = contact.surfaces[i].mesh.group[s.attrib["group"]].index
+                self.slidingContacts[contact.id]=contact
+                    
 
     def parseUnits(self, modelXml):
         xmlUnits = modelXml.find("units")
@@ -194,7 +249,7 @@ class Model:
     def parseJointGenerics(self,modelXml):
         for j in modelXml.iter("jointGeneric"):
             if j.attrib["id"] in self.genericJoints:
-                print "ERROR: sml.Model: joint defined twice, id:", j.attrib["id"]
+                print "ERROR: sml.Model: jointGeneric defined twice, id:", j.attrib["id"]
                 continue
 
             joint=Model.JointGeneric(j)
@@ -222,8 +277,11 @@ def setupUnits(myUnits):
     print message
 
 class BaseScene:
+    """ Base class for Scene class, creates a node for this Scene
+    """
     class Param:
         pass
+
     def __init__(self,parentNode,model):
         self.model=model
         self.param=BaseScene.Param()
@@ -231,18 +289,35 @@ class BaseScene:
         self.node=parentNode.createChild(self.model.name)
 
 class SceneDisplay(BaseScene):
+    """ Creates a scene to display rigids and deformables meshes
+    """
     def __init__(self,parentNode,model):
         BaseScene.__init__(self,parentNode,model)
         self.param.rigidColor="1. 0. 0."
         self.param.deformableColor="0. 1. 0."
+        self.param.colorByTag=dict()
    
+    def getTagColor(self, tags):
+        tag = tags & set(self.param.colorByTag.keys())
+        if len(tag)==0:
+            return None
+        else:
+            return self.param.colorByTag[tag.pop()]
+
+
     def createScene(self):
         model=self.model # shortcut
         for rigid in model.rigids.values():
             print "Display rigid:",rigid.name
-            insertVisual(self.node, rigid, self.param.rigidColor)
+            color = self.getTagColor(rigid.tags)
+            if color is None:
+                color = self.param.rigidColor
+            insertVisual(self.node, rigid, color)
         
         for deformable in model.deformables.values():
             print "Display deformable:",deformable.name
-            insertVisual(self.node, deformable, self.param.deformableColor)
+            color = self.getTagColor(deformable.tags)
+            if color is None:
+                color = self.param.deformableColor
+            insertVisual(self.node, deformable, color)
             

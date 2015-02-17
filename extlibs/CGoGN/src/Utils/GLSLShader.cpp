@@ -31,7 +31,7 @@
 #include <algorithm>
 #include "Utils/cgognStream.h"
 
-#include "glm/gtx/inverse_transpose.hpp"
+#include "glm/gtc/matrix_inverse.hpp"
 
 
 namespace CGoGN
@@ -40,7 +40,15 @@ namespace CGoGN
 namespace Utils
 {
 
+#ifdef USE_OGL_CORE_PROFILE
+unsigned int GLSLShader::CURRENT_OGL_VERSION = 3;
+#else
 unsigned int GLSLShader::CURRENT_OGL_VERSION = 2;
+#endif
+
+unsigned int GLSLShader::MAJOR_OGL_CORE = 3;
+unsigned int GLSLShader::MINOR_OGL_CORE = 3;
+
 
 std::string GLSLShader::DEFINES_GL2=\
 "#version 110\n"
@@ -49,6 +57,7 @@ std::string GLSLShader::DEFINES_GL2=\
 "#define VARYING_VERT varying\n"
 "#define VARYING_FRAG varying\n"
 "#define FRAG_OUT_DEF float pipo_FRAGDEF\n"
+"#define FRAG_OUT gl_FragColor\n"
 "#define INVARIANT_POS float pipo_INVARIANT\n";
 
 
@@ -56,9 +65,10 @@ std::string GLSLShader::DEFINES_GL3=\
 "#version 150\n"
 "#define PRECISON precision highp float\n"
 "#define ATTRIBUTE in\n"
-"#define VARYING_VERT smooth out\n"
-"#define VARYING_FRAG smooth in\n"
-"#define FRAG_OUT_DEF out vec4 gl_FragColor\n"
+"#define VARYING_VERT out\n"
+"#define VARYING_FRAG in\n"
+"#define FRAG_OUT_DEF out vec4 outFragColor\n"
+"#define FRAG_OUT outFragColor\n"
 "#define INVARIANT_POS invariant gl_Position\n";
 
 
@@ -66,13 +76,14 @@ std::string* GLSLShader::DEFINES_GL = NULL;
 
 std::vector<std::string> GLSLShader::m_pathes;
 
-std::set< std::pair<void*, GLSLShader*> > GLSLShader::m_registeredShaders;
+std::set< std::pair<void*, GLSLShader*> >* GLSLShader::m_registeredShaders = NULL;
 
 
 //glm::mat4* GLSLShader::s_current_matrices=NULL;
 Utils::GL_Matrices* GLSLShader::s_current_matrices=NULL;
 
 GLSLShader::GLSLShader() :
+	m_vao(0),
 	m_vertex_shader_source(NULL),
 	m_fragment_shader_source(NULL),
 	m_geom_shader_source(NULL)
@@ -90,21 +101,25 @@ GLSLShader::GLSLShader() :
 		DEFINES_GL = &DEFINES_GL2;
 
 	m_nbMaxVertices = 16;
+
+	if (m_registeredShaders==NULL)
+		m_registeredShaders = new std::set< std::pair<void*, GLSLShader*> >;
+
 }
 
 void GLSLShader::registerShader(void* ptr, GLSLShader* shader)
 {
-	m_registeredShaders.insert(std::pair<void*,GLSLShader*>(ptr, shader));
+	m_registeredShaders->insert(std::pair<void*,GLSLShader*>(ptr, shader));
 }
 
 void GLSLShader::unregisterShader(void* ptr, GLSLShader* shader)
 {
-	m_registeredShaders.erase(std::pair<void*,GLSLShader*>(ptr, shader));
+	m_registeredShaders->erase(std::pair<void*,GLSLShader*>(ptr, shader));
 }
 
 std::string GLSLShader::defines_Geom(const std::string& primitivesIn, const std::string& primitivesOut, int maxVert)
 {
-	if (CURRENT_OGL_VERSION == 3)
+	if (CURRENT_OGL_VERSION >= 3)
 	{
 		std::string str("#version 150\n");
 		str.append("precision highp float;\n");
@@ -120,7 +135,7 @@ std::string GLSLShader::defines_Geom(const std::string& primitivesIn, const std:
 		str.append(ss.str());
 		str.append(") out;\n");
 		str.append("#define VARYING_IN in\n");
-		str.append("#define VARYING_OUT smooth out\n");
+		str.append("#define VARYING_OUT out\n");
 		str.append("#define POSITION_IN(X) gl_in[X].gl_Position\n");
 		str.append("#define NBVERTS_IN gl_in.length()\n");
 		return str;
@@ -141,24 +156,15 @@ std::string GLSLShader::defines_Geom(const std::string& primitivesIn, const std:
 
 bool GLSLShader::areGeometryShadersSupported()
 {
-	if (!glewGetExtension("GL_EXT_geometry_shader4"))
+	if (!glewGetExtension("GL_ARB_geometry_shader4"))
 		return false;
 	return true;
 }
 
-bool GLSLShader::areShadersSupported()
-{
-	if ( ! glewGetExtension("GL_ARB_vertex_shader")) return false;
-	if ( ! glewGetExtension("GL_ARB_fragment_shader")) return false;
-	if ( ! glewGetExtension("GL_ARB_shader_objects")) return false;
-	if ( ! glewGetExtension("GL_ARB_shading_language_100")) return false;
-
-	return true;
-}
 
 bool GLSLShader::areVBOSupported()
 {
-	if (!glewGetExtension("GL_ARB_vertex_buffer_object"))
+	if (!glewGetExtension("GL_vertex_buffer_object"))
 		return false;
 	return true;
 }
@@ -278,7 +284,7 @@ bool GLSLShader::loadGeometryShader(const std::string& filename )
 bool GLSLShader::logError(GLuint handle, const std::string& nameSrc, const char *src)
 {
 	char *info_log;
-	info_log = getInfoLog( handle );
+	info_log = getInfoLogShader( handle );
 	if (info_log!=NULL)
 	{
 		CGoGNerr << "============================================================================" << CGoGNendl;
@@ -304,7 +310,7 @@ bool GLSLShader::logError(GLuint handle, const std::string& nameSrc, const char 
 
 bool GLSLShader::loadVertexShaderSourceString( const char *vertex_shader_source )
 {
-	if (*m_vertex_shader_object==0)
+	if (*m_vertex_shader_object!=0)
 	{
 		glDeleteShader(*m_vertex_shader_object);
 		*m_vertex_shader_object=0;
@@ -348,7 +354,7 @@ bool GLSLShader::loadVertexShaderSourceString( const char *vertex_shader_source 
 
 bool GLSLShader::loadFragmentShaderSourceString( const char *fragment_shader_source )
 {
-	if (*m_fragment_shader_object==0)
+	if (*m_fragment_shader_object!=0)
 	{
 		glDeleteShader(*m_fragment_shader_object);
 		*m_fragment_shader_object=0;
@@ -393,13 +399,13 @@ bool GLSLShader::loadFragmentShaderSourceString( const char *fragment_shader_sou
 
 bool GLSLShader::loadGeometryShaderSourceString( const char *geom_shader_source )
 {
-	if (*m_geom_shader_object==0)
+	if (*m_geom_shader_object!=0)
 	{
 		glDeleteShader(*m_geom_shader_object);
 		*m_geom_shader_object=0;
 	}
 	/*** create shader object ***/
-	*m_geom_shader_object = glCreateShader(GL_GEOMETRY_SHADER_EXT);
+	*m_geom_shader_object = glCreateShader(GL_GEOMETRY_SHADER);
 
 	if( !*m_geom_shader_object )
 	{
@@ -441,16 +447,35 @@ char* GLSLShader::getInfoLog( GLuint obj )
 	int		info_log_length;
 	int		length;
 
-	glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &info_log_length);
+	glGetProgramiv(obj, GL_INFO_LOG_LENGTH, &info_log_length);
 
 	if (info_log_length <= 1)
 		return NULL;
 
 	info_log = new char [info_log_length];
-	glGetShaderInfoLog( obj, info_log_length, &length, info_log );
+	glGetProgramInfoLog( obj, info_log_length, &length, info_log );
 
 	return info_log;
 }
+
+
+char* GLSLShader::getInfoLogShader( GLuint obj )
+{
+    char	*info_log;
+    int		info_log_length;
+    int		length;
+
+    glGetShaderiv(obj, GL_INFO_LOG_LENGTH, &info_log_length);
+
+    if (info_log_length <= 1)
+        return NULL;
+
+    info_log = new char [info_log_length+1];
+    glGetShaderInfoLog( obj, info_log_length, &length, info_log );
+    info_log[info_log_length]=0;
+    return info_log;
+}
+
 
 
 
@@ -488,15 +513,18 @@ bool GLSLShader::create(GLint inputGeometryPrimitive,GLint outputGeometryPrimiti
 	{
 		glAttachShader( *m_program_object, *m_geom_shader_object );
 
-		glProgramParameteriEXT(*m_program_object, GL_GEOMETRY_INPUT_TYPE_EXT, inputGeometryPrimitive);
-		glProgramParameteriEXT(*m_program_object, GL_GEOMETRY_OUTPUT_TYPE_EXT, outputGeometryPrimitive);
-		glProgramParameteriEXT(*m_program_object, GL_GEOMETRY_VERTICES_OUT_EXT, m_nbMaxVertices);
+		if (CURRENT_OGL_VERSION == 2)
+		{
+			glProgramParameteriEXT(*m_program_object, GL_GEOMETRY_INPUT_TYPE_EXT, inputGeometryPrimitive);
+			glProgramParameteriEXT(*m_program_object, GL_GEOMETRY_OUTPUT_TYPE_EXT, outputGeometryPrimitive);
+			glProgramParameteriEXT(*m_program_object, GL_GEOMETRY_VERTICES_OUT_EXT, m_nbMaxVertices);
+		}
 	}
 
 	/*** link program object ***/
 	glLinkProgram( *m_program_object );
 
-	glGetProgramiv( *m_program_object, GL_OBJECT_LINK_STATUS_ARB, &status );
+	glGetProgramiv( *m_program_object, GL_LINK_STATUS, &status );
 	if( !status )
 	{
 		CGoGNerr << "ERROR - GLSLShader::create() - error occured while linking shader program." << CGoGNendl;
@@ -527,7 +555,7 @@ bool GLSLShader::create(GLint inputGeometryPrimitive,GLint outputGeometryPrimiti
 bool GLSLShader::changeNbMaxVertices(int nb_max_vertices)
 {
 	m_nbMaxVertices = nb_max_vertices;
-	if (*m_geom_shader_object)
+	if ((*m_geom_shader_object) && (CURRENT_OGL_VERSION == 2))
 	{
 		glProgramParameteriEXT(*m_program_object,GL_GEOMETRY_VERTICES_OUT_EXT,m_nbMaxVertices);
 		// need to relink
@@ -567,7 +595,6 @@ bool GLSLShader::link()
 
 		return false;
 	}
-
 	return true;
 }
 
@@ -632,7 +659,7 @@ GLSLShader::~GLSLShader()
 	if (m_geom_shader_source != NULL)
 		delete[] m_geom_shader_source;
 
-//	m_registeredShaders.erase(this);
+//	m_registeredShaders->erase(this);
 }
 
 std::string GLSLShader::findFile(const std::string filename)
@@ -661,8 +688,8 @@ std::string GLSLShader::findFile(const std::string filename)
 		}
 	}
 
-	// LA MACRO SHADERPATH contient le chemin du repertoire qui contient les fichiers textes
-	std::string st(SHADERPATH);
+    // LA MACRO CGOGN_SHADER_PATH contient le chemin du repertoire qui contient les fichiers textes
+    std::string st(CGOGN_SHADER_PATH);
 	st.append(filename);
 
 	std::ifstream file2; // on ne peut pas réutiliser file ????
@@ -687,12 +714,20 @@ bool GLSLShader::init()
 		CGoGNout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << CGoGNendl;
 
 	if (!areVBOSupported())
-		CGoGNout << "VBO not supported !" << CGoGNendl;
+		CGoGNerr << "VBO not supported !" << CGoGNendl;
 
-	if(!areShadersSupported()) {
-		CGoGNout << "Shaders not supported !" << CGoGNendl;
+	if  ((CURRENT_OGL_VERSION == 2) && (!glewIsSupported("GL_VERSION_2_0")))
+	{
+		CGoGNerr << " GL 2.0 not supported" << CGoGNendl;
 		return false;
 	}
+
+	if ((CURRENT_OGL_VERSION == 3) && (!glewIsSupported("GL_VERSION_3_3")))
+	{
+		CGoGNerr << " GL 3.3 not supported" << CGoGNendl;
+		return false;
+	}
+
 #endif
 	return true;
 
@@ -973,6 +1008,7 @@ unsigned int GLSLShader::bindVA_VBO(const std::string& name, VBO* vbo)
 		CGoGNerr << "GLSLShader: Attribute " << name << " does not exist in shader" << CGoGNendl;
 		return idVA;
 	}
+
 	// search if name already exist
 	for (std::vector<VAStr>::iterator it = m_va_vbo_binding.begin(); it != m_va_vbo_binding.end(); ++it)
 	{
@@ -987,12 +1023,14 @@ unsigned int GLSLShader::bindVA_VBO(const std::string& name, VBO* vbo)
 	temp.va_id = idVA;
 	temp.vbo_ptr = vbo;
 	m_va_vbo_binding.push_back(temp);
+
 	return (m_va_vbo_binding.size() -1);
 }
 
 void GLSLShader::changeVA_VBO(unsigned int id, VBO* vbo)
 {
 	m_va_vbo_binding[id].vbo_ptr = vbo;
+
 }
 
 void GLSLShader::unbindVA(const std::string& name)
@@ -1033,12 +1071,20 @@ void GLSLShader::setCurrentOGLVersion(unsigned int version)
 	}
 }
 
+void GLSLShader::setCurrentOGLVersion(unsigned int major,unsigned int minor)
+{
+	setCurrentOGLVersion(major);
+	MAJOR_OGL_CORE = major;
+	MINOR_OGL_CORE = minor;
+}
+
+
 /**
  * update projection, modelview, ... matrices
  */
 void GLSLShader::updateMatrices(const glm::mat4& projection, const glm::mat4& modelview)
 {
-	this->bind();
+    this->bind();
 
 	if (*m_uniMat_Proj >= 0)
 		glUniformMatrix4fv(*m_uniMat_Proj, 1, false, &projection[0][0]);
@@ -1054,7 +1100,7 @@ void GLSLShader::updateMatrices(const glm::mat4& projection, const glm::mat4& mo
 
 	if (*m_uniMat_Normal >= 0)
 	{
-		glm::mat4 normalMatrix = glm::gtx::inverse_transpose::inverseTranspose(modelview);
+		glm::mat4 normalMatrix = glm::inverseTranspose(modelview);
 		glUniformMatrix4fv(*m_uniMat_Normal, 	1 , false, &normalMatrix[0][0]);
 	}
 
@@ -1081,26 +1127,96 @@ void GLSLShader::updateMatrices(const glm::mat4& projection, const glm::mat4& mo
 }
 
 
-
-
-void GLSLShader::enableVertexAttribs(unsigned int stride, unsigned int begin) const
+void GLSLShader::updateMatrices(const Utils::GLSLShader *sh)
 {
+	float mp[16];
+	float mmv[16];
+	float mmpv[16];
+	float mn[16];
+
+	sh->bind();
+	if (*m_uniMat_Proj >= 0)
+		glGetUniformfv(*(sh->m_program_object),*(sh->m_uniMat_Proj),mp);
+
+
+	if (*m_uniMat_Model >= 0)
+		glGetUniformfv(*(sh->m_program_object),*(sh->m_uniMat_Model),mmv);
+
+	if (*m_uniMat_ModelProj >= 0)
+		glGetUniformfv(*(sh->m_program_object),*(sh->m_uniMat_ModelProj),mmpv);
+
+	if (*m_uniMat_Normal >= 0)
+		glGetUniformfv(*(sh->m_program_object),*(sh->m_uniMat_Normal),mn);
+
+
 	this->bind();
-	for (std::vector<Utils::GLSLShader::VAStr>::const_iterator it = m_va_vbo_binding.begin(); it != m_va_vbo_binding.end(); ++it)
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, it->vbo_ptr->id());
-		glEnableVertexAttribArray(it->va_id);
-		glVertexAttribPointer(it->va_id, it->vbo_ptr->dataSize(), GL_FLOAT, false, stride, (const GLvoid*)((unsigned long)(begin)));
-	}
-//	this->unbind();
+
+	if (*m_uniMat_Proj >= 0)
+		glUniformMatrix4fv(*m_uniMat_Proj, 1, false, mp);
+
+	if (*m_uniMat_Model >= 0)
+		glUniformMatrix4fv(*m_uniMat_Model,	1, false, mmv);
+
+	if (*m_uniMat_ModelProj >= 0)
+		glUniformMatrix4fv(*m_uniMat_ModelProj,	1 , false, mmpv);
+
+	if (*m_uniMat_Normal >= 0)
+		glUniformMatrix4fv(*m_uniMat_Normal, 	1 , false, mn);
+
+	this->unbind();
 }
 
-void GLSLShader::disableVertexAttribs() const
+
+
+
+
+
+void GLSLShader::enableVertexAttribs(unsigned int stride, unsigned int begin)
+{
+	this->bind();
+
+	if (CURRENT_OGL_VERSION>=3)
+	{
+        if (m_vao!=0)
+            glDeleteVertexArrays(1, &m_vao);
+        glGenVertexArrays(1, &m_vao);
+		glBindVertexArray(m_vao);
+
+		for (std::vector<Utils::GLSLShader::VAStr>::const_iterator it = m_va_vbo_binding.begin(); it != m_va_vbo_binding.end(); ++it)
+		{
+			assert(((it->vbo_ptr->nbElts()==0) || (it->vbo_ptr->dataSize()!=0) ) || !"dataSize of VBO is 0 ! could not draw");
+			glBindBuffer(GL_ARRAY_BUFFER, it->vbo_ptr->id());
+			glEnableVertexAttribArray(it->va_id);
+			glVertexAttribPointer(it->va_id, it->vbo_ptr->dataSize(), GL_FLOAT, false, stride, (const GLvoid*)((unsigned long)(begin)));
+		}
+	}
+	else
+	{
+		for (std::vector<Utils::GLSLShader::VAStr>::const_iterator it = m_va_vbo_binding.begin(); it != m_va_vbo_binding.end(); ++it)
+		{
+			assert(((it->vbo_ptr->nbElts()==0) || (it->vbo_ptr->dataSize()!=0) ) || !"dataSize of VBO is 0 ! could not draw");
+			glBindBuffer(GL_ARRAY_BUFFER, it->vbo_ptr->id());
+			glVertexAttribPointer(it->va_id, it->vbo_ptr->dataSize(), GL_FLOAT, false, stride, (const GLvoid*)((unsigned long)(begin)));
+			glEnableVertexAttribArray(it->va_id);
+		}
+	}
+	//	this->unbind();
+}
+
+void GLSLShader::disableVertexAttribs()
 {
 //	this->bind();
-	for (std::vector<Utils::GLSLShader::VAStr>::const_iterator it = m_va_vbo_binding.begin(); it != m_va_vbo_binding.end(); ++it)
-		glDisableVertexAttribArray(it->va_id);
-	this->unbind();
+
+	if (CURRENT_OGL_VERSION>=3)
+	{
+		glBindVertexArray(0);
+	}
+	else
+	{
+		for (std::vector<Utils::GLSLShader::VAStr>::const_iterator it = m_va_vbo_binding.begin(); it != m_va_vbo_binding.end(); ++it)
+			glDisableVertexAttribArray(it->va_id);
+		this->unbind();
+	}
 }
 
 
@@ -1110,9 +1226,9 @@ void GLSLShader::updateCurrentMatrices()
 	model *= currentTransfo();
 
 	currentPMV() = currentProjection() * model;
-	currentNormalMatrix() = glm::gtx::inverse_transpose::inverseTranspose(model);
+	currentNormalMatrix() = glm::inverseTranspose(model);
 
-	for(std::set< std::pair<void*, GLSLShader*> >::iterator it = m_registeredShaders.begin(); it != m_registeredShaders.end(); ++it)
+	for(std::set< std::pair<void*, GLSLShader*> >::iterator it = m_registeredShaders->begin(); it != m_registeredShaders->end(); ++it)
 		it->second->updateMatrices(currentProjection(), model, currentPMV(), currentNormalMatrix());
 }
 
@@ -1137,9 +1253,9 @@ void GLSLShader::updateAllFromGLMatrices()
 	model = currentTransfo() * model;
 
 	currentPMV() = proj * model;
-	currentNormalMatrix() = glm::gtx::inverse_transpose::inverseTranspose(model);
+	currentNormalMatrix() = glm::inverseTranspose(model);
 
-	for(std::set< std::pair<void*, GLSLShader*> >::iterator it = m_registeredShaders.begin(); it != m_registeredShaders.end(); ++it)
+	for(std::set< std::pair<void*, GLSLShader*> >::iterator it = m_registeredShaders->begin(); it != m_registeredShaders->end(); ++it)
 		it->second->updateMatrices(proj, model, currentPMV(), currentNormalMatrix());
 }
 
