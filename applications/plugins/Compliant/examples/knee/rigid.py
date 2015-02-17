@@ -83,10 +83,10 @@ class Mass(object):
         volume = sx * sy * sz 
         self.mass = rho * volume
 
-        dim = np.array([sx, sy, sz])
+        dim = np.array([sx, sy, sz], float)
         dim2 = dim * dim
         
-        self.inertia = self.mass / 12.0 * dim2[ [1, 0, 0] ] + dim2[ [2, 2, 1] ]
+        self.inertia = self.mass / 12.0 * (dim2[ [1, 2, 0] ] + dim2[ [2, 0, 1] ])
         
     def cylinder(self, radius, length, rho = 1000.0):
         # TODO axis...
