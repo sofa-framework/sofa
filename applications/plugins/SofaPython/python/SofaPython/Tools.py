@@ -17,6 +17,11 @@ def strToListInt(s):
     """
     return map(int,s.split())
 
+def getObjectPath(obj):
+    """ Return the path of this object
+    """
+    return obj.getContext().getPathName()+"/"+obj.name
+
 def getNode(rootNode, path):
     """ Return node at path or None if not found
     """
