@@ -23,11 +23,11 @@ def setup(node, **kwargs):
         num = node.createObject('SequentialSolver', **kwargs)
     else:
         require(node, 'pouf')    
-        # ode = node.createObject('pouf.solver', **kwargs)
-        # num = node.createObject('pouf.pgs', **kwargs)
+        ode = node.createObject('pouf.solver', **kwargs)
+        num = node.createObject('pouf.pgs', **kwargs)
 
-        # ode.stabilization = True
-        # num.nlnscg = True
+        ode.stabilization = True
+        num.nlnscg = True
 
     style = node.createObject('VisualStyle', **kwargs)
     node.createObject('DefaultPipeline', name = 'pipeline')
@@ -51,12 +51,12 @@ def vec(*args):
 def createScene( node ):
     reload(rigid)
 
-    setup( node, iterations = 10000, precision = 0,
+    setup( node, iterations = 1000, precision = 1e-8,
            displayFlags = 'showMapping showBehavior showCollisionModels' )
     
     scene = node.createChild('scene')
     
-    femur = rigid.Body(scene, 'femur', showObject = True)
+    femur = rigid.Body(scene, 'femur', draw = True)
     femur.length = 0.6
     femur.width = 0.05
     
@@ -74,7 +74,7 @@ def createScene( node ):
 
     condyles.createObject('SphereModel', radius = radius)
 
-    tibia = rigid.Body(scene, 'tibia', showObject = True)
+    tibia = rigid.Body(scene, 'tibia', draw = True)
     tibia.length = 0.6
     tibia.width = 0.05
     
@@ -107,7 +107,7 @@ def createScene( node ):
                        pairs = '0 0',
                        output = '@dofs')
 
-    stiffness = 1e8
+    stiffness = 1e7
     ff = delta.createObject('UniformCompliance',
                             template = 'Vec3',
                             compliance = 1.0 / stiffness)
