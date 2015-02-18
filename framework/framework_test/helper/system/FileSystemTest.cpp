@@ -4,7 +4,7 @@
 #include <exception>
 #include <algorithm>
 
-using namespace sofa::helper::system;
+using sofa::helper::system::FileSystem;
 
 static std::string getPath(std::string s) {
     return std::string(FRAMEWORK_TEST_RESOURCES_DIR) + std::string("/") + s;

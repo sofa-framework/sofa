@@ -36,8 +36,9 @@ namespace helper
 {
 
 /// @brief Contains possibly useful functions, that don't fit anywhere else.
-namespace Utils
+class SOFA_HELPER_API Utils
 {
+public:
 
 /// @brief Convert a string to a wstring.
 ///
@@ -49,7 +50,7 @@ namespace Utils
 /// environnement variables, and check that those are set to appropriate values.
 ///
 /// @return The converted string on success, or a empty string on failure.
-SOFA_HELPER_API std::wstring widenString(const std::string& s);
+static std::wstring widenString(const std::string& s);
 
 /// @brief Convert a wstring to a string.
 ///
@@ -61,7 +62,7 @@ SOFA_HELPER_API std::wstring widenString(const std::string& s);
 /// environnement variables, and check that those are set to appropriate values.
 ///
 /// @return The converted string on success, or a empty string on failure.
-SOFA_HELPER_API std::string narrowString(const std::wstring& ws);
+static std::string narrowString(const std::wstring& ws);
 
 #if defined WIN32 || defined _XBOX
 
@@ -69,7 +70,7 @@ SOFA_HELPER_API std::string narrowString(const std::wstring& ws);
 ///
 /// This function calls ::GetLastError along with the boilerplate code for
 /// formatting, and converts the result to a non-wide string with narrowString().
-SOFA_HELPER_API std::string GetLastError();
+static std::string GetLastError();
 
 #endif
 
@@ -77,15 +78,15 @@ SOFA_HELPER_API std::string GetLastError();
 ///
 /// Note that this function uses various non-portable tricks to achieve its
 /// goal, and it might not be the most reliable thing ever written.
-SOFA_HELPER_API std::string getExecutablePath();
+static std::string getExecutablePath();
 
 /// @brief Read a file written in a very basic ini-like format.
 ///
 /// For each line that contains a '=' character, (e.g. "key=value"), the returned
 /// map will contains a pair <"key", "value">.  Other lines will be ignored.
-SOFA_HELPER_API std::map<std::string, std::string> readBasicIniFile(const std::string& path);
+static std::map<std::string, std::string> readBasicIniFile(const std::string& path);
 
-}
+};
 
 
 } // namespace helper

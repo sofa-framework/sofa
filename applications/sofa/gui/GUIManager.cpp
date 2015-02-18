@@ -32,7 +32,7 @@
 
 using std::cerr;
 using std::endl;
-using namespace sofa::helper::system;
+using sofa::helper::system::FileSystem;
 
 namespace sofa
 {

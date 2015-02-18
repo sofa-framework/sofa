@@ -63,8 +63,8 @@
 using std::cerr;
 using std::endl;
 
-using namespace sofa::helper::system;
-using namespace sofa::helper;
+using sofa::helper::system::FileSystem;
+using sofa::helper::Utils;
 
 // bool loadConfigurationFile(const std::string& filePath)
 // {
