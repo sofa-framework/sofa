@@ -66,7 +66,11 @@ public:
 
 	static unsigned int CURRENT_OGL_VERSION;
 
-	static std::set< std::pair<void*, GLSLShader*> > m_registeredShaders;
+	static unsigned int MAJOR_OGL_CORE;
+
+	static unsigned int MINOR_OGL_CORE;
+
+	static std::set< std::pair<void*, GLSLShader*> >* m_registeredShaders;
 
 //	static glm::mat4* s_current_matrices;
 	static Utils::GL_Matrices* s_current_matrices;
@@ -82,21 +86,23 @@ protected:
 
 	int m_nbMaxVertices;
 
+	GLuint m_vao;
+
 
 	/**
 	 * handle of vertex shader
 	 */
-	CGoGNGLhandleARB	m_vertex_shader_object;
+	CGoGNGLhandle	m_vertex_shader_object;
 
 	/**
 	 * handle of fragment shader
 	 */
-	CGoGNGLhandleARB	m_fragment_shader_object;
+	CGoGNGLhandle	m_fragment_shader_object;
 
 	/**
 	 * handle of geometry shader
 	 */
-	CGoGNGLhandleARB	m_geom_shader_object;
+	CGoGNGLhandle	m_geom_shader_object;
 
 	std::string m_nameVS;
 	std::string m_nameFS;
@@ -190,6 +196,8 @@ protected:
 	 */
 	char* getInfoLog( GLuint obj );
 
+	char* getInfoLogShader( GLuint obj );
+
 public:
 	/**
 	 * constructor
@@ -203,6 +211,8 @@ public:
 
 	static void setCurrentOGLVersion(unsigned int version);
 
+	static void setCurrentOGLVersion(unsigned int major,unsigned int minor);
+
 	/*
 	 * search file in different path
 	 */
@@ -211,7 +221,7 @@ public:
 	/**
 	 * test support of shader
 	 */
-	static bool	areShadersSupported();
+	static bool	areShadersSupported() { return true;} // deprecated
 
 	/**
 	 * test support of Vertex Buffer Object
@@ -334,7 +344,7 @@ public:
 public:
 	/**
 	 * set uniform shader float variable
-	 * @warning practical but less efficient that storing id (get with glGetUniformLocation) and use glUniform*fvARB
+	 * @warning practical but less efficient that storing id (get with glGetUniformLocation) and use glUniform*fv
 	 * @param NB template size of variable to set
 	 * @param name name in shader
 	 * @param pointer on data to copy
@@ -344,7 +354,7 @@ public:
 
 	/**
 	 * set uniform shader int variable
-	 * @warning practical but less efficient that storing id (get with glGetUniformLocation) and use glUniform*ivARB
+	 * @warning practical but less efficient that storing id (get with glGetUniformLocation) and use glUniform*iv
 	 * @param NB template size of variable to set
 	 * @param name name in shader
 	 * @param pointer on data to copy
@@ -391,17 +401,18 @@ public:
 	 */
 	void updateMatrices(const glm::mat4& projection, const glm::mat4& modelview, const glm::mat4& PMV, const glm::mat4& normalMatrix);
 
+	void updateMatrices(const Utils::GLSLShader *sh);
 
 	/**
 	 * bind, enable, and set all vertex attrib pointers
-	 * @param stride: the stride parameter, number osf byte between two consecutive attributes
+	 * @param stride: the stride parameter, number of bytes between two consecutive attributes
 	 */
-	void enableVertexAttribs(unsigned int stride = 0, unsigned int begin = 0) const;
+	void enableVertexAttribs(unsigned int stride = 0, unsigned int begin = 0);
 
 	/**
 	 * disenable all vertex attribs
 	 */
-	void disableVertexAttribs() const;
+	void disableVertexAttribs();
 
 	/// get back OpenGL standard matrices & send to all shaders
 	static void updateAllFromGLMatrices();
@@ -440,22 +451,22 @@ inline bool GLSLShader::isCreated()
 template<unsigned int NB>
 void GLSLShader::setuniformf( const char* name, const float* val)
 {
-	GLint uni = glGetUniformLocationARB(*m_program_object,name);
+	GLint uni = glGetUniformLocation(*m_program_object,name);
 	if (uni >= 0)
 	{
 		switch(NB)
 		{
 		case 1:
-			glUniform1fvARB(uni, 1, val) ;
+			glUniform1fv(uni, 1, val) ;
 			break;
 		case 2:
-			glUniform2fvARB(uni, 1, val) ;
+			glUniform2fv(uni, 1, val) ;
 			break;
 		case 3:
-			glUniform3fvARB(uni, 1, val) ;
+			glUniform3fv(uni, 1, val) ;
 			break;
 		case 4:
-			glUniform4fvARB(uni, 1, val) ;
+			glUniform4fv(uni, 1, val) ;
 			break;
 		case 16:
 			glUniformMatrix4fv(uni, 1, false, val);
@@ -467,22 +478,22 @@ void GLSLShader::setuniformf( const char* name, const float* val)
 template<unsigned int NB>
 void GLSLShader::setuniformi( const char* name, const int* val)
 {
-	GLint uni = glGetUniformLocationARB(*m_program_object,name);
+	GLint uni = glGetUniformLocation(*m_program_object,name);
 	if (uni>=0)
 	{
 		switch(NB)
 		{
 		case 1:
-			glUniform1ivARB(uni, 1, val) ;
+			glUniform1iv(uni, 1, val) ;
 			break;
 		case 2:
-			glUniform2ivARB(uni, 1, val) ;
+			glUniform2iv(uni, 1, val) ;
 			break;
 		case 3:
-			glUniform3ivARB(uni, 1, val) ;
+			glUniform3iv(uni, 1, val) ;
 			break;
 		case 4:
-			glUniform4ivARB(uni, 1, val) ;
+			glUniform4iv(uni, 1, val) ;
 			break;
 		}
 	}

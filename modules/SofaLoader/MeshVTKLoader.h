@@ -28,9 +28,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/component/component.h>
-#ifndef TIXML_USE_STL
-#define TIXML_USE_STL
-#endif
+
 #include <tinyxml.h>
 
 namespace sofa

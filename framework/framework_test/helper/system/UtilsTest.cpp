@@ -20,3 +20,8 @@ TEST(UtilsTest, widestring_to_string_to_widestring)
     const std::wstring ws = Utils::s2ws(s);
     EXPECT_EQ(ws, Utils::s2ws(Utils::ws2s(ws)));
 }
+
+TEST(UtilsTest, getExecutablePath)
+{
+    EXPECT_FALSE(Utils::getExecutablePath().empty());
+}

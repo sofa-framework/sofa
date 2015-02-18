@@ -60,7 +60,6 @@ inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, con
     //const SReal contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;

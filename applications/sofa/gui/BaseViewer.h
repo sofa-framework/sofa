@@ -112,9 +112,9 @@ public:
     virtual void configure(sofa::component::configurationsetting::ViewerSetting* viewerConf);
 
     //Fonctions needed to take a screenshot
-    virtual const std::string screenshotName();
-    virtual void setPrefix(const std::string filename);
-    virtual void screenshot(const std::string filename, int compression_level =-1);
+    const std::string screenshotName();
+    void setPrefix(const std::string& prefix);
+    virtual void screenshot(const std::string& filename, int compression_level =-1);
 
     virtual void getView(sofa::defaulttype::Vec3d& pos, sofa::defaulttype::Quat& ori) const;
     virtual void setView(const sofa::defaulttype::Vec3d& pos, const sofa::defaulttype::Quat &ori);
@@ -200,6 +200,7 @@ protected:
     StereoMode _stereoMode;
     double _stereoShift;
 
+    std::string _screenshotDirectory;
 };
 
 }

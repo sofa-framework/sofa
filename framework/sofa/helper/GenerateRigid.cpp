@@ -52,8 +52,8 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
     // of that agreement.
 
     // order:	1, x, y, z, x^2, y^2, z^2, xy, yz, zx
-    double afIntegral[10] = { (double)0.0, (double)0.0, (double)0.0, (double)0.0,
-            (double)0.0, (double)0.0, (double)0.0, (double)0.0, (double)0.0, (double)0.0
+    SReal afIntegral[10] = { (SReal)0.0, (SReal)0.0, (SReal)0.0, (SReal)0.0,
+            (SReal)0.0, (SReal)0.0, (SReal)0.0, (SReal)0.0, (SReal)0.0, (SReal)0.0
                             };
 
     const vector<Vector3>& points = mesh->getVertices();
@@ -74,8 +74,8 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
             Vector3 kN = cross(kV1mV0,kV2mV0);
 
             // compute integral terms
-            double fTmp0, fTmp1, fTmp2;
-            double fF1x, fF2x, fF3x, fG0x, fG1x, fG2x;
+            SReal fTmp0, fTmp1, fTmp2;
+            SReal fF1x, fF2x, fF3x, fG0x, fG1x, fG2x;
             fTmp0 = kV0[0] + kV1[0];
             fF1x = fTmp0 + kV2[0];
             fTmp1 = kV0[0]*kV0[0];
@@ -86,7 +86,7 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
             fG1x = fF2x + kV1[0]*(fF1x + kV1[0]);
             fG2x = fF2x + kV2[0]*(fF1x + kV2[0]);
 
-            double fF1y, fF2y, fF3y, fG0y, fG1y, fG2y;
+            SReal fF1y, fF2y, fF3y, fG0y, fG1y, fG2y;
             fTmp0 = kV0[1] + kV1[1];
             fF1y = fTmp0 + kV2[1];
             fTmp1 = kV0[1]*kV0[1];
@@ -97,7 +97,7 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
             fG1y = fF2y + kV1[1]*(fF1y + kV1[1]);
             fG2y = fF2y + kV2[1]*(fF1y + kV2[1]);
 
-            double fF1z, fF2z, fF3z, fG0z, fG1z, fG2z;
+            SReal fF1z, fF2z, fF3z, fG0z, fG1z, fG2z;
             fTmp0 = kV0[2] + kV1[2];
             fF1z = fTmp0 + kV2[2];
             fTmp1 = kV0[2]*kV0[2];
@@ -122,16 +122,16 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
         }
     }
 
-    afIntegral[0] /= 6.0;
-    afIntegral[1] /= 24.0;
-    afIntegral[2] /= 24.0;
-    afIntegral[3] /= 24.0;
-    afIntegral[4] /= 60.0;
-    afIntegral[5] /= 60.0;
-    afIntegral[6] /= 60.0;
-    afIntegral[7] /= 120.0;
-    afIntegral[8] /= 120.0;
-    afIntegral[9] /= 120.0;
+    afIntegral[0] /= (SReal)6.0;
+    afIntegral[1] /= (SReal)24.0;
+    afIntegral[2] /= (SReal)24.0;
+    afIntegral[3] /= (SReal)24.0;
+    afIntegral[4] /= (SReal)60.0;
+    afIntegral[5] /= (SReal)60.0;
+    afIntegral[6] /= (SReal)60.0;
+    afIntegral[7] /= (SReal)120.0;
+    afIntegral[8] /= (SReal)120.0;
+    afIntegral[9] /= (SReal)120.0;
 
     // mass
     mass.volume = afIntegral[0];
@@ -163,8 +163,6 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
     mass.inertiaMatrix[2][2] -= mass.mass*(center[0]*center[0] + center[1]*center[1]);
 
     mass.inertiaMatrix /= mass.mass;
-
-    mass.recalc();
 }
 
 
@@ -199,6 +197,8 @@ bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
 
     generateRigid( mass, center, mesh );
 
+    mass.recalc();
+
     mass.mass *= density;
 
     return true;
@@ -220,11 +220,14 @@ bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
     res.mass = rigidMass.mass;
     res.inertia = res.mass * rigidMass.inertiaMatrix;
 
-    // extracting principal axes basis to get the corresponding rotation with a diagonal inertia
-    if( res.inertia[0][1]>1e-5 || res.inertia[0][2]>1e-5 || res.inertia[1][2]>1e-5 ) // if !diagonal (1e-5 seems big but the precision from a mesh is poor)
+    // a threshol to test if inertia is diagonal in function of diagonal values
+    SReal threshold = defaulttype::trace( res.inertia ) * 1e-6;
+
+    // if not diagonal, extracting principal axes basis to get the corresponding rotation with a diagonal inertia
+    if( res.inertia[0][1]>threshold || res.inertia[0][2]>threshold || res.inertia[1][2]>threshold )
     {
-        defaulttype::Matrix3 U, V;
-        Decompose<SReal>::SVD( res.inertia, U, res.inertia_diagonal, V );
+        defaulttype::Matrix3 U;
+        Decompose<SReal>::eigenDecomposition_iterative( res.inertia, U, res.inertia_diagonal );
 
         // det should be 1->rotation or -1->reflexion
         if( determinant( U ) < 0 ) // reflexion

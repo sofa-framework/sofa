@@ -27,8 +27,11 @@
 #include "BaseGUI.h"
 #include <SofaComponentMain/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/helper/system/FileSystem.h>
+
 using std::cerr;
 using std::endl;
+using namespace sofa::helper::system;
 
 namespace sofa
 {
@@ -104,7 +107,7 @@ std::string GUIManager::ListSupportedGUI(char separator)
 const char* GUIManager::GetValidGUIName()
 {
     const char* name;
-    std::string lastGuiFilename = "share/config/lastUsedGUI.ini";
+    std::string lastGuiFilename = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
     if (guiCreators.empty())
     {
         std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;
@@ -113,11 +116,10 @@ const char* GUIManager::GetValidGUIName()
     else
     {
         //Check the config file for the last used GUI type
-        if(sofa::helper::system::DataRepository.findFile(lastGuiFilename))
+        if(FileSystem::exists(lastGuiFilename))
         {
-            std::string configPath = sofa::helper::system::DataRepository.getFile(lastGuiFilename);
             std::string lastGuiName;
-            std::ifstream lastGuiStream(configPath.c_str());
+            std::ifstream lastGuiStream(lastGuiFilename.c_str());
             std::getline(lastGuiStream,lastGuiName);
             lastGuiStream.close();
 
@@ -134,6 +136,10 @@ const char* GUIManager::GetValidGUIName()
                 }
             }
             std::cerr << "WARNING(SofaGUI): Previously used GUI not registered. Using default GUI." << std::endl;
+        }
+        else
+        {
+            std::cout << "INFO(SofaGUI): lastUsedGUI.ini not found; using default GUI." << std::endl;
         }
 
         std::list<GUICreator>::iterator it =guiCreators.begin();
@@ -174,7 +180,6 @@ int GUIManager::Init(const char* argv0, const char* name /* = "" */)
     BaseGUI::SetProgramName(argv0);
     sofa::component::init();
     sofa::simulation::xml::initXml();
-    GUICreator* creator;
 
     if (currentGUI)
         return 0; // already initialized
@@ -189,7 +194,7 @@ int GUIManager::Init(const char* argv0, const char* name /* = "" */)
     {
         name = GetValidGUIName(); // get the default gui name
     }
-    creator = GetGUICreator(name);
+    GUICreator *creator = GetGUICreator(name);
     if(!creator)
     {
         return 1;
@@ -219,11 +224,8 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
             return 1;
         }
         //Save this GUI type as the last used GUI
-        std::string lastGUIfileName;
-        std::string path = sofa::helper::system::DataRepository.getFirstPath();
-        lastGUIfileName = path.append("/share/config/lastUsedGUI.ini");
-
-        std::ofstream out(lastGUIfileName.c_str(),std::ios::out);
+        const std::string lastGuiFilePath = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
+        std::ofstream out(lastGuiFilePath.c_str(),std::ios::out);
         out << valid_guiname << std::endl;
         out.close();
     }

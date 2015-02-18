@@ -36,7 +36,7 @@
 #include <iostream>
 #include <sofa/helper/IndexOpenMP.h>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
     #include <omp.h>
 #endif
 
@@ -180,7 +180,7 @@ void ShapeMatching<DataTypes>::update()
     for (unsigned int iter=0 ; iter<iterations.getValue()  ; ++iter)
     {
         // this could be speeded up using fast summation technique
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
         for(sofa::helper::IndexOpenMP<unsigned int>::type i=0 ; i<nbc ; ++i)

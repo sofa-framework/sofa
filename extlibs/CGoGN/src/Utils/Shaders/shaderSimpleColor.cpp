@@ -49,7 +49,7 @@ namespace Utils
 //		"FRAG_OUT_DEF;\n"
 //		"void main()\n"
 //		"{\n"
-//		"	gl_FragColor = color;\n"
+//		"	FRAG_OUT = color;\n"
 //		"}";
 
 

@@ -18,6 +18,8 @@
 # include <string.h>            // for strerror()
 #endif
 
+#include <assert.h>
+
 namespace sofa
 {
 namespace helper
@@ -83,7 +85,7 @@ bool listDirectory(const std::string& directoryPath,
 		std::string filename = ffd.cFileName;
 # else
 		std::string filename = Utils::ws2s(std::wstring(ffd.cFileName));
-#endif
+# endif
         if (filename != "." && filename != "..")
 			outputFilenames.push_back(filename);
     } while (FindNextFile(hFind, &ffd) != 0);
@@ -195,6 +197,104 @@ bool listDirectory(const std::string& directoryPath,
                 outputFilenames.push_back(filename);
     }
     return false;
+}
+
+static bool pathHasDrive(const std::string& path) {
+    return path.length() >=3
+        && ((path[0] >= 'A' && path[0] <= 'Z') || (path[0] >= 'a' && path[0] <= 'z'))
+        && path[1] == ':';
+}
+
+static std::string pathWithoutDrive(const std::string& path) {
+    return path.substr(2, std::string::npos);
+}
+
+static std::string pathDrive(const std::string& path) {
+    return path.substr(0, 2);
+}
+
+bool isAbsolute(const std::string& path)
+{
+    return !path.empty()
+        && (pathHasDrive(path)
+            || path[0] == '/');
+}
+
+std::string convertBackSlashesToSlashes(const std::string& path)
+{
+    std::string str = path;
+    size_t backSlashPos = str.find('\\');
+    while(backSlashPos != std::string::npos)
+    {
+        str[backSlashPos] = '/';
+        backSlashPos = str.find("\\");
+    }
+    return str;
+}
+
+std::string removeExtraSlashes(const std::string& path)
+{
+    std::string str = path;
+    size_t pos = str.find("//");
+    while(pos != std::string::npos) {
+        str.replace(pos, 2, "/");
+        pos = str.find("//");
+    }
+    return str;
+}
+
+std::string cleanPath(const std::string& path)
+{
+    return removeExtraSlashes(convertBackSlashesToSlashes(path));
+}
+
+static std::string computeParentDirectory(const std::string& path)
+{
+    if (path == "")
+        return ".";
+    else if (path == "/")
+        return "/";
+    else if (path[path.length()-1] == '/')
+        return computeParentDirectory(path.substr(0, path.length() - 1));
+    else {
+        size_t last_slash = path.find_last_of('/');
+        if (last_slash == std::string::npos)
+            return ".";
+        else if (last_slash == 0)
+            return "/";
+        else if (last_slash == path.length())
+            return "";
+        else
+            return path.substr(0, last_slash);
+    }
+}
+
+std::string getParentDirectory(const std::string& path)
+{
+    if (pathHasDrive(path))     // check for Windows drive
+        return pathDrive(path) + computeParentDirectory(pathWithoutDrive(path));
+    else
+        return computeParentDirectory(path);
+}
+
+std::string stripDirectory(const std::string& path)
+{
+    if (pathHasDrive(path))     // check for Windows drive
+        return stripDirectory(pathWithoutDrive(path));
+    else
+    {
+        size_t last_slash = path.find_last_of("/");
+        if (last_slash == std::string::npos)    // No slash
+            return path;
+        else if (last_slash == path.size() - 1) // Trailing slash
+            if (path.size() == 1)
+                return "/";
+            else
+                return stripDirectory(path.substr(0, path.size() - 1));
+        else
+            return path.substr(last_slash + 1, std::string::npos);
+        return "";
+    }
 }
 
 } // namespace FileSystem

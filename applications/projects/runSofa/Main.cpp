@@ -25,6 +25,9 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
+#include <tinyxml.h>
+
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
@@ -43,6 +46,8 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/system/Utils.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
@@ -57,6 +62,56 @@
 #endif
 using std::cerr;
 using std::endl;
+
+using namespace sofa::helper::system;
+
+// Make a path absolute if it is relative: relative paths are relative to the
+// directory containing the application binary.
+static std::string makeAbsolutePath(const std::string& path)
+{
+    if (FileSystem::isAbsolute(path))
+        return path;
+    else
+        return FileSystem::getParentDirectory(Utils::getExecutablePath()) + "/" + path;
+}
+
+bool loadConfigurationFile(const std::string& filePath)
+{
+    TiXmlDocument doc;
+    doc.LoadFile();
+
+    if (!(doc.LoadFile(filePath)))
+    {
+        std::cerr << "Error while loading configuration file: " << filePath << std::endl;
+        return false;
+    }
+
+    TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
+    for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
+        elt != NULL;
+        elt = elt->NextSiblingElement("ResourcePath"))
+    {
+        const std::string path = elt->GetText();
+        sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
+    }
+
+    for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
+        elt != NULL;
+        elt = elt->NextSiblingElement("PluginPath"))
+    {
+        const std::string path = elt->GetText();
+        sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
+    }
+
+    TiXmlElement* elt = root->FirstChildElement("ScreenshotDirectory");
+    if (elt != NULL)
+    {
+        const std::string path = elt->GetText();
+        sofa::gui::BaseGUI::setScreenshotDirectoryPath(makeAbsolutePath(path));
+    }
+
+    return true;
+}
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -203,6 +258,10 @@ int main(int argc, char** argv)
 
     sofa::component::init();
     sofa::simulation::xml::initXml();
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
+
+    const std::string configFilePath = FileSystem::getParentDirectory(FileSystem::getParentDirectory(Utils::getExecutablePath())) + "/etc/runSofa-config.xml";
+    loadConfigurationFile(configFilePath);
 
     if (!files.empty())
         fileName = files[0];
@@ -235,8 +294,7 @@ int main(int argc, char** argv)
     {
         if (loadRecent) // try to reload the latest scene
         {
-            std::string scenes = "share/config/Sofa.ini";
-            scenes = sofa::helper::system::DataRepository.getFile( scenes );
+            std::string scenes = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini";
             std::ifstream mrulist(scenes.c_str());
             std::getline(mrulist,fileName);
             mrulist.close();

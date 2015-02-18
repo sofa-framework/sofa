@@ -8,7 +8,6 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
         set(CMAKE_C_LINK_FLAGS_RELEASE "${CMAKE_C_LINK_FLAGS_RELEASE} ${OpenMP_C_FLAGS}")
         set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
         set(CMAKE_CXX_LINK_FLAGS_RELEASE "${CMAKE_CXX_LINK_FLAGS_RELEASE} ${OpenMP_CXX_FLAGS}")
-        add_definitions(-DUSING_OMP_PRAGMAS)
     else()
         if(UNIX AND NOT APPLE)
             # GCC implements OpenMP, so if OpenMP is not "FOUND", then the current
@@ -18,7 +17,6 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
             set(CMAKE_CXX_COMPILER_ARG1 "")
             set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fopenmp")
             set(CMAKE_CXX_LINK_FLAGS_RELEASE "${CMAKE_CXX_LINK_FLAGS_RELEASE} -fopenmp")
-            add_definitions(-DUSING_OMP_PRAGMAS)
         else()
             # Using clang on OS X? Then no OpenMP...
             message(WARNING "your compiler does not implement OpenMP, DiffusionSolver will be single-threaded and very inefficient..." )
@@ -34,12 +32,10 @@ endif()
 # For Cimg
 include_directories(${SOFA_EXTLIBS_DIR})
 
-AddCompilerDefinitions("SOFA_BUILD_DIFFUSION_SOLVER")
-
 add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
 
 # add Dependency to SofaHelper to be able
-AddLinkerDependencies(SofaHelper)
+AddSourceDependencies(SofaHelper)
 
 if(APPLE)
     find_package(X11)

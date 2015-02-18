@@ -107,7 +107,7 @@ bool Matrix<M,N,T>::setSubMatrix(unsigned int ii, unsigned int jj, const Matrix<
 
 template <unsigned int M, unsigned int N, typename T>
 template <unsigned int K>
-bool Matrix<M,N,T>::setSubVectorV(unsigned int ii, unsigned int jj, const Vector<K,T>& v)
+bool Matrix<M,N,T>::setSubVectorV(unsigned int ii, unsigned int jj, const typename Vector<K,T>::type& v)
 {
 	if(ii + K <= M && jj <= N)
 	{
@@ -120,7 +120,7 @@ bool Matrix<M,N,T>::setSubVectorV(unsigned int ii, unsigned int jj, const Vector
 
 template <unsigned int M, unsigned int N, typename T>
 template <unsigned int L>
-bool Matrix<M,N,T>::setSubVectorH(unsigned int ii, unsigned int jj, const Vector<L,T>& v)
+bool Matrix<M,N,T>::setSubVectorH(unsigned int ii, unsigned int jj, const typename Vector<L,T>::type& v)
 {
 	if(ii <= M && jj + L <= N)
 	{
@@ -167,7 +167,7 @@ bool Matrix<M,N,T>::getSubMatrix(unsigned int ii, unsigned int jj, Matrix<K,L,T>
 
 template <unsigned int M, unsigned int N, typename T>
 template <unsigned int K>
-bool Matrix<M,N,T>::getSubVectorV(unsigned int ii, unsigned int jj, Vector<K,T>& v) const
+bool Matrix<M,N,T>::getSubVectorV(unsigned int ii, unsigned int jj, typename Vector<K,T>::type& v) const
 {
 	if(ii + K <= M && jj <= N)
 	{
@@ -180,7 +180,7 @@ bool Matrix<M,N,T>::getSubVectorV(unsigned int ii, unsigned int jj, Vector<K,T>&
 
 template <unsigned int M, unsigned int N, typename T>
 template <unsigned int L>
-bool Matrix<M,N,T>::getSubVectorH(unsigned int ii, unsigned int jj, Vector<L,T>& v) const
+bool Matrix<M,N,T>::getSubVectorH(unsigned int ii, unsigned int jj, typename Vector<L,T>::type& v) const
 {
 	if(ii <= M && jj + L <= N)
 	{
@@ -280,9 +280,9 @@ Matrix<M,P,T> Matrix<M,N,T>::operator*(const Matrix<N,P,T>& m) const
 }
 
 template <unsigned int M, unsigned int N, typename T>
-Vector<M,T> Matrix<M,N,T>::operator*(const Vector<N,T>& v) const
+typename Vector<M,T>::type Matrix<M,N,T>::operator*(const typename Vector<N,T>::type& v) const
 {
-	Vector<M,T> res ;
+        typename Vector<N,T>::type res ;
 	for(unsigned int i = 0; i < M; ++i)
 		for(unsigned int j = 0; j < N; ++j)
 			res[i] += m_data[i][j] * v[j] ;
@@ -439,9 +439,9 @@ std::istream& operator>>(std::istream& in, Matrix<M,N,T>& m)
 
 // Vector / Matrix multiplication
 template <unsigned int M, unsigned int N, typename T>
-Vector<N,T> operator*(const Vector<M,T>& v, const Matrix<M,N,T>& m)
+typename Vector<N,T>::type operator*(const typename Vector<M,T>::type& v, const Matrix<M,N,T>& m)
 {
-	Vector<N,T> res (0);
+        typename Vector<N,T>::type res;
 	for(unsigned int i = 0; i < M; ++i)
 		for(unsigned int j = 0; j < N; ++j)
 			res[j] += v[i] * m(i,j) ;
@@ -450,8 +450,8 @@ Vector<N,T> operator*(const Vector<M,T>& v, const Matrix<M,N,T>& m)
 
 // Matrix / Vector multiplication
 template <unsigned int M, unsigned int N, typename T>
-Vector<M,T> operator*(const Matrix<M,N,T>& m,const Vector<N,T>& v) {
-	Vector<M,T> res (0);
+typename Vector<M,T>::type operator*(const Matrix<M,N,T>& m,const Vector<N,T>& v) {
+        typename Vector<M,T>::type res (0);
 	for(unsigned int i = 0; i < M; ++i)
 		for(unsigned int j = 0; j < N; ++j)
 			res[i] += m(i,j) * v[j] ;
@@ -472,7 +472,7 @@ Matrix<M,N,T> operator*(T s, const Matrix<M,N,T>& m)
 }
 
 template <unsigned int M, unsigned int N, typename T>
-Matrix<M,N,T> transposed_vectors_mult(const Vector<M,T>& v1, const Vector<N,T>& v2) {
+Matrix<M,N,T> transposed_vectors_mult(const typename Vector<M,T>::type& v1, const Vector<N,T>& v2) {
 	Matrix<M,N,T> res ;
 	for(unsigned int i = 0; i < M; ++i)
 		for(unsigned int j = 0; j < N; ++j)

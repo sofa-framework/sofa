@@ -35,8 +35,8 @@
 #include <iostream>
 #include <map>
 
-#ifdef USING_OMP_PRAGMAS
-# include <omp.h>
+#ifdef _OPENMP
+#include <omp.h>
 #endif
 
 #include <SofaLoader/MeshObjLoader.h>
@@ -190,11 +190,11 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
     this->targetIgnored.resize(nbt); targetIgnored.fill(false);
 
     // closest target points from source points
-    if(blendingFactor.getValue()<1)
-    {
+    if(blendingFactor.getValue()<1) {
+
         //unsigned int count=0;
-#ifdef USING_OMP_PRAGMAS
-# pragma omp parallel for
+#ifdef _OPENMP
+#pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbs;i++)
             if(rejectOutsideBbox.getValue() && !targetBbox.contains(x[i])) sourceIgnored[i]=true;
@@ -204,8 +204,8 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
     if(blendingFactor.getValue()>0)
     {
         initSource();
-#ifdef USING_OMP_PRAGMAS
-# pragma omp parallel for
+#ifdef _OPENMP
+#pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbt;i++)
             sourceKdTree.getNClosest(closestTarget[i],tp[i], this->mstate->read(core::ConstVecCoordId::position())->getValue(),1);
@@ -213,9 +213,9 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
 
 
     // prune outliers
-//    if(rejectOutsideBbox.getValue()) {
-//        for(unsigned int i=0;i<nbt;i++) if(closestTarget[i].size()) if(!targetBbox.contains(x[closestTarget[i].begin()->second])) targetIgnored[i]=true;
-//    }
+    //    if(rejectOutsideBbox.getValue()) {
+    //        for(unsigned int i=0;i<nbt;i++) if(closestTarget[i].size()) if(!targetBbox.contains(x[closestTarget[i].begin()->second])) targetIgnored[i]=true;
+    //    }
     if(outlierThreshold.getValue()!=0) {
         Real mean=0,stdev=0,count=0;
         for(unsigned int i=0;i<nbs;i++) if(closestSource[i].size()) {count++; Real d=closestSource[i].begin()->first; stdev+=d*d; mean+=d; }
@@ -339,6 +339,8 @@ void ClosestPointRegistrationForceField<DataTypes>::addForce(const core::Mechani
     _f.endEdit();
 
 }
+
+
 
 
 

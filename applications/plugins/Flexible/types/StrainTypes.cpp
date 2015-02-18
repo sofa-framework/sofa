@@ -24,7 +24,6 @@
 ******************************************************************************/
 #define FLEXIBLE_StrainTYPES_CPP
 
-#include "../initFlexible.h"
 #include "../types/StrainTypes.h"
 #include <sofa/core/ObjectFactory.h>
 

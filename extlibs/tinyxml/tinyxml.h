@@ -26,6 +26,10 @@ distribution.
 #ifndef TINYXML_INCLUDED
 #define TINYXML_INCLUDED
 
+#ifndef TIXML_USE_STL
+	#define TIXML_USE_STL
+#endif
+
 #ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4530 )
@@ -49,7 +53,6 @@ distribution.
 	#include <sstream>
 	#define TIXML_STRING		std::string
 #else
-	#error TIXML_USE_STL not defined!
 	#include "tinystr.h"
 	#define TIXML_STRING		TiXmlString
 #endif

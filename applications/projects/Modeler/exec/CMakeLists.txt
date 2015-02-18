@@ -27,7 +27,7 @@ set(RESOURCE_FILES_GROUP "Generated")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES} ${RESOURCE_FILES})
 
-AddLinkerDependencies(SofaModeler SofaComponentMain )
+AddLinkerDependencies(SofaModeler SofaComponentMain tinyxml)
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 

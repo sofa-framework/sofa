@@ -22,9 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-//#include "stdafx.h"
-#include "Elasticity_test.h"
+#include <plugins/SofaTest/Elasticity_test.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 #include <sofa/component/init.h>
@@ -35,11 +33,8 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
 
-// Including constraint, force and mass
-#include <sofa/component/mass/UniformMass.h>
+// Including mechanical object
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/core/MechanicalParams.h>
 
 // Solvers
 #include <sofa/component/odesolver/NewmarkImplicitSolver.h>
@@ -66,15 +61,8 @@ Then it compares the effective mass position to the computed mass position every
 template <typename _DataTypes>
 struct NewmarkImplicitDynamic_test : public Elasticity_test<_DataTypes>
 {
-
-
     typedef _DataTypes DataTypes;
-    typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::Real Real;
 
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
     typedef component::odesolver::NewmarkImplicitSolver NewmarkImplicitSolver;
@@ -97,11 +85,6 @@ struct NewmarkImplicitDynamic_test : public Elasticity_test<_DataTypes>
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         root = simulation::getSimulation()->createNewGraph("root");
-
-        // Load the scene from the xml file
-        /*std::string fileName = std::string(SOFATEST_SCENES_DIR) + "/" + "NewmarkSpringDynamicTest.xml";
-        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()));
-        std::cout << "Load the file ! " << std::endl;*/
 
         // Create the scene
         root->setGravity(Coord3(0,-10,0));
@@ -162,12 +145,13 @@ struct NewmarkImplicitDynamic_test : public Elasticity_test<_DataTypes>
         // First velocity is v0
         velocitiesArray.push_back(v0);
 
-        // Compute velocities
+        // Constants
         double denominator = (h*h*beta+h*gamma*rk)*K+m*(1+h*gamma*rm);
         double constantAcc = h*(-rm*m*(1-gamma)-K*h*(0.5-beta)-rk*K*(1-gamma));
         double constantVel = (-rm*m-K*(h+rk));
         double constant2 = h*h*0.5*(1-2*beta);
 
+        // Compute next velocities and accelerations
         for(int i=1;i< size+1; i++)
         {
             accelerationsArray.push_back((-K*(positionsArray[i-1]-z0)-m*g+constantAcc*accelerationsArray[i-1]+constantVel*velocitiesArray[i-1])/denominator);
