@@ -1,6 +1,6 @@
 #include <sofa/helper/system/FileSystem.h>
 
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 
 #include <fstream>
 #include <iostream>

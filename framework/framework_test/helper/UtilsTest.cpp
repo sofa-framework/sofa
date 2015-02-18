@@ -1,7 +1,7 @@
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
 
-using namespace sofa::helper::system;
+using namespace sofa::helper;
 
 TEST(UtilsTest, string_to_widestring_to_string)
 {
