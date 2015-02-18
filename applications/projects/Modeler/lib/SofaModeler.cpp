@@ -35,6 +35,8 @@
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
 
 
 #define MAX_RECENTLY_OPENED 10
@@ -61,7 +63,9 @@ namespace qt
 {
 
 
-using namespace sofa::helper::system;
+using sofa::helper::system::PluginManager;
+using sofa::helper::system::FileSystem;
+using sofa::helper::Utils;
 
 
 void SofaModeler::createActions()
@@ -209,7 +213,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(sofa::gui::BaseGUI::getPat
     //Get the different path needed
     examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
     openPath = examplePath;
-    binPath = sofa::helper::system::DataRepository.getFirstPath().c_str() + std::string( "/bin/" );
+    binPath = FileSystem::getParentDirectory(Utils::getExecutablePath()) + "/";
     presetPath = examplePath + std::string("Objects/");
     std::string presetFile = std::string("config/preset.ini" );
     presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
