@@ -179,7 +179,7 @@ void SofaModeler::createToolbar()
     addToolBar(Qt::TopToolBarArea, toolBar);
 }
 
-SofaModeler::SofaModeler():recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/Modeler.ini")
+SofaModeler::SofaModeler():recentlyOpenedFilesManager(sofa::gui::BaseGUI::getPathPrefix() + "/config/Modeler.ini")
     ,runSofaGUI(NULL)
 {
     setWindowTitle(QString("Sofa Modeler"));
