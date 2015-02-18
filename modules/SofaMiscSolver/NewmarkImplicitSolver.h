@@ -59,6 +59,7 @@ class SOFA_MISC_SOLVER_API NewmarkImplicitSolver : public sofa::core::behavior::
 {
 protected:
     unsigned int cpt;
+    sofa::core::MultiVecDerivId pID;
 
     NewmarkImplicitSolver();
 

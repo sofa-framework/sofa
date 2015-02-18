@@ -65,6 +65,15 @@ public:
     }
 
 
+    void set(Real x, Real y, Real z, Real w)
+    {
+        _q[0] = x;
+        _q[1] = y;
+        _q[2] = z;
+        _q[3] = w;
+    }
+
+
     /// Cast into a standard C array of elements.
     const Real* ptr() const
     {
@@ -317,7 +326,7 @@ public:
     }
 
     enum { static_size = 4 };
-    static unsigned int size() {return 4;};
+    static unsigned int size() {return 4;}
 
     /// Compile-time constant specifying the number of scalars within this vector (equivalent to the size() method)
     enum { total_size = 4 };

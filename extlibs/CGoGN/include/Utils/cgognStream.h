@@ -52,7 +52,7 @@ void allToStd(bool yes = true);
  */
 void allToFile(const std::string& filename);
 
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 /**
  * set all outputs to status bar of Qt interface
  */
@@ -93,7 +93,7 @@ protected:
 
 	std::stringstream m_buffer;
 	
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 	Utils::QT::SimpleQT* m_sqt_bar;
 	Utils::QT::SimpleQT* m_sqt_console;
 
@@ -131,7 +131,7 @@ public:
 	 */
 	void toFile(const std::string& filename);
 
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 
 	/**
 	 * remove output to status bars

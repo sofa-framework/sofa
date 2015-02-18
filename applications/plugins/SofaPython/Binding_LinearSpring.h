@@ -27,6 +27,8 @@
 
 #include "PythonMacros.h"
 
+#include <SofaDeformable/SpringForceField.h>
+
 SP_DECLARE_CLASS_TYPE(LinearSpring)
 
 #endif // BINDING_LINEARSPRING_H

@@ -55,7 +55,7 @@ DistanceFromTargetMapping<TIn, TOut>::~DistanceFromTargetMapping()
 }
 
 template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::createTarget( unsigned index, InCoord position, Real distance)
+void DistanceFromTargetMapping<TIn, TOut>::createTarget(unsigned index, const InCoord &position, Real distance)
 {
     helper::WriteAccessor< Data< vector<Real> > > distances(f_restDistances);
     helper::WriteAccessor< Data<vector<unsigned> > > indices(f_indices);
@@ -69,7 +69,7 @@ void DistanceFromTargetMapping<TIn, TOut>::createTarget( unsigned index, InCoord
 }
 
 template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::updateTarget( unsigned index, InCoord position)
+void DistanceFromTargetMapping<TIn, TOut>::updateTarget(unsigned index, const InCoord &position)
 {
     helper::WriteAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::WriteAccessor< Data<vector<unsigned> > > indices(f_indices);
@@ -79,6 +79,14 @@ void DistanceFromTargetMapping<TIn, TOut>::updateTarget( unsigned index, InCoord
     unsigned i=0; while(i<indices.size() && indices[i]!=index) i++;
 
     targetPositions[i] = position;
+}
+
+template <class TIn, class TOut>
+void DistanceFromTargetMapping<TIn, TOut>::updateTarget(unsigned index, SReal x, SReal y, SReal z)
+{
+    InCoord pos;
+    TIn::set( pos, x, y, z );
+    updateTarget( index, pos );
 }
 
 template <class TIn, class TOut>

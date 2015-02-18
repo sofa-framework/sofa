@@ -281,7 +281,7 @@ AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
     }
 
     sqmat.compress();
-    return sqmat.compressedMatrix.selfadjointView<Eigen::Upper>();
+    return sqmat.compressedMatrix;
 }
 
 
@@ -531,7 +531,7 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
                                         const AssemblyVisitor::mat& d)
 {
-//#ifdef USING_OMP_PRAGMAS
+//#ifdef _OPENMP
 //    return component::linearsolver::mul_EigenSparseMatrix_MT( l.transpose(), component::linearsolver::mul_EigenSparseMatrix_MT( d, l ) );
 //#else
     return l.transpose() * (d * l);

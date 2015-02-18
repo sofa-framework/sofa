@@ -9,7 +9,7 @@ namespace odesolver {
 
 /**
 
-   Default ConstraintValue for damped elasticity
+   ConstraintValue for elasticity (compliant constraints)
 
 */
 
@@ -26,9 +26,6 @@ class SOFA_Compliant_API ConstraintValue : public BaseConstraintValue {
 	// value for dynamics
     virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
 
-
-//    Data< SReal > dampingRatio;  ///< Same damping ratio applied to all the constraints
-	
 };
 
 }

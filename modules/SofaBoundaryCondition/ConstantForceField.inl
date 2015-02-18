@@ -55,8 +55,12 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , force(initData(&force, "force", "applied force to all points if forces attribute is not specified"))
     , totalForce(initData(&totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
     , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , d_color(initData(&d_color, defaulttype::Vec4f(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display"))
     , indexFromEnd(initData(&indexFromEnd,(bool)false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector"))
 {
+    arrowSizeCoef.setGroup("Visualization");
+    d_color.setGroup("Visualization");
+
 }
 
 
@@ -94,7 +98,7 @@ void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* /*par
     else if (forceVal * forceVal > 0.0)
         singleForce = forceVal;
 
-    const Deriv f_end = (f.empty() ? singleForce : f.back());
+    const Deriv f_end = (f.empty() ? singleForce : f[f.size()-1]);
 
     // When no indices are given, copy the forces from the start
     if (indices.empty())
@@ -252,17 +256,15 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
             float norm = (float)(p2-p1).norm();
 
-            static const defaulttype::Vec<4,float> color(0.2f,0.9f,0.3f,1.0f);
-
             if( aSC > 0)
             {
                 //helper::gl::drawArrow(p1,p2, norm/20.0);
-                vparams->drawTool()->drawArrow(p1,p2, norm/20.0f, color);
+                vparams->drawTool()->drawArrow(p1,p2, norm/20.0f, d_color.getValue());
             }
             else
             {
                 //helper::gl::drawArrow(p2,p1, norm/20.0);
-                vparams->drawTool()->drawArrow(p2,p1, norm/20.0f, color);
+                vparams->drawTool()->drawArrow(p2,p1, norm/20.0f, d_color.getValue());
             }
         }
         glPopAttrib();

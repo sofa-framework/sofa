@@ -55,6 +55,7 @@ GLWidget::GLWidget(SimpleQT* cbs, QWidget *parent) :
 	allow_rotation(true)
 {
 	makeCurrent();
+	glewExperimental = GL_TRUE;
 	glewInit();
 
 	newModel = 1;
@@ -66,6 +67,29 @@ GLWidget::GLWidget(SimpleQT* cbs, QWidget *parent) :
 
 	// init trackball
 	trackball(m_cbs->curquat(), 0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+
+GLWidget::GLWidget(SimpleQT* cbs, QGLFormat& format, QWidget *parent) :
+	QGLWidget(format, parent),
+	m_cbs(cbs),
+	m_state_modifier(0),
+	allow_rotation(true)
+{
+	makeCurrent();
+	glewExperimental = GL_TRUE;
+	glewInit();
+
+	newModel = 1;
+	m_cbs->trans_x() = 0.;
+	m_cbs->trans_y() = 0.;
+	float f = FAR_PLANE;
+	m_cbs->trans_z() = -f / 5.0f;
+	foc = 2.0f;
+
+	// init trackball
+	trackball(m_cbs->curquat(), 0.0f, 0.0f, 0.0f, 0.0f);
+
 }
 
 GLWidget::~GLWidget()
@@ -193,7 +217,6 @@ glm::vec3& GLWidget::getObjPos()
 
 void GLWidget::initializeGL()
 {
-	std::cout << "GL VERSION = "<< glGetString(GL_VERSION)<< std::endl;
 	glEnable(GL_DEPTH_TEST);
 
 	if (m_cbs)
@@ -420,7 +443,7 @@ void GLWidget::glMousePosition(int& x, int& y)
 
 void GLWidget::oglRotate(float angle, float x, float y, float z)
 {
-	m_cbs->modelViewMatrix() = glm::rotate(m_cbs->modelViewMatrix(), angle, glm::vec3(x,y,z));
+	m_cbs->modelViewMatrix() = glm::rotate(m_cbs->modelViewMatrix(), glm::radians(angle), glm::vec3(x,y,z));
 }
 
 void GLWidget::oglTranslate(float tx, float ty, float tz)
@@ -510,7 +533,7 @@ float GLWidget::getWidthInWorld(unsigned int pixel_width, const Geom::Vec3f& cen
 
 void GLWidget::transfoRotate(float angle, float x, float y, float z)
 {
-	m_cbs->transfoMatrix() = glm::rotate( m_cbs->transfoMatrix(), angle, glm::vec3(x,y,z));
+	m_cbs->transfoMatrix() = glm::rotate( m_cbs->transfoMatrix(), glm::radians(angle), glm::vec3(x,y,z));
 	recalcModelView() ;
 }
 

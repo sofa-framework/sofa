@@ -453,7 +453,7 @@ void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vp
 
 
     std::vector<  sofa::defaulttype::Vector3 > points;
-    std::vector<  sofa::defaulttype::Vec<2,int> > indices;
+//    std::vector<  sofa::defaulttype::Vec<2,int> > indices;
 
     Coord gravityCenter;
     for ( unsigned int i=ibegin; i<iend; i++ )
@@ -464,7 +464,7 @@ void UniformMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vp
         points.push_back ( p );
         gravityCenter += x[i];
     }
-    sofa::defaulttype::Vec4f color(1,1,1,1);
+//    sofa::defaulttype::Vec4f color(1,1,1,1);
 
 #ifdef SOFA_SMP
     static float colorTab[][4]=

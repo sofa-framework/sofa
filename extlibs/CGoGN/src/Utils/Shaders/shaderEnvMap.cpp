@@ -107,7 +107,7 @@ void ShaderEnvMap::sendParams()
 	if (m_with_eyepos)
 		glUniform3fv(*m_unif_eyePos, 1, m_eyePos.data());
 	// we use texture engine 0
-	glUniform1iARB(*m_unif_envMap,GL_TEXTURE0);
+	glUniform1i(*m_unif_envMap,GL_TEXTURE0);
 	unbind();
 }
 
@@ -485,7 +485,7 @@ bool ShaderEnvMap::setCubeMapCheckered()
 }
 
 
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 bool ShaderEnvMap::setCubeMap(const std::string& filename)
 {
 

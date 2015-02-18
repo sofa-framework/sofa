@@ -68,6 +68,8 @@ bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPic
     double restLength = picked.dist;
     mstateCollision = static_cast< core::behavior::MechanicalState<defaulttype::Rigid3fTypes>*  >(picked.mstate);
 
+    if( !mstateCollision ) mstateCollision = static_cast< core::behavior::MechanicalState<defaulttype::Rigid3fTypes>* >( picked.body->getContext()->getMechanicalState() );
+
     if( !mstateCollision ) return false;
 
     m_forcefield = sofa::core::objectmodel::New< JointSpringForceField< defaulttype::Rigid3fTypes > >(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
@@ -101,6 +103,8 @@ bool AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPic
 
     double restLength = picked.dist;
     mstateCollision = static_cast< core::behavior::MechanicalState<defaulttype::Rigid3dTypes>*  >(picked.mstate);
+
+    if( !mstateCollision ) mstateCollision = static_cast< core::behavior::MechanicalState<defaulttype::Rigid3dTypes>* >( picked.body->getContext()->getMechanicalState() );
 
     if( !mstateCollision ) return false;
 

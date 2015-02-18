@@ -33,7 +33,7 @@
 #include <sofa/helper/decompose.h>
 
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -158,7 +158,7 @@ public:
 
         rot.resize(this->clusters.size());
 
-        //#ifdef USING_OMP_PRAGMAS
+        //#ifdef _OPENMP
         //        #pragma omp parallel for
         //#endif
         for (unsigned int i=0 ; i<this->clusters.size() ; ++i)

@@ -623,7 +623,7 @@ unsigned int EmbeddedMap2_MR::closeHole(Dart d, bool forboundary)
 	return nbE ;
 }
 
-bool EmbeddedMap2_MR::check()
+bool EmbeddedMap2_MR::check() const
 {
 	bool topo = Map2::check() ;
 	if (!topo)

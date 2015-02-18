@@ -1,103 +1,55 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
-# cmake_minimum_required(VERSION 2.8)
 
-# project(CGoGN)
-
-#SET ( CMAKE_VERBOSE_MAKEFILE 1 )
 
 SET(CGoGN_ROOT_DIR ${SOFA_EXTLIBS_DIR}/CGoGN )
+LIST (APPEND CMAKE_MODULE_PATH ${CGoGN_ROOT_DIR}/cmake_modules/ )
 
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
-				 	  ${CGoGN_ROOT_DIR}/cmake_modules/ )
-
-# for shared or not shared
-# SET ( BUILD_SHARED_LIBS OFF CACHE BOOL "if used all library are build as shared type (.so/.dylib/.dll)" )
-
-# SET ( WITH_ASSIMP ON CACHE BOOL "build CGoGN with Assimp" )
-# SET ( WITH_ZINRI ON CACHE BOOL "build CGoGN with Zinri lib" )
-# SET ( WITH_QT ON CACHE BOOL "build CGoGN with Qt lib" )
-# SET ( DESIRED_QT_VERSION "4" CACHE STRING "4: QT4/ 5 not yet implemented" )
-# SET ( DONOT_COMPILE_SANDBOX OFF CACHE BOOL "do not compile the SandBox directory" )
-
-
-# for CGoGN MR
-# SET ( FORCE_MR "0" CACHE STRING "0: normal mode / 1 multires mode" )
-
-# #create one big lib
-# SET ( ONELIB OFF CACHE BOOL "build CGoGN in one lib" )
-
-# SET ( WITH_GLEWMX OFF CACHE BOOL "use multi-contex GLEW" )
-
-SET ( BUILD_SHARED_LIBS ON )
-SET ( WITH_ASSIMP OFF)
-SET ( WITH_QT ON)
-SET ( DESIRED_QT_VERSION "4")
+#SET ( CMAKE_VERBOSE_MAKEFILE 1 )
+SET ( CGOGN_WITH_QT ON)
+SET ( CGOGN_DESIRED_QT_VERSION "4")
 SET ( DONOT_COMPILE_SANDBOX ON)
-SET ( FORCE_MR "0" )
-SET ( ONELIB ON)
-SET ( WITH_GLEWMX OFF)
-
+SET ( CGOGN_ONELIB ON)
+SET ( CGOGN_WITH_GLEWMX OFF)
+SET ( CGOGN_WITH_ZINRI OFF)
 
 IF(WIN32)
 	SET ( CMAKE_PREFIX_PATH ${CGoGN_ROOT_DIR}/windows_dependencies CACHE STRING "path to dependencies" )
 ENDIF(WIN32)
 
+SET (CGoGN_EXT_INCLUDES "")
+SET (CGoGN_EXT_LIBS "")
 
-IF (WITH_QT)
-	add_definitions(-DWITH_QT)
-	find_package(Qt REQUIRED)
+find_package(Boost COMPONENTS regex thread system REQUIRED)
+find_package(ZLIB REQUIRED)
+find_package(LibXml2 REQUIRED)
+
+IF (CGOGN_WITH_QT)
+        add_definitions("-DCGOGN_WITH_QT")
 	SET(QT_USE_QTCORE TRUE)
 	SET(QT_USE_QTOPENGL TRUE)
 	SET(QT_USE_QTSVG TRUE)
 	SET(QT_USE_QTXML TRUE )
+        find_package(Qt REQUIRED)
 	INCLUDE(${QT_USE_FILE})
-#	ADD_DEFINITIONS(${QT_DEFINITIONS})
-#        if(NOT SOFA-LIB_GUI_QGLVIEWER)
-#                message(FATAL_ERROR "CgoGN with QT option activated need SOFA-LIB_GUI_QGLVIEWER to be enabled.")
-#        endif()
-	# find_package(QGLViewer REQUIRED)
-        SET (CGoGN_EXT_INCLUDES ${CGoGN_EXT_INCLUDES} ${QT_INCLUDE_DIR} )
-        SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} ${QT_LIBRARIES} )
-ENDIF (WITH_QT)
-
+        LIST (APPEND CGoGN_EXT_INCLUDES ${QT_INCLUDE_DIR} )
+        LIST (APPEND CGoGN_EXT_LIBS ${QT_LIBRARIES} )
+ENDIF (CGOGN_WITH_QT)
 
 if(NOT (SOFA-EXTERNAL_BOOST_PATH STREQUAL ""))
 	message(FATAL_ERROR "CGoGN needs the full boost version. You need to set SOFA-EXTERNAL_BOOST_PATH to \"\"")
 endif()
-find_package(Boost COMPONENTS regex thread system REQUIRED)
 
-find_package(ZLIB REQUIRED)
-find_package(LibXml2 REQUIRED)
-
-
-
-
-IF (DEFINED ASSERTON)
-	add_definitions(-DCGOGN_ASSERT_BOOL=${ASSERTON})
-ELSE (DEFINED ASSERTON)
-	add_definitions(-DCGOGN_ASSERT_BOOL=false)
-ENDIF (DEFINED ASSERTON)
-
-IF (FORCE_MR EQUAL 0)
-	file(WRITE ${CGoGN_ROOT_DIR}/include/cgogn_mr.h "0" )
-ENDIF (FORCE_MR EQUAL 0)
-
-IF (FORCE_MR EQUAL 1)
-	add_definitions(-DCGoGN_FORCE_MR=1)
-	file(WRITE ${CGoGN_ROOT_DIR}/include/cgogn_mr.h "1" )
-ENDIF (FORCE_MR EQUAL 1)
-
-IF (ONELIB)
-	file(WRITE ${CGoGN_ROOT_DIR}/include/cgogn_onelib.h "1" )
-ELSE (ONELIB)
-	file(WRITE ${CGoGN_ROOT_DIR}/include/cgogn_onelib.h "0" )
-ENDIF (ONELIB)
-
-add_definitions(-DSHADERPATH="${CGoGN_ROOT_DIR}/lib/Shaders/")
+add_definitions("-DCGOGN_SHADER_PATH=\"${CGoGN_ROOT_DIR}/lib/Shaders/\"")
 add_definitions("-Werror=return-type")
 
+IF (DEFINED CGOGN_ASSERTON)
+        add_definitions("-DCGOGN_ASSERT_BOOL=${CGOGN_ASSERTON}")
+ELSE (DEFINED CGOGN_ASSERTON)
+        add_definitions("-DCGOGN_ASSERT_BOOL=false")
+ENDIF (DEFINED CGOGN_ASSERTON)
+
 # define includes of external libs 
-SET (CGoGN_EXT_INCLUDES
+LIST (APPEND CGoGN_EXT_INCLUDES
 	${CGoGN_ROOT_DIR}/ThirdParty/include
 	${ZLIB_INCLUDE_DIRS}
 	${LIBXML2_INCLUDE_DIR}
@@ -111,10 +63,8 @@ include_directories(
 	${CGoGN_EXT_INCLUDES}
 )
 
-
 # define libs for external libs
-SET (CGoGN_EXT_LIBS
-    # nl
+LIST (APPEND CGoGN_EXT_LIBS
 	${ZLIB_LIBRARIES}
 	${LIBXML2_LIBRARIES}
 	${Boost_SYSTEM_LIBRARY}
@@ -122,40 +72,11 @@ SET (CGoGN_EXT_LIBS
 	${Boost_THREAD_LIBRARY}
 )
 
-#IF(WIN32)
-#	SET (CGoGN_EXT_INCLUDES ${CGoGN_EXT_INCLUDES} ${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include)
-#	file(GLOB WIN32SUITESPARSELIBS "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
-#	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} 
-#						${WIN32SUITESPARSELIBS})
-#ELSE(WIN32)
-#	find_package(SuiteSparse REQUIRED)
-#	SET (CGoGN_EXT_INCLUDES ${CGoGN_EXT_INCLUDES} ${SUITESPARSE_INCLUDE_DIRS})
-#	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} ${SUITESPARSE_LIBRARIES})
-#ENDIF(WIN32)
-
-
-# IF(APPLE)APPLE
-# # attention a changer pour chercher la bonne version automatiquement
-# 	SET(CMAKE_OSX_SYSROOT "/Developer/SDKs/MacOSX10.6.sdk" CACHE STRING "developer SDK")
-# 	SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-undefined -Wl,dynamic_lookup")
-# 	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMAC_OSX")
-# 	SET(CMAKE_OSX_ARCHITECTURES x86_64)
-# 	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} "-framework Foundation -framework cocoa" )
-# ENDIF(APPLE)
-
-# add_subdirectory(ThirdParty/OpenNL)
-# file(GLOB NL_H ThirdParty/OpenNL/src/NL/*.h)
-# file(COPY ${NL_H}
-# 	 DESTINATION ${CGoGN_ROOT_DIR}/ThirdParty/include/NL)
-
-IF (WITH_ZINRI)
-	add_definitions(-DWITH_ZINRI)
-	SET (CGoGN_EXT_LIBS ${CGoGN_EXT_LIBS} Zinri)
+IF (CGOGN_WITH_ZINRI)
+        add_definitions("-DCGOGN_WITH_ZINRI")
+        LIST (APPEND CGoGN_EXT_LIBS  Zinri)
 	add_subdirectory(ThirdParty/Zinri)
-	file(GLOB ZINRI_H ThirdParty/Zinri/*.h)
-	file(COPY ${ZINRI_H}
-		 DESTINATION ${CGoGN_ROOT_DIR}/ThirdParty/include/Zinri)
-ENDIF(WITH_ZINRI)
+ENDIF(CGOGN_WITH_ZINRI)
 
 
 file(
@@ -214,7 +135,7 @@ file(
 	${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.geom
 )
 
-IF(WITH_QT)
+IF(CGOGN_WITH_QT)
         file(
                 GLOB
                 files_utils_qt
@@ -236,10 +157,9 @@ IF(WITH_QT)
 
         QT4_WRAP_CPP(UTILS_QT_HEADERS_MOC ${utils_qt_headers})
         SET (files_utils_withQt ${files_utils} ${files_utils_qt} ${UTILS_QT_HEADERS_MOC})
-ENDIF (WITH_QT)
+ENDIF (CGOGN_WITH_QT)
 
-        SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wall -Wextra -fPIC" )
-#        SET( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS} )
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC" )
 	add_executable( shader_to_h ${CGoGN_ROOT_DIR}/ThirdParty/Tools/shader_to_h.cpp )
 	add_custom_target(shader_target shader_to_h ${shaders_src}
 	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
@@ -254,19 +174,18 @@ IF(WIN32)
 ELSE(WIN32)
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC ")
         message(CMAKE_CXX_FLAGS : ${CMAKE_CXX_FLAGS})
-#	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wclobbered -Wempty-body -Wignored-qualifiers -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -fPIC")
 	SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Woverride-init -fPIC")
-	IF (ONELIB)
+        IF (CGOGN_ONELIB)
         add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
 		add_dependencies(${PROJECT_NAME} shader_target )
 		SET(CGOGN_LIBS "${PROJECT_NAME}")
-	ELSE (ONELIB)
+        ELSE (CGOGN_ONELIB)
 		add_library( ${PROJECT_NAME}			${files_topology})
 		add_library( ${PROJECT_NAME}_container	${files_container})
 		add_library( ${PROJECT_NAME}_algo		${files_algo})
 		add_library( ${PROJECT_NAME}_utils 		${files_utils} )
 		SET(CGOGN_LIBS "${PROJECT_NAME}_topology ${PROJECT_NAME}_container ${PROJECT_NAME}_algo ${PROJECT_NAME}_utils")
-	ENDIF (ONELIB)
+        ENDIF (CGOGN_ONELIB)
 ENDIF(WIN32)
 
 AddLinkerDependencies(${CGoGN_EXT_LIBS} SofaDefaultType ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}  ${QT_LIBRARIES})

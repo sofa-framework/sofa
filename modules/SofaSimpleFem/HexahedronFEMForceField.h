@@ -175,6 +175,7 @@ public:
     Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
     Data<bool> f_drawing;
     Data<Real> f_drawPercentageOffset;
+    bool needUpdateTopology;
 
 protected:
     HexahedronFEMForceField()
@@ -192,6 +193,7 @@ protected:
         , _gatherBsize(initData(&_gatherBsize,"gatherBsize","number of dof accumulated per threads during the gather operation (Only use in GPU version)"))
         , f_drawing(initData(&f_drawing,true,"drawing"," draw the forcefield if true"))
         , f_drawPercentageOffset(initData(&f_drawPercentageOffset,(Real)0.15,"drawPercentageOffset","size of the hexa"))
+        , needUpdateTopology(false)
     {
         data->initPtrData(this);
         _coef[0][0]=-1;
@@ -338,6 +340,12 @@ public:
 
 
     void draw(const core::visual::VisualParams* vparams);
+
+    void handleTopologyChange()
+    {
+        needUpdateTopology = true;
+    }
+
 
 protected:
 

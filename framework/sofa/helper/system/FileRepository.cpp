@@ -66,19 +66,8 @@ std::string cleanPath( const std::string& path )
     return p;
 }
 
-#if defined (WIN32) || defined (_XBOX)
-FileRepository PluginRepository("SOFA_PLUGIN_PATH","./");
-#else
-FileRepository PluginRepository("SOFA_PLUGIN_PATH","../lib");
-#endif
-#if defined (WIN32) || defined (_XBOX) || defined(PS3)
-FileRepository DataRepository("SOFA_DATA_PATH", "../share;../examples");
-#elif defined (__APPLE__)
-FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../Resources/examples:../Resources:../../../../examples:../../../../share");
-#else
-FileRepository DataRepository("SOFA_DATA_PATH", "../share:../examples:../../Verification/data:../../Verification/simulation:../share/sofa:../share/sofa/examples:/usr/share/sofa/examples:/usr/share/sofa");
-#endif
-
+FileRepository PluginRepository("SOFA_PLUGIN_PATH");
+FileRepository DataRepository("SOFA_DATA_PATH");
 
 #if defined (_XBOX) || defined(PS3)
 char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED

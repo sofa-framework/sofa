@@ -61,7 +61,6 @@ set(SOFAHELPER_HEADERS
     system/PipeProcess.h
     system/SofaOStream.h
     system/FileSystem.h
-    system/Utils.h
     system/DynamicLibrary.h
     system/PluginManager.h
     TagFactory.h
@@ -85,6 +84,9 @@ set(SOFAHELPER_HEADERS
     kdTree.inl
     kdTree.h
     vectorData.h
+    GenerateRigid.h
+    Utils.h
+	IndexOpenMP.h
 	)
 
 set(SOFAHELPER_SOURCES
@@ -122,7 +124,6 @@ set(SOFAHELPER_SOURCES
     system/PipeProcess.cpp
     system/SofaOStream.cpp
     system/FileSystem.cpp
-    system/Utils.cpp
     system/DynamicLibrary.cpp
     system/PluginManager.cpp
     TagFactory.cpp
@@ -135,6 +136,8 @@ set(SOFAHELPER_SOURCES
     OptionsGroup.cpp
     Polynomial_LD.cpp
     UnitTest.cpp
+    GenerateRigid.cpp
+    Utils.cpp
 	)
 
 if(SOFA_HAVE_PNG)

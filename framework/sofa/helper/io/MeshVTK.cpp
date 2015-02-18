@@ -25,6 +25,7 @@
 #include <sofa/helper/io/MeshVTK.h>
 
 #include <sstream>
+
 #include <tinyxml.h>
 
 #include <sofa/helper/system/FileRepository.h>
@@ -60,7 +61,8 @@ void MeshVTK::init(std::string filename)
 void MeshVTK::readVTU(const std::string &filename)
 {
 
-    TiXmlDocument vtu(filename);
+    TiXmlDocument vtu;
+    vtu.LoadFile(filename);
     if (vtu.Error())
     {
         std::cerr << "Error while loading file " << filename << std::endl;

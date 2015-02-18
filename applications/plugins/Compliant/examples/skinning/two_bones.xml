@@ -12,17 +12,17 @@
         <position>1 0 0 0 0 0 1</position>
     </rigid>
     
-    <joint id="joint01">
-        <parent id="bone01">
+    <jointGeneric id="joint01">
+        <object id="bone01">
             <offset type="absolute">0.5 0 0 0 0 0 1</offset>
-        </parent>
-        <child id="bone02">
+        </object>
+        <object id="bone02">
             <offset type="relative">-0.5 0 0 0 0 0 1</offset>
-        </child>
-        <dof index="3"/>
-        <dof index="4"/>
-        <dof index="5"/>
-    </joint>
+        </object>
+        <dof index="rx"/>
+        <dof index="ry"/>
+        <dof index="rz"/>
+    </jointGeneric>
     
     <deformable id="skin">
         <position>0 0 0 0 0 0 1</position>
@@ -31,17 +31,17 @@
             
             <group id="group01">
                 <index>0 1</index>
-                <weight>1. 0.75</weight>
+                <data type="float" name="weight">1. 0.75</data>
             </group>
             
             <group id="group02">
                 <index>1 2</index> 
-                <weight>0.25 1.</weight>
+                <data type="float" name="weight">0.25 1.</data>
             </group>
             
         </mesh>
-        <skinning group="group01" rigid="bone01" />
-        <skinning group="group02" rigid="bone02" />
+        <skinning rigid="bone01" mesh="skin" group="group01" weight="weight" />
+        <skinning rigid="bone02" mesh="skin" group="group02" weight="weight" />
     </deformable>
     
 </sml>

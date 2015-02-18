@@ -76,6 +76,7 @@ protected:
     DataWidget *isComplianceWidget;
     DataWidget *arrowSizeWidget;
     DataWidget *colorWidget;
+    DataWidget *visualModelWidget;
 };
 
 

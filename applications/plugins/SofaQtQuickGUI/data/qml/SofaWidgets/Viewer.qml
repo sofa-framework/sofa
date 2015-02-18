@@ -3,16 +3,22 @@ import QtQuick.Controls 1.2
 import SofaBasics 1.0
 import Viewer 1.0
 import Scene 1.0
+import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 
 Viewer {
     id: root
     clip: true
+	
+	Action{
+		shortcut: "F5"
+		onTriggered: root.viewAll()
+	}
 
     Timer {
-        interval: 16
         running: true
         repeat: true
-        onTriggered: root.update()
+        interval: 16
+        onTriggered: root.update() // TODO: warning, does not work with multithreaded render loop
     }
 
     BusyIndicator {
@@ -47,9 +53,6 @@ Viewer {
         Connections {
             target: scene ? scene.pickingInteractor : null
             onPositionChanged: {
-                if(!scene)
-                    return;
-
                 var position = root.mapFromWorld(scene.pickingInteractor.position)
                 if(position.z > 0.0 && position.z < 1.0) {
                     handIcon.x = position.x - 6;
@@ -65,7 +68,8 @@ Viewer {
     }
 
     onSceneChanged: {
-        actor.init();
+        if(scene)
+            actor.init();
     }
 
     property alias actor: actor
@@ -86,10 +90,6 @@ Viewer {
             property real zoomFactor: 1.25
 
             function init() {
-                // set the default mapping
-                if(!scene)
-                    return;
-
                 addMousePressedMapping (Qt.LeftButton, function(mouse) {
                     var nearPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 0.0));
                     var farPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 1.0));
@@ -118,7 +118,7 @@ Viewer {
                     previousX = mouse.x;
                     previousY = mouse.y;
 
-                    overrideCursorShape = Qt.ClosedHandCursor;
+                    SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
                     setMouseMoveMapping(function(mouse) {
                         if(!camera)
@@ -136,14 +136,14 @@ Viewer {
                 addMouseReleasedMapping(Qt.RightButton, function(mouse) {
                     setMouseMoveMapping(null);
 
-                    overrideCursorShape = 0;
+                    SofaToolsScript.Tools.overrideCursorShape = 0;
                 });
 
                 addMousePressedMapping (Qt.MiddleButton, function(mouse) {
                     previousX = mouse.x;
                     previousY = mouse.y;
 
-                    overrideCursorShape = Qt.ClosedHandCursor;
+                    SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
                     setMouseMoveMapping(function(mouse) {
                         if(!camera)
@@ -161,7 +161,7 @@ Viewer {
                 addMouseReleasedMapping(Qt.MiddleButton, function(mouse) {
                     setMouseMoveMapping(null);
 
-                    overrideCursorShape = 0;
+                    SofaToolsScript.Tools.overrideCursorShape = 0;
                 });
 
                 setMouseWheelMapping(function(wheel) {
@@ -171,9 +171,16 @@ Viewer {
                     if(0 === wheel.angleDelta.y)
                         return;
 
-                    var factor = wheel.angleDelta.y / 120.0 * camera.zoomSpeed;
-                    if(factor < 0.0)
-                        factor = 1.0 / -factor;
+                    var boundary = 2.0;
+                    var factor = Math.max(-boundary, Math.min(wheel.angleDelta.y / 120.0, boundary)) / boundary;
+                    if(factor < 0.0) {
+                        factor = 1.0 + 0.5 * factor;
+                        factor /= camera.zoomSpeed;
+                    }
+                    else {
+                        factor = 1.0 + factor;
+                        factor *= camera.zoomSpeed;
+                    }
 
                     camera.zoom(factor, true);
                 });

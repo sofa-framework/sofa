@@ -1,6 +1,6 @@
 import Sofa
 
-from Compliant import Rigid, Tools
+from Compliant import Rigid, Tools, Frame
 
 mesh_path = Tools.path( __file__ )
 
@@ -17,17 +17,17 @@ parts = [
 
 # joint offsets
 offset = [
-    [0, Rigid.Frame().read('0 0 0 0 0 0 1')],
-    [1, Rigid.Frame().read('0 0 0.148 0 0 0 1')],
+    [0, Frame.Frame().read('0 0 0 0 0 0 1')],
+    [1, Frame.Frame().read('0 0 0.148 0 0 0 1')],
 
-    [1, Rigid.Frame().read('0.24 -0.145 0.478 0 0 0 1')],
-    [2, Rigid.Frame().read('-0.845 -0.073 0 0 0 0 1')],
+    [1, Frame.Frame().read('0.24 -0.145 0.478 0 0 0 1')],
+    [2, Frame.Frame().read('-0.845 -0.073 0 0 0 0 1')],
 
-    [2, Rigid.Frame().read('0.852 0.072 0 0 0 0 1')],
-    [3, Rigid.Frame().read('-0.113 0 0 0 0 0 1')],
+    [2, Frame.Frame().read('0.852 0.072 0 0 0 0 1')],
+    [3, Frame.Frame().read('-0.113 0 0 0 0 0 1')],
 
-    [3, Rigid.Frame().read('0.15 0 0 0 0 0 1')],
-    [0, Rigid.Frame().read('2.2 0 0.33 0 0 0 1')]    
+    [3, Frame.Frame().read('0.15 0 0 0 0 0 1')],
+    [0, Frame.Frame().read('2.2 0 0.33 0 0 0 1')]    
 ]
 
 # joints: parent offset, child offset, joint def

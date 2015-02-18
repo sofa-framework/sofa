@@ -26,6 +26,10 @@ distribution.
 #ifndef TINYXML_INCLUDED
 #define TINYXML_INCLUDED
 
+#ifndef TIXML_USE_STL
+	#define TIXML_USE_STL
+#endif
+
 #if defined (_WIN32)
 	#if defined(tinyxml_EXPORTS)
 		#define EXPORT __declspec(dllexport)
@@ -59,7 +63,6 @@ distribution.
 	#include <sstream>
 	#define TIXML_STRING		std::string
 #else
-	#error TIXML_USE_STL not defined!
 	#include "tinystr.h"
 	#define TIXML_STRING		TiXmlString
 #endif

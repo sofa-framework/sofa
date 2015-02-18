@@ -48,7 +48,7 @@ ShaderExplodeSmoothVolumes::ShaderExplodeSmoothVolumes(bool withColorPerFace, bo
 	glxvert.append(vertexShaderText);
 
 	std::string glxgeom;
-	glxgeom.append(GLSLShader::defines_Geom("lines_with_adjacency", "triangle_strip", 3));
+	glxgeom.append(GLSLShader::defines_Geom("lines_adjacency", "triangle_strip", 3));
 
 	if (withColorPerFace)
 		glxgeom.append("#define WITH_COLORPF 1\n");

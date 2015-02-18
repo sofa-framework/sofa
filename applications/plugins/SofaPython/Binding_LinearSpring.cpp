@@ -27,6 +27,9 @@
 #include <SofaDeformable/SpringForceField.h>
 using namespace sofa::component::interactionforcefield;
 
+
+using namespace sofa::component::interactionforcefield;
+
 extern "C" PyObject * LinearSpring_getAttr_Index1(PyObject *self, void*)
 {
     LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)self)->object);
