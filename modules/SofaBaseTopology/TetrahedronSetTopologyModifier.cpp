@@ -585,22 +585,31 @@ void TetrahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::
     TriangleSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
 
-void TetrahedronSetTopologyModifier::removeTetrahedra(sofa::helper::vector< unsigned int >& tetrahedra)
+void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::helper::vector<unsigned int> &tetrahedraIds)
 {
-    removeTetrahedraWarning(tetrahedra);
+    sofa::helper::vector<unsigned int> tetrahedraIds_filtered;
+    for (unsigned int i = 0; i < tetrahedraIds.size(); i++)
+    {
+        if( tetrahedraIds[i] >= m_container->getNumberOfTetrahedra())
+            std::cout << "Error: TetrahedronSetTopologyModifier::removeTetrahedra: tetrahedra: "<< tetrahedraIds[i] <<" is out of bound and won't be removed." << std::endl;
+        else
+            tetrahedraIds_filtered.push_back(tetrahedraIds[i]);
+    }
+
+    removeTetrahedraWarning(tetrahedraIds_filtered);
 
     // inform other objects that the triangles are going to be removed
     propagateTopologicalChanges();
 
     // now destroy the old tetrahedra.
-    removeTetrahedraProcess(tetrahedra ,true);
+    removeTetrahedraProcess(tetrahedraIds_filtered ,true);
 
     m_container->checkTopology();
 
-    m_container->addRemovedTetraIndex(tetrahedra);
+    m_container->addRemovedTetraIndex(tetrahedraIds_filtered);
 }
 
-void TetrahedronSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+void TetrahedronSetTopologyModifier::removeItems(const sofa::helper::vector< unsigned int >& items)
 {
     removeTetrahedra(items);
 }

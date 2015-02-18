@@ -46,8 +46,6 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/system/FileSystem.h>
-#include <sofa/helper/system/Utils.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
@@ -63,55 +61,43 @@
 using std::cerr;
 using std::endl;
 
-using namespace sofa::helper::system;
+// bool loadConfigurationFile(const std::string& filePath)
+// {
+//     TiXmlDocument doc;
+//     doc.LoadFile();
 
-// Make a path absolute if it is relative: relative paths are relative to the
-// directory containing the application binary.
-static std::string makeAbsolutePath(const std::string& path)
-{
-    if (FileSystem::isAbsolute(path))
-        return path;
-    else
-        return FileSystem::getParentDirectory(Utils::getExecutablePath()) + "/" + path;
-}
+//     if (!(doc.LoadFile(filePath)))
+//     {
+//         std::cerr << "Error while loading configuration file: " << filePath << std::endl;
+//         return false;
+//     }
 
-bool loadConfigurationFile(const std::string& filePath)
-{
-    TiXmlDocument doc;
-    doc.LoadFile();
+//     TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
+//     for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
+//         elt != NULL;
+//         elt = elt->NextSiblingElement("ResourcePath"))
+//     {
+//         const std::string path = elt->GetText();
+//         sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
+//     }
 
-    if (!(doc.LoadFile(filePath)))
-    {
-        std::cerr << "Error while loading configuration file: " << filePath << std::endl;
-        return false;
-    }
+//     for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
+//         elt != NULL;
+//         elt = elt->NextSiblingElement("PluginPath"))
+//     {
+//         const std::string path = elt->GetText();
+//         sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
+//     }
 
-    TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
-    for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
-        elt != NULL;
-        elt = elt->NextSiblingElement("ResourcePath"))
-    {
-        const std::string path = elt->GetText();
-        sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
-    }
+//     TiXmlElement* elt = root->FirstChildElement("ScreenshotDirectory");
+//     if (elt != NULL)
+//     {
+//         const std::string path = elt->GetText();
+//         sofa::gui::BaseGUI::setScreenshotDirectoryPath(makeAbsolutePath(path));
+//     }
 
-    for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
-        elt != NULL;
-        elt = elt->NextSiblingElement("PluginPath"))
-    {
-        const std::string path = elt->GetText();
-        sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
-    }
-
-    TiXmlElement* elt = root->FirstChildElement("ScreenshotDirectory");
-    if (elt != NULL)
-    {
-        const std::string path = elt->GetText();
-        sofa::gui::BaseGUI::setScreenshotDirectoryPath(makeAbsolutePath(path));
-    }
-
-    return true;
-}
+//     return true;
+// }
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -258,10 +244,18 @@ int main(int argc, char** argv)
 
     sofa::component::init();
     sofa::simulation::xml::initXml();
-    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
 
-    const std::string configFilePath = FileSystem::getParentDirectory(FileSystem::getParentDirectory(Utils::getExecutablePath())) + "/etc/runSofa-config.xml";
-    loadConfigurationFile(configFilePath);
+    // Add the plugin directory to PluginRepository
+#ifdef WIN32
+    const std::string pluginDir = "bin";
+#else
+    const std::string pluginDir = "lib";
+#endif
+    sofa::helper::system::PluginRepository.addFirstPath(sofa::gui::BaseGUI::getPathPrefix() + "/" + pluginDir);
+
+    // Initialise paths
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/screenshots");
 
     if (!files.empty())
         fileName = files[0];

@@ -669,19 +669,28 @@ void HexahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::v
     QuadSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
 
-void HexahedronSetTopologyModifier::removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra)
+void HexahedronSetTopologyModifier::removeHexahedra(const sofa::helper::vector< unsigned int >& hexahedraIds)
 {
+    sofa::helper::vector<unsigned int> hexahedraIds_filtered;
+    for (unsigned int i = 0; i < hexahedraIds.size(); i++)
+    {
+        if( hexahedraIds[i] >= m_container->getNumberOfHexahedra())
+            std::cout << "Error: HexahedronSetTopologyModifier::removeHexahedra: hexahedra: "<< hexahedraIds[i] <<" is out of bound and won't be removed." << std::endl;
+        else
+            hexahedraIds_filtered.push_back(hexahedraIds[i]);
+    }
+
     // add the topological changes in the queue
-    removeHexahedraWarning(hexahedra);
+    removeHexahedraWarning(hexahedraIds_filtered);
     // inform other objects that the hexa are going to be removed
     propagateTopologicalChanges();
     // now destroy the old hexahedra.
-    removeHexahedraProcess(  hexahedra ,true);
+    removeHexahedraProcess(hexahedraIds_filtered ,true);
 
     m_container->checkTopology();
 }
 
-void HexahedronSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+void HexahedronSetTopologyModifier::removeItems(const sofa::helper::vector< unsigned int >& items)
 {
     removeHexahedra(items);
 }

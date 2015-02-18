@@ -10,6 +10,7 @@ set(SOURCE_FILES
     ImageFilter.cpp
     ImageOperation.cpp
     ImageTransform.cpp
+    ImageTransformEngine.cpp
     TransferFunction.cpp
     ImageValuesFromPositions.cpp
     MergeImages.cpp
@@ -31,6 +32,7 @@ set(HEADER_FILES
     ImageFilter.h
     ImageOperation.h
     ImageTransform.h
+    ImageTransformEngine.h
     TransferFunction.h
     ImageValuesFromPositions.h
     MergeImages.h
@@ -50,6 +52,9 @@ set(HEADER_FILES
 
 set(README_FILES image.txt)
 
+# include python files
+include(./python/python.cmake)
+
 if (NOT SOFA-MISC_NO_OPENGL)
     list(APPEND HEADER_FILES "ImageViewer.h")
     list(APPEND SOURCE_FILES "ImageViewer.cpp")
@@ -67,7 +72,7 @@ if(SOFA-EXTERNAL_ZLIB)
 endif()
 
 include_directories("${SOFA_EXTLIBS_DIR}")
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE")
 AddLinkerDependencies(SofaBaseVisual)

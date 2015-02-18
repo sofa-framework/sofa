@@ -699,7 +699,7 @@ template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowMechanicalMappings() || (!showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) ) return;
+    if (!vparams->displayFlags().getShowMechanicalMappings() && !showDeformationGradientScale.getValue() && showColorOnTopology.getValue().getSelectedId()==0) return;
 
 
     glPushAttrib ( GL_LIGHTING_BIT );

@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
 #ifdef WIN32
@@ -42,26 +42,24 @@
 #include <stdlib.h>
 #include <vector>
 #include <iostream>
+#include <fstream>
+
+
+using sofa::helper::system::FileSystem;
 
 namespace sofa
 {
 namespace helper
 {
-namespace system
-{
 
-
-namespace Utils
-{
-
-std::wstring s2ws(const std::string& s)
+std::wstring Utils::widenString(const std::string& s)
 {
     const char * src = s.c_str();
     // Call mbsrtowcs() once to find out the length of the converted string.
     size_t length = mbsrtowcs(NULL, &src, 0, NULL);
     if (length == size_t(-1)) {
         int error = errno;
-        std::cerr << "Error: Utils::s2ws(): " << strerror(error) << std::endl;
+        std::cerr << "Error: Utils::widenString(): " << strerror(error) << std::endl;
         return L"";
     }
 
@@ -70,13 +68,13 @@ std::wstring s2ws(const std::string& s)
     length = mbsrtowcs(buffer, &src, length + 1, NULL);
     if (length == size_t(-1)) {
         int error = errno;
-        std::cerr << "Error: Utils::s2ws(): " << strerror(error) << std::endl;
+        std::cerr << "Error: Utils::widenString(): " << strerror(error) << std::endl;
         delete[] buffer;
         return L"";
     }
 
     if (src != NULL) {
-        std::cerr << "Error: Utils::s2ws(): conversion failed." << std::endl;
+        std::cerr << "Error: Utils::widenString(): conversion failed." << std::endl;
         delete[] buffer;
         return L"";
     }
@@ -87,13 +85,13 @@ std::wstring s2ws(const std::string& s)
 }
 
 
-std::string ws2s(const std::wstring& ws)
+std::string Utils::narrowString(const std::wstring& ws)
 {
     const wchar_t * src = ws.c_str();
     // Call wcstombs() once to find out the length of the converted string.
     size_t length = wcstombs(NULL, src, 0);
     if (length == size_t(-1)) {
-        std::cerr << "Error: Utils::s2ws(): conversion failed." << std::endl;
+        std::cerr << "Error: Utils::narrowString(): conversion failed." << std::endl;
         return "";
     }
 
@@ -101,7 +99,7 @@ std::string ws2s(const std::wstring& ws)
     char * buffer = new char[length + 1];
     length = wcstombs(buffer, src, length + 1);
     if (length == size_t(-1)) {
-        std::cerr << "Error: Utils::s2ws(): conversion failed." << std::endl;
+        std::cerr << "Error: Utils::narrowString(): conversion failed." << std::endl;
         delete[] buffer;
         return "";
     }
@@ -113,7 +111,7 @@ std::string ws2s(const std::wstring& ws)
 
 #if defined WIN32 || defined _XBOX
 # ifdef WIN32
-std::string GetLastError() {
+std::string Utils::GetLastError() {
     LPVOID lpErrMsgBuf;
     LPVOID lpMessageBuf;
     DWORD dwErrorCode = ::GetLastError();
@@ -140,10 +138,10 @@ std::string GetLastError() {
     std::wstring wsMessage((LPCTSTR)lpMessageBuf);
     LocalFree(lpErrMsgBuf);
     LocalFree(lpMessageBuf);
-    return ws2s(wsMessage);
+    return narrowString(wsMessage);
 }
 # else  // XBOX
-std::string GetLastError() {
+std::string Utils::GetLastError() {
     DWORD dwErrorCode = ::GetLastError();
     char buffer[32];
     sprintf_s(buffer, 32, "0x%08.8X", dwErrorCode);
@@ -152,7 +150,7 @@ std::string GetLastError() {
 # endif
 #endif
 
-std::string getExecutablePath() {
+std::string Utils::getExecutablePath() {
     std::string path = "";
 
 #if defined(_XBOX) || defined(PS3)
@@ -166,7 +164,7 @@ std::string getExecutablePath() {
     if (ret == 0 || ret == MAX_PATH) {
         std::cerr << "Utils::getExecutablePath(): " << GetLastError() << std::endl;
     } else {
-        path = ws2s(std::wstring(&lpFilename[0]));
+        path = narrowString(std::wstring(&lpFilename[0]));
     }
 
 #elif defined(__APPLE__)
@@ -194,11 +192,31 @@ std::string getExecutablePath() {
     return FileSystem::cleanPath(path);
 }
 
+std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& path)
+{
+    std::map<std::string, std::string> map;
+    std::ifstream iniFile(path.c_str());
+    if (!iniFile.good())
+    {
+        std::cerr << "Utils::loadSofaIniFile(): error while trying to read file '" << path << "'" << std::endl;
+    }
 
-} // namespace Utils
+    std::string line;
+    while (std::getline(iniFile, line))
+    {
+        size_t equalPos = line.find_first_of('=');
+        if (equalPos != std::string::npos)
+        {
+            const std::string key = line.substr(0, equalPos);
+            const std::string value = line.substr(equalPos + 1, std::string::npos);
+            map[key] = value;
+        }
+    }
+
+    return map;
+}
 
 
-} // namespace system
 } // namespace helper
 } // namespace sofa
 
