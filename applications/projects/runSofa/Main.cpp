@@ -46,8 +46,6 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/system/FileSystem.h>
-#include <sofa/helper/Utils.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
@@ -62,9 +60,6 @@
 #endif
 using std::cerr;
 using std::endl;
-
-using sofa::helper::system::FileSystem;
-using sofa::helper::Utils;
 
 // bool loadConfigurationFile(const std::string& filePath)
 // {
@@ -247,38 +242,18 @@ int main(int argc, char** argv)
 
     sofa::component::init();
     sofa::simulation::xml::initXml();
-    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
 
-    const std::string binDir = FileSystem::getParentDirectory(Utils::getExecutablePath());
-    const std::string prefix = FileSystem::getParentDirectory(binDir);
-    const std::string etcDir = prefix + "/etc";
-    const std::string sofaIniFilePath = etcDir + "/sofa.ini";
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
-
-    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
-    {
-        std::string shareDir = iniFileValues["SHARE_DIR"];
-        if (!FileSystem::isAbsolute(shareDir))
-            shareDir = etcDir + "/" + shareDir;
-        sofa::helper::system::DataRepository.addFirstPath(shareDir);
-    }
-
-    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
-    {
-        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
-        if (!FileSystem::isAbsolute(examplesDir))
-            examplesDir = etcDir + "/" + examplesDir;
-        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
-    }
-
+    // Add the plugin directory to PluginRepository
 #ifdef WIN32
     const std::string pluginDir = "bin";
 #else
     const std::string pluginDir = "lib";
 #endif
-    sofa::helper::system::PluginRepository.addFirstPath(prefix + "/" + pluginDir);
+    sofa::helper::system::PluginRepository.addFirstPath(sofa::gui::BaseGUI::getPathPrefix() + "/" + pluginDir);
 
-    sofa::gui::BaseGUI::setScreenshotDirectoryPath(prefix + "/screenshots");
+    // Initialise paths
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/screenshots");
 
     if (!files.empty())
         fileName = files[0];
