@@ -211,7 +211,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(sofa::gui::BaseGUI::getPat
     openPath = examplePath;
     binPath = sofa::helper::system::DataRepository.getFirstPath().c_str() + std::string( "/bin/" );
     presetPath = examplePath + std::string("Objects/");
-    std::string presetFile = std::string("share/config/preset.ini" );
+    std::string presetFile = std::string("config/preset.ini" );
     presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
 
 
@@ -527,7 +527,7 @@ void SofaModeler::clearTab()
 
 void SofaModeler::newTab()
 {
-    std::string newScene="share/config/newScene.scn";
+    std::string newScene="config/newScene.scn";
     if (sofa::helper::system::DataRepository.findFile(newScene))
     {
         std::string openPathPrevious = openPath;
@@ -837,7 +837,7 @@ void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const 
     QString fullPath(graph->getFilename().c_str());
     if (fullPath.isEmpty())
     {
-        fullPath = QString(sofa::helper::system::DataRepository.getFile("share/config/newScene.scn").c_str());
+        fullPath = QString(sofa::helper::system::DataRepository.getFile("config/newScene.scn").c_str());
     }
     //Update the name of the tab
     {
