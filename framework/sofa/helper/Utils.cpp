@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
 #ifdef WIN32
@@ -44,14 +44,11 @@
 #include <iostream>
 #include <fstream>
 
+
 namespace sofa
 {
 namespace helper
 {
-namespace system
-{
-
-
 namespace Utils
 {
 
@@ -192,7 +189,7 @@ std::string getExecutablePath() {
     }
 #endif
 
-    return FileSystem::cleanPath(path);
+    return system::FileSystem::cleanPath(path);
 }
 
 std::map<std::string, std::string> readBasicIniFile(const std::string& path)
@@ -221,9 +218,6 @@ std::map<std::string, std::string> readBasicIniFile(const std::string& path)
 
 
 } // namespace Utils
-
-
-} // namespace system
 } // namespace helper
 } // namespace sofa
 

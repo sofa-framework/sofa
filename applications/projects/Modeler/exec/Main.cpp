@@ -37,11 +37,12 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileSystem.h>
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 
 #include <sofa/gui/BaseGUI.h>
 
 using namespace sofa::helper::system;
+using namespace sofa::helper;
 
 // ---------------------------------------------------------------------
 // ---

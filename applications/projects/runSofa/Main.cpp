@@ -47,7 +47,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileSystem.h>
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
@@ -64,6 +64,7 @@ using std::cerr;
 using std::endl;
 
 using namespace sofa::helper::system;
+using namespace sofa::helper;
 
 // bool loadConfigurationFile(const std::string& filePath)
 // {

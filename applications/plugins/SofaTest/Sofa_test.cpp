@@ -28,9 +28,10 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 
 using namespace sofa::helper::system;
+using namespace sofa::helper;
 
 namespace sofa {
 

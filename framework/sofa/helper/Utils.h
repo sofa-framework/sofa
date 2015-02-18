@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_SYSTEM_UTILS_H
-#define SOFA_HELPER_SYSTEM_UTILS_H
+#ifndef SOFA_HELPER_UTILS_H
+#define SOFA_HELPER_UTILS_H
 
 #include <sofa/helper/helper.h>
 
@@ -34,11 +34,8 @@ namespace sofa
 {
 namespace helper
 {
-namespace system
-{
 
-/// @brief Contains possibly useful functions, somehow related to system
-/// aspects, that don't fit anywhere else.
+/// @brief Contains possibly useful functions, that don't fit anywhere else.
 namespace Utils
 {
 
@@ -91,7 +88,6 @@ SOFA_HELPER_API std::map<std::string, std::string> readBasicIniFile(const std::s
 }
 
 
-} // namespace system
 } // namespace helper
 } // namespace sofa
 
