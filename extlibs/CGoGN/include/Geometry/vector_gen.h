@@ -106,29 +106,29 @@ typename Vector<DIM, T>::type operator*(T2 b, const typename Vector<DIM, T>::typ
 //typedef Vector<4, int> Vec4i ;
 //typedef Vector<4, unsigned char> Vec4uc ;
 
-typedef typename Vector<2, float>::type Vec2f ;
-typedef typename Vector<2, double>::type Vec2d ;
-typedef typename Vector<2, unsigned int>::type Vec2ui ;
-typedef typename Vector<2, int>::type Vec2i ;
-typedef typename Vector<2, unsigned char>::type Vec2uc ;
+typedef Vector<2, float>::type Vec2f ;
+typedef Vector<2, double>::type Vec2d ;
+typedef Vector<2, unsigned int>::type Vec2ui ;
+typedef Vector<2, int>::type Vec2i ;
+typedef Vector<2, unsigned char>::type Vec2uc ;
 
-typedef typename Vector<3, float>::type Vec3f ;
-typedef typename Vector<3, double>::type Vec3d ;
-typedef typename Vector<3, unsigned int>::type Vec3ui ;
-typedef typename Vector<3, int>::type Vec3i ;
-typedef typename Vector<3, unsigned char>::type Vec3uc ;
+typedef Vector<3, float>::type Vec3f ;
+typedef Vector<3, double>::type Vec3d ;
+typedef Vector<3, unsigned int>::type Vec3ui ;
+typedef Vector<3, int>::type Vec3i ;
+typedef Vector<3, unsigned char>::type Vec3uc ;
 
-typedef typename Vector<4, float>::type Vec4f ;
-typedef typename Vector<4, double>::type Vec4d ;
-typedef typename Vector<4, unsigned int>::type Vec4ui ;
-typedef typename Vector<4, int>::type Vec4i ;
-typedef typename Vector<4, unsigned char>::type Vec4uc ;
+typedef Vector<4, float>::type Vec4f ;
+typedef Vector<4, double>::type Vec4d ;
+typedef Vector<4, unsigned int>::type Vec4ui ;
+typedef Vector<4, int>::type Vec4i ;
+typedef Vector<4, unsigned char>::type Vec4uc ;
 
-typedef typename Vector<6, float>::type Vec6f ;
-typedef typename Vector<6, double>::type Vec6d ;
-typedef typename Vector<6, unsigned int>::type Vec6ui ;
-typedef typename Vector<6, int>::type Vec6i ;
-typedef typename Vector<6, unsigned char>::type Vec6uc ;
+typedef Vector<6, float>::type Vec6f ;
+typedef Vector<6, double>::type Vec6d ;
+typedef Vector<6, unsigned int>::type Vec6ui ;
+typedef Vector<6, int>::type Vec6i ;
+typedef Vector<6, unsigned char>::type Vec6uc ;
 }
 
 }

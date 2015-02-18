@@ -26,7 +26,7 @@
 #include "BaseViewer.h"
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
 #include <SofaGraphComponent/SofaDefaultPathSetting.h>
@@ -40,7 +40,8 @@
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
 
 using namespace sofa::simulation;
-using namespace sofa::helper::system;
+using sofa::helper::system::FileSystem;
+using sofa::helper::Utils;
 
 using namespace sofa::simulation;
 namespace sofa

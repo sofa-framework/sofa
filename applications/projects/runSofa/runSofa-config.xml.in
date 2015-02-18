@@ -1,6 +1,0 @@
-<RunSofaConfig>
-    <ResourcePath>@SHARE_DIR@</ResourcePath>
-    <ResourcePath>@EXAMPLES_DIR@</ResourcePath>
-    <PluginPath>@PLUGINS_DIR@</PluginPath>
-    <ScreenshotDirectory>@SCREENSHOTS_DIR@</ScreenshotDirectory>
-</RunSofaConfig>

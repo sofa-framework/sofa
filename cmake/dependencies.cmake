@@ -182,17 +182,3 @@ if(WIN32)
         endforeach()
     endif()
 endif()
-
-# creating examples/Object and examples/Objects folder
-file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Object")
-file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Objects")
-
-# copying default config files
-if(NOT CONFIG_FILES_ALREADY_COPIED)
-    file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/default/*.*")
-    foreach(configFile ${configFiles})
-        file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
-    endforeach()
-
-    set(CONFIG_FILES_ALREADY_COPIED 1 CACHE INTERNAL "Config files copied" FORCE)
-endif()

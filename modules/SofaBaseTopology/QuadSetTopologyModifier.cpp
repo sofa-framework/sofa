@@ -463,21 +463,30 @@ void QuadSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
     EdgeSetTopologyModifier::renumberPointsProcess( index, inv_index, renumberDOF );
 }
 
-void QuadSetTopologyModifier::removeQuads(sofa::helper::vector< unsigned int >& quads,
+void QuadSetTopologyModifier::removeQuads(const sofa::helper::vector< unsigned int >& quadIds,
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
+    sofa::helper::vector<unsigned int> quadIds_filtered;
+    for (unsigned int i = 0; i < quadIds.size(); i++)
+    {
+        if( quadIds[i] >= m_container->getNumberOfQuads())
+            std::cout << "Error: QuadSetTopologyModifier::removeQuads: quad: "<< quadIds[i] <<" is out of bound and won't be removed." << std::endl;
+        else
+            quadIds_filtered.push_back(quadIds[i]);
+    }
+
     /// add the topological changes in the queue
-    removeQuadsWarning(quads);
+    removeQuadsWarning(quadIds_filtered);
     // inform other objects that the quads are going to be removed
     propagateTopologicalChanges();
     // now destroy the old quads.
-    removeQuadsProcess( quads, removeIsolatedEdges, removeIsolatedPoints);
+    removeQuadsProcess( quadIds_filtered, removeIsolatedEdges, removeIsolatedPoints);
 
     m_container->checkTopology();
 }
 
-void QuadSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+void QuadSetTopologyModifier::removeItems(const sofa::helper::vector<unsigned int> &items)
 {
     removeQuads(items, true, true);
 }

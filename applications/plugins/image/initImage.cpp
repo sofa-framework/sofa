@@ -91,6 +91,7 @@ SOFA_LINK_CLASS(ImageFilter)
 SOFA_LINK_CLASS(ImageOperation)
 SOFA_LINK_CLASS(ImageSampler)
 SOFA_LINK_CLASS(ImageTransform)
+SOFA_LINK_CLASS(ImageTransformEngine)
 SOFA_LINK_CLASS(ImageValuesFromPositions)
 SOFA_LINK_CLASS(ImageToRigidMassEngine)
 #ifndef SOFA_NO_OPENGL

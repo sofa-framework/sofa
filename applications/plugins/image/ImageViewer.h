@@ -338,6 +338,11 @@ public:
 
         waPoints wpoints(this->points);
         waPlane wplane(this->plane);
+        // Set input for wplane
+        std::vector<VisuModelType*> visuals;
+        sofa::core::objectmodel::BaseContext* context = this->getContext();
+        context->get<VisuModelType>(&visuals,core::objectmodel::BaseContext::SearchRoot);
+        wplane->setInput(image.getValue(),transform.getValue(),visuals);
         wplane->setTime( this->getContext()->getTime() );
         
         bool imagedirty=image.isDirty();
@@ -345,6 +350,8 @@ public:
         {
             raImage rimage(this->image);			// used here to propagate changes across linked data
             waHisto whisto(this->histo);
+            // Set input for whisto
+            whisto->setInput(image.getValue());
             whisto->update();
             wplane->setClamp(whisto->getClamp());
         }

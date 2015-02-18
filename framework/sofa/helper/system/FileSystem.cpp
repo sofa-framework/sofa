@@ -1,6 +1,6 @@
 #include <sofa/helper/system/FileSystem.h>
 
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 
 #include <fstream>
 #include <iostream>
@@ -26,8 +26,6 @@ namespace helper
 {
 namespace system
 {
-namespace FileSystem
-{
 
 
 #if defined(WIN32)
@@ -39,7 +37,7 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 
     // Prepare string for use with FindFile functions.  First, copy the
     // string to a buffer, then append '\*' to the directory name.
-    StringCchCopy(szDir, MAX_PATH, Utils::s2ws(path).c_str());
+    StringCchCopy(szDir, MAX_PATH, Utils::narrowString(path).c_str());
     StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
 
     // Find the first file in the directory.
@@ -66,8 +64,8 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 #endif
 
 
-bool listDirectory(const std::string& directoryPath,
-                   std::vector<std::string>& outputFilenames)
+bool FileSystem::listDirectory(const std::string& directoryPath,
+                               std::vector<std::string>& outputFilenames)
 {
 #if defined(WIN32) || defined (_XBOX)
     // Find the first file in the directory.
@@ -84,7 +82,7 @@ bool listDirectory(const std::string& directoryPath,
 # if defined (_XBOX)
 		std::string filename = ffd.cFileName;
 # else
-		std::string filename = Utils::ws2s(std::wstring(ffd.cFileName));
+		std::string filename = Utils::widenString(std::wstring(ffd.cFileName));
 # endif
         if (filename != "." && filename != "..")
 			outputFilenames.push_back(filename);
@@ -118,10 +116,10 @@ bool listDirectory(const std::string& directoryPath,
 }
 
 
-bool exists(const std::string& path)
+bool FileSystem::exists(const std::string& path)
 {
 #if defined(WIN32)
-    bool pathExists = PathFileExists(Utils::s2ws(path).c_str()) != 0;
+    bool pathExists = PathFileExists(Utils::narrowString(path).c_str()) != 0;
     DWORD errorCode = ::GetLastError();
     if (errorCode != 0) {
         std::cerr << "FileSystem::exists(\"" << path << "\"): "
@@ -147,10 +145,10 @@ bool exists(const std::string& path)
 }
 
 
-bool isDirectory(const std::string& path)
+bool FileSystem::isDirectory(const std::string& path)
 {
 #if defined(WIN32)
-    DWORD fileAttrib = GetFileAttributes(Utils::s2ws(path).c_str());
+    DWORD fileAttrib = GetFileAttributes(Utils::narrowString(path).c_str());
     if (fileAttrib == INVALID_FILE_ATTRIBUTES) {
         std::cerr << "FileSystem::isDirectory(\"" << path << "\"): "
                   << Utils::GetLastError() << std::endl;
@@ -179,9 +177,9 @@ bool isDirectory(const std::string& path)
 #endif
 }
 
-bool listDirectory(const std::string& directoryPath,
-                   std::vector<std::string>& outputFilenames,
-                   const std::string& extension)
+bool FileSystem::listDirectory(const std::string& directoryPath,
+                               std::vector<std::string>& outputFilenames,
+                               const std::string& extension)
 {
     // List directory
     std::vector<std::string> files;
@@ -213,14 +211,14 @@ static std::string pathDrive(const std::string& path) {
     return path.substr(0, 2);
 }
 
-bool isAbsolute(const std::string& path)
+bool FileSystem::isAbsolute(const std::string& path)
 {
     return !path.empty()
         && (pathHasDrive(path)
             || path[0] == '/');
 }
 
-std::string convertBackSlashesToSlashes(const std::string& path)
+std::string FileSystem::convertBackSlashesToSlashes(const std::string& path)
 {
     std::string str = path;
     size_t backSlashPos = str.find('\\');
@@ -232,7 +230,7 @@ std::string convertBackSlashesToSlashes(const std::string& path)
     return str;
 }
 
-std::string removeExtraSlashes(const std::string& path)
+std::string FileSystem::removeExtraSlashes(const std::string& path)
 {
     std::string str = path;
     size_t pos = str.find("//");
@@ -243,7 +241,7 @@ std::string removeExtraSlashes(const std::string& path)
     return str;
 }
 
-std::string cleanPath(const std::string& path)
+std::string FileSystem::cleanPath(const std::string& path)
 {
     return removeExtraSlashes(convertBackSlashesToSlashes(path));
 }
@@ -269,7 +267,7 @@ static std::string computeParentDirectory(const std::string& path)
     }
 }
 
-std::string getParentDirectory(const std::string& path)
+std::string FileSystem::getParentDirectory(const std::string& path)
 {
     if (pathHasDrive(path))     // check for Windows drive
         return pathDrive(path) + computeParentDirectory(pathWithoutDrive(path));
@@ -277,7 +275,7 @@ std::string getParentDirectory(const std::string& path)
         return computeParentDirectory(path);
 }
 
-std::string stripDirectory(const std::string& path)
+std::string FileSystem::stripDirectory(const std::string& path)
 {
     if (pathHasDrive(path))     // check for Windows drive
         return stripDirectory(pathWithoutDrive(path));
@@ -297,7 +295,7 @@ std::string stripDirectory(const std::string& path)
     }
 }
 
-} // namespace FileSystem
+
 } // namespace system
 } // namespace helper
 } // namespace sofa

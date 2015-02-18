@@ -3,6 +3,7 @@ include(${SOFA_CMAKE_DIR}/preProject.cmake)
 set(SOURCE_FILES
 
  #alphabetical order
+    CentralDifferenceExplicitSolverDynamic_test.cpp
     EulerExplicitSolverDynamic_test.cpp
     RungeKutta2ExplicitSolverDynamic_test.cpp
     RungeKutta4ExplicitSolverDynamic_test.cpp
