@@ -46,56 +46,57 @@ namespace system
 ///
 /// This set of functions is not meant to be complete, but it can be completed
 /// if need be.
-namespace FileSystem
+class SOFA_HELPER_API FileSystem
 {
+public:
 
 /// @brief List the content of a directory.
 ///
 /// It pushes the filenames (not their absolute paths) in the vector provided in argument.
 /// @warning The directory must exist.
 /// @return true on error
-SOFA_HELPER_API bool listDirectory(const std::string& directoryPath,
-                                   std::vector<std::string>& outputFilenames);
+static bool listDirectory(const std::string& directoryPath,
+                          std::vector<std::string>& outputFilenames);
 
 /// @brief List the files in a directory which match the given extension.
 ///
 /// It pushes the filenames (not their absolute paths) in the vector provided in argument.
 /// @warning The directory must exist.
 /// @return true on error
-SOFA_HELPER_API bool listDirectory(const std::string& directoryPath,
-                                   std::vector<std::string>& outputFilenames,
-                                   const std::string& extension);
+static bool listDirectory(const std::string& directoryPath,
+                          std::vector<std::string>& outputFilenames,
+                          const std::string& extension);
 
 /// @brief Return true if and only if the given file exists.
-SOFA_HELPER_API bool exists(const std::string& path);
+static bool exists(const std::string& path);
 
 /// @brief Return true if and only if the given file path corresponds to a directory.
 ///
 /// @warning The path must exist.
-SOFA_HELPER_API bool isDirectory(const std::string& path);
+static bool isDirectory(const std::string& path);
 
 /// @brief Return true if and only if the given file path is absolute.
-SOFA_HELPER_API bool isAbsolute(const std::string& path);
+static bool isAbsolute(const std::string& path);
 
 /// @brief Replace backslashes with slashes.
-SOFA_HELPER_API std::string convertBackSlashesToSlashes(const std::string& path);
+static std::string convertBackSlashesToSlashes(const std::string& path);
 
 /// @brief Replace consecutive occurrences of '/' with a single '/'.
-SOFA_HELPER_API std::string removeExtraSlashes(const std::string& path);
+static std::string removeExtraSlashes(const std::string& path);
 
 /// @brief Clean path (backslashes, extra slashes...)
-SOFA_HELPER_API std::string cleanPath(const std::string& path);
+static std::string cleanPath(const std::string& path);
 
 /// @brief Strip the last component from a path.
 /// Return the path given in argument with its last non-slash
 /// component and trailing slashes removed, or "." if the path
 /// contains no slashes.
 /// E.g. /a/b/c --> /a/b
-SOFA_HELPER_API std::string getParentDirectory(const std::string& path);
+static std::string getParentDirectory(const std::string& path);
 
 /// @brief Strip the directory components from a path.
 /// E.g. /a/b/c --> c
-SOFA_HELPER_API std::string stripDirectory(const std::string& path);
+static std::string stripDirectory(const std::string& path);
 
 };
 

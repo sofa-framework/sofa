@@ -41,8 +41,8 @@
 
 #include <sofa/gui/BaseGUI.h>
 
-using namespace sofa::helper::system;
-using namespace sofa::helper;
+using sofa::helper::system::FileSystem;
+using sofa::helper::Utils;
 
 // ---------------------------------------------------------------------
 // ---

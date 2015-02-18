@@ -45,14 +45,14 @@
 #include <fstream>
 
 
+using sofa::helper::system::FileSystem;
+
 namespace sofa
 {
 namespace helper
 {
-namespace Utils
-{
 
-std::wstring widenString(const std::string& s)
+std::wstring Utils::widenString(const std::string& s)
 {
     const char * src = s.c_str();
     // Call mbsrtowcs() once to find out the length of the converted string.
@@ -85,7 +85,7 @@ std::wstring widenString(const std::string& s)
 }
 
 
-std::string narrowString(const std::wstring& ws)
+std::string Utils::narrowString(const std::wstring& ws)
 {
     const wchar_t * src = ws.c_str();
     // Call wcstombs() once to find out the length of the converted string.
@@ -111,7 +111,7 @@ std::string narrowString(const std::wstring& ws)
 
 #if defined WIN32 || defined _XBOX
 # ifdef WIN32
-std::string GetLastError() {
+std::string Utils::GetLastError() {
     LPVOID lpErrMsgBuf;
     LPVOID lpMessageBuf;
     DWORD dwErrorCode = ::GetLastError();
@@ -141,7 +141,7 @@ std::string GetLastError() {
     return narrowString(wsMessage);
 }
 # else  // XBOX
-std::string GetLastError() {
+std::string Utils::GetLastError() {
     DWORD dwErrorCode = ::GetLastError();
     char buffer[32];
     sprintf_s(buffer, 32, "0x%08.8X", dwErrorCode);
@@ -150,7 +150,7 @@ std::string GetLastError() {
 # endif
 #endif
 
-std::string getExecutablePath() {
+std::string Utils::getExecutablePath() {
     std::string path = "";
 
 #if defined(_XBOX) || defined(PS3)
@@ -189,10 +189,10 @@ std::string getExecutablePath() {
     }
 #endif
 
-    return system::FileSystem::cleanPath(path);
+    return FileSystem::cleanPath(path);
 }
 
-std::map<std::string, std::string> readBasicIniFile(const std::string& path)
+std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& path)
 {
     std::map<std::string, std::string> map;
     std::ifstream iniFile(path.c_str());
@@ -217,7 +217,6 @@ std::map<std::string, std::string> readBasicIniFile(const std::string& path)
 }
 
 
-} // namespace Utils
 } // namespace helper
 } // namespace sofa
 
