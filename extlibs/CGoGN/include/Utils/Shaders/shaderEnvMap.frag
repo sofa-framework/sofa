@@ -37,5 +37,5 @@ void main()
 		vec3 R  = reflect(-EyeVector,N);
 		finalColor += mix(col,textureCube(EnvMap,R),blendCoef) * lambertTerm;
 	}	
-	gl_FragColor=finalColor;
+	FRAG_OUT=finalColor;
 }

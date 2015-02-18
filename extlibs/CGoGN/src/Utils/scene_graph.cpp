@@ -191,6 +191,7 @@ void VBO_Node::render()
 {
 	if (m_vbo != NULL)
 	{
+	/*
 		if (m_primitives & Algo::Render::GL2::TRIANGLES)
 		{
 			glEnable(GL_POLYGON_OFFSET_FILL);
@@ -223,6 +224,7 @@ void VBO_Node::render()
 			m_vbo->draw(m_current_material->getShader(), Algo::Render::GL2::POINTS);
 			glUseProgram(prg);
 		}
+	*/
 //		if (m_primitives & Algo::Render::GL2::FLAT_TRIANGLES)
 //		{
 //			glEnable(GL_POLYGON_OFFSET_FILL);
@@ -310,7 +312,7 @@ void Material_Node::render()
 //		m_shader->bind();
 //	else
 //		if (m_disable_shader)
-//			glUseProgramObjectARB(0);
+//			glUseProgramObject(0);
 }
 
 

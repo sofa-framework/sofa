@@ -35,22 +35,22 @@ namespace Utils
 
 VBORender::VBORender()
 {
-	glGenBuffersARB(1, &m_indexBuffer) ;
+	glGenBuffers(1, &m_indexBuffer) ;
 	m_nbIndices = 0 ;
 	m_primitiveType = POINTS;
 }
 
 VBORender::~VBORender()
 {
-	glDeleteBuffersARB(1, &m_indexBuffer) ;
+	glDeleteBuffers(1, &m_indexBuffer) ;
 }
 
 void VBORender::setConnectivity(std::vector<GLuint>& tableIndices, int primitiveType)
 {
 	m_primitiveType = primitiveType ;
 	m_nbIndices = tableIndices.size() ;
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer) ;
-	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, m_nbIndices * sizeof(GLuint), &(tableIndices[0]), GL_STREAM_DRAW) ;
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer) ;
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_nbIndices * sizeof(GLuint), &(tableIndices[0]), GL_STREAM_DRAW) ;
 }
 
 void VBORender::draw(Utils::GLSLShader* sh)

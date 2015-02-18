@@ -26,6 +26,8 @@
 #include "BaseViewer.h"
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/system/FileSystem.h>
 
 #include <SofaGraphComponent/SofaDefaultPathSetting.h>
 #include <SofaGraphComponent/BackgroundSetting.h>
@@ -37,6 +39,8 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
 
+using namespace sofa::simulation;
+using namespace sofa::helper::system;
 
 using namespace sofa::simulation;
 namespace sofa
@@ -44,8 +48,11 @@ namespace sofa
 
 namespace gui
 {
+
 const char* BaseGUI::mProgramName = NULL;
 std::string BaseGUI::mGuiName = "";
+std::string BaseGUI::configDirectoryPath = ".";
+std::string BaseGUI::screenshotDirectoryPath = ".";
 
 BaseGUI::BaseGUI()
 {
@@ -127,6 +134,49 @@ bool BaseGUI::saveScreenshot(const std::string& filename, int compression_level)
 		return true;
 	}
 	else return false;
+}
+
+
+static std::string computePathPrefix()
+{
+    const std::string exePath = Utils::getExecutablePath();
+    return FileSystem::getParentDirectory(FileSystem::getParentDirectory(exePath));
+}
+
+const std::string& BaseGUI::getPathPrefix()
+{
+    static const std::string prefix = computePathPrefix();
+    return prefix;
+}
+
+const std::string& BaseGUI::getConfigDirectoryPath()
+{
+    return configDirectoryPath;
+}
+
+const std::string& BaseGUI::getScreenshotDirectoryPath()
+{
+    return screenshotDirectoryPath;
+}
+
+void BaseGUI::setConfigDirectoryPath(const std::string& path)
+{
+    if (!FileSystem::exists(path))
+        std::cerr << "BaseGUI::setConfigDirectoryPath(): no such directory: " << path << std::endl;
+    else if (!FileSystem::isDirectory(path))
+        std::cerr << "BaseGUI::setConfigDirectoryPath(): not a directory: " << path << std::endl;
+    else
+        configDirectoryPath = path;
+}
+
+void BaseGUI::setScreenshotDirectoryPath(const std::string& path)
+{
+    if (!FileSystem::exists(path))
+        std::cerr << "BaseGUI::setScreenshotDirectoryPath(): no such directory: " << path << std::endl;
+    else if (!FileSystem::isDirectory(path))
+        std::cerr << "BaseGUI::setScreenshotDirectoryPath(): not a directory: " << path << std::endl;
+    else
+        screenshotDirectoryPath = path;
 }
 
 

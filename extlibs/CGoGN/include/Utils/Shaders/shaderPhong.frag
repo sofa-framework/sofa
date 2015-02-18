@@ -14,28 +14,43 @@ void main()
 {
 	vec3 N = normalize (Normal);
 	vec3 L = normalize (LightDir);
-	float lambertTerm = dot(N,L);
+	//float lambertTerm = clamp(dot(N,L),0.0,1.0);
 
 	vec4 finalColor = materialAmbient;
-	
-	#ifdef DOUBLE_SIDED
-	if (lambertTerm < 0.0)
+
+#ifdef DOUBLE_SIDED
+	float lambertTerm;
+	vec4 diffuseColor = materialDiffuse;
+	if (!gl_FrontFacing)
 	{
-		N = -1.0*N;
-		lambertTerm = -1.0*lambertTerm;
-	#else
-	if (lambertTerm > 0.0)
+		N *= -1.0;
+		lambertTerm = clamp(dot(N,L),0.0,1.0);
+	}
+	else
+		lambertTerm = clamp(dot(N,L),0.0,1.0);
+#ifndef WITH_COLOR
+	finalColor += materialDiffuse * lambertTerm;
+#else
+	finalColor += vec4((Color*lambertTerm),0.0) ;
+#endif
+	vec3 E = normalize(EyeVector);
+	vec3 R = reflect(-L, N);
+	float specular = pow( max(dot(R, E), 0.0), shininess );
+	finalColor += materialSpecular * specular;
+#else
+	float lambertTerm = clamp(dot(N,L),0.0,1.0);
+	if (gl_FrontFacing)
 	{
-	#endif
-		#ifndef WITH_COLOR
+#ifndef WITH_COLOR
 		finalColor += materialDiffuse * lambertTerm;
-		#else
+#else
 		finalColor += vec4((Color*lambertTerm),0.0) ;
-		#endif
+#endif
 		vec3 E = normalize(EyeVector);
 		vec3 R = reflect(-L, N);
 		float specular = pow( max(dot(R, E), 0.0), shininess );
 		finalColor += materialSpecular * specular;
 	}
-	gl_FragColor=finalColor;
+#endif
+	FRAG_OUT=finalColor;
 }

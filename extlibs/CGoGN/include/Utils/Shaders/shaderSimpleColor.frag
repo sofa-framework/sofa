@@ -9,5 +9,5 @@ void main()
 	if (dot(color,color) == 0.0)
 		discard;
 #endif
-	gl_FragColor=color;
+	FRAG_OUT=color;
 }

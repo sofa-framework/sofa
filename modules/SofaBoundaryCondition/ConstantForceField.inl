@@ -98,7 +98,7 @@ void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* /*par
     else if (forceVal * forceVal > 0.0)
         singleForce = forceVal;
 
-    const Deriv f_end = (f.empty() ? singleForce : f.back());
+    const Deriv f_end = (f.empty() ? singleForce : f[f.size()-1]);
 
     // When no indices are given, copy the forces from the start
     if (indices.empty())

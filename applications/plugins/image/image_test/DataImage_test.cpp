@@ -73,7 +73,7 @@ struct DataImageLink_test : public Sofa_test<>
         ASSERT_EQ(data1.getValue(),data2.getValue());
 
         // Check if pointers are equal
-        if(&data1!= &data2)
+        if(&data1.getValue()!= &data2.getValue())
         {
             ADD_FAILURE() << "Data Link duplicates the datas ! " << std::endl;
         }

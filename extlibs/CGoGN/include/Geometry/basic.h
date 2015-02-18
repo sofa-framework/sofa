@@ -43,30 +43,30 @@ VEC lerp(const VEC& v1, const VEC& v2, typename VEC::DATA_TYPE s)
 
 // weighted barycenter of 2 points
 template <unsigned int DIM, typename T>
-Vector<DIM,T> barycenter(const Vector<DIM,T>& v1, const Vector<DIM,T>& v2, T a, T b)
+typename Vector<DIM,T>::type barycenter(const typename Vector<DIM,T>::type& v1, const typename Vector<DIM,T>::type& v2, T a, T b)
 {
 	return a * v1 + b * v2 ;
 }
 
 // isobarycenter of 2 points
 template <unsigned int DIM, typename T>
-Vector<DIM,T> isobarycenter(const Vector<DIM,T>& v1, const Vector<DIM,T>& v2)
+typename Vector<DIM,T>::type isobarycenter(const typename Vector<DIM,T>::type& v1, const typename Vector<DIM,T>::type& v2)
 {
 	return lerp(v1, v2, 0.5) ;
 }
 
 // weighted barycenter of 3 points
 template <unsigned int DIM, typename T>
-Vector<DIM,T> barycenter(const Vector<DIM,T>& v1, const Vector<DIM,T>& v2, const Vector<DIM,T>& v3, T a, T b, T c)
+typename Vector<DIM,T>::type barycenter(const typename Vector<DIM,T>::type& v1, const typename Vector<DIM,T>::type& v2, const typename Vector<DIM,T>::type& v3, T a, T b, T c)
 {
 	return a * v1 + b * v2 + c * v3 ;
 }
 
 // isobarycenter of 3 points
 template <unsigned int DIM, typename T>
-Vector<DIM,T> isobarycenter(const Vector<DIM,T>& v1, const Vector<DIM,T>& v2, const Vector<DIM,T>& v3)
+typename Vector<DIM,T>::type isobarycenter(const typename Vector<DIM,T>::type& v1, const typename Vector<DIM,T>::type& v2, const typename Vector<DIM,T>::type& v3)
 {
-	Vector<DIM,T> v ;
+        typename Vector<DIM,T>::type v ;
 	for(unsigned int i = 0; i < DIM; ++i)
 		v[i] = (v1[i] + v2[i] + v3[i]) / T(3) ;
 	return v ;

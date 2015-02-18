@@ -8,7 +8,7 @@ path = Compliant.path()
 
 from Compliant.Vec import Proxy as vec
 
-from Compliant import Rigid, Tools
+from Compliant import StructuralAPI, Tools
 
 
 # helper
@@ -26,13 +26,6 @@ def insert_point(node, name, position, mass = 1.0):
     res.createObject('SphereModel', radius = 0.1)
     
     return res
-
-# shared data
-class Shared:
-    pass
-
-global shared
-shared = Shared()
 
 
 # scene: gravity = 0, -1, 0. we let two masses (m = 1) fall on a fixed
@@ -65,9 +58,6 @@ def createScene(node):
     manager = node.getObject('manager')
     manager.response = 'CompliantContact'
 
-    script = node.createObject('PythonScriptController',
-                               filename = __file__,
-                               classname = 'Controller')
 
     style = node.getObject('style')
 
@@ -79,42 +69,47 @@ def createScene(node):
     # dofs
     p1 = insert_point(scene, 'p1', [-1, 1, 0]) 
     p2 = insert_point(scene, 'p2', [1, 1, 0]) 
-
-    rigid = Rigid.Body('rigid')
-    rigid.collision = path + '/examples/mesh/ground.obj'
-
-    rigid.node = rigid.insert( scene )
-
-    ground = Rigid.Body('ground')
-    ground.node = ground.insert( scene )
-    ground.node.createObject('FixedConstraint', indices = '0')
+    
+    
+    rigid = StructuralAPI.RigidBody( scene, 'rigid' )
+    rigid.setManually( [0,0,0,0,0,0,1], 1, [1,1,1] )
+    rigid.addCollisionMesh( path + '/examples/mesh/ground.obj' )
+    
+    
+    ground = StructuralAPI.RigidBody( scene, 'ground' )
+    ground.setManually( [0,0,0,0,0,0,1], 1, [1,1,1] )
+    ground.node.createObject('FixedConstraint')
+    
+    
     
     # blocked joint between ground/rigid
-    joint = Rigid.Joint('joint')
-    joint.absolute(Rigid.Frame(), ground.node, rigid.node)
+    joint = StructuralAPI.FixedRigidJoint( "joint", ground.node, rigid.node )
     
-    joint.node = joint.insert( scene )
+   
     
-    shared.joint = joint
-    shared.body = rigid
+    script = node.createObject('PythonScriptController',
+                               filename = __file__,
+                               classname = 'Controller')
     
     return node
 
 
 class Controller(Sofa.PythonScriptController):
     
-    def onLoaded(self, node):
+    def onLoaded(self,node):
         self.node = node
+        self.joint = node.getObject("scene/rigid/joint/dofs")
+        self.body = node.getObject("scene/rigid/dofs")
 
     def onEndAnimationStep(self, dt):
 
         # wait for simulation to settle
         if self.node.getRoot().getTime() > 1: 
             
-            constraint_force = shared.joint.node.getObject('dofs').force[0]
+            constraint_force = self.joint.force[0]
             constraint_ref = [0, 3, 0, 0, 0, 0]
         
-            net_force  = shared.body.node.getObject('dofs').force[0]
+            net_force  = self.body.force[0]
             net_ref = [0, 1, 0, 0, 0, 0]
         
             constraint_check = (vec(constraint_force) - vec(constraint_ref)).norm()

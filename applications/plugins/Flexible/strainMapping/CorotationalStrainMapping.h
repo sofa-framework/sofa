@@ -175,7 +175,7 @@ protected:
         {
         case SMALL:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
@@ -187,7 +187,7 @@ protected:
         }
         case QR:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
@@ -199,7 +199,7 @@ protected:
         }
         case POLAR:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
@@ -212,7 +212,7 @@ protected:
         }
         case SVD:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
             for( int i=0 ; i < static_cast<int>(jacobianBlock.size()) ; i++ )
@@ -242,7 +242,7 @@ protected:
         {
         case SMALL:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
@@ -254,7 +254,7 @@ protected:
         }
         case QR:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
@@ -266,7 +266,7 @@ protected:
         }
         case POLAR:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
@@ -278,7 +278,7 @@ protected:
         }
         case SVD:
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
@@ -323,7 +323,7 @@ protected:
             }
             case QR:
             {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
@@ -334,7 +334,7 @@ protected:
             }
             case POLAR:
             {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )
@@ -345,7 +345,7 @@ protected:
             }
             case SVD:
             {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
                 for( int i=0 ; i < static_cast<int>(this->jacobian.size()) ; i++ )

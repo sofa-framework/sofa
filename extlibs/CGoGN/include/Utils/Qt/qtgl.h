@@ -33,7 +33,7 @@
 #include <stack>
 
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_projection.hpp"
+//#include "glm/gtc/matrix_projection.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Geometry/vector_gen.h"
 
@@ -54,6 +54,8 @@ class GLWidget : public QGLWidget
 
 public:
 	GLWidget(SimpleQT* cbs, QWidget *parent = 0);
+
+	GLWidget(SimpleQT* cbs, QGLFormat& format, QWidget *parent = 0);
 
 	~GLWidget();
 
