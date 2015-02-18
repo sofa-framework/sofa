@@ -13,6 +13,7 @@ CollapsibleGroupBox {
     property int priority: 90
 
     property Scene scene
+    property real rowHeight: 16
 
     enabled: scene ? scene.ready : false
 
@@ -26,8 +27,8 @@ CollapsibleGroupBox {
             Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.leftMargin: (depth) * 16
-                height: visible ? 16 : 0
+                anchors.leftMargin: depth * 16
+                height: visible ? rowHeight : 0
                 visible: !(SceneListModel.Hidden & visibility)
 
                 MouseArea {
@@ -40,8 +41,8 @@ CollapsibleGroupBox {
                     Image {
                         visible: isNode
                         source: !(SceneListModel.Collapsed & visibility) ? "qrc:/icon/downArrow.png" : "qrc:/icon/rightArrow.png"
-                        width: 16
-                        height: width
+                        height: rowHeight
+                        width: height
                     }
 
                     Text {
@@ -56,7 +57,7 @@ CollapsibleGroupBox {
         ScrollView {
             id: scrollView
             Layout.fillWidth: true
-            Layout.preferredHeight:400
+            Layout.preferredHeight: 400 //Math.min(scene.listModel.count * rowHeight, 400)
             clip: true
 
             ListView {
