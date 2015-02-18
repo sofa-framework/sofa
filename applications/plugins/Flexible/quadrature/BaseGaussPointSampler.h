@@ -47,11 +47,13 @@ namespace engine
 
 using helper::vector;
 using defaulttype::Vec;
+using defaulttype::Mat;
 
 ///Abstract class for sampling integration points according to a specific quadrature method.
 /**
  * Samplers provide:
- * - Sample positions according to integration method of order @param order
+ * - Sample positions according to integration method of order 'order'
+ * - Initial value of deformation gradient according to underlying geometry (eg. surface mesh) and/or user input (to set anisotopy and residual deformation)
  * - Weighted volume associated to each sample (for elastons, this is a vector of volume moments)
  * - sample region (can be used in shape function component to provide an averaged version of the shape function)
  */
@@ -76,12 +78,21 @@ public:
 
     /** @name position data */
     //@{
-    typedef Vec<3,Real> Coord;
+    static const unsigned int spatial_dimensions = 3;
+    typedef Vec<spatial_dimensions,Real> Coord;   // TODO: put as a template to handle the 2D case (currently the conversion 3D-> 2D is done in the deformation mapping) ?
     typedef vector<Coord> SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteAccessor<Data< SeqPositions > > waPositions;
     Data< SeqPositions > f_position; ///< Samples position
     //@}
+
+    /** @name orientation data */
+    //@{
+    typedef Mat<spatial_dimensions,spatial_dimensions,Real> Transform;
+    typedef vector<Transform> VTransform;
+    Data< VTransform > f_transforms;        ///< linear transformation in world space to orient samples
+    //@}
+
 
     /** @name volume integral data */
     //@{
@@ -105,6 +116,7 @@ public:
     BaseGaussPointSampler()    :   Inherited()
         , f_method ( initData ( &f_method,"method","quadrature method" ) )
         , f_position(initData(&f_position,SeqPositions(),"position","output sample positions"))
+        , f_transforms(initData(&f_transforms,VTransform(),"transforms","output sample orientations"))
         , f_order(initData(&f_order,(unsigned int)1,"order","order of quadrature method"))
         , f_volume(initData(&f_volume,vector<volumeIntegralType>(),"volume","output weighted volume"))
         , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples"))
@@ -122,16 +134,17 @@ public:
     {
         addOutput(&f_position);
         addOutput(&f_volume);
+        addOutput(&f_transforms);
         setDirtyValue();
     }
 
 
     ///@brief Get the number of samples
     unsigned int getNbSamples() {return this->f_position.getValue().size(); }
-    ///@brief Get the sample at index i as a const reference
-    const Coord& getSample(unsigned int i) {return this->f_position.getValue()[i]; }
     ///@brief Get all samples as a const reference
     const SeqPositions& getSamples(){return this->f_position.getValue();}
+    ///@brief Get all orientations as a const reference
+    const VTransform& getTransforms(){return this->f_transforms.getValue();}
 
 protected:
 

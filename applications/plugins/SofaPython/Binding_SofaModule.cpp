@@ -35,11 +35,12 @@
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/gui/GUIManager.h>
-
+#include <sofa/helper/GenerateRigid.h>
 
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
+using namespace sofa::defaulttype;
 using namespace sofa::component;
 
 #include <sofa/simulation/common/Node.h>
@@ -307,6 +308,31 @@ extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 
 
 
+// from a mesh, a density and a 3d scale
+// computes a mass, a center of mass, a diagonal inertia matrix and a inertia rotation
+extern "C" PyObject * Sofa_generateRigid(PyObject * /*self*/, PyObject * args)
+{
+    char* meshFilename;
+    double density;
+    double sx,sy,sz;
+    if (!PyArg_ParseTuple(args, "sdddd",&meshFilename,&density,&sx,&sy,&sz))
+    {
+        PyErr_BadArgument();
+        Py_RETURN_NONE;
+    }
+
+    sofa::helper::GenerateRigidInfo rigid;
+    if( !sofa::helper::generateRigid( rigid, meshFilename, density, Vector3(sx,sy,sz) ) )
+        exit(0);
+
+    return Py_BuildValue("ddddddddddd",rigid.mass
+                         ,rigid.com[0],rigid.com[1],rigid.com[2]
+                         ,rigid.inertia_diagonal[0],rigid.inertia_diagonal[1],rigid.inertia_diagonal[2]
+                         ,rigid.inertia_rotation[0],rigid.inertia_rotation[1],rigid.inertia_rotation[2],rigid.inertia_rotation[3]
+            );
+}
+
+
 // Méthodes du module
 SP_MODULE_METHODS_BEGIN(Sofa)
 SP_MODULE_METHOD(Sofa,getSofaPythonVersion) 
@@ -319,6 +345,7 @@ SP_MODULE_METHOD(Sofa,setViewerResolution)
 SP_MODULE_METHOD(Sofa,setViewerBackgroundColor)
 SP_MODULE_METHOD(Sofa,setViewerCamera)
 SP_MODULE_METHOD(Sofa,getViewerCamera)
+SP_MODULE_METHOD(Sofa,generateRigid)
 SP_MODULE_METHODS_END
 
 

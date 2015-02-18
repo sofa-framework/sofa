@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SofaPluginManager.h"
+#include "../BaseGUI.h"
 #include "FileManagement.h"
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -52,11 +53,9 @@ SofaPluginManager::SofaPluginManager()
     // SIGNAL / SLOTS CONNECTIONS
     this->connect(buttonAdd, SIGNAL(clicked() ),  this, SLOT( addLibrary() ));
     this->connect(buttonRemove, SIGNAL(clicked() ),  this, SLOT( removeLibrary() ));
-
     this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateComponentList(Q3ListViewItem*) ));
     this->connect(listPlugins, SIGNAL(selectionChanged(Q3ListViewItem*) ), this, SLOT(updateDescription(Q3ListViewItem*) ));
-
-    sofa::helper::system::PluginManager::getInstance().initRecentlyOpened();
+    loadPluginsFromIniFile();
     initPluginListView();
 }
 
@@ -131,7 +130,7 @@ void SofaPluginManager::addLibrary()
 
         Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, pluginFile.c_str());
         item->setSelectable(true);
-        sofa::helper::system::PluginManager::getInstance().writeToIniFile();
+        savePluginsToIniFile();
         emit( libraryAdded() );
     }
     else
@@ -159,7 +158,7 @@ void SofaPluginManager::removeLibrary()
     if( sofa::helper::system::PluginManager::getInstance().unloadPlugin(location,&sstream) )
     {
         listPlugins->removeItem(curItem);
-        sofa::helper::system::PluginManager::getInstance().writeToIniFile();
+        savePluginsToIniFile();
         emit( libraryRemoved() );
         description->clear();
         listComponents->clear();
@@ -218,6 +217,17 @@ void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
     description->setText(QString(plugin.getModuleDescription()));
 }
 
+void SofaPluginManager::savePluginsToIniFile()
+{
+    const std::string pluginsIniFile = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
+    sofa::helper::system::PluginManager::getInstance().writeToIniFile(pluginsIniFile);
+}
+
+void SofaPluginManager::loadPluginsFromIniFile()
+{
+    const std::string pluginsIniFile = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/loadedPlugins.ini";
+    sofa::helper::system::PluginManager::getInstance().readFromIniFile(pluginsIniFile);
+}
 
 
 }

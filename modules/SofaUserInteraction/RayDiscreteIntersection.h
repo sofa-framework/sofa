@@ -58,6 +58,9 @@ public:
     template<class T> int computeIntersection(Ray&, TSphere<T>&, OutputVector*);
     int computeIntersection(Ray&, Triangle&, OutputVector*);
 
+    bool testIntersection(Ray& rRay, OBB& rOBB);
+    int computeIntersection(Ray& rRay, OBB& rOBB, OutputVector*);
+
 protected:
 
     DiscreteIntersection* intersection;

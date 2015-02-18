@@ -27,6 +27,9 @@
 #include <sofa/defaulttype/Vec.h>
 using namespace sofa::defaulttype;
 
+
+using namespace sofa::defaulttype;
+
 SP_CLASS_ATTR_GET(Vector3,x)(PyObject *self, void*)
 {
     Vector3* obj=dynamic_cast<Vector3*>(((PyPtr<Vector3>*)self)->object);

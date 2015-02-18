@@ -39,11 +39,6 @@ namespace system
 
 namespace
 {
-#ifndef _DEBUG
-const std::string pluginsIniFile = "share/config/sofaplugins_release.ini";
-#else
-const std::string pluginsIniFile = "share/config/sofaplugins_debug.ini";
-#endif
 
 template <class LibraryEntry>
 bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
@@ -83,18 +78,8 @@ PluginManager::~PluginManager()
     //writeToIniFile();
 }
 
-void PluginManager::readFromIniFile()
+void PluginManager::readFromIniFile(const std::string& path)
 {
-    std::string path= pluginsIniFile;
-    if ( !DataRepository.findFile(path) )
-    {
-        path = DataRepository.getFirstPath() + "/" + pluginsIniFile;
-        std::ofstream ofile(path.c_str());
-        ofile << "";
-        ofile.close();
-    }
-    else path = DataRepository.getFile( pluginsIniFile );
-
     std::ifstream instream(path.c_str());
     std::string pluginPath;
 
@@ -106,17 +91,8 @@ void PluginManager::readFromIniFile()
     instream.close();
 }
 
-void PluginManager::writeToIniFile()
+void PluginManager::writeToIniFile(const std::string& path)
 {
-    std::string path= pluginsIniFile;
-    if ( !DataRepository.findFile(path) )
-    {
-        path = DataRepository.getFirstPath() + "/" + pluginsIniFile;
-        std::ofstream ofile(path.c_str(),std::ios::out);
-        ofile << "";
-        ofile.close();
-    }
-    else path = DataRepository.getFile( pluginsIniFile );
     std::ofstream outstream(path.c_str());
     PluginIterator iter;
     for( iter = m_pluginMap.begin(); iter!=m_pluginMap.end(); ++iter)
@@ -224,11 +200,6 @@ bool PluginManager::unloadPlugin(std::string &pluginPath, std::ostream *errlog)
         m_pluginMap.erase(iter);
         return true;
     }
-}
-
-void PluginManager::initRecentlyOpened()
-{
-    readFromIniFile();
 }
 
 std::istream& PluginManager::readFromStream(std::istream & in)

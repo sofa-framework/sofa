@@ -133,8 +133,6 @@ public:
     typedef typename BaseShapeFunction::VHessian VHessian;
     typedef typename BaseShapeFunction::VRef VRef;
     typedef typename BaseShapeFunction::VecVRef VecVRef;
-    typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< MaterialToSpatial transformation = deformation gradient type
-    typedef typename BaseShapeFunction::VMaterialToSpatial VMaterialToSpatial;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
     //@}
 
@@ -142,6 +140,8 @@ public:
     //@{
     typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef vector<Coord> VecCoord;
+    typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local liner transformation from material space to world space
+    typedef vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
     //@}
@@ -162,8 +162,7 @@ public:
     typedef linearsolver::EigenSparseMatrix<In1,In1>    SparseKMatrixEigen1;
     typedef typename BlockType2::KBlock  KBlock2;  ///< stiffness block matrix
     typedef linearsolver::EigenSparseMatrix<In2,In2>    SparseKMatrixEigen2;
-    //@}
-
+    //@}	
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
     virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
@@ -264,7 +263,7 @@ public:
     Data<VecVReal >       f_w;
     Data<vector<VGradient> >   f_dw;
     Data<vector<VHessian> >    f_ddw;
-    Data<VMaterialToSpatial>    f_F0;
+    Data<VMaterialToSpatial>    f_F0;   ///< initial value of deformation gradients
     Data< vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
@@ -284,7 +283,7 @@ protected:
     }
     KDT f_KdTree;
 
-    VMaterialToSpatial f_F;
+    VMaterialToSpatial f_F;     ///< current value of deformation gradients (for visualisation)
     void mapDeformationGradients() ///< map initial deform  gradients stored in f_F0 to f_F      (used for visualization)
     {
         this->f_F.resize(this->f_pos0.getValue().size());

@@ -71,7 +71,7 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
 {
     //List of objects
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
-    std::string object ( "share/config/object.txt" );
+    std::string object ( "config/object.txt" );
 
     if( sofa::helper::system::DataRepository.findFile ( object ) )
     {

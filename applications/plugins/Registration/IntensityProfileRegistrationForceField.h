@@ -93,7 +93,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef Data<typename DataTypes::VecCoord> DataVecCoord;
-    typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;
+    typedef Data<typename DataTypes::VecDeriv> DataVecDeriv;	
 
     typedef helper::ReadAccessor< Data< VecCoord > > RDataRefVecCoord;
 
@@ -125,8 +125,7 @@ public:
     typedef helper::ReadAccessor<Data< similarityTypes > > raSimilarity;
     typedef helper::WriteAccessor<Data< similarityTypes > > waSimilarity;
     Data < similarityTypes > similarity;
-
-
+	
     // mask for values outside images
     cimg_library::CImg<bool> refMask;
     cimg_library::CImg<bool> mask;
@@ -145,8 +144,7 @@ public:
     */
     Data<bool> highToLowSignal;
 
-
-
+	
 public:
     IntensityProfileRegistrationForceField(core::behavior::MechanicalState<DataTypes> *mm = NULL);
     virtual ~IntensityProfileRegistrationForceField() {}

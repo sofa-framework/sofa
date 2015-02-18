@@ -15,11 +15,17 @@
 #include <qqml.h>
 #include <qmath.h>
 
+namespace sofa
+{
+
+namespace qtquick
+{
+
 Viewer::Viewer(QQuickItem* parent) : QQuickItem(parent),
 	myScene(0),
 	myCamera(0)
 {
-	setFlag(QQuickItem::ItemHasContents);
+    setFlag(QQuickItem::ItemHasContents);
 
 	connect(this, &Viewer::sceneChanged, this, &Viewer::handleSceneChanged);
 	connect(this, &Viewer::scenePathChanged, this, &Viewer::handleScenePathChanged);
@@ -145,19 +151,26 @@ void Viewer::handleScenePathChanged()
 void Viewer::handleWindowChanged(QQuickWindow* window)
 {
     if(window)
+    {
+        window->setClearBeforeRendering(false);
         connect(window, SIGNAL(beforeRendering()), this, SLOT(paint()), Qt::DirectConnection);
+    }
 }
 
 void Viewer::paint()
 {
+    if(!window())
+        return;
+
     // compute the correct viewer position and size
     QPointF realPos(mapToScene(QPointF(0.0, 0.0)));
+    realPos.setX(realPos.x() * window()->devicePixelRatio());
+    realPos.setY((window()->height() - height()) * window()->devicePixelRatio() - realPos.y() * window()->devicePixelRatio());  // OpenGL has its Y coordinate inverted compared to Qt
 
-	QPoint pos(qFloor(realPos.x()), qFloor(realPos.y()));
-    pos.setY(window()->height() - height() - pos.y()); // OpenGL has its Y coordinate inverted compared to Qt
-	QSize size(qCeil(width()), qCeil(height()));
+    QPoint pos(qFloor(realPos.x()), qFloor(realPos.y()));
+    QSize size((qCeil(width()) + qCeil(pos.x() - realPos.x())) * window()->devicePixelRatio(), (qCeil((height()) + qCeil(pos.y() - realPos.y())) * window()->devicePixelRatio()));
 	if(!size.isValid())
-		return;
+        return;
 
     // clear the viewer rectangle and just its area, not the whole OpenGL buffer
     glScissor(pos.x(), pos.y(), size.width(), size.height());
@@ -189,8 +202,14 @@ void Viewer::paint()
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadMatrixf(myCamera->view().constData());
+	
+	// Get the camera position
+	QVector3D camera_position(myCamera->eye());
+	float cx = camera_position[0]; 
+	float cy = camera_position[1];
+	float cz = camera_position[2];
 
-	float light_position[] = { 1.0f, 1.0f, 1.0f, 0.0f};
+	float light_position[] = { cx, cy, cz, 0.0f};	// Use of the camera position for light
 	float light_ambient[]  = { 0.0f, 0.0f, 0.0f, 0.0f};
 	float light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 0.0f};
 	float light_specular[] = { 1.0f, 1.0f, 1.0f, 0.0f};
@@ -202,7 +221,7 @@ void Viewer::paint()
 	glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
 
-	glEnable(GL_CULL_FACE);
+	glDisable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 
@@ -232,7 +251,7 @@ void Viewer::paint()
 		_vparams->setModelViewMatrix(_mvmatrix);
 	}
 
-	myScene->draw();
+    myScene->draw();
 
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -250,4 +269,8 @@ void Viewer::viewAll()
 	myScene->computeBoundingBox(min, max);
 
 	myCamera->fit(min, max);
+}
+
+}
+
 }

@@ -4,17 +4,23 @@
 #include <qmath.h>
 #include <QDebug>
 
+namespace sofa
+{
+
+namespace qtquick
+{
+
 Camera::Camera(QObject* parent) : QObject(parent),
 	myDistanceToCenter(1.0),
 	myZoomFactor(1.0),
 	mySmoothedZoomFactor(1.0),
 	mySmoothZoom(true),
-	myZoomSpeed(1.1),
 	myZoomedDistanceToCenter(myDistanceToCenter),
+    myZoomSpeed(1.025),
 	myFovY(55.0),
 	myAspectRatio(16.0 / 9.0),
-	myZNear(0.1),
-	myZFar(10000.0),
+	myZNear(0.1f),
+	myZFar(1000.f),
 	myProjection(),
 	myView(),
 	myModel(),
@@ -64,7 +70,7 @@ const QMatrix4x4& Camera::projection() const
 	if(myProjectionDirty) // update projection if needed
 	{
 		myProjection.setToIdentity();
-		myProjection.perspective((float) myFovY, (float) myAspectRatio, 0.1f, 1000.0f);
+		myProjection.perspective((float) myFovY, (float) myAspectRatio, myZNear, myZFar);
 		myProjectionDirty = false;
 	}
 
@@ -136,8 +142,8 @@ void Camera::fit(const QVector3D& min, const QVector3D& max)
 
 	QVector3D eye = center - direction().normalized() * distance;
 
-	//setZNear(qMax(0.01, distance - radius * 1.5));
-	//setZFar(distance + radius * 1.5);
+	setZNear(qMax(0.01, distance - radius * 100));
+	setZFar(distance + radius * 100);
 
 	double distanceToCenter = (eye - center).length();
 	if(distanceToCenter < 0.0001 || !(distanceToCenter == distanceToCenter)) // return if incorrect value, i.e < epsilon or nan
@@ -198,4 +204,8 @@ void Camera::applyZoom()
 	myZoomedDistanceToCenter = myDistanceToCenter * factor;
 
 	myModelDirty = true;
+}
+
+}
+
 }

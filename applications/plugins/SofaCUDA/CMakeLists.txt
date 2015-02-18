@@ -87,6 +87,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     main.cpp
     sofa/gpu/cuda/mycuda.cpp
+	sofa/gpu/cuda/CudaTypes.cpp
     sofa/gpu/cuda/CudaBaseVector.cpp
     sofa/gpu/cuda/CudaBoxROI.cpp
     sofa/gpu/cuda/CudaSphereROI.cpp
@@ -189,6 +190,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 cuda_include_directories(${SofaFramework_INCLUDE_DIRS})
 
+# Make these compiler definitions available to nvcc
+if(WIN32)
+    set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DWIN32")
+    set(WINDOWS_OPTIONS "-MD")
+endif()
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 if(SOFACUDA_VERBOSE_PTXAS)
@@ -196,7 +202,7 @@ if(SOFACUDA_VERBOSE_PTXAS)
 endif()
 
 # Let nvcc build the library
-cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS})
+cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWS_OPTIONS})
 
 option(SOFACUDA_DOUBLE "Activate double-precision support in CUDA (requires GT200+ GPU and -arch sm_13 flag." OFF)
 if(SOFACUDA_DOUBLE)
@@ -220,6 +226,7 @@ if(SOFACUDA_CUBLAS)
     cuda_add_cublas_to_target(${PROJECT_NAME})
     list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
     find_package(CUDASparse REQUIRED)
+    #message(STATUS CUDA_SPARSE_LIBRARY=${CUDA_SPARSE_LIBRARY})
     target_link_libraries(${PROJECT_NAME} ${CUDA_SPARSE_LIBRARY})
 endif()
 

@@ -53,6 +53,7 @@ public:
     Data<bool> isCompliance;
     Data<SReal> arrowSize;
     Data<defaulttype::Vec<4,SReal> > color;
+    Data<bool> visualmodel;
 };
 
 }

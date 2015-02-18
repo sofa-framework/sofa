@@ -100,14 +100,14 @@ public:
         for(unsigned i = 0, n = x.size(); i < n; ++i) {
             const unsigned index = clamp(i);
 
-            double m00 = inertia.getValue()[index][0];
-            double m11 = inertia.getValue()[index][1];
-            double m22 = inertia.getValue()[index][2];
+            const real& m00 = inertia.getValue()[index][0];
+            const real& m11 = inertia.getValue()[index][1];
+            const real& m22 = inertia.getValue()[index][2];
 			
             defaulttype::Vec3d len;
-            len[0] = sqrt(m11+m22-m00);
-            len[1] = sqrt(m00+m22-m11);
-            len[2] = sqrt(m00+m11-m22);
+            len[0] = std::sqrt(m11+m22-m00);
+            len[1] = std::sqrt(m00+m22-m11);
+            len[2] = std::sqrt(m00+m11-m22);
 
 #ifndef SOFA_NO_OPENGL
             helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
@@ -194,7 +194,7 @@ public:
 		for(unsigned i = 0, n = x.size(); i < n; ++i) {
 			const unsigned index = clamp(i);
 	
-			res += mass.getValue()[index] * (g * x[i].getCenter()); 
+			res -= mass.getValue()[index] * (g * x[i].getCenter()); 
 		}
 		
 		return res;

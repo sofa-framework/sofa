@@ -622,23 +622,32 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
     removeEdgesProcess( indices, removeIsolatedPoints );
 }
 
-void EdgeSetTopologyModifier::removeEdges(sofa::helper::vector< unsigned int >& edges,
+void EdgeSetTopologyModifier::removeEdges(const sofa::helper::vector< unsigned int >& edgeIds,
         const bool removeIsolatedPoints, const bool resetTopoChange)
 {
+    sofa::helper::vector<unsigned int> edgeIds_filtered;
+    for (unsigned int i = 0; i < edgeIds.size(); i++)
+    {
+        if( edgeIds[i] >= m_container->getNumberOfEdges())
+            std::cout << "Error: EdgeSetTopologyModifier::removeEdges: edges: "<< edgeIds[i] <<" is out of bound and won't be removed." << std::endl;
+        else
+            edgeIds_filtered.push_back(edgeIds[i]);
+    }
+
     /// add the topological changes in the queue
-    removeEdgesWarning(edges);
+    removeEdgesWarning(edgeIds_filtered);
     // inform other objects that the edges are going to be removed
     if (resetTopoChange)
         propagateTopologicalChanges();
     else
         propagateTopologicalChangesWithoutReset();
     // now destroy the old edges.
-    removeEdgesProcess( edges, removeIsolatedPoints );
+    removeEdgesProcess( edgeIds_filtered, removeIsolatedPoints );
 
     m_container->checkTopology();
 }
 
-void EdgeSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+void EdgeSetTopologyModifier::removeItems(const sofa::helper::vector< unsigned int >& items)
 {
     removeEdges(items);
 }

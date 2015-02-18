@@ -25,11 +25,10 @@
 #ifndef __MAP2MR_PRIMAL_ADAPT__
 #define __MAP2MR_PRIMAL_ADAPT__
 
+#include <cmath>
 #include "Topology/ihmap/ihm2.h"
 #include "Topology/generic/traversor/traversorCell.h"
 #include "Topology/generic/traversor/traversor2.h"
-
-#include <cmath>
 
 namespace CGoGN
 {

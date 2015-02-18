@@ -39,7 +39,7 @@
 
 #include "BaseDeformationMapping.h"
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
     #include <omp.h>
 #endif
 
@@ -188,7 +188,7 @@ protected:
             if(!holefilling) // paste transformed voxels into output image : fastest but sparse
             {
                 if(weightByVolumeChange.getValue()) {serr<<"weightByVolumeChange not supported!"<<sendl;}
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
                 #pragma omp parallel for
 #endif
                 for(int z=0; z<img.depth(); z++)
@@ -212,7 +212,7 @@ protected:
                 // create floating point image of transformed voxel corners
                 cimg_library::CImg<Real> flt(dim[0]+1,dim[1]+1,dim[2]+1,3);
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
                 #pragma omp parallel for
 #endif
                 for(int z=0; z<=img.depth(); z++)
@@ -229,7 +229,7 @@ protected:
                 // paste values
                 Real dv0 = 1; if(weightByVolumeChange.getValue()) dv0 = inT->getScale()[0]*inT->getScale()[1]*inT->getScale()[2]/(outT->getScale()[0]*outT->getScale()[1]*outT->getScale()[2]);
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
                 #pragma omp parallel for
 #endif
                 cimg_forXYZ(img,x,y,z)
@@ -286,7 +286,7 @@ protected:
 
             if(usekdtree) {Coord p,p0,q; deformationMapping-> getClosestMappedPoint(p, p0, q, usekdtree); } // first, update kd tree to avoid conflict during parallelization
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
             #pragma omp parallel for
 #endif
             for(int z=0; z<outImg.depth(); z++)

@@ -23,6 +23,7 @@ set(SOURCE_FILES
     ImageFilter.cpp
     ImageOperation.cpp
     ImageTransform.cpp
+    ImageTransformEngine.cpp
     TransferFunction.cpp
     ImageValuesFromPositions.cpp
     MergeImages.cpp
@@ -33,7 +34,8 @@ set(SOURCE_FILES
     ImageSampler.cpp 
     ImageExporter.cpp 
     ImageDataDisplay.cpp
-    VoronoiToMeshEngine.cpp)
+    VoronoiToMeshEngine.cpp
+    ImageToRigidMassEngine.cpp)
 
 set(HEADER_FILES
     initImage.h
@@ -42,6 +44,7 @@ set(HEADER_FILES
     ImageFilter.h
     ImageOperation.h
     ImageTransform.h
+    ImageTransformEngine.h
     TransferFunction.h
     ImageValuesFromPositions.h
     MergeImages.h
@@ -55,10 +58,13 @@ set(HEADER_FILES
     ImageAlgorithms.h 
     Containers.h 
     ImageDataDisplay.h
-    VoronoiToMeshEngine.h)
+    VoronoiToMeshEngine.h
+    ImageToRigidMassEngine.h)
 
 set(README_FILES image.txt)
 
+# include python files
+include(./python/python.cmake)
 
 find_package(SofaBase REQUIRED)
 find_package(Newmat REQUIRED)
@@ -82,6 +88,8 @@ if(FREENECT_FOUND)
     list(APPEND IMAGE_DEPENDENCY_INCLUDE_DIR ${FREENECT_INCLUDE_DIR})
     list(APPEND HEADER_FILES "Kinect.h")
     list(APPEND SOURCE_FILES "Kinect.cpp")
+    AddLinkerDependencies("freenect")
+    AddLinkerDependencies("freenect_sync")
 endif()
 
 # todo
@@ -110,6 +118,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${IMAGE_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_IMAGE")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 if(SOFA_HAVE_ZLIB)
     target_link_libraries(${PROJECT_NAME} SofaFramework::ZLIB)

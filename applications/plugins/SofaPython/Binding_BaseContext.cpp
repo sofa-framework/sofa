@@ -37,6 +37,7 @@ using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 #include <sofa/simulation/common/Node.h>
 using namespace sofa::simulation;
+using namespace sofa::defaulttype;
 
 
 extern "C" PyObject * BaseContext_setGravity(PyObject *self, PyObject * args)

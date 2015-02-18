@@ -470,6 +470,7 @@ public:
     typedef Inherit::SeqPositions SeqPositions;
     typedef Inherit::raPositions raPositions;
     typedef Inherit::waPositions waPositions;
+    typedef Inherit::VTransform VTransform;
     //@}
 
     /** @name  Image data */
@@ -665,17 +666,16 @@ protected:
 
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
+        helper::WriteAccessor<Data< VTransform > > transforms(this->f_transforms);
 
         pos.resize ( nb );
         vol.resize ( nb );
+        transforms.resize ( nb );
 
         vector<vector<unsigned int> > index(nb);
         vector<vector<Real> > w(nb);
         vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw(nb);
         vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
-
-        defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> I=defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real>::Identity(); // could be image orientation
-        vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0((int)nb,I);
 
         for(unsigned int i=0; i<nb; i++)
         {
@@ -685,6 +685,8 @@ protected:
             pos[i]=reg->center;
             vol[i].resize(reg->vol.rows());  for(unsigned int j=0; j<vol[i].size(); j++) vol[i][j]=reg->vol(j);
             reg->getMapping(index[i],w[i],dw[i],ddw[i]);
+            // set sample orientation to identity (could be image orientation)
+            transforms[i].identity();
         }
 
         // test
@@ -699,7 +701,7 @@ protected:
         {
             if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< nb <<" gauss points exported"<<std::endl;
             if(!deformationMapping) {serr<<"deformationMapping not found -> cannot map Gauss points"<<sendl; return;}
-            else deformationMapping->resizeOut(pos.ref(),index,w,dw,ddw,F0);
+            else deformationMapping->resizeOut(pos.ref(),index,w,dw,ddw,transforms.ref());
         }
     }
 

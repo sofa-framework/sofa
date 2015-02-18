@@ -41,7 +41,7 @@ public:
 	
 	A* operator->() { 
 		A* res = 0;
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp critical
 #endif
 		res = get(); 

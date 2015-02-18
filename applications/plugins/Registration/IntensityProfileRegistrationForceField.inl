@@ -35,8 +35,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include "float.h"
+#include <sofa/helper/IndexOpenMP.h>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -202,10 +203,10 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
 
     if(Interpolation.getValue().getSelectedId()==INTERPOLATION_NEAREST)
     {
-#ifdef USING_OMP_PRAGMAS
-# pragma omp parallel for
+#ifdef _OPENMP
+#pragma omp parallel for
 #endif
-        for(unsigned int i=0;i<dims[1];i++)
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -220,10 +221,10 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
     }
     else if(Interpolation.getValue().getSelectedId()==INTERPOLATION_LINEAR)
     {
-#ifdef USING_OMP_PRAGMAS
-# pragma omp parallel for
+#ifdef _OPENMP
+#pragma omp parallel for
 #endif
-        for(unsigned int i=0;i<dims[1];i++)
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -238,10 +239,10 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateProfile
     }
     else    // INTERPOLATION_CUBIC
     {
-#ifdef USING_OMP_PRAGMAS
-# pragma omp parallel for
+#ifdef _OPENMP
+#pragma omp parallel for
 #endif
-        for(unsigned int i=0;i<dims[1];i++)
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             Coord dp=dir[i]*this->Step.getValue();
             Coord p=pos[i]-dp*(Real)sizes[0];
@@ -298,10 +299,10 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
 
     if(this->SimilarityMeasure.getValue().getSelectedId()==SIMILARITY_SSD)
     {
-#ifdef USING_OMP_PRAGMAS
-# pragma omp parallel for
+#ifdef _OPENMP
+#pragma omp parallel for
 #endif
-        for(unsigned int i=0;i<dims[1];i++)
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             for(unsigned int j=0;j<dims[0];j++)
             {
@@ -323,10 +324,10 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::udpateSimilar
     }
     else // SIMILARITY_NCC
     {
-#ifdef USING_OMP_PRAGMAS
-# pragma omp parallel for
+#ifdef _OPENMP
+#pragma omp parallel for
 #endif
-        for(unsigned int i=0;i<dims[1];i++)
+		for(sofa::helper::IndexOpenMP<unsigned int>::type i=0;i<dims[1];i++)
         {
             for(unsigned int j=0;j<dims[0];j++)
             {
@@ -397,8 +398,6 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addForce(cons
     {
         udpateSimilarity();
     }
-
-
 
     m_potentialEnergy = 0;
     //serr<<"addForce()"<<sendl;
@@ -552,6 +551,9 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::updateThresho
             closestThreshold[i] = 0;
         }
     }
+
+
+
 }
 
 /*
@@ -607,6 +609,7 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addDForce(con
 }
 
 
+
 template<class DataTypes,class ImageTypes>
 void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::addKToMatrix(const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
@@ -649,12 +652,12 @@ void IntensityProfileRegistrationForceField<DataTypes,ImageTypes>::draw(const co
     {
         std::vector< Vector3 > points;
         for (unsigned int i=0; i<nb; i++)
-        {
-            Vector3 point1 = DataTypes::getCPos(x[i]);
-            Vector3 point2 = DataTypes::getCPos(this->targetPos[i]);
-            points.push_back(point1);
-            points.push_back(point2);
-        }
+            {
+                Vector3 point1 = DataTypes::getCPos(x[i]);
+                Vector3 point2 = DataTypes::getCPos(this->targetPos[i]);
+                points.push_back(point1);
+                points.push_back(point2);
+            }
 
         const Vec<4,float> c(0,1,0.5,1);
         if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)	vparams->drawTool()->drawLines(points, 1, c);

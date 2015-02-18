@@ -114,6 +114,8 @@ public:
     sofa::core::objectmodel::Data<int> odt_max_it, lloyd_max_it;
     sofa::core::objectmodel::Data<double> perturb_max_time, exude_max_time;
     sofa::core::objectmodel::Data<int> ordering;
+    sofa::core::objectmodel::Data<bool> constantMeshProcess;
+    sofa::core::objectmodel::Data<unsigned int> meshingSeed;
 
     // Display
     sofa::core::objectmodel::Data<bool> drawTetras;

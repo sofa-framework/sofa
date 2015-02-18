@@ -26,6 +26,7 @@ set(HEADER_FILES
     misc/FailNode.h
 
     mapping/RigidJointMapping.h
+	mapping/RigidJointMultiMapping.h
     mapping/AssembledRigidRigidMapping.h
     mapping/AssembledMapping.h
     mapping/AssembledMultiMapping.h
@@ -51,6 +52,12 @@ set(HEADER_FILES
     numericalsolver/BenchmarkSolver.h
     numericalsolver/PreconditionedSolver.h
     numericalsolver/PreconditionedCgSolver.h
+    numericalsolver/AnalysisSolver.h
+    numericalsolver/LumpedResponse.h
+    numericalsolver/LUSolver.h
+    numericalsolver/LUResponse.h
+    numericalsolver/BiCgStabSolver.h
+    numericalsolver/NNCGSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
@@ -90,6 +97,8 @@ set(HEADER_FILES
     contact/FrictionCompliantContact.h
     contact/BaseContact.h
     contact/PenalityCompliantContact.h
+
+    controller/CompliantSleepController.h
     
     utils/basis.h
     utils/cast.h
@@ -110,7 +119,13 @@ set(HEADER_FILES
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
-    utils/thread_local.h)
+    utils/thread_local.h
+
+    utils/cg.h
+    utils/preconditionedcg.h
+    utils/minres.h
+    utils/bicgstab.h
+)
 
 set(SOURCE_FILES
     initCompliant.cpp
@@ -147,6 +162,12 @@ set(SOURCE_FILES
     numericalsolver/BenchmarkSolver.cpp
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
+    numericalsolver/AnalysisSolver.cpp
+    numericalsolver/LumpedResponse.cpp
+    numericalsolver/LUSolver.cpp
+    numericalsolver/LUResponse.cpp
+    numericalsolver/BiCgStabSolver.cpp
+    numericalsolver/NNCGSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
@@ -174,7 +195,9 @@ set(SOURCE_FILES
 
     contact/CompliantContact.cpp
     contact/FrictionCompliantContact.cpp
-    contact/PenalityCompliantContact.cpp)
+    contact/PenalityCompliantContact.cpp
+	
+	controller/CompliantSleepController.cpp)
 
 set(README_FILES Compliant.txt)
 
@@ -226,6 +249,9 @@ write_basic_package_version_file(${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigVer
 install(FILES ${COMPLIANT_BUILD_CMAKE_DIR}/CompliantConfigVersion.cmake
         DESTINATION ${COMPLIANT_INSTALL_CMAKE_DIR})
 
+# linking with boost-system is needed
+# that means an installed version of boost is mandatory (sadly)
+# I loved the header-only boost
 
 # CompliantConfig.cmake (build tree)
 set(COMPLIANT_INCLUDE_DIR "${COMPLIANT_BUILD_INCLUDE_DIR}")

@@ -40,10 +40,10 @@ namespace Utils
 
 
 std::string Strings3D::fragmentShaderText2 =
-"	if (lum == 0.0) discard;\n gl_FragColor = color*lum;\n}";
+"	if (lum == 0.0) discard;\n FRAG_OUT = color*lum;\n}";
 
 std::string Strings3D::fragmentShaderText3 =
-"	gl_FragColor = mix(backColor,color,lum);\n}";
+"	FRAG_OUT = mix(backColor,color,lum);\n}";
 
 
 Strings3D* Strings3D::m_instance0 = NULL;
@@ -237,7 +237,7 @@ void Strings3D::predraw(const Geom::Vec4f& color)
 	glUniform1i(*m_uniform_texture, 0);
 	glUniform4fv(*m_uniform_color, 1, color.data());
 
-	glActiveTextureARB(GL_TEXTURE0_ARB);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, *m_idTexture);
 	glEnable(GL_TEXTURE_2D);
 

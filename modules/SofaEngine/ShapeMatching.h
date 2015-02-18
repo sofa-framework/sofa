@@ -67,7 +67,7 @@ public:
     typedef core::topology::BaseMeshTopology::PointID ID;
     typedef helper::vector<ID> VI;
     typedef helper::vector<VI> VVI;
-    typedef helper::vector<Real> VD;
+	typedef helper::vector<Real> VD;	
 
 public:
 

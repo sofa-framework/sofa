@@ -1,13 +1,20 @@
 #ifndef VIEWER_H
 #define VIEWER_H
 
+#include "SofaQtQuickGUI.h"
 #include <QtQuick/QQuickItem>
 #include <QVector3D>
+
+namespace sofa
+{
+
+namespace qtquick
+{
 
 class Scene;
 class Camera;
 
-class Viewer : public QQuickItem
+class SOFA_SOFAQTQUICKGUI_API Viewer : public QQuickItem
 {
     Q_OBJECT
 
@@ -19,15 +26,15 @@ public:
 	void componentComplete();
 
 public:
-	Q_PROPERTY(Scene* scene READ scene WRITE setScene NOTIFY sceneChanged)
-	Q_PROPERTY(Camera* camera READ camera WRITE setCamera NOTIFY cameraChanged)
+    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged)
+    Q_PROPERTY(sofa::qtquick::Camera* camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
 	Scene* scene() const	{return myScene;}
-	void setScene(Scene* newScene);
+    void setScene(Scene* newScene);
 
 	Camera* camera() const	{return myCamera;}
-	void setCamera(Camera* newCamera);
+    void setCamera(Camera* newCamera);
 
 	Q_INVOKABLE QVector3D mapFromWorld(const QVector3D& point);
 	Q_INVOKABLE QVector3D mapToWorld(const QVector3D& point);
@@ -35,9 +42,9 @@ public:
 	Q_INVOKABLE QVector3D projectOnViewPlane(const QVector3D& point, double depth);
 
 signals:
-	void sceneChanged(Scene* newScene);
+    void sceneChanged(sofa::qtquick::Scene* newScene);
 	void scenePathChanged();
-	void cameraChanged(Camera* newCamera);
+    void cameraChanged(sofa::qtquick::Camera* newCamera);
 
 public slots:
     void paint();
@@ -55,5 +62,9 @@ private:
 	Scene*						myScene;
 	Camera*						myCamera;
 };
+
+}
+
+}
 
 #endif // VIEWER_H

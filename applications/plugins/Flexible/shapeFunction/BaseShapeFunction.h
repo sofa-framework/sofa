@@ -86,8 +86,6 @@ public:
 	typedef typename ShapeFunctionTypes::VGradient VGradient;
     typedef typename ShapeFunctionTypes::Hessian Hessian;                       ///< Hessian (second derivative) of a scalar value in world space
 	typedef typename ShapeFunctionTypes::VHessian VHessian;
-    typedef typename ShapeFunctionTypes::MaterialToSpatial MaterialToSpatial;          ///< local transformation from material to spatial space ( linear for now). Used in mapping to convert gradients and hessians to material space
-	typedef typename ShapeFunctionTypes::VMaterialToSpatial VMaterialToSpatial;
 	typedef typename ShapeFunctionTypes::Cell Cell;
 	typedef typename ShapeFunctionTypes::VCell VCell;
 
@@ -131,30 +129,30 @@ public:
     }
 
     //Pierre-Luc : I added these two functions to fill indices, weights and derivatives from an external component. I also wanted to make a difference between gauss points and mesh vertices.
-    virtual void fillWithMeshQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< MaterialToSpatial >& /*M*/, sofa::helper::vector< VReal >& /*w*/,
+    virtual void fillWithMeshQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< VReal >& /*w*/,
                                     sofa::helper::vector< VGradient >& /*dw*/, sofa::helper::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
 
-    virtual void fillWithGaussQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< MaterialToSpatial >& /*M*/, sofa::helper::vector< VReal >& /*w*/,
+    virtual void fillWithGaussQuery( sofa::helper::vector< VRef >& /*index*/, sofa::helper::vector< VReal >& /*w*/,
                                      sofa::helper::vector< VGradient >& /*dw*/, sofa::helper::vector< VHessian >& /*ddw */){std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;}
 
     /// interpolate shape function values (and their first and second derivatives) at a given child position
     /// 'cell' might be used to target a specific element/voxel in case of overlapping elements/voxels.
     /// this function is typically used for collision and visual points
-	virtual void computeShapeFunction(const Coord& childPosition, MaterialToSpatial& M, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)=0;
+    virtual void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell cell=-1)=0;
 
     /// wrappers
-	virtual void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
+    virtual void computeShapeFunction(const VCoord& childPosition, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw)
     {
 		unsigned int nb=childPosition.size();
-        M.resize(nb); ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],M[i],ref[i],w[i],&dw[i],&ddw[i]);
+        ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
+        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i]);
 	}
 
-	virtual void computeShapeFunction(const VCoord& childPosition, VMaterialToSpatial& M, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw,  const VCell& cells)
+    virtual void computeShapeFunction(const VCoord& childPosition, VecVRef& ref, VecVReal& w, VecVGradient& dw,VecVHessian& ddw,  const VCell& cells)
     {
         unsigned int nb=childPosition.size();
-        M.resize(nb); ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
-        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],M[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
+        ref.resize(nb);        w.resize(nb);   dw.resize(nb);  ddw.resize(nb);
+        for(unsigned i=0; i<nb; i++)            computeShapeFunction(childPosition[i],ref[i],w[i],&dw[i],&ddw[i],cells[i]);
     }
 
     /// used to make a partition of unity: $sum_i w_i(x)=1$ and adjust derivatives accordingly
@@ -214,8 +212,6 @@ struct ShapeFunctionTypes
 	typedef vector<Gradient> VGradient;
     typedef Mat<spatial_dimensions_,spatial_dimensions_,Real> Hessian;    ///< Hessian (second derivative) of a scalar value in world space
 	typedef vector<Hessian> VHessian;
-    typedef Mat<spatial_dimensions_,spatial_dimensions_,Real> MaterialToSpatial;           ///< local transformation from material to spatial space ( linear for now). Used in mapping to convert gradients and hessians to material space
-	typedef vector<MaterialToSpatial> VMaterialToSpatial;
 	typedef int Cell;
 	typedef vector<Cell> VCell;
 

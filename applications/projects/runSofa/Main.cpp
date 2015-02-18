@@ -25,6 +25,9 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
+#include <tinyxml.h>
+
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
@@ -64,6 +67,44 @@
 #endif
 using std::cerr;
 using std::endl;
+
+// bool loadConfigurationFile(const std::string& filePath)
+// {
+//     TiXmlDocument doc;
+//     doc.LoadFile();
+
+//     if (!(doc.LoadFile(filePath)))
+//     {
+//         std::cerr << "Error while loading configuration file: " << filePath << std::endl;
+//         return false;
+//     }
+
+//     TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
+//     for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
+//         elt != NULL;
+//         elt = elt->NextSiblingElement("ResourcePath"))
+//     {
+//         const std::string path = elt->GetText();
+//         sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
+//     }
+
+//     for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
+//         elt != NULL;
+//         elt = elt->NextSiblingElement("PluginPath"))
+//     {
+//         const std::string path = elt->GetText();
+//         sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
+//     }
+
+//     TiXmlElement* elt = root->FirstChildElement("ScreenshotDirectory");
+//     if (elt != NULL)
+//     {
+//         const std::string path = elt->GetText();
+//         sofa::gui::BaseGUI::setScreenshotDirectoryPath(makeAbsolutePath(path));
+//     }
+
+//     return true;
+// }
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -216,6 +257,18 @@ int main(int argc, char** argv)
 
     sofa::simulation::xml::initXml();
 
+    // Add the plugin directory to PluginRepository
+#ifdef WIN32
+    const std::string pluginDir = "bin";
+#else
+    const std::string pluginDir = "lib";
+#endif
+    sofa::helper::system::PluginRepository.addFirstPath(sofa::gui::BaseGUI::getPathPrefix() + "/" + pluginDir);
+
+    // Initialise paths
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/screenshots");
+
     if (!files.empty())
         fileName = files[0];
 
@@ -247,8 +300,7 @@ int main(int argc, char** argv)
     {
         if (loadRecent) // try to reload the latest scene
         {
-            std::string scenes = "share/config/Sofa.ini";
-            scenes = sofa::helper::system::DataRepository.getFile( scenes );
+            std::string scenes = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini";
             std::ifstream mrulist(scenes.c_str());
             std::getline(mrulist,fileName);
             mrulist.close();

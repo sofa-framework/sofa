@@ -7,7 +7,7 @@ namespace component {
 namespace linearsolver {
 
 SOFA_DECL_CLASS(LUResponse)
-int LUResponseClass = core::RegisterObject("A sparse LU factorization of the response matrix.").add< LUResponse >();
+static int LUResponseClass = core::RegisterObject("A sparse LU factorization of the response matrix.").add< LUResponse >();
  
 
 LUResponse::LUResponse()
@@ -24,7 +24,7 @@ void LUResponse::factor(const mat& H, bool semidefinite ) {
     if( regularize.getValue() && semidefinite ) {
 		// add a tiny diagonal matrix to make H psd.
         // TODO add epsilon only on the empty diagonal entries?
-        system_type::rmat identity(H.rows(),H.cols());
+        system_type::rmat identity(H.rows(), H.cols());
         identity.setIdentity();
         response.compute( ( H + identity * regularize.getValue() ) );
     }
@@ -36,7 +36,7 @@ void LUResponse::factor(const mat& H, bool semidefinite ) {
 
 	
 	if( response.info() != Eigen::Success ) {
-        serr << "non invertible response" << sendl;
+        serr << "non-invertible response" << sendl;
 	}
 
 	assert( response.info() == Eigen::Success );

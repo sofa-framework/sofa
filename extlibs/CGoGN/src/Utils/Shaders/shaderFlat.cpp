@@ -61,9 +61,10 @@ ShaderFlat::ShaderFlat()
 	m_explode = 1.0f;
 	m_ambiant = Geom::Vec4f(0.05f, 0.05f, 0.1f, 0.0f);
 	m_diffuse = Geom::Vec4f(0.1f, 1.0f, 0.1f, 0.0f);
+	m_diffuseBack = m_diffuse;
 	m_light_pos = Geom::Vec3f(10.0f, 10.0f, 1000.0f);
 
-	setParams(m_explode, m_ambiant, m_diffuse, m_light_pos);
+	setParams(m_explode, m_ambiant, m_diffuse, m_diffuseBack ,m_light_pos);
 }
 
 void ShaderFlat::getLocations()
@@ -71,6 +72,7 @@ void ShaderFlat::getLocations()
 	*m_unif_explode  = glGetUniformLocation(program_handler(), "explode");
 	*m_unif_ambiant  = glGetUniformLocation(program_handler(), "ambient");
 	*m_unif_diffuse  = glGetUniformLocation(program_handler(), "diffuse");
+	*m_unif_diffuseback  = glGetUniformLocation(program_handler(), "diffuseBack");
 	*m_unif_lightPos = glGetUniformLocation(program_handler(), "lightPosition");
 }
 
@@ -83,7 +85,7 @@ unsigned int ShaderFlat::setAttributePosition(VBO* vbo)
 	return id;
 }
 
-void ShaderFlat::setParams(float expl, const Geom::Vec4f& ambiant, const Geom::Vec4f& diffuse, const Geom::Vec3f& lightPos)
+void ShaderFlat::setParams(float expl, const Geom::Vec4f& ambiant, const Geom::Vec4f& diffuse, const Geom::Vec4f& diffuseBack, const Geom::Vec3f& lightPos)
 {
 	m_explode = expl;
 	m_ambiant = ambiant;
@@ -95,6 +97,7 @@ void ShaderFlat::setParams(float expl, const Geom::Vec4f& ambiant, const Geom::V
 	glUniform1f(*m_unif_explode, expl);
 	glUniform4fv(*m_unif_ambiant, 1, ambiant.data());
 	glUniform4fv(*m_unif_diffuse, 1, diffuse.data());
+	glUniform4fv(*m_unif_diffuseback, 1, diffuseBack.data());
 	glUniform3fv(*m_unif_lightPos, 1, lightPos.data());
 
 	unbind();
@@ -124,6 +127,14 @@ void ShaderFlat::setDiffuse(const Geom::Vec4f& diffuse)
 	unbind();
 }
 
+void ShaderFlat::setDiffuseBack(const Geom::Vec4f& diffuseb)
+{
+	m_diffuseBack = diffuseb;
+	bind();
+	glUniform4fv(*m_unif_diffuseback,1, diffuseb.data());
+	unbind();
+}
+
 void ShaderFlat::setLightPosition(const Geom::Vec3f& lp)
 {
 	m_light_pos = lp;
@@ -134,16 +145,18 @@ void ShaderFlat::setLightPosition(const Geom::Vec3f& lp)
 
 void ShaderFlat::restoreUniformsAttribs()
 {
-	*m_unif_explode   = glGetUniformLocation(program_handler(),"explode");
-	*m_unif_ambiant   = glGetUniformLocation(program_handler(),"ambient");
-	*m_unif_diffuse   = glGetUniformLocation(program_handler(),"diffuse");
-	*m_unif_lightPos =  glGetUniformLocation(program_handler(),"lightPosition");
+	*m_unif_explode     = glGetUniformLocation(program_handler(),"explode");
+	*m_unif_ambiant     = glGetUniformLocation(program_handler(),"ambient");
+	*m_unif_diffuse     = glGetUniformLocation(program_handler(),"diffuse");
+	*m_unif_diffuseback = glGetUniformLocation(program_handler(),"diffuseBack");
+	*m_unif_lightPos    =  glGetUniformLocation(program_handler(),"lightPosition");
 
 	bind();
 
 	glUniform1f (*m_unif_explode, m_explode);
 	glUniform4fv(*m_unif_ambiant,  1, m_ambiant.data());
 	glUniform4fv(*m_unif_diffuse,  1, m_diffuse.data());
+	glUniform4fv(*m_unif_diffuseback,  1, m_diffuseBack.data());
 	glUniform3fv(*m_unif_lightPos, 1, m_light_pos.data());
 
 	bindVA_VBO("VertexPosition", m_vboPos);

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2010 G-Truc Creation (www.g-truc.net)
+// OpenGL Mathematics Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Created : 2005-12-21
 // Updated : 2008-11-27
@@ -8,244 +8,255 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 #include <limits>
+#include "../gtc/constants.hpp"
 
-namespace glm{
-namespace gtx{
-namespace quaternion
+namespace glm
 {
-    template <typename valType> 
-    inline detail::tvec3<valType> cross
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tvec3<T, P> cross
 	(
-		detail::tvec3<valType> const & v, 
-		detail::tquat<valType> const & q
+		detail::tvec3<T, P> const & v,
+		detail::tquat<T, P> const & q
 	)
-    {
-		return gtc::quaternion::inverse(q) * v;
-    }
+	{
+		return inverse(q) * v;
+	}
 
-	template <typename valType> 
-    inline detail::tvec3<valType> cross
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tvec3<T, P> cross
 	(
-		detail::tquat<valType> const & q, 
-		detail::tvec3<valType> const & v
+		detail::tquat<T, P> const & q,
+		detail::tvec3<T, P> const & v
 	)
-    {
+	{
 		return q * v;
-    }
+	}
 
-    template <typename T> 
-    inline detail::tquat<T> squad
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tquat<T, P> squad
 	(
-		detail::tquat<T> const & q1, 
-		detail::tquat<T> const & q2, 
-		detail::tquat<T> const & s1, 
-		detail::tquat<T> const & s2, 
+		detail::tquat<T, P> const & q1,
+		detail::tquat<T, P> const & q2,
+		detail::tquat<T, P> const & s1,
+		detail::tquat<T, P> const & s2,
 		T const & h)
-    {
-        return mix(mix(q1, q2, h), mix(s1, s2, h), T(2) * h (T(1) - h));
-    }
+	{
+		return mix(mix(q1, q2, h), mix(s1, s2, h), static_cast<T>(2) * (static_cast<T>(1) - h) * h);
+	}
 
-    template <typename T> 
-    inline detail::tquat<T> intermediate
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tquat<T, P> intermediate
 	(
-		detail::tquat<T> const & prev, 
-		detail::tquat<T> const & curr, 
-		detail::tquat<T> const & next
+		detail::tquat<T, P> const & prev,
+		detail::tquat<T, P> const & curr,
+		detail::tquat<T, P> const & next
 	)
-    {
-        detail::tquat<T> invQuat = gtc::quaternion::inverse(curr);
-        return ext((log(next + invQuat) + log(prev + invQuat)) / T(-4)) * curr;
-    }
+	{
+		detail::tquat<T, P> invQuat = inverse(curr);
+		return exp((log(next + invQuat) + log(prev + invQuat)) / static_cast<T>(-4)) * curr;
+	}
 
-    template <typename T> 
-    inline detail::tquat<T> exp
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tquat<T, P> exp
 	(
-		detail::tquat<T> const & q, 
-		T const & exponent
+		detail::tquat<T, P> const & q
 	)
-    {
-        detail::tvec3<T> u(q.x, q.y, q.z);
-		float a = glm::length(u);
-        detail::tvec3<T> v(u / a);
-        return detail::tquat<T>(cos(a), sin(a) * v);
-    }
+	{
+		detail::tvec3<T, P> u(q.x, q.y, q.z);
+		T Angle = glm::length(u);
+		if (Angle < epsilon<T>())
+			return detail::tquat<T, P>();
 
-    template <typename T> 
-    inline detail::tquat<T> log
+		detail::tvec3<T, P> v(u / Angle);
+		return detail::tquat<T, P>(cos(Angle), sin(Angle) * v);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tquat<T, P> log
 	(
-		detail::tquat<T> const & q
+		detail::tquat<T, P> const & q
 	)
-    {
-        if((q.x == T(0)) && (q.y == T(0)) && (q.z == T(0)))
-        {
-            if(q.w > T(0))
-                return detail::tquat<T>(log(q.w), T(0), T(0), T(0));
-            else if(q.w < T(0))
-                return detail::tquat<T>(log(-q.w), T(3.1415926535897932384626433832795), T(0),T(0));
-            else
-                return detail::tquat<T>(std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity());
-        } 
-        else 
-        {
-            T Vec3Len = sqrt(q.x * q.x + q.y * q.y + q.z * q.z);
-            T QuatLen = sqrt(Vec3Len * Vec3Len + q.w * q.w);
-            T t = atan(Vec3Len, T(q.w)) / Vec3Len;
-            return detail::tquat<T>(t * q.x, t * q.y, t * q.z, log(QuatLen));
-        }
-    }
+	{
+		detail::tvec3<T, P> u(q.x, q.y, q.z);
+		T Vec3Len = length(u);
 
-    template <typename T> 
-    inline detail::tquat<T> pow
+		if (Vec3Len < epsilon<T>())
+		{
+			if(q.w > static_cast<T>(0))
+				return detail::tquat<T, P>(log(q.w), static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
+			else if(q.w < static_cast<T>(0))
+				return detail::tquat<T, P>(log(-q.w), pi<T>(), static_cast<T>(0), static_cast<T>(0));
+			else
+				return detail::tquat<T, P>(std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity(), std::numeric_limits<T>::infinity());
+		}
+		else
+		{
+			T QuatLen = sqrt(Vec3Len * Vec3Len + q.w * q.w);
+			T t = atan(Vec3Len, T(q.w)) / Vec3Len;
+			return detail::tquat<T, P>(log(QuatLen), t * q.x, t * q.y, t * q.z);
+		}
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tquat<T, P> pow
 	(
-		detail::tquat<T> const & x, 
+		detail::tquat<T, P> const & x,
 		T const & y
 	)
-    {
-        if(abs(x.w) > T(0.9999))
-            return x;
-        float Angle = acos(y);
-        float NewAngle = Angle * y;
-        float Div = sin(NewAngle) / sin(Angle);
-        return detail::tquat<T>(
-            cos(NewAngle),
-            x.x * Div,
-            x.y * Div,
-            x.z * Div);
-    }
+	{
+		if(abs(x.w) > (static_cast<T>(1) - epsilon<T>()))
+			return x;
+		T Angle = acos(y);
+		T NewAngle = Angle * y;
+		T Div = sin(NewAngle) / sin(Angle);
+		return detail::tquat<T, P>(
+			cos(NewAngle),
+			x.x * Div,
+			x.y * Div,
+			x.z * Div);
+	}
 
-	//template <typename T> 
-	//inline detail::tquat<T> sqrt
+	//template <typename T, precision P>
+	//GLM_FUNC_QUALIFIER detail::tquat<T, P> sqrt
 	//(
-	//	detail::tquat<T> const & q
+	//	detail::tquat<T, P> const & q
 	//)
 	//{
-	//	T q0 = T(1) - dot(q, q);
+	//	T q0 = static_cast<T>(1) - dot(q, q);
 	//	return T(2) * (T(1) + q0) * q;
 	//}
 
-    template <typename T> 
-    inline detail::tvec3<T> rotate
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tvec3<T, P> rotate
 	(
-		detail::tquat<T> const & q, 
-		detail::tvec3<T> const & v
+		detail::tquat<T, P> const & q,
+		detail::tvec3<T, P> const & v
 	)
-    {
+	{
 		return q * v;
-    }
-
-    template <typename T> 
-    inline detail::tvec4<T> rotate
-	(
-		detail::tquat<T> const & q, 
-		detail::tvec4<T> const & v
-	)
-    {
-        return q * v;
-    }
-
-    template <typename T> 
-    inline T angle
-	(
-		detail::tquat<T> const & x
-	)
-    {
-        return acos(x.w) * T(2);
-    }
-
-    template <typename T> 
-    inline detail::tvec3<T> axis
-	(
-		detail::tquat<T> const & x
-	)
-    {
-        T tmp1 = T(1) - x.w * x.w;
-        if(tmp1 <= T(0))
-            return detail::tvec3<T>(0, 0, 1);
-        T tmp2 = T(1) / sqrt(tmp1);
-        return detail::tvec3<T>(x.x * tmp2, x.y * tmp2, x.z * tmp2);
-    }
-
-    template <typename valType> 
-    inline detail::tquat<valType> angleAxis
-	(
-		valType const & angle, 
-		valType const & x, 
-		valType const & y, 
-		valType const & z
-	)
-    {
-        return angleAxis(angle, detail::tvec3<valType>(x, y, z));
-    }
-
-    template <typename valType> 
-    inline detail::tquat<valType> angleAxis
-	(
-		valType const & angle, 
-		detail::tvec3<valType> const & v
-	)
-    {
-        detail::tquat<valType> result;
-        detail::tvec3<valType> v_normalized = glm::normalize(v);
-
-		valType a = glm::radians(angle);
-        valType s = glm::sin(a * valType(0.5));
-
-        result.w = glm::cos(a * valType(0.5));
-        result.x = v.x * s;
-        result.y = v.y * s;
-        result.z = v.z * s;
-        return result;
-    }
-
-    template <typename T> 
-	inline T extractRealComponent
-	(
-		detail::tquat<T> const & q
-	)
-    {
-        T w = T(1.0) - q.x * q.x - q.y * q.y - q.z * q.z;
-        if(w < T(0))
-            return T(0);
-        else
-            return -sqrt(w);
-    }
-
-	template <typename valType> 
-	inline valType roll
-	(
-		detail::tquat<valType> const & q
-	)
-	{
-		return atan2(valType(2) * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z);
 	}
 
-	template <typename valType> 
-	inline valType pitch
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tvec4<T, P> rotate
 	(
-		detail::tquat<valType> const & q
+		detail::tquat<T, P> const & q,
+		detail::tvec4<T, P> const & v
 	)
 	{
-		return atan2(valType(2) * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z);
+		return q * v;
 	}
 
-	template <typename valType> 
-	inline valType yaw
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T extractRealComponent
 	(
-		detail::tquat<valType> const & q
+		detail::tquat<T, P> const & q
 	)
 	{
-		return asin(valType(-2) * (q.x * q.z - q.w * q.y));
+		T w = static_cast<T>(1) - q.x * q.x - q.y * q.y - q.z * q.z;
+		if(w < T(0))
+			return T(0);
+		else
+			return -sqrt(w);
 	}
 
-    template <typename valType> 
-    inline detail::tvec3<valType> eularAngles
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T length2
 	(
-		detail::tquat<valType> const & x
+		detail::tquat<T, P> const & q
 	)
-    {
-        return detail::tvec3<valType>(pitch(x), yaw(x), roll(x));
-    }
+	{
+		return q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+	}
 
-}//namespace quaternion
-}//namespace gtx
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tquat<T, P> shortMix
+	(
+		detail::tquat<T, P> const & x,
+		detail::tquat<T, P> const & y,
+		T const & a
+	)
+	{
+		if(a <= static_cast<T>(0)) return x;
+		if(a >= static_cast<T>(1)) return y;
+
+		T fCos = dot(x, y);
+		detail::tquat<T, P> y2(y); //BUG!!! tquat<T> y2;
+		if(fCos < static_cast<T>(0))
+		{
+			y2 = -y;
+			fCos = -fCos;
+		}
+
+		//if(fCos > 1.0f) // problem
+		T k0, k1;
+		if(fCos > (static_cast<T>(1) - epsilon<T>()))
+		{
+			k0 = static_cast<T>(1) - a;
+			k1 = static_cast<T>(0) + a; //BUG!!! 1.0f + a;
+		}
+		else
+		{
+			T fSin = sqrt(T(1) - fCos * fCos);
+			T fAngle = atan(fSin, fCos);
+			T fOneOverSin = static_cast<T>(1) / fSin;
+			k0 = sin((static_cast<T>(1) - a) * fAngle) * fOneOverSin;
+			k1 = sin((static_cast<T>(0) + a) * fAngle) * fOneOverSin;
+		}
+
+		return detail::tquat<T, P>(
+			k0 * x.w + k1 * y2.w,
+			k0 * x.x + k1 * y2.x,
+			k0 * x.y + k1 * y2.y,
+			k0 * x.z + k1 * y2.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tquat<T, P> fastMix
+	(
+		detail::tquat<T, P> const & x,
+		detail::tquat<T, P> const & y,
+		T const & a
+	)
+	{
+		return glm::normalize(x * (static_cast<T>(1) - a) + (y * a));
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER detail::tquat<T, P> rotation
+	(
+		detail::tvec3<T, P> const & orig,
+		detail::tvec3<T, P> const & dest
+	)
+	{
+		T cosTheta = dot(orig, dest);
+		detail::tvec3<T, P> rotationAxis;
+
+		if(cosTheta < static_cast<T>(-1) + epsilon<T>())
+		{
+			// special case when vectors in opposite directions :
+			// there is no "ideal" rotation axis
+			// So guess one; any will do as long as it's perpendicular to start
+			// This implementation favors a rotation around the Up axis (Y),
+			// since it's often what you want to do.
+			rotationAxis = cross(detail::tvec3<T, P>(0, 0, 1), orig);
+			if(length2(rotationAxis) < epsilon<T>()) // bad luck, they were parallel, try again!
+				rotationAxis = cross(detail::tvec3<T, P>(1, 0, 0), orig);
+
+			rotationAxis = normalize(rotationAxis);
+			return angleAxis(pi<T>(), rotationAxis);
+		}
+
+		// Implementation from Stan Melax's Game Programming Gems 1 article
+		rotationAxis = cross(orig, dest);
+
+		T s = sqrt((T(1) + cosTheta) * static_cast<T>(2));
+		T invs = static_cast<T>(1) / s;
+
+		return detail::tquat<T, P>(
+			s * static_cast<T>(0.5f), 
+			rotationAxis.x * invs,
+			rotationAxis.y * invs,
+			rotationAxis.z * invs);
+	}
+
 }//namespace glm

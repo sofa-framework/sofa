@@ -66,7 +66,8 @@ public slots:
 private :
     void updatePluginsListView();
     void initPluginListView();
-
+    void savePluginsToIniFile();
+    void loadPluginsFromIniFile();
 };
 
 

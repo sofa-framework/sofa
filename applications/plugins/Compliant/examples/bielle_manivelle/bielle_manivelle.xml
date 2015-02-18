@@ -43,48 +43,48 @@
         <density>7.8e+3</density>
     </rigid>
     
-    <joint id="5">
+    <jointGeneric id="5">
         <name>hinge_corps-roue</name>
-        <parent id="1">
+        <object id="1">
             <offset type="relative">0 0 0 0 0 0 1</offset>
-        </parent>
-        <child id="2">
+        </object>
+        <object id="2">
             <offset type="relative">0 0 0.148 0 0 0 1</offset>
-        </child>
-        <dof index="5"/>
-    </joint>
+        </object>
+        <dof index="rz"/>
+    </jointGeneric>
     
-    <joint id="6">
+    <jointGeneric id="6">
         <name>hinge_roue-came</name>
-        <parent id="2">
+        <object id="2">
             <offset type="relative">0.24 -0.145 0.478 0 0 0 1</offset>
-        </parent>
-        <child id="3">
+        </object>
+        <object id="3">
             <offset type="relative">-0.845 -0.073 0 0 0 0 1</offset>
-        </child>
-        <dof index="5"/>
-    </joint>
+        </object>
+        <dof index="rz"/>
+    </jointGeneric>
     
-    <joint id="7">
+    <jointGeneric id="7">
         <name>hinge_came-piston</name>
-        <parent id="3">
+        <object id="3">
             <offset type="relative">0.852 0.072 0 0 0 0 1</offset>
-        </parent>
-        <child id="4">
+        </object>
+        <object id="4">
             <offset type="relative">-0.113 0 0 0 0 0 1</offset>
-        </child>
-        <dof index="5"/>
-    </joint>
+        </object>
+        <dof index="rz"/>
+    </jointGeneric>
     
-    <joint id="8">
+    <jointGeneric id="8">
         <name>slider_corps-piston</name>
-        <parent id="4">
+        <object id="4">
             <offset type="relative">0.15 0 0 0 0 0 1</offset>
-        </parent>
-        <child id="1">
+        </object>
+        <object id="1">
             <offset type="relative">2.2 0 0.33 0 0 0 1</offset>
-        </child>
-        <dof index="0"/>
-    </joint>
+        </object>
+        <dof index="x"/>
+    </jointGeneric>
 
 </sml>

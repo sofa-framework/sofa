@@ -272,7 +272,7 @@ public:
 
     }
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #define EIGENSPARSEMATRIX_PARALLEL
 #endif
 

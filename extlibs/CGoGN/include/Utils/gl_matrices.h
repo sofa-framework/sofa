@@ -70,7 +70,7 @@ public:
 
 	void rotate(float angle, const Geom::Vec3f& Axis)
 	{
-		glm::mat4 X = glm::rotate(glm::mat4(1.f), angle, glm::vec3(Axis[0],Axis[1],Axis[2])) * m_matrices[2];
+		glm::mat4 X = glm::rotate(glm::mat4(1.f), glm::radians(angle), glm::vec3(Axis[0],Axis[1],Axis[2])) * m_matrices[2];
 		m_matrices[2] = X;
 	}
 

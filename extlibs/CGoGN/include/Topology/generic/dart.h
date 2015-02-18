@@ -102,8 +102,7 @@ struct Dart
 
 const Dart NIL = Dart::nil();
 
-template<unsigned int ORBIT>
-inline std::string orbitName()
+inline std::string orbitName(unsigned int ORBIT)
 {
     switch(ORBIT)
 	{

@@ -9,13 +9,13 @@
     <Node name="STL binary file">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshSTLLoader name="STLLoader" filename="mesh/porsche_binary.stl" />
+        <MeshSTLLoader name="STLLoader" filename="mesh/pliers_binary.stl" />
         <MechanicalObject name="dofs" scale="1" src="@STLLoader" />
         <TriangleSetTopologyContainer name="topo" src="@STLLoader" />
         <TriangleSetTopologyModifier name="modif" />
         <TriangleSetTopologyAlgorithms name="algo" />
         <TriangleSetGeometryAlgorithms name="triGeo" />
-        <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+        <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="small" />
         <DiagonalMass massDensity="0.15" />
         <TriangleModel />
         <Node>

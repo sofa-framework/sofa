@@ -11,7 +11,14 @@
 #include <qqml.h>
 #include <QDebug>
 #include <QSequentialIterable>
+#include <QJSValue>
 #include <vector>
+
+namespace sofa
+{
+
+namespace qtquick
+{
 
 PythonInteractor::PythonInteractor(QObject *parent) : QObject(parent), QQmlParserStatus(),
 	myScene(0),
@@ -76,26 +83,30 @@ static PyObject* PythonBuildValueHelper(const QVariant& parameter)
 	PyObject* value = 0;
 	if(!parameter.isNull())
 	{
-		switch(parameter.type())
+        QVariant finalParameter = parameter;
+        if(finalParameter.userType() == qMetaTypeId<QJSValue>())
+            finalParameter = finalParameter.value<QJSValue>().toVariant();
+
+        switch(finalParameter.type())
 		{
 		case QVariant::Bool:
-			value = Py_BuildValue("b", parameter.toBool());
+            value = Py_BuildValue("b", finalParameter.toBool());
 			break;
 		case QVariant::Int:
-			value = Py_BuildValue("i", parameter.toInt());
+            value = Py_BuildValue("i", finalParameter.toInt());
 			break;
 		case QVariant::UInt:
-			value = Py_BuildValue("I", parameter.toUInt());
+            value = Py_BuildValue("I", finalParameter.toUInt());
 			break;
 		case QVariant::Double:
-			value = Py_BuildValue("d", parameter.toDouble());
+            value = Py_BuildValue("d", finalParameter.toDouble());
 			break;
 		case QVariant::String:
-			value = Py_BuildValue("s", parameter.toString().toLatin1().constData());
+            value = Py_BuildValue("s", finalParameter.toString().toLatin1().constData());
 			break;
 		default:
 			value = Py_BuildValue("");
-			qDebug() << "ERROR: buildPythonParameterHelper, type not supported:" << parameter.typeName();
+            qDebug() << "ERROR: buildPythonParameterHelper, type not supported:" << finalParameter.typeName() << "- id" << finalParameter.type();
 			break;
 		}
 	}
@@ -108,21 +119,25 @@ static PyObject* PythonBuildTupleHelper(const QVariant& parameter, bool mustBeTu
 	PyObject* tuple = 0;
 
 	if(!parameter.isNull())
-	{
-		if(QVariant::List == parameter.type())
+    {
+        QVariant finalParameter = parameter;
+        if(finalParameter.userType() == qMetaTypeId<QJSValue>())
+            finalParameter = finalParameter.value<QJSValue>().toVariant();
+
+        if(QVariant::List == finalParameter.type())
 		{
-			QSequentialIterable parameterIterable = parameter.value<QSequentialIterable>();
+            QSequentialIterable parameterIterable = finalParameter.value<QSequentialIterable>();
 			tuple = PyTuple_New(parameterIterable.size());
 
 			int count = 0;
 			for(const QVariant& i : parameterIterable)
 				PyTuple_SetItem(tuple, count++, PythonBuildTupleHelper(i, false));
 		}
-		else if(QVariant::Map == parameter.type())
-		{
+        else if(QVariant::Map == finalParameter.type())
+        {
 			PyObject* dict = PyDict_New();
 
-			QVariantMap map = parameter.value<QVariantMap>();
+            QVariantMap map = finalParameter.value<QVariantMap>();
 
 			for(QVariantMap::const_iterator i = map.begin(); i != map.end(); ++i)
 				PyDict_SetItemString(dict, i.key().toLatin1().constData(), PythonBuildTupleHelper(i.value(), false));
@@ -142,11 +157,11 @@ static PyObject* PythonBuildTupleHelper(const QVariant& parameter, bool mustBeTu
 			if(mustBeTuple)
 			{
 				tuple = PyTuple_New(1);
-				PyTuple_SetItem(tuple, 0, PythonBuildValueHelper(parameter));
+                PyTuple_SetItem(tuple, 0, PythonBuildValueHelper(finalParameter));
 			}
 			else
 			{
-				tuple = PythonBuildValueHelper(parameter);
+                tuple = PythonBuildValueHelper(finalParameter);
 			}
 		}
 	}
@@ -190,7 +205,7 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 		if(!iterator)
 			return value;
 
-		while(item = PyIter_Next(iterator))
+        while((item = PyIter_Next(iterator)))
 		{
 			tuple.append(ExtractPythonTupleHelper(item));
 
@@ -225,6 +240,11 @@ static QVariant ExtractPythonTupleHelper(PyObject* parameter)
 	}	
 
 	return value;
+}
+
+QVariant PythonInteractor::call(const QString& pythonClassName, const QString& funcName, const QVariant& parameter)
+{
+    return onCall(pythonClassName, funcName, parameter);
 }
 
 QVariant PythonInteractor::onCall(const QString& pythonClassName, const QString& funcName, const QVariant& parameter)
@@ -342,4 +362,8 @@ void PythonInteractor::sendEventToAll(const QString& eventName, const QVariant& 
 {
 	for(const QString& pythonClassName : myPythonScriptControllers.keys())
 		sendEvent(pythonClassName, eventName, parameter);
+}
+
+}
+
 }

@@ -205,7 +205,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/)
+    virtual void removeItems(const sofa::helper::vector< unsigned int >& /*items*/)
     { }
 
     /** \brief Generic method for points renumbering

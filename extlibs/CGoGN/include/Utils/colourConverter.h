@@ -65,7 +65,7 @@ public: // types
 		C_HSL = 5  /*!< H,S,L in [0,1] */
 	} ;
 
-	typedef Geom::Vector<3,REAL> VEC3 ; /*!< Triplet for color encoding */
+    typedef typename Geom::Vector<3,REAL>::type VEC3 ; /*!< Triplet for color encoding */
 
 public: // methods
 	/**

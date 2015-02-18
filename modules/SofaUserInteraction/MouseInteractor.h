@@ -94,7 +94,7 @@ public:
     BodyPicked getBodyPicked() const {return lastPicked;}
     void setBodyPicked( BodyPicked picked) {lastPicked=picked;}
 
-    SReal getDistanceFromMouse() const {return distanceFromMouse;};
+    SReal getDistanceFromMouse() const {return distanceFromMouse;}
     void setDistanceFromMouse(SReal d) {distanceFromMouse=d;}
 
 protected:
@@ -121,7 +121,7 @@ public:
     typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
     typedef typename DataTypes::Coord Coord;
 public:
-    MouseInteractor():mouseInSofa(NULL) {};
+    MouseInteractor():mouseInSofa(NULL) {}
     ~MouseInteractor() {}
 
     void init();

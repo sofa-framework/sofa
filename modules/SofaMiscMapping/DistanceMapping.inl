@@ -288,12 +288,16 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if( !vparams->displayFlags().getShowMechanicalMappings() ) return;
 
+    glPushAttrib(GL_LIGHTING_BIT);
+
     typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
     SeqEdges links = edgeContainer->getEdges();
 
 
+
     if( d_showObjectScale.getValue() == 0 )
     {
+        glDisable(GL_LIGHTING);
         vector< defaulttype::Vector3 > points;
         for(unsigned i=0; i<links.size(); i++ )
         {
@@ -304,13 +308,16 @@ void DistanceMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     }
     else
     {
+        glEnable(GL_LIGHTING);
         for(unsigned i=0; i<links.size(); i++ )
         {
             defaulttype::Vector3 p0 = TIn::getCPos(pos[links[i][0]]);
             defaulttype::Vector3 p1 = TIn::getCPos(pos[links[i][1]]);
-            vparams->drawTool()->drawCylinder( p0, p1, d_showObjectScale.getValue(), d_color.getValue() );
+            vparams->drawTool()->drawCylinder( p0, p1, (float)d_showObjectScale.getValue(), d_color.getValue() );
         }
     }
+
+    glPopAttrib();
 }
 
 

@@ -141,7 +141,6 @@ public:
     bool loadPlugin(std::string& path, std::ostream* errlog=&std::cerr);
     bool unloadPlugin(std::string& path, std::ostream* errlog=&std::cerr);
 
-    void initRecentlyOpened();
     void init();
 	void init(const std::string& pluginName);
 
@@ -156,8 +155,8 @@ public:
     PluginMap& getPluginMap()  { return m_pluginMap; }
 
 
-    void readFromIniFile();
-    void writeToIniFile();
+    void readFromIniFile(const std::string& path);
+    void writeToIniFile(const std::string& path);
 
 private:
     PluginManager() {}

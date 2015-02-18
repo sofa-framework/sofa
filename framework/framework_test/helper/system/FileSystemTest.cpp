@@ -4,7 +4,7 @@
 #include <exception>
 #include <algorithm>
 
-using namespace sofa::helper::system;
+using sofa::helper::system::FileSystem;
 
 static std::string getPath(std::string s) {
     return std::string(FRAMEWORK_TEST_RESOURCES_DIR) + std::string("/") + s;
@@ -103,4 +103,100 @@ TEST(FileSystemTest, isDirectory_yes_trailingSlash)
 TEST(FileSystemTest, isDirectory_nope)
 {
     EXPECT_FALSE(FileSystem::isDirectory(getPath("non-empty-directory/fileA.txt")));
+}
+
+TEST(FileSystemTest, isAbsolute)
+{
+    EXPECT_FALSE(FileSystem::isAbsolute(""));
+    EXPECT_FALSE(FileSystem::isAbsolute("abc"));
+    EXPECT_FALSE(FileSystem::isAbsolute("abc/def"));
+    EXPECT_TRUE(FileSystem::isAbsolute("/"));
+    EXPECT_TRUE(FileSystem::isAbsolute("/abc"));
+    EXPECT_TRUE(FileSystem::isAbsolute("/abc/"));
+    EXPECT_TRUE(FileSystem::isAbsolute("/abc/def"));
+    EXPECT_TRUE(FileSystem::isAbsolute("A:/"));
+    EXPECT_TRUE(FileSystem::isAbsolute("B:/abc"));
+    EXPECT_TRUE(FileSystem::isAbsolute("C:/abc/"));
+    EXPECT_TRUE(FileSystem::isAbsolute("D:/abc/def"));
+}
+
+TEST(FileSystemTest, cleanPath)
+{
+    EXPECT_EQ("", FileSystem::cleanPath(""));
+    EXPECT_EQ("/abc/def/ghi/jkl/mno", FileSystem::cleanPath("/abc/def//ghi/jkl///mno"));
+    EXPECT_EQ("C:/abc/def/ghi/jkl/mno", FileSystem::cleanPath("C:\\abc\\def\\ghi/jkl///mno"));
+}
+
+TEST(FileSystemTest, convertBackSlashesToSlashes)
+{
+    EXPECT_EQ("", FileSystem::convertBackSlashesToSlashes(""));
+    EXPECT_EQ("abc/def/ghi", FileSystem::convertBackSlashesToSlashes("abc/def/ghi"));
+    EXPECT_EQ("abc/def/ghi", FileSystem::convertBackSlashesToSlashes("abc/def\\ghi"));
+    EXPECT_EQ("abc/def/ghi", FileSystem::convertBackSlashesToSlashes("abc\\def\\ghi"));
+    EXPECT_EQ("C:/abc/def/ghi", FileSystem::convertBackSlashesToSlashes("C:\\abc\\def\\ghi"));
+    EXPECT_EQ("C:/abc/def/ghi", FileSystem::convertBackSlashesToSlashes("C:\\abc\\def/ghi"));
+}
+
+TEST(FileSystemTest, removeExtraSlashes)
+{
+    EXPECT_EQ("", FileSystem::removeExtraSlashes(""));
+    EXPECT_EQ("/", FileSystem::removeExtraSlashes("/"));
+    EXPECT_EQ("/", FileSystem::removeExtraSlashes("//"));
+    EXPECT_EQ("/", FileSystem::removeExtraSlashes("///"));
+    EXPECT_EQ("/", FileSystem::removeExtraSlashes("////"));
+    EXPECT_EQ("/", FileSystem::removeExtraSlashes("/////"));
+    EXPECT_EQ("/", FileSystem::removeExtraSlashes("//////"));
+    EXPECT_EQ("/abc/def", FileSystem::removeExtraSlashes("/abc/def"));
+    EXPECT_EQ("/abc/def/", FileSystem::removeExtraSlashes("/abc/def/"));
+    EXPECT_EQ("/abc/def/ghi/jkl/", FileSystem::removeExtraSlashes("/abc//def//ghi/jkl///"));
+}
+
+TEST(FileSystemTest, getParentDirectory)
+{
+    EXPECT_EQ("/abc/def", FileSystem::getParentDirectory("/abc/def/ghi"));
+    EXPECT_EQ("/abc/def", FileSystem::getParentDirectory("/abc/def/ghi/"));
+    EXPECT_EQ("/", FileSystem::getParentDirectory("/abc/"));
+    EXPECT_EQ("/", FileSystem::getParentDirectory("/abc"));
+    EXPECT_EQ("/", FileSystem::getParentDirectory("/"));
+    EXPECT_EQ(".", FileSystem::getParentDirectory("."));
+    EXPECT_EQ(".", FileSystem::getParentDirectory(""));
+
+    EXPECT_EQ("abc/def", FileSystem::getParentDirectory("abc/def/ghi"));
+    EXPECT_EQ("abc/def", FileSystem::getParentDirectory("abc/def/ghi/"));
+    EXPECT_EQ("abc/def", FileSystem::getParentDirectory("abc/def/ghi//"));
+    EXPECT_EQ("abc/def", FileSystem::getParentDirectory("abc/def/ghi///"));
+    EXPECT_EQ("abc/def", FileSystem::getParentDirectory("abc/def/ghi////"));
+    EXPECT_EQ("abc", FileSystem::getParentDirectory("abc/def"));
+    EXPECT_EQ(".", FileSystem::getParentDirectory("abc"));
+
+    EXPECT_EQ("C:/abc/def", FileSystem::getParentDirectory("C:/abc/def/ghi"));
+    EXPECT_EQ("C:/abc/def", FileSystem::getParentDirectory("C:/abc/def/ghi/"));
+    EXPECT_EQ("C:/", FileSystem::getParentDirectory("C:/abc/"));
+    EXPECT_EQ("C:/", FileSystem::getParentDirectory("C:/abc"));
+    EXPECT_EQ("C:/", FileSystem::getParentDirectory("C:///"));
+    EXPECT_EQ("C:/", FileSystem::getParentDirectory("C://"));
+    EXPECT_EQ("C:/", FileSystem::getParentDirectory("C:/"));
+}
+
+TEST(FileSystemTest, stripDirectory)
+{
+    EXPECT_EQ("", FileSystem::stripDirectory(""));
+    EXPECT_EQ("/", FileSystem::stripDirectory("/"));
+    EXPECT_EQ("/", FileSystem::stripDirectory("C:/"));
+    EXPECT_EQ("abc", FileSystem::stripDirectory("abc"));
+    EXPECT_EQ("abc", FileSystem::stripDirectory("/abc"));
+    EXPECT_EQ("abc", FileSystem::stripDirectory("/abc/"));
+    EXPECT_EQ("abc", FileSystem::stripDirectory("C:/abc"));
+    EXPECT_EQ("abc", FileSystem::stripDirectory("C:/abc/"));
+    EXPECT_EQ("def", FileSystem::stripDirectory("abc/def"));
+    EXPECT_EQ("def", FileSystem::stripDirectory("/abc/def"));
+    EXPECT_EQ("def", FileSystem::stripDirectory("/abc/def/"));
+    EXPECT_EQ("def", FileSystem::stripDirectory("C:/abc/def"));
+    EXPECT_EQ("def", FileSystem::stripDirectory("C:/abc/def/"));
+    EXPECT_EQ("ghi", FileSystem::stripDirectory("/abc/def/ghi"));
+    EXPECT_EQ("ghi", FileSystem::stripDirectory("/abc/def/ghi/"));
+    EXPECT_EQ("ghi", FileSystem::stripDirectory("abc/def/ghi"));
+    EXPECT_EQ("ghi", FileSystem::stripDirectory("abc/def/ghi/"));
+    EXPECT_EQ("ghi", FileSystem::stripDirectory("C:/abc/def/ghi"));
+    EXPECT_EQ("ghi", FileSystem::stripDirectory("C:/abc/def/ghi/"));
 }

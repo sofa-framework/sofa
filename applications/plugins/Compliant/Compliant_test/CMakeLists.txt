@@ -12,6 +12,7 @@ set(SOURCE_FILES
     CompliantImplicitSolver_test.cpp
     CompliantNLImplicitSolver_test.cpp
     DampedOscillator_test.cpp
+	AssembledRigidRigidMapping_test.cpp
 
 	)
 

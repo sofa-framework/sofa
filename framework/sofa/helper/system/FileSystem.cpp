@@ -1,6 +1,6 @@
 #include <sofa/helper/system/FileSystem.h>
 
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 
 #include <fstream>
 #include <iostream>
@@ -24,8 +24,6 @@ namespace helper
 {
 namespace system
 {
-namespace FileSystem
-{
 
 
 #if defined(WIN32)
@@ -37,7 +35,7 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 
     // Prepare string for use with FindFile functions.  First, copy the
     // string to a buffer, then append '\*' to the directory name.
-    StringCchCopy(szDir, MAX_PATH, Utils::s2ws(path).c_str());
+    StringCchCopy(szDir, MAX_PATH, Utils::narrowString(path).c_str());
     StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
 
     // Find the first file in the directory.
@@ -64,8 +62,8 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 #endif
 
 
-bool listDirectory(const std::string& directoryPath,
-                   std::vector<std::string>& outputFilenames)
+bool FileSystem::listDirectory(const std::string& directoryPath,
+                               std::vector<std::string>& outputFilenames)
 {
 #if defined(WIN32) || defined (_XBOX)
     // Find the first file in the directory.
@@ -82,8 +80,8 @@ bool listDirectory(const std::string& directoryPath,
 # if defined (_XBOX)
 		std::string filename = ffd.cFileName;
 # else
-		std::string filename = Utils::ws2s(std::wstring(ffd.cFileName));
-#endif
+		std::string filename = Utils::widenString(std::wstring(ffd.cFileName));
+# endif
         if (filename != "." && filename != "..")
 			outputFilenames.push_back(filename);
     } while (FindNextFile(hFind, &ffd) != 0);
@@ -116,11 +114,11 @@ bool listDirectory(const std::string& directoryPath,
 }
 
 
-bool exists(const std::string& path)
+bool FileSystem::exists(const std::string& path)
 {
 #if defined(WIN32)
 	::SetLastError(0);
-    bool pathExists = PathFileExists(Utils::s2ws(path).c_str()) != 0;
+    bool pathExists = PathFileExists(Utils::narrowString(path).c_str()) != 0;
     DWORD errorCode = ::GetLastError();
 	if (errorCode != 0
 		&& errorCode != ERROR_FILE_NOT_FOUND
@@ -148,10 +146,10 @@ bool exists(const std::string& path)
 }
 
 
-bool isDirectory(const std::string& path)
+bool FileSystem::isDirectory(const std::string& path)
 {
 #if defined(WIN32)
-    DWORD fileAttrib = GetFileAttributes(Utils::s2ws(path).c_str());
+    DWORD fileAttrib = GetFileAttributes(Utils::narrowString(path).c_str());
     if (fileAttrib == INVALID_FILE_ATTRIBUTES) {
         std::cerr << "FileSystem::isDirectory(\"" << path << "\"): "
                   << Utils::GetLastError() << std::endl;
@@ -180,9 +178,9 @@ bool isDirectory(const std::string& path)
 #endif
 }
 
-bool listDirectory(const std::string& directoryPath,
-                   std::vector<std::string>& outputFilenames,
-                   const std::string& extension)
+bool FileSystem::listDirectory(const std::string& directoryPath,
+                               std::vector<std::string>& outputFilenames,
+                               const std::string& extension)
 {
     // List directory
     std::vector<std::string> files;
@@ -200,7 +198,105 @@ bool listDirectory(const std::string& directoryPath,
     return false;
 }
 
-} // namespace FileSystem
+static bool pathHasDrive(const std::string& path) {
+    return path.length() >=3
+        && ((path[0] >= 'A' && path[0] <= 'Z') || (path[0] >= 'a' && path[0] <= 'z'))
+        && path[1] == ':';
+}
+
+static std::string pathWithoutDrive(const std::string& path) {
+    return path.substr(2, std::string::npos);
+}
+
+static std::string pathDrive(const std::string& path) {
+    return path.substr(0, 2);
+}
+
+bool FileSystem::isAbsolute(const std::string& path)
+{
+    return !path.empty()
+        && (pathHasDrive(path)
+            || path[0] == '/');
+}
+
+std::string FileSystem::convertBackSlashesToSlashes(const std::string& path)
+{
+    std::string str = path;
+    size_t backSlashPos = str.find('\\');
+    while(backSlashPos != std::string::npos)
+    {
+        str[backSlashPos] = '/';
+        backSlashPos = str.find("\\");
+    }
+    return str;
+}
+
+std::string FileSystem::removeExtraSlashes(const std::string& path)
+{
+    std::string str = path;
+    size_t pos = str.find("//");
+    while(pos != std::string::npos) {
+        str.replace(pos, 2, "/");
+        pos = str.find("//");
+    }
+    return str;
+}
+
+std::string FileSystem::cleanPath(const std::string& path)
+{
+    return removeExtraSlashes(convertBackSlashesToSlashes(path));
+}
+
+static std::string computeParentDirectory(const std::string& path)
+{
+    if (path == "")
+        return ".";
+    else if (path == "/")
+        return "/";
+    else if (path[path.length()-1] == '/')
+        return computeParentDirectory(path.substr(0, path.length() - 1));
+    else {
+        size_t last_slash = path.find_last_of('/');
+        if (last_slash == std::string::npos)
+            return ".";
+        else if (last_slash == 0)
+            return "/";
+        else if (last_slash == path.length())
+            return "";
+        else
+            return path.substr(0, last_slash);
+    }
+}
+
+std::string FileSystem::getParentDirectory(const std::string& path)
+{
+    if (pathHasDrive(path))     // check for Windows drive
+        return pathDrive(path) + computeParentDirectory(pathWithoutDrive(path));
+    else
+        return computeParentDirectory(path);
+}
+
+std::string FileSystem::stripDirectory(const std::string& path)
+{
+    if (pathHasDrive(path))     // check for Windows drive
+        return stripDirectory(pathWithoutDrive(path));
+    else
+    {
+        size_t last_slash = path.find_last_of("/");
+        if (last_slash == std::string::npos)    // No slash
+            return path;
+        else if (last_slash == path.size() - 1) // Trailing slash
+            if (path.size() == 1)
+                return "/";
+            else
+                return stripDirectory(path.substr(0, path.size() - 1));
+        else
+            return path.substr(last_slash + 1, std::string::npos);
+        return "";
+    }
+}
+
+
 } // namespace system
 } // namespace helper
 } // namespace sofa

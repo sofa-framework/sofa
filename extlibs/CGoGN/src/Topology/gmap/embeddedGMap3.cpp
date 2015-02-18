@@ -354,9 +354,9 @@ void EmbeddedGMap3::splitVolume(std::vector<Dart>& vd)
 	}
 }
 
-unsigned int EmbeddedGMap3::closeHole(Dart d, bool forboundary)
+unsigned int EmbeddedGMap3::closeHole(Dart d)
 {
-	unsigned int nbF = GMap3::closeHole(d, forboundary) ;
+	unsigned int nbF = GMap3::closeHole(d) ;
 
 	DartMarkerStore<EmbeddedGMap3> mark(*this);	// Lock a marker
 
