@@ -26,7 +26,7 @@
 #include "BaseViewer.h"
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
 #include <sofa/component/configurationsetting/SofaDefaultPathSetting.h>
@@ -40,6 +40,7 @@
 
 using namespace sofa::simulation;
 using namespace sofa::helper::system;
+using namespace sofa::helper;
 
 namespace sofa
 {
