@@ -29,6 +29,7 @@
 #include <fstream>
 #include <algorithm>
 
+using sofa::helper::system::FileSystem;
 
 namespace sofa
 {
@@ -45,7 +46,7 @@ FilesRecentlyOpenedManager::FilesRecentlyOpenedManager(const std::string &config
 void FilesRecentlyOpenedManager::setPath(const std::string &path)
 {
     // File does not exist? Create an empty one.
-    if (!sofa::helper::system::FileSystem::exists(path))
+    if (!FileSystem::exists(path))
     {
         std::ofstream ofile(path.c_str());
         ofile << "";
@@ -71,7 +72,7 @@ void FilesRecentlyOpenedManager::writeFiles() const
 void FilesRecentlyOpenedManager::openFile(const std::string &path)
 {
     // Verify the existence of the file
-    if (path.empty() || !sofa::helper::system::FileSystem::exists(path))
+    if (path.empty() || !FileSystem::exists(path))
         return;
 
     // Remove previous occurence of the file, if any
