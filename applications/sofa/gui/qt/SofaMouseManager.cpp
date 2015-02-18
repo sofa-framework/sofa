@@ -54,6 +54,7 @@ SofaMouseManager::SofaMouseManager()
     connect( gui->RightOperationCombo,  SIGNAL(activated(int)), this, SLOT( selectOperation(int) ));
 
     RegisterOperation("Attach").add< QAttachOperation >();
+#ifndef SOFA_FLAG_SOFAPRO
     RegisterOperation("AddFrame").add< AddFrameOperation >();
     RegisterOperation("SaveCameraViewPoint").add< QAddRecordedCameraOperation >();
     RegisterOperation("StartNavigation").add< QStartNavigationOperation >();
@@ -62,6 +63,7 @@ SofaMouseManager::SofaMouseManager()
     RegisterOperation("Remove").add< QTopologyOperation  >();
     RegisterOperation("Suture").add< QAddSutureOperation >();
     RegisterOperation("ConstraintAttach").add< ConstraintAttachOperation >();
+#endif // SOFA_FLAG_SOFAPRO
 }
 
 SofaMouseManager::~SofaMouseManager()
@@ -103,10 +105,11 @@ void SofaMouseManager::setPickHandler(PickHandler *picker)
     pickHandler=picker;
     updateContent();
     updateOperation(LEFT,   "Attach");
+#ifndef SOFA_FLAG_SOFAPRO
     updateOperation(MIDDLE, "Incise");
     updateOperation(RIGHT,  "Remove");
+#endif // SOFA_FLAG_SOFAPRO
 }
-
 
 void SofaMouseManager::selectOperation(int operation)
 {

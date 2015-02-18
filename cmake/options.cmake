@@ -22,6 +22,13 @@ set(SOFA-EXTERNAL_INCLUDE_DIR ${SOFA-EXTERNAL_INCLUDE_DIR} CACHE PATH "Include p
 set(SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library path for pre-compiled dependencies outside of the Sofa directory")
 set(SOFA-EXTERNAL_PLUGIN_DIRS ${SOFA-EXTERNAL_PLUGIN_DIRS} CACHE STRING "External directories (separated with ;) containing Sofa Plugin folders (but not the path to the plugin it-self !)")
 
+#SofaPro
+set(SOFA-FLAG_SOFAPRO CACHE BOOL "Enable SofaPro-type build compilation")
+if(SOFA-FLAG_SOFAPRO MATCHES ON)
+    message("Enable SofaPro build")
+    add_definitions("-DSOFA_FLAG_SOFAPRO")
+endif(SOFA-FLAG_SOFAPRO MATCHES ON)
+
 # extlibs
 ##CGoGN
 sofa_option(SOFA-EXTERNAL_CGOGN_PATH PATH "${SOFA_EXTLIBS_DIR}/CGoGN" "Path to the CGoGN library")

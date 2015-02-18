@@ -120,7 +120,7 @@ void QAttachOperation::configure(PickHandler *picker, sofa::component::configura
 }
 //*******************************************************************************************
 
-
+#ifndef SOFA_FLAG_SOFAPRO
 //*******************************************************************************************
 QAddRecordedCameraOperation::QAddRecordedCameraOperation()
 {}
@@ -436,6 +436,8 @@ double QAddSutureOperation::getDamping() const
 }
 
 //*******************************************************************************************
+
+#endif // SOFA_FLAG_SOFAPRO
 
 } // namespace sofa
 } // namespace gui

@@ -28,12 +28,16 @@
 
 #include <sofa/component/collision/ComponentMouseInteraction.h>
 #include <sofa/component/collision/AttachBodyPerformer.h>
+
+#ifndef SOFA_FLAG_SOFAPRO
 #include <sofa/component/collision/FixParticlePerformer.h>
 #include <sofa/component/collision/RemovePrimitivePerformer.h>
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
 #include <sofa/component/collision/AddRecordedCameraPerformer.h>
 #include <sofa/component/collision/StartNavigationPerformer.h>
 #include <sofa/component/collision/SuturePointPerformer.h>
+#endif // SOFA_FLAG_SOFAPRO
+
 #ifdef SOFA_HAVE_ARPLUGIN
 #include "./../../../applications-dev/plugins/ARPlugin/ARPSAttachPerformer.h"
 #endif
@@ -44,34 +48,45 @@ namespace sofa
 using namespace component::collision;
 
 #ifdef WIN32
+
 #ifndef SOFA_DOUBLE
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
+#endif // SOFA_DOUBLE
+#ifndef SOFA_FLOAT
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
+#endif // SOFA_FLOAT
+
+#ifndef SOFA_FLAG_SOFAPRO
+#ifndef SOFA_DOUBLE
 #ifdef SOFA_DEV
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3fTypes> >  AddFramePerformerVec3fClass("AddFrame",true);
 #ifdef SOFA_HAVE_ARPLUGIN
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AdaptativeAttachPerformer<defaulttype::Vec3fTypes> >  AdaptativeAttachPerformerVec3fClass("AdaptativeAttach",true);
-#endif
-#endif
+#endif // SOFA_HAVE_ARPLUGIN
+#endif // SOFA_DEV
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3fTypes> >  RemovePrimitivePerformerVec3fClass("RemovePrimitive",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3fTypes> >  SuturePointPerformerVec3fClass("SuturePoints",true);
-#endif
+#endif // SOFA_DOUBLE
+
 #ifndef SOFA_FLOAT
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
 #ifdef SOFA_DEV
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3dTypes> >  AddFramePerformerVec3dClass("AddFrame",true);
 #ifdef SOFA_HAVE_ARPLUGIN
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AdaptativeAttachPerformer<defaulttype::Vec3dTypes> >  AdaptativeAttachPerformerVec3dClass("AdaptativeAttach",true);
-#endif
-#endif
+#endif // SOFA_HAVE_ARPLUGIN
+#endif // SOFA_DEV
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3dTypes> >  FixParticlePerformerVec3dClass("FixParticle",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3dTypes> >  RemovePrimitivePerformerVec3dClass("RemovePrimitive",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, SuturePointPerformer<defaulttype::Vec3dTypes> >  SuturePointPerformerVec3dClass("SuturePoints",true);
-#endif
+#endif // SOFA_FLOAT
+
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPathPerformer>  InciseAlongPathPerformerClass("InciseAlongPath");
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddRecordedCameraPerformer> AddRecordedCameraPerformerClass("AddRecordedCamera");
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, StartNavigationPerformer> StartNavigationPerformerClass("StartNavigation");
-#endif
+
+#endif // SOFA_FLAG_SOFAPRO
+#endif // WIN32
 
 namespace gui
 {
@@ -134,7 +149,7 @@ void AttachOperation::configurePerformer(sofa::component::collision::Interaction
         }
     */
 }
-
+#ifndef SOFA_FLAG_SOFAPRO
 //*******************************************************************************************
 std::string FixOperation::defaultPerformerType() { return "FixParticle"; }
 
@@ -350,6 +365,8 @@ void AddSutureOperation::configurePerformer(sofa::component::collision::Interact
         performerConfiguration->setDamping(getDamping());
     }
 }
+
+#endif // SOFA_FLAG_SOFAPRO
 
 }
 }

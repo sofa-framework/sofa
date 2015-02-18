@@ -5,6 +5,7 @@ set(HEADER_FILES
     ../initUserInteraction.h 
     ../collision/RayTraceDetection.h 
     ../collision/RayContact.h 
+    ../collision/InteractionPerformer.h
     # ../collision/DisabledContact.h 
      ../collision/ComponentMouseInteraction.h
      ../collision/ComponentMouseInteraction.inl
@@ -12,11 +13,6 @@ set(HEADER_FILES
     ../collision/MouseInteractor.inl 
     ../collision/AttachBodyPerformer.h 
     ../collision/AttachBodyPerformer.inl 
-     ../collision/FixParticlePerformer.h 
-     ../collision/FixParticlePerformer.inl 
-     ../collision/InteractionPerformer.h
-     ../collision/SuturePointPerformer.h 
-     ../collision/SuturePointPerformer.inl 
     # ../collision/GraspingManager.h 
     # ../controller/ArticulatedHierarchyController.h 
     # ../controller/ArticulatedHierarchyBVHController.h 
@@ -27,37 +23,20 @@ set(HEADER_FILES
     # ../controller/MechanicalStateController.inl 
     ../collision/Ray.h 
     ../collision/RayModel.h 
-    # ../collision/RayDiscreteIntersection.h 
-    # ../collision/RayDiscreteIntersection.inl 
-    # ../collision/RayNewProximityIntersection.h 
-     ../collision/RemovePrimitivePerformer.h 
-     ../collision/RemovePrimitivePerformer.inl 
-     ../collision/InciseAlongPathPerformer.h 
-     ../collision/TopologicalChangeManager.h
-     ../collision/CuttingPoint.h 
-# #    ../collision/AddFramePerformer.h
-#    ../collision/AddFramePerformer.inl
-     ../collision/AddRecordedCameraPerformer.h 
-     ../collision/StartNavigationPerformer.h
-#     ../controller/MechanicalStateControllerOmni.h 
-# 	../controller/MechanicalStateControllerOmni.inl 
-#     ../controller/NodeToggleController.h
-#     ../controller/InterpolationController.h
-# 	../controller/SleepController.h
+    ../collision/TopologicalChangeManager.h
+
     )
     
 set(SOURCE_FILES
 
     ../initUserInteraction.cpp 
-#    ../collision/RayTraceDetection.cpp
+    ../collision/InteractionPerformer.cpp
+    ../collision/AttachBodyPerformer.cpp 
+#   ../collision/RayTraceDetection.cpp
     ../collision/RayContact.cpp 
     # ../collision/DisabledContact.cpp 
      ../collision/ComponentMouseInteraction.cpp
     ../collision/MouseInteractor.cpp 
-    ../collision/AttachBodyPerformer.cpp 
-     ../collision/FixParticlePerformer.cpp 
-     ../collision/InteractionPerformer.cpp
-     ../collision/SuturePointPerformer.cpp 
     # ../collision/GraspingManager.cpp 
     # ../controller/ArticulatedHierarchyController.cpp 
     # ../controller/ArticulatedHierarchyBVHController.cpp 
@@ -65,21 +44,55 @@ set(SOURCE_FILES
     # ../controller/EdgeSetController.cpp 
     # ../controller/MechanicalStateController.cpp 
     ../collision/RayModel.cpp 
-    # ../collision/RayDiscreteIntersection.cpp 
-    # ../collision/RayNewProximityIntersection.cpp 
-     ../collision/RemovePrimitivePerformer.cpp 
-     ../collision/InciseAlongPathPerformer.cpp 
-     ../collision/TopologicalChangeManager.cpp
-     ../collision/CuttingPoint.cpp 
-    # ../collision/AddFramePerformer.cpp
-     ../collision/AddRecordedCameraPerformer.cpp
-     ../collision/StartNavigationPerformer.cpp
- #    ../controller/MechanicalStateControllerOmni.cpp 
- #    ../controller/NodeToggleController.cpp
- #    ../controller/InterpolationController.cpp
- #    ../controller/InterpolationController.inl
-	# ../controller/SleepController.cpp
+    ../collision/TopologicalChangeManager.cpp
+
+)
+
+if(SOFA-FLAG_SOFAPRO MATCHES OFF)
+    # message("SOFA PRO NOT ACTIVATED")
+    set(HEADER_FILES
+         ../collision/FixParticlePerformer.h 
+         ../collision/FixParticlePerformer.inl 
+         ../collision/SuturePointPerformer.h 
+         ../collision/SuturePointPerformer.inl 
+        # ../collision/RayDiscreteIntersection.h 
+        # ../collision/RayDiscreteIntersection.inl 
+        # ../collision/RayNewProximityIntersection.h 
+         ../collision/RemovePrimitivePerformer.h 
+         ../collision/RemovePrimitivePerformer.inl 
+         ../collision/InciseAlongPathPerformer.h 
+         ../collision/CuttingPoint.h 
+    # #    ../collision/AddFramePerformer.h
+    #    ../collision/AddFramePerformer.inl
+         ../collision/AddRecordedCameraPerformer.h 
+         ../collision/StartNavigationPerformer.h
+    #     ../controller/MechanicalStateControllerOmni.h 
+    #   ../controller/MechanicalStateControllerOmni.inl 
+    #     ../controller/NodeToggleController.h
+    #     ../controller/InterpolationController.h
+    #   ../controller/SleepController.h    
     )
+
+    set(SOURCE_FILES
+         ../collision/FixParticlePerformer.cpp
+         ../collision/SuturePointPerformer.cpp 
+        # ../collision/RayDiscreteIntersection.cpp 
+        # ../collision/RayNewProximityIntersection.cpp 
+         ../collision/RemovePrimitivePerformer.cpp 
+         ../collision/InciseAlongPathPerformer.cpp 
+         
+         ../collision/CuttingPoint.cpp 
+        # ../collision/AddFramePerformer.cpp
+         ../collision/AddRecordedCameraPerformer.cpp
+         ../collision/StartNavigationPerformer.cpp
+     #    ../controller/MechanicalStateControllerOmni.cpp 
+     #    ../controller/NodeToggleController.cpp
+     #    ../controller/InterpolationController.cpp
+     #    ../controller/InterpolationController.inl
+        # ../controller/SleepController.cpp
+    )
+
+endif(SOFA-FLAG_SOFAPRO MATCHES OFF)
 
 set(GROUP_BASE_DIR "..")
 

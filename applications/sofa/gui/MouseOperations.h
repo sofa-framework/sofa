@@ -29,9 +29,12 @@
 #include <iostream>
 #include <vector>
 
-#include <sofa/component/configurationsetting/AddRecordedCameraButtonSetting.h>
 #include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
+#ifndef SOFA_FLAG_SOFAPRO
+#include <sofa/component/configurationsetting/AddRecordedCameraButtonSetting.h>
 #include <sofa/component/configurationsetting/FixPickedParticleButtonSetting.h>
+#endif // SOFA_FLAG_SOFAPRO
+
 #include <sofa/gui/SofaGUI.h>
 
 namespace sofa
@@ -100,6 +103,7 @@ private:
     std::string id;
 };
 
+
 class SOFA_SOFAGUI_API AttachOperation : public Operation
 {
 public:
@@ -124,7 +128,7 @@ protected:
     sofa::component::configurationsetting::AttachBodyButtonSetting::SPtr setting;
 };
 
-
+#ifndef SOFA_FLAG_SOFAPRO
 class SOFA_SOFAGUI_API ConstraintAttachOperation : public sofa::gui::AttachOperation
 {
 public:
@@ -267,6 +271,7 @@ protected:
     double stiffness;
     double damping;
 };
+#endif // SOFA_FLAG_SOFAPRO
 
 }
 }

@@ -83,6 +83,7 @@ protected:
     DataWidget *showSizeFactorWidget;
 };
 
+#ifndef SOFA_FLAG_SOFAPRO
 class QAddRecordedCameraOperation : public QMouseOperation, public AddRecordedCameraOperation
 {
     Q_OBJECT
@@ -206,6 +207,8 @@ protected:
     QLineEdit *stiffness;
     QLineEdit *damping;
 };
+#endif // SOFA_FLAG_SOFAPRO
+
 
 }
 }
