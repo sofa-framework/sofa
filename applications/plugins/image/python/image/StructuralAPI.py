@@ -10,6 +10,7 @@ class Image:
         self.closingValue = None
         self.image = None
         self.viewer = None
+        self.writer = None
 
     def addMeshLoader(self, mesh):
         self.mesh = SofaPython.Tools.meshLoader(self.node, mesh, name="loader")
@@ -25,7 +26,15 @@ class Image:
     def addViewer(self):
         if self.image is None:
             print "[StructuralAPI.Image] ERROR: no image"
-        print self.image
         imagePath = SofaPython.Tools.getObjectPath(self.image)
-        self.viewer = self.node.createObject('ImageViewer', name="viewier", template="ImageUC", image="@"+imagePath+".image", transform="@"+imagePath+".transform")
+        self.viewer = self.node.createObject('ImageViewer', name="viewer", template="ImageUC", image="@"+imagePath+".image", transform="@"+imagePath+".transform")
+
+    def addReader(self, filename):
+        self.image = self.node.createObject('ImageContainer', template='ImageUC', name="container", filename=filename)
+
+    def addWriter(self, filename):
+        if self.image is None:
+            print "[StructuralAPI.Image] ERROR: no image"
+        imagePath = SofaPython.Tools.getObjectPath(self.image)
+        self.node.createObject('ImageExporter', template='ImageUC', image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=filename, exportAtEnd=True, printLog=True)
 
