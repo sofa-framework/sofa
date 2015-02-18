@@ -29,10 +29,12 @@
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
 
 using std::cerr;
 using std::endl;
 using sofa::helper::system::FileSystem;
+using sofa::helper::Utils;
 
 namespace sofa
 {
@@ -176,11 +178,34 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
         return &(*it);
 }
 
-int GUIManager::Init(const char* argv0, const char* name /* = "" */)
+int GUIManager::Init(const char* argv0, const char* name)
 {
     BaseGUI::SetProgramName(argv0);
     sofa::component::init();
     sofa::simulation::xml::initXml();
+
+    // Read the paths to the share/ and examples/ directories from etc/sofa.ini,
+    const std::string binDir = FileSystem::getParentDirectory(Utils::getExecutablePath());
+    const std::string prefix = FileSystem::getParentDirectory(binDir);
+    const std::string etcDir = prefix + "/etc";
+    const std::string sofaIniFilePath = etcDir + "/sofa.ini";
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+
+    // and add them to DataRepository
+    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
+    {
+        std::string shareDir = iniFileValues["SHARE_DIR"];
+        if (!FileSystem::isAbsolute(shareDir))
+            shareDir = etcDir + "/" + shareDir;
+        sofa::helper::system::DataRepository.addFirstPath(shareDir);
+    }
+    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
+    {
+        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
+        if (!FileSystem::isAbsolute(examplesDir))
+            examplesDir = etcDir + "/" + examplesDir;
+        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
+    }
 
     if (currentGUI)
         return 0; // already initialized
