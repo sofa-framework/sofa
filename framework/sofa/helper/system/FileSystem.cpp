@@ -39,7 +39,7 @@ static HANDLE helper_FindFirstFile(std::string path, WIN32_FIND_DATA *ffd)
 
     // Prepare string for use with FindFile functions.  First, copy the
     // string to a buffer, then append '\*' to the directory name.
-    StringCchCopy(szDir, MAX_PATH, Utils::s2ws(path).c_str());
+    StringCchCopy(szDir, MAX_PATH, Utils::narrowString(path).c_str());
     StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
 
     // Find the first file in the directory.
@@ -84,7 +84,7 @@ bool listDirectory(const std::string& directoryPath,
 # if defined (_XBOX)
 		std::string filename = ffd.cFileName;
 # else
-		std::string filename = Utils::ws2s(std::wstring(ffd.cFileName));
+		std::string filename = Utils::widenString(std::wstring(ffd.cFileName));
 # endif
         if (filename != "." && filename != "..")
 			outputFilenames.push_back(filename);
@@ -121,7 +121,7 @@ bool listDirectory(const std::string& directoryPath,
 bool exists(const std::string& path)
 {
 #if defined(WIN32)
-    bool pathExists = PathFileExists(Utils::s2ws(path).c_str()) != 0;
+    bool pathExists = PathFileExists(Utils::narrowString(path).c_str()) != 0;
     DWORD errorCode = ::GetLastError();
     if (errorCode != 0) {
         std::cerr << "FileSystem::exists(\"" << path << "\"): "
@@ -150,7 +150,7 @@ bool exists(const std::string& path)
 bool isDirectory(const std::string& path)
 {
 #if defined(WIN32)
-    DWORD fileAttrib = GetFileAttributes(Utils::s2ws(path).c_str());
+    DWORD fileAttrib = GetFileAttributes(Utils::narrowString(path).c_str());
     if (fileAttrib == INVALID_FILE_ATTRIBUTES) {
         std::cerr << "FileSystem::isDirectory(\"" << path << "\"): "
                   << Utils::GetLastError() << std::endl;

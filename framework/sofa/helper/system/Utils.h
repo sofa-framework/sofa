@@ -52,7 +52,7 @@ namespace Utils
 /// environnement variables, and check that those are set to appropriate values.
 ///
 /// @return The converted string on success, or a empty string on failure.
-SOFA_HELPER_API std::wstring s2ws(const std::string& s);
+SOFA_HELPER_API std::wstring widenString(const std::string& s);
 
 /// @brief Convert a wstring to a string.
 ///
@@ -64,14 +64,14 @@ SOFA_HELPER_API std::wstring s2ws(const std::string& s);
 /// environnement variables, and check that those are set to appropriate values.
 ///
 /// @return The converted string on success, or a empty string on failure.
-SOFA_HELPER_API std::string ws2s(const std::wstring& ws);
+SOFA_HELPER_API std::string narrowString(const std::wstring& ws);
 
 #if defined WIN32 || defined _XBOX
 
 /// @brief Simple wrapper around the Windows function GetLastError().
 ///
 /// This function calls ::GetLastError along with the boilerplate code for
-/// formatting, and converts the result to a non-wide string with ws2s().
+/// formatting, and converts the result to a non-wide string with narrowString().
 SOFA_HELPER_API std::string GetLastError();
 
 #endif

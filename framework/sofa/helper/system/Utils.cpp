@@ -55,14 +55,14 @@ namespace system
 namespace Utils
 {
 
-std::wstring s2ws(const std::string& s)
+std::wstring widenString(const std::string& s)
 {
     const char * src = s.c_str();
     // Call mbsrtowcs() once to find out the length of the converted string.
     size_t length = mbsrtowcs(NULL, &src, 0, NULL);
     if (length == size_t(-1)) {
         int error = errno;
-        std::cerr << "Error: Utils::s2ws(): " << strerror(error) << std::endl;
+        std::cerr << "Error: Utils::widenString(): " << strerror(error) << std::endl;
         return L"";
     }
 
@@ -71,13 +71,13 @@ std::wstring s2ws(const std::string& s)
     length = mbsrtowcs(buffer, &src, length + 1, NULL);
     if (length == size_t(-1)) {
         int error = errno;
-        std::cerr << "Error: Utils::s2ws(): " << strerror(error) << std::endl;
+        std::cerr << "Error: Utils::widenString(): " << strerror(error) << std::endl;
         delete[] buffer;
         return L"";
     }
 
     if (src != NULL) {
-        std::cerr << "Error: Utils::s2ws(): conversion failed." << std::endl;
+        std::cerr << "Error: Utils::widenString(): conversion failed." << std::endl;
         delete[] buffer;
         return L"";
     }
@@ -88,13 +88,13 @@ std::wstring s2ws(const std::string& s)
 }
 
 
-std::string ws2s(const std::wstring& ws)
+std::string narrowString(const std::wstring& ws)
 {
     const wchar_t * src = ws.c_str();
     // Call wcstombs() once to find out the length of the converted string.
     size_t length = wcstombs(NULL, src, 0);
     if (length == size_t(-1)) {
-        std::cerr << "Error: Utils::s2ws(): conversion failed." << std::endl;
+        std::cerr << "Error: Utils::narrowString(): conversion failed." << std::endl;
         return "";
     }
 
@@ -102,7 +102,7 @@ std::string ws2s(const std::wstring& ws)
     char * buffer = new char[length + 1];
     length = wcstombs(buffer, src, length + 1);
     if (length == size_t(-1)) {
-        std::cerr << "Error: Utils::s2ws(): conversion failed." << std::endl;
+        std::cerr << "Error: Utils::narrowString(): conversion failed." << std::endl;
         delete[] buffer;
         return "";
     }
@@ -141,7 +141,7 @@ std::string GetLastError() {
     std::wstring wsMessage((LPCTSTR)lpMessageBuf);
     LocalFree(lpErrMsgBuf);
     LocalFree(lpMessageBuf);
-    return ws2s(wsMessage);
+    return narrowString(wsMessage);
 }
 # else  // XBOX
 std::string GetLastError() {
@@ -167,7 +167,7 @@ std::string getExecutablePath() {
     if (ret == 0 || ret == MAX_PATH) {
         std::cerr << "Utils::getExecutablePath(): " << GetLastError() << std::endl;
     } else {
-        path = ws2s(std::wstring(&lpFilename[0]));
+        path = narrowString(std::wstring(&lpFilename[0]));
     }
 
 #elif defined(__APPLE__)
