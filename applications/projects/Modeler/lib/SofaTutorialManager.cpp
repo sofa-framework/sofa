@@ -54,11 +54,12 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
     tutorialList = new QComboBox(mainWidget);
     tutorialList->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
 
-    //Add button to launch a scene in Sofa
+    //Add button to launch a scene in runSofa
     buttonRunInSofa = new QPushButton(QString("Launch scene in Sofa"), mainWidget);
     buttonRunInSofa->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
     connect(buttonRunInSofa, SIGNAL(clicked()), this, SLOT(launchScene()));
 
+    //Add button to edit a scene in Modeler
     buttonEditInModeler = new QPushButton(QString("Edit in Modeler"), mainWidget);
     connect(buttonEditInModeler, SIGNAL(clicked()), this, SLOT(editScene()));
 
@@ -71,6 +72,7 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
             this, SLOT(openTutorial(const std::string&)));
     connect(selector, SIGNAL(openHTML(const std::string&)),
             this, SLOT(openHTML(const std::string&)));
+    selector->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 
 
     //Create the HTML Browser to display the information
@@ -79,10 +81,8 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
 
     //Create the Graph
     graph = new GraphModeler(mainWidget);
-    connect(this, SIGNAL(undo()), graph, SIGNAL(undo()));
-    connect(this, SIGNAL(redo()), graph, SIGNAL(redo()));
     graph->setAcceptDrops(true);
-    graph->setMinimumWidth(300);
+    graph->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
 
     //Setup the layout
 
