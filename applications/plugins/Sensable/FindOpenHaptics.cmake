@@ -26,6 +26,7 @@ MARK_AS_ADVANCED(OPENHAPTICS_INCLUDE_DIR)
 FIND_PATH(OPENHAPTICS_UTIL_INCLUDE_DIR NAMES HDU/hdu.h
     HINTS $ENV{3DTOUCH_BASE}/utilities/include
     $ENV{OH_SDK_BASE}/utilities/include
+    $ENV{OH_SDK_BASE}/include
     "${program_files_path}/SensAble/3DTouch/utilities/include"
     DOC "Path in which the files HDU/hdu.h are located." )
 MARK_AS_ADVANCED(OPENHAPTICS_UTIL_INCLUDE_DIR)
@@ -34,6 +35,7 @@ MARK_AS_ADVANCED(OPENHAPTICS_UTIL_INCLUDE_DIR)
 SET( OPENHAPTICS_LIBRARY_DIRECTORIES $ENV{3DTOUCH_BASE}/lib        # OpenHaptics 2.0
     $ENV{3DTOUCH_BASE}/lib/${LIB}  # OpenHaptics 3.0
     $ENV{OH_SDK_BASE}/lib        # OpenHaptics 2.0
+    $ENV{OH_SDK_BASE}/lib64
     $ENV{OH_SDK_BASE}/lib/${LIB}  # OpenHaptics 3.0
     $ENV{OH_SDK_BASE}/lib/${LIB}/Release
     $ENV{OH_SDK_BASE}/lib/${LIB}/ReleaseAcademicEdition
@@ -59,6 +61,7 @@ FIND_LIBRARY(OPENHAPTICS_HDU_LIBRARY NAMES HDU
     $ENV{3DTOUCH_BASE}/utilities/lib/${LIB}/Release  # OpenHaptics 3.0
     $ENV{OH_SDK_BASE}/utilities/lib        # OpenHaptics 2.0
     $ENV{OH_SDK_BASE}/utilities/lib/${LIB}/Release  # OpenHaptics 3.0
+    $ENV{OH_SDK_BASE}/lib64
     "${program_files_path}/SensAble/3DTouch/utilities/lib"        # OpenHaptics 2.0
     "${program_files_path}/SensAble/3DTouch/utilities/lib/${LIB}/Release"  # OpenHaptics 3.0
     "/usr/lib64"
