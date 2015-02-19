@@ -2,7 +2,7 @@
 #define COMPLIANT_ANALYSISSOLVER_H
 
 
-#include "initCompliant.h"
+#include <Compliant/Compliant.h>
 
 #include "KKTSolver.h"
 
