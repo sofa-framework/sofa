@@ -60,6 +60,23 @@ if(EXISTS ${SOFA_EXTERNALS_DIR} )
     add_subdirectory("${SOFA_EXTERNALS_DIR}")
 endif()
 
+# Install resource files
+install(DIRECTORY "${SOFA_SHARE_DIR}" DESTINATION share/sofa)
+install(DIRECTORY "${SOFA_EXAMPLES_DIR}" DESTINATION share/sofa/examples)
+# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
+# build directory, it points to the source tree, whereas in the install
+# directory, it contains to relative paths to the installed resource directory.
+set(SHARE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/share)
+set(EXAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/examples)
+configure_file(etc/sofa.ini.in ${CMAKE_BINARY_DIR}/etc/sofa.ini)
+set(SHARE_DIR ../share/sofa)
+set(EXAMPLES_DIR ../share/sofa/examples)
+configure_file(etc/sofa.ini.in ${CMAKE_BINARY_DIR}/etc/installedSofa.ini)
+
+install(FILES ${CMAKE_BINARY_DIR}/etc/installedSofa.ini
+        DESTINATION etc
+        RENAME sofa.ini)
+
 # deps
 add_subdirectory("${SOFA_DEPS_DIR}")
 
@@ -86,9 +103,3 @@ add_subdirectory("${SOFA_MISC_DIR}")
 
 # gui
 add_subdirectory("${SOFA_GUI_DIR}")
-
-# examples
-add_subdirectory("${SOFA_EXAMPLES_DIR}")
-
-# share 
-add_subdirectory("${SOFA_SHARE_DIR}")
