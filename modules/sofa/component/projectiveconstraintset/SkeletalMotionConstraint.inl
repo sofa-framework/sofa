@@ -100,7 +100,6 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
             Real keyTime = (Real) skeletonJoint.mTimes[j];
             if(keyTime <= cT)
             {
-                //if(skeletonJoint.mPreviousMotionTime < keyTime)
                 {
                     skeletonJoint.mPreviousMotionTime = keyTime;
                     const RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
@@ -111,7 +110,6 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
             }
             else
             {
-                //if(skeletonJoint.mNextMotionTime > keyTime)
                 {
                     skeletonJoint.mNextMotionTime = keyTime;
                     const RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
@@ -183,13 +181,7 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
             this->interpolatePosition<Coord>(cT+dt, nextPositions);
             // compute the velocity using finite difference
             for (unsigned i=0; i<nextPositions.size(); i++)
-            {
                 dx[i] = DataTypes::coordDifference(nextPositions[i], x[i])/dt;
-//                 dx[i].getVCenter() = (nextPositions[i].getCenter() - x[i].getCenter())/dt;
-//                 helper::Quater<SReal> tmp;
-//                 Vec<3, Real> diff = tmp.angularDisplacement( nextPositions[i].getOrientation(), x[i].getOrientation());
-//                 dx[i].getVOrientation() = diff/dt;
-            }
 
         }
         else
