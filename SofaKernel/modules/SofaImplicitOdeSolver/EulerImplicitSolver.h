@@ -113,6 +113,8 @@ public:
     Data<SReal> f_velocityDamping;
     Data<bool> f_firstOrder;
     Data<bool> f_verbose;
+    Data<bool> f_projectForce;
+    Data<bool> f_solveConstraint;
     Data<bool> d_trapezoidalScheme;
 protected:
     EulerImplicitSolver();
