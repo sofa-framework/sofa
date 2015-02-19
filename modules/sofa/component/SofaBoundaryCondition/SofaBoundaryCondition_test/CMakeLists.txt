@@ -7,6 +7,7 @@ set(SOURCE_FILES
     ProjectToPlaneConstraint_test.cpp
     QuadPressureForceField_test.cpp
     TrianglePressureForceField_test.cpp
+    SkeletalMotionConstraint_test.cpp
 )
 
 # Define a macro to get the absolute path to a directory;
