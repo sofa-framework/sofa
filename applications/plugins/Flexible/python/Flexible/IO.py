@@ -34,6 +34,15 @@ def export_AffineFrames(mechanicalObject, filename):
 	f.close()
 	return 0
 
+##   Write mass of an 'affine' mechanicalObject in a python file 'filename'
+# 'loadMass(node)' function from this file allows to recreate the mass
+def export_AffineMass(affinemass, filename):
+	f = open(filename, 'w')
+	f.write("def loadMass(node):\n\tcomponent=node.createObject('AffineMass', massMatrix='"+str(affinemass.findData('massMatrix').value).replace('\n',' ')+"'")
+	f.write(")\n\treturn component\n")
+	f.close()
+	return 0
+
 ##   Write state of an 'affine' mechanicalObject in a python file 'filename'
 # 'loadDofs(node)' function from this file allows to recreate the MechanicalObject
 def export_RigidFrames(mechanicalObject, filename):
