@@ -1,4 +1,5 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8.12)
+project(DiffusionSolver)
 
 if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no need for openmp in debug
 
@@ -29,13 +30,15 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
 
 endif()
 
-# For Cimg
-include_directories(${SOFA_EXTLIBS_DIR})
+# Todo?
+
+# # For Cimg
+# include_directories(${SOFA_EXTLIBS_DIR})
 
 add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
 
-# add Dependency to SofaHelper to be able
-AddSourceDependencies(SofaHelper)
+find_package(SofaFramework REQUIRED)
+target_link_libraries(${PROJECT_NAME} SofaHelper)
 
 if(APPLE)
     find_package(X11)
@@ -46,4 +49,3 @@ if(APPLE)
     include_directories(${X11_X11_INCLUDE_PATH})
 endif()
 
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
