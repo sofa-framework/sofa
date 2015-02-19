@@ -85,6 +85,7 @@ const char* getModuleComponentList()
 SOFA_LINK_CLASS(VoronoiShapeFunction)
 SOFA_LINK_CLASS(ImageGaussPointSampler)
 SOFA_LINK_CLASS(ImageDensityMass)
+SOFA_LINK_CLASS(MassFromDensity)
 SOFA_LINK_CLASS(ImageShapeFunctionContainer)
 SOFA_LINK_CLASS(ShapeFunctionDiscretizer)
 SOFA_LINK_CLASS(DiffusionShapeFunction)
@@ -123,6 +124,8 @@ SOFA_LINK_CLASS(AffineMechanicalObject)
 SOFA_LINK_CLASS(QuadraticMechanicalObject)
 SOFA_LINK_CLASS(AffineUniformMass)
 SOFA_LINK_CLASS(RigidConstraint)
+SOFA_LINK_CLASS(AffineMass)
+
 
 
 
