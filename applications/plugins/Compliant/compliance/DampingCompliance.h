@@ -1,7 +1,7 @@
 #ifndef DAMPINGCOMPLIANCE_H
 #define DAMPINGCOMPLIANCE_H
 
-#include "initCompliant.h"
+#include <Compliant/Compliant.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 

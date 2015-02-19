@@ -205,10 +205,9 @@ set(README_FILES Compliant.txt)
 include(./python/python.cmake)	
 
 
-find_package(SofaSimulation REQUIRED)
 find_package(SofaMisc REQUIRED)
 
-set(COMPLIANT_DEPENDENCY_INCLUDE_DIR ${SofaSimulation_INCLUDE_DIRS} ${SofaMisc_INCLUDE_DIRS})
+set(COMPLIANT_DEPENDENCY_INCLUDE_DIR ${SofaMisc_INCLUDE_DIRS})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Compliant.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/Compliant/Compliant.h)

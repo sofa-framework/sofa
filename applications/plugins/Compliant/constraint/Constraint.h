@@ -1,7 +1,7 @@
 #ifndef COMPLIANT_CONSTRAINT_H
 #define COMPLIANT_CONSTRAINT_H
 
-#include "../initCompliant.h"
+#include <Compliant/Compliant.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa {

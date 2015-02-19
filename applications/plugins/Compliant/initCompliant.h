@@ -25,15 +25,7 @@
 #ifndef INITCompliant_H
 #define INITCompliant_H
 
-
-#include <sofa/helper/system/config.h>
-#include <sofa/simulation/common/Node.h>
-
-#ifdef SOFA_BUILD_Compliant
-#define SOFA_Compliant_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_Compliant_API  SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <Compliant/Compliant.h>
 
 /** \mainpage
   Simulation of deformable object using a formulation similar to the KKT system for hard constraints, regularized using a compliance matrix.
@@ -53,8 +45,6 @@
 namespace sofa
 {
 	SOFA_Compliant_API void initCompliant();
-
-
 }
 
 #endif // INITCompliant_H
