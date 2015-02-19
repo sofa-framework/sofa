@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
+#include <ManifoldTopologies/ManifoldTopologies.h>
 #include "ManifoldTopologyObject_double.h"
 #include "ManifoldTopologyObject_float.h"
 
