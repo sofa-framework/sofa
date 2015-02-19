@@ -45,11 +45,22 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
 {
 
     QWidget *mainWidget = new QWidget(this);
-    QHBoxLayout *mainLayout = new QHBoxLayout(mainWidget);
+    QGridLayout *mainLayout = new QGridLayout(mainWidget);
     this->setCentralWidget(mainWidget);
     this->setAcceptDrops(TRUE);
     this->setCaption(QString("Sofa Tutorials"));
 
+    //Add list of tutorials
+    tutorialList = new QComboBox(mainWidget);
+    tutorialList->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+
+    //Add button to launch a scene in Sofa
+    buttonRunInSofa = new QPushButton(QString("Launch scene in Sofa"), mainWidget);
+    buttonRunInSofa->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+    connect(buttonRunInSofa, SIGNAL(clicked()), this, SLOT(launchScene()));
+
+    buttonEditInModeler = new QPushButton(QString("Edit in Modeler"), mainWidget);
+    connect(buttonEditInModeler, SIGNAL(clicked()), this, SLOT(editScene()));
 
     //Create the tree containing the tutorials
     selector = new TutorialSelector(mainWidget);
@@ -65,32 +76,22 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
     //Create the HTML Browser to display the information
     descriptionPage = new QTextBrowser(mainWidget);
     connect(descriptionPage, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(dynamicChangeOfScene(const QUrl&)));
-    descriptionPage->setMinimumWidth(400);
+
     //Create the Graph
     graph = new GraphModeler(mainWidget);
-    graph->setAcceptDrops(true);
-
-    //Setup the layout
-    mainLayout->addWidget(selector);
-    mainLayout->addWidget(descriptionPage);
-    mainLayout->addWidget(graph);
-
     connect(this, SIGNAL(undo()), graph, SIGNAL(undo()));
     connect(this, SIGNAL(redo()), graph, SIGNAL(redo()));
+    graph->setAcceptDrops(true);
+    graph->setMinimumWidth(300);
 
-    //Creation of a Tool Bar
-    QToolBar *toolBar = new QToolBar( this );
-    toolBar->setLabel(QString("Tools"));
+    //Setup the layout
 
-    //Add list of tutorials
-    tutorialList = new QComboBox(toolBar);
-
-    //Add button to launch a scene in Sofa
-    buttonRunInSofa = new QPushButton(QString("Launch scene in Sofa"), toolBar);
-    connect(buttonRunInSofa, SIGNAL(clicked()), this, SLOT(launchScene()));
-
-    buttonEditInModeler = new QPushButton(QString("Edit in Modeler"), toolBar);
-    connect(buttonEditInModeler, SIGNAL(clicked()), this, SLOT(editScene()));
+    mainLayout->addWidget(tutorialList, 0, 0);
+    mainLayout->addWidget(buttonRunInSofa, 0, 1);
+    mainLayout->addWidget(buttonEditInModeler, 0, 2);
+    mainLayout->addWidget(selector, 1, 0);
+    mainLayout->addWidget(descriptionPage, 1, 1);
+    mainLayout->addWidget(graph, 1, 2);
 
     //Set up the list of tutorials
     selector->init();
