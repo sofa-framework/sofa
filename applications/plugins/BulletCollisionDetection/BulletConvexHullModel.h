@@ -4,7 +4,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <BulletCollision/CollisionShapes/btTriangleMesh.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
-#include <BulletCollisionModel.h>
+#include "BulletCollisionModel.h"
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
