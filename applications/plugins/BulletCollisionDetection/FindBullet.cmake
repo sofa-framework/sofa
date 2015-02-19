@@ -7,11 +7,15 @@
 # BULLET_*_LIBRARY, one for each library (for example, "BULLET_BulletCollision_LIBRARY").
 # BULLET_*_LIBRARY_debug, one for each library.
 #
-# This script will look in standard locations for installed Bullet. However, if you
-# install Bullet into a non-standard location, you can use the BULLET_ROOT
+# This script will look in standard locations for installed Bullet. However, if
+# you install Bullet into a non-standard location, you can use the BULLET_ROOT
 # variable (in environment or CMake) to specify the location.
 
-set(BULLET_ROOT "" CACHE PATH "Bullet install dir, parent of both header files and binaries.")
+if(NOT BULLET_ROOT)
+    if(NOT "$ENV{BULLET_ROOT}" STREQUAL "")
+        set(BULLET_ROOT "$ENV{BULLET_ROOT}" CACHE PATH "Bullet install prefix")
+    endif()
+endif()
 
 unset(BULLET_INCLUDE_DIR CACHE)
 mark_as_advanced(BULLET_INCLUDE_DIR)
