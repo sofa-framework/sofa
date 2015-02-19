@@ -170,8 +170,8 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
 
 
     /// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
-    SolidTypes<double>::Transform baseOmni_H_endOmni(pos* data->scale, rot);
-    SolidTypes<double>::Transform world_H_virtualTool = data->world_H_baseOmni * baseOmni_H_endOmni * data->endOmni_H_virtualTool;
+    sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(pos* data->scale, rot);
+    sofa::defaulttype::SolidTypes<double>::Transform world_H_virtualTool = data->world_H_baseOmni * baseOmni_H_endOmni * data->endOmni_H_virtualTool;
 
     Vec3d world_pos_tool = world_H_virtualTool.getOrigin();
     Quat world_quat_tool = world_H_virtualTool.getOrientation();
@@ -185,8 +185,8 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
 
 
     ///////////////// 6D rendering ////////////////
-    SolidTypes<double>::SpatialVector Twist_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0)); // Todo: compute a velocity !!
-    SolidTypes<double>::SpatialVector Wrench_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0));
+    sofa::defaulttype::SolidTypes<double>::SpatialVector Twist_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0)); // Todo: compute a velocity !!
+    sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_tool_inWorld(Vec3d(0.0,0.0,0.0), Vec3d(0.0,0.0,0.0));
 
     // which forcefeedback ?
     ForceFeedback* ff = 0;
@@ -198,11 +198,11 @@ HDCallbackCode HDCALLBACK stateCallbackOmni(void *userData)
         ff->computeWrench(world_H_virtualTool,Twist_tool_inWorld,Wrench_tool_inWorld );
 
     // we compute its value in the current Tool frame:
-    SolidTypes<double>::SpatialVector Wrench_tool_inTool(world_quat_tool.inverseRotate(Wrench_tool_inWorld.getForce()),  world_quat_tool.inverseRotate(Wrench_tool_inWorld.getTorque())  );
+    sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_tool_inTool(world_quat_tool.inverseRotate(Wrench_tool_inWorld.getForce()),  world_quat_tool.inverseRotate(Wrench_tool_inWorld.getTorque())  );
     // we transport (change of application point) its value to the endOmni frame
-    SolidTypes<double>::SpatialVector Wrench_endOmni_inEndOmni = data->endOmni_H_virtualTool * Wrench_tool_inTool;
+    sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_endOmni_inEndOmni = data->endOmni_H_virtualTool * Wrench_tool_inTool;
     // we compute its value in the baseOmni frame
-    SolidTypes<double>::SpatialVector Wrench_endOmni_inBaseOmni( baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getForce()), baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getTorque()) );
+    sofa::defaulttype::SolidTypes<double>::SpatialVector Wrench_endOmni_inBaseOmni( baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getForce()), baseOmni_H_endOmni.projectVector(Wrench_endOmni_inEndOmni.getTorque()) );
 
     double currentForce[3];
     currentForce[0] = Wrench_endOmni_inBaseOmni.getForce()[0] * data->forceScale;
@@ -443,8 +443,8 @@ void OmniDriver::draw()
     if(omniVisu.getValue())
     {
         // compute position of the endOmni in worldframe
-        SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
-        SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
+        sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
+        sofa::defaulttype::SolidTypes<double>::Transform world_H_endOmni = data.world_H_baseOmni * baseOmni_H_endOmni ;
 
         visu_base = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
         visu_base->fileMesh.setValue("mesh/omni_test2.obj");
@@ -504,8 +504,8 @@ void OmniDriver::handleEvent(core::objectmodel::Event *event)
 
             if (isToolControlled) // ignore haptic device if tool is unselected
             {
-                SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
-                SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
+                sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni(data.deviceData.pos*data.scale, data.deviceData.quat);
+                sofa::defaulttype::SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseOmni * baseOmni_H_endOmni * data.endOmni_H_virtualTool;
                 sofa::helper::AdvancedTimer::stepEnd("OmniDriver::2");
 
                 sofa::helper::AdvancedTimer::stepBegin("OmniDriver::3");
