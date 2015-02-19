@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_SKELETALMOTIONCONSTRAINT_H
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/SVector.h>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -58,6 +59,7 @@ class SkeletalMotionConstraint : public ProjectiveConstraintSet<TDataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(SkeletalMotionConstraint,TDataTypes),SOFA_TEMPLATE(ProjectiveConstraintSet, TDataTypes));
     typedef TDataTypes DataTypes;
+    typedef component::container::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
@@ -135,6 +137,9 @@ private:
     /// the key times surrounding the current simulation time (for interpolation)
     Real												prevT, nextT;
 
+    /// the global position of the bones at time t+dt used for the velocities computation
+    VecCoord nextPositions;
+
     /// to know if we found the key times
     bool												finished;
 
@@ -151,6 +156,8 @@ struct SkeletonJoint
         : mParentIndex(-1)
         , mChannels()
         , mTimes()
+        , mNextMotionTime(0)
+        , mPreviousMotionTime(0)
     {
 
     }
@@ -168,12 +175,14 @@ struct SkeletonJoint
 
     inline friend std::ostream& operator << (std::ostream& out, const SkeletonJoint& skeletonJoint)
     {
-        out << "Parent"			<< " " << skeletonJoint.mParentIndex		<< " ";
-        out << "Channels"		<< " " << skeletonJoint.mChannels.size()	<< " " << skeletonJoint.mChannels	<< " ";
-        out << "Times"			<< " " << skeletonJoint.mTimes.size()		<< " " << skeletonJoint.mTimes		<< " ";
-        out << "PreviousMotion"	<< " " << skeletonJoint.mPreviousMotion		<< " ";
-        out << "NextMotion"		<< " " << skeletonJoint.mNextMotion			<< " ";
-        out << "LocalRigid"		<< " " << skeletonJoint.mLocalRigid;
+        out << "Parent"			    << " " << skeletonJoint.mParentIndex		<< " ";
+        out << "Channels"		    << " " << skeletonJoint.mChannels.size()	<< " " << skeletonJoint.mChannels	<< " ";
+        out << "Times"			    << " " << skeletonJoint.mTimes.size()		<< " " << skeletonJoint.mTimes		<< " ";
+        out << "PreviousMotion"	    << " " << skeletonJoint.mPreviousMotion		<< " ";
+        out << "PreviousMotionTime" << " " << skeletonJoint.mPreviousMotionTime << " ";
+        out << "NextMotion"		    << " " << skeletonJoint.mNextMotion			<< " ";
+        out << "NextMotionTime"     << " " << skeletonJoint.mNextMotionTime     << " ";
+        out << "LocalRigid"		    << " " << skeletonJoint.mLocalRigid;
 
         return out;
     }
@@ -239,6 +248,12 @@ private:
 
     // next joint motion
     Coord								mNextMotion;
+
+    // time position for previous joint motion 
+    double                              mPreviousMotionTime;
+
+    // time position for next joint motion 
+    double                              mNextMotionTime;
 
     // this rigid represent the animated node at a specific time relatively to its parent, it may be an interpolation between two channels
     // we need to store the current rigid in order to compute the final world position of its rigid children
