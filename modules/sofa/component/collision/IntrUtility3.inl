@@ -61,6 +61,8 @@ template <typename Real>
 CapIntrConfiguration<Real>::CapIntrConfiguration(){
     have_naxis = false;
 }
+
+#ifndef SOFA_FLAG_SOFAPRO
 //----------------------------------------------------------------------------
 template <class TDataTypes>
 bool IntrAxis<TOBB<TDataTypes> >::Find (const Coord& axis,
@@ -95,6 +97,7 @@ bool IntrAxis<TOBB<TDataTypes> >::Find(const Coord& axis,
     return IntrConfigManager<Real>::Find(capCfgStart, boxCfgStart, side,
         capCfgFinal, boxCfgFinal, dmax,dfirst, config_modified);
 }
+#endif //sa SOFA_FLAG_SOFAPRO
 //----------------------------------------------------------------------------
 template <typename Real>
 void IntrConfigManager<Real>::init (const Vec<3,Real>& axis,
@@ -167,6 +170,8 @@ void IntrConfigManager<Real>::init(const Vec<3,Real> & axis,
         cfg.mIndex[1] = 0;
     }
 }
+
+#ifndef SOFA_FLAG_SOFAPRO
 //----------------------------------------------------------------------------
 template <class TDataTypes>
 void IntrConfigManager<TOBB<TDataTypes> >::init (const Vec<3,Real> & axis,
@@ -759,6 +764,7 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Vec<3,Real> segment[2],
         }
     }
 }
+#endif // SOFA_FLAG_SOFAPRO
 
 template <typename Real>
 Vec<3,Real> IntrUtil<Real>::nearestPointOnSeg(const Vec<3,Real> & seg0,const Vec<3,Real> & seg1,const Vec<3,Real> & point){
@@ -950,6 +956,7 @@ void IntrUtil<Real>::segNearestPoints(const Vec<3,Real> * p, const Vec<3,Real> *
 }
 
 //----------------------------------------------------------------------------
+#ifndef SOFA_FLAG_SOFAPRO
 template <class TDataTypes>
 FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
     const Box& box1,const Vec<3,Real> & axis,int side, const IntrConfiguration<Real>& box0Cfg,
@@ -1207,6 +1214,8 @@ FindContactSet<TOBB<TDataTypes> >::FindContactSet (const Box& box0,
         }
     }
 }
+#endif // SOFA_FLAG_SOFAPRO
+
 //----------------------------------------------------------------------------
 template <typename Real>
 void IntrUtil<Real>::ColinearSegments (const Vec<3,Real> segment0[2],
@@ -1728,6 +1737,7 @@ template <typename Real>
 bool IntrUtil<Real>::inf(Real a,Real b){
     return a < b + ZERO_TOLERANCE();
 }
+#ifndef SOFA_FLAG_SOFAPRO
 
 template <class TDataTypes>
 void IntrUtil<TOBB<TDataTypes> >::project(Vec<3,Real> & point,const Box & box){
@@ -1772,6 +1782,7 @@ void IntrUtil<TOBB<TDataTypes> >::project(Vec<3,Real> & point,const Box & box){
         }
     }
 }
+#endif // SOFA_FLAG_SOFAPRO
 
 template <typename Real>
 bool IntrUtil<Real>::equal(const Vec<3,Real> & vec0,const Vec<3,Real> & vec1){
@@ -1986,6 +1997,7 @@ Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal> &box)
     return point;
 }
 
+#ifndef SOFA_FLAG_SOFAPRO
 template <typename TDataTypes>
 Vec<3,typename TDataTypes::Real> getPointFromIndex(int index, const TOBB<TDataTypes>& box)
 {
@@ -2020,6 +2032,7 @@ Vec<3,typename TDataTypes::Real> getPointFromIndex(int index, const TOBB<TDataTy
 
     return point;
 }
+#endif // SOFA_FLAG_SOFAPRO
 
 template <class TReal>
 void MyBox<TReal>::showVertices()const{

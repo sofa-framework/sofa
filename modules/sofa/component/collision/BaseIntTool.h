@@ -4,12 +4,17 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/CubeModel.h>
+
+#ifndef SOFA_FLAG_SOFAPRO
+#include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/IntrCapsuleOBB.h>
 #include <sofa/component/collision/CapsuleIntTool.h>
 #include <sofa/component/collision/OBBIntTool.h>
+#endif // SOFA_FLAG_SOFAPRO
+
 #include <cmath>
 
 namespace sofa
@@ -19,7 +24,13 @@ namespace component
 namespace collision
 {
 
-class SOFA_BASE_COLLISION_API BaseIntTool : public CapsuleIntTool,public OBBIntTool{
+#ifndef SOFA_FLAG_SOFAPRO
+class SOFA_BASE_COLLISION_API BaseIntTool : public CapsuleIntTool,public OBBIntTool
+#else
+class SOFA_BASE_COLLISION_API BaseIntTool
+#endif // SOFA_FLAG_SOFAPRO
+
+{
 public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
 
@@ -39,10 +50,6 @@ public:
         return ( sph1.center() - sph2.center() ).norm2() <= r*r;
     }
 
-
-
-
-
     template <class DataTypes1,class DataTypes2>
     static int computeIntersection(TSphere<DataTypes1>& sph1, TSphere<DataTypes2>& sph2,SReal alarmDist,SReal contactDist,OutputVector* contacts)
     {
@@ -55,7 +62,7 @@ public:
             return 0;
 
         contacts->resize(contacts->size()+1);
-        DetectionOutput *detection = &*(contacts->end()-1);
+        sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
         SReal distSph1Sph2 = helper::rsqrt(norm2);
         detection->normal = dist / distSph1Sph2;
         detection->point[0] = sph1.getContactPointByNormal( -detection->normal );
@@ -69,8 +76,11 @@ public:
         return 1;
     }
 
+    inline static int computeIntersection(Cube&, Cube&, SReal, SReal, OutputVector *){
+        return 0;
+    }
 
-
+#ifndef SOFA_FLAG_SOFAPRO
     template <class DataTypes1,class DataTypes2>
     inline static int computeIntersection(TCapsule<DataTypes1> &c1, TCapsule<DataTypes2> &c2, SReal alarmDist, SReal contactDist, OutputVector *contacts){
         return CapsuleIntTool::computeIntersection(c1,c2,alarmDist,contactDist,contacts);
@@ -95,10 +105,7 @@ public:
         return OBBIntTool::computeIntersection(sph,obb,alarmDist,contactDist,contacts);
     }
 
-    inline static int computeIntersection(Cube&, Cube&, SReal, SReal, OutputVector *){
-        return 0;
-    }
-
+#endif // SOFA_FLAG_SOFAPRO
 
 };
 

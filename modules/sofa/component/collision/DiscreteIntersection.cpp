@@ -52,9 +52,10 @@ int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionC
 
 DiscreteIntersection::DiscreteIntersection()
 {
-    intersectors.add<CubeModel,       CubeModel,         DiscreteIntersection> (this);
-
     intersectors.add<SphereModel,     SphereModel,       DiscreteIntersection> (this);
+
+#ifndef SOFA_FLAG_SOFAPRO
+    intersectors.add<CubeModel,       CubeModel,         DiscreteIntersection> (this);
 
     intersectors.add<CapsuleModel,CapsuleModel, DiscreteIntersection> (this);
     intersectors.add<CapsuleModel,SphereModel, DiscreteIntersection> (this);
@@ -73,6 +74,7 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<RigidCapsuleModel,SphereModel, DiscreteIntersection> (this);
     intersectors.add<RigidCapsuleModel,OBBModel,DiscreteIntersection>(this);
     intersectors.add<RigidCapsuleModel,RigidSphereModel,DiscreteIntersection>(this);
+#endif // SOFA_FLAG_SOFAPRO
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 }

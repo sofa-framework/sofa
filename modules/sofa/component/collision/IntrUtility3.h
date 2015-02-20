@@ -5,9 +5,11 @@
 #ifndef WM5INTRUTILITY3_H
 #define WM5INTRUTILITY3_H
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 
+#ifndef SOFA_FLAG_SOFAPRO
+#include <sofa/component/collision/OBBModel.h>
+#endif // SOFA_FLAG_SOFAPRO
 
 namespace sofa{
 namespace component{
@@ -164,6 +166,8 @@ public:
     static bool inf(Real a,Real b);
 };
 
+#ifndef SOFA_FLAG_SOFAPRO
+
 template <class DataType>
 struct IntrUtil<TOBB<DataType> >{
     typedef typename DataType::Real Real;
@@ -175,6 +179,8 @@ struct IntrUtil<TOBB<DataType> >{
     static void project(Vec<3,Real> & pt,const Box & box);
 };
 
+#endif // SOFA_FLAG_SOFAPRO
+
 //----------------------------------------------------------------------------
 /**
   *IntrAxis is used to find the axis which maximizes the distance between the
@@ -184,6 +190,7 @@ struct IntrUtil<TOBB<DataType> >{
 template <class Primitive1Class,class Primitive2Class = Primitive1Class>
 class IntrAxis;
 
+#ifndef SOFA_FLAG_SOFAPRO
 /**
 *The axis must be normalized when testing a capsule !.
 *TDataTypes is the data type of the OBB.
@@ -210,6 +217,8 @@ public:
         IntrConfiguration<Real>& boxCfgFinal,bool & config_modified);
 };
 
+#endif // SOFA_FLAG_SOFAPRO
+
 /**
   *IntrConfigManager is used to project the primitives on an axis and to find
   *the axis which maximizes the distance of the projected primitives. Each time you
@@ -219,6 +228,7 @@ public:
 template <typename TDataType>
 struct IntrConfigManager;
 
+#ifndef SOFA_FLAG_SOFAPRO
 template<class TDataTypes>
 struct IntrConfigManager<TOBB<TDataTypes> >{
     typedef TOBB<TDataTypes> Box;
@@ -227,6 +237,7 @@ struct IntrConfigManager<TOBB<TDataTypes> >{
     static void init(const Vec<3,Real> & axis,
                    const Box & box, IntrConfiguration<Real>& cfg);
 };
+#endif // SOFA_FLAG_SOFAPRO
 
 template<typename Real>
 struct IntrConfigManager{
@@ -253,6 +264,8 @@ struct IntrConfigManager{
   */
 template <class Primitive1Class,class Primitive2Class = Primitive1Class>
 class FindContactSet;
+
+#ifndef SOFA_FLAG_SOFAPRO
 /**
   *TDataTypes is the OBB type.
   */
@@ -284,6 +297,9 @@ private:
     static void FindContactConfig(const Vec<3,Real> & axis,const Vec<3,Real> & segP0, Real radius,const Box & box,CapIntrConfiguration<Real> &capCfg,int side,
         Vec<3, Real> & pt_on_capsule,Vec<3, Real> & pt_on_box);
 };
+
+#endif // SOFA_FLAG_SOFAPRO
+
 //----------------------------------------------------------------------------
 // Miscellaneous support.
 //----------------------------------------------------------------------------
@@ -299,8 +315,10 @@ void ClipConvexPolygonAgainstPlane (const Vec<3,Real>& normal,
 template <typename TReal>
 Vec<3,TReal> GetPointFromIndex (int index, const MyBox<TReal>& box);
 
+#ifndef SOFA_FLAG_SOFAPRO
 template <typename TDataTypes>
 Vec<3,typename TDataTypes::Real> getPointFromIndex (int index, const TOBB<TDataTypes>& box);
+#endif // SOFA_FLAG_SOFAPRO
 //----------------------------------------------------------------------------
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BASE_COLLISION)
@@ -308,29 +326,34 @@ Vec<3,typename TDataTypes::Real> getPointFromIndex (int index, const TOBB<TDataT
 extern template struct SOFA_BASE_COLLISION_API IntrUtil<SReal>;
 
 #ifndef SOFA_FLOAT
-extern template struct SOFA_BASE_COLLISION_API IntrUtil<TOBB<Rigid3dTypes> >;
-extern template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<defaulttype::Rigid3dTypes> >;
-extern template class SOFA_BASE_COLLISION_API IntrAxis<TOBB<defaulttype::Rigid3dTypes> >;
 extern template class SOFA_BASE_COLLISION_API IntrConfiguration<SReal>;
 extern template struct SOFA_BASE_COLLISION_API IntrConfigManager<SReal>;
-extern template struct SOFA_BASE_COLLISION_API IntrConfigManager<TOBB<Rigid3dTypes> >;
 extern template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane(const Vec<3,SReal>&, SReal, int&,Vec<3,SReal>*);
 extern template SOFA_BASE_COLLISION_API Vec<3,SReal> GetPointFromIndex (int, const MyBox<SReal>& );
-extern template SOFA_BASE_COLLISION_API Vec<3,Rigid3dTypes::Real> getPointFromIndex (int, const TOBB<Rigid3dTypes>& );
 extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<SReal>;
+#ifndef SOFA_FLAG_SOFAPRO
+extern template struct SOFA_BASE_COLLISION_API IntrUtil<TOBB<Rigid3dTypes> >;
+extern template struct SOFA_BASE_COLLISION_API IntrConfigManager<TOBB<Rigid3dTypes> >;
+extern template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<defaulttype::Rigid3dTypes> >;
+extern template class SOFA_BASE_COLLISION_API IntrAxis<TOBB<defaulttype::Rigid3dTypes> >;
+extern template SOFA_BASE_COLLISION_API Vec<3,Rigid3dTypes::Real> getPointFromIndex (int, const TOBB<Rigid3dTypes>& );
+#endif // SOFA_FLAG_SOFAPRO
 #endif
 #ifndef SOFA_DOUBLE
 extern template struct SOFA_BASE_COLLISION_API IntrUtil<float>;
+extern template class SOFA_BASE_COLLISION_API IntrConfiguration<float>;
+extern template struct SOFA_BASE_COLLISION_API IntrConfigManager<float>;
+extern template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane(const Vec<3,float>&, float, int&,Vec<3,float>*);
+extern template SOFA_BASE_COLLISION_API Vec<3,float> GetPointFromIndex (int, const MyBox<float>& );
+extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<float>;
+#ifndef SOFA_FLAG_SOFAPRO
 extern template struct SOFA_BASE_COLLISION_API IntrUtil<TOBB<Rigid3fTypes> >;
 extern template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<defaulttype::Rigid3fTypes> >;
 extern template class SOFA_BASE_COLLISION_API IntrAxis<TOBB<defaulttype::Rigid3fTypes> >;
-extern template class SOFA_BASE_COLLISION_API IntrConfiguration<float>;
-extern template struct SOFA_BASE_COLLISION_API IntrConfigManager<float>;
 extern template struct SOFA_BASE_COLLISION_API IntrConfigManager<TOBB<Rigid3fTypes> >;
-extern template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane(const Vec<3,float>&, float, int&,Vec<3,float>*);
-extern template SOFA_BASE_COLLISION_API Vec<3,float> GetPointFromIndex (int, const MyBox<float>& );
 extern template SOFA_BASE_COLLISION_API Vec<3,Rigid3fTypes::Real> getPointFromIndex (int, const TOBB<Rigid3fTypes>& );
-extern template SOFA_BASE_COLLISION_API class CapIntrConfiguration<float>;
+#endif // SOFA_FLAG_SOFAPRO
+
 #endif
 #endif
 

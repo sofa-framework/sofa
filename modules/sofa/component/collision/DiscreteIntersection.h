@@ -30,12 +30,16 @@
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/BaseIntTool.h>
+
+#ifndef SOFA_FLAG_SOFAPRO
 #include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/CapsuleIntTool.h>
 #include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/OBBIntTool.h>
-#include <sofa/component/collision/BaseIntTool.h>
+
 #include <sofa/component/collision/RigidCapsuleModel.h>
+#endif // SOFA_FLAG_SOFAPRO
 
 namespace sofa
 {
@@ -59,6 +63,7 @@ public:
     core::collision::IntersectorMap intersectors;
     typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
 
+
     template <class Elem1,class Elem2>
     int computeIntersection(Elem1 & e1,Elem2 & e2,OutputVector* contacts){
         return BaseIntTool::computeIntersection(e1,e2,e1.getProximity() + e2.getProximity() + getAlarmDistance(),e1.getProximity() + e2.getProximity() + getContactDistance(),contacts);
@@ -68,6 +73,7 @@ public:
     int testIntersection(Elem1& e1,Elem2& e2){
         return BaseIntTool::testIntersection(e1,e2,this->getAlarmDistance());
     }
+
 };
 
 } // namespace collision

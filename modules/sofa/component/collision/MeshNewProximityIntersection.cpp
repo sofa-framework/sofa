@@ -63,6 +63,8 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
         intersection->intersectors.add<TriangleModel, SphereModel, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<TriangleModel, LineModel, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<TriangleModel, TriangleModel, MeshNewProximityIntersection>(this);
+
+#ifndef SOFA_FLAG_SOFAPRO
         intersection->intersectors.add<CapsuleModel, TriangleModel, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<CapsuleModel, LineModel, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<TriangleModel, OBBModel, MeshNewProximityIntersection>(this);
@@ -73,6 +75,8 @@ MeshNewProximityIntersection::MeshNewProximityIntersection(NewProximityIntersect
 
         intersection->intersectors.add<RigidCapsuleModel, TriangleModel, MeshNewProximityIntersection>(this);
         intersection->intersectors.add<RigidCapsuleModel, LineModel, MeshNewProximityIntersection>(this);
+#endif // SOFA_FLAG_SOFAPRO
+
     }
 }
 

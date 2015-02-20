@@ -31,6 +31,14 @@
 #include <iostream>
 #include <algorithm>
 
+#ifndef SOFA_FLAG_SOFAPRO
+#include <sofa/component/collision/CapsuleModel.h>
+#include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/CapsuleIntTool.h>
+#include <sofa/component/collision/OBBModel.h>
+#include <sofa/component/collision/OBBIntTool.h>
+#endif // SOFA_FLAG_SOFAPRO
 
 namespace sofa
 {
@@ -59,8 +67,10 @@ NewProximityIntersection::NewProximityIntersection()
 
 void NewProximityIntersection::init()
 {
-    intersectors.add<CubeModel, CubeModel, NewProximityIntersection>(this);
     intersectors.add<SphereModel, SphereModel, NewProximityIntersection>(this);
+    intersectors.add<CubeModel, CubeModel, NewProximityIntersection>(this);
+
+#ifndef SOFA_FLAG_SOFAPRO
     intersectors.add<CapsuleModel,CapsuleModel, NewProximityIntersection> (this);
     intersectors.add<CapsuleModel,SphereModel, NewProximityIntersection> (this);
     intersectors.add<OBBModel,OBBModel, NewProximityIntersection> (this);
@@ -75,6 +85,7 @@ void NewProximityIntersection::init()
     intersectors.add<RigidCapsuleModel,SphereModel, NewProximityIntersection> (this);
     intersectors.add<RigidCapsuleModel,OBBModel, NewProximityIntersection> (this);
     intersectors.add<RigidCapsuleModel,RigidSphereModel, NewProximityIntersection> (this);
+#endif // SOFA_FLAG_SOFAPRO
 
     IntersectorFactory::getInstance()->addIntersectors(this);
 }

@@ -2,14 +2,19 @@
 #define MESHINTTOOL_H
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
+
+#ifndef SOFA_FLAG_SOFAPRO
 #include <sofa/component/collision/OBBModel.h>
 #include <sofa/component/collision/CapsuleModel.h>
 #include <sofa/component/collision/RigidCapsuleModel.h>
+#include <sofa/component/collision/IntrTriangleOBB.h>
+#endif // SOFA_FLAG_SOFAPRO
+
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/IntrTriangleOBB.h>
 #include <sofa/component/collision/SphereModel.h>
+
 
 namespace sofa
 {
@@ -25,6 +30,7 @@ public:
     typedef sofa::helper::vector<sofa::core::collision::DetectionOutput> OutputVector;
     typedef sofa::core::collision::DetectionOutput DetectionOutput;
 
+#ifndef SOFA_FLAG_SOFAPRO
     template <class DataTypes>
     static int computeIntersection(TCapsule<DataTypes>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
     ////!\ CAUTION : uninitialized fields detection->elem and detection->id
@@ -38,6 +44,8 @@ public:
     template <class DataTypes>
     static int doCapLineInt(TCapsule<DataTypes>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1 = false,bool ignore_p2 = false);
 
+#endif // SOFA_FLAG_SOFAPRO
+
     ////!\ CAUTION : uninitialized fields detection->elem and detection->id and detection->value
     static int doCapLineInt(const Vector3 & p1,const Vector3 & p2,SReal cap_rad,
                          const Vector3 & q1, const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1 = false,bool ignore_p2 = false);
@@ -46,12 +54,14 @@ public:
     ///this function can be used also as doIntersectionTriangleSphere where the contactDist = getContactDist() + sphere_radius
     static int doIntersectionTrianglePoint(SReal dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3,const Vector3& q, OutputVector* contacts,bool swapElems = false);
 
+#ifndef SOFA_FLAG_SOFAPRO
     template <class DataTypes>
     static int computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
     static int computeIntersection(Triangle& tri,OBB & obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 
     static int computeIntersection(Triangle& tri,int flags,OBB & obb,SReal alarmDist,SReal contactDist,OutputVector* contacts);
+#endif // SOFA_FLAG_SOFAPRO
 
     //SPHERE - POINT
     template <class DataTypes>
@@ -85,9 +95,11 @@ public:
     static void triangleBaryCoords(const Vector3& to_be_projected,const Vector3& p1, const Vector3& p2, const Vector3& p3,SReal & alpha,SReal & beta);
 };
 
+#ifndef SOFA_FLAG_SOFAPRO
 inline int MeshIntTool::computeIntersection(Triangle& tri,OBB & obb,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     return computeIntersection(tri,tri.flags(),obb,alarmDist,contactDist,contacts);
 }
+#endif // SOFA_FLAG_SOFAPRO
 
 template <class DataTypes>
 int MeshIntTool::computeIntersection(TSphere<DataTypes> & e1, Point& e2,typename DataTypes::Real alarmDist,typename DataTypes::Real contactDist, OutputVector* contacts){
@@ -208,7 +220,7 @@ int MeshIntTool::computeIntersection(Triangle& tri, TSphere<DataTypes>& sph,type
     }
 }
 
-
+#ifndef SOFA_FLAG_SOFAPRO
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<Vec3Types>& cap, Point& pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapPointInt(TCapsule<Vec3Types>& cap, const Vector3& q,SReal alarmDist,SReal contactDist,OutputVector* contacts);
@@ -222,7 +234,7 @@ extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCa
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::doCapLineInt(TCapsule<Rigid3Types>& cap,const Vector3 & q1,const Vector3 & q2,SReal alarmDist,SReal contactDist,OutputVector* contacts,bool ignore_p1,bool ignore_p2);
 extern template SOFA_MESH_COLLISION_API int MeshIntTool::computeIntersection(TCapsule<Rigid3Types>& cap, Triangle& tri,SReal alarmDist,SReal contactDist,OutputVector* contacts);
 #endif
-
+#endif // SOFA_FLAG_SOFAPRO
 
 }
 }

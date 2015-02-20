@@ -201,6 +201,7 @@ public:
 };
 
 
+#ifndef SOFA_FLAG_SOFAPRO
 template <class DataTypes>
 class ContactMapper<CapsuleModel, DataTypes> : public BarycentricContactMapper<CapsuleModel, DataTypes>{
     typedef typename DataTypes::Real Real;
@@ -224,13 +225,16 @@ public:
         return this->mapper->addPointInLine ( index, baryCoords );
     }
 };
+#endif // SOFA_FLAG_SOFAPRO
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel>;
+#ifndef SOFA_FLAG_SOFAPRO
 extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel>;
+#endif // SOFA_FLAG_SOFAPRO
 //extern template class SOFA_MESH_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
 #endif
 

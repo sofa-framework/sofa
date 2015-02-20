@@ -108,6 +108,9 @@ void SofaMouseManager::setPickHandler(PickHandler *picker)
 #ifndef SOFA_FLAG_SOFAPRO
     updateOperation(MIDDLE, "Incise");
     updateOperation(RIGHT,  "Remove");
+#else
+    updateOperation(MIDDLE, "Attach");
+    updateOperation(RIGHT,  "Attach");
 #endif // SOFA_FLAG_SOFAPRO
 }
 

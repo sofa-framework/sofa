@@ -8,7 +8,7 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::collision;
 
-
+#ifndef SOFA_FLAG_SOFAPRO
 template <class DataTypes>
 int MeshIntTool::computeIntersection(TCapsule<DataTypes> & cap, Point & pnt,SReal alarmDist,SReal contactDist,OutputVector* contacts){
     if(doCapPointInt(cap,pnt.p(),alarmDist,contactDist,contacts)){
@@ -167,6 +167,8 @@ int MeshIntTool::computeIntersection(TCapsule<DataTypes>& cap, Triangle& tri,SRe
 
     return n + old_n;
 }
+
+#endif // SOFA_FLAG_SOFAPRO
 
 
 
