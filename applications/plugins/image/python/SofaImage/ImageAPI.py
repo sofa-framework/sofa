@@ -19,7 +19,7 @@ class Image:
     # TODO add support for ROI
     def addImage(self, voxelSize, value, closingValue=None):
         if self.mesh is None:
-            print "[StructuralAPI.Image] ERROR: no mesh"
+            print "[ImageAPI.Image] ERROR: no mesh"
         self.value = value
         self.closingValue = value if closingValue is None else closingValue
         meshPath = SofaPython.Tools.getObjectPath(self.mesh)
@@ -27,7 +27,7 @@ class Image:
 
     def addViewer(self):
         if self.image is None:
-            print "[StructuralAPI.Image] ERROR: no image"
+            print "[ImageAPI.Image] ERROR: no image"
         imagePath = SofaPython.Tools.getObjectPath(self.image)
         self.viewer = self.node.createObject('ImageViewer', name="viewer", template=self.imageType, image="@"+imagePath+".image", transform="@"+imagePath+".transform")
 
@@ -36,7 +36,7 @@ class Image:
 
     def addExporter(self, filename):
         if self.image is None:
-            print "[StructuralAPI.Image] ERROR: no image"
+            print "[ImageAPI.Image] ERROR: no image"
         imagePath = SofaPython.Tools.getObjectPath(self.image)
         self.exporter = self.node.createObject('ImageExporter', template=self.imageType, name="exporter", image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=filename, exportAtEnd=True, printLog=True)
 
