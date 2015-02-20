@@ -43,14 +43,32 @@
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 
+// Mapping
+#include <SofaRigid/RigidMapping.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+
 // ForceField
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
+#include <SofaDeformable/RegularGridSpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaMiscForceField/MeshMatrixMass.h>
 
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
+using sofa::component::mass::UniformMass;
+using sofa::component::mapping::RigidMapping;
+using sofa::component::mapping::SubsetMultiMapping;
+using sofa::component::container::MechanicalObject;
+using sofa::component::projectiveconstraintset::FixedConstraint;
+using sofa::component::interactionforcefield::StiffSpringForceField;
+using sofa::component::interactionforcefield::RegularGridSpringForceField;
+
+
 
 namespace sofa
 {
@@ -82,7 +100,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     // Root node
-    root->setGravity( Coord3(0,0,0) );
+    root->setGravity( sofa::defaulttype::Vector3(0,0,0) );
     root->setAnimate(false);
     root->setDt(0.05);
 
@@ -148,7 +166,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     root = sofa::simulation::getSimulation()->createNewGraph("root");
     tractionStruct.root=root;
 
-    root->setGravity( Coord3(0,0,0) );
+    root->setGravity( sofa::defaulttype::Vector3(0,0,0) );
     root->setAnimate(false);
     root->setDt(0.05);
 
@@ -241,7 +259,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // The graph root node
     simulation::Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
-    root->setGravity( Coord3(0,-10,0) );
+    root->setGravity( sofa::defaulttype::Vector3(0,-10,0) );
     root->setAnimate(false);
     root->setDt(0.01);
     component::visualmodel::addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
@@ -255,19 +273,19 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // The rigid object
     simulation::Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
-    MechanicalObjectRigid3::SPtr rigid_dof = modeling::addNew<MechanicalObjectRigid3>(rigidNode, "dof");
-    UniformMassRigid3::SPtr rigid_mass = modeling::addNew<UniformMassRigid3>(rigidNode,"mass");
-    FixedConstraintRigid3::SPtr rigid_fixedConstraint = modeling::addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
+    MechanicalObject<Rigid3>::SPtr rigid_dof = modeling::addNew<MechanicalObject<Rigid3> >(rigidNode, "dof");
+    UniformMass<Rigid3, Rigid3Mass>::SPtr rigid_mass = modeling::addNew<UniformMass<Rigid3, Rigid3Mass> >(rigidNode,"mass");
+    FixedConstraint<Rigid3>::SPtr rigid_fixedConstraint = modeling::addNew< FixedConstraint<Rigid3> >(rigidNode,"fixedConstraint");
 
     // Particles mapped to the rigid object
     simulation::Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
-    MechanicalObject3::SPtr mappedParticles_dof = modeling::addNew< MechanicalObject3>(mappedParticles,"dof");
-    RigidMappingRigid3_to_3::SPtr mappedParticles_mapping = modeling::addNew<RigidMappingRigid3_to_3>(mappedParticles,"mapping");
+    MechanicalObject<Vec3Types>::SPtr mappedParticles_dof = modeling::addNew< MechanicalObject<Vec3Types> >(mappedParticles,"dof");
+    RigidMapping<Rigid3, Vec3Types>::SPtr mappedParticles_mapping = modeling::addNew<RigidMapping<Rigid3, Vec3Types> >(mappedParticles,"mapping");
     mappedParticles_mapping->setModels( rigid_dof.get(), mappedParticles_dof.get() );
 
     // The independent particles
     simulation::Node::SPtr independentParticles = simulatedScene->createChild("independentParticles");
-    MechanicalObject3::SPtr independentParticles_dof = modeling::addNew< MechanicalObject3>(independentParticles,"dof");
+    MechanicalObject<Vec3Types>::SPtr independentParticles_dof = modeling::addNew< MechanicalObject<Vec3Types> >(independentParticles,"dof");
 
     // The deformable grid, connected to its 2 parents using a MultiMapping
     simulation::Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
@@ -277,17 +295,17 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     deformableGrid_grid->setNumVertices(numX,numY,numZ);
     deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
-    MechanicalObject3::SPtr deformableGrid_dof = modeling::addNew< MechanicalObject3>(deformableGrid,"dof");
+    MechanicalObject<Vec3Types>::SPtr deformableGrid_dof = modeling::addNew< MechanicalObject<Vec3Types> >(deformableGrid,"dof");
 
-    SubsetMultiMapping3_to_3::SPtr deformableGrid_mapping = modeling::addNew<SubsetMultiMapping3_to_3>(deformableGrid,"mapping");
+    SubsetMultiMapping<Vec3Types, Vec3Types>::SPtr deformableGrid_mapping = modeling::addNew<SubsetMultiMapping<Vec3Types, Vec3Types> >(deformableGrid,"mapping");
     deformableGrid_mapping->addInputModel(independentParticles_dof.get()); // first parent
     deformableGrid_mapping->addInputModel(mappedParticles_dof.get());      // second parent
     deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
 
-    UniformMass3::SPtr mass = modeling::addNew<UniformMass3>(deformableGrid,"mass" );
+    UniformMass<Rigid3, Rigid3Mass>::SPtr mass = modeling::addNew<UniformMass<Rigid3, Rigid3Mass> >(deformableGrid,"mass" );
     mass->mass.setValue( totalMass/(numX*numY*numZ) );
 
-    RegularGridSpringForceField3::SPtr spring = modeling::addNew<RegularGridSpringForceField3>(deformableGrid, "spring");
+    RegularGridSpringForceField<Vec3Types>::SPtr spring = modeling::addNew<RegularGridSpringForceField<Vec3Types> >(deformableGrid, "spring");
     spring->setLinesStiffness(stiffnessValue);
     spring->setQuadsStiffness(stiffnessValue);
     spring->setCubesStiffness(stiffnessValue);
@@ -299,7 +317,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     deformableGrid_grid->init();
     deformableGrid_dof->init();
     //    cerr<<"SimpleSceneCreator::createGridScene size = "<< deformableGrid_dof->getSize() << endl;
-    MechanicalObject3::ReadVecCoord  xgrid = deformableGrid_dof->readPositions();
+    MechanicalObject<Vec3Types>::ReadVecCoord  xgrid = deformableGrid_dof->readPositions();
     //    cerr<<"SimpleSceneCreator::createGridScene xgrid = " << xgrid << endl;
 
 
@@ -317,7 +335,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     boxes[1] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
                            sofa::defaulttype::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
     rigid_dof->resize(numRigid);
-    MechanicalObjectRigid3::WriteVecCoord xrigid = rigid_dof->writePositions();
+    MechanicalObject<Rigid3>::WriteVecCoord xrigid = rigid_dof->writePositions();
     xrigid[0].getCenter()=Coord(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
     xrigid[1].getCenter()=Coord(  endPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
 
@@ -339,16 +357,16 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     // distribute the particles to the different solids. One solid for each box.
     mappedParticles_dof->resize(numMapped);
     independentParticles_dof->resize( numX*numY*numZ - numMapped );
-    MechanicalObject3::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
+    MechanicalObject<Vec3Types>::WriteVecCoord xmapped = mappedParticles_dof->writePositions();
     mappedParticles_mapping->globalToLocalCoords.setValue(true); // to define the mapped positions in world coordinates
-    MechanicalObject3::WriteVecCoord xindependent = independentParticles_dof->writePositions();
-    vector< pair<MechanicalObject3*,size_t> > parentParticles(xgrid.size());
+    MechanicalObject<Vec3Types>::WriteVecCoord xindependent = independentParticles_dof->writePositions();
+    vector< std::pair<MechanicalObject<Vec3Types>*,size_t> > parentParticles(xgrid.size());
 
     // independent particles
     size_t independentIndex=0;
     for( size_t i=0; i<xgrid.size(); i++ ){
         if( isFree[i] ){
-            parentParticles[i]=make_pair(independentParticles_dof.get(),independentIndex);
+            parentParticles[i]=std::make_pair(independentParticles_dof.get(),independentIndex);
             xindependent[independentIndex] = xgrid[i];
             independentIndex++;
         }
@@ -363,7 +381,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
         for(size_t i=0; i<ind.size(); i++)
         {
             rigidIndexPerPoint->push_back( b ); // tell the mapping the number of points associated with this frame
-            parentParticles[ind[i]]=make_pair(mappedParticles_dof.get(),mappedIndex);
+            parentParticles[ind[i]]=std::make_pair(mappedParticles_dof.get(),mappedIndex);
             xmapped[mappedIndex] = xgrid[ ind[i] ];
             mappedIndex++;
 
@@ -396,35 +414,35 @@ simulation::Node::SPtr Elasticity_test<DataTypes>::createMassSpringSystem(
 
 // Fixed point
 simulation::Node::SPtr fixedPointNode = root->createChild("FixedPointNode");
-MechanicalObject3::SPtr FixedPoint = modeling::addNew<MechanicalObject3>(fixedPointNode,"fixedPoint");
+MechanicalObject<Vec3Types>::SPtr FixedPoint = modeling::addNew<MechanicalObject<Vec3Types> >(fixedPointNode,"fixedPoint");
 
 // Set position and velocity
 FixedPoint->resize(1);
-MechanicalObject3::WriteVecCoord xdof = FixedPoint->writePositions();
+MechanicalObject<Vec3Types>::WriteVecCoord xdof = FixedPoint->writePositions();
 copyToData( xdof, xFixedPoint );
-MechanicalObject3::WriteVecDeriv vdof = FixedPoint->writeVelocities();
+MechanicalObject<Vec3Types>::WriteVecDeriv vdof = FixedPoint->writeVelocities();
 copyToData( vdof, vFixedPoint );
 
-FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(fixedPointNode,"FixedPointNode");
+FixedConstraint<Vec3Types>::SPtr fixed = modeling::addNew<FixedConstraint<Vec3Types> >(fixedPointNode,"FixedPointNode");
 fixed->addConstraint(0);      // attach particle
 
 
 // Mass
 simulation::Node::SPtr massNode = root->createChild("MassNode");
-MechanicalObject3::SPtr massDof = modeling::addNew<MechanicalObject3>(massNode,"massNode");
+MechanicalObject<Vec3Types>::SPtr massDof = modeling::addNew<MechanicalObject<Vec3Types> >(massNode,"massNode");
 
 // Set position and velocity
 FixedPoint->resize(1);
-MechanicalObject3::WriteVecCoord xMassDof = massDof->writePositions();
+MechanicalObject<Vec3Types>::WriteVecCoord xMassDof = massDof->writePositions();
 copyToData( xMassDof, xMass );
-MechanicalObject3::WriteVecDeriv vMassDof = massDof->writeVelocities();
+MechanicalObject<Vec3Types>::WriteVecDeriv vMassDof = massDof->writeVelocities();
 copyToData( vMassDof, vMass );
 
-UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(massNode,"mass");
+UniformMass<Rigid3, Rigid3Mass>::SPtr massPtr = modeling::addNew<UniformMass<Rigid3, Rigid3Mass> >(massNode,"mass");
 massPtr->totalMass.setValue( mass );
 
 // attach a spring
-StiffSpringForceField3::SPtr spring = core::objectmodel::New<StiffSpringForceField3>(FixedPoint.get(), massDof.get());
+StiffSpringForceField<Vec3Types>::SPtr spring = core::objectmodel::New<StiffSpringForceField<Vec3Types> >(FixedPoint.get(), massDof.get());
 root->addObject(spring);
 spring->addSpring(0,0,stiffness ,0, restLength);
 

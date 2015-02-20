@@ -33,7 +33,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>

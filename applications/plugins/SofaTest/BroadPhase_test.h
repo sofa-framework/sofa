@@ -1,6 +1,8 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
 
+#include "Sofa_test.h"
+
 #include <SofaMeshCollision/DirectSAP.h>
 #include <gtest/gtest.h>
 #include <iostream>
@@ -25,7 +27,6 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <SofaComponentMain/init.h>
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <SofaBaseTopology/EdgeSetTopologyContainer.h>
@@ -36,15 +37,10 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaBaseCollision/OBBModel.h>
-#include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+#include <SofaBaseCollision/NewProximityIntersection.h>
 
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
-//#include <plugins/SceneCreator/SceneCreator.h>
-
-//#include <plugins/Flexible/deformationMapping/DistanceMapping.h>
-//#include <plugins/Flexible/deformationMapping/DistanceFromTargetMapping.h>
+//#include <SceneCreator/SceneCreator.h>
 
 #include <sofa/simulation/common/Simulation.h>
 #include <SofaMiscCollision/DefaultCollisionGroupManager.h>
@@ -58,6 +54,8 @@
 #include <stdlib.h>
 //#include <sofa/component/collision/TeschnerSpatialHashing.h>
 
+
+using sofa::component::container::MechanicalObject;
 
 struct MyBox{
 
@@ -165,14 +163,14 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<sofa::
 
 void randMoving(sofa::core::CollisionModel* cm,const sofa::defaulttype::Vector3 & min_vect,const sofa::defaulttype::Vector3 & max_vect){
     sofa::component::collision::OBBModel * obbm = dynamic_cast<sofa::component::collision::OBBModel*>(cm->getLast());
-    MechanicalObjectRigid3* dof = dynamic_cast<MechanicalObjectRigid3*>(obbm->getMechanicalState());
+    MechanicalObject<Rigid3>* dof = dynamic_cast<MechanicalObject<Rigid3>*>(obbm->getMechanicalState());
 
-    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecCoord> & dpositions = *dof->write( sofa::core::VecId::position() );
-    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
+    sofa::core::objectmodel::Data<MechanicalObject<Rigid3>::VecCoord> & dpositions = *dof->write( sofa::core::VecId::position() );
+    MechanicalObject<Rigid3>::VecCoord & positions = *dpositions.beginEdit();
 
     //Editting the velocity of the OBB
-    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
-    MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
+    sofa::core::objectmodel::Data<MechanicalObject<Rigid3>::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
+    MechanicalObject<Rigid3>::VecDeriv & velocities = *dvelocities.beginEdit();
 
     for(int i = 0 ; i < dof->getSize() ; ++i){
         if( (sofa::helper::irand()) < RAND_MAX/2.0){//make it move !
@@ -410,12 +408,12 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<sofa::
     sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObjectRigid3::SPtr obbDOF = sofa::core::objectmodel::New<MechanicalObjectRigid3>();
+    MechanicalObject<Rigid3>::SPtr obbDOF = sofa::core::objectmodel::New<MechanicalObject<Rigid3> >();
 
     //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
     obbDOF->resize(n);
-    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
-    MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
+    sofa::core::objectmodel::Data<MechanicalObject<Rigid3>::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
+    MechanicalObject<Rigid3>::VecCoord & positions = *dpositions.beginEdit();
 
     for(int i = 0 ; i < n ; ++i)
         positions[i] = sofa::defaulttype::Rigid3Types::Coord(p[i],sofa::defaulttype::Quaternion(0,0,0,1));
@@ -423,9 +421,9 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<sofa::
     dpositions.endEdit();
 
     //Editting the velocity of the OBB
-    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
+    sofa::core::objectmodel::Data<MechanicalObject<Rigid3>::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
 
-    MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
+    MechanicalObject<Rigid3>::VecDeriv & velocities = *dvelocities.beginEdit();
     for(int i = 0 ; i < n ; ++i)
         velocities[i] = sofa::defaulttype::Vector3(0,0,0);
     dvelocities.endEdit();

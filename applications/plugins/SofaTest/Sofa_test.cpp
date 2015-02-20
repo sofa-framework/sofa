@@ -24,7 +24,7 @@
 ******************************************************************************/
 
 #include "Sofa_test.h"
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
