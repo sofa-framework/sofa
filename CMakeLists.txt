@@ -61,8 +61,8 @@ if(EXISTS ${SOFA_EXTERNALS_DIR} )
 endif()
 
 # Install resource files
-install(DIRECTORY "${SOFA_SHARE_DIR}" DESTINATION share/sofa)
-install(DIRECTORY "${SOFA_EXAMPLES_DIR}" DESTINATION share/sofa/examples)
+install(DIRECTORY "${SOFA_SHARE_DIR}/" DESTINATION share/sofa)
+install(DIRECTORY "${SOFA_EXAMPLES_DIR}/" DESTINATION share/sofa/examples)
 # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
 # build directory, it points to the source tree, whereas in the install
 # directory, it contains to relative paths to the installed resource directory.
