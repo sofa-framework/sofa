@@ -43,6 +43,17 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
+// Maybe not the right place to put this (private header?)
+#ifndef SOFA_FLOAT
+typedef sofa::defaulttype::Rigid3dTypes Rigid3;
+typedef sofa::defaulttype::Rigid3dMass Rigid3Mass;
+typedef sofa::defaulttype::Vec3dTypes Vec3Types;
+#else
+typedef sofa::defaulttype::Rigid3fTypes Rigid3;
+typedef sofa::defaulttype::Rigid3fMass Rigid3Mass;
+typedef sofa::defaulttype::Vec3fTypes Vec3Types;
+#endif
+
 namespace sofa {
 
 

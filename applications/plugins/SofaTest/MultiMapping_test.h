@@ -37,7 +37,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 #include <sofa/helper/vector.h>
 
 

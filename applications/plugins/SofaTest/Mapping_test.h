@@ -28,14 +28,16 @@
 #define SOFA_STANDARDTEST_Mapping_test_H
 
 #include "Sofa_test.h"
-#include <SofaComponentMain/init.h>
+
+#include <SceneCreator/SceneCreator.h>
+
 #include <sofa/core/MechanicalParams.h>
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/VectorOperations.h>
+
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
-#include <plugins/SceneCreator/SceneCreator.h>
 
 namespace sofa {
 
@@ -123,7 +125,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test():deltaMax(1000),errorMax(10),flags(TEST_ASSEMBLY_API)
     {
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Parent node
@@ -139,7 +140,6 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
     Mapping_test(std::string fileName):deltaMax(1000),errorMax(100),flags(TEST_ASSEMBLY_API)
     {
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Load the scene
