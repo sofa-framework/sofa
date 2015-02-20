@@ -245,44 +245,44 @@ const bool solveConstraint = f_solveConstraint.getValue();
     {
         const char* prevStep = "UpdateV";
         sofa::helper::AdvancedTimer::stepBegin(prevStep);
-#define NEXTSTEP(s) { sofa::helper::AdvancedTimer::stepNext(s,prevStep); prevStep=s; }
+#define SOFATIMER_NEXTSTEP(s) { sofa::helper::AdvancedTimer::stepNext(prevStep,s); prevStep=s; }
         newVel.eq(x);                         // vel = x
         if (solveConstraint)
         {
-            NEXTSTEP("CorrectV");
+            SOFATIMER_NEXTSTEP("CorrectV");
             mop.solveConstraint(newVel,core::ConstraintParams::VEL);
         }
-        NEXTSTEP("UpdateX");
+        SOFATIMER_NEXTSTEP("UpdateX");
         newPos.eq(pos, newVel, h);            // pos = pos + h vel
         if (solveConstraint)
         {
-            NEXTSTEP("CorrectX");
+            SOFATIMER_NEXTSTEP("CorrectX");
             mop.solveConstraint(newPos,core::ConstraintParams::POS);
         }
-#undef NEXTSTEP
+#undef SOFATIMER_NEXTSTEP
         sofa::helper::AdvancedTimer::stepEnd  (prevStep);
     }
     else
     {
         const char* prevStep = "UpdateV";
         sofa::helper::AdvancedTimer::stepBegin(prevStep);
-#define NEXTSTEP(s) { sofa::helper::AdvancedTimer::stepNext(s,prevStep); prevStep=s; }
+#define SOFATIMER_NEXTSTEP(s) { sofa::helper::AdvancedTimer::stepNext(prevStep,s); prevStep=s; }
         //vel.peq( x );                       // vel = vel + x
         newVel.eq(vel, x);
         if (solveConstraint)
         {
-            NEXTSTEP("CorrectV");
+            SOFATIMER_NEXTSTEP("CorrectV");
             mop.solveConstraint(newVel,core::ConstraintParams::VEL);
         }
-        NEXTSTEP("UpdateX");
+        SOFATIMER_NEXTSTEP("UpdateX");
         //pos.peq( vel, h );                  // pos = pos + h vel
         newPos.eq(pos, newVel, h);
         if (solveConstraint)
         {
-            NEXTSTEP("CorrectX");
+            SOFATIMER_NEXTSTEP("CorrectX");
             mop.solveConstraint(newPos,core::ConstraintParams::POS);
         }
-#undef NEXTSTEP
+#undef SOFATIMER_NEXTSTEP
         sofa::helper::AdvancedTimer::stepEnd  (prevStep);
     }
 
@@ -314,10 +314,13 @@ const bool solveConstraint = f_solveConstraint.getValue();
         sofa::helper::AdvancedTimer::stepBegin("UpdateVAndX");
 
         vop.v_multiop(ops);
-        sofa::helper::AdvancedTimer::stepEnd ("UpdateVAndX");
-        if (solveConstraint)
+        if (!solveConstraint)
         {
-            sofa::helper::AdvancedTimer::stepBegin("CorrectV");
+            sofa::helper::AdvancedTimer::stepEnd("UpdateVAndX");
+        }
+        else
+        {
+            sofa::helper::AdvancedTimer::stepNext ("UpdateVAndX", "CorrectV");
             mop.solveConstraint(newVel,core::ConstraintParams::VEL);
             sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
             mop.solveConstraint(newPos,core::ConstraintParams::POS);
