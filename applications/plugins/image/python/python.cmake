@@ -1,4 +1,4 @@
 set(PYTHON_FILES
-    python/image/__init__.py
-    python/image/StructuralAPI.py
+    python/Image/__init__.py
+    python/Image/StructuralAPI.py
 )
