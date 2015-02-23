@@ -34,10 +34,13 @@ class Image:
         self.meshes[_name] = mesh
         self.meshSeq.append(_name)
 
-    def addMeshVisual(self, meshName):
-        if self.meshes[meshName].mesh is None:
+    def addMeshVisual(self, meshName=None):
+        name = self.meshSeq[0] if meshName is None else meshName
+        mesh = self.meshes[name]
+
+        if mesh.mesh is None:
             print "[ImageAPI.Image] ERROR: no mesh for", meshName
-        self.meshes[meshName].visual = self.node.createObject("VisualModel", name="visual_"+meshName, src="@"+SofaPython.Tools.getObjectPath(self.meshes[meshName].mesh))
+        mesh.visual = self.node.createObject("VisualModel", name="visual_"+name, src="@"+SofaPython.Tools.getObjectPath(mesh.mesh))
 
     def addMeshToImage(self, voxelSize):
         args=dict()
