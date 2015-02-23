@@ -45,6 +45,8 @@ set(HEADER_FILES
     IncrSAP.inl
     DirectSAP.h
     DirectSAP.inl
+    CollisionPM.h
+    EndPoint.h
     )
 
 set(SOURCE_FILES
