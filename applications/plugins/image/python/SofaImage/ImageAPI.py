@@ -30,7 +30,7 @@ class Image:
         mesh.value = value
         mesh.closingValue = value if closingValue is None else closingValue
         _name = name if not name is None else os.path.splitext(os.path.basename(meshFile))[0]
-        mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name)
+        mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name, triangulate=True)
         self.meshes[_name] = mesh
         self.meshSeq.append(_name)
 
