@@ -32,6 +32,11 @@ class Image:
         mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name)
         self.meshes[_name] = mesh
 
+    def addMeshVisual(self, meshName):
+        if self.meshes[meshName].mesh is None:
+            print "[ImageAPI.Image] ERROR: no mesh for", meshName
+        self.meshes[meshName].visual = self.node.createObject("VisualModel", name="visual_"+meshName, src="@"+SofaPython.Tools.getObjectPath(self.meshes[meshName].mesh))
+
     def addMeshToImage(self, voxelSize):
         args=dict()
         i=1
