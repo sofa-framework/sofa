@@ -18,6 +18,7 @@ class Image:
         self.node = parentNode.createChild("image_"+name)
         self.name = name
         self.meshes = dict()
+        self.meshSeq = list() # to keep track of the mesh sequence, adding order does matter !
         self.value = None
         self.closingValue = None
         self.image = None
@@ -31,6 +32,7 @@ class Image:
         _name = name if not name is None else os.path.splitext(os.path.basename(meshFile))[0]
         mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name)
         self.meshes[_name] = mesh
+        self.meshSeq.append(_name)
 
     def addMeshVisual(self, meshName):
         if self.meshes[meshName].mesh is None:
@@ -40,7 +42,8 @@ class Image:
     def addMeshToImage(self, voxelSize):
         args=dict()
         i=1
-        for name,mesh in self.meshes.iteritems():
+        for name in self.meshSeq:
+            mesh = self.meshes[name]
             if mesh.mesh is None:
                 print "[ImageAPI.Image] ERROR: no mesh for", name
             meshPath = SofaPython.Tools.getObjectPath(mesh.mesh)
