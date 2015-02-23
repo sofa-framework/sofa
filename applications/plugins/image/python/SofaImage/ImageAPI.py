@@ -4,21 +4,23 @@ import SofaPython.Tools
 import SofaPython.units
 
 class Image:
+    """ This class proposes a high-level API to build images. It support multiple meshes rasterization.
+    """
 
     class Mesh:
         # TODO add support for ROI
-        def __init__(self):
+        def __init__(self, value, closingValue=None):
             self.mesh=None
             self.visual=None
-            self.value=None
-            self.closingValue=None
+            self.value=value
+            self.closingValue = value if closingValue is None else closingValue
 
     def __init__(self, parentNode, name, imageType="ImageUC"):
         self.imageType = imageType
         self.node = parentNode.createChild("image_"+name)
         self.name = name
         self.meshes = dict()
-        self.meshSeq = list() # to keep track of the mesh sequence, adding order does matter !
+        self.meshSeq = list() # to keep track of the mesh sequence, order does matter
         self.value = None
         self.closingValue = None
         self.image = None
@@ -26,11 +28,21 @@ class Image:
         self.exporter = None
 
     def addMeshLoader(self, meshFile, value, closingValue=None, name=None):
-        mesh = Image.Mesh()
-        mesh.value = value
-        mesh.closingValue = value if closingValue is None else closingValue
+        mesh = Image.Mesh(value, closingValue)
         _name = name if not name is None else os.path.splitext(os.path.basename(meshFile))[0]
         mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name, triangulate=True)
+        self.meshes[_name] = mesh
+        self.meshSeq.append(_name)
+
+    def addMesh(self, externMesh, value, closingValue=None, name=None):
+        mesh = Image.Mesh(value, closingValue)
+        if not name is None :
+            _name = name
+        else :
+            _name = externMesh.name
+            if "meshLoader_" in _name:
+                _name=_name[len("meshLoader_"):]
+        mesh.mesh = externMesh
         self.meshes[_name] = mesh
         self.meshSeq.append(_name)
 
