@@ -698,4 +698,84 @@ inline unsigned int ImplicitHierarchicalMap2::vertexInsertionLevel(Dart d)
 
 
 
+
+
+
+
+// NEW
+
+Dart IHM2::phi_1(Dart d) const
+{
+    assert((*m_dartLevel)[d.index] <= m_curLevel || !"Access to a dart introduced after current level") ;
+    bool finished = false ;
+    Dart it = TOPO_MAP::phi_1(d) ;
+    unsigned int edgeId = m_edgeId[it] ;
+    do
+    {
+        if((*m_dartLevel)[it.index] <= m_curLevel)
+            finished = true ;
+        else
+        {
+            it = TOPO_MAP::phi_1(it) ;
+            while(m_edgeId[it] != edgeId)
+                it = TOPO_MAP::phi_1(TOPO_MAP::phi2(it)) ;
+        }
+    } while(!finished) ;
+    return it ;
+}
+
+Dart IHM2::phi2(Dart d) const
+{
+    assert((*m_dartLevel)[d.index] <= m_curLevel || !"Access to a dart introduced after current level") ;
+    if(TOPO_MAP::phi2(d) == d)
+        return d ;
+    return TOPO_MAP::phi2(TOPO_MAP::phi_1(phi1(d))) ;
+}
+
+Dart IHM2::alpha0(Dart d) const
+{
+    return phi2(d);
+}
+
+Dart IHM2::alpha1(Dart d) const
+{
+     return TOPO_MAP::alpha1(d) ;
+}
+
+Dart IHM2::alpha_1(Dart d) const
+{
+    return TOPO_MAP::alpha_1(d) ;
+}
+
+Dart IHM2::phi1(Dart d) const
+{
+    assert((*m_dartLevel)[d.index] <= m_curLevel || !"Access to a dart introduced after current level") ;
+    bool finished = false ;
+    unsigned int edgeId = m_edgeId[d] ;
+    Dart it = d ;
+    do
+    {
+        it = TOPO_MAP::phi1(it) ;
+        if((*m_dartLevel)[it.index] <= m_curLevel)
+            finished = true ;
+        else
+        {
+            while(m_edgeId[it] != edgeId)
+                it = TOPO_MAP::phi1(TOPO_MAP::phi2(it)) ;
+        }
+    } while(!finished) ;
+    return it ;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 } //namespace CGoGN

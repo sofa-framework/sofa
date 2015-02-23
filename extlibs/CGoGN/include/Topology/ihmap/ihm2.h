@@ -26,6 +26,8 @@
 #define __IMPLICIT_HIERARCHICAL_MAP2__
 
 #include "Topology/map/embeddedMap2.h"
+#include "Topology/generic/mapImpl/mapIH2.h"
+
 
 namespace CGoGN
 {
@@ -299,6 +301,119 @@ public:
     unsigned int end() const;
     void next(unsigned int& iter) const;
 } ;
+
+// TODO : CONTINUE
+// NEW VERSION
+
+class IHM2 : public Map2<MapIH2> {
+public:
+    typedef MapIH2 IMPL;
+    typedef Map2<IMPL> TOPO_MAP;
+    static const unsigned int DIMENSION = TOPO_MAP::DIMENSION ;
+
+private:
+    // Map2 interface
+    IHM2(const IHM2& m): TOPO_MAP(m)  {}
+public:
+     inline IHM2() : TOPO_MAP()
+     {}
+//    virtual bool checkSimpleOrientedPath(std::vector<Dart> &vd);
+
+    // from ihm2
+     inline Dart phi1(Dart d) const ;
+     inline Dart phi_1(Dart d) const ;
+     inline Dart phi2(Dart d) const ;
+     inline Dart alpha0(Dart d) const ;
+     inline Dart alpha1(Dart d) const ;
+     inline Dart alpha_1(Dart d) const ;
+
+     template <typename T, unsigned int ORBIT, typename MAP>
+     AttributeHandler<T, ORBIT, MAP> addAttribute(const std::string& nameAttr) ;
+     template <typename T, unsigned int ORBIT, typename MAP>
+     inline AttributeHandler<T, ORBIT, MAP> getAttribute(const std::string& nameAttr) ;
+
+
+
+
+
+     // FROM EMBEDDEDMAP2
+    Dart newPolyLine(unsigned int nbEdges) ;
+    Dart newFace(unsigned int nbEdges, bool withBoundary = true) ;
+    void splitVertex(Dart d, Dart e) ;
+    Dart deleteVertex(Dart d) ;
+    Dart cutEdge(Dart d) ;
+    bool uncutEdge(Dart d) ;
+    bool edgeCanCollapse(Dart d) ;
+    Dart collapseEdge(Dart d, bool delDegenerateFaces = true) ;
+    bool flipEdge(Dart d) ;
+    bool flipBackEdge(Dart d) ;
+    void swapEdges(Dart d, Dart e);
+    void insertEdgeInVertex(Dart d, Dart e);
+    bool removeEdgeFromVertex(Dart d);
+    void sewFaces(Dart d, Dart e, bool withBoundary = true) ;
+    virtual void unsewFaces(Dart d, bool withBoundary = true) ;
+    virtual bool collapseDegeneratedFace(Dart d);
+    virtual void splitFace(Dart d, Dart e) ;
+    bool mergeFaces(Dart d) ;
+    bool mergeVolumes(Dart d, Dart e, bool deleteFace = true) ;
+    void splitSurface(std::vector<Dart>& vd, bool firstSideClosed = true, bool secondSideClosed = true);
+    virtual unsigned int closeHole(Dart d, bool forboundary = true);
+    virtual bool check() const;
+
+    /***************************************************
+     *             EDGE ID MANAGEMENT                  *
+     ***************************************************/
+
+    void initEdgeId() ;
+    inline unsigned int getNewEdgeId() ;
+    inline unsigned int getEdgeId(Dart d) ;
+    inline void setEdgeId(Dart d, unsigned int i) ;
+    unsigned int getTriRefinementEdgeId(Dart d);
+    unsigned int getQuadRefinementEdgeId(Dart d);
+
+private:
+    DartAttribute<unsigned int, TOPO_MAP> m_edgeId ;
+};
+
+template <typename T, unsigned int ORBIT, typename MAP>
+AttributeHandler<T, ORBIT, MAP> IHM2::addAttribute(const std::string &nameAttr)
+{
+    bool addNextLevelCell = false ;
+    if(!isOrbitEmbedded<ORBIT>())
+        addNextLevelCell = true ;
+
+    AttributeHandler<T, ORBIT, MAP> h = TOPO_MAP::addAttribute<T, ORBIT, MAP>(nameAttr) ;
+
+    if(addNextLevelCell)
+    {
+        AttributeContainer& cellCont = m_attribs[ORBIT] ;
+        AttributeMultiVector<unsigned int>* amv = cellCont.addAttribute<unsigned int>("nextLevelCell") ;
+        this->m_nextLevelCell[ORBIT] = amv ;
+        for(unsigned int i = cellCont.begin(); i < cellCont.end(); cellCont.next(i))
+            amv->operator[](i) = EMBNULL ;
+    }
+
+    return AttributeHandler<T, ORBIT, MAP>(this, h.getDataVector()) ;
+}
+
+
+template <typename T, unsigned int ORBIT, typename MAP>
+inline AttributeHandler<T, ORBIT, MAP> IHM2::getAttribute(const std::string& nameAttr)
+{
+    return AttributeHandler<T, ORBIT, MAP>(this, TOPO_MAP::getAttribute<T, ORBIT, MAP>(nameAttr).getDataVector()) ;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 } //namespace CGoGN
 

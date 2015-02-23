@@ -103,222 +103,709 @@ unsigned int ImplicitHierarchicalMap2::vertexDegree(Dart d)
     return count ;
 }
 
-//unsigned int ImplicitHierarchicalMap2::faceLevel(Dart d)
-//{
-//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
+Dart IHM2::newPolyLine(unsigned int nbEdges)
+{
+    Dart d = TOPO_MAP::newPolyLine(nbEdges) ;
 
-//	if(m_curLevel == 0)
-//		return 0 ;
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        Dart e = d ;
+        for (unsigned int i = 0 ; i <= nbEdges ; ++i)
+        {
+            Algo::Topo::initOrbitEmbeddingOnNewCell<VERTEX>(*this, e) ;
+            e = this->phi1(e) ;
+        }
+    }
 
-////	unsigned int cur = m_curLevel ;
-////	Dart it = d ;
-////	Dart end = d ;
-////	bool resetEnd = true ;
-////	bool firstEdge = true ;
-////	do
-////	{
-////		if(!resetEnd)
-////			firstEdge = false ;
-////
-////		unsigned int eId = m_edgeId[it] ;
-////		Dart next = it ;
-////		do
-////		{
-////			unsigned int l = edgeLevel(next) ;
-////			if(l < m_curLevel)
-////				m_curLevel = l ;
-////			else // l == curLevel
-////			{
-////				if(!firstEdge)
-////				{
-////					--m_curLevel ;
-////					next = it ;
-////				}
-////			}
-////			next = phi1(next) ;
-////		} while(m_edgeId[next] == eId) ;
-////		it = next ;
-////
-////		if(resetEnd)
-////		{
-////			end = it ;
-////			resetEnd = false ;
-////		}
-////
-////	} while(!firstEdge && it != end) ;
-////
-////	unsigned int fLevel = m_curLevel ;
-////	m_curLevel = cur ;
+    if (isOrbitEmbedded<EDGE>())
+    {
+        Dart e = d ;
+        for (unsigned int i = 0 ; i < nbEdges ; ++i)
+        {
+            Algo::Topo::initOrbitEmbeddingOnNewCell<EDGE>(*this, e) ;
+            e = this->phi1(e) ;
+        }
+    }
 
-//	Dart it = d ;
-//	Dart old = it ;
-//	unsigned int l_old = m_dartLevel[old] ;
-//	unsigned int fLevel = edgeLevel(it) ;
-//	do
-//	{
-//		it = phi1(it) ;
-//		unsigned int dl = m_dartLevel[it] ;
-//		if(dl < l_old)							// compute the oldest dart of the face
-//		{										// in the same time
-//			old = it ;
-//			l_old = dl ;
-//		}										// in a first time, the level of a face
-//		unsigned int l = edgeLevel(it) ;		// is the minimum of the levels
-//		fLevel = l < fLevel ? l : fLevel ;		// of its edges
-//	} while(it != d) ;
+    if (isOrbitEmbedded<FACE>())
+    {
+        Algo::Topo::initOrbitEmbeddingOnNewCell<FACE>(*this, d) ;
+    }
 
-//	unsigned int cur = m_curLevel ;
-//	m_curLevel = fLevel ;
+    return d ;
+}
 
-//	unsigned int nbSubd = 0 ;
-//	it = old ;
-//	unsigned int eId = m_edgeId[old] ;			// the particular case of a face
-//	do											// with all neighboring faces regularly subdivided
-//	{											// but not the face itself
-//		++nbSubd ;								// is treated here
-//		it = phi1(it) ;
-//	} while(m_edgeId[it] == eId) ;
+Dart IHM2::newFace(unsigned int nbEdges, bool withBoundary)
+{
+    Dart d = TOPO_MAP::newFace(nbEdges, withBoundary);
 
-//	while(nbSubd > 1)
-//	{
-//		nbSubd /= 2 ;
-//		--fLevel ;
-//	}
+    if(withBoundary)
+    {
+        if (isOrbitEmbedded<VERTEX>())
+        {
+            Dart e = d;
+            do
+            {
+                Algo::Topo::initOrbitEmbeddingOnNewCell<VERTEX>(*this, e) ;
+                e = this->phi1(e);
+            } while (d != e);
+        }
 
-//	m_curLevel = cur ;
+        if(isOrbitEmbedded<EDGE>())
+        {
+            Dart e = d;
+            do
+            {
+                Algo::Topo::initOrbitEmbeddingOnNewCell<EDGE>(*this, e) ;
+                e = this->phi1(e);
+            } while (d != e);
+        }
 
-//	return fLevel ;
-//}
-
-//Dart ImplicitHierarchicalMap2::faceOrigin(Dart d)
-//{
-//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-//	unsigned int cur = m_curLevel ;
-//	Dart p = d ;
-//	unsigned int pLevel = m_dartLevel[p] ;
-//	while(pLevel > 0)
-//	{
-//		p = faceOldestDart(p) ;
-//		pLevel = m_dartLevel[p] ;
-//		m_curLevel = pLevel ;
-//	}
-//	m_curLevel = cur ;
-//	return p ;
-//}
-
-//Dart ImplicitHierarchicalMap2::faceOldestDart(Dart d)
-//{
-//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-//	Dart it = d ;
-//	Dart oldest = it ;
-//	unsigned int l_old = m_dartLevel[oldest] ;
-//	do
-//	{
-//		unsigned int l = m_dartLevel[it] ;
-//		if(l == 0)
-//			return it ;
-//		if(l < l_old)
-////		if(l < l_old || (l == l_old && it < oldest))
-//		{
-//			oldest = it ;
-//			l_old = l ;
-//		}
-//		it = phi1(it) ;
-//	} while(it != d) ;
-//	return oldest ;
-//}
-
-//bool ImplicitHierarchicalMap2::edgeIsSubdivided(Dart d)
-//{
-//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-////	Dart d2 = phi2(d) ;
-//	Dart d1 = phi1(d) ;
-//	++m_curLevel ;
-////	Dart d2_l = phi2(d) ;
-//	Dart d1_l = phi1(d) ;
-//	--m_curLevel ;
-//	if(d1 != d1_l)
-//		return true ;
+        if(isOrbitEmbedded<FACE>())
+        {
+            Algo::Topo::initOrbitEmbeddingOnNewCell<FACE>(*this, d) ;
+            Algo::Topo::initOrbitEmbeddingOnNewCell<FACE>(*this, phi2(d)) ;
+        }
+    }
 //	else
-//		return false ;
-//}
-
-//bool ImplicitHierarchicalMap2::edgeCanBeCoarsened(Dart d)
-//{
-//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-//	bool subd = false ;
-//	bool subdOnce = true ;
-//	bool degree2 = false ;
-//	if(edgeIsSubdivided(d))
 //	{
-//		subd = true ;
-//		Dart d2 = phi2(d) ;
-//		++m_curLevel ;
-//		if(vertexDegree(phi1(d)) == 2)
-//		{
-//			degree2 = true ;
-//			if(edgeIsSubdivided(d) || edgeIsSubdivided(d2))
-//				subdOnce = false ;
-//		}
-//		--m_curLevel ;
+//		do not set embedding when creating a face without boundary
+//		-> usually called from import which manages embedding on its own
 //	}
-//	return subd && degree2 && subdOnce ;
-//}
+    return d ;
+}
 
-//bool ImplicitHierarchicalMap2::faceIsSubdivided(Dart d)
-//{
-//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-//	unsigned int fLevel = faceLevel(d) ;
-//	if(fLevel < m_curLevel)
-//		return false ;
+void IHM2::splitVertex(Dart d, Dart e)
+{
+    Dart dd = phi2(d) ;
+    Dart ee = phi2(e) ;
 
-//	bool subd = false ;
-//	++m_curLevel ;
-//	if(m_dartLevel[phi1(d)] == m_curLevel && m_edgeId[phi1(d)] != m_edgeId[d])
-//		subd = true ;
-//	--m_curLevel ;
-//	return subd ;
-//}
+    Map2::splitVertex(d, e) ;
 
-//bool ImplicitHierarchicalMap2::faceIsSubdividedOnce(Dart d)
-//{
-//	assert(m_dartLevel[d] <= m_curLevel || !"Access to a dart introduced after current level") ;
-//	unsigned int fLevel = faceLevel(d) ;
-//	if(fLevel < m_curLevel)		// a face whose level in the current level map is lower than
-//		return false ;			// the current level can not be subdivided to higher levels
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        initDartEmbedding<VERTEX>(phi1(dd), getEmbedding<VERTEX>(d)) ;
+        Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*this, e) ;
+        Algo::Topo::copyCellAttributes<VERTEX>(*this, e, d) ;
+    }
 
-//	unsigned int degree = 0 ;
-//	bool subd = false ;
-//	bool subdOnce = true ;
-//	Dart fit = d ;
-//	do
-//	{
-//		++m_curLevel ;
-//		if(m_dartLevel[phi1(fit)] == m_curLevel && m_edgeId[phi1(fit)] != m_edgeId[fit])
-//		{
-//			subd = true ;
-//			++m_curLevel ;
-//			if(m_dartLevel[phi1(fit)] == m_curLevel && m_edgeId[phi1(fit)] != m_edgeId[fit])
-//				subdOnce = false ;
-//			--m_curLevel ;
-//		}
-//		--m_curLevel ;
-//		++degree ;
-//		fit = phi1(fit) ;
-//	} while(subd && subdOnce && fit != d) ;
+    if(isOrbitEmbedded<EDGE>())
+    {
+        Algo::Topo::initOrbitEmbeddingOnNewCell<EDGE>(*this, phi1(dd)) ;
+    }
 
-//	if(degree == 3 && subd)
-//	{
-//		++m_curLevel ;
-//		Dart cf = phi2(phi1(d)) ;
-//		++m_curLevel ;
-//		if(m_dartLevel[phi1(cf)] == m_curLevel && m_edgeId[phi1(cf)] != m_edgeId[cf])
-//			subdOnce = false ;
-//		--m_curLevel ;
-//		--m_curLevel ;
-//	}
+    if(isOrbitEmbedded<FACE>())
+    {
+        initDartEmbedding<FACE>(phi1(dd), getEmbedding<FACE>(dd)) ;
+        initDartEmbedding<FACE>(phi1(ee), getEmbedding<FACE>(ee)) ;
+    }
+}
 
-//	return subd && subdOnce ;
-//}
+Dart IHM2::deleteVertex(Dart d)
+{
+    Dart f = Map2::deleteVertex(d) ;
+    if(f != NIL)
+    {
+        if (isOrbitEmbedded<FACE>())
+        {
+            Algo::Topo::setOrbitEmbedding<FACE>(*this, f, getEmbedding<FACE>(f)) ;
+        }
+    }
+    return f ;
+}
+
+Dart IHM2::cutEdge(Dart d)
+{
+    Dart nd = Map2::cutEdge(d) ;
+
+    if(isOrbitEmbedded<VERTEX>())
+    {
+        Algo::Topo::initOrbitEmbeddingOnNewCell<VERTEX>(*this, nd) ;
+    }
+
+    if (isOrbitEmbedded<EDGE>())
+    {
+        initDartEmbedding<EDGE>(phi2(d), getEmbedding<EDGE>(d)) ;
+        Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE>(*this, nd) ;
+        Algo::Topo::copyCellAttributes<EDGE>(*this, nd, d) ;
+    }
+
+    if(isOrbitEmbedded<FACE>())
+    {
+        initDartEmbedding<FACE>(nd, getEmbedding<FACE>(d)) ;
+        Dart e = phi2(nd) ;
+        initDartEmbedding<FACE>(phi1(e), getEmbedding<FACE>(e)) ;
+    }
+
+    return nd;
+}
+
+bool IHM2::uncutEdge(Dart d)
+{
+    if(Map2::uncutEdge(d))
+    {
+        if(isOrbitEmbedded<EDGE>())
+        {
+            copyDartEmbedding<EDGE>(phi2(d), d) ;
+        }
+        return true ;
+    }
+    return false ;
+}
+
+bool IHM2::edgeCanCollapse(Dart d)
+{
+    if(isBoundaryVertex(d) || isBoundaryVertex(phi1(d)))
+        return false ;
+
+    unsigned int val_v1 = vertexDegree(d) ;
+    unsigned int val_v2 = vertexDegree(phi1(d)) ;
+
+    if(val_v1 + val_v2 < 8 || val_v1 + val_v2 > 14)
+        return false ;
+
+    if(faceDegree(d) == 3)
+    {
+        if(vertexDegree(phi_1(d)) < 4)
+            return false ;
+    }
+
+    Dart dd = phi2(d) ;
+    if(faceDegree(dd) == 3)
+    {
+        if(vertexDegree(phi_1(dd)) < 4)
+            return false ;
+    }
+
+    // Check vertex sharing condition
+    std::vector<unsigned int> vu1 ;
+    vu1.reserve(32) ;
+    Dart vit1 = alpha1(alpha1(d)) ;
+    Dart end = phi1(dd) ;
+    do
+    {
+        unsigned int ve = getEmbedding<VERTEX>(phi2(vit1)) ;
+        vu1.push_back(ve) ;
+        vit1 = alpha1(vit1) ;
+    } while(vit1 != end) ;
+    end = phi1(d) ;
+    Dart vit2 = alpha1(alpha1(dd)) ;
+    do
+    {
+        unsigned int ve = getEmbedding<VERTEX>(phi2(vit2)) ;
+        std::vector<unsigned int>::iterator it = std::find(vu1.begin(), vu1.end(), ve) ;
+        if(it != vu1.end())
+            return false ;
+        vit2 = alpha1(vit2) ;
+    } while(vit2 != end) ;
+
+    return true ;
+}
+
+Dart IHM2::collapseEdge(Dart d, bool delDegenerateFaces)
+{
+    unsigned int vEmb = EMBNULL ;
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        vEmb = getEmbedding<VERTEX>(d) ;
+    }
+
+    Dart dV = Map2::collapseEdge(d, delDegenerateFaces);
+
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        Algo::Topo::setOrbitEmbedding<VERTEX>(*this, dV, vEmb) ;
+    }
+
+    return dV ;
+}
+
+bool IHM2::flipEdge(Dart d)
+{
+    if(Map2::flipEdge(d))
+    {
+        Dart e = phi2(d) ;
+
+        if (isOrbitEmbedded<VERTEX>())
+        {
+            copyDartEmbedding<VERTEX>(d, phi1(e)) ;
+            copyDartEmbedding<VERTEX>(e, phi1(d)) ;
+        }
+
+        if (isOrbitEmbedded<FACE>())
+        {
+            copyDartEmbedding<FACE>(phi_1(d), d) ;
+            copyDartEmbedding<FACE>(phi_1(e), e) ;
+        }
+
+        return true ;
+    }
+    return false ;
+}
+
+bool IHM2::flipBackEdge(Dart d)
+{
+    if(Map2::flipBackEdge(d))
+    {
+        Dart e = phi2(d) ;
+
+        if (isOrbitEmbedded<VERTEX>())
+        {
+            copyDartEmbedding<VERTEX>(d, phi1(e)) ;
+            copyDartEmbedding<VERTEX>(e, phi1(d)) ;
+        }
+
+        if (isOrbitEmbedded<FACE>())
+        {
+            copyDartEmbedding<FACE>(phi1(d), d) ;
+            copyDartEmbedding<FACE>(phi1(e), e) ;
+        }
+
+        return true ;
+    }
+    return false ;
+}
+
+void IHM2::swapEdges(Dart d, Dart e)
+{
+    Dart d2 = phi2(d);
+    Dart e2 = phi2(e);
+    Map2::swapEdges(d,e);
+
+    if(isOrbitEmbedded<VERTEX>())
+    {
+        copyDartEmbedding<VERTEX>(d, phi2(phi_1(d)));
+        copyDartEmbedding<VERTEX>(e, phi2(phi_1(e)));
+        copyDartEmbedding<VERTEX>(d2, phi2(phi_1(d2)));
+        copyDartEmbedding<VERTEX>(e2, phi2(phi_1(e2)));
+    }
+
+    if(isOrbitEmbedded<EDGE>())
+    {
+
+    }
+
+    if(isOrbitEmbedded<VOLUME>())
+    {
+        Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(*this, d);
+    }
+}
+
+void IHM2::insertEdgeInVertex(Dart d, Dart e)
+{
+    Map2::insertEdgeInVertex(d, e);
+
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        copyDartEmbedding<VERTEX>(e, d) ;
+    }
+
+    if (isOrbitEmbedded<FACE>())
+    {
+        if(!sameFace(d,e))
+        {
+            Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(*this, e);
+            Algo::Topo::copyCellAttributes<FACE>(*this, e, d);
+        }
+        else
+        {
+            Algo::Topo::setOrbitEmbedding<FACE>(*this, d, getEmbedding<FACE>(d)) ;
+        }
+    }
+}
+
+bool IHM2::removeEdgeFromVertex(Dart d)
+{
+    Dart dPrev = alpha_1(d);
+
+    if (dPrev == d) return false ;
+
+    bool b = Map2::removeEdgeFromVertex(d);
+
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*this, d);
+        Algo::Topo::copyCellAttributes<VERTEX>(*this, d, dPrev);
+    }
+
+    if (isOrbitEmbedded<FACE>())
+    {
+        if(!sameFace(d, dPrev))
+        {
+            Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(*this, d);
+            Algo::Topo::copyCellAttributes<FACE>(*this, d, dPrev);
+        }
+        else
+        {
+            setDartEmbedding<FACE>(d, getEmbedding<FACE>(d)) ;
+        }
+    }
+    return b ;
+}
+
+void IHM2::sewFaces(Dart d, Dart e, bool withBoundary)
+{
+    if (!withBoundary)
+    {
+        Map2::sewFaces(d, e, false) ;
+        return ;
+    }
+
+    Map2::sewFaces(d, e, withBoundary) ;
+
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        Algo::Topo::setOrbitEmbedding<VERTEX>(*this, d, getEmbedding<VERTEX>(d)) ;
+        Algo::Topo::setOrbitEmbedding<VERTEX>(*this, e, getEmbedding<VERTEX>(phi1(d))) ;
+    }
+
+    if (isOrbitEmbedded<EDGE>())
+    {
+        copyDartEmbedding<EDGE>(e, d) ;
+    }
+}
+
+void IHM2::unsewFaces(Dart d, bool withBoundary)
+{
+    if (!withBoundary)
+    {
+        Map2::unsewFaces(d, false) ;
+        return ;
+    }
+
+    Dart e = phi2(d) ;
+    Map2::unsewFaces(d) ;
+
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        copyDartEmbedding<VERTEX>(phi2(e), d) ;
+        copyDartEmbedding<VERTEX>(phi2(d), e) ;
+
+        Dart ee = phi1(e) ;
+        if(!sameVertex(d, ee))
+        {
+            Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*this, ee);
+            Algo::Topo::copyCellAttributes<VERTEX>(*this, ee, d);
+        }
+
+        Dart dd = phi1(d) ;
+        if(!sameVertex(e, dd))
+        {
+            Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(*this, dd);
+            Algo::Topo::copyCellAttributes<VERTEX>(*this, dd, e);
+        }
+    }
+
+    if (isOrbitEmbedded<EDGE>())
+    {
+        Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE>(*this, e);
+        Algo::Topo::copyCellAttributes<EDGE>(*this, e, d);
+    }
+}
+
+bool IHM2::collapseDegeneratedFace(Dart d)
+{
+    Dart e = phi2(d) ;
+    bool updateEdgeEmb = false ;
+    if(phi1(d) != d)
+        updateEdgeEmb = true ;
+
+    if(Map2::collapseDegeneratedFace(d))
+    {
+        if (isOrbitEmbedded<EDGE>() && updateEdgeEmb)
+        {
+            copyDartEmbedding<EDGE>(phi2(e), e) ;
+        }
+        return true ;
+    }
+    return false ;
+}
+
+void IHM2::splitFace(Dart d, Dart e)
+{
+    Map2::splitFace(d, e) ;
+
+    if (isOrbitEmbedded<VERTEX>())
+    {
+        initDartEmbedding<VERTEX>(phi_1(e), getEmbedding<VERTEX>(d)) ;
+        initDartEmbedding<VERTEX>(phi_1(d), getEmbedding<VERTEX>(e)) ;
+    }
+
+    if(isOrbitEmbedded<EDGE>())
+    {
+        Algo::Topo::initOrbitEmbeddingOnNewCell<EDGE>(*this, phi_1(d)) ;
+    }
+
+    if (isOrbitEmbedded<FACE>())
+    {
+        initDartEmbedding<FACE>(phi_1(d), getEmbedding<FACE>(d)) ;
+        Algo::Topo::setOrbitEmbeddingOnNewCell<FACE>(*this, e) ;
+        Algo::Topo::copyCellAttributes<FACE>(*this, e, d) ;
+    }
+}
+
+bool IHM2::mergeFaces(Dart d)
+{
+    Dart dNext = phi1(d) ;
+
+    if(Map2::mergeFaces(d))
+    {
+        if (isOrbitEmbedded<FACE>())
+        {
+            Algo::Topo::setOrbitEmbedding<FACE>(*this, dNext, getEmbedding<FACE>(dNext)) ;
+        }
+        return true ;
+    }
+    return false ;
+}
+
+bool IHM2::mergeVolumes(Dart d, Dart e, bool deleteFace)
+{
+    std::vector<Dart> darts ;
+    std::vector<unsigned int> vEmb ;
+    vEmb.reserve(32) ;
+    std::vector<unsigned int> eEmb ;
+    eEmb.reserve(32) ;
+    Dart fit = d ;
+    do
+    {
+        darts.push_back(phi2(fit)) ;
+
+        if (isOrbitEmbedded<VERTEX>())
+        {
+            vEmb.push_back(getEmbedding<VERTEX>(phi2(fit))) ;
+        }
+
+        if (isOrbitEmbedded<EDGE>())
+        {
+            eEmb.push_back(getEmbedding<EDGE>(fit)) ;
+        }
+
+        fit = phi1(fit) ;
+    } while (fit != d) ;
+
+    if(Map2::mergeVolumes(d, e, deleteFace))
+    {
+        for(unsigned int i = 0; i < darts.size(); ++i)
+        {
+            if (isOrbitEmbedded<VERTEX>())
+            {
+                Algo::Topo::setOrbitEmbedding<VERTEX>(*this, darts[i], vEmb[i]) ;
+            }
+
+            if (isOrbitEmbedded<EDGE>())
+            {
+                Algo::Topo::setOrbitEmbedding<EDGE>(*this, darts[i], eEmb[i]) ;
+            }
+        }
+        return true ;
+    }
+    return false ;
+}
+
+void IHM2::splitSurface(std::vector<Dart> &vd, bool firstSideClosed, bool secondSideClosed)
+{
+    std::vector<Dart> darts ;
+    darts.reserve(vd.size());
+
+    // save the edge neighbors darts
+    for(std::vector<Dart>::iterator it = vd.begin() ; it != vd.end() ; ++it)
+    {
+        darts.push_back(phi2(*it));
+    }
+
+    assert(darts.size() == vd.size());
+
+    Map2::splitSurface(vd, firstSideClosed, secondSideClosed);
+
+    // follow the edge path a second time to embed the vertex, edge and volume orbits
+    for(unsigned int i = 0; i < vd.size(); ++i)
+    {
+        Dart dit = vd[i];
+        Dart dit2 = darts[i];
+
+        // embed the vertex embedded from the origin volume to the new darts
+        if(isOrbitEmbedded<VERTEX>())
+        {
+            initDartEmbedding<VERTEX>(phi2(dit), getEmbedding<VERTEX>(phi1(dit)));
+            initDartEmbedding<VERTEX>(phi2(dit2), getEmbedding<VERTEX>(phi1(dit2)));
+        }
+
+        // embed the edge embedded from the origin volume to the new darts
+        if(isOrbitEmbedded<EDGE>())
+        {
+            initDartEmbedding<EDGE>(phi2(dit), getEmbedding<EDGE>(dit));
+            Algo::Topo::setOrbitEmbeddingOnNewCell<EDGE>(*this, phi2(dit2));
+            Algo::Topo::copyCellAttributes<EDGE>(*this, dit2, dit);
+        }
+
+        // embed the volume embedded from the origin volume to the new darts
+        if(isOrbitEmbedded<VOLUME>())
+        {
+            initDartEmbedding<VOLUME>(phi2(dit), getEmbedding<VOLUME>(dit));
+            initDartEmbedding<VOLUME>(phi2(dit2), getEmbedding<VOLUME>(dit2));
+        }
+    }
+}
+
+unsigned int IHM2::closeHole(Dart d, bool forboundary)
+{
+    unsigned int nbE = Map2::closeHole(d, forboundary) ;
+    Dart dd = phi2(d) ;
+    Dart f = dd ;
+    do
+    {
+        if (isOrbitEmbedded<VERTEX>())
+        {
+            unsigned int emb = getEmbedding<VERTEX>(phi1(phi2(f)));
+            if (emb == EMBNULL)
+                Algo::Topo::initOrbitEmbeddingOnNewCell<VERTEX>(*this, f) ;
+            else
+                initDartEmbedding<VERTEX>(f, emb) ;
+        }
+
+        if (isOrbitEmbedded<EDGE>())
+        {
+            unsigned int emb = getEmbedding<EDGE>(phi2(f));
+            if (emb == EMBNULL)
+                Algo::Topo::initOrbitEmbeddingOnNewCell<EDGE>(*this, f) ;
+            else
+                initDartEmbedding<EDGE>(f, emb) ;
+        }
+
+        f = phi1(f) ;
+    } while(dd != f) ;
+
+    if(isOrbitEmbedded<FACE>())
+    {
+        Algo::Topo::initOrbitEmbeddingOnNewCell<FACE>(*this, dd) ;
+    }
+
+    return nbE ;
+}
+
+bool IHM2::check() const
+{
+    bool topo = Map2::check() ;
+    if (!topo)
+        return false ;
+
+    CGoGNout << "nb vertex orbits : " << Algo::Topo::getNbOrbits<VERTEX>(*this) << CGoGNendl ;
+    if (isOrbitEmbedded<VERTEX>())
+        CGoGNout << "nb vertex cells : " << m_attribs[VERTEX].size() << CGoGNendl ;
+
+    CGoGNout << "nb edge orbits : " << Algo::Topo::getNbOrbits<EDGE>(*this) << CGoGNendl ;
+    if (isOrbitEmbedded<EDGE>())
+        CGoGNout << "nb edge cells : " << m_attribs[EDGE].size() << CGoGNendl ;
+
+    CGoGNout << "nb face orbits : " << Algo::Topo::getNbOrbits<FACE>(*this) << CGoGNendl ;
+    if (isOrbitEmbedded<FACE>())
+        CGoGNout << "nb face cells : " << m_attribs[FACE].size() << CGoGNendl ;
+
+    CGoGNout << "Check: embedding begin" << CGoGNendl ;
+    for(Dart d = begin(); d != end(); next(d))
+    {
+        if (isOrbitEmbedded<VERTEX>())
+        {
+            if (getEmbedding<VERTEX>(d) != getEmbedding<VERTEX>(alpha1(d)))
+            {
+                CGoGNout << "Check: different embeddings on vertex" << CGoGNendl ;
+                return false ;
+            }
+        }
+
+        if (isOrbitEmbedded<EDGE>())
+        {
+            if (getEmbedding<EDGE>(d) != getEmbedding<EDGE>(phi2(d)))
+            {
+                CGoGNout << "Check: different embeddings on edge" << CGoGNendl ;
+                return false ;
+            }
+        }
+
+        if (isOrbitEmbedded<FACE>())
+        {
+            if (getEmbedding<FACE>(d) != getEmbedding<FACE>(phi1(d)))
+            {
+                CGoGNout << "Check: different embeddings on face" << CGoGNendl ;
+                return false ;
+            }
+        }
+    }
+
+    CGoGNout << "Check: embedding ok" << CGoGNendl ;
+
+    std::cout << "nb vertex orbits : " << Algo::Topo::getNbOrbits<VERTEX>(*this) << std::endl ;
+    if (isOrbitEmbedded<VERTEX>())
+        std::cout << "nb vertex cells : " << m_attribs[VERTEX].size() << std::endl ;
+
+    std::cout << "nb edge orbits : " << Algo::Topo::getNbOrbits<EDGE>(*this) << std::endl ;
+    if (isOrbitEmbedded<EDGE>())
+        std::cout << "nb edge cells : " << m_attribs[EDGE].size() << std::endl ;
+
+    std::cout << "nb face orbits : " << Algo::Topo::getNbOrbits<FACE>(*this) << std::endl ;
+    if (isOrbitEmbedded<FACE>())
+        std::cout << "nb face cells : " << m_attribs[FACE].size() << std::endl ;
+
+    return true ;
+}
+
+void IHM2::initEdgeId()
+{
+    m_idCount = 0 ;
+    DartMarker<Map2> edgeMark(*this) ;
+    for(Dart d = Map2::begin(); d != Map2::end(); Map2::next(d))
+    {
+        if(!edgeMark.isMarked(d))
+        {
+            edgeMark.markOrbit<EDGE>(d) ;
+            m_edgeId[d] = m_idCount ;
+            m_edgeId[Map2::phi2(d)] = m_idCount++ ;
+        }
+    }
+}
+
+unsigned int IHM2::getNewEdgeId()
+{
+    return m_idCount++ ;
+}
+
+unsigned int IHM2::getEdgeId(Dart d)
+{
+    return m_edgeId[d.index] ;
+}
+
+void IHM2::setEdgeId(Dart d, unsigned int i)
+{
+    m_edgeId[d.index] = i ;
+}
+
+unsigned int IHM2::getTriRefinementEdgeId(Dart d)
+{
+    unsigned int dId = getEdgeId(phi_1(d));
+    unsigned int eId = getEdgeId(phi1(d));
+
+    unsigned int id = dId + eId;
+
+    if(id == 0)
+        return 1;
+    else if(id == 1)
+        return 2;
+    else if(id == 2)
+    {
+        if(dId == eId)
+            return 0;
+        else
+            return 1;
+    }
+
+    //else if(id == 3)
+    return 0;
+}
+
+unsigned int IHM2::getQuadRefinementEdgeId(Dart d)
+{
+    return (getEdgeId(this->phi1(d)) == 0) ? 1u : 0u;
+}
 
 } //namespace CGoGN
