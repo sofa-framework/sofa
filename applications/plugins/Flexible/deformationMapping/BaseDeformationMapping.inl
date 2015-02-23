@@ -91,6 +91,34 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
 }
 
 
+template <class JacobianBlockType>
+void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
+{    
+    if(this->f_printLog.getValue())
+        std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
+    int parentSize = this->getFromSize();
+    int childSize = this->getToSize();
+    this->f_index_parentToChild.clear();
+    this->f_index_parentToChild.resize(parentSize);
+
+    //Check size just in case
+    if(childSize != this->f_index.getValue().size())
+    {
+        std::cout << SOFA_CLASS_METHOD << " f_index has wrong size" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    //Go through f_index and use its value to update f_index_parentToChild
+    for(size_t i=0; i<this->f_index.getValue().size(); ++i)
+    {
+        for(size_t j=0; j< this->f_index.getValue()[i].size(); j++ )
+        {
+            int parentIndex = this->f_index.getValue()[i][j];
+            this->f_index_parentToChild[parentIndex].push_back(i); //Add child index
+            this->f_index_parentToChild[parentIndex].push_back(j); //Add parent index
+        }
+    }
+}
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
@@ -166,6 +194,8 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
     }
 
+    updateIndex();
+
     // init jacobians
     initJacobianBlocks();
 
@@ -209,6 +239,8 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     helper::WriteAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
 
     if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" custom gauss points imported"<<std::endl;
+
+    updateIndex();
 
     // init jacobians
     initJacobianBlocks();
@@ -478,8 +510,18 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
             // update index_parentToChild
             if( this->f_index_parentToChild.size()!=in.size())
             {
+                /*
                 this->f_index_parentToChild.resize(in.size());
                 for(size_t i=0; i< this->f_index.getValue().size(); i++ ) for(size_t j=0; j< this->f_index.getValue()[i].size(); j++ ) { this->f_index_parentToChild[this->f_index.getValue()[i][j]].push_back(i); this->f_index_parentToChild[this->f_index.getValue()[i][j]].push_back(j); }
+                */
+
+                //Update parentToChild index
+                //Note : make sure that each time f_index is modified then parentToChild is updated to.
+                //Example : If child number change the next line will miss some information
+                if( this->f_index_parentToChild.size()!=in.size())
+                {
+                    updateIndex();
+                }
             }
 
 #ifdef _OPENMP
