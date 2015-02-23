@@ -54,6 +54,12 @@ class Image:
             print "[ImageAPI.Image] ERROR: no mesh for", meshName
         mesh.visual = self.node.createObject("VisualModel", name="visual_"+name, src="@"+SofaPython.Tools.getObjectPath(mesh.mesh))
 
+    def addAllMeshVisual(self, color=None):
+        for name in self.meshSeq:
+            self.addMeshVisual(name)
+            if not color is None:
+                self.meshes[name].visual.setColor(color[0],color[1],color[2],color[3])
+
     def addMeshToImage(self, voxelSize):
         args=dict()
         i=1
