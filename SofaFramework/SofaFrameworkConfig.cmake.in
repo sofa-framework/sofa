@@ -25,6 +25,13 @@ set(SOFA_HAVE_GLUT    "@SOFA_HAVE_GLUT@"   )
 set(SOFA_HAVE_BOOST   "@SOFA_HAVE_BOOST@"  )
 set(SOFA_HAVE_EIGEN2  "@SOFA_HAVE_EIGEN2@" )
 set(SOFA_NO_OPENGL    "@SOFA_NO_OPENGL@"   )
+set(SOFA_HAVE_GTEST   "@SOFA_HAVE_GTEST@"  )
+
+if(SOFA_HAVE_GTEST)
+    find_package(GTest CONFIG REQUIRED)
+    # sofa_create_target(GTest SofaFramework "${GTEST_LIBRARY}" "${GTEST_INCLUDE_DIR}" )
+    # sofa_create_target(GTestMain SofaFramework "${GTEST_MAIN_LIBRARY}" "${GTEST_INCLUDE_DIR}" )
+endif()
 
 if(SOFA_HAVE_ZLIB)
     find_package(ZLIB REQUIRED)

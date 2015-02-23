@@ -16,6 +16,7 @@ set( SofaFramework_ACTUAL_SOURCE_DIR ${SofaFramework_SOURCE_DIR}/../framework)
 option(SOFAFRAMEWORK_DETECTIONOUTPUT_FREEMOTION      "Compile SofaCore library with DETECTIONOUTPUT_FREEMOTION preprocessor definition" OFF)
 option(SOFAFRAMEWORK_DETECTIONOUTPUT_BARYCENTRICINFO "Compile SofaCore library with DETECTIONOUTPUT_BARYCENTRICINFO preprocessor definition" OFF)
 option(SOFA_NO_OPENGL                                "Compile SofaFramework libraries without OpenGL dependencies" OFF )
+option(SOFA_TESTS                                    "Compile the gtest library, and the automatic tests" ON)
 
 set(DETECTIONOUTPUT_FREEMOTION ${SOFAFRAMEWORK_DETECTIONOUTPUT_FREEMOTION} )
 set(DETECTIONOUTPUT_BARYCENTRICINFO ${SOFAFRAMEWORK_DETECTIONOUTPUT_BARYCENTRICINFO} )
@@ -48,6 +49,18 @@ set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 ##
 ## Dependencies lookup 
 ##
+
+if(SOFA_TESTS)
+    set(gtest_force_shared_crt ON CACHE BOOL "")
+    add_subdirectory(../extlibs/gtest ${CMAKE_CURRENT_BINARY_DIR}/gtest)
+
+    find_package(GTest CONFIG REQUIRED)
+    # sofa_create_target(GTest SofaFramework "${GTEST_LIBRARY}" "${GTEST_INCLUDE_DIR}" )
+    # sofa_create_target(GTestMain SofaFramework "${GTEST_MAIN_LIBRARY}" "${GTEST_INCLUDE_DIR}" )
+    set(SOFA_HAVE_GTEST 1)
+else()
+    set(SOFA_HAVE_GTEST 0)
+endif()
 
 if( NOT SOFA_NO_OPENGL )
 
@@ -147,7 +160,7 @@ list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/helper      ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper )
 add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType )
 add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/sofa/core        ${CMAKE_CURRENT_BINARY_DIR}/SofaCore )
-if(TARGET gtest)
+if(SOFA_HAVE_GTEST)
     add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/framework_test        ${CMAKE_CURRENT_BINARY_DIR}/framework_test )
 endif()
 
