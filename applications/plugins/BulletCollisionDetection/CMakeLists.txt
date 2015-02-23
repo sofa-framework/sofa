@@ -43,7 +43,7 @@ set(SOURCE_FILES
 set(README_FILES
     BulletCollisionDetection.txt)
 
-find_package(SofaGeneral REQUIRED)
+find_package(SofaMisc REQUIRED)
 find_package(Compliant)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Bullet REQUIRED)
@@ -62,6 +62,10 @@ endif()
 
 include_directories(${BULLET_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${BULLET_LIBRARIES})
+
+if(SOFA_HAVE_GTEST)
+    add_subdirectory(BulletCollisionDetection_test)
+endif()
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT BulletCollisionDetection_libraries
