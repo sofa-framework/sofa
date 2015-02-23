@@ -17,7 +17,7 @@ class Image:
 
     def __init__(self, parentNode, name, imageType="ImageUC"):
         self.imageType = imageType
-        self.node = parentNode.createChild("image_"+name)
+        self.node = parentNode.createChild(name)
         self.name = name
         self.meshes = dict()
         self.meshSeq = list() # to keep track of the mesh sequence, order does matter
