@@ -822,3 +822,5 @@ s:#include *[<"]sofa/component/interactionforcefield/PartialRigidificationForceF
 s:#include *[<"]sofa/component/interactionforcefield/PartialRigidificationForceField.inl[>"]:#include <SofaObjectInteraction/PartialRigidificationForceField.inl>:
 s:#include *[<"]sofa/component/engine/TestEngine.h[>"]:#include <SofaEngine/TestEngine.h>:
 s:#include *[<"]sofa/component/controller/SleepController.h[>"]:#include <SofaUserInteraction/SleepController.h>:
+s:#include *[<"]sofa/component/collision/EndPoint.h[>"]:#include <SofaMeshCollision/SleepController.h>:
+s:#include *[<"]sofa/component/collision/CollisionPM.h[>"]:#include <SofaMeshCollision/CollisionPM.h>:
