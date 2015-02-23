@@ -61,9 +61,8 @@ using cimg_library::CImgList;
 
 /**
  * This class rasterizes meshes into a boolean image (1: inside mesh, 0: outside) or a scalar image (val: inside mesh, 0: outside)
+ * \todo adjust type of value, closingValue, backgroundValue, roiValue according to ImageTypes
  */
-
-
 template <class _ImageTypes>
 class MeshToImageEngine : public core::DataEngine
 {
