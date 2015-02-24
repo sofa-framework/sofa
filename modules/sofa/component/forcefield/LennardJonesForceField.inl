@@ -165,6 +165,38 @@ void LennardJonesForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 }
 
 template<class DataTypes>
+double LennardJonesForceField<DataTypes>::getPotentialEnergy (const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& d_x) const
+{
+    const VecCoord& p1 = d_x.getValue();
+
+
+    double potentialEnergy = 0;
+
+    for (unsigned int ib=1; ib<p1.size(); ib++)
+    {
+        const Coord pb = p1[ib];
+        for (unsigned int ia=0; ia<ib; ia++)
+        {
+            const Coord pa = p1[ia];
+            const Deriv u = pb-pa;
+            const Real d2 = u.norm2();
+            const Real d = (Real)sqrt(d2);
+
+            if(aInit.getValue() != 0)
+            {
+                potentialEnergy = -a/d;
+            }
+            else
+            {
+                potentialEnergy = a*(Real)pow(d,-alpha.getValue()) - b*(pow(d,-beta.getValue()));
+            }
+        }
+    }
+    return potentialEnergy;
+
+}
+
+template<class DataTypes>
 void LennardJonesForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowForceFields()) return;

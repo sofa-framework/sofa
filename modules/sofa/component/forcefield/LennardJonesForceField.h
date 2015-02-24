@@ -87,6 +87,7 @@ protected:
 
 public:
 
+    void setAInit(Real v) { aInit.setValue(v); }
     void setAlpha(Real v) { alpha.setValue(v); }
     void setBeta(Real v) { beta.setValue(v); }
     void setFMax(Real v) { fmax.setValue(v); }
@@ -100,6 +101,7 @@ public:
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& d_x) const;
 
     void draw(const core::visual::VisualParams* vparams);
 
