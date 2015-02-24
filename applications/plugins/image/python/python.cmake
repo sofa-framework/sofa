@@ -1,4 +1,4 @@
 set(PYTHON_FILES
-    python/image/__init__.py
-    python/image/StructuralAPI.py
+    python/SofaImage/__init__.py
+    python/SofaImage/ImageAPI.py
 )

@@ -36,7 +36,7 @@ Rectangle {
 
             var contentComponent = Qt.createComponent(source);
             if(contentComponent.status === Component.Error) {
-                console.log("LOADING ERROR:", contentComponent.errorString());
+                console.error("LOADING ERROR:", contentComponent.errorString());
             } else {
                 contentList.push(contentComponent.createObject(root, {"Layout.fillWidth": true, "scene": scene}));
             }
