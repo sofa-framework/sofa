@@ -1,24 +1,11 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
 
-set(HEADER_FILES
-
-	)
+project(THMPGSpatialHashing_test)
 
 set(SOURCE_FILES
-  THMPGSpatialHashingTest.cpp
-	)
+    THMPGSpatialHashingTest.cpp)
 
-include_directories("${SOFA_EXTLIBS_DIR}/gtest/include")
-link_directories("${SOFA_EXTLIBS_DIR}/gtest/lib")
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+target_link_libraries(${PROJECT_NAME} THMPGSpatialHashing SofaTest gtest_main)
 
-#add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${RC_FILES})
-
-AddCompilerDefinitions("")
-AddLinkerDependencies(THMPGSpatialHashing)
-AddLinkerDependencies(gtest gtest_main)
-#AddLinkerDependencies(SofaTest_test)
-AddLinkerDependencies(SofaSimulationGraph)
-AddLinkerDependencies(SceneCreator)
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

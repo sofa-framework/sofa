@@ -27,6 +27,11 @@ if(LINUX OR UNIX AND NOT APPLE)
     target_link_libraries(${PROJECT_NAME} rt)   # for clock_gettime()
 endif()
 
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(THMPGSpatialHashing_test)
+endif()
+
 install(TARGETS ${PROJECT_NAME}
     COMPONENT THMPGSpatialHashing_libraries
     EXPORT THMPGSpatialHashingTargets
