@@ -28,11 +28,11 @@ find_package(SofaPython QUIET)
 
 if(SofaPython_FOUND)
     list(APPEND SOURCE_FILES python_test_list.cpp)
-    add_definitions("-DFLEXIBLE_TEST_PYTHON_DIR=\"\\\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\\\"\"")
+    add_definitions("-DFLEXIBLE_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes/python\"")
     include(./scenes/python/python.cmake) # Defines PYTHON_FILES
 endif()
 
-add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"\\\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\\\"\"")
+add_definitions("-DFLEXIBLE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
 # find_package(image QUIET)
 # find_package(Compliant QUIET)
