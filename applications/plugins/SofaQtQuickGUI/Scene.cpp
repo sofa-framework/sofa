@@ -150,7 +150,7 @@ void Scene::open()
 
 	std::string filepath = finalFilename.toLatin1().constData();
 	if(sofa::helper::system::DataRepository.findFile(filepath))
-		finalFilename = filepath.c_str();
+        finalFilename = filepath.c_str();
 
 	if(finalFilename.isEmpty())
 	{

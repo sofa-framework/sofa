@@ -266,7 +266,7 @@ void Viewer::viewAll()
 		return;
 
 	QVector3D min, max;
-	myScene->computeBoundingBox(min, max);
+    myScene->computeBoundingBox(min, max);
 
 	myCamera->fit(min, max);
 }
