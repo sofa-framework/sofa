@@ -73,6 +73,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${REGISTRATION_VERSION}
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_REGISTRATION")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(Registration_test)
+endif()
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT Registration_libraries

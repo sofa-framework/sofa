@@ -1,12 +1,18 @@
-#include <plugins/SofaTest/Sofa_test.h>
-#include <plugins/SceneCreator/SceneCreator.h>
-#include <assert.h>
-#include <sofa/simulation/graph/DAGSimulation.h>
+#include <SofaTest/Sofa_test.h>
+#include <Registration/InertiaAlign.h>
+#include <SceneCreator/SceneCreator.h>
 #include <SofaLoader/MeshObjLoader.h>
 #include <SofaLoader/MeshObjLoader.h>
 #include <SofaEngine/GenerateRigidMass.h>
+
+#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/Node.h>
-#include <plugins/Registration/InertiaAlign.h>
+#include <sofa/helper/RandomGenerator.h>
+
+#include <assert.h>
+
+using sofa::core::objectmodel::New;
+
 //#include <projects/GenerateRigid/GenerateRigid.h>
 namespace sofa{
 using namespace modeling;
