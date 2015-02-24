@@ -237,6 +237,10 @@ foreach(HEADER ${HEADER_FILES})
     install(FILES ${HEADER} DESTINATION "${COMPLIANT_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}/${DIR}")
 endforeach(HEADER HEADERS)
 
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(Compliant_test)
+endif()
 
 include(CMakePackageConfigHelpers)
 # CompliantConfigVersion.cmake file (same for build tree and intall)

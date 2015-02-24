@@ -48,10 +48,12 @@ using std::endl;
 typedef sofa::defaulttype::Rigid3dTypes Rigid3;
 typedef sofa::defaulttype::Rigid3dMass Rigid3Mass;
 typedef sofa::defaulttype::Vec3dTypes Vec3Types;
+typedef sofa::defaulttype::Vec1dTypes Vec1Types;
 #else
 typedef sofa::defaulttype::Rigid3fTypes Rigid3;
 typedef sofa::defaulttype::Rigid3fMass Rigid3Mass;
 typedef sofa::defaulttype::Vec3fTypes Vec3Types;
+typedef sofa::defaulttype::Vec1fTypes Vec1Types;
 #endif
 
 namespace sofa {
