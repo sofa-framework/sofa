@@ -1,10 +1,10 @@
 from SofaPython.Tools import listToStr as concat
 import SofaPython.sml
-import StructuralAPI
+import FlexibleAPI
 
 def insertDeformableWithSkinning(parentNode, deformableModel, bonesPath, bonesId):
     print "deformable:", deformableModel.name
-    deformable=StructuralAPI.Deformable(parentNode, deformableModel.name)
+    deformable=FlexibleAPI.Deformable(parentNode, deformableModel.name)
     deformable.setMesh(deformableModel.position, deformableModel.mesh.source)
     deformable.addVisual()
     
