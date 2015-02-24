@@ -5,9 +5,7 @@ project(image_test)
 set(SOURCE_FILES
     DataImage_test.cpp)
 
-
-
-add_definitions("-DIMAGE_TEST_SCENES_DIR=\"\\\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\\\"\"")
+add_definitions("-DIMAGE_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} image SofaTest gtest_main)
