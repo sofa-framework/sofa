@@ -30,6 +30,9 @@ class Deformable:
         self.skinning = self.node.createObject("LinearMapping", template="Rigid3d,Vec3d", name="skinning", input="@"+bonesPath, indices=concat(indices), weights=concat(weights))
 
 class ShapeFunction:
+    """ High-level API to manipulate ShapeFunction
+    @todo better handle template
+    """
     def __init__(self, node, name):
         self.node = node.createChild(name)
         self.name = name
@@ -39,7 +42,7 @@ class ShapeFunction:
         """ Add a Voronoi shape function using position from position component and BranchingImage image
         """
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
-        self.shapeFunction = self.node.createObject('VoronoiShapeFunction', name="shapeFunction", template="ShapeFunctiond,BranchingImageD", position="@"+SofaPython.Tools.getObjectPath(position)+".position", src="@"+imagePath, method=0, nbRef=8, bias=True)
+        self.shapeFunction = self.node.createObject('VoronoiShapeFunction', name="shapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, position="@"+SofaPython.Tools.getObjectPath(position)+".position", src="@"+imagePath, method=0, nbRef=8, bias=True)
    
     def getFilenameIndices(self, filenamePrefix=None, directory=""):
         _filename=filenamePrefix if not filenamePrefix is None else self.name
@@ -59,6 +62,5 @@ class ShapeFunction:
         sfPath = SofaPython.Tools.getObjectPath(self.shapeFunction)
         self.node.createObject('ImageExporter', template="BranchingImageUI", name="exporterIndices", image="@"+sfPath+".indices", transform="@"+sfPath+".transform", filename=self.getFilenameIndices(filenamePrefix, directory), exportAtEnd=True, printLog=True)
         self.node.createObject('ImageExporter', template="BranchingImageD", name="exporterWeights", image="@"+sfPath+".weights", transform="@"+sfPath+".transform", filename=self.getFilenameWeights(filenamePrefix, directory), exportAtEnd=True, printLog=True)
-       
        
        
