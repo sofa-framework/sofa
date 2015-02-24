@@ -26,7 +26,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <sofa/defaulttype/defaulttype.h>
 #include <sofa/core/MultiMapping.inl>
 
 namespace sofa
