@@ -23,11 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "stdafx.h"
-#include "Elasticity_test.h"
+#include <SofaTest/Elasticity_test.h>
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
 #include "../strainMapping/InvariantMapping.h"
@@ -93,7 +92,6 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
     void SetUp()
     { 
         // Init simulation
-        sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 		
         vIndex=25;

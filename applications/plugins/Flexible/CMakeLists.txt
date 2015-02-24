@@ -263,6 +263,11 @@ foreach(HEADER ${HEADER_FILES})
     install(FILES ${HEADER} DESTINATION "${FLEXIBLE_INSTALL_INCLUDE_DIR}/${PROJECT_NAME}/${DIR}")
 endforeach(HEADER HEADERS)
 
+find_package(SofaTest QUIET)
+if(SofaTest_FOUND)
+    add_subdirectory(Flexible_test)
+endif()
+
 include(CMakePackageConfigHelpers)
 # FlexibleConfigVersion.cmake file (same for build tree and intall)
 write_basic_package_version_file(${FLEXIBLE_BUILD_CMAKE_DIR}/FlexibleConfigVersion.cmake

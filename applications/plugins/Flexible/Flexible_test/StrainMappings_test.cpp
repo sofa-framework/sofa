@@ -10,7 +10,7 @@
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/CauchyStrainMapping.h"
 
-#include <Mapping_test.h>
+#include <SofaTest/Mapping_test.h>
 
 
 namespace sofa {
