@@ -11,6 +11,8 @@ check_required_components(image)
 
 find_package(SofaBase REQUIRED)
 find_package(Newmat REQUIRED)
+find_package(Freenect QUIET)
+find_package(DiffusionSolver CONFIG REQUIRED)
 
 if(NOT TARGET image)
 	include("${CMAKE_CURRENT_LIST_DIR}/imageTargets.cmake")

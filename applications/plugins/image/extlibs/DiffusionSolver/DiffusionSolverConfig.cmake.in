@@ -1,0 +1,12 @@
+# - Config file for the DiffusionSolver package
+# It defines the following variables
+#  DiffusionSolver_INCLUDE_DIR  - include directories for DiffusionSolver
+#  DiffusionSolver_LIBRARIES    - libraries to link against
+
+@PACKAGE_INIT@
+
+check_required_components(DiffusionSolver)
+
+if(NOT TARGET DiffusionSolver)
+	include("${CMAKE_CURRENT_LIST_DIR}/DiffusionSolverTargets.cmake")
+endif() 

@@ -102,8 +102,11 @@ endif()
 #     AddLinkerDependencies("cxcore")
 # endif()
 
+find_package(DiffusionSolver CONFIG REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase)
+target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 target_link_libraries(${PROJECT_NAME} newmat)
 
 if(FREENECT_FOUND)
