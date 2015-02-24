@@ -31,23 +31,22 @@ endif()
 
 set(PYTHON_FILES "")
 
-# Todo
-
-# if(SOFA-PLUGIN_SOFAPYTHON)
-#     list(APPEND HEADER_FILES "Python_test.h")
-#     list(APPEND SOURCE_FILES "Python_test.cpp")
-
-#     AddLinkerDependencies(SofaPython)
-
-#     # include python files
-#     include(./python/python.cmake)
-# endif()
-
 find_package(SofaFramework REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SceneCreator REQUIRED)
 
+find_package(SofaPython QUIET)
+if(SofaPython_FOUND)
+    list(APPEND HEADER_FILES "Python_test.h")
+    list(APPEND SOURCE_FILES "Python_test.cpp")
+    include(./python/python.cmake) # Defines PYTHON_FILES
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+
+if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
+endif()
 
 target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentMisc)
 target_link_libraries(${PROJECT_NAME} gtest)
