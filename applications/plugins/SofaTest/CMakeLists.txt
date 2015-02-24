@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 2.8)
 
 project(SofaTest)
 
+set(SOFATEST_MAJOR_VERSION 0)
+set(SOFATEST_MINOR_VERSION 0)
+set(SOFATEST_BUILD_VERSION 1)
+
+set(SOFATEST_VERSION ${SOFATEST_MAJOR_VERSION}.${SOFATEST_MINOR_VERSION}.${SOFATEST_BUILD_VERSION} CACHE INTERNAL "SofaTest version")
+
 set(HEADER_FILES
 
     InitPlugin_test.h
@@ -56,9 +62,39 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TES
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT Flexible_libraries
-        EXPORT FlexibleTargets
+        COMPONENT SofaTest_libraries
+        EXPORT SofaTestTargets
         PUBLIC_HEADER DESTINATION include/SofaTest
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
+
+include(CMakePackageConfigHelpers)
+
+# SofaTestConfigVersion.cmake
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/SofaTest/SofaTestConfigVersion.cmake
+                                 VERSION ${SOFATEST_VERSION}
+                                 COMPATIBILITY AnyNewerVersion)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaTest/SofaTestConfigVersion.cmake
+        DESTINATION lib/cmake/SofaTest)
+
+# SofaTestTargets.cmake
+install(EXPORT SofaTestTargets
+        DESTINATION lib/cmake/SofaTest)
+
+# SofaTestConfig.cmake (build directory)
+set(SOFATEST_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+configure_package_config_file(SofaTestConfig.cmake.in
+                              SofaTest/SofaTestConfig.cmake
+                              INSTALL_DESTINATION Nope
+                              PATH_VARS SOFATEST_INCLUDE_DIR)
+
+# SofaTestConfig.cmake (install directory)
+set(SOFATEST_INCLUDE_DIR include)
+configure_package_config_file(SofaTestConfig.cmake.in
+                              ${CMAKE_CURRENT_BINARY_DIR}/SofaTest/SofaTestConfigInstall.cmake
+                              INSTALL_DESTINATION lib/cmake/SofaTest
+                              PATH_VARS SOFATEST_INCLUDE_DIR)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaTest/SofaTestConfigInstall.cmake
+        DESTINATION lib/cmake/SofaTest
+        RENAME SofaTestConfig.cmake)
