@@ -23,10 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "stdafx.h"
-#include <plugins/SofaTest/Sofa_test.h>
-#include<sofa/helper/system/SetDirectory.h>
+#include <SofaTest/Sofa_test.h>
+#include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -72,7 +71,6 @@ namespace sofa {
         void SetUp()
         { 
             // Init simulation
-            sofa::component::init();
             sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
             root = simulation::getSimulation()->createNewGraph("root");

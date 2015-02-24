@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "stdafx.h"
-#include <Mapping_test.h>
+#include <SofaTest/Mapping_test.h>
 #include <sofa/helper/Quater.h>
 #include <image/ImageTypes.h>
 #include <image/ImageContainer.h>
