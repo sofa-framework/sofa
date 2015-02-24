@@ -176,6 +176,10 @@ configure_package_config_file(SofaPythonConfig.cmake.in
                               INSTALL_DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR}
                               PATH_VARS SOFAPYTHON_INCLUDE_DIR)
 
+install(FILES ${SOFAPYTHON_BUILD_CMAKE_DIR}/SofaPythonConfigInstall.cmake
+        DESTINATION ${SOFAPYTHON_INSTALL_CMAKE_DIR}
+        RENAME SofaPythonConfig.cmake)
+
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT SofaPython_libraries
