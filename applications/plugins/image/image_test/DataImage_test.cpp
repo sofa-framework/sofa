@@ -23,10 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/Data.h>
-#include <plugins/SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneCreator.h>
 
-#include <plugins/SofaTest/Sofa_test.h>
-#include <plugins/image/ImageContainer.h>
+#include <SofaTest/Sofa_test.h>
+#include <image/ImageContainer.h>
 
 namespace sofa {
 
@@ -52,7 +52,7 @@ struct DataImageLink_test : public Sofa_test<>
         imageContainer = sofa::core::objectmodel::New<ImageContainer>();
 
         // Set path to image for imageContainer
-        std::string fileName = std::string(IMAGETEST_SCENES_DIR) + "/" + "beam.raw";
+        std::string fileName = std::string(IMAGE_TEST_SCENES_DIR) + "/" + "beam.raw";
         imageContainer->m_filename.setValue(fileName);
 
         // Init image container
