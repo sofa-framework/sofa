@@ -1,46 +1,33 @@
-include(${SOFA_CMAKE_DIR}/preProject.cmake)
+cmake_minimum_required(VERSION 2.8)
+
+project(Compliant_test)
 
 set(HEADER_FILES
-
-    Compliant_test.h
-
-        )
+    Compliant_test.h)
 
 set(SOURCE_FILES
-
     Assembly_test.cpp
     CompliantImplicitSolver_test.cpp
     CompliantNLImplicitSolver_test.cpp
     DampedOscillator_test.cpp
-	AssembledRigidRigidMapping_test.cpp
+	AssembledRigidRigidMapping_test.cpp)
 
-	)
+find_package(SofaPython QUIET)
 
-if(APPLE)
-#    set(RC_FILES "runSOFA.icns")
+if(SofaPython_FOUND)
+    add_definitions("-DCOMPLIANT_TEST_PYTHON_DIR=\"\\\"${CMAKE_CURRENT_SOURCE_DIR}/python\\\"\"")
+    list(APPEND SOURCE_FILES python_test_list.cpp)
+    include(./python/python.cmake) # Defines PYTHON_FILES
 endif()
 
-if(WIN32)
-	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+target_link_libraries(${PROJECT_NAME} Compliant SofaTest gtest_main)
+
+if(SofaPython_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
 
-if(SOFA-PLUGIN_SOFAPYTHON)
-    AddCompilerDefinitions("COMPLIANT_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
-    list(APPEND SOURCE_FILES "python_test_list.cpp")
-    AddLinkerDependencies(SofaPython)
-    # include python files
-    include(./python/python.cmake)
-endif()
+# # needed by python tests
+# AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${RC_FILES} ${PYTHON_FILES})
-
-AddLinkerDependencies(Compliant SofaTest)
-
-
-
-
-# needed by python tests
-AddCompilerDefinitions("SOFA_SRC_DIR=${SOFA_SRC_DIR}")
-
-
-include(${SOFA_CMAKE_DIR}/postProject.cmake)
+add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
