@@ -49,3 +49,26 @@ if(APPLE)
     include_directories(${X11_X11_INCLUDE_PATH})
 endif()
 
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT DiffusionSolver_libraries
+        EXPORT  DiffusionSolverTargets
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
+include(CMakePackageConfigHelpers)
+# imageConfigVersion.cmake
+write_basic_package_version_file(${CMAKE_BINARY_DIR}/DiffusionSolver/DiffusionSolverConfigVersion.cmake
+                                 VERSION 0.0
+                                 COMPATIBILITY AnyNewerVersion)
+
+# DiffusionSolverConfig.cmake
+configure_package_config_file(DiffusionSolverConfig.cmake.in
+                              ${CMAKE_BINARY_DIR}/DiffusionSolverConfig.cmake
+                              INSTALL_DESTINATION lib/cmake/DiffusionSolver)
+install(FILES ${CMAKE_BINARY_DIR}/DiffusionSolverConfig.cmake
+        DESTINATION lib/cmake/DiffusionSolver)
+
+# DiffusionSolverTargets.cmake
+install(EXPORT DiffusionSolverTargets
+        DESTINATION lib/cmake/DiffusionSolver)
