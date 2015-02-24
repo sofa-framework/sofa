@@ -20,6 +20,7 @@ set(HEADER_FILES
     mapping/ProjectionMapping.h
     mapping/RigidComMultiMapping.h
     mapping/AffineMultiMapping.h
+	mapping/PythonMultiMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/LDLTSolver.h
@@ -129,6 +130,7 @@ set(SOURCE_FILES
     mapping/ProjectionMapping.cpp
     mapping/RigidComMultiMapping.cpp
     mapping/AffineMultiMapping.cpp
+	mapping/PythonMultiMapping.cpp
 
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp
