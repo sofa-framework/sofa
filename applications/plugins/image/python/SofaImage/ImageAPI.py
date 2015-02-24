@@ -82,12 +82,18 @@ class Image:
         imagePath = SofaPython.Tools.getObjectPath(self.image)
         self.viewer = self.node.createObject('ImageViewer', name="viewer", template=self.imageType, image="@"+imagePath+".image", transform="@"+imagePath+".transform")
 
-    def addContainer(self, filename):
-        self.image = self.node.createObject('ImageContainer', template=self.imageType, name="image", filename=filename)
+    def getFilename(self, filename=None, directory=""):
+        _filename = filename if not filename is None else self.name+".mhd"
+        _filename = os.path.join(directory, _filename)
+        return _filename
 
-    def addExporter(self, filename):
+    def addContainer(self, filename=None, directory=""):
+        self.image = self.node.createObject('ImageContainer', template=self.imageType, name="image", filename=self.getFilename(filename, directory))
+
+    def addExporter(self, filename=None, directory=""):
         if self.image is None:
             print "[ImageAPI.Image] ERROR: no image"
         imagePath = SofaPython.Tools.getObjectPath(self.image)
-        self.exporter = self.node.createObject('ImageExporter', template=self.imageType, name="exporter", image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=filename, exportAtEnd=True, printLog=True)
+        self.exporter = self.node.createObject('ImageExporter', template=self.imageType, name="exporter", image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=self.getFilename(filename, directory), exportAtEnd=True, printLog=True)
+
 
