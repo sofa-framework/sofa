@@ -5,7 +5,9 @@
 # ctest.  You can select which tests to run using 'ctest -R regex'.
 # For more options, run 'ctest --help'.
 
-set(CMAKE_CXX_FLAGS -fPIC)
+if(NOT WIN32)
+    set(CMAKE_CXX_FLAGS -fPIC)
+endif()
 
 # BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here to
 # make it prominent in the GUI.
