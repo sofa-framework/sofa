@@ -27,7 +27,7 @@ timeout "demos/linearHexaFEM-armadillo.scn" "50"
 
 # This scene needs time to load
 iterations "demos/steak_diffusion.scn" "10"
-timeout "demos/steak_diffusion.scn" "80"
+timeout "demos/steak_diffusion.scn" "180"
 
 #This scene needs long timeout because DT is big (DT=1) so compute only a few iterations
 iterations "visualization/strainDiscretizer.scn" "10"

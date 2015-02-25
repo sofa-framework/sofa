@@ -1,288 +1,58 @@
 <?xml version="1.0"?>
-<Node 	name="Root" gravity="0 -0.5 0 " dt="0.1"  >
-  <RequiredPlugin pluginName="Flexible"/>
-  <RequiredPlugin pluginName="image"/>
-  <VisualStyle displayFlags="showVisual  " />
-  <DefaultAnimationLoop />
-  <DefaultVisualManagerLoop />
+<Node 	name="Root" gravity="0 -9.8 0 " dt="0.05"  >
 
-  <EulerImplicitSolver />
-  <CGLinearSolver iterations="100"/>
-  <!--   <EulerExplicitSolver/> -->
+<RequiredPlugin pluginName="Flexible"/>
+<RequiredPlugin pluginName="image"/>
+  
+<EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
+<CGSolver tolerance="1.0e-9" threshold="1.0e-9" />
 
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels" />
 
+    <MeshObjLoader name="loader" filename="mesh/torus.obj" triangulate="1"/>
 
-
-  <Node name="MAPPED  PINK" >
-
-    <MeshObjLoader name="mesh" filename="mesh/torus.obj" triangulate="1"/>
-    <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.1" padSize="1" rotateImage="true" />
+    <MeshToImageEngine template="ImageUC" name="rasterizer" src="@loader" voxelSize="0.1" padSize="1" rotateImage="true" />
     <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 
-    <!-- param = DESIRED NUMBER OF FRAMES -->
-    <!-- fixedPosition = USER POSITIONS OF FRAMES -->
-    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
-    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
+    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" /> 
+    <MechanicalObject template="Affine" name="dof" showObject="true" showObjectScale="0.7" src="@sampler" />
 
+    <VoronoiShapeFunction name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="4" />
 
-    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
+    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@sampler.position" name="FixedROI"/>
     <FixedConstraint indices="@FixedROI.indices" />
 
-    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
-
     <Node 	name="behavior"   >
-
-      <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
-
-      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Affine,F332"  />
-
-      <Node 	name="E"   >
-        <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="F332,E333"    />
-        <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
-
-      </Node>
+	<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamplesScale="0" targetNumber="200" />
+	<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+    	<LinearMapping template="Affine,F331"  />
+	<Node 	name="E"   >
+	    <MechanicalObject  template="E331" name="E"  /> 
+	    <GreenStrainMapping template="F331,E331"    />
+	    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/> 
+	</Node>
 
     </Node>
 
-    <Node 	name="mass"   >
-      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
-      <Mesh name="mesh" src="@loader" />
-      <MechanicalObject />
-      <UniformMass totalMass="250" />
-      <LinearMapping template="Affine,Vec3d"  />
+    <Node  name="mass"   >
+	      <TransferFunction name="density" template="ImageUC,ImageD" inputImage="@../image.image" param="0 0 1 2" />
+	      <MechanicalObject template="Vec3d" />
+	      <LinearMapping template="Affine,Vec3d"  />
+	      <MassFromDensity  name="MassFromDensity"  template="Affine,ImageD" image="@density.outputImage" transform="@../image.transform"  lumping="0"/>
     </Node>
+    <AffineMass massMatrix="@mass/MassFromDensity.massMatrix"/>
+<!-- <TransferFunction name="density" template="ImageUC,ImageD" inputImage="@image.image" param="0 0 1 0.01" />-->
+<!-- <ImageDensityMass template="Affine"  densityImage="@density.outputImage" transform="@image.transform" lumping="0"  printMassMatrix="true" />-->
+
     <Node 	name="collision"   >
-      <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
-      <Mesh name="mesh" src="@MeshLoader" />
-      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
-      <LinearMapping template="Affine,Vec3d"/>
+	<Mesh name="mesh" src="@../loader" /> 
+	<MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
+    	<LinearMapping template="Affine,Vec3d"/>
+    	<Node 	name="visual"   >
+		<VisualModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
+	    	<IdentityMapping />
+    	</Node>
     </Node>
-    <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
-      <LinearMapping template="Affine,ExtVec3f"/>
-    </Node>
-  </Node>
-
-
-
-
-
-
-  <Node name="DENSITY NOT LUMPED  BLUE" >
-
-    <!--     <ExtraMonitor template="Affine" listening="1"/> -->
-
-    <MeshObjLoader name="mesh" filename="mesh/torus.obj" triangulate="1"/>
-    <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.1" padSize="1" rotateImage="true" />
-    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
-
-    <!-- param = DESIRED NUMBER OF FRAMES -->
-    <!-- fixedPosition = USER POSITIONS OF FRAMES -->
-    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
-    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
-
-
-    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
-    <FixedConstraint indices="@FixedROI.indices" />
-
-    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
-
-
-    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.022"/>
-    <ImageDensityMass  template="Affine" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" printMassMatrix="true" />
-
-    <Node 	name="behavior"   >
-
-      <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
-
-      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Affine,F332"  />
-
-      <Node 	name="E"   >
-        <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="F332,E333"    />
-        <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
-
-      </Node>
-
-    </Node>
-    <Node 	name="collision"   >
-      <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
-      <Mesh name="mesh" src="@MeshLoader" />
-      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
-      <LinearMapping template="Affine,Vec3d"/>
-    </Node>
-
-    <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.2 0.2 1 "/>
-      <LinearMapping template="Affine,ExtVec3f"/>
-    </Node>
-  </Node>
-
-
-  <Node name="DENSITY BLOC-LUMPED  YELLOW" >
-
-    <MeshObjLoader name="mesh" filename="mesh/torus.obj" triangulate="1"/>
-    <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.1" padSize="1" rotateImage="true" />
-    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
-
-    <!-- param = DESIRED NUMBER OF FRAMES -->
-    <!-- fixedPosition = USER POSITIONS OF FRAMES -->
-    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
-    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
-
-
-    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
-    <FixedConstraint indices="@FixedROI.indices" />
-
-    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
-
-
-    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.022"/>
-    <ImageDensityMass  template="Affine" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="1" printMassMatrix="true"/>
-
-    <Node 	name="behavior"   >
-
-      <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
-
-      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Affine,F332"  />
-
-      <Node 	name="E"   >
-        <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="F332,E333"    />
-        <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
-
-      </Node>
-
-    </Node>
-    <Node 	name="collision"   >
-      <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
-      <Mesh name="mesh" src="@MeshLoader" />
-      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
-      <LinearMapping template="Affine,Vec3d"/>
-    </Node>
-
-    <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 1 0 "/>
-      <LinearMapping template="Affine,ExtVec3f"/>
-    </Node>
-  </Node>
-
-
-
-  <Node name="DENSITY DIAGONAL-LUMPED  GRAY" >
-
-    <MeshObjLoader name="mesh" filename="mesh/torus.obj" triangulate="1"/>
-    <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.1" padSize="1" rotateImage="true" />
-    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
-
-    <!-- param = DESIRED NUMBER OF FRAMES -->
-    <!-- fixedPosition = USER POSITIONS OF FRAMES -->
-    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
-    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
-
-
-    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
-    <FixedConstraint indices="@FixedROI.indices" />
-
-    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
-
-
-    <TransferFunction name="densityTF" template="ImageUC,ImageD" inputImage="@rasterizer.image" param="0 0 1 0.022"/>
-    <ImageDensityMass  template="Affine" densityImage="@densityTF.outputImage" transform="@rasterizer.transform" lumping="2" printMassMatrix="true"/>
-
-    <Node 	name="behavior"   >
-
-      <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
-
-      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Affine,F332"  />
-
-      <Node 	name="E"   >
-        <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="F332,E333"    />
-        <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
-
-      </Node>
-
-    </Node>
-    <Node 	name="collision"   >
-      <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
-      <Mesh name="mesh" src="@MeshLoader" />
-      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
-      <LinearMapping template="Affine,Vec3d"/>
-    </Node>
-
-    <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.3 0.3 0.3"/>
-      <LinearMapping template="Affine,ExtVec3f"/>
-    </Node>
-  </Node>
-
-
-
-  <Node name="UNIFORM  GREEN" >
-
-    <MeshObjLoader name="mesh" filename="mesh/torus.obj" triangulate="1"/>
-    <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.1" padSize="1" rotateImage="true" />
-    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
-
-    <!-- param = DESIRED NUMBER OF FRAMES -->
-    <!-- fixedPosition = USER POSITIONS OF FRAMES -->
-    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
-    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
-    <MechanicalObject template="Affine" name="parent" useMask="0" showObject="true" showObjectScale="0.5" src="@merged" />
-
-
-    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
-    <FixedConstraint indices="@FixedROI.indices" />
-
-    <VoronoiShapeFunction name="SF" position="@parent.rest_position" src="@image" useDijkstra="true" method="0" nbRef="4" />
-
-
-    <UniformMass template="Affine" totalMass="250"  />
-
-
-    <Node 	name="behavior"   >
-
-      <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
-      <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="4" showSamplesScale="0" printLog="false" targetNumber="1" />
-
-      <MechanicalObject template="F332" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
-      <LinearMapping template="Affine,F332"  />
-
-      <Node 	name="E"   >
-        <MechanicalObject  template="E333" name="E"  />
-        <GreenStrainMapping template="F332,E333"    />
-        <HookeForceField  template="E333" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
-
-      </Node>
-
-    </Node>
-    <Node 	name="collision"   >
-      <MeshObjLoader name="MeshLoader" filename="mesh/torus.obj"/>
-      <Mesh name="mesh" src="@MeshLoader" />
-      <MechanicalObject  template="Vec3d" name="pts"  useMask="0"  />
-      <LinearMapping template="Affine,Vec3d"/>
-    </Node>
-
-    <Node 	name="visual"   >
-      <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.2 1 0.8 "/>
-      <LinearMapping template="Affine,ExtVec3f"/>
-    </Node>
-  </Node>
-
 
 
 </Node>

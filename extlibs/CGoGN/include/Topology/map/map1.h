@@ -71,16 +71,16 @@ public:
 	 * Access and Modification
 	 *************************************************************************/
 
-	Dart phi1(Dart d) const;
+    Dart phi1(Dart d) const;
 
-	Dart phi_1(Dart d) const;
+    Dart phi_1(Dart d) const;
 
-	template <int N>
-	Dart phi(Dart d) const;
+    template <int N>
+    Dart phi(Dart d) const;
 
-	Dart alpha1(Dart d) const;
+    Dart alpha1(Dart d) const;
 
-	Dart alpha_1(Dart d) const;
+    Dart alpha_1(Dart d) const;
 
 protected:
 	//! Link the current dart to dart d with a permutation

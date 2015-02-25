@@ -50,7 +50,7 @@ SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : sofa::core::be
     , skeletonJoints(initData(&skeletonJoints, "joints", "skeleton joints"))
     , skeletonBones(initData(&skeletonBones, "bones", "skeleton bones"))
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
-    , active(initData(&active, true, "active", "is the constraint actived?"))
+    , active(initData(&active, true, "active", "is the constraint active?"))
 {
 
 }
@@ -64,6 +64,7 @@ SkeletalMotionConstraint<DataTypes>::~SkeletalMotionConstraint()
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::init()
 {
+    nextPositions.resize(skeletonBones.getValue().size());
     sofa::core::behavior::ProjectiveConstraintSet<DataTypes>::init();
 }
 
@@ -76,12 +77,16 @@ void SkeletalMotionConstraint<DataTypes>::reset()
 template <class DataTypes>
 void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
 {
+    //Note: works only if the times are sorted
+
     Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
+    
     finished = false;
 
     for(unsigned int i = 0; i < skeletonJoints.getValue().size(); ++i)
     {
         SkeletonJoint<DataTypes>& skeletonJoint = (*skeletonJoints.beginEdit())[i];
+        
 
         if(skeletonJoint.mChannels.empty() || skeletonJoint.mChannels.size() != skeletonJoint.mTimes.size())
             continue;
@@ -91,17 +96,23 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
             Real keyTime = (Real) skeletonJoint.mTimes[j];
             if(keyTime <= cT)
             {
-                prevT = keyTime;
-
-                const defaulttype::RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
-                skeletonJoint.mPreviousMotion = motion;
+                {
+                    skeletonJoint.mPreviousMotionTime = keyTime;
+                    const defaulttype::RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
+                    skeletonJoint.mPreviousMotion = motion;
+                }
+                if(prevT < keyTime)
+                    prevT = keyTime;
             }
             else
             {
-                nextT = keyTime;
-
-                const defaulttype::RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
-                skeletonJoint.mNextMotion = motion;
+                {
+                    skeletonJoint.mNextMotionTime = keyTime;
+                    const defaulttype::RigidCoord<3, Real>& motion = skeletonJoint.mChannels[j];
+                    skeletonJoint.mNextMotion = motion;
+                }
+                if(nextT > keyTime)
+                    nextT = keyTime;
 
                 finished = true;
                 break;
@@ -149,35 +160,21 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
     if( !active.getValue() ) return;
 
     helper::WriteAccessor<DataVecDeriv> dx = vData;
+    helper::ReadAccessor<DataVecCoord> x =((MechanicalObject*)this->getContext()->getMechanicalState())->readPositions();
     Real cT = (Real) this->getContext()->getTime() * animationSpeed.getValue();
+    Real dt = (Real) this->getContext()->getDt();
 
     if(0.0 != cT)
     {
         findKeyTimes();
-
-        if(finished && nextT != prevT)
+        if(finished)
         {
-            //set the motion to the Dofs
-            for(unsigned int i = 0; i < dx.size(); ++i)
-            {
-                const SkeletonJoint<DataTypes>& skeletonJoint = skeletonJoints.getValue()[skeletonBones.getValue()[i]];
+            // compute the position of the bones at cT + dt
+            this->interpolatePosition<Coord>(cT+dt, nextPositions);
+            // compute the velocity using finite difference
+            for (unsigned i=0; i<nextPositions.size(); i++)
+                dx[i] = DataTypes::coordDifference(nextPositions[i], x[i])/dt;
 
-                const helper::vector<Coord>& channels = skeletonJoint.mChannels;
-
-                if(channels.empty())
-                {
-                    dx[i] = Deriv();
-                }
-                else
-                {
-                    dx[i].getVCenter() = (skeletonJoint.mNextMotion.getCenter() - skeletonJoint.mPreviousMotion.getCenter()) * (1.0 / (nextT - prevT));
-
-                    defaulttype::Quat previousOrientation = skeletonJoint.mPreviousMotion.getOrientation();
-                    defaulttype::Quat nextOrientation = skeletonJoint.mNextMotion.getOrientation();
-                    defaulttype::Vec<3, Real> diff = nextOrientation.angularDisplacement(previousOrientation, nextOrientation);
-                    dx[i].getVOrientation() = diff * (1.0 / (nextT - prevT));
-                }
-            }
         }
         else
         {
@@ -209,25 +206,39 @@ template <class MyCoord>
 void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x)
 {
     // set the motion to the SkeletonJoint corresponding rigid
-    if(finished && nextT != prevT)
-    {
-        Real dt = (cT - prevT) / (nextT - prevT);
-
+    
+    if(finished)    
         for(unsigned int i = 0; i < skeletonJoints.getValue().size(); ++i)
         {
+            
             SkeletonJoint<DataTypes>& skeletonJoint = (*skeletonJoints.beginEdit())[i];
+            if(  skeletonJoint.mPreviousMotionTime !=  skeletonJoint.mNextMotionTime)
+            {
+                Real dt = (cT - skeletonJoint.mPreviousMotionTime) / (skeletonJoint.mNextMotionTime - skeletonJoint.mPreviousMotionTime);
 
-            const helper::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
+                const helper::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
 
-            if(channels.empty())
-                continue;
+                if(channels.empty())
+                    continue;
 
-            skeletonJoint.mLocalRigid.getCenter() = skeletonJoint.mPreviousMotion.getCenter() + (skeletonJoint.mNextMotion.getCenter() - skeletonJoint.mPreviousMotion.getCenter()) * dt;
-            skeletonJoint.mLocalRigid.getOrientation().slerp(skeletonJoint.mPreviousMotion.getOrientation(), skeletonJoint.mNextMotion.getOrientation(), (float) dt, true);
-        
-			skeletonJoints.endEdit();
-		}
-    }
+                skeletonJoint.mLocalRigid.getCenter() = skeletonJoint.mPreviousMotion.getCenter() + (skeletonJoint.mNextMotion.getCenter() - skeletonJoint.mPreviousMotion.getCenter()) * dt;
+                skeletonJoint.mLocalRigid.getOrientation().slerp(skeletonJoint.mPreviousMotion.getOrientation(), skeletonJoint.mNextMotion.getOrientation(), (float) dt, true);
+
+                skeletonJoints.endEdit();
+            }
+            else
+            {
+                const helper::vector<defaulttype::RigidCoord<3, Real> >& channels = skeletonJoint.mChannels;
+
+                if(channels.empty())
+                    continue;
+
+                skeletonJoint.mLocalRigid.getCenter() = skeletonJoint.mNextMotion.getCenter();
+                skeletonJoint.mLocalRigid.getOrientation() = skeletonJoint.mNextMotion.getOrientation();
+
+                skeletonJoints.endEdit();
+            }
+        }
     else
     {
         for(unsigned int i = 0; i < skeletonJoints.getValue().size(); ++i)
@@ -298,6 +309,7 @@ void SkeletalMotionConstraint<DataTypes>::setSkeletalMotion(const helper::vector
 {
     this->skeletonJoints.setValue(skeletonJoints);
     this->skeletonBones.setValue(skeletonBones);
+    this->init();
 }
 
 template <class DataTypes>

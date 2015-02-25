@@ -84,10 +84,9 @@ Viewer {
             property var previousX: -1
             property var previousY: -1
 
-            property real moveSpeed: 0.1
-            property real moveForwardSpeed: 10.0
-            property real turnSpeed: 5.0
-            property real zoomFactor: 1.25
+            property real moveSpeed: 0.00133
+            property real turnSpeed: 20.0
+            property real zoomSpeed: 1.0
 
             function init() {
                 addMousePressedMapping (Qt.LeftButton, function(mouse) {
@@ -118,15 +117,26 @@ Viewer {
                     previousX = mouse.x;
                     previousY = mouse.y;
 
+                    crosshairGizmo.visible = true;
+                    //circleGizmo.visible = true;
                     SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
                     setMouseMoveMapping(function(mouse) {
                         if(!camera)
                             return;
 
-                        var angleAroundX = (mouse.y - previousY) / 180.0 * Math.PI * turnSpeed;
-                        var angleAroundY = (mouse.x - previousX) / 180.0 * Math.PI * turnSpeed;
-                        camera.turn(angleAroundX, angleAroundY, 0.0);
+                        var angleAroundX = 0.0;
+                        var angleAroundY = 0.0;
+                        var angleAroundZ = 0.0;
+
+                        if(Qt.ControlModifier & mouse.modifiers) {
+                            angleAroundZ = (previousX - mouse.x) / 180.0 * Math.PI * turnSpeed;
+                        } else {
+                            angleAroundX = (previousY - mouse.y) / 180.0 * Math.PI * turnSpeed;
+                            angleAroundY = (previousX - mouse.x) / 180.0 * Math.PI * turnSpeed;
+                        }
+
+                        camera.turn(angleAroundX, angleAroundY, angleAroundZ);
 
                         previousX = mouse.x;
                         previousY = mouse.y;
@@ -137,20 +147,25 @@ Viewer {
                     setMouseMoveMapping(null);
 
                     SofaToolsScript.Tools.overrideCursorShape = 0;
+                    //circleGizmo.visible = false;
+                    crosshairGizmo.visible = false;
                 });
 
                 addMousePressedMapping (Qt.MiddleButton, function(mouse) {
                     previousX = mouse.x;
                     previousY = mouse.y;
 
+                    crosshairGizmo.visible = true;
                     SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
                     setMouseMoveMapping(function(mouse) {
                         if(!camera)
                             return;
 
-                        var moveX = (mouse.x - previousX) * moveSpeed;
-                        var moveY = (mouse.y - previousY) * moveSpeed;
+                        var screenToScene = camera.target().minus(camera.eye()).length();
+
+                        var moveX = (mouse.x - previousX) * screenToScene * moveSpeed;
+                        var moveY = (mouse.y - previousY) * screenToScene * moveSpeed;
                         camera.move(-moveX, moveY, 0.0);
 
                         previousX = mouse.x;
@@ -162,6 +177,7 @@ Viewer {
                     setMouseMoveMapping(null);
 
                     SofaToolsScript.Tools.overrideCursorShape = 0;
+                    crosshairGizmo.visible = false;
                 });
 
                 setMouseWheelMapping(function(wheel) {
@@ -175,14 +191,14 @@ Viewer {
                     var factor = Math.max(-boundary, Math.min(wheel.angleDelta.y / 120.0, boundary)) / boundary;
                     if(factor < 0.0) {
                         factor = 1.0 + 0.5 * factor;
-                        factor /= camera.zoomSpeed;
+                        factor /= zoomSpeed;
                     }
                     else {
                         factor = 1.0 + factor;
-                        factor *= camera.zoomSpeed;
+                        factor *= zoomSpeed;
                     }
 
-                    camera.zoom(factor, true);
+                    camera.zoom(factor);
                 });
             }
         }
@@ -248,4 +264,50 @@ Viewer {
             event.accepted = true;
         }
     }
+
+    Item {
+        id: crosshairGizmo
+        anchors.centerIn: parent
+        visible: false
+
+        opacity: 0.75
+        property color color: "red"
+        property real size: Math.min(root.width, root.height) / 20.0
+        property real thickness: 1
+
+        Rectangle {
+            anchors.centerIn: parent
+            color: crosshairGizmo.color
+            width: crosshairGizmo.size
+            height: crosshairGizmo.thickness
+        }
+
+        Rectangle {
+            anchors.centerIn: parent
+            color: crosshairGizmo.color
+            width: crosshairGizmo.thickness
+            height: crosshairGizmo.size
+        }
+    }
+
+    /*Item {
+        id: circleGizmo
+        anchors.centerIn: parent
+        visible: false
+
+        opacity: 0.75
+        property color color: "red"
+        property real size: Math.min(root.width, root.height) / 2.0
+        property real thickness: 1
+
+        Rectangle {
+            anchors.centerIn: parent
+            color: "transparent"
+            border.color: circleGizmo.color
+            border.width: circleGizmo.thickness
+            width: circleGizmo.size
+            height: width
+            radius: width / 2.0
+        }
+    }*/
 }
