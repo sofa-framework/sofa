@@ -49,8 +49,10 @@ Scene::Scene(QObject *parent) : QObject(parent),
     myStepTimer(new QTimer(this))
 {
 	// sofa init
+	sofa::helper::system::DataRepository.addFirstPath("./");
     sofa::helper::system::DataRepository.addFirstPath("../../share/");
     sofa::helper::system::DataRepository.addFirstPath("../../examples/");
+	sofa::helper::system::PluginRepository.addFirstPath("./");
     sofa::helper::system::PluginRepository.addFirstPath("../bin/");
     sofa::helper::system::PluginRepository.addFirstPath("../lib/");
 
@@ -151,13 +153,15 @@ void Scene::open()
 
 	std::string filepath = finalFilename.toLatin1().constData();
 	if(sofa::helper::system::DataRepository.findFile(filepath))
-        finalFilename = filepath.c_str();
+		finalFilename = filepath.c_str();
 
 	if(finalFilename.isEmpty())
 	{
 		setStatus(Status::Error);
 		return;
 	}
+
+	finalFilename.replace("\\", "/");
 
     aboutToUnload();
 
