@@ -5,7 +5,7 @@ set(HEADER_FILES
     initImplicitODESolver.h
     EulerImplicitSolver.h
     StaticSolver.h
-
+    VariationalSymplecticSolver.h
     )
 
 set(SOURCE_FILES
@@ -13,6 +13,7 @@ set(SOURCE_FILES
     initImplicitODESolver.cpp
     EulerImplicitSolver.cpp
     StaticSolver.cpp
+    VariationalSymplecticSolver.cpp
 
     )
 
