@@ -52,6 +52,7 @@
 #include <SofaDeformable/RegularGridSpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaMiscForceField/MeshMatrixMass.h>
+#include <SofaMiscForceField/LennardJonesForceField.h>
 
 #include <SofaBaseVisual/VisualStyle.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
@@ -445,6 +446,56 @@ massPtr->totalMass.setValue( mass );
 StiffSpringForceField<Vec3Types>::SPtr spring = core::objectmodel::New<StiffSpringForceField<Vec3Types> >(FixedPoint.get(), massDof.get());
 root->addObject(spring);
 spring->addSpring(0,0,stiffness ,0, restLength);
+
+return root;
+
+}
+
+template<class DataTypes>
+simulation::Node::SPtr Elasticity_test<DataTypes>::createSunPlanetSystem(
+        simulation::Node::SPtr root,
+        double mSun,
+        double mPlanet,
+        double g,
+        Coord xSun,
+        Deriv vSun,
+        Coord xPlanet,
+        Deriv vPlanet)
+{
+
+// Mechanical object with 2 dofs: first sun, second planet
+MechanicalObject<Vec3Types>::SPtr sunPlanet_dof = modeling::addNew<MechanicalObject<Vec3Types> >(root,"sunPlanet_MO");
+
+// Set position and velocity
+sunPlanet_dof->resize(2);
+// Position
+MechanicalObject<Vec3Types>::VecCoord positions(2);
+positions[0] = xSun;
+positions[1]= xPlanet;
+MechanicalObject<Vec3Types>::WriteVecCoord xdof = sunPlanet_dof->writePositions();
+copyToData( xdof, positions );
+// Velocity
+MechanicalObject<Vec3Types>::VecDeriv velocities(2);
+velocities[0] = vSun;
+velocities[1]= vPlanet;
+MechanicalObject<Vec3Types>::WriteVecDeriv vdof = sunPlanet_dof->writeVelocities();
+copyToData( vdof, velocities );
+
+// Fix sun
+FixedConstraint<Vec3Types>::SPtr fixed = modeling::addNew<FixedConstraint<Vec3Types> >(root,"FixedSun");
+fixed->addConstraint(0);
+
+// Uniform Mass
+UniformMass<Vec3Types, SReal>::SPtr massPtr = modeling::addNew<UniformMass<Vec3Types, SReal> >(root,"mass");
+massPtr->totalMass.setValue(mPlanet + mSun);
+
+// Lennard Jones Force Field
+typename component::forcefield::LennardJonesForceField<DataTypes>::SPtr ff =
+    modeling::addNew<typename component::forcefield::LennardJonesForceField<DataTypes> >(root);
+// Set froce field parameters
+ff->setAlpha(1);
+ff->setBeta(-1);
+ff->setAInit(mPlanet*mSun*g);
 
 return root;
 

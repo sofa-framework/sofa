@@ -6,6 +6,9 @@ set(SOURCE_FILES
     EulerImplicitSolverStatic_test.cpp
     EulerImplicitSolverDynamic_test.cpp
     SpringSolverDynamic_test.cpp
+    VariationalSymplecticExplicitSolverDynamic_test.cpp
+    VariationalSymplecticImplicitSolverDynamic_test.cpp
+    VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp
 )
 
 # Define a macro to get the absolute path to a directory;

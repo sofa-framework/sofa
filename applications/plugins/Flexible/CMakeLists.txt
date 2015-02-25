@@ -18,6 +18,7 @@ set(FLEXIBLE_INSTALL_INCLUDE_DIR include                  CACHE PATH "Installati
 set(FLEXIBLE_INSTALL_CMAKE_DIR   ${FLEXIBLE_INSTALL_LIB_DIR}/cmake/Flexible )
 
 set(HEADER_FILES
+
     initFlexible.h
     BaseJacobian.h
     helper.h
@@ -67,10 +68,12 @@ set(HEADER_FILES
     deformationMapping/TriangleStrainAverageMapping.h
     deformationMapping/TriangleStrainAverageMapping.inl
     deformationMapping/VolumeMapping.h
+    deformationMapping/TetrahedronVolumeMapping.h
     deformationMapping/CorotationalMeshMapping.h
     engine/ComputeDualQuatEngine.h
     engine/ComputeDualQuatEngine.inl
     engine/ComputeWeightEngine.h
+    mass/AffineMass.h
     strainMapping/BaseStrainMapping.h
     strainMapping/CauchyStrainMapping.h
     strainMapping/CauchyStrainJacobianBlock.h
@@ -145,9 +148,11 @@ set(SOURCE_FILES
     deformationMapping/TriangleDeformationMapping.cpp
     deformationMapping/TriangleStrainAverageMapping.cpp
     deformationMapping/VolumeMapping.cpp
+    deformationMapping/TetrahedronVolumeMapping.cpp
     deformationMapping/CorotationalMeshMapping.cpp
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
+    mass/AffineMass.cpp
     strainMapping/CauchyStrainMapping.cpp
     strainMapping/GreenStrainMapping.cpp
     strainMapping/CorotationalStrainMapping.cpp
@@ -180,6 +185,7 @@ if(image_FOUND)
    	list(APPEND HEADER_FILES "shapeFunction/DiffusionShapeFunction.h")
    	list(APPEND HEADER_FILES "shapeFunction/ShapeFunctionDiscretizer.h")
    	list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
+    list(APPEND HEADER_FILES "mass/MassFromDensity.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
     list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
@@ -188,6 +194,7 @@ if(image_FOUND)
    	list(APPEND SOURCE_FILES "shapeFunction/DiffusionShapeFunction.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
    	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
+    list(APPEND HEADER_FILES "mass/MassFromDensity.cpp")
    	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
     list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
 endif()

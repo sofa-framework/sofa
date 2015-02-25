@@ -147,7 +147,7 @@ inline AttributeMultiVector<T>* AttributeHandler<T, ORBIT, MAP>::getDataVector()
 }
 
 template <typename T, unsigned int ORBIT, typename MAP>
-inline AttributeMultiVectorGen* AttributeHandler<T, ORBIT, MAP>::getDataVectorGen() const
+AttributeMultiVectorGen* AttributeHandler<T, ORBIT, MAP>::getDataVectorGen() const
 {
 	return m_attrib ;
 }
@@ -159,7 +159,7 @@ inline int AttributeHandler<T, ORBIT, MAP>::getSizeOfType() const
 }
 
 template <typename T, unsigned int ORBIT, typename MAP>
-inline unsigned int AttributeHandler<T, ORBIT, MAP>::getOrbit() const
+unsigned int AttributeHandler<T, ORBIT, MAP>::getOrbit() const
 {
 	return ORBIT ;
 }
@@ -171,7 +171,7 @@ inline unsigned int AttributeHandler<T, ORBIT, MAP>::getIndex() const
 }
 
 template <typename T, unsigned int ORBIT, typename MAP>
-inline const std::string& AttributeHandler<T, ORBIT, MAP>::name() const
+const std::string& AttributeHandler<T, ORBIT, MAP>::name() const
 {
 	return m_attrib->getName() ;
 }
