@@ -18,6 +18,7 @@ static struct Tests : public Python_test_list
         addTest( "restitution.py", scenePath );
         addTest( "friction.py", scenePath );
         addTest( "ManyCollisions.py", scenePath );
+        addTest( "DynamicRopeLength.py", scenePath );
 
         // add python tests here
     }
