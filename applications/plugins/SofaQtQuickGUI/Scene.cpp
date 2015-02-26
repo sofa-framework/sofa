@@ -13,9 +13,9 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/helper/system/glut.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <qqml.h>
+#include <QtCore/QCoreApplication>
 #include <QVector3D>
 #include <QStack>
 #include <QTimer>
@@ -36,6 +36,84 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 
+SceneComponent::SceneComponent(const Scene* scene, sofa::core::objectmodel::Base* base) : QObject(),
+    myScene(scene),
+    myBase(base)
+{
+
+}
+
+Base* SceneComponent::base()
+{
+    return const_cast<Base*>(static_cast<const SceneComponent*>(this)->base());
+}
+
+const Base* SceneComponent::base() const
+{
+    // check object existence
+    if(myScene && myBase)
+    {
+        QStack<Node*> nodes;
+        nodes.push(myScene->sofaSimulation()->GetRoot().get());
+
+        while(!nodes.empty())
+        {
+            Node* node = nodes.pop();
+            if(myBase == node)
+                return myBase;
+
+            for(int i = 0; i < node->object.size(); ++i)
+                if(myBase == node->object[i])
+                    return myBase;
+
+            for(int i = 0; i < node->child.size(); ++i)
+                nodes.push(node->child[i].get());
+        }
+    }
+
+    myBase = 0;
+    return myBase;
+}
+
+SceneData::SceneData(const SceneComponent* sceneComponent, sofa::core::objectmodel::BaseData* data) : QObject(),
+    mySceneComponent(sceneComponent),
+    myData(data)
+{
+
+}
+
+QVariantMap SceneData::object() const
+{
+    const BaseData* data = SceneData::data();
+    if(data)
+        return Scene::dataObject(data);
+
+    return QVariantMap();
+}
+
+void SceneData::setValue(const QVariant& value)
+{
+    BaseData* data = SceneData::data();
+    if(data)
+        Scene::setDataValue(data, value);
+}
+
+BaseData* SceneData::data()
+{
+    return const_cast<BaseData*>(static_cast<const SceneData*>(this)->data());
+}
+
+const BaseData* SceneData::data() const
+{
+    // check if the base still exists hence if the data is still valid
+
+    const Base* base = mySceneComponent->base();
+    if(!base)
+        myData = 0;
+
+    return myData;
+}
+
 Scene::Scene(QObject *parent) : QObject(parent),
 	myStatus(Status::Null),
 	mySource(),
@@ -52,9 +130,12 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	sofa::helper::system::DataRepository.addFirstPath("./");
     sofa::helper::system::DataRepository.addFirstPath("../../share/");
     sofa::helper::system::DataRepository.addFirstPath("../../examples/");
-	sofa::helper::system::PluginRepository.addFirstPath("./");
+
+    sofa::helper::system::PluginRepository.addFirstPath("./");
     sofa::helper::system::PluginRepository.addFirstPath("../bin/");
     sofa::helper::system::PluginRepository.addFirstPath("../lib/");
+    sofa::helper::system::PluginRepository.addFirstPath(QCoreApplication::applicationDirPath().toStdString() + "/../bin/");
+    sofa::helper::system::PluginRepository.addFirstPath(QCoreApplication::applicationDirPath().toStdString() + "/../lib/");
 
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
@@ -258,7 +339,7 @@ void Scene::setVisualDirty(bool newVisualDirty)
     visualDirtyChanged(newVisualDirty);
 }
 
-double Scene::radius()
+double Scene::radius() const
 {
 	QVector3D min, max;
 	computeBoundingBox(min, max);
@@ -267,7 +348,7 @@ double Scene::radius()
 	return diag.length();
 }
 
-void Scene::computeBoundingBox(QVector3D& min, QVector3D& max)
+void Scene::computeBoundingBox(QVector3D& min, QVector3D& max) const
 {
 	SReal pmin[3], pmax[3];
 	mySofaSimulation->computeBBox(mySofaSimulation->GetRoot().get(), pmin, pmax );
@@ -276,7 +357,7 @@ void Scene::computeBoundingBox(QVector3D& min, QVector3D& max)
 	max = QVector3D(pmax[0], pmax[1], pmax[2]);
 }
 
-QString Scene::dumpGraph()
+QString Scene::dumpGraph() const
 {
 	QString dump;
 
@@ -295,27 +376,34 @@ QString Scene::dumpGraph()
 	return dump;
 }
 
-QVariant Scene::getData(const QString& path) const
+QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
 {
-    return onGetData(path);
+    QVariantMap object;
+
+    if(!data)
+        return object;
+
+    object.insert("name", data->getName().c_str());
+
+    // TODO:
+    QString type;
+    object.insert("type", type);
+
+    // TODO:
+    QVariantMap properties;
+    object.insert("properties", properties);
+
+    object.insert("value", dataValue(data));
+
+    return object;
 }
 
-void Scene::setData(const QString& path, const QVariant& value)
-{
-    onSetData(path, value);
-}
-
-QVariant Scene::onGetData(const QString& path) const
+QVariant Scene::dataValue(const BaseData* data)
 {
     QVariant value;
 
-    BaseData* data = 0;
-    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
     if(!data)
-    {
-        qWarning() << "DataPath unknown:" << path;
         return value;
-    }
 
     const AbstractTypeInfo* typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
@@ -396,16 +484,10 @@ QVariant Scene::onGetData(const QString& path) const
     return value;
 }
 
-void Scene::onSetData(const QString& path, const QVariant& value)
+void Scene::setDataValue(BaseData* data, const QVariant& value)
 {
-    BaseData* data = 0;
-    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
-
     if(!data)
-    {
-        qWarning() << "DataPath unknown:" << path;
         return;
-    }
 
     const AbstractTypeInfo* typeinfo = data->getValueTypeInfo();
 
@@ -529,6 +611,44 @@ void Scene::onSetData(const QString& path, const QVariant& value)
     }
 }
 
+QVariant Scene::dataValue(const QString& path) const
+{
+    return onDataValue(path);
+}
+
+void Scene::setDataValue(const QString& path, const QVariant& value)
+{
+    onSetDataValue(path, value);
+}
+
+QVariant Scene::onDataValue(const QString& path) const
+{
+    BaseData* data = 0;
+    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
+    if(!data)
+    {
+        qWarning() << "DataPath unknown:" << path;
+        return QVariant();
+    }
+
+    return dataValue(data);
+}
+
+void Scene::onSetDataValue(const QString& path, const QVariant& value)
+{
+    BaseData* data = 0;
+    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
+
+    if(!data)
+    {
+        qWarning() << "DataPath unknown:" << path;
+    }
+    else
+    {
+        setDataValue(data, value);
+    }
+}
+
 void Scene::init()
 {
 	if(!mySofaSimulation->GetRoot())
@@ -644,393 +764,6 @@ void Scene::onKeyReleased(char key)
 
 	sofa::core::objectmodel::KeyreleasedEvent keyEvent(key);
 	sofaSimulation()->GetRoot()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &keyEvent);
-}
-
-SceneListModel::SceneListModel(QObject* parent) : QAbstractListModel(parent), QQmlParserStatus(), MutationListener(),
-    myItems(),
-    myUpdatedCount(0),
-    myScene(0)
-{
-
-}
-
-SceneListModel::~SceneListModel()
-{
-
-}
-
-void SceneListModel::classBegin()
-{
-
-}
-
-void SceneListModel::componentComplete()
-{
-    if(!myScene)
-        setScene(qobject_cast<Scene*>(parent()));
-    else
-        handleSceneChange(myScene);
-}
-
-void SceneListModel::update()
-{
-    int changeNum = myItems.size() - myUpdatedCount;
-    if(changeNum > 0)
-    {
-        beginInsertRows(QModelIndex(), myUpdatedCount, myItems.size() - 1);
-        endInsertRows();
-    }
-    else if(changeNum < 0)
-    {
-        beginRemoveRows(QModelIndex(), myItems.size(), myUpdatedCount - 1);
-        endRemoveRows();
-    }
-
-    dataChanged(createIndex(0, 0), createIndex(myItems.size() - 1, 0));
-
-    myUpdatedCount = myItems.size();
-}
-
-void SceneListModel::handleSceneChange(Scene* newScene)
-{
-    if(myScene)
-    {
-        clear();
-        if(myScene->isReady())
-            addChild(0, myScene->sofaSimulation()->GetRoot().get());
-
-        connect(myScene, &Scene::loaded, [this]() {addChild(0, myScene->sofaSimulation()->GetRoot().get()); update();});
-        connect(myScene, &Scene::aboutToUnload, this, &SceneListModel::clear);
-    }
-}
-
-void SceneListModel::clear()
-{
-    myItems.clear();
-    update();
-}
-
-SceneListModel::Item SceneListModel::buildNodeItem(Item* parent, BaseNode* node)
-{
-    SceneListModel::Item item;
-
-    item.parent = parent;
-    item.depth = parent ? parent->depth + 1 : 0;
-    item.visibility = !parent ? Visible : (((Hidden | Collapsed) & parent->visibility) ? Hidden : Visible);
-    item.base = node;
-    item.object = 0;
-    item.node = node;
-
-    return item;
-}
-
-SceneListModel::Item SceneListModel::buildObjectItem(Item* parent, BaseObject* object)
-{
-    SceneListModel::Item item;
-
-    item.parent = parent;
-    item.depth = parent ? parent->depth + 1 : 0;
-    item.visibility = !parent ? Visible : (((Hidden | Collapsed) & parent->visibility) ? Hidden : Visible);
-    item.base = object;
-    item.object = object;
-    item.node = parent->node;
-
-    return item;
-}
-
-void SceneListModel::setScene(Scene* newScene)
-{
-    if(newScene == myScene)
-        return;
-
-    if(myScene)
-        myScene->disconnect(this);
-
-    myScene = newScene;
-
-    handleSceneChange(myScene);
-
-    sceneChanged(newScene);
-}
-
-int	SceneListModel::rowCount(const QModelIndex & parent) const
-{
-    return myItems.size();
-}
-
-QVariant SceneListModel::data(const QModelIndex& index, int role) const
-{
-    if(!index.isValid())
-    {
-        qWarning("Invalid index");
-        return QVariant("");
-    }
-
-    if(index.row() >= myItems.size())
-        return QVariant("");
-
-    const Item& item = myItems[index.row()];
-    int depth = item.depth;
-    int visibility = item.visibility;
-    Base* base = item.base;
-    BaseObject* object = item.object;
-
-    if(0 == base)
-    {
-        qWarning("Item is empty");
-        return QVariant("");
-    }
-
-    switch(role)
-    {
-    case NameRole:
-        return QVariant::fromValue(QString(base->name.getValue().c_str()));
-    case DepthRole:
-        return QVariant::fromValue(depth);
-    case VisibilityRole:
-        return QVariant::fromValue(visibility);
-    case TypeRole:
-        return QVariant::fromValue(QString(base->getClass()->className.c_str()));
-    case IsNodeRole:
-        return QVariant::fromValue(0 == object);
-    default:
-        qWarning("Role unknown");
-    }
-
-    return QVariant("");
-}
-
-QHash<int,QByteArray> SceneListModel::roleNames() const
-{
-    QHash<int,QByteArray> roles;
-
-    roles[NameRole]         = "name";
-    roles[DepthRole]        = "depth";
-    roles[VisibilityRole]   = "visibility";
-    roles[TypeRole]         = "type";
-    roles[IsNodeRole]       = "isNode";
-
-    return roles;
-}
-
-void SceneListModel::setCollapsed(int row, bool collapsed)
-{
-    if(-1 == row)
-    {
-        qWarning("Invalid index");
-        return;
-    }
-
-    if(row >= myItems.size())
-        return;
-
-    Item& item = myItems[row];
-
-    int collapsedFlag = collapsed ? Collapsed : Visible;
-    if(collapsedFlag == item.visibility)
-        return;
-
-    item.visibility = collapsed;
-
-    QStack<Item*> children;
-    for(int i = 0; i < item.children.size(); ++i)
-        children.append(item.children[i]);
-
-    while(!children.isEmpty())
-    {
-        Item* child = children.pop();
-        if(1 == collapsed)
-            child->visibility |= Hidden;
-        else
-            child->visibility ^= Hidden;
-
-        if(!(Collapsed & child->visibility))
-            for(int i = 0; i < child->children.size(); ++i)
-                children.append(child->children[i]);
-    }
-
-    dataChanged(createIndex(0, 0), createIndex(myItems.size() - 1, 0));
-}
-
-// TODO: prefer iteration to recursivity
-//static bool isAncestor(BaseNode* ancestor, BaseNode* node)
-//{
-//    if(!node)
-//        return false;
-
-//    if(0 == ancestor && 0 == node->getParents().size())
-//        return true;
-
-//    BaseNode::Parents parents = node->getParents();
-//    for(int i = 0; i != parents.size(); ++i)
-//    {
-//        BaseNode* parent = parents[i];
-//        if(ancestor == parent)
-//        {
-//            return true;
-//        }
-//        else
-//        {
-//            bool status = isAncestor(ancestor, parent);
-//            if(status)
-//                return true;
-//        }
-//    }
-
-//    return false;
-//}
-
-void SceneListModel::addChild(Node* parent, Node* child)
-{
-    if(!child)
-        return;
-
-    if(!parent)
-    {
-        myItems.append(buildNodeItem(0, child));
-    }
-    else
-    {
-        QList<Item>::iterator parentItemIt = myItems.begin();
-        while(parentItemIt != myItems.end())
-        {
-            if(parent == parentItemIt->base)
-            {
-                Item* parentItem = &*parentItemIt;
-
-                QList<Item>::iterator itemIt = parentItemIt;
-                while(++itemIt != myItems.end())
-                    if(parent != itemIt->node)
-                        break;
-
-                QList<Item>::iterator childItemIt = myItems.insert(itemIt, buildNodeItem(parentItem, child));
-                parentItem->children.append(&*childItemIt);
-
-                parentItemIt = childItemIt;
-            }
-            else
-                ++parentItemIt;
-        }
-    }
-
-    MutationListener::addChild(parent, child);
-}
-
-void SceneListModel::removeChild(Node* parent, Node* child)
-{
-    if(!child)
-        return;
-
-    MutationListener::removeChild(parent, child);
-
-    QList<Item>::iterator itemIt = myItems.begin();
-    while(itemIt != myItems.end())
-    {
-        if(child == itemIt->node)
-        {
-            Item* parentItem = itemIt->parent;
-            if((!parent && !parentItem) || (parent && parentItem && parent == parentItem->base))
-            {
-                if(parentItem)
-                {
-                    int index = parentItem->children.indexOf(&*itemIt);
-                    if(-1 != index)
-                        parentItem->children.remove(index);
-                }
-
-                itemIt = myItems.erase(itemIt);
-            }
-            else
-                ++itemIt;
-        }
-        else
-        {
-            ++itemIt;
-        }
-    }
-}
-
-//void SceneListModel::moveChild(Node* previous, Node* parent, Node* child)
-//{
-
-//}
-
-void SceneListModel::addObject(Node* parent, BaseObject* object)
-{
-    if(!object || !parent)
-        return;
-
-    QList<Item>::iterator parentItemIt = myItems.begin();
-    while(parentItemIt != myItems.end())
-    {
-        if(parent == parentItemIt->base)
-        {
-            Item* parentItem = &*parentItemIt;
-
-            QList<Item>::iterator itemIt = parentItemIt;
-            while(++itemIt != myItems.end())
-                if(parent != itemIt->node)
-                    break;
-
-            QList<Item>::iterator childItemIt = myItems.insert(itemIt, buildObjectItem(parentItem, object));
-            parentItem->children.append(&*childItemIt);
-
-            parentItemIt = childItemIt;
-        }
-        else
-            ++parentItemIt;
-    }
-
-    MutationListener::addObject(parent, object);
-}
-
-void SceneListModel::removeObject(Node* parent, BaseObject* object)
-{
-    if(!object || !parent)
-        return;
-
-    MutationListener::removeObject(parent, object);
-
-    QList<Item>::iterator itemIt = myItems.begin();
-    while(itemIt != myItems.end())
-    {
-        if(object == itemIt->base)
-        {
-            Item* parentItem = itemIt->parent;
-            if(parentItem && parent == parentItem->base)
-            {
-                if(parentItem)
-                {
-                    int index = parentItem->children.indexOf(&*itemIt);
-                    if(-1 != index)
-                        parentItem->children.remove(index);
-                }
-
-                itemIt = myItems.erase(itemIt);
-            }
-            else
-                ++itemIt;
-        }
-        else
-        {
-            ++itemIt;
-        }
-    }
-}
-
-//void SceneListModel::moveObject(Node* previous, Node* parent, BaseObject* object)
-//{
-
-//}
-
-void SceneListModel::addSlave(BaseObject* master, BaseObject* slave)
-{
-    MutationListener::addSlave(master, slave);
-}
-
-void SceneListModel::removeSlave(BaseObject* master, BaseObject* slave)
-{
-    MutationListener::removeSlave(master, slave);
 }
 
 }
