@@ -122,10 +122,12 @@ bool exists(const std::string& path)
 {
 #if defined(WIN32)
     bool pathExists = PathFileExists(Utils::s2ws(path).c_str()) != 0;
-    DWORD errorCode = ::GetLastError();
-    if (errorCode != 0) {
-        std::cerr << "FileSystem::exists(\"" << path << "\"): "
-                  << Utils::GetLastError() << std::endl;
+    if (!pathExists) {
+	    DWORD errorCode = ::GetLastError();
+		if (errorCode != 0) {
+			std::cerr << "FileSystem::exists(\"" << path << "\"): "
+					  << Utils::GetLastError() << std::endl;
+		}
     }
     return  pathExists;
 #elif defined (_XBOX)

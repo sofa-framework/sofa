@@ -642,7 +642,7 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 		J.resize(out.size() * NOut, in.size() * NIn);
 		J.setZero();
 
-		J.reserve((inIdxEnd - inIdxBegin) * outputPerInput * NOut * NIn);
+		J.reserve(pts.size() * NOut * NIn);
 
 		// matrix chunk
 		typedef typename TOut::Real real;
