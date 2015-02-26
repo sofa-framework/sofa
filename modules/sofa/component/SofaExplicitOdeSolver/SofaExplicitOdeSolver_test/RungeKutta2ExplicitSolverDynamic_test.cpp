@@ -146,14 +146,14 @@ struct RungeKutta2ExplicitSolverDynamic_test : public Elasticity_test<_DataTypes
         for(int i=1;i< size+1; i++)
         {
             // At time t + h/2
-            double acc = (-K*(positionsArray[i-1]-z0)-m*g)/m;
             double newPos = positionsArray[i-1]+0.5*h*velocitiesArray[i-1];
-            double newVel = velocitiesArray[i-1]+0.5*h*acc;
+            double newVel = velocitiesArray[i-1]+0.5*h*accelerationsArray[i-1];
+            double acc    = (-K*(newPos-z0)-m*g)/m;
 
             // At time t + h
-            accelerationsArray.push_back((-K*(newPos-z0)-m*g)/m);
             positionsArray.push_back(positionsArray[i-1]+h*newVel);
-            velocitiesArray.push_back(velocitiesArray[i-1]+h*accelerationsArray[i]);
+            velocitiesArray.push_back(velocitiesArray[i-1]+h*acc);
+            accelerationsArray.push_back((-K*(positionsArray[i]-z0)-m*g)/m);
 
         }
 
