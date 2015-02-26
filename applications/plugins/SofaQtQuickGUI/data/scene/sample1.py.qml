@@ -82,11 +82,11 @@ CollapsibleGroupBox {
                     stepSize:0.01
 
                     function update() {
-                        scene.setData("@.gravity", [[vx, vy, vz]])
+                        scene.setDataValue("@.gravity", [[vx, vy, vz]])
                     }
 
                     Component.onCompleted: {
-                        setValueFromArray(scene.getData("@.gravity")[0]);
+                        setValueFromArray(scene.dataValue("@.gravity")[0]);
 
                         onVxChanged.connect(update);
                         onVyChanged.connect(update);
@@ -115,10 +115,10 @@ CollapsibleGroupBox {
                     }
 
                     function update() {
-                        setValueFromArray(scene.getData("@P1/M1.position")[0]);
+                        setValueFromArray(scene.dataValue("@P1/M1.position")[0]);
 
                         // this is how to set new positions:
-                        //scene.setData("@P1/M1.position", [[3, 2, 1]]);
+                        //scene.setDataValue("@P1/M1.position", [[3, 2, 1]]);
                     }
                 }
             }

@@ -4,16 +4,13 @@
 #include "SofaQtQuickGUI.h"
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/MutationListener.h>
 
 #include <QObject>
+#include <QVariant>
+#include <QVector3D>
 #include <QUrl>
-#include <QAbstractListModel>
-#include <QQmlParserStatus>
-#include <QList>
 
 class QTimer;
-class QVector3D;
 
 namespace sofa
 {
@@ -21,7 +18,42 @@ namespace sofa
 namespace qtquick
 {
 
-class SceneListModel;
+class Scene;
+
+class SceneComponent : public QObject
+{
+    Q_OBJECT
+
+public:
+    SceneComponent(const Scene* scene, sofa::core::objectmodel::Base* base);
+
+    sofa::core::objectmodel::Base* base();
+    const sofa::core::objectmodel::Base* base() const;
+
+private:
+    const Scene*                            myScene;
+    mutable sofa::core::objectmodel::Base*  myBase;
+
+};
+
+class SceneData : public QObject
+{
+    Q_OBJECT
+
+public:
+    SceneData(const SceneComponent* sceneComponent, sofa::core::objectmodel::BaseData* data);
+
+    Q_INVOKABLE QVariantMap object() const;
+    Q_INVOKABLE void setValue(const QVariant& value);
+
+    sofa::core::objectmodel::BaseData* data();
+    const sofa::core::objectmodel::BaseData* data() const;
+
+private:
+    const SceneComponent*                       mySceneComponent;
+    mutable sofa::core::objectmodel::BaseData*  myData;
+
+};
 
 class Scene : public QObject
 {
@@ -82,17 +114,21 @@ signals:
     void visualDirtyChanged(bool newVisualDirty);
 
 public:
-	Q_INVOKABLE double radius();
-	Q_INVOKABLE void computeBoundingBox(QVector3D& min, QVector3D& max);
-    Q_INVOKABLE QString dumpGraph();
+    Q_INVOKABLE double radius() const;
+    Q_INVOKABLE void computeBoundingBox(QVector3D& min, QVector3D& max) const;
+    Q_INVOKABLE QString dumpGraph() const;
 
 public:
-    QVariant getData(const QString& path) const;
-    void setData(const QString& path, const QVariant& value);
+    static QVariantMap dataObject(const sofa::core::objectmodel::BaseData* data);
+    static QVariant dataValue(const sofa::core::objectmodel::BaseData* data);
+    static void setDataValue(sofa::core::objectmodel::BaseData* data, const QVariant& value);
+
+    QVariant dataValue(const QString& path) const;
+    void setDataValue(const QString& path, const QVariant& value);
 
 protected:
-    Q_INVOKABLE QVariant onGetData(const QString& path) const;
-    Q_INVOKABLE void onSetData(const QString& path, const QVariant& value);
+    Q_INVOKABLE QVariant onDataValue(const QString& path) const;
+    Q_INVOKABLE void onSetDataValue(const QString& path, const QVariant& value);
 
 public slots:
     void init();        // need an opengl context made current
@@ -127,105 +163,6 @@ private:
 
 	sofa::simulation::Simulation*	mySofaSimulation;
     QTimer*							myStepTimer;
-};
-
-class SceneListModel : public QAbstractListModel, public QQmlParserStatus, private sofa::simulation::MutationListener
-{
-    Q_OBJECT
-    Q_INTERFACES(QQmlParserStatus)
-
-public:
-    SceneListModel(QObject* parent = 0);
-    ~SceneListModel();
-
-    void classBegin();
-    void componentComplete();
-
-    Q_INVOKABLE void update();
-
-    Q_ENUMS(Visibility)
-    enum Visibility {
-        Visible     = 0,
-        Collapsed   = 1,
-        Hidden      = 2
-    };
-
-public slots:
-    void handleSceneChange(Scene* newScene);
-    void clear();
-
-public:
-    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged);
-
-public:
-    Scene* scene() const		{return myScene;}
-    void setScene(Scene* newScene);
-
-protected:
-    int	rowCount(const QModelIndex & parent = QModelIndex()) const;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-    QHash<int,QByteArray> roleNames() const;
-
-    Q_INVOKABLE void setCollapsed(int row, bool value);
-
-signals:
-    void sceneChanged(sofa::qtquick::Scene* newScene);
-
-protected:
-    void addChild(sofa::simulation::Node* parent, sofa::simulation::Node* child);
-    void removeChild(sofa::simulation::Node* parent, sofa::simulation::Node* child);
-    //void moveChild(sofa::simulation::Node* previous, sofa::simulation::Node* parent, sofa::simulation::Node* child);
-    void addObject(sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
-    void removeObject(sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
-    //void moveObject(sofa::simulation::Node* previous, sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
-    void addSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    void removeSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    //void moveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    //void sleepChanged(sofa::simulation::Node* node);
-
-private:
-    enum {
-        NameRole = Qt::UserRole + 1,
-        DepthRole,
-        VisibilityRole,
-        TypeRole,
-        IsNodeRole
-    };
-
-    struct Item
-    {
-        Item() :
-            parent(0),
-            children(0),
-            depth(0),
-            visibility(0),
-            base(0),
-            object(0),
-            context(0),
-            node(0)
-        {
-
-        }
-
-        Item*                                   parent;
-        QVector<Item*>                          children;
-        int                                     depth;
-        int                                     visibility;
-
-        sofa::core::objectmodel::Base*          base;
-        sofa::core::objectmodel::BaseObject*    object;
-        sofa::core::objectmodel::BaseContext*   context;
-        sofa::core::objectmodel::BaseNode*      node;
-    };
-
-    Item buildNodeItem(Item* parent, sofa::core::objectmodel::BaseNode* node);
-    Item buildObjectItem(Item* parent, sofa::core::objectmodel::BaseObject* object);
-
-private:
-    QList<Item>                     myItems;
-    int                             myUpdatedCount;
-    Scene*                          myScene;
-
 };
 
 }

@@ -29,5 +29,7 @@
         <file>SofaTools/SceneGraphView.qml</file>
         <file>SofaTools/DataView.qml</file>
         <file>SofaBasics/SceneListModel.qml</file>
+        <file>SofaBasics/DataListModel.qml</file>
+        <file>SofaBasics/Data.qml</file>
     </qresource>
 </RCC>
