@@ -48,6 +48,8 @@ namespace sofa {
  * Deriving the ForceField test from this class makes it easy to write: just call function run_test with positions, velocities and the corresponding expected forces.
  * This function automatically checks not only the forces (function addForce), but also the stiffness (methods addDForce and addKToMatrix), using finite differences.
  * @author François Faure, 2014
+ *
+ * TODO: the potential energy (getPotentialEnergy function) should also be tested. E.g. by comparing forces obtained using finite differences on the potential energy and by the addForce function.
  */
 template <typename _ForceFieldType>
 struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::Real>
