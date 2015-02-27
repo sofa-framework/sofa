@@ -40,35 +40,6 @@ def class_dict( klass ):
     return namespace[name]
     
 
-def sofa_class( cls ):
-    '''decorator for sofa classes (with the same name)
-    
-    extends sofa classes with cls.__dict__ through CPython. not quite
-    pythonic.
-
-    '''
-    
-    klass = getattr(Sofa, cls.__name__)
-    
-    name = klass.__name__
-    slots = getattr(klass, '__dict__')
-
-    pointer = SlotsPointer.from_address(id(slots))
-
-    # not exactly sure why we need this dictionary but hey, it works
-    namespace = {}
-
-    ctypes.pythonapi.PyDict_SetItem(
-        ctypes.py_object(namespace),
-        ctypes.py_object(name),
-        pointer.dict,
-    )
-
-    # update class dictionnary
-    namespace[name].update( cls.__dict__ )
-
-    return cls
-
 
 def instance(obj, cls):
     '''change class for obj. use wisely.'''
