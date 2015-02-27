@@ -17,13 +17,6 @@ namespace mapping {
 	this is mostly useful to python scripts that need to compute
 	arbitrary multimappings.
 	
-	this class can be used to set arbitrary velocity constraints, by
-	setting 'hard_positions': in this case, y = b but the velocity is
-	still mapped as dy = A dx. With zero compliance, this corresponds
-	to a kinematic velocity constraint of the form:  A dx = -b / dt
-
-	Hence b corresponds to (current_position - desired_position)
-
 	@author Maxime Tournier
 	
 */
@@ -42,7 +35,6 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
 
 	Data<matrix_type> matrix;
 	Data<value_type> value;		
-	Data<bool> hard_positions;
 	
 	PythonMultiMapping() :
 		matrix(initData(&matrix, "jacobian", "jacobian for the mapping (row-major)")),
@@ -56,42 +48,59 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
 		typedef typename self::jacobian_type::CompressedMatrix jack_type;
 
 		// each input mstate
+        unsigned size = 0;
+        const unsigned rows = value.getValue().size() * TOut::Deriv::total_size;
+
 		for(unsigned j = 0, m = in.size(); j < m; ++j) {
 			jack_type& jack = this->jacobian(j).compressedMatrix;
 
-			unsigned dim = this->from(j)->getMatrixSize();
-			
-			jack.resize(value.getValue().size(), dim );
+            const unsigned cols = this->from(j)->getMatrixSize();
+			jack.resize(rows, cols );
 			jack.setZero();
+            size += rows * cols;
 		}
+
+        if(matrix.getValue().size() != size) {
+
+            if( matrix.getValue().size() ) serr << "matrix size incorrect" << sendl;
+            else {
+                // std::cout << "derp" << std::endl;
+                return;
+            }
+        }
+
 
 		// each out dof
 		unsigned off = 0;
 			
-		// each input mstate
+		// each output mstate
 		for(unsigned i = 0, n = value.getValue().size(); i < n; ++i) {
-			
-			// each input mstate
-			for(unsigned j = 0, m = in.size(); j < m; ++j) {
-				jack_type& jack = this->jacobian(j).compressedMatrix;
-				
-				unsigned dim = this->from(j)->getMatrixSize();
-				
-				unsigned r = i;
-				jack.startVec(r);
 
-				// each input mstate dof
-				for(unsigned k = 0, p = in[j].size(); k < p; ++k) {
+            for(unsigned v = 0; v < self::Nout; ++v) {
+
+                // each input mstate
+                for(unsigned j = 0, m = in.size(); j < m; ++j) {
+                    jack_type& jack = this->jacobian(j).compressedMatrix;
+				
+                    const unsigned dim = this->from(j)->getMatrixSize();
+				
+                    const unsigned r = self::Nout * i + v;
+                    jack.startVec(r);
+
+                    // each input mstate dof
+                    for(unsigned k = 0, p = in[j].size(); k < p; ++k) {
 					
-					// each dof dimension
-					for(unsigned u = 0; u < self::Nin; ++u) {
-						unsigned c = k * self::Nin + u;
-						SReal value = matrix.getValue()[off + c];
-						if( value ) jack.insertBack(r, c) = value;
-					}					
-				}
-				off += dim;
-			}
+                        // each dof dimension
+                        for(unsigned u = 0; u < self::Nin; ++u) {
+                            const unsigned c = k * self::Nin + u;
+                            const SReal value = matrix.getValue()[off + c];
+                            if( value ) jack.insertBack(r, c) = value;
+                        }					
+                    }
+                    off += dim;
+                }
+                
+            }
 			
 		}
 		assert( off == matrix.getValue().size() );
@@ -101,6 +110,7 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
 			jack_type& jack = this->jacobian(j).compressedMatrix;
 			
 			jack.finalize();
+            // std::cout << jack << std::endl;
 		}
 		
 		
