@@ -1,20 +1,21 @@
 
 import Sofa
 
-import numpy as np
 import os
 
-np.set_string_function( lambda x: ' '.join( map(str, x)), repr = False )
+import numpy as np
 
 import rigid
+import mapping
+import script
+import tool
 
-def require(node, plugin):
-    return node.createObject('RequiredPlugin', pluginName = plugin)
+from tool import vec
 
 
 def setup(node, **kwargs):
 
-    require(node, 'Compliant')
+    tool.require(node, 'Compliant')
 
     use_pouf = False
 
@@ -22,7 +23,7 @@ def setup(node, **kwargs):
         ode = node.createObject('CompliantImplicitSolver', **kwargs)
         num = node.createObject('SequentialSolver', **kwargs)
     else:
-        require(node, 'pouf')    
+        tool.require(node, 'pouf')    
         ode = node.createObject('pouf.solver', **kwargs)
         num = node.createObject('pouf.pgs', **kwargs)
 
@@ -30,6 +31,7 @@ def setup(node, **kwargs):
         num.nlnscg = True
 
     style = node.createObject('VisualStyle', **kwargs)
+    
     node.createObject('DefaultPipeline', name = 'pipeline')
     node.createObject('BruteForceDetection', name = 'detection')
 
@@ -45,12 +47,19 @@ def setup(node, **kwargs):
                                 responseParams = "compliance=0" )
 
     
-def vec(*args):
-    return np.array( args, float )
-    
+
+class Controller(script.Controller):
+
+    def reset(self):
+        print 'reset'
+
+
 def createScene( node ):
     reload(rigid)
-
+    reload(script)
+    import path
+    reload(path)
+    
     setup( node, iterations = 1000, precision = 1e-8,
            displayFlags = 'showMapping showBehavior showCollisionModels' )
     
@@ -92,8 +101,12 @@ def createScene( node ):
 
     femur.fixed = True
 
-    femur.attach = femur.dofs.map_vec3('attach', vec(0, h, 0))
-    tibia.attach = tibia.dofs.map_vec3('attach', vec(0, 0.9 * tibia.length / 2, 0))
+
+    point = femur.dofs.map_vec3('e', vec(0, 0.1, 0) )
+    
+
+    femur.attach = femur.dofs.map_vec3('ligament', vec(0, h, 0))
+    tibia.attach = tibia.dofs.map_vec3('ligament', vec(0, 0.9 * tibia.length / 2, 0))
 
     delta = scene.createChild('delta')
     delta.createObject('MechanicalObject',
@@ -103,7 +116,7 @@ def createScene( node ):
     
     delta.createObject('DifferenceMultiMapping',
                        template = 'Vec3,Vec3',
-                       input = '@../femur/attach/dofs @../tibia/attach/dofs',
+                       input = '@../femur/ligament/dofs @../tibia/ligament/dofs',
                        pairs = '0 0',
                        output = '@dofs')
 
@@ -112,6 +125,18 @@ def createScene( node ):
                             template = 'Vec3',
                             compliance = 1.0 / stiffness)
 
+
+    # obj = node.createObject('PythonScriptController',
+    #                         filename = __file__,
+    #                         classname = 'Bob')
+
+    test = mapping.Affine(scene, 'test', 1,
+                          template = 'Vec3',
+                          input = [ path.get_object(femur.node, '@ligament/dofs' ) ] )
+
+
+    
+    
     return 0
 
     
