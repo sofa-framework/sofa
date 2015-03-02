@@ -1,12 +1,10 @@
 
-
-
 import patch
 
 type_dict = {}
 
 def cast( obj ):
-    '''cast an object to its specialized handling class, as decorated by
+    '''cast an object into its specialized handling class, as decorated by
     sofa_object.
 
     '''
@@ -33,6 +31,8 @@ def extends(base):
 
     return res
 
+
+
 def sofa_class(classname,
                template = ''):
     '''decorator for specialized classes.
@@ -50,8 +50,6 @@ def sofa_class(classname,
         return cls
 
     return res
-
-
 
 # actual wrapping starts here
 # should probably go somewhere else
@@ -120,7 +118,6 @@ class BaseMechanicalState:
     @force.setter
     def force(self, value):
         BaseMechanicalState._setattr(self, 'force', str(value))
-
     
 
 import numpy as np
@@ -134,12 +131,12 @@ np.set_string_function( lambda x: ' '.join( map(str, x)), repr = False )
 class Rigid3Object(Sofa.BaseMechanicalState):
 
     def __new__(cls, node, **kwargs):
-        pos = np.zeros(7)
-        pos[-1] = 1
+
+        kwargs.setdefault('position', Rigid3())
+        kwargs.setdefault('template', 'Rigid')
+        kwargs.setdefault('name', 'dofs')
         
         return node.createObject('MechanicalObject',
-                                 template = 'Rigid',
-                                 position = pos,
                                  **kwargs)
     
     @property
@@ -184,14 +181,19 @@ class Rigid3(np.ndarray):
         res.center = -res.orient.rotate(self.center)
         return res
 
-    def __lmul__(self, other):
+    def __mul__(self, other):
         res = Rigid3()
 
         res.orient = self.orient * other.orient
         res.center = self.center + self.orient.rotate(other.center)
         
         return res
-        
+
+
+    def __call__(self, x):
+        '''applies rigid transform to vector x'''
+        return self.center + self.orient(x)
+    
 
 import math
 import sys
@@ -237,25 +239,25 @@ class Quaternion(np.ndarray):
         '''flip quaternion in the real positive halfplane, if needed'''
         if self.real < 0: self = -self
 
-    def __lmul__(self, other):
+    def __mul__(self, other):
         '''quaternion product'''
         res = Quaternion()
         res.real = self.real * other.real - self.imag.dot(other.imag)
-        res.imag = self.real * other.imag + other.real * self.imag + np.cross( self.imag, other.imag)
+        res.imag = self.real * other.imag + other.real * self.imag + np.cross(self.imag, other.imag)
         
         return res
          
 
-    def rotate(self, x):
+    def __call__(self, x):
         '''rotate a vector. self should be normalized'''
         
         tmp = Quaternion()
         tmp.real = 0
         tmp.imag = x
 
-        return (q * tmp * q.conj()).imag
+        return (self * tmp * self.conj()).imag
     
-
+    @staticmethod
     def exp(x):
         '''quaternion exponential (doubled)'''
 
@@ -270,6 +272,6 @@ class Quaternion(np.ndarray):
         c = math.cos(theta / 2.0)
 
         res.real = c
-        res.imag = v * (s / theta)
+        res.imag = x * (s / theta)
 
         return res
