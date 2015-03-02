@@ -54,6 +54,7 @@ public:
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VecCoord VecCoord;
     typedef typename Inherit::InVecCoord InVecCoord;
+    typedef typename Inherit::InVecDeriv InVecDeriv;
     typedef typename Inherit::OutVecCoord OutVecCoord;
 
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
@@ -80,6 +81,7 @@ protected:
     virtual ~LinearMapping()     { }
 
 
+public :
     virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
@@ -119,6 +121,27 @@ protected:
             unsigned int index=ref[j];
             mapper.init( in0[index],o,p0,M,w[j],dw[j],ddw[0]);
             mapper.addapply(Fc,in[index]);
+        }
+        F=Fc.getF();
+    }
+
+    virtual void mapDeformationGradientRate(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)
+    {
+        helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
+        helper::ReadAccessor<Data<InVecDeriv> > in (*this->fromModel->read(core::ConstVecDerivId::velocity()));
+
+        DeformationGradientMapperType mapper;
+
+        // empty variables (not used in init)
+        typename DeformationGradientMapperType::OutCoord o;
+        VHessian ddw(1);
+
+        typename DeformationGradientMapperType::OutCoord Fc;
+        for(unsigned int j=0; j<ref.size(); j++ )
+        {
+            unsigned int index=ref[j];
+            mapper.init( in0[index],o,p0,M,w[j],dw[j],ddw[0]);
+            mapper.addmult(Fc,in[index]);
         }
         F=Fc.getF();
     }
