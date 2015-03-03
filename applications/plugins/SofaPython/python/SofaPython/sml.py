@@ -95,7 +95,7 @@ class Model:
             self.objects = [None,None]
             # offsets
             self.offsets = [None,None]
-            objects = jointXml.findall("object")
+            objects = jointXml.findall("jointObject")
             for i in range(0,2):
                 if not objects[i].find("offset") is None:
                     self.offsets[i] = Model.Offset(objects[i].find("offset"))
@@ -232,11 +232,10 @@ class Model:
                 continue
 
             joint=Model.JointGeneric(j)
-            objects=j.findall("object")
+            objects=j.findall("jointObject")
             for i,o in enumerate(objects):
-                if o.attrib["id"] in self.rigids:
-                    joint.objects[i] = self.rigids[o.attrib["id"]]
-                #elif o.attrib["id"] in self.deformables: # TODO check id uniqueness in rigids and deformables first !
+                if o.attrib["id"] in self.objects:
+                    joint.objects[i] = self.objects[o.attrib["id"]]
                 else:
                     print "ERROR: sml.Model: in joint {0}, unknown object {1} referenced".format(joint.name, o.attrib["id"])
             self.genericJoints[joint.id]=joint
