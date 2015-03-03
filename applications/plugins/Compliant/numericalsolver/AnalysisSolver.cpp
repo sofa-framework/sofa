@@ -49,10 +49,10 @@ void AnalysisSolver::factor(const system_type& system) {
             dmat(system.H), dmat(-system.J.transpose()),
             dmat(-system.J), dmat(-system.C);
 
-        const system_type::vec eigen = kkt.jacobiSvd().singularValues();
+        system_type::vec eigen = kkt.jacobiSvd().singularValues();
 
-        const real min = eigen.tail<1>()(0);
-        const real max = eigen(0);
+        real min = eigen.tail<1>()(0);
+        real max = eigen(0);
 
         if( min < std::numeric_limits<real>::epsilon() ) std::cout << "AnalysisSolver: singular system"<<std::endl;
         else
@@ -61,6 +61,21 @@ void AnalysisSolver::factor(const system_type& system) {
             std::cout << "condition number: " << cond << "("<<max<<"/"<<min<<")"<<std::endl;
             std::cout << "required precision:  "<<log(cond)<<" bits"<<std::endl;
         }
+
+
+        eigen = dmat(system.H).jacobiSvd().singularValues();
+
+        min = eigen.tail<1>()(0);
+        max = eigen(0);
+
+        if( min < std::numeric_limits<real>::epsilon() ) std::cout << "AnalysisSolver: singular implicit system"<<std::endl;
+        else
+        {
+            const real cond = max/min;
+            std::cout << "condition number implicit system: " << cond << "("<<max<<"/"<<min<<")"<<std::endl;
+            std::cout << "required precision implicit system:  "<<log(cond)<<" bits"<<std::endl;
+        }
+
     }
 
     // TODO add more as needed

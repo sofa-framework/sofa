@@ -123,7 +123,7 @@ struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
     }
 
     /// Generate discrete mass position values with euler implicit solver
-    void generateDiscreteMassPositions (double h, double K, double m, double z0, double v0,double g, double finalTime, double cd, double rm, double rk)
+    void generateDiscreteMassPositions (double h, double K, double m, double z0, double v0,double g, double finalTime, double rm, double rk)
     {
         int size = 0 ;
 
@@ -142,8 +142,8 @@ struct EulerImplicitDynamic_test : public Elasticity_test<_DataTypes>
         velocitiesArray.push_back(v0);
 
         // Compute velocities
-        double denominator = h*(h+rk)*K+cd*h+(1+h*rm)*m;
-        double constant = (cd-(rk+h)*K-rm*m);
+        double denominator = h*(h+rk)*K+(1+h*rm)*m;
+        double constant = (-(rk+h)*K-rm*m);
 
         for(int i=1;i< size+1; i++)
         {
@@ -208,7 +208,7 @@ TYPED_TEST_CASE(EulerImplicitDynamic_test, DataTypes);
 TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_without_damping)
 {
    this->createScene(100,10,1,0,0); // k,m,l0,rm,rk
-   this->generateDiscreteMassPositions (0.1, 100, 10, 1, 0, 10, 2, 0, 0, 0);
+   this->generateDiscreteMassPositions (0.1, 100, 10, 1, 0, 10, 2, 0, 0);
    this-> compareSimulatedToTheoreticalPositions(5e-16,0.1);
 }
 
@@ -216,7 +216,7 @@ TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_w
 TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_with_damping)
 {
    this->createScene(100,10,1,0.1,0.1); // k,m,l0,rm,rk
-   this->generateDiscreteMassPositions (0.1, 100, 10,1, 0, 10, 2, 0, 0.1, 0.1);
+   this->generateDiscreteMassPositions (0.1, 100, 10,1, 0, 10, 2, 0.1, 0.1);
    this-> compareSimulatedToTheoreticalPositions(5e-16,0.1);
 }
 
@@ -224,7 +224,7 @@ TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_high_dt_w
 TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_medium_dt_with_rayleigh_stiffness)
 {
    this->createScene(10,10,1,0,0.1); // k,m,l0,rm,rk
-   this->generateDiscreteMassPositions (0.01, 10, 10, 1, 0, 10, 2, 0, 0, 0.1);
+   this->generateDiscreteMassPositions (0.01, 10, 10, 1, 0, 10, 2, 0, 0.1);
    this-> compareSimulatedToTheoreticalPositions(6e-15,0.01);
 }
 
@@ -232,7 +232,7 @@ TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_medium_dt
 TYPED_TEST( EulerImplicitDynamic_test , eulerImplicitSolverDynamicTest_small_dt_with_rayleigh_mass)
 {
    this->createScene(10,100,1,0.1,0); // k,m,l0,rm,rk
-   this->generateDiscreteMassPositions (0.001, 10, 100, 1, 0, 10, 2, 0, 0.1, 0);
+   this->generateDiscreteMassPositions (0.001, 10, 100, 1, 0, 10, 2, 0.1, 0);
    this-> compareSimulatedToTheoreticalPositions(5e-16,0.001);
 }
 

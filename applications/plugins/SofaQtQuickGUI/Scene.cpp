@@ -48,8 +48,10 @@ Scene::Scene(QObject *parent) : QObject(parent),
     myStepTimer(new QTimer(this))
 {
 	// sofa init
+	sofa::helper::system::DataRepository.addFirstPath("./");
     sofa::helper::system::DataRepository.addFirstPath("../../share/");
     sofa::helper::system::DataRepository.addFirstPath("../../examples/");
+	sofa::helper::system::PluginRepository.addFirstPath("./");
     sofa::helper::system::PluginRepository.addFirstPath("../bin/");
     sofa::helper::system::PluginRepository.addFirstPath("../lib/");
 
@@ -150,13 +152,15 @@ void Scene::open()
 
 	std::string filepath = finalFilename.toLatin1().constData();
 	if(sofa::helper::system::DataRepository.findFile(filepath))
-        finalFilename = filepath.c_str();
+		finalFilename = filepath.c_str();
 
 	if(finalFilename.isEmpty())
 	{
 		setStatus(Status::Error);
 		return;
 	}
+
+	finalFilename.replace("\\", "/");
 
     aboutToUnload();
 
@@ -265,7 +269,7 @@ double Scene::radius()
 void Scene::computeBoundingBox(QVector3D& min, QVector3D& max)
 {
 	SReal pmin[3], pmax[3];
-	mySofaSimulation->computeTotalBBox(mySofaSimulation->GetRoot().get(), pmin, pmax );
+	mySofaSimulation->computeBBox(mySofaSimulation->GetRoot().get(), pmin, pmax );
 
 	min = QVector3D(pmin[0], pmin[1], pmin[2]);
 	max = QVector3D(pmax[0], pmax[1], pmax[2]);

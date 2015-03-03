@@ -332,17 +332,17 @@ void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool 
 }
 
 /// Compute the bounding box of the scene.
-void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
-{
-    assert ( root!=NULL );
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    root->execute<UpdateBoundingBoxVisitor>( params );
-    defaulttype::BoundingBox bb = root->f_bbox.getValue();
-    for(int i=0; i<3; i++){
-        minBBox[i]= bb.minBBox()[i];
-        maxBBox[i]= bb.maxBBox()[i];
-    }
-}
+//void Simulation::computeTotalBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
+//{
+//    assert ( root!=NULL );
+//    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+//    root->execute<UpdateBoundingBoxVisitor>( params );
+//    defaulttype::BoundingBox bb = root->f_bbox.getValue();
+//    for(int i=0; i<3; i++){
+//        minBBox[i]= bb.minBBox()[i];
+//        maxBBox[i]= bb.maxBBox()[i];
+//    }
+//}
 
 /// Update contexts. Required before drawing the scene if root flags are modified.
 void Simulation::updateContext ( Node* root )

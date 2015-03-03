@@ -22,7 +22,7 @@ using namespace sofa::defaulttype;
  * several Newton steps to estimate the velocity
  *
 */
-class VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_IMPLICIT_ODE_SOLVER_API VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
 {
 public:
 	SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
