@@ -11,79 +11,83 @@
         <source format="obj">3.obj</source>
     </mesh>
     
-    <rigid id="1">
+    <object id="1">
         <name>Corps</name>
+        <tag>rigid</tag>
         <position>0 0 0 0 0 0 1</position>
         <mesh id="0.obj">
             <source format="obj">0.obj</source>
         </mesh>
         <density>7.8e+3</density>
-    </rigid>
+    </object>
     
-    <rigid id="2">
+    <object id="2">
         <name>Roue</name>
+        <tag>rigid</tag>
         <position>0 0 -0.148 0 0 0 1</position>
         <mesh id="3.obj" />
         <density>7.8e+3</density>
-    </rigid>
+    </object>
     
-    <rigid id="3">
+    <object id="3">
         <name>Came</name>
+        <tag>rigid</tag>
         <position>1.085 -0.072 0.33 0 0 0 1</position>
         <mesh id="2.obj" />
         <density>7.8e+3</density>
-    </rigid>
+    </object>
     
-    <rigid id="4">
+    <object id="4">
         <name>Piston</name>
+        <tag>rigid</tag>
         <position>2.05 0 0.33 0 0 0 1</position>
         <mesh id="1.obj">
             <source format="obj">1.obj</source>
         </mesh>
         <density>7.8e+3</density>
-    </rigid>
+    </object>
     
     <jointGeneric id="5">
         <name>hinge_corps-roue</name>
-        <object id="1">
+        <jointObject id="1">
             <offset type="relative">0 0 0 0 0 0 1</offset>
-        </object>
-        <object id="2">
+        </jointObject>
+        <jointObject id="2">
             <offset type="relative">0 0 0.148 0 0 0 1</offset>
-        </object>
+        </jointObject>
         <dof index="rz"/>
     </jointGeneric>
     
     <jointGeneric id="6">
         <name>hinge_roue-came</name>
-        <object id="2">
+        <jointObject id="2">
             <offset type="relative">0.24 -0.145 0.478 0 0 0 1</offset>
-        </object>
-        <object id="3">
+        </jointObject>
+        <jointObject id="3">
             <offset type="relative">-0.845 -0.073 0 0 0 0 1</offset>
-        </object>
+        </jointObject>
         <dof index="rz"/>
     </jointGeneric>
     
     <jointGeneric id="7">
         <name>hinge_came-piston</name>
-        <object id="3">
+        <jointObject id="3">
             <offset type="relative">0.852 0.072 0 0 0 0 1</offset>
-        </object>
-        <object id="4">
+        </jointObject>
+        <jointObject id="4">
             <offset type="relative">-0.113 0 0 0 0 0 1</offset>
-        </object>
+        </jointObject>
         <dof index="rz"/>
     </jointGeneric>
     
     <jointGeneric id="8">
         <name>slider_corps-piston</name>
-        <object id="4">
+        <jointObject id="4">
             <offset type="relative">0.15 0 0 0 0 0 1</offset>
-        </object>
-        <object id="1">
+        </jointObject>
+        <jointObject id="1">
             <offset type="relative">2.2 0 0.33 0 0 0 1</offset>
-        </object>
+        </jointObject>
         <dof index="x"/>
     </jointGeneric>
 

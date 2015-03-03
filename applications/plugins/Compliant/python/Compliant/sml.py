@@ -85,7 +85,7 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         SofaPython.sml.setupUnits(self.model.units)
 
         # rigids
-        for rigidId,rigidModel in self.model.rigids.iteritems():
+        for rigidModel in self.model.objectsByTag["rigid"]:
             self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.param)
         
         # joints
