@@ -137,7 +137,7 @@ class Model:
         self.units=dict()
         self.meshes=dict()
         self.objects=dict()
-        #self.objectsbyType=dict()
+        self.objectsByTag=dict()
         self.genericJoints=dict()
         self.slidingContacts=dict()
         
@@ -189,6 +189,10 @@ class Model:
                     object.skinnings.append(skinning)
 
                 self.objects[object.id]=object
+                for tag in object.tags:
+                    if not tag in self.objectsByTag:
+                        self.objectsByTag[tag]=list()
+                    self.objectsByTag[tag].append(object)
             
             # joints
             self.parseJointGenerics(modelXml)
