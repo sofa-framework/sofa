@@ -120,7 +120,7 @@ void SofaScene::reset()
 void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax )
 {
     SReal pmin[3], pmax[3];
-    sofaSimulation->computeTotalBBox( _groot, pmin, pmax );
+    sofaSimulation->computeBBox( _groot, pmin, pmax );
     *xmin = pmin[0]; *xmax = pmax[0];
     *ymin = pmin[1]; *ymax = pmax[1];
     *zmin = pmin[2]; *zmax = pmax[2];

@@ -155,6 +155,9 @@ public:
         const helper::vector<Spring>& springs= this->springs.getValue();
         const VecCoord& p1 =  data_x1.getValue();
         const VecCoord& p2 =  data_x2.getValue();
+
+        double ener = 0;
+
         for (unsigned int i=0; i<springs.size(); i++)
         {
             int a = springs[i].m1;
@@ -162,12 +165,11 @@ public:
             Coord u = p2[b]-p1[a];
             Real d = u.norm();
             Real elongation = (Real)(d - springs[i].initpos);
-            double ener = elongation * elongation * springs[i].ks /2;
+            ener += elongation * elongation * springs[i].ks /2;
             //std::cout << "spring energy = " << ener << std::endl;
-            return ener;
         }
 
-
+        return ener;
     }
 
 
