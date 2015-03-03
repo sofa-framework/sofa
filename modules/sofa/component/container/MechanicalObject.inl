@@ -2754,10 +2754,10 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     }
     if (showVectors.getValue())
     {
-        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::Node* context = static_cast<sofa::simulation::Node*>(this->getContext());
+//        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+//        sofa::simulation::Node* context = static_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+//        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
         float scale = showVectorsScale.getValue();
         sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(ConstVecDerivId::velocity());
@@ -3468,6 +3468,15 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
         }
     }
     return true;
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::computeBBox(const core::ExecParams* params)
+{
+    // participating to bbox only if it is drawn
+    if( !showObject.getValue() ) return;
+    Inherited::computeBBox( params );
 }
 
 template <class DataTypes>
