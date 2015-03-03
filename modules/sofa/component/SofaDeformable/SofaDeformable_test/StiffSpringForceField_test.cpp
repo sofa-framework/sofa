@@ -242,7 +242,7 @@ TYPED_TEST( StiffSpringForceField_test , extension )
 }
 
 
-//// velocity, no extension
+// velocity, no extension
 TYPED_TEST( StiffSpringForceField_test , viscosity )
 {
     this->errorMax = 1000;
