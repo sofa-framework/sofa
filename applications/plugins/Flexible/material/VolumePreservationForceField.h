@@ -83,7 +83,7 @@ public:
         }
     }
 
-    virtual double getPotentialEnergy( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const typename Inherit::DataVecCoord& x ) const
+    virtual double getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const typename Inherit::DataVecCoord& x ) const
     {
         double e = 0;
         const typename Inherit::VecCoord& _x = x.getValue();
@@ -127,7 +127,7 @@ protected:
 
 
 
-    virtual void addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, typename Inherit::DataVecDeriv& _f , const typename Inherit::DataVecCoord& _x , const typename Inherit::DataVecDeriv& _v)
+    virtual void addForce(const core::MechanicalParams* /*mparams*/, typename Inherit::DataVecDeriv& _f , const typename Inherit::DataVecCoord& _x , const typename Inherit::DataVecDeriv& _v)
     {
         typename Inherit::VecDeriv&  f = *_f.beginEdit();
         const typename Inherit::VecCoord&  x = _x.getValue();

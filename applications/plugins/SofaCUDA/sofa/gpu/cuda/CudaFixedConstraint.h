@@ -100,7 +100,7 @@ public:
     template<> void FixedConstraint< T >::init(); \
     template<> void FixedConstraint< T >::addConstraint(unsigned int index); \
     template<> void FixedConstraint< T >::removeConstraint(unsigned int index); \
-    template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
+    template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
 
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3f1Types);

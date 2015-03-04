@@ -260,7 +260,7 @@ void CurveMapping<TIn, TOut>::reset()
 }
 
 template <class TIn, class TOut>
-void CurveMapping<TIn, TOut>::apply(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn)
+void CurveMapping<TIn, TOut>::apply(const core::MechanicalParams* /*mparams*/, OutDataVecCoord& dOut, const InDataVecCoord& dIn)
 {
     helper::WriteAccessor< OutDataVecCoord > out = dOut;
     helper::ReadAccessor< InDataVecCoord > in = dIn;
@@ -299,7 +299,7 @@ void CurveMapping<TIn, TOut>::apply(const core::MechanicalParams* /*mparams*/ /*
 
 
 template <class TIn, class TOut>
-void CurveMapping<TIn, TOut>::applyJ( const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn)
+void CurveMapping<TIn, TOut>::applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn)
 {
     VecDeriv &out = *dOut.beginEdit();
     const InVecDeriv &in = dIn.getValue();
@@ -341,7 +341,7 @@ void CurveMapping<TIn, TOut>::applyJ( const core::MechanicalParams* mparams /* P
 }
 
 template <class TIn, class TOut>
-void CurveMapping<TIn, TOut>::applyJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn)
+void CurveMapping<TIn, TOut>::applyJT(const core::MechanicalParams* /*mparams*/, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn)
 {
     helper::WriteAccessor< InDataVecDeriv > out = dOut;
     helper::ReadAccessor< OutDataVecDeriv > in = dIn;
@@ -363,7 +363,7 @@ void CurveMapping<TIn, TOut>::applyJT(const core::MechanicalParams* /*mparams*/ 
 }
 
 template <class TIn, class TOut>
-void CurveMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, Data< typename In::MatrixDeriv >& /*out*/, const Data< typename Out::MatrixDeriv >& /*in*/)
+void CurveMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data< typename In::MatrixDeriv >& /*out*/, const Data< typename Out::MatrixDeriv >& /*in*/)
 {
 }
 

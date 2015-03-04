@@ -53,7 +53,7 @@ void SlidingConstraint<DataTypes>::init()
 
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+void SlidingConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams*, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
         , const DataVecCoord &x1, const DataVecCoord &x2)
 {
     int tm1 = m1.getValue();
@@ -133,7 +133,7 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
 
 
 template<class DataTypes>
-void SlidingConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams * /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
+void SlidingConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams *, defaulttype::BaseVector *v, const DataVecCoord &, const DataVecCoord &
         , const DataVecDeriv &, const DataVecDeriv &)
 {
     v->set(cid, m_dist);

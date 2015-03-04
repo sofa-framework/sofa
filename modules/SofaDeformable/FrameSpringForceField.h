@@ -195,13 +195,13 @@ public:
     virtual void init();
 
 
-    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
     ///SOFA_DEPRECATED_ForceField <<<virtual void addForce ( VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2 );
 
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
     ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce ( VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2 );
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
+    virtual double getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
     ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy ( const VecCoord&, const VecCoord& ) const { return m_potentialEnergy; }
 
     sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }

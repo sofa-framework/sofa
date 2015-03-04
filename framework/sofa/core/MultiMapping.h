@@ -113,56 +113,56 @@ public:
     ///
     /// If the Mapping can be represented as a matrix \f$ J \f$, this method computes
     /// \f$ out = J in \f$
-    virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos, ConstMultiVecCoordId inPos );
+    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos );
 
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
     /// The size of InPos vector is the same as the number of fromModels.
     /// The size of OutPos vector is the same as the number of OutModels.
-    virtual void apply(const MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) = 0;
+    virtual void apply(const MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) = 0;
 
     /// ApplyJ ///
     /// Apply the mapping to derived (velocity, displacement) vectors.
     /// \f$ out = J in \f$
     /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJ (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
+    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJ(const MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) = 0;
+    virtual void applyJ(const MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) = 0;
 
     /// ApplyJT (Force)///
     /// Apply the reverse mapping to force vectors.
     /// \f$ out += J^t in \f$
     /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJT (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
+    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
+    virtual void applyJT(const MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST */, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
+    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
     {
         helper::vector<InDataMatrixDeriv*> matOutConst;
         getMatInDeriv(inConst, matOutConst);
         helper::vector<const OutDataMatrixDeriv*> matInConst;
         getConstMatOutDeriv(outConst, matInConst);
 
-        this->applyJT(cparams /* PARAMS FIRST */, matOutConst, matInConst);
+        this->applyJT(cparams, matOutConst, matInConst);
     }
     /// This method must be reimplemented by all mappings if they need to support constraints.
-    virtual void applyJT( const ConstraintParams* /* cparams */ /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ )
+    virtual void applyJT( const ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ )
     {
         serr << "This mapping does not support constraints since MultiMapping::applyJT( const ConstraintParams*, const helper::vector< InDataMatrixDeriv* >& , const helper::vector< const OutDataMatrixDeriv* >&  ) is not overloaded" << sendl;
     }
 
     /// computeAccFromMapping
-    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc)
+    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc)
     {
         helper::vector<OutDataVecDeriv*> vecOutAcc;
         getVecOutDeriv(outAcc, vecOutAcc);
@@ -171,11 +171,11 @@ public:
         helper::vector<const InDataVecDeriv*> vecInAcc;
         getConstVecInDeriv(inAcc, vecInAcc);
 
-        this->computeAccFromMapping(mparams /* PARAMS FIRST */, vecOutAcc, vecInVel, vecInAcc);
+        this->computeAccFromMapping(mparams, vecOutAcc, vecInVel, vecInAcc);
     }
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(
-        const MechanicalParams* /* mparams */ /* PARAMS FIRST */, const helper::vector< OutDataVecDeriv*>&  /* dataVecOutAcc */,
+        const MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>&  /* dataVecOutAcc */,
         const helper::vector<const InDataVecDeriv*>& /* dataVecInVel */,
         const helper::vector<const InDataVecDeriv*>& /* dataVecInAcc */)
     {

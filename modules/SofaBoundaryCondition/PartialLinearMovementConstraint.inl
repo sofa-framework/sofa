@@ -181,7 +181,7 @@ void PartialLinearMovementConstraint<DataTypes>::reset()
 
 template <class DataTypes>
 template <class DataDeriv>
-void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
+void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
     VecBool movedDirection = movedDirections.getValue();
@@ -205,14 +205,14 @@ void PartialLinearMovementConstraint<DataTypes>::projectResponseT(const core::Me
 }
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void PartialLinearMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
+    projectResponseT<VecDeriv>(mparams, res.wref());
 }
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
+void PartialLinearMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real cT = (Real) this->getContext()->getTime();
@@ -235,7 +235,7 @@ void PartialLinearMovementConstraint<DataTypes>::projectVelocity(const core::Mec
 
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
+void PartialLinearMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
     Real cT = (Real) this->getContext()->getTime();
@@ -373,7 +373,7 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
 }
 
 template <class DataTypes>
-void PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
 
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
@@ -383,7 +383,7 @@ void PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix(const cor
 
     while (rowIt != rowItEnd)
     {
-        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
+        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
     //cerr<<" PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix c= "<<endl<<c<<endl;

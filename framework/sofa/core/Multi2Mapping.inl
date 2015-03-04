@@ -162,10 +162,10 @@ helper::vector<behavior::BaseMechanicalState*> Multi2Mapping<In1,In2,Out>::getMe
 template < class In1, class In2, class Out >
 void Multi2Mapping<In1,In2,Out>::init()
 {
-    apply(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecCoordId::position(), ConstVecCoordId::position());
-    applyJ(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecDerivId::velocity(), ConstVecDerivId::velocity());
+    apply(MechanicalParams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
+    applyJ(MechanicalParams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())
-        apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecCoordId::restPosition(), ConstVecCoordId::restPosition());
+        apply(MechanicalParams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
 
 ///<TO REMOVE>

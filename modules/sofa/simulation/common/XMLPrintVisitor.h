@@ -46,7 +46,7 @@ protected:
     std::ostream& m_out;
     int level;
 public:
-    XMLPrintVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, std::ostream& out) : Visitor(params), m_out(out),level(0) {}
+    XMLPrintVisitor(const sofa::core::ExecParams* params, std::ostream& out) : Visitor(params), m_out(out),level(0) {}
 
     template<class T>
     void processObject(T obj);

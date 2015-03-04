@@ -82,7 +82,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
         {
             simulation::Node* n = root->child[g].get();
             double gdim = 0;
-            simulation::MechanicalGetDimensionVisitor(mparams /* PARAMS FIRST */, &gdim).execute(n);
+            simulation::MechanicalGetDimensionVisitor(mparams, &gdim).execute(n);
             if (gdim <= 0) continue;
             groups.push_back(n);
             gData[n].systemSize = (int)gdim;
@@ -94,7 +94,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
     {
         groups.clear();
         double dim = 0;
-        simulation::MechanicalGetDimensionVisitor(mparams /* PARAMS FIRST */, &dim).execute(root);
+        simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
         defaultGroup.systemSize = (int)dim;
     }
     currentNode = root;
@@ -159,7 +159,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
         setGroup(g);
         if (!this->frozen)
         {
-            simulation::common::MechanicalOperations mops(mparams /* PARAMS FIRST */, this->getContext());
+            simulation::common::MechanicalOperations mops(mparams, this->getContext());
             if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
             currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
             currentGroup->matrixAccessor.clear();
@@ -193,7 +193,7 @@ void MatrixLinearSolver<Matrix,Vector>::rebuildSystem(double massFactor, double 
         setGroup(g);
         if (!this->frozen)
         {
-            simulation::common::MechanicalOperations mops(&mparams /* PARAMS FIRST */, this->getContext());
+            simulation::common::MechanicalOperations mops(&mparams, this->getContext());
             if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
             currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
             currentGroup->matrixAccessor.clear();

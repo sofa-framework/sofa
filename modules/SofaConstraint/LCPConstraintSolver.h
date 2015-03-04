@@ -65,7 +65,7 @@ public:
     typedef core::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
     typedef core::behavior::BaseConstraint::VecConstArea VecConstArea;
 
-    MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+    MechanicalGetConstraintInfoVisitor(const core::ConstraintParams* params, VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
         : simulation::BaseMechanicalVisitor(params)
         , _blocks(blocks)
         , _ids(ids)

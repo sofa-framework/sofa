@@ -63,7 +63,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::
 }
 
 template <>
-void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
+void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
     const helper::vector<int> &m1Indices = m1.getValue();
@@ -131,7 +131,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::buildConstraintMatrix(const c
 
 
 template <>
-void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &d_x1, const DataVecCoord &d_x2
+void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/, defaulttype::BaseVector *v, const DataVecCoord &d_x1, const DataVecCoord &d_x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
     const helper::vector<int> &m1Indices = m1.getValue();
@@ -186,7 +186,7 @@ void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv
 
 #ifndef SOFA_DOUBLE
 template <>
-void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
+void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &constraintId
         , const DataVecCoord &/*x1*/, const DataVecCoord &/*x2*/)
 {
     const helper::vector<int> &m1Indices = m1.getValue();
@@ -254,7 +254,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::buildConstraintMatrix(const c
 
 
 template <>
-void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &d_x1, const DataVecCoord &d_x2
+void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/, defaulttype::BaseVector *v, const DataVecCoord &d_x1, const DataVecCoord &d_x2
         , const DataVecDeriv &/*v1*/, const DataVecDeriv &/*v2*/)
 {
     const helper::vector<int> &m1Indices = m1.getValue();

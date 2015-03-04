@@ -144,7 +144,7 @@ public:
         std::cout << "Do nothing" << std::endl;
     }
 
-    virtual void addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
+    virtual void addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& _f , const DataVecCoord& _x , const DataVecDeriv& _v)
     {
         if(this->mstate->getSize()!=(int)material.size()) resize();
 
@@ -237,7 +237,7 @@ public:
     //@}
 
 
-    virtual double getPotentialEnergy( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x ) const
+    virtual double getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
     {
         double e = 0;
         const VecCoord& _x = x.getValue();

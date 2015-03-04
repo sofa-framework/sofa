@@ -103,7 +103,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::bwdInit() {
 
 template<class TMatrix, class TVector,class ThreadManager>
 unsigned WarpPreconditioner<TMatrix,TVector,ThreadManager >::getSystemDimention(const sofa::core::MechanicalParams* mparams) {
-    simulation::common::MechanicalOperations mops(mparams /* PARAMS FIRST */, this->getContext());
+    simulation::common::MechanicalOperations mops(mparams, this->getContext());
 
     this->currentGroup->matrixAccessor.setGlobalMatrix(this->currentGroup->systemMatrix);
     this->currentGroup->matrixAccessor.clear();
@@ -122,7 +122,7 @@ void WarpPreconditioner<TMatrix,TVector,ThreadManager >::setSystemMBKMatrix(cons
     for (unsigned int g=0, nbg = this->getNbGroups(); g < nbg; ++g) {
         this->setGroup(g);
         if (!this->frozen) {
-            simulation::common::MechanicalOperations mops(mparams /* PARAMS FIRST */, this->getContext());
+            simulation::common::MechanicalOperations mops(mparams, this->getContext());
             if (!this->currentGroup->systemMatrix) this->currentGroup->systemMatrix = this->createMatrix();
         }
     }

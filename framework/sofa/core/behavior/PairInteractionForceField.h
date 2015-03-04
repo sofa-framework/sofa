@@ -105,7 +105,7 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId );
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId );
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -120,7 +120,7 @@ public:
     /// This method retrieves the force and dx vector from the two MechanicalState
     /// and call the internal addDForce(VecDeriv&,VecDeriv&,const VecDeriv&,const VecDeriv&,double,double)
     /// method implemented by the component.
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId );
+    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId );
 
 
     /// Get the potential energy associated to this ForceField.
@@ -143,7 +143,7 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::addForce() method.
 
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )=0;
+    virtual void addForce(const MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )=0;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -162,7 +162,7 @@ public:
     /// without scalar coefficients, it defaults to using a temporaty vector to
     /// compute $ K dx $ and then manually scaling all values by kFactor.
 
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)=0;
+    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)=0;
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -172,7 +172,7 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
+    virtual double getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
 
 
     /// @}

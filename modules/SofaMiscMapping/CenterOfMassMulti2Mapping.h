@@ -89,19 +89,19 @@ public:
 
 
     virtual void apply(
-        const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
+        const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
         const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
         const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos);
     virtual void applyJ(
-        const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
+        const core::MechanicalParams* mparams, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
         const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel);
     virtual void applyJT(
-        const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
+        const core::MechanicalParams* mparams, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
         const helper::vector< In2DataVecDeriv*>& dataVecOut2Force,
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce);
     virtual void applyJT(
-        const core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
+        const core::ConstraintParams* /*cparams*/, const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
         const helper::vector< In2DataMatrixDeriv*>&  /*dataMatOut2Const*/ ,
         const helper::vector<const OutDataMatrixDeriv*>& /*dataMatInConst*/)
     {
@@ -112,7 +112,7 @@ public:
     //virtual void apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 );
     //virtual void applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2);
     //virtual void applyJT( const helper::vector<In1VecDeriv*>& outDeriv1 ,const helper::vector<In2VecDeriv*>& outDeriv2 , const helper::vector<const OutVecDeriv*>& inDeriv );
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
 
     virtual void init();
     void draw(const core::visual::VisualParams* vparams);

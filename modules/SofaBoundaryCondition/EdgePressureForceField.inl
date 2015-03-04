@@ -102,7 +102,7 @@ void EdgePressureForceField<DataTypes>::init()
 
 
 template <class DataTypes>
-void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  /*dataX */, const DataVecDeriv & /*dataV*/ )
+void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  /*dataX */, const DataVecDeriv & /*dataV*/ )
 {
     VecDeriv& f = *(dataF.beginEdit());
     Deriv force;

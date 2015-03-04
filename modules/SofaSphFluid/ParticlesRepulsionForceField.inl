@@ -71,7 +71,7 @@ void ParticlesRepulsionForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void ParticlesRepulsionForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void ParticlesRepulsionForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -146,7 +146,7 @@ void ParticlesRepulsionForceField<DataTypes>::addForce(const core::MechanicalPar
 }
 
 template<class DataTypes>
-void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

@@ -358,7 +358,7 @@ void SPHFluidForceField<DataTypes>::computeNeighbors(const core::MechanicalParam
 }
 
 template<class DataTypes> template<class TKd, class TKp, class TKv, class TKc>
-void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     helper::WriteAccessor<DataVecDeriv> f = d_f;
     helper::ReadAccessor<DataVecCoord> x = d_x;
@@ -518,7 +518,7 @@ void SPHFluidForceField<DataTypes>::computeForce(const core::MechanicalParams* /
 }
 
 template<class DataTypes>
-void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& f1 = *d_df.beginEdit();
     const VecDeriv& dx1 = d_dx.getValue();
@@ -542,7 +542,7 @@ void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mpar
 }
 
 template <class DataTypes>
-double SPHFluidForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, const DataVecCoord& /* d_x */) const
+double SPHFluidForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
 {
     serr<<"getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

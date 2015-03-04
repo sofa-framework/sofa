@@ -185,7 +185,7 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
 //    cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
 //    assert(false);
@@ -213,7 +213,7 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
@@ -250,7 +250,7 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*vData*/)
+void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
 {
 #if 0 /// @todo ADD A FLAG FOR THIS
     const SetIndexArray & indices = f_indices.getValue();
@@ -272,14 +272,14 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& /*xData*/)
+void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
 {
 
 }
 
 // Matrix Integration interface
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
     if(r)
@@ -305,7 +305,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams /* PARAMS FIRST */, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     int o = matrix->getGlobalOffset(this->mstate.get(mparams));
     if (o >= 0)

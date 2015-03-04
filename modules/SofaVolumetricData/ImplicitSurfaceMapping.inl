@@ -71,7 +71,7 @@ Real sqr(Real r)
 }
 
 template <class In, class Out>
-void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+void ImplicitSurfaceMapping<In,Out>::apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     OutVecCoord &out = *dOut.beginEdit();
     const InVecCoord& in = dIn.getValue();
@@ -275,7 +275,7 @@ void ImplicitSurfaceMapping<In,Out>::newPlane()
 
 
 template <class In, class Out>
-void ImplicitSurfaceMapping<In,Out>::applyJ(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecDeriv>& /*dOut*/, const Data<InVecDeriv>& /*dIn*/)
+void ImplicitSurfaceMapping<In,Out>::applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& /*dOut*/, const Data<InVecDeriv>& /*dIn*/)
 {
 }
 

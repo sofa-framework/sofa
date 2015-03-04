@@ -88,7 +88,7 @@ class MechanicalGetConstraintViolationVisitor : public simulation::BaseMechanica
 {
 public:
 
-    MechanicalGetConstraintViolationVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, sofa::defaulttype::BaseVector *v)
+    MechanicalGetConstraintViolationVisitor(const core::ConstraintParams* params, sofa::defaulttype::BaseVector *v)
         : simulation::BaseMechanicalVisitor(params)
         , cparams(params)
         , m_v(v)
@@ -103,7 +103,7 @@ public:
         if (core::behavior::BaseConstraintSet *c=dynamic_cast<core::behavior::BaseConstraintSet*>(cSet))
         {
             ctime_t t0 = begin(node, c);
-            c->getConstraintViolation(cparams /* PARAMS FIRST */, m_v);
+            c->getConstraintViolation(cparams, m_v);
             end(node, c, t0);
         }
         return RESULT_CONTINUE;

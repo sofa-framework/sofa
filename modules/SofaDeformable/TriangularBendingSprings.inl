@@ -530,7 +530,7 @@ void TriangularBendingSprings<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-double TriangularBendingSprings<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, const DataVecCoord& /* d_x */) const
+double TriangularBendingSprings<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
 {
     serr<<"TriangularBendingSprings::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -538,7 +538,7 @@ double TriangularBendingSprings<DataTypes>::getPotentialEnergy(const core::Mecha
 
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -661,7 +661,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
 }
 
 template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

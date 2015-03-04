@@ -71,7 +71,7 @@ public:
 
     virtual void resetContactForce();
 
-    virtual void computeResidual(const sofa::core::ExecParams* /*params*/ /* PARAMS FIRST */, sofa::defaulttype::BaseVector *lambda);
+    virtual void computeResidual(const sofa::core::ExecParams* /*params*/, sofa::defaulttype::BaseVector *lambda);
 
     Data< helper::vector< std::string > >  solverName;
 

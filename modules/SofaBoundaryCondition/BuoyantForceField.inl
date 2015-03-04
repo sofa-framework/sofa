@@ -207,7 +207,7 @@ void BuoyantForceField<DataTypes>::init()
 
 
 template <class DataTypes>
-void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     if (!m_topology) return;
     if (!m_triangles.size()) return;
@@ -290,7 +290,7 @@ void BuoyantForceField<DataTypes>::addForce(const core::MechanicalParams* /* mpa
 }
 
 template <class DataTypes>
-void BuoyantForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
+void BuoyantForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
 {
     if (!m_topology) return;
 

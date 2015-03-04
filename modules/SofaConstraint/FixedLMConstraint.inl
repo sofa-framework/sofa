@@ -126,7 +126,7 @@ void FixedLMConstraint<DataTypes>::init()
 
 
 template<class DataTypes>
-void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /* cParams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId cId, unsigned int &cIndex)
+void FixedLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /* cParams*/, core::MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     using namespace core::objectmodel;
     Data<MatrixDeriv>* dC = cId[this->constrainedObject1].write();

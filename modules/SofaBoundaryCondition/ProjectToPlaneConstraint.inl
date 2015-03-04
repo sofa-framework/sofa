@@ -236,7 +236,7 @@ void ProjectToPlaneConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
 
 
 template <class DataTypes>
-void ProjectToPlaneConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void ProjectToPlaneConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
 //    cerr<< "ProjectToPlaneConstraint<DataTypes>::projectResponse input  = "<< endl << res.ref() << endl;

@@ -237,7 +237,7 @@ void PatchTestMovementConstraint<DataTypes>::findCornerPoints()
 
 template <class DataTypes>
 template <class DataDeriv>
-void PatchTestMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
+void PatchTestMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
 {
     const SetIndexArray & indices = m_indices.getValue();
     for (size_t i = 0; i< indices.size(); ++i)
@@ -247,10 +247,10 @@ void PatchTestMovementConstraint<DataTypes>::projectResponseT(const core::Mechan
 }
 
 template <class DataTypes>
-void PatchTestMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void PatchTestMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
+    projectResponseT<VecDeriv>(mparams, res.wref());
 }
 
 
@@ -259,11 +259,11 @@ template <class DataTypes>
 void PatchTestMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> res = vData;
-    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
+    projectResponseT<VecDeriv>(mparams, res.wref());
 }
 
 template <class DataTypes>
-void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
+void PatchTestMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     sofa::simulation::Node::SPtr root =sofa::simulation::getSimulation()->GetRoot();
     helper::WriteAccessor<DataVecCoord> x = xData;

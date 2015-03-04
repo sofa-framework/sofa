@@ -61,7 +61,7 @@ simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::N
     return RESULT_CONTINUE;
 }
 
-ExportGnuplotVisitor::ExportGnuplotVisitor(const core::ExecParams* params /* PARAMS FIRST */, double time)
+ExportGnuplotVisitor::ExportGnuplotVisitor(const core::ExecParams* params, double time)
     : Visitor(params), m_time(time)
 {
 

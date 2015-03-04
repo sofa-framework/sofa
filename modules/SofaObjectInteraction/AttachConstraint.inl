@@ -528,7 +528,7 @@ void AttachConstraint<sofa::defaulttype::Rigid3dTypes>::calcRestRotations();
 #endif
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecCoord& res1_d, DataVecCoord& res2_d)
+void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams * /*mparams*/, DataVecCoord& res1_d, DataVecCoord& res2_d)
 {
     const SetIndexArray & indices1 = f_indices1.getValue();
     const SetIndexArray & indices2 = f_indices2.getValue();
@@ -600,7 +600,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
+void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams * /*mparams*/, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
 {
     VecDeriv &res1 = *res1_d.beginEdit();
     VecDeriv &res2 = *res2_d.beginEdit();
@@ -641,7 +641,7 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
 }
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
+void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams * /*mparams*/, DataVecDeriv& res1_d, DataVecDeriv& res2_d)
 {
     VecDeriv &res1 = *res1_d.beginEdit();
     VecDeriv &res2 = *res2_d.beginEdit();
@@ -696,7 +696,7 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
 
 // Matrix Integration interface
 template <class DataTypes>
-void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (f_twoWay.getValue())
         return;
@@ -747,7 +747,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
 
 
 template <class DataTypes>
-void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams * /*mparams*/, defaulttype::BaseVector* vect, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     if (f_twoWay.getValue())
         return;

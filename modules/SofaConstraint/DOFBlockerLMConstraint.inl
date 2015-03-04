@@ -113,7 +113,7 @@ void DOFBlockerLMConstraint<DataTypes>::resetConstraint()
 }
 
 template<class DataTypes>
-void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId cId, unsigned int &cIndex)
+void DOFBlockerLMConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, core::MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if(!idxEquations.empty() ) return;
 

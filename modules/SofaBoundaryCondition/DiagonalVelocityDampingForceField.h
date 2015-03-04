@@ -71,7 +71,7 @@ namespace sofa
 
                 virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, double bFact, unsigned int& offset);
 
-                virtual double getPotentialEnergy(const core::MechanicalParams* params /* PARAMS FIRST */, const DataVecCoord& x) const;
+                virtual double getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const;
 
             };
 

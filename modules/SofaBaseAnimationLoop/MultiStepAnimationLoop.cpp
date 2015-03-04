@@ -67,7 +67,7 @@ MultiStepAnimationLoop::~MultiStepAnimationLoop()
 {
 }
 
-void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
+void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, double dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO

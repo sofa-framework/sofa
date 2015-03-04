@@ -340,7 +340,7 @@ const typename RigidMapping<TIn, TOut>::VecCoord & RigidMapping<TIn, TOut>::getP
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<VecCoord>& dOut, const Data<InVecCoord>& dIn)
+void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data<VecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     helper::WriteAccessor< Data<VecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
@@ -369,7 +369,7 @@ void RigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<VecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data<VecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     helper::WriteAccessor< Data<VecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
@@ -398,7 +398,7 @@ void RigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ 
 }
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<InVecDeriv>& dOut, const Data<VecDeriv>& dIn)
+void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dOut, const Data<VecDeriv>& dIn)
 {
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<VecDeriv> > in = dIn;
@@ -469,7 +469,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId )
+void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId )
 {
     if( mparams->symmetricMatrix() )
         return;  // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
@@ -524,7 +524,7 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* 
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
 // in order to compute the right constaint on the rigidModel.
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn)
+void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn)
 {
     InMatrixDeriv& out = *dOut.beginEdit();
     const OutMatrixDeriv& in = dIn.getValue();

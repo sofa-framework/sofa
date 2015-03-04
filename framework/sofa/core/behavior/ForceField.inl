@@ -66,48 +66,48 @@ void ForceField<DataTypes>::init()
 template<class DataTypes>
 struct ParallelForceFieldAddForce
 {
-    void operator()(const MechanicalParams *mparams /* PARAMS FIRST */, ForceField< DataTypes > *ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv > > _f,Shared_r< objectmodel::Data< typename DataTypes::VecCoord > > _x,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _v)
+    void operator()(const MechanicalParams *mparams, ForceField< DataTypes > *ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv > > _f,Shared_r< objectmodel::Data< typename DataTypes::VecCoord > > _x,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _v)
     {
-        ff->addForce(mparams /* PARAMS FIRST */, _f.access(),_x.read(),_v.read());
+        ff->addForce(mparams, _f.access(),_x.read(),_v.read());
     }
 };
 
 template<class DataTypes>
 struct ParallelForceFieldAddDForce
 {
-    void operator()(const MechanicalParams *mparams /* PARAMS FIRST */, ForceField< DataTypes >*ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _df,Shared_r<objectmodel::Data< typename DataTypes::VecDeriv> > _dx)
+    void operator()(const MechanicalParams *mparams, ForceField< DataTypes >*ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _df,Shared_r<objectmodel::Data< typename DataTypes::VecDeriv> > _dx)
     {
-        ff->addDForce(mparams /* PARAMS FIRST */, _df.access(),_dx.read());
+        ff->addDForce(mparams, _df.access(),_dx.read());
     }
 };
 #endif /* SOFA_SMP */
 
 
 template<class DataTypes>
-void ForceField<DataTypes>::addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId )
+void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDerivId fId )
 {
     if (mparams)
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            // Task<ParallelForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this, sofa::defaulttype::getShared(*fId[mstate.get(mparams)].write()),
+            // Task<ParallelForceFieldAddForce< DataTypes > >(mparams, this, sofa::defaulttype::getShared(*fId[mstate.get(mparams)].write()),
             // 	defaulttype::getShared(*mparams->readX(mstate)), defaulttype::getShared(*mparams->readV(mstate)));
-            Task<ParallelForceFieldAddForce< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*fId[mstate.get(mparams)].write()),
+            Task<ParallelForceFieldAddForce< DataTypes > >(mparams, this, **defaulttype::getShared(*fId[mstate.get(mparams)].write()),
                     **defaulttype::getShared(*mparams->readX(mstate)), **defaulttype::getShared(*mparams->readV(mstate)));
         else
 #endif /* SOFA_SMP */
-            addForce(mparams /* PARAMS FIRST */, *fId[mstate.get(mparams)].write() , *mparams->readX(mstate), *mparams->readV(mstate));
+            addForce(mparams, *fId[mstate.get(mparams)].write() , *mparams->readX(mstate), *mparams->readV(mstate));
     }
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId )
+void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId )
 {
     if (mparams)
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelForceFieldAddDForce< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*dfId[mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readDx(mstate)));
+            Task<ParallelForceFieldAddDForce< DataTypes > >(mparams, this, **defaulttype::getShared(*dfId[mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readDx(mstate)));
         else
 #endif /* SOFA_SMP */
 
@@ -115,7 +115,7 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams /* PARAMS 
             mparams->setKFactorUsed(false);
 #endif
 
-        addDForce(mparams /* PARAMS FIRST */, *dfId[mstate.get(mparams)].write(), *mparams->readDx(mstate.get(mparams)));
+        addDForce(mparams, *dfId[mstate.get(mparams)].write(), *mparams->readDx(mstate.get(mparams)));
 
 #ifndef NDEBUG
         if (!mparams->getKFactorUsed())
@@ -129,12 +129,12 @@ double ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams
 {
 
     if (this->mstate)
-        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(mstate));
+        return getPotentialEnergy(mparams, *mparams->readX(mstate));
     return 0;
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
@@ -153,7 +153,7 @@ void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex )
+void ForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r) addSubKToMatrix(r.matrix, subMatrixIndex, mparams->kFactorIncludingRayleighDamping(rayleighStiffness.getValue()), r.offset);
@@ -170,7 +170,7 @@ void ForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix * mat,
 
 
 template<class DataTypes>
-void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
@@ -187,7 +187,7 @@ void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addSubBToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex)
+void ForceField<DataTypes>::addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r) addSubBToMatrix(r.matrix, subMatrixIndex, mparams->bFactor() , r.offset);
