@@ -36,16 +36,23 @@ class ShapeFunction:
     """ High-level API to manipulate ShapeFunction
     @todo better handle template
     """
-    def __init__(self, node, name):
+    def __init__(self, node, name, position=None):
         self.node = node.createChild(name)
         self.name = name
+        self.position = position # component which contains shape function position (spatial coordinates of the parent nodes)
         self.shapeFunction=None
    
-    def addVoronoi(self, position, image):
+    def addVoronoi(self, image):
         """ Add a Voronoi shape function using position from position component and BranchingImage image
         """
+        if self.position is None:
+            print "[Felexible.API.ShapeFunction] ERROR: no position"
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
-        self.shapeFunction = self.node.createObject('VoronoiShapeFunction', name="shapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, position="@"+SofaPython.Tools.getObjectPath(position)+".position", src="@"+imagePath, method=0, nbRef=8, bias=True)
+        self.shapeFunction = self.node.createObject(
+            "VoronoiShapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, 
+            name="shapeFunction",
+            position="@"+SofaPython.Tools.getObjectPath(self.position)+".position",
+            src="@"+imagePath, method=0, nbRef=8, bias=True)
    
     def getFilenameIndices(self, filenamePrefix=None, directory=""):
         _filename=filenamePrefix if not filenamePrefix is None else self.name
