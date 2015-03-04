@@ -14,20 +14,31 @@ import Flexible.sml
 def insertRigid(parentNode, rigidModel, param):
     print "rigid:", rigidModel.name
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
-    if not rigidModel.density is None:
+    if not rigidModel.density is None and not rigidModel.mesh is None:
+        # compute physics using mesh and density
         rigid.setFromMesh(rigidModel.mesh.source, density=rigidModel.density, offset=rigidModel.position)
-    else:
+    elif not rigidModel.mesh is None:
+        # no density but a mesh, let's compute physics whith this information plus specified mass if any
+        rigid.setFromMesh(rigidModel.mesh.source, density=1, offset=rigidModel.position)
         mass=1.
         if not rigidModel.mass is None:
             mass = rigidModel.mass
-        rigid.setFromMesh(rigidModel.mesh.source, density=1, offset=rigidModel.position)
-        
         inertia = []
         for inert,m in zip(rigid.mass.inertia, rigid.mass.mass):
             for i in inert:
                 inertia.append( i/m[0]*mass)
         rigid.mass.inertia = concat(inertia)
         rigid.mass.mass = mass
+    else:
+        # no mesh, get mass/inertia if present, default to a unit sphere
+        mass=1.
+        if not rigidModel.mass is None:
+            mass = rigidModel.mass
+        inertia = [1,1,1] #TODO: take care of full inertia matrix, which may be given in sml, update SofaPython.mass.RigidMassInfo to diagonalize it
+        if not rigidModel.inertia is None:
+            inertia = rigidModel.inertia
+        rigid.setManually(rigidModel.position, mass, inertia)
+        
     rigid.dofs.showObject = param.showRigid
     rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
     # visual
