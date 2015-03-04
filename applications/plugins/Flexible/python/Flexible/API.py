@@ -68,9 +68,30 @@ class ShapeFunction:
 
     def addExporter(self, filenamePrefix=None, directory=""):
         if self.shapeFunction is None:
-            print "[FelexibleAPI.ShapeFunction] ERROR: no shapeFunction"
+            print "[Felexible.API.ShapeFunction] ERROR: no shapeFunction"
         sfPath = SofaPython.Tools.getObjectPath(self.shapeFunction)
-        self.node.createObject('ImageExporter', template="BranchingImageUI", name="exporterIndices", image="@"+sfPath+".indices", transform="@"+sfPath+".transform", filename=self.getFilenameIndices(filenamePrefix, directory), exportAtEnd=True, printLog=True)
-        self.node.createObject('ImageExporter', template="BranchingImageD", name="exporterWeights", image="@"+sfPath+".weights", transform="@"+sfPath+".transform", filename=self.getFilenameWeights(filenamePrefix, directory), exportAtEnd=True, printLog=True)
+        self.node.createObject(
+            "ImageExporter", template="BranchingImageUI", name="exporterIndices", 
+            image="@"+sfPath+".indices", transform="@"+sfPath+".transform",
+            filename=self.getFilenameIndices(filenamePrefix, directory),
+            exportAtEnd=True, printLog=True)
+        self.node.createObject(
+            "ImageExporter", template="BranchingImageD", name="exporterWeights", 
+            image="@"+sfPath+".weights", transform="@"+sfPath+".transform",
+            filename=self.getFilenameWeights(filenamePrefix, directory), exportAtEnd=True, printLog=True)
        
-       
+    def addContainer(self, filenamePrefix=None, directory=""):
+        if self.position is None:
+            print "[Felexible.API.ShapeFunction] ERROR: no position"
+        self.node.createObject(
+            "ImageContainer", template="BranchingImageUI", name="containerIndices", 
+            filename=self.getFilenameIndices(filenamePrefix, directory), drawBB=False)
+        self.node.createObject(
+            "ImageContainer", template="BranchingImageD", name="containerWeights", 
+            filename=self.getFilenameWeights(filenamePrefix, directory), drawBB=False)
+        self.shapeFunction = self.node.createObject(
+            "ImageShapeFunctionContainer", template="ShapeFunctiond,BranchingImageUC", name="shapeFunction", position="@"+SofaPython.Tools.getObjectPath(self.position)+".position",
+            transform="@containerWeights.transform",
+            weights="@containerWeights.image", indices="@containerIndices.image")
+        
+        
