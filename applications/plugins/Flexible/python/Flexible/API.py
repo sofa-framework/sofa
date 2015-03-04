@@ -26,6 +26,7 @@ def insertLinearMapping(node, dofRigid=None, dofAffine=None, position=None, labe
             return node.createObject(
                 "LinearMultiMapping", template="Rigid,Affine,F331", cell="@cell.cell", 
                 input1="@"+dofRigid.getPathName(), input2="@"+dofAffine.getPathName(), output="@.", assemble=assemble)
+
 class Deformable:
     
     def __init__(self, node, name):
@@ -114,5 +115,36 @@ class ShapeFunction:
             "ImageShapeFunctionContainer", template="ShapeFunctiond,BranchingImageUC", name="shapeFunction", position="@"+SofaPython.Tools.getObjectPath(self.position)+".position",
             transform="@containerWeights.transform",
             weights="@containerWeights.image", indices="@containerIndices.image")
+        
+        
+class Behavior:
+    """ High level API to add a behavior
+    """
+    def __init__(self, node, name, labelImage=None, labels=None):
+        self.node=node.createChild(name)
+        self.name=name
+        self.labelImage=labelImage
+        self.labels=labels
+        self.sampler=None
+        
+    def addGaussPointSampler(self, shapeFunction, nbPoint):
+        shapeFunctionPath = SofaPython.Tools.getObjectPath(shapeFunction.shapeFunction)
+        self.sampler = self.node.createObject(
+            "ImageGaussPointSampler", template="BranchingImageD,BranchingImageUC", name="sampler",
+            indices="@"+shapeFunctionPath+".indices", weights="@"+shapeFunctionPath+".weights", transform="@"+shapeFunctionPath+".transform", 
+            method="2", order="1", targetNumber=nbPoint, 
+            mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels), clearData=True)
+        
+    def addMechanicalObject(self, dofRigid=None, dofAffine=None):
+        if self.sampler is None:
+            print "[Felexible.API.Behavior] ERROR: no sampler"
+        self.node.createObject("MechanicalObject", template="F331", name="dofs")
+        insertLinearMapping(self.node, dofRigid, dofAffine, self.sampler, self.labelImage, self.labels)
+    
+    def addHooke(self, youngModule):
+        eNode = self.node.createChild("E")
+        eNode.createObject('MechanicalObject',  template="E331", name="E")
+        eNode.createObject('CorotationalStrainMapping', template="F331,E331", assemble=True)
+        eNode.createObject('HookeForceField',  template="E331", youngModulus= SofaPython.units.elasticity_from_SI(youngModule), poissonRatio=0.4, viscosity=0, assemble=True, isCompliance=False)
         
         
