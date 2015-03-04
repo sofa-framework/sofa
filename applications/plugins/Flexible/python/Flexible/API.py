@@ -6,6 +6,9 @@ from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
 
 def insertLinearMapping(node, dofRigid=None, dofAffine=None, position=None, labelImage=None, labels=None, assemble=True):
+    """ insert the correct Linear(Multi)Mapping
+    hopefully the template is deduced automatically by the component
+    """
     if dofRigid is None and dofAffine is None:
         print "[Felexible.API.insertLinearMapping] ERROR: no dof given"
     if dofAffine is None:
@@ -18,13 +21,10 @@ def insertLinearMapping(node, dofRigid=None, dofAffine=None, position=None, labe
             src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels))
         if dofRigid is None:
             #TODO
-            #return node.createObject(
-                #"LinearMapping", template="Affine,F331", cell="@cell.cell", 
-                #input="@"+dofAffine.getPathName(), output="@.", assemble=assemble)
             return None
         else:
             return node.createObject(
-                "LinearMultiMapping", template="Rigid,Affine,F331", cell="@cell.cell", 
+                "LinearMultiMapping", cell="@cell.cell", 
                 input1="@"+dofRigid.getPathName(), input2="@"+dofAffine.getPathName(), output="@.", assemble=assemble)
 
 class Deformable:
