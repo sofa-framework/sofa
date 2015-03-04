@@ -145,7 +145,11 @@ void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams /* PARA
 template<class DataTypes>
 void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
 {
-    serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
+    static int i=0;
+    if (i < 10) {
+        serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
+        i++;
+    }
 }
 
 template<class DataTypes>
@@ -175,7 +179,11 @@ void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams /* PARA
 template<class DataTypes>
 void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int &/*offset*/)
 {
-//    serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
+//    static int i=0;
+//    if (i < 10) {
+//        serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
+//        i++;
+//    }
 }
 
 template<class DataTypes>
