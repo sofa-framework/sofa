@@ -5,6 +5,27 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
 
+def insertLinearMapping(node, dofRigid=None, dofAffine=None, position=None, labelImage=None, labels=None, assemble=True):
+    if dofRigid is None and dofAffine is None:
+        print "[Felexible.API.insertLinearMapping] ERROR: no dof given"
+    if dofAffine is None:
+        #TODO
+        return None
+    else:
+        node.createObject(
+            "BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", 
+            position ="@"+SofaPython.Tools.getObjectPath(position)+".position", 
+            src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels))
+        if dofRigid is None:
+            #TODO
+            #return node.createObject(
+                #"LinearMapping", template="Affine,F331", cell="@cell.cell", 
+                #input="@"+dofAffine.getPathName(), output="@.", assemble=assemble)
+            return None
+        else:
+            return node.createObject(
+                "LinearMultiMapping", template="Rigid,Affine,F331", cell="@cell.cell", 
+                input1="@"+dofRigid.getPathName(), input2="@"+dofAffine.getPathName(), output="@.", assemble=assemble)
 class Deformable:
     
     def __init__(self, node, name):
