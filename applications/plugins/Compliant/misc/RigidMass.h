@@ -159,7 +159,7 @@ public:
 	// cinétique d'un rigide, sauf si on considère les vitesses en
 	// coordonnées locales (ce que sofa ne fait pas). du coup on tape
 	// dans this->mstate->getX pour l'obtenir mais l'api devrait gérer ca
-	double getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, 
+    double getKineticEnergy( const core::MechanicalParams*,
 	                         const DataVecDeriv& _v  ) const {
 		helper::ReadAccessor< DataVecDeriv >  v(_v);
 		
@@ -183,7 +183,7 @@ public:
 	}
 
 	// TODO maybe sign is wrong 
-	double getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, 
+    double getPotentialEnergy( const core::MechanicalParams*,
 	                           const DataVecCoord& _x  ) const {
 		helper::ReadAccessor< DataVecCoord >  x(_x);
 				
@@ -201,7 +201,7 @@ public:
 	}
 
 
-	virtual void addMDx(const core::MechanicalParams*  /* PARAMS FIRST */, 
+    virtual void addMDx(const core::MechanicalParams* ,
 	                    DataVecDeriv& _f, 
 	                    const DataVecDeriv& _dx, 
 	                    double factor) {
@@ -259,10 +259,8 @@ public:
 			
 		}
 		
-	}
+    }
 
-    virtual void addKToMatrix(const core::MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) {}
-    virtual void addBToMatrix(const core::MechanicalParams*, const sofa::core::behavior::MultiMatrixAccessor*) {}
 };
 
 }

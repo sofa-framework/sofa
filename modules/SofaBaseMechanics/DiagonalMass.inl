@@ -427,7 +427,7 @@ void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& res, const DataVecDeriv& dx, double factor)
+void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& res, const DataVecDeriv& dx, double factor)
 {
     const MassVector &masses= f_mass.getValue();
     //std::cout << "DIAGONALMASS: dx size = " << dx.size() << " res size = " << res.size() << " masses size = " << masses.size() << std::endl;
@@ -456,7 +456,7 @@ void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*m
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
+void DiagonalMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -470,7 +470,7 @@ void DiagonalMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecDeriv& v ) const
+double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v ) const
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -484,7 +484,7 @@ double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::Mechanic
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x ) const
+double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -504,13 +504,13 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechan
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
 sofa::defaulttype::Vec6d
-DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
     return sofa::defaulttype::Vec6d();
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     const MassVector &masses= f_mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
@@ -723,7 +723,7 @@ void DiagonalMass<DataTypes, MassType>::init()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)
+void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
 {
     if(mparams)
     {
@@ -745,7 +745,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPara
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
+void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -778,7 +778,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
 }
 #else
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& , const DataVecDeriv& )
+void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& , const DataVecDeriv& )
 {
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if(this->m_separateGravity.getValue())

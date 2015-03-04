@@ -158,7 +158,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& vres, const DataVecDeriv& vdx, double factor)
+void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, double factor)
 {
     helper::WriteAccessor<DataVecDeriv> res = vres;
     helper::ReadAccessor<DataVecDeriv> dx = vdx;
@@ -186,7 +186,7 @@ void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams* /*
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& va, const DataVecDeriv& vf )
+void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams*, DataVecDeriv& va, const DataVecDeriv& vf )
 {
     helper::WriteAccessor<DataVecDeriv> a = va;
     helper::ReadAccessor<DataVecDeriv> f = vf;
@@ -216,7 +216,7 @@ void UniformMass<DataTypes, MassType>::addMDxToVector ( defaulttype::BaseVector 
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)
+void UniformMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
 {
     if (mparams)
     {
@@ -239,12 +239,12 @@ void UniformMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParam
 
 template <class DataTypes, class MassType>
 #ifdef SOFA_SUPPORT_MAPPED_MASS
-void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* mparams, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
 #else
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
-void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& vf, const DataVecCoord& x, const DataVecDeriv& v )
+void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& x, const DataVecDeriv& v )
 #else
-void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ )
+void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ )
 #endif
 #endif
 {
@@ -334,7 +334,7 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams* 
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getKineticEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& vv  ) const
+double UniformMass<DataTypes, MassType>::getKineticEnergy ( const core::MechanicalParams*, const DataVecDeriv& vv  ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
 
@@ -358,7 +358,7 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy ( const core::Mechanic
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx  ) const
+double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& vx  ) const
 {
     helper::ReadAccessor<DataVecCoord> x = vx;
 
@@ -393,14 +393,14 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::Mechan
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
 sofa::defaulttype::Vec6d
-UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
     return sofa::defaulttype::Vec6d();
 }
 
 /// Add Mass contribution to global Matrix assembling
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMToMatrix (const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void UniformMass<DataTypes, MassType>::addMToMatrix (const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     const MassType& m = mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
