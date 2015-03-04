@@ -9,21 +9,21 @@
         <source format="obj">mesh/Armadillo_verysimplified.obj</source>
     </mesh>
     
-    <object id="armadillo">
+    <solid id="armadillo">
         <tag>red</tag>
         <position>0 0 0 0 0 0 1</position>
         <mesh id="armadillo" />
-    </object>
+    </solid>
     
-    <object id="ball01">
+    <solid id="ball01">
         <tag>green</tag>
         <position>0 8 -5 0 0 0 1</position>
         <mesh id="ball" />
-    </object>
+    </solid>
     
-    <object id="ball02">
+    <solid id="ball02">
         <position>0 8 -7 0 0 0 1</position>
         <mesh id="ball" />
-    </object>
+    </solid>
     
 </sml>

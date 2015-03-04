@@ -13,7 +13,7 @@ def insertDeformableWithSkinning(parentNode, deformableModel, bonesPath, bonesId
         indices = dict()
         weights = dict()
         for s in deformableModel.skinnings:
-            currentBoneIndex = bonesId.index(s.rigid.id)
+            currentBoneIndex = bonesId.index(s.solid.id)
             for index,weight in zip(s.index, s.weight):
                 if not index in indices:
                     indices[index]=list()

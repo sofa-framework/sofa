@@ -52,7 +52,7 @@ def insertJoint(jointModel, rigids, param):
     print "joint:", jointModel.name
     frames=list()
     for i,offset in enumerate(jointModel.offsets):
-        rigid = rigids[jointModel.objects[i].id] # shortcut
+        rigid = rigids[jointModel.solids[i].id] # shortcut
         if not offset is None:
             if offset.isAbsolute():
                 frames.append( rigid.addAbsoluteOffset(offset.name, offset.value))
@@ -96,7 +96,7 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         SofaPython.sml.setupUnits(self.model.units)
 
         # rigids
-        for rigidModel in self.model.objectsByTag["rigid"]:
+        for rigidModel in self.model.solidsByTag["rigid"]:
             self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.param)
         
         # joints
@@ -113,20 +113,22 @@ class SceneSkinning(SceneArticulatedRigid) :
         SceneArticulatedRigid.createScene(self)
         
         # all rigids (bones) must be gathered in a single node
-        self.nodes["bones"] = self.node.createChild("bones")
-        self.nodes["bones"].createObject("MechanicalObject", template = "Rigid3d", name="dofs")
+        self.nodes["armature"] = self.node.createChild("armature")
+        self.nodes["armature"].createObject("MechanicalObject", template = "Rigid3d", name="dofs")
         bonesId = list() # keep track of merged bones, bone index and bone id
         input=""
         indexPairs=""
-        for rigidId,rigid in self.rigids.iteritems():
-            rigid.node.addChild(self.nodes["bones"])
+        for armatureBone in self.model.solidsByTag["armature"]:
+            rigid = self.rigids[armatureBone.id]
+            rigid.node.addChild(self.nodes["armature"])
             input += '@'+rigid.node.getPathName()+" "
             indexPairs += str(len(bonesId)) + " 0 "
-            bonesId.append(rigidId)
-        self.nodes["bones"].createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
+            bonesId.append(armatureBone.id)
+        self.nodes["armature"].createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
         
         #deformable
-        for deformableModel in self.model.deformables.values():
-            self.deformables[deformableModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, deformableModel, self.nodes["bones"].getPathName(), bonesId)
+        for solidModel in self.model.solids.values():
+            if len(solidModel.skinnings)>0:
+                self.deformables[solidModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, solidModel, self.nodes["armature"].getPathName(), bonesId)
         
         

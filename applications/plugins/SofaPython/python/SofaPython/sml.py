@@ -55,7 +55,7 @@ class Model:
                 for d in g.iter("data"):
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)                    
     
-    class Object:
+    class Solid:
         def __init__(self, objXml):
             parseIdName(self,objXml)
             parseTag(self,objXml)
@@ -63,6 +63,7 @@ class Model:
             self.mesh = None
             self.density=None
             self.mass=None
+            self.inertia=None
             if not objXml.find("density") is None:
                 self.density=float(objXml.find("density").text)
             if not objXml.find("mass") is None:
@@ -92,13 +93,13 @@ class Model:
         #def __init__(self, name="Unknown",object1,offset1,object2,offset2):
         def __init__(self, jointXml):
             parseIdName(self,jointXml)
-            self.objects = [None,None]
+            self.solids = [None,None]
             # offsets
             self.offsets = [None,None]
-            objects = jointXml.findall("jointObject")
+            solidsRef = jointXml.findall("jointSolidRef")
             for i in range(0,2):
-                if not objects[i].find("offset") is None:
-                    self.offsets[i] = Model.Offset(objects[i].find("offset"))
+                if not solidsRef[i].find("offset") is None:
+                    self.offsets[i] = Model.Offset(solidsRef[i].find("offset"))
                     self.offsets[i].name = "offset_{0}".format(self.name)
                     
             # dofs
@@ -136,8 +137,8 @@ class Model:
         self.modelDir = os.path.dirname(filename)
         self.units=dict()
         self.meshes=dict()
-        self.objects=dict()
-        self.objectsByTag=dict()
+        self.solids=dict()
+        self.solidsByTag=dict()
         self.genericJoints=dict()
         self.slidingContacts=dict()
         
@@ -166,33 +167,33 @@ class Model:
                     self.meshes[m.attrib["id"]] = mesh
                     
             # objects
-            for objXml in modelXml.iter("object"):
-                if objXml.attrib["id"] in self.objects:
-                    print "ERROR: sml.Model: object defined twice, id:", r.attrib["id"]
+            for objXml in modelXml.iter("solid"):
+                if objXml.attrib["id"] in self.solids:
+                    print "ERROR: sml.Model: solid defined twice, id:", r.attrib["id"]
                     continue
-                object=Model.Object(objXml)
-                self.parseMesh(object, objXml)
+                solid=Model.Solid(objXml)
+                self.parseMesh(solid, objXml)
 
-                mesh=object.mesh # shortcut
+                mesh=solid.mesh # shortcut
 
                 for s in objXml.iter("skinning"):
-                    if not s.attrib["object"] in self.objects:
-                        print "ERROR: sml.Model: skinning for object {0}: object {1} is not defined".format(name, s.attrib["object"])
+                    if not s.attrib["solid"] in self.solids:
+                        print "ERROR: sml.Model: skinning for solid {0}: solid {1} is not defined".format(name, s.attrib["solid"])
                         continue
                     skinning = Model.Skinning()
-                    skinning.object = self.objects[s.attrib["object"]]
+                    skinning.solid = self.solids[s.attrib["solid"]]
                     if not (s.attrib["group"] in mesh.group and s.attrib["weight"] in mesh.group[s.attrib["group"]].data):
-                        print "ERROR: sml.Model: skinning for object {0}: group {1} - weight {2} is not defined".format(name, s.attrib["group"], s.attrib["weight"])
+                        print "ERROR: sml.Model: skinning for solid {0}: group {1} - weight {2} is not defined".format(name, s.attrib["group"], s.attrib["weight"])
                         continue
                     skinning.index = mesh.group[s.attrib["group"]].index
                     skinning.weight = mesh.group[s.attrib["group"]].data[s.attrib["weight"]]
-                    object.skinnings.append(skinning)
+                    solid.skinnings.append(skinning)
 
-                self.objects[object.id]=object
-                for tag in object.tags:
-                    if not tag in self.objectsByTag:
-                        self.objectsByTag[tag]=list()
-                    self.objectsByTag[tag].append(object)
+                self.solids[solid.id]=solid
+                for tag in solid.tags:
+                    if not tag in self.solidsByTag:
+                        self.solidsByTag[tag]=list()
+                    self.solidsByTag[tag].append(solid)
             
             # joints
             self.parseJointGenerics(modelXml)
@@ -206,11 +207,11 @@ class Model:
                 surfaces=c.findall("surface")
                 for i,s in enumerate(surfaces):
                     contact.surfaces[i] = Model.Surface()
-                    if s.attrib["object"] in self.objects:
-                        contact.surfaces[i].object = self.objects[s.attrib["object"]]
+                    if s.attrib["solid"] in self.solids:
+                        contact.surfaces[i].solid = self.solids[s.attrib["solid"]]
                     else:
-                        print "ERROR: sml.Model: in contact {0}, unknown object {1} referenced".format(contact.name, s.attrib["object"])
-                    contact.surfaces[i].mesh = contact.surfaces[i].object.mesh # for now a single mesh is supported
+                        print "ERROR: sml.Model: in contact {0}, unknown solid {1} referenced".format(contact.name, s.attrib["solid"])
+                    contact.surfaces[i].mesh = contact.surfaces[i].solid.mesh # for now a single mesh is supported
                     contact.surfaces[i].index = contact.surfaces[i].mesh.group[s.attrib["group"]].index
                 self.slidingContacts[contact.id]=contact
                     
@@ -227,7 +228,7 @@ class Model:
             if meshId in self.meshes:
                 obj.mesh = self.meshes[meshId]
             else:
-                print "ERROR: sml.Model: object {0} references undefined mesh {1}".format(obj.name, meshId)
+                print "ERROR: sml.Model: solid {0} references undefined mesh {1}".format(obj.name, meshId)
 
     def parseJointGenerics(self,modelXml):
         for j in modelXml.iter("jointGeneric"):
@@ -236,12 +237,12 @@ class Model:
                 continue
 
             joint=Model.JointGeneric(j)
-            objects=j.findall("jointObject")
-            for i,o in enumerate(objects):
-                if o.attrib["id"] in self.objects:
-                    joint.objects[i] = self.objects[o.attrib["id"]]
+            solids=j.findall("jointSolidRef")
+            for i,o in enumerate(solids):
+                if o.attrib["id"] in self.solids:
+                    joint.solids[i] = self.solids[o.attrib["id"]]
                 else:
-                    print "ERROR: sml.Model: in joint {0}, unknown object {1} referenced".format(joint.name, o.attrib["id"])
+                    print "ERROR: sml.Model: in joint {0}, unknown solid {1} referenced".format(joint.name, o.attrib["id"])
             self.genericJoints[joint.id]=joint
             
 def insertVisual(parentNode,obj,color):
@@ -274,7 +275,7 @@ class BaseScene:
         self.node=parentNode.createChild(self.model.name)
 
 class SceneDisplay(BaseScene):
-    """ Creates a scene to display object meshes
+    """ Creates a scene to display solid meshes
     """
     def __init__(self,parentNode,model):
         BaseScene.__init__(self,parentNode,model)
@@ -294,7 +295,7 @@ class SceneDisplay(BaseScene):
 
     def createScene(self):
         model=self.model # shortcut
-        for object in model.objects.values():
-            print "Display object:", object.name
-            color = self.getTagColor(object.tags)
-            insertVisual(self.node, object, color)
+        for solid in model.solids.values():
+            print "Display solid:", solid.name
+            color = self.getTagColor(solid.tags)
+            insertVisual(self.node, solid, color)
