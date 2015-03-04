@@ -124,7 +124,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_directory*/ )
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    ExportGnuplotVisitor expg ( params /* PARAMS FIRST */, node->getTime());
+    ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );
 }
 

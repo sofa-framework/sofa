@@ -42,7 +42,7 @@ using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
 
 template <>
-Vec6d MeshMatrixMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vec6d MeshMatrixMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();
@@ -85,7 +85,7 @@ Vec6d MeshMatrixMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalPa
 #ifndef SOFA_DOUBLE
 
 template <>
-Vec6d MeshMatrixMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vec6d MeshMatrixMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();

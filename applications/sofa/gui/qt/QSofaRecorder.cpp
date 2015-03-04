@@ -304,10 +304,10 @@ void QSofaRecorder::slot_recordSimulation(bool value)
         std::cout << "Simulation parameters saved in "<<simulationFileName<<std::endl;
     }
     //Change the state of the writers
-    WriteStateActivator v_write(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, value);
+    WriteStateActivator v_write(sofa::core::ExecParams::defaultInstance(), value);
     v_write.addTag(Tag("AutoRecord"));
     v_write.execute(root);
-    ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, false);
+    ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance(), false);
     v_read.addTag(Tag("AutoRecord"));
     v_read.execute(root);
 }
@@ -414,7 +414,7 @@ void QSofaRecorder::loadSimulation(bool one_step )
     root->execute< UpdateSimulationContextVisitor >(sofa::core::ExecParams::defaultInstance());
     root->execute< VisualUpdateVisitor >(sofa::core::ExecParams::defaultInstance());
     //read the state for the current time
-    ReadStateModifier v(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, time);
+    ReadStateModifier v(sofa::core::ExecParams::defaultInstance(), time);
     v.addTag(Tag("AutoRecord"));
     v.execute(root);
     if (!one_step)
@@ -464,7 +464,7 @@ void QSofaRecorder::addWriteState(const std::string& writeSceneName )
     assert(! writeSceneName.empty());
     assert(root);
     //record X, V, but won't record in the Mapping
-    WriteStateCreator v(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, writeSceneName, true, true, true, false);
+    WriteStateCreator v(sofa::core::ExecParams::defaultInstance(), writeSceneName, true, true, true, false);
     v.addTag(Tag("AutoRecord"));
     v.execute(root);
     std::cout << "Recording simulation with base name: " << writeSceneName << "\n";

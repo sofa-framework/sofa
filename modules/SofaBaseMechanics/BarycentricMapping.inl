@@ -1161,7 +1161,7 @@ void BarycentricMapping<TIn, TOut>::reinit()
 }
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in)
+void BarycentricMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in)
 {
     if (
 #ifdef SOFA_DEV
@@ -1480,7 +1480,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const unsign
 //--
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& in)
+void BarycentricMapping<TIn, TOut>::applyJ (const core::MechanicalParams * /*mparams*/, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& in)
 {
 #ifdef SOFA_DEV
     if ( sleeping.getValue()==false)
@@ -2080,7 +2080,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJ ( typename Out::VecD
 }
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in)
+void BarycentricMapping<TIn, TOut>::applyJT (const core::MechanicalParams * /*mparams*/, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in)
 {
     if (
 #ifdef SOFA_DEV
@@ -3733,7 +3733,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::draw  (const core::visual::
 
 
 template <class TIn, class TOut>
-void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in)
+void BarycentricMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in)
 {
     if (
 #ifdef SOFA_DEV

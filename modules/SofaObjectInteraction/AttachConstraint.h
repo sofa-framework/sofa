@@ -106,15 +106,15 @@ public:
 
     // -- Constraint interface
     void init();
-    void projectResponse(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv& dx1, DataVecDeriv& dx2);
-    void projectVelocity(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv& v1, DataVecDeriv& v2);
-    void projectPosition(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecCoord& x1, DataVecCoord& x2);
+    void projectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2);
+    void projectVelocity(const core::MechanicalParams *mparams, DataVecDeriv& v1, DataVecDeriv& v2);
+    void projectPosition(const core::MechanicalParams *mparams, DataVecCoord& x1, DataVecCoord& x2);
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    void applyConstraint(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void applyConstraint(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    void applyConstraint(const core::MechanicalParams *mparams /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void applyConstraint(const core::MechanicalParams *mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
 
     virtual void draw(const core::visual::VisualParams* vparams);

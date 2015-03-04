@@ -566,17 +566,17 @@ public:
 
     virtual void init();
 
-    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-    double getPotentialEnergy(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, const DataVecCoord& /* d_x */) const ;
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+    double getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const ;
 
 
     void draw(const core::visual::VisualParams* vparams);
 
 protected:
-    void computeNeighbors(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+    void computeNeighbors(const core::MechanicalParams* mparams, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     template<class Kd, class Kp, class Kv, class Kc>
-    void computeForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+    void computeForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 };
 
 #ifndef SOFA_FLOAT

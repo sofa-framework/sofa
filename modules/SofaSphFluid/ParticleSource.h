@@ -397,7 +397,7 @@ public:
         projectResponseT(dx);
     }
 
-    virtual void projectResponse(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dxData) ///< project dx to constrained space
+    virtual void projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dxData) ///< project dx to constrained space
     {
         VecDeriv& dx = *dxData.beginEdit(mparams);
         projectResponseT(dx);
@@ -411,7 +411,7 @@ public:
     }
 */
 
-    virtual void projectVelocity(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&  vData ) ///< project dx to constrained space (dx models a velocity)
+    virtual void projectVelocity(const sofa::core::MechanicalParams* mparams, DataVecDeriv&  vData ) ///< project dx to constrained space (dx models a velocity)
     {
         if (!this->mstate) return;
         if (lastparticles.getValue().empty()) return;
@@ -433,7 +433,7 @@ public:
         vData.endEdit(mparams);
     }
 
-    virtual void projectPosition(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData) ///< project x to constrained space (x models a position)
+    virtual void projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData) ///< project x to constrained space (x models a position)
     {
         if (!this->mstate) return;
         if (lastparticles.getValue().empty()) return;
@@ -456,7 +456,7 @@ public:
         xData.endEdit(mparams);
     }
 
-    virtual void projectJacobianMatrix(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /* cData */)
+    virtual void projectJacobianMatrix(const sofa::core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */)
     {
 
     }

@@ -140,7 +140,7 @@ protected:
 class SOFA_EXPORTER_API WriteStateActivator: public simulation::Visitor
 {
 public:
-    WriteStateActivator( const core::ExecParams* params /* PARAMS FIRST */, bool active) : Visitor(params), state(active) {}
+    WriteStateActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     bool getState() const { return state; }

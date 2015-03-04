@@ -47,7 +47,7 @@ class SOFA_SIMULATION_COMMON_API BehaviorUpdatePositionVisitor : public Visitor
 {
 
 public:
-    BehaviorUpdatePositionVisitor(const core::ExecParams* params /* PARAMS FIRST */, double _dt): Visitor(params),dt(_dt) {}
+    BehaviorUpdatePositionVisitor(const core::ExecParams* params, double _dt): Visitor(params),dt(_dt) {}
     void processBehaviorModel(simulation::Node* node, core::BehaviorModel* b);
     virtual Result processNodeTopDown(simulation::Node* node);
 

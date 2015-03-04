@@ -43,7 +43,7 @@ namespace simulation
 {
 
 
-WriteStateVisitor::WriteStateVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, std::ostream& out )
+WriteStateVisitor::WriteStateVisitor( const sofa::core::ExecParams* params, std::ostream& out )
     : Visitor(params), m_out(out)
 {}
 

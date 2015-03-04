@@ -159,7 +159,7 @@ void SubsetMultiMapping<TIn, TOut>::addPoint( int from, int index)
 
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
+void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
     //apply(const vecOutVecCoord& outPos, const vecConstInVecCoord& inPos)
     //OutVecCoord& out = *outPos[0];
@@ -183,7 +183,7 @@ void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams 
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
+void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
     OutVecDeriv& out = *(dataVecOutVel[0]->beginEdit(mparams));
 
@@ -200,7 +200,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
 }
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& dOut, const helper::vector< const OutDataMatrixDeriv* >& dIn)
+void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cparams*/, const helper::vector< InDataMatrixDeriv* >& dOut, const helper::vector< const OutDataMatrixDeriv* >& dIn)
 {
     vector<unsigned>  indexP = indexPairs.getValue();
 
@@ -250,7 +250,7 @@ void SubsetMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*cpa
 
 
 template <class TIn, class TOut>
-void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+void SubsetMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
 //void SubsetMultiMapping<TIn, TOut>::applyJT(const helper::vector<typename SubsetMultiMapping<TIn, TOut>::InVecDeriv*>& parentDeriv , const helper::vector<const OutVecDeriv*>& childDeriv )
 {
     const OutDataVecDeriv* cderData = dataVecInForce[0];

@@ -43,13 +43,13 @@ using namespace sofa::defaulttype;
 using sofa::core::MultiVecDerivId;
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& p, Vector& r, double beta)
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, double beta)
 {
     p.eq(r,p,beta); // p = p*beta + r
 }
 
 template<> SOFA_BASE_LINEAR_SOLVER_API
-inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params /* PARAMS FIRST */, Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
+inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
 {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     x.peq(p,alpha);                 // x = x + alpha p
@@ -64,7 +64,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     ops[1].first = (MultiVecDerivId)r;
     ops[1].second.push_back(std::make_pair((MultiVecDerivId)r,1.0));
     ops[1].second.push_back(std::make_pair((MultiVecDerivId)q,-alpha));
-    this->executeVisitor(simulation::MechanicalVMultiOpVisitor(params /* PARAMS FIRST */, ops));
+    this->executeVisitor(simulation::MechanicalVMultiOpVisitor(params, ops));
 #endif
 }
 

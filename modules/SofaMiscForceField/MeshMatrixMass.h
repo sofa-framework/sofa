@@ -206,26 +206,26 @@ public:
 
 
     // -- Mass interface
-    void addMDx(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
+    void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
 
-    void accFromF(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f); // This function can't be used as it use M^-1
+    void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f); // This function can't be used as it use M^-1
 
-    void addForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    double getKineticEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
+    double getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
 
-    double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    double getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vec6d getMomentum(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv))
+    defaulttype::Vec6d getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv))
 
-    void addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v);
+    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
     bool isDiagonal() {return false;}
 
 
 
     /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     double getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;

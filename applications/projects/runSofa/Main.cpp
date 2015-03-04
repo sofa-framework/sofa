@@ -117,7 +117,7 @@ void loadVerificationData(std::string& directory, std::string& filename, sofa::s
     compareVisitor.setSceneName(refFile);
     compareVisitor.execute(node);
 
-    sofa::component::misc::ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
+    sofa::component::misc::ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance(), true);
     v_read.execute(node);
 }
 

@@ -134,7 +134,7 @@ static inline void clearPos(defaulttype::Vec<6,T>& v)
 }
 
 template <class DataTypes> template <class DataDeriv>
-void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
+void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -156,26 +156,26 @@ void FixedTranslationConstraint<DataTypes>::projectResponseT(const core::Mechani
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void FixedTranslationConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT(mparams /* PARAMS FIRST */, res.wref());
+    projectResponseT(mparams, res.wref());
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*vData*/)
+void FixedTranslationConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
 {
 
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& /*xData*/)
+void FixedTranslationConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
 {
 
 }
 
 template <class DataTypes>
-void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
@@ -184,7 +184,7 @@ void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::Me
 
     while (rowIt != rowItEnd)
     {
-        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
+        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
 }

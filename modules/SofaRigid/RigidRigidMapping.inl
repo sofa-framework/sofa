@@ -214,7 +214,7 @@ void RigidRigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<unsigned 
 }
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+void RigidRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     helper::WriteAccessor< Data<OutVecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
@@ -287,7 +287,7 @@ void RigidRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparam
 }
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     helper::WriteAccessor< Data<OutVecDeriv> > childVelocities = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > parentVelocities = dIn;
@@ -456,7 +456,7 @@ void RigidRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
 
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn)
+void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn)
 {
     helper::WriteAccessor< Data<InVecDeriv> > parentForces = dOut;
     helper::ReadAccessor< Data<OutVecDeriv> > childForces = dIn;
@@ -635,7 +635,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
 
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId )
+void RigidRigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId )
 {
     helper::ReadAccessor<Data<OutVecDeriv> > childForces (*mparams->readF(this->toModel));
     helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get(mparams)].write());
@@ -763,7 +763,7 @@ void RigidRigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparam
 
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn)
+void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data<InMatrixDeriv>& dOut, const Data<OutMatrixDeriv>& dIn)
 {
     InMatrixDeriv& out = *dOut.beginEdit();
     const OutMatrixDeriv& in = dIn.getValue();
@@ -908,7 +908,7 @@ void RigidRigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cpar
 
 
 template <class TIn, class TOut>
-void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecDeriv>& dAcc_out, const Data<InVecDeriv>& dV_in, const Data<InVecDeriv>& dAcc_in)
+void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(const core::MechanicalParams *mparams, Data<OutVecDeriv>& dAcc_out, const Data<InVecDeriv>& dV_in, const Data<InVecDeriv>& dAcc_in)
 {
     const InVecDeriv& v_in = dV_in.getValue();
     //	const InVecDeriv& acc_in = dAcc_in.getValue();
@@ -921,7 +921,7 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(const core::MechanicalP
     }
 
     // current acceleration on acc_in is applied on the child (when more than one mapping)
-    applyJ(mparams /* PARAMS FIRST */, dAcc_out, dAcc_in);
+    applyJ(mparams, dAcc_out, dAcc_in);
 
     OutVecDeriv& acc_out = *dAcc_out.beginEdit();
 

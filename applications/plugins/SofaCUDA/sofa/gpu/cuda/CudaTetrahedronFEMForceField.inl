@@ -898,7 +898,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 #define CudaTetrahedronFEMForceField_ImplMethods(T) \
     template<> inline void TetrahedronFEMForceField< T >::reinit() \
     { data.reinit(this); } \
-    template<> inline void TetrahedronFEMForceField< T >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) \
+    template<> inline void TetrahedronFEMForceField< T >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) \
     { \
 		VecDeriv& f = *d_f.beginEdit(); \
 		const VecCoord& x = d_x.getValue(); \
@@ -910,7 +910,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     { data.getRotations(this, rotations); } \
     template<> inline void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * rotations,int offset) \
     { data.getRotations(this, rotations,offset); } \
-    template<> inline void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx) \
+    template<> inline void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) \
     { \
 		VecDeriv& df = *d_df.beginEdit(); \
 		const VecDeriv& dx = d_dx.getValue(); \

@@ -67,7 +67,7 @@ namespace forcefield
 
 
 template<class DataTypes>
-void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV )
+void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV )
 {
 
     VecDeriv& f1        = *(dataF.beginEdit());
@@ -124,7 +124,7 @@ void EllipsoidForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
 }
 
 template<class DataTypes>
-void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX )
+void EllipsoidForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX )
 {
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
     VecDeriv& df1       = *(datadF.beginEdit());

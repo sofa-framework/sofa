@@ -233,7 +233,7 @@ void LineSetSkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* v
 }
 
 template <class TIn, class TOut>
-void LineSetSkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
+void LineSetSkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
     OutVecCoord& out = *outData.beginEdit(mparams);
     const InVecCoord& in = inData.getValue();
@@ -252,7 +252,7 @@ void LineSetSkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParam
 }
 
 template <class TIn, class TOut>
-void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
     const InVecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     OutVecDeriv& out = *outData.beginEdit(mparams);
@@ -272,7 +272,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalPara
 
 
 template <class TIn, class TOut>
-void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
+void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
     InVecDeriv& out = *outData.beginEdit(mparams);
     const OutVecDeriv& in = inData.getValue();
@@ -316,7 +316,7 @@ void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPar
 
 
 template <class TIn, class TOut>
-void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintParams* mparams /* PARAMS FIRST */, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
+void LineSetSkinningMapping<TIn, TOut>::applyJT( const sofa::core::ConstraintParams* mparams, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
     InMatrixDeriv& out = *outData.beginEdit(mparams);
     const OutMatrixDeriv& in = inData.getValue();

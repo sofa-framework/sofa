@@ -86,25 +86,25 @@ public:
         return vec;
     }
 
-    virtual void apply (const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */ /* PARAMS FIRST */, core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */)
+    virtual void apply (const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecCoordId /* outPos */, core::ConstMultiVecCoordId /* inPos */)
     {
     }
 
-    virtual void applyJ(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */ /* PARAMS FIRST */, core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */)
+    virtual void applyJ(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outVel */, core::ConstMultiVecDerivId /* inVel */)
     {
     }
 
-    virtual void applyJT(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */ /* PARAMS FIRST */, core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */)
+    virtual void applyJT(const core::MechanicalParams* /* mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* inForce */, core::ConstMultiVecDerivId /* outForce */)
     {
     }
 
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
 
-    virtual void applyJT(const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */)
+    virtual void applyJT(const core::ConstraintParams * /*cparams*/, core::MultiMatrixDerivId /* inConst */, core::ConstMultiMatrixDerivId /* outConst */)
     {
     }
 
-    virtual void computeAccFromMapping(const core::MechanicalParams* /*mparams = core::MechanicalParams::defaultInstance() */ /* PARAMS FIRST */, core::MultiVecDerivId /* outAcc */, core::ConstMultiVecDerivId /* inVel */, core::ConstMultiVecDerivId /* inAcc */)
+    virtual void computeAccFromMapping(const core::MechanicalParams* /*mparams = core::MechanicalParams::defaultInstance() */, core::MultiVecDerivId /* outAcc */, core::ConstMultiVecDerivId /* inVel */, core::ConstMultiVecDerivId /* inAcc */)
     {
     }
 

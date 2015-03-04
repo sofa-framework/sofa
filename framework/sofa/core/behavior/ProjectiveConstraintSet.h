@@ -99,28 +99,28 @@ public:
     /// This method retrieves the dxId vector from the MechanicalState and call
     /// the internal projectResponse(VecDeriv&) method implemented by
     /// the component.
-    virtual void projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dxId);
+    virtual void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId);
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///
     /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
     /// the internal projectResponse(MatrixDeriv&) method implemented by
     /// the component.
-    virtual void projectJacobianMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, MultiMatrixDerivId cId);
+    virtual void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId);
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method retrieves the vId vector from the MechanicalState and call
     /// the internal projectVelocity(VecDeriv&) method implemented by
     /// the component.
-    virtual void projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vId);
+    virtual void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId);
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method retrieves the xId vector from the MechanicalState and call
     /// the internal projectPosition(VecCoord&) method implemented by
     /// the component.
-    virtual void projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId xId);
+    virtual void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId);
 
 
 
@@ -128,36 +128,36 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectResponse() method.
-    virtual void projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx) = 0;
+    virtual void projectResponse(const MechanicalParams* mparams, DataVecDeriv& dx) = 0;
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectVelocity() method.
-    virtual void projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& v) = 0;
+    virtual void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& v) = 0;
     /// Project x to constrained space (x models a position).
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectPosition() method.
-    virtual void projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x) = 0;
+    virtual void projectPosition(const MechanicalParams* mparams, DataVecCoord& x) = 0;
 
     /// Project c to constrained space (c models a constraint).
     ///
     /// This method must be implemented by the component to handle Lagrange Multiplier based constraint
-    virtual void projectJacobianMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& cData) = 0;
+    virtual void projectJacobianMatrix(const MechanicalParams* /*mparams*/, DataMatrixDeriv& cData) = 0;
 
     /// @}
 
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {
         serr << "applyConstaint(mparams, matrix) not implemented" << sendl;
     }
 
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {
         serr << "applyConstaint(mparams, vector, matrix) not implemented" << sendl;
     }

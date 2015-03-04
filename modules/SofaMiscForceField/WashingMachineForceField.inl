@@ -45,7 +45,7 @@ namespace forcefield
 {
 
 template<class DataTypes>
-void WashingMachineForceField<DataTypes>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
+void WashingMachineForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
     for(int i=0; i<6; ++i)
     {
@@ -55,7 +55,7 @@ void WashingMachineForceField<DataTypes>::addForce(const core::MechanicalParams*
 }
 
 template<class DataTypes>
-void WashingMachineForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx)
+void WashingMachineForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
     for(int i=0; i<6; ++i)
         _planes[i]->addDForce(mparams, df, dx);

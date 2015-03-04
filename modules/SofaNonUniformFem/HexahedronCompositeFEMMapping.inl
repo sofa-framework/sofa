@@ -228,7 +228,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
 
 template <class BasicMapping>
-void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
+void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
     OutVecCoord& out = *outData.beginEdit(mparams);
     const InVecCoord& in = inData.getValue();
@@ -305,7 +305,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply( const sofa::core::Mecha
 
 
 template <class BasicMapping>
-void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
     OutVecDeriv& out = *outData.beginEdit(mparams);
     const InVecDeriv& in = inData.getValue();
@@ -360,7 +360,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ( const sofa::core::Mech
 
 
 template <class BasicMapping>
-void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
+void HexahedronCompositeFEMMapping<BasicMapping>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
     InVecDeriv& out = *outData.beginEdit(mparams);
     const OutVecDeriv& in = inData.getValue();

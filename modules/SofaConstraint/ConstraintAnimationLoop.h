@@ -53,7 +53,7 @@ namespace animationloop
 class SOFA_CONSTRAINT_API MechanicalGetConstraintResolutionVisitor : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params /* PARAMS FIRST */, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
+    MechanicalGetConstraintResolutionVisitor(const core::ConstraintParams* params, std::vector<core::behavior::ConstraintResolution*>& res, unsigned int offset)
         : simulation::BaseMechanicalVisitor(params), _res(res),_offset(offset), _cparams(params)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -96,7 +96,7 @@ private:
 class SOFA_CONSTRAINT_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalSetConstraint(const core::ConstraintParams* _cparams /* PARAMS FIRST  = sofa::core::ConstraintParams::defaultInstance()*/, core::MultiMatrixDerivId _res, unsigned int &_contactId)
+    MechanicalSetConstraint(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res, unsigned int &_contactId)
         : simulation::BaseMechanicalVisitor(_cparams)
         , res(_res)
         , contactId(_contactId)
@@ -111,7 +111,7 @@ public:
     {
         ctime_t t0 = begin(node, c);
 
-        c->buildConstraintMatrix(cparams /* PARAMS FIRST */, res, contactId);
+        c->buildConstraintMatrix(cparams, res, contactId);
 
         end(node, c, t0);
         return RESULT_CONTINUE;
@@ -152,7 +152,7 @@ protected:
 class SOFA_CONSTRAINT_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
 {
 public:
-    MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams /* PARAMS FIRST  = sofa::core::ConstraintParams::defaultInstance()*/, core::MultiMatrixDerivId _res)
+    MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
         : simulation::BaseMechanicalVisitor(_cparams)
         , res(_res)
         , cparams(_cparams)
@@ -165,7 +165,7 @@ public:
     virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
     {
         ctime_t t0 = begin(node, map);
-        map->applyJT(cparams /* PARAMS FIRST */, res, res);
+        map->applyJT(cparams, res, res);
         end(node, map, t0);
     }
 
@@ -238,7 +238,7 @@ protected:
 public:
     // virtual const char* getTypeName() const { return "AnimationLoop"; }
 
-    virtual void step(const core::ExecParams* params /* PARAMS FIRST */, double dt);
+    virtual void step(const core::ExecParams* params, double dt);
 
     //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
 
@@ -274,23 +274,23 @@ public:
 
 protected:
     void launchCollisionDetection(const core::ExecParams* params);
-    void freeMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, double &dt);
-    void setConstraintEquations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context);
-    void correctiveMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context);
+    void freeMotion(const core::ExecParams* params, simulation::Node *context, double &dt);
+    void setConstraintEquations(const core::ExecParams* params, simulation::Node *context);
+    void correctiveMotion(const core::ExecParams* params, simulation::Node *context);
     void debugWithContact(int numConstraints);
 
     ///  Specific procedures that are called for setting the constraints:
 
     /// 1.calling resetConstraint & setConstraint & accumulateConstraint visitors
     /// and resize the constraint problem that will be solved
-    void writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, unsigned int &numConstraints);
+    void writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params, simulation::Node *context, unsigned int &numConstraints);
 
     /// 2.calling GetConstraintViolationVisitor: each constraint provides its present violation
     /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
-    void getIndividualConstraintViolations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context);
+    void getIndividualConstraintViolations(const core::ExecParams* params, simulation::Node *context);
 
     /// 3.calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
-    void getIndividualConstraintSolvingProcess(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context);
+    void getIndividualConstraintSolvingProcess(const core::ExecParams* params, simulation::Node *context);
 
     /// 4.calling addComplianceInConstraintSpace projected in the contact space => getDelassusOperator(_W) = H*C*Ht
     virtual void computeComplianceInConstraintSpace();

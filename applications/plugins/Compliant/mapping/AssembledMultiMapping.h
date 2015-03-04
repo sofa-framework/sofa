@@ -108,7 +108,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     }
 
 	
-	virtual void apply(const core::MechanicalParams*  /* PARAMS FIRST */, 
+	virtual void apply(const core::MechanicalParams* , 
 	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
 	                   const helper::vector<const InDataVecCoord*>& dataVecInPos) {
 		alloc();

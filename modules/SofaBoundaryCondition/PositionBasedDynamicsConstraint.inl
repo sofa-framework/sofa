@@ -94,7 +94,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::reset()
 
 
 template <class DataTypes>
-void PositionBasedDynamicsConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void PositionBasedDynamicsConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
 
@@ -113,7 +113,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectJacobianMatrix(const cor
 
 
 template <class DataTypes>
-void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData)
+void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
 	helper::ReadAccessor<DataVecDeriv> vel ( mparams, velocity );
@@ -123,7 +123,7 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectVelocity(const core::Mec
 }
 
 template <class DataTypes>
-void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData)
+void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
 	helper::WriteAccessor<DataVecDeriv> vel ( mparams, velocity );
@@ -153,11 +153,11 @@ void PositionBasedDynamicsConstraint<DataTypes>::projectPosition(const core::Mec
 // Specialization for rigids
 #ifndef SOFA_FLOAT
 template <>
-void PositionBasedDynamicsConstraint<defaulttype::Rigid3dTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+void PositionBasedDynamicsConstraint<defaulttype::Rigid3dTypes >::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void PositionBasedDynamicsConstraint<defaulttype::Rigid3fTypes >::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+void PositionBasedDynamicsConstraint<defaulttype::Rigid3fTypes >::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
 #endif
 
 

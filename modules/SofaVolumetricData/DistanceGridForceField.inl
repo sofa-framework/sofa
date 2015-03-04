@@ -128,7 +128,7 @@ void DistanceGridForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV )
+void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV )
 {
     VecDeriv& f1 = *(dataF.beginEdit());
     const VecCoord& p1=dataX.getValue();
@@ -307,7 +307,7 @@ void DistanceGridForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
 }
 
 template<class DataTypes>
-void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   datadF , const DataVecDeriv&   datadX )
+void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv&   datadF , const DataVecDeriv&   datadX )
 {
     VecDeriv& df1      = *(datadF.beginEdit());
     const VecCoord& dx1=   datadX.getValue()  ;
@@ -387,7 +387,7 @@ void DistanceGridForceField<DataTypes>::addDForce(const sofa::core::MechanicalPa
 }
 
 template<class DataTypes>
-void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void DistanceGridForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());

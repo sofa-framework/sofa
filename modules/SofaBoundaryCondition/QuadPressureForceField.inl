@@ -76,7 +76,7 @@ template <class DataTypes> void QuadPressureForceField<DataTypes>::init()
 }
 
 template <class DataTypes>
-void QuadPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /* d_x */, const DataVecDeriv& /* d_v */)
+void QuadPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& /* d_x */, const DataVecDeriv& /* d_v */)
 {
     VecDeriv& f = *d_f.beginEdit();
     Deriv force;
@@ -101,7 +101,7 @@ void QuadPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /
 
 
 template<class DataTypes>
-void QuadPressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+void QuadPressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
 {
     //Todo
 

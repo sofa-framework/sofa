@@ -71,7 +71,7 @@ public:
     ///
     /// Specify and execute all computations for computing a timestep, such
     /// as one or more collisions and integrations stages.
-    virtual void step(const core::ExecParams* params /* PARAMS FIRST =ExecParams::defaultInstance()*/, double dt) = 0;
+    virtual void step(const core::ExecParams* params, double dt) = 0;
 
     /// Returns starting time of the simulation
     double getResetTime() const;

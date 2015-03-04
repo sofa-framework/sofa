@@ -103,7 +103,7 @@ void FixedPlaneConstraint<DataTypes>::removeConstraint(int index)
 
 
 template <class DataTypes> template <class DataDeriv>
-void FixedPlaneConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
+void FixedPlaneConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
     Coord dir=direction.getValue();
 
@@ -115,22 +115,22 @@ void FixedPlaneConstraint<DataTypes>::projectResponseT(const core::MechanicalPar
 }
 
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void FixedPlaneConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
+    projectResponseT<VecDeriv>(mparams, res.wref());
 }
 
 /// project dx to constrained space (dx models a velocity)
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*vData*/)
+void FixedPlaneConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
 {
 
 }
 
 /// project x to constrained space (x models a position)
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& /*xData*/)
+void FixedPlaneConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
 {
 
 }
@@ -148,7 +148,7 @@ void FixedPlaneConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatr
 
 }
 template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
@@ -157,7 +157,7 @@ void FixedPlaneConstraint<DataTypes>::projectJacobianMatrix(const core::Mechanic
 
     while (rowIt != rowItEnd)
     {
-        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
+        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
 }

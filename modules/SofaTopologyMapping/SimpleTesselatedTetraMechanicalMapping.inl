@@ -66,7 +66,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn)
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( const core::MechanicalParams* /* mparams */, OutDataVecCoord& dOut, const InDataVecCoord& dIn)
 {
     if (!topoMap) return;
     const helper::vector<int>& pointMap = topoMap->getPointMappedFromPoint();
@@ -91,7 +91,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::apply ( const core::Mech
 }
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::MechanicalParams* /* mparams */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn )
 {
 
     if (!topoMap) return;
@@ -117,7 +117,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJ( const core::Mech
 }
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::MechanicalParams* /* mparams */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn )
 {
     if (!topoMap) return;
     const helper::vector<int>& pointMap = topoMap->getPointMappedFromPoint();
@@ -146,7 +146,7 @@ void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::Mec
 
 
 template <class TIn, class TOut>
-void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn)
+void SimpleTesselatedTetraMechanicalMapping<TIn, TOut>::applyJT( const core::ConstraintParams * /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn)
 {
 
     if (!topoMap) return;

@@ -239,7 +239,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
 }
 
 template <class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     using namespace sofa::defaulttype;
 
@@ -352,7 +352,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
 
 
 template <class DataTypes>
-void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

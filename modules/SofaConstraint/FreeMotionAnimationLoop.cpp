@@ -108,7 +108,7 @@ void FreeMotionAnimationLoop::init()
 }
 
 
-void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
+void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, double dt)
 {
     if (dt == 0)
         dt = this->gnode->getDt();
@@ -279,7 +279,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params /* PARAM
         sout << "<<<<<< End display FreeMotionAnimationLoop time." << sendl;
     }
 
-    simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
+    simulation::MechanicalEndIntegrationVisitor endVisitor(params, dt);
     this->gnode->execute(&endVisitor);
 
     this->gnode->setTime ( startTime + dt );

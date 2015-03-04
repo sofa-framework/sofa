@@ -152,8 +152,8 @@ public:
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
-        mm->resetForce(this->params /* PARAMS FIRST */, res.getId(mm));
-        mm->accumulateForce(this->params /* PARAMS FIRST */, res.getId(mm));
+        mm->resetForce(this->params, res.getId(mm));
+        mm->accumulateForce(this->params, res.getId(mm));
         return RESULT_CONTINUE;
     }
     virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
@@ -164,7 +164,7 @@ public:
         else
             mm->resetForce(mparams, res.getId(mm));
 
-        mm->accumulateForce(this->params /* PARAMS FIRST */, res.getId(mm));
+        mm->accumulateForce(this->params, res.getId(mm));
         return RESULT_CONTINUE;
     }
 

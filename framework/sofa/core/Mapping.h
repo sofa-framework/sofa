@@ -112,28 +112,28 @@ public:
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) ;
+    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) ;
 
     /// This method must be reimplemented by all mappings.
-    virtual void apply( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in)= 0;
+    virtual void apply( const MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in)= 0;
 
     /// ApplyJ ///
     /// Apply the mapping to derived (velocity, displacement) vectors.
     /// $ out = J in $
     /// where J is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJ(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
+    virtual void applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
 
     /// This method must be reimplemented by all mappings.
-    virtual void applyJ( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in) = 0;
+    virtual void applyJ( const MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) = 0;
 
     /// ApplyJT (Force)///
     /// Apply the reverse mapping to force vectors.
     /// $ out += J^t in $
     /// where J is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
+    virtual void applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
 
     /// This method must be reimplemented by all mappings.
-    virtual void applyJT( const MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in) = 0;
+    virtual void applyJT( const MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) = 0;
 
     /// ApplyDJT (Force)///
     /// Apply the change of force due to the nonlinearity of the mapping and the last propagated displacement. Also called geometric stiffness.
@@ -149,10 +149,10 @@ public:
     virtual void applyDJT(const MechanicalParams* /*mparams = MechanicalParams::defaultInstance()*/ , MultiVecDerivId /*parentForce*/, ConstMultiVecDerivId  /*childForce*/ );
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST  = ConstraintParams::defaultInstance()*/, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst );
+    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst );
 
     /// This method must be reimplemented by all mappings if they need to support constraints.
-    virtual void applyJT( const ConstraintParams* /* mparams */ /* PARAMS FIRST */, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */)
+    virtual void applyJT( const ConstraintParams* /* mparams */, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */)
     {
         serr << "This mapping does not support constraints because Mapping::applyJT( const ConstraintParams* , InDataMatrixDeriv&, const OutDataMatrixDeriv&) is not overloaded." << sendl;
     }
@@ -162,10 +162,10 @@ public:
     /// Let \f$ v_c = J v_p \f$ be the velocity of the child given the velocity of the parent, then the acceleration is \f$ a_c = J a_p + dJ v_p \f$.
     /// The second term is null in linear mappings, otherwise it encodes the acceleration due to the change of mapping at constant parent velocity.
     /// For instance, in a rigid mapping with angular velocity\f$ w \f$,  the second term is $ w^(w^rel_pos) $
-    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc );
+    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc );
 
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
-    virtual void computeAccFromMapping(const MechanicalParams* /* mparams */ /* PARAMS FIRST */, OutDataVecDeriv& /* accOut */, const InDataVecDeriv& /* vIn */, const InDataVecDeriv& /* accIn */)
+    virtual void computeAccFromMapping(const MechanicalParams* /* mparams */, OutDataVecDeriv& /* accOut */, const InDataVecDeriv& /* vIn */, const InDataVecDeriv& /* accIn */)
     {
     }
 
@@ -297,9 +297,9 @@ protected:
     void matrixApplyJ( OutVecDeriv& /* out */, const InVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
     void matrixApplyJT( InVecDeriv& /* out */, const OutVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
     void matrixApplyJT( InMatrixDeriv& /* out */, const OutMatrixDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
-    bool checkApplyJ( const MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in, const sofa::defaulttype::BaseMatrix* /* J */);
-    bool checkApplyJT( const MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& /* out */, const OutDataVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
-    bool checkApplyJT( const ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
+    bool checkApplyJ( const MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in, const sofa::defaulttype::BaseMatrix* /* J */);
+    bool checkApplyJT( const MechanicalParams* mparams, InDataVecDeriv& /* out */, const OutDataVecDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
+    bool checkApplyJT( const ConstraintParams* cparams, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */, const sofa::defaulttype::BaseMatrix* /* J */);
 
 };
 

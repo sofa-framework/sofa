@@ -126,7 +126,7 @@ void BeamLinearMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-void BeamLinearMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data< typename Out::VecCoord >& _out, const Data< typename In::VecCoord >& _in)
+void BeamLinearMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data< typename Out::VecCoord >& _out, const Data< typename In::VecCoord >& _in)
 {
     helper::WriteAccessor< Data< typename Out::VecCoord > > out = _out;
     helper::ReadAccessor< Data< typename In::VecCoord > > in = _in;
@@ -152,7 +152,7 @@ void BeamLinearMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparam
 }
 
 template <class TIn, class TOut>
-void BeamLinearMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& _in)
+void BeamLinearMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& _in)
 {
     helper::WriteAccessor< Data< typename Out::VecDeriv > > out = _out;
     helper::ReadAccessor< Data< typename In::VecDeriv > > in = _in;
@@ -179,7 +179,7 @@ void BeamLinearMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mpara
 }
 
 template <class TIn, class TOut>
-void BeamLinearMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data< typename In::VecDeriv >& _out, const Data< typename Out::VecDeriv >& _in)
+void BeamLinearMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/, Data< typename In::VecDeriv >& _out, const Data< typename Out::VecDeriv >& _in)
 {
     helper::WriteAccessor< Data< typename In::VecDeriv > > out = _out;
     helper::ReadAccessor< Data< typename Out::VecDeriv > > in = _in;
@@ -220,7 +220,7 @@ void BeamLinearMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mpar
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
 // in order to compute the right constaint on the rigidModel.
 template <class TIn, class TOut>
-void BeamLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/ /* PARAMS FIRST */, Data< typename In::MatrixDeriv >& _out, const Data< typename Out::MatrixDeriv >& _in)
+void BeamLinearMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/, Data< typename In::MatrixDeriv >& _out, const Data< typename Out::MatrixDeriv >& _in)
 {
     typename In::MatrixDeriv* out = _out.beginEdit();
     const typename Out::MatrixDeriv& in = _in.getValue();

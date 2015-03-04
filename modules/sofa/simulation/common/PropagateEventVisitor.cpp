@@ -42,7 +42,7 @@ namespace simulation
 {
 
 
-PropagateEventVisitor::PropagateEventVisitor(const core::ExecParams* params /* PARAMS FIRST */, sofa::core::objectmodel::Event* e)
+PropagateEventVisitor::PropagateEventVisitor(const core::ExecParams* params, sofa::core::objectmodel::Event* e)
     : sofa::simulation::Visitor(params)
     , m_event(e)
 {}

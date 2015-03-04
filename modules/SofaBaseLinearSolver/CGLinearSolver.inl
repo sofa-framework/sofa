@@ -186,7 +186,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         {
             beta = rho / rho_1;
             //p = p*beta + r; //z;
-            cgstep_beta(params /* PARAMS FIRST */, p,r,beta);
+            cgstep_beta(params, p,r,beta);
         }
 
         if( verbose )
@@ -222,7 +222,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         alpha = rho/den;
         //x.peq(p,alpha);                 // x = x + alpha p
         //r.peq(q,-alpha);                // r = r - alpha q
-        cgstep_alpha(params /* PARAMS FIRST */, x,r,p,q,alpha);
+        cgstep_alpha(params, x,r,p,q,alpha);
         if( verbose )
         {
             sout<<"den = "<<den<<", alpha = "<<alpha<<sendl;
@@ -263,14 +263,14 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 }
 
 template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& p, Vector& r, double beta)
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, double beta)
 {
     p *= beta;
     p += r; //z;
 }
 
 template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/ /* PARAMS FIRST */, Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/, Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
 {
     x.peq(p,alpha);                 // x = x + alpha p
     r.peq(q,-alpha);                // r = r - alpha q

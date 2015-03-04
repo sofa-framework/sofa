@@ -39,7 +39,7 @@ class SOFA_SIMULATION_COMMON_API VelocityThresholdVisitor : public Visitor
 public:
     virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 
-    VelocityThresholdVisitor(const core::ExecParams* params /* PARAMS FIRST */, core::MultiVecId v, double threshold);
+    VelocityThresholdVisitor(const core::ExecParams* params, core::MultiVecId v, double threshold);
 
 
 

@@ -153,7 +153,7 @@ void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const
 
 template<class DataTypes>
 void SpringForceField<DataTypes>::addForce(
-    const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2,
+    const core::MechanicalParams* /* mparams */, DataVecDeriv& data_f1, DataVecDeriv& data_f2,
     const DataVecCoord& data_x1, const DataVecCoord& data_x2,
     const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
 {
@@ -180,7 +180,7 @@ void SpringForceField<DataTypes>::addForce(
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv&, DataVecDeriv&, const DataVecDeriv&, const DataVecDeriv& )
+void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams*, DataVecDeriv&, DataVecDeriv&, const DataVecDeriv&, const DataVecDeriv& )
 {
     serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
 }

@@ -70,7 +70,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
 
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
+void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -82,7 +82,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams*
 
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
+void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& /* */, const DataVecDeriv& /* */)
 {
     VecDeriv& f = *d_f.beginEdit();
     const CudaVector<float>& vertexMass = data.vMass;
@@ -94,7 +94,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParam
 
 
 template<>
-void MeshMatrixMass<CudaVec2fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<CudaVec2fTypes, float>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
     VecDeriv& _acc = *a.beginEdit();
     const VecDeriv& _f = f.getValue();

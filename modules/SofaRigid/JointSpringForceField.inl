@@ -335,7 +335,7 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
+void JointSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 {
 
     VecDeriv&       f1 = *data_f1.beginEdit();
@@ -361,7 +361,7 @@ void JointSpringForceField<DataTypes>::addForce(const core::MechanicalParams* /*
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
+void JointSpringForceField<DataTypes>::addDForce(const core::MechanicalParams *mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
 {
     VecDeriv&        df1 = *data_df1.beginEdit();
     VecDeriv&        df2 = *data_df2.beginEdit();

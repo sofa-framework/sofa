@@ -279,7 +279,7 @@ MassType ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::J1tmJ0( Li
 
 // -- Mass interface
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMDx( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& res, const DataVecDeriv& dx, double factor )
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMDx( const core::MechanicalParams*, DataVecDeriv& res, const DataVecDeriv& dx, double factor )
 {
     VecDeriv& _res = *res.beginEdit();
 
@@ -302,7 +302,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMDx( const 
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF( const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& acc, const DataVecDeriv& f )
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF( const core::MechanicalParams*, DataVecDeriv& acc, const DataVecDeriv& f )
 {
     if( f_lumping.getValue()==DIAGONAL_LUMPING )
     {
@@ -343,7 +343,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF( cons
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& v ) const
+double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& v ) const
 {
     const VecDeriv& _v = v.getValue();
     double e = 0;
@@ -357,7 +357,7 @@ double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getKineticEn
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& x ) const
+double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& x ) const
 {
     const VecCoord& _x = x.getValue();
 
@@ -378,7 +378,7 @@ double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotential
 
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
 {
     if(mparams)
     {
@@ -401,7 +401,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addGravityToV(
 
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
 {
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if(this->m_separateGravity.getValue()) return;
@@ -421,7 +421,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addForce(const
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     BaseMatrix* m = r.matrix;

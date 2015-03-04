@@ -77,7 +77,7 @@ protected:
     friend class FixedPlaneConstraintInternalData<DataTypes>;
 
     template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
+    void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
     SetIndex indices; // the set of vertex indices
 
@@ -95,12 +95,12 @@ public:
 
     // -- Constraint interface
 
-    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
     // Implement projectMatrix for assembled solver of compliant
     virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
-    void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
     virtual void init();
 
@@ -149,7 +149,7 @@ protected:
 
 #ifndef SOFA_FLOAT
 template <> template <class DataDeriv>
-void FixedPlaneConstraint<defaulttype::Rigid3dTypes>::projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& /*res*/);
+void FixedPlaneConstraint<defaulttype::Rigid3dTypes>::projectResponseT(const core::MechanicalParams* mparams, DataDeriv& /*res*/);
 
 template <>
 bool FixedPlaneConstraint<defaulttype::Rigid3dTypes>::isPointInPlane(Coord /*p*/);
@@ -157,7 +157,7 @@ bool FixedPlaneConstraint<defaulttype::Rigid3dTypes>::isPointInPlane(Coord /*p*/
 
 #ifndef SOFA_DOUBLE
 template <> template <class DataDeriv>
-void FixedPlaneConstraint<defaulttype::Rigid3fTypes>::projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& /*res*/);
+void FixedPlaneConstraint<defaulttype::Rigid3fTypes>::projectResponseT(const core::MechanicalParams* mparams, DataDeriv& /*res*/);
 
 template <>
 bool FixedPlaneConstraint<defaulttype::Rigid3fTypes>::isPointInPlane(Coord /*p*/);

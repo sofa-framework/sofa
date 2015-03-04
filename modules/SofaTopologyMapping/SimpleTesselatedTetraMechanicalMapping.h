@@ -80,13 +80,13 @@ public:
 
     void init();
 
-    virtual void apply(const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& dOut, const InDataVecCoord& dIn);
+    virtual void apply(const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn);
 
-    virtual void applyJ(const core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn);
+    virtual void applyJ(const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn);
 
-    virtual void applyJT(const core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn);
+    virtual void applyJT(const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn);
 
-    virtual void applyJT(const core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn);
+    virtual void applyJT(const core::ConstraintParams* cparams, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn);
 
 protected:
     topology::SimpleTesselatedTetraTopologicalMapping* topoMap;

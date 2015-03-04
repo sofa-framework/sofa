@@ -144,7 +144,7 @@ protected:
 class SOFA_EXPORTER_API WriteTopologyActivator: public simulation::Visitor
 {
 public:
-    WriteTopologyActivator( const core::ExecParams* params /* PARAMS FIRST */, bool active) : Visitor(params), state(active) {}
+    WriteTopologyActivator( const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     bool getState() const { return state; }
