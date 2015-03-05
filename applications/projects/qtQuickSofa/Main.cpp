@@ -5,6 +5,9 @@
 #include <QDebug>
 #include "Tools.h"
 
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/gui/BaseGUI.h>
+
 using namespace sofa::qtquick;
 
 int main(int argc, char **argv)
@@ -14,6 +17,17 @@ int main(int argc, char **argv)
 
 	QApplication app(argc, argv);
     app.addLibraryPath(QCoreApplication::applicationDirPath() + "/../lib/");
+
+    // Add the plugin directory to PluginRepository
+#ifdef WIN32
+    const std::string pluginDir = "bin";
+#else
+    const std::string pluginDir = "lib";
+#endif
+    sofa::helper::system::PluginRepository.addFirstPath(sofa::gui::BaseGUI::getPathPrefix() + "/" + pluginDir);
+    // Initialise paths
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/screenshots");
 
     // application specific settings
 	app.setOrganizationName("Sofa");

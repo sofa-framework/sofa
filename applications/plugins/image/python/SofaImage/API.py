@@ -82,12 +82,40 @@ class Image:
         imagePath = SofaPython.Tools.getObjectPath(self.image)
         self.viewer = self.node.createObject('ImageViewer', name="viewer", template=self.imageType, image="@"+imagePath+".image", transform="@"+imagePath+".transform")
 
-    def addContainer(self, filename):
-        self.image = self.node.createObject('ImageContainer', template=self.imageType, name="image", filename=filename)
+    def getFilename(self, filename=None, directory=""):
+        _filename = filename if not filename is None else self.name+".mhd"
+        _filename = os.path.join(directory, _filename)
+        return _filename
 
-    def addExporter(self, filename):
+    def addContainer(self, filename=None, directory=""):
+        self.image = self.node.createObject('ImageContainer', template=self.imageType, name="image", filename=self.getFilename(filename, directory))
+
+    def addExporter(self, filename=None, directory=""):
         if self.image is None:
             print "[ImageAPI.Image] ERROR: no image"
         imagePath = SofaPython.Tools.getObjectPath(self.image)
-        self.exporter = self.node.createObject('ImageExporter', template=self.imageType, name="exporter", image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=filename, exportAtEnd=True, printLog=True)
+        self.exporter = self.node.createObject('ImageExporter', template=self.imageType, name="exporter", image="@"+imagePath+".image", transform="@"+imagePath+".transform", filename=self.getFilename(filename, directory), exportAtEnd=True, printLog=True)
+
+class Sampler:
+    """ This class proposes a high-level API to build ImageSamplers
+    """
+
+    def __init__(self, parentNode, name):
+        self.node = parentNode.createChild(name)
+        self.name = name
+        self.sampler=None
+        self.dof=None
+
+    def _addImageSampler(self, template, nbSamples, src, fixedPosition, **kwargs):
+        self.sampler = self.node.createObject("ImageSampler", template=template, name="sampler", src=src, method="1", param=str(nbSamples)+" 1", fixedPosition=SofaPython.Tools.listListToStr(fixedPosition), **kwargs)
+        return self.sampler
+
+    #def addImageSampler(self, image, nbSamples, fixedPosition=list(), **kwargs):
+        #return self._addImageSampler(nbSamples, fixedPosition, template=image.imageType, src=SofaPython.Tools.getObjectPath(image.image), **kwargs)
+
+    def addMechanicalObject(self, template="Affine", **kwargs):
+        if self.sampler is None:
+            print "[ImageAPI.Sampler] ERROR: no sampler"
+        samplerPath = SofaPython.Tools.getObjectPath(self.sampler)
+        self.dof = self.node.createObject("MechanicalObject", template=template, name="dof", position="@"+samplerPath+".position", **kwargs)
 
