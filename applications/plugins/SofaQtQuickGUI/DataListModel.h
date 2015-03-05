@@ -51,6 +51,7 @@ signals:
 private:
     enum {
         NameRole = Qt::UserRole + 1,
+        GroupRole,
         ValueRole
     };
 

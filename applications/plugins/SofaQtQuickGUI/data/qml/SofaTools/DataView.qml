@@ -14,7 +14,7 @@ CollapsibleGroupBox {
     property int priority: 80
 
     property Scene scene
-    property var sceneComponent: scene && scene.ready ? scene.listModel.getComponentById(scene.listModel.selectedId) : null
+    property var sceneComponent: scene && scene.ready ? scene.listModel.getComponentById(scene.listModel.selectedId) : null // TODO: use SceneGraphView.selectedId
 
     enabled: scene ? scene.ready : false
 
@@ -23,53 +23,67 @@ CollapsibleGroupBox {
         anchors.fill: parent
         columns: 1
 
-        /*Text {
-            text: "Index: " + scene && -1 !== scene.listModel.selectedItem ? scene.listModel.selectedItem : ""
-        }
-
-        Text {
-            text: "Name: " + scene && -1 !== scene.listModel.selectedItem ? scene.listModel.get(scene.listModel.selectedItem)["name"] : ""
-        }*/
-
-        Component {
-            id: delegate
-
-            Data {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                //height: 16
-
-                scene: root.scene
-                sceneData: dataListModel.getDataById(index)
-
-                nameLabelWidth: scrollView.nameLabelImplicitWidth
-                Component.onCompleted: updateNameLabelWidth();
-                onNameLabelImplicitWidthChanged: updateNameLabelWidth();
-
-                function updateNameLabelWidth() {
-                    scrollView.nameLabelImplicitWidth = Math.max(scrollView.nameLabelImplicitWidth, nameLabelImplicitWidth);
-                }
-            }
-        }
-
-        ScrollView {
-            id: scrollView
+        ListView {
+            id: listView
             Layout.fillWidth: true
             Layout.preferredHeight: 400
             clip: true
+            focus: true
 
             property int nameLabelImplicitWidth : 16
 
-            ListView {
-                id: listView
+            model: DataListModel {
+                id: dataListModel
+                sceneComponent: root.sceneComponent
+
+                onSceneComponentChanged: listView.nameLabelImplicitWidth = 16;
+            }
+
+            section.property: "group"
+            section.criteria: ViewSection.FullString
+            section.delegate: Rectangle {
                 width: parent.width
-                model: DataListModel {
-                    id: dataListModel
-                    sceneComponent: root.sceneComponent
+                height: childrenRect.height
+                color: "darkgrey"
+
+                Text {
+                    width: parent.width
+                    horizontalAlignment: Text.AlignHCenter
+                    text: section
+                    font.bold: true
+                    font.pixelSize: 16
+                }
+            }
+
+            delegate: Item {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: data.height
+
+                Rectangle {
+                    visible: data.modified
+                    anchors.fill: data
+                    color: "lightsteelblue"
                 }
 
-                delegate: delegate
-                focus: true
+                Data {
+                    id: data
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+
+                    scene: root.scene
+                    sceneData: dataListModel.getDataById(index)
+
+                    nameLabelWidth: listView.nameLabelImplicitWidth
+                    Component.onCompleted: updateNameLabelWidth();
+                    onNameLabelImplicitWidthChanged: updateNameLabelWidth();
+
+                    //onModifiedChanged: ; // TODO: update SceneGraphView (component name may have changed)
+
+                    function updateNameLabelWidth() {
+                        listView.nameLabelImplicitWidth = Math.max(listView.nameLabelImplicitWidth, nameLabelImplicitWidth);
+                    }
+                }
             }
         }
     }
