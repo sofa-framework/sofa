@@ -8,13 +8,20 @@ GridLayout {
 
     columns: 4
 
+    columnSpacing: 0
+    rowSpacing: 0
+
     property Scene scene
     property var sceneData
+    onSceneDataChanged: updateObject();
 
-    readonly property alias name: dataObject.name
-    readonly property alias type: dataObject.type
+    readonly property alias name:       dataObject.name
+    readonly property alias type:       dataObject.type
     readonly property alias properties: dataObject.properties
-    readonly property alias value: dataObject.value
+    readonly property alias value:      dataObject.value
+    readonly property alias modified:   dataObject.modified
+
+    property bool readOnly: false
 
     QtObject {
         id: dataObject
@@ -23,17 +30,18 @@ GridLayout {
         property string type
         property var properties
         property var value
-    }
+        property bool modified: false
 
-    property bool readOnly: false
+        property bool readOnly: root.readOnly || track.checked
+
+        property var editedValue
+        onEditedValueChanged: modified = true;
+    }
 
     property int nameLabelWidth: -1
     readonly property int nameLabelImplicitWidth: nameLabel.implicitWidth
 
-    Component.onCompleted: updateItem();
-    onSceneDataChanged: updateItem();
-
-    function updateItem() {
+    function updateObject() {
         if(!sceneData)
             return;
 
@@ -43,14 +51,19 @@ GridLayout {
         dataObject.type = object.type;
         dataObject.properties = object.properties;
         dataObject.value = object.value;
+        dataObject.editedValue = object.value;
+
+        dataObject.modified = false;
     }
 
     function updateData() {
         if(!sceneData)
             return;
 
-        sceneData.setValue(value);
-        updateItem();
+        sceneData.setValue(dataObject.editedValue);
+        updateObject();
+
+        dataObject.modified = false;
     }
 
     Text {
@@ -60,153 +73,99 @@ GridLayout {
     }
 
     Loader {
+        id: loader
         Layout.fillWidth: true
-        sourceComponent: evaluateComponent()
-    }
+        asynchronous: false
 
-    CheckBox {
-        id: track
-        checked: false
-
+        Component.onCompleted: createItem();
         Connections {
-            target: track.checked ? scene : null
-            onStepEnd: root.updateItem();
+            target: root
+            onSceneDataChanged: loader.createItem();
+        }
+
+        function createItem() {
+            var type = root.type;
+            var properties = root.properties;
+
+            if(0 === type.length) {
+                type = typeof(root.value);
+
+                if("object" === type)
+                    if(Array.isArray(value))
+                        type = "array";
+            }
+
+            loader.setSource("qrc:/SofaDataTypes/DataType_" + type + ".qml", {"dataObject": dataObject});
+            if(Loader.Ready !== loader.status)
+                loader.sourceComponent = dataTypeNotSupportedComponent;
+
+            dataObject.modified = false;
         }
     }
 
     Button {
-        id: requestUpdate
-        text: "U"
-        Layout.preferredWidth: 16
+        Layout.preferredWidth: 14
         Layout.preferredHeight: Layout.preferredWidth
-        onClicked: {
-            root.updateData();
+        checkable: true
+        //iconSource: "qrc:/icon/link.png"
+
+        Image {
+            anchors.fill: parent
+            source: "qrc:/icon/link.png"
         }
     }
 
-    function evaluateComponent() {
-        var type = root.type;
-        if(0 === type.length) {
-            type = typeof(root.value);
+    CheckBox {
+        id: track
+        Layout.preferredWidth: 20
+        Layout.preferredHeight: Layout.preferredWidth
+        checked: false
 
-            if("object" === type)
-                if(Array.isArray(value))
-                    type = "dynamicArray";
-        }
-
-        if("string" === type)
-            return stringView;
-        else if("boolean" === type)
-            return booleanView;
-        else if("number" === type)
-        {
-            if(!readOnly && undefined !== properties.min && undefined !== properties.max)
-                return rangedNumberView;
-            else
-                return numberView;
-        }
-        else if("staticInDynamicArray" === type)
-            return tableView;
-        else if("staticArray" === type) {
-            if(value.length <= 7)
-                return staticArrayView; // TODO: tableView;
-            else
-                return staticArrayView;
-        }
-        else if("dynamicArray" === type) {
-            if(value.length <= 7)
-                return dynamicArrayView; // TODO: tableView;
-            else
-                return dynamicArrayView;
+        // update every 50ms during simulation
+        Timer {
+            interval: 50
+            repeat: true
+            running: scene.play && track.checked
+            onTriggered: root.updateObject();
         }
 
-        return notsupported;
+        // update at each step during step-by-step simulation
+        Connections {
+            target: !scene.play && track.checked ? scene : null
+            onStepEnd: root.updateObject();
+        }
     }
+
+    Button {
+        Layout.columnSpan: 4
+        Layout.fillWidth: true
+        visible: dataObject.modified
+        text: "Update"
+        onClicked: root.updateData();
+    }
+
+    /*Image {
+        id: requestUpdate
+        Layout.preferredWidth: 12
+        Layout.preferredHeight: Layout.preferredWidth + 1
+        visible: dataObject.modified
+        verticalAlignment: Image.AlignBottom
+        fillMode: Image.PreserveAspectFit
+
+        source: "qrc:/icon/rightArrow.png"
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: root.updateData();
+        }
+    }*/
 
     Component {
-        id: notsupported
+        id: dataTypeNotSupportedComponent
         TextField {
             readOnly: true
-            text: "Data type not supported"
-        }
-    }
-
-    Component {
-        id: stringView
-        TextField {
-            readOnly: root.readOnly || track.checked
-            text: root.value.toString()
-        }
-    }
-
-    Component {
-        id: booleanView
-        Switch {
-            enabled: !(root.readOnly || track.checked)
-            checked: root.value
-        }
-    }
-
-    Component {
-        id: rangedNumberView
-        SpinBox {
-            enabled: !(root.readOnly || track.checked)
-            value: root.value
-            minimumValue: root.properties.min
-            maximumValue: root.properties.max
-            stepSize: root.properties.step ? root.properties.step : 1
-        }
-    }
-
-    Component {
-        id: numberView
-        TextField {
-            readOnly: root.readOnly || track.checked
-            text: root.value
-        }
-    }
-
-    Component {
-        id: tableView
-        ListView {
-            enabled: !(root.readOnly || track.checked)
-            model: ListModel {
-                Component.onCompleted: populate();
-
-                function populate() {
-                    clear();
-
-                    for(var i = 0; i < root.value.length; ++i)
-                        append({"values": root.value[i]});
-                }
-            }
-
-            delegate: Text {
-                text: root.value.toString()
-            }
-
-            Connections {
-                target: root
-                onValueChanged: model.populate();
-            }
-
-            //"Static in Dynamic Array: " + root.value
-        }
-    }
-
-    Component {
-        id: staticArrayView
-        TextField {
-            readOnly: root.readOnly || track.checked
-            text: root.value.toString()
-        }
-    }
-
-    Component {
-        id: dynamicArrayView
-        TextField {
-            readOnly: root.readOnly || track.checked
-            text: root.value.toString()
+            enabled: !readOnly
+            text: "Data type not supported: " + (0 != root.type.length ? root.type : "Unknown")
         }
     }
 }

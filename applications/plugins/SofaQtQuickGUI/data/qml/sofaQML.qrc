@@ -31,5 +31,15 @@
         <file>SofaBasics/SceneListModel.qml</file>
         <file>SofaBasics/DataListModel.qml</file>
         <file>SofaBasics/Data.qml</file>
+        <file>SofaDataTypes/DataType_0to1RatioWidget.qml</file>
+        <file>SofaDataTypes/DataType_array.qml</file>
+        <file>SofaDataTypes/DataType_boolean.qml</file>
+        <file>SofaDataTypes/DataType_graph_linear.qml</file>
+        <file>SofaDataTypes/DataType_graph.qml</file>
+        <file>SofaDataTypes/DataType_number.qml</file>
+        <file>SofaDataTypes/DataType_poissonRatio.qml</file>
+        <file>SofaDataTypes/DataType_string.qml</file>
+        <file>SofaDataTypes/DataType_widget_displayFlags.qml</file>
+        <file>SofaDataTypes/qmldir</file>
     </qresource>
 </RCC>

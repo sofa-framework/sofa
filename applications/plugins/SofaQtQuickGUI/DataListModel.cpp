@@ -38,6 +38,8 @@ void DataListModel::update()
             sofa::helper::vector<BaseData*> dataFields = base->getDataFields();
             for(int i = 0; i < dataFields.size(); ++i)
                 myItems.append(buildDataItem(dataFields[i]));
+
+            qStableSort(myItems.begin(), myItems.end(), [](const Item& a, const Item& b) {return QString::compare(a.data->getGroup(), b.data->getGroup()) < 0;});
         }
     }
 
@@ -109,12 +111,20 @@ QVariant DataListModel::data(const QModelIndex& index, int role) const
         return QVariant("");
 
     const Item& item = myItems[index.row()];
-    BaseData* data = item.data;
+    BaseData* data = item.data; // TODO: WARNING - not safe ! the data may not exist anymore
 
     switch(role)
     {
     case NameRole:
         return QVariant::fromValue(QString(data->getName().c_str()));
+    case GroupRole:
+    {
+        QString group = data->getGroup();
+        if(group.isEmpty())
+            group = "Base";
+
+        return QVariant::fromValue(group);
+    }
     case ValueRole:
         return QVariant::fromValue(Scene::dataValue(data));
     default:
@@ -129,6 +139,7 @@ QHash<int,QByteArray> DataListModel::roleNames() const
     QHash<int,QByteArray> roles;
 
     roles[NameRole]         = "name";
+    roles[GroupRole]        = "group";
     roles[ValueRole]        = "value";
 
     return roles;

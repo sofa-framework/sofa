@@ -383,16 +383,59 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
     if(!data)
         return object;
 
-    object.insert("name", data->getName().c_str());
-
     // TODO:
     QString type;
-    object.insert("type", type);
+    const AbstractTypeInfo* typeinfo = data->getValueTypeInfo();
 
-    // TODO:
     QVariantMap properties;
-    object.insert("properties", properties);
 
+    if(typeinfo->Text())
+    {
+        type = "string";
+    }
+    else if(typeinfo->Scalar())
+    {
+        type = "number";
+        properties.insert("step", 0.1);
+        properties.insert("decimals", 3);
+    }
+    else if(typeinfo->Integer())
+    {
+        if(std::string::npos != typeinfo->name().find("bool"))
+        {
+            type = "boolean";
+        }
+        else
+        {
+            type = "number";
+            properties.insert("decimals", 0);
+            if(std::string::npos != typeinfo->name().find("unsigned"))
+                properties.insert("min", 0);
+        }
+    }
+
+    if(typeinfo->Container())
+    {
+        type = "array";
+        int nbCols = typeinfo->size();
+
+        properties.insert("cols", nbCols);
+        if(typeinfo->FixedSize())
+            properties.insert("static", true);
+
+        const AbstractTypeInfo* baseTypeinfo = typeinfo->BaseType();
+        if(baseTypeinfo->FixedSize())
+            properties.insert("innerStatic", true);
+    }
+
+    QString widget(data->getWidget());
+    if(!widget.isEmpty())
+        type = widget;
+
+    object.insert("name", data->getName().c_str());
+    object.insert("type", type);
+    object.insert("group", data->getGroup());
+    object.insert("properties", properties);
     object.insert("value", dataValue(data));
 
     return object;
@@ -415,7 +458,12 @@ QVariant Scene::dataValue(const BaseData* data)
         else if(typeinfo->Scalar())
             value = typeinfo->getScalarValue(valueVoidPtr, 0);
         else if(typeinfo->Integer())
-            value = typeinfo->getIntegerValue(valueVoidPtr, 0);
+        {
+            if(std::string::npos != typeinfo->name().find("bool"))
+                value = 0 != typeinfo->getIntegerValue(valueVoidPtr, 0) ? true : false;
+            else
+                value = typeinfo->getIntegerValue(valueVoidPtr, 0);
+        }
     }
     else
     {
@@ -468,11 +516,20 @@ QVariant Scene::dataValue(const BaseData* data)
             QVariantList subValues;
             subValues.reserve(nbCols);
 
+            bool isBool = false;
+            if(std::string::npos != typeinfo->name().find("bool"))
+                isBool = true;
+
             for(int j = 0; j < nbRows; j++)
             {
                 subValues.clear();
-                for(int i = 0; i < nbCols; i++)
-                    subValues.append(QVariant::fromValue(typeinfo->getIntegerValue(valueVoidPtr, j * nbCols + i)));
+
+                if(isBool)
+                    for(int i = 0; i < nbCols; i++)
+                        subValues.append(QVariant::fromValue(0 != typeinfo->getIntegerValue(valueVoidPtr, j * nbCols + i) ? true : false));
+                else
+                    for(int i = 0; i < nbCols; i++)
+                        subValues.append(QVariant::fromValue(typeinfo->getIntegerValue(valueVoidPtr, j * nbCols + i)));
 
                 values.push_back(QVariant::fromValue(subValues));
             }
@@ -500,13 +557,6 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
         if(QVariant::List == finalValue.type())
         {
             QSequentialIterable valueIterable = finalValue.value<QSequentialIterable>();
-            if(1 == valueIterable.size())
-                finalValue = valueIterable.at(0);
-        }
-
-        if(QVariant::List == finalValue.type())
-        {
-            QSequentialIterable valueIterable = finalValue.value<QSequentialIterable>();
 
             int nbCols = typeinfo->size();
             int nbRows = typeinfo->size(data->getValueVoidPtr()) / nbCols;
@@ -521,7 +571,7 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
             {
                 if(typeinfo->FixedSize())
                 {
-                    qWarning("The new data should have the same size");
+                    qWarning() << "The new data should have the same size, should be" << nbRows << ", got" << valueIterable.size();
                     return;
                 }
 
@@ -539,7 +589,7 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                         QSequentialIterable subValueIterable = subFinalValue.value<QSequentialIterable>();
                         if(subValueIterable.size() != nbCols)
                         {
-                            qWarning("The new sub data should have the same size");
+                            qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
                             return;
                         }
 
@@ -645,7 +695,22 @@ void Scene::onSetDataValue(const QString& path, const QVariant& value)
     }
     else
     {
-        setDataValue(data, value);
+        if(!value.isNull())
+        {
+            QVariant finalValue = value;
+            if(finalValue.userType() == qMetaTypeId<QJSValue>())
+                finalValue = finalValue.value<QJSValue>().toVariant();
+
+            // arguments from JS are packed in an array, we have to unpack it
+            if(QVariant::List == finalValue.type())
+            {
+                QSequentialIterable valueIterable = finalValue.value<QSequentialIterable>();
+                if(1 == valueIterable.size())
+                    finalValue = valueIterable.at(0);
+            }
+
+            setDataValue(data, finalValue);
+        }
     }
 }
 
