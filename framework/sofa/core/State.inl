@@ -60,7 +60,7 @@ const objectmodel::BaseData* State<DataTypes>::baseRead(ConstVecId v) const
 }
 
 template<class DataTypes>
-void State<DataTypes>::computeBBox(const core::ExecParams* params)
+void State<DataTypes>::computeBBox(const core::ExecParams* params, bool)
 {
     const VecCoord& x = read(ConstVecCoordId::position())->getValue(params);
     const size_t xSize = x.size();

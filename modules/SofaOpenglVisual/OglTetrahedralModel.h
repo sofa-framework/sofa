@@ -83,7 +83,7 @@ protected:
 public:
     void init();
     void drawTransparent(const core::visual::VisualParams* vparams);
-    void computeBBox(const core::ExecParams *);
+    void computeBBox(const core::ExecParams *, bool onlyVisible=false);
 
     virtual void updateVisual();
     virtual void computeMesh();

@@ -270,9 +270,9 @@ void PlaneForceField<DataTypes>::drawPlane(const core::visual::VisualParams* vpa
 }
 
 template <class DataTypes>
-void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params)
+void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bool onlyVisible)
 {
-    if (!bDraw.getValue()) return;
+    if (onlyVisible && !bDraw.getValue()) return;
 
     const Real max_real = std::numeric_limits<Real>::max();
     const Real min_real = std::numeric_limits<Real>::min();
