@@ -47,6 +47,7 @@ CompliantAttachButtonSetting::CompliantAttachButtonSetting()
     , isCompliance(initData(&isCompliance, false, "isCompliance", "Is the mouse interaction treated as a compliance? (otherwise as a stiffness)"))
     , arrowSize(initData(&arrowSize, SReal(0), "arrowSize", ""))
     , color(initData(&color, defaulttype::Vec<4,SReal>(1,0,0,1), "color", ""))
+    , visualmodel(initData(&visualmodel, false, "visualmodel", ""))
 {
 }
 
