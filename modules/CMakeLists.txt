@@ -5,7 +5,7 @@ RegisterProjects("SofaBaseAnimationLoop" OPTION "SOFA-LIB_COMPONENT_BASE_ANIMATI
 #RegisterProjects("SofaBaseAnimationLoop_test" OPTION "SOFA-LIB_COMPONENT_BASE_ANIMATION_LOOP" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseAnimationLoop/SofaBaseAnimationLoop_test")
 
 RegisterProjects("SofaBaseCollision" OPTION "SOFA-LIB_COMPONENT_BASE_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseCollision")
-#RegisterProjects("SofaBaseCollision_test" OPTION "SOFA-LIB_COMPONENT_BASE_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseCollision/SofaBaseCollision_test")
+RegisterProjects("SofaBaseCollision_test" OPTION "SOFA-LIB_COMPONENT_BASE_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseCollision/SofaBaseCollision_test")
 
 RegisterProjects("SofaBaseLinearSolver" OPTION "SOFA-LIB_COMPONENT_BASE_LINEAR_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseLinearSolver")
 #RegisterProjects("SofaBaseLinearSolver_test" OPTION "SOFA-LIB_COMPONENT_BASE_LINEAR_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseLinearSolver/SofaBaseLinearSolver_test")
@@ -14,7 +14,7 @@ RegisterProjects("SofaBaseMechanics" OPTION "SOFA-LIB_COMPONENT_BASE_MECHANICS" 
 RegisterProjects("SofaBaseMechanics_test" OPTION "SOFA-LIB_COMPONENT_BASE_MECHANICS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseMechanics/SofaBaseMechanics_test")
 
 RegisterProjects("SofaBaseTopology" OPTION "SOFA-LIB_COMPONENT_BASE_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseTopology")
-#RegisterProjects("SofaBaseTopology_test" OPTION "SOFA-LIB_COMPONENT_BASE_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseTopology/SofaBaseTopology_test")
+RegisterProjects("SofaBaseTopology_test" OPTION "SOFA-LIB_COMPONENT_BASE_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseTopology/SofaBaseTopology_test")
 
 RegisterProjects("SofaBaseVisual" OPTION "SOFA-LIB_COMPONENT_BASE_VISUAL" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseVisual")
 RegisterProjects("SofaBaseVisual_test" OPTION "SOFA-LIB_COMPONENT_BASE_VISUAL" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaBaseVisual/SofaBaseVisual_test")
@@ -44,7 +44,7 @@ RegisterProjects("SofaConstraint" OPTION "SOFA-LIB_COMPONENT_CONSTRAINT" PATH "$
 RegisterProjects("SofaConstraint_test" OPTION "SOFA-LIB_COMPONENT_CONSTRAINT" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaConstraint/SofaConstraint_test")
 
 RegisterProjects("SofaDeformable" OPTION "SOFA-LIB_COMPONENT_DEFORMABLE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable")
-#RegisterProjects("SofaDeformable_test" OPTION "SOFA-LIB_COMPONENT_DEFORMABLE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable/SofaDeformable_test")
+RegisterProjects("SofaDeformable_test" OPTION "SOFA-LIB_COMPONENT_DEFORMABLE" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaDeformable/SofaDeformable_test")
 
 RegisterProjects("SofaDenseSolver" OPTION "SOFA-LIB_COMPONENT_DENSE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaDenseSolver")
 #RegisterProjects("SofaDenseSolver_test" OPTION "SOFA-LIB_COMPONENT_DENSE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaDenseSolver/SofaDenseSolver_test")
@@ -59,7 +59,7 @@ RegisterProjects("SofaEulerianFluid" OPTION "SOFA-LIB_COMPONENT_EULERIAN_FLUID" 
 #RegisterProjects("SofaEulerianFluid_test" OPTION "SOFA-LIB_COMPONENT_EULERIAN_FLUID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaEulerianFluid/SofaEulerianFluid_test")
 
 RegisterProjects("SofaExplicitOdeSolver" OPTION "SOFA-LIB_COMPONENT_EXPLICIT_ODE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaExplicitOdeSolver")
-#RegisterProjects("SofaExplicitOdeSolver_test" OPTION "SOFA-LIB_COMPONENT_EXPLICIT_ODE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaExplicitOdeSolver/SofaExplicitOdeSolver_test")
+RegisterProjects("SofaExplicitOdeSolver_test" OPTION "SOFA-LIB_COMPONENT_EXPLICIT_ODE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaExplicitOdeSolver/SofaExplicitOdeSolver_test")
 
 RegisterProjects("SofaExporter" OPTION "SOFA-LIB_COMPONENT_EXPORTER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaExporter")
 #RegisterProjects("SofaExporter_test" OPTION "SOFA-LIB_COMPONENT_EXPORTER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaExporter/SofaExporter_test")
@@ -71,13 +71,13 @@ RegisterProjects("SofaHaptics" OPTION "SOFA-LIB_COMPONENT_HAPTICS" PATH "${CMAKE
 #RegisterProjects("SofaHaptics_test" OPTION "SOFA-LIB_COMPONENT_HAPTICS" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaHaptics/SofaHaptics_test")
 
 RegisterProjects("SofaImplicitOdeSolver" OPTION "SOFA-LIB_COMPONENT_IMPLICIT_ODE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaImplicitOdeSolver")
-#RegisterProjects("SofaImplicitOdeSolver_test" OPTION "SOFA-LIB_COMPONENT_IMPLICIT_ODE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaImplicitOdeSolver/SofaImplicitOdeSolver_test")
+RegisterProjects("SofaImplicitOdeSolver_test" OPTION "SOFA-LIB_COMPONENT_IMPLICIT_ODE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaImplicitOdeSolver/SofaImplicitOdeSolver_test")
 
 RegisterProjects("SofaLoader" OPTION "SOFA-LIB_COMPONENT_LOADER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaLoader")
 RegisterProjects("SofaLoader_test" OPTION "SOFA-LIB_COMPONENT_LOADER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaLoader/SofaLoader_test")
 
 RegisterProjects("SofaMeshCollision" OPTION "SOFA-LIB_COMPONENT_MESH_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMeshCollision")
-#RegisterProjects("SofaMeshCollision_test" OPTION "SOFA-LIB_COMPONENT_MESH_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMeshCollision/SofaMeshCollision_test")
+RegisterProjects("SofaMeshCollision_test" OPTION "SOFA-LIB_COMPONENT_MESH_COLLISION" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMeshCollision/SofaMeshCollision_test")
 
 RegisterProjects("SofaMisc" OPTION "SOFA-LIB_COMPONENT_MISC" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMisc")
 #RegisterProjects("SofaMisc_test" OPTION "SOFA-LIB_COMPONENT_MISC" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMisc/SofaMisc_test")
@@ -95,10 +95,10 @@ RegisterProjects("SofaMiscForceField" OPTION "SOFA-LIB_COMPONENT_MISC_FORCEFIELD
 #RegisterProjects("SofaMiscForceField_test" OPTION "SOFA-LIB_COMPONENT_MISC_FORCEFIELD" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscForceField/SofaMiscForceField_test")
 
 RegisterProjects("SofaMiscMapping" OPTION "SOFA-LIB_COMPONENT_MISC_MAPPING" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscMapping")
-#RegisterProjects("SofaMiscMapping_test" OPTION "SOFA-LIB_COMPONENT_MISC_MAPPING" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscMapping/SofaMiscMapping_test")
+RegisterProjects("SofaMiscMapping_test" OPTION "SOFA-LIB_COMPONENT_MISC_MAPPING" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscMapping/SofaMiscMapping_test")
 
 RegisterProjects("SofaMiscSolver" OPTION "SOFA-LIB_COMPONENT_MISC_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscSolver")
-#RegisterProjects("SofaMiscSolver_test" OPTION "SOFA-LIB_COMPONENT_MISC_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test")
+RegisterProjects("SofaMiscSolver_test" OPTION "SOFA-LIB_COMPONENT_MISC_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test")
 
 RegisterProjects("SofaMiscTopology" OPTION "SOFA-LIB_COMPONENT_MISC_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscTopology")
 #RegisterProjects("SofaMiscTopology_test" OPTION "SOFA-LIB_COMPONENT_MISC_TOPOLOGY" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test")
@@ -116,10 +116,10 @@ RegisterProjects("SofaPardisoSolver" OPTION "SOFA-LIB_COMPONENT_PARDISO_SOLVER" 
 #RegisterProjects("SofaPardisoSolver_test" OPTION "SOFA-LIB_COMPONENT_PARDISO_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaPardisoSolver/SofaPardisoSolver_test")
 
 RegisterProjects("SofaRigid" OPTION "SOFA-LIB_COMPONENT_RIGID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaRigid")
-#RegisterProjects("SofaRigid_test" OPTION "SOFA-LIB_COMPONENT_RIGID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaRigid/SofaRigid_test")
+RegisterProjects("SofaRigid_test" OPTION "SOFA-LIB_COMPONENT_RIGID" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaRigid/SofaRigid_test")
 
 RegisterProjects("SofaSimpleFem" OPTION "SOFA-LIB_COMPONENT_SIMPLE_FEM" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimpleFem")
-#RegisterProjects("SofaSimpleFem_test" OPTION "SOFA-LIB_COMPONENT_SIMPLE_FEM" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimpleFem/SofaSimpleFem_test")
+RegisterProjects("SofaSimpleFem_test" OPTION "SOFA-LIB_COMPONENT_SIMPLE_FEM" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSimpleFem/SofaSimpleFem_test")
 
 RegisterProjects("SofaSparseSolver" OPTION "SOFA-LIB_COMPONENT_SPARSE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSparseSolver")
 #RegisterProjects("SofaSparseSolver_test" OPTION "SOFA-LIB_COMPONENT_SPARSE_SOLVER" PATH "${CMAKE_CURRENT_SOURCE_DIR}/SofaSparseSolver/SofaSparseSolver_test")
