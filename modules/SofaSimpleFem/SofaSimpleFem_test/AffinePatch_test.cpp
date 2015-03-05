@@ -34,7 +34,7 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including constraint, force and mass
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaDeformable/MeshSpringForceField.h>
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>

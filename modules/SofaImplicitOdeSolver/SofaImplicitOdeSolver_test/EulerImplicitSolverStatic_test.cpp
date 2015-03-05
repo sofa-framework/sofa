@@ -31,6 +31,9 @@
 namespace sofa {
 
 using namespace modeling;
+using namespace defaulttype;
+using core::objectmodel::New;
+
 typedef component::odesolver::EulerImplicitSolver EulerImplicitSolver;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 

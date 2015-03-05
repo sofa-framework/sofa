@@ -54,6 +54,7 @@
 
 namespace sofa {
 
+using core::objectmodel::New;
 using namespace PrimitiveCreationTest;
 
 struct TestSphere : public Sofa_test<double>{
