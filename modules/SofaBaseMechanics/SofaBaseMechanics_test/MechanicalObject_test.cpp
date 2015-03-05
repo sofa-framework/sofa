@@ -108,7 +108,7 @@ TYPED_TEST(MechanicalObject_test, checkThatDefaultSizeIsOne)
 
 TYPED_TEST(MechanicalObject_test, checkThatTheSizeOfTheDefaultPositionIsEqualToTheSizeOfTheDataTypeCoord)
 {
-    ASSERT_EQ(TypeParam::coord_total_size, this->mechanicalObject.readPositions()[0].size());
+    ASSERT_EQ((size_t)TypeParam::coord_total_size, this->mechanicalObject.readPositions()[0].size());
 }
 
 TYPED_TEST(MechanicalObject_test, checkThatPositionDefaultValueIsAVectorOfValueInitializedReals)
