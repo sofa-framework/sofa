@@ -549,7 +549,7 @@ public:
         , voronoi(initData(&voronoi,VorTypes(),"voronoi",""))
         , f_clearData(initData(&f_clearData,true,"clearData","clear distance image after computation"))
         , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples"))
-        , drawMode(initData(&drawMode,0,"drawMode",""))
+        , drawMode(initData(&drawMode,0,"drawMode","0: points, 1: spheres"))
         , showEdges(initData(&showEdges,false,"showEdges","show edges"))
         , showGraph(initData(&showGraph,false,"showGraph","show graph"))
         , time((unsigned int)0)
