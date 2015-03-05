@@ -23,12 +23,12 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <plugins/SofaTest/Sofa_test.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 

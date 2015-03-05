@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/forcefield/HexahedronFEMForceField.h>
+#include <SofaSimpleFem/HexahedronFEMForceField.h>
 #include <plugins/SofaTest/ForceField_test.h>
 
 namespace sofa {

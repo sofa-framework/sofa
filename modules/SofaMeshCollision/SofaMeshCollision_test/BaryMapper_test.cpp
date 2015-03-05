@@ -1,7 +1,7 @@
 #include <plugins/SofaTest/Sofa_test.h>
 #include <plugins/SofaTest/PrimitiveCreation.h>
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
 
 namespace sofa {
 

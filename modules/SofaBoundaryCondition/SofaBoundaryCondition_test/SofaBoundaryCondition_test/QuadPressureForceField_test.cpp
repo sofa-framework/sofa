@@ -1,8 +1,8 @@
 // Base class
 #include "ForceField_test.h"
 //Force field
-#include <sofa/component/forcefield/QuadPressureForceField.h>
-#include <sofa/component/topology/TopologySparseData.inl>
+#include <SofaBoundaryCondition/QuadPressureForceField.h>
+#include <SofaBaseTopology/TopologySparseData.inl>
 
 namespace sofa {
 

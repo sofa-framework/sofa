@@ -28,7 +28,7 @@
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 //#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
 
 
 namespace sofa {

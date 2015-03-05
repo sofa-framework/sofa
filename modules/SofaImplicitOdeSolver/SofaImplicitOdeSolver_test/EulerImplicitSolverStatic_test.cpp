@@ -24,8 +24,8 @@
 ******************************************************************************/
 #include <plugins/SofaTest/Sofa_test.h>
 #include <plugins/SceneCreator/SceneCreator.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa {

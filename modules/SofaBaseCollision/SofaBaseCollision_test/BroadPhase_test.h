@@ -1,7 +1,7 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
 
-#include <sofa/component/collision/DirectSAP.h>
+#include <SofaMeshCollision/DirectSAP.h>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
@@ -25,17 +25,17 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/init.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/topology/CubeTopology.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/collision/OBBModel.h>
+#include <SofaComponentMain/init.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseTopology/CubeTopology.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaBaseCollision/OBBModel.h>
 #include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -47,13 +47,13 @@
 //#include <plugins/Flexible/deformationMapping/DistanceFromTargetMapping.h>
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 #include <sofa/simulation/tree/GNode.h>
 
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/collision/MeshIntTool.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaMeshCollision/MeshIntTool.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/collision/IncrSAP.h>
+#include <SofaMeshCollision/IncrSAP.h>
 #include <sofa/core/CollisionModel.h>
 #include <stdlib.h>
 //#include <sofa/component/collision/TeschnerSpatialHashing.h>

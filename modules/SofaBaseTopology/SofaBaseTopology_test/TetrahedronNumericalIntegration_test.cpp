@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <plugins/SofaTest/Sofa_test.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 //#include <plugins/SceneCreator/SceneCreator.h>
 //Including Simulation
 #include <sofa/simulation/common/Simulation.h>
@@ -31,8 +31,8 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/set.h>
 // Including constraint, force and mass
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/CommonAlgorithms.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <ctime>
 #include <plugins/SceneCreator/SceneCreator.h>

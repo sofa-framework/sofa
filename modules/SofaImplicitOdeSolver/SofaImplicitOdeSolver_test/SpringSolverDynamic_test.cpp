@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <plugins/SofaTest/Sofa_test.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -33,7 +33,7 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including mechanical object
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>

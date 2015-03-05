@@ -25,7 +25,7 @@
 
 #include <plugins/SofaTest/Elasticity_test.h>
 #include <sofa/helper/Quater.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -35,9 +35,9 @@
 
 // Including constraint, force and mass
 #include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/interactionforcefield/MeshSpringForceField.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaDeformable/MeshSpringForceField.h>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 #include <sofa/core/MechanicalParams.h>
 
 #include <sofa/defaulttype/VecTypes.h>

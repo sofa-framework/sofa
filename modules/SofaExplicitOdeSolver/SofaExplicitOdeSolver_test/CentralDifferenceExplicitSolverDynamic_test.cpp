@@ -25,7 +25,7 @@
 #include <plugins/SofaTest/Elasticity_test.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -34,10 +34,10 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including mechanical object
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 // Solvers
-#include <sofa/component/odesolver/CentralDifferenceSolver.h>
+#include <SofaExplicitOdeSolver/CentralDifferenceSolver.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 
