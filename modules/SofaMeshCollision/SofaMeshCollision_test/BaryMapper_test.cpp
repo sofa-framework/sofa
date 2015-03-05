@@ -5,6 +5,9 @@
 
 namespace sofa {
 
+using defaulttype::Vector3;
+using core::objectmodel::New;
+
 typedef sofa::component::topology::MeshTopology MeshTopology;
 typedef sofa::simulation::Node::SPtr NodePtr;
 typedef sofa::component::collision::TriangleModel TriangleModel;

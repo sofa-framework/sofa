@@ -182,7 +182,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         copyFromData( curF, dof->readForces() );
 
         // Get potential Energy before applying a displacement to dofs
-        double potentialEnergyBeforeDisplacement = force->getPotentialEnergy(&mparams);
+        double potentialEnergyBeforeDisplacement = force->getPotentialEnergy(&mparams, *mparams.readX(force->getMState()));
 
         // change position
         VecDeriv dX(n);
@@ -202,7 +202,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         }
 
         // Get potential energy after displacement of dofs
-        double potentialEnergyAfterDisplacement = force->getPotentialEnergy(&mparams);
+        double potentialEnergyAfterDisplacement = force->getPotentialEnergy(&mparams, *mparams.readX(force->getMState()));
 
         // Check getPotentialEnergy() we should have dE = -dX.F
 

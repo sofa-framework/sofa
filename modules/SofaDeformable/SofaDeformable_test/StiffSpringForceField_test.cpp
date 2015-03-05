@@ -147,7 +147,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
 
         // replace the spring with another one, between the parent and the child
         this->node->removeObject(this->force);
-        typename Spring::SPtr spring = New<Spring>(this->dof.get(), childDof.get());
+        typename Spring::SPtr spring = sofa::core::objectmodel::New<Spring>(this->dof.get(), childDof.get());
         this->node->addObject(spring);
 
         // set position and velocity vectors, using DataTypes::set to cope with tests in dimension 2

@@ -52,6 +52,9 @@
 #include <plugins/SofaTest/PrimitiveCreation.h>
 
 using namespace sofa::PrimitiveCreationTest;
+using namespace sofa::defaulttype;
+
+using sofa::core::objectmodel::New;
 
 namespace sofa{
 struct TestOBB : public Sofa_test<double>{

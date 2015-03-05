@@ -175,7 +175,7 @@ struct RungeKutta2ExplicitSolverDynamic_test : public Elasticity_test<_DataTypes
         do
         {              
             // Record the mass position
-            Coord p0=(*(dofs.get()->getX()))[0];
+            Coord p0=dofs.get()->read(sofa::core::ConstVecCoordId::position())->getValue()[0];
 
             double absoluteError = fabs(p0[1]-positionsArray[i]);
 
