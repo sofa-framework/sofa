@@ -81,7 +81,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    void computeBBox(const core::ExecParams*  params );
+    void computeBBox(const core::ExecParams* params, bool onlyVisible=false );
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

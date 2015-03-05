@@ -136,7 +136,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
     void drawPlane(const core::visual::VisualParams*, float size=0.0f);
-    void computeBBox(const core::ExecParams *);
+    void computeBBox(const core::ExecParams *, bool onlyVisible=false);
 
 };
 

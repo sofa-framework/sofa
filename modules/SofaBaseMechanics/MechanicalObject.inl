@@ -3474,10 +3474,10 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::computeBBox(const core::ExecParams* params)
+void MechanicalObject<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
 {
     // participating to bbox only if it is drawn
-    if( !showObject.getValue() ) return;
+    if( onlyVisible && !showObject.getValue() ) return;
     Inherited::computeBBox( params );
 }
 

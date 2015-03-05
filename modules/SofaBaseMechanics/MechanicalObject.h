@@ -257,7 +257,7 @@ public:
     /// update the given bounding box, to include this
     virtual bool addBBox(double* minBBox, double* maxBBox);
     /// Bounding Box computation method.
-    virtual void computeBBox(const core::ExecParams* params);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
 
     /// @name Base Matrices and Vectors Interface
     /// @{

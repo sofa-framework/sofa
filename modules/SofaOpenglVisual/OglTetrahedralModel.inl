@@ -243,7 +243,7 @@ void OglTetrahedralModel<DataTypes>::drawTransparent(const core::visual::VisualP
 }
 
 template<class DataTypes>
-void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params)
+void OglTetrahedralModel<DataTypes>::computeBBox(const core::ExecParams * params, bool onlyVisible)
 {
     if ( m_topology)
     {

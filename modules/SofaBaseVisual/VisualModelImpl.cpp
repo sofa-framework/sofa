@@ -1021,7 +1021,7 @@ void VisualModelImpl::computeTangents()
     m_vbitangents.endEdit();
 }
 
-void VisualModelImpl::computeBBox(sofa::core::ExecParams* params)
+void VisualModelImpl::computeBBox(sofa::core::ExecParams* params, bool)
 {
     const VecCoord& x = getVertices(); //m_vertices.getValue(params);
     SReal minBBox[3] = {1e10,1e10,1e10};

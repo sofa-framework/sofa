@@ -91,7 +91,7 @@ public:
 
     virtual void updateVisual();
 
-    virtual void computeBBox(const core::ExecParams*  params );
+    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false );
 
 protected:
     // marching cube
