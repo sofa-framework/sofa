@@ -11,7 +11,8 @@ from SofaPython.Tools import listToStr as concat
 import SofaPython.sml
 import Flexible.sml
 
-def insertRigid(parentNode, rigidModel, param):
+def insertRigid(parentNode, rigidModel, param=None):
+    """ create a StructuralAPI.RigidBody from the rigidModel """
     print "rigid:", rigidModel.name
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
     if not rigidModel.density is None and not rigidModel.mesh is None:
@@ -38,9 +39,9 @@ def insertRigid(parentNode, rigidModel, param):
         if not rigidModel.inertia is None:
             inertia = rigidModel.inertia
         rigid.setManually(rigidModel.position, mass, inertia)
-        
-    rigid.dofs.showObject = param.showRigid
-    rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
+    if not param is None:
+        rigid.dofs.showObject = param.showRigid
+        rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
     # visual
     if not rigidModel.mesh is None:
         cm = rigid.addCollisionMesh(rigidModel.mesh.source)
@@ -48,7 +49,8 @@ def insertRigid(parentNode, rigidModel, param):
        
     return rigid
 
-def insertJoint(jointModel, rigids, param):
+def insertJoint(jointModel, rigids, param=None):
+    """ create a StructuralAPI.GenericRigidJoint from the jointModel """
     print "joint:", jointModel.name
     frames=list()
     for i,offset in enumerate(jointModel.offsets):
@@ -58,8 +60,9 @@ def insertJoint(jointModel, rigids, param):
                 frames.append( rigid.addAbsoluteOffset(offset.name, offset.value))
             else:
                 frames.append( rigid.addOffset(offset.name, offset.value) )
-            frames[-1].dofs.showObject = param.showOffset
-            frames[-1].dofs.showObjectScale = SofaPython.units.length_from_SI(param.showOffsetScale)
+            if not param is None:
+                frames[-1].dofs.showObject = param.showOffset
+                frames[-1].dofs.showObjectScale = SofaPython.units.length_from_SI(param.showOffsetScale)
         else:
             frames.append(rigid)
     mask = [1]*6
@@ -74,9 +77,8 @@ def insertJoint(jointModel, rigids, param):
 
 class SceneArticulatedRigid(SofaPython.sml.BaseScene):
     """ Builds a (sub)scene from a model using compliant formulation
-    
-    <rigid>: if <density> is given, inertia is computed from mesh, else <mass> must be given
-    """
+    [tag]rigid are simulated as RigidBody
+    Compliant joints are setup between the rigids """
     
     def __init__(self, parentNode, model):
         SofaPython.sml.BaseScene.__init__(self, parentNode, model)
