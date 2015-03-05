@@ -27,18 +27,18 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
-#include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
-#include <sofa/component/topology/TopologySparseData.inl>
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <SofaMiscFem/TetrahedralTensorMassForceField.h>
+#include <SofaSimpleFem/TetrahedralCorotationalFEMForceField.h>
+#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/engine/PairBoxRoi.h>
-#include <sofa/component/odesolver/StaticSolver.h>
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaEngine/PairBoxRoi.h>
+#include <SofaImplicitOdeSolver/StaticSolver.h>
+#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
 
 namespace sofa {
 
