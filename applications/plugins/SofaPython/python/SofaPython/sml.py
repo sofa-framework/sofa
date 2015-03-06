@@ -190,11 +190,8 @@ class Model:
                     solid.skinnings.append(skinning)
 
                 self.solids[solid.id]=solid
-                for tag in solid.tags:
-                    if not tag in self.solidsByTag:
-                        self.solidsByTag[tag]=list()
-                    self.solidsByTag[tag].append(solid)
-            
+            self.updateTag()
+
             # joints
             self.parseJointGenerics(modelXml)
                 
@@ -244,7 +241,17 @@ class Model:
                 else:
                     print "ERROR: sml.Model: in joint {0}, unknown solid {1} referenced".format(joint.name, o.attrib["id"])
             self.genericJoints[joint.id]=joint
-            
+
+    def updateTag(self):
+        """ Update internal Model tag structures
+        Call this method after you changed solids tag """
+        self.solidsByTag.clear()
+        for solid in self.solids.values():
+            for tag in solid.tags:
+                if not tag in self.solidsByTag:
+                    self.solidsByTag[tag]=list()
+                self.solidsByTag[tag].append(solid)
+
 def insertVisual(parentNode,obj,color):
     node = parentNode.createChild("node_"+obj.name)
     translation=obj.position[:3]
