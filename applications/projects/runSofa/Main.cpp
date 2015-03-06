@@ -26,8 +26,6 @@
 #include <sstream>
 #include <fstream>
 
-#include <tinyxml.h>
-
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
@@ -63,44 +61,6 @@
 using std::cerr;
 using std::endl;
 using sofa::helper::Utils;
-
-// bool loadConfigurationFile(const std::string& filePath)
-// {
-//     TiXmlDocument doc;
-//     doc.LoadFile();
-
-//     if (!(doc.LoadFile(filePath)))
-//     {
-//         std::cerr << "Error while loading configuration file: " << filePath << std::endl;
-//         return false;
-//     }
-
-//     TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
-//     for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
-//         elt != NULL;
-//         elt = elt->NextSiblingElement("ResourcePath"))
-//     {
-//         const std::string path = elt->GetText();
-//         sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
-//     }
-
-//     for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
-//         elt != NULL;
-//         elt = elt->NextSiblingElement("PluginPath"))
-//     {
-//         const std::string path = elt->GetText();
-//         sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
-//     }
-
-//     TiXmlElement* elt = root->FirstChildElement("ScreenshotDirectory");
-//     if (elt != NULL)
-//     {
-//         const std::string path = elt->GetText();
-//         sofa::gui::BaseGUI::setScreenshotDirectoryPath(makeAbsolutePath(path));
-//     }
-
-//     return true;
-// }
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
