@@ -62,11 +62,11 @@ const Base* SceneComponent::base() const
             if(myBase == node)
                 return myBase;
 
-            for(int i = 0; i < node->object.size(); ++i)
+            for(unsigned int i = 0; i < node->object.size(); ++i)
                 if(myBase == node->object[i])
                     return myBase;
 
-            for(int i = 0; i < node->child.size(); ++i)
+            for(unsigned int i = 0; i < node->child.size(); ++i)
                 nodes.push(node->child[i].get());
         }
     }
