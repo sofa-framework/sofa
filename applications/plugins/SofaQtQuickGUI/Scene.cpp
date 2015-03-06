@@ -351,7 +351,7 @@ double Scene::radius() const
 void Scene::computeBoundingBox(QVector3D& min, QVector3D& max) const
 {
 	SReal pmin[3], pmax[3];
-	mySofaSimulation->computeBBox(mySofaSimulation->GetRoot().get(), pmin, pmax );
+    mySofaSimulation->computeTotalBBox(mySofaSimulation->GetRoot().get(), pmin, pmax);
 
 	min = QVector3D(pmin[0], pmin[1], pmin[2]);
 	max = QVector3D(pmax[0], pmax[1], pmax[2]);

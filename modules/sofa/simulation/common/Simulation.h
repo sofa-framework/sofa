@@ -94,8 +94,9 @@ public:
     /** Compute the bounding box of the scene.
      * Includes all objects, may they be displayed or not.
      * @sa computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true)
+     * @deprecated
      */
-//    virtual void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox);
+    virtual void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox);
 
     /// Render the scene
     virtual void draw(sofa::core::visual::VisualParams* vparams, Node* root);
