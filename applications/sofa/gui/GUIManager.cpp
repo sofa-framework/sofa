@@ -185,9 +185,7 @@ int GUIManager::Init(const char* argv0, const char* name)
     sofa::simulation::xml::initXml();
 
     // Read the paths to the share/ and examples/ directories from etc/sofa.ini,
-    const std::string binDir = FileSystem::getParentDirectory(Utils::getExecutablePath());
-    const std::string prefix = FileSystem::getParentDirectory(binDir);
-    const std::string etcDir = prefix + "/etc";
+    const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
     const std::string sofaIniFilePath = etcDir + "/sofa.ini";
     std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
 

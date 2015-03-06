@@ -1,7 +1,10 @@
 #include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
 
-using namespace sofa::helper;
+#include <sofa/helper/system/FileSystem.h>
+
+using sofa::helper::Utils;
+using sofa::helper::system::FileSystem;
 
 TEST(UtilsTest, string_to_widestring_to_string)
 {
@@ -23,7 +26,20 @@ TEST(UtilsTest, widestring_to_string_to_widestring)
 
 TEST(UtilsTest, getExecutablePath)
 {
-    EXPECT_FALSE(Utils::getExecutablePath().empty());
+    const std::string path = Utils::getExecutablePath();
+    EXPECT_TRUE(path.find("framework_test") != std::string::npos);
+}
+
+TEST(UtilsTest, getExecutableDirectory)
+{
+    const std::string path = Utils::getExecutableDirectory();
+    EXPECT_TRUE(path.find("bin") != std::string::npos);
+}
+
+TEST(UtilsTest, getSofaPathPrefix)
+{
+    const std::string prefix = Utils::getSofaPathPrefix();
+    EXPECT_TRUE(FileSystem::exists(prefix + "/bin"));
 }
 
 TEST(UtilsTest, readBasicIniFile_nonexistentFile)
