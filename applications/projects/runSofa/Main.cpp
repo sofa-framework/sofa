@@ -26,8 +26,6 @@
 #include <sstream>
 #include <fstream>
 
-#include <tinyxml.h>
-
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
@@ -46,6 +44,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
@@ -58,46 +57,10 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
+
 using std::cerr;
 using std::endl;
-
-// bool loadConfigurationFile(const std::string& filePath)
-// {
-//     TiXmlDocument doc;
-//     doc.LoadFile();
-
-//     if (!(doc.LoadFile(filePath)))
-//     {
-//         std::cerr << "Error while loading configuration file: " << filePath << std::endl;
-//         return false;
-//     }
-
-//     TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
-//     for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
-//         elt != NULL;
-//         elt = elt->NextSiblingElement("ResourcePath"))
-//     {
-//         const std::string path = elt->GetText();
-//         sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
-//     }
-
-//     for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
-//         elt != NULL;
-//         elt = elt->NextSiblingElement("PluginPath"))
-//     {
-//         const std::string path = elt->GetText();
-//         sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
-//     }
-
-//     TiXmlElement* elt = root->FirstChildElement("ScreenshotDirectory");
-//     if (elt != NULL)
-//     {
-//         const std::string path = elt->GetText();
-//         sofa::gui::BaseGUI::setScreenshotDirectoryPath(makeAbsolutePath(path));
-//     }
-
-//     return true;
-// }
+using sofa::helper::Utils;
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -247,15 +210,15 @@ int main(int argc, char** argv)
 
     // Add the plugin directory to PluginRepository
 #ifdef WIN32
-    const std::string pluginDir = "bin";
+    const std::string pluginDir = Utils::getExecutableDirectory();
 #else
-    const std::string pluginDir = "lib";
+    const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
 #endif
-    sofa::helper::system::PluginRepository.addFirstPath(sofa::gui::BaseGUI::getPathPrefix() + "/" + pluginDir);
+    sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
 
     // Initialise paths
-    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
-    sofa::gui::BaseGUI::setScreenshotDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/screenshots");
+    sofa::gui::BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config");
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots");
 
     if (!files.empty())
         fileName = files[0];

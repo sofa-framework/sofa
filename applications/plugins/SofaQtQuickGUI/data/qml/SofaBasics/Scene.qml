@@ -15,6 +15,8 @@ Scene {
     property string statusMessage: ""
 
     onStatusChanged: {
+        listModel.selectedId = -1;
+
         var path = source.toString().replace("///", "/").replace("file:", "");
         switch(status) {
         case Scene.Loading:
@@ -29,6 +31,9 @@ Scene {
             break;
         }
     }
+
+    property var listModel: SceneListModel {id : listModel}
+    onStepEnd: listModel.update()
 
     // convenience
     readonly property bool ready: status === Scene.Ready
@@ -60,27 +65,23 @@ Scene {
         tooltip: "Reset the simulation"
     }
 
-    /*property var sceneGraphModel: ListModel {
-
-    }*/
-
-    function getData(dataName) {
+    function dataValue(dataName) {
         if(arguments.length == 1) {
-            return onGetData(dataName);
+            return onDataValue(dataName);
         }
 
-        console.debug("ERROR: Scene - using getData with an invalid number of arguments:", arguments.length);
+        console.debug("ERROR: Scene - using dataValue with an invalid number of arguments:", arguments.length);
     }
 
-    function setData(dataName) {
+    function setDataValue(dataName) {
         if(arguments.length > 1){
             var packedArguments = [];
             for(var i = 1; i < arguments.length; i++)
                 packedArguments.push(arguments[i]);
 
-            return onSetData(dataName, packedArguments);
+            return onSetDataValue(dataName, packedArguments);
         }
 
-        console.debug("ERROR: Scene - using setData with an invalid number of arguments:", arguments.length);
+        console.debug("ERROR: Scene - using setDataValue with an invalid number of arguments:", arguments.length);
     }
 }

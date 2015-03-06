@@ -15,6 +15,8 @@ int main(int argc, char **argv)
     // TODO: this command disable the multithreaded render loop, currently we need this on Linux/OSX because our implementation of the sofa interface is not thread-safe
     qputenv("QML_BAD_GUI_RENDER_LOOP", "1");
 
+    QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
+
 	QApplication app(argc, argv);
     app.addLibraryPath(QCoreApplication::applicationDirPath() + "/../lib/");
 

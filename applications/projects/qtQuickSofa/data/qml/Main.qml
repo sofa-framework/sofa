@@ -58,10 +58,6 @@ ApplicationWindow {
 
     Scene {
         id: scene
-
-        property var listModel: SceneListModel {id : listModel}
-
-        onStepEnd: listModel.update()
     }
 
     DynamicSplitView {
