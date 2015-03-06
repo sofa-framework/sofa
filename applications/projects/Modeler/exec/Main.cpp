@@ -25,8 +25,6 @@
 #include <iostream>
 #include <fstream>
 
-#include <tinyxml.h>
-
 #include <QtGui/QApplication>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -38,8 +36,6 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
-
-#include <sofa/gui/BaseGUI.h>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
