@@ -46,6 +46,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
@@ -58,8 +59,10 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
+
 using std::cerr;
 using std::endl;
+using sofa::helper::Utils;
 
 // bool loadConfigurationFile(const std::string& filePath)
 // {
@@ -245,15 +248,15 @@ int main(int argc, char** argv)
 
     // Add the plugin directory to PluginRepository
 #ifdef WIN32
-    const std::string pluginDir = "bin";
+    const std::string pluginDir = Utils::getExecutableDirectory();
 #else
-    const std::string pluginDir = "lib";
+    const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
 #endif
-    sofa::helper::system::PluginRepository.addFirstPath(sofa::gui::BaseGUI::getPathPrefix() + "/" + pluginDir);
+    sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
 
     // Initialise paths
-    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
-    sofa::gui::BaseGUI::setScreenshotDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/screenshots");
+    sofa::gui::BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config");
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots");
 
     if (!files.empty())
         fileName = files[0];

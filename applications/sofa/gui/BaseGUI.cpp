@@ -135,19 +135,6 @@ bool BaseGUI::saveScreenshot(const std::string& filename, int compression_level)
 	else return false;
 }
 
-
-static std::string computePathPrefix()
-{
-    const std::string exePath = Utils::getExecutablePath();
-    return FileSystem::getParentDirectory(FileSystem::getParentDirectory(exePath));
-}
-
-const std::string& BaseGUI::getPathPrefix()
-{
-    static const std::string prefix = computePathPrefix();
-    return prefix;
-}
-
 const std::string& BaseGUI::getConfigDirectoryPath()
 {
     return configDirectoryPath;

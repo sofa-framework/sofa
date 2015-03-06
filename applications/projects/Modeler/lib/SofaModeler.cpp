@@ -35,7 +35,6 @@
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 
 
@@ -64,7 +63,6 @@ namespace qt
 
 
 using sofa::helper::system::PluginManager;
-using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
 
@@ -183,7 +181,7 @@ void SofaModeler::createToolbar()
     addToolBar(Qt::TopToolBarArea, toolBar);
 }
 
-SofaModeler::SofaModeler():recentlyOpenedFilesManager(sofa::gui::BaseGUI::getPathPrefix() + "/config/Modeler.ini")
+SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix() + "/config/Modeler.ini")
     ,runSofaGUI(NULL)
 {
     setWindowTitle(QString("Sofa Modeler"));
@@ -213,7 +211,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(sofa::gui::BaseGUI::getPat
     //Get the different path needed
     examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
     openPath = examplePath;
-    binPath = FileSystem::getParentDirectory(Utils::getExecutablePath()) + "/";
+    binPath = Utils::getExecutableDirectory() + "/";
     presetPath = examplePath + std::string("Objects/");
     std::string presetFile = std::string("config/preset.ini" );
     presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
