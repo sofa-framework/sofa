@@ -25,8 +25,6 @@
 #include <iostream>
 #include <fstream>
 
-#include <tinyxml.h>
-
 #include <QtGui/QApplication>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -38,8 +36,6 @@
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
-
-#include <sofa/gui/BaseGUI.h>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
@@ -57,9 +53,7 @@ int main(int argc, char** argv)
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
-    const std::string binDir = FileSystem::getParentDirectory(Utils::getExecutablePath());
-    const std::string prefix = FileSystem::getParentDirectory(binDir);
-    const std::string etcDir = prefix + "/etc";
+    const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
     const std::string sofaIniFilePath = etcDir + "/sofa.ini";
     std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
 
@@ -80,11 +74,11 @@ int main(int argc, char** argv)
     }
 
 #ifdef WIN32
-    const std::string pluginDir = "bin";
+    const std::string pluginDir = Utils::getExecutableDirectory();
 #else
-    const std::string pluginDir = "lib";
+    const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
 #endif
-    sofa::helper::system::PluginRepository.addFirstPath(prefix + "/" + pluginDir);
+    sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
 
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();

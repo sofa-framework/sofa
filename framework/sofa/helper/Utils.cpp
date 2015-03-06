@@ -150,7 +150,8 @@ std::string Utils::GetLastError() {
 # endif
 #endif
 
-std::string Utils::getExecutablePath() {
+static std::string computeExecutablePath()
+{
     std::string path = "";
 
 #if defined(_XBOX) || defined(PS3)
@@ -190,6 +191,39 @@ std::string Utils::getExecutablePath() {
 #endif
 
     return FileSystem::cleanPath(path);
+}
+
+const std::string& Utils::getExecutablePath()
+{
+    static const std::string path = computeExecutablePath();
+    return path;
+}
+
+const std::string& Utils::getExecutableDirectory()
+{
+    static const std::string path = FileSystem::getParentDirectory(getExecutablePath());
+    return path;
+}
+
+static std::string computeSofaPathPrefix()
+{
+    const std::string exePath = Utils::getExecutablePath();
+    std::size_t pos = exePath.rfind("/bin/");
+    if (pos == std::string::npos) {
+        std::cerr << "Utils::getSofaPathPrefix(): failed to deduce the root path of Sofa from the application path: \""
+                  << exePath << "\""<< std::endl;
+        // Safest thing to return in this case, I guess.
+        return Utils::getExecutableDirectory();
+    }
+    else {
+        return exePath.substr(0, pos);
+    }
+}
+
+const std::string& Utils::getSofaPathPrefix()
+{
+    static const std::string prefix = computeSofaPathPrefix();
+    return prefix;
 }
 
 std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& path)

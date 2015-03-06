@@ -27,45 +27,59 @@ CollapsibleGroupBox {
             Item {
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.leftMargin: depth * 16
+                anchors.leftMargin: depth * rowHeight
                 height: visible ? rowHeight : 0
                 visible: !(SceneListModel.Hidden & visibility)
 
-                MouseArea {
+                RowLayout {
                     anchors.fill: parent
-                    enabled: isNode
-                    onClicked: listView.model.setCollapsed(index, !(SceneListModel.Collapsed & visibility))
-                }
+                    spacing: 0
 
-                Row {
                     Image {
                         visible: isNode
                         source: !(SceneListModel.Collapsed & visibility) ? "qrc:/icon/downArrow.png" : "qrc:/icon/rightArrow.png"
-                        height: rowHeight
-                        width: height
+                        Layout.preferredHeight: rowHeight
+                        Layout.preferredWidth: Layout.preferredHeight
+
+                        MouseArea {
+                            anchors.fill: parent
+                            enabled: isNode
+                            onClicked: listView.model.setCollapsed(index, !(SceneListModel.Collapsed & visibility))
+                        }
                     }
 
                     Text {
                         text: 0 !== type.length || 0 !== name.length ? type + " - " + name : ""
                         color: Qt.darker(Qt.rgba((depth * 6) % 9 / 8.0, depth % 9 / 8.0, (depth * 3) % 9 / 8.0, 1.0), 1.5)
                         font.bold: isNode
+
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: rowHeight
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: listView.currentIndex = index
+                        }
                     }
                 }
             }
         }
 
-        ScrollView {
-            id: scrollView
+        ListView {
+            id: listView
             Layout.fillWidth: true
             Layout.preferredHeight: 400 //Math.min(scene.listModel.count * rowHeight, 400)
             clip: true
 
-            ListView {
-                id: listView
-                width: parent.width
-                model: scene.listModel
-                delegate: delegate
-                focus: true
+            model: scene.listModel
+            delegate: delegate
+            focus: true
+            highlight: Rectangle { anchors.left: parent.left; anchors.right: parent.right; color: "lightsteelblue"; radius: 5 }
+            Component.onCompleted: scene.listModel.selectedId = currentIndex
+            onCurrentIndexChanged: scene.listModel.selectedId = currentIndex
+            onCountChanged: {
+                if(currentIndex >= count)
+                    currentIndex = -1;
             }
         }
     }

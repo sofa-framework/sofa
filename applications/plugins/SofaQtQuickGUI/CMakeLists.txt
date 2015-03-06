@@ -6,6 +6,8 @@ set(SOURCE_FILES
 		Viewer.cpp
 		Camera.cpp
                 Scene.cpp
+                SceneListModel.cpp
+                DataListModel.cpp
 		PythonInteractor.cpp
 		PickingInteractor.cpp
 )
@@ -16,11 +18,24 @@ set(HEADER_FILES
 		Viewer.h
 		Camera.h
                 Scene.h
+                SceneListModel.h
+                DataListModel.h
 		PythonInteractor.h
 		PickingInteractor.h
 )
 
 set(QML_FILES
+                data/qml/SofaDataTypes/qmldir
+                data/qml/SofaDataTypes/DataType_boolean.qml
+                data/qml/SofaDataTypes/DataType_0to1RatioWidget.qml
+                data/qml/SofaDataTypes/DataType_array.qml
+                data/qml/SofaDataTypes/DataType_boolean.qml
+                data/qml/SofaDataTypes/DataType_graph_linear.qml
+                data/qml/SofaDataTypes/DataType_graph.qml
+                data/qml/SofaDataTypes/DataType_number.qml
+                data/qml/SofaDataTypes/DataType_poissonRatio.qml
+                data/qml/SofaDataTypes/DataType_string.qml
+                data/qml/SofaDataTypes/DataType_widget_displayFlags.qml
                 data/qml/SofaCommon/SofaCommonScript.js
                 data/qml/SofaCommon/SofaToolsScript.js
                 data/qml/SofaCommon/SofaSettingsScript.js
@@ -32,6 +47,8 @@ set(QML_FILES
 		data/qml/SofaBasics/DefaultMenuBar.qml
 		data/qml/SofaBasics/Scene.qml
                 data/qml/SofaBasics/SceneListModel.qml
+                data/qml/SofaBasics/Data.qml
+                data/qml/SofaBasics/DataListModel.qml
 		data/qml/SofaBasics/PythonInteractor.qml
 		data/qml/SofaBasics/Actor.qml
 		data/qml/SofaBasics/Camera.qml
