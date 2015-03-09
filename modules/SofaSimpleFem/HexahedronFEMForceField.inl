@@ -191,7 +191,7 @@ void HexahedronFEMForceField<DataTypes>::reinit()
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& p, const DataVecDeriv& /*v*/)
+void HexahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& p, const DataVecDeriv& /*v*/)
 {
     WDataRefVecDeriv _f = f;
     RDataRefVecCoord _p = p;
@@ -231,7 +231,7 @@ void HexahedronFEMForceField<DataTypes>::addForce (const core::MechanicalParams*
 }
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv& v, const DataVecDeriv& x)
+void HexahedronFEMForceField<DataTypes>::addDForce (const core::MechanicalParams *mparams, DataVecDeriv& v, const DataVecDeriv& x)
 {
     WDataRefVecDeriv _df = v;
     RDataRefVecCoord _dx = x;
@@ -1102,7 +1102,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, e;

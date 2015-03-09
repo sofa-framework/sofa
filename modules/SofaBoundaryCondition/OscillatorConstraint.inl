@@ -69,7 +69,7 @@ OscillatorConstraint<TDataTypes>*  OscillatorConstraint<TDataTypes>::addConstrai
 
 
 template <class TDataTypes> template <class DataDeriv>
-void OscillatorConstraint<TDataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
+void OscillatorConstraint<TDataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
     const helper::vector<Oscillator> &oscillators = constraints.getValue();
     //Real t = (Real) this->getContext()->getTime();
@@ -86,14 +86,14 @@ void OscillatorConstraint<TDataTypes>::projectResponseT(const core::MechanicalPa
 }
 
 template <class TDataTypes>
-void OscillatorConstraint<TDataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void OscillatorConstraint<TDataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT(mparams /* PARAMS FIRST */, res.wref());
+    projectResponseT(mparams, res.wref());
 }
 
 template <class TDataTypes>
-void OscillatorConstraint<TDataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
+void OscillatorConstraint<TDataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> v = vData;
     const helper::vector<Oscillator>& oscillators = constraints.getValue();
@@ -110,7 +110,7 @@ void OscillatorConstraint<TDataTypes>::projectVelocity(const core::MechanicalPar
 }
 
 template <class TDataTypes>
-void OscillatorConstraint<TDataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
+void OscillatorConstraint<TDataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
     const helper::vector<Oscillator> &oscillators = constraints.getValue();
@@ -128,7 +128,7 @@ void OscillatorConstraint<TDataTypes>::projectPosition(const core::MechanicalPar
 }
 
 template <class TDataTypes>
-void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c = cData;
 
@@ -137,7 +137,7 @@ void OscillatorConstraint<TDataTypes>::projectJacobianMatrix(const core::Mechani
 
     while (rowIt != rowItEnd)
     {
-        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
+        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
 }

@@ -288,7 +288,7 @@ struct setRotWrapper<DataTypes, N, false>
 
 template<class DataTypes>
 void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot)
-{ setRotWrapper<DataTypes, DataTypes::Coord::spatial_dimensions, DataTypes::Coord::total_size == DataTypes::Coord::spatial_dimensions>::setRot(coord, rot); }
+{ setRotWrapper<DataTypes, DataTypes::Coord::spatial_dimensions, (unsigned)DataTypes::Coord::total_size == (unsigned)DataTypes::Coord::spatial_dimensions>::setRot(coord, rot); }
 
 /// Create a coord of the specified type from a Vector3 and a Quater
 template<class DataTypes>

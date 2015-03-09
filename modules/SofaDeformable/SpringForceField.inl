@@ -153,7 +153,7 @@ void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const
 
 template<class DataTypes>
 void SpringForceField<DataTypes>::addForce(
-    const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2,
+    const core::MechanicalParams* /* mparams */, DataVecDeriv& data_f1, DataVecDeriv& data_f2,
     const DataVecCoord& data_x1, const DataVecCoord& data_x2,
     const DataVecDeriv& data_v1, const DataVecDeriv& data_v2)
 {
@@ -180,11 +180,34 @@ void SpringForceField<DataTypes>::addForce(
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv&, DataVecDeriv&, const DataVecDeriv&, const DataVecDeriv& )
+void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams*, DataVecDeriv&, DataVecDeriv&, const DataVecDeriv&, const DataVecDeriv& )
 {
     serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
 }
 
+
+template<class DataTypes>
+double SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const
+{
+    const helper::vector<Spring>& springs= this->springs.getValue();
+    const VecCoord& p1 =  data_x1.getValue();
+    const VecCoord& p2 =  data_x2.getValue();
+
+    double ener = 0;
+
+    for (unsigned int i=0; i<springs.size(); i++)
+    {
+        int a = springs[i].m1;
+        int b = springs[i].m2;
+        Coord u = p2[b]-p1[a];
+        Real d = u.norm();
+        Real elongation = (Real)(d - springs[i].initpos);
+        ener += elongation * elongation * springs[i].ks /2;
+        //std::cout << "spring energy = " << ener << std::endl;
+    }
+
+    return ener;
+}
 
 
 template<class DataTypes>

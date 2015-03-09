@@ -105,14 +105,14 @@ public:
     void setGridMax(const InCoord& val) { mGridMax.setValue(val); }
     void setGridMax(double x, double y, double z) { mGridMax.setValue( InCoord((InReal)x,(InReal)y,(InReal)z)); }
 
-    void apply(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
-    void applyJ(const core::MechanicalParams *mparams /* PARAMS FIRST */, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
-    void applyJT( const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, InDataVecDeriv& /*out*/, const OutDataVecDeriv& /*in*/)
+    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
+    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
+    void applyJT( const sofa::core::MechanicalParams* /*mparams*/, InDataVecDeriv& /*out*/, const OutDataVecDeriv& /*in*/)
     {
         serr << "applyJT(dx) is not implemented" << sendl;
     }
 
-    void applyJT( const sofa::core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/)
+    void applyJT( const sofa::core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/)
     {
         serr << "applyJT(constraint) is not implemented" << sendl;
     }

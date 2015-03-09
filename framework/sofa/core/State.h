@@ -148,7 +148,7 @@ public:
         return TDataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)

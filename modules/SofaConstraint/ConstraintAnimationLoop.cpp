@@ -312,7 +312,7 @@ void ConstraintAnimationLoop::launchCollisionDetection(const core::ExecParams* p
 }
 
 
-void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, double &dt)
+void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulation::Node *context, double &dt)
 {
     if (debug)
         sout<<"Free Motion is called"<<sendl;
@@ -320,7 +320,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params /* PARAM
 
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
     sofa::helper::AdvancedTimer::stepBegin("Free Motion");
-    simulation::MechanicalBeginIntegrationVisitor(params /* PARAMS FIRST */, dt).execute(context);
+    simulation::MechanicalBeginIntegrationVisitor(params, dt).execute(context);
 
     ////////////////// (optional) PREDICTIVE CONSTRAINT FORCES ///////////////////////////////////////////////////////////////////////////////////////////
     // When scheme Correction is used, the constraint forces computed at the previous time-step
@@ -338,13 +338,13 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params /* PARAM
         }
     }
 
-    simulation::SolveVisitor(params /* PARAMS FIRST */, dt, true).execute(context);
+    simulation::SolveVisitor(params, dt, true).execute(context);
 
     {
         sofa::core::MechanicalParams mparams(*params);
         sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
         mparams.x() = xfree;
-        simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, xfree, true ).execute(context);
+        simulation::MechanicalPropagatePositionVisitor(&mparams, 0, xfree, true ).execute(context);
     }
     sofa::helper::AdvancedTimer::stepEnd  ("Free Motion");
 
@@ -354,7 +354,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params /* PARAM
 
     //this is done to set dx to zero in subgraph
     core::MultiVecDerivId dx_id = core::VecDerivId::dx();
-    simulation::MechanicalVOpVisitor(params /* PARAMS FIRST */, dx_id, core::ConstVecId::null(), core::ConstVecId::null(), 1.0 ).setMapped(true).execute(context);
+    simulation::MechanicalVOpVisitor(params, dx_id, core::ConstVecId::null(), core::ConstVecId::null(), 1.0 ).setMapped(true).execute(context);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -366,7 +366,7 @@ void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params /* PARAM
     }
 }
 
-void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
+void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* params, simulation::Node *context)
 {
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -386,7 +386,7 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
         /// calling resetConstraint & setConstraint & accumulateConstraint visitors
         /// and resize the constraint problem that will be solved
         unsigned int numConstraints = 0;
-        writeAndAccumulateAndCountConstraintDirections(params /* PARAMS FIRST */, context, numConstraints);
+        writeAndAccumulateAndCountConstraintDirections(params, context, numConstraints);
     }
 
 
@@ -395,12 +395,12 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
 
     /// calling GetConstraintViolationVisitor: each constraint provides its present violation
     /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
-    getIndividualConstraintViolations(params /* PARAMS FIRST */, context);
+    getIndividualConstraintViolations(params, context);
 
     if(!schemeCorrection.getValue())
     {
         /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
-        getIndividualConstraintSolvingProcess(params /* PARAMS FIRST */, context);
+        getIndividualConstraintSolvingProcess(params, context);
     }
 
     sofa::helper::AdvancedTimer::stepEnd  ("Constraints definition");
@@ -415,7 +415,7 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
     }
 }
 
-void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context, unsigned int &numConstraints)
+void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params, simulation::Node *context, unsigned int &numConstraints)
 {
     // calling resetConstraint on LMConstraints and MechanicalStates
     simulation::MechanicalResetConstraintVisitor(params).execute(context);
@@ -426,12 +426,12 @@ void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(con
 
     // calling applyConstraint on each constraint
 
-    MechanicalSetConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+    MechanicalSetConstraint(&cparams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
 
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     // calling accumulateConstraint on the mappings
-    MechanicalAccumulateConstraint2(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC()).execute(context);
+    MechanicalAccumulateConstraint2(&cparams, core::MatrixDerivId::holonomicC()).execute(context);
 
     //if (debug)
     //    sout << "   1. resize constraints : numConstraints=" << numConstraints << sendl;
@@ -439,7 +439,7 @@ void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(con
     getCP()->clear(numConstraints,this->_tol.getValue());
 }
 
-void ConstraintAnimationLoop::getIndividualConstraintViolations(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
+void ConstraintAnimationLoop::getIndividualConstraintViolations(const core::ExecParams* params, simulation::Node *context)
 {
     //if (debug)
     //    sout << "   2. compute violation" << sendl;
@@ -451,7 +451,7 @@ void ConstraintAnimationLoop::getIndividualConstraintViolations(const core::Exec
     constraintset::MechanicalGetConstraintViolationVisitor(&cparams, getCP()->getDfree()).execute(context);
 }
 
-void ConstraintAnimationLoop::getIndividualConstraintSolvingProcess(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
+void ConstraintAnimationLoop::getIndividualConstraintSolvingProcess(const core::ExecParams* params, simulation::Node *context)
 {
     /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
     //if (debug)
@@ -480,7 +480,7 @@ void ConstraintAnimationLoop::computeComplianceInConstraintSpace()
 
 }
 
-void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params /* PARAMS FIRST */, simulation::Node *context)
+void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, simulation::Node *context)
 {
 
     if (debug)
@@ -529,7 +529,7 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params /*
     sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
 }
 
-void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FIRST */, double dt )
+void ConstraintAnimationLoop::step ( const core::ExecParams* params, double dt )
 {
 
     static double simulationTime=0.0;
@@ -626,7 +626,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
     // Update the BehaviorModels => to be removed ?
     // Required to allow the RayPickInteractor interaction
     sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
-    simulation::BehaviorUpdatePositionVisitor(params /* PARAMS FIRST */, dt).execute(this->gnode);
+    simulation::BehaviorUpdatePositionVisitor(params, dt).execute(this->gnode);
     sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
 
 
@@ -636,10 +636,10 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
         numConstraints = 0;
 
         //1. Find the new constraint direction
-        writeAndAccumulateAndCountConstraintDirections(params /* PARAMS FIRST */, this->gnode, numConstraints);
+        writeAndAccumulateAndCountConstraintDirections(params, this->gnode, numConstraints);
 
         //2. Get the constraint solving process:
-        getIndividualConstraintSolvingProcess(params /* PARAMS FIRST */, this->gnode);
+        getIndividualConstraintSolvingProcess(params, this->gnode);
 
         //3. Use the stored forces to compute
         if (debug)
@@ -662,7 +662,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
 
 
     /// FREE MOTION
-    freeMotion(params /* PARAMS FIRST */, this->gnode, dt);
+    freeMotion(params, this->gnode, dt);
 
 
 
@@ -674,11 +674,11 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
 
     //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
     core::MechanicalParams mparams(*params);
-    simulation::MechanicalPropagatePositionVisitor(&mparams /* PARAMS FIRST */, 0, core::VecCoordId::position(), true).execute(this->gnode);
+    simulation::MechanicalPropagatePositionVisitor(&mparams, 0, core::VecCoordId::position(), true).execute(this->gnode);
 
 
     /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION
-    setConstraintEquations(params /* PARAMS FIRST */, this->gnode);
+    setConstraintEquations(params, this->gnode);
 
     if (debug)
     {
@@ -709,7 +709,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
     }
 
     /// CORRECTIVE MOTION
-    correctiveMotion(params /* PARAMS FIRST */, this->gnode);
+    correctiveMotion(params, this->gnode);
     //    std::cout << " #C: " << CP.getSize() << " constraints" << std::endl;
 
 
@@ -721,7 +721,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params /* PARAMS FI
         sout << "<<<<< End display ConstraintAnimationLoop time." << sendl;
     }
 
-    simulation::MechanicalEndIntegrationVisitor endVisitor(params /* PARAMS FIRST */, dt);
+    simulation::MechanicalEndIntegrationVisitor endVisitor(params, dt);
     this->gnode->execute(&endVisitor);
     this->gnode->setTime ( startTime + dt );
     this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time

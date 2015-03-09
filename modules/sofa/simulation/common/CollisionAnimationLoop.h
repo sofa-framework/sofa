@@ -89,7 +89,7 @@ protected:
     virtual void computeCollision(const core::ExecParams* params = core::ExecParams::defaultInstance());
 
     /// Activate OdeSolvers
-    virtual void integrate(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, double dt);
+    virtual void integrate(const core::ExecParams* params, double dt);
 
 
     typedef simulation::Node::Sequence<core::behavior::OdeSolver> Solvers;

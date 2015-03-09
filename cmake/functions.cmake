@@ -135,7 +135,7 @@ endmacro()
 function(UseQt)
     set(ENV{QTDIR} "${SOFA-EXTERNAL_QT_PATH}")
     set(ENV{CONFIG} "qt;uic")
-    find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml REQUIRED)
+    find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qt3support qtxml qtnetwork REQUIRED)
     set(QT_QMAKE_EXECUTABLE ${QT_QMAKE_EXECUTABLE} CACHE INTERNAL "QMake executable path")
 
     include(${QT_USE_FILE})

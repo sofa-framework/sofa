@@ -150,7 +150,7 @@ bool GenericConstraintSolver::buildSystem(const core::ConstraintParams *cParams,
 	// mechanical action executed from root node to propagate the constraints
 	simulation::MechanicalResetConstraintVisitor(cParams).execute(context);
 	// calling buildConstraintMatrix
-	//simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
+	//simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
 
 	MechanicalSetConstraint(cParams, core::MatrixDerivId::holonomicC(), numConstraints).execute(context);
     MechanicalAccumulateConstraint2(cParams, core::MatrixDerivId::holonomicC(), reverseAccumulateOrder.getValue()).execute(context);

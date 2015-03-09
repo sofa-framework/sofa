@@ -435,7 +435,7 @@ double FastTriangularBendingSprings<DataTypes>::getPotentialEnergy(const core::M
 
 
 template<class DataTypes>
-void FastTriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void FastTriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();

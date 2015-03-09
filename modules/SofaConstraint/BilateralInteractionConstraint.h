@@ -303,10 +303,10 @@ public:
         init();
     }
 
-    void buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
+    void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
             , const DataVecCoord &x1, const DataVecCoord &x2);
 
-    void getConstraintViolation(const core::ConstraintParams* cParams /* PARAMS FIRST =core::ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+    void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
             , const DataVecDeriv &v1, const DataVecDeriv &v2);
 
 
@@ -362,11 +362,11 @@ public:
 
 #ifndef SOFA_FLOAT
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
         , const DataVecCoord &x1, const DataVecCoord &x2);
 
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams *cParams /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::getConstraintViolation(const core::ConstraintParams *cParams, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
         , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
 
 template<>
@@ -376,11 +376,11 @@ void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::addContact(Deriv
 
 #ifndef SOFA_DOUBLE
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams /* PARAMS FIRST */, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::buildConstraintMatrix(const core::ConstraintParams *cParams, DataMatrixDeriv &c1_d, DataMatrixDeriv &c2_d, unsigned int &cIndex
         , const DataVecCoord &x1_d, const DataVecCoord &x2_d);
 
 template<>
-void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams *cParams /* PARAMS FIRST */, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintViolation(const core::ConstraintParams *cParams, defaulttype::BaseVector *v, const DataVecCoord &x1_d, const DataVecCoord &x2_d
         , const DataVecDeriv &v1_d, const DataVecDeriv &v2_d);
 
 template<>

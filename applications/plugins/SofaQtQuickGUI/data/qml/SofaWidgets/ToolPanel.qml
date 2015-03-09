@@ -78,6 +78,7 @@ Rectangle {
         ScrollView {
             id: scrollView
             anchors.fill: parent
+            //horizontalScrollBarPolicy: Qt.ScrollBarAsNeeded
 
             Flickable {
                 id: flickable

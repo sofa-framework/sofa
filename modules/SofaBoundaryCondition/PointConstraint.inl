@@ -145,12 +145,12 @@ void PointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 
 // constant velocity: do not change the velocity
 template <class DataTypes>
-void PointConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*vData*/)
+void PointConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
 {
 }
 
 template <class DataTypes>
-void PointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& /*xData*/)
+void PointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
 {
     // nothing to do
 }

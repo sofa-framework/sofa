@@ -51,7 +51,7 @@ SOFA_DECL_CLASS(RestShapeSpringsForceField)
 #ifndef SOFA_FLOAT
 
 template<>
-void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
+void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
     sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
     sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
@@ -127,7 +127,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(const core::MechanicalPa
 
 
 template<>
-void RestShapeSpringsForceField<Rigid3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx)
+void RestShapeSpringsForceField<Rigid3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
     sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
@@ -148,7 +148,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addDForce(const core::MechanicalP
 
 
 template<>
-void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void RestShapeSpringsForceField<Rigid3dTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
@@ -281,7 +281,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::draw(const core::visual::VisualPa
 #ifndef SOFA_DOUBLE
 
 template<>
-void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
+void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
     sofa::helper::WriteAccessor< DataVecDeriv > f1 = f;
     sofa::helper::ReadAccessor< DataVecCoord > p1 = x;
@@ -323,7 +323,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(const core::MechanicalPa
 
 
 template<>
-void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx)
+void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
     sofa::helper::WriteAccessor< DataVecDeriv > df1 = df;
     sofa::helper::ReadAccessor< DataVecDeriv > dx1 = dx;
@@ -345,7 +345,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addDForce(const core::MechanicalP
 
 
 template<>
-void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();

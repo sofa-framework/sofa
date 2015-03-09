@@ -74,11 +74,23 @@ static std::string GetLastError();
 
 #endif
 
-/// @brief Get the path of the current executable.
+/// @brief Get the path of the executable that is currently running.
 ///
 /// Note that this function uses various non-portable tricks to achieve its
 /// goal, and it might not be the most reliable thing ever written.
-static std::string getExecutablePath();
+static const std::string& getExecutablePath();
+
+/// @brief Get the path to the directory of the executable that is currently running.
+static const std::string& getExecutableDirectory();
+
+/// @brief Get the path to the "root" path of Sofa (i.e. the build directory or
+/// the installation prefix).
+///
+/// @warning This function is meant to be used only by the applications that are
+/// distributed with SOFA: it deduces the "root" path from the path of the
+/// executable that is currently running. (It returns the path to the parent of
+/// the "bin" directory.)
+static const std::string& getSofaPathPrefix();
 
 /// @brief Read a file written in a very basic ini-like format.
 ///

@@ -68,7 +68,7 @@ void CollisionAnimationLoop::computeCollision(const core::ExecParams* params)
 
     {
         CollisionBeginEvent evBegin;
-        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evBegin);
+        PropagateEventVisitor eventPropagation( params, &evBegin);
         eventPropagation.execute(getContext());
     }
 
@@ -78,27 +78,27 @@ void CollisionAnimationLoop::computeCollision(const core::ExecParams* params)
 
     {
         CollisionEndEvent evEnd;
-        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evEnd);
+        PropagateEventVisitor eventPropagation( params, &evEnd);
         eventPropagation.execute(getContext());
     }
 }
 
-void CollisionAnimationLoop::integrate(const core::ExecParams* params /* PARAMS FIRST */, double dt)
+void CollisionAnimationLoop::integrate(const core::ExecParams* params, double dt)
 {
 
     {
         IntegrateBeginEvent evBegin;
-        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evBegin);
+        PropagateEventVisitor eventPropagation( params, &evBegin);
         eventPropagation.execute(getContext());
     }
 
-    MechanicalIntegrationVisitor act( params /* PARAMS FIRST */, dt );
+    MechanicalIntegrationVisitor act( params, dt );
     act.setTags(this->getTags());
     act.execute( getContext() );
 
     {
         IntegrateEndEvent evBegin;
-        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evBegin);
+        PropagateEventVisitor eventPropagation( params, &evBegin);
         eventPropagation.execute(getContext());
     }
 }

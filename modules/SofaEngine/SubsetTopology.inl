@@ -796,7 +796,7 @@ void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
 }
 
 template <class DataTypes>
-void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params )
+void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params , bool onlyVisible)
 {
     const helper::vector<Vec6>& vb=boxes.getValue();
     const Real max_real = std::numeric_limits<Real>::max();

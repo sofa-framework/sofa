@@ -257,7 +257,7 @@ core::visual::Shader* BaseContext::getShader() const
 }
 
 /// Propagate an event
-void BaseContext::propagateEvent( const core::ExecParams* /* PARAMS FIRST */, Event* )
+void BaseContext::propagateEvent( const core::ExecParams*, Event* )
 {
     serr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<sendl;
 }

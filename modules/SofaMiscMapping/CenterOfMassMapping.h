@@ -82,16 +82,16 @@ public:
 
     void init();
 
-    virtual void apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& out, const InDataVecCoord& in);
+    virtual void apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in);
     //void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    virtual void applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& out, const InDataVecDeriv& in);
+    virtual void applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in);
     //void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
-    virtual void applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& out, const OutDataVecDeriv& in);
+    virtual void applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in);
     //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    virtual void applyJT( const sofa::core::ConstraintParams* /*cparams*/ /* PARAMS FIRST */, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/)
+    virtual void applyJT( const sofa::core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/)
     {
         serr << "applyJT(constraint ) not implemented" << sendl;
     }

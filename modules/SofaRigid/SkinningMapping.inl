@@ -250,7 +250,7 @@ void SkinningMapping<TIn, TOut>::setWeights(const vector<sofa::helper::SVector<I
 }
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
+void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
     OutVecCoord& out = *outData.beginEdit(mparams);
     const InVecCoord& in = inData.getValue();
@@ -343,7 +343,7 @@ void SkinningMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mpar
 
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
     OutVecDeriv& out = *outData.beginEdit(mparams);
     const InVecDeriv& in = inData.getValue();
@@ -430,7 +430,7 @@ void SkinningMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mpa
 }
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
+void SkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
     InVecDeriv& out = *outData.beginEdit(mparams);
     const OutVecDeriv& in = inData.getValue();
@@ -522,7 +522,7 @@ void SkinningMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mp
 
 
 template <class TIn, class TOut>
-void SkinningMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
+void SkinningMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
     InMatrixDeriv& parentJacobians = *outData.beginEdit(cparams);
     const OutMatrixDeriv& childJacobians = inData.getValue();

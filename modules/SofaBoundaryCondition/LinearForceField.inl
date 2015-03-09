@@ -112,7 +112,7 @@ void LinearForceField<DataTypes>::clearKeyForces()
 }// LinearForceField::clearKeyForces
 
 template<class DataTypes>
-void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f1, const DataVecCoord& /*p1*/, const DataVecDeriv&)
+void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f1, const DataVecCoord& /*p1*/, const DataVecDeriv&)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f1;
 
@@ -164,7 +164,7 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
 }// LinearForceField::addForce
 
 template<class DataTypes>
-double LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& x) const
+double LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
     Real cT = (Real) this->getContext()->getTime();
     const VecCoord& _x = x.getValue();

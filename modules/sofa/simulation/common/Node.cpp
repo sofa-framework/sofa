@@ -186,9 +186,9 @@ void Node::reinit(const core::ExecParams* params)
 }
 
 /// Do one step forward in time
-//void Node::animate(const core::ExecParams* params /* PARAMS FIRST */, double dt)
+//void Node::animate(const core::ExecParams* params, double dt)
 //{
-//    simulation::AnimateVisitor vis(params /* PARAMS FIRST */, dt);
+//    simulation::AnimateVisitor vis(params, dt);
 //    //cerr<<"Node::animate, start execute"<<endl;
 //    execute(vis);
 //    //cerr<<"Node::animate, end execute"<<endl;
@@ -942,9 +942,9 @@ void Node::executeVisitor(Visitor* action, bool precomputedOrder)
 }
 
 /// Propagate an event
-void Node::propagateEvent(const core::ExecParams* params /* PARAMS FIRST */, core::objectmodel::Event* event)
+void Node::propagateEvent(const core::ExecParams* params, core::objectmodel::Event* event)
 {
-    simulation::PropagateEventVisitor act(params /* PARAMS FIRST */, event);
+    simulation::PropagateEventVisitor act(params, event);
     this->executeVisitor(&act);
 }
 

@@ -125,15 +125,15 @@ public:
     void init();
 
     /// Cancel the possible forces
-    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
     /// Cancel the possible velocities
-    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
-    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
     // Implement projectMatrix for assembled solver of compliant
     virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
 
-    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /* cData */)
+    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */)
     {
         serr << "projectJacobianMatrix not implemented" << sendl;
     }
@@ -167,7 +167,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* topology;
     
     template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
+    void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
 private:
 

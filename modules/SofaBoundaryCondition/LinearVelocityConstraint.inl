@@ -167,7 +167,7 @@ void LinearVelocityConstraint<DataTypes>::reset()
 
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& resData)
+void LinearVelocityConstraint<TDataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
     VecDeriv& dx = res.wref();
@@ -192,7 +192,7 @@ void LinearVelocityConstraint<TDataTypes>::projectResponse(const core::Mechanica
 }
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
+void LinearVelocityConstraint<TDataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> dx = vData;
     Real cT = (Real) this->getContext()->getTime();
@@ -233,7 +233,7 @@ void LinearVelocityConstraint<TDataTypes>::projectVelocity(const core::Mechanica
 
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
+void LinearVelocityConstraint<TDataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
 
@@ -328,7 +328,7 @@ void LinearVelocityConstraint<DataTypes>::findKeyTimes()
 }// LinearVelocityConstraint::findKeyTimes
 
 template <class TDataTypes>
-void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /*cData*/)
+void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /*cData*/)
 {
 
 }

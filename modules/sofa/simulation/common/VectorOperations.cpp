@@ -54,33 +54,33 @@ void VectorOperations::v_alloc(sofa::core::MultiVecCoordId& v)
     /* template < VecType vtype > MechanicalVAvailVisitor;  */
     /* this can be probably merged in a single operation with the MultiVecId design */
     core::VecCoordId id(core::VecCoordId::V_FIRST_DYNAMIC_INDEX);
-    //executeVisitor( MechanicalVAvailVisitor<core:V_COORD>( params /* PARAMS FIRST */, id) );
+    //executeVisitor( MechanicalVAvailVisitor<core:V_COORD>( params, id) );
     //v.assign(id);
-    MechanicalVAvailVisitor<core::V_COORD> avail(params /* PARAMS FIRST */, id);
+    MechanicalVAvailVisitor<core::V_COORD> avail(params, id);
     executeVisitor( &avail );
     //v.assign(id);
     v.setId(avail.states, id);
-    executeVisitor( MechanicalVAllocVisitor<core::V_COORD>(params /* PARAMS FIRST */, v) );
+    executeVisitor( MechanicalVAllocVisitor<core::V_COORD>(params, v) );
 }
 
 void VectorOperations::v_alloc(sofa::core::MultiVecDerivId& v)
 {
     core::VecDerivId id(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
-    MechanicalVAvailVisitor<core::V_DERIV> avail(params /* PARAMS FIRST */, id);
+    MechanicalVAvailVisitor<core::V_DERIV> avail(params, id);
     executeVisitor( &avail );
     //v.assign(id);
     v.setId(avail.states, id);
-    executeVisitor(  MechanicalVAllocVisitor<core::V_DERIV>(params /* PARAMS FIRST */, v) );
+    executeVisitor(  MechanicalVAllocVisitor<core::V_DERIV>(params, v) );
 }
 
 void VectorOperations::v_free(sofa::core::MultiVecCoordId& id, bool interactionForceField, bool propagate)
 {
-    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<core::V_COORD>( params /* PARAMS FIRST */, id, interactionForceField, propagate) );
+    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<core::V_COORD>( params, id, interactionForceField, propagate) );
 }
 
 void VectorOperations::v_free(sofa::core::MultiVecDerivId& id, bool interactionForceField, bool propagate)
 {
-    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<core::V_DERIV>(params /* PARAMS FIRST */, id, interactionForceField, propagate) );
+    if( !id.isNull() ) executeVisitor( MechanicalVFreeVisitor<core::V_DERIV>(params, id, interactionForceField, propagate) );
 }
 
 void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactionForceField, bool propagate)
@@ -88,12 +88,12 @@ void VectorOperations::v_realloc(sofa::core::MultiVecCoordId& v, bool interactio
     if( v.isNull() )
     {
         core::VecCoordId id(core::VecCoordId::V_FIRST_DYNAMIC_INDEX);
-        MechanicalVAvailVisitor<core::V_COORD> avail(params /* PARAMS FIRST */, id);
+        MechanicalVAvailVisitor<core::V_COORD> avail(params, id);
         executeVisitor( &avail );
         //v.assign(id);
         v.setId(avail.states, id);
     }
-    executeVisitor( MechanicalVReallocVisitor<core::V_COORD>(params /* PARAMS FIRST */, &v, interactionForceField, propagate) );
+    executeVisitor( MechanicalVReallocVisitor<core::V_COORD>(params, &v, interactionForceField, propagate) );
 }
 
 void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactionForceField, bool propagate)
@@ -101,78 +101,78 @@ void VectorOperations::v_realloc(sofa::core::MultiVecDerivId& v, bool interactio
     if( v.isNull() )
     {
         core::VecDerivId id(core::VecDerivId::V_FIRST_DYNAMIC_INDEX);
-        MechanicalVAvailVisitor<core::V_DERIV> avail(params /* PARAMS FIRST */, id);
+        MechanicalVAvailVisitor<core::V_DERIV> avail(params, id);
         executeVisitor( &avail );
         //v.assign(id);
         v.setId(avail.states, id);
     }
-    executeVisitor( MechanicalVReallocVisitor<core::V_DERIV>(params /* PARAMS FIRST */, &v, interactionForceField, propagate) );
+    executeVisitor( MechanicalVReallocVisitor<core::V_DERIV>(params, &v, interactionForceField, propagate) );
 }
 
 
 void VectorOperations::v_clear(sofa::core::MultiVecId v) //v=0
 {
-    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0) );
+    executeVisitor( MechanicalVOpVisitor(params, v, core::ConstMultiVecId::null(), core::ConstMultiVecId::null(), 1.0) );
 }
 
 void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a) // v=a
 {
-    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, a, core::ConstMultiVecId::null(), 1.0) );
+    executeVisitor( MechanicalVOpVisitor(params, v, a, core::ConstMultiVecId::null(), 1.0) );
 }
 
 void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f) // v=f*a
 {
-    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, core::ConstMultiVecId::null(), a, f) );
+    executeVisitor( MechanicalVOpVisitor(params, v, core::ConstMultiVecId::null(), a, f) );
 }
 
 #ifndef SOFA_SMP
 void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f)
 {
-    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, v, a, f) );
+    executeVisitor( MechanicalVOpVisitor(params, v, v, a, f) );
 }
 #else
 void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<double> &fSh,double f)
 {
-    ParallelMechanicalVOpVisitor(params /* PARAMS FIRST */, v, v, a, f, &fSh).execute( ctx );
+    ParallelMechanicalVOpVisitor(params, v, v, a, f, &fSh).execute( ctx );
 }
 
 void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f)
 {
-    // ParallelMechanicalVOpVisitor(params /* PARAMS FIRST */, v, v, a, f).execute( ctx );
+    // ParallelMechanicalVOpVisitor(params, v, v, a, f).execute( ctx );
 }
 
 void VectorOperations::v_meq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<double> &fSh)
 {
-    ParallelMechanicalVOpMecVisitor(params /* PARAMS FIRST */, v, a, &fSh).execute( ctx );
+    ParallelMechanicalVOpMecVisitor(params, v, a, &fSh).execute( ctx );
 }
 #endif
 
 void VectorOperations::v_teq(sofa::core::MultiVecId v, double f)
 {
-    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, core::MultiVecId::null(), v, f) );
+    executeVisitor( MechanicalVOpVisitor(params, v, core::MultiVecId::null(), v, f) );
 }
 
 void VectorOperations::v_op(core::MultiVecId v, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, double f )
 {
-    executeVisitor( MechanicalVOpVisitor(params /* PARAMS FIRST */, v, a, b, f) );
+    executeVisitor( MechanicalVOpVisitor(params, v, a, b, f) );
 }
 
 void VectorOperations::v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o)
 {
-    executeVisitor( MechanicalVMultiOpVisitor(params /* PARAMS FIRST */, o) );
+    executeVisitor( MechanicalVMultiOpVisitor(params, o) );
 }
 
 #ifdef SOFA_SMP
 void VectorOperations::v_op(sofa::core::MultiVecId v, sofa::core::MultiVecId a, sofa::core::MultiVecId b, Shared<double> &f) ///< v=a+b*f
 {
-    ParallelMechanicalVOpVisitor(params /* PARAMS FIRST */, v, a, b, 1.0, &f).execute( ctx );
+    ParallelMechanicalVOpVisitor(params, v, a, b, 1.0, &f).execute( ctx );
 }
 #endif // SOFA_SMP
 
 void VectorOperations::v_dot( sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b)
 {
     result = 0;
-    MechanicalVDotVisitor(params /* PARAMS FIRST */, a,b,&result).setTags(ctx->getTags()).execute( ctx, executeVisitor.precomputedTraversalOrder );
+    MechanicalVDotVisitor(params, a,b,&result).setTags(ctx->getTags()).execute( ctx, executeVisitor.precomputedTraversalOrder );
 }
 
 void VectorOperations::v_norm( sofa::core::ConstMultiVecId a, unsigned l)
@@ -185,19 +185,19 @@ void VectorOperations::v_norm( sofa::core::ConstMultiVecId a, unsigned l)
 #ifdef SOFA_SMP
 void VectorOperations::v_dot( Shared<double> &result, core::MultiVecId a, core::MultiVecId b)
 {
-    ParallelMechanicalVDotVisitor(params /* PARAMS FIRST */, &result, a, b).execute( ctx );
+    ParallelMechanicalVDotVisitor(params, &result, a, b).execute( ctx );
 }
 #endif
 
 void VectorOperations::v_threshold(sofa::core::MultiVecId a, double threshold)
 {
-    executeVisitor( VelocityThresholdVisitor(params /* PARAMS FIRST */, a,threshold) );
+    executeVisitor( VelocityThresholdVisitor(params, a,threshold) );
 }
 
 void VectorOperations::print(sofa::core::ConstMultiVecId v, std::ostream &out, std::string prefix, std::string suffix)
 {
     out << prefix;
-    executeVisitor( MechanicalVPrintVisitor( params /* PARAMS FIRST */, v, out ) );
+    executeVisitor( MechanicalVPrintVisitor( params, v, out ) );
     out << suffix;
 }
 

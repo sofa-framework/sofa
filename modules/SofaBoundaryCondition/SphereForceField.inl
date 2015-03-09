@@ -61,7 +61,7 @@ namespace forcefield
 // df = -stiffness * ( (x-c)/|x-c| * dot(dx,(x-c)/|x-c|) * r/|x-c|   + dx * (1 - r/|x-c|) )
 
 template<class DataTypes>
-void SphereForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void SphereForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f1 = *d_f.beginEdit();
     const VecCoord& p1 = d_x.getValue();
@@ -123,7 +123,7 @@ void SphereForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * m
 }
 
 template<class DataTypes>
-void SphereForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void SphereForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     VecDeriv& df1 = *d_df.beginEdit();
     const VecDeriv& dx1 = d_dx.getValue();

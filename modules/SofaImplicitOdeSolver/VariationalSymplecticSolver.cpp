@@ -84,7 +84,7 @@ void VariationalSymplecticSolver::init()
     energies.open((f_fileName.getValue()).c_str(),std::ios::out);
 }
 
-void VariationalSymplecticSolver::solve(const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void VariationalSymplecticSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );

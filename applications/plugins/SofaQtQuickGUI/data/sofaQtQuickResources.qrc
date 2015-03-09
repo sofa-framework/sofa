@@ -13,5 +13,6 @@
         <file>scene/sample1.py.qml</file>
         <file>icon/downArrow.png</file>
         <file>icon/rightArrow.png</file>
+        <file>icon/link.png</file>
     </qresource>
 </RCC>

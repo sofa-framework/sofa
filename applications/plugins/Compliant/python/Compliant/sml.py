@@ -11,25 +11,37 @@ from SofaPython.Tools import listToStr as concat
 import SofaPython.sml
 import Flexible.sml
 
-def insertRigid(parentNode, rigidModel, param):
+def insertRigid(parentNode, rigidModel, param=None):
+    """ create a StructuralAPI.RigidBody from the rigidModel """
     print "rigid:", rigidModel.name
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
-    if not rigidModel.density is None:
+    if not rigidModel.density is None and not rigidModel.mesh is None:
+        # compute physics using mesh and density
         rigid.setFromMesh(rigidModel.mesh.source, density=rigidModel.density, offset=rigidModel.position)
-    else:
+    elif not rigidModel.mesh is None:
+        # no density but a mesh, let's compute physics whith this information plus specified mass if any
+        rigid.setFromMesh(rigidModel.mesh.source, density=1, offset=rigidModel.position)
         mass=1.
         if not rigidModel.mass is None:
             mass = rigidModel.mass
-        rigid.setFromMesh(rigidModel.mesh.source, density=1, offset=rigidModel.position)
-        
         inertia = []
         for inert,m in zip(rigid.mass.inertia, rigid.mass.mass):
             for i in inert:
                 inertia.append( i/m[0]*mass)
         rigid.mass.inertia = concat(inertia)
         rigid.mass.mass = mass
-    rigid.dofs.showObject = param.showRigid
-    rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
+    else:
+        # no mesh, get mass/inertia if present, default to a unit sphere
+        mass=1.
+        if not rigidModel.mass is None:
+            mass = rigidModel.mass
+        inertia = [1,1,1] #TODO: take care of full inertia matrix, which may be given in sml, update SofaPython.mass.RigidMassInfo to diagonalize it
+        if not rigidModel.inertia is None:
+            inertia = rigidModel.inertia
+        rigid.setManually(rigidModel.position, mass, inertia)
+    if not param is None:
+        rigid.dofs.showObject = param.showRigid
+        rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
     # visual
     if not rigidModel.mesh is None:
         cm = rigid.addCollisionMesh(rigidModel.mesh.source)
@@ -37,18 +49,20 @@ def insertRigid(parentNode, rigidModel, param):
        
     return rigid
 
-def insertJoint(jointModel, rigids, param):
+def insertJoint(jointModel, rigids, param=None):
+    """ create a StructuralAPI.GenericRigidJoint from the jointModel """
     print "joint:", jointModel.name
     frames=list()
     for i,offset in enumerate(jointModel.offsets):
-        rigid = rigids[jointModel.objects[i].id] # shortcut
+        rigid = rigids[jointModel.solids[i].id] # shortcut
         if not offset is None:
             if offset.isAbsolute():
                 frames.append( rigid.addAbsoluteOffset(offset.name, offset.value))
             else:
                 frames.append( rigid.addOffset(offset.name, offset.value) )
-            frames[-1].dofs.showObject = param.showOffset
-            frames[-1].dofs.showObjectScale = SofaPython.units.length_from_SI(param.showOffsetScale)
+            if not param is None:
+                frames[-1].dofs.showObject = param.showOffset
+                frames[-1].dofs.showObjectScale = SofaPython.units.length_from_SI(param.showOffsetScale)
         else:
             frames.append(rigid)
     mask = [1]*6
@@ -63,9 +77,8 @@ def insertJoint(jointModel, rigids, param):
 
 class SceneArticulatedRigid(SofaPython.sml.BaseScene):
     """ Builds a (sub)scene from a model using compliant formulation
-    
-    <rigid>: if <density> is given, inertia is computed from mesh, else <mass> must be given
-    """
+    [tag]rigid are simulated as RigidBody
+    Compliant joints are setup between the rigids """
     
     def __init__(self, parentNode, model):
         SofaPython.sml.BaseScene.__init__(self, parentNode, model)
@@ -85,7 +98,7 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         SofaPython.sml.setupUnits(self.model.units)
 
         # rigids
-        for rigidId,rigidModel in self.model.rigids.iteritems():
+        for rigidModel in self.model.solidsByTag["rigid"]:
             self.rigids[rigidModel.id] = insertRigid(self.node, rigidModel, self.param)
         
         # joints
@@ -102,20 +115,22 @@ class SceneSkinning(SceneArticulatedRigid) :
         SceneArticulatedRigid.createScene(self)
         
         # all rigids (bones) must be gathered in a single node
-        self.nodes["bones"] = self.node.createChild("bones")
-        self.nodes["bones"].createObject("MechanicalObject", template = "Rigid3d", name="dofs")
+        self.nodes["armature"] = self.node.createChild("armature")
+        self.nodes["armature"].createObject("MechanicalObject", template = "Rigid3d", name="dofs")
         bonesId = list() # keep track of merged bones, bone index and bone id
         input=""
         indexPairs=""
-        for rigidId,rigid in self.rigids.iteritems():
-            rigid.node.addChild(self.nodes["bones"])
+        for armatureBone in self.model.solidsByTag["armature"]:
+            rigid = self.rigids[armatureBone.id]
+            rigid.node.addChild(self.nodes["armature"])
             input += '@'+rigid.node.getPathName()+" "
             indexPairs += str(len(bonesId)) + " 0 "
-            bonesId.append(rigidId)
-        self.nodes["bones"].createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
+            bonesId.append(armatureBone.id)
+        self.nodes["armature"].createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
         
         #deformable
-        for deformableModel in self.model.deformables.values():
-            self.deformables[deformableModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, deformableModel, self.nodes["bones"].getPathName(), bonesId)
+        for solidModel in self.model.solids.values():
+            if len(solidModel.skinnings)>0:
+                self.deformables[solidModel.id]=Flexible.sml.insertDeformableWithSkinning(self.node, solidModel, self.nodes["armature"].getPathName(), bonesId)
         
         

@@ -176,7 +176,7 @@ void CatmullRomSplineMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
-void CatmullRomSplineMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
+void CatmullRomSplineMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
     OutVecCoord& out = *outData.beginEdit(mparams);
     const InVecCoord& in = inData.getValue();
@@ -192,7 +192,7 @@ void CatmullRomSplineMapping<TIn, TOut>::apply( const sofa::core::MechanicalPara
 
 
 template <class TIn, class TOut>
-void CatmullRomSplineMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void CatmullRomSplineMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
     OutVecDeriv& out = *outData.beginEdit(mparams);
     const InVecDeriv& in = inData.getValue();
@@ -226,7 +226,7 @@ void CatmullRomSplineMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalPar
 
 
 template <class TIn, class TOut>
-void CatmullRomSplineMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
+void CatmullRomSplineMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
     InVecDeriv& out = *outData.beginEdit(mparams);
     const OutVecDeriv& in = inData.getValue();
@@ -263,7 +263,7 @@ void CatmullRomSplineMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalPa
 
 
 template <class TIn, class TOut>
-void CatmullRomSplineMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
+void CatmullRomSplineMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
     InMatrixDeriv& parentJacobians = *outData.beginEdit(cparams);
     const OutMatrixDeriv& childJacobians = inData.getValue();

@@ -14,20 +14,57 @@ namespace component {
 
 namespace mapping {
 
+
+
+// static dispatch wizardry
+namespace impl {
+
+template<class U>
+static bool use_dlog( ::sofa::defaulttype::RigidCoord<3, U>* ) { return false; }
+
+template<class U>
+static bool use_dlog( ::sofa::defaulttype::Vec<6, U>* ) { return true; }
+
+// dispatch on output type
+template<class U, class V>
+void fill( ::sofa::defaulttype::RigidCoord<3, U>& out,
+           const ::sofa::defaulttype::RigidCoord<3, V>& in) {
+    out = in;
+}
+
+// use log coords for vec6
+template<class U, class V>
+void fill( ::sofa::defaulttype::Vec<6, U>& out,
+           const ::sofa::defaulttype::RigidCoord<3, V>& in) {
+    
+    typedef SE3<V> se3;
+    
+    typename se3::deriv_type value = se3::product_log( in );
+    
+    utils::map(out).template head<3>() = utils::map(value.getLinear()).template cast<U>();
+    utils::map(out).template tail<3>() = utils::map(value.getAngular()).template cast<U>();
+    
+}
+
+
+}
+
 /** 
 
-    Maps rigid bodies to the (log) relative coordinates between the
+    Maps rigid bodies to the relative transform between the
     two: 
     
-     \[ f(p, c) = \log(p^{-1} c) \]
+     \[ f(p, c) = p^{-1} c \]
 
-     Optionally, mapped dofs can be restricted using @dofs mask.
-
+     logarithm coordinates are used for Vec6 output dofs
+     
      TODO .inl
 
-     @author: maxime.tournier@inria.fr
+     @author: Maxime Tournier
 
 */
+
+
 
 template <class TIn, class TOut >
 class RigidJointMultiMapping : public AssembledMultiMapping<TIn, TOut> {
@@ -49,6 +86,9 @@ public:
     Data<int> geometricStiffness;
 
 protected:
+
+    static const bool use_dlog;
+    
 	typedef SE3< in_real > se3;
 	typedef typename se3::coord_type coord_type;
 	
@@ -71,15 +111,12 @@ protected:
 
 		for( unsigned i = 0, n = p.size(); i < n; ++i) {
 
-			coord_type parent = in[0][ p[i](0) ];
-			coord_type child = in[1][ p[i](1) ];
-		
-			coord_type delta = se3::prod( se3::inv(parent), child);
-
-			typename se3::deriv_type value = se3::product_log( delta );
+			const coord_type parent = in[0][ p[i](0) ];
+			const coord_type child = in[1][ p[i](1) ];
+			const coord_type delta = se3::prod( se3::inv(parent), child);
             
-            utils::map(out[i]).template head<3>() =  utils::map(value.getLinear()).template cast<out_real>();
-            utils::map(out[i]).template tail<3>() =  utils::map(value.getAngular()).template cast<out_real>();
+            impl::fill(out[i], delta);
+            
 			
 		}
 		
@@ -249,9 +286,14 @@ protected:
 //				mat33 Rdelta = se3::rotation(delta).toRotationMatrix();
 				const typename se3::vec3 s = se3::translation(child) - se3::translation(parent);
 
-                // dlog in spatial coordinates
-                const mat33 dlog = se3::dlog( se3::rotation(delta).normalized() ); // * Rc.transpose() * Rp;
-                // const mat33 dlog = mat33::Identity();
+                mat33 chunk;
+
+                if( use_dlog ) {
+                    // note: dlog is in spatial coordinates !
+                    chunk = se3::dlog( se3::rotation(delta).normalized() ) * Rc.transpose();
+                } else {
+                    chunk = Rp.transpose();
+                }
                  
 				mat66 ddelta; 
 
@@ -259,12 +301,12 @@ protected:
 					// child
 					ddelta << 
 						Rp.transpose(), mat33::Zero(),
-						mat33::Zero(), dlog * Rc.transpose();
+						mat33::Zero(), chunk;
 				} else {
 					// parent
                     ddelta << 
                         -Rp.transpose(), Rp.transpose() * se3::hat(s),
-                        mat33::Zero(), -dlog * Rc.transpose();
+                        mat33::Zero(), -chunk;
 				}
 				
 
@@ -294,6 +336,12 @@ protected:
 
 
 };
+
+template<class In, class Out>
+const bool RigidJointMultiMapping<In, Out>::use_dlog = impl::use_dlog( (typename Out::Coord*) 0 );
+
+
+
 
 
 }

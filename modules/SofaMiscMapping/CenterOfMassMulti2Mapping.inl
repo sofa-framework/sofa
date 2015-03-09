@@ -94,7 +94,7 @@ public :
 
 template< class TIn1, class TIn2, class TOut  >
 void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
-        const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
+        const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
         const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
         const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos)
 //apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 )
@@ -157,7 +157,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::apply(
 
 template <class TIn1, class TIn2, class TOut>
 void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
-        const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
+        const core::MechanicalParams* mparams, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
         const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel)
 //applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2)
@@ -221,7 +221,7 @@ void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJ(
 
 template < class TIn1, class TIn2, class TOut >
 void CenterOfMassMulti2Mapping< TIn1, TIn2, TOut >::applyJT(
-        const core::MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
+        const core::MechanicalParams* mparams, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
         const helper::vector< In2DataVecDeriv*>& dataVecOut2Force,
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
 //applyJT( const helper::vector<typename In1::VecDeriv*>& outDeriv1 ,const helper::vector<typename In2::VecDeriv*>& outDeriv2 , const helper::vector<const typename Out::VecDeriv*>& inDeriv )

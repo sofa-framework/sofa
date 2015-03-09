@@ -66,7 +66,7 @@ void CenterOfMassMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
-void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
+void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
     OutVecCoord& childPositions = *outData.beginEdit(mparams);
     const InVecCoord& parentPositions = inData.getValue();
@@ -93,7 +93,7 @@ void CenterOfMassMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* 
 
 
 template <class TIn, class TOut>
-void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
     OutVecDeriv& childForces = *outData.beginEdit(mparams);
     const InVecDeriv& parentForces = inData.getValue();
@@ -120,7 +120,7 @@ void CenterOfMassMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams*
 
 
 template <class TIn, class TOut>
-void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
+void CenterOfMassMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
     InVecDeriv& parentForces = *outData.beginEdit(mparams);
     const OutVecDeriv& childForces = inData.getValue();

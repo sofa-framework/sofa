@@ -82,20 +82,20 @@ template<>
 void LinearForceField< gpu::cuda::CudaRigid3fTypes >::init();
 
 template<>
-void LinearForceField< gpu::cuda::CudaRigid3fTypes >::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+void LinearForceField< gpu::cuda::CudaRigid3fTypes >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
 template<>
-double LinearForceField< gpu::cuda::CudaRigid3fTypes >::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+double LinearForceField< gpu::cuda::CudaRigid3fTypes >::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template<>
 void LinearForceField< gpu::cuda::CudaRigid3dTypes >::init();
 
 template<>
-void LinearForceField< gpu::cuda::CudaRigid3dTypes >::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+void LinearForceField< gpu::cuda::CudaRigid3dTypes >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
 template<>
-double LinearForceField< gpu::cuda::CudaRigid3dTypes >::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& ) const;
+double LinearForceField< gpu::cuda::CudaRigid3dTypes >::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace forcefield

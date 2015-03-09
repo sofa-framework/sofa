@@ -461,7 +461,7 @@ void Fluid3D::updateVisual()
         points[i].n.normalize();
 }
 
-void Fluid3D::computeBBox(const core::ExecParams*  params )
+void Fluid3D::computeBBox(const core::ExecParams*  params , bool /*onlyVisible*/)
 {
     vec3 center = f_center.getValue(params);
     const real& cellwidth = f_cellwidth.getValue(params);

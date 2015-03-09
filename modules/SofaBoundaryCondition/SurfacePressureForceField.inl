@@ -127,7 +127,7 @@ void SurfacePressureForceField<DataTypes>::verifyDerivative(VecDeriv& v_plus, Ve
 
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();
@@ -241,7 +241,7 @@ void SurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams
 }
 
 template <class DataTypes>
-void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
+void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
 {
 
 
@@ -295,7 +295,7 @@ void SurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParam
 
 
 template<class DataTypes>
-void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void SurfacePressureForceField<DataTypes>::addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
 
 

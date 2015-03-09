@@ -21,7 +21,7 @@ using namespace sofa::defaulttype;
  * several Newton steps to estimate the velocity
  *
 */
-class VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
+class SOFA_IMPLICIT_ODE_SOLVER_API VariationalSymplecticSolver : public sofa::core::behavior::OdeSolver
 {
 public:
 	SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
@@ -42,7 +42,7 @@ public:
 
 	void init();
 	std::ofstream energies;
-   void solve (const core::ExecParams* params /* PARAMS FIRST */, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+   void solve (const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
    int cpt;
    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity

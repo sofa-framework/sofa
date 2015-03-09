@@ -66,7 +66,7 @@ using namespace gpu::cuda;
 
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     if (grid == NULL) return;
 
@@ -90,7 +90,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(const cor
 }
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     if (grid == NULL) return;
 
@@ -118,7 +118,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const co
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     if (grid == NULL) return;
 
@@ -142,7 +142,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(const cor
 }
 
 template <>
-void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     if (grid == NULL) return;
 

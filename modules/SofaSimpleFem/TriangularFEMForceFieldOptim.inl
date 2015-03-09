@@ -278,7 +278,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
 
 
 template <class DataTypes>
-double TriangularFEMForceFieldOptim<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, const DataVecCoord& /* x */) const
+double TriangularFEMForceFieldOptim<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* x */) const
 {
     serr<<"TriangularFEMForceFieldOptim::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -289,7 +289,7 @@ double TriangularFEMForceFieldOptim<DataTypes>::getPotentialEnergy(const core::M
 // --- AddForce and AddDForce methods
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
+void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > f = d_f;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > x = d_x;
@@ -349,7 +349,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::addForce(const core::MechanicalPar
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void TriangularFEMForceFieldOptim<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > df = d_df;
     sofa::helper::ReadAccessor< core::objectmodel::Data< VecCoord > > dx = d_dx;

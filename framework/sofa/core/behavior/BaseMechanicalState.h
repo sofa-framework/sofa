@@ -92,38 +92,38 @@ public:
     /// @name Vectors allocation and generic operations (based on VecId)
     /// @{
     /// Increment the index of the given VecCoordId, so that all 'allocated' vectors in this state have a lower index
-    virtual void vAvail(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecCoordId& v) = 0;
+    virtual void vAvail(const ExecParams* params, VecCoordId& v) = 0;
     /// Increment the index of the given VecDerivId, so that all 'allocated' vectors in this state have a lower index
-    virtual void vAvail(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecDerivId& v) = 0;
+    virtual void vAvail(const ExecParams* params, VecDerivId& v) = 0;
     /// Increment the index of the given MatrixDerivId, so that all 'allocated' vectors in this state have a lower index
     //virtual void vAvail(MatrixDerivId& v) = 0;
 
     /// Allocate a new temporary vector
-    virtual void vAlloc(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecCoordId v) = 0;
+    virtual void vAlloc(const ExecParams* params, VecCoordId v) = 0;
     /// Allocate a new temporary vector
-    virtual void vAlloc(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecDerivId v) = 0;
+    virtual void vAlloc(const ExecParams* params, VecDerivId v) = 0;
     /// Allocate a new temporary vector
     //virtual void vAlloc(MatrixDerivId v) = 0;
 
     /// Reallocate a new temporary vector
-    virtual void vRealloc(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecCoordId v) = 0;
+    virtual void vRealloc(const ExecParams* params, VecCoordId v) = 0;
     /// Reallocate a new temporary vector
-    virtual void vRealloc(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecDerivId v) = 0;
+    virtual void vRealloc(const ExecParams* params, VecDerivId v) = 0;
 
 
     /// Free a temporary vector
-    virtual void vFree(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecCoordId v) = 0;
+    virtual void vFree(const ExecParams* params, VecCoordId v) = 0;
     /// Free a temporary vector
-    virtual void vFree(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecDerivId v) = 0;
+    virtual void vFree(const ExecParams* params, VecDerivId v) = 0;
     /// Free a temporary vector
     //virtual void vFree(MatrixDerivId v) = 0;
 
     /// Initialize an unset vector
-    virtual void vInit(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecCoordId v, ConstVecCoordId vSrc) = 0;
+    virtual void vInit(const ExecParams* params, VecCoordId v, ConstVecCoordId vSrc) = 0;
     /// Initialize an unset vector
-    virtual void vInit(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecDerivId v, ConstVecDerivId vSrc) = 0;
+    virtual void vInit(const ExecParams* params, VecDerivId v, ConstVecDerivId vSrc) = 0;
     /// Initialize an unset vector
-    //virtual void vInit(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, MatrixDerivId v, ConstMatrixDerivId vSrc) = 0;
+    //virtual void vInit(const ExecParams* params, MatrixDerivId v, ConstMatrixDerivId vSrc) = 0;
 
     /// \brief Compute a linear operation on vectors : v = a + b * f.
     ///
@@ -132,11 +132,11 @@ public:
     /// \li v = a
     /// \li v = a + b
     /// \li v = b * f
-    virtual void vOp(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecId v, ConstVecId a = ConstVecId::null(), ConstVecId b = ConstVecId::null(), double f = 1.0 ) = 0;
+    virtual void vOp(const ExecParams* params, VecId v, ConstVecId a = ConstVecId::null(), ConstVecId b = ConstVecId::null(), double f = 1.0 ) = 0;
 #ifdef SOFA_SMP
-    virtual void vOp(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecId v, ConstVecId a, ConstVecId b, double f, a1::Shared<double> * fSh ) = 0;
-    virtual void vOpMEq(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecId v, ConstVecId a = ConstVecId::null(), a1::Shared<double> * fSh=NULL ) = 0;
-    virtual void vDot(const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, a1::Shared<double> *result,ConstVecId a, ConstVecId b ) = 0;
+    virtual void vOp(const ExecParams* params, VecId v, ConstVecId a, ConstVecId b, double f, a1::Shared<double> * fSh ) = 0;
+    virtual void vOpMEq(const ExecParams* params, VecId v, ConstVecId a = ConstVecId::null(), a1::Shared<double> * fSh=NULL ) = 0;
+    virtual void vDot(const ExecParams* params, a1::Shared<double> *result,ConstVecId a, ConstVecId b ) = 0;
 #endif
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
@@ -194,23 +194,23 @@ public:
     }
 
     /// Called at the end of each integration step.
-    virtual void endIntegration(const ExecParams* params /* PARAMS FIRST */, double /*dt*/)
+    virtual void endIntegration(const ExecParams* params, double /*dt*/)
     {
-        vOp(params /* PARAMS FIRST */, VecId::externalForce(), ConstVecId::null(), ConstVecId::null(), 1.0); // externalForce = 0
+        vOp(params, VecId::externalForce(), ConstVecId::null(), ConstVecId::null(), 1.0); // externalForce = 0
     }
 
     /// Set F = 0
-    virtual void resetForce( const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecId f = VecId::force())
-    { vOp( params /* PARAMS FIRST */, f, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
+    virtual void resetForce( const ExecParams* params, VecId f = VecId::force())
+    { vOp( params, f, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
 
     /// Set Acc =0
-    virtual void resetAcc( const ExecParams* params /* PARAMS FIRST   = ExecParams::defaultInstance()*/, VecId a = VecId::dx() )
-    { vOp( params /* PARAMS FIRST */, a, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
+    virtual void resetAcc( const ExecParams* params, VecId a = VecId::dx() )
+    { vOp( params, a, ConstVecId::null(), ConstVecId::null(), 1.0 ); }
 
     /// Add stored external forces to F
-    virtual void accumulateForce( const ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, VecId f = VecId::force() )
+    virtual void accumulateForce( const ExecParams* params, VecId f = VecId::force() )
     {
-        vOp( params /* PARAMS FIRST */, f, f, ConstVecId::externalForce(), 1.0 ); // f += externalForce
+        vOp( params, f, f, ConstVecId::externalForce(), 1.0 ); // f += externalForce
     }
 
     /// @}
@@ -298,7 +298,7 @@ public:
     ///
     /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
     /// Returns false if this object does not support picking
-    virtual bool pickParticles(const ExecParams* /* params */ /* PARAMS FIRST */, double /*rayOx*/, double /*rayOy*/, double /*rayOz*/,
+    virtual bool pickParticles(const ExecParams* /* params */, double /*rayOx*/, double /*rayOy*/, double /*rayOz*/,
             double /*rayDx*/, double /*rayDy*/, double /*rayDz*/,
             double /*radius0*/, double /*dRadius*/,
             std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& /*particles*/)

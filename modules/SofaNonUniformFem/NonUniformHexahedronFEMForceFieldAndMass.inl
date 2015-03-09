@@ -499,10 +499,10 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMaterialStiffness(Mater
 /////////////////////////////////////////////////
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor)
 {
     if(_useMass.getValue())
-        HexahedronFEMForceFieldAndMassT::addMDx(mparams /* PARAMS FIRST */, f,dx,factor);
+        HexahedronFEMForceFieldAndMassT::addMDx(mparams, f,dx,factor);
     else
     {
         helper::WriteAccessor<DataVecDeriv> _f = f;
@@ -516,10 +516,10 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(const core::MechanicalP
 }
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
 {
     if(_useMass.getValue())
-        HexahedronFEMForceFieldAndMassT::addGravityToV(mparams /* PARAMS FIRST */, d_v);
+        HexahedronFEMForceFieldAndMassT::addGravityToV(mparams, d_v);
     else
     {
         if(mparams)
@@ -540,13 +540,13 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(const core::Mech
 }
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
     if(_useMass.getValue())
-        HexahedronFEMForceFieldAndMassT::addForce(mparams /* PARAMS FIRST */, f,x,v);
+        HexahedronFEMForceFieldAndMassT::addForce(mparams, f,x,v);
     else
     {
-        HexahedronFEMForceFieldT::addForce(mparams /* PARAMS FIRST */, f,x,v);
+        HexahedronFEMForceFieldT::addForce(mparams, f,x,v);
 
         helper::WriteAccessor<DataVecDeriv> _f = f;
 

@@ -1387,7 +1387,7 @@ void MechanicalObject<DataTypes>::endIntegration(const core::ExecParams*
                                                  #ifdef SOFA_SMP
                                                  params
                                                  #endif
-                                                 /* PARAMS FIRST */, Real /*dt*/    )
+                                                , Real /*dt*/    )
 {
     this->forceMask.clear();
     //By default the mask is disabled, the user has to enable it to benefit from the speedup
@@ -1638,7 +1638,7 @@ void MechanicalObject<DataTypes>::setVecMatrixDeriv(unsigned int index, Data < M
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* /* params */ /* PARAMS FIRST */, core::VecCoordId& v)
+void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* /* params */, core::VecCoordId& v)
 {
     for (unsigned int i = v.index; i < vectorsCoord.size(); ++i)
     {
@@ -1648,7 +1648,7 @@ void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* /* params */ /*
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* /* params */ /* PARAMS FIRST */, core::VecDerivId& v)
+void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* /* params */, core::VecDerivId& v)
 {
     for (unsigned int i = v.index; i < vectorsDeriv.size(); ++i)
     {
@@ -1658,7 +1658,7 @@ void MechanicalObject<DataTypes>::vAvail(const core::ExecParams* /* params */ /*
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId v)
+void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecCoordId v)
 {
 #ifdef SOFA_SMP_NUMA
     if(this->getContext()->getProcessor()!=-1)
@@ -1681,7 +1681,7 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params /* PARAM
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params /* PARAMS FIRST */, core::VecDerivId v)
+void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::VecDerivId v)
 {
 #ifdef SOFA_SMP_NUMA
     if(this->getContext()->getProcessor()!=-1)
@@ -1705,7 +1705,7 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params /* PARAM
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId v)
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecCoordId v)
 {
     Data<VecCoord>* vec_d = this->write(v);
 
@@ -1717,7 +1717,7 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PAR
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PARAMS FIRST */, core::VecDerivId v)
+void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core::VecDerivId v)
 {
     Data<VecDeriv>* vec_d = this->write(v);
 
@@ -1729,7 +1729,7 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params /* PAR
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS FIRST */, core::VecCoordId vId)
+void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params, core::VecCoordId vId)
 {
     if (vId.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX)
     {
@@ -1744,7 +1744,7 @@ void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS FIRST */, core::VecDerivId vId)
+void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params, core::VecDerivId vId)
 {
     if (vId.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX)
     {
@@ -1759,7 +1759,7 @@ void MechanicalObject<DataTypes>::vFree(const core::ExecParams* params /* PARAMS
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS FIRST */
+void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params
                                         , core::VecCoordId vId
                                         , core::ConstVecCoordId vSrcId)
 {
@@ -1775,7 +1775,7 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS FIRST */,
+void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params,
                                         core::VecDerivId vId,
                                         core::ConstVecDerivId vSrcId)
 {
@@ -1791,14 +1791,14 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params /* PARAMS
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId v,
+void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecId v,
                                       core::ConstVecId a,
                                       core::ConstVecId b, double f)
 {
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
     {
-        vOp(params /* PARAMS FIRST */, v, a, b, f, NULL);
+        vOp(params, v, a, b, f, NULL);
     }
     else
 #endif
@@ -2174,7 +2174,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params /* PARAMS F
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops)
+void MechanicalObject<DataTypes>::vMultiOp(const core::ExecParams* params, const VMultiOp& ops)
 {
     // optimize common integration case: v += a*dt, x += v*dt
     if (ops.size() == 2
@@ -2302,7 +2302,7 @@ void MechanicalObject<DataTypes>::vThreshold(core::VecId v, SReal t)
 }
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b)
+double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b)
 {
     Real r = 0.0;
 
@@ -2396,7 +2396,7 @@ double MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::C
 }
 
 template <class DataTypes>
-size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId v)
+size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params, core::ConstVecId v)
 {
     if (v.type == sofa::core::V_COORD)
     {
@@ -2757,10 +2757,10 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     }
     if (showVectors.getValue())
     {
-        defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+//        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+//        sofa::simulation::Node* context = static_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+//        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
         float scale = showVectorsScale.getValue();
         sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
@@ -2836,7 +2836,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
 
 #ifdef SOFA_SMP
 template < class DataTypes >
-void MechanicalObject < DataTypes >::vOpMEq (const core::ExecParams* /* params */ /* PARAMS FIRST */, VecId v, ConstVecId b, a1::Shared < double >*f)
+void MechanicalObject < DataTypes >::vOpMEq (const core::ExecParams* /* params */, VecId v, ConstVecId b, a1::Shared < double >*f)
 {
     if (v.type == sofa::core::V_COORD)
     {
@@ -2870,14 +2870,14 @@ void MechanicalObject < DataTypes >::vOpMEq (const core::ExecParams* /* params *
 }
 
 // template < class DataTypes >
-// void MechanicalObject < DataTypes >::vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b , double f){ vOp(params /* PARAMS FIRST */, v,a,b,f,NULL); }
+// void MechanicalObject < DataTypes >::vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a, core::ConstVecId b , double f){ vOp(params, v,a,b,f,NULL); }
 
 template < class DataTypes >
-void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, double f, a1::Shared  < double >*fSh )
+void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params, core::VecId v, core::ConstVecId a, core::ConstVecId b, double f, a1::Shared  < double >*fSh )
 {
     if (params->execMode() != core::ExecParams::EXEC_KAAPI)
     {
-        vOp(params /* PARAMS FIRST */, v, a, b, f);
+        vOp(params, v, a, b, f);
     }
     else
     {
@@ -3244,7 +3244,7 @@ void MechanicalObject < DataTypes >::vOp (const core::ExecParams* params /* PARA
 }
 
 template < class DataTypes >
-void MechanicalObject < DataTypes >::vDot ( const core::ExecParams* /* params */ /* PARAMS FIRST */, a1::Shared  < double >*res, core::ConstVecId a,  core::ConstVecId b)
+void MechanicalObject < DataTypes >::vDot ( const core::ExecParams* /* params */, a1::Shared  < double >*res, core::ConstVecId a,  core::ConstVecId b)
 {
     //      double r = 0.0;
     if (a.type == sofa::core::V_COORD && b.type == sofa::core::V_COORD)
@@ -3407,7 +3407,7 @@ void MechanicalObject < DataTypes >::printDOF (core::ConstVecId /*v*/, std::ostr
 /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
 /// Returns false if this object does not support picking
 template <class DataTypes>
-bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* params */ /* PARAMS FIRST */, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
+bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* params */, double rayOx, double rayOy, double rayOz, double rayDx, double rayDy, double rayDz, double radius0, double dRadius,
                                                 std::multimap< double, std::pair<sofa::core::behavior::BaseMechanicalState*, int> >& particles)
 {
     if (defaulttype::DataTypeInfo<Coord>::size() == 2 || defaulttype::DataTypeInfo<Coord>::size() == 3
@@ -3472,6 +3472,15 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
         }
     }
     return true;
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    // participating to bbox only if it is drawn
+    if( onlyVisible && !showObject.getValue() ) return;
+    Inherited::computeBBox( params );
 }
 
 template <class DataTypes>

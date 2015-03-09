@@ -391,7 +391,7 @@ double  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const cor
 }
 
 template <class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
+void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
     sofa::helper::AdvancedTimer::stepBegin("addForceTetraTensorMass");
 
@@ -429,7 +429,7 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(const core::Mechanical
 
 
 template <class DataTypes>
-void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void TetrahedralTensorMassForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     sofa::helper::AdvancedTimer::stepBegin("addDForceTetraTensorMass");
 

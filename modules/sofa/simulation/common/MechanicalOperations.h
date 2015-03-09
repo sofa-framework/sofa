@@ -49,9 +49,9 @@ public:
     core::ConstraintParams cparams;
     core::objectmodel::BaseContext* ctx;
 
-    MechanicalOperations(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder=false);
+    MechanicalOperations(const core::MechanicalParams* mparams, core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder=false);
 
-    MechanicalOperations(const core::ExecParams* params /* PARAMS FIRST */, core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder=false);
+    MechanicalOperations(const core::ExecParams* params, core::objectmodel::BaseContext* ctx, bool precomputedTraversalOrder=false);
 
     core::MechanicalParams* operator->() { return &mparams; }
     operator const core::MechanicalParams*() { return &mparams; }
