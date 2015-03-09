@@ -296,7 +296,7 @@ protected:
         if( m1.rows()!=m2.rows() || m1.cols()!=m2.cols() ) return false;
 
         modeling::DenseMatrix diff = m1 - m2;
-        bool areEqual = abs(diff.maxCoeff()<tolerance) && abs(diff.minCoeff()<tolerance);
+        bool areEqual = abs(diff.maxCoeff())<tolerance && abs(diff.minCoeff())<tolerance;
         if( !areEqual )
         {
             cerr<<"CompliantSolver_test::matricesAreEqual1, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
@@ -335,7 +335,7 @@ protected:
         }
 
         modeling::Vector diff = m1-m2;
-        bool areEqual = abs(diff.maxCoeff()<tolerance) && abs(diff.minCoeff()<tolerance);
+        bool areEqual = abs(diff.maxCoeff())<tolerance && abs(diff.minCoeff())<tolerance;
         if( !areEqual )
         {
             cerr<<"CompliantSolver_test::vectorsAreEqual, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;

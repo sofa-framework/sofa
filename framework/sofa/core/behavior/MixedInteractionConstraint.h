@@ -95,7 +95,7 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *v);
+    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v);
 
     /// Construct the Constraint violations vector of each constraint
     ///
@@ -105,7 +105,7 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *v, const DataVecCoord1 &x1, const DataVecCoord2 &x2
+    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord1 &x1, const DataVecCoord2 &x2
             , const DataVecDeriv1 &v1, const DataVecDeriv2 &v2) = 0;
 
     /// Construct the Jacobian Matrix
@@ -113,7 +113,7 @@ public:
     /// \param cId is the result constraint sparse matrix Id
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, MultiMatrixDerivId cId, unsigned int &cIndex);
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex);
 
     /// Construct the Jacobian Matrix
     ///
@@ -123,7 +123,7 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
             , const DataVecCoord1 &x1, const DataVecCoord2 &x2) = 0;
 
     /// Pre-construction check method called by ObjectFactory.

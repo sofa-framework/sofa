@@ -124,7 +124,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_directory*/ )
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    ExportGnuplotVisitor expg ( params /* PARAMS FIRST */, node->getTime());
+    ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );
 }
 
@@ -135,19 +135,6 @@ bool BaseGUI::saveScreenshot(const std::string& filename, int compression_level)
 		return true;
 	}
 	else return false;
-}
-
-
-static std::string computePathPrefix()
-{
-    const std::string exePath = Utils::getExecutablePath();
-    return FileSystem::getParentDirectory(FileSystem::getParentDirectory(exePath));
-}
-
-const std::string& BaseGUI::getPathPrefix()
-{
-    static const std::string prefix = computePathPrefix();
-    return prefix;
 }
 
 const std::string& BaseGUI::getConfigDirectoryPath()

@@ -87,10 +87,10 @@ public:
     // -- Constraint interface
     void init();
 
-    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
 
     virtual void draw(const core::visual::VisualParams* vparams);
@@ -117,7 +117,7 @@ public:
 
 protected:
     template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
+    void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;

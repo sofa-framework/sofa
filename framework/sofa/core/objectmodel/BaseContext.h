@@ -457,7 +457,7 @@ public:
     virtual void executeVisitor( simulation::Visitor*, bool precomputedOrder=false );
 
     /// Propagate an event
-    virtual void propagateEvent( const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, Event* );
+    virtual void propagateEvent( const core::ExecParams* params, Event* );
 
     /// @}
 

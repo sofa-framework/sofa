@@ -305,6 +305,11 @@ public:
 
     virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)=0;
     virtual void mapDeformationGradient(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)=0;
+    virtual void mapDeformationGradientRate(MaterialToSpatial& /*F*/, const Coord &/*p0*/, const MaterialToSpatial& /*M*/, const VRef& /*ref*/, const VReal& /*w*/, const VGradient& /*dw*/)
+    {
+        std::cout << SOFA_CLASS_METHOD << " : not implemented here, see child classes." << std::endl;
+    }
+
     //@}
 
     SparseMatrix& getJacobianBlocks()

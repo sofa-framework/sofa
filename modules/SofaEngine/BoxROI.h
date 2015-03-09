@@ -84,7 +84,7 @@ public:
 
     void draw(const core::visual::VisualParams*);
 
-    virtual void computeBBox(const core::ExecParams*  params );
+    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false );
 
 
     /// Pre-construction check method called by ObjectFactory.

@@ -209,7 +209,7 @@ void TaitSurfacePressureForceField<DataTypes>::computePressureTriangles()
 }
 
 template <class DataTypes>
-void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
+void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
 {
     updateFromTopology();
 
@@ -271,7 +271,7 @@ void TaitSurfacePressureForceField<DataTypes>::addForce(const core::MechanicalPa
 }
 
 template <class DataTypes>
-void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
+void TaitSurfacePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx )
 {
     helper::WriteAccessor<DataVecDeriv> df = d_df;
     helper::ReadAccessor<DataVecDeriv> dx = d_dx;

@@ -84,10 +84,10 @@ public:
 
     void findKeyTimes();
 
-    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
+    void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData);
+    void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData);
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
@@ -113,7 +113,7 @@ public:
 
 protected:
     template <class DataDeriv>
-    void projectResponseT(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataDeriv& dx);
+    void projectResponseT(const core::MechanicalParams* mparams, DataDeriv& dx);
 
     template<class MyCoord>
     void interpolatePosition(Real cT, typename boost::enable_if<boost::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >, VecCoord>::type& x);

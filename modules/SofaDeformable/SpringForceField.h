@@ -148,28 +148,12 @@ public:
     virtual void reinit();
     virtual void init();
 
-    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2);
-    virtual void addDForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 );
-    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const
-    {
-        const helper::vector<Spring>& springs= this->springs.getValue();
-        const VecCoord& p1 =  data_x1.getValue();
-        const VecCoord& p2 =  data_x2.getValue();
-        for (unsigned int i=0; i<springs.size(); i++)
-        {
-            int a = springs[i].m1;
-            int b = springs[i].m2;
-            Coord u = p2[b]-p1[a];
-            Real d = u.norm();
-            Real elongation = (Real)(d - springs[i].initpos);
-            double ener = elongation * elongation * springs[i].ks /2;
-            //std::cout << "spring energy = " << ener << std::endl;
-            return ener;
-        }
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2);
+    virtual void addDForce(const core::MechanicalParams*, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 );
 
-
-    }
-
+    // Make other overloaded version of getPotentialEnergy() to show up in subclass.
+    using Inherit::getPotentialEnergy;
+    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const;
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);
 

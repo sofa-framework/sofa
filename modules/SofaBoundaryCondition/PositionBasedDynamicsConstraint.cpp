@@ -88,7 +88,7 @@ template class SOFA_BOUNDARY_CONDITION_API PositionBasedDynamicsConstraint<Rigid
 
 #ifndef SOFA_FLOAT
 template <>
-void PositionBasedDynamicsConstraint<Rigid3dTypes>::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData)
+void PositionBasedDynamicsConstraint<Rigid3dTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
     helper::ReadAccessor<DataVecCoord> tpos = position ;
@@ -128,7 +128,7 @@ void PositionBasedDynamicsConstraint<Rigid3dTypes>::projectPosition(const core::
 
 #ifndef SOFA_DOUBLE
 template <>
-void PositionBasedDynamicsConstraint<Rigid3fTypes>::projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData)
+void PositionBasedDynamicsConstraint<Rigid3fTypes>::projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> res ( mparams, xData );
     helper::ReadAccessor<DataVecCoord> tpos = position ;

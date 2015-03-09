@@ -106,7 +106,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     }
 
 	
-	virtual void apply(const core::MechanicalParams*  /* PARAMS FIRST */, 
+	virtual void apply(const core::MechanicalParams* , 
 	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
 	                   const helper::vector<const InDataVecCoord*>& dataVecInPos) {
 		alloc();
@@ -126,10 +126,10 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	}
 
 
-	virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, 
-                        const helper::vector<const InVecDeriv*>& inDeriv) {
 
-		unsigned n = js.size();
+    virtual void applyJ(const core::MechanicalParams*, const helper::vector<OutDataVecDeriv*>& outDeriv, const helper::vector<const InDataVecDeriv*>& inDeriv)
+    {
+        unsigned n = js.size();
         unsigned i = 0;
 
         // let the first valid jacobian set its contribution    out = J_0 * in_0
@@ -153,17 +153,6 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
     }
 
-    virtual void applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
-    {
-        assert(false && "This is a stub!");
-        static int i=0;
-        if (i < 10)
-        {
-            std::cout << "AssembledMultiMapping::applyJ() is not implemented" << std::endl;
-            i++;
-        }
-    }
-
     void debug() {
 		std::cerr << this->getClassName() << std::endl;
 		for( unsigned i = 0, n = js.size(); i < n; ++i) {
@@ -184,11 +173,11 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 		}
 	}
 
-	virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, 
+    virtual void applyDJT(const core::MechanicalParams*,
 	                      core::MultiVecDerivId /*inForce*/, 
 	                      core::ConstMultiVecDerivId /*outForce*/){}
 
-	virtual void applyJT( const core::ConstraintParams*  /* PARAMS FIRST */, 
+    virtual void applyJT( const core::ConstraintParams*,
 						  const helper::vector< typename self::InDataMatrixDeriv* >& , 
 						  const helper::vector< const typename self::OutDataMatrixDeriv* >&  ) {
 		// throw std::logic_error("not implemented");

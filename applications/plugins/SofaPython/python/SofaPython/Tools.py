@@ -7,6 +7,14 @@ def listToStr(x):
     """
     return ' '.join(map(str, x))
 
+def listListToStr(xx):
+    """ concatenate lists of list for use with data.
+    """
+    str_xx=""
+    for x in xx:
+        str_xx += listToStr(x)
+    return str_xx
+
 def strToListFloat(s):
     """ Convert a string to a list of float
     """

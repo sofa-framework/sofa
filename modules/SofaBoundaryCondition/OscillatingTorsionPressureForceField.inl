@@ -95,7 +95,7 @@ double OscillatingTorsionPressureForceField<DataTypes>::getAmplitude()
 
 
 template <class DataTypes>
-void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
+void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecCoord& x = d_x.getValue();

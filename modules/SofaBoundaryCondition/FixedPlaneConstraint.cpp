@@ -71,7 +71,7 @@ template class SOFA_BOUNDARY_CONDITION_API FixedPlaneConstraint<Vec6fTypes>;
 
 #ifndef SOFA_FLOAT
 template <> template <class DataDeriv>
-void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
+void FixedPlaneConstraint<Rigid3dTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
     Vec<Coord::spatial_dimensions,Real> dir=direction.getValue().getCenter();
 
@@ -95,7 +95,7 @@ bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Rigid3dTypes::Coord p)
 
 #ifndef SOFA_DOUBLE
 template <> template <class DataDeriv>
-void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& res)
+void FixedPlaneConstraint<Rigid3fTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
     Vec<Coord::spatial_dimensions,Real> dir=direction.getValue().getCenter();
 

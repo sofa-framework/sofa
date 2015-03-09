@@ -103,20 +103,20 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
       For each of these cases, we can test if the projections work
       */
     ///@{
-    /** Constrain one particle, and not the last one.
+    /** Constraint one particle, and not the last one.
     */
     void init_oneConstrainedParticle()
     {
         indices.clear();
-        indices.push_back(1);
-        std::sort(indices.begin(),indices.end()); // checking vectors in linear time requires sorted indices
+        indices.push_back(0);
+//        std::sort(indices.begin(),indices.end()); // checking vectors in linear time requires sorted indices
         projection->f_indices.setValue(indices);
 
         /// Init
         sofa::simulation::getSimulation()->init(root.get());
     }
 
-    /** Constrain all the particles.
+    /** Constraint all the particles.
     */
     void init_allParticlesConstrained()
     {

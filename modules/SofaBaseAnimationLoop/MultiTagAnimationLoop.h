@@ -54,7 +54,7 @@ public:
 
     virtual ~MultiTagAnimationLoop();
 
-    virtual void step (const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt);
+    virtual void step (const sofa::core::ExecParams* params, double dt);
 
     /// Construction method called by ObjectFactory.
     template<class T>

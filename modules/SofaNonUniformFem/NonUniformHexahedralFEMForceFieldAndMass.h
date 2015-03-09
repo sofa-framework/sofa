@@ -200,7 +200,7 @@ protected:
     /** Matrix-vector product for implicit methods with iterative solvers.
         If the MBK matrix is ill-conditionned, recompute it, and correct it to avoid too small singular values.
     */
-    virtual void addMBKdx(const core::MechanicalParams* mparams /* PARAMS FIRST */, core::MultiVecDerivId dfId);
+    virtual void addMBKdx(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId);
 
     bool matrixIsDirty;                      ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$ needs to be recomputed
     helper::vector< ElementMass > mbkMatrix; ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$

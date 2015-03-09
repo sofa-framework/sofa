@@ -130,7 +130,7 @@ protected:
 class SOFA_LOADER_API ReadStateActivator: public Visitor
 {
 public:
-    ReadStateActivator(const core::ExecParams* params /* PARAMS FIRST */, bool active) : Visitor(params), state(active) {}
+    ReadStateActivator(const core::ExecParams* params, bool active) : Visitor(params), state(active) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     bool getState() const {return state;};
@@ -145,7 +145,7 @@ protected:
 class SOFA_LOADER_API ReadStateModifier: public simulation::Visitor
 {
 public:
-    ReadStateModifier(const core::ExecParams* params /* PARAMS FIRST */, double _time) : Visitor(params), time(_time) {}
+    ReadStateModifier(const core::ExecParams* params, double _time) : Visitor(params), time(_time) {}
     virtual Result processNodeTopDown( simulation::Node*  );
 
     double getTime() const { return time; }

@@ -120,6 +120,7 @@ AssemblyVisitor::mat AssemblyVisitor::proj(simulation::Node* node) {
         isPIdentity = false;
 	}
 
+    tmp_p.compressedMatrix.prune(0, 0);
 	return tmp_p.compressedMatrix;
 }
 

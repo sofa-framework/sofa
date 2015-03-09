@@ -121,10 +121,10 @@ public:
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
 
 
-    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
@@ -132,11 +132,11 @@ public:
 
     virtual void updateStiffness( const VecCoord& x );
 
-    virtual void addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix );
+    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
 
     void draw(const core::visual::VisualParams* vparams);
     void drawPlane(const core::visual::VisualParams*, float size=0.0f);
-    void computeBBox(const core::ExecParams *);
+    void computeBBox(const core::ExecParams *, bool onlyVisible=false);
 
 };
 

@@ -1,0 +1,123 @@
+\documentclass[12pt]{article}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{titling}
+
+\setlength{\droptitle}{-10em}   % This is your set screw
+\title{ODE solvers recursive equations}
+\author{Aurelie Degletagne}
+
+
+\begin{document}
+\begin{doublespace}
+
+\maketitle
+\tableofcontents
+
+\section{Notations}
+In each following equation h is the time step, $x_{k}$,$v_{k}$,$a_{k}$   the position, velocity and acceleration at the time step k, K the stiffness, M the mass, $r_{m}$ the rayleigh mass, $r_{k}$ the rayleigh stiffness and $F_{ext}$ the external forces.
+
+\section{Euler solver}
+
+\subsection{EulerExplicit solver}
+It is the simplest time integration solver.
+\\The integration scheme is based on the following equations:
+\\$ v_{k+1} = v_{k}+ha_{k} $
+\\$ x_{k+1} = x_{k}+hv_{k} $
+
+\subsection{EulerImplicit solver}
+It is a semi-implicit time integrator using backward Euler scheme for first and second degree Ordinary Differential Equations (ODE). 
+This is based on [Baraff and Witkin, Large Steps in Cloth Simulation, SIGGRAPH 1998]
+\\ The integration scheme is based on the following equations:
+\\$ v_{k+1} = v_{k}+h\frac{Fext_{k}+v_{k}(-(r_{k}+h)K-r_{m}M)}{h(h+r_{k})K+(1+hr_{m})M} $
+\\$ x_{k+1} = x_{k}+hv_{k} $
+
+\section{Newmark solver}
+It is an implicit time integrator using Newmark scheme.
+The implementation computes $a_{k}$ directly then solves the first equation to compute $a_{k+1}$, and finally computes the new velocity $v_{k+1}$ and the new position $x_{k+1}$. In Sofa one uses for Newmark coefficients $\gamma=0.5$ and $\beta=0.25$.
+\\$ a_{k+1} = \frac{Fext_{k} + h*cstAcc*a_{k}+cstVel*v_{k}}{(h^2\beta + h\gamma r_{k})K+(1+h\gamma r_{m})M} $
+$\left\{
+\begin{array}{r c l}
+cstAcc &=& (-r_{m}(1-\gamma)M-h(0.5-\beta)K-rk(1-\gamma)K)\\
+cstVel &=& (-r_{m}M-(h+r_{k})K)
+\end{array}
+\right.$
+\\$ v_{k+1} = v_{k}+h(1-\gamma)a_{k}+h\gamma a_{k+1} $
+\\$ x_{k+1} = x_{k}+hv_{k}+0.5h^2(1-2\beta)a_{k}+h^2\beta a_{k+1} $
+
+\section{VariationalSymplectic solver}
+It is explicit and implicit time integrator using the Variational Symplectic Integrator as defined in: Kharevych, L et al. “Geometric, Variational Integrators for Computer Animation.” ACM SIGGRAPH Symposium on Computer Animation 4 (2006): 43–51. p is the momentum.
+
+\subsection{VariationalSymplecticExplicit solver}
+
+$ v_{k+1} = \frac{2(Fext_{k}+p_{k}-hr_{m}v_{k}M)}{M} $
+\\$ p_{k+1} = Mv_{k+1} $
+\\$ x_{k+1} = x_{k}+hv_{k+1} $
+
+\subsection{VariationalSymplecticImplicit solver}
+The current implementation for implicit integration assume $alpha=0.5$ (quadratic accuracy) and uses several Newton steps to estimate velocity.
+\\$ v_{k+1} = \frac{2(hFext_{k}+2p_{k})}{4M+h^2K+4h(r_{m}M+r_{k}K)} $
+\\$ p_{k+1} = (M+\frac{h^2}{4})v_{k+1}+\frac{h}{2}Fext_{k} $
+\\$ x_{k+1} = x_{k}+hv_{k+1} $
+
+\section{RungeKutta}
+It is a popular explicit time integration method, much more precise than euler explicit solver.
+
+\subsection{Runge Kutta second order}
+It is the Runge-Kutta method with order 2 or the middle point rule. Functions are evaluated two times at each step.
+\\ \underline {At time t + h/2}
+\\$ x_{k+\frac{1}{2}} = x_{k}+\frac{1}{2}hv_{k}$
+\\$ v_{k+\frac{1}{2}} = v_{k}+\frac{1}{2}ha_{k} $
+\\$ a_{k+\frac{1}{2}} = \frac{Fext_{k+\frac{1}{2}}}{m}$
+\\ \underline {At time t+h}
+\\$x_{k+1} = x_{k}+h*v_{k+\frac{1}{2}}$
+\\$v_{k+1} = v_{k}+h*a_{k+\frac{1}{2}}$
+\\$a_{k+1} = \frac{Fext_{k+1}}{m}$
+
+\subsection{Runge Kutta fourth order}
+It is the Runge-Kutta method with order four. Functions are evaluated four times at each step.
+\\  \underline{Variables}
+\\$stepBy2 = \frac{h}{2}$  $       $ $stepBy3 = \frac{h}{3}$ $       $  $stepBy6 = \frac{h}{6}$
+\\ \underline{At time t :}
+\begin{itemize}
+\item \textbf{Step 1}
+\\$k1v = v_{k}$
+\\$k1a = a_{k}$
+\item \textbf{Step 2}
+\\$k2x = x_{k} + k1v*stepBy2$
+\\$k2v  = v_{k} + k1a*stepBy2$
+\\$k2a  = (Fext_{stepBy2}(k2x,k2v))/m$
+\item \textbf{Step 3}
+\\$k3x  = x_{k} + k2v * stepBy2$
+\\$k3v  = v_{k} + k2a * stepBy2$
+\\$k3a  = (Fext_{stepBy2}(k3x,k3v))/m$
+\item \textbf{Step 4}
+\\ $ k4x  = x_{k} + k3v * h $
+\\ $ k4v  = v_{k} + k3a * h $
+\\ $ k4a  = (Fext_{k+1}(k4x,k4v))/m $
+\end{itemize}
+ \underline{At time t + h :}
+\\$x_{k+1} = x_{k} + k1v * stepBy6 + k2v * stepBy3 + k3v * stepBy3 + k4v * stepBy6$
+\\$v_{k+1} = v_{k} + k1a * stepBy6 + k2a * stepBy3 + k3a * stepBy3 + k4a * stepBy6$
+\\$a_{k+1} = (Fext{k+1})/m$
+
+\section{CentralDifference solver}
+It is an explicit time integrator using central difference (also known as Verlet or Leap-frog). The equations are separated in two cases: either the rayleigh mass is null or not. 
+\begin{itemize}
+\item \underline {if $rm=0$}
+\\$a_{k+1} = \frac{Fext_{k+1}}{m}$
+\\$v_{k+1} = v_{k}+ha_{k+1}$
+\\$x_{k+1} = x_{k}+hv_{k+1}$
+\item \underline{if $rm!=0$}
+\\$a_{k+1} = \frac{Fext_{k+1}}{m}$
+\\$v_{k+1} = cstVel * v_{k} + cstAcc*a_{k}$      
+$\left\{
+\begin{array}{r c l}
+cstVel &=&  \cfrac{\cfrac{1}{h}-\cfrac{r_{m}}{2}}{\cfrac{1}{h}+\cfrac{r_{m}}{2}}\\
+cstAcc &=& \cfrac{1}{\cfrac{1}{h}+\cfrac{r_{m}}{2}}
+\end{array}
+\right.$
+\\$x_{k+1} = x_{k}+hv_{k+1}$
+\end{itemize}
+\end{doublespace}
+\end{document}

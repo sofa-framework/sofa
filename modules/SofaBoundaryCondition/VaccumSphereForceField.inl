@@ -78,7 +78,7 @@ void VaccumSphereForceField<DataTypes>::init()
 // df = -stiffness * ( (x-c)/|x-c| * dot(dx,(x-c)/|x-c|) * r/|x-c|   + dx * (1 - r/|x-c|) )
 
 template<class DataTypes>
-void VaccumSphereForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void VaccumSphereForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     if (!active.getValue()) return;
 
@@ -119,7 +119,7 @@ void VaccumSphereForceField<DataTypes>::addForce(const core::MechanicalParams* /
 }
 
 template<class DataTypes>
-void VaccumSphereForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void VaccumSphereForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     mparams->setKFactorUsed(true);
     if (!active.getValue()) return;

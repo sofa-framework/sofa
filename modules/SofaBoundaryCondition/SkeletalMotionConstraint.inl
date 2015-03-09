@@ -124,7 +124,7 @@ void SkeletalMotionConstraint<DataTypes>::findKeyTimes()
 
 template <class DataTypes>
 template <class DataDeriv>
-void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
+void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
 {
     if( !active.getValue() ) return;
 
@@ -146,16 +146,16 @@ void SkeletalMotionConstraint<DataTypes>::projectResponseT(const core::Mechanica
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void SkeletalMotionConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     if( !active.getValue() ) return;
 
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
+    projectResponseT<VecDeriv>(mparams, res.wref());
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& vData)
+void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData)
 {
     if( !active.getValue() ) return;
 
@@ -185,7 +185,7 @@ void SkeletalMotionConstraint<DataTypes>::projectVelocity(const core::Mechanical
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
+void SkeletalMotionConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     if( !active.getValue() ) return;
 
@@ -262,7 +262,7 @@ void SkeletalMotionConstraint<DataTypes>::interpolatePosition(Real cT, typename 
 }
 
 template <class DataTypes>
-void SkeletalMotionConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void SkeletalMotionConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     if( !active.getValue() ) return;
 
@@ -273,7 +273,7 @@ void SkeletalMotionConstraint<DataTypes>::projectJacobianMatrix(const core::Mech
 
     while(rowIt != rowItEnd)
     {
-        projectResponseT<MatrixDerivRowType>(mparams /* PARAMS FIRST */, rowIt.row());
+        projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
 }

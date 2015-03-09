@@ -240,7 +240,7 @@ void BeamFEMForceField<DataTypes>::BeamFFEdgeHandler::applyCreateFunction(unsign
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
+void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & /*dataV*/ )
 {
     VecDeriv& f = *(dataF.beginEdit());
     const VecCoord& p=dataX.getValue();
@@ -299,7 +299,7 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams *mparams /* PARAMS FIRST */, DataVecDeriv& datadF , const DataVecDeriv& datadX)
+void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams *mparams, DataVecDeriv& datadF , const DataVecDeriv& datadX)
 {
     VecDeriv& df = *(datadF.beginEdit());
     const VecDeriv& dx=datadX.getValue();
@@ -563,7 +563,7 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const VecDe
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix )
+void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix )
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     Real k = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());

@@ -444,7 +444,7 @@ public:
 
     /// Bounding Box computation method.
     /// Default to empty method.
-    virtual void computeBBox(const core::ExecParams* /* params */) {}
+    virtual void computeBBox(const core::ExecParams* /* params */, bool /*onlyVisible*/=false) {}
 
     /// Sets a source Object and parses it to collect dependent Data
     void setSrc(const std::string &v, std::vector< std::string > *attributeList=0);

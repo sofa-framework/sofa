@@ -241,7 +241,6 @@ struct Assembly_test : public CompliantSolver_test
         expected.M = expected.P = DenseMatrix::Identity( 3*n, 3*n );
         for(unsigned i=0; i<3; i++)
             expected.P(i,i)=0; // fixed point
-        expected.M = expected.P.transpose() * expected.M * expected.P;
         expected.C = DenseMatrix::Zero(n-1,n-1); // null compliance
         expected.phi = Vector::Zero(n-1); // null imposed constraint value
         expected.dv = Vector::Zero(3*n);  // equilibrium
@@ -482,7 +481,7 @@ struct Assembly_test : public CompliantSolver_test
             expected.lambda(i) = -g*(n-1-i);
         }
         expected.J(n-1,0      ) = -1;   // the constrained endpoint
-        expected.lambda(n-1) = -g*n;
+        expected.lambda(n-1) = g*n;
         //        cerr<<"expected J = " << endl << DenseMatrix(expected.J) << endl;
         //        cerr<<"expected dv = " << expected.dv.transpose() << endl;
         //        cerr<<"expected lambda = " << expected.lambda.transpose() << endl;
@@ -612,7 +611,6 @@ struct Assembly_test : public CompliantSolver_test
         expected.M = expected.P = DenseMatrix::Identity( 6*n, 6*n );
         for(unsigned i=0; i<3; i++)
             expected.P(i,i)=0; // fixed point
-        expected.M = expected.P.transpose() * expected.M * expected.P;
         expected.C = DenseMatrix::Zero(2*n-1,2*n-1); // null
         expected.phi = Vector::Zero(2*n-1); // null imposed constraint value
         expected.dv = Vector::Zero(6*n);  // equilibrium
@@ -768,7 +766,6 @@ struct Assembly_test : public CompliantSolver_test
         expected.M = expected.P = DenseMatrix::Identity( nM,nM );
         for(unsigned i=0; i<3; i++)
             expected.P(6+i,6+i)=0; // fixed point
-        expected.M = expected.P.transpose() * expected.M * expected.P;
         expected.dv = Vector::Zero(nM);        // equilibrium
         expected.C = DenseMatrix::Zero(nC,nC); // null compliance
         expected.phi = Vector::Zero(nC);       // null imposed constraint value

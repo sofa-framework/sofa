@@ -145,7 +145,7 @@ void AffineMovementConstraint<DataTypes>::init()
 
 template <class DataTypes>
 template <class DataDeriv>
-void AffineMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataDeriv& dx)
+void AffineMovementConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& dx)
 {
     const SetIndexArray & indices = m_indices.getValue();
     for (size_t i = 0; i< indices.size(); ++i)
@@ -155,10 +155,10 @@ void AffineMovementConstraint<DataTypes>::projectResponseT(const core::Mechanica
 }
 
 template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void AffineMovementConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res = resData;
-    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
+    projectResponseT<VecDeriv>(mparams, res.wref());
 }
 
 
@@ -167,11 +167,11 @@ template <class DataTypes>
 void AffineMovementConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
     helper::WriteAccessor<DataVecDeriv> res = vData;
-    projectResponseT<VecDeriv>(mparams /* PARAMS FIRST */, res.wref());
+    projectResponseT<VecDeriv>(mparams, res.wref());
 }
 
 template <class DataTypes>
-void AffineMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
+void AffineMovementConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     sofa::simulation::Node::SPtr root =sofa::simulation::getSimulation()->GetRoot();
     helper::WriteAccessor<DataVecCoord> x = xData;

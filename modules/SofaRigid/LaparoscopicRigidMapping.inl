@@ -49,7 +49,7 @@ void LaparoscopicRigidMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-void LaparoscopicRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+void LaparoscopicRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     helper::WriteAccessor< Data<OutVecCoord> > out = dOut;
     helper::ReadAccessor< Data<InVecCoord> > in = dIn;
@@ -61,7 +61,7 @@ void LaparoscopicRigidMapping<TIn, TOut>::apply(const core::MechanicalParams * /
 }
 
 template <class TIn, class TOut>
-void LaparoscopicRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+void LaparoscopicRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
 {
     helper::WriteAccessor< Data<OutVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<InVecDeriv> > in = dIn;
@@ -72,7 +72,7 @@ void LaparoscopicRigidMapping<TIn, TOut>::applyJ(const core::MechanicalParams * 
 }
 
 template <class TIn, class TOut>
-void LaparoscopicRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/ /* PARAMS FIRST */, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn)
+void LaparoscopicRigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn)
 {
     helper::WriteAccessor< Data<InVecDeriv> > out = dOut;
     helper::ReadAccessor< Data<OutVecDeriv> > in = dIn;

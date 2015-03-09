@@ -755,7 +755,7 @@ void BoxROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
 
 template <class DataTypes>
-void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params )
+void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params , bool /*onlyVisible*/)
 {
     const helper::vector<Vec6>& vb=boxes.getValue(params);
     const Real max_real = std::numeric_limits<Real>::max();

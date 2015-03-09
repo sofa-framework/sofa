@@ -104,14 +104,14 @@ public:
     virtual void init();
     virtual void reinit();
 
-    void projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
 
-    virtual void applyConstraint(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    virtual void applyConstraint(const core::MechanicalParams* mparams /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     /** Project the the given matrix (Experimental API).
       See doc in base parent class

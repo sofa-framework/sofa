@@ -84,7 +84,7 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& /*data_v1*/, const DataVecDeriv& /*data_v2*/ )
+void PenalityContactForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& /*data_v1*/, const DataVecDeriv& /*data_v2*/ )
 {
 
     VecDeriv&       f1 = *data_f1.beginEdit();
@@ -122,7 +122,7 @@ void PenalityContactForceField<DataTypes>::addForce(const sofa::core::Mechanical
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
+void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
 {
     VecDeriv&        df1 = *data_df1.beginEdit();
     VecDeriv&        df2 = *data_df2.beginEdit();
@@ -153,7 +153,7 @@ void PenalityContactForceField<DataTypes>::addDForce(const sofa::core::Mechanica
 }
 
 template <class DataTypes>
-double PenalityContactForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const
+double PenalityContactForceField<DataTypes>::getPotentialEnergy(const sofa::core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
 {
     serr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

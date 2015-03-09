@@ -53,7 +53,7 @@ struct DampedOscillator_test : public CompliantSolver_test
         node->setGravity( Vec3(0,0,0) );
 
         // The oscillator
-        typename simulation::Node::SPtr oscillator = node->createChild("oscillator");
+        simulation::Node::SPtr oscillator = node->createChild("oscillator");
 
         DOF = addNew<MechanicalObject<Vec1Types> >(oscillator,"DOF");
         DOF->resize(1);

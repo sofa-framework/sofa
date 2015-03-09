@@ -184,9 +184,9 @@ public:
 
     virtual void reinit();
 
-    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-    virtual double getPotentialEnergy(const core::MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& d_x) const;
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+    virtual double getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const;
 
     virtual double getKs() const { return f_ks.getValue();}
     virtual double getKd() const { return f_kd.getValue();}

@@ -78,7 +78,7 @@ void ConstantForceField<DataTypes>::init()
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, DataVecDeriv& f1, const DataVecCoord& p1, const DataVecDeriv&)
+void ConstantForceField<DataTypes>::addForce(const core::MechanicalParams* /*params*/, DataVecDeriv& f1, const DataVecCoord& p1, const DataVecDeriv&)
 {
     sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = f1;
     _f1.resize(p1.getValue().size());
@@ -136,7 +136,7 @@ void ConstantForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *
 }
 
 template <class DataTypes>
-double ConstantForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/ /* PARAMS FIRST */, const DataVecCoord& x) const
+double ConstantForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/, const DataVecCoord& x) const
 {
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();

@@ -91,9 +91,9 @@ public:
     /// $ f += B v + K x $
     ///
     /// This method retrieves the force, x and v vector from the MechanicalState
-    /// and call the internal addForce(const MechanicalParams* /* PARAMS FIRST */, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
+    /// and call the internal addForce(const MechanicalParams*, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
     /// method implemented by the component.
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId );
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId );
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -103,7 +103,7 @@ public:
     /// $ f += B v + K x $
     ///
     /// This is the method that should be implemented by the component
-    virtual void addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v) = 0;
+    virtual void addForce(const MechanicalParams* /*mparams*/, DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v) = 0;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -118,9 +118,9 @@ public:
     /// This method retrieves the force and dx vector from the MechanicalState
     /// and call the internal addDForce(VecDeriv&,const VecDeriv&,double,double)
     /// method implemented by the component.
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId );
+    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId );
 
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   df , const DataVecDeriv&   dx ) = 0;
+    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv&   df , const DataVecDeriv&   dx ) = 0;
 
 
 
@@ -134,7 +134,7 @@ public:
 
     virtual double getPotentialEnergy(const MechanicalParams* mparams) const  ;
 
-    virtual double getPotentialEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&   x) const = 0;
+    virtual double getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord&   x) const = 0;
 
 
     /// @}

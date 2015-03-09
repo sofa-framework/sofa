@@ -98,9 +98,9 @@ public:
     virtual void reset();
 
     void projectResponse(const core::MechanicalParams* , DataVecDeriv& ) {}
-    void projectVelocity(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData);
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
 
     void applyConstraint(defaulttype::BaseMatrix *, unsigned int ) {}
     void applyConstraint(defaulttype::BaseVector *, unsigned int ) {}

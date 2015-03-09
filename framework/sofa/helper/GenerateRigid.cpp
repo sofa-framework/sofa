@@ -217,6 +217,13 @@ bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
     if( !generateRigid( rigidMass, res.com, meshFilename, density, scale ) )
         return false;
 
+    if( rigidMass.mass < 0 )
+    {
+        std::cerr<<"WARNING: generateRigid: are normals inverted? "<<meshFilename<<std::endl;
+        rigidMass.mass = -rigidMass.mass;
+        rigidMass.inertiaMatrix = -rigidMass.inertiaMatrix;
+    }
+
     res.mass = rigidMass.mass;
     res.inertia = res.mass * rigidMass.inertiaMatrix;
 

@@ -91,7 +91,7 @@ void DistanceLMContactConstraint<DataTypes>::computeTangentVectors( Deriv& T1, D
 
 
 template<class DataTypes>
-void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* cParams /* PARAMS FIRST */, core::MultiMatrixDerivId cId, unsigned int &cIndex)
+void DistanceLMContactConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     using namespace core::objectmodel;
     Data<MatrixDeriv>* dC1 = cId[this->constrainedObject1].write();

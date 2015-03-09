@@ -74,25 +74,25 @@ void FixedRotationConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*res*/)
+void FixedRotationConstraint<DataTypes>::projectResponse(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*res*/)
 {
 
 }
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& /*res*/)
+void FixedRotationConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /*res*/)
 {
 
 }
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& /*dx*/)
+void FixedRotationConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*dx*/)
 {
 
 }
 
 template <class DataTypes>
-void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecCoord& xData)
+void FixedRotationConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData)
 {
     helper::WriteAccessor<DataVecCoord> x = xData;
     if (FixedXRotation.getValue() == true)

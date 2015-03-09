@@ -416,7 +416,7 @@ void Fluid2D::updateVisual()
         points[i].n.normalize();
 }
 
-void Fluid2D::computeBBox(const core::ExecParams*  params )
+void Fluid2D::computeBBox(const core::ExecParams*  params , bool /*onlyVisible*/)
 {
     const int& nx = f_nx.getValue(params);
     const int& ny = f_ny.getValue(params);

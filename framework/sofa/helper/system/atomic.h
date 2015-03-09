@@ -231,6 +231,7 @@ public:
     void operator--(int) { dec(); }
 
     int exchange_and_add(int i) { return __exchange_and_add(&val,i); }
+    int compare_and_swap(int cmp, int with) { return __sync_val_compare_and_swap(&val, with, cmp); }
 
     static const char* getImplName() { return "GLIBC"; }
 };

@@ -308,9 +308,9 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
     if (showVectors.getValue())
     {
         Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+//        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+//        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
         float scale = showVectorsScale.getValue();
         sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());
@@ -574,9 +574,9 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
     if (showVectors.getValue())
     {
         Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+//        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+//        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         //float scale = (sceneMaxBBox - sceneMinBBox).norm() * showVectorsScale.getValue();
         float scale = showVectorsScale.getValue();
         sofa::helper::ReadAccessor< Data<VecDeriv> > v_rA = *this->read(core::ConstVecDerivId::velocity());

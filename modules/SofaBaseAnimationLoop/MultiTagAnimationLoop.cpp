@@ -76,7 +76,7 @@ void MultiTagAnimationLoop::init()
 
 
 
-void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS FIRST */, double dt)
+void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, double dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -107,7 +107,7 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params /* PARAMS 
         computeCollision(params);
         if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end collision" << sendl;
         if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin integration  for tag: "<< *it << sendl;
-        integrate(params /* PARAMS FIRST */, dt);
+        integrate(params, dt);
         if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end integration" << sendl;
 
         this->removeTag (*it);

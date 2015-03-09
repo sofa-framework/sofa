@@ -226,7 +226,7 @@ void ProjectToPointConstraint<DataTypes>::projectMatrix( sofa::defaulttype::Base
 
 
 template <class DataTypes>
-void ProjectToPointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void ProjectToPointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     //    cerr<<"ProjectToPointConstraint<DataTypes>::projectResponse is called "<<endl;
     //    assert(false);
@@ -257,7 +257,7 @@ void ProjectToPointConstraint<DataTypes>::projectResponse(const core::Mechanical
 }
 
 template <class DataTypes>
-void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataMatrixDeriv& cData)
+void ProjectToPointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
     const SetIndexArray & indices = f_indices.getValue(mparams);

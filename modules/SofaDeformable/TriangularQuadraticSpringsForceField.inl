@@ -234,7 +234,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 }
 
 template <class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     using namespace	sofa::component::topology;
 
@@ -312,7 +312,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
 
 
 template <class DataTypes>
-void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     using namespace	sofa::component::topology;
 

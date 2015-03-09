@@ -176,7 +176,7 @@ bool InteractionEllipsoidForceField<DataTypes1, DataTypes2>::calcF(const Coord1&
 
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
-    const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv1& dataf1, DataVecDeriv2& dataf2,
+    const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv1& dataf1, DataVecDeriv2& dataf2,
     const DataVecCoord1& datax1, const DataVecCoord2& datax2,
     const DataVecDeriv1& datav1, const DataVecDeriv2& datav2)
 {
@@ -314,7 +314,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(DataVecDe
 
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
-    const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& datadf1, DataVecDeriv2& datadf2,
+    const sofa::core::MechanicalParams* mparams, DataVecDeriv1& datadf1, DataVecDeriv2& datadf2,
     const DataVecDeriv1& datadx1, const DataVecDeriv2& datadx2)
 
 {
@@ -359,7 +359,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(
 }
 
 template <class DataTypes1, class DataTypes2>
-double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord1& /*x1*/, const DataVecCoord2& /*x2*/) const
+double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord1& /*x1*/, const DataVecCoord2& /*x2*/) const
 {
     serr<<"InteractionEllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

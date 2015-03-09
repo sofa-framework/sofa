@@ -232,7 +232,7 @@ void ProjectToLineConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseM
 
 
 template <class DataTypes>
-void ProjectToLineConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& resData)
+void ProjectToLineConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     jacobian.mult(res.wref(),res.ref());

@@ -81,32 +81,32 @@ public:
     virtual std::string getTemplateName() const;
 
     // -- Mass interface
-    virtual  void addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
+    virtual  void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
 
-    virtual void addMToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
-    void addKToMatrix(const core::MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
     {
-        HexahedronFEMForceFieldT::addKToMatrix(mparams /* PARAMS FIRST */, matrix);
+        HexahedronFEMForceFieldT::addKToMatrix(mparams, matrix);
     }
 
-    virtual  void accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f);
+    virtual  void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
 
-    virtual  void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual  void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    virtual double getKineticEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& /*v*/ ) const  ///< vMv/2 using dof->getV()
+    virtual double getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& /*v*/ ) const  ///< vMv/2 using dof->getV()
     {serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl; return 0;}
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&  /* x */) const
+    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx);
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
     // virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, double kFactor, double);
 
-    virtual void addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v);
+    virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
     double getElementMass(unsigned int index);
     // visual model

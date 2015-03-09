@@ -143,7 +143,7 @@ void TriangleFEMForceField<DataTypes>::reinit()
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
+void TriangleFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& /* v */)
 {
     VecDeriv& f1 = *f.beginEdit();
     const VecCoord& x1 = x.getValue();
@@ -176,7 +176,7 @@ void TriangleFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /*
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df, const DataVecDeriv& dx)
+void TriangleFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
     VecDeriv& df1 = *df.beginEdit();
     const VecDeriv& dx1 = dx.getValue();

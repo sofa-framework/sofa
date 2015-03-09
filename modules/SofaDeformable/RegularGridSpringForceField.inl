@@ -57,11 +57,11 @@ void RegularGridSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
+void RegularGridSpringForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 )
 //addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
 {
     // Calc any custom springs
-    this->StiffSpringForceField<DataTypes>::addForce(mparams /* PARAMS FIRST */, data_f1, data_f2, data_x1, data_x2, data_v1, data_v2);
+    this->StiffSpringForceField<DataTypes>::addForce(mparams, data_f1, data_f2, data_x1, data_x2, data_v1, data_v2);
     // Compute topological springs
 
     VecDeriv& f1       = *data_f1.beginEdit();
@@ -244,11 +244,11 @@ void RegularGridSpringForceField<DataTypes>::addForce(const core::MechanicalPara
 }
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
+void RegularGridSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2)
 //addDForce(VecDeriv& vdf1, VecDeriv& vdf2, const VecDeriv& vdx1, const VecDeriv& vdx2, double kFactor, double bFactor)
 {
     // Calc any custom springs
-    this->StiffSpringForceField<DataTypes>::addDForce(mparams /* PARAMS FIRST */, data_df1, data_df2, data_dx1, data_dx2);
+    this->StiffSpringForceField<DataTypes>::addDForce(mparams, data_df1, data_df2, data_dx1, data_dx2);
     // Compute topological springs
 
     VecDeriv&        df1 = *data_df1.beginEdit();

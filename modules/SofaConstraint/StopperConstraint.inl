@@ -54,7 +54,7 @@ void StopperConstraint<DataTypes>::init()
 }
 
 template<class DataTypes>
-void StopperConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/)
+void StopperConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/)
 {
     cid = cIndex;
 //	assert(mstate);
@@ -69,7 +69,7 @@ void StopperConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
 }
 
 template<class DataTypes>
-void StopperConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
+void StopperConstraint<DataTypes>::getConstraintViolation(const core::ConstraintParams* /*cParams*/, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
 {
     resV->set(cid, x.getValue()[index.getValue()][0]);
 }

@@ -285,7 +285,7 @@ template <class DataTypes>
 void StandardTetrahedralFEMForceField<DataTypes>::initNeighbourhoodEdges(){}
 
 template <class DataTypes> 
-void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
+void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /* d_v */)
 {
     sofa::helper::AdvancedTimer::stepBegin("addForceStandardTetraFEM");
 
@@ -413,7 +413,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::addForce(const core::Mechanica
 
 
 template <class DataTypes> 
-void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void StandardTetrahedralFEMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     sofa::helper::AdvancedTimer::stepBegin("addDForceStandardTetraFEM");
 
@@ -600,7 +600,7 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 		}
 
 		//this->addForce( force1, pos, force1 );
-		this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force1, d_pos, d_force1 );
+		this->addForce( core::MechanicalParams::defaultInstance(), d_force1, d_pos, d_force1 );
 
 		// get current energy around
 		Real energy1 = 0;
@@ -616,13 +616,13 @@ void StandardTetrahedralFEMForceField<DataTypes>::testDerivatives()
 		deltaPos[moveIdx] = epsilon;
 		// calc derivative
 		//this->addDForce( deltaForceCalculated, deltaPos);
-		this->addDForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_deltaForceCalculated, d_deltaPos );
+		this->addDForce( core::MechanicalParams::defaultInstance(), d_deltaForceCalculated, d_deltaPos );
 
 		deltaPos[moveIdx] = zero;
 		// calc factual change
 		pos[moveIdx] = pos[moveIdx] + epsilon;
 		//this->addForce( force2, pos, force2 );
-		this->addForce( core::MechanicalParams::defaultInstance() /* PARAMS FIRST */, d_force2, d_pos, d_force2 );
+		this->addForce( core::MechanicalParams::defaultInstance(), d_force2, d_pos, d_force2 );
 
 		pos[moveIdx] = pos[moveIdx] - epsilon;
 		// check first derivative:

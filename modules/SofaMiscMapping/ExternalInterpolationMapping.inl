@@ -104,7 +104,7 @@ void ExternalInterpolationMapping<TIn, TOut>::init()
 
 
 template <class TIn, class TOut>
-void ExternalInterpolationMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecCoord& outData, const InDataVecCoord& inData)
+void ExternalInterpolationMapping<TIn, TOut>::apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& outData, const InDataVecCoord& inData)
 {
     if(doNotMap)
         return;
@@ -130,7 +130,7 @@ void ExternalInterpolationMapping<TIn, TOut>::apply( const sofa::core::Mechanica
 }
 
 template <class TIn, class TOut>
-void ExternalInterpolationMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
+void ExternalInterpolationMapping<TIn, TOut>::applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& outData, const InDataVecDeriv& inData)
 {
 
     if(doNotMap)
@@ -158,7 +158,7 @@ void ExternalInterpolationMapping<TIn, TOut>::applyJ( const sofa::core::Mechanic
 }
 
 template <class TIn, class TOut>
-void ExternalInterpolationMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams /* PARAMS FIRST */, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
+void ExternalInterpolationMapping<TIn, TOut>::applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& outData, const OutDataVecDeriv& inData)
 {
 
     if(doNotMap)
@@ -185,7 +185,7 @@ void ExternalInterpolationMapping<TIn, TOut>::applyJT( const sofa::core::Mechani
 }
 
 template <class TIn, class TOut>
-void ExternalInterpolationMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams /* PARAMS FIRST */, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
+void ExternalInterpolationMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* cparams, InDataMatrixDeriv& outData, const OutDataMatrixDeriv& inData)
 {
     using sofa::helper::vector;
 

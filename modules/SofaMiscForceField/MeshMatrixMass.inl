@@ -1223,7 +1223,7 @@ void MeshMatrixMass<DataTypes, MassType>::clear()
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& vres, const DataVecDeriv& vdx, double factor)
+void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, double factor)
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();
@@ -1329,7 +1329,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
+void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f)
 {
     helper::WriteAccessor< DataVecDeriv > _a = a;
     const VecDeriv& _f = f.getValue();
@@ -1356,7 +1356,7 @@ void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& vf, const DataVecCoord& vx, const DataVecDeriv& vv)
+void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& vx, const DataVecDeriv& vv)
 {
     helper::WriteAccessor< DataVecDeriv > f = vf;
     helper::ReadAccessor< DataVecCoord > x = vx;
@@ -1386,7 +1386,7 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
 }
 #else
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /* PARAMS FIRST */, DataVecDeriv& vf, const DataVecCoord& , const DataVecDeriv& )
+void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*, DataVecDeriv& vf, const DataVecCoord& , const DataVecDeriv& )
 {
 
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
@@ -1410,7 +1410,7 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
 
 
 template <class DataTypes, class MassType>
-double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecDeriv& vv ) const
+double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& vv ) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();
@@ -1474,7 +1474,7 @@ double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::Mechan
 
 
 template <class DataTypes, class MassType>
-double MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx) const
+double MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
 
@@ -1495,7 +1495,7 @@ double MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mech
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-defaulttype::Vec6d MeshMatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+defaulttype::Vec6d MeshMatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
     return defaulttype::Vec6d();
 }
@@ -1503,7 +1503,7 @@ defaulttype::Vec6d MeshMatrixMass<DataTypes, MassType>::getMomentum ( const core
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_v)
+void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
 {
     if(this->mstate && mparams)
     {
@@ -1526,7 +1526,7 @@ void MeshMatrixMass<DataTypes, MassType>::addGravityToV(const core::MechanicalPa
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();

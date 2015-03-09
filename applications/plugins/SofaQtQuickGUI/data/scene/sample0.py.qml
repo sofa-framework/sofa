@@ -92,6 +92,11 @@ CollapsibleGroupBox {
                         onVyChanged.connect(update);
                         onVzChanged.connect(update);
                     }
+
+                    Connections {
+                        target: scene
+                        onStepEnd: gravity.setValueFromArray(scene.pythonInteractor.call("PythonScript", "getGravity"));
+                    }
                 }
 
                 // point location
