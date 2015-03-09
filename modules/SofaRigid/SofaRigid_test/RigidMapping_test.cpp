@@ -83,12 +83,15 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
 
     RigidMapping* rigidMapping;
 
-    RigidMappingTest(){
+    RigidMappingTest()
+    {
         rigidMapping = static_cast<RigidMapping*>( this->mapping );
-        // RigidMapping::getK is not implemented
-        // because it leads to a non symmetric stiffness matrix
-        // see RigidMapping implementation for more details
-        this->flags &= ~Inherit::TEST_getK;
+
+        if( InDataTypes::spatial_dimensions != 3 )
+        {
+            // RigidMapping::getK is not yet implemented for 2D rigids
+            this->flags &= ~Inherit::TEST_getK;
+        }
     }
 
 
@@ -107,6 +110,7 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
 
         // child positions
         rigidMapping->globalToLocalCoords.setValue(false); // initial child positions are given in local coordinates
+        rigidMapping->geometricStiffness.setValue(1); // full unsymmetrized geometric stiffness
         OutVecCoord xout(Nout);
         // vertices of the unit tetrahedron
         OutDataTypes::set( xout[0] ,0.,0.,0.);
@@ -147,6 +151,7 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
 
         // child positions
         rigidMapping->globalToLocalCoords.setValue(true); // initial child positions are given in world coordinates
+        rigidMapping->geometricStiffness.setValue(1); // full unsymmetrized geometric stiffness
         OutVecCoord xout(Nout);
         // vertices of the unit tetrahedron
         OutDataTypes::set( xout[0] ,0.,0.,0.);

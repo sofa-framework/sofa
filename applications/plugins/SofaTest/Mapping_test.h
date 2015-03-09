@@ -414,7 +414,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                 succeed = false;
                 ADD_FAILURE() << "K test failed" << endl <<
                                  "Kv    = " << Kv << endl <<
-                                 "dfp = " << fp12 << endl;
+                                 "dfp = " << dfp << endl;
             }
         }
 
