@@ -115,8 +115,10 @@ template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2dTypes, Vec2dTypes
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, Vec3fTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec2fTypes, Vec2fTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec1fTypes, Vec1fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec3fTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, Vec6fTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec3fTypes, ExtVec3fTypes >;
+template class SOFA_BASE_MECHANICS_API IdentityMapping< Vec6fTypes, ExtVec3fTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Rigid3fTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid2fTypes, Rigid2fTypes >;
 template class SOFA_BASE_MECHANICS_API IdentityMapping< Rigid3fTypes, Vec3fTypes >;

@@ -26,7 +26,6 @@
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_INL
 
 #include "MixedInteractionConstraint.h"
-#include <sofa/core/behavior/Constraint.inl>
 
 namespace sofa
 {

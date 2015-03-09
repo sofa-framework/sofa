@@ -35,7 +35,6 @@ using std::endl;
 #include "compliance/UniformCompliance.h"
 #include <sofa/simulation/common/InitVisitor.h>
 
-#include <SofaMiscMapping/DistanceFromTargetMapping.inl>
 
 
 

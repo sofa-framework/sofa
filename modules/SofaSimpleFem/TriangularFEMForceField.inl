@@ -31,16 +31,11 @@
 #endif
 
 #include "TriangularFEMForceField.h"
-#include <sofa/core/behavior/ForceField.inl>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaOpenglVisual/ColorMap.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/gl.h>
-
-//#include <sofa/component/topology/TriangleData.inl>
-//#include <sofa/component/topology/EdgeData.inl>
-//#include <sofa/component/topology/PointData.inl>
 
 #include <SofaBaseTopology/TopologyData.inl>
 

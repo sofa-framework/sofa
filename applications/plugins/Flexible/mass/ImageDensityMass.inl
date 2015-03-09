@@ -6,8 +6,6 @@
 
 #include "../shapeFunction/BaseShapeFunction.h"
 
-#include <sofa/core/State.inl>
-#include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 //#include <SofaBaseMechanics/AddMToMatrixFunctor.h>
