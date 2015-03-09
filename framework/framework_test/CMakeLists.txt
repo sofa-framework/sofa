@@ -23,6 +23,6 @@ target_link_libraries(${PROJECT_NAME} gtest_main SofaCore)
 #add_dependencies(${PROJECT_NAME} PluginA PluginB PluginC PluginD PluginE PluginF)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${PROJECT_NAME} COMMENT "-> Running unit tests..." VERBATIM)
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${PROJECT_NAME} COMMENT "-> Running unit tests..." VERBATIM)
 
 #add_subdirectory(defaulttype)
