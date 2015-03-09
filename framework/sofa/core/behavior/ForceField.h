@@ -103,7 +103,7 @@ public:
     /// $ f += B v + K x $
     ///
     /// This is the method that should be implemented by the component
-    virtual void addForce(const MechanicalParams* /*mparams*/, DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v) = 0;
+    virtual void addForce(const MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) = 0;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -120,7 +120,7 @@ public:
     /// method implemented by the component.
     virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId );
 
-    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv&   df , const DataVecDeriv&   dx ) = 0;
+    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
 
 
 
@@ -132,9 +132,9 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy(const MechanicalParams* mparams) method.
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams) const  ;
+    virtual double getPotentialEnergy(const MechanicalParams* mparams) const;
 
-    virtual double getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord&   x) const = 0;
+    virtual double getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& x) const = 0;
 
 
     /// @}

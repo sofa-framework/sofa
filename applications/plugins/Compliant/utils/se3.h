@@ -157,7 +157,7 @@ struct SE3 {
 			mat33::Zero(), R;
 
 		return res;
-	};
+    }
 
 	
 	// sofa adT
