@@ -33,7 +33,7 @@
 
 #include <sofa/helper/Utils.h>
 
-#if __linux__
+#if defined(__linux__)
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
 #endif
 
@@ -42,7 +42,6 @@ using namespace sofa::component::controller;
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
-
 
 namespace sofa
 {
@@ -68,10 +67,10 @@ void PythonEnvironment::Init()
     SP_MESSAGE_INFO("Python version: " + pythonVersion)
 #endif
 
+#if defined(__linux__)
     // WARNING: workaround to be able to import python libraries on linux (like
     // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
     // not fixing the real problem, but at least it is working for now.
-#if __linux__
     std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + ".so";
     dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
 #endif
@@ -80,8 +79,10 @@ void PythonEnvironment::Init()
     if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
         SP_MESSAGE_WARNING("failed to set environment variable PYTHONUNBUFFERED")
 
-    // Initialize the Python Interpreter.
-    Py_Initialize();
+    if ( !Py_IsInitialized() )
+    {
+        Py_Initialize();
+    }
 
     // Append sofa modules to the embedded python environment.
     bindSofaPythonModule();
