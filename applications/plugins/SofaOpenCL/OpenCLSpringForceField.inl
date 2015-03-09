@@ -26,12 +26,6 @@
 #define SOFAOPENCL_OPENCLSPRINGFORCEFIELD_INL
 
 #include "OpenCLSpringForceField.h"
-#include <SofaDeformable/SpringForceField.inl>
-#include <SofaDeformable/StiffSpringForceField.inl>
-#include <SofaDeformable/MeshSpringForceField.inl>
-#include <SofaDeformable/TriangleBendingSprings.inl>
-#include <SofaDeformable/QuadBendingSprings.inl>
-
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 namespace sofa
@@ -462,10 +456,10 @@ void SpringForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 	}
 
 
-OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3fTypes);
-OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3f1Types);
-OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3dTypes);
-OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3d1Types);
+OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3fTypes)
+OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3f1Types)
+OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3dTypes)
+OpenCLSpringForceField_ImplMethods(gpu::opencl::OpenCLVec3d1Types)
 
 //#undef OpenCLSpringForceField_ImplMethods
 
