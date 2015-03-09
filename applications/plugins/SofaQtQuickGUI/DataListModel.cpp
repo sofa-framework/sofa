@@ -36,7 +36,7 @@ void DataListModel::update()
         if(base)
         {
             sofa::helper::vector<BaseData*> dataFields = base->getDataFields();
-            for(int i = 0; i < dataFields.size(); ++i)
+            for(unsigned int i = 0; i < dataFields.size(); ++i)
                 myItems.append(buildDataItem(dataFields[i]));
 
             qStableSort(myItems.begin(), myItems.end(), [](const Item& a, const Item& b) {return QString::compare(a.data->getGroup(), b.data->getGroup()) < 0;});
@@ -68,7 +68,7 @@ void DataListModel::update()
     myUpdatedCount = myItems.size();
 }
 
-void DataListModel::handleSceneComponentChange(SceneComponent* newSceneComponent)
+void DataListModel::handleSceneComponentChange(SceneComponent* /*newSceneComponent*/)
 {
     update();
 }
@@ -94,7 +94,7 @@ void DataListModel::setSceneComponent(SceneComponent* newSceneComponent)
     sceneComponentChanged(newSceneComponent);
 }
 
-int	DataListModel::rowCount(const QModelIndex & parent) const
+int	DataListModel::rowCount(const QModelIndex & /*parent*/) const
 {
     return myItems.size();
 }
