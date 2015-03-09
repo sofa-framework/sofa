@@ -12,6 +12,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/helper/system/glut.h>
+#include <SofaComponentMain/init.h>
 
 #include <qqml.h>
 #include <QtCore/QCoreApplication>

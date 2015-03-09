@@ -66,7 +66,7 @@ private:
         sofa::core::objectmodel::BaseData*      data;
     };
 
-    Item buildDataItem(BaseData* data) const;
+    Item buildDataItem(sofa::core::objectmodel::BaseData* data) const;
 
 private:
     QList<Item>     myItems;

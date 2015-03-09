@@ -106,8 +106,8 @@ private:
         sofa::core::objectmodel::BaseNode*      node;
     };
 
-    Item buildNodeItem(Item* parent, BaseNode* node) const;
-    Item buildObjectItem(Item* parent, BaseObject* object) const;
+    Item buildNodeItem(Item* parent, sofa::core::objectmodel::BaseNode* node) const;
+    Item buildObjectItem(Item* parent, sofa::core::objectmodel::BaseObject* object) const;
 
 
 private:
