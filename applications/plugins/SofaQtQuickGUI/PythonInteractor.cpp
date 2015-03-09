@@ -303,11 +303,11 @@ QVariant PythonInteractor::onCall(const QString& pythonClassName, const QString&
 		}
 		else
 		{
-			PythonScriptFunction pythonScriptFunction(pyCallableObject, true);
-			PythonScriptFunctionParameter pythonScriptParameter(PythonBuildTupleHelper(parameter, true), true);
-			PythonScriptFunctionResult pythonScriptResult;
+            sofa::core::objectmodel::PythonScriptFunction pythonScriptFunction(pyCallableObject, true);
+            sofa::core::objectmodel::PythonScriptFunctionParameter pythonScriptParameter(PythonBuildTupleHelper(parameter, true), true);
+            sofa::core::objectmodel::PythonScriptFunctionResult pythonScriptResult;
 
-			pythonScriptFunction(&pythonScriptParameter, &pythonScriptResult);
+            pythonScriptFunction(&pythonScriptParameter, &pythonScriptResult);
 
 			result = ExtractPythonTupleHelper(pythonScriptResult.data());
 		}
