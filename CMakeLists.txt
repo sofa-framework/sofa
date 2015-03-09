@@ -41,6 +41,7 @@ set(SOFA_GENERAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGeneral")
 set(SOFA_ADVANCED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaAdvanced")
 set(SOFA_MISC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaMisc")
 set(SOFA_GUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaGui")
+set(SOFA_PLUGINS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaPlugins")
 set(SOFA_EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 set(SOFA_SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
 
@@ -103,3 +104,6 @@ add_subdirectory("${SOFA_MISC_DIR}")
 
 # gui
 add_subdirectory("${SOFA_GUI_DIR}")
+
+# plugins
+add_subdirectory("${SOFA_PLUGINS_DIR}")
