@@ -84,6 +84,28 @@ template class SOFA_RIGID_API RigidMapping< Rigid2fTypes, Vec2dTypes >;
 #endif
 
 
+
+
+
+#ifndef SOFA_FLOAT
+template<>
+const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::getK()
+{
+    serr<<"TODO: assembled geometric stiffness not implemented"<<sendl;
+    return NULL;
+}
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::getK()
+{
+    serr<<"TODO: assembled geometric stiffness not implemented"<<sendl;
+    return NULL;
+}
+#endif
+
+
+
 } // namespace mapping
 
 } // namespace component
