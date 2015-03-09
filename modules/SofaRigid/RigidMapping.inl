@@ -29,7 +29,6 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.inl>
 #include <sofa/core/State.h>
 
 #include <sofa/defaulttype/VecTypes.h>

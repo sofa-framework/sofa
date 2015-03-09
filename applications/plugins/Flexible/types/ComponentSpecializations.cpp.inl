@@ -47,6 +47,9 @@
 #endif
 
 
+#include <sofa/core/Mapping.inl>
+
+
 
 
 namespace sofa
@@ -54,6 +57,15 @@ namespace sofa
 
 namespace core
 {
+
+
+#ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes >;
+#endif
+
 
 namespace behavior
 {
