@@ -134,6 +134,17 @@ protected:
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
+#ifndef SOFA_FLOAT
+extern template class HermiteSplineConstraint<defaulttype::Rigid3dTypes>;
+extern template class HermiteSplineConstraint<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class HermiteSplineConstraint<defaulttype::Rigid3fTypes>;
+extern template class HermiteSplineConstraint<defaulttype::Vec3fTypes>;
+#endif
+#endif
+
 } // namespace projectiveconstraintset
 
 } // namespace component

@@ -62,6 +62,23 @@ namespace sofa
 #endif
                 ;
 
+#ifndef SOFA_FLOAT
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec2dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec1dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec6dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid3dTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec2fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec1fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Vec6fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid3fTypes>;
+template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<Rigid2fTypes>;
+#endif
+
         } // namespace forcefield
 
     } // namespace component

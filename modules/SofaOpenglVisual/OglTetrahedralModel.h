@@ -109,6 +109,15 @@ public:
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP)
+#ifndef SOFA_FLOAT
+extern template class OglTetrahedralModel<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class OglTetrahedralModel<defaulttype::Vec3fTypes>;
+#endif
+#endif
+
 }
 }
 }

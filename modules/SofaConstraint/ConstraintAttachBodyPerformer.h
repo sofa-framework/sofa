@@ -121,17 +121,18 @@ protected:
 #endif*/
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CONTRAINTATTACHBODYPERFORMER_CPP)
-//#ifndef SOFA_DOUBLE
-//      extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Vec3fTypes>;
-//      extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>;
+// #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_CONTRAINTATTACHBODYPERFORMER_CPP)
+// #ifndef SOFA_DOUBLE
+// extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3fTypes>;
+// extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>;
+// #endif
+// #ifndef SOFA_FLOAT
+// extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3dTypes>;
+// extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>;
+// #endif
+// #endif
 
-//#endif
-//#ifndef SOFA_FLOAT
-extern template class SOFA_CONSTRAINT_API  ConstraintAttachBodyPerformer<defaulttype::Vec3dTypes>;
-//      extern template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>;
-//#endif
-#endif
+extern template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 
 
 }

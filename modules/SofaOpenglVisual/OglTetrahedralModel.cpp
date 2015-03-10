@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_VISUALMODEL_OGLTETRAHEDRALMODEL_CPP
 #include "OglTetrahedralModel.inl"
 
 #include <sofa/core/ObjectFactory.h>

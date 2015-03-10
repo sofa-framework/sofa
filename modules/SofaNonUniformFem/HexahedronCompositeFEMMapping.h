@@ -153,6 +153,23 @@ protected :
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_HEXAHEDRONCOMPOSITEFEMMAPPING_CPP)
+#ifndef SOFA_FLOAT
+extern template class HexahedronCompositeFEMMapping< Mapping< defaulttype::Vec3dTypes, defaulttype::ExtVec3fTypes > >;
+extern template class HexahedronCompositeFEMMapping< Mapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes > >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class HexahedronCompositeFEMMapping< Mapping< defaulttype::Vec3fTypes, defaulttype::ExtVec3fTypes > >;
+extern template class HexahedronCompositeFEMMapping< Mapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes > >;
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class HexahedronCompositeFEMMapping< Mapping< defaulttype::Vec3fTypes, defaulttype::Vec3dTypes > >;
+extern template class HexahedronCompositeFEMMapping< Mapping< defaulttype::Vec3dTypes, defaulttype::Vec3fTypes > >;
+#endif
+#endif
+#endif
+
 } // namespace mapping
 
 } // namespace component

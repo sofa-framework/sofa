@@ -46,7 +46,7 @@ int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocit
 
 #ifndef SOFA_FLOAT
         .add< BeamLinearMapping< Rigid3dTypes, Vec3dTypes > >()
-        .add< BeamLinearMapping< Rigid3dTypes, ExtVec3fTypes > >()
+        .add< BeamLinearMapping< Rigid3dTypes, ExtVec3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< BeamLinearMapping< Rigid3fTypes, Vec3fTypes > >()
@@ -63,7 +63,7 @@ int BeamLinearMappingClass = core::RegisterObject("Set the positions and velocit
 
 #ifndef SOFA_FLOAT
 template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3dTypes >;
-template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, ExtVec3fTypes >;
+template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, ExtVec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3fTypes >;
