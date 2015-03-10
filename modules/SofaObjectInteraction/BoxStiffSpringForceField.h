@@ -81,6 +81,21 @@ public:
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec2dTypes>;
+extern template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec1dTypes>;
+extern template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec6dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec2fTypes>;
+extern template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec1fTypes>;
+extern template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<defaulttype::Vec6fTypes>;
+#endif
+#endif
+
 } // namespace interactionforcefield
 
 } // namespace component

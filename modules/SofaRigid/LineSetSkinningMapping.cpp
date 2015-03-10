@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_LINESETSKINNINGMAPPING_CPP
 #include <SofaRigid/LineSetSkinningMapping.inl>
 
 #include <sofa/core/ObjectFactory.h>

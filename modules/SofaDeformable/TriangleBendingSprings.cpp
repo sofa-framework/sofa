@@ -33,6 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_TRIANGLEBENDINGSPRINGS_CPP
 #include <SofaDeformable/TriangleBendingSprings.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
@@ -65,6 +66,7 @@ int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a train
         .add< TriangleBendingSprings<Vec2fTypes> >()
 #endif
         ;
+
 #ifndef SOFA_FLOAT
 template class SOFA_DEFORMABLE_API TriangleBendingSprings<Vec3dTypes>;
 template class SOFA_DEFORMABLE_API TriangleBendingSprings<Vec2dTypes>;
@@ -73,6 +75,7 @@ template class SOFA_DEFORMABLE_API TriangleBendingSprings<Vec2dTypes>;
 template class SOFA_DEFORMABLE_API TriangleBendingSprings<Vec3fTypes>;
 template class SOFA_DEFORMABLE_API TriangleBendingSprings<Vec2fTypes>;
 #endif
+
 } // namespace interactionforcefield
 
 } // namespace component

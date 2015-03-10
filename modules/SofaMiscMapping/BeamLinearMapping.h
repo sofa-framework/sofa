@@ -147,8 +147,6 @@ extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, Ext
 #ifndef SOFA_DOUBLE
 extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
 extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
 #endif
 #endif
 #endif

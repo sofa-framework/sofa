@@ -97,6 +97,8 @@ extern template class SOFA_ENGINE_API ValuesFromIndices< helper::fixed_array<uns
 extern template class SOFA_ENGINE_API ValuesFromIndices<double>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Vec2d>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Vec3d>;
+extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Vec4d>;
+extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Vec6d>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Rigid2dTypes::Coord>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Rigid2dTypes::Deriv>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Rigid3dTypes::Coord>;
@@ -106,6 +108,8 @@ extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Rigid3dType
 extern template class SOFA_ENGINE_API ValuesFromIndices<float>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Vec2f>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Vec3f>;
+extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Vec4f>;
+extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Vec6f>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Rigid2fTypes::Coord>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Rigid2fTypes::Deriv>;
 extern template class SOFA_ENGINE_API ValuesFromIndices<defaulttype::Rigid3fTypes::Coord>;

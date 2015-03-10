@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP
 #include <SofaObjectInteraction/RepulsiveSpringForceField.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -52,6 +53,7 @@ int RepulsiveSpringForceFieldClass = core::RegisterObject("Springs which only re
         .add< RepulsiveSpringForceField<Vec1fTypes> >()
 #endif
         ;
+
 #ifndef SOFA_FLOAT
 template class RepulsiveSpringForceField<Vec3dTypes>;
 template class RepulsiveSpringForceField<Vec2dTypes>;

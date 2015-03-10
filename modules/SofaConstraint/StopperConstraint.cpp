@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP
 #include <SofaConstraint/StopperConstraint.inl>
 
 #include <sofa/defaulttype/Vec3Types.h>
