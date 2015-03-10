@@ -220,15 +220,7 @@ void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParam
 #endif /* SOFA_NO_OPENGL */
 }
 
-#ifndef SOFA_FLOAT
-template<>
-void FixedTranslationConstraint<defaulttype::Vec6dTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
 
-#ifndef SOFA_DOUBLE
-template<>
-void FixedTranslationConstraint<defaulttype::Vec6fTypes>::draw(const core::visual::VisualParams* vparams);
-#endif
 
 } // namespace constraint
 
