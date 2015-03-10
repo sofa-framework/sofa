@@ -221,7 +221,7 @@ TYPED_TEST_CASE(StiffSpringForceField_test, TestTypes);
 TYPED_TEST( StiffSpringForceField_test , extension )
 {
     this->errorMax = 1000;
-    this->deltaMax = 1000;
+    this->deltaMax = this->errorMax*10;
     this->debug = false;
 
     SReal
@@ -268,7 +268,7 @@ TYPED_TEST( StiffSpringForceField_test , viscosity )
 TYPED_TEST( StiffSpringForceField_test , extension_in_parent_and_child )
 {
     this->errorMax = 1000;
-    this->deltaMax = 1000;
+    this->deltaMax = this->errorMax*10;
     this->debug = false;
 
     SReal
