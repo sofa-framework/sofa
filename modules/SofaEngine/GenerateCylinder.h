@@ -96,10 +96,10 @@ public:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_GENERATECYLINDER_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API GenerateCylinder<Vec3dTypes>;
+extern template class SOFA_ENGINE_API GenerateCylinder<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API GenerateCylinder<Vec3fTypes>;
+extern template class SOFA_ENGINE_API GenerateCylinder<defaulttype::Vec3fTypes>;
 #endif
 #endif
 
