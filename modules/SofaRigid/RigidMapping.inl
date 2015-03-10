@@ -204,7 +204,7 @@ void RigidMapping<TIn, TOut>::reinit()
             //            cerr<<"globalToLocal is true, compute local coordinates"  << endl;
 //            const VecCoord& xTo =this->toModel->read(core::ConstVecCoordId::position())->getValue();
 //            points.resize(xTo.size());
-            unsigned int i = 0, cpt = 0;
+            unsigned int i = 0;//, cpt = 0;
             const InVecCoord& xFrom =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
             for (i = 0; i < points.size(); i++)

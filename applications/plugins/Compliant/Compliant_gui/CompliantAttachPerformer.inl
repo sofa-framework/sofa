@@ -180,7 +180,7 @@ void CompliantAttachPerformer<DataTypes>::start()
 //        std::cerr<<"Already\n";
 
 
-        typedef mapping::DistanceFromTargetMapping< MouseTypes,DataTypes1 >  DistanceFromTargetMappingMouse;
+//        typedef mapping::DistanceFromTargetMapping< MouseTypes,DataTypes1 >  DistanceFromTargetMappingMouse;
 
         pickedNode = dynamic_cast<simulation::Node*> (picked.mstate->getContext());
 
