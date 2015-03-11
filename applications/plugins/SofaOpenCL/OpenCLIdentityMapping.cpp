@@ -27,6 +27,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/MechanicalState.h>
+
+#include <SofaBaseMechanics/IdentityMapping.inl>
 #include <sofa/core/Mapping.inl>
 
 namespace sofa
