@@ -771,6 +771,8 @@ Dart swap2To3(typename PFP::MAP& map, Dart d)
     while(dit != stop);
     map.splitVolume(edges);
 
+    map.compactOrbitContainer(FACE,std::numeric_limits<float>::infinity());
+    map.compactOrbitContainer(VOLUME,std::numeric_limits<float>::infinity());
     return stop; // map.phi1(d2_1);
 }
 
