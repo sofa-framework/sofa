@@ -28,6 +28,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPRINGFORCEFIELD_INL
 
+#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

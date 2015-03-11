@@ -27,6 +27,7 @@
 
 #include <SofaBaseMechanics/UniformMass.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/accessor.h>

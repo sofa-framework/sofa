@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_SPHEREFORCEFIELD_INL
 
+#include <sofa/core/behavior/ForceField.inl>
 #include "SphereForceField.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
