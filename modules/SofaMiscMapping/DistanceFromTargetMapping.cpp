@@ -40,33 +40,6 @@ SOFA_DECL_CLASS(DistanceFromTargetMapping)
 
 using namespace defaulttype;
 
-
-#ifndef SOFA_FLOAT
-template <>
-void DistanceFromTargetMapping<Vec3dTypes, Vec1dTypes>::computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b )
-{
-    r = b - a;
-}
-template <>
-void DistanceFromTargetMapping<Vec1dTypes, Vec1dTypes>::computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b )
-{
-    r = b - a;
-}
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void DistanceFromTargetMapping<Vec3fTypes, Vec1fTypes>::computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b )
-{
-    r = b - a;
-}
-template <>
-void DistanceFromTargetMapping<Vec1fTypes, Vec1fTypes>::computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b )
-{
-    r = b - a;
-}
-#endif
-
-
 // Register in the Factory
 int DistanceFromTargetMappingClass = core::RegisterObject("Compute edge extensions")
 #ifndef SOFA_FLOAT
