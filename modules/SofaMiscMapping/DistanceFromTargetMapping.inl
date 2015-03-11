@@ -130,10 +130,9 @@ void DistanceFromTargetMapping<TIn, TOut>::init()
 }
 
 template <class TIn, class TOut>
-void DistanceFromTargetMapping<TIn, TOut>::computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b )
+void DistanceFromTargetMapping<TIn, TOut>::computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b )
 {
-    // default implementation
-    TIn::setDPos(r, TIn::getDPos(TIn::coordDifference(b,a))); //Generic code working also for type!=particles but not optimize for particles
+    r = TIn::getCPos(b)-TIn::getCPos(a);
 }
 
 template <class TIn, class TOut>
@@ -151,12 +150,12 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        InDeriv& gap = directions[i];
+        Direction& gap = directions[i];
 
         // gap = in[links[i][1]] - in[links[i][0]] (only for position)
         computeCoordPositionDifference( gap, targetPositions[i], in[indices[i]] );
 
-        Real gapNorm = TIn::getDPos(gap).norm();
+        Real gapNorm = gap.norm();
 //        cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
         out[i] = gapNorm - restDistances[i];  // output
 
@@ -168,7 +167,7 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
         else
         {
             invlengths[i] = 0;
-            gap = InDeriv();
+            gap = Direction();
             gap[0]=1.0;  // arbitrary unit vector
         }
 
