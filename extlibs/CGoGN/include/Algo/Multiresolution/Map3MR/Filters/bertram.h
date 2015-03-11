@@ -29,7 +29,7 @@
 #include "Algo/Geometry/centroid.h"
 #include "Algo/Modelisation/tetrahedralization.h"
 #include "Algo/Multiresolution/filter.h"
-#include "Topology/generic/traversor2_closed.h"
+#include "Topology/generic/traversor/traversor2_closed.h"
 
 namespace CGoGN
 {

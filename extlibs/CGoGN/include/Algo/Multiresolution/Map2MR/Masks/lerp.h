@@ -48,19 +48,19 @@ class LerpVertexVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& m_position ;
 
 public:
-	LerpVertexVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LerpVertexVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)
 	{
-		std::cout << "dartIndex(d) = " << m_map.dartIndex(d) << std::endl;
+//		std::cout << "dartIndex(d) = " << m_map.dartIndex(d) << std::endl;
 		m_map.decCurrentLevel() ;
-		std::cout << "dartIndex(d) = " << m_map.dartIndex(d) << std::endl;
+//		std::cout << "dartIndex(d) = " << m_map.dartIndex(d) << std::endl;
 		typename PFP::VEC3 p = m_position[d] ;
-		std::cout << "p = " << p << std::endl;
+//		std::cout << "p = " << p << std::endl;
 		m_map.incCurrentLevel() ;
 
 		m_position[d] = p ;
@@ -74,10 +74,10 @@ class LerpEdgeVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& m_position ;
 
 public:
-	LerpEdgeVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LerpEdgeVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)
@@ -100,10 +100,10 @@ class LerpFaceVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& m_position ;
 
 public:
-	LerpFaceVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	LerpFaceVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)
@@ -113,7 +113,7 @@ public:
 
 		m_map.decCurrentLevel() ;
 
-		typename PFP::VEC3 p(0) ;
+        typename PFP::VEC3 p(0,0,0) ;
 		unsigned int degree = 0 ;
 		Traversor2FV<typename PFP::MAP> trav(m_map, df) ;
 		for(Dart it = trav.begin(); it != trav.end(); it = trav.next())
