@@ -180,20 +180,20 @@ void HoleBlockRef::printTableFree()
     }
 }
 
-bool HoleBlockRef::updateHole(unsigned int indx) {
-    if (!used(indx)) {
-//        std::cerr << "updateHole working : index " << indx << std::endl;
-        unsigned int* end = m_tableFree + m_nbfree ;
-        // first check if the index is already present
-//        printTableFree();
-        if (std::find(m_tableFree, end, indx) == end) {
-            m_tableFree[m_nbfree++] = indx ;
-            --m_nb ;
-        }
-        return true;
-    }
-    return false;
-}
+//bool HoleBlockRef::updateHole(unsigned int indx) {
+//    if (!used(indx)) {
+////        std::cerr << "updateHole working : index " << indx << std::endl;
+//        unsigned int* end = m_tableFree + m_nbfree ;
+//        // first check if the index is already present
+////        printTableFree();
+//        if (std::find(m_tableFree, end, indx) == end) {
+//            m_tableFree[m_nbfree++] = indx ;
+//            --m_nb ;
+//        }
+//        return true;
+//    }
+//    return false;
+//}
 
 
 void HoleBlockRef::saveBin(CGoGNostream& fs)
