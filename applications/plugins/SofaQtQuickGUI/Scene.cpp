@@ -126,17 +126,6 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	mySofaSimulation(0),
     myStepTimer(new QTimer(this))
 {
-	// sofa init
-	sofa::helper::system::DataRepository.addFirstPath("./");
-    sofa::helper::system::DataRepository.addFirstPath("../../share/");
-    sofa::helper::system::DataRepository.addFirstPath("../../examples/");
-
-    sofa::helper::system::PluginRepository.addFirstPath("./");
-    sofa::helper::system::PluginRepository.addFirstPath("../bin/");
-    sofa::helper::system::PluginRepository.addFirstPath("../lib/");
-    sofa::helper::system::PluginRepository.addFirstPath(QCoreApplication::applicationDirPath().toStdString() + "/../bin/");
-    sofa::helper::system::PluginRepository.addFirstPath(QCoreApplication::applicationDirPath().toStdString() + "/../lib/");
-
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
