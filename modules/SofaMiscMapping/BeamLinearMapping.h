@@ -121,32 +121,21 @@ public:
 
 template <int N, class Real> struct RigidMappingMatrixHelper;
 
-#ifndef SOFA_FLOAT
-typedef sofa::defaulttype::Vec3dTypes Vec3dTypes;
-typedef sofa::defaulttype::ExtVec3dTypes ExtVec3dTypes;
-typedef sofa::defaulttype::Rigid3dTypes Rigid3dTypes;
-#endif
-
-#ifndef SOFA_DOUBLE
-typedef sofa::defaulttype::Vec3fTypes Vec3fTypes;
-typedef sofa::defaulttype::ExtVec3fTypes ExtVec3fTypes;
-typedef sofa::defaulttype::Rigid3fTypes Rigid3fTypes;
-#endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, ExtVec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< defaulttype::Rigid3dTypes, defaulttype::ExtVec3fTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, ExtVec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< defaulttype::Rigid3fTypes, defaulttype::ExtVec3fTypes >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3dTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< Rigid3fTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API BeamLinearMapping< defaulttype::Rigid3fTypes, defaulttype::Vec3dTypes >;
 #endif
 #endif
 #endif
