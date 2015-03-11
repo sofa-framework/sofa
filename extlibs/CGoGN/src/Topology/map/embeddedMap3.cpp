@@ -147,9 +147,7 @@ bool EmbeddedMap3::uncutEdge(Dart d)
 Dart EmbeddedMap3::deleteEdge(Dart d)
 {
 
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
     Dart v = Map3::deleteEdge(d) ;
-    std::cout << __FILE__ << ":" << __LINE__ << std::endl;
 
     if((!v.isNil()) && (this->isOrbitEmbedded<VOLUME>())) {
         Algo::Topo::setOrbitEmbedding(*this, VolumeCell(v), getEmbedding(VolumeCell(v))) ;
