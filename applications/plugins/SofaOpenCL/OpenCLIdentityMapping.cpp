@@ -34,6 +34,12 @@
 namespace sofa
 {
 
+namespace core
+{
+    // wtf is it needed by gcc to link? I suspect a namespace complex situation
+    template class core::Mapping< defaulttype::Vec3dTypes, gpu::opencl::OpenCLVec3fTypes>;
+}
+
 namespace component
 {
 
@@ -45,32 +51,32 @@ using namespace sofa::core;
 using namespace sofa::core::behavior;
 using namespace sofa::gpu::opencl;
 
-template class  IdentityMapping< OpenCLVec3fTypes, OpenCLVec3fTypes>;
-template class  IdentityMapping< OpenCLVec3fTypes, Vec3fTypes>;
-template class  IdentityMapping< OpenCLVec3fTypes, Vec3dTypes>;
-template class  IdentityMapping< Vec3fTypes, OpenCLVec3fTypes>;
-template class  IdentityMapping< Vec3dTypes, OpenCLVec3fTypes>;
+template class IdentityMapping< OpenCLVec3fTypes, OpenCLVec3fTypes>;
+template class IdentityMapping< OpenCLVec3fTypes, Vec3fTypes>;
+template class IdentityMapping< OpenCLVec3fTypes, Vec3dTypes>;
+template class IdentityMapping< Vec3fTypes, OpenCLVec3fTypes>;
+template class IdentityMapping< Vec3dTypes, OpenCLVec3fTypes>;
 
-template class  IdentityMapping< OpenCLVec3fTypes, OpenCLVec3dTypes>;
-template class  IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes>;
-template class  IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes>;
-template class  IdentityMapping< OpenCLVec3dTypes, Vec3fTypes>;
-template class  IdentityMapping< OpenCLVec3dTypes, Vec3dTypes>;
-template class  IdentityMapping< Vec3fTypes, OpenCLVec3dTypes>;
-template class  IdentityMapping< Vec3dTypes, OpenCLVec3dTypes>;
+template class IdentityMapping< OpenCLVec3fTypes, OpenCLVec3dTypes>;
+template class IdentityMapping< OpenCLVec3dTypes, OpenCLVec3fTypes>;
+template class IdentityMapping< OpenCLVec3dTypes, OpenCLVec3dTypes>;
+template class IdentityMapping< OpenCLVec3dTypes, Vec3fTypes>;
+template class IdentityMapping< OpenCLVec3dTypes, Vec3dTypes>;
+template class IdentityMapping< Vec3fTypes, OpenCLVec3dTypes>;
+template class IdentityMapping< Vec3dTypes, OpenCLVec3dTypes>;
 
-template class  IdentityMapping< OpenCLVec3d1Types, ExtVec3fTypes>;
-template class  IdentityMapping< OpenCLVec3dTypes, ExtVec3fTypes>;
+template class IdentityMapping< OpenCLVec3d1Types, ExtVec3fTypes>;
+template class IdentityMapping< OpenCLVec3dTypes, ExtVec3fTypes>;
 
-template class  IdentityMapping< OpenCLVec3fTypes, ExtVec3fTypes>;
-template class  IdentityMapping< OpenCLVec3f1Types, OpenCLVec3f1Types>;
-template class  IdentityMapping< OpenCLVec3f1Types, Vec3dTypes>;
-template class  IdentityMapping< OpenCLVec3f1Types, Vec3fTypes>;
-template class  IdentityMapping< Vec3dTypes, OpenCLVec3f1Types>;
-template class  IdentityMapping< Vec3fTypes, OpenCLVec3f1Types>;
-template class  IdentityMapping< OpenCLVec3f1Types, ExtVec3fTypes>;
-template class  IdentityMapping< OpenCLVec3f1Types, OpenCLVec3fTypes>;
-template class  IdentityMapping< OpenCLVec3fTypes, OpenCLVec3f1Types>;
+template class IdentityMapping< OpenCLVec3fTypes, ExtVec3fTypes>;
+template class IdentityMapping< OpenCLVec3f1Types, OpenCLVec3f1Types>;
+template class IdentityMapping< OpenCLVec3f1Types, Vec3dTypes>;
+template class IdentityMapping< OpenCLVec3f1Types, Vec3fTypes>;
+template class IdentityMapping< Vec3dTypes, OpenCLVec3f1Types>;
+template class IdentityMapping< Vec3fTypes, OpenCLVec3f1Types>;
+template class IdentityMapping< OpenCLVec3f1Types, ExtVec3fTypes>;
+template class IdentityMapping< OpenCLVec3f1Types, OpenCLVec3fTypes>;
+template class IdentityMapping< OpenCLVec3fTypes, OpenCLVec3f1Types>;
 
 } // namespace mapping
 
