@@ -30,7 +30,6 @@
 #ifdef SOFA_HAVE_EIGEN2
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #endif
-#include <sofa/core/MultiMapping.inl>
 #include <iostream>
 
 namespace sofa
@@ -65,7 +64,7 @@ void SubsetMultiMapping<TIn, TOut>::init()
     for(unsigned i=0; i<baseMatrices.size(); i++ )
     {
         baseMatrices[i] = jacobians[i] = new linearsolver::EigenSparseMatrix<TIn,TOut>;
-        jacobians[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->readPositions().size() ); // each jacobian has the same number of rows
+        jacobians[i]->resize(Nout*indexPairSize,Nin*this->fromModels[i]->getSize() ); // each jacobian has the same number of rows
     }
 
     // fill the jacobians
