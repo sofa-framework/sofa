@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.3
 
 SpinBox {
     id: root
@@ -12,6 +12,12 @@ SpinBox {
     maximumValue: undefined !== dataObject.properties.max ? dataObject.properties.max :  Number.MAX_VALUE
     stepSize: undefined !== dataObject.properties.step ? dataObject.properties.step : 1
     decimals: undefined !== dataObject.properties.decimals ? dataObject.properties.decimals : 0
-    onValueChanged: dataObject.editedValue = value;
+
+    Binding {
+        target: dataObject
+        property: "value"
+        value: root.value
+        when: !dataObject.readOnly
+    }
 }
 

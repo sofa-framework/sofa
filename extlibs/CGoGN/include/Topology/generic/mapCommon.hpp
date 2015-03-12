@@ -109,6 +109,18 @@ void MapCommon<MAP_IMPL>::setDartEmbedding(Dart d, unsigned int emb)
 
 template <typename MAP_IMPL>
 template <unsigned int ORBIT>
+void MapCommon<MAP_IMPL>::unsetDartEmbedding(Dart d)
+{
+    assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    unsigned int old = getEmbedding<ORBIT>(d);
+    if (old != EMBNULL) {
+        (*this->m_embeddings[ORBIT])[this->dartIndex(d)] = EMBNULL;
+        this->m_attribs[ORBIT].unrefLine(old);
+    }
+}
+
+template <typename MAP_IMPL>
+template <unsigned int ORBIT>
 void MapCommon<MAP_IMPL>::initDartEmbedding(Dart d, unsigned int emb)
 {
 	assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");

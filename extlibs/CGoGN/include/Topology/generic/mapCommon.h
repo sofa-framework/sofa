@@ -73,6 +73,9 @@ public:
 	template <unsigned int ORBIT>
 	void setDartEmbedding(Dart d, unsigned int emb) ;
 
+
+    template <unsigned int ORBIT>
+    void unsetDartEmbedding(Dart d);
 	/**
 	 * Set the cell index of the given dimension associated to dart d
 	 * !!! WARNING !!! use only on freshly inserted darts (no unref is done on old embedding) !!! WARNING !!!

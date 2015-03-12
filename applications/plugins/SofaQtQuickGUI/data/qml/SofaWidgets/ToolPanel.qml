@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
 import SofaBasics 1.0
 import SofaTools 1.0
@@ -55,7 +55,7 @@ Rectangle {
             return 0;
         });
 
-        contextMenu = Qt.createQmlObject("import QtQuick.Controls 1.2; Menu {title: 'Tools'}", root, "contextMenu");
+        contextMenu = Qt.createQmlObject("import QtQuick.Controls 1.3; Menu {title: 'Tools'}", root, "contextMenu");
         for(var i = 0; i < contentList.length; ++i)
         {
             contentList[i].parent = loaderLocation;

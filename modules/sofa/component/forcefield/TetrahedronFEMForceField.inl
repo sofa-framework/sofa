@@ -713,6 +713,112 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 
 }
 
+// getPotentialEnergy only for small method and if assembling is false
+template<class DataTypes>
+inline double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const
+{
+    unsigned int i;
+    typename VecElement::const_iterator it;
+    double energyPotential = 0;
+    const VecCoord &initialPoints=_initialPoints.getValue();
+    const VecCoord &p            = x.getValue();
+
+    switch(method)
+    {
+    case SMALL :
+    {
+
+        for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
+        {
+            Element index = *it;
+            Index a = index[0];
+            Index b = index[1];
+            Index c = index[2];
+            Index d = index[3];
+
+            // displacements
+            Displacement D;
+            D[0] = 0;
+            D[1] = 0;
+            D[2] = 0;
+            D[3] =  initialPoints[b][0] - initialPoints[a][0] - p[b][0]+p[a][0];
+            D[4] =  initialPoints[b][1] - initialPoints[a][1] - p[b][1]+p[a][1];
+            D[5] =  initialPoints[b][2] - initialPoints[a][2] - p[b][2]+p[a][2];
+            D[6] =  initialPoints[c][0] - initialPoints[a][0] - p[c][0]+p[a][0];
+            D[7] =  initialPoints[c][1] - initialPoints[a][1] - p[c][1]+p[a][1];
+            D[8] =  initialPoints[c][2] - initialPoints[a][2] - p[c][2]+p[a][2];
+            D[9] =  initialPoints[d][0] - initialPoints[a][0] - p[d][0]+p[a][0];
+            D[10] = initialPoints[d][1] - initialPoints[a][1] - p[d][1]+p[a][1];
+            D[11] = initialPoints[d][2] - initialPoints[a][2] - p[d][2]+p[a][2];
+
+            // compute force on element
+            Displacement F;
+
+            if(!_assembling.getValue())
+            {
+                // ComputeForce without the case of  plasticity simulation when  _plasticMaxThreshold.getValue() > 0
+                // This case actually modifies  the member plasticStrain and getPotentialEnergy is a const fonction.
+                MaterialStiffness K = materialsStiffnesses[i];
+                StrainDisplacement J = strainDisplacements[i];
+
+                #if 0
+                    F = J*(K*(J.multTranspose(D)));
+                #else
+
+                    VoigtTensor JtD;
+                    JtD[0] = J[ 0][0]*D[ 0]+ J[ 3][0]*D[ 3]+ J[ 6][0]*D[ 6]+ J[ 9][0]*D[ 9];
+                    JtD[1] = J[ 1][1]*D[ 1]+ J[ 4][1]*D[ 4]+ J[ 7][1]*D[ 7]+ J[10][1]*D[10];
+                    JtD[2] = J[ 2][2]*D[ 2]+ J[ 5][2]*D[ 5]+ J[ 8][2]*D[ 8]+ J[11][2]*D[11];
+                    JtD[3] = J[ 0][3]*D[ 0]+ J[ 1][3]*D[ 1]+ J[ 3][3]*D[ 3]+ J[ 4][3]*D[ 4]+
+                             J[ 6][3]*D[ 6]+ J[ 7][3]*D[ 7]+ J[ 9][3]*D[ 9]+ J[10][3]*D[10];
+                    JtD[4] = J[ 1][4]*D[ 1]+ J[ 2][4]*D[ 2]+ J[ 4][4]*D[ 4]+ J[ 5][4]*D[ 5]+
+                             J[ 7][4]*D[ 7]+ J[ 8][4]*D[ 8]+ J[10][4]*D[10]+ J[11][4]*D[11];
+                    JtD[5] = J[ 0][5]*D[ 0]+ J[ 2][5]*D[ 2]+ J[ 3][5]*D[ 3]+ J[ 5][5]*D[ 5]+
+                             J[ 6][5]*D[ 6]+ J[ 8][5]*D[ 8]+ J[ 9][5]*D[ 9]+ J[11][5]*D[11];
+
+
+                    VoigtTensor KJtD;
+                    KJtD[0] = K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2];
+                    KJtD[1] = K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2];
+                    KJtD[2] = K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2];
+                    KJtD[3] = K[3][3]*JtD[3] ;
+                    KJtD[4] = K[4][4]*JtD[4];
+                    KJtD[5] = K[5][5]*JtD[5]  ;
+
+                    F[ 0] = J[ 0][0]*KJtD[0]+ J[ 0][3]*KJtD[3]+ J[ 0][5]*KJtD[5];
+                    F[ 1] = J[ 1][1]*KJtD[1]+ J[ 1][3]*KJtD[3]+ J[ 1][4]*KJtD[4];
+                    F[ 2] = J[ 2][2]*KJtD[2]+ J[ 2][4]*KJtD[4]+ J[ 2][5]*KJtD[5];
+                    F[ 3] = J[ 3][0]*KJtD[0]+ J[ 3][3]*KJtD[3]+ J[ 3][5]*KJtD[5];
+                    F[ 4] = J[ 4][1]*KJtD[1]+ J[ 4][3]*KJtD[3]+ J[ 4][
+                            4]*KJtD[4];
+                    F[ 5] = J[ 5][2]*KJtD[2]+ J[ 5][4]*KJtD[4]+ J[ 5][5]*KJtD[5];
+                    F[ 6] = J[ 6][0]*KJtD[0]+ J[ 6][3]*KJtD[3]+ J[ 6][5]*KJtD[5];
+                    F[ 7] = J[ 7][1]*KJtD[1]+ J[ 7][3]*KJtD[3]+ J[ 7][4]*KJtD[4];
+                    F[ 8] = J[ 8][2]*KJtD[2]+ J[ 8][4]*KJtD[4]+ J[ 8][5]*KJtD[5];
+                    F[ 9] = J[ 9][0]*KJtD[0]+ J[ 9][3]*KJtD[3]+ J[ 9][5]*KJtD[5];
+                    F[10] = J[10][1]*KJtD[1]+ J[10][3]*KJtD[3]+ J[10][4]*KJtD[4];
+                    F[11] = J[11][2]*KJtD[2]+ J[11][4]*KJtD[4]+ J[11][5]*KJtD[5];
+
+                #endif
+
+            }
+
+            // Compute potentialEnergy
+            energyPotential += dot(Deriv( F[0], F[1], F[2] ) ,-Deriv( D[0], D[1], D[2]));
+            energyPotential += dot(Deriv( F[3], F[4], F[5] ) ,-Deriv( D[3], D[4], D[5] ));
+            energyPotential += dot(Deriv( F[6], F[7], F[8] ) ,-Deriv( D[6], D[7], D[8] ));
+            energyPotential += dot(Deriv( F[9], F[10], F[11]),-Deriv( D[9], D[10], D[11] ));
+        }
+        energyPotential/=-2.0;
+
+        break;
+    }
+    }
+
+    return energyPotential;
+
+}
+
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
 {

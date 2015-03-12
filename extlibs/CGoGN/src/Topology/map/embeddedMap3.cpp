@@ -26,7 +26,7 @@
 #include <algorithm>
 #include "Topology/map/embeddedMap3.h"
 #include "Topology/generic/traversor/traversor3.h"
-
+#include <limits>
 namespace CGoGN
 {
 
@@ -146,15 +146,14 @@ bool EmbeddedMap3::uncutEdge(Dart d)
 
 Dart EmbeddedMap3::deleteEdge(Dart d)
 {
+
     Dart v = Map3::deleteEdge(d) ;
-    if (isOrbitEmbedded<EDGE>()) {
-        const unsigned int edgeID = getEmbedding(EdgeCell(d)) ;
-        getAttributeContainer(EDGE).updateHole(edgeID);
-    }
 
     if((!v.isNil()) && (this->isOrbitEmbedded<VOLUME>())) {
         Algo::Topo::setOrbitEmbedding(*this, VolumeCell(v), getEmbedding(VolumeCell(v))) ;
     }
+
+    this->compactOrbitContainer(EDGE,std::numeric_limits<float>::infinity());
     return v;
 }
 
@@ -452,15 +451,15 @@ bool EmbeddedMap3::mergeVolumes(Dart d, bool deleteFace)
         if (isOrbitEmbedded<VOLUME>())
         {
             Algo::Topo::setOrbitEmbedding<VOLUME>(*this, d2, getEmbedding<VOLUME>(d2)) ;
-            getAttributeContainer(VOLUME).updateHole(deleteVolumeID);
+//            getAttributeContainer(VOLUME).updateHole(deleteVolumeID);
         }
         if (deleteFace && (deletedFaceID != EMBNULL)) {
-            getAttributeContainer(FACE).updateHole(deletedFaceID);
+//            getAttributeContainer(FACE).updateHole(deletedFaceID);
         }
-//        this->check();
+        //        this->check();
         return true;
     }
-//    this->check();
+    //    this->check();
     return false;
 }
 
@@ -595,7 +594,7 @@ Dart EmbeddedMap3::collapseVolume(Dart d, bool delDegenerateVolumes)
 
 unsigned int EmbeddedMap3::closeHole(Dart d)
 {
-	unsigned int nbF = Map3::closeHole(d) ;
+    unsigned int nbF = Map3::closeHole(d) ;
 
     DartMarkerStore<EmbeddedMap3> mark(*this);	// Lock a marker
 

@@ -27,8 +27,6 @@
 
 #include <cmath>
 
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/if.hpp>
 namespace CGoGN
 {
 
@@ -49,26 +47,16 @@ public:
 template <typename PFP>
 unsigned int vertexLevel(typename PFP::MAP& map, Vertex v)
 {
-    typedef typename PFP::MAP MAP;
-    namespace bl = boost::lambda;
-    using bl::var;
-    assert(map.getDartLevel(v) <= map.getCurrentLevel() || !"vertexLevel : called with a dart inserted after current level") ;
+	assert(map.getDartLevel(v.dart) <= map.getCurrentLevel() || !"vertexLevel : called with a dart inserted after current level") ;
 
-    unsigned int level = map.getMaxLevel();
+	unsigned int level = map.getMaxLevel();
 
-//	map.foreach_dart_of_orbit(v, [&] (Dart d)
-//	{
-//		unsigned int ldit = map.getDartLevel(d) ;
-//		if(ldit < level)
-//			level = ldit;
-//	});
-    unsigned int ldit;
-    map.foreach_dart_of_orbit(v,
-    (
-        var(ldit) = bl::bind(&MAP::getDartLevel,boost::ref(map), bl::_1),
-        bl::if_(boost::ref(ldit) < boost::ref(level))[
-            var(level) = boost::ref(ldit)]
-    ));
+	map.foreach_dart_of_orbit(v, [&] (Dart d)
+	{
+		unsigned int ldit = map.getDartLevel(d) ;
+		if(ldit < level)
+			level = ldit;
+	});
 
 //	Dart dit = d;
 //	do
@@ -158,7 +146,7 @@ typename PFP::VEC3 doTwist(typename PFP::VEC3 pos, float t )
 }
 
 template <typename PFP>
-void frequencyDeformation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& attIn, unsigned int cutoffLevel)
+void frequencyDeformation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& attIn)
 {
 	float time = 1.0;
 	//float angle_deg_max = 0.4;

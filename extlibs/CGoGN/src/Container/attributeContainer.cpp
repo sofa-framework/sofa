@@ -377,43 +377,43 @@ void AttributeContainer::removeFromFreeIndices(unsigned int index) {
 }
 
 
-void AttributeContainer::updateHole(unsigned int index) {
-    //    std::cerr << "updateHole called for orbit " << m_orbit << ", with index = " << index << std::endl;
-    //    std::cerr << "###############################################################" << std::endl;
-    //    std::cerr << "m_tableBlocksWithFree :";
-    //    for (int i = 0 ; i < m_tableBlocksWithFree.size() ; ++i) {
-    //        std::cerr << " " << m_tableBlocksWithFree[i] ;
-    //    }
-    //    std::cerr << std::endl;
-    //    std::cerr << "###############################################################" << std::endl;
+//void AttributeContainer::updateHole(unsigned int index) {
+//    //    std::cerr << "updateHole called for orbit " << m_orbit << ", with index = " << index << std::endl;
+//    //    std::cerr << "###############################################################" << std::endl;
+//    //    std::cerr << "m_tableBlocksWithFree :";
+//    //    for (int i = 0 ; i < m_tableBlocksWithFree.size() ; ++i) {
+//    //        std::cerr << " " << m_tableBlocksWithFree[i] ;
+//    //    }
+//    //    std::cerr << std::endl;
+//    //    std::cerr << "###############################################################" << std::endl;
 
-    const unsigned int bi = index / _BLOCKSIZE_;
-    const unsigned int j = index % _BLOCKSIZE_;
-    HoleBlockRef* const block = m_holesBlocks[bi];
-    const bool  blockWasFull = std::find(m_tableBlocksWithFree.begin(), m_tableBlocksWithFree.end(),bi) == m_tableBlocksWithFree.end();
-    //    std::cerr << "update hole called  on index " << index << " bi = " << bi << " j = " << j << std::endl;
-    const bool lineRemoved = block->updateHole(j);
-    if (lineRemoved) {
-        if (blockWasFull) {
-            m_tableBlocksWithFree.push_back(bi);
-        } else {
-            if (block->empty())		// block is empty after removal
-                m_tableBlocksEmpty.push_back(bi);
-        }
+//    const unsigned int bi = index / _BLOCKSIZE_;
+//    const unsigned int j = index % _BLOCKSIZE_;
+//    HoleBlockRef* const block = m_holesBlocks[bi];
+//    const bool  blockWasFull = std::find(m_tableBlocksWithFree.begin(), m_tableBlocksWithFree.end(),bi) == m_tableBlocksWithFree.end();
+//    //    std::cerr << "update hole called  on index " << index << " bi = " << bi << " j = " << j << std::endl;
+//    const bool lineRemoved = block->updateHole(j);
+//    if (lineRemoved) {
+//        if (blockWasFull) {
+//            m_tableBlocksWithFree.push_back(bi);
+//        } else {
+//            if (block->empty())		// block is empty after removal
+//                m_tableBlocksEmpty.push_back(bi);
+//        }
 
-        std::sort(m_tableBlocksWithFree.begin(), m_tableBlocksWithFree.end(), std::greater<unsigned int>());
-    }
-    ////                DEBUG
-    //        std::cerr << "###############################################################" << std::endl;
-    //        std::cerr << "m_tableBlocksWithFree :";
-    //        for (int i = 0 ; i < m_tableBlocksWithFree.size() ; ++i) {
-    //            std::cerr << " " << m_tableBlocksWithFree[i] ;
-    //        }
-    //        std::cerr << std::endl;
-    //        std::cerr << "###############################################################" << std::endl;
-    ////                END DEBUG
+//        std::sort(m_tableBlocksWithFree.begin(), m_tableBlocksWithFree.end(), std::greater<unsigned int>());
+//    }
+//    ////                DEBUG
+//    //        std::cerr << "###############################################################" << std::endl;
+//    //        std::cerr << "m_tableBlocksWithFree :";
+//    //        for (int i = 0 ; i < m_tableBlocksWithFree.size() ; ++i) {
+//    //            std::cerr << " " << m_tableBlocksWithFree[i] ;
+//    //        }
+//    //        std::cerr << std::endl;
+//    //        std::cerr << "###############################################################" << std::endl;
+//    ////                END DEBUG
 
-}
+//}
 
 unsigned int AttributeContainer::insertLine()
 {
@@ -455,7 +455,7 @@ unsigned int AttributeContainer::insertLine()
 	HoleBlockRef* block = m_holesBlocks[bf];
 
 	// add new element in block and compute index
-	unsigned int ne = block->newRefElt(m_maxSize);
+    unsigned int ne = block->newRefElt(m_maxSize);
 	unsigned int index = _BLOCKSIZE_ * bf + ne;
 
 	if (ne == _BLOCKSIZE_-1)
