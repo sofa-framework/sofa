@@ -25,8 +25,7 @@ for relative in plugins_paths:
                 if os.path.exists( python ):
                     print "SofaPython: added plugin path for", plugin
                     sys.path.insert(0, python )
-                    #print "SofaPython: located in ", python					
-                    print "SofaPython: located in ", python					
+                    #print "SofaPython: located in ", python
 
 # add more customization here if needed
 
