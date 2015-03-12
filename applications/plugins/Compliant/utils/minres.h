@@ -52,6 +52,12 @@ struct minres  {
 		natural i;
 		for( i = 0; i < p.iterations; ++i) {
 			if( d.phi <= p.precision) break;
+
+            if(p.restart && i && i % p.restart == 0 ) {
+                residual = b - A(x);
+                d.residual( residual );
+            }
+            
 			d.step(x, A, sigma);
 		}
 
@@ -159,7 +165,10 @@ struct minres  {
 				res.alpha = v.dot( p );
       
 				p -= res.alpha * v + beta * v_prev;
-	
+
+                // paranoid orthogonalization
+                p -= p.dot(v) * v;
+                
 				res.beta = res.v.norm();
       
 				if( res.beta ) res.v /= res.beta;
