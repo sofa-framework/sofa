@@ -281,6 +281,12 @@ class BaseScene:
             n=self.model.name
         self.node=parentNode.createChild(self.model.name)
 
+    def createChild(self, parent, name):
+        """Creates a child node and store it in the Scene nodes dictionary"""
+        node = parent.createChild(name)
+        self.nodes[name] = node
+        return node
+
 class SceneDisplay(BaseScene):
     """ Creates a scene to display solid meshes
     """
