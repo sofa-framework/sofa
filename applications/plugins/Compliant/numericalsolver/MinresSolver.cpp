@@ -35,7 +35,6 @@ void MinresSolver::solve_kkt_impl(vec& x,
 }
 
 
-
 const char* MinresSolver::method() const { return "minres"; }
 			
 }
