@@ -91,6 +91,27 @@ class SceneArticulatedRigid(SofaPython.sml.BaseScene):
         self.param.showOffset=False
         self.param.showOffsetScale=0.1 # SI unit (m)    
 
+    def insertMergeRigid(self, mergeNode, tag="rigid"):
+        """ Merge all the rigids in a single MechanicalObject using a SubsetMultiMapping
+        optionnaly give a tag to select the rigids which are merged
+        return the list of merged rigids id"""
+
+        mergeNode.createObject("MechanicalObject", template = "Rigid3d", name="dofs")
+        rigidsId = list() # keep track of merged rigids, rigid index and rigid id
+        input=""
+        indexPairs=""
+        for solid in self.model.solidsByTag[tag]:
+            if not solid.id in self.rigids:
+                print "[Compliant.sml.SceneArticulatedRigid.insertMergeRigid] WARNING: "+solid.name+" is not a rigid"
+                continue
+            rigid = self.rigids[solid.id]
+            rigid.node.addChild(mergeNode)
+            input += '@'+rigid.node.getPathName()+" "
+            indexPairs += str(len(rigidsId)) + " 0 "
+            rigidsId.append(solid.id)
+        mergeNode.createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
+        return rigidsId
+
     def createScene(self):
         self.node.createObject('RequiredPlugin', name = 'Flexible' )
         self.node.createObject('RequiredPlugin', name = 'Compliant' )
@@ -115,19 +136,8 @@ class SceneSkinning(SceneArticulatedRigid) :
         SceneArticulatedRigid.createScene(self)
         
         # all rigids (bones) must be gathered in a single node
-        self.nodes["armature"] = self.node.createChild("armature")
-        self.nodes["armature"].createObject("MechanicalObject", template = "Rigid3d", name="dofs")
-        bonesId = list() # keep track of merged bones, bone index and bone id
-        input=""
-        indexPairs=""
-        for armatureBone in self.model.solidsByTag["armature"]:
-            rigid = self.rigids[armatureBone.id]
-            rigid.node.addChild(self.nodes["armature"])
-            input += '@'+rigid.node.getPathName()+" "
-            indexPairs += str(len(bonesId)) + " 0 "
-            bonesId.append(armatureBone.id)
-        self.nodes["armature"].createObject('SubsetMultiMapping', template = "Rigid3d,Rigid3d", name="mapping", input = input , output = '@./', indexPairs=indexPairs, applyRestPosition=True )
-        
+        self.createChild(self.node, "armature")
+        bonesId = self.insertMergeRigid(self.nodes["armature"], "armature")
         #deformable
         for solidModel in self.model.solids.values():
             if len(solidModel.skinnings)>0:
