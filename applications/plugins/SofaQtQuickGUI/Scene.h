@@ -117,6 +117,7 @@ public:
     Q_INVOKABLE double radius() const;
     Q_INVOKABLE void computeBoundingBox(QVector3D& min, QVector3D& max) const;
     Q_INVOKABLE QString dumpGraph() const;
+    Q_INVOKABLE void reinitComponent(const QString& path);
 
 public:
     static QVariantMap dataObject(const sofa::core::objectmodel::BaseData* data);
