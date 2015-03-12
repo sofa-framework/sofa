@@ -24,7 +24,8 @@ SubKKT::mat SubKKT::projection_basis(const mat& P) {
         }
 
     }
-    
+
+    return res;
 }
 
 // TODO optimize ?
@@ -35,8 +36,12 @@ SubKKT::SubKKT(const AssembledSystem& sys):
 
 }
 
+SubKKT::SubKKT() { }
 
-void SubKKT::factor(Response& resp) const { resp.factor(A); }
+
+void SubKKT::factor(Response& resp) const {
+    resp.factor(A);
+}
 
 
 // TODO we should also use Q here

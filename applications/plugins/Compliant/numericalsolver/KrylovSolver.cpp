@@ -1,5 +1,8 @@
 #include "KrylovSolver.h"
 
+#include "utils/kkt.h"
+#include "utils/schur.h"
+
 
 namespace sofa {
 namespace component {
@@ -20,15 +23,19 @@ void KrylovSolver::init() {
 	if( schur.getValue() ) {
 		response = this->getContext()->get<Response>(core::objectmodel::BaseContext::Local);
 		
-		if(!response) throw std::logic_error("response component not found, you need one next to the KKTSolver");
-		
+		if(!response) {
+            serr << "response component not found, you need one next to the KKTSolver" << sendl;
+        }		
     }
-
+    
 }
 
 
 void KrylovSolver::factor(const system_type& sys) {
-	if( response ) response->factor( sys.H );
+	if( response && schur.getValue() ) {
+        sub = SubKKT(sys);
+        sub.factor(*response);
+    }
 }
 
 
@@ -76,6 +83,67 @@ void KrylovSolver::report(const char* what, const params_type& p) const {
 		std::cerr << what << "- iterations: " << p.iterations << ", (abs) residual: " << p.precision << std::endl;
 	}
 }
+
+
+
+
+void KrylovSolver::solve_schur(AssembledSystem::vec& x,
+                               const AssembledSystem& sys,
+                               const AssembledSystem::vec& b,
+							   real damping) const {
+	// unconstrained velocity
+	vec tmp(sys.m);
+
+    sub.solve(*response, tmp, b.head(sys.m));
+	// response->solve(tmp, b.head(sys.m));
+    
+	x.head( sys.m ) = tmp;
+	
+	if( sys.n ) {
+
+        SubKKT::Adaptor adaptor = sub.adapt(*response);
+        
+		::schur<SubKKT::Adaptor> A(sys, adaptor, damping);
+		
+		vec rhs = b.tail(sys.n) - sys.J * x.head(sys.m);
+		
+		vec lambda = x.tail(sys.n);
+
+		params_type p = params(rhs);
+
+        // actual method
+        solve_schur_impl(lambda, A, rhs, p);
+		
+		// constraint velocity correction
+        sub.solve(*response, tmp, sys.J.transpose() * lambda);
+        // response->solve(tmp, sys.J.transpose() * lambda );
+        
+		x.head( sys.m ) += tmp;
+		x.tail( sys.n ) = lambda;
+		
+		report("schur", p );
+	}
+
+
+}
+
+
+void KrylovSolver::solve_kkt(AssembledSystem::vec& x,
+                             const AssembledSystem& system,
+                             const AssembledSystem::vec& b,
+							 real damping) const {
+	params_type p = params(b);
+			
+	vec rhs = b;
+	if( system.n ) rhs.tail(system.n) = -rhs.tail(system.n);
+	
+	kkt A(system, parallel.getValue(), damping);
+	
+    solve_kkt_impl(x, A, rhs, p);
+    
+	report("kkt", p );
+}
+
 
 
 
