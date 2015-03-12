@@ -1,12 +1,12 @@
-<!-- Mechanical MassSpring Group Basic Example -->
+<?xml version="1.0"?>
 <Node name="root" dt="0.02" gravity="0 0 0">
-    <VisualStyle displayFlags="showBehaviorModels showMappings" />
-    <CollisionPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
-    <CollisionResponse response="default" />
-    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-    <CollisionGroup />
+
+    <VisualStyle displayFlags="showBehaviorModels showCollisionModels showForceFields" />
     
+    <CollisionPipeline/>
+    <BruteForceDetection/>
+    <CollisionResponse response="default" />
+    <DiscreteIntersection/>
     
     
     <EulerImplicit />
@@ -14,24 +14,22 @@
     
     
     <Node name="object1">        
-        <GridMeshCreator name="loader" filename="nofile" resolution="10 10" />
+        <GridMeshCreator name="loader" filename="nofile" resolution="2 2" />
         <Mesh src="@loader" />
         <MechanicalObject template="Vec3d" src="@loader" name="dof1" />
-        <UniformMass mass="1" />
-    
-    
+
         <Node name="object2">        
-            <GridMeshCreator name="loader" filename="nofile" resolution="10 10" translation="12 0 0" />
+            <GridMeshCreator name="loader" filename="nofile" resolution="2 2" translation="2 0 0" />
             <Mesh src="@loader" />
             <MechanicalObject template="Vec3d" src="@loader"  name="dof2"/>
-            <UniformMass mass="1" />
-            
             
             <Node name="concatenation">
-                <MechanicalObject template="Vec3d" name="dofall" showObject/>
+                <MechanicalObject template="Vec3d" name="dofall" showObject="1"/>
                 <IdentityMultiMapping template="Vec3d,Vec3d" input="@../../dof1 @../dof2" output="@./dofall" />
+                <Sphere radius="0.3" selfCollision="1"/>
+                <UniformMass mass="1" />
+                <ConstantForceField points="0" force="1 0 0"/>
             </Node>
-            
             
         </Node>
     
