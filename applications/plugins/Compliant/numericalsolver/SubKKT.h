@@ -26,6 +26,8 @@ public:
 
     static mat projection_basis(const mat& P);
 
+    SubKKT();
+
     // standard projected (1, 1) schur subsystem
     SubKKT(const AssembledSystem& system);
     
@@ -35,6 +37,24 @@ public:
 
     void solve(Response& response, vec& result, const vec& rhs) const;
     void solve(Response& response, cmat& result, const cmat& rhs) const; 
+
+
+    // adapt to response API for solving
+    class Adaptor {
+        Response& resp;
+        const SubKKT& sub;
+    public:
+
+        Adaptor(Response& resp, const SubKKT& sub): resp(resp), sub(sub) { }
+
+        void solve(vec& res, const vec& rhs) const { sub.solve(resp, res, rhs); }
+        void solve(cmat& res, const cmat& rhs) const { sub.solve(resp, res, rhs); }
+        
+    };
+
+    Adaptor adapt(Response& resp) const {
+        return Adaptor(resp, *this);
+    }
     
 };
 
