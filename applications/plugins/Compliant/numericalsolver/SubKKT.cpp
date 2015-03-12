@@ -1,21 +1,26 @@
 #include "SubKKT.h"
 #include "Response.h"
 
+#include "utils/scoped.h"
 
 namespace sofa {
 namespace component {
 namespace linearsolver {
 
 
-static SubKKT::mat projection_basis(const SubKKT::mat& P) {
-    SubKKT::mat res(P.rows(), P.nonZeros());
+typedef SubKKT::rmat rmat;
 
+// P must be diagonal with 0, 1 on the diagonal
+static void projection_basis(rmat& res, const rmat& P, bool* is_identity) {
+    res.resize(P.rows(), P.nonZeros());
+    res.setZero();
+    
     unsigned off = 0;
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
 
         res.startVec(i);
 
-        for(SubKKT::mat::InnerIterator it(P, i); it; ++it) {
+        for(rmat::InnerIterator it(P, i); it; ++it) {
             if( it.value() ) {
                 res.insertBack(i, off) = it.value();
             }
@@ -24,20 +29,49 @@ static SubKKT::mat projection_basis(const SubKKT::mat& P) {
         }
 
     }
-
-    return res;
+    res.finalize();
+    *is_identity = (off == P.rows() );
 }
 
-SubKKT SubKKT::projected_primal(const AssembledSystem& sys) {
-    SubKKT res;
 
-    // matrix P conveniently filters out 
-    res.P = projection_basis(sys.P);
+static void filter(rmat& res, const rmat& H, const rmat& P) {
+    res.resize(P.cols(), P.cols());
+    res.setZero();
+    
+    for(unsigned i = 0, n = P.rows(); i < n; ++i) {
+        for(rmat::InnerIterator it(P, i); it; ++it) {
+            // we have a non-zero row in P, hence in res at row
+            // it.col()
+            res.startVec(it.col());
 
-    // TODO optimize ?
-    res.A = res.P.transpose() * sys.H * res.P;
+            for(rmat::InnerIterator itH(H, i); itH; ++itH) {
+                
+                for(rmat::InnerIterator it2(P, itH.col()); it2; ++it2) {
+                    // we have a non-zero row in P, non-zero col in
+                    // res at col it2.col()
+                    res.insertBack(it.col(), it2.col()) = itH.value();
+                }
+                
+            }
+            
+            
+        }
+        
+    }
+    res.finalize();
+}
 
-    return res;
+void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
+    scoped::timer step("subsystem projection");
+    
+    // matrix P conveniently filters out
+    bool identity;
+    projection_basis(res.P, sys.P, &identity);
+
+    // TODO optimize
+    filter(res.A, sys.H, res.P);
+
+    res.Q = rmat();
 }
 
 
@@ -45,35 +79,36 @@ SubKKT::SubKKT() { }
 
 
 void SubKKT::factor(Response& resp) const {
+    scoped::timer step("subsystem factor");
     resp.factor(A);
 }
 
 
-void SubKKT::solve(Response& resp,
+void SubKKT::solve(const Response& resp,
                    vec& res,
                    const vec& rhs) const {
     assert( rhs.size() == size_full() );
     res.resize( size_full() );
 
-    tmp1.resize( size_sub() );
+    vtmp1.resize( size_sub() );
 
     if( P.cols() ) {
-        tmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
+        vtmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
     }
     if( Q.cols() ) {
-        tmp1.tail(Q.cols()).noalias() = Q.transpose() * rhs.tail(Q.rows());
+        vtmp1.tail(Q.cols()).noalias() = Q.transpose() * rhs.tail(Q.rows());
     }
     
     // system solve
-    resp.solve(tmp2, tmp1);
+    resp.solve(vtmp2, vtmp1);
 
     // remap
     if( P.cols() ) {
-        res.head(P.rows()).noalias() = P * tmp2.head(P.cols());
+        res.head(P.rows()).noalias() = P * vtmp2.head(P.cols());
     }
     
     if( Q.cols() ) {
-        res.head(Q.rows()).noalias() = Q * tmp2.tail(Q.cols());
+        res.head(Q.rows()).noalias() = Q * vtmp2.tail(Q.cols());
     }
 
 }
@@ -88,7 +123,7 @@ unsigned SubKKT::size_sub() const {
 }
 
 
-void SubKKT::solve(Response& resp,
+void SubKKT::solve(const Response& resp,
                    cmat& res,
                    const cmat& rhs) const {
     res.resize(rhs.rows(), rhs.cols());
@@ -97,12 +132,14 @@ void SubKKT::solve(Response& resp,
         throw std::logic_error("sorry, not implemented");
     }
     
-    cmat tmp1, tmp2;
-    
-    tmp1 = P.transpose() * rhs;
-    resp.solve(tmp2, tmp1);
-    
-    res = P * tmp2;
+    mtmp1 = P.transpose() * rhs;
+        
+    resp.solve(mtmp2, mtmp1);
+
+    mtmp3 = P;
+
+    // not sure if this causes a temporary
+    res = mtmp3 * mtmp2;
 }
 
 

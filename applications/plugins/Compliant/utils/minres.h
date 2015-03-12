@@ -27,7 +27,6 @@ struct minres  {
 
 	typedef typename krylov::vec vec;
 	typedef typename krylov::real real;
-	typedef typename krylov::natural natural;
 	typedef typename krylov::params params;
 
 	// solves (A - sigma I) x = b using minres. 
@@ -49,7 +48,7 @@ struct minres  {
 		data d;
 		d.residual( residual );
 
-		natural i;
+		unsigned i;
 		for( i = 0; i < p.iterations; ++i) {
 			if( d.phi <= p.precision) break;
 
@@ -71,7 +70,7 @@ struct minres  {
 	// contains all the data needed for minres iterations
 	struct data {
     
-		natural n;			// dimension 
+		unsigned n;			// dimension 
     
 		real beta;
 
@@ -92,7 +91,7 @@ struct minres  {
 
 		real eps;
 
-		natural k;			// iteration 
+		unsigned k;			// iteration 
     
 		// initializes minres given initial residual @r
 		void residual(const vec& r) {

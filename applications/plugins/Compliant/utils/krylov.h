@@ -10,12 +10,11 @@ struct krylov
     // some useful types
     typedef U real;
     typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
-    typedef unsigned int natural;
 
     struct params
     {
         params() : iterations(0), precision(0), restart(0) { }
-        natural iterations;
+        unsigned iterations;
         real precision;
         unsigned restart;
     };
