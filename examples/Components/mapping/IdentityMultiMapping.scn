@@ -1,0 +1,41 @@
+<!-- Mechanical MassSpring Group Basic Example -->
+<Node name="root" dt="0.02" gravity="0 0 0">
+    <VisualStyle displayFlags="showBehaviorModels showMappings" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionGroup />
+    
+    
+    
+    <EulerImplicit />
+    <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+    
+    
+    <Node name="object1">        
+        <GridMeshCreator name="loader" filename="nofile" resolution="10 10" />
+        <Mesh src="@loader" />
+        <MechanicalObject template="Vec3d" src="@loader" name="dof1" />
+        <UniformMass mass="1" />
+    
+    
+        <Node name="object2">        
+            <GridMeshCreator name="loader" filename="nofile" resolution="10 10" translation="12 0 0" />
+            <Mesh src="@loader" />
+            <MechanicalObject template="Vec3d" src="@loader"  name="dof2"/>
+            <UniformMass mass="1" />
+            
+            
+            <Node name="concatenation">
+                <MechanicalObject template="Vec3d" name="dofall" showObject/>
+                <IdentityMultiMapping template="Vec3d,Vec3d" input="@../../dof1 @../dof2" output="@./dofall" />
+            </Node>
+            
+            
+        </Node>
+    
+    </Node>
+        
+    
+</Node>
