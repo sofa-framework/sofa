@@ -43,11 +43,11 @@ namespace mapping
 template <class TIn, class TOut>
 void IdentityMultiMapping<TIn, TOut>::init()
 {
-    m_outSize = 0;
+    unsigned outSize = 0;
     for( unsigned i=0 ; i<this->fromModels.size() ; ++i )
-        m_outSize += this->fromModels.getSize();
+        outSize += this->fromModels[i]->getSize();
 
-    this->toModels[0]->resize( m_outSize );
+    this->toModels[0]->resize( outSize );
 
     Inherit::init();
 
@@ -67,8 +67,7 @@ void IdentityMultiMapping<TIn, TOut>::init()
 
         size_t inmatrixsize = this->fromModels[i]->getSize()*Nin;
 
-        jacobians[i]->resize( Nout*m_outSize, inmatrixsize ); // each jacobian has the same number of rows
-
+        jacobians[i]->resize( Nout*outSize, inmatrixsize ); // each jacobian has the same number of rows
 
         // fill the jacobian
         for(unsigned j=0; j<inmatrixsize; j++ )
@@ -93,20 +92,12 @@ IdentityMultiMapping<TIn, TOut>::~IdentityMultiMapping()
     }
 }
 
-template <class TIn, class TOut>
-const helper::vector<sofa::defaulttype::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
-{
-    return &baseMatrices;
-}
-
 
 
 template <class TIn, class TOut>
 void IdentityMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
 {
     OutVecCoord& out = *(dataVecOutPos[0]->beginEdit(mparams));
-
-    out.resize( m_outSize );
 
     unsigned offset = 0;
     for(unsigned i=0; i<dataVecInPos.size(); i++ )
@@ -127,8 +118,6 @@ template <class TIn, class TOut>
 void IdentityMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
 {
     OutVecDeriv& out = *(dataVecOutVel[0]->beginEdit(mparams));
-
-    out.resize( m_outSize );
 
     unsigned offset = 0;
     for(unsigned i=0; i<dataVecInVel.size(); i++ )
@@ -155,9 +144,9 @@ void IdentityMultiMapping<TIn, TOut>::applyJT(const core::MechanicalParams* mpar
     {
         InVecDeriv& out = *dataVecOutForce[i]->beginEdit(mparams);
 
-        for(unsigned int j=0; j<in.size(); j++)
+        for(unsigned int j=0; j<out.size(); j++)
         {
-            helper::eq( out[j], in[offset+j]);
+            helper::peq( out[j], in[offset+j]);
         }
 
         dataVecOutForce[i]->endEdit(mparams);
@@ -174,6 +163,12 @@ void IdentityMultiMapping<TIn, TOut>::applyJT( const core::ConstraintParams* /*c
     serr<<"applyJT on matrix is not implemented"<<serr;
 }
 
+
+template <class TIn, class TOut>
+const helper::vector<sofa::defaulttype::BaseMatrix*>* IdentityMultiMapping<TIn, TOut>::getJs()
+{
+    return &baseMatrices;
+}
 
 
 

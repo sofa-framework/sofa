@@ -90,8 +90,6 @@ protected :
 
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
-    size_t m_outSize; ///< size of the mapped state
-
 };
 
 
