@@ -9,6 +9,7 @@ namespace linearsolver {
 KrylovSolver::KrylovSolver() 
     : schur(initData(&schur, false, "schur", "perform solving on the schur complement. you *must* have a response component nearby in the graph."))
     , verbose(initData(&verbose, false, "verbose", "print debug stuff on std::cerr") )
+    , restart(initData(&restart, unsigned(0), "restart", "restart every n steps"))
     , parallel(initData(&parallel, false, "parallel", "use openmp to parallelize matrix-vector products when use_schur is false (parallelization per KKT blocks, 4 threads)"))
 {}
 
@@ -36,9 +37,10 @@ KrylovSolver::params_type KrylovSolver::params(const vec& rhs) const {
 	params_type res;
 	res.iterations = iterations.getValue();
 	res.precision = precision.getValue();
-				
-	if( relative.getValue() ) res.precision *= rhs.norm();
+	res.restart = restart.getValue();
 
+	if( relative.getValue() ) res.precision *= rhs.norm();
+    
 	return res;
 }
 

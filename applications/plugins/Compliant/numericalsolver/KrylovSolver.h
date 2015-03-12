@@ -25,6 +25,7 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
 	
 	Data<bool> schur;
 	Data<bool> verbose;
+    Data<unsigned> restart;
 	
 	virtual void init();
 	
