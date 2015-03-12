@@ -10,36 +10,64 @@ namespace linearsolver {
 
 class Response;
 
+
+/**
+
+   A factorization of a sub-system in an AssembledSystem.
+
+   For now, it only provides a way to factor the sub-kkt corresponding
+   to non-zero lines/columns in the projection matrix P.
+
+   @author Maxime Tournier
+
+ */
+
 class SubKKT {
+public:
     typedef AssembledSystem::mat mat;
     typedef AssembledSystem::cmat cmat;
     typedef AssembledSystem::vec vec;
-
+private:
     // primal/dual selection matrices
     mat P, Q;
 
     // filtered subsystem
     mat A;
 
+    // work vectors during solve
     mutable vec tmp1, tmp2;
 public:
 
-    static mat projection_basis(const mat& P);
-
     SubKKT();
 
-    // standard projected (1, 1) schur subsystem
-    SubKKT(const AssembledSystem& system);
-    
-    // TODO with dual projection matrix
-    
-    void factor(Response& response) const;
+    // named constructors
 
+    // standard projected (1, 1) schur subsystem (Q is
+    // empty). size_full = sys.m, size_sub = #(non-empty P elements)
+    static SubKKT projected_primal(const AssembledSystem& sys);
+
+    // TODO more ctors with non-zero Q
+    
+
+    // P.rows() + Q.rows()
+    unsigned size_full() const;
+
+    // P.cols() + Q.cols()
+    unsigned size_sub() const;
+
+    
+    // factor the sub-kkt
+    void factor(Response& response) const;
+    
+    // WARNING the API might change a bit here 
+
+    // solve for rhs vec/mat. rhs must be of size size_full(), result
+    // will be resized as needed.
     void solve(Response& response, vec& result, const vec& rhs) const;
     void solve(Response& response, cmat& result, const cmat& rhs) const; 
 
 
-    // adapt to response API for solving
+    // adaptor to response API for solving
     class Adaptor {
         Response& resp;
         const SubKKT& sub;

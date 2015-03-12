@@ -25,7 +25,6 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
 	
 	KrylovSolver();				
 	
-	Data<bool> schur;
 	Data<bool> verbose;
     Data<unsigned> restart;
 	
@@ -62,7 +61,7 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
 	virtual params_type params(const vec& rhs) const;
 
 	// again
-    void report(const char* what, const params_type& p) const;
+    void report(const params_type& p) const;
 
 
     typedef ::schur<SubKKT::Adaptor> schur_type;
