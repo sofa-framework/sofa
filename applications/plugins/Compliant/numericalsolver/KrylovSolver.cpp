@@ -32,7 +32,7 @@ void KrylovSolver::init() {
 
 void KrylovSolver::factor(const system_type& sys) {
 	if( response ) {
-        sub = SubKKT::projected_primal(sys);
+        SubKKT::projected_primal(sub, sys);
         sub.factor(*response);
     }
 }

@@ -25,7 +25,6 @@ struct bicgstab
 
     typedef typename krylov::vec vec;
     typedef typename krylov::real real;
-    typedef typename krylov::natural natural;
     typedef typename krylov::params params;
 
     // solves Ax = b using bicgstab.
@@ -51,7 +50,7 @@ struct bicgstab
 
 		d.residual( residual );
 
-        natural i;
+        unsigned i;
         for( i = 0; i < p.iterations && d.phi > p.precision; ++i)
         {
             d.step(x, A);
@@ -76,7 +75,7 @@ struct bicgstab
         real alpha;
         real rho;
 
-        natural k;		// iteration
+        unsigned k;		// iteration
 
         void residual( const vec& rr ) {
 

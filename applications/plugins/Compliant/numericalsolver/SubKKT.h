@@ -3,6 +3,7 @@
 
 #include "../initCompliant.h"
 #include "../assembly/AssembledSystem.h"
+#include "../utils/eigen_types.h"
 
 namespace sofa {
 namespace component {
@@ -22,20 +23,18 @@ class Response;
 
  */
 
-class SubKKT {
-public:
-    typedef AssembledSystem::mat mat;
-    typedef AssembledSystem::cmat cmat;
-    typedef AssembledSystem::vec vec;
+class SubKKT : public utils::eigen_types {
 private:
     // primal/dual selection matrices
-    mat P, Q;
+    rmat P, Q;
 
     // filtered subsystem
-    mat A;
+    rmat A;
 
     // work vectors during solve
-    mutable vec tmp1, tmp2;
+    mutable vec vtmp1, vtmp2;
+
+    mutable cmat mtmp1, mtmp2, mtmp3;
 public:
 
     SubKKT();
@@ -44,7 +43,7 @@ public:
 
     // standard projected (1, 1) schur subsystem (Q is
     // empty). size_full = sys.m, size_sub = #(non-empty P elements)
-    static SubKKT projected_primal(const AssembledSystem& sys);
+    static void projected_primal(SubKKT& res, const AssembledSystem& sys);
 
     // TODO more ctors with non-zero Q
     
@@ -63,8 +62,8 @@ public:
 
     // solve for rhs vec/mat. rhs must be of size size_full(), result
     // will be resized as needed.
-    void solve(Response& response, vec& result, const vec& rhs) const;
-    void solve(Response& response, cmat& result, const cmat& rhs) const; 
+    void solve(const Response& response, vec& result, const vec& rhs) const;
+    void solve(const Response& response, cmat& result, const cmat& rhs) const; 
 
 
     // adaptor to response API for solving
