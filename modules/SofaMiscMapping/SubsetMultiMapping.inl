@@ -44,13 +44,12 @@ namespace mapping
 template <class TIn, class TOut>
 void SubsetMultiMapping<TIn, TOut>::init()
 {
-
-    Inherit::init();
-
     assert( indexPairs.getValue().size()%2==0 );
     const unsigned indexPairSize = indexPairs.getValue().size()/2;
 
     this->toModels[0]->resize( indexPairSize );
+
+    Inherit::init();
 
 #ifdef SOFA_HAVE_EIGEN2
     unsigned Nin = TIn::deriv_total_size, Nout = Nin;
@@ -165,8 +164,6 @@ void SubsetMultiMapping<TIn, TOut>::apply(const core::MechanicalParams* mparams,
 
     OutVecCoord& out = *(dataVecOutPos[0]->beginEdit(mparams));
 
-
-    out.resize(indexPairs.getValue().size()/2);
     for(unsigned i=0; i<out.size(); i++)
     {
 //        cerr<<"SubsetMultiMapping<TIn, TOut>::apply, i = "<< i <<", indexPair = " << indexPairs[i*2] << ", " << indexPairs[i*2+1] <<", inPos size = "<< inPos.size() <<", inPos[i] = " << (*inPos[indexPairs[i*2]]) << endl;
@@ -186,7 +183,6 @@ void SubsetMultiMapping<TIn, TOut>::applyJ(const core::MechanicalParams* mparams
 {
     OutVecDeriv& out = *(dataVecOutVel[0]->beginEdit(mparams));
 
-    out.resize(indexPairs.getValue().size()/2);
     for(unsigned i=0; i<out.size(); i++)
     {
         const InDataVecDeriv* inDerivPtr = dataVecInVel[indexPairs.getValue()[i*2]];
