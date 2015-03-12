@@ -44,6 +44,17 @@ static void add(LValue& lval, const RValue& rval) {
     }
 }
 
+// hopefully avoids a temporary alloc/dealloc for product
+template<class LValue, class LHS, class RHS>
+static void add_prod(LValue& lval, const LHS& lhs, const RHS& rhs) {
+    if( empty(lval) ) {
+        lval = lhs * rhs;
+    } else {
+        // paranoia, i has it
+        lval = lval + lhs * rhs;
+    }
+}
+
 
 template<class dofs_type>
 static std::string pretty(dofs_type* dofs) {
