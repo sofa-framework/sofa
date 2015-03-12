@@ -14,9 +14,10 @@ struct krylov
 
     struct params
     {
-        params() : iterations(0), precision(0) { }
+        params() : iterations(0), precision(0), restart(0) { }
         natural iterations;
         real precision;
+        unsigned restart;
     };
 
 
