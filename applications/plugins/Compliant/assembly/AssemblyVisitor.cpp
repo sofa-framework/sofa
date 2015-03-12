@@ -527,19 +527,31 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 
 
 
+// keep temporaries allocated
+static AssemblyVisitor::mat tmp1, tmp2;
 
 // this is meant to optimize L^T D L products
-static inline AssemblyVisitor::mat ltdl(const AssemblyVisitor::mat& l,
-                                        const AssemblyVisitor::mat& d)
+static inline const AssemblyVisitor::mat& ltdl(const AssemblyVisitor::mat& l,
+                                               const AssemblyVisitor::mat& d)
 {
 //#ifdef _OPENMP
 //    return component::linearsolver::mul_EigenSparseMatrix_MT( l.transpose(), component::linearsolver::mul_EigenSparseMatrix_MT( d, l ) );
 //#else
-    return l.transpose() * (d * l);
+    tmp1 = d * l;
+    tmp2 = l.transpose() * tmp1;
+    return tmp2;
 //#endif
 }
 
 
+template<class ResType, class LType, class DType>
+static inline void add_ltdl(ResType& res,
+                            const LType& l,
+                            const DType& d) {
+    tmp1 = d * l;
+    tmp2 = l.transpose() * tmp1;
+    res += tmp2;
+}
 
 
 // produce actual system assembly
@@ -601,7 +613,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
 //            std::cerr<<res.H.rows()<<" "<<geometricStiffnessJc.rows()<<std::endl;
 
-            res.H += ltdl(geometricStiffnessJc, mparams->kFactor() * *Ktilde);
+            add_ltdl(res.H, geometricStiffnessJc, mparams->kFactor() * *Ktilde);
         }
 
     }
@@ -610,7 +622,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
     // Then add interaction forcefields
     for( InteractionForceFieldList::iterator it=interactionForceFieldList.begin(),itend=interactionForceFieldList.end();it!=itend;++it)
     {
-        res.H += ltdl(it->J, it->H);
+        add_ltdl(res.H, it->J, it->H);
     }
 
 
@@ -683,7 +695,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 #elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
                     add_shifted_right( H, ltdl(Jc, c.H), 0 );
 #else
-                    res.H += ltdl(Jc, c.H);
+                    add_ltdl(res.H, Jc, c.H);
 #endif
                 }
             }
