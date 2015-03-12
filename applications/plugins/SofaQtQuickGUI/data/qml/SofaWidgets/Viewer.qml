@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.3
 import SofaBasics 1.0
 import Viewer 1.0
 import Scene 1.0

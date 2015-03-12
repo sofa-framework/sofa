@@ -30,6 +30,9 @@ set(QML_FILES
                 data/qml/SofaDataTypes/DataType_0to1RatioWidget.qml
                 data/qml/SofaDataTypes/DataType_array.qml
                 data/qml/SofaDataTypes/DataType_boolean.qml
+                data/qml/SofaDataTypes/DataType_BoundingBox.qml
+                data/qml/SofaDataTypes/DataType_Material.qml
+                data/qml/SofaDataTypes/DataType_OptionsGroup.qml
                 data/qml/SofaDataTypes/DataType_graph_linear.qml
                 data/qml/SofaDataTypes/DataType_graph.qml
                 data/qml/SofaDataTypes/DataType_number.qml

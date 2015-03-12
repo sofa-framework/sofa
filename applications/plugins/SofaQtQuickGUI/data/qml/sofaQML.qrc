@@ -41,5 +41,8 @@
         <file>SofaDataTypes/DataType_string.qml</file>
         <file>SofaDataTypes/DataType_widget_displayFlags.qml</file>
         <file>SofaDataTypes/qmldir</file>
+        <file>SofaDataTypes/DataType_BoundingBox.qml</file>
+        <file>SofaDataTypes/DataType_Material.qml</file>
+        <file>SofaDataTypes/DataType_OptionsGroup.qml</file>
     </qresource>
 </RCC>
