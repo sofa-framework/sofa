@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.0
 import SceneData 1.0
 
@@ -8,8 +8,8 @@ GridLayout {
 
     columns: 4
 
-    columnSpacing: 0
-    rowSpacing: 0
+    columnSpacing: 1
+    rowSpacing: 1
 
     property Scene scene
     property var sceneData
@@ -26,16 +26,16 @@ GridLayout {
     QtObject {
         id: dataObject
 
+        property bool initing: true
         property string name
         property string type
         property var properties
         property var value
         property bool modified: false
 
-        property bool readOnly: root.readOnly || track.checked
+        property bool readOnly: initing || root.readOnly || properties.readOnly || track.checked || link.checked
 
-        property var editedValue
-        onEditedValueChanged: modified = true;
+        onValueChanged: modified = true
     }
 
     property int nameLabelWidth: -1
@@ -45,22 +45,25 @@ GridLayout {
         if(!sceneData)
             return;
 
-        var object = sceneData.object();
+        var object              = sceneData.object();
 
-        dataObject.name = object.name;
-        dataObject.type = object.type;
-        dataObject.properties = object.properties;
-        dataObject.value = object.value;
-        dataObject.editedValue = object.value;
+        dataObject.initing      = true;
 
-        dataObject.modified = false;
+        dataObject.name         = object.name;
+        dataObject.type         = object.type;
+        dataObject.properties   = object.properties;
+        dataObject.value        = object.value;
+
+        dataObject.initing      = false;
+
+        dataObject.modified     = false;
     }
 
     function updateData() {
         if(!sceneData)
             return;
 
-        sceneData.setValue(dataObject.editedValue);
+        sceneData.setValue(dataObject.value);
         updateObject();
 
         dataObject.modified = false;
@@ -72,42 +75,70 @@ GridLayout {
         Layout.preferredWidth: -1 === nameLabelWidth ? implicitWidth : nameLabelWidth
     }
 
-    Loader {
-        id: loader
+    Column {
         Layout.fillWidth: true
-        asynchronous: false
 
-        Component.onCompleted: createItem();
-        Connections {
-            target: root
-            onSceneDataChanged: loader.createItem();
+        RowLayout {
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            TextField {
+                id: linkTextField
+                Layout.fillWidth: true
+                visible: link.checked
+                placeholderText: "Link: @./path/component.data"
+            }
+/*
+            Image {
+                source: "qrc:/icon/ok.png"
+            }
+*/
         }
 
-        function createItem() {
-            var type = root.type;
-            var properties = root.properties;
+        Loader {
+            id: loader
+            anchors.left: parent.left
+            anchors.right: parent.right
+            asynchronous: false
 
-            if(0 === type.length) {
-                type = typeof(root.value);
-
-                if("object" === type)
-                    if(Array.isArray(value))
-                        type = "array";
+            Component.onCompleted: createItem();
+            Connections {
+                target: root
+                onSceneDataChanged: loader.createItem();
             }
 
-            loader.setSource("qrc:/SofaDataTypes/DataType_" + type + ".qml", {"dataObject": dataObject});
-            if(Loader.Ready !== loader.status)
-                loader.sourceComponent = dataTypeNotSupportedComponent;
+            function createItem() {
+                var type = root.type;
+                var properties = root.properties;
 
-            dataObject.modified = false;
+                if(0 === type.length) {
+                    type = typeof(root.value);
+
+                    if("object" === type)
+                        if(Array.isArray(value))
+                            type = "array";
+                }
+
+                if("undefined" === type) {
+                    loader.source = "";
+                    console.warn("Type unknown for data: " + name);
+                } else {
+                    //console.log(type, name);
+                    loader.setSource("qrc:/SofaDataTypes/DataType_" + type + ".qml", {"dataObject": dataObject});
+                    if(Loader.Ready !== loader.status)
+                        loader.sourceComponent = dataTypeNotSupportedComponent;
+                }
+
+                dataObject.modified = false;
+            }
         }
     }
 
     Button {
+        id: link
         Layout.preferredWidth: 14
         Layout.preferredHeight: Layout.preferredWidth
         checkable: true
-        //iconSource: "qrc:/icon/link.png"
 
         Image {
             anchors.fill: parent
@@ -120,6 +151,8 @@ GridLayout {
         Layout.preferredWidth: 20
         Layout.preferredHeight: Layout.preferredWidth
         checked: false
+
+        onClicked: root.updateObject();
 
         // update every 50ms during simulation
         Timer {
@@ -137,7 +170,13 @@ GridLayout {
     }
 
     Button {
-        Layout.columnSpan: 4
+        visible: dataObject.modified
+        text: "Undo"
+        onClicked: root.updateObject();
+    }
+
+    Button {
+        Layout.columnSpan: 3
         Layout.fillWidth: true
         visible: dataObject.modified
         text: "Update"

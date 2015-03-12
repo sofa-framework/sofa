@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.0
 
 Loader {
@@ -9,24 +9,17 @@ Loader {
 
     sourceComponent: {
         if(dataObject.properties.static) {
-            if(1 === value.length) {
-                if(dataObject.properties.innerStatic && dataObject.properties.cols > 7)
-                    return staticArrayView;
-                else
-                    return staticSmallArrayView;
-            }
-            else if(dataObject.value.length <= 7) {
-                if(dataObject.properties.innerStatic)
-                    return staticInStaticTableView;
-                else
-                    return staticSmallArrayView;
-            }
+            if((!dataObject.properties.innerStatic && dataObject.value.length <= 7) ||
+               (dataObject.properties.innerStatic && 1 === dataObject.value.length && dataObject.properties.cols <= 7))
+                return staticSmallArrayView;
+            else if(dataObject.properties.innerStatic && dataObject.properties.cols <= 7)
+                return staticInStaticTableView;
             else
                 return staticArrayView;
         }
         else {
             if(dataObject.properties.innerStatic) {
-                if(dataObject.value.length <= 7)
+                if(dataObject.properties.cols <= 7)
                     return staticInDynamicTableView;
                 else
                     return dynamicArrayView;
@@ -48,7 +41,7 @@ Loader {
                     movable: false
                     resizable: false
                     horizontalAlignment: Text.AlignHCenter
-                    width: tableView.width / tableView.columnCount - 1
+                    width: (tableView.width - 14) / tableView.columnCount - 1
                 }
             }
 
@@ -57,33 +50,100 @@ Loader {
                     addColumn(columnComponent.createObject(tableView, {"title": i.toString(), "role": "c" + i.toString()}));
             }
 
-            property real rowHeight: 18
-            implicitHeight: Math.max(2, Math.min(rowCount, 6)) * rowHeight
+            Connections {
+                target: dataObject
+                onValueChanged: {
+                    listModel.update();
+
+                    dataObject.modified = false;
+                }
+            }
 
             model: ListModel {
+                id: listModel
+
                 Component.onCompleted: populate();
 
-                function populate() {
-                    clear();
+                property int previousCount: 0
 
-                    for(var j = 0; j < dataObject.value.length; ++j) {
+                function populate() {
+                    var newCount = dataObject.value.length;
+                    if(previousCount < newCount)
+                        for(var j = previousCount; j < newCount; ++j) {
+                            var values = {};
+                            for(var i = previousCount; i < dataObject.properties.cols; ++i)
+                                values["c" + i.toString()] = dataObject.value[j][i];
+
+                            append(values);
+                        }
+                    else if(previousCount > newCount)
+                        remove(newCount, previousCount - newCount);
+
+                    previousCount = count;
+                }
+
+                function update() {
+                    if(count !== dataObject.value.length)
+                        populate();
+
+                    for(var j = 0; j < count; ++j) {
                         var values = {};
-                        for(var i = 0; i < dataObject.value[j].length; ++i)
+                        for(var i = previousCount; i < dataObject.properties.cols; ++i)
                             values["c" + i.toString()] = dataObject.value[j][i];
 
-                        append(values);
+                            set(j, values);
                     }
                 }
             }
 
-            itemDelegate: TextEdit {
-                //anchors.centerIn: parent.Center
-                readOnly: dataObject.readOnly
+            function populate() {
+                listModel.populate();
+            }
+
+            function update() {
+                listModel.update();
+            }
+
+            itemDelegate: TextInput {
+                anchors.fill: parent
+                anchors.leftMargin: 6
+                anchors.rightMargin: 6
+                clip: true
+                readOnly: -1 === styleData.row || dataObject.readOnly
                 color: styleData.textColor
                 horizontalAlignment: TextEdit.AlignHCenter
-                //elide: styleData.elideMode
-                text: styleData.value
-                onTextChanged: dataObject.editedValue = text
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+                text: {
+                    if(-1 !== styleData.row) {
+                        var value = dataObject.value[styleData.row][styleData.column];
+                        if("string" === typeof(value))
+                            return value;
+                        else
+                            return value.toFixed(3);
+                    }
+
+                    return "";
+                }
+                property int previousRow: -1
+                onTextChanged: {
+                    if(-1 === styleData.row || dataObject.readOnly)
+                        return;
+
+                    if(previousRow !== styleData.row) {
+                        previousRow = styleData.row;
+                        return;
+                    }
+
+                    var oldValue = dataObject.value[styleData.row][styleData.column];
+                    if("string" !== typeof(oldValue))
+                        oldValue = oldValue.toFixed(3);
+
+                    var value = text;
+                    if(value !== oldValue) {
+                        dataObject.value[styleData.row][styleData.column] = value;
+                        dataObject.modified = true;
+                    }
+                }
             }
         }
     }
@@ -110,9 +170,8 @@ Loader {
                     innerArray = true;
                 }
 
-                //TODO: choose between textField and spinBox
                 useSpinBox = false;
-                if(values.length <= 4)
+                if(values.length <= 4 && "string" !== typeof(values[0])) // TODO: WARNING : could be mixed types array (string, number, etc.)
                     useSpinBox = true;
 
                 fields = [];
@@ -132,39 +191,29 @@ Loader {
 
                 for(var i = 0; i < values.length; ++i) {
                     if(useSpinBox)
-                        fields[i].value = Number(values[i]);
+                        fields[i].value = values[i];
                     else
-                        fields[i].text = Number(values[i]);
+                        fields[i].text = values[i];
                 }
             }
-
-            property real rowHeight: 24
 
             Component {
                 id: textFieldComponent
 
                 TextField {
                     Layout.fillWidth: true
-                    validator: DoubleValidator {}
                     readOnly: dataObject.readOnly
                     enabled: !dataObject.readOnly
 
                     property int index
                     onTextChanged: {
                         if(rowLayout.innerArray)
-                            dataObject.editedValue[0][index] = Number(text);
+                            dataObject.value[0][index] = text;
                         else
-                            dataObject.editedValue[index] = Number(text);
+                            dataObject.value[index] = text;
 
                         dataObject.modified = true;
                     }
-                    //Layout.preferredHeight: rowHeight
-/*
-                    decimals: 3
-                    minimumValue: undefined !== dataObject.properties.min ? dataObject.properties.min : -Number.MAX_VALUE
-                    maximumValue: undefined !== dataObject.properties.max ? dataObject.properties.max :  Number.MAX_VALUE
-                    stepSize: undefined !== dataObject.properties.step ? dataObject.properties.step : 1
-*/
                 }
             }
 
@@ -173,15 +222,14 @@ Loader {
 
                 SpinBox {
                     Layout.fillWidth: true
-                    //Layout.preferredHeight: rowHeight
                     enabled: !dataObject.readOnly
 
                     property int index
                     onValueChanged: {
                         if(rowLayout.innerArray)
-                            dataObject.editedValue[0][index] = value;
+                            dataObject.value[0][index] = value;
                         else
-                            dataObject.editedValue[index] = value;
+                            dataObject.value[index] = value;
 
                         dataObject.modified = true;
                     }
@@ -196,68 +244,77 @@ Loader {
                 target: dataObject
                 onValueChanged: rowLayout.update();
             }
-
-            //"Static in Dynamic Array: " + dataObject.value
         }
     }
 
     Component {
         id: staticArrayView
         TextField {
+            id: textField
             readOnly: dataObject.readOnly
             enabled: !dataObject.readOnly
             text: undefined !== dataObject.value ? dataObject.value.toString() : ""
-            onTextChanged: dataObject.editedValue = text
+
+            Binding {
+                target: dataObject
+                property: "value"
+                value: textField.text
+            }
         }
     }
 
     Component {
         id: staticInDynamicTableView
 
-        Column {
-            SpinBox {
-                id: rowNumber
-                value: dataObject.value.length
-                onValueChanged: dataObject.editedValue = value
-                enabled: !dataObject.readOnly
-            }
-            TableView {
-                enabled: !dataObject.readOnly
+        ColumnLayout {
+            spacing: 0
 
-                TableViewColumn {
-                    id: titleColumn
-                    title: "Value"
-                    role: "value"
-                    movable: false
-                    resizable: false
-                    //width: tableView.viewport.width - authorColumn.width
+            RowLayout {
+                Layout.fillWidth: true
+
+                Text {
+                    text: "Size"
                 }
+                SpinBox {
+                    id: rowNumber
+                    enabled: !dataObject.readOnly && showEditButton.checked
+                    Layout.fillWidth: true
+                    value: dataObject.value.length
+                    onEditingFinished: {
+                        if(value === dataObject.value.length)
+                            return;
 
-                model: ListModel {
-                    ListElement {value: "staticInDynamicTableView"}
-                    /*Component.onCompleted: populate();
+                        var oldLength = dataObject.value.length;
+                        dataObject.value.length = value;
+                        for(var j = oldLength; j < dataObject.value.length; ++j) {
+                            dataObject.value[j] = [];
+                            for(var i = 0; i < dataObject.properties.cols; ++i)
+                                dataObject.value[j][i] = 0;
+                        }
 
-                    function populate() {
-                        clear();
+                        dataObject.modified = true;
 
-                        for(var i = 0; i < dataObject.value.length; ++i)
-                            append({"name": dataObject.value[i]});
-                    }*/
-                }
-
-                itemDelegate: Item {
-                    TextField {
-                        readOnly: dataObject.readOnly
-                        anchors.verticalCenter: parent.verticalCenter
-                        //color: styleData.textColor
-                        //elide: styleData.elideMode
-                        text: styleData.value
-                        onTextChanged: dataObject.editedValue = text
+                        if(loader.item)
+                            loader.item.populate();
                     }
-                }
 
-                //rowCount: rowNumber.value
-                //columnCount: dataObject.properties.cols
+                    minimumValue: 0
+                    maximumValue: Number.MAX_VALUE
+                }
+                Button {
+                    id: showEditButton
+                    text: "Show / Edit"
+                    checkable: true
+                }
+            }
+
+            Loader {
+                id: loader
+                Layout.fillWidth: true
+                visible: showEditButton.checked
+                enabled: !dataObject.readOnly
+                active: visible
+                sourceComponent: staticInStaticTableView
             }
         }
     }
@@ -266,11 +323,23 @@ Loader {
         id: dynamicArrayView
 
         TextField {
+            id: textField
             readOnly: dataObject.readOnly
             enabled: !dataObject.readOnly
-            text: undefined !== dataObject.value ? dataObject.value.toString() : ""
-            onTextChanged: dataObject.editedValue = text
+
+            onTextChanged: {
+                if(!dataObject.readOnly)
+                    if(Array.isArray(dataObject.value))
+                        dataObject.value = text.split(' ')
+                    else
+                        dataObject.value = text
+            }
+
+            Binding {
+                target: textField
+                property: "text"
+                value: Array.isArray(dataObject.value) ? dataObject.value.join(' ') : dataObject.value
+            }
         }
     }
 }
-
