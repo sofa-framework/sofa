@@ -215,10 +215,12 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
             expectedDifferencePotentialEnergy = expectedDifferencePotentialEnergy - dot(dX[i],curF[i]);
         }
 
-        double absoluteErrorPotentialEnergy = differencePotentialEnergy - expectedDifferencePotentialEnergy;
-
+        double absoluteErrorPotentialEnergy = fabsf(differencePotentialEnergy - expectedDifferencePotentialEnergy);
         if( absoluteErrorPotentialEnergy> errorMax*this->epsilon() ){
-            ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F" << endl << "Failed seed number = " << BaseSofa_test::seed << endl;
+            ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F" << endl
+                        << "dPotentialEnergy is " << differencePotentialEnergy << endl
+                        << "-dX.F is" << expectedDifferencePotentialEnergy << endl
+                        << "Failed seed number = " << BaseSofa_test::seed << endl;
         }
 
         // check computeDf: compare its result to actual change
@@ -230,6 +232,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         node->execute(computeDf);
         VecDeriv dF;
         copyFromData( dF, dof->readForces() );
+
         if( this->vectorMaxDiff(changeOfForce,dF)> errorMax*this->epsilon() ){
             ADD_FAILURE()<<"dF differs from change of force" << endl << "Failed seed number = " << BaseSofa_test::seed << endl;
         }

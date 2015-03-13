@@ -4,9 +4,11 @@
 #include "SofaQtQuickGUI.h"
 
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/common/MutationListener.h>
 
 #include <QObject>
 #include <QVariant>
+#include <QSet>
 #include <QVector3D>
 #include <QUrl>
 
@@ -55,9 +57,11 @@ private:
 
 };
 
-class Scene : public QObject
+class Scene : public QObject, private sofa::simulation::MutationListener
 {
     Q_OBJECT
+
+    friend class SceneComponent;
 
 public:
     explicit Scene(QObject *parent = 0);
@@ -147,23 +151,30 @@ signals:
     void reseted();
 
 private slots:
-	void open();
+	void open();    
 
 public:
 	sofa::simulation::Simulation* sofaSimulation() const {return mySofaSimulation;}
 
-private:
-	Status							myStatus;
-	QUrl							mySource;
-	QUrl							mySourceQML;
-	bool							myIsInit;
-	bool							myVisualDirty;
-	double							myDt;
-	bool							myPlay;
-	bool							myAsynchronous;
+protected:
+    void addChild(sofa::simulation::Node* parent, sofa::simulation::Node* child);
+    void removeChild(sofa::simulation::Node* parent, sofa::simulation::Node* child);
+    void addObject(sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
+    void removeObject(sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
 
-	sofa::simulation::Simulation*	mySofaSimulation;
-    QTimer*							myStepTimer;
+private:
+    Status                                  myStatus;
+    QUrl                                    mySource;
+    QUrl                                    mySourceQML;
+    bool                                    myIsInit;
+    bool                                    myVisualDirty;
+    double                                  myDt;
+    bool                                    myPlay;
+    bool                                    myAsynchronous;
+
+    sofa::simulation::Simulation*           mySofaSimulation;
+    QTimer*                                 myStepTimer;
+    QSet<sofa::core::objectmodel::Base*>    myBases;
 };
 
 }
