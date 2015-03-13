@@ -282,11 +282,16 @@ const vector<sofa::defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOu
 template <class TIn, class TOut>
 const defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
 {
-    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
-    if( !geometricStiffness ) return NULL;
+    return &K;
+}
 
-//    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*this->toModel->read(core::ConstVecDerivId::force()));
-    const OutVecDeriv& childForce = this->toModel->readForces().ref();
+template <class TIn, class TOut>
+void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
+{
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    if( !geometricStiffness ) { K.resize(0,0); return; }
+
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get(mparams)].read() );
     helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
 
@@ -321,8 +326,6 @@ const defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
         }
     }
     K.compress();
-
-    return &K;
 }
 
 

@@ -137,6 +137,8 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
@@ -270,9 +272,12 @@ public:
     virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
     virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
     virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
+    virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) {}
     virtual void applyDJT(const core::MechanicalParams*, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce);
 
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
