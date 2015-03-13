@@ -179,11 +179,6 @@ void TriangleDeformationMapping<TIn, TOut>::apply(const core::MechanicalParams *
 
 }
 
-//template <class TIn, class TOut>
-//void TriangleDeformationMapping<TIn, TOut>::computeGeometricStiffness(const core::MechanicalParams *mparams)
-//{
-
-//}
 
 template <class TIn, class TOut>
 void TriangleDeformationMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)

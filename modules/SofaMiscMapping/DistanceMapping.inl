@@ -192,43 +192,51 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get(mparams)].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
-    const SReal kfactor = mparams->kFactor();
+    const SReal& kfactor = mparams->kFactor();
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (*mparams->readF(this->toModel));
-    SeqEdges links = edgeContainer->getEdges();
 
-    for(unsigned i=0; i<links.size(); i++ )
+    if( K.compressedMatrix.nonZeros() )
     {
-        // force in compression (>0) can lead to negative eigen values in geometric stiffness
-        // this results in a undefinite implicit matrix that causes instabilies
-        // if stabilized GS (geometricStiffness==2) -> keep only force in extension
-        if( childForce[i][0] < 0 || geometricStiffness==1 )
-        {
-            sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
-            for(unsigned j=0; j<Nin; j++)
-            {
-                for(unsigned k=0; k<Nin; k++)
-                {
-                    if( j==k )
-                        b[j][k] = 1. - directions[i][j]*directions[i][k];
-                    else
-                        b[j][k] =    - directions[i][j]*directions[i][k];
-                }
-            }
-            b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
-            // note that computing a block is not efficient here, but it would make sense for storing a stiffness matrix
+        K.addMult( parentForce.wref(), parentDisplacement.ref(), kfactor );
+    }
+    else
+    {
+        SeqEdges links = edgeContainer->getEdges();
 
-            InDeriv dx = parentDisplacement[links[i][1]] - parentDisplacement[links[i][0]];
-            InDeriv df;
-            for(unsigned j=0; j<Nin; j++)
+        for(unsigned i=0; i<links.size(); i++ )
+        {
+            // force in compression (>0) can lead to negative eigen values in geometric stiffness
+            // this results in a undefinite implicit matrix that causes instabilies
+            // if stabilized GS (geometricStiffness==2) -> keep only force in extension
+            if( childForce[i][0] < 0 || geometricStiffness==1 )
             {
-                for(unsigned k=0; k<Nin; k++)
+                sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+                for(unsigned j=0; j<Nin; j++)
                 {
-                    df[j]+=b[j][k]*dx[k];
+                    for(unsigned k=0; k<Nin; k++)
+                    {
+                        if( j==k )
+                            b[j][k] = 1. - directions[i][j]*directions[i][k];
+                        else
+                            b[j][k] =    - directions[i][j]*directions[i][k];
+                    }
                 }
+                b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
+                // note that computing a block is not efficient here, but it would make sense for storing a stiffness matrix
+
+                InDeriv dx = parentDisplacement[links[i][1]] - parentDisplacement[links[i][0]];
+                InDeriv df;
+                for(unsigned j=0; j<Nin; j++)
+                {
+                    for(unsigned k=0; k<Nin; k++)
+                    {
+                        df[j]+=b[j][k]*dx[k];
+                    }
+                }
+                parentForce[links[i][0]] -= df;
+                parentForce[links[i][1]] += df;
+         //       cerr<<"DistanceMapping<TIn, TOut>::applyDJT, df = " << df << endl;
             }
-            parentForce[links[i][0]] -= df;
-            parentForce[links[i][1]] += df;
-     //       cerr<<"DistanceMapping<TIn, TOut>::applyDJT, df = " << df << endl;
         }
     }
 }
@@ -252,15 +260,16 @@ const vector<sofa::defaulttype::BaseMatrix*>* DistanceMapping<TIn, TOut>::getJs(
     return &baseMatrices;
 }
 
+
+
 template <class TIn, class TOut>
-const defaulttype::BaseMatrix* DistanceMapping<TIn, TOut>::getK()
+void DistanceMapping<TIn, TOut>::updateK(const core::MechanicalParams *mparams, core::ConstMultiVecDerivId childForceId )
 {
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
-    if( !geometricStiffness ) return NULL;
+    if( !geometricStiffness ) { K.resize(0,0); return; }
 
 
-//    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*this->toModel->read(core::ConstVecDerivId::force()));
-    const OutVecDeriv& childForce = this->toModel->readForces().ref();
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[this->toModel.get(mparams)].read() );
     SeqEdges links = edgeContainer->getEdges();
 
     unsigned int size = this->fromModel->getSize();
@@ -296,10 +305,11 @@ const defaulttype::BaseMatrix* DistanceMapping<TIn, TOut>::getK()
         }
     }
     K.compress();
+}
 
-//    serr<<childForce<<sendl;
-//    serr<<K<<sendl;
-
+template <class TIn, class TOut>
+const defaulttype::BaseMatrix* DistanceMapping<TIn, TOut>::getK()
+{
     return &K;
 }
 
@@ -638,12 +648,12 @@ const vector<sofa::defaulttype::BaseMatrix*>* DistanceMultiMapping<TIn, TOut>::g
 }
 
 template <class TIn, class TOut>
-const defaulttype::BaseMatrix* DistanceMultiMapping<TIn, TOut>::getK()
+void DistanceMultiMapping<TIn, TOut>::updateK(const core::MechanicalParams */*mparams*/, core::ConstMultiVecDerivId childForceId )
 {
     const unsigned& geometricStiffness = d_geometricStiffness.getValue();
-    if( !geometricStiffness ) return NULL;
+    if( !geometricStiffness ) { K.resize(0,0); return; }
 
-    const OutVecDeriv& childForce = this->getToModels()[0]->readForces().ref();
+    helper::ReadAccessor<Data<OutVecDeriv> > childForce( *childForceId[(const core::State<TOut>*)this->getToModels()[0]].read() );
     SeqEdges links = edgeContainer->getEdges();
     const vector<defaulttype::Vec2i>& pairs = d_indexPairs.getValue();
 
@@ -700,10 +710,12 @@ const defaulttype::BaseMatrix* DistanceMultiMapping<TIn, TOut>::getK()
         }
     }
     K.compress();
+}
 
-//    std::cerr<<SOFA_CLASS_METHOD<<"K : "<<K<<std::endl;
 
-
+template <class TIn, class TOut>
+const defaulttype::BaseMatrix* DistanceMultiMapping<TIn, TOut>::getK()
+{
     return &K;
 }
 
