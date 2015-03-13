@@ -4,6 +4,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include "../utils/scoped.h"
+#include "../utils/sparse.h"
 
 using std::cerr;
 using std::endl;
@@ -67,6 +68,8 @@ void LDLTSolver::factor_schur( const cmat& schur )
     }
 }
 
+static LDLTSolver::cmat tmp;
+
 void LDLTSolver::factor(const AssembledSystem& sys) {
 
     // response matrix
@@ -79,9 +82,15 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
     if( sys.n ) {
         {
             scoped::timer step("schur assembly");
-            sub.solve(*response, pimpl->HinvPJT, sys.J.transpose() );
+            // sub.solve(*response, pimpl->HinvPJT, sys.J.transpose() );
+            sub.solve_opt(*response, pimpl->HinvPJT, sys.J );
+
+            tmp = sys.J;
+            pimpl->schur = sys.C.transpose();
+            sparse::fast_add_prod(pimpl->schur, tmp, pimpl->HinvPJT);
+            
+            // pimpl->schur = sys.C.transpose() + (sys.J * pimpl->HinvPJT).triangularView<Eigen::Lower>();
         }
-        pimpl->schur = sys.C.transpose() + (sys.J * pimpl->HinvPJT).triangularView<Eigen::Lower>();
         factor_schur( pimpl->schur );
     }
 

@@ -63,7 +63,11 @@ public:
     // solve for rhs vec/mat. rhs must be of size size_full(), result
     // will be resized as needed.
     void solve(const Response& response, vec& result, const vec& rhs) const;
-    void solve(const Response& response, cmat& result, const cmat& rhs) const; 
+    void solve(const Response& response, cmat& result, const cmat& rhs) const;
+
+
+    // this one transposes rhs before solving (avoids temporary)
+    void solve_opt(const Response& response, cmat& result, const rmat& rhs) const; 
 
 
     // adaptor to response API for solving
