@@ -34,6 +34,8 @@ set(HEADER_FILES
     PCAOnRigidFrameMapping.inl
     CatmullRomSplineMapping.h
     CatmullRomSplineMapping.inl
+    IdentityMultiMapping.h
+    IdentityMultiMapping.inl
 
     )
 
@@ -56,6 +58,7 @@ set(SOURCE_FILES
     DeformableOnRigidFrameMapping.cpp
     PCAOnRigidFrameMapping.cpp
     CatmullRomSplineMapping.cpp
+    IdentityMultiMapping.cpp
 
     )
 
