@@ -215,7 +215,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
             expectedDifferencePotentialEnergy = expectedDifferencePotentialEnergy - dot(dX[i],curF[i]);
         }
 
-        double absoluteErrorPotentialEnergy = fabsf(differencePotentialEnergy - expectedDifferencePotentialEnergy);
+        double absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
         if( absoluteErrorPotentialEnergy> errorMax*this->epsilon() ){
             ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F" << endl
                         << "dPotentialEnergy is " << differencePotentialEnergy << endl
