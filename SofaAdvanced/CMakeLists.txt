@@ -47,10 +47,8 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/sofa/SofaAdvanced.h
 set(SOFAADVANCED_TARGETS SofaEulerianFluid SofaSphFluid SofaVolumetricData SofaNonUniformFem SofaComponentAdvanced)
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})
-  add_subdirectory(${SofaAdvanced_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-  if(MSVC)
-    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaAdvanced")
-  endif()
+    add_subdirectory(${SofaAdvanced_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaAdvanced") # IDE folder
 endforeach()
 
 include(CMakePackageConfigHelpers)

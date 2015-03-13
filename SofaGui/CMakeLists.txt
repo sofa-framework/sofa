@@ -76,14 +76,12 @@ add_subdirectory(${SofaGui_ACTUAL_SOURCE_DIR}/SofaGuiMain ${CMAKE_CURRENT_BINARY
 # applications
 if(Qt4_FOUND)
     add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/Modeler            ${CMAKE_CURRENT_BINARY_DIR}/Modeler)
+    add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/runSofa            ${CMAKE_CURRENT_BINARY_DIR}/runSofa)
+    list(APPEND SOFAGUI_TARGETS Modeler runSofa)
 endif(Qt4_FOUND)
-add_subdirectory(${SofaProjects_ACTUAL_SOURCE_DIR}/runSofa            ${CMAKE_CURRENT_BINARY_DIR}/runSofa)
 
 foreach(TARGET ${SOFAGUI_TARGETS})
-  # set IDE project filter
-  if(MSVC)
-    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui")
-  endif()
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui") # IDE folder
 endforeach()
 
 configure_file( ${SofaGui_SOURCE_DIR}/SofaGui.h.in

@@ -164,13 +164,10 @@ if(SOFA_HAVE_GTEST)
     add_subdirectory( ${SofaFramework_ACTUAL_SOURCE_DIR}/framework_test        ${CMAKE_CURRENT_BINARY_DIR}/framework_test )
 endif()
 
-# set IDE project filter
-if(MSVC)
-    #message("${PROJECT_NAME} in ${GLOBAL_PROJECT_OPTION_FOLDER_${PROJECT_NAME}}")
-    set_target_properties(SofaHelper      PROPERTIES FOLDER "SofaFramework")
-    set_target_properties(SofaDefaultType PROPERTIES FOLDER "SofaFramework")
-    set_target_properties(SofaCore        PROPERTIES FOLDER "SofaFramework")
-endif()
+# IDE folder
+set_target_properties(SofaHelper PROPERTIES FOLDER "SofaFramework")
+set_target_properties(SofaDefaultType PROPERTIES FOLDER "SofaFramework")
+set_target_properties(SofaCore PROPERTIES FOLDER "SofaFramework")
 
 include(CMakePackageConfigHelpers)
 
