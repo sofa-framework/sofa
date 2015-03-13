@@ -58,7 +58,6 @@ NormalsFromPoints<DataTypes>::NormalsFromPoints()
 template <class DataTypes>
 void NormalsFromPoints<DataTypes>::init()
 {
-    mstate = dynamic_cast< sofa::core::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     addInput(&position);
     addInput(&triangles);
     addInput(&quads);
