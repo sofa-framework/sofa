@@ -14,6 +14,7 @@
 #include <sofa/helper/system/glut.h>
 #include <SofaComponentMain/init.h>
 
+#include <sstream>
 #include <qqml.h>
 #include <QtCore/QCoreApplication>
 #include <QVector3D>
@@ -52,24 +53,8 @@ const Base* SceneComponent::base() const
 {
     // check object existence
     if(myScene && myBase)
-    {
-        QStack<Node*> nodes;
-        nodes.push(myScene->sofaSimulation()->GetRoot().get());
-
-        while(!nodes.empty())
-        {
-            Node* node = nodes.pop();
-            if(myBase == node)
-                return myBase;
-
-            for(unsigned int i = 0; i < node->object.size(); ++i)
-                if(myBase == node->object[i])
-                    return myBase;
-
-            for(unsigned int i = 0; i < node->child.size(); ++i)
-                nodes.push(node->child[i].get());
-        }
-    }
+        if(myScene->myBases.contains(myBase))
+            return myBase;
 
     myBase = 0;
     return myBase;
@@ -124,7 +109,8 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	myPlay(false),
 	myAsynchronous(true),
 	mySofaSimulation(0),
-    myStepTimer(new QTimer(this))
+    myStepTimer(new QTimer(this)),
+    myBases()
 {
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
@@ -152,6 +138,7 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	connect(this, &Scene::sourceChanged, this, &Scene::open);
 	connect(this, &Scene::playChanged, myStepTimer, [&](bool newPlay) {newPlay ? myStepTimer->start() : myStepTimer->stop();});
 	connect(this, &Scene::statusChanged, this, [&](Scene::Status newStatus) {if(Scene::Status::Ready == newStatus) loaded();});
+    connect(this, &Scene::aboutToUnload, this, [&]() {myBases.clear();});
 
     connect(myStepTimer, &QTimer::timeout, this, &Scene::step);
 }
@@ -251,8 +238,9 @@ void Scene::open()
 		LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
         connect(loaderThread, &QThread::finished, this, [this, loaderThread]() {setStatus(loaderThread->isLoaded() ? Status::Ready : Status::Error);});
 		
+        connect(this, &Scene::loaded, this, [&]() {addChild(0, mySofaSimulation->GetRoot().get());});
 		if(!qmlFilepath.empty())
-			connect(loaderThread, &QThread::finished, this, [=]() {setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));});
+            connect(this, &Scene::loaded, this, [&, qmlFilepath]() {setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));});
 
 		connect(loaderThread, &QThread::finished, loaderThread, &QObject::deleteLater);
 		loaderThread->start();
@@ -261,8 +249,13 @@ void Scene::open()
 	{
         setStatus(LoaderProcess(mySofaSimulation, finalFilename) ? Status::Ready : Status::Error);
 
-		if(!qmlFilepath.empty())
-			setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
+        if(isReady())
+        {
+            addChild(0, mySofaSimulation->GetRoot().get());
+
+            if(!qmlFilepath.empty())
+                setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
+        }
 	}
 }
 
@@ -398,7 +391,15 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
     QVariantMap object;
 
     if(!data)
+    {
+        object.insert("name", "Invalid");
+        object.insert("type", "");
+        object.insert("group", "");
+        object.insert("properties", "");
+        object.insert("value", "");
+
         return object;
+    }
 
     // TODO:
     QString type;
@@ -430,6 +431,10 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
                 properties.insert("min", 0);
         }
     }
+    else
+    {
+        type = QString::fromStdString(data->getValueTypeString());
+    }
 
     if(typeinfo->Container())
     {
@@ -448,6 +453,8 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
     QString widget(data->getWidget());
     if(!widget.isEmpty())
         type = widget;
+
+    properties.insert("readOnly", false);
 
     object.insert("name", data->getName().c_str());
     object.insert("type", type);
@@ -480,6 +487,10 @@ QVariant Scene::dataValue(const BaseData* data)
                 value = 0 != typeinfo->getIntegerValue(valueVoidPtr, 0) ? true : false;
             else
                 value = typeinfo->getIntegerValue(valueVoidPtr, 0);
+        }
+        else
+        {
+            value = QString::fromStdString(data->getValueString());
         }
     }
     else
@@ -552,6 +563,10 @@ QVariant Scene::dataValue(const BaseData* data)
             }
 
             value = values;
+        }
+        else
+        {
+            value = QString::fromStdString(data->getValueString());
         }
     }
 
@@ -674,6 +689,8 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                 data->read(QString::number(value.toDouble()).toStdString());
             else if(typeinfo->Integer())
                 data->read(QString::number(value.toLongLong()).toStdString());
+            else
+                data->read(value.toString().toStdString());
         }
     }
 }
@@ -846,6 +863,46 @@ void Scene::onKeyReleased(char key)
 
 	sofa::core::objectmodel::KeyreleasedEvent keyEvent(key);
 	sofaSimulation()->GetRoot()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &keyEvent);
+}
+
+void Scene::addChild(Node* parent, Node* child)
+{
+    if(!child)
+        return;
+
+    myBases.insert(child);
+
+    MutationListener::addChild(parent, child);
+}
+
+void Scene::removeChild(Node* parent, Node* child)
+{
+    if(!child)
+        return;
+
+    MutationListener::removeChild(parent, child);
+
+    myBases.remove(child);
+}
+
+void Scene::addObject(Node* parent, BaseObject* object)
+{
+    if(!object || !parent)
+        return;
+
+    myBases.insert(object);
+
+    MutationListener::addObject(parent, object);
+}
+
+void Scene::removeObject(Node* parent, BaseObject* object)
+{
+    if(!object || !parent)
+        return;
+
+    MutationListener::removeObject(parent, object);
+
+    myBases.remove(object);
 }
 
 }

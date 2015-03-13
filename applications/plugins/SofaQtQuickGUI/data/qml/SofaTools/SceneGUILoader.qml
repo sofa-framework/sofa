@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.0
 import SofaBasics 1.0
 import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript

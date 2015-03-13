@@ -508,9 +508,12 @@ void GenericMap::compactOrbitContainer(unsigned int orbit, float frag)
 	if (isOrbitEmbedded(orbit) && (fragmentation(orbit)< frag))
 	{
 		m_attribs[orbit].compact(oldnew);
+        AttributeMultiVector<MarkerBool> const * const boundaryMarker = this->m_boundaryMarkers[this->dimension() -2];
 		for (unsigned int i = m_attribs[DART].begin(); i != m_attribs[DART].end(); m_attribs[DART].next(i))
 		{
-			unsigned int& idx = m_embeddings[orbit]->operator[](i);
+            if (boundaryMarker->operator [](i))
+                continue;
+            unsigned int& idx = m_embeddings[orbit]->operator[](i);
 			unsigned int jdx = oldnew[idx];
 			if (jdx != 0xffffffff)
 				idx = jdx;

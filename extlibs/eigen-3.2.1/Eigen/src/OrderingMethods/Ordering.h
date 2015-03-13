@@ -132,7 +132,8 @@ class COLAMDOrdering
       Index stats [COLAMD_STATS];
       internal::colamd_set_defaults(knobs);
       
-      Index info; (void)info;
+      Index info;
+      (void)(info);
       IndexVector p(n+1), A(Alen); 
       for(Index i=0; i <= n; i++)   p(i) = mat.outerIndexPtr()[i];
       for(Index i=0; i < nnz; i++)  A(i) = mat.innerIndexPtr()[i];
