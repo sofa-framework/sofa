@@ -5,6 +5,7 @@ macro(add_plugin plugin)
     option(${plugin_option} "Build the ${plugin} plugin." OFF)
     if(${plugin_option})
         add_subdirectory(../applications/plugins/${plugin} ${CMAKE_CURRENT_BINARY_DIR}/${plugin})
+        set_target_properties(${plugin} PROPERTIES FOLDER "SofaPlugins")
     endif()
 endmacro()
 
