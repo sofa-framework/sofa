@@ -171,7 +171,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/);
+    virtual void removeItems(const sofa::helper::vector<unsigned int> & /*items*/);
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.

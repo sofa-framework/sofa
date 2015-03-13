@@ -31,7 +31,7 @@
 
 #include <string>
 
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 #include <QImage>
 #endif
 
@@ -157,7 +157,7 @@ public:
 	 */
 	bool setCubeMapCheckered();
 
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 	bool setCubeMap(const std::string& filename);
 #endif
 

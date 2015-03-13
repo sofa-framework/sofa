@@ -86,7 +86,6 @@ void TriangleSetTopologyModifier::reinit()
         }
     }
 
-    std::cout << trianglesToBeRemoved << std::endl;
     this->removeItems(trianglesToBeRemoved);
 }
 
@@ -112,7 +111,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
             trianglesIndex.push_back(nTriangles+i);
 
         // add topology event in the stack of topological events
-        addTrianglesWarning( triangles.size(), triangles, trianglesIndex);
+        addTrianglesWarning((unsigned int)triangles.size(), triangles, trianglesIndex);
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
@@ -146,7 +145,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
             trianglesIndex.push_back(nTriangles+i);
 
         // add topology event in the stack of topological events
-        addTrianglesWarning( triangles.size(), triangles, trianglesIndex, ancestors, baryCoefs);
+        addTrianglesWarning((unsigned int)triangles.size(), triangles, trianglesIndex, ancestors, baryCoefs);
 
         // inform other objects that the edges are already added
         propagateTopologicalChanges();
@@ -221,7 +220,7 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
                 edgeIndex = m_container->getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
                 sofa::helper::vector< unsigned int > edgeIndexList;
                 edgeIndexList.push_back((unsigned int) edgeIndex);
-                addEdgesWarning( v.size(), v, edgeIndexList);
+                addEdgesWarning((unsigned int)v.size(), v, edgeIndexList);
             }
 
             if(m_container->hasEdgesInTriangle())
@@ -295,36 +294,33 @@ void TriangleSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Ed
 
 
 
-void TriangleSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+void TriangleSetTopologyModifier::removeItems(const sofa::helper::vector<unsigned int> &items)
 {
-
     removeTriangles(items, true, true); // remove triangles
 }
 
 
-void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned int >& triangles,
+void TriangleSetTopologyModifier::removeTriangles(const sofa::helper::vector<unsigned int> &triangleIds,
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
-{
-    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
-    for (unsigned int i = 0; i < triangles.size(); i++)
+{    
+    sofa::helper::vector<unsigned int> triangleIds_filtered;
+    for (unsigned int i = 0; i < triangleIds.size(); i++)
     {
-        if( triangles[i] >= m_triangle.size())
-        {
-            std::cout << "Error: TriangleSetTopologyModifier::removeTriangles: Triangle: "<< triangles[i] <<" is out of bound" << std::endl;
-            return;
-        }
+        if( triangleIds[i] >= m_container->getNumberOfTriangles())
+            std::cout << "Warning: TriangleSetTopologyModifier::removeTriangles: Triangle: "<< triangleIds[i] <<" is out of bound and won't be removed." << std::endl;
+        else
+            triangleIds_filtered.push_back(triangleIds[i]);
     }
 
-
-    if (removeTrianglesPreconditions(triangles)) // Test if the topology will still fulfill the conditions if these triangles are removed.
+    if (removeTrianglesPreconditions(triangleIds_filtered)) // Test if the topology will still fulfill the conditions if these triangles are removed.
     {
         /// add the topological changes in the queue
-        removeTrianglesWarning(triangles);
+        removeTrianglesWarning(triangleIds_filtered);
         // inform other objects that the triangles are going to be removed
         propagateTopologicalChanges();
         // now destroy the old triangles.
-        removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
+        removeTrianglesProcess(triangleIds_filtered ,removeIsolatedEdges, removeIsolatedPoints);
 
         m_container->checkTopology();
     }
@@ -634,7 +630,7 @@ void TriangleSetTopologyModifier::movePointsProcess (const sofa::helper::vector 
     m_container->setTriangleTopologyToDirty();
 
     (void)moveDOF;
-    unsigned int nbrVertex = id.size();
+    const size_t nbrVertex = id.size();
     bool doublet;
     sofa::helper::vector< unsigned int > trianglesAroundVertex2Move;
     sofa::helper::vector< Triangle > trianglesArray;

@@ -37,12 +37,14 @@ namespace helper
 {
 
 /**
-  This class implements classical kd tree for nearest neighbors search
-  - the tree is rebuild from points by calling build(p)
-  - N nearest points from point x (in terms of euclidean distance) are retrieved with getNClosest(distance/index_List , x , N)
-  - Caching may be used to speed up retrieval: if dx< (d(n)-d(0))/2, then the closest point is in the n-1 cached points (updateCachedDistances is used to update the n-1 distances)
-  see for instance: [zhang92] report and [simon96] thesis for more details
-  **/
+*  This class implements classical kd tree for nearest neighbors search
+*  - the tree is rebuild from points by calling build(p)
+*  - N nearest points from point x (in terms of euclidean distance) are retrieved with getNClosest(distance/index_List , x , N)
+*  - Caching may be used to speed up retrieval: if dx< (d(n)-d(0))/2, then the closest point is in the n-1 cached points (updateCachedDistances is used to update the n-1 distances)
+*  see for instance: [zhang92] report and [simon96] thesis for more details
+*
+*  @author Benjamin Gilles
+**/
 
 
 template<class Coord>
@@ -58,7 +60,6 @@ public:
     typedef typename distanceSet::iterator distanceSetIt;
     typedef std::list<unsigned int> UIlist;
 
-
     typedef struct
     {
         unsigned char splitdir; // 0/1/2 -> x/y/z
@@ -66,21 +67,21 @@ public:
         unsigned int right; // index of the right node
     } TREENODE;
 
-
-    void build(const VecCoord& p);       // update tree (to be used whenever points p have changed)
-    void getNClosest(distanceSet &cl, const Coord &x, const unsigned int n);  // get a order set of n distance/index pairs
-    unsigned int getClosest(const Coord &x);
-    void updateCachedDistances(distanceSet &cl, const Coord &x); // update n-1 distances and set last one to infinite (used in simon96 caching algorithm)
+    void build(const VecCoord& positions);       ///< update tree (to be used whenever positions have changed)
+    void build(const VecCoord& positions, const vector<unsigned int> &ROI);       ///< update tree based on positions subset (to be used whenever points p have changed)
+    void getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n);  ///< get an ordered set of n distance/index pairs between positions and x
+    unsigned int getClosest(const Coord &x, const VecCoord& positions); ///< get the index of the closest point between positions and x
+    void getNClosestCached(distanceSet &cl, distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n);  ///< use distance caching to accelerate closest point computation when positions are fixed (see simon96 thesis)
 
 protected :
+    void print(const unsigned int index);
 
-    const VecCoord* position;
     unsigned int N;
     vector< TREENODE > tree; unsigned int firstNode;
 
-    unsigned int build(UIlist &list, unsigned char direction); // recursive function to build the kdtree
-    void closest(distanceSet &cl, const Coord &x, const unsigned int &currentnode);     // recursive function to get closest points
-    void closest(distanceToPoint &cl,const Coord &x, const unsigned int &currentnode);  // recursive function to get closest point
+    unsigned int build(UIlist &list, unsigned char direction, const VecCoord& positions); // recursive function to build the kdtree
+    void closest(distanceSet &cl, const Coord &x, const unsigned int &currentnode, const VecCoord& positions);     // recursive function to get closest points
+    void closest(distanceToPoint &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions);  // recursive function to get closest point
 };
 
 

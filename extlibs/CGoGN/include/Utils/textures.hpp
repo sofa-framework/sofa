@@ -318,7 +318,7 @@ bool Image<DIM,TYPE>::load(const unsigned char *ptr, unsigned int w, unsigned in
 
 
 
-#ifndef WITH_QT
+#ifndef CGOGN_WITH_QT
 
 template < unsigned int DIM, typename TYPE >
 bool Image<DIM,TYPE>::load(const std::string& filename)
@@ -387,7 +387,7 @@ bool Image<DIM,TYPE>::load(const std::string& filename)
 	unsigned int bpp = ptr->depth() / 8;
 
 	// compatible TYPE
-	if (bpp < sizeof(TYPE))
+/*	if (bpp < sizeof(TYPE))
 	{
 		CGoGNerr << "Image::load incompatible type: bbp=" << bpp << CGoGNendl;
 
@@ -395,6 +395,7 @@ bool Image<DIM,TYPE>::load(const std::string& filename)
 		delete ptr;
 		return false;
 	}
+	*/
 
 	// destroy old data	
 	 if (this->m_data_ptr != NULL)
@@ -404,7 +405,7 @@ bool Image<DIM,TYPE>::load(const std::string& filename)
 	{
 		if (sizeof(TYPE) == 3)
 		{
-			QImage img = ptr->convertToFormat(QImage::Format_RGB888);
+			QImage img = ptr->convertToFormat(QImage::Format_RGB888,Qt::NoOpaqueDetection);
 			this->m_data_ptr = new TYPE[3*img.width()*img.height()];
 			//copy per line for alignment
 			TYPE* ptrOut = this->m_data_ptr;

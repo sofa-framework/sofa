@@ -154,7 +154,6 @@ unsigned int IHM2<PFP>::faceLevel(Dart d)
     return fLevel ;
 }
 
-
 template <typename PFP>
 Dart IHM2<PFP>::faceOrigin(Dart d)
 {
@@ -313,15 +312,22 @@ void IHM2<PFP>::subdivideEdge(Dart d)
 	unsigned int cur = m_map.getCurrentLevel() ;
 	m_map.setCurrentLevel(eLevel) ;
 
-    Dart dd = m_map.phi2(d) ;
+	Dart dd = m_map.phi2(d) ;
 
 	m_map.setCurrentLevel(eLevel + 1) ;
 
     m_map.cutEdge(d) ;
 	unsigned int eId = m_map.getEdgeId(d) ;
-    m_map.setEdgeId(m_map.phi1(d), eId) ;
-    m_map.setEdgeId(m_map.phi1(dd), eId) ;
-    (*edgeVertexFunctor)(m_map.phi1(d)) ;
+	m_map.setEdgeId(m_map.phi1(d), eId) ;
+	m_map.setEdgeId(m_map.phi1(dd), eId) ;
+    if(edgeVertexFunctor!=NULL)
+    {
+        (*edgeVertexFunctor)(m_map.phi1(d)) ;
+    }
+    else
+    {
+        std::cout<<"edgefunctor not initialized"<<std::endl;
+    }
 
 	m_map.setCurrentLevel(cur) ;
 }
@@ -330,7 +336,7 @@ template <typename PFP>
 void IHM2<PFP>::coarsenEdge(Dart d)
 {
 	assert(m_map.getDartLevel(d) <= m_map.getCurrentLevel() || !"coarsenEdge : called with a dart inserted after current level") ;
-	assert(m_map.edgeCanBeCoarsened(d) || !"Trying to coarsen an edge that can not be coarsened") ;
+    assert(edgeCanBeCoarsened(d) || !"Trying to coarsen an edge that can not be coarsened") ;
 
 
 	unsigned int cur = m_map.getCurrentLevel() ;
@@ -351,8 +357,6 @@ unsigned int IHM2<PFP>::subdivideFace(Dart d, bool triQuad, bool OneLevelDiffere
 
     unsigned int fLevel = faceLevel(d) ;
     Dart old = faceOldestDart(d) ;
-
-	//std::cout << "faceLevel = " << fLevel << std::endl;
 
 	unsigned int cur = m_map.getCurrentLevel() ;
 	m_map.setCurrentLevel(fLevel) ;		// go to the level of the face to subdivide its edges
@@ -496,7 +500,7 @@ void IHM2<PFP>::coarsenFace(Dart d)
 	fit = d ;
 	do
 	{
-		if(m_map.edgeCanBeCoarsened(fit))
+        if(edgeCanBeCoarsened(fit))
 			coarsenEdge(fit) ;
 		fit = m_map.phi1(fit) ;
 	} while(fit != d) ;

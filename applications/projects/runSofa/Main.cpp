@@ -25,6 +25,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
@@ -43,6 +44,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
@@ -55,8 +57,10 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
+
 using std::cerr;
 using std::endl;
+using sofa::helper::Utils;
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -202,6 +206,18 @@ int main(int argc, char** argv)
     sofa::component::init();
     sofa::simulation::xml::initXml();
 
+    // Add the plugin directory to PluginRepository
+#ifdef WIN32
+    const std::string pluginDir = Utils::getExecutableDirectory();
+#else
+    const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
+#endif
+    sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
+
+    // Initialise paths
+    sofa::gui::BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config");
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots");
+
     if (!files.empty())
         fileName = files[0];
 
@@ -233,8 +249,7 @@ int main(int argc, char** argv)
     {
         if (loadRecent) // try to reload the latest scene
         {
-            std::string scenes = "share/config/Sofa.ini";
-            scenes = sofa::helper::system::DataRepository.getFile( scenes );
+            std::string scenes = sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini";
             std::ifstream mrulist(scenes.c_str());
             std::getline(mrulist,fileName);
             mrulist.close();

@@ -26,6 +26,8 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
+#include <boost/algorithm/string.hpp>
+
 namespace sofa
 {
 namespace helper
@@ -35,11 +37,6 @@ namespace system
 
 namespace
 {
-#ifndef _DEBUG
-const std::string pluginsIniFile = "share/config/sofaplugins_release.ini";
-#else
-const std::string pluginsIniFile = "share/config/sofaplugins_debug.ini";
-#endif
 
 template <class LibraryEntry>
 bool getPluginEntry(LibraryEntry& entry, DynamicLibrary::Handle handle)
@@ -79,18 +76,8 @@ PluginManager::~PluginManager()
     //writeToIniFile();
 }
 
-void PluginManager::readFromIniFile()
+void PluginManager::readFromIniFile(const std::string& path)
 {
-    std::string path= pluginsIniFile;
-    if ( !DataRepository.findFile(path) )
-    {
-        path = DataRepository.getFirstPath() + "/" + pluginsIniFile;
-        std::ofstream ofile(path.c_str());
-        ofile << "";
-        ofile.close();
-    }
-    else path = DataRepository.getFile( pluginsIniFile );
-
     std::ifstream instream(path.c_str());
     std::string pluginPath;
 
@@ -102,17 +89,8 @@ void PluginManager::readFromIniFile()
     instream.close();
 }
 
-void PluginManager::writeToIniFile()
+void PluginManager::writeToIniFile(const std::string& path)
 {
-    std::string path= pluginsIniFile;
-    if ( !DataRepository.findFile(path) )
-    {
-        path = DataRepository.getFirstPath() + "/" + pluginsIniFile;
-        std::ofstream ofile(path.c_str(),std::ios::out);
-        ofile << "";
-        ofile.close();
-    }
-    else path = DataRepository.getFile( pluginsIniFile );
     std::ofstream outstream(path.c_str());
     PluginIterator iter;
     for( iter = m_pluginMap.begin(); iter!=m_pluginMap.end(); ++iter)
@@ -142,10 +120,17 @@ bool PluginManager::loadPlugin(std::string& pluginPath, std::ostream* errlog)
         //std::cout << "System-specific plugin filename: " << pluginPath << std::endl;
     }
 
-    if( !PluginRepository.findFile(pluginPath,"",errlog) )
+    if( !PluginRepository.findFile(pluginPath,"",NULL) )
     {
-        if (errlog) (*errlog) << "Plugin " << pluginPath << " NOT FOUND in: " << PluginRepository << std::endl;
-        return false;
+        // try to load the plugin with a lowercase name as a failsafe
+        std::string lowercasePluginPath = pluginPath;
+        boost::algorithm::to_lower(lowercasePluginPath);
+        if( !PluginRepository.findFile(lowercasePluginPath,"",NULL) )
+        {
+            if (errlog) (*errlog) << "WARNING: Plugin " << pluginPath << " NOT FOUND in: " << PluginRepository << std::endl;
+            return false;
+        }
+        else pluginPath = lowercasePluginPath;
     }
     if(m_pluginMap.find(pluginPath) != m_pluginMap.end() )
     {
@@ -213,11 +198,6 @@ bool PluginManager::unloadPlugin(std::string &pluginPath, std::ostream *errlog)
         m_pluginMap.erase(iter);
         return true;
     }
-}
-
-void PluginManager::initRecentlyOpened()
-{
-    readFromIniFile();
 }
 
 std::istream& PluginManager::readFromStream(std::istream & in)

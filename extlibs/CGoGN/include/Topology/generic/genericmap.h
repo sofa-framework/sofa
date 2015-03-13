@@ -77,49 +77,60 @@ inline int getSystemNumberOfCores(bool hyperthreading=false)
 
 }
 
+// forward
+class GenericMap;
+
+// classs that store static pointer for copy in schnapps plugins
+struct StaticPointers
+{
+	std::map<std::string, RegisteredBaseAttribute*>* att_registry;
+	std::vector<GenericMap*>* instances;
+	std::vector< std::vector<Dart>* >* vdartsBuffers;
+	std::vector< std::vector<unsigned int>* >* vintsBuffers;
+};
 
 class AttributeHandlerGen ;
 class DartMarkerGen ;
 class CellMarkerGen ;
+class MapManipulator;
 
 class GenericMap
 {
-    friend class ::sofa::cgogn_plugin::test::CGoGN_test;
-    template<typename T, unsigned int ORBIT, typename MAP> friend class AttributeHandler ;
-    template<typename T, typename MAP> friend class DartAutoAttribute ;
-    template<typename T, typename MAP> friend class VertexAutoAttribute ;
-    template<typename T, typename MAP> friend class EdgeAutoAttribute ;
-    template<typename T, typename MAP> friend class FaceAutoAttribute ;
-    template<typename T, typename MAP> friend class VolumeAutoAttribute ;
-    //	friend class DartMarkerGen ;
-    //	friend class CellMarkerGen ;
-    //	template<typename MAP, unsigned int CELL> friend class CellMarkerBase ;
+	template<typename T, unsigned int ORBIT, typename MAP> friend class AttributeHandler ;
+	template<typename T, typename MAP> friend class DartAutoAttribute ;
+	template<typename T, typename MAP> friend class VertexAutoAttribute ;
+	template<typename T, typename MAP> friend class EdgeAutoAttribute ;
+	template<typename T, typename MAP> friend class FaceAutoAttribute ;
+	template<typename T, typename MAP> friend class VolumeAutoAttribute ;
+//	friend class DartMarkerGen ;
+//	friend class CellMarkerGen ;
+//	template<typename MAP, unsigned int CELL> friend class CellMarkerBase ;
 
 protected:
-    // protected copy constructor to prevent the copy of map
-    GenericMap(const GenericMap& ) {}
+	// protected copy constructor to prevent the copy of map
+	GenericMap(const GenericMap& ) {}
 
     /**
      * Attributes Containers
      */
     AttributeContainer m_attribs[NB_ORBITS] ;
 
-    static std::map<std::string, RegisteredBaseAttribute*>* m_attributes_registry_map;
-    static int m_nbInstances;
+	/**
+	 *
+	 */
+    std::vector<boost::thread::id> m_thread_ids;
+public:
+	/// compute thread index in the table of thread
+	inline unsigned int getCurrentThreadIndex() const;
 
-    // buffer for less memory allocation
-    static  std::vector< std::vector<Dart>* >* s_vdartsBuffers;
-    static  std::vector< std::vector<unsigned int>* >* s_vintsBuffers;
+	/// add place for n new threads in the table of thread return index of first
+	inline unsigned int addEmptyThreadIds(unsigned int n);
 
-    // table of instancied maps for Dart/CellMarker release
-    static std::vector<GenericMap*>* s_instances;
-    typedef std::vector<GenericMap*>::iterator ITVectorOfGenMap;
+	/// remove  the n last added threads from table
+	inline void popThreadIds(unsigned int nb);
 
-    /**
-     * Direct access to the Dart attributes that store the orbits embeddings
-     * (only initialized when necessary, i.e. addEmbedding function)
-     */
-    AttributeMultiVector<unsigned int>* m_embeddings[NB_ORBITS] ;
+	/// get ref to jth threadId for updating (in thread)
+    inline boost::thread::id& getThreadId(unsigned int j);
 
     /**
      * Direct access to quick traversal attributes
@@ -129,335 +140,378 @@ protected:
     AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* m_quickLocalIncidentTraversal[NB_ORBITS][NB_ORBITS] ;
     AttributeMultiVector<NoTypeNameAttribute<std::vector<Dart> > >* m_quickLocalAdjacentTraversal[NB_ORBITS][NB_ORBITS] ;
 
-    std::vector< AttributeMultiVector<MarkerBool>* > m_markVectors_free[NB_ORBITS][NB_THREAD] ;
+protected:
+	static std::map<std::string, RegisteredBaseAttribute*>* m_attributes_registry_map;
+
+	/// buffer for less memory allocation
+	static  std::vector< std::vector<Dart>* >* s_vdartsBuffers;
+	static  std::vector< std::vector<unsigned int>* >* s_vintsBuffers;
+
+public:
+	/// table of instancied maps for Dart/CellMarker release
+	static std::vector<GenericMap*>* s_instances;
+protected:
+
+	/**
+	 * Direct access to the Dart attributes that store the orbits embeddings
+	 * (only initialized when necessary, i.e. addEmbedding function)
+	 */
+	AttributeMultiVector<unsigned int>* m_embeddings[NB_ORBITS] ;
+
+	/**
+	 * Direct access to quick traversal attributes
+	 * (initialized by enableQuickTraversal function)
+	 */
+
+	std::vector< AttributeMultiVector<MarkerBool>* > m_markVectors_free[NB_ORBITS][NB_THREAD] ;
     boost::mutex m_MarkerStorageMutex[NB_ORBITS];
 
-    unsigned int m_nextMarkerId;
+	unsigned int m_nextMarkerId;
 
-    /**
-     * Reserved boundary markers
-     */
-    AttributeMultiVector<MarkerBool>* m_boundaryMarkers[2];
+	/**
+	 * Reserved boundary markers
+	 */
+	AttributeMultiVector<MarkerBool>* m_boundaryMarkers[2];
 
-    /**
-     * Store links to created AttributeHandlers
-     */
-    std::multimap<AttributeMultiVectorGen*, AttributeHandlerGen*> attributeHandlers ;
+	/**
+	 * Store links to created AttributeHandlers
+	 */
+	std::multimap<AttributeMultiVectorGen*, AttributeHandlerGen*> attributeHandlers ;
     boost::mutex attributeHandlersMutex;
 
 public:
-    static const unsigned int UNKNOWN_ATTRIB = AttributeContainer::UNKNOWN ;
+	static const unsigned int UNKNOWN_ATTRIB = AttributeContainer::UNKNOWN ;
 
-    GenericMap() ;
+	/// copy all static pointers: use in SCHNApps only
+	static void copyAllStatics(const StaticPointers& sp);
 
-    virtual ~GenericMap() ;
+	/// init all static and store in sp (if not null) : use in SCHNApps only
+	static void initAllStatics(StaticPointers* sp);
 
-    static inline bool alive(GenericMap* map)
-    {
-        for (ITVectorOfGenMap it=s_instances->begin(); it != s_instances->end(); ++it)
-        {
-            if (*it == map)
-                return true;
-        }
-        return false;
-    }
+	GenericMap() ;
 
-    static inline std::vector<Dart>* askDartBuffer(unsigned int orbit);
-    static inline void releaseDartBuffer(std::vector<Dart>* vd, unsigned int orbit);
+	virtual ~GenericMap() ;
 
-    static inline std::vector<unsigned int>* askUIntBuffer(unsigned int orbit);
-    static inline void releaseUIntBuffer(std::vector<unsigned int>* vd, unsigned int orbit);
+	static inline bool alive(GenericMap* map)
+	{
+        for (std::vector<GenericMap*>::const_iterator it=s_instances->begin(); it != s_instances->end(); ++it)
+		{
+			if (*it == map)
+				return true;
+		}
+		return false;
+	}
 
+	inline std::vector<Dart>* askDartBuffer() const;
+	inline void releaseDartBuffer(std::vector<Dart>* vd) const;
+
+	inline std::vector<unsigned int>* askUIntBuffer() const;
+	inline void releaseUIntBuffer(std::vector<unsigned int>* vd) const;
 
 protected:
-    void init(bool addBoundaryMarkers=true);
+	void init(bool addBoundaryMarkers=true);
 
 public:
-    virtual std::string mapTypeName() const = 0 ;
+	virtual std::string mapTypeName() const = 0 ;
 
-    virtual unsigned int dimension() const = 0 ;
+	virtual unsigned int dimension() const = 0 ;
 
-    /**
-     * Clear the map
-     * @param removeAttrib
-     *   if false -> data is deleted but all attributes remain (all AttributeHandlers are still valid)
-     *   if true -> data and attributes are deleted (AttributeHandlers are invalid)
-     */
-    virtual void clear(bool removeAttrib) ;
+	/**
+	 * Clear the map
+	 * @param removeAttrib
+	 *   if false -> data is deleted but all attributes remain (all AttributeHandlers are still valid)
+	 *   if true -> data and attributes are deleted (AttributeHandlers are invalid)
+	 */
+	virtual void clear(bool removeAttrib) ;
 
 
-    /****************************************
-     *           DARTS MANAGEMENT           *
-     ****************************************/
+	/****************************************
+	 *     MANIPULATOR MANAGEMENT           *
+	 ****************************************/
 protected:
-    /**
-     * Add a dart to the map
-     */
-    virtual Dart newDart() ;
-
-    /**
-     * Erase a dart of the map
-     */
-    virtual void deleteDart(Dart d) = 0 ;
-
-    /**
-     * create a copy of a dart (based on its index in m_attribs[DART]) and returns its index
-     */
-    unsigned int copyDartLine(unsigned int index) ;
-
-    /**
-     * Properly deletes a dart in m_attribs[DART]
-     */
-    void deleteDartLine(unsigned int index) ;
+	/// manipulator pointer to Manipulator object that currently work on map
+	MapManipulator* m_manipulator;
 
 public:
-    /****************************************
-     *          ORBITS TRAVERSALS           *
-     ****************************************/
+	/**
+	 * @brief ask for associating manipulator to the map
+	 * @param ptr Manipulator ptr
+	 * @return ok or not
+	 */
+	bool askManipulate(MapManipulator* ptr);
 
-    //	virtual void foreach_dart_of_vertex(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
-    //	virtual void foreach_dart_of_edge(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
-    //	virtual void foreach_dart_of_face(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
-    //	virtual void foreach_dart_of_volume(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
-    //	virtual void foreach_dart_of_cc(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
+	/**
+	 * @brief release the map from manipulator
+	 * @param ptr manipulator asking for release
+	 * @return ok or not
+	 */
+	bool releaseManipulate(MapManipulator* ptr);
 
-    //	virtual void foreach_dart_of_vertex1(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
-    //	virtual void foreach_dart_of_edge1(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
+	/**
+	 * @brief get the manipulator
+	 * @return manipulator ptr
+	 */
+	MapManipulator* getManipulator();
 
-    //	virtual void foreach_dart_of_vertex2(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
-    //	virtual void foreach_dart_of_edge2(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
-    //	virtual void foreach_dart_of_face2(Dart /*d*/, std::function<void (Dart)>& /*f*/, unsigned int /*thread = 0*/) const { std::cerr << "Not implemented" << std::endl; }
+	/****************************************
+	 *           DARTS MANAGEMENT           *
+	 ****************************************/
+protected:
+	/**
+	 * Add a dart to the map
+	 */
+	virtual Dart newDart() ;
 
-    /****************************************
-     *         EMBEDDING MANAGEMENT         *
-     ****************************************/
+	/**
+	 * Erase a dart of the map
+	 */
+	virtual void deleteDart(Dart d) = 0 ;
 
-    /**
-     * tell if an orbit is embedded or not
-     */
-    template <unsigned int ORBIT>
-    bool isOrbitEmbedded() const ;
+	/**
+	 * create a copy of a dart (based on its index in m_attribs[DART]) and returns its index
+	 */
+	unsigned int copyDartLine(unsigned int index) ;
 
-    bool isOrbitEmbedded(unsigned int orbit) const ;
+	/**
+	 * Properly deletes a dart in m_attribs[DART]
+	 */
+	void deleteDartLine(unsigned int index) ;
 
-    /**
-     * Allocation of some place in attrib table
-     * @param orbit the orbit of embedding
-     * @return the index to use as embedding
-     */
-    template <unsigned int ORBIT>
-    unsigned int newCell() ;
-
-    /**
-     * Line of attributes i is overwritten with line j
-     * @param orbit attribute orbit to use
-     * @param i line destination of copy
-     * @param j line source of copy
-     */
-    template <unsigned int ORBIT>
-    void copyCell(unsigned int i, unsigned int j) ;
+public:
+	/****************************************
+	 *          ORBITS TRAVERSALS           *
+	 ****************************************/
 
 
-    /**
-     * Line of attributes i is initialized
-     * @param orbit attribute orbit to use
-     * @param i line to init
-     */
-    template <unsigned int ORBIT>
-    void initCell(unsigned int i) ;
 
-    /****************************************
-     *   ATTRIBUTES CONTAINERS MANAGEMENT   *
-     ****************************************/
 
-    /**
-     * get the number of cell in the attribute container of an orbit
-     * @param orb the orbit to get number of cells
-     */
+
+	/****************************************
+	 *         EMBEDDING MANAGEMENT         *
+	 ****************************************/
+
+	/**
+	 * tell if an orbit is embedded or not
+	 */
+	template <unsigned int ORBIT>
+	bool isOrbitEmbedded() const ;
+
+	bool isOrbitEmbedded(unsigned int orbit) const ;
+
+	/**
+	 * Allocation of some place in attrib table
+	 * @param orbit the orbit of embedding
+	 * @return the index to use as embedding
+	 */
+	template <unsigned int ORBIT>
+	unsigned int newCell() ;
+
+	/**
+	 * Line of attributes i is overwritten with line j
+	 * @param orbit attribute orbit to use
+	 * @param i line destination of copy
+	 * @param j line source of copy
+	 */
+	template <unsigned int ORBIT>
+	void copyCell(unsigned int i, unsigned int j) ;
+
+	/**
+	 * Line of attributes i is initialized
+	 * @param orbit attribute orbit to use
+	 * @param i line to init
+	 */
+	template <unsigned int ORBIT>
+	void initCell(unsigned int i) ;
+
+	/****************************************
+	 *   ATTRIBUTES CONTAINERS MANAGEMENT   *
+	 ****************************************/
+
+	/**
+	 * get the number of cell in the attribute container of an orbit
+	 * @param orb the orbit to get number of cells
+	 */
     unsigned int getNbCells(unsigned int orbit) const;
 
-    /**
-     * get the attrib container of a given orbit
-     * @param orbit the orbit !!! (bilbo the orbit !)
-     */
-    template <unsigned int ORBIT>
-    AttributeContainer& getAttributeContainer() ;
+	/**
+	 * get the attrib container of a given orbit
+	 * @param orbit the orbit !!! (bilbo the orbit !)
+	 */
+	template <unsigned int ORBIT>
+	AttributeContainer& getAttributeContainer() ;
 
-    template <unsigned int ORBIT>
-    const AttributeContainer& getAttributeContainer() const;
+	template <unsigned int ORBIT>
+	const AttributeContainer& getAttributeContainer() const;
 
-    AttributeContainer& getAttributeContainer(unsigned int orbit) ;
+	AttributeContainer& getAttributeContainer(unsigned int orbit) ;
 
-    const AttributeContainer& getAttributeContainer(unsigned int orbit) const;
+	const AttributeContainer& getAttributeContainer(unsigned int orbit) const;
 
-    /**
-     * @brief get a generic pointer to an existing attribute multi vector
-     * @param orbit the concerned orbit
-     * @param nameAttr attribute name
-     * @return a pointer to an AttributeMultiVectorGen
-     */
-    inline AttributeMultiVectorGen* getAttributeVectorGen(unsigned int orbit, const std::string& nameAttr) ;
+	/**
+	 * @brief get a generic pointer to an existing attribute multi vector
+	 * @param orbit the concerned orbit
+	 * @param nameAttr attribute name
+	 * @return a pointer to an AttributeMultiVectorGen
+	 */
+	inline AttributeMultiVectorGen* getAttributeVectorGen(unsigned int orbit, const std::string& nameAttr) ;
 
-    /**
-     * @brief ask for a marker attribute
-     */
-    template <unsigned int ORBIT>
-    AttributeMultiVector<MarkerBool>* askMarkVector(unsigned int thread=0) ;
+	/**
+	 * @brief ask for a marker attribute
+	 */
+	template <unsigned int ORBIT>
+	AttributeMultiVector<MarkerBool>* askMarkVector() ;
 
-    /**
-     * @brief release allocated marker attribute
-     */
-    template <unsigned int ORBIT>
-    void releaseMarkVector(AttributeMultiVector<MarkerBool>* amv, unsigned int thread=0);
-
-protected:
-    /**
-     * @brief scan attributes for MarkerBool, clean them and store as free in thread 0
-     */
-    void garbageMarkVectors();
-
-    /**
-     * @brief scan attributes for MarkerBool and remove them
-     */
-    void removeMarkVectors();
-public:
-
-    /**
-     * return a pointer to the Dart attribute vector that store the embedding of the given orbit
-     * (may be NULL if the orbit is not embedded)
-     */
-    template <unsigned int ORBIT>
-    AttributeMultiVector<unsigned int>* getEmbeddingAttributeVector() ;
-
-    /**
-     * swap two attribute containers
-     */
-    void swapEmbeddingContainers(unsigned int orbit1, unsigned int orbit2) ;
-
-    /**
-     * static function for type registration
-     */
-    template <typename R>
-    static bool registerAttribute(const std::string &nameType) ;
-
-    /**
-     * print attributes name of map in std::cout (for debugging)
-     */
-    void viewAttributesTables() ;
-
-    void printDartsTable();
-
-    /****************************************
-     *   EMBEDDING ATTRIBUTES MANAGEMENT    *
-     ****************************************/
-    /**
-     * Create the dart attribute to store the embedding of this orbit (for internal use only)
-     */
-    template <unsigned int ORBIT>
-    void addEmbedding() ;
+	/**
+	 * @brief release allocated marker attribute
+	 */
+	template <unsigned int ORBIT>
+	void releaseMarkVector(AttributeMultiVector<MarkerBool>* amv);
 
 protected:
-    /****************************************
-     *  TOPOLOGICAL ATTRIBUTES MANAGEMENT   *
-     ****************************************/
+	/**
+	 * @brief scan attributes for MarkerBool, clean them and store as free in thread 0
+	 */
+	void garbageMarkVectors();
 
-    /**
-     * Add a topological relation in the map
-     * @param name name of relation
-     */
-    AttributeMultiVector<Dart>* addRelation(const std::string& name) ;
-
-    /**
-     * Get AttributeMultivector pointer of a relation attribute
-     * @param name name of the relation
-     * @return the attribute multi-vector pointer
-     */
-    AttributeMultiVector<Dart>* getRelation(const std::string& name) ;
-
-    /****************************************
-     *          THREAD MANAGEMENT           *
-     ****************************************/
+	/**
+	 * @brief scan attributes for MarkerBool and remove them
+	 */
+	void removeMarkVectors();
 public:
-    //	/**
-    //	 * add threads (a table of Marker per orbit for each thread)
-    //	 * to allow MT
-    //	 * @param nb thread to add
-    //	 */
-    //	void addThreadMarker(unsigned int nb) ;
 
-    //	/**
-    //	 * return allowed threads
-    //	 * @return the number of threads (including principal)
-    //	 */
-    //	unsigned int getNbThreadMarkers() const;
+	/**
+	 * return a pointer to the Dart attribute vector that store the embedding of the given orbit
+	 * (may be NULL if the orbit is not embedded)
+	 */
+	template <unsigned int ORBIT>
+	AttributeMultiVector<unsigned int>* getEmbeddingAttributeVector() ;
 
-    //	/**
-    //	 * Remove some added threads
-    //	 * @return remaining number of threads (including principal)
-    //	 */
-    //	void removeThreadMarker(unsigned int nb) ;
+	/**
+	 * swap two attribute containers
+	 */
+	void swapEmbeddingContainers(unsigned int orbit1, unsigned int orbit2) ;
 
-    /****************************************
-     *             SAVE & LOAD              *
-     ****************************************/
-protected:
-    /**
-     * restore embedding / markers / quick traversal shortcuts
-     */
-    void restore_shortcuts();
+	/**
+	 * static function for type registration
+	 */
+	template <typename R>
+	static bool registerAttribute(const std::string &nameType) ;
 
-public:
-    /**
-     * Save map in a binary file
-     * @param filename the file name
-     * @return true if OK
-     */
-    virtual bool saveMapBin(const std::string& filename) const = 0;
+	/**
+	 * print attributes name of map in std::cout (for debugging)
+	 */
+	void viewAttributesTables() ;
 
-    /**
-     * Load map from a binary file
-     * @param filename the file name
-     * @return true if OK
-     */
-    virtual bool loadMapBin(const std::string& filename) = 0 ;
+	void printDartsTable();
 
-    /**
-     * copy from another map (of same type)
-     */
-    virtual bool copyFrom(const GenericMap& map) = 0 ;
-
-    /**
-     * Dump attributes types and names per orbit
-     */
-    void dumpAttributesAndMarkers() ;
+	/****************************************
+	 *   EMBEDDING ATTRIBUTES MANAGEMENT    *
+	 ****************************************/
+	/**
+	 * Create the dart attribute to store the embedding of this orbit (for internal use only)
+	 */
+	template <unsigned int ORBIT>
+	void addEmbedding() ;
 
 protected:
-    /**
-     * compact topo relations
-     */
-    virtual void compactTopo() = 0 ;
+	/****************************************
+	 *  TOPOLOGICAL ATTRIBUTES MANAGEMENT   *
+	 ****************************************/
+
+	/**
+	 * Add a topological relation in the map
+	 * @param name name of relation
+	 */
+	AttributeMultiVector<Dart>* addRelation(const std::string& name) ;
+
+	/**
+	 * Get AttributeMultivector pointer of a relation attribute
+	 * @param name name of the relation
+	 * @return the attribute multi-vector pointer
+	 */
+	AttributeMultiVector<Dart>* getRelation(const std::string& name) ;
+
+	/****************************************
+	 *             SAVE & LOAD              *
+	 ****************************************/
+protected:
+	/**
+	 * restore embedding / markers / quick traversal shortcuts
+	 */
+	void restore_shortcuts();
 
 public:
-    /**
-     * compact the map
-     */
-    void compact() ;
+	/**
+	 * Save map in a binary file
+	 * @param filename the file name
+	 * @return true if OK
+	 */
+	virtual bool saveMapBin(const std::string& filename) const = 0;
+
+	/**
+	 * Load map from a binary file
+	 * @param filename the file name
+	 * @return true if OK
+	 */
+	virtual bool loadMapBin(const std::string& filename) = 0 ;
+
+	/**
+	 * copy from another map (of same type)
+	 */
+	virtual bool copyFrom(const GenericMap& map) = 0 ;
+
+	/**
+	 * Dump attributes types and names per orbit
+	 */
+	void dumpAttributesAndMarkers() ;
+
+protected:
+	/**
+	 * compact topo relations
+	 */
+	virtual void compactTopo() = 0 ;
+
+public:
+	/**
+	 * compact the map
+	 * @warning the quickTraversals needs to be updated
+	 * @param topoOnly compact only the topo ?
+	 */
+	void compact(bool topoOnly = false) ;
 
     /**
      * @brief dump all attributes of map in CSV format  (; separated columns)
      */
     void dumpCSV() const;
 
-public:
-    /**
-     * @brief move data (container && shortcuts from a map to this map
-     * @param mapf map from which data are moved);
-     */
-    void moveData(GenericMap &mapf);
+	/**
+	 * compact a container (and update embedding attribute of topo)
+	 * @param orbit orbit of container to compact
+	 * @param frag minimum fragmentation value for compacting (default value 1.0 mean always compact)s
+	 */
+	void compactOrbitContainer(unsigned int orbit, float frag=1.0);
 
-private:
-    void allocVdartsBuffers();
-    void deleteBuffers();
+	/**
+	 * @brief compact if containers are fragmented.
+	 * @warning the quickTraversals needs to be updated
+	 * @param frag if fragmentation (filling) of containers inferior to frag then compact
+	 * @param topoOnly compact only the topo ?
+	 */
+	void compactIfNeeded(float frag, bool topoOnly = false) ;
+
+	/**
+	 * test if containers are fragmented
+	 *  ~1.0 (full filled) no need to compact
+	 *  ~0.0 (lots of holes) need to compact
+	 */
+	inline float fragmentation(unsigned int orbit);
+
+public:
+	/**
+	 * @brief move data (container && shortcuts from a map to this map
+	 * @param mapf map from which data are moved);
+	 */
+	void moveData(GenericMap &mapf);
 } ;
 
 

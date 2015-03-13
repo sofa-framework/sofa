@@ -3,13 +3,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include <Eigen/Sparse>
-#include <Eigen/SparseCholesky>
-
-#include <Eigen/LU>
-#include <Eigen/Cholesky>
-#include <Eigen/SVD>
-
 #include "../utils/scoped.h"
 
 using std::cerr;
@@ -19,7 +12,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(LDLTSolver);
+SOFA_DECL_CLASS(LDLTSolver)
 int LDLTSolverClass = core::RegisterObject("Direct LDLT solver").add< LDLTSolver >();
 
 typedef AssembledSystem::vec vec;

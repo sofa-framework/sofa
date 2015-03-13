@@ -100,7 +100,9 @@ struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 };
 
 
-
+/**
+ * \todo adjust type of ParamTypes according to InImageTypes and OutImageTypes
+ */
 template <class _InImageTypes,class _OutImageTypes>
 class TransferFunction : public core::DataEngine
 {

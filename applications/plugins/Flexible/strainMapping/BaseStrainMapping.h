@@ -37,6 +37,8 @@
 
 #include <sofa/component/linearsolver/EigenSparseMatrix.h>
 
+#include <sofa/helper/IndexOpenMP.h>
+
 
 namespace sofa
 {
@@ -101,8 +103,7 @@ public:
     typedef typename BlockType::KBlock  KBlock;  ///< stiffness block matrix
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     //@}
-
-
+	
     virtual void resizeOut()
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
@@ -116,6 +117,11 @@ public:
         reinit();
     }
 
+    //Pierre-Luc : I added this function to be able to use the mapping functionnalities without using the whole component
+    virtual void initJacobianBlock( vector<BlockType>& /*jacobianBlock*/)
+    {
+        std::cout << SOFA_CLASS_METHOD << " : Do nothing" << std::endl;
+    }
 
     /** @name Mapping functions */
     //@{
@@ -153,6 +159,46 @@ public:
        //TODO applyDJT(NULL, *this->fromModel->write(core::VecDerivId::force()), *this->toModel->read(core::ConstVecDerivId::force()));
     }
 
+    //Pierre-Luc : I added these function to be able to use the mapping functionnalities without using the whole component
+    virtual void applyBlock(Data<OutVecCoord>& /*dOut*/, const Data<InVecCoord>& /*dIn*/, vector<BlockType>& /*jacobianBlock*/)
+    {
+        std::cout << SOFA_CLASS_METHOD << " : do nothing" << std::endl;
+    }
+
+    virtual void apply(Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
+    {
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
+
+        const InVecCoord&  in = dIn.getValue();
+
+        vector< BlockType > jacobianBlock;
+        jacobianBlock.resize(in.size());
+        initJacobianBlock(jacobianBlock);
+        applyBlock(dOut, dIn, jacobianBlock);
+    }
+
+    virtual void applyJ(Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)
+    {
+        if(this->f_printLog.getValue()) std::cout<<this->getName()<<":applyJ"<<std::endl;
+
+        const InVecDeriv&  in = dIn.getValue();
+
+        vector< BlockType > jacobianBlock;
+        jacobianBlock.resize(in.size());
+        initJacobianBlock(jacobianBlock);
+
+        OutVecDeriv&  out = *dOut.beginEdit();
+#ifdef _OPENMP
+		#pragma omp parallel for
+#endif
+        for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i < jacobianBlock.size(); i++)
+        {
+            out[i]=OutDeriv();
+            jacobianBlock[i].addmult(out[i],in[i]);
+        }
+		dOut.endEdit();
+    }
+
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
@@ -164,7 +210,7 @@ public:
         OutVecCoord&  out = *dOut.beginEdit();
         const InVecCoord&  in = dIn.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
         for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -185,7 +231,7 @@ public:
             OutVecDeriv&  out = *dOut.beginEdit();
             const InVecDeriv&  in = dIn.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -206,7 +252,7 @@ public:
             InVecDeriv&  in = *dIn.beginEdit();
             const OutVecDeriv&  out = dOut.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
         #pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)
@@ -245,7 +291,7 @@ public:
         }
         else
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 			#pragma omp parallel for
 #endif
             for(int i=0; i < static_cast<int>(jacobian.size()); i++)

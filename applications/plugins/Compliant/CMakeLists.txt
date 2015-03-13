@@ -35,6 +35,12 @@ set(HEADER_FILES
     numericalsolver/BenchmarkSolver.h
     numericalsolver/PreconditionedSolver.h
     numericalsolver/PreconditionedCgSolver.h
+    numericalsolver/AnalysisSolver.h
+    numericalsolver/LumpedResponse.h
+    numericalsolver/LUSolver.h
+    numericalsolver/LUResponse.h
+    numericalsolver/BiCgStabSolver.h
+    numericalsolver/NNCGSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
@@ -79,7 +85,6 @@ set(HEADER_FILES
     
     utils/basis.h
     utils/cast.h
-    utils/cg.h
     utils/cone.h
     utils/edit.h
     utils/find.h
@@ -88,14 +93,19 @@ set(HEADER_FILES
     utils/kkt.h
     utils/krylov.h
     utils/map.h
-    utils/minres.h
+    utils/nan.h
     utils/pair.h
-    utils/preconditionedcg.h
     utils/schur.h
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
-    utils/thread_local.h)
+    utils/thread_local.h
+
+    utils/cg.h
+    utils/preconditionedcg.h
+    utils/minres.h
+    utils/bicgstab.h
+)
 
 set(SOURCE_FILES
     initCompliant.cpp
@@ -132,6 +142,12 @@ set(SOURCE_FILES
     numericalsolver/BenchmarkSolver.cpp
     numericalsolver/PreconditionedSolver.cpp
     numericalsolver/PreconditionedCgSolver.cpp
+    numericalsolver/AnalysisSolver.cpp
+    numericalsolver/LumpedResponse.cpp
+    numericalsolver/LUSolver.cpp
+    numericalsolver/LUResponse.cpp
+    numericalsolver/BiCgStabSolver.cpp
+    numericalsolver/NNCGSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
@@ -167,35 +183,12 @@ set(README_FILES Compliant.txt)
 
 # include python files
 include(./python/python.cmake)	
-	
-#if(WIN32)
-#	include_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Include")
-#	link_directories("${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib")
-#else()
-#	include_directories("/usr/include/suitesparse/")
-#endif()
+
 	
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_Compliant")
-AddLinkerDependencies(SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph)
-AddSourceDependencies( GenerateRigid )
-
-# is this really useful?
-#if(NOT APPLE)
-#	AddLinkerDependencies(amd lapack blas camd colamd cholmod)
-#endif()
-
-# WIN32: copy the needed dlls from the lib dir to the Sofa bin dir
-#if(WIN32)
-#	file(GLOB sharedObjects "${SOFA_EXTLIBS_DIR}/SuiteSparse/cholmod/Lib/*.dll")
-#	foreach(sharedObject ${sharedObjects})
-#		file(COPY ${sharedObject} DESTINATION "${SOFA_BIN_DIR}")
-#	endforeach()
-#endif()
-
-
-
+AddLinkerDependencies( SofaEigen2Solver SofaUserInteraction SofaComponentMisc SofaHelper SofaSimulationGraph )
 
 
 
@@ -213,6 +206,13 @@ AddSourceDependencies( GenerateRigid )
 # endif()
 # find_package(Boost COMPONENTS system REQUIRED)
 # AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+
+
+if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES DEBUG)
+    # c'est à n'y rien comprendre mais j'en ai besoin uniquement en debug avec certains compilos (e.g. gcc4.6)
+    find_package(Boost COMPONENTS system REQUIRED)
+    AddLinkerDependencies( ${Boost_SYSTEM_LIBRARY} )
+endif()
 
 
 if(LINUX OR UNIX AND NOT APPLE)

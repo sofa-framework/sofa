@@ -631,7 +631,7 @@ bool MeshTablesSurface<PFP>::importPly(const std::string& filename, std::vector<
 
         if (pid.hasColorsUint8())
         {
-            Geom::Vector<3, unsigned char> col ;
+            typename Geom::Vector<3, unsigned char>::type col ;
             pid.vertexColorUint8(i, col) ;
             colors[id][0] = col[0] ;
             colors[id][1] = col[1] ;
@@ -641,7 +641,7 @@ bool MeshTablesSurface<PFP>::importPly(const std::string& filename, std::vector<
 
         if (pid.hasColorsFloat32())
         {
-            Geom::Vector<3, float> col ;
+            typename Geom::Vector<3, float>::type col ;
             pid.vertexColorFloat32(i, col) ;
             colors[id][0] = col[0] ;
             colors[id][1] = col[1] ;
@@ -1502,6 +1502,9 @@ bool MeshTablesSurface<PFP>::importAHEM(const std::string& filename, std::vector
 template<typename PFP>
 bool MeshTablesSurface<PFP>::mergeCloseVertices()
 {
+    //TODO : remove return true
+    return true;
+
     const int NBV = 64; // seems to be good
 
     const int NEIGH[27] = {

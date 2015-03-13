@@ -441,64 +441,64 @@ public:
      *  Apply functors to all darts of a cell
      *************************************************************************/
 
-    //@{
-    //! Apply a function on every dart of an orbit
-    /*! @param c a cell
-     *  @param f a function
-     */
-    template <unsigned int ORBIT, typename FUNC>
-    void foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f, unsigned int thread = 0) const ;
-    //    template <unsigned int ORBIT, typename FUNC>
-    //    void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread = 0) const ;
+	//@{
+	//! Apply a function on every dart of an orbit
+	/*! @param c a cell
+	 *  @param f a function
+	 */
+//	template <unsigned int ORBIT, typename FUNC>
+//	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f) const ;
+	template <unsigned int ORBIT, typename FUNC>
+	void foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f) const ;
 
-    //! Apply a functor on every dart of a vertex
-    /*! @param d a dart of the vertex
-     *  @param f the functor to apply
-     */
-    template <typename FUNC>
-    void foreach_dart_of_vertex(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	//! Apply a functor on every dart of a vertex
+	/*! @param d a dart of the vertex
+	 *  @param f the functor to apply
+	 */
+	template <typename FUNC>
+	void foreach_dart_of_vertex(Dart d, const FUNC& f) const;
 
-    //! Apply a functor on every dart of an edge
-    /*! @param d a dart of the edge
-     *  @param f the functor to apply
-     */
-    template <typename FUNC>
-    void foreach_dart_of_edge(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	//! Apply a functor on every dart of an edge
+	/*! @param d a dart of the edge
+	 *  @param f the functor to apply
+	 */
+	template <typename FUNC>
+	void foreach_dart_of_edge(Dart d, const FUNC& f) const;
 
-    //! Apply a functor on every dart of a face
-    /*! @param d a dart of the volume
-     *  @param f the functor to apply
-     */
-    template <typename FUNC>
-    void foreach_dart_of_face(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	//! Apply a functor on every dart of a face
+	/*! @param d a dart of the volume
+	 *  @param f the functor to apply
+	 */
+	template <typename FUNC>
+	void foreach_dart_of_face(Dart d, const FUNC& f) const;
 
-    //! Apply a functor on every dart of a volume
-    /*! @param d a dart of the volume
-     *  @param f the functor to apply
-     */
-    template <typename FUNC>
-    void foreach_dart_of_volume(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	//! Apply a functor on every dart of a volume
+	/*! @param d a dart of the volume
+	 *  @param f the functor to apply
+	 */
+	template <typename FUNC>
+	void foreach_dart_of_volume(Dart d, const FUNC& f) const;
 
-    //! Apply a functor on every dart of a vertex of map1 representing the face of d
-    /*! @param d a dart of the vertex
-     *  @param f the functor to apply
-     */
-    template <typename FUNC>
-    void foreach_dart_of_vertex1(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	//! Apply a functor on every dart of a vertex of map1 representing the face of d
+	/*! @param d a dart of the vertex
+	 *  @param f the functor to apply
+	 */
+	template <typename FUNC>
+	void foreach_dart_of_vertex1(Dart d, const FUNC& f) const;
 
-    //! Apply a functor on every dart of an edge of map1 representing the face of d
-    /*! @param d a dart of the edge
-     *  @param f the functor to apply
-     */
-    template <typename FUNC>
-    void foreach_dart_of_edge1(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	//! Apply a functor on every dart of an edge of map1 representing the face of d
+	/*! @param d a dart of the edge
+	 *  @param f the functor to apply
+	 */
+	template <typename FUNC>
+	void foreach_dart_of_edge1(Dart d, const FUNC& f) const;
 
-    //! Apply a functor on every dart of a connected component
-    /*! @param d a dart of the connected component
-     *  @param f the functor to apply
-     */
-    template <typename FUNC>
-    void foreach_dart_of_cc(Dart d, const FUNC& f, unsigned int thread = 0) const;
+	//! Apply a functor on every dart of a connected component
+	/*! @param d a dart of the connected component
+	 *  @param f the functor to apply
+	 */
+	template <typename FUNC>
+	void foreach_dart_of_cc(Dart d, const FUNC& f) const;
 
     //@}
 

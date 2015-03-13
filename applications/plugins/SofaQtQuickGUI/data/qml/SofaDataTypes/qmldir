@@ -1,0 +1,12 @@
+DataType_0to1RatioWidget 1.0 DataType_0to1RatioWidget.qml
+DataType_array 1.0 DataType_array.qml
+DataType_boolean 1.0 DataType_boolean.qml
+DataType_graph_linear 1.0 DataType_graph_linear.qml
+DataType_graph 1.0 DataType_graph.qml
+DataType_number 1.0 DataType_number.qml
+DataType_BoundingBox 1.0 DataType_BoundingBox.qml
+DataType_OptionsGroup 1.0 DataType_OptionsGroup.qml
+DataType_Material 1.0 DataType_Material.qml
+DataType_poissonRatio 1.0 DataType_poissonRatio.qml
+DataType_string 1.0 DataType_string.qml
+DataType_widget_displayFlags 1.0 DataType_widget_displayFlags.qml

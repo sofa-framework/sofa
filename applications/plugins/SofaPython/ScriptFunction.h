@@ -65,7 +65,10 @@ protected:
 public:
 	virtual ~ScriptFunction();
 
-	virtual void operator()(const ScriptFunctionParameter*, ScriptFunctionResult*) const = 0;
+	void operator()(const ScriptFunctionParameter*, ScriptFunctionResult*) const;
+
+protected:
+	virtual void onCall(const ScriptFunctionParameter*, ScriptFunctionResult*) const = 0;
 
 };
 

@@ -62,6 +62,7 @@ if(SOFA-MISC_BUILD_GTEST)
 endif()
 
 RegisterProjects("framework_test" OPTION "SOFA-MISC_TESTS" PATH "${SOFA_FRAMEWORK_DIR}/framework_test")
+RegisterProjects("simulation_test" OPTION "SOFA-MISC_TESTS" PATH "${SOFA_MODULES_DIR}/sofa/simulation/simulation_test")
 
 # framework
 set(SOFA_PROJECT_FOLDER "SofaFramework")
@@ -180,18 +181,4 @@ if(WIN32)
 			endif()
         endforeach()
     endif()
-endif()
-
-# creating examples/Object and examples/Objects folder
-file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Object")
-file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Objects")
-
-# copying default config files
-if(NOT CONFIG_FILES_ALREADY_COPIED)
-    file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/default/*.*")
-    foreach(configFile ${configFiles})
-        file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
-    endforeach()
-
-    set(CONFIG_FILES_ALREADY_COPIED 1 CACHE INTERNAL "Config files copied" FORCE)
 endif()

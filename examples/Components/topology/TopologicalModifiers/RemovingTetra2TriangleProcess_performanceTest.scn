@@ -5,12 +5,14 @@
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <InteractiveCamera name="camera" position ="-43.0916 -14.6777 18.7712" orientation ="0.150872 -0.594478 -0.286645 0.735981" fieldOfView ="45" distance ="34.729" zNear ="0" zFar ="0" projectionType ="0" minBBox="-2.11554 -0.250372 0.88082"  maxBBox="2.10716 6.97043 16.8875" widthViewport="800" heightViewport="600" zoomSpeed="250" panSpeed="0.1" pivot="0" fixedLookAt="0" activated="1" listening="0" />
+
     <CollisionGroup />
     <Node name="TT">
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshVTKLoader name="meshLoader" filename="mesh/HeartTetra_200k.vtk" />
-        <MechanicalObject name="Volume" src="@meshLoader" />
+        <MeshVTKLoader name="meshLoader" filename="mesh/raptorTetra_19409.vtu" translation=" -19 -22 12" />
+        <MechanicalObject name="Volume" src="@meshLoader" translation="0 0 0" />
         <TetrahedronSetTopologyContainer name="Container" tetrahedra="@meshLoader.tetrahedra" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />

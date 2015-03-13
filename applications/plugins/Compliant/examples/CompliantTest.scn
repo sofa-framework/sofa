@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.1" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
+<RequiredPlugin name="Compliant" pluginName="Compliant" />
 <Node 	name="complianceSolverScene" >
 <!--    <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>-->
 <!--    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9"/>-->
-    <EulerSolver verbose="0" />
+    <EulerSolver />
     <MechanicalObject template="Vec3d" position="0 0 0   1 0 0 " name="particleDOFs" />
     <FixedConstraint template="Vec3d" indices="0" />
     <UniformMass />
@@ -13,8 +14,8 @@
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="0 1  " />
+        <UniformCompliance template="Vec1d" compliance="1.e-3" isCompliance="0"/>
         <DistanceMapping />
-        <UniformCompliance template="Vec1d" compliance="1.e-3" dampingRatio="0"  isCompliance="0"/>
     </Node>
 </Node>
 </Node>

@@ -13,7 +13,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(CgSolver);
+SOFA_DECL_CLASS(CgSolver)
 int CgSolverClass = core::RegisterObject("Sparse CG linear solver").add< CgSolver >();
 
 CgSolver::CgSolver() 
@@ -21,12 +21,6 @@ CgSolver::CgSolver()
 	
 }
 
-// TODO: copy pasta; put this in utils (see MinresSolver.cpp)
-template<class Params>
-static void report(const Params& p) {
-	std::cerr << "cg: " << p.iterations 
-			  << " iterations, absolute residual: " << p.precision << std::endl;
-}
 
 // delicious copypasta (see minres) TODO factor this in utils
 void CgSolver::solve_schur(AssembledSystem::vec& x,
@@ -57,29 +51,29 @@ void CgSolver::solve_schur(AssembledSystem::vec& x,
 
 		x.head( sys.m ) += tmp;
 		x.tail( sys.n ) = lambda;
-		
+
+        report("cg (schur)", p );
 	}
 
 }
 
-
+// this code could also be factorized with minres code (maybe in KrylovSolver?)
 void CgSolver::solve_kkt(AssembledSystem::vec& x,
                          const AssembledSystem& system,
                          const AssembledSystem::vec& b,
-						 real /* damping */ ) const {
-	if( system.n ) {
-		throw std::logic_error("CG can't solve KKT system with constraints. you need to turn on schur and add a response component for this");
-	}
+                         real damping ) const {
 
     params_type p = params(b);
 
-    kkt::matrixQ A(system);
+    vec rhs = b;
+    if( system.n ) rhs.tail(system.n) = -rhs.tail(system.n);
+
+    kkt A(system, parallel.getValue(), damping);
 
     typedef ::cg<real> solver_type;
-    solver_type::solve(x, A, b, p);
+    solver_type::solve(x, A, rhs, p);
 
     report("cg (kkt)", p );
-
 }
 
 

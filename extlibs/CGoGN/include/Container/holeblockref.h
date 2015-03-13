@@ -128,6 +128,14 @@ public:
 	*/
 	bool compressFree();
 
+
+	inline void compressFull(unsigned int nb)
+	{
+		m_nbfree = 0;
+		m_nbref = nb;
+		m_nb = nb;
+	}
+
 	/**
 	* clear the container of free block
 	*/
@@ -178,13 +186,14 @@ public:
 
 	bool updateHoles(unsigned int nb);
 
-    bool updateHole(unsigned int indx);
+//    bool updateHole(unsigned int indx);
 
 	void saveBin(CGoGNostream& fs);
 
 	bool loadBin(CGoGNistream& fs);
     void printTableFree();
     bool removeFromFreeElts(unsigned int nb);
+	unsigned int* getTableFree(unsigned int & nb) {nb =m_nbfree; return m_tableFree;}
 };
 
 } // namespace CGoGN

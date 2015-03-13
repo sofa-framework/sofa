@@ -69,7 +69,6 @@ public:
     typedef typename BaseShapeFunction::Gradient Gradient;
     typedef typename BaseShapeFunction::Hessian Hessian;
     typedef typename BaseShapeFunction::VRef VRef;
-    typedef typename BaseShapeFunction::MaterialToSpatial MaterialToSpatial ; ///< MaterialToSpatial transformation = deformation gradient type
     typedef typename BaseShapeFunction::Coord sCoord; ///< spatial coordinates
     BaseShapeFunction* m_shapeFunction;        ///< the component where the weights are computed
     //@}

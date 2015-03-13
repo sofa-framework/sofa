@@ -92,6 +92,7 @@ class TetrahedronFEMForceField : public core::behavior::ForceField<DataTypes>, p
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes), core::behavior::BaseRotationFinder);
 
+    typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecReal VecReal;
@@ -282,9 +283,9 @@ public:
 
 
     Data<int> _computeVonMisesStress;
-    Data<helper::vector<Real> > _vonMisesPerElement;
-    Data<helper::vector<Real> > _vonMisesPerNode;
-    Data<helper::vector<Vec3f> > _vonMisesStressColors;
+    Data<helper::vector<Real> >						_vonMisesPerElement;
+    Data<helper::vector<Real> >						_vonMisesPerNode;
+    Data<helper::vector<sofa::defaulttype::Vec3f> > _vonMisesStressColors;
 
 #ifndef SOFA_NO_OPENGL
 	visualmodel::ColorMap::SPtr _showStressColorMapReal;
@@ -412,6 +413,11 @@ public:
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+
+    // Make other overloaded version of getPotentialEnergy() to show up in subclass.
+    using InheritForceField::getPotentialEnergy;
+    // getPotentialEnergy is implemented for small method
+    virtual double getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const;
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
     virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ );

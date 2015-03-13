@@ -32,7 +32,7 @@ namespace CGoGN
 
 namespace Utils
 {
-#ifdef WITH_QT
+#ifdef CGOGN_WITH_QT
 namespace Img3D_IO
 {
 	/**

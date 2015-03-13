@@ -48,12 +48,10 @@
 //#define ANISOTROPIC 2
 
 #define GAUSS_SEIDEL 0
-#ifdef SOFA_HAVE_MGDIFFUSI0N
 #define JACOBI 1
 #define CG 2
-#define MULTIGRID 3
-#include <DiffusionSolver.h>
-#endif
+#include <image/extlibs/DiffusionSolver/DiffusionSolver.h>
+
 
 
 namespace sofa
@@ -222,12 +220,8 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 
         // init temperatures
         dist.fill(-1);
-        cimg_foroff(inimg,off) if(inimg[off]) dist[off]=
-#ifdef SOFA_HAVE_MGDIFFUSI0N
-                0;
-#else
-                0.5;  // by default 0 value must encode a Neuman condition?
-#endif
+        cimg_foroff(inimg,off) if(inimg[off]) dist[off] = 0;
+
 
         for(unsigned int i=0; i<parent.size(); i++)
         {
@@ -247,51 +241,9 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
             }
         }
 
-
-
-
-
-
-//        DIRTY CODE TO EXPORT IMAGES TO BE DIFFUSED
-//        CImg<float> img = dist; // convert in float
-
-//        std::stringstream ss;
-//        ss << "/tmp/DiffusionShapeFunction"<<index<<"_"<<dist.width()<<"_"<<dist.height()<<"_"<<dist.depth()<<"_"<<sizeof(float)<<".raw";
-//        img.save( ss.str().c_str() );
-
-//        CImg<char> mask(dist.width(),dist.height(),dist.depth(),1,-1);// outside
-//        cimg_foroff(mask,off)
-//                if( inimg[off]!=0 ) mask[off]=1; // inside
-
-//        for(unsigned int i=0; i<parent.size(); i++)
-//        {
-//            typename DiffusionShapeFunction::Coord p = inT->toImageInt(parent[i]);
-//            if(in->isInside(p[0],p[1],p[2])) mask(p[0],p[1],p[2])=0; // dirichlet
-//        }
-
-//        if(index<This->nbBoundaryConditions.getValue())
-//        {
-//            typename DiffusionShapeFunction::raDist bcData(This->f_boundaryConditions[index]);
-//            if(!bcData->isEmpty())
-//            {
-//                const  typename DiffusionShapeFunction::DistTypes::CImgT& bc = bcData->getCImg();
-//                cimg_foroff(bc,off)
-//                        if(bc[off]>=0) mask[off]=0; // dirichlet
-//            }
-//        }
-
-//        std::stringstream ss2;
-//        ss2 << "/tmp/DiffusionShapeFunction"<<index<<"_mask_"<<dist.width()<<"_"<<dist.height()<<"_"<<dist.depth()<<"_"<<sizeof(char)<<".raw";
-//        mask.save( ss2.str().c_str() );
-
-
-
-
-
     }
 
 
-#ifdef SOFA_HAVE_MGDIFFUSI0N
 
     template<class DiffusionShapeFunction>
     static void buildMaterialImage(DiffusionShapeFunction* This, cimg_library::CImg<float>& material)
@@ -427,129 +379,6 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         dist = values;
     }
 
-    template<class DiffusionShapeFunction>
-    static void solveMG(DiffusionShapeFunction* This, cimg_library::CImg<float>& values, cimg_library::CImg<char>& mask, cimg_library::CImg<float>* /*material*/=NULL)
-    {
-        DiffusionSolver<float>::solveMG( values, mask, This->tolerance.getValue(), 0, This->iterations.getValue() );
-
-        if( This->d_outsideDiffusion.getValue() )
-        {
-            cimg_for_insideXYZ(mask,x,y,z,1) // at least a one pixel outside border
-            {
-                char& m = mask(x,y,z);
-                if( m == DiffusionSolver<float>::OUTSIDE ) m = DiffusionSolver<float>::INSIDE;
-                else m = DiffusionSolver<float>::DIRICHLET;
-            }
-
-            DiffusionSolver<float>::solveMG( values, mask, This->tolerance.getValue(), 0, This->iterations.getValue() );
-        }
-
-        // convert from float // TODO improve that
-        typename DiffusionShapeFunction::waDist distData(This->f_distances);
-        typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
-        dist = values;
-    }
-
-
-
-
-
-#endif
-
-    /**
-    * do one gauss seidel diffusion step : each pixel is replaced by the weighted average of its neighbors
-    * weights are based on the (biased) distance : w= e(-d'²/sigma²) with d'=d/min(stiffness)
-    * distances must be initialized to 1 or 0 at constrained pixels, to -1 outside, and between 0 and 1 elsewhere
-    */
-    /*
-    template<typename real,typename T>
-    real GaussSeidelDiffusionStep (CImg<real>& distances, const sofa::defaulttype::Vec<3,real>& voxelsize, const CImg<T>* biasFactor=NULL)
-    {
-        typedef sofa::defaulttype::Vec<3,int> iCoord;
-        const iCoord dim(distances.width(),distances.height(),distances.depth());
-
-        // init
-        sofa::defaulttype::Vec<6,  iCoord > offset; // image coord offsets related to neighbors
-        sofa::defaulttype::Vec<6,  real > lD;      // precomputed local distances (supposing that the transformation is linear)
-        offset[0]=iCoord(-1,0,0);           lD[0]=voxelsize[0];
-        offset[1]=iCoord(+1,0,0);           lD[1]=voxelsize[0];
-        offset[2]=iCoord(0,-1,0);           lD[2]=voxelsize[1];
-        offset[3]=iCoord(0,+1,0);           lD[3]=voxelsize[1];
-        offset[4]=iCoord(0,0,-1);           lD[4]=voxelsize[2];
-        offset[5]=iCoord(0,0,+1);           lD[5]=voxelsize[2];
-        unsigned int nbOffset=offset.size();
-
-        const real inv_variance=5.0; // =1/sigma² arbitrary
-
-        real res=0; // return maximum absolute change
-        cimg_for_insideXYZ(distances,x,y,z,1)
-                if(distances(x,y,z)>0 && distances(x,y,z)<1)
-        {
-            real b1; if(biasFactor) b1=(real)(*biasFactor)(x,y,z); else  b1=1.0;
-            real val=0;
-            real W=0;
-            for(unsigned int i=0;i<nbOffset;i++)
-            {
-                real b2; if(biasFactor) b2=(real)(*biasFactor)(x+offset[0],y+offset[1],z+offset[2]); else  b2=1.0;
-                real d = lD[i]*1.0/sofa::helper::rmin(b1,b2);
-                real w=exp(-d*d*inv_variance);
-                if(distances(x+offset[0],y+offset[1],z+offset[2])!=-1.0) val+= w*distances(x+offset[0],y+offset[1],z+offset[2]);
-                else val+= w*distances(x,y,z);
-                W+=w;
-            }
-            if(W!=0) val /= W;
-            if(res<fabs(val-distances(x,y,z))) res=fabs(val-distances(x,y,z));
-            distances(x,y,z)=val;
-        }
-        return res;
-    }*/
-
-    template<class DiffusionShapeFunction>
-    static double GaussSeidelStep(DiffusionShapeFunction* This, const unsigned index) //, const CImg<typename DiffusionShapeFunction::DistT>& stencil
-    {
-        typedef typename DiffusionShapeFunction::DistT DistT;
-
-        // laplacian stencil
-        cimg_library::CImg<DistT> stencil(3,3,3);
-        stencil.fill(0);
-        stencil(1,1,1)=-6.0;
-        stencil(0,1,1)=stencil(2,1,1)=stencil(1,0,1)=stencil(1,2,1)=stencil(1,1,0)=stencil(1,1,2)=1.0;
-
-        typename DiffusionShapeFunction::waDist distData(This->f_distances);     typename DiffusionShapeFunction::DistTypes::CImgT& dist = distData->getCImg();
-
-        unsigned int ox=0.5*(stencil.width()-1),oy=0.5*(stencil.height()-1),oz=0.5*(stencil.depth()-1);
-        unsigned int border=std::max(ox,std::max(oy,oz));
-
-        const  typename DiffusionShapeFunction::DistTypes::CImgT* bc = NULL;
-        if(index<This->nbBoundaryConditions.getValue())
-        {
-            typename DiffusionShapeFunction::raDist bcData(This->f_boundaryConditions[index]);
-            if(!bcData->isEmpty()) bc = &(bcData->getCImg());
-        }
-
-        double res=0; // return maximum absolute change
-
-        //#ifdef USING_OMP_PRAGMAS
-        //        #pragma omp parallel for
-        //#endif
-        cimg_for_insideXYZ(dist,x,y,z,border)
-                if(dist(x,y,z)>0 && dist(x,y,z)<1)
-                if(!bc || (*bc)(x,y,z)==(DistT)-1)
-        {
-            DistT val=0;
-            cimg_forXYZ(stencil,dx,dy,dz)
-                    if(stencil(dx,dy,dz))
-                    if(dx!=(int)ox || dy!=(int)oy || dz!=(int)oz)
-            {
-                if(dist(x+dx-ox,y+dy-oy,z+dz-oz)!=-1.0) val+=dist(x+dx-ox,y+dy-oy,z+dz-oz)*stencil(dx,dy,dz);
-                else val+=dist(x,y,z)*stencil(dx,dy,dz);  // neumann boundary conditions
-            }
-            val = -val/stencil(ox,oy,oz);
-            if(res<fabs(val-dist(x,y,z))) res=fabs(val-dist(x,y,z));
-            dist(x,y,z)=val;
-        }
-        return res;
-    }
 };
 
 
@@ -624,9 +453,6 @@ public:
 //        if (this->method.getValue().getSelectedId() == HARMONIC)
         {
 
-#ifdef SOFA_HAVE_MGDIFFUSI0N
-
-
 //            DiffusionSolver<float>::setNbThreads( 1 );
             DiffusionSolver<float>::setDefaultNbThreads();
 
@@ -652,7 +478,13 @@ public:
 //                values.display("values");
 //                mask.display("mask");
 
-
+#ifndef NDEBUG
+                // checking that there is at least a one pixel outside border
+                // it is a limitation that dramatically improves performances by removing boundary testing
+                cimg_forXYZ(mask,x,y,z)
+                    if( x==0 || y==0 || z==0 || x==mask.width()-1 || y==mask.height()-1 || z==mask.depth()-1 )
+                        assert( mask(x,y,z) == DiffusionSolver<float>::OUTSIDE && "DiffusionShapeFunction mask must have at least one pixel outside border" );
+#endif
 
                 switch( this->solver.getValue().getSelectedId() )
                 {
@@ -661,9 +493,6 @@ public:
                         break;
                     case CG:
                         DiffusionShapeFunctionSpecialization<ImageTypes::label>::solveCG(this,values,mask,materialPtr);
-                        break;
-                    case MULTIGRID:
-                        DiffusionShapeFunctionSpecialization<ImageTypes::label>::solveMG(this,values,mask);
                         break;
                     case GAUSS_SEIDEL:
                     default:
@@ -676,73 +505,6 @@ public:
                 DiffusionShapeFunctionSpecialization<ImageTypes::label>::updateWeights(this,i);
             }
 
-
-#else
-
-            if (this->solver.getValue().getSelectedId() == GAUSS_SEIDEL)
-            {
-                for(unsigned int i=0; i<this->f_position.getValue().size(); i++)
-                {
-                    DiffusionShapeFunctionSpecialization<ImageTypes::label>::initTemp(this,i);
-
-
-
-
-                    double res=this->tolerance.getValue();
-                    unsigned int nbit=0;
-                    for(unsigned int it=0; it<this->iterations.getValue(); it++)
-                        if(res>=this->tolerance.getValue())
-                        {
-                            res = DiffusionShapeFunctionSpecialization<ImageTypes::label>::GaussSeidelStep(this,i);
-                            nbit++;
-                        }
-                    if(this->f_printLog.getValue()) std::cout<<this->getName()<<": dof "<<i<<": performed "<<nbit<<" iterations, residual="<<res<<std::endl;
-
-                    DiffusionShapeFunctionSpecialization<ImageTypes::label>::updateWeights(this,i);
-                }
-            }
-            /* else
-            {
-                // assemble system Hx = b
-                Eigen::SparseMatrix<double> H = fillH(label,stencil,ind,N);
-                Eigen::VectorXd b = fillb(label,stencil,ind,N,index,temp);
-
-                // solve using Eigen
-                if (this->solver.getValue().getSelectedId() == LDLT)
-                {
-                    Eigen::SimplicialCholesky<Eigen::SparseMatrix<double> > chol(H);
-                    std::cout<<"done"<<std::endl;
-                    std::cout<<"solve"<<std::endl;
-                    Eigen::VectorXd X = chol.solve(b);
-                    //    Eigen::VectorXd X = chol.solve(X1+b);
-                    std::cout<<"done"<<std::endl;
-                }
-                else if (this->solver.getValue().getSelectedId() == CG)
-                {
-                        Eigen::ConjugateGradient<Eigen::SparseMatrix<double>,  Eigen::IncompleteLUT<double> > cg;
-                        cg.setMaxIterations(500);
-                        cg.setTolerance(1e-8);
-                        cg.compute(H);
-                        std::cout<<"done"<<std::endl;
-                        std::cout<<"solve"<<std::endl;
-                        Eigen::VectorXd X = cg.solve(b);
-                        std::cout<<"done"<<std::endl;
-                        std::cout << "#iterations:     " << cg.iterations() << std::endl;
-                        std::cout << "estimated error: " << cg.error()      << std::endl;
-                }
-                else if (this->solver.getValue().getSelectedId() == biCG)
-                {
-                            Eigen::BiCGSTAB<Eigen::SparseMatrix<double>, Eigen::IncompleteLUT<double> > cg(H);
-                                cg.setTolerance(1e-8);
-                            std::cout<<"done"<<std::endl;
-                                std::cout<<"solve"<<std::endl;
-                                Eigen::VectorXd X = cg.solve(b);
-                                std::cout<<"done"<<std::endl;
-                                std::cout << "#iterations:     " << cg.iterations() << std::endl;
-                                std::cout << "estimated error: " << cg.error()      << std::endl;
-                }
-            }*/
-#endif
 
         }
 
@@ -805,17 +567,10 @@ protected:
 //        method.setValue(methodOptions);
 //        method.setGroup("parameters");
 
-        helper::OptionsGroup solverOptions(1
-#ifdef SOFA_HAVE_MGDIFFUSI0N
-                                          +3
-#endif
+        helper::OptionsGroup solverOptions(3
                                            ,"0 - Gauss-Seidel"
-                                   #ifdef SOFA_HAVE_MGDIFFUSI0N
                                            ,"1 - Jacobi"
-                                           ,"2 - CG"
-                                           ,"3 - Multigrid"
-#endif
-                                           );
+                                           ,"2 - CG" );
         solverOptions.setSelectedItem(GAUSS_SEIDEL);
         solver.setValue(solverOptions);
         solver.setGroup("parameters");

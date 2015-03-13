@@ -65,10 +65,11 @@ public:
 	virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &)  { }
 
 
-protected:
 	typedef typename DataTypes::Real real;
 
 	Data<real> damping;
+
+protected:
 
 	typedef linearsolver::EigenBaseSparseMatrix<real> matrix_type;
 	matrix_type matrix; ///< compliance matrix

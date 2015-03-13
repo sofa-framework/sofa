@@ -198,6 +198,10 @@ namespace sofa {
             OutVecCoord xout(xelasticityDofs.size());
             copyFromData(xout,xelasticityDofs);
 
+            typename  OutDOFs::ReadVecCoord xelasticityDofs_rest = Inherited::outDofs->readRestPositions();
+            OutVecCoord xout_rest(xelasticityDofs_rest.size());
+            copyFromData(xout_rest,xelasticityDofs_rest);
+
             // Apply affine transform to each dof
             InVecCoord parentNew(xin.size());
             this->applyAffineTransform(xin,parentNew);
@@ -208,7 +212,7 @@ namespace sofa {
             for(size_t i=0;i<xout.size();++i)
             {
                 OutFrame &f = expectedChildCoords[i].getF();
-                f = testedRotation;
+                f = testedRotation*xelasticityDofs_rest[i].getF();
             }
            
            // run the mapping test

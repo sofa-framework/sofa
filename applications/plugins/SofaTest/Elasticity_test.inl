@@ -45,6 +45,7 @@
 
 // ForceField
 #include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <sofa/component/forcefield/LennardJonesForceField.h>
 
 #include <sofa/component/visualmodel/VisualStyle.h>
 #include <sofa/component/topology/RegularGridTopology.h>
@@ -358,20 +359,20 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // mapped particles
     size_t mappedIndex=0;
-    vector<unsigned>* pointsPerFrame = mappedParticles_mapping->pointsPerFrame.beginEdit();
+    vector<unsigned>* rigidIndexPerPoint = mappedParticles_mapping->rigidIndexPerPoint.beginEdit();
     for( size_t b=0; b<numRigid; b++ )
     {
         const vector<size_t>& ind = indices[b];
-        pointsPerFrame->push_back(ind.size()); // tell the mapping the number of points associated with this frame
         for(size_t i=0; i<ind.size(); i++)
         {
+            rigidIndexPerPoint->push_back( b ); // tell the mapping the number of points associated with this frame
             parentParticles[ind[i]]=make_pair(mappedParticles_dof.get(),mappedIndex);
             xmapped[mappedIndex] = xgrid[ ind[i] ];
             mappedIndex++;
 
         }
     }
-    mappedParticles_mapping->pointsPerFrame.endEdit();
+    mappedParticles_mapping->rigidIndexPerPoint.endEdit();
 
     // now add all the particles to the multimapping
     for( size_t i=0; i<xgrid.size(); i++ )
@@ -384,7 +385,105 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
 }
 
+template<class DataTypes>
+simulation::Node::SPtr Elasticity_test<DataTypes>::createMassSpringSystem(
+        simulation::Node::SPtr root,
+        double stiffness,
+        double mass,
+        double restLength,
+        VecCoord xFixedPoint,
+        VecDeriv vFixedPoint,
+        VecCoord xMass,
+        VecDeriv vMass)
+{
 
+// Fixed point
+simulation::Node::SPtr fixedPointNode = root->createChild("FixedPointNode");
+MechanicalObject3::SPtr FixedPoint = addNew<MechanicalObject3>(fixedPointNode,"fixedPoint");
+
+// Set position and velocity
+FixedPoint->resize(1);
+MechanicalObject3::WriteVecCoord xdof = FixedPoint->writePositions();
+copyToData( xdof, xFixedPoint );
+MechanicalObject3::WriteVecDeriv vdof = FixedPoint->writeVelocities();
+copyToData( vdof, vFixedPoint );
+
+FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(fixedPointNode,"FixedPointNode");
+fixed->addConstraint(0);      // attach particle
+
+
+// Mass
+simulation::Node::SPtr massNode = root->createChild("MassNode");
+MechanicalObject3::SPtr massDof = addNew<MechanicalObject3>(massNode,"massNode");
+
+// Set position and velocity
+FixedPoint->resize(1);
+MechanicalObject3::WriteVecCoord xMassDof = massDof->writePositions();
+copyToData( xMassDof, xMass );
+MechanicalObject3::WriteVecDeriv vMassDof = massDof->writeVelocities();
+copyToData( vMassDof, vMass );
+
+UniformMass3::SPtr massPtr = addNew<UniformMass3>(massNode,"mass");
+massPtr->totalMass.setValue( mass );
+
+// attach a spring
+StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>(FixedPoint.get(), massDof.get());
+root->addObject(spring);
+spring->addSpring(0,0,stiffness ,0, restLength);
+
+return root;
+
+}
+
+template<class DataTypes>
+simulation::Node::SPtr Elasticity_test<DataTypes>::createSunPlanetSystem(
+        simulation::Node::SPtr root,
+        double mSun,
+        double mPlanet,
+        double g,
+        Coord xSun,
+        Deriv vSun,
+        Coord xPlanet,
+        Deriv vPlanet)
+{
+
+// Mechanical object with 2 dofs: first sun, second planet
+MechanicalObject3::SPtr sunPlanet_dof = addNew<MechanicalObject3>(root,"sunPlanet_MO");
+
+// Set position and velocity
+sunPlanet_dof->resize(2);
+// Position
+MechanicalObject3::VecCoord positions(2);
+positions[0] = xSun;
+positions[1]= xPlanet;
+MechanicalObject3::WriteVecCoord xdof = sunPlanet_dof->writePositions();
+copyToData( xdof, positions );
+// Velocity
+MechanicalObject3::VecDeriv velocities(2);
+velocities[0] = vSun;
+velocities[1]= vPlanet;
+MechanicalObject3::WriteVecDeriv vdof = sunPlanet_dof->writeVelocities();
+copyToData( vdof, velocities );
+
+// Fix sun
+FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(root,"FixedSun");
+fixed->addConstraint(0);
+
+// Uniform Mass
+UniformMass3::SPtr massPtr = addNew<UniformMass3>(root,"mass");
+massPtr->totalMass.setValue(mPlanet + mSun);
+
+// Lennard Jones Force Field
+typename component::forcefield::LennardJonesForceField<DataTypes>::SPtr ff =
+        addNew<typename component::forcefield::LennardJonesForceField<DataTypes> >(root);
+// Set froce field parameters
+ff->setAlpha(1);
+ff->setBeta(-1);
+ff->setAInit(mPlanet*mSun*g);
+
+return root;
+
+}
 
 
 }// sofa

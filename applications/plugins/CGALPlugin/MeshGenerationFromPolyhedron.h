@@ -114,6 +114,8 @@ public:
     Data<int> odt_max_it, lloyd_max_it;
     Data<double> perturb_max_time, exude_max_time;
     Data<int> ordering;
+    Data<bool> constantMeshProcess;
+    Data<unsigned int> meshingSeed;
 
     // Display
     Data<bool> drawTetras;

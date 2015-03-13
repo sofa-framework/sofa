@@ -35,7 +35,7 @@
 #include <iostream>
 #include <map>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -181,7 +181,7 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
     unsigned int nbs=x.size(),nbt=tp.size();
 
     distanceSet emptyset;
-    if(nbs!=closestSource.size()) {initSource();  closestSource.resize(nbs);	closestSource.fill(emptyset); cacheDist.resize(nbs); cacheDist.fill((Real)0.); cacheDist2.resize(nbs); cacheDist2.fill((Real)0.); previousX.assign(x.begin(),x.end());}
+    if(nbs!=closestSource.size()) {initSource();  closestSource.resize(nbs);	closestSource.fill(emptyset); cacheThresh_max.resize(nbs); cacheThresh_min.resize(nbs); previousX.assign(x.begin(),x.end());}
     if(nbt!=closestTarget.size()) {initTarget();  closestTarget.resize(nbt);	closestTarget.fill(emptyset);}
 
     if(nbs==0 || nbt==0) return;
@@ -193,41 +193,22 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
     if(blendingFactor.getValue()<1) {
 
         //unsigned int count=0;
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbs;i++)
             if(rejectOutsideBbox.getValue() && !targetBbox.contains(x[i])) sourceIgnored[i]=true;
-            else
-            {
-                Real dx=(previousX[i]-x[i]).norm();
-                //  closest point caching [cf. Simon96 thesis]
-                if(dx>=cacheDist[i] || closestSource[i].size()==0)
-                {
-                    targetKdTree.getNClosest(closestSource[i],x[i],this->cacheSize.getValue() );
-                    typename distanceSet::iterator it0=closestSource[i].begin(), it1=it0; it1++;
-                    typename distanceSet::reverse_iterator itn=closestSource[i].rbegin();
-                    cacheDist[i] =((itn->first)-(it0->first))*(Real)0.5;
-                    cacheDist2[i]=((it1->first)-(it0->first))*(Real)0.5;
-                    previousX[i]=x[i];
-                }
-                else if(dx>=cacheDist2[i]) // in the cache -> update N-1 distances
-                {
-                    targetKdTree.updateCachedDistances(closestSource[i],x[i]);
-                    //count++;
-                }
-            }
-        //std::cout<<(Real)count*(Real)100./(Real)nbs<<" % cached"<<std::endl;
+            else targetKdTree.getNClosestCached(closestSource[i], cacheThresh_max[i], cacheThresh_min[i], this->previousX[i], x[i], this->targetPositions.getValue(), this->cacheSize.getValue());
     }
     // closest source points from target points
     if(blendingFactor.getValue()>0)
     {
         initSource();
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbt;i++)
-            sourceKdTree.getNClosest(closestTarget[i],tp[i],1);
+            sourceKdTree.getNClosest(closestTarget[i],tp[i],*this->mstate->getX(),1);
     }
 
 

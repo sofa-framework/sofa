@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <Node name="" gravity="0 0 0" dt="0.05">
     <VisualStyle displayFlags="showVisualModels hideBehaviorModels showForceFields hideWireframe" />
+    
+    <RequiredPlugin name="Flexible"/>
 
     <Node name="Hexa" >
         <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
@@ -10,10 +12,10 @@
         <MechanicalObject name="DOF" />
         <UniformMass  totalMass="100" />
 
-        <BarycentricShapeFunction nbRef='8' orientation="0 0 45" useLocalOrientation="0"/>
+        <BarycentricShapeFunction nbRef='8' />
 
             <Node 	name="behavior"   >
-                <TopologyGaussPointSampler name="sampler" inPosition="@../DOF.rest_position" method="0" order="2"/>
+                <TopologyGaussPointSampler name="sampler" inPosition="@../DOF.rest_position" method="0" order="2" orientation="0 0 45" useLocalOrientation="0"/>
                 <MechanicalObject  template="F331" name="F"  />
                 <LinearMapping template="Vec3d,F331" showDeformationGradientScale="0.2" showDeformationGradientStyle="1"/>
 

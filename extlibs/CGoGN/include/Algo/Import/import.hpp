@@ -45,15 +45,9 @@ namespace Import
 
 
 template <typename PFP>
-bool importMesh(typename PFP::MAP& map, CGoGN::Algo::Volume::Import::MeshTablesVolume<PFP>& mtv ) {
-    return false;
-}
-
-template <typename PFP>
 bool importMesh(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
 {
     typedef typename PFP::MAP MAP;
-
     VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> >, MAP> vecDartsPerVertex(map, "incidents");
 
     unsigned nbf = mts.getNbFaces();
@@ -154,12 +148,12 @@ bool importMesh(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
         CGoGNout << "Map closed (" << nbBoundaryEdges << " boundary edges / " << nbH << " holes)" << CGoGNendl;
     }
 
-    if (needBijectiveCheck)
-    {
-        // ensure bijection between topo and embedding
-        Algo::Topo::bijectiveOrbitEmbedding<VERTEX>(map);
-    }
-
+//    if (needBijectiveCheck)
+//    {
+//        // ensure bijection between topo and embedding
+//        Algo::Topo::bijectiveOrbitEmbedding<VERTEX>(map);
+//    }
+    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
     return true ;
 }
 

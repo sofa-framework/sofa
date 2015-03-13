@@ -56,6 +56,7 @@ set(HEADER_FILES
     engine/ComputeDualQuatEngine.h
     engine/ComputeDualQuatEngine.inl
     engine/ComputeWeightEngine.h
+    mass/AffineMass.h
     strainMapping/BaseStrainMapping.h
     strainMapping/CauchyStrainMapping.h
     strainMapping/CauchyStrainJacobianBlock.h
@@ -136,6 +137,7 @@ set(SOURCE_FILES
     deformationMapping/CorotationalMeshMapping.cpp
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
+    mass/AffineMass.cpp
     strainMapping/CauchyStrainMapping.cpp
     strainMapping/GreenStrainMapping.cpp
     strainMapping/CorotationalStrainMapping.cpp 
@@ -166,20 +168,25 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND HEADER_FILES "shapeFunction/DiffusionShapeFunction.h")
    	list(APPEND HEADER_FILES "shapeFunction/ShapeFunctionDiscretizer.h")
    	list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
-   	list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
+        list(APPEND HEADER_FILES "mass/MassFromDensity.h")
+        list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
-        list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
+    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
 
    	list(APPEND SOURCE_FILES "quadrature/ImageGaussPointSampler.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/VoronoiShapeFunction.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/DiffusionShapeFunction.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
    	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
-   	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
-        list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
+        list(APPEND HEADER_FILES "mass/MassFromDensity.cpp")
+        list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
+    list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
 
-        AddLinkerDependencies(image)
-        AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
+    AddCompilerDefinitions("SOFA_HAVE_IMAGE" )
+
+
+    AddLinkerDependencies(image)
+
 endif()
 
 
@@ -188,6 +195,7 @@ include(./python/python.cmake)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
+
 
 AddCompilerDefinitions("SOFA_BUILD_Flexible")
 AddLinkerDependencies(SofaEigen2Solver SofaBaseVisual)
@@ -203,32 +211,6 @@ if(UNIX)
     link_directories("/usr/lib/x86_64-linux-gnu/")
     AddLinkerDependencies("pthread")
 endif()
-
-
-
-sofa_option(SOFA-EXTERNAL_MGDIFFUSI0N_PATH PATH "" "Path to the MGDIFFUSI0N library")
-if(NOT SOFA-EXTERNAL_MGDIFFUSI0N_PATH STREQUAL "")
-    AddCompilerDefinitions("SOFA_HAVE_MGDIFFUSI0N")
-    include_directories( "${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/" )
-
-#    link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/ )
-#    AddLinkerDependencies("DiffusionSolver")
-#    link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/ )
-#    link_directories( ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/ )
-#    AddLinkerDependencies("PhysBAM_PhysBAM_Tools" "Threading_Tools")
-
-
-# TODO fix this!
-# link_directories does not add a -Lpath to the link command so I found this workaround for now
-
-    target_link_libraries (${PROJECT_NAME} ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/mgdiffusion/DiffusionSolver/libDiffusionSolver.so
-                                            ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Public_Library/libPhysBAM_PhysBAM_Tools.so
-                                            ${SOFA-EXTERNAL_MGDIFFUSI0N_PATH}/PhysBAM/build/nocona/release/Common_Libraries/libThreading_Tools.so )
-
-
-endif()
-
-
 
 
 

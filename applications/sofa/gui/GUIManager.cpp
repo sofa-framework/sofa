@@ -25,10 +25,16 @@
 
 #include "GUIManager.h"
 #include "BaseGUI.h"
+#include "BaseViewer.h"
 #include <sofa/component/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/helper/system/FileSystem.h>
+#include <sofa/helper/Utils.h>
+
 using std::cerr;
 using std::endl;
+using sofa::helper::system::FileSystem;
+using sofa::helper::Utils;
 
 namespace sofa
 {
@@ -104,7 +110,7 @@ std::string GUIManager::ListSupportedGUI(char separator)
 const char* GUIManager::GetValidGUIName()
 {
     const char* name;
-    std::string lastGuiFilename = "share/config/lastUsedGUI.ini";
+    std::string lastGuiFilename = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
     if (guiCreators.empty())
     {
         std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;
@@ -113,11 +119,10 @@ const char* GUIManager::GetValidGUIName()
     else
     {
         //Check the config file for the last used GUI type
-        if(sofa::helper::system::DataRepository.findFile(lastGuiFilename))
+        if(FileSystem::exists(lastGuiFilename))
         {
-            std::string configPath = sofa::helper::system::DataRepository.getFile(lastGuiFilename);
             std::string lastGuiName;
-            std::ifstream lastGuiStream(configPath.c_str());
+            std::ifstream lastGuiStream(lastGuiFilename.c_str());
             std::getline(lastGuiStream,lastGuiName);
             lastGuiStream.close();
 
@@ -134,6 +139,10 @@ const char* GUIManager::GetValidGUIName()
                 }
             }
             std::cerr << "WARNING(SofaGUI): Previously used GUI not registered. Using default GUI." << std::endl;
+        }
+        else
+        {
+            std::cout << "INFO(SofaGUI): lastUsedGUI.ini not found; using default GUI." << std::endl;
         }
 
         std::list<GUICreator>::iterator it =guiCreators.begin();
@@ -169,12 +178,32 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
         return &(*it);
 }
 
-int GUIManager::Init(const char* argv0, const char* name /* = "" */)
+int GUIManager::Init(const char* argv0, const char* name)
 {
     BaseGUI::SetProgramName(argv0);
     sofa::component::init();
     sofa::simulation::xml::initXml();
-    GUICreator* creator;
+
+    // Read the paths to the share/ and examples/ directories from etc/sofa.ini,
+    const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
+    const std::string sofaIniFilePath = etcDir + "/sofa.ini";
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+
+    // and add them to DataRepository
+    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
+    {
+        std::string shareDir = iniFileValues["SHARE_DIR"];
+        if (!FileSystem::isAbsolute(shareDir))
+            shareDir = etcDir + "/" + shareDir;
+        sofa::helper::system::DataRepository.addFirstPath(shareDir);
+    }
+    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
+    {
+        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
+        if (!FileSystem::isAbsolute(examplesDir))
+            examplesDir = etcDir + "/" + examplesDir;
+        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
+    }
 
     if (currentGUI)
         return 0; // already initialized
@@ -189,7 +218,7 @@ int GUIManager::Init(const char* argv0, const char* name /* = "" */)
     {
         name = GetValidGUIName(); // get the default gui name
     }
-    creator = GetGUICreator(name);
+    GUICreator *creator = GetGUICreator(name);
     if(!creator)
     {
         return 1;
@@ -219,11 +248,8 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
             return 1;
         }
         //Save this GUI type as the last used GUI
-        std::string lastGUIfileName;
-        std::string path = sofa::helper::system::DataRepository.getFirstPath();
-        lastGUIfileName = path.append("/share/config/lastUsedGUI.ini");
-
-        std::ofstream out(lastGUIfileName.c_str(),std::ios::out);
+        const std::string lastGuiFilePath = BaseGUI::getConfigDirectoryPath() + "/lastUsedGUI.ini";
+        std::ofstream out(lastGuiFilePath.c_str(),std::ios::out);
         out << valid_guiname << std::endl;
         out.close();
     }

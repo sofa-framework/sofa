@@ -32,7 +32,7 @@
 
       <Node 	name="I"   >
         <MechanicalObject  template="I331" name="I"  />
-        <InvariantMapping template="F331,I331"     deviatoric="true"/>
+        <InvariantMapping template="F331,I331"  />
         <NeoHookeanForceField  template="I331" youngModulus="1000" poissonRatio="0.3"      />
       </Node>
     </Node>

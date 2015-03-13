@@ -90,7 +90,7 @@ public:
         typename Hessians::iterator hessianIt = hessians.begin();
         if( d_volumePerNodes.getValue() )
         {
-            for( int i=0 ; i<v.size() ; i++ ) v[i][0] = 0;
+            for( size_t i=0 ; i<v.size() ; i++ ) v[i][0] = 0;
             SparseMatrixEigen tetraJ( m_topology->getNbTetrahedra(), x.size()*Nin );
             SparseMatrixEigen TetraToNode( v.size(), m_topology->getNbTetrahedra() );
             for (int i = 0, nbTetra = m_topology->getNbTetrahedra(); i < nbTetra; i++)

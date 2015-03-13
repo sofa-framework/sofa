@@ -47,7 +47,7 @@ public:
 template <typename PFP>
 unsigned int vertexLevel(typename PFP::MAP& map, Vertex v)
 {
-    assert(map.getDartLevel(v) <= map.getCurrentLevel() || !"vertexLevel : called with a dart inserted after current level") ;
+	assert(map.getDartLevel(v.dart) <= map.getCurrentLevel() || !"vertexLevel : called with a dart inserted after current level") ;
 
 	unsigned int level = map.getMaxLevel();
 
@@ -146,7 +146,7 @@ typename PFP::VEC3 doTwist(typename PFP::VEC3 pos, float t )
 }
 
 template <typename PFP>
-void frequencyDeformation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& attIn, unsigned int cutoffLevel)
+void frequencyDeformation(typename PFP::MAP& map, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& attIn)
 {
 	float time = 1.0;
 	//float angle_deg_max = 0.4;

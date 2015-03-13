@@ -34,10 +34,9 @@ struct SE3 {
 
 	typedef Eigen::Quaternion<real> quat;
 
-	// order: translation, rotation
+	// sofa order: (translation, rotation)
 	typedef vec6 twist;
-
-
+    
 	// easy mappings between sofa/eigen vectors
 	template<int I>
 	static Eigen::Map< Eigen::Matrix<real, I, 1> > map(::sofa::defaulttype::Vec<I, real>& v) {
@@ -237,18 +236,21 @@ struct SE3 {
 		
 		quat q = qq;
 		q.normalize();
-		
-		// flip if needed
+
+		// // flip if needed
 		if( q.w() < 0 ) q.coeffs() = -q.coeffs();
-		
+
+        const real w = std::min<real>(1.0, q.w());
+        
 		// (half) rotation angle
-		real half_theta = std::acos( q.w() );
-		real theta = 2 * half_theta;
+		const real half_theta = std::acos( w ); // in (0, pi / 2)
+		const real theta = 2 * half_theta;      // in (0, pi)
 		
 		if( std::abs(theta) < epsilon() ) {
 			return q.vec();
 		} else {
 			// TODO q.vec() / sinc(theta) instead ?
+            // return 2 * q.vec() / SE3::sinc(half_theta);
 			return theta * q.vec().normalized();
 		}
 
@@ -311,7 +313,22 @@ struct SE3 {
 	}
 
 	// TODO provide exponential lol
-	
+
+    // SO(3) exponential
+    static quat exp(const vec3& v) {
+        const real theta = v.norm();
+
+        const real c = std::cos( theta / 2.0 );
+        const real sc = sinc( theta / 2.0 ) / 2.0;
+        
+        quat res;
+
+        res.w() = std::cos( theta / 2.0 );
+        res.vec() = sc * v;
+        
+        return res;
+    }
+    
 	// static mat33 dexp(const vec3& x) {
 	// 	return dexp(x, exp(x) );
 	// }
@@ -368,6 +385,9 @@ struct SE3 {
 
 		// return sofa( prod(g, h) ) * Ad( inv(h) ) * body(g);
 	}
+
+
+    
 
 
 };

@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icon/open.png</file>
+        <file>icon/hand.png</file>
+        <file>icon/trCorner.png</file>
+        <file>icon/blCorner.png</file>
+        <file>icon/plus.png</file>
+        <file>icon/minus.png</file>
+        <file>config/default.ini</file>
+        <file>scene/sample0.py</file>
+        <file>scene/sample0.py.qml</file>
+        <file>scene/sample1.py</file>
+        <file>scene/sample1.py.qml</file>
+        <file>icon/downArrow.png</file>
+        <file>icon/rightArrow.png</file>
+        <file>icon/link.png</file>
+    </qresource>
+</RCC>

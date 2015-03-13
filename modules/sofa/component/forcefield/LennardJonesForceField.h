@@ -58,6 +58,7 @@ public:
 
 protected:
     Real a,b;
+    Data<Real> aInit;
     Data<Real> alpha,beta,dmax,fmax;
     Data<Real> d0,p0;
     Data<Real> damping;
@@ -73,6 +74,7 @@ protected:
     LennardJonesForceField()
         : a(1)
         , b(1)
+        , aInit  (initData(&aInit  ,Real(0), "aInit"  ,"a for Gravitational FF which corresponds to G*m1*m2 alpha should be equal to 1 and beta to 0."))
         , alpha  (initData(&alpha  ,Real(6), "alpha"  ,"Alpha"))
         , beta   (initData(&beta   ,Real(12),"beta"   ,"Beta"))
         , dmax   (initData(&dmax   ,Real(2), "dmax"   ,"DMax"))
@@ -85,6 +87,7 @@ protected:
 
 public:
 
+    void setAInit(Real v) { aInit.setValue(v); }
     void setAlpha(Real v) { alpha.setValue(v); }
     void setBeta(Real v) { beta.setValue(v); }
     void setFMax(Real v) { fmax.setValue(v); }
@@ -98,6 +101,7 @@ public:
 
     virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& d_x) const;
 
     void draw(const core::visual::VisualParams* vparams);
 

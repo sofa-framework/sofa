@@ -14,7 +14,7 @@
         <MeshTopology name="mesh" src="@loader" />
 
         <MechanicalObject src="@loader" />
-        <BarycentricShapeFunction template="ShapeFunctiond"  orientation="0 0 25" useLocalOrientation="0"/>
+        <BarycentricShapeFunction template="ShapeFunctiond"  />
 
         <UniformMass  totalMass="100"/>
 
@@ -24,7 +24,7 @@
 	<BoxROI box="0.995 -0.005 -0.005    1.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
 
         <Node name="deformationNode" >
-            <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" method="0" order="1" />
+            <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" method="0" order="1" orientation="0 0 25" useLocalOrientation="0"/>
             <MechanicalObject template="F321"  />
             <LinearMapping template="Vec3d,F321" showDeformationGradientScale="0.1" showDeformationGradientStyle="1"/>
             <Node name="StrainNode">
@@ -53,7 +53,7 @@
 	<QuadSetTopologyContainer  name="mesh" src="@loader" />
         
 	<MechanicalObject src="@loader" />
-        <BarycentricShapeFunction template="ShapeFunctiond" orientation="0 0 25" useLocalOrientation="0"/>
+        <BarycentricShapeFunction template="ShapeFunctiond" />
 
         <UniformMass totalMass="100"/>
 
@@ -63,7 +63,7 @@
 	<BoxROI box="2.995 -0.005 -0.005    3.005 1.005 0.005  " /> <ConstantForceField points="@[-1].indices" force="10 0 0" arrowSizeCoef="@[-2].arrowSizeCoef"/>
 
         <Node name="deformationNode" >
-            <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" method="0" order="2" />
+            <TopologyGaussPointSampler name="sampler" inPosition="@../loader.position" method="0" order="2" orientation="0 0 25" useLocalOrientation="0"/>
             <MechanicalObject template="F321"  />
             <LinearMapping template="Vec3d,F321" showDeformationGradientScale="0.1" showDeformationGradientStyle="1"/>
             <Node name="StrainNode">

@@ -1,3 +1,7 @@
+set(SOFA_PROJECT_FOLDER "SofaExternal")
+RegisterProjects("DiffusionSolver" PATH "${CMAKE_CURRENT_LIST_DIR}/extlibs/DiffusionSolver")
+
+set(SOFA_PROJECT_FOLDER "SofaPlugin")
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
@@ -6,6 +10,7 @@ set(SOURCE_FILES
     ImageFilter.cpp
     ImageOperation.cpp
     ImageTransform.cpp
+    ImageTransformEngine.cpp
     TransferFunction.cpp
     ImageValuesFromPositions.cpp
     MergeImages.cpp
@@ -17,6 +22,7 @@ set(SOURCE_FILES
     ImageExporter.cpp 
     ImageDataDisplay.cpp
     VoronoiToMeshEngine.cpp
+    ImageToRigidMassEngine.cpp
 )
 
 set(HEADER_FILES
@@ -26,6 +32,7 @@ set(HEADER_FILES
     ImageFilter.h
     ImageOperation.h
     ImageTransform.h
+    ImageTransformEngine.h
     TransferFunction.h
     ImageValuesFromPositions.h
     MergeImages.h
@@ -40,9 +47,13 @@ set(HEADER_FILES
     Containers.h 
     ImageDataDisplay.h
     VoronoiToMeshEngine.h
+    ImageToRigidMassEngine.h
 )
 
 set(README_FILES image.txt)
+
+# include python files
+include(./python/python.cmake)
 
 if (NOT SOFA-MISC_NO_OPENGL)
     list(APPEND HEADER_FILES "ImageViewer.h")
@@ -60,7 +71,8 @@ if(SOFA-EXTERNAL_ZLIB)
     AddLinkerDependencies(${ZLIB_LIBRARIES})
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES})
+include_directories("${SOFA_EXTLIBS_DIR}")
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 
 AddCompilerDefinitions("SOFA_BUILD_IMAGE")
 AddLinkerDependencies(SofaBaseVisual)
@@ -84,6 +96,7 @@ if(SOFA-EXTERNAL_OPENCV)
 endif()
 
 AddLinkerDependencies(newmat)
+AddLinkerDependencies(DiffusionSolver)
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

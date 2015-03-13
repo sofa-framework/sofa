@@ -21,7 +21,7 @@
  * Contact information: cgogn@unistra.fr                                        *
  *                                                                              *
  *******************************************************************************/
-
+#include <limits>
 #include "Algo/Modelisation/subdivision.h"
 #include "Algo/Modelisation/subdivision3.h"
 #include "Topology/generic/traversor/traversor3.h"
@@ -253,7 +253,7 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
 }
 
 template<typename PFP>
-void EarTriangulation<PFP>::triangule(unsigned int thread)
+void EarTriangulation<PFP>::triangule()
 {
     //	DartMarker m(m_map, thread);
     //
@@ -268,7 +268,7 @@ void EarTriangulation<PFP>::triangule(unsigned int thread)
     //	}
     //	m.unmarkAll();
 
-    TraversorF<typename PFP::MAP> trav(m_map,thread);
+    TraversorF<typename PFP::MAP> trav(m_map);
 
     for(Dart d = trav.begin(); d != trav.end(); d = trav.next())
     {
@@ -626,12 +626,12 @@ Dart splitVertex(typename PFP::MAP& map, std::vector<Dart>& vd)
  *************************************************************************************************/
 
 template <typename PFP>
-bool isTetrahedron(typename PFP::MAP& map, Vol v, unsigned int thread)
+bool isTetrahedron(typename PFP::MAP& map, Vol v)
 {
     unsigned int nbFaces = 0;
 
     //Test the number of faces end its valency
-    Traversor3WF<typename PFP::MAP> travWF(map, v, false, thread);
+    Traversor3WF<typename PFP::MAP> travWF(map, v, false);
     for(Dart dit = travWF.begin() ; dit != travWF.end(); dit = travWF.next())
     {
         //increase the number of faces
@@ -736,6 +736,7 @@ Dart swap3To2(typename PFP::MAP& map, Dart d)
 template <typename PFP>
 Dart swap2To3(typename PFP::MAP& map, Dart d)
 {
+//    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
     std::vector<Dart> edges;
     //    map.check();
     Dart d2_1 = map.phi_1(map.phi2(d));
@@ -770,6 +771,8 @@ Dart swap2To3(typename PFP::MAP& map, Dart d)
     while(dit != stop);
     map.splitVolume(edges);
 
+    map.compactOrbitContainer(FACE,std::numeric_limits<float>::infinity());
+    map.compactOrbitContainer(VOLUME,std::numeric_limits<float>::infinity());
     return stop; // map.phi1(d2_1);
 }
 
@@ -879,6 +882,8 @@ Dart swapGen3To2(typename PFP::MAP& map, Dart d)
 template <typename PFP>
 std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
 {
+//    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
+
     Dart stop = map.phi1(map.phi2(map.phi_1(d)));
 
     if(map.deleteEdge(d) == NIL)
@@ -928,7 +933,10 @@ std::vector<Dart> swapGen3To2Optimized(typename PFP::MAP& map, Dart d)
     map.splitVolume(edges);
     Tetrahedralization::EarTriangulation<PFP> triangulation(map);
     triangulation.trianguleFace(map.phi1(map.phi2(stop)));
-    return triangulation.getResultingTets();
+    const std::vector<Dart>& res = triangulation.getResultingTets();
+    map.compactOrbitContainer(FACE,std::numeric_limits<float>::infinity());
+    map.compactOrbitContainer(VOLUME,std::numeric_limits<float>::infinity());
+    return res;
 }
 
 template <typename PFP>
@@ -950,6 +958,7 @@ void swapGen2To3(typename PFP::MAP& map, Dart d)
 template <typename PFP>
 Dart flip1To4(typename PFP::MAP& map, Dart d)
 {
+//    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
     std::vector<Dart> edges;
 
     //
@@ -997,6 +1006,7 @@ Dart flip1To4(typename PFP::MAP& map, Dart d)
 template <typename PFP>
 Dart flip1To3(typename PFP::MAP& map, Dart d)
 {
+//    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
     std::vector<Dart> edges;
 
     //
@@ -1040,7 +1050,9 @@ template <typename PFP>
 Dart edgeBisection(typename PFP::MAP& map, Dart d)
 {
     //coupe l'arete en 2
+//    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
     Dart dV = map.cutEdge(d);
+
     Dart e = map.phi1(d);
     Dart dit = e;
     do

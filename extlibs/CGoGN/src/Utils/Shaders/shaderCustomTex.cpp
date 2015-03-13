@@ -49,7 +49,7 @@
 //		"FRAG_OUT_DEF;\n"
 //		"void main()\n"
 //		"{\n"
-//		"	gl_FragColor=texture2D(textureUnit,texCoord);\n"
+//		"	FRAG_OUT=texture2D(textureUnit,texCoord);\n"
 //		"}";
 
 
@@ -86,7 +86,7 @@ void ShaderCustomTex::setTextureUnit(GLenum texture_unit)
 {
 	this->bind();
 	int unit = texture_unit - GL_TEXTURE0;
-	glUniform1iARB(*m_unif_unit,unit);
+	glUniform1i(*m_unif_unit,unit);
 	m_unit = unit;
 }
 
@@ -162,6 +162,6 @@ void ShaderCustomTex::restoreUniformsAttribs()
 	bindVA_VBO("VertexTexCoord", m_vboTexCoord);
 
 	this->bind();
-	glUniform1iARB(*m_unif_unit,m_unit);
+	glUniform1i(*m_unif_unit,m_unit);
 	this->unbind();
 }

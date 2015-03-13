@@ -47,9 +47,9 @@ unsigned int MapCommon<MAP_IMPL>::degree(Dart d) const
 
 template <typename MAP_IMPL>
 template <unsigned int ORBIT>
-bool MapCommon<MAP_IMPL>::sameOrbit(Cell<ORBIT> c1, Cell<ORBIT> c2, unsigned int thread) const
+bool MapCommon<MAP_IMPL>::sameOrbit(Cell<ORBIT> c1, Cell<ORBIT> c2) const
 {
-	TraversorDartsOfOrbit<MapCommon<MAP_IMPL>, ORBIT> tradoo(*this, c1, thread);
+    TraversorDartsOfOrbit<MapCommon<MAP_IMPL>, ORBIT> tradoo(*this, c1);
 	for (Dart x = tradoo.begin(); x != tradoo.end(); x = tradoo.next())
 	{
         if (x == c2)
@@ -105,6 +105,18 @@ void MapCommon<MAP_IMPL>::setDartEmbedding(Dart d, unsigned int emb)
 		this->m_attribs[ORBIT].refLine(emb);	// ref the new emb
 
 	(*this->m_embeddings[ORBIT])[this->dartIndex(d)] = emb ; // finally affect the embedding to the dart
+}
+
+template <typename MAP_IMPL>
+template <unsigned int ORBIT>
+void MapCommon<MAP_IMPL>::unsetDartEmbedding(Dart d)
+{
+    assert(this->template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    unsigned int old = getEmbedding<ORBIT>(d);
+    if (old != EMBNULL) {
+        (*this->m_embeddings[ORBIT])[this->dartIndex(d)] = EMBNULL;
+        this->m_attribs[ORBIT].unrefLine(old);
+    }
 }
 
 template <typename MAP_IMPL>

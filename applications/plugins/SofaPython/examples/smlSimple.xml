@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE sml SYSTEM "sml.dtd"> 
+
+<sml name="sml_display">
+    <mesh id="ball">
+        <source format="obj">mesh/ball.obj</source>
+    </mesh>
+    <mesh id="armadillo">
+        <source format="obj">mesh/Armadillo_verysimplified.obj</source>
+    </mesh>
+    
+    <solid id="armadillo">
+        <tag>red</tag>
+        <position>0 0 0 0 0 0 1</position>
+        <mesh id="armadillo" />
+    </solid>
+    
+    <solid id="ball01">
+        <tag>green</tag>
+        <position>0 8 -5 0 0 0 1</position>
+        <mesh id="ball" />
+    </solid>
+    
+    <solid id="ball02">
+        <position>0 8 -7 0 0 0 1</position>
+        <mesh id="ball" />
+    </solid>
+    
+</sml>

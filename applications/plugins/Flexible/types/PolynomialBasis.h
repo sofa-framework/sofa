@@ -35,7 +35,7 @@
 #include <set>
 #include <vector>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 	#include <omp.h>
 #endif
 

@@ -1,74 +1,83 @@
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// OpenGL Mathematics Copyright (c) 2005 - 2010 G-Truc Creation (www.g-truc.net)
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Created : 2008-06-08
-// Updated : 2008-06-08
-// Licence : This source is under MIT License
-// File    : glm/gtx/std_based_type.hpp
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Dependency:
-// - GLM core
-///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+/// OpenGL Mathematics (glm.g-truc.net)
+///
+/// Copyright (c) 2005 - 2014 G-Truc Creation (www.g-truc.net)
+/// Permission is hereby granted, free of charge, to any person obtaining a copy
+/// of this software and associated documentation files (the "Software"), to deal
+/// in the Software without restriction, including without limitation the rights
+/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+/// copies of the Software, and to permit persons to whom the Software is
+/// furnished to do so, subject to the following conditions:
+/// 
+/// The above copyright notice and this permission notice shall be included in
+/// all copies or substantial portions of the Software.
+/// 
+/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+/// THE SOFTWARE.
+///
+/// @ref gtx_std_based_type
+/// @file glm/gtx/std_based_type.hpp
+/// @date 2008-06-08 / 2011-06-07
+/// @author Christophe Riccio
+///
+/// @see core (dependence)
+/// @see gtx_extented_min_max (dependence)
+///
+/// @defgroup gtx_std_based_type GLM_GTX_std_based_type
+/// @ingroup gtx
+/// 
+/// @brief Adds vector types based on STL value types.
+/// <glm/gtx/std_based_type.hpp> need to be included to use these functionalities.
+///////////////////////////////////////////////////////////////////////////////////
 
-#ifndef glm_gtx_std_based_type
-#define glm_gtx_std_based_type
+#ifndef GLM_GTX_std_based_type
+#define GLM_GTX_std_based_type
 
 // Dependency:
 #include "../glm.hpp"
 #include <cstdlib>
 
+#if(defined(GLM_MESSAGES) && !defined(GLM_EXT_INCLUDED))
+#	pragma message("GLM: GLM_GTX_std_based_type extension included")
+#endif
+
 namespace glm
 {
-	namespace test{
-		void main_gtx_std_based_type();
-	}//namespace test
+	/// @addtogroup gtx_std_based_type
+	/// @{
+	
+	/// Vector type based of two std::size_t components.
+	/// @see GLM_GTX_std_based_type
+	typedef detail::tvec2<std::size_t, defaultp>		size2;
+	
+	/// Vector type based of three std::size_t components.
+	/// @see GLM_GTX_std_based_type
+	typedef detail::tvec3<std::size_t, defaultp>		size3;
 
-	namespace gtx{
-	//! GLM_GTX_std_based_type extension: Add support vector types based on C++ standard type
-	namespace std_based_type
-	{
-		typedef detail::tvec2<std::size_t>		size2;
-		typedef detail::tvec3<std::size_t>		size3;
-		typedef detail::tvec4<std::size_t>		size4;
+	/// Vector type based of four std::size_t components.
+	/// @see GLM_GTX_std_based_type
+	typedef detail::tvec4<std::size_t, defaultp>		size4;
 
-		typedef detail::tvec2<signed char>		scvec2;
-		typedef detail::tvec3<signed char>		scvec3;
-		typedef detail::tvec4<signed char>		scvec4;
+	/// Vector type based of two std::size_t components.
+	/// @see GLM_GTX_std_based_type
+	typedef detail::tvec2<std::size_t, defaultp>		size2_t;
+	
+	/// Vector type based of three std::size_t components.
+	/// @see GLM_GTX_std_based_type
+	typedef detail::tvec3<std::size_t, defaultp>		size3_t;
+	
+	/// Vector type based of four std::size_t components.
+	/// @see GLM_GTX_std_based_type
+	typedef detail::tvec4<std::size_t, defaultp>		size4_t;
 
-		typedef detail::tvec2<unsigned char>	ucvec2;
-		typedef detail::tvec3<unsigned char>	ucvec3;
-		typedef detail::tvec4<unsigned char>	ucvec4;
-
-		typedef detail::tvec2<signed short>		ssvec2;
-		typedef detail::tvec3<signed short>		ssvec3;
-		typedef detail::tvec4<signed short>		ssvec4;
-
-		typedef detail::tvec2<unsigned short>	usvec2;
-		typedef detail::tvec3<unsigned short>	usvec3;
-		typedef detail::tvec4<unsigned short>	usvec4;
-
-		typedef detail::tvec2<signed int>		sivec2;
-		typedef detail::tvec3<signed int>		sivec3;
-		typedef detail::tvec4<signed int>		sivec4;
-
-		typedef detail::tvec2<unsigned int>		uivec2;
-		typedef detail::tvec3<unsigned int>		uivec3;
-		typedef detail::tvec4<unsigned int>		uivec4;
-
-		typedef detail::tvec2<signed long>		slvec2;
-		typedef detail::tvec3<signed long>		slvec3;
-		typedef detail::tvec4<signed long>		slvec4;
-
-		typedef detail::tvec2<unsigned long>	ulvec2;
-		typedef detail::tvec3<unsigned long>	ulvec3;
-		typedef detail::tvec4<unsigned long>	ulvec4;
-
-	}//namespace std_based_type
-	}//namespace gtx
+	/// @}
 }//namespace glm
 
 #include "std_based_type.inl"
 
-namespace glm{using namespace gtx::std_based_type;}
-
-#endif//glm_gtx_std_based_type
+#endif//GLM_GTX_std_based_type

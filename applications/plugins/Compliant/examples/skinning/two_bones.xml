@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE sml SYSTEM "sml.dtd">
+
+<sml name="two_bones">
+    <units mass="kg" length="m" time="s" />
+    
+    <solid id="bone01">
+        <tag>rigid</tag>
+        <tag>armature</tag>
+        <position>0 0 0 0 0 0 1</position>
+    </solid>
+    
+    <solid id="bone02">
+        <tag>rigid</tag>
+        <tag>armature</tag>
+        <position>1 0 0 0 0 0 1</position>
+    </solid>
+    
+    <jointGeneric id="joint01">
+        <jointSolidRef id="bone01">
+            <offset type="absolute">0.5 0 0 0 0 0 1</offset>
+        </jointSolidRef>
+        <jointSolidRef id="bone02">
+            <offset type="relative">-0.5 0 0 0 0 0 1</offset>
+        </jointSolidRef>
+        <dof index="rx"/>
+        <dof index="ry"/>
+        <dof index="rz"/>
+    </jointGeneric>
+    
+    <solid id="skin">
+        <position>0 0 0 0 0 0 1</position>
+        <mesh id="skin">
+            <source format="obj">minimal_skin.obj</source>
+            <group id="group01">
+                <index>0 1</index>
+                <data type="float" name="weight">1. 0.75</data>
+            </group>
+            <group id="group02">
+                <index>1 2</index> 
+                <data type="float" name="weight">0.25 1.</data>
+            </group>
+        </mesh>
+        <skinning solid="bone01" mesh="skin" group="group01" weight="weight" />
+        <skinning solid="bone02" mesh="skin" group="group02" weight="weight" />
+    </solid>
+    
+</sml>

@@ -422,7 +422,7 @@ void EdgeSetTopologyModifier::swapEdgesProcess(const sofa::helper::vector< sofa:
     addEdgesProcess( v );
 
     // now warn about the creation
-    addEdgesWarning( v.size(), v, edgeIndexList, ancestorsArray);
+    addEdgesWarning((unsigned int)v.size(), v, edgeIndexList, ancestorsArray);
 
     // now warn about the destruction of the old edges
     sofa::helper::vector< unsigned int > indices;
@@ -489,7 +489,7 @@ void EdgeSetTopologyModifier::fuseEdgesProcess(const sofa::helper::vector< sofa:
     addEdgesProcess( v );
 
     // now warn about the creation
-    addEdgesWarning( v.size(), v, edgeIndexList, ancestorsArray);
+    addEdgesWarning((unsigned int)v.size(), v, edgeIndexList, ancestorsArray);
 
     // now warn about the destruction of the old edges
     sofa::helper::vector< unsigned int > indices;
@@ -549,14 +549,14 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
         defaultBaryCoefs[i].resize(2, 0.5f);
     }
 
-    addPointsProcess( indices.size());
+    addPointsProcess((unsigned int)indices.size());
 
     addEdgesProcess( edges );
 
     // warn about added points and edges
-    addPointsWarning( indices.size(), v, defaultBaryCoefs);
+    addPointsWarning((unsigned int)indices.size(), v, defaultBaryCoefs);
 
-    addEdgesWarning( edges.size(), edges, edgesIndex);
+    addEdgesWarning((unsigned int)edges.size(), edges, edgesIndex);
 
     // warn about old edges about to be removed
     removeEdgesWarning( indices );
@@ -604,14 +604,14 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
         edgesIndex.push_back(nbEdges++);
     }
 
-    addPointsProcess( indices.size());
+    addPointsProcess((unsigned int)indices.size());
 
     addEdgesProcess( edges );
 
     // warn about added points and edges
-    addPointsWarning( indices.size(), v, baryCoefs);
+    addPointsWarning((unsigned int)indices.size(), v, baryCoefs);
 
-    addEdgesWarning( edges.size(), edges, edgesIndex);
+    addEdgesWarning((unsigned int)edges.size(), edges, edgesIndex);
 
     // warn about old edges about to be removed
     removeEdgesWarning( indices );
@@ -622,23 +622,32 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<unsigned in
     removeEdgesProcess( indices, removeIsolatedPoints );
 }
 
-void EdgeSetTopologyModifier::removeEdges(sofa::helper::vector< unsigned int >& edges,
+void EdgeSetTopologyModifier::removeEdges(const sofa::helper::vector< unsigned int >& edgeIds,
         const bool removeIsolatedPoints, const bool resetTopoChange)
 {
+    sofa::helper::vector<unsigned int> edgeIds_filtered;
+    for (unsigned int i = 0; i < edgeIds.size(); i++)
+    {
+        if( edgeIds[i] >= m_container->getNumberOfEdges())
+            std::cout << "Error: EdgeSetTopologyModifier::removeEdges: edges: "<< edgeIds[i] <<" is out of bound and won't be removed." << std::endl;
+        else
+            edgeIds_filtered.push_back(edgeIds[i]);
+    }
+
     /// add the topological changes in the queue
-    removeEdgesWarning(edges);
+    removeEdgesWarning(edgeIds_filtered);
     // inform other objects that the edges are going to be removed
     if (resetTopoChange)
         propagateTopologicalChanges();
     else
         propagateTopologicalChangesWithoutReset();
     // now destroy the old edges.
-    removeEdgesProcess( edges, removeIsolatedPoints );
+    removeEdgesProcess( edgeIds_filtered, removeIsolatedPoints );
 
     m_container->checkTopology();
 }
 
-void EdgeSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
+void EdgeSetTopologyModifier::removeItems(const sofa::helper::vector< unsigned int >& items)
 {
     removeEdges(items);
 }
@@ -672,7 +681,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
     }
 
     // add topology event in the stack of topological events
-    addEdgesWarning( edges.size(), edges, edgesIndex);
+    addEdgesWarning((unsigned int)edges.size(), edges, edgesIndex);
 
     // inform other objects that the edges are already added
     propagateTopologicalChanges();
@@ -696,7 +705,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
     }
 
     // add topology event in the stack of topological events
-    addEdgesWarning( edges.size(), edges, edgesIndex, ancestors, baryCoefs);
+    addEdgesWarning((unsigned int)edges.size(), edges, edgesIndex, ancestors, baryCoefs);
 
     // inform other objects that the edges are already added
     propagateTopologicalChanges();
@@ -720,7 +729,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
     }
 
     // add topology event in the stack of topological events
-    addEdgesWarning( edges.size(), edges, edgesIndex, ancestorElems);
+    addEdgesWarning((unsigned int)edges.size(), edges, edgesIndex, ancestorElems);
 
     // inform other objects that the edges are already added
     propagateTopologicalChanges();
@@ -792,7 +801,7 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
             it != inv_perm.end(); ++it)
     {
         //sout << index_map[*it] << " ";
-        inverse_permutation[ind_i++]=index_map[*it];
+        inverse_permutation[ind_i++] = (int)index_map[*it];
     }
     //sout << sendl;
 
@@ -812,8 +821,8 @@ void EdgeSetTopologyModifier::movePointsProcess (const sofa::helper::vector <uns
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
         const bool moveDOF)
 {
-    (void)moveDOF;
-    unsigned int nbrVertex = id.size();
+    SOFA_UNUSED(moveDOF);
+    unsigned int nbrVertex = (unsigned int)id.size();
     bool doublet;
     sofa::helper::vector<unsigned int> edgesAroundVertex2Move;
     sofa::helper::vector< Edge > edgeArray;
@@ -923,9 +932,9 @@ bool EdgeSetTopologyModifier::removeIsolatedElements(unsigned int scaleElem)
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        unsigned int other_edgeID = elemAll.size();
+        EdgeID other_edgeID = (EdgeID)elemAll.size();
 
-        for (unsigned int i = 0; i<elemAll.size(); ++i)
+        for (EdgeID i = 0; i<elemAll.size(); ++i)
             if (elemAll[i] != i)
             {
                 other_edgeID = i;

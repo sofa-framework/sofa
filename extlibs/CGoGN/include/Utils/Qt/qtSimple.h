@@ -195,9 +195,26 @@ public:
 	/**
 	 * set width and pos center of object to draw
 	 */
-	void setParamObject(float width, float* pos) { m_glWidget->setParamObject(width, pos); }
+	template<typename T>
+	inline void setParamObject(T width, T* pos)
+	{
+		float posF[3];
+		posF[0]=float(pos[0]);
+		posF[1]=float(pos[1]);
+		posF[2]=float(pos[2]);
+		m_glWidget->setParamObject(float(width), posF);
+	}
 
-	void resetCenterOfRotation(float width, float* pos) { m_glWidget->resetCenterOfRotation(width, pos); }
+	template<typename T>
+	inline void resetCenterOfRotation(T width, T* pos)
+	{
+		float posF[3];
+		posF[0]=float(pos[0]);
+		posF[1]=float(pos[1]);
+		posF[2]=float(pos[2]);
+		m_glWidget->resetCenterOfRotation(float(width), posF);
+	}
+
 
 	/**
 	 * make the contex of glWidget current

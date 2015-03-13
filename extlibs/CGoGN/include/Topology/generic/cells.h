@@ -67,8 +67,10 @@ public:
 
     template<unsigned ORB_FROM>
     inline static Cell convertCell(const Cell<ORB_FROM>& c) {return Cell(Dart::create(c.index()));}
-private:
+    //TODO : should be private
     Dart dart;
+private:
+
     template<unsigned int ORB_FROM>
     Cell(const Cell<ORB_FROM>& ) ;
     template<unsigned int ORB_FROM>

@@ -54,6 +54,7 @@ public:
     typedef typename Inherit::Coord Coord;
     typedef typename Inherit::VecCoord VecCoord;
     typedef typename Inherit::InVecCoord InVecCoord;
+    typedef typename Inherit::InVecDeriv InVecDeriv;
     typedef typename Inherit::OutVecCoord OutVecCoord;
 
     typedef typename Inherit::MaterialToSpatial MaterialToSpatial;
@@ -80,6 +81,7 @@ protected:
     virtual ~LinearMapping()     { }
 
 
+public :
     virtual void mapPosition(Coord& p,const Coord &p0, const VRef& ref, const VReal& w)
     {
         helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
@@ -123,6 +125,27 @@ protected:
         F=Fc.getF();
     }
 
+    virtual void mapDeformationGradientRate(MaterialToSpatial& F, const Coord &p0, const MaterialToSpatial& M, const VRef& ref, const VReal& w, const VGradient& dw)
+    {
+        helper::ReadAccessor<Data<InVecCoord> > in0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
+        helper::ReadAccessor<Data<InVecDeriv> > in (*this->fromModel->read(core::ConstVecDerivId::velocity()));
+
+        DeformationGradientMapperType mapper;
+
+        // empty variables (not used in init)
+        typename DeformationGradientMapperType::OutCoord o;
+        VHessian ddw(1);
+
+        typename DeformationGradientMapperType::OutCoord Fc;
+        for(unsigned int j=0; j<ref.size(); j++ )
+        {
+            unsigned int index=ref[j];
+            mapper.init( in0[index],o,p0,M,w[j],dw[j],ddw[0]);
+            mapper.addmult(Fc,in[index]);
+        }
+        F=Fc.getF();
+    }
+
     virtual void initJacobianBlocks()
     {
         helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
@@ -134,6 +157,7 @@ protected:
         bool ddw = !this->f_ddw.getValue().empty();
         bool F0  = !this->f_F0.getValue().empty();
 
+        MaterialToSpatial FI; identity(FI);
         this->jacobian.resize(size);
         for(unsigned int i=0; i<size; i++ )
         {
@@ -143,7 +167,7 @@ protected:
             {
                 unsigned int index=this->f_index.getValue()[i][j];
                 this->jacobian[i][j].init( in[index],out[i],this->f_pos0.getValue()[i],
-                                           F0 ? this->f_F0.getValue()[i] : MaterialToSpatial(),
+                                           F0 ? this->f_F0.getValue()[i] : FI,
                                            this->f_w.getValue()[i][j],
                                            dw  ? this->f_dw.getValue()[i][j]  : Gradient(),
                                            ddw ? this->f_ddw.getValue()[i][j] : Hessian()

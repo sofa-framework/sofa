@@ -52,6 +52,15 @@ inline void setOrbitEmbedding(MAP& m, Cell<ORBIT> c, unsigned int em)
     m. template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template setDartEmbedding<ORBIT>, boost::ref(m), bl::_1, boost::cref(em) ))) ;
 }
 
+
+template <unsigned int ORBIT, typename MAP>
+inline void unsetOrbitEmbedding(MAP& m, Cell<ORBIT> c)
+{
+    assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
+    m. template foreach_dart_of_orbit<ORBIT>(c, (bl::bind(&MAP::template unsetDartEmbedding<ORBIT>, boost::ref(m), bl::_1 ))) ;
+}
+
+
 /**
  * Set the index of the associated cell to all the darts of an orbit
  * !!! WARNING !!! use only on freshly inserted darts (no unref is done on old embedding)!!! WARNING !!!
@@ -75,7 +84,7 @@ inline unsigned int setOrbitEmbeddingOnNewCell(MAP& m, Cell<ORBIT> c)
 {
 	assert(m.template isOrbitEmbedded<ORBIT>() || !"Invalid parameter: orbit not embedded");
 	unsigned int em = m.template newCell<ORBIT>();
-	setOrbitEmbedding<ORBIT>(m, c, em);
+    setOrbitEmbedding<ORBIT, MAP>(m, c, em);
 	return em;
 }
 

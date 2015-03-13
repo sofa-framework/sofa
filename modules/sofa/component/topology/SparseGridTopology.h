@@ -367,7 +367,7 @@ public :
         return sofa::component::topology::MeshTopology::getNbPoints();
     }
 
-    virtual int getNbHexahedra() { return this->getHexahedra().size();}
+    virtual int getNbHexahedra() { return (int)this->getHexahedra().size();}
 };
 
 } // namespace topology

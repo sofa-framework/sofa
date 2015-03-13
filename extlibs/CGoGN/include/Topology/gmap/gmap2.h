@@ -398,10 +398,10 @@ public:
 	/*! @param c a cell
 	 *  @param f a function
 	 */
-	template <unsigned int ORBIT, typename FUNC>
-	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f, unsigned int thread = 0) const ;
 //	template <unsigned int ORBIT, typename FUNC>
-//	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC& f, unsigned int thread = 0) const ;
+//	void foreach_dart_of_orbit(Cell<ORBIT> c, FUNC f) const ;
+	template <unsigned int ORBIT, typename FUNC>
+    void foreach_dart_of_orbit(Cell<ORBIT> c, const FUNC& f) const ;
 
 	/**
 	* Apply a functor on each dart of an oriented vertex
@@ -409,7 +409,7 @@ public:
 	* @param fonct functor obj ref
 	*/
 	template <typename FUNC>
-	void foreach_dart_of_oriented_vertex(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_oriented_vertex(Dart d, FUNC& f) const;
 
 	/**
 	* Apply a functor on each dart of a vertex
@@ -417,7 +417,7 @@ public:
 	* @param fonct functor obj ref
 	*/
 	template <typename FUNC>
-	void foreach_dart_of_vertex(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_vertex(Dart d, FUNC& f) const;
 
 	/**
 	* Apply a functor on each dart of an oriented edge
@@ -425,7 +425,7 @@ public:
 	* @param fonct functor obj ref
 	*/
 	template <typename FUNC>
-	void foreach_dart_of_oriented_edge(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_oriented_edge(Dart d, FUNC& f) const;
 
 	/**
 	* Apply a functor on each dart of an edge
@@ -433,28 +433,28 @@ public:
 	* @param fonct functor obj ref
 	*/
 	template <typename FUNC>
-	void foreach_dart_of_edge(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_edge(Dart d, FUNC& f) const;
 
 	//! Apply a functor on every dart of an oriented face
 	/*! @param d a dart of the oriented face
 	 *  @param f the functor to apply
 	 */
 	template <typename FUNC>
-	void foreach_dart_of_oriented_face(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_oriented_face(Dart d, FUNC& f) const;
 
 	//! Apply a functor on every dart of a face
 	/*! @param d a dart of the face
 	 *  @param f the functor to apply
 	 */
 	template <typename FUNC>
-	void foreach_dart_of_face(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_face(Dart d, FUNC& f) const;
 
 	//! Apply a functor on every dart of a volume
 	/*! @param d a dart of the volume
 	 *  @param f the functor to apply
 	 */
 	template <typename FUNC>
-	void foreach_dart_of_volume(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_volume(Dart d, FUNC& f) const;
 
 	/**
 	* Apply a functor on each dart of a vertex
@@ -462,7 +462,7 @@ public:
 	* @param fonct functor obj ref
 	*/
 	template <typename FUNC>
-	void foreach_dart_of_vertex1(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_vertex1(Dart d, FUNC& f) const;
 
 	/**
 	* Apply a functor on each dart of an edge
@@ -470,21 +470,21 @@ public:
 	* @param fonct functor obj ref
 	*/
 	template <typename FUNC>
-	void foreach_dart_of_edge1(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_edge1(Dart d, FUNC& f) const;
 
 	//! Apply a functor on every dart of an oriented convex component
 	/*! @param d a dart of the oriented convex component
 	 *  @param f the functor to apply
 	 */
 	template <typename FUNC>
-	void foreach_dart_of_oriented_cc(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_oriented_cc(Dart d, FUNC& f) const;
 
 	//! Apply a functor on every dart of a convex component
 	/*! @param d a dart of the convex component
 	 *  @param f the functor to apply
 	 */
 	template <typename FUNC>
-	void foreach_dart_of_cc(Dart d, FUNC& f, unsigned int thread = 0) const;
+	void foreach_dart_of_cc(Dart d, FUNC& f) const;
 
 	//@}
 

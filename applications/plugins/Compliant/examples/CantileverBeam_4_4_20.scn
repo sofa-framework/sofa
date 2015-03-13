@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Node name="" gravity="0 -10 0" dt="0.02">
     <RequiredPlugin name="Flexible" pluginName="Flexible" />
-      <RequiredPlugin pluginName="Compliant"/>
+    <RequiredPlugin pluginName="Compliant"/>
 
     <VisualStyle displayFlags="showBehavior showVisual hideMechanicalMappings" />
     <Node name="Cube grid" >
@@ -48,7 +48,7 @@
             <BarycentricShapeFunction position="@../DOF.rest_position" />
 
             <Node 	name="behavior"   >
-                <TopologyGaussPointSampler name="sampler" inPosition="@../../DOF.rest_position" showSamples="false" method="0" order="2"/>
+                <TopologyGaussPointSampler name="sampler" inPosition="@../../DOF.rest_position" method="0" order="2"/>
                 <MechanicalObject  template="F331" name="F"  showObject="0" showObjectScale="0.05" />
                 <LinearMapping template="Vec3d,F331" name="linearMapping" assemble="true"/>
 

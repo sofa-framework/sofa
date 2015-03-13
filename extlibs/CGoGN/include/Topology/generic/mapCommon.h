@@ -54,7 +54,7 @@ public:
 	unsigned int degree(Dart d) const;
 
 	template <unsigned int ORBIT>
-	bool sameOrbit(Cell<ORBIT> c1, Cell<ORBIT> c2, unsigned int thread = 0) const;
+    bool sameOrbit(Cell<ORBIT> c1, Cell<ORBIT> c2) const;
 
 	/****************************************
 	 *         EMBEDDING MANAGEMENT         *
@@ -73,6 +73,9 @@ public:
 	template <unsigned int ORBIT>
 	void setDartEmbedding(Dart d, unsigned int emb) ;
 
+
+    template <unsigned int ORBIT>
+    void unsetDartEmbedding(Dart d);
 	/**
 	 * Set the cell index of the given dimension associated to dart d
 	 * !!! WARNING !!! use only on freshly inserted darts (no unref is done on old embedding) !!! WARNING !!!

@@ -31,8 +31,9 @@
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
 #include <sofa/helper/system/glu.h>
+#include <sofa/helper/IndexOpenMP.h>
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #include <omp.h>
 #endif
 
@@ -90,6 +91,34 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
 }
 
 
+template <class JacobianBlockType>
+void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
+{    
+    if(this->f_printLog.getValue())
+        std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
+    int parentSize = this->getFromSize();
+    int childSize = this->getToSize();
+    this->f_index_parentToChild.clear();
+    this->f_index_parentToChild.resize(parentSize);
+
+    //Check size just in case
+    if(childSize != this->f_index.getValue().size())
+    {
+        std::cout << SOFA_CLASS_METHOD << " f_index has wrong size" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    //Go through f_index and use its value to update f_index_parentToChild
+    for(size_t i=0; i<this->f_index.getValue().size(); ++i)
+    {
+        for(size_t j=0; j< this->f_index.getValue()[i].size(); j++ )
+        {
+            int parentIndex = this->f_index.getValue()[i][j];
+            this->f_index_parentToChild[parentIndex].push_back(i); //Add child index
+            this->f_index_parentToChild[parentIndex].push_back(j); //Add parent index
+        }
+    }
+}
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
@@ -99,6 +128,7 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
     helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
+    helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update mapped spatial positions if needed for visualization
 
     size_t size;
@@ -111,15 +141,27 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     if(sampler) // retrieve initial positions from gauss point sampler (deformation gradient types)
     {
         size = sampler->getNbSamples();
-        if(rest.size()==size && size!=1) restPositionSet=true;
+        if(rest.size()==size && size!=1)  restPositionSet=true;
+
         this->toModel->resize(size);
-        pos0.resize(size);  for(size_t i=0; i<size; i++) pos0[i]=sampler->getSample(i);
+        pos0.resize(size);  for(size_t i=0; i<size; i++) pos0[i]=sampler->getSamples()[i];
+        F0.resize(size);
+        if(restPositionSet)     // use custom rest positions defined in state (to set material directions or set residual deformations)
+        {
+            for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
+            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
+        }
+        else
+        {
+            for(size_t i=0; i<size; ++i) copy(F0[i],sampler->getTransforms()[i]);
+        }
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" gauss points imported"<<std::endl;
     }
     else  // retrieve initial positions from children dofs (vec types)
     {
         size = out.size();
         pos0.resize(size);  for(size_t i=0; i<size; i++ )  Out::get(pos0[i][0],pos0[i][1],pos0[i][2],out[i]);
+//        F0.resize(size); for(size_t i=0; i<size; ++i) identity(F0[i]); // necessary ?
     }
 
     // init shape function
@@ -139,59 +181,20 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
         for(size_t i=0; i<pos0.size(); ++i)  StdVectorTypes<mCoord,mCoord>::set( mpos0[i], pos0[i][0] , pos0[i][1] , pos0[i][2]);
 
         // interpolate weights at sample positions
-        if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),this->f_cell.getValue());
-        else _shapeFunction->computeShapeFunction(mpos0,*this->f_F0.beginEdit(),*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
-        this->f_index.endEdit();     this->f_F0.endEdit();    this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
-
-        // use custom rest positions (to set material directions or set residual deformations)
-        if(restPositionSet)
-        {
-            helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
-            for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
-            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
-        }
+        if(this->f_cell.getValue().size()==size) _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit(),this->f_cell.getValue());
+        else _shapeFunction->computeShapeFunction(mpos0,*this->f_index.beginEdit(),*this->f_w.beginEdit(),*this->f_dw.beginEdit(),*this->f_ddw.beginEdit());
+        this->f_index.endEdit();      this->f_w.endEdit();        this->f_dw.endEdit();        this->f_ddw.endEdit();
     }
     else if(0 != f_index.getValue().size() && pos0.size() == f_index.getValue().size() && f_w.getValue().size() == f_index.getValue().size()) // if we do not have a shape function but we already have the needed data, we directly use them
     {
         if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : using filled data" <<std::endl;
-
-        // MattN 01/09/14
-        // it can make too many allocations, are default weight gradients really necessary?
-        // it does not seems so, but I am not sure (sorry...)
-
-//        VMaterialToSpatial& F0	= *f_F0.beginEdit();
-//        vector<VReal>& w		= *f_w.beginEdit();
-//        vector<VGradient>& dw	= *f_dw.beginEdit();
-//        vector<VHessian>& ddw	= *f_ddw.beginEdit();
-
-//        F0.assign(pos0.size(), MaterialToSpatial());
-//        dw.assign(pos0.size(), VGradient());
-//        ddw.assign(pos0.size(), VHessian());
-
-//        for(size_t i = 0; i < pos0.size(); ++i)
-//        {
-//            dw[i].assign(w.size(), Gradient());
-//            ddw[i].assign(w.size(), Hessian());
-//        }
-
-//        f_ddw.endEdit();
-//        f_dw.endEdit();
-//        f_F0.endEdit();
-
-        // use custom rest positions (to set material directions or set residual deformations)
-        if(restPositionSet)
-        {
-            helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
-            F0.wref().resize(pos0.size());
-
-            for(size_t i=0; i<rest.size(); ++i) F0[i]=OutDataTypesInfo<Out>::getF(rest[i]);
-            if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<<rest.size()<<" rest positions imported "<<std::endl;
-        }
     }
     else // if the prerequisites are not fulfilled we print an error
     {
         serr << "ShapeFunction<"<<ShapeFunctionType::Name()<<"> component not found" << sendl;
     }
+
+    updateIndex();
 
     // init jacobians
     initJacobianBlocks();
@@ -204,11 +207,12 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
     //Apply mapping to init child positions
     reinit();
 
+    // set deformation gradient state rest position when defined by gaussPointSampler
     if(sampler && restPositionSet == false && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
-        helper::ReadAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+        helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
         helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
+        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = ra_F0[i][j][k];
     }
 }
 
@@ -228,13 +232,15 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     this->toModel->resize(size);
     pos0.resize(size);  for(size_t i=0; i<size; i++ )        pos0[i]=position0[i];
 
-    helper::WriteAccessor<Data<vector<VRef> > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
-    helper::WriteAccessor<Data<vector<VReal> > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
+    helper::WriteAccessor<Data<VecVRef > > wa_index (this->f_index);   wa_index.resize(size);  for(size_t i=0; i<size; i++ )    wa_index[i].assign(index[i].begin(), index[i].end());
+    helper::WriteAccessor<Data<VecVReal > > wa_w (this->f_w);          wa_w.resize(size);  for(size_t i=0; i<size; i++ )    wa_w[i].assign(w[i].begin(), w[i].end());
     helper::WriteAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);    wa_dw.resize(size);  for(size_t i=0; i<size; i++ )    wa_dw[i].assign(dw[i].begin(), dw[i].end());
     helper::WriteAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);   wa_ddw.resize(size);  for(size_t i=0; i<size; i++ )    wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
     helper::WriteAccessor<Data<VMaterialToSpatial> > wa_F0 (this->f_F0);    wa_F0.resize(size);  for(size_t i=0; i<size; i++ )    for(size_t j=0; j<spatial_dimensions; j++ ) for(size_t k=0; k<material_dimensions; k++ )   wa_F0[i][j][k]=F0[i][j][k];
 
     if(this->f_printLog.getValue())  std::cout<<this->getName()<<" : "<< size <<" custom gauss points imported"<<std::endl;
+
+    updateIndex();
 
     // init jacobians
     initJacobianBlocks();
@@ -247,14 +253,14 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut(const vector<Coord>& 
     //Apply mapping to init child positions
     reinit();
 
-    //Test to reinit deformation gradient using imageGaussPointSampler
+    // update deformation gradient state rest position
     engine::BaseGaussPointSampler* sampler;
     this->getContext()->get(sampler,core::objectmodel::BaseContext::Local);
     if(sampler && this->toModel->read(core::VecCoordId::restPosition())->getValue().size()==size ) // not for states that do not have restpos (like visualmodel)
     {
-        helper::ReadAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
+        helper::ReadAccessor<Data< VMaterialToSpatial > >  ra_F0(this->f_F0);
         helper::WriteAccessor<Data< OutVecCoord > >  rest(*this->toModel->write(core::VecCoordId::restPosition()));
-        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = F0[i][j][k];
+        for(size_t i=0; i<rest.size(); ++i) for(int j=0; j<spatial_dimensions; ++j) for(int k=0; k<material_dimensions; ++k) rest[i][j*material_dimensions+k] = ra_F0[i][j][k];
     }
 }
 
@@ -407,10 +413,10 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
     OutVecCoord&  out = *dOut.beginEdit();
     const InVecCoord&  in = dIn.getValue();
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
-    for(unsigned int i=0; i<jacobian.size(); i++)
+	for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
     {
         out[i]=OutCoord();
         for(size_t j=0; j<jacobian[i].size(); j++)
@@ -457,10 +463,10 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJ(const core::MechanicalPa
 
         if( !this->maskTo || !this->maskTo->isInUse() )
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
-            for(unsigned int i=0; i<jacobian.size(); i++)
+            for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
             {
                 out[i]=OutDeriv();
                 for(size_t j=0; j<jacobian[i].size(); j++)
@@ -504,14 +510,24 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
             // update index_parentToChild
             if( this->f_index_parentToChild.size()!=in.size())
             {
+                /*
                 this->f_index_parentToChild.resize(in.size());
                 for(size_t i=0; i< this->f_index.getValue().size(); i++ ) for(size_t j=0; j< this->f_index.getValue()[i].size(); j++ ) { this->f_index_parentToChild[this->f_index.getValue()[i][j]].push_back(i); this->f_index_parentToChild[this->f_index.getValue()[i][j]].push_back(j); }
+                */
+
+                //Update parentToChild index
+                //Note : make sure that each time f_index is modified then parentToChild is updated to.
+                //Example : If child number change the next line will miss some information
+                if( this->f_index_parentToChild.size()!=in.size())
+                {
+                    updateIndex();
+                }
             }
 
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
-            for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
+			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
                 {
@@ -561,10 +577,10 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
     {
         if( !this->maskTo || !this->maskTo->isInUse() )
         {
-#ifdef USING_OMP_PRAGMAS
+#ifdef _OPENMP
 #pragma omp parallel for
 #endif
-            for(unsigned int i=0; i<this->f_index_parentToChild.size(); i++)
+			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
                 {
@@ -645,8 +661,8 @@ void BaseDeformationMappingT<JacobianBlockType>::ForwardMapping(Coord& p,const C
 
     // interpolate weights at sample positions
     mCoord mp0;        StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
-    MaterialToSpatial M;  VRef ref; VReal w;
-    _shapeFunction->computeShapeFunction(mp0,M,ref,w);
+    VRef ref; VReal w;
+    _shapeFunction->computeShapeFunction(mp0,ref,w);
 
     // map using specific instanciation
     this->mapPosition(p,p0,ref,w);
@@ -664,13 +680,13 @@ void BaseDeformationMappingT<JacobianBlockType>::BackwardMapping(Coord& p0,const
     MaterialToSpatial F0;  VRef ref; VReal w; VGradient dw;
     Coord pnew;
     MaterialToSpatial F;
-    MaterialToSpatial Finv;
-    MaterialToSpatial F0Finv;
+    Mat<material_dimensions,spatial_dimensions,Real> Finv;
 
+    identity(F0);
     while(count<NbMaxIt)
     {
         StdVectorTypes<mCoord,mCoord>::set( mp0, p0[0] , p0[1] , p0[2]);
-        _shapeFunction->computeShapeFunction(mp0,F0,ref,w,&dw);
+        _shapeFunction->computeShapeFunction(mp0,ref,w,&dw);
         if(!w[0]) { p0=Coord(); return; } // outside object
 
         this->mapPosition(pnew,p0,ref,w);
@@ -678,8 +694,7 @@ void BaseDeformationMappingT<JacobianBlockType>::BackwardMapping(Coord& p0,const
         this->mapDeformationGradient(F,p0,F0,ref,w,dw);
 
         invert(Finv,F);
-        F0Finv=F0*Finv;
-        p0+=F0Finv*(p-pnew);
+        p0+=F0*Finv*(p-pnew);
         count++;
     }
 }
@@ -704,7 +719,7 @@ unsigned int BaseDeformationMappingT<JacobianBlockType>::getClosestMappedPoint(c
             this->f_KdTree.build(f_pos);
             this->KdTreeDirty=false;
         }
-        index=this->f_KdTree.getClosest(p);
+        index=this->f_KdTree.getClosest(p,f_pos);
         x=f_pos[index];
     }
     else
@@ -733,8 +748,8 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
 
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
-    helper::ReadAccessor<Data<vector<VRef> > > ref (this->f_index);
-    helper::ReadAccessor<Data<vector<VReal> > > w (this->f_w);
+    helper::ReadAccessor<Data<VecVRef > > ref (this->f_index);
+    helper::ReadAccessor<Data<VecVReal > > w (this->f_w);
 
     if(this->missingInformationDirty)
     {

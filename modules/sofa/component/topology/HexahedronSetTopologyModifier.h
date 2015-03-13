@@ -59,11 +59,14 @@ public:
 protected:
     HexahedronSetTopologyModifier()
         : QuadSetTopologyModifier()
+        , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
     { }
 
     virtual ~HexahedronSetTopologyModifier() {}
 public:
     virtual void init();
+
+    Data< bool > removeIsolated; ///< Controlled DOF index.
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
     virtual void propagateTopologicalEngineChanges();
@@ -193,11 +196,11 @@ public:
     @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
     *
     */
-    virtual void removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra);
+    virtual void removeHexahedra(const sofa::helper::vector<unsigned int> &hexahedraIds);
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+    virtual void removeItems(const sofa::helper::vector<unsigned int> &items);
 
     /** \brief Generic method for points renumbering
     */

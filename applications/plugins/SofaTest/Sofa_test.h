@@ -48,7 +48,7 @@ namespace sofa {
 
 /** @brief Base class for Sofa test fixtures.
   */
-  struct SOFA_TestPlugin_API BaseSofa_test : public ::testing::Test
+struct SOFA_TestPlugin_API BaseSofa_test : public ::testing::Test
 {
     /// Initialize Sofa and the random number generator
     BaseSofa_test();
@@ -67,7 +67,7 @@ namespace sofa {
 /** @brief Helper functions to compare scalars, vectors, matrices, etc.
   */
 template <typename _Real=SReal>
-struct SOFA_TestPlugin_API  Sofa_test : public BaseSofa_test
+struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
 {
 
     /** @name Scalars

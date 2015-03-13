@@ -25,22 +25,13 @@
 #ifndef PYTHONSCRIPTFUNCTION_H
 #define PYTHONSCRIPTFUNCTION_H
 
+#include "PythonMacros.h"
 #include "initSofaPython.h"
-#include "PythonEnvironment.h"
-#include <ScriptFunction.h>
+#include "ScriptFunction.h"
+
 
 namespace sofa
 {
-
-namespace component
-{
-
-namespace controller
-{
-	class PythonScriptController;
-}
-
-}
 
 namespace core
 {
@@ -82,20 +73,19 @@ private:
 
 class SOFA_SOFAPYTHON_API PythonScriptFunction : public ScriptFunction
 {
-	friend class sofa::component::controller::PythonScriptController;
-
 public:
-	explicit PythonScriptFunction(component::controller::PythonScriptController* pythonScriptController, const std::string& funcName);
+	explicit PythonScriptFunction(PyObject* pyCallableObject, bool own);
 	virtual ~PythonScriptFunction();
 
 	PyObject* callableObject() const					{return m_pyCallableObject;}
 	void setCallableObject(PyObject* callableObject)	{m_pyCallableObject = callableObject;}
 
-protected:
-	virtual void operator()(const ScriptFunctionParameter*, ScriptFunctionResult*) const;
+private:
+	virtual void onCall(const ScriptFunctionParameter*, ScriptFunctionResult*) const;
 
 private:
-	PyObject* m_pyCallableObject;
+	bool		m_own;
+	PyObject*	m_pyCallableObject;
 
 };
 

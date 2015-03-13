@@ -6,8 +6,9 @@ set(SOURCE_FILES
     defaulttype/MatTypesTest.cpp
     helper/system/atomicTest.cpp
     helper/system/FileSystemTest.cpp
-    helper/system/UtilsTest.cpp
-    core/objectmodel/AspectPoolTest.cpp)
+    helper/UtilsTest.cpp
+    core/objectmodel/AspectPoolTest.cpp
+    core/loader/MeshLoader_test.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_definitions("-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources\"")
