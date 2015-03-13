@@ -3,6 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <Eigen/SVD>
+#include <Eigen/Eigenvalues>
 
 namespace sofa {
 namespace component {
@@ -12,10 +13,9 @@ SOFA_DECL_CLASS(AnalysisSolver)
 int AnalysisSolverClass = core::RegisterObject("Analysis solver: runs other KKTSolvers successively on a given problem and performs extra analysis on KKT system").add< AnalysisSolver >();
 
 AnalysisSolver::AnalysisSolver()
-
-    : condest(initData(&condest, false, "condest", "compute condition number with svd")) {
-
-}
+    : condest(initData(&condest, false, "condest", "compute condition number with svd"))
+    , eigenvaluesign(initData(&eigenvaluesign, false, "eigenvaluesign", "computing the sign of the eigenvalues (of the implicit matrix H)"))
+{}
 
 void AnalysisSolver::init() {
 
@@ -38,9 +38,12 @@ void AnalysisSolver::factor(const system_type& system) {
 		solvers[i]->factor(system);
 	}
 
+
+
+    typedef system_type::dmat dmat;
+
     if( condest.getValue() ) {
 
-        typedef system_type::dmat dmat;
         dmat kkt;
 
         kkt.setZero(system.size(), system.size());
@@ -74,6 +77,28 @@ void AnalysisSolver::factor(const system_type& system) {
             const real cond = max/min;
             std::cout << "condition number implicit system: " << cond << "("<<max<<"/"<<min<<")"<<std::endl;
             std::cout << "required precision implicit system:  "<<log(cond)<<" bits"<<std::endl;
+        }
+    }
+
+
+     if( eigenvaluesign.getValue() ) {
+
+
+        Eigen::EigenSolver<dmat> es( dmat(system.H) );
+//        Eigen::MatrixXcd D = es.eigenvalues().asDiagonal();
+        unsigned positive = 0, negative = 0;
+        for( dmat::Index i =0 ; i< es.eigenvalues().rows() ; ++i )
+            if( es.eigenvalues()[i].real() < 0 ) negative++;
+            else positive++;
+
+
+        std::cout << "eigenvalues H: neg="<<negative<<" pos="<<positive<<std::endl;
+        if( negative )
+        {
+            getContext()->getRootContext()->setAnimate(false);
+
+            std::cerr<<es.eigenvalues().array().abs().minCoeff()<<std::endl;
+            std::cerr<<" $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n";
         }
 
     }
