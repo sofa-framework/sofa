@@ -35,6 +35,14 @@ set(QT_USE_IMPORTED_TARGETS 1)
 set(QT4_NO_LINK_QTMAIN 1)
 find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml qt3support)
 
+if(WIN32)
+    file(GLOB QT4_DLLS "${QT_BINARY_DIR}/*.dll")
+    foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+        file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+    endforeach()
+endif()
+install(FILES ${QT4_DLLS} DESTINATION ${SOFAGUI_INSTALL_BIN_DIR})
+
 set(SOFA_HAVE_QT ${Qt4_FOUND} )
 set(SOFA_QT4 ${Qt4_FOUND} )
 
