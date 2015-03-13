@@ -391,6 +391,7 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
     if(!data)
     {
         object.insert("name", "Invalid");
+        object.insert("description", "");
         object.insert("type", "");
         object.insert("group", "");
         object.insert("properties", "");
@@ -457,6 +458,7 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
     properties.insert("readOnly", false);
 
     object.insert("name", data->getName().c_str());
+    object.insert("description", data->getHelp());
     object.insert("type", type);
     object.insert("group", data->getGroup());
     object.insert("properties", properties);
