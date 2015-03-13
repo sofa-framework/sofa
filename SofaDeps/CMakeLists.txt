@@ -17,9 +17,7 @@ add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/tinyxml ${CMAKE_CURRENT_BINARY_DI
 set(EIGEN_ROOT ${SofaDeps_ACTUAL_SOURCE_DIR}/eigen-3.2.1 CACHE PATH "Directory for Eigen3 find_package")
 add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/eigen-3.2.1 ${CMAKE_CURRENT_BINARY_DIR}/eigen)
 
-if(MSVC)
-    set_target_properties(tinyxml    PROPERTIES FOLDER "SofaExtlibs")
-endif()
+set_target_properties(tinyxml PROPERTIES FOLDER "SofaExtlibs")
 
 # optional extlibs
 add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/miniFlowVR ${CMAKE_CURRENT_BINARY_DIR}/miniFlowVR)
@@ -27,7 +25,5 @@ add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/newmat ${CMAKE_CURRENT_BINARY_DIR
 add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/CImg ${CMAKE_CURRENT_BINARY_DIR}/CImg)
 add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/SuiteSparse ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse)
 
-if(MSVC)
-    set_target_properties(miniFlowVR PROPERTIES FOLDER "SofaExtlibs")
-    set_target_properties(newmat     PROPERTIES FOLDER "SofaExtlibs")
-endif()
+set_target_properties(miniFlowVR PROPERTIES FOLDER "SofaExtlibs")
+set_target_properties(newmat PROPERTIES FOLDER "SofaExtlibs")

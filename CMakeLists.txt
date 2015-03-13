@@ -1,12 +1,10 @@
 cmake_minimum_required(VERSION 2.8.12)
 
-set(SOLUTION_NAME "Sofa")
-project(${SOLUTION_NAME})
+project(Sofa)
 
-# MSVC: Use solution folders.
-if(MSVC)
-    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-endif()
+# Enable the organisation in folders for generators that support
+# it. (E.g. some versions of Visual Studio have 'solution folders')
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if( CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT )
     set( CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/install CACHE PATH "Install path prefix, prepended onto install directories." FORCE )

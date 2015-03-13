@@ -42,10 +42,8 @@ set(SOFACOMMON_TARGETS SofaLoader SofaRigid SofaDeformable SofaSimpleFem SofaObj
     SofaMeshCollision SofaExplicitOdeSolver SofaImplicitOdeSolver SofaComponentCommon)
 
 foreach(TARGET ${SOFACOMMON_TARGETS})
-  add_subdirectory(${SofaCommon_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
-  if(MSVC)
-    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaCommon")
-  endif()
+    add_subdirectory(${SofaCommon_ACTUAL_SOURCE_DIR}/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
+    set_target_properties(${TARGET} PROPERTIES FOLDER "SofaCommon") # IDE folder
 endforeach()
 
 include(CMakePackageConfigHelpers)
