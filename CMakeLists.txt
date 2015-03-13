@@ -48,17 +48,17 @@ set(SOFA_SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
 # cmake functions specific to sofa that needs to be redistributed.
 add_subdirectory( ${SOFA_CMAKE_DIR} )
 
-# externals
-if(EXISTS ${SOFA_EXTERNALS_DIR} )
-    list(APPEND CMAKE_INCLUDE_PATH ${SOFA_EXTERNALS_DIR}/include)
-    if(MSVC)
+# Dependency pack for Windows
+if(MSVC)
+    if(EXISTS ${SOFA_EXTERNALS_DIR} )
+        list(APPEND CMAKE_INCLUDE_PATH ${SOFA_EXTERNALS_DIR}/include)
         if(CMAKE_CL_64)
             list(APPEND CMAKE_LIBRARY_PATH ${SOFA_EXTERNALS_DIR}/lib/win64)
         else()
             list(APPEND CMAKE_LIBRARY_PATH ${SOFA_EXTERNALS_DIR}/lib/win32)
         endif()
-    endif() 
-    add_subdirectory("${SOFA_EXTERNALS_DIR}")
+        add_subdirectory("${SOFA_EXTERNALS_DIR}")
+    endif()
 endif()
 
 # Install resource files
