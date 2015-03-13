@@ -58,10 +58,11 @@ CollapsibleGroupBox {
                 }
             }
 
-            delegate: Item {
+            delegate: Rectangle {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 height: data.height
+                color: index % 2 ? Qt.rgba(0.85, 0.85, 0.85, 1.0) : Qt.rgba(0.9, 0.9, 0.9, 1.0)
 
                 Rectangle {
                     visible: data.modified

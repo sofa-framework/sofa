@@ -13,7 +13,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/helper/system/glut.h>
-#include <SofaComponentMain/init.h>
+#include <sofa/component/init.h>
 
 #include <sstream>
 #include <qqml.h>
@@ -61,6 +61,11 @@ const Base* SceneComponent::base() const
     return myBase;
 }
 
+const Scene* SceneComponent::scene() const
+{
+    return myScene;
+}
+
 SceneData::SceneData(const SceneComponent* sceneComponent, sofa::core::objectmodel::BaseData* data) : QObject(),
     mySceneComponent(sceneComponent),
     myData(data)
@@ -77,11 +82,31 @@ QVariantMap SceneData::object() const
     return QVariantMap();
 }
 
-void SceneData::setValue(const QVariant& value)
+bool SceneData::setValue(const QVariant& value)
 {
     BaseData* data = SceneData::data();
     if(data)
-        Scene::setDataValue(data, value);
+        return Scene::setDataValue(data, value);
+
+    return false;
+}
+
+bool SceneData::setLink(const QString& path)
+{
+    BaseData* data = SceneData::data();
+    if(data)
+    {
+        std::streambuf* backup(std::cerr.rdbuf());
+
+        std::ostringstream stream;
+        std::cerr.rdbuf(stream.rdbuf());
+        bool status = Scene::setDataLink(data, path);
+        std::cerr.rdbuf(backup);
+
+        return status;
+    }
+
+    return false;
 }
 
 BaseData* SceneData::data()
@@ -369,6 +394,7 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
         object.insert("type", "");
         object.insert("group", "");
         object.insert("properties", "");
+        object.insert("link", "");
         object.insert("value", "");
 
         return object;
@@ -395,6 +421,7 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
         if(std::string::npos != typeinfo->name().find("bool"))
         {
             type = "boolean";
+            properties.insert("autoUpdate", true);
         }
         else
         {
@@ -433,6 +460,7 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
     object.insert("type", type);
     object.insert("group", data->getGroup());
     object.insert("properties", properties);
+    object.insert("link", QString::fromStdString(data->getLinkPath()));
     object.insert("value", dataValue(data));
 
     return object;
@@ -546,10 +574,11 @@ QVariant Scene::dataValue(const BaseData* data)
     return value;
 }
 
-void Scene::setDataValue(BaseData* data, const QVariant& value)
+// TODO: WARNING : do not use data->read anymore but directly the correct set*Type*Value(...)
+bool Scene::setDataValue(BaseData* data, const QVariant& value)
 {
     if(!data)
-        return;
+        return false;
 
     const AbstractTypeInfo* typeinfo = data->getValueTypeInfo();
 
@@ -569,7 +598,7 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
             if(!typeinfo->Container())
             {
                 qWarning("Trying to set a list of values on a non-container data");
-                return;
+                return false;
             }
 
             if(valueIterable.size() != nbRows)
@@ -577,7 +606,7 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                 if(typeinfo->FixedSize())
                 {
                     qWarning() << "The new data should have the same size, should be" << nbRows << ", got" << valueIterable.size();
-                    return;
+                    return false;
                 }
 
                 typeinfo->setSize(data, valueIterable.size());
@@ -595,7 +624,7 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                         if(subValueIterable.size() != nbCols)
                         {
                             qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
-                            return;
+                            return false;
                         }
 
                         for(int j = 0; j < subValueIterable.size(); ++j)
@@ -627,8 +656,8 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                         QSequentialIterable subValueIterable = subFinalValue.value<QSequentialIterable>();
                         if(subValueIterable.size() != nbCols)
                         {
-                            qWarning("The new sub data should have the same size");
-                            return;
+                            qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
+                            return false;
                         }
 
                         for(int j = 0; j < subValueIterable.size(); ++j)
@@ -649,10 +678,46 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
 
                 data->read(dataString.toStdString());
             }
+            else if(typeinfo->Text())
+            {
+                QString dataString;
+                for(int i = 0; i < valueIterable.size(); ++i)
+                {
+                    QVariant subFinalValue = valueIterable.at(i);
+                    if(QVariant::List == subFinalValue.type())
+                    {
+                        QSequentialIterable subValueIterable = subFinalValue.value<QSequentialIterable>();
+                        if(subValueIterable.size() != nbCols)
+                        {
+                            qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
+                            return false;
+                        }
+
+                        for(int j = 0; j < subValueIterable.size(); ++j)
+                        {
+                            dataString += subValueIterable.at(j).toString();
+                            if(subValueIterable.size() - 1 != j)
+                                dataString += ' ';
+                        }
+                    }
+                    else
+                    {
+                        dataString += subFinalValue.toString();
+                    }
+
+                    if(valueIterable.size() - 1 != i)
+                        dataString += ' ';
+                }
+
+                data->read(dataString.toStdString());
+            }
+            else
+                data->read(value.toString().toStdString());
         }
         else if(QVariant::Map == finalValue.type())
         {
-            qWarning("Map type are not supported");
+            qWarning("Map type is not supported");
+            return false;
         }
         else
         {
@@ -666,6 +731,23 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                 data->read(value.toString().toStdString());
         }
     }
+    else
+        return false;
+
+    return true;
+}
+
+bool Scene::setDataLink(BaseData* data, const QString& link)
+{
+    if(!data)
+        return false;
+
+    if(link.isEmpty())
+        data->setParent(0);
+    else
+        data->setParent(link.toStdString());
+
+    return data->getParent();
 }
 
 QVariant Scene::dataValue(const QString& path) const

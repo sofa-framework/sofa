@@ -46,6 +46,7 @@ set(QML_FILES
                 data/qml/SofaBasics/RecentSettings.qml
                 data/qml/SofaBasics/UISettings.qml
                 data/qml/SofaBasics/Tools.qml
+                data/qml/SofaBasics/ToolTip.qml
                 data/qml/SofaBasics/DefaultStatusBar.qml
 		data/qml/SofaBasics/DefaultMenuBar.qml
 		data/qml/SofaBasics/Scene.qml

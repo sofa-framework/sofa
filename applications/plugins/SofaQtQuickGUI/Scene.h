@@ -32,6 +32,8 @@ public:
     sofa::core::objectmodel::Base* base();
     const sofa::core::objectmodel::Base* base() const;
 
+    const Scene* scene() const;
+
 private:
     const Scene*                            myScene;
     mutable sofa::core::objectmodel::Base*  myBase;
@@ -46,7 +48,8 @@ public:
     SceneData(const SceneComponent* sceneComponent, sofa::core::objectmodel::BaseData* data);
 
     Q_INVOKABLE QVariantMap object() const;
-    Q_INVOKABLE void setValue(const QVariant& value);
+    Q_INVOKABLE bool setValue(const QVariant& value);
+    Q_INVOKABLE bool setLink(const QString& path);
 
     sofa::core::objectmodel::BaseData* data();
     const sofa::core::objectmodel::BaseData* data() const;
@@ -125,7 +128,8 @@ public:
 public:
     static QVariantMap dataObject(const sofa::core::objectmodel::BaseData* data);
     static QVariant dataValue(const sofa::core::objectmodel::BaseData* data);
-    static void setDataValue(sofa::core::objectmodel::BaseData* data, const QVariant& value);
+    static bool setDataValue(sofa::core::objectmodel::BaseData* data, const QVariant& value);
+    static bool setDataLink(sofa::core::objectmodel::BaseData* data, const QString& link);
 
     QVariant dataValue(const QString& path) const;
     void setDataValue(const QString& path, const QVariant& value);
