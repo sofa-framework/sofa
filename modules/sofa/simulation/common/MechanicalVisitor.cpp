@@ -1307,7 +1307,6 @@ void MechanicalComputeForceVisitor::bwdMechanicalMapping(simulation::Node* /*nod
 
         //map->accumulateForce();
         map->applyJT(mparams, res, res);
-//        map->computeGeometricStiffness(mparams);
 
         ForceMaskDeactivate( map->getMechTo() );
     }
@@ -1360,6 +1359,12 @@ void MechanicalComputeDfVisitor::bwdMechanicalMapping(simulation::Node* /*node*/
 void MechanicalComputeDfVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
     mm->forceMask.activate(false);
+}
+
+Visitor::Result MechanicalComputeGeometricStiffness::fwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+{
+    map->updateK( mparams, childForce );
+    return RESULT_CONTINUE;
 }
 
 
