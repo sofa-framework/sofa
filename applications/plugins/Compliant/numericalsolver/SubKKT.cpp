@@ -91,6 +91,7 @@ void SubKKT::solve(const Response& resp,
     res.resize( size_full() );
 
     vtmp1.resize( size_sub() );
+    vtmp2.resize( size_sub() );    
 
     if( P.cols() ) {
         vtmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
