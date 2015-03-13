@@ -90,6 +90,8 @@ set(HEADER_FILES
     NormEngine.h
     NormEngine.inl
     TestEngine.h
+    MeshClosingEngine.h
+    MeshClosingEngine.inl
     )
 
 set(SOURCE_FILES
@@ -140,6 +142,7 @@ set(SOURCE_FILES
     HausdorffDistance.cpp
     NormEngine.cpp
     TestEngine.cpp
+    MeshClosingEngine.cpp
     )
 
 set(GROUP_BASE_DIR "..")
