@@ -54,6 +54,7 @@ set(HEADER_FILES
     IndicesFromValues.inl
     IndexValueMapper.h
     IndexValueMapper.inl
+    ROIValueMapper.h
     JoinPoints.h
     JoinPoints.inl
     MapIndices.h
@@ -120,6 +121,7 @@ set(SOURCE_FILES
     ValuesFromIndices.cpp
     IndicesFromValues.cpp
     IndexValueMapper.cpp
+    ROIValueMapper.cpp
     JoinPoints.cpp
     MapIndices.cpp
     RandomPointDistributionInSurface.cpp
