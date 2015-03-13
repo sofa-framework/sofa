@@ -16,7 +16,9 @@ GridLayout {
     onSceneDataChanged: updateObject();
 
     readonly property alias name:       dataObject.name
+    readonly property alias description:dataObject.description
     readonly property alias type:       dataObject.type
+    readonly property alias group:      dataObject.group
     readonly property alias properties: dataObject.properties
     readonly property alias value:      dataObject.value
     readonly property alias modified:   dataObject.modified
@@ -28,7 +30,9 @@ GridLayout {
 
         property bool initing: true
         property string name
+        property string description
         property string type
+        property string group
         property var properties
         property string link
         property var value
@@ -52,7 +56,9 @@ GridLayout {
         dataObject.initing      = true;
 
         dataObject.name         = object.name;
+        dataObject.description  = object.description;
         dataObject.type         = object.type;
+        dataObject.group        = object.group;
         dataObject.properties   = object.properties;
         dataObject.link         = object.link;
         dataObject.value        = object.value;
@@ -82,8 +88,13 @@ GridLayout {
         id: nameLabel
         Layout.preferredWidth: -1 === nameLabelWidth ? implicitWidth : nameLabelWidth
         Layout.alignment: Qt.AlignTop
-        text: name + " "
+        text: dataObject.name + " "
         font.italic: true
+
+        ToolTip {
+            anchors.fill: parent
+            description: dataObject.description
+        }
     }
 
     Column {

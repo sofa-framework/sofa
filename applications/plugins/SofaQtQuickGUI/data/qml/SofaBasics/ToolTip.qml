@@ -57,11 +57,8 @@ MouseArea {
 
             // ensure the tooltip stays in the item window
             if(contentItem === window.contentItem) {
-                if(d.toolTip.x + d.toolTip.width > contentItem.width)
-                    d.toolTip.x -= d.toolTip.width + 2 * root.xOffset;
-
-                if(d.toolTip.y + d.toolTip.height > contentItem.height)
-                    d.toolTip.y -= d.toolTip.height + 2 * root.yOffset;
+                d.toolTip.x = Math.min(d.toolTip.x, contentItem.width - d.toolTip.width);
+                d.toolTip.y = Math.min(d.toolTip.y, contentItem.height - d.toolTip.height);
             }
         }
     }
