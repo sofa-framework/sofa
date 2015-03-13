@@ -186,7 +186,7 @@ public:
 
 	bool updateHoles(unsigned int nb);
 
-    bool updateHole(unsigned int indx);
+//    bool updateHole(unsigned int indx);
 
 	void saveBin(CGoGNostream& fs);
 

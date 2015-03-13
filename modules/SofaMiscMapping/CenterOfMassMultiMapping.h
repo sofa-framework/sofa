@@ -117,13 +117,13 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMULTIMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Vec3dTypes, Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Rigid3dTypes, Rigid3dTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Rigid3dTypes, Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Rigid3dTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Vec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Vec3fTypes, Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< Rigid3fTypes, Rigid3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API CenterOfMassMultiMapping< defaulttype::Rigid3fTypes, defaulttype::Rigid3fTypes >;
 #endif
 #endif
 

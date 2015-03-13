@@ -28,6 +28,7 @@
 
 #include <SofaBaseLinearSolver/BTDLinearSolver.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
 namespace sofa
 {

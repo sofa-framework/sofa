@@ -46,7 +46,7 @@ namespace engine
 template <class DataTypes>
 SmoothMeshEngine<DataTypes>::SmoothMeshEngine()
     : input_position( initData (&input_position, "input_position", "Input position") )
-    , input_indices( initData (&input_indices, "input_indices", "Position indices that need to be smoothed") )
+    , input_indices( initData (&input_indices, "input_indices", "Position indices that need to be smoothed, leave empty for all positions") )
     , output_position( initData (&output_position, "output_position", "Output position") )
     , nb_iterations( initData (&nb_iterations, (unsigned int)1, "nb_iterations", "Number of iterations of laplacian smoothing") )
     , showInput( initData (&showInput, false, "showInput", "showInput") )

@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PENALITYCONTACTFORCEFIELD_INL
 
-#include <sofa/core/behavior/ForceField.inl>
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>

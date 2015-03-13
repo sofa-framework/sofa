@@ -29,9 +29,6 @@ public:
 
     Q_INVOKABLE void update();
 
-public slots:
-    void handleSceneComponentChange(SceneComponent* newSceneComponent);
-
 public:
     Q_PROPERTY(sofa::qtquick::SceneComponent* sceneComponent READ sceneComponent WRITE setSceneComponent NOTIFY sceneComponentChanged);
 
@@ -46,7 +43,7 @@ protected:
 
     Q_INVOKABLE sofa::qtquick::SceneData* getDataById(int row) const;
 signals:
-    void sceneComponentChanged(SceneComponent* newSceneComponent);
+    void sceneComponentChanged(SceneComponent* newSceneComponent) const;
 
 private:
     enum {
@@ -66,12 +63,12 @@ private:
         sofa::core::objectmodel::BaseData*      data;
     };
 
-    Item buildDataItem(BaseData* data) const;
+    Item buildDataItem(sofa::core::objectmodel::BaseData* data) const;
 
 private:
-    QList<Item>     myItems;
-    int             myUpdatedCount;
-    SceneComponent* mySceneComponent;
+    QList<Item>             myItems;
+    int                     myUpdatedCount;
+    mutable SceneComponent* mySceneComponent;
 
 };
 

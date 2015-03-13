@@ -127,7 +127,6 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 template<class DataTypes>
 double ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
-
     if (this->mstate)
         return getPotentialEnergy(mparams, *mparams->readX(mstate));
     return 0;

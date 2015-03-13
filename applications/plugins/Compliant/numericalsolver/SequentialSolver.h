@@ -61,7 +61,7 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	// mapping matrix response 
     typedef Response::cmat cmat;
     cmat mapping_response;
-	mat JP;
+	rmat JP;
 	
 	// data blocks 
 	struct SOFA_Compliant_API block {

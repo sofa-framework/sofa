@@ -63,9 +63,11 @@ public:
 protected:
 
 	virtual void apply(typename self::out_pos_type& out,
-	                   const typename self::in_pos_type& in) {
+                       const typename self::in_pos_type& in) {
 		
 		// local frames have been computed in assemble
+
+        (void)in;
 
         assert( in.size() == out.size() || mask.size()==in.size() );
         assert( in.size() == penetrations.getValue().size() || self::Nout == 2 );

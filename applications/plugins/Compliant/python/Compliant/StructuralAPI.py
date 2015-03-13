@@ -97,6 +97,17 @@ class RigidBody:
         ## adding a offset given in absolute coordinates to the rigid body
         return RigidBody.Offset( self.node, name, (self.frame.inv()*Frame.Frame(offset)).offset() )
 
+    def addMappedPoint(self, name, relativePosition=[0,0,0]):
+        ## adding a relative position to the rigid body
+        # @warning the translation due to the center of mass offset is automatically removed. If necessary a function without this mecanism could be added
+        frame = Frame.Frame(); frame.translation = relativePosition
+        return RigidBody.MappedPoint( self.node, name, (self.framecom.inv()*frame).translation )
+
+    def addAbsoluteMappedPoint(self, name, position=[0,0,0]):
+        ## adding a position given in absolute coordinates to the rigid body
+        frame = Frame.Frame(); frame.translation = position
+        return RigidBody.MappedPoint( self.node, name, (self.frame.inv()*frame).translation )
+
     def addMotor( self, forces=[0,0,0,0,0,0] ):
         ## adding a constant force/torque to the rigid body (that could be driven by a controller to simulate a motor)
         return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
@@ -153,6 +164,28 @@ class RigidBody:
         def addMotor( self, forces=[0,0,0,0,0,0] ):
             ## adding a constant force/torque at the offset location (that could be driven by a controller to simulate a motor)
             return self.node.createObject('ConstantForceField', template='Rigid3'+template_suffix, name='motor', points='0', forces=concat(forces))
+
+        def addMappedPoint(self, name, relativePosition=[0,0,0]):
+            ## adding a relative position to the rigid body
+            return RigidBody.MappedPoint( self.node, name, relativePosition )
+
+        def addAbsoluteMappedPoint(self, name, position=[0,0,0]):
+            ## adding a position given in absolute coordinates to the rigid body
+            frame = Frame.Frame(); frame.translation = position
+            return RigidBody.MappedPoint( self.node, name, (frame * self.frame.inv()).translation )
+
+        class MappedPoint:
+            def __init__(self, node, name, position):
+                self.node = node.createChild( name )
+                self.dofs = self.node.createObject( 'MechanicalObject', name='dofs', template="Vec3"+template_suffix, position=concat(position) )
+                self.mapping = self.node.createObject('RigidMapping', name="mapping", geometricStiffness = geometric_stiffness)
+
+    class MappedPoint:
+        def __init__(self, node, name, position):
+            self.node = node.createChild( name )
+            self.dofs = self.node.createObject( 'MechanicalObject', name='dofs', template="Vec3"+template_suffix, position=concat(position) )
+            self.mapping = self.node.createObject('RigidMapping', name="mapping", geometricStiffness = geometric_stiffness)
+
 
 class GenericRigidJoint:
     ## Generic kinematic joint between two Rigids

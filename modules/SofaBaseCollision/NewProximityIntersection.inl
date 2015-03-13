@@ -31,7 +31,6 @@
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/collision/Intersection.inl>
 #include <iostream>
 #include <algorithm>
 

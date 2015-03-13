@@ -27,6 +27,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
 #include "myopencl.h"
 #include "OpenCLProgram.h"

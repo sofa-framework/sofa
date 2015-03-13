@@ -1,5 +1,5 @@
 import QtQuick 2.2
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.3
 import QtQuick.Controls.Private 1.0
 import QtQuick.Controls.Styles 1.1
 import QtQuick.Layouts 1.0
@@ -9,6 +9,7 @@ FocusScope {
 
     property string title
     property bool collapsed: false
+    property int contentMargin: 5
 
     /*! \internal */
     default property alias __content: container.data
@@ -63,10 +64,10 @@ FocusScope {
                     Item {
                         id: container
                         anchors.fill: parent
-                        anchors.topMargin: 5
-                        anchors.leftMargin: 5
-                        anchors.rightMargin: 5
-                        anchors.bottomMargin: 5
+                        anchors.topMargin: root.contentMargin
+                        anchors.leftMargin: root.contentMargin
+                        anchors.rightMargin: root.contentMargin
+                        anchors.bottomMargin: root.contentMargin
 
                         property Item layoutItem: container.children.length === 1 ? container.children[0] : null
                         function calcWidth () { return container.anchors.leftMargin + container.anchors.rightMargin + (layoutItem ? (layoutItem.implicitWidth) +

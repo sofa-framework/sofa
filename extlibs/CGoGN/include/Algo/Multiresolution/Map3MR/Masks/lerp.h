@@ -53,10 +53,10 @@ class LerpVertexVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	AttributeHandler<typename PFP::VEC3, VERTEX>& m_position ;
+	AttributeHandler<typename PFP::VEC3, VERTEX, typename PFP::MAP>& m_position ;
 
 public:
-	LerpVertexVertexFunctor(typename PFP::MAP& m, AttributeHandler<typename PFP::VEC3, VERTEX>& p) : m_map(m), m_position(p)
+	LerpVertexVertexFunctor(typename PFP::MAP& m, AttributeHandler<typename PFP::VEC3, VERTEX, typename PFP::MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)
@@ -68,7 +68,7 @@ public:
 
 //		std::cout << " p du niv i+1 = " << p << std::endl;
 
-		m_position[d] = p;
+		//m_position[d] = p;
 
 //		m_map.decCurrentLevel() ;
 //		std::cout << "dec = " <<  m_position[d] << std::endl;
@@ -84,10 +84,10 @@ class LerpEdgeVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	AttributeHandler<typename PFP::VEC3, VERTEX>& m_position ;
+	AttributeHandler<typename PFP::VEC3, VERTEX, typename PFP::MAP>& m_position ;
 
 public:
-	LerpEdgeVertexFunctor(typename PFP::MAP& m, AttributeHandler<typename PFP::VEC3, VERTEX>& p) : m_map(m), m_position(p)
+	LerpEdgeVertexFunctor(typename PFP::MAP& m, AttributeHandler<typename PFP::VEC3, VERTEX, typename PFP::MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)
@@ -110,10 +110,10 @@ class LerpFaceVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	AttributeHandler<typename PFP::VEC3, VERTEX>& m_position ;
+	AttributeHandler<typename PFP::VEC3, VERTEX, typename PFP::MAP>& m_position ;
 
 public:
-	LerpFaceVertexFunctor(typename PFP::MAP& m, AttributeHandler<typename PFP::VEC3, VERTEX>& p) : m_map(m), m_position(p)
+	LerpFaceVertexFunctor(typename PFP::MAP& m, AttributeHandler<typename PFP::VEC3, VERTEX, typename PFP::MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)
@@ -135,10 +135,10 @@ class LerpVolumeVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	AttributeHandler<typename PFP::VEC3, VERTEX>& m_position ;
+	AttributeHandler<typename PFP::VEC3, VERTEX, typename PFP::MAP>& m_position ;
 
 public:
-	LerpVolumeVertexFunctor(typename PFP::MAP& m, AttributeHandler<typename PFP::VEC3, VERTEX>& p) : m_map(m), m_position(p)
+	LerpVolumeVertexFunctor(typename PFP::MAP& m, AttributeHandler<typename PFP::VEC3, VERTEX, typename PFP::MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)

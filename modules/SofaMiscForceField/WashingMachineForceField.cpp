@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_CPP
 #include <SofaMiscForceField/WashingMachineForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -56,7 +57,6 @@ template class WashingMachineForceField<Vec3dTypes>;
 #ifndef SOFA_DOUBLE
 template class WashingMachineForceField<Vec3fTypes>;
 #endif
-;
 
 } // namespace forcefield
 

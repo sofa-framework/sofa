@@ -97,6 +97,7 @@ extern template class SOFA_ENGINE_API MergeVectors< helper::vector<bool> >;
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<double> >;
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2d> >;
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec3d> >;
+extern template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec4d> >;
 extern template class SOFA_ENGINE_API MergeVectors< defaulttype::Rigid2dTypes::VecCoord >;
 extern template class SOFA_ENGINE_API MergeVectors< defaulttype::Rigid2dTypes::VecDeriv >;
 extern template class SOFA_ENGINE_API MergeVectors< defaulttype::Rigid3dTypes::VecCoord >;
@@ -106,6 +107,7 @@ extern template class SOFA_ENGINE_API MergeVectors< defaulttype::Rigid3dTypes::V
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<float> >;
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec2f> >;
 extern template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec3f> >;
+extern template class SOFA_ENGINE_API MergeVectors< helper::vector<defaulttype::Vec4f> >;
 extern template class SOFA_ENGINE_API MergeVectors< defaulttype::Rigid2fTypes::VecCoord >;
 extern template class SOFA_ENGINE_API MergeVectors< defaulttype::Rigid2fTypes::VecDeriv >;
 extern template class SOFA_ENGINE_API MergeVectors< defaulttype::Rigid3fTypes::VecCoord >;

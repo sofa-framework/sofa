@@ -18,16 +18,18 @@ class SOFA_Compliant_API CgSolver : public KrylovSolver {
 
   protected:
 
-	virtual void solve_schur(vec& x,
-	                         const system_type& system,
-	                         const vec& rhs,
-							 real damping) const;
-	
-	virtual void solve_kkt(vec& x,
-	                       const system_type& system,
-	                       const vec& rhs,
-						   real damping) const;
+    virtual void solve_schur_impl(vec& lambda,
+                                  const schur_type& A,
+                                  const vec& b,
+                                  params_type& p) const;
 
+    virtual void solve_kkt_impl(vec& x,
+                                const kkt_type& A,
+                                const vec& b,
+                                params_type& p) const;
+
+    virtual const char* method() const;
+    
 };
 
 

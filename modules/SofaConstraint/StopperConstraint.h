@@ -120,6 +120,16 @@ public:
 
     virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 };
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_STOPPERCONSTRAINT_CPP)
+#ifndef SOFA_FLOAT
+extern template class StopperConstraint<defaulttype::Vec1dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class StopperConstraint<defaulttype::Vec1fTypes>;
+#endif
+#endif
+
 } // namespace constraintset
 
 } // namespace component

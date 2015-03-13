@@ -62,7 +62,6 @@ int MouseInteractorRigidClass = core::RegisterObject("Perform tasks related to t
 template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2fTypes>;
 template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec3fTypes>;
 template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Rigid3fTypes>;
-
 #endif
 #ifndef SOFA_FLOAT
 template class SOFA_USER_INTERACTION_API MouseInteractor<defaulttype::Vec2dTypes>;
