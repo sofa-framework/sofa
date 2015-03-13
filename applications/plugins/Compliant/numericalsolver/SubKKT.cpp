@@ -1,7 +1,8 @@
 #include "SubKKT.h"
 #include "Response.h"
 
-#include "utils/scoped.h"
+#include "../utils/scoped.h"
+#include "../utils/sparse.h"
 
 namespace sofa {
 namespace component {
@@ -137,10 +138,30 @@ void SubKKT::solve(const Response& resp,
         
     resp.solve(mtmp2, mtmp1);
 
+    // mtmp3 = P;
+
+    // not sure if this causes a temporary
+    res = P * mtmp2;
+}
+
+void SubKKT::solve_opt(const Response& resp,
+                       cmat& res,
+                       const rmat& rhs) const {
+    res.resize(rhs.rows(), rhs.cols());
+    
+    if( Q.cols() ) {
+        throw std::logic_error("sorry, not implemented");
+    }
+
+    sparse::fast_prod(mtmp1, P.transpose(), rhs.transpose());
+    // mtmp1 = P.transpose() * rhs.transpose();
+    
+    resp.solve(mtmp2, mtmp1);
     mtmp3 = P;
 
     // not sure if this causes a temporary
-    res = mtmp3 * mtmp2;
+    sparse::fast_prod(res, mtmp3, mtmp2);
+    // res = mtmp3 * mtmp2;
 }
 
 

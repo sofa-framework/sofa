@@ -1,5 +1,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
+#include "../utils/sparse.h"
+
 namespace sofa {
 
 
@@ -48,10 +50,12 @@ static void add(LValue& lval, const RValue& rval) {
 template<class LValue, class LHS, class RHS>
 static void add_prod(LValue& lval, const LHS& lhs, const RHS& rhs) {
     if( empty(lval) ) {
-        lval = lhs * rhs;
+        sparse::fast_prod(lval, lhs, rhs);
+        // lval = lhs * rhs;
     } else {
         // paranoia, i has it
-        lval = lval + lhs * rhs;
+        sparse::fast_add_prod(lval, lhs, rhs);
+        // lval = lval + lhs * rhs;
     }
 }
 
