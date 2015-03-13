@@ -44,6 +44,7 @@ DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
     , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
     , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
+    , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , _arrowSize(-1)
     , _color( 1,0,0,1 )
 {
@@ -217,6 +218,9 @@ void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::ConstraintParams*
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
 {
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+     if( !geometricStiffness ) return;
+
     helper::WriteAccessor<Data<InVecDeriv> > parentForce (*parentDfId[this->fromModel.get(mparams)].write());
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (*mparams->readDx(this->fromModel));  // parent displacement
     const SReal kfactor = mparams->kFactor();
@@ -225,32 +229,38 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
 
     for(unsigned i=0; i<indices.size(); i++ )
     {
-        sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
-        for(unsigned j=0; j<Nin; j++)
+        // force in compression (>0) can lead to negative eigen values in geometric stiffness
+        // this results in a undefinite implicit matrix that causes instabilies
+        // if stabilized GS (geometricStiffness==2) -> keep only force in extension
+        if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
-            for(unsigned k=0; k<Nin; k++)
+            sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+            for(unsigned j=0; j<Nin; j++)
             {
-                if( j==k )
-                    b[j][k] = 1.f - directions[i][j]*directions[i][k];
-                else
-                    b[j][k] =     - directions[i][j]*directions[i][k];
+                for(unsigned k=0; k<Nin; k++)
+                {
+                    if( j==k )
+                        b[j][k] = 1.f - directions[i][j]*directions[i][k];
+                    else
+                        b[j][k] =     - directions[i][j]*directions[i][k];
+                }
             }
-        }
-        b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
-        // note that computing a block is not efficient here, but it would makes sense for storing a stiffness matrix
+            b *= childForce[i][0] * invlengths[i] * kfactor;  // (I - uu^T)*f/l*kfactor     do not forget kfactor !
+            // note that computing a block is not efficient here, but it would makes sense for storing a stiffness matrix
 
-        InDeriv dx = parentDisplacement[indices[i]];
-        InDeriv df;
-        for(unsigned j=0; j<Nin; j++)
-        {
-            for(unsigned k=0; k<Nin; k++)
+            InDeriv dx = parentDisplacement[indices[i]];
+            InDeriv df;
+            for(unsigned j=0; j<Nin; j++)
             {
-                df[j]+=b[j][k]*dx[k];
+                for(unsigned k=0; k<Nin; k++)
+                {
+                    df[j]+=b[j][k]*dx[k];
+                }
             }
+           // InDeriv df = b*dx;
+            parentForce[indices[i]] += df;
+    //        cerr<<"DistanceFromTargetMapping<TIn, TOut>::applyDJT, df = " << df << endl;
         }
-       // InDeriv df = b*dx;
-        parentForce[indices[i]] += df;
-//        cerr<<"DistanceFromTargetMapping<TIn, TOut>::applyDJT, df = " << df << endl;
     }
 }
 
@@ -272,6 +282,9 @@ const vector<sofa::defaulttype::BaseMatrix*>* DistanceFromTargetMapping<TIn, TOu
 template <class TIn, class TOut>
 const defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
 {
+    const unsigned& geometricStiffness = d_geometricStiffness.getValue();
+    if( !geometricStiffness ) return NULL;
+
 //    helper::ReadAccessor<Data<OutVecDeriv> > childForce (*this->toModel->read(core::ConstVecDerivId::force()));
     const OutVecDeriv& childForce = this->toModel->readForces().ref();
     helper::ReadAccessor< Data<vector<unsigned> > > indices(f_indices);
@@ -280,26 +293,32 @@ const defaulttype::BaseMatrix* DistanceFromTargetMapping<TIn, TOut>::getK()
     K.resizeBlocks(in.size(),in.size());
     for(size_t i=0; i<indices.size(); i++)
     {
-        size_t idx = indices[i];
-
-        sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
-        for(unsigned j=0; j<Nin; j++)
+        // force in compression (>0) can lead to negative eigen values in geometric stiffness
+        // this results in a undefinite implicit matrix that causes instabilies
+        // if stabilized GS (geometricStiffness==2) -> keep only force in extension
+        if( childForce[i][0] < 0 || geometricStiffness==1 )
         {
-            for(unsigned k=0; k<Nin; k++)
+            size_t idx = indices[i];
+
+            sofa::defaulttype::Mat<Nin,Nin,Real> b;  // = (I - uu^T)
+            for(unsigned j=0; j<Nin; j++)
             {
-                if( j==k )
-                    b[j][k] = 1.f - directions[i][j]*directions[i][k];
-                else
-                    b[j][k] =     - directions[i][j]*directions[i][k];
+                for(unsigned k=0; k<Nin; k++)
+                {
+                    if( j==k )
+                        b[j][k] = 1.f - directions[i][j]*directions[i][k];
+                    else
+                        b[j][k] =     - directions[i][j]*directions[i][k];
+                }
             }
+            b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
+
+    //        std::cerr<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
+
+            K.beginBlockRow(idx);
+            K.createBlock(idx,b);
+            K.endBlockRow();
         }
-        b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
-
-//        std::cerr<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
-
-        K.beginBlockRow(idx);
-        K.createBlock(idx,b);
-        K.endBlockRow();
     }
     K.compress();
 

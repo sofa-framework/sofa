@@ -97,6 +97,7 @@ public:
     Data< vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< InVecCoord >       f_targetPositions; ///< positions the distances are measured from
     Data< vector< Real > >   f_restDistances;   ///< rest distance from each position
+    Data< unsigned >         d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     /// Add a target with a desired distance
     void createTarget( unsigned index, const InCoord& position, Real distance);
