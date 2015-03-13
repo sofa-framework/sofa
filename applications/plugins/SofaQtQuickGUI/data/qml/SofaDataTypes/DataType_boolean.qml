@@ -21,7 +21,7 @@ Item {
             target: control
             property: "checked"
             value: dataObject.value
-            when: !dataObject.readOnly
+            //when: !dataObject.readOnly
         }
     }
 }

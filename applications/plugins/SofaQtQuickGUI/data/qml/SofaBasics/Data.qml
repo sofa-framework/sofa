@@ -30,12 +30,14 @@ GridLayout {
         property string name
         property string type
         property var properties
+        property string link
         property var value
         property bool modified: false
 
-        property bool readOnly: initing || root.readOnly || properties.readOnly || track.checked || link.checked
+        property bool readOnly: initing || root.readOnly || properties.readOnly || track.checked || linkButton.checked
 
         onValueChanged: modified = true
+        onModifiedChanged: if(modified && properties.autoUpdate) root.updateData();
     }
 
     property int nameLabelWidth: -1
@@ -52,6 +54,7 @@ GridLayout {
         dataObject.name         = object.name;
         dataObject.type         = object.type;
         dataObject.properties   = object.properties;
+        dataObject.link         = object.link;
         dataObject.value        = object.value;
 
         dataObject.initing      = false;
@@ -65,14 +68,22 @@ GridLayout {
 
         sceneData.setValue(dataObject.value);
         updateObject();
+    }
 
-        dataObject.modified = false;
+    function updateLink() {
+        if(!sceneData)
+            return;
+
+        sceneData.setLink(linkButton.checked ? linkTextField.text : "");
+        updateObject();
     }
 
     Text {
         id: nameLabel
-        text: name + " "
         Layout.preferredWidth: -1 === nameLabelWidth ? implicitWidth : nameLabelWidth
+        Layout.alignment: Qt.AlignTop
+        text: name + " "
+        font.italic: true
     }
 
     Column {
@@ -81,18 +92,25 @@ GridLayout {
         RowLayout {
             anchors.left: parent.left
             anchors.right: parent.right
+            visible: linkButton.checked
+            spacing: 0
 
             TextField {
                 id: linkTextField
                 Layout.fillWidth: true
-                visible: link.checked
-                placeholderText: "Link: @./path/component.data"
+                placeholderText: "Link: @./path/component." + dataObject.name
+                textColor: 0 === dataObject.link.length ? "black" : "green"
+
+                onTextChanged: updateLink();
+
+                Component.onCompleted: dataObject.link
             }
-/*
+
             Image {
-                source: "qrc:/icon/ok.png"
+                Layout.preferredWidth: 16
+                Layout.preferredHeight: Layout.preferredWidth
+                source: 0 === dataObject.link.length ? "qrc:/icon/invalid.png" : "qrc:/icon/correct.png"
             }
-*/
         }
 
         Loader {
@@ -134,15 +152,28 @@ GridLayout {
         }
     }
 
-    Button {
-        id: link
-        Layout.preferredWidth: 14
+    Item {
+        Layout.preferredWidth: 20
         Layout.preferredHeight: Layout.preferredWidth
-        checkable: true
+        Layout.alignment: Qt.AlignTop
 
-        Image {
+        Button {
+            id: linkButton
             anchors.fill: parent
-            source: "qrc:/icon/link.png"
+            anchors.margins: 3
+            checkable: true
+
+            ToolTip {
+                anchors.fill: parent
+                description: "Link the data with another"
+            }
+
+            onClicked: updateLink()
+
+            Image {
+                anchors.fill: parent
+                source: "qrc:/icon/link.png"
+            }
         }
     }
 
@@ -150,9 +181,15 @@ GridLayout {
         id: track
         Layout.preferredWidth: 20
         Layout.preferredHeight: Layout.preferredWidth
+        Layout.alignment: Qt.AlignTop
         checked: false
 
         onClicked: root.updateObject();
+
+        ToolTip {
+            anchors.fill: parent
+            description: "Track the data value during simulation"
+        }
 
         // update every 50ms during simulation
         Timer {
@@ -173,6 +210,11 @@ GridLayout {
         visible: dataObject.modified
         text: "Undo"
         onClicked: root.updateObject();
+
+        ToolTip {
+            anchors.fill: parent
+            description: "Undo changes in the data value"
+        }
     }
 
     Button {
@@ -181,6 +223,11 @@ GridLayout {
         visible: dataObject.modified
         text: "Update"
         onClicked: root.updateData();
+
+        ToolTip {
+            anchors.fill: parent
+            description: "Update the data value"
+        }
     }
 
     /*Image {

@@ -95,7 +95,7 @@ CollapsibleGroupBox {
 
                     Connections {
                         target: scene
-                        onStepEnd: setValueFromArray(scene.dataValue("@.gravity")[0]);
+                        onStepEnd: gravity.setValueFromArray(scene.dataValue("@.gravity")[0]);
                     }
                 }
 

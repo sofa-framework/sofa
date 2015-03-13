@@ -44,5 +44,6 @@
         <file>SofaDataTypes/DataType_BoundingBox.qml</file>
         <file>SofaDataTypes/DataType_Material.qml</file>
         <file>SofaDataTypes/DataType_OptionsGroup.qml</file>
+        <file>SofaBasics/ToolTip.qml</file>
     </qresource>
 </RCC>
