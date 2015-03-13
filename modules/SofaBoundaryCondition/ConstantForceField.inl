@@ -32,7 +32,6 @@
 #include <iostream>
 //#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 

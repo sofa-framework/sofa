@@ -129,6 +129,19 @@ protected:
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MASS_MATRIXMASS_CPP)
+#ifndef SOFA_FLOAT
+extern template class MatrixMass<defaulttype::Vec3dTypes, defaulttype::Mat3x3d>;
+extern template class MatrixMass<defaulttype::Vec2dTypes, defaulttype::Mat2x2d>;
+extern template class MatrixMass<defaulttype::Vec1dTypes, defaulttype::Mat1x1d>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class MatrixMass<defaulttype::Vec3fTypes, defaulttype::Mat3x3f>;
+extern template class MatrixMass<defaulttype::Vec2fTypes, defaulttype::Mat2x2f>;
+extern template class MatrixMass<defaulttype::Vec1fTypes, defaulttype::Mat1x1f>;
+#endif
+#endif
+
 } // namespace mass
 
 } // namespace component

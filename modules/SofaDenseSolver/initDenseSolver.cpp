@@ -26,11 +26,28 @@
 #include <SofaDenseSolver/initDenseSolver.h>
 
 
+
+#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
+#include "NewMatMatrix.h"
+#include "NewMatVector.h"
+
+
 namespace sofa
 {
 
 namespace component
 {
+
+namespace linearsolver
+{
+
+// template specialization on specific matrix types
+
+template class SOFA_DENSE_SOLVER_API MatrixLinearSolver< NewMatMatrix, NewMatVector >;
+template class SOFA_DENSE_SOLVER_API MatrixLinearSolver< NewMatSymmetricMatrix, NewMatVector >;
+template class SOFA_DENSE_SOLVER_API MatrixLinearSolver< NewMatBandMatrix, NewMatVector >;
+template class SOFA_DENSE_SOLVER_API MatrixLinearSolver< NewMatSymmetricBandMatrix, NewMatVector >;
+}
 
 
 void initDenseSolver()
@@ -43,6 +60,9 @@ void initDenseSolver()
 }
 
 SOFA_LINK_CLASS(LULinearSolver)
+
+
+
 
 
 } // namespace component

@@ -30,7 +30,6 @@
 
 #include <SofaDeformable/SpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/common/Simulation.h>

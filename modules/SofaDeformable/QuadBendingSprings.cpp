@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_QUADBENDINGSPRINGS_CPP
 #include <SofaDeformable/QuadBendingSprings.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/SofaCommon.h>

@@ -153,7 +153,7 @@ Dart EmbeddedMap3_MR::deleteEdge(Dart d)
     Dart v = Map3::deleteEdge(d) ;
     if (isOrbitEmbedded<EDGE>()) {
         const unsigned int edgeID = getEmbedding(EdgeCell(d)) ;
-        getAttributeContainer(EDGE).updateHole(edgeID);
+//        getAttributeContainer(EDGE).updateHole(edgeID);
     }
 
     if((!v.isNil()) && (this->isOrbitEmbedded<VOLUME>())) {
@@ -461,10 +461,10 @@ bool EmbeddedMap3_MR::mergeVolumes(Dart d, bool deleteFace)
         if (isOrbitEmbedded<VOLUME>())
         {
             Algo::Topo::setOrbitEmbedding<VOLUME>(*this, d2, getEmbedding<VOLUME>(d2)) ;
-            getAttributeContainer(VOLUME).updateHole(deleteVolumeID);
+//            getAttributeContainer(VOLUME).updateHole(deleteVolumeID);
         }
         if (deleteFace && (deletedFaceID != EMBNULL)) {
-            getAttributeContainer(FACE).updateHole(deletedFaceID);
+//            getAttributeContainer(FACE).updateHole(deletedFaceID);
         }
         return true;
     }

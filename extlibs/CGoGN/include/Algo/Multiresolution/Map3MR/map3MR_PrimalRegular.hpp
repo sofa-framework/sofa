@@ -95,7 +95,7 @@ void Map3MR<PFP>::swapEdges(Dart d, Dart e)
 		}
 
 		if(m_map.template isOrbitEmbedded<VOLUME>())
-			m_map.template setOrbitEmbeddingOnNewCell<VOLUME>(d);
+			Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(m_map,d);
 	}
 }
 
@@ -313,7 +313,7 @@ void Map3MR<PFP>::addNewLevelSqrt3(bool embedNewVertices, VertexAttribute<typena
             unsigned int emb = m_map.template getEmbedding<VERTEX>(dit);
             m_map.incCurrentLevel();
 
-            unsigned int newemb = m_map.template setOrbitEmbeddingOnNewCell<VERTEX>(dit) ;
+			unsigned int newemb = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(m_map,dit);
             m_map.template copyCell<VERTEX>(newemb, emb);
 
         }
@@ -496,7 +496,7 @@ void Map3MR<PFP>::addNewLevelSqrt3Geom(bool embedNewVertices, VertexAttribute<ty
             unsigned int emb = m_map.template getEmbedding<VERTEX>(dit);
             m_map.incCurrentLevel();
 
-            unsigned int newemb = m_map.template setOrbitEmbeddingOnNewCell<VERTEX>(dit) ;
+			unsigned int newemb = Algo::Topo::setOrbitEmbeddingOnNewCell<VERTEX>(m_map,dit);
             m_map.template copyCell<VERTEX>(newemb, emb);
 
         }
@@ -1349,7 +1349,7 @@ void Map3MR<PFP>::addNewLevel()
 			}while(f != x);
 
 			//replonger l'orbit de ditV.
-			m_map.template setOrbitEmbedding<VERTEX>(x, m_map.template getEmbedding<VERTEX>(x));
+			Algo::Topo::setOrbitEmbedding<VERTEX>(m_map,x, m_map.template getEmbedding<VERTEX>(x));
 
 			m_map.decCurrentLevel() ;
 		}

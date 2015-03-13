@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDROTATIONCONSTRAINT_CPP
 #include <SofaBoundaryCondition/FixedRotationConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 

@@ -26,7 +26,6 @@
 #define SOFAOPENCL_OPENCLIDENTITYMAPPING_INL
 
 #include "OpenCLIdentityMapping.h"
-#include <SofaBaseMechanics/IdentityMapping.inl>
 
 namespace sofa
 {

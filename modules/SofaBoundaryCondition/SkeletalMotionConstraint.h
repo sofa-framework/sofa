@@ -153,8 +153,8 @@ struct SkeletonJoint
         : mParentIndex(-1)
         , mChannels()
         , mTimes()
-        , mNextMotionTime(0)
         , mPreviousMotionTime(0)
+        , mNextMotionTime(0)
     {
 
     }

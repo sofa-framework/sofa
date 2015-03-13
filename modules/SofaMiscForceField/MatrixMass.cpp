@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MASS_MATRIXMASS_CPP
 #include <SofaMiscForceField/MatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Mat.h>
@@ -61,6 +62,7 @@ int MatrixMassClass = core::RegisterObject("Define a specific mass for each part
         .add< MatrixMass<Vec1fTypes,Mat1x1f> >()
 #endif
         ;
+
 #ifndef SOFA_FLOAT
 template class MatrixMass<Vec3dTypes,Mat3x3d>;
 template class MatrixMass<Vec2dTypes,Mat2x2d>;

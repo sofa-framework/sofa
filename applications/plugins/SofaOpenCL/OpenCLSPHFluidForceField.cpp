@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "OpenCLTypes.h"
 #include "OpenCLSPHFluidForceField.inl"
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);

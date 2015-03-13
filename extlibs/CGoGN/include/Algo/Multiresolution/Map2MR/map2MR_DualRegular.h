@@ -50,7 +50,7 @@ namespace Regular
 {
 
 template <typename PFP>
-class Map2MR
+class Map2MR: public MapManipulator
 {
 public:
 	typedef typename PFP::MAP MAP ;
@@ -64,6 +64,8 @@ protected:
 
 public:
 	Map2MR(MAP& map);
+
+	virtual MapManipulator* create(GenericMap *gm);
 
 	~Map2MR();
 

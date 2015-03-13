@@ -93,10 +93,12 @@ public:
     typedef linearsolver::EigenSparseMatrix<TIn,TOut>    SparseMatrixEigen;
     typedef linearsolver::EigenSparseMatrix<In,In>    SparseKMatrixEigen;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
+    typedef defaulttype::Vec<In::spatial_dimensions> Direction;
 
     Data< vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< InVecCoord >       f_targetPositions; ///< positions the distances are measured from
     Data< vector< Real > >   f_restDistances;   ///< rest distance from each position
+    Data< unsigned >         d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     /// Add a target with a desired distance
     void createTarget( unsigned index, const InCoord& position, Real distance);
@@ -136,11 +138,11 @@ protected:
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
-    vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
+    vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
-    void computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b );
+    void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
 };
 
 

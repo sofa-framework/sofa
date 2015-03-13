@@ -167,7 +167,7 @@ static std::string computeExecutablePath()
     if (ret == 0 || ret == MAX_PATH) {
         std::cerr << "Utils::getExecutablePath(): " << GetLastError() << std::endl;
     } else {
-        path = narrowString(std::wstring(&lpFilename[0]));
+        path = Utils::narrowString(std::wstring(&lpFilename[0]));
     }
 
 #elif defined(__APPLE__)

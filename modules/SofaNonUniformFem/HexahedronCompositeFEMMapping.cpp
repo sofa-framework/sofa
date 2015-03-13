@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_HEXAHEDRONCOMPOSITEFEMMAPPING_CPP
 #include <SofaNonUniformFem/HexahedronCompositeFEMMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/core/behavior/MappedModel.h>
@@ -48,46 +49,38 @@ using namespace core::behavior;
 int HexahedronCompositeFEMMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
 #ifndef SOFA_FLOAT
         .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3fTypes > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes    > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes > > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, ExtVec3fTypes > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes    > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes > > >()
 #endif
 //
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< HexahedronCompositeFEMMapping< Mapping<Vec3fTypes, Vec3dTypes > > >()
-        .add< HexahedronCompositeFEMMapping< Mapping<Vec3dTypes, Vec3fTypes > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3dTypes > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3fTypes > > >()
 #endif
 #endif
         ;
 
-
-
 #ifndef SOFA_FLOAT
-template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3fTypes >  >;
-template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes    >  >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, ExtVec3fTypes > >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3dTypes > >;
 #endif
 #ifndef SOFA_DOUBLE
 template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, ExtVec3fTypes > >;
-template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes    > >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes > >;
 #endif
-
-/*
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-	template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, ExtVec3fTypes > >;
-	template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3fTypes    > >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3fTypes, Vec3dTypes > >;
+template class HexahedronCompositeFEMMapping< Mapping< Vec3dTypes, Vec3fTypes > >;
 #endif
 #endif
-*/
-
-
 
 } // namespace mapping
 
 } // namespace component
 
 } // namespace sofa
-

@@ -409,12 +409,16 @@ struct AssemblyVisitor::process_helper {
                     // scoped::timer step("mapping matrix product");
 
                     // TODO optimize this, it is the most costly part
-                    add(Jc, *jc * Jp ); // full mapping
+                    add_prod(Jc, *jc, Jp ); // full mapping
 
                     if( geometricStiffnessJc )
                     {
                         // mapping for geometric stiffness
-                        add( *geometricStiffnessJc, shift_left<mat>( localOffsetParentInMapped, p->size, c->Ktilde->rows() ) * Jp );
+                        add_prod( *geometricStiffnessJc,
+                                  shift_left<mat>( localOffsetParentInMapped,
+                                                   p->size,
+                                                   c->Ktilde->rows() ),
+                                  Jp );
                         localOffsetParentInMapped += p->size;
                     }
                 } else {

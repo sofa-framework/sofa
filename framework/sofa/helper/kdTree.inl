@@ -106,7 +106,7 @@ void kdTree<Coord>::closest(distanceSet &cl,const Coord &x, const unsigned int &
     unsigned int splitdir=tree[currentnode].splitdir;
     Coord pos=positions[currentnode];
     Real c1=x[splitdir],c2=pos[splitdir];
-    if(abs(c1-c2)<=Dmax)
+    if(std::abs(c1-c2)<=Dmax)
     {
         Real d=(x-pos).norm();
         if(d<Dmax)

@@ -118,14 +118,14 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
 
 
     virtual void apply(typename self::out_pos_type& out, 
-					   const vector<typename self::in_pos_type>& in ) {
+                       const vector<typename self::in_pos_type>& /*in*/ ) {
 		
 		// let's be paranoid
 		assert( out.size() == value.getValue().size() );
 		assert( matrix.getValue().size() % value.getValue().size() == 0 );
 		
 		// each out dof
-		unsigned off = 0;
+//		unsigned off = 0;
 		for(unsigned i = 0, n = out.size(); i < n; ++i) {
 			out[i] = value.getValue()[i];
 		}

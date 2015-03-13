@@ -59,17 +59,17 @@ public:
     /**
      * @brief Get the emitter control ID
      */
-    const std::string getControlID(void) const {return m_controlID;};
+    const std::string getControlID(void) const {return m_controlID;}
 
     /**
      * @brief Get the value name
      */
-    const std::string getValueName(void) const {return m_valueName;};
+    const std::string getValueName(void) const {return m_valueName;}
 
     /**
      * @brief Get the value
      */
-    const std::string getValue(void) const {return m_value;};
+    const std::string getValue(void) const {return m_value;}
 
 
     virtual const char* getClassName() const { return "GUIEvent"; }

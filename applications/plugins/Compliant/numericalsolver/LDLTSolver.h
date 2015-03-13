@@ -8,7 +8,7 @@
 
 
 #include "utils/thread_local.h"
-
+#include "SubKKT.h"
 
 namespace sofa {
 namespace component {
@@ -43,22 +43,19 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
   private:
 	
 	struct pimpl_type {
-		typedef SReal real;
-		typedef Eigen::SparseMatrix<real, Eigen::ColMajor> cmat;
-		typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
-		
         typedef Eigen::SimplicialLDLT< cmat >  solver_type;
 
-        solver_type schur;
+        solver_type solver;
         cmat HinvPJT;
-		
+        cmat schur;
 	};
 
-    void factor_schur( const pimpl_type::cmat& schur );
+    void factor_schur( const cmat& schur );
 
 	
     mutable thread_local<pimpl_type> pimpl;
 
+    SubKKT sub;
 };
 
 
