@@ -4,11 +4,7 @@
 #include "KKTSolver.h"
 #include "Response.h"
 
-
-#include <Eigen/SparseLU>
-
-#include "../utils/thread_variable.h"
-
+#include "../utils/scoped.h"
 
 namespace sofa {
 namespace component {
@@ -41,23 +37,13 @@ class SOFA_Compliant_API LUSolver : public KKTSolver {
     Response::SPtr response;
 
   private:
-	
-	struct pimpl_type {
-		typedef SReal real;
-		typedef Eigen::SparseMatrix<real, Eigen::ColMajor> cmat;
-		typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
-		
-        typedef Eigen::SparseLU< cmat > solver_type;
 
-        solver_type schur;
-        cmat HinvPJT;
-		
-	};
+    struct pimpl_type;
+    scoped::ptr<pimpl_type> pimpl;
 
-    void factor_schur( const pimpl_type::cmat& schur );
+    void factor_schur( const cmat& schur );
 
 	
-    mutable thread_variable<pimpl_type> pimpl;
 
 };
 
