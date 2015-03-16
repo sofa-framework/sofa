@@ -95,9 +95,6 @@ public:
     typedef defaulttype::Vec<N, Real> Vector;
     typedef defaulttype::Mat<NOut, NIn, Real> MBloc;
     typedef sofa::component::linearsolver::CompressedRowSparseMatrix<MBloc> MatrixType;
-#ifdef SOFA_HAVE_EIGEN2
-    typedef linearsolver::EigenSparseMatrix<In,Out>    SparseMatrixEigen;
-#endif
 
 
     Data<VecCoord> points;    ///< mapped points in local coordinates
@@ -110,6 +107,8 @@ public:
 
     Data< helper::vector<unsigned int> > rigidIndexPerPoint;
     Data<bool> globalToLocalCoords;
+
+    Data<int> geometricStiffness;
 
     helper::ParticleMask* maskFrom;
     helper::ParticleMask* maskTo;
@@ -142,7 +141,11 @@ public:
 
 #ifdef SOFA_HAVE_EIGEN2
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
+    virtual const defaulttype::BaseMatrix* getK();
 #endif
+
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
@@ -167,13 +170,30 @@ protected:
     bool updateJ;
 
 #ifdef SOFA_HAVE_EIGEN2
+    typedef linearsolver::EigenSparseMatrix<In,Out> SparseMatrixEigen;
     SparseMatrixEigen eigenJacobian;                      ///< Jacobian of the mapping used by getJs
     helper::vector<sofa::defaulttype::BaseMatrix*> eigenJacobians; /// used by getJs
+
+    typedef linearsolver::EigenSparseMatrix<In,In> StiffnessSparseMatrixEigen;
+    StiffnessSparseMatrixEigen geometricStiffnessMatrix;
 #endif
 };
 
 template <int N, class Real>
 struct RigidMappingMatrixHelper;
+
+
+
+#ifndef SOFA_FLOAT
+template<>
+const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::getK();
+#endif
+#ifndef SOFA_DOUBLE
+template<>
+const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::getK();
+#endif
+
+
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_RIGIDMAPPING_CPP)
 #ifndef SOFA_FLOAT
