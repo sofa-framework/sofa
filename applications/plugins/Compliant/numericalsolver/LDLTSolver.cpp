@@ -3,7 +3,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include "../utils/scoped.h"
 #include "../utils/sparse.h"
 
 #include <Eigen/SparseCholesky>
@@ -26,7 +25,7 @@ struct LDLTSolver::pimpl_type {
     typedef Eigen::SimplicialLDLT< cmat >  solver_type;
 
     solver_type solver;
-    cmat HinvPJT;
+    cmat PHinvPJT;
     cmat schur;
 
     SubKKT sub;
@@ -68,7 +67,7 @@ void LDLTSolver::factor_schur( const cmat& schur )
 {
     if( debug.getValue() ){
         typedef AssembledSystem::dmat dmat;
-        serr << "factor, HinvPJT = " << sendl << dmat(pimpl->HinvPJT) << sendl
+        serr << "factor, PHinvPJT = " << sendl << dmat(pimpl->PHinvPJT) << sendl
              << "factor, schur = " << sendl << dmat(schur) << sendl;
     }
 
@@ -83,6 +82,7 @@ void LDLTSolver::factor_schur( const cmat& schur )
     }
 }
 
+// TODO move to PIMPL
 static LDLTSolver::cmat tmp;
 
 void LDLTSolver::factor(const AssembledSystem& sys) {
@@ -97,12 +97,13 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
     if( sys.n ) {
         {
             scoped::timer step("schur assembly");
-            // sub.solve(*response, pimpl->HinvPJT, sys.J.transpose() );
-            pimpl->sub.solve_opt(*response, pimpl->HinvPJT, sys.J );
+            pimpl->sub.solve_opt(*response, pimpl->PHinvPJT, sys.J );
 
+            // TODO hide this somewhere
             tmp = sys.J;
             pimpl->schur = sys.C.transpose();
-            sparse::fast_add_prod(pimpl->schur, tmp, pimpl->HinvPJT);
+            
+            sparse::fast_add_prod(pimpl->schur, tmp, pimpl->PHinvPJT);
             
             // pimpl->schur = sys.C.transpose() + (sys.J * pimpl->HinvPJT).triangularView<Eigen::Lower>();
         }
@@ -121,11 +122,9 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
 
     vec free;
     
-    typedef AssembledSystem::dmat dmat;
 
     if( debug.getValue() ){
         serr << "solve, rhs = " << rhs.transpose() << sendl
-             << "solve, free = " << free.transpose() << sendl
              << "solve, H = " << endl << dmat(sys.H) << sendl;
     }
 
@@ -144,13 +143,13 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
     res.head( sys.m ) = free;
     
     if( sys.n ) {
-        vec tmp = rhs.tail( sys.n ) - pimpl->HinvPJT.transpose() * rhs.head( sys.m );
+        vec tmp = rhs.tail( sys.n ) - pimpl->PHinvPJT.transpose() * rhs.head( sys.m );
         
         // lambdas
         res.tail( sys.n ) = pimpl->solver.solve( tmp );
         
         // constraint forces
-        res.head( sys.m ) += pimpl->HinvPJT * res.tail( sys.n );
+        res.head( sys.m ) += pimpl->PHinvPJT * res.tail( sys.n );
         
         if( debug.getValue() ){
             serr << "solve, free motion constraint error= "
@@ -160,7 +159,7 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
                  << res.tail(sys.n).transpose() << sendl
                 
                  << "solve, constraint forces = "
-                 << (pimpl->HinvPJT * res.tail( sys.n)).transpose() << sendl;
+                 << (pimpl->PHinvPJT * res.tail( sys.n)).transpose() << sendl;
         }
     }
 

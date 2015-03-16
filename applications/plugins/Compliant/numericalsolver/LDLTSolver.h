@@ -1,9 +1,8 @@
-#ifndef LDLTSOLVER_H
-#define LDLTSOLVER_H
+#ifndef COMPLIANT_LDLTSOLVER_H
+#define COMPLIANT_LDLTSOLVER_H
 
 #include "KKTSolver.h"
 #include "Response.h"
-
 
 #include "../utils/scoped.h"
 
