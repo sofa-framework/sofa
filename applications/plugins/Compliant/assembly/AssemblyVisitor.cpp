@@ -561,14 +561,14 @@ static inline void add_ltdl(ResType& res,
 
 enum {
     METHOD_DEFAULT,
-    METHOD_TRIPLETS,
+    METHOD_TRIPLETS,            // triplets seems fastest (for me)
     METHOD_COEFREF,
     METHOD_DENSEMATRIX,
     METHOD_NOMULT
 };
 
 
-template<int Method = METHOD_NOMULT> struct add_shifted;
+template<int Method = METHOD_TRIPLETS> struct add_shifted;
 
 typedef AssembledSystem::mat mat;
 
@@ -579,7 +579,10 @@ template<> struct add_shifted<METHOD_TRIPLETS> {
     mat& result;
     std::vector<Triplet> triplets;
     
-    add_shifted(mat& result):result(result) { }
+    add_shifted(mat& result) : result(result) {
+        triplets.reserve(result.rows());
+    }
+    
     ~add_shifted() {
         result.setFromTriplets( triplets.begin(), triplets.end() );
     }
@@ -590,6 +593,9 @@ template<> struct add_shifted<METHOD_TRIPLETS> {
     }
 
 };
+
+
+
 
 
 template<> struct add_shifted<METHOD_COEFREF> {
@@ -666,7 +672,7 @@ template<> struct add_shifted<METHOD_NOMULT> {
 
 
 // produce actual system assembly
-AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
+void AssemblyVisitor::assemble(system_type& res) const {
 	scoped::timer step("assembly");
 	assert(!chunks.empty() && "need to send a visitor first");
 
@@ -676,8 +682,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
     _processed = process();
 
 	// result system
-    system_type res(_processed->size_m, _processed->size_c);
-
+    res.reset(_processed->size_m, _processed->size_c);
+    
 	res.dt = mparams->dt();
     res.isPIdentity = isPIdentity;
 
@@ -833,7 +839,6 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 	// max: no we don't
     // res.H = res.P.transpose() * res.H * res.P;
 
-	return res;
 }
 
 // TODO redo
