@@ -29,13 +29,19 @@ struct LUSolver::pimpl_type {
     cmat PHinvPJT;
     cmat schur;
 
+    cmat tmp;
+    
     SubKKT sub;
 };
 
 
 
 LUSolver::LUSolver()
-    : pimpl( new pimpl_type ){
+    : pimpl( new pimpl_type ),
+      schur(initData(&schur,
+                     true,
+                     "schur",
+                     "use schur complement")){
 
 }
 
@@ -63,60 +69,91 @@ void LUSolver::init() {
 }
 
 
+void LUSolver::factor(const AssembledSystem& sys) {
 
-void LUSolver::factor_schur( const cmat& schur )
-{
-    if( debug.getValue() ){
-        typedef AssembledSystem::dmat dmat;
-        serr << "factor, PHinvPJT = " << sendl
-             << dmat(pimpl->PHinvPJT) << sendl
-             << "factor, schur = " << sendl << dmat(schur)
-             << sendl;
-    }
-
-    {
-        scoped::timer step("Schur factorization");
-        pimpl->solver.compute( schur );
-    }
-
-    if( pimpl->solver.info() == Eigen::NumericalIssue ){
-        serr << "factor: schur factorization failed." << sendl
-             << schur << sendl;
+    if( schur.getValue() ) {
+        factor_schur( sys );
+    } else {
+        SubKKT::projected_kkt(pimpl->sub, sys);
+        pimpl->sub.factor(*response);
     }
 }
 
+void LUSolver::solve(vec& res,
+                       const AssembledSystem& sys,
+                       const vec& rhs) const {
+    if( schur.getValue() ) {
+        solve_schur(res, sys, rhs);
+    } else {
+        solve_kkt(res, sys, rhs);
+    }
 
-// TODO move to PIMPL
-static LUSolver::cmat tmp;
+}
 
-void LUSolver::factor(const AssembledSystem& sys) {
 
-    // response matrix
-    assert( response );
 
+
+void LUSolver::factor_schur(const AssembledSystem& sys ) {
+    // schur complement
     SubKKT::projected_primal(pimpl->sub, sys);
     pimpl->sub.factor(*response);
 
+    // much cleaner now ;-)
     if( sys.n ) {
         {
             scoped::timer step("schur assembly");
             pimpl->sub.solve_opt(*response, pimpl->PHinvPJT, sys.J );
 
-            // TODO hide this
-            tmp = sys.J;
+            // TODO hide this somewhere
+            pimpl->tmp = sys.J;
             pimpl->schur = sys.C.transpose();
             
-            sparse::fast_add_prod(pimpl->schur, tmp, pimpl->PHinvPJT);
+            sparse::fast_add_prod(pimpl->schur, pimpl->tmp, pimpl->PHinvPJT);
             
             // pimpl->schur = sys.C.transpose() + (sys.J * pimpl->HinvPJT).triangularView<Eigen::Lower>();
         }
-        factor_schur( pimpl->schur );
+        if( debug.getValue() ){
+            typedef AssembledSystem::dmat dmat;
+            serr << "factor, PHinvPJT = " << sendl
+                 << dmat(pimpl->PHinvPJT) << sendl
+                 << "factor, schur = " << sendl << dmat(pimpl->schur)
+                 << sendl;
+        }
+
+        {
+            scoped::timer step("schur factorization (LU)");
+            pimpl->solver.compute( pimpl->schur );
+        }
+
+        if( pimpl->solver.info() == Eigen::NumericalIssue ){
+            serr << "factor: schur factorization failed :-/" << sendl
+                 << pimpl->schur << sendl;
+        }
     }
+}
+
+
+
+void LUSolver::solve_kkt(vec& res,
+                         const AssembledSystem& sys,
+                         const vec& rhs) const {
+    assert( res.size() == sys.size() );
+    assert( rhs.size() == sys.size() );
+
+    vec tmp = vec::Zero(sys.size());
+
+    // flip dual value to agree with symmetric kkt
+    tmp.head(sys.m) = rhs.head(sys.m);
+    if( sys.n ) tmp.tail(sys.n) = -rhs.tail(sys.n);
+
+    pimpl->sub.solve(*response, res, tmp);
     
 }
 
 
-void LUSolver::solve(vec& res,
+
+
+void LUSolver::solve_schur(vec& res,
                      const AssembledSystem& sys,
                      const vec& rhs) const {
 
