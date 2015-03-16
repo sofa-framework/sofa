@@ -34,7 +34,12 @@ struct LDLTSolver::pimpl_type {
 
 
 LDLTSolver::LDLTSolver() 
-    : pimpl( new pimpl_type ) {
+    : pimpl( new pimpl_type ),
+      schur(initData(&schur,
+                     true,
+                     "schur",
+                     "use schur complement"))
+{
     
 }
 
@@ -62,34 +67,12 @@ void LDLTSolver::init() {
 }
 
 
-
-void LDLTSolver::factor_schur( const cmat& schur )
-{
-    if( debug.getValue() ){
-        typedef AssembledSystem::dmat dmat;
-        serr << "factor, PHinvPJT = " << sendl << dmat(pimpl->PHinvPJT) << sendl
-             << "factor, schur = " << sendl << dmat(schur) << sendl;
-    }
-
-    {
-        scoped::timer step("schur factorization");
-        pimpl->solver.compute( schur );
-    }
-
-    if( pimpl->solver.info() == Eigen::NumericalIssue ){
-        serr << "factor: schur is not psd. System solution will be wrong." << sendl
-             << schur << sendl;
-    }
-}
-
 // TODO move to PIMPL
 static LDLTSolver::cmat tmp;
 
-void LDLTSolver::factor(const AssembledSystem& sys) {
+void LDLTSolver::factor_schur( const AssembledSystem& sys ) {
 
-    // response matrix
-    assert( response );
-
+     // schur complement
     SubKKT::projected_primal(pimpl->sub, sys);
     pimpl->sub.factor(*response);
 
@@ -107,21 +90,72 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
             
             // pimpl->schur = sys.C.transpose() + (sys.J * pimpl->HinvPJT).triangularView<Eigen::Lower>();
         }
-        factor_schur( pimpl->schur );
+    
+        if( debug.getValue() ){
+            typedef AssembledSystem::dmat dmat;
+            serr << "factor, PHinvPJT = " << sendl << dmat(pimpl->PHinvPJT) << sendl
+                 << "factor, schur = " << sendl << dmat(pimpl->schur) << sendl;
+        }
+
+        {
+            scoped::timer step("schur factorization");
+            pimpl->solver.compute( pimpl->schur );
+        }
+
+        if( pimpl->solver.info() == Eigen::NumericalIssue ){
+            serr << "factor: schur is not psd. System solution will be wrong." << sendl
+                 << pimpl->schur << sendl;
+        }
+    }
+}
+
+
+void LDLTSolver::factor(const AssembledSystem& sys) {
+
+    if( schur.getValue() ) {
+        factor_schur( sys );
+    } else {
+        SubKKT::projected_kkt(pimpl->sub, sys);
+        pimpl->sub.factor(*response);
+    }
+}
+
+void LDLTSolver::solve(vec& res,
+                       const AssembledSystem& sys,
+                       const vec& rhs) const {
+    if( schur.getValue() ) {
+        solve_schur(res, sys, rhs);
+    } else {
+        solve_kkt(res, sys, rhs);
     }
 
 }
 
 
-void LDLTSolver::solve(AssembledSystem::vec& res,
-                       const AssembledSystem& sys,
-                       const AssembledSystem::vec& rhs) const {
+void LDLTSolver::solve_kkt(vec& res,
+                           const AssembledSystem& sys,
+                           const vec& rhs) const {
+    assert( res.size() == sys.size() );
+    assert( rhs.size() == sys.size() );
+
+    vec tmp = vec::Zero(sys.size());
+
+    // flip dual value to agree with symmetric kkt
+    tmp.head(sys.m) = rhs.head(sys.m);
+    if( sys.n ) tmp.tail(sys.n) = -rhs.tail(sys.n);
+
+    pimpl->sub.solve(*response, res, tmp);
+    
+}
+
+void LDLTSolver::solve_schur(vec& res,
+                             const AssembledSystem& sys,
+                             const vec& rhs) const {
 
     assert( res.size() == sys.size() );
     assert( rhs.size() == sys.size() );
 
     vec free;
-    
 
     if( debug.getValue() ){
         serr << "solve, rhs = " << rhs.transpose() << sendl

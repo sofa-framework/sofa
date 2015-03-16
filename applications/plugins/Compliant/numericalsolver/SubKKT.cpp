@@ -35,9 +35,10 @@ static void projection_basis(rmat& res, const rmat& P, bool* is_identity) {
 }
 
 
-static void filter(rmat& res, const rmat& H, const rmat& P) {
+static void filter_primal(rmat& res, const rmat& H, const rmat& P) {
     res.resize(P.cols(), P.cols());
     res.setZero();
+    res.reserve(H.nonZeros());
     
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
         for(rmat::InnerIterator it(P, i); it; ++it) {
@@ -62,6 +63,61 @@ static void filter(rmat& res, const rmat& H, const rmat& P) {
     res.finalize();
 }
 
+
+static void filter_kkt(rmat& res, const rmat& H, const rmat& P, const rmat& J, const rmat& C) {
+    res.resize(P.cols() + J.rows(), P.cols() + J.rows());
+    res.setZero();
+
+    res.reserve(H.nonZeros() + 2 * J.nonZeros() + C.nonZeros());
+    
+    const rmat JT = J.transpose();
+    
+    for(unsigned i = 0, n = P.rows(); i < n; ++i) {
+        for(rmat::InnerIterator it(P, i); it; ++it) {
+            // we have a non-zero row in P, hence in res at row
+            // it.col()
+            res.startVec(it.col());
+
+            for(rmat::InnerIterator itH(H, i); itH; ++itH) {
+                
+                for(rmat::InnerIterator it2(P, itH.col()); it2; ++it2) {
+                    // we have a non-zero row in P, non-zero col in
+                    // res at col it2.col()
+                    res.insertBack(it.col(), it2.col()) = itH.value();
+                }
+                
+            }
+
+            for(rmat::InnerIterator itJT(JT, i); itJT; ++itJT) {
+                res.insertBack(it.col(), P.cols() + itJT.col()) = -itJT.value();
+            }
+            
+        }
+        
+    }
+
+    for(unsigned i = 0, n = J.rows(); i < n; ++i) {
+        res.startVec(P.cols() + i);
+        
+        for(rmat::InnerIterator itJ(J, i); itJ; ++itJ) {
+            for(rmat::InnerIterator it2(P, itJ.col()); it2; ++it2) {
+                // we have a non-zero row in P, so non-zero col in
+                // res at col it2.col()
+                res.insertBack(P.cols() + i, it2.col()) = -itJ.value();
+            }
+        }
+
+        for(rmat::InnerIterator itC(C, i); itC; ++itC) {
+            res.insertBack(P.cols() + i, P.cols() + itC.col()) = -itC.value();
+        }
+    }
+
+
+    res.finalize();
+}
+
+
+
 void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
     scoped::timer step("subsystem projection");
     
@@ -70,9 +126,28 @@ void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
     projection_basis(res.P, sys.P, &identity);
 
     // TODO optimize
-    filter(res.A, sys.H, res.P);
+    filter_primal(res.A, sys.H, res.P);
 
     res.Q = rmat();
+}
+
+
+void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys) {
+    scoped::timer step("subsystem projection");
+
+    bool identity;
+    projection_basis(res.P, sys.P, &identity);
+
+    if(sys.n) {
+        filter_kkt(res.A, sys.H, res.P, sys.J, sys.C);
+
+        res.Q.resize(sys.n, sys.n);
+        res.Q.setIdentity();
+    } else {
+        filter_primal(res.A, sys.H, res.P);
+        res.Q = rmat();
+    }
+
 }
 
 
@@ -110,7 +185,7 @@ void SubKKT::solve(const Response& resp,
     }
     
     if( Q.cols() ) {
-        res.head(Q.rows()).noalias() = Q * vtmp2.tail(Q.cols());
+        res.tail(Q.rows()).noalias() = Q * vtmp2.tail(Q.cols());
     }
 
 }
