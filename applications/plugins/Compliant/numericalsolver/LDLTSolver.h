@@ -7,7 +7,7 @@
 #include <Eigen/SparseCholesky>
 
 
-#include "utils/thread_local.h"
+#include "utils/thread_variable.h"
 #include "SubKKT.h"
 
 namespace sofa {
@@ -53,7 +53,7 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
     void factor_schur( const cmat& schur );
 
 	
-    mutable thread_local<pimpl_type> pimpl;
+    mutable thread_variable<pimpl_type> pimpl;
 
     SubKKT sub;
 };

@@ -101,7 +101,7 @@ set(HEADER_FILES
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
-    utils/thread_local.h
+    utils/thread_variable.h
 
     utils/cg.h
     utils/preconditionedcg.h

@@ -1,5 +1,5 @@
-#ifndef LUSOLVER_H
-#define LUSOLVER_H
+#ifndef COMPLIANT_LUSOLVER_H
+#define COMPLIANT_LUSOLVER_H
 
 #include "KKTSolver.h"
 #include "Response.h"
@@ -7,7 +7,7 @@
 
 #include <Eigen/SparseLU>
 
-#include "utils/thread_local.h"
+#include "../utils/thread_variable.h"
 
 
 namespace sofa {
@@ -57,7 +57,7 @@ class SOFA_Compliant_API LUSolver : public KKTSolver {
     void factor_schur( const pimpl_type::cmat& schur );
 
 	
-    mutable thread_local<pimpl_type> pimpl;
+    mutable thread_variable<pimpl_type> pimpl;
 
 };
 
