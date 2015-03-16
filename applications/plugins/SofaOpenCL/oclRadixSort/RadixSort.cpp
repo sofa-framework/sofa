@@ -250,8 +250,8 @@ void RadixSort::radixSortBlocksKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_
 
     BARRIER(d_keys,__FILE__,__LINE__);
     unsigned int totalBlocks = numElements/4/CTA_SIZE;
-    size_t globalWorkSize[1] = {CTA_SIZE*totalBlocks};
-    size_t localWorkSize[1] = {CTA_SIZE};
+    size_t globalWorkSize[1] = { (size_t)(CTA_SIZE*totalBlocks)};
+    size_t localWorkSize[1] = {(size_t)CTA_SIZE};
 
     ckRadixSortBlocksKeysOnly->setArg<cl_mem>(0, &d_keys.m);
     ckRadixSortBlocksKeysOnly->setArg<cl_mem>(1, &d_tempKeys.m);
@@ -284,8 +284,8 @@ void RadixSort::findRadixOffsetsOCL(unsigned int startbit, unsigned int numEleme
 
     BARRIER(d_tempKeys,__FILE__,__LINE__);
     unsigned int totalBlocks = numElements/2/CTA_SIZE;
-    size_t globalWorkSize[1] = {CTA_SIZE*totalBlocks};
-    size_t localWorkSize[1] = {CTA_SIZE};
+    size_t globalWorkSize[1] = {(size_t)(CTA_SIZE*totalBlocks)};
+    size_t localWorkSize[1] = {(size_t)CTA_SIZE};
 
     ckFindRadixOffsets->setArg<cl_mem>(0,&d_tempKeys.m);
     ckFindRadixOffsets->setArg<cl_mem>(1,&mCounters.m);
@@ -338,8 +338,8 @@ void RadixSort::reorderDataKeysOnlyOCL(sofa::gpu::opencl::_device_pointer d_keys
 
     BARRIER(d_keys,__FILE__,__LINE__);
     unsigned int totalBlocks = numElements/2/CTA_SIZE;
-    size_t globalWorkSize[1] = {CTA_SIZE*totalBlocks};
-    size_t localWorkSize[1] = {CTA_SIZE};
+    size_t globalWorkSize[1] = {(size_t)(CTA_SIZE*totalBlocks)};
+    size_t localWorkSize[1] = {(size_t)CTA_SIZE};
 
     ckReorderDataKeysOnly->setArg<cl_mem>(0,&d_keys.m);
     ckReorderDataKeysOnly->setArg<cl_mem>(1,&d_tempKeys.m);

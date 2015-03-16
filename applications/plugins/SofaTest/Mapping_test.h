@@ -283,6 +283,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData( dxin, vp );
         dfp.fill( InDeriv() );
         copyToData( fin, dfp );
+        mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( dfp, inDofs->readForces() ); // fp + df due to geometric stiffness
         //        cout<<"dfp = " << dfp << endl;
@@ -410,7 +411,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             K->mult(Kv,vp);
 
             // check that K.vp = dfp
-            if( this->vectorMaxDiff(Kv,dfp)>this->epsilon()*errorMax ){
+            if( this->vectorMaxDiff(Kv,fp12)>this->epsilon()*errorMax ){
                 succeed = false;
                 ADD_FAILURE() << "K test failed" << endl <<
                                  "Kv    = " << Kv << endl <<

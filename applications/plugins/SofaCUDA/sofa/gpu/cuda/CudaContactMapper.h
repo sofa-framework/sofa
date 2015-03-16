@@ -121,13 +121,13 @@ public:
         {
             this->mapping->points.beginEdit()->fastResize(n);
             this->mapping->rotatedPoints.fastResize(n);
-            RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->points.beginEdit()->deviceWrite());
+            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->points.beginEdit()->deviceWrite());
         }
         else
         {
             Data<VecCoord>* d_x = this->outmodel->write(core::VecCoordId::position());
             VecCoord& vx = *d_x->beginEdit();
-            RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), vx.deviceWrite());
+            gpu::cuda::RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), vx.deviceWrite());
             d_x->endEdit();
         }
     }
@@ -161,7 +161,7 @@ public:
             if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
         typename MMapping::IndexArray& map = *this->mapping->f_indices.beginEdit();
         map.fastResize(n);
-        SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, this->model->groupSize.getValue(), outputs->tests.deviceRead(), outputs->results.deviceRead(), map.deviceWrite());
+        gpu::cuda::SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, this->model->groupSize.getValue(), outputs->tests.deviceRead(), outputs->results.deviceRead(), map.deviceWrite());
         this->mapping->f_indices.endEdit();
     }
 };
@@ -193,7 +193,7 @@ public:
             if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
         typename MMapping::IndexArray& map = *this->mapping->f_indices.beginEdit();
         map.fastResize(n);
-        SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, 0, outputs->tests.deviceRead(), outputs->results.deviceRead(), map.deviceWrite());
+        gpu::cuda::SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, 0, outputs->tests.deviceRead(), outputs->results.deviceRead(), map.deviceWrite());
         this->mapping->f_indices.endEdit();
     }
 };

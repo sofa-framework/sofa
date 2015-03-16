@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include "OpenCLTypes.h"
 #include "OpenCLUniformMass.inl"
+#include <sofa/core/behavior/ForceField.inl>
+#include <sofa/core/behavior/Mass.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include "OpenCLProgram.h"

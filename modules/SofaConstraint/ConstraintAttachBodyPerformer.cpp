@@ -44,14 +44,16 @@ namespace component
 namespace collision
 {
 
-//#ifndef SOFA_DOUBLE
-//      template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Vec3fTypes>;
-//      template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>;
-//#endif
-//#ifndef SOFA_FLOAT
-template class SOFA_CONSTRAINT_API  ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
-//      template class SOFA_USER_INTERACTION_API  ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>;
-//#endif
+// #ifndef SOFA_DOUBLE
+// template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3fTypes>;
+// template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Rigid3fTypes>;
+// #endif
+// #ifndef SOFA_FLOAT
+// template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3dTypes>;
+// template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Rigid3dTypes>;
+// #endif
+
+template class SOFA_CONSTRAINT_API ConstraintAttachBodyPerformer<defaulttype::Vec3Types>;
 
 
 //#ifndef SOFA_DOUBLE

@@ -124,7 +124,7 @@ TYPED_TEST_CASE(HexahedronFEMForceField_test, TestTypes);
 TYPED_TEST( HexahedronFEMForceField_test , extension )
 {
     this->errorMax = 10000;
-    this->deltaMax = 10000;
+    this->deltaMax = this->errorMax*100;
     this->debug = false;
 
     // run test

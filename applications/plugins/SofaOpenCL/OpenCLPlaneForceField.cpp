@@ -27,6 +27,7 @@
 #include "OpenCLKernel.h"
 #include "OpenCLPlaneForceField.inl"
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ForceField.inl>
 
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 

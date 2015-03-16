@@ -102,12 +102,14 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_HAUSDORFFDISTANCE_CPP)
 #ifndef SOFA_FLOAT
+extern template class SOFA_ENGINE_API HausdorffDistance<defaulttype::Vec1dTypes>;
 extern template class SOFA_ENGINE_API HausdorffDistance<defaulttype::Vec2dTypes>;
 extern template class SOFA_ENGINE_API HausdorffDistance<defaulttype::Vec3dTypes>;
 extern template class SOFA_ENGINE_API HausdorffDistance<defaulttype::Rigid2dTypes>;
 extern template class SOFA_ENGINE_API HausdorffDistance<defaulttype::Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
+extern template class SOFA_ENGINE_API HausdorffDistance<defaulttype::Vec1fTypes>;
 extern template class SOFA_ENGINE_API HausdorffDistance<defaulttype::Vec2fTypes>;
 extern template class SOFA_ENGINE_API HausdorffDistance<defaulttype::Vec3fTypes>;
 extern template class SOFA_ENGINE_API HausdorffDistance<defaulttype::Rigid2fTypes>;

@@ -4,6 +4,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include "../utils/scoped.h"
+#include "../utils/sparse.h"
 
 using std::cerr;
 using std::endl;
@@ -13,18 +14,12 @@ namespace component {
 namespace linearsolver {
 
 SOFA_DECL_CLASS(LDLTSolver)
-int LDLTSolverClass = core::RegisterObject("Direct LDLT solver").add< LDLTSolver >();
+static int LDLTSolverClass = core::RegisterObject("Direct LDLT solver").add< LDLTSolver >();
 
 typedef AssembledSystem::vec vec;
 
 
-
-
-
-
 LDLTSolver::LDLTSolver() 
-    : KKTSolver()
-    , pimpl()
 {
 
 }
@@ -45,58 +40,58 @@ void LDLTSolver::init() {
     if( !response ) {
         response = new LDLTResponse();
         this->getContext()->addObject( response );
-        std::cout << "LDLTSolver: fallback response class: "
-                  << response->getClassName()
-                  << " added to the scene" << std::endl;
+        
+        serr << "fallback response class: "
+             << response->getClassName()
+             << " added to the scene" << sendl;
     }
 }
 
 
 
-void LDLTSolver::factor_schur( const pimpl_type::cmat& schur )
+void LDLTSolver::factor_schur( const cmat& schur )
 {
     if( debug.getValue() ){
         typedef AssembledSystem::dmat dmat;
-        cerr<< "LDLTSolver::factor, HinvPJT = " << endl << dmat(pimpl->HinvPJT) << endl;
-        cerr<< "LDLTSolver::factor, schur = " << endl << dmat(schur) << endl;
+        serr << "factor, HinvPJT = " << sendl << dmat(pimpl->HinvPJT) << sendl
+             << "factor, schur = " << sendl << dmat(schur) << sendl;
     }
 
     {
-        scoped::timer step("Schur factorization");
-        pimpl->schur.compute( schur.selfadjointView<Eigen::Upper>() );
+        scoped::timer step("schur factorization");
+        pimpl->solver.compute( schur );
     }
 
-    if( pimpl->schur.info() == Eigen::NumericalIssue ){
-        std::cerr << "LDLTSolver::factor: schur is not psd. System solution will be wrong." << std::endl;
-        std::cerr << schur << std::endl;
+    if( pimpl->solver.info() == Eigen::NumericalIssue ){
+        serr << "factor: schur is not psd. System solution will be wrong." << sendl
+             << schur << sendl;
     }
 }
+
+static LDLTSolver::cmat tmp;
 
 void LDLTSolver::factor(const AssembledSystem& sys) {
 
     // response matrix
     assert( response );
 
-    if( !sys.isPIdentity ) // there are projective constraints
-    {
-        response->factor( sys.P.transpose() * sys.H * sys.P, true ); // replace H with P^T.H.P to account for projective constraints
+    SubKKT::projected_primal(sub, sys);
+    sub.factor(*response);
 
-        if( sys.n ) // bilateral constraints
+    // much cleaner now ;-)
+    if( sys.n ) {
         {
-            pimpl_type::cmat PJT = sys.P.transpose() * sys.J.transpose(); //yes, we have to filter J, even if H is filtered already. Otherwise Hinv*JT has large (if not infinite) values on filtered DOFs
-            response->solve( pimpl->HinvPJT, PJT );
-            factor_schur(sys.C.transpose() + (PJT.transpose() * pimpl->HinvPJT ));
-        }
-    }
-    else // no projection
-    {
-        response->factor( sys.H );
+            scoped::timer step("schur assembly");
+            // sub.solve(*response, pimpl->HinvPJT, sys.J.transpose() );
+            sub.solve_opt(*response, pimpl->HinvPJT, sys.J );
 
-        if( sys.n ) // bilateral constraints
-        {
-            response->solve( pimpl->HinvPJT, sys.J.transpose() );
-            factor_schur( sys.C.transpose() + ( sys.J * pimpl->HinvPJT ) );
+            tmp = sys.J;
+            pimpl->schur = sys.C.transpose();
+            sparse::fast_add_prod(pimpl->schur, tmp, pimpl->HinvPJT);
+            
+            // pimpl->schur = sys.C.transpose() + (sys.J * pimpl->HinvPJT).triangularView<Eigen::Lower>();
         }
+        factor_schur( pimpl->schur );
     }
 
 }
@@ -109,41 +104,48 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
     assert( res.size() == sys.size() );
     assert( rhs.size() == sys.size() );
 
-
-    vec Pv = (sys.P * rhs.head(sys.m));
-
+    vec free;
+    
     typedef AssembledSystem::dmat dmat;
 
     if( debug.getValue() ){
-        cerr<<"LDLTSolver::solve, rhs = " << rhs.transpose() << endl;
-        cerr<<"LDLTSolver::solve, Pv = " << Pv.transpose() << endl;
-        cerr<<"LDLTSolver::solve, H = " << endl << dmat(sys.H) << endl;
+        serr << "solve, rhs = " << rhs.transpose() << sendl
+             << "solve, free = " << free.transpose() << sendl
+             << "solve, H = " << endl << dmat(sys.H) << sendl;
     }
 
     // in place solve
-    response->solve( Pv, Pv );
-
+    sub.solve(*response, free, rhs.head(sys.m));
+    
     if( debug.getValue() ){
-        cerr<<"LDLTSolver::solve, free motion solution = " << Pv.transpose() << endl;
-        cerr<<"LDLTSolver::solve, verification = " << (sys.H * Pv).transpose() << endl;
-        cerr<<"LDLTSolver::solve, sys.m = " << sys.m << ", sys.n = " << sys.n << ", rhs.size = " << rhs.size() << endl;
+        serr << "solve, free motion solution = " << free.transpose() << sendl
+            // << "solve, verification = " << (sys.H * free).transpose() << sendl;
+             << "solve, sys.m = " << sys.m
+             << ", sys.n = " << sys.n
+             << ", rhs.size = " << rhs.size() << sendl;
 
     }
-    res.head( sys.m ) = sys.P * Pv;
-
+    
+    res.head( sys.m ) = free;
+    
     if( sys.n ) {
         vec tmp = rhs.tail( sys.n ) - pimpl->HinvPJT.transpose() * rhs.head( sys.m );
-
-
+        
         // lambdas
-        res.tail( sys.n ) = pimpl->schur.solve( tmp );
-
+        res.tail( sys.n ) = pimpl->solver.solve( tmp );
+        
         // constraint forces
-        res.head( sys.m ) += sys.P * (pimpl->HinvPJT * res.tail( sys.n));
+        res.head( sys.m ) += pimpl->HinvPJT * res.tail( sys.n );
+        
         if( debug.getValue() ){
-            cerr<<"LDLTSolver::solve, free motion constraint error= " << -tmp.transpose() << endl;
-            cerr<<"LDLTSolver::solve, lambda = " << res.tail(sys.n).transpose() << endl;
-            cerr<<"LDLTSolver::solve, constraint forces = " << (sys.P * (pimpl->HinvPJT * res.tail( sys.n))).transpose() << endl;
+            serr << "solve, free motion constraint error= "
+                 << -tmp.transpose() << sendl
+                
+                 << "solve, lambda = "
+                 << res.tail(sys.n).transpose() << sendl
+                
+                 << "solve, constraint forces = "
+                 << (pimpl->HinvPJT * res.tail( sys.n)).transpose() << sendl;
         }
     }
 

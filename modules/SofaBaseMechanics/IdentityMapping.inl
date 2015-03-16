@@ -29,8 +29,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/core/Mapping.inl>
-
 
 namespace sofa
 {
@@ -41,132 +39,6 @@ namespace component
 namespace mapping
 {
 
-template<class T1, class T2>
-static inline void eq(T1& dest, const T2& src)
-{
-    dest = src;
-}
-
-template<class T1, class T2>
-static inline void peq(T1& dest, const T2& src)
-{
-    dest += src;
-}
-
-// float <-> double (to remove warnings)
-
-//template<>
-static inline void eq(float& dest, const double& src)
-{
-    dest = (float)src;
-}
-
-//template<>
-static inline void peq(float& dest, const double& src)
-{
-    dest += (float)src;
-}
-
-// Vec <-> Vec
-
-template<int N1, int N2, class T1, class T2>
-static inline void eq(defaulttype::Vec<N1,T1>& dest, const defaulttype::Vec<N2,T2>& src)
-{
-    dest = src;
-}
-
-template<int N1, int N2, class T1, class T2>
-static inline void peq(defaulttype::Vec<N1,T1>& dest, const defaulttype::Vec<N2,T2>& src)
-{
-    for (unsigned int i=0; i<(N1>N2?N2:N1); i++)
-        dest[i] += (T1)src[i];
-}
-
-// RigidDeriv <-> RigidDeriv
-
-template<int N, class T1, class T2>
-static inline void eq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
-{
-    dest.getVCenter() = src.getVCenter();
-    dest.getVOrientation() = (typename defaulttype::RigidDeriv<N,T1>::Rot)src.getVOrientation();
-}
-
-template<int N, class T1, class T2>
-static inline void peq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
-{
-    dest.getVCenter() += src.getVCenter();
-    dest.getVOrientation() += (typename defaulttype::RigidDeriv<N,T1>::Rot)src.getVOrientation();
-}
-
-// RigidCoord <-> RigidCoord
-
-template<int N, class T1, class T2>
-static inline void eq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
-{
-    dest.getCenter() = src.getCenter();
-    dest.getOrientation() = (typename defaulttype::RigidCoord<N,T1>::Rot)src.getOrientation();
-}
-
-template<int N, class T1, class T2>
-static inline void peq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
-{
-    dest.getCenter() += src.getCenter();
-    dest.getOrientation() += src.getOrientation();
-}
-
-// RigidDeriv <-> Vec
-
-template<int N, class T1, class T2>
-static inline void eq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
-{
-    dest = src.getVCenter();
-}
-
-template<int N, class T1, class T2>
-static inline void peq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidDeriv<N,T2>& src)
-{
-    dest += src.getVCenter();
-}
-
-template<int N, class T1, class T2>
-static inline void eq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
-{
-    dest.getVCenter() = src;
-    //dest.getVOrientation() = defaulttype::RigidDeriv<N,T1>::Rot(); //.clear();
-}
-
-template<int N, class T1, class T2>
-static inline void peq(defaulttype::RigidDeriv<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
-{
-    dest.getVCenter() += src;
-}
-
-// RigidCoord <-> Vec
-
-template<int N, class T1, class T2>
-static inline void eq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
-{
-    dest = src.getCenter();
-}
-
-template<int N, class T1, class T2>
-static inline void peq(defaulttype::Vec<N,T1>& dest, const defaulttype::RigidCoord<N,T2>& src)
-{
-    dest += src.getCenter();
-}
-
-template<int N, class T1, class T2>
-static inline void eq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
-{
-    dest.getCenter() = src;
-    //dest.getOrientation() = defaulttype::RigidCoord<N,T1>::Rot(); //.clear();
-}
-
-template<int N, class T1, class T2>
-static inline void peq(defaulttype::RigidCoord<N,T1>& dest, const defaulttype::Vec<N,T2>& src)
-{
-    dest.getCenter() += src;
-}
 
 template<class TIn, class TOut>
 void IdentityMapping<TIn, TOut>::init()
@@ -188,7 +60,7 @@ void IdentityMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*
 
     for(unsigned int i=0; i<out.size(); i++)
     {
-        eq(out[i], in[i]);
+        helper::eq(out[i], in[i]);
     }
 }
 
@@ -204,7 +76,7 @@ void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams
     {
         for(unsigned int i=0; i<out.size(); i++)
         {
-            eq(out[i], in[i]);
+            helper::eq(out[i], in[i]);
         }
     }
     else
@@ -215,7 +87,7 @@ void IdentityMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams
         for (it=indices.begin(); it!=indices.end(); it++)
         {
             const int i=(int)(*it);
-            eq(out[i], in[i]);
+            helper::eq(out[i], in[i]);
         }
     }
 }
@@ -231,7 +103,7 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparam
         maskFrom->setInUse(false);
         for(unsigned int i=0; i<in.size(); i++)
         {
-            peq(out[i], in[i]);
+            helper::peq(out[i], in[i]);
         }
     }
     else
@@ -242,7 +114,7 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparam
         for (it=indices.begin(); it!=indices.end(); it++)
         {
             const int i=(int)(*it);
-            peq(out[i], in[i]);
+            helper::peq(out[i], in[i]);
             maskFrom->insertEntry(i);
         }
     }
@@ -269,7 +141,7 @@ void IdentityMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparam
             while (colIt != colItEnd)
             {
                 InDeriv data;
-                eq(data, colIt.val());
+                helper::eq(data, colIt.val());
 
                 o.addCol(colIt.index(), data);
 

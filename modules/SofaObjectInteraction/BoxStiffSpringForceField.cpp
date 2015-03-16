@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_BOXSTIFFSPRINGFORCEFIELD_CPP
 #include <SofaObjectInteraction/BoxStiffSpringForceField.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
@@ -54,6 +55,7 @@ int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the
         .add< BoxStiffSpringForceField<sofa::defaulttype::Vec6fTypes> >()
 #endif
         ;
+
 #ifndef SOFA_FLOAT
 template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec3dTypes>;
 template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec2dTypes>;
@@ -66,6 +68,7 @@ template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaul
 template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec1fTypes>;
 template class SOFA_OBJECT_INTERACTION_API BoxStiffSpringForceField<sofa::defaulttype::Vec6fTypes>;
 #endif
+
 } // namespace interactionforcefield
 
 } // namespace component

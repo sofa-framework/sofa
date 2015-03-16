@@ -12,6 +12,7 @@ CollapsibleGroupBox {
 
     title: "Data"
     property int priority: 80
+    contentMargin: 0
 
     property Scene scene
     property var sceneComponent: scene && scene.ready ? scene.listModel.getComponentById(scene.listModel.selectedId) : null // TODO: use SceneGraphView.selectedId
@@ -45,13 +46,15 @@ CollapsibleGroupBox {
                 width: parent.width
                 height: childrenRect.height
                 color: "darkgrey"
+                radius: 10
 
                 Text {
                     width: parent.width
                     horizontalAlignment: Text.AlignHCenter
                     text: section
+                    color: "darkblue"
                     font.bold: true
-                    font.pixelSize: 16
+                    font.pixelSize: 14
                 }
             }
 
@@ -64,6 +67,7 @@ CollapsibleGroupBox {
                     visible: data.modified
                     anchors.fill: data
                     color: "lightsteelblue"
+                    radius: 5
                 }
 
                 Data {
@@ -77,8 +81,6 @@ CollapsibleGroupBox {
                     nameLabelWidth: listView.nameLabelImplicitWidth
                     Component.onCompleted: updateNameLabelWidth();
                     onNameLabelImplicitWidthChanged: updateNameLabelWidth();
-
-                    //onModifiedChanged: ; // TODO: update SceneGraphView (component name may have changed)
 
                     function updateNameLabelWidth() {
                         listView.nameLabelImplicitWidth = Math.max(listView.nameLabelImplicitWidth, nameLabelImplicitWidth);

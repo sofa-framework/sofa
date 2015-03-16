@@ -62,6 +62,7 @@ SOFA_LINK_CLASS(PointsFromIndices)
 SOFA_LINK_CLASS(ValuesFromIndices)
 SOFA_LINK_CLASS(IndicesFromValues)
 SOFA_LINK_CLASS(IndexValueMapper)
+SOFA_LINK_CLASS(ROIValueMapper)
 SOFA_LINK_CLASS(JoinPoints)
 SOFA_LINK_CLASS(MapIndices)
 SOFA_LINK_CLASS(RandomPointDistributionInSurface)
@@ -76,6 +77,7 @@ SOFA_LINK_CLASS(NormalsFromPoints)
 SOFA_LINK_CLASS(ClusteringEngine)
 SOFA_LINK_CLASS(ShapeMatching)
 SOFA_LINK_CLASS(ProximityROI)
+SOFA_LINK_CLASS(MeshClosingEngine)
 
 } // namespace component
 

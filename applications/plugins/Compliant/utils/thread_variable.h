@@ -1,12 +1,12 @@
-#ifndef THREAD_LOCAL_H
-#define THREAD_LOCAL_H
+#ifndef COMPLIANT_THREAD_VARIABLE_H
+#define COMPLIANT_THREAD_VARIABLE_H
 
 #if defined(WIN32)
 #include <omp.h>
 #endif
 
 template<class A>
-class thread_local {
+class thread_variable {
 	typedef std::map<int, A*> value_type;
 	value_type value;
 	
@@ -56,7 +56,7 @@ public:
 		value.clear();
 	}
 
-	~thread_local() { clear(); }
+	~thread_variable() { clear(); }
 };
 
 

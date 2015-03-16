@@ -193,9 +193,6 @@ public:
 	void setFaceVertexFunctor(FunctorType* f) { faceVertexFunctor = f ; }
 	void setVolumeVertexFunctor(FunctorType* f) { volumeVertexFunctor = f ; }
 	//@}
-
-	unsigned int subdivideHexa2(Dart d, bool OneLevelDifference = true);
-	void subdivideFace2(Dart d, bool triQuad);
 };
 
 } // namespace Adaptive

@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MISC_EVALPOINTSDISTANCE_CPP
 #include "EvalPointsDistance.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -60,6 +61,7 @@ template class EvalPointsDistance<Rigid3dTypes>;
 template class EvalPointsDistance<Vec3fTypes>;
 template class EvalPointsDistance<Rigid3fTypes>;
 #endif
+
 } // namespace misc
 
 } // namespace component

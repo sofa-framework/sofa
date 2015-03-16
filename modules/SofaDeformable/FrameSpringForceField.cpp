@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_FRAMESPRINGFORCEFIELD_CPP
+#include <SofaDeformable/FrameSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <SofaDeformable/FrameSpringForceField.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 
 

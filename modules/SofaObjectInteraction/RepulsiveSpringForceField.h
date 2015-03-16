@@ -75,6 +75,19 @@ public:
     ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy() const;
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_CPP)
+#ifndef SOFA_FLOAT
+extern template class RepulsiveSpringForceField<defaulttype::Vec3dTypes>;
+extern template class RepulsiveSpringForceField<defaulttype::Vec2dTypes>;
+extern template class RepulsiveSpringForceField<defaulttype::Vec1dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class RepulsiveSpringForceField<defaulttype::Vec3fTypes>;
+extern template class RepulsiveSpringForceField<defaulttype::Vec2fTypes>;
+extern template class RepulsiveSpringForceField<defaulttype::Vec1fTypes>;
+#endif
+#endif
+
 } // namespace interactionforcefield
 
 } // namespace component

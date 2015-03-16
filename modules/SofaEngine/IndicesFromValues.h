@@ -86,19 +86,19 @@ extern template class SOFA_ENGINE_API IndicesFromValues< helper::fixed_array<uns
 extern template class SOFA_ENGINE_API IndicesFromValues<double>;
 extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec2d>;
 extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec3d>;
-extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Coord>;
-extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Deriv>;
-extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Coord>;
-extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Deriv>;
+// extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Coord>;
+// extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2dTypes::Deriv>;
+// extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Coord>;
+// extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3dTypes::Deriv>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 extern template class SOFA_ENGINE_API IndicesFromValues<float>;
 extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec2f>;
 extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Vec3f>;
-extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Coord>;
-extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Deriv>;
-extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Coord>;
-extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Deriv>;
+// extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Coord>;
+// extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid2fTypes::Deriv>;
+// extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Coord>;
+// extern template class SOFA_ENGINE_API IndicesFromValues<defaulttype::Rigid3fTypes::Deriv>;
 #endif //SOFA_DOUBLE
 #endif
 

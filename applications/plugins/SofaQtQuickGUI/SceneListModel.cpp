@@ -57,7 +57,7 @@ void SceneListModel::update()
     myUpdatedCount = myItems.size();
 }
 
-void SceneListModel::handleSceneChange(Scene* newScene)
+void SceneListModel::handleSceneChange(Scene* /*newScene*/)
 {
     clear();
     if(myScene)
@@ -119,7 +119,7 @@ void SceneListModel::setScene(Scene* newScene)
     sceneChanged(newScene);
 }
 
-int	SceneListModel::rowCount(const QModelIndex & parent) const
+int	SceneListModel::rowCount(const QModelIndex & /*parent*/) const
 {
     return myItems.size();
 }

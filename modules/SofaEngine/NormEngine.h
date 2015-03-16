@@ -82,10 +82,10 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3d>;
+extern template class SOFA_ENGINE_API NormEngine<defaulttype::Vec3d>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_ENGINE_API DilateEngine<defaulttype::Vec3f>;
+extern template class SOFA_ENGINE_API NormEngine<defaulttype::Vec3f>;
 #endif
 #endif
 

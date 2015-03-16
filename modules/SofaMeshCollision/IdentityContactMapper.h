@@ -198,6 +198,11 @@ public:
     }
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP)
+extern template class SOFA_MESH_COLLISION_API ContactMapper<SphereModel>;
+extern template class SOFA_MESH_COLLISION_API ContactMapper<PointModel>;
+#endif
+
 } // namespace collision
 
 } // namespace component

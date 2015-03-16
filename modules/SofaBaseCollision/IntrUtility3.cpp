@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COLLISION_INTRUTILITY3_CPP
 #include <SofaBaseCollision/IntrUtility3.inl>
 
 
@@ -29,8 +30,8 @@ template SOFA_BASE_COLLISION_API class CapIntrConfiguration<double>;
 template struct SOFA_BASE_COLLISION_API IntrUtil<float>;
 template struct SOFA_BASE_COLLISION_API IntrUtil<TOBB<Rigid3fTypes> >;
 template class SOFA_BASE_COLLISION_API IntrConfiguration<float>;
-template struct SOFA_BASE_COLLISION_API IntrConfigManager<TOBB<Rigid3fTypes> >;
 template struct SOFA_BASE_COLLISION_API IntrConfigManager<float>;
+template struct SOFA_BASE_COLLISION_API IntrConfigManager<TOBB<Rigid3fTypes> >;
 template class SOFA_BASE_COLLISION_API IntrAxis<TOBB<Rigid3fTypes> >;
 template class SOFA_BASE_COLLISION_API FindContactSet<TOBB<Rigid3fTypes> >;
 template SOFA_BASE_COLLISION_API void ClipConvexPolygonAgainstPlane<float> (const Vec<3,float>&, float,int&, Vec<3,float>*);

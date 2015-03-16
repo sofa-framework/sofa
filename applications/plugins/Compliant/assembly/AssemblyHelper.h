@@ -1,5 +1,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
+#include "../utils/sparse.h"
+
 namespace sofa {
 
 
@@ -41,6 +43,19 @@ static void add(LValue& lval, const RValue& rval) {
     } else {
         // paranoia, i has it
         lval += rval;
+    }
+}
+
+// hopefully avoids a temporary alloc/dealloc for product
+template<class LValue, class LHS, class RHS>
+static void add_prod(LValue& lval, const LHS& lhs, const RHS& rhs) {
+    if( empty(lval) ) {
+        sparse::fast_prod(lval, lhs, rhs);
+        // lval = lhs * rhs;
+    } else {
+        // paranoia, i has it
+        sparse::fast_add_prod(lval, lhs, rhs);
+        // lval = lval + lhs * rhs;
     }
 }
 
@@ -88,11 +103,11 @@ static mat shift_left(unsigned off, unsigned size, unsigned total_rows, SReal va
 template<class Triplet, class mat>
 static void add_shifted_right( std::vector<Triplet>& res, const mat& m, unsigned off, SReal factor = 1.0 )
 {
-    for( int k=0 ; k<m.outerSize() ; ++k )
-        for( typename mat::InnerIterator it(m,k) ; it ; ++it )
-        {
-            res.push_back( Triplet( off+it.row(), off+it.col(), it.value()*factor ) );
+    for( int k = 0, n = m.outerSize(); k < n; ++k ) {
+        for( typename mat::InnerIterator it(m,k) ; it ; ++it ) {
+            res.push_back( Triplet( off + it.row(), off + it.col(), it.value() * factor ) );
         }
+    }
 }
 
 template<class mat>

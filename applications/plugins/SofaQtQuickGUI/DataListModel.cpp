@@ -18,7 +18,7 @@ DataListModel::DataListModel(QObject* parent) : QAbstractListModel(parent),
     myUpdatedCount(0),
     mySceneComponent(0)
 {
-
+    connect(this, &DataListModel::sceneComponentChanged, &DataListModel::update);
 }
 
 DataListModel::~DataListModel()
@@ -36,10 +36,14 @@ void DataListModel::update()
         if(base)
         {
             sofa::helper::vector<BaseData*> dataFields = base->getDataFields();
-            for(int i = 0; i < dataFields.size(); ++i)
+            for(unsigned int i = 0; i < dataFields.size(); ++i)
                 myItems.append(buildDataItem(dataFields[i]));
 
             qStableSort(myItems.begin(), myItems.end(), [](const Item& a, const Item& b) {return QString::compare(a.data->getGroup(), b.data->getGroup()) < 0;});
+        }
+        else
+        {
+            setSceneComponent(0);
         }
     }
 
@@ -68,11 +72,6 @@ void DataListModel::update()
     myUpdatedCount = myItems.size();
 }
 
-void DataListModel::handleSceneComponentChange(SceneComponent* newSceneComponent)
-{
-    update();
-}
-
 DataListModel::Item DataListModel::buildDataItem(BaseData* data) const
 {
     DataListModel::Item item;
@@ -89,12 +88,10 @@ void DataListModel::setSceneComponent(SceneComponent* newSceneComponent)
 
     mySceneComponent = newSceneComponent;
 
-    handleSceneComponentChange(mySceneComponent);
-
     sceneComponentChanged(newSceneComponent);
 }
 
-int	DataListModel::rowCount(const QModelIndex & parent) const
+int	DataListModel::rowCount(const QModelIndex & /*parent*/) const
 {
     return myItems.size();
 }
@@ -110,8 +107,17 @@ QVariant DataListModel::data(const QModelIndex& index, int role) const
     if(index.row() >= myItems.size())
         return QVariant("");
 
+    if(!mySceneComponent->base())
+    {
+        //the base is not valid anymore, neither is its data
+        mySceneComponent = 0;
+        sceneComponentChanged(0);
+
+        return QVariant("");
+    }
+
     const Item& item = myItems[index.row()];
-    BaseData* data = item.data; // TODO: WARNING - not safe ! the data may not exist anymore
+    BaseData* data = item.data;
 
     switch(role)
     {
