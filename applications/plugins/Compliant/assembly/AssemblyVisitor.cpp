@@ -581,7 +581,11 @@ template<> struct add_shifted<METHOD_TRIPLETS> {
     std::vector<Triplet> triplets;
     
     add_shifted(mat& result) : result(result) {
-        triplets.reserve(result.rows());
+        triplets.reserve(result.nonZeros() + result.rows());
+
+        // don't forget to add prior values since we will overwrite
+        // result in the dtor
+        add_shifted_right<Triplet, mat>( triplets, result, 0);
     }
     
     ~add_shifted() {
