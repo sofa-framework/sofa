@@ -39,7 +39,9 @@ struct Assembly_test : public CompliantSolver_test
     {
         simulation::AssemblyVisitor assemblyVisitor(mparams);
         node->getContext()->executeVisitor( &assemblyVisitor );
-        component::linearsolver::AssembledSystem sys = assemblyVisitor.assemble(); // assemble system
+        component::linearsolver::AssembledSystem sys;
+        assemblyVisitor.assemble(sys); // assemble system
+        
         return sys.H;
     }
 

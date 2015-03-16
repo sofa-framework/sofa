@@ -103,11 +103,11 @@ static mat shift_left(unsigned off, unsigned size, unsigned total_rows, SReal va
 template<class Triplet, class mat>
 static void add_shifted_right( std::vector<Triplet>& res, const mat& m, unsigned off, SReal factor = 1.0 )
 {
-    for( int k=0 ; k<m.outerSize() ; ++k )
-        for( typename mat::InnerIterator it(m,k) ; it ; ++it )
-        {
-            res.push_back( Triplet( off+it.row(), off+it.col(), it.value()*factor ) );
+    for( int k = 0, n = m.outerSize(); k < n; ++k ) {
+        for( typename mat::InnerIterator it(m,k) ; it ; ++it ) {
+            res.push_back( Triplet( off + it.row(), off + it.col(), it.value() * factor ) );
         }
+    }
 }
 
 template<class mat>

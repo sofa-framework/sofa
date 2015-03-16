@@ -314,7 +314,7 @@ public:
 	// build assembled system (needs to send visitor first)
 	// if the pp pointer is given, the created process_type structure will be kept (won't be deleted)
 	typedef component::linearsolver::AssembledSystem system_type;
-	system_type assemble() const;
+	void assemble(system_type& ) const;
 	
 private:
 

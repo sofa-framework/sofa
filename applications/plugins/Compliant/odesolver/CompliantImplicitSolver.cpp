@@ -542,7 +542,7 @@ using namespace core::behavior;
         send( *assemblyVisitor );
 
         // assemble system
-        sys = assemblyVisitor->assemble();
+        assemblyVisitor->assemble(sys);
     }
 
     void CompliantImplicitSolver::solve(const core::ExecParams* params,
