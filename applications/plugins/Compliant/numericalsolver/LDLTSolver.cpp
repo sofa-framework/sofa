@@ -6,6 +6,9 @@
 #include "../utils/scoped.h"
 #include "../utils/sparse.h"
 
+#include <Eigen/SparseCholesky>
+#include "SubKKT.h"
+
 using std::cerr;
 using std::endl;
 
@@ -19,13 +22,25 @@ static int LDLTSolverClass = core::RegisterObject("Direct LDLT solver").add< LDL
 typedef AssembledSystem::vec vec;
 
 
-LDLTSolver::LDLTSolver() 
-{
+struct LDLTSolver::pimpl_type {
+    typedef Eigen::SimplicialLDLT< cmat >  solver_type;
 
+    solver_type solver;
+    cmat HinvPJT;
+    cmat schur;
+
+    SubKKT sub;
+};
+
+
+
+LDLTSolver::LDLTSolver() 
+    : pimpl( new pimpl_type ) {
+    
 }
 
 LDLTSolver::~LDLTSolver() {
-
+    
 }
 
 
@@ -75,15 +90,15 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
     // response matrix
     assert( response );
 
-    SubKKT::projected_primal(sub, sys);
-    sub.factor(*response);
+    SubKKT::projected_primal(pimpl->sub, sys);
+    pimpl->sub.factor(*response);
 
     // much cleaner now ;-)
     if( sys.n ) {
         {
             scoped::timer step("schur assembly");
             // sub.solve(*response, pimpl->HinvPJT, sys.J.transpose() );
-            sub.solve_opt(*response, pimpl->HinvPJT, sys.J );
+            pimpl->sub.solve_opt(*response, pimpl->HinvPJT, sys.J );
 
             tmp = sys.J;
             pimpl->schur = sys.C.transpose();
@@ -115,7 +130,7 @@ void LDLTSolver::solve(AssembledSystem::vec& res,
     }
 
     // in place solve
-    sub.solve(*response, free, rhs.head(sys.m));
+    pimpl->sub.solve(*response, free, rhs.head(sys.m));
     
     if( debug.getValue() ){
         serr << "solve, free motion solution = " << free.transpose() << sendl
