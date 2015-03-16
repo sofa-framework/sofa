@@ -350,7 +350,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 
 
 template <class JacobianBlockType1,class JacobianBlockType2>
-void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateK(const OutVecDeriv& /*childForce*/)
+void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
 {
     // TODO IMPLEMENT THIS SUCH AS EVERY BLOCK ARE ADDED AT THE RIGHT PLACE IN THE GLOBAL MATRIX
     // ANYWAY I AM NOT SURE IT CAN BE IMPLEMENTED THIS WAY (WITH INDEPENDANT BLOCKS)
@@ -634,7 +634,6 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyD
 //    {
 //        if(!BlockType1::constant)
 //        {
-//            updateK(childForce.ref());
 //            K.addMult(parentForce1.wref(),parentDisplacementData1.getValue(),mparams->kFactor());
 //        }
 //    }
