@@ -561,14 +561,15 @@ static inline void add_ltdl(ResType& res,
 
 enum {
     METHOD_DEFAULT,
-    METHOD_TRIPLETS,            // triplets seems fastest (for me)
+    METHOD_TRIPLETS,            // triplets seems fastest (for me) but
+                                // might use too much memory
     METHOD_COEFREF,
     METHOD_DENSEMATRIX,
     METHOD_NOMULT
 };
 
 
-template<int Method = METHOD_TRIPLETS> struct add_shifted;
+template<int Method = METHOD_NOMULT> struct add_shifted;
 
 typedef AssembledSystem::mat mat;
 
@@ -659,6 +660,8 @@ template<> struct add_shifted<METHOD_NOMULT> {
     add_shifted(mat& result)
         : result(result) {
 
+        // ideal would be somewhere between n and n^2 (TODO we should add a parameter)
+        result.reserve( result.rows() );
     }
 
     template<class Matrix>
