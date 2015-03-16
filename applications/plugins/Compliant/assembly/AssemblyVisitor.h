@@ -315,7 +315,14 @@ public:
 	// if the pp pointer is given, the created process_type structure will be kept (won't be deleted)
 	typedef component::linearsolver::AssembledSystem system_type;
 	void assemble(system_type& ) const;
-	
+
+
+    system_type assemble() const {
+        system_type res;
+        assemble(res);
+        return res;
+    }
+    
 private:
 
 	// temporaries
