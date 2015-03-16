@@ -28,6 +28,8 @@ struct LDLTSolver::pimpl_type {
     cmat PHinvPJT;
     cmat schur;
 
+    cmat tmp;
+    
     SubKKT sub;
 };
 
@@ -67,49 +69,6 @@ void LDLTSolver::init() {
 }
 
 
-// TODO move to PIMPL
-static LDLTSolver::cmat tmp;
-
-void LDLTSolver::factor_schur( const AssembledSystem& sys ) {
-
-     // schur complement
-    SubKKT::projected_primal(pimpl->sub, sys);
-    pimpl->sub.factor(*response);
-
-    // much cleaner now ;-)
-    if( sys.n ) {
-        {
-            scoped::timer step("schur assembly");
-            pimpl->sub.solve_opt(*response, pimpl->PHinvPJT, sys.J );
-
-            // TODO hide this somewhere
-            tmp = sys.J;
-            pimpl->schur = sys.C.transpose();
-            
-            sparse::fast_add_prod(pimpl->schur, tmp, pimpl->PHinvPJT);
-            
-            // pimpl->schur = sys.C.transpose() + (sys.J * pimpl->HinvPJT).triangularView<Eigen::Lower>();
-        }
-    
-        if( debug.getValue() ){
-            typedef AssembledSystem::dmat dmat;
-            serr << "factor, PHinvPJT = " << sendl << dmat(pimpl->PHinvPJT) << sendl
-                 << "factor, schur = " << sendl << dmat(pimpl->schur) << sendl;
-        }
-
-        {
-            scoped::timer step("schur factorization");
-            pimpl->solver.compute( pimpl->schur );
-        }
-
-        if( pimpl->solver.info() == Eigen::NumericalIssue ){
-            serr << "factor: schur is not psd. System solution will be wrong." << sendl
-                 << pimpl->schur << sendl;
-        }
-    }
-}
-
-
 void LDLTSolver::factor(const AssembledSystem& sys) {
 
     if( schur.getValue() ) {
@@ -130,6 +89,48 @@ void LDLTSolver::solve(vec& res,
     }
 
 }
+
+
+
+void LDLTSolver::factor_schur( const AssembledSystem& sys ) {
+
+    // schur complement
+    SubKKT::projected_primal(pimpl->sub, sys);
+    pimpl->sub.factor(*response);
+
+    // much cleaner now ;-)
+    if( sys.n ) {
+        {
+            scoped::timer step("schur assembly");
+            pimpl->sub.solve_opt(*response, pimpl->PHinvPJT, sys.J );
+
+            // TODO hide this somewhere
+            pimpl->tmp = sys.J;
+            pimpl->schur = sys.C.transpose();
+            
+            sparse::fast_add_prod(pimpl->schur, pimpl->tmp, pimpl->PHinvPJT);
+            
+            // pimpl->schur = sys.C.transpose() + (sys.J * pimpl->HinvPJT).triangularView<Eigen::Lower>();
+        }
+    
+        if( debug.getValue() ){
+            typedef AssembledSystem::dmat dmat;
+            serr << "factor, PHinvPJT = " << sendl << dmat(pimpl->PHinvPJT) << sendl
+                 << "factor, schur = " << sendl << dmat(pimpl->schur) << sendl;
+        }
+
+        {
+            scoped::timer step("schur factorization (LDLT)");
+            pimpl->solver.compute( pimpl->schur );
+        }
+
+        if( pimpl->solver.info() == Eigen::NumericalIssue ){
+            serr << "factor: schur factorization failed :-/ (is schur psd ?)" << sendl
+                 << pimpl->schur << sendl;
+        }
+    }
+}
+
 
 
 void LDLTSolver::solve_kkt(vec& res,
