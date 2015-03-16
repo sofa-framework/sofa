@@ -141,6 +141,8 @@ public:
 
 #ifdef SOFA_HAVE_EIGEN2
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
     virtual const defaulttype::BaseMatrix* getK();
 #endif
 

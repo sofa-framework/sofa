@@ -85,6 +85,8 @@ struct RigidMappingTest : public Mapping_test<_RigidMapping>
 
     RigidMappingTest()
     {
+        this->errorFactorDJ = 200;
+
         rigidMapping = static_cast<RigidMapping*>( this->mapping );
 
         if( InDataTypes::spatial_dimensions != 3 )
