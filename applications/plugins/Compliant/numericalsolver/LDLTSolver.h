@@ -36,13 +36,18 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
     // response matrix
     Response::SPtr response;
 
+    void factor_schur(const AssembledSystem& system);
+    // void factor_kkt(const AssembledSystem& system) const;
+    
+    void solve_schur(vec& x, const AssembledSystem& system, const vec& rhs) const;
+    void solve_kkt(vec& x, const AssembledSystem& system, const vec& rhs) const;
+    
   private:
 
     struct pimpl_type;
     scoped::ptr<pimpl_type> pimpl;
 
-
-    void factor_schur( const cmat& schur );
+    Data<bool> schur;
 
 };
 

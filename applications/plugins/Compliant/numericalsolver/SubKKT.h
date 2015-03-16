@@ -45,6 +45,9 @@ public:
     // empty). size_full = sys.m, size_sub = #(non-empty P elements)
     static void projected_primal(SubKKT& res, const AssembledSystem& sys);
 
+    // full kkt with projected primal variables
+    static void projected_kkt(SubKKT& res, const AssembledSystem& sys);
+    
     // TODO more ctors with non-zero Q
     
 
