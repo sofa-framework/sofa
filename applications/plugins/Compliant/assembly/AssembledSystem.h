@@ -10,6 +10,8 @@
 #include "../constraint/BaseConstraintValue.h"
 #include "../constraint/Constraint.h"
 
+#include "../utils/eigen_types.h"
+
 namespace sofa {
 namespace core {
 namespace behavior {
@@ -29,14 +31,8 @@ namespace linearsolver {
 // especially store JT as a column-major matrix, as we sometimes have
 // to compute Hinv * JT which requires converting back and forth.
 
-class SOFA_Compliant_API AssembledSystem {
+class SOFA_Compliant_API AssembledSystem : public utils::eigen_types {
 public:
-	typedef SReal real;
-	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
-	
-	typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
-	typedef Eigen::SparseMatrix<real, Eigen::ColMajor> cmat;
-    typedef Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic> dmat; ///< dense matrix
 
 	// makes it easier to filter constraint rows
 	typedef rmat mat;
@@ -53,7 +49,9 @@ public:
 	unsigned size() const;
 
 	AssembledSystem(unsigned m = 0, unsigned n = 0);
-				
+
+    void reset(unsigned m, unsigned n);
+    
 	real dt;
 				
     // ode matrix, compliance, mapping and projection

@@ -112,16 +112,16 @@ protected :
 };
 
 
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MISC_MAPPING)
-
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SUBSETMULTIMAPPING_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< sofa::defaulttype::Vec3dTypes, sofa::defaulttype::Vec3dTypes >;
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Rigid3dTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< sofa::defaulttype::Vec3fTypes, sofa::defaulttype::Vec3fTypes >;
-extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Rigid3fTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec3fTypes, defaulttype::Vec3fTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Vec1fTypes, defaulttype::Vec1fTypes >;
+extern template class SOFA_MISC_MAPPING_API SubsetMultiMapping< defaulttype::Rigid3fTypes, defaulttype::Rigid3fTypes >;
 #endif
 #endif
 

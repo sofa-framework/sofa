@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_BEZIERTETRAHEDRONSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/BezierTetrahedronSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -39,11 +38,11 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(BezierTetrahedronSetGeometryAlgorithms)
 int BezierTetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahedron set geometry algorithms")
 #ifdef SOFA_FLOAT
-        .add< BezierTetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >(true) // default template
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
 #else
-        .add< BezierTetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes> >(true) // default template
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
 #ifndef SOFA_DOUBLE
-        .add< BezierTetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes> >() // default template
+        .add< BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes> >() // default template
 #endif
 #endif
 #ifndef SOFA_FLOAT
@@ -57,13 +56,13 @@ int BezierTetrahedronSetGeometryAlgorithmsClass = core::RegisterObject("Tetrahed
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3dTypes>;
+template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec3dTypes>;
 template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec2dTypes>;
 template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec1dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<sofa::defaulttype::Vec3fTypes>;
+template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec3fTypes>;
 template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec2fTypes>;
 template class SOFA_BASE_TOPOLOGY_API BezierTetrahedronSetGeometryAlgorithms<Vec1fTypes>;
 #endif

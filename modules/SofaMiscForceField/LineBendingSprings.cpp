@@ -33,6 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_CPP
 #include <SofaMiscForceField/LineBendingSprings.inl>
 #include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/core/behavior/PairInteractionForceField.inl>
@@ -65,6 +66,7 @@ int LineBendingSpringsClass = core::RegisterObject("Springs added to a polyline 
         .add< LineBendingSprings<Vec2fTypes> >()
 #endif
         ;
+
 #ifndef SOFA_FLOAT
 template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3dTypes>;
 template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2dTypes>;
@@ -73,6 +75,7 @@ template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2dTypes>;
 template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3fTypes>;
 template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2fTypes>;
 #endif
+
 } // namespace interactionforcefield
 
 } // namespace component

@@ -76,8 +76,6 @@ public:
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const NormalsFromPoints<DataTypes>* = NULL) { return DataTypes::Name();    }
 
-protected:
-    sofa::core::behavior::MechanicalState<DataTypes> *mstate;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NormalsFromPoints_CPP)

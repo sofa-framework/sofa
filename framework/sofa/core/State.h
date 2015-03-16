@@ -27,10 +27,8 @@
 
 #include <sofa/core/core.h>
 #include <sofa/core/BaseState.h>
-#include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-//#include <sofa/helper/accessor.h>
 #include <limits>
 
 namespace sofa

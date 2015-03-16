@@ -95,12 +95,14 @@ public:
     typedef Data<OutMatrixDeriv> OutDataMatrixDeriv;
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
+    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
 
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
     Data< vector< Real > > f_restLengths;		///< rest length of each link
     Data< Real >           d_showObjectScale;   ///< drawing size
     Data< defaulttype::Vec4f > d_color;         ///< drawing color
+    Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     virtual void init();
 
@@ -135,6 +137,8 @@ public:
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
@@ -147,11 +151,11 @@ protected:
     SparseMatrixEigen jacobian;                         ///< Jacobian of the mapping
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
     SparseKMatrixEigen K;                               ///< Assembled geometric stiffness matrix
-    vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
+    vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
-    void computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b );
+    void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
 };
 
 
@@ -189,6 +193,7 @@ public:
     enum {Nin = In::deriv_total_size, Nout = Out::deriv_total_size };
     typedef topology::EdgeSetTopologyContainer::SeqEdges SeqEdges;
     typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
+    typedef defaulttype::Vec<In::spatial_dimensions,Real> Direction;
 
 
     Data< bool >		   f_computeDistance;	///< computeDistance = true ---> restDistance = 0
@@ -196,6 +201,7 @@ public:
     Data< Real >           d_showObjectScale;   ///< drawing size
     Data< defaulttype::Vec4f > d_color;         ///< drawing color
     Data< vector<defaulttype::Vec2i> > d_indexPairs;  ///< for each child, its parent and index in parent
+    Data< unsigned >       d_geometricStiffness; ///< how to compute geometric stiffness (0->no GS, 1->exact GS, 2->stabilized GS)
 
     // Append particle of given index within the given model to the subset.
     void addPoint(const core::BaseState* fromModel, int index);
@@ -266,9 +272,12 @@ public:
     virtual void apply(const helper::vector<OutVecCoord*>& outPos, const vecConstInVecCoord& inPos);
     virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, const helper::vector<const  InVecDeriv*>& inDeriv);
     virtual void applyJT(const helper::vector< InVecDeriv*>& outDeriv, const helper::vector<const OutVecDeriv*>& inDeriv);
+    virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) {}
     virtual void applyDJT(const core::MechanicalParams*, core::MultiVecDerivId inForce, core::ConstMultiVecDerivId outForce);
 
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForce );
     virtual const defaulttype::BaseMatrix* getK();
 
     virtual void draw(const core::visual::VisualParams* vparams);
@@ -279,13 +288,13 @@ protected:
 
     topology::EdgeSetTopologyContainer* edgeContainer;  ///< where the edges are defined
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
-    vector<InDeriv> directions;                         ///< Unit vectors in the directions of the lines
+    vector<Direction> directions;                         ///< Unit vectors in the directions of the lines
     vector< Real > invlengths;                          ///< inverse of current distances. Null represents the infinity (null distance)
 
     SparseKMatrixEigen K;
 
     /// r=b-a only for position (eventual rotation, affine transform... remains null)
-    void computeCoordPositionDifference( InDeriv& r, const InCoord& a, const InCoord& b );
+    void computeCoordPositionDifference( Direction& r, const InCoord& a, const InCoord& b );
 
 
 private:

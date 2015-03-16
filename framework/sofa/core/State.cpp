@@ -48,10 +48,12 @@ template class SOFA_CORE_API State<Vec2fTypes>;
 template class SOFA_CORE_API State<Vec1fTypes>;
 template class SOFA_CORE_API State<Vec6fTypes>;
 template class SOFA_CORE_API State<Rigid2fTypes>;
+template class SOFA_CORE_API State<Rigid3fTypes>;
 #endif
 
-template class SOFA_CORE_API State<Rigid3fTypes>;
 template class SOFA_CORE_API State<ExtVec3fTypes>;
+
+
 
 } // namespace core
 

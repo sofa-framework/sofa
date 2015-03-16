@@ -76,7 +76,8 @@ public:
 
 			}while(!found && dit!=d);
 
-			m_map.template setOrbitEmbedding<VERTEX>(dres, m_map.template getEmbedding<VERTEX>(dres));
+//			m_map.template setOrbitEmbedding<VERTEX>(dres, m_map.template getEmbedding<VERTEX>(dres));
+			Algo::Topo::setOrbitEmbedding<VERTEX>(m_map,template getEmbedding<VERTEX>(dres));
 		}
 
 //		SelectorEdgeLevel<typename PFP::MAP> ml(m_map, m_map.getCurrentLevel());

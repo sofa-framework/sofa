@@ -15,13 +15,6 @@
 #include "../utils/find.h"
 
 
-// select the way to perform shifting of local matrix in a larger matrix, default = build a shift matrix and be multiplied with
-#define USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX 0 // more memory and not better
-#define USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX 0 // bof
-#define USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX 0 // very slow
-#define SHIFTING_MATRIX_WITHOUT_MULTIPLICATION 1 // seems a bit faster
-
-
 
 namespace sofa {
 namespace simulation {
@@ -321,7 +314,7 @@ public:
 	// build assembled system (needs to send visitor first)
 	// if the pp pointer is given, the created process_type structure will be kept (won't be deleted)
 	typedef component::linearsolver::AssembledSystem system_type;
-	system_type assemble() const;
+	void assemble(system_type& ) const;
 	
 private:
 
@@ -409,12 +402,16 @@ struct AssemblyVisitor::process_helper {
                     // scoped::timer step("mapping matrix product");
 
                     // TODO optimize this, it is the most costly part
-                    add(Jc, *jc * Jp ); // full mapping
+                    add_prod(Jc, *jc, Jp ); // full mapping
 
                     if( geometricStiffnessJc )
                     {
                         // mapping for geometric stiffness
-                        add( *geometricStiffnessJc, shift_left<mat>( localOffsetParentInMapped, p->size, c->Ktilde->rows() ) * Jp );
+                        add_prod( *geometricStiffnessJc,
+                                  shift_left<mat>( localOffsetParentInMapped,
+                                                   p->size,
+                                                   c->Ktilde->rows() ),
+                                  Jp );
                         localOffsetParentInMapped += p->size;
                     }
                 } else {

@@ -453,10 +453,32 @@ bool Map3<MAP_IMPL>::deleteEdgePreCond(Dart d)
 template <typename MAP_IMPL>
 Dart Map3<MAP_IMPL>::deleteEdge(Dart d)
 {
+
 	assert(deleteEdgePreCond(d));
 
 	if(isBoundaryEdge(d))
 		return NIL ;
+
+//    if((!d.isNil()) && (this->template isOrbitEmbedded<EDGE>())) {
+//        Algo::Topo::unsetOrbitEmbedding<EDGE>(*this, EdgeCell(d));
+//    }
+    //  TODO : hack : improve this
+//    unsigned int oldEdgeEmb = EMBNULL;
+//    if(this->template isOrbitEmbedded<EDGE>()) {
+//        oldEdgeEmb = this->template getEmbedding<EDGE>(d);
+//    }
+//    if( this->template isOrbitEmbedded<EDGE>() ) {
+//        const unsigned int maxEdgeIndex = this->getNbCells(EDGE) -1u;
+//        AttributeContainer& dartAtt = this->getDartContainer();
+//        for (unsigned it = dartAtt.realBegin() ; it != dartAtt.realEnd() ; dartAtt.next(it)) {
+//            Dart dit(it);
+//            if (this->template getEmbedding<EDGE>(dit) == maxEdgeIndex) {
+//                this->getAttributeContainer(EDGE).copyLine(oldEdgeEmb, maxEdgeIndex);
+//                Algo::Topo::setOrbitEmbedding<EDGE>(*this,dit,oldEdgeEmb);
+//                break;
+//            }
+//        }
+//    }
 
 	Dart res = NIL ;
 	Dart dit = d ;
@@ -485,7 +507,6 @@ Dart Map3<MAP_IMPL>::deleteEdge(Dart d)
 	} while(dit != d) ;
 
 	ParentMap::deleteCC(d) ;
-
 	return res ;
 }
 
@@ -887,11 +908,9 @@ template <typename MAP_IMPL>
 unsigned int Map3<MAP_IMPL>::vertexDegree(Dart d) const
 {
 	unsigned int count = 0;
-
-	Traversor3VE<Map3<MAP_IMPL> > trav3VE(*this, d);
+    Traversor3VE<Map3<MAP_IMPL> > trav3VE(*this, d);
 	for(Dart dit = trav3VE.begin() ; dit != trav3VE.end() ; dit = trav3VE.next())
 		++count;
-
 	return count;
 }
 

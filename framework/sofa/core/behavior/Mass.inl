@@ -27,7 +27,6 @@
 
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseConstraint.h>
-#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 

@@ -13,66 +13,34 @@ namespace component {
 namespace linearsolver {
 
 SOFA_DECL_CLASS(BiCgStabSolver)
-int BiCgStabSolverClass = core::RegisterObject("Sparse biCGStab linear solver").add< BiCgStabSolver >();
+static int BiCgStabSolverClass = core::RegisterObject("Sparse biCGStab linear solver").add< BiCgStabSolver >();
 
 BiCgStabSolver::BiCgStabSolver()
 {
 	
 }
 
-// delicious copypasta (see minres) TODO factor this in utils
-void BiCgStabSolver::solve_schur(AssembledSystem::vec& x,
-						   const AssembledSystem& sys,
-						   const AssembledSystem::vec& b,
-						   real damping) const {
 
-	// unconstrained velocity
-	vec tmp(sys.m);
-	response->solve(tmp, b.head(sys.m));
-	x.head( sys.m ) = tmp;
-	
-	if( sys.n ) {
-		
-		::schur<response_type> A(sys, *response, damping);
-		
-		vec rhs = b.tail(sys.n) - sys.J * x.head(sys.m);
-		
-		vec lambda = x.tail(sys.n);
-
-        typedef ::bicgstab<real> solver_type;
-		
-		solver_type::params p = params(rhs);
-		solver_type::solve(lambda, A, rhs, p);
-		
-		// constraint velocity correction
-		response->solve(tmp, sys.J.transpose() * lambda );
-
-		x.head( sys.m ) += tmp;
-		x.tail( sys.n ) = lambda;
-		
-        report("bicgstab (schur)", p );
-	}
-
+void BiCgStabSolver::solve_schur_impl(vec& lambda,
+                                    const schur_type& A,
+                                    const vec& b,
+                                    params_type& p) const{
+    typedef bicgstab<SReal> solver_type;		
+    solver_type::solve(lambda, A, b, p);
 }
 
-// this code could also be factorized with cg/minres code (maybe in KrylovSolver?)
-void BiCgStabSolver::solve_kkt(AssembledSystem::vec& x,
-                         const AssembledSystem& system,
-                         const AssembledSystem::vec& b,
-                         real damping ) const {
 
-    params_type p = params(b);
-
-    vec rhs = b;
-    if( system.n ) rhs.tail(system.n) = -rhs.tail(system.n);
-
-    kkt A(system, false, damping);
-
-    typedef ::bicgstab<real> solver_type;
-    solver_type::solve(x, A, rhs, p);
-
-    report("bicgstab (kkt)", p );
+void BiCgStabSolver::solve_kkt_impl(vec& x,
+                                  const kkt_type& A,
+                                  const vec& b,
+                                  params_type& p) const{
+    typedef bicgstab<real> solver_type;
+	solver_type::solve(x, A, b, p);
 }
+
+
+
+const char* BiCgStabSolver::method() const { return "bicgstab"; }
 
 
 

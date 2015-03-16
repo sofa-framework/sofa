@@ -25,6 +25,7 @@ class SOFA_Compliant_API PreconditionedCgSolver : public CgSolver, public Precon
 	                       const vec& rhs,
 						   real damping) const;
 
+    const char* method() const;
 };
 
 

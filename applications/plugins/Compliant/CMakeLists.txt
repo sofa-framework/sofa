@@ -42,6 +42,7 @@ set(HEADER_FILES
     numericalsolver/LUResponse.h
     numericalsolver/BiCgStabSolver.h
     numericalsolver/NNCGSolver.h
+	numericalsolver/SubKKT.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
@@ -100,7 +101,7 @@ set(HEADER_FILES
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
-    utils/thread_local.h
+    utils/thread_variable.h
 
     utils/cg.h
     utils/preconditionedcg.h
@@ -150,6 +151,7 @@ set(SOURCE_FILES
     numericalsolver/LUResponse.cpp
     numericalsolver/BiCgStabSolver.cpp
     numericalsolver/NNCGSolver.cpp
+	numericalsolver/SubKKT.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp

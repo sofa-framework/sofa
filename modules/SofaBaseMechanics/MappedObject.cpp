@@ -22,11 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP
+#include <SofaBaseMechanics/MappedObject.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <SofaBaseMechanics/MappedObject.inl>
 
 namespace sofa
 {

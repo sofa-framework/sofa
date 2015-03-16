@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_LINEARSOLVER_MinResLinearSolver_INL
 
 #include <SofaBaseLinearSolver/MinResLinearSolver.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>

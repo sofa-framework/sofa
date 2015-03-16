@@ -122,13 +122,14 @@ bool BaseMapping::isMechanical() const
 /// provided implementations for debugging.
 const sofa::defaulttype::BaseMatrix* BaseMapping::getJ(const MechanicalParams* /*mparams*/)
 {
-    serr << "Calling deprecated getJ() method in " << getClassName() << ". Use getJ(const MechanicalParams *) instead." << sendl;
+    serr << "BaseMapping::getJ() NOT IMPLEMENTED BY " << getClassName() << sendl;
+
     return getJ();
 }
 
 const sofa::defaulttype::BaseMatrix* BaseMapping::getJ()
 {
-    serr << "BaseMapping::getJ() NOT IMPLEMENTED BY " << getClassName() << sendl;
+    serr << "Calling deprecated getJ() method in " << getClassName() << ". Use getJ(const MechanicalParams *) instead." << sendl;
     return NULL;
 }
 

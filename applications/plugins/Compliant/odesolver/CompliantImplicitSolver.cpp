@@ -237,6 +237,10 @@ using namespace core::behavior;
             simulation::MechanicalAddComplianceForce lvis( &sop.mparams(), f, lagrange, factor ); // f += fc  with  fc = lambda / dt
             send( lvis );
         }
+
+        // computing mapping geometric stiffnesses based on child force stored in f
+        simulation::MechanicalComputeGeometricStiffness gsvis( &sop.mparams(), f );
+        send( gsvis );
     }
 
 
@@ -538,7 +542,7 @@ using namespace core::behavior;
         send( *assemblyVisitor );
 
         // assemble system
-        sys = assemblyVisitor->assemble();
+        assemblyVisitor->assemble(sys);
     }
 
     void CompliantImplicitSolver::solve(const core::ExecParams* params,

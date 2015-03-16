@@ -181,6 +181,21 @@ protected:
     } vars;
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_INTERACTIONELLIPSOIDFORCEFIELD_CPP)
+#ifndef SOFA_FLOAT
+extern template class InteractionEllipsoidForceField<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class InteractionEllipsoidForceField<defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class InteractionEllipsoidForceField<defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes>;
+extern template class InteractionEllipsoidForceField<defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes>;
+#endif
+#endif
+#endif
+
 } // namespace interactionforcefield
 
 } // namespace component

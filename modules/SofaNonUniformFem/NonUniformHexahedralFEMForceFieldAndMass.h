@@ -209,6 +209,15 @@ protected:
     virtual void computeCorrection( ElementMass& ) {} ///< Limit the conditioning number of each mbkMatrix as defined by maxConditioning (in derived classes).
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_NONUNIFORMHEXAHEDRALFEMFORCEFIELDANDMASS_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedralFEMForceFieldAndMass<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_NON_UNIFORM_FEM_API NonUniformHexahedralFEMForceFieldAndMass<defaulttype::Vec3fTypes>;
+#endif
+#endif
+
 } // namespace forcefield
 
 } // namespace component

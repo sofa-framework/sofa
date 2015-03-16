@@ -27,7 +27,6 @@
 
 #include <SofaVolumetricData/ImplicitSurfaceMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/Mapping.inl>
 #include <sofa/helper/rmath.h>
 #include <map>
 #include <list>

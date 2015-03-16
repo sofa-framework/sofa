@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MISC_DEVANGLECOLLISIONMONITOR_CPP
 #include <SofaValidation/DevAngleCollisionMonitor.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>

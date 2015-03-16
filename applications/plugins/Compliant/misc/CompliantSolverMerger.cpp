@@ -19,6 +19,7 @@ namespace component
 namespace collision
 {
 
+// max: wtf is this ?!
 
     core::behavior::BaseLinearSolver::SPtr createCgSolver(linearsolver::CgSolver& solver1, linearsolver::CgSolver& solver2)
     {

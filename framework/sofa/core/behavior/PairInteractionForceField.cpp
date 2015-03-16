@@ -35,6 +35,7 @@ namespace behavior
 
 using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
+template class SOFA_CORE_API PairInteractionForceField<Vec6dTypes>;
 template class SOFA_CORE_API PairInteractionForceField<Vec3dTypes>;
 template class SOFA_CORE_API PairInteractionForceField<Vec2dTypes>;
 template class SOFA_CORE_API PairInteractionForceField<Vec1dTypes>;
@@ -43,6 +44,7 @@ template class SOFA_CORE_API PairInteractionForceField<Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
+template class SOFA_CORE_API PairInteractionForceField<Vec6fTypes>;
 template class SOFA_CORE_API PairInteractionForceField<Vec3fTypes>;
 template class SOFA_CORE_API PairInteractionForceField<Vec2fTypes>;
 template class SOFA_CORE_API PairInteractionForceField<Vec1fTypes>;

@@ -30,7 +30,6 @@
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/collision/Intersection.inl>
 #include <iostream>
 #include <algorithm>
 
@@ -45,7 +44,6 @@
 #include <vector>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/collision/Intersection.inl>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
