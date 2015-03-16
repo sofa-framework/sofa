@@ -423,7 +423,8 @@ struct AssemblyVisitor::propagation_helper {
 	const core::MechanicalParams* mparams;
 	graph_type& g;
 
-	propagation_helper(const core::MechanicalParams* mparams, graph_type& g) : mparams(mparams), g(g) {}
+	propagation_helper(const core::MechanicalParams* mparams,
+                       graph_type& g) : mparams(mparams), g(g) {}
 
     void operator()( unsigned v ) const {
 
@@ -433,7 +434,8 @@ struct AssemblyVisitor::propagation_helper {
         if( c->mechanical ) {
 
             // have a look to all its parents
-			for(graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
+			for(graph_type::out_edge_range e = boost::out_edges(v, g);
+                e.first != e.second; ++e.first) {
 
 				chunk* p = g[ boost::target(*e.first, g) ].data;
                 p->mechanical = true; // a parent of a mechanical child is necessarily mechanical
@@ -554,7 +556,112 @@ static inline void add_ltdl(ResType& res,
     tmp3 = l.transpose();
     sparse::fast_add_prod(res, tmp3, tmp1);
 }
- 
+
+
+
+template<int Method> struct add_shifted;
+
+enum {
+    METHOD_DEFAULT,
+    METHOD_TRIPLETS,
+    METHOD_COEFREF,
+    METHOD_DENSEMATRIX,
+    METHOD_NOMULT
+};
+
+typedef AssembledSystem::mat mat;
+
+template<> struct add_shifted<METHOD_TRIPLETS> {
+    typedef Eigen::Triplet<SReal> Triplet;
+
+    
+    mat& result;
+    std::vector<Triplet> triplets;
+    
+    add_shifted(mat& result):result(result) { }
+    ~add_shifted() {
+        result.setFromTriplets( triplets.begin(), triplets.end() );
+    }
+
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0)  {
+        add_shifted_right<Triplet, mat>( triplets, chunk, off, factor);
+    }
+
+};
+
+
+template<> struct add_shifted<METHOD_COEFREF> {
+
+    mat& result;
+    add_shifted(mat& result) : result(result) { }
+    
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
+        add_shifted_right<mat>( result, chunk, off, factor );
+    }
+
+};
+
+
+template<> struct add_shifted<METHOD_DENSEMATRIX> {
+
+    typedef Eigen::Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> DenseMat;
+
+    mat& result;
+
+    DenseMat dense;
+    
+    add_shifted(mat& result)
+        : result(result),
+          dense(result.rows(), result.cols()) {
+
+    }
+    
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0)  {
+        add_shifted_right<DenseMat,mat>( dense, chunk, off, factor);
+    }
+
+    ~add_shifted() {
+        convertDenseToSparse( result, dense );
+    }
+
+};
+
+template<> struct add_shifted<METHOD_DEFAULT> {
+    mat& result;
+    add_shifted(mat& result)
+        : result(result) {
+
+    }
+
+    // TODO optimize shift creation
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
+        const mat shift = shift_right<mat>(off, chunk.cols(), result.cols(), factor);
+        result.middleRows(off, chunk.rows()) = result.middleRows(off, chunk.rows()) + chunk * shift;
+    }
+
+};
+
+
+template<> struct add_shifted<METHOD_NOMULT> {
+    mat& result;
+    add_shifted(mat& result)
+        : result(result) {
+
+    }
+
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
+        result.middleRows(off, chunk.rows()) = result.middleRows(off, chunk.rows()) +
+            shifted_matrix( chunk, off, result.cols(), factor);
+    }
+
+};
+
+
 
 // produce actual system assembly
 AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
