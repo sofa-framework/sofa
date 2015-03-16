@@ -198,14 +198,14 @@ public:
         waHisto whisto(this->histo);        whisto->setInput(image.getValue());
         
         // record user values of plane position
-        typename ImagePlaneType::pCoord pc; bool usedefaultplanecoord=true;
-        if(this->plane.isSet()) {  raPlane rplane(this->plane); pc=rplane->getPlane(); usedefaultplanecoord=false; }
+        bool usedefaultplanecoord=true;
+        if(this->plane.isSet())  usedefaultplanecoord=false;
         
         // set plane data
         waPlane wplane(this->plane);        wplane->setInput(image.getValue(),transform.getValue(),visuals);
         
-        // set recorded plane pos
-        if(!usedefaultplanecoord) wplane->setPlane(pc);
+        // set default plane pos
+        if(usedefaultplanecoord) wplane->setPlane(typename ImagePlaneType::pCoord(wplane->getDimensions()[0]/2,wplane->getDimensions()[1]/2,wplane->getDimensions()[2]/2));
         
         // enable vecorvis ?
         if(wplane->getDimensions()[3]<2) vectorVisualization.setDisplayed(false);
@@ -344,7 +344,7 @@ public:
         context->get<VisuModelType>(&visuals,core::objectmodel::BaseContext::SearchRoot);
         wplane->setInput(image.getValue(),transform.getValue(),visuals);
         wplane->setTime( this->getContext()->getTime() );
-        
+
         bool imagedirty=image.isDirty();
         if(imagedirty)
         {
@@ -377,19 +377,19 @@ public:
             {
                 sofa::component::visualmodel::RecordedCamera* currentCamera = root->getNodeObject<sofa::component::visualmodel::RecordedCamera>();
                 if(currentCamera)
-                {	
+                {
                     currentCamera->m_translationPositions.setValue(this->points.getValue());
                 }
             }
         }
 
         if(vectorVisualization.getValue().getShape())
-		{
+        {
             if(wplane->getDimensions()[3] == 3)
                 drawArrows(vparams);
-			if(wplane->getDimensions()[3] == 6)
-				drawEllipsoid();
-		}
+            if(wplane->getDimensions()[3] == 6)
+                drawEllipsoid();
+        }
         glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
         drawCutplanes();
         glPopAttrib();
