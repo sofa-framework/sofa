@@ -223,9 +223,11 @@ public:
         return &baseMatrices;
     }
 
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
+
     virtual const defaulttype::BaseMatrix* getK()
     {
-        updateK(this->toModel->readForces().ref());
         return &K;
     }
 
@@ -316,7 +318,6 @@ protected:
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
-    void updateK(const OutVecDeriv& childForce);
 
     helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 

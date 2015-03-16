@@ -286,7 +286,6 @@ public:
 
         if(this->assemble.getValue())
         {
-            updateK(childForce.ref());
             K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
         }
         else
@@ -321,6 +320,33 @@ public:
             serr<<"Please, with an assembled solver, set assemble=1\n";
         }
         return &baseMatrices;
+    }
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
+    {
+        const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
+
+        unsigned int size = this->fromModel->getSize();
+        K.resizeBlocks(size,size);
+        for(size_t i=0; i<jacobian.size(); i++)
+        {
+//            vector<KBlock> blocks;
+//            vector<unsigned> columns;
+//            columns.push_back( i );
+//            blocks.push_back( jacobian[i].getK(childForce[i]) );
+//            K.appendBlockRow( i, columns, blocks );
+            K.beginBlockRow(i);
+            K.createBlock(i,jacobian[i].getK(childForce[i]));
+            K.endBlockRow();
+        }
+//        K.endEdit();
+        K.compress();
+    }
+
+
+    virtual const defaulttype::BaseMatrix* getK()
+    {
+        return &K;
     }
 
 
@@ -376,29 +402,6 @@ protected:
     }
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
-    void updateK(const OutVecDeriv& childForce)
-    {
-        unsigned int size = this->fromModel->getSize();
-        K.resizeBlocks(size,size);
-        for(size_t i=0; i<jacobian.size(); i++)
-        {
-//            vector<KBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( jacobian[i].getK(childForce[i]) );
-//            K.appendBlockRow( i, columns, blocks );
-            K.beginBlockRow(i);
-            K.createBlock(i,jacobian[i].getK(childForce[i]));
-            K.endBlockRow();
-        }
-//        K.endEdit();
-        K.compress();
-    }
-    virtual const defaulttype::BaseMatrix* getK()
-    {
-        updateK(this->toModel->readForces().ref());
-        return &K;
-    }
 };
 
 

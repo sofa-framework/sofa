@@ -353,8 +353,9 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 
 
 template <class JacobianBlockType>
-void BaseDeformationMappingT<JacobianBlockType>::updateK(const OutVecDeriv& childForce)
+void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
+    const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     K.resizeBlocks(in.size(),in.size());
     vector<KBlock> diagonalBlocks; diagonalBlocks.resize(in.size());
@@ -570,7 +571,6 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
 
     if(this->assemble.getValue())
     {
-        updateK(childForce.ref());
         K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
     }
     else
