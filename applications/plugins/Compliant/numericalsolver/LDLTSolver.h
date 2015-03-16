@@ -4,11 +4,8 @@
 #include "KKTSolver.h"
 #include "Response.h"
 
-#include <Eigen/SparseCholesky>
 
-
-#include "utils/thread_variable.h"
-#include "SubKKT.h"
+#include "../utils/scoped.h"
 
 namespace sofa {
 namespace component {
@@ -41,21 +38,13 @@ class SOFA_Compliant_API LDLTSolver : public KKTSolver {
     Response::SPtr response;
 
   private:
-	
-	struct pimpl_type {
-        typedef Eigen::SimplicialLDLT< cmat >  solver_type;
 
-        solver_type solver;
-        cmat HinvPJT;
-        cmat schur;
-	};
+    struct pimpl_type;
+    scoped::ptr<pimpl_type> pimpl;
+
 
     void factor_schur( const cmat& schur );
 
-	
-    mutable thread_variable<pimpl_type> pimpl;
-
-    SubKKT sub;
 };
 
 
