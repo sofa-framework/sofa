@@ -51,8 +51,10 @@ void SceneListModel::update()
         beginRemoveRows(QModelIndex(), myItems.size(), myUpdatedCount - 1);
         endRemoveRows();
     }
-
-    dataChanged(createIndex(0, 0), createIndex(myItems.size() - 1, 0));
+    else
+    {
+        dataChanged(createIndex(0, 0), createIndex(myItems.size() - 1, 0));
+    }
 
     myUpdatedCount = myItems.size();
 }
