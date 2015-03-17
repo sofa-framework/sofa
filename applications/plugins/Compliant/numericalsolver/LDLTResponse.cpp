@@ -31,6 +31,10 @@ void LDLTResponse::reinit()
 
 void LDLTResponse::factor(const mat& H, bool semidefinite ) {
 
+#ifndef NDEBUG
+    if( !H.rows() ) serr<<"factor - null matrix"<<sendl;
+#endif
+
     if( constant.getValue() && factorized ) return;
 
     factorized = true;
@@ -58,13 +62,11 @@ void LDLTResponse::factor(const mat& H, bool semidefinite ) {
 }
 
 void LDLTResponse::solve(cmat& res, const cmat& M) const {
-	assert( response.rows() );
 	res = response.solve( M );
 }
 
 
 void LDLTResponse::solve(vec& res, const vec& x) const {
-	assert( response.rows() );
 	res = response.solve( x );
 }
 
