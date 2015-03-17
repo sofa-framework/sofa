@@ -548,10 +548,9 @@ static inline const AssemblyVisitor::mat& ltdl(const AssemblyVisitor::mat& l,
 }
 
 
-template<class ResType, class LType, class DType>
-static inline void add_ltdl(ResType& res,
-                            const LType& l,
-                            const DType& d) {
+static inline void add_ltdl(AssemblyVisitor::mat& res,
+                            const AssemblyVisitor::mat& l,
+                            const AssemblyVisitor::mat& d) {
     sparse::fast_prod(tmp1, d, l);
     tmp3 = l.transpose();
     sparse::fast_add_prod(res, tmp3, tmp1);
@@ -724,16 +723,20 @@ void AssemblyVisitor::assemble(system_type& res) const {
         }
         else // multimapping
         {
-//            std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
             // directly add the geometric stiffness to the assembled level
             // by mapping with the specific jacobian from master to the (current-1) level
 
 
+            std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
 
             // full mapping chunk for geometric stiffness
             const mat& geometricStiffnessJc = _processed->fullmappinggeometricstiffness[ graph[ prefix[i] ].dofs ];
-//std::cerr<<geometricStiffnessJc<<std::endl;
-//std::cerr<<c.Ktilde<<std::endl;
+
+
+
+            //std::cerr<<geometricStiffnessJc<<std::endl;
+            std::cerr<<*Ktilde<<std::endl;
+            std::cerr<<Ktilde->nonZeros()<<std::endl;
 
 //            std::cerr<<res.H.rows()<<" "<<geometricStiffnessJc.rows()<<std::endl;
 
