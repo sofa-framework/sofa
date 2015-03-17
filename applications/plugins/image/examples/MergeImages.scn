@@ -11,8 +11,8 @@
       <MeshObjLoader name="mesh1" filename="mesh/sphere.obj" triangulate="1" scale="2 2 2"/>
       <MeshObjLoader name="mesh2" filename="mesh/sphere.obj" triangulate="1"/>
 
-      <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
-      <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="1" insideValue="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="2" insideValue="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
 
       <MergeImages  template="ImageUC" name="merge" nbImages="2" overlap="0" interpolation="0"
                                      image1="@rasterizer1.image" transform1="@rasterizer1.transform"
@@ -27,8 +27,8 @@
       <MeshObjLoader name="mesh1" filename="mesh/sphere.obj" triangulate="1" scale="2 2 2" translation="5 0 0"/>
       <MeshObjLoader name="mesh2" filename="mesh/sphere.obj" triangulate="1" translation="5 0 0"/>
 
-      <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
-      <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="1" insideValue="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="2" insideValue="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
 
       <MergeImages  template="ImageUC" name="merge" nbImages="2" overlap="1" interpolation="0"
                                      image1="@rasterizer1.image" transform1="@rasterizer1.transform"
@@ -43,8 +43,8 @@
       <MeshObjLoader name="mesh1" filename="mesh/sphere.obj" triangulate="1" scale="2 2 2" translation="10 0 0"/>
       <MeshObjLoader name="mesh2" filename="mesh/sphere.obj" triangulate="1" translation="10 0 0"/>
 
-      <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
-      <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="1" insideValue="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="2" insideValue="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
 
       <MergeImages  template="ImageUC" name="merge" nbImages="2" overlap="2" interpolation="0"
                                      image1="@rasterizer1.image" transform1="@rasterizer1.transform"
@@ -59,8 +59,8 @@
       <MeshObjLoader name="mesh1" filename="mesh/sphere.obj" triangulate="1" scale="2 2 2" translation="15 0 0"/>
       <MeshObjLoader name="mesh2" filename="mesh/sphere.obj" triangulate="1" translation="15 0 0"/>
 
-      <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
-      <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="1" insideValue="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="2" insideValue="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
 
       <MergeImages  template="ImageUC" name="merge" nbImages="2" overlap="3" interpolation="0"
                                      image1="@rasterizer1.image" transform1="@rasterizer1.transform"
@@ -75,8 +75,8 @@
       <MeshObjLoader name="mesh1" filename="mesh/sphere.obj" triangulate="1" scale="2 2 2" translation="20 0 0"/>
       <MeshObjLoader name="mesh2" filename="mesh/sphere.obj" triangulate="1" translation="20 0 0"/>
 
-      <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
-      <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="1" insideValue="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="2" insideValue="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
 
       <MergeImages  template="ImageUC" name="merge" nbImages="2" overlap="4" interpolation="0"
                                      image1="@rasterizer1.image" transform1="@rasterizer1.transform"
@@ -91,8 +91,8 @@
       <MeshObjLoader name="mesh1" filename="mesh/sphere.obj" triangulate="1" scale="2 2 2" translation="25 0 0" />
       <MeshObjLoader name="mesh2" filename="mesh/sphere.obj" triangulate="1" translation="25 0 0"/>
 
-      <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
-      <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="1" insideValue="1" name="rasterizer1" src="@mesh1" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
+      <MeshToImageEngine template="ImageUC" value="2" insideValue="2" name="rasterizer2" src="@mesh2" voxelSize="0.1" padSize="2" rotateImage="false" printLog="true"/>
 
       <MergeImages  template="ImageUC" name="merge" nbImages="2" overlap="5" interpolation="0"
                                      image1="@rasterizer1.image" transform1="@rasterizer1.transform"
