@@ -21,6 +21,7 @@ set(HEADER_FILES
     mapping/RigidComMultiMapping.h
     mapping/AffineMultiMapping.h
 	mapping/PythonMultiMapping.h
+    mapping/GearMapping.h
 
     numericalsolver/KKTSolver.h
     numericalsolver/LDLTSolver.h
@@ -132,6 +133,7 @@ set(SOURCE_FILES
     mapping/RigidComMultiMapping.cpp
     mapping/AffineMultiMapping.cpp
 	mapping/PythonMultiMapping.cpp
+    mapping/GearMapping.cpp
 
     numericalsolver/LDLTSolver.cpp
     numericalsolver/MinresSolver.cpp
