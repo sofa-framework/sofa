@@ -167,7 +167,17 @@ public:
 
     virtual void init()
     {
+        // backward compatibility (is InsideValue is not set: use first value)
+        for( size_t meshId=0; meshId<vf_InsideValues.size() ; ++meshId )
+            if(!this->vf_InsideValues[meshId]->isSet())
+            {
+                this->vf_InsideValues[meshId]->setValue(this->vf_values[meshId]->getValue()[0]);
+                serr<<"InsideValue["<<meshId<<"] is not set -> used Value["<<meshId<<"]="<<this->vf_values[meshId]->getValue()[0]<<" instead"<<sendl;
+            }
+
+
         addInput(&f_nbMeshes);
+
         createInputMeshesData();
 
         // HACK to enforce copying linked data so the first read is not done in update(). Because the first read enforces the copy, then tag the data as modified and all update() again.
@@ -351,9 +361,9 @@ protected:
     // regular rasterization like first implementation, with inside filled by the unique value
     void rasterizeAndFill( const unsigned int &meshId, CImg<T>& im, const waTransform& tr )
     {
-        vf_positions[meshId]->cleanDirty();
-        vf_triangles[meshId]->cleanDirty();
-        vf_edges[meshId]->cleanDirty();
+//        vf_positions[meshId]->cleanDirty();
+//        vf_triangles[meshId]->cleanDirty();
+//        vf_edges[meshId]->cleanDirty();
         //        TODO - need this ?
         //        vf_roi[meshId]->cleanDirty();
         //        vf_roiValues[meshId]->cleanDirty();
@@ -446,14 +456,14 @@ protected:
 
 
     /// retrieve input value of vertex 'index' of mesh 'meshId'
-    const ValueType& getValue( const unsigned int &meshId, const unsigned int &index ) const
+    ValueType getValue( const unsigned int &meshId, const unsigned int &index ) const
     {
         if(!this->vf_values[meshId]->getValue().size()) return (ValueType)1.0;
         return ( index<this->vf_values[meshId]->getValue().size() )? this->vf_values[meshId]->getValue()[index] : this->vf_values[meshId]->getValue()[0];
     }
 
     /// retrieve value of roi 'index' of mesh 'meshId'
-    const ValueType& getROIValue( const unsigned int &meshId, const unsigned int &index ) const
+    ValueType getROIValue( const unsigned int &meshId, const unsigned int &index ) const
     {
         if(!this->vf_roiValue[meshId]->getValue().size()) return (ValueType)1.0;
         return ( index<this->vf_roiValue[meshId]->getValue().size() )? this->vf_roiValue[meshId]->getValue()[index] : this->vf_roiValue[meshId]->getValue()[0];
@@ -628,9 +638,10 @@ protected:
             d->setName(name_i);
             d->setReadOnly(readOnly);
             d->setValue(defaultValue);
+            d->unset();
             vf.push_back(d);
             this->addData(d);
-            this->addInput(d);
+            this->addInput(d);            
         }
     }
 
