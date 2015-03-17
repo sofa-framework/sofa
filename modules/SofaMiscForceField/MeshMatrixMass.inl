@@ -1495,9 +1495,9 @@ SReal MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mecha
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-defaulttype::Vec6d MeshMatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+defaulttype::Vector6 MeshMatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return defaulttype::Vec6d();
+    return defaulttype::Vector6();
 }
 
 

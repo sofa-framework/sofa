@@ -391,7 +391,7 @@ void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *re
 }
 
 template <> SOFA_BASE_MECHANICS_API
-Vec6d UniformMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 UniformMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;
@@ -422,7 +422,7 @@ Vec6d UniformMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParam
 }
 
 template <> SOFA_BASE_MECHANICS_API
-Vec6d UniformMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 UniformMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;
@@ -755,7 +755,7 @@ void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *res
 
 
 template <> SOFA_BASE_MECHANICS_API
-Vec6d UniformMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 UniformMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;
@@ -786,7 +786,7 @@ Vec6d UniformMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams
 }
 
 template <> SOFA_BASE_MECHANICS_API
-Vec6d UniformMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 UniformMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;

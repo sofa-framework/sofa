@@ -124,10 +124,10 @@ SReal MatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechanica
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vec6d MatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
+sofa::defaulttype::Vector6 MatrixMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
     serr<<"void MatrixMass<DataTypes, MassType>::getMomentum not yet implemented"<<sendl;
-    return sofa::defaulttype::Vec6d();
+    return sofa::defaulttype::Vector6();
 }
 
 

@@ -111,7 +111,7 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vec6d getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
+    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
 
     /// Add Mass contribution to global Matrix assembling
     //void addMToMatrix(defaulttype::BaseMatrix * mat, SReal mFact, unsigned int &offset);

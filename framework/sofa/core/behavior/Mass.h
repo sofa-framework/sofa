@@ -133,8 +133,8 @@ public:
     ///
     /// This method retrieves the positions and velocity vectors and call the internal
     /// getMomentum(const MechanicalParams*, const VecCoord&, const VecDeriv&) method implemented by the component.
-    virtual defaulttype::Vec6d getMomentum( const MechanicalParams* mparams ) const;
-    virtual defaulttype::Vec6d getMomentum( const MechanicalParams* , const DataVecCoord& , const DataVecDeriv&  ) const;
+    virtual defaulttype::Vector6 getMomentum( const MechanicalParams* mparams ) const;
+    virtual defaulttype::Vector6 getMomentum( const MechanicalParams* , const DataVecCoord& , const DataVecDeriv&  ) const;
 
 
 

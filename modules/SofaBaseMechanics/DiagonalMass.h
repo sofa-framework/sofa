@@ -255,7 +255,7 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vec6d getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
+    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
@@ -302,9 +302,9 @@ void DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::init();
 template <>
 void DiagonalMass<defaulttype::Rigid2dTypes, defaulttype::Rigid2dMass>::draw(const core::visual::VisualParams* vparams);
 template <>
-defaulttype::Vec6d DiagonalMass<defaulttype::Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+defaulttype::Vector6 DiagonalMass<defaulttype::Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 template <>
-defaulttype::Vec6d DiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+defaulttype::Vector6 DiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -325,9 +325,9 @@ void DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::init();
 template <>
 void DiagonalMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::draw(const core::visual::VisualParams* vparams);
 template <>
-defaulttype::Vec6d DiagonalMass<defaulttype::Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+defaulttype::Vector6 DiagonalMass<defaulttype::Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 template <>
-defaulttype::Vec6d DiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
+defaulttype::Vector6 DiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const;
 #endif
 
 

@@ -189,18 +189,18 @@ SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, c
 
 
 template<class DataTypes>
-defaulttype::Vec6d Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
+defaulttype::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
 {
     if (this->mstate)
         return getMomentum(mparams, *mparams->readX(this->mstate), *mparams->readV(this->mstate));
-    return defaulttype::Vec6d();
+    return defaulttype::Vector6();
 }
 
 template<class DataTypes>
-defaulttype::Vec6d Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
+defaulttype::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
 {
     serr << "ERROR("<<getClassName()<<"): getMomentum( const MechanicalParams*, const DataVecCoord&, const DataVecDeriv& ) not implemented." << sendl;
-    return defaulttype::Vec6d();
+    return defaulttype::Vector6();
 }
 
 

@@ -200,7 +200,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualPar
 
 
 template <>
-Vec6d DiagonalMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;
@@ -222,7 +222,7 @@ Vec6d DiagonalMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalPara
 }
 
 template <>
-Vec6d DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;
