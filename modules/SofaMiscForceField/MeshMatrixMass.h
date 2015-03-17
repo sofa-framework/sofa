@@ -216,7 +216,7 @@ public:
 
     SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vec6d getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv))
+    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv))
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 

@@ -20,11 +20,9 @@
 
 #ifndef SOFA_FLOAT
 #include <sofa/component/typedef/Mapping_double.h>
-typedef RigidMappingRigid3d_to_3d RigidMappingRigid3_to_3;
 #endif
 #ifndef SOFA_DOUBLE
 #include <sofa/component/typedef/Mapping_float.h>
-typedef RigidMappingRigid3f_to_3f RigidMappingRigid3_to_3;
 #endif
 
 

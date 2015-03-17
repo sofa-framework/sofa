@@ -373,7 +373,7 @@ SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::Mechani
     SReal e = 0;
     const MassType& m = mass.getValue();
     // gravity
-    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );
@@ -391,10 +391,10 @@ SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::Mechani
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vec6d
+defaulttype::Vector6
 UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return sofa::defaulttype::Vec6d();
+    return defaulttype::Vector6();
 }
 
 /// Add Mass contribution to global Matrix assembling
