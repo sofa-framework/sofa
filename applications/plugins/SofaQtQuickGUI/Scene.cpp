@@ -4,6 +4,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -384,6 +385,15 @@ void Scene::reinitComponent(const QString& path)
         return;
     }
     object->reinit();
+}
+
+void Scene::sendGUIEvent(const QString& controlID, const QString& valueName, const QString& value)
+{
+    if(!mySofaSimulation->GetRoot())
+        return;
+
+    sofa::core::objectmodel::GUIEvent event(controlID.toUtf8().constData(), valueName.toUtf8().constData(), value.toUtf8().constData());
+    mySofaSimulation->GetRoot()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
 }
 
 QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
