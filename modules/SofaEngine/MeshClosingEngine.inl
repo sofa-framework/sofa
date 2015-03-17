@@ -48,7 +48,7 @@ void MeshClosingEngine<DataTypes>::update()
     helper::WriteAccessor<Data< SeqPositions > > opos(this->outputPosition);
     helper::WriteAccessor<Data< SeqTriangles > >  otri(this->outputTriangles);
     helper::WriteAccessor<Data< SeqQuads > > oqd(this->outputQuads);
-    helper::WriteAccessor<Data< SeqIndices > >  oindices(this->indices);
+    helper::WriteAccessor<Data< VecSeqIndex > >  oindices(this->indices);
     helper::WriteAccessor<Data< SeqPositions > > clpos(this->closingPosition);
     helper::WriteAccessor<Data< SeqTriangles > >  cltri(this->closingTriangles);
 
@@ -90,7 +90,7 @@ void MeshClosingEngine<DataTypes>::update()
     for(edgesetit it=edges.begin(); it!=edges.end(); it++)  emap[it->first]=it->second;
 
     typename edgemap::iterator it=emap.begin();
-    std::vector<SeqIndices> loops; loops.resize(1);
+    VecSeqIndex loops; loops.resize(1);
     loops.back().push_back(it->first);
     while(!emap.empty())
     {
@@ -99,7 +99,7 @@ void MeshClosingEngine<DataTypes>::update()
         emap.erase(it);
         if(!emap.empty())
         {
-            if(i==loops.back().front())  loops.push_back(SeqIndices());  //  loop termination
+            if(i==loops.back().front())  loops.push_back(SeqIndex());  //  loop termination
             it=emap.find(i);
             if(it==emap.end())
             {
@@ -115,12 +115,13 @@ void MeshClosingEngine<DataTypes>::update()
     for(size_t i=0; i<loops.size(); i++)
         if(loops[i].size()>2)
         {
+            SeqIndex ind;
             Coord centroid;
             size_t indexCentroid=clpos.size()+loops[i].size()-1;
             for(size_t j=0; j<loops[i].size()-1; j++)
             {
                 PointID posIdx = loops[i][j];
-                oindices.push_back(posIdx);
+                ind.push_back(posIdx);
                 clpos.push_back(pos[posIdx]);
                 centroid+=pos[posIdx];
                 cltri.push_back(Triangle(indexCentroid,clpos.size()-1,j?clpos.size()-2:indexCentroid-1));
@@ -128,8 +129,9 @@ void MeshClosingEngine<DataTypes>::update()
             }
             centroid/=(Real)(loops[i].size()-1);
             clpos.push_back(centroid);
-            oindices.push_back(opos.size());
+            ind.push_back(opos.size());
             opos.push_back(centroid);
+            oindices.push_back(ind);
         }
 }
 
