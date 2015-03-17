@@ -217,7 +217,7 @@ mat convert( const defaulttype::BaseMatrix* m) {
 /// Smart pointer that can point to an existing data without taking ownership
 /// Or that can point to a new temporary Data that must be deleted when this
 /// smart pointer is deleted (taking ownership)
-// maybe an equivalent smart pointer exists in boost but I do not now
+// maybe an equivalent smart pointer exists in boost but I do not know
 template<class T>
 class MySPtr
 {
