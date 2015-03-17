@@ -714,7 +714,7 @@ void MechanicalObject<DataTypes>::reserve(const int size)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyTranslation (const double dx, const double dy, const double dz)
+void MechanicalObject<DataTypes>::applyTranslation (const SReal dx, const SReal dy, const SReal dz)
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(core::VecCoordId::position());
 
@@ -726,7 +726,7 @@ void MechanicalObject<DataTypes>::applyTranslation (const double dx, const doubl
 
 //Apply Rotation from Euler angles (in degree!)
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyRotation (const double rx, const double ry, const double rz)
+void MechanicalObject<DataTypes>::applyRotation (const SReal rx, const SReal ry, const SReal rz)
 {
     sofa::defaulttype::Quaternion q =
             helper::Quater< SReal >::createQuaterFromEuler(sofa::defaulttype::Vec< 3, SReal >(rx, ry, rz) * M_PI / 180.0);
@@ -748,7 +748,7 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyScale(const double sx,const double sy,const double sz)
+void MechanicalObject<DataTypes>::applyScale(const SReal sx,const SReal sy,const SReal sz)
 {
     helper::WriteAccessor< Data<VecCoord> > x_wA = this->writePositions();
 
@@ -1326,7 +1326,7 @@ void MechanicalObject<DataTypes>::readVec(core::VecId v, std::istream &in)
 }
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::compareVec(core::ConstVecId v, std::istream &in)
+SReal MechanicalObject<DataTypes>::compareVec(core::ConstVecId v, std::istream &in)
 {
     std::string ref,cur;
     getline(in, ref);
@@ -1350,7 +1350,7 @@ double MechanicalObject<DataTypes>::compareVec(core::ConstVecId v, std::istream 
 
     cur = out.str();
 
-    double error=0;
+    SReal error=0;
     std::istringstream compare_ref(ref);
     std::istringstream compare_cur(cur);
 
@@ -1791,7 +1791,7 @@ void MechanicalObject<DataTypes>::vInit(const core::ExecParams* params,
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecId v,
                                       core::ConstVecId a,
-                                      core::ConstVecId b, double f)
+                                      core::ConstVecId b, SReal f)
 {
 #ifdef SOFA_SMP
     if (params->execMode() == core::ExecParams::EXEC_KAAPI)
@@ -2300,7 +2300,7 @@ void MechanicalObject<DataTypes>::vThreshold(core::VecId v, SReal t)
 }
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b)
+SReal MechanicalObject<DataTypes>::vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b)
 {
     Real r = 0.0;
 
@@ -2335,7 +2335,7 @@ double MechanicalObject<DataTypes>::vDot(const core::ExecParams* params, core::C
 typedef std::size_t nat;
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l)
+SReal MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l)
 {
     Real r = 0.0;
 
@@ -2367,7 +2367,7 @@ double MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, core::C
 }
 
 template <class DataTypes>
-double MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::ConstVecId a )
+SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::ConstVecId a )
 {
     Real r = 0.0;
 
@@ -3450,7 +3450,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 
 
 template <class DataTypes>
-bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+bool MechanicalObject<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
 {
     // participating to bbox only if it is drawn
     if( !showObject.getValue() ) return false;

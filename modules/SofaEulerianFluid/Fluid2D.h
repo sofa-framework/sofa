@@ -78,7 +78,7 @@ public:
 
     virtual void reset();
 
-    virtual void updatePosition(double dt);
+    virtual void updatePosition(SReal dt);
 
     virtual void draw(const core::visual::VisualParams* vparams);
 

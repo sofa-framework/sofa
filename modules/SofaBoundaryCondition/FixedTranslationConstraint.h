@@ -71,7 +71,7 @@ protected:
 public:
     SetIndex f_indices;
     Data<bool> f_fixAll;
-    Data<double> _drawSize;
+    Data<SReal> _drawSize;
     SetIndex f_coordinates;
 protected:
     FixedTranslationConstraint();

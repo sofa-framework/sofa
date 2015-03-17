@@ -304,9 +304,9 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualPara
 }
 
 template <> SOFA_BASE_MECHANICS_API
-double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
+SReal UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
 {
-    double e = 0;
+    SReal e = 0;
     helper::ReadAccessor< DataVecCoord > x = vx;
     // gravity
     Vec3d g ( this->getContext()->getGravity() );
@@ -319,9 +319,9 @@ double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const core::Me
 
 
 template <> SOFA_BASE_MECHANICS_API
-double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
+SReal UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
 {
-    double e = 0;
+    SReal e = 0;
     helper::ReadAccessor< DataVecCoord > x = vx;
     // gravity
     Vec2d g; g = this->getContext()->getGravity();
@@ -371,7 +371,7 @@ void UniformMass<Vec6dTypes, double>::draw(const core::visual::VisualParams* vpa
 }
 
 template <> SOFA_BASE_MECHANICS_API
-void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, double mFact, unsigned int& offset)
+void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, SReal mFact, unsigned int& offset)
 {
     unsigned int derivDim = Deriv::size();
     double m = mass.getValue();
@@ -667,9 +667,9 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualPara
 }
 
 template <> SOFA_BASE_MECHANICS_API
-double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
+SReal UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
 {
-    double e = 0;
+    SReal e = 0;
     helper::ReadAccessor< DataVecCoord > x = vx;
     // gravity
     Vec3d g ( this->getContext()->getGravity() );
@@ -681,9 +681,9 @@ double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const core::Me
 }
 
 template <> SOFA_BASE_MECHANICS_API
-double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx) const
+SReal UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx) const
 {
-    double e = 0;
+    SReal e = 0;
     helper::ReadAccessor< DataVecCoord > x = vx;
     // gravity
     Vec2d g; g = this->getContext()->getGravity();

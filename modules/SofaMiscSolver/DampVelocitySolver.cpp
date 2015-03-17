@@ -57,7 +57,7 @@ DampVelocitySolver::DampVelocitySolver()
     , threshold( initData( &threshold, 0.0, "threshold", "Threshold under which the velocities are canceled.") )
 {}
 
-void DampVelocitySolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)
+void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     //sofa::simulation::common::MechanicalOperations mop( this->getContext() );

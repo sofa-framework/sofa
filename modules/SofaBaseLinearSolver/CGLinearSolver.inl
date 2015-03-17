@@ -50,8 +50,8 @@ namespace linearsolver
 template<class TMatrix, class TVector>
 CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
-    , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-    , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
+    , f_tolerance( initData(&f_tolerance,(SReal)1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
+    , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,(SReal)1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
     , f_warmStart( initData(&f_warmStart,false,"warmStart","Use previous solution as initial solution") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
@@ -59,7 +59,7 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     f_graph.setWidget("graph");
 //    f_graph.setReadOnly(true);
 #ifdef DISPLAY_TIME
-    timeStamp = 1.0 / (double)sofa::helper::system::thread::CTime::getRefTicksPerSec();
+    timeStamp = 1.0 / (SReal)sofa::helper::system::thread::CTime::getRefTicksPerSec();
 #endif
 
 	f_maxIter.setRequired(true);
@@ -81,13 +81,13 @@ void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::Mecha
 {
 #ifdef DISPLAY_TIME
     sofa::helper::system::thread::CTime timer;
-    time2 = (double) timer.getTime();
+    time2 = (SReal) timer.getTime();
 #endif
 
     Inherit::setSystemMBKMatrix(mparams);
 
 #ifdef DISPLAY_TIME
-    time2 = ((double) timer.getTime() - time2)  * timeStamp;
+    time2 = ((SReal) timer.getTime() - time2)  * timeStamp;
 #endif
 }
 
@@ -129,10 +129,10 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     }
 
     double normb = b.norm();
-    std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
-    sofa::helper::vector<double>& graph_error = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Error") : std::string("Error")];
+    std::map < std::string, sofa::helper::vector<SReal> >& graph = *f_graph.beginEdit();
+    sofa::helper::vector<SReal>& graph_error = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Error") : std::string("Error")];
     graph_error.clear();
-    sofa::helper::vector<double>& graph_den = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Denominator") : std::string("Denominator")];
+    sofa::helper::vector<SReal>& graph_den = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Denominator") : std::string("Denominator")];
     graph_den.clear();
     graph_error.push_back(1);
     unsigned nb_iter;
@@ -140,7 +140,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
 #ifdef DISPLAY_TIME
     sofa::helper::system::thread::CTime timer;
-    time1 = (double) timer.getTime();
+    time1 = (SReal) timer.getTime();
 #endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -237,7 +237,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     }
 
 #ifdef DISPLAY_TIME
-    time1 = (double)(((double) timer.getTime() - time1) * timeStamp / (nb_iter-1));
+    time1 = (SReal)(((SReal) timer.getTime() - time1) * timeStamp / (nb_iter-1));
 #endif
 
     f_graph.endEdit();
@@ -262,14 +262,14 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 }
 
 template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, double beta)
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_beta(const core::ExecParams* /*params*/, Vector& p, Vector& r, SReal beta)
 {
     p *= beta;
     p += r; //z;
 }
 
 template<class TMatrix, class TVector>
-inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/, Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
+inline void CGLinearSolver<TMatrix,TVector>::cgstep_alpha(const core::ExecParams* /*params*/, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha)
 {
     x.peq(p,alpha);                 // x = x + alpha p
     r.peq(q,-alpha);                // r = r - alpha q

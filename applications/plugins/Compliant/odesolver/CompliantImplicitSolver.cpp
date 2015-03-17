@@ -546,7 +546,7 @@ using namespace core::behavior;
     }
 
     void CompliantImplicitSolver::solve(const core::ExecParams* params,
-                                double dt,
+                                SReal dt,
                                 core::MultiVecCoordId posId,
                                 core::MultiVecDerivId velId) {
 

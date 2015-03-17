@@ -75,13 +75,13 @@ public:
     virtual void reinit( );
 
     virtual void computeElementMasses( ); ///< compute the mass matrices
-    virtual void computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor=1.0); ///< compute the mass matrix of an element
+    virtual void computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, SReal stiffnessFactor=1.0); ///< compute the mass matrix of an element
     Real integrateMass( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
 
     virtual std::string getTemplateName() const;
 
     // -- Mass interface
-    virtual  void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
+    virtual  void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
     virtual void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
@@ -94,24 +94,23 @@ public:
 
     virtual  void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    virtual double getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& /*v*/ ) const  ///< vMv/2 using dof->getV()
+    virtual SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& /*v*/ ) const  ///< vMv/2 using dof->getV()
     {
         serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl;
         return 0;
     }
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
-    // virtual void addDForce(DataVecDeriv& df, const DataVecDeriv& dx, double kFactor, double);
 
     virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
-    double getElementMass(unsigned int index);
+    SReal getElementMass(unsigned int index);
     // visual model
 
     virtual void draw(const core::visual::VisualParams* vparams);

@@ -1223,7 +1223,7 @@ void MeshMatrixMass<DataTypes, MassType>::clear()
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, double factor)
+void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, SReal factor)
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();
@@ -1231,7 +1231,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
     helper::WriteAccessor< DataVecDeriv > res = vres;
     helper::ReadAccessor< DataVecDeriv > dx = vdx;
 
-    double massTotal = 0.0;
+    SReal massTotal = 0.0;
 
     //using a lumped matrix (default)-----
     if(this->lumping.getValue())
@@ -1410,7 +1410,7 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(const core::MechanicalParams*
 
 
 template <class DataTypes, class MassType>
-double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& vv ) const
+SReal MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& vv ) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();
@@ -1420,7 +1420,7 @@ double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::Mechan
     unsigned int nbEdges=_topology->getNbEdges();
     unsigned int v0,v1;
 
-    double e = 0;
+    SReal e = 0;
 
     for (unsigned int i=0; i<v.size(); i++)
     {
@@ -1474,7 +1474,7 @@ double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const core::Mechan
 
 
 template <class DataTypes, class MassType>
-double MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx) const
+SReal MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
 
@@ -1546,7 +1546,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
         mat->resize(_topology->getNbPoints()*N,_topology->getNbPoints()*N);
     }
 
-    double massTotal=0.0;
+    SReal massTotal=0.0;
 
     if(this->lumping.getValue())
     {
@@ -1645,10 +1645,10 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 
 
 template <class DataTypes, class MassType>
-double MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) const
+SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
-    double mass = vertexMass[index] * massLumpingCoeff;
+    SReal mass = vertexMass[index] * massLumpingCoeff;
 
     return mass;
 }

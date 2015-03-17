@@ -41,9 +41,9 @@ using namespace sofa::defaulttype;
 
 #ifndef SOFA_FLOAT
 template <>
-double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+SReal DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
-    double e = 0;
+    SReal e = 0;
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
@@ -59,9 +59,9 @@ double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const core::
 }
 
 template <>
-double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+SReal DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
-    double e = 0;
+    SReal e = 0;
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
@@ -247,9 +247,9 @@ Vec6d DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::Mechanic
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+SReal DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
-    double e = 0;
+    SReal e = 0;
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
@@ -265,9 +265,9 @@ double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const core::
 }
 
 template <>
-double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+SReal DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
-    double e = 0;
+    SReal e = 0;
 
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();

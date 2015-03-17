@@ -153,9 +153,9 @@ public:
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using Inherit::getPotentialEnergy;
-    virtual double getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const;
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/);
 
     SReal getStiffness() const { return ks.getValue(); }
     SReal getDamping() const { return kd.getValue(); }
@@ -212,7 +212,7 @@ public:
     virtual void initGnuplot(const std::string path);
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(double time);
+    virtual void exportGnuplot(SReal time);
 
     protected:
     /// stream to export Potential Energy to gnuplot files

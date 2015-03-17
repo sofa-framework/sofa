@@ -139,15 +139,15 @@ public:
 
 
     // -- Mass interface
-    void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
+    void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    double getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
+    SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
 
-    double getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
@@ -185,7 +185,7 @@ protected:
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunctiond,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
 //extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3dTypes,core::behavior::ShapeFunctiond,defaulttype::Rigid3dMass>; // rigid frame
 #endif
-#ifndef SOFA_DOUBLE
+#ifndef SOFA_SReal
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunctionf,defaulttype::Mat3x3f>;
 //extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3fTypes,core::behavior::ShapeFunctionf,defaulttype::Rigid3fMass>; // rigid frame
 #endif

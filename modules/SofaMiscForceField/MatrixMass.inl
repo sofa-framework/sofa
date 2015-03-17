@@ -81,7 +81,7 @@ void MatrixMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void MatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, DataVecDeriv& res, const DataVecDeriv& dx, double factor)
+void MatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, DataVecDeriv& res, const DataVecDeriv& dx, SReal factor)
 {
     const VecMass &masses= *_usedMassMatrices;
 
@@ -109,14 +109,14 @@ void MatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*, Da
 }
 
 template <class DataTypes, class MassType>
-double MatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& ) const
+SReal MatrixMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& ) const
 {
     serr<<"void MatrixMass<DataTypes, MassType>::getKineticEnergy not yet implemented"<<sendl;
     return 0;
 }
 
 template <class DataTypes, class MassType>
-double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& ) const
+SReal MatrixMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& ) const
 {
     serr<<"void MatrixMass<DataTypes, MassType>::getPotentialEnergy not yet implemented"<<sendl;
     return 0;
@@ -227,7 +227,7 @@ void MatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams 
 
 
 template <class DataTypes, class MassType>
-double MatrixMass<DataTypes, MassType>::getElementMass(unsigned int /*index*/) const
+SReal MatrixMass<DataTypes, MassType>::getElementMass(unsigned int /*index*/) const
 {
     //NOT IMPLEMENTED YET
     return (sofa::defaulttype::Vector3::value_type)(_defaultValue.getValue());

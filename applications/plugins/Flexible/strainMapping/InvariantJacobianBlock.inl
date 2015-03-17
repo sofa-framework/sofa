@@ -232,7 +232,7 @@ public:
         K=dd1*childForce.getStrain()[0]+dd2*childForce.getStrain()[1]+ddJ*childForce.getStrain()[2];
         return K;
     }
-    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         Hessian H=dd1*childForce.getStrain()[0]+dd2*childForce.getStrain()[1]+ddJ*childForce.getStrain()[2];
         const Vec<frame_size,Real>& vdx = *reinterpret_cast<const Vec<frame_size,Real>*>(&dx.getF()[0][0]);
@@ -358,7 +358,7 @@ public:
 //        KBlock K = KBlock();
 //        return K;
 //    }
-//    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+//    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
 //    {
 //    }
 //};

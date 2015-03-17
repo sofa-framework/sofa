@@ -294,7 +294,7 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 
 extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 {
-    Vector3 pos;
+    Vec3d pos;
     Quat orient;
 
 

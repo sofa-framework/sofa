@@ -589,7 +589,7 @@ void QuadularBendingSprings<DataTypes>::init()
 }
 
 template <class DataTypes>
-double QuadularBendingSprings<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
+SReal QuadularBendingSprings<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
 {
     serr<<"getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

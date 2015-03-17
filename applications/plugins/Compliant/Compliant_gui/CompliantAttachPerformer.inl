@@ -209,7 +209,7 @@ void CompliantAttachPerformer<DataTypes>::start()
 
 
     // set target point to closest point on the ray
-    double distanceFromMouse=picked.rayLength;
+    SReal distanceFromMouse=picked.rayLength;
     Ray ray = this->interactor->getMouseRayModel()->getRay(0);
     defaulttype::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
 //    ray.setOrigin(pointOnRay);

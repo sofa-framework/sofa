@@ -99,13 +99,13 @@ public:
     /// @{
 
     /// Project the compliance Matrix to constrained space.
-    virtual void projectResponse(const MechanicalParams* /*mparams*/, double **) {};
+    virtual void projectResponse(const MechanicalParams* /*mparams*/, double **) {}
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/, const behavior::MultiMatrixAccessor* /*matrix*/) {};
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {};
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
 
     /** Project the the given matrix (Experimental API).
       Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method. Contrary to applyConstraint(), the diagonal blocks of the result are not reset to the identity.

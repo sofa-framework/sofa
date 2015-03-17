@@ -92,7 +92,7 @@ public:
     };
 protected:
 
-    double m_potentialEnergy;
+    SReal m_potentialEnergy;
     /// true if the springs are initialized from the topology
     bool useTopology;
     bool usingMask;
@@ -161,14 +161,10 @@ public:
     virtual void handleEvent( core::objectmodel::Event* e );
 
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
-    //virtual double getPotentialEnergy(const VecCoord& ) const
-    virtual double getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
-    ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const  { return m_potentialEnergy; }
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
 
     Real getStiffness() const
     {

@@ -108,7 +108,7 @@ void UniformCompliance<DataTypes>::reinit()
 }
 
 template<class DataTypes>
-double UniformCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
+SReal UniformCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
 {
     const VecCoord& _x = x.getValue();
     unsigned int m = this->mstate->getMatrixBlockSize();
@@ -117,7 +117,7 @@ double UniformCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalP
             1. / compliance.getValue() :
             1. / s_complianceEpsilon;
 
-    double e = 0;
+    SReal e = 0;
     for( unsigned int i=0 ; i<_x.size() ; ++i )
     {
         for( unsigned int j=0 ; j<m ; ++j )
@@ -137,13 +137,13 @@ const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getCompliance
 
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
+void UniformCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset )
 {
     matK.addToBaseMatrix( matrix, kFact, offset );
 }
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset )
+void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset )
 {
 //	if( damping.getValue() > 0 ) // B is empty in that case
     {

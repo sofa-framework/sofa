@@ -48,7 +48,7 @@ MeshSpringForceField<DataTypes>::~MeshSpringForceField()
 }
 
 template <class DataTypes>
-double MeshSpringForceField<DataTypes>::getPotentialEnergy() const
+SReal MeshSpringForceField<DataTypes>::getPotentialEnergy() const
 {
     serr<<"MeshSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

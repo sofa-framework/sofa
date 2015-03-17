@@ -542,7 +542,7 @@ void SPHFluidForceField<DataTypes>::addDForce(const core::MechanicalParams* mpar
 }
 
 template <class DataTypes>
-double SPHFluidForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
+SReal SPHFluidForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
 {
     serr<<"getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

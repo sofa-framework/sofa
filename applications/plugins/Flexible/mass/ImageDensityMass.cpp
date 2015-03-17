@@ -20,13 +20,13 @@ using namespace sofa::defaulttype;
 
 //#ifndef SOFA_FLOAT
 //template <> SOFA_BASE_MECHANICS_API
-//double ImageDensityMass<Rigid3dTypes,core::behavior::ShapeFunctiond,Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
+//SReal ImageDensityMass<Rigid3dTypes,core::behavior::ShapeFunctiond,Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
 //{
 //    const VecCoord& _x = vx.getValue();
 
 //    VecCoord Mx = m_massMatrix * _x;
 
-//    double e = 0;
+//    SReal e = 0;
 //    // gravity
 //    Vec3d g ( this->getContext()->getGravity() );
 //    for( unsigned int i=0 ; i<_x.size() ; i++ )
@@ -38,9 +38,9 @@ using namespace sofa::defaulttype;
 
 
 //#endif
-//#ifndef SOFA_DOUBLE
+//#ifndef SOFA_SReal
 //template <> SOFA_BASE_MECHANICS_API
-//double ImageDensityMass<Rigid3fTypes,core::behavior::ShapeFunctionf,Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
+//SReal ImageDensityMass<Rigid3fTypes,core::behavior::ShapeFunctionf,Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
 //{
 //    const VecCoord& _x = vx.getValue();
 
@@ -71,7 +71,7 @@ int ImageDensityMassClass = core::RegisterObject("Define a global mass matrix in
         .add< ImageDensityMass<Vec3dTypes,core::behavior::ShapeFunctiond,Mat3x3d> >( true )
 //        .add< ImageDensityMass<Rigid3dTypes,core::behavior::ShapeFunctiond,Rigid3dMass> >()
 #endif
-#ifndef SOFA_DOUBLE
+#ifndef SOFA_SReal
         .add< ImageDensityMass<Vec3fTypes,core::behavior::ShapeFunctionf,Mat3x3f> >()
 //        .add< ImageDensityMass<Rigid3fTypes,core::behavior::ShapeFunctionf,Rigid3fMass> >()
 #endif
@@ -80,7 +80,7 @@ int ImageDensityMassClass = core::RegisterObject("Define a global mass matrix in
 template class SOFA_Flexible_API ImageDensityMass<Vec3dTypes,core::behavior::ShapeFunctiond,Mat3x3d>;
 //template class SOFA_Flexible_API ImageDensityMass<Rigid3dTypes,core::behavior::ShapeFunctiond,Rigid3dMass>;
 #endif
-#ifndef SOFA_DOUBLE
+#ifndef SOFA_SReal
 template class SOFA_Flexible_API ImageDensityMass<Vec3fTypes,core::behavior::ShapeFunctionf,Mat3x3f>;
 //template class SOFA_Flexible_API ImageDensityMass<Rigid3fTypes,core::behavior::ShapeFunctionf,Rigid3fMass>;
 #endif

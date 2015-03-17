@@ -3,6 +3,13 @@
 #include "../assembly/AssemblyVisitor.h"
 
 
+//#ifndef SOFA_FLOAT
+//#include <sofa/component/typedef/Mapping_double.h>
+//#endif
+//#ifndef SOFA_DOUBLE
+//#include <sofa/component/typedef/Mapping_float.h>
+//#endif
+
 namespace sofa
 {
 
@@ -712,7 +719,15 @@ struct Assembly_test : public CompliantSolver_test
         simulation::Node::SPtr particleOnRigid = rigid->createChild("particleOnRigid");
         MechanicalObject3::SPtr particleOnRigidDOF = addNew<MechanicalObject3>(particleOnRigid);
         particleOnRigidDOF->resize(1);
-        RigidMappingRigid3d_to_3d::SPtr particleOnRigidMapping = addNew<RigidMappingRigid3d_to_3d>(particleOnRigid);
+
+#ifndef SOFA_FLOAT
+        typedef RigidMappingRigid3d_to_3d RigidMappingRigid3_to_3;
+#endif
+#ifndef SOFA_DOUBLE
+        typedef RigidMappingRigid3f_to_3f RigidMappingRigid3_to_3;
+#endif
+
+        RigidMappingRigid3_to_3::SPtr particleOnRigidMapping = addNew<RigidMappingRigid3_to_3>(particleOnRigid);
         particleOnRigidMapping->setModels(rigidDOF.get(),particleOnRigidDOF.get());
 
         // ========= The string

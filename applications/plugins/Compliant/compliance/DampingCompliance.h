@@ -86,8 +86,8 @@ public:
 
 
     // stiffness implementation makes no sense
-    virtual double getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
-    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix*, double, unsigned int& ) {}
+    virtual SReal getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix*, SReal, unsigned int& ) {}
     virtual void addForce(const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) {}
     virtual void addDForce(const core::MechanicalParams*, DataVecDeriv&, const DataVecDeriv&) {}
 

@@ -211,14 +211,14 @@ public:
     virtual ~ConstraintProblem();
     virtual void clear(int dim, const double &tol);
 
-    inline int getSize(void) {return _dim;};
-    inline sofa::component::linearsolver::LPtrFullMatrix<double>* getW(void) {return &_W;};
-    inline sofa::component::linearsolver::FullVector<double>* getDfree(void) {return &_dFree;};
-    inline sofa::component::linearsolver::FullVector<double>* getD(void) {return &_d;};
-    inline sofa::component::linearsolver::FullVector<double>* getF(void) {return &_force;};
-    inline sofa::component::linearsolver::FullVector<double>* getdF(void) {return &_df;};
-    inline std::vector<core::behavior::ConstraintResolution*>& getConstraintResolutions(void) {return _constraintsResolutions;};
-    inline double *getTolerance(void) {return &_tol;};
+    inline int getSize(void) {return _dim;}
+    inline sofa::component::linearsolver::LPtrFullMatrix<double>* getW(void) {return &_W;}
+    inline sofa::component::linearsolver::FullVector<double>* getDfree(void) {return &_dFree;}
+    inline sofa::component::linearsolver::FullVector<double>* getD(void) {return &_d;}
+    inline sofa::component::linearsolver::FullVector<double>* getF(void) {return &_force;}
+    inline sofa::component::linearsolver::FullVector<double>* getdF(void) {return &_df;}
+    inline std::vector<core::behavior::ConstraintResolution*>& getConstraintResolutions(void) {return _constraintsResolutions;}
+    inline double *getTolerance(void) {return &_tol;}
 
     void gaussSeidelConstraintTimed(double &timeout, int numItMax);
 };
@@ -238,7 +238,7 @@ protected:
 public:
     // virtual const char* getTypeName() const { return "AnimationLoop"; }
 
-    virtual void step(const core::ExecParams* params, double dt);
+    virtual void step(const core::ExecParams* params, SReal dt);
 
     //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
 
@@ -259,7 +259,7 @@ public:
 
     Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors, _graphConstraints, _graphForces;
 
-    ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;};
+    ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;}
 
     /// Construction method called by ObjectFactory.
     template<class T>
@@ -274,7 +274,7 @@ public:
 
 protected:
     void launchCollisionDetection(const core::ExecParams* params);
-    void freeMotion(const core::ExecParams* params, simulation::Node *context, double &dt);
+    void freeMotion(const core::ExecParams* params, simulation::Node *context, SReal &dt);
     void setConstraintEquations(const core::ExecParams* params, simulation::Node *context);
     void correctiveMotion(const core::ExecParams* params, simulation::Node *context);
     void debugWithContact(int numConstraints);
@@ -315,13 +315,13 @@ protected:
     }
 
     sofa::helper::system::thread::CTime *timer;
-    double timeScale, time ;
+    SReal timeScale, time ;
     bool debug;
 
     unsigned int numConstraints;
 
     bool bufCP1;
-    double compTime, iterationTime;
+    SReal compTime, iterationTime;
 
 private:
     ConstraintProblem CP1, CP2;

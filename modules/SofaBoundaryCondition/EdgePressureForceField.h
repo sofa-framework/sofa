@@ -94,7 +94,7 @@ protected:
     Data<Deriv> normal; // the normal used to define the edge subjected to the pressure force
     Data<Real> dmin; // coordinates min of the plane for the vertex selection
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
-    Data< double > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
+    Data< SReal > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< helper::vector<Real> > p_intensity; // pressure intensity on edge normal
     Data<Coord> p_binormal; // binormal of the 2D plane
     Data<bool> p_showForces;
@@ -109,7 +109,7 @@ protected:
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
         , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
-        , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+        , arrowSizeCoef(initData(&arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
         , p_intensity(initData(&p_intensity,"p_intensity", "pressure intensity on edge normal"))
         , p_binormal(initData(&p_binormal,"binormal", "Binormal of the 2D plane"))
         , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw arrows of edge pressures"))
@@ -128,7 +128,7 @@ public:
         mparams->setKFactorUsed(true);
     }
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
@@ -137,7 +137,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    void setDminAndDmax(const double _dmin, const double _dmax)
+    void setDminAndDmax(const SReal _dmin, const SReal _dmax)
     {
         dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);
     }
