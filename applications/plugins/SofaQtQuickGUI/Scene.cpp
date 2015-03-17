@@ -38,7 +38,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 
-SceneComponent::SceneComponent(const Scene* scene, sofa::core::objectmodel::Base* base) : QObject(),
+SceneComponent::SceneComponent(const Scene* scene, const sofa::core::objectmodel::Base* base) : QObject(),
     myScene(scene),
     myBase(base)
 {
@@ -66,8 +66,17 @@ const Scene* SceneComponent::scene() const
     return myScene;
 }
 
-SceneData::SceneData(const SceneComponent* sceneComponent, sofa::core::objectmodel::BaseData* data) : QObject(),
-    mySceneComponent(sceneComponent),
+SceneData::SceneData(const SceneComponent* sceneComponent, const sofa::core::objectmodel::BaseData* data) : QObject(),
+    myScene(sceneComponent->scene()),
+    myBase(sceneComponent->base()),
+    myData(data)
+{
+
+}
+
+SceneData::SceneData(const Scene* scene, const sofa::core::objectmodel::Base* base, const sofa::core::objectmodel::BaseData* data) : QObject(),
+    myScene(scene),
+    myBase(base),
     myData(data)
 {
 
@@ -117,9 +126,13 @@ BaseData* SceneData::data()
 const BaseData* SceneData::data() const
 {
     // check if the base still exists hence if the data is still valid
+    const Base* base = 0;
+    if(myScene && myBase)
+        if(myScene->myBases.contains(myBase))
+            base = myBase;
 
-    const Base* base = mySceneComponent->base();
-    if(!base)
+    myBase = base;
+    if(!myBase)
         myData = 0;
 
     return myData;
@@ -128,7 +141,7 @@ const BaseData* SceneData::data() const
 Scene::Scene(QObject *parent) : QObject(parent),
 	myStatus(Status::Null),
 	mySource(),
-	mySourceQML(),
+    mySourceQML(),
 	myIsInit(false),
     myVisualDirty(false),
 	myDt(0.04),
@@ -164,6 +177,7 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	connect(this, &Scene::sourceChanged, this, &Scene::open);
 	connect(this, &Scene::playChanged, myStepTimer, [&](bool newPlay) {newPlay ? myStepTimer->start() : myStepTimer->stop();});
 	connect(this, &Scene::statusChanged, this, [&](Scene::Status newStatus) {if(Scene::Status::Ready == newStatus) loaded();});
+    connect(this, &Scene::loaded, this, [&]() {addChild(0, mySofaSimulation->GetRoot().get());});
     connect(this, &Scene::aboutToUnload, this, [&]() {myBases.clear();});
 
     connect(myStepTimer, &QTimer::timeout, this, &Scene::step);
@@ -255,33 +269,29 @@ void Scene::open()
 
 	std::string qmlFilepath = (finalFilename + ".qml").toLatin1().constData();
 	if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
-		qmlFilepath.clear();
+        qmlFilepath.clear();
 
     mySofaSimulation->unload(mySofaSimulation->GetRoot());
 
 	if(myAsynchronous)
 	{
-		LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
-        connect(loaderThread, &QThread::finished, this, [this, loaderThread]() {setStatus(loaderThread->isLoaded() ? Status::Ready : Status::Error);});
-		
-        connect(this, &Scene::loaded, this, [&]() {addChild(0, mySofaSimulation->GetRoot().get());});
-		if(!qmlFilepath.empty())
-            connect(this, &Scene::loaded, this, [&, qmlFilepath]() {setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));});
+        LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
 
-		connect(loaderThread, &QThread::finished, loaderThread, &QObject::deleteLater);
+        connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {
+            setStatus(loaderThread->isLoaded() ? Status::Ready : Status::Error);
+            if(isReady() && !qmlFilepath.empty())
+                setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
+
+            loaderThread->deleteLater();
+        });
+
 		loaderThread->start();
 	}
 	else
 	{
         setStatus(LoaderProcess(mySofaSimulation, finalFilename) ? Status::Ready : Status::Error);
-
-        if(isReady())
-        {
-            addChild(0, mySofaSimulation->GetRoot().get());
-
-            if(!qmlFilepath.empty())
-                setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
-        }
+        if(isReady() && !qmlFilepath.empty())
+            setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 	}
 }
 
@@ -762,10 +772,50 @@ void Scene::setDataValue(const QString& path, const QVariant& value)
     onSetDataValue(path, value);
 }
 
-QVariant Scene::onDataValue(const QString& path) const
+static BaseData* FindDataHelper(BaseNode* node, const QString& path)
 {
     BaseData* data = 0;
-    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
+    std::streambuf* backup(std::cerr.rdbuf());
+
+    std::ostringstream stream;
+    std::cerr.rdbuf(stream.rdbuf());
+    node->findDataLinkDest(data, path.toStdString(), 0);
+    std::cerr.rdbuf(backup);
+
+    return data;
+}
+
+SceneData* Scene::data(const QString& path) const
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path);
+    if(!data)
+        return 0;
+
+    Base* base = data->getOwner();
+    if(!base)
+        return 0;
+
+    return new SceneData(this, base, data);
+}
+
+SceneComponent* Scene::component(const QString& path) const
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path + ".name"); // search for the "name" data of the component (this data is always present if the component exist)
+
+    if(!data)
+        return 0;
+
+    Base* base = data->getOwner();
+    if(!base)
+        return 0;
+
+    return new SceneComponent(this, base);
+}
+
+QVariant Scene::onDataValue(const QString& path) const
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path);
+
     if(!data)
     {
         qWarning() << "DataPath unknown:" << path;
@@ -777,8 +827,7 @@ QVariant Scene::onDataValue(const QString& path) const
 
 void Scene::onSetDataValue(const QString& path, const QVariant& value)
 {
-    BaseData* data = 0;
-    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path);
 
     if(!data)
     {

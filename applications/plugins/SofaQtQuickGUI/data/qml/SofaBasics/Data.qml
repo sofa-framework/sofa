@@ -24,6 +24,10 @@ GridLayout {
     readonly property alias modified:   dataObject.modified
 
     property bool readOnly: false
+    property bool showName: true
+    property bool showLinkButton: true
+    property bool showTrackButton: true
+    property alias track: trackButton.checked
 
     QtObject {
         id: dataObject
@@ -38,7 +42,7 @@ GridLayout {
         property var value
         property bool modified: false
 
-        property bool readOnly: initing || root.readOnly || properties.readOnly || track.checked || linkButton.checked
+        property bool readOnly: initing || root.readOnly || properties.readOnly || trackButton.checked || linkButton.checked
 
         onValueChanged: modified = true
         onModifiedChanged: if(modified && properties.autoUpdate) root.updateData();
@@ -80,7 +84,7 @@ GridLayout {
         if(!sceneData)
             return;
 
-        sceneData.setLink(linkButton.checked ? linkTextField.text : "");
+        sceneData.setLink(linkTextField.visible ? linkTextField.text : "");
         updateObject();
     }
 
@@ -88,6 +92,7 @@ GridLayout {
         id: nameLabel
         Layout.preferredWidth: -1 === nameLabelWidth ? implicitWidth : nameLabelWidth
         Layout.alignment: Qt.AlignTop
+        visible: root.showName
         text: dataObject.name + " "
         font.italic: true
 
@@ -97,13 +102,14 @@ GridLayout {
         }
     }
 
-    Column {
+    ColumnLayout {
         Layout.fillWidth: true
+        Layout.fillHeight: true
+        Layout.alignment: Qt.AlignTop
 
         RowLayout {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            visible: linkButton.checked
+            Layout.fillWidth: true
+            visible: 0 !== dataObject.name.length && (linkButton.checked || (0 !== dataObject.link.length && !root.showLinkButton))
             spacing: 0
 
             TextField {
@@ -113,8 +119,6 @@ GridLayout {
                 textColor: 0 === dataObject.link.length ? "black" : "green"
 
                 onTextChanged: updateLink();
-
-                Component.onCompleted: dataObject.link
             }
 
             Image {
@@ -126,14 +130,19 @@ GridLayout {
 
         Loader {
             id: loader
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             asynchronous: false
 
             Component.onCompleted: createItem();
             Connections {
                 target: root
-                onSceneDataChanged: loader.createItem();
+                onSceneDataChanged: {
+                    if(root.sceneData)
+                        loader.createItem();
+                    else
+                        loader.destroyItem();
+                }
             }
 
             function createItem() {
@@ -148,15 +157,22 @@ GridLayout {
                             type = "array";
                 }
 
+                //console.log(type, name);
+
                 if("undefined" === type) {
                     loader.source = "";
                     console.warn("Type unknown for data: " + name);
                 } else {
-                    //console.log(type, name);
                     loader.setSource("qrc:/SofaDataTypes/DataType_" + type + ".qml", {"dataObject": dataObject});
                     if(Loader.Ready !== loader.status)
                         loader.sourceComponent = dataTypeNotSupportedComponent;
                 }
+
+                dataObject.modified = false;
+            }
+
+            function destroyItem() {
+                loader.setSource("");
 
                 dataObject.modified = false;
             }
@@ -167,6 +183,7 @@ GridLayout {
         Layout.preferredWidth: 20
         Layout.preferredHeight: Layout.preferredWidth
         Layout.alignment: Qt.AlignTop
+        visible: root.showLinkButton
 
         Button {
             id: linkButton
@@ -189,10 +206,11 @@ GridLayout {
     }
 
     CheckBox {
-        id: track
+        id: trackButton
         Layout.preferredWidth: 20
         Layout.preferredHeight: Layout.preferredWidth
         Layout.alignment: Qt.AlignTop
+        visible: root.showTrackButton && 0 !== dataObject.name.length
         checked: false
 
         onClicked: root.updateObject();
@@ -206,13 +224,13 @@ GridLayout {
         Timer {
             interval: 50
             repeat: true
-            running: scene.play && track.checked
+            running: scene.play && trackButton.checked
             onTriggered: root.updateObject();
         }
 
         // update at each step during step-by-step simulation
         Connections {
-            target: !scene.play && track.checked ? scene : null
+            target: !scene.play && trackButton.checked ? scene : null
             onStepEnd: root.updateObject();
         }
     }

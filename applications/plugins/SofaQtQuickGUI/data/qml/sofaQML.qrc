@@ -27,7 +27,7 @@
         <file>SofaCommon/SofaSettingsScript.js</file>
         <file>SofaBasics/RecentSettings.qml</file>
         <file>SofaTools/SceneGraphView.qml</file>
-        <file>SofaTools/DataView.qml</file>
+        <file>SofaTools/DataListView.qml</file>
         <file>SofaBasics/SceneListModel.qml</file>
         <file>SofaBasics/DataListModel.qml</file>
         <file>SofaBasics/Data.qml</file>
@@ -45,5 +45,6 @@
         <file>SofaDataTypes/DataType_Material.qml</file>
         <file>SofaDataTypes/DataType_OptionsGroup.qml</file>
         <file>SofaBasics/ToolTip.qml</file>
+        <file>SofaWidgets/DataView.qml</file>
     </qresource>
 </RCC>
