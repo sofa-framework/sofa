@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/component.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/helper/SVector.h>
 
 namespace sofa
 {
@@ -63,7 +64,8 @@ public:
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef typename core::topology::BaseMeshTopology::SeqQuads SeqQuads;
     typedef typename core::topology::BaseMeshTopology::PointID PointID;
-    typedef typename core::topology::BaseMeshTopology::SetIndex SeqIndices;
+    typedef helper::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex;
+    typedef helper::vector<SeqIndex> VecSeqIndex;  ///< vector of index lists
 
     /// inputs
     Data< SeqPositions > position;
@@ -74,7 +76,7 @@ public:
     Data< SeqPositions > outputPosition;
     Data< SeqTriangles > outputTriangles;
     Data< SeqQuads > outputQuads;
-    Data< SeqIndices > indices;
+    Data< VecSeqIndex > indices;
     Data< SeqPositions > closingPosition;
     Data< SeqTriangles > closingTriangles;
 
@@ -90,7 +92,7 @@ protected:
       , outputPosition(initData(&outputPosition,"outputPosition","Vertices of closed mesh"))
       , outputTriangles(initData(&outputTriangles,"outputTriangles","Triangles of closed mesh"))
       , outputQuads(initData(&outputQuads,"outputQuads","Quads of closed mesh (=input quads with current method)"))
-      , indices(initData(&indices,"indices","output indices of closing vertices "))
+      , indices(initData(&indices,"indices","Index lists of the closing parts"))
       , closingPosition(initData(&closingPosition,"closingPosition","Vertices of the closing parts"))
       , closingTriangles(initData(&closingTriangles,"closingTriangles","Triangles of the closing parts"))
     {
