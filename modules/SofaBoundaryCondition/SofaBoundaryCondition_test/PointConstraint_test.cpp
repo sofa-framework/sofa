@@ -121,7 +121,7 @@ struct PointConstraint_test : public Sofa_test<typename _DataTypes::Real>
 
             // Check if the particle moved in a fixed direction
             typename MechanicalObject::ReadVecDeriv readV = dofs->readVelocities();
-            for (int j = 0; j < readV[i].size(); ++j) {
+            for (unsigned int j = 0; j < readV[i].size(); ++j) {
                 if( readV[i][j]>epsilon )
                 {
                     ADD_FAILURE() << "Error: non null velocity in direction " << j << endl;
