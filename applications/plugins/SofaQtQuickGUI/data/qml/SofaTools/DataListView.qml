@@ -27,7 +27,7 @@ CollapsibleGroupBox {
         ListView {
             id: listView
             Layout.fillWidth: true
-            Layout.preferredHeight: 400
+            Layout.preferredHeight: contentHeight
             clip: true
             focus: true
 

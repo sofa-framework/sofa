@@ -65,10 +65,11 @@ set(QML_FILES
 		data/qml/SofaTools/qmldir
 		data/qml/SofaTools/SimulationControl.qml
                 data/qml/SofaTools/SceneGraphView.qml
-                data/qml/SofaTools/DataView.qml
+                data/qml/SofaTools/DataListView.qml
 		data/qml/SofaTools/SceneGUILoader.qml
 		data/qml/SofaWidgets/qmldir
 		data/qml/SofaWidgets/Viewer.qml
+                data/qml/SofaWidgets/DataView.qml
 		data/qml/SofaWidgets/ImageViewer.qml
 		data/qml/SofaWidgets/ToolPanel.qml
 )
