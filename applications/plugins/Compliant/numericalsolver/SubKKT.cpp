@@ -16,7 +16,7 @@ static void projection_basis(rmat& res, const rmat& P, bool* is_identity) {
     res.resize(P.rows(), P.nonZeros());
     res.setZero();
     
-    unsigned off = 0;
+    rmat::Index off = 0;
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
 
         res.startVec(i);

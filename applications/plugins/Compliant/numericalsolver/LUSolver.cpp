@@ -37,11 +37,12 @@ struct LUSolver::pimpl_type {
 
 
 LUSolver::LUSolver()
-    : pimpl( new pimpl_type ),
-      schur(initData(&schur,
+    : schur(initData(&schur,
                      true,
                      "schur",
-                     "use schur complement")){
+                     "use schur complement"))
+    , pimpl( new pimpl_type )
+{
 
 }
 

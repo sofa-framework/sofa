@@ -102,7 +102,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
 
         if(meca.size()==2)
         {
-            for(int i=0; i<meca.size(); i++)
+            for(unsigned int i=0; i<meca.size(); i++)
                 points[i] = meca[i]->read(core::ConstVecCoordId::position())->getValue()[0];
         }
         else

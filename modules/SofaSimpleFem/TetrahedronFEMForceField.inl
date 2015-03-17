@@ -795,6 +795,11 @@ inline double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core
                 #endif
 
             }
+            else
+            {
+                serr<<"getPotentialEnergy is not implemented for assembled version"<<sendl;
+                F.clear();
+            }
 
             // Compute potentialEnergy
             energyPotential += dot(Deriv( F[0], F[1], F[2] ) ,-Deriv( D[0], D[1], D[2]));

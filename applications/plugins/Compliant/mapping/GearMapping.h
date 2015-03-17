@@ -63,11 +63,13 @@ namespace mapping
 
 
 
-        virtual void apply(typename Inherit::out_pos_type& out,
+        virtual void apply(typename Inherit::out_pos_type& /*out*/,
                            const vector<typename Inherit::in_pos_type>& in)  {
             // macro_trace;
             assert( in.size() == 2 );
             assert( this->Nout == 1 );
+
+            (void) in;
         }
 
         typedef defaulttype::Vec<2, unsigned> index_type;

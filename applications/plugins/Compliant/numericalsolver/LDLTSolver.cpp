@@ -36,13 +36,13 @@ struct LDLTSolver::pimpl_type {
 
 
 LDLTSolver::LDLTSolver() 
-    : pimpl( new pimpl_type ),
-      schur(initData(&schur,
+    : schur(initData(&schur,
                      true,
                      "schur",
                      "use schur complement"))
+    , pimpl( new pimpl_type )
 {
-    
+
 }
 
 LDLTSolver::~LDLTSolver() {
