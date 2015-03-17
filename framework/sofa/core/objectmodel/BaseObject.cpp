@@ -377,7 +377,7 @@ void BaseObject::handleTopologyChange(core::topology::Topology* t)
 //     return m_printLog;
 // }
 
-double BaseObject::getTime() const
+SReal BaseObject::getTime() const
 {
     return getContext()->getTime();
 }

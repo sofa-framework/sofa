@@ -51,14 +51,14 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 StaticSolver::StaticSolver()
-    : massCoef( initData(&massCoef,(double)0.0,"massCoef","factor associated with the mass matrix in the equation system") )
-    , dampingCoef( initData(&dampingCoef,(double)0.0,"dampingCoef","factor associated with the mass matrix in the equation system") )
-    , stiffnessCoef( initData(&stiffnessCoef,(double)1.0,"stiffnessCoef","factor associated with the mass matrix in the equation system") )
+    : massCoef( initData(&massCoef,(SReal)0.0,"massCoef","factor associated with the mass matrix in the equation system") )
+    , dampingCoef( initData(&dampingCoef,(SReal)0.0,"dampingCoef","factor associated with the mass matrix in the equation system") )
+    , stiffnessCoef( initData(&stiffnessCoef,(SReal)1.0,"stiffnessCoef","factor associated with the mass matrix in the equation system") )
     , applyIncrementFactor( initData(&applyIncrementFactor,false,"applyIncrementFactor","multiply the solution by dt before adding it to the current state") )
 {
 }
 
-void StaticSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId /*vResult*/)
+void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId /*vResult*/)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );

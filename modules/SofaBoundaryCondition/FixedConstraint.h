@@ -86,7 +86,7 @@ protected:
 public:
     SetIndex f_indices;
     Data<bool> f_fixAll;
-    Data<double> f_drawSize;
+    Data<SReal> f_drawSize;
 
 
 protected:

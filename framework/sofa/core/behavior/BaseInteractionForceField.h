@@ -73,7 +73,7 @@ public:
     }
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(double time){
+    virtual void exportGnuplot(SReal time){
         std::cout << time << std::endl << "Warning ::: exportGnuplot not implemented for all interaction force field" << std::endl;
     }
 

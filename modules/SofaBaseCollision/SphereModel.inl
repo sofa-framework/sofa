@@ -196,7 +196,7 @@ void TSphereModel<DataTypes>::computeBoundingTree(int maxDepth)
 
 
 template <class DataTypes>
-void TSphereModel<DataTypes>::computeContinuousBoundingTree(double dt, int maxDepth)
+void TSphereModel<DataTypes>::computeContinuousBoundingTree(SReal dt, int maxDepth)
 {
     using namespace sofa::defaulttype;
 

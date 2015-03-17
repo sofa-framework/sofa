@@ -421,7 +421,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
 
 /*
 template<>
-void RestShapeSpringsForceField<Vec3dTypes>::addDForce(VecDeriv& df, const VecDeriv &dx, double kFactor, double )
+void RestShapeSpringsForceField<Vec3dTypes>::addDForce(VecDeriv& df, const VecDeriv &dx, SReal kFactor, SReal )
 {
 const VecIndex& indices = points.getValue();
 const VecReal& k = stiffness.getValue();

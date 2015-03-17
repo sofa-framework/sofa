@@ -71,14 +71,14 @@ template<class DataTypes>
 struct ParallelMassAddMDx
 {
 public:
-    void	operator()(const MechanicalParams* mparams, Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _res,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _dx,double factor)
+    void	operator()(const MechanicalParams* mparams, Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _res,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _dx,SReal factor)
     {
         m->addMDx(mparams, _res.access(),_dx.read(),factor);
     }
 };
 
 // template<class DataTypes>
-// void Mass<DataTypes>::addMBKv(double mFactor, double bFactor, double kFactor)
+// void Mass<DataTypes>::addMBKv(SReal mFactor, SReal bFactor, SReal kFactor)
 // {
 //     this->ForceField<DataTypes>::addMBKv(mFactor, bFactor, kFactor);
 //     if (mFactor != 0.0)
@@ -91,7 +91,7 @@ public:
 
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, double factor)
+void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor)
 {
     if (mparams)
     {
@@ -105,9 +105,9 @@ void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fi
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/, DataVecDeriv& /*f*/, const DataVecDeriv& /*dx*/ , double /*factor*/ )
+void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/, DataVecDeriv& /*f*/, const DataVecDeriv& /*dx*/ , SReal /*factor*/ )
 {
-    serr << "ERROR("<<getClassName()<< "): addMDx(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv&  , double  ) not implemented." << sendl;
+    serr << "ERROR("<<getClassName()<< "): addMDx(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv&  , SReal  ) not implemented." << sendl;
 }
 
 
@@ -159,14 +159,14 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId 
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/) const
+SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/) const
 {
     serr << "ERROR("<<getClassName()<<"): getKineticEnergy(const MechanicalParams*) not implemented." << sendl;
     return 0.0;
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, const DataVecDeriv& /*v*/) const
+SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, const DataVecDeriv& /*v*/) const
 {
     serr << "ERROR("<<getClassName()<<"): getKineticEnergy(const MechanicalParams*, const DataVecDeriv& ) not implemented." << sendl;
     return 0.0;
@@ -174,14 +174,14 @@ double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, co
 
 
 template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams*) const
+SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams*) const
 {
     serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const MechanicalParams* ) not implemented." << sendl;
     return 0.0;
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
+SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
 {   
     serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented." << sendl;
     return 0.0;
@@ -214,7 +214,7 @@ void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams, const sofa::
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/)
+void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*mFact*/, unsigned int &/*offset*/)
 {
     static int i=0;
     if (i < 10) {
@@ -270,7 +270,7 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, double time)
+void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 {
     if (m_gnuplotFileEnergy!=NULL)
     {
@@ -282,7 +282,7 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, double time
 }
 
 template <class DataTypes>
-double Mass<DataTypes>::getElementMass(unsigned int ) const
+SReal Mass<DataTypes>::getElementMass(unsigned int ) const
 {
     serr << "ERROR("<<getClassName()<<"): getElementMass with Scalar not implemented" << sendl;
     return 0.0;

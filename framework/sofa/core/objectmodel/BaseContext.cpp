@@ -90,13 +90,13 @@ const BaseContext::Vec3& BaseContext::getGravity() const
 }
 
 /// Simulation timestep
-double BaseContext::getDt() const
+SReal BaseContext::getDt() const
 {
     return 0.01;
 }
 
 /// Simulation time
-double BaseContext::getTime() const
+SReal BaseContext::getTime() const
 {
     return 0.0;
 }

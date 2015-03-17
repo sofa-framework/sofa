@@ -130,10 +130,10 @@ public:
 	virtual bool canChangeSleepingState() const;
 
     /// Simulation time
-    virtual double getTime() const;
+    virtual SReal getTime() const;
 
     /// Simulation timestep
-    virtual double getDt() const;
+    virtual SReal getDt() const;
 
     /// Animation flag
     virtual bool getAnimate() const;
@@ -378,7 +378,7 @@ public:
 
 
     /// Simulation timestep
-    virtual void setDt( double /*dt*/ )
+    virtual void setDt( SReal /*dt*/ )
     { }
 
     /// Animation flag

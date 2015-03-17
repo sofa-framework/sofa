@@ -270,7 +270,7 @@ class DefaultMeshTopologyLoader : public helper::io::MeshTopologyLoader
 public:
     BaseMeshTopology* dest;
     DefaultMeshTopologyLoader(BaseMeshTopology* dest) : dest(dest) {}
-    virtual void addPoint(double px, double py, double pz)
+    virtual void addPoint(SReal px, SReal py, SReal pz)
     {
         dest->addPoint(px,py,pz);
     }
@@ -321,7 +321,7 @@ void BaseMeshTopology::clear()
     serr<<"clear() not supported." << sendl;
 }
 
-void BaseMeshTopology::addPoint(double, double, double)
+void BaseMeshTopology::addPoint(SReal, SReal, SReal)
 {
     serr<<"addPoint() not supported." << sendl;
 }

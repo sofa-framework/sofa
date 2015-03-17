@@ -499,7 +499,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeMaterialStiffness(Mater
 /////////////////////////////////////////////////
 
 template<class T>
-void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor)
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor)
 {
     if(_useMass.getValue())
         HexahedronFEMForceFieldAndMassT::addMDx(mparams, f,dx,factor);

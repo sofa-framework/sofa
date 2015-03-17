@@ -127,7 +127,7 @@ public:
     static std::string templateName(const AffineMass<DataTypes>* = NULL)    { return DataTypes::Name();    }
     virtual std::string getTemplateName() const	{		return templateName(this); 	}
 
-    void addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, double factor)
+    void addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor)
     {
         if( factor == 1.0 ) d_massMatrix.getValue().addMult( f, dx );
         else d_massMatrix.getValue().addMult( f, dx, factor );
@@ -163,17 +163,17 @@ public:
         f.endEdit();
     }
 
-    double getKineticEnergy(const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v) const
+    SReal getKineticEnergy(const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v) const
     {
         const VecDeriv& _v = v.getValue();
-        double e = 0;
+        SReal e = 0;
         VecDeriv Mv;
         d_massMatrix.getValue().mult( Mv, _v );
         for( unsigned int i=0 ; i<_v.size() ; i++ ) e += _v[i] * Mv[i];
         return e/2;
     }
 
-    double getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
     {
         serr<<SOFA_CLASS_METHOD<<"not implemented!\n";
         return core::behavior::Mass< DataTypes >::getPotentialEnergy( mparams, x );

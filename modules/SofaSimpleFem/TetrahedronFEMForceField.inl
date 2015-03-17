@@ -477,7 +477,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
 }
 
 template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact )
+inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, SReal fact )
 {
 
     // Unit of K = unit of youngModulus / unit of volume = Pa / m^3 = kg m^-4 s^-2
@@ -708,11 +708,11 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f
 
 // getPotentialEnergy only for small method and if assembling is false
 template<class DataTypes>
-inline double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const
+inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const
 {
     unsigned int i;
     typename VecElement::const_iterator it;
-    double energyPotential = 0;
+    SReal energyPotential = 0;
     const VecCoord &initialPoints=_initialPoints.getValue();
     const VecCoord &p            = x.getValue();
 
@@ -818,7 +818,7 @@ inline double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core
 }
 
 template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
+inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, SReal fact )
 {
     Displacement X;
 
@@ -1336,7 +1336,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceSVD( Vector& f, 
 ///////////////////////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
-inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
+inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, SReal fact )
 {
     Displacement X;
 

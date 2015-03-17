@@ -111,7 +111,7 @@ class ProjectiveMaterialBlock< F331(_Real) >:
         f.getF()-= B*v.getF();
     }
 
-    void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& bfactor ) const
+    void addDForce( Deriv&   df, const Deriv&   dx, const SReal& kfactor, const SReal& bfactor ) const
     {
         df.getF() -= dx.getF()*(kfactor*K+bfactor*B);
     }

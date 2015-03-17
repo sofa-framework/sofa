@@ -71,7 +71,7 @@ public:
     // Geometric Stiffness = dJ^T.fc
     virtual KBlock getK(const OutDeriv& childForce)=0;
     // compute $ df += K dx $
-    virtual void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )=0;
+    virtual void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )=0;
 
 protected:
 

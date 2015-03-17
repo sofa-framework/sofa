@@ -45,7 +45,7 @@ class SOFA_MISC_SOLVER_API DampVelocitySolver : public sofa::core::behavior::Ode
 public:
     SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);
 
-    void solve (const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
     Data<double> rate;
     Data<double> threshold;
 
@@ -53,7 +53,7 @@ public:
     /// how much will it affect the output derivative of the given order.
     virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const
     {
-        const double dt = getContext()->getDt();
+        const SReal dt = getContext()->getDt();
         double matrix[3][3] =
         {
             { 1, 0, 0},

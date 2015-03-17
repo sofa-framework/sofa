@@ -69,7 +69,7 @@ public:
     /// Sum of the forces applied at each point, if per-point forces are not specified
     Data< Deriv > totalForce;
     ///S for drawing. The sign changes the direction, 0 doesn't draw arrow
-    Data< double > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
+    Data< SReal > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
     /// display color
     Data< defaulttype::Vec4f > d_color;
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
@@ -99,9 +99,9 @@ public:
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 
     /// Constant force has null variation
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, double /*kFact*/) {}
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, SReal /*kFact*/) {}
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const;
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -113,16 +113,16 @@ protected:
 
 #ifndef SOFA_FLOAT
 template <>
-double ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+SReal ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 template <>
-double ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+SReal ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 #endif
 
 #ifndef SOFA_DOUBLE
 template <>
-double ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+SReal ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 template <>
-double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
+SReal ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 #endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_CONSTANTFORCEFIELD_CPP)

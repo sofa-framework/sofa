@@ -353,7 +353,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double /*bFactor*/)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, SReal kFactor, SReal /*bFactor*/)
 {
     Data& data = m->data;
     df.resize(dx.size());
@@ -374,7 +374,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
         Data& data = m->data;
 
@@ -574,7 +574,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addSubKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, double k, unsigned int &offset)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addSubKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset)
 {
     Data& data = m->data;
 
@@ -923,8 +923,8 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     { data.addSubKToMatrix(this, mat, subMatrixIndex, kFactor, offset); }
 
 
-CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);
-CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3f1Types);
+CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3fTypes)
+CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3f1Types)
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 

@@ -93,7 +93,7 @@ public:
     IndexSubsetData f_indices;  ///< the particles to project
     Data<CPos> f_origin;       ///< A point in the plane
     Data<CPos> f_normal;       ///< The normal to the plane. Will be normalized by init().
-    Data<double> f_drawSize;    ///< The size of the display of the constrained particles
+    Data<SReal> f_drawSize;    ///< The size of the display of the constrained particles
 
 
 protected:

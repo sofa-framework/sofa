@@ -457,7 +457,7 @@ void CompliantNLImplicitSolver::handleUnilateralConstraints()
 }
 
 void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
-                         double dt,
+                         SReal dt,
                          core::MultiVecCoordId posId,
                          core::MultiVecDerivId velId)
 {
@@ -762,7 +762,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
     {
         SReal test=0.0, temp;
         for( i=0 ; i<n ; i++ ) {
-            temp = fabs(p[i]) / std::max( fabs(xold[i]), SReal(1.0) );
+            temp = fabs(p[i]) / std::max( std::abs(xold[i]), SReal(1.0) );
             if( temp > test ) test=temp;
         }
         alamin = std::max( TOLX/test, MINIMALSTEP );

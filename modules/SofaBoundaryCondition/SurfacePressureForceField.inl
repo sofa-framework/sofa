@@ -463,7 +463,7 @@ bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) cons
 template<class DataTypes>
 const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceField<DataTypes>::computePulseModePressure()
 {
-    double dt = this->getContext()->getDt();
+    SReal dt = this->getContext()->getDt();
 
     if (state == INCREASE)
     {

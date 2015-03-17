@@ -44,7 +44,7 @@ using namespace core::behavior;
 using namespace defaulttype;
 
 //template <>
-//bool MechanicalObject<Vec3dTypes>::addBBox(double* minBBox, double* maxBBox)
+//bool MechanicalObject<Vec3dTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
 //{
 //    cerr << "MechanicalObject<Vec3dTypes>::addBBox, before min=" << *minBBox <<", max=" << *maxBBox << endl;
 
@@ -513,7 +513,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
 }
 
 // template <>
-//     bool MechanicalObject<Vec1fTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+//     bool MechanicalObject<Vec1fTypes>::addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
 // {
 //     return false; // ignore 1D DOFs for 3D bbox
 // }

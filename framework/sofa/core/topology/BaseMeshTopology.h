@@ -257,15 +257,15 @@ public:
     /// Note that this data is only used for initialization and is not maintained afterwards (i.e. topological changes may not be applied)
     /// @{
     virtual bool hasPos() const { return false; }
-    virtual double getPX(int) const { return 0.0; }
-    virtual double getPY(int) const { return 0.0; }
-    virtual double getPZ(int) const { return 0.0; }
+    virtual SReal getPX(int) const { return 0.0; }
+    virtual SReal getPY(int) const { return 0.0; }
+    virtual SReal getPZ(int) const { return 0.0; }
     /// @}
 
     /// Procedural creation methods
     /// @{
     virtual void clear();
-    virtual void addPoint(double px, double py, double pz);
+    virtual void addPoint(SReal px, SReal py, SReal pz);
     virtual void addEdge( int a, int b );
     void addLine( int a, int b ) { addEdge(a,b); }
     virtual void addTriangle( int a, int b, int c );
