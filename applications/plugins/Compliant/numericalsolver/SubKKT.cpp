@@ -35,6 +35,7 @@ static void projection_basis(rmat& res, const rmat& P) {
 }
 
 
+
 static void filter_primal(rmat& res, const rmat& H, const rmat& P) {
     res.resize(P.cols(), P.cols());
     res.setZero();
@@ -64,13 +65,14 @@ static void filter_primal(rmat& res, const rmat& H, const rmat& P) {
 }
 
 
-/// build a big assembled kkt matrix
-/// version with a projection matrix P
-/// does not insert lines/cols where P is 0
-static void filter_kkt(rmat& res, const rmat& H, const rmat& P, const rmat& J, const rmat& C) {
+static void filter_kkt(rmat& res,
+                       const rmat& H,
+                       const rmat& P,
+                       const rmat& J,
+                       const rmat& C,
+                       SReal eps) {
     res.resize(P.cols() + J.rows(), P.cols() + J.rows());
     res.setZero();
-
     res.reserve(H.nonZeros() + 2 * J.nonZeros() + C.nonZeros());
     
     const rmat JT = J.transpose();
@@ -110,9 +112,24 @@ static void filter_kkt(rmat& res, const rmat& H, const rmat& P, const rmat& J, c
             }
         }
 
+        SReal* diag = 0;
         for(rmat::InnerIterator itC(C, i); itC; ++itC) {
-            res.insertBack(P.cols() + i, P.cols() + itC.col()) = -itC.value();
+            SReal& ref = res.insertBack(P.cols() + i, P.cols() + itC.col());
+            ref = -itC.value();
+
+            // store diagonal ref
+            if(itC.col() == itC.row()) diag = &ref;
+            
         }
+
+        if( !diag && eps ) {
+            SReal& ref = res.insertBack(P.cols() + i, P.cols() + i);
+            ref = 0;
+            diag = &ref;
+        }
+
+        // if( eps ) *diag = std::max(eps, *diag);
+        if( eps ) *diag += eps;
     }
 
 
@@ -188,35 +205,20 @@ void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
 }
 
 
-void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys) {
+void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps) {
     scoped::timer step("subsystem projection");
 
-    if( !sys.isPIdentity )
-    {
-        projection_basis(res.P, sys.P);
+    bool identity;
+    projection_basis(res.P, sys.P, &identity);
 
-        if(sys.n) {
-            filter_kkt(res.A, sys.H, res.P, sys.J, sys.C);
+    if(sys.n) {
+        filter_kkt(res.A, sys.H, res.P, sys.J, sys.C, eps);
 
-            res.Q.resize(sys.n, sys.n);
-            res.Q.setIdentity();
-        } else {
-            filter_primal(res.A, sys.H, res.P);
-            res.Q = rmat();
-        }
-    }
-    else
-    {
-        res.P = sys.P; // TODO we should not need to copy any matrix
-        if(sys.n) {
-            filter_kkt(res.A, sys.H, sys.J, sys.C);
-
-            res.Q.resize(sys.n, sys.n);
-            res.Q.setIdentity();
-        } else {
-            res.A = sys.H; // TODO we should not need to copy any matrix
-            res.Q = rmat();
-        }
+        res.Q.resize(sys.n, sys.n);
+        res.Q.setIdentity();
+    } else {
+        filter_primal(res.A, sys.H, res.P);
+        res.Q = rmat();
     }
 
 }

@@ -46,7 +46,7 @@ public:
     static void projected_primal(SubKKT& res, const AssembledSystem& sys);
 
     // full kkt with projected primal variables
-    static void projected_kkt(SubKKT& res, const AssembledSystem& sys);
+    static void projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps = 0);
     
     // TODO more ctors with non-zero Q
     
