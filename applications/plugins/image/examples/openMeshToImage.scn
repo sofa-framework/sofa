@@ -9,7 +9,7 @@
   <VisualModel name="closingVisual"  position="@closer.closingPosition" triangles="@closer.closingTriangles" color="1 0.1 0.1 1"/>
 
 <!-- method1 : using ROIs -->
-  <MeshToImageEngine template="ImageUC" name="rasterizer" position="@closer.position"  triangles="@closer.triangles" value="1" insideValue="1" roiVertices="@closer.indices" roiValue="2"  voxelSize="0.5" padSize="5" rotateImage="true" printLog="true"/>
+  <MeshToImageEngine template="ImageUC" name="rasterizer" position="@closer.position"  triangles="@closer.triangles" value="1" insideValue="1" roiIndices="@closer.indices" roiValue="2"  voxelSize="0.5" padSize="5" rotateImage="true" printLog="true"/>
 
 <!-- method2 : using several meshes -->
 <!--<MeshToImageEngine template="ImageUC" name="rasterizer" nbMeshes="2" position="@closer.position"  triangles="@closer.triangles" value="1" insideValue="1" position2="@closer.closingPosition" triangles2="@closer.closingTriangles" value2="2" insideValue2="0" voxelSize="0.5" padSize="5" rotateImage="true" printLog="true"/>-->
