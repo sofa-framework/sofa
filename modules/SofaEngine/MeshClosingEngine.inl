@@ -41,13 +41,13 @@ void MeshClosingEngine<DataTypes>::update()
 {
     this->cleanDirty();
 
-    helper::ReadAccessor<Data< SeqPositions > > pos(this->position);
-    helper::ReadAccessor<Data< SeqTriangles > > tri(this->triangles);
-    helper::ReadAccessor<Data< SeqQuads > > qd(this->quads);
+    helper::ReadAccessor<Data< SeqPositions > > pos(this->inputPosition);
+    helper::ReadAccessor<Data< SeqTriangles > > tri(this->inputTriangles);
+    helper::ReadAccessor<Data< SeqQuads > > qd(this->inputQuads);
 
-    helper::WriteAccessor<Data< SeqPositions > > opos(this->outputPosition);
-    helper::WriteAccessor<Data< SeqTriangles > >  otri(this->outputTriangles);
-    helper::WriteAccessor<Data< SeqQuads > > oqd(this->outputQuads);
+    helper::WriteAccessor<Data< SeqPositions > > opos(this->position);
+    helper::WriteAccessor<Data< SeqTriangles > >  otri(this->triangles);
+    helper::WriteAccessor<Data< SeqQuads > > oqd(this->quads);
     helper::WriteAccessor<Data< VecSeqIndex > >  oindices(this->indices);
     helper::WriteAccessor<Data< SeqPositions > > clpos(this->closingPosition);
     helper::WriteAccessor<Data< SeqTriangles > >  cltri(this->closingTriangles);
