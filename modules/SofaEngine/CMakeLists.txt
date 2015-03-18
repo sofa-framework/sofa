@@ -37,6 +37,7 @@ set(HEADER_FILES
     MergeSets.inl
     MergeVectors.h
     MergeVectors.inl
+    MergeROIs.h
     MeshBarycentricMapperEngine.h
     MeshBarycentricMapperEngine.inl
     MeshROI.h
@@ -114,6 +115,7 @@ set(SOURCE_FILES
     MergePoints.cpp
     MergeSets.cpp
     MergeVectors.cpp
+    MergeROIs.cpp
     MeshBarycentricMapperEngine.cpp
     MeshROI.cpp
     TransformPosition.cpp
