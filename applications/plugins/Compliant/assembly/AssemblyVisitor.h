@@ -316,12 +316,6 @@ public:
 	typedef component::linearsolver::AssembledSystem system_type;
 	void assemble(system_type& ) const;
 
-
-    system_type assemble() const {
-        system_type res;
-        assemble(res);
-        return res;
-    }
     
 private:
 
