@@ -11,13 +11,22 @@ namespace linearsolver {
 
 typedef SubKKT::rmat rmat;
 
+// build a projection basis based on filtering matrix P
 // P must be diagonal with 0, 1 on the diagonal
-static void projection_basis(rmat& res, const rmat& P) {
+static void projection_basis(rmat& res, const rmat& P,
+                             bool identity_hint = false) {
+
     res.resize(P.rows(), P.nonZeros());
+
+    if( identity_hint ) {
+        res.setIdentity();
+        return;
+    }
+
     res.setZero();
     res.reserve(P.rows());
     
-    rmat::Index off = 0;
+    unsigned off = 0;
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
 
         res.startVec(i);
@@ -31,16 +40,26 @@ static void projection_basis(rmat& res, const rmat& P) {
         }
 
     }
+    
     res.finalize();
 }
 
+// builds the projected primal system P^T H P, where P is the primal
+// projection basis
+static void filter_primal(rmat& res,
+                          const rmat& H,
+                          const rmat& P,
+                          bool identity_hint = false) {
 
-
-static void filter_primal(rmat& res, const rmat& H, const rmat& P) {
+    if( identity_hint ) {
+        res = H;
+        return;
+    }
+    
     res.resize(P.cols(), P.cols());
     res.setZero();
     res.reserve(H.nonZeros());
-    
+
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
         for(rmat::InnerIterator it(P, i); it; ++it) {
             // we have a non-zero row in P, hence in res at row
@@ -64,7 +83,7 @@ static void filter_primal(rmat& res, const rmat& H, const rmat& P) {
     res.finalize();
 }
 
-
+// build a projected KKT system based on primal projection matrix P
 static void filter_kkt(rmat& res,
                        const rmat& H,
                        const rmat& P,
@@ -137,70 +156,19 @@ static void filter_kkt(rmat& res,
 }
 
 
-/// build a big assembled kkt matrix
-/// version without projection matrix
-static void filter_kkt(rmat& res, const rmat& H, const rmat& J, const rmat& C) {
-    res.resize(H.cols() + J.rows(), H.cols() + J.rows());
-    res.setZero();
-
-    res.reserve(H.nonZeros() + 2 * J.nonZeros() + C.nonZeros());
-
-    const rmat JT = J.transpose();
-
-// snif, ces initialisations ne marchent pas sur des sparsematrix ? :(
-//    res << H, -JT,
-//           J, C;
-
-
-    for(unsigned i = 0, n = H.rows(); i < n; ++i) {
-
-            res.startVec(i);
-
-            for(rmat::InnerIterator itH(H, i); itH; ++itH) {
-                res.insertBack(i, itH.col()) = itH.value();
-            }
-
-            for(rmat::InnerIterator itJT(JT, i); itJT; ++itJT) {
-                res.insertBack(i, H.cols() + itJT.col()) = -itJT.value();
-            }
-
-    }
-
-    for(unsigned i = 0, n = J.rows(); i < n; ++i) {
-        res.startVec(H.cols() + i);
-
-        for(rmat::InnerIterator itJ(J, i); itJ; ++itJ) {
-            res.insertBack(H.cols() + i, itJ.col()) = -itJ.value();
-        }
-
-        for(rmat::InnerIterator itC(C, i); itC; ++itC) {
-            res.insertBack(H.cols() + i, H.cols() + itC.col()) = -itC.value();
-        }
-    }
-
-    res.finalize();
-}
-
-
+// note: i removed the non-projected one because it was the *exact
+// same* as the projected one.
 
 void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
     scoped::timer step("subsystem projection");
     
-    if( !sys.isPIdentity )
-    {
-        // matrix P conveniently filters out
-        projection_basis(res.P, sys.P);
+    // matrix P conveniently filters out fixed dofs
+    projection_basis(res.P, sys.P, sys.isPIdentity);
+    filter_primal(res.A, sys.H, res.P, sys.isPIdentity);
 
-        // TODO optimize
-        filter_primal(res.A, sys.H, res.P);
-    }
-    else
-    {
-         // TODO when P is the identity matrix, we should not need to copy any matrix
-        res.P = sys.P;
-        res.A = sys.H;
-    }
-
+    // note: i don't care about matrices beeing copied (yet), i want
+    // clean code first.
+    
     res.Q = rmat();
 }
 
@@ -208,8 +176,7 @@ void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
 void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps) {
     scoped::timer step("subsystem projection");
 
-    bool identity;
-    projection_basis(res.P, sys.P, &identity);
+    projection_basis(res.P, sys.P, sys.isPIdentity);
 
     if(sys.n) {
         filter_kkt(res.A, sys.H, res.P, sys.J, sys.C, eps);
