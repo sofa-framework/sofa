@@ -12,7 +12,7 @@ namespace linearsolver {
 typedef SubKKT::rmat rmat;
 
 // P must be diagonal with 0, 1 on the diagonal
-static void projection_basis(rmat& res, const rmat& P, bool* is_identity) {
+static void projection_basis(rmat& res, const rmat& P) {
     res.resize(P.rows(), P.nonZeros());
     res.setZero();
     
@@ -25,13 +25,12 @@ static void projection_basis(rmat& res, const rmat& P, bool* is_identity) {
             if( it.value() ) {
                 res.insertBack(i, off) = it.value();
             }
-            
+
             ++off;
         }
 
     }
     res.finalize();
-    *is_identity = (off == P.rows() );
 }
 
 
@@ -64,6 +63,9 @@ static void filter_primal(rmat& res, const rmat& H, const rmat& P) {
 }
 
 
+/// build a big assembled kkt matrix
+/// version with a projection matrix P
+/// does not insert lines/cols where P is 0
 static void filter_kkt(rmat& res, const rmat& H, const rmat& P, const rmat& J, const rmat& C) {
     res.resize(P.cols() + J.rows(), P.cols() + J.rows());
     res.setZero();
@@ -117,16 +119,69 @@ static void filter_kkt(rmat& res, const rmat& H, const rmat& P, const rmat& J, c
 }
 
 
+/// build a big assembled kkt matrix
+/// version without projection matrix
+static void filter_kkt(rmat& res, const rmat& H, const rmat& J, const rmat& C) {
+    res.resize(H.cols() + J.rows(), H.cols() + J.rows());
+    res.setZero();
+
+    res.reserve(H.nonZeros() + 2 * J.nonZeros() + C.nonZeros());
+
+    const rmat JT = J.transpose();
+
+// snif, ces initialisations ne marchent pas sur des sparsematrix ? :(
+//    res << H, -JT,
+//           J, C;
+
+
+    for(unsigned i = 0, n = H.rows(); i < n; ++i) {
+
+            res.startVec(i);
+
+            for(rmat::InnerIterator itH(H, i); itH; ++itH) {
+                res.insertBack(i, itH.col()) = itH.value();
+            }
+
+            for(rmat::InnerIterator itJT(JT, i); itJT; ++itJT) {
+                res.insertBack(i, H.cols() + itJT.col()) = -itJT.value();
+            }
+
+    }
+
+    for(unsigned i = 0, n = J.rows(); i < n; ++i) {
+        res.startVec(H.cols() + i);
+
+        for(rmat::InnerIterator itJ(J, i); itJ; ++itJ) {
+            res.insertBack(H.cols() + i, itJ.col()) = -itJ.value();
+        }
+
+        for(rmat::InnerIterator itC(C, i); itC; ++itC) {
+            res.insertBack(H.cols() + i, H.cols() + itC.col()) = -itC.value();
+        }
+    }
+
+    res.finalize();
+}
+
+
 
 void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
     scoped::timer step("subsystem projection");
     
-    // matrix P conveniently filters out
-    bool identity;
-    projection_basis(res.P, sys.P, &identity);
+    if( !sys.isPIdentity )
+    {
+        // matrix P conveniently filters out
+        projection_basis(res.P, sys.P);
 
-    // TODO optimize
-    filter_primal(res.A, sys.H, res.P);
+        // TODO optimize
+        filter_primal(res.A, sys.H, res.P);
+    }
+    else
+    {
+         // TODO when P is the identity matrix, we should not need to copy any matrix
+        res.P = sys.P;
+        res.A = sys.H;
+    }
 
     res.Q = rmat();
 }
@@ -135,17 +190,32 @@ void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
 void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys) {
     scoped::timer step("subsystem projection");
 
-    bool identity;
-    projection_basis(res.P, sys.P, &identity);
+    if( !sys.isPIdentity )
+    {
+        projection_basis(res.P, sys.P);
 
-    if(sys.n) {
-        filter_kkt(res.A, sys.H, res.P, sys.J, sys.C);
+        if(sys.n) {
+            filter_kkt(res.A, sys.H, res.P, sys.J, sys.C);
 
-        res.Q.resize(sys.n, sys.n);
-        res.Q.setIdentity();
-    } else {
-        filter_primal(res.A, sys.H, res.P);
-        res.Q = rmat();
+            res.Q.resize(sys.n, sys.n);
+            res.Q.setIdentity();
+        } else {
+            filter_primal(res.A, sys.H, res.P);
+            res.Q = rmat();
+        }
+    }
+    else
+    {
+        res.P = sys.P; // TODO we should not need to copy any matrix
+        if(sys.n) {
+            filter_kkt(res.A, sys.H, sys.J, sys.C);
+
+            res.Q.resize(sys.n, sys.n);
+            res.Q.setIdentity();
+        } else {
+            res.A = sys.H; // TODO we should not need to copy any matrix
+            res.Q = rmat();
+        }
     }
 
 }
