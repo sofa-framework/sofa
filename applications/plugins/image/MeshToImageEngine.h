@@ -361,9 +361,9 @@ protected:
     // regular rasterization like first implementation, with inside filled by the unique value
     void rasterizeAndFill( const unsigned int &meshId, CImg<T>& im, const waTransform& tr )
     {
-//        vf_positions[meshId]->cleanDirty();
-//        vf_triangles[meshId]->cleanDirty();
-//        vf_edges[meshId]->cleanDirty();
+        //        vf_positions[meshId]->cleanDirty();
+        //        vf_triangles[meshId]->cleanDirty();
+        //        vf_edges[meshId]->cleanDirty();
         //        TODO - need this ?
         //        vf_roi[meshId]->cleanDirty();
         //        vf_roiValues[meshId]->cleanDirty();
@@ -440,17 +440,14 @@ protected:
 
 
         /// fill inside
-        if( InsideColor != OutsideColor )
+        if(!isClosed(tri.ref()))   serr<<"mesh["<<meshId<<"] is open -> can't fill it"<<sendl;
+        else
         {
-            if(!isClosed(tri.ref()))   serr<<"mesh["<<meshId<<"] is open -> can't fill it"<<sendl;
-            else
-            {
-                // flood fill from the exterior point (0,0,0) with the color outsideColor
-                if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
-                bool colorTrue=true;
-                mask.draw_fill(0,0,0,&colorTrue);
-                cimg_foroff(mask,off) if(!mask[off]) im[off]=InsideColor;
-            }
+            // flood fill from the exterior point (0,0,0) with the color outsideColor
+            if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
+            bool colorTrue=true;
+            mask.draw_fill(0,0,0,&colorTrue);
+            cimg_foroff(mask,off) if(!mask[off]) im[off]=InsideColor;
         }
     }
 
@@ -641,7 +638,7 @@ protected:
             d->unset();
             vf.push_back(d);
             this->addData(d);
-            this->addInput(d);            
+            this->addInput(d);
         }
     }
 
