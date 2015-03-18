@@ -529,12 +529,8 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 
 
 
-// keep temporaries allocated
-static AssemblyVisitor::mat tmp1, tmp2, tmp3;
-
 // this is meant to optimize L^T D L products
-static inline const AssemblyVisitor::mat& ltdl(const AssemblyVisitor::mat& l,
-                                               const AssemblyVisitor::mat& d)
+inline const AssemblyVisitor::mat& AssemblyVisitor::ltdl(const mat& l, const mat& d) const
 {
 //#ifdef _OPENMP
 //    return component::linearsolver::mul_EigenSparseMatrix_MT( l.transpose(), component::linearsolver::mul_EigenSparseMatrix_MT( d, l ) );
@@ -548,9 +544,8 @@ static inline const AssemblyVisitor::mat& ltdl(const AssemblyVisitor::mat& l,
 }
 
 
-static inline void add_ltdl(AssemblyVisitor::mat& res,
-                            const AssemblyVisitor::mat& l,
-                            const AssemblyVisitor::mat& d) {
+inline void AssemblyVisitor::add_ltdl(mat& res, const mat& l, const mat& d)  const
+{
     sparse::fast_prod(tmp1, d, l);
     tmp3 = l.transpose();
     sparse::fast_add_prod(res, tmp3, tmp1);

@@ -148,8 +148,8 @@ public:
     typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
     typedef Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic> dmat;
 
-	// default: row-major
-	typedef rmat mat;
+    // default: row-major
+    typedef rmat mat;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
     AssemblyVisitor(const core::MechanicalParams* mparams);
@@ -339,6 +339,14 @@ private:
 
     //simulation::Node* start_node;
 
+
+    // keep temporaries allocated
+    mutable mat tmp1, tmp2, tmp3;
+
+
+    // this is meant to optimize L^T D L products
+    const mat& ltdl(const mat& l, const mat& d) const;
+    void add_ltdl(mat& res, const mat& l, const mat& d) const;
 
 };
 
