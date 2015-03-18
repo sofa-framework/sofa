@@ -57,7 +57,6 @@ public:
     // P.cols() + Q.cols()
     unsigned size_sub() const;
 
-    
     // factor the sub-kkt
     void factor(Response& response) const;
     
