@@ -166,7 +166,7 @@ void TCapsuleModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 
         // Check topological modifications
-        //const int npoints = _mstate->getX()->size()/2;
+        //const int npoints = _mstate->getSize()/2;
 
         for (int i=0; i<size; i++){
             vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);

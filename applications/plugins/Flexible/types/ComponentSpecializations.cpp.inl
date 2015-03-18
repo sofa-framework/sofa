@@ -722,12 +722,12 @@ namespace mass
 //    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
 //    {
 //        MassType* m = this->mass.beginEdit();
-//        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+//        *m = ((Real)this->totalMass.getValue() / this->mstate->getSize());
 //        this->mass.endEdit();
 //    }
 //    else
 //    {
-//        this->totalMass.setValue( this->mstate->getX()->size() * this->mass.getValue().getUniformValue() );
+//        this->totalMass.setValue( this->mstate->getSize() * this->mass.getValue().getUniformValue() );
 //    }
 //}
 //#endif
@@ -738,12 +738,12 @@ namespace mass
 //    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
 //    {
 //        MassType* m = this->mass.beginEdit();
-//        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+//        *m = ((Real)this->totalMass.getValue() / this->mstate->getSize());
 //        this->mass.endEdit();
 //    }
 //    else
 //    {
-//        this->totalMass.setValue( this->mstate->getX()->size() * this->mass.getValue().getUniformValue() );
+//        this->totalMass.setValue( this->mstate->getSize() * this->mass.getValue().getUniformValue() );
 //    }
 //}
 //#endif

@@ -328,7 +328,7 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f)
+void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, SReal f)
 {
     DEBUG_TEXT(" MechanicalObjectInternalData::vOp ");
     if(v.isNull())
@@ -770,7 +770,7 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 }
 
 template<class TCoord, class TDeriv, class TReal>
-double MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vDot(Main* m, ConstVecId a, ConstVecId b)
+SReal MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::vDot(Main* m, ConstVecId a, ConstVecId b)
 {
     DEBUG_TEXT(" MechanicalObjectInternalData::vDot ");
     Real r = 0.0f;
@@ -836,11 +836,11 @@ void MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 #define OpenCLMechanicalObject_ImplMethods(T) \
 template<> void MechanicalObject< T >::accumulateForce(const core::ExecParams* /* params */) \
 { data.accumulateForce(this); } \
-template<> void MechanicalObject< T >::vOp(const core::ExecParams* /* params */ /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, double f) \
+template<> void MechanicalObject< T >::vOp(const core::ExecParams* /* params */ /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f) \
 { data.vOp(this, v, a, b, f); }		\
 template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops) \
 { data.vMultiOp(this, params, ops); }                                    \
-template<> double MechanicalObject< T >::vDot(const core::ExecParams* /* params */ /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b) \
+template<> SReal MechanicalObject< T >::vDot(const core::ExecParams* /* params */ /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b) \
 { return data.vDot(this, a, b); }				    \
 template<> void MechanicalObject< T >::resetForce(const core::ExecParams* /* params */) \
 { data.resetForce(this); }

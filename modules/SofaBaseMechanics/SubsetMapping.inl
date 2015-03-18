@@ -88,7 +88,7 @@ void SubsetMapping<TIn, TOut>::handleTopologyChange(core::topology::Topology* t)
 
     std::list<const core::topology::TopologyChange *>::const_iterator itBegin=topoFrom->beginChange();
     std::list<const core::topology::TopologyChange *>::const_iterator itEnd=topoFrom->endChange();
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getX()->size());
+    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getSize());
     f_indices.endEdit();
 }
 */
