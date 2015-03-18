@@ -15,6 +15,7 @@ typedef SubKKT::rmat rmat;
 static void projection_basis(rmat& res, const rmat& P) {
     res.resize(P.rows(), P.nonZeros());
     res.setZero();
+    res.reserve(P.rows());
     
     rmat::Index off = 0;
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
