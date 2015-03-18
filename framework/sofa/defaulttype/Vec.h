@@ -791,9 +791,16 @@ inline real dot(const Vec<N,real>& a, const Vec<N,real>& b)
     return a*b;
 }
 
-/// multiplication with a scalar \returns a*V
+///// multiplication with a scalar \returns a*V
 template <int N, typename real>
-Vec<N,real> operator*(const real& a, const Vec<N,real>& V)
+Vec<N,real> operator*(const double& a, const Vec<N,real>& V)
+{
+    return V * a;
+}
+
+///// multiplication with a scalar \returns a*V
+template <int N, typename real>
+Vec<N,real> operator*(const float& a, const Vec<N,real>& V)
 {
     return V * a;
 }
