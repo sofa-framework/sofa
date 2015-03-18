@@ -240,8 +240,8 @@ inline bool isEqual( double x, double y, double threshold )
 }
 
 // default implementation for integers
-template<class T>
-inline bool isNull( T x, T =std::numeric_limits<T>::epsilon() )
+template<class T, class T2>
+inline bool isNull( T x, T2 = std::numeric_limits<T2>::epsilon() )
 {
     assert( std::numeric_limits<T>::is_integer );
     return x==0;
@@ -249,6 +249,11 @@ inline bool isNull( T x, T =std::numeric_limits<T>::epsilon() )
 // specialization for floating points
 template<>
 inline bool isNull( float x, float threshold )
+{
+    return rabs(x) <= threshold;
+}
+template<>
+inline bool isNull( float x, double threshold )
 {
     return rabs(x) <= threshold;
 }

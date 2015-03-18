@@ -820,7 +820,7 @@ return;
 
 totalMass = 0.0;
 //compute the total mass of the object
-for (unsigned int i=0 ; i<m_fromModel->getX()->size() ; i++)
+for (unsigned int i=0 ; i<m_fromModel->getSize() ; i++)
 totalMass += masses->getElementMass(i);
 
 
