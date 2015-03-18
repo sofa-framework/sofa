@@ -186,9 +186,13 @@ struct RigidMappingMatrixHelper;
 
 #ifndef SOFA_FLOAT
 template<>
+void RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
+template<>
 const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::getK();
 #endif
 #ifndef SOFA_DOUBLE
+template<>
+void RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
 template<>
 const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::getK();
 #endif
