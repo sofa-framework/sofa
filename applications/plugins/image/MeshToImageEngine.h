@@ -122,7 +122,7 @@ public:
 
     typedef helper::SVector<typename core::topology::BaseMeshTopology::PointID> SeqIndex; ///< one roi defined as an index list
     typedef helper::vector<SeqIndex> VecSeqIndex;  ///< vector of rois
-    helper::vector< Data<VecSeqIndex> *> vf_roiVertices;  ///< vector of rois for each mesh
+    helper::vector< Data<VecSeqIndex> *> vf_roiIndices;  ///< vector of rois for each mesh
     helper::vector< Data<SeqValues> *> vf_roiValue;   ///< values for each roi
     typedef helper::ReadAccessor<Data< VecSeqIndex > > raIndex;
 
@@ -161,7 +161,7 @@ public:
         deleteInputDataVector(vf_triangles);
         deleteInputDataVector(vf_values);
         deleteInputDataVector(vf_InsideValues);
-        deleteInputDataVector(vf_roiVertices);
+        deleteInputDataVector(vf_roiIndices);
         deleteInputDataVector(vf_roiValue);
     }
 
@@ -188,7 +188,7 @@ public:
             this->vf_triangles[meshId]->getValue();
             this->vf_values[meshId]->getValue();
             this->vf_InsideValues[meshId]->getValue();
-            this->vf_roiVertices[meshId]->getValue();
+            this->vf_roiIndices[meshId]->getValue();
             this->vf_roiValue[meshId]->getValue();
         }
 
@@ -374,9 +374,9 @@ protected:
         if(!nbp || (!nbtri && !nbedg) ) { serr<<"no topology defined for mesh "<<meshId<<sendl; return; }
         unsigned int nbval = this->vf_values[meshId]->getValue().size();
 
-        raIndex roiVertices(*this->vf_roiVertices[meshId]);
-        if(roiVertices.size() && !this->vf_roiValue[meshId]->getValue().size()) serr<<"at least one roiValue for mesh "<<meshId<<" needs to be specified"<<sendl;
-        if(this->f_printLog.getValue())  for(size_t r=0;r<roiVertices.size();++r) std::cout<<"MeshToImageEngine: "<<this->getName()<<"mesh "<<meshId<<"\t ROI "<<r<<"\t number of vertices= " << roiVertices[r].size() << "\t value= "<<getROIValue(meshId,r)<<std::endl;
+        raIndex roiIndices(*this->vf_roiIndices[meshId]);
+        if(roiIndices.size() && !this->vf_roiValue[meshId]->getValue().size()) serr<<"at least one roiValue for mesh "<<meshId<<" needs to be specified"<<sendl;
+        if(this->f_printLog.getValue())  for(size_t r=0;r<roiIndices.size();++r) std::cout<<"MeshToImageEngine: "<<this->getName()<<"mesh "<<meshId<<"\t ROI "<<r<<"\t number of vertices= " << roiIndices[r].size() << "\t value= "<<getROIValue(meshId,r)<<std::endl;
 
         /// colors definition
         T FillColor = (T)getValue(meshId,0);
@@ -399,10 +399,10 @@ protected:
             Coord pts[2];
             for(size_t j=0; j<2; j++) pts[j] = (tr->toImage(Coord(pos[edg[i][j]])));
             T currentColor = FillColor;
-            for(size_t r=0;r<roiVertices.size();++r)
+            for(size_t r=0;r<roiIndices.size();++r)
             {
                 bool isRoi = true;
-                for(size_t j=0; j<2; j++)  if(std::find(roiVertices[r].begin(), roiVertices[r].end(), edg[i][j])==roiVertices[r].end()) { isRoi=false; break; }
+                for(size_t j=0; j<2; j++)  if(std::find(roiIndices[r].begin(), roiIndices[r].end(), edg[i][j])==roiIndices[r].end()) { isRoi=false; break; }
                 if (isRoi) currentColor = (T)getROIValue(meshId,r);
             }
             if (nbval>1 && currentColor == FillColor)  draw_line(im,mask,pts[0],pts[1],getValue(meshId,edg[i][0]),getValue(meshId,edg[i][1]),this->subdiv.getValue()); // edge rasterization with interpolated values (if not in roi)
@@ -420,10 +420,10 @@ protected:
             Coord pts[3];
             for(size_t j=0; j<3; j++) pts[j] = (tr->toImage(Coord(pos[tri[i][j]])));
             T currentColor = FillColor;
-            for(size_t r=0;r<roiVertices.size();++r)
+            for(size_t r=0;r<roiIndices.size();++r)
             {
                 bool isRoi = true;
-                for(size_t j=0; j<3; j++) if(std::find(roiVertices[r].begin(), roiVertices[r].end(), tri[i][j])==roiVertices[r].end()) { isRoi=false; break; }
+                for(size_t j=0; j<3; j++) if(std::find(roiIndices[r].begin(), roiIndices[r].end(), tri[i][j])==roiIndices[r].end()) { isRoi=false; break; }
                 if (isRoi) currentColor = (T)getROIValue(meshId,r);
             }
             if (nbval>1 && currentColor == FillColor)  // triangle rasterization with interpolated values (if not in roi)
@@ -611,8 +611,8 @@ public:
 
         createInputDataVector(n, vf_InsideValues, "insideValue", "pixel value inside the mesh", defaultValue, false);
 
-        createInputDataVector(n, vf_roiVertices, "roiVertices", "List of Regions Of Interest, vertices index ", VecSeqIndex(), false);
-        createInputDataVector(n, vf_roiValue, "roiValue", "pixel value for ROIs ", SeqValues(), false);
+        createInputDataVector(n, vf_roiIndices, "roiIndices", "List of Regions Of Interest, vertex indices ", VecSeqIndex(), false);
+        createInputDataVector(n, vf_roiValue, "roiValue", "pixel value for ROIs, list of values ", SeqValues(), false);
     }
 
 protected:
