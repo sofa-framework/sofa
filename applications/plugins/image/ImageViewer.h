@@ -70,16 +70,16 @@ using defaulttype::Vector3;
    *
    *  <b>transform</b> - a link to the transformation in the ImageContainer component
    *
-   *  <b>histo</b> - 
+   *  <b>histo</b> -
    *
-   *  <b>plane</b> - 
+   *  <b>plane</b> -
    *
    *  <b>vectorvis</b> - Describes the settings for vizualizing vectors and tensors. Input string should be in the form:
    *	"subsampleXY subsampleZ scale rgb shape tensorOrder", where:
    *	subsampleXY is an integer <i>n</i> where in the X and Y planes, a shape is drawn every <i>n</i> voxels.
    *    subsampleZ is an integer <i>n</i> where in the Z plane, a shape is drawn every <i>n</i> voxels.
    *	scale is an integer <i>n</i> such that each shape is drawn <i>n</i> times its normal size.
-   *    rgb is a bool. When true, an image with 3 channels is displayed as an rgb image, and when false, it is 
+   *    rgb is a bool. When true, an image with 3 channels is displayed as an rgb image, and when false, it is
    *		displayed as a greyscale image where the value is the L2 norm of all the channels.
    *	shape is a bool. When true, an image with 3 channels has vectors displayed, and an image with 6 channels has tensors displayed.
    *    tensorOrder is a string describing the order in which the 6 tensors values are provided in the image. The three supported types are:
@@ -210,13 +210,13 @@ public:
         // enable vecorvis ?
         if(wplane->getDimensions()[3]<2) vectorVisualization.setDisplayed(false);
         else         vectorVisualization.setGroup("Vectors");
-                
+
         for(unsigned int i=0;i<3;i++)
         {
             cutplane_tex[i]= new helper::gl::Texture(new helper::io::Image,false);
             cutplane_tex[i]->getImage()->init(cutplane_res,cutplane_res,32);
         }
- 
+
         raVis rvis(this->vectorVisualization);
 
         whisto->setMergeChannels(!rvis->getRgb());
@@ -395,6 +395,42 @@ public:
         glPopAttrib();
         
     }
+
+
+    void getCorners(Vec<8,Vector3> &c) // get image corners
+    {
+        raImage rimage(this->image);
+        const imCoord dim= rimage->getDimensions();
+
+        Vec<8,Vector3> p;
+        p[0]=Vector3(-0.5,-0.5,-0.5);
+        p[1]=Vector3(dim[0]-0.5,-0.5,-0.5);
+        p[2]=Vector3(-0.5,dim[1]-0.5,-0.5);
+        p[3]=Vector3(dim[0]-0.5,dim[1]-0.5,-0.5);
+        p[4]=Vector3(-0.5,-0.5,dim[2]-0.5);
+        p[5]=Vector3(dim[0]-0.5,-0.5,dim[2]-0.5);
+        p[6]=Vector3(-0.5,dim[1]-0.5,dim[2]-0.5);
+        p[7]=Vector3(dim[0]-0.5,dim[1]-0.5,dim[2]-0.5);
+
+        raTransform rtransform(this->transform);
+        for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
+    }
+
+    virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ )
+    {
+        //        if( onlyVisible) return;
+        Vec<8,Vector3> c;
+        getCorners(c);
+
+        Real bbmin[3]  = {c[0][0],c[0][1],c[0][2]} , bbmax[3]  = {c[0][0],c[0][1],c[0][2]};
+        for(unsigned int i=1;i<c.size();i++)
+            for(unsigned int j=0;j<3;j++)
+            {
+                if(bbmin[j]>c[i][j]) bbmin[j]=c[i][j];
+                if(bbmax[j]<c[i][j]) bbmax[j]=c[i][j];
+            }
+        this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
+    }
     
     
 protected:
@@ -434,10 +470,10 @@ protected:
         }
     }
 
-	   //Draw tensors as ellipsoids
+    //Draw tensors as ellipsoids
     void drawEllipsoid()
     {
-       raImage rimage(this->image);
+        raImage rimage(this->image);
         raPlane rplane(this->plane);
         raTransform rtransform(this->transform);
         raVis rVis(this->vectorVisualization);
@@ -446,7 +482,7 @@ protected:
         imCoord dims=rplane->getDimensions();
         Vec<3,int> sampling(rVis->getSubsampleXY(),rVis->getSubsampleXY(),rVis->getSubsampleZ());
 
-		int counter=0;
+        int counter=0;
 
         unsigned int x,y,z;
         for (z=0;z<3;z++)
@@ -460,122 +496,122 @@ protected:
                     for(ip[y] = 0; ip[y] < dims[y]; ip[y] += sampling[y])
                     {
 
-						counter++ ;
+                        counter++ ;
 
                         Coord base = rtransform->fromImage(ip);
 
-						CImg<T> vector = rimage->getCImg(rplane->getTime()).get_vector_at(ip[0], ip[1], ip[2]);
+                        CImg<T> vector = rimage->getCImg(rplane->getTime()).get_vector_at(ip[0], ip[1], ip[2]);
 
-						//CImg::get_tensor_at() assumes a different tensor input than we expect.
-						// That is why we are generating the tensor manually from the vector instead.
-						CImg<T> tensor;
-	
-						if(rVis->getTensorOrder().compare("LowerTriRowMajor") == 0)
-						{
-							tensor = computeTensorFromLowerTriRowMajorVector(vector);
-						}
-						else if(rVis->getTensorOrder().compare("UpperTriRowMajor") == 0)
-						{
-							tensor = computeTensorFromUpperTriRowMajorVector(vector);
-						}
-						else if(rVis->getTensorOrder().compare("DiagonalFirst") == 0)
-						{
-							tensor = computeTensorFromDiagonalFirstVector(vector);
-						}
-						else
-                                                {
-//                                                    FF commented this out due to ambiguous overload for operator<< on gcc4.4
-//                                                        serr << "ImageViewer: Tensor input order \"" << rVis->getTensorOrder() << "\" is not valid." << sout;
-							return;
-						}
+                        //CImg::get_tensor_at() assumes a different tensor input than we expect.
+                        // That is why we are generating the tensor manually from the vector instead.
+                        CImg<T> tensor;
 
-						CImgList<T> eig = tensor.get_symmetric_eigen();
-						const CImg<T> &val = eig[0];
-						const CImg<T> &vec = eig[1];
+                        if(rVis->getTensorOrder().compare("LowerTriRowMajor") == 0)
+                        {
+                            tensor = computeTensorFromLowerTriRowMajorVector(vector);
+                        }
+                        else if(rVis->getTensorOrder().compare("UpperTriRowMajor") == 0)
+                        {
+                            tensor = computeTensorFromUpperTriRowMajorVector(vector);
+                        }
+                        else if(rVis->getTensorOrder().compare("DiagonalFirst") == 0)
+                        {
+                            tensor = computeTensorFromDiagonalFirstVector(vector);
+                        }
+                        else
+                        {
+                            //                                                    FF commented this out due to ambiguous overload for operator<< on gcc4.4
+                            //                                                        serr << "ImageViewer: Tensor input order \"" << rVis->getTensorOrder() << "\" is not valid." << sout;
+                            return;
+                        }
 
-						glPushMatrix();
+                        CImgList<T> eig = tensor.get_symmetric_eigen();
+                        const CImg<T> &val = eig[0];
+                        const CImg<T> &vec = eig[1];
 
-						GLUquadricObj* ellipsoid = gluNewQuadric();
-						glTranslated(base[0], base[1], base[2]);
-						GLdouble transformMatrix[16]; 						
-						 
-						int index=0;
-						for(int i=0; i<vec.width(); i++)
-						{
-							for(int j=0; j<vec.height(); j++)
-							{
-								transformMatrix[index] = (double)vec(i,j);
-								index++;
-							}
-							transformMatrix[index] = 0;
-							index++;
-						}
-						transformMatrix[12] = transformMatrix[13] = transformMatrix[14] = 0;
-						transformMatrix[15] = 1;
+                        glPushMatrix();
 
-						//Same method for getting colours as MedInria
-						double colourR = fabs((double)vec(0,0));
-						double colourG = fabs((double)vec(0,1));
-						double colourB = fabs((double)vec(0,2));
+                        GLUquadricObj* ellipsoid = gluNewQuadric();
+                        glTranslated(base[0], base[1], base[2]);
+                        GLdouble transformMatrix[16];
 
-						colourR = (colourR > 1.0) ? 1.0 : colourR;
-						colourG = (colourG > 1.0) ? 1.0 : colourG;
-						colourB = (colourB > 1.0) ? 1.0 : colourB;
+                        int index=0;
+                        for(int i=0; i<vec.width(); i++)
+                        {
+                            for(int j=0; j<vec.height(); j++)
+                            {
+                                transformMatrix[index] = (double)vec(i,j);
+                                index++;
+                            }
+                            transformMatrix[index] = 0;
+                            index++;
+                        }
+                        transformMatrix[12] = transformMatrix[13] = transformMatrix[14] = 0;
+                        transformMatrix[15] = 1;
 
-						glColor3d(colourR, colourG, colourB);
-						glEnable(GL_COLOR_MATERIAL);
+                        //Same method for getting colours as MedInria
+                        double colourR = fabs((double)vec(0,0));
+                        double colourG = fabs((double)vec(0,1));
+                        double colourB = fabs((double)vec(0,2));
 
-						glMultMatrixd(transformMatrix);
-						glScaled((double)val(0)*size/10, (double)val(1)*size/10, (double)val(2)*size/10);
-						gluSphere(ellipsoid, 1.0, 10, 10);
-						gluDeleteQuadric(ellipsoid);
+                        colourR = (colourR > 1.0) ? 1.0 : colourR;
+                        colourG = (colourG > 1.0) ? 1.0 : colourG;
+                        colourB = (colourB > 1.0) ? 1.0 : colourB;
 
-						glDisable(GL_COLOR_MATERIAL);
+                        glColor3d(colourR, colourG, colourB);
+                        glEnable(GL_COLOR_MATERIAL);
 
-						glPopMatrix();
-						
-					}
-		}
+                        glMultMatrixd(transformMatrix);
+                        glScaled((double)val(0)*size/10, (double)val(1)*size/10, (double)val(2)*size/10);
+                        gluSphere(ellipsoid, 1.0, 10, 10);
+                        gluDeleteQuadric(ellipsoid);
+
+                        glDisable(GL_COLOR_MATERIAL);
+
+                        glPopMatrix();
+
+                    }
+        }
 
     }
 
-	CImg<T> computeTensorFromLowerTriRowMajorVector(CImg<T> vector)
-	{
-		CImg<T> tensor(3,3);
-		tensor(0,0) = vector(0);
-		tensor(1,0) = tensor(0,1) = vector(1);
-		tensor(1,1) = vector(2);
-		tensor(2,0) = tensor(0,2) = vector(3);
-		tensor(2,1) = tensor(1,2) = vector(4);
-		tensor(2,2) = vector(5);
-	
-		return tensor;
-	}
+    CImg<T> computeTensorFromLowerTriRowMajorVector(CImg<T> vector)
+    {
+        CImg<T> tensor(3,3);
+        tensor(0,0) = vector(0);
+        tensor(1,0) = tensor(0,1) = vector(1);
+        tensor(1,1) = vector(2);
+        tensor(2,0) = tensor(0,2) = vector(3);
+        tensor(2,1) = tensor(1,2) = vector(4);
+        tensor(2,2) = vector(5);
 
-	CImg<T> computeTensorFromUpperTriRowMajorVector(CImg<T> vector)
-	{
-		CImg<T> tensor(3,3);
-		tensor(0,0) = vector(0);
-		tensor(0,1) = tensor(1,0) = vector(1);
-		tensor(0,2) = tensor(2,0) = vector(2);
-		tensor(1,1) = vector(3);
-		tensor(1,2) = tensor(2,1) = vector(4);
-		tensor(2,2) = vector(5);
+        return tensor;
+    }
 
-		return tensor;
-	}
+    CImg<T> computeTensorFromUpperTriRowMajorVector(CImg<T> vector)
+    {
+        CImg<T> tensor(3,3);
+        tensor(0,0) = vector(0);
+        tensor(0,1) = tensor(1,0) = vector(1);
+        tensor(0,2) = tensor(2,0) = vector(2);
+        tensor(1,1) = vector(3);
+        tensor(1,2) = tensor(2,1) = vector(4);
+        tensor(2,2) = vector(5);
 
-	CImg<T> computeTensorFromDiagonalFirstVector(CImg<T> vector)
-	{
-		CImg<T> tensor(3,3);
-		tensor(0,0) = vector(0);
-		tensor(1,1) = vector(1);
-		tensor(2,2) = vector(2);
-		tensor(1,0) = tensor(0,1) = vector(3);
-		tensor(2,0) = tensor(0,2) = vector(4);
-		tensor(2,1) = tensor(1,2) = vector(5);
-		return tensor;
-	}
+        return tensor;
+    }
+
+    CImg<T> computeTensorFromDiagonalFirstVector(CImg<T> vector)
+    {
+        CImg<T> tensor(3,3);
+        tensor(0,0) = vector(0);
+        tensor(1,1) = vector(1);
+        tensor(2,2) = vector(2);
+        tensor(1,0) = tensor(0,1) = vector(3);
+        tensor(2,0) = tensor(0,2) = vector(4);
+        tensor(2,1) = tensor(1,2) = vector(5);
+        return tensor;
+    }
 
     //Draw the boxes around the slices
     void drawCutplanes()
