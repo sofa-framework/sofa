@@ -2,7 +2,6 @@
 #include "SofaGL.h"
 #include "VisualPickVisitor.h"
 #include <sofa/core/objectmodel/Tag.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
 
 namespace sofa {
 using core::objectmodel::Tag;
@@ -156,7 +155,7 @@ void SofaGL::glPick(int x, int y )
 
 PickedPoint SofaGL::pick(GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
 {
-    defaulttype::Vec3d origin(ox,oy,oz), direction;
+    Vec3 origin(ox,oy,oz), direction;
     getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
 
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
@@ -200,7 +199,7 @@ Interactor* SofaGL::getInteractor( const PickedPoint& glpicked )
 Interactor* SofaGL::pickInteractor( GLdouble ox, GLdouble oy, GLdouble oz, int x, int y )
 {
 
-    defaulttype::Vec3d origin(ox,oy,oz), direction;
+    Vec3 origin(ox,oy,oz), direction;
     getPickDirection(&direction[0],&direction[1],&direction[2],x,y);
     double distance = 10.5, distanceGrowth = 0.1; // cone around the ray ????
     //    cout<< "SofaScene::rayPick from origin " << origin << ", in direction " << direction << endl;
