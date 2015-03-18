@@ -89,6 +89,9 @@ template class SOFA_RIGID_API RigidMapping< Rigid2fTypes, Vec2dTypes >;
 
 #ifndef SOFA_FLOAT
 template<>
+void RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
+{}
+template<>
 const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2dTypes, sofa::defaulttype::Vec2dTypes >::getK()
 {
     serr<<"TODO: assembled geometric stiffness not implemented"<<sendl;
@@ -96,6 +99,9 @@ const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2dTypes, so
 }
 #endif
 #ifndef SOFA_DOUBLE
+template<>
+void RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
+{}
 template<>
 const defaulttype::BaseMatrix* RigidMapping< sofa::defaulttype::Rigid2fTypes, sofa::defaulttype::Vec2fTypes >::getK()
 {
