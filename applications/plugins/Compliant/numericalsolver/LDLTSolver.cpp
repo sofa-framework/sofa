@@ -74,7 +74,7 @@ void LDLTSolver::factor(const AssembledSystem& sys) {
     if( schur.getValue() ) {
         factor_schur( sys );
     } else {
-        SubKKT::projected_kkt(pimpl->sub, sys);
+        SubKKT::projected_kkt(pimpl->sub, sys, 1e-14);
         pimpl->sub.factor(*response);
     }
 }
