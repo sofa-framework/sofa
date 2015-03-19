@@ -83,57 +83,88 @@ static void filter_primal(rmat& res,
     res.finalize();
 }
 
+
+static inline bool has_row(unsigned row, const rmat& P, unsigned* col, bool identity_hint) {
+    if(identity_hint) {
+        *col = row;
+        return true;
+    } else {
+        rmat::InnerIterator it(P, row);
+
+        if( it ) {
+            *col = it.col();
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
 // build a projected KKT system based on primal projection matrix P
 static void filter_kkt(rmat& res,
                        const rmat& H,
                        const rmat& P,
                        const rmat& J,
                        const rmat& C,
-                       SReal eps) {
+                       SReal eps,
+                       bool identity_hint = false,
+                       bool only_lower = false) {
+    
     res.resize(P.cols() + J.rows(), P.cols() + J.rows());
     res.setZero();
     res.reserve(H.nonZeros() + 2 * J.nonZeros() + C.nonZeros());
+
+    rmat JT;
+
+    if( !only_lower ) {
+        JT = J.transpose();
+    }
     
-    const rmat JT = J.transpose();
+    const unsigned P_cols = P.cols();
     
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
-        for(rmat::InnerIterator it(P, i); it; ++it) {
-            // we have a non-zero row in P, hence in res at row
-            // it.col()
-            res.startVec(it.col());
 
-            for(rmat::InnerIterator itH(H, i); itH; ++itH) {
-                
-                for(rmat::InnerIterator it2(P, itH.col()); it2; ++it2) {
-                    // we have a non-zero row in P, non-zero col in
-                    // res at col it2.col()
-                    res.insertBack(it.col(), it2.col()) = itH.value();
-                }
-                
-            }
+        unsigned sub_row = 0;
+        if(! has_row(i, P, &sub_row, identity_hint) ) continue;
 
-            for(rmat::InnerIterator itJT(JT, i); itJT; ++itJT) {
-                res.insertBack(it.col(), P.cols() + itJT.col()) = -itJT.value();
-            }
+        res.startVec(sub_row);
+
+        // H
+        for(rmat::InnerIterator itH(H, i); itH; ++itH) {
+
+            if(only_lower && itH.col() > itH.row() ) break;
             
+            unsigned sub_col = 0;
+            if(! has_row(itH.col(), P, &sub_col, identity_hint) ) continue;
+
+            res.insertBack(sub_row, sub_col) = itH.value();
+        }
+
+        if( only_lower ) continue;
+
+        // JT
+        for(rmat::InnerIterator itJT(JT, i); itJT; ++itJT) {
+            res.insertBack(sub_row, P_cols + itJT.col()) = -itJT.value();
         }
         
     }
 
     for(unsigned i = 0, n = J.rows(); i < n; ++i) {
-        res.startVec(P.cols() + i);
-        
+        res.startVec(P_cols + i);
+
+        // J
         for(rmat::InnerIterator itJ(J, i); itJ; ++itJ) {
-            for(rmat::InnerIterator it2(P, itJ.col()); it2; ++it2) {
-                // we have a non-zero row in P, so non-zero col in
-                // res at col it2.col()
-                res.insertBack(P.cols() + i, it2.col()) = -itJ.value();
-            }
+
+            unsigned sub_col = 0;
+            if(!has_row(itJ.col(), P, &sub_col, identity_hint)) continue;
+            
+            res.insertBack(P_cols + i, sub_col) = -itJ.value();
         }
 
+        // C 
         SReal* diag = 0;
         for(rmat::InnerIterator itC(C, i); itC; ++itC) {
-            SReal& ref = res.insertBack(P.cols() + i, P.cols() + itC.col());
+            SReal& ref = res.insertBack(P_cols + i, P_cols + itC.col());
             ref = -itC.value();
 
             // store diagonal ref
@@ -142,13 +173,13 @@ static void filter_kkt(rmat& res,
         }
 
         if( !diag && eps ) {
-            SReal& ref = res.insertBack(P.cols() + i, P.cols() + i);
+            SReal& ref = res.insertBack(P_cols + i, P_cols + i);
             ref = 0;
             diag = &ref;
         }
 
-        // if( eps ) *diag = std::max(eps, *diag);
-        if( eps ) *diag += eps;
+        if( eps ) *diag = std::min(-eps, *diag);
+        // if( eps ) *diag -= eps;
     }
 
 
@@ -173,13 +204,15 @@ void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
 }
 
 
-void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps) {
+
+
+void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps, bool only_lower) {
     scoped::timer step("subsystem projection");
 
     projection_basis(res.P, sys.P, sys.isPIdentity);
 
     if(sys.n) {
-        filter_kkt(res.A, sys.H, res.P, sys.J, sys.C, eps);
+        filter_kkt(res.A, sys.H, res.P, sys.J, sys.C, eps, sys.isPIdentity, only_lower);
 
         res.Q.resize(sys.n, sys.n);
         res.Q.setIdentity();
@@ -229,6 +262,33 @@ void SubKKT::solve(const Response& resp,
     }
 
 }
+
+void SubKKT::prod(vec& res, const vec& rhs) const {
+    res.resize( size_full() );
+
+    vtmp1.resize( size_sub() );
+    vtmp2.resize( size_sub() );    
+
+    if( P.cols() ) {
+        vtmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
+    }
+    if( Q.cols() ) {
+        vtmp1.tail(Q.cols()).noalias() = Q.transpose() * rhs.tail(Q.rows());
+    }
+
+    vtmp2.noalias() = A * vtmp1;
+
+    // remap
+    if( P.cols() ) {
+        res.head(P.rows()).noalias() = P * vtmp2.head(P.cols());
+    }
+    
+    if( Q.cols() ) {
+        res.tail(Q.rows()).noalias() = Q * vtmp2.tail(Q.cols());
+    }
+
+}
+
 
 
 unsigned SubKKT::size_full() const {

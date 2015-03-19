@@ -24,13 +24,17 @@ class Response;
  */
 
 class SubKKT : public utils::eigen_types {
-private:
+public:
+
+    // TODO: determine correct access rights
+
     // primal/dual selection matrices
     rmat P, Q;
 
     // filtered subsystem
     rmat A;
 
+private:
     // work vectors during solve
     mutable vec vtmp1, vtmp2;
 
@@ -46,7 +50,8 @@ public:
     static void projected_primal(SubKKT& res, const AssembledSystem& sys);
 
     // full kkt with projected primal variables
-    static void projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps = 0);
+    static void projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps = 0,
+                              bool only_lower = false);
     
     // TODO more ctors with non-zero Q
     
@@ -67,6 +72,8 @@ public:
     void solve(const Response& response, vec& result, const vec& rhs) const;
     void solve(const Response& response, cmat& result, const cmat& rhs) const;
 
+
+    void prod(vec& result, const vec& rhs) const;
 
     // this one transposes rhs before solving (avoids temporary)
     void solve_opt(const Response& response, cmat& result, const rmat& rhs) const; 
