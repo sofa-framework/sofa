@@ -28,7 +28,7 @@ typedef AssembledSystem::vec vec;
 
 ModulusSolver::ModulusSolver() 
     : omega(initData(&omega,
-                     1e-5,
+                     1.0,
                      "omega",
                      "magic stuff")) 
 {
@@ -138,8 +138,10 @@ void ModulusSolver::solve(vec& res,
     
     const real omega = this->omega.getValue();
     const real precision = this->precision.getValue();
-    
-    for(unsigned k = 0, kmax = iterations.getValue(); k < kmax; ++k) {
+
+    unsigned k;
+    const unsigned kmax = iterations.getValue();
+    for(k = 0; k < kmax; ++k) {
         
         // tmp = (x, |z|)
         tmp = y;
@@ -175,7 +177,7 @@ void ModulusSolver::solve(vec& res,
         if( error <= precision ) break;
     }
 
-    sout << "fixed point error: " << error << sendl;
+    sout << "fixed point error: " << error << "\titerations: " << k << sendl;
 
     // and that should be it ?
     res = y;
