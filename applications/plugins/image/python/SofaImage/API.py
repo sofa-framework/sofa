@@ -8,14 +8,14 @@ class Image:
     """
 
     class Mesh:
-        # TODO add support for ROI
         def __init__(self, value, insideValue=None):
             self.mesh=None
             self.visual=None
             self.value=value
             self.insideValue = value if insideValue is None else insideValue
-            self.roiValue=None
-            self.roiIndices=None
+            self.roiValue=list() # a list of values corresponding to each roi
+            self.roiIndices=None # a string pointing to indices
+            self.mergeROIs=None
 
     def __init__(self, parentNode, name, imageType="ImageUC"):
         self.imageType = imageType
@@ -28,13 +28,13 @@ class Image:
         self.exporter = None
 
 
-    def addMeshLoader(self, meshFile, value, insideValue=None, closingValue=None, name=None):
+    def addMeshLoader(self, meshFile, value, insideValue=None, closingValue=None, roiIndices=list(), roiValue=list(), name=None):
         mesh = Image.Mesh(value, insideValue)
         _name = name if not name is None else os.path.splitext(os.path.basename(meshFile))[0]
         mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name, triangulate=True)
-        self.__addMesh(mesh,closingValue,_name)
+        self.__addMesh(mesh,closingValue,roiIndices,roiValue,_name)
 
-    def addExternMesh(self, externMesh, value, insideValue=None, closingValue=None, name=None):
+    def addExternMesh(self, externMesh, value, insideValue=None, closingValue=None, roiIndices=list(), roiValue=list(), name=None):
         mesh = Image.Mesh(value, insideValue)
         if not name is None :
             _name = name
@@ -43,9 +43,9 @@ class Image:
             if "meshLoader_" in _name:
                 _name=_name[len("meshLoader_"):]
         mesh.mesh = externMesh
-        self.__addMesh(mesh,closingValue,_name)
+        self.__addMesh(mesh,closingValue,roiIndices,roiValue,_name)
 
-    def __addMesh(self, mesh, closingValue=None, name=None):
+    def __addMesh(self, mesh, closingValue=None, roiIndices=list(), roiValue=list(), name=None):
         """ some code factorization between addMeshLoader and addExternMesh
         """
         args=dict()
@@ -54,9 +54,15 @@ class Image:
             mesh.mesh = self.node.createObject("MeshClosingEngine", name="closer_"+name, inputPosition="@"+meshPath+".position", inputTriangles="@"+meshPath+".triangles")
             mesh.roiValue=[closingValue]
             mesh.roiIndices="@"+SofaPython.Tools.getObjectPath(mesh.mesh)+".indices"
-        # TODO: else add rois
-#        if len(args)!=0 :
-#            mesh.mergeROIs = self.node.createObject('MergeROIs', name="mergeROIs_"+name, nbROIs=len(args), **args)
+        elif len(roiIndices)!=0 and len(roiValue)!=0 :
+            mesh.roiValue=roiValue
+            args=dict()
+            for i,roi in enumerate(roiIndices):
+                args["indices"+str(i+1)]=SofaPython.Tools.listToStr(roi)
+            mesh.mergeROIs = self.node.createObject('MergeROIs', name="mergeROIs_"+name, nbROIs=len(roiIndices), **args)
+            mesh.roiIndices="@"+SofaPython.Tools.getObjectPath(mesh.mergeROIs)+".roiIndices"
+            # use mergeROIs to potentially combine other rois (from meshclosing, boxRois, etc.)
+            # but here, roiIndices reformating to "[i,j,..] [k,l,..]" would work..
 
         self.meshes[name] = mesh
         self.meshSeq.append(name)
@@ -64,7 +70,6 @@ class Image:
     def addMeshVisual(self, meshName=None, color=None):
         name = self.meshSeq[0] if meshName is None else meshName
         mesh = self.meshes[name]
-
         if mesh.mesh is None:
             print "[ImageAPI.Image] ERROR: no mesh for", meshName
         mesh.visual = self.node.createObject("VisualModel", name="visual_"+name, src="@"+SofaPython.Tools.getObjectPath(mesh.mesh))
@@ -87,12 +92,11 @@ class Image:
             args["triangles"+(str(i) if i>1 else "")]="@"+meshPath+".triangles"
             args["value"+(str(i) if i>1 else "")]=mesh.value
             args["insideValue"+(str(i) if i>1 else "")]=mesh.insideValue
-            if not mesh.roiIndices is None and not mesh.roiValue is None:
+            if not mesh.roiIndices is None and len(mesh.roiValue)!=0 :
                 args["roiIndices"+(str(i) if i>1 else "")]=mesh.roiIndices
                 args["roiValue"+(str(i) if i>1 else "")]=SofaPython.Tools.listToStr(mesh.roiValue)
             i+=1
-
-        self.image = self.node.createObject('MeshToImageEngine', template=self.imageType, name="image", voxelSize=SofaPython.units.length_from_SI(voxelSize), subdiv=8, rotateImage="false", nbMeshes=len(self.meshes), **args)
+        self.image = self.node.createObject('MeshToImageEngine', template=self.imageType, name="image", voxelSize=SofaPython.units.length_from_SI(voxelSize), padSize="1", subdiv=8, rotateImage="false", nbMeshes=len(self.meshes), **args)
 
     def addViewer(self):
         if self.image is None:
