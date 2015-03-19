@@ -44,6 +44,7 @@ set(HEADER_FILES
     numericalsolver/BiCgStabSolver.h
     numericalsolver/NNCGSolver.h
 	numericalsolver/SubKKT.h
+	numericalsolver/ModulusSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
@@ -154,6 +155,7 @@ set(SOURCE_FILES
     numericalsolver/BiCgStabSolver.cpp
     numericalsolver/NNCGSolver.cpp
 	numericalsolver/SubKKT.cpp
+	numericalsolver/ModulusSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp
