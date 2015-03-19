@@ -45,7 +45,7 @@ class RigidBody:
         self.frame = Frame.Frame()
         self.framecom = Frame.Frame()
 
-    def setFromMesh(self, filepath, density = 1, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
+    def setFromMesh(self, filepath, density = 1000, offset = [0,0,0,0,0,0,1], scale3d=[1,1,1], inertia_forces = False ):
         ## create the rigid body from a mesh (inertia and com are automatically computed)
         massInfo = SofaPython.mass.RigidMassInfo()
         massInfo.setFromMesh(filepath, density, scale3d)
