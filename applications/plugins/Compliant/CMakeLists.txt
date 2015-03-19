@@ -24,7 +24,8 @@ set(HEADER_FILES
     mapping/GearMapping.h
 
     numericalsolver/KKTSolver.h
-    numericalsolver/LDLTSolver.h
+    numericalsolver/EigenSparseSolver.h
+    numericalsolver/EigenSparseSolver.inl
     numericalsolver/MinresSolver.h
     numericalsolver/KrylovSolver.h
     numericalsolver/CgSolver.h
@@ -39,7 +40,6 @@ set(HEADER_FILES
     numericalsolver/PreconditionedCgSolver.h
     numericalsolver/AnalysisSolver.h
     numericalsolver/LumpedResponse.h
-    numericalsolver/LUSolver.h
     numericalsolver/LUResponse.h
     numericalsolver/BiCgStabSolver.h
     numericalsolver/NNCGSolver.h
@@ -136,7 +136,7 @@ set(SOURCE_FILES
 	mapping/PythonMultiMapping.cpp
     mapping/GearMapping.cpp
 
-    numericalsolver/LDLTSolver.cpp
+    numericalsolver/EigenSparseSolver.cpp
     numericalsolver/MinresSolver.cpp
     numericalsolver/KrylovSolver.cpp
     numericalsolver/CgSolver.cpp
@@ -150,7 +150,6 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedCgSolver.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/LumpedResponse.cpp
-    numericalsolver/LUSolver.cpp
     numericalsolver/LUResponse.cpp
     numericalsolver/BiCgStabSolver.cpp
     numericalsolver/NNCGSolver.cpp

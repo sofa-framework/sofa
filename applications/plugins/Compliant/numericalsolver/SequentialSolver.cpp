@@ -343,16 +343,14 @@ void SequentialSolver::solve_impl(vec& res,
 
 
 	// free velocity
-    vec tmp( sub.size_sub() );
-
-
-    sub.solve_filtered(*response, tmp, rhs.head(sys.m));
+    vec free_res( sub.size_sub() );
+    sub.solve_filtered(*response, free_res, rhs.head(sys.m));
 
 
     // we're done
     if( !sys.n )
     {
-        res.head( sys.m ) = sub.unproject_primal(tmp);
+        res.head( sys.m ) = sub.unproject_primal(free_res);
         return;
     }
 
@@ -367,7 +365,7 @@ void SequentialSolver::solve_impl(vec& res,
 	vec delta = vec::Zero( sys.n );
 	
 	// lcp rhs 
-    vec constant = rhs.tail(sys.n) - JP * tmp;
+    vec constant = rhs.tail(sys.n) - JP * free_res;
 	
 	// lcp error
 	vec error = vec::Zero( sys.n );
@@ -391,7 +389,7 @@ void SequentialSolver::solve_impl(vec& res,
 		if( std::sqrt(estimate2) / sys.n <= epsilon ) break;
 	}
 
-    res.head( sys.m ) = sub.unproject_primal( tmp + net );
+    res.head( sys.m ) = sub.unproject_primal( free_res + net );
     res.tail( sys.n ) = lambda;
 
 
