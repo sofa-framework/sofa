@@ -141,10 +141,10 @@ class Behavior:
         self.node.createObject("MechanicalObject", template="F331", name="dofs")
         insertLinearMapping(self.node, dofRigid, dofAffine, self.sampler, self.labelImage, self.labels)
     
-    def addHooke(self, youngModule):
+    def addHooke(self, youngModulus):
         eNode = self.node.createChild("E")
         eNode.createObject('MechanicalObject',  template="E331", name="E")
         eNode.createObject('CorotationalStrainMapping', template="F331,E331", assemble=True)
-        eNode.createObject('HookeForceField',  template="E331", youngModulus= SofaPython.units.elasticity_from_SI(youngModule), poissonRatio=0.4, viscosity=0, assemble=True, isCompliance=False)
+        eNode.createObject('HookeForceField',  template="E331", youngModulus= SofaPython.units.elasticity_from_SI(youngModulus), poissonRatio=0.4, viscosity=0, assemble=True, isCompliance=False)
         
         
