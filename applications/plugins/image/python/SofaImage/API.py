@@ -9,11 +9,13 @@ class Image:
 
     class Mesh:
         # TODO add support for ROI
-        def __init__(self, value, closingValue=None):
+        def __init__(self, value, insideValue=None):
             self.mesh=None
             self.visual=None
             self.value=value
-            self.closingValue = value if closingValue is None else closingValue
+            self.insideValue = value if insideValue is None else insideValue
+            self.roiValue=None
+            self.roiIndices=None
 
     def __init__(self, parentNode, name, imageType="ImageUC"):
         self.imageType = imageType
@@ -21,21 +23,19 @@ class Image:
         self.name = name
         self.meshes = dict()
         self.meshSeq = list() # to keep track of the mesh sequence, order does matter
-        self.value = None
-        self.closingValue = None
         self.image = None
         self.viewer = None
         self.exporter = None
 
-    def addMeshLoader(self, meshFile, value, closingValue=None, name=None):
-        mesh = Image.Mesh(value, closingValue)
+
+    def addMeshLoader(self, meshFile, value, insideValue=None, closingValue=None, name=None):
+        mesh = Image.Mesh(value, insideValue)
         _name = name if not name is None else os.path.splitext(os.path.basename(meshFile))[0]
         mesh.mesh = SofaPython.Tools.meshLoader(self.node, meshFile, name="meshLoader_"+_name, triangulate=True)
-        self.meshes[_name] = mesh
-        self.meshSeq.append(_name)
+        self.__addMesh(mesh,closingValue,_name)
 
-    def addMesh(self, externMesh, value, closingValue=None, name=None):
-        mesh = Image.Mesh(value, closingValue)
+    def addExternMesh(self, externMesh, value, insideValue=None, closingValue=None, name=None):
+        mesh = Image.Mesh(value, insideValue)
         if not name is None :
             _name = name
         else :
@@ -43,22 +43,37 @@ class Image:
             if "meshLoader_" in _name:
                 _name=_name[len("meshLoader_"):]
         mesh.mesh = externMesh
-        self.meshes[_name] = mesh
-        self.meshSeq.append(_name)
+        self.__addMesh(mesh,closingValue,_name)
 
-    def addMeshVisual(self, meshName=None):
+    def __addMesh(self, mesh, closingValue=None, name=None):
+        """ some code factorization between addMeshLoader and addExternMesh
+        """
+        args=dict()
+        if not closingValue is None : # close mesh if closingValue is defined
+            meshPath = SofaPython.Tools.getObjectPath(mesh.mesh)
+            mesh.mesh = self.node.createObject("MeshClosingEngine", name="closer_"+name, inputPosition="@"+meshPath+".position", inputTriangles="@"+meshPath+".triangles")
+            mesh.roiValue=[closingValue]
+            mesh.roiIndices="@"+SofaPython.Tools.getObjectPath(mesh.mesh)+".indices"
+        # TODO: else add rois
+#        if len(args)!=0 :
+#            mesh.mergeROIs = self.node.createObject('MergeROIs', name="mergeROIs_"+name, nbROIs=len(args), **args)
+
+        self.meshes[name] = mesh
+        self.meshSeq.append(name)
+
+    def addMeshVisual(self, meshName=None, color=None):
         name = self.meshSeq[0] if meshName is None else meshName
         mesh = self.meshes[name]
 
         if mesh.mesh is None:
             print "[ImageAPI.Image] ERROR: no mesh for", meshName
         mesh.visual = self.node.createObject("VisualModel", name="visual_"+name, src="@"+SofaPython.Tools.getObjectPath(mesh.mesh))
+        if not color is None:
+            mesh.visual.setColor(color[0],color[1],color[2],color[3])
 
     def addAllMeshVisual(self, color=None):
         for name in self.meshSeq:
-            self.addMeshVisual(name)
-            if not color is None:
-                self.meshes[name].visual.setColor(color[0],color[1],color[2],color[3])
+            self.addMeshVisual(name, color)
 
     def addMeshToImage(self, voxelSize):
         args=dict()
@@ -71,10 +86,13 @@ class Image:
             args["position"+(str(i) if i>1 else "")]="@"+meshPath+".position"
             args["triangles"+(str(i) if i>1 else "")]="@"+meshPath+".triangles"
             args["value"+(str(i) if i>1 else "")]=mesh.value
-#            args["closingValue"+(str(i) if i>1 else "")]=mesh.closingValue not yet a closingValue per mesh !
-            args["closingValue"]=mesh.closingValue # last wins
+            args["insideValue"+(str(i) if i>1 else "")]=mesh.insideValue
+            if not mesh.roiIndices is None and not mesh.roiValue is None:
+                args["roiIndices"+(str(i) if i>1 else "")]=mesh.roiIndices
+                args["roiValue"+(str(i) if i>1 else "")]=SofaPython.Tools.listToStr(mesh.roiValue)
             i+=1
-        self.image = self.node.createObject('MeshToImageEngine', template=self.imageType, name="image", voxelSize=SofaPython.units.length_from_SI(voxelSize), subdiv=8, fillInside="true", rotateImage="false", nbMeshes=len(self.meshes), **args)
+
+        self.image = self.node.createObject('MeshToImageEngine', template=self.imageType, name="image", voxelSize=SofaPython.units.length_from_SI(voxelSize), subdiv=8, rotateImage="false", nbMeshes=len(self.meshes), **args)
 
     def addViewer(self):
         if self.image is None:
