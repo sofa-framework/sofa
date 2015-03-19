@@ -48,13 +48,16 @@ void LDLTResponse::factor(const mat& H, bool semidefinite ) {
     }
     else
     {
-        // TODO make sure no temporary is used ?
-        response.compute( H.selfadjointView<Eigen::Upper>() );
+        // TODO there IS a temporary here, from rmat to cmat
+
+        // so we only copy the part LDLT will work from (default to
+        // Lower)
+        response.compute( H.triangularView< response_type::UpLo >() );
     }
 
 	
 	if( response.info() != Eigen::Success ) {
-        serr << "non invertible response" << sendl;
+        serr << "non invertible matrix" << sendl;
 	}
 
 	assert( response.info() == Eigen::Success );
