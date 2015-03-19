@@ -191,6 +191,9 @@ public:
     Data< VecReal > radius;
     Data< SReal > defaultRadius;
 
+
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
+
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;
 };
