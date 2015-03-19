@@ -14,13 +14,11 @@
 
 <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="0" stabilization="no stabilization" warm_start="false"/>
 
-<ModulusSolver iterations="30" omega="1" precision="1e-10" />
+<ModulusSolver iterations="30" omega="1" precision="1e-8" />
 <!-- <SequentialSolver iterations="30" precision="1e-10" /> -->
 
 <Node   name="scene" activated="1" >
-   
-
-
+  
    <Node name="cloth" >
 	 
      <GridMeshCreator name="loader" filename="nofile" resolution="20 20" trianglePattern="0" rotation="90 0 0 " translation="-0.5 1 -0.5" scale="1 1 0" />

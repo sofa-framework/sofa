@@ -9,19 +9,17 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-/// Solve a dynamics system including bilateral constraints
-/// with a Schur complement factorization (LDL^T Cholesky)
-/// Note that the dynamics equation is solved by an external Response component
+// solve unilateral sparse systems without forming the schur
+// complement
 class SOFA_Compliant_API ModulusSolver : public IterativeSolver {
   public:
 	
-	SOFA_CLASS(ModulusSolver, KKTSolver);
+	SOFA_CLASS(ModulusSolver, IterativeSolver);
 	
 	virtual void solve(vec& x,
 	                   const AssembledSystem& system,
 	                   const vec& rhs) const;
 
-	// performs factorization
 	virtual void factor(const AssembledSystem& system);
 
     virtual void init();
@@ -30,7 +28,7 @@ class SOFA_Compliant_API ModulusSolver : public IterativeSolver {
 	~ModulusSolver();
     
   protected:
-
+    
     // response matrix
     Response::SPtr response;
 
