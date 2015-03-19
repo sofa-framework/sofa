@@ -64,7 +64,7 @@ namespace core
     template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
     template class SOFA_Flexible_API MultiMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes >;
     template class SOFA_Flexible_API MultiMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
@@ -78,7 +78,7 @@ namespace behavior
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
@@ -168,7 +168,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
     }
 }
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template<>
 void FixedConstraint< TYPEABSTRACTNAME3fTypes >::draw(const core::visual::VisualParams* vparams)
 {
@@ -240,14 +240,14 @@ int EVALUATOR(TYPEABSTRACTNAME,FixedConstraintClass) = core::RegisterObject ( "A
         #ifndef SOFA_FLOAT
                 .add< FixedConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
     #endif
-    #ifndef SOFA_SReal
+    #ifndef SOFA_DOUBLE
                 .add< FixedConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
     #endif
         ;
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API FixedConstraint<TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template class SOFA_Flexible_API FixedConstraint<TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -326,7 +326,7 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::V
     }
 }
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template <>
 void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -397,14 +397,14 @@ int EVALUATOR(TYPEABSTRACTNAME,PartialFixedConstraintClass) = core::RegisterObje
         #ifndef SOFA_FLOAT
         .add< PartialFixedConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
     #endif
-    #ifndef SOFA_SReal
+    #ifndef SOFA_DOUBLE
         .add< PartialFixedConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
     #endif
 ;
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template class SOFA_Flexible_API PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -418,14 +418,14 @@ int EVALUATOR(TYPEABSTRACTNAME,ProjectToPointConstraintClass) = core::RegisterOb
 #ifndef SOFA_FLOAT
         .add< ProjectToPointConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 .add< ProjectToPointConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
 #endif
         ;
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template class SOFA_Flexible_API ProjectToPointConstraint<TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -436,14 +436,14 @@ int EVALUATOR(TYPEABSTRACTNAME,ProjectToLineConstraintClass) = core::RegisterObj
 #ifndef SOFA_FLOAT
 .add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 .add< ProjectToLineConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
 #endif
 ;
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template class SOFA_Flexible_API ProjectToLineConstraint<TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -454,7 +454,7 @@ int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterOb
 #ifndef SOFA_FLOAT
 .add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 .add< ProjectToPlaneConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
 #endif
 ;
@@ -462,7 +462,7 @@ int EVALUATOR(TYPEABSTRACTNAME,ProjectToPlaneConstraintClass) = core::RegisterOb
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template class SOFA_Flexible_API ProjectToPlaneConstraint<TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -473,14 +473,14 @@ int EVALUATOR(TYPEABSTRACTNAME,ProjectDirectionConstraintClass) = core::Register
 #ifndef SOFA_FLOAT
 .add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 .add< ProjectDirectionConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
 #endif
     ;
 #ifndef SOFA_FLOAT
 template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template class SOFA_Flexible_API ProjectDirectionConstraint<TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -594,7 +594,7 @@ void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::vi
 #endif /* SOFA_NO_OPENGL */
 }
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template <> SOFA_Flexible_API
 void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
@@ -694,7 +694,7 @@ int EVALUATOR(TYPEABSTRACTNAME,MechanicalObjectClass) = core::RegisterObject ( "
     #ifndef SOFA_FLOAT
         .add< MechanicalObject<TYPEABSTRACTNAME3dTypes> >()
     #endif
-    #ifndef SOFA_SReal
+    #ifndef SOFA_DOUBLE
         .add< MechanicalObject<TYPEABSTRACTNAME3fTypes> >()
     #endif
         ;
@@ -704,7 +704,7 @@ int EVALUATOR(TYPEABSTRACTNAME,MechanicalObjectClass) = core::RegisterObject ( "
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API MechanicalObject<TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API MechanicalObject<TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -731,7 +731,7 @@ namespace mass
 //    }
 //}
 //#endif
-//#ifndef SOFA_SReal
+//#ifndef SOFA_DOUBLE
 //template<> SOFA_Flexible_API
 //void UniformMass<TYPEABSTRACTNAME3fTypes, TYPEABSTRACTNAME3fMass>::reinit()
 //{
@@ -785,7 +785,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
     return e;
 }
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template <> SOFA_Flexible_API
 void UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fMass>::draw(const core::visual::VisualParams* /*vparams*/)
 {
@@ -834,7 +834,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
 #ifndef SOFA_FLOAT
     .add< UniformMass<TYPEABSTRACTNAME3dTypes,TYPEABSTRACTNAME3dMass> >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     .add< UniformMass<TYPEABSTRACTNAME3fTypes,TYPEABSTRACTNAME3fMass> >()
 #endif
             ;
@@ -848,7 +848,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
 #ifndef SOFA_FLOAT
     .add< ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunctiond,TYPEABSTRACTNAME3dMass> >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     .add< ImageDensityMass<TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunctionf,TYPEABSTRACTNAME3fMass> >()
 #endif
             ;
@@ -857,7 +857,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3dTypes,core::behavior::ShapeFunctiond,TYPEABSTRACTNAME3dMass>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API ImageDensityMass<TYPEABSTRACTNAME3fTypes,core::behavior::ShapeFunctionf,TYPEABSTRACTNAME3fMass>;
 #endif
 
@@ -868,7 +868,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API UniformMass<TYPEABSTRACTNAME3dTypes,TYPEABSTRACTNAME3dMass>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API UniformMass<TYPEABSTRACTNAME3fTypes,TYPEABSTRACTNAME3fMass>;
 #endif
 
@@ -885,7 +885,7 @@ int EVALUATOR(TYPEABSTRACTNAME,MonitorClass) = core::RegisterObject("Monitoring 
 #ifndef SOFA_FLOAT
         .add< Monitor<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
         .add< Monitor<defaulttype::TYPEABSTRACTNAME3fTypes> >()
 #endif
     ;
@@ -893,7 +893,7 @@ int EVALUATOR(TYPEABSTRACTNAME,MonitorClass) = core::RegisterObject("Monitoring 
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API Monitor<defaulttype::TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API Monitor<defaulttype::TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -907,7 +907,7 @@ int EVALUATOR(TYPEABSTRACTNAME,ExtraMonitorClass) = core::RegisterObject("Monito
 #ifndef SOFA_FLOAT
     .add< ExtraMonitor<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     .add< ExtraMonitor<defaulttype::TYPEABSTRACTNAME3fTypes> >()
 #endif
 ;
@@ -917,7 +917,7 @@ int EVALUATOR(TYPEABSTRACTNAME,ExtraMonitorClass) = core::RegisterObject("Monito
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API ExtraMonitor<defaulttype::TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API ExtraMonitor<defaulttype::TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -962,7 +962,7 @@ void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >::init
     compliance.setValue(usedComp);
 }
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 template<> SOFA_Flexible_API
 void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >::init()
 {
@@ -1004,7 +1004,7 @@ int EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrectionClass) = core::Regis
 #ifndef SOFA_FLOAT
     .add< UncoupledConstraintCorrection<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     .add< UncoupledConstraintCorrection<defaulttype::TYPEABSTRACTNAME3fTypes> >()
 #endif
         ;
@@ -1012,7 +1012,7 @@ int EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrectionClass) = core::Regis
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API UncoupledConstraintCorrection<defaulttype::TYPEABSTRACTNAME3dTypes>;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API UncoupledConstraintCorrection<defaulttype::TYPEABSTRACTNAME3fTypes>;
 #endif
 
@@ -1030,12 +1030,12 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes > >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3fTypes > >()
 #endif
 #ifndef SOFA_FLOAT
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3dTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3fTypes > >()
@@ -1051,12 +1051,12 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes >;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3dTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3fTypes >;
@@ -1076,7 +1076,7 @@ int EVALUATOR(TYPEABSTRACTNAME,SubsetMultiMappingClass) = core::RegisterObject("
 #ifndef SOFA_FLOAT
     .add< SubsetMultiMapping< TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dTypes > >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     .add< SubsetMultiMapping< TYPEABSTRACTNAME3fTypes, TYPEABSTRACTNAME3fTypes > >()
 #endif
         ;
@@ -1084,7 +1084,7 @@ int EVALUATOR(TYPEABSTRACTNAME,SubsetMultiMappingClass) = core::RegisterObject("
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API SubsetMultiMapping< TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dTypes >;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API SubsetMultiMapping< TYPEABSTRACTNAME3fTypes, TYPEABSTRACTNAME3fTypes >;
 #endif
 
@@ -1101,7 +1101,7 @@ namespace engine
 #ifndef SOFA_FLOAT
             .add< BoxROI< defaulttype::TYPEABSTRACTNAME3dTypes > >()
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
             .add< BoxROI< defaulttype::TYPEABSTRACTNAME3fTypes > >()
 #endif
     ;
@@ -1110,7 +1110,7 @@ namespace engine
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API BoxROI< defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API BoxROI< defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 
@@ -1126,7 +1126,7 @@ namespace forcefield
     #ifndef SOFA_FLOAT
             .add< RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3dTypes > >()
     #endif
-    #ifndef SOFA_SReal
+    #ifndef SOFA_DOUBLE
             .add< RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3fTypes > >()
     #endif
     ;
@@ -1134,7 +1134,7 @@ namespace forcefield
     #ifndef SOFA_FLOAT
         template class SOFA_Flexible_API RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
     #endif
-    #ifndef SOFA_SReal
+    #ifndef SOFA_DOUBLE
         template class SOFA_Flexible_API RestShapeSpringsForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     #endif
 
@@ -1149,7 +1149,7 @@ namespace forcefield
     #ifndef SOFA_FLOAT
             .add< ConstantForceField< defaulttype::TYPEABSTRACTNAME3dTypes > >()
     #endif
-    #ifndef SOFA_SReal
+    #ifndef SOFA_DOUBLE
             .add< ConstantForceField< defaulttype::TYPEABSTRACTNAME3fTypes > >()
     #endif
     ;
@@ -1157,7 +1157,7 @@ namespace forcefield
     #ifndef SOFA_FLOAT
         template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
     #endif
-    #ifndef SOFA_SReal
+    #ifndef SOFA_DOUBLE
         template class SOFA_Flexible_API ConstantForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     #endif
 
