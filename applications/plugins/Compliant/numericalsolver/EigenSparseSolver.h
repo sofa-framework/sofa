@@ -68,6 +68,8 @@ class LDLTSolver : public EigenSparseSolver< Eigen::SimplicialLDLT< AssembledSys
 {
 public:
     SOFA_CLASS(LDLTSolver,SOFA_TEMPLATE2(EigenSparseSolver,SOFA_TEMPLATE(Eigen::SimplicialLDLT,AssembledSystem::cmat),true));
+
+    ~LDLTSolver() {}
 };
 
 
@@ -75,6 +77,8 @@ class LUSolver : public EigenSparseSolver< Eigen::SparseLU< AssembledSystem::cma
 {
 public:
     SOFA_CLASS(LUSolver,SOFA_TEMPLATE2(EigenSparseSolver,SOFA_TEMPLATE(Eigen::SparseLU,AssembledSystem::cmat),false));
+
+    ~LUSolver() {}
 };
 
 
