@@ -13,10 +13,9 @@ plugins_paths = ['applications/plugins',
 
 for relative in plugins_paths:
     absolute = os.path.join(Sofa.src_dir(), relative)
-    if __name__ == "__main__":
-        if len(sys.argv)>=2 and os.path.isdir(os.path.abspath(sys.argv[1])):
-            absolute=os.path.join(os.path.abspath(sys.argv[1]),relative)
-
+    if 'SOFA_PythonScriptPath' in locals() and len(SOFA_PythonScriptPath) > 0 :
+        absolute=os.path.join(os.path.abspath(SOFA_PythonScriptPath),relative)
+    #print absolute
     if os.path.exists(absolute): # applications-dev is not necessarily existing
         for plugin in os.listdir( absolute ):
             path = os.path.join(absolute, plugin)

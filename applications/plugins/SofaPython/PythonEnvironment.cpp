@@ -94,23 +94,20 @@ void PythonEnvironment::Init()
         return ;
     }
 
-    const char* python_argv[2];
-    python_argv[0]=scriptPy.c_str();
     scriptPyPath=scriptPy.substr(0,scriptPy.size()-scriptPyPath.size());
-    python_argv[1]=scriptPyPath.c_str();
+    std::string setPyVar="SOFA_PythonScriptPath=\'"+scriptPyPath+"\'";
+    PyRun_SimpleString(setPyVar.c_str());
 
 #ifdef WIN32
     char* scriptPyChar = (char*) malloc((scriptPy.size()+1)*sizeof(char));
     strcpy(scriptPyChar,scriptPy.c_str());
     PyObject* PyFileObject = PyFile_FromString(scriptPyChar, "r");
     if(PyFileObject){
-        PySys_SetArgvEx(2, (char**)python_argv, 0);
         PyRun_SimpleFileEx(PyFile_AsFile(PyFileObject), scriptPyChar, 1);
     }
     free(scriptPyChar);
 #else
     FILE* scriptPyFile = fopen(scriptPy.c_str(),"r");
-    PySys_SetArgvEx(2, (char**)python_argv, 0);
     PyRun_SimpleFile(scriptPyFile, scriptPy.c_str());
     fclose(scriptPyFile);
 #endif 
