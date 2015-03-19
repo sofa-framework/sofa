@@ -1,29 +1,26 @@
-#include "LUSolver.h"
-#include "LUResponse.h"
+#ifndef COMPLIANT_EIGENSPARSESOLVER_INL
+#define COMPLIANT_EIGENSPARSESOLVER_INL
 
-#include <sofa/core/ObjectFactory.h>
-
-#include "../utils/sparse.h"
-#include <Eigen/SparseLU>
+#include "EigenSparseSolver.h"
 #include "SubKKT.h"
 
+#include "LDLTResponse.h"
+#include "LUResponse.h"
 
-using std::cerr;
-using std::endl;
+#include "../utils/sparse.h"
+
+
 
 namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(LUSolver)
-static int LUSolverClass = core::RegisterObject("Direct LU solver").add< LUSolver >();
 
 typedef AssembledSystem::vec vec;
 
-
-struct LUSolver::pimpl_type {
-    
-    typedef Eigen::SparseLU< cmat > solver_type;
+template<class LinearSolver,bool symmetric>
+struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
+    typedef LinearSolver solver_type;
 
     solver_type solver;
     cmat PHinvPJT;
@@ -35,52 +32,53 @@ struct LUSolver::pimpl_type {
 };
 
 
-
-LUSolver::LUSolver()
+template<class LinearSolver,bool symmetric>
+EigenSparseSolver<LinearSolver,symmetric>::EigenSparseSolver()
     : schur(initData(&schur,
                      true,
                      "schur",
                      "use schur complement"))
     , pimpl( new pimpl_type )
-{
+{}
 
-}
+template<class LinearSolver,bool symmetric>
+EigenSparseSolver<LinearSolver,symmetric>::~EigenSparseSolver()
+{}
 
-LUSolver::~LUSolver() {
-
-}
-
-
-void LUSolver::init() {
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::init() {
 
     KKTSolver::init();
 
     // let's find a response
-    response = this->getContext()->get<Response>( core::objectmodel::BaseContext::Local );
+    response = this->getContext()->template get<Response>( core::objectmodel::BaseContext::Local );
 
     // fallback in case we missed
     if( !response ) {
-        response = new LUResponse();
-        this->getContext()->addObject( response );
 
+        if( symmetric ) response = new LDLTResponse();
+        else response = new LUResponse();
+        this->getContext()->addObject( response );
+        
         serr << "fallback response class: "
              << response->getClassName()
              << " added to the scene" << sendl;
     }
 }
 
-
-void LUSolver::factor(const AssembledSystem& sys) {
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::factor(const AssembledSystem& sys) {
 
     if( schur.getValue() ) {
         factor_schur( sys );
     } else {
-        SubKKT::projected_kkt(pimpl->sub, sys, 1e-14);
+        SubKKT::projected_kkt(pimpl->sub, sys, 1e-14, symmetric);
         pimpl->sub.factor(*response);
     }
 }
 
-void LUSolver::solve(vec& res,
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::solve(vec& res,
                        const AssembledSystem& sys,
                        const vec& rhs) const {
     if( schur.getValue() ) {
@@ -91,10 +89,9 @@ void LUSolver::solve(vec& res,
 
 }
 
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSystem& sys ) {
 
-
-
-void LUSolver::factor_schur(const AssembledSystem& sys ) {
     // schur complement
     SubKKT::projected_primal(pimpl->sub, sys);
     pimpl->sub.factor(*response);
@@ -110,34 +107,33 @@ void LUSolver::factor_schur(const AssembledSystem& sys ) {
             pimpl->schur = sys.C.transpose();
             
             sparse::fast_add_prod(pimpl->schur, pimpl->tmp, pimpl->PHinvPJT);
-            
-            // pimpl->schur = sys.C.transpose() + (sys.J * pimpl->HinvPJT).triangularView<Eigen::Lower>();
+
         }
+    
         if( debug.getValue() ){
             typedef AssembledSystem::dmat dmat;
-            serr << "factor, PHinvPJT = " << sendl
-                 << dmat(pimpl->PHinvPJT) << sendl
-                 << "factor, schur = " << sendl << dmat(pimpl->schur)
-                 << sendl;
+            serr << "factor, PHinvPJT = " << sendl << dmat(pimpl->PHinvPJT) << sendl
+                 << "factor, schur = " << sendl << dmat(pimpl->schur) << sendl;
         }
 
         {
-            scoped::timer step("schur factorization (LU)");
+            scoped::timer step("schur factorization");
             pimpl->solver.compute( pimpl->schur );
         }
 
         if( pimpl->solver.info() == Eigen::NumericalIssue ){
-            serr << "factor: schur factorization failed :-/" << sendl
-                 << pimpl->schur << sendl;
+            serr << "factor: schur factorization failed :-/ ";
+            if( symmetric ) serr<< "(is schur psd ?)";
+            serr << sendl << pimpl->schur << sendl;
         }
     }
 }
 
 
-
-void LUSolver::solve_kkt(vec& res,
-                         const AssembledSystem& sys,
-                         const vec& rhs) const {
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::solve_kkt(vec& res,
+                           const AssembledSystem& sys,
+                           const vec& rhs) const {
     assert( res.size() == sys.size() );
     assert( rhs.size() == sys.size() );
 
@@ -151,44 +147,43 @@ void LUSolver::solve_kkt(vec& res,
     
 }
 
-
-
-
-void LUSolver::solve_schur(vec& res,
-                     const AssembledSystem& sys,
-                     const vec& rhs) const {
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
+                             const AssembledSystem& sys,
+                             const vec& rhs) const {
 
     assert( res.size() == sys.size() );
     assert( rhs.size() == sys.size() );
 
     vec free;
 
-
     if( debug.getValue() ){
         serr << "solve, rhs = " << rhs.transpose() << sendl
              << "solve, H = " << sendl << dmat(sys.H) << sendl;
     }
 
-    pimpl->sub.solve(*response, free, rhs.head(sys.m));    
-
+    // in place solve
+    pimpl->sub.solve(*response, free, rhs.head(sys.m));
+    
     if( debug.getValue() ){
         serr << "solve, free motion solution = " << free.transpose() << sendl
-             << "solve, verification = " << (sys.H * free).transpose() << sendl
+            // << "solve, verification = " << (sys.H * free).transpose() << sendl;
              << "solve, sys.m = " << sys.m
              << ", sys.n = " << sys.n
              << ", rhs.size = " << rhs.size() << sendl;
 
     }
+    
     res.head( sys.m ) = free;
     
     if( sys.n ) {
         vec tmp = rhs.tail( sys.n ) - pimpl->PHinvPJT.transpose() * rhs.head( sys.m );
-
+        
         // lambdas
-        res.tail( sys.n ) =  pimpl->solver.solve( tmp );
-
+        res.tail( sys.n ) = pimpl->solver.solve( tmp );
+        
         // constraint forces
-        res.head( sys.m ) += pimpl->PHinvPJT * res.tail( sys.n);
+        res.head( sys.m ) += pimpl->PHinvPJT * res.tail( sys.n );
         
         if( debug.getValue() ){
             serr << "solve, free motion constraint error= "
@@ -208,4 +203,6 @@ void LUSolver::solve_schur(vec& res,
 }
 }
 }
+
+#endif
 
