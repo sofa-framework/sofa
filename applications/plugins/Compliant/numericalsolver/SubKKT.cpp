@@ -236,21 +236,10 @@ void SubKKT::factor(Response& resp) const {
 void SubKKT::solve(const Response& resp,
                    vec& res,
                    const vec& rhs) const {
-    assert( rhs.size() == size_full() );
+
     res.resize( size_full() );
 
-    vtmp1.resize( size_sub() );
-    vtmp2.resize( size_sub() );    
-
-    if( P.cols() ) {
-        vtmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
-    }
-    if( Q.cols() ) {
-        vtmp1.tail(Q.cols()).noalias() = Q.transpose() * rhs.tail(Q.rows());
-    }
-    
-    // system solve
-    resp.solve(vtmp2, vtmp1);
+    solve_filtered( resp, vtmp2, rhs );
 
     // remap
     if( P.cols() ) {
@@ -324,19 +313,72 @@ void SubKKT::solve_opt(const Response& resp,
                        const rmat& rhs) const {
     res.resize(rhs.rows(), rhs.cols());
     
+//    if( Q.cols() ) {
+//        throw std::logic_error("sorry, not implemented");
+//    }
+
+//    sparse::fast_prod(mtmp1, P.transpose(), rhs.transpose());
+//    // mtmp1 = P.transpose() * rhs.transpose();
+    
+//    resp.solve(mtmp2, mtmp1);
+//    mtmp3 = P;
+
+//    // not sure if this causes a temporary
+//    sparse::fast_prod(res, mtmp3, mtmp2);
+//    // res = mtmp3 * mtmp2;
+
+
+    solve_filtered( resp, mtmp2, rhs );
+
+    mtmp1 = P;
+    sparse::fast_prod(res, mtmp1, mtmp2);
+}
+
+
+
+
+
+
+
+
+void SubKKT::solve_filtered(const Response& resp,
+                   vec& res,
+                   const vec& rhs) const {
+    assert( rhs.size() == size_full() );
+    res.resize( size_full() );
+
+    vtmp1.resize( size_sub() );
+    res.resize( size_sub() );
+
+    if( P.cols() ) {
+        vtmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
+    }
+    if( Q.cols() ) {
+        vtmp1.tail(Q.cols()).noalias() = Q.transpose() * rhs.tail(Q.rows());
+    }
+
+    // system solve
+    resp.solve(res, vtmp1);
+}
+
+
+void SubKKT::solve_filtered(const Response& resp,
+                       cmat& res,
+                       const rmat& rhs,
+                       rmat* Prhs ) const {
+    
     if( Q.cols() ) {
         throw std::logic_error("sorry, not implemented");
     }
 
-    sparse::fast_prod(mtmp1, P.transpose(), rhs.transpose());
-    // mtmp1 = P.transpose() * rhs.transpose();
-    
-    resp.solve(mtmp2, mtmp1);
-    mtmp3 = P;
+    if( !Prhs ) Prhs = &mtmpr;
 
-    // not sure if this causes a temporary
-    sparse::fast_prod(res, mtmp3, mtmp2);
-    // res = mtmp3 * mtmp2;
+    Prhs->resize( rhs.rows(), P.cols() );
+    res.resize( P.cols(), rhs.rows() );
+
+    sparse::fast_prod(*Prhs, rhs, P);
+    
+    resp.solve(res, Prhs->transpose() );
 }
 
 
