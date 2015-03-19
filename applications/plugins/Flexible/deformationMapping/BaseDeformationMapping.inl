@@ -125,7 +125,9 @@ void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
-    helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
+    //Pierre-Luc : I changed from position to rest position.
+    //During a simulation where a dof is dynamically added and mapping needs to be updated the deformed positions were used and not the rest ones as expected.
+    helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
 
     helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
     helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);

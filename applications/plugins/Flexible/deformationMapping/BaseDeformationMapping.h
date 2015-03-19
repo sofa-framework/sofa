@@ -341,17 +341,14 @@ public:
 
     Data<bool> assemble;
 
+    Data<VecCoord >    f_pos0; ///< initial spatial positions of children
+    VecCoord f_pos;
+    VMaterialToSpatial f_F;         ///< current value of deformation gradients (for visualisation)
+    KDT f_KdTree;
+
 protected:
     BaseDeformationMappingT (core::State<In>* from = NULL, core::State<Out>* to= NULL);
     virtual ~BaseDeformationMappingT()     { }
-
-    Data<VecCoord >    f_pos0; ///< initial spatial positions of children
-
-    VecCoord f_pos;
-
-    KDT f_KdTree;
-    VMaterialToSpatial f_F;         ///< current value of deformation gradients (for visualisation)
-
 
 public:
 
