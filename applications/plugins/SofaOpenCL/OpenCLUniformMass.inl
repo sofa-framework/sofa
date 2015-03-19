@@ -358,8 +358,6 @@ bool UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addBBox(SReal* minBBox
 }*/
 
 
-#endif
-
 template <>
 SReal UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& d_x) const
 {
