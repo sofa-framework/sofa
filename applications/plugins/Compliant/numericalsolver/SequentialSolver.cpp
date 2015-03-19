@@ -12,7 +12,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(SequentialSolver);
+SOFA_DECL_CLASS(SequentialSolver)
 int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").add< SequentialSolver >();
 
 
@@ -139,12 +139,9 @@ void SequentialSolver::factor(const system_type& system) {
 	// response matrix
 	assert( response );
 
-	// TODO this is nonsense and should be removed. This matrix is not
-	// invertible in the general case.
-    if( !system.isPIdentity ) response->factor( system.P.transpose() * system.H * system.P, true ); // replace H with P^T.H.P to account for projective constraints
-    else response->factor( system.H );
+    SubKKT::projected_primal(sub, system);
+    sub.factor(*response);
 
-	
 	// find blocks
 	fetch_blocks(system);
 	
@@ -155,16 +152,7 @@ void SequentialSolver::factor(const system_type& system) {
 
 	blocks_inv.resize( n );
 
-	mapping_response.resize( system.J.cols(), system.J.rows() );
-
-	this->JP = system.J * system.P;
-
-    cmat tmp( mapping_response.rows(), mapping_response.cols());
-	
-
-	// TODO: temporary :-/
-	response->solve(tmp, JP.transpose());
-	mapping_response = system.P * tmp;
+    sub.solve_filtered( *response, mapping_response, system.J, &JP );  // mapping_response = PHinv(JP)^T
 	
 	
 	// to avoid allocating matrices for each block, could be a vec instead ?
@@ -355,13 +343,18 @@ void SequentialSolver::solve_impl(vec& res,
 
 
 	// free velocity
-	vec tmp( sys.m );
-	
-	response->solve(tmp, sys.P.selfadjointView<Eigen::Upper>() * rhs.head( sys.m ) );
-	res.head(sys.m).noalias() = sys.P.selfadjointView<Eigen::Upper>() * tmp;
-	
-	// we're done lol
-	if( !sys.n ) return;
+    vec tmp( sub.size_sub() );
+
+
+    sub.solve_filtered(*response, tmp, rhs.head(sys.m));
+
+
+    // we're done
+    if( !sys.n )
+    {
+        res.head( sys.m ) = sub.unproject_primal(tmp);
+        return;
+    }
 
 	
 	// lagrange multipliers TODO reuse res.tail( sys.n ) ?
@@ -374,7 +367,7 @@ void SequentialSolver::solve_impl(vec& res,
 	vec delta = vec::Zero( sys.n );
 	
 	// lcp rhs 
-	vec constant = rhs.tail(sys.n) - JP * res.head( sys.m );
+    vec constant = rhs.tail(sys.n) - JP * tmp;
 	
 	// lcp error
 	vec error = vec::Zero( sys.n );
@@ -398,8 +391,8 @@ void SequentialSolver::solve_impl(vec& res,
 		if( std::sqrt(estimate2) / sys.n <= epsilon ) break;
 	}
 
-	res.head( sys.m ) += net;
-	res.tail( sys.n ) = lambda;
+    res.head( sys.m ) = sub.unproject_primal( tmp + net );
+    res.tail( sys.n ) = lambda;
 
 
 

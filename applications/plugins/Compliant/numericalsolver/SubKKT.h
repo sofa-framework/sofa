@@ -38,7 +38,8 @@ private:
     // work vectors during solve
     mutable vec vtmp1, vtmp2;
 
-    mutable cmat mtmp1, mtmp2, mtmp3;
+    mutable cmat mtmp1, mtmp2/*, mtmp3*/;
+    mutable rmat mtmpr;
 public:
 
     SubKKT();
@@ -54,7 +55,14 @@ public:
                               bool only_lower = false);
     
     // TODO more ctors with non-zero Q
-    
+
+
+
+    inline vec project_primal( const vec& v ) const { return P.transpose() * v; }
+    inline vec unproject_primal( const vec& v ) const { return P * v; }
+    inline vec project_dual( const vec& v ) const { return Q.transpose() * v; }
+    inline vec unproject_dual( const vec& v ) const { return Q * v; }
+
 
     // P.rows() + Q.rows()
     unsigned size_full() const;
@@ -68,7 +76,7 @@ public:
     // WARNING the API might change a bit here 
 
     // solve for rhs vec/mat. rhs must be of size size_full(), result
-    // will be resized as needed.
+    // will be resized as needed (full size).
     void solve(const Response& response, vec& result, const vec& rhs) const;
     void solve(const Response& response, cmat& result, const cmat& rhs) const;
 
@@ -76,7 +84,14 @@ public:
     void prod(vec& result, const vec& rhs) const;
 
     // this one transposes rhs before solving (avoids temporary)
-    void solve_opt(const Response& response, cmat& result, const rmat& rhs) const; 
+    void solve_opt(const Response& response, cmat& result, const rmat& rhs ) const;
+
+    // todo donner un joli nom
+    // rhs is full size
+    // result is sub size
+    void solve_filtered(const Response& response, vec& result, const vec& rhs ) const;
+    // Prhs is sub size
+    void solve_filtered(const Response& response, cmat& result, const rmat& rhs, rmat* Prhs=NULL ) const;
 
 
     // adaptor to response API for solving
