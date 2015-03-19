@@ -185,7 +185,7 @@ protected:
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3dTypes,core::behavior::ShapeFunctiond,defaulttype::Mat3x3d>; // volume FEM (tetra, hexa)
 //extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3dTypes,core::behavior::ShapeFunctiond,defaulttype::Rigid3dMass>; // rigid frame
 #endif
-#ifndef SOFA_SReal
+#ifndef SOFA_DOUBLE
 extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Vec3fTypes,core::behavior::ShapeFunctionf,defaulttype::Mat3x3f>;
 //extern template class SOFA_Flexible_API ImageDensityMass<defaulttype::Rigid3fTypes,core::behavior::ShapeFunctionf,defaulttype::Rigid3fMass>; // rigid frame
 #endif
