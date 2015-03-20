@@ -48,7 +48,6 @@ class Model:
             self.source = meshXml.find("source").text
         
             self.group=dict()
-            self.data=dict()
             for g in meshXml.iter("group"):
                 self.group[g.attrib["id"]] = Model.Mesh.Group()
                 self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
@@ -120,7 +119,7 @@ class Model:
         def __init__(self):
             self.object=None
             self.mesh=None
-            self.index=None
+            self.group=None
             
     class ContactSliding:
         def __init__(self,contactXml):
@@ -130,6 +129,11 @@ class Model:
             if contactXml.find("distance"):
                 self.distance=float(contactXml.findText("distance"))
     
+    class ContactAttached:
+        def __init__(self,contactXml):
+            parseIdName(self,contactXml)
+            self.surfaces = [None,None]
+
     dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
     
     def __init__(self, filename, name=None):
@@ -141,7 +145,8 @@ class Model:
         self.solidsByTag=dict()
         self.genericJoints=dict()
         self.slidingContacts=dict()
-        
+        self.attachedContacts=dict()
+
         with open(filename,'r') as f:
             # TODO automatic DTD validation could go here, not available in python builtin ElementTree module
             modelXml = etree.parse(f).getroot()
@@ -209,9 +214,29 @@ class Model:
                     else:
                         print "ERROR: sml.Model: in contact {0}, unknown solid {1} referenced".format(contact.name, s.attrib["solid"])
                     contact.surfaces[i].mesh = contact.surfaces[i].solid.mesh # for now a single mesh is supported
-                    contact.surfaces[i].index = contact.surfaces[i].mesh.group[s.attrib["group"]].index
+                    if "group" in s.attrib: # optional
+                        if len(s.attrib["group"]): # discard empty string
+                            contact.surfaces[i].group = s.attrib["group"]
                 self.slidingContacts[contact.id]=contact
-                    
+
+            for c in modelXml.iter("contactAttached"):
+                if c.attrib["id"] in self.attachedContacts:
+                    print "ERROR: sml.Model: contactAttached defined twice, id:", c.attrib["id"]
+                    continue
+                contact = Model.ContactAttached(c)
+                surfaces=c.findall("surface")
+                for i,s in enumerate(surfaces):
+                    contact.surfaces[i] = Model.Surface()
+                    if s.attrib["solid"] in self.solids:
+                        contact.surfaces[i].solid = self.solids[s.attrib["solid"]]
+                    else:
+                        print "ERROR: sml.Model: in contact {0}, unknown object {1} referenced".format(contact.name, s.attrib["solid"])
+                    contact.surfaces[i].mesh = contact.surfaces[i].solid.mesh # for now a single mesh is supported
+                    if "group" in s.attrib: # optional
+                        if len(s.attrib["group"]): # discard empty string
+                            contact.surfaces[i].group = s.attrib["group"]
+                self.attachedContacts[contact.id]=contact
+
 
     def parseUnits(self, modelXml):
         xmlUnits = modelXml.find("units")
