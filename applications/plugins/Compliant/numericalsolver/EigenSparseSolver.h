@@ -64,21 +64,17 @@ class SOFA_Compliant_API EigenSparseSolver : public KKTSolver {
 
 
 
-class LDLTSolver : public EigenSparseSolver< Eigen::SimplicialLDLT< AssembledSystem::cmat >, true >
+class SOFA_Compliant_API LDLTSolver : public EigenSparseSolver< Eigen::SimplicialLDLT< AssembledSystem::cmat >, true >
 {
 public:
     SOFA_CLASS(LDLTSolver,SOFA_TEMPLATE2(EigenSparseSolver,SOFA_TEMPLATE(Eigen::SimplicialLDLT,AssembledSystem::cmat),true));
-
-    ~LDLTSolver() {}
 };
 
 
-class LUSolver : public EigenSparseSolver< Eigen::SparseLU< AssembledSystem::cmat >, false >
+class SOFA_Compliant_API LUSolver : public EigenSparseSolver< Eigen::SparseLU< AssembledSystem::cmat >, false >
 {
 public:
     SOFA_CLASS(LUSolver,SOFA_TEMPLATE2(EigenSparseSolver,SOFA_TEMPLATE(Eigen::SparseLU,AssembledSystem::cmat),false));
-
-    ~LUSolver() {}
 };
 
 
