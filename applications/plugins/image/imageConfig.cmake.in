@@ -11,6 +11,7 @@ check_required_components(image)
 
 find_package(SofaBase REQUIRED)
 find_package(Newmat REQUIRED)
+find_package(CImg REQUIRED)
 find_package(Freenect QUIET)
 find_package(DiffusionSolver CONFIG REQUIRED)
 
@@ -19,4 +20,7 @@ if(NOT TARGET image)
 endif() 
 
 set(image_LIBRARIES image)
-set(image_INCLUDE_DIRS ${IMAGE_INCLUDE_DIR})
+set(image_INCLUDE_DIRS
+    ${CImg_INCLUDE_DIRS}
+    ${SofaBase_INCLUDE_DIRS}
+    ${Newmat_INCLUDE_DIRS})

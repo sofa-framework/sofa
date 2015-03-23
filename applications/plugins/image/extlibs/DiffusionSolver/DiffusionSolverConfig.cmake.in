@@ -5,6 +5,8 @@
 
 @PACKAGE_INIT@
 
+find_package(CImg REQUIRED)
+
 check_required_components(DiffusionSolver)
 
 if(NOT TARGET DiffusionSolver)
