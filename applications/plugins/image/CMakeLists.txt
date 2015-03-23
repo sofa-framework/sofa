@@ -70,8 +70,9 @@ include(./python/python.cmake)
 
 find_package(SofaBase REQUIRED)
 find_package(Newmat REQUIRED)
+find_package(CImg REQUIRED)
 
-set(IMAGE_DEPENDENCY_INCLUDE_DIR ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUDE_DIRS})
+set(IMAGE_DEPENDENCY_INCLUDE_DIR ${CImg_INCLUDE_DIRS} ${SofaBase_INCLUDE_DIRS} ${Newmat_INCLUDE_DIRS})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/image.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/image/image.h)

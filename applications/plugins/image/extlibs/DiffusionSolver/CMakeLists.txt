@@ -30,15 +30,17 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
 
 endif()
 
-# Todo?
-
-# # For Cimg
-# include_directories(${SOFA_EXTLIBS_DIR})
-
 add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
 
 find_package(SofaFramework REQUIRED)
 target_link_libraries(${PROJECT_NAME} SofaHelper)
+
+find_package(CImg REQUIRED)
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
+if(UNIX)
+    # Seems to be required by CImg
+    target_link_libraries(${PROJECT_NAME} pthread)
+endif()
 
 if(APPLE)
     find_package(X11)
