@@ -35,6 +35,10 @@ SOFA_DECL_CLASS(EigenBiCGSTABSolver)
 static int EigenBiCGSTABSolverClass = core::RegisterObject("Bi Conjugate Gradient stabilized solver").add< EigenBiCGSTABSolver >();
 
 
+template class SOFA_Compliant_API EigenSparseIterativeSolver< Eigen::MINRES< AssembledSystem::cmat >, true >;
+SOFA_DECL_CLASS(EigenMinresSolver)
+static int EigenMinresSolverClass = core::RegisterObject("MINRES solver").add< EigenMinresSolver >();
+
 }
 }
 }
