@@ -35,6 +35,8 @@ def parseData(xmlData):
         return xmlData.text.split()
 
 class Model:
+    """ This class stores a Sofa Model read from a sml/xml (Sofa Modelling Language) file.
+    """
 
     class Mesh:
 
@@ -136,7 +138,7 @@ class Model:
 
     dofIndex={"x":0,"y":1,"z":2,"rx":3,"ry":4,"rz":5}
     
-    def __init__(self, filename, name=None):
+    def __init__(self, filename=None, name=None):
         self.name=name
         self.modelDir = os.path.dirname(filename)
         self.units=dict()
@@ -147,6 +149,10 @@ class Model:
         self.slidingContacts=dict()
         self.attachedContacts=dict()
 
+        if not filename is None:
+            self.open(filename)
+
+    def open(self, filename):
         with open(filename,'r') as f:
             # TODO automatic DTD validation could go here, not available in python builtin ElementTree module
             modelXml = etree.parse(f).getroot()
