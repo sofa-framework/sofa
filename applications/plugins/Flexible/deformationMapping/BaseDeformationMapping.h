@@ -180,8 +180,10 @@ public:
     typedef typename BaseShapeFunction::VecVReal VecVReal;
     typedef typename BaseShapeFunction::Gradient Gradient;
     typedef typename BaseShapeFunction::VGradient VGradient;
+    typedef typename BaseShapeFunction::VecVGradient VecVGradient;
     typedef typename BaseShapeFunction::Hessian Hessian;
     typedef typename BaseShapeFunction::VHessian VHessian;
+    typedef typename BaseShapeFunction::VecVHessian VecVHessian;
     typedef typename BaseShapeFunction::VRef VRef;
     typedef typename BaseShapeFunction::VecVRef VecVRef;
     typedef typename BaseShapeFunction::Coord mCoord; ///< material coordinates
@@ -211,14 +213,17 @@ public:
 
     ///@brief Update \see f_index_parentToChild from \see f_index
     void updateIndex();
+    void updateIndex(const size_t parentSize, const size_t childSize);
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
     virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
+    virtual void resizeAll(const InVecCoord& p0, const OutVecCoord& c0, const VecCoord& x0, const VecVRef& index, const VecVReal& w, const VecVGradient& dw, const VecVHessian& ddw, const VMaterialToSpatial& F0);
 
     /** @name Mapping functions */
     //@{
     virtual void init();
     virtual void reinit();
 
+    virtual void apply(OutVecCoord& out, const InVecCoord& in);
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn);
     virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn);
     virtual void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut);
@@ -370,6 +375,7 @@ protected :
 
     SparseMatrix jacobian;   ///< Jacobian of the mapping
     virtual void initJacobianBlocks()=0;
+    virtual void initJacobianBlocks(const InVecCoord& /*inCoord*/, const OutVecCoord& /*outCoord*/){ std::cout << "Only implemented in LinearMapping for now." << std::endl;}
 
 //    helper::ParticleMask* maskFrom;  ///< Subset of master DOF, to cull out computations involving null forces or displacements
     helper::ParticleMask* maskTo;    ///< Subset of slave DOF, to cull out computations involving null forces or displacements

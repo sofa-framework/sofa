@@ -92,12 +92,11 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
 
 
 template <class JacobianBlockType>
-void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
-{    
+void BaseDeformationMappingT<JacobianBlockType>::updateIndex(const size_t parentSize, const size_t childSize)
+{
     if(this->f_printLog.getValue())
         std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
-    int parentSize = this->getFromSize();
-    int childSize = this->getToSize();
+
     this->f_index_parentToChild.clear();
     this->f_index_parentToChild.resize(parentSize);
 
@@ -105,6 +104,8 @@ void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
     if(childSize != this->f_index.getValue().size())
     {
         std::cout << SOFA_CLASS_METHOD << " f_index has wrong size" << std::endl;
+        serr << "index size : " << f_index.getValue().size() << sendl;
+        serr << "child size : " << childSize << sendl;
         exit(EXIT_FAILURE);
     }
 
@@ -121,13 +122,89 @@ void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
 }
 
 template <class JacobianBlockType>
+void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
+{    
+    if(this->f_printLog.getValue())
+        std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
+    int parentSize = this->getFromSize();
+    int childSize = this->getToSize();
+    this->f_index_parentToChild.clear();
+    this->f_index_parentToChild.resize(parentSize);
+
+    //Check size just in case
+    if(childSize != this->f_index.getValue().size())
+    {
+        std::cout << SOFA_CLASS_METHOD << " f_index has wrong size" << std::endl;
+        serr << "index size : " << f_index.getValue().size() << sendl;
+        serr << "child size : " << childSize << sendl;
+        exit(EXIT_FAILURE);
+    }
+
+    //Go through f_index and use its value to update f_index_parentToChild
+    for(size_t i=0; i<this->f_index.getValue().size(); ++i)
+    {
+        for(size_t j=0; j< this->f_index.getValue()[i].size(); j++ )
+        {
+            int parentIndex = this->f_index.getValue()[i][j];
+            this->f_index_parentToChild[parentIndex].push_back(i); //Add child index
+            this->f_index_parentToChild[parentIndex].push_back(j); //Add parent index
+        }
+    }
+}
+
+template <class JacobianBlockType>
+void BaseDeformationMappingT<JacobianBlockType>::resizeAll(const InVecCoord& p0, const OutVecCoord& c0, const VecCoord& x0, const VecVRef& index, const VecVReal& w, const VecVGradient& dw, const VecVHessian& ddw, const VMaterialToSpatial& F0)
+{
+    if(this->f_printLog.getValue())
+        std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
+
+    size_t cSize = c0.size();
+    if(cSize != x0.size() || cSize != index.size() || cSize != w.size() || cSize != dw.size() || cSize != ddw.size())
+    {
+        std::cout << SOFA_CLASS_METHOD << " : wrong sizes " << std::endl;
+    }
+
+    helper::WriteAccessor<Data<VecCoord> > wa_x0 (this->f_pos0);
+    wa_x0.resize(cSize);
+    for(size_t i=0; i<cSize; ++i)
+        wa_x0[i] = x0[i];
+
+    helper::WriteAccessor<Data<VecVRef > > wa_index (this->f_index);
+    wa_index.resize(cSize);
+    for(size_t i=0; i<cSize; ++i)
+        wa_index[i].assign(index[i].begin(), index[i].end());
+
+    helper::WriteAccessor<Data<VecVReal > > wa_w (this->f_w);
+    wa_w.resize(cSize);
+    for(size_t i=0; i<cSize; ++i)
+        wa_w[i].assign(w[i].begin(), w[i].end());
+
+    helper::WriteAccessor<Data<vector<VGradient> > > wa_dw (this->f_dw);
+    wa_dw.resize(cSize);
+    for(size_t i=0; i<cSize; ++i)
+        wa_dw[i].assign(dw[i].begin(), dw[i].end());
+
+    helper::WriteAccessor<Data<vector<VHessian> > > wa_ddw (this->f_ddw);
+    wa_ddw.resize(cSize);
+    for(size_t i=0; i<cSize; ++i)
+        wa_ddw[i].assign(ddw[i].begin(), ddw[i].end());
+
+    helper::WriteAccessor<Data< VMaterialToSpatial > >  wa_F0(this->f_F0);
+    wa_F0.resize(cSize);
+    for(size_t i=0; i<cSize; ++i)
+        wa_F0[i] = F0[i];
+
+    updateIndex(p0.size(), c0.size());
+
+    initJacobianBlocks(p0, c0);
+}
+
+template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::resizeOut()
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<"::resizeOut()"<<std::endl;
 
-    //Pierre-Luc : I changed from position to rest position.
-    //During a simulation where a dof is dynamically added and mapping needs to be updated the deformed positions were used and not the rest ones as expected.
-    helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::restPosition()));
+    helper::ReadAccessor<Data<OutVecCoord> > out (*this->toModel->read(core::ConstVecCoordId::position()));
 
     helper::WriteAccessor<Data<VecCoord> > pos0 (this->f_pos0);
     helper::WriteAccessor<Data< VMaterialToSpatial > >  F0(this->f_F0);
@@ -402,15 +479,39 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK(const OutVecDeriv& chil
     K.compress();
 }
 
+template <class JacobianBlockType>
+void BaseDeformationMappingT<JacobianBlockType>::apply(OutVecCoord& out, const InVecCoord& in)
+{
+    if(this->f_printLog.getValue())
+    {
+        std::cout<<this->getName()<<":apply"<<std::endl;
+        std::cout << "Jacobian size : " << jacobian.size() << std::endl;
+        std::cout << "In size : " << in.size() << std::endl;
+        std::cout << "Out size : " << out.size() << std::endl;
+    }
 
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+    for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
+    {
+        out[i]=OutCoord();
+        for(size_t j=0; j<jacobian[i].size(); j++)
+        {
+            size_t index=this->f_index.getValue()[i][j];
+            jacobian[i][j].addapply(out[i],in[index]);
+        }
+    }
+
+    if(this->assemble.getValue() && ( !BlockType::constant ) )  Jdirty = true; // J needs to be updated later where the dof mask can be activated
+
+    this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update spatial positions of defo grads if needed for visualization
+}
 
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
-
-    helper::ReadAccessor<Data<OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
-    //    if(_sampler) if(_sampler->getNbSamples()!=outpos.size()) resizeOut();
 
     OutVecCoord&  out = *dOut.beginEdit();
     const InVecCoord&  in = dIn.getValue();
