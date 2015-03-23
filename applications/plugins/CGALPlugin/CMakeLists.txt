@@ -37,6 +37,8 @@ set(README_FILES
 
 find_package(SofaFramework REQUIRED)
 find_package(CGAL REQUIRED)
+find_package(MPFR REQUIRED)
+find_package(GMP REQUIRED)
 # CGAL uses boost_system and boost_thread
 find_package(Boost REQUIRED COMPONENTS system thread)
 
@@ -47,7 +49,8 @@ if(image_FOUND)
     list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
 endif()
 
-set(CGALPLUGIN_DEPENDENCY_INCLUDE_DIR ${SofaFramework_INCLUDE_DIRS})
+set(CGALPLUGIN_DEPENDENCY_INCLUDE_DIR ${SofaFramework_INCLUDE_DIRS}
+    ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR} ${CGAL_DIR}/include)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CGALPlugin.h.in
                 ${CMAKE_CURRENT_BINARY_DIR}/CGALPlugin/CGALPlugin.h)
@@ -73,7 +76,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CGALPLUGIN_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CGALPLUGIN")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-target_link_libraries(${PROJECT_NAME} SofaCore ${Boost_LIBRARIES} ${CGAL_LIBRARY})
+target_link_libraries(${PROJECT_NAME} SofaCore ${Boost_LIBRARIES} ${GMP_LIBRARIES} ${MPFR_LIBRARIES} ${CGAL_LIBRARY})
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
