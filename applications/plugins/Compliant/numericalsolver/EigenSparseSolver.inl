@@ -10,7 +10,6 @@
 #include "../utils/sparse.h"
 
 
-
 namespace sofa {
 namespace component {
 namespace linearsolver {
@@ -118,6 +117,18 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSys
 
         {
             scoped::timer step("schur factorization");
+            // taking only a triangular part of the Schur complement only works for Direct solvers (not for iterative ones)
+            // and anyway it seems slower!
+//            if( symmetric )
+//            {
+//                const cmat& schur = pimpl->schur;
+////                pimpl->solver.compute( schur.selfadjointView<Eigen::Upper>() );
+////                pimpl->solver.compute( schur.triangularView<Eigen::Lower>() );
+////                 pimpl->solver.compute( schur.triangularView< LinearSolver::UpLo >() ); // need specializations to get UpLo on a generic way
+//            }
+//            else
+//                pimpl->solver.compute( pimpl->schur );
+
             pimpl->solver.compute( pimpl->schur );
         }
 

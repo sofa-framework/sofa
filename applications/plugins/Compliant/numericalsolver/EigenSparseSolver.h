@@ -9,7 +9,7 @@
 #include <Eigen/SparseCholesky>
 #include <Eigen/SparseLU>
 #include <Eigen/IterativeLinearSolvers>
-
+#include <unsupported/Eigen/IterativeSolvers>
 
 namespace sofa {
 namespace component {
@@ -56,6 +56,7 @@ class EigenSparseSolver : public KKTSolver {
 
     struct pimpl_type;
     scoped::ptr<pimpl_type> pimpl;
+
 
 };
 
@@ -118,6 +119,11 @@ public:
 };
 
 
+class EigenMinresSolver : public EigenSparseIterativeSolver< Eigen::MINRES< AssembledSystem::cmat >, true >
+{
+public:
+    SOFA_CLASS(EigenMinresSolver,SOFA_TEMPLATE2(EigenSparseIterativeSolver,SOFA_TEMPLATE(Eigen::MINRES,AssembledSystem::cmat),true));
+};
 
 }
 }
