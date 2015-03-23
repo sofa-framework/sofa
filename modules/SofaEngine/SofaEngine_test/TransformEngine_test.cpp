@@ -122,7 +122,7 @@ class TransformEngine_test_uninitialized : public TransformEngine_test < _DataTy
 {
 public:
 	TransformEngine_test_uninitialized()
-		: TransformEngine_test(false)
+        : TransformEngine_test<_DataTypes>(false)
 	{
 	}
 };
