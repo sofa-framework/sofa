@@ -1,0 +1,8 @@
+# Package Configuration file for CImg.
+#
+# It defines the following variable:
+# - CImg_INCLUDE_DIRS
+
+@PACKAGE_INIT@
+
+set_and_check(CImg_INCLUDE_DIRS "@PACKAGE_CIMG_INCLUDE_DIR@")
