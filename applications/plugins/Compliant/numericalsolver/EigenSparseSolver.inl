@@ -4,8 +4,7 @@
 #include "EigenSparseSolver.h"
 #include "SubKKT.h"
 
-#include "LDLTResponse.h"
-#include "LUResponse.h"
+#include "EigenSparseResponse.h"
 
 #include "../utils/sparse.h"
 
