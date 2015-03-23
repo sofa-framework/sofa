@@ -50,38 +50,38 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_BASE_VISUAL_API RigidState : public core::State< sofa::defaulttype::Rigid3fTypes >
-{
-public:
-    VecCoord xforms;
-    bool xformsModified;
+//class SOFA_BASE_VISUAL_API RigidState : public core::State< sofa::defaulttype::Rigid3fTypes >
+//{
+//public:
+//    VecCoord xforms;
+//    bool xformsModified;
 
-    RigidState()
-        : xformsModified(false)
-    {
-    }
+//    RigidState()
+//        : xformsModified(false)
+//    {
+//    }
 
-    virtual void resize(int vsize) { xformsModified = true; xforms.resize( vsize); }
-    virtual int getSize() const { return 0; }
+//    virtual void resize(int vsize) { xformsModified = true; xforms.resize( vsize); }
+//    virtual int getSize() const { return 0; }
 
-    const VecCoord* getX()  const { return &xforms; }
-    const VecDeriv* getV()  const { return NULL; }
+//    const VecCoord* getX()  const { return &xforms; }
+//    const VecDeriv* getV()  const { return NULL; }
 
-    VecCoord* getX()  { xformsModified = true; return &xforms;   }
-    VecDeriv* getV()  { return NULL; }
+//    VecCoord* getX()  { xformsModified = true; return &xforms;   }
+//    VecDeriv* getV()  { return NULL; }
 
-    const VecCoord* getRigidX()  const { return getX(); }
-    VecCoord* getRigidX()  { return getX(); }
+//    const VecCoord* getRigidX()  const { return getX(); }
+//    VecCoord* getRigidX()  { return getX(); }
 
-    virtual       Data<VecCoord>* write(     core::VecCoordId /* v */) { return NULL; }
-    virtual const Data<VecCoord>*  read(core::ConstVecCoordId /* v */) const { return NULL; }
+//    virtual       Data<VecCoord>* write(     core::VecCoordId /* v */) { return NULL; }
+//    virtual const Data<VecCoord>*  read(core::ConstVecCoordId /* v */) const { return NULL; }
 
-    virtual       Data<VecDeriv>* write(     core::VecDerivId /* v */) { return NULL; }
-    virtual const Data<VecDeriv>*  read(core::ConstVecDerivId /* v */) const { return NULL; }
+//    virtual       Data<VecDeriv>* write(     core::VecDerivId /* v */) { return NULL; }
+//    virtual const Data<VecDeriv>*  read(core::ConstVecDerivId /* v */) const { return NULL; }
 
-    virtual       Data<MatrixDeriv>* write(     core::MatrixDerivId /* v */) { return NULL; }
-    virtual const Data<MatrixDeriv>*  read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
-};
+//    virtual       Data<MatrixDeriv>* write(     core::MatrixDerivId /* v */) { return NULL; }
+//    virtual const Data<MatrixDeriv>*  read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
+//};
 
 class SOFA_BASE_VISUAL_API ExtVec3fState : public core::State< sofa::defaulttype::ExtVec3fTypes >
 {
