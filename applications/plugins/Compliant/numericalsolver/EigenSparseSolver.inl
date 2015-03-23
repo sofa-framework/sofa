@@ -16,8 +16,8 @@ namespace linearsolver {
 
 typedef AssembledSystem::vec vec;
 
-template<class LinearSolver,bool symmetric>
-struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
+template<class LinearSolver,bool symmetric,int UpLo>
+struct EigenSparseSolver<LinearSolver,symmetric,UpLo>::pimpl_type {
     typedef LinearSolver solver_type;
 
     solver_type solver;
@@ -30,8 +30,8 @@ struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
 };
 
 
-template<class LinearSolver,bool symmetric>
-EigenSparseSolver<LinearSolver,symmetric>::EigenSparseSolver()
+template<class LinearSolver,bool symmetric,int UpLo>
+EigenSparseSolver<LinearSolver,symmetric,UpLo>::EigenSparseSolver()
     : schur(initData(&schur,
                      true,
                      "schur",
@@ -39,12 +39,12 @@ EigenSparseSolver<LinearSolver,symmetric>::EigenSparseSolver()
     , pimpl( new pimpl_type )
 {}
 
-template<class LinearSolver,bool symmetric>
-EigenSparseSolver<LinearSolver,symmetric>::~EigenSparseSolver()
+template<class LinearSolver,bool symmetric,int UpLo>
+EigenSparseSolver<LinearSolver,symmetric,UpLo>::~EigenSparseSolver()
 {}
 
-template<class LinearSolver,bool symmetric>
-void EigenSparseSolver<LinearSolver,symmetric>::init() {
+template<class LinearSolver,bool symmetric,int UpLo>
+void EigenSparseSolver<LinearSolver,symmetric,UpLo>::init() {
 
     KKTSolver::init();
 
@@ -64,8 +64,8 @@ void EigenSparseSolver<LinearSolver,symmetric>::init() {
     }
 }
 
-template<class LinearSolver,bool symmetric>
-void EigenSparseSolver<LinearSolver,symmetric>::factor(const AssembledSystem& sys) {
+template<class LinearSolver,bool symmetric,int UpLo>
+void EigenSparseSolver<LinearSolver,symmetric,UpLo>::factor(const AssembledSystem& sys) {
 
     if( schur.getValue() ) {
         factor_schur( sys );
@@ -75,8 +75,8 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor(const AssembledSystem& sy
     }
 }
 
-template<class LinearSolver,bool symmetric>
-void EigenSparseSolver<LinearSolver,symmetric>::solve(vec& res,
+template<class LinearSolver,bool symmetric,int UpLo>
+void EigenSparseSolver<LinearSolver,symmetric,UpLo>::solve(vec& res,
                        const AssembledSystem& sys,
                        const vec& rhs) const {
     if( schur.getValue() ) {
@@ -87,8 +87,8 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve(vec& res,
 
 }
 
-template<class LinearSolver,bool symmetric>
-void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSystem& sys ) {
+template<class LinearSolver,bool symmetric,int UpLo>
+void EigenSparseSolver<LinearSolver,symmetric,UpLo>::factor_schur( const AssembledSystem& sys ) {
 
     // schur complement
     SubKKT::projected_primal(pimpl->sub, sys);
@@ -116,19 +116,13 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSys
 
         {
             scoped::timer step("schur factorization");
-            // taking only a triangular part of the Schur complement only works for Direct solvers (not for iterative ones)
-            // and anyway it seems slower!
-//            if( symmetric )
-//            {
-//                const cmat& schur = pimpl->schur;
-////                pimpl->solver.compute( schur.selfadjointView<Eigen::Upper>() );
-////                pimpl->solver.compute( schur.triangularView<Eigen::Lower>() );
-////                 pimpl->solver.compute( schur.triangularView< LinearSolver::UpLo >() ); // need specializations to get UpLo on a generic way
-//            }
-//            else
-//                pimpl->solver.compute( pimpl->schur );
 
-            pimpl->solver.compute( pimpl->schur );
+            if( UpLo )
+            {
+                 pimpl->solver.compute( pimpl->schur.template triangularView< UpLo >() );
+            }
+            else
+                pimpl->solver.compute( pimpl->schur );
         }
 
         if( pimpl->solver.info() == Eigen::NumericalIssue ){
@@ -140,8 +134,8 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSys
 }
 
 
-template<class LinearSolver,bool symmetric>
-void EigenSparseSolver<LinearSolver,symmetric>::solve_kkt(vec& res,
+template<class LinearSolver,bool symmetric,int UpLo>
+void EigenSparseSolver<LinearSolver,symmetric,UpLo>::solve_kkt(vec& res,
                            const AssembledSystem& sys,
                            const vec& rhs) const {
     assert( res.size() == sys.size() );
@@ -157,8 +151,8 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_kkt(vec& res,
     
 }
 
-template<class LinearSolver,bool symmetric>
-void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
+template<class LinearSolver,bool symmetric,int UpLo>
+void EigenSparseSolver<LinearSolver,symmetric,UpLo>::solve_schur(vec& res,
                              const AssembledSystem& sys,
                              const vec& rhs) const {
 
@@ -214,21 +208,21 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
 /////////////////////////////////////////////
 
 
-template<class LinearSolver,bool symmetric>
-EigenSparseIterativeSolver<LinearSolver,symmetric>::EigenSparseIterativeSolver()
+template<class LinearSolver,bool symmetric,int UpLo>
+EigenSparseIterativeSolver<LinearSolver,symmetric,UpLo>::EigenSparseIterativeSolver()
     : d_iterations( initData(&d_iterations, 100u, "iterations", "max iterations") )
     , d_tolerance( initData(&d_tolerance, (SReal)1e-6, "tolerance", "tolerance") )
 {}
 
-template<class LinearSolver,bool symmetric>
-void EigenSparseIterativeSolver<LinearSolver,symmetric>::init()
+template<class LinearSolver,bool symmetric,int UpLo>
+void EigenSparseIterativeSolver<LinearSolver,symmetric,UpLo>::init()
 {
-    EigenSparseSolver<LinearSolver,symmetric>::init();
+    EigenSparseSolver<LinearSolver,symmetric,UpLo>::init();
     reinit();
 }
 
-template<class LinearSolver,bool symmetric>
-void EigenSparseIterativeSolver<LinearSolver,symmetric>::reinit()
+template<class LinearSolver,bool symmetric,int UpLo>
+void EigenSparseIterativeSolver<LinearSolver,symmetric,UpLo>::reinit()
 {
     this->pimpl->solver.setMaxIterations( d_iterations.getValue() );
     this->pimpl->solver.setTolerance( d_tolerance.getValue() );
