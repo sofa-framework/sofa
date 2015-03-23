@@ -8,6 +8,7 @@
 
 #include <Eigen/SparseCholesky>
 #include <Eigen/SparseLU>
+#include <Eigen/IterativeLinearSolvers>
 
 
 namespace sofa {
@@ -24,7 +25,7 @@ namespace linearsolver {
 /// KKT system solve
 ///
 template<class LinearSolver, bool symmetric>
-class SOFA_Compliant_API EigenSparseSolver : public KKTSolver {
+class EigenSparseSolver : public KKTSolver {
   public:
 
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenSparseSolver,LinearSolver,symmetric), KKTSolver);
@@ -41,7 +42,6 @@ class SOFA_Compliant_API EigenSparseSolver : public KKTSolver {
     EigenSparseSolver();
     ~EigenSparseSolver();
 
-
   protected:
 
     // response matrix
@@ -54,11 +54,8 @@ class SOFA_Compliant_API EigenSparseSolver : public KKTSolver {
 
     Data<bool> schur;
 
-  private:
-
     struct pimpl_type;
     scoped::ptr<pimpl_type> pimpl;
-
 
 };
 
@@ -76,6 +73,50 @@ class SOFA_Compliant_API LUSolver : public EigenSparseSolver< Eigen::SparseLU< A
 public:
     SOFA_CLASS(LUSolver,SOFA_TEMPLATE2(EigenSparseSolver,SOFA_TEMPLATE(Eigen::SparseLU,AssembledSystem::cmat),false));
 };
+
+
+
+
+
+
+/////////////////////////////////////////////
+
+
+/// Solve a dynamics system including bilateral constraints with an iterative linear solver
+template<class LinearSolver, bool symmetric>
+class EigenSparseIterativeSolver : public EigenSparseSolver<LinearSolver,symmetric>
+{
+  public:
+
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenSparseIterativeSolver,LinearSolver,symmetric),SOFA_TEMPLATE2(EigenSparseSolver,LinearSolver,symmetric));
+
+    Data<unsigned> d_iterations;
+    Data<SReal> d_tolerance;
+
+    EigenSparseIterativeSolver();
+
+    virtual void init();
+    virtual void reinit();
+
+};
+
+
+
+
+
+class EigenCGSolver : public EigenSparseIterativeSolver< Eigen::ConjugateGradient< AssembledSystem::cmat >, true >
+{
+public:
+    SOFA_CLASS(EigenCGSolver,SOFA_TEMPLATE2(EigenSparseIterativeSolver,SOFA_TEMPLATE(Eigen::ConjugateGradient,AssembledSystem::cmat),true));
+};
+
+
+class EigenBiCGSTABSolver : public EigenSparseIterativeSolver< Eigen::BiCGSTAB< AssembledSystem::cmat >, false >
+{
+public:
+    SOFA_CLASS(EigenBiCGSTABSolver,SOFA_TEMPLATE2(EigenSparseIterativeSolver,SOFA_TEMPLATE(Eigen::BiCGSTAB,AssembledSystem::cmat),false));
+};
+
 
 
 }

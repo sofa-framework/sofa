@@ -200,6 +200,30 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
 } 
 
 
+
+/////////////////////////////////////////////
+
+
+template<class LinearSolver,bool symmetric>
+EigenSparseIterativeSolver<LinearSolver,symmetric>::EigenSparseIterativeSolver()
+    : d_iterations( initData(&d_iterations, 100u, "iterations", "max iterations") )
+    , d_tolerance( initData(&d_tolerance, (SReal)1e-6, "tolerance", "tolerance") )
+{}
+
+template<class LinearSolver,bool symmetric>
+void EigenSparseIterativeSolver<LinearSolver,symmetric>::init()
+{
+    EigenSparseSolver<LinearSolver,symmetric>::init();
+    reinit();
+}
+
+template<class LinearSolver,bool symmetric>
+void EigenSparseIterativeSolver<LinearSolver,symmetric>::reinit()
+{
+    this->pimpl->solver.setMaxIterations( d_iterations.getValue() );
+    this->pimpl->solver.setTolerance( d_tolerance.getValue() );
+}
+
 }
 }
 }
