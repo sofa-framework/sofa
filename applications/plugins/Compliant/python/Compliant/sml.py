@@ -18,7 +18,7 @@ def insertRigid(parentNode, rigidModel, param=None):
     if not rigidModel.density is None and not rigidModel.mesh is None:
         # compute physics using mesh and density
         rigid.setFromMesh(rigidModel.mesh.source, density=rigidModel.density, offset=rigidModel.position)
-    elif not rigidModel.mesh is None:
+    elif not rigidModel.mesh is None and (rigidModel.mesh.format=="obj" or rigidModel.mesh.format=="vtk"):
         # no density but a mesh, let's compute physics whith this information plus specified mass if any
         rigid.setFromMesh(rigidModel.mesh.source, density=1, offset=rigidModel.position)
         mass=1.
