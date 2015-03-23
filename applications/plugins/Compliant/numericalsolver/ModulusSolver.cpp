@@ -1,5 +1,5 @@
 #include "ModulusSolver.h"
-#include "LDLTResponse.h"
+#include "EigenSparseResponse.h"
 
 #include <sofa/core/ObjectFactory.h>
 

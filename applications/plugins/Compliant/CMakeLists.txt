@@ -26,11 +26,12 @@ set(HEADER_FILES
     numericalsolver/KKTSolver.h
     numericalsolver/EigenSparseSolver.h
     numericalsolver/EigenSparseSolver.inl
+    numericalsolver/EigenSparseResponse.h
+    numericalsolver/EigenSparseResponse.inl
     numericalsolver/MinresSolver.h
     numericalsolver/KrylovSolver.h
     numericalsolver/CgSolver.h
     numericalsolver/Response.h
-    numericalsolver/LDLTResponse.h
     numericalsolver/DiagonalResponse.h
     numericalsolver/SequentialSolver.h
     numericalsolver/IterativeSolver.h
@@ -40,7 +41,6 @@ set(HEADER_FILES
     numericalsolver/PreconditionedCgSolver.h
     numericalsolver/AnalysisSolver.h
     numericalsolver/LumpedResponse.h
-    numericalsolver/LUResponse.h
     numericalsolver/BiCgStabSolver.h
     numericalsolver/NNCGSolver.h
 	numericalsolver/SubKKT.h
@@ -137,10 +137,10 @@ set(SOURCE_FILES
     mapping/GearMapping.cpp
 
     numericalsolver/EigenSparseSolver.cpp
+    numericalsolver/EigenSparseResponse.cpp
     numericalsolver/MinresSolver.cpp
     numericalsolver/KrylovSolver.cpp
     numericalsolver/CgSolver.cpp
-    numericalsolver/LDLTResponse.cpp
     numericalsolver/DiagonalResponse.cpp
     numericalsolver/SequentialSolver.cpp
     numericalsolver/IterativeSolver.cpp
@@ -150,7 +150,6 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedCgSolver.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/LumpedResponse.cpp
-    numericalsolver/LUResponse.cpp
     numericalsolver/BiCgStabSolver.cpp
     numericalsolver/NNCGSolver.cpp
 	numericalsolver/SubKKT.cpp

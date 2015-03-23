@@ -2,7 +2,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include "LDLTResponse.h"
+#include "EigenSparseResponse.h"
 
 #include "../utils/scoped.h"
 #include "../utils/nan.h"
