@@ -66,9 +66,10 @@ public:
 	typedef sofa::helper::Quater<SReal> Quat;
 
 
-	TransformEngine_test()
+	TransformEngine_test(bool init = true)
 	{
-		TransformEngine<DataTypes>::init();
+		if (init)
+			TransformEngine<DataTypes>::init();
 		this->f_outputX.cleanDirty();
 		this->f_inputX.cleanDirty();
 		this->cleanDirty();
@@ -116,6 +117,16 @@ public:
 
 };
 
+template <typename _DataTypes>
+class TransformEngine_test_uninitialized : public TransformEngine_test < _DataTypes >
+{
+public:
+	TransformEngine_test_uninitialized()
+		: TransformEngine_test(false)
+	{
+	}
+};
+
 namespace
 {
 
@@ -131,6 +142,17 @@ typedef Types<
 
 // Test suite for all the instanciations
 TYPED_TEST_CASE(TransformEngine_test, DataTypes);
+TYPED_TEST_CASE(TransformEngine_test_uninitialized, DataTypes);
+
+// test dirty flag on inputs, uninitialized
+TYPED_TEST( TransformEngine_test_uninitialized , uninitialized )
+{
+	this->testInput(&this->f_inputX);
+	this->testInput(&this->translation);
+	this->testInput(&this->rotation);
+	this->testInput(&this->scale);
+}
+
 // test dirty flag on inputs
 TYPED_TEST( TransformEngine_test , input )
 {
