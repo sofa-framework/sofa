@@ -530,7 +530,7 @@ namespace sofa {
                 expectedChildCoords[0].getVec()[2] = J;
 
                 this->deltaMax = 500;  // J not tested
-                this->errorMax = 6000;
+                this->errorMax = 7000;
 
                 InVecCoord xin(1);
                 OutVecCoord xout(1);
