@@ -10,7 +10,7 @@ def insertLinearMapping(node, dofRigid=None, dofAffine=None, position=None, labe
     hopefully the template is deduced automatically by the component
     """
     if dofRigid is None and dofAffine is None:
-        print "[Felexible.API.insertLinearMapping] ERROR: no dof given"
+        print "[Flexible.API.insertLinearMapping] ERROR: no dof given"
     if dofAffine is None:
         #TODO
         return None
@@ -68,7 +68,7 @@ class ShapeFunction:
         """ Add a Voronoi shape function using position from position component and BranchingImage image
         """
         if self.position is None:
-            print "[Felexible.API.ShapeFunction] ERROR: no position"
+            print "[Flexible.API.ShapeFunction] ERROR: no position"
         imagePath = SofaPython.Tools.getObjectPath(image.branchingImage)
         self.shapeFunction = self.node.createObject(
             "VoronoiShapeFunction", template="ShapeFunctiond,"+"Branching"+image.imageType, 
@@ -90,7 +90,7 @@ class ShapeFunction:
 
     def addExporter(self, filenamePrefix=None, directory=""):
         if self.shapeFunction is None:
-            print "[Felexible.API.ShapeFunction] ERROR: no shapeFunction"
+            print "[Flexible.API.ShapeFunction] ERROR: no shapeFunction"
         sfPath = SofaPython.Tools.getObjectPath(self.shapeFunction)
         self.node.createObject(
             "ImageExporter", template="BranchingImageUI", name="exporterIndices", 
@@ -104,7 +104,7 @@ class ShapeFunction:
        
     def addContainer(self, filenamePrefix=None, directory=""):
         if self.position is None:
-            print "[Felexible.API.ShapeFunction] ERROR: no position"
+            print "[Flexible.API.ShapeFunction] ERROR: no position"
         self.node.createObject(
             "ImageContainer", template="BranchingImageUI", name="containerIndices", 
             filename=self.getFilenameIndices(filenamePrefix, directory), drawBB=False)
@@ -137,7 +137,7 @@ class Behavior:
         
     def addMechanicalObject(self, dofRigid=None, dofAffine=None):
         if self.sampler is None:
-            print "[Felexible.API.Behavior] ERROR: no sampler"
+            print "[Flexible.API.Behavior] ERROR: no sampler"
         self.node.createObject("MechanicalObject", template="F331", name="dofs")
         insertLinearMapping(self.node, dofRigid, dofAffine, self.sampler, self.labelImage, self.labels)
     
