@@ -24,6 +24,8 @@ add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/miniFlowVR ${CMAKE_CURRENT_BINARY
 add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/newmat ${CMAKE_CURRENT_BINARY_DIR}/newmat)
 add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/CImg ${CMAKE_CURRENT_BINARY_DIR}/CImg)
 add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/SuiteSparse ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse)
+add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/csparse ${CMAKE_CURRENT_BINARY_DIR}/csparse)
 
 set_target_properties(miniFlowVR PROPERTIES FOLDER "SofaExtlibs")
 set_target_properties(newmat PROPERTIES FOLDER "SofaExtlibs")
+set_target_properties(csparse PROPERTIES FOLDER "SofaExtlibs")
