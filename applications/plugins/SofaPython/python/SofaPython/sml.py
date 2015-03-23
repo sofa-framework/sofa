@@ -140,7 +140,7 @@ class Model:
     
     def __init__(self, filename=None, name=None):
         self.name=name
-        self.modelDir = os.path.dirname(filename)
+        self.modelDir = None
         self.units=dict()
         self.meshes=dict()
         self.solids=dict()
@@ -153,6 +153,7 @@ class Model:
             self.open(filename)
 
     def open(self, filename):
+        self.modelDir = os.path.dirname(filename)
         with open(filename,'r') as f:
             # TODO automatic DTD validation could go here, not available in python builtin ElementTree module
             modelXml = etree.parse(f).getroot()
