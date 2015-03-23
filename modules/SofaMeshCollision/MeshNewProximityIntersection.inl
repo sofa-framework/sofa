@@ -51,7 +51,7 @@ inline int MeshNewProximityIntersection::doIntersectionLineLine(SReal dist2, con
     defaulttype::Vector3 p,q;
     IntrUtil<SReal>::segNearestPoints(p1,p2,q1,q2,p,q);
 
-    defaulttype::Vector3 pq = p-q;
+    defaulttype::Vector3 pq = q-p;
     SReal norm2 = pq.norm2();
 
     if (norm2 >= dist2)
