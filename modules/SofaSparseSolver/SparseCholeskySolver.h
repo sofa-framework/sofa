@@ -25,13 +25,13 @@
 #ifndef SOFA_COMPONENT_LINEARSOLVER_SparseCholeskySolver_H
 #define SOFA_COMPONENT_LINEARSOLVER_SparseCholeskySolver_H
 
+#include <sofa/SofaGeneral.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-#include <sofa/component/component.h>
 #include <sofa/helper/map.h>
 #include <math.h>
 #include <csparse.h>
