@@ -395,21 +395,25 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         if( flags & TEST_getK )
         {
+            InVecDeriv Kv(Np);
+
             // ================ test getK()
             const defaulttype::BaseMatrix* bk = mapping->getK();
-            if( bk == NULL ){
-                ADD_FAILURE() << "getK returns a null matrix";
-            }
 
-            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
-            const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
-            if( K == NULL ){
-                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
-                // TODO perform a slow conversion with a big warning rather than a failure?
-            }
+            // K can be null for NULL for linear mapping.
+            // perform the test with a null vector to check if the mapping is really null
 
-            InVecDeriv Kv(Np);
-            K->mult(Kv,vp);
+            if( bk != NULL ){
+
+                typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+                const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
+                if( K == NULL ){
+                    ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
+                    // TODO perform a slow conversion with a big warning rather than a failure?
+                }
+
+                if( K->compressedMatrix.nonZeros() ) K->mult(Kv,vp);
+            }
 
             // check that K.vp = dfp
             if( this->vectorMaxDiff(Kv,fp12)>this->epsilon()*errorMax*errorFactorDJ ){
