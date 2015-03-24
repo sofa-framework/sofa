@@ -46,7 +46,7 @@ class Deformable:
         self.dofs = self.node.createObject("MechanicalObject", template = "Vec3d", name="dofs", src="@"+self.meshLoader.name)
 
     def addMass(self,totalMass):
-        self.mass = self.node.createObject('UniformMass', totalMass=SofaPython.units.mass_from_SI(totalMass))
+        self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
     def addMapping(self, dofRigid=None, dofAffine=None, labelImage=None, labels=None, assemble=True):
         self.mapping = insertLinearMapping(self.node, dofRigid, dofAffine, self.topology, labelImage, labels, assemble)
@@ -161,6 +161,6 @@ class Behavior:
         eNode = self.node.createChild("E")
         eNode.createObject('MechanicalObject',  template="E"+self.type, name="E")
         eNode.createObject(strainMeasure+'StrainMapping', template="F"+self.type+",E"+self.type, assemble=assemble)
-        eNode.createObject('HookeForceField',  template="E"+self.type, youngModulus= SofaPython.units.elasticity_from_SI(youngModulus), poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
+        eNode.createObject('HookeForceField',  template="E"+self.type, youngModulus= youngModulus, poissonRatio=poissonRatio, viscosity=viscosity, assemble=assemble, isCompliance=False)
         
         

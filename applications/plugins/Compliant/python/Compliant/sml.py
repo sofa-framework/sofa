@@ -20,7 +20,7 @@ def insertRigid(parentNode, rigidModel, param=None):
     if len(rigidModel.mesh)!=0:
         massinfo = SofaPython.mass.RigidMassInfo()
 
-        density = rigidModel.density if not rigidModel.density is None else 1000. # TODO: convert units ?
+        density = SofaPython.units.density_from_SI(rigidModel.density) if not rigidModel.density is None else SofaPython.units.density_from_SI(1000.)
         for mesh in rigidModel.mesh :
             mi = SofaPython.mass.RigidMassInfo()
             mi.setFromMesh(mesh.source, density=density)
@@ -29,7 +29,7 @@ def insertRigid(parentNode, rigidModel, param=None):
 
         if rigidModel.density is None and not rigidModel.mass is None :
             # no density but a mesh let's normalise computed mass with specified mass
-            mass= rigidModel.mass # TODO: convert units ?
+            mass= SofaPython.units.mass_from_SI(rigidModel.mass)
             inertia = []
             for inert,m in zip(rigid.mass.inertia, rigid.mass.mass):
                 for i in inert:
@@ -38,7 +38,7 @@ def insertRigid(parentNode, rigidModel, param=None):
             rigid.mass.mass = mass
     else:
         # no mesh, get mass/inertia if present, default to a unit sphere
-        mass=1.
+        mass=SofaPython.units.mass_from_SI(1.)
         if not rigidModel.mass is None:
             mass = rigidModel.mass
         inertia = [1,1,1] #TODO: take care of full inertia matrix, which may be given in sml, update SofaPython.mass.RigidMassInfo to diagonalize it
