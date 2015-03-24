@@ -12,7 +12,7 @@ GridLayout {
     rowSpacing: 1
 
     property Scene scene
-    property var sceneData
+    property QtObject sceneData
     onSceneDataChanged: updateObject();
 
     readonly property alias name:       dataObject.name
@@ -33,6 +33,7 @@ GridLayout {
         id: dataObject
 
         property bool initing: true
+        property QtObject data
         property string name
         property string description
         property string type
@@ -59,6 +60,7 @@ GridLayout {
 
         dataObject.initing      = true;
 
+        dataObject.data         = sceneData;
         dataObject.name         = object.name;
         dataObject.description  = object.description;
         dataObject.type         = object.type;
@@ -163,7 +165,7 @@ GridLayout {
                     loader.source = "";
                     console.warn("Type unknown for data: " + name);
                 } else {
-                    loader.setSource("qrc:/SofaDataTypes/DataType_" + type + ".qml", {"dataObject": dataObject});
+                    loader.setSource("qrc:/SofaDataTypes/DataType_" + type + ".qml", {"dataObject": dataObject, "scene": scene, "sceneData": sceneData});
                     if(Loader.Ready !== loader.status)
                         loader.sourceComponent = dataTypeNotSupportedComponent;
                 }
@@ -220,18 +222,13 @@ GridLayout {
             description: "Track the data value during simulation"
         }
 
-        // update every 50ms during simulation
         Timer {
             interval: 50
             repeat: true
-            running: scene.play && trackButton.checked
-            onTriggered: root.updateObject();
-        }
+            running: trackButton.checked
 
-        // update at each step during step-by-step simulation
-        Connections {
-            target: !scene.play && trackButton.checked ? scene : null
-            onStepEnd: root.updateObject();
+            onRunningChanged: root.updateObject();
+            onTriggered: root.updateObject();
         }
     }
 
