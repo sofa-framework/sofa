@@ -15,12 +15,12 @@ set(SOURCE_FILES
     THMPGSpatialHashing.cpp
     THMPGHashTable.cpp)
 
-find_package(SofaBase REQUIRED)
+find_package(SofaCommon REQUIRED)
 find_package(Boost COMPONENTS system REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_THMPGSPATIALHASHING")
-target_link_libraries(${PROJECT_NAME} SofaComponentBase)
+target_link_libraries(${PROJECT_NAME} SofaComponentCommon)
 target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 if(LINUX OR UNIX AND NOT APPLE)
