@@ -104,9 +104,6 @@ public:
 
 
 
-// TODO check why passing only a triangular matrix to the symmetric iterative solvers does not work
-
-
 typedef Eigen::ConjugateGradient< AssembledSystem::cmat > CGSparseLinearSolver;
 class EigenCGSolver : public EigenSparseIterativeSolver< CGSparseLinearSolver, true >
 {

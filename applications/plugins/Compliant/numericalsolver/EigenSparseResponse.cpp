@@ -17,6 +17,13 @@ SOFA_DECL_CLASS(LUResponse)
 int LUResponseClass = core::RegisterObject("A sparse LU factorization of the response matrix.").add< LUResponse >();
 
 
+/////////////////////////////////////////////
+
+
+template class SOFA_Compliant_API EigenSparseIterativeResponse< CGSparseLinearSolver, true >;
+SOFA_DECL_CLASS(EigenCGResponse)
+static int EigenCGResponseClass = core::RegisterObject("Conjugate Gradient solve of the response matrix.").add< EigenCGResponse >();
+
 
 }
 }
