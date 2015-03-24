@@ -13,8 +13,6 @@ endif()
 
 include(CMakeSofaCreateTarget)
 
-set_and_check(SOFAFRAMEWORK_INCLUDE_DIR  "@PACKAGE_SOFAFRAMEWORK_INCLUDE_DIR@")
-
 find_package(TinyXML REQUIRED)
 sofa_create_target(TinyXML SofaFramework "${TinyXML_LIBRARIES}" "${TinyXML_INCLUDE_DIRS}" )
 
@@ -68,4 +66,4 @@ endif()
 check_required_components(SofaHelper SofaDefaultType SofaCore)
 
 set(SofaFramework_LIBRARIES SofaHelper SofaDefaultType SofaCore)
-set(SofaFramework_INCLUDE_DIRS ${SOFAFRAMEWORK_INCLUDE_DIR} ${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIR} )
+set(SofaFramework_INCLUDE_DIRS "@PACKAGE_SOFAFRAMEWORK_INCLUDE_DIRS@")

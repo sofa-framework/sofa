@@ -180,18 +180,18 @@ install(FILES ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigVersion.cmake
 
 
 # SofaFrameworkConfig.cmake (build tree)
-set(SOFAFRAMEWORK_INCLUDE_DIR "${SOFAFRAMEWORK_BUILD_INCLUDE_DIR}")
+set(SOFAFRAMEWORK_INCLUDE_DIRS "${SOFAFRAMEWORK_BUILD_INCLUDE_DIR}" "${SofaFramework_ACTUAL_SOURCE_DIR}")
 configure_package_config_file(SofaFrameworkConfig.cmake.in
                               ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfig.cmake
                               INSTALL_DESTINATION ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}
-                              PATH_VARS SOFAFRAMEWORK_INCLUDE_DIR)
+                              PATH_VARS SOFAFRAMEWORK_INCLUDE_DIRS)
 
 # SofaFrameworkConfig.cmake (installed)
-set(SOFAFRAMEWORK_INCLUDE_DIR "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}")
+set(SOFAFRAMEWORK_INCLUDE_DIRS "${SOFAFRAMEWORK_INSTALL_INCLUDE_DIR}")
 configure_package_config_file(SofaFrameworkConfig.cmake.in
                               ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigInstall.cmake
                               INSTALL_DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR}
-                              PATH_VARS SOFAFRAMEWORK_INCLUDE_DIR)
+                              PATH_VARS SOFAFRAMEWORK_INCLUDE_DIRS)
 
 install(FILES ${SOFAFRAMEWORK_BUILD_CMAKE_DIR}/SofaFrameworkConfigInstall.cmake
         DESTINATION ${SOFAFRAMEWORK_INSTALL_CMAKE_DIR}
