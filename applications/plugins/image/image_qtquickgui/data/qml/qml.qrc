@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>SofaDataTypes/qmldir</file>
+        <file>SofaDataTypes/DataType_imageplane.qml</file>
+    </qresource>
+</RCC>

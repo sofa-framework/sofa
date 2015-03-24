@@ -199,12 +199,8 @@ static bool LoaderProcess(sofa::simulation::Simulation* sofaSimulation, const QS
 		vparams->displayFlags().setShowVisualModels(true);
 
 	if(sofaSimulation->load(scenePath.toLatin1().constData()))
-	{
-		sofaSimulation->init(sofaSimulation->GetRoot().get());
-
 		if(sofaSimulation->GetRoot())
 			return true;
-	}
 
 	return false;
 }
@@ -278,8 +274,7 @@ void Scene::open()
         LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
 
         connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {
-            setStatus(loaderThread->isLoaded() ? Status::Ready : Status::Error);
-            if(isReady() && !qmlFilepath.empty())
+            if(loaderThread->isLoaded() && !qmlFilepath.empty())
                 setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 
             loaderThread->deleteLater();
@@ -287,10 +282,9 @@ void Scene::open()
 
 		loaderThread->start();
 	}
-	else
+    else
 	{
-        setStatus(LoaderProcess(mySofaSimulation, finalFilename) ? Status::Ready : Status::Error);
-        if(isReady() && !qmlFilepath.empty())
+        if(LoaderProcess(mySofaSimulation, finalFilename) && !qmlFilepath.empty())
             setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 	}
 }
@@ -921,10 +915,14 @@ void Scene::init()
     }
 #endif
 
+    // WARNING: some plugins like "image" need a valid OpenGL Context during init because they are initing textures during init instead of initTextures ...
+    mySofaSimulation->init(mySofaSimulation->GetRoot().get());
 	mySofaSimulation->initTextures(mySofaSimulation->GetRoot().get());
 	setDt(mySofaSimulation->GetRoot()->getDt());
 
     myIsInit = true;
+
+    setStatus(Status::Ready);
 }
 
 void Scene::reload()

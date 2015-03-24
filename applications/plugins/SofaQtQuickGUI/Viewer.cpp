@@ -179,11 +179,14 @@ void Viewer::paint()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glDisable(GL_SCISSOR_TEST);
 
-	if(!myScene || !myScene->isReady())
+    if(!myScene)
 		return;
 
 	if(!myScene->isInit())
 		myScene->init();
+
+    if(!myScene->isReady())
+        return;
 
     // set the viewer viewport
     glViewport(pos.x(), pos.y(), size.width(), size.height());
