@@ -70,15 +70,18 @@ public:
     // P.cols() + Q.cols()
     unsigned size_sub() const;
 
-    // factor the sub-kkt
+    // factor the sub-kkt using
+    template<class Solver>
+    void factor(Solver& response) const;
     void factor(Response& response) const;
-    
+
     // WARNING the API might change a bit here 
 
     // solve for rhs vec/mat. rhs must be of size size_full(), result
     // will be resized as needed (full size).
-    void solve(const Response& response, vec& result, const vec& rhs) const;
     void solve(const Response& response, cmat& result, const cmat& rhs) const;
+    template<class Solver>
+    void solve(const Solver& response, vec& result, const vec& rhs) const;
 
 
     void prod(vec& result, const vec& rhs) const;
@@ -86,12 +89,12 @@ public:
     // this one transposes rhs before solving (avoids temporary)
     void solve_opt(const Response& response, cmat& result, const rmat& rhs ) const;
 
-    // todo donner un joli nom
-    // rhs is full size
-    // result is sub size
-    void solve_filtered(const Response& response, vec& result, const vec& rhs ) const;
-    // Prhs is sub size
-    void solve_filtered(const Response& response, cmat& result, const rmat& rhs, rmat* Prhs=NULL ) const;
+    // (in) rhs is full size
+    // (out) result is sub size
+    template<class Solver>
+    void solve_filtered(const Solver& response, vec& result, const vec& rhs ) const;
+    // (out) projected_rhs is sub size
+    void solve_filtered(const Response& response, cmat& result, const rmat& rhs, rmat& projected_rhs ) const;
 
 
     // adaptor to response API for solving

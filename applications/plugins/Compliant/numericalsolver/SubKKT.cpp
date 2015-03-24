@@ -1,8 +1,5 @@
-#include "SubKKT.h"
-#include "Response.h"
+#include "SubKKT.inl"
 
-#include "../utils/scoped.h"
-#include "../utils/sparse.h"
 
 namespace sofa {
 namespace component {
@@ -224,32 +221,12 @@ void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps, bo
 }
 
 
-SubKKT::SubKKT() { }
+SubKKT::SubKKT() {}
 
-
+// why this is mandatory with clang? (not with g++)
 void SubKKT::factor(Response& resp) const {
     scoped::timer step("subsystem factor");
     resp.factor(A);
-}
-
-
-void SubKKT::solve(const Response& resp,
-                   vec& res,
-                   const vec& rhs) const {
-
-    res.resize( size_full() );
-
-    solve_filtered( resp, vtmp2, rhs );
-
-    // remap
-    if( P.cols() ) {
-        res.head(P.rows()).noalias() = P * vtmp2.head(P.cols());
-    }
-    
-    if( Q.cols() ) {
-        res.tail(Q.rows()).noalias() = Q * vtmp2.tail(Q.cols());
-    }
-
 }
 
 void SubKKT::prod(vec& res, const vec& rhs) const {
@@ -328,7 +305,7 @@ void SubKKT::solve_opt(const Response& resp,
 //    // res = mtmp3 * mtmp2;
 
 
-    solve_filtered( resp, mtmp2, rhs );
+    solve_filtered( resp, mtmp2, rhs, mtmpr );
 
     mtmp1 = P;
     sparse::fast_prod(res, mtmp1, mtmp2);
@@ -339,46 +316,21 @@ void SubKKT::solve_opt(const Response& resp,
 
 
 
-
-
-void SubKKT::solve_filtered(const Response& resp,
-                   vec& res,
-                   const vec& rhs) const {
-    assert( rhs.size() == size_full() );
-    res.resize( size_full() );
-
-    vtmp1.resize( size_sub() );
-    res.resize( size_sub() );
-
-    if( P.cols() ) {
-        vtmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
-    }
-    if( Q.cols() ) {
-        vtmp1.tail(Q.cols()).noalias() = Q.transpose() * rhs.tail(Q.rows());
-    }
-
-    // system solve
-    resp.solve(res, vtmp1);
-}
-
-
 void SubKKT::solve_filtered(const Response& resp,
                        cmat& res,
                        const rmat& rhs,
-                       rmat* Prhs ) const {
+                       rmat &projected_rhs ) const {
     
     if( Q.cols() ) {
         throw std::logic_error("sorry, not implemented");
     }
 
-    if( !Prhs ) Prhs = &mtmpr;
-
-    Prhs->resize( rhs.rows(), P.cols() );
+    projected_rhs.resize( rhs.rows(), P.cols() );
     res.resize( P.cols(), rhs.rows() );
 
-    sparse::fast_prod(*Prhs, rhs, P);
+    sparse::fast_prod(projected_rhs, rhs, P);
     
-    resp.solve(res, Prhs->transpose() );
+    resp.solve(res, projected_rhs.transpose() );
 }
 
 

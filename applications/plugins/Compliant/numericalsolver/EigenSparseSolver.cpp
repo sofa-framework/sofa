@@ -11,7 +11,7 @@ namespace linearsolver {
 
 
 
-template class SOFA_Compliant_API EigenSparseSolver< LDLTSparseLinearSolver, true, LDLTSparseLinearSolver::UpLo >;
+template class SOFA_Compliant_API EigenSparseSolver< LDLTSparseLinearSolver, true >;
 SOFA_DECL_CLASS(LDLTSolver)
 static int LDLTSolverClass = core::RegisterObject("Direct LDLT solver").add< LDLTSolver >();
 
@@ -36,8 +36,14 @@ static int EigenBiCGSTABSolverClass = core::RegisterObject("Bi Conjugate Gradien
 
 
 template class SOFA_Compliant_API EigenSparseIterativeSolver< MINRESSparseLinearSolver, true >;
-SOFA_DECL_CLASS(EigenMinresSolver)
-static int EigenMinresSolverClass = core::RegisterObject("MINRES solver").add< EigenMinresSolver >();
+SOFA_DECL_CLASS(EigenMINRESSolver)
+static int EigenMinresSolverClass = core::RegisterObject("MINRES solver").add< EigenMINRESSolver >();
+
+
+template class SOFA_Compliant_API EigenSparseIterativeSolver< GMRESSparseLinearSolver >;
+SOFA_DECL_CLASS(EigenGMRESSolver)
+static int EigenGmresSolverClass = core::RegisterObject("GMRES solver").add< EigenGMRESSolver >();
+
 
 }
 }
