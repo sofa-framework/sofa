@@ -2,7 +2,7 @@
 #define COMPLIANT_EIGENSPARSESOLVER_INL
 
 #include "EigenSparseSolver.h"
-#include "SubKKT.h"
+#include "SubKKT.inl"
 
 #include "EigenSparseResponse.h"
 
@@ -16,22 +16,47 @@ namespace linearsolver {
 
 typedef AssembledSystem::vec vec;
 
-template<class LinearSolver,bool symmetric,int UpLo>
-struct EigenSparseSolver<LinearSolver,symmetric,UpLo>::pimpl_type {
+template<class LinearSolver,bool symmetric>
+struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
     typedef LinearSolver solver_type;
 
-    solver_type solver;
+    mutable solver_type solver;
     cmat PHinvPJT;
     cmat schur;
 
     cmat tmp;
     
     SubKKT sub;
+
+
+    // for kkt solve, pimpl will have the same API as a Response
+    // (such as the same functions can be called in SubKKT)
+
+    void factor(const rmat& A)
+    {
+        if( symmetric ) tmp = A.template triangularView< Eigen::Lower >();  // only copy the triangular part (default to Lower)
+        else tmp = A;    // TODO there IS a temporary here, from rmat to cmat
+
+        solver.compute( tmp ); // the conversion from rmat to cmat needs to be explicit for iterative solvers
+
+        if( solver.info() != Eigen::Success ) {
+            std::cerr << "EigenSparseSolver non invertible matrix" << std::endl;
+        }
+    }
+
+    void solve(vec& lval, const vec& rval) const
+    {
+        lval = solver.solve( rval );
+    }
 };
 
 
-template<class LinearSolver,bool symmetric,int UpLo>
-EigenSparseSolver<LinearSolver,symmetric,UpLo>::EigenSparseSolver()
+
+
+
+
+template<class LinearSolver,bool symmetric>
+EigenSparseSolver<LinearSolver,symmetric>::EigenSparseSolver()
     : schur(initData(&schur,
                      true,
                      "schur",
@@ -39,44 +64,54 @@ EigenSparseSolver<LinearSolver,symmetric,UpLo>::EigenSparseSolver()
     , pimpl( new pimpl_type )
 {}
 
-template<class LinearSolver,bool symmetric,int UpLo>
-EigenSparseSolver<LinearSolver,symmetric,UpLo>::~EigenSparseSolver()
+template<class LinearSolver,bool symmetric>
+EigenSparseSolver<LinearSolver,symmetric>::~EigenSparseSolver()
 {}
 
-template<class LinearSolver,bool symmetric,int UpLo>
-void EigenSparseSolver<LinearSolver,symmetric,UpLo>::init() {
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::init() {
 
     KKTSolver::init();
+    reinit();
+}
 
-    // let's find a response
-    response = this->getContext()->template get<Response>( core::objectmodel::BaseContext::Local );
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::reinit() {
 
-    // fallback in case we missed
-    if( !response ) {
+    KKTSolver::reinit();
 
-        if( symmetric ) response = new LDLTResponse();
-        else response = new LUResponse();
-        this->getContext()->addObject( response );
-        
-        serr << "fallback response class: "
-             << response->getClassName()
-             << " added to the scene" << sendl;
+    if( schur.getValue() && !response )
+    {
+        // let's find a response
+        response = this->getContext()->template get<Response>( core::objectmodel::BaseContext::Local );
+
+        // fallback in case we missed
+        if( !response ) {
+
+            if( symmetric ) response = new LDLTResponse();
+            else response = new LUResponse();
+            this->getContext()->addObject( response );
+
+            serr << "fallback response class: "
+                 << response->getClassName()
+                 << " added to the scene" << sendl;
+        }
     }
 }
 
-template<class LinearSolver,bool symmetric,int UpLo>
-void EigenSparseSolver<LinearSolver,symmetric,UpLo>::factor(const AssembledSystem& sys) {
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::factor(const AssembledSystem& sys) {
 
     if( schur.getValue() ) {
         factor_schur( sys );
     } else {
         SubKKT::projected_kkt(pimpl->sub, sys, 1e-14, symmetric);
-        pimpl->sub.factor(*response);
+        pimpl->sub.factor( *pimpl );
     }
 }
 
-template<class LinearSolver,bool symmetric,int UpLo>
-void EigenSparseSolver<LinearSolver,symmetric,UpLo>::solve(vec& res,
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::solve(vec& res,
                        const AssembledSystem& sys,
                        const vec& rhs) const {
     if( schur.getValue() ) {
@@ -87,8 +122,8 @@ void EigenSparseSolver<LinearSolver,symmetric,UpLo>::solve(vec& res,
 
 }
 
-template<class LinearSolver,bool symmetric,int UpLo>
-void EigenSparseSolver<LinearSolver,symmetric,UpLo>::factor_schur( const AssembledSystem& sys ) {
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSystem& sys ) {
 
     // schur complement
     SubKKT::projected_primal(pimpl->sub, sys);
@@ -117,9 +152,10 @@ void EigenSparseSolver<LinearSolver,symmetric,UpLo>::factor_schur( const Assembl
         {
             scoped::timer step("schur factorization");
 
-            if( UpLo )
+            if( symmetric )
             {
-                 pimpl->solver.compute( pimpl->schur.template triangularView< UpLo >() );
+                pimpl->tmp = pimpl->schur.template triangularView< Eigen::Lower >(); // to make it work with MINRES
+                pimpl->solver.compute( pimpl->tmp );
             }
             else
                 pimpl->solver.compute( pimpl->schur );
@@ -134,8 +170,8 @@ void EigenSparseSolver<LinearSolver,symmetric,UpLo>::factor_schur( const Assembl
 }
 
 
-template<class LinearSolver,bool symmetric,int UpLo>
-void EigenSparseSolver<LinearSolver,symmetric,UpLo>::solve_kkt(vec& res,
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::solve_kkt(vec& res,
                            const AssembledSystem& sys,
                            const vec& rhs) const {
     assert( res.size() == sys.size() );
@@ -147,12 +183,12 @@ void EigenSparseSolver<LinearSolver,symmetric,UpLo>::solve_kkt(vec& res,
     tmp.head(sys.m) = rhs.head(sys.m);
     if( sys.n ) tmp.tail(sys.n) = -rhs.tail(sys.n);
 
-    pimpl->sub.solve(*response, res, tmp);
+    pimpl->sub.solve( *pimpl, res, tmp );
     
 }
 
-template<class LinearSolver,bool symmetric,int UpLo>
-void EigenSparseSolver<LinearSolver,symmetric,UpLo>::solve_schur(vec& res,
+template<class LinearSolver,bool symmetric>
+void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
                              const AssembledSystem& sys,
                              const vec& rhs) const {
 
@@ -208,22 +244,23 @@ void EigenSparseSolver<LinearSolver,symmetric,UpLo>::solve_schur(vec& res,
 /////////////////////////////////////////////
 
 
-template<class LinearSolver,bool symmetric,int UpLo>
-EigenSparseIterativeSolver<LinearSolver,symmetric,UpLo>::EigenSparseIterativeSolver()
+template<class LinearSolver,bool symmetric>
+EigenSparseIterativeSolver<LinearSolver,symmetric>::EigenSparseIterativeSolver()
     : d_iterations( initData(&d_iterations, 100u, "iterations", "max iterations") )
     , d_tolerance( initData(&d_tolerance, (SReal)1e-6, "tolerance", "tolerance") )
 {}
 
-template<class LinearSolver,bool symmetric,int UpLo>
-void EigenSparseIterativeSolver<LinearSolver,symmetric,UpLo>::init()
+template<class LinearSolver,bool symmetric>
+void EigenSparseIterativeSolver<LinearSolver,symmetric>::init()
 {
-    EigenSparseSolver<LinearSolver,symmetric,UpLo>::init();
+    EigenSparseSolver<LinearSolver,symmetric>::init();
     reinit();
 }
 
-template<class LinearSolver,bool symmetric,int UpLo>
-void EigenSparseIterativeSolver<LinearSolver,symmetric,UpLo>::reinit()
+template<class LinearSolver,bool symmetric>
+void EigenSparseIterativeSolver<LinearSolver,symmetric>::reinit()
 {
+    EigenSparseSolver<LinearSolver,symmetric>::reinit();
     this->pimpl->solver.setMaxIterations( d_iterations.getValue() );
     this->pimpl->solver.setTolerance( d_tolerance.getValue() );
 }
