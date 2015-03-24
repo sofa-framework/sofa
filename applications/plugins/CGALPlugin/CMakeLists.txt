@@ -37,9 +37,11 @@ set(README_FILES
 
 find_package(SofaFramework REQUIRED)
 find_package(CGAL REQUIRED)
+
+# Dependencies required by CGAL
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package(MPFR REQUIRED)
 find_package(GMP REQUIRED)
-# CGAL uses boost_system and boost_thread
 find_package(Boost REQUIRED COMPONENTS system thread)
 
 find_package(image)
