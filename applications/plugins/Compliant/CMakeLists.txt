@@ -119,6 +119,7 @@ set(SOURCE_FILES
     misc/CompliantSolverMerger.cpp
     misc/RigidMass.cpp
     misc/FailNode.cpp
+	misc/python.cpp
 
     compliance/UniformCompliance.cpp
     compliance/DiagonalCompliance.cpp
