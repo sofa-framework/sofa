@@ -106,8 +106,6 @@ public:
 
     virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
 
-//    virtual void computeGeometricStiffness(const core::MechanicalParams *mparams);
-
 //    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 
     virtual const sofa::defaulttype::BaseMatrix* getJ();

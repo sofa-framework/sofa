@@ -38,6 +38,7 @@ set(HEADER_FILES
     MergeSets.inl
     MergeVectors.h
     MergeVectors.inl
+    MergeROIs.h
     MeshBarycentricMapperEngine.h
     MeshBarycentricMapperEngine.inl
     MeshROI.h
@@ -55,6 +56,7 @@ set(HEADER_FILES
     IndicesFromValues.inl
     IndexValueMapper.h
     IndexValueMapper.inl
+    ROIValueMapper.h
     JoinPoints.h
     JoinPoints.inl
     MapIndices.h
@@ -90,6 +92,8 @@ set(HEADER_FILES
     NormEngine.h
     NormEngine.inl
     TestEngine.h
+    MeshClosingEngine.h
+    MeshClosingEngine.inl
     )
 
 set(SOURCE_FILES
@@ -112,6 +116,7 @@ set(SOURCE_FILES
     MergePoints.cpp
     MergeSets.cpp
     MergeVectors.cpp
+    MergeROIs.cpp
     MeshBarycentricMapperEngine.cpp
     MeshROI.cpp
     TransformPosition.cpp
@@ -121,6 +126,7 @@ set(SOURCE_FILES
     ValuesFromIndices.cpp
     IndicesFromValues.cpp
     IndexValueMapper.cpp
+    ROIValueMapper.cpp
     JoinPoints.cpp
     MapIndices.cpp
     RandomPointDistributionInSurface.cpp
@@ -139,6 +145,7 @@ set(SOURCE_FILES
     HausdorffDistance.cpp
     NormEngine.cpp
     TestEngine.cpp
+    MeshClosingEngine.cpp
     )
 
 set(GROUP_BASE_DIR "..")

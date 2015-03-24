@@ -30,13 +30,15 @@ int main(int argc, char **argv)
     sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
 
     // Initialise paths
-    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::helper::Utils::getSofaPathPrefix() + "/config");
+    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::helper::Utils::getSofaPathPrefix() + "/etc");
     sofa::gui::BaseGUI::setScreenshotDirectoryPath(sofa::helper::Utils::getSofaPathPrefix() + "/screenshots");
 
     // sofa init
     sofa::helper::system::DataRepository.addFirstPath("./");
     sofa::helper::system::DataRepository.addLastPath(sofa::helper::Utils::getSofaPathPrefix() + "/share/");
     sofa::helper::system::DataRepository.addLastPath(sofa::helper::Utils::getSofaPathPrefix() + "/examples/");
+    sofa::helper::system::DataRepository.addLastPath(sofa::helper::Utils::getSofaPathPrefix() + "/../share/");
+    sofa::helper::system::DataRepository.addLastPath(sofa::helper::Utils::getSofaPathPrefix() + "/../examples/");
 
     // application specific settings
 	app.setOrganizationName("Sofa");

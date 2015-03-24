@@ -9,7 +9,7 @@
 
 #include "numericalsolver/MinresSolver.h"
 #include "numericalsolver/CgSolver.h"
-#include "numericalsolver/LDLTSolver.h"
+#include "numericalsolver/EigenSparseSolver.h"
 #include "numericalsolver/SequentialSolver.h"
 
 namespace sofa

@@ -154,7 +154,7 @@ public:
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT( const ConstraintParams* /* mparams */, InDataMatrixDeriv& /* out */, const OutDataMatrixDeriv& /* in */)
     {
-        serr << "This mapping does not support constraints because Mapping::applyJT( const ConstraintParams* , InDataMatrixDeriv&, const OutDataMatrixDeriv&) is not overloaded." << sendl;
+        serr << "This mapping does not support certain constraints because Mapping::applyJT( const ConstraintParams* , InDataMatrixDeriv&, const OutDataMatrixDeriv&) is not overloaded." << sendl;
     }
 
     /// computeAccFromMapping

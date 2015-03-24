@@ -310,7 +310,6 @@ protected:
 
         if(this->assemble.getValue())
         {
-            this->updateK(childForce.ref());
             this->K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
         }
         else

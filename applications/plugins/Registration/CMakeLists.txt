@@ -60,7 +60,7 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/Registration/Registration.h
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGuiQt)
+target_link_libraries(${PROJECT_NAME} SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
 endif()

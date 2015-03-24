@@ -49,7 +49,9 @@ public:
 	unsigned size() const;
 
 	AssembledSystem(unsigned m = 0, unsigned n = 0);
-				
+
+    void reset(unsigned m, unsigned n);
+    
 	real dt;
 				
     // ode matrix, compliance, mapping and projection

@@ -423,7 +423,8 @@ struct AssemblyVisitor::propagation_helper {
 	const core::MechanicalParams* mparams;
 	graph_type& g;
 
-	propagation_helper(const core::MechanicalParams* mparams, graph_type& g) : mparams(mparams), g(g) {}
+	propagation_helper(const core::MechanicalParams* mparams,
+                       graph_type& g) : mparams(mparams), g(g) {}
 
     void operator()( unsigned v ) const {
 
@@ -433,7 +434,8 @@ struct AssemblyVisitor::propagation_helper {
         if( c->mechanical ) {
 
             // have a look to all its parents
-			for(graph_type::out_edge_range e = boost::out_edges(v, g); e.first != e.second; ++e.first) {
+			for(graph_type::out_edge_range e = boost::out_edges(v, g);
+                e.first != e.second; ++e.first) {
 
 				chunk* p = g[ boost::target(*e.first, g) ].data;
                 p->mechanical = true; // a parent of a mechanical child is necessarily mechanical
@@ -527,35 +529,151 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 
 
 
-// keep temporaries allocated
-static AssemblyVisitor::mat tmp1, tmp2;
-
 // this is meant to optimize L^T D L products
-static inline const AssemblyVisitor::mat& ltdl(const AssemblyVisitor::mat& l,
-                                               const AssemblyVisitor::mat& d)
+inline const AssemblyVisitor::mat& AssemblyVisitor::ltdl(const mat& l, const mat& d) const
 {
 //#ifdef _OPENMP
 //    return component::linearsolver::mul_EigenSparseMatrix_MT( l.transpose(), component::linearsolver::mul_EigenSparseMatrix_MT( d, l ) );
 //#else
-    tmp1 = d * l;
-    tmp2 = l.transpose() * tmp1;
+    sparse::fast_prod(tmp1, d, l);
+    tmp3 = l.transpose();
+    sparse::fast_prod(tmp2, tmp3, tmp1);
+    
     return tmp2;
 //#endif
 }
 
 
-template<class ResType, class LType, class DType>
-static inline void add_ltdl(ResType& res,
-                            const LType& l,
-                            const DType& d) {
-    tmp1 = d * l;
-    tmp2 = l.transpose() * tmp1;
-    res += tmp2;
+inline void AssemblyVisitor::add_ltdl(mat& res, const mat& l, const mat& d)  const
+{
+    sparse::fast_prod(tmp1, d, l);
+    tmp3 = l.transpose();
+    sparse::fast_add_prod(res, tmp3, tmp1);
 }
 
 
+
+enum {
+    METHOD_DEFAULT,
+    METHOD_TRIPLETS,            // triplets seems fastest (for me) but
+                                // might use too much memory
+    METHOD_COEFREF,
+    METHOD_DENSEMATRIX,
+    METHOD_NOMULT
+};
+
+
+template<int Method = METHOD_NOMULT> struct add_shifted;
+
+typedef AssembledSystem::mat mat;
+
+template<> struct add_shifted<METHOD_TRIPLETS> {
+    typedef Eigen::Triplet<SReal> Triplet;
+
+    
+    mat& result;
+    std::vector<Triplet> triplets;
+    
+    add_shifted(mat& result) : result(result) {
+        triplets.reserve(result.nonZeros() + result.rows());
+
+        // don't forget to add prior values since we will overwrite
+        // result in the dtor
+        add_shifted_right<Triplet, mat>( triplets, result, 0);
+    }
+    
+    ~add_shifted() {
+        result.setFromTriplets( triplets.begin(), triplets.end() );
+    }
+
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0)  {
+        add_shifted_right<Triplet, mat>( triplets, chunk, off, factor);
+    }
+
+};
+
+
+
+
+
+template<> struct add_shifted<METHOD_COEFREF> {
+
+    mat& result;
+    add_shifted(mat& result) : result(result) { }
+    
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
+        add_shifted_right<mat>( result, chunk, off, factor );
+    }
+
+};
+
+
+template<> struct add_shifted<METHOD_DENSEMATRIX> {
+
+    typedef Eigen::Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> DenseMat;
+
+    mat& result;
+
+    DenseMat dense;
+    
+    add_shifted(mat& result)
+        : result(result),
+          dense( DenseMat::Zero(result.rows(), result.cols())) {
+
+    }
+    
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0)  {
+        add_shifted_right<DenseMat,mat>( dense, chunk, off, factor);
+    }
+
+    ~add_shifted() {
+        convertDenseToSparse( result, dense );
+    }
+
+};
+
+template<> struct add_shifted<METHOD_DEFAULT> {
+    mat& result;
+    add_shifted(mat& result)
+        : result(result) {
+
+    }
+
+    // TODO optimize shift creation
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
+        const mat shift = shift_right<mat>(off, chunk.cols(), result.cols(), factor);
+        
+        result.middleRows(off, chunk.rows()) = result.middleRows(off, chunk.rows()) + chunk * shift;
+    }
+
+};
+
+// barely faster than DEFAULT
+template<> struct add_shifted<METHOD_NOMULT> {
+    mat& result;
+    add_shifted(mat& result)
+        : result(result) {
+
+        // ideal would be somewhere between n and n^2 (TODO we should add a parameter)
+        result.reserve( result.rows() );
+    }
+
+    template<class Matrix>
+    void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
+        result.middleRows(off, chunk.rows()) = result.middleRows(off, chunk.rows()) +
+            shifted_matrix( chunk, off, result.cols(), factor);
+    }
+
+};
+
+
+
 // produce actual system assembly
-AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
+void AssemblyVisitor::assemble(system_type& res) const {
 	scoped::timer step("assembly");
 	assert(!chunks.empty() && "need to send a visitor first");
 
@@ -565,8 +683,8 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
     _processed = process();
 
 	// result system
-    system_type res(_processed->size_m, _processed->size_c);
-
+    res.reset(_processed->size_m, _processed->size_c);
+    
 	res.dt = mparams->dt();
     res.isPIdentity = isPIdentity;
 
@@ -600,16 +718,20 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
         }
         else // multimapping
         {
-//            std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
             // directly add the geometric stiffness to the assembled level
             // by mapping with the specific jacobian from master to the (current-1) level
 
 
+            std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
 
             // full mapping chunk for geometric stiffness
             const mat& geometricStiffnessJc = _processed->fullmappinggeometricstiffness[ graph[ prefix[i] ].dofs ];
-//std::cerr<<geometricStiffnessJc<<std::endl;
-//std::cerr<<c.Ktilde<<std::endl;
+
+
+
+            //std::cerr<<geometricStiffnessJc<<std::endl;
+            std::cerr<<*Ktilde<<std::endl;
+            std::cerr<<Ktilde->nonZeros()<<std::endl;
 
 //            std::cerr<<res.H.rows()<<" "<<geometricStiffnessJc.rows()<<std::endl;
 
@@ -632,14 +754,13 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 	unsigned off_m = 0;
 	unsigned off_c = 0;
 
-#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
-    typedef Eigen::Triplet<real> Triplet;
-    std::vector<Triplet> H_triplets, C_triplets, P_triplets;
-#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
-    typedef Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic> DenseMat;
-    DenseMat H(_processed->size_m,_processed->size_m), C(_processed->size_c, _processed->size_c), P(_processed->size_m,_processed->size_m);
-#endif
+    typedef add_shifted<> add_type;
 
+    add_type add_H(res.H), add_P(res.P), add_C(res.C);
+
+    const SReal c_factor = 1.0 /
+        ( res.dt * res.dt * mparams->implicitVelocity() * mparams->implicitPosition() );
+    
 	// assemble system
     for( unsigned i = 0, n = prefix.size() ; i < n ; ++i ) {
 
@@ -653,29 +774,10 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
         if( c.master() ) {
             res.master.push_back( c.dofs );
 
-
-            // scoped::timer step("independent dofs");
-#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
-            if( !zero(c.H) ) add_shifted_right<Triplet,mat>( H_triplets, c.H, off_m );
-            if( !zero(c.P) ) add_shifted_right<Triplet,mat>( P_triplets, c.P, off_m );
-#elif USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX
-            if( !zero(c.H) ) add_shifted_right<mat>( res.H, c.H, off_m );
-            if( !zero(c.P) ) add_shifted_right<mat>( res.P, c.P, off_m );
-#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
-            if( !zero(c.H) ) add_shifted_right<DenseMat,mat>( H, c.H, off_m );
-            if( !zero(c.P) ) add_shifted_right<DenseMat,mat>( P, c.P, off_m );
-#elif SHIFTING_MATRIX_WITHOUT_MULTIPLICATION
-            if( !zero(c.H) ) res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + shifted_matrix( c.H, off_m, _processed->size_m );
-            if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = shifted_matrix( c.P, off_m, _processed->size_m );
-#else
-            mat shift = shift_right<mat>(off_m, c.size, _processed->size_m);
-            if( !zero(c.H) ) res.H.middleRows(off_m, c.size) = res.H.middleRows(off_m, c.size) + c.H * shift;
-            if( !zero(c.P) ) res.P.middleRows(off_m, c.size) = c.P * shift;
-
-#endif
-
+            if( !zero(c.H) ) add_H(c.H, off_m);
+            if( !zero(c.P) ) add_P(c.P, off_m);
+            
             off_m += c.size;
-
 		}
 
 		// mapped dofs
@@ -688,16 +790,7 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
                 assert( Jc.cols() == int(_processed->size_m) );
 
                 // actual response matrix mapping
-                if( !zero(c.H) ) {
-
-#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
-                    add_shifted_right( H_triplets, ltdl(Jc, c.H), 0 );
-#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
-                    add_shifted_right( H, ltdl(Jc, c.H), 0 );
-#else
-                    add_ltdl(res.H, Jc, c.H);
-#endif
-                }
+                if( !zero(c.H) ) add_H(ltdl(Jc, c.H), 0);
             }
 
 
@@ -737,37 +830,12 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 
                 // compliance
 
-                if( !zero( *C ) )
-                {
-                    SReal factor = 1.0 /
-                        ( res.dt * res.dt * mparams->implicitVelocity() * mparams->implicitPosition() );
-					
-#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
-                        add_shifted_right( C_triplets, *C, off_c, factor );
-#elif USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX
-                        add_shifted_right( res.C, *C, off_c, factor );
-#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
-                        add_shifted_right( *C, C, off_c, factor );
-#elif SHIFTING_MATRIX_WITHOUT_MULTIPLICATION
-                        res.C.middleRows(off_c, c.size) = shifted_matrix( *C, off_c, _processed->size_c, factor );
-#else
-                        res.C.middleRows(off_c, c.size) = *C * shift_right<mat>(off_c, c.size, _processed->size_c, factor);
-#endif
-                }
+                if( !zero( *C ) ) add_C(*C, off_c, c_factor);
+                
 				off_c += c.size;
 			}
 		}
 	}
-	
-#if USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX
-    res.H.setFromTriplets( H_triplets.begin(), H_triplets.end() );
-    res.P.setFromTriplets( P_triplets.begin(), P_triplets.end() );
-    res.C.setFromTriplets( C_triplets.begin(), C_triplets.end() );
-#elif USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX
-    convertDenseToSparse( res.H, H );
-    convertDenseToSparse( res.C, C );
-    convertDenseToSparse( res.P, P );
-#endif
 
     assert( off_m == _processed->size_m );
     assert( off_c == _processed->size_c );
@@ -776,7 +844,6 @@ AssemblyVisitor::system_type AssemblyVisitor::assemble() const {
 	// max: no we don't
     // res.H = res.P.transpose() * res.H * res.P;
 
-	return res;
 }
 
 // TODO redo

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -10 0" time="0" animate="0"  dt="0.01" >
+<VisualStyle displayFlags="showBehaviorModels showMechanicalMappings hideForceFields showCollisionModels" />
+
+<RequiredPlugin name="Compliant" pluginName="Compliant" />
+<RequiredPlugin name="Flexible" pluginName="Flexible" />
+
+<CompliantAttachButton arrowSize=".007" isCompliance="1"/>
+
+<DefaultPipeline />
+<BruteForceDetection />
+<NewProximityIntersection alarmDistance="1" contactDistance="0.01" />
+<DefaultContactManager response = "CompliantContact" />
+
+<CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="0" stabilization="no stabilization" warm_start="false"/>
+
+<ModulusSolver iterations="30" omega="1" precision="1e-8" />
+<!-- <SequentialSolver iterations="30" precision="1e-10" /> -->
+
+<Node   name="scene" activated="1" >
+  
+   <Node name="cloth" >
+	 
+     <GridMeshCreator name="loader" filename="nofile" resolution="20 20" trianglePattern="0" rotation="90 0 0 " translation="-0.5 1 -0.5" scale="1 1 0" />
+     <MeshTopology name="mesh" src="@loader" />
+     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale=".015" drawMode="1"/>
+
+     <UniformMass  name="mass" totalMass="10" rayleighMass="0"/>
+     
+     <Node name="extensionsNode" >
+       <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+       <EdgeSetTopologyContainer edges="@../mesh.edges" />
+       <DistanceMapping  showObjectScale="0.007"/>
+       <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-15" isCompliance="1" />
+       <ConstraintValue/>
+     </Node>
+     
+     <Node name="Visual" >
+       <VisualModel  color="green"/>
+       <IdentityMapping />
+     </Node>
+
+	 <SphereModel radius="0.01" />
+   </Node>
+
+
+   <Node name="ball">
+	 <MechanicalObject template="Vec3" position="0 0 0" name="dofs" />
+	 <UniformMass />
+	 <FixedConstraint indices="0" />
+	 <SphereModel radius="0.5" />
+   </Node>
+   
+</Node>
+
+
+
+
+</Node>

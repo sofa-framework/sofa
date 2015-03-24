@@ -104,7 +104,6 @@ public:
 
             //map->accumulateForce();
             map->applyJT(mparams, lambda, lambda);
-    //        map->computeGeometricStiffness(mparams);
 
             ForceMaskDeactivate( map->getMechTo() );
 
@@ -398,6 +397,9 @@ void CompliantNLImplicitSolver::compute_jacobian(SolverOperations sop)
 //    cerr<<"compute_jacobian, kfactor = " << sop.mparams().kFactor() <<endl;
 //    cerr<<"compute_jacobian, x = "; sop.vop.print(sop.mparams().x(),cerr); cerr<<endl;
 //    cerr<<"compute_jacobian, v = "; sop.vop.print(sop.mparams().v(),cerr); cerr<<endl;
+
+    simulation::MechanicalComputeGeometricStiffness gsvis( &sop.mparams(), core::VecDerivId::force() );
+    send( gsvis );
 
     // assemble system
     perform_assembly( &sop.mparams(), sys );
@@ -922,7 +924,9 @@ void CompliantNLImplicitSolver::compute_forces(SolverOperations& sop, core::beha
 
 ////            // TODO have a look about reseting or not forces of mapped dofs
 ////        }
-
+////
+////        // computing mapping geometric stiffnesses based on child force stored in f
+////        simulation::MechanicalComputeGeometricStiffness( &sop.mparams(), f );
 //    }
 }
 

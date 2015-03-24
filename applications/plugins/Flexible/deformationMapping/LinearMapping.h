@@ -176,6 +176,26 @@ public :
         }
     }
 
+    virtual void initJacobianBlocks(const InVecCoord& inCoord, const OutVecCoord& outCoord)
+    {
+        if(this->f_printLog.getValue())
+            std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
+
+        unsigned int cSize = this->f_pos0.getValue().size();
+        this->jacobian.resize(cSize);
+        for(unsigned int i=0; i<cSize; i++ )
+        {
+            unsigned int nbref=this->f_index.getValue()[i].size();
+            this->jacobian[i].resize(nbref);
+            for(unsigned int j=0; j<nbref; j++ )
+            {
+                unsigned int index=this->f_index.getValue()[i][j];
+                this->jacobian[i][j].init( inCoord[index],outCoord[i],this->f_pos0.getValue()[i], this->f_F0.getValue()[i],
+                                           this->f_w.getValue()[i][j], this->f_dw.getValue()[i][j], this->f_ddw.getValue()[i][j] );
+            }
+        }
+    }
+
 };
 
 
