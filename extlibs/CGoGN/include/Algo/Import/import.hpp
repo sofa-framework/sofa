@@ -27,7 +27,7 @@
 #include "Container/fakeAttribute.h"
 #include "Algo/Modelisation/polyhedron.h"
 #include "Algo/Topo/basic.h"
-#include <utils.h>
+//#include <utils.h>
 #include <boost/function.hpp>
 
 namespace CGoGN
