@@ -190,12 +190,6 @@ find_package(CUDA REQUIRED)
 
 set(SOFACUDA_COMPILE_DEFINITIONS "-DSOFA_BUILD_GPU_CUDA")
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-# Give include directories to nvcc compiler
-cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-cuda_include_directories(${SofaFramework_INCLUDE_DIRS})
-
 # Make these compiler definitions available to nvcc
 if(WIN32)
     set(SOFACUDA_COMPILE_DEFINITIONS "${SOFACUDA_COMPILE_DEFINITIONS} -DWIN32")
@@ -207,8 +201,19 @@ if(SOFACUDA_VERBOSE_PTXAS)
     set(VERBOSE_PTXAS --ptxas-options=-v)
 endif()
 
+# Give include directories to nvcc compiler.
+# Note: keep cuda_include_directories() before cuda_add_library().
+cuda_include_directories(${CMAKE_CURRENT_BINARY_DIR})
+cuda_include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+cuda_include_directories(${SofaFramework_INCLUDE_DIRS})
+cuda_include_directories(${SofaBase_INCLUDE_DIRS})
+
 # Let nvcc build the library
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWS_OPTIONS})
+
+# include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 
 option(SOFACUDA_DOUBLE "Activate double-precision support in CUDA (requires GT200+ GPU and -arch sm_13 flag." OFF)
 if(SOFACUDA_DOUBLE)
