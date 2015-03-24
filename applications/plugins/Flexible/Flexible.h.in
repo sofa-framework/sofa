@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#ifndef _Flexible_H_
+#ifndef _FLEXIBLE_H_
 #define _FLEXIBLE_H_
 
 #include <sofa/SofaBase.h>
