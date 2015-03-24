@@ -160,8 +160,13 @@ public:
         return K;
     }
 
-    // TO DO : implement this !!
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) { std::cerr<<"addDForce not yet implemented\n"; }
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        typename In::AngularVector& parentTorque = getVOrientation(df);
+        const typename In::AngularVector& parentRotation = getVOrientation(dx);
+        const typename In::AngularVector& torqueDecrement = In::crosscross( childForce, parentRotation, Pa ) * kfactor;
+        parentTorque -=  torqueDecrement;
+    }
 };
 
 
@@ -260,8 +265,13 @@ public:
         return K;
     }
 
-    // TO DO : implement this !!
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        typename In::AngularVector& parentTorque = getVOrientation(df);
+        const typename In::AngularVector& parentRotation = getVOrientation(dx);
+        const typename In::AngularVector& torqueDecrement = In::crosscross( childForce, parentRotation, Pa ) * kfactor;
+        parentTorque -=  torqueDecrement;
+    }
 };
 
 
