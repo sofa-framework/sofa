@@ -185,6 +185,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SofaCUDA/SofaCUDA.h
         DESTINATION "${SOFACUDA_INSTALL_INCLUDE_DIR}/SofaCUDA")
 
 find_package(SofaAdvanced REQUIRED)
+find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
 
 set(SOFACUDA_COMPILE_DEFINITIONS "-DSOFA_BUILD_GPU_CUDA")
@@ -270,7 +271,7 @@ set(CUDA_NVCC_FLAGS_DEBUG "-g")
 set(CUDA_NVCC_FLAGS_RELEASE "-DNDEBUG")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData SofaComponentAdvanced)
+target_link_libraries(${PROJECT_NAME} SofaHelper SofaOpenglVisual SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData SofaComponentAdvanced SofaComponentMisc)
 
 # Make the compiler definitions available to nvcc
 add_definitions("${SOFACUDA_COMPILE_DEFINITIONS}")
