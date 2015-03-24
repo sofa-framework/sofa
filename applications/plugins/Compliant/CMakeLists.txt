@@ -44,6 +44,7 @@ set(HEADER_FILES
     numericalsolver/BiCgStabSolver.h
     numericalsolver/NNCGSolver.h
 	numericalsolver/SubKKT.h
+    numericalsolver/SubKKT.inl
 	numericalsolver/ModulusSolver.h
 
     preconditioner/BasePreconditioner.h
