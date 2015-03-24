@@ -113,7 +113,8 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     simulation::Node::SPtr root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
     Real deltaMax; ///< The maximum magnitude of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
-    Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
+    Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  errorMax * numeric_limits<Real>::epsilon
+    Real errorFactorDJ;     ///< The test for geometric stiffness is successfull if the (infinite norm of the) difference is less than  errorFactorDJ * errorMax * numeric_limits<Real>::epsilon
 
 
     static const unsigned char TEST_getJs = 1; ///< testing getJs used in assembly API
@@ -123,7 +124,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
 
-    Mapping_test():deltaMax(1000),errorMax(10),flags(TEST_ASSEMBLY_API)
+    Mapping_test():deltaMax(1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
     {
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -138,7 +139,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100),flags(TEST_ASSEMBLY_API)
+    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
     {
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -283,6 +284,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         copyToData( dxin, vp );
         dfp.fill( InDeriv() );
         copyToData( fin, dfp );
+        mapping->updateK( &mparams, core::ConstVecDerivId::force() ); // updating stiffness matrix for the current state and force
         mapping->applyDJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
         copyFromData( dfp, inDofs->readForces() ); // fp + df due to geometric stiffness
         //        cout<<"dfp = " << dfp << endl;
@@ -361,7 +363,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         if( this->vectorMaxDiff(dxc,vc)>this->epsilon()*errorMax ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax  << endl
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax << endl
                           << "position change = " << dxc << endl
                           << "velocity        = " << vc << endl;
         }
@@ -384,37 +386,41 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // ================ test applyDJT()
-        if( this->vectorMaxDiff(dfp,fp12)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(dfp,fp12)>this->epsilon()*errorMax*errorFactorDJ ){
             succeed = false;
-            ADD_FAILURE() << "applyDJT test failed" << endl <<
-                             "dfp    = " << dfp << endl <<
-                             "fp2-fp = " << fp12 << endl;
+            ADD_FAILURE() << "applyDJT test failed" << endl
+                          << "dfp    = " << dfp << endl
+                          << "fp2-fp = " << fp12 << endl;
         }
 
         if( flags & TEST_getK )
         {
+            InVecDeriv Kv(Np);
+
             // ================ test getK()
             const defaulttype::BaseMatrix* bk = mapping->getK();
-            if( bk == NULL ){
-                ADD_FAILURE() << "getK returns a null matrix";
-            }
 
-            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
-            const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
-            if( K == NULL ){
-                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
-                // TODO perform a slow conversion with a big warning rather than a failure?
-            }
+            // K can be null for NULL for linear mapping.
+            // perform the test with a null vector to check if the mapping is really null
 
-            InVecDeriv Kv(Np);
-            K->mult(Kv,vp);
+            if( bk != NULL ){
+
+                typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+                const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
+                if( K == NULL ){
+                    ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
+                    // TODO perform a slow conversion with a big warning rather than a failure?
+                }
+
+                if( K->compressedMatrix.nonZeros() ) K->mult(Kv,vp);
+            }
 
             // check that K.vp = dfp
-            if( this->vectorMaxDiff(Kv,dfp)>this->epsilon()*errorMax ){
+            if( this->vectorMaxDiff(Kv,fp12)>this->epsilon()*errorMax*errorFactorDJ ){
                 succeed = false;
-                ADD_FAILURE() << "K test failed" << endl <<
-                                 "Kv    = " << Kv << endl <<
-                                 "dfp = " << fp12 << endl;
+                ADD_FAILURE() << "K test failed, difference should be less than " << this->epsilon()*errorMax*errorFactorDJ  << endl
+                              << "Kv    = " << Kv << endl
+                              << "dfp = " << fp12 << endl;
             }
         }
 

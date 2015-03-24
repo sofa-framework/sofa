@@ -27,7 +27,6 @@ namespace mapping
 // 2D -> (nT1, nT2)
 // 3D -> (n, nT1, nT2)
 
-// @penetrations are given (the ones computed during the collision detection and so signed), they are directly used as the normal components.
 
 // depending on TOut dimension (3 or 1), tangent components will be available or not
 // special case for TOut==2, only the tangent components are available (but not the normal component)
@@ -49,15 +48,11 @@ public:
 	typedef vector< defaulttype::Vec<3, real> > normal_type;
     Data<normal_type> normal;
 
-	typedef vector< real > penetration_type;
-    Data<penetration_type> penetrations;
-
     vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
 
 
     ContactMapping()
         : normal(initData(&normal, "normal", "contact normals"))
-        , penetrations(initData(&penetrations, "penetrations", "contact penetrations"))
     {}
 	
 protected:
@@ -70,7 +65,6 @@ protected:
         (void)in;
 
         assert( in.size() == out.size() || mask.size()==in.size() );
-        assert( in.size() == penetrations.getValue().size() || self::Nout == 2 );
 
         unsigned n = out.size();
 
@@ -83,10 +77,9 @@ protected:
             }
             else
             {
-                out[i][0] = penetrations.getValue()[i];
 
-    //             std::cout << SOFA_CLASS_METHOD<<"normal " << normal[i] << std::endl;
-    //             std::cout << SOFA_CLASS_METHOD<< "penetration " << penetrations[i] << " "<< out[i][0]<< std::endl;
+                // out[i][0] = penetrations are given during contact creation, they are directly used as the normal components.
+                // (the ones computed during the collision detection and so signed)
 
                 if( self::Nout == 3 ) {
                     out[i][1] = 0;

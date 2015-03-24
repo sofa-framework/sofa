@@ -446,16 +446,15 @@ protected:
         }
     }
 
-    typedef vector< real > penetration_type;
-    void copyPenetrations( penetration_type& res ) const {
+    template< class Coord >
+    void copyPenetrations( helper::vector<Coord>& res ) const {
         const unsigned size = mappedContacts.size();
         assert( size );
         assert( size == contacts->size() );
-
-        res.resize(size);
+        assert( size == res.size() );
 
         for(unsigned i = 0; i < size; ++i) {
-            res[i] = (*contacts)[i].value;
+            res[i][0] = (*contacts)[i].value;
         }
     }
 

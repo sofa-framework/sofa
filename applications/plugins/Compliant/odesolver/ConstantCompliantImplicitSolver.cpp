@@ -45,7 +45,7 @@ void ConstantCompliantImplicitSolver::perform_assembly( const core::MechanicalPa
     send( *assemblyVisitor );
 
     // assemble system
-    sys = assemblyVisitor->assemble();
+    assemblyVisitor->assemble(sys);
 }
 
 

@@ -27,14 +27,16 @@ class SceneComponent : public QObject
     Q_OBJECT
 
 public:
-    SceneComponent(const Scene* scene, sofa::core::objectmodel::Base* base);
+    SceneComponent(const Scene* scene, const sofa::core::objectmodel::Base* base);
 
     sofa::core::objectmodel::Base* base();
     const sofa::core::objectmodel::Base* base() const;
 
+    const Scene* scene() const;
+
 private:
-    const Scene*                            myScene;
-    mutable sofa::core::objectmodel::Base*  myBase;
+    const Scene*                                    myScene;
+    mutable const sofa::core::objectmodel::Base*    myBase;
 
 };
 
@@ -43,17 +45,20 @@ class SceneData : public QObject
     Q_OBJECT
 
 public:
-    SceneData(const SceneComponent* sceneComponent, sofa::core::objectmodel::BaseData* data);
+    SceneData(const SceneComponent* sceneComponent, const sofa::core::objectmodel::BaseData* data);
+    SceneData(const Scene* scene, const sofa::core::objectmodel::Base* base, const sofa::core::objectmodel::BaseData* data);
 
     Q_INVOKABLE QVariantMap object() const;
-    Q_INVOKABLE void setValue(const QVariant& value);
+    Q_INVOKABLE bool setValue(const QVariant& value);
+    Q_INVOKABLE bool setLink(const QString& path);
 
     sofa::core::objectmodel::BaseData* data();
     const sofa::core::objectmodel::BaseData* data() const;
 
 private:
-    const SceneComponent*                       mySceneComponent;
-    mutable sofa::core::objectmodel::BaseData*  myData;
+    const Scene*                                        myScene;
+    mutable const sofa::core::objectmodel::Base*        myBase;
+    mutable const sofa::core::objectmodel::BaseData*    myData;
 
 };
 
@@ -62,6 +67,7 @@ class Scene : public QObject, private sofa::simulation::MutationListener
     Q_OBJECT
 
     friend class SceneComponent;
+    friend class SceneData;
 
 public:
     explicit Scene(QObject *parent = 0);
@@ -122,14 +128,19 @@ public:
     Q_INVOKABLE void computeBoundingBox(QVector3D& min, QVector3D& max) const;
     Q_INVOKABLE QString dumpGraph() const;
     Q_INVOKABLE void reinitComponent(const QString& path);
+    Q_INVOKABLE void sendGUIEvent(const QString& controlID, const QString& valueName, const QString& value);
 
 public:
     static QVariantMap dataObject(const sofa::core::objectmodel::BaseData* data);
     static QVariant dataValue(const sofa::core::objectmodel::BaseData* data);
-    static void setDataValue(sofa::core::objectmodel::BaseData* data, const QVariant& value);
+    static bool setDataValue(sofa::core::objectmodel::BaseData* data, const QVariant& value);
+    static bool setDataLink(sofa::core::objectmodel::BaseData* data, const QString& link);
 
     QVariant dataValue(const QString& path) const;
     void setDataValue(const QString& path, const QVariant& value);
+
+    Q_INVOKABLE sofa::qtquick::SceneData* data(const QString& path) const;
+    Q_INVOKABLE sofa::qtquick::SceneComponent* component(const QString& path) const;
 
 protected:
     Q_INVOKABLE QVariant onDataValue(const QString& path) const;
@@ -163,18 +174,18 @@ protected:
     void removeObject(sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
 
 private:
-    Status                                  myStatus;
-    QUrl                                    mySource;
-    QUrl                                    mySourceQML;
-    bool                                    myIsInit;
-    bool                                    myVisualDirty;
-    double                                  myDt;
-    bool                                    myPlay;
-    bool                                    myAsynchronous;
+    Status                                      myStatus;
+    QUrl                                        mySource;
+    QUrl                                        mySourceQML;
+    bool                                        myIsInit;
+    bool                                        myVisualDirty;
+    double                                      myDt;
+    bool                                        myPlay;
+    bool                                        myAsynchronous;
 
-    sofa::simulation::Simulation*           mySofaSimulation;
-    QTimer*                                 myStepTimer;
-    QSet<sofa::core::objectmodel::Base*>    myBases;
+    sofa::simulation::Simulation*               mySofaSimulation;
+    QTimer*                                     myStepTimer;
+    QSet<const sofa::core::objectmodel::Base*>  myBases;
 };
 
 }

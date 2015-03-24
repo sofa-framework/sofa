@@ -137,6 +137,7 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , indexFromEnd(initData(&indexFromEnd, false, "indexFromEnd", "input DOF index starts from the end of input DOFs vector"))
     , rigidIndexPerPoint(initData(&rigidIndexPerPoint, "rigidIndexPerPoint", "For each mapped point, the index of the Rigid it is mapped from"))
     , globalToLocalCoords(initData(&globalToLocalCoords, "globalToLocalCoords", "are the output DOFs initially expressed in global coordinates"))
+    , geometricStiffness(initData(&geometricStiffness, 0, "geometricStiffness", "assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)"))
     , maskFrom(NULL)
     , maskTo(NULL)
     , matrixJ()
@@ -468,48 +469,71 @@ void RigidMapping<TIn, TOut>::applyJT(const core::MechanicalParams * /*mparams*/
 
 
 template <class TIn, class TOut>
-void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId )
+void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForceChangeId, core::ConstMultiVecDerivId childForceId)
 {
-    if( mparams->symmetricMatrix() )
-        return;  // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
+    if( !geometricStiffness.getValue() ) return;
 
-    helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
-    helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get(mparams)].write());
-    helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
-    //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, parent displacements = "<< parentDisplacements << endl;
-    //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, parent forces = "<< parentForces << endl;
-
-    InReal kfactor = (InReal)mparams->kFactor();
-    //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, kfactor = "<< kfactor << endl;
-
-    const VecCoord& pts = this->getPoints();
-
-    bool isMaskInUse = maskTo && maskTo->isInUse();
-    if (maskFrom) maskFrom->setInUse(isMaskInUse);
-    typedef helper::ParticleMask ParticleMask;
-    ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
-    ParticleMask::InternalStorage::const_iterator it;
-    if (isMaskInUse) it = indices->begin();
-
-
-    for (unsigned int i = 0; i < pts.size() && !(isMaskInUse && it == indices->end()) ; i++)
+    if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
-        if( isMaskInUse )
+            const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
+                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
+            geometricStiffnessMatrix.addMult( InF, inDx, mparams->kFactor() );
+    }
+    else
+    {
+
+        // if symmetrized version, force assembly
+        if( geometricStiffness.getValue() == 2 && !geometricStiffnessMatrix.compressedMatrix.nonZeros() )
         {
-            if( i!=*it ) continue;
-            ++it;
+            updateK( mparams, childForceId );
+            const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
+                  Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
+            geometricStiffnessMatrix.addMult( InF, inDx, mparams->kFactor() );
         }
-        unsigned int rigidIndex = getRigidIndex(i);
-
-        typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[rigidIndex]);
-        const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[rigidIndex]);
-        //  const typename TIn::AngularVector& torqueDecrement = symCrossCross( childForces[i], parentRotation, rotatedPoints[i]) * kfactor;
-        const typename TIn::AngularVector& torqueDecrement = TIn::crosscross( childForces[i], parentRotation, rotatedPoints[i]) * kfactor;
-        parentTorque -=  torqueDecrement;
-
-        if (isMaskInUse)
+        else
         {
-            maskFrom->insertEntry(rigidIndex);
+            // This method corresponds to a non-symmetric matrix, due to the non-commutativity of the group of rotations.
+            assert( !mparams->symmetricMatrix() );
+
+            helper::ReadAccessor<Data<VecDeriv> > childForces (*mparams->readF(this->toModel));
+            helper::WriteAccessor<Data<InVecDeriv> > parentForces (*parentForceChangeId[this->fromModel.get(mparams)].write());
+            helper::ReadAccessor<Data<InVecDeriv> > parentDisplacements (*mparams->readDx(this->fromModel));
+            //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, parent displacements = "<< parentDisplacements << endl;
+            //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, parent forces = "<< parentForces << endl;
+
+            InReal kfactor = (InReal)mparams->kFactor();
+            //    cerr<<"RigidMapping<TIn, TOut>::applyDJT, kfactor = "<< kfactor << endl;
+
+            const VecCoord& pts = this->getPoints();
+
+            bool isMaskInUse = maskTo && maskTo->isInUse();
+            if (maskFrom) maskFrom->setInUse(isMaskInUse);
+            typedef helper::ParticleMask ParticleMask;
+            ParticleMask::InternalStorage* indices = isMaskInUse ? &maskTo->getEntries() : NULL;
+            ParticleMask::InternalStorage::const_iterator it;
+            if (isMaskInUse) it = indices->begin();
+
+
+            for (unsigned int i = 0; i < pts.size() && !(isMaskInUse && it == indices->end()) ; i++)
+            {
+                if( isMaskInUse )
+                {
+                    if( i!=*it ) continue;
+                    ++it;
+                }
+                unsigned int rigidIndex = getRigidIndex(i);
+
+                typename TIn::AngularVector& parentTorque = getVOrientation(parentForces[rigidIndex]);
+                const typename TIn::AngularVector& parentRotation = getVOrientation(parentDisplacements[rigidIndex]);
+                //  const typename TIn::AngularVector& torqueDecrement = symCrossCross( childForces[i], parentRotation, rotatedPoints[i]) * kfactor;
+                const typename TIn::AngularVector& torqueDecrement = TIn::crosscross( childForces[i], parentRotation, rotatedPoints[i]) * kfactor;
+                parentTorque -=  torqueDecrement;
+
+                if (isMaskInUse)
+                {
+                    maskFrom->insertEntry(rigidIndex);
+                }
+            }
         }
     }
 
@@ -679,6 +703,98 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 												
     return &eigenJacobians;
 }
+
+
+// skew-symmetric mapping: hat(v) * x = v.cross(x)
+// c'est moche mais pour l'instant on s'en cogne
+template<class Real, class Vec, unsigned size>
+Eigen::Matrix<Real, size, size> hat(const Vec& v)
+{
+    Eigen::Matrix<Real, size, size> res;
+
+    res.diagonal().setZero();
+
+    res(0, 1) = -v.z();
+    res(1, 0) = v.z();
+
+    res(0, 2) = v.y();
+    res(2, 0) = -v.y();
+
+    res(1, 2) = -v.x();
+    res(2, 1) = v.x();
+
+    return res;
+}
+
+
+template <class TIn, class TOut>
+void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
+{
+    if( !geometricStiffness.getValue() ) { geometricStiffnessMatrix.resize(0,0); return; }
+
+    typedef typename StiffnessSparseMatrixEigen::CompressedMatrix matrix_type;
+    matrix_type& dJ = geometricStiffnessMatrix.compressedMatrix;
+
+    size_t insize = TIn::deriv_total_size*this->fromModel->getSize();
+
+    dJ.resize( insize, insize );
+    dJ.setZero(); // necessary ?
+
+    const VecDeriv& childForces = childForceId[this->toModel.get(mparams)].read()->getValue();
+
+    // sorted in-out
+    typedef std::map<unsigned, unsigned> in_out_type;
+    in_out_type in_out;
+
+    for(unsigned i = 0, n = rotatedPoints.size(); i < n; ++i)
+        in_out[ getRigidIndex(i) ] = i;
+
+
+    for( in_out_type::const_iterator it = in_out.begin(), end = in_out.end() ; it != end; ++it )
+    {
+        const unsigned pointIdx = it->second;
+        const unsigned rigidIdx = it->first;
+
+        static const unsigned rotation_dimension = TIn::deriv_total_size - TIn::spatial_dimensions;
+
+        typedef Eigen::Map< const Eigen::Matrix<typename TOut::Real, TOut::deriv_total_size, 1> > OutForce;
+        OutForce cf( childForces[pointIdx].ptr() );
+        OutForce rt( rotatedPoints[pointIdx].ptr() );
+
+
+        // TODO handle 2D case
+
+        Eigen::Matrix<Real, rotation_dimension, rotation_dimension> block = hat<Real,OutForce,rotation_dimension>( cf ) * hat<Real,OutForce,rotation_dimension>( rt );
+
+        for(unsigned j = 0; j < rotation_dimension; ++j) {
+
+            const unsigned row = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions + j;
+
+            dJ.startVec( row );
+
+            for(unsigned k = 0; k < rotation_dimension; ++k) {
+                const unsigned col = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions + k;
+
+                if( block(j, k) ) dJ.insertBack(row, col) = block(j, k);
+            }
+        }
+    }
+
+    dJ.finalize();
+
+
+    if( geometricStiffness.getValue() == 2 ) {
+        dJ = (dJ + matrix_type(dJ.transpose())) / 2.0;
+    }
+}
+
+
+template <class TIn, class TOut>
+const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getK()
+{
+    return &geometricStiffnessMatrix;
+}
+
 #endif
 
 template <class TIn, class TOut>

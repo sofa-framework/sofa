@@ -4,6 +4,7 @@
 #include <Compliant/Compliant.h>
 
 #include "../assembly/AssembledSystem.h"
+#include "../utils/eigen_types.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa {
@@ -12,19 +13,17 @@ namespace linearsolver {
 
 
 /// Base class to solve the linear ode/dynamics equation
-class Response : public core::objectmodel::BaseObject {
+class Response : public core::objectmodel::BaseObject,
+                 public utils::eigen_types {
 public:
 	SOFA_CLASS(Response, core::objectmodel::BaseObject);
 
 	typedef AssembledSystem system_type;
-	
-	typedef system_type::real real;
-	typedef system_type::vec vec;
 
-	typedef system_type::mat mat;
-	typedef system_type::cmat cmat;
+    // FIXME remove mat altogether
+    typedef rmat mat;
 
-
+    
     /// @param semidefinite indicates if the matrix is semi-definite
     virtual void factor(const mat&, bool semidefinite=false ) = 0;
 	

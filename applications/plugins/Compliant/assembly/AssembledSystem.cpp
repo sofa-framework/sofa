@@ -8,21 +8,33 @@ namespace component {
 namespace linearsolver {
 
 
-AssembledSystem::AssembledSystem(unsigned m, unsigned n) 
-	: m(m), 
-	  n(n),
-	  dt(0)
-{
+void AssembledSystem::reset(unsigned m, unsigned n) {
+    this->m = m;
+    this->n = n;
+    this->dt = 0;
+
 	if( !m ) return;
 
-	H.resize(m, m);
-	P.resize(m, m);
+	H.resize(m, m); 
+	P.resize(m, m); 
 			
 	if( n ) {
 		J.resize(n, m);
 		C.resize(n, n);
 	}
-				
+
+    constraints.clear();
+    master.clear();
+    compliant.clear();
+    isPIdentity = true;
+}
+
+AssembledSystem::AssembledSystem(unsigned m, unsigned n) 
+	: m(m), 
+	  n(n),
+	  dt(0)
+{
+    reset(m, n);
 }
 
 unsigned AssembledSystem::size() const { return m + n; }

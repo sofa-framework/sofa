@@ -4,6 +4,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -12,7 +13,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/helper/system/glut.h>
-#include <SofaComponentMain/init.h>
+#include <sofa/component/init.h>
 
 #include <sstream>
 #include <qqml.h>
@@ -37,7 +38,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 
-SceneComponent::SceneComponent(const Scene* scene, sofa::core::objectmodel::Base* base) : QObject(),
+SceneComponent::SceneComponent(const Scene* scene, const sofa::core::objectmodel::Base* base) : QObject(),
     myScene(scene),
     myBase(base)
 {
@@ -60,8 +61,22 @@ const Base* SceneComponent::base() const
     return myBase;
 }
 
-SceneData::SceneData(const SceneComponent* sceneComponent, sofa::core::objectmodel::BaseData* data) : QObject(),
-    mySceneComponent(sceneComponent),
+const Scene* SceneComponent::scene() const
+{
+    return myScene;
+}
+
+SceneData::SceneData(const SceneComponent* sceneComponent, const sofa::core::objectmodel::BaseData* data) : QObject(),
+    myScene(sceneComponent->scene()),
+    myBase(sceneComponent->base()),
+    myData(data)
+{
+
+}
+
+SceneData::SceneData(const Scene* scene, const sofa::core::objectmodel::Base* base, const sofa::core::objectmodel::BaseData* data) : QObject(),
+    myScene(scene),
+    myBase(base),
     myData(data)
 {
 
@@ -76,11 +91,31 @@ QVariantMap SceneData::object() const
     return QVariantMap();
 }
 
-void SceneData::setValue(const QVariant& value)
+bool SceneData::setValue(const QVariant& value)
 {
     BaseData* data = SceneData::data();
     if(data)
-        Scene::setDataValue(data, value);
+        return Scene::setDataValue(data, value);
+
+    return false;
+}
+
+bool SceneData::setLink(const QString& path)
+{
+    BaseData* data = SceneData::data();
+    if(data)
+    {
+        std::streambuf* backup(std::cerr.rdbuf());
+
+        std::ostringstream stream;
+        std::cerr.rdbuf(stream.rdbuf());
+        bool status = Scene::setDataLink(data, path);
+        std::cerr.rdbuf(backup);
+
+        return status;
+    }
+
+    return false;
 }
 
 BaseData* SceneData::data()
@@ -91,9 +126,13 @@ BaseData* SceneData::data()
 const BaseData* SceneData::data() const
 {
     // check if the base still exists hence if the data is still valid
+    const Base* base = 0;
+    if(myScene && myBase)
+        if(myScene->myBases.contains(myBase))
+            base = myBase;
 
-    const Base* base = mySceneComponent->base();
-    if(!base)
+    myBase = base;
+    if(!myBase)
         myData = 0;
 
     return myData;
@@ -102,7 +141,7 @@ const BaseData* SceneData::data() const
 Scene::Scene(QObject *parent) : QObject(parent),
 	myStatus(Status::Null),
 	mySource(),
-	mySourceQML(),
+    mySourceQML(),
 	myIsInit(false),
     myVisualDirty(false),
 	myDt(0.04),
@@ -138,6 +177,7 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	connect(this, &Scene::sourceChanged, this, &Scene::open);
 	connect(this, &Scene::playChanged, myStepTimer, [&](bool newPlay) {newPlay ? myStepTimer->start() : myStepTimer->stop();});
 	connect(this, &Scene::statusChanged, this, [&](Scene::Status newStatus) {if(Scene::Status::Ready == newStatus) loaded();});
+    connect(this, &Scene::loaded, this, [&]() {addChild(0, mySofaSimulation->GetRoot().get());});
     connect(this, &Scene::aboutToUnload, this, [&]() {myBases.clear();});
 
     connect(myStepTimer, &QTimer::timeout, this, &Scene::step);
@@ -229,33 +269,29 @@ void Scene::open()
 
 	std::string qmlFilepath = (finalFilename + ".qml").toLatin1().constData();
 	if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
-		qmlFilepath.clear();
+        qmlFilepath.clear();
 
     mySofaSimulation->unload(mySofaSimulation->GetRoot());
 
 	if(myAsynchronous)
 	{
-		LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
-        connect(loaderThread, &QThread::finished, this, [this, loaderThread]() {setStatus(loaderThread->isLoaded() ? Status::Ready : Status::Error);});
-		
-        connect(this, &Scene::loaded, this, [&]() {addChild(0, mySofaSimulation->GetRoot().get());});
-		if(!qmlFilepath.empty())
-            connect(this, &Scene::loaded, this, [&, qmlFilepath]() {setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));});
+        LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
 
-		connect(loaderThread, &QThread::finished, loaderThread, &QObject::deleteLater);
+        connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {
+            setStatus(loaderThread->isLoaded() ? Status::Ready : Status::Error);
+            if(isReady() && !qmlFilepath.empty())
+                setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
+
+            loaderThread->deleteLater();
+        });
+
 		loaderThread->start();
 	}
 	else
 	{
         setStatus(LoaderProcess(mySofaSimulation, finalFilename) ? Status::Ready : Status::Error);
-
-        if(isReady())
-        {
-            addChild(0, mySofaSimulation->GetRoot().get());
-
-            if(!qmlFilepath.empty())
-                setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
-        }
+        if(isReady() && !qmlFilepath.empty())
+            setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 	}
 }
 
@@ -386,6 +422,15 @@ void Scene::reinitComponent(const QString& path)
     object->reinit();
 }
 
+void Scene::sendGUIEvent(const QString& controlID, const QString& valueName, const QString& value)
+{
+    if(!mySofaSimulation->GetRoot())
+        return;
+
+    sofa::core::objectmodel::GUIEvent event(controlID.toUtf8().constData(), valueName.toUtf8().constData(), value.toUtf8().constData());
+    mySofaSimulation->GetRoot()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+}
+
 QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
 {
     QVariantMap object;
@@ -393,9 +438,11 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
     if(!data)
     {
         object.insert("name", "Invalid");
+        object.insert("description", "");
         object.insert("type", "");
         object.insert("group", "");
         object.insert("properties", "");
+        object.insert("link", "");
         object.insert("value", "");
 
         return object;
@@ -422,6 +469,7 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
         if(std::string::npos != typeinfo->name().find("bool"))
         {
             type = "boolean";
+            properties.insert("autoUpdate", true);
         }
         else
         {
@@ -457,9 +505,11 @@ QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
     properties.insert("readOnly", false);
 
     object.insert("name", data->getName().c_str());
+    object.insert("description", data->getHelp());
     object.insert("type", type);
     object.insert("group", data->getGroup());
     object.insert("properties", properties);
+    object.insert("link", QString::fromStdString(data->getLinkPath()));
     object.insert("value", dataValue(data));
 
     return object;
@@ -573,10 +623,11 @@ QVariant Scene::dataValue(const BaseData* data)
     return value;
 }
 
-void Scene::setDataValue(BaseData* data, const QVariant& value)
+// TODO: WARNING : do not use data->read anymore but directly the correct set*Type*Value(...)
+bool Scene::setDataValue(BaseData* data, const QVariant& value)
 {
     if(!data)
-        return;
+        return false;
 
     const AbstractTypeInfo* typeinfo = data->getValueTypeInfo();
 
@@ -596,7 +647,7 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
             if(!typeinfo->Container())
             {
                 qWarning("Trying to set a list of values on a non-container data");
-                return;
+                return false;
             }
 
             if(valueIterable.size() != nbRows)
@@ -604,7 +655,7 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                 if(typeinfo->FixedSize())
                 {
                     qWarning() << "The new data should have the same size, should be" << nbRows << ", got" << valueIterable.size();
-                    return;
+                    return false;
                 }
 
                 typeinfo->setSize(data, valueIterable.size());
@@ -622,7 +673,7 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                         if(subValueIterable.size() != nbCols)
                         {
                             qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
-                            return;
+                            return false;
                         }
 
                         for(int j = 0; j < subValueIterable.size(); ++j)
@@ -654,8 +705,8 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                         QSequentialIterable subValueIterable = subFinalValue.value<QSequentialIterable>();
                         if(subValueIterable.size() != nbCols)
                         {
-                            qWarning("The new sub data should have the same size");
-                            return;
+                            qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
+                            return false;
                         }
 
                         for(int j = 0; j < subValueIterable.size(); ++j)
@@ -676,10 +727,46 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
 
                 data->read(dataString.toStdString());
             }
+            else if(typeinfo->Text())
+            {
+                QString dataString;
+                for(int i = 0; i < valueIterable.size(); ++i)
+                {
+                    QVariant subFinalValue = valueIterable.at(i);
+                    if(QVariant::List == subFinalValue.type())
+                    {
+                        QSequentialIterable subValueIterable = subFinalValue.value<QSequentialIterable>();
+                        if(subValueIterable.size() != nbCols)
+                        {
+                            qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
+                            return false;
+                        }
+
+                        for(int j = 0; j < subValueIterable.size(); ++j)
+                        {
+                            dataString += subValueIterable.at(j).toString();
+                            if(subValueIterable.size() - 1 != j)
+                                dataString += ' ';
+                        }
+                    }
+                    else
+                    {
+                        dataString += subFinalValue.toString();
+                    }
+
+                    if(valueIterable.size() - 1 != i)
+                        dataString += ' ';
+                }
+
+                data->read(dataString.toStdString());
+            }
+            else
+                data->read(value.toString().toStdString());
         }
         else if(QVariant::Map == finalValue.type())
         {
-            qWarning("Map type are not supported");
+            qWarning("Map type is not supported");
+            return false;
         }
         else
         {
@@ -693,6 +780,23 @@ void Scene::setDataValue(BaseData* data, const QVariant& value)
                 data->read(value.toString().toStdString());
         }
     }
+    else
+        return false;
+
+    return true;
+}
+
+bool Scene::setDataLink(BaseData* data, const QString& link)
+{
+    if(!data)
+        return false;
+
+    if(link.isEmpty())
+        data->setParent(0);
+    else
+        data->setParent(link.toStdString());
+
+    return data->getParent();
 }
 
 QVariant Scene::dataValue(const QString& path) const
@@ -705,10 +809,50 @@ void Scene::setDataValue(const QString& path, const QVariant& value)
     onSetDataValue(path, value);
 }
 
-QVariant Scene::onDataValue(const QString& path) const
+static BaseData* FindDataHelper(BaseNode* node, const QString& path)
 {
     BaseData* data = 0;
-    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
+    std::streambuf* backup(std::cerr.rdbuf());
+
+    std::ostringstream stream;
+    std::cerr.rdbuf(stream.rdbuf());
+    node->findDataLinkDest(data, path.toStdString(), 0);
+    std::cerr.rdbuf(backup);
+
+    return data;
+}
+
+SceneData* Scene::data(const QString& path) const
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path);
+    if(!data)
+        return 0;
+
+    Base* base = data->getOwner();
+    if(!base)
+        return 0;
+
+    return new SceneData(this, base, data);
+}
+
+SceneComponent* Scene::component(const QString& path) const
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path + ".name"); // search for the "name" data of the component (this data is always present if the component exist)
+
+    if(!data)
+        return 0;
+
+    Base* base = data->getOwner();
+    if(!base)
+        return 0;
+
+    return new SceneComponent(this, base);
+}
+
+QVariant Scene::onDataValue(const QString& path) const
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path);
+
     if(!data)
     {
         qWarning() << "DataPath unknown:" << path;
@@ -720,8 +864,7 @@ QVariant Scene::onDataValue(const QString& path) const
 
 void Scene::onSetDataValue(const QString& path, const QVariant& value)
 {
-    BaseData* data = 0;
-    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path);
 
     if(!data)
     {

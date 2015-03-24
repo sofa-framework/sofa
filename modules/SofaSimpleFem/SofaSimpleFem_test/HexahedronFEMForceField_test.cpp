@@ -93,7 +93,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         // Set force parameters
         Inherited::force->f_poissonRatio.setValue(0);
         Inherited::force->f_youngModulus.setValue(10);
-        Inherited::force->setMethod(1);
+        Inherited::force->setMethod(2); // small method
         Inherited::force->isCompliance.setValue(0);
 
         // Init simulation
@@ -124,7 +124,7 @@ TYPED_TEST_CASE(HexahedronFEMForceField_test, TestTypes);
 TYPED_TEST( HexahedronFEMForceField_test , extension )
 {
     this->errorMax = 10000;
-    this->deltaMax = this->errorMax*100;
+    this->deltaMax = this->errorMax;
     this->debug = false;
 
     // run test

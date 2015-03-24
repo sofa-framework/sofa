@@ -33,7 +33,6 @@ Loader {
         id: staticInStaticTableView
         TableView {
             id: tableView
-            enabled: !dataObject.readOnly
 
             Component {
                 id: columnComponent
@@ -311,8 +310,8 @@ Loader {
             Loader {
                 id: loader
                 Layout.fillWidth: true
+                Layout.fillHeight: true
                 visible: showEditButton.checked
-                enabled: !dataObject.readOnly
                 active: visible
                 sourceComponent: staticInStaticTableView
             }

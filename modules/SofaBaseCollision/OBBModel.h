@@ -266,6 +266,10 @@ public:
     Coord generalCoordinates(const Coord & c,int index)const;
 
     Data<VecCoord> & writeExtents();
+
+
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
+
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;
 };

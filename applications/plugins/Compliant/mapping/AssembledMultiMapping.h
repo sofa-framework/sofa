@@ -82,13 +82,17 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     geometric_type geometric;
     
     virtual const defaulttype::BaseMatrix* getK() {
+        return &geometric;
+    }
+
+
+    virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId force ) {
 
 		const unsigned n = this->getFrom().size();
 
 		vector<const_in_coord_type> in_vec; in_vec.reserve(n);
 
         core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
-        core::ConstMultiVecDerivId force = core::ConstVecDerivId::force();
         
 		for( unsigned i = 0; i < n; ++i ) {
             const core::State<TIn>* from = this->getFromModels()[i];
@@ -97,12 +101,9 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 		}
 
         const core::State<TOut>* to = this->getToModels()[0];
-        const_out_deriv_type out_force(  *force[to].read() );
+        const_out_deriv_type out_force( *force[to].read() );
 
         this->assemble_geometric(in_vec, out_force);
-        
-        if( geometric.compressedMatrix.nonZeros() ) return &geometric;
-        else return 0;
     }
 
 	

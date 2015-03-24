@@ -38,14 +38,17 @@ set(HEADER_FILES
     mapping/RigidComMultiMapping.h
     mapping/AffineMultiMapping.h
 	mapping/PythonMultiMapping.h
+    mapping/GearMapping.h
 
     numericalsolver/KKTSolver.h
-    numericalsolver/LDLTSolver.h
+    numericalsolver/EigenSparseSolver.h
+    numericalsolver/EigenSparseSolver.inl
+    numericalsolver/EigenSparseResponse.h
+    numericalsolver/EigenSparseResponse.inl
     numericalsolver/MinresSolver.h
     numericalsolver/KrylovSolver.h
     numericalsolver/CgSolver.h
     numericalsolver/Response.h
-    numericalsolver/LDLTResponse.h
     numericalsolver/DiagonalResponse.h
     numericalsolver/SequentialSolver.h
     numericalsolver/IterativeSolver.h
@@ -55,11 +58,11 @@ set(HEADER_FILES
     numericalsolver/PreconditionedCgSolver.h
     numericalsolver/AnalysisSolver.h
     numericalsolver/LumpedResponse.h
-    numericalsolver/LUSolver.h
-    numericalsolver/LUResponse.h
     numericalsolver/BiCgStabSolver.h
     numericalsolver/NNCGSolver.h
 	numericalsolver/SubKKT.h
+    numericalsolver/SubKKT.inl
+	numericalsolver/ModulusSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
@@ -121,7 +124,7 @@ set(HEADER_FILES
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
-    utils/thread_local.h
+    utils/thread_variable.h
 
     utils/cg.h
     utils/preconditionedcg.h
@@ -152,12 +155,13 @@ set(SOURCE_FILES
     mapping/RigidComMultiMapping.cpp
     mapping/AffineMultiMapping.cpp
 	mapping/PythonMultiMapping.cpp
+    mapping/GearMapping.cpp
 
-    numericalsolver/LDLTSolver.cpp
+    numericalsolver/EigenSparseSolver.cpp
+    numericalsolver/EigenSparseResponse.cpp
     numericalsolver/MinresSolver.cpp
     numericalsolver/KrylovSolver.cpp
     numericalsolver/CgSolver.cpp
-    numericalsolver/LDLTResponse.cpp
     numericalsolver/DiagonalResponse.cpp
     numericalsolver/SequentialSolver.cpp
     numericalsolver/IterativeSolver.cpp
@@ -167,11 +171,10 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedCgSolver.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/LumpedResponse.cpp
-    numericalsolver/LUSolver.cpp
-    numericalsolver/LUResponse.cpp
     numericalsolver/BiCgStabSolver.cpp
     numericalsolver/NNCGSolver.cpp
 	numericalsolver/SubKKT.cpp
+	numericalsolver/ModulusSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
     #preconditioner/IncompleteCholeskyPreconditioner.cpp

@@ -48,6 +48,13 @@ IHM2<PFP>::IHM2(typename PFP::MAP& map) :
 {
 }
 
+template <typename PFP>
+IHM2<PFP>::~IHM2()
+{
+    this->clearSynthesisFilters();
+    this->clearAnalysisFilters();
+}
+
 //if true : tri and quad else quad
 template <typename PFP>
 void IHM2<PFP>::addNewLevel(bool triQuad)
