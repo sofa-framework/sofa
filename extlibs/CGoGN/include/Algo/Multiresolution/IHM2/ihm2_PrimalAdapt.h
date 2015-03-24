@@ -63,7 +63,7 @@ protected:
 
 public:
 	IHM2(MAP& map) ;
-
+    ~IHM2();
     /***************************************************
      *               CELLS INFORMATION                 *
      ***************************************************/
@@ -145,10 +145,24 @@ public:
 	/**
 	 * vertices attributes management
 	 */
-	void setVertexVertexFunctor(FunctorType* f) { vertexVertexFunctor = f ; }
-	void setEdgeVertexFunctor(FunctorType* f) { edgeVertexFunctor = f ; }
-	void setFaceVertexFunctor(FunctorType* f) { faceVertexFunctor = f ; }
+    void setVertexVertexFunctor(FunctorType* f)
+    {
+        delete vertexVertexFunctor;
+        vertexVertexFunctor = f ;
+    }
+
+    void setEdgeVertexFunctor(FunctorType* f)
+    {
+        delete edgeVertexFunctor;
+        edgeVertexFunctor = f ;
+    }
+
+    void setFaceVertexFunctor(FunctorType* f) {
+        delete faceVertexFunctor;
+        faceVertexFunctor = f ;
+    }
 } ;
+
 
 } // namespace Adaptive
 
