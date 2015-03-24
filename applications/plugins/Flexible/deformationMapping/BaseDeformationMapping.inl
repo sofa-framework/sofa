@@ -669,8 +669,10 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
 }
 
 template <class JacobianBlockType>
-void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId childForceId )
 {
+    if( !d_geometricStiffness.getValue() ) return;
+
     if(BlockType::constant) return;
 
     Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
@@ -681,8 +683,9 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (parentDisplacementData);
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
 
-    if(this->assemble.getValue())
+    if( this->assemble.getValue() || d_geometricStiffness.getValue() == 2 ) // assembled version (if symmetrized version, force assembly)
     {
+        updateK( mparams, childForceId );
         K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
     }
     else
@@ -692,7 +695,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-			for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
+            for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
             {
                 for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
                 {

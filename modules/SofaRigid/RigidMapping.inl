@@ -475,7 +475,6 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
 
     if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
-
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
                   Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
             geometricStiffnessMatrix.addMult( InF, inDx, mparams->kFactor() );
