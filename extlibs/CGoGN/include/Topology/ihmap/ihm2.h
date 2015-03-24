@@ -35,6 +35,7 @@ template<typename T, unsigned int ORBIT> class AttributeHandler_IHM ;
 
 class ImplicitHierarchicalMap2 : public EmbeddedMap2
 {
+public:
 	template<typename T, unsigned int ORBIT> friend class AttributeHandler_IHM ;
 	typedef EmbeddedMap2::TOPO_MAP TOPO_MAP;
 
@@ -46,7 +47,7 @@ private:
 	DartAttribute<unsigned int, ImplicitHierarchicalMap2> m_dartLevel ;
 	DartAttribute<unsigned int, ImplicitHierarchicalMap2> m_edgeId ;
 
-	AttributeMultiVector<unsigned int>* m_nextLevelCell[NB_ORBITS] ;
+//	AttributeMultiVector<unsigned int>* m_nextLevelCell[NB_ORBITS] ;
 
 public:
 	ImplicitHierarchicalMap2() ;
@@ -149,21 +150,21 @@ public:
 	 *              LEVELS MANAGEMENT                  *
 	 ***************************************************/
 
-	unsigned int getCurrentLevel() ;
+    inline unsigned int getCurrentLevel() const;
 
-	void setCurrentLevel(unsigned int l) ;
+    inline void setCurrentLevel(unsigned int l) ;
 
-	void incCurrentLevel();
+    inline void incCurrentLevel();
 
-	void decCurrentLevel();
+    inline void decCurrentLevel();
 
-	unsigned int getMaxLevel() ;
+    inline unsigned int getMaxLevel() const;
 
-	unsigned int getDartLevel(Dart d) ;
+    inline unsigned int getDartLevel(Dart d) const ;
 
-	void setDartLevel(Dart d, unsigned int i) ;
+    inline void setDartLevel(Dart d, unsigned int i) ;
 
-	void setMaxLevel(unsigned int l);
+    inline void setMaxLevel(unsigned int l);
 
 	/***************************************************
 	 *             EDGE ID MANAGEMENT                  *
@@ -179,9 +180,9 @@ public:
 	 */
 	unsigned int getNewEdgeId() ;
 
-	unsigned int getEdgeId(Dart d) ;
+    unsigned int getEdgeId(Dart d) const;
 
-	void setEdgeId(Dart d, unsigned int i) ;
+    inline void setEdgeId(Dart d, unsigned int i) ;
 
 	unsigned int getTriRefinementEdgeId(Dart d);
 
@@ -196,12 +197,12 @@ public:
      * @param d
      * @return
      */
-    unsigned int faceDegree(Dart d);
+    unsigned int faceDegree(Dart d) const;
 
 	/**
 	 * Return the level of insertion of the vertex of d
 	 */
-	unsigned int vertexInsertionLevel(Dart d) ;
+    unsigned int vertexInsertionLevel(Dart d) const;
 
 //	/**
 //	 * Return the level of the edge of d in the current level map
@@ -255,23 +256,24 @@ public:
 template <typename T, unsigned int ORBIT>
 class AttributeHandler_IHM : public AttributeHandler<T, ORBIT, ImplicitHierarchicalMap2>
 {
+    typedef AttributeHandler<T, ORBIT, ImplicitHierarchicalMap2> Inherit;
 public:
 	typedef T DATA_TYPE ;
 
-	AttributeHandler_IHM() : AttributeHandler<T, ORBIT, ImplicitHierarchicalMap2>()
+    AttributeHandler_IHM() : Inherit()
 	{}
 
-	AttributeHandler_IHM(ImplicitHierarchicalMap2* m, AttributeMultiVector<T>* amv) : AttributeHandler<T, ORBIT, ImplicitHierarchicalMap2>(m, amv)
+    AttributeHandler_IHM(ImplicitHierarchicalMap2* m, AttributeMultiVector<T>* amv) : Inherit(m, amv)
 	{}
 
 	AttributeMultiVector<T>* getDataVector() const
 	{
-		return AttributeHandler<T, ORBIT, ImplicitHierarchicalMap2>::getDataVector() ;
+        return Inherit::getDataVector() ;
 	}
 
 	bool isValid() const
 	{
-		return AttributeHandler<T, ORBIT, ImplicitHierarchicalMap2>::isValid() ;
+        return Inherit::isValid() ;
 	}
 
 	T& operator[](Dart d) ;
@@ -280,23 +282,23 @@ public:
 
 	T& operator[](unsigned int a)
 	{
-		return AttributeHandler<T, ORBIT, ImplicitHierarchicalMap2>::operator[](a) ;
+        return Inherit::operator[](a) ;
 	}
 
 	const T& operator[](unsigned int a) const
 	{
-		return AttributeHandler<T, ORBIT, ImplicitHierarchicalMap2>::operator[](a) ;
+        return Inherit::operator[](a) ;
 	}
 } ;
 
-template <typename T>
-class VertexAttribute_IHM : public AttributeHandler_IHM<T, VERTEX>
-{
-public:
-	VertexAttribute_IHM() : AttributeHandler_IHM<T, VERTEX>() {}
-	VertexAttribute_IHM(const AttributeHandler_IHM<T, VERTEX>& ah) : AttributeHandler_IHM<T, VERTEX>(ah) {}
-	VertexAttribute_IHM<T>& operator=(const AttributeHandler_IHM<T, VERTEX>& ah) { this->AttributeHandler_IHM<T, VERTEX>::operator=(ah); return *this; }
-};
+//template <typename T>
+//class VertexAttribute_IHM : public AttributeHandler_IHM<T, VERTEX>
+//{
+//public:
+//	VertexAttribute_IHM() : AttributeHandler_IHM<T, VERTEX>() {}
+//	VertexAttribute_IHM(const AttributeHandler_IHM<T, VERTEX>& ah) : AttributeHandler_IHM<T, VERTEX>(ah) {}
+//	VertexAttribute_IHM<T>& operator=(const AttributeHandler_IHM<T, VERTEX>& ah) { this->AttributeHandler_IHM<T, VERTEX>::operator=(ah); return *this; }
+//};
 
 
 } //namespace CGoGN
