@@ -15,11 +15,11 @@ set(SOURCE_FILES
     FEMGridBehaviorModel.cpp)
 
 
-find_package(SofaCommon REQUIRED)
+find_package(SofaGeneral REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_ExternalBehaviorModel")
-target_link_libraries(${PROJECT_NAME} SofaComponentCommon)
+target_link_libraries(${PROJECT_NAME} SofaComponentGeneral)
 
 install(TARGETS ${PROJECT_NAME}
     COMPONENT ExternalBehaviorModel_libraries
