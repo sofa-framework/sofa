@@ -73,6 +73,7 @@ BaseDeformationMappingT<JacobianBlockType>::BaseDeformationMappingT (core::State
     , showDeformationGradientStyle ( initData ( &showDeformationGradientStyle,"showDeformationGradientStyle","Visualization style for deformation gradients" ) )
     , showColorOnTopology ( initData ( &showColorOnTopology,"showColorOnTopology","Color mapping method" ) )
     , showColorScale(initData(&showColorScale, (float)1.0, "showColorScale", "Color mapping scale"))
+    , d_geometricStiffness(initData(&d_geometricStiffness, 0u, "geometricStiffness", "0=no GS, 1=non symmetric, 2=symmetrized"))
 {
     helper::OptionsGroup methodOptions(3,"0 - None"
                                        ,"1 - trace(F^T.F)-3"
@@ -434,6 +435,8 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
+     if( !d_geometricStiffness.getValue() ) { K.resize(0,0); return; }
+
     const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
     K.resizeBlocks(in.size(),in.size());
@@ -478,6 +481,12 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::Mechanical
     }
     //        K.endEdit();
     K.compress();
+
+    if( d_geometricStiffness.getValue() == 2 ) {
+        typename SparseKMatrixEigen::CompressedMatrix& dJ = K.compressedMatrix;
+        dJ = (dJ + typename SparseKMatrixEigen::CompressedMatrix(dJ.transpose())) / 2.0;
+    }
+
 }
 
 template <class JacobianBlockType>
