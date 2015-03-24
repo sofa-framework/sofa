@@ -393,21 +393,23 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                           << "fp2-fp = " << fp12 << endl;
         }
 
+
+        // ================ test getK()
         if( flags & TEST_getK )
         {
             InVecDeriv Kv(Np);
 
-            // ================ test getK()
             const defaulttype::BaseMatrix* bk = mapping->getK();
 
-            // K can be null for NULL for linear mapping.
-            // perform the test with a null vector to check if the mapping is really null
+            // K can be null or empty for linear mappings
+            // still performing the test with a null Kv vector to check if the mapping is really linear
 
             if( bk != NULL ){
 
                 typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
                 const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
                 if( K == NULL ){
+                    succeed = false;
                     ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
                     // TODO perform a slow conversion with a big warning rather than a failure?
                 }
