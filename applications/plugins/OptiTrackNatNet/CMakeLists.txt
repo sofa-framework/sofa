@@ -22,6 +22,11 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OPTITRACKNATNET")
 target_link_libraries(${PROJECT_NAME} SofaCore SofaSimulationCommon SofaUserInteraction ${Boost_LIBRARIES})
 
+# Seems to be required by boost::asio
+if(UNIX)
+    target_link_libraries(${PROJECT_NAME} pthread)
+endif()
+
 install(TARGETS ${PROJECT_NAME}
     COMPONENT OptiTrackNatNet_libraries
     EXPORT OptiTrackNatNetTargets
