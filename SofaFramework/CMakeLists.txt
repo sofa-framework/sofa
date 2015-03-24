@@ -81,9 +81,19 @@ if( NOT SOFA_NO_OPENGL )
 
     # GLUT
     find_package(GLUT)
-    if( GLUT_FOUND )
-        sofa_create_target(GLUT SofaFramework "${GLUT_glut_LIBRARY}" "${GLUT_INCLUDE_DIR}" )
-        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target} )
+    if(GLUT_FOUND)
+        if(NOT APPLE)
+            sofa_create_target(GLUT SofaFramework "${GLUT_glut_LIBRARY}" "${GLUT_INCLUDE_DIR}" )
+            list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${GLUT_Target})
+        else()
+            # Workaround: on OS X, "${GLUT_glut_LIBRARY}" is not a target (it is
+            # actually "-framework GLUT"), so we use find_library to find
+            # something better (like /System/Library/Frameworks/GLUT.framework.)
+            # (Fun fact: FindGLUT.cmake litterally reads "These values for Apple
+            # could probably do with improvement.)"
+            find_library(ACTUAL_GLUT_LIBRARIES "GLUT")
+            list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "${ACTUAL_GLUT_LIBRARIES}")
+        endif()
     endif()
     set(SOFA_HAVE_GLUT ${GLUT_FOUND})
     
