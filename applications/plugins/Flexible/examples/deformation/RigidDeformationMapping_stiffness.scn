@@ -8,7 +8,7 @@
   
   <Node name="Patch" >
     <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="0"/>
-    <LUSolver/> 
+    <LDLTSolver schur="0"/> 
 
     <!--Nodes-->
     <MechanicalObject template="Rigid"  position="0 0 0 0 0 0 1  10 0 0 0 0 0 1  20 0 0 0 0 0 1   30 0 0 0 0 0 1  40 0 0 0 0 0 1  50 0 0 0 0 0 1" name="DOFs" showObject="1"  showObjectScale="2" showIndices="1"/>
@@ -26,13 +26,13 @@
     
     <Node       name="Points" >
       <MechanicalObject template="Vec3d" showObject="1" showObjectScale="10" position="2.5 0 0  7.5 0 0  22.5 0 0  27.5 0 0  42.5 0 0 47.5 0 0"/>
-      <LinearMapping name="linearMapping" template="Rigid,Vec3d"/>
+      <LinearMapping name="linearMapping" template="Rigid,Vec3d" geometricStiffness="2"/>
       
 
           <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="0 1 1 2 2 3 3 4 4 5" />
-        <DistanceMapping showObjectScale="0.1" />
+        <DistanceMapping showObjectScale="0.1" geometricStiffness="2" />
         <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-15" isCompliance="1" />
     </Node>
     
