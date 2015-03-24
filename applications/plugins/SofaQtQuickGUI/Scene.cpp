@@ -273,8 +273,10 @@ void Scene::open()
 	{
         LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
 
-        connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {
-            if(loaderThread->isLoaded() && !qmlFilepath.empty())
+        connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {                    
+            if(!loaderThread->isLoaded())
+                setStatus(Status::Error);
+            else if(!qmlFilepath.empty())
                 setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 
             loaderThread->deleteLater();
@@ -284,7 +286,9 @@ void Scene::open()
 	}
     else
 	{
-        if(LoaderProcess(mySofaSimulation, finalFilename) && !qmlFilepath.empty())
+        if(!LoaderProcess(mySofaSimulation, finalFilename))
+            setStatus(Status::Error);
+        else if(!qmlFilepath.empty())
             setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 	}
 }
