@@ -25,7 +25,6 @@
 #ifndef SOFA_GPU_CUDA_CUDASPHEREMODEL_H
 #define SOFA_GPU_CUDA_CUDASPHEREMODEL_H
 
-#include <sofa/gpu/cuda/gpucuda.h>
 #include "CudaTypes.h"
 
 #include <SofaBaseCollision/SphereModel.h>
