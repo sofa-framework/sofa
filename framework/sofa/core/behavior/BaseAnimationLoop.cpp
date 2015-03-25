@@ -51,7 +51,7 @@ void BaseAnimationLoop::storeResetState()
         m_resetTime = c->getTime();
 }
 
-double BaseAnimationLoop::getResetTime() const
+SReal BaseAnimationLoop::getResetTime() const
 {
     return m_resetTime;
 }

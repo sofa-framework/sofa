@@ -53,7 +53,7 @@ MappedObject<DataTypes>::~MappedObject()
 template <class DataTypes>
 void MappedObject<DataTypes>::init()
 {
-    if (getX()->size() == 0)
+    if (getSize() == 0)
     {
         sofa::core::topology::BaseMeshTopology* topo = this->getContext()->getMeshTopology();
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())

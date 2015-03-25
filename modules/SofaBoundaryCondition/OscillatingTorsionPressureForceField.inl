@@ -86,10 +86,10 @@ template <class DataTypes> void OscillatingTorsionPressureForceField<DataTypes>:
 
 
 template<class DataTypes>
-double OscillatingTorsionPressureForceField<DataTypes>::getAmplitude()
+SReal OscillatingTorsionPressureForceField<DataTypes>::getAmplitude()
 {
-    double t = this->getContext()->getTime();
-    double val = cos( 6.2831853 * frequency.getValue() * t );
+    SReal t = this->getContext()->getTime();
+    SReal val = cos( 6.2831853 * frequency.getValue() * t );
     return val;
 }
 
@@ -121,7 +121,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
     rotationAngle = avgRotAngle;
 
 
-    //double da = 360.0 / 6.2831853 * rotationAngle;
+    //SReal da = 360.0 / 6.2831853 * rotationAngle;
     //  file <<this->getContext()->getTime() << " " << getAmplitude()*0.01 << " " << avgRotAngle << std::endl;
 
 

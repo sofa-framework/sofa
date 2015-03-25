@@ -20,13 +20,13 @@ using namespace sofa::defaulttype;
 
 //#ifndef SOFA_FLOAT
 //template <> SOFA_BASE_MECHANICS_API
-//double ImageDensityMass<Rigid3dTypes,core::behavior::ShapeFunctiond,Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
+//SReal ImageDensityMass<Rigid3dTypes,core::behavior::ShapeFunctiond,Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
 //{
 //    const VecCoord& _x = vx.getValue();
 
 //    VecCoord Mx = m_massMatrix * _x;
 
-//    double e = 0;
+//    SReal e = 0;
 //    // gravity
 //    Vec3d g ( this->getContext()->getGravity() );
 //    for( unsigned int i=0 ; i<_x.size() ; i++ )
@@ -40,7 +40,7 @@ using namespace sofa::defaulttype;
 //#endif
 //#ifndef SOFA_DOUBLE
 //template <> SOFA_BASE_MECHANICS_API
-//double ImageDensityMass<Rigid3fTypes,core::behavior::ShapeFunctionf,Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
+//SReal ImageDensityMass<Rigid3fTypes,core::behavior::ShapeFunctionf,Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& vx ) const
 //{
 //    const VecCoord& _x = vx.getValue();
 

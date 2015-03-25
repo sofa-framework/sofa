@@ -116,7 +116,7 @@ protected:
     ///@{
 
     /// Helper method to create strings used in various tests.
-    simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0/*, double dampingRatio=0*/, bool isCompliant=true, SReal totalRestLength = -1 )
+    simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, SReal totalMass, SReal complianceValue=0/*, SReal dampingRatio=0*/, bool isCompliant=true, SReal totalRestLength = -1 )
     {
         static unsigned numObject = 1;
         std::ostringstream oss;
@@ -167,7 +167,7 @@ protected:
         helper::vector<SReal> restLengths;
         for( unsigned i=0; i<numParticles; i++ )
         {
-            double alpha = (double)i/(numParticles-1);
+            SReal alpha = (SReal)i/(numParticles-1);
             x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
             if(i>0)
             {
@@ -196,7 +196,7 @@ protected:
         DistanceMapping31::SPtr extensionMapping;
         UniformCompliance1::SPtr compliance;
 
-        ParticleString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass )
+        ParticleString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, SReal totalMass )
         {
         static unsigned numObject = 1;
         std::ostringstream oss;
@@ -244,7 +244,7 @@ protected:
         helper::vector<SReal> restLengths;
         for( unsigned i=0; i<numParticles; i++ )
         {
-            double alpha = (double)i/(numParticles-1);
+            SReal alpha = (SReal)i/(numParticles-1);
             x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
             if(i>0)
             {

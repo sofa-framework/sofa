@@ -2347,7 +2347,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
         offset += vDest->size() * derivDim;
         d_vDest->endEdit();
     }
-};
+}
 
 template<int N, class real>
 void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFromCudaBaseVectorSameSize(Main* m, VecId dest, const sofa::gpu::cuda::CudaBaseVectorType<Real> *src, unsigned int &offset)
@@ -2376,7 +2376,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
         offset += va->size() * elemDim;
         d_va->endEdit();
     }
-};
+}
 
 
 
@@ -2384,11 +2384,11 @@ void MechanicalObjectInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addFrom
 #define CudaMechanicalObject_ImplMethods(T) \
 template<> void MechanicalObject< T >::accumulateForce(const core::ExecParams* /* params */) \
 { data.accumulateForce(this); } \
-template<> void MechanicalObject< T >::vOp(const core::ExecParams* /* params */, core::VecId v, core::ConstVecId a, core::ConstVecId b, double f) \
+template<> void MechanicalObject< T >::vOp(const core::ExecParams* /* params */, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f) \
 { data.vOp(this, v, a, b, f); }		\
 template<> void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, const VMultiOp& ops) \
 { data.vMultiOp(this, params, ops); }                                    \
-template<> double MechanicalObject< T >::vDot(const core::ExecParams* /* params */, core::ConstVecId a, core::ConstVecId b) \
+template<> SReal MechanicalObject< T >::vDot(const core::ExecParams* /* params */, core::ConstVecId a, core::ConstVecId b) \
 { return data.vDot(this, a, b); }				    \
 template<> void MechanicalObject< T >::resetForce(const core::ExecParams* /* params */) \
 { data.resetForce(this); } \
@@ -2402,12 +2402,12 @@ template<> void MechanicalObject< T >::addFromBaseVectorSameSize(core::VecId des
 { if (const CudaBaseVectorType<Real> * vec = dynamic_cast<const CudaBaseVectorType<Real> *>(src)) data.addFromCudaBaseVectorSameSize(this, dest,vec,offset); \
 else data.addFromBaseVectorSameSize(this, dest,src,offset); }
 
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec1fTypes);
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec2fTypes);
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3fTypes);
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3f1Types);
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec6fTypes);
-CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3fTypes);
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec1fTypes)
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec2fTypes)
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3fTypes)
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3f1Types)
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec6fTypes)
+CudaMechanicalObject_ImplMethods(gpu::cuda::CudaRigid3fTypes)
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE

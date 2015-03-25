@@ -120,39 +120,39 @@ void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecI
     executeVisitor( MechanicalVOpVisitor(params, v, a, core::ConstMultiVecId::null(), 1.0) );
 }
 
-void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f) // v=f*a
+void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, SReal f) // v=f*a
 {
     executeVisitor( MechanicalVOpVisitor(params, v, core::ConstMultiVecId::null(), a, f) );
 }
 
 #ifndef SOFA_SMP
-void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f)
+void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, SReal f)
 {
     executeVisitor( MechanicalVOpVisitor(params, v, v, a, f) );
 }
 #else
-void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<double> &fSh,double f)
+void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<SReal> &fSh,SReal f)
 {
     ParallelMechanicalVOpVisitor(params, v, v, a, f, &fSh).execute( ctx );
 }
 
-void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, double f)
+void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, SReal f)
 {
     // ParallelMechanicalVOpVisitor(params, v, v, a, f).execute( ctx );
 }
 
-void VectorOperations::v_meq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<double> &fSh)
+void VectorOperations::v_meq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<SReal> &fSh)
 {
     ParallelMechanicalVOpMecVisitor(params, v, a, &fSh).execute( ctx );
 }
 #endif
 
-void VectorOperations::v_teq(sofa::core::MultiVecId v, double f)
+void VectorOperations::v_teq(sofa::core::MultiVecId v, SReal f)
 {
     executeVisitor( MechanicalVOpVisitor(params, v, core::MultiVecId::null(), v, f) );
 }
 
-void VectorOperations::v_op(core::MultiVecId v, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, double f )
+void VectorOperations::v_op(core::MultiVecId v, sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b, SReal f )
 {
     executeVisitor( MechanicalVOpVisitor(params, v, a, b, f) );
 }
@@ -163,7 +163,7 @@ void VectorOperations::v_multiop(const core::behavior::BaseMechanicalState::VMul
 }
 
 #ifdef SOFA_SMP
-void VectorOperations::v_op(sofa::core::MultiVecId v, sofa::core::MultiVecId a, sofa::core::MultiVecId b, Shared<double> &f) ///< v=a+b*f
+void VectorOperations::v_op(sofa::core::MultiVecId v, sofa::core::MultiVecId a, sofa::core::MultiVecId b, Shared<SReal> &f) ///< v=a+b*f
 {
     ParallelMechanicalVOpVisitor(params, v, a, b, 1.0, &f).execute( ctx );
 }
@@ -183,13 +183,13 @@ void VectorOperations::v_norm( sofa::core::ConstMultiVecId a, unsigned l)
 }
 
 #ifdef SOFA_SMP
-void VectorOperations::v_dot( Shared<double> &result, core::MultiVecId a, core::MultiVecId b)
+void VectorOperations::v_dot( Shared<SReal> &result, core::MultiVecId a, core::MultiVecId b)
 {
     ParallelMechanicalVDotVisitor(params, &result, a, b).execute( ctx );
 }
 #endif
 
-void VectorOperations::v_threshold(sofa::core::MultiVecId a, double threshold)
+void VectorOperations::v_threshold(sofa::core::MultiVecId a, SReal threshold)
 {
     executeVisitor( VelocityThresholdVisitor(params, a,threshold) );
 }
@@ -208,7 +208,7 @@ size_t VectorOperations::v_size(core::MultiVecId v)
     return result;
 }
 
-double VectorOperations::finish()
+SReal VectorOperations::finish()
 {
     return result;
 

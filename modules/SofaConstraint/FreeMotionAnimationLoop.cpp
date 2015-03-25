@@ -108,7 +108,7 @@ void FreeMotionAnimationLoop::init()
 }
 
 
-void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, double dt)
+void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
     if (dt == 0)
         dt = this->gnode->getDt();

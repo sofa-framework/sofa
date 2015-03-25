@@ -125,7 +125,7 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 }
 
 template<class DataTypes>
-double ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal ForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
         return getPotentialEnergy(mparams, *mparams->readX(mstate));
@@ -142,7 +142,7 @@ void ForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const 
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
+void ForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/)
 {
     static int i=0;
     if (i < 10) {
@@ -160,7 +160,7 @@ void ForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, con
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, double kFact, unsigned int & offset)
+void ForceField<DataTypes>::addSubKToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, SReal kFact, unsigned int & offset)
 {
     addKToMatrix(mat,kFact,offset);
 }
@@ -176,7 +176,7 @@ void ForceField<DataTypes>::addBToMatrix(const MechanicalParams* mparams, const 
         addBToMatrix(r.matrix, mparams->bFactor() , r.offset);
 }
 template<class DataTypes>
-void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int &/*offset*/)
+void ForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int &/*offset*/)
 {
 //    static int i=0;
 //    if (i < 10) {
@@ -193,7 +193,7 @@ void ForceField<DataTypes>::addSubBToMatrix(const MechanicalParams* mparams, con
 }
 
 template<class DataTypes>
-void ForceField<DataTypes>::addSubBToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, double bFact, unsigned int & offset)
+void ForceField<DataTypes>::addSubBToMatrix(sofa::defaulttype::BaseMatrix * mat, const helper::vector<unsigned> & /*subMatrixIndex*/, SReal bFact, unsigned int & offset)
 {
     addBToMatrix(mat,bFact,offset);
 }

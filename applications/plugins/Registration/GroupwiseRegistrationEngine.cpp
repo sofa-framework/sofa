@@ -40,12 +40,19 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(GroupwiseRegistrationEngine)
 
 int GroupwiseRegistrationEngineClass = core::RegisterObject("Register a set of meshes of similar topology")
+#ifndef SOFA_FLOAT
         .add<GroupwiseRegistrationEngine< Vec3dTypes > >(true)
+#endif
+#ifndef SOFA_DOUBLE
         .add<GroupwiseRegistrationEngine< Vec3fTypes > >()
+#endif
         ;
-
+#ifndef SOFA_FLOAT
 template class SOFA_REGISTRATION_API GroupwiseRegistrationEngine< Vec3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
 template class SOFA_REGISTRATION_API GroupwiseRegistrationEngine< Vec3fTypes >;
+#endif
 
 } //
 } // namespace component

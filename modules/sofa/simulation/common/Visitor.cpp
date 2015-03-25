@@ -135,7 +135,7 @@ void Visitor::dumpInfo( const std::string &info)
     if (printActivated) {(*outputVisitor) << info; /*outputVisitor->flush();*/}
 }
 
-void Visitor::startDumpVisitor(std::ostream *s, double time)
+void Visitor::startDumpVisitor(std::ostream *s, SReal time)
 {
     std::cout << "startDumpVisitor" << std::endl;
     initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
@@ -154,9 +154,9 @@ void Visitor::stopDumpVisitor()
     printActivated=false;
 };
 
-double Visitor::getTimeSpent(ctime_t initTime, ctime_t endTime)
+SReal Visitor::getTimeSpent(ctime_t initTime, ctime_t endTime)
 {
-    return (double)(endTime-initTime);
+    return (SReal)(endTime-initTime);
 }
 
 

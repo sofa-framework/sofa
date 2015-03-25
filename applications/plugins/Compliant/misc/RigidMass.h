@@ -159,11 +159,11 @@ public:
 	// cinétique d'un rigide, sauf si on considère les vitesses en
 	// coordonnées locales (ce que sofa ne fait pas). du coup on tape
 	// dans this->mstate->getX pour l'obtenir mais l'api devrait gérer ca
-    double getKineticEnergy( const core::MechanicalParams*,
+    SReal getKineticEnergy( const core::MechanicalParams*,
 	                         const DataVecDeriv& _v  ) const {
 		helper::ReadAccessor< DataVecDeriv >  v(_v);
 		
-		double res = 0;
+        SReal res = 0;
 
 		for(unsigned i = 0, n = v.size(); i < n; ++i) {
 			const unsigned index = clamp(i);
@@ -183,13 +183,13 @@ public:
 	}
 
 	// TODO maybe sign is wrong 
-    double getPotentialEnergy( const core::MechanicalParams*,
+    SReal getPotentialEnergy( const core::MechanicalParams*,
 	                           const DataVecCoord& _x  ) const {
 		helper::ReadAccessor< DataVecCoord >  x(_x);
 				
 		defaulttype::Vec3d g ( this->getContext()->getGravity() );
 
-		double res = 0;
+        SReal res = 0;
 
 		for(unsigned i = 0, n = x.size(); i < n; ++i) {
 			const unsigned index = clamp(i);
@@ -204,7 +204,7 @@ public:
     virtual void addMDx(const core::MechanicalParams* ,
 	                    DataVecDeriv& _f, 
 	                    const DataVecDeriv& _dx, 
-	                    double factor) {
+                        SReal factor) {
 		helper::WriteAccessor< DataVecDeriv >  f(_f);
 		helper::ReadAccessor< DataVecDeriv >  dx(_dx);
 

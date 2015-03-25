@@ -49,7 +49,7 @@ class SOFA_Compliant_API CompliantNLImplicitSolver : public CompliantImplicitSol
 	
     // OdeSolver API
     virtual void solve(const core::ExecParams* params,
-                       double dt,
+                       SReal dt,
                        core::MultiVecCoordId posId,
                        core::MultiVecDerivId velId);
 

@@ -306,13 +306,13 @@ void ConstraintAnimationLoop::launchCollisionDetection(const core::ExecParams* p
     if ( displayTime.getValue() )
     {
         sout<<" computeCollision                 " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
-        time = (double) timer->getTime();
+        time = (SReal) timer->getTime();
     }
 
 }
 
 
-void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulation::Node *context, double &dt)
+void ConstraintAnimationLoop::freeMotion(const core::ExecParams* params, simulation::Node *context, SReal &dt)
 {
     if (debug)
         sout<<"Free Motion is called"<<sendl;
@@ -529,10 +529,10 @@ void ConstraintAnimationLoop::correctiveMotion(const core::ExecParams* params, s
     sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
 }
 
-void ConstraintAnimationLoop::step ( const core::ExecParams* params, double dt )
+void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 {
 
-    static double simulationTime=0.0;
+    static SReal simulationTime=0.0;
 
     simulationTime+=dt;
     sofa::helper::AdvancedTimer::begin("Animate");
@@ -549,7 +549,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, double dt )
     }
 
 
-    double startTime = this->gnode->getTime();
+    SReal startTime = this->gnode->getTime();
 
     BehaviorUpdatePositionVisitor beh(params , this->gnode->getDt());
     this->gnode->execute ( beh );
@@ -561,14 +561,14 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, double dt )
         activateSubGraph.setValue(false);
 
     time = 0.0;
-    double totaltime = 0.0;
-    timeScale = 1.0 / (double)CTime::getTicksPerSec() * 1000;
+    SReal totaltime = 0.0;
+    timeScale = 1.0 / (SReal)CTime::getTicksPerSec() * 1000;
     if ( displayTime.getValue() )
     {
         if (timer == 0)
             timer = new CTime();
 
-        time = (double) timer->getTime();
+        time = (SReal) timer->getTime();
         totaltime = time;
         sout<<sendl;
     }
@@ -586,13 +586,13 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, double dt )
         if (timer == 0)
         {
             timer = new CTime();
-            compTime = iterationTime = (double)timer->getTime();
+            compTime = iterationTime = (SReal)timer->getTime();
         }
         else
         {
-            double actTime = double(timer->getTime());
-            double compTimeDiff = actTime - compTime;
-            double iterationTimeDiff = actTime - iterationTime;
+            SReal actTime = SReal(timer->getTime());
+            SReal compTimeDiff = actTime - compTime;
+            SReal iterationTimeDiff = actTime - iterationTime;
             iterationTime = actTime;
             std::cout << "Total time = " << iterationTimeDiff << std::endl;
             int toSleep = (int)floor(dt*1000000-compTimeDiff);
@@ -601,7 +601,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, double dt )
                 usleep(toSleep);
             else
                 serr << "Cannot achieve frequency for dt = " << dt << sendl;
-            compTime = (double)timer->getTime();
+            compTime = (SReal)timer->getTime();
         }
     }
 #endif
@@ -704,8 +704,8 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, double dt )
 
     if ( displayTime.getValue() )
     {
-        sout << " Solve with GaussSeidel                " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
-        time = (double) timer->getTime();
+        sout << " Solve with GaussSeidel                " << ( (SReal) timer->getTime() - time)*timeScale<<" ms" <<sendl;
+        time = (SReal) timer->getTime();
     }
 
     /// CORRECTIVE MOTION
@@ -715,8 +715,8 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, double dt )
 
     if ( displayTime.getValue() )
     {
-        sout << " ContactCorrections                    " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
-        sout << "  = Total                              " << ( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
+        sout << " ContactCorrections                    " << ( (SReal) timer->getTime() - time)*timeScale <<" ms" <<sendl;
+        sout << "  = Total                              " << ( (SReal) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
         sout << " With : " << CP.getSize() << " constraints" << sendl;
         sout << "<<<<< End display ConstraintAnimationLoop time." << sendl;
     }

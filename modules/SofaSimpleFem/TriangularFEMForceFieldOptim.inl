@@ -268,7 +268,7 @@ void TriangularFEMForceFieldOptim<DataTypes>::reinit()
 
 
 template <class DataTypes>
-double TriangularFEMForceFieldOptim<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* x */) const
+SReal TriangularFEMForceFieldOptim<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* x */) const
 {
     serr<<"TriangularFEMForceFieldOptim::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

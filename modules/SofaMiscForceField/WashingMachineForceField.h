@@ -163,13 +163,13 @@ public:
 
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
     void draw(const core::visual::VisualParams* vparams);
-    bool addBBox(double* minBBox, double* maxBBox);
+    bool addBBox(SReal* minBBox, SReal* maxBBox);
 
 
 protected :

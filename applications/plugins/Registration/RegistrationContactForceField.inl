@@ -127,7 +127,7 @@ void RegistrationContactForceField<DataTypes>::addDForce(const core::MechanicalP
 	VecDeriv&        df2 = *data_df2.beginEdit();
 	const VecDeriv&  dx1 =  data_dx1.getValue();
 	const VecDeriv&  dx2 =  data_dx2.getValue();
-	double kFactor = mparams->kFactor();
+    SReal kFactor = mparams->kFactor();
 
 	df1.resize(dx1.size());
 	df2.resize(dx2.size());
@@ -152,7 +152,7 @@ void RegistrationContactForceField<DataTypes>::addDForce(const core::MechanicalP
 }
 
 template <class DataTypes>
-    double RegistrationContactForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const
+    SReal RegistrationContactForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const
 {
     serr<<"RegistrationContactForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

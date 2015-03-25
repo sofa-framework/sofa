@@ -84,7 +84,7 @@ RegularGridTopology::RegularGridTopology()
     min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal")),
     max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal")),
     p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points")),
-    _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
+    _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
 {
 }
 
@@ -99,7 +99,7 @@ RegularGridTopology::RegularGridTopology(Vec3i n, BoundingBox b)
       min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
       max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
       p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0")),
-      _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
+      _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
 
 {
     setPos(b);
@@ -116,7 +116,7 @@ RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
       min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
       max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
       p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0")),
-      _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
+      _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
 
 {
 }
@@ -125,7 +125,7 @@ void RegularGridTopology::init()
 {
     if (_cellWidth.getValue())
     {
-        double w = _cellWidth.getValue();
+        SReal w = _cellWidth.getValue();
 
         Vec3i grid;
         grid[0]= (int)ceil((max.getValue()[0]-min.getValue()[0]) / w)+1;

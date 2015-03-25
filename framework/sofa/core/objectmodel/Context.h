@@ -60,8 +60,8 @@ public:
 
     Data<bool> is_activated;
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    Data<double> dt_;
-    Data<double> time_;
+    Data<SReal> dt_;
+    Data<SReal> time_;
     Data<bool> animate_;
 	Data<bool> d_isSleeping;				/// Tells if the context is sleeping, and thus ignored by visitors
 	Data<bool> d_canChangeSleepingState;	/// Tells if the context can change its sleeping state
@@ -107,10 +107,10 @@ public:
     virtual void setGravity( const Vec3& );
 
     /// Simulation timestep
-    virtual double getDt() const;
+    virtual SReal getDt() const;
 
     /// Simulation time
-    virtual double getTime() const;
+    virtual SReal getTime() const;
 
     /// Animation flag
     virtual bool getAnimate() const;
@@ -164,10 +164,10 @@ public:
     /// @{
 
     /// Simulation timestep
-    virtual void setDt( double dt );
+    virtual void setDt( SReal dt );
 
     /// Simulation time
-    virtual void setTime( double t );
+    virtual void setTime( SReal t );
 
     /// Animation flag
     virtual void setAnimate(bool val);

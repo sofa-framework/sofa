@@ -84,9 +84,9 @@ public:
     Vector3 getPoint(int i) const;
     Vector3 getPoint(int x, int y, int z) const ;
     bool hasPos()  const { return true; }
-    double getPX(int i)  const { return getPoint(i)[0]; }
-    double getPY(int i) const { return getPoint(i)[1]; }
-    double getPZ(int i) const { return getPoint(i)[2]; }
+    SReal getPX(int i)  const { return getPoint(i)[0]; }
+    SReal getPY(int i) const { return getPoint(i)[1]; }
+    SReal getPZ(int i) const { return getPoint(i)[2]; }
 
 
     unsigned getCubeIndex( int i, int j, int k ) const; ///< one-dimensional index of a grid cube
@@ -128,7 +128,7 @@ protected:
     Data< Vector3 > min, max;
     /// Position of point 0
     Data< Vector3 > p0;
-    Data< double > _cellWidth; ///< if > 0 : dimension of each cell in the created grid
+    Data< SReal > _cellWidth; ///< if > 0 : dimension of each cell in the created grid
     /// Distance between points in the grid. Must be perpendicular to each other
     Vector3 dx,dy,dz;
     SReal inv_dx2, inv_dy2, inv_dz2;

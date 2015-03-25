@@ -51,7 +51,7 @@ class SOFA_Flexible_API BaseMaterialForceField : public virtual core::objectmode
 {
 public:
     virtual void resize()=0;
-    virtual double getPotentialEnergy( const unsigned int index ) const=0;
+    virtual SReal getPotentialEnergy( const unsigned int index ) const=0;
 };
 
 
@@ -217,7 +217,7 @@ public:
         return &C;
     }
 
-    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset )
     {
         if(!this->assemble.getValue() || !BlockType::constantK) updateK();
 
@@ -237,9 +237,9 @@ public:
     //@}
 
 
-    virtual double getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
+    virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
     {
-        double e = 0;
+        SReal e = 0;
         const VecCoord& _x = x.getValue();
 
         for( unsigned int i=0 ; i<material.size() ; i++ )
@@ -249,7 +249,7 @@ public:
         return e;
     }
 
-    virtual double getPotentialEnergy( const unsigned int index ) const
+    virtual SReal getPotentialEnergy( const unsigned int index ) const
     {
         if(!this->mstate) return 0;
         helper::ReadAccessor<Data< VecCoord > >  x(*this->mstate->read(core::ConstVecCoordId::position()));

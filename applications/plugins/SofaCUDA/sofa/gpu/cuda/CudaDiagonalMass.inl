@@ -62,7 +62,7 @@ namespace mass
 {
 
 template<>
-void DiagonalMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
+void DiagonalMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -119,7 +119,7 @@ void DiagonalMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams*
 
 template<>
 //void DiagonalMass<CudaVec3dTypes, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
-void DiagonalMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor)
+void DiagonalMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor)
 {
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();

@@ -131,7 +131,7 @@ public:
      *  information might affect performances and leads to incorrect scene
      *  bounding box.
      */
-    virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+    virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {
         return false;
     }
@@ -139,14 +139,14 @@ public:
     /// Translate the positions
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyTranslation(const double /*dx*/, const double /*dy*/, const double /*dz*/)
+    virtual void applyTranslation(const SReal /*dx*/, const SReal /*dy*/, const SReal /*dz*/)
     {
     }
 
     /// Rotate the positions using Euler Angles in degree
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyRotation (const double /*rx*/, const double /*ry*/, const double /*rz*/)
+    virtual void applyRotation (const SReal /*rx*/, const SReal /*ry*/, const SReal /*rz*/)
     {
     }
 
@@ -160,7 +160,7 @@ public:
     /// Scale the positions
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyScale(const double /*sx*/,const double /*sy*/,const double /*sz*/)
+    virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)
     {
     }
 
