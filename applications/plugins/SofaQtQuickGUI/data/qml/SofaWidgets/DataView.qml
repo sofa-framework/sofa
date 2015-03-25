@@ -58,6 +58,16 @@ Rectangle {
     property string sceneSource: ""     // TODO: use this
     property string sceneDataPath: ""   // TODO: use this
 
+    Connections {
+        target: scene
+        onAboutToUnload:
+        {
+            console.log("unloading");
+            dataPathTextField.text = "";
+            trackButton.checked = false;
+        }
+    }
+
     QtObject {
         id : d
 

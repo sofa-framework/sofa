@@ -26,6 +26,12 @@
 #define __MR_FILTERS__
 
 #include <cmath>
+#include <boost/lambda/lambda.hpp>
+#include <boost/lambda/bind.hpp>
+#include <boost/lambda/if.hpp>
+#include <boost/bind.hpp>
+
+namespace bl = boost::lambda;
 
 namespace CGoGN
 {
@@ -51,12 +57,19 @@ unsigned int vertexLevel(typename PFP::MAP& map, Vertex v)
 
 	unsigned int level = map.getMaxLevel();
 
-	map.foreach_dart_of_orbit(v, [&] (Dart d)
-	{
-		unsigned int ldit = map.getDartLevel(d) ;
-		if(ldit < level)
-			level = ldit;
-	});
+//	map.foreach_dart_of_orbit(v, [&] (Dart d)
+//	{
+//		unsigned int ldit = map.getDartLevel(d) ;
+//		if(ldit < level)
+//			level = ldit;
+//	});
+    unsigned int ldit;
+    map.foreach_dart_of_orbit(v, (
+                                  bl::var(ldit) = map.getDartLevel(bl::_1),
+                                  bl::if_(bl::var(ldit) < bl::var(level))[bl::var(level) = bl::var(ldit)]
+                                )
+            );
+
 
 //	Dart dit = d;
 //	do
