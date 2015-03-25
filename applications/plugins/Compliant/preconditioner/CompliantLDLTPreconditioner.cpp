@@ -7,16 +7,14 @@ namespace component {
 namespace linearsolver {
 
 
-SOFA_DECL_CLASS(CompliantLDLTPreconditioner);
+SOFA_DECL_CLASS(CompliantLDLTPreconditioner)
 int CompliantLDLTPreconditionerClass = core::RegisterObject("LDLT preconditioner").add< CompliantLDLTPreconditioner >();
 
 
 CompliantLDLTPreconditioner::CompliantLDLTPreconditioner()
     : BasePreconditioner()
     , _factorized( false )
-{
-
-}
+{}
 
 void CompliantLDLTPreconditioner::compute( const AssembledSystem::mat& H )
 {
@@ -28,7 +26,7 @@ void CompliantLDLTPreconditioner::compute( const AssembledSystem::mat& H )
 
         if( preconditioner.info() != Eigen::Success )
         {
-            std::cerr<<SOFA_CLASS_METHOD<<"automatic regularization of a singular matrix\n";
+            serr<<"automatic regularization of a singular matrix"<<sendl;
 
             // if singular, try to regularize by adding a tiny diagonal matrix
             AssembledSystem::mat identity(H.rows(),H.cols());

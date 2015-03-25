@@ -31,9 +31,11 @@ void EigenSparseResponse<LinearSolver,symmetric>::factor(const mat& H, bool semi
     if( !H.rows() ) serr<<"factor - null matrix"<<sendl;
 #endif
 
-    if( d_constant.getValue() && m_factorized ) return;
-
-    m_factorized = true;
+    if( d_constant.getValue() )
+    {
+        if( m_factorized ) return;
+        else m_factorized = true;
+    }
 
 
     if( symmetric ) tmp = H.triangularView< Eigen::Lower >(); // only copy the triangular part (default to Lower)
