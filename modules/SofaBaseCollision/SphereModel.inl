@@ -136,7 +136,7 @@ void TSphereModel<DataTypes>::draw(const core::visual::VisualParams* vparams)
         vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
 
         // Check topological modifications
-        const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
+        const int npoints = mstate->getSize();
 
         std::vector<Vector3> points;
         std::vector<float> radius;
@@ -247,6 +247,34 @@ typename TSphereModel<DataTypes>::Real TSphereModel<DataTypes>::getRadius(const 
         return radius.getValue()[i];
     else
         return (Real) defaultRadius.getValue();
+}
+
+template<class DataTypes>
+void TSphereModel<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    if( !onlyVisible ) return;
+
+    static const Real max_real = std::numeric_limits<Real>::max();
+    static const Real min_real = std::numeric_limits<Real>::min();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+
+    std::vector<Coord> p;
+    const int npoints = mstate->getSize();
+    for(int i = 0 ; i < npoints ; ++i )
+    {
+        TSphere<DataTypes> t(this,i);
+        defaulttype::Vector3 p = t.p();
+        float r = (float)t.r();
+
+        for (int c=0; c<3; c++)
+        {
+            if (p[c]+r > maxBBox[c]) maxBBox[c] = (Real)p[c]+r;
+            if (p[c]-r < minBBox[c]) minBBox[c] = (Real)p[c]-r;
+        }
+    }
+
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 

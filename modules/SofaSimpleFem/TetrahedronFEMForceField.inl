@@ -744,11 +744,12 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
             D[10] = initialPoints[d][1] - initialPoints[a][1] - p[d][1]+p[a][1];
             D[11] = initialPoints[d][2] - initialPoints[a][2] - p[d][2]+p[a][2];
 
-            // compute force on element
-            Displacement F;
-
             if(!_assembling.getValue())
             {
+
+                // compute force on element
+                Displacement F;
+
                 // ComputeForce without the case of  plasticity simulation when  _plasticMaxThreshold.getValue() > 0
                 // This case actually modifies  the member plasticStrain and getPotentialEnergy is a const fonction.
                 MaterialStiffness K = materialsStiffnesses[i];
@@ -794,18 +795,14 @@ inline SReal TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const core:
 
                 #endif
 
-            }
-            else
-            {
-                serr<<"getPotentialEnergy is not implemented for assembled version"<<sendl;
-                F.clear();
+                // Compute potentialEnergy
+                energyPotential += dot(Deriv( F[0], F[1], F[2] ) ,-Deriv( D[0], D[1], D[2]));
+                energyPotential += dot(Deriv( F[3], F[4], F[5] ) ,-Deriv( D[3], D[4], D[5] ));
+                energyPotential += dot(Deriv( F[6], F[7], F[8] ) ,-Deriv( D[6], D[7], D[8] ));
+                energyPotential += dot(Deriv( F[9], F[10], F[11]),-Deriv( D[9], D[10], D[11] ));
+
             }
 
-            // Compute potentialEnergy
-            energyPotential += dot(Deriv( F[0], F[1], F[2] ) ,-Deriv( D[0], D[1], D[2]));
-            energyPotential += dot(Deriv( F[3], F[4], F[5] ) ,-Deriv( D[3], D[4], D[5] ));
-            energyPotential += dot(Deriv( F[6], F[7], F[8] ) ,-Deriv( D[6], D[7], D[8] ));
-            energyPotential += dot(Deriv( F[9], F[10], F[11]),-Deriv( D[9], D[10], D[11] ));
         }
         energyPotential/=-2.0;
 

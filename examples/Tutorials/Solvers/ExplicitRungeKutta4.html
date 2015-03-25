@@ -9,7 +9,7 @@
 		<center><img src="ExplicitEulerSolver_stable.png" align="middle" width="300"></center>
 
 		<div id="orangeText">Description</div><br>
-	<div align="justify">	
+	<div align="left">	
 		Like EulerSolver in Sofa, RungeKuttaSolver denotes the ODE solver using the explicit integration scheme for computing of 
 		the dynamic system. This integration scheme explicitely resolves the system in relation to time: given the mechanical state
 		at time T<sub>n</sub>, compute the state at time T<sub>n+1</sub>=T<sub>n</sub> + dt. The difference with RungeKuttaSolver is that this 
@@ -17,7 +17,7 @@
 		and can use a higher time step than the EulerSolver one. Otherwise, RungeKuttaSolver uses a more general explicit method than EulerSolver.
         <br>
 
-		<div id="orangeText">Key points</div>
+		<div id="orangeText" align="left">Key points</div>
 		<br>
 		As with every Explicit Integration method, RungeKutta accumulates errors for each time step. Therefore, two criteria must be 
 		controled when using it : 

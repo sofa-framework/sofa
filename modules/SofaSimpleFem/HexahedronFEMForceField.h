@@ -96,6 +96,7 @@ class HexahedronFEMForceField : virtual public core::behavior::ForceField<DataTy
 public:
     SOFA_CLASS(SOFA_TEMPLATE(HexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::behavior::ForceField, DataTypes));
 
+    typedef typename core::behavior::ForceField<DataTypes> InheritForceField;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;
@@ -120,6 +121,7 @@ public:
     {
         LARGE = 0,   ///< Symbol of mean large displacements tetrahedron solver (frame = edges mean on the 3 directions)
         POLAR = 1,   ///< Symbol of polar displacements tetrahedron solver
+        SMALL = 2,
     };
 
 
@@ -183,7 +185,7 @@ protected:
         , _sparseGrid(NULL)
         , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
         , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
-        , f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
+        , f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" or \"small\" displacements" ))
         , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
         , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
@@ -236,6 +238,7 @@ public:
         switch(val)
         {
         case POLAR: f_method.setValue("polar"); break;
+        case SMALL: f_method.setValue("small"); break;
         default   : f_method.setValue("large");
         };
     }
@@ -256,6 +259,11 @@ public:
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
+
+    // Make other overloaded version of getPotentialEnergy() to show up in subclass.
+    using InheritForceField::getPotentialEnergy;
+    // getPotentialEnergy is implemented for polar method
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*) const;
 
     const Transformation& getElementRotation(const unsigned elemidx);
 
@@ -379,6 +387,9 @@ protected:
     void computeRotationPolar( Transformation &r, defaulttype::Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem  );
 
+    ////////////// small decomposition method
+    void initSmall(int i, const Element&elem);
+    virtual void accumulateForceSmall( WDataRefVecDeriv &f, RDataRefVecCoord &p, int i, const Element&elem  );
 
     bool _alreadyInit;
 };

@@ -51,12 +51,6 @@ TransformEngine<DataTypes>::TransformEngine()
     , scale(initData(&scale, defaulttype::Vector3(1,1,1),"scale", "scale factor") )
     , inverse(initData(&inverse, false, "inverse", "true to apply inverse transformation"))
 {
-}
-
-
-template <class DataTypes>
-void TransformEngine<DataTypes>::init()
-{
     addInput(&f_inputX);
     addInput(&translation);
     addInput(&rotation);
@@ -65,6 +59,11 @@ void TransformEngine<DataTypes>::init()
     addInput(&inverse);
     addOutput(&f_outputX);
     setDirtyValue();
+}
+
+template <class DataTypes>
+void TransformEngine<DataTypes>::init()
+{
 }
 
 template <class DataTypes>

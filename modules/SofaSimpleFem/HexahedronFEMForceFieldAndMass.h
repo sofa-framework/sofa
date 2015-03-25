@@ -96,13 +96,19 @@ public:
 
     virtual SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& /*v*/ ) const  ///< vMv/2 using dof->getV()
     {
-        serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl;
-        return 0;
+        serr << "HexahedronFEMForceFieldAndMass::getKineticEnergy() not implemented" << sendl;
+        return 0.0;
     }
 
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
-        serr << "Get potentialEnergy not implemented" << sendl;
+        serr << "HexahedronFEMForceFieldAndMass::getPotentialEnergy() not implemented" << sendl;
+        return 0.0;
+    }
+
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/) const
+    {
+        serr << "HexahedronFEMForceFieldAndMass::getPotentialEnergy() not implemented" << sendl;
         return 0.0;
     }
 

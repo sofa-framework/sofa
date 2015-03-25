@@ -84,7 +84,8 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     geometric_type geometric;
     
     virtual const defaulttype::BaseMatrix* getK() {
-        return &geometric;
+        if( geometric.compressedMatrix.nonZeros() ) return &geometric;
+        else return NULL;
     }
 
 
@@ -178,7 +179,11 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 
     virtual void applyDJT(const core::MechanicalParams*,
 	                      core::MultiVecDerivId /*inForce*/, 
-	                      core::ConstMultiVecDerivId /*outForce*/){}
+                          core::ConstMultiVecDerivId /*outForce*/)
+    {
+        serr<<"applyDJT is not yet implemented"<<sendl;
+        // TODO implement it!
+    }
 
     virtual void applyJT( const core::ConstraintParams*,
 						  const helper::vector< typename self::InDataMatrixDeriv* >& , 

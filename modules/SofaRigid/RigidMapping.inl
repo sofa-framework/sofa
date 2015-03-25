@@ -475,21 +475,20 @@ void RigidMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams, co
 
     if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) // assembled version
     {
-
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
                   Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
             geometricStiffnessMatrix.addMult( InF, inDx, mparams->kFactor() );
     }
     else
     {
-
-        // if symmetrized version, force assembly
-        if( geometricStiffness.getValue() == 2 && !geometricStiffnessMatrix.compressedMatrix.nonZeros() )
+        // if symmetrized version, force local assembly
+        if( geometricStiffness.getValue() == 2 )
         {
             updateK( mparams, childForceId );
             const Data<InVecDeriv>& inDx = *mparams->readDx(this->fromModel);
                   Data<InVecDeriv>& InF  = *parentForceChangeId[this->fromModel.get(mparams)].write();
             geometricStiffnessMatrix.addMult( InF, inDx, mparams->kFactor() );
+            geometricStiffnessMatrix.resize(0,0); // forgot about this matrix
         }
         else
         {
@@ -793,7 +792,8 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* RigidMapping<TIn, TOut>::getK()
 {
-    return &geometricStiffnessMatrix;
+    if( geometricStiffnessMatrix.compressedMatrix.nonZeros() ) return &geometricStiffnessMatrix;
+    else return NULL;
 }
 
 #endif

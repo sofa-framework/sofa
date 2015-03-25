@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "PythonEnvironment.h"
 #include "PythonMacros.h"
-
+#include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -79,15 +79,33 @@ void PythonEnvironment::Init()
     bindSofaPythonModule();
 
     // load a python script which search for python packages defined in the modules
-    std::string scriptPy = std::string(SOFA_SRC_DIR) + "/applications/plugins/SofaPython/SofaPython.py";
+    //sofaPython.py should imo be located outside of the sources at install stage for instance, like in the shared directory ; 
+    // so as to get rid of this source located path
+    //and so do the different plugins python script
+    std::string scriptPy = "applications/plugins/SofaPython/SofaPython.py"; 
+    std::string scriptPyPath = scriptPy;
 
+    if(    !sofa::helper::system::DataRepository.findFile(scriptPy, "", NULL)
+        && !sofa::helper::system::PluginRepository.findFile(scriptPy, "", NULL)
+        && !sofa::helper::system::DataRepository.findFile(scriptPy, std::string(SOFA_SRC_DIR), NULL))
+    {
+        std::cerr << "SofaPython.py configuration file NOT FOUND in: " << sofa::helper::system::DataRepository <<std::endl
+                    <<sofa::helper::system::PluginRepository<< std::endl
+                    <<std::string(SOFA_SRC_DIR)<< std::endl;
+        return ;
+    }
+
+    scriptPyPath=scriptPy.substr(0,scriptPy.size()-scriptPyPath.size());
+    std::string setPyVar="SOFA_PythonScriptPath=\'"+scriptPyPath+"\'";
+    PyRun_SimpleString(setPyVar.c_str());
 
 #ifdef WIN32
     char* scriptPyChar = (char*) malloc((scriptPy.size()+1)*sizeof(char));
     strcpy(scriptPyChar,scriptPy.c_str());
     PyObject* PyFileObject = PyFile_FromString(scriptPyChar, "r");
-    if(PyFileObject)
+    if(PyFileObject){
         PyRun_SimpleFileEx(PyFile_AsFile(PyFileObject), scriptPyChar, 1);
+    }
     free(scriptPyChar);
 #else
     FILE* scriptPyFile = fopen(scriptPy.c_str(),"r");

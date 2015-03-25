@@ -76,6 +76,7 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa
     , recompute(initData(&recompute, false, "recompute", "if true, always recompute the compliance"))
     , debugViewFrameScale(initData(&debugViewFrameScale, 1.0, "debugViewFrameScale", "Scale on computed node's frame"))
     , f_fileCompliance(initData(&f_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
+    , fileDir(initData(&fileDir, "fileDir", "If not empty, the compliance will be saved in this repertory"))
     , invM(NULL)
     , appCompliance(NULL)
     , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
@@ -148,7 +149,25 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
         // Try to load from file
         sout << "Try to load compliance from : " << fileName << sendl;
 
-        if ((sofa::helper::system::DataRepository.findFile(fileName)) && (recompute.getValue() == false))
+        std::string dir = fileDir.getValue();
+        if (!dir.empty())
+        {
+			std::ifstream compFileIn((dir + "/" + fileName).c_str(), std::ifstream::binary);
+            if (compFileIn.is_open())
+            {
+                invM->data = new Real[nbRows * nbCols];
+
+                sout << "File " << dir + "/" + fileName << " found. Loading..." << sendl;
+
+                compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
+                compFileIn.close();
+
+                return true;
+            }
+            else
+                return false;
+        }
+        else if ((sofa::helper::system::DataRepository.findFile(fileName)) && (recompute.getValue() == false))
         {
             invM->data = new Real[nbRows * nbCols];
 
@@ -175,7 +194,12 @@ void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::strin
 {
     sout << "saveCompliance in " << fileName << sendl;
 
-    std::string filePathInSofaShare = sofa::helper::system::DataRepository.getFirstPath() +"/"+ fileName;
+    std::string filePathInSofaShare;
+    std::string dir = fileDir.getValue();
+    if (!dir.empty())
+        filePathInSofaShare = dir + "/" + fileName;
+    else
+        filePathInSofaShare  = sofa::helper::system::DataRepository.getFirstPath() + "/" + fileName;
 
     std::ofstream compFileOut(filePathInSofaShare.c_str(), std::fstream::out | std::fstream::binary);
     compFileOut.write((char*)invM->data, nbCols * nbRows * sizeof(double));

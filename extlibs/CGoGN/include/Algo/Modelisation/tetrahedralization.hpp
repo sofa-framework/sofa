@@ -26,7 +26,7 @@
 #include "Algo/Modelisation/subdivision3.h"
 #include "Topology/generic/traversor/traversor3.h"
 #include "Algo/Geometry/normal.h"
-#include <utils.h>
+
 
 namespace CGoGN
 {

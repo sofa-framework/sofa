@@ -92,7 +92,8 @@ namespace sofa {
 
                 virtual const defaulttype::BaseMatrix* getK() {
 
-                    return &geometric;
+                    if( geometric.compressedMatrix.nonZeros() ) return &geometric;
+                    else return NULL;
                 }
 
                 virtual void applyDJT(const core::MechanicalParams* mparams,

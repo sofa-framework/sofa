@@ -24,17 +24,22 @@ class Response;
  */
 
 class SubKKT : public utils::eigen_types {
-private:
+public:
+
+    // TODO: determine correct access rights
+
     // primal/dual selection matrices
     rmat P, Q;
 
     // filtered subsystem
     rmat A;
 
+private:
     // work vectors during solve
     mutable vec vtmp1, vtmp2;
 
-    mutable cmat mtmp1, mtmp2, mtmp3;
+    mutable cmat mtmp1, mtmp2/*, mtmp3*/;
+    mutable rmat mtmpr;
 public:
 
     SubKKT();
@@ -46,10 +51,18 @@ public:
     static void projected_primal(SubKKT& res, const AssembledSystem& sys);
 
     // full kkt with projected primal variables
-    static void projected_kkt(SubKKT& res, const AssembledSystem& sys);
+    static void projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps = 0,
+                              bool only_lower = false);
     
     // TODO more ctors with non-zero Q
-    
+
+
+
+    inline vec project_primal( const vec& v ) const { return P.transpose() * v; }
+    inline vec unproject_primal( const vec& v ) const { return P * v; }
+    inline vec project_dual( const vec& v ) const { return Q.transpose() * v; }
+    inline vec unproject_dual( const vec& v ) const { return Q * v; }
+
 
     // P.rows() + Q.rows()
     unsigned size_full() const;
@@ -57,20 +70,31 @@ public:
     // P.cols() + Q.cols()
     unsigned size_sub() const;
 
-    
-    // factor the sub-kkt
+    // factor the sub-kkt using
+    template<class Solver>
+    void factor(Solver& response) const;
     void factor(Response& response) const;
-    
+
     // WARNING the API might change a bit here 
 
     // solve for rhs vec/mat. rhs must be of size size_full(), result
-    // will be resized as needed.
-    void solve(const Response& response, vec& result, const vec& rhs) const;
+    // will be resized as needed (full size).
     void solve(const Response& response, cmat& result, const cmat& rhs) const;
+    template<class Solver>
+    void solve(const Solver& response, vec& result, const vec& rhs) const;
 
+
+    void prod(vec& result, const vec& rhs) const;
 
     // this one transposes rhs before solving (avoids temporary)
-    void solve_opt(const Response& response, cmat& result, const rmat& rhs) const; 
+    void solve_opt(const Response& response, cmat& result, const rmat& rhs ) const;
+
+    // (in) rhs is full size
+    // (out) result is sub size
+    template<class Solver>
+    void solve_filtered(const Solver& response, vec& result, const vec& rhs ) const;
+    // (out) projected_rhs is sub size
+    void solve_filtered(const Response& response, cmat& result, const rmat& rhs, rmat& projected_rhs ) const;
 
 
     // adaptor to response API for solving

@@ -9,7 +9,7 @@ ContentItem {
 
     property string title: "Scene GUI"
 
-    property int priority: 50
+    property int priority: 100
     property Scene scene
     property url source: scene ? scene.sourceQML : ""
     readonly property alias status: d.status
