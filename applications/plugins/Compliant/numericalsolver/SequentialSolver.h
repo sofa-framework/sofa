@@ -7,6 +7,7 @@
 
 #include "IterativeSolver.h"
 #include "Response.h"
+#include "SubKKT.h"
 
 #include <Eigen/Sparse>
 #include <Eigen/SparseCholesky>
@@ -56,7 +57,8 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	
 	// response matrix
 	typedef Response response_type;
-	response_type::SPtr response;
+    response_type::SPtr response;
+    SubKKT sub;
 	
 	// mapping matrix response 
     typedef Response::cmat cmat;

@@ -1,6 +1,6 @@
 #include <plugins/Compliant/numericalsolver/MinresSolver.h>
-#include <plugins/Compliant/numericalsolver/LDLTSolver.h>
-#include <plugins/Compliant/numericalsolver/LDLTResponse.h>
+#include <plugins/Compliant/numericalsolver/EigenSparseSolver.h>
+#include <plugins/Compliant/numericalsolver/EigenSparseResponse.h>
 #include <plugins/Compliant/Compliant_test/Compliant_test.h>
 #include <plugins/Compliant/odesolver/CompliantImplicitSolver.h>
 #include <SofaExplicitOdeSolver/EulerSolver.h>

@@ -4,10 +4,10 @@ Qt.include("SofaCommonScript.js")
 
 //////////////////// UI
 
-var Ui = new InstanciateComponent("qrc:/SofaBasics/UISettings.qml");
+var Ui = new InstanciateURLComponent("qrc:/SofaBasics/UISettings.qml");
 
 //////////////////// RECENT
 
-var Recent = new InstanciateComponent("qrc:/SofaBasics/RecentSettings.qml");
+var Recent = new InstanciateURLComponent("qrc:/SofaBasics/RecentSettings.qml");
 
 ////////////////////

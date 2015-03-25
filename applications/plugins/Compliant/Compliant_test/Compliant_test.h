@@ -47,8 +47,8 @@
 #include <SofaBoundaryCondition/FixedConstraint.h>
 
 #include "../odesolver/CompliantImplicitSolver.h"
-#include "../numericalsolver/LDLTSolver.h"
-#include "../numericalsolver/LDLTResponse.h"
+#include "../numericalsolver/EigenSparseSolver.h"
+#include "../numericalsolver/EigenSparseResponse.h"
 #include "../compliance/UniformCompliance.h"
 #include <SofaDeformable/StiffSpringForceField.h>
 

@@ -27,8 +27,7 @@
 #include <fstream>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/Base.h>
+//#include <sofa/core/topology/BaseMeshTopology.h>
 //#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
 //#endif
@@ -99,14 +98,13 @@ bool DistanceGrid::release()
 
 DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
-    sofa::core::objectmodel::Base* base;
     double absscale=fabs(scale);
     if (filename == "#cube")
     {
         float dim = (float)scale;
         int np = 5;
         Coord bbmin(-dim, -dim, -dim), bbmax(dim,dim,dim);
-        //base->sout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<base->sendl;
+        //std::cout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<std::endl;
         if (pmin[0]<=pmax[0])
         {
             pmin = bbmin;
@@ -123,12 +121,12 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
                 if (bbmax[c] > pmax[c]) pmax[c] = bbmax[c];
             }
         }
-        //base->sout << "Creating cube distance grid in <"<<pmin<<">-<"<<pmax<<">"<<base->sendl;
+        //std::cout << "Creating cube distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         grid->calcCubeDistance(dim, np);
         if (sampling)
             grid->sampleSurface(sampling);
-        //base->sout << "Distance grid creation DONE."<< base->sendl;
+        //std::cout << "Distance grid creation DONE."<< std::endl;
         return grid;
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")
@@ -156,14 +154,14 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
         flowvr::render::Mesh mesh;
         if (!mesh.load(filename.c_str()))
         {
-            base->serr << "ERROR loading FlowVR mesh file "<<filename<<base->sendl;
+            std::cerr << "ERROR loading FlowVR mesh file "<<filename<<std::endl;
             return NULL;
         }
         //std::cout << "bbox = "<<mesh.bb<<std::endl;
 
         if (!mesh.getAttrib(flowvr::render::Mesh::MESH_DISTMAP))
         {
-            base->serr << "ERROR: FlowVR mesh "<<filename<<" does not contain distance information. Please use flowvr-distmap."<<base->sendl;
+            std::cerr << "ERROR: FlowVR mesh "<<filename<<" does not contain distance information. Please use flowvr-distmap."<<std::endl;
             return NULL;
         }
         nx = mesh.distmap->nx;
@@ -173,7 +171,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
         ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f((float)(nx-1),(float)(ny-1),(float)(nz-1)))*(float)absscale;
         pmin = Coord(fpmin.ptr());
         pmax = Coord(fpmax.ptr());
-        //base->sout << "Copying "<<nx<<"x"<<ny<<"x"<<nz<<" distance grid in <"<<pmin<<">-<"<<pmax<<">"<<base->sendl;
+        //std::cout << "Copying "<<nx<<"x"<<ny<<"x"<<nz<<" distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         for (int i=0; i< grid->nxnynz; i++)
             grid->dists[i] = mesh.distmap->data[i]*scale;
@@ -187,7 +185,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
                 if (mesh.getGP0(i) >= 0)
                     ++nbpos;
             }
-            //base->sout << "Copying "<<nbpos<<" mesh vertices."<<base->sendl;
+            //std::cout << "Copying "<<nbpos<<" mesh vertices."<<std::endl;
             grid->meshPts.resize(nbpos);
             int p = 0;
             for (int i=0; i<mesh.nbg(); i++)
@@ -200,7 +198,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
         else
         {
             int nbpos = mesh.nbp();
-            //base->sout << "Copying "<<nbpos<<" mesh vertices."<<base->sendl;
+            //std::cout << "Copying "<<nbpos<<" mesh vertices."<<std::endl;
             grid->meshPts.resize(nbpos);
             for (int i=0; i<nbpos; i++)
                 grid->meshPts[i] = Coord(mesh.getPP(i).ptr())*absscale;
@@ -212,7 +210,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
         }
         else
             grid->computeBBox();
-        //base->sout<< "Distance grid creation DONE."<<base->sendl;
+        //std::cout<< "Distance grid creation DONE."<<std::endl;
         return grid;
     }
 //#endif
@@ -221,7 +219,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
         const sofa::helper::vector<Vector3> & vertices = mesh->getVertices();
 
-        //base->sout <<"Computing bbox."<< base->sendl;
+        //std::cout <<"Computing bbox."<< std::endl;
 
         Coord bbmin, bbmax;
         if (!vertices.empty())
@@ -237,7 +235,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
             bbmin *= absscale;
             bbmax *= absscale;
         }
-        //base->sout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<base->sendl;
+        //std::cout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<std::endl;
 
         if (pmin[0]<=pmax[0])
         {
@@ -255,21 +253,21 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
                 if (bbmax[c] > pmax[c]) pmax[c] = bbmax[c];
             }
         }
-        //base->sout << "Creating distance grid in <"<<pmin<<">-<"<<pmax<<">"<<base->sendl;
+        //std::cout << "Creating distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
-        //base->sout << "Computing distance field."<<base->sendl;
+        //std::cout << "Computing distance field."<<std::endl;
         grid->calcDistance(mesh, scale);
         if (sampling)
             grid->sampleSurface(sampling);
         else
         {
-            //base->sout << "Copying "<<vertices.size()<<" mesh vertices."<<base->sendl;
+            //std::cout << "Copying "<<vertices.size()<<" mesh vertices."<<std::endl;
             grid->meshPts.resize(vertices.size());
             for(unsigned int i=0; i<vertices.size(); i++)
                 grid->meshPts[i] = vertices[i]*absscale;
         }
         grid->computeBBox();
-        //base->sout << "Distance grid creation DONE."<<base->sendl;
+        //std::cout << "Distance grid creation DONE."<<std::endl;
         delete mesh;
         return grid;
     }

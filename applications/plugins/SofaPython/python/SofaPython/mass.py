@@ -11,7 +11,7 @@ class RigidMassInfo:
         self.diagonal_inertia=[0.,0.,0.]
         self.inertia_rotation=Quaternion.id()
 
-    def setFromMesh(self, filepath, density = 1, scale3d=[1,1,1]):
+    def setFromMesh(self, filepath, density = 1000, scale3d=[1,1,1]):
         rigidInfo = Sofa.generateRigid( filepath, density, scale3d[0], scale3d[1], scale3d[2] )
         self.mass = rigidInfo[0]
         self.com = rigidInfo[1:4]

@@ -634,7 +634,6 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             M2I->f_nbMeshes.setValue(1);
                             M2I->createInputMeshesData();
                             M2I->backgroundValue.setValue(0);
-                            M2I->closingValue.setValue(1);
                             engine::MeshToImageEngine<defaulttype::ImageB>::SeqValues values(1,1);
                             (*M2I->vf_values[0]).setValue(values);
                             (*M2I->vf_positions[0]).setParent( &currentMechanicalObject->x );
@@ -669,7 +668,6 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                 M2I->rotateImage.setValue(false);
                                 M2I->f_nbMeshes.setValue(1);
                                 M2I->createInputMeshesData();
-                                M2I->closingValue.setValue(0);
 
                                 std::stringstream nameStream(meshName);
                                 if(meshName.empty())
