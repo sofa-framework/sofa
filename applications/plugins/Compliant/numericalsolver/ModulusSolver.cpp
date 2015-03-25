@@ -10,7 +10,7 @@
 #include "../constraint/UnilateralConstraint.h"
 
 #include <Eigen/SparseCholesky>
-#include "SubKKT.h"
+#include "SubKKT.inl"
 
 using std::cerr;
 using std::endl;
