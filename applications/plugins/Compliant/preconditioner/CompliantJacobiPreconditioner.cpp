@@ -7,15 +7,13 @@ namespace component {
 namespace linearsolver {
 
 
-SOFA_DECL_CLASS(CompliantJacobiPreconditioner);
+SOFA_DECL_CLASS(CompliantJacobiPreconditioner)
 int CompliantJacobiPreconditionerClass = core::RegisterObject("Jacobi preconditioner").add< CompliantJacobiPreconditioner >();
 
 
 CompliantJacobiPreconditioner::CompliantJacobiPreconditioner()
     : BasePreconditioner()
-{
-
-}
+{}
 
 void CompliantJacobiPreconditioner::compute( const AssembledSystem::mat& H )
 {
