@@ -50,6 +50,15 @@ IHM2<PFP>::IHM2(MAP& map) :
 
 }
 
+
+template <typename PFP>
+IHM2<PFP>::~IHM2()
+{
+    delete vertexVertexFunctor;
+    delete edgeVertexFunctor;
+    delete faceVertexFunctor;
+}
+
 /***************************************************
  *               CELLS INFORMATION                 *
  ***************************************************/
@@ -61,7 +70,7 @@ unsigned int IHM2<PFP>::edgeLevel(Dart d)
     unsigned int ld = m_map.getDartLevel(d);
 //	unsigned int ldd = m_dartLevel[phi2(d)] ;	// the level of an edge is the maximum of the
     unsigned int ldd = m_map.getDartLevel(m_map.phi1(d));
-    return ld < ldd ? ldd : ld ;
+    return std::max(ld,ldd);
 }
 
 template <typename PFP>

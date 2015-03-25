@@ -12,30 +12,41 @@ GridLayout {
     rowSpacing: 1
 
     property Scene scene
-    property var sceneData
+    property QtObject sceneData
     onSceneDataChanged: updateObject();
 
     readonly property alias name:       dataObject.name
+    readonly property alias description:dataObject.description
     readonly property alias type:       dataObject.type
+    readonly property alias group:      dataObject.group
     readonly property alias properties: dataObject.properties
     readonly property alias value:      dataObject.value
     readonly property alias modified:   dataObject.modified
 
     property bool readOnly: false
+    property bool showName: true
+    property bool showLinkButton: true
+    property bool showTrackButton: true
+    property alias track: trackButton.checked
 
     QtObject {
         id: dataObject
 
         property bool initing: true
+        property QtObject data
         property string name
+        property string description
         property string type
+        property string group
         property var properties
+        property string link
         property var value
         property bool modified: false
 
-        property bool readOnly: initing || root.readOnly || properties.readOnly || track.checked || link.checked
+        property bool readOnly: initing || root.readOnly || properties.readOnly || trackButton.checked || linkButton.checked
 
         onValueChanged: modified = true
+        onModifiedChanged: if(modified && properties.autoUpdate) root.updateData();
     }
 
     property int nameLabelWidth: -1
@@ -49,9 +60,13 @@ GridLayout {
 
         dataObject.initing      = true;
 
+        dataObject.data         = sceneData;
         dataObject.name         = object.name;
+        dataObject.description  = object.description;
         dataObject.type         = object.type;
+        dataObject.group        = object.group;
         dataObject.properties   = object.properties;
+        dataObject.link         = object.link;
         dataObject.value        = object.value;
 
         dataObject.initing      = false;
@@ -65,46 +80,71 @@ GridLayout {
 
         sceneData.setValue(dataObject.value);
         updateObject();
+    }
 
-        dataObject.modified = false;
+    function updateLink() {
+        if(!sceneData)
+            return;
+
+        sceneData.setLink(linkTextField.visible ? linkTextField.text : "");
+        updateObject();
     }
 
     Text {
         id: nameLabel
-        text: name + " "
         Layout.preferredWidth: -1 === nameLabelWidth ? implicitWidth : nameLabelWidth
+        Layout.alignment: Qt.AlignTop
+        visible: root.showName
+        text: dataObject.name + " "
+        font.italic: true
+
+        ToolTip {
+            anchors.fill: parent
+            description: dataObject.description
+        }
     }
 
-    Column {
+    ColumnLayout {
         Layout.fillWidth: true
+        Layout.fillHeight: true
+        Layout.alignment: Qt.AlignTop
 
         RowLayout {
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.fillWidth: true
+            visible: 0 !== dataObject.name.length && (linkButton.checked || (0 !== dataObject.link.length && !root.showLinkButton))
+            spacing: 0
 
             TextField {
                 id: linkTextField
                 Layout.fillWidth: true
-                visible: link.checked
-                placeholderText: "Link: @./path/component.data"
+                placeholderText: "Link: @./path/component." + dataObject.name
+                textColor: 0 === dataObject.link.length ? "black" : "green"
+
+                onTextChanged: updateLink();
             }
-/*
+
             Image {
-                source: "qrc:/icon/ok.png"
+                Layout.preferredWidth: 16
+                Layout.preferredHeight: Layout.preferredWidth
+                source: 0 === dataObject.link.length ? "qrc:/icon/invalid.png" : "qrc:/icon/correct.png"
             }
-*/
         }
 
         Loader {
             id: loader
-            anchors.left: parent.left
-            anchors.right: parent.right
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             asynchronous: false
 
             Component.onCompleted: createItem();
             Connections {
                 target: root
-                onSceneDataChanged: loader.createItem();
+                onSceneDataChanged: {
+                    if(root.sceneData)
+                        loader.createItem();
+                    else
+                        loader.destroyItem();
+                }
             }
 
             function createItem() {
@@ -119,53 +159,76 @@ GridLayout {
                             type = "array";
                 }
 
+                //console.log(type, name);
+
                 if("undefined" === type) {
                     loader.source = "";
                     console.warn("Type unknown for data: " + name);
                 } else {
-                    //console.log(type, name);
-                    loader.setSource("qrc:/SofaDataTypes/DataType_" + type + ".qml", {"dataObject": dataObject});
+                    loader.setSource("qrc:/SofaDataTypes/DataType_" + type + ".qml", {"dataObject": dataObject, "scene": scene, "sceneData": sceneData});
                     if(Loader.Ready !== loader.status)
                         loader.sourceComponent = dataTypeNotSupportedComponent;
                 }
 
                 dataObject.modified = false;
             }
+
+            function destroyItem() {
+                loader.setSource("");
+
+                dataObject.modified = false;
+            }
         }
     }
 
-    Button {
-        id: link
-        Layout.preferredWidth: 14
+    Item {
+        Layout.preferredWidth: 20
         Layout.preferredHeight: Layout.preferredWidth
-        checkable: true
+        Layout.alignment: Qt.AlignTop
+        visible: root.showLinkButton
 
-        Image {
+        Button {
+            id: linkButton
             anchors.fill: parent
-            source: "qrc:/icon/link.png"
+            anchors.margins: 3
+            checkable: true
+
+            ToolTip {
+                anchors.fill: parent
+                description: "Link the data with another"
+            }
+
+            onClicked: updateLink()
+
+            Image {
+                anchors.fill: parent
+                source: "qrc:/icon/link.png"
+            }
         }
     }
 
     CheckBox {
-        id: track
+        id: trackButton
         Layout.preferredWidth: 20
         Layout.preferredHeight: Layout.preferredWidth
+        Layout.alignment: Qt.AlignTop
+        visible: root.showTrackButton && 0 !== dataObject.name.length
         checked: false
 
         onClicked: root.updateObject();
 
-        // update every 50ms during simulation
+        ToolTip {
+            anchors.fill: parent
+            description: "Track the data value during simulation"
+        }
+
         Timer {
             interval: 50
             repeat: true
-            running: scene.play && track.checked
-            onTriggered: root.updateObject();
-        }
+            running: trackButton.checked
 
-        // update at each step during step-by-step simulation
-        Connections {
-            target: !scene.play && track.checked ? scene : null
-            onStepEnd: root.updateObject();
+            onRunningChanged: root.updateObject();
+            onTriggered: root.updateObject();
         }
     }
 
@@ -173,6 +236,11 @@ GridLayout {
         visible: dataObject.modified
         text: "Undo"
         onClicked: root.updateObject();
+
+        ToolTip {
+            anchors.fill: parent
+            description: "Undo changes in the data value"
+        }
     }
 
     Button {
@@ -181,6 +249,11 @@ GridLayout {
         visible: dataObject.modified
         text: "Update"
         onClicked: root.updateData();
+
+        ToolTip {
+            anchors.fill: parent
+            description: "Update the data value"
+        }
     }
 
     /*Image {

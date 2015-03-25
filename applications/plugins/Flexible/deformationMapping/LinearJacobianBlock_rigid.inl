@@ -42,6 +42,29 @@ namespace defaulttype
 
 
 
+template<class Real, class Vec, unsigned size>
+Mat<size, size, Real> hat(const Vec& v)
+{
+    Mat<size, size, Real> res;
+
+    res[0][0] = 0;
+    res[1][1] = 0;
+    res[2][2] = 0;
+
+    res[0][1] = -v.z();
+    res[1][0] = v.z();
+
+    res[0][2] = v.y();
+    res[2][0] = -v.y();
+
+    res[1][2] = -v.x();
+    res[2][1] = v.x();
+
+    return res;
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////////////
 ////  Rigid3 -> Vec3
 //////////////////////////////////////////////////////////////////////////////////
@@ -124,9 +147,26 @@ public:
         return J;
     }
 
-    // TO DO : implement this !!
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    KBlock getK(const OutDeriv& childForce)
+    {
+        static const unsigned rotation_dimension = In::deriv_total_size - In::spatial_dimensions;
+
+        // will only work for 3d rigids
+        Mat<rotation_dimension,rotation_dimension,Real> block = hat<Real,OutDeriv,rotation_dimension>( childForce ) * hat<Real,OutCoord,rotation_dimension>( Pa );
+        KBlock K;
+        for( unsigned i=0; i<rotation_dimension; ++i )
+            for( unsigned j=0; j<rotation_dimension; ++j )
+                K[dim+i][dim+j] = block[i][j];
+        return K;
+    }
+
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        typename In::AngularVector& parentTorque = getVOrientation(df);
+        const typename In::AngularVector& parentRotation = getVOrientation(dx);
+        const typename In::AngularVector& torqueDecrement = In::crosscross( childForce, parentRotation, Pa ) * kfactor;
+        parentTorque -=  torqueDecrement;
+    }
 };
 
 
@@ -212,9 +252,26 @@ public:
         return J;
     }
 
-    // TO DO : implement this !!
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    KBlock getK(const OutDeriv& childForce)
+    {
+        static const unsigned rotation_dimension = In::deriv_total_size - In::spatial_dimensions;
+
+        // will only work for 3d rigids
+        Mat<rotation_dimension,rotation_dimension,Real> block = hat<Real,OutDeriv,rotation_dimension>( childForce ) * hat<Real,OutCoord,rotation_dimension>( Pa );
+        KBlock K;
+        for( unsigned i=0; i<rotation_dimension; ++i )
+            for( unsigned j=0; j<rotation_dimension; ++j )
+                K[dim+i][dim+j] = block[i][j];
+        return K;
+    }
+
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    {
+        typename In::AngularVector& parentTorque = getVOrientation(df);
+        const typename In::AngularVector& parentRotation = getVOrientation(dx);
+        const typename In::AngularVector& torqueDecrement = In::crosscross( childForce, parentRotation, Pa ) * kfactor;
+        parentTorque -=  torqueDecrement;
+    }
 };
 
 

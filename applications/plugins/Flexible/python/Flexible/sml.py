@@ -5,7 +5,8 @@ import Flexible.API
 def insertDeformableWithSkinning(parentNode, deformableModel, bonesPath, bonesId):
     print "deformable:", deformableModel.name
     deformable=Flexible.API.Deformable(parentNode, deformableModel.name)
-    deformable.setMesh(deformableModel.position, deformableModel.mesh.source)
+    # TODO: handle multiple meshes
+    deformable.addMesh(deformableModel.mesh[0].source,deformableModel.position)
     deformable.addVisual()
     
     if len(deformableModel.skinnings)>0:

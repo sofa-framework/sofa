@@ -300,11 +300,11 @@ bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaultt
 {
 
     PointInfo & Pi = m_pointInfo[pointIndex];
-    if(&Pi==NULL)
-    {
-        serr<<"Pi == NULL"<<sendl;
-        return true;
-    }
+//    if(&Pi==NULL)
+//    {
+//        serr<<"Pi == NULL"<<sendl;
+//        return true;
+//    }
 
     if(this->isRigid())
     {

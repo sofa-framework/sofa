@@ -2,6 +2,7 @@ Actor 1.0 Actor.qml
 Camera 1.0 Camera.qml
 CollapsibleGroupBox 1.0 CollapsibleGroupBox.qml
 ContentItem 1.0 ContentItem.qml
+ToolTip 1.0 ToolTip.qml
 Data 1.0 Data.qml
 DataListModel 1.0 DataListModel.qml
 DefaultMenuBar 1.0 DefaultMenuBar.qml

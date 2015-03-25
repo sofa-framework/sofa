@@ -8,6 +8,7 @@ import SofaPython.Tools
 import SofaPython.units
 from SofaPython import Quaternion
 from SofaPython.Tools import listToStr as concat
+import SofaPython.mass
 import SofaPython.sml
 import Flexible.sml
 
@@ -15,36 +16,48 @@ def insertRigid(parentNode, rigidModel, param=None):
     """ create a StructuralAPI.RigidBody from the rigidModel """
     print "rigid:", rigidModel.name
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
-    if not rigidModel.density is None and not rigidModel.mesh is None:
-        # compute physics using mesh and density
-        rigid.setFromMesh(rigidModel.mesh.source, density=rigidModel.density, offset=rigidModel.position)
-    elif not rigidModel.mesh is None and (rigidModel.mesh.format=="obj" or rigidModel.mesh.format=="vtk"):
-        # no density but a mesh, let's compute physics whith this information plus specified mass if any
-        rigid.setFromMesh(rigidModel.mesh.source, density=1, offset=rigidModel.position)
-        mass=1.
-        if not rigidModel.mass is None:
-            mass = rigidModel.mass
-        inertia = []
-        for inert,m in zip(rigid.mass.inertia, rigid.mass.mass):
-            for i in inert:
-                inertia.append( i/m[0]*mass)
-        rigid.mass.inertia = concat(inertia)
-        rigid.mass.mass = mass
+
+    # check mesh formats are supported by generateRigid
+    meshFormatSupported = True
+    for mesh in rigidModel.mesh :
+        meshFormatSupported &= rigidModel.mesh.format=="obj" or rigidModel.mesh.format=="vtk"
+
+    if len(rigidModel.mesh)!=0 and meshFormatSupported:
+        massinfo = SofaPython.mass.RigidMassInfo()
+
+        density = SofaPython.units.density_from_SI(rigidModel.density) if not rigidModel.density is None else SofaPython.units.density_from_SI(1000.)
+        for mesh in rigidModel.mesh :
+            mi = SofaPython.mass.RigidMassInfo()
+            mi.setFromMesh(mesh.source, density=density)
+            massinfo+=mi
+        rigid.setFromRigidInfo(massinfo, offset=rigidModel.position , inertia_forces = False )    # TODO: handle inertia_forces ?
+
+        if rigidModel.density is None and not rigidModel.mass is None :
+            # no density but a mesh let's normalise computed mass with specified mass
+            mass= SofaPython.units.mass_from_SI(rigidModel.mass)
+            inertia = []
+            for inert,m in zip(rigid.mass.inertia, rigid.mass.mass):
+                for i in inert:
+                    inertia.append( i/m[0]*mass)
+            rigid.mass.inertia = concat(inertia)
+            rigid.mass.mass = mass
     else:
         # no mesh, get mass/inertia if present, default to a unit sphere
-        mass=1.
+        mass=SofaPython.units.mass_from_SI(1.)
         if not rigidModel.mass is None:
             mass = rigidModel.mass
         inertia = [1,1,1] #TODO: take care of full inertia matrix, which may be given in sml, update SofaPython.mass.RigidMassInfo to diagonalize it
         if not rigidModel.inertia is None:
             inertia = rigidModel.inertia
         rigid.setManually(rigidModel.position, mass, inertia)
+
     if not param is None:
         rigid.dofs.showObject = param.showRigid
         rigid.dofs.showObjectScale = SofaPython.units.length_from_SI(param.showRigidScale)
     # visual
-    if not rigidModel.mesh is None:
-        cm = rigid.addCollisionMesh(rigidModel.mesh.source)
+
+    for mesh in rigidModel.mesh :
+        cm = rigid.addCollisionMesh(mesh.source)
         rigid.visual = cm.addVisualModel()
        
     return rigid
