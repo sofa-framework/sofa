@@ -1,6 +1,8 @@
 #include <QDebug>
 #include "ImagePlaneModel.h"
 
+#include <sofa/core/objectmodel/BaseData.h>
+
 using cimg_library::CImg;
 
 namespace sofa
@@ -44,7 +46,7 @@ int ImagePlaneModel::length(int axis) const
 
 BaseImagePlaneWrapper* ImagePlaneModel::imagePlane() const
 {
-    const BaseData* data = mySceneData->data();
+    const core::objectmodel::BaseData* data = mySceneData->data();
     if(!data)
         myImagePlane = 0;
 
@@ -79,7 +81,7 @@ void ImagePlaneModel::handleSceneDataChange()
     if(!mySceneData)
         return;
 
-    const BaseData* data = mySceneData->data();
+    const core::objectmodel::BaseData* data = mySceneData->data();
     if(!data)
         return;
 
