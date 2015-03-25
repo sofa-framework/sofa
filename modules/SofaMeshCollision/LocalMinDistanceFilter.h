@@ -57,12 +57,12 @@ public:
     InfoFilter(LocalMinDistanceFilter *lmdFilters)
         :	m_revision(-1),
             m_lmdFilters(lmdFilters)
-    {};
+    {}
 
     /**
      * @brief Default destructor.
      */
-    virtual ~InfoFilter() {};
+    virtual ~InfoFilter() {}
 
     /**
      * @brief Returns the validity of a detected contact according to the InfoFilter.
@@ -83,16 +83,16 @@ public:
     /**
      * @brief Returns the LocalMinDistanceFilters object that contains this InfoFilter.
      */
-    const LocalMinDistanceFilter *getLMDFilters(void)  {return m_lmdFilters;};
+    const LocalMinDistanceFilter *getLMDFilters(void)  {return m_lmdFilters;}
 
     /**
      * @brief Sets the LocalMinDistanceFilters object that contains this InfoFilter.
      */
-    void setLMDFilters(const LocalMinDistanceFilter *lmdFilters) {m_lmdFilters = lmdFilters;};
+    void setLMDFilters(const LocalMinDistanceFilter *lmdFilters) {m_lmdFilters = lmdFilters;}
 
-    void setBaseMeshTopology( core::topology::BaseMeshTopology *bmt) {base_mesh_topology = bmt;};
+    void setBaseMeshTopology( core::topology::BaseMeshTopology *bmt) {base_mesh_topology = bmt;}
 
-    void setPositionFiltering(const sofa::helper::vector< sofa::defaulttype::Vector3 > *x) {position_filtering = x;};
+    void setPositionFiltering(const sofa::helper::vector< sofa::defaulttype::Vector3 > *x) {position_filtering = x;}
 
 
 protected:
@@ -152,42 +152,42 @@ public:
     /**
      * @brief Get filtering cone extension angle.
      */
-    double getConeExtension(void) const {return m_coneExtension.getValue();};
+    double getConeExtension(void) const {return m_coneExtension.getValue();}
 
     /**
      * @brief Set filtering cone extension angle.
      */
-    void setConeExtenstion(const double coneExtension) {m_coneExtension.setValue(coneExtension);};
+    void setConeExtenstion(const double coneExtension) {m_coneExtension.setValue(coneExtension);}
 
     /**
      * @brief Get the minimal filtering cone angle value, independently from geometry.
      */
-    double getConeMinAngle(void) const {return m_coneMinAngle.getValue();};
+    double getConeMinAngle(void) const {return m_coneMinAngle.getValue();}
 
     /**
      * @brief Set the minimal filtering cone angle value, independently from geometry.
      */
-    void setConeMinAngle(const double coneMinAngle) {m_coneMinAngle.setValue(coneMinAngle);};
+    void setConeMinAngle(const double coneMinAngle) {m_coneMinAngle.setValue(coneMinAngle);}
 
     /**
      * @brief Returns the current CollisionModel update index.
      */
-    int getRevision(void) const {return m_revision;};
+    int getRevision(void) const {return m_revision;}
 
     /**
      * @brief Sets the current CollisionModel update index.
      */
-    void setRevision(const int revision) {m_revision = revision;};
+    void setRevision(const int revision) {m_revision = revision;}
 
     /**
      * @brief Returns true if the CollisionElement is mapped to a rigid mechanical state.
      */
-    bool isRigid(void) const {return m_rigid.getValue();};
+    bool isRigid(void) const {return m_rigid.getValue();}
 
     /**
      * @brief Sets the rigid property, true if the CollisionElement is mapped to a rigid mechanical state.
      */
-    void setRigid(bool rigid) {m_rigid.setValue(rigid);};
+    void setRigid(bool rigid) {m_rigid.setValue(rigid);}
 
     /**
      * @brief Increases LMDFilter revision number to notify a CollisionModel modification.

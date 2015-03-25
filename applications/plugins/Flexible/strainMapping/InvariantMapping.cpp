@@ -38,7 +38,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(InvariantMapping);
+SOFA_DECL_CLASS(InvariantMapping)
 
 using namespace defaulttype;
 

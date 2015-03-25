@@ -38,7 +38,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(PrincipalStretchesMapping);
+SOFA_DECL_CLASS(PrincipalStretchesMapping)
 
 using namespace defaulttype;
 
