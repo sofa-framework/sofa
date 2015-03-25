@@ -1,9 +1,16 @@
 import math
 import os.path
+import pickle
+import Sofa
+
+import Flexible.IO
+import sys
 
 import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
+
+__file = __file__.replace('\\', '/')  # windows compatible filename
 
 def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=None, labelImage=None, labels=None, assemble=True):
     """ insert the correct Linear(Multi)Mapping
@@ -71,18 +78,46 @@ class Deformable:
             self.mapping = self.node.createObject("IdentityMapping", name="mapping")
 
 class AffineMass:
-    def __init__(self, node):
-        self.node = node
+    def __init__(self, node, dofAffineNode):
+        self.node = node # a children node of all nodes and shape function
+        self.dofAffineNode = dofAffineNode # where the mechanical state is located
 
-    def massFromDensityImage(self, dofRigidNode, dofAffineNode, densityImage, lumping='0'):
+    def massFromDensityImage(self, dofRigidNode, densityImage, lumping='0'):
         node = self.node.createChild('Mass')
         dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
-        insertLinearMapping(node, dofRigidNode, dofAffineNode, dof, assemble=False)
-        # MassFromDensity on branching images does not exist yet
-        densityImage.addBranchingToImage('0')
-        self.massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+'.transform', lumping=lumping)
-        dofAffineNode.createObject('AffineMass', massMatrix="@"+SofaPython.Tools.getObjectPath(self.massFromDensity)+".massMatrix")
+        insertLinearMapping(node, dofRigidNode, self.dofAffineNode, dof, assemble=False)
+        densityImage.addBranchingToImage('0') # MassFromDensity on branching images does not exist yet
+        massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+'.transform', lumping=lumping)
+        self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix="@"+SofaPython.Tools.getObjectPath(massFromDensity)+".massMatrix")
 
+    def read(self, directory):
+#        with open(os.path.join(directory,"affineMass.pkl"), "r") as f:
+#            data = pickle.load(f)
+#            self.dofAffineNode.createObject('AffineMass', name='mass', massMatrix=data.mass)
+#            print 'Imported Affine Mass from '+directory+"/affineMass.pkl"
+        sys.path.insert(0, directory)
+        __import__('affineMass').loadMass(self.dofAffineNode)
+        print 'Imported Affine Mass from '+directory+"/affineMass.py"
+
+    class InternalData:
+        def __init__(self,node):
+            self.mass = None
+
+    def write(self, directory):
+        self.dofAffineNode.createObject('PythonScriptController', filename=__file__, classname='massExporter', variables=directory)
+
+class massExporter(Sofa.PythonScriptController):
+    def bwdInitGraph(self,node):
+        directory = self.findData('variables').value[0][0]
+#        with open(os.path.join(directory,"affineMass.pkl"), "w") as f:
+#            pickle.dump(self.InternalData(node), f)
+#        print 'Exported Affine Mass in '+directory+"/affineMass.pkl";
+        Flexible.IO.export_AffineMass(node.getObject('mass'), directory+"/affineMass.py")
+        print 'Exported Affine Mass in '+directory+"/affineMass.py"
+        return 0
+    class InternalData:
+        def __init__(self,node):
+            self.mass = str(node.getObject('mass').massMatrix).replace('\n',' ')
 
 class ShapeFunction:
     """ High-level API to manipulate ShapeFunction
