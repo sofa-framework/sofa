@@ -223,11 +223,6 @@ void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps, bo
 
 SubKKT::SubKKT() {}
 
-// why this is mandatory with clang? (not with g++)
-void SubKKT::factor(Response& resp) const {
-    scoped::timer step("subsystem factor");
-    resp.factor(A);
-}
 
 void SubKKT::prod(vec& res, const vec& rhs) const {
     res.resize( size_full() );
