@@ -16,7 +16,6 @@ Scene {
 
     onStatusChanged: {
         listModel.selectedId = -1;
-
         var path = source.toString().replace("///", "/").replace("file:", "");
         switch(status) {
         case Scene.Loading:
