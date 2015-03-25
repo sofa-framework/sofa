@@ -3,6 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include "EigenSparseResponse.h"
+#include "SubKKT.inl"
 
 #include "../utils/scoped.h"
 #include "../utils/nan.h"
