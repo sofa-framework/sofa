@@ -43,6 +43,10 @@ namespace component
 namespace collision
 {
 
+
+/// I guess LMD is for Local Min Distance?
+/// What is the specificity of this approach?
+/// What are exactly doing the filters?
 class SOFA_CONSTRAINT_API LMDNewProximityIntersection : public BaseProximityIntersection
 {
 public:
