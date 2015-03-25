@@ -78,9 +78,9 @@ public:
     {}
     static void accumulateForce(Main* m);
     static void vAlloc(Main* m, VecId v);
-    static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, double f);
+    static void vOp(Main* m, VecId v, ConstVecId a, ConstVecId b, SReal f);
     static void vMultiOp(Main* m, const core::ExecParams* params, const VMultiOp& ops);
-    static double vDot(Main* m, ConstVecId a, ConstVecId b);
+    static SReal vDot(Main* m, ConstVecId a, ConstVecId b);
     static void resetForce(Main* m);
 };
 
@@ -88,9 +88,9 @@ public:
 // I know using macros is bad design but this is the only way not to repeat the code for all OpenCL types
 #define OpenCLMechanicalObject_DeclMethods(T) \
     template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params); \
-    template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, double f); \
+    template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params /* PARAMS FIRST */, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f); \
     template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params /* PARAMS FIRST */, const VMultiOp& ops); \
-    template<> inline double MechanicalObject< T >::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b); \
+    template<> inline SReal MechanicalObject< T >::vDot(const core::ExecParams* params /* PARAMS FIRST */, core::ConstVecId a, core::ConstVecId b); \
     template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params);
 
 //OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3fTypes);

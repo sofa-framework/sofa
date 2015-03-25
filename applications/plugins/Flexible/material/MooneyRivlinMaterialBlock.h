@@ -184,7 +184,7 @@ public:
         if( stabilization ) helper::Decompose<Real>::PSDProjection( _K );
     }
 
-    void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const
+    void addDForce( Deriv& df, const Deriv& dx, const SReal& kfactor, const SReal& /*bfactor*/ ) const
     {
         df.getStrain() -= _K * dx.getStrain() * kfactor;
     }
@@ -319,7 +319,7 @@ public:
         if( stabilization ) helper::Decompose<Real>::PSDProjection( _K );
     }
 
-    void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ ) const
+    void addDForce( Deriv& df, const Deriv& dx, const SReal& kfactor, const SReal& /*bfactor*/ ) const
     {
         df.getStrain() -= _K * dx.getStrain() * kfactor;
     }
@@ -424,7 +424,7 @@ public:
         f.getStrain()[2]+=K02*x.getStrain()[0] + K12*x.getStrain()[1] - bulkVol*(x.getStrain()[2]-1.);
     }
 
-    void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ ) const
+    void addDForce( Deriv&   df, const Deriv&   dx, const SReal& kfactor, const SReal& /*bfactor*/ ) const
     {
         df.getStrain()[0]+=K02*dx.getStrain()[2]*kfactor;
         df.getStrain()[1]+=K12*dx.getStrain()[2]*kfactor;

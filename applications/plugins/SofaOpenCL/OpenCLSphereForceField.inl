@@ -85,7 +85,7 @@ void SphereForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::Mech
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    SReal kFactor = mparams->kFactor();
 
     df.resize(dx.size());
     double stiff = data.sphere.stiffness;
@@ -120,7 +120,7 @@ void SphereForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce(const core::Mec
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    SReal kFactor = mparams->kFactor();
 
     df.resize(dx.size());
     double stiff = data.sphere.stiffness;

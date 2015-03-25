@@ -42,14 +42,14 @@ public:
     /// Compute the compliance matrix
     virtual void reinit();
 
-    virtual double getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x ) const;
+    virtual SReal getPotentialEnergy( const core::MechanicalParams* mparams, const DataVecCoord& x ) const;
 
     /// Return a pointer to the compliance matrix
     virtual const sofa::defaulttype::BaseMatrix* getComplianceMatrix(const core::MechanicalParams*);
 
-    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset );
+    virtual void addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset );
 
-	virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset );
+    virtual void addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset );
 
     /// addForce does nothing when this component is processed like a compliance.
     virtual void addForce(const core::MechanicalParams *, DataVecDeriv &, const DataVecCoord &, const DataVecDeriv &);

@@ -93,9 +93,9 @@ public :
      /// indices of the DOFs the constraint is applied to
     SetIndex m_indices;
     /// data begin time when the constraint is applied
-    Data <double> m_beginConstraintTime;
+    Data <SReal> m_beginConstraintTime;
     /// data end time when the constraint is applied
-    Data <double> m_endConstraintTime;
+    Data <SReal> m_endConstraintTime;
     /// Rotation Matrix of affine transformation
     Data<RotationMatrix> m_rotation;
     /// Quaternion of affine transformation (for rigid)

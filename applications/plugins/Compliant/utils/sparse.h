@@ -20,7 +20,7 @@ void fill(Eigen::SparseMatrix<U, Eigen::RowMajor>& res, unsigned nnz,
 		res.startVec( i );
 		
 		for( unsigned j = 0, n = res.cols(); j < n; ++j) {
-			double value = f(i, j);
+            U value = f(i, j);
 			if( value ) res.insertBack(i, j) = value;
 		}
 	}

@@ -167,7 +167,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int /*elementIndice*/, double stiffnessFactor)
+void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int /*elementIndice*/, SReal stiffnessFactor)
 {
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
@@ -235,7 +235,7 @@ std::string HexahedronFEMForceFieldAndMass<DataTypes>::getTemplateName() const
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, double factor)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor)
 {
     helper::WriteAccessor< DataVecDeriv > _f = f;
     helper::ReadAccessor< DataVecDeriv > _dx = dx;
@@ -340,7 +340,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addGravityToV(const core::Mechan
     if(mparams)
     {
         VecDeriv& v = *d_v.beginEdit();
-        double dt = mparams->dt();
+        SReal dt = mparams->dt();
         for (unsigned int i=0; i<_particleMasses.size(); i++)
         {
             v[i] +=this->getContext()->getGravity()*dt;
@@ -413,7 +413,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 
 
 template<class DataTypes>
-double HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
+SReal HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
 {
     serr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<sendl; return 0.0;
 }

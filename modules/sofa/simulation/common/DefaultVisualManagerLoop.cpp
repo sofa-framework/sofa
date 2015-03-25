@@ -88,7 +88,7 @@ void DefaultVisualManagerLoop::updateStep(sofa::core::ExecParams* params)
 //    gRoot->execute<UpdateMappingVisitor>(params);
 //    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
 //    {
-//        double dt=gRoot->getDt();
+//        SReal dt=gRoot->getDt();
 //        UpdateMappingEndEvent ev ( dt );
 //        PropagateEventVisitor act ( params, &ev );
 //        gRoot->execute ( act );

@@ -45,12 +45,16 @@ namespace opencl
 SOFA_DECL_CLASS(OpenCLUniformMass)
 
 int UniformMassOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
+#ifndef SOFA_DOUBLE
         .add< component::mass::UniformMass<OpenCLVec3fTypes,float> >()
         .add< component::mass::UniformMass<OpenCLVec3f1Types,float> >()
         .add< component::mass::UniformMass<OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass> >()
+#endif
+#ifndef SOFA_FLOAT
         .add< component::mass::UniformMass<OpenCLVec3dTypes,double> >()
         .add< component::mass::UniformMass<OpenCLVec3d1Types,double> >()
         .add< component::mass::UniformMass<OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass> >()
+#endif
         ;
 
 

@@ -87,7 +87,7 @@ bool PointSetTopologyContainer::hasPos() const
     return !initPoints.empty();
 }
 
-double PointSetTopologyContainer::getPX(int i) const
+SReal PointSetTopologyContainer::getPX(int i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -96,7 +96,7 @@ double PointSetTopologyContainer::getPX(int i) const
         return 0.0;
 }
 
-double PointSetTopologyContainer::getPY(int i) const
+SReal PointSetTopologyContainer::getPY(int i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
@@ -105,7 +105,7 @@ double PointSetTopologyContainer::getPY(int i) const
         return 0.0;
 }
 
-double PointSetTopologyContainer::getPZ(int i) const
+SReal PointSetTopologyContainer::getPZ(int i) const
 {
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())

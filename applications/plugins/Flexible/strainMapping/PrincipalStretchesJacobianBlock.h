@@ -184,7 +184,7 @@ class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
 //        return KBlock();
 //    }
 
-//    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+//    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
 //    {
 //        if( _degenerated ) return;
 
@@ -366,7 +366,7 @@ public:
         return K;
     }
 
-    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         if( _degenerated ) return;
 

@@ -186,13 +186,13 @@ void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams*, DataV
 
 
 template<class DataTypes>
-double SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const
+SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const
 {
     const helper::vector<Spring>& springs= this->springs.getValue();
     const VecCoord& p1 =  data_x1.getValue();
     const VecCoord& p2 =  data_x2.getValue();
 
-    double ener = 0;
+    SReal ener = 0;
 
     for (unsigned int i=0; i<springs.size(); i++)
     {
@@ -210,7 +210,7 @@ double SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPar
 
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, double, unsigned int &)
+void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &)
 {
     serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
 }
@@ -434,7 +434,7 @@ void SpringForceField<DataTypes>::initGnuplot(const std::string path)
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::exportGnuplot(double time)
+void SpringForceField<DataTypes>::exportGnuplot(SReal time)
 {
     if (m_gnuplotFileEnergy!=NULL)
     {

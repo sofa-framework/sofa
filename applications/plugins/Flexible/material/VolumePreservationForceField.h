@@ -83,9 +83,9 @@ public:
         }
     }
 
-    virtual double getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const typename Inherit::DataVecCoord& x ) const
+    virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const typename Inherit::DataVecCoord& x ) const
     {
-        double e = 0;
+        SReal e = 0;
         const typename Inherit::VecCoord& _x = x.getValue();
 
         switch( f_method.getValue().getSelectedId() )

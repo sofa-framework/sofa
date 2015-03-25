@@ -419,7 +419,7 @@ public:
     /// @{
 
     /// Current time
-    double getTime() const;
+    SReal getTime() const;
 
     /// @}
 

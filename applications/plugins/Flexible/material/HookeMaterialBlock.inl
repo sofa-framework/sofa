@@ -604,7 +604,7 @@ public:
         }
     }
 
-    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor ) const
+    void addDForce( Deriv&   df , const Deriv&   dx, const SReal& kfactor, const SReal& bfactor ) const
     {
         // order 0
         hooke.applyK(df.getStrain(),dx.getStrain(),factors.vol()*kfactor);

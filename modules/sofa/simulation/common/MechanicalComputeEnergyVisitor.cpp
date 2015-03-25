@@ -54,12 +54,12 @@ MechanicalComputeEnergyVisitor::~MechanicalComputeEnergyVisitor()
 {
 }
 
-double MechanicalComputeEnergyVisitor::getKineticEnergy()
+SReal MechanicalComputeEnergyVisitor::getKineticEnergy()
 {
     return m_kineticEnergy;
 }
 
-double MechanicalComputeEnergyVisitor::getPotentialEnergy()
+SReal MechanicalComputeEnergyVisitor::getPotentialEnergy()
 {
     return m_potentialEnergy;
 }

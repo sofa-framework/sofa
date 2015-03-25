@@ -106,12 +106,12 @@ void DiagonalCompliance<DataTypes>::reinit()
 }
 
 template<class DataTypes>
-double DiagonalCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
+SReal DiagonalCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
 {
     const VecCoord& _x = x.getValue();
     unsigned int m = this->mstate->getMatrixBlockSize();
 
-    double e = 0;
+    SReal e = 0;
     for( unsigned int i=0 ; i<_x.size() ; ++i )
     {
         for( unsigned int j=0 ; j<m ; ++j )
@@ -147,14 +147,14 @@ const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getComplianc
 }
 
 template<class DataTypes>
-void DiagonalCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
+void DiagonalCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset )
 {
 //    cerr<<SOFA_CLASS_METHOD<<std::endl;
     matK.addToBaseMatrix( matrix, kFact, offset );
 }
 
 template<class DataTypes>
-void DiagonalCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset )
+void DiagonalCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset )
 {
     matB.addToBaseMatrix( matrix, bFact, offset );
 }

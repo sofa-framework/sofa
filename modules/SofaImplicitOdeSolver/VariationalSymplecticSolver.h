@@ -29,8 +29,8 @@ public:
 
     Data<double>       f_newtonError;
     Data<unsigned int> f_newtonSteps;
-	Data<double> f_rayleighStiffness;
-	Data<double> f_rayleighMass;
+    Data<SReal> f_rayleighStiffness;
+    Data<SReal> f_rayleighMass;
 	Data<bool> f_verbose;
     Data<bool> f_saveEnergyInFile;
 	Data<bool>       f_explicit;
@@ -43,7 +43,7 @@ public:
 
 	void init();
 	std::ofstream energies;
-   void solve (const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+   void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
    int cpt;
    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity

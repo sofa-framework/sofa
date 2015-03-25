@@ -167,14 +167,14 @@ void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::Mu
 }
 
 /// Apply projective constraints to the given position vector
-void MechanicalOperations::projectPosition(core::MultiVecCoordId x, double time)
+void MechanicalOperations::projectPosition(core::MultiVecCoordId x, SReal time)
 {
     setX(x);
     executeVisitor( MechanicalProjectPositionVisitor(&mparams, time, x) );
 }
 
 /// Apply projective constraints to the given velocity vector
-void MechanicalOperations::computeEnergy(double &kineticEnergy, double &potentialEnergy)
+void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy)
 {
     kineticEnergy=0;
 	potentialEnergy=0;
@@ -184,7 +184,7 @@ void MechanicalOperations::computeEnergy(double &kineticEnergy, double &potentia
 	potentialEnergy=energyVisitor->getPotentialEnergy();
 }
 /// Apply projective constraints to the given velocity vector
-void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, double time)
+void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, SReal time)
 {
     setV(v);
     executeVisitor( MechanicalProjectVelocityVisitor(&mparams, time, v) );
@@ -197,14 +197,14 @@ void MechanicalOperations::projectResponse(core::MultiVecDerivId dx, double **W)
     executeVisitor( MechanicalApplyConstraintsVisitor(&mparams, dx, W) );
 }
 
-void MechanicalOperations::addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, double factor)
+void MechanicalOperations::addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, SReal factor)
 {
     setDx(dx);
     executeVisitor( MechanicalAddMDxVisitor(&mparams, res,dx,factor) );
 }
 
 ///< res += factor M.dx
-void MechanicalOperations::integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, double dt)
+void MechanicalOperations::integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, SReal dt)
 {
     executeVisitor( MechanicalVOpVisitor(&mparams, res,x,v,dt) );
 }
@@ -259,7 +259,7 @@ void MechanicalOperations::computeDfV(core::MultiVecDerivId df, bool clear, bool
 }
 
 /// accumulate $ df += (m M + b B + k K) dx $ (given the latest propagated displacement)
-void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, double m, double b, double k, bool clear, bool accumulate)
+void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear, bool accumulate)
 {
     setDf(df);
     if (clear)
@@ -274,7 +274,7 @@ void MechanicalOperations::addMBKdx(core::MultiVecDerivId df, double m, double b
 }
 
 /// accumulate $ df += (m M + b B + k K) velocity $
-void MechanicalOperations::addMBKv(core::MultiVecDerivId df, double m, double b, double k, bool clear, bool accumulate)
+void MechanicalOperations::addMBKv(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear, bool accumulate)
 {
     core::ConstMultiVecDerivId dx = mparams.dx();
     mparams.setDx(mparams.v());
@@ -295,7 +295,7 @@ void MechanicalOperations::addMBKv(core::MultiVecDerivId df, double m, double b,
 
 
 /// Add dt*Gravity to the velocity
-void MechanicalOperations::addSeparateGravity(double dt, core::MultiVecDerivId result)
+void MechanicalOperations::addSeparateGravity(SReal dt, core::MultiVecDerivId result)
 {
     mparams.setDt(dt);
     setV(result);
@@ -317,7 +317,7 @@ void MechanicalOperations::computeContactDf(core::MultiVecDerivId df)
     //finish();
 }
 
-void MechanicalOperations::computeAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
+void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
     MultiVecDerivId f( VecDerivId::force() );
     setF(f);
@@ -335,7 +335,7 @@ void MechanicalOperations::computeAcc(double t, core::MultiVecDerivId a, core::M
     projectResponse(a);
 }
 
-void MechanicalOperations::computeForce(double t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v, bool neglectingCompliance)
+void MechanicalOperations::computeForce(SReal t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v, bool neglectingCompliance)
 {
     setF(f);
     setX(x);
@@ -350,7 +350,7 @@ void MechanicalOperations::computeForce(double t, core::MultiVecDerivId f, core:
     projectResponse(f);
 }
 
-void MechanicalOperations::computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
+void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
     MultiVecDerivId f( VecDerivId::force() );
     setF(f);
@@ -376,7 +376,7 @@ using sofa::core::behavior::LinearSolver;
 using sofa::core::objectmodel::BaseContext;
 
 /*
-void MechanicalOperations::solveConstraint(double dt, MultiVecDerivId id, core::ConstraintParams::ConstOrder order )
+void MechanicalOperations::solveConstraint(SReal dt, MultiVecDerivId id, core::ConstraintParams::ConstOrder order )
 {
   core::ConstraintParams cparams(mparams    // PARAMS FIRST //, order);
   mparams.setDt(dt);
@@ -385,7 +385,7 @@ void MechanicalOperations::solveConstraint(double dt, MultiVecDerivId id, core::
   solveConstraint(&cparams    // PARAMS FIRST //, id);
 }
 
-void MechanicalOperations::solveConstraint(double dt, MultiVecCoordId id, core::ConstraintParams::ConstOrder order)
+void MechanicalOperations::solveConstraint(SReal dt, MultiVecCoordId id, core::ConstraintParams::ConstOrder order)
 {
   core::ConstraintParams cparams(mparams    // PARAMS FIRST //, order);
   mparams.setDt(dt);
@@ -427,7 +427,7 @@ void MechanicalOperations::m_resetSystem()
     s->resetSystem();
 }
 
-void MechanicalOperations::m_setSystemMBKMatrix(double mFact, double bFact, double kFact)
+void MechanicalOperations::m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact)
 {
     LinearSolver* s = ctx->get<LinearSolver>(ctx->getTags(), BaseContext::SearchDown);
     if (!s)
@@ -506,7 +506,7 @@ void MechanicalOperations::getMatrixDimension(unsigned int *  const nbRow, unsig
     executeVisitor( MechanicalGetMatrixDimensionVisitor(&mparams, nbRow, nbCol, matrix) );
 }
 
-void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact)
+void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal mFact, SReal bFact, SReal kFact)
 {
     mparams.setMFactor(mFact);
     mparams.setBFactor(bFact);
@@ -518,7 +518,7 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     }
 }
 
-void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const helper::vector<unsigned> & subMatrixIndex, double mFact, double bFact, double kFact)
+void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix,const helper::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact)
 {
     mparams.setMFactor(mFact);
     mparams.setBFactor(bFact);

@@ -108,7 +108,7 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
     _min(initData(&_min, Vector3(0,0,0), "min","Min")),
     _max(initData(&_max, Vector3(0,0,0), "max","Max")),
-    _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid")),
+    _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid")),
     _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
     dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
     voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
@@ -140,7 +140,7 @@ SparseGridTopology::SparseGridTopology(Vec3i numVertices, BoundingBox box, bool 
     n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
     _min(initData(&_min, Vector3(0,0,0), "min","Min")),
     _max(initData(&_max, Vector3(0,0,0), "max","Max")),
-    _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid")),
+    _cellWidth(initData(&_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid")),
     _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
     dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
     voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
@@ -566,12 +566,12 @@ void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
         const Vec3i& hexacoord = _regularGrid->getCubeCoordinate(i);
         const RegularGridTopology::Hexa& hexa = _regularGrid->getHexahedron( hexacoord[0],hexacoord[1], hexacoord[2] );
 
-        double p0x = _regularGrid->getPX( hexa[0] ) / vsize[0];
-        double p0y = _regularGrid->getPY( hexa[0] ) / vsize[1];
-        double p0z = _regularGrid->getPZ( hexa[0] ) / vsize[2];
-        double p6x = _regularGrid->getPX( hexa[6] ) / vsize[0];
-        double p6y = _regularGrid->getPY( hexa[6] ) / vsize[1];
-        double p6z = _regularGrid->getPZ( hexa[6] ) / vsize[2];
+        SReal p0x = _regularGrid->getPX( hexa[0] ) / vsize[0];
+        SReal p0y = _regularGrid->getPY( hexa[0] ) / vsize[1];
+        SReal p0z = _regularGrid->getPZ( hexa[0] ) / vsize[2];
+        SReal p6x = _regularGrid->getPX( hexa[6] ) / vsize[0];
+        SReal p6y = _regularGrid->getPY( hexa[6] ) / vsize[1];
+        SReal p6z = _regularGrid->getPZ( hexa[6] ) / vsize[2];
 
 
         for(int x=(int)p0x; x<(int)p6x; ++x)
@@ -806,7 +806,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
     // if cellWidth is given, update n
     if (_cellWidth.getValue())
     {
-        double w = _cellWidth.getValue();
+        SReal w = _cellWidth.getValue();
         Vector3 diff = _max.getValue() - _min.getValue();
         setN(Vec3i((int)ceil(diff[0] / w)+1, (int)ceil(diff[1] / w)+1, (int)ceil(diff[2] / w)+1));
         sout << "Grid size: " << n.getValue() << sendl;

@@ -160,7 +160,7 @@ public:
         return K;
     }
 
-    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         typename In::AngularVector& parentTorque = getVOrientation(df);
         const typename In::AngularVector& parentRotation = getVOrientation(dx);
@@ -265,7 +265,7 @@ public:
         return K;
     }
 
-    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         typename In::AngularVector& parentTorque = getVOrientation(df);
         const typename In::AngularVector& parentRotation = getVOrientation(dx);
@@ -380,7 +380,7 @@ public:
 
     // TO DO : implement this !!
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 
@@ -484,7 +484,7 @@ public:
 
     // TO DO : implement this !!
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 
@@ -588,7 +588,7 @@ public:
 
     // TO DO : implement this !!
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 
@@ -727,7 +727,7 @@ public:
 
     // TO DO : implement this !!
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 
@@ -844,7 +844,7 @@ public:
 
     // TO DO : implement this !!
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 
