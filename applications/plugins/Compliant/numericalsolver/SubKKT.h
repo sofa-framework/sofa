@@ -73,7 +73,6 @@ public:
     // factor the sub-kkt using
     template<class Solver>
     void factor(Solver& response) const;
-    void factor(Response& response) const;
 
     // WARNING the API might change a bit here 
 

@@ -1,4 +1,5 @@
 #include "KrylovSolver.h"
+#include "SubKKT.inl"
 
 #include "utils/kkt.h"
 #include "utils/schur.h"
