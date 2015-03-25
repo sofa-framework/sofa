@@ -23,7 +23,7 @@ class Response;
 
  */
 
-class SubKKT : public utils::eigen_types {
+class SOFA_Compliant_API SubKKT : public utils::eigen_types {
 public:
 
     // TODO: determine correct access rights
