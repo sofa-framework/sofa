@@ -5,27 +5,31 @@ import SofaPython.Tools
 from SofaPython.Tools import listToStr as concat
 from SofaPython import Quaternion
 
-def insertLinearMapping(node, dofRigid=None, dofAffine=None, position=None, labelImage=None, labels=None, assemble=True):
+def insertLinearMapping(node, dofRigidNode=None, dofAffineNode=None, position=None, labelImage=None, labels=None, assemble=True):
     """ insert the correct Linear(Multi)Mapping
     hopefully the template is deduced automatically by the component
     """
-    if dofRigid is None and dofAffine is None:
+    if dofRigidNode is None and dofAffineNode is None:
         print "[Flexible.API.insertLinearMapping] ERROR: no dof given"
-    if dofAffine is None:
+    if dofAffineNode is None:
         #TODO
         return None
     else:
-        node.createObject(
-            "BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell", 
-            position ="@"+SofaPython.Tools.getObjectPath(position)+".position", 
-            src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels))
-        if dofRigid is None:
+        cell = ''
+        if not labelImage is None and not labels is None : # use labels to select specific voxels in branching image
+            node.createObject(
+                "BranchingCellOffsetsFromPositions", template="BranchingImageUC", name="cell",
+                position ="@"+SofaPython.Tools.getObjectPath(position)+".position",
+                src="@"+SofaPython.Tools.getObjectPath(labelImage.branchingImage), labels=concat(labels))
+            cell = "@cell.cell"
+
+        if dofRigidNode is None:
             #TODO
             return None
         else:
             return node.createObject(
-                "LinearMultiMapping", cell="@cell.cell", 
-                input1="@"+dofRigid.getPathName(), input2="@"+dofAffine.getPathName(), output="@.", assemble=assemble)
+                "LinearMultiMapping", cell=cell,
+                input1="@"+dofRigidNode.getPathName(), input2="@"+dofAffineNode.getPathName(), output="@.", assemble=assemble)
 
 class Deformable:
     
@@ -48,8 +52,8 @@ class Deformable:
     def addMass(self,totalMass):
         self.mass = self.node.createObject('UniformMass', totalMass=totalMass)
 
-    def addMapping(self, dofRigid=None, dofAffine=None, labelImage=None, labels=None, assemble=True):
-        self.mapping = insertLinearMapping(self.node, dofRigid, dofAffine, self.topology, labelImage, labels, assemble)
+    def addMapping(self, dofRigidNode=None, dofAffineNode=None, labelImage=None, labels=None, assemble=True):
+        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.topology, labelImage, labels, assemble)
 
 # TODO: refactor this
     def addSkinning(self, bonesPath, indices, weights, assemble=True):
@@ -66,14 +70,26 @@ class Deformable:
             self.model = self.node.createObject("VisualModel", name="model", color=concat(color))
             self.mapping = self.node.createObject("IdentityMapping", name="mapping")
 
+class AffineMass:
+    def __init__(self, node):
+        self.node = node
+
+    def massFromDensityImage(self, dofRigidNode, dofAffineNode, densityImage, lumping='0'):
+        node = self.node.createChild('Mass')
+        dof = node.createObject('MechanicalObject', name='massPoints', template='Vec3d')
+        insertLinearMapping(node, dofRigidNode, dofAffineNode, dof, assemble=False)
+        # MassFromDensity on branching images does not exist yet
+        densityImage.addBranchingToImage('0')
+        self.massFromDensity = node.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+".image", transform="@"+SofaPython.Tools.getObjectPath(densityImage.converter)+'.transform', lumping=lumping)
+        dofAffineNode.createObject('AffineMass', massMatrix="@"+SofaPython.Tools.getObjectPath(self.massFromDensity)+".massMatrix")
+
 
 class ShapeFunction:
     """ High-level API to manipulate ShapeFunction
     @todo better handle template
     """
-    def __init__(self, node, name, position=None):
-        self.node = node.createChild(name)
-        self.name = name
+    def __init__(self, node, position=None):
+        self.node = node
         self.position = position # component which contains shape function position (spatial coordinates of the parent nodes)
         self.shapeFunction=None
    
@@ -90,13 +106,13 @@ class ShapeFunction:
             src="@"+imagePath, method=0, nbRef=8, bias=True)
    
     def getFilenameIndices(self, filenamePrefix=None, directory=""):
-        _filename=filenamePrefix if not filenamePrefix is None else self.name
+        _filename=filenamePrefix if not filenamePrefix is None else "SF"
         _filename+="_indices.mhd"
         _filename=os.path.join(directory, _filename)
         return _filename
 
     def getFilenameWeights(self, filenamePrefix=None, directory=""):
-        _filename=filenamePrefix if not filenamePrefix is None else self.name
+        _filename=filenamePrefix if not filenamePrefix is None else "SF"
         _filename+="_weights.mhd"
         _filename=os.path.join(directory, _filename)
         return _filename
@@ -151,11 +167,11 @@ class Behavior:
             method="2", order=self.type[2:], targetNumber=nbPoint,
             mask="@"+SofaPython.Tools.getObjectPath(self.labelImage.branchingImage)+".branchingImage", maskLabels=concat(self.labels), clearData=True)
         
-    def addMechanicalObject(self, dofRigid=None, dofAffine=None, assemble=True):
+    def addMechanicalObject(self, dofRigidNode=None, dofAffineNode=None, assemble=True):
         if self.sampler is None:
             print "[Flexible.API.Behavior] ERROR: no sampler"
         self.dofs = self.node.createObject("MechanicalObject", template="F"+self.type, name="dofs")
-        self.mapping = insertLinearMapping(self.node, dofRigid, dofAffine, self.sampler, self.labelImage, self.labels, assemble)
+        self.mapping = insertLinearMapping(self.node, dofRigidNode, dofAffineNode, self.sampler, self.labelImage, self.labels, assemble)
     
     def addHooke(self, strainMeasure="Corotational", youngModulus=0, poissonRatio=0, viscosity=0, assemble=True):
         eNode = self.node.createChild("E")
