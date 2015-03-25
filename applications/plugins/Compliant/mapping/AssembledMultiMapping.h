@@ -181,7 +181,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	                      core::MultiVecDerivId /*inForce*/, 
                           core::ConstMultiVecDerivId /*outForce*/)
     {
-        serr<<"applyDJT is not yet implemented"<<sendl;
+        if( geometric.compressedMatrix.nonZeros() ) serr<<"applyDJT is not yet implemented"<<sendl;
         // TODO implement it!
     }
 
