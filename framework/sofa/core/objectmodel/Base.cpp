@@ -311,7 +311,7 @@ void Base::processStream(std::ostream& out)
             std::cout<<" [INFO] ";
             SetConsoleTextAttribute(console, _currentInfo.wAttributes);
 #else
-            std::cerr<<GREEN<<"[INFO]"<< ENDL;
+            std::cout<<GREEN<<"[INFO]"<< ENDL;
 #endif
             std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< str << std::flush;
         }
