@@ -272,7 +272,8 @@ public:
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
     virtual const defaulttype::BaseMatrix* getK()
     {
-        return &K;
+        if( BlockType::constant || !K.compressedMatrix.nonZeros() ) return NULL;
+        else return &K;
     }
 
     void draw(const core::visual::VisualParams* vparams);

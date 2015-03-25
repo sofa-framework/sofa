@@ -435,7 +435,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
-     if( !d_geometricStiffness.getValue() ) { K.resize(0,0); return; }
+    if( BlockType::constant || !d_geometricStiffness.getValue() /*|| !assemble.getValue()*/ ) { K.resize(0,0); return; }
 
     const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -671,9 +671,7 @@ void BaseDeformationMappingT<JacobianBlockType>::applyJT(const core::MechanicalP
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId childForceId )
 {
-    if( !d_geometricStiffness.getValue() ) return;
-
-    if(BlockType::constant) return;
+    if( BlockType::constant || !d_geometricStiffness.getValue() ) return;
 
     Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
     const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
@@ -683,38 +681,48 @@ void BaseDeformationMappingT<JacobianBlockType>::applyDJT(const core::Mechanical
     helper::ReadAccessor<Data<InVecDeriv> > parentDisplacement (parentDisplacementData);
     helper::ReadAccessor<Data<OutVecDeriv> > childForce (childForceData);
 
-    if( this->assemble.getValue() || d_geometricStiffness.getValue() == 2 ) // assembled version (if symmetrized version, force assembly)
+    if( assemble.getValue() && K.compressedMatrix.nonZeros() ) // assembled version
     {
-        updateK( mparams, childForceId );
+        assert( this->assemble.getValue() );
         K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
     }
     else
     {
-        if( !this->maskTo || !this->maskTo->isInUse() )
+        // if symmetrized version, force local assembly
+        if( assemble.getValue() || d_geometricStiffness.getValue() == 2 )
         {
-#ifdef _OPENMP
-#pragma omp parallel for
-#endif
-            for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
-            {
-                for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
-                {
-                    size_t indexc=this->f_index_parentToChild[i][j];
-                    jacobian[indexc][this->f_index_parentToChild[i][j+1]].addDForce(parentForce[i],parentDisplacement[i],childForce[indexc], mparams->kFactor());
-                }
-            }
+            updateK( mparams, childForceId );
+            K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+            K.resize(0,0); // forgot about this matrix
         }
         else
         {
-            typedef helper::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-            for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+            if( !this->maskTo || !this->maskTo->isInUse() )
             {
-                const int i= ( int ) ( *it );
-                for(size_t j=0; j<jacobian[i].size(); j++)
+    #ifdef _OPENMP
+    #pragma omp parallel for
+    #endif
+                for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<this->f_index_parentToChild.size(); i++)
                 {
-                    size_t index=this->f_index.getValue()[i][j];
-                    jacobian[i][j].addDForce( parentForce[index], parentDisplacement[index], childForce[i], mparams->kFactor() );
+                    for(size_t j=0; j<this->f_index_parentToChild[i].size(); j+=2)
+                    {
+                        size_t indexc=this->f_index_parentToChild[i][j];
+                        jacobian[indexc][this->f_index_parentToChild[i][j+1]].addDForce(parentForce[i],parentDisplacement[i],childForce[indexc], mparams->kFactor());
+                    }
+                }
+            }
+            else
+            {
+                typedef helper::ParticleMask ParticleMask;
+                const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+                for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+                {
+                    const int i= ( int ) ( *it );
+                    for(size_t j=0; j<jacobian[i].size(); j++)
+                    {
+                        size_t index=this->f_index.getValue()[i][j];
+                        jacobian[i][j].addDForce( parentForce[index], parentDisplacement[index], childForce[i], mparams->kFactor() );
+                    }
                 }
             }
         }
