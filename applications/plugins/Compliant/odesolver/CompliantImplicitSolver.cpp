@@ -661,11 +661,11 @@ using namespace core::behavior;
                     integrate( sop, posId, velId );
                     break;
                 case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
-                    set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+                    set_state( sys, x, _acc.id() ); // set v and lambda
                     integrate( sop, posId, velId, _acc.id(), 1.0  );
                     break;
                 case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
-                    set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+                    set_state( sys, x, _acc.id() ); // set v and lambda
                     integrate( sop, posId, velId, _acc.id(), dt  );
                     break;
                 }

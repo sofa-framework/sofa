@@ -8,7 +8,8 @@
 
 #include <Eigen/SparseCholesky>
 #include <Eigen/SparseLU>
-
+#include <Eigen/IterativeLinearSolvers>
+#include <unsupported/Eigen/IterativeSolvers>
 
 namespace sofa {
 namespace component {
@@ -23,8 +24,8 @@ namespace linearsolver {
 /// schur = 0
 /// KKT system solve
 ///
-template<class LinearSolver, bool symmetric>
-class SOFA_Compliant_API EigenSparseSolver : public KKTSolver {
+template<class LinearSolver, bool symmetric=false>
+class EigenSparseSolver : public KKTSolver {
   public:
 
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenSparseSolver,LinearSolver,symmetric), KKTSolver);
@@ -37,10 +38,10 @@ class SOFA_Compliant_API EigenSparseSolver : public KKTSolver {
     virtual void factor(const AssembledSystem& system);
 
     virtual void init();
+    virtual void reinit();
 
     EigenSparseSolver();
     ~EigenSparseSolver();
-
 
   protected:
 
@@ -54,8 +55,6 @@ class SOFA_Compliant_API EigenSparseSolver : public KKTSolver {
 
     Data<bool> schur;
 
-  private:
-
     struct pimpl_type;
     scoped::ptr<pimpl_type> pimpl;
 
@@ -64,18 +63,78 @@ class SOFA_Compliant_API EigenSparseSolver : public KKTSolver {
 
 
 
-class SOFA_Compliant_API LDLTSolver : public EigenSparseSolver< Eigen::SimplicialLDLT< AssembledSystem::cmat >, true >
+typedef Eigen::SimplicialLDLT< AssembledSystem::cmat > LDLTSparseLinearSolver;
+class SOFA_Compliant_API LDLTSolver : public EigenSparseSolver< LDLTSparseLinearSolver, true >
 {
 public:
-    SOFA_CLASS(LDLTSolver,SOFA_TEMPLATE2(EigenSparseSolver,SOFA_TEMPLATE(Eigen::SimplicialLDLT,AssembledSystem::cmat),true));
+    SOFA_CLASS(LDLTSolver,SOFA_TEMPLATE2(EigenSparseSolver,LDLTSparseLinearSolver,true));
 };
 
 
-class SOFA_Compliant_API LUSolver : public EigenSparseSolver< Eigen::SparseLU< AssembledSystem::cmat >, false >
+typedef Eigen::SparseLU< AssembledSystem::cmat > LUSparseLinearSolver;
+class SOFA_Compliant_API LUSolver : public EigenSparseSolver< LUSparseLinearSolver >
 {
 public:
-    SOFA_CLASS(LUSolver,SOFA_TEMPLATE2(EigenSparseSolver,SOFA_TEMPLATE(Eigen::SparseLU,AssembledSystem::cmat),false));
+    SOFA_CLASS(LUSolver,SOFA_TEMPLATE(EigenSparseSolver,LUSparseLinearSolver));
 };
+
+
+
+
+/////////////////////////////////////////////
+
+
+/// Solve a dynamics system including bilateral constraints with an iterative linear solver
+template<class LinearSolver, bool symmetric=false>
+class EigenSparseIterativeSolver : public EigenSparseSolver<LinearSolver,symmetric>
+{
+public:
+
+    SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenSparseIterativeSolver,LinearSolver,symmetric),SOFA_TEMPLATE2(EigenSparseSolver,LinearSolver,symmetric));
+
+    Data<unsigned> d_iterations;
+    Data<SReal> d_tolerance;
+
+    EigenSparseIterativeSolver();
+
+    virtual void init();
+    virtual void reinit();
+
+};
+
+
+
+typedef Eigen::ConjugateGradient< AssembledSystem::cmat > CGSparseLinearSolver;
+class EigenCGSolver : public EigenSparseIterativeSolver< CGSparseLinearSolver, true >
+{
+public:
+    SOFA_CLASS(EigenCGSolver,SOFA_TEMPLATE2(EigenSparseIterativeSolver,CGSparseLinearSolver, true));
+};
+
+
+typedef Eigen::BiCGSTAB< AssembledSystem::cmat > BiCGSTABSparseLinearSolver;
+class EigenBiCGSTABSolver : public EigenSparseIterativeSolver< BiCGSTABSparseLinearSolver >
+{
+public:
+    SOFA_CLASS(EigenBiCGSTABSolver,SOFA_TEMPLATE(EigenSparseIterativeSolver,BiCGSTABSparseLinearSolver));
+};
+
+
+typedef Eigen::MINRES< AssembledSystem::cmat > MINRESSparseLinearSolver;
+class EigenMINRESSolver : public EigenSparseIterativeSolver< MINRESSparseLinearSolver, true >
+{
+public:
+    SOFA_CLASS(EigenMINRESSolver,SOFA_TEMPLATE2(EigenSparseIterativeSolver,MINRESSparseLinearSolver, true));
+};
+
+typedef Eigen::GMRES< AssembledSystem::cmat > GMRESSparseLinearSolver;
+class EigenGMRESSolver : public EigenSparseIterativeSolver< GMRESSparseLinearSolver >
+{
+public:
+    SOFA_CLASS(EigenGMRESSolver,SOFA_TEMPLATE(EigenSparseIterativeSolver,GMRESSparseLinearSolver));
+};
+
+
 
 
 }

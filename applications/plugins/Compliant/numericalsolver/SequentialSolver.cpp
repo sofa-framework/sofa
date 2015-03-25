@@ -2,7 +2,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include "LDLTResponse.h"
+#include "EigenSparseResponse.h"
 
 #include "../utils/scoped.h"
 #include "../utils/nan.h"
@@ -152,7 +152,7 @@ void SequentialSolver::factor(const system_type& system) {
 
 	blocks_inv.resize( n );
 
-    sub.solve_filtered( *response, mapping_response, system.J, &JP );  // mapping_response = PHinv(JP)^T
+    sub.solve_filtered( *response, mapping_response, system.J, JP );  // mapping_response = PHinv(JP)^T
 	
 	
 	// to avoid allocating matrices for each block, could be a vec instead ?

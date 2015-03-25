@@ -309,11 +309,11 @@ bool TriangleLocalMinDistanceFilter::validPoint(const int pointIndex, const defa
     // AdvancedTimer::StepVar("Filters");
 
     PointInfo & Pi = m_pointInfo[pointIndex];
-    if(&Pi==NULL)
-    {
-        serr<<"Pi == NULL"<<sendl;
-        return true;
-    }
+//    if(&Pi==NULL)
+//    {
+//        serr<<"Pi == NULL"<<sendl;
+//        return true;
+//    }
 
     if(this->isRigid())
     {
@@ -333,11 +333,11 @@ bool TriangleLocalMinDistanceFilter::validLine(const int lineIndex, const defaul
     //AdvancedTimer::StepVar("Filters");
 
     LineInfo &Li = m_lineInfo[lineIndex];  // filter is precomputed
-    if(&Li==NULL)
-    {
-        serr<<"Li == NULL"<<sendl;
-        return true;
-    }
+//    if(&Li==NULL)
+//    {
+//        serr<<"Li == NULL"<<sendl;
+//        return true;
+//    }
 
     if(this->isRigid())
     {
@@ -357,11 +357,11 @@ bool TriangleLocalMinDistanceFilter::validTriangle(const int triangleIndex, cons
     //std::cout<<"validTriangle "<<triangleIndex<<" is called with PQ="<<PQ<<std::endl;
     TriangleInfo &Ti = m_triangleInfo[triangleIndex];
 
-    if(&Ti==NULL)
-    {
-        serr<<"Ti == NULL"<<sendl;
-        return true;
-    }
+//    if(&Ti==NULL)
+//    {
+//        serr<<"Ti == NULL"<<sendl;
+//        return true;
+//    }
 
     if(this->isRigid())
     {

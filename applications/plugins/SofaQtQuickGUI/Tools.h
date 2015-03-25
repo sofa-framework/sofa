@@ -4,6 +4,8 @@
 #include "SofaQtQuickGUI.h"
 #include <QQmlApplicationEngine>
 #include <QApplication>
+#include <QQuickWindow>
+#include <QQuickItem>
 #include <QSettings>
 
 class QOpenGLDebugLogger;
@@ -31,8 +33,10 @@ public:
 
 signals:
     void overrideCursorShapeChanged();
+    void windowChanged();
 
 public:
+    Q_INVOKABLE QQuickWindow* window(QQuickItem* item) const;
 	Q_INVOKABLE void trimCache(QObject* object = 0);
 	Q_INVOKABLE void clearSettingGroup(const QString& group);
 

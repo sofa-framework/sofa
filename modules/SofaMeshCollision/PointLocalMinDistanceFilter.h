@@ -71,7 +71,7 @@ public:
     /**
      * @brief Default destructor.
      */
-    virtual ~PointInfo() {};
+    virtual ~PointInfo() {}
 
     /**
      * @brief Returns the validity of a detected contact according to this PointInfo.

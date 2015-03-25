@@ -57,25 +57,36 @@ class IHM2
 {
 public:
     typedef typename PFP::MAP MAP ;
-
+    typedef std::vector<Algo::MR::Filter*>  filtersArray;
+    typedef filtersArray::iterator filtersArray_iterator;
 protected:
     MAP& m_map;
 	bool shareVertexEmbeddings ;
 
-    std::vector<Algo::MR::Filter*> synthesisFilters ;
-    std::vector<Algo::MR::Filter*> analysisFilters ;
+    filtersArray synthesisFilters ;
+    filtersArray analysisFilters ;
 
 public:
     IHM2(MAP& map) ;
-
+    ~IHM2();
     //if true : tri and quad else quad
     void addNewLevel(bool triQuad = true) ;
 
     void addSynthesisFilter(Algo::MR::Filter* f) { synthesisFilters.push_back(f) ; }
     void addAnalysisFilter(Algo::MR::Filter* f) { analysisFilters.push_back(f) ; }
 
-    void clearSynthesisFilters() { synthesisFilters.clear() ; }
-    void clearAnalysisFilters() { analysisFilters.clear() ; }
+    void clearSynthesisFilters()
+    {
+        for (filtersArray_iterator it = synthesisFilters.begin() ; it != synthesisFilters.end() ; ++it)
+            delete *it;
+        synthesisFilters.clear() ;
+    }
+    void clearAnalysisFilters()
+    {
+        for (filtersArray_iterator it = analysisFilters.begin() ; it != analysisFilters.end() ; ++it)
+            delete *it;
+        analysisFilters.clear() ;
+    }
 
     void analysis() ;
     void synthesis() ;
