@@ -16,7 +16,7 @@ CompliantLDLTPreconditioner::CompliantLDLTPreconditioner()
     , _factorized( false )
 {}
 
-void CompliantLDLTPreconditioner::compute( const AssembledSystem::mat& H )
+void CompliantLDLTPreconditioner::compute( const AssembledSystem::rmat& H )
 {
     if( !_factorized )
     {
@@ -29,7 +29,7 @@ void CompliantLDLTPreconditioner::compute( const AssembledSystem::mat& H )
             serr<<"automatic regularization of a singular matrix"<<sendl;
 
             // if singular, try to regularize by adding a tiny diagonal matrix
-            AssembledSystem::mat identity(H.rows(),H.cols());
+            AssembledSystem::rmat identity(H.rows(),H.cols());
             identity.setIdentity();
             preconditioner.compute( (H + identity * std::numeric_limits<SReal>::epsilon()).selfadjointView<Eigen::Lower>() );
 

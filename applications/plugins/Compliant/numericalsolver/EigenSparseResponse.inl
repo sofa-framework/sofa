@@ -25,7 +25,7 @@ void EigenSparseResponse<LinearSolver,symmetric>::reinit()
 }
 
 template<class LinearSolver,bool symmetric>
-void EigenSparseResponse<LinearSolver,symmetric>::factor(const mat& H, bool semidefinite ) {
+void EigenSparseResponse<LinearSolver,symmetric>::factor(const rmat& H, bool semidefinite ) {
 
 #ifndef NDEBUG
     if( !H.rows() ) serr<<"factor - null matrix"<<sendl;

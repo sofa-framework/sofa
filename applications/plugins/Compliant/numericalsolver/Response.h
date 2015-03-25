@@ -16,16 +16,12 @@ namespace linearsolver {
 class Response : public core::objectmodel::BaseObject,
                  public utils::eigen_types {
 public:
-	SOFA_CLASS(Response, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(Response, core::objectmodel::BaseObject);
 
 	typedef AssembledSystem system_type;
-
-    // FIXME remove mat altogether
-    typedef rmat mat;
-
     
     /// @param semidefinite indicates if the matrix is semi-definite
-    virtual void factor(const mat&, bool semidefinite=false ) = 0;
+    virtual void factor(const rmat&, bool semidefinite=false ) = 0;
 	
 	virtual void solve(cmat&, const cmat& ) const = 0;
 	virtual void solve(vec&, const vec& ) const = 0;
