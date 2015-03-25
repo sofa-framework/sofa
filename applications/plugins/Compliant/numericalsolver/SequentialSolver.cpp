@@ -75,15 +75,15 @@ void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) 
 
 //static bool diagonal_dominant(const AssembledSystem& sys)
 //{
-//	typedef AssembledSystem::mat::Index Index;
+//	typedef rmat::Index Index;
     
-//	AssembledSystem::mat PH = sys.P * sys.H;
+//	rmat PH = sys.P * sys.H;
     
 //	typedef SReal real;
 
 //    if( sys.n )
 //    {
-//        AssembledSystem::mat PJt = sys.P * sys.J.transpose();
+//        rmat PJt = sys.P * sys.J.transpose();
         
 //        for( unsigned i = 0 ; i < sys.m ; ++i )
 //	        {
@@ -156,7 +156,7 @@ void SequentialSolver::factor(const system_type& system) {
 	
 	
 	// to avoid allocating matrices for each block, could be a vec instead ?
-	dense_matrix storage;
+    dmat storage;
 
 	// build blocks and factorize
 	for(unsigned i = 0; i < n; ++i) {
@@ -180,7 +180,7 @@ void SequentialSolver::factor(const system_type& system) {
 		
 		// add diagonal C block
 		for( unsigned r = 0; r < b.size; ++r) {
-			for(system_type::mat::InnerIterator it(system.C, b.offset + r); it; ++it) {
+            for(rmat::InnerIterator it(system.C, b.offset + r); it; ++it) {
 				
 				// paranoia, i has it
 				assert( it.col() >= int(b.offset) );

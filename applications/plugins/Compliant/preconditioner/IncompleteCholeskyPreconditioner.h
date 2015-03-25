@@ -25,7 +25,7 @@ class SOFA_Compliant_API IncompleteCholeskyPreconditioner : public BasePrecondit
 
     typedef AssembledSystem::real real;
     typedef AssembledSystem::vec vec;
-    typedef AssembledSystem::mat rmat;
+    typedef AssembledSystem::rmat rmat;
     typedef AssembledSystem::cmat cmat;
 
     virtual void reinit();
