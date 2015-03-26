@@ -134,16 +134,15 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSys
     SubKKT::projected_primal(pimpl->sub, sys);
     pimpl->sub.factor(*response);
 
-    if( d_onlyBilaterals.getValue() )
-    {
-        serr<<"SORRY, excluding non bilateral is not yet implemented with a Schur complement (only full KKT formulation)"<<sendl;
-        d_onlyBilaterals.setValue(false);
-    }
-
     if( sys.n )
     {
+
         {
             scoped::timer step("schur assembly");
+
+            if( d_onlyBilaterals.getValue() && SubKKT::projected_dual(pimpl->sub, sys) )
+                return; // no bilateral constraints
+
             pimpl->sub.solve_opt(*response, pimpl->PHinvPJT, sys.J );
 
             // TODO hide this somewhere
@@ -194,7 +193,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_kkt(vec& res,
     tmp.head(sys.m) = rhs.head(sys.m);
     if( sys.n ) tmp.tail(sys.n) = -rhs.tail(sys.n);
 
-    pimpl->sub.solve( *pimpl, res, tmp );
+    pimpl->sub.solve( *pimpl, res, tmp, SubKKT::FULL );
     
 }
 
@@ -214,7 +213,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
     }
 
     // in place solve
-    pimpl->sub.solve(*response, free, rhs.head(sys.m));
+    pimpl->sub.solve(*response, free, rhs.head(sys.m), SubKKT::PRIMAL);
     
     if( debug.getValue() ){
         serr << "solve, free motion solution = " << free.transpose() << sendl
@@ -227,7 +226,8 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
     
     res.head( sys.m ) = free;
     
-    if( sys.n ) {
+    if( sys.n && (!d_onlyBilaterals.getValue() || pimpl->sub.Q.cols() /*there are bilateral constraints*/ ) ) {
+
         vec tmp = rhs.tail( sys.n ) - pimpl->PHinvPJT.transpose() * rhs.head( sys.m );
         
         // lambdas

@@ -262,6 +262,16 @@ void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
 }
 
 
+bool SubKKT::projected_dual(SubKKT& res, const AssembledSystem& sys) {
+    scoped::timer step("dual subsystem projection");
+
+    // matrix Q conveniently filters out non bilateral constraints
+    return !projection_bilateral(res.Q, sys);
+}
+
+
+
+
 void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, bool only_bilaterals, real eps, bool only_lower)
 {
     scoped::timer step("subsystem projection");
@@ -341,14 +351,14 @@ void SubKKT::solve(const Response& resp,
         throw std::logic_error("sorry, not implemented");
     }
     
-    mtmp1 = P.transpose() * rhs;
+    mtmpc1 = P.transpose() * rhs;
         
-    resp.solve(mtmp2, mtmp1);
+    resp.solve(mtmpc2, mtmpc1);
 
     // mtmp3 = P;
 
     // not sure if this causes a temporary
-    res = P * mtmp2;
+    res = P * mtmpc2;
 }
 
 void SubKKT::solve_opt(const Response& resp,
@@ -371,10 +381,10 @@ void SubKKT::solve_opt(const Response& resp,
 //    // res = mtmp3 * mtmp2;
 
 
-    solve_filtered( resp, mtmp2, rhs, mtmpr );
+    solve_filtered( resp, mtmpc2, rhs, mtmpr );
 
-    mtmp1 = P;
-    sparse::fast_prod(res, mtmp1, mtmp2);
+    mtmpc1 = P;
+    sparse::fast_prod(res, mtmpc1, mtmpc2);
 }
 
 
@@ -383,17 +393,15 @@ void SubKKT::solve_filtered(const Response& resp,
                        cmat& res,
                        const rmat& rhs,
                        rmat &projected_rhs ) const {
-    
-    if( Q.cols() ) {
-        throw std::logic_error("sorry, not implemented");
-    }
+
+    // TODO? projected_rhs with Q too?
 
     projected_rhs.resize( rhs.rows(), P.cols() );
-    res.resize( P.cols(), rhs.rows() );
-
     sparse::fast_prod(projected_rhs, rhs, P);
-    
+
+    res.resize( P.cols(), rhs.rows() );
     resp.solve(res, projected_rhs.transpose() );
+
 }
 
 

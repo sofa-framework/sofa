@@ -121,7 +121,7 @@ void ModulusSolver::solve(vec& res,
     if( sys.n ) constant.tail(sys.n) = -constant.tail(sys.n);
 
     vec tmp;
-    sub.solve(*response, tmp, constant);
+    sub.solve(*response, tmp, constant, SubKKT::FULL);
 
     if(!sys.n) {
         res = tmp;
@@ -165,7 +165,7 @@ void ModulusSolver::solve(vec& res,
         tmp -= constant;
 
         // solve
-        sub.solve(*response, tmp, tmp);
+        sub.solve(*response, tmp, tmp, SubKKT::FULL);
 
         // backup old dual
         old = y.tail(sys.n);
