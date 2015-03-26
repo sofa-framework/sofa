@@ -56,8 +56,15 @@ public:
     static void projected_primal(SubKKT& res, const AssembledSystem& sys);
 
     // full kkt with projected primal variables
-    static void projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps = 0,
+    // if only_bilaterals=true then excludes non bilateral constaints
+    // eps is for a Tikhonov regularization on null Compliance diagonal entries
+    // only_lower to build only the low triangular matrix for symmetric problems
+    static void projected_kkt(SubKKT& res,
+                              const AssembledSystem& sys,
+                              bool only_bilaterals = false,
+                              real eps = 0,
                               bool only_lower = false);
+
     
     // TODO more ctors with non-zero Q
 

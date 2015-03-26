@@ -57,10 +57,12 @@ struct EigenSparseSolver<LinearSolver,symmetric>::pimpl_type {
 
 template<class LinearSolver,bool symmetric>
 EigenSparseSolver<LinearSolver,symmetric>::EigenSparseSolver()
-    : schur(initData(&schur,
+    : d_schur(initData(&d_schur,
                      true,
                      "schur",
                      "use schur complement"))
+    , d_regularization(initData(&d_regularization, std::numeric_limits<SReal>::epsilon(), "regularization", "Optional diagonal Tikhonov regularization on constraints"))
+    , d_onlyBilaterals(initData(&d_onlyBilaterals, false, "onlyBilaterals", "Excludes non bilateral constraints from the system?"))
     , pimpl( new pimpl_type )
 {}
 
@@ -80,7 +82,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::reinit() {
 
     KKTSolver::reinit();
 
-    if( schur.getValue() && !response )
+    if( d_schur.getValue() && !response )
     {
         // let's find a response
         response = this->getContext()->template get<Response>( core::objectmodel::BaseContext::Local );
@@ -102,11 +104,14 @@ void EigenSparseSolver<LinearSolver,symmetric>::reinit() {
 template<class LinearSolver,bool symmetric>
 void EigenSparseSolver<LinearSolver,symmetric>::factor(const AssembledSystem& sys) {
 
-    if( schur.getValue() ) {
+    if( d_schur.getValue() ) {
         factor_schur( sys );
     } else {
-        SubKKT::projected_kkt(pimpl->sub, sys, 1e-14, symmetric);
+
+        SubKKT::projected_kkt(pimpl->sub, sys, d_onlyBilaterals.getValue(), d_regularization.getValue(), symmetric);
+
         pimpl->sub.factor( *pimpl );
+
     }
 }
 
@@ -114,7 +119,7 @@ template<class LinearSolver,bool symmetric>
 void EigenSparseSolver<LinearSolver,symmetric>::solve(vec& res,
                        const AssembledSystem& sys,
                        const vec& rhs) const {
-    if( schur.getValue() ) {
+    if( d_schur.getValue() ) {
         solve_schur(res, sys, rhs);
     } else {
         solve_kkt(res, sys, rhs);
@@ -129,8 +134,14 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSys
     SubKKT::projected_primal(pimpl->sub, sys);
     pimpl->sub.factor(*response);
 
-    // much cleaner now ;-)
-    if( sys.n ) {
+    if( d_onlyBilaterals.getValue() )
+    {
+        serr<<"SORRY, excluding non bilateral is not yet implemented with a Schur complement (only full KKT formulation)"<<sendl;
+        d_onlyBilaterals.setValue(false);
+    }
+
+    if( sys.n )
+    {
         {
             scoped::timer step("schur assembly");
             pimpl->sub.solve_opt(*response, pimpl->PHinvPJT, sys.J );
