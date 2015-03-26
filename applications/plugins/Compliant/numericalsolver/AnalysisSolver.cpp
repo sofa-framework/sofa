@@ -15,6 +15,8 @@ int AnalysisSolverClass = core::RegisterObject("Analysis solver: runs other KKTS
 AnalysisSolver::AnalysisSolver()
     : condest(initData(&condest, false, "condest", "compute condition number with svd"))
     , eigenvaluesign(initData(&eigenvaluesign, false, "eigenvaluesign", "computing the sign of the eigenvalues (of the implicit matrix H)"))
+    , dump_qp(initData(&dump_qp, "dump_qp", "dump qp to file if non-empty"))
+      
 {}
 
 void AnalysisSolver::init() {
@@ -103,9 +105,31 @@ void AnalysisSolver::factor(const system_type& system) {
 
     }
 
+    
     // TODO add more as needed
 }
 
+
+static void write_qp(std::ofstream& out,
+                     const AssembledSystem& sys,
+                     const AssembledSystem::vec& rhs) {
+
+    const char endl = '\n';
+    
+    out << sys.m << ' ' << sys.n << endl;
+
+    out << sys.H << endl;
+    out << -rhs.head(sys.m).transpose() << endl;
+    out << sys.P << endl;
+
+    if( sys.n ) {
+        out << sys.J << endl;
+        out << rhs.tail(sys.n).transpose() << endl;
+
+        // TODO unilateral mask !
+    }
+    
+}
 
 // solution is that of the first solver
 void AnalysisSolver::correct(vec& res,
@@ -114,6 +138,12 @@ void AnalysisSolver::correct(vec& res,
                              real damping) const {
 	assert( solvers.size() > 1 );
 	solvers.back()->correct(res, sys, rhs, damping);
+
+    if(!dump_qp.getValue().empty() ) {
+        std::ofstream out(dump_qp.getValue() + ".correction" );
+        
+        write_qp(out, sys, rhs);
+    }
 }
 
 // solution is that of the last solver
@@ -128,6 +158,12 @@ void AnalysisSolver::solve(vec& res,
 		res = backup;
 		solvers[i]->solve(res, sys, rhs);
 	}
+
+    if(!dump_qp.getValue().empty() ) {
+        std::ofstream out(dump_qp.getValue() + ".dynamics" );
+        
+        write_qp(out, sys, rhs);
+    }
 	
 }
 
