@@ -23,7 +23,8 @@ namespace qtquick
 
 Viewer::Viewer(QQuickItem* parent) : QQuickItem(parent),
 	myScene(0),
-	myCamera(0)
+    myCamera(0),
+    myWireframe(false)
 {
     setFlag(QQuickItem::ItemHasContents);
 
@@ -85,6 +86,16 @@ void Viewer::setCamera(Camera* newCamera)
 	cameraChanged(newCamera);
 }
 
+void Viewer::setWireframe(bool newWireframe)
+{
+    if(newWireframe == myWireframe)
+        return;
+
+    myWireframe = newWireframe;
+
+    wireframeChanged(newWireframe);
+}
+
 QVector3D Viewer::mapFromWorld(const QVector3D& point)
 {
 	if(!myCamera)
@@ -111,11 +122,9 @@ QVector3D Viewer::mapToWorld(const QVector3D& point)
 double Viewer::computeDepth(const QVector3D& point)
 {
 	if(!myCamera)
-		return 0.0;
+        return 0.0;
 
-	QVector4D csPosition = myCamera->projection() * myCamera->view() * QVector4D(point, 1.0);
-
-	return (csPosition.z() / csPosition.w()) * 0.5 + 0.5;
+    return myCamera->computeDepth(point);
 }
 
 QVector3D Viewer::projectOnViewPlane(const QVector3D& point, double depth)
@@ -196,7 +205,7 @@ void Viewer::paint()
 	if(!myCamera)
 		return;
 
-	myCamera->setAspectRatio(size.width() / (double) size.height());
+    myCamera->setPerspectiveAspectRatio(size.width() / (double) size.height());
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
@@ -252,6 +261,9 @@ void Viewer::paint()
 		_vparams->sceneBBox() = myScene->sofaSimulation()->GetRoot()->f_bbox.getValue();
 		_vparams->setProjectionMatrix(_projmatrix);
 		_vparams->setModelViewMatrix(_mvmatrix);
+
+        if(wireframe())
+            _vparams->drawTool()->setPolygonMode(0, true);
 	}
 
     myScene->draw();
@@ -261,6 +273,9 @@ void Viewer::paint()
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+
+    if(wireframe())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Viewer::viewAll()

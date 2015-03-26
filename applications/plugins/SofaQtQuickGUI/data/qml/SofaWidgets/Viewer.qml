@@ -1,5 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.3
+import QtQuick.Controls.Styles 1.3
+import QtQuick.Layouts 1.1
 import SofaBasics 1.0
 import Viewer 1.0
 import Scene 1.0
@@ -77,6 +79,7 @@ Viewer {
         anchors.fill: parent
         focus: true
         acceptedButtons: Qt.AllButtons
+        propagateComposedEvents: true
 
         Actor {
             id: actor
@@ -199,6 +202,8 @@ Viewer {
                     }
 
                     camera.zoom(factor);
+
+                    wheel.accepted = true;
                 });
             }
         }
@@ -310,4 +315,265 @@ Viewer {
             radius: width / 2.0
         }
     }*/
+
+    Rectangle {
+        id: toolPanel
+        color: "lightgrey"
+        anchors.top: toolPanelSwitch.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.topMargin: -6
+        anchors.bottomMargin: 20
+        anchors.rightMargin: -radius
+        width: 250
+        radius: 5
+        visible: false
+        opacity: 0.9
+        layer.enabled: true
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.AllButtons
+            onWheel: wheel.accepted = true
+
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: toolPanel.radius / 2
+                anchors.rightMargin: anchors.margins - toolPanel.anchors.rightMargin
+                spacing: 2
+
+                Text {
+                    Layout.fillWidth: true
+                    text: "Viewer parameters"
+                    font.bold: true
+                    color: "darkblue"
+                }
+
+                Flickable {
+                    id: flickable
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Column {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        spacing: 5
+
+                        GroupBox {
+                            id: visualPanel
+                            implicitWidth: parent.width
+                            title: "Visual"
+
+                            RowLayout {
+                                anchors.fill: parent
+                                spacing: 0
+
+                                Label {
+                                    Layout.fillWidth: true
+                                    text: "Wireframe"
+                                }
+
+                                Switch {
+                                    Layout.fillWidth: true
+                                    checked: false
+                                    onCheckedChanged: root.wireframe = checked
+
+                                    ToolTip {
+                                        anchors.fill: parent
+                                        description: "Draw in wireframe mode"
+                                    }
+                                }
+                            }
+                        }
+
+                        GroupBox {
+                            id: cameraPanel
+                            implicitWidth: parent.width
+
+                            title: "Camera"
+
+                            Column {
+                                anchors.fill: parent
+                                spacing: 0
+
+                                GroupBox {
+                                    implicitWidth: parent.width
+                                    title: "Mode"
+                                    flat: true
+
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        spacing: 0
+
+                                        Button {
+                                            id: orthoButton
+                                            Layout.fillWidth: true
+                                            Layout.preferredWidth: parent.width
+
+                                            text: "Orthographic"
+                                            checkable: true
+                                            checked: false
+                                            onCheckedChanged: root.camera.orthographic = checked
+                                            onClicked: {
+                                                checked = true;
+                                                perspectiveButton.checked = false;
+                                            }
+
+                                            ToolTip {
+                                                anchors.fill: parent
+                                                description: "Orthographic Mode"
+                                            }
+                                        }
+
+                                        Button {
+                                            id: perspectiveButton
+                                            Layout.fillWidth: true
+                                            Layout.preferredWidth: parent.width
+
+                                            text: "Perspective"
+                                            checkable: true
+                                            checked: true
+                                            onCheckedChanged: root.camera.orthographic = !checked
+                                            onClicked: {
+                                                checked = true;
+                                                orthoButton.checked = false;
+                                            }
+
+                                            ToolTip {
+                                                anchors.fill: parent
+                                                description: "Perspective Mode"
+                                            }
+                                        }
+                                    }
+                                }
+
+                                GroupBox {
+                                    implicitWidth: parent.width
+                                    title: "View"
+                                    flat: true
+
+                                    GridLayout {
+                                        anchors.fill: parent
+                                        columns: 2
+                                        rowSpacing: 0
+                                        columnSpacing: 0
+
+                                        Button {
+                                            Layout.fillWidth: true
+                                            Layout.preferredWidth: parent.width
+                                            text: "Front"
+
+                                            onClicked: if(camera) camera.viewFromFront()
+
+                                            ToolTip {
+                                                anchors.fill: parent
+                                                description: "Front View"
+                                            }
+                                        }
+
+                                        Button {
+                                            Layout.fillWidth: true
+                                            Layout.preferredWidth: parent.width
+                                            text: "Back"
+
+                                            onClicked: if(camera) camera.viewFromBack()
+
+                                            ToolTip {
+                                                anchors.fill: parent
+                                                description: "Back View"
+                                            }
+                                        }
+
+                                        Button {
+                                            Layout.fillWidth: true
+                                            text: "Left"
+
+                                            onClicked: if(camera) camera.viewFromLeft()
+
+                                            ToolTip {
+                                                anchors.fill: parent
+                                                description: "Left View"
+                                            }
+                                        }
+
+                                        Button {
+                                            Layout.fillWidth: true
+                                            text: "Right"
+
+                                            onClicked: if(camera) camera.viewFromRight()
+
+                                            ToolTip {
+                                                anchors.fill: parent
+                                                description: "Right View"
+                                            }
+                                        }
+
+                                        Button {
+                                            Layout.fillWidth: true
+                                            text: "Top"
+
+                                            onClicked: if(camera) camera.viewFromTop()
+
+                                            ToolTip {
+                                                anchors.fill: parent
+                                                description: "Top View"
+                                            }
+                                        }
+
+                                        Button {
+                                            Layout.fillWidth: true
+                                            text: "Bottom"
+
+                                            onClicked: if(camera) camera.viewFromBottom()
+
+                                            ToolTip {
+                                                anchors.fill: parent
+                                                description: "Bottom View"
+                                            }
+                                        }
+
+                                        Button {
+                                            Layout.fillWidth: true
+                                            Layout.columnSpan: 2
+                                            text: "Isometric"
+
+                                            onClicked: if(camera) camera.viewIsometric()
+
+                                            ToolTip {
+                                                anchors.fill: parent
+                                                description: "Isometric View"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 1
+                    color: "darkgrey"
+                }
+            }
+        }
+    }
+
+    Image {
+        id: toolPanelSwitch
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: 26
+        anchors.rightMargin: 3
+        source: toolPanel.visible ? "qrc:/icon/minus.png" : "qrc:/icon/plus.png"
+        width: 12
+        height: width
+
+        MouseArea {
+            anchors.fill: parent
+            propagateComposedEvents: true
+            onClicked: toolPanel.visible = !toolPanel.visible
+        }
+    }
 }
