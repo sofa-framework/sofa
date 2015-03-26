@@ -15,20 +15,33 @@ template<> struct argtype< int >  {
     static std::string value() { return  "c_int"; }
 };
 
+template<> struct argtype< unsigned >  {
+    static std::string value() { return  "c_uint"; }
+};
+
+template<> struct argtype< float >  {
+    static std::string value() { return  "c_float"; }
+};
+
+template<> struct argtype< double >  {
+    static std::string value() { return  "c_double"; }
+};
 
 template<> struct argtype< void >  {
     static std::string value() { return  "None"; }
 };
 
-
-template<> struct argtype< const char*  >  {
-    static std::string value() { return  "c_char_p"; }
+template<> struct argtype< char >  {
+    static std::string value() { return  "c_char"; }
 };
 
-template<> struct argtype< char*  >  {
-    static std::string value() { return  "c_char_p"; }
+template<class T> struct argtype< T * > {
+    static std::string value() {
+        return  "POINTER(" + argtype<T>::value() + ")";
+    }
 };
 
+template<class T> struct argtype< const T > : argtype<T> { };
 
 // TODO more as needed
 
@@ -72,6 +85,9 @@ static std::string make_restype( Ret (*func) (Arg1, Arg2) ) {
 class python {
 
 public:
+
+    typedef sofa::core::objectmodel::Base* object;
+
     typedef void (*func_ptr_type)();
 private:
     typedef std::map<func_ptr_type, std::string> map_type;
