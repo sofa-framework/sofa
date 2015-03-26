@@ -20,7 +20,7 @@ def insertRigid(parentNode, rigidModel, param=None):
     # check mesh formats are supported by generateRigid
     meshFormatSupported = True
     for mesh in rigidModel.mesh :
-        meshFormatSupported &= rigidModel.mesh.format=="obj" or rigidModel.mesh.format=="vtk"
+        meshFormatSupported &= mesh.format=="obj" or mesh.format=="vtk"
 
     if len(rigidModel.mesh)!=0 and meshFormatSupported:
         massinfo = SofaPython.mass.RigidMassInfo()
