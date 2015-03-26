@@ -40,7 +40,7 @@ private:
 
 };
 
-class SceneData : public QObject
+class SOFA_SOFAQTQUICKGUI_API SceneData : public QObject
 {
     Q_OBJECT
 
