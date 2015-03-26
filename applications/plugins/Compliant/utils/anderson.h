@@ -17,7 +17,7 @@ class anderson : public eigen_types {
     vec metric;
 
     // work stuff
-    vec old, alpha;
+    vec old, next, alpha;
     Eigen::LDLT<dmat> inv;
     
 public:
@@ -27,7 +27,7 @@ public:
     anderson(unsigned n, unsigned m = 2, const vec& metric = vec() );
 
     // apply acceleration to fixed-point vector
-    void operator()(vec& x);
+    void operator()(vec& x, bool sign_check = false);
 
 };
 

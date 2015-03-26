@@ -15,7 +15,7 @@ anderson::anderson(unsigned n, unsigned m, const vec& metric)
 }
 
 
-void anderson::operator()(vec& x) {
+void anderson::operator()(vec& x, bool sign_check) {
 
     if( k > 0 ) {
         const unsigned index = k % m;
@@ -28,6 +28,8 @@ void anderson::operator()(vec& x) {
 
         inv.compute( K );
 
+        old = x;
+        
         if(inv.info() == Eigen::Success) {
         
             // TODO is there a temporary for ones ?
@@ -35,13 +37,17 @@ void anderson::operator()(vec& x) {
 
             alpha /= alpha.array().sum();
 
-            // TODO sign change check
-            x.noalias() = G * alpha;
+            next.noalias() = G * alpha;
+            
+            if( !sign_check || ((x.array() > 0) == (next.array() > 0)).all() ) {
+                x.noalias() = next;
+            }
             
         }
+    } else {
+        old = x;
     }
 
-    old = x;
     ++k;
 }
 
