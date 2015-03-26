@@ -345,7 +345,7 @@ void SequentialSolver::solve_impl(vec& res,
 
 	// free velocity
     vec free_res( sub.size_sub() );
-    sub.solve_filtered(*response, free_res, rhs.head(sys.m));
+    sub.solve_filtered(*response, free_res, rhs.head(sys.m), SubKKT::PRIMAL);
 
 
     // we're done

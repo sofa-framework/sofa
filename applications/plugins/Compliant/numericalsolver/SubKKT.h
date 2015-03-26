@@ -38,11 +38,17 @@ public:
     // filtered subsystem
     rmat A;
 
+
+    typedef unsigned char ProblemType;
+    static const ProblemType PRIMAL = 1;
+    static const ProblemType DUAL = 2;
+    static const ProblemType FULL = PRIMAL | DUAL;
+
 private:
     // work vectors during solve
     mutable vec vtmp1, vtmp2;
 
-    mutable cmat mtmp1, mtmp2;
+    mutable cmat mtmpc1, mtmpc2;
     mutable rmat mtmpr;
 
 public:
@@ -54,6 +60,10 @@ public:
     // standard projected (1, 1) schur subsystem (Q is
     // empty). size_full = sys.m, size_sub = #(non-empty P elements)
     static void projected_primal(SubKKT& res, const AssembledSystem& sys);
+
+    // project constraint substem by exluding non-bilateral constraints
+    // returns true iff there are no bilateral constraints
+    static bool projected_dual(SubKKT& res, const AssembledSystem& sys);
 
     // full kkt with projected primal variables
     // if only_bilaterals=true then excludes non bilateral constaints
@@ -92,7 +102,7 @@ public:
     // will be resized as needed (full size).
     void solve(const Response& response, cmat& result, const cmat& rhs) const;
     template<class Solver>
-    void solve(const Solver& response, vec& result, const vec& rhs) const;
+    void solve(const Solver& response, vec& result, const vec& rhs, ProblemType problem ) const;
 
 
     void prod(vec& result, const vec& rhs) const;
@@ -103,7 +113,7 @@ public:
     // (in) rhs is full size
     // (out) result is sub size
     template<class Solver>
-    void solve_filtered(const Solver& response, vec& result, const vec& rhs ) const;
+    void solve_filtered(const Solver& response, vec& result, const vec& rhs, ProblemType problem ) const;
     // (out) projected_rhs is sub size
     void solve_filtered(const Response& response, cmat& result, const rmat& rhs, rmat& projected_rhs ) const;
 
@@ -116,7 +126,7 @@ public:
 
         Adaptor(Response& resp, const SubKKT& sub): resp(resp), sub(sub) { }
 
-        void solve(vec& res, const vec& rhs) const { sub.solve(resp, res, rhs); }
+        void solve(vec& res, const vec& rhs) const { sub.solve(resp, res, rhs, FULL); }
         void solve(cmat& res, const cmat& rhs) const { sub.solve(resp, res, rhs); }
         
     };
