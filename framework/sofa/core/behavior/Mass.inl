@@ -159,9 +159,10 @@ void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId 
 }
 
 template<class DataTypes>
-SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/) const
+SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
 {
-    serr << "ERROR("<<getClassName()<<"): getKineticEnergy(const MechanicalParams*) not implemented." << sendl;
+    if (this->mstate)
+        return getKineticEnergy(mparams /* PARAMS FIRST */, *mparams->readV(this->mstate));
     return 0.0;
 }
 
@@ -174,15 +175,16 @@ SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, con
 
 
 template<class DataTypes>
-SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams*) const
+SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
-    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const MechanicalParams* ) not implemented." << sendl;
+    if (this->mstate)
+        return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate));
     return 0.0;
 }
 
 template<class DataTypes>
 SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
-{   
+{
     serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented." << sendl;
     return 0.0;
 }
