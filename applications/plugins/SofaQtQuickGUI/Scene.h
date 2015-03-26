@@ -74,10 +74,10 @@ public:
 	~Scene();
 
 public:
-	Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged);
-	Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged);
-	Q_PROPERTY(QUrl sourceQML READ sourceQML WRITE setSourceQML NOTIFY sourceQMLChanged);
-	Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged);
+    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged)
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QUrl sourceQML READ sourceQML WRITE setSourceQML NOTIFY sourceQMLChanged)
+    Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged)
 	Q_PROPERTY(bool play READ playing WRITE setPlay NOTIFY playChanged)
 	Q_PROPERTY(bool asynchronous MEMBER myAsynchronous NOTIFY asynchronousChanged)
     Q_PROPERTY(bool visualDirty READ visualDirty NOTIFY visualDirtyChanged)

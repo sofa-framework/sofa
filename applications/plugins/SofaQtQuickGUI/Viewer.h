@@ -29,12 +29,17 @@ public:
     Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged)
     Q_PROPERTY(sofa::qtquick::Camera* camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
+    Q_PROPERTY(bool wireframe READ wireframe WRITE setWireframe NOTIFY wireframeChanged)
+
 public:
 	Scene* scene() const	{return myScene;}
     void setScene(Scene* newScene);
 
 	Camera* camera() const	{return myCamera;}
     void setCamera(Camera* newCamera);
+
+    bool wireframe() const	{return myWireframe;}
+    void setWireframe(bool newWireframe);
 
 	Q_INVOKABLE QVector3D mapFromWorld(const QVector3D& point);
 	Q_INVOKABLE QVector3D mapToWorld(const QVector3D& point);
@@ -45,6 +50,7 @@ signals:
     void sceneChanged(sofa::qtquick::Scene* newScene);
 	void scenePathChanged();
     void cameraChanged(sofa::qtquick::Camera* newCamera);
+    void wireframeChanged(bool newWireframe);
 
 public slots:
     void paint();
@@ -56,11 +62,13 @@ private slots:
     void handleWindowChanged(QQuickWindow* window);
 
 signals:
-	void requestPaint();
+    void requestPaint();
 
 private:
 	Scene*						myScene;
 	Camera*						myCamera;
+    bool                        myWireframe;
+
 };
 
 }
