@@ -39,6 +39,7 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/rmath.h>
@@ -320,6 +321,10 @@ protected:
                 stepCounter = 0;
                 write();
             }
+        }
+        if (sofa::core::objectmodel::GUIEvent * guiEvent = dynamic_cast<sofa::core::objectmodel::GUIEvent*>(event)) {
+            if (guiEvent->getValueName().compare("ImageExport") == 0)
+                write();
         }
     }
 
