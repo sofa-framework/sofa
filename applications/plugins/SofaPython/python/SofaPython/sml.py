@@ -44,13 +44,19 @@ class Model:
             def __init__(self):
                 self.index=list()
                 self.data=dict()
-        
-        def __init__(self, meshXml):
+
+        def __init__(self, meshXml=None):
+            self.format=None
+            self.source=None
+            self.group=dict()
+            if not meshXml is None:
+                self.parseXml(meshXml)
+
+        def parseXml(self, meshXml):
             parseIdName(self,meshXml)
             self.format = meshXml.find("source").attrib["format"]
             self.source = meshXml.find("source").text
         
-            self.group=dict()
             for g in meshXml.iter("group"):
                 self.group[g.attrib["id"]] = Model.Mesh.Group()
                 self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
@@ -58,19 +64,27 @@ class Model:
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)                    
     
     class Solid:
-        def __init__(self, objXml):
-            parseIdName(self,objXml)
+        def __init__(self, solidXml=None):
+            self.id = None
+            self.name = None
+            self.tags = set()
+            self.position = None
+            self.mesh = list() # list of meshes
+            self.density = None
+            self.mass = None
+            self.inertia = None
+            self.skinnings=list()
+            if not solidXml is None:
+                self.parseXml(solidXml)
+
+        def parseXml(self, objXml):
+            parseIdName(self, objXml)
             parseTag(self,objXml)
             self.position=Tools.strToListFloat(objXml.find("position").text)
-            self.mesh = list() # list of meshes
-            self.density=None
-            self.mass=None
-            self.inertia=None
             if not objXml.find("density") is None:
                 self.density=float(objXml.find("density").text)
             if not objXml.find("mass") is None:
                 self.mass = float(objXml.find("mass").text)
-            self.skinnings=list()
 
     class Offset:
         def __init__(self, offsetXml):
