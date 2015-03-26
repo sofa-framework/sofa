@@ -21,20 +21,14 @@ static void projection_basis(rmat& res, const rmat& P,
     }
 
     res.setZero();
-    res.reserve(P.rows());
+    res.reserve(P.nonZeros());
     
     unsigned off = 0;
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
 
         res.startVec(i);
 
-        for(rmat::InnerIterator it(P, i); it; ++it) {
-            if( it.value() ) {
-                res.insertBack(i, off) = it.value();
-            }
-
-            ++off;
-        }
+        if( rmat::InnerIterator(P, i) ) res.insertBack(i, off++) = 1;
 
     }
     

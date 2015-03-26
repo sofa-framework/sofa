@@ -16,8 +16,12 @@ class Response;
 
    A factorization of a sub-system in an AssembledSystem.
 
-   For now, it only provides a way to factor the sub-kkt corresponding
-   to non-zero lines/columns in the projection matrix P.
+   For now, it provides:
+        - a way to factor the sub-kkt corresponding
+            to non-zero lines/columns in the projection matrix P.
+        - a way to assemble the complete KKT (dynamics+bilateral constraints)
+            in a large matrix (with removed zero lines/columns in
+            the projection matrix P)
 
    @author Maxime Tournier
 
@@ -38,8 +42,9 @@ private:
     // work vectors during solve
     mutable vec vtmp1, vtmp2;
 
-    mutable cmat mtmp1, mtmp2/*, mtmp3*/;
+    mutable cmat mtmp1, mtmp2;
     mutable rmat mtmpr;
+
 public:
 
     SubKKT();
