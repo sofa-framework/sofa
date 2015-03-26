@@ -34,6 +34,8 @@ class SOFA_Compliant_API ModulusSolver : public IterativeSolver {
 
     SubKKT sub;
     Data<real> omega;
+
+    Data<unsigned> anderson;
     
   private:
     vec unilateral, diagonal;

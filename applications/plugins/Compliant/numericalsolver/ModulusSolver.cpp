@@ -4,7 +4,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include "../utils/sparse.h"
-
+#include "../utils/anderson.h"
 
 #include "../constraint/CoulombConstraint.h"
 #include "../constraint/UnilateralConstraint.h"
@@ -30,7 +30,10 @@ ModulusSolver::ModulusSolver()
     : omega(initData(&omega,
                      1.0,
                      "omega",
-                     "magic stuff")) 
+                     "magic stuff")),
+      anderson(initData(&anderson, unsigned(0),
+                        "anderson",
+                        "anderson acceleration history size, 0 if none"))
 {
     
 }
@@ -139,6 +142,8 @@ void ModulusSolver::solve(vec& res,
     const real omega = this->omega.getValue();
     const real precision = this->precision.getValue();
 
+    utils::anderson accel(sys.n, anderson.getValue(), diagonal);
+    
     unsigned k;
     const unsigned kmax = iterations.getValue();
     for(k = 0; k < kmax; ++k) {
@@ -155,7 +160,7 @@ void ModulusSolver::solve(vec& res,
         // store |z|
         zabs = unilateral.cwiseProduct(tmp.tail(sys.n));
         
-        // prod is wrong, we need to add back 2 omega |z|
+        // prod is wrong, we need to add back 2 diag * omega |z|
         sub.prod(tmp, tmp);
         
         // tmp += 2 * omega.getValue() * zabs;
@@ -172,6 +177,15 @@ void ModulusSolver::solve(vec& res,
         
         y.head(sys.m).array() -= tmp.head(sys.m).array();
         y.tail(sys.n).array() -= tmp.tail(sys.n).array() + unilateral.array() * y.tail(sys.n).array();
+
+        if( anderson.getValue() ) {
+
+            // reuse zabs
+            zabs = y.tail(sys.n);
+            accel(zabs, true);
+            y.tail(sys.n) = zabs;
+
+        }
         
         error = unilateral.cwiseProduct(old - y.tail(sys.n)).norm();
         if( error <= precision ) break;
@@ -184,6 +198,8 @@ void ModulusSolver::solve(vec& res,
 
     // add |z| to dual to get lambda
     res.tail(sys.n).array() += unilateral.array() * y.tail(sys.n).array().abs();
+
+    // TODO we should recompute x based on actual, non sticky lambdas
     
 }
 
