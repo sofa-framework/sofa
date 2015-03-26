@@ -440,8 +440,8 @@ protected:
 
 
         /// fill inside
-        if(!isClosed(tri.ref()))   serr<<"mesh["<<meshId<<"] is open -> can't fill it"<<sendl;
-        else
+        if(!isClosed(tri.ref())) sout<<"mesh["<<meshId<<"] might be open, let's try to fill it anyway"<<sendl;
+//        else
         {
             // flood fill from the exterior point (0,0,0) with the color outsideColor
             if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
