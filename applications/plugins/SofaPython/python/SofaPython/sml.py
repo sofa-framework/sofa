@@ -193,7 +193,7 @@ class Model:
                         print "WARNING: sml.Model: mesh not found:", mesh.source
                     self.meshes[m.attrib["id"]] = mesh
                     
-            # objects
+            # solids
             for objXml in modelXml.iter("solid"):
                 if objXml.attrib["id"] in self.solids:
                     print "ERROR: sml.Model: solid defined twice, id:", r.attrib["id"]
@@ -320,7 +320,7 @@ def setupUnits(myUnits):
     for quantity,unit in myUnits.iteritems():
         exec("units.local_{0} = units.{0}_{1}".format(quantity,unit))
         message+=" "+quantity+":"+unit
-    print message
+    print message    
 
 class BaseScene:
     """ Base class for Scene class, creates a node for this Scene
