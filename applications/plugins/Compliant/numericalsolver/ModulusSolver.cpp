@@ -83,7 +83,7 @@ void ModulusSolver::factor(const AssembledSystem& sys) {
     }
 
     // build system
-    SubKKT::projected_kkt(sub, sys, 1e-14 );
+    SubKKT::projected_kkt(sub, sys, false, 1e-14 ); // TODO remove hard-coded regularization
 
     const vec Hdiag_inv = sys.H.diagonal().cwiseInverse();
 
