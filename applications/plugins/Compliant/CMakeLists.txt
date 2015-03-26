@@ -105,7 +105,8 @@ set(HEADER_FILES
     utils/se3.h
     utils/sparse.h
     utils/thread_variable.h
-
+	utils/anderson.h
+	
     utils/cg.h
     utils/preconditionedcg.h
     utils/minres.h
@@ -185,7 +186,9 @@ set(SOURCE_FILES
     contact/FrictionCompliantContact.cpp
     contact/PenalityCompliantContact.cpp
 	
-	controller/CompliantSleepController.cpp)
+	controller/CompliantSleepController.cpp
+
+   	utils/anderson.cpp)
 
 set(README_FILES Compliant.txt)
 
