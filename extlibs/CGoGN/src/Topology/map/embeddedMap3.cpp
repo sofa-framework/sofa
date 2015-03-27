@@ -216,6 +216,73 @@ Dart EmbeddedMap3::collapseEdge(Dart d, bool delDegenerateVolumes)
     return resV;
 }
 
+bool EmbeddedMap3::flipEdge(Dart d)
+{
+    std::cerr << "EmbeddedMap3::flipEdge" << std::endl;
+    if (Map2::flipEdge(d))
+    {
+        const Dart dd = phi3(d);
+        const Dart e = phi2(d) ;
+        const Dart ee = phi3(e);
+
+        if (isOrbitEmbedded<VERTEX>())
+        {
+            copyDartEmbedding<VERTEX>(d, phi1(e)) ;
+            copyDartEmbedding<VERTEX>(e, phi1(d)) ;
+            if (!isBoundaryMarkedCurrent(dd))
+            {
+                copyDartEmbedding<VERTEX>(dd, phi1(ee)) ;
+                copyDartEmbedding<VERTEX>(ee, phi1(dd)) ;
+            }
+        }
+
+        if (isOrbitEmbedded<FACE>())
+        {
+            copyDartEmbedding<FACE>(phi_1(d), d) ;
+            copyDartEmbedding<FACE>(phi_1(e), e) ;
+            if (!isBoundaryMarkedCurrent(dd))
+            {
+                copyDartEmbedding<FACE>(phi1(dd), dd) ;
+                copyDartEmbedding<FACE>(phi1(ee), ee) ;
+            }
+        }
+
+        return true;
+    }
+    return false;
+}
+
+bool EmbeddedMap3::flipBackEdge(Dart d)
+{
+    std::cerr << "EmbeddedMap3::flipBackEdge" << std::endl;
+    if (Map2::flipBackEdge(d))
+    {
+        const Dart dd = phi3(d);
+        const Dart e = phi2(d) ;
+        const Dart ee = phi3(e);
+
+        if (isOrbitEmbedded<VERTEX>())
+        {
+            copyDartEmbedding<VERTEX>(d, phi1(e)) ;
+            copyDartEmbedding<VERTEX>(e, phi1(d)) ;
+            copyDartEmbedding<VERTEX>(dd, phi1(ee)) ;
+            copyDartEmbedding<VERTEX>(ee, phi1(dd)) ;
+
+        }
+
+        if (isOrbitEmbedded<FACE>())
+        {
+            copyDartEmbedding<FACE>(phi1(d), d) ;
+            copyDartEmbedding<FACE>(phi1(e), e) ;
+            copyDartEmbedding<FACE>(phi_1(dd), dd) ;
+            copyDartEmbedding<FACE>(phi_1(ee), ee) ;
+        }
+
+        return true;
+    }
+    return false;
+}
+
 void EmbeddedMap3::splitFace(Dart d, Dart e)
 {
     Dart dd = phi1(phi3(d));
@@ -451,10 +518,10 @@ bool EmbeddedMap3::mergeVolumes(Dart d, bool deleteFace)
         if (isOrbitEmbedded<VOLUME>())
         {
             Algo::Topo::setOrbitEmbedding<VOLUME>(*this, d2, getEmbedding<VOLUME>(d2)) ;
-//            getAttributeContainer(VOLUME).updateHole(deleteVolumeID);
+            //            getAttributeContainer(VOLUME).updateHole(deleteVolumeID);
         }
         if (deleteFace && (deletedFaceID != EMBNULL)) {
-//            getAttributeContainer(FACE).updateHole(deletedFaceID);
+            //            getAttributeContainer(FACE).updateHole(deletedFaceID);
         }
         //        this->check();
         return true;
@@ -507,8 +574,7 @@ void EmbeddedMap3::splitVolume(std::vector<Dart>& vd)
     }
 
     if (isOrbitEmbedded<FACE>()) {
-        Dart v = vd.front() ;
-        Algo::Topo::initOrbitEmbeddingOnNewCell<FACE>(*this, phi2(v)) ;
+        Algo::Topo::initOrbitEmbeddingOnNewCell<FACE>(*this, phi2(vd.front())) ;
     }
 
 
