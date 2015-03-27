@@ -392,6 +392,42 @@ QString Scene::dumpGraph() const
 	return dump;
 }
 
+void Scene::reinitComponent(const QString& path)
+{
+    QStringList pathComponents = path.split("/");
+
+    Node::SPtr node = mySofaSimulation->GetRoot();
+    unsigned int i = 0;
+    while(i < pathComponents.size()-1) {
+        if (pathComponents[i]=="@") {
+            ++i;
+            continue;
+        }
+
+        node = node->getChild(pathComponents[i].toStdString());
+        if (!node) {
+            qWarning() << "Object path unknown:" << path;
+            return;
+        }
+        ++i;
+    }
+    BaseObject* object = node->get<BaseObject>(pathComponents[i].toStdString());
+    if(!object) {
+        qWarning() << "Object path unknown:" << path;
+        return;
+    }
+    object->reinit();
+}
+
+void Scene::sendGUIEvent(const QString& controlID, const QString& valueName, const QString& value)
+{
+    if(!mySofaSimulation->GetRoot())
+        return;
+
+    sofa::core::objectmodel::GUIEvent event(controlID.toUtf8().constData(), valueName.toUtf8().constData(), value.toUtf8().constData());
+    mySofaSimulation->GetRoot()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
+}
+
 QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
 {
     QVariantMap object;
