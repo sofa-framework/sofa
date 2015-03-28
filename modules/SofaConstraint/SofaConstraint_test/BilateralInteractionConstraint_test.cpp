@@ -100,19 +100,20 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
         std::vector<Coord> points;
         points.resize(2);
 
-        if(meca.size()==2)
-        {
-            for(unsigned int i=0; i<meca.size(); i++)
-                points[i] = meca[i]->read(core::ConstVecCoordId::position())->getValue()[0];
-        }
-        else
+        if(meca.size()!=2)
         {
             ADD_FAILURE() << "Error while searching mechanical object" << std::endl;
         }
 
         for(int i=0; i<10; i++)
             sofa::simulation::getSimulation()->animate(root.get(),(double)0.001);
-
+        
+        if(meca.size()==2)
+        {
+            for(unsigned int i=0; i<meca.size(); i++)
+                points[i] = meca[i]->read(core::ConstVecCoordId::position())->getValue()[0];
+        }
+            
         if(points[0] == points[1]) return true;
         else
         {
