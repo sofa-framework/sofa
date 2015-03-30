@@ -75,7 +75,7 @@ void StopperConstraint<DataTypes>::getConstraintViolation(const core::Constraint
 }
 
 template<class DataTypes>
-void StopperConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void StopperConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     for(int i=0; i<1; i++)
         resTab[offset++] = new StopperConstraintResolution1Dof(min.getValue(), max.getValue());

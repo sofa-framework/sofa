@@ -516,18 +516,18 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 		tol *= dimension;
 
 	if(solver)
-	{
+    {
 		for(i=0; i<dimension; )
-		{
-			if(!constraintsResolutions[i])
-			{
+        {
+            if(!constraintsResolutions[i])
+            {
 				std::cerr << "Bad size of constraintsResolutions in GenericConstraintProblem" << std::endl;
                 //std::cout << "size="<< constraintsResolutions.size()<<std::endl;
 
 				dimension = i;
 				break;
-			}
-			constraintsResolutions[i]->init(i, w, force);
+            }
+            constraintsResolutions[i]->init(i, w, force);
 			i += constraintsResolutions[i]->nbLines;
 		}
 	}

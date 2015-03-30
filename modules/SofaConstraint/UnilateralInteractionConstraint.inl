@@ -311,7 +311,7 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintInfo(VecConstraint
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams *, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
     if(contactsStatus)
     {
