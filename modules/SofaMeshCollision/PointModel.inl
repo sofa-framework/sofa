@@ -456,7 +456,7 @@ bool TPoint<DataTypes>::testLMD(const defaulttype::Vector3 &PQ, double &coneFact
     defaulttype::Vector3 pt = p();
 
     sofa::core::topology::BaseMeshTopology* mesh = this->model->getMeshTopology();
-    helper::vector<defaulttype::Vector3> x = (*this->model->mstate->getX());
+    helper::vector<defaulttype::Vector3> x = (*this->model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue());
 
     const helper::vector <unsigned int>& trianglesAroundVertex = mesh->getTrianglesAroundVertex(this->index);
     const helper::vector <unsigned int>& edgesAroundVertex = mesh->getEdgesAroundVertex(this->index);

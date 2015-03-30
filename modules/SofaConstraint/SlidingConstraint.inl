@@ -178,7 +178,7 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     else
         glColor4f(1,0,1,1);
     helper::gl::glVertexT((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[m1.getValue()]);
-    //      helper::gl::glVertexT((*this->object2->getX())[m3]);
+    //      helper::gl::glVertexT((*this->object2->read(sofa::core::ConstVecCoordId::position())->getValue())[m3]);
     //      helper::gl::glVertexT(proj);
     glEnd();
 
