@@ -890,7 +890,7 @@ void Scene::onSetDataValue(const QString& path, const QVariant& value)
 
 void Scene::init()
 {
-	if(!mySofaSimulation->GetRoot())
+    if(!mySofaSimulation->GetRoot() || myIsInit)
 		return;
 
     GLenum err = glewInit();
@@ -918,10 +918,14 @@ void Scene::init()
     }
 #endif
 
+    // WARNING: some plugins like "image" need a valid OpenGL Context during init because they are initing textures during init instead of initTextures ...
+    mySofaSimulation->init(mySofaSimulation->GetRoot().get());
 	mySofaSimulation->initTextures(mySofaSimulation->GetRoot().get());
 	setDt(mySofaSimulation->GetRoot()->getDt());
 
     myIsInit = true;
+
+    setStatus(Status::Ready);
 }
 
 void Scene::reload()
