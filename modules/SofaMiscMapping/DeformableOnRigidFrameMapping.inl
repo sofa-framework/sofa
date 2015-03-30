@@ -371,7 +371,7 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::Ve
             //this->f_printLog.setValue(true);
             serr<<"Warning: applyJT was called before any apply ("<<in.size() << "!="<<rotatedPoints.size()<<")"<<sendl;
             //this->propagateX();
-            //	if (m_fromModel!=NULL && m_toModel->getX()!=NULL && m_fromModel->getX()!=NULL)
+            //	if (m_fromModel!=NULL && m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL && m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL)
             const InDataVecCoord* xfromData = m_toModel->read(core::ConstVecCoordId::position());
             const InVecCoord xfrom = xfromData->getValue();
             OutDataVecCoord* xtoData = m_toModel->write(core::VecCoordId::position());
@@ -677,15 +677,15 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //template <class TIn, class TInRoot, class TOut>
 //void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateX()
 //{
-//	if (m_fromModel!=NULL && m_toModel->getX()!=NULL && m_fromModel->getX()!=NULL)
-//		apply(*m_toModel->getX(),m_fromModel->getX(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
+//	if (m_fromModel!=NULL && m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL && m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()!=NULL)
+//		apply(*m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue(),m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
 //
 //
 //	if( this->f_printLog.getValue())	{
 //		serr<<"DeformableOnRigidFrameMapping::propageX processed :"<<sendl;
 //		if (m_fromRootModel!=NULL)
-//			serr<<"input root: "<<*m_fromRootModel->getX();
-//		serr<<"  - input: "<<*m_fromModel->getX()<<"  output : "<<*m_toModel->getX()<<sendl;
+//			serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::position())->getValue();
+//		serr<<"  - input: "<<*m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<"  output : "<<*m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<sendl;
 //	}
 //
 //
@@ -694,14 +694,14 @@ void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::handleTopologyChange(cor
 //template <class TIn, class TInRoot, class TOut>
 //void DeformableOnRigidFrameMapping<TIn, TInRoot, TOut>::propagateXfree()
 //{
-//	if (m_fromModel!=NULL && m_toModel->getXfree()!=NULL && m_fromModel->getXfree()!=NULL)
-//		apply(*m_toModel->getXfree(), *m_fromModel->getXfree(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->getXfree()));
+//	if (m_fromModel!=NULL && m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()!=NULL && m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()!=NULL)
+//		apply(*m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue(), *m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue(), (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()));
 //
 //	if( this->f_printLog.getValue()){
 //		serr<<"DeformableOnRigidFrameMapping::propageXfree processed"<<sendl;
 //		if (m_fromRootModel!=NULL)
-//			serr<<"input root: "<<*m_fromRootModel->getXfree();
-//		serr<<"  - input: "<<*m_fromModel->getXfree()<<"  output : "<<*m_toModel->getXfree()<<sendl;
+//			serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue();
+//		serr<<"  - input: "<<*m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()<<"  output : "<<*m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()<<sendl;
 //	}
 //
 //}

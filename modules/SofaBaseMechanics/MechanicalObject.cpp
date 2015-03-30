@@ -51,7 +51,7 @@ using namespace defaulttype;
 //    // participating to bbox only if it is drawn
 //    if( !showObject.getValue() ) return false;
 
-//    const VecCoord& x = *this->getX();
+//    const VecCoord& x = *this->read(sofa::core::ConstVecCoordId::position())->getValue();
 //    for( std::size_t i=0; i<x.size(); i++ )
 //    {
 //        Vec<3,Real> p;

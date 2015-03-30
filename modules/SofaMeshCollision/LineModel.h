@@ -296,14 +296,14 @@ inline bool TLine<DataTypes>::activated(core::CollisionModel *cm) const
 
 //inline const Vector3* Line::tRight() const {
 //	if (model->elems[index].tRight != -1)
-//		return &(*model->mstate->getX())[model->elems[index].tRight];
+//		return &(*model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue())[model->elems[index].tRight];
 //	else
 //		return NULL;
 //}
 
 //inline const Vector3* Line::tLeft() const {
 //	if (model->elems[index].tLeft != -1)
-//		return &(*model->mstate->getX())[model->elems[index].tLeft];
+//		return &(*model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue())[model->elems[index].tLeft];
 //	else
 //		return NULL;
 //}
