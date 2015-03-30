@@ -54,7 +54,7 @@ public:
         force[line  ] = 0.0;
     }
 
-    virtual void resolution(int line, double** /*w*/, double* d, double* force)
+    virtual void resolution(int line, double** /*w*/, double* d, double* force, double*)
     {
         double dfree = d[line] - _w * force[line];
 
