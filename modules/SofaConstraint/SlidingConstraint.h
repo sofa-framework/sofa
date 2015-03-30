@@ -39,6 +39,7 @@ namespace component
 
 namespace constraintset
 {
+using sofa::core::ConstraintParams;
 
 template<class DataTypes>
 class SlidingConstraint : public core::behavior::PairInteractionConstraint<DataTypes>
@@ -113,7 +114,9 @@ public:
     void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
             , const DataVecDeriv &v1, const DataVecDeriv &v2);
 
-    virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+    virtual void getConstraintResolution(const core::ConstraintParams*,
+                                         std::vector<core::behavior::ConstraintResolution*>& resTab,
+                                         unsigned int& offset);
 
     void draw(const core::visual::VisualParams* vparams);
 };

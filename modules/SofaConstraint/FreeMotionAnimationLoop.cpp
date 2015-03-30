@@ -39,7 +39,6 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
