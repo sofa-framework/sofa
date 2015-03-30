@@ -522,6 +522,8 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
 			if(!constraintsResolutions[i])
 			{
 				std::cerr << "Bad size of constraintsResolutions in GenericConstraintProblem" << std::endl;
+                //std::cout << "size="<< constraintsResolutions.size()<<std::endl;
+
 				dimension = i;
 				break;
 			}
