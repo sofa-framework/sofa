@@ -39,6 +39,7 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	virtual void init();
 
 	Data<SReal> omega;
+    Data<bool> d_bilateralBlock;
 
   protected:
 
@@ -75,7 +76,19 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	
 	typedef std::vector<block> blocks_type;
 	blocks_type blocks;
-	
+
+    struct SOFA_Compliant_API Bilateral_block {
+        unsigned size;
+        rmat offset;
+        typedef Eigen::SimplicialLDLT< AssembledSystem::cmat > inverse_type;
+        inverse_type inv;
+        cmat C;
+        rmat JP;
+        cmat mapping_response;
+    };
+    Bilateral_block bilateral_block;
+
+
     virtual void fetch_blocks(const system_type& system);
 
     // constraint responses
@@ -88,12 +101,11 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	// blocks factorization
     typedef Eigen::Map<dmat> schur_type;
 	void factor_block(inverse_type& inv, const schur_type& schur);
-	
+
 	// blocks solve
 	typedef Eigen::Map< vec > chunk_type;
-	virtual void solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const;
-	
-  protected:
+    void solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const;
+
 
 
 };

@@ -21,42 +21,91 @@ int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").a
 
 SequentialSolver::SequentialSolver() 
 	: omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
-{
-	
-}
+    , d_bilateralBlock(initData(&d_bilateralBlock, false, "bilateralBlock", "One big block for all bilateral constraints, slow for now" ))
+{}
 
 
 SequentialSolver::block::block() : offset(0), size(0), projector(0), activated(false) { }
 
 void SequentialSolver::fetch_blocks(const system_type& system) {
-	
+
+    bool bilateralBlock = d_bilateralBlock.getValue();
+
+
 	// TODO don't free memory ?
 	blocks.clear();
+    bilateral_block.size = 0;
 	
 	unsigned off = 0;
 
-	for(unsigned i = 0, n = system.compliant.size(); i < n; ++i) {
+    for(unsigned i = 0, n = system.compliant.size(); i < n; ++i)
+    {
 		system_type::dofs_type* const dofs = system.compliant[i];
         const system_type::constraint_type& constraint = system.constraints[i];
+        Constraint* proj = constraint.projector.get();
 
-		const unsigned dim = dofs->getDerivDimension();
-		
-		for(unsigned k = 0, max = dofs->getSize(); k < max; ++k) {
-			
-			block b;
+        if( proj || !bilateralBlock )
+        {
+            const unsigned dim = dofs->getDerivDimension();
 
-			b.offset = off;
-			b.size = dim;
-            b.projector = constraint.projector.get(); // TODO remove this pointer copy
+            for(unsigned k = 0, max = dofs->getSize(); k < max; ++k)
+            {
 
-            assert( !b.projector || !b.projector->mask || b.projector->mask->empty() || b.projector->mask->size() == max );
-            b.activated = !b.projector || !b.projector->mask || b.projector->mask->empty() || (*b.projector->mask)[k];
+                block b;
 
-			blocks.push_back( b );
+                b.offset = off;
+                b.size = dim;
+                b.projector = constraint.projector.get();
 
-			off += dim;
-		}
-	}
+                assert( !b.projector || !b.projector->mask || b.projector->mask->empty() || b.projector->mask->size() == max );
+                b.activated = !b.projector || !b.projector->mask || b.projector->mask->empty() || (*b.projector->mask)[k];
+
+                blocks.push_back( b );
+                off += dim;
+            }
+        }
+        else
+        {
+            const unsigned dim = dofs->getMatrixSize();
+            off += dim;
+            bilateral_block.size += dim;
+        }
+    }
+
+
+    if( bilateral_block.size )
+    {
+        off = 0;
+        unsigned off_bilat = 0;
+
+        bilateral_block.offset.resize( bilateral_block.size, system.n );
+
+        for(unsigned i = 0, n = system.compliant.size(); i < n; ++i)
+        {
+            system_type::dofs_type* const dofs = system.compliant[i];
+            const system_type::constraint_type& constraint = system.constraints[i];
+
+            const unsigned dim = dofs->getMatrixSize();
+
+            if( !constraint.projector ) // bilat
+            {
+                for( unsigned j=0 ; j<dim; ++j )
+                {
+                    bilateral_block.offset.startVec( off_bilat+j );
+                    bilateral_block.offset.insertBack( off_bilat+j, off+j ) = 1.0;
+                }
+                off_bilat += dim;
+            }
+
+            off += dim;
+        }
+
+        bilateral_block.offset.finalize();
+
+//        serr<<"fetch_blocks bilateral_block.offset "<<dmat(bilateral_block.offset)<<sendl;
+
+    }
+
 
 }
 
@@ -74,68 +123,11 @@ void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) 
 }
 
 
-//static bool diagonal_dominant(const AssembledSystem& sys)
-//{
-//	typedef rmat::Index Index;
-    
-//	rmat PH = sys.P * sys.H;
-    
-//	typedef SReal real;
-
-//    if( sys.n )
-//    {
-//        rmat PJt = sys.P * sys.J.transpose();
-        
-//        for( unsigned i = 0 ; i < sys.m ; ++i )
-//	        {
-//		        real d = helper::rabs(PH.coeff(i,i));
-		        
-//		        real o = -d;
-//		        for( Index j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
-//		        for( Index j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
-		        
-//		        if( o > d ) return false;
-//	        }
-        
-//        for( unsigned i=0 ; i< sys.n ; ++i )
-//	        {
-//		        real d = helper::rabs(sys.C.coeff(i,i));
-		        
-//		        real o = -d;
-//		        for( Index j=0 ; j<sys.C.cols() ; ++j ) o += helper::rabs(sys.C.coeff(i,j));
-//		        for( Index j=0 ; j<sys.J.cols() ; ++j ) o += helper::rabs(sys.J.coeff(i,j));
-		        
-//		        if( o > d ) return false;
-//	        }
-//    }
-//    else
-//	    {
-//		    for( unsigned i=0 ; i< sys.m ; ++i )
-//			    {
-//				    real d = helper::rabs(PH.coeff(i,i));
-				    
-//				    real o = -d;
-//				    for( Index j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
-				    
-//				    if( o > d ) return false;
-//			    }
-//	    }
-    
-//    return true;
-//}
-
-
-
-
-
-
 
 void SequentialSolver::factor(const system_type& system) { 
 	scoped::timer timer("system factorization");
  
 	Benchmark::scoped_timer bench_timer(this->bench, &Benchmark::factor);
-	
-	// assert( diagonal_dominant(system) );
 
 	// response matrix
 	assert( response );
@@ -149,7 +141,7 @@ void SequentialSolver::factor(const system_type& system) {
 	// compute block responses
 	const unsigned n = blocks.size();
 	
-	if( !n ) return;
+    if( !n && !bilateral_block.size ) return;
 
 	blocks_inv.resize( n );
 
@@ -193,6 +185,20 @@ void SequentialSolver::factor(const system_type& system) {
 
 		factor_block( blocks_inv[i], schur );
 	}
+
+    if( bilateral_block.size )
+    {
+        bilateral_block.C.resize( bilateral_block.size, bilateral_block.size );
+        bilateral_block.C = bilateral_block.offset * system.C * bilateral_block.offset.transpose();
+        bilateral_block.JP.resize( bilateral_block.size, JP.cols() );
+        bilateral_block.JP = bilateral_block.offset * JP;
+        bilateral_block.mapping_response.resize( mapping_response.rows(), bilateral_block.size );
+        bilateral_block.mapping_response = mapping_response * bilateral_block.offset.transpose();
+
+        cmat schur( bilateral_block.size, bilateral_block.size );
+        schur = bilateral_block.JP * bilateral_block.mapping_response + bilateral_block.C;
+        bilateral_block.inv.compute( schur.triangularView< Eigen::Lower >() );
+    }
 
 }
 
@@ -301,6 +307,18 @@ SReal SequentialSolver::step(vec& lambda,
 
 		// fix net to avoid error accumulations ?
 	}
+
+    if( bilateral_block.size )
+    {
+        vec error( bilateral_block.size ), delta( bilateral_block.size );
+        error = bilateral_block.offset * rhs - bilateral_block.JP*net - bilateral_block.C * (bilateral_block.offset * lambda);
+        delta = omega.getValue() * bilateral_block.inv.solve(error);
+        estimate += delta.squaredNorm();
+        net.noalias() = net + bilateral_block.mapping_response * delta;
+        lambda.noalias() = lambda + bilateral_block.offset.transpose() * delta;
+    }
+
+
 	
 	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
