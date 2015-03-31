@@ -18,6 +18,11 @@ namespace controller
 {
 
 template <class DataTypes>
+StateTester<DataTypes>::~StateTester()
+{
+}
+
+template <class DataTypes>
 bool StateTester<DataTypes>::canConvert(core::behavior::BaseMechanicalState* baseState)
 {
 	return dynamic_cast< core::behavior::MechanicalState<DataTypes>* >(baseState) != NULL;
