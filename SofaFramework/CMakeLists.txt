@@ -18,6 +18,20 @@ option(SOFAFRAMEWORK_DETECTIONOUTPUT_BARYCENTRICINFO "Compile SofaCore library w
 option(SOFA_NO_OPENGL                                "Compile SofaFramework libraries without OpenGL dependencies" OFF )
 option(SOFA_TESTS                                    "Compile the gtest library, and the automatic tests" ON)
 
+set(SOFA_FLOATING_POINT_TYPE double CACHE STRING
+"Type used for floating point values in SOFA.  It actually determines:
+ - what template instanciations will be compiled (via the definition of the
+   SOFA_FLOAT and SOFA_DOUBLE macros)
+ - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
+   is selected, SReal defaults to double.)" )
+set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
+
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
+    set(SOFA_DOUBLE 1)
+elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+    set(SOFA_FLOAT 1)
+endif()
+
 set(DETECTIONOUTPUT_FREEMOTION ${SOFAFRAMEWORK_DETECTIONOUTPUT_FREEMOTION} )
 set(DETECTIONOUTPUT_BARYCENTRICINFO ${SOFAFRAMEWORK_DETECTIONOUTPUT_BARYCENTRICINFO} )
 
