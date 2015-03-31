@@ -13,7 +13,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/helper/system/glut.h>
-#include <sofa/component/init.h>
 
 #include <sstream>
 #include <qqml.h>
