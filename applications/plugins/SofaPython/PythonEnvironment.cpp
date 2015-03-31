@@ -85,12 +85,13 @@ void PythonEnvironment::Init()
     std::string scriptPyPath = scriptPy;
 
     if(    !sofa::helper::system::DataRepository.findFile(scriptPy, "", NULL)
-        && !sofa::helper::system::PluginRepository.findFile(scriptPy, "", NULL)
-        && !sofa::helper::system::DataRepository.findFile(scriptPy, std::string(SOFA_SRC_DIR), NULL))
+           && !sofa::helper::system::PluginRepository.findFile(scriptPy, "", NULL))
+        // && !sofa::helper::system::DataRepository.findFile(scriptPy, std::string(SOFA_SRC_DIR), NULL))
     {
+        std::cerr << "TODO" << std::endl;
         std::cerr << "SofaPython.py configuration file NOT FOUND in: " << sofa::helper::system::DataRepository <<std::endl
-                    <<sofa::helper::system::PluginRepository<< std::endl
-                    <<std::string(SOFA_SRC_DIR)<< std::endl;
+                  <<sofa::helper::system::PluginRepository<< std::endl;
+                    // <<std::string(SOFA_SRC_DIR)<< std::endl;
         return ;
     }
 
