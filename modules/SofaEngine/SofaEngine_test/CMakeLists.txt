@@ -1,6 +1,7 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(SOURCE_FILES
+	Engine_test.cpp
 	TransformEngine_test.cpp
         )
 
