@@ -377,6 +377,7 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(defaulttype
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(const core::ConstraintParams* cParams, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
+    SOFA_UNUSED(cParams);
     unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
 
     if (!merge.getValue())

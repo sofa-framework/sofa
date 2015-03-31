@@ -71,6 +71,7 @@ public:
     BilateralConstraintResolution(double* initF=NULL) : _f(initF) {}
     virtual void resolution(int line, double** w, double* d, double* force, double *dfree)
     {
+        SOFA_UNUSED(dfree);
         force[line] -= d[line] / w[line][line];
     }
 
@@ -131,6 +132,7 @@ public:
 
     virtual void resolution(int line, double** /*w*/, double* d, double* force, double * dFree)
     {
+        SOFA_UNUSED(dFree);
         for(int i=0; i<3; i++)
         {
             for(int j=0; j<3; j++)
