@@ -39,6 +39,7 @@ template <class DataTypes>
 class StateTester : public BaseStateTester
 {
 public:
+    virtual ~StateTester();
 	virtual bool canConvert(core::behavior::BaseMechanicalState* baseState);
 	virtual bool wantsToSleep(core::behavior::BaseMechanicalState* baseState, SReal speedThreshold, SReal rotationThreshold);
 };
