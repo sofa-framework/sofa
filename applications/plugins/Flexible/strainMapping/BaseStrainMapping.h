@@ -269,7 +269,7 @@ public:
     }
 
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId childForceId )
     {
         if(BlockType::constant) return;
 
@@ -283,9 +283,18 @@ public:
 
 //        cerr<<"BaseStrainMapping::applyDJT, parentForce before = " << parentForce << endl;
 
-        if(this->assemble.getValue())
+        if( assemble.getValue() ) // assembled version
         {
-            K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+            if( K.compressedMatrix.nonZeros() )
+            {
+                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+            }
+            else // force local assembly
+            {
+                updateK( mparams, childForceId );
+                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+                K.resize(0,0); // forgot about this matrix
+            }
         }
         else
         {
@@ -310,7 +319,7 @@ public:
         return &eigenJacobian;
     }
 
-    // Compliant plugin experimental API
+    // Compliant plugin API
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
     {
         if(!this->assemble.getValue()/* || !BlockType::constant*/)  // J should have been updated in apply() that is call before (when assemble==1)
@@ -323,6 +332,8 @@ public:
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
     {
+        if( BlockType::constant /*|| !assemble.getValue()*/ ) { K.resize(0,0); return; }
+
         const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
 
         unsigned int size = this->fromModel->getSize();
@@ -345,7 +356,8 @@ public:
 
     virtual const defaulttype::BaseMatrix* getK()
     {
-        return &K;
+        if( BlockType::constant || !K.compressedMatrix.nonZeros() ) return NULL;
+        else return &K;
     }
 
 

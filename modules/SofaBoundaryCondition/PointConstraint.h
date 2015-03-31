@@ -72,7 +72,7 @@ public:
 
 
     SetIndex f_indices;
-    Data<double> _drawSize;
+    Data<SReal> _drawSize;
 protected:
     PointConstraint();
 

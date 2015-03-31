@@ -5,11 +5,11 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/ObjectFactory.h>
 
 // sofa types should not be exposed
 //typedef sofa::defaulttype::Vector3 Vec3;

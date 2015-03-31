@@ -24,7 +24,7 @@ class SOFA_Compliant_API BasePreconditioner : public core::objectmodel::BaseObje
 
     SOFA_ABSTRACT_CLASS(BasePreconditioner, core::objectmodel::BaseObject);
 
-    virtual void compute( const AssembledSystem::mat& H ) = 0;
+    virtual void compute( const AssembledSystem::rmat& H ) = 0;
 
     virtual void apply( AssembledSystem::vec& res, const AssembledSystem::vec& v ) = 0;
 

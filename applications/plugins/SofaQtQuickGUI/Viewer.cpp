@@ -8,8 +8,12 @@
 #include <QtQuick/qquickwindow.h>
 #include <QQmlEngine>
 #include <QQmlContext>
+#include <QOpenGLPaintDevice>
+#include <QPaintEngine>
+#include <QPainter>
 #include <QVector>
 #include <QVector4D>
+#include <QOpenGLFrameBufferObject>
 #include <QTime>
 #include <QThread>
 #include <qqml.h>
@@ -23,17 +27,27 @@ namespace qtquick
 
 Viewer::Viewer(QQuickItem* parent) : QQuickItem(parent),
 	myScene(0),
-	myCamera(0)
+    myCamera(0),
+    myBackgroundColor("#00404040"),
+    myBackgroundImageSource(),
+    myBackgroundImage(),
+    myWireframe(false),
+    myCulling(true),
+    myAntialiasing(false),
+    myFBO(0)
 {
     setFlag(QQuickItem::ItemHasContents);
 
 	connect(this, &Viewer::sceneChanged, this, &Viewer::handleSceneChanged);
 	connect(this, &Viewer::scenePathChanged, this, &Viewer::handleScenePathChanged);
+    connect(this, &Viewer::backgroundImageSourceChanged, this, &Viewer::handleBackgroundImageSourceChanged);
     connect(this, SIGNAL(windowChanged(QQuickWindow*)), this, SLOT(handleWindowChanged(QQuickWindow*)));
 }
 
 Viewer::~Viewer()
 {
+    //delete myFBO;
+
 	/*sofa::core::visual::VisualParams* _vparams = sofa::core::visual::VisualParams::defaultInstance();
 	if(_vparams && _vparams->drawTool())
 	{
@@ -44,6 +58,7 @@ Viewer::~Viewer()
 
 void Viewer::classBegin()
 {
+    // TODO: implicit assignation => to be removed
 	if(!myScene)
 	{
 		QQmlContext* context = QQmlEngine::contextForObject(this);
@@ -85,48 +100,104 @@ void Viewer::setCamera(Camera* newCamera)
 	cameraChanged(newCamera);
 }
 
-QVector3D Viewer::mapFromWorld(const QVector3D& point)
+void Viewer::setBackgroundColor(QColor newBackgroundColor)
+{
+    if(newBackgroundColor == myBackgroundColor)
+        return;
+
+    myBackgroundColor = newBackgroundColor;
+
+    backgroundColorChanged(newBackgroundColor);
+}
+
+void Viewer::setBackgroundImageSource(QUrl newBackgroundImageSource)
+{
+    if(newBackgroundImageSource == myBackgroundImageSource)
+        return;
+
+    myBackgroundImageSource = newBackgroundImageSource;
+
+    backgroundImageSourceChanged(newBackgroundImageSource);
+}
+
+void Viewer::setWireframe(bool newWireframe)
+{
+    if(newWireframe == myWireframe)
+        return;
+
+    myWireframe = newWireframe;
+
+    wireframeChanged(newWireframe);
+}
+
+void Viewer::setCulling(bool newCulling)
+{
+    if(newCulling == myCulling)
+        return;
+
+    myCulling = newCulling;
+
+    cullingChanged(newCulling);
+}
+
+void Viewer::setAntialiasing(bool newAntialiasing)
+{
+    if(newAntialiasing == myAntialiasing)
+        return;
+
+    myAntialiasing = newAntialiasing;
+
+    antialiasingChanged(newAntialiasing);
+}
+
+unsigned int Viewer::texture() const
+{
+    if(myFBO)
+        return myFBO->texture();
+
+    return 0;
+}
+
+QVector3D Viewer::mapFromWorld(const QVector3D& wsPoint)
 {
 	if(!myCamera)
 		return QVector3D();
 
-	QVector4D nsPosition = (myCamera->projection() * myCamera->view() * QVector4D(point, 1.0));
+    QVector4D nsPosition = (myCamera->projection() * myCamera->view() * QVector4D(wsPoint, 1.0));
 	nsPosition /= nsPosition.w();
 
 	return QVector3D((nsPosition.x() * 0.5 + 0.5) * qCeil(width()) + 0.5, qCeil(height()) - (nsPosition.y() * 0.5 + 0.5) * qCeil(height()) + 0.5, (nsPosition.z() * 0.5 + 0.5));
 }
 
-QVector3D Viewer::mapToWorld(const QVector3D& point)
+QVector3D Viewer::mapToWorld(const QVector3D& ssPoint)
 {
 	if(!myCamera)
 		return QVector3D();
 
-	QVector3D nsPosition = QVector3D(point.x() / (double) qCeil(width()) * 2.0 - 1.0, (1.0 - point.y() / (double) qCeil(height())) * 2.0 - 1.0, point.z() * 2.0 - 1.0);
+    QVector3D nsPosition = QVector3D(ssPoint.x() / (double) qCeil(width()) * 2.0 - 1.0, (1.0 - ssPoint.y() / (double) qCeil(height())) * 2.0 - 1.0, ssPoint.z() * 2.0 - 1.0);
 	QVector4D vsPosition = myCamera->projection().inverted() * QVector4D(nsPosition, 1.0);
 	vsPosition /= vsPosition.w();
 
 	return (myCamera->model() * vsPosition).toVector3D();
 }
 
-double Viewer::computeDepth(const QVector3D& point)
+QVector4D Viewer::projectOnGeometry(const QPointF& ssPoint)
 {
-	if(!myCamera)
-		return 0.0;
+    if(!window())
+        return QVector3D();
 
-	QVector4D csPosition = myCamera->projection() * myCamera->view() * QVector4D(point, 1.0);
+    QPointF ssPointGL = ssPoint;
+    ssPointGL.setX(ssPointGL.x() * window()->devicePixelRatio());
+    ssPointGL.setY((height() - ssPointGL.y()) * window()->devicePixelRatio());  // OpenGL has its Y coordinate inverted compared to Qt
 
-	return (csPosition.z() / csPosition.w()) * 0.5 + 0.5;
-}
+    myFBO->bind();
 
-QVector3D Viewer::projectOnViewPlane(const QVector3D& point, double depth)
-{
-	if(!myCamera)
-		return QVector3D();
+    float z;
+    glReadPixels(ssPointGL.x(), ssPointGL.y(), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &z);
 
-	QVector4D csPosition = myCamera->projection() * myCamera->view() * QVector4D(point, 1.0);
-	QVector4D nsPosition = csPosition / csPosition.w();
+    myFBO->release();
 
-	return mapToWorld(QVector3D((nsPosition.x() * 0.5 + 0.5) * qCeil(width()), (1.0 - (nsPosition.y() * 0.5 + 0.5)) * qCeil(height()), depth));
+    return QVector4D(mapToWorld(QVector3D(ssPoint.x(), ssPoint.y(), z)), qCeil(1.0f - z));
 }
 
 void Viewer::handleSceneChanged(Scene* scene)
@@ -148,6 +219,15 @@ void Viewer::handleScenePathChanged()
 	viewAll();
 }
 
+void Viewer::handleBackgroundImageSourceChanged(QUrl newBackgroundImageSource)
+{
+    QString path = newBackgroundImageSource.toEncoded();
+    if(path.isEmpty())
+        path = newBackgroundImageSource.toLocalFile();
+
+    myBackgroundImage = QImage(path.replace("qrc:", ":"));
+}
+
 void Viewer::handleWindowChanged(QQuickWindow* window)
 {
     if(window)
@@ -163,67 +243,87 @@ void Viewer::paint()
         return;
 
     // compute the correct viewer position and size
-    QPointF realPos(mapToScene(QPointF(0.0, 0.0)));
+    QPointF realPos(mapToScene(QPointF(0.0, height())));
     realPos.setX(realPos.x() * window()->devicePixelRatio());
-    realPos.setY((window()->height() - height()) * window()->devicePixelRatio() - realPos.y() * window()->devicePixelRatio());  // OpenGL has its Y coordinate inverted compared to Qt
+    realPos.setY((window()->height() - realPos.y()) * window()->devicePixelRatio());  // OpenGL has its Y coordinate inverted compared to Qt
 
     QPoint pos(qFloor(realPos.x()), qFloor(realPos.y()));
     QSize size((qCeil(width()) + qCeil(pos.x() - realPos.x())) * window()->devicePixelRatio(), (qCeil((height()) + qCeil(pos.y() - realPos.y())) * window()->devicePixelRatio()));
 	if(!size.isValid())
         return;
 
-    // clear the viewer rectangle and just its area, not the whole OpenGL buffer
-    glScissor(pos.x(), pos.y(), size.width(), size.height());
-    glEnable(GL_SCISSOR_TEST);
-    glClearColor(0.25, 0.25, 0.25, 1.0);
+    if(!myScene)
+        return;
+
+    if(!myScene->isInit())
+        myScene->init();
+
+    if(!myScene->isReady())
+        return;
+
+    if(!myCamera)
+        return;
+
+    // create or resize the fbo
+    if(!myFBO ||
+            size.width() > myFBO->width() || size.height() > myFBO->height() ||
+            myFBO->width() >= size.width() / 2 || myFBO->height() >= size.height() / 2)
+    {
+        delete myFBO;
+        myFBO = new QOpenGLFramebufferObject(size);
+        myFBO->setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
+
+        textureChanged(myFBO->texture());
+    }
+
+    // draw the Sofa scene in the fbo
+    myFBO->bind();
+
+    glClearColor(myBackgroundColor.redF(), myBackgroundColor.greenF(), myBackgroundColor.blueF(), myBackgroundColor.alphaF());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glDisable(GL_SCISSOR_TEST);
 
-	if(!myScene || !myScene->isReady())
-		return;
+    glDisable(GL_CULL_FACE);
 
-	if(!myScene->isInit())
-		myScene->init();
+    if(!myBackgroundImage.isNull())
+    {
+        QOpenGLPaintDevice device(size);
+        QPainter painter(&device);
+        painter.drawImage(size.width() - myBackgroundImage.width(), size.height() - myBackgroundImage.height(), myBackgroundImage);
+    }
 
     // set the viewer viewport
-    glViewport(pos.x(), pos.y(), size.width(), size.height());
+    glViewport(0, 0, size.width(), size.height());
 
-    glDisable(GL_DEPTH_TEST);
-
-	if(!myCamera)
-		return;
-
-	myCamera->setAspectRatio(size.width() / (double) size.height());
+    myCamera->setPerspectiveAspectRatio(size.width() / (double) size.height());
 
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadMatrixf(myCamera->projection().constData());
 
 	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadMatrixf(myCamera->view().constData());
-	
-	// Get the camera position
-	QVector3D camera_position(myCamera->eye());
-	float cx = camera_position[0]; 
-	float cy = camera_position[1];
-	float cz = camera_position[2];
+    glPushMatrix();
+    glLoadMatrixf(myCamera->view().constData());
 
-	float light_position[] = { cx, cy, cz, 0.0f};	// Use of the camera position for light
-	float light_ambient[]  = { 0.0f, 0.0f, 0.0f, 0.0f};
-	float light_diffuse[]  = { 1.0f, 1.0f, 1.0f, 0.0f};
-	float light_specular[] = { 1.0f, 1.0f, 1.0f, 0.0f};
+    QVector3D cameraPosition(myCamera->eye());
+    float lightPosition[] = { cameraPosition.x(), cameraPosition.y(), cameraPosition.z(), 1.0f};
+    float lightAmbient [] = { 0.0f, 0.0f, 0.0f, 0.0f};
+    float lightDiffuse [] = { 1.0f, 1.0f, 1.0f, 0.0f};
+    float lightSpecular[] = { 1.0f, 1.0f, 1.0f, 0.0f};
 
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-	glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmbient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDiffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+    glEnable(GL_LIGHT0);
 	glEnable(GL_LIGHTING);
 
-	glDisable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
+    if(culling())
+        glEnable(GL_CULL_FACE);
+
+    //if(antialiasing())
+        //glEnable(GL_MULTISAMPLE);
+
+    glEnable(GL_DEPTH_TEST);
 
 	// qt does not release its shader program and we do not use one so we have to release the current bound program
 	glUseProgram(0);
@@ -242,13 +342,16 @@ void Viewer::paint()
 		GLdouble _mvmatrix[16], _projmatrix[16];
 
 		glGetIntegerv (GL_VIEWPORT, _viewport);
-		glGetDoublev (GL_MODELVIEW_MATRIX, _mvmatrix);
-		glGetDoublev (GL_PROJECTION_MATRIX, _projmatrix);
+        glGetDoublev  (GL_MODELVIEW_MATRIX, _mvmatrix);
+        glGetDoublev  (GL_PROJECTION_MATRIX, _projmatrix);
 
 		_vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
 		_vparams->sceneBBox() = myScene->sofaSimulation()->GetRoot()->f_bbox.getValue();
 		_vparams->setProjectionMatrix(_projmatrix);
 		_vparams->setModelViewMatrix(_mvmatrix);
+
+        if(wireframe())
+            _vparams->drawTool()->setPolygonMode(0, true);
 	}
 
     myScene->draw();
@@ -258,6 +361,56 @@ void Viewer::paint()
 
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+
+    myFBO->release();
+
+    if(wireframe())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    // clear the viewer rectangle and just its area, not the whole OpenGL buffer
+    glScissor(pos.x(), pos.y(), size.width(), size.height());
+    glEnable(GL_SCISSOR_TEST);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_SCISSOR_TEST);
+
+    glViewport(pos.x(), pos.y(), size.width(), size.height());
+
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    // draw the fbo texture
+    glBindTexture(GL_TEXTURE_2D, myFBO->texture());
+    // TODO: use a VBO
+    glBegin(GL_QUADS);
+        glTexCoord2d( 0, 0);
+        glVertex2d  (-1,-1);
+
+        glTexCoord2d( 1, 0);
+        glVertex2d  ( 1,-1);
+
+        glTexCoord2d( 1, 1);
+        glVertex2d  ( 1, 1);
+
+        glTexCoord2d( 0, 1);
+        glVertex2d  (-1, 1);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
 }
 
 void Viewer::viewAll()

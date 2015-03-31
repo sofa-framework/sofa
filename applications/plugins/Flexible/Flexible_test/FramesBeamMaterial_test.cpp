@@ -64,7 +64,7 @@ struct BeamMaterial_test : public Sofa_test<typename Vec3Types::Real>
     typedef typename DataTypes::EType EType;
 	typedef typename Vec3Types::Coord Coord;
 	typedef typename Vec3Types::Real Real;
-    typedef component::container::MechanicalObject<Affine3dTypes> AffineMechanicalObject;
+    typedef component::container::MechanicalObject<Affine3Types> AffineMechanicalObject;
     typedef sofa::component::forcefield::HookeForceField<EType> HookeForceField;
     typedef typename sofa::component::forcefield::HookeForceField<EType>::SPtr HookeForceFieldSPtr;
     typedef HookeForceFieldSPtr (BeamMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double,double);

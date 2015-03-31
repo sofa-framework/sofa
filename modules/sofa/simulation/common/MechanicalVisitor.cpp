@@ -269,8 +269,8 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
         // create temporary accumulation buffer for parallel reductions (dot products)
         if (node != root)
         {
-            double* parentData = stack->empty() ? rootData : (double*)stack->top();
-            ctx.nodeData = new double(0.0);
+            SReal* parentData = stack->empty() ? rootData : (SReal*)stack->top();
+            ctx.nodeData = new SReal(0.0);
             setNodeData(node, ctx.nodeData, parentData);
             stack->push(ctx.nodeData);
         }
@@ -286,7 +286,7 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, LocalSto
     ctx.root = root;
     ctx.node = node;
     ctx.nodeData = rootData;
-    double* parentData = rootData;
+    SReal* parentData = rootData;
 
     const bool writeData = writeNodeData();
 
@@ -295,8 +295,8 @@ void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, LocalSto
         // use temporary accumulation buffer for parallel reductions (dot products)
         if (node != root)
         {
-            ctx.nodeData = (double*)stack->pop();
-            parentData = stack->empty() ? rootData : (double*)stack->top();
+            ctx.nodeData = (SReal*)stack->pop();
+            parentData = stack->empty() ? rootData : (SReal*)stack->top();
         }
     }
 
@@ -466,14 +466,14 @@ void BaseMechanicalVisitor::end(simulation::Node* node, core::objectmodel::BaseO
 Visitor::Result MechanicalGetDimensionVisitor::fwdMechanicalState(VisitorContext* ctx, core::behavior::BaseMechanicalState* mm)
 {
     const unsigned int n = mm->getMatrixSize();
-    *ctx->nodeData += (double)n;
+    *ctx->nodeData += (SReal)n;
     return RESULT_CONTINUE;
 }
 
 
 Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* node, core::behavior::OdeSolver* obj)
 {
-    double nextTime = node->getTime() + dt;
+    SReal nextTime = node->getTime() + dt;
     MechanicalBeginIntegrationVisitor beginVisitor( this->params, dt );
     node->execute(&beginVisitor);
 
@@ -700,7 +700,7 @@ Visitor::Result MechanicalVMultiOpVisitor::fwdMappedMechanicalState(VisitorConte
         if (ctx->nodeData && *ctx->nodeData != 1.0)
         {
             VMultiOp ops2 = ops;
-            const double fact = *ctx->nodeData;
+            const SReal fact = *ctx->nodeData;
             for (VMultiOp::iterator it = ops2.begin(), itend = ops2.end(); it != itend; ++it)
                 for (unsigned int i = 1; i < it->second.size(); ++i)
                     it->second[i].second *= fact;
@@ -742,7 +742,7 @@ SReal MechanicalVNormVisitor::getResult() const
 /// Parallel code
 Visitor::Result MechanicalVDotVisitor::processNodeTopDown(simulation::Node* /*node*/, LocalStorage* stack)
 {
-    double* localTotal = new double(0.0);
+    SReal* localTotal = new SReal(0.0);
     stack->push(localTotal);
     if (node->mechanicalState && !node->mechanicalMapping)
     {
@@ -756,8 +756,8 @@ Visitor::Result MechanicalVDotVisitor::processNodeTopDown(simulation::Node* /*no
 /// Parallel code
 void MechanicalVDotVisitor::processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack)
 {
-    double* localTotal = static_cast<double*>(stack->pop());
-    double* parentTotal = static_cast<double*>(stack->top());
+    SReal* localTotal = static_cast<SReal*>(stack->pop());
+    SReal* parentTotal = static_cast<SReal*>(stack->top());
     if (!parentTotal)
         *total += *localTotal; // root
     else
@@ -940,7 +940,7 @@ Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* /*node*/, c
 
 MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVelocityVisitor(
     const sofa::core::MechanicalParams* mparams,
-    double time, MultiVecCoordId x, MultiVecDerivId v,
+    SReal time, MultiVecCoordId x, MultiVecDerivId v,
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     MultiVecDerivId a,
 #endif
@@ -1047,7 +1047,7 @@ Visitor::Result MechanicalProjectPositionVisitor::fwdProjectiveConstraintSet(sim
 
 
 
-MechanicalPropagatePositionVisitor::MechanicalPropagatePositionVisitor(const sofa::core::MechanicalParams* mparams, double t, MultiVecCoordId x, bool m )
+MechanicalPropagatePositionVisitor::MechanicalPropagatePositionVisitor(const sofa::core::MechanicalParams* mparams, SReal t, MultiVecCoordId x, bool m )
     : MechanicalVisitor(mparams) , t(t), x(x), ignoreMask(m), applyProjections(true)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -1157,7 +1157,7 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdProjectiveCons
 
 MechanicalPropagateVelocityVisitor::MechanicalPropagateVelocityVisitor(
     const sofa::core::MechanicalParams* mparams,
-    double time, MultiVecDerivId v,
+    SReal time, MultiVecDerivId v,
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     MultiVecDerivId a,
 #endif
@@ -1220,7 +1220,7 @@ void MechanicalPropagateVelocityVisitor::bwdMechanicalState(simulation::Node* , 
 #ifdef SOFA_SUPPORT_MAPPED_MASS
 
 MechanicalSetPositionAndVelocityVisitor::MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,
-        double time, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId a)
+        SReal time, MultiVecCoordId x, MultiVecDerivId v, MultiVecDerivId a)
     : MechanicalVisitor(mparams) , t(time), x(x), v(v), a(a)
 {
 
@@ -1231,7 +1231,7 @@ MechanicalSetPositionAndVelocityVisitor::MechanicalSetPositionAndVelocityVisitor
 }
 #else
 MechanicalSetPositionAndVelocityVisitor::MechanicalSetPositionAndVelocityVisitor(const sofa::core::MechanicalParams* mparams ,
-        double time, MultiVecCoordId x, MultiVecDerivId v)
+        SReal time, MultiVecCoordId x, MultiVecDerivId v)
     : MechanicalVisitor(mparams) , t(time), x(x), v(v)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO

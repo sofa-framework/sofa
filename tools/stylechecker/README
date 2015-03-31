@@ -1,5 +1,5 @@
 =========== Installer llvm+clang ==================
-To compile stylecheck you need to install LLVM & CLANG as well has the developement headers.
+To compile stylecheck you need to install LLVM & CLANG as well as the development headers.
 
 Stylecheck is using llvm/clang from svn revision: 211571
 To compile llvm/clang you can follow the step-by-step procedure available there (specifying the adequate revision number):

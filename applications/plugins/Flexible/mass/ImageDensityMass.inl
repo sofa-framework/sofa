@@ -277,7 +277,7 @@ MassType ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::J1tmJ0( Li
 
 // -- Mass interface
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMDx( const core::MechanicalParams*, DataVecDeriv& res, const DataVecDeriv& dx, double factor )
+void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::addMDx( const core::MechanicalParams*, DataVecDeriv& res, const DataVecDeriv& dx, SReal factor )
 {
     VecDeriv& _res = *res.beginEdit();
 
@@ -341,10 +341,10 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF( cons
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& v ) const
+SReal ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getKineticEnergy( const core::MechanicalParams*, const DataVecDeriv& v ) const
 {
     const VecDeriv& _v = v.getValue();
-    double e = 0;
+    SReal e = 0;
 
     VecDeriv Mv = m_massMatrix * _v;
 
@@ -355,7 +355,7 @@ double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getKineticEn
 }
 
 template < class DataTypes, class ShapeFunctionTypes, class MassType >
-double ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& x ) const
+SReal ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::getPotentialEnergy( const core::MechanicalParams*, const DataVecCoord& x ) const
 {
     const VecCoord& _x = x.getValue();
 

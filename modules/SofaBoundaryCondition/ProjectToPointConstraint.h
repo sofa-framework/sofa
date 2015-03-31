@@ -88,7 +88,7 @@ public:
     SetIndex f_indices;    ///< the indices of the points to project to the target
     Data<Coord> f_point;    ///< the target of the projection
     Data<bool> f_fixAll;    ///< to project all the points, rather than those listed in f_indices
-    Data<double> f_drawSize;
+    Data<SReal> f_drawSize;
 
 
 protected:

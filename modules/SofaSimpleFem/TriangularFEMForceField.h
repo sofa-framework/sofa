@@ -118,7 +118,7 @@ public:
     virtual void reinit();
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
-    virtual double getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;
 
     void draw(const core::visual::VisualParams* vparams);
     //}
@@ -295,14 +295,14 @@ protected :
 
 
     /// f += Kx where K is the stiffness matrix and x a displacement
-    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
+    virtual void applyStiffness( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
     virtual void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c);
     void accumulateForceSmall( VecCoord& f, const VecCoord & p, Index elementIndex);
     void accumulateDampingSmall( VecCoord& f, Index elementIndex );
-    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
+    void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
     ////////////// large displacements method
     //sofa::helper::vector< helper::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
@@ -311,7 +311,7 @@ protected :
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( VecCoord& f, const VecCoord & p, Index elementIndex);
     void accumulateDampingLarge( VecCoord& f, Index elementIndex );
-    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const double &kFactor );
+    void applyStiffnessLarge( VecCoord& f, Real h, const VecCoord& x, const SReal &kFactor );
 
 
     bool updateMatrix;

@@ -134,7 +134,7 @@ static const double pi=3.14159265358979323846264338327950288;
 
 
 template<class DataTypes>
-void GearSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring)
+void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring)
 {
     const Coord *cc1 = &p1[spring.m1]  , *cc2 = &p2[spring.m2] , *cp1 , *cp2;
     Deriv dv1 = -v1[spring.m1] , dv2 = -v2[spring.m2] ;
@@ -199,7 +199,7 @@ void GearSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy*
     {
         if(f_reinit.getValue())  outfile->seekp(std::ios::beg);
 
-        double time = this->getContext()->getTime();
+        SReal time = this->getContext()->getTime();
         if (time >= (lastTime + f_period.getValue()))
         {
             lastTime += f_period.getValue();

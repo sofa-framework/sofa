@@ -50,7 +50,7 @@ protected:
     FreeMotionAnimationLoop(simulation::Node* gnode);
     virtual ~FreeMotionAnimationLoop();
 public:
-    virtual void step (const sofa::core::ExecParams* params, double dt);
+    virtual void step (const sofa::core::ExecParams* params, SReal dt);
 
     virtual void init();
 

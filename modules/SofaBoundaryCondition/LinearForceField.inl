@@ -49,7 +49,7 @@ LinearForceField<DataTypes>::LinearForceField()
     , force(initData(&force, (Real)1.0, "force", "applied force to all points"))
     , keyTimes(initData(&keyTimes, "times", "key times for the interpolation"))
     , keyForces(initData(&keyForces, "forces", "forces corresponding to the key times"))
-    , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , arrowSizeCoef(initData(&arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
 { }
 
 
@@ -164,12 +164,12 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
 }// LinearForceField::addForce
 
 template<class DataTypes>
-double LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
     Real cT = (Real) this->getContext()->getTime();
     const VecCoord& _x = x.getValue();
     const SetIndexArray& indices = points.getValue();
-    double e=0;
+    SReal e=0;
     if (keyTimes.getValue().size() != 0 && cT >= *keyTimes.getValue().begin() && cT <= *keyTimes.getValue().rbegin() && prevT != nextT)
     {
         Real dt = (cT - prevT)/(nextT - prevT);

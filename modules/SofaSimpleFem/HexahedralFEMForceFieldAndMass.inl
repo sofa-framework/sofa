@@ -377,7 +377,7 @@ typename HexahedralFEMForceFieldAndMass<DataTypes>::Real HexahedralFEMForceField
 
 
 template<class DataTypes>
-void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, double factor)
+void HexahedralFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor)
 {
     helper::WriteAccessor< DataVecDeriv > _f = f;
     const VecDeriv& _dx = dx.getValue();
@@ -577,7 +577,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addGravityToV(const core::Mechan
     {
         VecDeriv& v = *d_v.beginEdit();
 
-        double _dt = mparams->dt();
+        SReal _dt = mparams->dt();
 
         for (unsigned int i=0; i<_particleMasses.getValue().size(); i++)
         {
@@ -628,7 +628,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addDForce(const core::Mechanical
 
 
 template<class DataTypes>
-double HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
+SReal HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
 {
     serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getElementMass not yet implemented"<<sendl; return 0.0;
 }

@@ -16,14 +16,18 @@ class Response;
 
    A factorization of a sub-system in an AssembledSystem.
 
-   For now, it only provides a way to factor the sub-kkt corresponding
-   to non-zero lines/columns in the projection matrix P.
+   For now, it provides:
+        - a way to factor the sub-kkt corresponding
+            to non-zero lines/columns in the projection matrix P.
+        - a way to assemble the complete KKT (dynamics+bilateral constraints)
+            in a large matrix (with removed zero lines/columns in
+            the projection matrix P)
 
    @author Maxime Tournier
 
  */
 
-class SubKKT : public utils::eigen_types {
+class SOFA_Compliant_API SubKKT : public utils::eigen_types {
 public:
 
     // TODO: determine correct access rights
@@ -34,12 +38,19 @@ public:
     // filtered subsystem
     rmat A;
 
+
+    typedef unsigned char ProblemType;
+    static const ProblemType PRIMAL = 1;
+    static const ProblemType DUAL = 2;
+    static const ProblemType FULL = PRIMAL | DUAL;
+
 private:
     // work vectors during solve
     mutable vec vtmp1, vtmp2;
 
-    mutable cmat mtmp1, mtmp2/*, mtmp3*/;
+    mutable cmat mtmpc1, mtmpc2;
     mutable rmat mtmpr;
+
 public:
 
     SubKKT();
@@ -50,9 +61,20 @@ public:
     // empty). size_full = sys.m, size_sub = #(non-empty P elements)
     static void projected_primal(SubKKT& res, const AssembledSystem& sys);
 
+    // project constraint substem by exluding non-bilateral constraints
+    // returns true iff there are no bilateral constraints
+    static bool projected_dual(SubKKT& res, const AssembledSystem& sys);
+
     // full kkt with projected primal variables
-    static void projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps = 0,
+    // if only_bilaterals=true then excludes non bilateral constaints
+    // eps is for a Tikhonov regularization on null Compliance diagonal entries
+    // only_lower to build only the low triangular matrix for symmetric problems
+    static void projected_kkt(SubKKT& res,
+                              const AssembledSystem& sys,
+                              bool only_bilaterals = false,
+                              real eps = 0,
                               bool only_lower = false);
+
     
     // TODO more ctors with non-zero Q
 
@@ -73,7 +95,6 @@ public:
     // factor the sub-kkt using
     template<class Solver>
     void factor(Solver& response) const;
-    void factor(Response& response) const;
 
     // WARNING the API might change a bit here 
 
@@ -81,7 +102,7 @@ public:
     // will be resized as needed (full size).
     void solve(const Response& response, cmat& result, const cmat& rhs) const;
     template<class Solver>
-    void solve(const Solver& response, vec& result, const vec& rhs) const;
+    void solve(const Solver& response, vec& result, const vec& rhs, ProblemType problem ) const;
 
 
     void prod(vec& result, const vec& rhs) const;
@@ -92,7 +113,7 @@ public:
     // (in) rhs is full size
     // (out) result is sub size
     template<class Solver>
-    void solve_filtered(const Solver& response, vec& result, const vec& rhs ) const;
+    void solve_filtered(const Solver& response, vec& result, const vec& rhs, ProblemType problem ) const;
     // (out) projected_rhs is sub size
     void solve_filtered(const Response& response, cmat& result, const rmat& rhs, rmat& projected_rhs ) const;
 
@@ -105,7 +126,7 @@ public:
 
         Adaptor(Response& resp, const SubKKT& sub): resp(resp), sub(sub) { }
 
-        void solve(vec& res, const vec& rhs) const { sub.solve(resp, res, rhs); }
+        void solve(vec& res, const vec& rhs) const { sub.solve(resp, res, rhs, FULL); }
         void solve(cmat& res, const cmat& rhs) const { sub.solve(resp, res, rhs); }
         
     };

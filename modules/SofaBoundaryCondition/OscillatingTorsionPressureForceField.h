@@ -105,7 +105,7 @@ protected:
     std::vector<Coord> momentDir;         // direction in which to apply a moment
     std::vector<Coord> origVecFromCenter; // vector from rotation axis for all points in original state
     std::vector<Coord> origCenter;        // center of rotation for original points
-    double rotationAngle;
+    SReal rotationAngle;
 
 
     OscillatingTorsionPressureForceField()
@@ -134,7 +134,7 @@ public:
         mparams->setKFactorUsed(true);
     }
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
@@ -143,7 +143,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    void setDminAndDmax(const double _dmin, const double _dmax)
+    void setDminAndDmax(const SReal _dmin, const SReal _dmax)
     {
         dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);
     }
@@ -152,11 +152,11 @@ public:
     void setMoment(Real x) { moment.setValue( x ); }
 
     // returns the amplitude/modifier of the set moment (dependent on frequency)
-    double getAmplitude();
+    SReal getAmplitude();
 
     // returns the rotation of the driven part of the object relative to the original state (in radians)
     // this value is updated in addForce()
-    double getRotationAngle() { return rotationAngle; }
+    SReal getRotationAngle() { return rotationAngle; }
 
 protected :
 

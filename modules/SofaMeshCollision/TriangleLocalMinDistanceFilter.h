@@ -72,7 +72,7 @@ public:
     /**
      * @brief Default destructor.
      */
-    virtual ~TriangleInfo() {};
+    virtual ~TriangleInfo() {}
 
     /**
      * @brief Returns the validity of a detected contact according to this TriangleInfo.

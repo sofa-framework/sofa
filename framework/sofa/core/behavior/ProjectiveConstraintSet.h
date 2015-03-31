@@ -152,14 +152,14 @@ public:
     /// Project the global Mechanical Matrix to constrained space using offset parameter
     virtual void applyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {
-        serr << "applyConstaint(mparams, matrix) not implemented" << sendl;
+        serr << "applyConstraint(mparams, matrix) not implemented" << sendl;
     }
 
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
     virtual void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {
-        serr << "applyConstaint(mparams, vector, matrix) not implemented" << sendl;
+        serr << "applyConstraint(mparams, vector, matrix) not implemented" << sendl;
     }
 
     /// Pre-construction check method called by ObjectFactory.

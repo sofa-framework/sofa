@@ -166,7 +166,7 @@ public:
 
 protected:
 
-    double m_potentialEnergy;
+    SReal m_potentialEnergy;
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;
     /// the list of the local referentials of the springs
@@ -179,7 +179,7 @@ protected:
 
 
     /// Accumulate the spring force and compute and store its stiffness
-    void addSpringForce ( double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring );
+    void addSpringForce ( SReal& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring );
     /// Apply the stiffness, i.e. accumulate df given dx
     void addSpringDForce ( VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, const Spring& spring );
 
@@ -196,13 +196,10 @@ public:
 
 
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addForce ( VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2 );
 
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
-    ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce ( VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2 );
 
-    virtual double getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
-    ///SOFA_DEPRECATED_ForceField <<<virtual double getPotentialEnergy ( const VecCoord&, const VecCoord& ) const { return m_potentialEnergy; }
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
 
     sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
 

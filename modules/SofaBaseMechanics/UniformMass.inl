@@ -58,7 +58,7 @@ namespace mass
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
     : mass ( initData ( &mass, MassType ( 1.0f ), "mass", "Mass of each particle" ) )
-    , totalMass ( initData ( &totalMass, 0.0, "totalmass", "Sum of the particles' masses" ) )
+    , totalMass ( initData ( &totalMass, (SReal)0.0, "totalmass", "Sum of the particles' masses" ) )
     , filenameMass ( initData ( &filenameMass, "filename", "Rigid file to load the mass parameters" ) )
     , showCenterOfGravity ( initData ( &showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
@@ -82,7 +82,7 @@ void UniformMass<DataTypes, MassType>::setMass ( const MassType& m )
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::setTotalMass ( double m )
+void UniformMass<DataTypes, MassType>::setTotalMass ( SReal m )
 {
     this->totalMass.setValue ( m );
 }
@@ -159,7 +159,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, double factor)
+void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*, DataVecDeriv& vres, const DataVecDeriv& vdx, SReal factor)
 {
     helper::WriteAccessor<DataVecDeriv> res = vres;
     helper::ReadAccessor<DataVecDeriv> dx = vdx;
@@ -335,7 +335,7 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getKineticEnergy ( const core::MechanicalParams*, const DataVecDeriv& vv  ) const
+SReal UniformMass<DataTypes, MassType>::getKineticEnergy ( const core::MechanicalParams*, const DataVecDeriv& vv  ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
 
@@ -348,7 +348,7 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy ( const core::Mechanic
     if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
         iend = localRange.getValue() [1]+1;
 
-    double e=0;
+    SReal e=0;
     const MassType& m = mass.getValue();
     for ( unsigned int i=ibegin; i<iend; i++ )
     {
@@ -359,7 +359,7 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy ( const core::Mechanic
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& vx  ) const
+SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& vx  ) const
 {
     helper::ReadAccessor<DataVecCoord> x = vx;
 
@@ -372,10 +372,10 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::Mechan
     if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
         iend = localRange.getValue() [1]+1;
 
-    double e = 0;
+    SReal e = 0;
     const MassType& m = mass.getValue();
     // gravity
-    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );
@@ -393,10 +393,10 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const core::Mechan
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vec6d
+defaulttype::Vector6
 UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return sofa::defaulttype::Vec6d();
+    return defaulttype::Vector6();
 }
 
 /// Add Mass contribution to global Matrix assembling
@@ -415,9 +415,9 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const core::MechanicalParam
 
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getElementMass ( unsigned int ) const
+SReal UniformMass<DataTypes, MassType>::getElementMass ( unsigned int ) const
 {
-    return ( double ) ( mass.getValue() );
+    return ( SReal ) ( mass.getValue() );
 }
 
 template <class DataTypes, class MassType>

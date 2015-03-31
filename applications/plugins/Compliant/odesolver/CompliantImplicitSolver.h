@@ -196,7 +196,7 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 
     // OdeSolver API
     virtual void solve(const core::ExecParams* params,
-                       double dt,
+                       SReal dt,
                        core::MultiVecCoordId posId,
                        core::MultiVecDerivId velId);
 

@@ -270,7 +270,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                     Node::SPtr currentSubNode = meshNode;
 
                     // generating a MechanicalObject and a SkinningMapping if the mesh contains bones and filling up theirs properties
-                    MechanicalObject<Rigid3dTypes>::SPtr currentBoneMechanicalObject;
+                    MechanicalObject<Rigid3Types>::SPtr currentBoneMechanicalObject;
                     if(currentAiMesh->HasBones())
                     {
                         /*std::cout << "animation num : " << currentAiScene->mNumAnimations << std::endl;
@@ -278,7 +278,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                         std::cout << "animation ticks per second : " << currentAiScene->mAnimations[0]->mTicksPerSecond << std::endl;
                         std::cout << "animation channel num : " << currentAiScene->mAnimations[0]->mNumChannels << std::endl;*/
 
-                        currentBoneMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Rigid3dTypes> >();
+                        currentBoneMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Rigid3Types> >();
                         {
                             // adding the generated MechanicalObject to its parent Node
                             currentSubNode->addObject(currentBoneMechanicalObject);
@@ -292,8 +292,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentBoneMechanicalObject->resize(currentAiMesh->mNumBones);
 
                             {
-                                Data<vector<Rigid3dTypes::Coord> >* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
-                                vector<Rigid3dTypes::Coord> &x = *d_x->beginEdit();
+                                Data<vector<Rigid3Types::Coord> >* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
+                                vector<Rigid3Types::Coord> &x = *d_x->beginEdit();
                                 for(unsigned int k = 0; k < currentAiMesh->mNumBones; ++k)
                                 {
                                     aiMatrix4x4 offsetMatrix = currentAiMesh->mBones[k]->mOffsetMatrix;
@@ -310,7 +310,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                                     Vec3d boneTranslation(aiBoneTranslation.x, aiBoneTranslation.y, aiBoneTranslation.z);
                                     Quaternion boneQuat(aiBoneRotation.x, aiBoneRotation.y, aiBoneRotation.z, aiBoneRotation.w);
 
-                                    x[k] = Rigid3dTypes::Coord(boneTranslation, boneQuat);
+                                    x[k] = Rigid3Types::Coord(boneTranslation, boneQuat);
                                 }
                                 d_x->endEdit();
                             }
@@ -318,7 +318,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                         if(generateCollisionModels.getValue())
                         {
-                            UniformMass<Rigid3dTypes, Rigid3dMass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3dTypes, Rigid3dMass> >();
+                            UniformMass<Rigid3Types, Rigid3Mass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types, Rigid3Mass> >();
                             {
                                 // adding the generated UniformMass to its parent Node
                                 currentSubNode->addObject(currentUniformMass);
@@ -333,7 +333,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                         }
 
                         // generating a SkeletalMotionConstraint and filling up its properties
-                        SkeletalMotionConstraint<Rigid3dTypes>::SPtr currentSkeletalMotionConstraint = sofa::core::objectmodel::New<SkeletalMotionConstraint<Rigid3dTypes> >();
+                        SkeletalMotionConstraint<Rigid3Types>::SPtr currentSkeletalMotionConstraint = sofa::core::objectmodel::New<SkeletalMotionConstraint<Rigid3Types> >();
                         {
                             // adding the generated SkeletalMotionConstraint to its parent Node
                             currentSubNode->addObject(currentSkeletalMotionConstraint);
@@ -349,7 +349,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             if(parentNodeInfo)
                                 parentAiNode = parentNodeInfo->mAiNode;
 
-                            helper::vector<SkeletonJoint<Rigid3dTypes> > skeletonJoints;
+                            helper::vector<SkeletonJoint<Rigid3Types> > skeletonJoints;
                             helper::vector<SkeletonBone> skeletonBones;
                             fillSkeletalInfo(currentAiScene, parentAiNode, currentAiNode, currentTransformation, currentAiMesh, skeletonJoints, skeletonBones);
                             currentSkeletalMotionConstraint->setSkeletalMotion(skeletonJoints, skeletonBones);
@@ -357,7 +357,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                     }
                     else
                     {
-						currentBoneMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Rigid3dTypes> >();
+                        currentBoneMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Rigid3Types> >();
 						{
 							// adding the generated MechanicalObject to its parent Node
 							currentSubNode->addObject(currentBoneMechanicalObject);
@@ -371,19 +371,19 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 							currentBoneMechanicalObject->resize(1);
 
 							{
-								Data<vector<Rigid3dTypes::Coord> >* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
-								vector<Rigid3dTypes::Coord> &x = *d_x->beginEdit();
+                                Data<vector<Rigid3Types::Coord> >* d_x = currentBoneMechanicalObject->write(core::VecCoordId::position());
+                                vector<Rigid3Types::Coord> &x = *d_x->beginEdit();
 								
 								Vec3d boneTranslation(0.0, 0.0, 0.0);
 								Quaternion boneQuat(0.0, 0.0, 1.0, 1.0);
 
-								x[0] = Rigid3dTypes::Coord(boneTranslation, boneQuat);
+                                x[0] = Rigid3Types::Coord(boneTranslation, boneQuat);
 
 								d_x->endEdit();
 							}
 						}
 
-						UniformMass<Rigid3dTypes, Rigid3dMass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3dTypes, Rigid3dMass> >();
+                        UniformMass<Rigid3Types, Rigid3Mass>::SPtr currentUniformMass = sofa::core::objectmodel::New<UniformMass<Rigid3Types, Rigid3Mass> >();
 						{
 							// adding the generated UniformMass to its parent Node
 							currentSubNode->addObject(currentUniformMass);
@@ -394,7 +394,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 							currentUniformMass->setName(nameStream.str());
 						}
 
-						FixedConstraint<Rigid3dTypes>::SPtr currentFixedConstraint = sofa::core::objectmodel::New<FixedConstraint<Rigid3dTypes> >();
+                        FixedConstraint<Rigid3Types>::SPtr currentFixedConstraint = sofa::core::objectmodel::New<FixedConstraint<Rigid3Types> >();
 						{
 							// adding the generated FixedConstraint to its parent Node
 							currentSubNode->addObject(currentFixedConstraint);
@@ -422,7 +422,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                     std::map<Vec3d,unsigned> vertexMap; // no to superimpose identical vertices
 
                     // generating a MechanicalObject and filling up its properties
-                    MechanicalObject<Vec3dTypes>::SPtr currentMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Vec3dTypes> >();
+                    MechanicalObject<Vec3Types>::SPtr currentMechanicalObject = sofa::core::objectmodel::New<MechanicalObject<Vec3Types> >();
                     {
                         // adding the generated MechanicalObject to its parent Node
                         currentSubNode->addObject(currentMechanicalObject);
@@ -449,8 +449,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                             currentMechanicalObject->resize(vertexMap.size());
 
                             {
-                                Data<vector<Vec3dTypes::Coord> >* d_x = currentMechanicalObject->write(core::VecCoordId::position());
-                                vector<Vec3dTypes::Coord> &x = *d_x->beginEdit();
+                                Data<vector<Vec3Types::Coord> >* d_x = currentMechanicalObject->write(core::VecCoordId::position());
+                                vector<Vec3Types::Coord> &x = *d_x->beginEdit();
                                 for( std::map<Vec3d,unsigned>::iterator it=vertexMap.begin() , itend=vertexMap.end() ; it!=itend ; ++it )
                                     x[it->second] = it->first;
 
@@ -577,7 +577,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
 					if(generateCollisionModels.getValue())
 					{
-						TTriangleModel<defaulttype::Vec3dTypes>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3dTypes> >();
+                        TTriangleModel<defaulttype::Vec3Types>::SPtr currentTTriangleModel = sofa::core::objectmodel::New<TTriangleModel<defaulttype::Vec3Types> >();
 						{
 							// adding the generated TTriangleModel to its parent Node
 							currentSubNode->addObject(currentTTriangleModel);
@@ -588,7 +588,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 							currentTTriangleModel->setName(nameStream.str());
 						}
 
-                        TLineModel<defaulttype::Vec3dTypes>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3dTypes> >();
+                        TLineModel<defaulttype::Vec3Types>::SPtr currentTLineModel = sofa::core::objectmodel::New<TLineModel<defaulttype::Vec3Types> >();
 						{
 							// adding the generated TLineModel to its parent Node
                             currentSubNode->addObject(currentTLineModel);
@@ -599,7 +599,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 							currentTLineModel->setName(nameStream.str());
 						}
 
-						TPointModel<defaulttype::Vec3dTypes>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3dTypes> >();
+                        TPointModel<defaulttype::Vec3Types>::SPtr currentTPointModel = sofa::core::objectmodel::New<TPointModel<defaulttype::Vec3Types> >();
 						{
 							// adding the generated TPointModel to its parent Node
                             currentSubNode->addObject(currentTPointModel);
@@ -748,7 +748,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
                         if(useFlexible.getValue())
                         {
-							LinearMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3dTypes, Vec3dTypes> >();
+                            LinearMapping<Rigid3Types, Vec3Types>::SPtr currentLinearMapping = sofa::core::objectmodel::New<LinearMapping<Rigid3Types, Vec3Types> >();
 
                             // adding the generated LinearMapping to its parent Node
                             currentSubNode->addObject(currentLinearMapping);
@@ -760,8 +760,8 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
                             currentLinearMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
 
-                            LinearMapping<Rigid3dTypes, Vec3dTypes>::VecVReal& weights = *currentLinearMapping->f_w.beginEdit();
-                            LinearMapping<Rigid3dTypes, Vec3dTypes>::VecVRef& indices = *currentLinearMapping->f_index.beginEdit();
+                            LinearMapping<Rigid3Types, Vec3Types>::VecVReal& weights = *currentLinearMapping->f_w.beginEdit();
+                            LinearMapping<Rigid3Types, Vec3Types>::VecVRef& indices = *currentLinearMapping->f_index.beginEdit();
 
                             indices.resize(vertexMap.size());
                             weights.resize(vertexMap.size());
@@ -807,7 +807,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                         else
 #endif
 						{
-							SkinningMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentSkinningMapping = sofa::core::objectmodel::New<SkinningMapping<Rigid3dTypes, Vec3dTypes> >();
+                            SkinningMapping<Rigid3Types, Vec3Types>::SPtr currentSkinningMapping = sofa::core::objectmodel::New<SkinningMapping<Rigid3Types, Vec3Types> >();
 							{
 								// adding the generated SkinningMapping to its parent Node
 								currentSubNode->addObject(currentSkinningMapping);
@@ -819,7 +819,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 
 								currentSkinningMapping->setModels(currentBoneMechanicalObject.get(), currentMechanicalObject.get());
 
-								vector<helper::SVector<SkinningMapping<Rigid3dTypes, Vec3dTypes>::InReal> > weights;
+                                vector<helper::SVector<SkinningMapping<Rigid3Types, Vec3Types>::InReal> > weights;
 								vector<helper::SVector<unsigned int> > indices;
 								vector<unsigned int> nbref;
 
@@ -863,7 +863,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
                     }
 					else
 					{
-						RigidMapping<Rigid3dTypes, Vec3dTypes>::SPtr currentRigidMapping = sofa::core::objectmodel::New<RigidMapping<Rigid3dTypes, Vec3dTypes> >();
+                        RigidMapping<Rigid3Types, Vec3Types>::SPtr currentRigidMapping = sofa::core::objectmodel::New<RigidMapping<Rigid3Types, Vec3Types> >();
 						{
 							// adding the generated RigidMapping to its parent Node
 							currentSubNode->addObject(currentRigidMapping);
@@ -971,7 +971,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 //                         }
                     }
 
-					IdentityMapping<Vec3dTypes, ExtVec3fTypes>::SPtr currentIdentityMapping = sofa::core::objectmodel::New<IdentityMapping<Vec3dTypes, ExtVec3fTypes> >();
+                    IdentityMapping<Vec3Types, ExtVec3fTypes>::SPtr currentIdentityMapping = sofa::core::objectmodel::New<IdentityMapping<Vec3Types, ExtVec3fTypes> >();
 					{
 						// adding the generated IdentityMapping to its parent Node
 						currentSubNode->addObject(currentIdentityMapping);
@@ -1013,7 +1013,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
     return true;
 }
 
-bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<SkeletonJoint<Rigid3dTypes> >& skeletonJoints, helper::vector<SkeletonBone>& skeletonBones) const
+bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshParentNode, aiNode* meshNode, aiMatrix4x4 meshTransformation, aiMesh* mesh, helper::vector<projectiveconstraintset::SkeletonJoint<Rigid3Types> > &skeletonJoints, helper::vector<SkeletonBone>& skeletonBones) const
 {
     //std::cout << "fillSkeletalInfo : begin" << std::endl;
 
@@ -1032,7 +1032,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
 //		for(int i = 0; i < 4; ++i)
 //			meshWorldTranformation[j][i] = meshTransformation[j][i];
 
-    Rigid3dTypes::Coord meshTransformationRigid;
+    Rigid3Types::Coord meshTransformationRigid;
     meshTransformationRigid.getCenter()[0] = meshWorldTranformation[0][3];
     meshTransformationRigid.getCenter()[1] = meshWorldTranformation[1][3];
     meshTransformationRigid.getCenter()[2] = meshWorldTranformation[2][3];
@@ -1061,7 +1061,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             std::map<aiNode*, std::size_t>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
             if(aiNodeToSkeletonJointIndex.end() == aiNodeToSkeletonJointIndexIterator)
             {
-                skeletonJoints.push_back(SkeletonJoint<Rigid3dTypes>());
+                skeletonJoints.push_back(SkeletonJoint<Rigid3Types>());
                 aiNodeToSkeletonJointIndex[node] = skeletonJoints.size() - 1;
                 aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
             }
@@ -1069,7 +1069,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             {
                 return false;
             }
-            SkeletonJoint<Rigid3dTypes>& skeletonJoint = skeletonJoints[aiNodeToSkeletonJointIndexIterator->second];
+            SkeletonJoint<Rigid3Types>& skeletonJoint = skeletonJoints[aiNodeToSkeletonJointIndexIterator->second];
 
             aiVectorKey positionKey, scaleKey;
             aiQuatKey	rotationKey;
@@ -1081,7 +1081,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             skeletonJoint.mChannels.resize(numKey);
             for(unsigned int l = 0; l < numKey; ++l)
             {
-                double time = 0.0;
+                SReal time = 0.0;
                 aiMatrix4x4 transformation;
 
                 if(l < channel->mNumPositionKeys)
@@ -1112,7 +1112,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
 
                 Mat4x4d localTranformation(transformation[0]);
 
-                Rigid3dTypes::Coord localRigid;
+                Rigid3Types::Coord localRigid;
                 localRigid.getCenter()[0] = localTranformation[0][3];
                 localRigid.getCenter()[1] = localTranformation[1][3];
                 localRigid.getCenter()[2] = localTranformation[2][3];
@@ -1139,7 +1139,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
         std::map<aiNode*, std::size_t>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
         if(aiNodeToSkeletonJointIndex.end() == aiNodeToSkeletonJointIndexIterator)
         {
-            skeletonJoints.push_back(SkeletonJoint<Rigid3dTypes>());
+            skeletonJoints.push_back(SkeletonJoint<Rigid3Types>());
             aiNodeToSkeletonJointIndex[node] = skeletonJoints.size() - 1;
             aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
         }
@@ -1150,7 +1150,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
     // register every SkeletonJoint and their parents and fill up theirs properties
     for(std::size_t i = 0; i < skeletonJoints.size(); ++i)
     {
-//        SkeletonJoint<Rigid3dTypes>& skeletonJoint = skeletonJoints[i];
+//        SkeletonJoint<Rigid3Types>& skeletonJoint = skeletonJoints[i];
 
         aiNode*	node = NULL;
 
@@ -1181,11 +1181,11 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             std::map<aiNode*, std::size_t>::iterator aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
             if(aiNodeToSkeletonJointIndex.end() == aiNodeToSkeletonJointIndexIterator)
             {
-                skeletonJoints.push_back(SkeletonJoint<Rigid3dTypes>());
+                skeletonJoints.push_back(SkeletonJoint<Rigid3Types>());
                 aiNodeToSkeletonJointIndex[node] = skeletonJoints.size() - 1;
                 aiNodeToSkeletonJointIndexIterator = aiNodeToSkeletonJointIndex.find(node);
             }
-            SkeletonJoint<Rigid3dTypes>& currentSkeletonJoint = skeletonJoints[aiNodeToSkeletonJointIndexIterator->second];
+            SkeletonJoint<Rigid3Types>& currentSkeletonJoint = skeletonJoints[aiNodeToSkeletonJointIndexIterator->second];
 
             // register the current node
             aiMatrix4x4 aiLocalTransformation = node->mTransformation;
@@ -1193,7 +1193,7 @@ bool SceneColladaLoader::fillSkeletalInfo(const aiScene* scene, aiNode* meshPare
             // compute the rigid corresponding to the SkeletonJoint
             Mat4x4d localTranformation(aiLocalTransformation[0]);
 
-            Rigid3dTypes::Coord localRigid;
+            Rigid3Types::Coord localRigid;
             localRigid.getCenter()[0] = localTranformation[0][3];
             localRigid.getCenter()[1] = localTranformation[1][3];
             localRigid.getCenter()[2] = localTranformation[2][3];

@@ -135,8 +135,8 @@ public:
 class SOFA_SIMULATION_COMMON_API VisualComputeBBoxVisitor : public Visitor
 {
 public:
-    double minBBox[3];
-    double maxBBox[3];
+    SReal minBBox[3];
+    SReal maxBBox[3];
     VisualComputeBBoxVisitor(const core::ExecParams* params);
 
     virtual void processBehaviorModel(simulation::Node*, core::BehaviorModel* vm);

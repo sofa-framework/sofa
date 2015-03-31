@@ -85,7 +85,7 @@ protected:
 public:
     SetIndex f_indices;
     Data<bool> f_fixAll;
-    Data<double> _drawSize;
+    Data<SReal> _drawSize;
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
     Data<VecBool> fixedDirections;  ///< Defines the directions in which the particles are fixed: true (or 1) for fixed, false (or 0) for free.

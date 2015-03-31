@@ -3,6 +3,8 @@
 #include <QQmlApplicationEngine>
 #include <QPluginLoader>
 #include <QDebug>
+#include <QQuickWindow>
+#include <QOpenGLContext>
 #include "Tools.h"
 
 #include <sofa/helper/system/FileRepository.h>
@@ -50,6 +52,10 @@ int main(int argc, char **argv)
     // use the default.ini settings if it is the first time the user launch the application
     Tools::useDefaultSettingsAtFirstLaunch();
 
+    QSurfaceFormat format;
+    //format.setSamples(4);
+    QSurfaceFormat::setDefaultFormat(format);
+
     // plugin initialization
 	QString pluginName("SofaQtQuickGUI");
 #ifdef SOFA_LIBSUFFIX
@@ -68,6 +74,19 @@ int main(int argc, char **argv)
     applicationEngine.addImportPath("qrc:/");
     applicationEngine.addImportPath(QCoreApplication::applicationDirPath() + "/../lib/qml/");
     applicationEngine.load(QUrl("qrc:/qml/Main.qml"));
+
+//    QList<QObject*> objects = applicationEngine.rootObjects();
+//    foreach(QObject* object, objects)
+//    {
+//        QQuickWindow* window = qobject_cast<QQuickWindow*>(object);
+//        if(!window)
+//            continue;
+
+//        window->connect(window, &QQuickWindow::openglContextCreated, [](QOpenGLContext *context) {
+//            qDebug() << "opengl context creation";
+//        });
+//        window->show();
+//    }
 
     return app.exec();
 }

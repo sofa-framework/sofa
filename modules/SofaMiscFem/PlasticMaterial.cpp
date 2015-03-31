@@ -45,8 +45,8 @@ namespace material
 
 
 PlasticMaterial::PlasticMaterial()
-: _poissonRatio(initData(&_poissonRatio,(double)0.45,"poissonRatio","Poisson ratio in Hooke's law"))
-, _youngModulus(initData(&_youngModulus,(double)3000.,"youngModulus","Young modulus in Hooke's law"))
+: _poissonRatio(initData(&_poissonRatio,(SReal)0.45,"poissonRatio","Poisson ratio in Hooke's law"))
+, _youngModulus(initData(&_youngModulus,(SReal)3000.,"youngModulus","Young modulus in Hooke's law"))
 {
 	// we give the inclination here
 	_E.push_back(_youngModulus.getValue());
@@ -65,7 +65,7 @@ PlasticMaterial::PlasticMaterial()
 void PlasticMaterial::computeStress(Vector3& Stress, Vector3 Strain, int elementIndex)
 {
 	// Computes the Von Mises strain
-	double vonMisesStrain = computeVonMisesStrain(Strain);
+    SReal vonMisesStrain = computeVonMisesStrain(Strain);
 
 	// Seeks the section of the piecewise function where we are on
 	int section = 0;
@@ -100,7 +100,7 @@ void PlasticMaterial::computeDStress(Vector3& dStress, Vector3 dStrain)
 	dStress *= (_youngModulus.getValue() / (12 * (1 - _poissonRatio.getValue()*_poissonRatio.getValue())));
 }
 
-double PlasticMaterial::computeVonMisesStrain(Vector3 &strain)
+SReal PlasticMaterial::computeVonMisesStrain(Vector3 &strain)
 {
 	NEWMAT::SymmetricMatrix e(2);
 	e = 0.0;

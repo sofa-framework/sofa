@@ -55,7 +55,7 @@ void CompliantPostStabilizationAnimationLoop::init()
 }
 
 
-void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams* params, double dt)
+void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
     // TODO handle dt as in defaultanimationloop
     if (dt == 0) dt = this->gnode->getDt();
@@ -77,7 +77,7 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
         this->gnode->execute ( act );
     }
 
-    double startTime = this->gnode->getTime();
+    SReal startTime = this->gnode->getTime();
 
     odesolver::CompliantImplicitSolver::SolverOperations sop( params, m_solver->getContext(), m_solver->alpha.getValue(), m_solver->beta.getValue(), dt, core::VecCoordId::position(), core::VecDerivId::velocity() );
 

@@ -62,7 +62,7 @@ public:
 class SOFA_SIMULATION_COMMON_API ExportGnuplotVisitor : public simulation::Visitor
 {
 public:
-    ExportGnuplotVisitor(const core::ExecParams* params, double time);
+    ExportGnuplotVisitor(const core::ExecParams* params, SReal time);
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
     virtual Result processNodeTopDown(simulation::Node* node);
 
@@ -74,7 +74,7 @@ public:
     }
     virtual const char* getClassName() const { return "ExportGnuplotVisitor"; }
 protected:
-    double m_time;
+    SReal m_time;
 };
 
 } // namespace simulation

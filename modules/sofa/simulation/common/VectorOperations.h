@@ -61,26 +61,26 @@ public:
 
     void v_clear(core::MultiVecId v); ///< v=0
     void v_eq(core::MultiVecId v, core::ConstMultiVecId a); ///< v=a
-    void v_eq(core::MultiVecId v, core::ConstMultiVecId a, double f); ///< v=f*a
-    void v_peq(core::MultiVecId v, core::ConstMultiVecId a, double f=1.0); ///< v+=f*a
+    void v_eq(core::MultiVecId v, core::ConstMultiVecId a, SReal f); ///< v=f*a
+    void v_peq(core::MultiVecId v, core::ConstMultiVecId a, SReal f=1.0); ///< v+=f*a
 #ifdef SOFA_SMP
-    void v_peq(core::MultiVecId v, core::ConstMultiVecId a, Shared<double> &fSh, double f=1.0) ; ///< v+=f*a
-    void v_meq(core::MultiVecId v, core::ConstMultiVecId a, Shared<double> &fSh) ; ///< v+=f*a
+    void v_peq(core::MultiVecId v, core::ConstMultiVecId a, Shared<SReal> &fSh, SReal f=1.0) ; ///< v+=f*a
+    void v_meq(core::MultiVecId v, core::ConstMultiVecId a, Shared<SReal> &fSh) ; ///< v+=f*a
 #endif
-    void v_teq(core::MultiVecId v, double f) ; ///< v*=f
-    void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId  b, double f=1.0) ; ///< v=a+b*f
+    void v_teq(core::MultiVecId v, SReal f) ; ///< v*=f
+    void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId  b, SReal f=1.0) ; ///< v=a+b*f
 #ifdef SOFA_SMP
-    void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId b, Shared<double> &f) ; ///< v=a+b*f
+    void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId b, Shared<SReal> &f) ; ///< v=a+b*f
 #endif
     void v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o);
     void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId  b); ///< a dot b ( get result using finish )
     void v_norm(core::ConstMultiVecId a, unsigned l); ///< Compute the norm of a vector ( get result using finish ). The type of norm is set by parameter l. Use 0 for the infinite norm. Note that the 2-norm is more efficiently computed using the square root of the dot product.
 #ifdef SOFA_SMP
-    void v_dot(Shared<double> &result,core::ConstMultiVecId a, core::ConstMultiVecId b) ; ///< a dot b
+    void v_dot(Shared<SReal> &result,core::ConstMultiVecId a, core::ConstMultiVecId b) ; ///< a dot b
 #endif
-    void v_threshold(core::MultiVecId a, double threshold); ///< nullify the values below the given threshold
+    void v_threshold(core::MultiVecId a, SReal threshold); ///< nullify the values below the given threshold
 
-    double finish();
+    SReal finish();
     void print(sofa::core::ConstMultiVecId v, std::ostream& out, std::string prefix="", std::string suffix="" );
 
     virtual size_t v_size(core::MultiVecId v);
@@ -88,7 +88,7 @@ public:
 protected:
     VisitorExecuteFunc executeVisitor;
     /// Result of latest v_dot operation
-    double result;
+    SReal result;
 
 };
 

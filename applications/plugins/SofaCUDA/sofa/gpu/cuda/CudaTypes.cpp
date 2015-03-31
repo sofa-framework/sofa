@@ -38,10 +38,16 @@ using namespace sofa::defaulttype;
 using namespace sofa::gpu::cuda;
 
 
+#ifndef SOFA_FLOAT
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3fTypes, Vec1dTypes>;
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3fTypes, Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3fTypes, Vec1fTypes>;
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3fTypes, Vec3fTypes>;
+#endif
+
+
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3dTypes, Vec1dTypes>;
 template class SOFA_GPU_CUDA_API MultiMapping<CudaVec3dTypes, Vec3dTypes>;

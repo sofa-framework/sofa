@@ -76,7 +76,7 @@ void FrameSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void FrameSpringForceField<DataTypes>::addSpringForce ( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , const Spring& spring )
+void FrameSpringForceField<DataTypes>::addSpringForce ( SReal& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , const Spring& spring )
 {
     int a = spring.m1;
     int b = spring.m2;

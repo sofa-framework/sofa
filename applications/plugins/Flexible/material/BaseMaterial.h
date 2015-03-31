@@ -61,7 +61,7 @@ public:
     // compute $ f=-dU/dx + f(v) $
     virtual void addForce( Deriv& f , const Coord& x , const Deriv& v) const = 0;
     // compute $ df += kFactor K dx + bFactor B dx $
-    virtual void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& bfactor ) const = 0;
+    virtual void addDForce( Deriv&   df , const Deriv&   dx, const SReal& kfactor, const SReal& bfactor ) const = 0;
 
     virtual MatBlock getK() const = 0;
     virtual MatBlock getB() const = 0;

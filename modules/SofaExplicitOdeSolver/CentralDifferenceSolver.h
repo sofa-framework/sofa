@@ -50,16 +50,16 @@ public:
 protected:
     CentralDifferenceSolver();
 public:
-    void solve (const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
-    Data<double> f_rayleighMass;
+    Data<SReal> f_rayleighMass;
 
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
     virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const
     {
-        const double dt = getContext()->getDt();
+        const SReal dt = getContext()->getDt();
         double matrix[3][3] =
         {
             { 1, dt, dt*dt},
@@ -77,7 +77,7 @@ public:
     ///
     virtual double getSolutionIntegrationFactor(int outputDerivative) const
     {
-        const double dt = getContext()->getDt();
+        const SReal dt = getContext()->getDt();
         double vect[3] = { dt*dt, dt, 1};
         if (outputDerivative >= 3)
             return 0;

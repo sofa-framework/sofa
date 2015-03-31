@@ -504,7 +504,7 @@ namespace sofa {
 
         bool runTest()
         {
-            this->errorMax *= 300;
+            this->errorMax *= 500;
 
             defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
 

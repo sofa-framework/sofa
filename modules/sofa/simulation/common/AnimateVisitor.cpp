@@ -47,7 +47,7 @@ namespace simulation
 {
 
 
-AnimateVisitor::AnimateVisitor(const core::ExecParams* params, double dt)
+AnimateVisitor::AnimateVisitor(const core::ExecParams* params, SReal dt)
     : Visitor(params)
     , dt(dt)
 #ifdef SOFA_HAVE_EIGEN2
@@ -169,7 +169,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     if (!node->solver.empty() )
     {
         sofa::helper::AdvancedTimer::StepVar timer("Mechanical",node);
-        double nextTime = node->getTime() + dt;
+        SReal nextTime = node->getTime() + dt;
 
 
         {

@@ -93,9 +93,9 @@ class SOFA_IMPLICIT_ODE_SOLVER_API EulerImplicitSolver : public sofa::core::beha
 public:
     SOFA_CLASS(EulerImplicitSolver, sofa::core::behavior::OdeSolver);
 
-    Data<double> f_rayleighStiffness;
-    Data<double> f_rayleighMass;
-    Data<double> f_velocityDamping;
+    Data<SReal> f_rayleighStiffness;
+    Data<SReal> f_rayleighMass;
+    Data<SReal> f_velocityDamping;
     Data<bool> f_firstOrder;
     Data<bool> f_verbose;
 protected:
@@ -105,7 +105,7 @@ public:
 
     void cleanup();
 
-    void solve (const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
     ///

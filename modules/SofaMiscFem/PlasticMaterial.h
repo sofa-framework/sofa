@@ -65,8 +65,8 @@ public:
     typedef sofa::helper::vector<Vector3> VecStress;
 
 	// Material properties
-    Data<double> _poissonRatio;
-    Data<double> _youngModulus;
+    Data<SReal> _poissonRatio;
+    Data<SReal> _youngModulus;
 
     // Stress-strain curve description
     VecDouble _E;
@@ -80,7 +80,7 @@ public:
     void computeStress (Vector3& stress, Vector3 strain, int elementIndex);
     void computeDStress (Vector3& dstress, Vector3 dstrain);
 
-    double computeVonMisesStrain(Vector3 &strain);
+    SReal computeVonMisesStrain(Vector3 &strain);
     void computeStressOnSection(Vector3& Stress, Vector3 Strain, int section);	// computes the stress on a given section of the piecewise function
 
     virtual void computeStress (unsigned int /*iElement*/){}

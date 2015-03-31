@@ -123,7 +123,7 @@ void RayTriangleVisitor::processTriangleModel(simulation::Node* /*node*/, compon
     typedef component::collision::TriangleModel TriangleModel;
     typedef TriangleModel::DataTypes DataTypes;
 
-    const DataTypes::VecCoord& x = tm->getX();
+    const DataTypes::VecCoord& x = tm->getMechanicalState()->read(sofa::core::ConstVecCoordId::position())->getValue();
     for( core::topology::BaseMeshTopology::SeqTriangles::const_iterator it=tm->getTriangles().begin(), iend=tm->getTriangles().end() ; it!=iend; it++)
     {
         //cerr<<"RayTriangleVisitor::processTriangleModel, triangle " << *it << ", coordinates: " << x[(*it)[0]] << endl;

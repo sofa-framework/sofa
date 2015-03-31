@@ -45,8 +45,9 @@ namespace constraintset
 class UnilateralConstraintResolution : public core::behavior::ConstraintResolution
 {
 public:
-    virtual void resolution(int line, double** w, double* d, double* force)
+    virtual void resolution(int line, double** w, double* d, double* force, double *dfree)
     {
+        SOFA_UNUSED(dfree);
 //		std::cout<< "UnilateralConstraintResolution (without friction): verify resolution ! "<<std::endl;
         force[line] -= d[line] / w[line][line];
         if(force[line] < 0)
@@ -240,7 +241,7 @@ public:
 
     virtual void getConstraintInfo(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas);
 
-    virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+    virtual void getConstraintResolution(const core::ConstraintParams *,std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
     bool isActive();
 
     void draw(const core::visual::VisualParams* vparams);

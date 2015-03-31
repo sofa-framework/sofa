@@ -426,7 +426,7 @@ void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& res, const DataVecDeriv& dx, double factor)
+void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& res, const DataVecDeriv& dx, SReal factor)
 {
     const MassVector &masses= f_mass.getValue();
     //std::cout << "DIAGONALMASS: dx size = " << dx.size() << " res size = " << res.size() << " masses size = " << masses.size() << std::endl;
@@ -469,12 +469,12 @@ void DiagonalMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v ) const
+SReal DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v ) const
 {
 
     const MassVector &masses= f_mass.getValue();
     helper::ReadAccessor< DataVecDeriv > _v = v;
-    double e = 0.0;
+    SReal e = 0.0;
     for (unsigned int i=0; i<masses.size(); i++)
     {
         e += _v[i]*masses[i]*_v[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
@@ -483,14 +483,14 @@ double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::Mechanic
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
+SReal DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
 {
 
     const MassVector &masses= f_mass.getValue();
     helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
     // gravity
-    sofa::defaulttype::Vec3d g ( this->getContext()->getGravity() );
+    defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<masses.size(); i++)
@@ -502,10 +502,10 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::Mechan
 
 // does nothing by default, need to be specialized in .cpp
 template <class DataTypes, class MassType>
-sofa::defaulttype::Vec6d
+defaulttype::Vector6
 DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& /*vx*/, const DataVecDeriv& /*vv*/  ) const
 {
-    return sofa::defaulttype::Vec6d();
+    return defaulttype::Vector6();
 }
 
 template <class DataTypes, class MassType>
@@ -522,7 +522,7 @@ void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParam
 
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) const
+SReal DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) const
 {
     return (SReal)(f_mass.getValue()[index]);
 }

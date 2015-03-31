@@ -376,7 +376,7 @@ void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams*)
     if (!p_showForces.getValue())
         return;
 
-    double aSC = arrowSizeCoef.getValue();
+    SReal aSC = arrowSizeCoef.getValue();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable(GL_LIGHTING);

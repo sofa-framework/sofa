@@ -71,7 +71,7 @@ void WashingMachineForceField<DataTypes>::draw(const core::visual::VisualParams*
 }
 
 template<class DataTypes>
-bool WashingMachineForceField<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+bool WashingMachineForceField<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
 {
     Deriv corner0 = _center.getValue() - _size.getValue() * .5;
     Deriv corner1 = _center.getValue() + _size.getValue() * .5;

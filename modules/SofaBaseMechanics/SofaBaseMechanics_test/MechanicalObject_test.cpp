@@ -51,12 +51,9 @@ struct MechanicalObject_test :  public ::testing::Test
     StubMechanicalObject<T> mechanicalObject;
 };
 
+
 using namespace sofa::defaulttype;
-typedef ::testing::Types<
-    Vec1fTypes, Vec1dTypes,
-    Vec2fTypes, Vec2dTypes,
-    Vec3fTypes, Vec3dTypes
-    > DataTypesList;
+typedef ::testing::Types<Vec1Types, Vec2Types, Vec3Types> DataTypesList;
 TYPED_TEST_CASE(MechanicalObject_test, DataTypesList);
 
 namespace TestHelpers

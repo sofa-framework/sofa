@@ -353,7 +353,7 @@ void PCAOnRigidFrameMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeriv&
     //	const InVecCoord xfrom = xfromData->getValue();
     //	OutDataVecCoord* xtoData = m_toModel->write(core::VecCoordId::position());
     //	OutVecCoord &xto = *xtoData->beginEdit();
-    //	apply(xto, xfrom, (m_fromRootModel==NULL ? NULL : m_fromRootModel->getX()));
+    //	apply(xto, xfrom, (m_fromRootModel==NULL ? NULL : m_fromRootModel->read(sofa::core::ConstVecCoordId::position())->getValue()));
     //	xtoData->endEdit();
     //}
 

@@ -46,7 +46,7 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 CentralDifferenceSolver::CentralDifferenceSolver()
-    : f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    : f_rayleighMass( initData(&f_rayleighMass,(SReal)0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
 {
 }
 
@@ -85,7 +85,7 @@ CentralDifferenceSolver::CentralDifferenceSolver()
  *
  */
 
-void CentralDifferenceSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
@@ -97,7 +97,7 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, double dt, s
     MultiVecDeriv dx (&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
 
-    const double r = f_rayleighMass.getValue();
+    const SReal r = f_rayleighMass.getValue();
 
     mop.addSeparateGravity(dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
 

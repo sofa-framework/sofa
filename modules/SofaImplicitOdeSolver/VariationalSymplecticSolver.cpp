@@ -57,8 +57,8 @@ using namespace core::behavior;
 VariationalSymplecticSolver::VariationalSymplecticSolver()
     : f_newtonError( initData(&f_newtonError,0.01,"newtonError","Error tolerance for Newton iterations") )
     , f_newtonSteps( initData(&f_newtonSteps,(unsigned int)5,"steps","Maximum number of Newton steps") )
-    , f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
-    , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
+    , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
+    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump information on the residual errors and number of Newton iterations") )
     , f_saveEnergyInFile( initData(&f_saveEnergyInFile,false,"saveEnergyInFile","If kinetic and potential energies should be dumped in a CSV file at each iteration") )
     , f_explicit( initData(&f_explicit,false,"explicitIntegration","Use explicit integration scheme") )
@@ -84,7 +84,7 @@ void VariationalSymplecticSolver::init()
     energies.open((f_fileName.getValue()).c_str(),std::ios::out);
 }
 
-void VariationalSymplecticSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void VariationalSymplecticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
@@ -101,9 +101,9 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, double d
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
 
-    double h = dt;
-    const double rM = f_rayleighMass.getValue();
-    const double rK = f_rayleighStiffness.getValue();
+    const SReal& h = dt;
+    const SReal rM = f_rayleighMass.getValue();
+    const SReal rK = f_rayleighStiffness.getValue();
     const bool verbose  = f_verbose.getValue();
 
     if (cpt == 0 || this->getContext()->getTime()==0.0)
@@ -114,8 +114,8 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, double d
 		mop.addMdx(pInit,vel_1,1.0); // momemtum is initialized to M*vinit (assume 0 acceleration)
 
         // Compute potential energy at time t=0
-        double KineticEnergy;
-        double potentialEnergy;
+        SReal KineticEnergy;
+        SReal potentialEnergy;
         mop.computeEnergy(KineticEnergy,potentialEnergy);
 
         // Compute incremental potential energy
@@ -333,8 +333,8 @@ void VariationalSymplecticSolver::solve(const core::ExecParams* params, double d
             else if (!f_useIncrementalPotentialEnergy.getValue())
             {
                 // Compute approximate potential energy
-                double potentialEnergy;
-                double KineticEnergy;
+                SReal potentialEnergy;
+                SReal KineticEnergy;
                 mop.computeEnergy(KineticEnergy,potentialEnergy);
 
                 // Hamiltonian energy

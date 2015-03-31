@@ -109,7 +109,7 @@ public:
         dfdJ=-KVol;
     }
 
-    void addDForce( Deriv&   df , const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ )  const
+    void addDForce( Deriv&   df , const Deriv&   dx, const SReal& kfactor, const SReal& /*bfactor*/ )  const
     {
         df.getStrain()[2]+=dfdJ*dx.getStrain()[2]*kfactor;
     }
@@ -249,7 +249,7 @@ public:
         }
     }
 
-    void addDForce( Deriv& df, const Deriv& dx, const double& kfactor, const double& /*bfactor*/ )  const
+    void addDForce( Deriv& df, const Deriv& dx, const SReal& kfactor, const SReal& /*bfactor*/ )  const
     {
         df.getStrain() -= _K * dx.getStrain() * kfactor;
     }

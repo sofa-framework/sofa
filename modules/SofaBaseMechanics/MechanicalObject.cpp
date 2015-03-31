@@ -47,14 +47,14 @@ using namespace core::behavior;
 using namespace defaulttype;
 
 //template <>
-//bool MechanicalObject<Vec3dTypes>::addBBox(double* minBBox, double* maxBBox)
+//bool MechanicalObject<Vec3dTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
 //{
 //    cerr << "MechanicalObject<Vec3dTypes>::addBBox, before min=" << *minBBox <<", max=" << *maxBBox << endl;
 
 //    // participating to bbox only if it is drawn
 //    if( !showObject.getValue() ) return false;
 
-//    const VecCoord& x = *this->getX();
+//    const VecCoord& x = *this->read(sofa::core::ConstVecCoordId::position())->getValue();
 //    for( std::size_t i=0; i<x.size(); i++ )
 //    {
 //        Vec<3,Real> p;
@@ -516,7 +516,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core
 }
 
 // template <>
-//     bool MechanicalObject<Vec1fTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+//     bool MechanicalObject<Vec1fTypes>::addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
 // {
 //     return false; // ignore 1D DOFs for 3D bbox
 // }

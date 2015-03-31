@@ -44,9 +44,9 @@ using namespace sofa::defaulttype;
 
 #ifndef SOFA_FLOAT
 template <>
-double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+SReal DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
-    double e = 0;
+    SReal e = 0;
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
@@ -62,9 +62,9 @@ double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const core::
 }
 
 template <>
-double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+SReal DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
-    double e = 0;
+    SReal e = 0;
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
@@ -203,7 +203,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw(const core::visual::VisualPar
 
 
 template <>
-Vec6d DiagonalMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;
@@ -225,7 +225,7 @@ Vec6d DiagonalMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalPara
 }
 
 template <>
-Vec6d DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;
@@ -250,9 +250,9 @@ Vec6d DiagonalMass<Rigid3dTypes,Rigid3dMass>::getMomentum ( const core::Mechanic
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+SReal DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
-    double e = 0;
+    SReal e = 0;
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
     // gravity
@@ -268,9 +268,9 @@ double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const core::
 }
 
 template <>
-double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
+SReal DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const
 {
-    double e = 0;
+    SReal e = 0;
 
     const MassVector &masses= f_mass.getValue();
     const VecCoord& _x = x.getValue();
@@ -387,14 +387,14 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw(const core::visual::VisualPar
 
 
 template <>
-Vec6d DiagonalMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;
 
     const MassVector &masses = f_mass.getValue();
 
-    defaulttype::Vec6d momentum;
+    Vector6 momentum;
 
     for ( unsigned int i=0 ; i<v.size() ; i++ )
     {
@@ -409,14 +409,14 @@ Vec6d DiagonalMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParam
 }
 
 template <>
-Vec6d DiagonalMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 DiagonalMass<Rigid3fTypes,Rigid3fMass>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     helper::ReadAccessor<DataVecDeriv> v = vv;
     helper::ReadAccessor<DataVecCoord> x = vx;
 
     const MassVector &masses = f_mass.getValue();
 
-    defaulttype::Vec6d momentum;
+    Vector6 momentum;
 
     for ( unsigned int i=0 ; i<v.size() ; i++ )
     {

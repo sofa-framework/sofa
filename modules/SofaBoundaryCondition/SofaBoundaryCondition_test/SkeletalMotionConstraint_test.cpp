@@ -79,10 +79,10 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
         /// Create the scene
         root = simulation->createNewGraph("root");
 
-        dofs = New<MechanicalObject>();
+        dofs = core::objectmodel::New<MechanicalObject>();
         root->addObject(dofs);
 
-        projection = New<SkeletalMotionConstraint>();
+        projection = core::objectmodel::New<SkeletalMotionConstraint>();
         root->addObject(projection);
 
        

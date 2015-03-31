@@ -132,10 +132,10 @@ public:
     const Viewport& viewport() const { return m_viewport; }
     Viewport& viewport() { return m_viewport; }
 
-    const double& zNear() const { return m_zNear; }
-    const double& zFar()  const { return m_zFar;  }
-    double& zNear() { return m_zNear; }
-    double& zFar()  { return m_zFar;  }
+    const SReal& zNear() const { return m_zNear; }
+    const SReal& zFar()  const { return m_zFar;  }
+    SReal& zNear() { return m_zNear; }
+    SReal& zFar()  { return m_zFar;  }
 
     const CameraType& cameraType() const { return m_cameraType; }
     CameraType& cameraType() { return m_cameraType; }
@@ -189,8 +189,8 @@ protected:
     sofa::defaulttype::BoundingBox      m_sceneBoundingBox;
     helper::gl::Transformation          m_sceneTransform;
     Viewport                            m_viewport;
-    double                              m_zNear;
-    double                              m_zFar;
+    SReal                              m_zNear;
+    SReal                              m_zFar;
     CameraType                          m_cameraType;
     Pass                                m_pass;
     DisplayFlags                        m_displayFlags;
@@ -203,8 +203,8 @@ protected:
     /// Mask of supported graphics API
     unsigned int m_supportedAPIs;
 
-    double m_modelViewMatrix[16];  ///< model view matrix.
-    double m_projectionMatrix[16]; ///< projection matrix.
+    SReal m_modelViewMatrix[16];  ///< model view matrix.
+    SReal m_projectionMatrix[16]; ///< projection matrix.
 };
 
 } // namespace visual

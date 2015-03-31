@@ -13,6 +13,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/helper/system/glut.h>
+#include <SofaComponentMain/init.h>
 
 #include <sstream>
 #include <qqml.h>
@@ -198,12 +199,8 @@ static bool LoaderProcess(sofa::simulation::Simulation* sofaSimulation, const QS
 		vparams->displayFlags().setShowVisualModels(true);
 
 	if(sofaSimulation->load(scenePath.toLatin1().constData()))
-	{
-		sofaSimulation->init(sofaSimulation->GetRoot().get());
-
 		if(sofaSimulation->GetRoot())
 			return true;
-	}
 
 	return false;
 }
@@ -276,9 +273,10 @@ void Scene::open()
 	{
         LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
 
-        connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {
-            setStatus(loaderThread->isLoaded() ? Status::Ready : Status::Error);
-            if(isReady() && !qmlFilepath.empty())
+        connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {                    
+            if(!loaderThread->isLoaded())
+                setStatus(Status::Error);
+            else if(!qmlFilepath.empty())
                 setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 
             loaderThread->deleteLater();
@@ -286,10 +284,11 @@ void Scene::open()
 
 		loaderThread->start();
 	}
-	else
+    else
 	{
-        setStatus(LoaderProcess(mySofaSimulation, finalFilename) ? Status::Ready : Status::Error);
-        if(isReady() && !qmlFilepath.empty())
+        if(!LoaderProcess(mySofaSimulation, finalFilename))
+            setStatus(Status::Error);
+        else if(!qmlFilepath.empty())
             setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 	}
 }
@@ -368,8 +367,7 @@ double Scene::radius() const
 void Scene::computeBoundingBox(QVector3D& min, QVector3D& max) const
 {
 	SReal pmin[3], pmax[3];
-    if (mySofaSimulation != nullptr)
-        mySofaSimulation->computeTotalBBox(mySofaSimulation->GetRoot().get(), pmin, pmax);
+    mySofaSimulation->computeTotalBBox(mySofaSimulation->GetRoot().get(), pmin, pmax);
 
 	min = QVector3D(pmin[0], pmin[1], pmin[2]);
 	max = QVector3D(pmax[0], pmax[1], pmax[2]);
@@ -892,7 +890,7 @@ void Scene::onSetDataValue(const QString& path, const QVariant& value)
 
 void Scene::init()
 {
-	if(!mySofaSimulation->GetRoot())
+    if(!mySofaSimulation->GetRoot() || myIsInit)
 		return;
 
     GLenum err = glewInit();
@@ -920,10 +918,14 @@ void Scene::init()
     }
 #endif
 
+    // WARNING: some plugins like "image" need a valid OpenGL Context during init because they are initing textures during init instead of initTextures ...
+    mySofaSimulation->init(mySofaSimulation->GetRoot().get());
 	mySofaSimulation->initTextures(mySofaSimulation->GetRoot().get());
 	setDt(mySofaSimulation->GetRoot()->getDt());
 
     myIsInit = true;
+
+    setStatus(Status::Ready);
 }
 
 void Scene::reload()

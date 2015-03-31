@@ -42,7 +42,7 @@ using namespace sofa::defaulttype;
 #ifndef SOFA_FLOAT
 
 template <>
-Vec6d MeshMatrixMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 MeshMatrixMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();
@@ -50,7 +50,7 @@ Vec6d MeshMatrixMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalPa
     helper::ReadAccessor< DataVecCoord > x = vx;
     helper::ReadAccessor< DataVecDeriv > v = vv;
 
-    Vec6d momentum;
+    Vector6 momentum;
     for( unsigned int i=0 ; i<v.size() ; i++ )
     {
         Deriv linearMomentum = v[i] * vertexMass[i];
@@ -85,7 +85,7 @@ Vec6d MeshMatrixMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalPa
 #ifndef SOFA_DOUBLE
 
 template <>
-Vec6d MeshMatrixMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
+Vector6 MeshMatrixMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();
@@ -93,7 +93,7 @@ Vec6d MeshMatrixMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalPar
     helper::ReadAccessor< DataVecCoord > x = vx;
     helper::ReadAccessor< DataVecDeriv > v = vv;
 
-    Vec6d momentum;
+    Vector6 momentum;
     for( unsigned int i=0 ; i<v.size() ; i++ )
     {
         Deriv linearMomentum = v[i] * vertexMass[i];

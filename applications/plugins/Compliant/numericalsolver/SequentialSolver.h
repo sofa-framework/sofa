@@ -78,16 +78,15 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	
     virtual void fetch_blocks(const system_type& system);
 
-	// constraint responses
-	typedef Eigen::Matrix< system_type::real, Eigen::Dynamic, Eigen::Dynamic > dense_matrix;
-	typedef Eigen::LDLT< dense_matrix > inverse_type;
+    // constraint responses
+    typedef Eigen::LDLT< dmat > inverse_type;
 
 	// blocks inverse
 	typedef std::vector< inverse_type > blocks_inv_type;
 	blocks_inv_type blocks_inv;
 	
 	// blocks factorization
-	typedef Eigen::Map<dense_matrix> schur_type;
+    typedef Eigen::Map<dmat> schur_type;
 	void factor_block(inverse_type& inv, const schur_type& schur);
 	
 	// blocks solve

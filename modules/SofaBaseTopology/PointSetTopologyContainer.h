@@ -94,13 +94,13 @@ public:
     virtual bool hasPos() const;
 
     /** \brief Returns the X coordinate of the ith DOF. */
-    virtual double getPX(int i) const;
+    virtual SReal getPX(int i) const;
 
     /** \brief Returns the Y coordinate of the ith DOF. */
-    virtual double getPY(int i) const;
+    virtual SReal getPY(int i) const;
 
     /** \brief Returns the Z coordinate of the ith DOF. */
-    virtual double getPZ(int i) const;
+    virtual SReal getPZ(int i) const;
 
     /// @}
 
