@@ -79,12 +79,11 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 
     struct SOFA_Compliant_API Bilateral_block {
         unsigned size;
-        rmat offset;
         typedef Eigen::SimplicialLDLT< AssembledSystem::cmat > inverse_type;
         inverse_type inv;
-        cmat C;
-        rmat JP;
-        cmat mapping_response;
+
+        typedef std::pair<unsigned,unsigned> chunk;
+        vector<chunk> chunks;
     };
     Bilateral_block bilateral_block;
 

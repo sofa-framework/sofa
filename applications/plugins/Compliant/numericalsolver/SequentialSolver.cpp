@@ -35,6 +35,7 @@ void SequentialSolver::fetch_blocks(const system_type& system) {
 	// TODO don't free memory ?
 	blocks.clear();
     bilateral_block.size = 0;
+    bilateral_block.chunks.clear();
 	
 	unsigned off = 0;
 
@@ -67,45 +68,13 @@ void SequentialSolver::fetch_blocks(const system_type& system) {
         else
         {
             const unsigned dim = dofs->getMatrixSize();
+
+            bilateral_block.chunks.push_back( Bilateral_block::chunk( off, dim ) );
+
             off += dim;
             bilateral_block.size += dim;
         }
     }
-
-
-    if( bilateral_block.size )
-    {
-        off = 0;
-        unsigned off_bilat = 0;
-
-        bilateral_block.offset.resize( bilateral_block.size, system.n );
-
-        for(unsigned i = 0, n = system.compliant.size(); i < n; ++i)
-        {
-            system_type::dofs_type* const dofs = system.compliant[i];
-            const system_type::constraint_type& constraint = system.constraints[i];
-
-            const unsigned dim = dofs->getMatrixSize();
-
-            if( !constraint.projector ) // bilat
-            {
-                for( unsigned j=0 ; j<dim; ++j )
-                {
-                    bilateral_block.offset.startVec( off_bilat+j );
-                    bilateral_block.offset.insertBack( off_bilat+j, off+j ) = 1.0;
-                }
-                off_bilat += dim;
-            }
-
-            off += dim;
-        }
-
-        bilateral_block.offset.finalize();
-
-//        serr<<"fetch_blocks bilateral_block.offset "<<dmat(bilateral_block.offset)<<sendl;
-
-    }
-
 
 }
 
@@ -146,7 +115,7 @@ void SequentialSolver::factor(const system_type& system) {
 	blocks_inv.resize( n );
 
     sub.solve_filtered( *response, mapping_response, system.J, JP );  // mapping_response = PHinv(JP)^T
-	
+
 	
 	// to avoid allocating matrices for each block, could be a vec instead ?
     dmat storage;
@@ -184,22 +153,35 @@ void SequentialSolver::factor(const system_type& system) {
 		}
 
 		factor_block( blocks_inv[i], schur );
-	}
+    }
 
     if( bilateral_block.size )
     {
-        bilateral_block.C.resize( bilateral_block.size, bilateral_block.size );
-        bilateral_block.C = bilateral_block.offset * system.C * bilateral_block.offset.transpose();
-        bilateral_block.JP.resize( bilateral_block.size, JP.cols() );
-        bilateral_block.JP = bilateral_block.offset * JP;
-        bilateral_block.mapping_response.resize( mapping_response.rows(), bilateral_block.size );
-        bilateral_block.mapping_response = mapping_response * bilateral_block.offset.transpose();
-
         cmat schur( bilateral_block.size, bilateral_block.size );
-        schur = bilateral_block.JP * bilateral_block.mapping_response + bilateral_block.C;
+
+        unsigned off = 0;
+
+        for( unsigned i=0, iend=bilateral_block.chunks.size() ; i<iend ; ++i )
+        {
+            const unsigned offset = bilateral_block.chunks[i].first;
+            const unsigned size = bilateral_block.chunks[i].second;
+
+            cmat tmp = JP.middleRows(offset, size) * mapping_response.middleCols(offset, size)
+                              + cmat( system.C.block( offset, offset, size , size ) );
+
+            for( unsigned r = 0; r < size; ++r) {
+                schur.startVec( off+r );
+                for(cmat::InnerIterator it(tmp, r); it; ++it) {
+                    schur.insertBack( off+it.row()-offset, off+r ) += it.value();
+                }
+            }
+
+            off += size;
+        }
+        schur.finalize();
+
         bilateral_block.inv.compute( schur.triangularView< Eigen::Lower >() );
     }
-
 }
 
 // TODO make sure this does not cause any alloc
@@ -248,6 +230,44 @@ SReal SequentialSolver::step(vec& lambda,
 	// error norm2 estimate (seems conservative and much cheaper to
 	// compute anyways)
 	real estimate = 0;
+
+
+    // solve bilaterals first
+    if( bilateral_block.size )
+    {
+        vec error( bilateral_block.size ), delta( bilateral_block.size );
+
+        unsigned off = 0;
+        for( unsigned i=0, iend=bilateral_block.chunks.size() ; i<iend ; ++i )
+        {
+            const unsigned offset = bilateral_block.chunks[i].first;
+            const unsigned size = bilateral_block.chunks[i].second;
+
+            error.segment(off, size) = rhs.segment(offset, size) - JP.middleRows(offset, size) * net
+                                              - sys.C.middleRows(offset, size) * lambda;
+
+           off += size;
+        }
+
+        delta = omega.getValue() * bilateral_block.inv.solve(error);
+
+        estimate += delta.squaredNorm();
+
+        off = 0;
+        for( unsigned i=0, iend=bilateral_block.chunks.size() ; i<iend ; ++i )
+        {
+            const unsigned offset = bilateral_block.chunks[i].first;
+            const unsigned size = bilateral_block.chunks[i].second;
+
+            net.noalias() = net + mapping_response.middleCols(offset, size) * delta.segment(off, size);
+
+            lambda.segment(offset, size) += delta.segment(off, size);
+
+            off += size;
+        }
+
+    }
+
 		
 	// inner loop
 	for(unsigned i = 0, n = blocks.size(); i < n; ++i) {
@@ -308,18 +328,6 @@ SReal SequentialSolver::step(vec& lambda,
 		// fix net to avoid error accumulations ?
 	}
 
-    if( bilateral_block.size )
-    {
-        vec error( bilateral_block.size ), delta( bilateral_block.size );
-        error = bilateral_block.offset * rhs - bilateral_block.JP*net - bilateral_block.C * (bilateral_block.offset * lambda);
-        delta = omega.getValue() * bilateral_block.inv.solve(error);
-        estimate += delta.squaredNorm();
-        net.noalias() = net + bilateral_block.mapping_response * delta;
-        lambda.noalias() = lambda + bilateral_block.offset.transpose() * delta;
-    }
-
-
-	
 	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
 	// TODO is this needed to avoid error accumulation ?
