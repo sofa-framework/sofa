@@ -221,6 +221,7 @@ static void filter_kkt(rmat& res,
         }
 
         // C
+
         SReal* diag = 0;
         for(rmat::InnerIterator itC(C, i); itC; ++itC) {
             SReal& ref = res.insertBack(P_cols + sub_row, P_cols + itC.col());
