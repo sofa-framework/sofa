@@ -213,7 +213,7 @@ install( FILES ${CMAKE_CURRENT_BINARY_DIR}/Flexible/Flexible.h
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILES})
 target_link_libraries(${PROJECT_NAME} SofaComponentMisc)
 
-set(FLEXIBLE_COMPILER_FLAGS "-DSOFA_BUILD_Flexible")
+set(FLEXIBLE_COMPILER_FLAGS "-DSOFA_BUILD_FLEXIBLE")
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
@@ -255,7 +255,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${FLEXIBLE_DEPENDENCY_INCLUDE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${FLEXIBLE_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Flexible")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${FLEXIBLE_COMPILER_FLAGS}")
 
 
 install(TARGETS ${PROJECT_NAME}
