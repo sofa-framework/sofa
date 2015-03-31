@@ -58,6 +58,16 @@
 
 #cmakedefine DETECTIONOUTPUT_BARYCENTRICINFO
 
+#cmakedefine SOFA_FLOAT
+
+#cmakedefine SOFA_DOUBLE
+
+#ifdef SOFA_FLOAT
+typedef float SReal;
+#else
+typedef double SReal;
+#endif
+
 // Use of "extern template" is activated by the following macro
 // It must be used for DLLs on windows, and is now also activated
 // on other platforms (unless SOFA_NO_EXTERN_TEMPLATE is set), as
