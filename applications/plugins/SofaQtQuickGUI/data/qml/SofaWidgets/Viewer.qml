@@ -2,6 +2,8 @@ import QtQuick 2.0
 import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.3
 import QtQuick.Layouts 1.1
+import QtQuick.Dialogs 1.2
+import QtGraphicalEffects 1.0
 import SofaBasics 1.0
 import Viewer 1.0
 import Scene 1.0
@@ -10,7 +12,12 @@ import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 Viewer {
     id: root
     clip: true
-	
+    backgroundColor: "#FF404040"
+    backgroundImageSource: "qrc:/icon/sofaLogoAlpha.png"
+    wireframe: false
+    culling: true
+    antialiasing: false
+
 	Action{
 		shortcut: "F5"
 		onTriggered: root.viewAll()
@@ -77,9 +84,8 @@ Viewer {
     property alias actor: actor
     MouseArea {
         anchors.fill: parent
-        focus: true
         acceptedButtons: Qt.AllButtons
-        propagateComposedEvents: true
+        //propagateComposedEvents: true
 
         Actor {
             id: actor
@@ -96,15 +102,15 @@ Viewer {
                     var nearPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 0.0));
                     var farPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 1.0));
                     if(scene.pickingInteractor.pick(nearPosition, farPosition.minus(nearPosition))) {
-                        var z = root.computeDepth(scene.pickingInteractor.pickedPointPosition());
-                        var position = root.projectOnViewPlane(nearPosition, z);
+                        var z = camera.computeDepth(scene.pickingInteractor.pickedPointPosition());
+                        var position = camera.projectOnViewPlane(nearPosition, z);
                         scene.pickingInteractor.position = position;
 
                         setMouseMoveMapping(function(mouse) {
                             var nearPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 0.0));
                             var farPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 1.0));
-                            var z = root.computeDepth(scene.pickingInteractor.pickedPointPosition());
-                            var position = root.projectOnViewPlane(nearPosition, z);
+                            var z = camera.computeDepth(scene.pickingInteractor.pickedPointPosition());
+                            var position = camera.projectOnViewPlane(nearPosition, z);
                             scene.pickingInteractor.position = position;
                         });
                     }
@@ -116,12 +122,19 @@ Viewer {
                     setMouseMoveMapping(null);
                 });
 
+                addMouseDoubleClickedMapping(Qt.LeftButton, function(mouse) {
+                    var position = root.projectOnGeometry(Qt.point(mouse.x + 0.5, mouse.y + 0.5));
+                    if(1.0 === position.w) {
+                        camera.target = position.toVector3d();
+                        crosshairGizmo.pop();
+                    }
+                });
+
                 addMousePressedMapping (Qt.RightButton, function(mouse) {
                     previousX = mouse.x;
                     previousY = mouse.y;
 
-                    crosshairGizmo.visible = true;
-                    //circleGizmo.visible = true;
+                    crosshairGizmo.show();
                     SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
                     setMouseMoveMapping(function(mouse) {
@@ -150,22 +163,21 @@ Viewer {
                     setMouseMoveMapping(null);
 
                     SofaToolsScript.Tools.overrideCursorShape = 0;
-                    //circleGizmo.visible = false;
-                    crosshairGizmo.visible = false;
+                    crosshairGizmo.hide();
                 });
 
                 addMousePressedMapping (Qt.MiddleButton, function(mouse) {
                     previousX = mouse.x;
                     previousY = mouse.y;
 
-                    crosshairGizmo.visible = true;
+                    crosshairGizmo.show();
                     SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
 
                     setMouseMoveMapping(function(mouse) {
                         if(!camera)
                             return;
 
-                        var screenToScene = camera.target().minus(camera.eye()).length();
+                        var screenToScene = camera.target.minus(camera.eye()).length();
 
                         var moveX = (mouse.x - previousX) * screenToScene * moveSpeed;
                         var moveY = (mouse.y - previousY) * screenToScene * moveSpeed;
@@ -180,7 +192,7 @@ Viewer {
                     setMouseMoveMapping(null);
 
                     SofaToolsScript.Tools.overrideCursorShape = 0;
-                    crosshairGizmo.visible = false;
+                    crosshairGizmo.hide();
                 });
 
                 setMouseWheelMapping(function(wheel) {
@@ -275,7 +287,30 @@ Viewer {
         anchors.centerIn: parent
         visible: false
 
-        opacity: 0.75
+        function show() {
+            popAnimation.complete();
+            visible = true;
+        }
+
+        function hide() {
+            popAnimation.complete();
+            visible = false;
+        }
+
+        function pop() {
+            popAnimation.restart();
+        }
+
+        SequentialAnimation {
+            id: popAnimation
+
+            ScriptAction    {script: {crosshairGizmo.visible = true;}}
+            NumberAnimation {target:  crosshairGizmo; properties: "opacity"; from: 1.0; to: 0.0; duration: 2000;}
+            ScriptAction    {script: {crosshairGizmo.visible = false; crosshairGizmo.opacity = crosshairGizmo.defaultOpacity;}}
+        }
+
+        readonly property real defaultOpacity: 0.75
+        opacity: defaultOpacity
         property color color: "red"
         property real size: Math.min(root.width, root.height) / 20.0
         property real thickness: 1
@@ -334,7 +369,10 @@ Viewer {
         MouseArea {
             anchors.fill: parent
             acceptedButtons: Qt.AllButtons
-            onWheel: wheel.accepted = true
+            onWheel: {
+                //flickable.;
+                wheel.accepted = true
+            }
 
             ColumnLayout {
                 anchors.fill: parent
@@ -364,9 +402,11 @@ Viewer {
                             implicitWidth: parent.width
                             title: "Visual"
 
-                            RowLayout {
+                            GridLayout {
                                 anchors.fill: parent
-                                spacing: 0
+                                columnSpacing: 0
+                                rowSpacing: 2
+                                columns: 2
 
                                 Label {
                                     Layout.fillWidth: true
@@ -374,13 +414,134 @@ Viewer {
                                 }
 
                                 Switch {
-                                    Layout.fillWidth: true
-                                    checked: false
+                                    id: wireframeSwitch
+                                    Layout.alignment: Qt.AlignCenter
+                                    Component.onCompleted: checked = root.wireframe
                                     onCheckedChanged: root.wireframe = checked
 
                                     ToolTip {
                                         anchors.fill: parent
                                         description: "Draw in wireframe mode"
+                                    }
+                                }
+
+                                Label {
+                                    Layout.fillWidth: true
+                                    text: "Culling"
+                                }
+
+                                Switch {
+                                    id: cullingSwitch
+                                    Layout.alignment: Qt.AlignCenter
+                                    Component.onCompleted: checked = root.culling
+                                    onCheckedChanged: root.culling = checked
+
+                                    ToolTip {
+                                        anchors.fill: parent
+                                        description: "Enable culling"
+                                    }
+                                }
+/*
+                                // TODO: antialiasing not implemented yet
+                                Label {
+                                    Layout.fillWidth: true
+                                    text: "Antialiasing"
+                                }
+
+                                Switch {
+                                    id: antialiasingSwitch
+                                    Layout.alignment: Qt.AlignCenter
+                                    Component.onCompleted: checked = root.antialiasing
+                                    onCheckedChanged: root.antialiasing = checked
+
+                                    ToolTip {
+                                        anchors.fill: parent
+                                        description: "Enable Antialiasing"
+                                    }
+                                }
+*/
+                                Label {
+                                    Layout.fillWidth: true
+                                    text: "Background"
+                                }
+
+                                Rectangle {
+                                    Layout.preferredWidth: wireframeSwitch.implicitWidth
+                                    Layout.preferredHeight: wireframeSwitch.implicitHeight
+                                    Layout.alignment: Qt.AlignCenter
+                                    color: "darkgrey"
+                                    radius: 2
+
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        onClicked: backgroundColorPicker.open()
+                                    }
+
+                                    ColorDialog {
+                                        id: backgroundColorPicker
+                                        title: "Please choose a background color"
+                                        showAlphaChannel: true
+
+                                        property color previousColor
+                                        Component.onCompleted: {
+                                            previousColor = root.backgroundColor;
+                                            color = previousColor;
+                                            currentColor = color;
+                                        }
+
+                                        onCurrentColorChanged: root.backgroundColor = currentColor
+
+                                        onAccepted: previousColor = currentColor
+                                        onRejected: currentColor = previousColor
+                                    }
+
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        anchors.margins: 2
+                                        color: Qt.rgba(root.backgroundColor.r, root.backgroundColor.g, root.backgroundColor.b, 1.0)
+
+                                        ToolTip {
+                                            anchors.fill: parent
+                                            description: "Background color"
+                                        }
+                                    }
+                                }
+
+                                Label {
+                                    Layout.fillWidth: true
+                                    text: "Logo"
+                                }
+
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 0
+
+                                    TextField {
+                                        id: logoTextField
+                                        Layout.fillWidth: true
+                                        Component.onCompleted: text = root.backgroundImageSource
+                                        onAccepted: root.backgroundImageSource = text
+                                    }
+
+                                    Button {
+                                        Layout.preferredWidth: 22
+                                        Layout.preferredHeight: Layout.preferredWidth
+                                        iconSource: "qrc:/icon/open.png"
+
+                                        onClicked: openLogoDialog.open()
+
+                                        FileDialog {
+                                            id: openLogoDialog
+                                            title: "Please choose a logo"
+                                            selectFolder: true
+                                            selectMultiple: false
+                                            selectExisting: true
+                                            property var resultTextField
+                                            onAccepted: {
+                                                logoTextField.text = Qt.resolvedUrl(fileUrl)
+                                                logoTextField.accepted();
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -549,12 +710,6 @@ Viewer {
                             }
                         }
                     }
-                }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 1
-                    color: "darkgrey"
                 }
             }
         }

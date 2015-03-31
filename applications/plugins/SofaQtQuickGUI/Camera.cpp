@@ -50,6 +50,18 @@ void Camera::setOrthographic(bool orthographic)
     orthographicChanged();
 }
 
+void Camera::setTarget(const QVector3D& target)
+{
+    if(target == myTarget)
+        return;
+
+    myTarget = target;
+
+    computeModel();
+
+    targetChanged();
+}
+
 const QMatrix4x4& Camera::projection() const
 {
 	if(myProjectionDirty) // update projection if needed
@@ -94,7 +106,18 @@ double Camera::computeDepth(const QVector3D& point)
 {
     QVector4D csPosition = projection() * view() * QVector4D(point, 1.0);
 
-    return (csPosition.z() / csPosition.w()) * 0.5 + 0.5;
+    return csPosition.z() / csPosition.w();
+}
+
+QVector3D Camera::projectOnViewPlane(const QVector3D& point, double depth)
+{
+    QVector4D csPosition = projection() * view() * QVector4D(point, 1.0);
+    QVector4D nsPosition = csPosition / csPosition.w();
+
+    csPosition = projection().inverted() * QVector4D(nsPosition.x(), nsPosition.y(), depth, 1.0);
+    QVector4D vsPosition = csPosition / csPosition.w();
+
+    return (model() * vsPosition).toVector3D();
 }
 
 void Camera::viewFromFront()
@@ -322,6 +345,15 @@ void Camera::computeOrthographic()
     setOrthoTop     ( trCorner.y());
 
     myProjectionDirty = true;
+}
+
+void Camera::computeModel()
+{
+    myView.setToIdentity();
+    myView.lookAt(eye(), myTarget, up());
+    myModel = myView.inverted();
+
+    myViewDirty = false;
 }
 
 }

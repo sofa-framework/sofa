@@ -15,7 +15,7 @@ namespace qtquick
 
 class SOFA_SOFAQTQUICKGUI_API Camera : public QObject
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 	explicit Camera(QObject* parent = 0);
@@ -23,13 +23,18 @@ public:
 
 public:
     Q_PROPERTY(bool orthographic READ orthographic WRITE setOrthographic NOTIFY orthographicChanged)
+    Q_PROPERTY(QVector3D target READ target WRITE setTarget NOTIFY targetChanged)
 
 public:
     bool orthographic() const {return myOrthographic;}
     void setOrthographic(bool orthographic);
 
+    QVector3D target() const {return myTarget;}
+    void setTarget(const QVector3D& target);
+
 signals:
     void orthographicChanged();
+    void targetChanged();
 
 public:
 	const QMatrix4x4& projection() const;
@@ -37,7 +42,6 @@ public:
 	const QMatrix4x4& model() const;
 
     Q_INVOKABLE QVector3D eye() const				{return model().column(3).toVector3D();}
-    Q_INVOKABLE QVector3D target() const			{return myTarget;}
 
     Q_INVOKABLE QVector3D direction() const			{return -model().column(2).toVector3D().normalized();}
     Q_INVOKABLE QVector3D up() const				{return  model().column(1).toVector3D().normalized();}
@@ -46,6 +50,7 @@ public:
     Q_INVOKABLE void lookAt(const QVector3D& eye, const QVector3D& target, const QVector3D& up);
 
     Q_INVOKABLE double computeDepth(const QVector3D& point);
+    Q_INVOKABLE QVector3D projectOnViewPlane(const QVector3D& point, double depth);
 
 public slots:
     void viewFromFront();
@@ -75,6 +80,7 @@ public:
 
 private:
     void computeOrthographic();
+    void computeModel();
 
 private:
     bool                myOrthographic;
