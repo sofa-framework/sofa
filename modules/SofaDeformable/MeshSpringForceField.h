@@ -97,8 +97,6 @@ protected:
 
     virtual ~MeshSpringForceField();
 public:
-    virtual double getPotentialEnergy() const;
-
     Real getStiffness() const { return linesStiffness.getValue(); }
     Real getLinesStiffness() const { return linesStiffness.getValue(); }
     Real getTrianglesStiffness() const { return trianglesStiffness.getValue(); }

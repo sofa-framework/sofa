@@ -532,7 +532,7 @@ void TriangularBendingSprings<DataTypes>::reinit()
 }
 
 template <class DataTypes>
-double TriangularBendingSprings<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
+SReal TriangularBendingSprings<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* d_x */) const
 {
     serr<<"TriangularBendingSprings::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

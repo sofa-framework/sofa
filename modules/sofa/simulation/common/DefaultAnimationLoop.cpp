@@ -98,7 +98,7 @@ void DefaultAnimationLoop::setNode( simulation::Node* n )
     gnode=n;
 }
 
-void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
+void DefaultAnimationLoop::step(const core::ExecParams* params, SReal dt)
 {
     if (dt == 0)
         dt = this->gnode->getDt();
@@ -117,7 +117,7 @@ void DefaultAnimationLoop::step(const core::ExecParams* params, double dt)
         gnode->execute ( act );
     }
 
-    double startTime = gnode->getTime();
+    SReal startTime = gnode->getTime();
 
     BehaviorUpdatePositionVisitor beh(params , dt);
     gnode->execute ( beh );

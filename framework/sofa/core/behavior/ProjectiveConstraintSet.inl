@@ -210,7 +210,7 @@ void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams*
 // {
 // 	if( !isActive() ) return;
 // 	if (mstate)
-// 		Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->getXfree());
+// 		Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->read(sofa::core::ConstVecCoordId::freePosition())->getValue());
 // }
 
 #endif /* SOFA_SMP */

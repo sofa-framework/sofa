@@ -203,9 +203,11 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
 
 protected:
     // helpers
-    static Real norm(Real a){ return fabs(a); }
+    static float norm(float a){ return std::abs(a); }
+    static double norm(double a){ return std::abs(a); }
+
     template <typename T>
-    static Real norm(T a){ return a.norm(); }
+    static Real norm(T a){ return (Real)a.norm(); }
 
 
 };

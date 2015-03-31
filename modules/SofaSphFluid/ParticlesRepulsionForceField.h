@@ -97,7 +97,7 @@ public:
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
 
-    virtual double getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord& /* x */) const
+    virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams* /*mparams*/, const DataVecCoord& /* x */) const
     {
         serr << "getPotentialEnergy not implemented" << sendl;
 

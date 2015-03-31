@@ -122,32 +122,32 @@ public:
     /// Add some values. Values are added at the end of the vector.
     virtual void add(unsigned int ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
 
     /// Temporary Hack: find a way to have a generic description of topological element:
     /// add Edge
     virtual void add( unsigned int ,
             const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,2> >& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
 
     /// add Triangle
     virtual void add( unsigned int ,
             const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,3> >& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
 
     /// add Quad & Tetrahedron
     virtual void add( unsigned int ,
             const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,4> >& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
 
     /// add Hexahedron
     virtual void add( unsigned int ,
             const sofa::helper::vector< sofa::helper::fixed_array<unsigned int,8> >& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > &,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
 
     /// Remove the values corresponding to the points removed.
     virtual void remove( const sofa::helper::vector<unsigned int>& ) {}
@@ -161,7 +161,7 @@ public:
     /// Move a list of points
     virtual void move( const sofa::helper::vector<unsigned int>& ,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ,
-            const sofa::helper::vector< sofa::helper::vector< double > >& ) {}
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& ) {}
 
 
 

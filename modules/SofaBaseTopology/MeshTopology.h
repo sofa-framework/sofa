@@ -148,7 +148,7 @@ public:
     virtual const SeqUV& getUVs();
     virtual int getNbUVs();
     virtual const UV getUV(UVID i);
-    void addUV(double u, double v);
+    void addUV(SReal u, SReal v);
     //
 
     /// @name neighbors queries
@@ -211,20 +211,20 @@ public:
     /// @}
 
     // Get point positions (same methods as points accessors but not inherited)
-    double getPosX(int i) const;
-    double getPosY(int i) const;
-    double getPosZ(int i) const;
+    SReal getPosX(int i) const;
+    SReal getPosY(int i) const;
+    SReal getPosZ(int i) const;
 
     // Points accessors (not always available)
 
     virtual bool hasPos() const;
-    virtual double getPX(int i) const;
-    virtual double getPY(int i) const;
-    virtual double getPZ(int i) const;
+    virtual SReal getPX(int i) const;
+    virtual SReal getPY(int i) const;
+    virtual SReal getPZ(int i) const;
 
     // for procedural creation without file loader
     virtual void clear();
-    void addPoint(double px, double py, double pz);
+    void addPoint(SReal px, SReal py, SReal pz);
     void addEdge( int a, int b );
     void addTriangle( int a, int b, int c );
     void addQuad( int a, int b, int c, int d );

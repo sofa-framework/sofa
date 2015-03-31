@@ -57,7 +57,7 @@ public:
     public:
         simulation::Node* root; ///< root node from which the visitor was executed
         simulation::Node* node; ///< current node
-        double* nodeData;       ///< double value associated with this subtree. Set to NULL if node-specific data is not in use
+        SReal* nodeData;       ///< SReal value associated with this subtree. Set to NULL if node-specific data is not in use
     };
     typedef helper::system::thread::ctime_t ctime_t;
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -214,8 +214,8 @@ protected:
 
 #ifdef SOFA_DUMP_VISITOR_INFO
 public:
-    static double getTimeSpent(ctime_t initTime, ctime_t endTime);
-    static void startDumpVisitor(std::ostream *s, double time);
+    static SReal getTimeSpent(ctime_t initTime, ctime_t endTime);
+    static void startDumpVisitor(std::ostream *s, SReal time);
     static void stopDumpVisitor();
     static bool isPrintActivated() { return printActivated; }
     typedef std::vector< std::pair< std::string,std::string > > TRACE_ARGUMENT;

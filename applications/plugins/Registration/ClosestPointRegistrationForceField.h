@@ -100,7 +100,7 @@ public:
     void init();
     void addForce(const core::MechanicalParams* /*mparams*/,DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v);
     void addDForce(const core::MechanicalParams* mparams ,DataVecDeriv&   df , const DataVecDeriv&   dx);
-    double getPotentialEnergy(const core::MechanicalParams* ,const DataVecCoord&) const { return m_potentialEnergy; }
+    SReal getPotentialEnergy(const core::MechanicalParams* ,const DataVecCoord&) const { return m_potentialEnergy; }
     void addKToMatrix( const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     Real getStiffness() const{ return ks.getValue(); }
@@ -120,7 +120,7 @@ protected :
 
     VecCoord closestPos;
     vector<unsigned int>  cnt;
-    double m_potentialEnergy;
+    SReal m_potentialEnergy;
 
     Real min,max;
 

@@ -279,7 +279,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     Real minBBox[3] = {max_real,max_real,max_real};
 
     defaulttype::Vec3d normal; normal = planeNormal.getValue(params);
-    double size=10.0;
+    SReal size=10.0;
 
     // find a first vector inside the plane
     defaulttype::Vec3d v1;

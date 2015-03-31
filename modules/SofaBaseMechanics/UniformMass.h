@@ -59,7 +59,7 @@ public:
 
 //protected:
     Data<MassType> mass;    ///< the mass of each particle
-    Data<double> totalMass; ///< if >0 : total mass of this body
+    Data<SReal> totalMass; ///< if >0 : total mass of this body
     sofa::core::objectmodel::DataFileName filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
     /// to display the center of gravity of the system
     Data< bool > showCenterOfGravity;
@@ -84,8 +84,8 @@ public:
     void setMass(const MassType& mass);
     const MassType& getMass() const { return mass.getValue(); }
 
-    double getTotalMass() const { return totalMass.getValue(); }
-    void setTotalMass(double m);
+    SReal getTotalMass() const { return totalMass.getValue(); }
+    void setTotalMass(SReal m);
 
     void setFileMass(const std::string& file) {filenameMass.setValue(file);}
     std::string getFileMass() const {return filenameMass.getFullPath();}
@@ -98,17 +98,17 @@ public:
 
     void handleTopologyChange();
 
-    void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
+    void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
 
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    double getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
+    SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
 
-    double getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vec6d getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
+    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
 
     void addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
 
@@ -117,7 +117,7 @@ public:
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
-    double getElementMass(unsigned int index) const;
+    SReal getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
     bool isDiagonal() {return true;}
@@ -152,9 +152,9 @@ void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::draw(cons
 template <>
 void UniformMass<defaulttype::Rigid2fTypes, defaulttype::Rigid2fMass>::draw(const core::visual::VisualParams* vparams);
 template <>
-double UniformMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
+SReal UniformMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
 template <>
-double UniformMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
+SReal UniformMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& x ) const;
 template <>
 void UniformMass<defaulttype::Vec6fTypes,float>::draw(const core::visual::VisualParams* vparams);
 #endif

@@ -131,7 +131,7 @@ public:
     /// $ df += kFactor K dx + bFactor B dx $
     ///
     /// This method retrieves the force and dx vector from the two MechanicalState
-    /// and call the internal addDForce(VecDeriv&,VecDeriv&,const VecDeriv&,const VecDeriv&,double,double)
+    /// and call the internal addDForce(VecDeriv&,VecDeriv&,const VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
     virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId );
 
@@ -163,7 +163,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
-    virtual double getPotentialEnergy(const MechanicalParams* mparams) const;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams) const;
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -173,7 +173,7 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
 
 
 

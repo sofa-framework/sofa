@@ -52,14 +52,14 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API AnimateBeginEvent : public sofa::core::objectmodel::Event
 {
 public:
-    AnimateBeginEvent( double dt );
+    AnimateBeginEvent( SReal dt );
 
     ~AnimateBeginEvent();
 
-    double getDt() const { return dt; }
+    SReal getDt() const { return dt; }
     virtual const char* getClassName() const { return "AnimateBeginEvent"; }
 protected:
-    double dt;
+    SReal dt;
 };
 
 } // namespace simulation

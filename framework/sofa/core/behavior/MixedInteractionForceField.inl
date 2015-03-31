@@ -173,7 +173,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const Mechani
 
 
 template<class DataTypes1, class DataTypes2>
-double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (mstate1 && mstate2)
         return getPotentialEnergy(mparams, *mparams->readX(mstate1),*mparams->readX(mstate2));
@@ -205,7 +205,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(const Mechani
     	df1.endEdit(mparams); df2.endEdit(mparams);
 }
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2, double kFactor, double )
+void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2, SReal kFactor, SReal )
 {
     if (kFactor == 1.0)
         addDForce(df1, df2, dx1, dx2);
@@ -247,13 +247,13 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1& , 
 
 /*
 template<class DataTypes1, class DataTypes2>
-double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2) const
+SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2) const
 {
 	return getPotentialEnergy( x1.getValue(mparams) , x2.getValue(mparams) );
 }
 
 template<class DataTypes1, class DataTypes2>
-double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& , const VecCoord2& ) const
+SReal MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& , const VecCoord2& ) const
 {
     serr << "ERROR("<<getClassName()<<"): getPotentialEnergy(const VecCoord1& , const VecCoord2&) not implemented." << sendl;
     return 0.0;

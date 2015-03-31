@@ -186,7 +186,7 @@ void Node::reinit(const core::ExecParams* params)
 }
 
 /// Do one step forward in time
-//void Node::animate(const core::ExecParams* params, double dt)
+//void Node::animate(const core::ExecParams* params, SReal dt)
 //{
 //    simulation::AnimateVisitor vis(params, dt);
 //    //cerr<<"Node::animate, start execute"<<endl;

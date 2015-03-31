@@ -73,7 +73,7 @@ void UniformVelocityDampingForceField<DataTypes>::addDForce(const core::Mechanic
 }
 
 template<class DataTypes>
-void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*bFact*/, unsigned int& /*offset*/)
+void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*bFact*/, unsigned int& /*offset*/)
 {
 //    const unsigned int size = this->mstate->getMatrixSize();
 
@@ -82,7 +82,7 @@ void UniformVelocityDampingForceField<DataTypes>::addBToMatrix(sofa::defaulttype
 }
 
 template <class DataTypes>
-double UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
+SReal UniformVelocityDampingForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const
 {
     return 0;
 }

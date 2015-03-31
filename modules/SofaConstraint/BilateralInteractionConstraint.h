@@ -69,8 +69,9 @@ class BilateralConstraintResolution : public core::behavior::ConstraintResolutio
 {
 public:
     BilateralConstraintResolution(double* initF=NULL) : _f(initF) {}
-    virtual void resolution(int line, double** w, double* d, double* force)
+    virtual void resolution(int line, double** w, double* d, double* force, double *dfree)
     {
+        SOFA_UNUSED(dfree);
         force[line] -= d[line] / w[line][line];
     }
 
@@ -129,8 +130,9 @@ public:
         }
     }
 
-    virtual void resolution(int line, double** /*w*/, double* d, double* force)
+    virtual void resolution(int line, double** /*w*/, double* d, double* force, double * dFree)
     {
+        SOFA_UNUSED(dFree);
         for(int i=0; i<3; i++)
         {
             for(int j=0; j<3; j++)
@@ -182,7 +184,7 @@ public:
         }
     }
 
-    virtual void resolution(int line, double** /*w*/, double* d, double* force)
+    virtual void resolution(int line, double** /*w*/, double* d, double* force, double* dFree)
     {
         for(int i=0; i<N; i++)
         {
@@ -312,7 +314,7 @@ public:
 
     void getVelocityViolation(defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2, const DataVecDeriv &v1, const DataVecDeriv &v2);
 
-    virtual void getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
+    virtual void getConstraintResolution(const core::ConstraintParams* cParams, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 
     void handleEvent(sofa::core::objectmodel::Event *event);
 

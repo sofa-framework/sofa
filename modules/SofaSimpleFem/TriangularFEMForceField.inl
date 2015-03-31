@@ -352,7 +352,7 @@ void TriangularFEMForceField<DataTypes>::reinit()
 // --- Get/Set methods
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-double TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* x */) const
+SReal TriangularFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /* mparams */, const DataVecCoord& /* x */) const
 {
     serr<<"TriangularFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -1240,7 +1240,7 @@ void TriangularFEMForceField<DataTypes>::computeStressAlongDirection(Real &stres
 // --- Apply functions
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const double &kFactor)
+void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
 
 #ifdef DEBUG_TRIANGLEFEM
@@ -1283,7 +1283,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessSmall(VecCoord &v, Real h
 
 
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, const VecCoord& x, const double &kFactor )
+void TriangularFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, const VecCoord& x, const SReal &kFactor )
 {
     if (method == SMALL)
         applyStiffnessSmall( v, h, x, kFactor );
@@ -1295,7 +1295,7 @@ void TriangularFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, co
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x, const double &kFactor)
+void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, const VecCoord &x, const SReal &kFactor)
 {
 
 #ifdef DEBUG_TRIANGLEFEM

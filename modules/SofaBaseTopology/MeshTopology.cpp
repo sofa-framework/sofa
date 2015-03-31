@@ -665,7 +665,7 @@ void MeshTopology::clear()
 }
 
 
-void MeshTopology::addPoint(double px, double py, double pz)
+void MeshTopology::addPoint(SReal px, SReal py, SReal pz)
 {
     seqPoints.beginEdit()->push_back(defaulttype::Vec<3,SReal>((SReal)px, (SReal)py, (SReal)pz));
     seqPoints.endEdit();
@@ -728,7 +728,7 @@ void MeshTopology::addHexa(int p1, int p2, int p3, int p4, int p5, int p6, int p
     if (p8 >= (int)nbPoints) nbPoints = p8+1;
 }
 
-void MeshTopology::addUV(double u, double v)
+void MeshTopology::addUV(SReal u, SReal v)
 {
     seqUVs.beginEdit()->push_back(defaulttype::Vec<2,SReal>((SReal)u, (SReal)v));
     seqUVs.endEdit();
@@ -2253,17 +2253,17 @@ bool MeshTopology::hasPos() const
     return !seqPoints.getValue().empty();
 }
 
-double MeshTopology::getPX(int i) const
+SReal MeshTopology::getPX(int i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
 }
 
-double MeshTopology::getPY(int i) const
+SReal MeshTopology::getPY(int i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
 }
 
-double MeshTopology::getPZ(int i) const
+SReal MeshTopology::getPZ(int i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
 }
@@ -2619,17 +2619,17 @@ const sofa::helper::vector <unsigned int> MeshTopology::getElementAroundElements
 
 /// @}
 
-double MeshTopology::getPosX(int i) const
+SReal MeshTopology::getPosX(int i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][0]:0.0);
 }
 
-double MeshTopology::getPosY(int i) const
+SReal MeshTopology::getPosY(int i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][1]:0.0);
 }
 
-double MeshTopology::getPosZ(int i) const
+SReal MeshTopology::getPosZ(int i) const
 {
     return ((unsigned)i<seqPoints.getValue().size()?seqPoints.getValue()[i][2]:0.0);
 }

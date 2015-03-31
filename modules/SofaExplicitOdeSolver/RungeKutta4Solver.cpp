@@ -53,7 +53,7 @@ SOFA_DECL_CLASS(RungeKutta4);
 
 
 
-void RungeKutta4Solver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
@@ -87,7 +87,7 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, double dt, sofa::c
     double stepBy3 = double(dt / 3.0);
     double stepBy6 = double(dt / 6.0);
 
-    double startTime = this->getTime();
+    SReal startTime = this->getTime();
 
     mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 

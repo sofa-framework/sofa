@@ -65,12 +65,28 @@ TYPED_TEST_P(DiagonalMass_test, fakeTest2)
 
 REGISTER_TYPED_TEST_CASE_P(DiagonalMass_test, fakeTest1, fakeTest2);
 
+#ifndef SOFA_FLOAT
+
 MY_PARAM_TYPE(Vec3dd, sofa::defaulttype::Vec3dTypes, double)
 MY_PARAM_TYPE(Vec2dd, sofa::defaulttype::Vec2dTypes, double)
 MY_PARAM_TYPE(Vec1dd, sofa::defaulttype::Vec1dTypes, double)
 
-INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case1, DiagonalMass_test, Vec3dd);
-INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case2, DiagonalMass_test, Vec2dd);
-INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case3, DiagonalMass_test, Vec1dd);
+INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case1d, DiagonalMass_test, Vec3dd);
+INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case2d, DiagonalMass_test, Vec2dd);
+INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case3d, DiagonalMass_test, Vec1dd);
+
+#endif
+
+#ifndef SOFA_DOUBLE
+
+MY_PARAM_TYPE(Vec3ff, sofa::defaulttype::Vec3fTypes, float)
+MY_PARAM_TYPE(Vec2ff, sofa::defaulttype::Vec2fTypes, float)
+MY_PARAM_TYPE(Vec1ff, sofa::defaulttype::Vec1fTypes, float)
+
+INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case1f, DiagonalMass_test, Vec3ff);
+INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case2f, DiagonalMass_test, Vec2ff);
+INSTANTIATE_TYPED_TEST_CASE_P(DiagonalMass_test_case3f, DiagonalMass_test, Vec1ff);
+
+#endif
 
 } // namespace sofa

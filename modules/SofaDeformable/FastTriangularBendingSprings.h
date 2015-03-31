@@ -97,8 +97,8 @@ public:
 
 
 
-    Data<double> f_bendingStiffness;  ///< Material parameter
-	Data<double> d_minDistValidity; ///< Minimal distance to consider a spring valid
+    Data<SReal> f_bendingStiffness;  ///< Material parameter
+    Data<SReal> d_minDistValidity; ///< Minimal distance to consider a spring valid
 
 
     /// Searches triangle topology and creates the bending springs
@@ -109,7 +109,7 @@ public:
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset); // compute and add all the element stiffnesses to the global stiffness matrix
-    virtual double getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& d_x) const;
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -308,7 +308,7 @@ protected:
 
     TriangularBSEdgeHandler* edgeHandler;
 
-    double m_potentialEnergy;
+    SReal m_potentialEnergy;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)

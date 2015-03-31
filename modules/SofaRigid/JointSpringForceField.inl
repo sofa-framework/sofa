@@ -187,7 +187,7 @@ void JointSpringForceField<DataTypes>::projectTorsion(Spring& spring)
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring)
+void JointSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring)
 {
 
     Deriv constantForce;
@@ -291,7 +291,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     {
         if(f_reinit.getValue()) outfile->seekp(std::ios::beg);
 
-        double time = this->getContext()->getTime();
+        SReal time = this->getContext()->getTime();
         if (time >= (lastTime + f_period.getValue()))
         {
             lastTime += f_period.getValue();

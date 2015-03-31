@@ -159,7 +159,7 @@ public:
     void init();
     void addForce(const core::MechanicalParams* /*mparams*/,DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v);
     void addDForce(const core::MechanicalParams* mparams ,DataVecDeriv&   df , const DataVecDeriv&   dx);
-    double getPotentialEnergy(const core::MechanicalParams* ,const DataVecCoord&) const { return m_potentialEnergy; }
+    SReal getPotentialEnergy(const core::MechanicalParams* ,const DataVecCoord&) const { return m_potentialEnergy; }
     void addKToMatrix( const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     Real getStiffness() const{ return ks.getValue(); }
@@ -177,7 +177,7 @@ protected :
 
     sofa::helper::vector<MatNN>  dfdx;
     VecCoord targetPos;
-    double m_potentialEnergy;
+    SReal m_potentialEnergy;
 
     /// compute intensity profile image by sampling the input image along 'direction'.
     /// can be done for the current or reference position/image

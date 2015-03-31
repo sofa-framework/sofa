@@ -67,7 +67,7 @@ MultiStepAnimationLoop::~MultiStepAnimationLoop()
 {
 }
 
-void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, double dt)
+void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -80,14 +80,14 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, double d
         this->gnode->execute ( act );
     }
 
-    double startTime = this->gnode->getTime();
+    SReal startTime = this->gnode->getTime();
 
     BehaviorUpdatePositionVisitor beh(params , dt);
     this->gnode->execute ( beh );
 
     const int ncollis = collisionSteps.getValue();
     const int ninteg = integrationSteps.getValue();
-    double stepDt = dt / (ncollis * ninteg);
+    SReal stepDt = dt / (ncollis * ninteg);
     for (int c = 0; c < ncollis; ++c)
     {
         // First we reset the constraints

@@ -66,7 +66,7 @@ set(HEADER_FILES
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
-    #preconditioner/IncompleteCholeskyPreconditioner.h
+    preconditioner/IncompleteCholeskyPreconditioner.h
     preconditioner/CompliantJacobiPreconditioner.h
 
     assembly/AssemblyHelper.h
@@ -177,7 +177,7 @@ set(SOURCE_FILES
 	numericalsolver/ModulusSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
-    #preconditioner/IncompleteCholeskyPreconditioner.cpp
+    preconditioner/IncompleteCholeskyPreconditioner.cpp
     preconditioner/CompliantJacobiPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp

@@ -428,7 +428,7 @@ public:
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using InheritForceField::getPotentialEnergy;
     // getPotentialEnergy is implemented for small method
-    virtual double getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const;
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
     virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ );
@@ -453,13 +453,13 @@ protected:
 
 
     void computeForce( Displacement &F, const Displacement &Depl, VoigtTensor &plasticStrain, const MaterialStiffness &K, const StrainDisplacement &J );
-    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact );        
+    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, SReal fact );
 
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0  );
+    void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
     ////////////// large displacements method
     vector<helper::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
@@ -478,7 +478,7 @@ protected:
     void initSVD(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSVD( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
 
-    void applyStiffnessCorotational( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0  );
+    void applyStiffnessCorotational( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
 
     void handleTopologyChange()

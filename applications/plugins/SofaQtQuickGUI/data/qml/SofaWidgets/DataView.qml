@@ -55,8 +55,18 @@ Rectangle {
     }
 
     property Scene  scene
-    property string sceneSource: ""
-    property string sceneDataPath: ""
+    property string sceneSource: ""     // TODO: use this
+    property string sceneDataPath: ""   // TODO: use this
+
+    Connections {
+        target: scene
+        onAboutToUnload:
+        {
+            console.log("unloading");
+            dataPathTextField.text = "";
+            trackButton.checked = false;
+        }
+    }
 
     QtObject {
         id : d
@@ -73,7 +83,9 @@ Rectangle {
             Layout.fillHeight: true
 
             Data {
+                id: dataItem
                 anchors.fill: parent
+                anchors.margins: 2
 
                 readOnly: true
                 showName: false
@@ -86,6 +98,7 @@ Rectangle {
 
             Text {
                 anchors.fill: parent
+                anchors.margins: 2
                 visible: d.sceneData ? false : true
                 text: "No data at this path"
                 color: "darkred"
@@ -120,6 +133,36 @@ Rectangle {
                         textColor: d.sceneData ? "green" : "black"
 
                         onTextChanged: d.sceneData = root.scene.data(dataPathTextField.text)
+                    }
+
+                    Image {
+                        Layout.preferredWidth: 16
+                        Layout.preferredHeight: Layout.preferredWidth
+                        source: !d.sceneData ? "qrc:/icon/invalid.png" : "qrc:/icon/correct.png"
+                    }
+
+                    CheckBox {
+                        id: trackButton
+                        Layout.preferredWidth: 20
+                        Layout.preferredHeight: Layout.preferredWidth
+                        checked: false
+                        enabled: d.sceneData
+
+                        onClicked: dataItem.updateObject();
+
+                        ToolTip {
+                            anchors.fill: parent
+                            description: "Track the data value during simulation"
+                        }
+
+                        Timer {
+                            interval: 50
+                            repeat: true
+                            running: trackButton.checked
+
+                            onRunningChanged: dataItem.updateObject();
+                            onTriggered: dataItem.updateObject();
+                        }
                     }
                 }
             }

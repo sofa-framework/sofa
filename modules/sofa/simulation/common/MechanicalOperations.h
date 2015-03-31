@@ -72,16 +72,16 @@ public:
     /// Propagate the given position through all mappings and reset the current force delta
     void propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f, bool applyProjections);
     /// Apply projective constraints to the given position vector
-    void projectPosition(core::MultiVecCoordId x, double time = 0.0);
+    void projectPosition(core::MultiVecCoordId x, SReal time = 0.0);
     /// Apply projective constraints to the given velocity vector
-    void projectVelocity(core::MultiVecDerivId v, double time = 0.0);
+    void projectVelocity(core::MultiVecDerivId v, SReal time = 0.0);
     /// Apply projective constraints to the given vector
     void projectResponse(core::MultiVecDerivId dx, double **W=NULL);
-    void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, double factor = 1.0); ///< res += factor M.dx
-    void integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, double dt); ///< res = x + v.dt
+    void addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, SReal factor = 1.0); ///< res += factor M.dx
+    void integrateVelocity(core::MultiVecDerivId res, core::ConstMultiVecCoordId x, core::ConstMultiVecDerivId v, SReal dt); ///< res = x + v.dt
     void accFromF(core::MultiVecDerivId a, core::ConstMultiVecDerivId f); ///< a = M^-1 . f
 	/// Compute Energy 
-    void computeEnergy(double &kineticEnergy, double &potentialEnergy);
+    void computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy);
     /// Compute the current force (given the latest propagated position and velocity)
     void computeForce(core::MultiVecDerivId result, bool clear = true, bool accumulate = true, bool neglectingCompliance=true);
     /// Compute the current force delta (given the latest propagated displacement)
@@ -89,19 +89,19 @@ public:
     /// Compute the current force delta (given the latest propagated velocity)
     void computeDfV(core::MultiVecDerivId df, bool clear = true, bool accumulate = true);
     /// accumulate $ df += (m M + b B + k K) dx $ (given the latest propagated displacement)
-    void addMBKdx(core::MultiVecDerivId df, double m, double b, double k, bool clear = true, bool accumulate = true);
+    void addMBKdx(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true);
     /// accumulate $ df += (m M + b B + k K) velocity $
-    void addMBKv(core::MultiVecDerivId df, double m, double b, double k, bool clear = true, bool accumulate = true);
+    void addMBKv(core::MultiVecDerivId df, SReal m, SReal b, SReal k, bool clear = true, bool accumulate = true);
     /// Add dt*Gravity to the velocity
-    void addSeparateGravity(double dt, core::MultiVecDerivId result = core::VecDerivId::velocity() );
+    void addSeparateGravity(SReal dt, core::MultiVecDerivId result = core::VecDerivId::velocity() );
 
     void computeContactForce(core::MultiVecDerivId result);
     void computeContactDf(core::MultiVecDerivId df);
 
 
-    void computeAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); ///< Compute a(x,v) at time t. Parameters x and v not const due to propagation through mappings.
-    void computeForce(double t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v, bool neglectingCompliance=true);  ///< Compute f(x,v) at time t. Parameters x and v not const due to propagation through mappings.
-    void computeContactAcc(double t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); // Parameters x and v not const due to propagation through mappings.
+    void computeAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); ///< Compute a(x,v) at time t. Parameters x and v not const due to propagation through mappings.
+    void computeForce(SReal t, core::MultiVecDerivId f, core::MultiVecCoordId x, core::MultiVecDerivId v, bool neglectingCompliance=true);  ///< Compute f(x,v) at time t. Parameters x and v not const due to propagation through mappings.
+    void computeContactAcc(SReal t, core::MultiVecDerivId a, core::MultiVecCoordId x, core::MultiVecDerivId v); // Parameters x and v not const due to propagation through mappings.
 
     /// @}
 
@@ -109,7 +109,7 @@ public:
     /// @{
 
     void m_resetSystem();
-    void m_setSystemMBKMatrix(double mFact, double bFact, double kFact);
+    void m_setSystemMBKMatrix(SReal mFact, SReal bFact, SReal kFact);
     void m_setSystemRHVector(core::MultiVecDerivId v);
     void m_setSystemLHVector(core::MultiVecDerivId v);
     void m_solveSystem();
@@ -133,8 +133,8 @@ public:
         getMatrixDimension(NULL, NULL, matrix);
     }
 
-    void addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, double mFact, double bFact, double kFact);
-    void addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex, double mFact, double bFact, double kFact);
+    void addMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, SReal mFact, SReal bFact, SReal kFact);
+    void addSubMBK_ToMatrix(const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex, SReal mFact, SReal bFact, SReal kFact);
 
     void multiVector2BaseVector(core::ConstMultiVecId src, defaulttype::BaseVector *dest, const sofa::core::behavior::MultiMatrixAccessor* matrix);
     void multiVectorPeqBaseVector(core::MultiVecDerivId dest, defaulttype::BaseVector *src, const sofa::core::behavior::MultiMatrixAccessor* matrix);

@@ -120,7 +120,7 @@ public:
     /// Constant pressure has null variation
     virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ){}
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
@@ -128,7 +128,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams);
 
-    void setDminAndDmax(const double _dmin, const double _dmax)
+    void setDminAndDmax(const SReal _dmin, const SReal _dmax)
     {
         dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);
     }

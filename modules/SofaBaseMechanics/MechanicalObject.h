@@ -175,7 +175,7 @@ public:
 
     virtual void writeVec(core::ConstVecId v, std::ostream &out);
     virtual void readVec(core::VecId v, std::istream &in);
-    virtual double compareVec(core::ConstVecId v, std::istream &in);
+    virtual SReal compareVec(core::ConstVecId v, std::istream &in);
 
     virtual void writeState( std::ostream& out );
 
@@ -201,13 +201,13 @@ public:
 
     int getSize() const { return vsize; }
 
-    double getPX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
-    double getPY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
-    double getPZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
+    SReal getPX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
+    SReal getPY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
+    SReal getPZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)z; }
 
-    double getVX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)x; }
-    double getVY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)y; }
-    double getVZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)z; }
+    SReal getVX(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)x; }
+    SReal getVY(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)y; }
+    SReal getVZ(int i) const { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z, read(core::ConstVecDerivId::velocity())->getValue()[i]); return (SReal)z; }
 
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
@@ -240,14 +240,14 @@ public:
     /// @{
 
     /// Apply translation vector to the position.
-    virtual void applyTranslation (const double dx, const double dy, const double dz);
+    virtual void applyTranslation (const SReal dx, const SReal dy, const SReal dz);
 
     /// Rotation using Euler Angles in degree.
-    virtual void applyRotation (const double rx, const double ry, const double rz);
+    virtual void applyRotation (const SReal rx, const SReal ry, const SReal rz);
 
     virtual void applyRotation (const defaulttype::Quat q);
 
-    virtual void applyScale (const double sx, const double sy, const double sz);
+    virtual void applyScale (const SReal sx, const SReal sy, const SReal sz);
 
     /// @}
 
@@ -255,7 +255,7 @@ public:
     void getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
 
     /// update the given bounding box, to include this
-    virtual bool addBBox(double* minBBox, double* maxBBox);
+    virtual bool addBBox(SReal* minBBox, SReal* maxBBox);
     /// Bounding Box computation method.
     virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
 
@@ -296,9 +296,9 @@ public:
     /// @name Initial transformations accessors.
     /// @{
 
-    void setTranslation(double dx, double dy, double dz) {translation.setValue(Vector3(dx,dy,dz));}
-    void setRotation(double rx, double ry, double rz) {rotation.setValue(Vector3(rx,ry,rz));}
-    void setScale(double sx, double sy, double sz) {scale.setValue(Vector3(sx,sy,sz));}
+    void setTranslation(SReal dx, SReal dy, SReal dz) {translation.setValue(Vector3(dx,dy,dz));}
+    void setRotation(SReal rx, SReal ry, SReal rz) {rotation.setValue(Vector3(rx,ry,rz));}
+    void setScale(SReal sx, SReal sy, SReal sz) {scale.setValue(Vector3(sx,sy,sz));}
 
     virtual Vector3 getTranslation() const {return translation.getValue();}
     virtual Vector3 getRotation() const {return rotation.getValue();}
@@ -357,7 +357,7 @@ public:
     /// Initialize an unset vector
     //virtual void vInit(const core::ExecParams* params, core::MatrixDerivId v, core::ConstMatrixDerivId vSrc);
 
-    virtual void vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), double f=1.0);
+    virtual void vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), SReal f=1.0);
 
 #ifdef SOFA_SMP
     virtual void vOp(const core::ExecParams* params, core::VecId, core::ConstVecId, core::ConstVecId, double f, a1::Shared<double> *fSh);
@@ -369,13 +369,13 @@ public:
 
     virtual void vThreshold(core::VecId a, SReal threshold );
 
-    virtual double vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b);
+    virtual SReal vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b);
 
     /// Sum of the entries of state vector a at the power of l>0. This is used to compute the l-norm of the vector.
-    virtual double vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l);
+    virtual SReal vSum(const core::ExecParams* params, core::ConstVecId a, unsigned l);
 
     /// Maximum of the absolute values of the entries of state vector a. This is used to compute the infinite-norm of the vector.
-    virtual double vMax(const core::ExecParams* params, core::ConstVecId a);
+    virtual SReal vMax(const core::ExecParams* params, core::ConstVecId a);
 
     virtual size_t vSize( const core::ExecParams* params, core::ConstVecId v );
 
