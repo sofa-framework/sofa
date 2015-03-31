@@ -2,8 +2,9 @@
 #define COMPLIANT_MODULUSSOLVER_H
 
 #include "IterativeSolver.h"
-#include "Response.h"
-#include "SubKKT.h"
+#include "../utils/sub_kkt.h"
+
+#include <Eigen/SparseCholesky>
 
 namespace sofa {
 namespace component {
@@ -17,24 +18,28 @@ class SOFA_Compliant_API ModulusSolver : public IterativeSolver {
 	SOFA_CLASS(ModulusSolver, IterativeSolver);
 	
 	virtual void solve(vec& x,
-	                   const AssembledSystem& system,
+	                   const system_type& sys,
 	                   const vec& rhs) const;
 
-	virtual void factor(const AssembledSystem& system);
-
-    virtual void init();
+	virtual void factor(const system_type& sys);
 
 	ModulusSolver();
 	~ModulusSolver();
     
   protected:
+
+    class sub_kkt : public utils::sub_kkt {
+    public:
+        using utils::sub_kkt::matrix;
+        using utils::sub_kkt::primal;        
+    };
     
-    // response matrix
-    Response::SPtr response;
+    sub_kkt sub;
 
-    SubKKT sub;
+    typedef Eigen::SimplicialLDLT<cmat, Eigen::Upper> solver_type;
+    solver_type solver;
+    
     Data<real> omega;
-
     Data<unsigned> anderson;
     
   private:

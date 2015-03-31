@@ -106,6 +106,8 @@ set(HEADER_FILES
     utils/sparse.h
     utils/thread_variable.h
 	utils/anderson.h
+	utils/sub_kkt.h
+	utils/sub_kkt.inl
 	
     utils/cg.h
     utils/preconditionedcg.h
@@ -188,7 +190,8 @@ set(SOURCE_FILES
 	
 	controller/CompliantSleepController.cpp
 
-   	utils/anderson.cpp)
+   	utils/anderson.cpp
+   	utils/sub_kkt.cpp)
 
 set(README_FILES Compliant.txt)
 
