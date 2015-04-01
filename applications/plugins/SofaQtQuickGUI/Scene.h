@@ -177,6 +177,7 @@ private:
     Status                                      myStatus;
     QUrl                                        mySource;
     QUrl                                        mySourceQML;
+    QString                                     myPathQML;
     bool                                        myIsInit;
     bool                                        myVisualDirty;
     double                                      myDt;
