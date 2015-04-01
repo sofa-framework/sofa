@@ -157,7 +157,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, doub
             std::cerr << "ERROR loading FlowVR mesh file "<<filename<<std::endl;
             return NULL;
         }
-        //std::cout << "bbox = "<<mesh.bb<<std::endl;
+        //base->sout << "bbox = "<<mesh.bb<<base->sendl;
 
         if (!mesh.getAttrib(flowvr::render::Mesh::MESH_DISTMAP))
         {
