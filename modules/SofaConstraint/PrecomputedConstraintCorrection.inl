@@ -1129,14 +1129,12 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         nbConstraints++;
     }
 
-//	unsigned int numNodes1 = constraint_dofs.size();
-//	sout<< "numNodes : avant = " << numNodes1;
     constraint_dofs.sort();
     constraint_dofs.unique();
-//	unsigned int numNodes = constraint_dofs.size();
-//	sout<< " apres = " << numNodes << sendl;
 
     id_to_localIndex.clear();
+    localIndex_to_id.clear();
+    active_local_force.clear();
     unsigned int cpt = 0;
 
     for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
@@ -1150,7 +1148,10 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
             serr << "duplicate entry in constraints for id " << cId << " : " << id_to_localIndex[cId] << " + " << cpt << sendl;
 
         id_to_localIndex[cId] = cpt;
+        localIndex_to_id.push_back(cId);
 
+        if(fabs(f[cId]) > std::numeric_limits<double>::epsilon())
+            active_local_force.push_back(cpt);
 
 #ifdef NEW_METHOD_UNBUILT  // Fill constraint_F => provide the present constraint forces
         double fC = f[rowIt.index()];
@@ -1308,15 +1309,19 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(doubl
     }
 
 #else
-    unsigned int numConstraints = localConstraintId->size();
+    const unsigned int numLocalConstraints = localIndex_to_id.size();
+    std::list<unsigned int>::const_iterator itBegin = active_local_force.cbegin(), itEnd = active_local_force.cend();
 
     for (int i = begin; i <= end; i++)
     {
         int c = id_to_localIndex[i];
         double dc = d[i];
 
-        for (unsigned int j = 0; j < numConstraints; ++j)
-            dc += localW.element(c,j) * constraint_force[(*localConstraintId)[j]];
+        for (std::list<unsigned int>::const_iterator it = itBegin; it != itEnd; ++it)
+        {
+            int id = localIndex_to_id[*it];
+            dc += localW.element(c, *it) * constraint_force[id];
+        }
 
         d[i] = dc;
     }
@@ -1327,7 +1332,7 @@ template<class DataTypes>
 #ifdef NEW_METHOD_UNBUILT
 void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * df, int begin, int end, bool update)
 #else
-void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/)
+void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*df*/, int begin, int end, bool update)
 #endif
 {
 #ifdef NEW_METHOD_UNBUILT
@@ -1388,6 +1393,18 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*
             }
         }
     }
+#else
+    if(!update)
+        return;
+
+    /// fill a local table of active forces (non-null forces)
+    for (int i = begin; i <= end; i++)
+    {
+        int c = id_to_localIndex[i];
+        active_local_force.push_back(c);
+    }
+    active_local_force.sort();
+    active_local_force.unique();
 #endif
 }
 
