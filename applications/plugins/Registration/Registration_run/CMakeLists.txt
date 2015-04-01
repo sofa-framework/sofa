@@ -1,7 +1,9 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
+if(SOFA-LIB_GUI_QT)
+
 set(SOURCE_FILES
-	    Registration_run.cpp
+	Registration_run.cpp
         QSofaScene.cpp
         QSofaViewer.cpp
         QMainWindow_RegistrationRun.cpp
@@ -33,6 +35,8 @@ AddCompilerDefinitions("registration_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"")
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${MOC_FILES} ${SOURCE_FILES} ${RESOURCE_FILES})
 
 AddLinkerDependencies(SofaPython SofaSimpleGUI ${GLUT_LIBRARIES})
+
+endif()
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)
 
