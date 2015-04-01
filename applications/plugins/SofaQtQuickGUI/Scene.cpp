@@ -142,6 +142,7 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	myStatus(Status::Null),
 	mySource(),
     mySourceQML(),
+    myPathQML(),
 	myIsInit(false),
     myVisualDirty(false),
 	myDt(0.04),
@@ -232,6 +233,7 @@ private:
 
 void Scene::open()
 {
+    myPathQML.clear();
 	setSourceQML(QUrl());
 
 	if(Status::Loading == myStatus) // return now if a scene is already loading
@@ -263,9 +265,11 @@ void Scene::open()
 	setPlay(false);
 	myIsInit = false;
 
-	std::string qmlFilepath = (finalFilename + ".qml").toLatin1().constData();
-	if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
+    std::string qmlFilepath = (finalFilename + ".qml").toLatin1().constData();
+    if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
         qmlFilepath.clear();
+
+    myPathQML = QString::fromStdString(qmlFilepath);
 
     mySofaSimulation->unload(mySofaSimulation->GetRoot());
 
@@ -276,8 +280,6 @@ void Scene::open()
         connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {                    
             if(!loaderThread->isLoaded())
                 setStatus(Status::Error);
-            else if(!qmlFilepath.empty())
-                setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 
             loaderThread->deleteLater();
         });
@@ -288,8 +290,6 @@ void Scene::open()
 	{
         if(!LoaderProcess(mySofaSimulation, finalFilename))
             setStatus(Status::Error);
-        else if(!qmlFilepath.empty())
-            setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
 	}
 }
 
@@ -926,6 +926,9 @@ void Scene::init()
     myIsInit = true;
 
     setStatus(Status::Ready);
+
+    if(!myPathQML.isEmpty())
+        setSourceQML(QUrl::fromLocalFile(myPathQML));
 }
 
 void Scene::reload()
