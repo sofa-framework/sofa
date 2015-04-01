@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node name="root" gravity="0 0 0" dt="1">
+<Node name="root" gravity="0 0 0" dt="0.1">
 	<RequiredPlugin name="Flexible" pluginName="Flexible" />
 	<RequiredPlugin name="Registration" pluginName="Registration" />
 	<RequiredPlugin name="Image" pluginName="image" />
@@ -7,7 +7,7 @@
     <VisualStyle displayFlags="showForceFields showBehaviorModels showVisual" />
 
     <EulerImplicitSolver rayleighStiffness="0.2"  rayleighMass="0.2" />
-    <CGLinearSolver template="GraphScattered" iterations="25"  threshold="1e-008" />
+    <CGLinearSolver template="GraphScattered" iterations="25"  tolerance="1e-15" threshold="1e-15" />
 
 <!--	<RequiredPlugin name="Compliant" pluginName="Compliant" />-->
 <!--	<ConstantCompliantImplicitSolver />-->
@@ -25,7 +25,7 @@
 	    <ImageContainer  name="rimage" filename="data/thigh_m.raw" drawBB="false"/>
 
 	    <MeshObjLoader name="mesh" filename="data/femur_m.obj" triangulate="1"/>
-            <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.05" padSize="1" rotateImage="true" />
+            <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" voxelSize="0.05" padSize="1" rotateImage="true" insideValue="1"/>
 	    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
 
 	    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="2" /> 
@@ -39,7 +39,7 @@
 		<Node 	name="E"   >
 		    <MechanicalObject  template="E331" /> 
 		    <GreenStrainMapping template="F331,E331"  assemble="1"/>
-		    <HookeForceField  template="E331" youngModulus="100.0" poissonRatio="0" viscosity="0"  assemble="1"/>
+		    <HookeForceField  template="E331" youngModulus="1000.0" poissonRatio="0" viscosity="0"  assemble="1"/>
 		</Node>
 <!--      		<ProjectiveForceField  template="F331" youngModulus="100" viscosity="0" assemble="1"  isCompliance="0"/>-->
 	    </Node>
@@ -47,7 +47,7 @@
 		<Node name="ModelInteraction">
 			<MeshObjLoader name="MeshLoader"  filename="data/femur_m.obj" />
 			<MechanicalObject  name="PointSet"  position="@MeshLoader.position" useMask="0" />
-			<UniformMass totalMass="2000" />
+			<UniformMass totalMass="20" />
 			<LinearMapping template="Affine,Vec3d" assemble="1" />
 
 			<NormalsFromPoints name="NormalsFromPoints" template="Vec3d" position="@PointSet.position" triangles="@MeshLoader.triangles" quads="@MeshLoader.quads"/>
