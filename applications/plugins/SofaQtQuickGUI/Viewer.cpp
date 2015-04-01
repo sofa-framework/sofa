@@ -13,7 +13,7 @@
 #include <QPainter>
 #include <QVector>
 #include <QVector4D>
-#include <QOpenGLFrameBufferObject>
+#include <QOpenGLFramebufferObject>
 #include <QTime>
 #include <QThread>
 #include <qqml.h>

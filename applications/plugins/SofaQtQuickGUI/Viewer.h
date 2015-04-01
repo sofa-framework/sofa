@@ -5,7 +5,7 @@
 #include <QtQuick/QQuickItem>
 #include <QVector3D>
 #include <QVector4D>
-#include <QiMAGE>
+#include <QImage>
 #include <QColor>
 
 class QOpenGLFramebufferObject;
