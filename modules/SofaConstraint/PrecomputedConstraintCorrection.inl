@@ -1309,15 +1309,14 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(doubl
     }
 
 #else
-    const unsigned int numLocalConstraints = localIndex_to_id.size();
-    std::list<unsigned int>::const_iterator itBegin = active_local_force.cbegin(), itEnd = active_local_force.cend();
+    std::list<unsigned int>::iterator itBegin = active_local_force.begin(), itEnd = active_local_force.end();
 
     for (int i = begin; i <= end; i++)
     {
         int c = id_to_localIndex[i];
         double dc = d[i];
 
-        for (std::list<unsigned int>::const_iterator it = itBegin; it != itEnd; ++it)
+        for (std::list<unsigned int>::iterator it = itBegin; it != itEnd; ++it)
         {
             int id = localIndex_to_id[*it];
             dc += localW.element(c, *it) * constraint_force[id];
