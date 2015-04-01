@@ -71,9 +71,10 @@ public:
     Data<bool> m_restRotations;
 
     Data<bool> recompute;
-    Data<std::string> fileDir;
-    Data<double> debugViewFrameScale;
-    sofa::core::objectmodel::DataFileName f_fileCompliance;
+	Data<double> debugViewFrameScale;
+	sofa::core::objectmodel::DataFileName f_fileCompliance;
+	Data<std::string> fileDir;
+    
 protected:
     PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
