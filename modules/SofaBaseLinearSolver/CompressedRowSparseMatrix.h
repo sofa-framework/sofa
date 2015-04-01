@@ -860,15 +860,15 @@ public:
                     for (Index bj = 0; bj < NC; ++bj)
                         traits::v(b, bi, bj) = 0;
                     Index j = colsIndex[xj];
-                    if (j != i)
+
+                    //Removed "if (j!=i)" commented as "non-diagonal bloc" optimization that was in fact a bug
+                    //TODO : This whole block of code may then need refactoring
+
+                    Bloc* bloc = wbloc(j,i,false);
+                    if (bloc)
                     {
-                        // non diagonal bloc
-                        Bloc* b = wbloc(j,i,false);
-                        if (b)
-                        {
-                            for (Index bj = 0; bj < NL; ++bj)
-                                traits::v(*b, bj, bi) = 0;
-                        }
+                        for (Index bj = 0; bj < NL; ++bj)
+                            traits::v(*bloc, bj, bi) = 0;
                     }
                 }
             }

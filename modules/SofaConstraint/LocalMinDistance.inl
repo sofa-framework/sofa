@@ -85,7 +85,7 @@ bool LocalMinDistance::testIntersection(CubicBezierCurve<FLAG>& e2, Point& e1)
     double A;
     double b;
 
-    if(e2.isStraightLine() )//The case where e2 is taged as a straight line, computation behave exactly as a lineModel
+    if(e2.isStraightLine() )//In the case where e2 is tagged as a straight line, computation behaves exactly as a lineModel
     {
         AB = e2[3]-e2[0];
         AP = e1.p()-e2[0];
@@ -127,7 +127,7 @@ bool LocalMinDistance::testIntersection(CubicBezierCurve<FLAG>& e2, Point& e1)
     }
     else if( e2.isCubicBezier () )
     {
-        //The case where e2 is taged as a cubic curve, computation behave discretly as 3 Lines
+        //In the case where e2 is tagged as a cubic curve, computation behaves discretly as 3 Lines
         //Todo implementation for continuous curve
         for(int i=0; i<3; i++)
         {
@@ -185,7 +185,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
     double A;
     double b;
 
-    if(e2.isStraightLine() )//The case where e2 is taged as a straight line, computation behave exactly as a lineModel
+    if(e2.isStraightLine() )//In the case where e2 is tagged as a straight line, computation behaves exactly as a lineModel
     {
         AB = e2[3]-e2[0];
         AP = e1.p()-e2[0];
@@ -238,7 +238,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
         detection->value -= contactDist;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
         //alpha here is the barycentric coordinate of the local spline (littler)
-        //need to be transforme to the barycentric coordinate of the globale spline on the Edge
+        //need to be transformed to the barycentric coordinate of the globale spline on the Edge
         double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
         detection->baryCoords[0][0]=t;
 
@@ -257,7 +257,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
     }
     else if ( e2.isCubicBezier () )
     {
-        //The case where e2 is taged as a cubic curve, computation behave discretly as 3 Lines
+        //In the case where e2 is tagged as a cubic curve, computation behaves discretly as 3 Lines
         //Todo implementation for continuous curve
         for(int i=0; i<3; i++)
         {
@@ -309,7 +309,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
             detection->value -= contactDist;
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
             //alpha here is the barycentric coordinate of the local spline (littler)
-            //need to be transforme to the barycentric coordinate of the globale spline on the Edge
+            //need to be transformed to the barycentric coordinate of the globale spline on the Edge
             double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
             detection->baryCoords[0][0]=t;
 
@@ -349,7 +349,7 @@ bool LocalMinDistance::testIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1)
     double A;
     double b;
 
-    if(e2.isStraightLine() )//The case where e2 is taged as a straight line, computation behave exactly as a lineModel
+    if(e2.isStraightLine() )//In the case where e2 is tagged as a straight line, computation behaves exactly as a lineModel
     {
 
         x32 = e2[0]-e2[3];
@@ -380,7 +380,7 @@ bool LocalMinDistance::testIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1)
     }
     else if( e2.isCubicBezier () )
     {
-        //The case where e2 is taged as a cubic curve, computation behave discretly as 3 Lines
+        //In the case where e2 is tagged as a cubic curve, computation behaves discretly as 3 Lines
         //Todo implementation for continuous curve
         for(int i=0; i<3; i++)
         {
@@ -425,7 +425,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1
     double b;
 
 
-    if(e2.isStraightLine() )//The case where e2 is taged as a straight line, computation behave exactly as a lineModel
+    if(e2.isStraightLine() )//In the case where e2 is tagged as a straight line, computation behaves exactly as a lineModel
     {
 
         x32 = e2[0]-e2[3];
@@ -467,7 +467,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1
 
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
         //alpha here is the barycentric coordinate of the local spline (littler)
-        //need to be transforme to the barycentric coordinate of the globale spline on the Edge
+        //need to be transformed to the barycentric coordinate of the globale spline on the Edge
         double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
         detection->baryCoords[0][0]=t;
 
@@ -486,7 +486,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1
     }
     else if( e2.isCubicBezier () )
     {
-        //The case where e2 is taged as a cubic curve, computation behave discretly as 3 Lines
+        //In the case where e2 is tagged as a cubic curve, computation behaves discretly as 3 Lines
         //Todo implementation for continuous curve
         for(int i=0; i<3; i++)
         {
@@ -530,7 +530,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1
 
 #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
             //alpha here is the barycentric coordinate of the local spline (littler)
-            //need to be transforme to the barycentric coordinate of the globale spline on the Edge
+            //need to be transformed to the barycentric coordinate of the globale spline on the Edge
             double t=(double)e2.getGlobal_t_(alpha);// alpha*=(e2.t0() - e2.t1());alpha+=e2.t0();
             detection->baryCoords[0][0]=t;
 
