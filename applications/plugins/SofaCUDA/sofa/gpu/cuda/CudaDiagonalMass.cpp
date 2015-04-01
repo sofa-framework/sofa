@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include "CudaDiagonalMass.inl"
+#include <sofa/core/behavior/Mass.inl>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

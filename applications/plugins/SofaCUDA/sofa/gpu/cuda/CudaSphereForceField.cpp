@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 #include "CudaSphereForceField.inl"
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
