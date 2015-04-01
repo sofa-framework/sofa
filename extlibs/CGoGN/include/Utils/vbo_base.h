@@ -30,6 +30,9 @@
 #include "Utils/gl_def.h"
 #include "Container/convert.h"
 #include "Topology/generic/attributeHandler.h"
+#include <GL/glew.h>
+
+#include "Utils/dll.h"
 
 namespace CGoGN
 {
@@ -46,7 +49,7 @@ class GLSLShader;
  * - ref by Shaders
  * - size of data (invidual cells)
  */
-class VBO
+class CGoGN_UTILS_API VBO
 {
 protected:
 	// VBO id
@@ -86,37 +89,37 @@ public:
 	/**
 	 * get id of vbo
 	 */
-	GLuint id() const { return *m_id; }
+	inline GLuint id() const { return *m_id; }
 
 	/**
 	 * get dataSize
 	 */
-	unsigned int dataSize() const { return m_data_size; }
+	inline unsigned int dataSize() const { return m_data_size; }
 
 	/**
 	 * get name
 	 */
-	const std::string& name() const { return m_name; }
+	inline const std::string& name() const { return m_name; }
 
 	/**
 	 * get type name
 	 */
-	const std::string& typeName() const { return m_typeName; }
+	inline const std::string& typeName() const { return m_typeName; }
 
 	/**
 	 * set the data size (in number of float)
 	 */
-	void setDataSize(unsigned int ds) { m_data_size = ds; }
+	inline void setDataSize(unsigned int ds) { m_data_size = ds; }
 
 	/**
 	 * get nb element in vbo (vertices, colors ...)
 	 */
-	unsigned int nbElts() { return m_nbElts; }
+	inline unsigned int nbElts() { return m_nbElts; }
 
 	/**
 	 * bind array vbo
 	 */
-	void bind() const  { glBindBuffer(GL_ARRAY_BUFFER, *m_id); }
+	inline void bind() const  { glBindBuffer(GL_ARRAY_BUFFER, *m_id); }
 
 	/**
 	 * alloc buffer of same size than parameter

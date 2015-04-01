@@ -29,34 +29,47 @@
 #include "Utils/clippingShader.h"
 #include "Geometry/vector_gen.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderSimpleColor : public ClippingShader
+class CGoGN_UTILS_API ShaderSimpleColor : public ClippingShader
 {
 protected:
 	// shader sources
 	static std::string vertexShaderText;
 	static std::string fragmentShaderText;
+	static std::string vertexShaderClipText;
+	static std::string fragmentShaderClipText;
 
-	// uniform locations
+	/// color
 	CGoGNGLuint m_unif_color;
-
 	Geom::Vec4f m_color;
+
+	/// clipping
+	CGoGNGLuint m_unif_planeClip;
+	Geom::Vec4f m_planeClip;
+
 
 	VBO* m_vboPos;
 
 	void restoreUniformsAttribs();
 
 public:
-	ShaderSimpleColor(bool back_is_transparent = false);
+	ShaderSimpleColor(bool withClipping = false, bool back_is_transparent = false);
 
 	void setColor(const Geom::Vec4f& color);
 
 	unsigned int setAttributePosition(VBO* vbo);
+
+	void setClippingPlane(const Geom::Vec4f& plane);
+
+	inline void setNoClippingPlane() { setClippingPlane(Geom::Vec4f(0.0f,0.0f,0.0f,0.0f)); }
+
 };
 
 } // namespace Utils

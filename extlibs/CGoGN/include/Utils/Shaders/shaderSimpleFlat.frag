@@ -1,6 +1,6 @@
 //ShaderSimpleFlat::fragmentShaderText
 
-PRECISON;
+PRECISION;
 VARYING_FRAG vec3 LightDir;
 VARYING_FRAG vec3 Position;
 #ifdef WITH_COLOR
@@ -10,6 +10,8 @@ uniform vec4 materialDiffuse;
 uniform vec4 materialSpecular;
 uniform vec4 materialAmbient;
 uniform float shininess;
+uniform vec4 backColor;
+
 FRAG_OUT_DEF;
 
 void main()
@@ -46,6 +48,10 @@ void main()
 #else
 		finalColor += vec4((Color*lambertTerm),0.0) ;
 #endif
+	}
+	else
+	{
+		finalColor = backColor;
 	}
 #endif
 	FRAG_OUT=finalColor;

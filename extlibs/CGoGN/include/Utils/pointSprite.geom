@@ -3,6 +3,9 @@
 uniform float size;
 uniform mat4 ModelViewMatrix;
 uniform mat4 ProjectionMatrix;
+uniform vec4 planeClip;
+
+VARYING_IN vec3 posClip[1];
 
 #ifdef WITH_PLANE
 uniform vec3 eyePos;
@@ -37,10 +40,11 @@ void corner( vec4 center, float x, float y)
 
 void main()
 {
+	if (dot(planeClip,vec4(posClip[0],1.0))<=0.0)
+	{
 #ifdef WITH_COLOR_PER_VERTEX 
 	colorsprite = color[0];
 #endif
-
 	vec4 posCenter = ModelViewMatrix * POSITION_IN(0);
 	sphereCenter = posCenter.xyz;
 	
@@ -65,5 +69,6 @@ void main()
 #endif	
 
 	EndPrimitive();
+	}
 }
 

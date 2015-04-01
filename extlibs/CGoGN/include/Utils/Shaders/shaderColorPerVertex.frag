@@ -1,6 +1,6 @@
 // ShaderColorPerVertex::fragmentShaderText
 
-PRECISON;
+PRECISION;
 VARYING_FRAG vec3 color;
 uniform float alpha;
 FRAG_OUT_DEF;

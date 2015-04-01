@@ -33,6 +33,8 @@
 #include <cstdlib>
 #include <time.h>
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
@@ -47,7 +49,7 @@ namespace Utils
  ***********************************************/
 
 
-class ClippingPresetAnimated : public ClippingPreset
+class CGoGN_UTILS_API ClippingPresetAnimated : public ClippingPreset
 {
 
 public :
@@ -55,9 +57,9 @@ public :
 	/// constructor
 	ClippingPresetAnimated():
 		m_attachedClippingShader (NULL),
-		m_animationOneStepIncrement (0.01),
-		m_animationSpeedFactor (1.0),
-		m_animParam (0.0)
+		m_animationOneStepIncrement (0.01f),
+		m_animationSpeedFactor (1.0f),
+		m_animParam (0.0f)
 		{}
 
 public :
@@ -66,10 +68,10 @@ public :
 	 * sets the animation speed factor (can be negative for reverse animation)
 	 * @param speedFactor speed factor
 	 */
-	void setAnimationSpeedFactor(float speedFactor) { m_animationSpeedFactor = speedFactor; }
+	inline void setAnimationSpeedFactor(float speedFactor) { m_animationSpeedFactor = speedFactor; }
 
 	/// gets the animation speed factor
-	float getAnimationSpeedFactor() { return m_animationSpeedFactor; }
+	inline float getAnimationSpeedFactor() { return m_animationSpeedFactor; }
 
 protected :
 
@@ -119,7 +121,7 @@ public :
  ***********************************************/
 
 
-class ClippingPresetAnimatedDualPlanes : public ClippingPresetAnimated
+class CGoGN_UTILS_API ClippingPresetAnimatedDualPlanes : public ClippingPresetAnimated
 {
 
 public :
@@ -158,7 +160,7 @@ private :
 
 };
 
-class ClippingPresetAnimatedRotatingPlane : public ClippingPresetAnimated
+class CGoGN_UTILS_API ClippingPresetAnimatedRotatingPlane : public ClippingPresetAnimated
 {
 
 public :
@@ -183,7 +185,7 @@ private :
 
 };
 
-class ClippingPresetAnimatedScaledSphere : public ClippingPresetAnimated
+class CGoGN_UTILS_API ClippingPresetAnimatedScaledSphere : public ClippingPresetAnimated
 {
 
 public :
@@ -217,7 +219,7 @@ private :
 };
 
 
-class ClippingPresetAnimatedSpheresCubeCollision : public ClippingPresetAnimated
+class CGoGN_UTILS_API ClippingPresetAnimatedSpheresCubeCollision : public ClippingPresetAnimated
 {
 
 public :

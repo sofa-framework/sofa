@@ -35,6 +35,8 @@
 #include <QImage>
 #endif
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
@@ -45,7 +47,7 @@ namespace Utils
  *
  * @warning shader code is GL2.0 compatible for GL3.0 replace textureCube by texture in fragment shader !
  */
-class ShaderEnvMap : public ClippingShader
+class CGoGN_UTILS_API ShaderEnvMap : public ClippingShader
 {
 protected:
 	// flag color per vertex or not

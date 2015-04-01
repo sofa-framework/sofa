@@ -33,6 +33,16 @@
 #include "Utils/Qt/qtpopup.h"
 
 
+#ifdef WIN32
+#if defined CGoGN_QT_DLL_EXPORT
+#define CGoGN_UTILS_API __declspec(dllexport)
+#else
+#define CGoGN_UTILS_API __declspec(dllimport)
+#endif
+#else
+#define CGoGN_UTILS_API
+#endif
+
 namespace CGoGN
 {
 
@@ -57,7 +67,7 @@ class SimpleQT;
  *  Closing the window make a hide() (no destruction)
  *  To destroy: call delete in exit_cb
  */
-class ColorsChooser: public QtPopUp
+class CGoGN_UTILS_API  ColorsChooser : public QtPopUp
 {
 	Q_OBJECT
 protected:

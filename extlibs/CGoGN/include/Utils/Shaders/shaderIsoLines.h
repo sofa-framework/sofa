@@ -28,6 +28,8 @@
 #include "Utils/GLSLShader.h"
 #include "Geometry/vector_gen.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
@@ -39,7 +41,7 @@ namespace Utils
  * nb iso-lines, min/max attributes value and colors can be changed on the fly
  * For better rendering result use glEnable(GL_LINE_SMOOTH)
  */
-class ShaderIsoLines : public GLSLShader
+class CGoGN_UTILS_API ShaderIsoLines : public GLSLShader
 {
 protected:
 	/// shader sources

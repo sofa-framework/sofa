@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include <GL/glew.h>
 #include "Utils/Shaders/shaderPhongTexture.h"
 
@@ -50,11 +50,11 @@ ShaderPhongTexture::ShaderPhongTexture(bool doubleSided, bool withEyePosition):
 
 	// get choose GL defines (2 or 3)
 	// ans compile shaders
-	std::string glxvert(*GLSLShader::DEFINES_GL);
+	std::string glxvert(GLSLShader::defines_gl());
 	if (m_with_eyepos)
 		glxvert.append("#define WITH_EYEPOSITION");
 	glxvert.append(vertexShaderText);
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
+	std::string glxfrag(GLSLShader::defines_gl());
 	// Use double sided lighting if set
 	if (doubleSided)
 		glxfrag.append("#define DOUBLE_SIDED\n");

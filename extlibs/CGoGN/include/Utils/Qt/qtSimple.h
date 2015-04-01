@@ -25,12 +25,15 @@
 #ifndef __SIMPLE_QT_GL2__
 #define __SIMPLE_QT_GL2__
 
+#include "Utils/Qt/qtgl.h"
+
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QMainWindow>
 #include <QWidget>
-#include <QtGui>
-#include "Utils/Qt/qtgl.h"
+//#include <QtGui>
+#include <QTextEdit>
+
 
 #include <set>
 #include <string>
@@ -38,6 +41,18 @@
 #include "Utils/gl_matrices.h"
 
 namespace CGoGN { namespace Utils { class GLSLShader; } }
+
+#ifdef WIN32
+#ifndef CGoGN_UTILS_API
+#if defined CGoGN_QT_DLL_EXPORT
+#define CGoGN_UTILS_API __declspec(dllexport)
+#else
+#define CGoGN_UTILS_API __declspec(dllimport)
+#endif
+#endif
+#else
+#define CGoGN_UTILS_API
+#endif
 
 namespace CGoGN
 {
@@ -51,7 +66,7 @@ namespace QT
 // forward definition
 class GLWidget;
 
-class SimpleQT : public QMainWindow
+class CGoGN_UTILS_API SimpleQT : public QMainWindow
 {
 	Q_OBJECT
 

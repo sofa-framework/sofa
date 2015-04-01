@@ -29,6 +29,17 @@
 #include <QDialog>
 #include "Utils/Qt/qtSimple.h"
 
+#ifdef WIN32
+#ifndef CGoGN_UTILS_API
+#if defined CGoGN_QT_DLL_EXPORT
+#define CGoGN_UTILS_API __declspec(dllexport)
+#else
+#define CGoGN_UTILS_API __declspec(dllimport)
+#endif
+#endif
+#else
+#define CGoGN_UTILS_API
+#endif
 
 namespace CGoGN
 {
@@ -44,7 +55,7 @@ namespace QT
 *   Can contain one a more widgets in a grid
 *	Use show/hide to show/hide !
 */
-class QtPopUp : public QDialog
+class CGoGN_UTILS_API QtPopUp : public QDialog
 {
 	Q_OBJECT
 

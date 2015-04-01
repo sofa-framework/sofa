@@ -31,6 +31,8 @@
 #include "Utils/Shaders/shaderColorPerVertex.h"
 #include "Utils/Shaders/shaderSimpleColor.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
@@ -38,7 +40,7 @@ namespace Utils
 {
 
 
-class LineDrawable
+class CGoGN_UTILS_API LineDrawable
 {
 protected:
 	/**
@@ -126,7 +128,7 @@ public:
 };
 
 
-class Pickable
+class CGoGN_UTILS_API Pickable
 {
 protected:
 	/// type of drawable
@@ -293,7 +295,7 @@ public:
 /**
  * Grid (-1,-1,0 ; 1,1,0)
  */
-class Grid: public LineDrawable
+class CGoGN_UTILS_API Grid : public LineDrawable
 {
 public:
 	/**
@@ -330,7 +332,7 @@ public:
 /**
  * Sphere of radius 1 drawon with lines
  */
-class Sphere: public LineDrawable
+class CGoGN_UTILS_API Sphere : public LineDrawable
 {
 public:
 	/**
@@ -372,7 +374,7 @@ public:
 /**
  * Cone of radius 1 drawon with lines
  */
-class Cone: public Sphere
+class CGoGN_UTILS_API Cone : public Sphere
 {
 public:
 	/**
@@ -409,7 +411,7 @@ public:
 /**
  * Cone of radius 1 drawon with lines
  */
-class Cylinder: public Sphere
+class CGoGN_UTILS_API Cylinder: public Sphere
 {
 public:
 	/**
@@ -447,7 +449,7 @@ public:
 /**
  * Sphere of radius 1 drawon with lines
  */
-class Cube: public LineDrawable
+class CGoGN_UTILS_API Cube : public LineDrawable
 {
 public:
 	/**
@@ -487,7 +489,7 @@ public:
 
 };
 
-class IcoSphere: public Sphere
+class CGoGN_UTILS_API IcoSphere : public Sphere
 {
 protected:
 

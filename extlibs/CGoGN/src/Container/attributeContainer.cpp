@@ -198,23 +198,23 @@ void AttributeContainer::clear(bool removeAttrib)
         // nb a zero
         m_nbAttributes = 0;
 
-		// detruit tous les attributs
-		for (std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
-		{
-			if ((*it) != NULL)
-				delete (*it);
-		}
-		std::vector<AttributeMultiVectorGen*> amg;
-		m_tableAttribs.swap(amg);
+        // detruit tous les attributs
+        for (std::vector<AttributeMultiVectorGen*>::iterator it = m_tableAttribs.begin(); it != m_tableAttribs.end(); ++it)
+        {
+            if ((*it) != NULL)
+                delete (*it);
+        }
+        std::vector<AttributeMultiVectorGen*> amg;
+        m_tableAttribs.swap(amg);
 
-		// detruit tous les attributs MarkerBool
-		for (std::vector<AttributeMultiVector<MarkerBool>*>::iterator it = m_tableMarkerAttribs.begin(); it != m_tableMarkerAttribs.end(); ++it)
-		{
-			if ((*it) != NULL)
-				delete (*it);
-		}
-		std::vector<AttributeMultiVector<MarkerBool>*> amgb;
-		m_tableMarkerAttribs.swap(amgb);
+        // detruit tous les attributs MarkerBool
+        for (std::vector<AttributeMultiVector<MarkerBool>*>::iterator it = m_tableMarkerAttribs.begin(); it != m_tableMarkerAttribs.end(); ++it)
+        {
+            if ((*it) != NULL)
+                delete (*it);
+        }
+        std::vector<AttributeMultiVector<MarkerBool>*> amgb;
+        m_tableMarkerAttribs.swap(amgb);
 
         std::vector<unsigned int> fi;
         m_freeIndices.swap(fi);
