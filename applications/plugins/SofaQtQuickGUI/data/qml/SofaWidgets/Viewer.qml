@@ -5,9 +5,9 @@ import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 import QtGraphicalEffects 1.0
 import SofaBasics 1.0
+import SofaInteractor 1.0
 import Viewer 1.0
 import Scene 1.0
-import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 
 Viewer {
     id: root
@@ -76,181 +76,54 @@ Viewer {
             sceneChanged(scene);
     }
 
-    onSceneChanged: {
-        if(scene)
-            actor.init();
-    }
-
-    property alias actor: actor
+    property alias interactor: mouseArea.interactor
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
         acceptedButtons: Qt.AllButtons
-        //propagateComposedEvents: true
 
-        Actor {
-            id: actor
-
-            property var previousX: -1
-            property var previousY: -1
-
-            property real moveSpeed: 0.00133
-            property real turnSpeed: 20.0
-            property real zoomSpeed: 1.0
-
-            function init() {
-                addMousePressedMapping (Qt.LeftButton, function(mouse) {
-                    var nearPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 0.0));
-                    var farPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 1.0));
-                    if(scene.pickingInteractor.pick(nearPosition, farPosition.minus(nearPosition))) {
-                        var z = camera.computeDepth(scene.pickingInteractor.pickedPointPosition());
-                        var position = camera.projectOnViewPlane(nearPosition, z);
-                        scene.pickingInteractor.position = position;
-
-                        setMouseMoveMapping(function(mouse) {
-                            var nearPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 0.0));
-                            var farPosition = root.mapToWorld(Qt.vector3d(mouse.x + 0.5, mouse.y + 0.5, 1.0));
-                            var z = camera.computeDepth(scene.pickingInteractor.pickedPointPosition());
-                            var position = camera.projectOnViewPlane(nearPosition, z);
-                            scene.pickingInteractor.position = position;
-                        });
-                    }
-                });
-
-                addMouseReleasedMapping(Qt.LeftButton, function(mouse) {
-                    scene.pickingInteractor.release();
-
-                    setMouseMoveMapping(null);
-                });
-
-                addMouseDoubleClickedMapping(Qt.LeftButton, function(mouse) {
-                    var position = root.projectOnGeometry(Qt.point(mouse.x + 0.5, mouse.y + 0.5));
-                    if(1.0 === position.w) {
-                        camera.target = position.toVector3d();
-                        crosshairGizmo.pop();
-                    }
-                });
-
-                addMousePressedMapping (Qt.RightButton, function(mouse) {
-                    previousX = mouse.x;
-                    previousY = mouse.y;
-
-                    crosshairGizmo.show();
-                    SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
-
-                    setMouseMoveMapping(function(mouse) {
-                        if(!camera)
-                            return;
-
-                        var angleAroundX = 0.0;
-                        var angleAroundY = 0.0;
-                        var angleAroundZ = 0.0;
-
-                        if(Qt.ControlModifier & mouse.modifiers) {
-                            angleAroundZ = (previousX - mouse.x) / 180.0 * Math.PI * turnSpeed;
-                        } else {
-                            angleAroundX = (previousY - mouse.y) / 180.0 * Math.PI * turnSpeed;
-                            angleAroundY = (previousX - mouse.x) / 180.0 * Math.PI * turnSpeed;
-                        }
-
-                        camera.turn(angleAroundX, angleAroundY, angleAroundZ);
-
-                        previousX = mouse.x;
-                        previousY = mouse.y;
-                    });
-                });
-
-                addMouseReleasedMapping(Qt.RightButton, function(mouse) {
-                    setMouseMoveMapping(null);
-
-                    SofaToolsScript.Tools.overrideCursorShape = 0;
-                    crosshairGizmo.hide();
-                });
-
-                addMousePressedMapping (Qt.MiddleButton, function(mouse) {
-                    previousX = mouse.x;
-                    previousY = mouse.y;
-
-                    crosshairGizmo.show();
-                    SofaToolsScript.Tools.overrideCursorShape = Qt.ClosedHandCursor;
-
-                    setMouseMoveMapping(function(mouse) {
-                        if(!camera)
-                            return;
-
-                        var screenToScene = camera.target.minus(camera.eye()).length();
-
-                        var moveX = (mouse.x - previousX) * screenToScene * moveSpeed;
-                        var moveY = (mouse.y - previousY) * screenToScene * moveSpeed;
-                        camera.move(-moveX, moveY, 0.0);
-
-                        previousX = mouse.x;
-                        previousY = mouse.y;
-                    });
-                });
-
-                addMouseReleasedMapping(Qt.MiddleButton, function(mouse) {
-                    setMouseMoveMapping(null);
-
-                    SofaToolsScript.Tools.overrideCursorShape = 0;
-                    crosshairGizmo.hide();
-                });
-
-                setMouseWheelMapping(function(wheel) {
-                    if(!camera)
-                        return;
-
-                    if(0 === wheel.angleDelta.y)
-                        return;
-
-                    var boundary = 2.0;
-                    var factor = Math.max(-boundary, Math.min(wheel.angleDelta.y / 120.0, boundary)) / boundary;
-                    if(factor < 0.0) {
-                        factor = 1.0 + 0.5 * factor;
-                        factor /= zoomSpeed;
-                    }
-                    else {
-                        factor = 1.0 + factor;
-                        factor *= zoomSpeed;
-                    }
-
-                    camera.zoom(factor);
-
-                    wheel.accepted = true;
-                });
-            }
+        property UserInteractor interactor: UserInteractor_Selection {
+            scene: root.scene
+            viewer: root
         }
 
         onClicked: {
             if(!activeFocus)
                 focus = true;
 
-            actor.mouseClicked(mouse);
+            if(interactor)
+                interactor.mouseClicked(mouse);
         }
 
         onDoubleClicked: {
             if(!activeFocus)
                 focus = true;
 
-            actor.mouseDoubleClicked(mouse);
+            if(interactor)
+                interactor.mouseDoubleClicked(mouse);
         }
 
         onPressed: {
             if(!activeFocus)
                 focus = true;
 
-            actor.mousePressed(mouse);
+            if(interactor)
+                interactor.mousePressed(mouse);
         }
 
         onReleased: {
-            actor.mouseReleased(mouse);
+            if(interactor)
+                interactor.mouseReleased(mouse);
         }
 
         onWheel: {
-            actor.mouseWheel(wheel);
+            if(interactor)
+                interactor.mouseWheel(wheel);
         }
 
         onPositionChanged: {
-            actor.mouseMove(mouse);
+            if(interactor)
+                interactor.mouseMove(mouse);
         }
 
         Keys.onPressed: {
@@ -262,7 +135,8 @@ Viewer {
             if(scene)
                 scene.keyPressed(event);
 
-            actor.keyPressed(event);
+            if(interactor)
+                interactor.keyPressed(event);
 
             event.accepted = true;
         }
@@ -276,7 +150,8 @@ Viewer {
             if(scene)
                 scene.keyReleased(event);
 
-            actor.keyReleased(event);
+            if(interactor)
+                interactor.keyReleased(event);
 
             event.accepted = true;
         }

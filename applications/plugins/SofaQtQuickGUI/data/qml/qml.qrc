@@ -2,35 +2,38 @@
     <qresource prefix="/">
         <file>SofaBasics/qmldir</file>
         <file>SofaBasics/DefaultStatusBar.qml</file>
+        <file>SofaBasics/DefaultToolBar.qml</file>
         <file>SofaBasics/DefaultMenuBar.qml</file>
         <file>SofaBasics/Scene.qml</file>
         <file>SofaBasics/PythonInteractor.qml</file>
         <file>SofaBasics/FPSDisplay.qml</file>
         <file>SofaBasics/Camera.qml</file>
-        <file>SofaBasics/Actor.qml</file>
+        <file>SofaBasics/UserInteractor.qml</file>
         <file>SofaBasics/ContentItem.qml</file>
         <file>SofaBasics/CollapsibleGroupBox.qml</file>
         <file>SofaBasics/Vector3DSpinBox.qml</file>
         <file>SofaBasics/DynamicSplitView.qml</file>
         <file>SofaBasics/DynamicContent.qml</file>
+        <file>SofaBasics/UISettings.qml</file>
+        <file>SofaBasics/Tools.qml</file>
+        <file>SofaBasics/RecentSettings.qml</file>
+        <file>SofaBasics/SceneListModel.qml</file>
+        <file>SofaBasics/DataListModel.qml</file>
+        <file>SofaBasics/Data.qml</file>
+        <file>SofaBasics/ToolTip.qml</file>
         <file>SofaTools/qmldir</file>
         <file>SofaTools/SimulationControl.qml</file>
         <file>SofaTools/SceneGUILoader.qml</file>
+        <file>SofaTools/SceneGraphView.qml</file>
+        <file>SofaTools/DataListView.qml</file>
         <file>SofaWidgets/qmldir</file>
         <file>SofaWidgets/Viewer.qml</file>
         <file>SofaWidgets/ImageViewer.qml</file>
         <file>SofaWidgets/ToolPanel.qml</file>
+        <file>SofaWidgets/DataView.qml</file>
         <file>SofaCommon/SofaCommonScript.js</file>
-        <file>SofaBasics/UISettings.qml</file>
-        <file>SofaBasics/Tools.qml</file>
         <file>SofaCommon/SofaToolsScript.js</file>
         <file>SofaCommon/SofaSettingsScript.js</file>
-        <file>SofaBasics/RecentSettings.qml</file>
-        <file>SofaTools/SceneGraphView.qml</file>
-        <file>SofaTools/DataListView.qml</file>
-        <file>SofaBasics/SceneListModel.qml</file>
-        <file>SofaBasics/DataListModel.qml</file>
-        <file>SofaBasics/Data.qml</file>
         <file>SofaDataTypes/DataType_0to1RatioWidget.qml</file>
         <file>SofaDataTypes/DataType_array.qml</file>
         <file>SofaDataTypes/DataType_boolean.qml</file>
@@ -44,7 +47,9 @@
         <file>SofaDataTypes/DataType_BoundingBox.qml</file>
         <file>SofaDataTypes/DataType_Material.qml</file>
         <file>SofaDataTypes/DataType_OptionsGroup.qml</file>
-        <file>SofaBasics/ToolTip.qml</file>
-        <file>SofaWidgets/DataView.qml</file>
+        <file>SofaBasics/Application.qml</file>
+        <file>SofaCommon/SofaApplicationScript.js</file>
+        <file>SofaInteractor/qmldir</file>
+        <file>SofaInteractor/UserInteractor_Selection.qml</file>
     </qresource>
 </RCC>
