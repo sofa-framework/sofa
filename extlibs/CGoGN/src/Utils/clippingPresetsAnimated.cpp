@@ -21,10 +21,10 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/clippingPresetsAnimated.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
+
+#include <cmath>
 
 namespace CGoGN
 {
@@ -293,10 +293,10 @@ ClippingPresetAnimatedSpheresCubeCollision::ClippingPresetAnimatedSpheresCubeCol
 
 	// Store spheres random directions
 	m_spheresDirections.resize(usedSpheresCount);
-	srand(time(NULL));
+    srand(time(NULL));
 	for (size_t i = 0; i < m_spheresDirections.size(); i++)
 	{
-		Geom::Vec3f dir ((rand() % 1000) - 500, (rand() % 1000) - 500, (rand() % 1000) - 500);
+		Geom::Vec3f dir ((rand() % 1000) - 500.0f, (rand() % 1000) - 500.0f, (rand() % 1000) - 500.0f);
 		dir.normalize();
 		m_spheresDirections[i] = dir;
 	}

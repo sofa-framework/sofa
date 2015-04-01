@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include <string>
 #include "Utils/Shaders/shaderFlatColor.h"
 
@@ -41,7 +41,7 @@ ShaderFlatColor::ShaderFlatColor(bool averageColor)
 	m_nameFS = "shaderFlatColor_fs";
 	m_nameGS = "shaderFlatColor_gs";
 
-	std::string glxvert(*GLSLShader::DEFINES_GL);
+	std::string glxvert(GLSLShader::defines_gl());
 	glxvert.append(vertexShaderText);
 
 	std::string glxgeom = GLSLShader::defines_Geom("triangles", "triangle_strip", 3);
@@ -49,7 +49,7 @@ ShaderFlatColor::ShaderFlatColor(bool averageColor)
 		glxgeom.append("#define AVERAGE_COLOR 1\n");
 	glxgeom.append(geometryShaderText);
 
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
+	std::string glxfrag(GLSLShader::defines_gl());
 	glxfrag.append(fragmentShaderText);
 
 	loadShadersFromMemory(glxvert.c_str(), glxfrag.c_str(), glxgeom.c_str(), GL_TRIANGLES, GL_TRIANGLE_STRIP,3);

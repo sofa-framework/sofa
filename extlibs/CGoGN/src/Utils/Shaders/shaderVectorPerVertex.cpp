@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/Shaders/shaderVectorPerVertex.h"
 
 namespace CGoGN
@@ -37,19 +37,20 @@ namespace Utils
 
 ShaderVectorPerVertex::ShaderVectorPerVertex() :
 	m_scale(1.0f),
-	m_color(Geom::Vec4f(1.0f, 0.0f, 0.0f, 0.0f))
+	m_color	(1.0f, 0.0f, 0.0f, 0.0f),
+	m_planeClip(0.0f,0.0f,0.0f,0.0f)
 {
 	m_nameVS = "ShaderVectorPerVertex_vs";
 	m_nameFS = "ShaderVectorPerVertex_fs";
 	m_nameGS = "ShaderVectorPerVertex_gs";
 
-	std::string glxvert(*GLSLShader::DEFINES_GL);
+	std::string glxvert(GLSLShader::defines_gl());
 	glxvert.append(vertexShaderText);
 
 	std::string glxgeom = GLSLShader::defines_Geom("points", "line_strip", 4);
 	glxgeom.append(geometryShaderText);
 
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
+	std::string glxfrag(GLSLShader::defines_gl());
 	glxfrag.append(fragmentShaderText);
 
 	loadShadersFromMemory(glxvert.c_str(), glxfrag.c_str(), glxgeom.c_str(), GL_POINTS, GL_LINE_STRIP,2);
@@ -64,6 +65,7 @@ void ShaderVectorPerVertex::getLocations()
 	bind();
 	*m_uniform_scale = glGetUniformLocation(this->program_handler(), "vectorScale");
 	*m_uniform_color = glGetUniformLocation(this->program_handler(), "vectorColor");
+	*m_unif_planeClip = glGetUniformLocation(this->program_handler(), "planeClip");
 	unbind();
 }
 
@@ -72,6 +74,9 @@ void ShaderVectorPerVertex::sendParams()
 	bind();
 	glUniform1f(*m_uniform_scale, m_scale);
 	glUniform4fv(*m_uniform_color, 1, m_color.data());
+	if (*m_unif_planeClip > 0)
+		glUniform4fv(*m_unif_planeClip, 1, m_planeClip.data());
+
 	unbind();
 }
 
@@ -119,6 +124,18 @@ void ShaderVectorPerVertex::restoreUniformsAttribs()
 	bindVA_VBO("VertexVector", m_vboVec);
 	unbind();
 }
+
+void ShaderVectorPerVertex::setClippingPlane(const Geom::Vec4f& plane)
+{
+	if (*m_unif_planeClip > 0)
+	{
+		m_planeClip = plane;
+		bind();
+		glUniform4fv(*m_unif_planeClip, 1, plane.data());
+		unbind();
+	}
+}
+
 
 } // namespace Utils
 

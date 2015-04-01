@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/Shaders/shaderSimpleColor.h"
 
 namespace CGoGN
@@ -32,47 +32,53 @@ namespace Utils
 
 #include "shaderSimpleColor.vert"
 #include "shaderSimpleColor.frag"
-
-//std::string ShaderSimpleColor::vertexShaderText =
-//		"ATTRIBUTE vec3 VertexPosition, VertexNormal;\n"
-//		"uniform mat4 ModelViewProjectionMatrix;\n"
-////		"INVARIANT_POS;\n"
-//		"void main ()\n"
-//		"{\n"
-//		"	gl_Position = ModelViewProjectionMatrix * vec4 (VertexPosition, 1.0);\n"
-//		"}";
-//
-//
-//std::string ShaderSimpleColor::fragmentShaderText =
-//		"PRECISON;\n"
-//		"uniform vec4 color;\n"
-//		"FRAG_OUT_DEF;\n"
-//		"void main()\n"
-//		"{\n"
-//		"	FRAG_OUT = color;\n"
-//		"}";
+#include "shaderSimpleColorClip.vert"
+#include "shaderSimpleColorClip.frag"
 
 
-ShaderSimpleColor::ShaderSimpleColor(bool black_is_transparent)
+ShaderSimpleColor::ShaderSimpleColor(bool withClipping, bool black_is_transparent)
 {
-	m_nameVS = "ShaderSimpleColor_vs";
-	m_nameFS = "ShaderSimpleColor_fs";
-	m_nameGS = "ShaderSimpleColor_gs";
+	if (withClipping)
+	{
+		m_nameVS = "ShaderSimpleColorClip_vs";
+		m_nameFS = "ShaderSimpleColorClip_fs";
+		m_nameGS = "";
 
-	// chose GL defines (2 or 3)
-	// and compile shaders
-	std::string glxvert(*GLSLShader::DEFINES_GL);
-	glxvert.append(vertexShaderText);
+		// chose GL defines (2 or 3)
+		// and compile shaders
+		std::string glxvert(GLSLShader::defines_gl());
+		glxvert.append(vertexShaderClipText);
 
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
-	if (black_is_transparent)
-		glxfrag.append("#define BLACK_TRANSPARENCY 1\n");
-	glxfrag.append(fragmentShaderText);
+		std::string glxfrag(GLSLShader::defines_gl());
+		if (black_is_transparent)
+			glxfrag.append("#define BLACK_TRANSPARENCY 1\n");
+		glxfrag.append(fragmentShaderClipText);
 
-	loadShadersFromMemory(glxvert.c_str(), glxfrag.c_str());
+		loadShadersFromMemory(glxvert.c_str(), glxfrag.c_str());
+
+		*m_unif_planeClip = glGetUniformLocation(this->program_handler(),"planeClip");
+		setClippingPlane(Geom::Vec4f (0.0f, 0.0f, 0.0f, 0.0f));
+	}
+	else
+	{
+		m_nameVS = "ShaderSimpleColor_vs";
+		m_nameFS = "ShaderSimpleColor_fs";
+		m_nameGS = "";
+
+		// chose GL defines (2 or 3)
+		// and compile shaders
+		std::string glxvert(GLSLShader::defines_gl());
+		glxvert.append(vertexShaderText);
+
+		std::string glxfrag(GLSLShader::defines_gl());
+		if (black_is_transparent)
+			glxfrag.append("#define BLACK_TRANSPARENCY 1\n");
+		glxfrag.append(fragmentShaderText);
+
+		loadShadersFromMemory(glxvert.c_str(), glxfrag.c_str());
+	}
 
 	*m_unif_color = glGetUniformLocation(this->program_handler(),"color");
-
 	//Default values
 	Geom::Vec4f color(0.1f, 0.9f, 0.1f, 0.0f);
 	setColor(color);
@@ -85,6 +91,16 @@ void ShaderSimpleColor::setColor(const Geom::Vec4f& color)
 	glUniform4fv(*m_unif_color, 1, color.data());
 	unbind();
 }
+
+
+void ShaderSimpleColor::setClippingPlane(const Geom::Vec4f& plane)
+{
+	m_planeClip = plane;
+	bind();
+	glUniform4fv(*m_unif_planeClip, 1, plane.data());
+	unbind();
+}
+
 
 unsigned int ShaderSimpleColor::setAttributePosition(VBO* vbo)
 {
@@ -100,6 +116,7 @@ void ShaderSimpleColor::restoreUniformsAttribs()
 	*m_unif_color = glGetUniformLocation(this->program_handler(), "color");
 	bind();
 	glUniform4fv(*m_unif_color, 1, m_color.data());
+	glUniform4fv(*m_unif_planeClip, 1, m_planeClip.data());
 	bindVA_VBO("VertexPosition", m_vboPos);
 	unbind();
 }

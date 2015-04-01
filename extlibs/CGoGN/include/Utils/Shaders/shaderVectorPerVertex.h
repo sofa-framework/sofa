@@ -29,13 +29,15 @@
 #include "Utils/clippingShader.h"
 #include "Geometry/vector_gen.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderVectorPerVertex : public ClippingShader
+class CGoGN_UTILS_API ShaderVectorPerVertex : public ClippingShader
 {
 protected:
 	// shader sources
@@ -52,6 +54,10 @@ protected:
     VBO* m_vboPos;
     VBO* m_vboVec;
 
+	/// clipping
+	CGoGNGLuint m_unif_planeClip;
+	Geom::Vec4f m_planeClip;
+
 	void getLocations();
 
 	void sendParams();
@@ -59,7 +65,7 @@ protected:
 	void restoreUniformsAttribs();
 
 public:
-    ShaderVectorPerVertex();
+	ShaderVectorPerVertex();
 
 	void setScale(float scale);
 
@@ -68,6 +74,11 @@ public:
 	unsigned int setAttributePosition(VBO* vbo);
 
 	unsigned int setAttributeVector(VBO* vbo);
+
+	void setClippingPlane(const Geom::Vec4f& plane);
+
+	inline void setNoClippingPlane() { setClippingPlane(Geom::Vec4f(0.0f,0.0f,0.0f,0.0f)); }
+
 };
 
 } // namespace Utils

@@ -36,13 +36,14 @@
 #include "Utils/cgognStream.h"
 
 #include "glm/glm.hpp"
-#include <GL/glew.h>
+//#include <GL/glew.h>
 
 #include <stdlib.h>
 #include <string>
 #include <vector>
 #include <set>
 
+#include "Utils/dll.h"
 
 namespace CGoGN
 {
@@ -50,7 +51,7 @@ namespace CGoGN
 namespace Utils
 {
 
-class GLSLShader
+class CGoGN_UTILS_API GLSLShader
 {
 public:
 	struct VAStr
@@ -64,25 +65,24 @@ public:
 	 */
 	enum shaderType {VERTEX_SHADER = 1, FRAGMENT_SHADER = 2, GEOMETRY_SHADER = 3 };
 
-	static unsigned int CURRENT_OGL_VERSION;
-
-	static unsigned int MAJOR_OGL_CORE;
-
-	static unsigned int MINOR_OGL_CORE;
+#ifdef CGOGN_USE_OGL_CORE_PROFILE
+	static const unsigned int CURRENT_OGL_VERSION = 3;
+	static const unsigned int MAJOR_OGL_CORE = 3;
+	static const unsigned int MINOR_OGL_CORE = 3;
+#else
+	static const unsigned int CURRENT_OGL_VERSION = 2;
+	static const unsigned int MAJOR_OGL_CORE = 2;
+	static const unsigned int MINOR_OGL_CORE = 1;
+#endif
 
 	static std::set< std::pair<void*, GLSLShader*> >* m_registeredShaders;
 
-//	static glm::mat4* s_current_matrices;
 	static Utils::GL_Matrices* s_current_matrices;
 
 protected:
-	static std::string DEFINES_GL2;
-
-	static std::string DEFINES_GL3;
-
-	static std::string* DEFINES_GL;
-
 	static std::string defines_Geom(const std::string& primitivesIn, const std::string& primitivesOut, int maxVert);
+
+	static std::string defines_gl();
 
 	int m_nbMaxVertices;
 
@@ -209,9 +209,9 @@ public:
 	 */
 	virtual ~GLSLShader();
 
-	static void setCurrentOGLVersion(unsigned int version);
+//	static void setCurrentOGLVersion(unsigned int version);
 
-	static void setCurrentOGLVersion(unsigned int major,unsigned int minor);
+//	static void setCurrentOGLVersion(unsigned int major,unsigned int minor);
 
 	/*
 	 * search file in different path
