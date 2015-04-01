@@ -286,9 +286,10 @@ void Viewer::paint()
 
     if(!myBackgroundImage.isNull())
     {
-        QOpenGLPaintDevice device(size);
-        QPainter painter(&device);
-        painter.drawImage(size.width() - myBackgroundImage.width(), size.height() - myBackgroundImage.height(), myBackgroundImage);
+		// TODO: warning: disable lights
+        //QOpenGLPaintDevice device(size);
+        //QPainter painter(&device);
+        //painter.drawImage(size.width() - myBackgroundImage.width(), size.height() - myBackgroundImage.height(), myBackgroundImage);
     }
 
     // set the viewer viewport
@@ -392,6 +393,8 @@ void Viewer::paint()
     glBindTexture(GL_TEXTURE_2D, myFBO->texture());
     // TODO: use a VBO
     glBegin(GL_QUADS);
+		glColor3d	(1.0, 1.0, 1.0);
+
         glTexCoord2d( 0, 0);
         glVertex2d  (-1,-1);
 
