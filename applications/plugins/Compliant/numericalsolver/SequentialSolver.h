@@ -27,6 +27,14 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 
 	virtual void factor(const system_type& system);
 
+    virtual void solve(vec& x,
+                       const system_type& system,
+                       const vec& rhs) const;
+
+    virtual void correct(vec& x,
+                         const system_type& system,
+                         const vec& rhs,
+                         real damping) const;
 
 	virtual void init();
 
@@ -38,6 +46,9 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 							const system_type& system,
 							const vec& rhs,
                             bool correct) const;
+
+    virtual void factor_impl(const system_type& system);
+
 
     // performs a single iteration
     SReal step(vec& lambda,
@@ -130,7 +141,6 @@ public:
     Data<SReal> d_regularization;
 
     virtual void factor(const system_type& system);
-
 
     virtual void solve(vec& x,
                        const system_type& system,

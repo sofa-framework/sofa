@@ -69,9 +69,13 @@ void BaseSequentialSolver::factor_block(inverse_type& inv, const schur_type& sch
 #endif
 }
 
-
-
 void BaseSequentialSolver::factor(const system_type& system) {
+
+    fetch_blocks( system );
+    factor_impl( system );
+}
+
+void BaseSequentialSolver::factor_impl(const system_type& system) {
 	scoped::timer timer("system factorization");
  
 	Benchmark::scoped_timer bench_timer(this->bench, &Benchmark::factor);
@@ -253,7 +257,19 @@ SReal BaseSequentialSolver::step(vec& lambda,
 	return estimate;
 }
 
+void BaseSequentialSolver::solve(vec& res,
+                             const system_type& sys,
+                             const vec& rhs) const {
+    solve_impl(res, sys, rhs, false );
+}
 
+
+void BaseSequentialSolver::correct(vec& res,
+                               const system_type& sys,
+                               const vec& rhs,
+                               real /*damping*/ ) const {
+    solve_impl(res, sys, rhs, true );
+}
 
 void BaseSequentialSolver::solve_impl(vec& res,
 								  const system_type& sys,
@@ -515,12 +531,12 @@ void SequentialSolver::factor(const system_type& system) {
             )
     {
         fetch_blocks( system ); // find blocks
-        return BaseSequentialSolver::factor( system );
+        return factor_impl( system );
     }
     else
     {
         fetch_unilateral_blocks( system ); // find unilateral blocks
-        BaseSequentialSolver::factor( m_localSystem );
+        factor_impl( m_localSystem );
     }
 }
 
