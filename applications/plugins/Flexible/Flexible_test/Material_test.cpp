@@ -28,12 +28,12 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include "../material/HookeForceField.h"
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa {
 
@@ -161,7 +161,7 @@ struct Material_test : public Sofa_test<typename Vec3Types::Real>
                     // Init the triangle pressure forcefield
                     tractionStruct.forceField.get()->init();
                     // Record the initial point of a given vertex
-                    Coord p0=(*(tractionStruct.dofs.get()->getX()))[vIndex];
+                    Coord p0=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
 
                     //  do several steps of the static solver
                     for(l=0;l<10;++l) 
@@ -170,9 +170,8 @@ struct Material_test : public Sofa_test<typename Vec3Types::Real>
                     }
 
                     // Get the simulated final position of that vertex
-                    Coord p1=(*(tractionStruct.dofs.get()->getX()))[vIndex];
-                    Real longitudinalDeformation=(p1[2]-p0[2])/p0[2];
-
+                    Coord p1=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
+                     Real longitudinalDeformation=(p1[2]-p0[2])/p0[2];
                     // Test if longitudinal stretch is a nan value
                     if(longitudinalDeformation != longitudinalDeformation)
                     {

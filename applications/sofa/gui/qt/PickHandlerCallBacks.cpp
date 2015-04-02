@@ -27,7 +27,7 @@
 #include "viewer/SofaViewer.h"
 #include "QSofaListView.h"
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/collision/MouseInteractor.h>
+#include <SofaUserInteraction/MouseInteractor.h>
 
 #ifdef SOFA_QT4
 #   include <QStatusBar>

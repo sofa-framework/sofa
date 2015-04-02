@@ -37,7 +37,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/fixed_array.h>
@@ -495,7 +495,7 @@ public:
     //internal data
     helper::Quater<Real> qrotation; Coord axisrotation; Real phirotation; // "rotation" in other formats
 
-    void setCamPos(const Real cx,const Real cy) {this->camx=cx;  this->camy=cy; }
+    void setCamPos(const Real& cx,const Real& cy) {this->camx=cx;  this->camy=cy; }
 
     //internal data update
     virtual void update()
@@ -678,8 +678,8 @@ public:
         transform=&_transform;
         img=&_img;
         visualModels.assign(_visualModels.begin(),_visualModels.end());
-        this->setPlane(pCoord(this->img->getDimensions()[0]/2,this->img->getDimensions()[1]/2,this->img->getDimensions()[2]/2));
-        this->imagePlaneDirty=true;
+//        this->setPlane(pCoord(this->img->getDimensions()[0]/2,this->img->getDimensions()[1]/2,this->img->getDimensions()[2]/2));
+//        this->imagePlaneDirty=true;
     }
 
     const pCoord& getPlane() const {return plane;}
@@ -865,9 +865,9 @@ public:
 
     inline friend std::istream& operator >> ( std::istream& in, ImagePlane& p )
     {
-        pCoord _plane;
+        Vec<3,int> _plane;
         in>>_plane;
-        p.setPlane(_plane);
+        p.setPlane(pCoord((unsigned int)_plane[0],(unsigned int)_plane[1],(unsigned int)_plane[2]));
         return in;
     }
 

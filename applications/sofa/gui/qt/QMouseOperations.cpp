@@ -26,8 +26,8 @@
 #include "QMouseOperations.h"
 #include "QDisplayDataWidget.h"
 #include "DataWidget.h"
-#include <sofa/component/configurationsetting/AttachBodyButtonSetting.h>
-#include <sofa/component/configurationsetting/AddRecordedCameraButtonSetting.h>
+#include <SofaGraphComponent/AttachBodyButtonSetting.h>
+#include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 
 #ifdef SOFA_QT4
 #include <QVBoxLayout>

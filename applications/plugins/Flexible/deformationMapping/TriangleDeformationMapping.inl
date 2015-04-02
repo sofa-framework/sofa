@@ -27,7 +27,6 @@
 
 #include "../deformationMapping/TriangleDeformationMapping.h"
 #include <sofa/core/visual/VisualParams.h>
-//#include <sofa/component/container/MechanicalObject.inl>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -180,11 +179,6 @@ void TriangleDeformationMapping<TIn, TOut>::apply(const core::MechanicalParams *
 
 }
 
-//template <class TIn, class TOut>
-//void TriangleDeformationMapping<TIn, TOut>::computeGeometricStiffness(const core::MechanicalParams *mparams)
-//{
-
-//}
 
 template <class TIn, class TOut>
 void TriangleDeformationMapping<TIn, TOut>::applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn)

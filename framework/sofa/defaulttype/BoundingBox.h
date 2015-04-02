@@ -46,7 +46,7 @@ public:
     BoundingBox(const Vector3& minBBox, const Vector3& maxBBox);
     BoundingBox(const bbox_t& bbox);
     /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
-    BoundingBox(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax );
+    BoundingBox(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax );
     /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
     BoundingBox(const Vec6f& bbox);
     /// Define using xmin, xmax, ymin, ymax, zmin, zmax in this order
@@ -135,7 +135,7 @@ public:
     BoundingBox2D(const Vector2& minBBox, const Vector2& maxBBox);
     BoundingBox2D(const bbox_t& bbox);
     /// Define using xmin, xmax, ymin, ymax in this order
-    BoundingBox2D(double xmin, double xmax, double ymin, double ymax );
+    BoundingBox2D(SReal xmin, SReal xmax, SReal ymin, SReal ymax );
     /// Define using xmin, xmax, ymin, ymax in this order
     BoundingBox2D(const Vec4f& bbox);
     /// Define using xmin, xmax, ymin, ymax in this order

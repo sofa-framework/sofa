@@ -46,10 +46,13 @@ class  MyProjectiveConstraintSet : public core::behavior::ProjectiveConstraintSe
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MyProjectiveConstraintSet,DataTypes),SOFA_TEMPLATE(core::behavior::ProjectiveConstraintSet,DataTypes));
     typedef core::behavior::ProjectiveConstraintSet<DataTypes> Inherit;
-    typedef typename  DataTypes::VecDeriv VecDeriv;
-    typedef typename  DataTypes::MatrixDeriv MatrixDeriv;
-    typedef typename  DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
-    typedef typename  DataTypes::VecCoord VecCoord;
+    typedef typename Inherit::DataVecCoord DataVecCoord;
+    typedef typename Inherit::DataVecDeriv DataVecDeriv;
+    typedef typename Inherit::DataMatrixDeriv DataMatrixDeriv;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    typedef typename DataTypes::MatrixDeriv::RowType MatrixDerivRowType;
+    typedef typename DataTypes::VecCoord VecCoord;
 protected:
     MyProjectiveConstraintSet();
     ~MyProjectiveConstraintSet();
@@ -58,10 +61,10 @@ public:
 
     void reinit();
 
-    void projectResponse(MatrixDerivRowType& /*dx*/) {}
-    void projectResponse(VecDeriv& /*dx*/) {}
-    void projectVelocity(VecDeriv& /*dx*/) {}
-    void projectPosition(VecCoord& /*x*/) {}
+    void projectResponse(const core::MechanicalParams* /* mparams */, DataVecDeriv& /* dx */) {};
+    void projectVelocity(const core::MechanicalParams* /* mparams */, DataVecDeriv& /* v */) {};
+    void projectPosition(const core::MechanicalParams* /* mparams */, DataVecCoord& /* x */) {};
+    void projectJacobianMatrix(const core::MechanicalParams* /* mparams */, DataMatrixDeriv& /* cData */) {};
 
 
 protected:

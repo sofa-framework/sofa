@@ -6,7 +6,7 @@
     
     <Node name="Beam">
         <MeshObjLoader name="mesh" filename="../beam/beam.obj" triangulate="1"/>
-        <MeshToImageEngine template="ImageD" name="image" position="@mesh.position" triangles="@mesh.triangles" voxelSize="0.1" padSize="1" fillInside="true" value="1." />
+        <MeshToImageEngine template="ImageD" name="image" position="@mesh.position" triangles="@mesh.triangles" voxelSize="0.1" padSize="1" value="1." />
         
         <!--<ImageSampler template="ImageD" name="sampler" src="@image" method="1" param="0" fixedPosition="0 0 -0.9 0 0 0.9"/> 
         <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />

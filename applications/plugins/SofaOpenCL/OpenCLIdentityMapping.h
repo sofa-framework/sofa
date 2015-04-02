@@ -26,7 +26,7 @@
 #define SOFAOPENCL_OPENCLIDENTITYMAPPING_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/mapping/IdentityMapping.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 namespace sofa

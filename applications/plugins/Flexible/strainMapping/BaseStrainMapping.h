@@ -32,10 +32,10 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/common/Simulation.h>
 
-//#include <sofa/component/container/MechanicalObject.inl>
+//#include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/core/Mapping.inl>
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/helper/IndexOpenMP.h>
 
@@ -270,7 +270,7 @@ public:
     }
 
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId )
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId childForceId )
     {
         if(BlockType::constant) return;
 
@@ -284,10 +284,18 @@ public:
 
 //        cerr<<"BaseStrainMapping::applyDJT, parentForce before = " << parentForce << endl;
 
-        if(this->assemble.getValue())
+        if( assemble.getValue() ) // assembled version
         {
-            updateK(childForce.ref());
-            K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+            if( K.compressedMatrix.nonZeros() )
+            {
+                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+            }
+            else // force local assembly
+            {
+                updateK( mparams, childForceId );
+                K.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
+                K.resize(0,0); // forgot about this matrix
+            }
         }
         else
         {
@@ -312,7 +320,7 @@ public:
         return &eigenJacobian;
     }
 
-    // Compliant plugin experimental API
+    // Compliant plugin API
     virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
     {
         if(!this->assemble.getValue()/* || !BlockType::constant*/)  // J should have been updated in apply() that is call before (when assemble==1)
@@ -321,6 +329,36 @@ public:
             serr<<"Please, with an assembled solver, set assemble=1\n";
         }
         return &baseMatrices;
+    }
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
+    {
+        if( BlockType::constant /*|| !assemble.getValue()*/ ) { K.resize(0,0); return; }
+
+        const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
+
+        unsigned int size = this->fromModel->getSize();
+        K.resizeBlocks(size,size);
+        for(size_t i=0; i<jacobian.size(); i++)
+        {
+//            vector<KBlock> blocks;
+//            vector<unsigned> columns;
+//            columns.push_back( i );
+//            blocks.push_back( jacobian[i].getK(childForce[i]) );
+//            K.appendBlockRow( i, columns, blocks );
+            K.beginBlockRow(i);
+            K.createBlock(i,jacobian[i].getK(childForce[i]));
+            K.endBlockRow();
+        }
+//        K.endEdit();
+        K.compress();
+    }
+
+
+    virtual const defaulttype::BaseMatrix* getK()
+    {
+        if( BlockType::constant || !K.compressedMatrix.nonZeros() ) return NULL;
+        else return &K;
     }
 
 
@@ -376,29 +414,6 @@ protected:
     }
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
-    void updateK(const OutVecDeriv& childForce)
-    {
-        unsigned int size = this->fromModel->getSize();
-        K.resizeBlocks(size,size);
-        for(size_t i=0; i<jacobian.size(); i++)
-        {
-//            vector<KBlock> blocks;
-//            vector<unsigned> columns;
-//            columns.push_back( i );
-//            blocks.push_back( jacobian[i].getK(childForce[i]) );
-//            K.appendBlockRow( i, columns, blocks );
-            K.beginBlockRow(i);
-            K.createBlock(i,jacobian[i].getK(childForce[i]));
-            K.endBlockRow();
-        }
-//        K.endEdit();
-        K.compress();
-    }
-    virtual const defaulttype::BaseMatrix* getK()
-    {
-        updateK(this->toModel->readForces().ref());
-        return &K;
-    }
 };
 
 

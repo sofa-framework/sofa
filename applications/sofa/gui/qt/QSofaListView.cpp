@@ -138,7 +138,7 @@ void QSofaListView::Clear(Node* rootNode)
 
     for (graph_iterator = graphListener_->items.begin();
             graph_iterator != graphListener_->items.end();
-            graph_iterator++)
+            ++graph_iterator)
     {
         Node* node = dynamic_cast< Node* >(graph_iterator->first);
         if (node!=NULL && !node->isActive())
@@ -535,6 +535,7 @@ void QSofaListView::Modify()
         connect ( this, SIGNAL( Close() ), dialogModifyObject, SLOT( closeNow() ) );
         connect ( dialogModifyObject, SIGNAL( dialogClosed(void *) ) , this, SLOT( modifyUnlock(void *)));
         connect ( dialogModifyObject, SIGNAL( nodeNameModification(simulation::Node*) ) , this, SLOT( nodeNameModification(simulation::Node*) ));
+        connect ( dialogModifyObject, SIGNAL( dataModified(QString) ), this, SIGNAL( dataModified(QString) ) );
         dialogModifyObject->show();
         dialogModifyObject->raise();
     }
@@ -544,7 +545,7 @@ void QSofaListView::Modify()
 void QSofaListView::UpdateOpenedDialogs()
 {
     std::map<void*,QDialog*>::const_iterator iter;
-    for(iter = map_modifyObjectWindow.begin(); iter != map_modifyObjectWindow.end() ; iter++)
+    for(iter = map_modifyObjectWindow.begin(); iter != map_modifyObjectWindow.end() ; ++iter)
     {
         ModifyObject* modify = reinterpret_cast<ModifyObject*>(iter->second);
         modify->updateTables();
@@ -585,7 +586,7 @@ bool QSofaListView::isNodeErasable ( BaseNode* node)
     }
     // check if there is already a dialog opened for that item in the graph
     std::map< void*, Q3ListViewItem*>::iterator it;
-    for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
+    for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
     {
         if (it->second == item) return false;
     }
@@ -594,7 +595,7 @@ bool QSofaListView::isNodeErasable ( BaseNode* node)
     Q3ListViewItem *child = item->firstChild();
     while (child != NULL)
     {
-        for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
+        for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); ++it)
         {
             if( it->second == child) return false;
         }

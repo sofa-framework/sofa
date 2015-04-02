@@ -3,8 +3,8 @@
 
 #include "initCompliant.h"
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/linearsolver/EigenVector.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenVector.h>
 #include <map>
 
 #include "AssembledSystem.h"
@@ -13,13 +13,6 @@
 #include "AssemblyHelper.h"
 
 #include "../utils/find.h"
-
-
-// select the way to perform shifting of local matrix in a larger matrix, default = build a shift matrix and be multiplied with
-#define USE_TRIPLETS_RATHER_THAN_SHIFT_MATRIX 0 // more memory and not better
-#define USE_SPARSECOEFREF_RATHER_THAN_SHIFT_MATRIX 0 // bof
-#define USE_DENSEMATRIX_RATHER_THAN_SHIFT_MATRIX 0 // very slow
-#define SHIFTING_MATRIX_WITHOUT_MULTIPLICATION 1 // seems a bit faster
 
 
 
@@ -49,12 +42,12 @@ namespace simulation {
 /// res += constraint forces (== lambda/dt), only for mechanical object linked to a compliance
 class MechanicalAddComplianceForce : public MechanicalVisitor
 {
-    MultiVecDerivId res, lambdas;
+    core::MultiVecDerivId res, lambdas;
     SReal invdt;
 
 
 public:
-    MechanicalAddComplianceForce(const sofa::core::MechanicalParams* mparams, MultiVecDerivId res, MultiVecDerivId lambdas, SReal dt )
+    MechanicalAddComplianceForce(const sofa::core::MechanicalParams* mparams, core::MultiVecDerivId res, core::MultiVecDerivId lambdas, SReal dt )
         : MechanicalVisitor(mparams), res(res), lambdas(lambdas), invdt(1.0/dt)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -74,7 +67,7 @@ public:
 
         if( !ff || !ff->isCompliance.getValue() )
         {
-            const VecDerivId& lambdasid = lambdas.getId(mm);
+            const core::VecDerivId& lambdasid = lambdas.getId(mm);
             if( !lambdasid.isNull() ) // previously allocated
             {
                 mm->resetForce(this->params, lambdasid);
@@ -97,10 +90,10 @@ public:
     // for all dofs, f += lambda / dt
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
-        const VecDerivId& lambdasid = lambdas.getId(mm);
+        const core::VecDerivId& lambdasid = lambdas.getId(mm);
         if( !lambdasid.isNull() ) // previously allocated
         {
-            const VecDerivId& resid = res.getId(mm);
+            const core::VecDerivId& resid = res.getId(mm);
 
             mm->vOp( this->params, resid, resid, lambdasid, invdt ); // f += lambda / dt
         }
@@ -155,8 +148,7 @@ public:
     typedef Eigen::SparseMatrix<real, Eigen::RowMajor> rmat;
     typedef Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic> dmat;
 
-	// default: row-major
-	typedef rmat mat;
+    // default: row-major
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;
 			
     AssemblyVisitor(const core::MechanicalParams* mparams);
@@ -195,14 +187,14 @@ public:
 				
 		unsigned offset, size;
 
-        const BaseMatrix* C; ///< Compliance matrix (only valid for mapped dof with a compliance)
-        mat P; ///< Projective constraint matrix (only valid for master dof)
-		mat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
-        const BaseMatrix* Ktilde; ///< geometric stiffness (only valid for mapped dof) @warning: size=parent*parent
+        const defaulttype::BaseMatrix* C; ///< Compliance matrix (only valid for mapped dof with a compliance)
+        rmat P; ///< Projective constraint matrix (only valid for master dof)
+        rmat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
+        const defaulttype::BaseMatrix* Ktilde; ///< geometric stiffness (only valid for mapped dof) @warning: size=parent*parent
 				
 		struct mapped {
             mapped() : J(NULL) {}
-            const BaseMatrix* J; ///< mapping jacobian
+            const defaulttype::BaseMatrix* J; ///< mapping jacobian
 		};
 
 		// this is to remove f*cking mouse dofs
@@ -228,22 +220,22 @@ public:
     // a special structure to handle InteractionForceFields
     struct InteractionForceField
     {
-        InteractionForceField( mat H, core::behavior::BaseInteractionForceField* ff ) : H(H), ff(ff) {
+        InteractionForceField( rmat H, core::behavior::BaseInteractionForceField* ff ) : H(H), ff(ff) {
 //        std::cerr<<"Assembly InteractionForceField "<<H<<std::endl;
         }
-        mat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
+        rmat H; ///< linear combinaison of M,B,K (mass, damping, stiffness matrices)
         core::behavior::BaseInteractionForceField* ff;
-        mat J;
+        rmat J;
     };
     typedef std::list<InteractionForceField> InteractionForceFieldList;
     mutable InteractionForceFieldList interactionForceFieldList;
 
 public:
 
-    const BaseMatrix* compliance(simulation::Node* node);
-    const BaseMatrix* geometricStiffness(simulation::Node* node);
-	mat proj(simulation::Node* node);
-    mat odeMatrix(simulation::Node* node);
+    const defaulttype::BaseMatrix* compliance(simulation::Node* node);
+    const defaulttype::BaseMatrix* geometricStiffness(simulation::Node* node);
+    rmat proj(simulation::Node* node);
+    rmat odeMatrix(simulation::Node* node);
     void interactionForceField(simulation::Node* node);
 			
 	chunk::map_type mapping(simulation::Node* node);
@@ -263,7 +255,7 @@ public:
 
     /// full mapping matrices
     /// for a dof, gives it full mapping from master level
-    typedef std::map<dofs_type*, mat> fullmapping_type;
+    typedef std::map<dofs_type*, rmat> fullmapping_type;
 
 	// dof offset
 	typedef std::map<dofs_type*, unsigned> offset_type;
@@ -321,8 +313,9 @@ public:
 	// build assembled system (needs to send visitor first)
 	// if the pp pointer is given, the created process_type structure will be kept (won't be deleted)
 	typedef component::linearsolver::AssembledSystem system_type;
-	system_type assemble() const;
-	
+	void assemble(system_type& ) const;
+
+    
 private:
 
 	// temporaries
@@ -339,6 +332,14 @@ private:
 
     //simulation::Node* start_node;
 
+
+    // keep temporaries allocated
+    mutable rmat tmp1, tmp2, tmp3;
+
+
+    // this is meant to optimize L^T D L products
+    const rmat& ltdl(const rmat& l, const rmat& d) const;
+    void add_ltdl(rmat& res, const rmat& l, const rmat& d) const;
 
 };
 
@@ -373,12 +374,12 @@ struct AssemblyVisitor::process_helper {
 
         if( c->master() || !c->mechanical ) return;
 
-        mat& Jc = full[ curr ];
+        rmat& Jc = full[ curr ];
         assert( empty(Jc) );
 
 
         // full jacobian for multimapping's geometric stiffness
-        mat* geometricStiffnessJc = NULL;
+        rmat* geometricStiffnessJc = NULL;
         unsigned localOffsetParentInMapped = 0; // only used for multimappings
         if( boost::out_degree(v,g)>1 && notempty(c->Ktilde) )
         {
@@ -392,16 +393,16 @@ struct AssemblyVisitor::process_helper {
 
             // parent data chunk/mapping matrix
             const chunk* p = vp.data;
-            mat& Jp = full[ vp.dofs ];
+            rmat& Jp = full[ vp.dofs ];
             {
                 // mapping blocks
-                MySPtr<mat> jc( convertSPtr<mat>( g[*e.first].data->J ) );
+                MySPtr<rmat> jc( convertSPtr<rmat>( g[*e.first].data->J ) );
 
                 // parent is not mapped: we put a shift matrix with the
                 // correct offset as its full mapping matrix, so that its
                 // children will get the right place on multiplication
                 if( p->master() && empty(Jp) ) {
-                    Jp = shift_right<mat>( find(offsets, vp.dofs), p->size, size_m);
+                    Jp = shift_right<rmat>( find(offsets, vp.dofs), p->size, size_m);
                 }
 
                 // Jp is empty for children of a non-master dof (e.g. mouse)
@@ -409,12 +410,16 @@ struct AssemblyVisitor::process_helper {
                     // scoped::timer step("mapping matrix product");
 
                     // TODO optimize this, it is the most costly part
-                    add(Jc, *jc * Jp ); // full mapping
+                    add_prod(Jc, *jc, Jp ); // full mapping
 
                     if( geometricStiffnessJc )
                     {
                         // mapping for geometric stiffness
-                        add( *geometricStiffnessJc, shift_left<mat>( localOffsetParentInMapped, p->size, c->Ktilde->rows() ) * Jp );
+                        add_prod( *geometricStiffnessJc,
+                                  shift_left<rmat>( localOffsetParentInMapped,
+                                                   p->size,
+                                                   c->Ktilde->rows() ),
+                                  Jp );
                         localOffsetParentInMapped += p->size;
                     }
                 } else {

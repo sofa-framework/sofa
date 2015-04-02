@@ -7,7 +7,7 @@
 	<MeshSpringForceField name="Springs" stiffness="400" damping="4"/>
 	<Node name="VisualNode">
 		<OglModel name="Visual" filename="file"  color="green"  />
-		<BarycentricMapping object1="../.." object2="Visual" />
+		<BarycentricMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="CollisionNode">
     <MeshLoader name="loader" filename="file"/>

@@ -4,7 +4,6 @@
 #include "../initCompliant.h"
 
 #include "AssembledMapping.h"
-#include "AssembledMultiMapping.h"
 
 namespace sofa
 {

@@ -46,12 +46,13 @@ namespace helper
 namespace gl
 {
 
-using namespace sofa::defaulttype;
-
 class SOFA_HELPER_API Axis
 {
 public:
-
+    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::defaulttype::Vec4f   Vec4f;
+    typedef sofa::defaulttype::Vec3d   Vec3d;
+    typedef sofa::defaulttype::Quaternion Quaternion;
     Axis(SReal len=(SReal)1);
     Axis(const Vector3& len);
     Axis(const Vector3& center, const Quaternion &orient, const Vector3& length);

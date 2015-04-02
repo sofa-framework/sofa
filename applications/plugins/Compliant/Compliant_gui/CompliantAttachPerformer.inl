@@ -26,7 +26,7 @@
 #include "CompliantAttachPerformer.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/component/collision/MouseInteractor.h>
+#include <SofaUserInteraction/MouseInteractor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <iostream>
 using std::cerr;
@@ -35,7 +35,6 @@ using std::endl;
 #include "compliance/UniformCompliance.h"
 #include <sofa/simulation/common/InitVisitor.h>
 
-#include <sofa/component/mapping/DistanceFromTargetMapping.inl>
 
 
 
@@ -181,7 +180,7 @@ void CompliantAttachPerformer<DataTypes>::start()
 //        std::cerr<<"Already\n";
 
 
-        typedef mapping::DistanceFromTargetMapping< MouseTypes,DataTypes1 >  DistanceFromTargetMappingMouse;
+//        typedef mapping::DistanceFromTargetMapping< MouseTypes,DataTypes1 >  DistanceFromTargetMappingMouse;
 
         pickedNode = dynamic_cast<simulation::Node*> (picked.mstate->getContext());
 
@@ -210,7 +209,7 @@ void CompliantAttachPerformer<DataTypes>::start()
 
 
     // set target point to closest point on the ray
-    double distanceFromMouse=picked.rayLength;
+    SReal distanceFromMouse=picked.rayLength;
     Ray ray = this->interactor->getMouseRayModel()->getRay(0);
     defaulttype::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
 //    ray.setOrigin(pointOnRay);
@@ -232,7 +231,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     interactionNode = static_cast<simulation::Node*>(_baseCollisionMState->getContext() )->createChild("InteractionDistanceNode");
 
     typedef component::container::MechanicalObject<DataTypes1> MechanicalObject1;
-    typename MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
+    typename MechanicalObject1::SPtr extensions = core::objectmodel::New<MechanicalObject1>();
     interactionNode->addObject(extensions);
     extensions->setName("extensionValues");
 
@@ -242,7 +241,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     if( mstateCollisionVec )
     {
         typedef mapping::DistanceFromTargetMapping< MouseTypes,DataTypes1 >  MyDistanceFromTargetMapping;
-        typename MyDistanceFromTargetMapping::SPtr map = New<MyDistanceFromTargetMapping>();
+        typename MyDistanceFromTargetMapping::SPtr map = core::objectmodel::New<MyDistanceFromTargetMapping>();
         map->setModels(mstateCollisionVec,extensions.get());
         interactionNode->addObject( map );
         map->setName(distanceMappingName.c_str());
@@ -256,7 +255,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     else
     {
         typedef mapping::DistanceFromTargetMapping< DataTypes,DataTypes1 >  MyDistanceFromTargetMapping;
-        typename MyDistanceFromTargetMapping::SPtr map = New<MyDistanceFromTargetMapping>();
+        typename MyDistanceFromTargetMapping::SPtr map = core::objectmodel::New<MyDistanceFromTargetMapping>();
         map->setModels(mstateCollision,extensions.get());
         interactionNode->addObject( map );
         map->setName(distanceMappingName.c_str());
@@ -272,13 +271,13 @@ void CompliantAttachPerformer<DataTypes>::start()
 
     if( _visualmodel )
     {
-        _vm = New<visualmodel::OglModel>();
-        ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginEdit();
+        _vm = core::objectmodel::New<visualmodel::OglModel>();
+        defaulttype::ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginEdit();
         vmpos.resize(2);
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = pointOnRay;
         _vm->m_positions.endEdit();
-        ResizableExtVector< visualmodel::OglModel::Triangle >& vmtri= *_vm->m_triangles.beginEdit();
+        defaulttype::ResizableExtVector< visualmodel::OglModel::Triangle >& vmtri= *_vm->m_triangles.beginEdit();
         vmtri.resize(1);
         vmtri[0] = visualmodel::OglModel::Triangle( 0, 0, 1 );
         _vm->m_triangles.endEdit();
@@ -293,7 +292,7 @@ void CompliantAttachPerformer<DataTypes>::start()
     //       cerr<<"CompliantAttachPerformer<DataTypes>::start(), create target of " << picked.indexCollisionElement << " at " <<  (*_baseCollisionMState->getX())[picked.indexCollisionElement] << " to " << pointOnRay << ", distance = " << (picked.point-pointOnRay).norm() << endl;
 
     typedef forcefield::UniformCompliance<DataTypes1> UniformCompliance1;
-    typename UniformCompliance1::SPtr compliance = New<UniformCompliance1>();
+    typename UniformCompliance1::SPtr compliance = core::objectmodel::New<UniformCompliance1>();
     compliance->setName("pickCompliance");
     compliance->compliance.setValue(_compliance);
     compliance->isCompliance.setValue(_isCompliance);
@@ -320,7 +319,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
 
     if( _visualmodel )
     {
-        ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginEdit();
+        defaulttype::ResizableExtVector<visualmodel::OglModel::Coord>& vmpos= *_vm->m_positions.beginEdit();
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = DataTypes::getCPos(xmouse[0]);
         _vm->m_positions.endEdit();

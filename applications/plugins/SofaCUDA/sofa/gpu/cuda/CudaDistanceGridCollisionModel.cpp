@@ -31,7 +31,7 @@
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <fstream>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/rmath.h>
@@ -626,7 +626,7 @@ void CudaRigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         Vector3 emin, emax;
         if (rigid)
         {
-            const RigidTypes::Coord& xform = (*rigid->getX())[i];
+            const RigidTypes::Coord& xform = rigid->read(core::ConstVecCoordId::position())->getValue()[i];
             elems[i].translation = xform.getCenter();
             xform.getOrientation().toMatrix(elems[i].rotation);
             elems[i].isTransformed = true;

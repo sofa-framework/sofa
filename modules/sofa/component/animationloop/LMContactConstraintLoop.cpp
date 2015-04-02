@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/animationloop/LMContactConstraintLoop.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/constraintset/LMConstraintSolver.h>
+#include <SofaConstraint/LMConstraintSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>

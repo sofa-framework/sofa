@@ -79,8 +79,6 @@ polygon_contains_point_3d(int nverts, const float verts[/* nverts */][3],
 {
     float abspolynormal[3];
     int zaxis, xaxis, yaxis, i, count;
-    int xdirection;
-    const float *v, *w;
 
     /*
      * Determine which axis to ignore
@@ -104,9 +102,9 @@ polygon_contains_point_3d(int nverts, const float verts[/* nverts */][3],
     count = 0;
     FOR(i,nverts)
     {
-        v = verts[i];
-        w = verts[(i+1)%nverts];
-        if ((xdirection = seg_contains_point(v[xaxis], w[xaxis], point[xaxis])))
+        const float* v = verts[i];
+        const float* w = verts[(i+1)%nverts];
+        if (const int xdirection = seg_contains_point(v[xaxis], w[xaxis], point[xaxis]))
         {
             if (seg_contains_point(v[yaxis], w[yaxis], point[yaxis]))
             {
@@ -139,11 +137,12 @@ polygon_contains_point_3d(int nverts, const float verts[/* nverts */][3],
 extern int
 segment_intersects_cube(const float v0[3], const float v1[3])
 {
-    int i, iplus1, iplus2, edgevec_signs[3];
     float edgevec[3];
 
     VMV3(edgevec, v1, v0);
 
+    int i = 0;
+    int edgevec_signs[3];
     FOR(i,3)
     edgevec_signs[i] = SIGN_NONZERO(edgevec[i]);
 
@@ -172,8 +171,8 @@ segment_intersects_cube(const float v0[3], const float v1[3])
     {
         float rhomb_normal_dot_v0, rhomb_normal_dot_cubedge;
 
-        iplus1 = (i+1)%3;
-        iplus2 = (i+2)%3;
+        const int iplus1 = (i+1)%3;
+        const int iplus2 = (i+2)%3;
 
 #ifdef THE_EASY_TO_UNDERSTAND_WAY
 

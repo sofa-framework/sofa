@@ -73,7 +73,7 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
     //Traversing the Graph: print the name of the context
     if (context != enteringBase)
     {
-        std::string info;
+        //std::string info;
         if (dirDown)
         {
             printNode("Node",context->getName());
@@ -135,12 +135,12 @@ void Visitor::dumpInfo( const std::string &info)
     if (printActivated) {(*outputVisitor) << info; /*outputVisitor->flush();*/}
 }
 
-void Visitor::startDumpVisitor(std::ostream *s, double time)
+void Visitor::startDumpVisitor(std::ostream *s, SReal time)
 {
     std::cout << "startDumpVisitor" << std::endl;
     initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
     printActivated=true; outputVisitor=s;
-    std::string initDump;
+    //std::string initDump;
     std::ostringstream ff; ff << "<TraceVisitor time=\"" << time << "\">\n";
     dumpInfo(ff.str());
 };
@@ -154,9 +154,9 @@ void Visitor::stopDumpVisitor()
     printActivated=false;
 };
 
-double Visitor::getTimeSpent(ctime_t initTime, ctime_t endTime)
+SReal Visitor::getTimeSpent(ctime_t initTime, ctime_t endTime)
 {
-    return (double)(endTime-initTime);
+    return (SReal)(endTime-initTime);
 }
 
 

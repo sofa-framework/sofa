@@ -47,7 +47,7 @@ void TBulletTriangleModel<DataTypes>::initBullet(){
     _bt_mesh = new btTriangleMesh();
 
     const SeqTriangles & tri = *(this->triangles);//this->_topology->getTriangles();
-    const VecCoord & pos = *(mstate->getX());
+    const VecCoord & pos = mstate->read(core::ConstVecCoordId::position())->getValue();
     int npoints = mstate->getSize();
     int nTri = _topology->getNbTriangles();
 
@@ -125,7 +125,7 @@ void TBulletTriangleModel<DataTypes>::reinit(){
 
 //    _bt_mesh->getLockedVertexIndexBase(&vertexbase,numverts,type,vertexStride,&indexbase,indexstride,numfaces,indicestype);
 
-//    const VecCoord & pos = *(mstate->getX());
+//    const VecCoord & pos = mstate->read(core::ConstVecCoordId::position())->getValue();
 //    assert(mstate->getSize() == numverts);
 
 //    if(type == PHY_FLOAT){
@@ -172,7 +172,7 @@ void TBulletTriangleModel<DataTypes>::updateBullet(){
 
     _bt_mesh->getLockedVertexIndexBase(&vertexbase,numverts,type,vertexStride,&indexbase,indexstride,numfaces,indicestype);
 
-    const VecCoord & pos = *(mstate->getX());
+    const VecCoord & pos = mstate->read(core::ConstVecCoordId::position())->getValue();
     assert(mstate->getSize() == numverts);
 
     if(type == PHY_FLOAT){

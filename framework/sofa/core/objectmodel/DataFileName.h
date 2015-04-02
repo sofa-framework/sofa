@@ -96,7 +96,7 @@ public:
     }
     virtual void virtualEndEdit() { endEdit(); }
     virtual void virtualSetValue(const std::string& v) { setValue(v); }
-    virtual bool read( std::string& s );
+    virtual bool read(const std::string& s );
 
     virtual const std::string& getRelativePath() const { return getValue(); }
     virtual const std::string& getFullPath() const
@@ -176,16 +176,18 @@ public:
         *beginEdit() = v;
         endEdit();
     }
-    void setValue(const std::string& v)
+    virtual void virtualEndEdit() { endEdit(); }
+
+    void setValueAsString(const std::string& v)
     {
         sofa::helper::vector<std::string>& val = *beginEdit();
         val.clear();
         val.push_back(v);
         endEdit();
     }
-    virtual void virtualEndEdit() { endEdit(); }
-    virtual void virtualSetValue(const std::string& v) { setValue(v); }
-    virtual bool read( std::string& s )
+    virtual void virtualSetValueAsString(const std::string& v) { setValueAsString(v); }
+
+    virtual bool read(const std::string& s )
     {
         bool ret = Inherit::read(s);
         if (ret || fullpath.empty()) updatePath();

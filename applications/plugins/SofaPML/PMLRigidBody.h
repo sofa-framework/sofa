@@ -48,7 +48,7 @@
 
 #include <StructuralComponent.h>
 
-#include "sofa/component/container/MechanicalObject.h"
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include "sofa/defaulttype/RigidTypes.h"
 #include "sofa/defaulttype/Quat.h"
 

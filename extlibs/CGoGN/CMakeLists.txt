@@ -7,10 +7,12 @@ LIST (APPEND CMAKE_MODULE_PATH ${CGoGN_ROOT_DIR}/cmake_modules/ )
 #SET ( CMAKE_VERBOSE_MAKEFILE 1 )
 SET ( CGOGN_WITH_QT ON)
 SET ( CGOGN_DESIRED_QT_VERSION "4")
-SET ( DONOT_COMPILE_SANDBOX ON)
-SET ( CGOGN_ONELIB ON)
+SET ( CGoGN_COMPILE_SANDBOX OFF)
+SET ( CGoGN_ONELIB ON)
 SET ( CGOGN_WITH_GLEWMX OFF)
 SET ( CGOGN_WITH_ZINRI OFF)
+SET ( CGoGN_COMPILE_BENCHES OFF)
+SET ( CGoGN_ASSERT_ACTIVED OFF)
 
 IF(WIN32)
 	SET ( CMAKE_PREFIX_PATH ${CGoGN_ROOT_DIR}/windows_dependencies CACHE STRING "path to dependencies" )
@@ -39,14 +41,18 @@ if(NOT (SOFA-EXTERNAL_BOOST_PATH STREQUAL ""))
 	message(FATAL_ERROR "CGoGN needs the full boost version. You need to set SOFA-EXTERNAL_BOOST_PATH to \"\"")
 endif()
 
-add_definitions("-DCGOGN_SHADER_PATH=\"${CGoGN_ROOT_DIR}/lib/Shaders/\"")
+add_definitions("-DSHADERPATH=\"${CGoGN_ROOT_DIR}/lib/Shaders/\"")
 add_definitions("-Werror=return-type")
 
-IF (DEFINED CGOGN_ASSERTON)
-        add_definitions("-DCGOGN_ASSERT_BOOL=${CGOGN_ASSERTON}")
-ELSE (DEFINED CGOGN_ASSERTON)
+IF (APPLE)
+        add_definitions("-DCGOGN_APPLE")
+ENDIF ()
+
+IF (DEFINED CGoGN_ASSERT_ACTIVED)
+        add_definitions("-DCGOGN_ASSERT_BOOL=${CGoGN_ASSERT_ACTIVED}")
+ELSE (DEFINED CGoGN_ASSERT_ACTIVED)
         add_definitions("-DCGOGN_ASSERT_BOOL=false")
-ENDIF (DEFINED CGOGN_ASSERTON)
+ENDIF (DEFINED CGoGN_ASSERT_ACTIVED)
 
 # define includes of external libs 
 LIST (APPEND CGoGN_EXT_INCLUDES
@@ -124,16 +130,21 @@ file(	GLOB_RECURSE
 		${CGoGN_ROOT_DIR}/include/Geometry/*.hpp
 )
 
-file(
-	GLOB
+file(	GLOB_RECURSE
 	shaders_src
-	${CGoGN_ROOT_DIR}/include/Utils/*.frag
-	${CGoGN_ROOT_DIR}/include/Utils/*.vert
-	${CGoGN_ROOT_DIR}/include/Utils/*.geom	
-	${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.frag
-	${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.vert
-	${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.geom
+        ${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.frag
+        ${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.vert
+        ${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.geom
 )
+
+add_executable( shader_to_h ${CGoGN_ROOT_DIR}/ThirdParty/Tools/shader_to_h.cpp )
+
+add_custom_target(shader_target shader_to_h ${shaders_src}
+                  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+                  SOURCES ${shaders_src}
+                 )
+
+add_dependencies(shader_target shader_to_h) #ensure that shader_to_h is compiled
 
 IF(CGOGN_WITH_QT)
         file(
@@ -154,16 +165,23 @@ IF(CGOGN_WITH_QT)
                 ${CGoGN_ROOT_DIR}/include/Utils/Qt/qthistodraw.h
                 ${CGoGN_ROOT_DIR}/include/Utils/Qt/qtcolorschooser.h
         )
-
         QT4_WRAP_CPP(UTILS_QT_HEADERS_MOC ${utils_qt_headers})
         SET (files_utils_withQt ${files_utils} ${files_utils_qt} ${UTILS_QT_HEADERS_MOC})
 ENDIF (CGOGN_WITH_QT)
 
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC" )
-	add_executable( shader_to_h ${CGoGN_ROOT_DIR}/ThirdParty/Tools/shader_to_h.cpp )
-	add_custom_target(shader_target shader_to_h ${shaders_src}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-	SOURCES ${shaders_src} )
+IF(NOT WIN32)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC" )
+    IF(CMAKE_COMPILER_IS_GNUCXX)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs")
+        SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-unused-local-typedefs")
+    ENDIF()
+    IF(APPLE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated -Wno-overloaded-virtual")
+    ENDIF()
+ELSE()
+    ADD_DEFINITIONS("/wd4251") #dll export warnings
+ENDIF()
+
 
 IF(WIN32)
         add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
@@ -172,20 +190,18 @@ IF(WIN32)
 	set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING "Only Release or Debug" FORCE)
 #	set(CMAKE_CONFIGURATION_TYPES "Release Debug" CACHE STRING "Only Release or Debug" FORCE)
 ELSE(WIN32)
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -fPIC ")
-        message(CMAKE_CXX_FLAGS : ${CMAKE_CXX_FLAGS})
-	SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Woverride-init -fPIC")
-        IF (CGOGN_ONELIB)
-        add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
-		add_dependencies(${PROJECT_NAME} shader_target )
-		SET(CGOGN_LIBS "${PROJECT_NAME}")
-        ELSE (CGOGN_ONELIB)
-		add_library( ${PROJECT_NAME}			${files_topology})
-		add_library( ${PROJECT_NAME}_container	${files_container})
-		add_library( ${PROJECT_NAME}_algo		${files_algo})
-		add_library( ${PROJECT_NAME}_utils 		${files_utils} )
-		SET(CGOGN_LIBS "${PROJECT_NAME}_topology ${PROJECT_NAME}_container ${PROJECT_NAME}_algo ${PROJECT_NAME}_utils")
-        ENDIF (CGOGN_ONELIB)
+        IF (CGoGN_ONELIB)
+            add_library(${PROJECT_NAME} ${files_topology} ${files_container} ${files_algo} ${files_utils} ${files_utils_withQt})
+            add_dependencies(${PROJECT_NAME} shader_target )
+            SET(CGOGN_LIBS "${PROJECT_NAME}")
+        ELSE (CGoGN_ONELIB)
+            add_library( ${PROJECT_NAME}			${files_topology})
+            add_library( ${PROJECT_NAME}_container	${files_container})
+            add_library( ${PROJECT_NAME}_algo		${files_algo})
+            add_library( ${PROJECT_NAME}_utils 		${files_utils} )
+            SET(CGOGN_LIBS "${PROJECT_NAME}_topology ${PROJECT_NAME}_container ${PROJECT_NAME}_algo ${PROJECT_NAME}_utils")
+            add_dependencies(${PROJECT_NAME}_utils shader_target )
+        ENDIF (CGoGN_ONELIB)
 ENDIF(WIN32)
 
 AddLinkerDependencies(${CGoGN_EXT_LIBS} SofaDefaultType ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES}  ${QT_LIBRARIES})

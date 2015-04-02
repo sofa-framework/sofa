@@ -31,15 +31,15 @@
 #include "Utils/Shaders/shaderSimpleColor.h"
 #include "Utils/pickables.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-
-
-class FrameManipulator//: public Pickable
+class CGoGN_UTILS_API FrameManipulator//: public Pickable
 {
 public:
 	enum AXIS {NONE=0, CENTER, Xt, Yt, Zt, Xr, Yr, Zr, Xs, Ys, Zs, Translations, Rotations, Scales};
@@ -127,7 +127,7 @@ protected:
 	 */
 	glm::mat4 transfoRenderFrame();
 
-	bool axisPickable(unsigned int a) { return (!m_locked_axis[a]) && (!m_lockedPicking_axis[a]);}
+	inline bool axisPickable(unsigned int a) { return (!m_locked_axis[a]) && (!m_lockedPicking_axis[a]);}
 
 public:
 	FrameManipulator();
@@ -227,7 +227,7 @@ public:
 	 */
 	void setTranslation(const Geom::Vec3f& P);
 
-	Geom::Vec3f getPosition() { return Geom::Vec3f(m_trans[0],m_trans[1],m_trans[2]);}
+	inline Geom::Vec3f getPosition() { return Geom::Vec3f(m_trans[0], m_trans[1], m_trans[2]); }
 
 	Geom::Vec3f getAxis(unsigned int ax);
 
@@ -264,9 +264,9 @@ public:
 
 //	float factorCenterFromMouse(int dx, int dy);
 
-	static bool rotationAxis(unsigned int axis) { return (axis>=Xr) && (axis<=Zr);}
-	static bool translationAxis(unsigned int axis) { return (axis>=Xt) && (axis<=Zt);}
-	static bool scaleAxis(unsigned int axis) { return ((axis>=Xs) && (axis<=Zs))|| (axis==CENTER);}
+	inline static bool rotationAxis(unsigned int axis) { return (axis >= Xr) && (axis <= Zr); }
+	inline static bool translationAxis(unsigned int axis) { return (axis >= Xt) && (axis <= Zt); }
+	inline static bool scaleAxis(unsigned int axis) { return ((axis >= Xs) && (axis <= Zs)) || (axis == CENTER); }
 
 	/**
 	 * translate from screen mouse move

@@ -57,7 +57,7 @@ void DualQuatCoord3<real>::normalize()
 
 // get velocity/quaternion change mapping : dq = J(q) v
 template<typename real>
-void DualQuatCoord3<real>::velocity_getJ( Mat<4,3,real>& J0, Mat<4,3,real>& JE)
+void DualQuatCoord3<real>::velocity_getJ( sofa::defaulttype::Mat<4,3,real>& J0, sofa::defaulttype::Mat<4,3,real>& JE)
 {
     // multiplication by orientation quaternion
     J0[0][0] = orientation[3];  	J0[0][1] = orientation[2];  	J0[0][2] =-orientation[1];
@@ -66,7 +66,7 @@ void DualQuatCoord3<real>::velocity_getJ( Mat<4,3,real>& J0, Mat<4,3,real>& JE)
     J0[3][0] =-orientation[0];  	J0[3][1] =-orientation[1];  	J0[3][2] =-orientation[2];
     J0*=(real)0.5;
 
-    Vec<3,real> t=getTranslation();
+    sofa::defaulttype::Vec<3,real> t=getTranslation();
     JE[0][0] = dual[3]+orientation[1]*t[1]+orientation[2]*t[2];  	JE[0][1] = dual[2]-orientation[1]*t[0]-orientation[3]*t[2];  	JE[0][2] =-dual[1]-orientation[2]*t[0]+orientation[3]*t[1];
     JE[1][0] =-dual[2]-orientation[0]*t[1]+orientation[3]*t[2];  	JE[1][1] = dual[3]+orientation[0]*t[0]+orientation[2]*t[2];  	JE[1][2] = dual[0]-orientation[3]*t[0]-orientation[2]*t[1];
     JE[2][0] = dual[1]-orientation[3]*t[1]-orientation[0]*t[2];  	JE[2][1] =-dual[0]+orientation[3]*t[0]-orientation[1]*t[2];  	JE[2][2] = dual[3]+orientation[0]*t[0]+orientation[1]*t[1];
@@ -76,7 +76,7 @@ void DualQuatCoord3<real>::velocity_getJ( Mat<4,3,real>& J0, Mat<4,3,real>& JE)
 
 // get quaternion change: dq = J(q) v
 template<typename real>
-DualQuatCoord3<real> DualQuatCoord3<real>::velocity_applyJ( const Vec<6,real>& a )
+DualQuatCoord3<real> DualQuatCoord3<real>::velocity_applyJ( const sofa::defaulttype::Vec<6,real>& a )
 {
     DualQuatCoord3 r ;
 
@@ -97,20 +97,20 @@ DualQuatCoord3<real> DualQuatCoord3<real>::velocity_applyJ( const Vec<6,real>& a
 
 // get velocity : v = JT(q) dq
 template<typename real>
-Vec<6,real> DualQuatCoord3<real>::velocity_applyJT( const DualQuatCoord3<real>& dq )
+sofa::defaulttype::Vec<6,real> DualQuatCoord3<real>::velocity_applyJT( const DualQuatCoord3<real>& dq )
 {
-    Mat<4,3,real> J0,JE;
+    sofa::defaulttype::Mat<4,3,real> J0,JE;
     velocity_getJ(J0,JE);
-    Vec<3,real> omega=J0.transposed()*dq.orientation+JE.transposed()*dq.dual;
-    Vec<3,real> vel=J0.transposed()*dq.dual;
-    Vec<6,real> v;
+    sofa::defaulttype::Vec<3,real> omega=J0.transposed()*dq.orientation+JE.transposed()*dq.dual;
+    sofa::defaulttype::Vec<3,real> vel=J0.transposed()*dq.dual;
+    sofa::defaulttype::Vec<6,real> v;
     for(unsigned int i=0; i<3; i++) {v[i]=vel[i]; v[i+3]=omega[i];}
     return v;
 }
 
 // get jacobian of the normalization : dqn = J(q) dq
 template<typename real>
-void DualQuatCoord3<real>::normalize_getJ( Mat<4,4,real>& J0, Mat<4,4,real>& JE)
+void DualQuatCoord3<real>::normalize_getJ( sofa::defaulttype::Mat<4,4,real>& J0, sofa::defaulttype::Mat<4,4,real>& JE)
 {
     J0.fill(0); JE.fill(0);
 
@@ -136,7 +136,7 @@ void DualQuatCoord3<real>::normalize_getJ( Mat<4,4,real>& J0, Mat<4,4,real>& JE)
 template<typename real>
 DualQuatCoord3<real> DualQuatCoord3<real>::normalize_applyJ( const DualQuatCoord3<real>& dq )
 {
-    Mat<4,4,real> J0,JE;
+    sofa::defaulttype::Mat<4,4,real> J0,JE;
     normalize_getJ(J0,JE);
     DualQuatCoord3<real> r;
     r.orientation=J0*dq.orientation;
@@ -149,7 +149,7 @@ DualQuatCoord3<real> DualQuatCoord3<real>::normalize_applyJ( const DualQuatCoord
 template<typename real>
 DualQuatCoord3<real> DualQuatCoord3<real>::normalize_applyJT( const DualQuatCoord3<real>& dqn )
 {
-    Mat<4,4,real> J0,JE;
+    sofa::defaulttype::Mat<4,4,real> J0,JE;
     normalize_getJ(J0,JE);
     DualQuatCoord3<real> r;
     r.orientation=J0*dqn.orientation+JE*dqn.dual;
@@ -159,7 +159,7 @@ DualQuatCoord3<real> DualQuatCoord3<real>::normalize_applyJT( const DualQuatCoor
 
 // get Jacobian change: dJ = H(p) dq
 template<typename real>
-void  DualQuatCoord3<real>::normalize_getdJ( Mat<4,4,real>& dJ0, Mat<4,4,real>& dJE, const DualQuatCoord3<real>& dq )
+void  DualQuatCoord3<real>::normalize_getdJ( sofa::defaulttype::Mat<4,4,real>& dJ0, sofa::defaulttype::Mat<4,4,real>& dJE, const DualQuatCoord3<real>& dq )
 {
     dJ0.fill(0); dJE.fill(0);
 
@@ -209,9 +209,9 @@ void  DualQuatCoord3<real>::normalize_getdJ( Mat<4,4,real>& dJ0, Mat<4,4,real>& 
 
 
 template<typename real>
-Vec<3,real> DualQuatCoord3<real>::rotate(const Vec<3,real>& v) const
+sofa::defaulttype::Vec<3,real> DualQuatCoord3<real>::rotate(const sofa::defaulttype::Vec<3,real>& v) const
 {
-    return Vec<3,real>(
+    return sofa::defaulttype::Vec<3,real>(
             (real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3])) * v[2]),
             (real)((2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[2]),
             (real)((2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2])
@@ -219,9 +219,9 @@ Vec<3,real> DualQuatCoord3<real>::rotate(const Vec<3,real>& v) const
 }
 
 template<typename real>
-Vec<3,real> DualQuatCoord3<real>::inverseRotate(const Vec<3,real>& v) const
+sofa::defaulttype::Vec<3,real> DualQuatCoord3<real>::inverseRotate(const sofa::defaulttype::Vec<3,real>& v) const
 {
-    return Vec<3,real>(
+    return sofa::defaulttype::Vec<3,real>(
             (real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3])) * v[2]),
             (real)((2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[2]),
             (real)((2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2])
@@ -277,7 +277,7 @@ DualQuatCoord3<real> DualQuatCoord3<real>::multRight( const DualQuatCoord3<real>
 
 // get jacobian of the product with another frame f on the right : d(q*f) = J(q) f
 template<typename real>
-void DualQuatCoord3<real>::multRight_getJ( Mat<4,4,real>& J0,Mat<4,4,real>& JE)
+void DualQuatCoord3<real>::multRight_getJ( sofa::defaulttype::Mat<4,4,real>& J0,sofa::defaulttype::Mat<4,4,real>& JE)
 {
     J0[0][0] = orientation[3];	J0[0][1] =-orientation[2];	J0[0][2] = orientation[1];	J0[0][3] = orientation[0];
     J0[1][0] = orientation[2];	J0[1][1] = orientation[3];	J0[1][2] =-orientation[0];	J0[1][3] = orientation[1];
@@ -311,7 +311,7 @@ DualQuatCoord3<real> DualQuatCoord3<real>::multLeft( const DualQuatCoord3<real>&
 
 // get jacobian of the product with another frame f on the left : d(f*q) = J(q) f
 template<typename real>
-void DualQuatCoord3<real>::multLeft_getJ( Mat<4,4,real>& J0,Mat<4,4,real>& JE)
+void DualQuatCoord3<real>::multLeft_getJ( sofa::defaulttype::Mat<4,4,real>& J0,sofa::defaulttype::Mat<4,4,real>& JE)
 {
     J0[0][0] = orientation[3];	J0[0][1] = orientation[2];	J0[0][2] =-orientation[1];	J0[0][3] = orientation[0];
     J0[1][0] =-orientation[2];	J0[1][1] = orientation[3];	J0[1][2] = orientation[0];	J0[1][3] = orientation[1];
@@ -327,7 +327,7 @@ void DualQuatCoord3<real>::multLeft_getJ( Mat<4,4,real>& J0,Mat<4,4,real>& JE)
 // Write to the given matrix
 template<typename  real>
 template<typename real2>
-void DualQuatCoord3<real>::toMatrix( Mat<3,4,real2>& m) const
+void DualQuatCoord3<real>::toMatrix( sofa::defaulttype::Mat<3,4,real2>& m) const
 {
     m[0][0] = (real2) (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]));
     m[0][1] = (real2) (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]));
@@ -341,7 +341,7 @@ void DualQuatCoord3<real>::toMatrix( Mat<3,4,real2>& m) const
     m[2][1] = (real2) (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]));
     m[2][2] = (real2) (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]));
 
-    Vec<3,real> p=getTranslation();
+    sofa::defaulttype::Vec<3,real> p=getTranslation();
     m[0][3] =  (real2) p[0];
     m[1][3] =  (real2) p[1];
     m[2][3] =  (real2) p[2];
@@ -351,9 +351,9 @@ void DualQuatCoord3<real>::toMatrix( Mat<3,4,real2>& m) const
 
 // Project a point from the child frame to the parent frame: P = R(q)p + t(q)
 template<typename  real>
-Vec<3,real> DualQuatCoord3<real>::pointToParent( const Vec<3,real>& p )
+sofa::defaulttype::Vec<3,real> DualQuatCoord3<real>::pointToParent( const sofa::defaulttype::Vec<3,real>& p )
 {
-    Vec<3,real> p2;
+    sofa::defaulttype::Vec<3,real> p2;
     p2[0] = (real) ((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*p[0] + (2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3])) * p[1] + (2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3])) * p[2]);
     p2[1] = (real) ((2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3]))*p[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*p[1] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*p[2]);
     p2[2] = (real) ((2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3]))*p[0] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*p[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*p[2]);
@@ -363,7 +363,7 @@ Vec<3,real> DualQuatCoord3<real>::pointToParent( const Vec<3,real>& p )
 
 // get jacobian of the transformation : dP = J(p,q) dq
 template<typename  real>
-void DualQuatCoord3<real>::pointToParent_getJ( Mat<3,4,real>& J0,Mat<3,4,real>& JE,const Vec<3,real>& p)
+void DualQuatCoord3<real>::pointToParent_getJ( sofa::defaulttype::Mat<3,4,real>& J0,sofa::defaulttype::Mat<3,4,real>& JE,const sofa::defaulttype::Vec<3,real>& p)
 {
     J0.fill(0); JE.fill(0);
     J0[0][0] = (real)2.*(- dual[3] + orientation[0]*p[0] + orientation[1]*p[1] + orientation[2]*p[2]);	J0[0][1] =   (real)2.*(dual[2] - orientation[1]*p[0] + orientation[0]*p[1] + orientation[3]*p[2]);	J0[0][2] = (real)2.*(- dual[1] - orientation[2]*p[0] - orientation[3]*p[1] + orientation[0]*p[2]);	J0[0][3] = (real)2.*(  dual[0] + orientation[3]*p[0] - orientation[2]*p[1] + orientation[1]*p[2]);
@@ -376,19 +376,19 @@ void DualQuatCoord3<real>::pointToParent_getJ( Mat<3,4,real>& J0,Mat<3,4,real>& 
 
 // get transformed position change: dP = J(p,q) dq
 template<typename  real>
-Vec<3,real> DualQuatCoord3<real>::pointToParent_applyJ( const DualQuatCoord3<real>& dq ,const Vec<3,real>& p)
+sofa::defaulttype::Vec<3,real> DualQuatCoord3<real>::pointToParent_applyJ( const DualQuatCoord3<real>& dq ,const sofa::defaulttype::Vec<3,real>& p)
 {
-    Mat<3,4,real> J0,JE;
+    sofa::defaulttype::Mat<3,4,real> J0,JE;
     pointToParent_getJ(J0,JE,p);
-    Vec<3,real> r=J0*dq.orientation+JE*dq.dual;
+    sofa::defaulttype::Vec<3,real> r=J0*dq.orientation+JE*dq.dual;
     return r;
 }
 
 // get quaternion change: dq = JT(p,q) dP
 template<typename  real>
-DualQuatCoord3<real> DualQuatCoord3<real>::pointToParent_applyJT( const Vec<3,real>& dP ,const Vec<3,real>& p)
+DualQuatCoord3<real> DualQuatCoord3<real>::pointToParent_applyJT( const sofa::defaulttype::Vec<3,real>& dP ,const sofa::defaulttype::Vec<3,real>& p)
 {
-    Mat<3,4,real> J0,JE;
+    sofa::defaulttype::Mat<3,4,real> J0,JE;
     pointToParent_getJ(J0,JE,p);
     DualQuatCoord3<real> r;
     r.orientation=J0.transposed()*dP;
@@ -399,9 +399,9 @@ DualQuatCoord3<real> DualQuatCoord3<real>::pointToParent_applyJT( const Vec<3,re
 
 // get rigid transformation change: d(R,t) = H(q) dq
 template<typename  real>
-Mat<3,4,real> DualQuatCoord3<real>::rigid_applyH( const DualQuatCoord3<real>& dq )
+sofa::defaulttype::Mat<3,4,real> DualQuatCoord3<real>::rigid_applyH( const DualQuatCoord3<real>& dq )
 {
-    Mat<3,4,real> dR;
+    sofa::defaulttype::Mat<3,4,real> dR;
     dR[0][0]=(real)2.*(-2*orientation[1]*dq.orientation[1]-2*orientation[2]*dq.orientation[2]);
     dR[0][1]=(real)2.*(orientation[1]*dq.orientation[0]+orientation[0]*dq.orientation[1]-orientation[3]*dq.orientation[2]-orientation[2]*dq.orientation[3]);
     dR[0][2]=(real)2.*(orientation[2]*dq.orientation[0]+orientation[3]*dq.orientation[1]+orientation[0]*dq.orientation[2]+orientation[1]*dq.orientation[3]);
@@ -418,9 +418,9 @@ Mat<3,4,real> DualQuatCoord3<real>::rigid_applyH( const DualQuatCoord3<real>& dq
 }
 // get rotation change: dR = H(q) dq
 template<typename  real>
-Mat<3,3,real> DualQuatCoord3<real>::rotation_applyH( const DualQuatCoord3<real>& dq )
+sofa::defaulttype::Mat<3,3,real> DualQuatCoord3<real>::rotation_applyH( const DualQuatCoord3<real>& dq )
 {
-    Mat<3,3,real> dR;
+    sofa::defaulttype::Mat<3,3,real> dR;
     dR[0][0]=(real)2.*(-2*orientation[1]*dq.orientation[1]-2*orientation[2]*dq.orientation[2]);
     dR[0][1]=(real)2.*(orientation[1]*dq.orientation[0]+orientation[0]*dq.orientation[1]-orientation[3]*dq.orientation[2]-orientation[2]*dq.orientation[3]);
     dR[0][2]=(real)2.*(orientation[2]*dq.orientation[0]+orientation[3]*dq.orientation[1]+orientation[0]*dq.orientation[2]+orientation[1]*dq.orientation[3]);
@@ -435,7 +435,7 @@ Mat<3,3,real> DualQuatCoord3<real>::rotation_applyH( const DualQuatCoord3<real>&
 
 // get quaternion change: dq = H^T(q) d(R,t)
 template<typename  real>
-DualQuatCoord3<real> DualQuatCoord3<real>::rigid_applyHT( const Mat<3,4,real>& dR )
+DualQuatCoord3<real> DualQuatCoord3<real>::rigid_applyHT( const sofa::defaulttype::Mat<3,4,real>& dR )
 {
     DualQuatCoord3<real> r;
     r.orientation[0]=(real)2.*(orientation[1]*dR[0][1]+orientation[2]*dR[0][2]-dual[3]*dR[0][3]+orientation[1]*dR[1][0]-2*orientation[0]*dR[1][1]-orientation[3]*dR[1][2]-dual[2]*dR[1][3]+orientation[2]*dR[2][0]+orientation[3]*dR[2][1]-2*orientation[0]*dR[2][2]+dual[1]*dR[2][3]);
@@ -450,7 +450,7 @@ DualQuatCoord3<real> DualQuatCoord3<real>::rigid_applyHT( const Mat<3,4,real>& d
 }
 // get quaternion change: dq = H^T(q) dR
 template<typename  real>
-DualQuatCoord3<real> DualQuatCoord3<real>::rotation_applyHT( const Mat<3,3,real>& dR )
+DualQuatCoord3<real> DualQuatCoord3<real>::rotation_applyHT( const sofa::defaulttype::Mat<3,3,real>& dR )
 {
     DualQuatCoord3<real> r;
     r.orientation[0]=(real)2.*(orientation[1]*dR[0][1]+orientation[2]*dR[0][2]+orientation[1]*dR[1][0]-2*orientation[0]*dR[1][1]-orientation[3]*dR[1][2]+orientation[2]*dR[2][0]+orientation[3]*dR[2][1]-2*orientation[0]*dR[2][2]);
@@ -463,9 +463,9 @@ DualQuatCoord3<real> DualQuatCoord3<real>::rotation_applyHT( const Mat<3,3,real>
 
 // get Jacobian change: dJ = H(p) dq
 template<typename  real>
-Mat<3,8,real> DualQuatCoord3<real>::pointToParent_applyH( const DualQuatCoord3<real>& dq ,const Vec<3,real>& p)
+sofa::defaulttype::Mat<3,8,real> DualQuatCoord3<real>::pointToParent_applyH( const DualQuatCoord3<real>& dq ,const sofa::defaulttype::Vec<3,real>& p)
 {
-    Mat<3,8,real> dJ;
+    sofa::defaulttype::Mat<3,8,real> dJ;
     dJ.fill(0);
     dJ[0][0] = (real)2.*(- dq.dual[3] + dq.orientation[0]*p[0] + dq.orientation[1]*p[1] + dq.orientation[2]*p[2]);	dJ[0][1] =   (real)2.*(dq.dual[2] - dq.orientation[1]*p[0] + dq.orientation[0]*p[1] + dq.orientation[3]*p[2]);	dJ[0][2] = (real)2.*(- dq.dual[1] - dq.orientation[2]*p[0] - dq.orientation[3]*p[1] + dq.orientation[0]*p[2]);	dJ[0][3] = (real)2.*(  dq.dual[0] + dq.orientation[3]*p[0] - dq.orientation[2]*p[1] + dq.orientation[1]*p[2]);
     dJ[1][0] = -dJ[0][1];	dJ[1][1] = dJ[0][0];	dJ[1][2] = dJ[0][3];	dJ[1][3] = -dJ[0][2];
@@ -478,7 +478,7 @@ Mat<3,8,real> DualQuatCoord3<real>::pointToParent_applyH( const DualQuatCoord3<r
 
 // get quaternion change: dq = H^T(p) dJ
 template<typename  real>
-DualQuatCoord3<real> DualQuatCoord3<real>::pointToParent_applyHT( const Mat<3,8,real>& dJ ,const Vec<3,real>& p)
+DualQuatCoord3<real> DualQuatCoord3<real>::pointToParent_applyHT( const sofa::defaulttype::Mat<3,8,real>& dJ ,const sofa::defaulttype::Vec<3,real>& p)
 {
     DualQuatCoord3<real> r;
     r.orientation[0]=(real)2.*(p[0]*dJ[0][0]+p[1]*dJ[0][1]+p[2]*dJ[0][2]-dJ[0][7]-p[1]*dJ[1][0]+p[0]*dJ[1][1]-p[2]*dJ[1][3]-dJ[1][6]-p[2]*dJ[2][0]+p[0]*dJ[2][2]+p[1]*dJ[2][3]+dJ[2][5]);
@@ -495,9 +495,9 @@ DualQuatCoord3<real> DualQuatCoord3<real>::pointToParent_applyHT( const Mat<3,8,
 
 // Project a point from the parent frame to the child frame
 template<typename  real>
-Vec<3,real> DualQuatCoord3<real>::pointToChild( const Vec<3,real>& v )
+sofa::defaulttype::Vec<3,real> DualQuatCoord3<real>::pointToChild( const sofa::defaulttype::Vec<3,real>& v )
 {
-    Vec<3,real> p,v2=v-this->getTranslation();
+    sofa::defaulttype::Vec<3,real> p,v2=v-this->getTranslation();
     p[0]=(real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v2[0] + (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3])) * v2[1] + (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3])) * v2[2]);
     p[1]=(real)((2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]))*v2[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v2[1] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v2[2]);
     p[2]=(real)((2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]))*v2[0] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v2[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v2[2]);
@@ -506,10 +506,10 @@ Vec<3,real> DualQuatCoord3<real>::pointToChild( const Vec<3,real>& v )
 
 // compute the projection of a vector from the parent frame to the child
 template<typename  real>
-Vec<3,real> DualQuatCoord3<real>::vectorToChild( const Vec<3,real>& v )
+sofa::defaulttype::Vec<3,real> DualQuatCoord3<real>::vectorToChild( const sofa::defaulttype::Vec<3,real>& v )
 {
     //return orientation.inverseRotate(v);
-    Vec<3,real> p;
+    sofa::defaulttype::Vec<3,real> p;
     p[0]=(real)((1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[2] * orientation[2]))*v[0] + (2.0f * (orientation[0] * orientation[1] + orientation[2] * orientation[3])) * v[1] + (2.0f * (orientation[2] * orientation[0] - orientation[1] * orientation[3])) * v[2]);
     p[1]=(real)((2.0f * (orientation[0] * orientation[1] - orientation[2] * orientation[3]))*v[0] + (1.0f - 2.0f * (orientation[2] * orientation[2] + orientation[0] * orientation[0]))*v[1] + (2.0f * (orientation[1] * orientation[2] + orientation[0] * orientation[3]))*v[2]);
     p[2]=(real)((2.0f * (orientation[2] * orientation[0] + orientation[1] * orientation[3]))*v[0] + (2.0f * (orientation[1] * orientation[2] - orientation[0] * orientation[3]))*v[1] + (1.0f - 2.0f * (orientation[1] * orientation[1] + orientation[0] * orientation[0]))*v[2]);

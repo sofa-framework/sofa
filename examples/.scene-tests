@@ -33,3 +33,7 @@ timeout "Components/topology/TopologicalModifiers/RemovingTetra2TriangleProcess_
 # millions of warnings:
 # WARNING[default2(MinProximityIntersection)]: WARNING: null distance between contact detected
 ignore "Tutorials/Mappings/TutorialMappingOctopusArticulated.scn"
+
+# We can't use CUDA on the build slaves, so let's just ignore this scene that
+# uses the SofaCUDA plugin.
+ignore "Benchmark/Accuracy/cylinder_TLEDTetraSolution.scn"

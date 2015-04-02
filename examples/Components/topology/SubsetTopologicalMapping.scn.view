@@ -3,7 +3,7 @@
     <!--Vector of 3 reals (x, y, z)-->
     <position value="-34.8314 -217.733 31.7729" />
     <!--Quaternion (x, y, z, w)-->
-    <orientation value="0.654307 -0.0784639 -0.019743 0.751888" />
+    <orientation value="0.654307 -0.078464 -0.0197431 0.751888" />
     <!--Vector of 3 reals (x, y, z)-->
     <lookAt value="-2.89744 0.0396461 2.58686" />
     <!--Real-->
@@ -15,5 +15,5 @@
     <!--Real-->
     <zFar value="0" />
     <!--Int (0 -> Perspective, 1 -> Orthographic)-->
-    <type value="0" />
+    <projectionType value="0" />
 </Camera>

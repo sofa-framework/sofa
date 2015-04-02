@@ -42,24 +42,24 @@
 #include <sofa/core/Mapping.h>
 
 
-#include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/component/mapping/BeamLinearMapping.h>
-#include <sofa/component/mapping/CenterOfMassMapping.h>
-#include <sofa/component/mapping/CenterPointMechanicalMapping.h>
-#include <sofa/component/mapping/CurveMapping.h>
-#include <sofa/component/mapping/ExternalInterpolationMapping.h>
-#include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
-#include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/mapping/ImplicitSurfaceMapping.h>
-#include <sofa/component/mapping/LineSetSkinningMapping.h>
-#include <sofa/component/mapping/Mesh2PointMechanicalMapping.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/mapping/RigidRigidMapping.h>
-#include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
-#include <sofa/component/mapping/SimpleTesselatedTetraMechanicalMapping.h>
-#include <sofa/component/mapping/SkinningMapping.h>
-#include <sofa/component/mapping/SubsetMapping.h>
-#include <sofa/component/mapping/TubularMapping.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
+#include <SofaMiscMapping/BeamLinearMapping.h>
+#include <SofaMiscMapping/CenterOfMassMapping.h>
+#include <SofaMiscMapping/CenterPointMechanicalMapping.h>
+#include <SofaMiscMapping/CurveMapping.h>
+#include <SofaMiscMapping/ExternalInterpolationMapping.h>
+#include <SofaNonUniformFem/HexahedronCompositeFEMMapping.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
+#include <SofaVolumetricData/ImplicitSurfaceMapping.h>
+#include <SofaRigid/LineSetSkinningMapping.h>
+#include <SofaTopologyMapping/Mesh2PointMechanicalMapping.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaRigid/RigidRigidMapping.h>
+#include <SofaSphFluid/SPHFluidSurfaceMapping.h>
+#include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
+#include <SofaRigid/SkinningMapping.h>
+#include <SofaBaseMechanics/SubsetMapping.h>
+#include <SofaMiscMapping/TubularMapping.h>
 
 
 

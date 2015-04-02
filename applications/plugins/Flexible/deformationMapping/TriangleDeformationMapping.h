@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_H
 
 #include <sofa/core/Mapping.inl>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include "../initFlexible.h"
@@ -105,8 +105,6 @@ public:
     virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);
 
     virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
-
-//    virtual void computeGeometricStiffness(const core::MechanicalParams *mparams);
 
 //    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
 

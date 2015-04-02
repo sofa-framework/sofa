@@ -94,6 +94,11 @@ public:
      */
     virtual Dart collapseEdge(Dart d, bool delDegenerateVolumes=true);
 
+
+
+    bool flipEdge(Dart d) ;
+
+    bool flipBackEdge(Dart d);
     //!
     /*!
      */

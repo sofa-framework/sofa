@@ -39,7 +39,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/loader/Material.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa

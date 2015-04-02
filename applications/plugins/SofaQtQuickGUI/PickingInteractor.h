@@ -53,10 +53,10 @@ public:
 	void componentComplete();
 	
 public:
-    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged);
-	Q_PROPERTY(double stiffness MEMBER myStiffness NOTIFY stiffnessChanged);
-	Q_PROPERTY(bool picking READ picking NOTIFY pickingChanged);
-	Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged);
+    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged)
+    Q_PROPERTY(double stiffness MEMBER myStiffness NOTIFY stiffnessChanged)
+    Q_PROPERTY(bool picking READ picking NOTIFY pickingChanged)
+    Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
 
 public:
 	Scene* scene() const		{return myScene;}

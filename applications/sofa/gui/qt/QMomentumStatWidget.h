@@ -60,7 +60,7 @@ public:
         // Add Momentum
         if( _node->mass )
         {
-            defaulttype::Vec6d momenta = _node->mass->getMomentum();
+            defaulttype::Vector6 momenta = _node->mass->getMomentum();
             for( unsigned i=0 ; i<6 ; ++i ) _YHistory[i].push_back( momenta[i] );
         }
         else

@@ -27,7 +27,7 @@
 
 #include <sofa/core/collision/Contact.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <sofa/component/constraintset/LagrangianMultiplierContactConstraint.h>
 #include <sofa/helper/Factory.h>
 

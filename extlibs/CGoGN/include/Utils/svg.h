@@ -37,6 +37,7 @@
 //#include "glm/gtc/matrix_projection.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "Utils/dll.h"
 
 namespace CGoGN
 {
@@ -60,7 +61,7 @@ struct DepthSort
 };
 
 
-class SvgObj
+class CGoGN_UTILS_API SvgObj
 {
 protected:
 	std::vector<Geom::Vec3f> m_vertices;
@@ -110,7 +111,7 @@ public:
 
 };
 
-class SvgPoints: public SvgObj
+class CGoGN_UTILS_API SvgPoints : public SvgObj
 {
 public:
 	void save(std::ofstream& out) const;
@@ -120,7 +121,7 @@ public:
 	void fillDS(std::vector<DepthSort>& vds, unsigned int idObj) const;
 };
 
-class SvgLines: public SvgObj
+class CGoGN_UTILS_API SvgLines : public SvgObj
 {
 public:
 	void save(std::ofstream& out) const;
@@ -131,7 +132,7 @@ public:
 };
 
 
-class SvgStrings: public SvgObj
+class CGoGN_UTILS_API SvgStrings : public SvgObj
 {
 protected:
 	float m_sf;
@@ -162,7 +163,7 @@ public:
 
 class AnimatedSVGOut;
 
-class SvgGroup
+class CGoGN_UTILS_API SvgGroup
 {
 
 public:
@@ -242,7 +243,7 @@ public:
 };
 
 
-class SVGOut
+class CGoGN_UTILS_API SVGOut
 {
 public:
 	std::ofstream* m_out;
@@ -295,7 +296,7 @@ public:
 };
 
 
-class AnimatedSVGOut
+class CGoGN_UTILS_API AnimatedSVGOut
 {
 protected:
 	std::vector<SVGOut*> m_svgs;

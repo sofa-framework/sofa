@@ -674,8 +674,8 @@ protected:
 
         vector<vector<unsigned int> > index(nb);
         vector<vector<Real> > w(nb);
-        vector<vector<Vec<spatial_dimensions,Real> > > dw(nb);
-        vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
+        vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw(nb);
+        vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw(nb);
 
         for(unsigned int i=0; i<nb; i++)
         {

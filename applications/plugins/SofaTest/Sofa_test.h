@@ -126,7 +126,7 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
 
     /// Return the maximum difference between two containers. Issues a failure if sizes are different.
     template<class Container1, class Container2>
-    static Real vectorMaxDiff( const Container1& c1, const Container2& c2 )
+    Real vectorMaxDiff( const Container1& c1, const Container2& c2 )
     {
         if( c1.size()!=c2.size() ){
             ADD_FAILURE() << "containers have different sizes";
@@ -190,9 +190,11 @@ struct SOFA_TestPlugin_API Sofa_test : public BaseSofa_test
 
 protected:
     // helpers
-    static Real norm(Real a){ return fabs(a); }
+    static float norm(float a){ return std::abs(a); }
+    static double norm(double a){ return std::abs(a); }
+
     template <typename T>
-    static Real norm(T a){ return a.norm(); }
+    static Real norm(T a){ return (Real)a.norm(); }
 
 
 };
@@ -256,6 +258,36 @@ struct data_traits
 
 };
 
+// Do not use this class directly
+template<class DataTypes, int N, bool isVector>
+struct setRotWrapper
+{ static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot); };
+
+template<class DataTypes, int N>
+struct setRotWrapper<DataTypes, N, true>
+{ static void setRot(typename DataTypes::Coord& /*coord*/, const sofa::helper::Quater<SReal>& /*rot*/) {} };
+
+template<class DataTypes>
+struct setRotWrapper<DataTypes, 2, false>
+{ static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot)	{ coord.getOrientation() = rot.toEulerVector().z(); } };
+
+template<class DataTypes, int N>
+struct setRotWrapper<DataTypes, N, false>
+{ static void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot) 	{ DataTypes::setCRot(coord, rot); } };
+
+template<class DataTypes>
+void setRot(typename DataTypes::Coord& coord, const sofa::helper::Quater<SReal>& rot)
+{ setRotWrapper<DataTypes, DataTypes::Coord::spatial_dimensions, (unsigned)DataTypes::Coord::total_size == (unsigned)DataTypes::Coord::spatial_dimensions>::setRot(coord, rot); }
+
+/// Create a coord of the specified type from a Vector3 and a Quater
+template<class DataTypes>
+typename DataTypes::Coord createCoord(const sofa::defaulttype::Vector3& pos, const sofa::helper::Quater<SReal>& rot)
+{
+	typename DataTypes::Coord temp;
+	DataTypes::set(temp, pos[0], pos[1], pos[2]);
+	setRot<DataTypes>(temp, rot);
+	return temp;
+}
 
 template <int N, class real>
 void EXPECT_VEC_DOUBLE_EQ(sofa::defaulttype::Vec<N, real> const& expected, sofa::defaulttype::Vec<N, real> const& actual) {

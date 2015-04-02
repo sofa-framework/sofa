@@ -77,7 +77,7 @@
 #if defined(_WIN32)
 #pragma warning (disable:4244)          /* disable bogus conversion warnings */
 #endif
-#include <math.h>
+#include <cmath>
 
 #include "Utils/trackball.h"
 

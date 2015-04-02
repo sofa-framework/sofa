@@ -66,6 +66,7 @@ public:
         FLAG_DISPLAYED  = 1 << 1, ///< The Data will be displayed in GUIs.
         FLAG_PERSISTENT = 1 << 2, ///< The Data contains persistent information.
         FLAG_AUTOLINK   = 1 << 3, ///< The Data should be autolinked when using the src="..." syntax.
+        FLAG_REQUIRED = 1 << 4, ///< True if the Data has to be set for the owner component to be valid (a warning is displayed at init otherwise) 
         FLAG_ANIMATION_INSTANCE = 1 << 10,
         FLAG_VISUAL_INSTANCE = 1 << 11,
         FLAG_HAPTICS_INSTANCE = 1 << 12,
@@ -172,9 +173,6 @@ public:
     /// Set the help message.
     void setHelp(const char* val) { help = val; }
 
-    /// @deprecated Set the help message.
-    void setHelpMsg(const char* val) { help = val; }
-
     /// Get owner class
     const char* getOwnerClass() const { return ownerClass; }
 
@@ -224,6 +222,8 @@ public:
     bool isPersistent() const { return getFlag(FLAG_PERSISTENT); }
     /// Return whether this %Data should be autolinked when using the src="" syntax.
     bool isAutoLink() const { return getFlag(FLAG_AUTOLINK); }
+    /// Return whether the Data has to be set by the user for the owner component to be valid
+    bool isRequired() const { return getFlag(FLAG_REQUIRED); }
 
     /// Set whether this %Data should be displayed in GUIs.
     void setDisplayed(bool b)  { setFlag(FLAG_DISPLAYED,b); }
@@ -233,6 +233,8 @@ public:
     void setPersistent(bool b) { setFlag(FLAG_PERSISTENT,b); }
     /// Set whether this data should be autolinked when using the src="" syntax
     void setAutoLink(bool b) { setFlag(FLAG_AUTOLINK,b); }
+    /// Set whether the Data has to be set by the user for the owner component to be valid.
+    void setRequired(bool b) { setFlag(FLAG_REQUIRED,b); }
     /// @}
 
     /// If we use the Data as a link and not as value directly

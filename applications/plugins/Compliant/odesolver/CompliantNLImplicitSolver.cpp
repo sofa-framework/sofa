@@ -1,7 +1,7 @@
 #include "CompliantNLImplicitSolver.h"
 
-//#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-//#include <sofa/component/linearsolver/EigenVector.h>
+//#include <SofaEigen2Solver/EigenSparseMatrix.h>
+//#include <SofaEigen2Solver/EigenVector.h>
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/simulation/common/VectorOperations.h>
 
@@ -104,7 +104,6 @@ public:
 
             //map->accumulateForce();
             map->applyJT(mparams, lambda, lambda);
-    //        map->computeGeometricStiffness(mparams);
 
             ForceMaskDeactivate( map->getMechTo() );
 
@@ -152,8 +151,8 @@ public:
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
     {
-        mm->resetForce(this->params /* PARAMS FIRST */, res.getId(mm));
-        mm->accumulateForce(this->params /* PARAMS FIRST */, res.getId(mm));
+        mm->resetForce(this->params, res.getId(mm));
+        mm->accumulateForce(this->params, res.getId(mm));
         return RESULT_CONTINUE;
     }
     virtual Result fwdMappedMechanicalState(simulation::Node* node, core::behavior::BaseMechanicalState* mm)
@@ -164,7 +163,7 @@ public:
         else
             mm->resetForce(mparams, res.getId(mm));
 
-        mm->accumulateForce(this->params /* PARAMS FIRST */, res.getId(mm));
+        mm->accumulateForce(this->params, res.getId(mm));
         return RESULT_CONTINUE;
     }
 
@@ -384,8 +383,8 @@ SReal CompliantNLImplicitSolver::compute_residual( SolverOperations sop, MultiVe
         sop.vop.print(newX,std::cout,"CompliantNLImplicitSolver::compute_residual, newX= ", "\n");
         sop.vop.print(lagrange,std::cout,"CompliantNLImplicitSolver::compute_residual, lagrange= ", "\n");
         sop.vop.print(residual,std::cout,"CompliantNLImplicitSolver::compute_residual, err= ", " | ");
-        if(residual_constraints) std::cout<<residual_constraints->transpose()<<" -> ";
-        std::cout<<e;
+        if(residual_constraints) std::cout<<residual_constraints->transpose();
+        std::cout<<" -> "<<e;
         std::cout<<std::endl;
     }
 
@@ -398,6 +397,9 @@ void CompliantNLImplicitSolver::compute_jacobian(SolverOperations sop)
 //    cerr<<"compute_jacobian, kfactor = " << sop.mparams().kFactor() <<endl;
 //    cerr<<"compute_jacobian, x = "; sop.vop.print(sop.mparams().x(),cerr); cerr<<endl;
 //    cerr<<"compute_jacobian, v = "; sop.vop.print(sop.mparams().v(),cerr); cerr<<endl;
+
+    simulation::MechanicalComputeGeometricStiffness gsvis( &sop.mparams(), core::VecDerivId::force() );
+    send( gsvis );
 
     // assemble system
     perform_assembly( &sop.mparams(), sys );
@@ -455,7 +457,7 @@ void CompliantNLImplicitSolver::handleUnilateralConstraints()
 }
 
 void CompliantNLImplicitSolver::solve(const core::ExecParams* eparams,
-                         double dt,
+                         SReal dt,
                          core::MultiVecCoordId posId,
                          core::MultiVecDerivId velId)
 {
@@ -760,7 +762,7 @@ bool CompliantNLImplicitSolver::lnsrch( SReal& resnorm, vec& p, vec& residual, S
     {
         SReal test=0.0, temp;
         for( i=0 ; i<n ; i++ ) {
-            temp = fabs(p[i]) / std::max( fabs(xold[i]), SReal(1.0) );
+            temp = fabs(p[i]) / std::max( std::abs(xold[i]), SReal(1.0) );
             if( temp > test ) test=temp;
         }
         alamin = std::max( TOLX/test, MINIMALSTEP );
@@ -922,7 +924,9 @@ void CompliantNLImplicitSolver::compute_forces(SolverOperations& sop, core::beha
 
 ////            // TODO have a look about reseting or not forces of mapped dofs
 ////        }
-
+////
+////        // computing mapping geometric stiffnesses based on child force stored in f
+////        simulation::MechanicalComputeGeometricStiffness( &sop.mparams(), f );
 //    }
 }
 

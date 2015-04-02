@@ -12,15 +12,15 @@ int LumpedResponseClass = core::RegisterObject("A diagonal factorization of the 
 
 
 
-void LumpedResponse::factor( const mat& H, bool semidefinite )
+void LumpedResponse::factor( const rmat& H, bool semidefinite )
 {
 	
     diag.resize( H.rows() );
 
     // lumping
-    for( mat::Index k=0 ; k<H.outerSize() ; ++k )
+    for( rmat::Index k=0 ; k<H.outerSize() ; ++k )
     {
-        for( mat::InnerIterator it(H,k) ; it ; ++it )
+        for( rmat::InnerIterator it(H,k) ; it ; ++it )
         {
             diag[it.row()] += it.value();
         }
@@ -28,7 +28,7 @@ void LumpedResponse::factor( const mat& H, bool semidefinite )
 
     if( semidefinite )
     {
-        for( mat::Index i=0 ; i<diag.size() ; ++i )
+        for( rmat::Index i=0 ; i<diag.size() ; ++i )
             diag.coeffRef(i) = std::abs(diag.coeff(i)) < std::numeric_limits<real>::epsilon() ? real(0) : real(1) / diag.coeff(i);
     }
     else

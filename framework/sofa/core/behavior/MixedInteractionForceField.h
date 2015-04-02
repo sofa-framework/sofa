@@ -99,7 +99,7 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId );
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId );
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -112,9 +112,9 @@ public:
     /// $ df += kFactor K dx + bFactor B dx $
     ///
     /// This method retrieves the force and dx vector from the two MechanicalState
-    /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,double,double)
+    /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,SReal,SReal)
     /// method implemented by the component.
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId );
+    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId );
 
 
     /// Get the potential energy associated to this ForceField.
@@ -125,7 +125,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
-    virtual double getPotentialEnergy(const MechanicalParams* mparams) const;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams) const;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -137,9 +137,7 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::addForce() method.
 
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2)=0;
-    /// @deprecated
-    //virtual void addForce(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& x1, const VecCoord2& x2, const VecDeriv1& v1, const VecDeriv2& v2);
+    virtual void addForce(const MechanicalParams* mparams, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2)=0;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -153,34 +151,8 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic MixedInteractionForceField::addDForce() method.
-    ///
-    /// @deprecated to more efficiently accumulate contributions from all terms
-    ///   of the system equation, a new addDForce method allowing to pass two
-    ///   coefficients for the stiffness and damping terms should now be used.
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)=0;
 
-    /// @deprecated
-    //virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2, double kFactor, double /*bFactor*/);
-    //virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
-
-
-    /// Compute the force derivative given a small displacement from the
-    /// position and velocity used in the previous call to addForce().
-    ///
-    /// The derivative should be directly derived from the computations
-    /// done by addForce. Any forces neglected in addDForce will be integrated
-    /// explicitly (i.e. using its value at the beginning of the timestep).
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += kFactor K dx + bFactor B dx $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic MixedInteractionForceField::addDForce() method.
-    ///
-    /// To support old components that implement the deprecated addForce method
-    /// without scalar coefficients, it defaults to using a temporaty vector to
-    /// compute $ K dx $ and then manually scaling all values by kFactor.
-    /// @deprecated
+    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2)=0;
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -188,35 +160,14 @@ public:
     /// post-stabilization techniques.
     ///
     /// This method must be implemented by the component, and is usually called
-    /// by the generic ForceField::getPotentialEnergy() method.
-    virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord1& x1, const DataVecCoord2& x2) const =0;
-
-    /// @deprecated
-    //virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const;
-
-
-    /// @}
+    /// by the generic MixedInteractionForceField::getPotentialEnergy() method.
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2) const =0;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        MechanicalState<DataTypes1>* mstate1 = NULL;
-        MechanicalState<DataTypes2>* mstate2 = NULL;
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
-        if (object1[0] != '@')
-            object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
-        if (object2[0] != '@')
-            object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
-        context->findLinkDest(mstate1, object1, NULL);
-        context->findLinkDest(mstate2, object2, NULL);
-
-        if (!mstate1 || !mstate2)
-            return false;
 
         return BaseInteractionForceField::canCreate(obj, context, arg);
     }
@@ -232,19 +183,6 @@ public:
 
         if (arg)
         {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
-            if (!object1.empty() && object1[0] != '@')
-            {
-                object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
-                arg->setAttribute("object1", object1.c_str());
-            }
-            if (!object2.empty() && object2[0] != '@')
-            {
-                object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
-                arg->setAttribute("object2", object2.c_str());
-            }
-
             obj->parse(arg);
         }
 

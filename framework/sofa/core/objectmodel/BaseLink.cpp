@@ -236,48 +236,6 @@ std::string BaseLink::CreateString(Base* object, BaseData* data, Base* from)
     return CreateString(CreateStringPath(object,from),CreateStringData(data));
 }
 
-#ifndef SOFA_DEPRECATE_OLD_API
-std::string BaseLink::ConvertOldPath(const std::string& path, const char* oldName, const char* newName, Base* obj, bool showWarning)
-{
-    std::string newPath;
-    if (path.empty())
-        newPath = std::string();
-    else if (path[0] == '@')
-        newPath = path; // this is actually a path with the current syntax
-    else if (path[0] == '/')
-        newPath = std::string("@") + path; // absolute path
-    else if (path == "..")
-        newPath = std::string("@./"); // special case: current context
-    else if (path == ".")
-        newPath = std::string("@[]"); // special case: current object
-    else if (path.substr(0,3) == std::string("../"))
-        newPath = std::string("@") + path.substr(3); // remove one parent level
-    else
-        newPath = std::string("@") + path; // path from one of the parent nodes
-    /*
-        {
-            if (obj && oldName && newName)
-                obj->serr << "Invalid and deprecated path "<< oldName << "=\"" << path << "\". Replace it with a path specified as " << newName << " and using the new '@' prefixed syntax." << obj->sendl;
-            else if (obj)
-                obj->serr << "Invalid and deprecated path \"" << path << "\". Replace it with a path using the new '@' prefixed syntax." << obj->sendl;
-            else if (oldName && newName)
-                std::cerr << "Invalid and deprecated path "<< oldName << "=\"" << path << "\". Replace it with a path specified as " << newName << " and using the new '@' prefixed syntax." << std::endl;
-            else
-                std::cerr << "Invalid and deprecated path \"" << path << "\". Replace it with a path using the new '@' prefixed syntax." << std::endl;
-            return path;
-        }
-    */
-    if (obj && showWarning)
-    {
-        if (oldName && newName)
-            obj->sout << "Deprecated syntax "<< oldName << "=\"" << path << "\". Replace with " << newName << "=\"" << newPath << "\"." << obj->sendl;
-        else
-            obj->sout << "Deprecated syntax \"" << path << "\". Replace with \"" << newPath << "\"." << obj->sendl;
-    }
-    return newPath;
-}
-#endif
-
 } // namespace objectmodel
 
 } // namespace core

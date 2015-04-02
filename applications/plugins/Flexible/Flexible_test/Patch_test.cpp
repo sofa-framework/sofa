@@ -26,7 +26,7 @@
 #include <plugins/SofaTest/Sofa_test.h>
 #include<sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ExecParams.h>
 
 //Including Simulation
@@ -35,8 +35,8 @@
 #include <sofa/simulation/common/Node.h>
 
 // Including component
-#include <sofa/component/projectiveconstraintset/PatchTestMovementConstraint.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBoundaryCondition/PatchTestMovementConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 namespace sofa {

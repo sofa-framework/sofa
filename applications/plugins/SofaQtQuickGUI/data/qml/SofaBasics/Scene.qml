@@ -9,14 +9,13 @@ import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
 Scene {
     id: root
 
-    asynchronous: true
+    asynchronous: false
     source: ""
     sourceQML: ""
     property string statusMessage: ""
 
     onStatusChanged: {
         listModel.selectedId = -1;
-
         var path = source.toString().replace("///", "/").replace("file:", "");
         switch(status) {
         case Scene.Loading:

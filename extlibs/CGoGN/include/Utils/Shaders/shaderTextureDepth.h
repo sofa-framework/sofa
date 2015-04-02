@@ -32,13 +32,15 @@
 #include "Utils/textures.h"
 #include "Utils/gl_def.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderTextureDepth : public ClippingShader
+class CGoGN_UTILS_API ShaderTextureDepth : public ClippingShader
 {
 protected:
 	// shader sources

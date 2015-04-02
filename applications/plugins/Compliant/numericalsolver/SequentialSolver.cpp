@@ -2,7 +2,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include "LDLTResponse.h"
+#include "EigenSparseResponse.h"
+#include "SubKKT.inl"
 
 #include "../utils/scoped.h"
 #include "../utils/nan.h"
@@ -12,7 +13,7 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(SequentialSolver);
+SOFA_DECL_CLASS(SequentialSolver)
 int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").add< SequentialSolver >();
 
 
@@ -75,15 +76,15 @@ void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) 
 
 //static bool diagonal_dominant(const AssembledSystem& sys)
 //{
-//	typedef AssembledSystem::mat::Index Index;
+//	typedef rmat::Index Index;
     
-//	AssembledSystem::mat PH = sys.P * sys.H;
+//	rmat PH = sys.P * sys.H;
     
 //	typedef SReal real;
 
 //    if( sys.n )
 //    {
-//        AssembledSystem::mat PJt = sys.P * sys.J.transpose();
+//        rmat PJt = sys.P * sys.J.transpose();
         
 //        for( unsigned i = 0 ; i < sys.m ; ++i )
 //	        {
@@ -139,12 +140,9 @@ void SequentialSolver::factor(const system_type& system) {
 	// response matrix
 	assert( response );
 
-	// TODO this is nonsense and should be removed. This matrix is not
-	// invertible in the general case.
-    if( !system.isPIdentity ) response->factor( system.P.transpose() * system.H * system.P, true ); // replace H with P^T.H.P to account for projective constraints
-    else response->factor( system.H );
+    SubKKT::projected_primal(sub, system);
+    sub.factor(*response);
 
-	
 	// find blocks
 	fetch_blocks(system);
 	
@@ -155,20 +153,11 @@ void SequentialSolver::factor(const system_type& system) {
 
 	blocks_inv.resize( n );
 
-	mapping_response.resize( system.J.cols(), system.J.rows() );
-
-	this->JP = system.J * system.P;
-
-    cmat tmp( mapping_response.rows(), mapping_response.cols());
-	
-
-	// TODO: temporary :-/
-	response->solve(tmp, JP.transpose());
-	mapping_response = system.P * tmp;
+    sub.solve_filtered( *response, mapping_response, system.J, JP );  // mapping_response = PHinv(JP)^T
 	
 	
 	// to avoid allocating matrices for each block, could be a vec instead ?
-	dense_matrix storage;
+    dmat storage;
 
 	// build blocks and factorize
 	for(unsigned i = 0; i < n; ++i) {
@@ -192,7 +181,7 @@ void SequentialSolver::factor(const system_type& system) {
 		
 		// add diagonal C block
 		for( unsigned r = 0; r < b.size; ++r) {
-			for(system_type::mat::InnerIterator it(system.C, b.offset + r); it; ++it) {
+            for(rmat::InnerIterator it(system.C, b.offset + r); it; ++it) {
 				
 				// paranoia, i has it
 				assert( it.col() >= int(b.offset) );
@@ -355,13 +344,16 @@ void SequentialSolver::solve_impl(vec& res,
 
 
 	// free velocity
-	vec tmp( sys.m );
-	
-	response->solve(tmp, sys.P.selfadjointView<Eigen::Upper>() * rhs.head( sys.m ) );
-	res.head(sys.m).noalias() = sys.P.selfadjointView<Eigen::Upper>() * tmp;
-	
-	// we're done lol
-	if( !sys.n ) return;
+    vec free_res( sub.size_sub() );
+    sub.solve_filtered(*response, free_res, rhs.head(sys.m), SubKKT::PRIMAL);
+
+
+    // we're done
+    if( !sys.n )
+    {
+        res.head( sys.m ) = sub.unproject_primal(free_res);
+        return;
+    }
 
 	
 	// lagrange multipliers TODO reuse res.tail( sys.n ) ?
@@ -374,7 +366,7 @@ void SequentialSolver::solve_impl(vec& res,
 	vec delta = vec::Zero( sys.n );
 	
 	// lcp rhs 
-	vec constant = rhs.tail(sys.n) - JP * res.head( sys.m );
+    vec constant = rhs.tail(sys.n) - JP * free_res;
 	
 	// lcp error
 	vec error = vec::Zero( sys.n );
@@ -398,8 +390,8 @@ void SequentialSolver::solve_impl(vec& res,
 		if( std::sqrt(estimate2) / sys.n <= epsilon ) break;
 	}
 
-	res.head( sys.m ) += net;
-	res.tail( sys.n ) = lambda;
+    res.head( sys.m ) = sub.unproject_primal( free_res + net );
+    res.tail( sys.n ) = lambda;
 
 
 

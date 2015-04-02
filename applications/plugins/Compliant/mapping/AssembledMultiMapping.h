@@ -4,7 +4,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MultiMapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -56,18 +56,16 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	typedef typename Out::Deriv OutDeriv;
 	typedef typename Out::MatrixDeriv OutMatrixDeriv;
 	typedef typename Out::Real Real;
+    typedef Data<OutVecCoord> OutDataVecCoord;
+    typedef Data<OutVecDeriv> OutDataVecDeriv;
 	typedef typename In::Deriv InDeriv;
 	typedef typename In::MatrixDeriv InMatrixDeriv;
 	typedef typename In::Coord InCoord;
 	typedef typename In::VecCoord InVecCoord;
 	typedef typename In::VecDeriv InVecDeriv;
+    typedef Data<InVecCoord> InDataVecCoord;
+    typedef Data<InVecDeriv> InDataVecDeriv;
 	typedef linearsolver::EigenSparseMatrix<TIn,TOut>  SparseMatrixEigen;
-
-	typedef Data<OutVecCoord> OutDataVecCoord;
-	typedef Data<OutVecDeriv> OutDataVecDeriv;
-	typedef Data<InVecCoord> InDataVecCoord;
-	typedef Data<InVecDeriv> InDataVecDeriv;
-
 
 	typedef typename helper::vector <const InVecCoord*> vecConstInVecCoord;
 	typedef typename helper::vector<OutVecCoord*> vecOutVecCoord;
@@ -86,13 +84,18 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
     geometric_type geometric;
     
     virtual const defaulttype::BaseMatrix* getK() {
+        if( geometric.compressedMatrix.nonZeros() ) return &geometric;
+        else return NULL;
+    }
+
+
+    virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId force ) {
 
 		const unsigned n = this->getFrom().size();
 
 		vector<const_in_coord_type> in_vec; in_vec.reserve(n);
 
         core::ConstMultiVecCoordId pos = core::ConstVecCoordId::position();
-        core::ConstMultiVecDerivId force = core::ConstVecDerivId::force();
         
 		for( unsigned i = 0; i < n; ++i ) {
             const core::State<TIn>* from = this->getFromModels()[i];
@@ -101,16 +104,13 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 		}
 
         const core::State<TOut>* to = this->getToModels()[0];
-        const_out_deriv_type out_force(  *force[to].read() );
+        const_out_deriv_type out_force( *force[to].read() );
 
         this->assemble_geometric(in_vec, out_force);
-        
-        if( geometric.compressedMatrix.nonZeros() ) return &geometric;
-        else return 0;
     }
 
 	
-	virtual void apply(const core::MechanicalParams*  /* PARAMS FIRST */, 
+	virtual void apply(const core::MechanicalParams* , 
 	                   const helper::vector<OutDataVecCoord*>& dataVecOutPos,
 	                   const helper::vector<const InDataVecCoord*>& dataVecInPos) {
 		alloc();
@@ -130,10 +130,10 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 	}
 
 
-	virtual void applyJ(const helper::vector<OutVecDeriv*>& outDeriv, 
-                        const helper::vector<const InVecDeriv*>& inDeriv) {
 
-		unsigned n = js.size();
+    virtual void applyJ(const core::MechanicalParams*, const helper::vector<OutDataVecDeriv*>& outDeriv, const helper::vector<const InDataVecDeriv*>& inDeriv)
+    {
+        unsigned n = js.size();
         unsigned i = 0;
 
         // let the first valid jacobian set its contribution    out = J_0 * in_0
@@ -155,7 +155,7 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
                 jacobian(i).addMult(*outDeriv[0], *inDeriv[i]);
         }
 
-	}
+    }
 
     void debug() {
 		std::cerr << this->getClassName() << std::endl;
@@ -177,11 +177,15 @@ class AssembledMultiMapping : public core::MultiMapping<TIn, TOut>
 		}
 	}
 
-	virtual void applyDJT(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, 
+    virtual void applyDJT(const core::MechanicalParams*,
 	                      core::MultiVecDerivId /*inForce*/, 
-	                      core::ConstMultiVecDerivId /*outForce*/){}
+                          core::ConstMultiVecDerivId /*outForce*/)
+    {
+        if( geometric.compressedMatrix.nonZeros() ) serr<<"applyDJT is not yet implemented"<<sendl;
+        // TODO implement it!
+    }
 
-	virtual void applyJT( const core::ConstraintParams*  /* PARAMS FIRST */, 
+    virtual void applyJT( const core::ConstraintParams*,
 						  const helper::vector< typename self::InDataMatrixDeriv* >& , 
 						  const helper::vector< const typename self::OutDataMatrixDeriv* >&  ) {
 		// throw std::logic_error("not implemented");

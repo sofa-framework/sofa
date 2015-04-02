@@ -1,7 +1,7 @@
 #include "ConstantCompliantImplicitSolver.h"
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/linearsolver/EigenVector.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenVector.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/common/MechanicalOperations.h>
 #include <sofa/simulation/common/VectorOperations.h>
@@ -45,7 +45,7 @@ void ConstantCompliantImplicitSolver::perform_assembly( const core::MechanicalPa
     send( *assemblyVisitor );
 
     // assemble system
-    sys = assemblyVisitor->assemble();
+    assemblyVisitor->assemble(sys);
 }
 
 

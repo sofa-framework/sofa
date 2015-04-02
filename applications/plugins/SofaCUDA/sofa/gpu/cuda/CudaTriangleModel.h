@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_H
 
 #include "CudaTypes.h"
-#include <sofa/component/collision/TriangleModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 
 namespace sofa
 {

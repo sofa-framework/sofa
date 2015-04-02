@@ -71,6 +71,7 @@ bool ImageBMP::load(std::string filename)
     if(!fread(&bfType, sizeof(short int), 1, file))
     {
         std::cerr << "Error reading file!" << std::endl;
+        fclose(file);
         return false;
     }
 
@@ -78,6 +79,7 @@ bool ImageBMP::load(std::string filename)
     if (bfType != 19778)
     {
         std::cerr << "Not a Bitmap-File!\n";
+        fclose(file);
         return false;
     }
     /* get the file size */
@@ -87,6 +89,7 @@ bool ImageBMP::load(std::string filename)
     if (!fread(&bfOffBits, sizeof(uint32_t), 1, file))
     {
         std::cerr << "Error reading file!\n";
+        fclose(file);
         return false;
     }
     // printf("Data at Offset: %ld\n", bfOffBits);
@@ -97,6 +100,7 @@ bool ImageBMP::load(std::string filename)
     if (fread(&width, sizeof(int), 1, file) != 1)
 	{
         std::cerr << "Error: fread can't read the width of the bitmap." << std::endl;
+        fclose(file);
 		return false;
 	}
 
@@ -107,6 +111,7 @@ bool ImageBMP::load(std::string filename)
     if (fread(&height, sizeof(int), 1, file) != 1)
 	{
         std::cerr << "Error: fread can't read the height of the bitmap." << std::endl;
+        fclose(file);
 		return false;
 	}
 
@@ -117,24 +122,28 @@ bool ImageBMP::load(std::string filename)
     if (fread(&biPlanes, sizeof(short int), 1, file) != 1)
 	{
         std::cerr << "Error: fread can't read the number of planes." << std::endl;
+        fclose(file);
 		return false;
 	}
 
     if (biPlanes != 1)
     {
         std::cerr << "Error: number of Planes not 1!\n";
+        fclose(file);
         return false;
     }
     /* get the number of bits per pixel */
     if (!fread(&biBitCount, sizeof(short int), 1, file))
     {
         std::cerr << "Error reading file!\n";
+        fclose(file);
         return false;
     }
     //printf("Bits per Pixel: %d\n", biBitCount);
     if (biBitCount != 24 && biBitCount != 32 && biBitCount != 8)
     {
         std::cerr << "Bits per Pixel not supported\n";
+        fclose(file);
         return false;
     }
     int nbBits = biBitCount;
@@ -160,6 +169,7 @@ bool ImageBMP::load(std::string filename)
         break;
     default:
         fprintf(stderr, "ImageBMP: Unsupported number of bits per pixel: %i\n", nc*8);
+        fclose(file);
 		return false;
     }
     init(width, height, 1, 1, Image::UNORM8, channels);
@@ -172,6 +182,7 @@ bool ImageBMP::load(std::string filename)
         if (!fread(data, biSizeImage, 1, file))
         {
             std::cerr << "Error loading file!\n";
+            fclose(file);
             return false;
         }
     }
@@ -184,11 +195,13 @@ bool ImageBMP::load(std::string filename)
             if (!fread(data+(upsidedown?height-1-y:y)*width*nc, width*nc, 1, file))
             {
                 std::cerr << "Error loading file!\n";
+                fclose(file);
                 return false;
             }
             if (pad && !fread(buf, 4-((width*nc)%4), 1, file))
             {
                 std::cerr << "Error loading file!\n";
+                fclose(file);
                 return false;
             }
         }
@@ -197,11 +210,10 @@ bool ImageBMP::load(std::string filename)
     if (nc == 3 || nc == 4)
     {
         int i;
-        unsigned char temp;
         // swap red and blue (bgr -> rgb)
         for (i = 0; i < width*height*nc; i += nc)
         {
-            temp = data[i];
+            unsigned char temp = data[i];
             data[i] = data[i + 2];
             data[i + 2] = temp;
         }
@@ -262,11 +274,10 @@ bool ImageBMP::save(std::string filename, int)
     unsigned char *data = getPixels();
     if(bytespp==3)
     {
-        unsigned char temp;
         /* swap red and blue (rgb -> bgr) */
         for (unsigned i = 0; i < width*height*3; i += 3)
         {
-            temp = data[i];
+            unsigned char temp = data[i];
             data[i] = data[i + 2];
             data[i + 2] = temp;
         }
@@ -287,11 +298,10 @@ bool ImageBMP::save(std::string filename, int)
     if(bytespp==3)
     {
         unsigned i;
-        unsigned char temp;
         /* swap red and blue (bgr -> rgb) */
         for (i = 0; i < width*height*3; i += 3)
         {
-            temp = data[i];
+            unsigned char temp = data[i];
             data[i] = data[i + 2];
             data[i + 2] = temp;
         }

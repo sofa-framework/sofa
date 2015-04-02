@@ -1,26 +1,71 @@
-
+import Sofa
+from SofaPython import Quaternion as quat
 
 import numpy as np
 
 np.set_string_function( lambda x: ' '.join( map(str, x)), repr = False )
 
+import path
+import tool
+
+# rigid body operations
+def id():
+    res = np.zeros(7)
+    res[-1] = 1
+    return res
+
+def inv(x):
+    res = np.zeros(7)
+
+    res[3:] = quat.conj(x[3:])
+    res[:3] = -quat.rotate(res[3:], x[:3])
+    
+    return res
+
+def prod(x, y):
+    print x.inv()
+    res = np.zeros(7)
+
+    res[:3] = x[:3] + quat.rotate(x[3:], y[:3])
+    res[3:] = quat.prod(x[3:], y[3:])
+
+    return res
+
+
 
 class DOFs(object):
 
-    def __init__(self, node, **kwargs):
-        kwargs.setdefault('template', 'Rigid')
+    def __init__(self, arg, **kwargs):
+        if type(arg) == Sofa.BaseMechanicalState:
+            self.obj = arg
+        else:
+            node = arg
+            kwargs.setdefault('template', 'Rigid')
 
-        pos = np.zeros(7)
-        pos[-1] = 1
-        kwargs.setdefault('position', pos)
-        
-        self.obj = node.createObject('MechanicalObject',
-                                     name = 'dofs',
-                                     **kwargs)
+            pos = np.zeros(7)
+            pos[-1] = 1
+            kwargs.setdefault('position', pos)
+
+            self.obj = node.createObject('MechanicalObject',
+                                         name = 'dofs',
+                                         **kwargs)
 
     @property
+    def position(self):
+        return np.array(self.obj.position[0])
+
+    @position.setter
+    def position(self, value):
+        self.obj.position = str(value)
+
+
+    @property
+    def node(self):
+        return self.obj.getContext()
+    
+    @property
     def center(self):
-        return self.obj.position[0][:3]
+        return np.array(self.obj.position[0][:3])
 
     @center.setter
     def center(self, value):
@@ -28,7 +73,7 @@ class DOFs(object):
         
     @property
     def orient(self):
-        return self.obj.position[0][3:]
+        return np.array(self.obj.position[0][3:])
 
     @orient.setter
     def orient(self, value):
@@ -36,16 +81,56 @@ class DOFs(object):
 
 
     def map_vec3(self, name, position):
+        # note: you may map multiple points at once
+        
         node = self.obj.getContext()
         
         res = node.createChild(name)
         res.createObject('MechanicalObject',
                          template = 'Vec3',
                          name = 'dofs',
-                         position = position)
+                         position = position,
+                         velocity = np.zeros( len(position) ) )
         res.createObject('RigidMapping')
         return res
-    
+
+    def map_rigid(self, name, position):
+        # note: only one rigid for now
+        
+        node = self.node.createChild(name)
+
+        res = DOFs(node)
+        
+        node.createObject('AssembledRigidRigidMapping',
+                          source = '0 ' + str(position) )
+        
+        return res
+
+
+    def map_relative(self, node, child, **kwargs):
+
+        log = kwargs.get('log', False)
+
+        template = 'Vec6' if log else 'Rigid'
+        
+        dofs = DOFs(node) if not log else node.createObject('MechanicalObject',
+                                                            name = 'dofs',
+                                                            template = template,
+                                                            position = np.zeros(6) )
+
+        obj = dofs.obj if not log else dofs
+        
+        input = [ '@' + path.relative(obj, x) for x in [self.obj, child.obj] ]
+        
+        node.createObject('RigidJointMultiMapping',
+                          template = 'Rigid,' + template,
+                          name = 'mapping',
+                          input = ' '.join(input),
+                          output = '@dofs',
+                          pairs = '0 0')
+                          
+        return dofs
+
 
 class Mass(object):
     
@@ -173,3 +258,60 @@ class Collision(object):
         self.loader.translation = str( value )
 
     # TODO rotation
+
+
+
+
+class Joint(object):
+
+    def __init__(self, dofs, parent, child):
+
+        # nodes
+        self.relative = dofs.node.createChild('relative')
+        self.constraint = self.relative.createChild('constraint')
+
+        self.parent = parent
+        self.child = child
+        
+        relative_dofs = parent.map_relative(self.relative, child)
+
+        dofs.map_relative(self.constraint, relative_dofs, log = True)
+
+        self.constraint.createObject('UniformCompliance',
+                                     template = 'Vec6',
+                                     compliance = 0)
+        
+        self.constraint.createObject('Stabilization')
+
+import mapping        
+class HingeJoint(Joint):
+
+    def __init__(self, node, parent, child):
+
+        self.dofs = tool.dofs(node, 'Vec1')
+
+        spring = node.createChild('spring')
+        tool.dofs(spring, 'Vec1')
+        spring.createObject('IdentityMapping', template = 'Vec1,Vec1')
+        
+        spring.createObject('UniformCompliance',
+                            template = 'Vec1',
+                            compliance = 1e-4,
+                            isCompliance = False)
+
+        # for some reason we need mass for stability :-/
+        self.mass = node.createObject('UniformMass',
+                                      template = 'Vec1',
+                                      mass = 1)
+        
+
+        self.mapping = mapping.HingeJoint(self.dofs)
+
+
+        dofs = DOFs( self.mapping.output )
+        
+        Joint.__init__(self, dofs, parent, child)
+        
+        
+    
+

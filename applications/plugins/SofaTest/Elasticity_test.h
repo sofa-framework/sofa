@@ -31,26 +31,22 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/forcefield/TetrahedralTensorMassForceField.h>
-#include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
-#include <sofa/component/topology/TopologySparseData.inl>
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/engine/PairBoxRoi.h>
-#include <sofa/component/engine/GenerateCylinder.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/StaticSolver.h>
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
+#include <SofaMiscFem/TetrahedralTensorMassForceField.h>
+#include <SofaSimpleFem/TetrahedralCorotationalFEMForceField.h>
+#include <SofaBaseTopology/TopologySparseData.inl>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaEngine/PairBoxRoi.h>
+#include <SofaEngine/GenerateCylinder.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaImplicitOdeSolver/StaticSolver.h>
+#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
 
 namespace sofa {
-
-
-using namespace simulation;
-using namespace modeling;
 
 /// Structure which contains the nodes and the pointers useful for the patch test
 template<class T>
@@ -91,15 +87,15 @@ template< class DataTypes>
 /// Create a scene with a regular grid and an affine constraint for patch test
 
 PatchTestStruct<DataTypes> createRegularGridScene(
-        Node::SPtr root,
+        simulation::Node::SPtr root,
         Coord startPoint,
         Coord endPoint,
         int numX,
         int numY,
         int numZ,
-        Vec<6,SReal> entireBoxRoi,
-        Vec<6,SReal> inclusiveBox,
-        Vec<6,SReal> includedBox);
+        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
+        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
+        sofa::defaulttype::Vec<6,SReal> includedBox);
 
 CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
         int resolutionCircumferential,

@@ -167,7 +167,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
 
     for (it_map = dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
     {
-        BaseData* data = obj->findField( (*it_map).first );
+        BaseData* data = obj->findData( (*it_map).first );
         if (data != NULL)
         {
             if (!(*it_map).second->isAutoLink())
@@ -300,6 +300,14 @@ void BaseObject::init()
     if(!context_||!context_->is_partition())
         setPartition(new Iterative::IterativePartition());
 #endif
+
+	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
+	{
+		if ((*iData)->isRequired() && !(*iData)->isSet())
+		{
+			serr << "ERROR: Required data " << (*iData)->getName() << " has not been set. (Current value is " << (*iData)->getValueString() << ")" << sendl;
+		}
+	}
 }
 
 void BaseObject::bwdInit()
@@ -369,7 +377,7 @@ void BaseObject::handleTopologyChange(core::topology::Topology* t)
 //     return m_printLog;
 // }
 
-double BaseObject::getTime() const
+SReal BaseObject::getTime() const
 {
     return getContext()->getTime();
 }

@@ -30,14 +30,14 @@
 #include "initExternalBehaviorModel.h"
 
 // SOFA includes
-#include <sofa/component/misc/InteractingBehaviorModel.h>
+#include <SofaGraphComponent/InteractingBehaviorModel.h>
 
 
 // internal stuff, here it is using SOFA components that could be replaced by any library
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/forcefield/HexahedronFEMForceField.h>
-#include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaSimpleFem/HexahedronFEMForceField.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/simulation/common/Node.h>
 
 

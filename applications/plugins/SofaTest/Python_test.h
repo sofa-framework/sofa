@@ -1,3 +1,5 @@
+#ifndef SOFA_STANDARDTEST_Python_test_H
+#define SOFA_STANDARDTEST_Python_test_H
 
 #include <gtest/gtest.h>
 #include <string>
@@ -75,3 +77,5 @@ public:
 
 
 }
+
+#endif

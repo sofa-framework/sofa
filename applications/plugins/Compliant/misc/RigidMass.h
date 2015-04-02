@@ -94,7 +94,7 @@ public:
 		
         if ( !vparams->displayFlags().getShowBehaviorModels() || !_draw.getValue() )
             return;
-        helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
+        helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
 
         for(unsigned i = 0, n = x.size(); i < n; ++i) {
@@ -159,17 +159,17 @@ public:
 	// cinétique d'un rigide, sauf si on considère les vitesses en
 	// coordonnées locales (ce que sofa ne fait pas). du coup on tape
 	// dans this->mstate->getX pour l'obtenir mais l'api devrait gérer ca
-	double getKineticEnergy( const core::MechanicalParams* /* PARAMS FIRST */, 
+    SReal getKineticEnergy( const core::MechanicalParams*,
 	                         const DataVecDeriv& _v  ) const {
 		helper::ReadAccessor< DataVecDeriv >  v(_v);
 		
-		double res = 0;
+        SReal res = 0;
 
 		for(unsigned i = 0, n = v.size(); i < n; ++i) {
 			const unsigned index = clamp(i);
 			
 			// body-fixed velocity
-			typename se3::vec3 omega_body = se3::rotation( (*this->mstate->getX())[i] ).inverse() * 
+			typename se3::vec3 omega_body = se3::rotation( this->mstate->read(core::ConstVecCoordId::position())->getValue()[i] ).inverse() * 
 				se3::map(v[i].getVOrientation());
 			
 			res += 
@@ -183,13 +183,13 @@ public:
 	}
 
 	// TODO maybe sign is wrong 
-	double getPotentialEnergy( const core::MechanicalParams* /* PARAMS FIRST */, 
+    SReal getPotentialEnergy( const core::MechanicalParams*,
 	                           const DataVecCoord& _x  ) const {
 		helper::ReadAccessor< DataVecCoord >  x(_x);
 				
 		defaulttype::Vec3d g ( this->getContext()->getGravity() );
 
-		double res = 0;
+        SReal res = 0;
 
 		for(unsigned i = 0, n = x.size(); i < n; ++i) {
 			const unsigned index = clamp(i);
@@ -201,10 +201,10 @@ public:
 	}
 
 
-	virtual void addMDx(const core::MechanicalParams*  /* PARAMS FIRST */, 
+    virtual void addMDx(const core::MechanicalParams* ,
 	                    DataVecDeriv& _f, 
 	                    const DataVecDeriv& _dx, 
-	                    double factor) {
+                        SReal factor) {
 		helper::WriteAccessor< DataVecDeriv >  f(_f);
 		helper::ReadAccessor< DataVecDeriv >  dx(_dx);
 
@@ -215,7 +215,7 @@ public:
 			
             se3::map(f[i].getLinear()) += (factor * mass.getValue()[ index ]) * se3::map(dx[i].getLinear());
 
-			typename se3::quat q = se3::rotation( (*this->mstate->getX())[i] );
+			typename se3::quat q = se3::rotation( this->mstate->read(core::ConstVecCoordId::position())->getValue()[i] );
             se3::map(f[i].getAngular()) += factor *
                 ( q * se3::map(inertia.getValue()[ index ]).cwiseProduct( q.conjugate() * se3::map(dx[i].getAngular() ) ));
 			
@@ -243,7 +243,7 @@ public:
                               mass.getValue()[ index ] * mFactor );
 			}			              
 			
-			typename se3::mat33 R = se3::rotation( (*this->mstate->getX())[i] ).toRotationMatrix();
+			typename se3::mat33 R = se3::rotation( this->mstate->read(core::ConstVecCoordId::position())->getValue()[i] ).toRotationMatrix();
 			
 			typename se3::mat33 chunk = R * se3::map( inertia.getValue()[ index ] ).asDiagonal() * R.transpose();
 			
@@ -259,7 +259,8 @@ public:
 			
 		}
 		
-	}
+    }
+
 };
 
 }

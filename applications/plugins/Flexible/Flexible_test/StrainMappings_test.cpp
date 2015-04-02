@@ -42,9 +42,6 @@ namespace sofa {
 
         bool runTest( defaulttype::Mat<3,3,Real>& rotation, defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real>& strain, const OutVecCoord& expectedChildCoords)
         {
-            this->deltaMax = 100;  // OUUUUUUUU la triche ! Du coup on ne teste pas les J
-            this->errorMax = 1000;
-
             InVecCoord xin(1);
             OutVecCoord xout(1);
 
@@ -62,8 +59,8 @@ namespace sofa {
 
             // rotation
             f = rotation * f;
-            cerr<<"StrainMappingTest::runTest, f="<< f << endl;
-            cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
+//            cerr<<"StrainMappingTest::runTest, f="<< f << endl;
+//            cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
 
             static_cast<_Mapping*>(this->mapping)->assemble.setValue(true);
 
@@ -99,6 +96,9 @@ namespace sofa {
 
         bool runTest( unsigned method )
         {
+            this->errorMax *= 150;
+            this->errorFactorDJ = 10;
+
             static_cast<_Mapping*>(this->mapping)->f_geometricStiffness.setValue(1);
             static_cast<_Mapping*>(this->mapping)->f_method.beginEdit()->setSelectedItem( method );
 
@@ -112,7 +112,7 @@ namespace sofa {
                     symGradDef[i][j] = (i+1)*2+j*0.3; // todo randomize it being careful not to create a rotation
                     if( i!=j ) symGradDef[j][i] = symGradDef[i][j];
                 }
-//          cerr<<"symGradDef = " << symGradDef << endl;
+//          /*cerr<<*/"symGradDef = " << symGradDef << endl;
 
                 // expected mapped values
                 OutVecCoord expectedChildCoords(1);
@@ -267,6 +267,9 @@ namespace sofa {
 
         bool runTest()
         {
+            this->errorMax *= 300;
+            this->errorFactorDJ = 10;
+
             defaulttype::Mat<3,3,Real> rotation;
             defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; // stretch only
 
@@ -330,6 +333,9 @@ namespace sofa {
 
         bool runTest()
         {
+            this->errorMax *= 100;
+            this->errorFactorDJ = 25;
+
             defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
 
             // create a deformation gradient
@@ -348,9 +354,6 @@ namespace sofa {
                 OutVecCoord expectedChildCoords(1);
                 expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
 
-                this->deltaMax = 0.001;  
-                this->errorMax = 10;
-
                 InVecCoord xin(1);
                 OutVecCoord xout(1);
 
@@ -366,8 +369,8 @@ namespace sofa {
                     }
                 }
 
-                cerr<<"StrainMappingTest::runTest, f="<< f << endl;
-                cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
+//                cerr<<"StrainMappingTest::runTest, f="<< f << endl;
+//                cerr<<"StrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
 
                 return Inherited::runTest(xin,xout,xin,expectedChildCoords);
 
@@ -434,9 +437,6 @@ namespace sofa {
                 OutVecCoord expectedChildCoords(1);
                 expectedChildCoords[0].getVec() = defaulttype::StrainMatToVoigt( defo );
 
-                this->deltaMax = 0.001;  
-                this->errorMax = 5;
-
                 InVecCoord xin(1);
                 OutVecCoord xout(1);
 
@@ -452,8 +452,8 @@ namespace sofa {
                     }
                 }
 
-                cerr<<"CauchyStrainMappingTest::runTest, f="<< f << endl;
-                cerr<<"CauchyStrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
+//                cerr<<"CauchyStrainMappingTest::runTest, f="<< f << endl;
+//                cerr<<"CauchyStrainMappingTest::runTest, expected="<< expectedChildCoords << endl;
 
                 return Inherited::runTest(xin,xout,xin,expectedChildCoords);
 
@@ -504,6 +504,8 @@ namespace sofa {
 
         bool runTest()
         {
+            this->errorMax *= 500;
+
             defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
 
             // create a deformation gradient
@@ -529,8 +531,6 @@ namespace sofa {
                 expectedChildCoords[0].getVec()[1] = I2;
                 expectedChildCoords[0].getVec()[2] = J;
 
-                this->deltaMax = 500;  // J not tested
-                this->errorMax = 7000;
 
                 InVecCoord xin(1);
                 OutVecCoord xout(1);
@@ -547,8 +547,8 @@ namespace sofa {
                     }
                 }
 
-                cerr<<"InvariantMappingTest::runTest, f="<< f << endl;
-                cerr<<"InvaraintMappingTest::runTest, expected="<< expectedChildCoords << endl;
+//                cerr<<"InvariantMappingTest::runTest, f="<< f << endl;
+//                cerr<<"InvaraintMappingTest::runTest, expected="<< expectedChildCoords << endl;
 
                 return Inherited::runTest(xin,xout,xin,expectedChildCoords);
 

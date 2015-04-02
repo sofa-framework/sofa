@@ -52,7 +52,7 @@ if (SOFA-MISC_DOXYGEN)
     set(SOFA_DOC_TARGETS)
     foreach(project ${GLOBAL_DEPENDENCIES})
         if((${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/plugins/${project}") OR
-                (${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/modules/sofa/component/${project}"))
+                (${GLOBAL_PROJECT_PATH_${project}} MATCHES ".*/modules/${project}"))
             # Ignore SofaComponent* meta-modules
             if(NOT ${project} MATCHES "SofaComponent.*")
                 list(APPEND SOFA_DOCUMENTABLE_PROJECTS ${project})

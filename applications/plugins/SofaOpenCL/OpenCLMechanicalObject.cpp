@@ -30,7 +30,7 @@
 
 #include "OpenCLMechanicalObject.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/container/MappedObject.inl>
+#include <SofaBaseMechanics/MappedObject.inl>
 
 //#include "tools/top.h"
 

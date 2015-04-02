@@ -3,7 +3,7 @@
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/State.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <SofaBaseTopology/MeshTopology.h>
 #include "SingleComponent.h"
 #include "MeshSTEPLoader.h"
 #include <sofa/core/objectmodel/BaseObjectDescription.h>

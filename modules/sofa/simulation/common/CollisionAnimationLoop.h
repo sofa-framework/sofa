@@ -33,18 +33,6 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/PropagateEventVisitor.h>
-#include <sofa/simulation/common/UpdateMappingEndEvent.h>
-#include <sofa/simulation/common/UpdateMappingVisitor.h>
-#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
-#include <sofa/simulation/common/UpdateContextVisitor.h>
-#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
-
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-using namespace sofa::core::behavior;
 
 namespace sofa
 {
@@ -70,7 +58,8 @@ class SOFA_SIMULATION_COMMON_API CollisionAnimationLoop : public sofa::core::beh
 {
 public:
     typedef sofa::core::behavior::BaseAnimationLoop Inherit;
-
+    typedef sofa::core::objectmodel::BaseContext BaseContext;
+    typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
 protected:
     CollisionAnimationLoop(simulation::Node* gnode);
 
@@ -100,7 +89,7 @@ protected:
     virtual void computeCollision(const core::ExecParams* params = core::ExecParams::defaultInstance());
 
     /// Activate OdeSolvers
-    virtual void integrate(const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, double dt);
+    virtual void integrate(const core::ExecParams* params, SReal dt);
 
 
     typedef simulation::Node::Sequence<core::behavior::OdeSolver> Solvers;

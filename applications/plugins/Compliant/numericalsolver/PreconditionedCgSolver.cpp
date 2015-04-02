@@ -15,7 +15,7 @@ namespace component {
 namespace linearsolver {
 
 SOFA_DECL_CLASS(PreconditionedCgSolver);
-int PreconditionedCgSolverClass = core::RegisterObject("Sparse PCG linear solver").add< PreconditionedCgSolver >();
+static int PreconditionedCgSolverClass = core::RegisterObject("Sparse PCG linear solver").add< PreconditionedCgSolver >();
 
 
 void PreconditionedCgSolver::init()
@@ -24,10 +24,14 @@ void PreconditionedCgSolver::init()
     PreconditionedCgSolver::getPreconditioner( this->getContext() );
 }
 
+
+const char* PreconditionedCgSolver::method() const { return "pcg"; }
+    
+
 void PreconditionedCgSolver::solve_kkt(AssembledSystem::vec& x,
-                         const AssembledSystem& system,
-                         const AssembledSystem::vec& b,
-                         real damping ) const {
+                                       const AssembledSystem& system,
+                                       const AssembledSystem::vec& b,
+                                       real damping ) const {
 
     if( _preconditioner )
     {
@@ -37,15 +41,13 @@ void PreconditionedCgSolver::solve_kkt(AssembledSystem::vec& x,
 
         params_type p = params(b);
 
-//        report("pcg (kkt) recquired ", p );
-
         kkt::matrixQ A( system );
         Preconditioner P( system, _preconditioner );
 
         typedef ::preconditionedcg<real> solver_type;
         solver_type::solve(x, A, P, b, p);
 
-        report("pcg (kkt)", p );
+        report( p );
     }
     else
         CgSolver::solve_kkt( x, system, b, damping );
