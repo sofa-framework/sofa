@@ -1,5 +1,5 @@
-#ifndef COMPLIANT_SEQUENTIALSOLVER_H
-#define COMPLIANT_SEQUENTIALSOLVER_H
+#ifndef COMPLIANT_BaseSequentialSolver_H
+#define COMPLIANT_BaseSequentialSolver_H
 
 
 // #include "utils/debug.h"
@@ -18,12 +18,12 @@ namespace component {
 namespace linearsolver {
 
 /// Sequential impulse/projected block gauss-seidel kkt solver
-class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
+class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
   public:
 
-	SOFA_CLASS(SequentialSolver, IterativeSolver);
+    SOFA_ABSTRACT_CLASS(BaseSequentialSolver, IterativeSolver);
 	
-	SequentialSolver();
+    BaseSequentialSolver();
 
 	virtual void factor(const system_type& system);
 	
@@ -76,7 +76,7 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	typedef std::vector<block> blocks_type;
 	blocks_type blocks;
 
-    virtual void fetch_blocks(const system_type& system);
+    void fetch_blocks(const system_type& system);
 
     // constraint responses
     typedef Eigen::LDLT< dmat > inverse_type;
@@ -100,8 +100,8 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 
 
 /// Projected block gauss-seidel kkt solver with schur complement on both dynamics+bilateral constraints
-/// TODO move this as an option in SequentialSolver, so it can be used by derived solvers (eg NNCGSolver)
-class SOFA_Compliant_API PGSSolver : public SequentialSolver {
+/// TODO move this as an option in BaseSequentialSolver, so it can be used by derived solvers (eg NNCGSolver)
+class SOFA_Compliant_API SequentialSolver : public BaseSequentialSolver {
 
 protected:
 
@@ -130,10 +130,11 @@ protected:
 
 public:
 
-    SOFA_CLASS(PGSSolver, SequentialSolver);
+    SOFA_CLASS(SequentialSolver, BaseSequentialSolver);
 
-    PGSSolver();
+    SequentialSolver();
 
+    Data<bool> d_iterateOnBilaterals;
     Data<SReal> d_regularization;
 
     virtual void factor(const system_type& system);
@@ -150,7 +151,6 @@ protected:
                             const vec& rhs,
                             bool correct) const;
 
-    virtual void fetch_blocks(const system_type& system);
     virtual void fetch_unilateral_blocks(const system_type& system);
 
 };
