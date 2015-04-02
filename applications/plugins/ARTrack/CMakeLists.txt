@@ -29,6 +29,10 @@ if(WIN32)
     target_link_libraries(${PROJECT_NAME} Ws2_32)
 endif()
 
+if(UNIX)
+    target_link_libraries(${PROJECT_NAME} pthread)
+endif()
+
 install(TARGETS ${PROJECT_NAME}
     COMPONENT ARTrack_libraries
     EXPORT ARTrackTargets

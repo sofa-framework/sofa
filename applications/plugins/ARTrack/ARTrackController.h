@@ -29,7 +29,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <SofaRigid/ArticulatedHierarchyContainer.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-#include <ARTrackEvent.h>
+#include "ARTrackEvent.h"
 
 namespace sofa
 {
