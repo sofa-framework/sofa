@@ -105,19 +105,25 @@ class SOFA_Compliant_API PGSSolver : public SequentialSolver {
 
 protected:
 
-
+    // let's play with matrices
     struct LocalSubKKT : public SubKKT
     {
-
-        // full kkt with projected primal variables
-        // excludes non bilateral constaints
-        // TODO upgrade it to any constraint mask and/or move it in a sub-class
-        static bool projected_kkt_bilateral( rmat&H, rmat&P, rmat& Q, rmat&Q_star,
+        // kkt with projected primal variables and bilateral constraints
+        // excludes non bilateral constraints
+        bool projected_primal_and_bilateral( AssembledSystem& res,
                                   const AssembledSystem& sys,
                                   real eps = 0,
                                   bool only_lower = false);
 
 
+        // reorder global (primal,constraint) to projected (primal,bilateral,non-bilateral) order
+        void toLocal(vec& local, const vec& global ) const;
+        // reorder projected (primal,bilateral,non-bilateral) to global (primal,constraint) order
+        void fromLocal( vec& global, const vec& local ) const;
+
+    protected:
+
+        // non-bilateral constraints selection matrix
         rmat Q_unil;
     };
 
@@ -126,20 +132,23 @@ public:
 
     SOFA_CLASS(PGSSolver, SequentialSolver);
 
+    PGSSolver();
 
-    system_type m_localSystem;
-    LocalSubKKT m_localSub;
-
+    Data<SReal> d_regularization;
 
     virtual void factor(const system_type& system);
 
 protected:
 
 
-  virtual void solve_impl(vec& x,
-                          const system_type& system,
-                          const vec& rhs,
-                          bool correct) const;
+    system_type m_localSystem; // a local AssembledSystem with H=(primal,bilateral), J=J_unil, P=identity (H already filtered)
+    LocalSubKKT m_localSub; // to build m_localSystem
+
+
+    virtual void solve_impl(vec& x,
+                            const system_type& system,
+                            const vec& rhs,
+                            bool correct) const;
 
     virtual void fetch_blocks(const system_type& system);
     virtual void fetch_unilateral_blocks(const system_type& system);

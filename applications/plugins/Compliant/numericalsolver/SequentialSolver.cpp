@@ -64,8 +64,8 @@ void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) 
 	inv.compute( schur );
 
 #ifndef NDEBUG
-    if( inv.info() == Eigen::NumericalIssue ){
-        std::cerr << SOFA_CLASS_METHOD<<"block Schur is not psd. System solution will be wrong." << std::endl;
+    if( inv.info() != Eigen::Success ){
+        std::cerr << SOFA_CLASS_METHOD<<"non invertible block Schur." << std::endl;
         std::cerr << schur << std::endl;
     }
 #endif
@@ -363,7 +363,7 @@ int PGSSolverClass = core::RegisterObject("Sequential Impulses solver").add< PGS
 
 
 
-// build a projection basis based on constraint types
+// build a projection basis based on constraint types (bilateral vs others)
 // TODO put it in a helper file that can be used by other solvers?
 static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSystem::rmat& Q_unil, const AssembledSystem& sys)
 {
@@ -430,86 +430,112 @@ static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSy
 
 
 
-bool PGSSolver::LocalSubKKT::projected_kkt_bilateral(rmat&H, rmat&P, rmat& Q, rmat&Q_star, const AssembledSystem& sys, real eps, bool only_lower)
+
+
+bool PGSSolver::LocalSubKKT::projected_primal_and_bilateral( AssembledSystem& res,
+                                                              const AssembledSystem& sys,
+                                                              real eps,
+                                                              bool only_lower)
 {
-    scoped::timer step("subsystem kkt-bilateral projection");
+    scoped::timer step("subsystem primal-bilateral");
 
     projection_basis(P, sys.P, sys.isPIdentity);
 
     if(sys.n)
     {
-        unsigned nb_bilaterals = projection_bilateral( Q, Q_star, sys );
+        unsigned nb_bilaterals = projection_bilateral( Q, Q_unil, sys );
 
         if( !nb_bilaterals ) // no bilateral constraints
         {
-            H = rmat();
+            res.H = rmat();
             return false;
         }
         else
         {
-            filter_kkt(H, sys.H, P, Q, sys.J, sys.C, eps, sys.isPIdentity, nb_bilaterals == sys.n, only_lower);
+            filter_kkt(res.H, sys.H, P, Q, sys.J, sys.C, eps, sys.isPIdentity, nb_bilaterals == sys.n, only_lower);
+
+            res.dt = sys.dt;
+            res.m = res.H.rows();
+            res.n = Q_unil.cols();
+            res.P.resize( res.m, res.m );
+            res.P.setIdentity();
+            res.isPIdentity = true;
+
+            if( res.n ) // there are non-bilat constraints
+            {
+                // keep only unilateral constraints in C
+                res.C.resize( res.n, res.n );
+                res.C = Q_unil.transpose() * sys.C * Q_unil;
+
+                // compute J_unil and resize it
+                res.J.resize( res.n, res.m );
+                rmat tmp = Q_unil.transpose() * sys.J * P;
+                for(unsigned i = 0; i < tmp.rows(); ++i)
+                {
+                    res.J.startVec( i );
+                    for(rmat::InnerIterator it(tmp, i); it; ++it) {
+                        res.J.insertBack(i, it.col()) = it.value();
+                    }
+                }
+                res.J.finalize();
+            }
+            else
+            {
+                res.J = rmat();
+                res.C = rmat();
+            }
+
             return true;
         }
     }
     else // no constraints
     {
-        H = rmat();
+        res.H = rmat();
         return false;
     }
 }
 
 
 
+void PGSSolver::LocalSubKKT::toLocal( vec& local, const vec& global ) const
+{
+    assert( local.size() == P.cols() + Q.cols() + Q_unil.cols() );
+    assert( global.size() == P.rows() + Q.rows() );
+
+    local.head( P.cols() ) = P.transpose() * global.head( P.rows() ); // primal
+    local.segment( P.cols(), Q.cols() ) = -Q.transpose() * global.tail( Q.rows() ); // bilaterals
+    if( Q_unil.cols() )
+        local.tail( Q_unil.cols() ) = Q_unil.transpose() * global.tail( Q.rows() ); // other constraints
+}
+
+void PGSSolver::LocalSubKKT::fromLocal( vec& global, const vec& local ) const
+{
+    assert( local.size() == P.cols() + Q.cols() + Q_unil.cols() );
+    assert( global.size() == P.rows() + Q.rows() );
+
+    // TODO optimize copy of localres into res (constraints could be written in one loop)
+
+    global.head( P.rows() ) = P * local.head( P.cols() ); // primal
+    global.tail( Q.rows() ) = Q * local.segment( P.cols(), Q.cols() ); // bilaterals
+    if( Q_unil.cols() )
+        global.tail( Q.rows() ) += Q_unil * local.tail( Q_unil.cols() ); // other constraints
+}
 
 
-
+PGSSolver::PGSSolver()
+    : d_regularization(initData(&d_regularization, std::numeric_limits<SReal>::epsilon(), "regularization", "Optional diagonal Tikhonov regularization on bilateral constraints"))
+{}
 
 
 void PGSSolver::factor(const system_type& system) {
     scoped::timer timer("system factorization");
 
-
-    if( !LocalSubKKT::projected_kkt_bilateral( m_localSystem.H, m_localSub.P, m_localSub.Q, m_localSub.Q_unil, system, 1e-15 ) )
+    if( !m_localSub.projected_primal_and_bilateral( m_localSystem, system, d_regularization.getValue(), response->isSymmetric() ) )
         return SequentialSolver::factor( system );
 
+    fetch_unilateral_blocks( system );
 
-    m_localSystem.dt = system.dt;
-    m_localSystem.m = m_localSystem.H.rows();
-    m_localSystem.n = m_localSub.Q_unil.cols();
-    m_localSystem.P.resize( m_localSystem.m, m_localSystem.m );
-    m_localSystem.P.setIdentity();
-    m_localSystem.isPIdentity = true;
-
-    if( m_localSystem.n ) // there are non-bilat constraints
-    {
-        // keep only unilateral constraints in C
-        m_localSystem.C.resize( m_localSystem.n, m_localSystem.n );
-        m_localSystem.C = m_localSub.Q_unil.transpose() * system.C * m_localSub.Q_unil;
-
-
-        // compute J_unil and resize it
-        m_localSystem.J.resize( m_localSystem.n, m_localSystem.m );
-        rmat tmp = m_localSub.Q_unil.transpose() * system.J * m_localSub.P;
-        for(unsigned i = 0; i < tmp.rows(); ++i)
-        {
-            m_localSystem.J.startVec( i );
-            for(rmat::InnerIterator it(tmp, i); it; ++it) {
-                m_localSystem.J.insertBack(i, it.col()) = it.value();
-            }
-        }
-        m_localSystem.J.finalize();
-    }
-    else
-    {
-        m_localSystem.J = rmat();
-        m_localSystem.C = rmat();
-    }
-
-
-   fetch_unilateral_blocks( system );
-
-
-   SequentialSolver::factor( m_localSystem );
+    SequentialSolver::factor( m_localSystem );
 }
 
 
@@ -520,26 +546,21 @@ void PGSSolver::solve_impl(vec& res,
 
     if( !m_localSystem.H.nonZeros() )
         return SequentialSolver::solve_impl( res, sys, rhs, correct );
-    assert( m_localSystem.m == m_localSub.P.cols() + m_localSub.Q.cols() );
-    assert( m_localSystem.n == m_localSub.Q_unil.cols() );
+
     const size_t localsize = m_localSystem.size();
 
     vec localrhs(localsize), localres(localsize);
 
     // reordering rhs
-    localrhs.head( m_localSub.P.cols() ) = m_localSub.P.transpose() * rhs.head( sys.m ); // primal
-    localrhs.segment( m_localSub.P.cols(), m_localSub.Q.cols() ) = - m_localSub.Q.transpose() * rhs.tail( sys.n ); // bilaterals
-    if( m_localSub.Q_unil.cols() )
-        localrhs.tail( m_localSub.Q_unil.cols() ) = m_localSub.Q_unil.transpose() * rhs.tail( sys.n ); // other constraints
+    m_localSub.toLocal( localrhs, rhs );
+    // reordering res, for warm_start...
+    m_localSub.toLocal( localres, res );
 
+    // performing the solve on the reorganized system
     SequentialSolver::solve_impl( localres, m_localSystem, localrhs, correct );
 
-
     // reordering res
-    res.head( sys.m ) = m_localSub.P * localres.head( m_localSub.P.cols() ); // primal
-    res.tail( sys.n ) = m_localSub.Q * localres.segment( m_localSub.P.cols(), m_localSub.Q.cols() ); // bilaterals
-    if( m_localSub.Q_unil.cols() )
-        res.tail( sys.n ) += m_localSub.Q_unil * localres.tail( m_localSub.Q_unil.cols() ); // other constraints
+    m_localSub.fromLocal( res, localres );
 }
 
 
@@ -585,8 +606,12 @@ void PGSSolver::fetch_unilateral_blocks(const system_type& system)
 
 }
 
-void PGSSolver::fetch_blocks(const system_type& system)
+void PGSSolver::fetch_blocks(const system_type& /*system*/)
 {
+    // it is called by SequentialSolver but does nothing here
+    // PGSSolver call itself his own fetch_unilateral_blocks
+    // the idea is to call fetch_unilateral_blocks with the *original* AssembledSystem
+    // while this function is called with m_localSystem
 }
 
 
