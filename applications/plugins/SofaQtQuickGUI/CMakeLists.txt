@@ -82,8 +82,8 @@ set(CONFIG_FILES
 	data/config/default.ini)
 
 set(QRC_FILES
-	data/sofaQtQuickResources.qrc
-	data/qml/sofaQML.qrc)
+    data/resources.qrc
+    data/qml/qml.qrc)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
