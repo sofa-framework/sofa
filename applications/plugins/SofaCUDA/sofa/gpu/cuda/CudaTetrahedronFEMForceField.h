@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDATETRAHEDRONFEMFORCEFIELD_H
 
 #include "CudaTypes.h"
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 
 
 namespace sofa
@@ -298,9 +298,9 @@ public:
 
     static void reinit(Main* m);
     static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
-    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-    static void addKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, double kFactor, unsigned int& offset);
-    static void addSubKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, double kFactor, unsigned int& offset);
+    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, SReal kFactor, SReal bFactor);
+    static void addKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset);
+    static void addSubKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset);
     static void getRotations(Main* m, VecReal& rotations);
     static void getRotations(Main* m, defaulttype::BaseMatrix * rotations,int offset);
 
@@ -329,10 +329,10 @@ public:
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaTetrahedronFEMForceField_DeclMethods(T) \
     template<> void TetrahedronFEMForceField< T >::reinit(); \
-    template<> void TetrahedronFEMForceField< T >::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v); \
+    template<> void TetrahedronFEMForceField< T >::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v); \
     template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& vecR); \
     template<> void TetrahedronFEMForceField< T >::getRotations(defaulttype::BaseMatrix * vecR,int offset); \
-    template<> void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx); \
+    template<> void TetrahedronFEMForceField< T >::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx); \
     template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset); \
     template<> void TetrahedronFEMForceField< T >::addSubKToMatrix(sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset);
 

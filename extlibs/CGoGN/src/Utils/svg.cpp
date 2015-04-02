@@ -21,6 +21,8 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
+
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/svg.h"
 #include "Utils/cgognStream.h"
 #include <algorithm>
@@ -37,6 +39,7 @@ namespace Utils
 namespace SVG
 {
 
+typedef unsigned int uint32;
 
 const std::vector<Geom::Vec3f>& SvgObj::vertices() const
 {
@@ -104,7 +107,7 @@ void SvgObj::close()
 
 unsigned int SvgObj::nbv() const
 {
-	return m_vertices.size();
+	return uint32(m_vertices.size());
 }
 
 const Geom::Vec3f& SvgObj::P(unsigned int i) const
@@ -171,7 +174,7 @@ void SvgPoints::saveOne(std::ofstream& out, unsigned int i, unsigned int /*bbl*/
 	out << "\" style=\"stroke: none; fill: #";
 
 	out << std::hex;
-	unsigned int wp = out.width(2);
+	std::streamsize wp = out.width(2);
 	char prev = out.fill('0');
 	out << int(m_colors[i][0]*255);
 	out.width(2); out.fill('0');
@@ -196,7 +199,7 @@ void SvgPoints::saveOneDepthAttenuation(std::ofstream& out, float da, unsigned i
 	Geom::Vec3f color = m_colors[i] * da;
 
 	out << std::hex;
-	unsigned int wp = out.width(2);
+	std::streamsize wp = out.width(2);
 	char prev = out.fill('0');
 	out << int(color[0]*255);
 	out.width(2); out.fill('0');
@@ -217,7 +220,8 @@ unsigned int SvgPoints::nbPrimtives() const
 
 void SvgPoints::fillDS(std::vector<DepthSort>& vds, unsigned int idObj) const
 {
-	for (unsigned int i = 0; i< m_vertices.size(); ++i)
+	uint32 nbv = uint32(m_vertices.size());
+	for (unsigned int i = 0; i<nbv ; ++i)
 	{
 		vds.push_back(DepthSort(idObj,i,m_vertices[i][2]));
 	}
@@ -238,7 +242,7 @@ void SvgLines::saveOne(std::ofstream& out, unsigned int i, unsigned int /*bbl*/)
 
 	out << "<polyline fill=\"none\" stroke=\"#";
 	out << std::hex;
-	unsigned int wp = out.width(2);
+	std::streamsize wp = out.width(2);
 	char prev = out.fill('0');
 	out << int(m_colors[2*i][0]*255);
 	out.width(2); out.fill('0');
@@ -261,7 +265,7 @@ void SvgLines::saveOneDepthAttenuation(std::ofstream& out, float da, unsigned in
 
 	out << "<polyline fill=\"none\" stroke=\"#";
 	out << std::hex;
-	unsigned int wp = out.width(2);
+	std::streamsize wp = out.width(2);
 	char prev = out.fill('0');
 	out << int(color[0]*255);
 	out.width(2); out.fill('0');
@@ -318,7 +322,7 @@ void SvgStrings::saveOne(std::ofstream& out, unsigned int i, unsigned int bbl) c
 	out << "<tspan style=\"fill:#";
 
 	out << std::hex;
-	unsigned int wp = out.width(2);
+	std::streamsize wp = out.width(2);
 	char prev = out.fill('0');
 	out << int(m_colors[i][0]*255);
 	out.width(2); out.fill('0');
@@ -345,7 +349,7 @@ void SvgStrings::saveOneDepthAttenuation(std::ofstream& out, float da, unsigned 
 	out << "<tspan style=\"fill:#";
 
 	out << std::hex;
-	unsigned int wp = out.width(2);
+	std::streamsize wp = out.width(2);
 	char prev = out.fill('0');
 	out << int(color[0]*255);
 	out.width(2); out.fill('0');

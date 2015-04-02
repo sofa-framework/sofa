@@ -109,7 +109,7 @@ public:
         , deformationMethod ( initData ( &deformationMethod,"deformationMethod","" ) )
         , interpolation ( initData ( &interpolation,"interpolation","" ) )
         , weightByVolumeChange ( initData ( &weightByVolumeChange,false,"weightByVolumeChange","for images representing densities, weight intensities according to the local volume variation" ) )
-        , dimensions ( initData ( &dimensions,Vec<3,unsigned int>(1,1,1),"dimensions","output image dimensions" ) )
+        , dimensions ( initData ( &dimensions,defaulttype::Vec<3,unsigned int>(1,1,1),"dimensions","output image dimensions" ) )
         , param ( initData ( &param,"param","Parameters" ) )
         , inputImage(initData(&inputImage,ImageTypes(),"inputImage",""))
         , inputTransform(initData(&inputTransform,TransformType(),"inputTransform",""))
@@ -333,14 +333,14 @@ protected:
             Coord f = p[0]*g[0]*g[2]*g[1] + p[1]*w[0]*g[2]*g[1] + p[2]*w[0]*w[2]*g[1] + p[3]*g[0]*w[2]*g[1] + p[4]*g[0]*g[2]*w[1] + p[5]*w[0]*g[2]*w[1] + p[6]*w[0]*w[2]*w[1] + p[7]*g[0]*w[2]*w[1] - x; // function to minimize
             if(f.norm2()<tolerance) {  return; }
 
-            Mat<3,3,Real> df;
+            defaulttype::Mat<3,3,Real> df;
             df[0] = - p[0]*g[2]*g[1] + p[1]*g[2]*g[1] + p[2]*w[2]*g[1] - p[3]*w[2]*g[1] - p[4]*g[2]*w[1] + p[5]*g[2]*w[1] + p[6]*w[2]*w[1] - p[7]*w[2]*w[1];
             df[1] = - p[0]*g[0]*g[2] - p[1]*w[0]*g[2] - p[2]*w[0]*w[2] - p[3]*g[0]*w[2] + p[4]*g[0]*g[2] + p[5]*w[0]*g[2] + p[6]*w[0]*w[2] + p[7]*g[0]*w[2];
             df[2] = - p[0]*g[0]*g[1] - p[1]*w[0]*g[1] + p[2]*w[0]*g[1] + p[3]*g[0]*g[1] - p[4]*g[0]*w[1] - p[5]*w[0]*w[1] + p[6]*w[0]*w[1] + p[7]*g[0]*w[1];
 
             Real det=determinant(df);
             if ( -MIN_DETERMINANT<=det && det<=MIN_DETERMINANT) { return; }
-            Mat<3,3,Real> dfinv;
+            defaulttype::Mat<3,3,Real> dfinv;
             dfinv(0,0)= (df(1,1)*df(2,2) - df(2,1)*df(1,2))/det;
             dfinv(0,1)= (df(1,2)*df(2,0) - df(2,2)*df(1,0))/det;
             dfinv(0,2)= (df(1,0)*df(2,1) - df(2,0)*df(1,1))/det;

@@ -1,0 +1,58 @@
+=========== Installer llvm+clang ==================
+To compile stylecheck you need to install LLVM & CLANG as well as the development headers.
+
+Stylecheck is using llvm/clang from svn revision: 211571
+To compile llvm/clang you can follow the step-by-step procedure available there (specifying the adequate revision number):
+http://clang.llvm.org/get_started.html
+
+Once llvm & clang are working and install on your system you can compile
+stylecheck using the following procedure
+========== Compiler stylecheck ====================
+# cd YOURSOFAROOT
+# mkdir tools/stylechecker-build
+# cd tools/stylechecker-build 
+# cmake ../stylechecker -DLLVM_PATH=YOUR_PATH_TO_LLVM_SOURCE
+# make
+# sudo make install 
+
+In case you cannot install the tool using make install you can use it 
+from any other path but you need to copy some standard headers libraries from clang.
+You can find more info in this page: 
+http://clang.llvm.org/docs/LibTooling.html
+
+========== Tester stylecheck ====================
+# cd YOURSOFAROOT
+# cd tools/stylechecker/
+# stylecheck.exe test1.cpp  --
+
+It should display a bunch of warning. 
+
+========== Wrapper stylecheck dans  un script de build ====================
+
+---------- dans un script fakegcc.sh copier-coller ----------
+#!/bin/bash
+# A quick and dirty script to add extra commands in front of a sofa compilation.
+# You can replace g++ with clang++ 
+# You can add extra checking tools like include-what-you-want or cppcheck
+# My advice is to first use the -Q0 qualifier, fix sofa, then -Q1 then -Q2 to increase 
+# the codebase quality
+
+# Take the last item from the command line
+FILENAME_SRC=${BASH_ARGV[0]}
+
+# Take the last -2 item from the command line 
+FILENAME_OUT=${BASH_ARGV[2]}
+
+# Ok so if what we consider as the filename to compîle start with a "-" we should not compile it. 
+if [[ $FILENAME_SRC != -* ]]
+then
+	/usr/local/bin/stylecheck.exe $FILENAME_SRC -Q0 -Eframework/sofa/helper -Eframework/sofa/defaulttype -Eframework/sofa/core -Esimulation/common -- $@
+fi
+g++ $@
+------------------------------------------------
+
+
+Et après il faut faire une nouveau répertoire de build sofa.
+mkdir build-sofa-stylecheck
+cd build-sofa-stylecheck  
+CXX=pathto/fakegcc.sh CC=pathto/fakegcc.sh cmake pathto/sofa-src

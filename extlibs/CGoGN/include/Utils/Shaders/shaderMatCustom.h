@@ -9,7 +9,9 @@
 
 using namespace CGoGN;
 
-class ShaderMatCustom : public Utils::GLSLShader
+#include "Utils/dll.h"
+
+class CGoGN_UTILS_API ShaderMatCustom : public Utils::GLSLShader
 {
 protected:
 	// flag color per vertex or not

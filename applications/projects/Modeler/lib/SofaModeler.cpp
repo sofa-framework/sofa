@@ -52,6 +52,8 @@
 #include <QDesktopServices>
 #include <QSettings>
 
+using namespace sofa::core;
+
 namespace sofa
 {
 
@@ -608,7 +610,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
         typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
         std::pair< multimapIterator,multimapIterator > range;
         range=mapSofa.equal_range(curTab);
-        for (multimapIterator it=range.first; it!=range.second; it++)
+        for (multimapIterator it=range.first; it!=range.second; ++it)
         {
             removeTemporaryFiles(it->second->name());
             it->second->kill();
@@ -618,7 +620,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
 
     //Find the scene in the window menu
     std::map< int, QWidget* >::const_iterator it;
-    for (it = mapWindow.begin(); it!=mapWindow.end(); it++)
+    for (it = mapWindow.begin(); it!=mapWindow.end(); ++it)
     {
         if (it->second == curTab) break;
     }
@@ -1228,7 +1230,7 @@ void SofaModeler::sofaExited()
     removeTemporaryFiles(p->name());
     if (p->normalExit()) return;
     typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
-    for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); it++)
+    for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); ++it)
     {
         if (it->second == p)
         {

@@ -3,7 +3,7 @@
 #define COMPLIANT_ASSEMBLEDMAPPING_H
 
 #include <sofa/core/Mapping.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa {
 	namespace component {
@@ -83,27 +83,23 @@ namespace sofa {
 				}
 
 
-                virtual const defaulttype::BaseMatrix* getK() {
+                virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId childForce ) {
 
                     // trigger assembly
                     this->assemble_geometric(this->in_pos(),
-                                             this->out_force() );
-                    
+                                             this->out_force( childForce ) );
+                }
+
+                virtual const defaulttype::BaseMatrix* getK() {
+
                     if( geometric.compressedMatrix.nonZeros() ) return &geometric;
-                    else return 0;
-                    
+                    else return NULL;
                 }
 
                 virtual void applyDJT(const core::MechanicalParams* mparams,
                                       core::MultiVecDerivId inForce,
                                       core::ConstMultiVecDerivId /* inDx */ ) {
-                    // TODO FIXME
-                    // trigger K recomputation 
-                    this->getK();
-                    
-                    std::cout << "WARNING: geometric stiffness might be reassembled everytime !"
-                              << std::endl;
-                    
+
                     if( geometric.compressedMatrix.nonZeros() ) {
 
                         const Data<typename self::InVecDeriv>& inDx =
@@ -146,12 +142,10 @@ namespace sofa {
 				}
 
 
-                out_force_type out_force() {
+                out_force_type out_force( core::ConstMultiVecDerivId outForce ) {
 
 					const core::State<Out>* toModel = this->getToModel();
-					assert( toModel );
-					
-					core::ConstMultiVecDerivId outForce = core::ConstVecDerivId::force();
+                    assert( toModel );
 	  
 					const typename self::OutDataVecDeriv* out = outForce[toModel].read();
 					

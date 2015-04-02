@@ -31,13 +31,15 @@
 
 #include <string>
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderPhong : public ClippingShader
+class CGoGN_UTILS_API ShaderPhong : public ClippingShader
 {
 protected:
 	// flag color per vertex or not
@@ -46,8 +48,10 @@ protected:
 	bool m_with_eyepos;	
 
 	// shader sources OGL3
-    static std::string vertexShaderText;
-    static std::string fragmentShaderText;
+	static std::string vertexShaderText;
+	static std::string fragmentShaderText;
+	static std::string vertexShaderClipText;
+	static std::string fragmentShaderClipText;
 
     // uniform locations
 	CGoGNGLuint m_unif_ambiant;
@@ -56,6 +60,7 @@ protected:
 	CGoGNGLuint m_unif_shininess;
 	CGoGNGLuint m_unif_lightPos;
 	CGoGNGLuint m_unif_eyePos;
+	CGoGNGLuint m_unif_backColor;
 
 	//values
 	Geom::Vec4f m_ambiant;
@@ -64,10 +69,15 @@ protected:
 	float m_shininess;
 	Geom::Vec3f m_lightPos;
 	Geom::Vec3f m_eyePos;
+	Geom::Vec4f m_backColor;
 
 	VBO* m_vboPos;
 	VBO* m_vboNormal;
 	VBO* m_vboColor;
+
+	/// clipping
+	CGoGNGLuint m_unif_planeClip;
+	Geom::Vec4f m_planeClip;
 
 	void getLocations();
 
@@ -76,7 +86,7 @@ protected:
 	void restoreUniformsAttribs();
 
 public:
-	ShaderPhong(bool doubleSided = false, bool withEyePosition=false);
+	ShaderPhong(bool withClipping = false ,bool doubleSided = false, bool withEyePosition=false);
 
 	// inviduals parameter setting functions
 	void setAmbiant(const Geom::Vec4f& ambiant);
@@ -88,6 +98,8 @@ public:
 	void setShininess(float shininess);
 
 	void setLightPosition(const Geom::Vec3f& lp);
+
+	void setBackColor(const Geom::Vec4f& back);
 	
 	/// set eye position for VR environement
 	void setEyePosition(const Geom::Vec3f& ep);
@@ -115,6 +127,10 @@ public:
 	// optional attributes
 	unsigned int setAttributeColor(VBO* vbo);
 	void unsetAttributeColor();
+
+	void setClippingPlane(const Geom::Vec4f& plane);
+
+	inline void setNoClippingPlane() { setClippingPlane(Geom::Vec4f(0.0f,0.0f,0.0f,0.0f)); }
 };
 
 } // namespace Utils

@@ -172,7 +172,7 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
             force[i] = Deriv();
     }
 
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -258,7 +258,7 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
             force[i] = Deriv();
     }
 
-    const MatrixDeriv& c = *mstate->getC();
+    const MatrixDeriv& c = mstate->read(ConstMatrixDerivId::holonomicC())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 

@@ -24,13 +24,13 @@
 ******************************************************************************/
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/misc/ReadState.h>
-#include <sofa/component/misc/WriteState.h>
-#include <sofa/component/misc/CompareState.h>
-#include <sofa/component/misc/ReadTopology.h>
-#include <sofa/component/misc/WriteTopology.h>
-#include <sofa/component/misc/CompareTopology.h>
-#include <sofa/component/init.h>
+#include <SofaLoader/ReadState.h>
+#include <SofaExporter/WriteState.h>
+#include <SofaValidation/CompareState.h>
+#include <SofaLoader/ReadTopology.h>
+#include <SofaExporter/WriteTopology.h>
+#include <SofaValidation/CompareTopology.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/helper/system/thread/TimeoutWatchdog.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>

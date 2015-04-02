@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaSphereModel.h"
-#include <sofa/component/collision/SphereModel.inl>
+#include <SofaBaseCollision/SphereModel.inl>
 #include <sofa/core/ObjectFactory.h>
 namespace sofa
 {

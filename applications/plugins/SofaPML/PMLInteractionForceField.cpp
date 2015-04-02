@@ -34,8 +34,8 @@
 
 #include "PMLInteractionForceField.h"
 
-#include "sofa/component/container/MechanicalObject.h"
-#include "sofa/component/interactionforcefield/StiffSpringForceField.h"
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaDeformable/StiffSpringForceField.h>
 
 #include <PhysicalModel.h>
 #include <MultiComponent.h>
@@ -87,8 +87,8 @@ void PMLInteractionForceField::createForceField()
 
 void PMLInteractionForceField::createSprings(StructuralComponent * body)
 {
-    const Vec3Types::VecCoord& P1 = *((MechanicalObject<Vec3Types>*)body1->getMechanicalState().get())->getX();
-    const Vec3Types::VecCoord& P2 = *((MechanicalObject<Vec3Types>*)body2->getMechanicalState().get())->getX();
+    const Vec3Types::VecCoord& P1 = ((MechanicalObject<Vec3Types>*)body1->getMechanicalState().get())->read(core::ConstVecCoordId::position())->getValue();
+    const Vec3Types::VecCoord& P2 = ((MechanicalObject<Vec3Types>*)body2->getMechanicalState().get())->read(core::ConstVecCoordId::position())->getValue();
     if (kd==0.0)kd=5.0;
     if (ks==0.0)ks=500.0;
     for (unsigned int i=0; i<body->getNumberOfCells() ; i++)

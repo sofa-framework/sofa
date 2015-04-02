@@ -36,7 +36,7 @@ namespace simulation
 void SolveVisitor::processSolver(simulation::Node* node, core::behavior::OdeSolver* s)
 {
     sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
-    s->solve(params /* PARAMS FIRST */, dt, x, v);
+    s->solve(params, dt, x, v);
 
     sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }

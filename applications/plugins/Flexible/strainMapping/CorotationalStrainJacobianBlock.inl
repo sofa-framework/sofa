@@ -501,8 +501,8 @@ public:
         return K;
     }
 
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
-    void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
+    void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         // VERY UNSTABLE
         if( _geometricStiffnessData.degenerated() ) return;
@@ -524,7 +524,7 @@ public:
             }*/
         }
     }
-    void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         if( _geometricStiffnessData.degenerated() ) return;
 
@@ -545,7 +545,7 @@ public:
             }*/
         }
     }
-    void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         if( _geometricStiffnessData.degenerated() ) return;  // inverted or too flat -> no geometric stiffness for robustness
 
@@ -772,8 +772,8 @@ public:
 
         return K;
     }
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
-    void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
+    void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         if( _geometricStiffnessData.degenerated() ) return;
 
@@ -781,11 +781,11 @@ public:
         helper::Decompose<Real>::QRDecompositionGradient_dQ( _R, *_geometricStiffnessData.invT(), dx.getF(), dR );
         df.getF() += dR * StressVoigtToMat( childForce.getStrain() ) * (Real)kfactor;
     }
-    void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         addDForce_svd( df, dx, childForce, kfactor );
     }
-    void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         if( _geometricStiffnessData.degenerated() ) return;
 
@@ -917,17 +917,17 @@ public:
         K*=childForce.getStrain()[0]/this->nrm;
         return K;
     }
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
-    void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
+    void addDForce_qr( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         df.getF()+=(dx.getF() - _R*_R.transposed()*dx.getF()) * (Real)kfactor * childForce.getStrain()[0]/this->nrm;
     }
 
-    void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce_polar( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         addDForce_qr( df, dx, childForce, kfactor );
     }
-    void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce_svd( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         addDForce_qr( df, dx, childForce, kfactor );
     }
@@ -1097,16 +1097,16 @@ public:
         // TODO
         return K;
     }
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
-    void addDForce_qr( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor*/ )
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
+    void addDForce_qr( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const SReal& /*kfactor*/ )
     {
         // TODO
     }
-    void addDForce_polar( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor*/ )
+    void addDForce_polar( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const SReal& /*kfactor*/ )
     {
         // TODO
     }
-    void addDForce_svd( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const double& /*kfactor*/ )
+    void addDForce_svd( InDeriv& /*df*/, const InDeriv& /*dx*/, const OutDeriv& /*childForce*/, const SReal& /*kfactor*/ )
     {
         // TODO
     }

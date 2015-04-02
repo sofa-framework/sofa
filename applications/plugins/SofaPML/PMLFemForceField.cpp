@@ -34,13 +34,13 @@
 
 #include "PMLFemForceField.h"
 
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
-#include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/mass/DiagonalMass.h>
-#include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseMechanics/DiagonalMass.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
+#include <SofaBaseTopology/MeshTopology.h>
 #include <PhysicalModel.h>
 #include <MultiComponent.h>
 #include <PhysicalProperties/CellProperties.h>
@@ -160,7 +160,7 @@ BaseMeshTopology::Tetra * PMLFemForceField::Tesselate(Cell* pCell)
 
 Vector3 PMLFemForceField::getDOF(unsigned int index)
 {
-    return (*((MechanicalState<Vec3Types>*)mmodel.get())->getX())[index];
+    return ((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue()[index];
 }
 
 //creation of the mechanical model
@@ -264,7 +264,7 @@ void PMLFemForceField::createMass(StructuralComponent* body)
         if (density.size() != 0)
         {
             //BUILDING WITH DENSITY PROPERTY
-            if (density.size() > 1 && density.size() != ((MechanicalState<Vec3Types>*)mmodel.get())->getX()->size())
+            if (density.size() > 1 && density.size() != ((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue().size())
             {
                 cerr<<"WARNING building "<<name<<" object : density property not properly defined."<<endl;
                 return;
@@ -272,7 +272,7 @@ void PMLFemForceField::createMass(StructuralComponent* body)
             else
             {
                 //init the mass list
-                for (unsigned int i=0 ; i<((MechanicalState<Vec3Types>*)mmodel.get())->getX()->size() ; i++)
+                for (unsigned int i=0 ; i<((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue().size() ; i++)
                     massList.push_back(0.0);
 
                 SReal m;
@@ -313,7 +313,7 @@ void PMLFemForceField::createMass(StructuralComponent* body)
         else
         {
             //if there nbDofs values --> diagonal mass (one value for each dof)
-            if (massList.size() == ((MechanicalState<Vec3Types>*)mmodel.get())->getX()->size())
+            if (massList.size() == ((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue().size())
             {
                 mass = New<DiagonalMass<Vec3Types,SReal> >();
                 for (unsigned int i=0 ; i<massList.size() ; i++)
@@ -436,17 +436,17 @@ bool PMLFemForceField::FusionBody(PMLBody* body)
     //-----  Fusion Mechanical Model
     map<unsigned int, unsigned int>::iterator it = femBody->AtomsToDOFsIndexes.begin();
     map<unsigned int, unsigned int>::iterator itt;
-    unsigned int X1size = ((MechanicalState<Vec3Types>*)mmodel.get())->getX()->size();
+    unsigned int X1size = ((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue().size();
     while (it !=  femBody->AtomsToDOFsIndexes.end())
     {
         //if femBody's index doesn't exist in current list, we insert it
         if ( (itt = this->AtomsToDOFsIndexes.find( (*it).first)) == this->AtomsToDOFsIndexes.end() )
         {
-            int cpt = ((MechanicalState<Vec3Types>*)mmodel.get())->getX()->size();
+            int cpt = ((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue().size();
             mmodel->resize( cpt+1);
             this->AtomsToDOFsIndexes.insert(std::pair<unsigned int, unsigned int>((*it).first, cpt ));
             oldToNewIndex.insert(std::pair<unsigned int, unsigned int>((*it).second, cpt ));
-            ((MechanicalState<Vec3Types>*)mmodel.get())->writePositions()[cpt] = (*((MechanicalState<Vec3Types>*)(femBody->getMechanicalState().get()))->getX())[(*it).second];
+            ((MechanicalState<Vec3Types>*)mmodel.get())->writePositions()[cpt] = ((MechanicalState<Vec3Types>*)(femBody->getMechanicalState().get()))->read(core::ConstVecCoordId::position())->getValue()[(*it).second];
         }
         else
             oldToNewIndex.insert(std::pair<unsigned int, unsigned int>((*it).second, (*itt).second) );
@@ -495,7 +495,7 @@ bool PMLFemForceField::FusionBody(PMLBody* body)
     parentNode->addObject(mass);
     SReal m1,m2;
 
-    for (unsigned int i=0 ; i< ((MechanicalState<Vec3Types>*)mmodel.get())->getX()->size(); i++)
+    for (unsigned int i=0 ; i< ((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue().size(); i++)
     {
         m1 = m2 = 0.0;
         if (massList.size() >0)

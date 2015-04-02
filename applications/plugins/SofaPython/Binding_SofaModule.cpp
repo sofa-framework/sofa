@@ -41,6 +41,7 @@
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
+using namespace sofa::defaulttype;
 using namespace sofa::component;
 
 #include <sofa/simulation/common/Node.h>
@@ -234,7 +235,7 @@ extern "C" PyObject * Sofa_setViewerResolution(PyObject * /*self*/, PyObject * a
 extern "C" PyObject * Sofa_setViewerBackgroundColor(PyObject * /*self*/, PyObject * args)
 {
 	float r = 0.0f, g = 0.0f, b = 0.0f;
-	sofa::defaulttype::Vector3 color;
+	Vector3 color;
     if (!PyArg_ParseTuple(args, "fff", &r, &g, &b))
     {
         PyErr_BadArgument();
@@ -285,7 +286,7 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
         SP_MESSAGE_ERROR( "setViewerCamera: no Viewer!" )
         return Py_BuildValue("i",-1);
     }
-    viewer->setView(sofa::defaulttype::Vector3(px,py,pz),sofa::defaulttype::Quat(qx,qy,qz,qw));
+    viewer->setView(Vector3(px,py,pz),Quat(qx,qy,qz,qw));
 
     return Py_BuildValue("i",0);
 }
@@ -293,8 +294,8 @@ extern "C" PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
 
 extern "C" PyObject * Sofa_getViewerCamera(PyObject * /*self*/, PyObject *)
 {
-    sofa::defaulttype::Vector3 pos;
-    sofa::defaulttype::Quat orient;
+    Vec3d pos;
+    Quat orient;
 
 
     BaseGUI *gui = GUIManager::getGUI();

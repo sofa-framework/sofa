@@ -29,13 +29,15 @@
 #include "Utils/clippingShader.h"
 #include "Geometry/vector_gen.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderScalarField : public ClippingShader
+class CGoGN_UTILS_API ShaderScalarField : public ClippingShader
 {
 protected:
 	// shader sources

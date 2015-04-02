@@ -38,6 +38,8 @@
 
 //#include "MechanicalIntegration.h"
 
+using namespace sofa::core;
+
 namespace sofa
 {
 
@@ -45,7 +47,7 @@ namespace simulation
 {
 
 
-AnimateVisitor::AnimateVisitor(const core::ExecParams* params /* PARAMS FIRST */, double dt)
+AnimateVisitor::AnimateVisitor(const core::ExecParams* params, SReal dt)
     : Visitor(params)
     , dt(dt)
 #ifdef SOFA_HAVE_EIGEN2
@@ -91,7 +93,7 @@ void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::coll
     sofa::helper::AdvancedTimer::stepBegin("begin collision",obj);
     {
         CollisionBeginEvent evBegin;
-        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evBegin);
+        PropagateEventVisitor eventPropagation( params, &evBegin);
         eventPropagation.execute(node->getContext());
     }
     sofa::helper::AdvancedTimer::stepEnd("begin collision",obj);
@@ -102,7 +104,7 @@ void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::coll
     sofa::helper::AdvancedTimer::stepBegin("end collision",obj);
     {
         CollisionEndEvent evEnd;
-        PropagateEventVisitor eventPropagation( params /* PARAMS FIRST */, &evEnd);
+        PropagateEventVisitor eventPropagation( params, &evEnd);
         eventPropagation.execute(node->getContext());
     }
     sofa::helper::AdvancedTimer::stepEnd("end collision",obj);
@@ -116,7 +118,7 @@ void AnimateVisitor::processOdeSolver(simulation::Node* node, core::behavior::Od
     /*    MechanicalIntegrationVisitor act(getDt());
         node->execute(&act);*/
 //  cerr<<"AnimateVisitor::processOdeSolver "<<solver->getName()<<endl;
-    solver->solve(params /* PARAMS FIRST */, getDt());
+    solver->solve(params, getDt());
     sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 
@@ -167,16 +169,16 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     if (!node->solver.empty() )
     {
         sofa::helper::AdvancedTimer::StepVar timer("Mechanical",node);
-        double nextTime = node->getTime() + dt;
+        SReal nextTime = node->getTime() + dt;
 
 
         {
             IntegrateBeginEvent evBegin;
-            PropagateEventVisitor eventPropagation( this->params /* PARAMS FIRST */, &evBegin);
+            PropagateEventVisitor eventPropagation( this->params, &evBegin);
             eventPropagation.execute(node);
         }
 
-        MechanicalBeginIntegrationVisitor beginVisitor(this->params /* PARAMS FIRST */, dt);
+        MechanicalBeginIntegrationVisitor beginVisitor(this->params, dt);
         node->execute(&beginVisitor);
 
         sofa::core::MechanicalParams m_mparams(*this->params);
@@ -186,8 +188,8 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         {
             unsigned int constraintId=0;
             core::ConstraintParams cparams;
-            //MechanicalAccumulateConstraint(&m_mparams /* PARAMS FIRST */, constraintId, VecCoordId::position()).execute(node);
-            simulation::MechanicalAccumulateConstraint(&cparams /* PARAMS FIRST */, core::MatrixDerivId::holonomicC(),constraintId).execute(node);
+            //MechanicalAccumulateConstraint(&m_mparams, constraintId, VecCoordId::position()).execute(node);
+            simulation::MechanicalAccumulateConstraint(&cparams, core::MatrixDerivId::holonomicC(),constraintId).execute(node);
         }
 #endif
 
@@ -195,22 +197,22 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         {
             ctime_t t0 = begin(node, node->solver[i]);
             //cerr<<"AnimateVisitor::processNodeTpDown  solver  "<<node->solver[i]->getName()<<endl;
-            node->solver[i]->solve(params /* PARAMS FIRST */, getDt());
+            node->solver[i]->solve(params, getDt());
             end(node, node->solver[i], t0);
         }
 
-        MechanicalPropagatePositionAndVelocityVisitor(&m_mparams /* PARAMS FIRST */, nextTime,VecCoordId::position(),VecDerivId::velocity(),
+        MechanicalPropagatePositionAndVelocityVisitor(&m_mparams, nextTime,VecCoordId::position(),VecDerivId::velocity(),
 #ifdef SOFA_SUPPORT_MAPPED_MASS
                 VecDerivId::dx(),
 #endif
                 true).execute( node );
 
-        MechanicalEndIntegrationVisitor endVisitor(this->params /* PARAMS FIRST */, dt);
+        MechanicalEndIntegrationVisitor endVisitor(this->params, dt);
         node->execute(&endVisitor);
 
         {
             IntegrateEndEvent evBegin;
-            PropagateEventVisitor eventPropagation(this->params /* PARAMS FIRST */, &evBegin);
+            PropagateEventVisitor eventPropagation(this->params, &evBegin);
             eventPropagation.execute(node);
         }
 

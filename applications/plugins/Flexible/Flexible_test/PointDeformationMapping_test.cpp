@@ -27,7 +27,7 @@
 
 // Including component
 
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include "../deformationMapping/LinearMapping.h"
 
 #include <Mapping_test.h>

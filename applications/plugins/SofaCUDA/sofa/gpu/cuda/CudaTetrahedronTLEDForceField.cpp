@@ -27,7 +27,7 @@
 #include "mycuda.h"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 
 namespace sofa
 {
@@ -213,7 +213,7 @@ void CudaTetrahedronTLEDForceField::reinit()
      */
     std::cout << "CudaTetrahedronTLEDForceField: precomputations..." << std::endl;
 
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     nelems.clear();
 
     // Shape function natural derivatives DhDr
@@ -370,7 +370,7 @@ void CudaTetrahedronTLEDForceField::addForce (const sofa::core::MechanicalParams
     const VecCoord& x  =   dataX.getValue()  ;
 
     // Gets initial positions (allow to compute displacements by doing the difference between initial and current positions)
-    const VecCoord& x0 = *mstate->getX0();
+    const VecCoord& x0 = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     f.resize(x.size());
     CudaTetrahedronTLEDForceField3f_addForce(

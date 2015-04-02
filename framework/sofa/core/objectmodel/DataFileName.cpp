@@ -34,7 +34,7 @@ namespace core
 namespace objectmodel
 {
 
-bool DataFileName::read( std::string& s )
+bool DataFileName::read(const std::string& s )
 {
 	bool ret = Inherit::read(s);
 	if (ret) updatePath();

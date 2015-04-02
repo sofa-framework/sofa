@@ -3,7 +3,7 @@
 	<Node name="M1">
 		<RungeKutta4 />
 		<!--<CGImplicit iterations="10" tolerance="1e-15" threshold="1e-15" />-->
-		<!--<EulerImplicit />                <Object type="CGLinearSolver" iterations="10" tolerance="1e-15" threshold="1e-15"/>-->
+		<!--<EulerImplicit />                <CGLinearSolver iterations="10" tolerance="1e-15" threshold="1e-15"/>-->
 		<MechanicalObject template="CudaVec3f" />
 <!--		<UniformMass totalmass="20" /> -->
 <?php echo '<UniformMass totalmass="'.(20*$size).'" />'."\n"; ?>

@@ -181,6 +181,18 @@ if(SOFA-MISC_DUMP_VISITOR_INFO)
 endif()
 
 
+if( NOT WIN32 )
+    # Even if SOFA code should remain C++98 compatible (so it can be compiled with most compilers),
+    # it can be interesting to compile it with a C++11 STL.
+    sofa_option(SOFA-MISC_C++11 BOOL OFF "Compile as C++11 (more optimized STL)")
+    if(SOFA-MISC_C++11)
+#        add_definitions(-std=c++11) # is also adding the flag to the C compiler...
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    endif()
+endif()
+
+
+
 ## tutorials
 if(PS3)
     set(tutorial_default OFF)

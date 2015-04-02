@@ -31,7 +31,7 @@
 #include "../deformationMapping/LinearJacobianBlock_rigid.inl"
 #include "../deformationMapping/LinearJacobianBlock_affine.inl"
 #include "../deformationMapping/LinearJacobianBlock_quadratic.inl"
-//#include <sofa/component/container/MechanicalObject.inl>
+//#include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/core/State.inl>
 
 namespace sofa

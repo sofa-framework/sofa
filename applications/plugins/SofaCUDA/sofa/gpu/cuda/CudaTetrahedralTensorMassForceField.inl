@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDATETRAHEDRALTENSORMASSFORCEFIELD_INL
 
 #include <sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.h>
-#include <sofa/component/forcefield/TetrahedralTensorMassForceField.inl>
+#include <SofaMiscFem/TetrahedralTensorMassForceField.inl>
 
 namespace sofa
 {
@@ -55,7 +55,7 @@ namespace forcefield
 using namespace gpu::cuda;
 
     template <>
-    void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
+    void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
     {
 		sofa::helper::AdvancedTimer::stepBegin("addForceTetraTensorMass");
 
@@ -76,7 +76,7 @@ using namespace gpu::cuda;
     }
 
     template <>
-    void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+    void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
     {
 		sofa::helper::AdvancedTimer::stepBegin("addDForceTetraTensorMass");
 
@@ -141,7 +141,7 @@ using namespace gpu::cuda;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
     template <>
-    void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
+    void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
     {
         VecDeriv& f = *d_f.beginEdit();
         const VecCoord& x = d_x.getValue();
@@ -161,7 +161,7 @@ using namespace gpu::cuda;
     }
 
     template <>
-    void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+    void TetrahedralTensorMassForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
     {
         VecDeriv& df = *d_df.beginEdit();
         const VecDeriv& dx = d_dx.getValue();

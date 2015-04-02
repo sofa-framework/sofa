@@ -1,0 +1,163 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
+*                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#ifndef MergeROIs_H_
+#define MergeROIs_H_
+
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
+#pragma once
+#endif
+
+#include <sofa/core/DataEngine.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/vectorData.h>
+#include <sofa/helper/SVector.h>
+
+
+namespace sofa
+{
+namespace component
+{
+namespace engine
+{
+
+/**
+ * This class merges a list of ROIs (vector<Indices>) into a single Data (vector<svector<Indices>>)
+ */
+
+class MergeROIs : public sofa::core::DataEngine
+{
+public:
+    typedef core::DataEngine Inherited;
+
+    SOFA_CLASS(MergeROIs,Inherited);
+    typedef unsigned int Index;
+
+    //Input
+    Data<unsigned int> nbROIs;
+    helper::vectorData<helper::vector<Index> > f_indices;
+
+    //Output
+    Data<helper::vector<helper::SVector<Index> > > f_outputIndices;
+
+    virtual std::string getTemplateName() const    {        return templateName(this);    }
+    static std::string templateName(const MergeROIs* = NULL)    {        return std::string();    }
+
+    virtual void init()
+    {
+        addInput(&nbROIs);
+        f_indices.resize(nbROIs.getValue());
+        addOutput(&f_outputIndices);
+        setDirtyValue();
+    }
+
+    virtual void reinit()
+    {
+        f_indices.resize(nbROIs.getValue());
+        update();
+    }
+
+
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
+    void parse ( core::objectmodel::BaseObjectDescription* arg )
+    {
+        f_indices.parseSizeData(arg, nbROIs);
+        Inherit1::parse(arg);
+    }
+
+    /// Assign the field values stored in the given map of name -> value pairs
+    void parseFields ( const std::map<std::string,std::string*>& str )
+    {
+        f_indices.parseFieldsSizeData(str, nbROIs);
+        Inherit1::parseFields(str);
+    }
+
+protected:
+
+    MergeROIs(): Inherited()
+        , nbROIs ( initData ( &nbROIs,(unsigned int)0,"nbROIs","size of indices/value vector" ) )
+        , f_indices(this, "indices", "ROIs")
+        , f_outputIndices(initData(&f_outputIndices, "roiIndices", "Vector of ROIs"))
+    {
+    }
+
+    virtual ~MergeROIs() {}
+
+    virtual void update()
+    {
+        cleanDirty();
+
+        size_t nb = nbROIs.getValue();
+        f_indices.resize(nb);
+        if(!nb) return;
+
+        helper::WriteAccessor< Data< helper::vector<helper::SVector<Index> > > > outputIndices = f_outputIndices;
+        outputIndices.resize(nb);
+
+        for(size_t j=0; j<nb;j++)
+        {
+            helper::ReadAccessor< Data< helper::vector<Index> > > indices = f_indices[j];
+            outputIndices[j].resize(indices.size());
+            for(size_t i=0 ; i<indices.size() ; i++) outputIndices[j][i]=indices[i];
+        }
+    }
+
+    template<class t>
+    void createInputDataVector(unsigned int nb, helper::vector< Data<t>* >& vf, std::string name, std::string help)
+    {
+        vf.reserve(nb);
+        for (unsigned int i=vf.size(); i<nb; i++)
+        {
+            std::ostringstream oname; oname << name << (1+i); std::string name_i = oname.str();
+
+            Data<t>* d = new Data<t>();
+            d->setName(name_i);
+            d->setHelp(help.c_str());
+            d->setReadOnly(true);
+
+            vf.push_back(d);
+            this->addData(d);
+            this->addInput(d);
+        }
+    }
+    template<class t>
+    void deleteInputDataVector(helper::vector< Data<t>* >& vf)
+    {
+        for (unsigned int i=0; i<vf.size(); ++i)
+        {
+            this->delInput(vf[i]);
+            delete vf[i];
+        }
+        vf.clear();
+    }
+
+};
+
+
+} // namespace engine
+} // namespace component
+} // namespace sofa
+
+#endif /* MergeROIs_H_ */

@@ -27,10 +27,8 @@
 
 #include <sofa/core/core.h>
 #include <sofa/core/BaseState.h>
-#include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-//#include <sofa/helper/accessor.h>
 #include <limits>
 
 namespace sofa
@@ -137,44 +135,6 @@ public:
 
     /// @}
 
-    /// @name Old specific vectors access API (now limited to read-only accesses)
-    /// @{
-
-    /// Return the current position vector.
-    /// @deprecated use read(ConstVecCoordId::position()) instead.
-    virtual const VecCoord* getX()  const
-    {
-        const Data<VecCoord>* v = read(ConstVecCoordId::position());
-        return (v == NULL) ? NULL : &(v->getValue());
-    }
-
-    /// Return the current velocity vector.
-    /// @deprecated use read(ConstVecDerivId::velocity()) instead.
-    virtual const VecDeriv* getV()  const
-    {
-        const Data<VecDeriv>* v = read(ConstVecDerivId::velocity());
-        return (v == NULL) ? NULL : &(v->getValue());
-    }
-
-    /// Return the current rest position vector
-    /// (return NULL if the state does not store rest position).
-    /// @deprecated use read(ConstVecCoordId::restPosition()) instead.
-    virtual const VecCoord* getX0() const
-    {
-        const Data<VecCoord>* v = read(ConstVecCoordId::restPosition());
-        return (v == NULL) ? NULL : &(v->getValue());
-    }
-
-    /// Return the current normal vector
-    /// (return NULL if the state does not store normal).
-    /// @deprecated use read(ConstVecDerivId::velocity()) instead.
-    virtual const VecDeriv* getN() const
-    {
-        const Data<VecDeriv>* v = read(ConstVecDerivId::normal());
-        return (v == NULL) ? NULL : &(v->getValue());
-    }
-
-    /// @}
 
     virtual std::string getTemplateName() const
     {
@@ -186,7 +146,7 @@ public:
         return TDataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
@@ -206,10 +166,10 @@ extern template class SOFA_CORE_API State<defaulttype::Vec2fTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec1fTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Vec6fTypes>;
 extern template class SOFA_CORE_API State<defaulttype::Rigid2fTypes>;
+extern template class SOFA_CORE_API State<defaulttype::Rigid3fTypes>;
 #endif
 
 extern template class SOFA_CORE_API State<defaulttype::ExtVec3fTypes>;
-extern template class SOFA_CORE_API State<defaulttype::Rigid3fTypes>;
 
 #endif
 } // namespace core

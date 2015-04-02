@@ -28,15 +28,15 @@
 #define SOFA_STANDARDTEST_ForceField_test_H
 
 #include "Sofa_test.h"
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/EigenBaseSparseMatrix.h>
-#include <sofa/component/linearsolver/SingleMatrixAccessor.h>
+#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
+#include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 namespace sofa {
@@ -182,7 +182,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         copyFromData( curF, dof->readForces() );
 
         // Get potential Energy before applying a displacement to dofs
-        double potentialEnergyBeforeDisplacement = force->getPotentialEnergy(&mparams);
+        double potentialEnergyBeforeDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
 
         // change position
         VecDeriv dX(n);
@@ -202,7 +202,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         }
 
         // Get potential energy after displacement of dofs
-        double potentialEnergyAfterDisplacement = force->getPotentialEnergy(&mparams);
+        double potentialEnergyAfterDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
 
         // Check getPotentialEnergy() we should have dE = -dX.F
 
@@ -215,7 +215,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
             expectedDifferencePotentialEnergy = expectedDifferencePotentialEnergy - dot(dX[i],curF[i]);
         }
 
-        double absoluteErrorPotentialEnergy = fabsf(differencePotentialEnergy - expectedDifferencePotentialEnergy);
+        double absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
         if( absoluteErrorPotentialEnergy> errorMax*this->epsilon() ){
             ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F" << endl
                         << "dPotentialEnergy is " << differencePotentialEnergy << endl

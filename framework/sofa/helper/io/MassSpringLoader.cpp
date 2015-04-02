@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <sstream>
 #include <string.h>
 
 namespace sofa
@@ -92,13 +93,15 @@ bool MassSpringLoader::load(const char *filename)
     skipToEOL(file);
 
     // then find out number of masses and springs
-    if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"numm"))
+    std::ostringstream cmdScanFormat;
+    cmdScanFormat << "%" << (sizeof(cmd) - 1) << "s";
+    if (fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF && !strcmp(cmd,"numm"))
     {
         if (fscanf(file, "%d", &totalNumMasses) == EOF)
             std::cerr << "Error: MassSpringLoader: fscanf function has encountered an error." << std::endl;
         setNumMasses(totalNumMasses);
     }
-    if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"nums"))
+    if (fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF && !strcmp(cmd,"nums"))
     {
         if (fscanf(file, "%d", &totalNumSprings) == EOF)
             std::cerr << "Error: MassSpringLoader: fscanf function has encountered an error." << std::endl;
@@ -111,7 +114,7 @@ bool MassSpringLoader::load(const char *filename)
     if (totalNumMasses>0)
         masses.reserve(totalNumMasses);
 
-    while (fscanf(file, "%s", cmd) != EOF)
+    while (fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF)
     {
         if (!strcmp(cmd,"mass"))
         {

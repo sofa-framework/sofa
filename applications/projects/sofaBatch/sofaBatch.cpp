@@ -29,7 +29,7 @@
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/PluginManager.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 
 #include <sofa/helper/system/FileRepository.h>
@@ -40,7 +40,7 @@
 
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
-#include <sofa/component/misc/WriteState.h>
+#include <SofaExporter/WriteState.h>
 
 
 

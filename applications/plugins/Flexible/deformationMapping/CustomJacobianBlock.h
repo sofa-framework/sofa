@@ -64,7 +64,7 @@ public:
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data); }
     MatBlock getJ()    { return J; }
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 
@@ -100,7 +100,7 @@ public:
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
     MatBlock getJ()    { return J; }
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 template<class InReal,class OutReal>
@@ -135,7 +135,7 @@ public:
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
     MatBlock getJ()    { return J; }
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 template<class InReal,class OutReal>
@@ -170,7 +170,7 @@ public:
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
     MatBlock getJ()    { return J; }
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 template<class InReal,class OutReal>
@@ -205,7 +205,7 @@ public:
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
     MatBlock getJ()    { return J; }
     KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const double& /*kfactor */) {}
+    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
 } // namespace defaulttype

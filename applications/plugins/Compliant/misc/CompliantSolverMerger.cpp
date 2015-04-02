@@ -1,7 +1,7 @@
 
 #include "CompliantSolverMerger.h"
 
-#include <sofa/component/collision/SolverMerger.h>
+#include <SofaMiscCollision/SolverMerger.h>
 #include <sofa/helper/FnDispatcher.inl>
 
 #include "odesolver/CompliantImplicitSolver.h"
@@ -9,7 +9,7 @@
 
 #include "numericalsolver/MinresSolver.h"
 #include "numericalsolver/CgSolver.h"
-#include "numericalsolver/LDLTSolver.h"
+#include "numericalsolver/EigenSparseSolver.h"
 #include "numericalsolver/SequentialSolver.h"
 
 namespace sofa
@@ -19,6 +19,7 @@ namespace component
 namespace collision
 {
 
+// max: wtf is this ?!
 
     core::behavior::BaseLinearSolver::SPtr createCgSolver(linearsolver::CgSolver& solver1, linearsolver::CgSolver& solver2)
     {

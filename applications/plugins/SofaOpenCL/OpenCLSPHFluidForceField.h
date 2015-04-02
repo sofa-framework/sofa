@@ -26,7 +26,7 @@
 #define SOFAOPENCL_OPENCLSPHFLUIDFORCEFIELD_H
 
 #include "OpenCLTypes.h"
-#include <sofa/component/forcefield/SPHFluidForceField.h>
+#include <SofaSphFluid/SPHFluidForceField.h>
 #include "OpenCLSpatialGridContainer.h"
 
 namespace sofa

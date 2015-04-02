@@ -33,6 +33,8 @@
 namespace CGoGN { namespace Utils { class VBO; } }
 namespace CGoGN { namespace Utils { namespace SVG { class SVGOut ; } } }
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
@@ -46,7 +48,7 @@ namespace Utils
  * Drawing (callList) efficient after data has been finalized (endList)
  *
  */
-class Drawer
+class CGoGN_UTILS_API Drawer
 {
 	struct PrimParam
 	{

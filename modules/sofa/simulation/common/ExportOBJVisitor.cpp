@@ -34,12 +34,12 @@ namespace simulation
 {
 
 
-ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::ostream* out)
+ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params, std::ostream* out)
     : Visitor(params) , out(out), mtl(NULL), ID(0), vindex(0), nindex(0), tindex(0), count(0)
 {
 }
 
-ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params /* PARAMS FIRST */, std::ostream* out,std::ostream* mtl)
+ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params, std::ostream* out,std::ostream* mtl)
     : Visitor(params) , out(out), mtl(mtl), ID(0), vindex(0), nindex(0), tindex(0), count(0)
 {
 }

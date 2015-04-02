@@ -2,7 +2,7 @@
 #define FLEXIBLE_COMPUTEWEIGHTENGINE_H
 
 #include "../shapeFunction/BaseShapeFunction.h"
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/helper/vector.h>
 

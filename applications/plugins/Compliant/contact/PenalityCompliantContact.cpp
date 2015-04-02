@@ -2,9 +2,9 @@
 
 #include "PenalityCompliantContact.h"
 
-#include <sofa/component/collision/FrictionContact.inl>
-#include <sofa/component/collision/RigidContactMapper.inl>
-#include <sofa/component/collision/BarycentricContactMapper.inl>
+#include <SofaConstraint/FrictionContact.inl>
+#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <SofaMeshCollision/BarycentricContactMapper.inl>
 
 
 namespace sofa
@@ -19,7 +19,7 @@ namespace collision
 using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::Node;
-
+using core::collision::Contact;
 
 SOFA_DECL_CLASS(PenalityCompliantContact)
 

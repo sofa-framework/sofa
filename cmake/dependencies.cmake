@@ -73,7 +73,7 @@ RegisterProjects("SofaCore" OPTION "SOFA-LIB_CORE" PATH "${SOFA_FRAMEWORK_DIR}/s
 # modules
 set(SOFA_PROJECT_FOLDER "SofaLib")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/simulation")
-add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
+add_subdirectory("${SOFA_MODULES_DIR}")
 
 RegisterProjects("SofaGpuOpenCL" OPTION SOFA-LIB_COMPONENT_GPU_OPENCL COMPILE_DEFINITIONS SOFA_GPU_OPENCL PATH "${SOFA_MODULES_DIR}/sofa/gpu/opencl")
 

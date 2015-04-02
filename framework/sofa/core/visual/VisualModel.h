@@ -67,20 +67,13 @@ public:
      *  Called once before the first frame is drawn, and if the graphical
      *  context has been recreated.
      */
-    virtual void initVisual() { initTextures(); }
+    virtual void initVisual() {  }
 
     /**
      *  \brief clear some graphical resources (generaly called before the deleteVisitor).
      *  \note: for more general usage you can use the cleanup visitor
      */
     virtual void clearVisual() { }
-
-    /**
-     *  \brief Initialize the textures, or other graphical resources.
-     *
-     *  @deprecated Use initVisual() instead.
-     */
-    virtual void initTextures() {}
 
     /**
      *  \brief Called before objects in the current branch are displayed
@@ -121,19 +114,12 @@ public:
     /**
      *  \brief used to update the model if necessary.
      */
-    virtual void updateVisual() { update(); }
+    virtual void updateVisual() {  }
     /**
     *  \brief used to update the model if necessary.
     */
     virtual void parallelUpdateVisual() { }
 
-
-    /**
-     *  \brief used to update the model if necessary.
-     *
-     *  @deprecated Use updateVisual() instead.
-     */
-    virtual void update() {}
 
     /**
      *  \brief used to add the bounding-box of this visual model to the
@@ -145,7 +131,7 @@ public:
      *  information might affect performances and leads to incorrect scene
      *  bounding box.
      */
-    virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+    virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {
         return false;
     }
@@ -153,14 +139,14 @@ public:
     /// Translate the positions
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyTranslation(const double /*dx*/, const double /*dy*/, const double /*dz*/)
+    virtual void applyTranslation(const SReal /*dx*/, const SReal /*dy*/, const SReal /*dz*/)
     {
     }
 
     /// Rotate the positions using Euler Angles in degree
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyRotation (const double /*rx*/, const double /*ry*/, const double /*rz*/)
+    virtual void applyRotation (const SReal /*rx*/, const SReal /*ry*/, const SReal /*rz*/)
     {
     }
 
@@ -174,7 +160,7 @@ public:
     /// Scale the positions
     ///
     /// This method is optional, it is used when the user want to interactively change the position of an object
-    virtual void applyScale(const double /*sx*/,const double /*sy*/,const double /*sz*/)
+    virtual void applyScale(const SReal /*sx*/,const SReal /*sy*/,const SReal /*sz*/)
     {
     }
 

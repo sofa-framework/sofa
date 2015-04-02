@@ -10,7 +10,7 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/component/loader/MeshObjLoader.h>
+#include <SofaLoader/MeshObjLoader.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
@@ -51,7 +51,7 @@ void RegistrationExporter::init()
 
     if (!position.isSet() && mstate)
     {
-        sofa::core::objectmodel::BaseData* parent = mstate->findField("position");
+        sofa::core::objectmodel::BaseData* parent = mstate->findData("position");
         if (parent)
         {
             position.setParent(parent);

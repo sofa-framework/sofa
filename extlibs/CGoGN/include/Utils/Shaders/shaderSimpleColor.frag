@@ -1,6 +1,6 @@
 // ShaderSimpleColor::fragmentShaderText
 
-PRECISON;
+PRECISION;
 uniform vec4 color;
 FRAG_OUT_DEF;
 void main()

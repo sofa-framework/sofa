@@ -117,18 +117,18 @@ public:
     bool testVertexAndFindIndex(const Vec3 &vertex, int &index);
 
     //Inputs
-    Data<VecCoord> m_inVertices;
-    Data<SeqTriangles> m_inTriangles;
-    Data<int> m_edgesTarget;
-    Data<float> m_edgesRatio;
+    sofa::core::objectmodel::Data<VecCoord> m_inVertices;
+    sofa::core::objectmodel::Data<SeqTriangles> m_inTriangles;
+    sofa::core::objectmodel::Data<int> m_edgesTarget;
+    sofa::core::objectmodel::Data<float> m_edgesRatio;
 
     // Outputs
-    Data<VecCoord> m_outVertices;
-    Data<SeqTriangles> m_outTriangles;
-    Data< helper::vector<Vec3> > m_outNormals;
+    sofa::core::objectmodel::Data<VecCoord> m_outVertices;
+    sofa::core::objectmodel::Data<SeqTriangles> m_outTriangles;
+    sofa::core::objectmodel::Data< helper::vector<Vec3> > m_outNormals;
 
     // Parameters
-    Data<bool> m_writeToFile;
+    sofa::core::objectmodel::Data<bool> m_writeToFile;
 
 
 };

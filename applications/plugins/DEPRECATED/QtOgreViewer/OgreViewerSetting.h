@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_CONFIGURATIONSETTING_OGREVIEWER_H
 #define SOFA_COMPONENT_CONFIGURATIONSETTING_OGREVIEWER_H
 
-#include <sofa/component/configurationsetting/ViewerSetting.h>
+#include <SofaGraphComponent/ViewerSetting.h>
 
 namespace sofa
 {

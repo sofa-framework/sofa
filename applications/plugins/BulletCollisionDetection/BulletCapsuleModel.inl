@@ -90,12 +90,12 @@ void updateCapsuleHeight(btCollisionShape * capsule,typename TDataTypes::Real he
 
 #ifndef SOFA_FLOAT
 template <>
-void updateCapsuleHeight<Rigid3dTypes>(btCollisionShape * ,typename Rigid3dTypes::Real ){}
+void updateCapsuleHeight<defaulttype::Rigid3dTypes>(btCollisionShape * ,typename defaulttype::Rigid3dTypes::Real ){}
 #endif
 
 #ifndef SOFA_DOUBLE
 template <>
-void updateCapsuleHeight<Rigid3fTypes>(btCollisionShape * ,typename Rigid3fTypes::Real ){}
+void updateCapsuleHeight<defaulttype::Rigid3fTypes>(btCollisionShape * ,typename defaulttype::Rigid3fTypes::Real ){}
 #endif
 
 template <class TDataTypes>

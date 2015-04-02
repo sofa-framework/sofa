@@ -29,9 +29,10 @@
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
-#include <sofa/component/configurationsetting/SofaDefaultPathSetting.h>
-#include <sofa/component/configurationsetting/BackgroundSetting.h>
-#include <sofa/component/configurationsetting/StatsSetting.h>
+#include <SofaGraphComponent/SofaDefaultPathSetting.h>
+#include <SofaGraphComponent/BackgroundSetting.h>
+#include <SofaGraphComponent/StatsSetting.h>
+
 #include <algorithm>
 #include <string.h>
 
@@ -42,6 +43,7 @@ using namespace sofa::simulation;
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
+using namespace sofa::simulation;
 namespace sofa
 {
 
@@ -122,7 +124,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_directory*/ )
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    ExportGnuplotVisitor expg ( params /* PARAMS FIRST */, node->getTime());
+    ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );
 }
 

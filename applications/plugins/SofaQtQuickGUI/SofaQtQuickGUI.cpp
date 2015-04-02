@@ -45,8 +45,8 @@ SofaQtQuickGUI::SofaQtQuickGUI(QObject *parent) : QQmlExtensionPlugin(parent)
 
 void SofaQtQuickGUI::init()
 {
-    Q_INIT_RESOURCE(sofaQML);
-    Q_INIT_RESOURCE(sofaQtQuickResources);
+    Q_INIT_RESOURCE(qml);
+    Q_INIT_RESOURCE(resources);
 
     registerTypes("SofaQtQuickGUI");
 }

@@ -44,7 +44,7 @@
 #include "PMLBody.h"
 #include "initSofaPML.h"
 
-#include "sofa/component/container/MechanicalObject.h"
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <map>
 
 

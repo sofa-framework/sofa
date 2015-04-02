@@ -1,6 +1,6 @@
 // ShaderScalarField::fragmentShaderText
 
-PRECISON;
+PRECISION;
 uniform float minValue;
 uniform float maxValue;
 VARYING_FRAG vec3 color;

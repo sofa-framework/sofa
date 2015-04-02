@@ -30,12 +30,12 @@
 #include <sstream>
 
 #include "Sofa_test.h"
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/simulation/common/VectorOperations.h>
-#include <sofa/component/linearsolver/FullVector.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseLinearSolver/FullVector.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 #include <sofa/helper/vector.h>

@@ -1,6 +1,6 @@
 <Node name="TorusSpring">
 	<EulerImplicitSolver rayleighStiffness="0.01" />
-	<CGLinearSolver iterations="25" />
+	<CGLinearSolver iterations="25" tolerance="1e-05" threshold="1e-05" />
 	<MeshGmshLoader name="meshLoader" filename="mesh/torus_low_res.msh"/>
 	<Mesh src="@meshLoader"/>
 	<MechanicalObject  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>
@@ -8,7 +8,7 @@
 	<MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4"/>
 	<Node name="Visu">
 		<OglModel name="Visual" fileMesh="mesh/torus.obj"  color="green"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>
-		<BarycentricMapping object1="../.." object2="Visual" />
+		<BarycentricMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="Surf2">
    <MeshObjLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>

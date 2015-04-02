@@ -126,9 +126,9 @@ public:
     virtual bool hasPos() const { return false; }
     virtual int getNbPoints() const { return 0; }
     virtual void setNbPoints(int /*n*/) {}
-    virtual double getPX(int /*i*/) const { return 0.0; }
-    virtual double getPY(int /*i*/) const { return 0.0; }
-    virtual double getPZ(int /*i*/) const { return 0.0; }
+    virtual SReal getPX(int /*i*/) const { return 0.0; }
+    virtual SReal getPY(int /*i*/) const { return 0.0; }
+    virtual SReal getPZ(int /*i*/) const { return 0.0; }
 };
 
 template<class TopologyElement>

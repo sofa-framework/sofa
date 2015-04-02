@@ -25,7 +25,7 @@
 #include "CudaPointModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <fstream>
 #include <sofa/helper/system/gl.h>
 
@@ -69,7 +69,7 @@ void CudaPointModel::init()
         return;
     }
 
-    const int npoints = mstate->getX()->size();
+    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     int gsize = groupSize.getValue();
     int nelems = (npoints + gsize-1)/gsize;
     resize(nelems);
@@ -80,7 +80,7 @@ void CudaPointModel::draw(const core::visual::VisualParams* ,int index)
     const int gsize = groupSize.getValue();
     CudaPoint t(this,index);
     glBegin(GL_POINTS);
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
     int i0 = index*gsize;
     int n = (index==size-1) ? x.size()-i0 : gsize;
     for (int p=0; p<n; p++)
@@ -121,7 +121,7 @@ using sofa::component::collision::CubeModel;
 void CudaPointModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mstate->getX()->size();
+    const int npoints = mstate->read(core::ConstVecCoordId::position())->getValue().size();
     const int gsize = groupSize.getValue();
     const int nelems = (npoints + gsize-1)/gsize;
     bool updated = false;
@@ -136,7 +136,7 @@ void CudaPointModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        const VecCoord& x = *mstate->getX();
+        const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
         for (int i=0; i<size; i++)
         {
             int i0 = i*gsize;

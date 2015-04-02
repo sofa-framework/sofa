@@ -35,14 +35,14 @@
 #include <sofa/simulation/common/Simulation.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/kdTree.inl>
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 namespace sofa
 {
@@ -56,7 +56,7 @@ public:
     enum {material_dimensions = OutDataTypes::spatial_dimensions};
     static const bool positionMapped=true; ///< tells if spatial positions are included in output state
     static const bool FMapped=false;        ///< tells if deformation gradients are included in output state
-    static Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real> getF(const typename OutDataTypes::Coord&)  { return Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real>(); }
+    static defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real> getF(const typename OutDataTypes::Coord&)  { return defaulttype::Mat<OutDataTypes::spatial_dimensions,material_dimensions,typename OutDataTypes::Real>(); }
 };
 
 template<int _spatial_dimensions, int _material_dimensions, int _order, typename _Real>
@@ -77,7 +77,7 @@ public:
     enum {material_dimensions = TCoord::spatial_dimensions};
     static const bool positionMapped=true;
     static const bool FMapped=false;
-    static Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
+    static defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
 };
 
 template<class TCoord, class TDeriv, class TReal>
@@ -87,7 +87,7 @@ public:
     enum {material_dimensions = TCoord::spatial_dimensions};
     static const bool positionMapped=true;
     static const bool FMapped=false;
-    static Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
+    static defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal> getF(const TCoord&)  { return defaulttype::Mat<TCoord::spatial_dimensions,material_dimensions,TReal>(); }
 };
 
 
@@ -113,13 +113,13 @@ template <int spatial_dimensions,typename Real>
 class BasePointMapper : public virtual core::objectmodel::BaseObject
 {
 public:
-    typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
 
     virtual void ForwardMapping(Coord& p,const Coord& p0)=0;      ///< returns spatial coord p in deformed configuration corresponding to the rest coord p0
     virtual void BackwardMapping(Coord& p0,const Coord& p,const Real Thresh=1e-5, const size_t NbMaxIt=10)=0;     ///< iteratively approximate spatial coord p0 in rest configuration corresponding to the deformed coord p (warning! p0 need to be initialized in the object first, for instance using closest point matching)
     virtual unsigned int getClosestMappedPoint(const Coord& p, Coord& x0,Coord& x, bool useKdTree=false)=0; ///< returns closest mapped point x from input point p, its rest pos x0, and its index
 
-    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
+    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0)=0; /// resizing given custom positions and weights
 };
 
 
@@ -191,9 +191,9 @@ public:
 
     /** @name  Coord types    */
     //@{
-    typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef vector<Coord> VecCoord;
-    typedef Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;     ///< local liner transformation from material space to world space = deformation gradient type
+    typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;     ///< local liner transformation from material space to world space = deformation gradient type
     typedef vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
@@ -215,7 +215,19 @@ public:
     void updateIndex();
     void updateIndex(const size_t parentSize, const size_t childSize);
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
+    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
+
+    /*!
+     * \brief Resize all required data and initialize jacobian blocks
+     * \param p0 parent initial positions
+     * \param c0 child initial positions
+     * \param x0 child initial positions as Vec3r
+     * \param index child to parent index
+     * \param w child weights
+     * \param dw child weight derivatives
+     * \param ddw child weight hessians
+     * \param F child initial frame
+     */
     virtual void resizeAll(const InVecCoord& p0, const OutVecCoord& c0, const VecCoord& x0, const VecVRef& index, const VecVReal& w, const VecVGradient& dw, const VecVHessian& ddw, const VMaterialToSpatial& F0);
 
     /** @name Mapping functions */
@@ -225,6 +237,7 @@ public:
 
     virtual void apply(OutVecCoord& out, const InVecCoord& in);
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn);
+    void applyJ(OutVecDeriv& out, const InVecDeriv& in);
     virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn);
     virtual void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut);
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId );
@@ -269,10 +282,11 @@ public:
         return &baseMatrices;
     }
 
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
     virtual const defaulttype::BaseMatrix* getK()
     {
-        updateK(this->toModel->readForces().ref());
-        return &K;
+        if( BlockType::constant || !K.compressedMatrix.nonZeros() ) return NULL;
+        else return &K;
     }
 
     void draw(const core::visual::VisualParams* vparams);
@@ -388,7 +402,6 @@ protected :
     helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence (TODO add such a mechanism directly in ParticleMask?)
 
     SparseKMatrixEigen K;  ///< Assembled geometric stiffness matrix
-    void updateK(const OutVecDeriv& childForce);
 
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
@@ -397,6 +410,7 @@ protected :
     Data< helper::OptionsGroup > showDeformationGradientStyle;
     Data< helper::OptionsGroup > showColorOnTopology;
     Data< float > showColorScale;
+    Data< unsigned > d_geometricStiffness;
 };
 
 

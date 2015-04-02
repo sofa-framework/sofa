@@ -26,7 +26,7 @@
 #define SOFAOPENCL_OPENCLPLANEFORCEFIELD_INL
 
 #include "OpenCLPlaneForceField.h"
-#include <sofa/component/forcefield/PlaneForceField.inl>
+#include <SofaBoundaryCondition/PlaneForceField.inl>
 
 namespace sofa
 {
@@ -93,7 +93,7 @@ void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::Mecha
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    SReal kFactor = mparams->kFactor();
 
     df.resize(dx.size());
     double stiff = data.plane.stiffness;
@@ -130,7 +130,7 @@ void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce(const core::Mech
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    SReal kFactor = mparams->kFactor();
 
     df.resize(dx.size());
     double stiff = data.plane.stiffness;
@@ -166,7 +166,7 @@ void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(const core::Mecha
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    SReal kFactor = mparams->kFactor();
 
     df.resize(dx.size());
     double stiff = data.plane.stiffness;
@@ -201,7 +201,7 @@ void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addDForce(const core::Mech
 {
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    double kFactor = mparams->kFactor();
+    SReal kFactor = mparams->kFactor();
 
     df.resize(dx.size());
     double stiff = data.plane.stiffness;

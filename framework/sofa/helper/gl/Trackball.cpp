@@ -188,7 +188,7 @@ void Trackball::ComputeQuaternion(double p1x, double p1y, double p2x,
 // if we are away from the center of the sphere.
 static double tb_project_to_sphere(double r, double x, double y)
 {
-    double	d, t, z;
+    double	d, z;
 
     d = sqrt(x * x + y * y);
     if (d < r * 0.70710678118654752440)
@@ -199,7 +199,7 @@ static double tb_project_to_sphere(double r, double x, double y)
     else
     {
         /* On hyperbola */
-        t = r / 1.41421356237309504880;
+        double t = r / 1.41421356237309504880;
         z = t * t / d;
     }
     return z;

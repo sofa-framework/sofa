@@ -33,13 +33,15 @@
 #include <string>
 #include <sstream>
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderMutator
+class CGoGN_UTILS_API ShaderMutator
 {
 	
 public:

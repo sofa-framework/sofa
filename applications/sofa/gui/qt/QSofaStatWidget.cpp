@@ -158,7 +158,7 @@ void QSofaStatWidget::addSummary()
     std::string textStats("<hr>Collision Elements present: <ul>");
     std::map< std::string, int >::const_iterator it;
 
-    for (it=mapElement.begin(); it!=mapElement.end(); it++)
+    for (it=mapElement.begin(); it!=mapElement.end(); ++it)
     {
         if (it->second)
         {

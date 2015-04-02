@@ -25,13 +25,15 @@
 #include <sofa/simulation/common/MechanicalVPrintVisitor.h>
 #include <sofa/simulation/common/Node.h>
 
+using namespace sofa::core;
 namespace sofa
 {
 
 namespace simulation
 {
 
-MechanicalVPrintVisitor::MechanicalVPrintVisitor(const core::ExecParams* params /* PARAMS FIRST */, ConstMultiVecId v, std::ostream& out )
+
+MechanicalVPrintVisitor::MechanicalVPrintVisitor(const core::ExecParams* params, ConstMultiVecId v, std::ostream& out )
     : Visitor(params)
     , v_(v)
     , out_(out)
@@ -54,7 +56,7 @@ Visitor::Result MechanicalVPrintVisitor::processNodeTopDown(simulation::Node* no
 }
 
 
-MechanicalVPrintWithElapsedTimeVisitor::MechanicalVPrintWithElapsedTimeVisitor(const core::ExecParams* params /* PARAMS FIRST */, ConstMultiVecId vid, unsigned time, std::ostream& out )
+MechanicalVPrintWithElapsedTimeVisitor::MechanicalVPrintWithElapsedTimeVisitor(const core::ExecParams* params, ConstMultiVecId vid, unsigned time, std::ostream& out )
     : Visitor (params)
     , v_(vid)
     , count_(0)
@@ -79,7 +81,7 @@ Visitor::Result MechanicalVPrintWithElapsedTimeVisitor::processNodeTopDown(simul
 
 
 
-DofPrintVisitor::DofPrintVisitor(const core::ExecParams* params /* PARAMS FIRST */, ConstMultiVecId v, const std::string& dofname, std::ostream& out )
+DofPrintVisitor::DofPrintVisitor(const core::ExecParams* params, ConstMultiVecId v, const std::string& dofname, std::ostream& out )
     : Visitor(params)
     , v_(v)
     , out_(out)

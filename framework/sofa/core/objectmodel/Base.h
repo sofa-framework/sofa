@@ -158,8 +158,7 @@ public:
     /// If more than one field is found (due to aliases), only the first is returned.
     BaseData* findData( const std::string &name ) const;
 
-    /// @deprecated
-    BaseData* findField( const std::string &name ) const { return findData(name); }
+
 
     /// Find data fields given a name: several can be found as we look into the alias map
     std::vector< BaseData* > findGlobalField( const std::string &name ) const;
@@ -203,12 +202,6 @@ public:
     /// Remove a data field.
     void removeData(BaseData* f);
 
-    /// @deprecated
-    void addField(BaseData* f, const char* name)
-    {
-        if (name && *name) f->setName(name);
-        addData(f);
-    }
 
     /// Add an alias to a Data
     void addAlias( BaseData* field, const char* alias);

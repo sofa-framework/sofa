@@ -1,7 +1,15 @@
 #include"CompliantPostStabilizationAnimationLoop.h"
 #include <sofa/core/ObjectFactory.h>
 #include <Compliant/odesolver/CompliantImplicitSolver.h>
-#include <sofa/component/collision/DefaultContactManager.h>
+#include <SofaBaseCollision/DefaultContactManager.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
+#include <sofa/simulation/common/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::core::behavior;
@@ -47,7 +55,7 @@ void CompliantPostStabilizationAnimationLoop::init()
 }
 
 
-void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams* params, double dt)
+void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
     // TODO handle dt as in defaultanimationloop
     if (dt == 0) dt = this->gnode->getDt();
@@ -64,12 +72,12 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
 
 
     {
-        AnimateBeginEvent ev ( dt );
-        PropagateEventVisitor act ( params, &ev );
+        simulation::AnimateBeginEvent ev ( dt );
+        simulation::PropagateEventVisitor act ( params, &ev );
         this->gnode->execute ( act );
     }
 
-    double startTime = this->gnode->getTime();
+    SReal startTime = this->gnode->getTime();
 
     odesolver::CompliantImplicitSolver::SolverOperations sop( params, m_solver->getContext(), m_solver->alpha.getValue(), m_solver->beta.getValue(), dt, core::VecCoordId::position(), core::VecDerivId::velocity() );
 
@@ -112,24 +120,24 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
     this->gnode->execute(&endVisitor);
 
     this->gnode->setTime ( startTime + dt );
-    this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time
+    this->gnode->execute<simulation::UpdateSimulationContextVisitor>(params);  // propagate time
 
     {
-        AnimateEndEvent ev ( dt );
-        PropagateEventVisitor act ( params, &ev );
+        simulation::AnimateEndEvent ev ( dt );
+        simulation::PropagateEventVisitor act ( params, &ev );
         this->gnode->execute ( act );
     }
 
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
-    this->gnode->execute<UpdateMappingVisitor>(params);
+    this->gnode->execute<simulation::UpdateMappingVisitor>(params);
     {
-        UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( params , &ev );
+        simulation::UpdateMappingEndEvent ev ( dt );
+        simulation::PropagateEventVisitor act ( params , &ev );
         this->gnode->execute ( act );
     }
 
 #ifndef SOFA_NO_UPDATE_BBOX
-    this->gnode->execute<UpdateBoundingBoxVisitor>(params);
+    this->gnode->execute<simulation::UpdateBoundingBoxVisitor>(params);
 #endif
 
 }

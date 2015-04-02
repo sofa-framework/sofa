@@ -23,8 +23,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
-#include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.h>
-#include <sofa/component/projectiveconstraintset/FixedTranslationConstraint.inl>
+#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <SofaBoundaryCondition/FixedTranslationConstraint.h>
+#include <SofaBoundaryCondition/FixedTranslationConstraint.inl>
 
 
 #include <sofa/defaulttype/RigidTypes.h>
@@ -52,7 +53,7 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable(GL_LIGHTING);
     glPointSize(10);
     glColor4f(1, 0.5, 0.5, 1);
@@ -61,14 +62,14 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            gl::glVertexT(defaulttype::Vec<3,float>(x[i][0], x[i][1], x[i][2]));
+            helper::gl::glVertexT(defaulttype::Vec<3,float>(x[i][0], x[i][1], x[i][2]));
         }
     }
     else
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            gl::glVertexT(defaulttype::Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
+            helper::gl::glVertexT(defaulttype::Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
         }
     }
     glEnd();
@@ -81,7 +82,7 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     glDisable(GL_LIGHTING);
     glPointSize(10);
     glColor4f(1, 0.5, 0.5, 1);
@@ -90,14 +91,14 @@ void component::projectiveconstraintset::FixedTranslationConstraint<gpu::cuda::C
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            gl::glVertexT(defaulttype::Vec<3,float>(x[i][0], x[i][1], x[i][2]));
+            helper::gl::glVertexT(defaulttype::Vec<3,float>(x[i][0], x[i][1], x[i][2]));
         }
     }
     else
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            gl::glVertexT(defaulttype::Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
+            helper::gl::glVertexT(defaulttype::Vec<3,float>(x[*it][0], x[*it][1], x[*it][2]));
         }
     }
     glEnd();

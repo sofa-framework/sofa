@@ -320,7 +320,6 @@ void DrawToolGL::drawCapsule(const Vector3& p1, const Vector3 &p2, float radius,
     q.normalize();
 
     int i2;
-    float theta, st, ct;
     /* build the cylinder part of the capsule from rectangular subd */
     std::vector<Vector3> points;
     std::vector<Vector3> normals;
@@ -328,9 +327,9 @@ void DrawToolGL::drawCapsule(const Vector3& p1, const Vector3 &p2, float radius,
     for (i2=0 ; i2<=subd ; i2++)
     {
         /* sweep out a circle */
-        theta =  (float)( i2 * 2.0f * M_PI / subd );
-        st = sin(theta);
-        ct = cos(theta);
+        float theta =  (float)( i2 * 2.0f * M_PI / subd );
+        float st = sin(theta);
+        float ct = cos(theta);
         /* construct normal */
         tmp = p*ct+q*st;
         /* set the normal for the two subseqent points */
@@ -376,10 +375,9 @@ void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, f
     q.normalize();
 
     int i2;
-    float theta, st, ct;
+    
     /* build the cylinder from rectangular subd */
     std::vector<Vector3> points;
-    std::vector<Vec<4,int> > indices;
     std::vector<Vector3> normals;
 
     std::vector<Vector3> pointsCloseCylinder1;
@@ -397,9 +395,9 @@ void DrawToolGL::drawCone(const Vector3& p1, const Vector3 &p2, float radius1, f
     for (i2=0 ; i2<=subd ; i2++)
     {
         /* sweep out a circle */
-        theta =  (float)( i2 * 2.0f * M_PI / subd );
-        st = sin(theta);
-        ct = cos(theta);
+        float theta =  (float)( i2 * 2.0f * M_PI / subd );
+        float st = sin(theta);
+        float ct = cos(theta);
         /* construct normal */
         tmp = p*ct+q*st;
         /* set the normal for the two subseqent points */

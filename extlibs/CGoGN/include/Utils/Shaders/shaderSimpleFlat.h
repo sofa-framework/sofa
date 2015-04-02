@@ -31,13 +31,15 @@
 
 #include <string>
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderSimpleFlat : public ClippingShader
+class CGoGN_UTILS_API ShaderSimpleFlat : public ClippingShader
 {
 protected:
 	// flag color per vertex or not
@@ -46,21 +48,30 @@ protected:
 	bool m_with_eyepos;	
 
 	// shader sources OGL3
-    static std::string vertexShaderText;
-    static std::string fragmentShaderText;
+	static std::string vertexShaderText;
+	static std::string fragmentShaderText;
+	static std::string vertexShaderClipText;
+	static std::string fragmentShaderClipText;
 
     // uniform locations
 	CGoGNGLuint m_unif_ambiant;
 	CGoGNGLuint m_unif_diffuse;
 	CGoGNGLuint m_unif_lightPos;
+	CGoGNGLuint m_unif_backColor;
 
 	//values
 	Geom::Vec4f m_ambiant;
 	Geom::Vec4f m_diffuse;
 	Geom::Vec3f m_lightPos;
+	Geom::Vec4f m_backColor;
 
 	VBO* m_vboPos;
 	VBO* m_vboColor;
+
+	/// clipping
+	CGoGNGLuint m_unif_planeClip;
+	Geom::Vec4f m_planeClip;
+
 
 	void getLocations();
 
@@ -69,16 +80,17 @@ protected:
 	void restoreUniformsAttribs();
 
 public:
-	ShaderSimpleFlat(bool doubleSided = false);
+	ShaderSimpleFlat(bool withClipping = false, bool doubleSided = false);
 
 	// inviduals parameter setting functions
 	void setAmbiant(const Geom::Vec4f& ambiant);
 
 	void setDiffuse(const Geom::Vec4f& diffuse);
 
-
 	void setLightPosition(const Geom::Vec3f& lp);
-	
+
+	void setBackColor(const Geom::Vec4f& back);
+
 	const Geom::Vec4f& getAmbiant() const { return m_ambiant; }
 
 	const Geom::Vec4f& getDiffuse() const { return m_diffuse; }
@@ -96,6 +108,11 @@ public:
 	// optional attributes
 	unsigned int setAttributeColor(VBO* vbo);
 	void unsetAttributeColor();
+
+	void setClippingPlane(const Geom::Vec4f& plane);
+
+	inline void setNoClippingPlane() { setClippingPlane(Geom::Vec4f(0.0f,0.0f,0.0f,0.0f)); }
+
 };
 
 } // namespace Utils

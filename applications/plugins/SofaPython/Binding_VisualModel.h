@@ -27,7 +27,7 @@
 
 #include "PythonMacros.h"
 
-#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 
 SP_DECLARE_CLASS_TYPE(VisualModel)
 

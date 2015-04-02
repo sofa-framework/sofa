@@ -39,15 +39,15 @@
 
 #include <sofa/core/objectmodel/SPtr.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/mapping/IdentityMapping.h>
-#include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/mass/DiagonalMass.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaBaseMechanics/IdentityMapping.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBaseMechanics/DiagonalMass.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/collision/TriangleModel.h>
-//#include "sofa/component/collision/LineModel.h"
-//#include "sofa/component/collision/PointModel.h"
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaMeshCollision/TriangleModel.h>
+//#include <SofaMeshCollision/LineModel.h>
+//#include <SofaMeshCollision/PointModel.h>
 //using namespace sofa::component::GL;
 //using namespace sofa::Core;
 
@@ -206,7 +206,7 @@ void PMLRigidBody::initVelocity(string m)
 
 Vector3 PMLRigidBody::getDOF(unsigned int index)
 {
-    return (*((MechanicalState<Vec3Types>*)mmodel.get())->getX())[index];
+    return ((MechanicalState<Vec3Types>*)mmodel.get())->read(core::ConstVecCoordId::position())->getValue()[index];
 }
 
 

@@ -40,7 +40,7 @@ private:
 
 };
 
-class SceneData : public QObject
+class SOFA_SOFAQTQUICKGUI_API SceneData : public QObject
 {
     Q_OBJECT
 
@@ -74,10 +74,10 @@ public:
 	~Scene();
 
 public:
-	Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged);
-	Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged);
-	Q_PROPERTY(QUrl sourceQML READ sourceQML WRITE setSourceQML NOTIFY sourceQMLChanged);
-	Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged);
+    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged)
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QUrl sourceQML READ sourceQML WRITE setSourceQML NOTIFY sourceQMLChanged)
+    Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged)
 	Q_PROPERTY(bool play READ playing WRITE setPlay NOTIFY playChanged)
 	Q_PROPERTY(bool asynchronous MEMBER myAsynchronous NOTIFY asynchronousChanged)
     Q_PROPERTY(bool visualDirty READ visualDirty NOTIFY visualDirtyChanged)
@@ -127,6 +127,8 @@ public:
     Q_INVOKABLE double radius() const;
     Q_INVOKABLE void computeBoundingBox(QVector3D& min, QVector3D& max) const;
     Q_INVOKABLE QString dumpGraph() const;
+    Q_INVOKABLE void reinitComponent(const QString& path);
+    Q_INVOKABLE void sendGUIEvent(const QString& controlID, const QString& valueName, const QString& value);
 
 public:
     static QVariantMap dataObject(const sofa::core::objectmodel::BaseData* data);
@@ -175,6 +177,7 @@ private:
     Status                                      myStatus;
     QUrl                                        mySource;
     QUrl                                        mySourceQML;
+    QString                                     myPathQML;
     bool                                        myIsInit;
     bool                                        myVisualDirty;
     double                                      myDt;

@@ -47,7 +47,7 @@ SceneLoader* SceneLoaderFactory::getEntryFileExtension(std::string extension)
     {
         if ((*it)->canLoadFileExtension(extension.c_str()))
             return *it;
-        it++;
+        ++it;
     }
     // not found, sorry....
     return 0;
@@ -61,7 +61,7 @@ SceneLoader* SceneLoaderFactory::getEntryFileName(std::string filename)
     {
         if ((*it)->canLoadFileName(filename.c_str()))
             return *it;
-        it++;
+        ++it;
     }
     // not found, sorry....
     return 0;

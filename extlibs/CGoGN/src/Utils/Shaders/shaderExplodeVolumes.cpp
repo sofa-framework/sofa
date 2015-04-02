@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include <string.h>
 #include "Utils/Shaders/shaderExplodeVolumes.h"
 
@@ -44,7 +44,7 @@ ShaderExplodeVolumes::ShaderExplodeVolumes(bool withColorPerFace, bool withExplo
 	m_nameFS = "ShaderExplodeVolumes_fs";
 	m_nameGS = "ShaderExplodeVolumes_gs";
 
-	std::string glxvert(*GLSLShader::DEFINES_GL);
+	std::string glxvert(GLSLShader::defines_gl());
 	glxvert.append(vertexShaderText);
 
 	std::string glxgeom;
@@ -56,7 +56,7 @@ ShaderExplodeVolumes::ShaderExplodeVolumes(bool withColorPerFace, bool withExplo
 		glxgeom.append("#define WITH_EXPLODE_FACE 1\n");
 	glxgeom.append(geometryShaderText);
 
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
+	std::string glxfrag(GLSLShader::defines_gl());
 	glxfrag.append(fragmentShaderText);
 
 	loadShadersFromMemory(glxvert.c_str(), glxfrag.c_str(), glxgeom.c_str(), GL_LINES_ADJACENCY_EXT , GL_TRIANGLE_STRIP,4);

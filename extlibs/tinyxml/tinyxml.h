@@ -1714,22 +1714,6 @@ public:
 	*/
 	TiXmlUnknown* ToUnknown() const		{ return ( ( node && node->ToUnknown() ) ? node->ToUnknown() : 0 ); }
 
-	/** @deprecated use ToNode. 
-		Return the handle as a TiXmlNode. This may return null.
-	*/
-	TiXmlNode* Node() const			{ return ToNode(); } 
-	/** @deprecated use ToElement. 
-		Return the handle as a TiXmlElement. This may return null.
-	*/
-	TiXmlElement* Element() const	{ return ToElement(); }
-	/**	@deprecated use ToText()
-		Return the handle as a TiXmlText. This may return null.
-	*/
-	TiXmlText* Text() const			{ return ToText(); }
-	/** @deprecated use ToUnknown()
-		Return the handle as a TiXmlUnknown. This may return null.
-	*/
-	TiXmlUnknown* Unknown() const	{ return ToUnknown(); }
 
 private:
 	TiXmlNode* node;

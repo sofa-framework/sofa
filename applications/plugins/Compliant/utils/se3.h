@@ -43,9 +43,20 @@ struct SE3 {
 		return Eigen::Map< Eigen::Matrix<real, I, 1> >(v.ptr());
 	}
 
+
 	template<int I>
 	static Eigen::Map<const Eigen::Matrix<real, I, 1> > map(const ::sofa::defaulttype::Vec<I, real>& v) {
 		return Eigen::Map<const Eigen::Matrix<real, I, 1> >(v.ptr());
+	}
+
+
+    // rigidderiv
+	static Eigen::Map< vec6 > map(deriv_type& v) {
+		return Eigen::Map< vec6 >(v.getVCenter().ptr());
+	}
+
+	static Eigen::Map< const vec6 > map(const deriv_type& v) {
+		return Eigen::Map< const vec6 >(v.getVCenter().ptr());
 	}
 
 
@@ -146,7 +157,7 @@ struct SE3 {
 			mat33::Zero(), R;
 
 		return res;
-	};
+    }
 
 	
 	// sofa adT

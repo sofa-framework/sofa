@@ -13,7 +13,6 @@ struct preconditionedcg
 
     typedef typename krylov::vec vec;
     typedef typename krylov::real real;
-    typedef typename krylov::natural natural;
     typedef typename krylov::params params;
 
     // solves Ax = b using a preconditioned conjugate gradient.
@@ -41,7 +40,7 @@ struct preconditionedcg
         action d( residual );
         d.init( P );
 
-        natural i;
+        unsigned i;
         for( i = 0; i < p.iterations && d.r_norm > p.precision; ++i )
         {
             d.step(x, A, P);
@@ -64,7 +63,7 @@ struct preconditionedcg
         real phi2;		// residual . preconditioned residual norm
         real r_norm;	// residual norm
 
-        natural k;		// iteration
+        unsigned k;		// iteration
 
         action( vec& r ) : r(r) {}
 

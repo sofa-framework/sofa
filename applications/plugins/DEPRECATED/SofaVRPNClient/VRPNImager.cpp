@@ -137,7 +137,7 @@ void  VRPN_CALLBACK handle_region_change(void *userData, const vrpn_IMAGERREGION
     }
     fprintf(stderr,"\n");
     //std::cout << "rigidPoint = " << rigidPoint. << std::endl;
-
+    free(data);
 }
 
 void  VRPN_CALLBACK handle_end_of_frame(void *userData,const struct _vrpn_IMAGERENDFRAMECB)

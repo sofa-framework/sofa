@@ -1,3 +1,5 @@
+#define CGoGN_UTILS_DLL_EXPORT 1
+
 #include <GL/glew.h>
 #include <string.h>
 #include "Utils/Shaders/shaderMatCustom.h"
@@ -22,7 +24,7 @@ ShaderMatCustom::ShaderMatCustom(bool doubleSided, bool withEyePosition):
 	m_nameFS = "ShaderMatCustom_fs";
 	m_nameGS = "ShaderMatCustom_gs";
 
-	std::string glxvert(*GLSLShader::DEFINES_GL);
+	std::string glxvert(GLSLShader::defines_gl());
 	// get choose GL defines (2 or 3)
 	// ans compile shaders
 	if (m_with_eyepos)
@@ -32,7 +34,7 @@ ShaderMatCustom::ShaderMatCustom(bool doubleSided, bool withEyePosition):
 //	std::string glxgeom = GLSLShader::defines_Geom("triangles", "triangle_strip", 3);
 //	glxgeom.append(geometryShaderText);
 
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
+	std::string glxfrag(GLSLShader::defines_gl());
 	// Use double sided lighting if set
 	if (doubleSided)
 		glxfrag.append("#define DOUBLE_SIDED\n");
@@ -145,10 +147,10 @@ unsigned int ShaderMatCustom::setAttributeColor(CGoGN::Utils::VBO* vbo)
 	{
 		m_with_color=true;
 		// set the define and recompile shader
-		std::string gl3vert(*GLSLShader::DEFINES_GL);
+		std::string gl3vert(GLSLShader::defines_gl());
 		gl3vert.append("#define WITH_COLOR 1\n");
 		gl3vert.append(vertexShaderText);
-		std::string gl3frag(*GLSLShader::DEFINES_GL);
+		std::string gl3frag(GLSLShader::defines_gl());
 		gl3frag.append("#define WITH_COLOR 1\n");
 		gl3frag.append(fragmentShaderText);
 		loadShadersFromMemory(gl3vert.c_str(), gl3frag.c_str());
@@ -175,9 +177,9 @@ void ShaderMatCustom::unsetAttributeColor()
 		unbindVA("VertexColor");
 		unbind();
 		// recompile shader
-		std::string gl3vert(*GLSLShader::DEFINES_GL);
+		std::string gl3vert(GLSLShader::defines_gl());
 		gl3vert.append(vertexShaderText);
-		std::string gl3frag(*GLSLShader::DEFINES_GL);
+		std::string gl3frag(GLSLShader::defines_gl());
 		gl3frag.append(fragmentShaderText);
 		loadShadersFromMemory(gl3vert.c_str(), gl3frag.c_str());
 		// and treat uniforms

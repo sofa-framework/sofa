@@ -25,7 +25,7 @@
 #ifndef SOFA_Flexible_MassFromDensity_H
 #define SOFA_Flexible_MassFromDensity_H
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <image/ImageTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/DataEngine.h>

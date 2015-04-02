@@ -31,7 +31,7 @@
 using namespace sofa::simulation;
 #include <sofa/core/ExecParams.h>
 using namespace sofa::core;
-
+using namespace sofa::core::objectmodel;
 #include "Binding_Node.h"
 #include "Binding_Context.h"
 #include "PythonVisitor.h"
@@ -39,7 +39,7 @@ using namespace sofa::core;
 
 extern "C" PyObject * Node_executeVisitor(PyObject *self, PyObject * args)
 {
-    Node* node=dynamic_cast<Node*>(((PySPtr<Base>*)self)->object.get());
+    Node* node=dynamic_cast<Node*>(((PySPtr<sofa::core::objectmodel::Base>*)self)->object.get());
 
     PyObject* pyVisitor;
     if (!PyArg_ParseTuple(args, "O",&pyVisitor))

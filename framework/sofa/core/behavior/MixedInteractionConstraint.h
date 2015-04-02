@@ -79,7 +79,7 @@ protected:
 
     virtual ~MixedInteractionConstraint();
 public:
-    Data<double> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     virtual void init();
@@ -95,7 +95,7 @@ public:
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *v);
+    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v);
 
     /// Construct the Constraint violations vector of each constraint
     ///
@@ -105,7 +105,7 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, defaulttype::BaseVector *v, const DataVecCoord1 &x1, const DataVecCoord2 &x2
+    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord1 &x1, const DataVecCoord2 &x2
             , const DataVecDeriv1 &v1, const DataVecDeriv2 &v2) = 0;
 
     /// Construct the Jacobian Matrix
@@ -113,7 +113,7 @@ public:
     /// \param cId is the result constraint sparse matrix Id
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, MultiMatrixDerivId cId, unsigned int &cIndex);
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex);
 
     /// Construct the Jacobian Matrix
     ///
@@ -123,7 +123,7 @@ public:
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
     ///
     /// This is the method that should be implemented by the component
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST =ConstraintParams::defaultInstance()*/, DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv1 &c1, DataMatrixDeriv2 &c2, unsigned int &cIndex
             , const DataVecCoord1 &x1, const DataVecCoord2 &x2) = 0;
 
     /// Pre-construction check method called by ObjectFactory.
@@ -131,22 +131,6 @@ public:
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        MechanicalState<DataTypes1>* mstate1 = NULL;
-        MechanicalState<DataTypes2>* mstate2 = NULL;
-        std::string object1 = arg->getAttribute("object1","@./");
-        std::string object2 = arg->getAttribute("object2","@./");
-        if (object1.empty()) object1 = "@./";
-        if (object2.empty()) object2 = "@./";
-        if (object1[0] != '@')
-            object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
-        if (object2[0] != '@')
-            object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
-        context->findLinkDest(mstate1, object1, NULL);
-        context->findLinkDest(mstate2, object2, NULL);
-
-        if (!mstate1 || !mstate2)
-            return false;
-
         return BaseInteractionConstraint::canCreate(obj, context, arg);
     }
 
@@ -158,19 +142,6 @@ public:
 
         if (arg)
         {
-            std::string object1 = arg->getAttribute("object1","");
-            std::string object2 = arg->getAttribute("object2","");
-            if (!object1.empty() && object1[0] != '@')
-            {
-                object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
-                arg->setAttribute("object1", object1.c_str());
-            }
-            if (!object2.empty() && object2[0] != '@')
-            {
-                object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
-                arg->setAttribute("object2", object2.c_str());
-            }
-
             obj->parse(arg);
         }
 

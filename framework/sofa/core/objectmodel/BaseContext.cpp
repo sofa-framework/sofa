@@ -90,13 +90,13 @@ const BaseContext::Vec3& BaseContext::getGravity() const
 }
 
 /// Simulation timestep
-double BaseContext::getDt() const
+SReal BaseContext::getDt() const
 {
     return 0.01;
 }
 
 /// Simulation time
-double BaseContext::getTime() const
+SReal BaseContext::getTime() const
 {
     return 0.0;
 }
@@ -254,11 +254,10 @@ core::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
 core::visual::Shader* BaseContext::getShader() const
 {
     return this->get<sofa::core::visual::Shader>();
-    return NULL;
 }
 
 /// Propagate an event
-void BaseContext::propagateEvent( const core::ExecParams* /* PARAMS FIRST */, Event* )
+void BaseContext::propagateEvent( const core::ExecParams*, Event* )
 {
     serr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<sendl;
 }

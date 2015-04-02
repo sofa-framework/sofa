@@ -69,24 +69,28 @@ public:
     /// This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
     void setGroup(int g) { group.setValue(g); }
 
+
+    /// Return the lists of models this constraint applies to. 
+    virtual helper::vector< core::BaseState* > getModels() = 0;
+
     /// @name Vector operations
     /// @{
 
     /// Project dx to constrained space (dx models an acceleration).
     /// \param dxId output vector
-    virtual void projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dxId) = 0;
+    virtual void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) = 0;
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     /// \param cId output vector
-    virtual void projectJacobianMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, MultiMatrixDerivId cId) = 0;
+    virtual void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) = 0;
 
     /// Project v to constrained space (v models a velocity).
     /// \param vId output vector
-    virtual void projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vId) = 0;
+    virtual void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) = 0;
 
     /// Project x to constrained space (x models a position).
     /// \param xId output vector
-    virtual void projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId xId) = 0;
+    virtual void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) = 0;
 
     /// @}
 
@@ -95,13 +99,13 @@ public:
     /// @{
 
     /// Project the compliance Matrix to constrained space.
-    virtual void projectResponse(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, double **) {};
+    virtual void projectResponse(const MechanicalParams* /*mparams*/, double **) {}
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const behavior::MultiMatrixAccessor* /*matrix*/) {};
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {};
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const behavior::MultiMatrixAccessor* /*matrix*/) {}
 
     /** Project the the given matrix (Experimental API).
       Replace M with PMP, where P is the projection matrix corresponding to the projectResponse method. Contrary to applyConstraint(), the diagonal blocks of the result are not reset to the identity.

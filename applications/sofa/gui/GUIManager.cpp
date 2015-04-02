@@ -25,8 +25,7 @@
 
 #include "GUIManager.h"
 #include "BaseGUI.h"
-#include "BaseViewer.h"
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>

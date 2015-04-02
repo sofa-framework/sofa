@@ -27,6 +27,8 @@
 
 #include "Utils/gl_def.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
@@ -36,7 +38,7 @@ namespace Utils
 // forward definition
 class GLSLShader;
 
-class VBORender
+class CGoGN_UTILS_API VBORender
 {
 protected:
 	GLuint m_indexBuffer ;

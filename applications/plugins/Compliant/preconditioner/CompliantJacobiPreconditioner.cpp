@@ -7,20 +7,18 @@ namespace component {
 namespace linearsolver {
 
 
-SOFA_DECL_CLASS(CompliantJacobiPreconditioner);
+SOFA_DECL_CLASS(CompliantJacobiPreconditioner)
 int CompliantJacobiPreconditionerClass = core::RegisterObject("Jacobi preconditioner").add< CompliantJacobiPreconditioner >();
 
 
 CompliantJacobiPreconditioner::CompliantJacobiPreconditioner()
     : BasePreconditioner()
-{
+{}
 
-}
-
-void CompliantJacobiPreconditioner::compute( const AssembledSystem::mat& H )
+void CompliantJacobiPreconditioner::compute( const AssembledSystem::rmat& H )
 {
     m_diagonal_inv = H.diagonal();
-    for( AssembledSystem::mat::Index i=0 ; i<H.rows() ; ++i )
+    for( AssembledSystem::rmat::Index i=0 ; i<H.rows() ; ++i )
         m_diagonal_inv.coeffRef(i) = std::abs(m_diagonal_inv.coeff(i)) < std::numeric_limits<Real>::epsilon() ? Real(0) : Real(1) / m_diagonal_inv.coeff(i);
 }
 

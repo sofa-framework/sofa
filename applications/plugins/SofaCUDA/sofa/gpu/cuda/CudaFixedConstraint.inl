@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_INL
 
 #include "CudaFixedConstraint.h"
-#include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
+#include <SofaBoundaryCondition/FixedConstraint.inl>
 
 namespace sofa
 {
@@ -83,7 +83,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     {
         // put indices in a set to sort them and remove duplicates
         std::set<int> sortedIndices;
-        for (typename SetIndex::const_iterator it = indices.begin(); it!=indices.end(); it++)
+        for (typename SetIndex::const_iterator it = indices.begin(); it!=indices.end(); ++it)
             sortedIndices.insert(*it);
         // check if the indices are contiguous
         if (*sortedIndices.begin() + (int)sortedIndices.size()-1 == *sortedIndices.rbegin())
@@ -96,7 +96,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         {
             //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" non-contiguous fixed indices"<<sendl;
             data.cudaIndices.reserve(sortedIndices.size());
-            for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); it++)
+            for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); ++it)
                 data.cudaIndices.push_back(*it);
         }
     }
@@ -134,7 +134,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
         else
         {
             data.cudaIndices.reserve(data.maxIndex-data.minIndex+2);
-            for (int i=data.minIndex; i<data.maxIndex; i++)
+            for (int i=data.minIndex; i<data.maxIndex; ++i)
                 data.cudaIndices.push_back(i);
             data.cudaIndices.push_back(index);
             data.minIndex = -1;
@@ -175,7 +175,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
             else
             {
                 data.cudaIndices.reserve(data.maxIndex-data.minIndex);
-                for (int i=data.minIndex; i<data.maxIndex; i++)
+                for (int i=data.minIndex; i<data.maxIndex; ++i)
                     if (i != (int)index)
                         data.cudaIndices.push_back(i);
                 data.minIndex = -1;
@@ -186,7 +186,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
     else
     {
         bool found = false;
-        for (unsigned int i=0; i<data.cudaIndices.size(); i++)
+        for (unsigned int i=0; i<data.cudaIndices.size(); ++i)
         {
             if (found)
                 data.cudaIndices[i-1] = data.cudaIndices[i];
@@ -211,7 +211,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
     {
         // put indices in a set to sort them and remove duplicates
         std::set<int> sortedIndices;
-        for (typename SetIndex::const_iterator it = indices.begin(); it!=indices.end(); it++)
+        for (typename SetIndex::const_iterator it = indices.begin(); it!=indices.end(); ++it)
             sortedIndices.insert(*it);
         // check if the indices are contiguous
         if (*sortedIndices.begin() + (int)sortedIndices.size()-1 == *sortedIndices.rbegin())
@@ -224,7 +224,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Mai
         {
             //std::cout << "CudaFixedConstraint: "<<sortedIndices.size()<<" non-contiguous fixed indices"<<sendl;
             data.cudaIndices.reserve(sortedIndices.size());
-            for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); it++)
+            for (std::set<int>::const_iterator it = sortedIndices.begin(); it!=sortedIndices.end(); ++it)
                 data.cudaIndices.push_back(*it);
         }
     }
@@ -262,7 +262,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConst
         else
         {
             data.cudaIndices.reserve(data.maxIndex-data.minIndex+2);
-            for (int i=data.minIndex; i<data.maxIndex; i++)
+            for (int i=data.minIndex; i<data.maxIndex; ++i)
                 data.cudaIndices.push_back(i);
             data.cudaIndices.push_back(index);
             data.minIndex = -1;
@@ -303,7 +303,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
             else
             {
                 data.cudaIndices.reserve(data.maxIndex-data.minIndex);
-                for (int i=data.minIndex; i<data.maxIndex; i++)
+                for (int i=data.minIndex; i<data.maxIndex; ++i)
                     if (i != (int)index)
                         data.cudaIndices.push_back(i);
                 data.minIndex = -1;
@@ -314,7 +314,7 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeCo
     else
     {
         bool found = false;
-        for (unsigned int i=0; i<data.cudaIndices.size(); i++)
+        for (unsigned int i=0; i<data.cudaIndices.size(); ++i)
         {
             if (found)
                 data.cudaIndices[i-1] = data.cudaIndices[i];
@@ -424,7 +424,7 @@ void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(M
     { data->addConstraint(this, index); } \
     template<> void FixedConstraint< T >::removeConstraint(unsigned int index) \
     { data->removeConstraint(this, index); } \
-    template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* /* mparams */ /* PARAMS FIRST */, DataVecDeriv& d_resData) \
+    template<> void FixedConstraint< T >::projectResponse(const core::MechanicalParams* /* mparams */, DataVecDeriv& d_resData) \
     {  \
 		VecDeriv &resData = *d_resData.beginEdit(); \
 		data->projectResponse(this, resData);  \
