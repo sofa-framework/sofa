@@ -4,6 +4,9 @@
 #include <assert.h>
 #include <iostream>
 #include <vector>
+#ifdef WIN32
+#include <algorithm> // Necessary to have the function std::min on visual studio 2013
+#endif
 
 #include <sofa/helper/IndexOpenMP.h>
 
