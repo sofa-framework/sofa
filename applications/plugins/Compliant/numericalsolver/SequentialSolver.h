@@ -97,6 +97,57 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 
 };
 
+
+
+/// Projected block gauss-seidel kkt solver with schur complement on both dynamics+bilateral constraints
+/// TODO move this as an option in SequentialSolver, so it can be used by derived solvers (eg NNCGSolver)
+class SOFA_Compliant_API PGSSolver : public SequentialSolver {
+
+protected:
+
+
+    struct LocalSubKKT : public SubKKT
+    {
+
+        // full kkt with projected primal variables
+        // excludes non bilateral constaints
+        // TODO upgrade it to any constraint mask and/or move it in a sub-class
+        static bool projected_kkt_bilateral( rmat&H, rmat&P, rmat& Q, rmat&Q_star,
+                                  const AssembledSystem& sys,
+                                  real eps = 0,
+                                  bool only_lower = false);
+
+
+        rmat Q_unil;
+    };
+
+
+public:
+
+    SOFA_CLASS(PGSSolver, SequentialSolver);
+
+
+    system_type m_localSystem;
+    LocalSubKKT m_localSub;
+
+
+    virtual void factor(const system_type& system);
+
+protected:
+
+
+  virtual void solve_impl(vec& x,
+                          const system_type& system,
+                          const vec& rhs,
+                          bool correct) const;
+
+    virtual void fetch_blocks(const system_type& system);
+    virtual void fetch_unilateral_blocks(const system_type& system);
+
+};
+
+
+
 }
 }
 }
