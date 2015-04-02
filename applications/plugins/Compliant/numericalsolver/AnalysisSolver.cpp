@@ -140,7 +140,8 @@ void AnalysisSolver::correct(vec& res,
 	solvers.back()->correct(res, sys, rhs, damping);
 
     if(!dump_qp.getValue().empty() ) {
-        std::ofstream out(dump_qp.getValue() + ".correction" );
+        const std::string filename = dump_qp.getValue() + ".correction";
+        std::ofstream out(filename.c_str());
         
         write_qp(out, sys, rhs);
     }
@@ -160,7 +161,8 @@ void AnalysisSolver::solve(vec& res,
 	}
 
     if(!dump_qp.getValue().empty() ) {
-        std::ofstream out(dump_qp.getValue() + ".dynamics" );
+        const std::string filename = dump_qp.getValue() + ".correction";
+        std::ofstream out(filename.c_str());
         
         write_qp(out, sys, rhs);
     }
