@@ -26,15 +26,7 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
     BaseSequentialSolver();
 
 	virtual void factor(const system_type& system);
-	
-	virtual void solve(vec& x,
-	                   const system_type& system,
-                       const vec& rhs) const;
 
-	virtual void correct(vec& x,
-						 const system_type& system,
-						 const vec& rhs,
-						 real damping) const;
 
 	virtual void init();
 
@@ -45,7 +37,7 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 	virtual void solve_impl(vec& x,
 							const system_type& system,
 							const vec& rhs,
-							bool correct) const;
+                            bool correct) const;
 
     // performs a single iteration
     SReal step(vec& lambda,
@@ -139,6 +131,16 @@ public:
 
     virtual void factor(const system_type& system);
 
+
+    virtual void solve(vec& x,
+                       const system_type& system,
+                       const vec& rhs) const;
+
+    virtual void correct(vec& x,
+                         const system_type& system,
+                         const vec& rhs,
+                         real damping) const;
+
 protected:
 
 
@@ -146,10 +148,10 @@ protected:
     LocalSubKKT m_localSub; // to build m_localSystem
 
 
-    virtual void solve_impl(vec& x,
-                            const system_type& system,
-                            const vec& rhs,
-                            bool correct) const;
+    void solve_local(vec& x,
+                    const system_type& system,
+                    const vec& rhs,
+                    bool correct) const;
 
     virtual void fetch_unilateral_blocks(const system_type& system);
 
