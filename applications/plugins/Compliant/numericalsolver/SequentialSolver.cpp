@@ -13,20 +13,16 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(SequentialSolver)
-int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").add< SequentialSolver >();
-
-
 			
 
-SequentialSolver::SequentialSolver() 
+BaseSequentialSolver::BaseSequentialSolver()
 	: omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
 {}
 
 
-SequentialSolver::block::block() : offset(0), size(0), projector(0), activated(false) { }
+BaseSequentialSolver::block::block() : offset(0), size(0), projector(0), activated(false) { }
 
-void SequentialSolver::fetch_blocks(const system_type& system) {
+void BaseSequentialSolver::fetch_blocks(const system_type& system) {
 
     // TODO don't free memory ?
     blocks.clear();
@@ -60,7 +56,7 @@ void SequentialSolver::fetch_blocks(const system_type& system) {
 
 
 // TODO optimize remaining allocs
-void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) {
+void BaseSequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) {
 	inv.compute( schur );
 
 #ifndef NDEBUG
@@ -73,7 +69,7 @@ void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) 
 
 
 
-void SequentialSolver::factor(const system_type& system) { 
+void BaseSequentialSolver::factor(const system_type& system) {
 	scoped::timer timer("system factorization");
  
 	Benchmark::scoped_timer bench_timer(this->bench, &Benchmark::factor);
@@ -85,9 +81,6 @@ void SequentialSolver::factor(const system_type& system) {
     SubKKT::projected_primal(sub, system);
 
     sub.factor(*response);
-
-	// find blocks
-	fetch_blocks(system);
 	
 	// compute block responses
 	const unsigned n = blocks.size();
@@ -142,7 +135,7 @@ void SequentialSolver::factor(const system_type& system) {
 }
 
 // TODO make sure this does not cause any alloc
-void SequentialSolver::solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const {
+void BaseSequentialSolver::solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const {
 	assert( !has_nan(rhs.eval()) );
 	result = rhs;
 
@@ -155,7 +148,7 @@ void SequentialSolver::solve_block(chunk_type result, const inverse_type& inv, c
 
 
 
-void SequentialSolver::init() {
+void BaseSequentialSolver::init() {
 	
     IterativeSolver::init();
 
@@ -166,7 +159,7 @@ void SequentialSolver::init() {
 	if( !response ) {
         response = new LDLTResponse();
         this->getContext()->addObject( response );
-        std::cout << "SequentialSolver: fallback response class: "
+        std::cout << "BaseSequentialSolver: fallback response class: "
                   << response->getClassName()
                   << " added to the scene" << std::endl;
 	}
@@ -175,7 +168,7 @@ void SequentialSolver::init() {
 
 
 // this is where the magic happens
-SReal SequentialSolver::step(vec& lambda,
+SReal BaseSequentialSolver::step(vec& lambda,
                              vec& net, 
                              const system_type& sys,
                              const vec& rhs,
@@ -261,14 +254,14 @@ SReal SequentialSolver::step(vec& lambda,
 
 
 
-void SequentialSolver::solve(vec& res,
+void BaseSequentialSolver::solve(vec& res,
 							 const system_type& sys,
 							 const vec& rhs) const {
 	solve_impl(res, sys, rhs, false );
 }
 
 
-void SequentialSolver::correct(vec& res,
+void BaseSequentialSolver::correct(vec& res,
 							   const system_type& sys,
 							   const vec& rhs,
 							   real /*damping*/ ) const {
@@ -276,7 +269,7 @@ void SequentialSolver::correct(vec& res,
 }
 
 
-void SequentialSolver::solve_impl(vec& res,
+void BaseSequentialSolver::solve_impl(vec& res,
 								  const system_type& sys,
 								  const vec& rhs,
 								  bool correct) const {
@@ -355,8 +348,8 @@ void SequentialSolver::solve_impl(vec& res,
 
 
 
-SOFA_DECL_CLASS(PGSSolver)
-int PGSSolverClass = core::RegisterObject("Sequential Impulses solver").add< PGSSolver >();
+SOFA_DECL_CLASS(SequentialSolver)
+int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").add< SequentialSolver >();
 
 
 
@@ -432,7 +425,7 @@ static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSy
 
 
 
-bool PGSSolver::LocalSubKKT::projected_primal_and_bilateral( AssembledSystem& res,
+bool SequentialSolver::LocalSubKKT::projected_primal_and_bilateral( AssembledSystem& res,
                                                               const AssembledSystem& sys,
                                                               real eps,
                                                               bool only_lower)
@@ -497,7 +490,7 @@ bool PGSSolver::LocalSubKKT::projected_primal_and_bilateral( AssembledSystem& re
 
 
 
-void PGSSolver::LocalSubKKT::toLocal( vec& local, const vec& global ) const
+void SequentialSolver::LocalSubKKT::toLocal( vec& local, const vec& global ) const
 {
     assert( local.size() == P.cols() + Q.cols() + Q_unil.cols() );
     assert( global.size() == P.rows() + Q.rows() );
@@ -508,7 +501,7 @@ void PGSSolver::LocalSubKKT::toLocal( vec& local, const vec& global ) const
         local.tail( Q_unil.cols() ) = Q_unil.transpose() * global.tail( Q.rows() ); // other constraints
 }
 
-void PGSSolver::LocalSubKKT::fromLocal( vec& global, const vec& local ) const
+void SequentialSolver::LocalSubKKT::fromLocal( vec& global, const vec& local ) const
 {
     assert( local.size() == P.cols() + Q.cols() + Q_unil.cols() );
     assert( global.size() == P.rows() + Q.rows() );
@@ -522,30 +515,37 @@ void PGSSolver::LocalSubKKT::fromLocal( vec& global, const vec& local ) const
 }
 
 
-PGSSolver::PGSSolver()
-    : d_regularization(initData(&d_regularization, std::numeric_limits<SReal>::epsilon(), "regularization", "Optional diagonal Tikhonov regularization on bilateral constraints"))
+SequentialSolver::SequentialSolver()
+    : d_iterateOnBilaterals(initData(&d_iterateOnBilaterals, false, "iterateOnBilaterals", "Should the bilateral constraint must be solved iteratively or factorized with the dynamics?"))
+    , d_regularization(initData(&d_regularization, std::numeric_limits<SReal>::epsilon(), "regularization", "Optional diagonal Tikhonov regularization on bilateral constraints"))
 {}
 
 
-void PGSSolver::factor(const system_type& system) {
+void SequentialSolver::factor(const system_type& system) {
     scoped::timer timer("system factorization");
 
-    if( !m_localSub.projected_primal_and_bilateral( m_localSystem, system, d_regularization.getValue(), response->isSymmetric() ) )
-        return SequentialSolver::factor( system );
-
-    fetch_unilateral_blocks( system );
-
-    SequentialSolver::factor( m_localSystem );
+    if( d_iterateOnBilaterals.getValue() ||
+            !m_localSub.projected_primal_and_bilateral( m_localSystem, system, d_regularization.getValue(), response->isSymmetric() ) // no bilaterals
+            )
+    {
+        fetch_blocks( system ); // find blocks
+        return BaseSequentialSolver::factor( system );
+    }
+    else
+    {
+        fetch_unilateral_blocks( system ); // find unilateral blocks
+        BaseSequentialSolver::factor( m_localSystem );
+    }
 }
 
 
-void PGSSolver::solve_impl(vec& res,
+void SequentialSolver::solve_impl(vec& res,
                            const system_type& sys,
                            const vec& rhs,
                            bool correct) const {
 
-    if( !m_localSystem.H.nonZeros() )
-        return SequentialSolver::solve_impl( res, sys, rhs, correct );
+    if( d_iterateOnBilaterals.getValue() || !m_localSystem.H.nonZeros() )
+        return BaseSequentialSolver::solve_impl( res, sys, rhs, correct );
 
     const size_t localsize = m_localSystem.size();
 
@@ -557,7 +557,7 @@ void PGSSolver::solve_impl(vec& res,
     m_localSub.toLocal( localres, res );
 
     // performing the solve on the reorganized system
-    SequentialSolver::solve_impl( localres, m_localSystem, localrhs, correct );
+    BaseSequentialSolver::solve_impl( localres, m_localSystem, localrhs, correct );
 
     // reordering res
     m_localSub.fromLocal( res, localres );
@@ -566,8 +566,7 @@ void PGSSolver::solve_impl(vec& res,
 
 
 // the only difference with the regular implementation is to consider only non-bilateral constraints
-// overloading this function allows no to set m_localSystem.master/compliance/constraints
-void PGSSolver::fetch_unilateral_blocks(const system_type& system)
+void SequentialSolver::fetch_unilateral_blocks(const system_type& system)
 {
     // TODO don't free memory ?
     blocks.clear();
@@ -604,14 +603,6 @@ void PGSSolver::fetch_unilateral_blocks(const system_type& system)
 
     assert( off == m_localSystem.n );
 
-}
-
-void PGSSolver::fetch_blocks(const system_type& /*system*/)
-{
-    // it is called by SequentialSolver but does nothing here
-    // PGSSolver call itself his own fetch_unilateral_blocks
-    // the idea is to call fetch_unilateral_blocks with the *original* AssembledSystem
-    // while this function is called with m_localSystem
 }
 
 
