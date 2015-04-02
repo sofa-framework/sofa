@@ -272,7 +272,7 @@ bool SubKKT::projected_dual(SubKKT& res, const AssembledSystem& sys) {
 
 
 
-void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, bool only_bilaterals, real eps, bool only_lower)
+void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps, bool only_lower)
 {
     scoped::timer step("subsystem projection");
 
@@ -280,20 +280,9 @@ void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, bool only_bi
 
     if(sys.n)
     {
-        if( only_bilaterals )
-        {
-            unsigned nb_bilaterals = projection_bilateral( res.Q, sys );
-            if( !nb_bilaterals ) // no bilateral constraints
-                filter_primal(res.A, sys.H, res.P);
-            else
-                filter_kkt(res.A, sys.H, res.P, res.Q, sys.J, sys.C, eps, sys.isPIdentity, projection_bilateral( res.Q, sys ) == sys.n, only_lower);
-        }
-        else
-        {
-            res.Q.resize(sys.n, sys.n);
-            res.Q.setIdentity();
-            filter_kkt(res.A, sys.H, res.P, res.Q, sys.J, sys.C, eps, sys.isPIdentity, true, only_lower);
-        }
+        res.Q.resize(sys.n, sys.n);
+        res.Q.setIdentity();
+        filter_kkt(res.A, sys.H, res.P, res.Q, sys.J, sys.C, eps, sys.isPIdentity, true, only_lower);
     }
     else // no constraints
     {
@@ -301,6 +290,30 @@ void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, bool only_bi
         res.Q = rmat();
     }
 }
+
+
+void SubKKT::projected_kkt_bilateral(SubKKT& res, const AssembledSystem& sys, real eps, bool only_lower)
+{
+    scoped::timer step("subsystem projection");
+
+    projection_basis(res.P, sys.P, sys.isPIdentity);
+
+    if(sys.n)
+    {
+        unsigned nb_bilaterals = projection_bilateral( res.Q, sys );
+        if( !nb_bilaterals ) // no bilateral constraints
+            filter_primal(res.A, sys.H, res.P);
+        else
+            filter_kkt(res.A, sys.H, res.P, res.Q, sys.J, sys.C, eps, sys.isPIdentity, projection_bilateral( res.Q, sys ) == sys.n, only_lower);
+
+    }
+    else // no constraints
+    {
+        filter_primal(res.A, sys.H, res.P);
+        res.Q = rmat();
+    }
+}
+
 
 SubKKT::SubKKT() {}
 
@@ -350,25 +363,31 @@ void SubKKT::solve(const Response& resp,
     if( Q.cols() ) {
         throw std::logic_error("sorry, not implemented");
     }
-    
+
     mtmpc1 = P.transpose() * rhs;
+
         
     resp.solve(mtmpc2, mtmpc1);
 
     // mtmp3 = P;
 
-    // not sure if this causes a temporary
-    res = P * mtmpc2;
+    if( Q.cols() ) {
+        res = P * mtmpc2 * Q.transpose();
+    }
+    else
+    {
+        // not sure if this causes a temporary
+        res = P * mtmpc2;
+    }
 }
 
 void SubKKT::solve_opt(const Response& resp,
                        cmat& res,
                        const rmat& rhs) const {
-    res.resize(rhs.rows(), rhs.cols());
     
-//    if( Q.cols() ) {
-//        throw std::logic_error("sorry, not implemented");
-//    }
+    if( Q.cols() ) {
+        throw std::logic_error("sorry, not implemented");
+    }
 
 //    sparse::fast_prod(mtmp1, P.transpose(), rhs.transpose());
 //    // mtmp1 = P.transpose() * rhs.transpose();
@@ -381,28 +400,17 @@ void SubKKT::solve_opt(const Response& resp,
 //    // res = mtmp3 * mtmp2;
 
 
-    solve_filtered( resp, mtmpc2, rhs, mtmpr );
+    mtmpr.resize( rhs.rows(), P.cols() );
+    sparse::fast_prod(mtmpr, rhs, P);
 
+    mtmpc2.resize( P.cols(), rhs.rows() );
+    resp.solve(mtmpc2, mtmpr.transpose() );
+
+    res.resize(rhs.rows(), rhs.cols());
     mtmpc1 = P;
     sparse::fast_prod(res, mtmpc1, mtmpc2);
 }
 
-
-
-void SubKKT::solve_filtered(const Response& resp,
-                       cmat& res,
-                       const rmat& rhs,
-                       rmat &projected_rhs ) const {
-
-    // TODO? projected_rhs with Q too?
-
-    projected_rhs.resize( rhs.rows(), P.cols() );
-    sparse::fast_prod(projected_rhs, rhs, P);
-
-    res.resize( P.cols(), rhs.rows() );
-    resp.solve(res, projected_rhs.transpose() );
-
-}
 
 
 

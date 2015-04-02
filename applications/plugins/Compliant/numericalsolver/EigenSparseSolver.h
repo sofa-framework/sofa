@@ -55,7 +55,6 @@ class EigenSparseSolver : public KKTSolver {
 
     Data<bool> d_schur;
     Data<SReal> d_regularization;
-    Data<bool> d_onlyBilaterals;
 
     struct pimpl_type;
     scoped::ptr<pimpl_type> pimpl;
