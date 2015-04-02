@@ -24,6 +24,8 @@ BaseSequentialSolver::block::block() : offset(0), size(0), projector(0), activat
 
 void BaseSequentialSolver::fetch_blocks(const system_type& system) {
 
+//    serr<<SOFA_CLASS_METHOD<<sendl;
+
     // TODO don't free memory ?
     blocks.clear();
 	
@@ -251,22 +253,6 @@ SReal BaseSequentialSolver::step(vec& lambda,
 	return estimate;
 }
 
-
-
-
-void BaseSequentialSolver::solve(vec& res,
-							 const system_type& sys,
-							 const vec& rhs) const {
-	solve_impl(res, sys, rhs, false );
-}
-
-
-void BaseSequentialSolver::correct(vec& res,
-							   const system_type& sys,
-							   const vec& rhs,
-							   real /*damping*/ ) const {
-	solve_impl(res, sys, rhs, true );
-}
 
 
 void BaseSequentialSolver::solve_impl(vec& res,
@@ -539,13 +525,31 @@ void SequentialSolver::factor(const system_type& system) {
 }
 
 
-void SequentialSolver::solve_impl(vec& res,
+
+
+void SequentialSolver::solve(vec& res,
+                             const system_type& sys,
+                             const vec& rhs) const {
+    solve_local(res, sys, rhs, false );
+}
+
+
+void SequentialSolver::correct(vec& res,
+                               const system_type& sys,
+                               const vec& rhs,
+                               real /*damping*/ ) const {
+    solve_local(res, sys, rhs, true );
+}
+
+
+
+void SequentialSolver::solve_local(vec& res,
                            const system_type& sys,
                            const vec& rhs,
                            bool correct) const {
 
     if( d_iterateOnBilaterals.getValue() || !m_localSystem.H.nonZeros() )
-        return BaseSequentialSolver::solve_impl( res, sys, rhs, correct );
+        return solve_impl( res, sys, rhs, correct );
 
     const size_t localsize = m_localSystem.size();
 
@@ -557,7 +561,7 @@ void SequentialSolver::solve_impl(vec& res,
     m_localSub.toLocal( localres, res );
 
     // performing the solve on the reorganized system
-    BaseSequentialSolver::solve_impl( localres, m_localSystem, localrhs, correct );
+    solve_impl( localres, m_localSystem, localrhs, correct );
 
     // reordering res
     m_localSub.fromLocal( res, localres );
@@ -568,6 +572,8 @@ void SequentialSolver::solve_impl(vec& res,
 // the only difference with the regular implementation is to consider only non-bilateral constraints
 void SequentialSolver::fetch_unilateral_blocks(const system_type& system)
 {
+//    serr<<SOFA_CLASS_METHOD<<sendl;
+
     // TODO don't free memory ?
     blocks.clear();
 
