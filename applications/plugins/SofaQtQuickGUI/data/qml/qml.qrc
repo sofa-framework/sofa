@@ -49,7 +49,7 @@
         <file>SofaDataTypes/DataType_OptionsGroup.qml</file>
         <file>SofaBasics/Application.qml</file>
         <file>SofaCommon/SofaApplicationScript.js</file>
-        <file>SofaInteractor/qmldir</file>
-        <file>SofaInteractor/UserInteractor_Selection.qml</file>
+        <file>SofaInteractors/qmldir</file>
+        <file>SofaInteractors/UserInteractor_Selection.qml</file>
     </qresource>
 </RCC>

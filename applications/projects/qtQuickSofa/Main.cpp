@@ -52,9 +52,9 @@ int main(int argc, char **argv)
     // use the default.ini settings if it is the first time the user launch the application
     Tools::useDefaultSettingsAtFirstLaunch();
 
-    QSurfaceFormat format;
+    //QSurfaceFormat format;
     //format.setSamples(4);
-    QSurfaceFormat::setDefaultFormat(format);
+    //QSurfaceFormat::setDefaultFormat(format);
 
     // plugin initialization
 	QString pluginName("SofaQtQuickGUI");

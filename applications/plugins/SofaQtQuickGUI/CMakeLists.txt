@@ -65,8 +65,8 @@ set(QML_FILES
 		data/qml/SofaBasics/Vector3DSpinBox.qml
 		data/qml/SofaBasics/DynamicSplitView.qml
                 data/qml/SofaBasics/DynamicContent.qml
-                data/qml/SofaInteractor/qmldir
-                data/qml/SofaInteractor/UserInteractor_Selection.qml
+                data/qml/SofaInteractors/qmldir
+                data/qml/SofaInteractors/UserInteractor_Selection.qml
 		data/qml/SofaTools/qmldir
 		data/qml/SofaTools/SimulationControl.qml
                 data/qml/SofaTools/SceneGraphView.qml
