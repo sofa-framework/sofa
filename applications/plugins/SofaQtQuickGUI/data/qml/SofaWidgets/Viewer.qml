@@ -5,9 +5,10 @@ import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 import QtGraphicalEffects 1.0
 import SofaBasics 1.0
-import SofaInteractor 1.0
+import SofaInteractors 1.0
 import Viewer 1.0
 import Scene 1.0
+import "qrc:/SofaCommon/SofaApplicationScript.js" as SofaApplicationScript
 
 Viewer {
     id: root
@@ -76,15 +77,21 @@ Viewer {
             sceneChanged(scene);
     }
 
-    property alias interactor: mouseArea.interactor
     MouseArea {
         id: mouseArea
         anchors.fill: parent
         acceptedButtons: Qt.AllButtons
 
-        property UserInteractor interactor: UserInteractor_Selection {
-            scene: root.scene
-            viewer: root
+        property alias interactor: interactorLoader.item
+        Loader {
+            id: interactorLoader
+            sourceComponent: SofaApplicationScript.Application.interactorComponent
+            onLoaded: {
+                var interactor = item;
+                interactor.scene   = root.scene;
+                interactor.viewer  = root;
+                interactor.init();
+            }
         }
 
         onClicked: {
@@ -157,6 +164,7 @@ Viewer {
         }
     }
 
+    readonly property alias crosshairGizmo: crosshairGizmo
     Item {
         id: crosshairGizmo
         anchors.centerIn: parent

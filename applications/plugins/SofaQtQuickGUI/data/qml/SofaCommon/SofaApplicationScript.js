@@ -2,4 +2,4 @@
 
 Qt.include("SofaCommonScript.js")
 
-var Application = new InstanciateURLComponent("qrc:/SofaBasics/Application.qml");
+var Application = InstanciateURLComponent("qrc:/SofaBasics/Application.qml");
