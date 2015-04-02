@@ -13,6 +13,14 @@ if(SOFA_USE_MINIBOOST)
     add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/miniBoost ${CMAKE_CURRENT_BINARY_DIR}/miniBoost)
 endif()
 
+option(SOFA_COMPILE_ARTRACK
+"Compile the ARTrack library distributed in the extlibs/ directory.  This
+library is used only by the ARTrack plugin."  OFF)
+if(SOFA_COMPILE_ARTRACK)
+    add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/ARTrack ${CMAKE_CURRENT_BINARY_DIR}/ARTrackLib)
+    set_target_properties(ARTrackLib PROPERTIES FOLDER "SofaExtlibs")
+endif()
+
 add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/tinyxml ${CMAKE_CURRENT_BINARY_DIR}/tinyxml)
 set(EIGEN_ROOT ${SofaDeps_ACTUAL_SOURCE_DIR}/eigen-3.2.1 CACHE PATH "Directory for Eigen3 find_package")
 add_subdirectory(${SofaDeps_ACTUAL_SOURCE_DIR}/eigen-3.2.1 ${CMAKE_CURRENT_BINARY_DIR}/eigen)
