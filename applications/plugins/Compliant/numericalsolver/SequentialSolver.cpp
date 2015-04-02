@@ -347,6 +347,249 @@ void SequentialSolver::solve_impl(vec& res,
 
 }
 
+
+
+
+//////////////
+
+
+
+
+SOFA_DECL_CLASS(PGSSolver)
+int PGSSolverClass = core::RegisterObject("Sequential Impulses solver").add< PGSSolver >();
+
+
+
+
+
+
+// build a projection basis based on constraint types
+// TODO put it in a helper file that can be used by other solvers?
+static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSystem::rmat& Q_unil, const AssembledSystem& sys)
+{
+    // flag which constraint are bilateral
+    vector<bool> bilateral( sys.n );
+    unsigned nb_bilaterals = 0;
+
+    for(unsigned i=0, off=0, n=sys.compliant.size(); i < n; ++i)
+    {
+        const AssembledSystem::dofs_type* dofs = sys.compliant[i];
+        const AssembledSystem::constraint_type& constraint = sys.constraints[i];
+
+        const unsigned dim = dofs->getDerivDimension();
+
+        for(unsigned k = 0, max = dofs->getSize(); k < max; ++k)
+        {
+            bool bilat = !constraint.projector.get(); // flag bilateral or not
+            if( bilat ) nb_bilaterals += dim;
+            const vector<bool>::iterator itoff = bilateral.begin() + off;
+            std::fill( itoff, itoff+dim, bilat );
+            off += dim;
+        }
+    }
+
+    if( !nb_bilaterals )  // no bilateral constraints
+    {
+        return 0;
+//        Q_bilat = AssembledSystem::rmat();
+//        Q_unil.resize(sys.n, sys.n);
+//        Q_unil.setIdentity();
+    }
+    else if( nb_bilaterals == sys.n ) // every constraints are bilateral,
+    {
+        Q_bilat.resize(sys.n, sys.n);
+        Q_bilat.setIdentity();
+        Q_unil = AssembledSystem::rmat();
+    }
+    else
+    {
+        Q_bilat.resize( sys.n, nb_bilaterals );
+        Q_bilat.reserve(nb_bilaterals);
+
+        unsigned nb_unilaterals = sys.n-nb_bilaterals;
+        Q_unil.resize( sys.n, nb_unilaterals );
+        Q_unil.reserve(nb_unilaterals);
+
+        unsigned off_bilat = 0;
+        unsigned off_unil = 0;
+        for( unsigned i = 0 ; i < sys.n ; ++i )
+        {
+            Q_bilat.startVec(i);
+            Q_unil.startVec(i);
+
+            if( bilateral[i] ) Q_bilat.insertBack(i, off_bilat++) = 1;
+            else Q_unil.insertBack(i, off_unil++) = 1;
+        }
+
+        Q_bilat.finalize();
+        Q_unil.finalize();
+    }
+
+    return nb_bilaterals;
+}
+
+
+
+bool PGSSolver::LocalSubKKT::projected_kkt_bilateral(rmat&H, rmat&P, rmat& Q, rmat&Q_star, const AssembledSystem& sys, real eps, bool only_lower)
+{
+    scoped::timer step("subsystem kkt-bilateral projection");
+
+    projection_basis(P, sys.P, sys.isPIdentity);
+
+    if(sys.n)
+    {
+        unsigned nb_bilaterals = projection_bilateral( Q, Q_star, sys );
+
+        if( !nb_bilaterals ) // no bilateral constraints
+        {
+            H = rmat();
+            return false;
+        }
+        else
+        {
+            filter_kkt(H, sys.H, P, Q, sys.J, sys.C, eps, sys.isPIdentity, nb_bilaterals == sys.n, only_lower);
+            return true;
+        }
+    }
+    else // no constraints
+    {
+        H = rmat();
+        return false;
+    }
+}
+
+
+
+
+
+
+
+
+void PGSSolver::factor(const system_type& system) {
+    scoped::timer timer("system factorization");
+
+
+    if( !LocalSubKKT::projected_kkt_bilateral( m_localSystem.H, m_localSub.P, m_localSub.Q, m_localSub.Q_unil, system, 1e-15 ) )
+        return SequentialSolver::factor( system );
+
+
+    m_localSystem.dt = system.dt;
+    m_localSystem.m = m_localSystem.H.rows();
+    m_localSystem.n = m_localSub.Q_unil.cols();
+    m_localSystem.P.resize( m_localSystem.m, m_localSystem.m );
+    m_localSystem.P.setIdentity();
+    m_localSystem.isPIdentity = true;
+
+    if( m_localSystem.n ) // there are non-bilat constraints
+    {
+        // keep only unilateral constraints in C
+        m_localSystem.C.resize( m_localSystem.n, m_localSystem.n );
+        m_localSystem.C = m_localSub.Q_unil.transpose() * system.C * m_localSub.Q_unil;
+
+
+        // compute J_unil and resize it
+        m_localSystem.J.resize( m_localSystem.n, m_localSystem.m );
+        rmat tmp = m_localSub.Q_unil.transpose() * system.J * m_localSub.P;
+        for(unsigned i = 0; i < tmp.rows(); ++i)
+        {
+            m_localSystem.J.startVec( i );
+            for(rmat::InnerIterator it(tmp, i); it; ++it) {
+                m_localSystem.J.insertBack(i, it.col()) = it.value();
+            }
+        }
+        m_localSystem.J.finalize();
+    }
+    else
+    {
+        m_localSystem.J = rmat();
+        m_localSystem.C = rmat();
+    }
+
+
+   fetch_unilateral_blocks( system );
+
+
+   SequentialSolver::factor( m_localSystem );
+}
+
+
+void PGSSolver::solve_impl(vec& res,
+                           const system_type& sys,
+                           const vec& rhs,
+                           bool correct) const {
+
+    if( !m_localSystem.H.nonZeros() )
+        return SequentialSolver::solve_impl( res, sys, rhs, correct );
+    assert( m_localSystem.m == m_localSub.P.cols() + m_localSub.Q.cols() );
+    assert( m_localSystem.n == m_localSub.Q_unil.cols() );
+    const size_t localsize = m_localSystem.size();
+
+    vec localrhs(localsize), localres(localsize);
+
+    // reordering rhs
+    localrhs.head( m_localSub.P.cols() ) = m_localSub.P.transpose() * rhs.head( sys.m ); // primal
+    localrhs.segment( m_localSub.P.cols(), m_localSub.Q.cols() ) = - m_localSub.Q.transpose() * rhs.tail( sys.n ); // bilaterals
+    if( m_localSub.Q_unil.cols() )
+        localrhs.tail( m_localSub.Q_unil.cols() ) = m_localSub.Q_unil.transpose() * rhs.tail( sys.n ); // other constraints
+
+    SequentialSolver::solve_impl( localres, m_localSystem, localrhs, correct );
+
+
+    // reordering res
+    res.head( sys.m ) = m_localSub.P * localres.head( m_localSub.P.cols() ); // primal
+    res.tail( sys.n ) = m_localSub.Q * localres.segment( m_localSub.P.cols(), m_localSub.Q.cols() ); // bilaterals
+    if( m_localSub.Q_unil.cols() )
+        res.tail( sys.n ) += m_localSub.Q_unil * localres.tail( m_localSub.Q_unil.cols() ); // other constraints
+}
+
+
+
+// the only difference with the regular implementation is to consider only non-bilateral constraints
+// overloading this function allows no to set m_localSystem.master/compliance/constraints
+void PGSSolver::fetch_unilateral_blocks(const system_type& system)
+{
+    // TODO don't free memory ?
+    blocks.clear();
+
+    unsigned off = 0;
+
+    for(unsigned i = 0, n = system.compliant.size(); i < n; ++i)
+    {
+        system_type::dofs_type* const dofs = system.compliant[i];
+        const system_type::constraint_type& constraint = system.constraints[i];
+
+        const unsigned dim = dofs->getDerivDimension();
+
+        Constraint* proj = constraint.projector.get();
+
+        if( proj )
+        {
+            for(unsigned k = 0, max = dofs->getSize(); k < max; ++k)
+            {
+                block b;
+
+                b.offset = off;
+                b.size = dim;
+                b.projector = proj;
+
+                assert( !b.projector || !b.projector->mask || b.projector->mask->empty() || b.projector->mask->size() == max );
+                b.activated = !b.projector || !b.projector->mask || b.projector->mask->empty() || (*b.projector->mask)[k];
+
+                blocks.push_back( b );
+                off += dim;
+            }
+        }
+    }
+
+    assert( off == m_localSystem.n );
+
+}
+
+void PGSSolver::fetch_blocks(const system_type& system)
+{
+}
+
+
 }
 }
 }

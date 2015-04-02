@@ -55,9 +55,6 @@ public:
     // empty). size_full = sys.m, size_sub = #(non-empty P elements)
     static void projected_primal(SubKKT& res, const AssembledSystem& sys);
 
-    // project constraint substem by exluding non-bilateral constraints
-    // returns true iff there are no bilateral constraints
-    static bool projected_dual(SubKKT& res, const AssembledSystem& sys);
 
     // full kkt with projected primal variables
     // eps is for a Tikhonov regularization on null Compliance diagonal entries
@@ -68,13 +65,6 @@ public:
                               bool only_lower = false);
 
 
-    // full kkt with projected primal variables
-    // excludes non bilateral constaints
-    // TODO upgrade it to any constraint mask and/or move it in a sub-class
-    static void projected_kkt_bilateral(SubKKT& res,
-                              const AssembledSystem& sys,
-                              real eps = 0,
-                              bool only_lower = false);
 
     
     // TODO more ctors with non-zero Q
@@ -121,6 +111,28 @@ public:
     Adaptor adapt(Response& resp) const {
         return Adaptor(resp, *this);
     }
+
+
+protected:
+
+
+    // build a projection basis based on filtering matrix P
+    // P must be diagonal with 0, 1 on the diagonal
+    static void projection_basis(rmat& res, const rmat& P,
+                                 bool identity_hint = false);
+
+    // build a projected KKT system based on primal projection matrix P
+    // and dual projection matrix Q (to only include bilateral constraints)
+    static void filter_kkt(rmat& res,
+                           const rmat& H,
+                           const rmat& P,
+                           const rmat& Q,
+                           const rmat& J,
+                           const rmat& C,
+                           SReal eps,
+                           bool P_is_identity = false,
+                           bool Q_is_identity = false,
+                           bool only_lower = false);
     
 };
 
