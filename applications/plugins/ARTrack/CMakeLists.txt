@@ -17,6 +17,7 @@ set(SOURCE_FILES
     ARTrackEvent.cpp
     ARTrackController.cpp)
 
+find_package(ARTrackLib REQUIRED)
 find_package(SofaGeneral REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
