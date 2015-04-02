@@ -38,12 +38,6 @@ public:
     // filtered subsystem
     rmat A;
 
-
-    typedef unsigned char ProblemType;
-    static const ProblemType PRIMAL = 1;
-    static const ProblemType DUAL = 2;
-    static const ProblemType FULL = PRIMAL | DUAL;
-
 private:
     // work vectors during solve
     mutable vec vtmp1, vtmp2;
@@ -66,24 +60,24 @@ public:
     static bool projected_dual(SubKKT& res, const AssembledSystem& sys);
 
     // full kkt with projected primal variables
-    // if only_bilaterals=true then excludes non bilateral constaints
     // eps is for a Tikhonov regularization on null Compliance diagonal entries
     // only_lower to build only the low triangular matrix for symmetric problems
     static void projected_kkt(SubKKT& res,
                               const AssembledSystem& sys,
-                              bool only_bilaterals = false,
+                              real eps = 0,
+                              bool only_lower = false);
+
+
+    // full kkt with projected primal variables
+    // excludes non bilateral constaints
+    // TODO upgrade it to any constraint mask and/or move it in a sub-class
+    static void projected_kkt_bilateral(SubKKT& res,
+                              const AssembledSystem& sys,
                               real eps = 0,
                               bool only_lower = false);
 
     
     // TODO more ctors with non-zero Q
-
-
-
-    inline vec project_primal( const vec& v ) const { return P.transpose() * v; }
-    inline vec unproject_primal( const vec& v ) const { return P * v; }
-    inline vec project_dual( const vec& v ) const { return Q.transpose() * v; }
-    inline vec unproject_dual( const vec& v ) const { return Q * v; }
 
 
     // P.rows() + Q.rows()
@@ -102,20 +96,13 @@ public:
     // will be resized as needed (full size).
     void solve(const Response& response, cmat& result, const cmat& rhs) const;
     template<class Solver>
-    void solve(const Solver& response, vec& result, const vec& rhs, ProblemType problem ) const;
+    void solve(const Solver& response, vec& result, const vec& rhs ) const;
 
 
     void prod(vec& result, const vec& rhs) const;
 
     // this one transposes rhs before solving (avoids temporary)
     void solve_opt(const Response& response, cmat& result, const rmat& rhs ) const;
-
-    // (in) rhs is full size
-    // (out) result is sub size
-    template<class Solver>
-    void solve_filtered(const Solver& response, vec& result, const vec& rhs, ProblemType problem ) const;
-    // (out) projected_rhs is sub size
-    void solve_filtered(const Response& response, cmat& result, const rmat& rhs, rmat& projected_rhs ) const;
 
 
     // adaptor to response API for solving
@@ -126,7 +113,7 @@ public:
 
         Adaptor(Response& resp, const SubKKT& sub): resp(resp), sub(sub) { }
 
-        void solve(vec& res, const vec& rhs) const { sub.solve(resp, res, rhs, FULL); }
+        void solve(vec& res, const vec& rhs) const { sub.solve(resp, res, rhs); }
         void solve(cmat& res, const cmat& rhs) const { sub.solve(resp, res, rhs); }
         
     };
