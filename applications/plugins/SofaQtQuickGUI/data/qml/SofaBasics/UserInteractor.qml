@@ -1,7 +1,13 @@
 import QtQuick 2.0
+import Scene 1.0
+import Viewer 1.0
 
 QtObject {
-    id: actor
+    id: root
+
+    property string name: ""
+    property Scene scene: null
+    property Viewer viewer: null
 
     property var mouseClickedMapping: Array()
     property var mouseDoubleClickedMapping: Array()
@@ -93,5 +99,28 @@ QtObject {
         var binding = keyReleasedMapping[event.key];
         if(binding)
             binding(event);
+    }
+
+    //Component.onCompleted: if(scene) init();
+    onSceneChanged:
+    {
+        //if(scene)
+        //    scene.Component.completed();
+
+        //console.log(scene);
+        //if(scene) init();
+    }
+
+    readonly property QtObject d: QtObject {
+
+        readonly property var sceneConnections: Connections {
+            target: root
+            onSceneChanged: root.init();
+            Component.onCompleted: root.init();
+        }
+    }
+
+    function init() {
+        console.error("UserInteractor_* must implement the init function !");
     }
 }

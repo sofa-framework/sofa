@@ -40,21 +40,24 @@ set(QML_FILES
                 data/qml/SofaDataTypes/DataType_string.qml
                 data/qml/SofaDataTypes/DataType_widget_displayFlags.qml
                 data/qml/SofaCommon/SofaCommonScript.js
+                data/qml/SofaCommon/SofaApplicationScript.js
                 data/qml/SofaCommon/SofaToolsScript.js
                 data/qml/SofaCommon/SofaSettingsScript.js
                 data/qml/SofaBasics/qmldir
+                data/qml/SofaBasics/Application.qml
                 data/qml/SofaBasics/RecentSettings.qml
                 data/qml/SofaBasics/UISettings.qml
                 data/qml/SofaBasics/Tools.qml
                 data/qml/SofaBasics/ToolTip.qml
                 data/qml/SofaBasics/DefaultStatusBar.qml
+                data/qml/SofaBasics/DefaultToolBar.qml
 		data/qml/SofaBasics/DefaultMenuBar.qml
 		data/qml/SofaBasics/Scene.qml
                 data/qml/SofaBasics/SceneListModel.qml
                 data/qml/SofaBasics/Data.qml
                 data/qml/SofaBasics/DataListModel.qml
 		data/qml/SofaBasics/PythonInteractor.qml
-		data/qml/SofaBasics/Actor.qml
+                data/qml/SofaBasics/UserInteractor.qml
 		data/qml/SofaBasics/Camera.qml
 		data/qml/SofaBasics/FPSDisplay.qml
                 data/qml/SofaBasics/ContentItem.qml
@@ -62,6 +65,8 @@ set(QML_FILES
 		data/qml/SofaBasics/Vector3DSpinBox.qml
 		data/qml/SofaBasics/DynamicSplitView.qml
                 data/qml/SofaBasics/DynamicContent.qml
+                data/qml/SofaInteractors/qmldir
+                data/qml/SofaInteractors/UserInteractor_Selection.qml
 		data/qml/SofaTools/qmldir
 		data/qml/SofaTools/SimulationControl.qml
                 data/qml/SofaTools/SceneGraphView.qml
