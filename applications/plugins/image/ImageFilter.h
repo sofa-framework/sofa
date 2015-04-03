@@ -618,15 +618,17 @@ protected:
 
                 cimglist_for(img,l)
                 {
-                    img(l).label(false,tol);
+                    typedef unsigned int Tlabel;
+                    CImg<Tlabel> im = inimg(l);
+                    im.label(false,tol);
                     //histo
-                    std::map<To,unsigned int> histo;
-                    cimg_foroff(img(l),off) histo[img(l)[off]]++;
-                    To val=0; unsigned int mx=0;
+                    std::map<Tlabel,unsigned long> histo;
+                    cimg_foroff(im,off) histo[im[off]]++;
+                    Tlabel val=0; unsigned long mx=0;
                     // get max size
-                    for (typename std::map<To,unsigned int>::iterator it=histo.begin(); it!=histo.end(); ++it) if(it->second>=mx && it->first!=(To)0.) { mx=it->second; val=it->first; }
+                    for (typename std::map<Tlabel,unsigned long>::iterator it=histo.begin(); it!=histo.end(); ++it) if(it->second>=mx && it->first!=(Tlabel)0.) { mx=it->second; val=it->first; }
                     // mask input
-                    cimg_foroff(img(l),off) if(img(l)[off]==val) img(l)[off]=(To)inimg(l)[off]; else     img(l)[off]=(To)0.;
+                    cimg_foroff(im,off) if(im[off]==val) img(l)[off]=(To)inimg(l)[off]; else     img(l)[off]=(To)0.;
                 }
             }
             break;
