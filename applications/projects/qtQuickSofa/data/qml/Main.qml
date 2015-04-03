@@ -56,6 +56,11 @@ ApplicationWindow {
         scene: scene
     }
 
+    toolBar: DefaultToolBar {
+        id: toolBar
+        scene: scene
+    }
+
     Scene {
         id: scene
     }

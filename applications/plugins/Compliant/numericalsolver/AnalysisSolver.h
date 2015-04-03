@@ -34,6 +34,8 @@ class SOFA_Compliant_API AnalysisSolver : public KKTSolver {
     Data<bool> condest; /// estimating the condition number as a ratio largest/smaller singular values (computed by SVD)
     Data<bool> eigenvaluesign; /// computing the sign of the eigenvalues (of the implicit matrix H)
 
+    Data<std::string> dump_qp;       /// dump qp to given filename if non-empty
+
   protected:
 
     std::vector< KKTSolver::SPtr > solvers;
