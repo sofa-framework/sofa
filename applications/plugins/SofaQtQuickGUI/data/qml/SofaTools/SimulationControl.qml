@@ -11,7 +11,7 @@ CollapsibleGroupBox {
     title: "Simulation Control"
     property int priority: 100
 
-    property Scene scene
+    property var scene
 
     enabled: scene ? scene.ready : false
 

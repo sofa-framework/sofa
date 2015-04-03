@@ -40,11 +40,10 @@ set(QML_FILES
                 data/qml/SofaDataTypes/DataType_string.qml
                 data/qml/SofaDataTypes/DataType_widget_displayFlags.qml
                 data/qml/SofaCommon/SofaCommonScript.js
-                data/qml/SofaCommon/SofaApplicationScript.js
                 data/qml/SofaCommon/SofaToolsScript.js
                 data/qml/SofaCommon/SofaSettingsScript.js
                 data/qml/SofaBasics/qmldir
-                data/qml/SofaBasics/Application.qml
+                data/qml/SofaBasics/SofaApplication.qml
                 data/qml/SofaBasics/RecentSettings.qml
                 data/qml/SofaBasics/UISettings.qml
                 data/qml/SofaBasics/Tools.qml

@@ -94,6 +94,9 @@ public:
 	Status status()	const							{return myStatus;}
 	void setStatus(Status newStatus);
 
+    bool isLoading() const							{return Status::Loading == myStatus;}
+    bool isReady() const							{return Status::Ready == myStatus;}
+
 	const QUrl& source() const						{return mySource;}
 	void setSource(const QUrl& newSource);
 
@@ -105,9 +108,6 @@ public:
 	
 	bool playing() const							{return myPlay;}
 	void setPlay(bool newPlay);
-
-	bool isReady() const							{return Status::Ready == myStatus;}
-	bool isInit() const								{return myIsInit;}
 
     bool visualDirty() const						{return myVisualDirty;}
     void setVisualDirty(bool newVisualDirty);
@@ -147,7 +147,7 @@ protected:
     Q_INVOKABLE void onSetDataValue(const QString& path, const QVariant& value);
 
 public slots:
-    void init();        // need an opengl context made current
+    void initGraphics();        // need an opengl context made current
 	void reload();
 	void step();
 	void reset();
@@ -162,7 +162,8 @@ signals:
     void reseted();
 
 private slots:
-	void open();    
+    void open();
+    void handleStatusChange(Status newStatus);
 
 public:
 	sofa::simulation::Simulation* sofaSimulation() const {return mySofaSimulation;}

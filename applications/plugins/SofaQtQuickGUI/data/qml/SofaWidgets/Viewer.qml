@@ -8,7 +8,6 @@ import SofaBasics 1.0
 import SofaInteractors 1.0
 import Viewer 1.0
 import Scene 1.0
-import "qrc:/SofaCommon/SofaApplicationScript.js" as SofaApplicationScript
 
 Viewer {
     id: root
@@ -37,6 +36,18 @@ Viewer {
         width: 100
         height: width
         running: scene ? scene.status === Scene.Loading : false;
+    }
+
+    Label {
+        anchors.fill: parent
+        visible: scene ? scene.status === Scene.Error : false
+        color: "red"
+        wrapMode: Text.WordWrap
+        font.bold: true
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+
+        text: scene ? "Error during scene loading\n" + scene.source.toString().replace("///", "/").replace("file:", "") : "No scene object"
     }
 
     Component {
@@ -85,7 +96,7 @@ Viewer {
         property alias interactor: interactorLoader.item
         Loader {
             id: interactorLoader
-            sourceComponent: SofaApplicationScript.Application.interactorComponent
+            sourceComponent: SofaApplication.interactorComponent
             onLoaded: {
                 var interactor = item;
                 interactor.scene   = root.scene;
@@ -369,13 +380,12 @@ Viewer {
                                         Component.onCompleted: {
                                             previousColor = root.backgroundColor;
                                             color = previousColor;
-                                            currentColor = color;
                                         }
 
-                                        onCurrentColorChanged: root.backgroundColor = currentColor
+                                        onColorChanged: root.backgroundColor = color
 
-                                        onAccepted: previousColor = currentColor
-                                        onRejected: currentColor = previousColor
+                                        onAccepted: previousColor = color
+                                        onRejected: color = previousColor
                                     }
 
                                     Rectangle {
