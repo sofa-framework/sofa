@@ -21,6 +21,7 @@ set(compilerDefines)
 set(SOFA-EXTERNAL_INCLUDE_DIR ${SOFA-EXTERNAL_INCLUDE_DIR} CACHE PATH "Include path for pre-compiled dependencies outside of the Sofa directory")
 set(SOFA-EXTERNAL_LIBRARY_DIR ${SOFA-EXTERNAL_LIBRARY_DIR} CACHE PATH "Library path for pre-compiled dependencies outside of the Sofa directory")
 set(SOFA-EXTERNAL_PLUGIN_DIRS ${SOFA-EXTERNAL_PLUGIN_DIRS} CACHE STRING "External directories (separated with ;) containing Sofa Plugin folders (but not the path to the plugin it-self !)")
+set(SOFA-EXTERNAL_APPLICATION_DIRS ${SOFA-EXTERNAL_APPLICATION_DIRS} CACHE STRING "External directories (separated with ;) containing Sofa Application directories")
 
 # extlibs
 ##CGoGN
@@ -488,6 +489,12 @@ RetrieveDependencies("${SOFA_APPLICATIONS_DEV_PLUGINS_DIR}" "SOFA-DEVPLUGIN_" "E
 set(SOFA_PROJECT_FOLDER "SofaExternalPlugin")
 foreach(extPlugin ${SOFA-EXTERNAL_PLUGIN_DIRS})
     RetrieveDependencies("${extPlugin}" "SOFA-EXTPLUGIN_" "Enable ext plugin" "SOFA_HAVE_EXTPLUGIN_" RECURSIVE)
+endforeach()
+
+# external applications (auto-search)
+set(SOFA_PROJECT_FOLDER "SofaExternalApplication")
+foreach(extApplication ${SOFA-EXTERNAL_APPLICATION_DIRS})
+    RetrieveDependencies("${extApplication}" "SOFA-EXTAPPLICATION_" "Enable ext application" "SOFA_HAVE_EXTAPPLICATION_" RECURSIVE)
 endforeach()
 
 # projects (auto-search)
