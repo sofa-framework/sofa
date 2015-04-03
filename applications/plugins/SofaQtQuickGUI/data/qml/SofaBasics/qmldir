@@ -1,4 +1,4 @@
-Application 1.0 Application.qml
+singleton SofaApplication 1.0 SofaApplication.qml
 UserInteractor 1.0 UserInteractor.qml
 Camera 1.0 Camera.qml
 CollapsibleGroupBox 1.0 CollapsibleGroupBox.qml
