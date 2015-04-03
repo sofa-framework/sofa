@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<Node 	name="Root" gravity="0 -9.8 0 " dt="0.05"  >
+
+    <RequiredPlugin pluginName="Flexible"/>
+    <RequiredPlugin pluginName="image"/>
+  
+    <EulerImplicitSolver rayleighStiffness="0" rayleighMass="0"/> 
+    <CGSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
+
+
+
+<Node 	name="no RG (green)"   >
+    <VisualStyle displayFlags="showVisualModels showBehaviorModels" />
+    
+    <MeshObjLoader name="loader" filename="mesh/torus.obj" triangulate="1"/>
+    
+    <MeshToImageEngine template="ImageUC" name="rasterizer" src="@loader" voxelSize="0.1" padSize="1" rotateImage="true" insideValue="1"/>
+    <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+    
+    <!-- param = DESIRED NUMBER OF FRAMES -->
+    <!-- fixedPosition = USER POSITIONS OF FRAMES -->
+    <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/>
+    <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+    <MechanicalObject template="Rigid" name="dof" showObject="true" showObjectScale="0.7" src="@merged" />
+    
+    <VoronoiShapeFunction name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="4" />
+    <!--  <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="6 -1 -1"/>  -->
+    
+    <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
+    <FixedConstraint indices="@FixedROI.indices" />
+    
+    <Node 	name="behavior"   >
+        
+        <!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
+        <ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamplesScale="0" printLog="true" targetNumber="200" />
+        
+        <!--    <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 -1 -1"/> -->
+        <!--    <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 -1 -1"/> -->
+        <MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+        <LinearMapping template="Rigid,F331"  geometricStiffness="0" />
+        
+        <Node 	name="E"   >
+            <MechanicalObject  template="E331" name="E"  />
+            <GreenStrainMapping template="F331,E331"    />
+            <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/>
+            
+        </Node>
+        
+    </Node>
+    
+    <Node 	name="mass"   >
+        <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
+        <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+        <Mesh name="mesh" src="@loader" />
+        <MechanicalObject />
+        <UniformMass totalMass="50" />
+        <LinearMapping template="Rigid,Vec3d"   geometricStiffness="0"/>
+    </Node>
+    
+    <Node 	name="collision"   >
+        <Mesh name="mesh" src="@../loader" />
+        <MechanicalObject  template="Vec3d" name="pts"  useMask="1"  />
+        <LinearMapping template="Rigid,Vec3d" geometricStiffness="0"/>
+    </Node>
+    
+    <Node 	name="visual"   >
+        <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="0.8 1 0.8 "/>
+        <LinearMapping template="Rigid,ExtVec3f"/>
+    </Node>
+</Node>
+
+
+
+    <Node 	name="RG (red)"   >
+	  <VisualStyle displayFlags="showVisualModels showBehaviorModels" />
+
+	  <MeshObjLoader name="loader" filename="mesh/torus.obj" triangulate="1"/>
+
+          <MeshToImageEngine template="ImageUC" name="rasterizer" src="@loader" voxelSize="0.1" padSize="1" rotateImage="true" insideValue="1"/>
+	  <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
+
+<!-- param = DESIRED NUMBER OF FRAMES -->
+<!-- fixedPosition = USER POSITIONS OF FRAMES -->
+	  <ImageSampler template="ImageUC" name="sampler" src="@image" method="1" param="5" fixedPosition="" printLog="false"/> 
+          <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
+	  <MechanicalObject template="Rigid" name="dof" showObject="true" showObjectScale="0.7" src="@merged" />
+
+	  <VoronoiShapeFunction name="SF" position="@dof.rest_position" src="@image" method="0" nbRef="4" />
+<!--  <ImageViewer template="ImageUI" name="viewer" image="@SF.indices" transform="@SF.transform" plane="6 -1 -1"/>  -->
+
+          <BoxROI template="Vec3d" box="0 -2 0 5 2 5" position="@merged.position" name="FixedROI"/>
+          <FixedConstraint indices="@FixedROI.indices" />
+
+	    <Node 	name="behavior"   >
+
+<!-- targetNumber = DESIRED NUMBER OF GAUSS POINTS -->
+		<ImageGaussPointSampler name="sampler" indices="@../SF.indices" weights="@../SF.weights" transform="@../SF.transform" method="2" order="1" showSamplesScale="0" printLog="true" targetNumber="200" />
+
+<!--    <ImageViewer template="ImageD" name="viewer" image="@sampler.error" transform="@sampler.transform" plane="6 -1 -1"/> -->
+<!--    <ImageViewer template="ImageUI" name="viewer" image="@sampler.region" transform="@sampler.transform" plane="6 -1 -1"/> -->
+		<MechanicalObject template="F331" name="F"  useMask="0"  showObject="1" showObjectScale="0.05" />
+	    	<LinearMapping template="Rigid,F331"  geometricStiffness="1" />
+
+		<Node 	name="E"   >
+		    <MechanicalObject  template="E331" name="E"  /> 
+		    <GreenStrainMapping template="F331,E331"    />
+		    <HookeForceField  template="E331" name="ff" youngModulus="2000.0" poissonRatio="0.2" viscosity="0"/> 
+
+		</Node>
+
+	    </Node>
+
+	<Node 	name="mass"   >
+	      <VisualStyle displayFlags="showVisualModels hideBehaviorModels" />
+	      <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
+	      <Mesh name="mesh" src="@loader" />
+	      <MechanicalObject />
+	      <UniformMass totalMass="50" />
+	      <LinearMapping template="Rigid,Vec3d"   geometricStiffness="1"/>
+        </Node>
+
+	    <Node 	name="collision"   >
+		<Mesh name="mesh" src="@../loader" /> 
+		<MechanicalObject  template="Vec3d" name="pts"  useMask="1"  />
+	    	<LinearMapping template="Rigid,Vec3d" geometricStiffness="1"/>
+	    </Node>
+
+	    <Node 	name="visual"   >
+		<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/torus.obj" color="1 0.8 0.8 "/>
+	    	<LinearMapping template="Rigid,ExtVec3f"/>
+	    </Node>
+    </Node>
+
+</Node>

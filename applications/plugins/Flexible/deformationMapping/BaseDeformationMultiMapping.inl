@@ -79,6 +79,7 @@ BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::BaseDeforma
     , showDeformationGradientStyle ( initData ( &showDeformationGradientStyle,"showDeformationGradientStyle","Visualization style for deformation gradients" ) )
     , showColorOnTopology ( initData ( &showColorOnTopology,"showColorOnTopology","Color mapping method" ) )
     , showColorScale(initData(&showColorScale, (float)1.0, "showColorScale", "Color mapping scale"))
+    , d_geometricStiffness(initData(&d_geometricStiffness, 0u, "geometricStiffness", "0=no GS, 1=non symmetric, 2=symmetrized"))
 {
     helper::OptionsGroup methodOptions(3,"0 - None"
                                        ,"1 - trace(F^T.F)-3"
@@ -352,6 +353,8 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::update
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForceId*/ )
 {
+    if( (BlockType1::constant && BlockType2::constant) || !d_geometricStiffness.getValue() ) return;
+
     // TODO IMPLEMENT THIS SUCH AS EVERY BLOCK ARE ADDED AT THE RIGHT PLACE IN THE GLOBAL MATRIX
     // ANYWAY I AM NOT SURE IT CAN BE IMPLEMENTED THIS WAY (WITH INDEPENDANT BLOCKS)
     // OTHERWISE CROSS-TERMS WILL BE LOST
@@ -606,6 +609,7 @@ void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyJ
 template <class JacobianBlockType1,class JacobianBlockType2>
 void BaseDeformationMultiMappingT<JacobianBlockType1,JacobianBlockType2>::applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentDfId*/, core::ConstMultiVecDerivId )
 {
+    if( (BlockType1::constant && BlockType2::constant) || !d_geometricStiffness.getValue() ) return;
 
     serr<<"applyDJT is not implemented\n";
     return;

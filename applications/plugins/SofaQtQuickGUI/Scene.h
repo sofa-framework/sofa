@@ -22,7 +22,7 @@ namespace qtquick
 
 class Scene;
 
-class SceneComponent : public QObject
+class SOFA_SOFAQTQUICKGUI_API SceneComponent : public QObject
 {
     Q_OBJECT
 
