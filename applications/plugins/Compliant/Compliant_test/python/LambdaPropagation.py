@@ -51,9 +51,13 @@ def createScene(node):
     num = node.createObject('SequentialSolver',
                             name = 'num',
                             iterations = 200,
-                            precision = 0)
+                            precision = 0,
+                            iterateOnBilaterals = True)
 
     resp = node.createObject('DiagonalResponse')
+
+    # NB: either iterateOnBilaterals or use a non-diagonal Response
+
 
     manager = node.getObject('manager')
     manager.response = 'CompliantContact'

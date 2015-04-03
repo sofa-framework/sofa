@@ -26,7 +26,8 @@ public:
 	virtual void solve(cmat&, const cmat& ) const = 0;
 	virtual void solve(vec&, const vec& ) const = 0;
 
-	
+    // Does this factorization only work for symmetric matrices?
+    virtual bool isSymmetric() const { return false; }
 };
 
 

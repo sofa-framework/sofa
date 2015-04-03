@@ -98,7 +98,7 @@ void KrylovSolver::solve_schur(AssembledSystem::vec& x,
 	// unconstrained velocity
 	vec tmp(sys.m);
     
-    sub.solve(*response, tmp, b.head(sys.m), SubKKT::PRIMAL);
+    sub.solve(*response, tmp, b.head(sys.m));
     
 	x.head( sys.m ) = tmp;
 	
@@ -117,7 +117,7 @@ void KrylovSolver::solve_schur(AssembledSystem::vec& x,
         solve_schur_impl(lambda, A, rhs, p);
 		
 		// constraint velocity correction
-        sub.solve(*response, tmp, sys.J.transpose() * lambda, SubKKT::PRIMAL);
+        sub.solve(*response, tmp, sys.J.transpose() * lambda);
         
 		x.head( sys.m ) += tmp;
 		x.tail( sys.n ) = lambda;
