@@ -126,11 +126,20 @@ template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
 {    
     if(this->f_printLog.getValue())
+    {
         std::cout<<this->getName()<< "::" << SOFA_CLASS_METHOD <<std::endl;
+    }
+
     int parentSize = this->getFromSize();
     int childSize = this->getToSize();
     this->f_index_parentToChild.clear();
     this->f_index_parentToChild.resize(parentSize);
+
+    if(this->f_printLog.getValue())
+    {
+        std::cout << "parent size : " << parentSize << std::endl;
+        std::cout << "child size : " << childSize << std::endl;
+    }
 
     //Check size just in case
     if(childSize != this->f_index.getValue().size())
@@ -516,6 +525,63 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(OutVecCoord& out, const I
     if(this->assemble.getValue() && ( !BlockType::constant ) )  Jdirty = true; // J needs to be updated later where the dof mask can be activated
 
     this->missingInformationDirty=true; this->KdTreeDirty=true; // need to update spatial positions of defo grads if needed for visualization
+}
+
+template <class JacobianBlockType>
+void BaseDeformationMappingT<JacobianBlockType>::applyJ(OutVecDeriv& out, const InVecDeriv& in)
+{
+    if(this->assemble.getValue())
+    {
+        if( Jdirty )
+        {
+            updateJ();
+            Jdirty = false;
+        }
+        else if( this->maskTo && this->maskTo->isInUse() )
+        {
+            if( previousMask!=this->maskTo->getEntries() )
+            {
+                previousMask = this->maskTo->getEntries();
+                updateJ();
+            }
+        }
+        else if( !eigenJacobian.compressedMatrix.nonZeros() ) updateJ();
+
+        eigenJacobian.mult(out,in);
+    }
+    else
+    {
+        if( !this->maskTo || !this->maskTo->isInUse() )
+        {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+            for(sofa::helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
+            {
+                out[i]=OutDeriv();
+                for(size_t j=0; j<jacobian[i].size(); j++)
+                {
+                    size_t index=this->f_index.getValue()[i][j];
+                    jacobian[i][j].addmult(out[i],in[index]);
+                }
+            }
+        }
+        else
+        {
+            typedef helper::ParticleMask ParticleMask;
+            const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+            for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+            {
+                size_t i= ( size_t ) ( *it );
+                out[i]=OutDeriv();
+                for(size_t j=0; j<jacobian[i].size(); j++)
+                {
+                    size_t index=this->f_index.getValue()[i][j];
+                    jacobian[i][j].addmult(out[i],in[index]);
+                }
+            }
+        }
+    }
 }
 
 template <class JacobianBlockType>

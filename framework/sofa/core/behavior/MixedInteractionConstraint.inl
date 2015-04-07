@@ -38,7 +38,7 @@ namespace behavior
 
 template<class DataTypes1, class DataTypes2>
 MixedInteractionConstraint<DataTypes1, DataTypes2>::MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
-    : endTime( initData(&endTime,(double)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
+    : endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
     , mstate1(initLink("object1", "First object to constrain"), mm1)
     , mstate2(initLink("object2", "Second object to constrain"), mm2)
 {

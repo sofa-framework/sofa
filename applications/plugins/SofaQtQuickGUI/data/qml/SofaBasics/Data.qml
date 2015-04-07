@@ -11,7 +11,7 @@ GridLayout {
     columnSpacing: 1
     rowSpacing: 1
 
-    property Scene scene
+    property var scene
     property QtObject sceneData
     onSceneDataChanged: updateObject();
 

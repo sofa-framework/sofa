@@ -33,9 +33,19 @@
 #include <stack>
 
 #include "glm/glm.hpp"
-//#include "glm/gtc/matrix_projection.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "Geometry/vector_gen.h"
+
+
+#ifdef WIN32
+#if defined CGoGN_QT_DLL_EXPORT
+#define CGoGN_UTILS_API __declspec(dllexport)
+#else
+#define CGoGN_UTILS_API __declspec(dllimport)
+#endif
+#else
+#define CGoGN_UTILS_API
+#endif
 
 namespace CGoGN
 {
@@ -48,14 +58,12 @@ namespace QT
 
 class SimpleQT;
 
-class GLWidget : public QGLWidget
+class CGoGN_UTILS_API GLWidget : public QGLWidget
 {
 	Q_OBJECT
 
 public:
 	GLWidget(SimpleQT* cbs, QWidget *parent = 0);
-
-	GLWidget(SimpleQT* cbs, QGLFormat& format, QWidget *parent = 0);
 
 	~GLWidget();
 
@@ -240,6 +248,15 @@ protected:
 	 * get the focale distance
 	 */
 	float getScale() { return scalefactor / foc; }
+
+	inline int pixelRatio() const
+	{
+		#if (QT_VERSION>>16) == 5
+			return this->devicePixelRatio();
+		#else
+			return 1;
+		#endif
+	}
 };
 
 } // namespace QT

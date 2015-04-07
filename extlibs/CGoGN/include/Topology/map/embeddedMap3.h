@@ -94,6 +94,11 @@ public:
      */
     virtual Dart collapseEdge(Dart d, bool delDegenerateVolumes=true);
 
+
+
+    bool flipEdge(Dart d) ;
+
+    bool flipBackEdge(Dart d);
     //!
     /*!
      */
@@ -185,9 +190,6 @@ public:
 
     template<unsigned int ORB>
     void printEmbedding() {
-        const AttributeContainer& orbCont = m_attribs[ORB] ;
-        const unsigned int size = orbCont.size();
-        AttributeMultiVector<unsigned int>* embVec = getEmbeddingAttributeVector<ORB>();
         std::cerr << "***** printing "<< this->orbitName(ORB) << " embeddings ***** " << std::endl;
         TraversorCell<EmbeddedMap3, ORB, FORCE_DART_MARKING> trav(*this);
         unsigned i = 0u ;

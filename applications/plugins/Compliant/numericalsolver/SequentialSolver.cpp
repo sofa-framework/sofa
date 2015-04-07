@@ -3,6 +3,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include "EigenSparseResponse.h"
+#include "SubKKT.inl"
 
 #include "../utils/scoped.h"
 #include "../utils/nan.h"
@@ -12,151 +13,95 @@ namespace sofa {
 namespace component {
 namespace linearsolver {
 
-SOFA_DECL_CLASS(SequentialSolver)
-int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").add< SequentialSolver >();
-
-
 			
 
-SequentialSolver::SequentialSolver() 
+BaseSequentialSolver::BaseSequentialSolver()
 	: omega(initData(&omega, (SReal)1.0, "omega", "SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode" ))
-{
-	
-}
+{}
 
 
-SequentialSolver::block::block() : offset(0), size(0), projector(0), activated(false) { }
+BaseSequentialSolver::block::block() : offset(0), size(0), projector(0), activated(false) { }
 
-void SequentialSolver::fetch_blocks(const system_type& system) {
-	
-	// TODO don't free memory ?
-	blocks.clear();
+void BaseSequentialSolver::fetch_blocks(const system_type& system) {
+
+//    serr<<SOFA_CLASS_METHOD<<sendl;
+
+    // TODO don't free memory ?
+    blocks.clear();
 	
 	unsigned off = 0;
 
-	for(unsigned i = 0, n = system.compliant.size(); i < n; ++i) {
+    for(unsigned i = 0, n = system.compliant.size(); i < n; ++i)
+    {
 		system_type::dofs_type* const dofs = system.compliant[i];
         const system_type::constraint_type& constraint = system.constraints[i];
 
-		const unsigned dim = dofs->getDerivDimension();
-		
-		for(unsigned k = 0, max = dofs->getSize(); k < max; ++k) {
-			
-			block b;
+        const unsigned dim = dofs->getDerivDimension();
 
-			b.offset = off;
-			b.size = dim;
-            b.projector = constraint.projector.get(); // TODO remove this pointer copy
+        for(unsigned k = 0, max = dofs->getSize(); k < max; ++k)
+        {
+            block b;
+
+            b.offset = off;
+            b.size = dim;
+            b.projector = constraint.projector.get();
 
             assert( !b.projector || !b.projector->mask || b.projector->mask->empty() || b.projector->mask->size() == max );
             b.activated = !b.projector || !b.projector->mask || b.projector->mask->empty() || (*b.projector->mask)[k];
 
-			blocks.push_back( b );
-
-			off += dim;
-		}
-	}
+            blocks.push_back( b );
+            off += dim;
+        }
+    }
 
 }
 
 
 // TODO optimize remaining allocs
-void SequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) {
+void BaseSequentialSolver::factor_block(inverse_type& inv, const schur_type& schur) {
 	inv.compute( schur );
 
 #ifndef NDEBUG
-    if( inv.info() == Eigen::NumericalIssue ){
-        std::cerr << SOFA_CLASS_METHOD<<"block Schur is not psd. System solution will be wrong." << std::endl;
+    if( inv.info() != Eigen::Success ){
+        std::cerr << SOFA_CLASS_METHOD<<"non invertible block Schur." << std::endl;
         std::cerr << schur << std::endl;
     }
 #endif
 }
 
+void BaseSequentialSolver::factor(const system_type& system) {
 
-//static bool diagonal_dominant(const AssembledSystem& sys)
-//{
-//	typedef AssembledSystem::mat::Index Index;
-    
-//	AssembledSystem::mat PH = sys.P * sys.H;
-    
-//	typedef SReal real;
+    fetch_blocks( system );
+    factor_impl( system );
+}
 
-//    if( sys.n )
-//    {
-//        AssembledSystem::mat PJt = sys.P * sys.J.transpose();
-        
-//        for( unsigned i = 0 ; i < sys.m ; ++i )
-//	        {
-//		        real d = helper::rabs(PH.coeff(i,i));
-		        
-//		        real o = -d;
-//		        for( Index j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
-//		        for( Index j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
-		        
-//		        if( o > d ) return false;
-//	        }
-        
-//        for( unsigned i=0 ; i< sys.n ; ++i )
-//	        {
-//		        real d = helper::rabs(sys.C.coeff(i,i));
-		        
-//		        real o = -d;
-//		        for( Index j=0 ; j<sys.C.cols() ; ++j ) o += helper::rabs(sys.C.coeff(i,j));
-//		        for( Index j=0 ; j<sys.J.cols() ; ++j ) o += helper::rabs(sys.J.coeff(i,j));
-		        
-//		        if( o > d ) return false;
-//	        }
-//    }
-//    else
-//	    {
-//		    for( unsigned i=0 ; i< sys.m ; ++i )
-//			    {
-//				    real d = helper::rabs(PH.coeff(i,i));
-				    
-//				    real o = -d;
-//				    for( Index j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
-				    
-//				    if( o > d ) return false;
-//			    }
-//	    }
-    
-//    return true;
-//}
-
-
-
-
-
-
-
-void SequentialSolver::factor(const system_type& system) { 
+void BaseSequentialSolver::factor_impl(const system_type& system) {
 	scoped::timer timer("system factorization");
  
 	Benchmark::scoped_timer bench_timer(this->bench, &Benchmark::factor);
-	
-	// assert( diagonal_dominant(system) );
 
 	// response matrix
 	assert( response );
 
-    SubKKT::projected_primal(sub, system);
-    sub.factor(*response);
 
-	// find blocks
-	fetch_blocks(system);
+    SubKKT::projected_primal(sub, system);
+
+    sub.factor(*response);
 	
 	// compute block responses
 	const unsigned n = blocks.size();
 	
-	if( !n ) return;
+    if( !n ) return;
 
 	blocks_inv.resize( n );
 
-    sub.solve_filtered( *response, mapping_response, system.J, JP );  // mapping_response = PHinv(JP)^T
-	
-	
+
+    sub.solve_opt( *response, mapping_response, system.J );  // mapping_response = PHinv(JP)^T
+
+    JP = system.J * system.P;
+
 	// to avoid allocating matrices for each block, could be a vec instead ?
-	dense_matrix storage;
+    dmat storage;
 
 	// build blocks and factorize
 	for(unsigned i = 0; i < n; ++i) {
@@ -169,8 +114,8 @@ void SequentialSolver::factor(const system_type& system) {
 		schur_type schur(storage.data(), b.size, b.size);
 		
 		// temporary sparse mat, difficult to remove :-/
-		cmat tmp = JP.middleRows(b.offset, b.size) * 
-			mapping_response.middleCols(b.offset, b.size);
+        cmat tmp = JP.middleRows(b.offset, b.size) *
+            mapping_response.middleCols(b.offset, b.size);
 		
 		// fill constraint block
 		schur = tmp;
@@ -180,7 +125,7 @@ void SequentialSolver::factor(const system_type& system) {
 		
 		// add diagonal C block
 		for( unsigned r = 0; r < b.size; ++r) {
-			for(system_type::mat::InnerIterator it(system.C, b.offset + r); it; ++it) {
+            for(rmat::InnerIterator it(system.C, b.offset + r); it; ++it) {
 				
 				// paranoia, i has it
 				assert( it.col() >= int(b.offset) );
@@ -190,13 +135,13 @@ void SequentialSolver::factor(const system_type& system) {
 			}
 		}
 
-		factor_block( blocks_inv[i], schur );
-	}
+        factor_block( blocks_inv[i], schur );
+    }
 
 }
 
 // TODO make sure this does not cause any alloc
-void SequentialSolver::solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const {
+void BaseSequentialSolver::solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const {
 	assert( !has_nan(rhs.eval()) );
 	result = rhs;
 
@@ -209,7 +154,7 @@ void SequentialSolver::solve_block(chunk_type result, const inverse_type& inv, c
 
 
 
-void SequentialSolver::init() {
+void BaseSequentialSolver::init() {
 	
     IterativeSolver::init();
 
@@ -220,7 +165,7 @@ void SequentialSolver::init() {
 	if( !response ) {
         response = new LDLTResponse();
         this->getContext()->addObject( response );
-        std::cout << "SequentialSolver: fallback response class: "
+        std::cout << "BaseSequentialSolver: fallback response class: "
                   << response->getClassName()
                   << " added to the scene" << std::endl;
 	}
@@ -229,7 +174,7 @@ void SequentialSolver::init() {
 
 
 // this is where the magic happens
-SReal SequentialSolver::step(vec& lambda,
+SReal BaseSequentialSolver::step(vec& lambda,
                              vec& net, 
                              const system_type& sys,
                              const vec& rhs,
@@ -241,6 +186,7 @@ SReal SequentialSolver::step(vec& lambda,
 	// error norm2 estimate (seems conservative and much cheaper to
 	// compute anyways)
 	real estimate = 0;
+
 		
 	// inner loop
 	for(unsigned i = 0, n = blocks.size(); i < n; ++i) {
@@ -248,8 +194,8 @@ SReal SequentialSolver::step(vec& lambda,
 		const block& b = blocks[i];
 			 
         // data chunks
-		chunk_type lambda_chunk(&lambda(b.offset), b.size);
-		chunk_type delta_chunk(&delta(b.offset), b.size);
+        chunk_type lambda_chunk(&lambda(b.offset), b.size);
+        chunk_type delta_chunk(&delta(b.offset), b.size);
 
         // if the constraint is activated, solve it
         if( b.activated )
@@ -295,12 +241,12 @@ SReal SequentialSolver::step(vec& lambda,
 
 		// incrementally update net forces, we only do fresh
 		// computation after the loop to keep perfs decent
-		net.noalias() = net + mapping_response.middleCols(b.offset, b.size) * delta_chunk;
+        net.noalias() = net + mapping_response.middleCols(b.offset, b.size) * delta_chunk;
 		// net.noalias() = mapping_response * lambda;
 
-		// fix net to avoid error accumulations ?
+        // fix net to avoid error accumulations ?
 	}
-	
+
 	// std::cerr << "sanity check: " << (net - mapping_response * lambda).norm() << std::endl;
 
 	// TODO is this needed to avoid error accumulation ?
@@ -311,25 +257,21 @@ SReal SequentialSolver::step(vec& lambda,
 	return estimate;
 }
 
-
-
-
-void SequentialSolver::solve(vec& res,
-							 const system_type& sys,
-							 const vec& rhs) const {
-	solve_impl(res, sys, rhs, false );
+void BaseSequentialSolver::solve(vec& res,
+                             const system_type& sys,
+                             const vec& rhs) const {
+    solve_impl(res, sys, rhs, false );
 }
 
 
-void SequentialSolver::correct(vec& res,
-							   const system_type& sys,
-							   const vec& rhs,
-							   real /*damping*/ ) const {
-	solve_impl(res, sys, rhs, true );
+void BaseSequentialSolver::correct(vec& res,
+                               const system_type& sys,
+                               const vec& rhs,
+                               real /*damping*/ ) const {
+    solve_impl(res, sys, rhs, true );
 }
 
-
-void SequentialSolver::solve_impl(vec& res,
+void BaseSequentialSolver::solve_impl(vec& res,
 								  const system_type& sys,
 								  const vec& rhs,
 								  bool correct) const {
@@ -343,32 +285,32 @@ void SequentialSolver::solve_impl(vec& res,
 
 
 	// free velocity
-    vec free_res( sub.size_sub() );
-    sub.solve_filtered(*response, free_res, rhs.head(sys.m));
+    vec free_res( sys.m );
+    sub.solve(*response, free_res, rhs.head( sys.m ));
 
 
     // we're done
-    if( !sys.n )
+    if( blocks.empty() )
     {
-        res.head( sys.m ) = sub.unproject_primal(free_res);
+        res = free_res;
         return;
     }
 
-	
-	// lagrange multipliers TODO reuse res.tail( sys.n ) ?
-	vec lambda = res.tail(sys.n); 
+
+    // lagrange multipliers TODO reuse res.tail( sys.n ) ?
+    vec lambda = res.tail(sys.n);
 
 	// net constraint velocity correction
 	vec net = mapping_response * lambda;
 	
 	// lambda change work vector
-	vec delta = vec::Zero( sys.n );
+    vec delta = vec::Zero(sys.n);
 	
 	// lcp rhs 
-    vec constant = rhs.tail(sys.n) - JP * free_res;
+    vec constant = rhs.tail(sys.n) - JP * free_res.head(sys.m);
 	
 	// lcp error
-	vec error = vec::Zero( sys.n );
+    vec error = vec::Zero(sys.n);
 	
 	const real epsilon = relative.getValue() ? 
 		constant.norm() * precision.getValue() : precision.getValue();
@@ -389,7 +331,7 @@ void SequentialSolver::solve_impl(vec& res,
 		if( std::sqrt(estimate2) / sys.n <= epsilon ) break;
 	}
 
-    res.head( sys.m ) = sub.unproject_primal( free_res + net );
+    res.head( sys.m ) = free_res + net;
     res.tail( sys.n ) = lambda;
 
 
@@ -399,6 +341,292 @@ void SequentialSolver::solve_impl(vec& res,
 	
 
 }
+
+
+
+
+//////////////
+
+
+
+
+SOFA_DECL_CLASS(SequentialSolver)
+int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").add< SequentialSolver >();
+
+
+
+
+
+
+// build a projection basis based on constraint types (bilateral vs others)
+// TODO put it in a helper file that can be used by other solvers?
+static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSystem::rmat& Q_unil, const AssembledSystem& sys)
+{
+    // flag which constraint are bilateral
+    vector<bool> bilateral( sys.n );
+    unsigned nb_bilaterals = 0;
+
+    for(unsigned i=0, off=0, n=sys.compliant.size(); i < n; ++i)
+    {
+        const AssembledSystem::dofs_type* dofs = sys.compliant[i];
+        const AssembledSystem::constraint_type& constraint = sys.constraints[i];
+
+        const unsigned dim = dofs->getDerivDimension();
+
+        for(unsigned k = 0, max = dofs->getSize(); k < max; ++k)
+        {
+            bool bilat = !constraint.projector.get(); // flag bilateral or not
+            if( bilat ) nb_bilaterals += dim;
+            const vector<bool>::iterator itoff = bilateral.begin() + off;
+            std::fill( itoff, itoff+dim, bilat );
+            off += dim;
+        }
+    }
+
+    if( !nb_bilaterals )  // no bilateral constraints
+    {
+        return 0;
+//        Q_bilat = AssembledSystem::rmat();
+//        Q_unil.resize(sys.n, sys.n);
+//        Q_unil.setIdentity();
+    }
+    else if( nb_bilaterals == sys.n ) // every constraints are bilateral,
+    {
+        Q_bilat.resize(sys.n, sys.n);
+        Q_bilat.setIdentity();
+        Q_unil = AssembledSystem::rmat();
+    }
+    else
+    {
+        Q_bilat.resize( sys.n, nb_bilaterals );
+        Q_bilat.reserve(nb_bilaterals);
+
+        unsigned nb_unilaterals = sys.n-nb_bilaterals;
+        Q_unil.resize( sys.n, nb_unilaterals );
+        Q_unil.reserve(nb_unilaterals);
+
+        unsigned off_bilat = 0;
+        unsigned off_unil = 0;
+        for( unsigned i = 0 ; i < sys.n ; ++i )
+        {
+            Q_bilat.startVec(i);
+            Q_unil.startVec(i);
+
+            if( bilateral[i] ) Q_bilat.insertBack(i, off_bilat++) = 1;
+            else Q_unil.insertBack(i, off_unil++) = 1;
+        }
+
+        Q_bilat.finalize();
+        Q_unil.finalize();
+    }
+
+    return nb_bilaterals;
+}
+
+
+
+
+
+bool SequentialSolver::LocalSubKKT::projected_primal_and_bilateral( AssembledSystem& res,
+                                                              const AssembledSystem& sys,
+                                                              real eps,
+                                                              bool only_lower)
+{
+    scoped::timer step("subsystem primal-bilateral");
+
+    projection_basis(P, sys.P, sys.isPIdentity);
+
+    if(sys.n)
+    {
+        unsigned nb_bilaterals = projection_bilateral( Q, Q_unil, sys );
+
+        if( !nb_bilaterals ) // no bilateral constraints
+        {
+            res.H = rmat();
+            return false;
+        }
+        else
+        {
+            filter_kkt(res.H, sys.H, P, Q, sys.J, sys.C, eps, sys.isPIdentity, nb_bilaterals == sys.n, only_lower);
+
+            res.dt = sys.dt;
+            res.m = res.H.rows();
+            res.n = Q_unil.cols();
+            res.P.resize( res.m, res.m );
+            res.P.setIdentity();
+            res.isPIdentity = true;
+
+            if( res.n ) // there are non-bilat constraints
+            {
+                // keep only unilateral constraints in C
+                res.C.resize( res.n, res.n );
+                res.C = Q_unil.transpose() * sys.C * Q_unil;
+
+                // compute J_unil and resize it
+                res.J.resize( res.n, res.m );
+                rmat tmp = Q_unil.transpose() * sys.J * P;
+                for(unsigned i = 0; i < tmp.rows(); ++i)
+                {
+                    res.J.startVec( i );
+                    for(rmat::InnerIterator it(tmp, i); it; ++it) {
+                        res.J.insertBack(i, it.col()) = it.value();
+                    }
+                }
+                res.J.finalize();
+            }
+            else
+            {
+                res.J = rmat();
+                res.C = rmat();
+            }
+
+            return true;
+        }
+    }
+    else // no constraints
+    {
+        res.H = rmat();
+        return false;
+    }
+}
+
+
+
+void SequentialSolver::LocalSubKKT::toLocal( vec& local, const vec& global ) const
+{
+    assert( local.size() == P.cols() + Q.cols() + Q_unil.cols() );
+    assert( global.size() == P.rows() + Q.rows() );
+
+    local.head( P.cols() ) = P.transpose() * global.head( P.rows() ); // primal
+    local.segment( P.cols(), Q.cols() ) = -Q.transpose() * global.tail( Q.rows() ); // bilaterals
+    if( Q_unil.cols() )
+        local.tail( Q_unil.cols() ) = Q_unil.transpose() * global.tail( Q.rows() ); // other constraints
+}
+
+void SequentialSolver::LocalSubKKT::fromLocal( vec& global, const vec& local ) const
+{
+    assert( local.size() == P.cols() + Q.cols() + Q_unil.cols() );
+    assert( global.size() == P.rows() + Q.rows() );
+
+    // TODO optimize copy of localres into res (constraints could be written in one loop)
+
+    global.head( P.rows() ) = P * local.head( P.cols() ); // primal
+    global.tail( Q.rows() ) = Q * local.segment( P.cols(), Q.cols() ); // bilaterals
+    if( Q_unil.cols() )
+        global.tail( Q.rows() ) += Q_unil * local.tail( Q_unil.cols() ); // other constraints
+}
+
+
+SequentialSolver::SequentialSolver()
+    : d_iterateOnBilaterals(initData(&d_iterateOnBilaterals, false, "iterateOnBilaterals", "Should the bilateral constraint must be solved iteratively or factorized with the dynamics?"))
+    , d_regularization(initData(&d_regularization, std::numeric_limits<SReal>::epsilon(), "regularization", "Optional diagonal Tikhonov regularization on bilateral constraints"))
+{}
+
+
+void SequentialSolver::factor(const system_type& system) {
+    scoped::timer timer("system factorization");
+
+    if( d_iterateOnBilaterals.getValue() ||
+            !m_localSub.projected_primal_and_bilateral( m_localSystem, system, d_regularization.getValue(), response->isSymmetric() ) // no bilaterals
+            )
+    {
+        fetch_blocks( system ); // find blocks
+        return factor_impl( system );
+    }
+    else
+    {
+        fetch_unilateral_blocks( system ); // find unilateral blocks
+        factor_impl( m_localSystem );
+    }
+}
+
+
+
+
+void SequentialSolver::solve(vec& res,
+                             const system_type& sys,
+                             const vec& rhs) const {
+    solve_local(res, sys, rhs, false );
+}
+
+
+void SequentialSolver::correct(vec& res,
+                               const system_type& sys,
+                               const vec& rhs,
+                               real /*damping*/ ) const {
+    solve_local(res, sys, rhs, true );
+}
+
+
+
+void SequentialSolver::solve_local(vec& res,
+                           const system_type& sys,
+                           const vec& rhs,
+                           bool correct) const {
+
+    if( d_iterateOnBilaterals.getValue() || !m_localSystem.H.nonZeros() )
+        return solve_impl( res, sys, rhs, correct );
+
+    const size_t localsize = m_localSystem.size();
+
+    vec localrhs(localsize), localres(localsize);
+
+    // reordering rhs
+    m_localSub.toLocal( localrhs, rhs );
+    // reordering res, for warm_start...
+    m_localSub.toLocal( localres, res );
+
+    // performing the solve on the reorganized system
+    solve_impl( localres, m_localSystem, localrhs, correct );
+
+    // reordering res
+    m_localSub.fromLocal( res, localres );
+}
+
+
+
+// the only difference with the regular implementation is to consider only non-bilateral constraints
+void SequentialSolver::fetch_unilateral_blocks(const system_type& system)
+{
+//    serr<<SOFA_CLASS_METHOD<<sendl;
+
+    // TODO don't free memory ?
+    blocks.clear();
+
+    unsigned off = 0;
+
+    for(unsigned i = 0, n = system.compliant.size(); i < n; ++i)
+    {
+        system_type::dofs_type* const dofs = system.compliant[i];
+        const system_type::constraint_type& constraint = system.constraints[i];
+
+        const unsigned dim = dofs->getDerivDimension();
+
+        Constraint* proj = constraint.projector.get();
+
+        if( proj )
+        {
+            for(unsigned k = 0, max = dofs->getSize(); k < max; ++k)
+            {
+                block b;
+
+                b.offset = off;
+                b.size = dim;
+                b.projector = proj;
+
+                assert( !b.projector || !b.projector->mask || b.projector->mask->empty() || b.projector->mask->size() == max );
+                b.activated = !b.projector || !b.projector->mask || b.projector->mask->empty() || (*b.projector->mask)[k];
+
+                blocks.push_back( b );
+                off += dim;
+            }
+        }
+    }
+
+    assert( off == m_localSystem.n );
+
+}
+
 
 }
 }

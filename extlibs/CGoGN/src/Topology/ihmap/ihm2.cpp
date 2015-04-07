@@ -30,65 +30,66 @@ namespace CGoGN
 
 ImplicitHierarchicalMap2::ImplicitHierarchicalMap2() : m_curLevel(0), m_maxLevel(0), m_idCount(0)
 {
-	m_dartLevel = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("dartLevel") ;
-	m_edgeId = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("edgeId") ;
-	for(unsigned int i = 0; i < NB_ORBITS; ++i)
-		m_nextLevelCell[i] = NULL ;
+    m_dartLevel = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("dartLevel") ;
+    m_edgeId = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("edgeId") ;
+//    for(unsigned int i = 0; i < NB_ORBITS; ++i)
+//        m_nextLevelCell[i] = NULL ;
+    //    this->initImplicitProperties();
 }
 
 ImplicitHierarchicalMap2::~ImplicitHierarchicalMap2()
 {
-	removeAttribute(m_edgeId) ;
-	removeAttribute(m_dartLevel) ;
+    removeAttribute(m_edgeId) ;
+    removeAttribute(m_dartLevel) ;
 }
 
 void ImplicitHierarchicalMap2::clear(bool removeAttrib)
 {
-	Map2::clear(removeAttrib) ;
-	if (removeAttrib)
-	{
-		m_dartLevel = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("dartLevel") ;
-		m_edgeId = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("edgeId") ;
+    Map2::clear(removeAttrib) ;
+    if (removeAttrib)
+    {
+        m_dartLevel = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("dartLevel") ;
+        m_edgeId = Map2::addAttribute<unsigned int, DART, ImplicitHierarchicalMap2>("edgeId") ;
 
-		for(unsigned int i = 0; i < NB_ORBITS; ++i)
-			m_nextLevelCell[i] = NULL ;
-	}
+//        for(unsigned int i = 0; i < NB_ORBITS; ++i)
+//            m_nextLevelCell[i] = NULL ;
+    }
 }
 
 void ImplicitHierarchicalMap2::initImplicitProperties()
 {
-	//initEdgeId() ;
+    //initEdgeId() ;
 
-	//init each edge Id at 0
-	for(Dart d = Map2::begin(); d != Map2::end(); Map2::next(d))
-	{
-		m_edgeId[d] = 0;
-	}
+    //init each edge Id at 0
+    for(Dart d = Map2::begin(); d != Map2::end(); Map2::next(d))
+    {
+        this->setEdgeId(d, 0u);
+    }
 
-	for(unsigned int orbit = 0; orbit < NB_ORBITS; ++orbit)
-	{
-		if(m_nextLevelCell[orbit] != NULL)
-		{
-			AttributeContainer& cellCont = m_attribs[orbit] ;
-			for(unsigned int i = cellCont.begin(); i < cellCont.end(); cellCont.next(i))
-				m_nextLevelCell[orbit]->operator[](i) = EMBNULL ;
-		}
-	}
+//    for(unsigned int orbit = 0; orbit < NB_ORBITS; ++orbit)
+//    {
+//        if(m_nextLevelCell[orbit] != NULL)
+//        {
+//            AttributeContainer& cellCont = m_attribs[orbit] ;
+//            for(unsigned int i = cellCont.begin(); i < cellCont.end(); cellCont.next(i))
+//                m_nextLevelCell[orbit]->operator[](i) = EMBNULL ;
+//        }
+//    }
 }
 
 void ImplicitHierarchicalMap2::initEdgeId()
 {
-	m_idCount = 0 ;
-	DartMarker<Map2> edgeMark(*this) ;
-	for(Dart d = Map2::begin(); d != Map2::end(); Map2::next(d))
-	{
-		if(!edgeMark.isMarked(d))
-		{
-			edgeMark.markOrbit<EDGE>(d) ;
-			m_edgeId[d] = m_idCount ;
-			m_edgeId[Map2::phi2(d)] = m_idCount++ ;
-		}
-	}
+    m_idCount = 0 ;
+    DartMarker<Map2> edgeMark(*this) ;
+    for(Dart d = Map2::begin(); d != Map2::end(); Map2::next(d))
+    {
+        if(!edgeMark.isMarked(d))
+        {
+            edgeMark.markOrbit<EDGE>(d) ;
+            m_edgeId[d] = m_idCount ;
+            m_edgeId[Map2::phi2(d)] = m_idCount++ ;
+        }
+    }
 }
 
 unsigned int ImplicitHierarchicalMap2::vertexDegree(Dart d)

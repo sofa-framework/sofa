@@ -67,7 +67,7 @@ public:
 
 
     /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
-    virtual void animate(Node* root, double dt=0.0);
+    virtual void animate(Node* root, SReal dt=0.0);
 
     /// Update the Visual Models: triggers the Mappings
     virtual void updateVisual(Node* root);

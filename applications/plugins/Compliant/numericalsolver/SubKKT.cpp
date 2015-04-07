@@ -10,8 +10,7 @@ typedef SubKKT::rmat rmat;
 
 // build a projection basis based on filtering matrix P
 // P must be diagonal with 0, 1 on the diagonal
-static void projection_basis(rmat& res, const rmat& P,
-                             bool identity_hint = false) {
+void SubKKT::projection_basis(rmat& res, const rmat& P, bool identity_hint) {
 
     res.resize(P.rows(), P.nonZeros());
 
@@ -21,25 +20,21 @@ static void projection_basis(rmat& res, const rmat& P,
     }
 
     res.setZero();
-    res.reserve(P.rows());
+    res.reserve(P.nonZeros());
     
     unsigned off = 0;
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
 
         res.startVec(i);
 
-        for(rmat::InnerIterator it(P, i); it; ++it) {
-            if( it.value() ) {
-                res.insertBack(i, off) = it.value();
-            }
-
-            ++off;
-        }
+        if( rmat::InnerIterator(P, i) ) res.insertBack(i, off++) = 1;
 
     }
     
     res.finalize();
 }
+
+
 
 // builds the projected primal system P^T H P, where P is the primal
 // projection basis
@@ -81,7 +76,7 @@ static void filter_primal(rmat& res,
 }
 
 
-static inline bool has_row(unsigned row, const rmat& P, unsigned* col, bool identity_hint) {
+static inline bool has_row(unsigned row, const rmat& P, unsigned* col, bool identity_hint=false) {
     if(identity_hint) {
         *col = row;
         return true;
@@ -98,16 +93,20 @@ static inline bool has_row(unsigned row, const rmat& P, unsigned* col, bool iden
 }
 
 // build a projected KKT system based on primal projection matrix P
-static void filter_kkt(rmat& res,
+// and dual projection matrix Q (to only include bilateral constraints)
+void SubKKT::filter_kkt(rmat& res,
                        const rmat& H,
                        const rmat& P,
+                       const rmat& Q,
                        const rmat& J,
                        const rmat& C,
                        SReal eps,
-                       bool identity_hint = false,
-                       bool only_lower = false) {
-    
-    res.resize(P.cols() + J.rows(), P.cols() + J.rows());
+                       bool P_is_identity,
+                       bool Q_is_identity,
+                       bool only_lower) {
+
+
+    res.resize(P.cols() + Q.cols(), P.cols() + Q.cols());
     res.setZero();
     res.reserve(H.nonZeros() + 2 * J.nonZeros() + C.nonZeros());
 
@@ -116,13 +115,13 @@ static void filter_kkt(rmat& res,
     if( !only_lower ) {
         JT = J.transpose();
     }
-    
+
     const unsigned P_cols = P.cols();
-    
+
     for(unsigned i = 0, n = P.rows(); i < n; ++i) {
 
         unsigned sub_row = 0;
-        if(! has_row(i, P, &sub_row, identity_hint) ) continue;
+        if(! has_row(i, P, &sub_row, P_is_identity) ) continue;
 
         res.startVec(sub_row);
 
@@ -130,9 +129,9 @@ static void filter_kkt(rmat& res,
         for(rmat::InnerIterator itH(H, i); itH; ++itH) {
 
             if(only_lower && itH.col() > itH.row() ) break;
-            
+
             unsigned sub_col = 0;
-            if(! has_row(itH.col(), P, &sub_col, identity_hint) ) continue;
+            if(! has_row(itH.col(), P, &sub_col, P_is_identity) ) continue;
 
             res.insertBack(sub_row, sub_col) = itH.value();
         }
@@ -141,36 +140,45 @@ static void filter_kkt(rmat& res,
 
         // JT
         for(rmat::InnerIterator itJT(JT, i); itJT; ++itJT) {
-            res.insertBack(sub_row, P_cols + itJT.col()) = -itJT.value();
+
+            unsigned sub_col = 0;
+            if(! has_row(itJT.col(), Q, &sub_col, Q_is_identity) ) continue;
+
+            res.insertBack(sub_row, P_cols + sub_col) = -itJT.value();
         }
-        
+
     }
 
     for(unsigned i = 0, n = J.rows(); i < n; ++i) {
-        res.startVec(P_cols + i);
+
+        unsigned sub_row = 0;
+        if(!has_row(i, Q, &sub_row, Q_is_identity) ) continue;
+
+        res.startVec(P_cols + sub_row);
 
         // J
         for(rmat::InnerIterator itJ(J, i); itJ; ++itJ) {
 
             unsigned sub_col = 0;
-            if(!has_row(itJ.col(), P, &sub_col, identity_hint)) continue;
-            
-            res.insertBack(P_cols + i, sub_col) = -itJ.value();
+            if(!has_row(itJ.col(), P, &sub_col, P_is_identity)) continue;
+
+            res.insertBack(P_cols + sub_row, sub_col) = -itJ.value();
         }
 
-        // C 
+        // C
+
         SReal* diag = 0;
         for(rmat::InnerIterator itC(C, i); itC; ++itC) {
-            SReal& ref = res.insertBack(P_cols + i, P_cols + itC.col());
+            SReal& ref = res.insertBack(P_cols + sub_row, P_cols + itC.col());
             ref = -itC.value();
 
             // store diagonal ref
             if(itC.col() == itC.row()) diag = &ref;
-            
+
         }
 
         if( !diag && eps ) {
-            SReal& ref = res.insertBack(P_cols + i, P_cols + i);
+            SReal& ref = res.insertBack(P_cols + sub_row, P_cols + sub_row);
             ref = 0;
             diag = &ref;
         }
@@ -178,7 +186,6 @@ static void filter_kkt(rmat& res,
         if( eps ) *diag = std::min(-eps, *diag);
         // if( eps ) *diag -= eps;
     }
-
 
     res.finalize();
 }
@@ -203,31 +210,30 @@ void SubKKT::projected_primal(SubKKT& res, const AssembledSystem& sys) {
 
 
 
-void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps, bool only_lower) {
+void SubKKT::projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps, bool only_lower)
+{
     scoped::timer step("subsystem projection");
 
     projection_basis(res.P, sys.P, sys.isPIdentity);
 
-    if(sys.n) {
-        filter_kkt(res.A, sys.H, res.P, sys.J, sys.C, eps, sys.isPIdentity, only_lower);
-
+    if(sys.n)
+    {
         res.Q.resize(sys.n, sys.n);
         res.Q.setIdentity();
-    } else {
+        filter_kkt(res.A, sys.H, res.P, res.Q, sys.J, sys.C, eps, sys.isPIdentity, true, only_lower);
+    }
+    else // no constraints
+    {
         filter_primal(res.A, sys.H, res.P);
         res.Q = rmat();
     }
-
 }
+
+
 
 
 SubKKT::SubKKT() {}
 
-// why this is mandatory with clang? (not with g++)
-void SubKKT::factor(Response& resp) const {
-    scoped::timer step("subsystem factor");
-    resp.factor(A);
-}
 
 void SubKKT::prod(vec& res, const vec& rhs) const {
     res.resize( size_full() );
@@ -274,25 +280,31 @@ void SubKKT::solve(const Response& resp,
     if( Q.cols() ) {
         throw std::logic_error("sorry, not implemented");
     }
-    
-    mtmp1 = P.transpose() * rhs;
+
+    mtmpc1 = P.transpose() * rhs;
+
         
-    resp.solve(mtmp2, mtmp1);
+    resp.solve(mtmpc2, mtmpc1);
 
     // mtmp3 = P;
 
-    // not sure if this causes a temporary
-    res = P * mtmp2;
+    if( Q.cols() ) {
+        res = P * mtmpc2 * Q.transpose();
+    }
+    else
+    {
+        // not sure if this causes a temporary
+        res = P * mtmpc2;
+    }
 }
 
 void SubKKT::solve_opt(const Response& resp,
                        cmat& res,
                        const rmat& rhs) const {
-    res.resize(rhs.rows(), rhs.cols());
     
-//    if( Q.cols() ) {
-//        throw std::logic_error("sorry, not implemented");
-//    }
+    if( Q.cols() ) {
+        throw std::logic_error("sorry, not implemented");
+    }
 
 //    sparse::fast_prod(mtmp1, P.transpose(), rhs.transpose());
 //    // mtmp1 = P.transpose() * rhs.transpose();
@@ -305,33 +317,17 @@ void SubKKT::solve_opt(const Response& resp,
 //    // res = mtmp3 * mtmp2;
 
 
-    solve_filtered( resp, mtmp2, rhs, mtmpr );
+    mtmpr.resize( rhs.rows(), P.cols() );
+    sparse::fast_prod(mtmpr, rhs, P);
 
-    mtmp1 = P;
-    sparse::fast_prod(res, mtmp1, mtmp2);
+    mtmpc2.resize( P.cols(), rhs.rows() );
+    resp.solve(mtmpc2, mtmpr.transpose() );
+
+    res.resize(rhs.rows(), rhs.cols());
+    mtmpc1 = P;
+    sparse::fast_prod(res, mtmpc1, mtmpc2);
 }
 
-
-
-
-
-
-void SubKKT::solve_filtered(const Response& resp,
-                       cmat& res,
-                       const rmat& rhs,
-                       rmat &projected_rhs ) const {
-    
-    if( Q.cols() ) {
-        throw std::logic_error("sorry, not implemented");
-    }
-
-    projected_rhs.resize( rhs.rows(), P.cols() );
-    res.resize( P.cols(), rhs.rows() );
-
-    sparse::fast_prod(projected_rhs, rhs, P);
-    
-    resp.solve(res, projected_rhs.transpose() );
-}
 
 
 

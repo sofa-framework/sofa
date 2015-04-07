@@ -146,7 +146,7 @@ void TaitSurfacePressureForceField<DataTypes>::handleEvent(core::objectmodel::Ev
 {
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
-        double dt = (static_cast<sofa::simulation::AnimateBeginEvent *> (event))->getDt();
+        SReal dt = (static_cast<sofa::simulation::AnimateBeginEvent *> (event))->getDt();
         Real inj = m_injectedVolume.getValue();
         Real curInj = m_currentInjectedVolume.getValue();
         if (inj != curInj)

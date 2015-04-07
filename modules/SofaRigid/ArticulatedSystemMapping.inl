@@ -325,16 +325,16 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
     //{
     //	serr<<"ArticulatedSystemMapping::propageX processed :"<<sendl;
     //	if (m_fromRootModel!=NULL)
-    //		serr<<"input root: "<<*m_fromRootModel->getX();
-    //	serr<<"  - input: "<<*m_fromModel->getX()<<"  output : "<<*m_toModel->getX()<<sendl;
+    //		serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::position())->getValue();
+    //	serr<<"  - input: "<<*m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<"  output : "<<*m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<sendl;
     //}
 
     //if( this->f_printLog.getValue())
     //{
     //	serr<<"ArticulatedSystemMapping::propageXfree processed"<<sendl;
     //	if (rootModel!=NULL)
-    //		serr<<"input root: "<<*rootModel->getXfree();
-    //	serr<<"  - input: "<<*m_fromModel->getXfree()<<"  output : "<<*m_toModel->getXfree()<<sendl;
+    //		serr<<"input root: "<<*rootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue();
+    //	serr<<"  - input: "<<*m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()<<"  output : "<<*m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()<<sendl;
     //}
 
 //	  std::cout << " <-- ArticulatedSystemMapping<TIn, TOut>::apply called with in: " << in << "  -- inroot" << (*inroot) << std::endl;
@@ -445,8 +445,8 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
     //apply(xto,xfrom);
 
     // debug
-    //apply(core::VecCoordId::position(), core::ConstVecCoordId::position(), (rootModel==NULL ? NULL : rootModel->getX()));
-    //serr<<" XTO = "<<xto<<"  - Xroot :"<<*rootModel->getX()<<sendl;
+    //apply(core::VecCoordId::position(), core::ConstVecCoordId::position(), (rootModel==NULL ? NULL : rootModel->read(sofa::core::ConstVecCoordId::position())->getValue()));
+    //serr<<" XTO = "<<xto<<"  - Xroot :"<<*rootModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<sendl;
 
     OutVecDeriv fObjects6DBuf = in;
     InVecDeriv OutBuf = out;

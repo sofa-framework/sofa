@@ -107,13 +107,13 @@ AssemblyVisitor::chunk::map_type AssemblyVisitor::mapping(simulation::Node* node
 
 
 // projection matrix
-AssemblyVisitor::mat AssemblyVisitor::proj(simulation::Node* node) {
+AssemblyVisitor::rmat AssemblyVisitor::proj(simulation::Node* node) {
 	assert( node->mechanicalState );
 
 	unsigned size = node->mechanicalState->getMatrixSize();
 
 	// identity matrix TODO alloc ?
-    tmp_p.compressedMatrix = shift_right<mat>(0, size, size);
+    tmp_p.compressedMatrix = shift_right<rmat>(0, size, size);
 
 	for(unsigned i=0; i<node->projectiveConstraintSet.size(); i++){
 		node->projectiveConstraintSet[i]->projectMatrix(&tmp_p, 0);
@@ -227,7 +227,7 @@ void AssemblyVisitor::interactionForceField(simulation::Node* node)
 
 
 // ode matrix
-AssemblyVisitor::mat AssemblyVisitor::odeMatrix(simulation::Node* node)
+AssemblyVisitor::rmat AssemblyVisitor::odeMatrix(simulation::Node* node)
 {
     unsigned size = node->mechanicalState->getMatrixSize();
 
@@ -508,20 +508,20 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 
         it->J.resize( it->H.rows(), size_m );
 
-        mat& Jp0 = full[ it->ff->getMechModel1() ];
-        mat& Jp1 = full[ it->ff->getMechModel2() ];
+        rmat& Jp0 = full[ it->ff->getMechModel1() ];
+        rmat& Jp1 = full[ it->ff->getMechModel2() ];
 
         if( empty(Jp0) ) {
             offset_type::const_iterator itoff = offsets.find(it->ff->getMechModel1());
-            if( itoff != offsets.end() ) Jp0 = shift_right<mat>( itoff->second, it->ff->getMechModel1()->getMatrixSize(), size_m);
+            if( itoff != offsets.end() ) Jp0 = shift_right<rmat>( itoff->second, it->ff->getMechModel1()->getMatrixSize(), size_m);
         }
         if( empty(Jp1) ) {
             offset_type::const_iterator itoff = offsets.find(it->ff->getMechModel2());
-            if( itoff != offsets.end() ) Jp1 = shift_right<mat>( itoff->second, it->ff->getMechModel2()->getMatrixSize(), size_m);
+            if( itoff != offsets.end() ) Jp1 = shift_right<rmat>( itoff->second, it->ff->getMechModel2()->getMatrixSize(), size_m);
         }
 
-        if( !empty(Jp0) ) add( it->J, shift_left<mat>( 0, it->ff->getMechModel1()->getMatrixSize(), it->H.rows() ) * Jp0 );
-        if( !empty(Jp1) ) add( it->J, shift_left<mat>( it->ff->getMechModel1()->getMatrixSize(), it->ff->getMechModel2()->getMatrixSize(), it->H.rows() ) * Jp1 );
+        if( !empty(Jp0) ) add( it->J, shift_left<rmat>( 0, it->ff->getMechModel1()->getMatrixSize(), it->H.rows() ) * Jp0 );
+        if( !empty(Jp1) ) add( it->J, shift_left<rmat>( it->ff->getMechModel1()->getMatrixSize(), it->ff->getMechModel2()->getMatrixSize(), it->H.rows() ) * Jp1 );
     }
 
 	return res;
@@ -530,7 +530,7 @@ AssemblyVisitor::process_type* AssemblyVisitor::process() const {
 
 
 // this is meant to optimize L^T D L products
-inline const AssemblyVisitor::mat& AssemblyVisitor::ltdl(const mat& l, const mat& d) const
+inline const AssemblyVisitor::rmat& AssemblyVisitor::ltdl(const rmat& l, const rmat& d) const
 {
 //#ifdef _OPENMP
 //    return component::linearsolver::mul_EigenSparseMatrix_MT( l.transpose(), component::linearsolver::mul_EigenSparseMatrix_MT( d, l ) );
@@ -544,7 +544,7 @@ inline const AssemblyVisitor::mat& AssemblyVisitor::ltdl(const mat& l, const mat
 }
 
 
-inline void AssemblyVisitor::add_ltdl(mat& res, const mat& l, const mat& d)  const
+inline void AssemblyVisitor::add_ltdl(rmat& res, const rmat& l, const rmat& d)  const
 {
     sparse::fast_prod(tmp1, d, l);
     tmp3 = l.transpose();
@@ -565,21 +565,21 @@ enum {
 
 template<int Method = METHOD_NOMULT> struct add_shifted;
 
-typedef AssembledSystem::mat mat;
+typedef AssembledSystem::rmat rmat;
 
 template<> struct add_shifted<METHOD_TRIPLETS> {
     typedef Eigen::Triplet<SReal> Triplet;
 
     
-    mat& result;
+    rmat& result;
     std::vector<Triplet> triplets;
     
-    add_shifted(mat& result) : result(result) {
+    add_shifted(rmat& result) : result(result) {
         triplets.reserve(result.nonZeros() + result.rows());
 
         // don't forget to add prior values since we will overwrite
         // result in the dtor
-        add_shifted_right<Triplet, mat>( triplets, result, 0);
+        add_shifted_right<Triplet, rmat>( triplets, result, 0);
     }
     
     ~add_shifted() {
@@ -588,7 +588,7 @@ template<> struct add_shifted<METHOD_TRIPLETS> {
 
     template<class Matrix>
     void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0)  {
-        add_shifted_right<Triplet, mat>( triplets, chunk, off, factor);
+        add_shifted_right<Triplet, rmat>( triplets, chunk, off, factor);
     }
 
 };
@@ -599,12 +599,12 @@ template<> struct add_shifted<METHOD_TRIPLETS> {
 
 template<> struct add_shifted<METHOD_COEFREF> {
 
-    mat& result;
-    add_shifted(mat& result) : result(result) { }
+    rmat& result;
+    add_shifted(rmat& result) : result(result) { }
     
     template<class Matrix>
     void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
-        add_shifted_right<mat>( result, chunk, off, factor );
+        add_shifted_right<rmat>( result, chunk, off, factor );
     }
 
 };
@@ -614,11 +614,11 @@ template<> struct add_shifted<METHOD_DENSEMATRIX> {
 
     typedef Eigen::Matrix<SReal, Eigen::Dynamic, Eigen::Dynamic> DenseMat;
 
-    mat& result;
+    rmat& result;
 
     DenseMat dense;
     
-    add_shifted(mat& result)
+    add_shifted(rmat& result)
         : result(result),
           dense( DenseMat::Zero(result.rows(), result.cols())) {
 
@@ -626,7 +626,7 @@ template<> struct add_shifted<METHOD_DENSEMATRIX> {
     
     template<class Matrix>
     void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0)  {
-        add_shifted_right<DenseMat,mat>( dense, chunk, off, factor);
+        add_shifted_right<DenseMat,rmat>( dense, chunk, off, factor);
     }
 
     ~add_shifted() {
@@ -636,8 +636,8 @@ template<> struct add_shifted<METHOD_DENSEMATRIX> {
 };
 
 template<> struct add_shifted<METHOD_DEFAULT> {
-    mat& result;
-    add_shifted(mat& result)
+    rmat& result;
+    add_shifted(rmat& result)
         : result(result) {
 
     }
@@ -645,7 +645,7 @@ template<> struct add_shifted<METHOD_DEFAULT> {
     // TODO optimize shift creation
     template<class Matrix>
     void operator()(const Matrix& chunk, unsigned off, SReal factor = 1.0) const {
-        const mat shift = shift_right<mat>(off, chunk.cols(), result.cols(), factor);
+        const rmat shift = shift_right<rmat>(off, chunk.cols(), result.cols(), factor);
         
         result.middleRows(off, chunk.rows()) = result.middleRows(off, chunk.rows()) + chunk * shift;
     }
@@ -654,8 +654,8 @@ template<> struct add_shifted<METHOD_DEFAULT> {
 
 // barely faster than DEFAULT
 template<> struct add_shifted<METHOD_NOMULT> {
-    mat& result;
-    add_shifted(mat& result)
+    rmat& result;
+    add_shifted(rmat& result)
         : result(result) {
 
         // ideal would be somewhere between n and n^2 (TODO we should add a parameter)
@@ -702,7 +702,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
         if( !c.mechanical || c.master() || !c.Ktilde ) continue;
 
         // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
-        MySPtr<mat> Ktilde( convertSPtr<mat>( c.Ktilde ) );
+        MySPtr<rmat> Ktilde( convertSPtr<rmat>( c.Ktilde ) );
 
         if( zero( *Ktilde ) ) continue;
 
@@ -725,7 +725,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
             std::cerr<<"multimapping "<<c.dofs->getName()<<std::endl;
 
             // full mapping chunk for geometric stiffness
-            const mat& geometricStiffnessJc = _processed->fullmappinggeometricstiffness[ graph[ prefix[i] ].dofs ];
+            const rmat& geometricStiffnessJc = _processed->fullmappinggeometricstiffness[ graph[ prefix[i] ].dofs ];
 
 
 
@@ -784,7 +784,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
 		else {
 
             // full mapping chunk
-            const mat& Jc = _processed->fullmapping[ graph[ prefix[i] ].dofs ];
+            const rmat& Jc = _processed->fullmapping[ graph[ prefix[i] ].dofs ];
 
 			if( !zero(Jc) ) {
                 assert( Jc.cols() == int(_processed->size_m) );
@@ -802,7 +802,7 @@ void AssemblyVisitor::assemble(system_type& res) const {
 
 
                 // TODO remove copy for matrices that are already in the right type (EigenBaseSparseMatrix<SReal>)
-                MySPtr<mat> C( convertSPtr<mat>( c.C ) );
+                MySPtr<rmat> C( convertSPtr<rmat>( c.C ) );
 
 
                 // fetch projector and constraint value if any

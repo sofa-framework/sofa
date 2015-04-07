@@ -79,13 +79,13 @@ struct ProjectToPlaneConstraint_test : public Sofa_test<typename _DataTypes::Rea
         /// Create the scene
         root = simulation->createNewGraph("root");
 
-        PointSetTopologyContainer::SPtr topology = New<PointSetTopologyContainer>();
+        PointSetTopologyContainer::SPtr topology = core::objectmodel::New<PointSetTopologyContainer>();
         root->addObject(topology);
 
-        dofs = New<MechanicalObject>();
+        dofs = core::objectmodel::New<MechanicalObject>();
         root->addObject(dofs);
 
-        projection = New<ProjectToPlaneConstraint>();
+        projection = core::objectmodel::New<ProjectToPlaneConstraint>();
         root->addObject(projection);
 
         /// Set the values

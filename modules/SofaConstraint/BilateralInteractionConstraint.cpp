@@ -45,8 +45,9 @@ using namespace sofa::helper;
 #ifndef SOFA_FLOAT
 
 template<>
-void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintResolution(const core::ConstraintParams* cParams, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
+    SOFA_UNUSED(cParams);
     unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
     for (unsigned pid=0; pid<minp; pid++)
     {
@@ -289,8 +290,9 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getVelocityViolation(defaultt
 }
 
 template<>
-void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
+void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintResolution(const core::ConstraintParams* cParams, std::vector<core::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
+    SOFA_UNUSED(cParams);
     unsigned minp=std::min(m1.getValue().size(),m2.getValue().size());
     for (unsigned pid=0; pid<minp; pid++)
     {

@@ -8,39 +8,66 @@ namespace component {
 namespace linearsolver {
 
 
-SOFA_DECL_CLASS(IncompleteCholeskyPreconditioner);
-int IncompleteCholeskyPreconditionerClass = core::RegisterObject("LDLT preconditioner").add< IncompleteCholeskyPreconditioner >();
+SOFA_DECL_CLASS(IncompleteCholeskyPreconditioner)
+int IncompleteCholeskyPreconditionerClass = core::RegisterObject("Incomplete Cholesky preconditioner").add< IncompleteCholeskyPreconditioner >();
 
 
-void IncompleteCholeskyPreconditioner::compute( const AssembledSystem::mat& H )
+IncompleteCholeskyPreconditioner::IncompleteCholeskyPreconditioner()
+    : BasePreconditioner()
+    , d_constant( initData(&d_constant, false, "constant", "reuse first factorization"))
+    , d_shift( initData(&d_shift, real(0), "shift", "initial shift"))
+    , m_factorized(false)
+{}
+
+
+
+void IncompleteCholeskyPreconditioner::reinit()
 {
-//         std::cerr<<SOFA_CLASS_METHOD<<"\n";
+    BasePreconditioner::reinit();
+    m_factorized = false;
+    preconditioner.setShift( d_shift.getValue() );
+}
 
-        preconditioner.compute( H );
+void IncompleteCholeskyPreconditioner::compute( const rmat& H )
+{
+    if( d_constant.getValue() )
+    {
+        if( m_factorized ) return;
+        else m_factorized = true;
+    }
+
+    preconditioner.compute( H );
+
+    if( preconditioner.info() != Eigen::Success )
+    {
+        serr<<"automatic regularization of a singular matrix"<<sendl;
+
+        // if singular, try to regularize by adding a tiny diagonal matrix
+        rmat identity(H.rows(),H.cols());
+        identity.setIdentity();
+        preconditioner.compute( H + identity * std::numeric_limits<SReal>::epsilon() );
 
         if( preconditioner.info() != Eigen::Success )
         {
-            // if singular, try to regularize by adding a tiny diagonal matrix
-            AssembledSystem::mat identity(H.rows(),H.cols());
-            identity.setIdentity();
-            preconditioner.compute( H + identity * std::numeric_limits<SReal>::epsilon() );
-
-            if( preconditioner.info() != Eigen::Success )
-            {
-                std::cerr << "warning: non invertible response" << std::endl;
-                assert( false );
-            }
-
+            serr << "non invertible response" << sendl;
+            assert( false );
         }
+
+    }
 }
 
-void IncompleteCholeskyPreconditioner::apply( AssembledSystem::vec& res, const AssembledSystem::vec& v )
+void IncompleteCholeskyPreconditioner::apply( vec& res, const vec& v )
 {
     res.resize( v.size() );
-    res.head(preconditioner.rows()) = preconditioner.solve( v.head(preconditioner.rows()) );
-    res.tail( v.size()-preconditioner.rows() ) = v.tail( v.size()-preconditioner.rows() ); // in case of dofs have been added, like mouse...
 
-//    std::cerr<<SOFA_CLASS_METHOD<<"\n";
+    if( d_constant.getValue() )
+    {
+        res.head(preconditioner.rows()) = preconditioner.solve( v.head(preconditioner.rows()) );
+        res.tail( v.size()-preconditioner.rows() ) = v.tail( v.size()-preconditioner.rows() ); // in case of dofs have been added, like mouse...
+    }
+    else
+        res = preconditioner.solve( v );
+
 }
 
 }

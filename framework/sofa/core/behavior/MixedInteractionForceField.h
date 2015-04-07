@@ -112,7 +112,7 @@ public:
     /// $ df += kFactor K dx + bFactor B dx $
     ///
     /// This method retrieves the force and dx vector from the two MechanicalState
-    /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,double,double)
+    /// and call the internal addDForce(VecDeriv1&,VecDeriv2&,const VecDeriv1&,const VecDeriv2&,SReal,SReal)
     /// method implemented by the component.
     virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId );
 
@@ -125,7 +125,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
     /// the component.
-    virtual double getPotentialEnergy(const MechanicalParams* mparams) const;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams) const;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -161,7 +161,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic MixedInteractionForceField::getPotentialEnergy() method.
-    virtual double getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2) const =0;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2) const =0;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

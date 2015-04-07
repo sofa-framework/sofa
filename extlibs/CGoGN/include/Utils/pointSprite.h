@@ -30,13 +30,15 @@
 
 namespace CGoGN { namespace Utils { class VBO; } }
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class PointSprite : public Utils::GLSLShader
+class CGoGN_UTILS_API PointSprite : public Utils::GLSLShader
 {
 protected:
 	static std::string vertexShaderText;
@@ -60,6 +62,11 @@ protected:
 	Geom::Vec3f m_lightPos;
 	Geom::Vec3f m_ambiant;
 	Geom::Vec3f m_eyePos;
+
+	/// clipping
+	CGoGNGLuint m_unif_planeClip;
+	Geom::Vec4f m_planeClip;
+
 
 	void getLocations();
 
@@ -91,6 +98,11 @@ public:
 	* set the plane of rendering for VR rendering
 	*/
 	void setEyePosition(const Geom::Vec3f& ep);
+
+	void setClippingPlane(const Geom::Vec4f& plane);
+
+	inline void setNoClippingPlane() { setClippingPlane(Geom::Vec4f(0.0f,0.0f,0.0f,0.0f)); }
+
 };
 
 } // namespace Utils

@@ -24,6 +24,8 @@
 
 #include <iostream>
 
+#define CGoGN_UTILS_DLL_EXPORT 1
+
 #include "Utils/img3D_IO.h"
 #include "Utils/cgognStream.h"
 
@@ -42,105 +44,10 @@ namespace Utils
 namespace Img3D_IO
 {
 
-template<typename DataType>
-DataType* compressZ8(DataType* src, int w, int h, int d, int& new_d)
-{
-	new_d = (d/8);
-	int wh=w*h;
-	if (d%8) new_d++;
-
-	DataType* newImg = new DataType[(w*h*new_d)+w]; // +w pour stocker entete
-	DataType *dest = newImg;
-
-	int z = 0;
-	while (z < d)
-	{
-		DataType* ptrs[8];
-		ptrs[0] = src;
-		z++;
-		for (int i =1; i<8; ++i)
-		{
-			if (z<d)
-				ptrs[i] = ptrs[i-1] + wh;
-			else ptrs[i] = NULL;
-			z++;
-		}
-
-		for (int i=0;i<wh;++i)
-		{
-			DataType val=0;
-			for(int j=7; j>=0; --j)
-			{
-				val *= 2;
-				if (ptrs[j] != NULL)
-				{
-					if (*((ptrs[j])++) != 0)
-					{
-						val++;
-					}
-				}
-			}
-			*dest++ = val;
-		}
-		src += 8*wh;
-	}
-
-	return newImg;
-}
-
-
-template<typename DataType>
-DataType* uncompressZ8(DataType* src, int w, int h, int d)
-{
-	int wh = w*h;
-	
-	DataType* newImg = new DataType[wh*d];
-	DataType *dest = newImg;
-
-	int z = 0;
-	while (z < d)
-	{
-		DataType* ptrs[8];
-		ptrs[0] = dest;
-		z++;
-		for (int i =1; i<8; ++i)
-		{
-			if (z<d)
-				ptrs[i] = ptrs[i-1] + wh;
-			else ptrs[i] = NULL;
-			z++;
-		}
-
-		for (int i=0;i<wh;++i)
-		{
-			DataType val=*src++;
-
-			for(int j=0; j<8; ++j)
-			{
-				if (ptrs[j] != NULL)
-				{
-					if (val%2)
-					{
-						*((ptrs[j])++) =  255;
-					}	
-					else
-					{
-						*((ptrs[j])++) =  0;
-					}
-				}
-				val /= 2;
-			}
-		}
-		dest += 8*wh;
-	}
-
-	return newImg;
-
-}
 
 
 
-void saveBool(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag)
+CGoGN_UTILS_API void saveBool(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag)
 {
 	// compress image from bool to 8bit pp
 	int nd;
@@ -165,7 +72,7 @@ void saveBool(const std::string& filename, unsigned char* data, int w, int h, in
 }
 
 
-unsigned char* loadVal_8(const std::string& filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& tag)
+CGoGN_UTILS_API unsigned char* loadVal_8(const std::string& filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& tag)
 {
 	QImage* ptrImg = new QImage(filename.c_str());
 	if (ptrImg==NULL)
@@ -217,7 +124,7 @@ unsigned char* loadVal_8(const std::string& filename, int& w, int& h, int &d, fl
 
 
 
-void saveVal(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag)
+CGoGN_UTILS_API void saveVal(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag)
 {
 	// init image2D
 	QImage img(w,(h*d)+1,QImage::Format_Indexed8);
@@ -241,7 +148,7 @@ void saveVal(const std::string& filename, unsigned char* data, int w, int h, int
 
 
 
-unsigned char* loadRGB(const std::string& filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& tag)
+CGoGN_UTILS_API unsigned char* loadRGB(const std::string& filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& tag)
 {
 	QImage* ptrImg = new QImage(filename.c_str());
 	if (ptrImg==NULL)
@@ -277,7 +184,7 @@ unsigned char* loadRGB(const std::string& filename, int& w, int& h, int &d, floa
 }
 
 
-void saveRGB(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag)
+CGoGN_UTILS_API void saveRGB(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag)
 {
 
 	// init image2D

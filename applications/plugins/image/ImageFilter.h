@@ -63,6 +63,7 @@
 #define CONNECTEDCOMPONENTS 25
 #define LARGESTCONNECTEDCOMPONENT 26
 #define MIRROR 27
+#define SHARPEN 28
 
 
 namespace sofa
@@ -136,7 +137,7 @@ public:
         inputTransform.setReadOnly(true);
         outputImage.setReadOnly(true);
         outputTransform.setReadOnly(true);
-        helper::OptionsGroup filterOptions(28	,"0 - None"
+        helper::OptionsGroup filterOptions(29	,"0 - None"
                                            ,"1 - Blur ( sigma )"
                                            ,"2 - Blur Median ( n )"
                                            ,"3 - Blur Bilateral ( sigma_s, sigma_r)"
@@ -164,6 +165,7 @@ public:
                                            ,"25 - Label connected components (tolerance=0)"
                                            ,"26 - Largest connected component (tolerance=0)"
                                            ,"27 - Mirror (axis=0)"
+										   ,"28 - Sharpen (sigma)"
                                            );
         filterOptions.setSelectedItem(NONE);
         filter.setValue(filterOptions);
@@ -234,7 +236,7 @@ protected:
                 float amplitude=0; if(p.size()) amplitude=(float)p[0];
                 cimglist_for(img,l) img(l)=inimg(l).get_blur_anisotropic (amplitude);
             }
-            break;
+			break;	
         case DERICHE:
             if(updateImage)
             {
@@ -616,15 +618,17 @@ protected:
 
                 cimglist_for(img,l)
                 {
-                    img(l).label(false,tol);
+                    typedef unsigned int Tlabel;
+                    CImg<Tlabel> im = inimg(l);
+                    im.label(false,tol);
                     //histo
-                    std::map<To,unsigned int> histo;
-                    cimg_foroff(img(l),off) histo[img(l)[off]]++;
-                    To val=0; unsigned int mx=0;
+                    std::map<Tlabel,unsigned long> histo;
+                    cimg_foroff(im,off) histo[im[off]]++;
+                    Tlabel val=0; unsigned long mx=0;
                     // get max size
-                    for (typename std::map<To,unsigned int>::iterator it=histo.begin(); it!=histo.end(); ++it) if(it->second>=mx && it->first!=(To)0.) { mx=it->second; val=it->first; }
+                    for (typename std::map<Tlabel,unsigned long>::iterator it=histo.begin(); it!=histo.end(); ++it) if(it->second>=mx && it->first!=(Tlabel)0.) { mx=it->second; val=it->first; }
                     // mask input
-                    cimg_foroff(img(l),off) if(img(l)[off]==val) img(l)[off]=(To)inimg(l)[off]; else     img(l)[off]=(To)0.;
+                    cimg_foroff(im,off) if(im[off]==val) img(l)[off]=(To)inimg(l)[off]; else     img(l)[off]=(To)0.;
                 }
             }
             break;
@@ -637,7 +641,15 @@ protected:
                 else if(axis==0) cimglist_for(img,l) img(l)=inimg(l).get_mirror ('y');
                 else cimglist_for(img,l) img(l)=inimg(l).get_mirror ('z');
             }
-            break;
+			break;	 
+
+		case SHARPEN:
+			if(updateImage)
+			{
+				float sigma=0; if(p.size()) sigma=(float)p[0];
+				cimglist_for(img,l) img(l)=inimg(l).get_sharpen(sigma);
+			}
+			break;
 
         default:
             break;

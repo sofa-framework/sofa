@@ -76,7 +76,7 @@ void MultiTagAnimationLoop::init()
 
 
 
-void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, double dt)
+void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
 {
     sofa::helper::AdvancedTimer::stepBegin("AnimationStep");
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -89,7 +89,7 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, double dt
         this->gnode->execute ( act );
     }
 
-    double startTime = this->gnode->getTime();
+    SReal startTime = this->gnode->getTime();
 
     BehaviorUpdatePositionVisitor beh(params , dt);
     this->gnode->execute ( beh );

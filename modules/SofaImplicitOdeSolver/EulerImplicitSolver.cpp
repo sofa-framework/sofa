@@ -56,9 +56,9 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 EulerImplicitSolver::EulerImplicitSolver()
-    : f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
-    , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
-    , f_velocityDamping( initData(&f_velocityDamping,0.,"vdamping","Velocity decay coefficient (no decay if null)") )
+    : f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
+    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
+    , f_velocityDamping( initData(&f_velocityDamping,(SReal)0.,"vdamping","Velocity decay coefficient (no decay if null)") )
     , f_firstOrder (initData(&f_firstOrder, false, "firstOrder", "Use backward Euler scheme for first order ode system."))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
 {
@@ -84,7 +84,7 @@ void EulerImplicitSolver::cleanup()
     vop.v_free( x.id(), true, true );
 }
 
-void EulerImplicitSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SolverVectorAllocation");
@@ -131,7 +131,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, double dt, sofa:
     }
 #endif
 
-    double h = dt;
+    const SReal& h = dt;
     const bool verbose  = f_verbose.getValue();
     const bool firstOrder = f_firstOrder.getValue();
 

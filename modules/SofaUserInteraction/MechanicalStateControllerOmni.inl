@@ -95,7 +95,7 @@ void MechanicalStateControllerOmni<DataTypes>::applyController(double /*dt*/)
     {
            if(mState)device
     	{
-    //			if(mState->getXfree())
+    //			if(mState->read(sofa::core::ConstVecCoordId::freePosition())->getValue())
     		{
                    helper::WriteAccessor<Data<VecCoord> > x = *this->mState->write(core::VecCoordId::position());
                    helper::WriteAccessor<Data<VecCoord> > xfree = *this->mState->write(core::VecCoordId::freePosition());

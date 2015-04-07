@@ -104,7 +104,7 @@ void Fluid3D::reset()
     init();
 }
 
-void Fluid3D::updatePosition(double dt)
+void Fluid3D::updatePosition(SReal dt)
 {
     fnext->gravity = getContext()->getGravity()/f_cellwidth.getValue();
     fnext->step(fluid, ftemp, (real)dt);

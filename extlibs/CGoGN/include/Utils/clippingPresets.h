@@ -30,13 +30,15 @@
 #include <vector>
 #include <cmath>
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ClippingPreset
+class CGoGN_UTILS_API ClippingPreset
 {
 
 

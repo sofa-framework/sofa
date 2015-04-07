@@ -216,6 +216,18 @@ public:
     void updateIndex(const size_t parentSize, const size_t childSize);
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
     virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
+
+    /*!
+     * \brief Resize all required data and initialize jacobian blocks
+     * \param p0 parent initial positions
+     * \param c0 child initial positions
+     * \param x0 child initial positions as Vec3r
+     * \param index child to parent index
+     * \param w child weights
+     * \param dw child weight derivatives
+     * \param ddw child weight hessians
+     * \param F child initial frame
+     */
     virtual void resizeAll(const InVecCoord& p0, const OutVecCoord& c0, const VecCoord& x0, const VecVRef& index, const VecVReal& w, const VecVGradient& dw, const VecVHessian& ddw, const VMaterialToSpatial& F0);
 
     /** @name Mapping functions */
@@ -225,6 +237,7 @@ public:
 
     virtual void apply(OutVecCoord& out, const InVecCoord& in);
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn);
+    void applyJ(OutVecDeriv& out, const InVecDeriv& in);
     virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn);
     virtual void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut);
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId );

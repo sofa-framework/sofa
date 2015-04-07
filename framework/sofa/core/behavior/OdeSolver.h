@@ -73,20 +73,20 @@ public:
     ///
     /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt, putting the resulting position and velocity in the provided vectors.
-    virtual void solve(const core::ExecParams* /*params*/, double /*dt*/, MultiVecCoordId /*xResult*/, MultiVecDerivId /*vResult*/) = 0; // { serr << "ERROR: " << getClassName() << " don't implement solve on custom x and v" << sendl; }
+    virtual void solve(const core::ExecParams* /*params*/, SReal /*dt*/, MultiVecCoordId /*xResult*/, MultiVecDerivId /*vResult*/) = 0; // { serr << "ERROR: " << getClassName() << " don't implement solve on custom x and v" << sendl; }
 
     /// Main computation method.
     ///
     /// Specify and execute all computation for timestep integration, i.e.
     /// advancing the state from time t to t+dt.
-    virtual void solve (const core::ExecParams* params, double dt) { solve(params, dt, VecCoordId::position(), VecDerivId::velocity()); }
+    virtual void solve (const core::ExecParams* params, SReal dt) { solve(params, dt, VecCoordId::position(), VecDerivId::velocity()); }
 
 
     /// Compute the residual of the newton iteration
     ///
     /// pos_t and vel_t are the position and velocities at the begining of the time step
     /// the result is accumulated in Vecid::force()
-    virtual void computeResidual(const core::ExecParams* /*params*/, double /*dt*/, sofa::core::MultiVecCoordId /*pos_t*/, sofa::core::MultiVecDerivId /*vel_t*/) { std::cerr << "ComputeResidual is not implemented in " << this->getName() << std::endl; }
+    virtual void computeResidual(const core::ExecParams* /*params*/, SReal /*dt*/, sofa::core::MultiVecCoordId /*pos_t*/, sofa::core::MultiVecDerivId /*vel_t*/) { std::cerr << "ComputeResidual is not implemented in " << this->getName() << std::endl; }
 
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
@@ -106,13 +106,13 @@ public:
     /// The last column is returned by the getSolutionIntegrationFactor method.
     ///
     /// FF: What is the meaning of the parameters ?
-    virtual double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const { serr<<"getIntegrationFactor not implemented !"<<sendl; return 0; };
+    virtual double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const { serr<<"getIntegrationFactor not implemented !"<<sendl; return 0; }
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
     ///
     /// FF: What is the meaning of the parameters ?
-    virtual double getSolutionIntegrationFactor(int /*outputDerivative*/) const { serr<<"getSolutionIntegrationFactor not implemented !"<<sendl; return 0; };
+    virtual double getSolutionIntegrationFactor(int /*outputDerivative*/) const { serr<<"getSolutionIntegrationFactor not implemented !"<<sendl; return 0; }
 
 
     /// Given the solution dx of the linear system inversion, how much will it affect the velocity

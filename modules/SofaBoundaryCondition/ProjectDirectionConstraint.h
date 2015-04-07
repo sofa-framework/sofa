@@ -90,7 +90,7 @@ protected:
 
 public:
     IndexSubsetData f_indices;  ///< the particles to project
-    Data<double> f_drawSize;    ///< The size of the square used to display the constrained particles
+    Data<SReal> f_drawSize;    ///< The size of the square used to display the constrained particles
     Data<CPos> f_direction;    ///< The direction of the line. Will be normalized by init()
 
 

@@ -148,9 +148,9 @@ public:
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_DeclMethods(T) \
     template<> inline void MechanicalObject< T >::accumulateForce(const core::ExecParams* params); \
-    template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a, core::ConstVecId b, double f); \
+    template<> inline void MechanicalObject< T >::vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a, core::ConstVecId b, SReal f); \
     template<> inline void MechanicalObject< T >::vMultiOp(const core::ExecParams* params, const VMultiOp& ops); \
-    template<> inline double MechanicalObject< T >::vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b); \
+    template<> inline SReal MechanicalObject< T >::vDot(const core::ExecParams* params, core::ConstVecId a, core::ConstVecId b); \
     template<> inline void MechanicalObject< T >::resetForce(const core::ExecParams* params); \
     template<> inline void MechanicalObject< T >::copyToBaseVector(defaulttype::BaseVector * dest, core::ConstVecId src, unsigned int &offset); \
     template<> inline void MechanicalObject< T >::copyFromBaseVector(core::VecId dest, const defaulttype::BaseVector * src,  unsigned int &offset); \

@@ -206,17 +206,17 @@ public:
 
 
     // -- Mass interface
-    void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
+    void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
     void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f); // This function can't be used as it use M^-1
 
     void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    double getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
+    SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV()
 
-    double getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vec6d getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv))
+    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv))
 
     void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
@@ -227,7 +227,7 @@ public:
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
-    double getElementMass(unsigned int index) const;
+    SReal getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
     void draw(const core::visual::VisualParams* vparams);

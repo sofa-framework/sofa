@@ -53,7 +53,8 @@ class EigenSparseSolver : public KKTSolver {
     void solve_schur(vec& x, const AssembledSystem& system, const vec& rhs) const;
     void solve_kkt(vec& x, const AssembledSystem& system, const vec& rhs) const;
 
-    Data<bool> schur;
+    Data<bool> d_schur;
+    Data<SReal> d_regularization;
 
     struct pimpl_type;
     scoped::ptr<pimpl_type> pimpl;

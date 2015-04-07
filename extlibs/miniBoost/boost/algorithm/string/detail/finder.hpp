@@ -142,7 +142,11 @@ namespace boost {
                     ForwardIteratorT End,
                     std::forward_iterator_tag ) const
                 {
+#ifdef __GNUC__
+                    typedef ForwardIteratorT input_iterator_type __attribute__((unused));
+#else
                     typedef ForwardIteratorT input_iterator_type;
+#endif
                     typedef iterator_range<ForwardIteratorT> result_type;
 
                     first_finder_type first_finder(
@@ -263,7 +267,11 @@ namespace boost {
                     ForwardIteratorT End,
                     unsigned int N) const
                 {
+#ifdef __GNUC__
+                    typedef ForwardIteratorT input_iterator_type __attribute__((unused));
+#else
                     typedef ForwardIteratorT input_iterator_type;
+#endif
                     typedef iterator_range<ForwardIteratorT> result_type;
 
                     // Sanity check
@@ -298,7 +306,11 @@ namespace boost {
                     ForwardIteratorT End,
                     unsigned int N) const
                 {
+#ifdef __GNUC__
+                    typedef ForwardIteratorT input_iterator_type __attribute__((unused));
+#else
                     typedef ForwardIteratorT input_iterator_type;
+#endif
                     typedef iterator_range<ForwardIteratorT> result_type;
 
                     // Sanity check
@@ -362,7 +374,11 @@ namespace boost {
                 unsigned int N,
                 std::random_access_iterator_tag )
             {
+#ifdef __GNUC__
+                typedef ForwardIteratorT input_iterator_type __attribute__((unused));
+#else
                 typedef ForwardIteratorT input_iterator_type;
+#endif
                 typedef iterator_range<ForwardIteratorT> result_type;
 
                 if ( (End<=Begin) || ( static_cast<unsigned int>(End-Begin) < N ) )
@@ -436,7 +452,11 @@ namespace boost {
                 unsigned int N,
                 std::random_access_iterator_tag )
             {
+#ifdef __GNUC__
+                typedef ForwardIteratorT input_iterator_type __attribute__((unused));
+#else
                 typedef ForwardIteratorT input_iterator_type;
+#endif
                 typedef iterator_range<ForwardIteratorT> result_type;
 
                 if ( (End<=Begin) || ( static_cast<unsigned int>(End-Begin) < N ) )

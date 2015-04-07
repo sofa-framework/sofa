@@ -16,5 +16,7 @@
         <file>icon/link.png</file>
         <file>icon/correct.png</file>
         <file>icon/invalid.png</file>
+        <file>icon/sofaLogo.png</file>
+        <file>icon/sofaLogoAlpha.png</file>
     </qresource>
 </RCC>

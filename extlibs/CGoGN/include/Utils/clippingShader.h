@@ -33,13 +33,15 @@
 #include <sstream>
 #include <vector>
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ClippingShader : public GLSLShader
+class CGoGN_UTILS_API ClippingShader : public GLSLShader
 {
 
 

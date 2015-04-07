@@ -165,12 +165,12 @@ void LennardJonesForceField<DataTypes>::addDForce(const core::MechanicalParams* 
 }
 
 template<class DataTypes>
-double LennardJonesForceField<DataTypes>::getPotentialEnergy (const core::MechanicalParams*, const DataVecCoord& d_x) const
+SReal LennardJonesForceField<DataTypes>::getPotentialEnergy (const core::MechanicalParams*, const DataVecCoord& d_x) const
 {
     const VecCoord& p1 = d_x.getValue();
 
 
-    double potentialEnergy = 0;
+    SReal potentialEnergy = 0;
 
     for (unsigned int ib=1; ib<p1.size(); ib++)
     {

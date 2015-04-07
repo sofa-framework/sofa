@@ -39,7 +39,7 @@ namespace behavior
 
 template<class DataTypes>
 PairInteractionConstraint<DataTypes>::PairInteractionConstraint(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
-    : endTime( initData(&endTime,(double)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
+    : endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
     , mstate1(initLink("object1", "First object to constrain"), mm1)
     , mstate2(initLink("object2", "Second object to constrain"), mm2)
 {

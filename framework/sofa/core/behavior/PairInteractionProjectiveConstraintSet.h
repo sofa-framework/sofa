@@ -68,7 +68,7 @@ protected:
 
     virtual ~PairInteractionProjectiveConstraintSet();
 public:
-    Data<double> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     virtual void init();

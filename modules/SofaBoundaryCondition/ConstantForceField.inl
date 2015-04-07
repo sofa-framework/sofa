@@ -53,7 +53,7 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , forces(initData(&forces, "forces", "applied forces at each point"))
     , force(initData(&force, "force", "applied force to all points if forces attribute is not specified"))
     , totalForce(initData(&totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
-    , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , arrowSizeCoef(initData(&arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
     , d_color(initData(&d_color, defaulttype::Vec4f(0.2f,0.9f,0.3f,1.0f), "showColor", "Color for object display"))
     , indexFromEnd(initData(&indexFromEnd,(bool)false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector"))
 {
@@ -135,13 +135,13 @@ void ConstantForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *
 }
 
 template <class DataTypes>
-double ConstantForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/, const DataVecCoord& x) const
+SReal ConstantForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*params*/, const DataVecCoord& x) const
 {
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     const VecCoord& _x = x.getValue();
     const Deriv f_end = (f.empty()? force.getValue() : f[f.size()-1]);
-    double e = 0;
+    SReal e = 0;
     unsigned int i = 0;
 
     if (!indexFromEnd.getValue())
@@ -188,7 +188,7 @@ template<class DataTypes>
 void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
-    double aSC = arrowSizeCoef.getValue();
+    SReal aSC = arrowSizeCoef.getValue();
 
     Deriv singleForce;
     if (totalForce.getValue()*totalForce.getValue() > 0.0)

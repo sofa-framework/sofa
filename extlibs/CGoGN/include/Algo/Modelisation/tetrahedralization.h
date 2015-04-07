@@ -30,6 +30,13 @@
 #include "Algo/Geometry/normal.h"
 #include <set>
 
+namespace sofa
+{
+namespace cgogn_plugin
+{
+class VolumeTopologyModifier;
+}
+}
 namespace CGoGN
 {
 
@@ -50,24 +57,24 @@ namespace Tetrahedralization
 template <typename PFP>
 class EarTriangulation
 {
-	typedef typename PFP::MAP MAP ;
-	typedef typename PFP::VEC3 VEC3 ;
+    typedef typename PFP::MAP MAP ;
+    typedef typename PFP::VEC3 VEC3 ;
 
-protected:
-	// forward declaration
-	class VertexPoly;
+public:
+    // forward declaration
+    class VertexPoly;
 
-	// multiset typedef for simple writing
-	typedef std::multiset<VertexPoly,VertexPoly> VPMS;
-	typedef typename VPMS::iterator VMPSITER;
-	typedef NoTypeNameAttribute<VMPSITER> EarAttr ;
+    // multiset typedef for simple writing
+    typedef std::multiset<VertexPoly,VertexPoly> VPMS;
+    typedef typename VPMS::iterator VMPSITER;
+    typedef NoTypeNameAttribute<VMPSITER> EarAttr ;
 
-	class VertexPoly
-	{
-	public:
-		Dart dart;
-		float angle;
-		float length;
+    class VertexPoly
+    {
+    public:
+        Dart dart;
+        float angle;
+        float length;
 
         VertexPoly()
         {}
@@ -83,34 +90,34 @@ protected:
         }
     };
 
-protected:
-	MAP& m_map;
 
-	VertexAutoAttribute<EarAttr, MAP> m_dartEars;
+    MAP& m_map;
 
-	VertexAttribute<VEC3, MAP> m_position;
+    VertexAutoAttribute<EarAttr, MAP> m_dartEars;
 
-	std::vector<Dart> m_resTets;
+    VertexAttribute<VEC3, MAP> m_position;
 
-	VPMS m_ears;
+    std::vector<Dart> m_resTets;
 
-	bool inTriangle(const VEC3& P, const VEC3& normal, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc);
+    VPMS m_ears;
 
-	void recompute2Ears(Dart d, const VEC3& normalPoly, bool convex);
+    bool inTriangle(const VEC3& P, const VEC3& normal, const VEC3& Ta, const VEC3& Tb, const VEC3& Tc);
 
-	float computeEarInit(Dart d, const VEC3& normalPoly, float& val);
+    void recompute2Ears(Dart d, const VEC3& normalPoly, bool convex);
+
+    float computeEarInit(Dart d, const VEC3& normalPoly, float& val);
 
 public:
 
-	EarTriangulation(MAP& map) : m_map(map), m_dartEars(map)
-	{
+    EarTriangulation(MAP& map) : m_map(map), m_dartEars(map)
+    {
         m_position = map.template getAttribute<VEC3, VERTEX, MAP>("position");
-	}
+    }
 
-//	void trianguleFace(Dart d, DartMarker& mark);
-	void trianguleFace(Dart d);
+    //	void trianguleFace(Dart d, DartMarker& mark);
+    void trianguleFace(Dart d);
 
-    void triangule();
+    //    void triangule();
 
     std::vector<Dart> getResultingTets() const { return m_resTets; }
 };

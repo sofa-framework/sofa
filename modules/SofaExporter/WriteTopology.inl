@@ -148,7 +148,7 @@ void WriteTopology::handleEvent(sofa::core::objectmodel::Event* event)
            )
             return;
 
-        double time = getContext()->getTime();
+        SReal time = getContext()->getTime();
 
         bool writeCurrent = false;
         if (nextTime<f_time.getValue().size())

@@ -110,7 +110,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
         simulation::Visitor::printNode("ComputeBoundingTree");
 #endif
         const bool continuous = intersectionMethod->useContinuous();
-        const double dt       = getContext()->getDt();
+        const SReal dt       = getContext()->getDt();
 
         sofa::helper::vector<CollisionModel*>::const_iterator it;
         const sofa::helper::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
