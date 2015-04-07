@@ -31,6 +31,7 @@
 #include <Topology/generic/dart.h>
 #include <Topology/generic/cells.h>
 #include <Eigen/Eigen>
+
 namespace CGoGN
 {
 
@@ -52,8 +53,8 @@ template <> inline std::string nameOfType(const sofa::defaulttype::Mat<24,24,flo
 template <> inline std::string nameOfType(const sofa::defaulttype::Mat<24,24,double>& /*v*/) { return "Mat<24,24,double>"; }
 template <> inline std::string nameOfType(const sofa::helper::fixed_array<sofa::defaulttype::Vec<3,float>,8>& /*v*/) { return "fixed_array<sVec<3,float>,8>f"; }
 template <> inline std::string nameOfType(const sofa::helper::fixed_array<sofa::defaulttype::Vec<3,double>,8>& /*v*/) { return "fixed_array<sVec<3,double>,8>f"; }
-
-
+template <> inline std::string nameOfType(const sofa::helper::fixed_array<sofa::helper::fixed_array<Dart,2>,6>& /*v*/) { return "sofa::helper::fixed_array<sofa::helper::fixed_array<Dart,2>,6>"; }
+template <> inline std::string nameOfType(const sofa::helper::fixed_array< Dart, 6 >&){ return "sofa::helper::fixed_array< Dart, 6 >";}
 template <> inline std::string nameOfType(const bool& /*v*/) { return "bool"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Mat4x4f& /*v*/) { return "Mat4x4f"; }
 template <> inline std::string nameOfType(const sofa::defaulttype::Mat4x4d& /*v*/) { return "Mat4x4d"; }
