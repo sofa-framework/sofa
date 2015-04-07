@@ -2742,7 +2742,6 @@ int Decompose<Real>::symmetricDiagonalization( const defaulttype::Mat<3,3,Real> 
 
 
 
-/// project a symmetric 3x3 matrix to the nearest PSD (symmetric, positive semi-definite)
 template<class Real>
 void Decompose<Real>::PSDProjection( defaulttype::Mat<3,3,Real> &A )
 {
@@ -2836,7 +2835,6 @@ inline void dsyev2(Real A, Real B, Real C, Real &rt1, Real &rt2,
 
 
 
-/// project a symmetric 2x2 matrix to the nearest PSD (symmetric, positive semi-definite)
 template<class Real>
 void Decompose<Real>::PSDProjection( defaulttype::Mat<2,2,Real> &A )
 {
