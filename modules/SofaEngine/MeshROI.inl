@@ -239,11 +239,11 @@ void MeshROI<DataTypes>::init()
     if (b[0] > b[3]) std::swap(b[0],b[3]);
     if (b[1] > b[4]) std::swap(b[1],b[4]);
     if (b[2] > b[5]) std::swap(b[2],b[5]);
-    f_box.setValue(b, true);
+    f_box.setValue(b);
     sout << "Bounding Box " << b << sendl;
 
     // fin perso : init de la mesh template
-    first.setValue(1, true); // perso
+    first.setValue(1); // perso
 
     addInput(&f_X0);
     addInput(&f_edges);
@@ -406,7 +406,7 @@ void MeshROI<DataTypes>::update()
 {
     if(first.getValue() || p_doUpdate.getValue() )
     {
-        first.setValue(false, true);
+        first.setValue(false);
 
         cleanDirty();
 
