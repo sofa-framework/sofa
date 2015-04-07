@@ -43,7 +43,8 @@ endif()
 
 add_definitions("-DSHADERPATH=\"${CGoGN_ROOT_DIR}/lib/Shaders/\"")
 add_definitions("-Werror=return-type")
-
+add_definitions("-DGLM_FORCE_RADIANS")
+add_definitions("-Wno-unused-local-typedef")
 IF (APPLE)
         add_definitions("-DCGOGN_APPLE")
 ENDIF ()
@@ -130,11 +131,14 @@ file(	GLOB_RECURSE
 		${CGoGN_ROOT_DIR}/include/Geometry/*.hpp
 )
 
-file(	GLOB_RECURSE
+file(	GLOB
 	shaders_src
         ${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.frag
         ${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.vert
         ${CGoGN_ROOT_DIR}/include/Utils/Shaders/*.geom
+        ${CGoGN_ROOT_DIR}/include/Utils/*.frag
+        ${CGoGN_ROOT_DIR}/include/Utils/*.vert
+        ${CGoGN_ROOT_DIR}/include/Utils/*.geom
 )
 
 add_executable( shader_to_h ${CGoGN_ROOT_DIR}/ThirdParty/Tools/shader_to_h.cpp )
