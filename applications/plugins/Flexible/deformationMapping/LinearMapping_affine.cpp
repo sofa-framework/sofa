@@ -41,7 +41,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(LinearMapping_affine);
+SOFA_DECL_CLASS(LinearMapping_affine)
 
 using namespace defaulttype;
 
