@@ -114,11 +114,12 @@ void BaseSequentialSolver::factor_impl(const system_type& system) {
 		schur_type schur(storage.data(), b.size, b.size);
 		
 		// temporary sparse mat, difficult to remove :-/
-        cmat tmp = JP.middleRows(b.offset, b.size) *
+        static cmat tmp; // try to improve matrix allocation
+        tmp = JP.middleRows(b.offset, b.size) *
             mapping_response.middleCols(b.offset, b.size);
 		
 		// fill constraint block
-		schur = tmp;
+        schur = tmp;
 		
 		// real symmetry = (schur - schur.transpose()).squaredNorm() / schur.size();
 		// assert( std::sqrt(symmetry) < 1e-8 );
@@ -363,7 +364,8 @@ int SequentialSolverClass = core::RegisterObject("Sequential Impulses solver").a
 static unsigned projection_bilateral(AssembledSystem::rmat& Q_bilat, AssembledSystem::rmat& Q_unil, const AssembledSystem& sys)
 {
     // flag which constraint are bilateral
-    vector<bool> bilateral( sys.n );
+    static vector<bool> bilateral;
+    bilateral.resize( sys.n );
     unsigned nb_bilaterals = 0;
 
     for(unsigned i=0, off=0, n=sys.compliant.size(); i < n; ++i)
@@ -464,7 +466,10 @@ bool SequentialSolver::LocalSubKKT::projected_primal_and_bilateral( AssembledSys
 
                 // compute J_unil and resize it
                 res.J.resize( res.n, res.m );
-                rmat tmp = Q_unil.transpose() * sys.J * P;
+
+                static rmat tmp; // try to improve matrix allocation
+
+                tmp = Q_unil.transpose() * sys.J * P;
                 for(unsigned i = 0; i < tmp.rows(); ++i)
                 {
                     res.J.startVec( i );
