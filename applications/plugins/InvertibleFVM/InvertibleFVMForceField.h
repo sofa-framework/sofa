@@ -108,7 +108,7 @@ protected:
      typedef vector< Col_Value > CompressedValue;
      typedef vector< CompressedValue > CompressedMatrix;
      CompressedMatrix _stiffnesses;
-     double m_potentialEnergy;*/
+     SReal m_potentialEnergy;*/
 
 
 
@@ -182,7 +182,7 @@ public:
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "getPotentialEnergy() not implemented" << sendl;
         return 0.0;

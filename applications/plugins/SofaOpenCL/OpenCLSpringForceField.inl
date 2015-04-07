@@ -84,9 +84,9 @@ public:
     {   StiffSpringForceFieldOpenCL3f_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
     static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3f_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2, dfdx); }
-    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor)
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, SReal factor)
     {   StiffSpringForceFieldOpenCL3f_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, (float)factor); }
-    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor)
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, SReal factor)
     {   StiffSpringForceFieldOpenCL3f_addExternalDForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, dx1, x1, offset2, dx2, x2, dfdx, (float)factor); }
 };
 
@@ -102,9 +102,9 @@ public:
     {   StiffSpringForceFieldOpenCL3f1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
     static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3f1_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2, dfdx); }
-    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor)
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, SReal factor)
     {   StiffSpringForceFieldOpenCL3f1_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
-    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor)
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, SReal factor)
     {   StiffSpringForceFieldOpenCL3f1_addExternalDForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, dx1, x1, offset2, dx2, x2, dfdx, factor); }
 };
 
@@ -122,9 +122,9 @@ public:
     {   StiffSpringForceFieldOpenCL3d_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
     static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3d_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2, dfdx); }
-    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor)
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, SReal factor)
     {   StiffSpringForceFieldOpenCL3d_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
-    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor)
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, SReal factor)
     {   StiffSpringForceFieldOpenCL3d_addExternalDForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, dx1, x1, offset2, dx2, x2, dfdx, factor); }
 };
 
@@ -140,9 +140,9 @@ public:
     {   StiffSpringForceFieldOpenCL3d1_addForce(nbVertex, nbSpringPerVertex, springs, f, x, v, dfdx); }
     static void addExternalForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer x1, const _device_pointer v1, unsigned int offset2, const _device_pointer x2, const _device_pointer v2, _device_pointer dfdx)
     {   StiffSpringForceFieldOpenCL3d1_addExternalForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, x1, v1, offset2, x2, v2, dfdx); }
-    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, double factor)
+    static void addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, SReal factor)
     {   StiffSpringForceFieldOpenCL3d1_addDForce(nbVertex, nbSpringPerVertex, springs, f, dx, x, dfdx, factor); }
-    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, double factor)
+    static void addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const _device_pointer springs, unsigned int offset1, _device_pointer f1, const _device_pointer dx1, const _device_pointer x1, unsigned int offset2, const _device_pointer dx2, const _device_pointer x2, const _device_pointer dfdx, SReal factor)
     {   StiffSpringForceFieldOpenCL3d1_addExternalDForce(nbVertex, nbSpringPerVertex, springs, offset1, f1, dx1, x1, offset2, dx2, x2, dfdx, factor); }
 };
 
@@ -348,7 +348,7 @@ void SpringForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void SpringForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::addDForce(Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/)
+void SpringForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::addDForce(Main* m, bool stiff, VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, SReal kFactor, SReal /*bFactor*/)
 {
     DEBUG_TEXT("SpringForceFieldInternalData::addDForce");
 

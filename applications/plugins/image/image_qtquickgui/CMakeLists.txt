@@ -20,6 +20,8 @@ set(HEADER_FILES
 set(QML_FILES
                 data/qml/SofaDataTypes/qmldir
                 data/qml/SofaDataTypes/DataType_imageplane.qml
+                data/qml/SofaInteractors/qmldir
+                data/qml/SofaInteractors/UserInteractor_Image.qml
 )
 
 set(QRC_FILES

@@ -49,7 +49,7 @@ set(HEADER_FILES
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
-    #preconditioner/IncompleteCholeskyPreconditioner.h
+    preconditioner/IncompleteCholeskyPreconditioner.h
     preconditioner/CompliantJacobiPreconditioner.h
 
     assembly/AssemblyHelper.h
@@ -71,6 +71,7 @@ set(HEADER_FILES
     constraint/CoulombConstraint.h
     constraint/UnilateralConstraint.h
     constraint/ResistanceConstraint.h
+    constraint/ClosureConstraint.h
 
     constraint/BaseConstraintValue.h
     constraint/Stabilization.h
@@ -105,7 +106,10 @@ set(HEADER_FILES
     utils/se3.h
     utils/sparse.h
     utils/thread_variable.h
-
+	utils/anderson.h
+	utils/sub_kkt.h
+	utils/sub_kkt.inl
+	
     utils/cg.h
     utils/preconditionedcg.h
     utils/minres.h
@@ -119,6 +123,7 @@ set(SOURCE_FILES
     misc/CompliantSolverMerger.cpp
     misc/RigidMass.cpp
     misc/FailNode.cpp
+	misc/python.cpp
 
     compliance/UniformCompliance.cpp
     compliance/DiagonalCompliance.cpp
@@ -157,7 +162,7 @@ set(SOURCE_FILES
 	numericalsolver/ModulusSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
-    #preconditioner/IncompleteCholeskyPreconditioner.cpp
+    preconditioner/IncompleteCholeskyPreconditioner.cpp
     preconditioner/CompliantJacobiPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp
@@ -171,6 +176,7 @@ set(SOURCE_FILES
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
     constraint/ResistanceConstraint.cpp
+    constraint/ClosureConstraint.cpp
 
     constraint/ConstraintValue.cpp
     constraint/Stabilization.cpp
@@ -184,7 +190,10 @@ set(SOURCE_FILES
     contact/FrictionCompliantContact.cpp
     contact/PenalityCompliantContact.cpp
 	
-	controller/CompliantSleepController.cpp)
+	controller/CompliantSleepController.cpp
+
+   	utils/anderson.cpp
+   	utils/sub_kkt.cpp)
 
 set(README_FILES Compliant.txt)
 

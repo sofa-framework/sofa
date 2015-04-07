@@ -49,6 +49,7 @@
 #include <fstream>
 #include <zlib.h>
 
+#include "Utils/dll.h"
 
 #ifdef GZSTREAM_NAMESPACE
 namespace GZSTREAM_NAMESPACE {
@@ -58,7 +59,7 @@ namespace GZSTREAM_NAMESPACE {
 // Internal classes to implement gzstream. See below for user classes.
 // ----------------------------------------------------------------------------
 
-class gzstreambuf : public std::streambuf {
+class CGoGN_UTILS_API gzstreambuf : public std::streambuf {
 private:
     static const int bufferSize = 47+256;    // size of data buff
     // totals 512 bytes under g++ for igzstream at the end.
@@ -87,16 +88,29 @@ public:
     virtual int     sync();
 };
 
-class gzstreambase : virtual public std::ios {
+class CGoGN_UTILS_API gzstreambase : virtual public std::ios {
 protected:
     gzstreambuf buf;
 public:
-    gzstreambase() { init(&buf); }
-    gzstreambase( const char* name, int open_mode);
-    ~gzstreambase();
-    void open( const char* name, int open_mode);
-    void close();
-    gzstreambuf* rdbuf() { return &buf; }
+    inline gzstreambase() { init(&buf); }
+    gzstreambase( const char* name, int open_mode)
+    {
+        init( &buf);
+        open( name, open_mode);
+    }
+    virtual ~gzstreambase(){
+        buf.close();
+    }
+    void open( const char* name, int open_mode) {
+        if ( ! buf.open( name, open_mode))
+            clear( rdstate() | std::ios::badbit);
+    }
+    void close() {
+        if ( buf.is_open())
+            if ( ! buf.close())
+                clear( rdstate() | std::ios::badbit);
+    }
+    inline gzstreambuf* rdbuf() { return &buf; }
 };
 
 // ----------------------------------------------------------------------------
@@ -105,7 +119,7 @@ public:
 // function interface of the zlib. Files are compatible with gzip compression.
 // ----------------------------------------------------------------------------
 
-class igzstream : public gzstreambase, public std::istream {
+class CGoGN_UTILS_API igzstream : public gzstreambase, public std::istream {
 public:
     igzstream() : std::istream( &buf) {} 
     igzstream( const char* name, int open_mode = std::ios::in)
@@ -116,7 +130,7 @@ public:
     }
 };
 
-class ogzstream : public gzstreambase, public std::ostream {
+class CGoGN_UTILS_API ogzstream : public gzstreambase, public std::ostream {
 public:
     ogzstream() : std::ostream( &buf) {}
     ogzstream( const char* name, int mode = std::ios::out)

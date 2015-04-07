@@ -86,7 +86,7 @@ public:
 
     /// Rebuild the system using a mass and force factor
     /// Experimental API used to investigate convergence issues.
-    virtual void rebuildSystem(double /*massFactor*/, double /*forceFactor*/){}
+    virtual void rebuildSystem(SReal /*massFactor*/, SReal /*forceFactor*/){}
 
     /// Indicate if the solver update the system in parallel
     virtual bool isAsyncSolver() { return false; }
@@ -122,7 +122,7 @@ public:
     /// @param J the matrix J to use
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, SReal fact)
     {
         SOFA_UNUSED(result);
         SOFA_UNUSED(J);
@@ -135,7 +135,7 @@ public:
     /// @param result the variable where the result will be added
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool buildComplianceMatrix(defaulttype::BaseMatrix* result, double fact)
+    virtual bool buildComplianceMatrix(defaulttype::BaseMatrix* result, SReal fact)
     {
         SOFA_UNUSED(result);
         SOFA_UNUSED(fact);
@@ -144,7 +144,7 @@ public:
     }
 
     /// Apply the contactforce dx = Minv * J * f and store the resut in VecId
-    virtual void applyContactForce(const defaulttype::BaseVector* /*f*/,double /*positionFactor*/,double /*velocityFactor*/) {
+    virtual void applyContactForce(const defaulttype::BaseVector* /*f*/,SReal /*positionFactor*/,SReal /*velocityFactor*/) {
         serr << "Error applyContactForce has not been implemented" << sendl;
     }
 
@@ -162,7 +162,7 @@ public:
     /// @param J the matrix J to use
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, SReal fact)
     {
         SOFA_UNUSED(result);
         SOFA_UNUSED(J);

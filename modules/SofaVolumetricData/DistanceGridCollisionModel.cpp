@@ -296,7 +296,7 @@ void RigidDistanceGridCollisionModel::draw(const core::visual::VisualParams* ,in
     {
         glPushMatrix();
         // float m[16];
-        // (*rigid->getX())[index].writeOpenGlMatrix( m );
+        // (*rigid->read(sofa::core::ConstVecCoordId::position())->getValue())[index].writeOpenGlMatrix( m );
         // glMultMatrixf(m);
         Matrix4 m;
         m.identity();

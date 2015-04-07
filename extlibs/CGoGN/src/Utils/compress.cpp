@@ -51,6 +51,8 @@ void zlibVTUWriteCompressed( unsigned char* input, unsigned int nbBytes, std::of
 	strm.opaque = Z_NULL;
 	int ret = deflateInit(&strm, level);
 	assert(ret == Z_OK); 
+	if (ret != Z_OK)
+		return;
 
 	unsigned char* bufferOut = new unsigned char[nbBytes];
 	unsigned char* ptrBufferOut = bufferOut;
@@ -85,7 +87,7 @@ void zlibVTUWriteCompressed( unsigned char* input, unsigned int nbBytes, std::of
 	}
 	deflateEnd(&strm);
 
-	header[0] = header.size()-3;
+	header[0] = (unsigned int)(header.size()-3);
 	header[1] = CHUNK;
 	if (remain != 0)
 		header[2] = remain +CHUNK;

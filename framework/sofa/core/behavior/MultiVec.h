@@ -119,44 +119,44 @@ public:
     }
 
     /// v = a*f
-    void eq(MyMultiVecId a, double f)
+    void eq(MyMultiVecId a, SReal f)
     {
         vop->v_eq(v, a, f);
     }
 
     /// v += a*f
-    void peq(AllMultiVecId a, double f=1.0)
+    void peq(AllMultiVecId a, SReal f=1.0)
     {
         vop->v_peq(v, a, f);
     }
 
     /// v *= f
-    void teq(double f)
+    void teq(SReal f)
     {
         vop->v_teq(v, f);
     }
 
     /// v = a+b*f
-    void eq(AllMultiVecId a, AllMultiVecId b, double f=1.0)
+    void eq(AllMultiVecId a, AllMultiVecId b, SReal f=1.0)
     {
         vop->v_op(v, a, b, f);
     }
 
     /// \return v.a
-    double dot(MyMultiVecId a)
+    SReal dot(MyMultiVecId a)
     {
         vop->v_dot(v, a);
         return vop->finish();
     }
 
     /// nullify values below given threshold
-    void threshold( double threshold )
+    void threshold( SReal threshold )
     {
         vop->v_threshold(v, threshold);
     }
 
     /// \return sqrt(v.v)
-    double norm()
+    SReal norm()
     {
         vop->v_dot(v, v);
         return sqrt( vop->finish() );
@@ -197,19 +197,19 @@ public:
     }
 
     /// v *= f
-    void operator*=(double f)
+    void operator*=(SReal f)
     {
         teq(f);
     }
 
     /// v /= f
-    void operator/=(double f)
+    void operator/=(SReal f)
     {
         teq(1.0/f);
     }
 
     /// return the scalar product dot(v,a)
-    double operator*(MyMultiVecId a)
+    SReal operator*(MyMultiVecId a)
     {
         return dot(a);
     }

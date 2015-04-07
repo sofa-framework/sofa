@@ -83,7 +83,7 @@ void CollisionAnimationLoop::computeCollision(const core::ExecParams* params)
     }
 }
 
-void CollisionAnimationLoop::integrate(const core::ExecParams* params, double dt)
+void CollisionAnimationLoop::integrate(const core::ExecParams* params, SReal dt)
 {
 
     {

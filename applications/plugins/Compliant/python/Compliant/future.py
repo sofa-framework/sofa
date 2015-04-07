@@ -1,23 +1,42 @@
-
-import patch
-
-type_dict = {}
-
-def cast( obj ):
-    '''cast an object into its specialized handling class, as decorated by
-    sofa_object.
-
-    '''
-
-    # TODO fancy template regexp ?
-    try:
-        cls = type_dict[obj.getClassName()][obj.getTemplateName()]
-        return patch.instance(obj, cls)
-    except AttributeError:
-        return obj
+import Sofa
+import ctypes
 
 
+class PyObject(ctypes.Structure):
+    _fields_ = (
+        ("ob_refcnt", ctypes.c_ssize_t),
+        ("ob_type", ctypes.py_object),
+    )
 
+class SlotsPointer(PyObject):
+    _fields_ = [('dict', ctypes.POINTER(PyObject))]
+
+
+# stolen from
+# http://stackoverflow.com/questions/6738987/extension-method-for-python-built-in-types
+def class_dict( klass ):
+    '''proxy for class __dict__ through CPython. not quite
+    pythonic.'''
+
+    name = klass.__name__
+    slots = getattr(klass, '__dict__')
+
+    pointer = SlotsPointer.from_address(id(slots))
+
+    # not exactly sure why we need this dictionary but hey, it works
+    namespace = {}
+
+    ctypes.pythonapi.PyDict_SetItem(
+        ctypes.py_object(namespace),
+        ctypes.py_object(name),
+        pointer.dict,
+    )
+
+    return namespace[name]
+    
+
+
+    
 def extends(base):
     '''decorator for SofaPython class extensions. 
 
@@ -26,252 +45,85 @@ def extends(base):
 
     '''
     def res(cls):
-        patch.class_dict( base ).update( cls.__dict__ )
+
+        # TODO we should filter crap such as '__module__' 
+        class_dict( base ).update( cls.__dict__ )
+
+        # print patch.class_dict( base )
         return cls
 
     return res
 
 
 
-def sofa_class(classname,
-               template = ''):
-    '''decorator for specialized classes.
 
-    use this to define specialized classes for handling
-    e.g. MechanicalObject<Vec3d>. 
 
-    objects obtained through Node.createObject or Node.getObject will
-    be wrapped according to their classname/templatename.
-
-    '''
-    
-    def res( cls ):
-        type_dict.setdefault(classname, {})[template] = cls
-        return cls
-
-    return res
-
-# actual wrapping starts here
-# should probably go somewhere else
-
-import Sofa
-
-@extends(Sofa.Node)
-class Node:
-    _createObject = Sofa.Node.createObject
-    _getObject = Sofa.Node.getObject
-
-    def createObject(self, typename, **kwargs):
-        return cast( Node._createObject(self, typename, **kwargs) )
-
-    def getObject(self, name):
-        return cast( Node._getObject(self, name) )
+# PySPtr and friends
+class SofaObject(PyObject):
+    _fields_ = [
+        ('obj', ctypes.c_void_p)
+    ]
     
 
 
-@extends(Sofa.BaseMechanicalState)
-class BaseMechanicalState:
+@extends(Sofa.Base)
+class Base:
+    
+    @property
+    def _as_parameter_(self):
+        '''use sofa objects in c functions as Base*'''
+        return SofaObject.from_address( id(self) ).obj
+    
 
-    _getattr = Sofa.Base.__getattribute__
-    _setattr = Sofa.Base.__setattr__
 
-    def __getattribute__(self, name):
-        # overrrides data access
-        if name in BaseMechanicalState.__dict__:
-            return object.__getattribute__(self, name)
-        else:
-            return BaseMechanicalState._getattr(self, name)
+class Plugin(object):
 
-    def __setattr__(self, name, value):
-        # overrrides data access
-        if name in BaseMechanicalState.__dict__:
-            return BaseMechanicalState.__dict__[name].__set__(self, value)
-        else:
-            return BaseMechanicalState._setattr(self, name, value)
-
+    def __init__(self, name):
+        directory = Sofa.build_dir()
         
-    # wrap state vectors as numpy arrays
-    @property
-    def position(self):
-        return np.array( BaseMechanicalState._getattr(self, 'position') )
+        import platform
+        system = platform.system()
+        extension = 'so'
 
-
-    @position.setter
-    def position(self, value):
-        BaseMechanicalState._setattr(self, 'position', str(value))
-
-
-    @property
-    def velocity(self):
-        return np.array( BaseMechanicalState._getattr(self, 'velocity') )
-
-
-    @velocity.setter
-    def velocity(self, value):
-        BaseMechanicalState._setattr(self, 'velocity', str(value))
-
-
-    @property
-    def force(self):
-        return np.array( BaseMechanicalState._getattr(self, 'force') )
-
-    @force.setter
-    def force(self, value):
-        BaseMechanicalState._setattr(self, 'force', str(value))
-    
-
-import numpy as np
-
-# magic function to get sofa-readable string output for numpy arrays
-np.set_string_function( lambda x: ' '.join( map(str, x)), repr = False )
-
-
-@sofa_class('MechanicalObject', 'Rigid3f')
-@sofa_class('MechanicalObject', 'Rigid3d')
-class Rigid3Object(Sofa.BaseMechanicalState):
-
-    def __new__(cls, node, **kwargs):
-
-        kwargs.setdefault('position', Rigid3())
-        kwargs.setdefault('template', 'Rigid')
-        kwargs.setdefault('name', 'dofs')
+        if system == 'Windows':
+            extension = 'dll'
+        elif system == 'Darwin':
+            extension = 'dylib'
         
-        return node.createObject('MechanicalObject',
-                                 **kwargs)
-    
-    @property
-    def position(self):
-        '''a view on rigid positions'''
-        return super(Rigid3Object, self).position.view(dtype = Rigid3)
-
-
-
-
-
-# datatypes
-
-class Rigid3(np.ndarray):
-
-    @property
-    def center(self):
-        return self[:3]
-
-    @center.setter
-    def center(self, value):
-        self[:3] = value
-
-    @property
-    def orient(self):
-        return self[3:].view(Quaternion)
-
-    @orient.setter
-    def orient(self, value):
-        self[3:] = value
-
-    def __new__(cls, *args):
-        return np.ndarray.__new__(cls, 7)
+        prefix = 'lib'
+        suffix = extension
         
-    def __init__(self):
-        self[-1] = 1
-        self[:6] = 0
+        self.dll = ctypes.CDLL('{}/lib/{}{}.{}'.format(directory, prefix, name, suffix))
 
-    def inv(self):
-        res = Rigid3()
-        res.orient = self.orient.inv()
-        res.center = -res.orient.rotate(self.center)
+        self.dll.argtypes.argtypes = [ type(self.dll.argtypes) ]
+        self.dll.argtypes.restype = ctypes.c_char_p
+
+        self.dll.restype.argtypes = [ type(self.dll.restype) ]
+        self.dll.restype.restype = ctypes.c_char_p
+
+    def __getattr__(self, name):
+
+        try:
+            res = getattr(self.dll, name)
+        except:
+            print 'error: function "{}" not found in plugin'.format(name)
+            raise
+
+        try:
+            if not res.argtypes:
+                res.argtypes = eval(self.dll.argtypes( res ), ctypes.__dict__ )
+                
+            if not res.restype:
+                res.restype = eval(self.dll.restype( res ), ctypes.__dict__)
+                
+        except TypeError:
+            print 'error computing argtypes/restypes for',
+            print name,
+            print 'did you register it using python::add ?'
+            raise
         return res
-
-    def __mul__(self, other):
-        res = Rigid3()
-
-        res.orient = self.orient * other.orient
-        res.center = self.center + self.orient.rotate(other.center)
         
-        return res
 
 
-    def __call__(self, x):
-        '''applies rigid transform to vector x'''
-        return self.center + self.orient(x)
-    
+from types import Rigid, Quaternion
 
-import math
-import sys
-
-class Quaternion(np.ndarray):
-    def __new__(cls, *args):
-        return np.ndarray.__new__(cls, 4)
-        
-    def __init__(self):
-        '''identity quaternion'''
-        self.real = 1
-        self.imag = 0
-        
-    def inv(self):
-        '''inverse'''
-        return self.conj() / self.dot(self)
-    
-    def conj(self):
-        '''conjugate'''
-        res = Quaternion()
-        res.real = self.real
-        res.imag = -self.imag
-
-        return res
-
-    @property
-    def real(self): return self[-1]
-
-    @real.setter
-    def real(self, value): self[-1] = value
-
-    @property
-    def imag(self): return self[:3]
-
-    @imag.setter
-    def imag(self, value): self[:3] = value
-
-    def normalize(self):
-        '''normalize quaternion'''
-        self /= math.sqrt( self.dot(self) )
-
-    def flip(self):
-        '''flip quaternion in the real positive halfplane, if needed'''
-        if self.real < 0: self = -self
-
-    def __mul__(self, other):
-        '''quaternion product'''
-        res = Quaternion()
-        res.real = self.real * other.real - self.imag.dot(other.imag)
-        res.imag = self.real * other.imag + other.real * self.imag + np.cross(self.imag, other.imag)
-        
-        return res
-         
-
-    def __call__(self, x):
-        '''rotate a vector. self should be normalized'''
-        
-        tmp = Quaternion()
-        tmp.real = 0
-        tmp.imag = x
-
-        return (self * tmp * self.conj()).imag
-    
-    @staticmethod
-    def exp(x):
-        '''quaternion exponential (doubled)'''
-
-        theta = np.linalg.norm(x)
-
-        res = Quaternion()
-        
-        if math.fabs(theta) < sys.float_info.epsilon:
-            return res
-
-        s = math.sin(theta / 2.0)
-        c = math.cos(theta / 2.0)
-
-        res.real = c
-        res.imag = x * (s / theta)
-
-        return res

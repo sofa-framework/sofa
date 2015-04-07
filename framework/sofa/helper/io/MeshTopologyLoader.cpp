@@ -59,9 +59,9 @@ bool MeshTopologyLoader::loadObj(const char *filename)
     setNbPoints((int)mesh->getVertices().size());
     for (size_t i=0; i<mesh->getVertices().size(); i++)
     {
-        addPoint((double)mesh->getVertices()[i][0],
-                (double)mesh->getVertices()[i][1],
-                (double)mesh->getVertices()[i][2]);
+        addPoint((SReal)mesh->getVertices()[i][0],
+                (SReal)mesh->getVertices()[i][1],
+                (SReal)mesh->getVertices()[i][2]);
     }
 
     const vector< vector < vector <int> > > & facets = mesh->getFacets();
@@ -135,9 +135,9 @@ bool MeshTopologyLoader::loadStl(const char *filename)
     
     for (size_t i=0; i<mesh->getVertices().size(); i++)
     {
-        addPoint((double)mesh->getVertices()[i][0],
-                (double)mesh->getVertices()[i][1],
-                (double)mesh->getVertices()[i][2]);
+        addPoint((SReal)mesh->getVertices()[i][0],
+                (SReal)mesh->getVertices()[i][1],
+                (SReal)mesh->getVertices()[i][2]);
     }
     for (size_t i=0; i<facets.size(); i++)
     {

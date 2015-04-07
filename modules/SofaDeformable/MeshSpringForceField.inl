@@ -47,13 +47,6 @@ MeshSpringForceField<DataTypes>::~MeshSpringForceField()
 {
 }
 
-template <class DataTypes>
-double MeshSpringForceField<DataTypes>::getPotentialEnergy() const
-{
-    serr<<"MeshSpringForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
-    return 0;
-}
-
 template<class DataTypes>
 void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping)
 {

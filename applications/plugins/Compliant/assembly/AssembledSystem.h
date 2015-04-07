@@ -33,9 +33,6 @@ namespace linearsolver {
 
 class SOFA_Compliant_API AssembledSystem : public utils::eigen_types {
 public:
-
-	// makes it easier to filter constraint rows
-	typedef rmat mat;
 	
 	// TODO protect m/n ?
 
@@ -56,7 +53,7 @@ public:
 				
     // ode matrix, compliance, mapping and projection
 	// matrices
-    mat H,
+    rmat H,
         C, J,
         P;
 

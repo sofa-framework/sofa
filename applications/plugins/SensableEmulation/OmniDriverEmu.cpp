@@ -142,7 +142,7 @@ void OmniDriverEmu::init()
 
 
 /**
- function that is use to emulate a haptic device by interpolating the position of the tool between several points.
+ function that is used to emulate a haptic device by interpolating the position of the tool between several points.
 */
 void *hapticSimuExecute( void *ptr )
 {
@@ -251,11 +251,18 @@ void *hapticSimuExecute( void *ptr )
     double timeCorrection = 0.1 * requiredTime;
     int timeToSleep;
 
+    int oneTimeMessage = 0;
     // loop that updates the position tool.
     while (true)
     {
         if (omniDrv->executeAsynchro)
         {
+            if (oneTimeMessage == 1)
+            {
+                oneTimeMessage = 0;
+            }
+
+
             startTime = double(omniDrv->thTimer->getTime());
 
 
@@ -363,7 +370,11 @@ void *hapticSimuExecute( void *ptr )
         }
         else
         {
-            std::cout << "Running Asynchro without action" << std::endl;
+            if (oneTimeMessage == 0)
+            {
+                std::cout << "Running Asynchro without action" << std::endl;
+                oneTimeMessage = 1;
+            }
 #ifndef WIN32
             usleep(10000);
 #else
@@ -564,7 +575,6 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
             std::cout << "Test handle event "<< std::endl;
         }
 
-        std::cout << "test handle event "<< std::endl;
         //getData(); // copy data->servoDeviceData to gDeviceData
         //if (!simulateTranslation.getValue()) {
         copyDeviceDataCallback(&data);
@@ -647,7 +657,6 @@ void OmniDriverEmu::handleEvent(core::objectmodel::Event *event)
                 setDataValue();
                 //this->reinitVisual();
             }
-            executeAsynchro=true;
 
             executeAsynchro = true;
         }

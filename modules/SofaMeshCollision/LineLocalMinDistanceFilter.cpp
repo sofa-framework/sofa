@@ -266,7 +266,7 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned 
     //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())
     //if(mstateVec3f != NULL)
     //{
-    //	lInfo.setPositionFiltering(mstateVec3f->getX());
+    //	lInfo.setPositionFiltering(mstateVec3f->read(sofa::core::ConstVecCoordId::position())->getValue());
     //}
 }
 
@@ -291,7 +291,7 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned i
     //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())
     //if(mstateVec3f != NULL)
     //{
-    //	lInfo.setPositionFiltering(mstateVec3f->getX());
+    //	lInfo.setPositionFiltering(mstateVec3f->read(sofa::core::ConstVecCoordId::position())->getValue());
     //}
 
 }

@@ -73,17 +73,17 @@ public:
     /**
      * @brief Get the device X coordinate
      */
-    double getPosX(void) const {return m_position[0];};
+    SReal getPosX(void) const {return m_position[0];}
 
     /**
      * @brief Get the device Y coordinate
      */
-    double getPosY(void) const {return m_position[1];};
+    SReal getPosY(void) const {return m_position[1];}
 
     /**
      * @brief Get the device Z coordinate
      */
-    double getPosZ(void) const {return m_position[2];};
+    SReal getPosZ(void) const {return m_position[2];}
 
     /**
      * @brief Get the device coordinates.

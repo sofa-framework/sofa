@@ -41,7 +41,7 @@ namespace sofa
 namespace simulation
 {
 
-UpdateMappingEndEvent::UpdateMappingEndEvent(double dt)
+UpdateMappingEndEvent::UpdateMappingEndEvent(SReal dt)
     : sofa::core::objectmodel::Event()
     , dt(dt)
 {

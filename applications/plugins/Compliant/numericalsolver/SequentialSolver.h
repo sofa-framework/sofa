@@ -1,5 +1,5 @@
-#ifndef COMPLIANT_SEQUENTIALSOLVER_H
-#define COMPLIANT_SEQUENTIALSOLVER_H
+#ifndef COMPLIANT_BaseSequentialSolver_H
+#define COMPLIANT_BaseSequentialSolver_H
 
 
 // #include "utils/debug.h"
@@ -18,34 +18,37 @@ namespace component {
 namespace linearsolver {
 
 /// Sequential impulse/projected block gauss-seidel kkt solver
-class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
+class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
   public:
 
-	SOFA_CLASS(SequentialSolver, IterativeSolver);
+    SOFA_ABSTRACT_CLASS(BaseSequentialSolver, IterativeSolver);
 	
-	SequentialSolver();
+    BaseSequentialSolver();
 
 	virtual void factor(const system_type& system);
-	
-	virtual void solve(vec& x,
-	                   const system_type& system,
+
+    virtual void solve(vec& x,
+                       const system_type& system,
                        const vec& rhs) const;
 
-	virtual void correct(vec& x,
-						 const system_type& system,
-						 const vec& rhs,
-						 real damping) const;
+    virtual void correct(vec& x,
+                         const system_type& system,
+                         const vec& rhs,
+                         real damping) const;
 
 	virtual void init();
 
-	Data<SReal> omega;
+    Data<SReal> omega;
 
   protected:
 
 	virtual void solve_impl(vec& x,
 							const system_type& system,
 							const vec& rhs,
-							bool correct) const;
+                            bool correct) const;
+
+    virtual void factor_impl(const system_type& system);
+
 
     // performs a single iteration
     SReal step(vec& lambda,
@@ -75,29 +78,96 @@ class SOFA_Compliant_API SequentialSolver : public IterativeSolver {
 	
 	typedef std::vector<block> blocks_type;
 	blocks_type blocks;
-	
-    virtual void fetch_blocks(const system_type& system);
 
-	// constraint responses
-	typedef Eigen::Matrix< system_type::real, Eigen::Dynamic, Eigen::Dynamic > dense_matrix;
-	typedef Eigen::LDLT< dense_matrix > inverse_type;
+    void fetch_blocks(const system_type& system);
+
+    // constraint responses
+    typedef Eigen::LDLT< dmat > inverse_type;
 
 	// blocks inverse
 	typedef std::vector< inverse_type > blocks_inv_type;
 	blocks_inv_type blocks_inv;
 	
 	// blocks factorization
-	typedef Eigen::Map<dense_matrix> schur_type;
+    typedef Eigen::Map<dmat> schur_type;
 	void factor_block(inverse_type& inv, const schur_type& schur);
-	
+
 	// blocks solve
 	typedef Eigen::Map< vec > chunk_type;
-	virtual void solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const;
-	
-  protected:
+    void solve_block(chunk_type result, const inverse_type& inv, chunk_type rhs) const;
+
 
 
 };
+
+
+
+/// Projected block gauss-seidel kkt solver with schur complement on both dynamics+bilateral constraints
+/// TODO move this as an option in BaseSequentialSolver, so it can be used by derived solvers (eg NNCGSolver)
+class SOFA_Compliant_API SequentialSolver : public BaseSequentialSolver {
+
+protected:
+
+    // let's play with matrices
+    struct LocalSubKKT : public SubKKT
+    {
+        // kkt with projected primal variables and bilateral constraints
+        // excludes non bilateral constraints
+        bool projected_primal_and_bilateral( AssembledSystem& res,
+                                  const AssembledSystem& sys,
+                                  real eps = 0,
+                                  bool only_lower = false);
+
+
+        // reorder global (primal,constraint) to projected (primal,bilateral,non-bilateral) order
+        void toLocal(vec& local, const vec& global ) const;
+        // reorder projected (primal,bilateral,non-bilateral) to global (primal,constraint) order
+        void fromLocal( vec& global, const vec& local ) const;
+
+    protected:
+
+        // non-bilateral constraints selection matrix
+        rmat Q_unil;
+    };
+
+
+public:
+
+    SOFA_CLASS(SequentialSolver, BaseSequentialSolver);
+
+    SequentialSolver();
+
+    Data<bool> d_iterateOnBilaterals;
+    Data<SReal> d_regularization;
+
+    virtual void factor(const system_type& system);
+
+    virtual void solve(vec& x,
+                       const system_type& system,
+                       const vec& rhs) const;
+
+    virtual void correct(vec& x,
+                         const system_type& system,
+                         const vec& rhs,
+                         real damping) const;
+
+protected:
+
+
+    system_type m_localSystem; // a local AssembledSystem with H=(primal,bilateral), J=J_unil, P=identity (H already filtered)
+    LocalSubKKT m_localSub; // to build m_localSystem
+
+
+    void solve_local(vec& x,
+                    const system_type& system,
+                    const vec& rhs,
+                    bool correct) const;
+
+    virtual void fetch_unilateral_blocks(const system_type& system);
+
+};
+
+
 
 }
 }

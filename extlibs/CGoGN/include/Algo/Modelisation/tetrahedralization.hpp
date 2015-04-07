@@ -252,31 +252,31 @@ void EarTriangulation<PFP>::trianguleFace(Dart d)
     m_ears.clear();
 }
 
-template<typename PFP>
-void EarTriangulation<PFP>::triangule()
-{
-    //	DartMarker m(m_map, thread);
-    //
-    //	for(Dart d = m_map.begin(); d != m_map.end(); m_map.next(d))
-    //	{
-    //		if(!m.isMarked(d))
-    //		{
-    //			Dart e = m_map.template phi<111>(d);
-    //			if (e!=d)
-    //				trianguleFace(d, m);
-    //		}
-    //	}
-    //	m.unmarkAll();
+//template<typename PFP>
+//void EarTriangulation<PFP>::triangule()
+//{
+//    //	DartMarker m(m_map, thread);
+//    //
+//    //	for(Dart d = m_map.begin(); d != m_map.end(); m_map.next(d))
+//    //	{
+//    //		if(!m.isMarked(d))
+//    //		{
+//    //			Dart e = m_map.template phi<111>(d);
+//    //			if (e!=d)
+//    //				trianguleFace(d, m);
+//    //		}
+//    //	}
+//    //	m.unmarkAll();
 
-    TraversorF<typename PFP::MAP> trav(m_map);
+//    TraversorF<typename PFP::MAP> trav(m_map);
 
-    for(Dart d = trav.begin(); d != trav.end(); d = trav.next())
-    {
-        Dart e = m_map.template phi<111>(d);
-        if (e!=d)
-            trianguleFace(d);
-    }
-}
+//    for(Dart d = trav.begin(); d != trav.end(); d = trav.next())
+//    {
+//        Dart e = m_map.template phi<111>(d);
+//        if (e!=d)
+//            trianguleFace(d);
+//    }
+//}
 
 //template <typename PFP>
 //void hexahedronToTetrahedron(typename PFP::MAP& map, Dart d)

@@ -712,7 +712,8 @@ struct Assembly_test : public CompliantSolver_test
         simulation::Node::SPtr particleOnRigid = rigid->createChild("particleOnRigid");
         MechanicalObject3::SPtr particleOnRigidDOF = addNew<MechanicalObject3>(particleOnRigid);
         particleOnRigidDOF->resize(1);
-        RigidMappingRigid3d_to_3d::SPtr particleOnRigidMapping = addNew<RigidMappingRigid3d_to_3d>(particleOnRigid);
+
+        RigidMappingRigid3_to_3::SPtr particleOnRigidMapping = addNew<RigidMappingRigid3_to_3>(particleOnRigid);
         particleOnRigidMapping->setModels(rigidDOF.get(),particleOnRigidDOF.get());
 
         // ========= The string

@@ -28,13 +28,15 @@
 #include "Utils/GLSLShader.h"
 #include "Geometry/vector_gen.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderFlatColor : public GLSLShader
+class CGoGN_UTILS_API ShaderFlatColor : public GLSLShader
 {
 protected:
 	// shader sources

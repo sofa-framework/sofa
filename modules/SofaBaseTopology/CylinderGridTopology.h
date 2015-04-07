@@ -50,9 +50,9 @@ public:
     Vector3 getPoint(int i) const;
     Vector3 getPoint(int x, int y, int z) const;
     bool hasPos()  const { return true; }
-    double getPX(int i)  const { return getPoint(i)[0]; }
-    double getPY(int i) const { return getPoint(i)[1]; }
-    double getPZ(int i) const { return getPoint(i)[2]; }
+    SReal getPX(int i)  const { return getPoint(i)[0]; }
+    SReal getPY(int i) const { return getPoint(i)[1]; }
+    SReal getPZ(int i) const { return getPoint(i)[2]; }
 
 protected:
     Data< Vector3 > center;

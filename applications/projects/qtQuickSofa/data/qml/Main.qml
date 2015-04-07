@@ -14,21 +14,24 @@ ApplicationWindow {
     height: 720
     title: Qt.application.name
 
+    property var scene: SofaApplication.scene
+
     style: ApplicationWindowStyle {
         background: null
     }
 
     Component.onCompleted: {
-        if (Qt.application.arguments.length>1)
-            scene.source = "file:" + Qt.application.arguments[1]
+        visible = true;
+
+        if(Qt.application.arguments.length > 1) {
+            scene.source = "file:" + Qt.application.arguments[1];
+        }
         else {
             if(0 !== SofaSettingsScript.Recent.scenes.length)
                 scene.source = SofaSettingsScript.Recent.mostRecent();
             else
                 scene.source = "file:Demos/caduceus.scn";
         }
-
-        visible = true;
     }
 
     // dialog
@@ -53,11 +56,12 @@ ApplicationWindow {
 
     menuBar: DefaultMenuBar {
         id: menuBar
-        scene: scene
+        scene: root.scene
     }
 
-    Scene {
-        id: scene
+    toolBar: DefaultToolBar {
+        id: toolBar
+        scene: root.scene
     }
 
     DynamicSplitView {
@@ -68,13 +72,13 @@ ApplicationWindow {
             DynamicContent {
                 defaultContentName: "Viewer"
                 sourceDir: "qrc:/SofaWidgets"
-                properties: {"scene": scene}
+                properties: {"scene": root.scene}
             }
         }
     }
 
     statusBar: DefaultStatusBar {
         id: statusBar
-        scene: scene
+        scene: root.scene
     }
 }

@@ -44,7 +44,7 @@ public:
 	void componentComplete();
 	
 public:
-    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged);
+    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged)
 
 public:
 	Scene* scene() const	{return myScene;}

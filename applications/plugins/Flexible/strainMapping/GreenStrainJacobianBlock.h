@@ -257,7 +257,7 @@ public:
         }
         return K;
     }
-    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const double& kfactor )
+    void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
         // order 0
         df.getF() += dx.getF()*StressVoigtToMat( childForce.getStrain() )*kfactor;

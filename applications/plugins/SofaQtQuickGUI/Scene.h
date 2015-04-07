@@ -22,7 +22,7 @@ namespace qtquick
 
 class Scene;
 
-class SceneComponent : public QObject
+class SOFA_SOFAQTQUICKGUI_API SceneComponent : public QObject
 {
     Q_OBJECT
 
@@ -40,7 +40,7 @@ private:
 
 };
 
-class SceneData : public QObject
+class SOFA_SOFAQTQUICKGUI_API SceneData : public QObject
 {
     Q_OBJECT
 
@@ -74,10 +74,10 @@ public:
 	~Scene();
 
 public:
-	Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged);
-	Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged);
-	Q_PROPERTY(QUrl sourceQML READ sourceQML WRITE setSourceQML NOTIFY sourceQMLChanged);
-	Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged);
+    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged)
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QUrl sourceQML READ sourceQML WRITE setSourceQML NOTIFY sourceQMLChanged)
+    Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged)
 	Q_PROPERTY(bool play READ playing WRITE setPlay NOTIFY playChanged)
 	Q_PROPERTY(bool asynchronous MEMBER myAsynchronous NOTIFY asynchronousChanged)
     Q_PROPERTY(bool visualDirty READ visualDirty NOTIFY visualDirtyChanged)
@@ -94,6 +94,9 @@ public:
 	Status status()	const							{return myStatus;}
 	void setStatus(Status newStatus);
 
+    bool isLoading() const							{return Status::Loading == myStatus;}
+    bool isReady() const							{return Status::Ready == myStatus;}
+
 	const QUrl& source() const						{return mySource;}
 	void setSource(const QUrl& newSource);
 
@@ -105,9 +108,6 @@ public:
 	
 	bool playing() const							{return myPlay;}
 	void setPlay(bool newPlay);
-
-	bool isReady() const							{return Status::Ready == myStatus;}
-	bool isInit() const								{return myIsInit;}
 
     bool visualDirty() const						{return myVisualDirty;}
     void setVisualDirty(bool newVisualDirty);
@@ -147,7 +147,7 @@ protected:
     Q_INVOKABLE void onSetDataValue(const QString& path, const QVariant& value);
 
 public slots:
-    void init();        // need an opengl context made current
+    void initGraphics();        // need an opengl context made current
 	void reload();
 	void step();
 	void reset();
@@ -162,7 +162,8 @@ signals:
     void reseted();
 
 private slots:
-	void open();    
+    void open();
+    void handleStatusChange(Status newStatus);
 
 public:
 	sofa::simulation::Simulation* sofaSimulation() const {return mySofaSimulation;}
@@ -177,6 +178,7 @@ private:
     Status                                      myStatus;
     QUrl                                        mySource;
     QUrl                                        mySourceQML;
+    QString                                     myPathQML;
     bool                                        myIsInit;
     bool                                        myVisualDirty;
     double                                      myDt;

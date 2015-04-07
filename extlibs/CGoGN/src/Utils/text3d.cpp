@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/text3d.h"
 #include "Utils/vbo_base.h"
 #include "Utils/svg.h"
@@ -72,13 +72,13 @@ Strings3D::Strings3D(bool withBackground, const Geom::Vec3f& bgc, bool with_plan
 		*m_idTexture = *(m_instance0->m_idTexture);
 	}
 
-	std::string glxvert(*GLSLShader::DEFINES_GL);
+	std::string glxvert(GLSLShader::defines_gl());
 	if (with_plane)
 		glxvert.append("#define WITH_PLANE 1");
 	glxvert.append(vertexShaderText);
 
 
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
+	std::string glxfrag(GLSLShader::defines_gl());
 	glxfrag.append(fragmentShaderText1);
 
 	if (!withBackground)

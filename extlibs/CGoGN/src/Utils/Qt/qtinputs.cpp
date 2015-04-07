@@ -21,9 +21,18 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/Qt/qtInputs.h"
 #include <iostream>
+
+#include<QLayout>
+#include<QPushButton>
+#include<QCheckBox>
+#include<QSpinBox>
+#include<QDoubleSpinBox>
+#include<QSlider>
+#include<QComboBox>
+
 
 namespace CGoGN
 {
@@ -81,7 +90,7 @@ CGoGNDialog::CGoGNDialog(std::vector<const Var*>& params, const std::string& tit
 
 void CGoGNDialog::getResults(std::vector<const Var*>& params)
 {
-	unsigned int nb = params.size();
+	unsigned int nb = (unsigned int)(params.size());
 	for (unsigned int i = 0; i < nb; ++i)
 		params[i]->updateFrom(m_wid[i]);
 }

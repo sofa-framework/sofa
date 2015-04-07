@@ -240,7 +240,7 @@ void PairInteractionForceField<DataTypes>::addDForce(const MechanicalParams* mpa
 	df1.endEdit(mparams); df2.endEdit(mparams);
 }
 template<class DataTypes>
-void PairInteractionForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double)
+void PairInteractionForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, SReal kFactor, SReal)
 {
     if (kFactor == 1.0)
         addDForce(df1, df2, dx1, dx2);
@@ -294,7 +294,7 @@ void PairInteractionForceField<DataTypes>::addDForce(VecDeriv& , VecDeriv&, cons
 
 
 template<class DataTypes>
-double PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (mstate1 && mstate2)
         return getPotentialEnergy(mparams, *mparams->readX(mstate1),*mparams->readX(mstate2));
@@ -303,12 +303,12 @@ double PairInteractionForceField<DataTypes>::getPotentialEnergy(const Mechanical
 
 /*
 template<class DataTypes>
-double PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2 ) const
+SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2 ) const
 {
 	return getPotentialEnergy( x1.getValue(mparams) , x2.getValue(mparams) );
 }
 template<class DataTypes>
-double PairInteractionForceField<DataTypes>::getPotentialEnergy(const VecCoord& , const VecCoord& ) const
+SReal PairInteractionForceField<DataTypes>::getPotentialEnergy(const VecCoord& , const VecCoord& ) const
 {
     serr << "ERROR("<<getClassName()<<"): getPotentialEnergy(const VecCoord1& , const VecCoord2&) not implemented." << sendl;
     return 0.0;

@@ -178,9 +178,9 @@ void AffineMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
     const SetIndexArray & indices = m_indices.getValue();
     
     // Time
-    double beginTime = m_beginConstraintTime.getValue();
-    double endTime = m_endConstraintTime.getValue();
-    double totalTime = endTime - beginTime;
+    SReal beginTime = m_beginConstraintTime.getValue();
+    SReal endTime = m_endConstraintTime.getValue();
+    SReal totalTime = endTime - beginTime;
    
     //initialize initial mesh Dofs positions, if it's not done
     if(meshPointsX0.size()==0)
@@ -199,7 +199,7 @@ void AffineMovementConstraint<DataTypes>::projectPosition(const core::Mechanical
         this->initializeFinalPositions(indices,xData,x0,xf);
 
     // Update the intermediate Dofs positions computed by linear interpolation
-   double time = root->getTime();
+   SReal time = root->getTime();
    if( time > beginTime && time <= endTime && totalTime > 0)
     { 
         for (size_t i = 0; i< indices.size(); ++i)

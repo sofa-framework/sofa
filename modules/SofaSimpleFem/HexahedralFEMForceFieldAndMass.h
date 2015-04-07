@@ -77,43 +77,37 @@ public:
     virtual void reinit( );
 
     // -- Mass interface
-    virtual  void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
+    virtual  void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
     ///// WARNING this method only add diagonal elements in the given matrix !
-    // virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
     virtual void addMToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     ///// WARNING this method only add diagonal elements in the given matrix !
-    // virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset);
     virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     ///// WARNING this method only add diagonal elements in the given matrix !
-    // virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix,
-    // double mFact, double bFact, double kFact, unsigned int &offset);
     virtual void addMBKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
 
     virtual  void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
 
     virtual  void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
 
-    virtual double getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
-    virtual double getKineticEnergy(const core::MechanicalParams* /* mparams */, const DataVecDeriv& /*v*/)  const ///< vMv/2 using dof->getV()
+    virtual SReal getKineticEnergy(const core::MechanicalParams* /* mparams */, const DataVecDeriv& /*v*/)  const ///< vMv/2 using dof->getV()
     {serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl; return 0;}
 
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
-    // virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
-    // virtual void addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double);
 
     virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-    double getElementMass(unsigned int index);
+    SReal getElementMass(unsigned int index);
 
     void setDensity(Real d) {_density.setValue( d );}
     Real getDensity() {return _density.getValue();}

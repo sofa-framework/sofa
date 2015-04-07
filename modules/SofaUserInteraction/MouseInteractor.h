@@ -78,7 +78,7 @@ public:
     void addInteractionPerformer(InteractionPerformer *i);
     bool removeInteractionPerformer( InteractionPerformer *i);
     //Called at each time step: launch all the performers
-    void updatePosition( double dt);
+    void updatePosition( SReal dt);
     //Propagate an event in case to all the performers
     void handleEvent(core::objectmodel::Event *e);
 

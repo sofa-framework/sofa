@@ -64,7 +64,7 @@ public:
 
     void init();
     void drawTransparent(const core::visual::VisualParams*);
-    bool addBBox(double* minBBox, double* maxBBox);
+    bool addBBox(SReal* minBBox, SReal* maxBBox);
 
     void handleTopologyChange()
     {

@@ -298,9 +298,9 @@ public:
 
     static void reinit(Main* m);
     static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
-    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-    static void addKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, double kFactor, unsigned int& offset);
-    static void addSubKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, double kFactor, unsigned int& offset);
+    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, SReal kFactor, SReal bFactor);
+    static void addKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset);
+    static void addSubKToMatrix (Main* m, sofa::defaulttype::BaseMatrix* mat, const helper::vector<unsigned> & subMatrixIndex, SReal kFactor, unsigned int& offset);
     static void getRotations(Main* m, VecReal& rotations);
     static void getRotations(Main* m, defaulttype::BaseMatrix * rotations,int offset);
 

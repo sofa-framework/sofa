@@ -84,10 +84,10 @@ public:
     ///                         $ f += factor M dx $
     ///
     /// This method retrieves the force and dx vector and call the internal
-    /// addMDx(const MechanicalParams*, DataVecDeriv&, const DataVecDeriv&, double) method implemented by the component.
-    virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, double factor);
+    /// addMDx(const MechanicalParams*, DataVecDeriv&, const DataVecDeriv&, SReal) method implemented by the component.
+    virtual void addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor);
 
-    virtual void addMDx(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, double factor);
+    virtual void addMDx(const MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
 
     ///                            $ dx = M^-1 f $
     ///
@@ -117,15 +117,15 @@ public:
     ///
     /// This method retrieves the velocity vector and call the internal
     /// getKineticEnergy(const MechanicalParams*, const DataVecDeriv&) method implemented by the component.
-    virtual double getKineticEnergy( const MechanicalParams* mparams) const;
-    virtual double getKineticEnergy( const MechanicalParams* mparams, const DataVecDeriv& v) const;
+    virtual SReal getKineticEnergy( const MechanicalParams* mparams) const;
+    virtual SReal getKineticEnergy( const MechanicalParams* mparams, const DataVecDeriv& v) const;
 
     ///                         $ e = M g x $
     ///
     /// This method retrieves the positions vector and call the internal
     /// getPotentialEnergy(const MechanicalParams*, const VecCoord&) method implemented by the component.
-    virtual double getPotentialEnergy( const MechanicalParams* mparams) const;
-    virtual double getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const;
+    virtual SReal getPotentialEnergy( const MechanicalParams* mparams) const;
+    virtual SReal getPotentialEnergy( const MechanicalParams* mparams, const DataVecCoord& x  ) const;
 
 
     ///    $ m = ( Mv, cross(x,Mv)+Iw ) $
@@ -133,8 +133,8 @@ public:
     ///
     /// This method retrieves the positions and velocity vectors and call the internal
     /// getMomentum(const MechanicalParams*, const VecCoord&, const VecDeriv&) method implemented by the component.
-    virtual defaulttype::Vec6d getMomentum( const MechanicalParams* mparams ) const;
-    virtual defaulttype::Vec6d getMomentum( const MechanicalParams* , const DataVecCoord& , const DataVecDeriv&  ) const;
+    virtual defaulttype::Vector6 getMomentum( const MechanicalParams* mparams ) const;
+    virtual defaulttype::Vector6 getMomentum( const MechanicalParams* , const DataVecCoord& , const DataVecDeriv&  ) const;
 
 
 
@@ -143,11 +143,11 @@ public:
     /// @name Matrix operations
     /// @{
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, double /*kFact*/, unsigned int &/*offset*/) {}
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, double /*bFact*/, unsigned int &/*offset*/) {}
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) {}
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) {}
 
     virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
+    virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
@@ -166,14 +166,14 @@ public:
     virtual void initGnuplot(const std::string path);
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(const MechanicalParams* mparams, double time);
+    virtual void exportGnuplot(const MechanicalParams* mparams, SReal time);
 
     /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     virtual void addGravityToV(const MechanicalParams* mparams, MultiVecDerivId /*vid*/);
     virtual void addGravityToV(const MechanicalParams* /* mparams */, DataVecDeriv& /* d_v */);
 
 
-    virtual double getElementMass(unsigned int) const;
+    virtual SReal getElementMass(unsigned int) const;
     virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
 protected:

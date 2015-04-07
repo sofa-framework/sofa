@@ -81,7 +81,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
         for (unsigned int g=0; g<root->child.size(); ++g)
         {
             simulation::Node* n = root->child[g].get();
-            double gdim = 0;
+            SReal gdim = 0;
             simulation::MechanicalGetDimensionVisitor(mparams, &gdim).execute(n);
             if (gdim <= 0) continue;
             groups.push_back(n);
@@ -93,7 +93,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
     else
     {
         groups.clear();
-        double dim = 0;
+        SReal dim = 0;
         simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
         defaultGroup.systemSize = (int)dim;
     }

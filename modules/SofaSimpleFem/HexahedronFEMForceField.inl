@@ -1213,7 +1213,7 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( WDataRefVecDeriv 
 }
 
 template<class DataTypes>
-inline double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*) const
+inline SReal HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*) const
 {
     return m_potentialEnergy;
 }

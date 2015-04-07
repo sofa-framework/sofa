@@ -43,16 +43,16 @@ using namespace sofa::defaulttype;
 
 #ifndef SOFA_FLOAT
 template <> SOFA_BOUNDARY_CONDITION_API
-double ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+SReal ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
 template <> SOFA_BOUNDARY_CONDITION_API
-double ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+SReal ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
 #endif
 
 #ifndef SOFA_DOUBLE
 template <> SOFA_BOUNDARY_CONDITION_API
-double ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+SReal ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
 template <> SOFA_BOUNDARY_CONDITION_API
-double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
+SReal ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const { return 0; }
 #endif
 
 

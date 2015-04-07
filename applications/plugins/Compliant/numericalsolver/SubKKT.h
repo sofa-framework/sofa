@@ -16,14 +16,18 @@ class Response;
 
    A factorization of a sub-system in an AssembledSystem.
 
-   For now, it only provides a way to factor the sub-kkt corresponding
-   to non-zero lines/columns in the projection matrix P.
+   For now, it provides:
+        - a way to factor the sub-kkt corresponding
+            to non-zero lines/columns in the projection matrix P.
+        - a way to assemble the complete KKT (dynamics+bilateral constraints)
+            in a large matrix (with removed zero lines/columns in
+            the projection matrix P)
 
    @author Maxime Tournier
 
  */
 
-class SubKKT : public utils::eigen_types {
+class SOFA_Compliant_API SubKKT : public utils::eigen_types {
 public:
 
     // TODO: determine correct access rights
@@ -38,8 +42,9 @@ private:
     // work vectors during solve
     mutable vec vtmp1, vtmp2;
 
-    mutable cmat mtmp1, mtmp2/*, mtmp3*/;
+    mutable cmat mtmpc1, mtmpc2;
     mutable rmat mtmpr;
+
 public:
 
     SubKKT();
@@ -50,18 +55,19 @@ public:
     // empty). size_full = sys.m, size_sub = #(non-empty P elements)
     static void projected_primal(SubKKT& res, const AssembledSystem& sys);
 
+
     // full kkt with projected primal variables
-    static void projected_kkt(SubKKT& res, const AssembledSystem& sys, real eps = 0,
+    // eps is for a Tikhonov regularization on null Compliance diagonal entries
+    // only_lower to build only the low triangular matrix for symmetric problems
+    static void projected_kkt(SubKKT& res,
+                              const AssembledSystem& sys,
+                              real eps = 0,
                               bool only_lower = false);
+
+
+
     
     // TODO more ctors with non-zero Q
-
-
-
-    inline vec project_primal( const vec& v ) const { return P.transpose() * v; }
-    inline vec unproject_primal( const vec& v ) const { return P * v; }
-    inline vec project_dual( const vec& v ) const { return Q.transpose() * v; }
-    inline vec unproject_dual( const vec& v ) const { return Q * v; }
 
 
     // P.rows() + Q.rows()
@@ -73,7 +79,6 @@ public:
     // factor the sub-kkt using
     template<class Solver>
     void factor(Solver& response) const;
-    void factor(Response& response) const;
 
     // WARNING the API might change a bit here 
 
@@ -81,20 +86,13 @@ public:
     // will be resized as needed (full size).
     void solve(const Response& response, cmat& result, const cmat& rhs) const;
     template<class Solver>
-    void solve(const Solver& response, vec& result, const vec& rhs) const;
+    void solve(const Solver& response, vec& result, const vec& rhs ) const;
 
 
     void prod(vec& result, const vec& rhs) const;
 
     // this one transposes rhs before solving (avoids temporary)
     void solve_opt(const Response& response, cmat& result, const rmat& rhs ) const;
-
-    // (in) rhs is full size
-    // (out) result is sub size
-    template<class Solver>
-    void solve_filtered(const Solver& response, vec& result, const vec& rhs ) const;
-    // (out) projected_rhs is sub size
-    void solve_filtered(const Response& response, cmat& result, const rmat& rhs, rmat& projected_rhs ) const;
 
 
     // adaptor to response API for solving
@@ -113,6 +111,28 @@ public:
     Adaptor adapt(Response& resp) const {
         return Adaptor(resp, *this);
     }
+
+
+protected:
+
+
+    // build a projection basis based on filtering matrix P
+    // P must be diagonal with 0, 1 on the diagonal
+    static void projection_basis(rmat& res, const rmat& P,
+                                 bool identity_hint = false);
+
+    // build a projected KKT system based on primal projection matrix P
+    // and dual projection matrix Q (to only include bilateral constraints)
+    static void filter_kkt(rmat& res,
+                           const rmat& H,
+                           const rmat& P,
+                           const rmat& Q,
+                           const rmat& J,
+                           const rmat& C,
+                           SReal eps,
+                           bool P_is_identity = false,
+                           bool Q_is_identity = false,
+                           bool only_lower = false);
     
 };
 

@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/gpu/cuda/CudaTypes.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/gpu/cuda/CudaTetrahedralTensorMassForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 

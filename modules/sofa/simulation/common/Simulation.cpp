@@ -235,7 +235,7 @@ void Simulation::initNode( Node* node)
 }
 
 /// Execute one timestep. If do is 0, the dt parameter in the graph will be used
-void Simulation::animate ( Node* root, double dt )
+void Simulation::animate ( Node* root, SReal dt )
 {
     if ( !root ) {
         serr<<"Simulation::animate, no root found"<<sendl;

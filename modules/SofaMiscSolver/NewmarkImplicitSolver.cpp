@@ -59,7 +59,7 @@ NewmarkImplicitSolver::NewmarkImplicitSolver()
 }
 
 
-void NewmarkImplicitSolver::solve(const core::ExecParams* params, double dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
+void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
     sofa::simulation::common::MechanicalOperations mop( params, this->getContext() );
@@ -75,7 +75,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, double dt, sof
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
 
-    const double h = dt;
+    const SReal h = dt;
     const double gamma = f_gamma.getValue();
     const double beta = f_beta.getValue();
     const double rM = f_rayleighMass.getValue();

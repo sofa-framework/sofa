@@ -60,7 +60,7 @@ void BaseMechanicalState::vMultiOp(const ExecParams* params, const VMultiOp& ops
     for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
     {
         VecId r = it->first.getId(this);
-        const helper::vector< std::pair< ConstMultiVecId, double > >& operands = it->second;
+        const helper::vector< std::pair< ConstMultiVecId, SReal > >& operands = it->second;
         size_t nop = operands.size();
         if (nop==0)
         {

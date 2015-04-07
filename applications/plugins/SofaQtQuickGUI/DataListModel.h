@@ -30,7 +30,7 @@ public:
     Q_INVOKABLE void update();
 
 public:
-    Q_PROPERTY(sofa::qtquick::SceneComponent* sceneComponent READ sceneComponent WRITE setSceneComponent NOTIFY sceneComponentChanged);
+    Q_PROPERTY(sofa::qtquick::SceneComponent* sceneComponent READ sceneComponent WRITE setSceneComponent NOTIFY sceneComponentChanged)
 
 public:
     SceneComponent* sceneComponent() const		{return mySceneComponent;}

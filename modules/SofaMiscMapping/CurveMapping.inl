@@ -167,8 +167,8 @@ void CurveMapping<TIn, TOut>::init()
     old_angle.resize(nout);
     fill(old_angle.begin(), old_angle.end(), 0.0);
 
-    //apply(*this->toModel->getX(),this->fromModel->read(core::ConstVecCoordId::position())->getValue());
-    //apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
+    //apply(*this->toModel->read(sofa::core::ConstVecCoordId::position())->getValue(),this->fromModel->read(core::ConstVecCoordId::position())->getValue());
+    //apply(*this->toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue(), *this->fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue());
 
     Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::position(),     core::ConstVecCoordId::position());
     Inherit::apply(core::MechanicalParams::defaultInstance(), core::VecCoordId::freePosition(), core::ConstVecCoordId::freePosition());

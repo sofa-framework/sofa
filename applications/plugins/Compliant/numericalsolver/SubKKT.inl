@@ -23,33 +23,10 @@ void SubKKT::solve(const Solver& resp,
                    vec& res,
                    const vec& rhs) const {
 
-    res.resize( size_full() );
+    const size_t sub_size = size_sub();
 
-    solve_filtered( resp, vtmp2, rhs );
-
-    // remap
-    if( P.cols() ) {
-        res.head(P.rows()).noalias() = P * vtmp2.head(P.cols());
-    }
-    
-    if( Q.cols() ) {
-        res.tail(Q.rows()).noalias() = Q * vtmp2.tail(Q.cols());
-    }
-
-}
-
-
-
-template< class Solver >
-void SubKKT::solve_filtered(const Solver& resp,
-                   vec& res,
-                   const vec& rhs) const {
-    assert( rhs.size() == size_full() );
-    res.resize( size_full() );
-
-    vtmp1.resize( size_sub() );
-    res.resize( size_sub() );
-
+    // project
+    vtmp1.resize( sub_size );
     if( P.cols() ) {
         vtmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
     }
@@ -58,8 +35,20 @@ void SubKKT::solve_filtered(const Solver& resp,
     }
 
     // system solve
-    resp.solve(res, vtmp1);
+    vtmp2.resize( sub_size );
+    resp.solve(vtmp2, vtmp1);
+
+    // remap
+    res.resize( rhs.size() );
+    if( P.cols() ) {
+        res.head(P.rows()).noalias() = P * vtmp2.head(P.cols());
+    }
+    if( Q.cols() ) {
+        res.tail(Q.rows()).noalias() = Q * vtmp2.tail(Q.cols());
+    }
+
 }
+
 
 
 

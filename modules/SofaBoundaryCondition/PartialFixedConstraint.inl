@@ -69,7 +69,7 @@ PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
     , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , _drawSize( initData(&_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     , fixedDirections( initData(&fixedDirections,"fixedDirections","for each direction, 1 if fixed, 0 if free") )
 {
     // default to indice 0
@@ -290,6 +290,42 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector 
     }
 }
 
+template <class DataTypes>
+void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+{
+    core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
+    if(r)
+    {
+        //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
+        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
+        const unsigned int N = Deriv::size();
+        const VecBool& blockedDirection = fixedDirections.getValue();
+        const SetIndexArray & indices = f_indices.getValue();
+
+        //TODO take f_fixAll into account
+
+
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<N; ++c)
+            {
+                if (blockedDirection[c])
+                {
+                    r.matrix->clearRowCol(r.offset + N * (*it) + c);
+                }
+            }
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<N; ++c)
+            {
+                if (blockedDirection[c])
+                {
+                    r.matrix->set(r.offset + N * (*it) + c, r.offset + N * (*it) + c, 1.0);
+                }
+            }
+        }
+    }
+}
 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
