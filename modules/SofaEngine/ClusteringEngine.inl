@@ -298,11 +298,11 @@ bool ClusteringEngine<DataTypes>::load()
     sofa::helper::WriteAccessor< Data< VVI > > clust = this->cluster;
     clust.clear();
 
-    bool usetopo; fileStream >> usetopo;	this->useTopo.setValue(usetopo,true);
-    Real rad; fileStream >> rad;		this->radius.setValue(usetopo,true);
-    fileStream >> rad;		this->fixedRadius.setValue(usetopo,true);
+    bool usetopo; fileStream >> usetopo;	this->useTopo.setValue(usetopo);
+    Real rad; fileStream >> rad;		this->radius.setValue(usetopo);
+    fileStream >> rad;		this->fixedRadius.setValue(usetopo);
     unsigned int nb; fileStream >> nb;			clust.resize(nb);
-    int numb; fileStream >> numb;		this->number.setValue(usetopo,true);
+    int numb; fileStream >> numb;		this->number.setValue(usetopo);
 
     for (unsigned int i=0; i<nb; ++i)
     {
