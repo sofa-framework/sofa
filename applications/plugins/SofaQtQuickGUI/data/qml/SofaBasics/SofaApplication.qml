@@ -1,10 +1,10 @@
+pragma Singleton
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 import QtQuick.Controls.Styles 1.3
 import QtQuick.Layouts 1.0
 import QtQuick.Dialogs 1.1
 import Qt.labs.settings 1.0
-import SofaBasics 1.0
 import SofaInteractors 1.0
 import Qt.labs.folderlistmodel 2.1
 import "qrc:/SofaCommon/SofaCommonScript.js" as SofaCommonScript
@@ -15,18 +15,21 @@ QtObject {
 ////////////////////////////////////////////////// PRIVATE
     property QtObject d: QtObject {
 
-        property SceneListModel sceneListModel: null
+        property var sceneListModel: null
 
     }
 
 ////////////////////////////////////////////////// SCENE
 
-//    readonly property Scene scene: Scene {}
+    readonly property var scene: Scene {}
 
 //    // create a sceneListModel only if needed
 //    function sceneListModel() {
-//        if(null === d.sceneListModel)
+//        if(null === d.sceneListModel) {
+//            console.log("+");
 //            d.sceneListModel = SofaCommonScript.InstanciateComponent(SceneListModel, root, {"scene": root.scene});
+//            console.log("-");
+//        }
 
 //        return d.sceneListModel;
 //    }
@@ -38,6 +41,7 @@ QtObject {
 
 ////////////////////////////////////////////////// INTERACTOR
 
+    property string defaultInteractorName: "Selection"
     readonly property string interactorName: {
         if(interactorComponent)
             for(var key in interactorComponentMap)
@@ -50,7 +54,8 @@ QtObject {
     property Component interactorComponent: null
     property var interactorComponentMap: null
 
-    property FolderListModel interactorFolderListModel: FolderListModel {
+    property var interactorFolderListModel: FolderListModel {
+        id: interactorFolderListModel
         nameFilters: ["*.qml"]
         showDirs: false
         showFiles: true
@@ -58,6 +63,11 @@ QtObject {
 
         Component.onCompleted: refresh();
         onCountChanged: update();
+
+        property var refreshOnSceneLoaded: Connections {
+            target: root.scene
+            onLoaded: interactorFolderListModel.refresh();
+        }
 
         function refresh() {
             folder = "";
@@ -81,10 +91,18 @@ QtObject {
                 var name = fileBaseName.slice(fileBaseName.indexOf("_") + 1);
                 var interactorComponent = Qt.createComponent(filePath);
                 interactorComponentMap[name] = interactorComponent;
-
-                if(null === root.interactorComponent)
-                    root.interactorComponent = interactorComponent;
             }
+
+            if(null === root.interactorComponent)
+                if(interactorComponentMap.hasOwnProperty(root.defaultInteractorName))
+                    root.interactorComponent = interactorComponentMap[root.defaultInteractorName];
+
+            if(null === root.interactorComponent)
+                for(var key in interactorComponentMap)
+                    if(interactorComponentMap.hasOwnProperty(key)) {
+                        root.interactorComponent = interactorComponentMap[key];
+                        break;
+                    }
 
             root.interactorComponentMap = interactorComponentMap;
         }

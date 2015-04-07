@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.0
+import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.0
 
 ToolBar {
@@ -8,7 +8,7 @@ ToolBar {
     anchors.margins: 0
     anchors.leftMargin: 0
 
-    property Scene scene
+    property var scene
     property string statusMessage: ""
     property int    statusDuration: 5000
 
@@ -23,8 +23,8 @@ ToolBar {
     }
 
     Connections {
-        target: scene
-        onStatusMessageChanged: statusMessage = scene.statusMessage;
+        target: root.scene
+        onStatusMessageChanged: statusMessage = root.scene.statusMessage;
     }
 
     RowLayout {

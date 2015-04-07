@@ -47,8 +47,7 @@
         <file>SofaDataTypes/DataType_BoundingBox.qml</file>
         <file>SofaDataTypes/DataType_Material.qml</file>
         <file>SofaDataTypes/DataType_OptionsGroup.qml</file>
-        <file>SofaBasics/Application.qml</file>
-        <file>SofaCommon/SofaApplicationScript.js</file>
+        <file>SofaBasics/SofaApplication.qml</file>
         <file>SofaInteractors/qmldir</file>
         <file>SofaInteractors/UserInteractor_Selection.qml</file>
     </qresource>

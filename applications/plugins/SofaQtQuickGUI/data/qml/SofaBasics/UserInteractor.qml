@@ -6,7 +6,7 @@ QtObject {
     id: root
 
     property string name: ""
-    property Scene scene: null
+    property var scene: null
     property Viewer viewer: null
 
     property var mouseClickedMapping: Array()
