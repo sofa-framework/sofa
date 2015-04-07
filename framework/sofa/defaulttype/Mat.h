@@ -672,6 +672,17 @@ public:
         return transformInvertMatrix(*this, m);
     }
 
+    /// for square matrices
+    /// @warning in-place simple symmetrization
+    /// this = ( this + this.transposed() ) / 2.0
+    void symmetrize()
+    {
+        BOOST_STATIC_ASSERT( C == L );
+        for(int l=0; l<L; l++)
+            for(int c=l+1; c<C; c++)
+                this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5;
+    }
+
 };
 
 /// Same as Mat except the values are not initialized by default

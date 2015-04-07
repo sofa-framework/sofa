@@ -749,7 +749,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
 
         if( geomStiff == 2 )
         {
-            block = ( block + block.transposed() ) * 0.5; // symmetrization
+            block.symmetrize(); // symmetrization
             helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
         }
 
