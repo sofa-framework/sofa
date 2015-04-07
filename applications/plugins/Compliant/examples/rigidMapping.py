@@ -56,8 +56,8 @@ def createScene(root):
         bodies.append( body )
         
     bodies[0].node.createObject('FixedConstraint')
-    bodies[9].mass.mass = 10
-    bodies[9].mass.inertia = "10 10 10"
+    bodies[N-1].mass.mass = 10
+    bodies[N-1].mass.inertia = "10 10 10"
     
         
     for i in xrange(N-1):
@@ -77,5 +77,4 @@ def createScene(root):
         d.createObject('DifferenceMultiMapping', name = 'mapping', input = Tools.cat(input), output = '@dofs', pairs = "0 0" )
         p1.node.addChild( d )
         d.createObject('UniformCompliance', name = 'compliance', compliance="0" )
-    
     
