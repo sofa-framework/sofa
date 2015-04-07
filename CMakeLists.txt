@@ -31,6 +31,13 @@ else()
     include(cmake/buildFlags.cmake)
     include(cmake/dependencies.cmake)
 
+    # Generate sofa/version.h
+    ## Not really pretty, just a number that satisfies SOFA_VERSION > LAST_RELEASED_VERSION
+    set(SOFA_VERSION "999999")
+    set(SOFA_VERSION_STR "\"devel\"")
+    configure_file("${SOFA_FRAMEWORK_DIR}/sofa/version.h.in"
+                   "${SOFA_BUILD_DIR}/misc/include/sofa/version.h")
+
     # Generate config.h header
     configure_file("${SOFA_FRAMEWORK_DIR}/sofa/config.h.in"
                    "${SOFA_BUILD_DIR}/misc/include/sofa/config.h")
