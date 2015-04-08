@@ -139,7 +139,8 @@ CImg<T>& nlmeans(int patch_size=1, double lambda=-1, double alpha=3, double sigm
             // add the central pixel
             cimg_forC(*this,v) uhat[v]+=wmax*(*this)(xi,yi,zi,v);
             sw+=wmax;
-            cimg_forC(*this,v) dest(xi,yi,zi,v) = (T)(uhat[v]/=sw);
+            if (sw) cimg_forC(*this,v) dest(xi,yi,zi,v) = (T)(uhat[v]/=sw);
+            else cimg_forC(*this,v) dest(xi,yi,zi,v) = (*this)(xi,yi,zi,v);
           }
       }
     }
@@ -190,8 +191,10 @@ CImg<T>& nlmeans(int patch_size=1, double lambda=-1, double alpha=3, double sigm
           // add the central pixel with the maximum weight
           cimg_forC(*this,v) uhat[v]+=wmax*(*this)(xi,yi,v);
           sw+=wmax;
+
           // Compute the estimate for the current pixel
-          cimg_forC(*this,v) dest(xi,yi,v) = (T)(uhat[v]/=sw);
+          if (sw) cimg_forC(*this,v) dest(xi,yi,v) = (T)(uhat[v]/=sw);
+          else cimg_forC(*this,v) dest(xi,yi,v) = (*this)(xi,yi,v);
         }
       } // main loop
     } // 2d
@@ -230,8 +233,8 @@ CImg<T>& nlmeans(int patch_size=1, double lambda=-1, double alpha=3, double sigm
    Computer Vision and Pattern Recognition, 2005. CVPR 2005. IEEE Computer Society Conference on
    Volume 2,  20-25 June 2005 Page(s):60 - 65 vol. 2
 **/
-CImg<T> get_nlmeans( int patch_size=1,  double lambda=-1, double alpha=3 ,double sigma=-1, int sampling=1)   {
+CImg<T> get_nlmeans( int patch_size=1,  double lambda=-1, double alpha=3 ,double sigma=-1, int sampling=1) const  {
   return CImg<T>(*this).nlmeans(patch_size,lambda,alpha,sigma,sampling);
 }
 
-#endif
+#endif /* cimg_plugin_nlmeans */

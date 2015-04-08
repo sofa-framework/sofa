@@ -371,4 +371,4 @@ const CImg& save_jpeg_buffer(JOCTET *const buffer, unsigned int &buffer_size, co
 
 // End of the plug-in
 //-------------------
-#endif
+#endif /* cimg_plugin_jpeg_buffer */
