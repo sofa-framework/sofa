@@ -34,6 +34,7 @@ namespace sofa
 {
 namespace cgogn_plugin
 {
+template<class >
 class VolumeTopologyModifier;
 }
 }
