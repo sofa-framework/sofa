@@ -69,7 +69,7 @@ public:
     virtual MatBlock getJ()=0;
 
     // Geometric Stiffness = dJ^T.fc
-    virtual KBlock getK(const OutDeriv& childForce)=0;
+    virtual KBlock getK(const OutDeriv& childForce, bool stabilization=false)=0;
     // compute $ df += K dx $
     virtual void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )=0;
 
