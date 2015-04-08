@@ -25,7 +25,7 @@
 			<ManifoldEdgeSetGeometryAlgorithms template="Vec3d" name="TopoGeo"/>
 			<Triangle2EdgeTopologicalMapping name="Mapping" input="@../Container" output="@Container"/>
 			<Node 	name="Visu" gravity="0 -9.81 0"  >
-				<OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45"/>
+				<OglModel template="ExtVec3f" name="Visual" position="@../../mechanical.position" triangles="@../../loader.triangles"  material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45"/>
 				<IdentityMapping template="Vec3d,ExtVec3f" name="default17" input="@../../mechanical" output="@Visual"/>
 			</Node>
 			<MeshSpringForceField template="Vec3d" name="default0" stiffness="100" damping="1" linesStiffness="100" linesDamping="1" trianglesStiffness="100" trianglesDamping="1" quadsStiffness="100" quadsDamping="1" tetrasStiffness="100" tetrasDamping="1" cubesStiffness="100" cubesDamping="1"/>
