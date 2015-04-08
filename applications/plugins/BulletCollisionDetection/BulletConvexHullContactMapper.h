@@ -1,7 +1,7 @@
 #ifndef BULLET_CONVEX_HULL_CONTACT_MAPPER
 #define BULLET_CONVEX_HULL_CONTACT_MAPPER
 
-#include <sofa/component/collision/RigidContactMapper.h>
+#include <SofaMeshCollision/RigidContactMapper.h>
 #include "BulletConvexHullModel.h"
 
 namespace sofa
@@ -27,7 +27,7 @@ public:
     {
         r = 0;
         const typename TVec3Types::Coord & cP = P - this->model->center();
-        const Quaternion & ori = this->model->orientation();
+        const defaulttype::Quaternion & ori = this->model->orientation();
 
         return RigidContactMapper<BulletConvexHullModel,TVec3Types >::addPoint(ori.inverseRotate(cP),0,r);
     }

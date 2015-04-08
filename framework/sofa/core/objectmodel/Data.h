@@ -455,30 +455,17 @@ public:
         m_values[DDGNode::currentAspect(params)].endEdit();
     }
 
-    /// If it is only to write the value set the bool writeOnly to true
-    inline void setValue(const T& value, const bool writeOnly = false)
+    /// @warning writeOnly (the Data is not updated before being set)
+    inline void setValue(const T& value)
     {
-        if(writeOnly)
-        {
-            *beginWriteOnly()=value;
-             endEdit();
-             return;
-        }
-
-        *beginEdit() = value;
+        *beginWriteOnly()=value;
         endEdit();
     }
 
-    /// If it is only to write the value set the bool writeOnly to true
-    inline void setValue(const core::ExecParams* params, const T& value, const bool writeOnly = false)
+    /// @warning writeOnly (the Data is not updated before being set)
+    inline void setValue(const core::ExecParams* params, const T& value)
     {
-        if(writeOnly)
-        {
-            *beginWriteOnly(params)=value;
-            endEdit(params);
-            return;
-        }
-        *beginEdit(params) = value;
+        *beginWriteOnly(params)=value;
         endEdit(params);
     }
 

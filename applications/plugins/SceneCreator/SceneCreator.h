@@ -41,8 +41,8 @@ namespace sofa
 namespace modeling {
 
 typedef SReal Scalar;
-typedef Vec<3,SReal> Vec3;
-typedef Vec<1,SReal> Vec1;
+typedef sofa::defaulttype::Vec<3,SReal> Vec3;
+typedef sofa::defaulttype::Vec<1,SReal> Vec1;
 
 SOFA_SceneCreator_API simulation::Node::SPtr createRootWithCollisionPipeline(const std::string &responseType=std::string("default"));
 SOFA_SceneCreator_API simulation::Node::SPtr createEulerSolverNode(simulation::Node::SPtr parent, const std::string& name, const std::string &integrationScheme=std::string("Implicit"));

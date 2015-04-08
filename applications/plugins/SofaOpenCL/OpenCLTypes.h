@@ -30,7 +30,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include "OpenCLMemoryManager.h"

@@ -27,7 +27,7 @@
 
 #include <sofa/component/interactionforcefield/SparseGridSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.inl>
+#include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/helper/gl/template.h>
 
 namespace sofa

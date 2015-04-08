@@ -25,25 +25,22 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 #define SOFA_COMPONENT_CONTROLLER_OMNIEMU_H
 
-//Sensable include
-//#include <HD/hd.h>
-//#include <HDU/hdu.h>
-//#include <HDU/hduError.h>
-//#include <HDU/hduVector.h>
-#include <sofa/helper/LCPcalc.h>
-#include <sofa/defaulttype/SolidTypes.h>
+#include <SofaUserInteraction/Controller.h>
+#include <SofaOpenglVisual/OglModel.h>
 
-#include <sofa/core/behavior/BaseController.h>
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/controller/Controller.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
+#include <sofa/defaulttype/RigidTypes.h>
+
 #include <sofa/helper/system/thread/CTime.h>
-#include <boost/thread.hpp>
+#include <pthread.h>
+
+#include "initSensableEmulation.h"
 
 
 namespace sofa
 {
+
 namespace simulation { class Node; }
 
 namespace component
@@ -57,8 +54,6 @@ class ForceFeedback;
 
 
 using namespace sofa::defaulttype;
-using namespace helper::system::thread;
-using core::objectmodel::Data;
 
 /** Holds data retrieved from HDAPI. */
 typedef struct
@@ -100,7 +95,7 @@ typedef struct
 * Omni driver
 */
 //changement NewOmni -> Omni
-class OmniDriverEmu : public Controller
+class SOFA_SENSABLEEMUPLUGIN_API OmniDriverEmu : public Controller
 {
 
 public:
@@ -152,11 +147,13 @@ public:
     bool afterFirstStep;
     SolidTypes<double>::Transform prevPosition;
 
-    //neede for "omni simulation"
-    CTime *thTimer;
-    //boost
-    boost::thread *hapSimuThread;
-    //pthread_t hapSimuThread;
+    //need for "omni simulation"
+    helper::system::thread::CTime *thTimer;
+
+#ifndef WIN32
+    pthread_t hapSimuThread;
+#endif
+
     double lastStep;
     bool executeAsynchro;
     Data<VecCoord> trajPts;
@@ -169,7 +166,7 @@ private:
 
     void copyDeviceDataCallback(OmniData *pUserData);
     void stopCallback(OmniData *pUserData);
-    sofa::component::visualmodel::OglModel::SPtr visu_base, visu_end;
+    component::visualmodel::OglModel::SPtr visu_base, visu_end;
     bool noDevice;
 
     bool moveOmniBase;

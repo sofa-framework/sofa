@@ -136,7 +136,7 @@ public:
     /// Apply modifications to the components
     void reinit(const core::ExecParams* params);
     /// Do one step forward in time
-//    void animate(const core::ExecParams* params /* PARAMS FIRST */, double dt);
+//    void animate(const core::ExecParams* params, SReal dt);
     /// Draw the objects in an OpenGl context
     void glDraw(core::visual::VisualParams* params);
     /// @}
@@ -469,7 +469,7 @@ public:
     virtual void initVisualContext() {}
 
     /// Propagate an event
-    virtual void propagateEvent(const core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, core::objectmodel::Event* event);
+    virtual void propagateEvent(const core::ExecParams* params, core::objectmodel::Event* event);
 
     /// Update the visual context values, based on parent and local ContextObjects
     virtual void updateVisualContext();

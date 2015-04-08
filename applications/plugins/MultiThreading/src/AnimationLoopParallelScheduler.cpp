@@ -169,7 +169,7 @@ namespace simulation
 		gnode->setTime ( startTime + dt );
 
 		// exchange data event
-		DataExchangeEvent ev ( dt );
+        core::DataExchangeEvent ev ( dt );
 		PropagateEventVisitor act ( params, &ev );
 		gnode->execute ( act );
 

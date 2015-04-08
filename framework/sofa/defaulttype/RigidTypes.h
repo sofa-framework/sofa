@@ -990,9 +990,9 @@ typedef RigidMass<3,double> Rigid3dMass;
 #endif
 
 typedef StdRigidTypes<3,float> Rigid3fTypes;
-#ifndef SOFA_DOUBLE
+//#ifndef SOFA_DOUBLE
 typedef RigidMass<3,float> Rigid3fMass;
-#endif
+//#endif
 
 /// We now use template aliases so we do not break backward compatibility.
 #ifndef SOFA_FLOAT

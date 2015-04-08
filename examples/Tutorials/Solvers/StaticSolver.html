@@ -11,7 +11,7 @@
 
                 
 		<div id="orangeText">Description</div><br>
-		<div align="justify">
+		<div align="left">
                 The StaticSolver contains the algorithm used to update particle positions at each time step. As we are dealing with a Static solver, <b>time (i.e. velocity and acceleration terms) is not taken into account</b>. At each time step, the solver is looking for an equilibrium of the generalized forces at each nodes. Using a static solver can be useful to measure the convergence of several algorithms.<br><br>
                 Solving for each point, the static equation amounts to solving a linear system Ax=b. In this scene, the static solver is coupled with an iterative linear solver: the CGLinearSolver, used to solve equation systems. <br>
                 </div>

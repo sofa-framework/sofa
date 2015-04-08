@@ -43,7 +43,7 @@ void test_transformInverse(Matrix4 const& M)
     M_inv.transformInvert(M);
     Matrix4 res = M*M_inv;
     Matrix4 I;I.identity();
-    EXPECT_MAT_NEAR(I, res, 1e-12);
+    EXPECT_MAT_NEAR(I, res, (SReal)1e-12);
 }
 
 TEST(MatTypesTest, transformInverse)

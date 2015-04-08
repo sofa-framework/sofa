@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/core/loader/PrimitiveGroup.h>
-//#include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/loader/Material.h>
 #include <sofa/helper/helper.h>
 
 namespace sofa
@@ -49,35 +49,25 @@ using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Vec4f;
 
 class SOFA_HELPER_API Mesh
-{
-
-protected:
-    vector<Vector3> vertices;
-    vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
-    vector<Vector3> normals;
-    vector< vector < vector <int> > > facets;
-    //sofa::core::objectmodel::Data< Material > material;
-    Material material;
-
-    std::vector<Material> materials;
-    std::vector<PrimitiveGroup> groups;
-
-    std::string textureName;
-    
+{    
 public:
     
     std::string loaderType;
     
 public:
+    typedef sofa::defaulttype::Vector3 Vector3;
+    typedef sofa::core::loader::PrimitiveGroup PrimitiveGroup;
+    typedef sofa::core::loader::Material Material;
 
-    vector<Vector3> & getVertices() { return vertices; }
-    const vector<Vector3> & getVertices() const { return vertices; }
-    vector<Vector3> & getTexCoords() { return texCoords; }
-    const vector<Vector3> & getTexCoords() const { return texCoords; }
-    vector<Vector3> & getNormals() { return normals; }
-    const vector<Vector3> & getNormals() const { return normals; }
-    vector< vector < vector <int> > > & getFacets() { return facets; }
-    const vector< vector < vector <int> > > & getFacets() const { return facets; }
+    sofa::helper::vector<Vector3> & getVertices() { return vertices; }
+    const sofa::helper::vector<Vector3> & getVertices() const { return vertices; }
+    sofa::helper::vector<Vector3> & getTexCoords() { return texCoords; }
+    const sofa::helper::vector<Vector3> & getTexCoords() const { return texCoords; }
+    sofa::helper::vector<Vector3> & getNormals() { return normals; }
+    const sofa::helper::vector<Vector3> & getNormals() const { return normals; }
+    sofa::helper::vector< vector < vector <int> > > & getFacets() { return facets; }
+    const sofa::helper::vector< vector < vector <int> > > & getFacets() const { return facets; }
+
 
     const Material& getMaterial() const { return material; }
 
@@ -97,6 +87,20 @@ public:
         return new Object(arg);
     }
     
+protected:
+
+    sofa::helper::vector<Vector3> vertices;
+    sofa::helper::vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
+    sofa::helper::vector<Vector3> normals;
+    sofa::helper::vector< sofa::helper::vector < sofa::helper::vector <int> > > facets;
+    //sofa::core::objectmodel::Data< Material > material;
+    Material material;
+
+    std::vector<Material> materials;
+    std::vector<PrimitiveGroup> groups;
+
+    std::string textureName;
+
 };
 
 } // namespace io

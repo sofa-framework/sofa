@@ -15,7 +15,7 @@
         <TriangleSetTopologyModifier name="modif" />
         <TriangleSetTopologyAlgorithms name="algo" />
         <TriangleSetGeometryAlgorithms name="triGeo" />
-        <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
+        <TriangularFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" method="small" />
         <DiagonalMass massDensity="0.15" />
         <TriangleModel />
         <Node>

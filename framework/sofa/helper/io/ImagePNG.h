@@ -41,8 +41,6 @@ namespace helper
 namespace io
 {
 
-//using namespace sofa::defaulttype;
-
 #ifdef SOFA_HAVE_PNG
 
 class SOFA_HELPER_API ImagePNG : public Image

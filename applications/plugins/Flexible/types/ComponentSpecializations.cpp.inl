@@ -8,43 +8,47 @@
 #ifdef Success
 #undef Success // before including eigen stuff http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
 #endif
-#include <sofa/component/projectiveconstraintset/ProjectToPointConstraint.inl>
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.inl>
-#include <sofa/component/projectiveconstraintset/ProjectToPlaneConstraint.inl>
-#include <sofa/component/projectiveconstraintset/ProjectDirectionConstraint.inl>
+#include <SofaBoundaryCondition/ProjectToPointConstraint.inl>
+#include <SofaBoundaryCondition/ProjectToLineConstraint.inl>
+#include <SofaBoundaryCondition/ProjectToPlaneConstraint.inl>
+#include <SofaBoundaryCondition/ProjectDirectionConstraint.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/common/Node.h>
 
-#include <sofa/component/container/MechanicalObject.inl>
+#include <SofaBaseMechanics/MechanicalObject.inl>
 
-#include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
-#include <sofa/component/projectiveconstraintset/PartialFixedConstraint.inl>
+#include <SofaBoundaryCondition/FixedConstraint.inl>
+#include <SofaBoundaryCondition/PartialFixedConstraint.inl>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
-#include <sofa/component/engine/BoxROI.inl>
+#include <SofaEngine/BoxROI.inl>
 
 
-#include <sofa/component/mass/UniformMass.inl>
+#include <SofaBaseMechanics/UniformMass.inl>
 
-#include <sofa/component/misc/Monitor.inl>
-#include <sofa/component/misc/ExtraMonitor.inl>
+#include <SofaValidation/Monitor.inl>
+#include <SofaValidation/ExtraMonitor.inl>
 
-#include <sofa/component/constraintset/UncoupledConstraintCorrection.inl>
+#include <SofaConstraint/UncoupledConstraintCorrection.inl>
 
-#include <sofa/component/mapping/IdentityMapping.inl>
-#include <sofa/component/mapping/SubsetMultiMapping.inl>
+#include <SofaBaseMechanics/IdentityMapping.inl>
+#include <SofaMiscMapping/SubsetMultiMapping.inl>
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/Mass.inl>
-#include <sofa/component/forcefield/RestShapeSpringsForceField.inl>
-#include <sofa/component/forcefield/ConstantForceField.inl>
+#include <SofaDeformable/RestShapeSpringsForceField.inl>
+#include <SofaBoundaryCondition/ConstantForceField.inl>
 
 
 #ifdef SOFA_HAVE_IMAGE
 #include "../mass/ImageDensityMass.inl"
 #endif
+
+
+#include <sofa/core/Mapping.inl>
+#include <sofa/core/MultiMapping.inl>
 
 
 
@@ -54,6 +58,17 @@ namespace sofa
 
 namespace core
 {
+
+
+#ifndef SOFA_FLOAT
+	template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
+    template class SOFA_Flexible_API MultiMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes >;
+    template class SOFA_Flexible_API MultiMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fTypes >;
+#endif
+
 
 namespace behavior
 {
@@ -95,7 +110,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const SetIndexArray & indices = f_indices.getValue();
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -160,7 +175,7 @@ void FixedConstraint< TYPEABSTRACTNAME3fTypes >::draw(const core::visual::Visual
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const SetIndexArray & indices = f_indices.getValue();
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if( f_drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -253,7 +268,7 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::V
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const SetIndexArray & indices = f_indices.getValue();
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -318,7 +333,7 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::V
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     const SetIndexArray & indices = f_indices.getValue();
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
@@ -484,11 +499,15 @@ namespace component
 namespace container
 {
 
+using defaulttype::Vector3;
+using defaulttype::Quat;
+using defaulttype::Vec4f;
+
 // ==========================================================================
 // Draw Specializations
 #ifndef SOFA_FLOAT
 template <> SOFA_Flexible_API
-void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
+void MechanicalObject<defaulttype::TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
 
@@ -501,7 +520,7 @@ void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualP
         glDisable ( GL_LIGHTING );
         float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
 
-        Mat<4,4, GLfloat> modelviewM;
+        defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         for ( int i=0 ; i< vsize ; i++ )
         {
@@ -520,7 +539,7 @@ void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualP
             glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+			defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
             temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
@@ -544,8 +563,8 @@ void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualP
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        const TYPEABSTRACTNAME3dTypes::VecCoord& x = ( *getX() );
-
+        const defaulttype::TYPEABSTRACTNAME3dTypes::VecCoord& x = ( read(core::ConstVecCoordId::position())->getValue() );
+        
         for (int i = 0; i < this->getSize(); ++i)
         {
             vparams->drawTool()->pushMatrix();
@@ -577,7 +596,7 @@ void MechanicalObject<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualP
 #endif
 #ifndef SOFA_DOUBLE
 template <> SOFA_Flexible_API
-void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
+void MechanicalObject<defaulttype::TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
 #ifndef SOFA_NO_OPENGL
 
@@ -590,7 +609,7 @@ void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualP
         glDisable ( GL_LIGHTING );
         float scale = ( vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox() ).norm() * showIndicesScale.getValue();
 
-        Mat<4,4, GLfloat> modelviewM;
+        defaulttype::Mat<4,4, GLfloat> modelviewM;
 
         for ( int i=0 ; i< vsize ; i++ )
         {
@@ -609,7 +628,7 @@ void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualP
             glGetFloatv ( GL_MODELVIEW_MATRIX , modelviewM.ptr() );
             modelviewM.transpose();
 
-            Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
+			defaulttype::Vec3d temp ( getPX ( i ), getPY ( i ), getPZ ( i ) );
             temp = modelviewM.transform ( temp );
 
             //glLoadMatrixf(modelview);
@@ -633,7 +652,7 @@ void MechanicalObject<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualP
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        const TYPEABSTRACTNAME3fTypes::VecCoord& x = ( *getX() );
+        const defaulttype::TYPEABSTRACTNAME3fTypes::VecCoord& x = read(core::ConstVecCoordId::position())->getValue();
 
         for (int i = 0; i < this->getSize(); ++i)
         {
@@ -703,12 +722,12 @@ namespace mass
 //    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
 //    {
 //        MassType* m = this->mass.beginEdit();
-//        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+//        *m = ((Real)this->totalMass.getValue() / this->mstate->getSize());
 //        this->mass.endEdit();
 //    }
 //    else
 //    {
-//        this->totalMass.setValue( this->mstate->getX()->size() * this->mass.getValue().getUniformValue() );
+//        this->totalMass.setValue( this->mstate->getSize() * this->mass.getValue().getUniformValue() );
 //    }
 //}
 //#endif
@@ -719,12 +738,12 @@ namespace mass
 //    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
 //    {
 //        MassType* m = this->mass.beginEdit();
-//        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+//        *m = ((Real)this->totalMass.getValue() / this->mstate->getSize());
 //        this->mass.endEdit();
 //    }
 //    else
 //    {
-//        this->totalMass.setValue( this->mstate->getX()->size() * this->mass.getValue().getUniformValue() );
+//        this->totalMass.setValue( this->mstate->getSize() * this->mass.getValue().getUniformValue() );
 //    }
 //}
 //#endif
@@ -735,7 +754,7 @@ void UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACT
 {
 }
 template <> SOFA_Flexible_API
-double UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dMass>::getPotentialEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx  ) const
+SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dMass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& vx  ) const
 {
     helper::ReadAccessor<DataVecCoord> x = vx;
 
@@ -748,10 +767,10 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRA
     if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
         iend = localRange.getValue() [1]+1;
 
-    double e = 0;
+    SReal e = 0;
     const MassType& m = mass.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+	defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
 
@@ -772,7 +791,7 @@ void UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACT
 {
 }
 template <> SOFA_Flexible_API
-double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fMass>::getPotentialEnergy ( const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& vx  ) const
+SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fMass>::getPotentialEnergy ( const core::MechanicalParams*, const DataVecCoord& vx  ) const
 {
     helper::ReadAccessor<DataVecCoord> x = vx;
 
@@ -785,10 +804,10 @@ double UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRA
     if ( localRange.getValue() [1] >= 0 && ( unsigned int ) localRange.getValue() [1]+1 < iend )
         iend = localRange.getValue() [1]+1;
 
-    double e = 0;
+    SReal e = 0;
     const MassType& m = mass.getValue();
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+	defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     theGravity[0]=g[0], theGravity[1]=g[1], theGravity[2]=g[2];
 
@@ -914,14 +933,14 @@ void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >::init
 {
     Inherit::init();
 
-    const double dt = this->getContext()->getDt();
+    const SReal dt = this->getContext()->getDt();
 
-    const double dt2 = dt * dt;
+    const SReal dt2 = dt * dt;
 
-    TYPEABSTRACTNAME3dMass massValue;
+    defaulttype::TYPEABSTRACTNAME3dMass massValue;
     VecReal usedComp;
 
-    sofa::component::mass::UniformMass< TYPEABSTRACTNAME3dTypes, TYPEABSTRACTNAME3dMass >* uniformMass;
+    sofa::component::mass::UniformMass< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dMass >* uniformMass;
 
     this->getContext()->get( uniformMass, core::objectmodel::BaseContext::SearchUp );
     if( uniformMass )
@@ -949,14 +968,14 @@ void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >::init
 {
     Inherit::init();
 
-    const double dt = this->getContext()->getDt();
+    const SReal dt = this->getContext()->getDt();
 
-    const double dt2 = dt * dt;
+    const SReal dt2 = dt * dt;
 
-    TYPEABSTRACTNAME3fMass massValue;
+    defaulttype::TYPEABSTRACTNAME3fMass massValue;
     VecReal usedComp;
 
-    sofa::component::mass::UniformMass< TYPEABSTRACTNAME3fTypes, TYPEABSTRACTNAME3fMass >* uniformMass;
+    sofa::component::mass::UniformMass< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fMass >* uniformMass;
 
     this->getContext()->get( uniformMass, core::objectmodel::BaseContext::SearchUp );
     if( uniformMass )
@@ -1008,8 +1027,8 @@ SOFA_DECL_CLASS(EVALUATOR(TYPEABSTRACTNAME,IdentityMapping))
 // Register in the Factory
 int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
 #ifndef SOFA_FLOAT
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes > >()
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes > >()
+		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes > >()
+		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes > >()
@@ -1017,8 +1036,8 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3dTypes > >()
-        .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes > >()
+		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3dTypes > >()
+		.add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3fTypes > >()
         .add< IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3fTypes > >()
 #endif
@@ -1029,8 +1048,8 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 
 
 #ifndef SOFA_FLOAT
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes >;
+	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
+	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes >;
@@ -1038,8 +1057,8 @@ int EVALUATOR(TYPEABSTRACTNAME,IdentityMappingClass) = core::RegisterObject("Spe
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3dTypes >;
-    template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes >;
+	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3dTypes >;
+	template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::ExtVec3dTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3fTypes >;
     template class SOFA_Flexible_API IdentityMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::ExtVec3fTypes >;
 #endif

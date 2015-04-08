@@ -658,7 +658,7 @@ unsigned int Map3MR<PFP>::subdivideVolume(Dart d, bool triQuad, bool OneLevelDif
 		}
 
 		//replonger l'orbit de ditV.
-		m_map.template setOrbitEmbedding<VERTEX>(centralDart, m_map.template getEmbedding<VERTEX>(centralDart));
+		Algo::Topo::setOrbitEmbedding<VERTEX>(m_map,centralDart, m_map.template getEmbedding<VERTEX>(centralDart));
 		(*volumeVertexFunctor)(centralDart) ;
 
 		m_map.decCurrentLevel() ;
@@ -697,7 +697,7 @@ unsigned int Map3MR<PFP>::subdivideVolume(Dart d, bool triQuad, bool OneLevelDif
 		{
 			Dart dit = *it;
 
-			m_map.template setOrbitEmbeddingOnNewCell<VOLUME>(dit);
+			Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(m_map,dit);
 			m_map.template copyCell<VOLUME>(dit, ditV);
 		}
 
@@ -706,7 +706,8 @@ unsigned int Map3MR<PFP>::subdivideVolume(Dart d, bool triQuad, bool OneLevelDif
 
 
 		//replonger l'orbit de ditV.
-		m_map.template setOrbitEmbedding<VERTEX>(m_map.phi2(m_map.phi3(x)), m_map.template getEmbedding<VERTEX>(m_map.phi2(m_map.phi3(x))));
+		Algo::Topo::setOrbitEmbedding<VERTEX>(m_map, m_map.phi2(m_map.phi3(x)), m_map.template getEmbedding<VERTEX>(m_map.phi2(m_map.phi3(x))));
+
 		//m_map.template setOrbitEmbedding<VERTEX>(centralDart, m_map.template getEmbedding<VERTEX>(centralDart));
 		//(*volumeVertexFunctor)(x) ;
 
@@ -754,13 +755,11 @@ unsigned int Map3MR<PFP>::subdivideVolume(Dart d, bool triQuad, bool OneLevelDif
 			for(std::vector<Dart>::iterator it = embVol.begin() ; it != embVol.end() ; ++it)
 			{
 				Dart dit = *it;
-
-				m_map.template setOrbitEmbeddingOnNewCell<VOLUME>(dit);
+				Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(m_map,dit);
 				m_map.template copyCell<VOLUME>(dit, d);
 			}
 
-
-			m_map.template setOrbitEmbedding<VERTEX>(x, m_map.template getEmbedding<VERTEX>(x));
+			Algo::Topo::setOrbitEmbeddingOnNewCell<VOLUME>(m_map, x, m_map.template getEmbedding<VERTEX>(x));
 			(*volumeVertexFunctor)(x) ;
 
 			m_map.decCurrentLevel() ;
@@ -1188,7 +1187,6 @@ void Map3MR<PFP>::subdivideVolumeTetOcta(Dart d)
 			}while(f != x);
 		}
 
-		//m_map.template setOrbitEmbedding<VERTEX>(centralDart, EMBNULL);
 		m_map.template setOrbitEmbedding<VERTEX>(centralDart, m_map.template getEmbedding<VERTEX>(centralDart));
 		(*volumeVertexFunctor)(centralDart) ;
 		//propagateOrbitEmbedding<VERTEX>(centralDart) ;

@@ -61,9 +61,9 @@ LMLConstraint<DataTypes>::LMLConstraint(Loads* loadsList, const std::map<unsigne
                 if (titi != atomIndexToDOFIndex.end())
                 {
                     unsigned int dofInd = titi->second;
-                    dirX = (*mm->getX())[dofInd].x();
-                    dirY = (*mm->getX())[dofInd].y();
-                    dirZ = (*mm->getX())[dofInd].z();
+                    dirX = mm->read(core::ConstVecCoordId::position())->getValue()[dofInd].x();
+                    dirY = mm->read(core::ConstVecCoordId::position())->getValue()[dofInd].y();
+                    dirZ = mm->read(core::ConstVecCoordId::position())->getValue()[dofInd].z();
                 }
             }
             else
@@ -76,7 +76,10 @@ LMLConstraint<DataTypes>::LMLConstraint(Loads* loadsList, const std::map<unsigne
                 {
                     cpt++;
                     if (load->getDirection().isToward())
-                        addConstraint(result->second, Deriv(dirX-(*mm->getX())[result->second].x(),dirY-(*mm->getX())[result->second].y(),dirZ-(*mm->getX())[result->second].z()) );
+                        addConstraint(result->second,
+                                      Deriv(dirX - mm->read(core::ConstVecCoordId::position())->getValue()[result->second].x(),
+                                            dirY - mm->read(core::ConstVecCoordId::position())->getValue()[result->second].y(),
+                                            dirZ - mm->read(core::ConstVecCoordId::position())->getValue()[result->second].z()));
                     else
                         addConstraint(result->second, Deriv(dirX,dirY,dirZ) );
                     // fix targets on the X axe
@@ -189,7 +192,7 @@ void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
                         std::map<unsigned int, unsigned int>::const_iterator titi = atomToDOFIndexes.find(load->getDirection().getToward());
                         if (titi != atomToDOFIndexes.end())
                         {
-                            (*it2) = (*mmodel->getX())[titi->second] - (*mmodel->getX())[*it1];
+                            (*it2) = mmodel->read(core::ConstVecCoordId::position())->getValue()[titi->second] - mmodel->read(core::ConstVecCoordId::position())->getValue()[*it1];
                             it2->normalize();
                         }
                     }
@@ -258,7 +261,7 @@ void LMLConstraint<DataTypes>::draw()
 
     // if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    const VecCoord& x = *mmodel->getX();
+    const VecCoord& x = mmodel->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glColor4f (1,0.5,0.5,1);
 

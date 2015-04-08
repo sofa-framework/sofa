@@ -4,6 +4,8 @@
 #include "SofaQtQuickGUI.h"
 #include <QQmlApplicationEngine>
 #include <QApplication>
+#include <QQuickWindow>
+#include <QQuickItem>
 #include <QSettings>
 
 class QOpenGLDebugLogger;
@@ -23,7 +25,7 @@ public:
     ~Tools();
 
 public:
-    Q_PROPERTY(int overrideCursorShape READ overrideCursorShape WRITE setOverrideCursorShape NOTIFY overrideCursorShapeChanged);
+    Q_PROPERTY(int overrideCursorShape READ overrideCursorShape WRITE setOverrideCursorShape NOTIFY overrideCursorShapeChanged)
 
 public:
     int overrideCursorShape() const {return QApplication::overrideCursor() ? QApplication::overrideCursor()->shape() : Qt::ArrowCursor;}
@@ -31,8 +33,10 @@ public:
 
 signals:
     void overrideCursorShapeChanged();
+    void windowChanged();
 
 public:
+    Q_INVOKABLE QQuickWindow* window(QQuickItem* item) const;
 	Q_INVOKABLE void trimCache(QObject* object = 0);
 	Q_INVOKABLE void clearSettingGroup(const QString& group);
 

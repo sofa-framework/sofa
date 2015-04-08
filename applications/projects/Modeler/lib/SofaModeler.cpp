@@ -35,6 +35,7 @@
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/helper/system/PluginManager.h>
+#include <sofa/helper/Utils.h>
 
 
 #define MAX_RECENTLY_OPENED 10
@@ -51,6 +52,8 @@
 #include <QDesktopServices>
 #include <QSettings>
 
+using namespace sofa::core;
+
 namespace sofa
 {
 
@@ -61,7 +64,8 @@ namespace qt
 {
 
 
-using namespace sofa::helper::system;
+using sofa::helper::system::PluginManager;
+using sofa::helper::Utils;
 
 
 void SofaModeler::createActions()
@@ -179,7 +183,7 @@ void SofaModeler::createToolbar()
     addToolBar(Qt::TopToolBarArea, toolBar);
 }
 
-SofaModeler::SofaModeler():recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/Modeler.ini")
+SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix() + "/config/Modeler.ini")
     ,runSofaGUI(NULL)
 {
     setWindowTitle(QString("Sofa Modeler"));
@@ -209,9 +213,9 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(sofa::gui::BaseGUI::getCon
     //Get the different path needed
     examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
     openPath = examplePath;
-    binPath = sofa::helper::system::DataRepository.getFirstPath().c_str() + std::string( "/bin/" );
+    binPath = Utils::getExecutableDirectory() + "/";
     presetPath = examplePath + std::string("Objects/");
-    std::string presetFile = std::string("share/config/preset.ini" );
+    std::string presetFile = std::string("config/preset.ini" );
     presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
 
 
@@ -527,7 +531,7 @@ void SofaModeler::clearTab()
 
 void SofaModeler::newTab()
 {
-    std::string newScene="share/config/newScene.scn";
+    std::string newScene="config/newScene.scn";
     if (sofa::helper::system::DataRepository.findFile(newScene))
     {
         std::string openPathPrevious = openPath;
@@ -606,7 +610,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
         typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
         std::pair< multimapIterator,multimapIterator > range;
         range=mapSofa.equal_range(curTab);
-        for (multimapIterator it=range.first; it!=range.second; it++)
+        for (multimapIterator it=range.first; it!=range.second; ++it)
         {
             removeTemporaryFiles(it->second->name());
             it->second->kill();
@@ -616,7 +620,7 @@ bool SofaModeler::closeTab(QWidget *curTab, bool forceClose)
 
     //Find the scene in the window menu
     std::map< int, QWidget* >::const_iterator it;
-    for (it = mapWindow.begin(); it!=mapWindow.end(); it++)
+    for (it = mapWindow.begin(); it!=mapWindow.end(); ++it)
     {
         if (it->second == curTab) break;
     }
@@ -837,7 +841,7 @@ void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const 
     QString fullPath(graph->getFilename().c_str());
     if (fullPath.isEmpty())
     {
-        fullPath = QString(sofa::helper::system::DataRepository.getFile("share/config/newScene.scn").c_str());
+        fullPath = QString(sofa::helper::system::DataRepository.getFile("config/newScene.scn").c_str());
     }
     //Update the name of the tab
     {
@@ -1226,7 +1230,7 @@ void SofaModeler::sofaExited()
     removeTemporaryFiles(p->name());
     if (p->normalExit()) return;
     typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
-    for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); it++)
+    for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); ++it)
     {
         if (it->second == p)
         {

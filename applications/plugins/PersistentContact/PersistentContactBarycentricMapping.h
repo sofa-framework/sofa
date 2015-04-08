@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_H
 #define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTBARYCENTRICMAPPING_H
 
-#include <sofa/component/mapping/BarycentricMapping.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
 
 #include "PersistentContactMapping.h"
 #include "PersistentContact.h"

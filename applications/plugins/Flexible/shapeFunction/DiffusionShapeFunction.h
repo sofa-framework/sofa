@@ -599,7 +599,7 @@ protected:
 
             Data<t>* d = new Data<t>();
             d->setName(name_i);
-            d->setHelpMsg(help.c_str());
+            d->setHelp(help.c_str());
             d->setReadOnly(true);
 
             vf.push_back(d);

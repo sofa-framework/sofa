@@ -42,14 +42,16 @@
 #include "PMLInteractionForceField.h"
 #include "PMLMappedBody.h"
 
-#include "sofa/component/collision/DefaultPipeline.h"
-#include "sofa/component/collision/DefaultContactManager.h"
-#include "sofa/component/collision/NewProximityIntersection.h"
-#include "sofa/component/collision/BruteForceDetection.h"
-#include "sofa/component/collision/DefaultCollisionGroupManager.h"
+#include <SofaBaseCollision/DefaultPipeline.h>
+#include <SofaBaseCollision/DefaultContactManager.h>
+#include <SofaBaseCollision/NewProximityIntersection.h>
+#include <SofaBaseCollision/BruteForceDetection.h>
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 #include "sofa/simulation/common/VisualVisitor.h"
 #include "sofa/simulation/common/Simulation.h"
 #include "sofa/simulation/common/Node.h"
+
+using sofa::core::objectmodel::New;
 
 namespace sofa
 {

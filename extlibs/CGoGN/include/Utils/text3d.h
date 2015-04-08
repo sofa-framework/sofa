@@ -30,12 +30,14 @@
 
 namespace CGoGN { namespace Utils { namespace SVG { class SVGOut ; } } }
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 namespace Utils
 {
 
-class Strings3D : public GLSLShader
+class CGoGN_UTILS_API Strings3D : public GLSLShader
 {
 protected:
     static const unsigned int WIDTHFONT = 32;

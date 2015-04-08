@@ -67,4 +67,3 @@ void MyProjectiveConstraintSet<DataTypes>::reinit()
 }	//component
 
 }	//sofa
-

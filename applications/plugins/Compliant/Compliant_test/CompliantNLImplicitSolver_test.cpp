@@ -1,8 +1,8 @@
 #include <plugins/Compliant/numericalsolver/MinresSolver.h>
-#include <plugins/Compliant/numericalsolver/LDLTSolver.h>
+#include <plugins/Compliant/numericalsolver/EigenSparseSolver.h>
 #include <plugins/Compliant/Compliant_test/Compliant_test.h>
 #include <plugins/Compliant/odesolver/CompliantNLImplicitSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 using namespace sofa::modeling;

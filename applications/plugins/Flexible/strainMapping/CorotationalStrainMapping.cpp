@@ -38,7 +38,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(CorotationalStrainMapping);
+SOFA_DECL_CLASS(CorotationalStrainMapping)
 
 using namespace defaulttype;
 

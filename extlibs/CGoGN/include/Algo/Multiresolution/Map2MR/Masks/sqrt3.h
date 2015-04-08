@@ -48,10 +48,10 @@ class Sqrt3VertexVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& m_position ;
 
 public:
-	Sqrt3VertexVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	Sqrt3VertexVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)
@@ -123,10 +123,10 @@ class Sqrt3FaceVertexFunctor : public FunctorType
 {
 protected:
 	typename PFP::MAP& m_map ;
-	VertexAttribute<typename PFP::VEC3>& m_position ;
+	VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& m_position ;
 
 public:
-	Sqrt3FaceVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3>& p) : m_map(m), m_position(p)
+	Sqrt3FaceVertexFunctor(typename PFP::MAP& m, VertexAttribute<typename PFP::VEC3, typename PFP::MAP>& p) : m_map(m), m_position(p)
 	{}
 
 	bool operator() (Dart d)

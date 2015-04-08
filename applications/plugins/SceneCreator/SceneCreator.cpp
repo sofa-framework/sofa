@@ -29,7 +29,7 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 
 
 //Including Simulation
@@ -40,29 +40,29 @@
 #include "GetAssembledSizeVisitor.h"
 
 //Including Solvers and linear algebra
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/linearsolver/FullVector.h>
-#include <sofa/component/loader/MeshObjLoader.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaBaseLinearSolver/FullVector.h>
+#include <SofaLoader/MeshObjLoader.h>
 
 //Including components for collision detection
-#include <sofa/component/collision/DefaultPipeline.h>
-#include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
-#include <sofa/component/collision/BruteForceDetection.h>
-#include <sofa/component/collision/MinProximityIntersection.h>
+#include <SofaBaseCollision/DefaultPipeline.h>
+#include <SofaBaseCollision/DefaultContactManager.h>
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
+#include <SofaBaseCollision/BruteForceDetection.h>
+#include <SofaBaseCollision/MinProximityIntersection.h>
 
 //Including Collision Models
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/CapsuleModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/CapsuleModel.h>
 
 //Including Visual Models
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/visualmodel/OglModel.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaOpenglVisual/OglModel.h>
 
 namespace sofa
 {
@@ -387,7 +387,7 @@ simulation::Node::SPtr massSpringString
     std::ostringstream oss;
     oss << "string_" << numObject++;
 
-    Vec3d startPoint(x0,y0,z0), endPoint(x1,y1,z1);
+    sofa::defaulttype::Vec3d startPoint(x0,y0,z0), endPoint(x1,y1,z1);
     SReal totalLength = (endPoint-startPoint).norm();
 
     //--------

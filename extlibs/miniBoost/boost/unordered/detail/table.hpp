@@ -459,6 +459,9 @@ namespace boost { namespace unordered { namespace detail {
             // According to 23.2.1.8, if propagate_on_container_swap is
             // false the behaviour is undefined unless the allocators
             // are equal.
+
+            //SOFA Fixe: force usage of other when assertion are disabled.to avoid warning.
+            other.node_alloc();
             BOOST_ASSERT(node_alloc() == other.node_alloc());
         }
 

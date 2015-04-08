@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAPENALITYCONTACTFORCEFIELD_INL
 
 #include "CudaPenalityContactForceField.h"
-#include <sofa/component/interactionforcefield/PenalityContactForceField.inl>
+#include <SofaObjectInteraction/PenalityContactForceField.inl>
 
 
 namespace sofa
@@ -134,7 +134,7 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2)
+void PenalityContactForceField<CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f1, DataVecDeriv& d_f2, const DataVecCoord& d_x1, const DataVecCoord& d_x2, const DataVecDeriv& d_v1, const DataVecDeriv& d_v2)
 {
     VecDeriv& f1 = *d_f1.beginEdit();
     const VecCoord& x1 = d_x1.getValue();
@@ -174,7 +174,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addForce(const core::MechanicalP
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2)
+void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df1, DataVecDeriv& d_df2, const DataVecDeriv& d_dx1, const DataVecDeriv& d_dx2)
 {
     VecDeriv& df1 = *d_df1.beginEdit();
     const VecDeriv& dx1 = d_dx1.getValue();
@@ -211,7 +211,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addDForce(const core::Mechanical
 }
 
 //template<>
-double PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord&, const DataVecCoord& ) const
+SReal PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const
 {
     serr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -221,8 +221,8 @@ double PenalityContactForceField<CudaVec3fTypes>::getPotentialEnergy(const core:
 void PenalityContactForceField<CudaVec3fTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!((this->mstate1 == this->mstate2)?  vparams->displayFlags().getShowForceFields():vparams->displayFlags().getShowInteractionForceFields())) return;
-    const VecCoord& p1 = *this->mstate1->getX();
-    const VecCoord& p2 = *this->mstate2->getX();
+    const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     glDisable(GL_LIGHTING);
 
     glBegin(GL_LINES);

@@ -69,10 +69,6 @@ public:
     typedef Data<VecCoord> DataVecCoord;
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
-#ifndef SOFA_DEPRECATE_OLD_API
-    typedef typename MatrixDeriv::RowIterator MatrixDerivRowIterator;
-    typedef typename MatrixDeriv::RowType MatrixDerivRowType;
-#endif
 protected:
     ProjectiveConstraintSet(MechanicalState<DataTypes> *mm = NULL);
 
@@ -82,6 +78,15 @@ public:
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     virtual void init();
+
+    
+    virtual helper::vector< core::BaseState* > getModels()
+    {
+        helper::vector< core::BaseState* > models;
+        models.push_back( getMState() );
+        return models;
+    }
+
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return mstate.get(); }
@@ -94,28 +99,28 @@ public:
     /// This method retrieves the dxId vector from the MechanicalState and call
     /// the internal projectResponse(VecDeriv&) method implemented by
     /// the component.
-    virtual void projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dxId);
+    virtual void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId);
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///
     /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
     /// the internal projectResponse(MatrixDeriv&) method implemented by
     /// the component.
-    virtual void projectJacobianMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, MultiMatrixDerivId cId);
+    virtual void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId);
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method retrieves the vId vector from the MechanicalState and call
     /// the internal projectVelocity(VecDeriv&) method implemented by
     /// the component.
-    virtual void projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vId);
+    virtual void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId);
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method retrieves the xId vector from the MechanicalState and call
     /// the internal projectPosition(VecCoord&) method implemented by
     /// the component.
-    virtual void projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId xId);
+    virtual void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId);
 
 
 
@@ -123,105 +128,38 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectResponse() method.
-    virtual void projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        projectResponse(*dx.beginEdit(mparams));
-        dx.endEdit(mparams);
-    }
-    /// @deprecated use instead projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dx)
-    virtual void projectResponse(VecDeriv& /*dx*/) {}
-#endif
+    virtual void projectResponse(const MechanicalParams* mparams, DataVecDeriv& dx) = 0;
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectVelocity() method.
-    virtual void projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& v)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        projectVelocity(*v.beginEdit(mparams));
-        v.endEdit(mparams);
-    }
-    /// @deprecated use instead projectVelocity(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& v)
-    virtual void projectVelocity(VecDeriv& /*v*/) {}
-#endif
-
+    virtual void projectVelocity(const MechanicalParams* mparams, DataVecDeriv& v) = 0;
     /// Project x to constrained space (x models a position).
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ProjectiveConstraintSet::projectPosition() method.
-    virtual void projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        projectPosition(*x.beginEdit(mparams));
-        x.endEdit(mparams);
-    }
-    /// @deprecated use instead  projectPosition(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecCoord& x)
-    virtual void projectPosition(VecCoord& /*x*/) {}
-#endif
+    virtual void projectPosition(const MechanicalParams* mparams, DataVecCoord& x) = 0;
 
     /// Project c to constrained space (c models a constraint).
     ///
     /// This method must be implemented by the component to handle Lagrange Multiplier based constraint
-    virtual void projectJacobianMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataMatrixDeriv& cData)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        helper::WriteAccessor<DataMatrixDeriv> c = cData;
-
-        MatrixDerivRowIterator rowIt = c->begin();
-        MatrixDerivRowIterator rowItEnd = c->end();
-
-        while (rowIt != rowItEnd)
-        {
-            projectResponse(rowIt.row());
-            ++rowIt;
-        }
-    }
-    /// @deprecated use instead projectResponse(const MechanicalParams* mparams /* PARAMS FIRST */, Data< MatrixDeriv >& c)
-    virtual void projectResponse(MatrixDerivRowType& /*c*/) {}
-#endif
+    virtual void projectJacobianMatrix(const MechanicalParams* /*mparams*/, DataMatrixDeriv& cData) = 0;
 
     /// @}
 
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    /// @deprecated
-    virtual void applyConstraint(defaulttype::BaseMatrix* /*matrix*/, unsigned int /*offset*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {
+        serr << "applyConstraint(mparams, matrix) not implemented" << sendl;
     }
 
-    /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-    {
-        MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
-        if (r)
-            applyConstraint(r.matrix, r.offset);
-    }
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    /// @deprecated
-    virtual void applyConstraint(defaulttype::BaseVector* /*vector*/, unsigned int /*offset*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
     {
-    }
-
-    /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* mparams /* PARAMS FIRST */, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
-    {
-        int o = matrix->getGlobalOffset(this->mstate.get(mparams));
-        if (o >= 0)
-        {
-            unsigned int offset = (unsigned int)o;
-            applyConstraint(vector, offset);
-        }
+        serr << "applyConstraint(mparams, vector, matrix) not implemented" << sendl;
     }
 
     /// Pre-construction check method called by ObjectFactory.

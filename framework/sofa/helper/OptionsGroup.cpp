@@ -131,6 +131,11 @@ unsigned int OptionsGroup::getSelectedId() const
 ///////////////////////////////////////
 const std::string& OptionsGroup::getSelectedItem() const
 {
+	if (textItems.empty())
+	{
+		static std::string empty;
+		return empty;
+	}
     return textItems[selectedItem];
 }
 ///////////////////////////////////////
@@ -142,7 +147,8 @@ void OptionsGroup::readFromStream(std::istream & stream)
     if (id_stringinButtonList == -1)
     {
         int idx=atoi(tempostring.c_str());
-        if (idx >=0 && idx < (int)size()) setSelectedItem(idx);
+        if (idx >=0 && idx < (int)size()) 
+			setSelectedItem(idx);
         else
             std::cerr<<"WARNING(OptionsGroup) : \""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\""<< std::endl;
     }

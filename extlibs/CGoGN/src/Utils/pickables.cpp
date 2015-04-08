@@ -21,15 +21,14 @@
  * Contact information: cgogn@unistra.fr                                        *
  *                                                                              *
  *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/pickables.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/norm.hpp"
 #include "Geometry/distances.h"
 #include "Geometry/intersection.h"
 #include <algorithm>
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include <cmath>
 
 namespace CGoGN
 {

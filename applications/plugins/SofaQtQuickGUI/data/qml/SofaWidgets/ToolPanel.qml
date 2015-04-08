@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
 import SofaBasics 1.0
 import SofaTools 1.0
@@ -10,7 +10,7 @@ Rectangle {
     clip: true
     color: "lightgrey"
 
-    property Scene scene
+    property var scene
 
     FolderListModel {
         id: folderListModel
@@ -36,7 +36,7 @@ Rectangle {
 
             var contentComponent = Qt.createComponent(source);
             if(contentComponent.status === Component.Error) {
-                console.log("LOADING ERROR:", contentComponent.errorString());
+                console.error("LOADING ERROR:", contentComponent.errorString());
             } else {
                 contentList.push(contentComponent.createObject(root, {"Layout.fillWidth": true, "scene": scene}));
             }
@@ -55,7 +55,7 @@ Rectangle {
             return 0;
         });
 
-        contextMenu = Qt.createQmlObject("import QtQuick.Controls 1.2; Menu {title: 'Tools'}", root, "contextMenu");
+        contextMenu = Qt.createQmlObject("import QtQuick.Controls 1.3; Menu {title: 'Tools'}", root, "contextMenu");
         for(var i = 0; i < contentList.length; ++i)
         {
             contentList[i].parent = loaderLocation;
@@ -78,6 +78,7 @@ Rectangle {
         ScrollView {
             id: scrollView
             anchors.fill: parent
+            //horizontalScrollBarPolicy: Qt.ScrollBarAsNeeded
 
             Flickable {
                 id: flickable

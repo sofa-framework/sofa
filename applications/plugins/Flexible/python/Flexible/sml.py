@@ -1,11 +1,12 @@
 from SofaPython.Tools import listToStr as concat
 import SofaPython.sml
-import StructuralAPI
+import Flexible.API
 
 def insertDeformableWithSkinning(parentNode, deformableModel, bonesPath, bonesId):
     print "deformable:", deformableModel.name
-    deformable=StructuralAPI.Deformable(parentNode, deformableModel.name)
-    deformable.setMesh(deformableModel.position, deformableModel.mesh.source)
+    deformable=Flexible.API.Deformable(parentNode, deformableModel.name)
+    # TODO: handle multiple meshes
+    deformable.addMesh(deformableModel.mesh[0].source,deformableModel.position)
     deformable.addVisual()
     
     if len(deformableModel.skinnings)>0:
@@ -13,7 +14,7 @@ def insertDeformableWithSkinning(parentNode, deformableModel, bonesPath, bonesId
         indices = dict()
         weights = dict()
         for s in deformableModel.skinnings:
-            currentBoneIndex = bonesId.index(s.rigid.id)
+            currentBoneIndex = bonesId.index(s.solid.id)
             for index,weight in zip(s.index, s.weight):
                 if not index in indices:
                     indices[index]=list()

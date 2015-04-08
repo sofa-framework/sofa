@@ -38,12 +38,12 @@ Then compare data pointers to see if data link duplicates the datas.
 struct DataImageLink_test : public Sofa_test<>
 {
     // Image Container
-    typedef sofa::component::container::ImageContainer< Image<unsigned char> > ImageContainer;
+    typedef sofa::component::container::ImageContainer< defaulttype::Image<unsigned char> > ImageContainer;
     ImageContainer::SPtr imageContainer;
 
     // 2 data images
-    core::objectmodel::Data< Image<unsigned char> > data1;
-    core::objectmodel::Data< Image<unsigned char> > data2;
+    core::objectmodel::Data< defaulttype::Image<unsigned char> > data1;
+    core::objectmodel::Data< defaulttype::Image<unsigned char> > data2;
 
     /// Create a link between the two images
     void SetUp()

@@ -6,7 +6,7 @@ set(SOURCE_FILES
     defaulttype/MatTypesTest.cpp
     helper/system/atomicTest.cpp
     helper/system/FileSystemTest.cpp
-    helper/system/UtilsTest.cpp
+    helper/UtilsTest.cpp
     core/objectmodel/AspectPoolTest.cpp
     core/loader/MeshLoader_test.cpp)
 

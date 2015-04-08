@@ -33,7 +33,8 @@ endif()
 
 add_library(${PROJECT_NAME} ${SOFA_LIB_TYPE} ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 AddCompilerDefinitions("SOFA_BUILD_REGISTRATION")
-AddLinkerDependencies(SofaGuiQt)
+AddLinkerDependencies(SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
+#AddLinkerDependencies(SofaGuiQt)
 
 
 include(${SOFA_CMAKE_DIR}/postProject.cmake)

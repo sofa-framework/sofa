@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include "SofaViewer.h"
 #include <sofa/helper/Factory.inl>
-#include <sofa/component/visualmodel/VisualStyle.h>
+#include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa

@@ -30,6 +30,8 @@
 #include "Utils/Shaders/shaderTextureDepth.h"
 #include "Utils/gl_def.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
@@ -39,7 +41,7 @@ namespace Utils
 /**
  * Static class that can be used to "stick" textures easily on the screen.
  */
-class TextureSticker
+class CGoGN_UTILS_API TextureSticker
 {
 
 private :

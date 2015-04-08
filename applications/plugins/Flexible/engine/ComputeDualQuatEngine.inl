@@ -98,8 +98,8 @@ void ComputeDualQuatEngine< DataTypes >::update()
         DualQuat dualQuat( p );
 
         // Insert into the output
-        sofa::helper::Vec<4,Real> orientation = dualQuat.getOrientation();
-        sofa::helper::Vec<4,Real> dual = dualQuat.getDual();
+        sofa::defaulttype::Vec<4,Real> orientation = dualQuat.getOrientation();
+        sofa::defaulttype::Vec<4,Real> dual = dualQuat.getDual();
         dualQuats.push_back( defaulttype::Vec4f( orientation[0], orientation[1], orientation[2], orientation[3] ) );
         dualQuats.push_back( defaulttype::Vec4f( dual[0], dual[1], dual[2], dual[3] ) );
     }

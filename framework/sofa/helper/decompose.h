@@ -249,6 +249,22 @@ public:
     static void PSDProjection( defaulttype::Mat<2,2,Real> &A );
     static void PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 );
 
+    // does nothing, for template compatibility
+    static void PSDProjection( defaulttype::Mat<1,1,Real> & ) {}
+
+
+
+    /// project a symmetric 3x3 matrix to the nearest NSD (symmetric, negative semi-definite)
+    static void NSDProjection( defaulttype::Mat<3,3,Real> &A );
+
+    /// project a symmetric 2x2 matrix to the nearest NSD (symmetric, negative semi-definite)
+    static void NSDProjection( defaulttype::Mat<2,2,Real> &A );
+    static void NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 );
+
+    // does nothing, for template compatibility
+    static void NSDProjection( defaulttype::Mat<1,1,Real> & ) {}
+
+
     /** @} */
 
     /// threshold for zero comparison (1e-6 for float and 1e-8 for double)

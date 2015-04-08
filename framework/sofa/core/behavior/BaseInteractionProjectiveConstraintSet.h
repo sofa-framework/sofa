@@ -58,6 +58,16 @@ public:
     /// \todo Rename to getMechState2()
     /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
     virtual BaseMechanicalState* getMechModel2() = 0;
+
+
+    virtual helper::vector< core::BaseState* > getModels()
+    {
+        helper::vector< core::BaseState* > models;
+        models.push_back( getMechModel1() );
+        models.push_back( getMechModel2() );
+        return models;
+    }
+
 };
 
 } // namespace behavior

@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include <GL/glew.h>
 #include "Utils/Shaders/shaderSimpleTexture.h"
 
@@ -48,7 +48,7 @@ namespace Utils
 //
 //
 //std::string ShaderSimpleTexture::fragmentShaderText =
-//		"PRECISON;\n"
+//		"PRECISION;\n"
 //		"VARYING_FRAG vec2 texCoord;\n"
 //		"uniform sampler2D textureUnit;\n"
 //		"FRAG_OUT_DEF;\n"
@@ -60,10 +60,10 @@ namespace Utils
 
 ShaderSimpleTexture::ShaderSimpleTexture()
 {
-	std::string glxvert(*GLSLShader::DEFINES_GL);
+	std::string glxvert(GLSLShader::defines_gl());
 	glxvert.append(vertexShaderText);
 
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
+	std::string glxfrag(GLSLShader::defines_gl());
 	glxfrag.append(fragmentShaderText);
 
 	loadShadersFromMemory(glxvert.c_str(), glxfrag.c_str());

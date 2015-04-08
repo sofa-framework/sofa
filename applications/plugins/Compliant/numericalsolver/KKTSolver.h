@@ -5,7 +5,7 @@
 #include "../assembly/AssembledSystem.h"
 
 #include <sofa/core/behavior/LinearSolver.h>
-
+#include "../utils/eigen_types.h"
 
 namespace sofa {
 namespace component {
@@ -15,19 +15,16 @@ namespace linearsolver {
 /// Solver for an AssembledSystem (could be non-linear in case of
 /// inequalities). This will eventually serve as a base class for
 /// all kinds of derived solver (sparse cholesky, minres, qp)
-class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver {
+class SOFA_Compliant_API KKTSolver : public core::behavior::BaseLinearSolver,
+                                     public utils::eigen_types {
   public:
-	SOFA_CLASS(KKTSolver, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(KKTSolver, core::objectmodel::BaseObject);
 
 	// solve the KKT system: \mat{ M - h^2 K & J^T \\ J, -C } x = rhs
 	// (watch out for the compliance scaling)
 	
 	typedef AssembledSystem system_type;
 	
-	typedef system_type::real real;
-    typedef system_type::vec vec;
-    typedef system_type::mat mat;
-
     Data<bool> debug; ///< print debug info
 
     KKTSolver() : debug(initData(&debug,false,"debug","print debug info")) {}

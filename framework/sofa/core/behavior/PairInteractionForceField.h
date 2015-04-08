@@ -105,7 +105,20 @@ public:
     /// This method retrieves the force, x and v vector from the two MechanicalState
     /// and call the internal addForce(VecDeriv&,VecDeriv&,const VecCoord&,const VecCoord&,const VecDeriv&,const VecDeriv&)
     /// method implemented by the component.
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId );
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId );
+
+    /// Given the current position and velocity states, update the current force
+    /// vector by computing and adding the forces associated with this
+    /// ForceField.
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// $ f += B v + K x $
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic ForceField::addForce() method.
+
+    virtual void addForce(const MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )=0;
+
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -118,36 +131,9 @@ public:
     /// $ df += kFactor K dx + bFactor B dx $
     ///
     /// This method retrieves the force and dx vector from the two MechanicalState
-    /// and call the internal addDForce(VecDeriv&,VecDeriv&,const VecDeriv&,const VecDeriv&,double,double)
+    /// and call the internal addDForce(VecDeriv&,VecDeriv&,const VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId );
-
-
-    /// Get the potential energy associated to this ForceField.
-    ///
-    /// Used to extimate the total energy of the system by some
-    /// post-stabilization techniques.
-    ///
-    /// This method retrieves the x vector from the MechanicalState and call
-    /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
-    /// the component.
-    virtual double getPotentialEnergy(const MechanicalParams* mparams) const;
-
-    /// Given the current position and velocity states, update the current force
-    /// vector by computing and adding the forces associated with this
-    /// ForceField.
-    ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ f += B v + K x $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic ForceField::addForce() method.
-
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2 )=0;
-
-    /// @deprecated
-    //virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-
+    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId );
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -166,29 +152,18 @@ public:
     /// without scalar coefficients, it defaults to using a temporaty vector to
     /// compute $ K dx $ and then manually scaling all values by kFactor.
 
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)=0;
+    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2)=0;
 
-    /// @deprecated
-    //virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double /*bFactor*/);
 
-    /// Compute the force derivative given a small displacement from the
-    /// position and velocity used in the previous call to addForce().
+    /// Get the potential energy associated to this ForceField.
     ///
-    /// The derivative should be directly derived from the computations
-    /// done by addForce. Any forces neglected in addDForce will be integrated
-    /// explicitly (i.e. using its value at the beginning of the timestep).
+    /// Used to extimate the total energy of the system by some
+    /// post-stabilization techniques.
     ///
-    /// If the ForceField can be represented as a matrix, this method computes
-    /// $ df += K dx $
-    ///
-    /// This method must be implemented by the component, and is usually called
-    /// by the generic PairInteractionForceField::addDForce() method.
-    ///
-    /// @deprecated to more efficiently accumulate contributions from all terms
-    ///   of the system equation, a new addDForce method allowing to pass two
-    ///   coefficients for the stiffness and damping terms should now be used.
-    /// @deprecated
-    //virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
+    /// This method retrieves the x vector from the MechanicalState and call
+    /// the internal getPotentialEnergy(const VecCoord&,const VecCoord&) method implemented by
+    /// the component.
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams) const;
 
     /// Get the potential energy associated to this ForceField.
     ///
@@ -198,10 +173,12 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x1, const DataVecCoord& x2) const=0;
 
-    /// @deprecated
-    //virtual double getPotentialEnergy(const VecCoord& x1, const VecCoord& x2) const;
+
+
+
+
 
     /// @}
 
@@ -216,15 +193,14 @@ public:
         std::string object2 = arg->getAttribute("object2","@./");
         if (object1.empty()) object1 = "@./";
         if (object2.empty()) object2 = "@./";
-        if (object1[0] != '@')
-            object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
-        if (object2[0] != '@')
-            object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
+
         context->findLinkDest(mstate1, object1, NULL);
         context->findLinkDest(mstate2, object2, NULL);
 
         if (!mstate1 || !mstate2)
+        {
             return false;
+        }
 
         return BaseInteractionForceField::canCreate(obj, context, arg);
     }
@@ -242,17 +218,14 @@ public:
         {
             std::string object1 = arg->getAttribute("object1","");
             std::string object2 = arg->getAttribute("object2","");
-            if (!object1.empty() && object1[0] != '@')
+            if (!object1.empty())
             {
-                object1 = BaseLink::ConvertOldPath(object1, "object1", "object1", context, false);
                 arg->setAttribute("object1", object1.c_str());
             }
-            if (!object2.empty() && object2[0] != '@')
+            if (!object2.empty())
             {
-                object2 = BaseLink::ConvertOldPath(object2, "object2", "object2", context, false);
                 arg->setAttribute("object2", object2.c_str());
             }
-
             obj->parse(arg);
         }
 
@@ -288,6 +261,7 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CORE)
 #ifndef SOFA_FLOAT
+extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec6dTypes>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec3dTypes>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec2dTypes>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec1dTypes>;
@@ -296,6 +270,7 @@ extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Rigid
 #endif
 
 #ifndef SOFA_DOUBLE
+extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec6fTypes>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec3fTypes>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec2fTypes>;
 extern template class SOFA_CORE_API PairInteractionForceField<defaulttype::Vec1fTypes>;

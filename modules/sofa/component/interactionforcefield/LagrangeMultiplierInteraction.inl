@@ -28,7 +28,7 @@
 #include <sofa/component/interactionforcefield/LagrangeMultiplierInteraction.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/component/linearsolver/FullVector.h>
+#include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>

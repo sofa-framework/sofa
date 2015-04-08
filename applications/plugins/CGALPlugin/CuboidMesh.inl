@@ -118,16 +118,12 @@ void CuboidMesh<DataTypes>::update()
 
 #ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
     unsigned count = 0;
-    double dif = 0;
 #endif
 
     //generate the points
     std::cout << "generate points..." << std::endl;
     //hexa vertices
     m_nbVertices = 0;
-#ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
-    count = 0;
-#endif
     for(int k = -m; k <= m; k+=2)
     {
         for(int j = -2*n; j <= 2*n; j+=2)
@@ -243,7 +239,8 @@ void CuboidMesh<DataTypes>::update()
         std::cout << "num of bdVertices = " << m_nbBdVertices << std::endl;
 
 #ifdef SOFA_CGALPLUGIN_CUBOIDMESH_DEBUG
-        count = 0, dif = 0;
+        double dif=0;
+        count = 0;
         for(int k = -(m+2); k >= -(m+2*n); k-=2)
         {
             for(int j = -(2*n+m+k); j <= (2*n+m+k); j+=2)

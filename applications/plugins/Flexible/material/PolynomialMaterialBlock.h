@@ -137,7 +137,7 @@ class PolynomialMaterialBlock< I331(_Real) >:
             f.getStrain()[2] += 2./3.*C10Vol*x.getStrain()[0]*Jm53 + 4./3.*C01Vol*x.getStrain()[1]*Jm73 + 4./3.*C20Vol*x.getStrain()[0]*x.getStrain()[0]*Jm73 - 4.*C20Vol*x.getStrain()[0]*Jm53 + 8./3.*C02Vol*x.getStrain()[1]*x.getStrain()[1]*Jm113 - 8.*C02Vol*x.getStrain()[1]*Jm73 + 2.*C30Vol*x.getStrain()[0]*x.getStrain()[0]*x.getStrain()[0]*Jm3 - 12.*C30Vol*x.getStrain()[0]*x.getStrain()[0]*Jm73 + 18.*C30Vol*x.getStrain()[0]*Jm53 + 4.*C03Vol*x.getStrain()[1]*x.getStrain()[1]*x.getStrain()[1]*Jm5 - 24.*C03Vol*x.getStrain()[1]*x.getStrain()[1]*Jm113 + 36.*C03Vol*x.getStrain()[1]*Jm73 + 2.*C11Vol*x.getStrain()[0]*Jm3*x.getStrain()[1] - 2.*C11Vol*x.getStrain()[0]*Jm53 - 4.*C11Vol*x.getStrain()[1]*Jm73 - bulkVol*x.getStrain()[2] + bulkVol;
         }
 
-        void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& /*bfactor*/ ) const
+        void addDForce( Deriv&   df, const Deriv&   dx, const SReal& kfactor, const SReal& /*bfactor*/ ) const
         {
             df.getStrain()+=K*dx.getStrain()*kfactor;
         }

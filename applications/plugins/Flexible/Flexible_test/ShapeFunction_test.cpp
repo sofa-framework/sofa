@@ -95,14 +95,14 @@ namespace sofa {
 
             // Get Image container
             typedef typename component::container::ImageContainer<ImageUC> ImageContainer;
-            BaseContext* rootNode = this->root.get();
+            core::objectmodel::BaseContext* rootNode = this->root.get();
             typename ImageContainer::SPtr imageContainerSptr = rootNode->get<ImageContainer >(sofa::core::objectmodel::BaseContext::SearchDown);
 
             // Voronoi Shape Function
             if(shapeFunctionCase == 0)
             {
                 typedef component::shapefunction::VoronoiShapeFunction<ShapeFunctionType,ImageUC> VoronoiShapeFunction;
-                VoronoiShapeFunction::SPtr voronoiShapeFctSptr = addNew <VoronoiShapeFunction> (patchNode,"shapeFunction");
+                VoronoiShapeFunction::SPtr voronoiShapeFctSptr = modeling::addNew <VoronoiShapeFunction> (patchNode,"shapeFunction");
                 sofa::modeling::setDataLink(&Inherited::inDofs->x0,&voronoiShapeFctSptr->f_position);
 
                 //std::cout << "voronoiShapeFctSptr->f_position size = " << voronoiShapeFctSptr->f_position.getValue().size() << std::endl;
@@ -119,7 +119,7 @@ namespace sofa {
             else if (shapeFunctionCase == 1)
             {
                 typedef component::shapefunction::DiffusionShapeFunction<ShapeFunctionType,ImageUC> DiffusionShapeFunction;
-                DiffusionShapeFunction::SPtr diffusionShapeFctSptr = addNew <DiffusionShapeFunction> (patchNode,"shapeFunction");
+                DiffusionShapeFunction::SPtr diffusionShapeFctSptr = modeling::addNew <DiffusionShapeFunction> (patchNode,"shapeFunction");
                 sofa::modeling::setDataLink(&Inherited::inDofs->x0,&diffusionShapeFctSptr->f_position);
                 diffusionShapeFctSptr->setSrc("@"+imageContainerSptr->getName(), imageContainerSptr.get());
 
@@ -129,7 +129,7 @@ namespace sofa {
             else if (shapeFunctionCase == 2)
             {
                 typedef component::shapefunction::ShepardShapeFunction<ShapeFunctionType> ShepardShapeFunction;
-                ShepardShapeFunction::SPtr shepardShapeFctSptr = addNew <ShepardShapeFunction> (patchNode,"shapeFunction");
+                ShepardShapeFunction::SPtr shepardShapeFctSptr = modeling::addNew <ShepardShapeFunction> (patchNode,"shapeFunction");
                 sofa::modeling::setDataLink(&Inherited::inDofs->x0,&shepardShapeFctSptr->f_position);
                 shepardShapeFctSptr->power.setValue(2);
                 shepardShapeFctSptr->f_nbRef.setValue(10);
@@ -139,11 +139,11 @@ namespace sofa {
             else if (shapeFunctionCase == 3)
             {
                 typedef component::shapefunction::HatShapeFunction<ShapeFunctionType> HatShapeFunction;
-                HatShapeFunction::SPtr hatShapeFctSptr = addNew <HatShapeFunction> (patchNode,"shapeFunction");
+                HatShapeFunction::SPtr hatShapeFctSptr = modeling::addNew <HatShapeFunction> (patchNode,"shapeFunction");
                 sofa::modeling::setDataLink(&Inherited::inDofs->x0,&hatShapeFctSptr->f_position);
                 hatShapeFctSptr->f_nbRef.setValue(10);
                 typedef component::engine::ShapeFunctionDiscretizer<ImageUC> ShapeFunctionDiscretizer;
-                ShapeFunctionDiscretizer::SPtr shapeFunctionDiscretizerSPtr = addNew <ShapeFunctionDiscretizer> (patchNode,"shapeFunctionDiscretizer");
+                ShapeFunctionDiscretizer::SPtr shapeFunctionDiscretizerSPtr = modeling::addNew <ShapeFunctionDiscretizer> (patchNode,"shapeFunctionDiscretizer");
                 shapeFunctionDiscretizerSPtr->setSrc("@"+imageContainerSptr->getName(), imageContainerSptr.get());
             }
 

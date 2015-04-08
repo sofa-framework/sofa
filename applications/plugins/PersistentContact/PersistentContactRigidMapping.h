@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_H
 #define SOFA_COMPONENT_MAPPING_PERSISTENTCONTACTRIGIDMAPPING_H
 
-#include <sofa/component/mapping/RigidMapping.h>
+#include <SofaRigid/RigidMapping.h>
 
 #include "PersistentContactMapping.h"
 #include "PersistentContact.h"

@@ -3,58 +3,48 @@ Ns 30
 Ka 0 0 0
 Kd 0.470573 0.337255 0.239216
 Ks 0.00784314 0.00784314 0.00784314
-map_Kd male casual texture.tif
 newmtl shoes
 Ns 30
 Ka 0 0 0
 Kd 0.117647 0.0784314 0.0352941
 Ks 0.168627 0.168627 0.168627
-map_Kd male casual texture.tif
 newmtl souls
 Ns 30
 Ka 0 0 0
 Kd 0.105882 0.0666667 0.0313726
 Ks 0.0196078 0.0196078 0.0196078
-map_Kd male casual texture.tif
 newmtl shirt
 Ns 30
 Ka 0 0 0
 Kd 0.454902 0.188235 0.160784
 Ks 0 0 0
-map_Kd male casual texture.tif
 newmtl skin
 Ns 30
 Ka 0 0 0
 Kd 0.831373 0.607843 0.52549
 Ks 0.0117647 0.0117647 0.0117647
-map_Kd male casual texture.tif
 newmtl belt
 Ns 30
 Ka 0 0 0
 Kd 0.0156863 0.0156863 0.0156863
 Ks 0.192157 0.192157 0.192157
-map_Kd male casual texture.tif
 newmtl lips
 Ns 30
 Ka 0 0 0
 Kd 0.619608 0.423529 0.372549
 Ks 0.0941176 0.0941176 0.0941176
-map_Kd male casual texture.tif
 newmtl eyeBall
 Ns 30
 Ka 0 0 0
 Kd 1 0.870588 0.811765
 Ks 0.0431373 0.0431373 0.0431373
-map_Kd male casual texture.tif
 newmtl iris
 Ns 30
 Ka 0 0 0
 Kd 0.552941 0.368627 0.32549
 Ks 0.45098 0.45098 0.45098
-map_Kd male casual texture.tif
 newmtl pupil
 Ns 30
 Ka 0 0 0
 Kd 0.0941176 0.0941176 0.0941176
 Ks 0.121569 0.121569 0.121569
-map_Kd male casual texture.tif

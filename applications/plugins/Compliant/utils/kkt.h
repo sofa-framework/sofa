@@ -19,7 +19,7 @@ struct kkt {
     typedef sofa::component::linearsolver::AssembledSystem sys_type;
 
 	typedef sys_type::real real;
-	typedef sys_type::mat mat;
+    typedef sys_type::rmat rmat;
 	typedef sys_type::vec vec;
 
 	struct matrixQ {
@@ -211,7 +211,7 @@ public:
 struct kkt_opt {
 	typedef sofa::component::linearsolver::AssembledSystem sys_type;
 	
-	typedef sys_type::mat mat;
+    typedef sys_type::rmat rmat;
 	typedef sys_type::vec vec;
 	
 	const sys_type& sys;

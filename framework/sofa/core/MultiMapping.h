@@ -113,153 +113,56 @@ public:
     ///
     /// If the Mapping can be represented as a matrix \f$ J \f$, this method computes
     /// \f$ out = J in \f$
-    virtual void apply (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecCoordId outPos, ConstMultiVecCoordId inPos );
+    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos );
 
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
     /// The size of InPos vector is the same as the number of fromModels.
     /// The size of OutPos vector is the same as the number of OutModels.
-    virtual void apply(const MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        //Not optimized at all...
-        helper::vector<OutVecCoord*> vecOutPos;
-        for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-            vecOutPos.push_back(dataVecOutPos[i]->beginEdit(mparams));
-
-        helper::vector<const InVecCoord*> vecInPos;
-        for(unsigned int i=0; i<dataVecInPos.size(); i++)
-            vecInPos.push_back(&dataVecInPos[i]->getValue(mparams));
-
-        this->apply(vecOutPos, vecInPos);
-
-        //Really Not optimized at all...
-        for(unsigned int i=0; i<dataVecOutPos.size(); i++)
-            dataVecOutPos[i]->endEdit(mparams);
-
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void apply(const helper::vector<OutVecCoord*>&  /* outPos */, const helper::vector<const InVecCoord*>& /* inPos */) {}
-#endif //SOFA_DEPRECATE_OLD_API
+    virtual void apply(const MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) = 0;
 
     /// ApplyJ ///
     /// Apply the mapping to derived (velocity, displacement) vectors.
     /// \f$ out = J in \f$
     /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJ (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
+    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJ(const MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        //Not optimized at all...
-        helper::vector<OutVecDeriv*> vecOutVel;
-        for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-            vecOutVel.push_back(dataVecOutVel[i]->beginEdit(mparams));
-
-        helper::vector<const InVecDeriv*> vecInVel;
-        for(unsigned int i=0; i<dataVecInVel.size(); i++)
-            vecInVel.push_back(&dataVecInVel[i]->getValue(mparams));
-
-        this->applyJ(vecOutVel, vecInVel);
-
-        //Really Not optimized at all...
-        for(unsigned int i=0; i<dataVecOutVel.size(); i++)
-            dataVecOutVel[i]->endEdit(mparams);
-
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void applyJ(const helper::vector< OutVecDeriv*>& /* outDeriv */, const helper::vector<const InVecDeriv*>& /* inDeriv */) {}
-#endif //SOFA_DEPRECATE_OLD_API
+    virtual void applyJ(const MechanicalParams* mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) = 0;
 
     /// ApplyJT (Force)///
     /// Apply the reverse mapping to force vectors.
     /// \f$ out += J^t in \f$
     /// where \f$ J \f$ is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJT (const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
+    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce );
 
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
     /// The size of OutDeriv vector is the same as the number of OutModels.
-    virtual void applyJT(const MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    {
-        //Not optimized at all...
-        helper::vector<InVecDeriv*> vecOutForce;
-        for(unsigned int i=0; i<dataVecOutForce.size(); i++)
-            vecOutForce.push_back(dataVecOutForce[i]->beginEdit(mparams));
-
-        helper::vector<const OutVecDeriv*> vecInForce;
-        for(unsigned int i=0; i<dataVecInForce.size(); i++)
-            vecInForce.push_back(&dataVecInForce[i]->getValue(mparams));
-
-        this->applyJT(vecOutForce, vecInForce);
-
-        //Really Not optimized at all...
-        for(unsigned int i=0; i<dataVecOutForce.size(); i++)
-            dataVecOutForce[i]->endEdit(mparams);
-
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void applyJT(const helper::vector< InVecDeriv*>& /* outDeriv */, const helper::vector<const OutVecDeriv*>& /* inDeriv */) {}
-#endif //SOFA_DEPRECATE_OLD_API
+    virtual void applyJT(const MechanicalParams* mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams /* PARAMS FIRST */, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
+    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
     {
         helper::vector<InDataMatrixDeriv*> matOutConst;
         getMatInDeriv(inConst, matOutConst);
         helper::vector<const OutDataMatrixDeriv*> matInConst;
         getConstMatOutDeriv(outConst, matInConst);
 
-        this->applyJT(cparams /* PARAMS FIRST */, matOutConst, matInConst);
+        this->applyJT(cparams, matOutConst, matInConst);
     }
     /// This method must be reimplemented by all mappings if they need to support constraints.
-    virtual void applyJT( const ConstraintParams* cparams /* PARAMS FIRST */, const helper::vector< InDataMatrixDeriv* >& dataMatOutConst, const helper::vector< const OutDataMatrixDeriv* >& dataMatInConst )
-#ifdef SOFA_DEPRECATE_OLD_API
+    virtual void applyJT( const ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ )
     {
-        serr << "This mapping does not support constraints since MultiMapping::applyJT( const ConstraintParams*, const helper::vector< InDataMatrixDeriv* >& , const helper::vector< const OutDataMatrixDeriv* >&  ) is not overloaded" << sendl;
+        serr << "This mapping does not support certain constraints since MultiMapping::applyJT( const ConstraintParams*, const helper::vector< InDataMatrixDeriv* >& , const helper::vector< const OutDataMatrixDeriv* >&  ) is not overloaded" << sendl;
     }
-#else
-    {
-        //Not optimized at all...
-        helper::vector<InMatrixDeriv*> matOutConst;
-        for(unsigned int i=0; i<dataMatOutConst.size(); i++)
-            matOutConst.push_back(dataMatOutConst[i]->beginEdit(cparams));
-
-        helper::vector<const OutMatrixDeriv*> matInConst;
-        for(unsigned int i=0; i<dataMatInConst.size(); i++)
-            matInConst.push_back(&dataMatInConst[i]->getValue(cparams));
-
-        this->applyJT(matOutConst, matInConst);
-
-        //Really Not optimized at all...
-        for(unsigned int i=0; i<dataMatOutConst.size(); i++)
-            dataMatOutConst[i]->endEdit(cparams);
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void applyJT( const helper::vector< InMatrixDeriv* >& /*outConst*/ , const helper::vector< const OutMatrixDeriv* >& /*inConst*/ )
-    {
-//        serr << "This mapping does not support constraints since MultiMapping::applyJT( const helper::vector< InMatrixDeriv* >& , const helper::vector< const OutMatrixDeriv* >& ) is not overloaded." << sendl;
-    }
-#endif //SOFA_DEPRECATE_OLD_API
 
     /// computeAccFromMapping
-    virtual void computeAccFromMapping(const MechanicalParams* mparams /* PARAMS FIRST  = MechanicalParams::defaultInstance()*/, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
+    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc)
     {
         helper::vector<OutDataVecDeriv*> vecOutAcc;
         getVecOutDeriv(outAcc, vecOutAcc);
@@ -268,44 +171,16 @@ public:
         helper::vector<const InDataVecDeriv*> vecInAcc;
         getConstVecInDeriv(inAcc, vecInAcc);
 
-        this->computeAccFromMapping(mparams /* PARAMS FIRST */, vecOutAcc, vecInVel, vecInAcc);
+        this->computeAccFromMapping(mparams, vecOutAcc, vecInVel, vecInAcc);
     }
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(
-        const MechanicalParams* mparams /* PARAMS FIRST */, const helper::vector< OutDataVecDeriv*>& dataVecOutAcc,
-        const helper::vector<const InDataVecDeriv*>& dataVecInVel,
-        const helper::vector<const InDataVecDeriv*>& dataVecInAcc)
-#ifdef SOFA_DEPRECATE_OLD_API
+        const MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>&  /* dataVecOutAcc */,
+        const helper::vector<const InDataVecDeriv*>& /* dataVecInVel */,
+        const helper::vector<const InDataVecDeriv*>& /* dataVecInAcc */)
     {
     }
-#else
-    {
-        //Not optimized at all...
-        helper::vector<OutVecDeriv*> vecOutAcc;
-        for(unsigned int i=0; i<dataVecOutAcc.size(); i++)
-            vecOutAcc.push_back(dataVecOutAcc[i]->beginEdit(mparams));
 
-        helper::vector<const InVecDeriv*> vecInVel;
-        for(unsigned int i=0; i<dataVecInVel.size(); i++)
-            vecInVel.push_back(&dataVecInVel[i]->getValue(mparams));
-        helper::vector<const InVecDeriv*> vecInAcc;
-        for(unsigned int i=0; i<dataVecInAcc.size(); i++)
-            vecInAcc.push_back(&dataVecInAcc[i]->getValue(mparams));
-
-        this->computeAccFromMapping(vecOutAcc, vecInVel, vecInAcc);
-
-        //Really Not optimized at all...
-        for(unsigned int i=0; i<dataVecOutAcc.size(); i++)
-            dataVecOutAcc[i]->endEdit(mparams);
-    }
-    /// Compat Method
-    /// @deprecated
-    virtual void computeAccFromMapping( const helper::vector<typename Out::VecDeriv*>& /*outDx*/,
-            const helper::vector<const typename In::VecDeriv*>& /*inV */,
-            const helper::vector<const typename In::VecDeriv*>& /*inDx */ )
-    {
-    }
-#endif //SOFA_DEPRECATE_OLD_API
 
     virtual void init();
 

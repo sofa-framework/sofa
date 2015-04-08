@@ -100,8 +100,6 @@ public:
     virtual void applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
     /// Accumulate a change of parent force due to the change of the mapping, for a constant child force. Null for linear mappings.
     virtual void applyDJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce) = 0;
-    /// Store data used to apply geometric stiffness. The child force can be read using mparams->readF(this->toModel). Default implementation does nothing, corresponding to a linear mapping.
-//    virtual void computeGeometricStiffness(const MechanicalParams* /*mparams*/) {}
     /// Propagate constraint Jacobians upward
     virtual void applyJT(const ConstraintParams* mparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst) = 0;
     virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc) = 0;
@@ -141,39 +139,40 @@ public:
     /// provided implementations for debugging.
     virtual const sofa::defaulttype::BaseMatrix* getJ(const MechanicalParams* /*mparams*/);
 
+    /// @deprecated
     virtual const sofa::defaulttype::BaseMatrix* getJ();
 
+
     typedef sofa::defaulttype::BaseMatrix* (*func_createMappedMatrix)(const behavior::BaseMechanicalState* , const behavior::BaseMechanicalState* );
-
-
-    //Create a matrix for mapped mechanical objects
-    //If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
-    //If the two mechanical objects is different, create a new interaction matrix
+    /// Create a matrix for mapped mechanical objects
+    /// If the two mechanical objects is identical, create a new stiffness matrix for this mapped objects
+    /// If the two mechanical objects is different, create a new interaction matrix
     virtual sofa::defaulttype::BaseMatrix* createMappedMatrix(const behavior::BaseMechanicalState* state1, const behavior::BaseMechanicalState* state2, func_createMappedMatrix);
 
-    ///<TO REMOVE>
-    ///Necessary ?
     /// Get the source (upper) mechanical state.
     virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom() = 0;
     /// Get the destination (lower, mapped) mechanical state.
     virtual helper::vector<behavior::BaseMechanicalState*> getMechTo() = 0;
-    /// Return false if this mapping should only be used as a regular
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     virtual void disable()=0;
 
-    /// @name Experimental API used in the Compliant solver to perform global matrix assembly (François Faure, 2012)
+    /// @name New API for global matrix assembly (used in the Compliant plugin)
     /// @{
 
     /// Returns pointers to Jacobian matrices associated with parent states, consistently with getFrom(). Most mappings have only one parent, however Multimappings have several parents.
     /// For efficiency concerns, please return pointers to defaulttype::EigenBaseSparseMatrix
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs()  { serr<<"getJs not implemented"<<sendl; return 0; }
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() { serr<<"getJs not implemented"<<sendl; return 0; }
 
-    /** Return a pointer to the geometric stiffness matrix.
-	This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product. 
-    This matrix is associated with the parent DOFs. It is a square SPD matrix with a size of the total number of parent DOFs.
-    For efficiency concerns, please return a pointer to a defaulttype::EigenBaseSparseMatrix
-    */
+    /// Compute the geometric stiffness matrix based on given child forces
+    /// K = dJ^T * outForce
+    /// Default implementation does nothing, corresponding to a linear mapping.
+    virtual void updateK( const MechanicalParams* /*mparams*/, ConstMultiVecDerivId /*outForce*/ ) {}
+
+    /// Returns a pointer to the geometric stiffness matrix.
+    /// This is the equivalent of applyDJT, for matrix assembly instead of matrix-vector product.
+    /// This matrix is associated with the parent DOFs. It is a square matrix with a size of the total number of parent DOFs.
+    /// For efficiency concerns, please return a pointer to a defaulttype::EigenBaseSparseMatrix
     virtual const defaulttype::BaseMatrix* getK() { return NULL; }
 
     /// @}

@@ -37,9 +37,6 @@
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/collision/Pipeline.h>
 
-using namespace sofa::core;
-
-
 namespace sofa
 {
 
@@ -50,16 +47,16 @@ class SOFA_SIMULATION_COMMON_API AnimateVisitor : public Visitor
 {
 
 protected :
-    double dt;
+    SReal dt;
 #ifdef SOFA_HAVE_EIGEN2
     bool firstNodeVisited;
 #endif
 public:
-    AnimateVisitor(const core::ExecParams* params = ExecParams::defaultInstance());
-    AnimateVisitor(const core::ExecParams* params /* PARAMS FIRST  = ExecParams::defaultInstance()*/, double dt);
+    AnimateVisitor(const core::ExecParams* params = core::ExecParams::defaultInstance());
+    AnimateVisitor(const core::ExecParams* params, SReal dt);
 
-    void setDt(double v) { dt = v; }
-    double getDt() const { return dt; }
+    void setDt(SReal v) { dt = v; }
+    SReal getDt() const { return dt; }
 
     virtual void processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj);
     virtual void processBehaviorModel(simulation::Node* node, core::BehaviorModel* obj);

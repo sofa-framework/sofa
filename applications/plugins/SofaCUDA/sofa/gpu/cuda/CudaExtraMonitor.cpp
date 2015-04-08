@@ -24,9 +24,9 @@
 ******************************************************************************/
 #include "CudaTypes.h"
 
-#include <sofa/component/misc/ExtraMonitor.h>
-#include <sofa/component/misc/ExtraMonitor.inl>
-#include <sofa/component/misc/Monitor.inl>
+#include <SofaValidation/ExtraMonitor.h>
+#include <SofaValidation/ExtraMonitor.inl>
+#include <SofaValidation/Monitor.inl>
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/RigidTypes.h>

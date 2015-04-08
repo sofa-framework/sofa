@@ -27,7 +27,7 @@
 
 #include "OpenCLSPHFluidForceField.h"
 //#include "CPUSPHFluidForceFieldWithOpenCL.h"
-#include <sofa/component/forcefield/SPHFluidForceField.inl>
+#include <SofaSphFluid/SPHFluidForceField.inl>
 //#include "OpenCLSpatialGridContainer.inl"
 
 namespace sofa
@@ -124,8 +124,8 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(const core::Me
     const VecDeriv& dx = d_dx.getValue();
 
     sout << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")" << sendl;
-    //const VecCoord& x = *this->mstate->getX();
-    const VecDeriv& v = *this->mstate->getV();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
@@ -185,8 +185,8 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(const core::Me
     if (grid == NULL) return;
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    //const VecCoord& x = *this->mstate->getX();
-    const VecDeriv& v = *this->mstate->getV();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
@@ -203,7 +203,7 @@ void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw(const sofa::core::v
 //if (!getContext()->getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const gpu::opencl::OpenCLVector<defaulttype::Vec4f> pos4 = this->data.pos4;
     if (pos4.empty()) return;
     glDisable(GL_LIGHTING);

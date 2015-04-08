@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.01" gravity="0 0 0" animate="0">
+    <!-- Basic Components to perform the collision detection -->
+    <VisualStyle displayFlags="showBehavior showCollisionModels" />
+    <ClipPlane position="0 0 0" normal="0 0 1" active="1"/>
+    <FreeMotionAnimationLoop name="FreeMotionAnimationLoop" />
+
+    <!-- Using a rigid cube using collision triangles, lines and points  -->
+    <Node name="Cube1">
+        <EulerImplicit name="EulerImplicit" />
+        <CGLinearSolver name="CG Solver" />
+        <MechanicalObject name="Cube1 RigidDOF" template="Rigid" dy="0" />
+        <UniformMass name="UniformMass1" totalmass="10.0" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visual Model1">
+            <OglModel name="Visual Cube1" filename="mesh/cube.obj" color="1 1 0 1.0" />
+            <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube1 RigidDOF" object2="Visual Cube1" />
+        </Node>
+<!--        <Node name="Collision Model1">
+            <Mesh name="Cube1 Mesh" filename="mesh/cube.obj" />
+            <MechanicalObject name="Collision Cube1" />
+            <Triangle name="TriangleModel1" />
+            <Line name="Cube1 Edge For Collision" />
+            <Point name="Cube1 Point For Collision" />
+            <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube1 RigidDOF" object2="Collision Cube1" />
+        </Node>-->
+    </Node>
+    <Node name="Cube2">
+        <EulerImplicit name="EulerImplicit" />
+        <CGLinearSolver name="CG Solver" />
+        <MechanicalObject name="Cube2 RigidDOF" template="Rigid" dy="0" dx="0" />
+        <UniformMass name="UniformMass2" totalmass="10.0" />
+        <UncoupledConstraintCorrection />
+        <Node name="Visual Model2">
+            <OglModel name="Visual Cube2" filename="mesh/cube.obj" color="1 1 0 1.0" scale="2 2 2"/>
+            <RigidMapping name="RigidMapping Visual-RigidDOF" object1="../../Cube2 RigidDOF" object2="Visual Cube2" />
+        </Node>
+<!--        <Node name="Collision Model2">
+            <Mesh name="Cube Mesh2" filename="mesh/cube.obj" />
+            <MechanicalObject name="Collision Cube2" scale="2 2 2" />
+            <Triangle name="TriangleModel2" />
+            <Line name="Cube2 Edge For Collision" />
+            <Point name="Cube2 Point For Collision" />
+            <RigidMapping name="RigidMapping Collision-RigidDOF" object1="../../Cube2 RigidDOF" object2="Collision Cube2" />
+        </Node>-->
+    </Node>
+</Node>

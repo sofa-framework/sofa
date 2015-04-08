@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_CUDADIAGONALMASS_H
 
 #include "CudaTypes.h"
-#include <sofa/component/mass/DiagonalMass.h>
+#include <SofaBaseMechanics/DiagonalMass.h>
 
 namespace sofa
 {
@@ -61,26 +61,26 @@ public :
 
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor);
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
 
 template<>
-void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 // -- Mass interface
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecDeriv& d_dx, double d_factor);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecDeriv& d_dx, SReal d_factor);
 
 template <>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::accFromF(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_a, const DataVecDeriv& d_f);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::accFromF(const core::MechanicalParams* mparams, DataVecDeriv& d_a, const DataVecDeriv& d_f);
 
 template<>
-void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
+void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
 
 // template<>
 // bool DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox);

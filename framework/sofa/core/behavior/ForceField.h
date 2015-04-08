@@ -91,9 +91,9 @@ public:
     /// $ f += B v + K x $
     ///
     /// This method retrieves the force, x and v vector from the MechanicalState
-    /// and call the internal addForce(const MechanicalParams* /* PARAMS FIRST */, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
+    /// and call the internal addForce(const MechanicalParams*, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
     /// method implemented by the component.
-    virtual void addForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fId );
+    virtual void addForce(const MechanicalParams* mparams, MultiVecDerivId fId );
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -103,14 +103,7 @@ public:
     /// $ f += B v + K x $
     ///
     /// This is the method that should be implemented by the component
-    virtual void addForce(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v)
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    ;
-    /// @deprecated use instead addForce(const MechanicalParams* /* PARAMS FIRST */, DataVecDeriv&,const DataVecCoord&,const DataVecDeriv&)
-    virtual void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-#endif
+    virtual void addForce(const MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) = 0;
 
     /// Compute the force derivative given a small displacement from the
     /// position and velocity used in the previous call to addForce().
@@ -123,20 +116,11 @@ public:
     /// $ df += kFactor K dx + bFactor B dx $
     ///
     /// This method retrieves the force and dx vector from the MechanicalState
-    /// and call the internal addDForce(VecDeriv&,const VecDeriv&,double,double)
+    /// and call the internal addDForce(VecDeriv&,const VecDeriv&,SReal,SReal)
     /// method implemented by the component.
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId );
+    virtual void addDForce(const MechanicalParams* mparams, MultiVecDerivId dfId );
 
-    virtual void addDForce(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv&   df , const DataVecDeriv&   dx )
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    ;
-    /// @deprecated
-    virtual void addDForce(VecDeriv&       df , const VecDeriv&       dx , double kFactor, double bFactor);
-    /// @deprecated
-    virtual void addDForce(VecDeriv&       df , const VecDeriv&       dx );
-#endif
+    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) = 0;
 
 
 
@@ -148,16 +132,9 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy(const MechanicalParams* mparams) method.
 
-    virtual double getPotentialEnergy(const MechanicalParams* mparams) const  ;
+    virtual SReal getPotentialEnergy(const MechanicalParams* mparams) const;
 
-    virtual double getPotentialEnergy(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord&   x) const
-#ifdef SOFA_DEPRECATE_OLD_API
-        = 0;
-#else
-    ;
-    /// @deprecated
-    virtual double getPotentialEnergy(const VecCoord& x) const;
-#endif
+    virtual SReal getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& x) const = 0;
 
 
     /// @}
@@ -170,10 +147,10 @@ public:
     /// addToMatrix only on the subMatrixIndex
     virtual void addSubKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex);
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
 
     /// addToMatrix only on the subMatrixIndex
-    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix * matrix, const helper::vector<unsigned> & subMatrixIndex, double kFact, unsigned int &offset);
+    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix * matrix, const helper::vector<unsigned> & subMatrixIndex, SReal kFact, unsigned int &offset);
 
 
 
@@ -182,10 +159,10 @@ public:
     /// addBToMatrix only on the subMatrixIndex
     virtual void addSubBToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & subMatrixIndex );
 
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset);
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset);
 
     /// addBToMatrix only on the subMatrixIndex
-    virtual void addSubBToMatrix(sofa::defaulttype::BaseMatrix * matrix, const helper::vector<unsigned> & subMatrixIndex, double bFact, unsigned int &offset);
+    virtual void addSubBToMatrix(sofa::defaulttype::BaseMatrix * matrix, const helper::vector<unsigned> & subMatrixIndex, SReal bFact, unsigned int &offset);
 
 
     /** Accumulate an element matrix to a global assembly matrix. This is a helper for addKToMatrix, to accumulate each (square) element matrix in the (square) assembled matrix.

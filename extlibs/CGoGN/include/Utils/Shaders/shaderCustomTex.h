@@ -11,7 +11,9 @@
 
 using namespace CGoGN;
 
-class ShaderCustomTex : public Utils::ClippingShader
+#include "Utils/dll.h"
+
+class CGoGN_UTILS_API ShaderCustomTex : public Utils::ClippingShader
 {
 protected:
 	// shader sources

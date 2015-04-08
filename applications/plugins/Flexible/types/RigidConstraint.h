@@ -30,7 +30,7 @@
 #include "QuadraticTypes.h"
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>
 
@@ -194,7 +194,7 @@ protected:
     {
         if (!vparams->displayFlags().getShowBehaviorModels()) return;
         if (!this->isActive()) return;
-        const VecCoord& x = *this->mstate->getX();
+        const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         const helper::vector<unsigned> & indices = f_index.getValue();
         std::vector< defaulttype::Vector3 > points;
         for (helper::vector<unsigned>::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(DataTypes::getCPos(x[*it]));

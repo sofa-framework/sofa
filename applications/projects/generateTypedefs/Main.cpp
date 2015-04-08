@@ -37,7 +37,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <algorithm>
 #include <functional>
 using sofa::core::SofaLibrary;

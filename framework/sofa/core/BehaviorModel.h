@@ -55,9 +55,9 @@ protected:
 	virtual BehaviorModel* toBehaviorModel() { return this; }
 public:
     /// Computation of a new simulation step.
-    virtual void updatePosition(double dt) = 0;
+    virtual void updatePosition(SReal dt) = 0;
 
-    virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+    virtual bool addBBox(SReal* /*minBBox*/, SReal* /*maxBBox*/)
     {
         return false;
     }

@@ -39,7 +39,7 @@
 
 
 
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 

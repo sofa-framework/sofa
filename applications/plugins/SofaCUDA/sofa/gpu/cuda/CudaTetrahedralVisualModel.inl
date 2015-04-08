@@ -141,16 +141,16 @@ void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::dra
 }
 
 template<class TCoord, class TDeriv, class TReal>
-bool OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addBBox(double* minBBox, double* maxBBox)
+bool OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addBBox(SReal* minBBox, SReal* maxBBox)
 {
     const core::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
     core::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-    const VecCoord& x = *nodes->getX();
+    const VecCoord& x = nodes->read(core::ConstVecCoordId::position())->getValue();
     Coord v;
 
-    for(it = vec.begin() ; it != vec.end() ; it++)
+    for(it = vec.begin() ; it != vec.end() ; ++it)
     {
-        for (unsigned int i=0 ; i< 4 ; i++)
+        for (unsigned int i=0 ; i< 4 ; ++i)
         {
             v = x[(*it)[i]];
 

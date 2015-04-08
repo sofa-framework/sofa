@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDAPARTICLESOURCE_H
 
 #include "CudaTypes.h"
-#include <sofa/component/misc/ParticleSource.h>
+#include <SofaSphFluid/ParticleSource.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 
 namespace sofa
@@ -38,27 +38,27 @@ namespace component
 namespace misc
 {
 
-template <>
-void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& res);
+// template <>
+// void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& res);
 
-template <>
-void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res);
+// template <>
+// void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res);
 
-template <>
-void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecCoord& res);
+// template <>
+// void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecCoord& res);
 
-#ifdef SOFA_GPU_CUDA_DOUBLE
+// #ifdef SOFA_GPU_CUDA_DOUBLE
 
-template <>
-void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectResponse(VecDeriv& res);
+// template <>
+// void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectResponse(VecDeriv& res);
 
-template <>
-void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectVelocity(VecDeriv& res);
+// template <>
+// void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectVelocity(VecDeriv& res);
 
-template <>
-void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectPosition(VecCoord& res);
+// template <>
+// void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectPosition(VecCoord& res);
 
-#endif // SOFA_GPU_CUDA_DOUBLE
+// #endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace misc
 

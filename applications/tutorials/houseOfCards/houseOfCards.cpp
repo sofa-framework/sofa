@@ -36,10 +36,10 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/collision/MinProximityIntersection.h>
-#include <sofa/component/constraintset/LMConstraintSolver.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaBaseCollision/MinProximityIntersection.h>
+#include <SofaConstraint/LMConstraintSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <sofa/core/CollisionModel.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.

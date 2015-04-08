@@ -14,18 +14,18 @@
 //#include "../compliance/DampingCompliance.h"
 
 // for forcefield version
-#include <sofa/component/forcefield/UniformVelocityDampingForceField.h>
+#include <SofaBoundaryCondition/UniformVelocityDampingForceField.h>
 
 
 
 #include "../mapping/ContactMapping.h"
 
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/TetrahedronModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/OBBModel.h>
-#include <sofa/component/collision/CylinderModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMiscCollision/TetrahedronModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/core/collision/Contact.h>
 
 #include <Compliant/utils/edit.h>
@@ -121,7 +121,7 @@ protected:
         contact_node->addObject( contact_map.get() );
 
         this->copyNormals( *edit(contact_map->normal) );
-        this->copyPenetrations( *edit(contact_map->penetrations) );
+        this->copyPenetrations( *edit(*contact_dofs->write(core::VecCoordId::position())) );
 
         // every contact points must propagate constraint forces
         for(unsigned i = 0; i < size; ++i)
@@ -192,7 +192,6 @@ protected:
                 contact_node->addObject( contact_map.get() );
 
                 this->copyNormals( *edit(contact_map->normal) );
-    //            this->copyPenetrations( *edit(contact_map->penetrations) );
 
                 // every contact points must propagate constraint forces
                 for(unsigned i = 0; i < size; ++i)

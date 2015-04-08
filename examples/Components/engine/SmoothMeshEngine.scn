@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Node name="root" >
+    <Node name="origin" >
+        <VisualStyle displayFlags="showWireframe" />
+        <MeshObjLoader name="loader" filename="mesh/dragon.obj" />
+        <VisualModel name="visual" src="@loader" color="yellow" />
+    </Node>
+    <Node name="smoothed" >
+        <VisualStyle displayFlags="hideWireframe" />
+        <MeshTopology name="topology" src="@/origin/loader"/>
+        <SmoothMeshEngine template="Vec3d" name="smoother" input_position="@/origin/loader.position" nb_iterations="1" showOutput="true"/>
+    </Node>
+</Node>

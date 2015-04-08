@@ -124,19 +124,19 @@ helper::vector<behavior::BaseMechanicalState*> MultiMapping<In,Out>::getMechTo()
 template <class In, class Out>
 void MultiMapping<In,Out>::init()
 {
-    apply(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecCoordId::position(), ConstVecCoordId::position());
-    applyJ(MechanicalParams::defaultInstance()  /* PARAMS FIRST */, VecDerivId::velocity(), ConstVecDerivId::velocity());
+    apply(MechanicalParams::defaultInstance() , VecCoordId::position(), ConstVecCoordId::position());
+    applyJ(MechanicalParams::defaultInstance() , VecDerivId::velocity(), ConstVecDerivId::velocity());
     if (f_applyRestPosition.getValue())
-        apply(MechanicalParams::defaultInstance() /* PARAMS FIRST */, VecCoordId::restPosition(), ConstVecCoordId::restPosition());
+        apply(MechanicalParams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
 
 #ifdef SOFA_SMP
 template<class T>
 struct ParallelMultiMappingApply
 {
-    void operator()(const MechanicalParams* mparams  /* PARAMS FIRST */, void *m, Shared_rw<defaulttype::SharedVector<typename T::Out::VecCoord*> > out, Shared_r<defaulttype::SharedVector<const typename T::In::VecCoord*> > in)
+    void operator()(const MechanicalParams* mparams , void *m, Shared_rw<defaulttype::SharedVector<typename T::Out::VecCoord*> > out, Shared_r<defaulttype::SharedVector<const typename T::In::VecCoord*> > in)
     {
-        ((T *)m)->apply(mparams  /* PARAMS FIRST */, out.access(), in.read());
+        ((T *)m)->apply(mparams , out.access(), in.read());
     }
 };
 
@@ -184,7 +184,7 @@ struct ParallelMultiMappingApplyJ3
 #endif /* SOFA_SMP */
 
 template <class In, class Out>
-void MultiMapping<In,Out>::apply(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
+void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
 {
     helper::vector<OutDataVecCoord*> vecOutPos;
     getVecOutCoord(outPos, vecOutPos);
@@ -193,15 +193,15 @@ void MultiMapping<In,Out>::apply(const MechanicalParams* mparams /* PARAMS FIRST
 
 #ifdef SOFA_SMP
 //		if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-//			Task<ParallelMultiMappingApply< MultiMapping<In,Out> > >(mparams /* PARAMS FIRST */, this,
+//			Task<ParallelMultiMappingApply< MultiMapping<In,Out> > >(mparams, this,
 //					**defaulttype::getShared(*out), **defaulttype::getShared(*in));
 //		else
 #endif /* SOFA_SMP */
-    this->apply(mparams /* PARAMS FIRST */, vecOutPos, vecInPos);
+    this->apply(mparams, vecOutPos, vecInPos);
 }// MultiMapping::apply
 
 template <class In, class Out>
-void MultiMapping<In,Out>::applyJ(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
+void MultiMapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel)
 {
     helper::vector<OutDataVecDeriv*> vecOutVel;
     getVecOutDeriv(outVel, vecOutVel);
@@ -210,22 +210,22 @@ void MultiMapping<In,Out>::applyJ(const MechanicalParams* mparams /* PARAMS FIRS
 
 #ifdef SOFA_SMP
 //		if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-//			Task<ParallelMultiMappingApplyJ< MultiMapping<In,Out> > >(mparams /* PARAMS FIRST */, this,
+//			Task<ParallelMultiMappingApplyJ< MultiMapping<In,Out> > >(mparams, this,
 //					**defaulttype::getShared(*out), **defaulttype::getShared(*in));
 //		else
 #endif /* SOFA_SMP */
-    this->applyJ(mparams /* PARAMS FIRST */, vecOutVel, vecInVel);
+    this->applyJ(mparams, vecOutVel, vecInVel);
 }// MultiMapping::applyJ
 
 template <class In, class Out>
-void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
+void MultiMapping<In,Out>::applyJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)
 {
     helper::vector<InDataVecDeriv*> vecOutForce;
     getVecInDeriv(inForce, vecOutForce);
     helper::vector<const OutDataVecDeriv*> vecInForce;
     getConstVecOutDeriv(outForce, vecInForce);
 
-    this->applyJT(mparams /* PARAMS FIRST */, vecOutForce, vecInForce);
+    this->applyJT(mparams, vecOutForce, vecInForce);
 }// MultiMapping::applyJT
 
 template <class In, class Out>

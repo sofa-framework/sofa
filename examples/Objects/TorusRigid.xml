@@ -1,11 +1,11 @@
 <Node name="TorusRigid">
 	<EulerImplicitSolver rayleighStiffness="0.01" />
-	<CGLinearSolver iterations="25" threshold="0.00000001"  />
+	<CGLinearSolver iterations="25" threshold="0.00000001"  tolerance="1e-05"/>
 	<MechanicalObject template="Rigid"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
 	<UniformMass />
 	<Node name="Visu">
 		<OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="1.0"/>
-		<RigidMapping object1="../.." object2="Visual" />
+		<RigidMapping input="@.." output="@Visual" />
 	</Node>
 	<Node name="Surf2">
 		<MeshObjLoader name="meshLoader" filename="mesh/torus_for_collision.obj"/>

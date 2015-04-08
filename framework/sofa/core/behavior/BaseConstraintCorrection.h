@@ -115,7 +115,7 @@ public:
     /// Compute the residual in the newton iterations due to the constraints forces
     /// i.e. compute Vecid::force() += J^t lambda
     /// the result is accumulated in Vecid::force()
-    virtual void computeResidual(const core::ExecParams* /*params*/ /* PARAMS FIRST */, defaulttype::BaseVector * /*lambda*/) { std::cerr << "ComputeResidual is not implemented in " << this->getName() << std::endl; }
+    virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector * /*lambda*/) { std::cerr << "ComputeResidual is not implemented in " << this->getName() << std::endl; }
 
     /// @name Deprecated API
     /// @{

@@ -175,10 +175,10 @@ public slots:
     virtual void setSizeW(int);
     virtual void setSizeH(int);
 
-    virtual void getView(Vec3d& pos, Quat& ori) const;
-    virtual void setView(const Vec3d& pos, const Quat &ori);
+    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const;
+    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
     virtual void newView();
-    virtual void moveView(const Vec3d& pos, const Quat &ori);
+    virtual void moveView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
     virtual void captureEvent() { SofaViewer::captureEvent(); }
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode * node ) { SofaViewer::fitNodeBBox(node); }

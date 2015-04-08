@@ -5,7 +5,7 @@
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <boost/functional/hash.hpp>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 
 
 #define CHECK_IF_ELLEMENT_EXISTS

@@ -54,11 +54,14 @@ def createScene(root):
     massNode = rigidNode.createChild('mass')
     massNode.createObject('TransferFunction',name="densityTF", template="ImageUC,ImageD", inputImage="@../../rasterizer.image", param="0 0 1 0.005")
     massNode.createObject('MechanicalObject', position="@../../merged.position", useMask="0")
-    massNode.createObject('ImageDensityMass', template="Vec3d", densityImage="@densityTF.outputImage", transform="@../../rasterizer.transform", lumping="0",  printMassMatrix="true" )
-    #massNode.createObject('UniformMass', totalMass="20" )
+#    massNode.createObject('ImageDensityMass', template="Vec3d", densityImage="@densityTF.outputImage", transform="@../../rasterizer.transform", lumping="0",  printMassMatrix="true" )
+    massNode.createObject('UniformMass', totalMass="20" )
     massNode.createObject('LinearMultiMapping', template="Rigid,Affine,Vec3d", input1="@..", input2="@../../Affine", output="@.", printLog="0", assemble="0")
+#    massNode.createObject('MechanicalObject')
+#    massNode.createObject('MassFromDensity',  name="MassFromDensity",  template="Affine,ImageD", image="@densityTF.outputImage", transform="@../../rasterizer.transform")
     affineNode.addChild( massNode )
-     
+#    affineNode.createObject('AffineMass',massMatrix="@mass/MassFromDensity.massMatrix")
+         
     visualNode = rigidNode.createChild('visual')
     visualNode.createObject('OglModel', template="ExtVec3f", name="Visual", fileMesh="mesh/torus.obj", color="1 0.8 0.8 ")
     visualNode.createObject('LinearMultiMapping', template="Rigid,Affine,ExtVec3f", input1="@..", input2="@../../Affine", output="@.", printLog="0", assemble="0")

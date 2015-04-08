@@ -10,16 +10,16 @@
   <MeshObjLoader name="mesh3" filename="mesh/bubille_out.obj" triangulate="1"/>
 
     <MeshToImageEngine template="ImageD" name="rasterizer"  nbMeshes="3"   
-                       value="100" position="@mesh3.position" triangles="@mesh3.triangles"   
-                       value2="10" position2="@mesh2.position" triangles2="@mesh2.triangles"   
-                       value3="1000" position3="@mesh1.position" triangles3="@mesh1.triangles"   
+                       value="100" insideValue="100" position="@mesh3.position" triangles="@mesh3.triangles"
+                       value2="10" insideValue2="10" position2="@mesh2.position" triangles2="@mesh2.triangles"
+                       value3="1000" insideValue3="1000"  position3="@mesh1.position" triangles3="@mesh1.triangles"
                        voxelSize="1.5 1.5 1.5" padSize="2" rotateImage="false" printLog="true"/>
     <ImageContainer template="ImageD" name="image" src="@rasterizer" drawBB="false"/>
 
 
   <Node name="flexible" >
     	    <EulerImplicitSolver />
-    	    <CGLinearSolver iterations="25"/>
+    	    <CGLinearSolver iterations="25" tolerance="1E-5" threshold="1E-5"/>
 
 	    <ImageSampler template="ImageD" name="sampler" src="@../image" param="1" showEdges="false" /> 
 	    <Mesh name="mesh" src="@sampler" />

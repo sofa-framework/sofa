@@ -3,7 +3,7 @@
 
 #include "../initFlexible.h"
 #include <sofa/core/Mapping.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 
@@ -85,7 +85,6 @@ public:
 
         jacobian.resizeBlocks( v.size(), x.size() );
         hessians.resize( m_topology->getNbTetrahedra() );
-        geometricStiffness.resizeBlocks( x.size(), x.size() );
 
         typename Hessians::iterator hessianIt = hessians.begin();
         if( d_volumePerNodes.getValue() )
@@ -137,15 +136,16 @@ public:
     {
         Data<InVecDeriv>& parentForceData = *parentDfId[this->fromModel.get(mparams)].write();
         const Data<InVecDeriv>& parentDisplacementData = *mparams->readDx(this->fromModel);
-
-        // OPTIMIZABLE!!!
-        getK();
         geometricStiffness.addMult(parentForceData,parentDisplacementData,mparams->kFactor());
     }
 
-    virtual const defaulttype::BaseMatrix* getK()
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
     {
-        const OutVecDeriv& childForce = this->toModel->readForces().ref();
+        size_t size = this->fromModel->getSize();
+        geometricStiffness.resizeBlocks( size, size );
+
+        const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
         const OutVecDeriv* cf; // force per tetra
         if( d_volumePerNodes.getValue() )
         {
@@ -160,7 +160,6 @@ public:
             }
         }
         else cf = &childForce;
-
 
         typename Hessians::const_iterator hessianIt = hessians.begin();
         for( int i = 0, nbTetra = m_topology->getNbTetrahedra() ; i < nbTetra ; i++ )
@@ -179,7 +178,10 @@ public:
         }
 
         if( d_volumePerNodes.getValue() ) delete cf;
+    }
 
+    virtual const defaulttype::BaseMatrix* getK()
+    {
         return &geometricStiffness;
     }
 

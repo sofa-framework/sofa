@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPARSEGRIDSPRINGFORCEFIELD_H
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_SPARSEGRIDSPRINGFORCEFIELD_H
 
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/component/topology/MultiResSparseGridTopology.h>
 
 namespace sofa

@@ -53,15 +53,15 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API AnimateEndEvent : public sofa::core::objectmodel::Event
 {
 public:
-    AnimateEndEvent( double dt );
+    AnimateEndEvent( SReal dt );
 
     ~AnimateEndEvent();
 
-    double getDt() const { return dt; }
+    SReal getDt() const { return dt; }
 
     virtual const char* getClassName() const { return "AnimateEndEvent"; }
 protected:
-    double dt;
+    SReal dt;
 };
 
 } // namespace simulation

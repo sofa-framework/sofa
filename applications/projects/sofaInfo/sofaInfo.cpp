@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/core/ObjectFactory.h>
 
 // ---------------------------------------------------------------------

@@ -52,7 +52,7 @@ $xmax=($distance*$i*$dx)+$dx;
 		<TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
     <Node name="Visu">
           <OglModel name="Visual" color="blue"/>
-          <IdentityMapping object1="../.." object2="Visual"/>
+          <IdentityMapping input="@.." output="@Visual"/>
     </Node>
 	</Node>
 	<?php
@@ -71,9 +71,9 @@ $xmax=($distance*$i*$dx)+$dx;
 		<TetrahedronFEMForceField name="FEM" youngModulus="4000" poissonRatio="0.3" />
 		<Node name="Visu">
 			<OglModel name="Visual" color="blue"/>
-			<IdentityMapping object1="../.." object2="Visual"/>
+			<IdentityMapping input="@.." output="@Visual"/>
 	  </Node>
-	<AttachConstraint object1="Bar<?=$i?>M<?=($j-1)?>" object2="Bar<?=$i?>M<?=$j?>" twoWay="true" radius="0.1" indices1="<?=$indices1?>" indices2="<?=$indices2?>" />
+	<AttachConstraint object1="@Bar<?=$i?>M<?=($j-1)?>" object2="@Bar<?=$i?>M<?=$j?>" twoWay="true" radius="0.1" indices1="<?=$indices1?>" indices2="<?=$indices2?>" />
 	</Node>
 	<?php } ?>
 

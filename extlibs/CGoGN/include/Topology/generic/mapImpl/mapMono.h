@@ -62,7 +62,7 @@ protected:
 
 	inline Dart newDart();
 
-	inline virtual void deleteDart(Dart d);
+    inline void deleteDart(Dart d);
 
 public:
 	inline unsigned int dartIndex(Dart d) const;

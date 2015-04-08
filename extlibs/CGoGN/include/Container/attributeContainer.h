@@ -84,7 +84,7 @@ protected:
 	/**
 	 * vector of free indices in the vector of AttributeMultiVectors
 	 */
-	std::vector<unsigned int> m_freeIndices;
+    std::vector<unsigned int> m_freeIndices;
 
 	/**
 	* vector of pointers to HoleBlockRef -> structure that manages holes and refs
@@ -378,7 +378,7 @@ public:
 	 **************************************/
 
     void printFreeIndices();
-    void updateHole(unsigned int index);
+//    void updateHole(unsigned int index);
 	/**
 	* insert a line in the container
 	* @return index of the line

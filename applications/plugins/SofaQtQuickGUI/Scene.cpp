@@ -1,10 +1,10 @@
 #include <GL/glew.h>
 #include "Scene.h"
 
-#include <sofa/component/init.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/GUIEvent.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/PluginManager.h>
@@ -13,9 +13,11 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/helper/system/glut.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
+#include <SofaComponentMain/init.h>
 
+#include <sstream>
 #include <qqml.h>
+#include <QtCore/QCoreApplication>
 #include <QVector3D>
 #include <QStack>
 #include <QTimer>
@@ -36,24 +38,120 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation;
 
+SceneComponent::SceneComponent(const Scene* scene, const sofa::core::objectmodel::Base* base) : QObject(),
+    myScene(scene),
+    myBase(base)
+{
+
+}
+
+Base* SceneComponent::base()
+{
+    return const_cast<Base*>(static_cast<const SceneComponent*>(this)->base());
+}
+
+const Base* SceneComponent::base() const
+{
+    // check object existence
+    if(myScene && myBase)
+        if(myScene->myBases.contains(myBase))
+            return myBase;
+
+    myBase = 0;
+    return myBase;
+}
+
+const Scene* SceneComponent::scene() const
+{
+    return myScene;
+}
+
+SceneData::SceneData(const SceneComponent* sceneComponent, const sofa::core::objectmodel::BaseData* data) : QObject(),
+    myScene(sceneComponent->scene()),
+    myBase(sceneComponent->base()),
+    myData(data)
+{
+
+}
+
+SceneData::SceneData(const Scene* scene, const sofa::core::objectmodel::Base* base, const sofa::core::objectmodel::BaseData* data) : QObject(),
+    myScene(scene),
+    myBase(base),
+    myData(data)
+{
+
+}
+
+QVariantMap SceneData::object() const
+{
+    const BaseData* data = SceneData::data();
+    if(data)
+        return Scene::dataObject(data);
+
+    return QVariantMap();
+}
+
+bool SceneData::setValue(const QVariant& value)
+{
+    BaseData* data = SceneData::data();
+    if(data)
+        return Scene::setDataValue(data, value);
+
+    return false;
+}
+
+bool SceneData::setLink(const QString& path)
+{
+    BaseData* data = SceneData::data();
+    if(data)
+    {
+        std::streambuf* backup(std::cerr.rdbuf());
+
+        std::ostringstream stream;
+        std::cerr.rdbuf(stream.rdbuf());
+        bool status = Scene::setDataLink(data, path);
+        std::cerr.rdbuf(backup);
+
+        return status;
+    }
+
+    return false;
+}
+
+BaseData* SceneData::data()
+{
+    return const_cast<BaseData*>(static_cast<const SceneData*>(this)->data());
+}
+
+const BaseData* SceneData::data() const
+{
+    // check if the base still exists hence if the data is still valid
+    const Base* base = 0;
+    if(myScene && myBase)
+        if(myScene->myBases.contains(myBase))
+            base = myBase;
+
+    myBase = base;
+    if(!myBase)
+        myData = 0;
+
+    return myData;
+}
+
 Scene::Scene(QObject *parent) : QObject(parent),
 	myStatus(Status::Null),
 	mySource(),
-	mySourceQML(),
+    mySourceQML(),
+    myPathQML(),
 	myIsInit(false),
     myVisualDirty(false),
 	myDt(0.04),
 	myPlay(false),
 	myAsynchronous(true),
 	mySofaSimulation(0),
-    myStepTimer(new QTimer(this))
+    myStepTimer(new QTimer(this)),
+    myBases()
 {
-	// sofa init
-    sofa::helper::system::DataRepository.addFirstPath("../../share/");
-    sofa::helper::system::DataRepository.addFirstPath("../../examples/");
-    sofa::helper::system::PluginRepository.addFirstPath("../bin/");
-    sofa::helper::system::PluginRepository.addFirstPath("../lib/");
-
 	sofa::core::ExecParams::defaultInstance()->setAspectID(0);
 	boost::shared_ptr<sofa::core::ObjectFactory::ClassEntry> classVisualModel;
 	sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
@@ -79,7 +177,9 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	// connections
 	connect(this, &Scene::sourceChanged, this, &Scene::open);
 	connect(this, &Scene::playChanged, myStepTimer, [&](bool newPlay) {newPlay ? myStepTimer->start() : myStepTimer->stop();});
-	connect(this, &Scene::statusChanged, this, [&](Scene::Status newStatus) {if(Scene::Status::Ready == newStatus) loaded();});
+    connect(this, &Scene::statusChanged, this, &Scene::handleStatusChange);
+    connect(this, &Scene::loaded, this, [&]() {addChild(0, mySofaSimulation->GetRoot().get());});
+    connect(this, &Scene::aboutToUnload, this, [&]() {myBases.clear();});
 
     connect(myStepTimer, &QTimer::timeout, this, &Scene::step);
 }
@@ -100,12 +200,10 @@ static bool LoaderProcess(sofa::simulation::Simulation* sofaSimulation, const QS
 		vparams->displayFlags().setShowVisualModels(true);
 
 	if(sofaSimulation->load(scenePath.toLatin1().constData()))
-	{
-		sofaSimulation->init(sofaSimulation->GetRoot().get());
-
-		if(sofaSimulation->GetRoot())
+        if(sofaSimulation->GetRoot()) {
+            sofaSimulation->init(sofaSimulation->GetRoot().get());
 			return true;
-	}
+        }
 
 	return false;
 }
@@ -137,6 +235,7 @@ private:
 
 void Scene::open()
 {
+    myPathQML.clear();
 	setSourceQML(QUrl());
 
 	if(Status::Loading == myStatus) // return now if a scene is already loading
@@ -159,6 +258,8 @@ void Scene::open()
 		return;
 	}
 
+	finalFilename.replace("\\", "/");
+
     aboutToUnload();
 
 	setStatus(Status::Loading);
@@ -166,30 +267,55 @@ void Scene::open()
 	setPlay(false);
 	myIsInit = false;
 
-	std::string qmlFilepath = (finalFilename + ".qml").toLatin1().constData();
-	if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
-		qmlFilepath.clear();
+    std::string qmlFilepath = (finalFilename + ".qml").toLatin1().constData();
+    if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
+        qmlFilepath.clear();
+
+    myPathQML = QString::fromStdString(qmlFilepath);
 
     mySofaSimulation->unload(mySofaSimulation->GetRoot());
 
 	if(myAsynchronous)
 	{
-		LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
-        connect(loaderThread, &QThread::finished, this, [this, loaderThread]() {setStatus(loaderThread->isLoaded() ? Status::Ready : Status::Error);});
-		
-		if(!qmlFilepath.empty())
-			connect(loaderThread, &QThread::finished, this, [=]() {setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));});
+        LoaderThread* loaderThread = new LoaderThread(mySofaSimulation, finalFilename);
 
-		connect(loaderThread, &QThread::finished, loaderThread, &QObject::deleteLater);
+        connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {                    
+            if(!loaderThread->isLoaded())
+                setStatus(Status::Error);
+            else
+                myIsInit = true;
+
+            loaderThread->deleteLater();
+        });
+
 		loaderThread->start();
 	}
-	else
+    else
 	{
-        setStatus(LoaderProcess(mySofaSimulation, finalFilename) ? Status::Ready : Status::Error);
-
-		if(!qmlFilepath.empty())
-			setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
+        if(!LoaderProcess(mySofaSimulation, finalFilename))
+            setStatus(Status::Error);
+        else
+            myIsInit = true;
 	}
+}
+
+void Scene::handleStatusChange(Scene::Status newStatus)
+{
+    switch(newStatus)
+    {
+    case Status::Null:
+        break;
+    case Status::Ready:
+        loaded();
+        break;
+    case Status::Loading:
+        break;
+    case Status::Error:
+        break;
+    default:
+        qWarning() << "Scene status unknown";
+        break;
+    }
 }
 
 void Scene::setStatus(Status newStatus)
@@ -254,7 +380,7 @@ void Scene::setVisualDirty(bool newVisualDirty)
     visualDirtyChanged(newVisualDirty);
 }
 
-double Scene::radius()
+double Scene::radius() const
 {
 	QVector3D min, max;
 	computeBoundingBox(min, max);
@@ -263,16 +389,16 @@ double Scene::radius()
 	return diag.length();
 }
 
-void Scene::computeBoundingBox(QVector3D& min, QVector3D& max)
+void Scene::computeBoundingBox(QVector3D& min, QVector3D& max) const
 {
 	SReal pmin[3], pmax[3];
-	mySofaSimulation->computeTotalBBox(mySofaSimulation->GetRoot().get(), pmin, pmax );
+    mySofaSimulation->computeTotalBBox(mySofaSimulation->GetRoot().get(), pmin, pmax);
 
 	min = QVector3D(pmin[0], pmin[1], pmin[2]);
 	max = QVector3D(pmax[0], pmax[1], pmax[2]);
 }
 
-QString Scene::dumpGraph()
+QString Scene::dumpGraph() const
 {
 	QString dump;
 
@@ -291,27 +417,132 @@ QString Scene::dumpGraph()
 	return dump;
 }
 
-QVariant Scene::getData(const QString& path) const
+void Scene::reinitComponent(const QString& path)
 {
-    return onGetData(path);
+    QStringList pathComponents = path.split("/");
+
+    Node::SPtr node = mySofaSimulation->GetRoot();
+    unsigned int i = 0;
+    while(i < pathComponents.size()-1) {
+        if (pathComponents[i]=="@") {
+            ++i;
+            continue;
+        }
+
+        node = node->getChild(pathComponents[i].toStdString());
+        if (!node) {
+            qWarning() << "Object path unknown:" << path;
+            return;
+        }
+        ++i;
+    }
+    BaseObject* object = node->get<BaseObject>(pathComponents[i].toStdString());
+    if(!object) {
+        qWarning() << "Object path unknown:" << path;
+        return;
+    }
+    object->reinit();
 }
 
-void Scene::setData(const QString& path, const QVariant& value)
+void Scene::sendGUIEvent(const QString& controlID, const QString& valueName, const QString& value)
 {
-    onSetData(path, value);
+    if(!mySofaSimulation->GetRoot())
+        return;
+
+    sofa::core::objectmodel::GUIEvent event(controlID.toUtf8().constData(), valueName.toUtf8().constData(), value.toUtf8().constData());
+    mySofaSimulation->GetRoot()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &event);
 }
 
-QVariant Scene::onGetData(const QString& path) const
+QVariantMap Scene::dataObject(const sofa::core::objectmodel::BaseData* data)
+{
+    QVariantMap object;
+
+    if(!data)
+    {
+        object.insert("name", "Invalid");
+        object.insert("description", "");
+        object.insert("type", "");
+        object.insert("group", "");
+        object.insert("properties", "");
+        object.insert("link", "");
+        object.insert("value", "");
+
+        return object;
+    }
+
+    // TODO:
+    QString type;
+    const AbstractTypeInfo* typeinfo = data->getValueTypeInfo();
+
+    QVariantMap properties;
+
+    if(typeinfo->Text())
+    {
+        type = "string";
+    }
+    else if(typeinfo->Scalar())
+    {
+        type = "number";
+        properties.insert("step", 0.1);
+        properties.insert("decimals", 3);
+    }
+    else if(typeinfo->Integer())
+    {
+        if(std::string::npos != typeinfo->name().find("bool"))
+        {
+            type = "boolean";
+            properties.insert("autoUpdate", true);
+        }
+        else
+        {
+            type = "number";
+            properties.insert("decimals", 0);
+            if(std::string::npos != typeinfo->name().find("unsigned"))
+                properties.insert("min", 0);
+        }
+    }
+    else
+    {
+        type = QString::fromStdString(data->getValueTypeString());
+    }
+
+    if(typeinfo->Container())
+    {
+        type = "array";
+        int nbCols = typeinfo->size();
+
+        properties.insert("cols", nbCols);
+        if(typeinfo->FixedSize())
+            properties.insert("static", true);
+
+        const AbstractTypeInfo* baseTypeinfo = typeinfo->BaseType();
+        if(baseTypeinfo->FixedSize())
+            properties.insert("innerStatic", true);
+    }
+
+    QString widget(data->getWidget());
+    if(!widget.isEmpty())
+        type = widget;
+
+    properties.insert("readOnly", false);
+
+    object.insert("name", data->getName().c_str());
+    object.insert("description", data->getHelp());
+    object.insert("type", type);
+    object.insert("group", data->getGroup());
+    object.insert("properties", properties);
+    object.insert("link", QString::fromStdString(data->getLinkPath()));
+    object.insert("value", dataValue(data));
+
+    return object;
+}
+
+QVariant Scene::dataValue(const BaseData* data)
 {
     QVariant value;
 
-    BaseData* data = 0;
-    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
     if(!data)
-    {
-        qWarning() << "DataPath unknown:" << path;
         return value;
-    }
 
     const AbstractTypeInfo* typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
@@ -323,7 +554,16 @@ QVariant Scene::onGetData(const QString& path) const
         else if(typeinfo->Scalar())
             value = typeinfo->getScalarValue(valueVoidPtr, 0);
         else if(typeinfo->Integer())
-            value = typeinfo->getIntegerValue(valueVoidPtr, 0);
+        {
+            if(std::string::npos != typeinfo->name().find("bool"))
+                value = 0 != typeinfo->getIntegerValue(valueVoidPtr, 0) ? true : false;
+            else
+                value = typeinfo->getIntegerValue(valueVoidPtr, 0);
+        }
+        else
+        {
+            value = QString::fromStdString(data->getValueString());
+        }
     }
     else
     {
@@ -376,32 +616,40 @@ QVariant Scene::onGetData(const QString& path) const
             QVariantList subValues;
             subValues.reserve(nbCols);
 
+            bool isBool = false;
+            if(std::string::npos != typeinfo->name().find("bool"))
+                isBool = true;
+
             for(int j = 0; j < nbRows; j++)
             {
                 subValues.clear();
-                for(int i = 0; i < nbCols; i++)
-                    subValues.append(QVariant::fromValue(typeinfo->getIntegerValue(valueVoidPtr, j * nbCols + i)));
+
+                if(isBool)
+                    for(int i = 0; i < nbCols; i++)
+                        subValues.append(QVariant::fromValue(0 != typeinfo->getIntegerValue(valueVoidPtr, j * nbCols + i) ? true : false));
+                else
+                    for(int i = 0; i < nbCols; i++)
+                        subValues.append(QVariant::fromValue(typeinfo->getIntegerValue(valueVoidPtr, j * nbCols + i)));
 
                 values.push_back(QVariant::fromValue(subValues));
             }
 
             value = values;
         }
+        else
+        {
+            value = QString::fromStdString(data->getValueString());
+        }
     }
 
     return value;
 }
 
-void Scene::onSetData(const QString& path, const QVariant& value)
+// TODO: WARNING : do not use data->read anymore but directly the correct set*Type*Value(...)
+bool Scene::setDataValue(BaseData* data, const QVariant& value)
 {
-    BaseData* data = 0;
-    mySofaSimulation->GetRoot()->findDataLinkDest(data, path.toStdString(), 0);
-
     if(!data)
-    {
-        qWarning() << "DataPath unknown:" << path;
-        return;
-    }
+        return false;
 
     const AbstractTypeInfo* typeinfo = data->getValueTypeInfo();
 
@@ -414,13 +662,6 @@ void Scene::onSetData(const QString& path, const QVariant& value)
         if(QVariant::List == finalValue.type())
         {
             QSequentialIterable valueIterable = finalValue.value<QSequentialIterable>();
-            if(1 == valueIterable.size())
-                finalValue = valueIterable.at(0);
-        }
-
-        if(QVariant::List == finalValue.type())
-        {
-            QSequentialIterable valueIterable = finalValue.value<QSequentialIterable>();
 
             int nbCols = typeinfo->size();
             int nbRows = typeinfo->size(data->getValueVoidPtr()) / nbCols;
@@ -428,15 +669,15 @@ void Scene::onSetData(const QString& path, const QVariant& value)
             if(!typeinfo->Container())
             {
                 qWarning("Trying to set a list of values on a non-container data");
-                return;
+                return false;
             }
 
             if(valueIterable.size() != nbRows)
             {
                 if(typeinfo->FixedSize())
                 {
-                    qWarning("The new data should have the same size");
-                    return;
+                    qWarning() << "The new data should have the same size, should be" << nbRows << ", got" << valueIterable.size();
+                    return false;
                 }
 
                 typeinfo->setSize(data, valueIterable.size());
@@ -453,8 +694,8 @@ void Scene::onSetData(const QString& path, const QVariant& value)
                         QSequentialIterable subValueIterable = subFinalValue.value<QSequentialIterable>();
                         if(subValueIterable.size() != nbCols)
                         {
-                            qWarning("The new sub data should have the same size");
-                            return;
+                            qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
+                            return false;
                         }
 
                         for(int j = 0; j < subValueIterable.size(); ++j)
@@ -486,8 +727,8 @@ void Scene::onSetData(const QString& path, const QVariant& value)
                         QSequentialIterable subValueIterable = subFinalValue.value<QSequentialIterable>();
                         if(subValueIterable.size() != nbCols)
                         {
-                            qWarning("The new sub data should have the same size");
-                            return;
+                            qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
+                            return false;
                         }
 
                         for(int j = 0; j < subValueIterable.size(); ++j)
@@ -508,10 +749,46 @@ void Scene::onSetData(const QString& path, const QVariant& value)
 
                 data->read(dataString.toStdString());
             }
+            else if(typeinfo->Text())
+            {
+                QString dataString;
+                for(int i = 0; i < valueIterable.size(); ++i)
+                {
+                    QVariant subFinalValue = valueIterable.at(i);
+                    if(QVariant::List == subFinalValue.type())
+                    {
+                        QSequentialIterable subValueIterable = subFinalValue.value<QSequentialIterable>();
+                        if(subValueIterable.size() != nbCols)
+                        {
+                            qWarning() << "The new sub data should have the same size, should be" << nbCols << ", got" << subValueIterable.size() << "- data size is:" << valueIterable.size();
+                            return false;
+                        }
+
+                        for(int j = 0; j < subValueIterable.size(); ++j)
+                        {
+                            dataString += subValueIterable.at(j).toString();
+                            if(subValueIterable.size() - 1 != j)
+                                dataString += ' ';
+                        }
+                    }
+                    else
+                    {
+                        dataString += subFinalValue.toString();
+                    }
+
+                    if(valueIterable.size() - 1 != i)
+                        dataString += ' ';
+                }
+
+                data->read(dataString.toStdString());
+            }
+            else
+                data->read(value.toString().toStdString());
         }
         else if(QVariant::Map == finalValue.type())
         {
-            qWarning("Map type are not supported");
+            qWarning("Map type is not supported");
+            return false;
         }
         else
         {
@@ -521,14 +798,131 @@ void Scene::onSetData(const QString& path, const QVariant& value)
                 data->read(QString::number(value.toDouble()).toStdString());
             else if(typeinfo->Integer())
                 data->read(QString::number(value.toLongLong()).toStdString());
+            else
+                data->read(value.toString().toStdString());
+        }
+    }
+    else
+        return false;
+
+    return true;
+}
+
+bool Scene::setDataLink(BaseData* data, const QString& link)
+{
+    if(!data)
+        return false;
+
+    if(link.isEmpty())
+        data->setParent(0);
+    else
+        data->setParent(link.toStdString());
+
+    return data->getParent();
+}
+
+QVariant Scene::dataValue(const QString& path) const
+{
+    return onDataValue(path);
+}
+
+void Scene::setDataValue(const QString& path, const QVariant& value)
+{
+    onSetDataValue(path, value);
+}
+
+static BaseData* FindDataHelper(BaseNode* node, const QString& path)
+{
+    BaseData* data = 0;
+    std::streambuf* backup(std::cerr.rdbuf());
+
+    std::ostringstream stream;
+    std::cerr.rdbuf(stream.rdbuf());
+    node->findDataLinkDest(data, path.toStdString(), 0);
+    std::cerr.rdbuf(backup);
+
+    return data;
+}
+
+SceneData* Scene::data(const QString& path) const
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path);
+    if(!data)
+        return 0;
+
+    Base* base = data->getOwner();
+    if(!base)
+        return 0;
+
+    return new SceneData(this, base, data);
+}
+
+SceneComponent* Scene::component(const QString& path) const
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path + ".name"); // search for the "name" data of the component (this data is always present if the component exist)
+
+    if(!data)
+        return 0;
+
+    Base* base = data->getOwner();
+    if(!base)
+        return 0;
+
+    return new SceneComponent(this, base);
+}
+
+QVariant Scene::onDataValue(const QString& path) const
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path);
+
+    if(!data)
+    {
+        qWarning() << "DataPath unknown:" << path;
+        return QVariant();
+    }
+
+    return dataValue(data);
+}
+
+void Scene::onSetDataValue(const QString& path, const QVariant& value)
+{
+    BaseData* data = FindDataHelper(mySofaSimulation->GetRoot().get(), path);
+
+    if(!data)
+    {
+        qWarning() << "DataPath unknown:" << path;
+    }
+    else
+    {
+        if(!value.isNull())
+        {
+            QVariant finalValue = value;
+            if(finalValue.userType() == qMetaTypeId<QJSValue>())
+                finalValue = finalValue.value<QJSValue>().toVariant();
+
+            // arguments from JS are packed in an array, we have to unpack it
+            if(QVariant::List == finalValue.type())
+            {
+                QSequentialIterable valueIterable = finalValue.value<QSequentialIterable>();
+                if(1 == valueIterable.size())
+                    finalValue = valueIterable.at(0);
+            }
+
+            setDataValue(data, finalValue);
         }
     }
 }
 
-void Scene::init()
+void Scene::initGraphics()
 {
-	if(!mySofaSimulation->GetRoot())
+    if(!myIsInit)
+        return;
+
+    if(!mySofaSimulation->GetRoot())
+    {
+        setStatus(Status::Error);
 		return;
+    }
 
     GLenum err = glewInit();
     if(0 != err)
@@ -555,10 +949,14 @@ void Scene::init()
     }
 #endif
 
+    // WARNING: some plugins like "image" need a valid OpenGL Context during init because they are initing textures during init instead of initTextures ...
 	mySofaSimulation->initTextures(mySofaSimulation->GetRoot().get());
 	setDt(mySofaSimulation->GetRoot()->getDt());
 
-    myIsInit = true;
+    setStatus(Status::Ready);
+
+    if(!myPathQML.isEmpty())
+        setSourceQML(QUrl::fromLocalFile(myPathQML));
 }
 
 void Scene::reload()
@@ -642,391 +1040,44 @@ void Scene::onKeyReleased(char key)
 	sofaSimulation()->GetRoot()->propagateEvent(sofa::core::ExecParams::defaultInstance(), &keyEvent);
 }
 
-SceneListModel::SceneListModel(QObject* parent) : QAbstractListModel(parent), QQmlParserStatus(), MutationListener(),
-    myItems(),
-    myUpdatedCount(0),
-    myScene(0)
-{
-
-}
-
-SceneListModel::~SceneListModel()
-{
-
-}
-
-void SceneListModel::classBegin()
-{
-
-}
-
-void SceneListModel::componentComplete()
-{
-    if(!myScene)
-        setScene(qobject_cast<Scene*>(parent()));
-    else
-        handleSceneChange(myScene);
-}
-
-void SceneListModel::update()
-{
-    int changeNum = myItems.size() - myUpdatedCount;
-    if(changeNum > 0)
-    {
-        beginInsertRows(QModelIndex(), myUpdatedCount, myItems.size() - 1);
-        endInsertRows();
-    }
-    else if(changeNum < 0)
-    {
-        beginRemoveRows(QModelIndex(), myItems.size(), myUpdatedCount - 1);
-        endRemoveRows();
-    }
-
-    dataChanged(createIndex(0, 0), createIndex(myItems.size() - 1, 0));
-
-    myUpdatedCount = myItems.size();
-}
-
-void SceneListModel::handleSceneChange(Scene* newScene)
-{
-    if(myScene)
-    {
-        clear();
-        if(myScene->isReady())
-            addChild(0, myScene->sofaSimulation()->GetRoot().get());
-
-        connect(myScene, &Scene::loaded, [this]() {addChild(0, myScene->sofaSimulation()->GetRoot().get()); update();});
-        connect(myScene, &Scene::aboutToUnload, this, &SceneListModel::clear);
-    }
-}
-
-void SceneListModel::clear()
-{
-    myItems.clear();
-    update();
-}
-
-SceneListModel::Item SceneListModel::buildNodeItem(Item* parent, BaseNode* node)
-{
-    SceneListModel::Item item;
-
-    item.parent = parent;
-    item.depth = parent ? parent->depth + 1 : 0;
-    item.visibility = !parent ? Visible : (((Hidden | Collapsed) & parent->visibility) ? Hidden : Visible);
-    item.base = node;
-    item.object = 0;
-    item.node = node;
-
-    return item;
-}
-
-SceneListModel::Item SceneListModel::buildObjectItem(Item* parent, BaseObject* object)
-{
-    SceneListModel::Item item;
-
-    item.parent = parent;
-    item.depth = parent ? parent->depth + 1 : 0;
-    item.visibility = !parent ? Visible : (((Hidden | Collapsed) & parent->visibility) ? Hidden : Visible);
-    item.base = object;
-    item.object = object;
-    item.node = parent->node;
-
-    return item;
-}
-
-void SceneListModel::setScene(Scene* newScene)
-{
-    if(newScene == myScene)
-        return;
-
-    if(myScene)
-        myScene->disconnect(this);
-
-    myScene = newScene;
-
-    handleSceneChange(myScene);
-
-    sceneChanged(newScene);
-}
-
-int	SceneListModel::rowCount(const QModelIndex & parent) const
-{
-    return myItems.size();
-}
-
-QVariant SceneListModel::data(const QModelIndex& index, int role) const
-{
-    if(!index.isValid())
-    {
-        qWarning("Invalid index");
-        return QVariant("");
-    }
-
-    if(index.row() >= myItems.size())
-        return QVariant("");
-
-    const Item& item = myItems[index.row()];
-    int depth = item.depth;
-    int visibility = item.visibility;
-    Base* base = item.base;
-    BaseObject* object = item.object;
-
-    if(0 == base)
-    {
-        qWarning("Item is empty");
-        return QVariant("");
-    }
-
-    switch(role)
-    {
-    case NameRole:
-        return QVariant::fromValue(QString(base->name.getValue().c_str()));
-    case DepthRole:
-        return QVariant::fromValue(depth);
-    case VisibilityRole:
-        return QVariant::fromValue(visibility);
-    case TypeRole:
-        return QVariant::fromValue(QString(base->getClass()->className.c_str()));
-    case IsNodeRole:
-        return QVariant::fromValue(0 == object);
-    default:
-        qWarning("Role unknown");
-    }
-
-    return QVariant("");
-}
-
-QHash<int,QByteArray> SceneListModel::roleNames() const
-{
-    QHash<int,QByteArray> roles;
-
-    roles[NameRole]         = "name";
-    roles[DepthRole]        = "depth";
-    roles[VisibilityRole]   = "visibility";
-    roles[TypeRole]         = "type";
-    roles[IsNodeRole]       = "isNode";
-
-    return roles;
-}
-
-void SceneListModel::setCollapsed(int row, bool collapsed)
-{
-    if(-1 == row)
-    {
-        qWarning("Invalid index");
-        return;
-    }
-
-    if(row >= myItems.size())
-        return;
-
-    Item& item = myItems[row];
-
-    int collapsedFlag = collapsed ? Collapsed : Visible;
-    if(collapsedFlag == item.visibility)
-        return;
-
-    item.visibility = collapsed;
-
-    QStack<Item*> children;
-    for(int i = 0; i < item.children.size(); ++i)
-        children.append(item.children[i]);
-
-    while(!children.isEmpty())
-    {
-        Item* child = children.pop();
-        if(1 == collapsed)
-            child->visibility |= Hidden;
-        else
-            child->visibility ^= Hidden;
-
-        if(!(Collapsed & child->visibility))
-            for(int i = 0; i < child->children.size(); ++i)
-                children.append(child->children[i]);
-    }
-
-    dataChanged(createIndex(0, 0), createIndex(myItems.size() - 1, 0));
-}
-
-// TODO: prefer iteration to recursivity
-//static bool isAncestor(BaseNode* ancestor, BaseNode* node)
-//{
-//    if(!node)
-//        return false;
-
-//    if(0 == ancestor && 0 == node->getParents().size())
-//        return true;
-
-//    BaseNode::Parents parents = node->getParents();
-//    for(int i = 0; i != parents.size(); ++i)
-//    {
-//        BaseNode* parent = parents[i];
-//        if(ancestor == parent)
-//        {
-//            return true;
-//        }
-//        else
-//        {
-//            bool status = isAncestor(ancestor, parent);
-//            if(status)
-//                return true;
-//        }
-//    }
-
-//    return false;
-//}
-
-void SceneListModel::addChild(Node* parent, Node* child)
+void Scene::addChild(Node* parent, Node* child)
 {
     if(!child)
         return;
 
-    if(!parent)
-    {
-        myItems.append(buildNodeItem(0, child));
-    }
-    else
-    {
-        QList<Item>::iterator parentItemIt = myItems.begin();
-        while(parentItemIt != myItems.end())
-        {
-            if(parent == parentItemIt->base)
-            {
-                Item* parentItem = &*parentItemIt;
-
-                QList<Item>::iterator itemIt = parentItemIt;
-                while(++itemIt != myItems.end())
-                    if(parent != itemIt->node)
-                        break;
-
-                QList<Item>::iterator childItemIt = myItems.insert(itemIt, buildNodeItem(parentItem, child));
-                parentItem->children.append(&*childItemIt);
-
-                parentItemIt = childItemIt;
-            }
-            else
-                ++parentItemIt;
-        }
-    }
+    myBases.insert(child);
 
     MutationListener::addChild(parent, child);
 }
 
-void SceneListModel::removeChild(Node* parent, Node* child)
+void Scene::removeChild(Node* parent, Node* child)
 {
     if(!child)
         return;
 
     MutationListener::removeChild(parent, child);
 
-    QList<Item>::iterator itemIt = myItems.begin();
-    while(itemIt != myItems.end())
-    {
-        if(child == itemIt->node)
-        {
-            Item* parentItem = itemIt->parent;
-            if((!parent && !parentItem) || (parent && parentItem && parent == parentItem->base))
-            {
-                if(parentItem)
-                {
-                    int index = parentItem->children.indexOf(&*itemIt);
-                    if(-1 != index)
-                        parentItem->children.remove(index);
-                }
-
-                itemIt = myItems.erase(itemIt);
-            }
-            else
-                ++itemIt;
-        }
-        else
-        {
-            ++itemIt;
-        }
-    }
+    myBases.remove(child);
 }
 
-//void SceneListModel::moveChild(Node* previous, Node* parent, Node* child)
-//{
-
-//}
-
-void SceneListModel::addObject(Node* parent, BaseObject* object)
+void Scene::addObject(Node* parent, BaseObject* object)
 {
     if(!object || !parent)
         return;
 
-    QList<Item>::iterator parentItemIt = myItems.begin();
-    while(parentItemIt != myItems.end())
-    {
-        if(parent == parentItemIt->base)
-        {
-            Item* parentItem = &*parentItemIt;
-
-            QList<Item>::iterator itemIt = parentItemIt;
-            while(++itemIt != myItems.end())
-                if(parent != itemIt->node)
-                    break;
-
-            QList<Item>::iterator childItemIt = myItems.insert(itemIt, buildObjectItem(parentItem, object));
-            parentItem->children.append(&*childItemIt);
-
-            parentItemIt = childItemIt;
-        }
-        else
-            ++parentItemIt;
-    }
+    myBases.insert(object);
 
     MutationListener::addObject(parent, object);
 }
 
-void SceneListModel::removeObject(Node* parent, BaseObject* object)
+void Scene::removeObject(Node* parent, BaseObject* object)
 {
     if(!object || !parent)
         return;
 
     MutationListener::removeObject(parent, object);
 
-    QList<Item>::iterator itemIt = myItems.begin();
-    while(itemIt != myItems.end())
-    {
-        if(object == itemIt->base)
-        {
-            Item* parentItem = itemIt->parent;
-            if(parentItem && parent == parentItem->base)
-            {
-                if(parentItem)
-                {
-                    int index = parentItem->children.indexOf(&*itemIt);
-                    if(-1 != index)
-                        parentItem->children.remove(index);
-                }
-
-                itemIt = myItems.erase(itemIt);
-            }
-            else
-                ++itemIt;
-        }
-        else
-        {
-            ++itemIt;
-        }
-    }
-}
-
-//void SceneListModel::moveObject(Node* previous, Node* parent, BaseObject* object)
-//{
-
-//}
-
-void SceneListModel::addSlave(BaseObject* master, BaseObject* slave)
-{
-    MutationListener::addSlave(master, slave);
-}
-
-void SceneListModel::removeSlave(BaseObject* master, BaseObject* slave)
-{
-    MutationListener::removeSlave(master, slave);
+    myBases.remove(object);
 }
 
 }

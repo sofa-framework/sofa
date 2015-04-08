@@ -52,14 +52,14 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API UpdateMappingEndEvent : public sofa::core::objectmodel::Event
 {
 public:
-    UpdateMappingEndEvent( double dt );
+    UpdateMappingEndEvent( SReal dt );
 
     ~UpdateMappingEndEvent();
 
-    double getDt() const { return dt; }
+    SReal getDt() const { return dt; }
     virtual const char* getClassName() const { return "UpdateMappingEndEvent"; }
 protected:
-    double dt;
+    SReal dt;
 };
 
 } // namespace simulation

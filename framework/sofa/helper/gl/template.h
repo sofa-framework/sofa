@@ -103,7 +103,7 @@ inline void glVertexT<float>(const float& c)
 ////////////////////////////////////////
 
 template<int N>
-inline void glTexCoordNv(const float* p)
+inline void glTexCoordNv(const float* /*p*/)
 {
 }
 

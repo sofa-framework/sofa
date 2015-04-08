@@ -17,7 +17,7 @@ public:
 	
 	DiagonalResponse();
 
-    virtual void factor(const mat& sys, bool semidefinite=false);
+    virtual void factor(const rmat& sys, bool semidefinite=false);
 	virtual void solve(cmat& lval, const cmat& rval) const;
 	virtual void solve(vec& lval,  const vec& rval) const;
     virtual void reinit();

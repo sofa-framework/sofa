@@ -39,8 +39,8 @@
 
 
 
-#include <sofa/component/mapping/ImplicitSurfaceMapping.h>
-#include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
+#include <SofaVolumetricData/ImplicitSurfaceMapping.h>
+#include <SofaSphFluid/SPHFluidSurfaceMapping.h>
 
 
 

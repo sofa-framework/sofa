@@ -134,7 +134,7 @@ class MuscleMaterialBlock< E311(_Real) >:
         f.getStrain()[0] += F;
     }
 
-    void addDForce( Deriv&   df, const Deriv&   dx, const double& kfactor, const double& bfactor ) const
+    void addDForce( Deriv&   df, const Deriv&   dx, const SReal& kfactor, const SReal& bfactor ) const
     {
         df.getStrain()+=K*dx.getStrain()*kfactor + B*dx.getStrain()*bfactor;
     }

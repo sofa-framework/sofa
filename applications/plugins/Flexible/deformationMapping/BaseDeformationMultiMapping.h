@@ -35,14 +35,14 @@
 #include <sofa/simulation/common/Simulation.h>
 
 #include "../shapeFunction/BaseShapeFunction.h"
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/kdTree.inl>
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include "BaseDeformationMapping.h"
 
@@ -139,9 +139,9 @@ public:
 
     /** @name  Coord types    */
     //@{
-    typedef Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
+    typedef defaulttype::Vec<spatial_dimensions,Real> Coord ; ///< spatial coordinates
     typedef vector<Coord> VecCoord;
-    typedef Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local liner transformation from material space to world space
+    typedef defaulttype::Mat<spatial_dimensions,material_dimensions,Real> MaterialToSpatial;           ///< local liner transformation from material space to world space
     typedef vector<MaterialToSpatial> VMaterialToSpatial;
     typedef helper::kdTree<Coord> KDT;      ///< kdTree for fast search of closest mapped points
     typedef typename KDT::distanceSet distanceSet;
@@ -166,7 +166,7 @@ public:
     //@}	
 
     void resizeOut(); /// automatic resizing (of output model and jacobian blocks) when input samples have changed. Recomputes weights from shape function component.
-    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<Vec<spatial_dimensions,Real> > > dw, vector<vector<Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
+    virtual void resizeOut(const vector<Coord>& position0, vector<vector<unsigned int> > index,vector<vector<Real> > w, vector<vector<defaulttype::Vec<spatial_dimensions,Real> > > dw, vector<vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > > ddw, vector<defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> > F0); /// resizing given custom positions and weights
 
     /** @name Mapping functions */
     //@{
@@ -223,9 +223,11 @@ public:
         return &baseMatrices;
     }
 
+
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
+
     virtual const defaulttype::BaseMatrix* getK()
     {
-        updateK(this->toModel->readForces().ref());
         return &K;
     }
 
@@ -316,7 +318,6 @@ protected:
     vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Vector of jacobian matrices, for the Compliant plugin API
 
     SparseKMatrixEigen1 K;  ///< Assembled geometric stiffness matrix
-    void updateK(const OutVecDeriv& childForce);
 
     helper::ParticleMask::InternalStorage previousMask; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
 
@@ -327,6 +328,7 @@ protected:
     Data< helper::OptionsGroup > showDeformationGradientStyle;
     Data< helper::OptionsGroup > showColorOnTopology;
     Data< float > showColorScale;
+    Data< unsigned > d_geometricStiffness;
 };
 
 

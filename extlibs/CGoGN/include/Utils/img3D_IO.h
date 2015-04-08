@@ -27,6 +27,8 @@
 
 #include "Utils/os_spec.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
@@ -55,7 +57,7 @@ namespace Img3D_IO
 	* @param tag image tag (reference out)
 	* @return a pointer on the image data (that have been allocated by function)
 	*/
-	unsigned char* loadBool(char* filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& tag);
+	CGoGN_UTILS_API unsigned char* loadBool(char* filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& tag);
 
 	/**
 	* Save bool image (0/255) 
@@ -72,7 +74,7 @@ namespace Img3D_IO
 	* @param vz voxel size z 
 	* @param tag image tag  
 	*/
-	void saveBool(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag);
+	CGoGN_UTILS_API void saveBool(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag);
 
 	/**
 	* Load 8 bits image, if image is boolean compressed, it uncompress it !
@@ -87,7 +89,7 @@ namespace Img3D_IO
 	* @param tag image tag (reference out)
 	* @return a pointer on the image data (that have been allocated by function)
 	*/
-	unsigned char* loadVal_8(const std::string& filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& tag);
+	CGoGN_UTILS_API unsigned char* loadVal_8(const std::string& filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& tag);
 
 	/**
 	* Save 8bits val image 
@@ -103,7 +105,7 @@ namespace Img3D_IO
 	* @param vz voxel size z 
 	* @param tag image tag  
 	*/
-	void saveVal(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag);
+	CGoGN_UTILS_API void saveVal(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag);
 
 
 	/**
@@ -119,7 +121,7 @@ namespace Img3D_IO
 	* @param tag image tag (reference out)
 	* @return a pointer on the image data (that have been allocated by function)
 	*/
-	unsigned char* loadRGB(const std::string& filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& id);
+	CGoGN_UTILS_API unsigned char* loadRGB(const std::string& filename, int& w, int& h, int &d, float& vx, float& vy, float& vz, int& id);
 
 	/**
 	* Save RGB 8 bits image 
@@ -135,7 +137,7 @@ namespace Img3D_IO
 	* @param vz voxel size z 
 	* @param tag image tag  
 	*/
-	void saveRGB(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag);
+	CGoGN_UTILS_API void saveRGB(const std::string& filename, unsigned char* data, int w, int h, int d, float vx, float vy, float vz, int tag);
 	/**
 	* Load 16 bits value image 
 	* Warning: the allocated data image contain w supplemntary bytes which store information
@@ -197,6 +199,103 @@ namespace Img3D_IO
 	* @param tag image tag  
 	*/
 //	void saveVal_float(const std::string& filename, float* data, int w, int h, int d, float vx, float vy, float vz, int tag);
+
+
+	template<typename DataType>
+	DataType* compressZ8(DataType* src, int w, int h, int d, int& new_d)
+	{
+		new_d = (d / 8);
+		int wh = w*h;
+		if (d % 8) new_d++;
+
+		DataType* newImg = new DataType[(w*h*new_d) + w]; // +w pour stocker entete
+		DataType *dest = newImg;
+
+		int z = 0;
+		while (z < d)
+		{
+			DataType* ptrs[8];
+			ptrs[0] = src;
+			z++;
+			for (int i = 1; i<8; ++i)
+			{
+				if (z<d)
+					ptrs[i] = ptrs[i - 1] + wh;
+				else ptrs[i] = NULL;
+				z++;
+			}
+
+			for (int i = 0; i<wh; ++i)
+			{
+				DataType val = 0;
+				for (int j = 7; j >= 0; --j)
+				{
+					val *= 2;
+					if (ptrs[j] != NULL)
+					{
+						if (*((ptrs[j])++) != 0)
+						{
+							val++;
+						}
+					}
+				}
+				*dest++ = val;
+			}
+			src += 8 * wh;
+		}
+
+		return newImg;
+	}
+
+
+	template<typename DataType>
+	DataType* uncompressZ8(DataType* src, int w, int h, int d)
+	{
+		int wh = w*h;
+
+		DataType* newImg = new DataType[wh*d];
+		DataType *dest = newImg;
+
+		int z = 0;
+		while (z < d)
+		{
+			DataType* ptrs[8];
+			ptrs[0] = dest;
+			z++;
+			for (int i = 1; i<8; ++i)
+			{
+				if (z<d)
+					ptrs[i] = ptrs[i - 1] + wh;
+				else ptrs[i] = NULL;
+				z++;
+			}
+
+			for (int i = 0; i<wh; ++i)
+			{
+				DataType val = *src++;
+
+				for (int j = 0; j<8; ++j)
+				{
+					if (ptrs[j] != NULL)
+					{
+						if (val % 2)
+						{
+							*((ptrs[j])++) = 255;
+						}
+						else
+						{
+							*((ptrs[j])++) = 0;
+						}
+					}
+					val /= 2;
+				}
+			}
+			dest += 8 * wh;
+		}
+
+		return newImg;
+
+	}
 
 
 

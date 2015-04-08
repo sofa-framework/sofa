@@ -38,7 +38,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(CauchyStrainMapping);
+SOFA_DECL_CLASS(CauchyStrainMapping)
 
 using namespace defaulttype;
 

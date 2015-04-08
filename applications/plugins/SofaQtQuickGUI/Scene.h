@@ -7,13 +7,12 @@
 #include <sofa/simulation/common/MutationListener.h>
 
 #include <QObject>
+#include <QVariant>
+#include <QSet>
+#include <QVector3D>
 #include <QUrl>
-#include <QAbstractListModel>
-#include <QQmlParserStatus>
-#include <QList>
 
 class QTimer;
-class QVector3D;
 
 namespace sofa
 {
@@ -21,21 +20,64 @@ namespace sofa
 namespace qtquick
 {
 
-class SceneListModel;
+class Scene;
 
-class Scene : public QObject
+class SOFA_SOFAQTQUICKGUI_API SceneComponent : public QObject
 {
     Q_OBJECT
+
+public:
+    SceneComponent(const Scene* scene, const sofa::core::objectmodel::Base* base);
+
+    sofa::core::objectmodel::Base* base();
+    const sofa::core::objectmodel::Base* base() const;
+
+    const Scene* scene() const;
+
+private:
+    const Scene*                                    myScene;
+    mutable const sofa::core::objectmodel::Base*    myBase;
+
+};
+
+class SOFA_SOFAQTQUICKGUI_API SceneData : public QObject
+{
+    Q_OBJECT
+
+public:
+    SceneData(const SceneComponent* sceneComponent, const sofa::core::objectmodel::BaseData* data);
+    SceneData(const Scene* scene, const sofa::core::objectmodel::Base* base, const sofa::core::objectmodel::BaseData* data);
+
+    Q_INVOKABLE QVariantMap object() const;
+    Q_INVOKABLE bool setValue(const QVariant& value);
+    Q_INVOKABLE bool setLink(const QString& path);
+
+    sofa::core::objectmodel::BaseData* data();
+    const sofa::core::objectmodel::BaseData* data() const;
+
+private:
+    const Scene*                                        myScene;
+    mutable const sofa::core::objectmodel::Base*        myBase;
+    mutable const sofa::core::objectmodel::BaseData*    myData;
+
+};
+
+class Scene : public QObject, private sofa::simulation::MutationListener
+{
+    Q_OBJECT
+
+    friend class SceneComponent;
+    friend class SceneData;
 
 public:
     explicit Scene(QObject *parent = 0);
 	~Scene();
 
 public:
-	Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged);
-	Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged);
-	Q_PROPERTY(QUrl sourceQML READ sourceQML WRITE setSourceQML NOTIFY sourceQMLChanged);
-	Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged);
+    Q_PROPERTY(Status status READ status WRITE setStatus NOTIFY statusChanged)
+    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QUrl sourceQML READ sourceQML WRITE setSourceQML NOTIFY sourceQMLChanged)
+    Q_PROPERTY(double dt READ dt WRITE setDt NOTIFY dtChanged)
 	Q_PROPERTY(bool play READ playing WRITE setPlay NOTIFY playChanged)
 	Q_PROPERTY(bool asynchronous MEMBER myAsynchronous NOTIFY asynchronousChanged)
     Q_PROPERTY(bool visualDirty READ visualDirty NOTIFY visualDirtyChanged)
@@ -52,6 +94,9 @@ public:
 	Status status()	const							{return myStatus;}
 	void setStatus(Status newStatus);
 
+    bool isLoading() const							{return Status::Loading == myStatus;}
+    bool isReady() const							{return Status::Ready == myStatus;}
+
 	const QUrl& source() const						{return mySource;}
 	void setSource(const QUrl& newSource);
 
@@ -63,9 +108,6 @@ public:
 	
 	bool playing() const							{return myPlay;}
 	void setPlay(bool newPlay);
-
-	bool isReady() const							{return Status::Ready == myStatus;}
-	bool isInit() const								{return myIsInit;}
 
     bool visualDirty() const						{return myVisualDirty;}
     void setVisualDirty(bool newVisualDirty);
@@ -82,20 +124,30 @@ signals:
     void visualDirtyChanged(bool newVisualDirty);
 
 public:
-	Q_INVOKABLE double radius();
-	Q_INVOKABLE void computeBoundingBox(QVector3D& min, QVector3D& max);
-    Q_INVOKABLE QString dumpGraph();
+    Q_INVOKABLE double radius() const;
+    Q_INVOKABLE void computeBoundingBox(QVector3D& min, QVector3D& max) const;
+    Q_INVOKABLE QString dumpGraph() const;
+    Q_INVOKABLE void reinitComponent(const QString& path);
+    Q_INVOKABLE void sendGUIEvent(const QString& controlID, const QString& valueName, const QString& value);
 
 public:
-    QVariant getData(const QString& path) const;
-    void setData(const QString& path, const QVariant& value);
+    static QVariantMap dataObject(const sofa::core::objectmodel::BaseData* data);
+    static QVariant dataValue(const sofa::core::objectmodel::BaseData* data);
+    static bool setDataValue(sofa::core::objectmodel::BaseData* data, const QVariant& value);
+    static bool setDataLink(sofa::core::objectmodel::BaseData* data, const QString& link);
+
+    QVariant dataValue(const QString& path) const;
+    void setDataValue(const QString& path, const QVariant& value);
+
+    Q_INVOKABLE sofa::qtquick::SceneData* data(const QString& path) const;
+    Q_INVOKABLE sofa::qtquick::SceneComponent* component(const QString& path) const;
 
 protected:
-    Q_INVOKABLE QVariant onGetData(const QString& path) const;
-    Q_INVOKABLE void onSetData(const QString& path, const QVariant& value);
+    Q_INVOKABLE QVariant onDataValue(const QString& path) const;
+    Q_INVOKABLE void onSetDataValue(const QString& path, const QVariant& value);
 
 public slots:
-    void init();        // need an opengl context made current
+    void initGraphics();        // need an opengl context made current
 	void reload();
 	void step();
 	void reset();
@@ -110,122 +162,32 @@ signals:
     void reseted();
 
 private slots:
-	void open();
+    void open();
+    void handleStatusChange(Status newStatus);
 
 public:
 	sofa::simulation::Simulation* sofaSimulation() const {return mySofaSimulation;}
 
-private:
-	Status							myStatus;
-	QUrl							mySource;
-	QUrl							mySourceQML;
-	bool							myIsInit;
-	bool							myVisualDirty;
-	double							myDt;
-	bool							myPlay;
-	bool							myAsynchronous;
-
-	sofa::simulation::Simulation*	mySofaSimulation;
-    QTimer*							myStepTimer;
-};
-
-class SceneListModel : public QAbstractListModel, public QQmlParserStatus, private sofa::simulation::MutationListener
-{
-    Q_OBJECT
-    Q_INTERFACES(QQmlParserStatus)
-
-public:
-    SceneListModel(QObject* parent = 0);
-    ~SceneListModel();
-
-    void classBegin();
-    void componentComplete();
-
-    Q_INVOKABLE void update();
-
-    Q_ENUMS(Visibility)
-    enum Visibility {
-        Visible     = 0,
-        Collapsed   = 1,
-        Hidden      = 2
-    };
-
-public slots:
-    void handleSceneChange(Scene* newScene);
-    void clear();
-
-public:
-    Q_PROPERTY(sofa::qtquick::Scene* scene READ scene WRITE setScene NOTIFY sceneChanged);
-
-public:
-    Scene* scene() const		{return myScene;}
-    void setScene(Scene* newScene);
-
-protected:
-    int	rowCount(const QModelIndex & parent = QModelIndex()) const;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-    QHash<int,QByteArray> roleNames() const;
-
-    Q_INVOKABLE void setCollapsed(int row, bool value);
-
-signals:
-    void sceneChanged(sofa::qtquick::Scene* newScene);
-
 protected:
     void addChild(sofa::simulation::Node* parent, sofa::simulation::Node* child);
     void removeChild(sofa::simulation::Node* parent, sofa::simulation::Node* child);
-    //void moveChild(sofa::simulation::Node* previous, sofa::simulation::Node* parent, sofa::simulation::Node* child);
     void addObject(sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
     void removeObject(sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
-    //void moveObject(sofa::simulation::Node* previous, sofa::simulation::Node* parent, sofa::core::objectmodel::BaseObject* object);
-    void addSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    void removeSlave(sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    //void moveSlave(sofa::core::objectmodel::BaseObject* previousMaster, sofa::core::objectmodel::BaseObject* master, sofa::core::objectmodel::BaseObject* slave);
-    //void sleepChanged(sofa::simulation::Node* node);
 
 private:
-    enum {
-        NameRole = Qt::UserRole + 1,
-        DepthRole,
-        VisibilityRole,
-        TypeRole,
-        IsNodeRole
-    };
+    Status                                      myStatus;
+    QUrl                                        mySource;
+    QUrl                                        mySourceQML;
+    QString                                     myPathQML;
+    bool                                        myIsInit;
+    bool                                        myVisualDirty;
+    double                                      myDt;
+    bool                                        myPlay;
+    bool                                        myAsynchronous;
 
-    struct Item
-    {
-        Item() :
-            parent(0),
-            children(0),
-            depth(0),
-            visibility(0),
-            base(0),
-            object(0),
-            context(0),
-            node(0)
-        {
-
-        }
-
-        Item*                                   parent;
-        QVector<Item*>                          children;
-        int                                     depth;
-        int                                     visibility;
-
-        sofa::core::objectmodel::Base*          base;
-        sofa::core::objectmodel::BaseObject*    object;
-        sofa::core::objectmodel::BaseContext*   context;
-        sofa::core::objectmodel::BaseNode*      node;
-    };
-
-    Item buildNodeItem(Item* parent, sofa::core::objectmodel::BaseNode* node);
-    Item buildObjectItem(Item* parent, sofa::core::objectmodel::BaseObject* object);
-
-private:
-    QList<Item>                     myItems;
-    int                             myUpdatedCount;
-    Scene*                          myScene;
-
+    sofa::simulation::Simulation*               mySofaSimulation;
+    QTimer*                                     myStepTimer;
+    QSet<const sofa::core::objectmodel::Base*>  myBases;
 };
 
 }

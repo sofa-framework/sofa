@@ -28,8 +28,8 @@
 #include "../initFlexible.h"
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/NumericalIntegrationDescriptor.h>
+#include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/NumericalIntegrationDescriptor.h>
 
 namespace sofa
 {

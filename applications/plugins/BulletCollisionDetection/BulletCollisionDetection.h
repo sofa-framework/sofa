@@ -29,7 +29,7 @@
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/component/component.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include "LinearMath/btQuaternion.h"
 #include "LinearMath/btTransform.h"
@@ -200,7 +200,7 @@ public:
     //Data<bool> useMultiSAP;
     //Data<bool> useBdvt;
 
-    Data< helper::fixed_array<Vector3,2> > box;
+    Data< helper::fixed_array<defaulttype::Vector3,2> > box;
 
 private:
     //sofa::set< > collisionModels;

@@ -73,7 +73,7 @@ ConstraintGroup* BaseLMConstraint::addGroupConstraint(ConstraintParams::ConstOrd
     return c;
 }
 
-void BaseLMConstraint::getConstraintViolation(const core::ConstraintParams* cparams /* PARAMS FIRST */, defaulttype::BaseVector *v)
+void BaseLMConstraint::getConstraintViolation(const core::ConstraintParams* cparams, defaulttype::BaseVector *v)
 {
     getConstraintViolation(v,cparams->constOrder());
 }
@@ -97,7 +97,7 @@ void BaseLMConstraint::getConstraintViolation(defaulttype::BaseVector * v, const
 void BaseLMConstraint::resetConstraint()
 {
     std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup*> >::iterator it;
-    for (it=constraintOrder.begin(); it!=constraintOrder.end(); it++)
+    for (it=constraintOrder.begin(); it!=constraintOrder.end(); ++it)
     {
         helper::vector< ConstraintGroup* > &v=it->second;
         for (size_t i=0; i<v.size(); ++i)

@@ -39,8 +39,8 @@
 #include <omp.h>
 #endif
 
-#include <sofa/component/loader/MeshObjLoader.h>
-#include <sofa/component/engine/NormalsFromPoints.h>
+#include <SofaLoader/MeshObjLoader.h>
+#include <SofaEngine/NormalsFromPoints.h>
 #include <limits>
 #include <set>
 #include <iterator>
@@ -149,7 +149,7 @@ template<class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::initSource()
 {
     // build k-d tree
-    const VecCoord&  p = *this->mstate->getX();
+    const VecCoord&  p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     sourceKdTree.build(p);
 
     // detect border
@@ -175,7 +175,7 @@ void ClosestPointRegistrationForceField<DataTypes>::initTarget()
 template<class DataTypes>
 void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
 {
-    const VecCoord& x = *this->mstate->getX();
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord&  tp = targetPositions.getValue();
 
     unsigned int nbs=x.size(),nbt=tp.size();
@@ -208,7 +208,7 @@ void ClosestPointRegistrationForceField<DataTypes>::updateClosestPoints()
 #pragma omp parallel for
 #endif
         for(int i=0;i<(int)nbt;i++)
-            sourceKdTree.getNClosest(closestTarget[i],tp[i],*this->mstate->getX(),1);
+            sourceKdTree.getNClosest(closestTarget[i],tp[i], this->mstate->read(core::ConstVecCoordId::position())->getValue(),1);
     }
 
 
@@ -377,7 +377,7 @@ void ClosestPointRegistrationForceField<DataTypes>::draw(const core::visual::Vis
     if (!vparams->displayFlags().getShowForceFields() && !drawColorMap.getValue()) return;
 
     ReadAccessor< Data< VecCoord > > x(*this->getMState()->read(core::ConstVecCoordId::position()));
-    //const VecCoord& x = *this->mstate->getX();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     unsigned int nb = this->closestPos.size();
     if (vparams->displayFlags().getShowForceFields())

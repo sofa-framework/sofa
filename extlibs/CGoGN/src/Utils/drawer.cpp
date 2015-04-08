@@ -23,6 +23,8 @@
 *******************************************************************************/
 
 #include "GL/glew.h"
+
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/drawer.h"
 #include "Utils/Shaders/shaderColorPerVertex.h"
 
@@ -81,11 +83,11 @@ void Drawer::pointSize(float ps)
 
 int Drawer::begin(GLenum mode)
 {
-	int res = m_begins.size();
+	int res = int(m_begins.size());
 	if (mode == GL_POINTS)
-		m_begins.push_back(PrimParam(m_dataPos.size(), mode, m_currentSize));
+        m_begins.push_back(PrimParam(m_dataPos.size(), mode, m_currentSize));
 	else
-		m_begins.push_back(PrimParam(m_dataPos.size(), mode, m_currentWidth));
+        m_begins.push_back(PrimParam(m_dataPos.size(), mode, m_currentWidth));
 	return res;
 }
 
@@ -94,7 +96,7 @@ void Drawer::end()
 	if (m_begins.empty())
 		return;
 
-	m_begins.back().nb = m_dataPos.size() - m_begins.back().begin;
+    m_begins.back().nb = m_dataPos.size() - m_begins.back().begin;
 }
 
 void Drawer::color(const Geom::Vec3f& col)
@@ -120,7 +122,7 @@ unsigned int Drawer::vertex(const Geom::Vec3f& v)
 			m_dataCol.push_back( m_dataCol.back());
 	}
 	m_dataPos.push_back(v);
-	return  m_dataPos.size()-1;
+    return  m_dataPos.size()-1u;
 }
 
 unsigned int Drawer::vertex3f(float r, float g, float b)
@@ -138,7 +140,7 @@ void Drawer::newList(GLenum comp)
 
 void Drawer::endList()
 {
-	unsigned int nbElts = m_dataPos.size();
+    unsigned int nbElts = m_dataPos.size();
 	
 	if (nbElts == 0)
 		return;

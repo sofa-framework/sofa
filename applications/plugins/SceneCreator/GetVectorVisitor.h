@@ -62,7 +62,7 @@ class SOFA_SceneCreator_API GetVectorVisitor: public Visitor
 public:
 //    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
     typedef defaulttype::BaseVector Vector;
-    GetVectorVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */, Vector* vec, core::ConstVecId src );
+    GetVectorVisitor( const sofa::core::ExecParams* params, Vector* vec, core::ConstVecId src );
     virtual ~GetVectorVisitor();
 
     virtual Result processNodeTopDown( simulation::Node*  );

@@ -56,6 +56,7 @@ set(HEADER_FILES
     engine/ComputeDualQuatEngine.h
     engine/ComputeDualQuatEngine.inl
     engine/ComputeWeightEngine.h
+    mass/AffineMass.h
     strainMapping/BaseStrainMapping.h
     strainMapping/CauchyStrainMapping.h
     strainMapping/CauchyStrainJacobianBlock.h
@@ -136,6 +137,7 @@ set(SOURCE_FILES
     deformationMapping/CorotationalMeshMapping.cpp
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
+    mass/AffineMass.cpp
     strainMapping/CauchyStrainMapping.cpp
     strainMapping/GreenStrainMapping.cpp
     strainMapping/CorotationalStrainMapping.cpp 
@@ -166,7 +168,8 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND HEADER_FILES "shapeFunction/DiffusionShapeFunction.h")
    	list(APPEND HEADER_FILES "shapeFunction/ShapeFunctionDiscretizer.h")
    	list(APPEND HEADER_FILES "deformationMapping/ImageDeformation.h")
-   	list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
+        list(APPEND HEADER_FILES "mass/MassFromDensity.h")
+        list(APPEND HEADER_FILES "mass/ImageDensityMass.h")
    	list(APPEND HEADER_FILES "mass/ImageDensityMass.inl")
     list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.h")
 
@@ -175,7 +178,8 @@ if(SOFA-PLUGIN_IMAGE)
    	list(APPEND SOURCE_FILES "shapeFunction/DiffusionShapeFunction.cpp")
    	list(APPEND SOURCE_FILES "shapeFunction/ShapeFunctionDiscretizer.cpp")
    	list(APPEND SOURCE_FILES "deformationMapping/ImageDeformation.cpp")
-   	list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
+        list(APPEND HEADER_FILES "mass/MassFromDensity.cpp")
+        list(APPEND SOURCE_FILES "mass/ImageDensityMass.cpp")
     list(APPEND SOURCE_FILES "shapeFunction/ImageShapeFunctionContainer.cpp")
 
     AddCompilerDefinitions("SOFA_HAVE_IMAGE" )

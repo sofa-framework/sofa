@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDASTANDARDTETRAHEDRALFEMFORCEFIELD_INL
 
 #include <sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.h>
-#include <sofa/component/forcefield/StandardTetrahedralFEMForceField.inl>
+#include <SofaMiscFem/StandardTetrahedralFEMForceField.inl>
 
 
 #define EDGEDEBUG 100
@@ -64,7 +64,7 @@ using namespace gpu::cuda;
 
 
 template <>
-void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
+void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
 {
     sofa::helper::AdvancedTimer::stepBegin("addForceStandardTetraFEM");
 
@@ -102,7 +102,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce(const
 }
 
 template <>
-void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
     sofa::helper::AdvancedTimer::stepBegin("addDForceStandardTetraFEM");
 
@@ -111,7 +111,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce(cons
 	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
 	unsigned int nbEdges=_topology->getNbEdges();
-	const vector< Edge> &edgeArray=_topology->getEdges() ;
+	const vector< topology::Edge> &edgeArray=_topology->getEdges() ;
 
     unsigned int nbTetrahedra=_topology->getNbTetrahedra();
 
@@ -220,7 +220,7 @@ void StandardTetrahedralFEMForceField<CudaVec3fTypes>::initNeighbourhoodEdges()
             {
                 unsigned int tetraID;
                 tetraID = _topology->getTetrahedraAroundEdge(i)[j];
-        		BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(tetraID);
+                topology::BaseMeshTopology::EdgesInTetrahedron te=_topology->getEdgesInTetrahedron(tetraID);
                 if( (unsigned)i == te[0])
                     StandardTetrahedralFEMForceField_neighbourhoodEdges[i*StandardTetrahedralFEMForceField_nbMaxTetraPerEdge + j] = tetraID*6 + 0;
                 else if( (unsigned)i == te[1])
@@ -240,7 +240,7 @@ void StandardTetrahedralFEMForceField<CudaVec3fTypes>::initNeighbourhoodEdges()
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template <>
-void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
+void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& /*d_v*/)
 {
 	VecDeriv& f = *d_f.beginEdit();
 	const VecCoord& x = d_x.getValue();
@@ -277,7 +277,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addForce(const
 }
 
 template <>
-void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
+void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
 	VecDeriv& df = *d_df.beginEdit();
 	const VecDeriv& dx = d_dx.getValue();

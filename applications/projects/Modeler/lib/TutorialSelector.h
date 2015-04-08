@@ -33,7 +33,6 @@
 #include <sofa/helper/system/SetDirectory.h>
 
 #include <tinyxml.h>
-#include <tinystr.h>
 
 #include <map>
 

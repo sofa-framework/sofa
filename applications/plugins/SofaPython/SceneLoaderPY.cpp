@@ -33,6 +33,9 @@
 
 #include <sstream>
 
+#include "PythonMainScriptController.h"
+
+using namespace sofa::core::objectmodel;
 
 namespace sofa
 {
@@ -108,9 +111,21 @@ sofa::simulation::Node::SPtr SceneLoaderPY::loadSceneWithArguments(const char *f
     }
     else
     {
-        SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" module method found." )
+        PyObject *pFunc = PyDict_GetItemString(pDict, "createSceneAndController");
+        if (PyCallable_Check(pFunc))
+        {
+            Node::SPtr rootNode = getSimulation()->createNewGraph("root");
+            ScriptEnvironment::enableNodeQueuedInit(false);
+            SP_CALL_MODULEFUNC(pFunc, "(O)", SP_BUILD_PYSPTR(rootNode.get()))
+            ScriptEnvironment::enableNodeQueuedInit(true);
+
+            rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );
+
+            return rootNode;
+        }
     }
 
+    SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" nor \"createSceneAndController(rootNode)\" module method found." )
     return NULL;
 }
 

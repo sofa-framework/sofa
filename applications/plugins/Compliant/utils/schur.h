@@ -18,7 +18,7 @@ struct schur {
 	typedef sofa::component::linearsolver::AssembledSystem sys_type;
 	
 	typedef sys_type::real real;
-	typedef sys_type::mat mat;
+    typedef sys_type::rmat rmat;
 	typedef sys_type::vec vec;
 	
 
@@ -26,7 +26,7 @@ struct schur {
 	
 	const sys_type& sys;
 	const Minv_type& Minv;
-	const mat JP;
+    const rmat JP;
 	const real damping;
 	
 	const vec* prec;

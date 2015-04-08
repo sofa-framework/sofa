@@ -1,7 +1,7 @@
 #include "BulletTriangleModel.inl"
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/collision/BarycentricPenalityContact.h>
+#include <SofaMeshCollision/BarycentricPenalityContact.h>
 #include <sofa/core/collision/Contact.h>
 namespace sofa
 {

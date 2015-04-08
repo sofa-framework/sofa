@@ -3,11 +3,7 @@
 
 #include "BasePreconditioner.h"
 
-#include <unsupported/Eigen/MatrixFunctions>
-#include <unsupported/Eigen/SparseExtra>
 #include <unsupported/Eigen/IterativeSolvers>
-
-//#include <unsupported/Eigen/ModuleHeader>
 
 namespace sofa {
 namespace component {
@@ -15,7 +11,7 @@ namespace linearsolver {
 
 /**
  *
- * 
+ *  Linear system preconditioner based on an Incomplete Cholesky factorization
 */
 
 class SOFA_Compliant_API IncompleteCholeskyPreconditioner : public BasePreconditioner
@@ -25,14 +21,28 @@ class SOFA_Compliant_API IncompleteCholeskyPreconditioner : public BasePrecondit
 
     SOFA_ABSTRACT_CLASS(IncompleteCholeskyPreconditioner, BasePreconditioner);
 
-    virtual void compute( const AssembledSystem::mat& H );
-    virtual void apply( AssembledSystem::vec& res, const AssembledSystem::vec& v );
+    IncompleteCholeskyPreconditioner();
+
+    typedef AssembledSystem::real real;
+    typedef AssembledSystem::vec vec;
+    typedef AssembledSystem::rmat rmat;
+    typedef AssembledSystem::cmat cmat;
+
+    virtual void reinit();
+
+    virtual void compute( const rmat& H );
+    virtual void apply( vec& res, const vec& v );
+
+    Data<bool> d_constant;
+    Data<real> d_shift;
 
   protected:
 
+    bool m_factorized;
 
-    /// the LDLT decomposition
-    Eigen::IncompleteCholesky< AssembledSystem::cmat > preconditioner;
+
+    /// Incomplete Cholesky decomposition is always set for cmat
+    Eigen::IncompleteCholesky< real > preconditioner;
 
 };
 

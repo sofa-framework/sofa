@@ -29,7 +29,7 @@
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/component/component.h>
-#include <sofa/component/collision/CubeModel.h>
+#include <SofaBaseCollision/CubeModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
 #include <boost/unordered_map.hpp>

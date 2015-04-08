@@ -1,6 +1,6 @@
 //ShaderMatCustom::fragmentShaderText
 
-PRECISON;
+PRECISION;
 VARYING_FRAG vec3 EyeVector, Normal, LightDir;
 #ifdef WITH_COLOR
 VARYING_FRAG vec3 Color;
