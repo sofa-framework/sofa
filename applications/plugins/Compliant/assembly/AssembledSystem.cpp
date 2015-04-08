@@ -166,6 +166,61 @@ void AssembledSystem::addToCompliantMultiVec( core::MultiVecId targetId, const v
 
 }
 
+
+
+//static bool diagonal_dominant(const AssembledSystem& sys)
+//{
+//	typedef rmat::Index Index;
+
+//	rmat PH = sys.P * sys.H;
+
+//	typedef SReal real;
+
+//    if( sys.n )
+//    {
+//        rmat PJt = sys.P * sys.J.transpose();
+
+//        for( unsigned i = 0 ; i < sys.m ; ++i )
+//	        {
+//		        real d = helper::rabs(PH.coeff(i,i));
+
+//		        real o = -d;
+//		        for( Index j=0 ; j<PH.cols()  ; ++j ) o += helper::rabs(PH.coeff(i,j));
+//		        for( Index j=0 ; j<PJt.cols() ; ++j ) o += helper::rabs(PJt.coeff(i,j));
+
+//		        if( o > d ) return false;
+//	        }
+
+//        for( unsigned i=0 ; i< sys.n ; ++i )
+//	        {
+//		        real d = helper::rabs(sys.C.coeff(i,i));
+
+//		        real o = -d;
+//		        for( Index j=0 ; j<sys.C.cols() ; ++j ) o += helper::rabs(sys.C.coeff(i,j));
+//		        for( Index j=0 ; j<sys.J.cols() ; ++j ) o += helper::rabs(sys.J.coeff(i,j));
+
+//		        if( o > d ) return false;
+//	        }
+//    }
+//    else
+//	    {
+//		    for( unsigned i=0 ; i< sys.m ; ++i )
+//			    {
+//				    real d = helper::rabs(PH.coeff(i,i));
+
+//				    real o = -d;
+//				    for( Index j=0 ; j<PH.cols() ; ++j ) o += helper::rabs(PH.coeff(i,j));
+
+//				    if( o > d ) return false;
+//			    }
+//	    }
+
+//    return true;
+//}
+
+
+
+
 }
 }
 }

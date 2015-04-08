@@ -3,25 +3,56 @@
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMechanicalMappings showForceFields" />
 
   <RequiredPlugin name="Compliant" pluginName="Compliant" />
-  <RequiredPlugin name="Flexible" pluginName="Flexible" />
+<!--   <RequiredPlugin name="CompliantDev"  /> -->
+<!--   <RequiredPlugin name="Flexible" pluginName="Flexible" /> -->
 
-<!-- <CompliantAttachButton /> -->
+<CompliantAttachButton />
   
 <Node 	name="complianceSolverScene" >
-        <CompliantImplicitSolver/>
-        <LDLTSolver/><LDLTResponse/>
-<!--    <MinresSolver iterations="20" precision="1e-3" /> -->
+        <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="0" stabilization="0"/>
+        <LDLTSolver schur="0" regularization="0" />
+<!--         <EigenCGSolver schur="1"/> -->
+<!--         <EigenMINRESSolver schur="1"/> -->
+<!--         <EigenGMRESSolver schur="0"/> -->
+        
+<!--         <LUSolver/> -->
+<!--         <LDLTResponse/> -->
+<!--         <EigenCGResponse/> -->
+<!--                 <LUResponse/> -->
+<!--    <MinresSolver iterations="200" precision="1e-6" /> -->
+<!--          <SequentialSolver iterations="200" precision="1e-6" /> -->
+<!--         <ModulusSolver /> -->
    
-    <GridMeshCreator name="loader" filename="nofile" resolution="5 5" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
+    <GridMeshCreator name="loader" filename="nofile" resolution="10 10" trianglePattern="0" rotation="90 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
-    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
+    <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" showObject="1" showObjectScale="10"/>
     <BoxConstraint box="-0.005 -0.005 -0.005    1.005 0.005 0.005  " />
     <UniformMass  name="mass" />
+    
+    
+<!--         <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-15" isCompliance="1" />
+        <UnilateralConstraint/>
+    </Node>-->
+    
     <Node name="extensionsNode" >
         <MechanicalObject template="Vec1d"  name="extensionsDOF" />
         <EdgeSetTopologyContainer edges="@../mesh.edges" />
         <DistanceMapping  />
-        <UniformCompliance name="ucomp" template="Vec1d" compliance="1.0e-4" isCompliance="1" />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-15" isCompliance="1" />
     </Node>
+
+    
+<!--    
+     <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="@../mesh.edges" />
+        <DistanceMapping  />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-15" isCompliance="1" />
+        <UnilateralConstraint/>
+    </Node>-->
 </Node>
 </Node>
