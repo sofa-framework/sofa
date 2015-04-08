@@ -177,6 +177,24 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         std::cout << "Stereo separation = " << _stereoShift << std::endl;
         break;
     }
+    case Qt::Key_F4:
+    {
+        // --- Switch between parallax and toedIn stereovision
+        switch (_stereoStrategy) {
+        case PARALLEL:
+            _stereoStrategy=TOEDIN;
+            std::cout << "Stereo Strategy: TOEDIN" << std::endl;
+            break;
+        case TOEDIN:
+            _stereoStrategy = PARALLEL;
+            std::cout << "Stereo Strategy: Parallel" << std::endl;
+            break;
+        default:
+            _stereoStrategy = PARALLEL;
+            break;
+        }
+        break;
+    }
     case Qt::Key_F5:
         // --- enable binocular mode
     {
