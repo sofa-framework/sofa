@@ -71,8 +71,7 @@ namespace sofa {
 
         // Constructor: call the constructor of the base class which loads the scene to test
         RigidLinearDeformationMappings_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "RigidLineDeformationMapping.scn")
-        {   
-            Inherited::errorMax = 5000;
+        {
             // rotation and translation
             this->SetRandomTestedRotationAndTranslation();
             typedef projectiveconstraintset::AffineMovementConstraint<In> AffineMovementConstraint;
@@ -81,6 +80,7 @@ namespace sofa {
             affineConstraint->m_translation.setValue(testedTranslation);
             testedQuaternion.toMatrix(testedRotation);
 
+            static_cast<_Mapping*>(this->mapping)->d_geometricStiffness.setValue( 1 );
         }
              
         void SetRandomTestedRotationAndTranslation()
