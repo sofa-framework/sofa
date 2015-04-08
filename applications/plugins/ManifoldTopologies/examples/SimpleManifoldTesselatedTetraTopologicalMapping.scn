@@ -1,4 +1,5 @@
-<Node name="root" dt="0.05" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1" showBoundingTree="0" gravity="0 0 0">
+<Node name="root" dt="0.05" gravity="0 0 0">
+    <VisualStyle displayFlags="showBehaviorModels showCollisionModels hideMappings showForceFields"/>
     <RequiredPlugin name="ManifoldTopologies"/>
 	<CollisionPipeline verbose="0" name="CollisionPipeline"/>
 	<BruteForceDetection name="N2" />

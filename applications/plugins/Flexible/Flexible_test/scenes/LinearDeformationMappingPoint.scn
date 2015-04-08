@@ -7,6 +7,7 @@
   <Node name="Patch" >
     <CompliantImplicitSolver/>
     <LDLTSolver/> 
+    <LDLTResponse/>
 
     <!--Nodes-->
     <MechanicalObject name="defoDOF" showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0003" />
@@ -20,7 +21,7 @@
     <UniformMass name="mass" totalMass="1"/>
     
     <!--Shape function-->
-    <BarycentricShapeFunction name="baryShapeFunction" template="ShapeFunctiond" useLocalOrientation="false"/>
+    <BarycentricShapeFunction name="baryShapeFunction" template="ShapeFunctiond" />
     
     <!--Elasticity-->
     <Node 	name="Elasticity" >
