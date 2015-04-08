@@ -67,7 +67,7 @@ public:
 
 
     /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
-    virtual void animate(Node* root, double dt=0.0);
+    virtual void animate(Node* root, SReal dt=0.0);
 
     /// Update the Visual Models: triggers the Mappings
     virtual void updateVisual(Node* root);
@@ -94,6 +94,7 @@ public:
     /** Compute the bounding box of the scene.
      * Includes all objects, may they be displayed or not.
      * @sa computeBBox(Node* root, SReal* minBBox, SReal* maxBBox, bool init=true)
+     * @deprecated
      */
     virtual void computeTotalBBox(Node* root, SReal* minBBox, SReal* maxBBox);
 

@@ -1,7 +1,7 @@
 #ifndef BULLET_TRIANGLE_MODEL
 #define BULLET_TRIANGLE_MODEL
 
-#include <sofa/component/collision/TriangleModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
 #include <BulletCollision/CollisionShapes/btTriangleMesh.h>
 #include "BulletCollisionModel.h"
 #include "BulletCollision/Gimpact/btGImpactShape.h"
@@ -98,7 +98,7 @@ private:
 
 };
 
-typedef TBulletTriangleModel<Vec3Types> BulletTriangleModel;
+typedef TBulletTriangleModel<defaulttype::Vec3Types> BulletTriangleModel;
 
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_BULLETCOLLISIONDETECTION)

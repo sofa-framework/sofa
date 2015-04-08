@@ -20,14 +20,18 @@ set(HEADER_FILES
     mapping/ProjectionMapping.h
     mapping/RigidComMultiMapping.h
     mapping/AffineMultiMapping.h
+	mapping/PythonMultiMapping.h
+    mapping/GearMapping.h
 
     numericalsolver/KKTSolver.h
-    numericalsolver/LDLTSolver.h
+    numericalsolver/EigenSparseSolver.h
+    numericalsolver/EigenSparseSolver.inl
+    numericalsolver/EigenSparseResponse.h
+    numericalsolver/EigenSparseResponse.inl
     numericalsolver/MinresSolver.h
     numericalsolver/KrylovSolver.h
     numericalsolver/CgSolver.h
     numericalsolver/Response.h
-    numericalsolver/LDLTResponse.h
     numericalsolver/DiagonalResponse.h
     numericalsolver/SequentialSolver.h
     numericalsolver/IterativeSolver.h
@@ -37,14 +41,15 @@ set(HEADER_FILES
     numericalsolver/PreconditionedCgSolver.h
     numericalsolver/AnalysisSolver.h
     numericalsolver/LumpedResponse.h
-    numericalsolver/LUSolver.h
-    numericalsolver/LUResponse.h
     numericalsolver/BiCgStabSolver.h
     numericalsolver/NNCGSolver.h
+	numericalsolver/SubKKT.h
+    numericalsolver/SubKKT.inl
+	numericalsolver/ModulusSolver.h
 
     preconditioner/BasePreconditioner.h
     preconditioner/CompliantLDLTPreconditioner.h
-    #preconditioner/IncompleteCholeskyPreconditioner.h
+    preconditioner/IncompleteCholeskyPreconditioner.h
     preconditioner/CompliantJacobiPreconditioner.h
 
     assembly/AssemblyHelper.h
@@ -66,6 +71,7 @@ set(HEADER_FILES
     constraint/CoulombConstraint.h
     constraint/UnilateralConstraint.h
     constraint/ResistanceConstraint.h
+    constraint/ClosureConstraint.h
 
     constraint/BaseConstraintValue.h
     constraint/Stabilization.h
@@ -99,8 +105,11 @@ set(HEADER_FILES
     utils/scoped.h
     utils/se3.h
     utils/sparse.h
-    utils/thread_local.h
-
+    utils/thread_variable.h
+	utils/anderson.h
+	utils/sub_kkt.h
+	utils/sub_kkt.inl
+	
     utils/cg.h
     utils/preconditionedcg.h
     utils/minres.h
@@ -114,6 +123,7 @@ set(SOURCE_FILES
     misc/CompliantSolverMerger.cpp
     misc/RigidMass.cpp
     misc/FailNode.cpp
+	misc/python.cpp
 
     compliance/UniformCompliance.cpp
     compliance/DiagonalCompliance.cpp
@@ -129,12 +139,14 @@ set(SOURCE_FILES
     mapping/ProjectionMapping.cpp
     mapping/RigidComMultiMapping.cpp
     mapping/AffineMultiMapping.cpp
+	mapping/PythonMultiMapping.cpp
+    mapping/GearMapping.cpp
 
-    numericalsolver/LDLTSolver.cpp
+    numericalsolver/EigenSparseSolver.cpp
+    numericalsolver/EigenSparseResponse.cpp
     numericalsolver/MinresSolver.cpp
     numericalsolver/KrylovSolver.cpp
     numericalsolver/CgSolver.cpp
-    numericalsolver/LDLTResponse.cpp
     numericalsolver/DiagonalResponse.cpp
     numericalsolver/SequentialSolver.cpp
     numericalsolver/IterativeSolver.cpp
@@ -144,13 +156,13 @@ set(SOURCE_FILES
     numericalsolver/PreconditionedCgSolver.cpp
     numericalsolver/AnalysisSolver.cpp
     numericalsolver/LumpedResponse.cpp
-    numericalsolver/LUSolver.cpp
-    numericalsolver/LUResponse.cpp
     numericalsolver/BiCgStabSolver.cpp
     numericalsolver/NNCGSolver.cpp
+	numericalsolver/SubKKT.cpp
+	numericalsolver/ModulusSolver.cpp
 
     preconditioner/CompliantLDLTPreconditioner.cpp
-    #preconditioner/IncompleteCholeskyPreconditioner.cpp
+    preconditioner/IncompleteCholeskyPreconditioner.cpp
     preconditioner/CompliantJacobiPreconditioner.cpp
 
     assembly/AssemblyVisitor.cpp
@@ -164,6 +176,7 @@ set(SOURCE_FILES
     constraint/CoulombConstraint.cpp
     constraint/UnilateralConstraint.cpp
     constraint/ResistanceConstraint.cpp
+    constraint/ClosureConstraint.cpp
 
     constraint/ConstraintValue.cpp
     constraint/Stabilization.cpp
@@ -177,7 +190,10 @@ set(SOURCE_FILES
     contact/FrictionCompliantContact.cpp
     contact/PenalityCompliantContact.cpp
 	
-	controller/CompliantSleepController.cpp)
+	controller/CompliantSleepController.cpp
+
+   	utils/anderson.cpp
+   	utils/sub_kkt.cpp)
 
 set(README_FILES Compliant.txt)
 

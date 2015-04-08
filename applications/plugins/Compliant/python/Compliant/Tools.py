@@ -30,7 +30,7 @@ def scene(node):
     node.createObject('DefaultPipeline', name = 'pipeline')
     node.createObject('BruteForceDetection', name = 'detection')
     
-    proximity = node.createObject('NewProximityIntersection', name = 'proximity' )
+    proximity = node.createObject('NewProximityIntersection', name = 'proximity', alarmDistance=1, contactDistance="0.5" ) # default distances
     
     manager = node.createObject('DefaultContactManager',
                                 name = 'manager',

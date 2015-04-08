@@ -214,6 +214,7 @@ std::string GLSLShader::GetShaderStageName(GLint target)
 ///	This function compiles a shader and check the log
 bool GLSLShader::CompileShader(GLint target, const std::string& fileName, const std::string& header)
 {
+    if (!GLSLIsSupported) return false;
     std::string source = LoadTextFile(fileName);
 
     std::string shaderStage = GetShaderStageName(target);
@@ -252,6 +253,7 @@ bool GLSLShader::CompileShader(GLint target, const std::string& fileName, const 
 ///	This function loads a vertex and fragment shader file
 void GLSLShader::InitShaders()
 {
+    if (!GLSLIsSupported) return;
     // Make sure the user passed in at least a vertex and fragment shader file
     if(!GetVertexShaderFileName().length() || !GetFragmentShaderFileName().length())
     {

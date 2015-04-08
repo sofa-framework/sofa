@@ -14,6 +14,9 @@ namespace forcefield
 {
 
 template<class DataTypes>
+const typename DiagonalCompliance<DataTypes>::Real DiagonalCompliance<DataTypes>::s_complianceEpsilon = std::numeric_limits<typename DiagonalCompliance<DataTypes>::Real>::epsilon();
+
+template<class DataTypes>
 DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
     , diagonal( initData(&diagonal, 
@@ -102,6 +105,28 @@ void DiagonalCompliance<DataTypes>::reinit()
     else matB.compressedMatrix.resize(0,0);
 }
 
+template<class DataTypes>
+SReal DiagonalCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
+{
+    const VecCoord& _x = x.getValue();
+    unsigned int m = this->mstate->getMatrixBlockSize();
+
+    SReal e = 0;
+    for( unsigned int i=0 ; i<_x.size() ; ++i )
+    {
+        for( unsigned int j=0 ; j<m ; ++j )
+        {
+            Real compliance = diagonal.getValue()[i][j];
+            Real k = compliance > s_complianceEpsilon ?
+                    1. / compliance :
+                    1. / s_complianceEpsilon;
+
+            e += .5 * k * _x[i][j]*_x[i][j];
+        }
+    }
+    return e;
+}
+
 //template<class DataTypes>
 //void DiagonalCompliance<DataTypes>::setCompliance( Real c )
 //{
@@ -122,14 +147,14 @@ const sofa::defaulttype::BaseMatrix* DiagonalCompliance<DataTypes>::getComplianc
 }
 
 template<class DataTypes>
-void DiagonalCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
+void DiagonalCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset )
 {
 //    cerr<<SOFA_CLASS_METHOD<<std::endl;
     matK.addToBaseMatrix( matrix, kFact, offset );
 }
 
 template<class DataTypes>
-void DiagonalCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset )
+void DiagonalCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset )
 {
     matB.addToBaseMatrix( matrix, bFact, offset );
 }

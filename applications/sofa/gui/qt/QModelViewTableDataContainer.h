@@ -28,9 +28,9 @@
 #include "SimpleDataWidget.h"
 #include "StructDataWidget.h"
 #ifdef TODOTOPO
-#include <sofa/component/topology/PointSubsetData.h>
+#include <SofaBaseTopology/PointSubsetData.h>
 #endif
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 #include "QModelViewTableUpdater.h"
 #include "QDisplayDataWidget.h"

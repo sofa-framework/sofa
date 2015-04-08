@@ -44,7 +44,7 @@ class BaseVectorOperations
 protected:
     const core::ExecParams* params;
     core::objectmodel::BaseContext* ctx;
-    double result;
+    SReal result;
 
 public:
     BaseVectorOperations(const core::ExecParams* params, core::objectmodel::BaseContext* ctx)
@@ -67,27 +67,27 @@ public:
 
     virtual void v_clear(core::MultiVecId v) = 0; ///< v=0
     virtual void v_eq(core::MultiVecId v, core::ConstMultiVecId a) = 0; ///< v=a
-    virtual void v_eq(core::MultiVecId v, core::ConstMultiVecId a, double f) = 0; ///< v=f*a
-    virtual void v_peq(core::MultiVecId v, core::ConstMultiVecId a, double f=1.0) = 0; ///< v+=f*a
+    virtual void v_eq(core::MultiVecId v, core::ConstMultiVecId a, SReal f) = 0; ///< v=f*a
+    virtual void v_peq(core::MultiVecId v, core::ConstMultiVecId a, SReal f=1.0) = 0; ///< v+=f*a
 #ifdef SOFA_SMP
-    virtual void v_peq(core::MultiVecId v, core::ConstMultiVecId a, Shared<double> &fSh, double f=1.0) = 0; ///< v+=f*a
-    virtual void v_meq(core::MultiVecId v, core::ConstMultiVecId a, Shared<double> &fSh) = 0; ///< v+=f*a
+    virtual void v_peq(core::MultiVecId v, core::ConstMultiVecId a, Shared<SReal> &fSh, SReal f=1.0) = 0; ///< v+=f*a
+    virtual void v_meq(core::MultiVecId v, core::ConstMultiVecId a, Shared<SReal> &fSh) = 0; ///< v+=f*a
 #endif
-    virtual void v_teq(core::MultiVecId v, double f) = 0; ///< v*=f
-    virtual void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId b, double f=1.0) = 0; ///< v=a+b*f
+    virtual void v_teq(core::MultiVecId v, SReal f) = 0; ///< v*=f
+    virtual void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId b, SReal f=1.0) = 0; ///< v=a+b*f
 #ifdef SOFA_SMP
-    virtual void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId b, Shared<double> &f) = 0; ///< v=a+b*f
+    virtual void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId b, Shared<SReal> &f) = 0; ///< v=a+b*f
 #endif
     virtual void v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o) = 0;
     virtual void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId b) = 0; ///< a dot b ( get result using finish )
     virtual void v_norm(core::ConstMultiVecId a, unsigned l)=0; ///< Compute the norm of a vector ( get result using finish ). The type of norm is set by parameter l. Use 0 for the infinite norm. Note that the 2-norm is more efficiently computed using the square root of the dot product.
 #ifdef SOFA_SMP
-    virtual void v_dot(Shared<double> &result,core::ConstMultiVecId a, core::ConstMultiVecId b) = 0; ///< a dot b
+    virtual void v_dot(Shared<SReal> &result,core::ConstMultiVecId a, core::ConstMultiVecId b) = 0; ///< a dot b
 #endif
-    virtual void v_threshold(core::MultiVecId a, double threshold) = 0; ///< nullify the values below the given threshold
+    virtual void v_threshold(core::MultiVecId a, SReal threshold) = 0; ///< nullify the values below the given threshold
 
 
-    virtual double finish() = 0;
+    virtual SReal finish() = 0;
 
     virtual void print( core::ConstMultiVecId v, std::ostream& out, std::string prefix="", std::string suffix="" ) = 0;
 

@@ -157,7 +157,7 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
     public:
         SOFA_POOLABLE_CLASS(SOFA_TEMPLATE2(DifferenceMultiMapping,TIn,TOut), SOFA_TEMPLATE2(core::MultiMapping,TIn,TOut));
 
-        typedef core::Mapping<TIn, TOut> Inherit;
+        typedef AssembledMultiMapping<TIn, TOut> Inherit;
         typedef TIn In;
         typedef TOut Out;
         typedef typename Out::VecCoord OutVecCoord;
@@ -215,29 +215,31 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
 
         void assemble(const vector<typename self::in_pos_type>& in ) {
 
-            for(unsigned i = 0, n = in.size(); i < n; ++i) {
-                // jacobian matrix assembly
-                const pairs_type& p = pairs.getValue();
-                assert( !p.empty() );
+            const pairs_type& p = pairs.getValue();
+            assert( !p.empty() );
 
-                this->jacobian(i).compressedMatrix.resize( Nout * p.size(), Nin * in[i].size());
-                this->jacobian(i).compressedMatrix.setZero();
+            for(unsigned i = 0, n = in.size(); i < n; ++i) {
+
+                typename Inherit::jacobian_type::CompressedMatrix& J = this->jacobian(i).compressedMatrix;
+
+                J.resize( Nout * p.size(), Nin * in[i].size());
+                J.setZero();
 
 
                 Real sign = (i == 0) ? -1 : 1;
 
                 for(unsigned k = 0, n = p.size(); k < n; ++k) {
-                    write_block(i, k, p[k][i], sign);
+                    write_block(J, k, p[k][i], sign);
                 }
 
-                this->jacobian(i).compressedMatrix.finalize();
+                J.finalize();
             }
         }
 
 
 
         // write sign * identity in jacobian(obj)
-        void write_block(unsigned int obj,
+        void write_block(typename Inherit::jacobian_type::CompressedMatrix& J,
                          unsigned row, unsigned col,
                          SReal sign) {
             assert( Nout == Nin );
@@ -247,8 +249,8 @@ class SOFA_Compliant_API DifferenceMapping : public AssembledMapping<TIn, TOut>
                 unsigned r = row * Nout + i;
                 unsigned c = col * Nin + i;
 
-                this->jacobian( obj ).compressedMatrix.startVec(r);
-                this->jacobian( obj ).compressedMatrix.insertBack(r, c) = sign;
+                J.startVec(r);
+                J.insertBack(r, c) = sign;
             }
         }
 

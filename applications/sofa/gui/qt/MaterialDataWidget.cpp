@@ -346,7 +346,7 @@ void VectorMaterialDataWidget::readFromData()
     _comboBox->clear();
     _vectorEditedMaterial.clear();
     std::copy(vecMaterial.begin(), vecMaterial.end(), std::back_inserter(_vectorEditedMaterial) );
-    for( iter = _vectorEditedMaterial.begin(); iter != _vectorEditedMaterial.end(); iter++ )
+    for( iter = _vectorEditedMaterial.begin(); iter != _vectorEditedMaterial.end(); ++iter )
     {
         _comboBox->insertItem ( QString( (*iter).name.c_str() ) );
     }

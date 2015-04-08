@@ -29,10 +29,10 @@
 #include "OpenCLFixedConstraint.h"
 #include "OpenCLSpringForceField.h"
 
-#include <sofa/component/collision/MouseInteractor.inl>
-#include <sofa/component/collision/ComponentMouseInteraction.inl>
-#include <sofa/component/collision/AttachBodyPerformer.inl>
-#include <sofa/component/collision/FixParticlePerformer.inl>
+#include <SofaUserInteraction/MouseInteractor.inl>
+#include <SofaUserInteraction/ComponentMouseInteraction.inl>
+#include <SofaUserInteraction/AttachBodyPerformer.inl>
+#include <SofaUserInteraction/FixParticlePerformer.inl>
 #include <sofa/helper/Factory.inl>
 #include <sofa/core/ObjectFactory.h>
 

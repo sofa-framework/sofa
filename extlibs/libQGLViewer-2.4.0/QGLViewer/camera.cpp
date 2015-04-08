@@ -986,7 +986,7 @@ void Camera::fitSphere(const Vec& center, float radius)
 void Camera::fitBoundingBox(const Vec& min, const Vec& max)
 {
   float diameter = qMax(fabs(max[1]-min[1]), fabs(max[0]-min[0]));
-  diameter = qMax(fabsf(max[2]-min[2]), diameter);
+  diameter = qMax(fabsf( float(max[2]-min[2]) ), diameter);
   fitSphere(0.5*(min+max), 0.5*diameter);
 }
 

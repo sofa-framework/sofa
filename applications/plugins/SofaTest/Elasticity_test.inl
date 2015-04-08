@@ -28,50 +28,48 @@
 #include "Elasticity_test.h"
 
 // Solvers
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/StaticSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaImplicitOdeSolver/StaticSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
 
 // Box roi
-#include <sofa/component/engine/PairBoxRoi.h>
-#include <sofa/component/engine/BoxROI.h>
-#include <sofa/component/engine/GenerateCylinder.h>
+#include <SofaEngine/PairBoxRoi.h>
+#include <SofaEngine/BoxROI.h>
+#include <SofaEngine/GenerateCylinder.h>
 
 // Constraint
-#include <sofa/component/projectiveconstraintset/ProjectToLineConstraint.h>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
-#include <sofa/component/projectiveconstraintset/AffineMovementConstraint.h>
-#include <sofa/component/projectiveconstraintset/FixedPlaneConstraint.h>
+#include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <SofaBoundaryCondition/AffineMovementConstraint.h>
+#include <SofaBoundaryCondition/FixedPlaneConstraint.h>
 
 // ForceField
-#include <sofa/component/forcefield/TrianglePressureForceField.h>
+#include <SofaBoundaryCondition/TrianglePressureForceField.h>
+#include <SofaMiscForceField/LennardJonesForceField.h>
 
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/topology/RegularGridTopology.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaBaseTopology/RegularGridTopology.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
 
 namespace sofa
 {
-using namespace simulation;
-using namespace component::odesolver;
-using namespace component::topology;
 typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
 /// Create a scene with a regular grid and an affine constraint for patch test
 
 template<class DataTypes> PatchTestStruct<DataTypes>
 Elasticity_test<DataTypes>::createRegularGridScene(
-        Node::SPtr root,
+        simulation::Node::SPtr root,
         Coord startPoint,
         Coord endPoint,
         int numX,
         int numY,
         int numZ,
-        Vec<6,SReal> entireBoxRoi,
-        Vec<6,SReal> inclusiveBox,
-        Vec<6,SReal> includedBox)
+        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
+        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
+        sofa::defaulttype::Vec<6,SReal> includedBox)
 {
     // Definitions
     PatchTestStruct<DataTypes> patchStruct;
@@ -93,39 +91,39 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     simulation::Node::SPtr SquareNode = root->createChild("Square");
 
     // Euler implicit solver and cglinear solver
-    component::odesolver::EulerImplicitSolver::SPtr solver = addNew<component::odesolver::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
+    component::odesolver::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
     solver->f_rayleighStiffness.setValue(0.5);
     solver->f_rayleighMass.setValue(0.5);
-    CGLinearSolver::SPtr cgLinearSolver = addNew< CGLinearSolver >(SquareNode,"linearSolver");
+    CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(SquareNode,"linearSolver");
 
     // Mass
-    typename UniformMass::SPtr mass = addNew<UniformMass>(SquareNode,"mass");
+    typename UniformMass::SPtr mass = modeling::addNew<UniformMass>(SquareNode,"mass");
 
     // Regular grid topology
-    RegularGridTopology::SPtr gridMesh = addNew<RegularGridTopology>(SquareNode,"loader");
+    RegularGridTopology::SPtr gridMesh = modeling::addNew<RegularGridTopology>(SquareNode,"loader");
     gridMesh->setNumVertices(numX,numY,numZ);
     gridMesh->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
     //Mechanical object
-    patchStruct.dofs = addNew<MechanicalObject>(SquareNode,"mechanicalObject");
+    patchStruct.dofs = modeling::addNew<MechanicalObject>(SquareNode,"mechanicalObject");
     patchStruct.dofs->setName("mechanicalObject");
     patchStruct.dofs->setSrc("@"+gridMesh->getName(), gridMesh.get());
 
     //BoxRoi to find all mesh points
     helper::vector < defaulttype::Vec<6,Real> > vecBox;
     vecBox.push_back(entireBoxRoi);
-    typename BoxRoi::SPtr boxRoi = addNew<BoxRoi>(SquareNode,"boxRoi");
+    typename BoxRoi::SPtr boxRoi = modeling::addNew<BoxRoi>(SquareNode,"boxRoi");
     boxRoi->boxes.setValue(vecBox);
 
     //PairBoxRoi to define the constrained points = points of the border
-    typename PairBoxRoi::SPtr pairBoxRoi = addNew<PairBoxRoi>(SquareNode,"pairBoxRoi");
+    typename PairBoxRoi::SPtr pairBoxRoi = modeling::addNew<PairBoxRoi>(SquareNode,"pairBoxRoi");
     pairBoxRoi->inclusiveBox.setValue(inclusiveBox);
     pairBoxRoi->includedBox.setValue(includedBox);
 
     //Affine constraint
-    patchStruct.affineConstraint  = addNew<AffineMovementConstraint>(SquareNode,"affineConstraint");
-    setDataLink(&boxRoi->f_indices,&patchStruct.affineConstraint->m_meshIndices);
-    setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->m_indices);
+    patchStruct.affineConstraint  = modeling::addNew<AffineMovementConstraint>(SquareNode,"affineConstraint");
+    modeling::setDataLink(&boxRoi->f_indices,&patchStruct.affineConstraint->m_meshIndices);
+    modeling::setDataLink(&pairBoxRoi->f_indices,& patchStruct.affineConstraint->m_indices);
 
     patchStruct.SquareNode = SquareNode;
     return patchStruct;
@@ -172,12 +170,12 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     typename sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>::SPtr geo1= sofa::modeling::addNew<sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes> >(root);
 
     // CGLinearSolver
-    typename CGLinearSolver::SPtr cgLinearSolver = addNew< CGLinearSolver >(root,"linearSolver");
+    typename CGLinearSolver::SPtr cgLinearSolver = modeling::addNew< CGLinearSolver >(root,"linearSolver");
     cgLinearSolver->f_maxIter=maxIter;
     cgLinearSolver->f_tolerance =1e-9;
     cgLinearSolver->f_smallDenominatorThreshold=1e-9;
     // StaticSolver
-    typename component::odesolver::StaticSolver::SPtr solver = addNew<component::odesolver::StaticSolver>(root,"StaticSolver");
+    typename component::odesolver::StaticSolver::SPtr solver = modeling::addNew<component::odesolver::StaticSolver>(root,"StaticSolver");
     // mechanicalObject object
     typename MechanicalObject::SPtr meca1= sofa::modeling::addNew<MechanicalObject>(root);
     sofa::modeling::setDataLink(&eng->f_outputX,&meca1->x);
@@ -191,32 +189,32 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     defaulttype::Vec<6,Real> box;
     box[0]= -0.01;box[1]= -0.01;box[2]= -0.01;box[3]= 0.01;box[4]= 0.01;box[5]= 0.01;
     vecBox.push_back(box);
-    typename BoxRoi::SPtr boxRoi1 = addNew<BoxRoi>(root,"boxRoiFix");
+    typename BoxRoi::SPtr boxRoi1 = modeling::addNew<BoxRoi>(root,"boxRoiFix");
     boxRoi1->boxes.setValue(vecBox);
     // FixedConstraint
     typename component::projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fc=
-        addNew<typename component::projectiveconstraintset::FixedConstraint<DataTypes> >(root);
+        modeling::addNew<typename component::projectiveconstraintset::FixedConstraint<DataTypes> >(root);
     sofa::modeling::setDataLink(&boxRoi1->f_indices,&fc->f_indices);
     // FixedPlaneConstraint
     typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes>::SPtr fpc=
-        addNew<typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes> >(root);
+        modeling::addNew<typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes> >(root);
     fpc->dmin= -0.01;
     fpc->dmax= 0.01;
     fpc->direction=Coord(0,0,1);
     /// box pressure
     box[0]= -0.2;box[1]= -0.2;box[2]= 0.99;box[3]= 0.2;box[4]= 0.2;box[5]= 1.01;
     vecBox[0]=box;
-    typename BoxRoi::SPtr boxRoi2 = addNew<BoxRoi>(root,"boxRoiPressure");
+    typename BoxRoi::SPtr boxRoi2 = modeling::addNew<BoxRoi>(root,"boxRoiPressure");
     boxRoi2->boxes.setValue(vecBox);
     boxRoi2->f_computeTriangles=true;
     /// TrianglePressureForceField
     typename component::forcefield::TrianglePressureForceField<DataTypes>::SPtr tpff=
-        addNew<typename component::forcefield::TrianglePressureForceField<DataTypes> >(root);
+        modeling::addNew<typename component::forcefield::TrianglePressureForceField<DataTypes> >(root);
     tractionStruct.forceField=tpff;
     sofa::modeling::setDataLink(&boxRoi2->f_triangleIndices,&tpff->triangleList);
     // ProjectToLineConstraint
     typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes>::SPtr ptlc=
-        addNew<typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes> >(root);
+        modeling::addNew<typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes> >(root);
     ptlc->f_direction=Coord(1,0,0);
     ptlc->f_origin=Coord(0,0,0);
     sofa::helper::vector<unsigned> vArray;
@@ -240,56 +238,57 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
         SReal dampingRatio )
 {
     using helper::vector;
+    using core::objectmodel::New;
 
     // The graph root node
-    Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
+    simulation::Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
     root->setGravity( Coord3(0,-10,0) );
     root->setAnimate(false);
     root->setDt(0.01);
     component::visualmodel::addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
 
-    Node::SPtr simulatedScene = root->createChild("simulatedScene");
+    simulation::Node::SPtr simulatedScene = root->createChild("simulatedScene");
 
-    EulerImplicitSolver::SPtr eulerImplicitSolver = New<EulerImplicitSolver>();
+    component::odesolver::EulerImplicitSolver::SPtr eulerImplicitSolver = New<component::odesolver::EulerImplicitSolver>();
     simulatedScene->addObject( eulerImplicitSolver );
     CGLinearSolver::SPtr cgLinearSolver = New<CGLinearSolver>();
     simulatedScene->addObject(cgLinearSolver);
 
     // The rigid object
-    Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
-    MechanicalObjectRigid3::SPtr rigid_dof = addNew<MechanicalObjectRigid3>(rigidNode, "dof");
-    UniformMassRigid3::SPtr rigid_mass = addNew<UniformMassRigid3>(rigidNode,"mass");
-    FixedConstraintRigid3::SPtr rigid_fixedConstraint = addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
+    simulation::Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
+    MechanicalObjectRigid3::SPtr rigid_dof = modeling::addNew<MechanicalObjectRigid3>(rigidNode, "dof");
+    UniformMassRigid3::SPtr rigid_mass = modeling::addNew<UniformMassRigid3>(rigidNode,"mass");
+    FixedConstraintRigid3::SPtr rigid_fixedConstraint = modeling::addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
 
     // Particles mapped to the rigid object
-    Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
-    MechanicalObject3::SPtr mappedParticles_dof = addNew< MechanicalObject3>(mappedParticles,"dof");
-    RigidMappingRigid3_to_3::SPtr mappedParticles_mapping = addNew<RigidMappingRigid3_to_3>(mappedParticles,"mapping");
+    simulation::Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
+    MechanicalObject3::SPtr mappedParticles_dof = modeling::addNew< MechanicalObject3>(mappedParticles,"dof");
+    RigidMappingRigid3_to_3::SPtr mappedParticles_mapping = modeling::addNew<RigidMappingRigid3_to_3>(mappedParticles,"mapping");
     mappedParticles_mapping->setModels( rigid_dof.get(), mappedParticles_dof.get() );
 
     // The independent particles
-    Node::SPtr independentParticles = simulatedScene->createChild("independentParticles");
-    MechanicalObject3::SPtr independentParticles_dof = addNew< MechanicalObject3>(independentParticles,"dof");
+    simulation::Node::SPtr independentParticles = simulatedScene->createChild("independentParticles");
+    MechanicalObject3::SPtr independentParticles_dof = modeling::addNew< MechanicalObject3>(independentParticles,"dof");
 
     // The deformable grid, connected to its 2 parents using a MultiMapping
-    Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
+    simulation::Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
     mappedParticles->addChild(deformableGrid);                                       // second parent
 
-    RegularGridTopology::SPtr deformableGrid_grid = addNew<RegularGridTopology>( deformableGrid, "grid" );
+    component::topology::RegularGridTopology::SPtr deformableGrid_grid = modeling::addNew<component::topology::RegularGridTopology>( deformableGrid, "grid" );
     deformableGrid_grid->setNumVertices(numX,numY,numZ);
     deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
-    MechanicalObject3::SPtr deformableGrid_dof = addNew< MechanicalObject3>(deformableGrid,"dof");
+    MechanicalObject3::SPtr deformableGrid_dof = modeling::addNew< MechanicalObject3>(deformableGrid,"dof");
 
-    SubsetMultiMapping3_to_3::SPtr deformableGrid_mapping = addNew<SubsetMultiMapping3_to_3>(deformableGrid,"mapping");
+    SubsetMultiMapping3_to_3::SPtr deformableGrid_mapping = modeling::addNew<SubsetMultiMapping3_to_3>(deformableGrid,"mapping");
     deformableGrid_mapping->addInputModel(independentParticles_dof.get()); // first parent
     deformableGrid_mapping->addInputModel(mappedParticles_dof.get());      // second parent
     deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
 
-    UniformMass3::SPtr mass = addNew<UniformMass3>(deformableGrid,"mass" );
+    UniformMass3::SPtr mass = modeling::addNew<UniformMass3>(deformableGrid,"mass" );
     mass->mass.setValue( totalMass/(numX*numY*numZ) );
 
-    RegularGridSpringForceField3::SPtr spring = addNew<RegularGridSpringForceField3>(deformableGrid, "spring");
+    RegularGridSpringForceField3::SPtr spring = modeling::addNew<RegularGridSpringForceField3>(deformableGrid, "spring");
     spring->setLinesStiffness(stiffnessValue);
     spring->setQuadsStiffness(stiffnessValue);
     spring->setCubesStiffness(stiffnessValue);
@@ -307,17 +306,17 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // create the rigid frames and their bounding boxes
     size_t numRigid = 2;
-    vector<BoundingBox> boxes(numRigid);
+    vector<sofa::defaulttype::BoundingBox> boxes(numRigid);
     vector< vector<size_t> > indices(numRigid); // indices of the particles in each box
     double eps = (endPoint[0]-startPoint[0])/(numX*2);
 
     // first box, x=xmin
-    boxes[0] = BoundingBox(Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-                           Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[0] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+                           sofa::defaulttype::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
 
     // second box, x=xmax
-    boxes[1] = BoundingBox(Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-                           Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+    boxes[1] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
+                           sofa::defaulttype::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
     rigid_dof->resize(numRigid);
     MechanicalObjectRigid3::WriteVecCoord xrigid = rigid_dof->writePositions();
     xrigid[0].getCenter()=Coord(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
@@ -398,7 +397,7 @@ simulation::Node::SPtr Elasticity_test<DataTypes>::createMassSpringSystem(
 
 // Fixed point
 simulation::Node::SPtr fixedPointNode = root->createChild("FixedPointNode");
-MechanicalObject3::SPtr FixedPoint = addNew<MechanicalObject3>(fixedPointNode,"fixedPoint");
+MechanicalObject3::SPtr FixedPoint = modeling::addNew<MechanicalObject3>(fixedPointNode,"fixedPoint");
 
 // Set position and velocity
 FixedPoint->resize(1);
@@ -413,7 +412,7 @@ fixed->addConstraint(0);      // attach particle
 
 // Mass
 simulation::Node::SPtr massNode = root->createChild("MassNode");
-MechanicalObject3::SPtr massDof = addNew<MechanicalObject3>(massNode,"massNode");
+MechanicalObject3::SPtr massDof = modeling::addNew<MechanicalObject3>(massNode,"massNode");
 
 // Set position and velocity
 FixedPoint->resize(1);
@@ -422,13 +421,63 @@ copyToData( xMassDof, xMass );
 MechanicalObject3::WriteVecDeriv vMassDof = massDof->writeVelocities();
 copyToData( vMassDof, vMass );
 
-UniformMass3::SPtr massPtr = addNew<UniformMass3>(massNode,"mass");
+UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(massNode,"mass");
 massPtr->totalMass.setValue( mass );
 
 // attach a spring
-StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>(FixedPoint.get(), massDof.get());
+StiffSpringForceField3::SPtr spring = core::objectmodel::New<StiffSpringForceField3>(FixedPoint.get(), massDof.get());
 root->addObject(spring);
 spring->addSpring(0,0,stiffness ,0, restLength);
+
+return root;
+
+}
+
+template<class DataTypes>
+simulation::Node::SPtr Elasticity_test<DataTypes>::createSunPlanetSystem(
+        simulation::Node::SPtr root,
+        double mSun,
+        double mPlanet,
+        double g,
+        Coord xSun,
+        Deriv vSun,
+        Coord xPlanet,
+        Deriv vPlanet)
+{
+
+// Mechanical object with 2 dofs: first sun, second planet
+MechanicalObject3::SPtr sunPlanet_dof = modeling::addNew<MechanicalObject3>(root,"sunPlanet_MO");
+
+// Set position and velocity
+sunPlanet_dof->resize(2);
+// Position
+MechanicalObject3::VecCoord positions(2);
+positions[0] = xSun;
+positions[1]= xPlanet;
+MechanicalObject3::WriteVecCoord xdof = sunPlanet_dof->writePositions();
+copyToData( xdof, positions );
+// Velocity
+MechanicalObject3::VecDeriv velocities(2);
+velocities[0] = vSun;
+velocities[1]= vPlanet;
+MechanicalObject3::WriteVecDeriv vdof = sunPlanet_dof->writeVelocities();
+copyToData( vdof, velocities );
+
+// Fix sun
+FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(root,"FixedSun");
+fixed->addConstraint(0);
+
+// Uniform Mass
+UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(root,"mass");
+massPtr->totalMass.setValue(mPlanet + mSun);
+
+// Lennard Jones Force Field
+typename component::forcefield::LennardJonesForceField<DataTypes>::SPtr ff =
+    modeling::addNew<typename component::forcefield::LennardJonesForceField<DataTypes> >(root);
+// Set froce field parameters
+ff->setAlpha(1);
+ff->setBeta(-1);
+ff->setAInit(mPlanet*mSun*g);
 
 return root;
 

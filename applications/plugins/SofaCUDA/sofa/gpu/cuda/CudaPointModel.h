@@ -28,7 +28,7 @@
 #include "CudaTypes.h"
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
@@ -114,7 +114,7 @@ inline int CudaPoint::i0()
 inline int CudaPoint::getSize()
 {
     if (index == model->getSize()-1)
-        return model->getMechanicalState()->getX()->size();
+        return model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue().size();
     else
         return model->groupSize.getValue();
 }

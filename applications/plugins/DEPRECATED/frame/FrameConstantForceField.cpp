@@ -27,7 +27,7 @@
 #include "FrameConstantForceField.h"
 #include "QuadraticTypes.h"
 #include "AffineTypes.h"
-#include <sofa/component/forcefield/ConstantForceField.inl>
+#include <SofaBoundaryCondition/ConstantForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

@@ -26,7 +26,6 @@
 #define SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_INL
 
 #include "MixedInteractionConstraint.h"
-#include <sofa/core/behavior/Constraint.inl>
 
 namespace sofa
 {
@@ -39,7 +38,7 @@ namespace behavior
 
 template<class DataTypes1, class DataTypes2>
 MixedInteractionConstraint<DataTypes1, DataTypes2>::MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
-    : endTime( initData(&endTime,(double)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
+    : endTime( initData(&endTime,(SReal)-1,"endTime","The constraint stops acting after the given value.\nUse a negative value for infinite constraints") )
     , mstate1(initLink("object1", "First object to constrain"), mm1)
     , mstate2(initLink("object2", "Second object to constrain"), mm2)
 {
@@ -66,20 +65,20 @@ bool MixedInteractionConstraint<DataTypes1, DataTypes2>::isActive() const
 }
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST */, defaulttype::BaseVector *v)
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v)
 {
     if (cParams)
     {
-        getConstraintViolation(cParams /* PARAMS FIRST */, v, *cParams->readX(mstate1), *cParams->readX(mstate2), *cParams->readV(mstate1), *cParams->readV(mstate2));
+        getConstraintViolation(cParams, v, *cParams->readX(mstate1), *cParams->readX(mstate2), *cParams->readV(mstate1), *cParams->readV(mstate2));
     }
 }
 
 template<class DataTypes1, class DataTypes2>
-void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST */, MultiMatrixDerivId cId, unsigned int &cIndex)
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams /* PARAMS FIRST */, *cId[mstate1.get(cParams)].write(), *cId[mstate2.get(cParams)].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
+        buildConstraintMatrix(cParams, *cId[mstate1.get(cParams)].write(), *cId[mstate2.get(cParams)].write(), cIndex, *cParams->readX(mstate1), *cParams->readX(mstate2));
     }
 }
 

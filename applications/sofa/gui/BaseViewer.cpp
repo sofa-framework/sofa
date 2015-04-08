@@ -27,7 +27,7 @@
 #include "BaseGUI.h"
 
 #include <sofa/helper/Factory.inl>
-#include <sofa/component/visualmodel/VisualStyle.h>
+#include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
@@ -43,9 +43,9 @@ BaseViewer::BaseViewer()
 #endif
     , _video(false)
     , _axis(false)
-    , backgroundColour(Vector3())
+    , backgroundColour(defaulttype::Vector3())
     , backgroundImageFile("textures/SOFA_logo.bmp")
-    , ambientColour(Vector3())
+    , ambientColour(defaulttype::Vector3())
     , pick(NULL)
     , _stereoEnabled(false)
     , _stereoMode(STEREO_AUTO)
@@ -146,13 +146,13 @@ void BaseViewer::screenshot(const std::string& filename, int compression_level)
 #endif
 }
 
-void BaseViewer::getView(Vec3d& pos, Quat& ori) const
+void BaseViewer::getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const
 {
     if (!currentCamera)
         return;
 
-    const Vec3d& camPosition = currentCamera->getPosition();
-    const Quat& camOrientation = currentCamera->getOrientation();
+    const defaulttype::Vec3d& camPosition = currentCamera->getPosition();
+    const defaulttype::Quat& camOrientation = currentCamera->getOrientation();
 
     pos[0] = camPosition[0];
     pos[1] = camPosition[1];
@@ -164,10 +164,10 @@ void BaseViewer::getView(Vec3d& pos, Quat& ori) const
     ori[3] = camOrientation[3];
 }
 
-void BaseViewer::setView(const Vec3d& pos, const Quat &ori)
+void BaseViewer::setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori)
 {
-    Vec3d position;
-    Quat orientation;
+    defaulttype::Vec3d position;
+    defaulttype::Quat orientation;
     for (unsigned int i=0 ; i<3 ; i++)
     {
         position[i] = pos[i];
@@ -181,7 +181,7 @@ void BaseViewer::setView(const Vec3d& pos, const Quat &ori)
     redraw();
 }
 
-void BaseViewer::moveView(const Vec3d& pos, const Quat &ori)
+void BaseViewer::moveView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori)
 {
     if (!currentCamera)
         return;

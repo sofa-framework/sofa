@@ -6,9 +6,10 @@ using std::cout;
 using std::endl;
 
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
+#include <sofa/core/ObjectFactory.h>
 
 // sofa types should not be exposed
 //typedef sofa::defaulttype::Vector3 Vec3;
@@ -120,7 +121,7 @@ void SofaScene::reset()
 void SofaScene::getBoundingBox( SReal* xmin, SReal* xmax, SReal* ymin, SReal* ymax, SReal* zmin, SReal* zmax )
 {
     SReal pmin[3], pmax[3];
-    sofaSimulation->computeTotalBBox( _groot, pmin, pmax );
+    sofaSimulation->computeBBox( _groot, pmin, pmax );
     *xmin = pmin[0]; *xmax = pmax[0];
     *ymin = pmin[1]; *ymax = pmax[1];
     *zmin = pmin[2]; *zmax = pmax[2];

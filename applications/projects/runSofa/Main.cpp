@@ -26,8 +26,6 @@
 #include <sstream>
 #include <fstream>
 
-#include <tinyxml.h>
-
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
@@ -39,15 +37,14 @@
 #include <sofa/simulation/tree/SMPSimulation.h>
 #endif
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/component/init.h>
-#include <sofa/component/misc/ReadState.h>
-#include <sofa/component/misc/CompareState.h>
+#include <SofaComponentMain/init.h>
+#include <SofaLoader/ReadState.h>
+#include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/system/FileSystem.h>
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
@@ -60,48 +57,10 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
+
 using std::cerr;
 using std::endl;
-
-using namespace sofa::helper::system;
-
-// bool loadConfigurationFile(const std::string& filePath)
-// {
-//     TiXmlDocument doc;
-//     doc.LoadFile();
-
-//     if (!(doc.LoadFile(filePath)))
-//     {
-//         std::cerr << "Error while loading configuration file: " << filePath << std::endl;
-//         return false;
-//     }
-
-//     TiXmlElement* root = doc.FirstChildElement("RunSofaConfig");
-//     for(TiXmlElement* elt = root->FirstChildElement("ResourcePath");
-//         elt != NULL;
-//         elt = elt->NextSiblingElement("ResourcePath"))
-//     {
-//         const std::string path = elt->GetText();
-//         sofa::helper::system::DataRepository.addFirstPath(makeAbsolutePath(path));
-//     }
-
-//     for(TiXmlElement* elt = root->FirstChildElement("PluginPath");
-//         elt != NULL;
-//         elt = elt->NextSiblingElement("PluginPath"))
-//     {
-//         const std::string path = elt->GetText();
-//         sofa::helper::system::PluginRepository.addFirstPath(makeAbsolutePath(path));
-//     }
-
-//     TiXmlElement* elt = root->FirstChildElement("ScreenshotDirectory");
-//     if (elt != NULL)
-//     {
-//         const std::string path = elt->GetText();
-//         sofa::gui::BaseGUI::setScreenshotDirectoryPath(makeAbsolutePath(path));
-//     }
-
-//     return true;
-// }
+using sofa::helper::Utils;
 
 void loadVerificationData(std::string& directory, std::string& filename, sofa::simulation::Node* node)
 {
@@ -121,7 +80,7 @@ void loadVerificationData(std::string& directory, std::string& filename, sofa::s
     compareVisitor.setSceneName(refFile);
     compareVisitor.execute(node);
 
-    sofa::component::misc::ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance() /* PARAMS FIRST */, true);
+    sofa::component::misc::ReadStateActivator v_read(sofa::core::ExecParams::defaultInstance(), true);
     v_read.execute(node);
 }
 
@@ -164,7 +123,8 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
-    int	        nbIterations = sofa::gui::BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
+    bool        testMode = false;
+    int         nbIterations = sofa::gui::BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
     unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
@@ -198,6 +158,7 @@ int main(int argc, char** argv)
     .option(&loadRecent,'r',"recent","load most recently opened file")
     .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree, smp)")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
+    .option(&testMode,'x',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
     .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
 #ifdef SOFA_SMP
@@ -246,38 +207,18 @@ int main(int argc, char** argv)
 
     sofa::component::init();
     sofa::simulation::xml::initXml();
-    sofa::gui::BaseGUI::setConfigDirectoryPath(sofa::gui::BaseGUI::getPathPrefix() + "/config");
 
-    const std::string binDir = FileSystem::getParentDirectory(Utils::getExecutablePath());
-    const std::string prefix = FileSystem::getParentDirectory(binDir);
-    const std::string etcDir = prefix + "/etc";
-    const std::string sofaIniFilePath = etcDir + "/sofa.ini";
-    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
-
-    if (iniFileValues.find("SHARE_DIR") != iniFileValues.end())
-    {
-        std::string shareDir = iniFileValues["SHARE_DIR"];
-        if (!FileSystem::isAbsolute(shareDir))
-            shareDir = etcDir + "/" + shareDir;
-        sofa::helper::system::DataRepository.addFirstPath(shareDir);
-    }
-
-    if (iniFileValues.find("EXAMPLES_DIR") != iniFileValues.end())
-    {
-        std::string examplesDir = iniFileValues["EXAMPLES_DIR"];
-        if (!FileSystem::isAbsolute(examplesDir))
-            examplesDir = etcDir + "/" + examplesDir;
-        sofa::helper::system::DataRepository.addFirstPath(examplesDir);
-    }
-
+    // Add the plugin directory to PluginRepository
 #ifdef WIN32
-    const std::string pluginDir = "bin";
+    const std::string pluginDir = Utils::getExecutableDirectory();
 #else
-    const std::string pluginDir = "lib";
+    const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
 #endif
-    sofa::helper::system::PluginRepository.addFirstPath(prefix + "/" + pluginDir);
+    sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
 
-    sofa::gui::BaseGUI::setScreenshotDirectoryPath(prefix + "/screenshots");
+    // Initialise paths
+    sofa::gui::BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config");
+    sofa::gui::BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots");
 
     if (!files.empty())
         fileName = files[0];
@@ -348,7 +289,6 @@ int main(int argc, char** argv)
 
     if (startAnim)
         groot->setAnimate(true);
-
     if (printFactory)
     {
         std::cout << "////////// FACTORY //////////" << std::endl;
@@ -366,8 +306,14 @@ int main(int argc, char** argv)
     // Run the main loop
     if (int err = sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
-
     groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
+
+    if (testMode)
+    {
+        std::string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
+        std::cout << "Exporting to XML " << xmlname << std::endl;
+        sofa::simulation::getSimulation()->exportXML(groot.get(), xmlname.c_str());
+    }
 
     if (groot!=NULL)
         sofa::simulation::getSimulation()->unload(groot);

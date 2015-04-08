@@ -4,9 +4,9 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
+#include <SofaDeformable/StiffSpringForceField.h>
 
 #include <qqml.h>
 #include <QDebug>

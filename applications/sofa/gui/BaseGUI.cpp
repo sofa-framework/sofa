@@ -26,12 +26,13 @@
 #include "BaseViewer.h"
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/system/Utils.h>
+#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileSystem.h>
 
-#include <sofa/component/configurationsetting/SofaDefaultPathSetting.h>
-#include <sofa/component/configurationsetting/BackgroundSetting.h>
-#include <sofa/component/configurationsetting/StatsSetting.h>
+#include <SofaGraphComponent/SofaDefaultPathSetting.h>
+#include <SofaGraphComponent/BackgroundSetting.h>
+#include <SofaGraphComponent/StatsSetting.h>
+
 #include <algorithm>
 #include <string.h>
 
@@ -39,8 +40,10 @@
 #include <sofa/simulation/common/ExportGnuplotVisitor.h>
 
 using namespace sofa::simulation;
-using namespace sofa::helper::system;
+using sofa::helper::system::FileSystem;
+using sofa::helper::Utils;
 
+using namespace sofa::simulation;
 namespace sofa
 {
 
@@ -121,7 +124,7 @@ void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
 void BaseGUI::exportGnuplot(sofa::simulation::Node* node, std::string /*gnuplot_directory*/ )
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    ExportGnuplotVisitor expg ( params /* PARAMS FIRST */, node->getTime());
+    ExportGnuplotVisitor expg ( params, node->getTime());
     node->execute ( expg );
 }
 
@@ -132,19 +135,6 @@ bool BaseGUI::saveScreenshot(const std::string& filename, int compression_level)
 		return true;
 	}
 	else return false;
-}
-
-
-static std::string computePathPrefix()
-{
-    const std::string exePath = Utils::getExecutablePath();
-    return FileSystem::getParentDirectory(FileSystem::getParentDirectory(exePath));
-}
-
-const std::string& BaseGUI::getPathPrefix()
-{
-    static const std::string prefix = computePathPrefix();
-    return prefix;
 }
 
 const std::string& BaseGUI::getConfigDirectoryPath()

@@ -5,4 +5,6 @@ import SceneListModel 1.0
 
 SceneListModel {
     id: root
+
+    property int selectedId: -1
 }

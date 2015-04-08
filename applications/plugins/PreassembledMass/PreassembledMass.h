@@ -4,7 +4,7 @@
 
 #include "initPlugin.h"
 #include <sofa/core/behavior/Mass.h>
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 
 #if SOFA_HAVE_FLEXIBLE

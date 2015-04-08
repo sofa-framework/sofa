@@ -8,7 +8,9 @@
 
 using namespace CGoGN;
 
-class ShaderCustom : public Utils::GLSLShader
+#include "Utils/dll.h"
+
+class CGoGN_UTILS_API ShaderCustom : public Utils::GLSLShader
 {
 protected:
 	// shader sources

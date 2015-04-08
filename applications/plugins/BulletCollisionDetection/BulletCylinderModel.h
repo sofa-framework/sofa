@@ -1,12 +1,12 @@
 #ifndef BULLET_CYLINDER_MODEL
 #define BULLET_CYLINDER_MODEL
 
-#include <sofa/component/collision/CylinderModel.h>
+#include <SofaBaseCollision/CylinderModel.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 #include "BulletCollisionModel.h"
 #include <BulletCollision/Gimpact/btGImpactShape.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
-#include <sofa/component/collision/CylinderModel.h>
+#include <SofaBaseCollision/CylinderModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "initBulletCollisionDetection.h"

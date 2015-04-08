@@ -48,17 +48,17 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/collision/Pipeline.h>
 
-#include <sofa/component/configurationsetting/ViewerSetting.h>
+#include <SofaGraphComponent/ViewerSetting.h>
 
 //instruments handling
-#include <sofa/component/controller/Controller.h>
+#include <SofaUserInteraction/Controller.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 //#include <sofa/simulation/common/GrabVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/visualmodel/InteractiveCamera.h>
+#include <SofaBaseVisual/InteractiveCamera.h>
 
 #include <sofa/helper/io/Image.h>
 
@@ -71,7 +71,6 @@ namespace gui
 {
 class PickHandler;
 
-using namespace sofa::defaulttype;
 enum
 {
     BTLEFT_MODE = 101, BTRIGHT_MODE = 102, BTMIDDLE_MODE = 103,
@@ -117,9 +116,9 @@ public:
     void setPrefix(const std::string& prefix);
     virtual void screenshot(const std::string& filename, int compression_level =-1);
 
-    virtual void getView(Vec3d& pos, Quat& ori) const;
-    virtual void setView(const Vec3d& pos, const Quat &ori);
-    virtual void moveView(const Vec3d& pos, const Quat &ori);
+    virtual void getView(sofa::defaulttype::Vec3d& pos, sofa::defaulttype::Quat& ori) const;
+    virtual void setView(const sofa::defaulttype::Vec3d& pos, const sofa::defaulttype::Quat &ori);
+    virtual void moveView(const sofa::defaulttype::Vec3d& pos, const sofa::defaulttype::Quat &ori);
     virtual void newView();
     virtual void resetView();
 
@@ -171,10 +170,10 @@ protected:
     int _background;
     bool initTexturesDone;
 
-    Vector3 backgroundColour;
+    sofa::defaulttype::Vector3 backgroundColour;
     std::string backgroundImageFile;
 
-    Vector3 ambientColour;
+    sofa::defaulttype::Vector3 ambientColour;
 
     PickHandler *pick;
 

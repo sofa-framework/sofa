@@ -66,56 +66,23 @@ void Constraint<DataTypes>::init()
 
 
 template<class DataTypes>
-void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams /* PARAMS FIRST */, defaulttype::BaseVector *v)
+void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v)
 {
     if (cParams)
     {
-        getConstraintViolation(cParams /* PARAMS FIRST */, v, *cParams->readX(mstate), *cParams->readV(mstate));
+        getConstraintViolation(cParams, v, *cParams->readX(mstate), *cParams->readV(mstate));
     }
 }
 
 
-#ifndef SOFA_DEPRECATE_OLD_API
 template<class DataTypes>
-void Constraint<DataTypes>::getConstraintViolation(const ConstraintParams* /*cParams*/ /* PARAMS FIRST */, defaulttype::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &/*v*/)
-{
-    if (mstate)
-    {
-        bool freePos = false;
-
-        if (&x.getValue() == mstate->getXfree())
-            freePos = true;
-
-        getConstraintValue(resV, freePos);
-    }
-}
-
-template<class DataTypes>
-void Constraint<DataTypes>::getConstraintValue(defaulttype::BaseVector * /*resV*/, bool /*freeMotion*/)
-{
-    serr << "ERROR(" << getClassName() << "): getConstraintViolation(defaulttype::BaseVector *, bool freeMotion) not implemented." << sendl;
-}
-#endif // SOFA_DEPRECATE_OLD_API
-
-
-template<class DataTypes>
-void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST */, MultiMatrixDerivId cId, unsigned int &cIndex)
+void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex)
 {
     if (cParams)
     {
-        buildConstraintMatrix(cParams /* PARAMS FIRST */, *cId[mstate].write(), cIndex, *cParams->readX(mstate));
+        buildConstraintMatrix(cParams, *cId[mstate].write(), cIndex, *cParams->readX(mstate));
     }
 }
-
-
-#ifndef SOFA_DEPRECATE_OLD_API
-template<class DataTypes>
-void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* /*cParams*/ /* PARAMS FIRST */, DataMatrixDeriv &/*c*/, unsigned int &/*cIndex*/, const DataVecCoord &/*x*/)
-{
-    serr << "ERROR(" << getClassName()
-            << "): buildConstraintMatrix(const ConstraintParams* cParams /* PARAMS FIRST */, DataMatrixDeriv *c, unsigned int &cIndex, const DataVecCoord &x) not implemented." << sendl;
-}
-#endif
 
 } // namespace behavior
 

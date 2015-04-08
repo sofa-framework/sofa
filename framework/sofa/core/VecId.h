@@ -45,7 +45,6 @@ enum VecType
     V_COORD,
     V_DERIV,
     V_MATDERIV,
-    V_CONST = V_MATDERIV ///< @deprecated
 };
 
 /// Types of vectors that can be stored in State

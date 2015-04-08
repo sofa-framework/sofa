@@ -47,14 +47,14 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/tree/DeleteVisitor.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/MinProximityIntersection.h>
-#include <sofa/component/collision/BruteForceDetection.h>
-#include <sofa/component/init.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaMeshCollision/PointModel.h>
+#include <SofaBaseCollision/MinProximityIntersection.h>
+#include <SofaBaseCollision/BruteForceDetection.h>
+#include <SofaComponentMain/init.h>
 
-#include <sofa/component/visualmodel/VisualModelImpl.h>
-#include <sofa/component/visualmodel/OglModel.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
+#include <SofaOpenglVisual/OglModel.h>
 
 #ifdef SOFA_GPU_CUDA
 #include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>

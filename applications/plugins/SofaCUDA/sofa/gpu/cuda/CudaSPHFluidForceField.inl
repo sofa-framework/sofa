@@ -26,7 +26,7 @@
 #define SOFA_GPU_CUDA_CUDASPHFLUIDFORCEFIELD_INL
 
 #include "CudaSPHFluidForceField.h"
-#include <sofa/component/forcefield/SPHFluidForceField.inl>
+#include <SofaSphFluid/SPHFluidForceField.inl>
 //#include <sofa/gpu/cuda/CudaSpatialGridContainer.inl>
 
 namespace sofa
@@ -85,7 +85,7 @@ void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::Kernels_addDForc
 }
 */
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     if (grid == NULL) return;
 
@@ -121,7 +121,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(const core::Mechani
 }
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /*d_df*/, const DataVecDeriv& /*d_dx*/)
+void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /*d_df*/, const DataVecDeriv& /*d_dx*/)
 {
     mparams->setKFactorUsed(true);
 #if 0
@@ -138,8 +138,8 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(const core::Mechan
     const VecDeriv& dx = d_dx.getValue();
 
     //sout << "addDForce(" << mparams->kFactor() << "," << mparams->bFactor() << ")" << sendl;
-    //const VecCoord& x = *this->mstate->getX();
-    const VecDeriv& v = *this->mstate->getV();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, kernelT, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
@@ -174,7 +174,7 @@ void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3dTypes>::Kernels_addDForc
 }
 */
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
+void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v)
 {
     if (grid == NULL) return;
 
@@ -210,7 +210,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addForce(const core::Mechani
 }
 
 template <>
-void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& /*d_df*/, const DataVecDeriv& /*d_dx*/)
+void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /*d_df*/, const DataVecDeriv& /*d_dx*/)
 {
     mparams->setKFactorUsed(true);
 #if 0
@@ -225,8 +225,8 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(const core::Mechan
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
-    //const VecCoord& x = *this->mstate->getX();
-    const VecDeriv& v = *this->mstate->getV();
+    //const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+    const VecDeriv& v = this->mstate->read(core::ConstVecDerivId::velocity())->getValue();
     data.fillParams(this, mparams->kFactor(), mparams->bFactor());
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
@@ -247,7 +247,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::draw(const core::visual::Vis
     if (!vparams->displayFlags().getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw(vparams);
-    helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
+    helper::ReadAccessor<VecCoord> x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     helper::ReadAccessor<gpu::cuda::CudaVector<defaulttype::Vec4f> > pos4 = this->data.pos4;
     if (pos4.empty()) return;
     glDisable(GL_LIGHTING);

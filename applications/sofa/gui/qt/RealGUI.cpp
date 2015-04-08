@@ -57,7 +57,7 @@
 #include <sofa/gui/BaseViewer.h>
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/DeactivatedNodeVisitor.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
+#include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/SetDirectory.h>
 
@@ -127,7 +127,9 @@
 #endif
 
 #include <algorithm>
-
+#include <iomanip>
+#include <sstream>
+#include <ctime>
 
 namespace sofa
 {
@@ -811,18 +813,18 @@ void RealGUI::fileOpen()
     // build the filter with the SceneLoaderFactory
     std::string filter, allKnownFilters = "All known (";
     SceneLoaderFactory::SceneLoaderList* loaders = SceneLoaderFactory::getInstance()->getEntries();
-    for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); it++)
+    for (SceneLoaderFactory::SceneLoaderList::iterator it=loaders->begin(); it!=loaders->end(); ++it)
     {
         if (it!=loaders->begin()) filter +=";;";
         filter += (*it)->getFileTypeDesc();
         filter += " (";
         SceneLoader::ExtensionList extensions;
         (*it)->getExtensionList(&extensions);
-        for (SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); itExt++)
+        for (SceneLoader::ExtensionList::iterator itExt=extensions.begin(); itExt!=extensions.end(); ++itExt)
         {
             if (itExt!=extensions.begin()) filter +=" ";
             filter+="*.";
-            filter+=(*itExt);       
+            filter+=(*itExt);
 
             allKnownFilters+="*."+(*itExt);
             if (*it!=loaders->back()) allKnownFilters += " ";
@@ -1841,6 +1843,7 @@ void RealGUI::createSimulationGraph()
 	connect(simulationGraph, SIGNAL( RequestSleeping(sofa::simulation::Node*, bool) ), this, SLOT( setSleepingNode(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
+    connect(simulationGraph, SIGNAL( dataModified( QString ) ), this, SLOT( appendToDataLogFile(QString ) ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
 }
@@ -1851,7 +1854,7 @@ void RealGUI::createPropertyWidget()
     modifyObjectFlags.setFlagsForSofa();
 
     propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags);
-	
+
 	QDockWindow *dockProperty=new QDockWindow(this);
 	dockProperty->setResizeEnabled(true);
 	dockProperty->setFixedExtentWidth(300);
@@ -1863,7 +1866,7 @@ void RealGUI::createPropertyWidget()
     dockProperty->setWidget(propertyWidget);
 
     connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
-    
+
     simulationGraph->setPropertyWidget(propertyWidget);
 }
 
@@ -2527,6 +2530,51 @@ void RealGUI::propertyDockMoved(Q3DockWindow::Place p)
 
 	if(Q3DockWindow::OutsideDock == p)
 		dockWindow->resize(500, 700);
+}
+
+namespace
+{
+
+std::string getFormattedLocalTimeFromTimestamp(time_t timestamp)
+{
+    const tm *timeinfo = localtime(&timestamp);
+    std::ostringstream oss;
+    oss << std::setfill('0')
+        << std::setw(2) << timeinfo->tm_mday << "/" // Day
+        << std::setw(2) << (timeinfo->tm_mon + 1) << "/"  // Month
+        << std::setw(4) << (1900 + timeinfo->tm_year) << " " // Year
+        << std::setw(2) << timeinfo->tm_hour << ":" // Hours
+        << std::setw(2) << timeinfo->tm_min << ":"  // Minutes
+        << std::setw(2) << timeinfo->tm_sec;        // Seconds
+    return oss.str();
+}
+
+std::string getFormattedLocalTime()
+{
+    return getFormattedLocalTimeFromTimestamp( time( NULL ) );
+}
+
+} // namespace
+
+//------------------------------------
+void RealGUI::appendToDataLogFile(QString dataModifiedString)
+{
+    const std::string filename = std::string(this->windowFilePath()) + std::string(".log");
+
+    std::ofstream ofs( filename.c_str(), std::ofstream::out | std::ofstream::app );
+
+    if (ofs.good())
+    {
+        if (m_modifiedLogFiles.find(filename) == m_modifiedLogFiles.end())
+        {
+            ofs << std::endl << "--- NEW SESSION: " << getFormattedLocalTime() << " ---" << std::endl;
+            m_modifiedLogFiles.insert(filename);
+        }
+
+        ofs << dataModifiedString.toStdString();
+    }
+
+    ofs.close();
 }
 
 //======================= SIGNALS-SLOTS ========================= }

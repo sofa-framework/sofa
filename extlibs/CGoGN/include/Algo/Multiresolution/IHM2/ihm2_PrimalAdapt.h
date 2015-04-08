@@ -25,10 +25,11 @@
 #ifndef __MAP2MR_PRIMAL_ADAPT__
 #define __MAP2MR_PRIMAL_ADAPT__
 
-#include <cmath>
 #include "Topology/ihmap/ihm2.h"
 #include "Topology/generic/traversor/traversorCell.h"
 #include "Topology/generic/traversor/traversor2.h"
+
+#include <cmath>
 
 namespace CGoGN
 {
@@ -62,7 +63,7 @@ protected:
 
 public:
 	IHM2(MAP& map) ;
-
+    ~IHM2();
     /***************************************************
      *               CELLS INFORMATION                 *
      ***************************************************/
@@ -70,7 +71,7 @@ public:
     /**
      * Return the level of the edge of d in the current level map
      */
-    unsigned int edgeLevel(Dart d) ;
+    inline unsigned int edgeLevel(Dart d) const;
 
     /**
      * Return the level of the face of d in the current level map
@@ -120,17 +121,40 @@ protected:
 	 *               SUBDIVISION                       *
 	 ***************************************************/
 
-	/**
-	 * subdivide the edge of d to the next level
-	 */
-	void subdivideEdge(Dart d) ;
+
 
 	/**
 	 * coarsen the edge of d from the next level
 	 */
 	void coarsenEdge(Dart d) ;
 
+
 public:
+
+    /**
+     * subdivide the edge of d to the next level
+     */
+    void subdivideEdge(Dart d) ;
+    /**
+     * checkForSurrounded check if the cell wont be surrounded by subdivided cells (before subdividing phi2(d)) to avoid the case of a non subdivided cell surrounded by subdivided ones.
+     */
+    bool checkForSurrounded (Dart d);
+
+    inline bool applyVertexVertexFunctor(Dart d)
+    {
+        return this->vertexVertexFunctor->operator ()(d);
+    }
+
+    inline bool applyEdgeVertexFunctor(Dart d)
+    {
+        return this->edgeVertexFunctor->operator ()(d);
+    }
+
+    inline bool applyFaceVertexFunctor(Dart d)
+    {
+        return this->faceVertexFunctor->operator ()(d);
+    }
+
 	/**
 	 * subdivide the face of d to the next level
 	 */
@@ -144,10 +168,24 @@ public:
 	/**
 	 * vertices attributes management
 	 */
-	void setVertexVertexFunctor(FunctorType* f) { vertexVertexFunctor = f ; }
-	void setEdgeVertexFunctor(FunctorType* f) { edgeVertexFunctor = f ; }
-	void setFaceVertexFunctor(FunctorType* f) { faceVertexFunctor = f ; }
+    void setVertexVertexFunctor(FunctorType* f)
+    {
+        delete vertexVertexFunctor;
+        vertexVertexFunctor = f ;
+    }
+
+    void setEdgeVertexFunctor(FunctorType* f)
+    {
+        delete edgeVertexFunctor;
+        edgeVertexFunctor = f ;
+    }
+
+    void setFaceVertexFunctor(FunctorType* f) {
+        delete faceVertexFunctor;
+        faceVertexFunctor = f ;
+    }
 } ;
+
 
 } // namespace Adaptive
 

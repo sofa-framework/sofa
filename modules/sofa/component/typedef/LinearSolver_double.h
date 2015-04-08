@@ -39,8 +39,8 @@
 
 
 
-#include <sofa/component/linearsolver/PrecomputedWarpPreconditioner.h>
-#include <sofa/component/linearsolver/WarpPreconditioner.h>
+#include <SofaPreconditioner/PrecomputedWarpPreconditioner.h>
+#include <SofaPreconditioner/WarpPreconditioner.h>
 
 
 #endif

@@ -1,8 +1,8 @@
 #include "THMPGSpatialHashing.h"
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/OBBModel.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaMeshCollision/TriangleModel.h>
+#include <SofaMeshCollision/LineModel.h>
+#include <SofaBaseCollision/OBBModel.h>
 
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/ObjectFactory.h>
@@ -66,7 +66,7 @@ void THMPGSpatialHashing::sumEdgeLength_template(core::CollisionModel *cm){
     if(mec == 0)
         return;
 
-    const typename sofa::core::behavior::MechanicalState<DataTypes>::VecCoord & coords = *(mec->getX());
+    const typename sofa::core::behavior::MechanicalState<DataTypes>::VecCoord & coords = mec->read(core::ConstVecCoordId::position())->getValue();
 
     const sofa::core::topology::BaseMeshTopology::SeqEdges & seq_edges = bmt->getEdges();
 

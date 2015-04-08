@@ -25,11 +25,11 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_ENSLAVEMENTFORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_ENSLAVEMENTFORCEFEEDBACK_H
 
-#include <sofa/component/collision/ContactListener.h>
+#include <SofaBaseCollision/ContactListener.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/component/controller/ForceFeedback.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaHaptics/ForceFeedback.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa

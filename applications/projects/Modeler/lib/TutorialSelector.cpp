@@ -96,7 +96,7 @@ void TutorialSelector::loadTutorials(const std::string &fileTutorial)
 
     TiXmlHandle hDoc(&doc);
     //Getting the root of the file
-    TiXmlNode* node=hDoc.FirstChildElement().Element();
+    TiXmlNode* node=hDoc.FirstChildElement().ToElement();
     if (!node)
     {
         std::cerr << "Error loading file: " << fileTutorial << std::endl;
@@ -183,7 +183,7 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
     }
     else if (typeElement == "Category")
     {
-        static QImage imageScene(QString(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/textures/media-seek-forward.png");
+        static QImage imageScene(QString(sofa::helper::system::DataRepository.getFile("textures/media-seek-forward.png").c_str()));
         static QPixmap pixScene;
         if (imageScene.width() != 20)
         {
@@ -215,7 +215,7 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
     }
     else if (typeElement == "Tutorial")
     {
-        static QImage imageScene(QString(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/icons/SOFA.png");
+        static QImage imageScene(QString(sofa::helper::system::DataRepository.getFile("icons/SOFA.png").c_str()));
         static QPixmap pixScene;
         if (imageScene.width() != 20)
         {

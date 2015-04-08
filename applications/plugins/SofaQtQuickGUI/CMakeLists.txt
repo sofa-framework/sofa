@@ -6,6 +6,8 @@ set(SOURCE_FILES
 		Viewer.cpp
 		Camera.cpp
                 Scene.cpp
+                SceneListModel.cpp
+                DataListModel.cpp
 		PythonInteractor.cpp
 		PickingInteractor.cpp
 )
@@ -16,24 +18,45 @@ set(HEADER_FILES
 		Viewer.h
 		Camera.h
                 Scene.h
+                SceneListModel.h
+                DataListModel.h
 		PythonInteractor.h
 		PickingInteractor.h
 )
 
 set(QML_FILES
+                data/qml/SofaDataTypes/qmldir
+                data/qml/SofaDataTypes/DataType_boolean.qml
+                data/qml/SofaDataTypes/DataType_0to1RatioWidget.qml
+                data/qml/SofaDataTypes/DataType_array.qml
+                data/qml/SofaDataTypes/DataType_boolean.qml
+                data/qml/SofaDataTypes/DataType_BoundingBox.qml
+                data/qml/SofaDataTypes/DataType_Material.qml
+                data/qml/SofaDataTypes/DataType_OptionsGroup.qml
+                data/qml/SofaDataTypes/DataType_graph_linear.qml
+                data/qml/SofaDataTypes/DataType_graph.qml
+                data/qml/SofaDataTypes/DataType_number.qml
+                data/qml/SofaDataTypes/DataType_poissonRatio.qml
+                data/qml/SofaDataTypes/DataType_string.qml
+                data/qml/SofaDataTypes/DataType_widget_displayFlags.qml
                 data/qml/SofaCommon/SofaCommonScript.js
                 data/qml/SofaCommon/SofaToolsScript.js
                 data/qml/SofaCommon/SofaSettingsScript.js
                 data/qml/SofaBasics/qmldir
+                data/qml/SofaBasics/SofaApplication.qml
                 data/qml/SofaBasics/RecentSettings.qml
                 data/qml/SofaBasics/UISettings.qml
                 data/qml/SofaBasics/Tools.qml
+                data/qml/SofaBasics/ToolTip.qml
                 data/qml/SofaBasics/DefaultStatusBar.qml
+                data/qml/SofaBasics/DefaultToolBar.qml
 		data/qml/SofaBasics/DefaultMenuBar.qml
 		data/qml/SofaBasics/Scene.qml
                 data/qml/SofaBasics/SceneListModel.qml
+                data/qml/SofaBasics/Data.qml
+                data/qml/SofaBasics/DataListModel.qml
 		data/qml/SofaBasics/PythonInteractor.qml
-		data/qml/SofaBasics/Actor.qml
+                data/qml/SofaBasics/UserInteractor.qml
 		data/qml/SofaBasics/Camera.qml
 		data/qml/SofaBasics/FPSDisplay.qml
                 data/qml/SofaBasics/ContentItem.qml
@@ -41,13 +64,16 @@ set(QML_FILES
 		data/qml/SofaBasics/Vector3DSpinBox.qml
 		data/qml/SofaBasics/DynamicSplitView.qml
                 data/qml/SofaBasics/DynamicContent.qml
+                data/qml/SofaInteractors/qmldir
+                data/qml/SofaInteractors/UserInteractor_Selection.qml
 		data/qml/SofaTools/qmldir
 		data/qml/SofaTools/SimulationControl.qml
                 data/qml/SofaTools/SceneGraphView.qml
-                data/qml/SofaTools/DataView.qml
+                data/qml/SofaTools/DataListView.qml
 		data/qml/SofaTools/SceneGUILoader.qml
 		data/qml/SofaWidgets/qmldir
 		data/qml/SofaWidgets/Viewer.qml
+                data/qml/SofaWidgets/DataView.qml
 		data/qml/SofaWidgets/ImageViewer.qml
 		data/qml/SofaWidgets/ToolPanel.qml
 )
@@ -57,8 +83,8 @@ set(CONFIG_FILES
 )
 
 set(QRC_FILES
-		data/sofaQtQuickResources.qrc
-		data/qml/sofaQML.qrc
+                data/resources.qrc
+                data/qml/qml.qrc
 )
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)

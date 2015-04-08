@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.2
+import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.0
 import SofaBasics 1.0
 import "qrc:/SofaCommon/SofaToolsScript.js" as SofaToolsScript
@@ -9,8 +9,8 @@ ContentItem {
 
     property string title: "Scene GUI"
 
-    property int priority: 50
-    property Scene scene
+    property int priority: 100
+    property var scene
     property url source: scene ? scene.sourceQML : ""
     readonly property alias status: d.status
     readonly property alias item: d.item

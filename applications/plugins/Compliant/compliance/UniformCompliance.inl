@@ -10,6 +10,11 @@ namespace component
 namespace forcefield
 {
 
+
+template<class DataTypes>
+const typename UniformCompliance<DataTypes>::Real UniformCompliance<DataTypes>::s_complianceEpsilon = std::numeric_limits<Real>::epsilon();
+
+
 template<class DataTypes>
 UniformCompliance<DataTypes>::UniformCompliance( core::behavior::MechanicalState<DataTypes> *mm )
     : Inherit(mm)
@@ -58,6 +63,7 @@ void UniformCompliance<DataTypes>::reinit()
     }
     else matC.compressedMatrix.resize(0,0);
 
+    // matK must be computed since it is used by MechanicalComputeComplianceForceVisitor to compute the compliance forces
 //    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
 //    {
         // the stiffness df/dx is the opposite of the inverse compliance
@@ -104,6 +110,27 @@ void UniformCompliance<DataTypes>::reinit()
 //    std::cerr<<SOFA_CLASS_METHOD<<matC<<" "<<matK<<std::endl;
 }
 
+template<class DataTypes>
+SReal UniformCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
+{
+    const VecCoord& _x = x.getValue();
+    unsigned int m = this->mstate->getMatrixBlockSize();
+
+    Real k = compliance.getValue() > s_complianceEpsilon ?
+            1. / compliance.getValue() :
+            1. / s_complianceEpsilon;
+
+    SReal e = 0;
+    for( unsigned int i=0 ; i<_x.size() ; ++i )
+    {
+        for( unsigned int j=0 ; j<m ; ++j )
+        {
+            e += .5 * k * _x[i][j]*_x[i][j];
+        }
+    }
+    return e;
+}
+
 
 template<class DataTypes>
 const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getComplianceMatrix(const core::MechanicalParams*)
@@ -113,13 +140,13 @@ const sofa::defaulttype::BaseMatrix* UniformCompliance<DataTypes>::getCompliance
 
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset )
+void UniformCompliance<DataTypes>::addKToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset )
 {
     matK.addToBaseMatrix( matrix, kFact, offset );
 }
 
 template<class DataTypes>
-void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, double bFact, unsigned int &offset )
+void UniformCompliance<DataTypes>::addBToMatrix( sofa::defaulttype::BaseMatrix * matrix, SReal bFact, unsigned int &offset )
 {
 //	if( damping.getValue() > 0 ) // B is empty in that case
     {

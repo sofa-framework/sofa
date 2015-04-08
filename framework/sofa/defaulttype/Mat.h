@@ -672,6 +672,17 @@ public:
         return transformInvertMatrix(*this, m);
     }
 
+    /// for square matrices
+    /// @warning in-place simple symmetrization
+    /// this = ( this + this.transposed() ) / 2.0
+    void symmetrize()
+    {
+        BOOST_STATIC_ASSERT( C == L );
+        for(int l=0; l<L; l++)
+            for(int c=l+1; c<C; c++)
+                this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5;
+    }
+
 };
 
 /// Same as Mat except the values are not initialized by default
@@ -1045,17 +1056,31 @@ inline real scalarProduct(const Mat<L,C,real>& left,const Mat<L,C,real>& right)
     return product;
 }
 
-} // namespace defaulttype
 
-} // namespace sofa
+/// skew-symmetric mapping
+/// crossProductMatrix(v) * x = v.cross(x)
+template<class Real>
+inline defaulttype::Mat<3, 3, Real> crossProductMatrix(const defaulttype::Vec<3, Real>& v)
+{
+    defaulttype::Mat<3, 3, Real> res;
+    res[0][0]=0;
+    res[0][1]=-v[2];
+    res[0][2]=v[1];
+    res[1][0]=v[2];
+    res[1][1]=0;
+    res[1][2]=-v[0];
+    res[2][0]=-v[1];
+    res[2][1]=v[0];
+    res[2][2]=0;
+    return res;
+}
 
+
+
+
+////////////////////////////////////////////
 // Specialization of the defaulttype::DataTypeInfo type traits template
-
-namespace sofa
-{
-
-namespace defaulttype
-{
+////////////////////////////////////////////
 
 template<int L, int C, typename real>
 struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Mat<L,C,real> >

@@ -25,7 +25,6 @@
 #ifndef SOFA_SIMULATION_VelocityThresholdVisitor_H
 #define SOFA_SIMULATION_VelocityThresholdVisitor_H
 
-
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 
@@ -35,14 +34,12 @@ namespace sofa
 namespace simulation
 {
 
-
-using namespace sofa::defaulttype;
 class SOFA_SIMULATION_COMMON_API VelocityThresholdVisitor : public Visitor
 {
 public:
     virtual Visitor::Result processNodeTopDown(simulation::Node* node);
 
-    VelocityThresholdVisitor(const core::ExecParams* params /* PARAMS FIRST */, core::MultiVecId v, double threshold);
+    VelocityThresholdVisitor(const core::ExecParams* params, core::MultiVecId v, SReal threshold);
 
 
 
@@ -56,7 +53,7 @@ public:
 
 protected:
     core::MultiVecId vid; ///< Id of the vector to process
-    double threshold; ///< All the entries below this threshold will be set to 0.
+    SReal threshold; ///< All the entries below this threshold will be set to 0.
 };
 
 } // namespace simulation

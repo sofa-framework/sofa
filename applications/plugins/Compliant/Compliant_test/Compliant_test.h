@@ -35,29 +35,29 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 
-#include <sofa/component/init.h>
-#include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/forcefield/ConstantForceField.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/mapping/DistanceMapping.h>
-#include <sofa/component/mapping/DistanceFromTargetMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <SofaComponentMain/init.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBoundaryCondition/ConstantForceField.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <SofaRigid/RigidMapping.h>
+#include <SofaMiscMapping/DistanceMapping.h>
+#include <SofaMiscMapping/DistanceFromTargetMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 
 #include "../odesolver/CompliantImplicitSolver.h"
-#include "../numericalsolver/LDLTSolver.h"
-#include "../numericalsolver/LDLTResponse.h"
+#include "../numericalsolver/EigenSparseSolver.h"
+#include "../numericalsolver/EigenSparseResponse.h"
 #include "../compliance/UniformCompliance.h"
-#include <sofa/component/interactionforcefield/StiffSpringForceField.h>
+#include <SofaDeformable/StiffSpringForceField.h>
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/component/misc/ReadState.h>
-#include <sofa/component/misc/CompareState.h>
+#include <SofaLoader/ReadState.h>
+#include <SofaValidation/CompareState.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -70,9 +70,17 @@
 
 
 #include <Eigen/Dense>
+using std::cout;
+
+using namespace sofa;
+using namespace sofa::component;
+using namespace modeling;
+using sofa::helper::vector;
 
 namespace sofa
 {
+    using core::objectmodel::New;
+
 /** \page Page_CompliantTestSuite Compliant plugin test suite
  *
  * Class CompliantSolver_test provides helpers.
@@ -94,7 +102,7 @@ public:
 
     typedef sofa::component::topology::EdgeSetTopologyContainer EdgeSetTopologyContainer;
     typedef sofa::defaulttype::Vec<3,SReal> Vec3;
-    typedef sofa::component::forcefield::UniformCompliance<Vec1Types> UniformCompliance1;
+    typedef sofa::component::forcefield::UniformCompliance<defaulttype::Vec1Types> UniformCompliance1;
 
     // Vec3-Vec1
     typedef sofa::component::mapping::DistanceMapping<MechanicalObject3::DataTypes, MechanicalObject1::DataTypes> DistanceMapping31;
@@ -108,7 +116,7 @@ protected:
     ///@{
 
     /// Helper method to create strings used in various tests.
-    simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass, double complianceValue=0/*, double dampingRatio=0*/, bool isCompliant=true, SReal totalRestLength = -1 )
+    simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, SReal totalMass, SReal complianceValue=0/*, SReal dampingRatio=0*/, bool isCompliant=true, SReal totalRestLength = -1 )
     {
         static unsigned numObject = 1;
         std::ostringstream oss;
@@ -159,7 +167,7 @@ protected:
         helper::vector<SReal> restLengths;
         for( unsigned i=0; i<numParticles; i++ )
         {
-            double alpha = (double)i/(numParticles-1);
+            SReal alpha = (SReal)i/(numParticles-1);
             x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
             if(i>0)
             {
@@ -188,7 +196,7 @@ protected:
         DistanceMapping31::SPtr extensionMapping;
         UniformCompliance1::SPtr compliance;
 
-        ParticleString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, double totalMass )
+        ParticleString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, SReal totalMass )
         {
         static unsigned numObject = 1;
         std::ostringstream oss;
@@ -236,7 +244,7 @@ protected:
         helper::vector<SReal> restLengths;
         for( unsigned i=0; i<numParticles; i++ )
         {
-            double alpha = (double)i/(numParticles-1);
+            SReal alpha = (SReal)i/(numParticles-1);
             x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
             if(i>0)
             {
@@ -286,7 +294,7 @@ protected:
         if( m1.rows()!=m2.rows() || m1.cols()!=m2.cols() ) return false;
 
         modeling::DenseMatrix diff = m1 - m2;
-        bool areEqual = abs(diff.maxCoeff()<tolerance) && abs(diff.minCoeff()<tolerance);
+        bool areEqual = abs(diff.maxCoeff())<tolerance && abs(diff.minCoeff())<tolerance;
         if( !areEqual )
         {
             cerr<<"CompliantSolver_test::matricesAreEqual1, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;
@@ -325,7 +333,7 @@ protected:
         }
 
         modeling::Vector diff = m1-m2;
-        bool areEqual = abs(diff.maxCoeff()<tolerance) && abs(diff.minCoeff()<tolerance);
+        bool areEqual = abs(diff.maxCoeff())<tolerance && abs(diff.minCoeff())<tolerance;
         if( !areEqual )
         {
             cerr<<"CompliantSolver_test::vectorsAreEqual, tolerance = "<< tolerance << ", difference = " << endl << diff << endl;

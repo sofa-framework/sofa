@@ -68,7 +68,6 @@ set(HEADER_FILES
     system/PipeProcess.h
     system/SofaOStream.h
     system/FileSystem.h
-    system/Utils.h
     system/DynamicLibrary.h
     system/PluginManager.h
     TagFactory.h
@@ -93,6 +92,7 @@ set(HEADER_FILES
     kdTree.h
     vectorData.h
     GenerateRigid.h
+    Utils.h
 	IndexOpenMP.h
     pooledEigen/Pool.h
     pooledEigen/CompressedStorage.h
@@ -136,7 +136,6 @@ set(SOURCE_FILES
     system/PipeProcess.cpp
     system/SofaOStream.cpp
     system/FileSystem.cpp
-    system/Utils.cpp
     system/DynamicLibrary.cpp
     system/PluginManager.cpp
     TagFactory.cpp
@@ -151,6 +150,7 @@ set(SOURCE_FILES
     UnitTest.cpp
     GenerateRigid.cpp
     pooledEigen/Pool.cpp
+    Utils.cpp
 	)
 
 if(SOFA-EXTERNAL_BOOST)

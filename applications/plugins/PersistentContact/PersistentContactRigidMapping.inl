@@ -27,7 +27,7 @@
 
 #include "PersistentContactRigidMapping.h"
 
-#include <sofa/component/mapping/RigidMapping.inl>
+#include <SofaRigid/RigidMapping.inl>
 
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
@@ -59,7 +59,7 @@ void PersistentContactRigidMapping<TIn, TOut>::beginAddContactPoint()
     {
         if (this->f_printLog.getValue())
         {
-            std::cout << "BeginAddContactPoint : pos = " << (*this->toModel->getX()) << " before suppr the contact" << std::endl;
+            std::cout << "BeginAddContactPoint : pos = " << this->toModel->read(core::ConstVecCoordId::position())->getValue() << " before suppr the contact" << std::endl;
         }
 
         m_previousPoints = this->points.getValue();
@@ -80,7 +80,7 @@ int PersistentContactRigidMapping<TIn, TOut>::addContactPointFromInputMapping(co
         std::cout << "addContactPointFromInputMapping  Pos Ref = " << pos <<std::endl;
     }
 
-    const typename In::VecCoord& xfrom = *this->fromModel->getX();
+    const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
     Coord posContact;
     for (unsigned int i = 0; i < 3; i++)

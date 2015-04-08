@@ -51,7 +51,7 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
-        (*object)->computeBBox(params);
+        (*object)->computeBBox(params,true);
 //        cerr<<"UpdateBoundingBoxVisitor::processNodeTopDown object " << (*object)->getName() << " = "<< (*object)->f_bbox.getValue(params) << endl;
         nodeBBox->include((*object)->f_bbox.getValue(params));
 //        cerr << "   new bbox = " << *nodeBBox << endl;

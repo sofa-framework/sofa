@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <plugins/SofaTest/Sofa_test.h>
-#include <sofa/component/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
@@ -42,22 +41,21 @@ struct Simulation_test: public Sofa_test<double>
    void computeBBox()
    {
        // Init Sofa
-       sofa::component::init();
        simulation::Simulation* simulation;
        sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
        root = simulation::getSimulation()->createNewGraph("root");
 
        // create DOFs and its expected bounding box
-       MechanicalObject3::SPtr DOF = New<MechanicalObject3>();
+       MechanicalObject3::SPtr DOF = core::objectmodel::New<MechanicalObject3>();
        root->addObject(DOF);
        DOF->resize(4);
        MechanicalObject3::WriteVecCoord x = DOF->writePositions();
-       x[0] = Vector3(0,0,0);
-       x[1] = Vector3(1,0,0);
-       x[2] = Vector3(0,1,0);
-       x[3] = Vector3(0,0,1);
-       Vector3 expectedMin(0,0,0), expectedMax(1,1,1);
+       x[0] = defaulttype::Vector3(0,0,0);
+       x[1] = defaulttype::Vector3(1,0,0);
+       x[2] = defaulttype::Vector3(0,1,0);
+       x[3] = defaulttype::Vector3(0,0,1);
+       defaulttype::Vector3 expectedMin(0,0,0), expectedMax(1,1,1);
        DOF->showObject.setValue(true); // bbox is updated only for drawn MO
 
        // end create scene
@@ -65,7 +63,7 @@ struct Simulation_test: public Sofa_test<double>
        initScene();
        //*********
 
-       Vector3 sceneMinBBox, sceneMaxBBox;
+       defaulttype::Vector3 sceneMinBBox, sceneMaxBBox;
        simulation->computeBBox(root.get(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
        if( vectorMaxDiff(sceneMinBBox,expectedMin)>this->epsilon() || vectorMaxDiff(sceneMaxBBox,expectedMax)>this->epsilon() )

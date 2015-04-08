@@ -869,7 +869,7 @@ public:
         return ok;
     }
 
-#ifndef SOFA_DEPRECATE_OLD_API
+#ifndef SOFA_MAYBE_DEPRECATED
     // Convenient operators to make a SingleLink appear as a regular pointer
     operator DestType*() const
     {

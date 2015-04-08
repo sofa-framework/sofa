@@ -60,7 +60,7 @@ namespace simulation
  class SOFA_SceneCreator_API GetAssembledSizeVisitor: public Visitor
 {
 public:
-    GetAssembledSizeVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST */=core::MechanicalParams::defaultInstance() );
+    GetAssembledSizeVisitor( const sofa::core::ExecParams* params=core::MechanicalParams::defaultInstance() );
     virtual ~GetAssembledSizeVisitor();
 
     virtual Result processNodeTopDown( simulation::Node*  );

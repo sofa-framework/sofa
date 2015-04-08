@@ -28,7 +28,7 @@
 #include <sofa/component/constraintset/LagrangianMultiplierAttachConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/behavior/Constraint.inl>
-#include <sofa/component/container/MechanicalObject.inl>
+#include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <sofa/helper/gl/template.h>

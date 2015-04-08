@@ -147,10 +147,6 @@ public:
 
         if (arg->getAttribute("input"))
             inPath = arg->getAttribute("input");
-#ifndef SOFA_DEPRECATE_OLD_API
-        else if (arg->getAttribute("object1"))
-            inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", context, false);
-#endif
         else
             inPath = "@../";
 
@@ -158,10 +154,6 @@ public:
 
         if (arg->getAttribute("output"))
             outPath = arg->getAttribute("output");
-#ifndef SOFA_DEPRECATE_OLD_API
-        else if (arg->getAttribute("object2"))
-            outPath = BaseLink::ConvertOldPath(arg->getAttribute("object2"), "object2", "output", context, false);
-#endif
         else
             outPath = "@./";
 
@@ -206,19 +198,11 @@ public:
             std::string inPath, outPath;
             if (arg->getAttribute("input"))
                 inPath = arg->getAttribute("input");
-#ifndef SOFA_DEPRECATE_OLD_API
-            else if (arg->getAttribute("object1"))
-                inPath = BaseLink::ConvertOldPath(arg->getAttribute("object1"), "object1", "input", obj.get());
-#endif
             else
                 inPath = "@../";
 
             if (arg->getAttribute("output"))
                 outPath = arg->getAttribute("output");
-#ifndef SOFA_DEPRECATE_OLD_API
-            else if (arg->getAttribute("object2"))
-                outPath = BaseLink::ConvertOldPath(arg->getAttribute("object2"), "object2", "output", obj.get());
-#endif
             else
                 outPath = "@./";
 

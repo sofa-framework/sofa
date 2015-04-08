@@ -29,7 +29,7 @@
 //#include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <Flexible/deformationMapping/TetrahedronVolumeMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <SofaBaseTopology/MeshTopology.h>
 
 
 namespace sofa {
@@ -67,7 +67,7 @@ struct TetrahedronVolumeMappingTest : public Mapping_test<_TestedMapping>
 
     bool test( bool perNode )
     {
-        component::topology::MeshTopology::SPtr topology = addNew<component::topology::MeshTopology>(this->root);
+        component::topology::MeshTopology::SPtr topology = modeling::addNew<component::topology::MeshTopology>(this->root);
         topology->addPoint( 0,0,0 );
         topology->addPoint( 1,0,0 );
         topology->addPoint( 0,1,0 );

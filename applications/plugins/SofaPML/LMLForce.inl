@@ -65,9 +65,9 @@ LMLForce<DataTypes>::LMLForce(Loads* loadsList, const map<unsigned int, unsigned
                 if (titi != atomIndexToDOFIndex.end())
                 {
                     unsigned int dofInd = titi->second;
-                    dirX = (*mm->getX())[dofInd].x();
-                    dirY = (*mm->getX())[dofInd].y();
-                    dirZ = (*mm->getX())[dofInd].z();
+                    dirX = mm->read(core::ConstVecCoordId::position())->getValue()[dofInd].x();
+                    dirY = mm->read(core::ConstVecCoordId::position())->getValue()[dofInd].y();
+                    dirZ = mm->read(core::ConstVecCoordId::position())->getValue()[dofInd].z();
                 }
             }
             else
@@ -82,7 +82,9 @@ LMLForce<DataTypes>::LMLForce(Loads* loadsList, const map<unsigned int, unsigned
                 {
                     cpt++;
                     if (load->getDirection().isToward())
-                        ve = Deriv(dirX-(*mm->getX())[result->second].x(), dirY-(*mm->getX())[result->second].y(), dirZ - (*mm->getX())[result->second].z());
+                        ve = Deriv(dirX - mm->read(core::ConstVecCoordId::position())->getValue()[result->second].x(),
+                                   dirY - mm->read(core::ConstVecCoordId::position())->getValue()[result->second].y(),
+                                   dirZ - mm->read(core::ConstVecCoordId::position())->getValue()[result->second].z());
                     else
                         ve = Deriv(dirX, dirY, dirZ);
                     ve.normalize();
@@ -128,7 +130,7 @@ void LMLForce<DataTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDer
                         if (titi != atomToDOFIndexes.end())
                         {
                             unsigned int dofInd = titi->second;
-                            (*it2) = (*mmodel->getX())[dofInd] - (*mmodel->getX())[*it1];
+                            (*it2) = mmodel->read(core::ConstVecCoordId::position())->getValue()[dofInd] - mmodel->read(core::ConstVecCoordId::position())->getValue()[*it1];
                             (*it2).normalize();
                         }
                     }
@@ -160,7 +162,7 @@ void LMLForce<DataTypes>::draw()
 {
     //display a little green segment with force direction
     // if (!vparams->displayFlags().getShowForceFields()) return;
-    const VecCoord& x = *mmodel->getX();
+    const VecCoord& x = mmodel->read(core::ConstVecCoordId::position())->getValue();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (0.5,1,0.5,1);

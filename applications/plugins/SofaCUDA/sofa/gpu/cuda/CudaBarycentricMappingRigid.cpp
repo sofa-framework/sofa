@@ -24,8 +24,10 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_CUDABARYCENTRICMAPPINGRIGID_CPP
 #include "CudaTypes.h"
-#include <sofa/component/mapping/BarycentricMappingRigid.h>
-#include <sofa/component/mapping/BarycentricMappingRigid.inl>
+#include <sofa/core/Mapping.inl>
+#include <SofaMiscMapping/BarycentricMappingRigid.h>
+
+#include <SofaMiscMapping/BarycentricMappingRigid.inl>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -142,7 +144,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3d
             // std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
             const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
-            const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+            const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
             //        sofa::helper::vector<unsigned int> hexahedra(tab);
 
             for ( unsigned int i=0; i<hexahedra.size(); ++i )
@@ -278,7 +280,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3f
 				// std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
 				const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
-				const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+				const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
 				//        sofa::helper::vector<unsigned int> hexahedra(tab);
 
 				for ( unsigned int i=0; i<hexahedra.size(); ++i )
@@ -415,7 +417,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3f
 				// std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
 				const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
-				const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+				const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
 				//        sofa::helper::vector<unsigned int> hexahedra(tab);
 
 				for ( unsigned int i=0; i<hexahedra.size(); ++i )
@@ -549,7 +551,7 @@ void BarycentricMapperHexahedronSetTopology<CudaVec3fTypes, defaulttype::Rigid3d
 				// std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
 				const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
-				const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+				const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
 				//        sofa::helper::vector<unsigned int> hexahedra(tab);
 
 				for ( unsigned int i=0; i<hexahedra.size(); ++i )

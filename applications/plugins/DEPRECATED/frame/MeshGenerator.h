@@ -30,10 +30,10 @@
 #include <sofa/helper/map.h>
 #include <sofa/helper/set.h>
 
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
-#include <sofa/component/topology/TriangleSetTopologyModifier.h>
-#include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyModifier.h>
+#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
+#include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -42,13 +42,13 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
-#include <sofa/component/visualmodel/OglAttribute.h>
-#include <sofa/component/visualmodel/OglVariable.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaOpenglVisual/OglAttribute.h>
+#include <SofaOpenglVisual/OglVariable.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 #include "GridMaterial.h"
 #include "Blending.h"
-#include <sofa/component/topology/TopologyData.h>
+#include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa
 {

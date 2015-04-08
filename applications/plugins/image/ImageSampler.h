@@ -549,7 +549,7 @@ public:
         , voronoi(initData(&voronoi,VorTypes(),"voronoi",""))
         , f_clearData(initData(&f_clearData,true,"clearData","clear distance image after computation"))
         , showSamplesScale(initData(&showSamplesScale,0.0f,"showSamplesScale","show samples"))
-        , drawMode(initData(&drawMode,0,"drawMode",""))
+        , drawMode(initData(&drawMode,0,"drawMode","0: points, 1: spheres"))
         , showEdges(initData(&showEdges,false,"showEdges","show edges"))
         , showGraph(initData(&showGraph,false,"showGraph","show graph"))
         , time((unsigned int)0)
@@ -743,10 +743,12 @@ protected:
             for(unsigned int i=0; i<nb; i++) {unsigned int index=indices[i]; q.insert(distanceToPoint(pos[index][dir],i));}
             typename distanceSet::iterator it=q.begin();
             BB[0][dir]=q.begin()->first; BB[1][dir]=q.rbegin()->first;
-            C[dir]=(BB[1][dir]+BB[0][dir])*0.5;   while(it->first<C[dir]) it++;       // mean
+            C[dir]=(BB[1][dir]+BB[0][dir])*0.5;   while(it->first<C[dir]) ++it;       // mean
             // for(unsigned int count=0; count<nb/2; count++) it++;   // median
             Real c=it->first;
-            it--; if(C[dir]-it->first<c-C[dir]) c=it->first;
+            --it;
+            if(C[dir]-it->first<c-C[dir]) 
+                c=it->first;
             C[dir]=c;
             //            std::cout<<"dir="<<dir<<":"; for( it=q.begin(); it!=q.end(); it++)  std::cout<<it->first <<" "; std::cout<<std::endl; std::cout<<"C="<<C[dir]<<std::endl;
         }
@@ -806,7 +808,7 @@ protected:
     }
 
     // add point p in pos if not already there are return its index
-    unsigned int addPoint(const Coord p, waPositions& pos, vector<unsigned int> &indices)
+    unsigned int addPoint(const Coord& p, waPositions& pos, vector<unsigned int> &indices)
     {
         unsigned int ret ;
         typename vector<Coord>::iterator it=std::find(pos.begin(),pos.end(),p);
@@ -820,7 +822,7 @@ protected:
     {
         if(e[0]==e[1]) return;
         typename vector<Edge>::iterator it=edg.begin();
-        while(it!=edg.end() && ((*it)[0]!=e[0] || (*it)[1]!=e[1])) it++; // to replace std::find that does not compile here for some reasons..
+        while(it!=edg.end() && ((*it)[0]!=e[0] || (*it)[1]!=e[1])) ++it; // to replace std::find that does not compile here for some reasons..
         if(it==edg.end()) edg.push_back(e);
     }
 

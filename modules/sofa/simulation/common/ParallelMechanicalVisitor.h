@@ -51,14 +51,7 @@ namespace sofa
 {
 
 namespace simulation
-{
-
-using namespace sofa::defaulttype::SharedTypes;
-
-using namespace sofa::defaulttype;
-using namespace sofa::simulation;
-
-/** Base class for easily creating new actions for mechanical simulation.
+{/** Base class for easily creating new actions for mechanical simulation.
 
 During the first traversal (top-down), method processNodeTopDown(Node*) is applied to each Node. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
 
@@ -75,11 +68,11 @@ The default behavior of the fwd* and bwd* is to do nothing. Derived actions typi
 class ParallelMechanicalVOpMecVisitor : virtual public BaseMechanicalVisitor
 {
 public:
-    MultiVecId v;
-    ConstMultiVecId a;
-    ConstMultiVecId b;
+    sofa::core::MultiVecId v;
+    sofa::core::ConstMultiVecId a;
+    sofa::core::ConstMultiVecId b;
     double f;
-    Shared<double> *fSh;
+    sofa::defaulttype::Shared<double> *fSh;
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -125,8 +118,9 @@ public:
         info += " : with v[" + v.getName() + "] " + aLabel + bLabel + fLabel;
         return info;
     }
-    ParallelMechanicalVOpMecVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, MultiVecId v, ConstMultiVecId a = ConstMultiVecId::null(),Shared<double> *fSh=NULL )
-        : BaseMechanicalVisitor(params), v(v), a(a),fSh(fSh)
+    ParallelMechanicalVOpMecVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, sofa::core::MultiVecId v, 
+                                    sofa::core::ConstMultiVecId a = sofa::core::ConstMultiVecId::null(), sofa::defaulttype::Shared<double> *fSh=NULL )
+        : BaseMechanicalVisitor(params), v(v), a(a),f(0),fSh(fSh)
     {}
 
     virtual Result fwdMechanicalState(Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm);
@@ -146,11 +140,11 @@ public:
 class ParallelMechanicalVOpVisitor : virtual public BaseMechanicalVisitor
 {
 public:
-    MultiVecId v;
-    ConstMultiVecId a;
-    ConstMultiVecId b;
+    sofa::core::MultiVecId v;
+    sofa::core::ConstMultiVecId a;
+    sofa::core::ConstMultiVecId b;
     double f;
-    Shared<double> *fSh;
+    sofa::defaulttype::Shared<double> *fSh;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     virtual void setReadWriteVectors() {}
@@ -197,7 +191,9 @@ public:
         return info;
     }
 
-    ParallelMechanicalVOpVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, MultiVecId v, ConstMultiVecId a = ConstMultiVecId::null(), ConstMultiVecId b = ConstMultiVecId::null(), double f=1.0, Shared<double> *fSh=NULL )
+    ParallelMechanicalVOpVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, sofa::core::MultiVecId v, 
+                                 sofa::core::ConstMultiVecId a = sofa::core::ConstMultiVecId::null(), sofa::core::ConstMultiVecId b = sofa::core::ConstMultiVecId::null(), 
+                                 double f=1.0, sofa::defaulttype::Shared<double> *fSh=NULL )
         : BaseMechanicalVisitor(params), v(v), a(a), b(b), f(f),fSh(fSh)
     {}
 
@@ -219,17 +215,18 @@ public:
 class ParallelMechanicalVDotVisitor : public BaseMechanicalVisitor
 {
 public:
-    ConstMultiVecId a;
-    ConstMultiVecId b;
+    sofa::core::ConstMultiVecId a;
+    sofa::core::ConstMultiVecId b;
     double* total;
-    Shared<double>* totalSh;
+    sofa::defaulttype::Shared<double>* totalSh;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors() {}
 #endif
 
 
-    ParallelMechanicalVDotVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, Shared<double>* t, ConstMultiVecId a, ConstMultiVecId b) : BaseMechanicalVisitor(params), a(a), b(b), totalSh(t)
+    ParallelMechanicalVDotVisitor( const sofa::core::ExecParams* params /* PARAMS FIRST  = sofa::core::ExecParams::defaultInstance()*/, sofa::defaulttype::Shared<double>* t, 
+                                   sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b) : BaseMechanicalVisitor(params), a(a), b(b), total(NULL), totalSh(t)
     {}
     /// Sequential code
     Result fwdMechanicalState(simulation::Node* /*node*/, sofa::core::behavior::BaseMechanicalState* mm);

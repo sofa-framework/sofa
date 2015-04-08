@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<Node 	name="sceneRoot" gravity="0 -10 0" time="0" animate="0"  dt="0.02" >
+  <RequiredPlugin pluginName="Flexible"/>
+  <RequiredPlugin pluginName="Compliant"/>
+  <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields showMechanicalMappings" />
+
+  <CompliantAttachButton/>
+  
+  <Node name="Patch" >
+      
+    <CompliantImplicitSolver neglecting_compliance_forces_in_geometric_stiffness="0"/>
+    <LDLTSolver schur="0"/> 
+      
+<!--       <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" /> -->
+<!--       <CGLinearSolver iterations="1000" tolerance="1e-5" threshold="1e-5"/> -->
+
+    <!--Nodes-->
+    <MechanicalObject template="Rigid"  position="0 0 0 0 0 0 1  10 0 0 0 0 0 1  20 0 0 0 0 0 1   30 0 0 0 0 0 1  40 0 0 0 0 0 1  50 0 0 0 0 0 1" name="DOFs" showObject="1"  showObjectScale="2" showIndices="1"/>
+    <MeshTopology name="mesh" lines="0 1   2 3   4 5" position="@DOFs.position" drawEdges="true"/>
+        
+    <!--Mass-->
+    <RigidMass name="mass" mass="1 1 1 1" inertia="1 1 1  1 1 1   1 1 1  1 1 1"/>
+    
+    <FixedConstraint indices="0" />
+    
+    <!--Shape function-->
+    <BarycentricShapeFunction name="baryShapeFunction" template="ShapeFunctiond"/> 
+    
+    
+    
+    <Node       name="Points" >
+      <MechanicalObject template="Vec3d" showObject="1" showObjectScale="10" position="2.5 0 0  7.5 0 0  22.5 0 0  27.5 0 0  42.5 0 0 47.5 0 0"/>
+      <LinearMapping name="linearMapping" template="Rigid,Vec3d" geometricStiffness="2" assemble="1"/>
+      
+
+          <Node name="extensionsNode" >
+        <MechanicalObject template="Vec1d"  name="extensionsDOF" />
+        <EdgeSetTopologyContainer edges="0 1 1 2 2 3 3 4 4 5" />
+        <DistanceMapping showObjectScale="0.1" geometricStiffness="2" />
+        <UniformCompliance name="ucomp" template="Vec1d" compliance="1e-10" isCompliance="1" />
+    </Node>
+    
+    </Node> 
+    
+    
+ 
+  </Node>
+
+</Node>

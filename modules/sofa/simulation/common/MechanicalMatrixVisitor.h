@@ -29,7 +29,6 @@
 #pragma once
 #endif
 
-
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/Mass.h>
@@ -54,12 +53,6 @@ namespace sofa
 namespace simulation
 {
 
-using std::cerr;
-using std::endl;
-
-using namespace sofa::defaulttype;
-using namespace sofa::core;
-
 
 /** Compute the size of a mechanical matrix (mass or stiffness) of the whole scene */
 class SOFA_SIMULATION_COMMON_API MechanicalGetMatrixDimensionVisitor : public BaseMechanicalVisitor
@@ -70,7 +63,7 @@ public:
     sofa::core::behavior::MultiMatrixAccessor* matrix;
 
     MechanicalGetMatrixDimensionVisitor(
-        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, unsigned int * const _nbRow, unsigned int * const _nbCol,
+        const core::ExecParams* params, unsigned int * const _nbRow, unsigned int * const _nbCol,
         sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , nbRow(_nbRow), nbCol(_nbCol), matrix(_matrix)
     {}
@@ -112,7 +105,7 @@ public:
     int offset;
 
     MechanicalGetConstraintJacobianVisitor(
-        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        const core::ExecParams* params, defaulttype::BaseMatrix * _J, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
         : BaseMechanicalVisitor(params) , J(_J), matrix(_matrix), offset(0)
     {}
 
@@ -137,14 +130,14 @@ class SOFA_SIMULATION_COMMON_API MechanicalIntegrateConstraintsVisitor : public 
 public:
 
 
-    const BaseVector *src;
+    const sofa::defaulttype::BaseVector *src;
     const double positionFactor;// use the OdeSolver to get the position integration factor
     const double velocityFactor;// use the OdeSolver to get the position integration factor
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
     MechanicalIntegrateConstraintsVisitor(
-        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, defaulttype::BaseVector * _src, double pf,double vf, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
+        const core::ExecParams* params, defaulttype::BaseVector * _src, double pf,double vf, const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL)
         : BaseMechanicalVisitor(params) , src(_src), positionFactor(pf), velocityFactor(vf), matrix(_matrix), offset(0)
     {}
 
@@ -186,7 +179,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalAddMBK_ToMatrixVisitor : public Mecha
 public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
 
-    MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
+    MechanicalAddMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix )
         : MechanicalVisitor(mparams) ,  matrix(_matrix) //,m(_m),b(_b),k(_k)
     {
     }
@@ -206,7 +199,7 @@ public:
         if (matrix != NULL)
         {
             assert( !ff->isCompliance.getValue() ); // if one day this visitor has to be used with compliance, K from compliance should not be added (by tweaking mparams with kfactor=0)
-            ff->addMBKToMatrix(this->mparams /* PARAMS FIRST */, matrix);
+            ff->addMBKToMatrix(this->mparams, matrix);
         }
 
         return RESULT_CONTINUE;
@@ -218,7 +211,7 @@ public:
     {
         if (matrix != NULL)
         {
-            c->applyConstraint(this->mparams /* PARAMS FIRST */, matrix);
+            c->applyConstraint(this->mparams, matrix);
         }
 
         return RESULT_CONTINUE;
@@ -232,7 +225,7 @@ public:
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     const helper::vector<unsigned> & subMatrixIndex; // index of the point where the matrix must be computed
 
-    MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, const sofa::core::behavior::MultiMatrixAccessor* _matrix, const helper::vector<unsigned> & Id)
+    MechanicalAddSubMBK_ToMatrixVisitor(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* _matrix, const helper::vector<unsigned> & Id)
         : MechanicalVisitor(mparams) ,  matrix(_matrix), subMatrixIndex(Id) //,m(_m),b(_b),k(_k)
     {
     }
@@ -252,7 +245,7 @@ public:
         if (matrix != NULL)
         {
             assert( !ff->isCompliance.getValue() ); // if one day this visitor has to be used with compliance, K from compliance should not be added (by tweaking mparams with kfactor=0)
-            ff->addSubMBKToMatrix(this->mparams /* PARAMS FIRST */, matrix, subMatrixIndex);
+            ff->addSubMBKToMatrix(this->mparams, matrix, subMatrixIndex);
         }
 
         return RESULT_CONTINUE;
@@ -264,7 +257,7 @@ public:
     {
         if (matrix != NULL)
         {
-            c->applyConstraint(this->mparams /* PARAMS FIRST */, matrix);
+            c->applyConstraint(this->mparams, matrix);
         }
 
         return RESULT_CONTINUE;
@@ -274,8 +267,8 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorToBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    ConstMultiVecId src;
-    BaseVector *vect;
+    sofa::core::ConstMultiVecId src;
+    sofa::defaulttype::BaseVector *vect;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
@@ -284,7 +277,8 @@ public:
     virtual const char* getClassName() const { return "MechanicalMultiVector2BaseVectorVisitor"; }
 
     MechanicalMultiVectorToBaseVectorVisitor(
-        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, ConstMultiVecId _src, defaulttype::BaseVector * _vect,
+        const core::ExecParams* params,
+        sofa::core::ConstMultiVecId _src, defaulttype::BaseVector * _vect,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , src(_src), vect(_vect), matrix(_matrix), offset(0)
     {
@@ -307,8 +301,8 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorPeqBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    BaseVector *src;
-    MultiVecDerivId dest;
+    sofa::defaulttype::BaseVector *src;
+    sofa::core::MultiVecDerivId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
@@ -317,7 +311,7 @@ public:
     virtual const char* getClassName() const { return "MechanicalMultiVectorPeqBaseVectorVisitor"; }
 
     MechanicalMultiVectorPeqBaseVectorVisitor(
-        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, MultiVecDerivId _dest, defaulttype::BaseVector * _src,
+        const core::ExecParams* params, sofa::core::MultiVecDerivId _dest, defaulttype::BaseVector * _src,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)
     {
@@ -341,8 +335,8 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalMultiVectorFromBaseVectorVisitor : public BaseMechanicalVisitor
 {
 public:
-    BaseVector *src;
-    MultiVecId dest;
+    sofa::defaulttype::BaseVector *src;
+    sofa::core::MultiVecId dest;
     const sofa::core::behavior::MultiMatrixAccessor* matrix;
     int offset;
 
@@ -351,7 +345,7 @@ public:
     virtual const char* getClassName() const { return "MechanicalMultiVectorFromBaseVectorVisitor"; }
 
     MechanicalMultiVectorFromBaseVectorVisitor(
-        const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, MultiVecId _dest,
+        const core::ExecParams* params, sofa::core::MultiVecId _dest,
         defaulttype::BaseVector * _src,
         const sofa::core::behavior::MultiMatrixAccessor* _matrix = NULL )
         : BaseMechanicalVisitor(params) , src(_src), dest(_dest), matrix(_matrix), offset(0)

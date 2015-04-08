@@ -4,6 +4,7 @@
 #include "../initCompliant.h"
 
 #include "../assembly/AssembledSystem.h"
+#include "../utils/eigen_types.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa {
@@ -12,26 +13,21 @@ namespace linearsolver {
 
 
 /// Base class to solve the linear ode/dynamics equation
-class Response : public core::objectmodel::BaseObject {
+class Response : public core::objectmodel::BaseObject,
+                 public utils::eigen_types {
 public:
-	SOFA_CLASS(Response, core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(Response, core::objectmodel::BaseObject);
 
 	typedef AssembledSystem system_type;
-	
-	typedef system_type::real real;
-	typedef system_type::vec vec;
-
-	typedef system_type::mat mat;
-	typedef system_type::cmat cmat;
-
-
+    
     /// @param semidefinite indicates if the matrix is semi-definite
-    virtual void factor(const mat&, bool semidefinite=false ) = 0;
+    virtual void factor(const rmat&, bool semidefinite=false ) = 0;
 	
 	virtual void solve(cmat&, const cmat& ) const = 0;
 	virtual void solve(vec&, const vec& ) const = 0;
 
-	
+    // Does this factorization only work for symmetric matrices?
+    virtual bool isSymmetric() const { return false; }
 };
 
 

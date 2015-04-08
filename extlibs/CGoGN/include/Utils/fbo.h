@@ -32,6 +32,8 @@
 #include <iostream>
 #include <vector>
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
@@ -44,7 +46,7 @@ class GLSLShader;
 /**
  * Simple Fbo class to do offscreen rendering in OpenGL.
  */
-class FBO
+class CGoGN_UTILS_API FBO
 {
 
 public:

@@ -227,10 +227,12 @@ Item {
                 Layout.fillWidth: true
                 Layout.preferredHeight: visible ? 22 : 0
                 color: "lightgrey"
-                visible: toolBarMode.displayToolbar
+                visible: false
 
                 MouseArea {
                     anchors.fill: parent
+                    acceptedButtons: Qt.AllButtons
+                    onWheel: wheel.accepted = true
 
                     RowLayout {
                         anchors.fill: parent
@@ -257,19 +259,17 @@ Item {
         }
 
         Image {
-            id: toolBarMode
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.bottomMargin: 3
             anchors.leftMargin: 16
-            source: displayToolbar ? "qrc:/icon/minus.png" : "qrc:/icon/plus.png"
+            source: toolBar.visible ? "qrc:/icon/minus.png" : "qrc:/icon/plus.png"
             width: 12
             height: width
 
-            property bool displayToolbar: false
             MouseArea {
                 anchors.fill: parent
-                onClicked: toolBarMode.displayToolbar = !toolBarMode.displayToolbar
+                onClicked: toolBar.visible = !toolBar.visible
             }
         }
 

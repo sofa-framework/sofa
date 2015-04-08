@@ -129,12 +129,12 @@ void Simulation::exportXML ( Node* root, const char* fileName )
         std::ofstream out ( fileName );
         out << "<?xml version=\"1.0\"?>\n";
 
-        XMLPrintVisitor print ( params /* PARAMS FIRST */, out );
+        XMLPrintVisitor print ( params, out );
         root->execute ( print );
     }
     else
     {
-        XMLPrintVisitor print ( params /* PARAMS FIRST */, std::cout );
+        XMLPrintVisitor print ( params, std::cout );
         root->execute ( print );
     }
 }
@@ -235,7 +235,7 @@ void Simulation::initNode( Node* node)
 }
 
 /// Execute one timestep. If do is 0, the dt parameter in the graph will be used
-void Simulation::animate ( Node* root, double dt )
+void Simulation::animate ( Node* root, SReal dt )
 {
     if ( !root ) {
         serr<<"Simulation::animate, no root found"<<sendl;
@@ -402,7 +402,7 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
 
     if ( !exportMTL )
     {
-        ExportOBJVisitor act ( params /* PARAMS FIRST */, &fout );
+        ExportOBJVisitor act ( params, &fout );
         root->execute ( &act );
     }
     else
@@ -422,7 +422,7 @@ void Simulation::exportOBJ ( Node* root, const char* filename, bool exportMTL )
         mtl << "# Generated from SOFA Simulation" << std::endl;
         fout << "mtllib "<<mtlfilename<<'\n';
 
-        ExportOBJVisitor act ( params /* PARAMS FIRST */, &fout,&mtl );
+        ExportOBJVisitor act ( params, &fout,&mtl );
         root->execute ( &act );
     }
 }
@@ -431,7 +431,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 {
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
     out<<root->getTime() <<" ";
-    WriteStateVisitor ( params /* PARAMS FIRST */, out ).execute ( root );
+    WriteStateVisitor ( params, out ).execute ( root );
     out<<endl;
 }
 

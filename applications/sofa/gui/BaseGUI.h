@@ -28,8 +28,8 @@
 #include "SofaGUI.h"
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/component/configurationsetting/ViewerSetting.h>
-#include <sofa/component/configurationsetting/MouseButtonSetting.h>
+#include <SofaGraphComponent/ViewerSetting.h>
+#include <SofaGraphComponent/MouseButtonSetting.h>
 
 #include <list>
 
@@ -106,7 +106,6 @@ public:
     static const char* GetProgramName() { return mProgramName; }
     static void SetProgramName(const char* argv0) { if(argv0) mProgramName = argv0;}
 
-    static const std::string& getPathPrefix();
     static const std::string& getConfigDirectoryPath();
     static const std::string& getScreenshotDirectoryPath();
     static void setConfigDirectoryPath(const std::string& path);

@@ -73,7 +73,7 @@ RegisterProjects("SofaCore" OPTION "SOFA-LIB_CORE" PATH "${SOFA_FRAMEWORK_DIR}/s
 # modules
 set(SOFA_PROJECT_FOLDER "SofaLib")
 add_subdirectory("${SOFA_MODULES_DIR}/sofa/simulation")
-add_subdirectory("${SOFA_MODULES_DIR}/sofa/component")
+add_subdirectory("${SOFA_MODULES_DIR}")
 
 RegisterProjects("SofaGpuOpenCL" OPTION SOFA-LIB_COMPONENT_GPU_OPENCL COMPILE_DEFINITIONS SOFA_GPU_OPENCL PATH "${SOFA_MODULES_DIR}/sofa/gpu/opencl")
 
@@ -181,18 +181,4 @@ if(WIN32)
 			endif()
         endforeach()
     endif()
-endif()
-
-# creating examples/Object and examples/Objects folder
-file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Object")
-file(MAKE_DIRECTORY "${SOFA_BUILD_DIR}/examples/Objects")
-
-# copying default config files
-if(NOT CONFIG_FILES_ALREADY_COPIED)
-    file(GLOB configFiles "${SOFA_SRC_DIR}/share/config/default/*.*")
-    foreach(configFile ${configFiles})
-        file(COPY ${configFile} DESTINATION "${SOFA_BUILD_DIR}/share/config")
-    endforeach()
-
-    set(CONFIG_FILES_ALREADY_COPIED 1 CACHE INTERNAL "Config files copied" FORCE)
 endif()

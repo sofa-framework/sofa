@@ -132,10 +132,6 @@ NewComputation(const Vector3& P1, const Vector3& P2, const Vector3& P3, const Ve
     else
     {
         printf(" no result from LCP !\n");
-        alphaP=0.0;
-        betaP=0.0;
-        alphaQ=0.0;
-        betaQ=0.0;
         Presult = P1;
         Qresult = Q1;
     }

@@ -24,7 +24,7 @@ class SOFA_Compliant_API CompliantLDLTPreconditioner : public BasePreconditioner
 
     CompliantLDLTPreconditioner();
 
-    virtual void compute( const AssembledSystem::mat& H );
+    virtual void compute( const AssembledSystem::rmat& H );
     virtual void apply( AssembledSystem::vec& res, const AssembledSystem::vec& v );
 
   protected:

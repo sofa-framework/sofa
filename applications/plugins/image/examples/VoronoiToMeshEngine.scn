@@ -15,7 +15,7 @@
 	 <ImageSampler  name="sampler"  template="ImageUC"  src="@image"  method="1"  param="50"  showSamplesScale="10"  clearData="0"/>
 <!--	 <ImageViewer  template="ImageUI"  transform="@image.transform"  image="@sampler.voronoi"  plane="-1 10 -1"/>-->
 
-	 <VoronoiToMeshEngine  name="VoronoiToMesh"  template="ImageUI"  transform="@image.transform"  image="@sampler.voronoi"  showMesh="0" minLength="2" printLog="1"/>
+	 <VoronoiToMeshEngine  name="VoronoiToMesh"  template="ImageUI"  transform="@image.transform"  image="@sampler.voronoi"  showMesh="0" minLength="0.5" printLog="1"/>
 
 	 <OglModel position="@VoronoiToMesh.position" edges="@VoronoiToMesh.edges" color="red" lineWidth="1" lineSmooth="1"/>
 	 <OglModel position="@VoronoiToMesh.position" triangles="@VoronoiToMesh.triangles" color="5e-1 5e-1 10e-1 1e-1" lineWidth="1"/>
@@ -37,7 +37,7 @@
 <!--	 <ImageViewer  template="ImageUI"  transform="@image.transform"  image="@sampler.voronoi"  plane="-1 10 -1"/>-->
 	 <ImageSampler  name="sampler_background"  template="ImageUC"  src="@background"  method="1"  param="150"  clearData="0"/>
 
-	 <VoronoiToMeshEngine  name="VoronoiToMesh"  template="ImageUI"  transform="@image.transform"  image="@sampler.voronoi"  background="@sampler_background.voronoi"  showMesh="0" minLength="2" printLog="1"/>
+	 <VoronoiToMeshEngine  name="VoronoiToMesh"  template="ImageUI"  transform="@image.transform"  image="@sampler.voronoi"  background="@sampler_background.voronoi"  showMesh="0" minLength="0.5" printLog="1"/>
 
 	 <OglModel position="@VoronoiToMesh.position" edges="@VoronoiToMesh.edges" color="red" lineWidth="1" lineSmooth="1"/>
 	 <OglModel position="@VoronoiToMesh.position" triangles="@VoronoiToMesh.triangles" color="5e-1 5e-1 10e-1 1e-1" lineWidth="1"/>

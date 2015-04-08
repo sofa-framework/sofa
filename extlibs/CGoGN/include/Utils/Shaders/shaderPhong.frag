@@ -1,6 +1,6 @@
 //ShaderPhong::fragmentShaderText
 
-PRECISON;
+PRECISION;
 VARYING_FRAG vec3 EyeVector, Normal, LightDir;
 #ifdef WITH_COLOR
 VARYING_FRAG vec3 Color;
@@ -9,6 +9,8 @@ uniform vec4 materialDiffuse;
 uniform vec4 materialSpecular;
 uniform vec4 materialAmbient;
 uniform float shininess;
+uniform vec4 backColor;
+
 FRAG_OUT_DEF;
 void main()
 {
@@ -50,6 +52,10 @@ void main()
 		vec3 R = reflect(-L, N);
 		float specular = pow( max(dot(R, E), 0.0), shininess );
 		finalColor += materialSpecular * specular;
+	}
+	else
+	{
+		finalColor = backColor;
 	}
 #endif
 	FRAG_OUT=finalColor;

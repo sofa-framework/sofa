@@ -24,31 +24,31 @@
 ******************************************************************************/
 #include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/component/contextobject/Gravity.h>
+#include <SofaGraphComponent/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/mass/UniformMass.h>
-#include <sofa/component/forcefield/ConstantForceField.h>
-#include <sofa/component/forcefield/HexahedronFEMForceField.h>
-#include <sofa/component/interactionforcefield/QuadBendingSprings.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+#include <SofaBaseMechanics/UniformMass.h>
+#include <SofaBoundaryCondition/ConstantForceField.h>
+#include <SofaSimpleFem/HexahedronFEMForceField.h>
+#include <SofaDeformable/QuadBendingSprings.h>
 #include <sofa/component/container/MeshLoader.h>
-#include <sofa/component/projectiveconstraintset/FixedConstraint.h>
+#include <SofaBoundaryCondition/FixedConstraint.h>
 
 // solvers
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 
 // collision pipeline
-#include <sofa/component/collision/DefaultPipeline.h>
-#include <sofa/component/collision/BruteForceDetection.h>
-#include <sofa/component/collision/NewProximityIntersection.h>
-#include <sofa/component/collision/DefaultContactManager.h>
+#include <SofaBaseCollision/DefaultPipeline.h>
+#include <SofaBaseCollision/BruteForceDetection.h>
+#include <SofaBaseCollision/NewProximityIntersection.h>
+#include <SofaBaseCollision/DefaultContactManager.h>
 #include <sofa/component/collision/TreeCollisionGroupManager.h>
 
 //#include <sofa/component/typedef/Sofa_typedef.h>
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
+#include <SofaOpenglVisual/OglModel.h>
+#include <SofaBaseMechanics/BarycentricMapping.h>
 
 #include <sofa/core/objectmodel/Context.h>
 

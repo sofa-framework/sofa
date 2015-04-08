@@ -130,10 +130,10 @@ public:
 	virtual bool canChangeSleepingState() const;
 
     /// Simulation time
-    virtual double getTime() const;
+    virtual SReal getTime() const;
 
     /// Simulation timestep
-    virtual double getDt() const;
+    virtual SReal getDt() const;
 
     /// Animation flag
     virtual bool getAnimate() const;
@@ -378,7 +378,7 @@ public:
 
 
     /// Simulation timestep
-    virtual void setDt( double /*dt*/ )
+    virtual void setDt( SReal /*dt*/ )
     { }
 
     /// Animation flag
@@ -457,7 +457,7 @@ public:
     virtual void executeVisitor( simulation::Visitor*, bool precomputedOrder=false );
 
     /// Propagate an event
-    virtual void propagateEvent( const core::ExecParams* params /* PARAMS FIRST  = core::ExecParams::defaultInstance()*/, Event* );
+    virtual void propagateEvent( const core::ExecParams* params, Event* );
 
     /// @}
 

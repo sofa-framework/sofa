@@ -50,7 +50,7 @@ ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::st
     std::vector<std::string> categories;
     const objectmodel::BaseClass* entryClass = entry->creatorMap.begin()->second->getClass();
     CategoryLibrary::getCategories(entryClass, categories);
-    for (std::vector< std::string >::iterator it=categories.begin(); it!=categories.end() ; it++)
+    for (std::vector< std::string >::iterator it=categories.begin(); it!=categories.end() ; ++it)
     {
         if (it != categories.begin()) description += std::string(", ");
         description += (*it);

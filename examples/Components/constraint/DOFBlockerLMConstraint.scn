@@ -1,7 +1,5 @@
 <Node name="Root" gravity="0 0 0" dt="0.001">
-    <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
     <VisualStyle displayFlags="showForceFields showBoundingCollisionModels" />
-    <CudaRasterizer template="Vec3d" name="default2" printLog="0" tags="LDI" listening="1" sceneBBox="0 0 0 0 0 0 " pixelSize="0.1" maxLayers="8" drawIntersection="0" zsortBits="8" responseType="3" responseStiffness="10000" />
     <EulerImplicitSolver name="default26" printLog="0" />
     <LMConstraintSolver name="ConstraintSolver" constraintVel="1" constraintPos="1" numIterations="27" maxError="1e-7"/>
     <CGLinearSolver template="GraphScattered" iterations="25" name="default31" tolerance="1e-07" threshold="1e-07" />
@@ -20,7 +18,7 @@
             <TriangleModel name="FrictionCoeff" contactFriction="1" />
         </Node>
     </Node>
-    <Node name="CudaRotationConstrained" gravity="0 -9.81 0">
+    <Node name="RotationConstrained" gravity="0 -9.81 0">
         <MechanicalObject template="Rigid" name="wY=2" translation="3 0 0" restScale="1" velocity="0 0 0 0 2 0" />
         <UncoupledConstraintCorrection template="Rigid" name="default67" />
         <UniformMass template="Rigid" name="default17" mass="10 1 [1 0 0,0 1 0,0 0 1]" totalmass="2" />

@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_PARAMETRICTRIANGLETOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_PARAMETRICTRIANGLETOPOLOGYCONTAINER_H
 
-#include <sofa/component/topology/TriangleSetTopologyContainer.h>
+#include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 

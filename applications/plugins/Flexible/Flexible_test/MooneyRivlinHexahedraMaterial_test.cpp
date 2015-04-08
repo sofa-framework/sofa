@@ -27,14 +27,14 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 //Including Simulation
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 
-#include <sofa/component/forcefield/QuadPressureForceField.h>
+#include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include "../strainMapping/InvariantMapping.h"
 #include "../strainMapping/PrincipalStretchesMapping.h"
 #include "../material/MooneyRivlinForceField.h"
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa {
 
@@ -174,7 +174,7 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
                 pressureForceField.get()->init();
  
                 // Record the initial point of a given vertex
-                Coord p0=(*(tractionStruct.dofs.get()->getX()))[vIndex];
+                Coord p0=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
 
                 //  do several steps of the implicit solver
                 for(l=0;l<8;++l) 
@@ -183,7 +183,7 @@ struct MooneyRivlinHexahedraMaterial_test : public Sofa_test<typename Vec3Types:
                 }
 
                 // Get the simulated final position of that vertex
-                Coord p1=(*(tractionStruct.dofs.get()->getX()))[vIndex];
+                Coord p1=tractionStruct.dofs.get()->read(core::ConstVecCoordId::position())->getValue()[vIndex];
 
                 // Compute longitudinal deformation
                 Real longitudinalStretch=p1[0]/p0[0];

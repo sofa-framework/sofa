@@ -27,7 +27,6 @@
 
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/BaseConstraint.h>
-#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
 
@@ -62,9 +61,9 @@ void Mass<DataTypes>::init()
 template<class DataTypes>
 struct ParallelMassAccFromF
 {
-    void	operator()( const MechanicalParams* mparams /* PARAMS FIRST */, Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename  DataTypes::VecDeriv> > _a,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _f)
+    void	operator()( const MechanicalParams* mparams, Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename  DataTypes::VecDeriv> > _a,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _f)
     {
-        m->accFromF(mparams /* PARAMS FIRST */, _a.access(),_f.read());
+        m->accFromF(mparams, _a.access(),_f.read());
     }
 };
 
@@ -72,88 +71,67 @@ template<class DataTypes>
 struct ParallelMassAddMDx
 {
 public:
-    void	operator()(const MechanicalParams* mparams /* PARAMS FIRST */, Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _res,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _dx,double factor)
+    void	operator()(const MechanicalParams* mparams, Mass< DataTypes >*m,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _res,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _dx,SReal factor)
     {
-        m->addMDx(mparams /* PARAMS FIRST */, _res.access(),_dx.read(),factor);
+        m->addMDx(mparams, _res.access(),_dx.read(),factor);
     }
 };
 
 // template<class DataTypes>
-// void Mass<DataTypes>::addMBKv(double mFactor, double bFactor, double kFactor)
+// void Mass<DataTypes>::addMBKv(SReal mFactor, SReal bFactor, SReal kFactor)
 // {
 //     this->ForceField<DataTypes>::addMBKv(mFactor, bFactor, kFactor);
 //     if (mFactor != 0.0)
 //     {
 //         if (this->mstate)
-//               Task<ParallelMassAddMDx < DataTypes > >(this,**this->mstate->getF(), **this->mstate->getV(),mFactor);
+//               Task<ParallelMassAddMDx < DataTypes > >(this,**this->mstate->getF(), *this->mstate->read(core::ConstVecCoordId::velocity())->getValue(),mFactor);
 //     }
 // }
 #endif /* SOFA_SMP */
 
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId fid, double factor)
+void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor)
 {
     if (mparams)
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelMassAddMDx< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*fid[this->mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readDx(this->mstate)), factor);
+            Task<ParallelMassAddMDx< DataTypes > >(mparams, this, **defaulttype::getShared(*fid[this->mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readDx(this->mstate)), factor);
         else
 #endif /* SOFA_SMP */
-            addMDx(mparams /* PARAMS FIRST */, *fid[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), factor);
+            addMDx(mparams, *fid[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), factor);
     }
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& f, const DataVecDeriv& dx , double factor )
+void Mass<DataTypes>::addMDx(const MechanicalParams* /*mparams*/, DataVecDeriv& /*f*/, const DataVecDeriv& /*dx*/ , SReal /*factor*/ )
 {
-    if (this->mstate)
-    {
-        this->mstate->forceMask.setInUse(this->useMask());
-        addMDx( *f.beginEdit(mparams) , dx.getValue(mparams), factor);
-        f.endEdit(mparams);
-    }
+    serr << "ERROR("<<getClassName()<< "): addMDx(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv&  , SReal  ) not implemented." << sendl;
 }
 
-template<class DataTypes>
-void Mass<DataTypes>::addMDx(VecDeriv& /*f*/, const VecDeriv& /*dx*/, double /*factor*/)
-{
-    serr << "ERROR("<<getClassName()<<"): addMDx(VecDeriv& , const VecDeriv& , double ) not implemented." << sendl;
-}
 
 template<class DataTypes>
-void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId aid)
+void Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid)
 {
     if(mparams)
     {
 #ifdef SOFA_SMP
         if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelMassAccFromF< DataTypes > >(mparams /* PARAMS FIRST */, this, **defaulttype::getShared(*aid[this->mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readF(this->mstate)));
+            Task<ParallelMassAccFromF< DataTypes > >(mparams, this, **defaulttype::getShared(*aid[this->mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readF(this->mstate)));
         else
 #endif /* SOFA_SMP */
-            accFromF(mparams /* PARAMS FIRST */, *aid[this->mstate.get(mparams)].write(), *mparams->readF(this->mstate));
+            accFromF(mparams, *aid[this->mstate.get(mparams)].write(), *mparams->readF(this->mstate));
     }
-    else serr <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId aid) receives no mparam" << sendl;
+    else serr <<"Mass<DataTypes>::accFromF(const MechanicalParams* mparams, MultiVecDerivId aid) receives no mparam" << sendl;
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::accFromF(const MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& a, const DataVecDeriv& f)
+void Mass<DataTypes>::accFromF(const MechanicalParams* /*mparams*/, DataVecDeriv& /*a*/, const DataVecDeriv& /*f*/)
 {
-    if (this->mstate)
-    {
-        this->mstate->forceMask.setInUse(this->useMask());
-        accFromF( *a.beginEdit(mparams) , f.getValue(mparams));
-        a.endEdit(mparams);
-    }
-    else serr<< "Mass<DataTypes>::accFromF, " << getName() << "has no mechanical state" << sendl;
+    serr << "ERROR("<<getClassName()<<"): accFromF(const MechanicalParams* , DataVecDeriv& , const DataVecDeriv& ) not implemented." << sendl;
 }
 
-template<class DataTypes>
-void Mass<DataTypes>::accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/)
-{
-    serr << "ERROR("<<getClassName()<<"): accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/) not implemented." << sendl;
-}
 
 template<class DataTypes>
 void Mass<DataTypes>::addDForce(const MechanicalParams*
@@ -171,90 +149,66 @@ void Mass<DataTypes>::addDForce(const MechanicalParams*
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId dfId)
+void Mass<DataTypes>::addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId)
 {
-    this->ForceField<DataTypes>::addMBKdx(mparams /* PARAMS FIRST */, dfId);
+    this->ForceField<DataTypes>::addMBKdx(mparams, dfId);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
     {
-        addMDx(mparams /* PARAMS FIRST */, *dfId[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
+        addMDx(mparams, *dfId[this->mstate.get(mparams)].write(), *mparams->readDx(this->mstate), mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()));
     }
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
+SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
         return getKineticEnergy(mparams /* PARAMS FIRST */, *mparams->readV(this->mstate));
-    return 0;
-}
-
-template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecDeriv& v) const
-{
-    return getKineticEnergy(v.getValue(mparams));
-}
-
-template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy(const VecDeriv& /*v*/ ) const
-{
-    serr << "ERROR("<<getClassName()<<"): getKineticEnergy( const VecDeriv& ) not implemented." << sendl;
     return 0.0;
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
+SReal Mass<DataTypes>::getKineticEnergy(const MechanicalParams* /*mparams*/, const DataVecDeriv& /*v*/) const
+{
+    serr << "ERROR("<<getClassName()<<"): getKineticEnergy(const MechanicalParams*, const DataVecDeriv& ) not implemented." << sendl;
+    return 0.0;
+}
+
+
+template<class DataTypes>
+SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams) const
 {
     if (this->mstate)
-    {
         return getPotentialEnergy(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate));
-    }
-    return 0;
+    return 0.0;
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* mparams /* PARAMS FIRST */, const DataVecCoord& x) const
-{   
-    return getPotentialEnergy(x.getValue(mparams));
-}
-
-template<class DataTypes>
-double Mass<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/ ) const
+SReal Mass<DataTypes>::getPotentialEnergy(const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/) const
 {
-    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const VecCoord& ) not implemented." << sendl;
+    serr << "ERROR("<<getClassName()<<"): getPotentialEnergy( const MechanicalParams*, const DataVecCoord& ) not implemented." << sendl;
     return 0.0;
 }
 
 
 template<class DataTypes>
-defaulttype::Vec6d Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
+defaulttype::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* mparams ) const
 {
     if (this->mstate)
-        return getMomentum(mparams /* PARAMS FIRST */, *mparams->readX(this->mstate), *mparams->readV(this->mstate));
-    return defaulttype::Vec6d();
+        return getMomentum(mparams, *mparams->readX(this->mstate), *mparams->readV(this->mstate));
+    return defaulttype::Vector6();
 }
 
 template<class DataTypes>
-defaulttype::Vec6d Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
+defaulttype::Vector6 Mass<DataTypes>::getMomentum( const MechanicalParams* /*mparams*/, const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/ ) const
 {
     serr << "ERROR("<<getClassName()<<"): getMomentum( const MechanicalParams*, const DataVecCoord&, const DataVecDeriv& ) not implemented." << sendl;
-    return defaulttype::Vec6d();
+    return defaulttype::Vector6();
 }
 
 
-template<class DataTypes>
-void Mass<DataTypes>::addKToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
-{
-    //    serr << "ERROR("<<getClassName()<<"): addKToMatrix not implemented." << sendl;
-}
 
 template<class DataTypes>
-void Mass<DataTypes>::addBToMatrix(const MechanicalParams* /*mparams*/ /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
-{
-    //	serr << "ERROR("<<getClassName()<<"): addBToMatrix not implemented." << sendl;
-}
-
-template<class DataTypes>
-void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
     if (r)
@@ -262,33 +216,48 @@ void Mass<DataTypes>::addMToMatrix(const MechanicalParams* mparams /* PARAMS FIR
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/)
+void Mass<DataTypes>::addMToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*mFact*/, unsigned int &/*offset*/)
 {
-    serr << "ERROR("<<getClassName()<<"): addMToMatrix not implemented." << sendl;
+    static int i=0;
+    if (i < 10) {
+        serr << "ERROR("<<getClassName()<<"): addMToMatrix not implemented." << sendl;
+        i++;
+    }
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void Mass<DataTypes>::addMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    this->ForceField<DataTypes>::addMBKToMatrix(mparams /* PARAMS FIRST */, matrix);
+    this->ForceField<DataTypes>::addMBKToMatrix(mparams, matrix);
     if (mparams->mFactorIncludingRayleighDamping(rayleighMass.getValue()) != 0.0)
-        addMToMatrix(mparams /* PARAMS FIRST */, matrix);
+        addMToMatrix(mparams, matrix);
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addSubMBKToMatrix(const MechanicalParams* mparams /* PARAMS FIRST */, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> /*subMatrixIndex*/) {
+void Mass<DataTypes>::addSubMBKToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> /*subMatrixIndex*/) {
     addMBKToMatrix(mparams,matrix); // default implementation use full addMFunction
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams /* PARAMS FIRST */, MultiVecDerivId vid)
+void Mass<DataTypes>::addGravityToV(const MechanicalParams* mparams, MultiVecDerivId vid)
 {
     if(this->mstate)
     {
         DataVecDeriv& v = *vid[this->mstate.get(mparams)].write();
-        addGravityToV(mparams /* PARAMS FIRST */, v);
+        addGravityToV(mparams, v);
     }
 }
+
+template<class DataTypes>
+void Mass<DataTypes>::addGravityToV(const MechanicalParams* /* mparams */, DataVecDeriv& /* d_v */)
+{
+    static int i=0;
+    if (i < 10) {
+        serr << "ERROR("<<getClassName()<<"): addGravityToV not implemented." << sendl;
+        i++;
+    }
+}
+
 
 template<class DataTypes>
 void Mass<DataTypes>::initGnuplot(const std::string path)
@@ -303,7 +272,7 @@ void Mass<DataTypes>::initGnuplot(const std::string path)
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams /* PARAMS FIRST */, double time)
+void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams, SReal time)
 {
     if (m_gnuplotFileEnergy!=NULL)
     {
@@ -315,7 +284,7 @@ void Mass<DataTypes>::exportGnuplot(const MechanicalParams* mparams /* PARAMS FI
 }
 
 template <class DataTypes>
-double Mass<DataTypes>::getElementMass(unsigned int ) const
+SReal Mass<DataTypes>::getElementMass(unsigned int ) const
 {
     serr << "ERROR("<<getClassName()<<"): getElementMass with Scalar not implemented" << sendl;
     return 0.0;

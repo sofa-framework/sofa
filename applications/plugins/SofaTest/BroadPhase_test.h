@@ -1,7 +1,7 @@
 #ifndef SOFA_STANDARDTEST_BroadPhase_test_H
 #define SOFA_STANDARDTEST_BroadPhase_test_H
 
-#include <sofa/component/collision/DirectSAP.h>
+#include <SofaMeshCollision/DirectSAP.h>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <sstream>
@@ -25,17 +25,17 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/init.h>
-#include <sofa/component/mapping/SubsetMultiMapping.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
-#include <sofa/component/collision/SphereModel.h>
-#include <sofa/component/topology/CubeTopology.h>
-#include <sofa/component/visualmodel/VisualStyle.h>
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/collision/OBBModel.h>
+#include <SofaComponentMain/init.h>
+#include <SofaMiscMapping/SubsetMultiMapping.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseTopology/CubeTopology.h>
+#include <SofaBaseVisual/VisualStyle.h>
+#include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
+#include <SofaBaseLinearSolver/CGLinearSolver.h>
+#include <SofaBaseCollision/OBBModel.h>
 #include <sofa/simulation/tree/tree.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
@@ -47,13 +47,13 @@
 //#include <plugins/Flexible/deformationMapping/DistanceFromTargetMapping.h>
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
+#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 #include <sofa/simulation/tree/GNode.h>
 
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/collision/MeshIntTool.h>
+#include <SofaBaseTopology/MeshTopology.h>
+#include <SofaMeshCollision/MeshIntTool.h>
 #include <sofa/helper/vector.h>
-#include <sofa/component/collision/IncrSAP.h>
+#include <SofaMeshCollision/IncrSAP.h>
 #include <sofa/core/CollisionModel.h>
 #include <stdlib.h>
 //#include <sofa/component/collision/TeschnerSpatialHashing.h>
@@ -66,10 +66,10 @@ struct MyBox{
     MyBox(sofa::component::collision::Cube cube_) : cube(cube_){}
 
     SReal squaredDistance(const MyBox & other)const{
-        const Vector3 & min_vect0 = cube.minVect();
-        const Vector3 & max_vect0 = cube.maxVect();
-        const Vector3 & min_vect1 = other.cube.minVect();
-        const Vector3 & max_vect1 = other.cube.maxVect();
+        const sofa::defaulttype::Vector3 & min_vect0 = cube.minVect();
+        const sofa::defaulttype::Vector3 & max_vect0 = cube.maxVect();
+        const sofa::defaulttype::Vector3 & min_vect1 = other.cube.minVect();
+        const sofa::defaulttype::Vector3 & max_vect1 = other.cube.maxVect();
 
         SReal temp;
         SReal dist2 = 0;
@@ -109,7 +109,7 @@ struct BroadPhaseTest: public ::testing::Test{
     static bool randDense();
     static bool randTest3();
 
-    static bool randTest(int seed,int nb1,int nb2,const Vector3 & min,const Vector3 & max);
+    static bool randTest(int seed,int nb1,int nb2,const sofa::defaulttype::Vector3 & min,const sofa::defaulttype::Vector3 & max);
 };
 
 struct InitIntersection{
@@ -142,7 +142,7 @@ struct InitIntersection{
 //}
 
 //intersection method used for the narrow phase
-sofa::component::collision::NewProximityIntersection::SPtr proxIntersection = New<sofa::component::collision::NewProximityIntersection>();
+sofa::component::collision::NewProximityIntersection::SPtr proxIntersection = sofa::core::objectmodel::New<sofa::component::collision::NewProximityIntersection>();
 InitIntersection initIntersection(proxIntersection,0);
 double alarmDist = proxIntersection->getAlarmDistance();
 
@@ -151,7 +151,7 @@ double alarmDist = proxIntersection->getAlarmDistance();
 template<class Detection>
 bool genTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,Detection & col_detection);
 
-static Vector3 randVect(const Vector3 & min,const Vector3 & max);
+static sofa::defaulttype::Vector3 randVect(const sofa::defaulttype::Vector3 & min,const sofa::defaulttype::Vector3 & max);
 
 void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
     sofa::component::collision::CubeModel * cbm = dynamic_cast<sofa::component::collision::CubeModel*>(cm->getLast()->getPrevious());
@@ -161,23 +161,23 @@ void getMyBoxes(sofa::core::CollisionModel * cm,std::vector<MyBox> & my_boxes){
         my_boxes.push_back(MyBox(sofa::component::collision::Cube(cbm,i)));
 }
 
-sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent);
+sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<sofa::defaulttype::Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent);
 
-void randMoving(sofa::core::CollisionModel* cm,const Vector3 & min_vect,const Vector3 & max_vect){
+void randMoving(sofa::core::CollisionModel* cm,const sofa::defaulttype::Vector3 & min_vect,const sofa::defaulttype::Vector3 & max_vect){
     sofa::component::collision::OBBModel * obbm = dynamic_cast<sofa::component::collision::OBBModel*>(cm->getLast());
     MechanicalObjectRigid3* dof = dynamic_cast<MechanicalObjectRigid3*>(obbm->getMechanicalState());
 
-    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *dof->write( sofa::core::VecId::position() );
+    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecCoord> & dpositions = *dof->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
+    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *dof->write( sofa::core::VecId::velocity() );
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
 
     for(int i = 0 ; i < dof->getSize() ; ++i){
         if( (sofa::helper::irand()) < RAND_MAX/2.0){//make it move !
-            velocities[i] = Vector3(1,1,1);//velocity is used only to know if a primitive moves, its direction is not important
-            positions[i] = Rigid3Types::Coord(randVect(min_vect,max_vect),Quaternion(0,0,0,1));
+            velocities[i] = sofa::defaulttype::Vector3(1,1,1);//velocity is used only to know if a primitive moves, its direction is not important
+            positions[i] = sofa::defaulttype::Rigid3Types::Coord(randVect(min_vect,max_vect),sofa::defaulttype::Quaternion(0,0,0,1));
         }
     }
 
@@ -404,37 +404,37 @@ bool GENTest(sofa::core::CollisionModel * cm1,sofa::core::CollisionModel * cm2,D
 }
 
 
-sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent){
+sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<sofa::defaulttype::Vector3> & p,sofa::simulation::Node::SPtr &father,double default_extent){
     int n = p.size();
     //creating node containing OBBModel
     sofa::simulation::Node::SPtr obb = father->createChild("obb");
 
     //creating a mechanical object which will be attached to the OBBModel
-    MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
+    MechanicalObjectRigid3::SPtr obbDOF = sofa::core::objectmodel::New<MechanicalObjectRigid3>();
 
     //editing DOF related to the OBBModel to be created, size is 1 because it contains just one OBB
     obbDOF->resize(n);
-    Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
+    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecCoord> & dpositions = *obbDOF->write( sofa::core::VecId::position() );
     MechanicalObjectRigid3::VecCoord & positions = *dpositions.beginEdit();
 
     for(int i = 0 ; i < n ; ++i)
-        positions[i] = Rigid3Types::Coord(p[i],Quaternion(0,0,0,1));
+        positions[i] = sofa::defaulttype::Rigid3Types::Coord(p[i],sofa::defaulttype::Quaternion(0,0,0,1));
 
     dpositions.endEdit();
 
     //Editting the velocity of the OBB
-    Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
+    sofa::core::objectmodel::Data<MechanicalObjectRigid3::VecDeriv> & dvelocities = *obbDOF->write( sofa::core::VecId::velocity() );
 
     MechanicalObjectRigid3::VecDeriv & velocities = *dvelocities.beginEdit();
     for(int i = 0 ; i < n ; ++i)
-        velocities[i] = Vector3(0,0,0);
+        velocities[i] = sofa::defaulttype::Vector3(0,0,0);
     dvelocities.endEdit();
 
 
     obb->addObject(obbDOF);
 
     //creating an OBBModel and attaching it to the same node than obbDOF
-    sofa::component::collision::OBBModel::SPtr obbCollisionModel = New<sofa::component::collision::OBBModel >();
+    sofa::component::collision::OBBModel::SPtr obbCollisionModel = sofa::core::objectmodel::New<sofa::component::collision::OBBModel >();
     obb->addObject(obbCollisionModel);
 
     //editting the OBBModel
@@ -453,9 +453,9 @@ sofa::component::collision::OBBModel::SPtr makeOBBModel(const std::vector<Vector
     return obbCollisionModel;
 }
 
-Vector3 randVect(const Vector3 & min, const Vector3& max) {
-    Vector3 ret;
-    Vector3 extents = max - min;
+sofa::defaulttype::Vector3 randVect(const sofa::defaulttype::Vector3 & min,const sofa::defaulttype::Vector3 & max){
+    sofa::defaulttype::Vector3 ret;
+    sofa::defaulttype::Vector3 extents = max - min;
 
     for(int i = 0 ; i < 3 ; ++i){
         ret[i] = (sofa::helper::drand()) * extents[i] + min[i];
@@ -466,12 +466,10 @@ Vector3 randVect(const Vector3 & min, const Vector3& max) {
 
 
 template <class BroadPhase>
-bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3 & min,const Vector3 & max){
+bool BroadPhaseTest<BroadPhase>::randTest(int seed, int nb1, int nb2, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max){
 
-    sofa::helper::srand(seed);
-
-    std::vector<Vector3> firstCollision;
-    std::vector<Vector3> secondCollision;
+    std::vector<sofa::defaulttype::Vector3> firstCollision;
+    std::vector<sofa::defaulttype::Vector3> secondCollision;
 
     for(int i = 0 ; i < nb1 ; ++i)
         firstCollision.push_back(randVect(min,max));
@@ -479,7 +477,7 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3
     for(int i = 0 ; i < nb2 ; ++i)
         secondCollision.push_back(randVect(min,max));
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::Node::SPtr scn = sofa::core::objectmodel::New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbm1,obbm2;
     obbm1 = makeOBBModel(firstCollision,scn,getExtent());
     obbm2 = makeOBBModel(secondCollision,scn,getExtent());
@@ -487,7 +485,7 @@ bool BroadPhaseTest<BroadPhase>::randTest(int seed,int nb1,int nb2,const Vector3
     obbm1->setSelfCollision(true);
     obbm2->setSelfCollision(true);
 
-    typename BroadPhase::SPtr pbroadphase = New<BroadPhase>();
+    typename BroadPhase::SPtr pbroadphase = sofa::core::objectmodel::New<BroadPhase>();
     BroadPhase & broadphase = *pbroadphase;
 
     for(int i = 0 ; i < 2 ; ++i){
@@ -506,7 +504,7 @@ template <class BroadPhase>
 bool BroadPhaseTest<BroadPhase>::randDense(){
     ////*!randTest(i,20,20,Vector3(-5,-5,-5),Vector3(5,5,5))*/
     for(int i = 0 ; i < 100 ; ++i){
-        if(/*!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,40,20,Vector3(-5,-5,-5),Vector3(5,5,5))){
+        if(/*!randTest(i,2,2,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,40,20,sofa::defaulttype::Vector3(-5,-5,-5),sofa::defaulttype::Vector3(5,5,5))){
             //std::cout<<"FAIL seed number "<<i<<std::endl;
             ADD_FAILURE() <<"FAIL seed number "<<i<< std::endl;
             return false;
@@ -519,7 +517,7 @@ bool BroadPhaseTest<BroadPhase>::randDense(){
 template <class BroadPhase>
 bool BroadPhaseTest<BroadPhase>::randSparse(){
     for(int i = 0 ; i < 1000 ; ++i){
-        if(/*!randTest(i,1,1,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,2,1,Vector3(-5,-5,-5),Vector3(5,5,5))){
+        if(/*!randTest(i,1,1,Vector3(-2,-2,-2),Vector3(2,2,2))*/!randTest(i,2,1,sofa::defaulttype::Vector3(-5,-5,-5),sofa::defaulttype::Vector3(5,5,5))){
             //std::cout<<"FAIL seed number "<<i<<std::endl;
             ADD_FAILURE() <<"FAIL seed number "<<i<< std::endl;
             return false;

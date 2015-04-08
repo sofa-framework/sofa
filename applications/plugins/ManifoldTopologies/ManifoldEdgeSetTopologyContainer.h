@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYCONTAINER_H
 #define SOFA_COMPONENT_TOPOLOGY_MANIFOLDEDGESETTOPOLOGYCONTAINER_H
 
-#include <sofa/component/topology/EdgeSetTopologyContainer.h>
+#include <SofaBaseTopology/EdgeSetTopologyContainer.h>
 
 namespace sofa
 {

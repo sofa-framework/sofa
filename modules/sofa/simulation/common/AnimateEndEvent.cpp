@@ -42,7 +42,7 @@ namespace simulation
 {
 
 
-AnimateEndEvent::AnimateEndEvent(double dt)
+AnimateEndEvent::AnimateEndEvent(SReal dt)
     : sofa::core::objectmodel::Event()
     , dt(dt)
 {

@@ -29,6 +29,7 @@
 #include <iostream>
 #include <cstdio>
 #include <string.h>
+#include <sstream>
 
 namespace sofa
 {
@@ -75,7 +76,10 @@ bool SphereLoader::load(const char *filename)
     }
     skipToEOL(file);
 
-    while (fscanf(file, "%s", cmd) != EOF)
+    std::ostringstream cmdScanFormat;
+    cmdScanFormat << "%" << (sizeof(cmd) - 1) << "s";
+
+    while (fscanf(file,cmdScanFormat.str().c_str(), cmd) != EOF)
     {
         if (!strcmp(cmd,"nums"))
         {

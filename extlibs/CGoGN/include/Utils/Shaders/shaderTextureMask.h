@@ -30,13 +30,15 @@
 #include "Utils/clippingShader.h"
 #include "Utils/textures.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderTextureMask : public ClippingShader
+class CGoGN_UTILS_API ShaderTextureMask : public ClippingShader
 {
 protected:
 	// shader sources

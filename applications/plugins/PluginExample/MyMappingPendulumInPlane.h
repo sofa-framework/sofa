@@ -67,6 +67,15 @@ public:
     typedef typename Out::Deriv OutDeriv;
     typedef typename Out::VecDeriv VecOutDeriv;
     typedef typename Out::MatrixDeriv MatrixOutDeriv;
+
+    typedef Data<VecInCoord> InDataVecCoord;
+    typedef Data<VecInDeriv> InDataVecDeriv;
+    typedef Data<MatrixInDeriv> InDataMatrixDeriv;
+
+    typedef Data<VecOutCoord> OutDataVecCoord;
+    typedef Data<VecOutDeriv> OutDataVecDeriv;
+    typedef Data<MatrixOutDeriv> OutDataMatrixDeriv;
+
 protected:
     MyMappingPendulumInPlane();
     ~MyMappingPendulumInPlane();
@@ -76,11 +85,11 @@ public:
     virtual void init();
     virtual void draw(const core::visual::VisualParams*);
 
-    virtual void apply(VecOutCoord& out, const VecInCoord& in);
-    virtual void applyJ( VecOutDeriv& out, const VecInDeriv& in);
-    virtual void applyJT( VecInDeriv& out, const VecOutDeriv& in);
-    virtual void applyJT( MatrixInDeriv& out, const MatrixOutDeriv& in);
-    virtual void applyDJT(const core::MechanicalParams* mparams /* PARAMS FIRST  = core::MechanicalParams::defaultInstance()*/, core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId );
+    virtual void apply(const core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in);
+    virtual void applyJ(const core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in);
+    virtual void applyJT(const core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in);
+    virtual void applyJT(const core::ConstraintParams* mparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in);
+    virtual void applyDJT(const core::MechanicalParams* mparams , core::MultiVecDerivId parentForceChange, core::ConstMultiVecDerivId);
 
 
 protected:

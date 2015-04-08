@@ -7,6 +7,14 @@ def listToStr(x):
     """
     return ' '.join(map(str, x))
 
+def listListToStr(xx):
+    """ concatenate lists of list for use with data.
+    """
+    str_xx=""
+    for x in xx:
+        str_xx += listToStr(x)
+    return str_xx
+
 def strToListFloat(s):
     """ Convert a string to a list of float
     """
@@ -16,6 +24,11 @@ def strToListInt(s):
     """ Convert a string to a list of float
     """
     return map(int,s.split())
+
+def getObjectPath(obj):
+    """ Return the path of this object
+    """
+    return obj.getContext().getPathName()+"/"+obj.name
 
 def getNode(rootNode, path):
     """ Return node at path or None if not found

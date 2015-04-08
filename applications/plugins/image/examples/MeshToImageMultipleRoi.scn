@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <RequiredPlugin pluginName="image"/>
+  <Background color="1 1 1" />
+  <VisualStyle displayFlags="hideWireframe showVisual showBehavior" />
+  <MeshObjLoader name="mesh" filename="mesh/sphere.obj" triangulate="1"/>
+  <OglModel name="meshOgl"  src="@mesh" color="0.5 0.5 1 .5"/>
+  <BoxROI template="Vec3d" name="box0" src="@mesh"  box="0 0 0 2 2 2" drawBoxes="1" />
+  <BoxROI template="Vec3d" name="box1" src="@mesh"  box="-2 -2 -2 0 0 0" drawBoxes="1" />
+
+  <MergeROIs name="ROIs" nbROIs="2" indices1="@box0.indices" indices2="@box1.indices" />
+
+  <MeshToImageEngine template="ImageUC" name="rasterizer" src="@mesh" value="2" insideValue="1" roiValue="10 15"roiIndices="@ROIs.roiIndices" voxelSize="0.05" padSize="10" rotateImage="true" printLog="true"/>
+  
+  <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="0"/>
+  <ImageViewer template="ImageUC" name="viewer" src="@image" />
+</Node>
+

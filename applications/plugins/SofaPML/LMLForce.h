@@ -68,6 +68,7 @@ using namespace std;
 template<class DataTypes>
 class LMLForce : public ForceField<DataTypes> //, public VisualModel
 {
+    SOFA_CLASS(SOFA_TEMPLATE(LMLForce, DataTypes), SOFA_TEMPLATE(ForceField, DataTypes));
 public :
     ///template types
     typedef typename DataTypes::VecCoord VecCoord;
@@ -76,6 +77,8 @@ public :
     typedef typename DataTypes::VecDeriv::iterator VecDerivIterator;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
+    typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
     ///constructors
     LMLForce(MechanicalState<DataTypes> *mm = NULL)
@@ -96,8 +99,19 @@ public :
     virtual void addDForce (VecDeriv& , const VecDeriv& ) {}
     virtual double getPotentialEnergy(const VecCoord& ) const {return 0;}
 
-    sofa::core::objectmodel::BaseClass* getClass() const { return NULL; }
-
+    virtual void addForce(const MechanicalParams* mparams, DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v)
+    {
+        serr << "LMLForce::addForce() not implemented" << sendl;
+    }
+    virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
+    {
+        serr << "LMLForce::addDForce() not implemented" << sendl;
+    }
+    virtual double getPotentialEnergy(const MechanicalParams* mparams, const DataVecCoord& x) const
+    {
+        serr << "LMLForce::getPotentialEnergy() not implemented" << sendl;
+        return 0.;
+    }
     /// -- VisualModel interface
     void draw();
     void initTextures() { }

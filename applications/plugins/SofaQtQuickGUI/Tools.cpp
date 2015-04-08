@@ -37,6 +37,14 @@ void Tools::setOverrideCursorShape(int newCursorShape)
     overrideCursorShapeChanged();
 }
 
+QQuickWindow* Tools::window(QQuickItem* item) const
+{
+    if(!item)
+        return 0;
+
+    return item->window();
+}
+
 void Tools::trimCache(QObject* object)
 {
 	if(!object)

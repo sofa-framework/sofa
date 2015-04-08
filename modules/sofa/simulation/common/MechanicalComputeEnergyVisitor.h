@@ -60,9 +60,9 @@ public:
 
     ~MechanicalComputeEnergyVisitor();
 
-    double getKineticEnergy();
+    SReal getKineticEnergy();
 
-    double getPotentialEnergy();
+    SReal getPotentialEnergy();
 
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::behavior::BaseMass* mass);

@@ -39,8 +39,8 @@
 
 
 
-#include <sofa/component/collision/TriangleModelInRegularGrid.h>
-#include <sofa/component/collision/TriangleOctreeModel.h>
+#include <SofaMiscCollision/TriangleModelInRegularGrid.h>
+#include <SofaMeshCollision/TriangleOctreeModel.h>
 
 
 

@@ -28,15 +28,15 @@
 #define SOFA_STANDARDTEST_ForceField_test_H
 
 #include "Sofa_test.h"
-#include <sofa/component/init.h>
+#include <SofaComponentMain/init.h>
 #include <sofa/simulation/graph/DAGSimulation.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/EigenBaseSparseMatrix.h>
-#include <sofa/component/linearsolver/SingleMatrixAccessor.h>
+#include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
+#include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <plugins/SceneCreator/SceneCreator.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 
 namespace sofa {
@@ -48,6 +48,7 @@ namespace sofa {
  * Deriving the ForceField test from this class makes it easy to write: just call function run_test with positions, velocities and the corresponding expected forces.
  * This function automatically checks not only the forces (function addForce), but also the stiffness (methods addDForce and addKToMatrix), using finite differences.
  * @author François Faure, 2014
+ *
  */
 template <typename _ForceFieldType>
 struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::Real>
@@ -134,8 +135,10 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      * @param x positions
      * @param v velocities
      * @param ef expected forces
-     * This function first checks that the expected forces are obtained. Then, it checks the stiffness, unless member checkStiffness is set to false.
+     * This function first checks that the expected forces are obtained. Then, it checks getPotentialEnergy.
+     * And then, it checks the stiffness, unless member checkStiffness is set to false.
      * A new position is created using a small random change, and the new force is computed.
+     * The change of potential energy is compared to the dot product between displacement and force.
      * The  change of force is compared to the change computed by function addDForce, and to the product of the position change with the stiffness matrix.
      */
     void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef )
@@ -178,6 +181,9 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         VecDeriv curF;
         copyFromData( curF, dof->readForces() );
 
+        // Get potential Energy before applying a displacement to dofs
+        double potentialEnergyBeforeDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
+
         // change position
         VecDeriv dX(n);
         for( unsigned i=0; i<n; i++ ){
@@ -195,6 +201,28 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
             changeOfForce[i] = newF[i] - curF[i];
         }
 
+        // Get potential energy after displacement of dofs
+        double potentialEnergyAfterDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
+
+        // Check getPotentialEnergy() we should have dE = -dX.F
+
+        // Compute dE = E(x+dx)-E(x)
+        double differencePotentialEnergy = potentialEnergyAfterDisplacement-potentialEnergyBeforeDisplacement;
+
+        // Compute the expected difference of potential energy: -dX.F (dot product between applied displacement and Force)
+        double expectedDifferencePotentialEnergy = 0;
+        for( unsigned i=0; i<n; ++i){
+            expectedDifferencePotentialEnergy = expectedDifferencePotentialEnergy - dot(dX[i],curF[i]);
+        }
+
+        double absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
+        if( absoluteErrorPotentialEnergy> errorMax*this->epsilon() ){
+            ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F" << endl
+                        << "dPotentialEnergy is " << differencePotentialEnergy << endl
+                        << "-dX.F is" << expectedDifferencePotentialEnergy << endl
+                        << "Failed seed number = " << BaseSofa_test::seed << endl;
+        }
+
         // check computeDf: compare its result to actual change
         node->execute(resetForce);
         dof->vRealloc( &mparams, core::VecDerivId::dx()); // dx is not allocated by default
@@ -204,6 +232,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         node->execute(computeDf);
         VecDeriv dF;
         copyFromData( dF, dof->readForces() );
+
         if( this->vectorMaxDiff(changeOfForce,dF)> errorMax*this->epsilon() ){
             ADD_FAILURE()<<"dF differs from change of force" << endl << "Failed seed number = " << BaseSofa_test::seed << endl;
         }
@@ -232,6 +261,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         data_traits<DataTypes>::VecDeriv_to_Vector( df, changeOfForce );
         if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
             ADD_FAILURE()<<"Kdx differs from change of force"<< endl << "Failed seed number = " << BaseSofa_test::seed << endl;;
+
 
 
     }

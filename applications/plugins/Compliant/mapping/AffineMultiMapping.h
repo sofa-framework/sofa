@@ -10,6 +10,8 @@ namespace component {
 namespace mapping {
 
 /** 
+    OBSELETE: use PythonMultiMapping instead
+
 	a very general affine multi mapping: y = A x + b
 	
 	where x is the concatenation of input dofs, in the order specified
@@ -70,14 +72,25 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 		typedef typename self::jacobian_type::CompressedMatrix jack_type;
 
 		// each input mstate
+        unsigned size = 0;
+        const unsigned rows = value.getValue().size() * TOut::Deriv::total_size;
+
 		for(unsigned j = 0, m = in.size(); j < m; ++j) {
 			jack_type& jack = this->jacobian(j).compressedMatrix;
 
-			unsigned dim = this->from(j)->getMatrixSize();
+			const unsigned cols = this->from(j)->getMatrixSize();
 			
-			jack.resize(value.getValue().size(), dim );
+			jack.resize(rows, cols );
 			jack.setZero();
+            size += rows * cols;
 		}
+
+        if(matrix.getValue().size() != size) {
+
+            if( matrix.getValue().size() ) serr << "matrix size incorrect" << sendl;
+                
+            return;
+        }
 
 		// each out dof
 		unsigned off = 0;
@@ -100,7 +113,8 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 					// each dof dimension
 					for(unsigned u = 0; u < self::Nin; ++u) {
 						unsigned c = k * self::Nin + u;
-						SReal value = matrix.getValue()[off + c];
+                        
+						const SReal value = matrix.getValue()[off + c];
 						if( value ) jack.insertBack(r, c) = value;
 					}					
 				}

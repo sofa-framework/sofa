@@ -22,16 +22,16 @@
 *                                                                              *
 *******************************************************************************/
 
+#include "Utils/GLSLShader.h"
+
 #include <iostream>
 #include "Utils/trackball.h"
 #include "Utils/Qt/qtgl.h"
 #include "Utils/Qt/qtSimple.h"
 #include "glm/gtc/type_precision.hpp"
-#include "Utils/GLSLShader.h"
 
-#ifdef MAC_OSX
-  #include "Utils/Qt/macgl3.h"
-#endif
+
+
 namespace CGoGN
 {
 
@@ -44,12 +44,7 @@ namespace QT
 float GLWidget::FAR_PLANE = 500.0f;
 
 GLWidget::GLWidget(SimpleQT* cbs, QWidget *parent) :
-#ifdef MAC_OSX
-//	QGLWidget(new Core3_2_context(QGLFormat::defaultFormat()),parent),
-	QGLWidget(QGLFormat(QGL::Rgba | QGL::DoubleBuffer| QGL::DepthBuffer), parent),
-#else
-	QGLWidget(QGLFormat(QGL::Rgba | QGL::DoubleBuffer| QGL::DepthBuffer), parent),
-#endif
+	QGLWidget(parent),
 	m_cbs(cbs),
 	m_state_modifier(0),
 	allow_rotation(true)
@@ -69,28 +64,6 @@ GLWidget::GLWidget(SimpleQT* cbs, QWidget *parent) :
 	trackball(m_cbs->curquat(), 0.0f, 0.0f, 0.0f, 0.0f);
 }
 
-
-GLWidget::GLWidget(SimpleQT* cbs, QGLFormat& format, QWidget *parent) :
-	QGLWidget(format, parent),
-	m_cbs(cbs),
-	m_state_modifier(0),
-	allow_rotation(true)
-{
-	makeCurrent();
-	glewExperimental = GL_TRUE;
-	glewInit();
-
-	newModel = 1;
-	m_cbs->trans_x() = 0.;
-	m_cbs->trans_y() = 0.;
-	float f = FAR_PLANE;
-	m_cbs->trans_z() = -f / 5.0f;
-	foc = 2.0f;
-
-	// init trackball
-	trackball(m_cbs->curquat(), 0.0f, 0.0f, 0.0f, 0.0f);
-
-}
 
 GLWidget::~GLWidget()
 {
@@ -256,14 +229,14 @@ void GLWidget::mousePressEvent(QMouseEvent* event)
 	m_current_button = event->button();
 
 	if (m_cbs)
-		m_cbs->cb_mousePress(event->button(), event->x(), getHeight() - event->y());
+		m_cbs->cb_mousePress(event->button(), event->x()*pixelRatio(), getHeight() - event->y()*pixelRatio());
 	setFocus(Qt::MouseFocusReason);
 }
 
 void GLWidget::mouseReleaseEvent(QMouseEvent* event)
 {
 	if (m_cbs)
-		m_cbs->cb_mouseRelease(event->button(), event->x(), getHeight() - event->y());
+		m_cbs->cb_mouseRelease(event->button(), event->x()*pixelRatio(), getHeight() - event->y()*pixelRatio());
 
 	if(event->pos() == clickPoint)
 		mouseClickEvent(event) ;
@@ -273,15 +246,15 @@ void GLWidget::mouseClickEvent(QMouseEvent* event)
 {
 
 	if (m_cbs)
-		m_cbs->cb_mouseClick(event->button(), event->x(), getHeight() - event->y());
+		m_cbs->cb_mouseClick(event->button(), event->x()*pixelRatio(), getHeight() - event->y()*pixelRatio());
 }
 
 void GLWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
 	if (event->button()==1)
 	{
-		GLint x = event->x();
-		GLint y = getHeight() - event->y();
+		GLint x = event->x()*pixelRatio();
+		GLint y = getHeight() - event->y()*pixelRatio();
 		GLfloat depth;
 		glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &depth);
 		if (depth < 1.0f)
@@ -412,7 +385,7 @@ void GLWidget::keyReleaseEvent(QKeyEvent *event)
 	if ((k == 'Y') && (event->modifiers() & Qt::ShiftModifier))
 	{
 		float X[3] = { 1.0f, 0.0f, 0.0f };
-		axis_to_quat(X, M_PI / 2.0f, m_cbs->curquat());
+		axis_to_quat(X, float(M_PI / 2.0), m_cbs->curquat());
 		newModel = 1;
 		updateGL();
 	}
@@ -420,7 +393,7 @@ void GLWidget::keyReleaseEvent(QKeyEvent *event)
 	if ((k == 'X') && (event->modifiers() & Qt::ShiftModifier))
 	{
 		float Y[3] = { 0.0f, 1.0f, 0.0f };
-		axis_to_quat(Y, -M_PI / 2.0f, m_cbs->curquat());
+		axis_to_quat(Y, float(-M_PI / 2.0), m_cbs->curquat());
 		newModel = 1;
 		updateGL();
 	}

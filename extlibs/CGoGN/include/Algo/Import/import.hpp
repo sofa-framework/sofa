@@ -27,7 +27,7 @@
 #include "Container/fakeAttribute.h"
 #include "Algo/Modelisation/polyhedron.h"
 #include "Algo/Topo/basic.h"
-#include <utils.h>
+//#include <utils.h>
 #include <boost/function.hpp>
 
 namespace CGoGN
@@ -48,7 +48,6 @@ template <typename PFP>
 bool importMesh(typename PFP::MAP& map, MeshTablesSurface<PFP>& mts)
 {
     typedef typename PFP::MAP MAP;
-    std::cerr << __FILE__ << ":" << __LINE__ << std::endl;
     VertexAutoAttribute< NoTypeNameAttribute< std::vector<Dart> >, MAP> vecDartsPerVertex(map, "incidents");
 
     unsigned nbf = mts.getNbFaces();

@@ -1,5 +1,5 @@
 #include "THMPGHashTable.h"
-#include <sofa/component/collision/BaseIntTool.h>
+#include <SofaBaseCollision/BaseIntTool.h>
 
 using namespace sofa;
 using namespace sofa::component::collision;
@@ -37,13 +37,13 @@ void THMPGHashTable::refersh(SReal timeStamp){
 
     for(;c.getIndex() < cube_model->getSize() ; ++c){
         ++nb_added_elems;
-        const Vector3 & minVec = c.minVect();
+        const defaulttype::Vector3 & minVec = c.minVect();
 
         mincell[0] = std::floor((minVec[0] - _alarmDistd2)/cell_size);
         mincell[1] = std::floor((minVec[1] - _alarmDistd2)/cell_size);
         mincell[2] = std::floor((minVec[2] - _alarmDistd2)/cell_size);
 
-        const Vector3 & maxVec = c.maxVect();
+        const defaulttype::Vector3 & maxVec = c.maxVect();
         maxcell[0] = std::floor((maxVec[0] + _alarmDistd2)/cell_size);
         maxcell[1] = std::floor((maxVec[1] + _alarmDistd2)/cell_size);
         maxcell[2] = std::floor((maxVec[2] + _alarmDistd2)/cell_size);

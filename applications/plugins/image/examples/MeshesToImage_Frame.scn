@@ -9,9 +9,9 @@
   <MeshObjLoader name="mesh3" filename="mesh/bubille_out.obj" triangulate="1"/>
 
   <Node name="using MergeImages (the most powerful solution)">
-    <MeshToImageEngine template="ImageUC" value="1" name="rasterizer1" src="@../mesh1" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
-    <MeshToImageEngine template="ImageUC" value="2" name="rasterizer2" src="@../mesh2" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
-    <MeshToImageEngine template="ImageUC" value="3" name="rasterizer3" src="@../mesh3" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
+    <MeshToImageEngine template="ImageUC" value="1" insideValue="1" name="rasterizer1" src="@../mesh1" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
+    <MeshToImageEngine template="ImageUC" value="2" insideValue="2" name="rasterizer2" src="@../mesh2" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
+    <MeshToImageEngine template="ImageUC" value="3" insideValue="3" name="rasterizer3" src="@../mesh3" voxelSize="0.2" padSize="2" rotateImage="false" printLog="true"/>
 
     <MergeImages  template="ImageUC" name="merge" nbImages="3" overlap="1" interpolation="0"
                                      image1="@rasterizer1.image" transform1="@rasterizer1.transform"
@@ -23,7 +23,7 @@
 
     <Node name="flexible" >
       <EulerImplicitSolver />
-      <CGLinearSolver iterations="25"/>
+      <CGLinearSolver iterations="25" tolerance="1E-5" threshold="1E-5"/>
 
       <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  />
       <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />
@@ -74,16 +74,16 @@
 
   <Node name="Voxelizing several meshes in one image (the prefered solution in most cases)" >
     <MeshToImageEngine template="ImageD" name="rasterizer"  nbMeshes="3"   
-                       value="100" position="@../mesh3.position" triangles="@../mesh3.triangles"   
-                       value2="10" position2="@../mesh2.position" triangles2="@../mesh2.triangles"   
-                       value3="1000" position3="@../mesh1.position" triangles3="@../mesh1.triangles"   
+                       value="100" insideValue="100" position="@../mesh3.position" triangles="@../mesh3.triangles"
+                       value2="10" insideValue2="10" position2="@../mesh2.position" triangles2="@../mesh2.triangles"
+                       value3="1000" insideValue3="1000" position3="@../mesh1.position" triangles3="@../mesh1.triangles"
                        voxelSize="0.2 0.2 0.2" padSize="2" rotateImage="false" printLog="true"/>
     <ImageContainer template="ImageD" name="image" src="@rasterizer" drawBB="false"/>
-    <!-- <ImageViewer template="ImageD" name="viewer" src="@image" /> -->
+<!--     <ImageViewer template="ImageD" name="viewer" src="@image" /> -->
 
     <Node name="flexible" >
       <EulerImplicitSolver />
-      <CGLinearSolver iterations="25"/>
+      <CGLinearSolver iterations="25" tolerance="1E-5" threshold="1E-5"/>
 
       <ImageSampler template="ImageD" name="sampler" src="@../image" method="1" param="10" fixedPosition="-1.5 0 0"  />
       <MergeMeshes name="merged" nbMeshes="2" position1="@sampler.fixedPosition"  position2="@sampler.position" />

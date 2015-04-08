@@ -39,7 +39,7 @@ class SOFA_SIMULATION_COMMON_API TopologyChangeVisitor : public Visitor
 {
 
 public:
-    TopologyChangeVisitor(const sofa::core::ExecParams* params /* PARAMS FIRST */, core::topology::Topology* source)
+    TopologyChangeVisitor(const sofa::core::ExecParams* params, core::topology::Topology* source)
         : Visitor(params), /*root(NULL),*/ source(source)
     {}
 

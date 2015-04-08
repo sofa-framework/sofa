@@ -1,20 +1,14 @@
 #include <plugins/Compliant/numericalsolver/MinresSolver.h>
-#include <plugins/Compliant/numericalsolver/LDLTSolver.h>
-#include <plugins/Compliant/numericalsolver/LDLTResponse.h>
+#include <plugins/Compliant/numericalsolver/EigenSparseSolver.h>
+#include <plugins/Compliant/numericalsolver/EigenSparseResponse.h>
 #include <plugins/Compliant/Compliant_test/Compliant_test.h>
 #include <plugins/Compliant/odesolver/CompliantImplicitSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
+#include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <plugins/SceneCreator/SceneCreator.h>
-
 
 
 namespace sofa
 {
-
-
-using namespace simulation;
-using namespace component;
-using namespace modeling;
 
 /**
  * @brief Integrate a one-dimensional damped oscillator in time, using an CompliantImplicitSolver.
@@ -29,7 +23,7 @@ struct DampedOscillator_test : public CompliantSolver_test
     SReal x0;
     SReal v0;
 
-    Node::SPtr node;
+    simulation::Node::SPtr node;
     MechanicalObject1::SPtr DOF;
     UniformCompliance1::SPtr compliance;
 
@@ -56,7 +50,7 @@ struct DampedOscillator_test : public CompliantSolver_test
         node->setGravity( Vec3(0,0,0) );
 
         // The oscillator
-        Node::SPtr oscillator = node->createChild("oscillator");
+        simulation::Node::SPtr oscillator = node->createChild("oscillator");
 
         DOF = addNew<MechanicalObject1>(oscillator,"DOF");
         DOF->resize(1);
@@ -266,7 +260,7 @@ TEST_F(DampedOscillator_test, compliance_second_degree )
     node->setGravity( Vec3(0,0,0) );
 
     // The oscillator
-    Node::SPtr oscillator = node->createChild("oscillator");
+    simulation::Node::SPtr oscillator = node->createChild("oscillator");
 
     DOF = addNew<MechanicalObject1>(oscillator,"DOF");
     DOF->resize(1);
@@ -276,7 +270,7 @@ TEST_F(DampedOscillator_test, compliance_second_degree )
     UniformMass1::SPtr Mass = addNew<UniformMass1>(oscillator,"mass");
     Mass->mass.setValue( mass );
 
-    Node::SPtr constraint = oscillator->createChild( "constraint" );
+    simulation::Node::SPtr constraint = oscillator->createChild( "constraint" );
 
     MechanicalObject1::SPtr constraintDOF = addNew<MechanicalObject1>(constraint,"DOF");
     constraintDOF->resize(1);

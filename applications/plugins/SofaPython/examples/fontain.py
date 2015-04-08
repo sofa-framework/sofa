@@ -30,7 +30,7 @@ class Fontain(Sofa.PythonScriptController):
         # VisualNode
         VisuNode = node.createChild('Visu')
         VisuNode.createObject('OglModel',name='Visual',fileMesh='mesh/PokeCube.obj',color=color)
-        VisuNode.createObject('RigidMapping',object1='@..',object2='@Visual')
+        VisuNode.createObject('RigidMapping',input='@..',output='@Visual')
 
         # apply wanted initial translation
         #object.applyTranslation(x,y,z)

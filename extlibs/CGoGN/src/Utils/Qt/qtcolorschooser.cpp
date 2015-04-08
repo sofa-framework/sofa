@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/Qt/qtcolorschooser.h"
 #include "Utils/Qt/qtSimple.h"
 
@@ -52,7 +52,7 @@ unsigned int ColorsChooser::addColor(Geom::Vec3f* ptr, const std::string& name)
 {
 	m_colors.push_back(ptr);
 	m_list->addItem(QString(name.c_str()));
-	return m_colors.size()-1;
+	return (unsigned int)(m_colors.size()-1);
 }
 
 

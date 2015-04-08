@@ -1,10 +1,10 @@
 #ifndef BASECONTACT_H
 #define BASECONTACT_H
 
-#include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/container/MechanicalObject.h>
+#include <SofaBaseCollision/DefaultContactManager.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/collision/DetectionOutput.h>
-#include <sofa/component/collision/BaseContactMapper.h>
+#include <SofaBaseCollision/BaseContactMapper.h>
 
 #include "../initCompliant.h"
 
@@ -446,16 +446,15 @@ protected:
         }
     }
 
-    typedef vector< real > penetration_type;
-    void copyPenetrations( penetration_type& res ) const {
+    template< class Coord >
+    void copyPenetrations( helper::vector<Coord>& res ) const {
         const unsigned size = mappedContacts.size();
         assert( size );
         assert( size == contacts->size() );
-
-        res.resize(size);
+        assert( size == res.size() );
 
         for(unsigned i = 0; i < size; ++i) {
-            res[i] = (*contacts)[i].value;
+            res[i][0] = (*contacts)[i].value;
         }
     }
 

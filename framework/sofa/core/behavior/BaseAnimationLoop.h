@@ -63,7 +63,7 @@ protected:
 	virtual BaseAnimationLoop* toAnimationLoop() { return this; }
 
     /// Stores starting time of the simulation
-    double m_resetTime;
+    SReal m_resetTime;
 
     /// Save the initial state for later uses in reset()
     virtual void storeResetState();
@@ -73,10 +73,10 @@ public:
     ///
     /// Specify and execute all computations for computing a timestep, such
     /// as one or more collisions and integrations stages.
-    virtual void step(const core::ExecParams* params /* PARAMS FIRST =ExecParams::defaultInstance()*/, double dt) = 0;
+    virtual void step(const core::ExecParams* params, SReal dt) = 0;
 
     /// Returns starting time of the simulation
-    double getResetTime() const;
+    SReal getResetTime() const;
 };
 
 } // namespace behavior

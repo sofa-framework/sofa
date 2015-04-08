@@ -19,7 +19,7 @@ def createDragon(parentNode,name,x,y,z,color):
 
 	VisuNode = node.createChild('VisuDragon')
 	VisuNode.createObject('OglModel', name='Visual', filename='mesh/dragon.obj', color=color, dx=x, dy=y, dz=z)
-	VisuNode.createObject('BarycentricMapping', object1='@..', object2='@Visual')
+	VisuNode.createObject('BarycentricMapping', input='@..', output='@Visual')
 
 	SurfNode = node.createChild('Surf')
 	SurfNode.createObject('MeshObjLoader', name="loader", filename="mesh/dragon.obj")
@@ -55,7 +55,7 @@ def createArmadillo(parentNode,name,x,y,z,color):
 	
 	VisuNode = node.createChild('VisuArmadillo')
 	VisuNode.createObject('OglModel', name='Visual', filename='mesh/Armadillo_verysimplified.obj', color=color, dx=x, dy=y, dz=z)
-	VisuNode.createObject('BarycentricMapping', object1='@..', object2='@Visual')
+	VisuNode.createObject('BarycentricMapping', input='@..', output='@Visual')
 
 	SurfNode = node.createChild('Surf')
 	SurfNode.createObject('MeshObjLoader', name="loader", filename="mesh/Armadillo_verysimplified.obj")
@@ -85,7 +85,7 @@ def createCube(parentNode,name,x,y,z,vx,vy,vz,color):
 	# VisualNode
 	VisuNode = node.createChild('Visu')
 	VisuNode.createObject("OglModel", name='Visual', fileMesh='mesh/PokeCube.obj', color=color, dx=x, dy=y, dz=z)
-	VisuNode.createObject('RigidMapping', object1='@..', object2='@Visual')
+	VisuNode.createObject('RigidMapping', input='@..', output='@Visual')
 
 	# SurfNode
 	SurfNode = node.createChild('Surf')

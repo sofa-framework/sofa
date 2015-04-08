@@ -42,32 +42,32 @@ class SOFA_CORE_API MechanicalMatrix
 {
 protected:
     enum { MFACT = 0, BFACT = 1, KFACT = 2 };
-    defaulttype::Vec<3,double> factors;
+    defaulttype::Vec<3,SReal> factors;
 public:
-    MechanicalMatrix(double m, double b, double k) : factors(m,b,k) {}
-    explicit MechanicalMatrix(const defaulttype::Vec<3,double>& f) : factors(f) {}
+    MechanicalMatrix(SReal m, SReal b, SReal k) : factors(m,b,k) {}
+    explicit MechanicalMatrix(const defaulttype::Vec<3,SReal>& f) : factors(f) {}
 
     static const MechanicalMatrix M;
     static const MechanicalMatrix B;
     static const MechanicalMatrix K;
 
-    double getMFact() const { return factors[MFACT]; }
-    double getBFact() const { return factors[BFACT]; }
-    double getKFact() const { return factors[KFACT]; }
+    SReal getMFact() const { return factors[MFACT]; }
+    SReal getBFact() const { return factors[BFACT]; }
+    SReal getKFact() const { return factors[KFACT]; }
 
     MechanicalMatrix operator + (const MechanicalMatrix& m2) const { return MechanicalMatrix(factors + m2.factors); }
     MechanicalMatrix operator - (const MechanicalMatrix& m2) const { return MechanicalMatrix(factors - m2.factors); }
     MechanicalMatrix operator - () const { return MechanicalMatrix(- factors); }
-    MechanicalMatrix operator * (double f) const { return MechanicalMatrix(factors * f); }
-    //friend MechanicalMatrix operator * (double f, const MechanicalMatrix& m1) { return MechanicalMatrix(m1.factors * f); }
-    MechanicalMatrix operator / (double f) const { return MechanicalMatrix(factors / f); }
+    MechanicalMatrix operator * (SReal f) const { return MechanicalMatrix(factors * f); }
+    //friend MechanicalMatrix operator * (SReal f, const MechanicalMatrix& m1) { return MechanicalMatrix(m1.factors * f); }
+    MechanicalMatrix operator / (SReal f) const { return MechanicalMatrix(factors / f); }
     friend std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
     {
         out << '(';
         bool first = true;
         for (unsigned int i=0; i<m.factors.size(); ++i)
         {
-            double f = m.factors[i];
+            SReal f = m.factors[i];
             if (f!=0.0)
             {
                 if (!first) out << ' ';

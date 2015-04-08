@@ -27,15 +27,15 @@
 
 #include "MeshGenerator.h"
 
-#include <sofa/component/topology/PointSetTopologyContainer.h>
-#include <sofa/component/topology/PointSetTopologyModifier.h>
-#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
+#include <SofaBaseTopology/PointSetTopologyContainer.h>
+#include <SofaBaseTopology/PointSetTopologyModifier.h>
+#include <SofaBaseTopology/PointSetGeometryAlgorithms.h>
 
-#include <sofa/component/topology/TopologyData.inl>
+#include <SofaBaseTopology/TopologyData.inl>
 
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/loader/VoxelGridLoader.h>
-#include <sofa/component/visualmodel/OglAttribute.inl>
+#include <SofaBaseMechanics/MechanicalObject.inl>
+#include <SofaLoader/VoxelGridLoader.h>
+#include <SofaOpenglVisual/OglAttribute.inl>
 
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Visitor.h>
@@ -211,7 +211,7 @@ void MeshGenerator<DataTypes>::init()
         // Init the DOFs (= Insert vertices)
         _to_DOFs->resize ( vertices.size() );
 
-        for ( unsigned int i = 0; i < vertices.size(); i++ )
+        for ( unsigned int i = 0; i < vertices.size(); ++i )
         {
             xto[i] = vertices[i];
             xtoInRestedPos[i] = vertices[i];
@@ -220,7 +220,7 @@ void MeshGenerator<DataTypes>::init()
         smoothedMesh0.setValue( xtoInRestedPos.ref());
 
         // Init the triangular topology (= Insert faces)
-        for ( unsigned int i = 0; i < triangles.size() / 3; i++ )
+        for ( unsigned int i = 0; i < triangles.size() / 3; ++i )
         {
             _to_tstm->addTriangleProcess ( Triangle ( triangles[3*i], triangles[3*i+1], triangles[3*i+2] ) );
         }
@@ -324,7 +324,7 @@ void MeshGenerator<DataTypes>::getToIndex ( vector<unsigned int>& toIndices, con
     const map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >& triIDirg2iit = triangleIDInRegularGrid2IndexInTopo.getValue();
     typename map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::const_iterator itTri = triIDirg2iit.find( fromIndex);
     if( itTri != triIDirg2iit.end())
-        for( typename ElementSet< BaseMeshTopology::TriangleID >::const_iterator it = itTri->second.begin(); it != itTri->second.end(); it++)
+        for( typename ElementSet< BaseMeshTopology::TriangleID >::const_iterator it = itTri->second.begin(); it != itTri->second.end(); ++it)
             toIndices.push_back( *it);
 }
 
@@ -432,11 +432,11 @@ void MeshGenerator<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsign
 #endif
     // List all the triangles corresponding to the removed hexahedra
     set< BaseMeshTopology::TriangleID > trianglesToRemoveSet;
-    for ( vector<unsigned int>::const_iterator itHexaRemoved = removedHexahedraID.begin(); itHexaRemoved != removedHexahedraID.end(); itHexaRemoved++ )
+    for ( vector<unsigned int>::const_iterator itHexaRemoved = removedHexahedraID.begin(); itHexaRemoved != removedHexahedraID.end(); ++itHexaRemoved )
     {
         vector<unsigned int> toIndices;
         getToIndex ( toIndices, *itHexaRemoved );
-        for( vector<unsigned int>::iterator itTriangleToRemove = toIndices.begin(); itTriangleToRemove != toIndices.end(); itTriangleToRemove++)
+        for( vector<unsigned int>::iterator itTriangleToRemove = toIndices.begin(); itTriangleToRemove != toIndices.end(); ++itTriangleToRemove)
         {
             trianglesToRemoveSet.insert ( *itTriangleToRemove );
         }
@@ -444,7 +444,7 @@ void MeshGenerator<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsign
 
     //  Remove them from the topology
     vector< BaseMeshTopology::TriangleID > trianglesToRemove;
-    for ( set< BaseMeshTopology::TriangleID >::const_reverse_iterator it = set< BaseMeshTopology::TriangleID >::const_reverse_iterator ( trianglesToRemoveSet.end() ); it != set< BaseMeshTopology::TriangleID >::const_reverse_iterator ( trianglesToRemoveSet.begin() ); it++ )
+    for ( set< BaseMeshTopology::TriangleID >::const_reverse_iterator it = set< BaseMeshTopology::TriangleID >::const_reverse_iterator ( trianglesToRemoveSet.end() ); it != set< BaseMeshTopology::TriangleID >::const_reverse_iterator ( trianglesToRemoveSet.begin() ); ++it )
         trianglesToRemove.push_back ( *it );
     _to_tstm->removeTriangles ( trianglesToRemove, true, true );
 
@@ -457,11 +457,11 @@ void MeshGenerator<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsign
     map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >& triIDirg2iit = *triangleIDInRegularGrid2IndexInTopo.beginEdit();
 
     unsigned int lastElt = triIDirg.size();
-    for ( set< BaseMeshTopology::TriangleID >::const_reverse_iterator itTriRemoved = set< BaseMeshTopology::TriangleID >::const_reverse_iterator ( trianglesToRemoveSet.end() ); itTriRemoved != set< BaseMeshTopology::TriangleID >::const_reverse_iterator ( trianglesToRemoveSet.begin() ); itTriRemoved++ )
+    for ( set< BaseMeshTopology::TriangleID >::const_reverse_iterator itTriRemoved = set< BaseMeshTopology::TriangleID >::const_reverse_iterator ( trianglesToRemoveSet.end() ); itTriRemoved != set< BaseMeshTopology::TriangleID >::const_reverse_iterator ( trianglesToRemoveSet.begin() ); ++itTriRemoved )
     {
         lastElt--;
         vector< HexaIDInRegularGrid >& idirgSet = triIDirg[*itTriRemoved];
-        for( vector< HexaIDInRegularGrid >::iterator itIDirg =  idirgSet.begin(); itIDirg != idirgSet.end(); itIDirg++)
+        for( vector< HexaIDInRegularGrid >::iterator itIDirg =  idirgSet.begin(); itIDirg != idirgSet.end(); ++itIDirg)
         {
             typename map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::iterator itMap = triIDirg2iit.find( *itIDirg);
             if( itMap != triIDirg2iit.end())
@@ -475,7 +475,7 @@ void MeshGenerator<DataTypes>::removeOldMesh ( const sofa::helper::vector<unsign
         if( *itTriRemoved != lastElt)
         {
             idirgSet = triIDirg[lastElt];
-            for( vector< HexaIDInRegularGrid >::iterator itIDirg =  idirgSet.begin(); itIDirg != idirgSet.end(); itIDirg++)
+            for( vector< HexaIDInRegularGrid >::iterator itIDirg =  idirgSet.begin(); itIDirg != idirgSet.end(); ++itIDirg)
             {
                 typename map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::iterator itMap = triIDirg2iit.find( *itIDirg);
                 if( itMap != triIDirg2iit.end())
@@ -549,7 +549,7 @@ void MeshGenerator<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
     unsigned int zOffset = resolution[0]*resolution[1];
     unsigned int maxX = resolution[0]-1, maxY = resolution[1]-1, maxZ = resolution[2]-1;
 
-    for( sofa::helper::vector<BaseMeshTopology::PointID>::const_iterator it = removedHexaID.begin(); it != removedHexaID.end(); it++)
+    for( sofa::helper::vector<BaseMeshTopology::PointID>::const_iterator it = removedHexaID.begin(); it != removedHexaID.end(); ++it)
     {
         const unsigned int& hexaID = *it;
         unsigned int z = (unsigned int)( hexaID / (resolution[0]*resolution[1]));
@@ -610,7 +610,7 @@ void MeshGenerator<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
     }
 
     // Delete the redundant elements.
-    for( sofa::helper::vector<BaseMeshTopology::PointID>::const_iterator it = removedHexaID.begin(); it != removedHexaID.end(); it++)
+    for( sofa::helper::vector<BaseMeshTopology::PointID>::const_iterator it = removedHexaID.begin(); it != removedHexaID.end(); ++it)
         hexaNeighbors.erase( *it);
 
     // Get the local vertices
@@ -618,14 +618,14 @@ void MeshGenerator<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
     vector< Vector3 > tmpVertices;
     std::map< Vector3, PointID> map_vertices;
     const SeqTriangles& seqTriangles = _to_topo->getTriangles();
-    for( set<unsigned int>::iterator itHexa = hexaNeighbors.begin(); itHexa != hexaNeighbors.end(); itHexa++)
+    for( set<unsigned int>::iterator itHexa = hexaNeighbors.begin(); itHexa != hexaNeighbors.end(); ++itHexa)
     {
         vector<unsigned int> triangleSet;
         getToIndex( triangleSet, *itHexa);
-        for( vector<unsigned int>::const_iterator itTri = triangleSet.begin(); itTri != triangleSet.end(); itTri++)
+        for( vector<unsigned int>::const_iterator itTri = triangleSet.begin(); itTri != triangleSet.end(); ++itTri)
         {
             const Triangle& pointSet = seqTriangles[*itTri];
-            for( Triangle::const_iterator itPoint = pointSet.begin(); itPoint != pointSet.end(); itPoint++)
+            for( Triangle::const_iterator itPoint = pointSet.begin(); itPoint != pointSet.end(); ++itPoint)
             {
                 Vec3d tmpCoord = Vec3d ( int ( xto0[*itPoint][0] * PRECISION ) / PRECISION, int ( xto0[*itPoint][1] * PRECISION ) / PRECISION, int ( xto0[*itPoint][2] * PRECISION ) / PRECISION );
                 if( map_vertices.find( tmpCoord) == map_vertices.end())
@@ -643,7 +643,7 @@ void MeshGenerator<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
 #endif
     // get all the mCube indices
     set< Vec3i > cubes;
-    for( sofa::helper::vector<BaseMeshTopology::PointID>::const_iterator it = removedHexaID.begin(); it != removedHexaID.end(); it++)
+    for( sofa::helper::vector<BaseMeshTopology::PointID>::const_iterator it = removedHexaID.begin(); it != removedHexaID.end(); ++it)
     {
         const unsigned int& hexaID = *it;
         unsigned int z = (unsigned int)( hexaID / (resolution[0]*resolution[1]));
@@ -663,7 +663,7 @@ void MeshGenerator<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
 
     vector<Vec<3, int> >& seeds = *mCubeSeeds.beginEdit();
     seeds.clear();
-    for( set< Vec3i >::iterator it = cubes.begin(); it != cubes.end(); it++)
+    for( set< Vec3i >::iterator it = cubes.begin(); it != cubes.end(); ++it)
     {seeds.push_back( *it);}
     mCubeSeeds.endEdit();
 
@@ -678,7 +678,7 @@ void MeshGenerator<DataTypes>::computeNewMesh ( vector< Vector3 >& vertices, vec
     marchingCubes.run ( &valueData[0], mCubeSeeds.getValue(), mIsoValue.getValue(), triangles, tmpVertices, map_vertices, &triangleIndexInRegularGrid, false );
 
     // Copy all the new vertices
-    for( unsigned int i = oldVerticesSize; i < tmpVertices.size(); i++)
+    for( unsigned int i = oldVerticesSize; i < tmpVertices.size(); ++i)
         vertices.push_back( tmpVertices[i]);
 
     serr << "trInRG size: " <<  this->triangleIndexInRegularGrid.getValue().size() << sendl;
@@ -709,7 +709,7 @@ void MeshGenerator<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector
     _to_tstm->addPointsProcess ( vertices.size() );
     _to_tstm->addPointsWarning ( vertices.size() );
 
-    for ( unsigned int i = 0; i < vertices.size(); i++ )
+    for ( unsigned int i = 0; i < vertices.size(); ++i )
     {
         xtoInRestedPos[i+oldVertSize] = vertices[i];
         xto[i+oldVertSize] = vertices[i];
@@ -734,7 +734,7 @@ void MeshGenerator<DataTypes>::addNewEltsInTopology ( const sofa::helper::vector
         Triangle tri ( triangles[i], triangles[i+1], triangles[i+2] );
         triangles_to_create.push_back ( tri );
         trianglesIndexList.push_back ( nb_elems );
-        nb_elems++;
+        ++nb_elems;
     }
 
     _to_tstm->addTrianglesProcess ( triangles_to_create );
@@ -768,8 +768,8 @@ void MeshGenerator<DataTypes>::smoothMesh ( const unsigned int oldVertSize, cons
     if( oldVertSize != 0)
     {
         helper::vector<unsigned int> newPatchVertices;
-        for ( unsigned int i = oldTriSize; i < triSeq.size(); i++ )
-            for ( unsigned int j = 0; j < 3; j++ )
+        for ( unsigned int i = oldTriSize; i < triSeq.size(); ++i )
+            for ( unsigned int j = 0; j < 3; ++j )
                 newPatchVertices.push_back ( triSeq[i][j] );
         std::sort( newPatchVertices.begin(), newPatchVertices.end());
         newPatchVertices.erase(std::unique( newPatchVertices.begin(), newPatchVertices.end()),newPatchVertices.end() );
@@ -784,21 +784,21 @@ void MeshGenerator<DataTypes>::smoothMesh ( const unsigned int oldVertSize, cons
     const typename DataTypes::VecCoord& smoothedxto0 = smoothedMesh0.getValue();
     typename DataTypes::VecCoord vrestposCpy;
     vrestposCpy.resize( _to_topo->getNumberOfTriangles());
-    for ( helper::vector<unsigned int>::iterator itPoints = border.begin(); itPoints != border.end(); itPoints++ )
+    for ( helper::vector<unsigned int>::iterator itPoints = border.begin(); itPoints != border.end(); ++itPoints )
         vrestposCpy[*itPoints] = smoothedxto0[*itPoints];
 
     // Smooth
     for( unsigned int j = 0; j < smoothIterations.getValue(); ++j)
     {
-        for ( unsigned int i = oldVertSize; i < xto.size(); i++ )
+        for ( unsigned int i = oldVertSize; i < xto.size(); ++i )
             vrestposCpy[i] = xto[i];
 
-        for ( unsigned int i = oldVertSize; i < xto.size(); i++ )
+        for ( unsigned int i = oldVertSize; i < xto.size(); ++i )
         {
             unsigned int nbPointAround = 1;
             //sofa::helper::set<unsigned int> pointSet;
             const TrianglesAroundVertex& triSet = _to_topo->getTrianglesAroundVertex ( i );
-            for ( TrianglesAroundVertex::const_iterator itTriSet = triSet.begin(); itTriSet != triSet.end(); itTriSet++ )
+            for ( TrianglesAroundVertex::const_iterator itTriSet = triSet.begin(); itTriSet != triSet.end(); ++itTriSet )
             {
                 xto[i] +=  vrestposCpy[triSeq[*itTriSet][0]] + vrestposCpy[triSeq[*itTriSet][1]] + vrestposCpy[triSeq[*itTriSet][2]];
                 nbPointAround += 3;
@@ -811,7 +811,7 @@ void MeshGenerator<DataTypes>::smoothMesh ( const unsigned int oldVertSize, cons
     // Update smoothedMeshxto0 with new smoothed mesh at rest
     typename DataTypes::VecCoord& smoothedMeshxto0 = *(smoothedMesh0.beginEdit());
     smoothedMeshxto0.resize ( xto.size() );
-    for ( unsigned int i = oldVertSize; i < xto.size(); i++ )
+    for ( unsigned int i = oldVertSize; i < xto.size(); ++i )
         smoothedMeshxto0[i] = xto[i];
     smoothedMesh0.endEdit();
 #endif
@@ -845,7 +845,7 @@ void MeshGenerator<DataTypes>::updateOglAttributes ( const unsigned int oldVertS
         unsigned int element;
         const typename GridMat::GCoord& gridDim = voxelDimension.getValue();
         const typename GridMat::SCoord& vSize = voxelSize.getValue();
-        for ( unsigned int i = oldVertSize; i < xto.size(); i++ )
+        for ( unsigned int i = oldVertSize; i < xto.size(); ++i )
         {
             coord = _to_geomAlgo->getPointRestPosition ( i );
             for (unsigned int j = 0; j < 3; ++j)
@@ -867,7 +867,7 @@ void MeshGenerator<DataTypes>::updateOglAttributes ( const unsigned int oldVertS
         ResizableExtVector<ExtVec3fTypes::Coord>& vrestpos = * ( restPosition->beginEdit() );
         vrestpos.resize ( xto.size() );
 
-        for ( unsigned int i = oldVertSize; i < xto.size(); i++ )
+        for ( unsigned int i = oldVertSize; i < xto.size(); ++i )
         {
             vrestpos[i] = xto[i];
         }
@@ -876,7 +876,7 @@ void MeshGenerator<DataTypes>::updateOglAttributes ( const unsigned int oldVertS
         vrestnormals.resize ( xto.size() );
 
         sofa::helper::set<unsigned int> points;
-        for ( unsigned int i = oldTriSize; i < _to_topo->getNumberOfTriangles() ; i++ )
+        for ( unsigned int i = oldTriSize; i < _to_topo->getNumberOfTriangles() ; ++i )
         {
             points.insert ( triSeq[i][0] );
             points.insert ( triSeq[i][1] );
@@ -886,11 +886,11 @@ void MeshGenerator<DataTypes>::updateOglAttributes ( const unsigned int oldVertS
         simulation::Visitor::printCloseNode("Update_restPosition");
         simulation::Visitor::printNode("Update_restNormal");
 #endif
-        for ( sofa::helper::set<unsigned int>::iterator itPoints = points.begin(); itPoints != points.end(); itPoints++ )
+        for ( sofa::helper::set<unsigned int>::iterator itPoints = points.begin(); itPoints != points.end(); ++itPoints )
         {
             vrestnormals[*itPoints].clear();
             const TrianglesAroundVertex& triSet = _to_topo->getTrianglesAroundVertex ( *itPoints );
-            for ( TrianglesAroundVertex::const_iterator itTriSet = triSet.begin(); itTriSet != triSet.end(); itTriSet++ )
+            for ( TrianglesAroundVertex::const_iterator itTriSet = triSet.begin(); itTriSet != triSet.end(); ++itTriSet )
             {
                 const ExtVec3fTypes::Coord  v1 = xto[triSeq[*itTriSet][0]];
                 const ExtVec3fTypes::Coord  v2 = xto[triSeq[*itTriSet][1]];
@@ -921,12 +921,12 @@ void MeshGenerator<DataTypes>::updateTrianglesInfos( const vector< vector<unsign
     vector< vector< HexaIDInRegularGrid > >& triangleIDirg = *triangleIndexInRegularGrid.beginEdit();
     map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >& triIDirg2IDit = *triangleIDInRegularGrid2IndexInTopo.beginEdit();
     unsigned int nbTriangle = triangleIDirg.size();
-    for( vector< vector<unsigned int> >::const_iterator it = triIDirg.begin(); it != triIDirg.end(); it++)
+    for( vector< vector<unsigned int> >::const_iterator it = triIDirg.begin(); it != triIDirg.end(); ++it)
     {
         triangleIDirg.push_back( *it);
-        for( vector<unsigned int>::const_iterator itTri = it->begin(); itTri != it->end(); itTri++)
+        for( vector<unsigned int>::const_iterator itTri = it->begin(); itTri != it->end(); ++itTri)
             triIDirg2IDit[*itTri].insert( nbTriangle);
-        nbTriangle++;
+        ++nbTriangle;
     }
     triangleIDInRegularGrid2IndexInTopo.endEdit();
     triangleIndexInRegularGrid.endEdit();
@@ -953,7 +953,7 @@ void MeshGenerator<DataTypes>::draw()
             if( !gridMat->getCoord( i, hexaCoord)) continue;
             vector<unsigned int> triID;
             getToIndex( triID, i);
-            for ( vector<unsigned int>::const_iterator itTri = triID.begin(); itTri != triID.end(); itTri++)
+            for ( vector<unsigned int>::const_iterator itTri = triID.begin(); itTri != triID.end(); ++itTri)
             {
                 Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( *itTri );
 
@@ -978,7 +978,7 @@ void MeshGenerator<DataTypes>::draw()
             Vec3d triCoord = _to_geomAlgo->computeTriangleCenter ( i );
             vector<unsigned int> hexaID;
             getFromIndex( hexaID, i);
-            for ( vector<unsigned int>::const_iterator itHex = hexaID.begin(); itHex != hexaID.end(); itHex++ )
+            for ( vector<unsigned int>::const_iterator itHex = hexaID.begin(); itHex != hexaID.end(); ++itHex )
             {
                 Vec3d hexaCoord;
                 if( !gridMat->getCoord( *itHex, hexaCoord)) continue;
@@ -998,7 +998,7 @@ void MeshGenerator<DataTypes>::draw()
         // Display the regular grid indices
         glColor4f ( 1,1,0,1 );
         unsigned int nbVoxels = voxelDimension.getValue()[0] * voxelDimension.getValue()[1] * voxelDimension.getValue()[2];
-        for ( unsigned int i = 0; i < nbVoxels; i++)
+        for ( unsigned int i = 0; i < nbVoxels; ++i)
         {
             Vec3i gCoord;
             Vec3d hexaCoord;
@@ -1033,23 +1033,23 @@ void MeshGenerator<DataTypes>::dispMaps() const
 {
     serr << "triangleIndexInRegularGrid:" << sendl;
     unsigned int cpt = 0;
-    for( vector< vector< HexaIDInRegularGrid > >::const_iterator it = triangleIndexInRegularGrid.getValue().begin(); it != triangleIndexInRegularGrid.getValue().end(); it++)
+    for( vector< vector< HexaIDInRegularGrid > >::const_iterator it = triangleIndexInRegularGrid.getValue().begin(); it != triangleIndexInRegularGrid.getValue().end(); ++it)
     {
         serr << cpt << " - ";
-        for( vector< HexaIDInRegularGrid >::const_iterator itVec = it->begin(); itVec != it->end(); itVec++)
+        for( vector< HexaIDInRegularGrid >::const_iterator itVec = it->begin(); itVec != it->end(); ++itVec)
         {
             serr << *itVec << " ";
         }
         serr << sendl;
-        cpt++;
+        ++cpt;
     }
 
     serr << "triangleIDInRegularGrid2IndexInTopo:" << sendl;
-    for( typename map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::const_iterator it = triangleIDInRegularGrid2IndexInTopo.getValue().begin(); it != triangleIDInRegularGrid2IndexInTopo.getValue().end(); it++)
+    for( typename map< HexaIDInRegularGrid, ElementSet< BaseMeshTopology::TriangleID > >::const_iterator it = triangleIDInRegularGrid2IndexInTopo.getValue().begin(); it != triangleIDInRegularGrid2IndexInTopo.getValue().end(); ++it)
     {
         const ElementSet< BaseMeshTopology::TriangleID >& tmp = it->second;
         serr << it->first << " - ";
-        for( typename ElementSet< BaseMeshTopology::TriangleID >::const_iterator itTmp = tmp.begin(); itTmp != tmp.end(); itTmp++)
+        for( typename ElementSet< BaseMeshTopology::TriangleID >::const_iterator itTmp = tmp.begin(); itTmp != tmp.end(); ++itTmp)
         {
             serr << *itTmp << " ";
         }

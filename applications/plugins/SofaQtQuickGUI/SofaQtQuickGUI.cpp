@@ -29,6 +29,8 @@
 #include "PickingInteractor.h"
 #include "PythonInteractor.h"
 #include "Scene.h"
+#include "SceneListModel.h"
+#include "DataListModel.h"
 #include "Viewer.h"
 
 using namespace sofa::qtquick;
@@ -43,8 +45,8 @@ SofaQtQuickGUI::SofaQtQuickGUI(QObject *parent) : QQmlExtensionPlugin(parent)
 
 void SofaQtQuickGUI::init()
 {
-    Q_INIT_RESOURCE(sofaQML);
-    Q_INIT_RESOURCE(sofaQtQuickResources);
+    Q_INIT_RESOURCE(qml);
+    Q_INIT_RESOURCE(resources);
 
     registerTypes("SofaQtQuickGUI");
 }
@@ -53,11 +55,14 @@ void SofaQtQuickGUI::registerTypes(const char* /*uri*/)
 {
 	//Q_ASSERT(QLatin1String(uri) == QLatin1String("SofaQtQuickGUI"));
 
-    qmlRegisterType<Tools>				("Tools"			, versionMajor, versionMinor, "Tools");
-    qmlRegisterType<Camera>				("Camera"			, versionMajor, versionMinor, "Camera");
-    qmlRegisterType<PickingInteractor>	("PickingInteractor", versionMajor, versionMinor, "PickingInteractor");
-    qmlRegisterType<PythonInteractor>	("PythonInteractor"	, versionMajor, versionMinor, "PythonInteractor");
-    qmlRegisterType<Scene>				("Scene"			, versionMajor, versionMinor, "Scene");
-    qmlRegisterType<SceneListModel> 	("SceneListModel"   , versionMajor, versionMinor, "SceneListModel");
-    qmlRegisterType<Viewer>				("Viewer"			, versionMajor, versionMinor, "Viewer");
+    qmlRegisterType<Tools>                      ("Tools"			, versionMajor, versionMinor, "Tools");
+    qmlRegisterType<Camera>                     ("Camera"			, versionMajor, versionMinor, "Camera");
+    qmlRegisterType<PickingInteractor>          ("PickingInteractor", versionMajor, versionMinor, "PickingInteractor");
+    qmlRegisterType<PythonInteractor>           ("PythonInteractor"	, versionMajor, versionMinor, "PythonInteractor");
+    qmlRegisterType<Scene>                      ("Scene"			, versionMajor, versionMinor, "Scene");
+    qmlRegisterUncreatableType<SceneComponent> 	("SceneComponent"	, versionMajor, versionMinor, "SceneComponent", "SceneComponent is not instantiable");
+    qmlRegisterUncreatableType<SceneData>       ("SceneData"        , versionMajor, versionMinor, "SceneData", "SceneData is not instantiable");
+    qmlRegisterType<SceneListModel>             ("SceneListModel"   , versionMajor, versionMinor, "SceneListModel");
+    qmlRegisterType<DataListModel>              ("DataListModel"    , versionMajor, versionMinor, "DataListModel");
+    qmlRegisterType<Viewer>                     ("Viewer"			, versionMajor, versionMinor, "Viewer");
 }

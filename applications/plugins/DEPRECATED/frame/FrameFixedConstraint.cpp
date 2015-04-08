@@ -27,7 +27,7 @@
 #include "QuadraticTypes.h"
 #include "AffineTypes.h"
 #include "FrameFixedConstraint.inl"
-#include <sofa/component/projectiveconstraintset/FixedConstraint.inl>
+#include <SofaBoundaryCondition/FixedConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

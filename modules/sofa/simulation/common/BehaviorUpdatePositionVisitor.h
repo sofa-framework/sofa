@@ -47,7 +47,7 @@ class SOFA_SIMULATION_COMMON_API BehaviorUpdatePositionVisitor : public Visitor
 {
 
 public:
-    BehaviorUpdatePositionVisitor(const core::ExecParams* params /* PARAMS FIRST */, double _dt): Visitor(params),dt(_dt) {}
+    BehaviorUpdatePositionVisitor(const core::ExecParams* params, SReal _dt): Visitor(params),dt(_dt) {}
     void processBehaviorModel(simulation::Node* node, core::BehaviorModel* b);
     virtual Result processNodeTopDown(simulation::Node* node);
 
@@ -59,10 +59,10 @@ public:
     virtual const char* getCategoryName() const { return "behavior update position"; }
     virtual const char* getClassName() const { return "BehaviorUpdatePositionVisitor"; }
 
-    void setDt(double _dt) {dt = _dt;}
-    double getDt() {return dt;}
+    void setDt(SReal _dt) {dt = _dt;}
+    SReal getDt() {return dt;}
 protected:
-    double dt;
+    SReal dt;
 };
 
 } // namespace simulation

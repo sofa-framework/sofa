@@ -1,21 +1,39 @@
 #!/bin/bash
 # use: ./rm-ObjectType.sh directoryPath
-# Warning do not use current directory or script will be changed as well
+# This script removes in all the scenes the deprecated structure <Object type="MyComponent"
+
+# WARNING: this script may modify your scene
+# make sure you saved/commited all local changes before apply this script
+
+DIR0=$PWD
+cd "${0%/*}"
+SCRIPTS=$PWD
+cd -
 
 
-grep -rl 'Object type=' ${1} | grep -v svn >> fileObject.log
+#while read filename
+#(taking into account spaces in the name)
 
-while read filename
+find ${1:-.} '(' -name '*.scn' -o -name '*.pscn' -o -name '*.xml' ')' -print0 | while read -rd $'\0' g;
 do
-  while read line
-  do
-    component=$(echo ${line} | awk -F 'Object type="' '{print $2}')
-    component=$(echo ${component} | awk -F '"' '{print $1}')
-#     echo "compo: $component"
+#to visualize all file read: echo "$g"
 
-    echo ${filename} | xargs sed -i 's/Object type="'"$component"'"/'"$component"'/'
-  
-  done < ${filename}
-done < "fileObject.log"
+  # check if file is not empty
+  if [ -s "$g" ]
+  then
+    # apply the scrit sed
+    "$SCRIPTS/rm-ObjectType.sed" < "$g" > "$g".tmp
+    if [ -s "$g".tmp ]
+    then
+      cat "$g".tmp > "$g"
+      rm -f "$g".tmp
+    else
+      echo "Error in $g"
+    fi
 
-rm fileObject.log
+  # if file is empty
+  else
+    echo "File $g is empty"
+  fi
+
+done

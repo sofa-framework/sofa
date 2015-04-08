@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_PERSISTENTFRICTIONCONTACT_H
 #define SOFA_COMPONENT_COLLISION_PERSISTENTFRICTIONCONTACT_H
 
-#include <sofa/component/collision/FrictionContact.h>
+#include <SofaConstraint/FrictionContact.h>
 
 #include <sofa/core/collision/DetectionOutput.h>
 

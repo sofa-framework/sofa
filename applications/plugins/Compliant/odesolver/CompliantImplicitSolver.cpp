@@ -1,7 +1,7 @@
 #include "CompliantImplicitSolver.h"
 
-#include <sofa/component/linearsolver/EigenSparseMatrix.h>
-#include <sofa/component/linearsolver/EigenVector.h>
+#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <SofaEigen2Solver/EigenVector.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include "assembly/AssemblyVisitor.h"
@@ -237,6 +237,10 @@ using namespace core::behavior;
             simulation::MechanicalAddComplianceForce lvis( &sop.mparams(), f, lagrange, factor ); // f += fc  with  fc = lambda / dt
             send( lvis );
         }
+
+        // computing mapping geometric stiffnesses based on child force stored in f
+        simulation::MechanicalComputeGeometricStiffness gsvis( &sop.mparams(), f );
+        send( gsvis );
     }
 
 
@@ -538,11 +542,11 @@ using namespace core::behavior;
         send( *assemblyVisitor );
 
         // assemble system
-        sys = assemblyVisitor->assemble();
+        assemblyVisitor->assemble(sys);
     }
 
     void CompliantImplicitSolver::solve(const core::ExecParams* params,
-                                double dt,
+                                SReal dt,
                                 core::MultiVecCoordId posId,
                                 core::MultiVecDerivId velId) {
 
@@ -657,11 +661,11 @@ using namespace core::behavior;
                     integrate( sop, posId, velId );
                     break;
                 case FORMULATION_DV: // v+ = v- + dv     p+ = p- + h.v
-                    set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+                    set_state( sys, x, _acc.id() ); // set v and lambda
                     integrate( sop, posId, velId, _acc.id(), 1.0  );
                     break;
                 case FORMULATION_ACC: // v+ = v- + h.a   p+ = p- + h.v
-                    set_state( sys, sys.P * x, _acc.id() ); // set v and lambda
+                    set_state( sys, x, _acc.id() ); // set v and lambda
                     integrate( sop, posId, velId, _acc.id(), dt  );
                     break;
                 }
