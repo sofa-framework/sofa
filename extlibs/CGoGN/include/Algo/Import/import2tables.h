@@ -38,12 +38,7 @@
 #include "Algo/Import/importFileTypes.h"
 #include "Algo/Modelisation/voxellisation.h"
 
-// #ifdef WITH_ASSIMP
-// #include "Assimp/assimp.h"
-// #include "Assimp/aiPostProcess.h"
-// #include "Assimp/aiScene.h"
-// #endif
-
+#include "Topology/ihmap/ihm3.h"
 namespace CGoGN
 {
 
@@ -140,7 +135,12 @@ public:
 
     MeshTablesSurface(typename PFP::MAP& map):
         m_map(map)
-    { }
+    {
+        m_nbVertices = 0u;
+        m_nbFaces = 0u;
+        m_nbEdges.clear();
+        m_emb.clear();
+    }
 };
 
 } // namespace Import
@@ -252,7 +252,14 @@ public:
 
     MeshTablesVolume(typename PFP::MAP& map):
         m_map(map)
-    { }
+    {
+        m_nbVertices = 0u;
+        m_nbVolumes = 0u;
+        m_nbFaces = 0u;
+        m_nbVerticesPerVolume.clear();
+        m_volumeType.clear();
+        m_emb.clear();
+    }
 };
 
 

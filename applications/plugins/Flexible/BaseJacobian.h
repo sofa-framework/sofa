@@ -69,7 +69,7 @@ public:
     virtual MatBlock getJ()=0;
 
     // Geometric Stiffness = dJ^T.fc
-    virtual KBlock getK(const OutDeriv& childForce)=0;
+    virtual KBlock getK(const OutDeriv& childForce, bool stabilization=false)=0;
     // compute $ df += K dx $
     virtual void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )=0;
 
@@ -206,23 +206,6 @@ inline MatSym<Dim, Real> covN(const Vec<Dim,Real>& v)
         }
     return res;
 }
-
-template<class _Real>
-inline Mat<3, 3, _Real> crossProductMatrix(const Vec<3,_Real>& v)
-{
-    Mat<3, 3, _Real> res;
-    res[0][0]=0;
-    res[0][1]=-v[2];
-    res[0][2]=v[1];
-    res[1][0]=v[2];
-    res[1][1]=0;
-    res[1][2]=-v[0];
-    res[2][0]=-v[1];
-    res[2][1]=v[0];
-    res[2][2]=0;
-    return res;
-}
-
 
 
 

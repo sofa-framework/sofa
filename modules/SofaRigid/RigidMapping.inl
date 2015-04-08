@@ -38,6 +38,7 @@
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/decompose.h>
 
 #include <sofa/simulation/common/Simulation.h>
 
@@ -705,32 +706,13 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
 }
 
 
-// skew-symmetric mapping: hat(v) * x = v.cross(x)
-// c'est moche mais pour l'instant on s'en cogne
-template<class Real, class Vec, unsigned size>
-Eigen::Matrix<Real, size, size> hat(const Vec& v)
-{
-    Eigen::Matrix<Real, size, size> res;
-
-    res.diagonal().setZero();
-
-    res(0, 1) = -v.z();
-    res(1, 0) = v.z();
-
-    res(0, 2) = v.y();
-    res(2, 0) = -v.y();
-
-    res(1, 2) = -v.x();
-    res(2, 1) = v.x();
-
-    return res;
-}
-
 
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
-    if( !geometricStiffness.getValue() ) { geometricStiffnessMatrix.resize(0,0); return; }
+    unsigned geomStiff = geometricStiffness.getValue();
+
+    if( !geomStiff ) { geometricStiffnessMatrix.resize(0,0); return; }
 
     typedef typename StiffnessSparseMatrixEigen::CompressedMatrix matrix_type;
     matrix_type& dJ = geometricStiffnessMatrix.compressedMatrix;
@@ -743,28 +725,33 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
     const VecDeriv& childForces = childForceId[this->toModel.get(mparams)].read()->getValue();
 
     // sorted in-out
-    typedef std::map<unsigned, unsigned> in_out_type;
+    typedef std::map<unsigned, vector<unsigned> > in_out_type;
     in_out_type in_out;
 
+    // wahoo it is heavy, can't we find lighter?
     for(unsigned i = 0, n = rotatedPoints.size(); i < n; ++i)
-        in_out[ getRigidIndex(i) ] = i;
-
+        in_out[ getRigidIndex(i) ].push_back(i);
 
     for( in_out_type::const_iterator it = in_out.begin(), end = in_out.end() ; it != end; ++it )
     {
-        const unsigned pointIdx = it->second;
         const unsigned rigidIdx = it->first;
 
         static const unsigned rotation_dimension = TIn::deriv_total_size - TIn::spatial_dimensions;
 
-        typedef Eigen::Map< const Eigen::Matrix<typename TOut::Real, TOut::deriv_total_size, 1> > OutForce;
-        OutForce cf( childForces[pointIdx].ptr() );
-        OutForce rt( rotatedPoints[pointIdx].ptr() );
+        defaulttype::Mat<rotation_dimension,rotation_dimension,Real> block;
 
 
-        // TODO handle 2D case
+        for( int w=0 ; w<it->second.size() ; ++w )
+        {
+            const unsigned pointIdx = it->second[w];
+            block += defaulttype::crossProductMatrix<Real>( childForces[pointIdx] ) * defaulttype::crossProductMatrix<Real>( rotatedPoints[pointIdx] );
+        }
 
-        Eigen::Matrix<Real, rotation_dimension, rotation_dimension> block = hat<Real,OutForce,rotation_dimension>( cf ) * hat<Real,OutForce,rotation_dimension>( rt );
+        if( geomStiff == 2 )
+        {
+            block.symmetrize(); // symmetrization
+            helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+        }
 
         for(unsigned j = 0; j < rotation_dimension; ++j) {
 
@@ -775,17 +762,12 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
             for(unsigned k = 0; k < rotation_dimension; ++k) {
                 const unsigned col = TIn::deriv_total_size * rigidIdx + TIn::spatial_dimensions + k;
 
-                if( block(j, k) ) dJ.insertBack(row, col) = block(j, k);
+                if( block(j, k) ) dJ.insertBack(row, col) += block[j][k];
             }
         }
     }
 
     dJ.finalize();
-
-
-    if( geometricStiffness.getValue() == 2 ) {
-        dJ = (dJ + matrix_type(dJ.transpose())) / 2.0;
-    }
 }
 
 

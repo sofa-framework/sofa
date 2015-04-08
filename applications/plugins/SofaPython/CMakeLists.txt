@@ -12,6 +12,7 @@ set(HEADER_FILES
     ScriptController.h
 	ScriptFunction.h
     PythonScriptController.h
+    PythonMainScriptController.h
 	PythonScriptFunction.h
     PythonMacros.h
     PythonEnvironment.h
@@ -56,6 +57,7 @@ set(SOURCE_FILES
     ScriptController.cpp
     ScriptFunction.cpp
     PythonScriptController.cpp
+    PythonMainScriptController.cpp
 	PythonScriptFunction.cpp
     PythonEnvironment.cpp
     Binding.cpp

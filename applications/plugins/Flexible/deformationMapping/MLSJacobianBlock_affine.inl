@@ -121,7 +121,7 @@ class MLSJacobianBlock< Affine3(InReal) , V3(OutReal) > :
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -208,7 +208,7 @@ class MLSJacobianBlock< Affine3(InReal) , EV3(OutReal) > :
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -307,7 +307,7 @@ class MLSJacobianBlock< Affine3(InReal) , F331(OutReal) > :
 
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -406,7 +406,7 @@ class MLSJacobianBlock< Affine3(InReal) , F321(OutReal) > :
 
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -505,7 +505,7 @@ class MLSJacobianBlock< Affine3(InReal) , F311(OutReal) > :
 
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -633,7 +633,7 @@ class MLSJacobianBlock< Affine3(InReal) , F332(OutReal) > :
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 

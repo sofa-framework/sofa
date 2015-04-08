@@ -17,7 +17,12 @@ def insertRigid(parentNode, rigidModel, param=None):
     print "rigid:", rigidModel.name
     rigid = StructuralAPI.RigidBody(parentNode, rigidModel.name)
 
-    if len(rigidModel.mesh)!=0:
+    # check mesh formats are supported by generateRigid
+    meshFormatSupported = True
+    for mesh in rigidModel.mesh :
+        meshFormatSupported &= mesh.format=="obj" or mesh.format=="vtk"
+
+    if len(rigidModel.mesh)!=0 and meshFormatSupported:
         massinfo = SofaPython.mass.RigidMassInfo()
 
         density = SofaPython.units.density_from_SI(rigidModel.density) if not rigidModel.density is None else SofaPython.units.density_from_SI(1000.)

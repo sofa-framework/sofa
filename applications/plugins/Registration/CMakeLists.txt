@@ -24,6 +24,9 @@ set(SOURCE_FILES
 
 set(README_FILES README.txt)
 
+# include python files
+include(./python/python.cmake)
+
 if(SOFA-PLUGIN_IMAGE)
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.h")
     list(APPEND HEADER_FILES "IntensityProfileRegistrationForceField.inl")
@@ -31,7 +34,7 @@ if(SOFA-PLUGIN_IMAGE)
     AddLinkerDependencies(image)
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
 AddCompilerDefinitions("SOFA_BUILD_REGISTRATION")
 AddLinkerDependencies(SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaOpenglVisual SofaMiscForceField)
 #AddLinkerDependencies(SofaGuiQt)

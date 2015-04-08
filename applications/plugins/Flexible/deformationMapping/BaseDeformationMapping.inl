@@ -444,7 +444,9 @@ void BaseDeformationMappingT<JacobianBlockType>::updateJ()
 template <class JacobianBlockType>
 void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId )
 {
-    if( BlockType::constant || !d_geometricStiffness.getValue() /*|| !assemble.getValue()*/ ) { K.resize(0,0); return; }
+    unsigned geometricStiffness = d_geometricStiffness.getValue();
+
+    if( BlockType::constant || !geometricStiffness /*|| !assemble.getValue()*/ ) { K.resize(0,0); return; }
 
     const OutVecDeriv& childForce = childForceId[this->toModel.get(mparams)].read()->getValue();
     helper::ReadAccessor<Data<InVecCoord> > in (*this->fromModel->read(core::ConstVecCoordId::position()));
@@ -458,7 +460,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::Mechanical
             for(size_t j=0; j<jacobian[i].size(); j++)
             {
                 size_t index=this->f_index.getValue()[i][j];
-                diagonalBlocks[index] += jacobian[i][j].getK(childForce[i]);
+                diagonalBlocks[index] += jacobian[i][j].getK(childForce[i], geometricStiffness==2);
             }
         }
     }
@@ -471,8 +473,8 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::Mechanical
             size_t i = ( size_t ) ( *it );
             for(size_t j=0; j<jacobian[i].size(); j++)
             {
-                size_t index=this->f_index.getValue()[i][j];
-                diagonalBlocks[index] += jacobian[i][j].getK(childForce[i]);
+                size_t index=this->f_index.getValue()[i][j];                
+                diagonalBlocks[index] += jacobian[i][j].getK(childForce[i], geometricStiffness==2);
             }
         }
     }
@@ -484,18 +486,13 @@ void BaseDeformationMappingT<JacobianBlockType>::updateK( const core::Mechanical
         //            columns.push_back( i );
         //            blocks.push_back( diagonalBlocks[i] );
         //            K.appendBlockRow( i, columns, blocks );
+
         K.beginBlockRow(i);
         K.createBlock(i,diagonalBlocks[i]);
         K.endBlockRow();
     }
     //        K.endEdit();
     K.compress();
-
-    if( d_geometricStiffness.getValue() == 2 ) {
-        typename SparseKMatrixEigen::CompressedMatrix& dJ = K.compressedMatrix;
-        dJ = (dJ + typename SparseKMatrixEigen::CompressedMatrix(dJ.transpose())) / 2.0;
-    }
-
 }
 
 template <class JacobianBlockType>

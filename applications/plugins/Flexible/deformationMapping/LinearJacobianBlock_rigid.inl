@@ -33,6 +33,7 @@
 #include "../types/AffineTypes.h"
 #include "../types/QuadraticTypes.h"
 #include "../types/DeformationGradientTypes.h"
+#include <sofa/helper/decompose.h>
 
 namespace sofa
 {
@@ -127,10 +128,17 @@ class LinearJacobianBlock< Rigid3(InReal) , V3(OutReal) > :
         return J;
     }
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         // will only work for 3d rigids
-        Mat<adim,adim,Real> block = crossProductMatrix( cross(childForce,Pa) );
+        Mat<adim,adim,Real> block = crossProductMatrix( childForce ) * crossProductMatrix( Pa );
+
+        if( stabilization )
+        {
+            block.symmetrize(); // symmetrization
+            helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+        }
+
         KBlock K;
         for( unsigned i=0; i<adim; ++i )
             for( unsigned j=0; j<adim; ++j )
@@ -230,10 +238,17 @@ class LinearJacobianBlock< Rigid3(InReal) , EV3(OutReal) > :
         return J;
     }
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         // will only work for 3d rigids
-        Mat<adim,adim,Real> block = crossProductMatrix( cross(childForce,Pa) );
+        Mat<adim,adim,Real> block = crossProductMatrix( childForce ) * crossProductMatrix( Pa );
+
+        if( stabilization )
+        {
+            block.symmetrize(); // symmetrization
+            helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+        }
+
         KBlock K;
         for( unsigned i=0; i<adim; ++i )
             for( unsigned j=0; j<adim; ++j )
@@ -353,13 +368,20 @@ class LinearJacobianBlock< Rigid3(InReal) , F331(OutReal) > :
     }
 
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         // will only work for 3d rigids
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = crossProductMatrix( cross(childForce.getF().col(k), PFa.getF().col(k)) );
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getF().col(k) ) * crossProductMatrix( PFa.getF().col(k) );
+
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
             for( unsigned i=0; i<adim; ++i )
                 for( unsigned j=0; j<adim; ++j )
                     K[dim+i][dim+j] += block[i][j];
@@ -473,13 +495,20 @@ class LinearJacobianBlock< Rigid3(InReal) , F321(OutReal) > :
         return J;
     }
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         // will only work for 3d rigids
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = crossProductMatrix( cross(childForce.getF().col(k), PFa.getF().col(k)) );
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getF().col(k) ) * crossProductMatrix( PFa.getF().col(k) );
+
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
             for( unsigned i=0; i<adim; ++i )
                 for( unsigned j=0; j<adim; ++j )
                     K[dim+i][dim+j] += block[i][j];
@@ -593,13 +622,20 @@ class LinearJacobianBlock< Rigid3(InReal) , F311(OutReal) > :
         return J;
     }
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         // will only work for 3d rigids
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = crossProductMatrix( cross(childForce.getF().col(k), PFa.getF().col(k)) );
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getF().col(k) ) * crossProductMatrix( PFa.getF().col(k) );
+
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
             for( unsigned i=0; i<adim; ++i )
                 for( unsigned j=0; j<adim; ++j )
                     K[dim+i][dim+j] += block[i][j];
@@ -751,14 +787,20 @@ class LinearJacobianBlock< Rigid3(InReal) , F332(OutReal) > :
         return J;
     }
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         // will only work for 3d rigids
         KBlock K = KBlock();
         for(unsigned int k=0; k<mdim; ++k)
         {
-            Mat<adim,adim,Real> block = crossProductMatrix( cross(childForce.getF().col(k), PFdFa.getF().col(k)) );
-            for (unsigned int m = 0; m < dim; ++m) block += crossProductMatrix( cross(childForce.getGradientF(m).col(k), PFdFa.getGradientF(m).col(k)) );
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getF().col(k) ) * crossProductMatrix( PFdFa.getF().col(k) );
+            for (unsigned int m = 0; m < dim; ++m) block += crossProductMatrix( childForce.getGradientF(m).col(k) ) * crossProductMatrix( PFdFa.getGradientF(m).col(k) );
+
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
 
             for( unsigned i=0; i<adim; ++i )
                 for( unsigned j=0; j<adim; ++j )
@@ -892,17 +934,31 @@ class LinearJacobianBlock< Rigid3(InReal) , Affine3(OutReal) > :
     }
 
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         // will only work for 3d rigids
         KBlock K;
-        Mat<adim,adim,Real> block = crossProductMatrix( cross(childForce.getVCenter(),Pa.getCenter()) );
+        Mat<adim,adim,Real> block = crossProductMatrix( childForce.getVCenter() ) * crossProductMatrix( Pa.getCenter() );
+
+        if( stabilization )
+        {
+            block.symmetrize(); // symmetrization
+            helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+        }
+
         for( unsigned i=0; i<adim; ++i )
             for( unsigned j=0; j<adim; ++j )
                 K[dim+i][dim+j] = block[i][j];
         for(unsigned int k=0; k<dim; ++k)
         {
-            Mat<adim,adim,Real> block = crossProductMatrix( cross(childForce.getVAffine().col(k), Pa.getAffine().col(k)) );
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getVAffine().col(k) ) * crossProductMatrix( Pa.getAffine().col(k) );
+
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
             for( unsigned i=0; i<adim; ++i )
                 for( unsigned j=0; j<adim; ++j )
                     K[dim+i][dim+j] += block[i][j];

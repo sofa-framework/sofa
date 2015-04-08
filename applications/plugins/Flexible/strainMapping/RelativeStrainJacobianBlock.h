@@ -113,7 +113,7 @@ public:
         return MatBlock::Identity()*multfactor;
     }
 
-    KBlock getK(const OutDeriv& /*childForce*/)
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false)
     {
         return KBlock();
     }

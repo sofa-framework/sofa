@@ -229,7 +229,7 @@ void TransformPosition<DataTypes>::getTransfoFromTfm()
         }
 
         if (!found) serr << "Transformation not found in " << fname << sendl;
-        f_affineMatrix.setValue(mat,true);
+        f_affineMatrix.setValue(mat);
     }
     else
     {
@@ -296,7 +296,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
                 {
                     tr[i] = mat[i][3] = (Real)atof(vLine[i].c_str());
                 }
-                f_translation.setValue(tr,true);
+                f_translation.setValue(tr);
 
             }
             else
@@ -307,7 +307,7 @@ void TransformPosition<DataTypes>::getTransfoFromTrm()
             }
 
         }
-        f_affineMatrix.setValue(mat,true);
+        f_affineMatrix.setValue(mat);
     }
     else
     {
@@ -369,7 +369,7 @@ void TransformPosition<DataTypes>::getTransfoFromTxt()
             for ( unsigned int i = 0; i < std::min((unsigned int)vLine.size(),(unsigned int)4); i++)
                 mat[nbLines-1][i] = (Real)atof(vLine[i].c_str());
         }
-        f_affineMatrix.setValue(mat,true);
+        f_affineMatrix.setValue(mat);
 
     }
     else
