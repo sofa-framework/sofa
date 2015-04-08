@@ -35,6 +35,11 @@
 
 #include <sofa/component/component.h>
 
+#ifdef _OPENMP
+#include <omp.h>
+#define cimg_use_openmp 1
+#endif // _OPENMP
+
 #define NONE 0
 #define BLURDERICHE 1
 #define BLURMEDIAN 2
@@ -229,7 +234,7 @@ protected:
             {
                 float sigma_s=0;  if(p.size()) sigma_s=(float)p[0];
                 float sigma_r=0; if(p.size()>1) sigma_r=(float)p[1];
-                cimglist_for(img,l) img(l)=inimg(l).get_blur_bilateral (sigma_s,sigma_r);
+                cimglist_for(img,l) img(l)=inimg(l).get_blur_bilateral (inimg(l), sigma_s,sigma_r);
             }
             break;
         case BLURANISOTROPIC:
