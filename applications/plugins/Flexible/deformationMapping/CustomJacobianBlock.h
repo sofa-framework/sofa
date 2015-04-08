@@ -63,7 +63,7 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )    { result += J*data; }
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data); }
     MatBlock getJ()    { return J; }
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -99,7 +99,7 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )    { result.getVec() += J*data; }
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
     MatBlock getJ()    { return J; }
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -134,7 +134,7 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )    { result.getVec() += J*data; }
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
     MatBlock getJ()    { return J; }
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -169,7 +169,7 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )    { result.getVec() += J*data; }
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
     MatBlock getJ()    { return J; }
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -204,7 +204,7 @@ public:
     void addmult( OutDeriv& result,const InDeriv& data )    { result.getVec() += J*data; }
     void addMultTranspose( InDeriv& result, const OutDeriv& data )    { result += J.multTranspose(data.getVec()); }
     MatBlock getJ()    { return J; }
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 

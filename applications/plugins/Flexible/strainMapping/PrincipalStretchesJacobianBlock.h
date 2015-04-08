@@ -179,7 +179,7 @@ class PrincipalStretchesJacobianBlock : public BaseJacobianBlock<TIn,TOut>
 
 
 //    // TODO requires to write (dU/dp.dp.fc.V+U.fc.dV/dp.dp) as a matrix-vector product K.dp
-//    KBlock getK(const OutDeriv& /*childForce*/)
+//    KBlock getK(const OutDeriv& /*childForce*/, bool=false)
 //    {
 //        return KBlock();
 //    }
@@ -356,7 +356,7 @@ public:
     }
 
     // write (dU/dp.dp.fc.V+U.fc.dV/dp.dp) as a matrix-vector product K.dp
-    KBlock getK( const OutDeriv& childForce )
+    KBlock getK( const OutDeriv& childForce, bool=false )
     {
         KBlock K;
 

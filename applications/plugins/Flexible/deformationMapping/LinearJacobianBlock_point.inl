@@ -110,7 +110,7 @@ public:
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -186,7 +186,7 @@ public:
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -269,7 +269,7 @@ public:
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -351,7 +351,7 @@ public:
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -433,7 +433,7 @@ public:
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -524,7 +524,7 @@ public:
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -630,7 +630,7 @@ public:
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -715,7 +715,7 @@ public:
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 
@@ -798,7 +798,7 @@ public:
     }
 
     // no geometric striffness (constant J)
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false) {return KBlock();}
     void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
 };
 

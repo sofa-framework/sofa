@@ -214,7 +214,7 @@ public:
         return B;
     }
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
         KBlock K = KBlock();
         typedef Eigen::Map<Eigen::Matrix<Real,In::deriv_total_size,In::deriv_total_size,Eigen::RowMajor> > EigenMap;

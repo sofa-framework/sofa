@@ -226,7 +226,7 @@ public:
         return B;
     }
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool /*stabilization*/=false)
     {
         KBlock K = KBlock();
         K=dd1*childForce.getStrain()[0]+dd2*childForce.getStrain()[1]+ddJ*childForce.getStrain()[2];
@@ -353,7 +353,7 @@ public:
 //        return _J;
 //    }
 
-//    KBlock getK(const OutDeriv& childForce)
+//    KBlock getK(const OutDeriv&, bool=false)
 //    {
 //        KBlock K = KBlock();
 //        return K;
