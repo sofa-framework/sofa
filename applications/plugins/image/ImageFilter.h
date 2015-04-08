@@ -187,15 +187,17 @@ public:
 protected:
 
     virtual void update()
-    {
+	{
         bool updateImage = this->inputImage.isDirty();	// change of input image -> update output image
         bool updateTransform = this->inputTransform.isDirty();	// change of input transform -> update output transform
         if(!updateImage && !updateTransform) {updateImage=true; updateTransform=true;}  // change of parameters -> update all
 
-        cleanDirty();
         raParam p(this->param);
         raImagei in(this->inputImage);
         raTransform inT(this->inputTransform);
+
+		cleanDirty();	 // cleanDirty must be here to avoid the multiple call of the update method
+
         waImageo out(this->outputImage);
         waTransform outT(this->outputTransform);
 
@@ -655,7 +657,7 @@ protected:
             break;
         }
 
-        if(updateTransform) outT->update(); // update internal data
+		if (updateTransform) outT->update(); // update internal data
     }
 
 };
