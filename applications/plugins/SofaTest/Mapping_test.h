@@ -61,7 +61,7 @@ using std::endl;
   - to validate mapping->applyJT, we apply it after setting the child force fc=vOut, then we check that parent force fp = J^T.fc
   - to validate mapping->applyDJT, we set the child force, and we compare the parent force before and after a small displacement
 
-  The magnitude of the small random changes applied in finite differences is between 0 and deltaMax*epsilon,
+  The magnitude of the small random changes applied in finite differences is between deltaRange.first*epsilon and deltaRange.second*epsilon,
   and a failure is issued if the error is greater than errorMax*epsilon,
   where epsilon=std::numeric_limits<Real>::epsilon() is 1.19209e-07 for float and 2.22045e-16 for double.
 
@@ -110,7 +110,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     typename OutDOFs::SPtr outDofs; ///< mapping output
     simulation::Node::SPtr root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
-    Real deltaMax; ///< The maximum magnitude of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
+    std::pair<Real,Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  errorMax * numeric_limits<Real>::epsilon
     Real errorFactorDJ;     ///< The test for geometric stiffness is successfull if the (infinite norm of the) difference is less than  errorFactorDJ * errorMax * numeric_limits<Real>::epsilon
 
@@ -122,7 +122,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
 
-    Mapping_test():deltaMax(1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -138,7 +138,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -196,6 +196,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                           const InVecCoord parentNew,
                           const OutVecCoord expectedChildNew)
     {
+        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+            ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
+
         if( !(flags & TEST_getJs) ) std::cerr<<"WARNING: MappingTest is not testing getJs\n";
         if( !(flags & TEST_getK) ) std::cerr<<"WARNING: MappingTest is not testing getK\n";
         if( !(flags & TEST_applyJT_matrix) ) std::cerr<<"WARNING: MappingTest is not testing applyJT on matrices\n";
@@ -247,7 +250,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set random child forces and propagate them to the parent
         for( unsigned i=0; i<Nc; i++ ){
-            fc[i] = Out::randomDeriv( 1.0 );
+            fc[i] = Out::randomDeriv( 0.1, 1.0 );
         }
         fp2.fill( InDeriv() );
         WriteInVecDeriv fin = inDofs->writeForces();
@@ -261,7 +264,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set small parent velocities and use them to update the child
         for( unsigned i=0; i<Np; i++ ){
-            vp[i] = In::randomDeriv( this->epsilon() * deltaMax );
+            vp[i] = In::randomDeriv( this->epsilon() * deltaRange.first, this->epsilon() * deltaRange.second );
         }
 //        cout<<"parent velocities vp = " << vp << endl;
         for( unsigned i=0; i<Np; i++ ){             // and small displacements

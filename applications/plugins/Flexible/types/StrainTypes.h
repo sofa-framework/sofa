@@ -193,11 +193,11 @@ public:
 
 
     /// Return a Deriv with random value. Each entry with magnitude smaller than the given value.
-    static Deriv randomDeriv( Real maxValue)
+    static Deriv randomDeriv( Real minMagnitude, Real maxMagnitude )
     {
         Deriv result;
         for( unsigned int i=0 ; i<VSize ; ++i )
-            result[i] = Real(helper::drand(maxValue));
+            result[i] = Real(helper::drand(minMagnitude,maxMagnitude));
         return result;
     }
 
