@@ -92,8 +92,7 @@ TYPED_TEST_CASE(QuadPressureForceField_test, TestTypes);
 // first test case: test force value
 TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 {
-    this->errorMax = 1000;
-    this->deltaMax = 1000;
+    this->errorMax *= 10;
     this->debug = false;
 
     this->test_valueForce();
@@ -102,8 +101,7 @@ TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 // second test case: test that force is constant
 TYPED_TEST( QuadPressureForceField_test , constantQuadPressureForceFieldTest)
 {
-    this->errorMax = 1000;
-    this->deltaMax = 1000;
+    this->errorMax *= 10;
     this->debug = false;
 
     this->test_constantForce();
