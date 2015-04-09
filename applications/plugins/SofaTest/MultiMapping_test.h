@@ -95,11 +95,11 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     simulation::Node::SPtr child; ///< Child node, created by setupScene
     vector<simulation::Node::SPtr> parents; ///< Parent nodes, created by setupScene
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
-    Real deltaMax; ///< The maximum magnitude of the change of each scalar value of the small displacement is deltaMax * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
+    std::pair<Real,Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is deltaRange * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon
 
 
-    MultiMapping_test():deltaMax(1000),errorMax(10)
+    MultiMapping_test():deltaRange(1,1000),errorMax(10)
     {
         sofa::component::init();
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
@@ -158,6 +158,9 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
     bool runTest( const vector<InVecCoord>& parentCoords,
                   const OutVecCoord& expectedChildCoords)
     {
+        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+            ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
+
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
@@ -210,7 +213,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 
         // set random child forces and propagate them to the parent
         for( unsigned i=0; i<Nc; i++ ){
-            fc[i] = Out::randomDeriv( 1.0 );
+            fc[i] = Out::randomDeriv( 0.1, 1.0 );
 //            cout<<"random child forces  fc[" << i <<"] = "<<fc[i]<<endl;
         }
         for(Index p=0; p<Np.size(); p++) {
@@ -229,7 +232,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
             vp[p].resize(Np[p]);
             xp1[p].resize(Np[p]);
             for( unsigned i=0; i<Np[p]; i++ ){
-                vp[p][i] = In::randomDeriv( this->epsilon() * deltaMax );
+                vp[p][i] = In::randomDeriv( this->epsilon() * deltaRange.first, this->epsilon() * deltaRange.second );
 //                cout<<"parent velocities vp[" << p <<"] = " << vp[p] << endl;
                 xp1[p][i] = xp[p][i] + vp[p][i];
 //                cout<<"new parent positions xp1["<< p <<"] = " << xp1[p] << endl;

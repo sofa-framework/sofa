@@ -75,18 +75,22 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     /// {
     SReal errorMax;       ///< tolerance in precision test. The actual value is this one times the epsilon of the Real numbers (typically float or double)
     /**
-     * @brief Maximum amplitude of the random perturbation used to check the stiffness using finite differences
+     * @brief Minimum/Maximum amplitudes of the random perturbation used to check the stiffness using finite differences
      * @warning Should be more than errorMax/stiffness. This is not checked automatically.
      */
-    SReal deltaMax;
+    std::pair<Real,Real> deltaRange;
     bool checkStiffness;  ///< If false, stops the test after checking the force, without checking the stiffness. Default value is true.
     bool debug;           ///< Print debug messages. Default is false.
     /// }
 
-    /** Create a scene with a node, a state and a forcefield.
+    /** Create a scene with a node, a state and a forcefield.;
      *
      */
     ForceField_test()
+        : errorMax( 100 )
+        , deltaRange( 1, 1000 )
+        , checkStiffness( true )
+        , debug( false )
     {
         using modeling::addNew;
         simulation::Simulation* simu;
@@ -97,17 +101,16 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         node = simu->createNewGraph("root");
         dof = addNew<DOF>(node);
         force = addNew<ForceField>(node);
-
-        errorMax = 100;
-        deltaMax = 1000;
-        checkStiffness = true;
-        debug = false;
     }
     
      /** Create a scene from a xml file.
      *
      */
     ForceField_test(std::string filename)
+        : errorMax( 100 )
+        , deltaRange( 1, 1000 )
+        , checkStiffness( true )
+        , debug( false )
     {
         using modeling::addNew;
         simulation::Simulation* simu;
@@ -123,11 +126,6 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
         // Add force field
         force = addNew<ForceField>(node);
-
-        errorMax = 100;
-        deltaMax = 1000;
-        checkStiffness = true;
-        debug = false;
     }
 
     /**
@@ -143,6 +141,9 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      */
     void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef )
     {
+        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+            ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
+
         ASSERT_TRUE(x.size()==v.size());
         ASSERT_TRUE(x.size()==ef.size());
         std::size_t n = x.size();
@@ -187,7 +188,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         // change position
         VecDeriv dX(n);
         for( unsigned i=0; i<n; i++ ){
-            dX[i] = DataTypes::randomDeriv(deltaMax * this->epsilon() );  // todo: better random, with negative values
+            dX[i] = DataTypes::randomDeriv( deltaRange.first * this->epsilon(), deltaRange.second * this->epsilon() );  // todo: better random, with negative values
             xdof[i] += dX[i];
         }
 
