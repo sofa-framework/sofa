@@ -29,6 +29,11 @@
 #define cimg_plugin "skeleton.h"
 #include "CImg.h"
 
+#ifdef _OPENMP
+#include <omp.h>
+#define cimg_use_openmp 1
+#endif // _OPENMP
+
 #include <iostream>
 #include <fstream>
 #include <stdio.h>

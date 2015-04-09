@@ -35,11 +35,6 @@
 
 #include <sofa/component/component.h>
 
-#ifdef _OPENMP
-#include <omp.h>
-#define cimg_use_openmp 1
-#endif // _OPENMP
-
 #define NONE 0
 #define BLURDERICHE 1
 #define BLURMEDIAN 2
