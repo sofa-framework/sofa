@@ -113,8 +113,8 @@ TYPED_TEST_CASE(TetrahedronFEMForceField_test, TestTypes);
 // test case
 TYPED_TEST( TetrahedronFEMForceField_test , extension )
 {
-    this->errorMax = 1.0e+8 ;
-    this->deltaMax = this->errorMax * 100;
+    this->errorMax *= 1e6;
+    this->deltaRange = std::make_pair( 1, this->errorMax * 10 );
     this->debug = false;
 
     // Young modulus, poisson ratio method

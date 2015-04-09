@@ -96,7 +96,8 @@ namespace sofa {
 
         bool runTest( unsigned method )
         {
-            this->errorMax *= 150;
+            this->deltaRange = std::make_pair( 100, 10000 );
+            this->errorMax = this->deltaRange.second;
             this->errorFactorDJ = 10;
 
             static_cast<_Mapping*>(this->mapping)->f_geometricStiffness.setValue(1);
@@ -267,7 +268,8 @@ namespace sofa {
 
         bool runTest()
         {
-            this->errorMax *= 300;
+            this->deltaRange = std::make_pair( 100, 10000 );
+            this->errorMax = this->deltaRange.second;
             this->errorFactorDJ = 10;
 
             defaulttype::Mat<3,3,Real> rotation;
@@ -333,8 +335,9 @@ namespace sofa {
 
         bool runTest()
         {
-            this->errorMax *= 100;
-            this->errorFactorDJ = 25;
+            this->deltaRange = std::make_pair( 100, 10000 );
+            this->errorMax = this->deltaRange.second;
+            this->errorFactorDJ = 500;
 
             defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
 
@@ -504,7 +507,9 @@ namespace sofa {
 
         bool runTest()
         {
-            this->errorMax *= 500;
+            this->deltaRange = std::make_pair( 100, 10000 );
+            this->errorMax = this->deltaRange.second;
+            this->errorFactorDJ = 10;
 
             defaulttype::Mat<In::material_dimensions,In::material_dimensions,Real> strain; 
 

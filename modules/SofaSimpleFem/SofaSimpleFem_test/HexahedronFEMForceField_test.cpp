@@ -123,8 +123,8 @@ TYPED_TEST_CASE(HexahedronFEMForceField_test, TestTypes);
 // test case
 TYPED_TEST( HexahedronFEMForceField_test , extension )
 {
-    this->errorMax = 10000;
-    this->deltaMax = this->errorMax;
+    this->errorMax *= 100;
+    this->deltaRange = std::make_pair( 1, this->errorMax * 10 );
     this->debug = false;
 
     // run test
