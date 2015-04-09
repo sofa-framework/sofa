@@ -172,7 +172,7 @@ void SOFA_HELPER_API generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::
                                   )
 {
     if( scale != Vector3(1, 1, 1) ) {
-        for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
+        for(size_t i = 0, n = mesh->getVertices().size(); i < n; ++i) {
             mesh->getVertices()[i] = mesh->getVertices()[i].linearProduct(scale);
         }
     }
@@ -181,7 +181,7 @@ void SOFA_HELPER_API generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::
 
         Quaternion q = sofa::helper::Quater<SReal>::createQuaterFromEuler( rotation*M_PI/180.0 );
 
-        for(unsigned i = 0, n = mesh->getVertices().size(); i < n; ++i) {
+        for(size_t i = 0, n = mesh->getVertices().size(); i < n; ++i) {
             mesh->getVertices()[i] = q.rotate( mesh->getVertices()[i] );
         }
     }
