@@ -39,11 +39,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/Texture.h>
 
-#ifdef _OPENMP
-#include <omp.h>
-#define cimg_use_openmp 1
-#endif // _OPENMP
-
 namespace sofa
 {
 
