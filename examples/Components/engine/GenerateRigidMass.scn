@@ -7,7 +7,7 @@
             <GenerateRigidMass template="Rigid" name="massEngine" density="1000" position="@loader.position" triangles="@loader.triangles" quads="@loader.quads" />
             <TransformPosition template="Vec3d" name="positionEngine" input_position="@loader.position" translation="@massEngine.centerToOrigin" method="translation" />
             <MechanicalObject template="Rigid" name="RigidObject" translation="@massEngine.massCenter" translation2="-5 10 0" />
-            <UniformMass template="Rigid" name="Mass" mass="@massEngine.mass" totalmass="0" showAxisSizeFactor="1" />
+            <UniformMass template="Rigid" name="Mass" mass="@massEngine.rigidMass" totalmass="0" showAxisSizeFactor="1" />
             <Node name="VisualNode" tags="Visual">
                 <OglModel template="ExtVec3f" name="Visual" position="@../positionEngine.output_position" normal="@../loader.normals" triangles="@../loader.triangles" material="Default Diffuse 1 0 0.8 0 1 Ambient 1 0.1 0.1 0.1 1 Specular 0 0.5 0.5 0.5 1 Emissive 0 0.5 0.5 0.5 1 Shininess 0 45" />
                 <RigidMapping template="Rigid,ExtVec3f" name="VisualMapping" input="@.." output="@Visual" />
