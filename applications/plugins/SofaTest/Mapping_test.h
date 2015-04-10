@@ -203,6 +203,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         if( !(flags & TEST_getK) ) std::cerr<<"WARNING: MappingTest is not testing getK\n";
         if( !(flags & TEST_applyJT_matrix) ) std::cerr<<"WARNING: MappingTest is not testing applyJT on matrices\n";
 
+
+        const Real errorThreshold = this->epsilon()*errorMax;
+
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
         mparams.setKFactor(1.0);
@@ -229,7 +232,8 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         for( unsigned i=0; i<xout.size(); i++ )
         {
             if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
-                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i];
+                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i]
+                              <<  "difference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << endl;
                 succeed = false;
             }
         }
@@ -303,13 +307,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             // ================ test applyJT()
             InVecDeriv jfc( (long)Np,InDeriv());
             J->addMultTranspose(jfc,fc);
-            if( this->vectorMaxDiff(jfc,fp)>this->epsilon()*errorMax ){
+            if( this->vectorMaxDiff(jfc,fp)>errorThreshold ){
                 succeed = false;
-                ADD_FAILURE() << "applyJT test failed"<<endl<<"jfc = " << jfc << endl<<" fp = " << fp << endl;
+                ADD_FAILURE() << "applyJT test failed, difference should be less than " << errorThreshold << " (" << this->vectorMaxDiff(jfc,fp) << ")" << endl
+                              << "jfc = " << jfc << endl<<" fp = " << fp << endl;
             }
             // ================ test getJs()
             // check that J.vp = vc
-            if( this->vectorMaxDiff(Jv,vc)>this->epsilon()*errorMax ){
+            if( this->vectorMaxDiff(Jv,vc)>errorThreshold ){
                 succeed = false;
                 cout<<"vp = " << vp << endl;
                 cout<<"Jvp = " << Jv << endl;
@@ -364,9 +369,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             dxc[i] = difference( xc1[i], xc[i] );
         }
 
-        if( this->vectorMaxDiff(dxc,vc)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(dxc,vc)>errorThreshold ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax << endl
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << errorThreshold << endl
                           << "position change = " << dxc << endl
                           << "velocity        = " << vc << endl;
         }
@@ -389,7 +394,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // ================ test applyDJT()
-        if( this->vectorMaxDiff(dfp,fp12)>this->epsilon()*errorMax*errorFactorDJ ){
+        if( this->vectorMaxDiff(dfp,fp12)>errorThreshold*errorFactorDJ ){
             succeed = false;
             ADD_FAILURE() << "applyDJT test failed" << endl
                           << "dfp    = " << dfp << endl
@@ -421,9 +426,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             }
 
             // check that K.vp = dfp
-            if( this->vectorMaxDiff(Kv,fp12)>this->epsilon()*errorMax*errorFactorDJ ){
+            if( this->vectorMaxDiff(Kv,fp12)>errorThreshold*errorFactorDJ ){
                 succeed = false;
-                ADD_FAILURE() << "K test failed, difference should be less than " << this->epsilon()*errorMax*errorFactorDJ  << endl
+                ADD_FAILURE() << "K test failed, difference should be less than " << errorThreshold*errorFactorDJ  << endl
                               << "Kv    = " << Kv << endl
                               << "dfp = " << fp12 << endl;
             }
