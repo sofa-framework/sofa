@@ -79,7 +79,7 @@ namespace sofa {
         ShapeFunction_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "ShapeFunctionTest.scn")
         {   
             if( _Mapping::Out::Basis::order >= 1 ) // F332Types
-                this->deltaRange = std::make_pair( 1e5, 5e8 );
+                this->deltaRange = std::make_pair( 1e5, 1e9 );
 
             this->errorMax = this->deltaRange.second * 5;
 
