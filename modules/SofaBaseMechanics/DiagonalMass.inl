@@ -459,7 +459,7 @@ void DiagonalMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /
 {
 
     const MassVector &masses= f_mass.getValue();
-    helper::WriteAccessor< DataVecDeriv > _a = a;
+    helper::WriteOnlyAccessor< DataVecDeriv > _a = a;
     const VecDeriv& _f = f.getValue();
 
     for (unsigned int i=0; i<masses.size(); i++)

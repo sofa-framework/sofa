@@ -71,7 +71,7 @@ namespace collision
 
         solver->warm_start.setValue( solver1.warm_start.getValue() && solver2.warm_start.getValue() );
         solver->propagate_lambdas.setValue( solver1.propagate_lambdas.getValue() && solver2.propagate_lambdas.getValue() );
-        solver->stabilization.beginEdit()->setSelectedItem( std::max( solver1.stabilization.getValue().getSelectedId(), solver2.stabilization.getValue().getSelectedId() ) ); solver->stabilization.endEdit();
+        solver->stabilization.beginWriteOnly()->setSelectedItem( std::max( solver1.stabilization.getValue().getSelectedId(), solver2.stabilization.getValue().getSelectedId() ) ); solver->stabilization.endEdit();
 
         return SolverSet(solver, CompliantSolverMerger::mergeLinearSolver(&solver1,&solver2) );
     }
@@ -82,7 +82,7 @@ namespace collision
 
         solver->warm_start.setValue( solver1.warm_start.getValue() && solver2.warm_start.getValue() );
         solver->propagate_lambdas.setValue( solver1.propagate_lambdas.getValue() && solver2.propagate_lambdas.getValue() );
-        solver->stabilization.beginEdit()->setSelectedItem( std::max( solver1.stabilization.getValue().getSelectedId(), solver2.stabilization.getValue().getSelectedId() ) ); solver->stabilization.endEdit();
+        solver->stabilization.beginWriteOnly()->setSelectedItem( std::max( solver1.stabilization.getValue().getSelectedId(), solver2.stabilization.getValue().getSelectedId() ) ); solver->stabilization.endEdit();
 
         return SolverSet(solver, CompliantSolverMerger::mergeLinearSolver(&solver1,&solver2) );
     }
@@ -93,7 +93,7 @@ namespace collision
 
         solver->warm_start.setValue( solver1.warm_start.getValue() && solver2.warm_start.getValue() );
         solver->propagate_lambdas.setValue( solver1.propagate_lambdas.getValue() && solver2.propagate_lambdas.getValue() );
-        solver->stabilization.beginEdit()->setSelectedItem( std::max( solver1.stabilization.getValue().getSelectedId(), solver2.stabilization.getValue().getSelectedId() ) ); solver->stabilization.endEdit();
+        solver->stabilization.beginWriteOnly()->setSelectedItem( std::max( solver1.stabilization.getValue().getSelectedId(), solver2.stabilization.getValue().getSelectedId() ) ); solver->stabilization.endEdit();
 
         return SolverSet(solver, CompliantSolverMerger::mergeLinearSolver(&solver1,&solver2) );
     }

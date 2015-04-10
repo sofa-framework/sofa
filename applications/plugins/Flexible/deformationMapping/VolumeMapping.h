@@ -149,7 +149,7 @@ public:
     {
         if(!m_topology) return;
 
-        helper::WriteAccessor< Data<OutVecCoord> >  v = dOut;
+        helper::WriteOnlyAccessor< Data<OutVecCoord> >  v = dOut;
         helper::ReadAccessor< Data<InVecCoord> >  x = dIn;
 
         v[0][0] = offset.getValue();

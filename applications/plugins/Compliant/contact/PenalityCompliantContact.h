@@ -9,6 +9,8 @@
 
 #include "../mapping/ContactMapping.h"
 
+#include "../utils/edit.h"
+
 
 namespace sofa
 {
@@ -81,8 +83,8 @@ protected:
         contact_map->setName( this->getName() + " contact mapping" );
         contact_node->addObject( contact_map.get() );
 
-        this->copyNormals( *edit(contact_map->normal) );
-        this->copyPenetrations( *edit(*contact_dofs->write(core::VecCoordId::position())) );
+        this->copyNormals( *editOnly(contact_map->normal) );
+        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
 
         contact_map->init();
 
@@ -91,7 +93,7 @@ protected:
         typedef forcefield::DiagonalCompliance<defaulttype::Vec1Types> compliance_type;
         compliance_type::SPtr compliance = sofa::core::objectmodel::New<compliance_type>( contact_dofs.get() );
         contact_node->addObject( compliance.get() );
-        edit(compliance->damping)->assign(1, this->damping_ratio.getValue() );
+        editOnly(compliance->damping)->assign(1, this->damping_ratio.getValue() );
         compliance->isCompliance.setValue( false );
 
         typename compliance_type::VecDeriv complianceValues( size );

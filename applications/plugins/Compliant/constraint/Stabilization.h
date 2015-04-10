@@ -35,7 +35,7 @@ class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
     virtual void filterConstraints( const vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim );
 
     // clear violated mask
-    virtual void clear() { mask.beginEdit()->clear(); mask.endEdit(); }
+    virtual void clear() { mask.beginWriteOnly()->clear(); mask.endEdit(); }
 };
 
 }
