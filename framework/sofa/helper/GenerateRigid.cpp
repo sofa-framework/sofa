@@ -165,7 +165,7 @@ void generateRigid(Rigid3Mass& mass, Vector3& center, const sofa::helper::io::Me
     mass.inertiaMatrix /= mass.mass;
 }
 
-void SOFA_HELPER_API generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, helper::io::Mesh* mesh
+void generateRigid( defaulttype::Rigid3Mass& mass, defaulttype::Vector3& center, helper::io::Mesh* mesh
                                   , SReal density
                                   , const defaulttype::Vector3& scale
                                   , const defaulttype::Vector3& rotation /*Euler angles*/
@@ -214,7 +214,7 @@ bool generateRigid(Rigid3Mass& mass, Vector3& center, const std::string& meshFil
 
 
 
-bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
+bool generateRigid( GenerateRigidInfo& res
                                   , const std::string& meshFilename
                                   , SReal density
                                   , const defaulttype::Vector3& scale
@@ -230,7 +230,7 @@ bool SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
     return true;
 }
 
-void SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
+void generateRigid( GenerateRigidInfo& res
                                   , io::Mesh *mesh
                                   , std::string const& meshName
                                   , SReal density
