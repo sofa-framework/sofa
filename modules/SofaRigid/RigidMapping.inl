@@ -741,7 +741,7 @@ void RigidMapping<TIn, TOut>::updateK( const core::MechanicalParams* mparams, co
         defaulttype::Mat<rotation_dimension,rotation_dimension,Real> block;
 
 
-        for( int w=0 ; w<it->second.size() ; ++w )
+        for( unsigned int w=0 ; w<it->second.size() ; ++w )
         {
             const unsigned pointIdx = it->second[w];
             block += defaulttype::crossProductMatrix<Real>( childForces[pointIdx] ) * defaulttype::crossProductMatrix<Real>( rotatedPoints[pointIdx] );

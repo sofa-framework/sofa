@@ -329,7 +329,7 @@ struct SE3 {
     static quat exp(const vec3& v) {
         const real theta = v.norm();
 
-        const real c = std::cos( theta / 2.0 );
+//        const real c = std::cos( theta / 2.0 );
         const real sc = sinc( theta / 2.0 ) / 2.0;
         
         quat res;

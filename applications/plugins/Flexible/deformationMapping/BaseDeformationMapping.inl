@@ -142,7 +142,7 @@ void BaseDeformationMappingT<JacobianBlockType>::updateIndex()
     }
 
     //Check size just in case
-    if(childSize != this->f_index.getValue().size())
+    if( (unsigned)childSize != this->f_index.getValue().size() )
     {
         std::cout << SOFA_CLASS_METHOD << " f_index has wrong size" << std::endl;
         serr << "index size : " << f_index.getValue().size() << sendl;
