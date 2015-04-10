@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include <GL/glew.h>
 #include "Utils/Shaders/shaderCustomTex.h"
 
@@ -43,7 +43,7 @@
 //
 //
 //std::string ShaderCustomTex::fragmentShaderText =
-//		"PRECISON;\n"
+//		"PRECISION;\n"
 //		"VARYING_FRAG vec2 texCoord;\n"
 //		"uniform sampler2D textureUnit;\n"
 //		"FRAG_OUT_DEF;\n"
@@ -54,19 +54,19 @@
 
 
 ShaderCustomTex::ShaderCustomTex() :
-m_col(1.0f, 1.0f, 1.0f, 1.0f)
+m_col(Geom::Vec4f(1.0f,1.0f,1.0f,1.0f))
 {
 	m_nameVS = "ShaderCustomTex_vs";
 	m_nameFS = "ShaderCustomTex_fs";
 	m_nameGS = "ShaderCustomTex_gs";
 
-	std::string glxvert(*GLSLShader::DEFINES_GL);
+	std::string glxvert(GLSLShader::defines_gl());
 	glxvert.append(vertexShaderText);
 
 	std::string glxgeom = GLSLShader::defines_Geom("triangles", "triangle_strip", 3);
 	glxgeom.append(geometryShaderText);
 
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
+	std::string glxfrag(GLSLShader::defines_gl());
 	glxfrag.append(fragmentShaderText);
 
 //	loadShadersFromMemory(glxvert.c_str(), glxfrag.c_str());

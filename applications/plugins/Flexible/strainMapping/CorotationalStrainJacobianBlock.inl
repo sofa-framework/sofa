@@ -407,7 +407,7 @@ public:
 
     /// @warning assembled geometric stiffness is only implemented for SVD method
     // see the maple file doc/corotational_geometricStiffnessMatrix.mw
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool /*stabilization*/=false)
     {
         if( !_geometricStiffnessData.dROverdF() || _geometricStiffnessData.degenerated() ) return KBlock();
 
@@ -724,7 +724,7 @@ public:
 
     /// @warning assembled geometric stiffness is only implemented for SVD method
     // see the maple file doc/corotational_geometricStiffnessMatrix.mw
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool /*stabilization*/=false)
     {
         if( !_geometricStiffnessData.dROverdF() || _geometricStiffnessData.degenerated() ) return KBlock();
 
@@ -910,7 +910,7 @@ public:
 
 
     // Geometric stiffness : dJ/dF=(I-uu^T)/nrm where nrm is the norm of F
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool=false)
     {
         KBlock K = _R*_R.transposed()*(-1.);
         for(unsigned int j=0; j<spatial_dimensions; j++) K(j,j)+=(Real)1.;
@@ -1091,7 +1091,7 @@ public:
     }
 
 
-    KBlock getK(const OutDeriv& /*childForce*/)
+    KBlock getK(const OutDeriv& /*childForce*/, bool=false)
     {
         KBlock K;
         // TODO

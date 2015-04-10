@@ -157,7 +157,7 @@ BezierDegreeType BezierTetrahedronSetTopologyContainer::getDegree() const{
  size_t BezierTetrahedronSetTopologyContainer::getNumberOfTetrahedralPoints() const{
 	 return d_numberOfTetrahedralPoints.getValue();
  }
-size_t BezierTetrahedronSetTopologyContainer::getGlobalIndexOfBezierPoint(const size_t tetrahedronIndex,
+size_t BezierTetrahedronSetTopologyContainer::getGlobalIndexOfBezierPoint(const TetraID tetrahedronIndex,
 	const TetrahedronBezierIndex id) {
 
 		Tetrahedron tet=getTetrahedron(tetrahedronIndex);
@@ -257,7 +257,7 @@ sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContain
 {
 	return (bezierIndexArray);
 }
-sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContainer::getTetrahedronBezierIndexArrayOfGivenDegree(const size_t deg) const
+sofa::helper::vector<TetrahedronBezierIndex> BezierTetrahedronSetTopologyContainer::getTetrahedronBezierIndexArrayOfGivenDegree(const BezierDegreeType deg) const
 {
 	// vertex index
 	size_t i,j,k;
@@ -325,7 +325,7 @@ sofa::helper::vector<LocalTetrahedronIndex> BezierTetrahedronSetTopologyContaine
 	}
 	return(correspondanceArray);
 }
-void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTetrahedron(const size_t tetrahedronIndex, VecPointID & indexArray) 
+void BezierTetrahedronSetTopologyContainer::getGlobalIndexArrayOfBezierPointsInTetrahedron(const TetraID tetrahedronIndex, VecPointID & indexArray)
 {
 	Tetrahedron tet=getTetrahedron(tetrahedronIndex);
 	indexArray.clear();

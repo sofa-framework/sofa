@@ -485,7 +485,7 @@ void BoxROI<DataTypes>::update()
     }
 
 
-	f_nbIndices.setValue(indices.size(),true);
+    f_nbIndices.setValue(indices.size());
 
     f_indices.endEdit();
     f_edgeIndices.endEdit();
@@ -773,7 +773,7 @@ void BoxROI<DataTypes>::computeBBox(const core::ExecParams*  params , bool /*onl
         if (b[4] > maxBBox[1]) maxBBox[1] = b[4];
         if (b[5] > maxBBox[2]) maxBBox[2] = b[5];
     }
-    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox),true);
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
 }
 
 } // namespace engine

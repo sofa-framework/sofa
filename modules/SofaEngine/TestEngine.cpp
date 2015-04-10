@@ -79,7 +79,7 @@ void TestEngine::update()
     SReal factor = f_factor.getValue();
 
     // Set result
-    f_result.setValue(number*factor,true);
+    f_result.setValue(number*factor);
    
     // Update call list
     updateCallList.push_back(this->identifier);

@@ -13,7 +13,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <sofa/helper/system/glut.h>
-#include <SofaComponentMain/init.h>
 
 #include <sstream>
 #include <qqml.h>
@@ -142,6 +141,7 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	myStatus(Status::Null),
 	mySource(),
     mySourceQML(),
+    myPathQML(),
 	myIsInit(false),
     myVisualDirty(false),
 	myDt(0.04),
@@ -158,7 +158,6 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	myStepTimer->setInterval(0);
 	mySofaSimulation = sofa::simulation::graph::getSimulation();
 
-	sofa::component::init();
 	sofa::simulation::xml::initXml();
 
 	// plugins
@@ -176,7 +175,7 @@ Scene::Scene(QObject *parent) : QObject(parent),
 	// connections
 	connect(this, &Scene::sourceChanged, this, &Scene::open);
 	connect(this, &Scene::playChanged, myStepTimer, [&](bool newPlay) {newPlay ? myStepTimer->start() : myStepTimer->stop();});
-	connect(this, &Scene::statusChanged, this, [&](Scene::Status newStatus) {if(Scene::Status::Ready == newStatus) loaded();});
+    connect(this, &Scene::statusChanged, this, &Scene::handleStatusChange);
     connect(this, &Scene::loaded, this, [&]() {addChild(0, mySofaSimulation->GetRoot().get());});
     connect(this, &Scene::aboutToUnload, this, [&]() {myBases.clear();});
 
@@ -199,8 +198,10 @@ static bool LoaderProcess(sofa::simulation::Simulation* sofaSimulation, const QS
 		vparams->displayFlags().setShowVisualModels(true);
 
 	if(sofaSimulation->load(scenePath.toLatin1().constData()))
-		if(sofaSimulation->GetRoot())
+        if(sofaSimulation->GetRoot()) {
+            sofaSimulation->init(sofaSimulation->GetRoot().get());
 			return true;
+        }
 
 	return false;
 }
@@ -232,6 +233,7 @@ private:
 
 void Scene::open()
 {
+    myPathQML.clear();
 	setSourceQML(QUrl());
 
 	if(Status::Loading == myStatus) // return now if a scene is already loading
@@ -263,9 +265,11 @@ void Scene::open()
 	setPlay(false);
 	myIsInit = false;
 
-	std::string qmlFilepath = (finalFilename + ".qml").toLatin1().constData();
-	if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
+    std::string qmlFilepath = (finalFilename + ".qml").toLatin1().constData();
+    if(!sofa::helper::system::DataRepository.findFile(qmlFilepath))
         qmlFilepath.clear();
+
+    myPathQML = QString::fromStdString(qmlFilepath);
 
     mySofaSimulation->unload(mySofaSimulation->GetRoot());
 
@@ -276,8 +280,8 @@ void Scene::open()
         connect(loaderThread, &QThread::finished, this, [this, loaderThread, qmlFilepath]() {                    
             if(!loaderThread->isLoaded())
                 setStatus(Status::Error);
-            else if(!qmlFilepath.empty())
-                setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
+            else
+                myIsInit = true;
 
             loaderThread->deleteLater();
         });
@@ -288,9 +292,28 @@ void Scene::open()
 	{
         if(!LoaderProcess(mySofaSimulation, finalFilename))
             setStatus(Status::Error);
-        else if(!qmlFilepath.empty())
-            setSourceQML(QUrl::fromLocalFile(qmlFilepath.c_str()));
+        else
+            myIsInit = true;
 	}
+}
+
+void Scene::handleStatusChange(Scene::Status newStatus)
+{
+    switch(newStatus)
+    {
+    case Status::Null:
+        break;
+    case Status::Ready:
+        loaded();
+        break;
+    case Status::Loading:
+        break;
+    case Status::Error:
+        break;
+    default:
+        qWarning() << "Scene status unknown";
+        break;
+    }
 }
 
 void Scene::setStatus(Status newStatus)
@@ -888,10 +911,16 @@ void Scene::onSetDataValue(const QString& path, const QVariant& value)
     }
 }
 
-void Scene::init()
+void Scene::initGraphics()
 {
-    if(!mySofaSimulation->GetRoot() || myIsInit)
+    if(!myIsInit)
+        return;
+
+    if(!mySofaSimulation->GetRoot())
+    {
+        setStatus(Status::Error);
 		return;
+    }
 
     GLenum err = glewInit();
     if(0 != err)
@@ -919,13 +948,13 @@ void Scene::init()
 #endif
 
     // WARNING: some plugins like "image" need a valid OpenGL Context during init because they are initing textures during init instead of initTextures ...
-    mySofaSimulation->init(mySofaSimulation->GetRoot().get());
 	mySofaSimulation->initTextures(mySofaSimulation->GetRoot().get());
 	setDt(mySofaSimulation->GetRoot()->getDt());
 
-    myIsInit = true;
-
     setStatus(Status::Ready);
+
+    if(!myPathQML.isEmpty())
+        setSourceQML(QUrl::fromLocalFile(myPathQML));
 }
 
 void Scene::reload()

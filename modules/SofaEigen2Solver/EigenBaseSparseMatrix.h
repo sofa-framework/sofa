@@ -130,7 +130,7 @@ public:
     void setIdentity()
     {
         clear();
-        for( unsigned i=0; i<rowSize(); i++ )
+        for( Index i=0; i<rowSize(); i++ )
         {
             if( i==colSize() ) break;
             add(i,i,1.0);

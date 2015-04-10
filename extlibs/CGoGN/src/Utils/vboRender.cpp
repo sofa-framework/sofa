@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "vector"
 
 #include "Utils/vboRender.h"
@@ -48,7 +48,7 @@ VBORender::~VBORender()
 void VBORender::setConnectivity(std::vector<GLuint>& tableIndices, int primitiveType)
 {
 	m_primitiveType = primitiveType ;
-	m_nbIndices = tableIndices.size() ;
+	m_nbIndices = GLuint(tableIndices.size()) ;
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer) ;
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_nbIndices * sizeof(GLuint), &(tableIndices[0]), GL_STREAM_DRAW) ;
 }

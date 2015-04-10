@@ -36,7 +36,10 @@ set(HEADER_FILES
 
     initSofaPython.h
     ScriptController.h
+	ScriptFunction.h
     PythonScriptController.h
+    PythonMainScriptController.h
+	PythonScriptFunction.h
     PythonMacros.h
     PythonEnvironment.h
     Binding.h
@@ -78,7 +81,10 @@ set(SOURCE_FILES
 
     initSofaPython.cpp
     ScriptController.cpp
+    ScriptFunction.cpp
     PythonScriptController.cpp
+    PythonMainScriptController.cpp
+	PythonScriptFunction.cpp
     PythonEnvironment.cpp
     Binding.cpp
     Binding_SofaModule.cpp

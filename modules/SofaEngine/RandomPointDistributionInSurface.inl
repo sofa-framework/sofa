@@ -70,13 +70,13 @@ void RandomPointDistributionInSurface<DataTypes>::init()
     if (nb%2 == 0)
     {
         sout << "Warning : even number of tests, adding an other ..." << sendl;
-        numberOfTests.setValue(nb+1,true);
+        numberOfTests.setValue(nb+1);
     }
 
     // initialize random seed
     if (randomSeed.getValue() == 0)
     {
-        randomSeed.setValue((unsigned int)time(NULL),true);
+        randomSeed.setValue((unsigned int)time(NULL));
     }
 
     //srand(randomSeed.getValue());

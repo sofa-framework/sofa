@@ -14,7 +14,7 @@
 
                        ( http://cimg.sourceforge.net )
 
-                                   1.5.4
+                                   1.6.2_pre040815
 
 --------------------------------------------------------------------------------
 
@@ -33,15 +33,19 @@
 
   - David Tschumperle (project leader) ( http://tschumperle.users.greyc.fr/ )
 
+  - Maksim Aizenshtein
+  - Alberto Albiol
   - Antonio Albiol
   - Haz-Edine Assemlal
   - Vincent Barra
+  - Wolf Blecher
   - Romain Blei
   - Yohan Bentolila
   - Jerome Boulanger
   - Pierre Buyssens
   - Sebastien Coudert
   - Frederic Devernay
+  - Olivier D'Hondt
   - Francois-Xavier Dupe
   - Gerd von Egidy
   - Eric Fausett
@@ -72,6 +76,7 @@
   - Baptiste Mougel
   - Jovana Milutinovich
   - Guillaume Nee
+  - Adam Newgas
   - Francisco Oliveira
   - Andrea Onofri
   - Renaud Peteri
@@ -165,100 +170,6 @@
   Then, you can look at the documentation 'html/reference/' to learn more about CImg
   functions and classes. Finally, you can participate to the 'Forum' section
   of the CImg web page and ask for help if needed.
-
-# Current list of available CImg plug-ins
-#-----------------------------------------
-
- --------------------------------------------------------------------------------
-  - VTK legacy format ('plugins/vtk.h') (April 2011).
-
-    This plug-in allows to save 3d scenes as VTK files.
-
-    by Haz-Edine Assemlal (http://www.cim.mcgill.ca/~assemlal/)
-
- --------------------------------------------------------------------------------
-  - CImg IPL 2nd edition ('plugins/cimg_ipl.h') (September 2009).
-
-    This plug-in allows the conversion between CImg and IplImage structures
-    (used in openCV).
-
-    by Hon-Kwok Fung (oldfung - at - graduate.hku.hk)
-
-    PS : This plug-in seems to correct some problems with the first edition,
-    when image pixels have a padding offset. Need to be tested before removing
-    the old one !
-
-  --------------------------------------------------------------------------------
-  - CImg IPL 1st edition ('plugins/cimgIPL.h') (November 2008).
-
-    This plug-in allows the conversion between CImg and IplImage structures
-    (used in openCV).
-
-    by Haibo Zheng (haibo.zheng - at - gmail.com)
-
-  --------------------------------------------------------------------------------
-  - Draw gradient ('plugins/draw_gradient.h') (November 2008).
-
-    This plug-in can be used to draw color gradient in images.
-
-    by Jerome Boulanger (http://www.irisa.fr/vista/Equipe/People/Jerome.Boulanger.html),
-
-  --------------------------------------------------------------------------------
-  - Add file format ('plugins/add_fileformat.h') (September 2007).
-
-    This plug-in shows how to easily add support for your own file format in
-    CImg. This can be interesting, since the additional format will be recognized
-    in functions 'CImg<T>::save()' and 'CImg<T>::load()' functions.
-
-    by David Tschumperle (http://tschumperle.users.greyc.fr/).
-       IMAGE Team / GREYC (CNRS UMR 6072), Caen / FRANCE.
-       Home page of the team :  http://www.greyc.ensicaen.fr/EquipeImage/
-
-  --------------------------------------------------------------------------------
-  - JPEG Buffer ('plugins/jpeg_buffer.h') (July 2007).
-
-    This plug-in provides functions to read/write images stored in jpeg format
-    directly in memory buffers. Interesting when dealing for instance with
-    images coming from webcams and stored in memory.
-
-    by Paolo Prete.
-
-  --------------------------------------------------------------------------------
-  - NL Means ('plugins/nlmeans.h') (May 2006).
-
-    Implementation of the Non-Local Means algorithm as described in [1] and [2].
-    The variance of the noise can be automatically estimated using the method
-    inspired from [3].
-
-    [1] Buades, A.; Coll, B.; Morel, J.-M.: A non-local algorithm for image
-        denoising. IEEE Computer Society Conference on Computer Vision and Pattern
-        Recognition, 2005. CVPR 2005. Vol 2,  20-25 June 2005 Page(s):60 - 65
-
-    [2] Buades, A. Coll, B. and Morel, J.: A review of image denoising algorithms,
-        with a new one. Multiscale Modeling and Simulation: A SIAM
-        Interdisciplinary Journal 4 (2004) 490-530
-
-    [3] Gasser, T. Sroka,L. Jennen Steinmetz,C. Residual variance and residual
-        pattern nonlinear regression. Biometrika 73 (1986) 625-659
-
-    by Jerome Boulanger (http://www.irisa.fr/vista/Equipe/People/Jerome.Boulanger.html),
-       Charles Kervrann and Patrick Bouthemy thanks to ACI IMPBio (MODYNCELL5D Project).
-       VISTA / IRISA-INRIA, Rennes / FRANCE
-       Home page of the team :  http://www.irisa.fr/vista/
-       MIA / INRA, Unite de Jouy-en-Josas / FRANCE.
-
-  --------------------------------------------------------------------------------
-  - Plug in for Matlab mex files ('plugins/cimgmatlab.h') (May 2006).
-
-    Implement a CImg<T> constructor from a matlab array, a CImg<T> assignment
-    operator from a matlab array and a method that exports a CImg<T> object to
-    a Matlab array.
-    For a bit more, http://www.itu.dk/people/francois/cimgmatlab.html
-
-    by Francois Lauze (http://www.itu.dk/people/francois/index.html)
-       The IT University of Copenhagen, Image Group.
-
-  --------------------------------------------------------------------------------
 
 # End of file
 #------------

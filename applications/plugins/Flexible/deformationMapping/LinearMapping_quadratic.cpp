@@ -41,7 +41,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(LinearMapping_quadratic);
+SOFA_DECL_CLASS(LinearMapping_quadratic)
 
 using namespace defaulttype;
 

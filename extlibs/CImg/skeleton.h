@@ -577,4 +577,4 @@ CImg<T> skeleton(const CImg<floatT> & flux,
   return get_skeleton(flux,dist,curve,thres).move_to(*this);
 }
 
-#endif /* cimg_skeleton_plugin */
+#endif /* cimg_plugin_skeleton */

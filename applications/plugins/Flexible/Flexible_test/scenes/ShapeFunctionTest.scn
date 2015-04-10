@@ -11,9 +11,10 @@
     <!--Solver-->
     <CompliantImplicitSolver/>
     <LDLTSolver/>
- 
+    <LDLTResponse/>
+
     <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>
-    <MeshToImageEngine  template="ImageUC" name="rasterizer" src="@mesh" nbVoxels="20 20 100" padSize="2" rotateImage="false" />
+    <MeshToImageEngine  template="ImageUC" name="rasterizer" src="@mesh" nbVoxels="20 20 100" padSize="2" rotateImage="false" insideValue="1"/>
     <ImageContainer template="ImageUC" name="image" src="@rasterizer" drawBB="false"/>
     
     

@@ -8,26 +8,26 @@ set(SOFAQTQUICKGUI_BUILD_VERSION 1)
 set(SOFAQTQUICKGUI_VERSION ${SOFAQTQUICKGUI_MAJOR_VERSION}.${SOFAQTQUICKGUI_MINOR_VERSION}.${SOFAQTQUICKGUI_BUILD_VERSION})
 
 set(SOURCE_FILES
-	SofaQtQuickGUI.cpp
+    SofaQtQuickGUI.cpp
     Tools.cpp
-	Viewer.cpp
-	Camera.cpp
+    Viewer.cpp
+    Camera.cpp
     Scene.cpp
     SceneListModel.cpp
     DataListModel.cpp
-	PythonInteractor.cpp
-	PickingInteractor.cpp)
+    PythonInteractor.cpp
+    PickingInteractor.cpp)
 
 set(HEADER_FILES
-	SofaQtQuickGUI.h
+    SofaQtQuickGUI.h
     Tools.h
-	Viewer.h
-	Camera.h
+    Viewer.h
+    Camera.h
     Scene.h
     SceneListModel.h
     DataListModel.h
-	PythonInteractor.h
-	PickingInteractor.h)
+    PythonInteractor.h
+    PickingInteractor.h)
 
 set(QML_FILES
     data/qml/SofaDataTypes/qmldir
@@ -48,38 +48,42 @@ set(QML_FILES
     data/qml/SofaCommon/SofaToolsScript.js
     data/qml/SofaCommon/SofaSettingsScript.js
     data/qml/SofaBasics/qmldir
+    data/qml/SofaBasics/SofaApplication.qml
     data/qml/SofaBasics/RecentSettings.qml
     data/qml/SofaBasics/UISettings.qml
     data/qml/SofaBasics/Tools.qml
     data/qml/SofaBasics/ToolTip.qml
     data/qml/SofaBasics/DefaultStatusBar.qml
-	data/qml/SofaBasics/DefaultMenuBar.qml
-	data/qml/SofaBasics/Scene.qml
+    data/qml/SofaBasics/DefaultToolBar.qml
+    data/qml/SofaBasics/DefaultMenuBar.qml
+    data/qml/SofaBasics/Scene.qml
     data/qml/SofaBasics/SceneListModel.qml
     data/qml/SofaBasics/Data.qml
     data/qml/SofaBasics/DataListModel.qml
-	data/qml/SofaBasics/PythonInteractor.qml
-	data/qml/SofaBasics/Actor.qml
-	data/qml/SofaBasics/Camera.qml
-	data/qml/SofaBasics/FPSDisplay.qml
+    data/qml/SofaBasics/PythonInteractor.qml
+    data/qml/SofaBasics/UserInteractor.qml
+    data/qml/SofaBasics/Camera.qml
+    data/qml/SofaBasics/FPSDisplay.qml
     data/qml/SofaBasics/ContentItem.qml
     data/qml/SofaBasics/CollapsibleGroupBox.qml
-	data/qml/SofaBasics/Vector3DSpinBox.qml
-	data/qml/SofaBasics/DynamicSplitView.qml
+    data/qml/SofaBasics/Vector3DSpinBox.qml
+    data/qml/SofaBasics/DynamicSplitView.qml
     data/qml/SofaBasics/DynamicContent.qml
-	data/qml/SofaTools/qmldir
-	data/qml/SofaTools/SimulationControl.qml
+    data/qml/SofaInteractors/qmldir
+    data/qml/SofaInteractors/UserInteractor_Selection.qml
+    data/qml/SofaTools/qmldir
+    data/qml/SofaTools/SimulationControl.qml
     data/qml/SofaTools/SceneGraphView.qml
     data/qml/SofaTools/DataListView.qml
-	data/qml/SofaTools/SceneGUILoader.qml
-	data/qml/SofaWidgets/qmldir
-	data/qml/SofaWidgets/Viewer.qml
+    data/qml/SofaTools/SceneGUILoader.qml
+    data/qml/SofaWidgets/qmldir
+    data/qml/SofaWidgets/Viewer.qml
     data/qml/SofaWidgets/DataView.qml
-	data/qml/SofaWidgets/ImageViewer.qml
-	data/qml/SofaWidgets/ToolPanel.qml)
+    data/qml/SofaWidgets/ImageViewer.qml
+    data/qml/SofaWidgets/ToolPanel.qml)
 
 set(CONFIG_FILES
-	data/config/default.ini)
+    data/config/default.ini)
 
 set(QRC_FILES
     data/resources.qrc
@@ -89,11 +93,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # on Window, Qt packages need the glu32 lib full path, but they do not find it without help
 if(WIN32)
-	if(CMAKE_CL_64)
-		set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files (x86)/Windows Kits/8.0/Lib/win8/um/x64")
-	else()
-		set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files (x86)/Windows Kits/8.0/Lib/win8/um/x86")
-	endif()
+    if(CMAKE_CL_64)
+        set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files (x86)/Windows Kits/8.0/Lib/win8/um/x64")
+    else()
+        set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "C:/Program Files (x86)/Windows Kits/8.0/Lib/win8/um/x86")
+    endif()
 endif()
 
 if(NOT MSVC)
@@ -117,11 +121,11 @@ add_definitions(${Qt5Qml_DEFINITIONS})
 add_definitions(${Qt5Quick_DEFINITIONS})
 
 if (WIN32)
-	if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-		add_definitions(-DQT_NO_DEBUG)
-	endif()
+    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+        add_definitions(-DQT_NO_DEBUG)
+    endif()
 endif()
-	
+
 qt5_wrap_cpp(MOC_FILES ${HEADER_FILES}) # do not use "set(CMAKE_AUTOMOC ON)" since all the mocced files will be compiled by a single compilation unit leading to a "out of heap space" issue on MSVC
 qt5_add_resources(RESOURCE_FILES ${QRC_FILES})
 

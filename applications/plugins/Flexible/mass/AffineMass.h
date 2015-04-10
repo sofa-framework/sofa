@@ -81,7 +81,7 @@ public:
     virtual void bwdInit()
     {
         // if the mass matrix is not given manually -> set to identity
-        if( d_massMatrix.getValue().rows() != d_massMatrix.getValue().cols() || d_massMatrix.getValue().rows()!=this->mstate->getMatrixSize() )
+        if( d_massMatrix.getValue().rows() != d_massMatrix.getValue().cols() || (unsigned)d_massMatrix.getValue().rows()!=this->mstate->getMatrixSize() )
         {
             MassMatrix& massMatrix = *d_massMatrix.beginEdit();
             massMatrix.resize(this->mstate->getMatrixSize(),this->mstate->getMatrixSize());

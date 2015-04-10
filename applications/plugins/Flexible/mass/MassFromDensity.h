@@ -188,7 +188,7 @@ protected:
                     //             for (int c=0; c<nbBlocks; ++c)
                     //                 nM.compressedMatrix.coeffRef(r*M.Nout+n,r*M.Nout+m) += M(r*M.Nout+n,c*M.Nin+m);
                     // keep only diagonal block -> symmetric mass
-                    for (int r=0; r<nbBlocks; ++r)
+                    for (unsigned int r=0; r<nbBlocks; ++r)
                         for (int n=0; n<M.Nout; ++n)
                             for (int m=0; m<M.Nin; ++m)
                                     nM.compressedMatrix.coeffRef(r*M.Nout+n,r*M.Nout+m) += M(r*M.Nout+n,r*M.Nin+m);

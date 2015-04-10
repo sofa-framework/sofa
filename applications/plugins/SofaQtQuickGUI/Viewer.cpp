@@ -13,7 +13,7 @@
 #include <QPainter>
 #include <QVector>
 #include <QVector4D>
-#include <QOpenGLFrameBufferObject>
+#include <QOpenGLFramebufferObject>
 #include <QTime>
 #include <QThread>
 #include <qqml.h>
@@ -252,17 +252,15 @@ void Viewer::paint()
 	if(!size.isValid())
         return;
 
-    if(!myScene)
-        return;
+    // clear the viewer rectangle and just its area, not the whole OpenGL buffer
+    glScissor(pos.x(), pos.y(), size.width(), size.height());
+    glEnable(GL_SCISSOR_TEST);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_SCISSOR_TEST);
 
-    if(!myScene->isInit())
-        myScene->init();
-
-    if(!myScene->isReady())
-        return;
-
-    if(!myCamera)
-        return;
+    if(myScene && myScene->isLoading())
+        myScene->initGraphics();
 
     // create or resize the fbo
     if(!myFBO ||
@@ -276,7 +274,13 @@ void Viewer::paint()
         textureChanged(myFBO->texture());
     }
 
-    // draw the Sofa scene in the fbo
+    if(!myFBO)
+    {
+        qCritical() << "ERROR: cannot create an fbo to draw the Sofa scene";
+        return;
+    }
+
+    // draw in the fbo
     myFBO->bind();
 
     glClearColor(myBackgroundColor.redF(), myBackgroundColor.greenF(), myBackgroundColor.blueF(), myBackgroundColor.alphaF());
@@ -284,95 +288,92 @@ void Viewer::paint()
 
     glDisable(GL_CULL_FACE);
 
-    if(!myBackgroundImage.isNull())
+//    if(!myBackgroundImage.isNull())
+//    {
+//        // TODO: warning: disable lights, but why ?
+//        QOpenGLPaintDevice device(size);
+//        QPainter painter(&device);
+//        painter.drawImage(size.width() - myBackgroundImage.width(), size.height() - myBackgroundImage.height(), myBackgroundImage);
+//    }
+
+    if(myScene && myScene->isReady() && myCamera)
     {
-        QOpenGLPaintDevice device(size);
-        QPainter painter(&device);
-        painter.drawImage(size.width() - myBackgroundImage.width(), size.height() - myBackgroundImage.height(), myBackgroundImage);
-    }
+        // set the viewer viewport
+        glViewport(0, 0, size.width(), size.height());
 
-    // set the viewer viewport
-    glViewport(0, 0, size.width(), size.height());
+        myCamera->setPerspectiveAspectRatio(size.width() / (double) size.height());
 
-    myCamera->setPerspectiveAspectRatio(size.width() / (double) size.height());
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadMatrixf(myCamera->projection().constData());
 
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadMatrixf(myCamera->projection().constData());
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadMatrixf(myCamera->view().constData());
 
-	glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadMatrixf(myCamera->view().constData());
+        QVector3D cameraPosition(myCamera->eye());
+        float lightPosition[] = { cameraPosition.x(), cameraPosition.y(), cameraPosition.z(), 1.0f};
+        float lightAmbient [] = { 0.0f, 0.0f, 0.0f, 0.0f};
+        float lightDiffuse [] = { 1.0f, 1.0f, 1.0f, 0.0f};
+        float lightSpecular[] = { 1.0f, 1.0f, 1.0f, 0.0f};
 
-    QVector3D cameraPosition(myCamera->eye());
-    float lightPosition[] = { cameraPosition.x(), cameraPosition.y(), cameraPosition.z(), 1.0f};
-    float lightAmbient [] = { 0.0f, 0.0f, 0.0f, 0.0f};
-    float lightDiffuse [] = { 1.0f, 1.0f, 1.0f, 0.0f};
-    float lightSpecular[] = { 1.0f, 1.0f, 1.0f, 0.0f};
+        glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+        glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmbient);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDiffuse);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
+        glEnable(GL_LIGHT0);
+        glEnable(GL_LIGHTING);
 
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
-    glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmbient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDiffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);
-    glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHTING);
+        if(culling())
+            glEnable(GL_CULL_FACE);
 
-    if(culling())
-        glEnable(GL_CULL_FACE);
-
-    //if(antialiasing())
+        //if(antialiasing())
         //glEnable(GL_MULTISAMPLE);
 
-    glEnable(GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_TEST);
 
-	// qt does not release its shader program and we do not use one so we have to release the current bound program
-	glUseProgram(0);
+        // qt does not release its shader program and we do not use one so we have to release the current bound program
+        glUseProgram(0);
 
-	// prepare the sofa visual params
-	sofa::core::visual::VisualParams* _vparams = sofa::core::visual::VisualParams::defaultInstance();
-	if(_vparams)
-	{
-		if(!_vparams->drawTool())
-		{
-			_vparams->drawTool() = new sofa::core::visual::DrawToolGL();
-			_vparams->setSupported(sofa::core::visual::API_OpenGL);
-		}
+        // prepare the sofa visual params
+        sofa::core::visual::VisualParams* _vparams = sofa::core::visual::VisualParams::defaultInstance();
+        if(_vparams)
+        {
+            if(!_vparams->drawTool())
+            {
+                _vparams->drawTool() = new sofa::core::visual::DrawToolGL();
+                _vparams->setSupported(sofa::core::visual::API_OpenGL);
+            }
 
-		GLint _viewport[4];
-		GLdouble _mvmatrix[16], _projmatrix[16];
+            GLint _viewport[4];
+            GLdouble _mvmatrix[16], _projmatrix[16];
 
-		glGetIntegerv (GL_VIEWPORT, _viewport);
-        glGetDoublev  (GL_MODELVIEW_MATRIX, _mvmatrix);
-        glGetDoublev  (GL_PROJECTION_MATRIX, _projmatrix);
+            glGetIntegerv (GL_VIEWPORT, _viewport);
+            glGetDoublev  (GL_MODELVIEW_MATRIX, _mvmatrix);
+            glGetDoublev  (GL_PROJECTION_MATRIX, _projmatrix);
 
-		_vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
-		_vparams->sceneBBox() = myScene->sofaSimulation()->GetRoot()->f_bbox.getValue();
-		_vparams->setProjectionMatrix(_projmatrix);
-		_vparams->setModelViewMatrix(_mvmatrix);
+            _vparams->viewport() = sofa::helper::fixed_array<int, 4>(_viewport[0], _viewport[1], _viewport[2], _viewport[3]);
+            _vparams->sceneBBox() = myScene->sofaSimulation()->GetRoot()->f_bbox.getValue();
+            _vparams->setProjectionMatrix(_projmatrix);
+            _vparams->setModelViewMatrix(_mvmatrix);
 
-        if(wireframe())
-            _vparams->drawTool()->setPolygonMode(0, true);
-	}
+            if(wireframe())
+                _vparams->drawTool()->setPolygonMode(0, true);
+        }
 
-    myScene->draw();
+        myScene->draw();
 
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
 
-	glMatrixMode(GL_MODELVIEW);
-	glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+    }
 
     myFBO->release();
 
     if(wireframe())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    // clear the viewer rectangle and just its area, not the whole OpenGL buffer
-    glScissor(pos.x(), pos.y(), size.width(), size.height());
-    glEnable(GL_SCISSOR_TEST);
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_SCISSOR_TEST);
 
     glViewport(pos.x(), pos.y(), size.width(), size.height());
 
@@ -392,17 +393,19 @@ void Viewer::paint()
     glBindTexture(GL_TEXTURE_2D, myFBO->texture());
     // TODO: use a VBO
     glBegin(GL_QUADS);
-        glTexCoord2d( 0, 0);
-        glVertex2d  (-1,-1);
+    glColor3d	(1.0, 1.0, 1.0);
 
-        glTexCoord2d( 1, 0);
-        glVertex2d  ( 1,-1);
+    glTexCoord2d( 0, 0);
+    glVertex2d  (-1,-1);
 
-        glTexCoord2d( 1, 1);
-        glVertex2d  ( 1, 1);
+    glTexCoord2d( 1, 0);
+    glVertex2d  ( 1,-1);
 
-        glTexCoord2d( 0, 1);
-        glVertex2d  (-1, 1);
+    glTexCoord2d( 1, 1);
+    glVertex2d  ( 1, 1);
+
+    glTexCoord2d( 0, 1);
+    glVertex2d  (-1, 1);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
 

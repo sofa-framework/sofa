@@ -61,12 +61,12 @@ public:
     /**
      * @brief Get the sender name
      */
-    const sofa::simulation::Node::SPtr getSender(void) const {return m_sender;};
+    const sofa::simulation::Node::SPtr getSender(void) const {return m_sender;}
 
     /**
      * @brief Get the event name
      */
-    const std::string getEventName(void) const {return m_eventName;};
+    const std::string getEventName(void) const {return m_eventName;}
 
     virtual const char* getClassName() const { return "ScriptEvent"; }
 private:

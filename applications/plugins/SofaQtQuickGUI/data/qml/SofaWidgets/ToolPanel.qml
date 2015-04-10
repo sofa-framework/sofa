@@ -10,7 +10,7 @@ Rectangle {
     clip: true
     color: "lightgrey"
 
-    property Scene scene
+    property var scene
 
     FolderListModel {
         id: folderListModel

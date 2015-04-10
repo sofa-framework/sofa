@@ -2742,7 +2742,6 @@ int Decompose<Real>::symmetricDiagonalization( const defaulttype::Mat<3,3,Real> 
 
 
 
-/// project a symmetric 3x3 matrix to the nearest PSD (symmetric, positive semi-definite)
 template<class Real>
 void Decompose<Real>::PSDProjection( defaulttype::Mat<3,3,Real> &A )
 {
@@ -2752,13 +2751,13 @@ void Decompose<Real>::PSDProjection( defaulttype::Mat<3,3,Real> &A )
     {
         bool modified = false;
         for( int i=0 ; i<3 ; ++i )
-            if( w[i] < 0 ){ w[i] = 0; modified = true; }
+            if( w[i] < 0 ){ w[i] = 0; modified = true;  }
 
         if( modified )
         {
 //            defaulttype::Mat<3,3,Real> invQ; invQ.invert( Q );
 //            A = Q.multDiagonal( w )*invQ;
-            A = (Q.multDiagonal( w )).multTransposed( Q ); // A = Q*wId*Q^T
+            A = (Q.multDiagonal( w )).multTransposed( Q ); // A = Q*wId*Q^T  // only valid for symmetric matrices
         }
     }
 }
@@ -2836,7 +2835,6 @@ inline void dsyev2(Real A, Real B, Real C, Real &rt1, Real &rt2,
 
 
 
-/// project a symmetric 2x2 matrix to the nearest PSD (symmetric, positive semi-definite)
 template<class Real>
 void Decompose<Real>::PSDProjection( defaulttype::Mat<2,2,Real> &A )
 {
@@ -2884,6 +2882,84 @@ void Decompose<Real>::PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 
         A11 = Q[1][0]*tmp[1][0] + Q[1][1]*tmp[1][1];
     }
 }
+
+
+
+
+
+template<class Real>
+void Decompose<Real>::NSDProjection( defaulttype::Mat<3,3,Real> &A )
+{
+    defaulttype::Mat<3,3,Real> Q;
+    defaulttype::Vec<3,Real> w;
+    if( !symmetricDiagonalization( A, Q, w ) )
+    {
+        bool modified = false;
+        for( int i=0 ; i<3 ; ++i )
+            if( w[i] > 0 ){ w[i] = 0; modified = true;  }
+
+        if( modified )
+        {
+//            defaulttype::Mat<3,3,Real> invQ; invQ.invert( Q );
+//            A = Q.multDiagonal( w )*invQ;
+            A = (Q.multDiagonal( w )).multTransposed( Q ); // A = Q*wId*Q^T  // only valid for symmetric matrices
+        }
+    }
+}
+
+
+
+
+template<class Real>
+void Decompose<Real>::NSDProjection( defaulttype::Mat<2,2,Real> &A )
+{
+    defaulttype::Mat<2,2,Real> Q;
+    defaulttype::Vec<2,Real> w;
+    dsyev2( (Real)A[0][0], (Real)A[0][1], (Real)A[1][1], w[0], w[1], Q[0][0], Q[1][0] );
+
+    bool modified = false;
+    for( int i=0 ; i<2 ; ++i )
+        if( w[i] > 0 ){ w[i] = 0; modified = true; }
+
+    if( modified )
+    {
+        Q[1][1] = Q[0][0];
+        Q[0][1] = -Q[1][0];
+
+        A = Q.multDiagonal( w ).multTransposed( Q ); // A = Q*wId*Q^T
+    }
+}
+
+
+
+template<class Real>
+void Decompose<Real>::NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 )
+{
+    defaulttype::Mat<2,2,Real> Q;
+    defaulttype::Vec<2,Real> w;
+    dsyev2( A00, A01, A11, w[0], w[1], Q[0][0], Q[1][0] );
+
+    bool modified = false;
+    for( int i=0 ; i<2 ; ++i )
+        if( w[i] > 0 ){ w[i] = 0; modified = true; }
+
+    if( modified )
+    {
+        Q[1][1] = Q[0][0];
+        Q[0][1] = -Q[1][0];
+
+        defaulttype::Mat<2,2,Real> tmp = Q.multDiagonal( w );
+
+        // A = Q*wId*Q^T
+
+        A00 = Q[0][0]*tmp[0][0] + Q[0][1]*tmp[0][1];
+        A01 = A10 = Q[1][0]*tmp[0][0] + Q[1][1]*tmp[1][1];
+        A11 = Q[1][0]*tmp[1][0] + Q[1][1]*tmp[1][1];
+    }
+}
+
+
+
 
 
 } // namespace helper

@@ -52,7 +52,7 @@ using namespace helper;
 
 SOFA_DECL_CLASS(MinProximityIntersection)
 
-int MinProximityIntersectionClass = core::RegisterObject("A set of methods to compute if two primitives are close enougth to consider they collide")
+int MinProximityIntersectionClass = core::RegisterObject("A set of methods to compute if two primitives are close enough to consider they collide")
         .add< MinProximityIntersection >()
         ;
 

@@ -32,13 +32,15 @@
 #include "Utils/textures.h"
 #include "Utils/gl_def.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderPhongTexture : public ClippingShader
+class CGoGN_UTILS_API ShaderPhongTexture : public ClippingShader
 {
 protected:
 	// shader sources

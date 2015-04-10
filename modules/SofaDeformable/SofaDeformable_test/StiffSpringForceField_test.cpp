@@ -220,8 +220,6 @@ TYPED_TEST_CASE(StiffSpringForceField_test, TestTypes);
 // first test case: extension, no velocity
 TYPED_TEST( StiffSpringForceField_test , extension )
 {
-    this->errorMax = 1000;
-    this->deltaMax = this->errorMax*10;
     this->debug = false;
 
     SReal
@@ -245,8 +243,6 @@ TYPED_TEST( StiffSpringForceField_test , extension )
 // velocity, no extension
 TYPED_TEST( StiffSpringForceField_test , viscosity )
 {
-    this->errorMax = 1000;
-    this->deltaMax = 1000;
     this->debug = false;
 
     SReal
@@ -267,8 +263,6 @@ TYPED_TEST( StiffSpringForceField_test , viscosity )
 // extension, two particles in different nodes
 TYPED_TEST( StiffSpringForceField_test , extension_in_parent_and_child )
 {
-    this->errorMax = 1000;
-    this->deltaMax = this->errorMax*10;
     this->debug = false;
 
     SReal

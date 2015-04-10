@@ -25,6 +25,7 @@
 #include <sofa/gpu/cuda/CudaMeshMatrixMass.inl>
 #include <SofaMiscForceField/MeshMatrixMass.inl>
 #include <sofa/core/behavior/Mass.inl>
+#include <sofa/core/behavior/ForceField.inl>
 
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.inl>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.inl>

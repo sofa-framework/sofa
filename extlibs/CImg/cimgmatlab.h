@@ -1,8 +1,8 @@
 /*************************************************************************
- * cimgmatlab.h
- * -------------
+ * matlab.h
+ * ---------
  *
- * cimgmatlab.h  is a "plugin" for the CImg library that allows to convert
+ * matlab.h is a "plugin" for the CImg library that allows to convert
  * CImg<T> images from/to MATLAB arrays, so that CImg can be used to write
  * MATLAB mex files.  It also swaps the "x" and "y" coordinates when going
  * from / to MATLAB array, i.e. the usual image-processing annoying MATLAB
@@ -29,11 +29,11 @@
  *
  * Its usage should be straightforward:
  *
- * - file cimgmatlab.h must be in a directory that the compiler can locate.
+ * - file matlab.h must be in a directory that the compiler can locate.
  * - prior to include CImg.h, mex.h  must  be  included first, else it will
  *   result in a compiler error.
  * - after the inclusion of mex.h, one must define the macro cimg_plugin as
- *   "cimgmatlab.h"  or  <cimgmatlab.h> or  <CImg/plugins/cimgmatlab.h>  or
+ *   "matlab.h"  or  <matlab.h> or  <CImg/plugins/matlab.h>  or
  *   a variation that  matches your  local installation of CImg package and
  *   plugins probably via the appropriate specification of the include path
  *   "-Ipath/to/cimg/and/plugins" at mex cmdline.
@@ -43,7 +43,7 @@
  * // The begining of my fantastic mex file code...
  * #include <mex.h>
  * ...
- * #define cimg_plugin  <cimgmatlab.h>
+ * #define cimg_plugin  <matlab.h>
  * #include <CImg.h>
  * ...
  * // and now I can implement my new killer MATLAB function!
@@ -68,10 +68,10 @@
 
 #define CIMGMATLAB_VER 0102
 #ifndef mex_h
-#error the file mex.h must be included prior to inclusion of cimgmatlab.h
+#error the file mex.h must be included prior to inclusion of matlab.h
 #endif
 #ifndef cimg_version
-#error cimgmatlab.h requires that CImg.h is included!
+#error matlab.h requires that CImg.h is included!
 #endif
 
 /**********************************************************
@@ -283,5 +283,5 @@ mxArray *toMatlab(mxClassID classID=mxDOUBLE_CLASS, const bool squeeze=false) co
   return matlabArray;
 }
 
-// end of cimgmatlab.h
-#endif
+// end of matlab.h
+#endif /* cimg_plugin_matlab */

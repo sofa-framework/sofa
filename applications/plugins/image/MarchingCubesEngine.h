@@ -130,10 +130,10 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-
         raImage in(this->image);
-        raTransform inT(this->transform);
+		raTransform inT(this->transform);
+
+		cleanDirty();	 // cleanDirty must be here to avoid the multiple call of the update method
 
         // get image at time t
         const CImg<T>& img = in->getCImg(this->time);

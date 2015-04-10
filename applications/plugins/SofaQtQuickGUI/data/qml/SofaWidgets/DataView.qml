@@ -56,13 +56,13 @@ Rectangle {
 
     property Scene  scene
     property string sceneSource: ""     // TODO: use this
-    property string sceneDataPath: ""   // TODO: use this
+    property alias sceneDataPath: dataPathTextField
+    property bool showControl: true
 
     Connections {
         target: scene
         onAboutToUnload:
         {
-            console.log("unloading");
             dataPathTextField.text = "";
             trackButton.checked = false;
         }
@@ -112,6 +112,7 @@ Rectangle {
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 22
+            visible: root.showControl
             color: "lightgrey"
 
             Flickable {

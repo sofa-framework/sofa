@@ -464,7 +464,7 @@ sofa::defaulttype::Vector3 randVect(const sofa::defaulttype::Vector3 & min,const
 
 
 template <class BroadPhase>
-bool BroadPhaseTest<BroadPhase>::randTest(int seed, int nb1, int nb2, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max){
+bool BroadPhaseTest<BroadPhase>::randTest(int /*seed*/, int nb1, int nb2, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max){
 
     std::vector<sofa::defaulttype::Vector3> firstCollision;
     std::vector<sofa::defaulttype::Vector3> secondCollision;

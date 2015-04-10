@@ -44,13 +44,19 @@ class Model:
             def __init__(self):
                 self.index=list()
                 self.data=dict()
-        
-        def __init__(self, meshXml):
+
+        def __init__(self, meshXml=None):
+            self.format=None
+            self.source=None
+            self.group=dict()
+            if not meshXml is None:
+                self.parseXml(meshXml)
+
+        def parseXml(self, meshXml):
             parseIdName(self,meshXml)
             self.format = meshXml.find("source").attrib["format"]
             self.source = meshXml.find("source").text
         
-            self.group=dict()
             for g in meshXml.iter("group"):
                 self.group[g.attrib["id"]] = Model.Mesh.Group()
                 self.group[g.attrib["id"]].index = Tools.strToListInt(g.find("index").text)
@@ -58,19 +64,27 @@ class Model:
                     self.group[g.attrib["id"]].data[d.attrib["name"]]=parseData(d)                    
     
     class Solid:
-        def __init__(self, objXml):
-            parseIdName(self,objXml)
+        def __init__(self, solidXml=None):
+            self.id = None
+            self.name = None
+            self.tags = set()
+            self.position = None
+            self.mesh = list() # list of meshes
+            self.density = None
+            self.mass = None
+            self.inertia = None
+            self.skinnings=list()
+            if not solidXml is None:
+                self.parseXml(solidXml)
+
+        def parseXml(self, objXml):
+            parseIdName(self, objXml)
             parseTag(self,objXml)
             self.position=Tools.strToListFloat(objXml.find("position").text)
-            self.mesh = list() # list of meshes
-            self.density=None
-            self.mass=None
-            self.inertia=None
             if not objXml.find("density") is None:
                 self.density=float(objXml.find("density").text)
             if not objXml.find("mass") is None:
                 self.mass = float(objXml.find("mass").text)
-            self.skinnings=list()
 
     class Offset:
         def __init__(self, offsetXml):
@@ -141,7 +155,7 @@ class Model:
     
     def __init__(self, filename=None, name=None):
         self.name=name
-        self.modelDir = os.path.dirname(filename)
+        self.modelDir = None
         self.units=dict()
         self.meshes=dict()
         self.solids=dict()
@@ -154,6 +168,7 @@ class Model:
             self.open(filename)
 
     def open(self, filename):
+        self.modelDir = os.path.dirname(filename)
         with open(filename,'r') as f:
             # TODO automatic DTD validation could go here, not available in python builtin ElementTree module
             modelXml = etree.parse(f).getroot()
@@ -178,7 +193,7 @@ class Model:
                         print "WARNING: sml.Model: mesh not found:", mesh.source
                     self.meshes[m.attrib["id"]] = mesh
                     
-            # objects
+            # solids
             for objXml in modelXml.iter("solid"):
                 if objXml.attrib["id"] in self.solids:
                     print "ERROR: sml.Model: solid defined twice, id:", r.attrib["id"]
@@ -297,15 +312,15 @@ def insertVisual(parentNode,obj,color):
     translation=obj.position[:3]
     rotation = Quaternion.to_euler(obj.position[3:])  * 180.0 / math.pi
     for m in obj.mesh:
-        Tools.meshLoader(node, m.source, name="loader_"+m.name, translation=concat(translation),rotation=concat(rotation))
-        node.createObject("VisualModel",src="@loader_"+m.name, color=color)
+        Tools.meshLoader(node, obj.mesh.source, name="loader_"+obj.name)
+        node.createObject("OglModel",src="@loader_"+obj.name, translation=concat(translation),rotation=concat(rotation), color=color)
     
 def setupUnits(myUnits):
     message = "units:"
     for quantity,unit in myUnits.iteritems():
         exec("units.local_{0} = units.{0}_{1}".format(quantity,unit))
         message+=" "+quantity+":"+unit
-    print message
+    print message    
 
 class BaseScene:
     """ Base class for Scene class, creates a node for this Scene

@@ -76,6 +76,7 @@ RegisterTemplateAlias::RegisterTemplateAlias(const std::string& alias, const std
 RegisterTemplateAlias Vec1Alias("Vec1", "Vec1d");
 RegisterTemplateAlias Vec2Alias("Vec2", "Vec2d");
 RegisterTemplateAlias Vec3Alias("Vec3", "Vec3d");
+RegisterTemplateAlias Vec4Alias("Vec4", "Vec4d");
 RegisterTemplateAlias Vec6Alias("Vec6", "Vec6d");
 RegisterTemplateAlias Rigid2Alias("Rigid2", "Rigid2d");
 RegisterTemplateAlias Rigid3Alias("Rigid", "Rigid3d");
@@ -83,6 +84,7 @@ RegisterTemplateAlias Rigid3Alias("Rigid", "Rigid3d");
 RegisterTemplateAlias Vec1Alias("Vec1", "Vec1f");
 RegisterTemplateAlias Vec2Alias("Vec2", "Vec2f");
 RegisterTemplateAlias Vec3Alias("Vec3", "Vec3f");
+RegisterTemplateAlias Vec4Alias("Vec4", "Vec4f");
 RegisterTemplateAlias Vec6Alias("Vec6", "Vec6f");
 RegisterTemplateAlias Rigid2Alias("Rigid2", "Rigid2f");
 RegisterTemplateAlias Rigid3Alias("Rigid", "Rigid3f");

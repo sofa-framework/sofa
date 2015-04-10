@@ -327,6 +327,7 @@ protected:
     Data< helper::OptionsGroup > showDeformationGradientStyle;
     Data< helper::OptionsGroup > showColorOnTopology;
     Data< float > showColorScale;
+    Data< unsigned > d_geometricStiffness;
 };
 
 

@@ -22,6 +22,8 @@
  *                                                                              *
  *******************************************************************************/
 
+#define CGoGN_UTILS_DLL_EXPORT 1
+
 #include "Utils/frameManipulator.h"
 
 #include "Geometry/distances.h"
@@ -29,8 +31,7 @@
 
 #include <glm/ext.hpp>
 
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include <cmath>
 
 
 namespace CGoGN
@@ -76,7 +77,7 @@ FrameManipulator::FrameManipulator():
 
 	for (unsigned int i=0; i<=nb_segments; ++i)
 	{
-		float alpha = float(i)*M_PI/float(nb_segments/2);
+		float alpha = float(M_PI*i)/float(nb_segments/2);
 		float x = (1.0f+ring_half_width) * cos(alpha);
 		float y = (1.0f+ring_half_width) * sin(alpha);
 		float xx = (1.0f-ring_half_width) * cos(alpha);
@@ -361,9 +362,9 @@ unsigned int FrameManipulator::pick(const Geom::Vec3f& PP, const Geom::Vec3f& VV
 	if (axisPickable(Xr))
 	{
 		if (inter == Geom::FACE_INTERSECTION)
-			dist_target[3] = Qx.norm() - 1.0f;
+			dist_target[3] = float(Qx.norm() - 1.0);
 		else if (inter == Geom::EDGE_INTERSECTION)
-			dist_target[3] = sqrt(dist2) - 1.0f;
+			dist_target[3] = float(sqrt(dist2) - 1.0);
 
 		if (fabs(dist_target[3]) < ring_half_width )
 			dist_cam[3] = (P-Qx)*(P-Qx);
@@ -376,7 +377,7 @@ unsigned int FrameManipulator::pick(const Geom::Vec3f& PP, const Geom::Vec3f& VV
 	if (axisPickable(Yr))
 	{
 		if (inter == Geom::FACE_INTERSECTION)
-			dist_target[4] = Qy.norm() - 1.0f;
+			dist_target[4] = float(Qy.norm() - 1.0);
 		else if (inter == Geom::EDGE_INTERSECTION)
 			dist_target[4] = sqrt(dist2) - 1.0f;
 
@@ -391,7 +392,7 @@ unsigned int FrameManipulator::pick(const Geom::Vec3f& PP, const Geom::Vec3f& VV
 	if (axisPickable(Zr))
 	{
 		if (inter == Geom::FACE_INTERSECTION)
-			dist_target[5] = Qz.norm() - 1.0f;
+			dist_target[5] = float(Qz.norm() - 1.0);
 		else if (inter == Geom::EDGE_INTERSECTION)
 			dist_target[5] = sqrt(dist2) - 1.0f;
 

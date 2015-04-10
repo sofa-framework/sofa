@@ -135,7 +135,7 @@ struct Engine_test : public Sofa_test<>
         // Check propagation direction
 
        // Change output value of engine3
-       engine3->f_result.setValue(2,true);
+       engine3->f_result.setValue(2);
 
        // Check that update methods are not called
 
