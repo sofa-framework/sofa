@@ -666,7 +666,7 @@ protected:
 
         waPositions pos(this->f_position);
         waVolume vol(this->f_volume);
-        helper::WriteAccessor<Data< VTransform > > transforms(this->f_transforms);
+        helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
 
         pos.resize ( nb );
         vol.resize ( nb );

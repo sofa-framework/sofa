@@ -86,7 +86,7 @@ void Stabilization::filterConstraints( const vector<bool>* activateMask, const c
 
     unsigned size = n*dim;
 
-    mask_type& mask = *this->mask.beginEdit();
+    mask_type& mask = *this->mask.beginWriteOnly();
     mask.resize( n );
 
     activateMask = NULL; // all activated

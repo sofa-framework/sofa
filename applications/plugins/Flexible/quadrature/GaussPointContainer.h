@@ -91,7 +91,7 @@ protected:
         if(!invol.size()) serr<<"no volume provided -> use unit default volume"<<sendl;
         waVolume vol(this->f_volume);
         unsigned int dim = this->f_volumeDim.getValue();
-        helper::WriteAccessor<Data< VTransform > > transforms(this->f_transforms);
+        helper::WriteOnlyAccessor<Data< VTransform > > transforms(this->f_transforms);
 
         vol.resize(this->f_position.getValue().size());
         transforms.resize(this->f_position.getValue().size());

@@ -353,12 +353,12 @@ void BoxROI<DataTypes>::update()
     SetIndex& quadIndices = *f_quadIndices.beginEdit();
 
     // Write accessor for toplogical element in BOX
-    helper::WriteAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
-    helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
-    helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
-    helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
-    helper::WriteAccessor< Data<helper::vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
-    helper::WriteAccessor< Data<helper::vector<Quad> > > quadInROI = f_quadInROI;
+    helper::WriteOnlyAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Hexa> > > hexahedraInROI = f_hexahedraInROI;
+    helper::WriteOnlyAccessor< Data<helper::vector<Quad> > > quadInROI = f_quadInROI;
 
 
     // Clear lists

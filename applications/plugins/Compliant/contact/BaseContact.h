@@ -10,7 +10,6 @@
 
 #include "../mapping/DifferenceMapping.h"
 
-#include "../utils/edit.h"
 #include "../constraint/Restitution.h"
 #include "../constraint/HolonomicConstraintValue.h"
 
@@ -365,13 +364,12 @@ protected:
             constraintValue->restitution.setValue( restitution );
 
             // don't activate non-penetrating contacts
-            edit(constraintValue->mask)->resize( this->mappedContacts.size() );
+            odesolver::Restitution::mask_type& mask = *constraintValue->mask.beginWriteOnly();
+            mask.resize( this->mappedContacts.size() );
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
-				// (max) watch out: editor is destroyed just after
-				// operator* is called, thus endEdit is called at this
-				// time !
-                (*edit(constraintValue->mask))[i] = ( (*this->contacts)[i].value <= 0 );
+                mask[i] = ( (*this->contacts)[i].value <= 0 );
             }
+            constraintValue->mask.endEdit();
 
             constraintValue->init();
             return &constraintValue->mask.getValue();
@@ -392,10 +390,12 @@ protected:
             node->addObject( stab.get() );
 
             // don't stabilize non-penetrating contacts (normal component only)
-            edit(stab->mask)->resize(  this->mappedContacts.size() );
+            odesolver::HolonomicConstraintValue::mask_type& mask = *stab->mask.beginWriteOnly();
+            mask.resize(  this->mappedContacts.size() );
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
-                (*edit(stab->mask))[i] = ( (*this->contacts)[i].value <= 0 );
+                mask[i] = ( (*this->contacts)[i].value <= 0 );
             }
+            stab->mask.endEdit();
 
             stab->init();
             return &stab->mask.getValue();
@@ -408,10 +408,12 @@ protected:
             node->addObject( stab.get() );
 
             // don't stabilize non-penetrating contacts (normal component only)
-            edit(stab->mask)->resize( this->mappedContacts.size() );
+            odesolver::Stabilization::mask_type& mask = *stab->mask.beginWriteOnly();
+            mask.resize( this->mappedContacts.size() );
             for(unsigned i = 0; i < this->mappedContacts.size(); ++i) {
-                (*edit(stab->mask))[i] = ( (*this->contacts)[i].value <= 0 );
+                mask[i] = ( (*this->contacts)[i].value <= 0 );
             }
+            stab->mask.endEdit();
 
             stab->init();
             return &stab->mask.getValue();

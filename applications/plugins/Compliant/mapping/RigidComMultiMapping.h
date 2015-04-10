@@ -5,7 +5,6 @@
 #include "initCompliant.h"
 
 #include "utils/map.h"
-#include "utils/edit.h"
 
 namespace sofa {
 

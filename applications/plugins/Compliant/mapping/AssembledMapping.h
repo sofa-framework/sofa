@@ -123,7 +123,7 @@ namespace sofa {
 
 				typedef helper::ReadAccessor< Data< typename self::InVecCoord > > in_pos_type;
                 
-				typedef helper::WriteAccessor< Data< typename self::OutVecCoord > > out_pos_type;
+                typedef helper::WriteOnlyAccessor< Data< typename self::OutVecCoord > > out_pos_type;
 
                 typedef helper::ReadAccessor< Data< typename self::OutVecDeriv > > out_force_type;
 

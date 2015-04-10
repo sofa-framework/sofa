@@ -130,7 +130,7 @@ public:
         for (unsigned int i=0; i<redges.size(); i++ )        { this->clusters.push_back(VecID());  this->clusters_child.push_back(VecID()); Edge cell;        for (unsigned int j=0; j<2; j++ ) {this->clusters.back().push_back(redges[i][j]);      this->clusters_child.back().push_back(nbOut); this->index_childToParent.push_back(redges[i][j]);       this->index_parentToChild[redges[i][j]].push_back(nbOut);       cell[j]=nbOut; nbOut++;} wedges.push_back(cell); }
         this->toModel->resize(nbOut);
 
-        helper::WriteAccessor<Data<VecCoord> > pos (*this->toModel->write(core::VecCoordId::restPosition()));
+        helper::WriteOnlyAccessor<Data<VecCoord> > pos (*this->toModel->write(core::VecCoordId::restPosition()));
         for (unsigned int i=0 ; i<this->clusters.size() ; ++i)
         {
             for (unsigned int j=0; j<this->clusters_child[i].size() ; ++j)
@@ -152,7 +152,7 @@ public:
 
     virtual void apply(const core::MechanicalParams */*mparams*/, Data<VecCoord>& dOut, const Data<VecCoord>& dIn)
     {
-        helper::WriteAccessor< Data<VecCoord> >  posOut = dOut;
+        helper::WriteOnlyAccessor< Data<VecCoord> >  posOut = dOut;
         helper::ReadAccessor< Data<VecCoord> >  pos = dIn;
         helper::ReadAccessor<Data<VecCoord> > pos0 (*this->fromModel->read(core::ConstVecCoordId::restPosition()));
 
@@ -187,7 +187,7 @@ public:
     virtual void applyJ(const core::MechanicalParams */*mparams*/, Data<VecDeriv>& dOut, const Data<VecDeriv>& dIn)
     {
 
-        helper::WriteAccessor< Data<VecDeriv> >  vOut = dOut;
+        helper::WriteOnlyAccessor< Data<VecDeriv> >  vOut = dOut;
         helper::ReadAccessor< Data<VecDeriv> >  v = dIn;
         for (unsigned int i=0 ; i<this->clusters.size() ; ++i)
         {

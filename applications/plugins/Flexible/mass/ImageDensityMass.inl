@@ -304,7 +304,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF( cons
 {
     if( f_lumping.getValue()==DIAGONAL_LUMPING )
     {
-        VecDeriv& _acc = *acc.beginEdit();
+        VecDeriv& _acc = *acc.beginWriteOnly();
         const VecDeriv& _f = f.getValue();
 
         for( unsigned int i=0 ; i<_f.size() ; i++ )
@@ -319,7 +319,7 @@ void ImageDensityMass< DataTypes, ShapeFunctionTypes, MassType >::accFromF( cons
     }
     else if( f_lumping.getValue()==BLOCK_LUMPING )
     {
-        VecDeriv& _acc = *acc.beginEdit();
+        VecDeriv& _acc = *acc.beginWriteOnly();
         const VecDeriv& _f = f.getValue();
 
         for( unsigned int i=0 ; i<_f.size() ; i++ )

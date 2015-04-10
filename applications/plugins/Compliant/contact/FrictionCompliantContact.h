@@ -11,6 +11,7 @@
 #include "../compliance/UniformCompliance.h"
 
 #include "utils/map.h"
+#include "utils/edit.h"
 
 namespace sofa
 {
@@ -80,8 +81,8 @@ protected:
         contact_map->setModels( delta.dofs.get(), contact_dofs.get() );
         contact_node->addObject( contact_map.get() );
 
-        this->copyNormals( *edit(contact_map->normal) );
-        this->copyPenetrations( *edit(*contact_dofs->write(core::VecCoordId::position())) );
+        this->copyNormals( *editOnly(contact_map->normal) );
+        this->copyPenetrations( *editOnly(*contact_dofs->write(core::VecCoordId::position())) );
 
         // every contact points must propagate constraint forces
         for(unsigned i = 0; i < size; ++i)

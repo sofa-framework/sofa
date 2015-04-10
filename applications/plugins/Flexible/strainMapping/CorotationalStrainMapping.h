@@ -168,7 +168,7 @@ protected:
     {
         if(this->f_printLog.getValue()) std::cout<<this->getName()<<":apply"<<std::endl;
 
-        typename Inherit::OutVecCoord& out = *dOut.beginEdit();
+        typename Inherit::OutVecCoord& out = *dOut.beginWriteOnly();
         const typename Inherit::InVecCoord&  in  =  dIn.getValue();
 
         switch( f_method.getValue().getSelectedId() )
@@ -235,7 +235,7 @@ protected:
         helper::ReadAccessor<Data<typename Inherit::OutVecCoord> > outpos (*this->toModel->read(core::ConstVecCoordId::position()));
         if(inpos.size()!=outpos.size()) this->resizeOut();
 
-        typename Inherit::OutVecCoord& out = *dOut.beginEdit();
+        typename Inherit::OutVecCoord& out = *dOut.beginWriteOnly();
         const typename Inherit::InVecCoord&  in  =  dIn.getValue();
 
         switch( f_method.getValue().getSelectedId() )

@@ -25,7 +25,7 @@ DiagonalCompliance<DataTypes>::DiagonalCompliance( core::behavior::MechanicalSta
     , damping( initData(&damping, "damping", "uniform viscous damping."))
 {
 	this->isCompliance.setValue(true);
-	edit(damping)->push_back(0);
+    editOnly(damping)->push_back(0);
 }
 
 template<class DataTypes>

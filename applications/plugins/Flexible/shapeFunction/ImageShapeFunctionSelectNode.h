@@ -67,7 +67,7 @@ public:
 
     Data<unsigned int> d_nodeIndex; ///< index of the selected node
 
-    typedef helper::WriteAccessor<Data< DistTypes > > waDist;
+    typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > d_nodeWeights; ///< weights of the selected node
     //@}
 

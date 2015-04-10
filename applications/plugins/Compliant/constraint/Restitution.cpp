@@ -124,7 +124,7 @@ void Restitution::filterConstraints( const vector<bool>* activateMask, const cor
 
     unsigned size = n*dim;
 
-    mask_type& mask = *this->mask.beginEdit();
+    mask_type& mask = *this->mask.beginWriteOnly();
     mask.resize( n );
 
 

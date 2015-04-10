@@ -68,7 +68,7 @@ void DistanceMapping<TIn, TOut>::init()
     // compute the rest lengths if they are not known
     if( f_restLengths.getValue().size() != links.size() )
     {
-        helper::WriteAccessor< Data<vector<Real> > > restLengths(f_restLengths);
+        helper::WriteOnlyAccessor< Data<vector<Real> > > restLengths(f_restLengths);
         typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
         restLengths.resize( links.size() );
         if(!(f_computeDistance.getValue()))
@@ -94,7 +94,7 @@ void DistanceMapping<TIn, TOut>::computeCoordPositionDifference( Direction& r, c
 template <class TIn, class TOut>
 void DistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
-    helper::WriteAccessor< Data<OutVecCoord> >  out = dOut;
+    helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
     helper::ReadAccessor<Data<vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = edgeContainer->getEdges();
