@@ -12,7 +12,7 @@ CollapsibleGroupBox {
     title: "Scene Graph"
     property int priority: 90
 
-    property Scene scene
+    property var scene
     property real rowHeight: 16
 
     enabled: scene ? scene.ready : false

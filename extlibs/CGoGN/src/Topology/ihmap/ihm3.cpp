@@ -778,11 +778,13 @@ bool ImplicitHierarchicalMap3::volumeIsSubdividedOnce(Dart d)
 
 bool ImplicitHierarchicalMap3::checkForSurrounded (Dart d)
 {
-    for(Vol dd : volumesAdjacentByFace3<ImplicitHierarchicalMap3>(*this,d))
+    typedef Iteratorize< Traversor3WWaF<ImplicitHierarchicalMap3> > volumesAdjacentByFace3Traversor;
+    volumesAdjacentByFace3Traversor vols(volumesAdjacentByFace3<ImplicitHierarchicalMap3>(*this,d));
+    for (volumesAdjacentByFace3Traversor::iterator it = vols.begin(), end = vols.end() ; it != end; ++it)
     {
-        if(!sameVolume(phi3(d),dd))
+        if(!sameVolume(phi3(d),*it))
         {
-            if(!volumeIsSubdivided(dd))
+            if(!volumeIsSubdivided(*it))
             {
                 return false;
             }

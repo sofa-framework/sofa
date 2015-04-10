@@ -33,8 +33,10 @@
 
 //forward definitions
 namespace CGoGN { namespace Utils { namespace QT { class SimpleQT; } } }
-namespace CGoGN { namespace Utils { namespace QT { class SimpleQGLV; } } }
+//namespace CGoGN { namespace Utils { namespace QT { class SimpleQGLV; } } }
 class QTextEdit;
+
+#include "Utils/dll.h"
 
 namespace CGoGN
 {
@@ -45,32 +47,32 @@ namespace CGoGNStream
 /**
  * set all outputs to std
  */
-void allToStd(bool yes = true);
+CGoGN_UTILS_API void allToStd(bool yes = true);
 
 /**
  * set all outputs to file
  */
-void allToFile(const std::string& filename);
+CGoGN_UTILS_API void allToFile(const std::string& filename);
 
 #ifdef CGOGN_WITH_QT
 /**
  * set all outputs to status bar of Qt interface
  */
-void allToStatusBar(Utils::QT::SimpleQT* sqt);
-void allToStatusBar(Utils::QT::SimpleQGLV* sqglv);
+CGoGN_UTILS_API void allToStatusBar(Utils::QT::SimpleQT* sqt);
+//CGoGN_UTILS_API void allToStatusBar(Utils::QT::SimpleQGLV* sqglv);
 
 /**
  * set all outputs to console of Qt interface
  */
-void allToConsole(Utils::QT::SimpleQT* sqt);
-void allToConsole(Utils::QT::SimpleQGLV* sqglv);
+CGoGN_UTILS_API void allToConsole(Utils::QT::SimpleQT* sqt);
+//CGoGN_UTILS_API void allToConsole(Utils::QT::SimpleQGLV* sqglv);
 
 #endif
 
 /**
  * set all outputs to string stream buffer
  */
-void allToBuffer(std::stringstream* ss);
+CGoGN_UTILS_API void allToBuffer(std::stringstream* ss);
 
 enum drawingType
 {
@@ -86,7 +88,7 @@ class Special
 {};
 
 
-class Out
+class CGoGN_UTILS_API Out
 {
 protected:
 	int m_out_mode;
@@ -156,12 +158,12 @@ public:
 	/**
 	 * set output to status bar of Qt interface
 	 */
-	void toStatusBar(Utils::QT::SimpleQGLV* sqglv = NULL);
+//	void toStatusBar(Utils::QT::SimpleQGLV* sqglv = NULL);
 
 	/**
 	 * set output to console of Qt interface
 	 */
-	void toConsole(Utils::QT::SimpleQGLV* sqglv = NULL);
+//	void toConsole(Utils::QT::SimpleQGLV* sqglv = NULL);
 
 #endif
 
@@ -195,7 +197,7 @@ public:
 /**
  * output stream class for error output (replace cout by cerr)
  */
-class Err: public Out
+class CGoGN_UTILS_API Err : public Out
 {
 public:
 	Err() { this->m_code = 1; }
@@ -225,11 +227,11 @@ Out&  Out::operator<< (const T& val)
 } // namespace CGoGNStream
 
 // glocal stream definitions
-extern CGoGNStream::Out CGoGNout;
-extern CGoGNStream::Err CGoGNerr;
-extern CGoGNStream::Dbg CGoGNdbg;
-extern CGoGNStream::Special CGoGNendl;
-extern CGoGNStream::Special CGoGNflush;
+CGoGN_UTILS_API extern CGoGNStream::Out CGoGNout;
+CGoGN_UTILS_API extern CGoGNStream::Err CGoGNerr;
+CGoGN_UTILS_API extern CGoGNStream::Dbg CGoGNdbg;
+CGoGN_UTILS_API extern CGoGNStream::Special CGoGNendl;
+CGoGN_UTILS_API extern CGoGNStream::Special CGoGNflush;
 
 } // namespace CGoGN
 

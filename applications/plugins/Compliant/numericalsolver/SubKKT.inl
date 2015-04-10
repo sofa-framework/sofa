@@ -21,64 +21,34 @@ inline void SubKKT::factor(Solver& resp) const {
 template< class Solver >
 void SubKKT::solve(const Solver& resp,
                    vec& res,
-                   const vec& rhs,
-                   ProblemType problem) const {
+                   const vec& rhs) const {
 
-    res.resize( rhs.size() );
+    const size_t sub_size = size_sub();
 
-    solve_filtered( resp, vtmp2, rhs, problem );
+    // project
+    vtmp1.resize( sub_size );
+    if( P.cols() ) {
+        vtmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
+    }
+    if( Q.cols() ) {
+        vtmp1.tail(Q.cols()).noalias() = Q.transpose() * rhs.tail(Q.rows());
+    }
+
+    // system solve
+    vtmp2.resize( sub_size );
+    resp.solve(vtmp2, vtmp1);
 
     // remap
-    if( (problem & PRIMAL) && P.cols() ) {
+    res.resize( rhs.size() );
+    if( P.cols() ) {
         res.head(P.rows()).noalias() = P * vtmp2.head(P.cols());
     }
-    
-    if( (problem & DUAL) && Q.cols() ) {
+    if( Q.cols() ) {
         res.tail(Q.rows()).noalias() = Q * vtmp2.tail(Q.cols());
     }
 
 }
 
-
-
-template< class Solver >
-void SubKKT::solve_filtered(const Solver& resp,
-                   vec& res,
-                   const vec& rhs,
-                   ProblemType problem ) const {
-
-    size_t size;
-
-    if( problem == FULL )
-    {
-        assert( rhs.size()==size_full() );
-        size = size_sub();
-    }
-    else if( problem == PRIMAL )
-    {
-        assert( rhs.size()==P.rows() );
-        size = P.cols();
-    }
-    else /*DUAL*/
-    {
-        assert( rhs.size()==Q.rows() );
-        size = Q.cols();
-    }
-
-
-    vtmp1.resize( size );
-    res.resize( size );
-
-    if( (problem & PRIMAL) && P.cols() ) {
-        vtmp1.head(P.cols()).noalias() = P.transpose() * rhs.head(P.rows());
-    }
-    if( (problem & DUAL) && Q.cols() ) {
-        vtmp1.tail(Q.cols()).noalias() = Q.transpose() * rhs.tail(Q.rows());
-    }
-
-    // system solve
-    resp.solve(res, vtmp1);
-}
 
 
 

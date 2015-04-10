@@ -78,10 +78,11 @@ namespace sofa {
         // Constructor: call the constructor of the base class which loads the scene to test
         ShapeFunction_test() : Mapping_test<_Mapping>(std::string(FLEXIBLE_TEST_SCENES_DIR) + "/" + "ShapeFunctionTest.scn")
         {   
-            // For F331Types
-            //Inherited::errorMax = 10000;
-            // For F332Types
-            Inherited::errorMax = 5e9;
+            if( _Mapping::Out::Basis::order >= 1 ) // F332Types
+                this->deltaRange = std::make_pair( 1e5, 5e8 );
+
+            this->errorMax = this->deltaRange.second * 5;
+
             // Set random rotation and translation
             this->SetRandomAffineTransform();
         }

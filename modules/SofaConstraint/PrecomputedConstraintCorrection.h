@@ -71,9 +71,10 @@ public:
     Data<bool> m_restRotations;
 
     Data<bool> recompute;
-    Data<std::string> fileDir;
-    Data<double> debugViewFrameScale;
-    sofa::core::objectmodel::DataFileName f_fileCompliance;
+	Data<double> debugViewFrameScale;
+	sofa::core::objectmodel::DataFileName f_fileCompliance;
+	Data<std::string> fileDir;
+    
 protected:
     PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm = NULL);
 
@@ -155,7 +156,8 @@ public:
     // new :  for non building the constraint system during solving process //
     //VecDeriv constraint_disp, constraint_force;
     helper::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
-    sofa::helper::vector<unsigned int>* localConstraintId;
+    helper::vector<unsigned int> localIndex_to_id; //inverse table that gives the id of a constraint given its local index
+    std::list<unsigned int> active_local_force; // table of local index of the non-null forces;
     linearsolver::FullMatrix< Real > localW;
     double* constraint_force;
 

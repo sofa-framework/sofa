@@ -29,9 +29,11 @@
 #include <QDesktopWidget>
 //#include <QMainWindow>
 #include <QWidget>
-#include <QtGui>
+//#include <QtGui>
 #include <QDialog>
 #include <QLabel>
+
+#include "Utils/dll.h"
 
 namespace CGoGN
 {
@@ -66,7 +68,7 @@ public:
  * Class for boolean input in dialog window
  * Use: VarBool(ref_to_val, "label" [,nextVar])
  */
-class VarBool: public Var
+class CGoGN_UTILS_API VarBool : public Var
 {
 public:
 	bool& m_val;
@@ -82,7 +84,7 @@ public:
  * Class for integer input in dialog window (with spinbox)
  * Use: VarBool(min,max,ref_to_val, "label" [,nextVar])
  */
-class VarInteger: public Var
+class CGoGN_UTILS_API VarInteger : public Var
 {
 public:
 	int m_min;
@@ -100,7 +102,7 @@ public:
  * Class for double input in dialog window (with spinbox)
  * Use: VarBool(min,max,ref_to_val, "label" [,nextVar])
  */
-class VarDbl: public Var
+class CGoGN_UTILS_API VarDbl : public Var
 {
 public:
 	double m_min;
@@ -119,7 +121,7 @@ public:
  * Class for double input in dialog window (with spinbox)
  * Use: VarBool(min,max,ref_to_val, "label" [,nextVar])
  */
-class VarFloat: public Var
+class CGoGN_UTILS_API VarFloat : public Var
 {
 public:
 	float m_min;
@@ -138,7 +140,7 @@ public:
  * Class for integer input in dialog window (with slider)
  * Use: VarBool(min,max,ref_to_val, "label" [,nextVar])
  */
-class VarSlider: public Var
+class CGoGN_UTILS_API VarSlider : public Var
 {
 public:
 	int m_min;
@@ -157,7 +159,7 @@ public:
  * Use: VarBool("list_of_item, ref_to_val, "label" [,nextVar])
  *     item are separated by ; in list_of_item
  */
-class VarCombo: public Var
+class CGoGN_UTILS_API VarCombo : public Var
 {
 public:
 	const std::string& m_choices;
@@ -182,7 +184,7 @@ public:
  *				VarCombo("Riri;Fifi;Loulou;Donald",c,"Combo"))))) );
  * } // limit scope of using namespace
  */
-bool inputValues(const Var& v1, const std::string& title = "input data");
+CGoGN_UTILS_API bool inputValues(const Var& v1, const std::string& title = "input data");
 
 
 } // namespace QT

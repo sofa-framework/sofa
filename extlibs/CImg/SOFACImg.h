@@ -27,7 +27,13 @@
 
 #include <queue>
 #define cimg_plugin "skeleton.h"
-#include "CImg.h"
+
+#if defined(_OPENMP) && (_OPENMP >= 200805)
+#include <omp.h>
+#define cimg_use_openmp 1
+#endif // _OPENMP
+
+#include "CImg.h"  
 
 #include <iostream>
 #include <fstream>

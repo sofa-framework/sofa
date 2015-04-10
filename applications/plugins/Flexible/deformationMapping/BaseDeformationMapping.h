@@ -405,6 +405,9 @@ protected :
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
     const defaulttype::ResizableExtVector<int> *extvertPosIdx;
+
+public:
+
     Data< float > showDeformationGradientScale;
     Data< helper::OptionsGroup > showDeformationGradientStyle;
     Data< helper::OptionsGroup > showColorOnTopology;

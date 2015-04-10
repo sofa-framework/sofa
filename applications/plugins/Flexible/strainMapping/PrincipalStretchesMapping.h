@@ -61,14 +61,14 @@ public:
 
     Data<bool> asStrain;
     Data<SReal> threshold;
-//    Data<bool> f_PSDStabilization;
+    Data<bool> f_PSDStabilization;
 
 
     virtual void reinit()
     {
         for(unsigned int i=0; i<this->jacobian.size(); i++)
         {
-            this->jacobian[i].init( asStrain.getValue(), threshold.getValue()/*, f_PSDStabilization.getValue()*/ );
+            this->jacobian[i].init( asStrain.getValue(), threshold.getValue(), f_PSDStabilization.getValue() );
         }
         Inherit::reinit();
     }
@@ -80,7 +80,7 @@ protected:
         : Inherit ( from, to )
         , asStrain(initData(&asStrain,false,"asStrain","compute principal stretches - 1"))
         , threshold(initData(&threshold,-std::numeric_limits<SReal>::max(),"threshold","threshold the principal stretches to ensure detF=J=U1*U2*U3 is not too close or < 0"))
-//        , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project geometric stiffness sub-matrices to their nearest symmetric, positive semi-definite matrices"))
+        , f_PSDStabilization(initData(&f_PSDStabilization,false,"PSDStabilization","project geometric stiffness sub-matrices to their nearest symmetric, positive semi-definite matrices"))
     {
     }
 

@@ -256,9 +256,9 @@ void GenerateRigidMass<DataTypes, MassType>::generateRigid()
     *rigidmass *= m_density.getValue();
 
     // Data updating
-    this->mass.setValue(rigidmass->mass,true);
-    this->volume.setValue(rigidmass->volume,true);
-    this->inertiaMatrix.setValue(rigidmass->inertiaMatrix,true);
+    this->mass.setValue(rigidmass->mass);
+    this->volume.setValue(rigidmass->volume);
+    this->inertiaMatrix.setValue(rigidmass->inertiaMatrix);
 
     this->rigidMass.endEdit();
 

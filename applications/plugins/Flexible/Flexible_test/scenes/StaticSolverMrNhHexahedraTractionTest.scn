@@ -39,7 +39,7 @@
       <QuadSetTopologyModifier />
       <QuadSetTopologyAlgorithms template="Vec3d" />
       <QuadSetGeometryAlgorithms template="Vec3d" />
-      <Hexa2QuadTopologicalMapping name="default28" object1="../hexahedra" object2="QuadContainer" />
+      <Hexa2QuadTopologicalMapping name="default28" />
       <!--Compression-->
       <QuadPressureForceField normal="1 0 0" dmin="0.99" dmax="1.01" showForces="1"/>
      

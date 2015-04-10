@@ -21,7 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
-
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include <string>
 #include "Utils/Shaders/shaderIsoLines.h"
 
@@ -42,13 +42,13 @@ ShaderIsoLines::ShaderIsoLines(int maxNbIsoPerTriangle)
 	m_nameFS = "shaderIsoLines_fs";
 	m_nameGS = "shaderIsoLines_gs";
 
-	std::string glxvert(*GLSLShader::DEFINES_GL);
+	std::string glxvert(GLSLShader::defines_gl());
 	glxvert.append(vertexShaderText);
 
 	std::string glxgeom = GLSLShader::defines_Geom("triangles", "line_strip", 2*maxNbIsoPerTriangle);
 	glxgeom.append(geometryShaderText);
 
-	std::string glxfrag(*GLSLShader::DEFINES_GL);
+	std::string glxfrag(GLSLShader::defines_gl());
 	glxfrag.append(fragmentShaderText);
 
 	loadShadersFromMemory(glxvert.c_str(), glxfrag.c_str(), glxgeom.c_str(), GL_TRIANGLES, GL_LINE_STRIP, 2*maxNbIsoPerTriangle);

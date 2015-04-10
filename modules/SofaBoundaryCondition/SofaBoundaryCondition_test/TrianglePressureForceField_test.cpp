@@ -91,8 +91,7 @@ TYPED_TEST_CASE(TrianglePressureForceField_test, TestTypes);
 // first test case: test force value
 TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)
 {
-    this->errorMax = 1000;
-    this->deltaMax = 1000;
+    this->errorMax *= 10;
     this->debug = false;
 
     this->test_valueForce();
@@ -101,8 +100,7 @@ TYPED_TEST( TrianglePressureForceField_test , trianglePressureForceFieldTest)
 // second test case: test that force is constant
 TYPED_TEST( TrianglePressureForceField_test , constantTrianglePressureForceFieldTest)
 {
-    this->errorMax = 1000;
-    this->deltaMax = 1000;
+    this->errorMax *= 10;
     this->debug = false;
 
     this->test_constantForce();

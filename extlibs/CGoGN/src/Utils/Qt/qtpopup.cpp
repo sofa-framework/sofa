@@ -21,6 +21,7 @@
 * Contact information: cgogn@unistra.fr                                        *
 *                                                                              *
 *******************************************************************************/
+#define CGoGN_UTILS_DLL_EXPORT 1
 #include "Utils/Qt/qtpopup.h"
  #include <QVBoxLayout>
  #include <QHBoxLayout>

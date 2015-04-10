@@ -103,15 +103,15 @@ public :
 	/// get the number of control points corresponding to the vertices of the tetrahedra 
 	size_t getNumberOfTetrahedralPoints() const;
 	/// get the global index of the Bezier  point associated with a given tetrahedron index and given its 4D Index   
-	size_t getGlobalIndexOfBezierPoint(const size_t tetrahedronIndex,const TetrahedronBezierIndex id) ;
+	size_t getGlobalIndexOfBezierPoint(const TetraID tetrahedronIndex,const TetrahedronBezierIndex id) ;
 	/// get the indices of all control points associated with a given tetrahedron
-	void getGlobalIndexArrayOfBezierPointsInTetrahedron(const size_t tetrahedronIndex, VecPointID & indexArray) ;
+	void getGlobalIndexArrayOfBezierPointsInTetrahedron(const TetraID tetrahedronIndex, VecPointID & indexArray) ;
 	/// return the Bezier index given the local index in a tetrahedron
 	TetrahedronBezierIndex getTetrahedronBezierIndex(const size_t localIndex) const;
 	/// get the Tetrahedron Bezier Index Array of degree d
 	sofa::helper::vector<TetrahedronBezierIndex> getTetrahedronBezierIndexArray() const;
 	/// get the Tetrahedron Bezier Index Array of a given degree 
-	sofa::helper::vector<TetrahedronBezierIndex> getTetrahedronBezierIndexArrayOfGivenDegree(const size_t deg) const;
+	sofa::helper::vector<TetrahedronBezierIndex> getTetrahedronBezierIndexArrayOfGivenDegree(const BezierDegreeType deg) const;
 	/** create an array which maps the local index of a Tetrahedron Bezier Index of degree d-1
 	into a local index of a TBI of degree d by adding respectively (1,0,0,0), (0,1,0,0), (0,0,1,0), (0,0,0,1) **/
 	sofa::helper::vector<LocalTetrahedronIndex> getMapOfTetrahedronBezierIndexArrayFromInferiorDegree() const;

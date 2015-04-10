@@ -284,7 +284,7 @@ void StandardTetrahedralFEMForceField<gpu::cuda::CudaVec3dTypes>::addDForce(cons
 	Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
 	unsigned int nbEdges=_topology->getNbEdges();
-	const vector< topology::Edge> &edgeArray=_topology->getEdges() ;
+    const vector< topology::Edge> &edgeArray=_topology->getEdges() ;
 
     unsigned int nbTetrahedra=_topology->getNbTetrahedra();
 

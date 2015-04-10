@@ -49,7 +49,7 @@ using core::topology::BaseMeshTopology;
 
 SOFA_DECL_CLASS(LocalMinDistance)
 
-int LocalMinDistanceClass = core::RegisterObject("A set of methods to compute (for constraint methods) if two primitives are close enougth to consider they collide")
+int LocalMinDistanceClass = core::RegisterObject("A set of methods to compute (for constraint methods) if two primitives are close enough to consider they collide")
         .add< LocalMinDistance >()
         ;
 

@@ -155,7 +155,7 @@ PyObject *GetDataValuePython(BaseData* data)
         return rows;
     }
     // default (should not happen)...
-    SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" ; returning string value" )
+    SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" ; returning string value (should not come here!)" )
     return PyString_FromString(data->getValueString().c_str());
 }
 

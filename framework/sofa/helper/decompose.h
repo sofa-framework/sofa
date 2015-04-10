@@ -242,12 +242,28 @@ public:
     static int symmetricDiagonalization( const defaulttype::Mat<3,3,Real> &A, defaulttype::Mat<3,3,Real> &Q, defaulttype::Vec<3,Real> &w );
 
 
-    /// project a symmetric 3x3 matrix to the nearest PSD (symmetric, positive semi-definite)
+    /// project a symmetric 3x3 matrix to a PSD (symmetric, positive semi-definite)
     static void PSDProjection( defaulttype::Mat<3,3,Real> &A );
 
-    /// project a symmetric 2x2 matrix to the nearest PSD (symmetric, positive semi-definite)
+    /// project a symmetric 2x2 matrix to a PSD (symmetric, positive semi-definite)
     static void PSDProjection( defaulttype::Mat<2,2,Real> &A );
     static void PSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 );
+
+    // does nothing, for template compatibility
+    static void PSDProjection( defaulttype::Mat<1,1,Real> & ) {}
+
+
+
+    /// project a symmetric 3x3 matrix to a NSD (symmetric, negative semi-definite)
+    static void NSDProjection( defaulttype::Mat<3,3,Real> &A );
+
+    /// project a symmetric 2x2 matrix to a NSD (symmetric, negative semi-definite)
+    static void NSDProjection( defaulttype::Mat<2,2,Real> &A );
+    static void NSDProjection( Real& A00, Real& A01, Real& A10, Real& A11 );
+
+    // does nothing, for template compatibility
+    static void NSDProjection( defaulttype::Mat<1,1,Real> & ) {}
+
 
     /** @} */
 

@@ -28,13 +28,15 @@
 #include "Utils/GLSLShader.h"
 #include "Geometry/vector_gen.h"
 
+#include "Utils/dll.h"
+
 namespace CGoGN
 {
 
 namespace Utils
 {
 
-class ShaderExplodeVolumesLines : public GLSLShader
+class CGoGN_UTILS_API ShaderExplodeVolumesLines : public GLSLShader
 {
 protected:
 	// shader sources

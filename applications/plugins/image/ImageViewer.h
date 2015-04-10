@@ -210,25 +210,11 @@ public:
         if(wplane->getDimensions()[3]<2) vectorVisualization.setDisplayed(false);
         else         vectorVisualization.setGroup("Vectors");
 
-        for(unsigned int i=0;i<3;i++)
-        {
-            cutplane_tex[i]= new helper::gl::Texture(new helper::io::Image,false);
-            cutplane_tex[i]->getImage()->init(cutplane_res,cutplane_res,32);
-        }
-
         raVis rvis(this->vectorVisualization);
 
         whisto->setMergeChannels(!rvis->getRgb());
         wplane->setMergeChannels(!rvis->getRgb());
         wplane->setClamp(whisto->getClamp());
-
-        updateTextures();
-        
-        for(unsigned int i=0;i<3;i++)	cutplane_tex[i]->init();
-        
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
     }
     
     
@@ -334,6 +320,22 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams)
     {
         if (!vparams->displayFlags().getShowVisualModels() || display.getValue()==false) return;
+
+        bool initialized=true;
+        for(unsigned int i=0;i<3;i++) if(!cutplane_tex[i]) initialized=false;
+        if(!initialized)
+        {
+            for(unsigned int i=0;i<3;i++)
+            {
+                cutplane_tex[i]= new helper::gl::Texture(new helper::io::Image,false);
+                cutplane_tex[i]->getImage()->init(cutplane_res,cutplane_res,32);
+            }
+            updateTextures();
+
+            for(unsigned int i=0;i<3;i++) cutplane_tex[i]->init();
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        }
 
         waPoints wpoints(this->points);
         waPlane wplane(this->plane);

@@ -62,7 +62,6 @@ EigenSparseSolver<LinearSolver,symmetric>::EigenSparseSolver()
                      "schur",
                      "use schur complement"))
     , d_regularization(initData(&d_regularization, std::numeric_limits<SReal>::epsilon(), "regularization", "Optional diagonal Tikhonov regularization on constraints"))
-    , d_onlyBilaterals(initData(&d_onlyBilaterals, false, "onlyBilaterals", "Excludes non bilateral constraints from the system?"))
     , pimpl( new pimpl_type )
 {}
 
@@ -108,7 +107,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor(const AssembledSystem& sy
         factor_schur( sys );
     } else {
 
-        SubKKT::projected_kkt(pimpl->sub, sys, d_onlyBilaterals.getValue(), d_regularization.getValue(), symmetric);
+        SubKKT::projected_kkt(pimpl->sub, sys, d_regularization.getValue(), symmetric);
 
         pimpl->sub.factor( *pimpl );
 
@@ -136,12 +135,8 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSys
 
     if( sys.n )
     {
-
         {
             scoped::timer step("schur assembly");
-
-            if( d_onlyBilaterals.getValue() && SubKKT::projected_dual(pimpl->sub, sys) )
-                return; // no bilateral constraints
 
             pimpl->sub.solve_opt(*response, pimpl->PHinvPJT, sys.J );
 
@@ -150,7 +145,6 @@ void EigenSparseSolver<LinearSolver,symmetric>::factor_schur( const AssembledSys
             pimpl->schur = sys.C.transpose();
             
             sparse::fast_add_prod(pimpl->schur, pimpl->tmp, pimpl->PHinvPJT);
-
         }
     
         if( debug.getValue() ){
@@ -193,7 +187,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_kkt(vec& res,
     tmp.head(sys.m) = rhs.head(sys.m);
     if( sys.n ) tmp.tail(sys.n) = -rhs.tail(sys.n);
 
-    pimpl->sub.solve( *pimpl, res, tmp, SubKKT::FULL );
+    pimpl->sub.solve( *pimpl, res, tmp );
     
 }
 
@@ -213,7 +207,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
     }
 
     // in place solve
-    pimpl->sub.solve(*response, free, rhs.head(sys.m), SubKKT::PRIMAL);
+    pimpl->sub.solve(*response, free, rhs.head(sys.m));
     
     if( debug.getValue() ){
         serr << "solve, free motion solution = " << free.transpose() << sendl
@@ -226,7 +220,7 @@ void EigenSparseSolver<LinearSolver,symmetric>::solve_schur(vec& res,
     
     res.head( sys.m ) = free;
     
-    if( sys.n && (!d_onlyBilaterals.getValue() || pimpl->sub.Q.cols() /*there are bilateral constraints*/ ) ) {
+    if( sys.n ) {
 
         vec tmp = rhs.tail( sys.n ) - pimpl->PHinvPJT.transpose() * rhs.head( sys.m );
         

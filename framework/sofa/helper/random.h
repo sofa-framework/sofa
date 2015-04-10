@@ -45,20 +45,43 @@ inline void srand(unsigned seed)
 // Random integer value between 0 and RAND_MAX
 inline int irand()
 {
-   return (std::rand());
+   return std::rand();
 }
 
 // Random double between 0 and 1 [0.0,1.0]
 inline double drand()
 {
-   return (std::rand()* 1.0/RAND_MAX);
+   return std::rand() / RAND_MAX;
+}
+
+// Random double between 0 and max [0.0,max]
+// max must be positive
+inline double drandpos(double max)
+{
+   assert( max >= 0 );
+
+   return drand() * max;
 }
 
 // Random double between -max and max [-max,max]
+// max must be positive
 inline double drand(double max)
 {
-   return ( ((std::rand()*1.0/RAND_MAX) * 2 * max) - max );
+   return drandpos(max) * 2.0 - max;
 }
+
+// Random double in [-max,-min] U [min,max]
+// min and max must be positve
+inline double drand(double min, double max)
+{
+   assert( max >= 0 );
+   assert( min >= 0 );
+   assert( min <= max );
+
+   double tmp = drand(max-min); // [ -(max-min), max-min ]
+   return tmp < 0 ? tmp-min : tmp+min;
+}
+
 
 } // namespace helper
 

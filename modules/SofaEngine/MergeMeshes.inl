@@ -77,7 +77,7 @@ void MergeMeshes<DataTypes>::createInputMeshesData(int nb)
     createInputDataVector(n, vf_tetrahedra, "tetrahedra", "input tetrahedra for mesh ");
     createInputDataVector(n, vf_hexahedra, "hexahedra", "input hexahedra for mesh ");
     if (n != f_nbMeshes.getValue())
-        f_nbMeshes.setValue(n,true);
+        f_nbMeshes.setValue(n);
 }
 
 

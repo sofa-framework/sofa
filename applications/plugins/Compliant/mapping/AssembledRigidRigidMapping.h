@@ -33,6 +33,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/helper/decompose.h>
+
 namespace sofa
 {
 
@@ -95,16 +97,20 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
     virtual void assemble_geometric(const typename self::in_pos_type& in_pos,
                                     const typename self::out_force_type& out_force) {
 
-        // we're done lol
-        if( ! geometricStiffness.getValue() ) return;
+        unsigned geomStiff = geometricStiffness.getValue();
+
+        // we're done
+        if( !geomStiff ) return;
+
 
         // sorted in-out
-        typedef std::map<unsigned, unsigned> in_out_type;
+        typedef std::map<unsigned, vector<unsigned> > in_out_type;
         in_out_type in_out;
 
+        // wahoo it is heavy, can't we find lighter?
         for(unsigned i = 0, n = source.getValue().size(); i < n; ++i) {
             const source_type& s = source.getValue()[i];
-            in_out[ s.first() ] = i;
+            in_out[ s.first() ].push_back(i);
         }
 
         typedef typename self::geometric_type::CompressedMatrix matrix_type;
@@ -118,39 +124,48 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         for(in_out_type::const_iterator it = in_out.begin(), end = in_out.end();
             it != end; ++it) {
 
-            const unsigned i = it->second;
-            const source_type& s = source.getValue()[i];
-            assert( it->first == s.first() );
-            
-			const typename TOut::Deriv& lambda = out_force[i];
-            const typename TOut::Deriv::Vec3& f = lambda.getLinear();
+            const unsigned parentIdx = it->first;
 
-            const typename TOut::Deriv::Quat& R = in_pos[ s.first() ].getOrientation();
-            const typename TOut::Deriv::Vec3& t = s.second().getCenter();
+            defaulttype::Mat<3,3,Real> block;
 
-            const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
+            for( unsigned int w=0 ; w<it->second.size() ; ++w )
+            {
+                const unsigned i = it->second[w];
 
-            typename se3::mat33 block = se3::hat( se3::map(f) ) * se3::hat( se3::map(Rt));
+                const source_type& s = source.getValue()[i];
+                assert( it->first == s.first() );
+
+                const typename TOut::Deriv& lambda = out_force[i];
+                const typename TOut::Deriv::Vec3& f = lambda.getLinear();
+
+                const typename TOut::Deriv::Quat& R = in_pos[ parentIdx ].getOrientation();
+                const typename TOut::Deriv::Vec3& t = s.second().getCenter();
+                const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
+
+                block += defaulttype::crossProductMatrix<Real>( f ) * defaulttype::crossProductMatrix<Real>( Rt );
+            }
+
+            if( geomStiff == 2 )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
 
 			for(unsigned j = 0; j < 3; ++j) {
                 
-				const unsigned row = 6 * s.first() + 3 + j;
+                const unsigned row = 6 * parentIdx + 3 + j;
                 
 				dJ.startVec( row );
 				
 				for(unsigned k = 0; k < 3; ++k) {
-                    const unsigned col = 6 * s.first() + 3 + k;
+                    const unsigned col = 6 * parentIdx + 3 + k;
                     
-					if( block(j, k) ) dJ.insertBack(row, col) = block(j, k);
+                    if( block(j, k) ) dJ.insertBack(row, col) = block[j][k];
 				}
 			}			
  		}
 
         dJ.finalize();
-
-        if( geometricStiffness.getValue() == 2 ) {
-            dJ = (dJ + matrix_type(dJ.transpose())) / 2.0;
-        }
 
     }
 

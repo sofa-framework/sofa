@@ -63,7 +63,7 @@ using std::endl;
   - to validate mapping->applyJT, we apply it after setting the child force fc=vOut, then we check that parent force fp = J^T.fc
   - to validate mapping->applyDJT, we set the child force, and we compare the parent force before and after a small displacement
 
-  The magnitude of the small random changes applied in finite differences is between 0 and deltaMax*epsilon,
+  The magnitude of the small random changes applied in finite differences is between deltaRange.first*epsilon and deltaRange.second*epsilon,
   and a failure is issued if the error is greater than errorMax*epsilon,
   where epsilon=std::numeric_limits<Real>::epsilon() is 1.19209e-07 for float and 2.22045e-16 for double.
 
@@ -112,7 +112,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     typename OutDOFs::SPtr outDofs; ///< mapping output
     simulation::Node::SPtr root;         ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;  ///< created by the constructor an re-used in the tests
-    Real deltaMax; ///< The maximum magnitude of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
+    std::pair<Real,Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is perturbation * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax;     ///< The test is successfull if the (infinite norm of the) difference is less than  errorMax * numeric_limits<Real>::epsilon
     Real errorFactorDJ;     ///< The test for geometric stiffness is successfull if the (infinite norm of the) difference is less than  errorFactorDJ * errorMax * numeric_limits<Real>::epsilon
 
@@ -124,7 +124,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
     unsigned char flags; ///< testing options. (all by default). To be used with precaution. Please implement the missing API in the mapping rather than not testing it.
 
 
-    Mapping_test():deltaMax(1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test():deltaRange(1,1000),errorMax(10),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
     {
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -139,7 +139,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 
-    Mapping_test(std::string fileName):deltaMax(1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
+    Mapping_test(std::string fileName):deltaRange(1,1000),errorMax(100),errorFactorDJ(1),flags(TEST_ASSEMBLY_API)
     {
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -196,9 +196,15 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
                           const InVecCoord parentNew,
                           const OutVecCoord expectedChildNew)
     {
+        if( deltaRange.second / errorMax <= s_minDeltaErrorRatio )
+            ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
+
         if( !(flags & TEST_getJs) ) std::cerr<<"WARNING: MappingTest is not testing getJs\n";
         if( !(flags & TEST_getK) ) std::cerr<<"WARNING: MappingTest is not testing getK\n";
         if( !(flags & TEST_applyJT_matrix) ) std::cerr<<"WARNING: MappingTest is not testing applyJT on matrices\n";
+
+
+        const Real errorThreshold = this->epsilon()*errorMax;
 
         typedef component::linearsolver::EigenSparseMatrix<In,Out> EigenSparseMatrix;
         core::MechanicalParams mparams;
@@ -226,7 +232,8 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         for( unsigned i=0; i<xout.size(); i++ )
         {
             if( !this->isSmall( difference(xout[i],expectedChildNew[i]).norm(), errorMax ) ) {
-                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i];
+                ADD_FAILURE() << "Position of mapped particle " << i << " is wrong: \n" << xout[i] <<"\nexpected: \n" << expectedChildNew[i]
+                              <<  "difference should be less than " << errorThreshold << " (" << difference(xout[i],expectedChildNew[i]).norm() << ")" << endl;
                 succeed = false;
             }
         }
@@ -247,7 +254,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set random child forces and propagate them to the parent
         for( unsigned i=0; i<Nc; i++ ){
-            fc[i] = Out::randomDeriv( 1.0 );
+            fc[i] = Out::randomDeriv( 0.1, 1.0 );
         }
         fp2.fill( InDeriv() );
         WriteInVecDeriv fin = inDofs->writeForces();
@@ -261,7 +268,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
         // set small parent velocities and use them to update the child
         for( unsigned i=0; i<Np; i++ ){
-            vp[i] = In::randomDeriv( this->epsilon() * deltaMax );
+            vp[i] = In::randomDeriv( this->epsilon() * deltaRange.first, this->epsilon() * deltaRange.second );
         }
 //        cout<<"parent velocities vp = " << vp << endl;
         for( unsigned i=0; i<Np; i++ ){             // and small displacements
@@ -300,13 +307,14 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             // ================ test applyJT()
             InVecDeriv jfc( (long)Np,InDeriv());
             J->addMultTranspose(jfc,fc);
-            if( this->vectorMaxDiff(jfc,fp)>this->epsilon()*errorMax ){
+            if( this->vectorMaxDiff(jfc,fp)>errorThreshold ){
                 succeed = false;
-                ADD_FAILURE() << "applyJT test failed"<<endl<<"jfc = " << jfc << endl<<" fp = " << fp << endl;
+                ADD_FAILURE() << "applyJT test failed, difference should be less than " << errorThreshold << " (" << this->vectorMaxDiff(jfc,fp) << ")" << endl
+                              << "jfc = " << jfc << endl<<" fp = " << fp << endl;
             }
             // ================ test getJs()
             // check that J.vp = vc
-            if( this->vectorMaxDiff(Jv,vc)>this->epsilon()*errorMax ){
+            if( this->vectorMaxDiff(Jv,vc)>errorThreshold ){
                 succeed = false;
                 cout<<"vp = " << vp << endl;
                 cout<<"Jvp = " << Jv << endl;
@@ -361,9 +369,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             dxc[i] = difference( xc1[i], xc[i] );
         }
 
-        if( this->vectorMaxDiff(dxc,vc)>this->epsilon()*errorMax ){
+        if( this->vectorMaxDiff(dxc,vc)>errorThreshold ){
             succeed = false;
-            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << this->epsilon()*errorMax << endl
+            ADD_FAILURE() << "applyJ test failed: the difference between child position change and child velocity (dt=1) should be less than  " << errorThreshold << endl
                           << "position change = " << dxc << endl
                           << "velocity        = " << vc << endl;
         }
@@ -386,7 +394,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
 
 
         // ================ test applyDJT()
-        if( this->vectorMaxDiff(dfp,fp12)>this->epsilon()*errorMax*errorFactorDJ ){
+        if( this->vectorMaxDiff(dfp,fp12)>errorThreshold*errorFactorDJ ){
             succeed = false;
             ADD_FAILURE() << "applyDJT test failed" << endl
                           << "dfp    = " << dfp << endl
@@ -418,9 +426,9 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
             }
 
             // check that K.vp = dfp
-            if( this->vectorMaxDiff(Kv,fp12)>this->epsilon()*errorMax*errorFactorDJ ){
+            if( this->vectorMaxDiff(Kv,fp12)>errorThreshold*errorFactorDJ ){
                 succeed = false;
-                ADD_FAILURE() << "K test failed, difference should be less than " << this->epsilon()*errorMax*errorFactorDJ  << endl
+                ADD_FAILURE() << "K test failed, difference should be less than " << errorThreshold*errorFactorDJ  << endl
                               << "Kv    = " << Kv << endl
                               << "dfp = " << fp12 << endl;
             }

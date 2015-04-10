@@ -91,7 +91,7 @@ public:
 };
 
 
-// by default, supposing T is a defaulttype::Mat (usefull for type derivated from defaulttype::Mat)
+// by default, supposing T is a defaulttype::Mat (useful for type derivated from defaulttype::Mat)
 template<class T>
 class matrix_bloc_traits
 {

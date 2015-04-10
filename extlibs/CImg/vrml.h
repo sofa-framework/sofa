@@ -785,4 +785,4 @@ const CImg<T>& _save_vrml(std::FILE *const file, const char *const filename,cons
   return *this;
 }
 
-#endif
+#endif /* cimg_plugin_vrml */

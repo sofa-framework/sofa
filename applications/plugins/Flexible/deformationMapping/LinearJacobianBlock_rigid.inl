@@ -33,35 +33,13 @@
 #include "../types/AffineTypes.h"
 #include "../types/QuadraticTypes.h"
 #include "../types/DeformationGradientTypes.h"
+#include <sofa/helper/decompose.h>
 
 namespace sofa
 {
 
 namespace defaulttype
 {
-
-
-
-template<class Real, class Vec, unsigned size>
-Mat<size, size, Real> hat(const Vec& v)
-{
-    Mat<size, size, Real> res;
-
-    res[0][0] = 0;
-    res[1][1] = 0;
-    res[2][2] = 0;
-
-    res[0][1] = -v.z();
-    res[1][0] = v.z();
-
-    res[0][2] = v.y();
-    res[2][0] = -v.y();
-
-    res[1][2] = -v.x();
-    res[2][1] = v.x();
-
-    return res;
-}
 
 
 
@@ -73,7 +51,7 @@ template<class InReal,class OutReal>
 class LinearJacobianBlock< Rigid3(InReal) , V3(OutReal) > :
     public  BaseJacobianBlock< Rigid3(InReal) , V3(OutReal) >
 {
-public:
+    public:
     typedef Rigid3(InReal) In;
     typedef V3(OutReal) Out;
 
@@ -103,7 +81,10 @@ public:
         - p0 is the position of p in the reference configuration.
         - q0 is the local position of p0.
 
-    Jacobian:    \f$ dp = w.dt + Omega x w.q0 \f$
+    Jacobian:
+        - \f$ dp = w.dt + Omega x w.A.q0 \f$
+    Geometric Stiffness:
+        - \f$ K = dJ^T/dOmega fc = (fc)x (A.w.q0)x  \f$
       */
 
     static const bool constant=false;
@@ -147,25 +128,27 @@ public:
         return J;
     }
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
-        static const unsigned rotation_dimension = In::deriv_total_size - In::spatial_dimensions;
-
         // will only work for 3d rigids
-        Mat<rotation_dimension,rotation_dimension,Real> block = hat<Real,OutDeriv,rotation_dimension>( childForce ) * hat<Real,OutCoord,rotation_dimension>( Pa );
+        Mat<adim,adim,Real> block = crossProductMatrix( childForce ) * crossProductMatrix( Pa );
+
+        if( stabilization )
+        {
+            block.symmetrize(); // symmetrization
+            helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+        }
+
         KBlock K;
-        for( unsigned i=0; i<rotation_dimension; ++i )
-            for( unsigned j=0; j<rotation_dimension; ++j )
+        for( unsigned i=0; i<adim; ++i )
+            for( unsigned j=0; j<adim; ++j )
                 K[dim+i][dim+j] = block[i][j];
         return K;
     }
 
     void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
-        typename In::AngularVector& parentTorque = getVOrientation(df);
-        const typename In::AngularVector& parentRotation = getVOrientation(dx);
-        const typename In::AngularVector& torqueDecrement = In::crosscross( childForce, parentRotation, Pa ) * kfactor;
-        parentTorque -=  torqueDecrement;
+        getAngular(df) += In::crosscross( childForce, Pa, getAngular(dx) ) * kfactor;
     }
 };
 
@@ -178,7 +161,7 @@ template<class InReal,class OutReal>
 class LinearJacobianBlock< Rigid3(InReal) , EV3(OutReal) > :
     public  BaseJacobianBlock< Rigid3(InReal) , EV3(OutReal) >
 {
-public:
+    public:
     typedef Rigid3(InReal) In;
     typedef EV3(OutReal) Out;
 
@@ -208,7 +191,10 @@ public:
         - p0 is the position of p in the reference configuration.
         - q0 is the local position of p0.
 
-    Jacobian:    \f$ dp = w.dt + Omega x A.w.q0 \f$
+    Jacobian:
+        - \f$ dp = w.dt + Omega x w.A.q0 \f$
+    Geometric Stiffness:
+        - \f$ K = dJ^T/dOmega fc = (fc)x (A.w.q0)x  \f$
       */
 
     static const bool constant=false;
@@ -252,25 +238,27 @@ public:
         return J;
     }
 
-    KBlock getK(const OutDeriv& childForce)
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
     {
-        static const unsigned rotation_dimension = In::deriv_total_size - In::spatial_dimensions;
-
         // will only work for 3d rigids
-        Mat<rotation_dimension,rotation_dimension,Real> block = hat<Real,OutDeriv,rotation_dimension>( childForce ) * hat<Real,OutCoord,rotation_dimension>( Pa );
+        Mat<adim,adim,Real> block = crossProductMatrix( childForce ) * crossProductMatrix( Pa );
+
+        if( stabilization )
+        {
+            block.symmetrize(); // symmetrization
+            helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+        }
+
         KBlock K;
-        for( unsigned i=0; i<rotation_dimension; ++i )
-            for( unsigned j=0; j<rotation_dimension; ++j )
+        for( unsigned i=0; i<adim; ++i )
+            for( unsigned j=0; j<adim; ++j )
                 K[dim+i][dim+j] = block[i][j];
         return K;
     }
 
     void addDForce( InDeriv& df, const InDeriv& dx, const OutDeriv& childForce, const SReal& kfactor )
     {
-        typename In::AngularVector& parentTorque = getVOrientation(df);
-        const typename In::AngularVector& parentRotation = getVOrientation(dx);
-        const typename In::AngularVector& torqueDecrement = In::crosscross( childForce, parentRotation, Pa ) * kfactor;
-        parentTorque -=  torqueDecrement;
+        getAngular(df) += In::crosscross( childForce, Pa, getAngular(dx) ) * kfactor;
     }
 };
 
@@ -283,7 +271,7 @@ template<class InReal,class OutReal>
 class LinearJacobianBlock< Rigid3(InReal) , F331(OutReal) > :
     public  BaseJacobianBlock< Rigid3(InReal) , F331(OutReal) >
 {
-public:
+    public:
     typedef Rigid3(InReal) In;
     typedef F331(OutReal) Out;
 
@@ -320,6 +308,8 @@ public:
         - grad denotes spatial derivatives
     Jacobian:
         - \f$ d F = dt.grad w.M + Omega x. A( q0.grad w + w.A0^{-1} ).M\f$
+    Geometric Stiffness:
+        - \f$ K = dJ^T/dOmega fc = (fc)x (A.( q0.grad w + w.A0^{-1} ).M)x  \f$
     */
 
     static const bool constant=false;
@@ -359,9 +349,9 @@ public:
 
         for(unsigned int i=0; i<mdim; ++i) getAngular(result) += cross(PFa.getF().col(i),data.getF().col(i));
 
-//        getAngular(result)[0] += dot(PFa.getF()[1],data.getF()[2]) - dot(PFa.getF()[2],data.getF()[1]);
-//        getAngular(result)[1] += dot(PFa.getF()[2],data.getF()[0]) - dot(PFa.getF()[0],data.getF()[2]);
-//        getAngular(rresult)[2] += dot(PFa.getF()[0],data.getF()[1]) - dot(PFa.getF()[1],data.getF()[0]);
+        //        getAngular(result)[0] += dot(PFa.getF()[1],data.getF()[2]) - dot(PFa.getF()[2],data.getF()[1]);
+        //        getAngular(result)[1] += dot(PFa.getF()[2],data.getF()[0]) - dot(PFa.getF()[0],data.getF()[2]);
+        //        getAngular(rresult)[2] += dot(PFa.getF()[0],data.getF()[1]) - dot(PFa.getF()[1],data.getF()[0]);
     }
 
     MatBlock getJ()
@@ -378,9 +368,31 @@ public:
     }
 
 
-    // TO DO : implement this !!
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
+    {
+        // will only work for 3d rigids
+        KBlock K = KBlock();
+        for(unsigned int k=0; k<mdim; ++k)
+        {
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getF().col(k) ) * crossProductMatrix( PFa.getF().col(k) );
+
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
+            for( unsigned i=0; i<adim; ++i )
+                for( unsigned j=0; j<adim; ++j )
+                    K[dim+i][dim+j] += block[i][j];
+        }
+        return K;
+    }
+
+    void addDForce( InDeriv& df, const InDeriv& dx,  const OutDeriv& childForce, const SReal& kfactor )
+    {
+        for(unsigned int i=0; i<mdim; ++i) getAngular(df) += In::crosscross( childForce.getF().col(i), PFa.getF().col(i), getAngular(dx) ) * kfactor;
+    }
 };
 
 
@@ -392,7 +404,7 @@ template<class InReal,class OutReal>
 class LinearJacobianBlock< Rigid3(InReal) , F321(OutReal) > :
     public  BaseJacobianBlock< Rigid3(InReal) , F321(OutReal) >
 {
-public:
+    public:
     typedef Rigid3(InReal) In;
     typedef F321(OutReal) Out;
 
@@ -429,6 +441,8 @@ public:
         - grad denotes spatial derivatives
     Jacobian:
         - \f$ d F = dt.grad w.M + Omega x. A( q0.grad w + w.A0^{-1} ).M\f$
+    Geometric Stiffness:
+        - \f$ K = dJ^T/dOmega fc = (fc)x (A.( q0.grad w + w.A0^{-1} ).M)x  \f$
     */
 
     static const bool constant=false;
@@ -481,10 +495,31 @@ public:
         return J;
     }
 
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
+    {
+        // will only work for 3d rigids
+        KBlock K = KBlock();
+        for(unsigned int k=0; k<mdim; ++k)
+        {
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getF().col(k) ) * crossProductMatrix( PFa.getF().col(k) );
 
-    // TO DO : implement this !!
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
+            for( unsigned i=0; i<adim; ++i )
+                for( unsigned j=0; j<adim; ++j )
+                    K[dim+i][dim+j] += block[i][j];
+        }
+        return K;
+    }
+
+    void addDForce( InDeriv& df, const InDeriv& dx,  const OutDeriv& childForce, const SReal& kfactor )
+    {
+        for(unsigned int i=0; i<mdim; ++i) getAngular(df) += In::crosscross( childForce.getF().col(i), PFa.getF().col(i), getAngular(dx) ) * kfactor;
+    }
 };
 
 
@@ -496,7 +531,7 @@ template<class InReal,class OutReal>
 class LinearJacobianBlock< Rigid3(InReal) , F311(OutReal) > :
     public  BaseJacobianBlock< Rigid3(InReal) , F311(OutReal) >
 {
-public:
+    public:
     typedef Rigid3(InReal) In;
     typedef F311(OutReal) Out;
 
@@ -533,6 +568,8 @@ public:
         - grad denotes spatial derivatives
     Jacobian:
         - \f$ d F = dt.grad w.M + Omega x. A( q0.grad w + w.A0^{-1} ).M\f$
+    Geometric Stiffness:
+        - \f$ K = dJ^T/dOmega fc = (fc)x (A.( q0.grad w + w.A0^{-1} ).M)x  \f$
     */
 
     static const bool constant=false;
@@ -585,10 +622,31 @@ public:
         return J;
     }
 
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
+    {
+        // will only work for 3d rigids
+        KBlock K = KBlock();
+        for(unsigned int k=0; k<mdim; ++k)
+        {
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getF().col(k) ) * crossProductMatrix( PFa.getF().col(k) );
 
-    // TO DO : implement this !!
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
+            for( unsigned i=0; i<adim; ++i )
+                for( unsigned j=0; j<adim; ++j )
+                    K[dim+i][dim+j] += block[i][j];
+        }
+        return K;
+    }
+
+    void addDForce( InDeriv& df, const InDeriv& dx,  const OutDeriv& childForce, const SReal& kfactor )
+    {
+        for(unsigned int i=0; i<mdim; ++i) getAngular(df) += In::crosscross( childForce.getF().col(i), PFa.getF().col(i), getAngular(dx) ) * kfactor;
+    }
 };
 
 
@@ -600,7 +658,7 @@ template<class InReal,class OutReal>
 class LinearJacobianBlock< Rigid3(InReal) , F332(OutReal) > :
     public  BaseJacobianBlock< Rigid3(InReal) , F332(OutReal) >
 {
-public:
+    public:
     typedef Rigid3(InReal) In;
     typedef F332(OutReal) Out;
 
@@ -641,6 +699,10 @@ public:
     Jacobian:
         - \f$ d F = dt.grad w.M + Omega x. A( q0.grad w + w.A0^{-1} ).M\f$
         - \f$ d (grad F)_k = dt.(grad2 w)_k^T.M + Omega x. A [q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w].M \f$
+    Geometric Stiffness:
+        - \f$ K = dJ^T/dOmega fc = (fc)x (A.( q0.grad w + w.A0^{-1} ).M)x
+                  + dJ^T/dOmega fc = (fc)x (A.[q0.(grad2 w)_k^T + (grad w)_k.A0^{-1} +  A0^{-1}_k.grad w].M)x  \f$
+
     */
 
     static const bool constant=false;
@@ -725,9 +787,36 @@ public:
         return J;
     }
 
-    // TO DO : implement this !!
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
+    {
+        // will only work for 3d rigids
+        KBlock K = KBlock();
+        for(unsigned int k=0; k<mdim; ++k)
+        {
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getF().col(k) ) * crossProductMatrix( PFdFa.getF().col(k) );
+            for (unsigned int m = 0; m < dim; ++m) block += crossProductMatrix( childForce.getGradientF(m).col(k) ) * crossProductMatrix( PFdFa.getGradientF(m).col(k) );
+
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
+            for( unsigned i=0; i<adim; ++i )
+                for( unsigned j=0; j<adim; ++j )
+                    K[dim+i][dim+j] += block[i][j];
+        }
+        return K;
+    }
+
+    void addDForce( InDeriv& df, const InDeriv& dx,  const OutDeriv& childForce, const SReal& kfactor )
+    {
+        for(unsigned int i=0; i<mdim; ++i)
+        {
+            getAngular(df) += In::crosscross( childForce.getF().col(i), PFdFa.getF().col(i), getAngular(dx) ) * kfactor;
+            for (unsigned int m = 0; m < dim; ++m)         getAngular(df) += In::crosscross( childForce.getGradientF(m).col(i), PFdFa.getGradientF(m).col(i), getAngular(dx) ) * kfactor;
+        }
+    }
 };
 
 
@@ -739,7 +828,7 @@ template<class InReal,class OutReal>
 class LinearJacobianBlock< Rigid3(InReal) , Affine3(OutReal) > :
     public  BaseJacobianBlock< Rigid3(InReal) , Affine3(OutReal) >
 {
-public:
+    public:
     typedef Rigid3(InReal) In;
     typedef Affine3(OutReal) Out;
 
@@ -772,8 +861,11 @@ public:
         - p0,F0 is the position of p,F in the reference configuration.
         - q0 is the local position of p0.
     Jacobian:
-        - \f$ dp = w.dt + w.dA.q0\f$
+        - \f$ dp = w.dt + Omega x w.A.q0\f$
         - \f$ d F = w.Omega x. A.A0^{-1}.F0\f$
+    Geometric Stiffness:
+        - \f$ K = dJ^T/dOmega fc = (fc)x (A.w.q0)x
+                + dJ^T/dOmega fc = (fc)x (x.A.A0^{-1}.F0)x  \f$
     */
 
     static const bool constant=false;
@@ -842,9 +934,43 @@ public:
     }
 
 
-    // TO DO : implement this !!
-    KBlock getK(const OutDeriv& /*childForce*/) {return KBlock();}
-    void addDForce( InDeriv& /*df*/, const InDeriv& /*dx*/,  const OutDeriv& /*childForce*/, const SReal& /*kfactor */) {}
+    KBlock getK(const OutDeriv& childForce, bool stabilization=false)
+    {
+        // will only work for 3d rigids
+        KBlock K;
+        Mat<adim,adim,Real> block = crossProductMatrix( childForce.getVCenter() ) * crossProductMatrix( Pa.getCenter() );
+
+        if( stabilization )
+        {
+            block.symmetrize(); // symmetrization
+            helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+        }
+
+        for( unsigned i=0; i<adim; ++i )
+            for( unsigned j=0; j<adim; ++j )
+                K[dim+i][dim+j] = block[i][j];
+        for(unsigned int k=0; k<dim; ++k)
+        {
+            Mat<adim,adim,Real> block = crossProductMatrix( childForce.getVAffine().col(k) ) * crossProductMatrix( Pa.getAffine().col(k) );
+
+            if( stabilization )
+            {
+                block.symmetrize(); // symmetrization
+                helper::Decompose<Real>::NSDProjection( block ); // negative, semi-definite projection
+            }
+
+            for( unsigned i=0; i<adim; ++i )
+                for( unsigned j=0; j<adim; ++j )
+                    K[dim+i][dim+j] += block[i][j];
+        }
+        return K;
+    }
+
+    void addDForce( InDeriv& df, const InDeriv& dx,  const OutDeriv& childForce, const SReal& kfactor )
+    {
+        getAngular(df) += In::crosscross( childForce.getVCenter(), Pa.getCenter(), getAngular(dx) ) * kfactor;
+        for(unsigned int i=0; i<dim; ++i) getAngular(df) += In::crosscross( childForce.getVAffine().col(i), Pa.getAffine().col(i), getAngular(dx) ) * kfactor;
+    }
 };
 
 

@@ -24,6 +24,7 @@ public:
 	virtual void solve(cmat& lval, const cmat& rval) const;
     virtual void solve(vec& lval, const vec& rval) const;
     virtual void reinit();
+    virtual bool isSymmetric() const { return symmetric; }
 
     /// Add identity*regularize to matrix H to make it definite (Tikhonov regularization)
     /// (this is useful when H is projected with a projective constraint and becomes semidefinite)

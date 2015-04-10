@@ -184,7 +184,7 @@ struct ImageContainerSpecialization<defaulttype::IMAGELABEL_IMAGE>
             else if(fname.find(".par")!=std::string::npos || fname.find(".rec")!=std::string::npos)
                 wimage->getCImgList().load_parrec(fname.c_str());
             else if(fname.find(".avi")!=std::string::npos || fname.find(".mov")!=std::string::npos || fname.find(".asf")!=std::string::npos || fname.find(".divx")!=std::string::npos || fname.find(".flv")!=std::string::npos || fname.find(".mpg")!=std::string::npos || fname.find(".m1v")!=std::string::npos || fname.find(".m2v")!=std::string::npos || fname.find(".m4v")!=std::string::npos || fname.find(".mjp")!=std::string::npos || fname.find(".mkv")!=std::string::npos || fname.find(".mpe")!=std::string::npos || fname.find(".movie")!=std::string::npos || fname.find(".ogm")!=std::string::npos || fname.find(".ogg")!=std::string::npos || fname.find(".qt")!=std::string::npos || fname.find(".rm")!=std::string::npos || fname.find(".vob")!=std::string::npos || fname.find(".wmv")!=std::string::npos || fname.find(".xvid")!=std::string::npos || fname.find(".mpeg")!=std::string::npos )
-                wimage->getCImgList().load_ffmpeg(fname.c_str());
+                wimage->getCImgList().load_ffmpeg_external(fname.c_str());
             else if (fname.find(".hdr")!=std::string::npos || fname.find(".nii")!=std::string::npos)
             {
                 float voxsize[3];

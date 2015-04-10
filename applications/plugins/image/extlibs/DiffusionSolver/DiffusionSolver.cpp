@@ -4,6 +4,9 @@
 #include <assert.h>
 #include <iostream>
 #include <vector>
+#ifdef WIN32
+#include <algorithm> // Necessary to have the function std::min on visual studio 2013
+#endif
 
 #include <sofa/helper/IndexOpenMP.h>
 
@@ -300,7 +303,7 @@ void genericColoredGSImpl(ImageType& img, const MaskType& mask, unsigned iterati
         std::swap( KO, OK );
     }
 
-    std::cerr<<"DiffusionSolver::solveGaussSeidel "<<it<<" iterations"<<std::endl;
+//    std::cerr<<"DiffusionSolver::solveGaussSeidel "<<it<<" iterations"<<std::endl;
 }
 
 
@@ -354,7 +357,7 @@ void genericGSImpl(ImageType& img, const MaskType& mask, unsigned iterations, Re
         }
     }
 
-    std::cerr<<"DiffusionSolver::solveGaussSeidel "<<it<<" iterations"<<std::endl;
+//    std::cerr<<"DiffusionSolver::solveGaussSeidel "<<it<<" iterations"<<std::endl;
 }
 
 
@@ -420,7 +423,7 @@ void genericJacobiImpl(ImageType& img, const MaskType& mask, unsigned iterations
         std::swap( current, previous );
     }
 
-    std::cerr<<"DiffusionSolver::solveJacobi "<<it<<" iterations"<<std::endl;
+//    std::cerr<<"DiffusionSolver::solveJacobi "<<it<<" iterations"<<std::endl;
 }
 
 
@@ -657,7 +660,7 @@ void genericCGImpl(ImageType& img, const MaskType& mask, unsigned iterations, Re
         rnormold = rnorm;
     }
 
-    std::cerr<<"DiffusionSolver::solveCG "<<it<<" iterations"<<std::endl;
+//    std::cerr<<"DiffusionSolver::solveCG "<<it<<" iterations"<<std::endl;
 }
 
 
