@@ -657,17 +657,22 @@ template<class T>
 class WriteOnlyAccessor : public WriteAccessor< core::objectmodel::Data<T> >
 {
 public:
+
+    typedef WriteAccessor< T > Base;
+    typedef WriteAccessor< core::objectmodel::Data<T> > Inherit;
+    typedef typename Inherit::data_container_type data_container_type;
+    typedef typename Inherit::container_type container_type;
+
     // these are forbidden (until c++11 move semantics) as they break
     // RAII encapsulation. the reference member 'data' prevents them
     // anyways, but the intent is more obvious like this.
     WriteOnlyAccessor(const WriteOnlyAccessor& );
     WriteOnlyAccessor& operator=(const WriteOnlyAccessor& );
 
-    WriteOnlyAccessor(data_container_type& d) : Inherit(*d.beginWriteOnly()), data(d), dparams(NULL) {}
-    WriteOnlyAccessor(data_container_type* d) : Inherit(*d->beginWriteOnly()), data(*d), dparams(NULL) {}
-    WriteOnlyAccessor(const core::ExecParams* params, data_container_type& d) : Inherit(*d.beginWriteOnly(params)), data(d), dparams(params) {}
-    WriteOnlyAccessor(const core::ExecParams* params, data_container_type* d) : Inherit(*d->beginWriteOnly(params)), data(*d), dparams(params) {}
-    ~WriteOnlyAccessor() { if (dparams) data.endEdit(dparams); else data.endEdit(); }
+    WriteOnlyAccessor(data_container_type& d) : Base(*d.beginWriteOnly()), Inherit::data(d), Inherit::dparams(NULL) {}
+    WriteOnlyAccessor(data_container_type* d) : Base(*d->beginWriteOnly()), Inherit::data(*d), Inherit::dparams(NULL) {}
+    WriteOnlyAccessor(const core::ExecParams* params, data_container_type& d) : Base(*d.beginWriteOnly(params)), Inherit::data(d), Inherit::dparams(params) {}
+    WriteOnlyAccessor(const core::ExecParams* params, data_container_type* d) : Base(*d->beginWriteOnly(params)), Inherit::data(*d), Inherit::dparams(params) {}
 };
 
 /// Easy syntax for getting write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
@@ -676,7 +681,7 @@ inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<
 
 /// Easy syntax for getting write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
 template<class T>
-inline WriteOnlyAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) { return WriteOnlyAccessor<core::objectmodel::Data<T> >(data); }
+inline WriteOnlyAccessor<core::objectmodel::Data<T> > writeOnly(core::objectmodel::Data<T>& data) { return WriteOnlyAccessor<core::objectmodel::Data<T> >(data); }
 
 
 } // namespace helper
