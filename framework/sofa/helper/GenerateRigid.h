@@ -65,7 +65,7 @@ struct GenerateRigidInfo
 };
 
 /// user friendly function to compute rigid info from a mesh, a density, a scale
-void generateRigid( GenerateRigidInfo& res
+void SOFA_HELPER_API generateRigid( GenerateRigidInfo& res
                                   , io::Mesh *mesh
                                   , std::string const& meshName
                                   , SReal density
