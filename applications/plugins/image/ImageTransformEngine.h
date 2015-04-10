@@ -105,8 +105,8 @@ protected:
 
     virtual void update()
     {
-        cleanDirty();
-        raTransform inT(this->inputTransform);
+		raTransform inT(this->inputTransform);
+		cleanDirty(); // cleanDirty is set here to avoid the multiple call of the engines, this issue is due to the readAccessor
         waTransform outT(this->outputTransform);
 
         Real s;
