@@ -47,6 +47,14 @@ SOFA_DECL_CLASS(MLSMapping_rigid)
 
 using namespace defaulttype;
 
+template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Rigid3Types, Vec3Types > >;
+template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Rigid3Types, ExtVec3fTypes > >;
+template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Rigid3Types, F331Types > >;
+template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Rigid3Types, F321Types > >;
+template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Rigid3Types, F311Types > >;
+template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Rigid3Types, F332Types > >;
+
+
 // Register in the Factory
 int MLSMappingClass_rigid = core::RegisterObject("Map child positions using generalized moving least squares.")
         .add< MLSMapping< Rigid3Types, Vec3Types > >()
@@ -65,6 +73,7 @@ template class SOFA_Flexible_API MLSMapping< Rigid3Types, F321Types >;
 template class SOFA_Flexible_API MLSMapping< Rigid3Types, F311Types >;
 template class SOFA_Flexible_API MLSMapping< Rigid3Types, F332Types >;
 //template class SOFA_Flexible_API MLSMapping< Rigid3Types, Affine3Types >;
+
 
 } // namespace mapping
 } // namespace component
