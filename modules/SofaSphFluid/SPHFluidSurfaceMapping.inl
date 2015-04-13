@@ -29,8 +29,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaSphFluid/SpatialGridContainer.inl>
 
-#include <sofa/core/Mapping.inl>
-
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/MarchingCubeUtility.h> // for marching cube tables
 #include <sofa/helper/gl/template.h>

@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_INL
 
-#include <sofa/core/behavior/ForceField.inl>
 #include <SofaMiscForceField/WashingMachineForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>

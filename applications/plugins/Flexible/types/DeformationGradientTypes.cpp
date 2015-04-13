@@ -29,9 +29,35 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <SofaBaseMechanics/MechanicalObject.inl>
+#include <sofa/core/State.inl>
 
 namespace sofa
 {
+
+using namespace sofa::defaulttype;
+
+
+namespace core
+{
+
+#ifndef SOFA_FLOAT
+template class SOFA_Flexible_API State<F331dTypes>;
+template class SOFA_Flexible_API State<F321dTypes>;
+template class SOFA_Flexible_API State<F311dTypes>;
+template class SOFA_Flexible_API State<F332dTypes>;
+template class SOFA_Flexible_API State<F221dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_Flexible_API State<F331fTypes>;
+template class SOFA_Flexible_API State<F321fTypes>;
+template class SOFA_Flexible_API State<F311fTypes>;
+template class SOFA_Flexible_API State<F332fTypes>;
+template class SOFA_Flexible_API State<F221fTypes>;
+#endif
+
+} // namespace core
+
+
 namespace component
 {
 namespace container
@@ -241,7 +267,6 @@ void MechanicalObject<F332Types >::draw(const core::visual::VisualParams* vparam
 
 SOFA_DECL_CLASS ( DefGradientMechanicalObject )
 
-using namespace sofa::defaulttype;
 
 int DefGradientMechanicalObjectClass = core::RegisterObject ( "mechanical state vectors" )
 #ifndef SOFA_FLOAT

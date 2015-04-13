@@ -31,7 +31,6 @@
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa

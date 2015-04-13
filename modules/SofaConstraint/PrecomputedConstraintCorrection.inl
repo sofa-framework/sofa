@@ -27,7 +27,7 @@
 
 #include "PrecomputedConstraintCorrection.h"
 
-#include <sofa/core/behavior/ConstraintCorrection.inl>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
@@ -37,7 +37,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 
-#include <SofaSimpleFem/TetrahedronFEMForceField.inl>
+#include <SofaSimpleFem/TetrahedronFEMForceField.h>
 
 #include <sofa/core/behavior/RotationFinder.h>
 

@@ -26,7 +26,6 @@
 #define SOFA_CORE_COLLISION_GENERICCONTACTCORRECTION_INL
 
 #include "GenericConstraintCorrection.h"
-#include <sofa/core/behavior/ConstraintCorrection.inl>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>

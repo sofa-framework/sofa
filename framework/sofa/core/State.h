@@ -29,6 +29,7 @@
 #include <sofa/core/BaseState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <limits>
 
 namespace sofa
@@ -179,13 +180,12 @@ extern template class SOFA_CORE_API State<defaulttype::Rigid3fTypes>;
 
 extern template class SOFA_CORE_API State<defaulttype::ExtVec3fTypes>;
 
+extern template class SOFA_CORE_API State<defaulttype::LaparoscopicRigid3Types>;
+
 #endif
 } // namespace core
 
 } // namespace sofa
 
-#ifndef SOFA_EXTERN_TEMPLATE
-#include <sofa/core/State.inl>
-#endif
 
 #endif
