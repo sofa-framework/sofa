@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_INL
 #define SOFA_COMPONENT_MAPPING_TriangleStrainAverageMapping_INL
 
-#include "../deformationMapping/TriangleStrainAverageMapping.h"
+#include "TriangleStrainAverageMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <map>
 #include <iostream>

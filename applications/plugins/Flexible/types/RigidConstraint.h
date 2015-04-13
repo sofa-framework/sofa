@@ -29,7 +29,7 @@
 #include "AffineTypes.h"
 #include "QuadraticTypes.h"
 
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
+#include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>

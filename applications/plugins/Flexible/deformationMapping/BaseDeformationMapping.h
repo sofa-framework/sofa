@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_H
 
 #include "../initFlexible.h"
-#include <sofa/core/Mapping.inl>
+#include <sofa/core/Mapping.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -243,51 +243,13 @@ public:
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId );
     virtual void applyJT(const core::ConstraintParams * /*cparams*/ , Data<InMatrixDeriv>& /*out*/, const Data<OutMatrixDeriv>& /*in*/);
 
-    const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/)
-    {
-        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
-        else if( this->maskTo && this->maskTo->isInUse() )
-        {
-            if( previousMask!=this->maskTo->getEntries() )
-            {
-                previousMask = this->maskTo->getEntries();
-                updateJ();
-            }
-        }
-        else if( !eigenJacobian.compressedMatrix.nonZeros() ) updateJ();
-
-        return &eigenJacobian;
-    }
+    const defaulttype::BaseMatrix* getJ(const core::MechanicalParams * /*mparams*/);
 
     // Compliant plugin experimental API
-    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs()
-    {
-        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
-        else if( this->maskTo && this->maskTo->isInUse() )
-        {
-            if( previousMask!=this->maskTo->getEntries()  )
-            {
-                previousMask = this->maskTo->getEntries();
-                updateJ();
-            }
-
-//            typedef helper::ParticleMask ParticleMask;
-//            const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
-//            for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
-//                std::cerr<<*it<<" ";
-//            std::cerr<<std::endl;
-        }
-        else if( !eigenJacobian.compressedMatrix.nonZeros() ) updateJ();
-
-        return &baseMatrices;
-    }
+    virtual const vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
     virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
-    virtual const defaulttype::BaseMatrix* getK()
-    {
-        if( BlockType::constant || !K.compressedMatrix.nonZeros() ) return NULL;
-        else return &K;
-    }
+    virtual const defaulttype::BaseMatrix* getK();
 
     void draw(const core::visual::VisualParams* vparams);
 
@@ -332,11 +294,7 @@ public:
 
     //@}
 
-    SparseMatrix& getJacobianBlocks()
-    {
-        if(!this->assemble.getValue() || !BlockType::constant) updateJ();
-        return jacobian;
-    }
+    SparseMatrix& getJacobianBlocks();
 
     void setWeights(const VecVReal& weights, const VecVRef& indices)
     {
