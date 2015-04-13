@@ -26,14 +26,12 @@
 #define SOFA_COMPONENT_MAPPING_MLSMAPPING_H
 
 #include "../initFlexible.h"
-#include "../deformationMapping/BaseDeformationMapping.inl"
-#include "../deformationMapping/MLSJacobianBlock.h"
-#include "../deformationMapping/MLSJacobianBlock_point.inl"
-#include "../deformationMapping/MLSJacobianBlock_affine.inl"
-#include "../deformationMapping/MLSJacobianBlock_rigid.inl"
-#include "../deformationMapping/MLSJacobianBlock_quadratic.inl"
-//#include <SofaBaseMechanics/MechanicalObject.inl>
-#include <sofa/core/State.inl>
+#include "BaseDeformationMapping.h"
+#include "BaseDeformationImpl.inl"
+#include "MLSJacobianBlock_point.inl"
+#include "MLSJacobianBlock_affine.inl"
+#include "MLSJacobianBlock_rigid.inl"
+#include "MLSJacobianBlock_quadratic.inl"
 
 
 namespace sofa

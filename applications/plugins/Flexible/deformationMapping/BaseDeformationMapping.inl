@@ -25,8 +25,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_INL
 #define SOFA_COMPONENT_MAPPING_BaseDeformationMAPPING_INL
 
-#include "../deformationMapping/BaseDeformationMapping.h"
-#include "../deformationMapping/BaseDeformationImpl.inl"
+#include "BaseDeformationMapping.h"
+#include "BaseDeformationImpl.inl"
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include "../quadrature/BaseGaussPointSampler.h"
 #include <sofa/helper/gl/Color.h>
@@ -1068,6 +1068,61 @@ void BaseDeformationMappingT<JacobianBlockType>::draw(const core::visual::Visual
 #endif /* SOFA_NO_OPENGL */
 }
 
+
+template <class JacobianBlockType>
+const defaulttype::BaseMatrix* BaseDeformationMappingT<JacobianBlockType>::getJ(const core::MechanicalParams * /*mparams*/)
+{
+    if(!this->assemble.getValue() || !BlockType::constant) updateJ();
+    else if( this->maskTo && this->maskTo->isInUse() )
+    {
+        if( previousMask!=this->maskTo->getEntries() )
+        {
+            previousMask = this->maskTo->getEntries();
+            updateJ();
+        }
+    }
+    else if( !eigenJacobian.compressedMatrix.nonZeros() ) updateJ();
+
+    return &eigenJacobian;
+}
+
+
+template <class JacobianBlockType>
+const vector<sofa::defaulttype::BaseMatrix*>* BaseDeformationMappingT<JacobianBlockType>::getJs()
+{
+    if(!this->assemble.getValue() || !BlockType::constant) updateJ();
+    else if( this->maskTo && this->maskTo->isInUse() )
+    {
+        if( previousMask!=this->maskTo->getEntries()  )
+        {
+            previousMask = this->maskTo->getEntries();
+            updateJ();
+        }
+
+//            typedef helper::ParticleMask ParticleMask;
+//            const ParticleMask::InternalStorage &indices=this->maskTo->getEntries();
+//            for (ParticleMask::InternalStorage::const_iterator  it=indices.begin(); it!=indices.end(); it++ )
+//                std::cerr<<*it<<" ";
+//            std::cerr<<std::endl;
+    }
+    else if( !eigenJacobian.compressedMatrix.nonZeros() ) updateJ();
+
+    return &baseMatrices;
+}
+
+template <class JacobianBlockType>
+const defaulttype::BaseMatrix* BaseDeformationMappingT<JacobianBlockType>::getK()
+{
+    if( BlockType::constant || !K.compressedMatrix.nonZeros() ) return NULL;
+    else return &K;
+}
+
+template <class JacobianBlockType>
+typename BaseDeformationMappingT<JacobianBlockType>::SparseMatrix& BaseDeformationMappingT<JacobianBlockType>::getJacobianBlocks()
+{
+    if(!this->assemble.getValue() || !BlockType::constant) updateJ();
+    return jacobian;
+}
 
 
 

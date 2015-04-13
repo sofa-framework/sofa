@@ -32,12 +32,15 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/common/Simulation.h>
 
-//#include <SofaBaseMechanics/MechanicalObject.inl>
-#include <sofa/core/Mapping.inl>
+#include <sofa/core/Mapping.h>
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/helper/IndexOpenMP.h>
+
+
+#include "../types/DeformationGradientTypes.h"
+#include "../types/StrainTypes.h"
 
 
 namespace sofa
@@ -423,5 +426,6 @@ protected:
 } // namespace component
 
 } // namespace sofa
+
 
 #endif

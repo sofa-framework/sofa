@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_INL
 #define SOFA_COMPONENT_MAPPING_TriangleDeformationMapping_INL
 
-#include "../deformationMapping/TriangleDeformationMapping.h"
+#include "TriangleDeformationMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 using std::cerr;

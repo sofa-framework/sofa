@@ -121,6 +121,7 @@ set(SOURCE_FILES
     shapeFunction/HatShapeFunction.cpp 
     shapeFunction/BarycentricShapeFunction.cpp 
     shapeFunction/BezierShapeFunction.cpp
+    deformationMapping/BaseDeformationMapping.cpp
     deformationMapping/LinearMapping_point.cpp
     deformationMapping/LinearMapping_affine.cpp 
     deformationMapping/LinearMapping_rigid.cpp 
@@ -138,6 +139,7 @@ set(SOURCE_FILES
     engine/ComputeDualQuatEngine.cpp
     engine/ComputeWeightEngine.cpp
     mass/AffineMass.cpp
+    strainMapping/BaseStrainMapping.cpp
     strainMapping/CauchyStrainMapping.cpp
     strainMapping/GreenStrainMapping.cpp
     strainMapping/CorotationalStrainMapping.cpp 
@@ -145,6 +147,7 @@ set(SOURCE_FILES
     strainMapping/InvariantMapping.cpp 
     strainMapping/PlasticStrainMapping.cpp 
     strainMapping/RelativeStrainMapping.cpp 
+    material/BaseMaterialForceField.cpp
     material/HookeForceField.cpp 
     material/StabilizedHookeForceField.cpp 
     material/NeoHookeanForceField.cpp 
