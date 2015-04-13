@@ -22,11 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_MAPPING_LINEARMULTIMAPPING_rigidaffine_CPP
 
-#include "../initFlexible.h"
-#include "LinearMultiMapping.h"
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/core/Multi2Mapping.inl>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -34,40 +31,22 @@
 #include "../types/QuadraticTypes.h"
 #include "../types/DeformationGradientTypes.h"
 
-
-#include "BaseDeformationMultiMapping.inl"
-
 namespace sofa
 {
-namespace component
+namespace core
 {
-namespace mapping
-{
-
-SOFA_DECL_CLASS(LinearMultiMapping_rigidaffine)
 
 using namespace defaulttype;
 
-// Register in the Factory
-int LinearMultiMappingClass_rigid = core::RegisterObject("Map child positions as a linear combination of parents.")
-        .add< LinearMultiMapping< Rigid3Types, Affine3Types, Vec3Types > >(true)
-        .add< LinearMultiMapping< Rigid3Types, Affine3Types, ExtVec3fTypes > >()
-        .add< LinearMultiMapping< Rigid3Types, Affine3Types, F331Types > >()
-        .add< LinearMultiMapping< Rigid3Types, Affine3Types, F321Types > >()
-        .add< LinearMultiMapping< Rigid3Types, Affine3Types, F311Types > >()
-        .add< LinearMultiMapping< Rigid3Types, Affine3Types, F332Types > >()
-        .add< LinearMultiMapping< Rigid3Types, Affine3Types, Affine3Types > >()
-        ;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, Vec3Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, ExtVec3fTypes >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, F331Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, F321Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, F311Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, F332Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, Affine3Types >;
 
-template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, Vec3Types >;
-template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, ExtVec3fTypes >;
-template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, F331Types >;
-template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, F321Types >;
-template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, F311Types >;
-template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, F332Types >;
-template class SOFA_Flexible_API LinearMultiMapping< Rigid3Types, Affine3Types, Affine3Types >;
 
-} // namespace mapping
-} // namespace component
+} // namespace core
+
 } // namespace sofa
-
