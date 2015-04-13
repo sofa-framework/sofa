@@ -48,7 +48,6 @@
 #include <GL/gl.h>
 #endif
 #endif
-#include <sofa/core/behavior/ForceField.inl>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <algorithm>
 #include <iterator>

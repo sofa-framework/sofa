@@ -28,8 +28,6 @@
 #include <SofaMiscMapping/CenterOfMassMulti2Mapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/core/Multi2Mapping.inl>
-
 #include <sofa/simulation/common/Simulation.h>
 
 #include <algorithm>

@@ -53,6 +53,8 @@ template class SOFA_CORE_API State<Rigid3fTypes>;
 
 template class SOFA_CORE_API State<ExtVec3fTypes>;
 
+template class SOFA_CORE_API State<LaparoscopicRigid3Types>;
+
 
 
 } // namespace core

@@ -27,7 +27,6 @@
 
 #include <SofaObjectInteraction/AttachConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/PairInteractionProjectiveConstraintSet.inl>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>

@@ -29,7 +29,6 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL
 
 #include <SofaDeformable/StiffSpringForceField.h>
-#include <SofaDeformable/SpringForceField.inl>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/visual/VisualParams.h>

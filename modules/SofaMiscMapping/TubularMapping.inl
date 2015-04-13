@@ -28,8 +28,6 @@
 #include <SofaMiscMapping/TubularMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/core/Mapping.inl>
-
 namespace sofa
 {
 
