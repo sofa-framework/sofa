@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 #include <set>
+#include <list>
 
 
 namespace sofa

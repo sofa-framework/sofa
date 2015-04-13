@@ -31,7 +31,6 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/GraphScatteredTypes.h>
-#include <SofaBaseLinearSolver/MatrixLinearSolver.inl>
 
 #include <sstream>
 #include <list>

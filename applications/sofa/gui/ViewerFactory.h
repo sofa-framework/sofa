@@ -25,7 +25,6 @@
 #ifndef SOFA_GUI_VIEWERFACTORY_H
 #define SOFA_GUI_VIEWERFACTORY_H
 
-#include <sofa/helper/Factory.h>
 #include <sofa/helper/Factory.inl>
 #include "BaseViewer.h"
 

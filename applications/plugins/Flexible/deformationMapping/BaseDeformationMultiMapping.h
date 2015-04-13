@@ -40,7 +40,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/helper/kdTree.inl>
+#include <sofa/helper/kdTree.h>
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
