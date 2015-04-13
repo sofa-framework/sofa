@@ -122,6 +122,7 @@ set(SOURCE_FILES
     shapeFunction/BarycentricShapeFunction.cpp 
     shapeFunction/BezierShapeFunction.cpp
     deformationMapping/BaseDeformationMapping.cpp
+    deformationMapping/BaseDeformationMultiMapping.cpp
     deformationMapping/LinearMapping_point.cpp
     deformationMapping/LinearMapping_affine.cpp 
     deformationMapping/LinearMapping_rigid.cpp 
