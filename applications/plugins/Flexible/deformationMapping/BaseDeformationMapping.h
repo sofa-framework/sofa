@@ -237,7 +237,7 @@ public:
 
     virtual void apply(OutVecCoord& out, const InVecCoord& in);
     virtual void apply(const core::MechanicalParams * /*mparams*/ , Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn);
-    void applyJ(OutVecDeriv& out, const InVecDeriv& in);
+    virtual void applyJ(OutVecDeriv& out, const InVecDeriv& in);
     virtual void applyJ(const core::MechanicalParams * /*mparams*/ , Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn);
     virtual void applyJT(const core::MechanicalParams * /*mparams*/ , Data<InVecDeriv>& dIn, const Data<OutVecDeriv>& dOut);
     virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentDfId, core::ConstMultiVecDerivId );
