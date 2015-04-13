@@ -47,6 +47,11 @@ SOFA_DECL_CLASS(MLSMapping_quadratic)
 
 using namespace defaulttype;
 
+template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Quadratic3Types, Vec3Types > >;
+template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Quadratic3Types, ExtVec3fTypes > >;
+template class SOFA_Flexible_API BaseDeformationMappingT< defaulttype::MLSJacobianBlock< Quadratic3Types, F331Types > >;
+
+
 // Register in the Factory
 int MLSMappingClass_quadratic = core::RegisterObject("Map child positions using generalized moving least squares.")
         .add< MLSMapping< Quadratic3Types, Vec3Types > >()
@@ -65,7 +70,6 @@ template class SOFA_Flexible_API MLSMapping< Quadratic3Types, F331Types >;
 //template class SOFA_Flexible_API MLSMapping< Quadratic3Types, F311Types >;
 //template class SOFA_Flexible_API MLSMapping< Quadratic3Types, F332Types >;
 //template class SOFA_Flexible_API MLSMapping< Quadratic3Types, Affine3Types >;
-
 
 
 } // namespace mapping

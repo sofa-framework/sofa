@@ -48,6 +48,15 @@ SOFA_DECL_CLASS(LinearMultiMapping_rigidaffine)
 
 using namespace defaulttype;
 
+template class SOFA_Flexible_API BaseDeformationMultiMappingT< defaulttype::LinearJacobianBlock< Rigid3Types, Vec3Types >, defaulttype::LinearJacobianBlock< Affine3Types, Vec3Types > >;
+template class SOFA_Flexible_API BaseDeformationMultiMappingT< defaulttype::LinearJacobianBlock< Rigid3Types, ExtVec3fTypes>,  defaulttype::LinearJacobianBlock< Affine3Types, ExtVec3fTypes > >;
+template class SOFA_Flexible_API BaseDeformationMultiMappingT< defaulttype::LinearJacobianBlock< Rigid3Types, F331Types >, defaulttype::LinearJacobianBlock< Affine3Types, F331Types > >;
+template class SOFA_Flexible_API BaseDeformationMultiMappingT< defaulttype::LinearJacobianBlock< Rigid3Types, F321Types >, defaulttype::LinearJacobianBlock< Affine3Types, F321Types > >;
+template class SOFA_Flexible_API BaseDeformationMultiMappingT< defaulttype::LinearJacobianBlock< Rigid3Types, F311Types >, defaulttype::LinearJacobianBlock< Affine3Types, F311Types > >;
+template class SOFA_Flexible_API BaseDeformationMultiMappingT< defaulttype::LinearJacobianBlock< Rigid3Types, F332Types >, defaulttype::LinearJacobianBlock< Affine3Types, F332Types > >;
+template class SOFA_Flexible_API BaseDeformationMultiMappingT< defaulttype::LinearJacobianBlock< Rigid3Types, Affine3Types >, defaulttype::LinearJacobianBlock< Affine3Types, Affine3Types > >;
+
+
 // Register in the Factory
 int LinearMultiMappingClass_rigid = core::RegisterObject("Map child positions as a linear combination of parents.")
         .add< LinearMultiMapping< Rigid3Types, Affine3Types, Vec3Types > >(true)
