@@ -26,6 +26,7 @@
 #define SOFA_CORE_INTERACTINGBEHAVIORMODEL_H
 
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/core/behavior/Mass.h>
 
 
 namespace sofa
