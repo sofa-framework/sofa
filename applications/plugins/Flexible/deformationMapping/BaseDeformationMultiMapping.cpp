@@ -16,76 +16,37 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                               SOFA :: Modules                               *
+*                               SOFA :: Plugins                               *
 *                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_INL
 
-#include <SofaMiscForceField/WashingMachineForceField.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/config.h>
-#include <sofa/helper/system/gl.h>
-#include <assert.h>
-#include <iostream>
+#include <sofa/core/Multi2Mapping.inl>
 
-
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include "../types/AffineTypes.h"
+#include "../types/QuadraticTypes.h"
+#include "../types/DeformationGradientTypes.h"
 
 namespace sofa
 {
-
-namespace component
+namespace core
 {
 
-namespace forcefield
-{
+using namespace defaulttype;
 
-template<class DataTypes>
-void WashingMachineForceField<DataTypes>::addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
-{
-    for(int i=0; i<6; ++i)
-    {
-        _planes[i]->rotate(_axis.getValue(),_speed.getValue());
-        _planes[i]->addForce(mparams,f,x,v);
-    }
-}
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, Vec3Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, ExtVec3fTypes >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, F331Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, F321Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, F311Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, F332Types >;
+template class SOFA_Flexible_API Multi2Mapping< Rigid3Types, Affine3Types, Affine3Types >;
 
-template<class DataTypes>
-void WashingMachineForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
-{
-    for(int i=0; i<6; ++i)
-        _planes[i]->addDForce(mparams, df, dx);
-}
 
-template<class DataTypes>
-void WashingMachineForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (!vparams->displayFlags().getShowForceFields() || !_alreadyInit ) return;
-    for(int i=0; i<6; ++i)
-// 				_planes[i]->drawPlane(_size.getValue()[0]);
-        _planes[i]->draw(vparams);
-}
-
-template<class DataTypes>
-bool WashingMachineForceField<DataTypes>::addBBox(SReal* minBBox, SReal* maxBBox)
-{
-    Deriv corner0 = _center.getValue() - _size.getValue() * .5;
-    Deriv corner1 = _center.getValue() + _size.getValue() * .5;
-    for (int c=0; c<3; c++)
-    {
-        if (minBBox[c] > corner0[c]) minBBox[c] = corner0[c];
-        if (maxBBox[c] < corner1[c]) maxBBox[c] = corner1[c];
-    }
-    return true;
-}
-
-} // namespace forcefield
-
-} // namespace component
+} // namespace core
 
 } // namespace sofa
-
-#endif

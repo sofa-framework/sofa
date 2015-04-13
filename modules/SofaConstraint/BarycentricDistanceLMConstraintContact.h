@@ -33,7 +33,7 @@
 
 #include <SofaMeshCollision/BarycentricContactMapper.h>
 #include <SofaMeshCollision/IdentityContactMapper.h>
-#include <SofaMeshCollision/RigidContactMapper.inl>
+#include <SofaMeshCollision/RigidContactMapper.h>
 
 
 namespace sofa

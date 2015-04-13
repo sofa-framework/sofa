@@ -31,8 +31,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 
-#include <SofaBaseTopology/PointSetTopologyAlgorithms.inl>
-
 #include <algorithm>
 #include <functional>
 

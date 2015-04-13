@@ -28,8 +28,6 @@
 #include <SofaRigid/LaparoscopicRigidMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/core/Mapping.inl>
-
 #include <string>
 
 

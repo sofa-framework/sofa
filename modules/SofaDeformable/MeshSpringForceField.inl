@@ -27,7 +27,6 @@
 
 #include <SofaDeformable/MeshSpringForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaDeformable/StiffSpringForceField.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <iostream>
 

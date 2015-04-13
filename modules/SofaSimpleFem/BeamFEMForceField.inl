@@ -25,7 +25,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
 
-#include <sofa/core/behavior/ForceField.inl>
 #include <SofaBaseTopology/TopologyData.inl>
 #include "BeamFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>

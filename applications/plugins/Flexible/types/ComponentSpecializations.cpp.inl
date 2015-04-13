@@ -17,6 +17,7 @@
 
 #include <sofa/simulation/common/Node.h>
 
+#include <sofa/core/State.inl>
 #include <SofaBaseMechanics/MechanicalObject.inl>
 
 #include <SofaBoundaryCondition/FixedConstraint.inl>
@@ -38,6 +39,7 @@
 
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/behavior/Mass.inl>
+#include <sofa/core/behavior/ConstraintCorrection.inl>
 #include <SofaDeformable/RestShapeSpringsForceField.inl>
 #include <SofaBoundaryCondition/ConstantForceField.inl>
 
@@ -61,10 +63,12 @@ namespace core
 
 
 #ifndef SOFA_FLOAT
+    template class SOFA_Flexible_API State< defaulttype::TYPEABSTRACTNAME3dTypes >;
 	template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::Vec3dTypes >;
     template class SOFA_Flexible_API MultiMapping< defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
+    template class SOFA_Flexible_API State< defaulttype::TYPEABSTRACTNAME3fTypes >;
     template class SOFA_Flexible_API Mapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::Vec3fTypes >;
     template class SOFA_Flexible_API MultiMapping< defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
@@ -77,10 +81,12 @@ namespace behavior
 #ifndef SOFA_FLOAT
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3dTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3dTypes >;
+    template class SOFA_Flexible_API ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
     template class SOFA_Flexible_API ForceField< defaulttype::TYPEABSTRACTNAME3fTypes >;
     template class SOFA_Flexible_API Mass< defaulttype::TYPEABSTRACTNAME3fTypes >;
+    template class SOFA_Flexible_API ConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >;
 #endif
 
 

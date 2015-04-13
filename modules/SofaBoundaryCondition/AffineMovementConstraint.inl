@@ -27,7 +27,6 @@
 
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>

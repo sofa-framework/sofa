@@ -1,6 +1,7 @@
 include(${SOFA_CMAKE_DIR}/preProject.cmake)
 
 set(HEADER_FILES
+    StrainMapping_test.h
 )
 
 set(SOURCE_FILES
@@ -13,12 +14,18 @@ set(SOURCE_FILES
    NeoHookeHexahedraMaterial_test.cpp
    PointDeformationMapping_test.cpp
    Patch_test.cpp
-   StrainMappings_test.cpp
    RigidDeformationMapping_test.cpp
    ShapeFunction_test.cpp
    StabilizedNeoHookeHexahedraMaterial_test.cpp
    TetrahedraMaterial_test.cpp
    TetrahedronVolumeMapping_test.cpp
+
+
+   CorotationalStrainMapping_test.cpp
+   CauchyStrainMapping_test.cpp
+   GreenStrainMapping_test.cpp
+   InvariantMapping_test.cpp
+   PrincipalStretchesMapping_test.cpp
         )
 
 if(WIN32)

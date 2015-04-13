@@ -26,7 +26,6 @@
 
 #include "../initFlexible.h"
 #include "LinearMultiMapping.h"
-#include <sofa/core/Multi2Mapping.inl>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
