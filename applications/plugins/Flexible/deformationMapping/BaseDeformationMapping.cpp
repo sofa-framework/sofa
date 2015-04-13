@@ -53,7 +53,7 @@ template class SOFA_Flexible_API Mapping< Vec3Types, F331Types >;
 template class SOFA_Flexible_API Mapping< Vec3Types, F332Types >;
 template class SOFA_Flexible_API Mapping< Vec3Types, F321Types >;
 template class SOFA_Flexible_API Mapping< Vec3Types, F311Types >;
-template class SOFA_Flexible_API Mapping< Vec2Types, Vec2Types >;
+//template class SOFA_Flexible_API Mapping< Vec2Types, Vec2Types >;
 template class SOFA_Flexible_API Mapping< Vec2Types, F221Types >;
 template class SOFA_Flexible_API Mapping< Vec3Types, Affine3Types >;
 
