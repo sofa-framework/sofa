@@ -685,6 +685,6 @@ void DiffusionSolver< Real >::solveCG( ImageType& img, const MaskType& mask, Rea
 }
 
 // precompilation for single and double floating points
-template class EXPORT_DYNAMIC_LIBRARY DiffusionSolver<float>;
-//template class EXPORT_DYNAMIC_LIBRARY DiffusionSolver<double>;
+template struct EXPORT_DYNAMIC_LIBRARY DiffusionSolver<float>;
+//template struct EXPORT_DYNAMIC_LIBRARY DiffusionSolver<double>;
 
